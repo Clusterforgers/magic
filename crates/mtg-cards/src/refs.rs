@@ -99,6 +99,9 @@ pub enum Ref {
     Monarch,
     /// The player the source chose as it entered ("the chosen player"); nobody before the choice, for a source that chose no player or once that player has left the game.
     Chosen,
+    /// The players the source chose as it entered other than the player the trigger event is about ("the other chosen
+    /// player"); nobody once they have left the game.
+    R4700OtherChosen,
     /// The opponent the gift was promised to as the spell the ability reads was cast (CR 702.174); nobody when none was promised or they have left the game.
     Promised,
     /// The defending player of the attacking creature that triggered the ability, else of the source: whoever it

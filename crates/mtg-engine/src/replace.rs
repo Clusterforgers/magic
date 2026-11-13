@@ -3501,7 +3501,7 @@ impl Pass<'_> {
         }
         if matches!(
             kind,
-            EntersChoice::Colors(_) | EntersChoice::ColorAndCreatureType
+            EntersChoice::Colors(_) | EntersChoice::ColorAndCreatureType | EntersChoice::Players(_)
         ) {
             return self.r4700_chooses(source, controller, kind);
         }
@@ -3531,6 +3531,7 @@ impl Pass<'_> {
                         | EntersChoice::CardTypeOf(_) => "Choose a card type.".to_owned(),
                         EntersChoice::Number { .. }
                         | EntersChoice::Colors(_)
+                        | EntersChoice::Players(_)
                         | EntersChoice::ColorAndCreatureType => String::new(),
                     };
                     return Ok(Asked::Ask(Decision {
@@ -3621,6 +3622,7 @@ impl Pass<'_> {
             | EntersChoice::NonlandCardName
             | EntersChoice::Number { .. }
             | EntersChoice::Colors(_)
+            | EntersChoice::Players(_)
             | EntersChoice::ColorAndCreatureType => Vec::new(),
             EntersChoice::Player => self
                 .state

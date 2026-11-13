@@ -77,6 +77,29 @@ impl Pass<'_> {
                     Chosen::ColorAndType(color, subtype)
                 })))
             }
+            EntersChoice::Players(count) => {
+                let mut chosen: Vec<PlayerId> = Vec::new();
+                for _ in 0..count {
+                    let left: Vec<PlayerId> = self
+                        .state
+                        .turn_order_from(controller)
+                        .into_iter()
+                        .filter(|player| !chosen.contains(player))
+                        .collect();
+                    let options = left.iter().copied().map(ChoiceOption::Player).collect();
+                    let text = if chosen.is_empty() {
+                        "Choose a player.".to_owned()
+                    } else {
+                        "Choose another player.".to_owned()
+                    };
+                    match self.r4700_pick(source, controller, options, text)? {
+                        Asked::Ask(decision) => return Ok(Asked::Ask(decision)),
+                        Asked::Got(Some(at)) => chosen.extend(left.get(at).copied()),
+                        Asked::Got(None) => break,
+                    }
+                }
+                Ok(Asked::Got(Some(Chosen::Players(chosen))))
+            }
             _ => Ok(Asked::Got(None)),
         }
     }

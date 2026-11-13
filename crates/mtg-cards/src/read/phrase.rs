@@ -56,6 +56,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::Monarch => "the monarch".to_owned(),
         Ref::Chosen => "the chosen object".to_owned(),
         Ref::Promised => "the promised object".to_owned(),
+        Ref::R4700OtherChosen => "the other chosen player".to_owned(),
         Ref::Defending => "the defending player".to_owned(),
         Ref::Attacked => "the attacked player".to_owned(),
         Ref::MostLife => "the player with the most life".to_owned(),

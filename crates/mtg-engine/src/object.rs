@@ -75,6 +75,8 @@ pub enum Chosen {
     LandType(mtg_core::card::Subtype),
     /// A player (public, like every choice made as a permanent enters).
     Player(PlayerId),
+    /// Several different players ("choose two players"), in the order they were chosen.
+    Players(Vec<PlayerId>),
     /// A card type.
     CardType(mtg_core::card::CardType),
     /// A card name (CR 201.3).

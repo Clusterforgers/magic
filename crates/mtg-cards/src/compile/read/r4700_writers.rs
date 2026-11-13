@@ -16,6 +16,13 @@ pub(super) fn r4700_wordings(
     written: fn(&Ability) -> Vec<String>,
     texts: &mut Vec<String>,
 ) {
+    if r4700_other_chosen(ability) {
+        let text = "Whenever damage is dealt to one of the chosen players, the other chosen player also loses that much life.".to_owned();
+        if !texts.contains(&text) {
+            texts.push(text);
+        }
+        return;
+    }
     if let Ability::Triggered {
         intervening_if: Some(held),
         ..
@@ -174,4 +181,37 @@ pub(super) fn r4700_top_cards_text(
         .strip_prefix("Exile ")?
         .strip_suffix(" from your graveyard")?;
     Some(format!("Exile the top {cards} of your graveyard"))
+}
+
+/// Whether the ability is "Whenever damage is dealt to one of the chosen players, the other chosen player also loses that
+/// much life.": damage of any source to a chosen player, the life lost by the other.
+fn r4700_other_chosen(ability: &Ability) -> bool {
+    use crate::effect::Effect;
+    use crate::trigger::TriggerPattern;
+    use crate::value::Amount;
+    let Ability::Triggered {
+        when: TriggerPattern::Batch(inner),
+        intervening_if: None,
+        targets,
+        effects,
+        ..
+    } = ability
+    else {
+        return false;
+    };
+    let TriggerPattern::DealsDamage {
+        source,
+        to: Some(Ref::Chosen),
+        combat: None,
+    } = inner.as_ref()
+    else {
+        return false;
+    };
+    source.0.is_empty()
+        && targets.is_empty()
+        && *effects
+            == [Effect::LoseLife {
+                who: Ref::R4700OtherChosen,
+                amount: Amount::Triggering,
+            }]
 }

@@ -1576,6 +1576,10 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
             .map(|n| format!("As ~ enters, choose {n} colors"))
             .into_iter()
             .collect(),
+        (ReplaceBy::Choose(EntersChoice::Players(n)), None) => super::amounts::count_word(*n)
+            .map(|n| format!("As ~ enters, choose {n} players"))
+            .into_iter()
+            .collect(),
         (ReplaceBy::Choose(EntersChoice::ColorAndCreatureType), None) => {
             vec!["As ~ enters, choose a color and a creature type".to_owned()]
         }

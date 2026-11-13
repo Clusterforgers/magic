@@ -122,6 +122,7 @@ fn compiled_cards() {
 #[case("Volrath's Laboratory")]
 #[case("Riptide Replicator")]
 #[case("Spinning Darkness")]
+#[case("Sower of Discord")]
 fn reads_back_whole(#[case] name: &str) {
     let report = report(name);
     assert_eq!(
@@ -193,6 +194,19 @@ fn altered(name: &str, from: &str, to: &str) -> String {
     r#"{"among":[{"Color":"Black"}]"#,
     r#"{"among":[{"Color":"Red"}]"#
 )]
+#[case::three_players("Sower of Discord", r#"{"Players":2}"#, r#"{"Players":3}"#)]
+#[case::one_player("Sower of Discord", r#"{"Players":2}"#, r#""Player""#)]
+#[case::the_same_player(
+    "Sower of Discord",
+    r#""who":"R4700OtherChosen""#,
+    r#""who":"Triggering""#
+)]
+#[case::only_combat(
+    "Sower of Discord",
+    r#""source":[],"to":"Chosen""#,
+    r#""combat":true,"source":[],"to":"Chosen""#
+)]
+#[case::one_life("Sower of Discord", r#""amount":"Triggering""#, r#""amount":1"#)]
 fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let report = report_of(name, &altered(name, from, to));
     assert_ne!(

@@ -983,6 +983,8 @@ pub enum EntersChoice {
     Colors(u32),
     /// A colour and a creature type ("choose a color and a creature type").
     ColorAndCreatureType,
+    /// This many different players ("choose two players").
+    Players(u32),
     /// A number from `min` to `max`.
     Number {
         /// The smallest number.

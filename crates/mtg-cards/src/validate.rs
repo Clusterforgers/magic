@@ -599,8 +599,12 @@ impl<'a> Walker<'a> {
     // One arm for each kind of reference.
     #[allow(clippy::too_many_lines)]
     fn reference(&mut self, r: &Ref, want: Kind) {
+        if *r == Ref::R4700OtherChosen {
+            self.uses("Ref", "R4700OtherChosen");
+        }
         match r {
-            Ref::You
+            Ref::R4700OtherChosen
+            | Ref::You
             | Ref::Opponents
             | Ref::EachPlayer
             | Ref::AttachedPlayer
@@ -3293,7 +3297,8 @@ impl Walker<'_> {
     /// What a reference names: a player, an object, or either when it is a name or a target of either kind.
     fn kind_of(&self, r: &Ref) -> Kind {
         match r {
-            Ref::You
+            Ref::R4700OtherChosen
+            | Ref::You
             | Ref::Opponents
             | Ref::EachPlayer
             | Ref::AttachedPlayer

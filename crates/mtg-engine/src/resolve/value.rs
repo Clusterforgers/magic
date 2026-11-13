@@ -1273,11 +1273,8 @@ impl<'a> Scope<'a> {
             Ref::Granter => self.granter_on_battlefield(),
             Ref::Monarch => state.monarch().map(Target::Player).into_iter().collect(),
             Ref::Promised => self.promised().map(Target::Player).into_iter().collect(),
-            Ref::Chosen => self
-                .chosen_player()
-                .map(Target::Player)
-                .into_iter()
-                .collect(),
+            Ref::Chosen => self.r4700_chosen_targets(false)?,
+            Ref::R4700OtherChosen => self.r4700_chosen_targets(true)?,
             Ref::Defending => self.defending().into_iter().map(Target::Player).collect(),
             Ref::Attacked => self
                 .attacked_opponents()
@@ -2587,7 +2584,11 @@ impl<'a> Scope<'a> {
             Chosen::Name(name) => seen.card.is_some_and(|c| {
                 crate::un34_stickers::name_with(&seen.chars.name_words, &c.card().name) == *name
             }),
-            Chosen::Player(_) | Chosen::Chapter(_) | Chosen::Number(_) | Chosen::Word(_) => false,
+            Chosen::Player(_)
+            | Chosen::Players(_)
+            | Chosen::Chapter(_)
+            | Chosen::Number(_)
+            | Chosen::Word(_) => false,
         }
     }
 
@@ -2928,11 +2929,34 @@ impl<'a> Scope<'a> {
     }
 
     /// The player the source chose as it entered, while they are still in the game.
-    fn chosen_player(&self) -> Option<PlayerId> {
-        match self.entered_choice() {
-            Some(Chosen::Player(player)) if self.state.is_alive(*player) => Some(*player),
-            _ => None,
-        }
+    /// The players the source chose as it entered who are still in the game, without those the trigger event is
+    /// about when `other` is set ("the other chosen player").
+    fn r4700_chosen_targets(&self, other: bool) -> Result<Vec<Target>, ResolveError> {
+        let about = if other {
+            self.refs(&Ref::Triggering)?
+        } else {
+            Vec::new()
+        };
+        Ok(self
+            .chosen_players()
+            .into_iter()
+            .map(Target::Player)
+            .filter(|player| !about.contains(player))
+            .collect())
+    }
+
+    /// The players the source chose as it entered who are still in the game.
+    fn chosen_players(&self) -> Vec<PlayerId> {
+        let chosen: &[PlayerId] = match self.entered_choice() {
+            Some(Chosen::Player(player)) => std::slice::from_ref(player),
+            Some(Chosen::Players(players)) => players,
+            _ => &[],
+        };
+        chosen
+            .iter()
+            .copied()
+            .filter(|player| self.state.is_alive(*player))
+            .collect()
     }
 
     /// The opponent a gift was promised to as the spell was cast, while they are still in the game (CR 702.174).

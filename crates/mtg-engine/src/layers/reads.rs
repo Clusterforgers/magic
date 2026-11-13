@@ -239,6 +239,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::AttachedPlayer
         | Ref::Monarch
         | Ref::Chosen
+        | Ref::R4700OtherChosen
         | Ref::Promised
         | Ref::Defending
         | Ref::Attacked
