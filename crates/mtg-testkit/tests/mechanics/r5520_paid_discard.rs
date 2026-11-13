@@ -71,7 +71,7 @@ fn angel_damage(driver: &Driver) -> u32 {
         .state()
         .object(angel)
         .and_then(|object| object.permanent())
-        .map_or(0, |permanent| permanent.damage())
+        .map_or(0, mtg_engine::object::PermanentState::damage)
 }
 
 #[rstest]
