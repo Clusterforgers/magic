@@ -459,6 +459,19 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::LoseAbilitiesExceptMana => Modification::LoseAbilitiesExceptMana,
         Wanted::LoseThisAbility | Wanted::LosePrinted(_) => return Err(not_resolving()),
         Wanted::GainAbilitiesOf(from) => Modification::GainAbilities(borrowed(scope, from)?),
+        // Each listed keyword one of the objects has, with its variant ("hexproof from white" for hexproof).
+        Wanted::KeywordsOf { from, keywords } => {
+            let mut given: Vec<Keyword> = Vec::new();
+            for donor in scope.objects(from)? {
+                for held in crate::keywords::keywords_of(scope.state, donor.id) {
+                    let listed = keywords.iter().any(|wanted| r5511_variant_of(held, wanted));
+                    if listed && !given.contains(held) {
+                        given.push(held.clone());
+                    }
+                }
+            }
+            Modification::AddKeywords(given)
+        }
         // A reference that names several players names the first in turn order from the active player.
         Wanted::SetController(who) => {
             Modification::SetController(*scope.players(who)?.first().ok_or_else(|| {
@@ -876,4 +889,19 @@ mod tests {
             Err(ResolveError::Invalid(_))
         ));
     }
+}
+
+/// Whether `held` is the keyword `wanted` or one of its variants: "hexproof from white" is a hexproof, a protection or a
+/// landwalk of any quality is one of its kind (Soulflayer's rulings).
+fn r5511_variant_of(held: &Keyword, wanted: &Keyword) -> bool {
+    held == wanted
+        || matches!(
+            (wanted, held),
+            (Keyword::Hexproof, Keyword::HexproofFrom(_))
+                | (
+                    Keyword::Protection(_),
+                    Keyword::Protection(_) | Keyword::ProtectionSparing { .. }
+                )
+                | (Keyword::Landwalk(_), Keyword::Landwalk(_))
+        )
 }

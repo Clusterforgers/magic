@@ -60,6 +60,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         }
         Modification::SetColors(_) | Modification::AddColors(_) => Traits::COLORS,
         Modification::AddKeyword(_)
+        | Modification::AddKeywords(_)
         | Modification::RemoveKeyword(_)
         | Modification::RemoveKeywordKind(_)
         | Modification::LockKeyword(_) => Traits::KEYWORDS,
@@ -119,6 +120,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::SetChosenColor
         | Wanted::SetCommanderColor => Traits::COLORS,
         Wanted::AddKeyword(_)
+        | Wanted::KeywordsOf { .. }
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType
         | Wanted::RemoveKeyword(_)
@@ -170,6 +172,8 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::SetToughness(value)
         | Wanted::BlocksAdditionalPer(value) => reads_of_amount(value),
         Wanted::SetController(who) | Wanted::GainAbilitiesOf(who) => reads_of_ref(who),
+        // The keywords of the other objects are read.
+        Wanted::KeywordsOf { from, .. } => Traits::KEYWORDS.or(reads_of_ref(from)),
         // The creature types of the other object are read.
         Wanted::SetCreatureTypesOf(from) => Traits::SUBTYPES.or(reads_of_ref(from)),
         Wanted::CantBeBlockedBy(blockers) | Wanted::CanBlockOnly(blockers) => {
@@ -255,7 +259,8 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Affected
         | Ref::Candidate
         | Ref::Paid
-        | Ref::Convoked => Traits::NONE,
+        | Ref::Convoked
+        | Ref::Delved => Traits::NONE,
         Ref::Remembered { on, .. } => reads_of_ref(on),
         Ref::LastExiledWith { on, filter } => reads_of_ref(on).or(reads_of_selector(filter)),
         Ref::ControllerOf(inner) | Ref::OrController(inner) => {

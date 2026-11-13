@@ -106,7 +106,8 @@
                   "effects": [
                     {
                       "RollDice": {
-                        "sides": 6
+                        "sides": 6,
+                        "results": []
                       }
                     }
                   ],

@@ -331,6 +331,19 @@ fn payment_events(
                 .filter_map(|convoked| refer(convoked.creature))
                 .collect();
             r282_keep_paid(choices, convoked, payment.life);
+            // The cards exiled for delve, as the objects they become in exile (CR 400.7, 702.66).
+            let delved: Vec<_> = payment
+                .delve
+                .iter()
+                .filter_map(|card| refer(*card))
+                .map(|card| crate::object::ObjectRef {
+                    id: card.id,
+                    counter: card.counter + 1,
+                })
+                .collect();
+            if !delved.is_empty() {
+                choices.cost_taken.get_or_insert_with(Box::default).delved = delved;
+            }
         }
     }
     events.extend(announced);

@@ -120,6 +120,14 @@ impl Gives {
             | Modification::LoseAbility(_) => {
                 return;
             }
+            Modification::AddKeywords(keywords) => {
+                for keyword in keywords {
+                    if !self.keywords.contains(keyword) {
+                        self.keywords.push(keyword.clone());
+                    }
+                }
+                return;
+            }
             Modification::AddKeyword(keyword) => {
                 if !self.keywords.contains(keyword) {
                     self.keywords.push(keyword.clone());

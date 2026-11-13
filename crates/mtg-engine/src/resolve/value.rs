@@ -1209,6 +1209,25 @@ impl<'a> Scope<'a> {
         Ok(held)
     }
 
+    /// The cards the delve of the source's spell exiled that are still those objects in exile (CR 702.66, 607.2a).
+    fn r5511_delved(&self) -> Vec<Target> {
+        let delved = self
+            .state
+            .object(self.source.id)
+            .filter(|object| object.counter() == self.source.counter)
+            .map(|object| object.delved().to_vec())
+            .unwrap_or_default();
+        delved
+            .into_iter()
+            .filter(|card| {
+                self.state.object(card.id).is_some_and(|object| {
+                    object.counter() == card.counter && object.zone() == crate::zones::Zone::Exile
+                })
+            })
+            .map(Target::Object)
+            .collect()
+    }
+
     /// The card each object `on` names exiled last among those `filter` selects, while it is still in exile.
     fn r5511_last_exiled(&self, on: &Ref, filter: &Selector) -> Result<Vec<Target>, ResolveError> {
         let mut found = Vec::new();
@@ -1313,6 +1332,7 @@ impl<'a> Scope<'a> {
             Ref::Bound(name) => self.bindings.get(name).cloned().unwrap_or_default(),
             Ref::Paid => self.paid(),
             Ref::Convoked => self.convoked(),
+            Ref::Delved => self.r5511_delved(),
             Ref::Remembered { on, slot } => self.remembered(on, slot)?,
             Ref::LastExiledWith { on, filter } => self.r5511_last_exiled(on, filter)?,
             Ref::Arrived { of, zone } => self.arrived(of, *zone)?,

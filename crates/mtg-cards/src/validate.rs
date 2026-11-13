@@ -634,6 +634,7 @@ impl<'a> Walker<'a> {
                 self.reference(on, Kind::Object);
                 self.expect(Kind::Either, want);
             }
+            Ref::Delved => self.expect(Kind::Object, want),
             Ref::LastExiledWith { on, filter } => {
                 self.reference(on, Kind::Object);
                 self.at("filter", |w| w.selector(filter));
@@ -2500,6 +2501,16 @@ impl<'a> Walker<'a> {
             Modification::GainAbilitiesOf(from) | Modification::SetCreatureTypesOf(from) => {
                 self.reference(from, Kind::Object);
             }
+            Modification::KeywordsOf { from, keywords } => {
+                self.reference(from, Kind::Object);
+                if keywords.is_empty() {
+                    self.problem("a keyword copied from other objects names at least one keyword");
+                }
+                for keyword in keywords {
+                    self.granted.push(keyword.clone());
+                    self.keyword(keyword);
+                }
+            }
             Modification::GrantAbility(granted) => self.granted(granted),
             Modification::CantBeBlockedBy(selector) | Modification::CanBlockOnly(selector) => {
                 self.selector(selector);
@@ -3353,7 +3364,7 @@ impl Walker<'_> {
             | Ref::Against
             | Ref::Remembered { .. }
             | Ref::Union(_) => Kind::Either,
-            Ref::LastExiledWith { .. } => Kind::Object,
+            Ref::LastExiledWith { .. } | Ref::Delved => Kind::Object,
         }
     }
 

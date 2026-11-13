@@ -1,17 +1,50 @@
 {
   "oracle_id": "d45cf9b1-d916-48bf-8b99-60cd09230a4b",
   "name": "Soulflayer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Soulflayer",
       "oracle_fingerprint": "1190cb9713ac0ff1e296074761fd06bd",
       "abilities": [
-        { "Keyword": "Delve" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 87, "end": 326 }
+          "Keyword": "Delve"
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "KeywordsOf": {
+                  "from": {
+                    "Each": [
+                      {
+                        "Is": "Delved"
+                      },
+                      {
+                        "In": "Exile"
+                      },
+                      {
+                        "Type": "Creature"
+                      }
+                    ]
+                  },
+                  "keywords": [
+                    "Flying",
+                    "FirstStrike",
+                    "DoubleStrike",
+                    "Deathtouch",
+                    "Haste",
+                    "Hexproof",
+                    "Indestructible",
+                    "Lifelink",
+                    "Reach",
+                    "Trample",
+                    "Vigilance"
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

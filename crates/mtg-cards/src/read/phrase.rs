@@ -69,6 +69,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::Candidate => "the object being judged".to_owned(),
         Ref::Remembered { on, slot } => format!("what {} remembers as {slot}", who(ctx, on)),
         Ref::LastExiledWith { on, .. } => format!("the last such card {} exiled", who(ctx, on)),
+        Ref::Delved => "the cards exiled with its delve".to_owned(),
         Ref::ControllerOf(inner) => format!("the controller of {}", who(ctx, inner)),
         Ref::OwnerOf(inner) => format!("the owner of {}", who(ctx, inner)),
         Ref::PlayersWhere { who: players, test } => format!(

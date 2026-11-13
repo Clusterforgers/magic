@@ -65,6 +65,15 @@ pub enum Modification {
     AddSubtype(Subtype),
     /// Replaces the creature types with these (layer 4): "becomes a red Weird" (CR 205.1b).
     SetCreatureTypes(Vec<Subtype>),
+    /// Gives each of the listed keywords that one of the objects the reference names has, with the variant it has
+    /// ("hexproof from white" for hexproof) (layer 6): "If a creature card with flying was exiled with this creature's
+    /// delve ability, this creature has flying. The same is true for ..." (Soulflayer).
+    KeywordsOf {
+        /// The objects whose keywords are read.
+        from: Ref,
+        /// The keywords given.
+        keywords: Vec<Keyword>,
+    },
     /// Replaces the creature types with those of the object the reference names (layer 4): "has the creature types of the
     /// last creature card exiled with it" (Duplicant).
     SetCreatureTypesOf(Ref),
@@ -230,6 +239,7 @@ impl Modification {
             | Modification::SetChosenColor
             | Modification::SetCommanderColor => Some("5"),
             Modification::AddKeyword(_)
+            | Modification::KeywordsOf { .. }
             | Modification::AddProtectionFromChosenColor
             | Modification::AddProtectionFromChosenCardType
             | Modification::LockKeyword(_)

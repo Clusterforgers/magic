@@ -294,6 +294,8 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::GrantAbility(_)
             | mtg_cards::modify::Modification::GainAbilitiesOf(_)
             | mtg_cards::modify::Modification::SetCreatureTypesOf(_)
+            // It reads the keywords of other objects, which the table's totem has none of to give.
+            | mtg_cards::modify::Modification::KeywordsOf { .. }
             // Only the resolution of an activated ability knows which ability it is, so it is not a row of the table.
             | mtg_cards::modify::Modification::LoseThisAbility
             // Like `LoseThisAbility`, it finds its ability only as a resolution begins.

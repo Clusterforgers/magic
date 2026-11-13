@@ -198,6 +198,11 @@ pub struct CostTaken {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectRef>>", optional))]
     pub convoked: Vec<ObjectRef>,
+    /// The cards exiled to pay for the spell with delve, as the objects they became in exile (CR 702.66): "exiled with
+    /// this creature's delve ability" reads them.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectRef>>", optional))]
+    pub delved: Vec<ObjectRef>,
     /// How many counters the cost removed from the source of the ability: "for each counter removed this way" reads it.
     #[serde(default, skip_serializing_if = "is_zero_u32")]
     #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
@@ -244,6 +249,13 @@ impl Choices {
         self.cost_taken
             .as_deref()
             .map_or(&[], |taken| &taken.convoked)
+    }
+
+    /// The cards exiled with the spell's delve (`CostTaken::delved`).
+    pub fn delved(&self) -> &[ObjectRef] {
+        self.cost_taken
+            .as_deref()
+            .map_or(&[], |taken| &taken.delved)
     }
 
     /// The cards spliced onto the spell (`CostTaken::spliced`).

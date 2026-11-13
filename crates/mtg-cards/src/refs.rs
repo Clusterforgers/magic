@@ -146,6 +146,8 @@ pub enum Ref {
         /// Which of them count.
         filter: Selector,
     },
+    /// The cards exiled with the delve of the spell the source is or came from (CR 702.66), while they are still in exile.
+    Delved,
     /// The controller of the referenced object.
     ControllerOf(Box<Ref>),
     /// The owner of the referenced object.

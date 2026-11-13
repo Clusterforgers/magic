@@ -383,7 +383,8 @@
        "effects": [
         {
          "RollDice": {
-          "sides": 6
+          "sides": 6,
+          "results": []
          }
         }
        ],
@@ -909,5 +910,85 @@
    }
   },
   "Basic lands of the first chosen type are the second chosen type."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "This",
+    "mods": [
+     {
+      "KeywordsOf": {
+       "from": {
+        "Each": [
+         {
+          "Is": "Delved"
+         },
+         {
+          "In": "Exile"
+         },
+         {
+          "Type": "Creature"
+         }
+        ]
+       },
+       "keywords": [
+        "Flying",
+        "FirstStrike",
+        "DoubleStrike",
+        "Deathtouch",
+        "Haste",
+        "Hexproof",
+        "Indestructible",
+        "Lifelink",
+        "Reach",
+        "Trample",
+        "Vigilance"
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "If a creature card with flying was exiled with this creature's delve ability, this creature has flying. The same is true for first strike, double strike, deathtouch, haste, hexproof, indestructible, lifelink, reach, trample, and vigilance."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "This",
+    "mods": [
+     {
+      "KeywordsOf": {
+       "from": {
+        "Each": [
+         {
+          "Is": "Delved"
+         },
+         {
+          "In": "Exile"
+         },
+         {
+          "Type": "Creature"
+         }
+        ]
+       },
+       "keywords": [
+        "Flying",
+        "FirstStrike",
+        "DoubleStrike",
+        "Deathtouch",
+        "Haste",
+        "Hexproof",
+        "Indestructible",
+        "Lifelink",
+        "Reach",
+        "Trample",
+        "Vigilance"
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "If a creature card with flying was exiled with ~'s delve ability, ~ has flying. The same is true for first strike, double strike, deathtouch, haste, hexproof, indestructible, lifelink, reach, trample, and vigilance."
  ]
 ]

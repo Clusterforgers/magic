@@ -196,6 +196,7 @@ mod r409_kicker_x;
 mod r4f_stack_move;
 mod r4i_may_flash;
 mod r5511_chosen_color;
+mod r5511_delved;
 mod r5511_entering_spent;
 mod r6q1_face_down_cost;
 mod r7p3_next_spell;

@@ -238,6 +238,8 @@ pub struct PermanentState {
     pub(crate) spent_from: Vec<mtg_cards::spend::SpentFrom>,
     /// The creatures that convoked the spell, which its enters triggers read (CR 702.51).
     pub(crate) convoked: Vec<ObjectRef>,
+    /// The cards exiled with the delve of its spell, as they are in exile (CR 702.66).
+    pub(crate) delved: Vec<ObjectRef>,
     /// The copy effect that makes the permanent a copy of another object (CR 707): its copiable values replace the card's.
     pub(crate) copy: Option<CopyEffect>,
     /// The cards the permanent is made of once a mutating creature spell has merged with it (CR 729).
@@ -284,6 +286,7 @@ impl PermanentState {
             spent,
             spent_from,
             convoked: Vec::new(),
+            delved: Vec::new(),
             copy: None,
             merged: None,
             phased: PhasedState::default(),
@@ -683,6 +686,17 @@ impl GameObject {
             Some(permanent) => &permanent.spent_from,
             None if self.kind != ObjectKind::Ability && self.zone == Zone::Stack => {
                 self.choices.spent_from()
+            }
+            None => &[],
+        }
+    }
+
+    /// The cards exiled with the delve of this card's spell, as they are in exile (CR 702.66).
+    pub fn delved(&self) -> &[ObjectRef] {
+        match &self.permanent {
+            Some(permanent) => &permanent.delved,
+            None if self.kind != ObjectKind::Ability && self.zone == Zone::Stack => {
+                self.choices.delved()
             }
             None => &[],
         }

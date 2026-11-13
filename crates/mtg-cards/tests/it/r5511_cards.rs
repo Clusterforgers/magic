@@ -103,6 +103,7 @@ fn r5511_probe() {
 
 #[rstest]
 #[case("Nethergoyf")]
+#[case("Soulflayer")]
 #[case("Duplicant")]
 #[case("Illusionary Terrain")]
 #[case("Omnath, Locus of All")]
@@ -177,6 +178,8 @@ fn r5511_reads_back_whole(#[case] name: &str) {
     r#""SetLandTypesNthChosen": 0"#
 )]
 #[case::terrain_any_land("Illusionary Terrain", r#"{ "Supertype": "Basic" }, "#, "")]
+#[case::soulflayer_without_reach("Soulflayer", r#""Reach", "#, "")]
+#[case::soulflayer_any_card("Soulflayer", r#", { "Type": "Creature" }"#, "")]
 #[case::goyf_colors_count(
     "Nethergoyf",
     r#"{ "ExileCardTypes": 4 }"#,

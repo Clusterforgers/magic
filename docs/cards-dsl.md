@@ -121,6 +121,7 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - "For each mana from a Treasure (an artifact source) spent to cast them" on an entering creature is `Stat { of: Affected, stat: TreasureManaSpent | ArtifactManaSpent }`: an enters replacement reads the entering card as `Affected`.
 - "Add mana equal to enchanted permanent's mana cost" is `Produce::CostOf`: generic mana adds {C}, {X} nothing, and a symbol of two colors (or a colorless hybrid one) is a choice; a snow symbol is refused. "Three or more colored mana symbols in its mana cost" counts `StatKind::ColoredManaSymbols`.
 - "The power, toughness, and creature types of the last creature card exiled with it" read `Ref::LastExiledWith` (the card the source exiled last among those its filter selects, while still in exile) and `Modification::SetCreatureTypesOf`.
+- "If a creature card with flying was exiled with this creature's delve ability, this creature has flying. The same is true for ..." is `Modification::KeywordsOf` over `Ref::Delved` (the cards the spell's delve exiled, while still in exile): each listed keyword one of them has, with its variant ("hexproof from white").
 - "Choose two basic land types" is `EntersChoice::TwoBasicLandTypes` (`Chosen::LandTypes`, in order); "lands of the first chosen type are the second chosen type" is `Pred::NthChosenLandType(0)` with `Modification::SetLandTypesNthChosen(1)`.
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 
