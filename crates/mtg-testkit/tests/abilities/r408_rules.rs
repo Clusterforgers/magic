@@ -1,6 +1,6 @@
 //! Goal: the r40-8 rules play as their cards say at two to four seats: Experimental Frenzy keeps lands and spells in the
 //! hand while the top of the library stays open, Cornered Market keeps a nonbasic land with a nontoken permanent's name
-//! in the hand but not a basic one, Discontinuity costs {1} during its caster's turn and ends the turn, and Intervention
+//! in the hand but not a basic one, Discontinuity costs {1}{U} during its caster's turn and ends the turn, and Intervention
 //! Pact prevents the next damage of the chosen source, gains that much life and is paid for at the next upkeep or the
 //! game is lost.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
@@ -102,12 +102,11 @@ fn cornered_market_keeps_a_named_nonbasic_land_in_hand(#[case] seats: usize, #[c
 #[case::two_seats(2)]
 #[case::three_seats(3)]
 #[case::four_seats(4)]
-fn discontinuity_costs_one_on_your_turn_and_ends_it(#[case] seats: usize) {
+fn discontinuity_costs_two_on_your_turn_and_ends_it(#[case] seats: usize) {
     let scenario = Scenario::new(seats)
         .at(2, 0, Step::Main1)
-        .battlefield(0, [ready(island())])
-        .hand(0, [card("Discontinuity").unwrap()])
-;
+        .battlefield(0, [ready(island()), ready(island())])
+        .hand(0, [card("Discontinuity").unwrap()]);
     let mut driver = Driver::from_scenario(libraries(scenario, seats, forest)).unwrap();
     driver.cast("Discontinuity").unwrap();
     for _ in 0..40 {
@@ -125,7 +124,7 @@ fn discontinuity_costs_one_on_your_turn_and_ends_it(#[case] seats: usize) {
 fn discontinuity_costs_its_full_price_on_another_turn() {
     let scenario = Scenario::new(2)
         .at(2, 0, Step::Main1)
-        .battlefield(1, [ready(island()), ready(island()), ready(island())])
+        .battlefield(1, (0..5).map(|_| ready(island())))
         .hand(1, [card("Discontinuity").unwrap()]);
     let mut driver = Driver::from_scenario(libraries(scenario, 2, forest)).unwrap();
     driver.pass().unwrap();
@@ -138,7 +137,7 @@ fn discontinuity_costs_its_full_price_on_another_turn() {
 fn pact_against_shock(seats: usize, lands: usize) -> Driver {
     let scenario = Scenario::new(seats)
         .at(2, 0, Step::Main1)
-        .battlefield(0, (0..lands).map(|_| ready(plains())).chain([ready(mountain())]))
+        .battlefield(0, (0..lands).map(|_| ready(plains())).chain([ready(mountain()), ready(mountain())]))
         .hand(0, [burn("Shock", 2), burn("Shock", 2), card("Intervention Pact").unwrap()]);
     let mut driver = Driver::from_scenario(libraries(scenario, seats, forest)).unwrap();
     let me = driver.target_player(0);
@@ -216,4 +215,50 @@ fn intervention_pact_is_paid_at_the_next_upkeep_or_the_game_is_lost(
         }
     }
     assert_eq!(driver.state().is_alive(pid(0)), pays);
+}
+
+#[rstest]
+#[case::paid_at_two_seats(2, 15, true)]
+#[case::paid_at_three_seats(3, 20, true)]
+#[case::declined_at_four_seats(4, 15, false)]
+fn garzas_assassin_recovers_for_half_the_life_rounded_up(
+    #[case] seats: usize,
+    #[case] life: i32,
+    #[case] pays: bool,
+) {
+    let scenario = Scenario::new(seats)
+        .at(2, 0, Step::Main1)
+        .life(0, life)
+        .battlefield(0, [ready(mountain()), ready(mtg_testkit::cards::bear())])
+        .graveyard(0, [card("Garza's Assassin").unwrap()])
+        .hand(0, [burn("Shock", 2)]);
+    let mut driver = Driver::from_scenario(libraries(scenario, seats, forest)).unwrap();
+    let bear = driver.target_named("Grizzly Bears").unwrap();
+    driver.begin_cast("Shock").unwrap();
+    driver.choose_targets(&[bear]).unwrap();
+    driver.answer(Answer::PayMana(PayChoice::Auto)).unwrap();
+    for _ in 0..30 {
+        if driver.state().stack().is_empty()
+            && !names(driver.state(), Zone::Graveyard(pid(0))).contains(&"Garza's Assassin".to_owned())
+        {
+            break;
+        }
+        match &driver.decision().unwrap().kind.clone() {
+            DecisionKind::YesNo(_) => {
+                driver.answer(Answer::YesNo(YesNoChoice(pays))).unwrap();
+            }
+            _ => {
+                driver.answer_passively().unwrap();
+            }
+        }
+    }
+    let now = driver.state().player(pid(0)).unwrap().life();
+    let hand = names(driver.state(), Zone::Hand(pid(0)));
+    if pays {
+        assert_eq!(now, life - (life + 1) / 2, "half the life, rounded up");
+        assert!(hand.contains(&"Garza's Assassin".to_owned()));
+    } else {
+        assert_eq!(now, life);
+        assert!(names(driver.state(), Zone::Exile).contains(&"Garza's Assassin".to_owned()));
+    }
 }
