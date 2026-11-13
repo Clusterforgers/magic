@@ -184,10 +184,10 @@ fn r409_reads_back_whole(#[case] name: &str) {
     r#""LoyaltyTwice": "You" }, "duration": "UntilEndOfTurn""#,
     r#""LoyaltyTwice": "You" }"#
 )]
-#[case::for_ever(
+#[case::until_end_of_turn(
     "Tamiyo Meets the Story Circle",
-    r#", "until": "UntilYourNextTurn""#,
-    ""
+    r#""until": "UntilYourNextTurn""#,
+    r#""until": "UntilEndOfTurn""#
 )]
 #[case::minus_three("Tamiyo Meets the Story Circle", r#""power": -2"#, r#""power": -3"#)]
 #[case::attach_always("Thieving Skydiver", r#""right": 1"#, r#""right": 0"#)]

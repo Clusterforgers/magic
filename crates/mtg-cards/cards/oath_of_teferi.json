@@ -9,66 +9,22 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
-            "targets": [
-              {
-                "what": {
-                  "Object": [
-                    "Other",
-                    {
-                      "ControlledBy": "You"
-                    }
-                  ]
-                }
-              }
-            ],
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": ["Other", { "ControlledBy": "You" }] } }],
             "effects": [
-              {
-                "Exile": {
-                  "what": {
-                    "Target": 0
-                  },
-                  "as": "exiled"
-                }
-              },
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
               {
                 "DelayedTrigger": {
-                  "when": {
-                    "StepBegins": {
-                      "step": "End"
-                    }
-                  },
+                  "when": { "StepBegins": { "step": "End" } },
                   "effects": [
-                    {
-                      "Move": {
-                        "what": {
-                          "Bound": "exiled"
-                        },
-                        "to": {
-                          "Battlefield": {}
-                        }
-                      }
-                    }
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
                   ]
                 }
               }
             ]
           }
         },
-        {
-          "Rule": {
-            "rule": {
-              "LoyaltyTwice": "You"
-            }
-          }
-        }
+        { "Rule": { "rule": { "LoyaltyTwice": "You" } } }
       ]
     }
   ]

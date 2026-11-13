@@ -9,23 +9,12 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "Chapter": {
-                "number": 1
-              }
-            },
+            "when": { "Chapter": { "number": 1 } },
             "effects": [
               {
                 "DelayedTrigger": {
                   "when": {
-                    "AttacksPlayerOrPlaneswalker": {
-                      "what": [
-                        {
-                          "Type": "Creature"
-                        }
-                      ],
-                      "at": "You"
-                    }
+                    "AttacksPlayerOrPlaneswalker": { "what": [{ "Type": "Creature" }], "at": "You" }
                   },
                   "once": false,
                   "until": "UntilYourNextTurn",
@@ -33,14 +22,7 @@
                     {
                       "Continuous": {
                         "affected": "Triggering",
-                        "mods": [
-                          {
-                            "ModifyPT": {
-                              "power": -2,
-                              "toughness": 0
-                            }
-                          }
-                        ],
+                        "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
                         "duration": "UntilEndOfTurn"
                       }
                     }
@@ -52,47 +34,21 @@
         },
         {
           "Triggered": {
-            "when": {
-              "Chapter": {
-                "number": 2
-              }
-            },
+            "when": { "Chapter": { "number": 2 } },
             "effects": [
               {
                 "Discard": {
-                  "count": {
-                    "Count": [
-                      {
-                        "In": "Hand"
-                      },
-                      {
-                        "OwnedBy": "You"
-                      }
-                    ]
-                  },
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
                   "optional": true,
                   "as": "discarded"
                 }
               },
               {
                 "CreateToken": {
-                  "token": {
-                    "Named": "clue"
-                  },
+                  "token": { "Named": "clue" },
                   "count": {
                     "Product": [
-                      {
-                        "Count": [
-                          {
-                            "Is": {
-                              "Bound": "discarded"
-                            }
-                          },
-                          {
-                            "In": "Graveyard"
-                          }
-                        ]
-                      },
+                      { "Count": [{ "Is": { "Bound": "discarded" } }, { "In": "Graveyard" }] },
                       2
                     ]
                   }
@@ -103,42 +59,15 @@
         },
         {
           "Triggered": {
-            "when": {
-              "Chapter": {
-                "number": 3
-              }
-            },
+            "when": { "Chapter": { "number": 3 } },
             "targets": [
               {
-                "what": {
-                  "Object": [
-                    {
-                      "In": "Graveyard"
-                    },
-                    {
-                      "OwnedBy": "You"
-                    }
-                  ]
-                },
-                "bounds": {
-                  "min": 0,
-                  "max": 3
-                }
+                "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "bounds": { "min": 0, "max": 3 }
               }
             ],
             "effects": [
-              {
-                "Move": {
-                  "what": {
-                    "Target": 0
-                  },
-                  "to": {
-                    "Library": {
-                      "place": "Shuffled"
-                    }
-                  }
-                }
-              }
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Shuffled" } } } }
             ]
           }
         }
