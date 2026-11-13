@@ -386,12 +386,17 @@ impl HeuristicBot {
         }
         let window = priority::window(&seen);
         let mut ramp = Search::new(self.seat, self.settings, key);
+        // The ramp bonus is simulated in a world whose hidden cards are redealt, so it reads nothing the seat cannot see.
+        let mut world = engine.clone();
+        if window == priority::Window::Main {
+            world.redeal(self.seat, key);
+        }
         let costs: Vec<f64> = answers
             .iter()
             .map(|answer| match answer {
                 Answer::Priority(play) => {
                     priority::hold_cost(self.settings.careful, &seen, window, play)
-                        - priority::ramp_bonus(&mut ramp, engine, window, play)
+                        - priority::ramp_bonus(&mut ramp, &world, window, play)
                 }
                 _ => 0.0,
             })
