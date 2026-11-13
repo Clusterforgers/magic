@@ -2112,32 +2112,7 @@ impl Pass<'_> {
             })
             .collect();
         if self.draws_changed {
-            let mut taken: BTreeMap<PlayerId, usize> = BTreeMap::new();
-            for event in &mut events {
-                let drawn = match event {
-                    Event::CardDrawn { player, .. } | Event::DrewFromEmptyLibrary { player } => {
-                        *player
-                    }
-                    _ => continue,
-                };
-                let nth = taken.entry(drawn).or_default();
-                let top = self
-                    .state
-                    .zone(Zone::Library(drawn))
-                    .iter()
-                    .rev()
-                    .filter(|card| !self.pulled.contains(card))
-                    .nth(*nth)
-                    .copied();
-                *nth += 1;
-                *event = match top {
-                    Some(object) => Event::CardDrawn {
-                        player: drawn,
-                        object,
-                    },
-                    None => Event::DrewFromEmptyLibrary { player: drawn },
-                };
-            }
+            lg1_draws::lg1_sequential_draws(self.state, &mut events);
         }
         w13a_moved::w13a_without_counters_on_moved(self.state, &mut events);
         r35_mills::r35_fresh_mills(self.state, &mut events);
@@ -3655,6 +3630,7 @@ mod e14b_pay_or_graveyard;
 mod prepared;
 
 mod dredge;
+mod lg1_draws;
 
 mod reveal;
 

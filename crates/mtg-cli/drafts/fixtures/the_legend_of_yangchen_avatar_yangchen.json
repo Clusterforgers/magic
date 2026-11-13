@@ -1,0 +1,183 @@
+{
+  "object": "card",
+  "id": "a60e8f23-90b2-4bc6-bd54-a95055556389",
+  "oracle_id": "521a63cf-5e83-4649-9800-c62b2fc474d6",
+  "multiverse_ids": [],
+  "resource_id": "3B57A4D37DF662FC3BACE6CCBD4BBA6C5EF70154F39967B443A983375F982117",
+  "mtgo_id": 144532,
+  "arena_id": 97300,
+  "tcgplayer_id": 661920,
+  "cardmarket_id": 857410,
+  "name": "The Legend of Yangchen // Avatar Yangchen",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/a60e8f23-90b2-4bc6-bd54-a95055556389",
+  "scryfall_uri": "https://scryfall.com/card/tla/27/the-legend-of-yangchen-avatar-yangchen?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:10:02Z",
+  "cmc": 5.0,
+  "type_line": "Enchantment — Saga // Legendary Creature — Avatar",
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Airbend",
+    "Transform"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "The Legend of Yangchen",
+      "mana_cost": "{3}{W}{W}",
+      "type_line": "Enchantment — Saga",
+      "oracle_text": "(As this Saga enters and after your draw step, add a lore counter.)\nI — Starting with you, each player chooses up to one permanent with mana value 3 or greater from among permanents your opponents control. Exile those permanents.\nII — You may have target opponent draw three cards. If you do, draw three cards.\nIII — Exile this Saga, then return it to the battlefield transformed under your control.",
+      "colors": [
+        "W"
+      ],
+      "artist": "Kuno",
+      "artist_id": "db3889ce-0a69-4931-9028-4f33fece71cb",
+      "illustration_id": "f85a25dd-07f4-41a1-a39c-993a413ddc8c",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.jpg?1783905002",
+        "normal": "https://cards.scryfall.io/normal/front/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.jpg?1783905002",
+        "large": "https://cards.scryfall.io/large/front/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.jpg?1783905002",
+        "png": "https://cards.scryfall.io/png/front/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.png?1783905002",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.jpg?1783905002",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.jpg?1783905002",
+        "thumb": "https://cards.scryfall.io/thumb/front/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.webp?1783905002",
+        "grid": "https://cards.scryfall.io/grid/front/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.webp?1783905002",
+        "display": "https://cards.scryfall.io/display/front/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.webp?1783905002",
+        "art": "https://cards.scryfall.io/art/front/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.webp?1783905002",
+        "crop": "https://cards.scryfall.io/crop/front/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.webp?1783905002",
+        "jpeg": "https://cards.scryfall.io/normal/front/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.jpg?1783905002"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Avatar Yangchen",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Avatar",
+      "oracle_text": "Flying\nWhenever you cast your second spell each turn, airbend up to one other target nonland permanent. (Exile it. While it's exiled, its owner may cast it for {2} rather than its mana cost.)",
+      "colors": [],
+      "power": "4",
+      "toughness": "5",
+      "flavor_text": "\"Selfless duty calls you to sacrifice your own spiritual needs and do whatever it takes to protect the world.\"",
+      "artist": "Kuno",
+      "artist_id": "db3889ce-0a69-4931-9028-4f33fece71cb",
+      "illustration_id": "b6f3228b-33f8-4c7e-b4e2-f499da072847",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.jpg?1783905002",
+        "normal": "https://cards.scryfall.io/normal/back/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.jpg?1783905002",
+        "large": "https://cards.scryfall.io/large/back/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.jpg?1783905002",
+        "png": "https://cards.scryfall.io/png/back/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.png?1783905002",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.jpg?1783905002",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.jpg?1783905002",
+        "thumb": "https://cards.scryfall.io/thumb/back/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.webp?1783905002",
+        "grid": "https://cards.scryfall.io/grid/back/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.webp?1783905002",
+        "display": "https://cards.scryfall.io/display/back/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.webp?1783905002",
+        "art": "https://cards.scryfall.io/art/back/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.webp?1783905002",
+        "crop": "https://cards.scryfall.io/crop/back/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.webp?1783905002",
+        "jpeg": "https://cards.scryfall.io/normal/back/a/6/a60e8f23-90b2-4bc6-bd54-a95055556389.jpg?1783905002"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set": "tla",
+  "set_name": "Avatar: The Last Airbender",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atla&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tla?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a60e8f23-90b2-4bc6-bd54-a95055556389/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A521a63cf-5e83-4649-9800-c62b2fc474d6&unique=prints",
+  "collector_number": "27",
+  "digital": false,
+  "rarity": "mythic",
+  "artist": "Kuno",
+  "artist_ids": [
+    "db3889ce-0a69-4931-9028-4f33fece71cb"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment",
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 4158,
+  "preview": {
+    "source": "The Command Zone",
+    "source_uri": "https://www.youtube.com/watch?v=DxIomU_20bc",
+    "previewed_at": "2025-10-31"
+  },
+  "prices": {
+    "usd": "2.86",
+    "usd_foil": "4.80",
+    "usd_etched": null,
+    "eur": "3.79",
+    "eur_foil": "4.95",
+    "tix": "1.00"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BLegend%2Bof%2BYangchen%2B%252F%252F%2BAvatar%2BYangchen",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BLegend%2Bof%2BYangchen%2B%252F%252F%2BAvatar%2BYangchen",
+    "edhrec": "https://edhrec.com/route/?cc=The+Legend+of+Yangchen"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F661920%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857410&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/144532?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

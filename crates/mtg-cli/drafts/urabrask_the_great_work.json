@@ -1,0 +1,124 @@
+{
+  "oracle_id": "4b1da9aa-a30c-44b8-a10e-f9dc3fe70b6f",
+  "name": "Urabrask // The Great Work",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urabrask",
+      "oracle_fingerprint": "1653cdf8ae655fcd9ba0a69c5242b268",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              { "AddMana": { "mana": { "Fixed": ["Red"] } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "timing": "Sorcery",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "InstantsAndSorceriesCast" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": {
+                    "Battlefield": {
+                      "under": { "OwnerOf": { "Bound": "exiled" } },
+                      "transformed": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "The Great Work",
+      "oracle_fingerprint": "98dab7db6bb9f9c231dc951623e480c5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Union": [
+                      { "Target": 0 },
+                      { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] }
+                    ]
+                  },
+                  "amount": 3
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" }, "count": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "from": "Graveyard"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": ["Spell", { "CastFrom": "Graveyard" }, { "ControlledBy": "You" }],
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": { "OwnerOf": { "Bound": "exiled" } } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

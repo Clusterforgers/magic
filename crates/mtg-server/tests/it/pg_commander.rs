@@ -156,7 +156,7 @@ pub(crate) async fn start(pool: &PgPool) -> TestServer {
     start_with(pool, bot_config()).await
 }
 
-async fn start_with(pool: &PgPool, config: ServerConfig) -> TestServer {
+pub(crate) async fn start_with(pool: &PgPool, config: ServerConfig) -> TestServer {
     migrate(pool).await.unwrap();
     let database = Database::from_pool(pool.clone());
     database.migrate().await.unwrap();

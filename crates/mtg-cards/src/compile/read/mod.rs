@@ -214,6 +214,7 @@ mod r375_phase;
 mod r376_nearest;
 mod r376_seats;
 mod r376_secret;
+mod r379_atoms;
 mod r408_lands;
 mod r408_pact;
 mod r5a_order;

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "0caeb396-e574-4e80-a1f6-79988fe9ba19",
+  "name": "Rufus Shinra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rufus Shinra",
+      "oracle_fingerprint": "d3ecc5db9e6e21e3579610a1b7e5d217",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Named": "Darkstar" }
+                  ]
+                },
+                "op": "Lt",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Darkstar",
+                      "colors": ["White", "Black"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dog"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

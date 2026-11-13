@@ -1,0 +1,51 @@
+{
+  "oracle_id": "2b6da458-e075-4696-a74f-c8846e0cc370",
+  "name": "Wood Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wood Elemental",
+      "oracle_fingerprint": "ff643dc3fcb684811d40ff6bd137cf6a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                {
+                  "SacrificeUpTo": {
+                    "filter": [{ "Subtype": "Forest" }, "Untapped"],
+                    "count": {
+                      "Count": [{ "Subtype": "Forest" }, "Untapped", { "ControlledBy": "You" }]
+                    },
+                    "as": "forests"
+                  }
+                },
+                {
+                  "RememberValue": {
+                    "value": { "CountOf": { "of": { "Bound": "forests" }, "filter": [] } },
+                    "slot": "sacrificed"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Remembered": { "on": "This", "slot": "sacrificed" } },
+                  "toughness": { "Remembered": { "on": "This", "slot": "sacrificed" } }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

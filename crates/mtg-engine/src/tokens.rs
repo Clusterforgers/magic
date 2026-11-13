@@ -132,6 +132,7 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
     let entered = token.reference();
     state.objects.insert(id, token);
     state.tally_object(entered, None, crate::state::Tally::Entered);
+    state.r379_entered(entered);
     state.log_event(mtg_cards::value::TallyEvent::Entered, event.controller, id);
     state.zones.insert(Zone::Battlefield, id, Placement::Top);
     state.next_object = state.next_object.max(id.get() + 1);

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ec86a45f-046c-4aab-9b82-422c6f39142e",
+  "name": "Ghostly Keybearer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghostly Keybearer",
+      "oracle_fingerprint": "6455561d4ce29847d75a630647fdaa4d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Subtype": "Room" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "LockOrUnlockDoor": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

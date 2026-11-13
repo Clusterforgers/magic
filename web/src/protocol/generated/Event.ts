@@ -1181,7 +1181,11 @@ opponent: PlayerId,
 /**
  * The clashing player won.
  */
-won: boolean, } } | { "Exerted": { 
+won: boolean, } } | { "VotesFinished": { 
+/**
+ * The voter and the place of their choice, for each vote cast.
+ */
+ballots: Array<[PlayerId, number]>, } } | { "Exerted": { 
 /**
  * The creature exerted.
  */

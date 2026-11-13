@@ -1,0 +1,99 @@
+{
+  "oracle_id": "697ac261-263b-4879-bf45-6d10d23312ae",
+  "name": "Ao, the Dawn Sky",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ao, the Dawn Sky",
+      "oracle_fingerprint": "79e7c62b129195cb70279ccd4d59b219",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        { "LookAtTop": { "count": 7, "as": "top" } },
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                { "In": "Library" },
+                                { "Is": { "Bound": "top" } },
+                                { "Not": { "Type": "Land" } },
+                                {
+                                  "AnyOf": [
+                                    { "Type": "Artifact" },
+                                    { "Type": "Battle" },
+                                    { "Type": "Creature" },
+                                    { "Type": "Enchantment" },
+                                    { "Type": "Land" },
+                                    { "Type": "Planeswalker" }
+                                  ]
+                                }
+                              ]
+                            },
+                            "count": { "min": 0, "max": 7 },
+                            "as": "kept"
+                          }
+                        },
+                        {
+                          "If": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "Total": {
+                                    "of": [{ "Is": { "Bound": "kept" } }],
+                                    "stat": "ManaValue"
+                                  }
+                                },
+                                "op": "Le",
+                                "right": 4
+                              }
+                            },
+                            "then": [
+                              {
+                                "Move": { "what": { "Bound": "kept" }, "to": { "Battlefield": {} } }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "Move": {
+                            "what": { "Bound": "top" },
+                            "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": {
+                              "Each": [
+                                { "ControlledBy": "You" },
+                                { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }
+                              ]
+                            },
+                            "counter": "+1/+1",
+                            "count": 2
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

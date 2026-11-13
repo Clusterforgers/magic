@@ -80,6 +80,21 @@ fn than_you(left: &Amount, op: Cmp, right: &Amount) -> Option<Fact> {
 
 /// The fact the test states about the player "you" names.
 fn fact(test: &Condition) -> Option<Fact> {
+    if let Condition::VotedAs {
+        with: Ref::Asker,
+        same,
+    } = test
+    {
+        let voted = if *same {
+            "who voted for a choice you voted for"
+        } else {
+            "who voted for a choice you didn't vote for"
+        };
+        return Some(Fact {
+            one: voted.to_owned(),
+            many: vec![voted.to_owned()],
+        });
+    }
     let Condition::Compare { left, op, right } = test else {
         return None;
     };
