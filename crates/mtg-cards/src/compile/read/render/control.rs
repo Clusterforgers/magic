@@ -6,7 +6,8 @@ use super::Writer;
 use crate::compile::read::selectors::{Form, keyword_text, phrase_text};
 use crate::effect::Effect;
 use crate::modify::{Duration, Modification};
-use crate::refs::{Ref, Targetable};
+use crate::refs::{Pred, Ref, Targetable};
+use mtg_core::card::CardType;
 
 impl Writer<'_> {
     /// The sentence for the control of the target or of the card itself changing, for the turn or for good.
@@ -28,6 +29,15 @@ impl Writer<'_> {
             }
             Duration::WhileSourceOnBattlefield => " for as long as ~ remains on the battlefield",
             Duration::WhileSourceTapped => " for as long as ~ remains tapped",
+            Duration::WhileEnchanted
+                if *affected == Ref::Target(0)
+                    && self.target_is(|what| {
+                        matches!(what, Targetable::Object(s) if s.0.contains(&Pred::Type(CardType::Creature)))
+                    }) =>
+            {
+                " for as long as that creature is enchanted"
+            }
+            Duration::WhileMonarch(Ref::Triggering) => " for as long as they're the monarch",
             _ => return None,
         };
         match (affected, new) {
@@ -68,7 +78,9 @@ impl Writer<'_> {
                 | Duration::WhileYouControlSource
                 | Duration::WhileYouControlSourceTapped
                 | Duration::WhileSourceTapped
-                | Duration::WhileSourceOnBattlefield),
+                | Duration::WhileSourceOnBattlefield
+                | Duration::WhileEnchanted
+                | Duration::WhileMonarch(_)),
         } = effect
         else {
             return None;

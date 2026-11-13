@@ -227,6 +227,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         }
         Event::ZoneChanged { from, .. } if hidden_from(*from, player) => Some(R::CardRevealed),
         Event::Revealed(_)
+        | Event::FaceDownLooked { .. }
         | Event::LibraryLooked(_)
         | Event::HandLooked(_)
         | Event::Scried { .. }
@@ -367,6 +368,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::Investigated { .. }
         | Event::GiftGiven { .. }
         | Event::UpkeepSettled { .. }
+        | Event::CommanderColorChosen { .. }
         | Event::Foraged { .. }
         | Event::PrizeClaimed { .. }
         | Event::StickerPut { .. }

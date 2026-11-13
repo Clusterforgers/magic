@@ -97,7 +97,8 @@ fn tag_of<T: Serialize>(value: &T) -> String {
 }
 
 /// The name of a part of a cost that takes all of a kind the payer has, with nothing to choose: "discard your hand"
-/// (`Cost.Discard.Hand`), "sacrifice all permanents you control" (`Cost.Sacrifice.All`).
+/// (`Cost.Discard.Hand`), "reveal your hand" (`Cost.RevealFromHand.Hand`), "sacrifice all permanents you control"
+/// (`Cost.Sacrifice.All`).
 fn r303c_whole(item: &CostItem) -> Option<&'static str> {
     match item {
         CostItem::Discard {
@@ -105,6 +106,14 @@ fn r303c_whole(item: &CostItem) -> Option<&'static str> {
             filter: None,
         } if counted.0 == [Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)] => {
             Some("Discard.Hand")
+        }
+        CostItem::RevealFromHand {
+            count: Amount::Count(counted),
+            filter,
+        } if filter.is_empty()
+            && counted.0 == [Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)] =>
+        {
+            Some("RevealFromHand.Hand")
         }
         CostItem::Sacrifice {
             filter,
@@ -421,6 +430,9 @@ struct Walker<'a> {
     r379_alt_x: bool,
     /// Whether a choice between costs is walked as the required additional cost of a spell, the one place the engine asks it.
     choosing: bool,
+    /// Whether the cost walked is what a spell's caster pays in place of its mana cost, which pays all of a kind with
+    /// nothing to choose ("reveal your hand").
+    r400_alternative: bool,
     /// Whether a choice between costs is the whole cost of a payment an effect asks once ("unless they sacrifice a creature or
     /// pay 3 life"), which the engine asks of the payer.
     r281_paying: bool,
@@ -469,6 +481,7 @@ impl<'a> Walker<'a> {
             x_now: false,
             r379_alt_x: false,
             choosing: false,
+            r400_alternative: false,
             r281_paying: false,
             r306_paying: false,
             amounting: Amounting::Other,
@@ -1672,17 +1685,7 @@ impl<'a> Walker<'a> {
                 if matches!(item, CostItem::Untap) && !w.activated_cost {
                     w.uses("Cost", "Untap.Elsewhere");
                 }
-                // Only the caster of a spell pays all of a kind with nothing to choose; an effect's payer may be another player.
-                if let Some(whole) = r303c_whole(item).filter(|_| w.choosing && !w.activated_cost) {
-                    w.uses("Cost", whole);
-                } else if !is_fixed(item) {
-                    let activated = match (w.activated_cost, w.rather_cost) {
-                        (true, _) => ".Activated",
-                        (false, true) => ".Rather",
-                        (false, false) => "",
-                    };
-                    w.uses("Cost", &format!("{}.Counted{activated}", tag_of(item)));
-                }
+                w.r400_counted(item);
                 match item {
                     CostItem::PayLife(amount)
                     | CostItem::PayEnergy(amount)
@@ -1886,7 +1889,9 @@ impl<'a> Walker<'a> {
             .any(|item| r301_pick_filter(item).is_some_and(Selector::r301_reads_x));
         let held = self.x_now;
         self.x_now |= reads_x;
+        let alternative = std::mem::replace(&mut self.r400_alternative, true);
         self.at("cost", |w| w.cost(cost));
+        self.r400_alternative = alternative;
         self.x_now = held;
         if reads_x {
             self.uses("Cost", "Pick.FilterX");
@@ -1992,6 +1997,23 @@ impl<'a> Walker<'a> {
             self.problem("a spell's targets are read with Targeting in what it applies to");
         }
         self.at("targeting", |w| w.selector(targeting));
+    }
+
+    /// The name of a counted part of a cost: a part that takes all of a kind (only the caster of a spell pays all of a
+    /// kind with nothing to choose; an effect's payer may be another player), or a count the engine may not pay there.
+    fn r400_counted(&mut self, item: &CostItem) {
+        if let Some(whole) = r303c_whole(item)
+            .filter(|_| (self.choosing || self.r400_alternative) && !self.activated_cost)
+        {
+            self.uses("Cost", whole);
+        } else if !is_fixed(item) {
+            let activated = match (self.activated_cost, self.rather_cost) {
+                (true, _) => ".Activated",
+                (false, true) => ".Rather",
+                (false, false) => "",
+            };
+            self.uses("Cost", &format!("{}.Counted{activated}", tag_of(item)));
+        }
     }
 
     /// What a cast pays rather than the mana cost: a permission cost whose counted amounts the engine counts for the card.
@@ -2301,6 +2323,15 @@ impl<'a> Walker<'a> {
             | Keyword::Outlast(cost) => {
                 self.at("cost", |w| w.cost(cost));
             }
+            // "Kicker {X}. X can't be 0.": the X is announced once the spell is kicked, and the least X with it.
+            Keyword::Kicker(cost) if cost.has_x() => {
+                self.uses("Keyword", "Kicker.X");
+                let held = (self.x_now, self.activated_cost);
+                (self.x_now, self.activated_cost) = (true, true);
+                self.at("cost", |w| w.cost(cost));
+                (self.x_now, self.activated_cost) = held;
+                self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost, false);
+            }
             // The cost of these is paid as the spell is announced: the mana, and the parts the engine pays there.
             Keyword::Kicker(cost)
             | Keyword::Squad(cost)
@@ -2457,6 +2488,13 @@ impl<'a> Walker<'a> {
                     self.problem("a limit on blockers needs a count of at least one");
                 }
             }
+            Modification::SetCommanderColor => {
+                if !self.scope.in_static {
+                    self.problem(
+                        "the color chosen for a commander is read by its static ability only",
+                    );
+                }
+            }
             Modification::AddChosenSubtype | Modification::SetChosenColor => {
                 if !self.scope.in_static {
                     self.problem(
@@ -2479,6 +2517,7 @@ impl<'a> Walker<'a> {
             | Modification::SetLandTypesChosen(_)
             | Modification::SetCreatureTypesChosen(_)
             | Modification::AddCreatureTypeChosen(_)
+            | Modification::AddLandTypeChosen(_)
             | Modification::ChangeTextChosen { .. }
             | Modification::SetColorsChosen(_)
             | Modification::AddAllCreatureTypes
@@ -2580,6 +2619,7 @@ impl<'a> Walker<'a> {
                     | Modification::SetPower(_)
                     | Modification::SetToughness(_)
                     | Modification::SetColors(_)
+                    | Modification::SetCommanderColor
                     | Modification::AddColors(_)
                     | Modification::AddType(_)
                     | Modification::AddSubtype(_)
@@ -2612,12 +2652,8 @@ impl<'a> Walker<'a> {
                 if matches!(
                     modification,
                     Modification::SetName(_) | Modification::ThisAbility | Modification::SetLoyalty(_)
-                ) || matches!(
-                    modification,
-                    Modification::AddSupertype(_) | Modification::RemoveSupertype(_)
-                ) && !w.scope.in_static
-                {
-                    w.problem("a supertype, a name or this ability changes only the copiable values of a copy (`except`)");
+                ) {
+                    w.problem("a name, a loyalty or this ability changes only the copiable values of a copy (`except`)");
                 }
             });
         }
@@ -2728,6 +2764,15 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Cycled { what, by } => {
                 self.at("what", |w| w.selector(what));
                 self.at("by", |w| w.reference(by, Kind::Player));
+                if matches!(
+                    pattern,
+                    TriggerPattern::TappedForMana {
+                        chosen_color: true,
+                        ..
+                    }
+                ) {
+                    self.uses("Trigger", "TappedForMana.ChosenColor");
+                }
             }
             TriggerPattern::Tapped { what }
             | TriggerPattern::TappedNotAttacking { what }
@@ -3816,6 +3861,7 @@ impl Walker<'_> {
                 }
             }
             Effect::LookAtHand { of } => w.at("of", |w| w.reference(of, Kind::Player)),
+            Effect::LookAtFaceDown { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::Reveal { what }
             | Effect::Untap { what }
             | Effect::TapOrUntap { what }
@@ -4438,6 +4484,16 @@ impl Walker<'_> {
                 if matches!(duration, Duration::WhileHasCounter(_)) {
                     w.uses("Duration", "WhileHasCounter");
                 }
+                if *duration == Duration::WhileEnchanted {
+                    w.uses("Duration", "WhileEnchanted");
+                }
+                if *duration == Duration::UntilItsControllersNextUntapStep {
+                    w.uses("Duration", "UntilItsControllersNextUntapStep");
+                }
+                if let Duration::WhileMonarch(who) = duration {
+                    w.uses("Duration", "WhileMonarch");
+                    w.at("duration", |w| w.reference(who, Kind::Player));
+                }
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Duration", "WhileSourceTapped");
                 }
@@ -4461,6 +4517,14 @@ impl Walker<'_> {
                 }
             }
             Effect::ExchangeControl { what, duration } => {
+                if matches!(
+                    duration,
+                    Duration::WhileEnchanted
+                        | Duration::WhileMonarch(_)
+                        | Duration::UntilItsControllersNextUntapStep
+                ) {
+                    w.uses("Exchange", &format!("Duration.{}", tag_of(duration)));
+                }
                 if matches!(duration, Duration::WhileHasCounter(_)) {
                     w.problem(COUNTER_DURATION_ONLY);
                 }
@@ -4498,6 +4562,14 @@ impl Walker<'_> {
                 }
             }
             Effect::Rule { rule, duration } => w.at("rule", |w| {
+                if matches!(
+                    duration,
+                    Duration::WhileEnchanted
+                        | Duration::WhileMonarch(_)
+                        | Duration::UntilItsControllersNextUntapStep
+                ) {
+                    w.uses("Rule", &format!("Duration.{}", tag_of(duration)));
+                }
                 if matches!(duration, Duration::WhileHasCounter(_)) {
                     w.problem(COUNTER_DURATION_ONLY);
                 }
@@ -4543,6 +4615,9 @@ impl Walker<'_> {
                 }
                 if matches!(rule, GameRule::Draft(_)) {
                     w.problem("a card follows a draft rule by a static ability, not by an effect");
+                }
+                if matches!(rule, GameRule::CantSpendMana) {
+                    w.problem("a spell is cast without mana by a static ability of its own, not by an effect");
                 }
                 if matches!(rule, GameRule::CantBeCopied) {
                     w.problem("a spell can't be copied by a static ability of its own, not by an effect");
@@ -4971,6 +5046,7 @@ impl Walker<'_> {
                     | Modification::SetLandTypesChosen(_)
                     | Modification::SetCreatureTypesChosen(_)
                     | Modification::AddCreatureTypeChosen(_)
+                    | Modification::AddLandTypeChosen(_)
                     | Modification::ChangeTextChosen { .. }
             )
         }) {
@@ -5298,7 +5374,17 @@ impl Walker<'_> {
             | GameRule::MustBlock(who)
             | GameRule::CantBeCountered(who)
             | GameRule::CantBeRegenerated(who)
-            | GameRule::Combat { who, .. } => self.at(tag, |w| w.reference(who, Kind::Object)),
+            | GameRule::Combat { who, .. } => {
+                if let GameRule::Combat {
+                    quirk: crate::modify::CombatQuirk::AttackIfAnyAttacks(among),
+                    ..
+                } = rule
+                {
+                    self.uses("Rule", "Combat.AttackIfAnyAttacks");
+                    self.at(tag.clone(), |w| w.at("among", |w| w.selector(among)));
+                }
+                self.at(tag, |w| w.reference(who, Kind::Object));
+            }
             GameRule::MustBlockAttacker { .. } | GameRule::IgnoreHexproof { .. } => {
                 self.at(tag, |w| w.targeting_rule(rule));
             }
@@ -5392,7 +5478,8 @@ impl Walker<'_> {
             | GameRule::RevealHand(who)
             | GameRule::LookAtTopAnyTime(who)
             | GameRule::SkipDrawStep(who)
-            | GameRule::NoMaxHandSize(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
+            | GameRule::NoMaxHandSize(who)
+            | GameRule::LoyaltyTwice(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
             GameRule::MayCast(permission) => self.at(tag, |w| w.cast_permission(permission)),
             GameRule::LookAtExiled { who, what, only } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
@@ -5420,7 +5507,8 @@ impl Walker<'_> {
             | GameRule::AttackOnlyNearest(_)
             | GameRule::DamageAsWither
             | GameRule::ManaBurn
-            | GameRule::CantBeCopied => {}
+            | GameRule::CantBeCopied
+            | GameRule::CantSpendMana => {}
             GameRule::UpToInDeck(most) => {
                 if *most < 2 {
                     self.at(tag, |w| w.problem("a deck rule allows at least two copies"));
@@ -5641,6 +5729,7 @@ impl Walker<'_> {
                     | GameRule::UpToInDeck(_)
                     | GameRule::Draft(_)
                     | GameRule::CantBeCopied
+                    | GameRule::CantSpendMana
             ) => self.at("from", |w| {
                 w.problem("a deck rule holds outside the game: write the rule without `from`");
             }),
@@ -5896,6 +5985,10 @@ impl Walker<'_> {
     }
 
     fn turn_up_cost(&mut self, cost: &Cost) {
+        // "Morph {X}{B}{B}": X is announced as the permanent is turned face up.
+        if cost.has_x() {
+            self.uses("Keyword", "TurnUp.X");
+        }
         self.at("cost", |w| w.cost(cost));
         self.parts_that_need_an_announcement("Keyword", "TurnUp.Cost", cost);
     }
@@ -6121,11 +6214,13 @@ impl Walker<'_> {
 }
 
 /// Whether the trigger is on an action of the card itself whose cost may hold an `{X}`: "when you cycle this card",
-/// "when this creature becomes monstrous". It reads the X of that cost.
+/// "when this creature becomes monstrous", "when this creature is turned face up". It reads the X of that cost.
 fn w6c_reads_cost_x(when: &TriggerPattern) -> bool {
     matches!(
         when,
-        TriggerPattern::Cycled { what, .. } | TriggerPattern::BecomesMonstrous { what }
+        TriggerPattern::Cycled { what, .. }
+        | TriggerPattern::BecomesMonstrous { what }
+        | TriggerPattern::TurnedFaceUp { what }
             if what.0.contains(&Pred::This)
     )
 }
@@ -6164,9 +6259,13 @@ fn r283_keyword_x(face: &Face) -> bool {
 /// Whether the face has an `{X}` in a cycling cost or in the cost of an activated ability that makes it monstrous.
 fn w6c_cost_x(face: &Face) -> bool {
     face.abilities.iter().any(|ability| match ability {
-        Ability::Keyword(Keyword::Cycling(cost) | Keyword::Typecycling { cost, .. }) => {
-            has_x_mana(cost)
-        }
+        Ability::Keyword(
+            Keyword::Cycling(cost)
+            | Keyword::Typecycling { cost, .. }
+            | Keyword::Morph(cost)
+            | Keyword::Megamorph(cost)
+            | Keyword::Disguise(cost),
+        ) => has_x_mana(cost),
         Ability::Activated { cost, effects, .. } => {
             has_x_mana(cost)
                 && effects
@@ -6576,7 +6675,13 @@ pub(crate) fn check_printed(
         }
     }
     for (face, path) in x_uses {
-        if !printed.faces[face].mana_cost.contains("{X}") {
+        // "Kicker {X}": a kicked spell announces X, which its permanent's enters trigger reads (CR 107.3m).
+        let kicker_x = card.faces.get(face).is_some_and(|face| {
+            face.abilities.iter().any(|ability| {
+                matches!(ability, Ability::Keyword(Keyword::Kicker(cost)) if cost.has_x())
+            })
+        });
+        if !printed.faces[face].mana_cost.contains("{X}") && !kicker_x {
             walker.path = vec![path];
             walker.problem("uses X but the imported mana cost has none");
         }
@@ -7225,9 +7330,9 @@ mod tests {
         r#"{"Static":{"affected":"This","mods":["AddProtectionFromChosenColor"]}}"#,
         "a colour or card type is chosen as an effect begins, so only a `Continuous` effect adds protection from it"
     )]
-    #[case::a_supertype_goes_with_a_copy_only(
+    #[case::this_ability_goes_with_a_copy_only(
         r#"{"Static":{"affected":"This","mods":["ThisAbility"]}}"#,
-        "a supertype, a name or this ability changes only the copiable values of a copy (`except`)"
+        "a name, a loyalty or this ability changes only the copiable values of a copy (`except`)"
     )]
     #[case::a_player_takes_only_the_keywords_players_have(
         r#"{"Static":{"affected":"You","mods":[{"AddKeyword":"Flying"}]}}"#,

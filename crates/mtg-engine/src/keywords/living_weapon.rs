@@ -67,6 +67,7 @@ fn germ() -> TokenSpec {
         power: Some(0),
         toughness: Some(0),
         abilities: Vec::new(),
+        mana_cost: None,
     }
 }
 

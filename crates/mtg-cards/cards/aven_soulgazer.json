@@ -1,7 +1,7 @@
 {
   "oracle_id": "e7ac8c1d-d298-4d57-8e0e-c60c7e61b247",
   "name": "Aven Soulgazer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Aven Soulgazer",
@@ -9,7 +9,11 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 49 } }
+          "Activated": {
+            "cost": "{2}{W}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "FaceDown"] } }],
+            "effects": [{ "LookAtFaceDown": { "what": { "Target": 0 } } }]
+          }
         }
       ]
     }

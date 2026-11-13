@@ -45,9 +45,30 @@ fn produced(r: &mut Reader<'_>) -> Option<Produce> {
 /// The effect of a triggered mana ability: who adds mana ("add" for you, "its controller adds" for the Aura's land,
 /// "that player adds" for any player) and the mana. `None` for any other sentence.
 pub fn effects(r: &mut Reader<'_>, when: &TriggerPattern) -> Option<Vec<Effect>> {
-    let TriggerPattern::TappedForMana { what, by, .. } = when else {
+    let TriggerPattern::TappedForMana {
+        what,
+        by,
+        chosen_color,
+        ..
+    } = when
+    else {
         return None;
     };
+    // "Whenever a basic land is tapped for mana of the chosen color, its controller adds an additional one mana of that
+    // color."
+    if *chosen_color {
+        (*by == Ref::EachPlayer).then_some(())?;
+        r.need("its controller adds an additional one mana of that color")?;
+        r.sentence_end().then_some(())?;
+        return Some(vec![Effect::AddMana {
+            who: Ref::Triggering,
+            mana: Produce::ChosenColor(1),
+            times: Amount::one(),
+            only: Vec::<SpendOn>::new(),
+            lasts: ManaLasts::Step,
+            when_spent: None,
+        }]);
+    }
     let controller = attached(what) && r.words("its controller adds");
     let player = !attached(what) && *by != Ref::You && r.words("that player adds");
     let who = if controller || player {
@@ -91,6 +112,12 @@ fn mana_words(mana: &Produce) -> Option<String> {
 /// The sentence of a triggered mana ability, without its period: "add an additional {G}" or "its controller adds an
 /// additional {G}". `None` when the wording is not one the reader reads.
 pub fn text(shape: &ManaTrigger<'_>) -> Option<String> {
+    if shape.chosen_color {
+        return (*shape.who == Ref::Triggering
+            && *shape.by == Ref::EachPlayer
+            && *shape.mana == Produce::ChosenColor(1))
+        .then(|| "its controller adds an additional one mana of that color".to_owned());
+    }
     let subject = match shape.who {
         Ref::You if *shape.by == Ref::You => "add",
         Ref::Triggering if attached(shape.what) => "its controller adds",

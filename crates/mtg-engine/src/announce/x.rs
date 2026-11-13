@@ -55,7 +55,12 @@ impl XCost {
                     return Some(XCost::Parts);
                 }
                 // A cleave, madness, foretell or freerunning cost may hold an `{X}` the mana cost lacks.
-                u32::from(card.x_in_cost).max(ways::r283_keyword_x(state, *spell))
+                let symbols = u32::from(card.x_in_cost).max(ways::r283_keyword_x(state, *spell));
+                // A kicker with `{X}` ("Kicker {X}") asks X once the spell is kicked; its X counts no other symbol.
+                if symbols == 0 && super::optional::kicker_x(card) > 0 {
+                    return Some(XCost::Mana { symbols: 0 });
+                }
+                symbols
             }
             What::Ability(ability) => match rules? {
                 activated @ Ability::Activated { cost, .. } => {
@@ -102,6 +107,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     if work.choices.way.is_some_and(CastWay::replaces_cost)
         && ctx.needs.x != Some(XCost::Parts)
         && alternative_symbols(ctx, work.choices.way) == Some(0)
+        && super::optional::chosen_x(ctx, work.choices) == 0
         && parts::most(ctx, work.choices).is_none()
     {
         work.choices.x = Some(0);
@@ -118,6 +124,12 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         && ways::r283_keyword_x(ctx.state, *spell) > 0
         && ctx.needs.x != Some(XCost::Parts)
     {
+        work.choices.x = Some(0);
+        work.done.x = true;
+        return None;
+    }
+    // A spell whose only `{X}` is in a kicker it was not kicked for has X = 0 (CR 107.3).
+    if ctx.needs.x == Some(XCost::Mana { symbols: 0 }) && per_x(ctx, work.choices) == 0 {
         work.choices.x = Some(0);
         work.done.x = true;
         return None;
@@ -179,7 +191,10 @@ fn at_zero(ctx: &Ctx<'_>, choices: &Choices) -> Option<ManaCost> {
 /// The generic mana each 1 of X adds to the total cost: the `{X}` of the cost paid, 0 for an X that is not mana.
 fn per_x(ctx: &Ctx<'_>, choices: &Choices) -> u32 {
     match &ctx.needs.x {
-        Some(XCost::Mana { symbols }) => alternative_symbols(ctx, choices.way).unwrap_or(*symbols),
+        Some(XCost::Mana { symbols }) => {
+            alternative_symbols(ctx, choices.way).unwrap_or(*symbols)
+                + super::optional::chosen_x(ctx, choices)
+        }
         _ => 0,
     }
 }
@@ -288,10 +303,10 @@ struct Offer {
 }
 
 /// The least X the cost allows: craft takes at least as many materials as it names (CR 702.167a), and a cost may say
-/// "X can't be 0".
-fn least_x(ctx: &Ctx<'_>) -> u32 {
+/// "X can't be 0", and so may a kicker with `{X}` the spell is kicked for.
+fn least_x(ctx: &Ctx<'_>, choices: &Choices) -> u32 {
     let Some(Ability::Activated { cost, .. }) = ctx.ability else {
-        return 0;
+        return super::optional::chosen_least_x(ctx, choices);
     };
     least_of(cost)
 }
@@ -317,7 +332,7 @@ impl Offer {
     /// The values of X from 0 to `most` for which every target specification can be met, or `None` when there are
     /// none. A target specification that does not read X is the same for every value.
     fn of(ctx: &Ctx<'_>, choices: &Choices, most: u32) -> Option<Offer> {
-        let least = least_x(ctx);
+        let least = least_x(ctx, choices);
         if least > most {
             return None;
         }
@@ -386,10 +401,10 @@ fn x_color(ctx: &Ctx<'_>) -> Option<Color> {
 
 /// `mana` with X paid: X generic mana for each `{X}` of the cost, or X mana of the color the cost asks.
 pub(super) fn add(ctx: &Ctx<'_>, choices: &Choices, mana: Option<ManaCost>) -> Option<ManaCost> {
-    let Some(XCost::Mana { symbols }) = &ctx.needs.x else {
+    if !matches!(ctx.needs.x, Some(XCost::Mana { .. })) {
         return mana;
-    };
-    let symbols = alternative_symbols(ctx, choices.way).unwrap_or(*symbols);
+    }
+    let symbols = per_x(ctx, choices);
     let amount = choices.x.unwrap_or(0).saturating_mul(symbols);
     Some(crate::price::with_x(
         mana.unwrap_or(ManaCost::ZERO),

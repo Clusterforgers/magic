@@ -681,7 +681,8 @@ fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
         (selector(), reference()).prop_map(|(what, by)| TriggerPattern::TappedForMana {
             what,
             by,
-            produced: None
+            produced: None,
+            chosen_color: false
         }),
         selector().prop_map(|what| TriggerPattern::Blocks {
             what,
@@ -787,6 +788,7 @@ fn token_ref() -> impl Strategy<Value = TokenRef> {
                     power: Some(1),
                     toughness: Some(1),
                     abilities: keywords.into_iter().map(Ability::Keyword).collect(),
+                    mana_cost: None,
                 }))
             }),
         (reference(), vec(modification(), 0..2)).prop_map(|(of, except)| TokenRef::CopyOf {

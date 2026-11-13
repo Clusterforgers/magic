@@ -23,10 +23,10 @@
                   "affected": { "Target": 0 },
                   "mods": [
                     { "SetPT": { "power": 4, "toughness": 4 } },
-                    { "AddSubtype": "Elemental" },
+                    { "SetCreatureTypes": ["Elemental"] },
                     { "AddType": "Creature" },
-                    { "AddKeyword": "Haste" },
-                    { "AddKeyword": "Hexproof" }
+                    { "AddKeyword": "Hexproof" },
+                    { "AddKeyword": "Haste" }
                   ],
                   "duration": "UntilEndOfTurn"
                 }

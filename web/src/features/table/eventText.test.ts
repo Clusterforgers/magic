@@ -31,6 +31,10 @@ type VariantName<E> = E extends string ? E : E extends object ? keyof E : never
 
 const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   FirstPlayerChosen: [{ FirstPlayerChosen: { player: 1 } }, 'Bo goes first'],
+  CommanderColorChosen: [
+    { CommanderColorChosen: { player: 1, object: 3, color: 'Blue' } },
+    'Bo chooses blue for Forest',
+  ],
   LibraryShuffled: [{ LibraryShuffled: { player: 0, order: [] } }, 'Ana shuffles their library'],
   AttractionDeckShuffled: [
     { AttractionDeckShuffled: { player: 0, order: [3, 4] } },
@@ -187,6 +191,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ],
   TurnedFaceUp: [{ TurnedFaceUp: { object: 3, player: 1 } }, 'Bo turns Forest face up'],
   TurnedFaceDown: [{ TurnedFaceDown: { object: 3, player: 1 } }, 'Bo turns Forest face down'],
+  FaceDownLooked: [{ FaceDownLooked: { object: 3, player: 1 } }, 'Bo looks at Forest'],
   DoorUnlocked: [{ DoorUnlocked: { object: 3, door: 1, player: 1 } }, 'Bo unlocks a door of Forest'],
   DoorLocked: [{ DoorLocked: { object: 3, door: 1, player: 1 } }, 'Bo locks a door of Forest'],
   Mutated: [{ Mutated: { object: 3, spell: 9, over: true, player: 1 } }, 'Bo mutates a creature over Forest'],

@@ -1,18 +1,13 @@
 {
   "oracle_id": "b2aeee90-7b8d-47a6-9167-cc21f7fbfd43",
   "name": "The Prismatic Piper",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Prismatic Piper",
       "oracle_fingerprint": "658e832a5f1c26b304467c2f6d63070b",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 121 }
-          }
-        },
+        { "Static": { "affected": "This", "mods": ["SetCommanderColor"], "defining": true } },
         { "Keyword": "Partner" }
       ]
     }

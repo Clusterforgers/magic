@@ -106,6 +106,8 @@ pub(crate) struct TurnUp {
     pub(crate) megamorph: bool,
     /// Whether it is a morph or megamorph cost, which changes of morph costs change.
     pub(crate) morph: bool,
+    /// The `{X}` symbols of the cost, whose X is announced as it is paid ("Morph {X}{X}{R}").
+    pub(crate) x: u32,
 }
 
 /// What turning the face-down permanent `id` face up takes: its morph, megamorph or disguise cost. A manifested or
@@ -138,6 +140,7 @@ pub(crate) fn turn_up(state: &GameState, id: ObjectId) -> Option<TurnUp> {
             parts: Vec::new(),
             megamorph: false,
             morph: false,
+            x: 0,
         });
     match (printed, natural) {
         (Some(printed), Some(natural)) => Some(
@@ -151,7 +154,7 @@ pub(crate) fn turn_up(state: &GameState, id: ObjectId) -> Option<TurnUp> {
     }
 }
 
-/// The morph, megamorph or disguise cost of `card` when the engine pays it: mana and fixed parts, with no X and nothing
+/// The morph, megamorph or disguise cost of `card` when the engine pays it: mana, `{X}` and fixed parts, and nothing
 /// that taps, untaps, moves or unattaches the source.
 fn keyword_cost(card: &CardDefinition) -> Option<TurnUp> {
     printed_rules(card).find_map(|rules| {
@@ -165,7 +168,6 @@ fn keyword_cost(card: &CardDefinition) -> Option<TurnUp> {
         if price.tap
             || price.untap
             || price.moves_source()
-            || price.x > 0
             || price.waterbend > 0
             || !price.changes.is_empty()
             || !price.parts.iter().all(turns_up)
@@ -177,6 +179,7 @@ fn keyword_cost(card: &CardDefinition) -> Option<TurnUp> {
             parts: price.parts,
             megamorph,
             morph,
+            x: price.x,
         })
     })
 }
@@ -313,7 +316,7 @@ mod tests {
     #[case::morph(Keyword::Morph(mana("{2}{R}")), Some(("{2}{R}", false)))]
     #[case::megamorph(Keyword::Megamorph(mana("{1}{R}")), Some(("{1}{R}", true)))]
     #[case::disguise(Keyword::Disguise(mana("{R}")), Some(("{R}", false)))]
-    #[case::a_morph_cost_with_an_x(Keyword::Morph(mana("{X}{R}")), None)]
+    #[case::a_morph_cost_with_an_x_is_its_mana_beside_x(Keyword::Morph(mana("{X}{R}")), Some(("{R}", false)))]
     #[case::no_such_keyword(Keyword::Flying, None)]
     fn turning_a_card_face_up_costs_its_keyword_cost_in_mana(
         #[case] keyword: Keyword,
@@ -333,7 +336,7 @@ mod tests {
     #[case::a_dearer_morph_cost(FaceDown::Manifest, Keyword::Morph(mana("{4}{R}{R}")), Some(("{3}{R}{R}", false)))]
     #[case::a_megamorph_cost(FaceDown::Cloak, Keyword::Megamorph(mana("{1}{R}")), Some(("{1}{R}", true)))]
     #[case::a_disguise_cost(FaceDown::Cloak, Keyword::Disguise(mana("{R}")), Some(("{R}", false)))]
-    #[case::a_morph_cost_with_an_x_leaves_the_mana_cost(FaceDown::Manifest, Keyword::Morph(mana("{X}{R}")), Some(("{3}{R}{R}", false)))]
+    #[case::a_morph_cost_with_an_x_counts_without_it(FaceDown::Manifest, Keyword::Morph(mana("{X}{R}")), Some(("{R}", false)))]
     #[case::a_spell_cast_face_down_has_no_mana_cost_to_pay(FaceDown::Morph, Keyword::Flying, None)]
     #[case::a_disguise_cast_face_down_has_no_mana_cost_to_pay(
         FaceDown::Disguise,

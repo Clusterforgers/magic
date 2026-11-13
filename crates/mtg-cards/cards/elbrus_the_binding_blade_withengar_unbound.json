@@ -1,7 +1,7 @@
 {
   "oracle_id": "da5881ca-b86e-4582-ae0e-1570c59773ae",
   "name": "Elbrus, the Binding Blade // Withengar Unbound",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Elbrus, the Binding Blade",
@@ -36,9 +36,9 @@
         { "Keyword": "Intimidate" },
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 148, "end": 231 }
+          "Triggered": {
+            "when": { "Did": { "action": "LostGame" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 13 } }]
           }
         }
       ]

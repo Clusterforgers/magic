@@ -60,6 +60,7 @@ fn spirit() -> TokenSpec {
         power: Some(1),
         toughness: Some(1),
         abilities: vec![Ability::Keyword(Keyword::Flying)],
+        mana_cost: None,
     }
 }
 

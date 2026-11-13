@@ -543,6 +543,13 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::ClassLevelGained { object, level, .. } => set_level(state, *object, *level)?,
         Event::TurnedFaceUp { object, .. } => turn_face_up(state, *object)?,
         Event::TurnedFaceDown { object, .. } => crate::rmt8_turns::turn_face_down(state, *object)?,
+        Event::CommanderColorChosen { object, color, .. } => {
+            state.commander_colors.retain(|(card, _)| card != object);
+            state.commander_colors.push((*object, *color));
+        }
+        Event::FaceDownLooked { object, player } => {
+            crate::sight::look_face_down(state, *player, *object);
+        }
         Event::DoorUnlocked { object, door, .. } => unlock(state, *object, *door)?,
         Event::DoorLocked { object, door, .. } => {
             crate::dk1c5_rooms::r281_fold_locked(state, *object, *door)?;

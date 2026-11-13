@@ -25,7 +25,7 @@ use crate::refs::Ref;
 use crate::value::Amount;
 
 /// The predefined tokens, as a card names them and as their files are named.
-pub(super) const NAMED: [(&str, &str); 12] = [
+pub(super) const NAMED: [(&str, &str); 13] = [
     ("Treasure", "treasure"),
     ("Clue", "clue"),
     ("Food", "food"),
@@ -38,6 +38,7 @@ pub(super) const NAMED: [(&str, &str); 12] = [
     ("Mutagen", "mutagen"),
     ("Gingerbrute", "gingerbrute"),
     ("Lander", "lander"),
+    ("Spellgorger Weird", "spellgorger_weird"),
 ];
 
 fn effect(who: Ref, token: TokenRef, count: Amount, tapped: bool, attacking: bool) -> Effect {
@@ -107,6 +108,7 @@ fn token(r: &mut Reader<'_>) -> Option<TokenRef> {
         power,
         toughness,
         abilities: Vec::new(),
+        mana_cost: None,
     });
     Some(match sized {
         // The announced X stands for the amount until the where clause or the cost names it.

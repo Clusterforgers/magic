@@ -1,18 +1,13 @@
 {
   "oracle_id": "542eae01-058d-4959-92a8-49d6b1e33ecd",
   "name": "Clara Oswald",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Clara Oswald",
       "oracle_fingerprint": "96ee33b97bb0cc559f1788673da8d067",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 125 }
-          }
-        },
+        { "Static": { "affected": "This", "mods": ["SetCommanderColor"], "defining": true } },
         {
           "Rule": {
             "rule": {

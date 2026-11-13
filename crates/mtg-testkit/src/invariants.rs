@@ -706,7 +706,7 @@ pub struct InvariantChecker {
     expected_enchanted: BTreeMap<ObjectId, PlayerId>,
     /// What the table was shown or told by hand, checked against the state.
     shown: ShownByHand,
-    loyalty_turns: BTreeMap<ObjectRef, u32>,
+    loyalty_turns: BTreeMap<ObjectRef, (u32, u32)>,
     zones_seen: BTreeMap<ObjectId, (Zone, u32)>,
     events_seen: usize,
     full_every: usize,
@@ -1399,9 +1399,17 @@ impl InvariantChecker {
             return Ok(());
         }
         let number = turn.number();
-        if self.loyalty_turns.insert(source, number) == Some(number) {
+        // Once a turn, or twice under a rule that allows it (Oath of Teferi, CR 606.3).
+        let limit = mtg_engine::rules::loyalty_activations(&self.shadow, player);
+        let entry = self.loyalty_turns.entry(source).or_insert((number, 0));
+        if entry.0 != number {
+            *entry = (number, 0);
+        }
+        entry.1 += 1;
+        if entry.1 > limit {
             return Err(Violation::Bookkeeping(format!(
-                "{source:?} had a second loyalty ability activated in turn {number}"
+                "{source:?} had loyalty abilities activated {} times in turn {number}",
+                entry.1
             )));
         }
         Ok(())

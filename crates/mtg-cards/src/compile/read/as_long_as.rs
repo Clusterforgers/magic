@@ -170,6 +170,13 @@ fn hand() -> Selector {
     Selector(vec![Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)])
 }
 
+/// The land cards in your hand ("you have no land cards in hand").
+fn r400_land_hand() -> Selector {
+    let mut lands = hand();
+    lands.0.push(Pred::Type(mtg_core::card::CardType::Land));
+    lands
+}
+
 /// The cards in the hand of the player whose turn it is, in either order of the two predicates.
 fn is_active_hand(of: &Selector) -> bool {
     let [first, second] = of.0.as_slice() else {
@@ -232,6 +239,9 @@ fn graveyard_kind(r: &mut Reader<'_>) -> Option<Selector> {
 fn in_hand(r: &mut Reader<'_>) -> Option<Condition> {
     if r.words("no cards in hand") {
         return Some(compare(Amount::Count(hand()), Cmp::Eq, 0));
+    }
+    if r.words("no land cards in hand") {
+        return Some(compare(Amount::Count(r400_land_hand()), Cmp::Eq, 0));
     }
     let number = quantity(r)?;
     let op = if r.words("or more") {
@@ -512,6 +522,9 @@ fn counted_text(condition: &Condition, number: u32, words: &str) -> Vec<String> 
             vec![format!(
                 "there are fewer than {words} cards in your graveyard"
             )]
+        }
+        (Amount::Count(of), Cmp::Eq) if number == 0 && *of == r400_land_hand() => {
+            vec!["you have no land cards in hand".to_owned()]
         }
         (Amount::Count(of), _) if *of == hand() => match op {
             Cmp::Eq if number == 0 => vec!["you have no cards in hand".to_owned()],

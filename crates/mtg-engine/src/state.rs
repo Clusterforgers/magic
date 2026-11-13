@@ -310,7 +310,7 @@ pub struct GameState {
     /// The once-each-game abilities used, as `limits_spent`; a new turn keeps them.
     pub(crate) game_limits_spent: BTreeSet<(ObjectRef, AbilitySource, usize)>,
     /// The planeswalkers that had a loyalty ability activated this turn: no more than one for each (CR 606.3).
-    pub(crate) loyalty_used: BTreeSet<ObjectRef>,
+    pub(crate) loyalty_used: BTreeMap<ObjectRef, u32>,
     /// The modes the abilities that choose a mode not yet chosen chose, in any turn, as (source, where the ability comes
     /// from, its index, the mode); a source that changed zones is a new object with none.
     pub(crate) modes_ever: BTreeSet<(ObjectRef, AbilitySource, usize, usize)>,
@@ -375,6 +375,12 @@ pub struct GameState {
     /// The cards of a library its owner looked at by hand (`ManualAction::LookTop`), known to that seat while each is
     /// still the object it looked at and the library has not been shuffled.
     pub(crate) looked_by_hand: Vec<(PlayerId, crate::object::ObjectRef)>,
+    /// The face-down permanents a seat looked at by an effect (`Effect::LookAtFaceDown`), known to that seat while each
+    /// is still the object it looked at.
+    pub(crate) looked_face_down: Vec<(PlayerId, crate::object::ObjectRef)>,
+    /// The colors chosen before the game began for commanders that are the chosen color, by card id
+    /// (`r404_commander_color`).
+    pub(crate) commander_colors: Vec<(ObjectId, mtg_core::color::Color)>,
     /// The cards a seat showed to every seat by hand (`ManualAction::Reveal`), identified by all while each is still the
     /// object it showed in the place it was shown in (a shuffle ends it for a library).
     pub(crate) revealed_by_hand: Vec<crate::object::ObjectRef>,
@@ -786,7 +792,10 @@ impl GameState {
 
     /// Whether a loyalty ability of the planeswalker `permanent` has been activated this turn (CR 606.3).
     pub(crate) fn loyalty_spent(&self, permanent: ObjectRef) -> bool {
-        self.loyalty_used.contains(&permanent)
+        let used = self.loyalty_used.get(&permanent).copied().unwrap_or(0);
+        let limit = crate::characteristics::controller_of(self, permanent.id)
+            .map_or(1, |player| crate::rules::loyalty_activations(self, player));
+        used >= limit
     }
 
     /// The id the next object created during the game gets (abilities on the stack, and tokens later).
@@ -950,6 +959,14 @@ impl Hash for GameState {
         // Likewise a game in which no seat looked at its library by hand.
         if !self.looked_by_hand.is_empty() {
             self.looked_by_hand.hash(state);
+        }
+        // Likewise a game in which no seat looked at a face-down permanent.
+        if !self.looked_face_down.is_empty() {
+            self.looked_face_down.hash(state);
+        }
+        // Likewise a game with no color chosen for a commander.
+        if !self.commander_colors.is_empty() {
+            self.commander_colors.hash(state);
         }
         // Likewise a game in which nothing was shown or noted by hand.
         if !self.revealed_by_hand.is_empty() {

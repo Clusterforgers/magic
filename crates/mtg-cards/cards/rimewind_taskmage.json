@@ -18,7 +18,7 @@
               }
             },
             "targets": [{ "what": { "Object": [] } }],
-            "effects": [{ "TapOrUntap": { "what": { "Target": 0 } } }]
+            "effects": [{ "May": { "effects": [{ "TapOrUntap": { "what": { "Target": 0 } } }] } }]
           }
         }
       ]

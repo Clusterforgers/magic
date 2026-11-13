@@ -29,6 +29,7 @@ fn hero() -> TokenSpec {
         power: Some(1),
         toughness: Some(1),
         abilities: Vec::new(),
+        mana_cost: None,
     }
 }
 

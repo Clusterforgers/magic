@@ -440,6 +440,10 @@ pub(crate) fn seat_decision(state: &GameState, player: PlayerId) -> Option<Decis
 /// answers may come in any order). The first is the engine's own decision: bottoming, then a scry, then keep or
 /// mulligan, each in turn order from the first player; the other seats follow in turn order.
 pub(crate) fn open_decisions(state: &GameState) -> Vec<Decision> {
+    // A commander color still owed is the one question asked: it comes before any hand.
+    if let Some(question) = crate::r404_commander_color::question(state) {
+        return vec![question];
+    }
     let mut asked: Vec<Decision> = state
         .turn_order_from(state.first_player())
         .into_iter()
@@ -468,6 +472,10 @@ pub(crate) fn next(state: &GameState) -> Progress {
             .collect()
     };
 
+    // A commander's color is chosen before the game begins, before any hand is dealt.
+    if let Some(decision) = crate::r404_commander_color::question(state) {
+        return Progress::Decide(decision);
+    }
     let needs_hand = with_status(|s| s == MulliganStatus::NeedsHand);
     if !needs_hand.is_empty() {
         return Progress::Events(deal(state, &needs_hand));

@@ -266,6 +266,9 @@ fn single_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     if let Some(found) = r.attempt(attached_tapped_for_mana) {
         return Some(found);
     }
+    if let Some(found) = r.attempt(chosen_tapped_for_mana) {
+        return Some(found);
+    }
     if let Some(found) = r.attempt(super::l291_nth_counter::event) {
         return Some(found);
     }
@@ -293,6 +296,21 @@ fn attached_tapped_for_mana(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         what: Selector(what),
         by: Ref::EachPlayer,
         produced: None,
+        chosen_color: false,
+    })
+}
+
+/// "a basic land is tapped for mana of the chosen color": a permanent of any player whose tap makes mana of the color
+/// the source chose.
+fn chosen_tapped_for_mana(r: &mut Reader<'_>) -> Option<TriggerPattern> {
+    (r.word("a") || r.word("an")).then_some(())?;
+    let what = phrase(r, Form::Subject)?;
+    r.need("is tapped for mana of the chosen color")?;
+    Some(TriggerPattern::TappedForMana {
+        what,
+        by: Ref::EachPlayer,
+        produced: None,
+        chosen_color: true,
     })
 }
 
@@ -773,6 +791,7 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
             what,
             by,
             produced: None,
+            chosen_color: false,
         })
     } else {
         None
@@ -1590,9 +1609,24 @@ fn step_text(step: Step, whose: &Ref) -> Option<String> {
 
 /// A permanent tapped for mana: "Whenever you tap a land for mana", "Whenever enchanted land is tapped for mana".
 fn tapped_for_mana_text(pattern: &TriggerPattern) -> Option<String> {
-    let TriggerPattern::TappedForMana { what, by, produced } = pattern else {
+    let TriggerPattern::TappedForMana {
+        what,
+        by,
+        produced,
+        chosen_color,
+    } = pattern
+    else {
         return None;
     };
+    // "Whenever a basic land is tapped for mana of the chosen color": a land of any player, in the passive.
+    if *chosen_color {
+        (produced.is_none() && *by == Ref::EachPlayer).then_some(())?;
+        let land = phrase_text(what, Form::Subject)?;
+        return Some(format!(
+            "Whenever {} {land} is tapped for mana of the chosen color",
+            article(&land)
+        ));
+    }
     // "Whenever you tap a permanent for {C}": a tap that makes mana of one type.
     if let Some(produced) = produced {
         return Some(format!(

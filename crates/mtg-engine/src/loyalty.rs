@@ -218,7 +218,7 @@ mod tests {
         apply_event(&mut game, &Event::StepBegan { step }).unwrap();
         if already_used {
             let named = walker_object(&game).reference();
-            game.loyalty_used.insert(named);
+            game.loyalty_used.insert(named, 1);
         }
         assert_eq!(can_activate(&game, ME, walker_object(&game), cost), allowed);
     }

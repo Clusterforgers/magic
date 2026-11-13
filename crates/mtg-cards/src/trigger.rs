@@ -318,6 +318,10 @@ pub enum TriggerPattern {
         /// Only a tap that makes mana of this type ("Whenever you tap a permanent for {C}"); any tap for mana when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         produced: Option<mtg_core::mana::ManaType>,
+        /// Only a tap that makes mana of the color the source chose as it entered ("tapped for mana of the chosen
+        /// color"); a source that chose no color makes no tap match.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        chosen_color: bool,
     },
     /// A creature matching the selector blocks.
     Blocks {

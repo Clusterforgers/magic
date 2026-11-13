@@ -1,22 +1,49 @@
 {
   "oracle_id": "c62c8006-5650-43cb-8247-da097aa42376",
   "name": "Magnetic Web",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Magnetic Web",
       "oracle_fingerprint": "aee6d8f81257e64e0447c0e42b265387",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 109 }
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": [{ "Type": "Creature" }, { "HasCounter": { "Other": "magnet" } }] },
+                "quirk": {
+                  "AttackIfAnyAttacks": [
+                    { "Type": "Creature" },
+                    { "HasCounter": { "Other": "magnet" } }
+                  ]
+                }
+              }
+            }
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 110, "end": 248 }
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [{ "Type": "Creature" }, { "HasCounter": { "Other": "magnet" } }]
+              }
+            },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MustBlockAttacker": {
+                      "who": {
+                        "Each": [{ "Type": "Creature" }, { "HasCounter": { "Other": "magnet" } }]
+                      },
+                      "attacker": "Triggering"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         },
         {

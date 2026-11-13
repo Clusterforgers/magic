@@ -1,7 +1,7 @@
 {
   "oracle_id": "8222321f-b74d-4f74-9ee7-79455433345a",
   "name": "Verdeloth the Ancient",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Verdeloth the Ancient",
@@ -25,9 +25,25 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 127, "end": 213 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": "X"
+                }
+              }
+            ]
           }
         }
       ]

@@ -260,6 +260,7 @@ function durationWords(
 ): string {
   if (typeof duration === 'object') {
     if ('UntilPaid' in duration) return ` until its controller pays ${duration.UntilPaid} to end it`
+    if ('WhileMonarch' in duration) return ' while that player is the monarch'
     const counter = `${counterName(duration.WhileHasCounter)} counter`
     return several ? ` while each has a ${counter}` : ` while it has a ${counter}`
   }
@@ -296,6 +297,8 @@ function durationWords(
       source === null
         ? ' until its source is cast from exile'
         : ` until ${n.card(source.id)} is cast from exile`,
+    WhileEnchanted: several ? ' while each is enchanted' : ' while it is enchanted',
+    UntilItsControllersNextUntapStep: " until its controller's next untap step",
     Forever: '',
   }
   return UNTIL[duration]
@@ -912,6 +915,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     }
   }
   if ('FirstPlayerChosen' in event) return line(`${n.seat(event.FirstPlayerChosen.player)} goes first`)
+  if ('CommanderColorChosen' in event) {
+    const { player, object, color } = event.CommanderColorChosen
+    return line(`${n.seat(player)} chooses ${color.toLowerCase()} for ${n.card(object)}`)
+  }
   if ('LibraryShuffled' in event)
     return quiet(`${n.seat(event.LibraryShuffled.player)} shuffles their library`)
   if ('AttractionDeckShuffled' in event)
@@ -1120,6 +1127,8 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(
       `${n.seat(event.TurnedFaceDown.player)} turns ${n.card(event.TurnedFaceDown.object)} face down`,
     )
+  if ('FaceDownLooked' in event)
+    return line(`${n.seat(event.FaceDownLooked.player)} looks at ${n.card(event.FaceDownLooked.object)}`)
   if ('DoorLocked' in event) {
     const { player, object, door } = event.DoorLocked
     return line(`${n.seat(player)} locks ${n.door?.(object, door) ?? `a door of ${n.card(object)}`}`)
@@ -1331,6 +1340,11 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   return line(String(unhandled))
 }
 
+/** The name of the source of a hidden ability, or "a hidden card" when the viewer cannot identify it. */
+function unseen(source: ObjectRef | null | undefined, n: EventNames): string {
+  return source ? n.card(source.id) : 'a hidden card'
+}
+
 function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
   if (typeof event === 'string') return quiet('A card leaves the game')
   if ('Remembered' in event) return quiet('A source remembers objects')
@@ -1390,15 +1404,15 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
   }
   if ('ChoiceMade' in event) return quiet(`${n.seat(event.ChoiceMade.player)} chooses`)
   if ('AbilityTriggered' in event) {
-    return line(`An ability of ${n.card(event.AbilityTriggered.source.id)} triggers`)
+    return line(`An ability of ${unseen(event.AbilityTriggered.source, n)} triggers`)
   }
   if ('AbilityPutOnStack' in event) {
-    return quiet(`An ability of ${n.card(event.AbilityPutOnStack.source.id)} goes on the stack`)
+    return quiet(`An ability of ${unseen(event.AbilityPutOnStack.source, n)} goes on the stack`)
   }
   if ('AbilityLeftToTable' in event) {
     const { source, controller } = event.AbilityLeftToTable
     return line(
-      `An ability of ${n.card(source.id)} could not be run by the game: ${n.seat(controller)} applies it by hand`,
+      `An ability of ${unseen(source, n)} could not be run by the game: ${n.seat(controller)} applies it by hand`,
     )
   }
   if ('TriggerRemoved' in event) {

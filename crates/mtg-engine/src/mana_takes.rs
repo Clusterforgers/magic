@@ -210,6 +210,9 @@ pub(crate) fn for_card<'a>(
     sources: &'a [ManaOption],
     id: ObjectId,
 ) -> Cow<'a, [ManaOption]> {
+    if crate::r400_no_mana::r400_no_mana(state, id) {
+        return Cow::Owned(Vec::new());
+    }
     let in_hand = state
         .object(id)
         .is_some_and(|object| matches!(object.zone(), Zone::Hand(_)));

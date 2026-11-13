@@ -210,11 +210,24 @@ pub(crate) fn definition_has_static(definition: &CardDefinition) -> bool {
     })
 }
 
-/// Whether a card with this definition has a static ability that gives a supertype (CR 205.4).
+/// Whether a card with this definition has a static ability or an effect that gives or takes a supertype (CR 205.4).
 pub(crate) fn definition_gives_supertype(definition: &CardDefinition) -> bool {
     definition.rules.iter().any(|rules| {
         matches!(&**rules, Ability::Static { mods, .. }
             if mods.iter().any(|given| matches!(given, WantedModification::AddSupertype(_) | WantedModification::RemoveSupertype(_))))
+            // An effect of a spell or ability may change supertypes too ("target snow land is no longer snow"), at any
+            // depth of its steps: the data names the change, so its words are looked for once as the game is set up.
+            || serde_json::to_string(&**rules).is_ok_and(|text| {
+                text.contains("\"AddSupertype\"") || text.contains("\"RemoveSupertype\"")
+            })
+    })
+}
+
+/// Whether a card with this definition has a static ability that makes it the color chosen for it as a commander.
+pub(crate) fn definition_sets_commander_color(definition: &CardDefinition) -> bool {
+    definition.rules.iter().any(|rules| {
+        matches!(&**rules, Ability::Static { mods, .. }
+            if mods.contains(&WantedModification::SetCommanderColor))
     })
 }
 

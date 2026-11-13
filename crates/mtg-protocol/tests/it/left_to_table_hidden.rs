@@ -163,7 +163,11 @@ fn a_failing_trigger_on_a_card_drawn_is_hidden_from_the_seats_that_cannot_see_th
                     seat,
                     EventView::Hidden(HiddenEvent::AbilityLeftToTable { source, controller }),
                 ) if seat > 0 => {
-                    assert_eq!((source.id, controller.index()), (watcher, 0), "seat {seat}");
+                    assert_eq!(
+                        (source.map(|source| source.id), controller.index()),
+                        (Some(watcher), 0),
+                        "seat {seat}"
+                    );
                     let json = serde_json::to_string(&HiddenEvent::AbilityLeftToTable {
                         source,
                         controller,

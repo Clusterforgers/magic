@@ -1,5 +1,6 @@
 Abbot of Keral Keep
 Aberrant
+Abominable Treefolk
 Abomination, World Ravager
 Aboroth
 Absolver Thrull
@@ -80,6 +81,7 @@ Archon of Absolution
 Archon of Coronation
 Archon of Cruelty
 Archway Commons
+Arcum's Weathervane
 Armguard Familiar
 Arrest
 Arrogant Wurm
@@ -102,10 +104,13 @@ Auriok Champion
 Austere Command
 Authority of the Consuls
 Auton Soldier
+Avalanche
+Avalanche Caller
 Avatar of Woe
 Aven Eternal
 Aven Initiate
 Aven Riftwatcher
+Aven Soulgazer
 Aven Squire
 Aven Tactician
 Aven Trailblazer
@@ -119,6 +124,7 @@ Azusa, Lost but Seeking
 Baaallerina
 Back in Town
 Baird, Steward of Argive
+Balduvian Conjurer
 Bandit's Haul
 Bane of Progress
 Banish to Another Universe
@@ -298,6 +304,7 @@ Chartooth Cougar
 Chemister's Insight
 Chicken Troupe
 Chief Engineer
+Chill to the Bone
 Chimil, the Inner Sun
 Chittering Harvester
 Chittering Witch
@@ -348,6 +355,7 @@ Complaints Clerk
 Composer of Spring
 Conclave Sledge-Captain
 Conclave Tribunal
+Conifer Wurm
 Consider
 Consign // Oblivion
 Consign to Dust
@@ -460,6 +468,7 @@ Deluxe Dragster
 Delver of Secrets // Insectile Aberration
 Demolition Field
 Demon Bolt
+Demon of Fate's Design
 Demon of Wailing Agonies
 Demonic Embrace
 Demotion
@@ -472,6 +481,7 @@ Despise
 Determined Iteration
 Devastation Tide
 Devoted Druid
+Diamond Faerie
 Diffusion Sliver
 Dig Up
 Diligent Zookeeper
@@ -527,6 +537,7 @@ Dreamtail Heron
 Dreg Mangler
 Dregscape Zombie
 Drift of Phantasms
+Drift of the Dead
 Drill Bit
 Drogskol Reinforcements
 Dromoka Captain
@@ -570,6 +581,7 @@ Eel Umbra
 Eiganjo Dynastorian // Replenish
 Eiganjo Free-Riders
 Eivor, Battle-Ready
+Ekundu Cyclops
 Elder Deep-Fiend
 Elder Owyn Lyons
 Eldrazi Conscription
@@ -644,6 +656,7 @@ Eye of Nidhogg
 Eyeblight Massacre
 Eyetwitch
 Ezzaroot Channeler
+Faceless One
 Fain, the Broker
 Faith Unbroken
 Faithful Watchdog
@@ -778,6 +791,7 @@ Girder Goons
 Gisa and Geralf
 Gix's Caress
 Gixian Infiltrator
+Glacial Crevasses
 Glacial Ray
 Glacier Godmaw
 Glamerdye
@@ -856,6 +870,7 @@ Hackrobat
 Hada Spy Patrol
 Hagra Mauling // Hagra Broodpit
 Hall of Triumph
+Hallowed Ground
 Hallowed Spiritkeeper
 Hama Pashar, Ruin Seeker
 Hammer Dropper
@@ -875,6 +890,7 @@ Headless Skaab
 Hearthhull, the Worldseed
 Heartless Act
 Hei Bai, Spirit of Balance
+Heidar, Rimewind Master
 Heliod, God of the Sun
 Heliod, Sun-Crowned
 Hellkite Igniter
@@ -906,6 +922,7 @@ High Ground
 Highspire Artisan
 History of Benalia
 Hoarder's Greed
+Hogaak, Arisen Necropolis
 Holdout Settlement
 Honor Troll
 Honor's Reward
@@ -925,6 +942,7 @@ Hunt the Weak
 Huntmaster Liger
 Hydra Broodmaster
 Icatian Infantry
+Ice-Fang Coatl
 Icefeather Aven
 Ichor Rats
 Idyllic Beachfront
@@ -959,6 +977,7 @@ Inspired Sphinx
 Inspiring Statuary
 Inspirit
 Intelligence Bobblehead
+Into the North
 Into the Roil
 Into the Time Vortex
 Intrepid Adversary
@@ -1023,6 +1042,7 @@ Keleth, Sunmane Familiar
 Kellogg, Dangerous Mind
 Kemba's Banner
 Kenrith's Transformation
+Kentaro, the Smiling Cat
 Kess, Dissident Mage
 Kessig Wolf Run
 Kill! Maim! Burn!
@@ -1066,6 +1086,7 @@ Krosan Verge
 Kulrath Knight
 Kydele, Chosen of Kruphix
 Kyler, Sigardian Emissary
+Land Grant
 Landslide
 Lantern Flare
 Laquatus's Disdain
@@ -1144,6 +1165,7 @@ Magical Hack
 Magistrate's Scepter
 Magmatic Galleon
 Magmatic Insight
+Magnetic Web
 Magus of the Moon
 Make Disappear
 Makeshift Mauler
@@ -1164,6 +1186,7 @@ Mardu Scout
 Mardu Shadowspear
 Mardu Strike Leader
 Mariposa Military Base
+Marit Lage's Slumber
 Maro
 Marrow Chomper
 Marvo, Deep Operative
@@ -1270,6 +1293,7 @@ Nantuko Vigilante
 Nardole, Resourceful Cyborg
 Narset's Rebuke
 Nature's Embrace
+Navigator's Compass
 Necklace of Girion
 Necroduality
 Necroplasm
@@ -1318,9 +1342,11 @@ Observed Stasis
 Obstinate Baloth
 Octomancer
 Octopus Umbra
+Ohran Yeti
 Okiba Reckoner Raid // Nezumi Road Captain
 Olivia's Wrath
 Ominous Harvest
+On Thin Ice
 Onakke Oathkeeper
 Ondu Spiritdancer
 Oona's Blackguard
@@ -1329,6 +1355,7 @@ Opt
 Oran-Rief, the Vastwood
 Orazca Relic
 Orchard Strider
+Orcish Farmer
 Ordered Migration
 Organic Extinction
 Origin of the Hulk
@@ -1434,6 +1461,7 @@ Preyseizer Dragon
 Price of Fame
 Pridemalkin
 Priest of the Crossing
+Priest of the Haunted Edge
 Primal Beyond
 Primal Growth
 Primal Might
@@ -1552,6 +1580,9 @@ Rift Bolt
 Righteous Avengers
 Righteous Confluence
 Riku of Two Reflections
+Rime Tender
+Rimewind Cryomancer
+Rimewind Taskmage
 Rionya, Fire Dancer
 Riptide Survivor
 Rishkar's Expertise
@@ -1569,6 +1600,7 @@ Rogue Refiner
 Root Sliver
 Rootborn Defenses
 Rootcast Apprenticeship
+Rootwater Matriarch
 Rope
 Rosheen Meanderer
 Rousing Refrain
@@ -1627,6 +1659,7 @@ Scrabbling Claws
 Scrapshooter
 Screeching Scorchbeast
 Scrounging Skyray
+Sculptor of Winter
 Scuzzback Marauders
 Scytheclaw
 Sea Gate
@@ -1710,6 +1743,7 @@ Skirk Prospector
 Skitter Eel
 Skittering Crustacean
 Skizzik Surger
+Skred
 Skull Skaab
 Skullbriar, the Walking Grave
 Skullclamp
@@ -1729,6 +1763,7 @@ Slitherhead
 Sluiceway Scorpion
 Smell Fear
 Smoke
+Smoke Teller
 Smuggler's Buggy
 Smuggler's Copter
 Snake Umbra
@@ -1773,6 +1808,7 @@ Spinnerette, Arachnobat
 Spire Golem
 Spire Winder
 Spirit Bonds
+Spirit of the Aldergard
 Spirit of the Hearth
 Spiritual Visit
 Spiteful Visions
@@ -1852,6 +1888,7 @@ Sunken Ruins
 Sunrise Cavalier
 Sunscorch Regent
 Sunstar Lightsmith
+Sunstone
 Suntouched Myr
 Super Combo
 Supernatural Rescue
@@ -1938,6 +1975,7 @@ The Moment
 The Most Dangerous Gamer
 The Mycosynth Gardens
 The Parting of the Ways
+The Prismatic Piper
 The Scorpion God
 The Seriema
 The Spear of Bashenga
@@ -2111,6 +2149,7 @@ Village Rites
 Viper's Kiss
 Viridian Corrupter
 Visage of Dread // Dread Osseosaur
+Viscerid Drone
 Vish Kal, Blood Arbiter
 Visionary Augmenter
 Vital Surge
@@ -2170,6 +2209,7 @@ Whisperer of the Wilds
 Whispering Madness
 Whispering Snitch
 White Auracite
+Whiteout
 Wibbly-wobbly, Timey-wimey
 Wickersmith's Tools
 Wild Growth
@@ -2200,6 +2240,7 @@ Wolfwillow Haven
 Wooded Bastion
 Woodland Bellower
 Woodripper
+Woolly Mammoths
 Worldspine Wurm
 Worst Fears
 Wrath of God

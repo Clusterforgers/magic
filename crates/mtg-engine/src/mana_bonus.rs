@@ -90,6 +90,16 @@ fn ways(
     }
 }
 
+/// Whether `made` holds mana of the color the permanent `source` chose as it entered; false when it chose none.
+pub(crate) fn makes_chosen(state: &GameState, source: ObjectRef, made: &[ManaType]) -> bool {
+    let chosen = state
+        .object(source.id)
+        .filter(|object| object.counter() == source.counter)
+        .and_then(GameObject::permanent)
+        .and_then(PermanentState::chosen);
+    matches!(chosen, Some(Chosen::Color(color)) if made.contains(&mana_of(*color)))
+}
+
 /// Whether `trigger` fires as `player` taps the permanent `land` for mana that makes `made`.
 fn fires(
     state: &GameState,
@@ -106,6 +116,7 @@ fn fires(
         .players(shape.by)
         .is_ok_and(|players| players.contains(&player))
         && shape.produced.is_none_or(|kind| made.contains(&kind))
+        && (!shape.chosen_color || makes_chosen(state, trigger.source, made))
         && scope.selects(shape.what, land).unwrap_or(false)
         && shape
             .condition

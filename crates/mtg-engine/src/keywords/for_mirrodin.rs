@@ -30,6 +30,7 @@ fn rebel() -> TokenSpec {
         power: Some(2),
         toughness: Some(2),
         abilities: Vec::new(),
+        mana_cost: None,
     }
 }
 

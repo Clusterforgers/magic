@@ -151,9 +151,9 @@ player: PlayerId, } } | { "StepDone": {
  */
 position: Array<number>, } } | { "AbilityTriggered": { 
 /**
- * The object with the ability, as it was.
+ * The object with the ability, as it was; none while the viewer cannot identify it (a card in a hand).
  */
-source: ObjectRef, 
+source?: ObjectRef, 
 /**
  * Its index among the rules of the source's card.
  */
@@ -167,17 +167,17 @@ controller: PlayerId, } } | { "AbilityPutOnStack": {
  */
 object: ObjectId, 
 /**
- * The object it comes from, as it was.
+ * The object with the ability, as it was; none while the viewer cannot identify it (a card in a hand).
  */
-source: ObjectRef, 
+source?: ObjectRef, 
 /**
  * Who controls it.
  */
 controller: PlayerId, } } | { "AbilityLeftToTable": { 
 /**
- * The object with the ability, as it was.
+ * The object with the ability, as it was; none while the viewer cannot identify it (a card in a hand).
  */
-source: ObjectRef, 
+source?: ObjectRef, 
 /**
  * Who controls it.
  */

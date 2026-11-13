@@ -810,6 +810,11 @@ impl Engine {
             scanned = self.events.len();
             before = None;
             for trigger in triggered {
+                // A miracle card is revealed as it triggers, so every seat learns what waits on the stack.
+                if let Some(revealed) = crate::keywords::miracle_reveal(&self.state, &trigger) {
+                    apply_event(&mut self.state, &revealed)?;
+                    self.events.push(revealed);
+                }
                 let event = Event::AbilityTriggered(Box::new(trigger));
                 apply_event(&mut self.state, &event)?;
                 self.events.push(event);

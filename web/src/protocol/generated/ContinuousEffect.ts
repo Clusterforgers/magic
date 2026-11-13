@@ -50,4 +50,8 @@ controller: PlayerId,
 /**
  * The number of the turn it began in, which `UntilEndOfCombat` and `UntilYourNextTurn` measure from.
  */
-turn: number, };
+turn: number, 
+/**
+ * The player a `WhileMonarch` effect follows, fixed as it began; none for any other duration.
+ */
+anchor?: PlayerId, };
