@@ -359,7 +359,7 @@ fn r5517_controllers(driver: &Driver, name: &str) -> Vec<PlayerId> {
         .iter()
         .filter_map(|id| state.object(*id))
         .filter(|object| object.card().name == name)
-        .map(|object| object.controller())
+        .map(mtg_engine::object::GameObject::controller)
         .collect()
 }
 

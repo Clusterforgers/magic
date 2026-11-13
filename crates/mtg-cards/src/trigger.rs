@@ -1391,11 +1391,13 @@ impl ShieldShape {
                 Some(Self::Class)
             }
             // "Until end of turn, if one or more tokens would be created under your control, twice that many ..."
-            (ReplaceWhen::TokenCreation { .. }, ReplaceBy::Multiply(_) | ReplaceBy::Add(_)) => {
-                Some(Self::Class)
-            }
             // "If a creature would enter under an opponent's control this turn, it enters under your control instead."
-            (ReplaceWhen::TokenCreation { .. }, ReplaceBy::UnderYourControl) => Some(Self::Class),
+            (
+                ReplaceWhen::TokenCreation { .. },
+                ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::UnderYourControl,
+            )
+            // "Until end of turn, if target player would draw a card, instead ...": every draw of the players.
+            | (ReplaceWhen::Draw { .. }, ReplaceBy::Instead(_)) => Some(Self::Class),
             (ReplaceWhen::Enters { what }, ReplaceBy::UnderYourControl) if !names_objects(what) => {
                 Some(Self::Class)
             }
@@ -1420,8 +1422,6 @@ impl ShieldShape {
                 ReplaceWhen::Draw { .. } | ReplaceWhen::LoseGame { .. },
                 ReplaceBy::InsteadNext(_),
             ) => Some(Self::Next),
-            // "Until end of turn, if target player would draw a card, instead ...": every draw of the players.
-            (ReplaceWhen::Draw { .. }, ReplaceBy::Instead(_)) => Some(Self::Class),
             _ => None,
         }
     }
