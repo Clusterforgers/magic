@@ -72,11 +72,15 @@ Seeded games against main's brains of the same level on the interaction pairings
 | --- | --- | --- | --- | --- | --- |
 | Normal | 1v1 | 960 | 50.1% | +1 [-21, +23] | |
 | Hard | 1v1 | 232 | 59.1% | +64 [+19, +110] | H1 accepted |
-VH_ROWS
+| Very Hard | 1v1 | 121 | 49.6% | -3 [-66, +60] | undecided |
+| Hard | pod | 82 | 56.1% | +43 [-32, +122] | undecided |
+
+A pod seats four players, two of each side. The build without the guard and the crack-back veto scored 58.4% over 219 games for Hard and 54.0% over 150 (+28 [-28, +85]) for Very Hard in 1v1, and 54.5% over 99 games for Hard in pods.
+
 Search authority on Hard, 256 games each against main's Hard on the same deals: the former margin (0.05 plus a standard error) overrides 4.7% of the searches and scores 51.6%; a standard error alone overrides 19% and scores 53.9%; with the importance budget and counter replies in the tree 55.9%; most of the deals (75 to 80%) are split, each side winning from the same seat. Judged rollouts score the same as cast-the-costliest (53.9% both) at the same cost and are kept as the opponent model. 400 iterations for Hard instead of 150 scored 51% over 82 games at three times the cost.
 
 Normal with Hard's former searches scores 59.6% against main's Normal (480 games, +67 Elo) but aims a Pacifism at its own team in Two-Headed Giant, so Normal keeps main's settings.
 
 The longest timed answer stays under the 4.5 s cap, which the clock test asserts (`brain_clock`); the suite's longest Very Hard answer is 3.8 s.
 
-Tuning: Texel fitting of the evaluation's terms on 47,000 positions from 1,000 Hard games lowers the held-out loss from 0.231 to 0.184 but plays even (50.4% in 240 games); SPSA over the 32 policy constants and weights (430 rounds of 16 games) gains +4 Elo on the interaction pairings and +17 on all pairings, within noise, and loses five suite cases, so the hand-set values stay. The suite's judgement (counters held for threats, blocks against the crack back) shows little in bot-against-bot win rates: both sides share the same rollout policy, so most games turn on the same plays.
+Tuning: `eval_tune` with `DECKS=interaction` fits the evaluation's terms on 21,218 positions from 600 Normal self-play games and lowers the held-out loss from 0.229 to 0.188 at K = 60, with weights far from the hand-set ones (lethal_for 39, early_source 37, lethal_against 36, card 27); they wait for a match test, so the hand-set weights stay. `PODS=<n>` adds Commander pods; a pod of seed 51405 loops a choice question at turn 44. Earlier, Texel fitting of the evaluation's terms on 47,000 positions from 1,000 Hard games lowers the held-out loss from 0.231 to 0.184 but plays even (50.4% in 240 games); SPSA over the 32 policy constants and weights (430 rounds of 16 games) gains +4 Elo on the interaction pairings and +17 on all pairings, within noise, and loses five suite cases, so the hand-set values stay. The suite's judgement (counters held for threats, blocks against the crack back) shows little in bot-against-bot win rates: both sides share the same rollout policy, so most games turn on the same plays.
