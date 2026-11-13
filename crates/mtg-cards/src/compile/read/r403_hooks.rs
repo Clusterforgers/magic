@@ -410,9 +410,9 @@ fn r403_same_counters() -> Effect {
 fn r403_choice_twin(text: &str) -> Option<String> {
     let (head, rest) = text.split_once("your choice of a ")?;
     let (list, tail) = rest.split_once(" counter on ")?;
-    let (firsts, last) = list.rsplit_once(", or ")?;
-    let mut kinds: Vec<&str> = firsts.split(", ").collect();
-    kinds.push(last);
+    let (leading, final_kind) = list.rsplit_once(", or ")?;
+    let mut kinds: Vec<&str> = leading.split(", ").collect();
+    kinds.push(final_kind);
     (kinds.len() >= 3 && !kinds.iter().any(|kind| kind.contains("counter"))).then_some(())?;
     let named: Vec<String> = kinds
         .iter()
@@ -440,9 +440,9 @@ fn r403_different_read(text: &str) -> Option<Ability> {
     let (number, rest) = rest.split_once(middle)?;
     let list = rest.strip_suffix(end)?;
     let count = super::amounts::number_word(number)?;
-    let (firsts, last) = list.rsplit_once(", and ")?;
+    let (leading, final_kind) = list.rsplit_once(", and ")?;
     let mut kinds = Vec::new();
-    for name in firsts.split(", ").chain(std::iter::once(last)) {
+    for name in leading.split(", ").chain(std::iter::once(final_kind)) {
         let tokens = tokenize(name);
         let mut r = Reader::new(&tokens, false);
         kinds.push(super::counters::kind(&mut r)?);
@@ -484,9 +484,9 @@ fn r403_article(word: &str) -> &'static str {
 fn r403_choice_joined(text: &str) -> Option<String> {
     let (head, rest) = text.split_once("your choice of ")?;
     let (list, tail) = rest.split_once(" counter on ")?;
-    let (firsts, last) = list.rsplit_once(" counter, or ")?;
-    let mut kinds: Vec<&str> = firsts.split(" counter, ").collect();
-    kinds.push(last);
+    let (leading, final_kind) = list.rsplit_once(" counter, or ")?;
+    let mut kinds: Vec<&str> = leading.split(" counter, ").collect();
+    kinds.push(final_kind);
     (kinds.len() >= 3).then_some(())?;
     let bare: Option<Vec<&str>> = kinds
         .iter()
@@ -509,7 +509,7 @@ fn r403_also_read(text: &str, read: &impl Fn(&str) -> Option<Ability>) -> Option
     let (first, more) = counted.split_once(" and ")?;
     let tokens = tokenize(more);
     let mut r = Reader::new(&tokens, false);
-    let (counter, count) = super::counters::entering(&mut r)?;
+    let (kind, number) = super::counters::entering(&mut r)?;
     r.end().then_some(())?;
     let mut ability = read(&format!("{head} enters with {first} on it{tail}"))?;
     let Ability::Replacement {
@@ -519,7 +519,10 @@ fn r403_also_read(text: &str, read: &impl Fn(&str) -> Option<Ability>) -> Option
     else {
         return None;
     };
-    also.push(MoreCounters { counter, count });
+    also.push(MoreCounters {
+        counter: kind,
+        count: number,
+    });
     Some(ability)
 }
 

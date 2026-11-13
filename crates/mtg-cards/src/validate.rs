@@ -5888,7 +5888,7 @@ impl Walker<'_> {
                     self.uses("ReplaceBy", "WithCountersAnd.Also");
                 }
                 for (i, more) in also.iter().enumerate() {
-                    self.at("also", |w| w.at(&i.to_string(), |w| w.amount(&more.count)));
+                    self.at("also", |w| w.at(i.to_string(), |w| w.amount(&more.count)));
                 }
                 self.enters_with_changes(enters, count, given);
             }
