@@ -49,7 +49,8 @@ pub struct Deep {
 }
 
 impl Deep {
-    /// A full budget: up to 600 iterations through the combat of the turn after next, about 2.5 s at most.
+    /// A full budget: up to 600 iterations through the combat of the turn after next, about 2.5 s for a decision of
+    /// ordinary importance; the search replaces the heuristic answer once its favourite is a standard error ahead.
     pub const FULL: Deep = Deep {
         iterations: 600,
         turns: 2,
@@ -58,9 +59,9 @@ impl Deep {
         forecasts: 40,
         targets: 4,
         time: Some(Duration::from_millis(2500)),
-        trust: 0.05,
+        trust: 0.0,
         doubt: 1.0,
-        judged: false,
+        judged: true,
     };
 
     /// A light budget for Hard: up to 150 iterations, about 0.6 s for a decision of ordinary importance.
