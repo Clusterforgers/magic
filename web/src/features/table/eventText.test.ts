@@ -1106,6 +1106,10 @@ describe('events with more than one shape', () => {
       'Hill Giant changes controller until a player casts a creature spell',
     ],
     [
+      effect(objects(2), { SetController: 1 }, 'WhileTapped', { id: 6, counter: 0 }),
+      'Hill Giant changes controller while it stays tapped',
+    ],
+    [
       effect(
         objects(2),
         { CantAttackYou: { you: 0, attacked: 'Both' } },
