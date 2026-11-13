@@ -94,7 +94,7 @@ fn r5518_sphinx_discards_two_nonland_cards_with_the_same_name(
                 DecisionKind::ChooseCards(_)
             ));
         }
-        assert!(driver.state().stack().is_empty());
+        assert_eq!(driver.state().stack().len(), 0, "the stack is empty");
         return Ok(());
     }
     begun?;
@@ -154,7 +154,7 @@ fn r5518_folio_reveals_two_cards_that_share_a_color(
                 DecisionKind::ChooseCards(_)
             ));
         }
-        assert!(driver.state().stack().is_empty());
+        assert_eq!(driver.state().stack().len(), 0, "the stack is empty");
         return Ok(());
     }
     begun?;

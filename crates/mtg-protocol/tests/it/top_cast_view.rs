@@ -75,7 +75,7 @@ fn only_the_owner_sees_and_may_cast_the_top_card(#[values(2, 3, 4)] seats: usize
     assert!(options.castable.contains(&top));
     let others = (1..seats).map(|seat| StateView::for_player(state, PlayerId::from_index(seat)));
     for view in others.chain([StateView::for_spectator(state)]) {
-        assert!(view.table.players[0].known_top.is_empty());
+        assert_eq!(view.table.players[0].known_top, Vec::new());
         assert!(
             !names(&serde_json::to_value(&view).unwrap(), TOP),
             "{TOP} leaked"
