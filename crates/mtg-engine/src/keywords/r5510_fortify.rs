@@ -77,6 +77,6 @@ mod tests {
             panic!("an object target");
         };
         assert!(selector.0.contains(&Pred::Type(CardType::Land)));
-        assert!(Fortify.adds_abilities(&Keyword::Equip(cost)).is_empty());
+        assert_eq!(Fortify.adds_abilities(&Keyword::Equip(cost)), Vec::new());
     }
 }

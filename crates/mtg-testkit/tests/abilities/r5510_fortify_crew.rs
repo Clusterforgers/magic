@@ -121,11 +121,12 @@ fn r5510_locomotive_crews_once_each_turn(
             .unwrap();
     }
     r5510_settle(&mut driver);
-    assert!(
+    assert_eq!(
         driver
             .offered_abilities("Luxurious Locomotive")
             .unwrap()
-            .is_empty()
+            .len(),
+        0
     );
     driver.pass_until(Step::DeclareAttackers).unwrap();
     driver.attack(&[("Luxurious Locomotive", 1)]).unwrap();
