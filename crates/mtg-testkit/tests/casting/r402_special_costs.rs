@@ -18,12 +18,12 @@ use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
-use crate::common::casting::{choose_way, lands, pay, resolve};
+use crate::common::casting::{choose_way, lands, pay};
 
 /// The priority options of the pending decision.
 fn r402_options(driver: &Driver) -> Result<PriorityOptions, ScriptError> {
     match &driver.decision()?.kind {
-        DecisionKind::Priority(options) => Ok(options.clone()),
+        DecisionKind::Priority(options) => Ok((**options).clone()),
         other => panic!("no priority decision: {other:?}"),
     }
 }
@@ -36,7 +36,10 @@ fn r402_unlock_costs(driver: &Driver) -> Result<Vec<(String, String)>, ScriptErr
         .map(|face| {
             (
                 face.name.clone(),
-                face.cost.as_ref().map(ToString::to_string).unwrap_or_default(),
+                face.cost
+                    .as_ref()
+                    .map(ToString::to_string)
+                    .unwrap_or_default(),
             )
         })
         .collect();
@@ -99,8 +102,7 @@ fn r402_can_turn_up(
     match doomsayer {
         Some(0) => mine.push(ready(card("Exiled Doomsayer").unwrap())),
         Some(seat) => {
-            scenario =
-                scenario.battlefield(seat, vec![ready(card("Exiled Doomsayer").unwrap())]);
+            scenario = scenario.battlefield(seat, vec![ready(card("Exiled Doomsayer").unwrap())]);
         }
         None => {}
     }
@@ -110,7 +112,10 @@ fn r402_can_turn_up(
         choose_way(&mut driver, "Cast face down")?;
     }
     pay(&mut driver)?;
-    resolve(&mut driver)?;
+    // Every seat passes before the Ape resolves.
+    while !driver.state().zone(Zone::Stack).is_empty() {
+        driver.pass()?;
+    }
     let ape = driver
         .state()
         .zone(Zone::Battlefield)

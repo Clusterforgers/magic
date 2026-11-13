@@ -621,6 +621,7 @@ Exalted Angel
 Excavation Technique
 Excise the Imperfect
 Exhumer Thrull
+Exiled Doomsayer
 Exocrine
 Exotic Disease
 Exotic Orchard
@@ -934,6 +935,7 @@ Infesting Radroach
 Infiltration Lens
 Inkwell Leviathan
 Inquisition of Kozilek
+Inquisitive Glimmer
 Insatiable Hemophage
 Inspired Skypainter // Maestro's Gift
 Inspired Sphinx

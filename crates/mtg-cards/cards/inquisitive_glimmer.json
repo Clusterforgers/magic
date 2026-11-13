@@ -5,30 +5,18 @@
   "faces": [
     {
       "name": "Inquisitive Glimmer",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "c002b6321b4007a643194620173b9d5b",
       "abilities": [
         {
           "CostModifier": {
-            "applies_to": [
-              "Spell",
-              {
-                "Type": "Enchantment"
-              },
-              {
-                "ControlledBy": "You"
-              }
-            ],
+            "applies_to": ["Spell", { "Type": "Enchantment" }, { "ControlledBy": "You" }],
             "change": "Reduce",
             "mana": "{1}"
           }
         },
         {
           "CostModifier": {
-            "applies_to": [
-              {
-                "ControlledBy": "You"
-              }
-            ],
+            "applies_to": [{ "ControlledBy": "You" }],
             "change": "Reduce",
             "mana": "{1}",
             "activating": "Unlock"

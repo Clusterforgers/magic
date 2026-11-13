@@ -116,7 +116,10 @@ pub(super) fn r402_special_cost_read(text: &str) -> Option<crate::ability::Abili
     let tokens = tokenize(text);
     let mut r = Reader::new(&tokens, false);
     let (kind, applies_to) = if r.words("unlock costs you pay cost") {
-        (ActivationKind::Unlock, Selector(vec![Pred::ControlledBy(Ref::You)]))
+        (
+            ActivationKind::Unlock,
+            Selector(vec![Pred::ControlledBy(Ref::You)]),
+        )
     } else if r.words("all morph costs cost") {
         (ActivationKind::Morph, Selector::default())
     } else {

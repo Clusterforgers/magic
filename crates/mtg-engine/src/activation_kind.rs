@@ -61,7 +61,8 @@ fn of_keyword(rules: &Ability, keyword: Option<Keyword>) -> Option<ActivationKin
 /// Whether an ability whose specific kind is `own` is of the kind `wanted`.
 pub(crate) fn is_kind(wanted: ActivationKind, own: Option<ActivationKind>) -> bool {
     // Unlocking and turning face up are no abilities: only a change of their own costs applies to them.
-    let special = |kind: ActivationKind| matches!(kind, ActivationKind::Unlock | ActivationKind::Morph);
+    let special =
+        |kind: ActivationKind| matches!(kind, ActivationKind::Unlock | ActivationKind::Morph);
     if own.is_some_and(special) || special(wanted) {
         return own == Some(wanted);
     }
