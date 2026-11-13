@@ -201,3 +201,42 @@ pub(super) fn r406_pair_read(text: &str) -> Option<Vec<Ability>> {
     )
     .then(|| r406_graveyard_bans().into())
 }
+
+/// The bans of counters: "Players can't get counters." and "Counters can't be put on artifacts, creatures,
+/// enchantments, or lands.", each the one ability it words.
+pub(super) fn r406_wordings(ability: &Ability, texts: &mut Vec<String>) {
+    use crate::modify::{GameRule, Prohibited};
+    use crate::refs::Pred;
+    use mtg_core::card::CardType;
+    let Ability::Rule {
+        rule:
+            GameRule::Cant {
+                who,
+                action: Prohibited::PutCounter,
+            },
+        condition: None,
+        from: ZoneKind::Battlefield,
+    } = ability
+    else {
+        return;
+    };
+    let kinds = Ref::Each(Selector(vec![Pred::AnyOf(
+        [
+            CardType::Artifact,
+            CardType::Creature,
+            CardType::Enchantment,
+            CardType::Land,
+        ]
+        .into_iter()
+        .map(Pred::Type)
+        .collect(),
+    )]));
+    let text = if *who == Ref::EachPlayer {
+        "Players can't get counters"
+    } else if *who == kinds {
+        "Counters can't be put on artifacts, creatures, enchantments, or lands"
+    } else {
+        return;
+    };
+    texts.push(text.to_owned());
+}

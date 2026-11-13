@@ -6,7 +6,7 @@ use serde_json::json;
 use crate::ability::Ability;
 
 /// The kinds of permanents an Aura that steals them enchants.
-const W16A_KINDS: [&str; 7] = [
+const W16A_KINDS: [&str; 8] = [
     "creature",
     "artifact",
     "artifact creature",
@@ -14,6 +14,7 @@ const W16A_KINDS: [&str; 7] = [
     "land",
     "planeswalker",
     "permanent",
+    "Equipment",
 ];
 
 /// Adds the wordings of a static ability that gives you control of the enchanted permanent.

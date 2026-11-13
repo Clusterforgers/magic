@@ -88,6 +88,9 @@ fn r406_probe() {
 #[case("Twists and Turns // Mycoid Maze")]
 #[case("Leader, Super-Genius")]
 #[case("Ashes of the Abhorrent")]
+#[case("Carry Away")]
+#[case("Solemnity")]
+#[case("Fallaji Wayfarer")]
 fn r406_reads_back_whole(#[case] name: &str) {
     let report = r406_report(name, &r406_file(name));
     assert_eq!(
@@ -151,6 +154,14 @@ fn r406_reads_back_whole(#[case] name: &str) {
     r#""Cast": { "filter": [{ "In": "Graveyard" }] }"#,
     r#""Cast": { "filter": [{ "In": "Exile" }] }"#
 )]
+#[case::unattach_itself(
+    "Carry Away",
+    r#"{ "Unattach": { "what": "Attached" } }"#,
+    r#"{ "Unattach": { "what": "This" } }"#
+)]
+#[case::opponents_only("Solemnity", r#""who": "EachPlayer""#, r#""who": "Opponents""#)]
+#[case::planeswalkers("Solemnity", r#"{ "Type": "Land" }"#, r#"{ "Type": "Planeswalker" }"#)]
+#[case::monocolored("Fallaji Wayfarer", r#""op": "Ge""#, r#""op": "Eq""#)]
 fn r406_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let file = r406_file(name);
     assert!(file.contains(from), "{name} has {from}");

@@ -1,7 +1,7 @@
 //! Goal: a replacement of a keyword action plays at tables of two to four seats: Topography Tracker has each creature
 //! you control explore twice, Twists and Turns has you scry 1 before the exploration (so the exploration reveals the
 //! card the scry leaves on top), the two together let the explorer's controller choose which applies first (one scry
-//! or two), Tekuthal makes a proliferation happen twice and Leader, Super-Genius draws a card before each connive, and Ashes of the Abhorrent stop the abilities of cards in graveyards (unearth); without
+//! or two), Tekuthal makes a proliferation happen twice and Leader, Super-Genius draws a card before each connive, and Ashes of the Abhorrent stop the abilities of cards in graveyards (unearth), Carry Away takes an Equipment unattached, Solemnity puts no counter on a permanent and Fallaji Wayfarer is all colors; without
 //! the replacement the action happens once, and the log replays to the state it was played to.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -14,14 +14,15 @@ use mtg_cards::refs::{Pred, Ref, Selector};
 use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
+use mtg_engine::characteristics::{characteristics, controller_of};
 use mtg_engine::choose::{CardsChoice, OptionChoice, ScryChoice};
 use mtg_engine::decision::{Answer, Decision, DecisionKind, PayChoice};
 use mtg_engine::replay;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_testkit::cards::{bear, burn, cost, forest, free_creature, swamp};
+use mtg_testkit::cards::{bear, burn, cost, forest, free_creature, island, swamp};
 use mtg_testkit::corpus::card;
-use mtg_testkit::{Driver, Scenario, ScriptError, ready};
+use mtg_testkit::{Driver, Scenario, ScriptError, attached_to, ready};
 use rstest::rstest;
 
 use crate::common::{names, pid};
@@ -325,5 +326,102 @@ fn r406_ashes_of_the_abhorrent_stop_graveyard_abilities(
         assert!(names(driver.state(), Zone::Battlefield).contains(&"Dregscape Zombie".to_owned()));
     }
     r406_replays(&driver, &scenario);
+    Ok(())
+}
+
+#[rstest]
+fn r406_carry_away_takes_the_equipment_unattached(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .hand(0, [card("Carry Away").unwrap()])
+        .battlefield(0, (0..2).map(|_| ready(island())))
+        .battlefield(
+            1,
+            [
+                ready(bear()),
+                attached_to(ready(card("Bonesplitter").unwrap()), 1, 0),
+            ],
+        );
+    for seat in 0..seats {
+        scenario = scenario.library(seat, (0..12).map(|_| forest()).collect::<Vec<_>>());
+    }
+    let mut driver = Driver::from_scenario(scenario.clone())?;
+    let equipment = driver.target_named("Bonesplitter")?;
+    driver.cast_at("Carry Away", &[equipment])?;
+    r406_settle(&mut driver, |_, _| None)?;
+    let id = driver.id_of("Bonesplitter")?;
+    let object = driver.state().object(id).unwrap();
+    assert_eq!(controller_of(driver.state(), id), Some(pid(0)));
+    assert!(object.permanent().unwrap().attached_to().is_none());
+    let bear = driver.id_of("Grizzly Bears")?;
+    assert_eq!(
+        characteristics(driver.state(), bear).unwrap().power,
+        Some(2)
+    );
+    r406_replays(&driver, &scenario);
+    Ok(())
+}
+
+#[rstest]
+#[case::with_solemnity(true, 0)]
+#[case::without_it(false, 2)]
+fn r406_solemnity_puts_no_counters_on_permanents(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] solemnity: bool,
+    #[case] counters: u32,
+) -> Result<(), ScriptError> {
+    let mut battlefield = vec![free_creature("Wall", 0, 8)];
+    if solemnity {
+        battlefield.push(card("Solemnity").unwrap());
+    }
+    let scenario = r406_table(
+        seats,
+        battlefield,
+        vec![card("Grim Affliction").unwrap()],
+        &[],
+    );
+    let mut driver = Driver::from_scenario(scenario.clone())?;
+    let wall = driver.target_named("Wall")?;
+    driver.cast_at("Grim Affliction", &[wall])?;
+    r406_settle(&mut driver, |_, decision| match &decision.kind {
+        DecisionKind::ChooseCards(cards) => {
+            Some(Answer::ChooseCards(CardsChoice(cards.from.clone())))
+        }
+        _ => None,
+    })?;
+    let id = driver.id_of("Wall")?;
+    let held = driver
+        .state()
+        .object(id)
+        .and_then(|object| object.permanent())
+        .unwrap()
+        .counters_of(&CounterKind::MinusOneMinusOne);
+    assert_eq!(held, counters);
+    r406_replays(&driver, &scenario);
+    Ok(())
+}
+
+#[rstest]
+fn r406_fallaji_wayfarer_is_all_colors(#[values(2, 3, 4)] seats: usize) -> Result<(), ScriptError> {
+    let scenario = r406_table(
+        seats,
+        vec![card("Fallaji Wayfarer").unwrap()],
+        Vec::new(),
+        &[],
+    );
+    let driver = Driver::from_scenario(scenario)?;
+    let id = driver.id_of("Fallaji Wayfarer")?;
+    let colors = characteristics(driver.state(), id).unwrap().colors;
+    for color in [
+        Color::White,
+        Color::Blue,
+        Color::Black,
+        Color::Red,
+        Color::Green,
+    ] {
+        assert!(colors.contains(color), "{color:?}");
+    }
     Ok(())
 }
