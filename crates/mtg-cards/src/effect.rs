@@ -118,6 +118,9 @@ pub enum Destination {
     Hand,
     /// Its owner's graveyard.
     Graveyard,
+    /// Its owner's command zone (CR 408): "returns each commander they control from the battlefield to the command
+    /// zone".
+    Command,
     /// The battlefield.
     Battlefield {
         /// Enters tapped.

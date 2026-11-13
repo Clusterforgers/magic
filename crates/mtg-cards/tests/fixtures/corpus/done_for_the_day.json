@@ -1,0 +1,162 @@
+{
+  "object": "card",
+  "id": "0aba0d7c-1e1e-4378-b25b-a531d1937779",
+  "oracle_id": "2a248d6a-aa83-4e59-848b-46de8204b538",
+  "multiverse_ids": [
+    580686
+  ],
+  "tcgplayer_id": 287191,
+  "cardmarket_id": 676495,
+  "name": "Done for the Day",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/0aba0d7c-1e1e-4378-b25b-a531d1937779",
+  "scryfall_uri": "https://scryfall.com/card/unf/136/done-for-the-day?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:29:15Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/a/0aba0d7c-1e1e-4378-b25b-a531d1937779.jpg?1783920555",
+    "normal": "https://cards.scryfall.io/normal/front/0/a/0aba0d7c-1e1e-4378-b25b-a531d1937779.jpg?1783920555",
+    "large": "https://cards.scryfall.io/large/front/0/a/0aba0d7c-1e1e-4378-b25b-a531d1937779.jpg?1783920555",
+    "png": "https://cards.scryfall.io/png/front/0/a/0aba0d7c-1e1e-4378-b25b-a531d1937779.png?1783920555",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/a/0aba0d7c-1e1e-4378-b25b-a531d1937779.jpg?1783920555",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/a/0aba0d7c-1e1e-4378-b25b-a531d1937779.jpg?1783920555",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/a/0aba0d7c-1e1e-4378-b25b-a531d1937779.webp?1783920555",
+    "grid": "https://cards.scryfall.io/grid/front/0/a/0aba0d7c-1e1e-4378-b25b-a531d1937779.webp?1783920555",
+    "display": "https://cards.scryfall.io/display/front/0/a/0aba0d7c-1e1e-4378-b25b-a531d1937779.webp?1783920555",
+    "art": "https://cards.scryfall.io/art/front/0/a/0aba0d7c-1e1e-4378-b25b-a531d1937779.webp?1783920555",
+    "crop": "https://cards.scryfall.io/crop/front/0/a/0aba0d7c-1e1e-4378-b25b-a531d1937779.webp?1783920555",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/a/0aba0d7c-1e1e-4378-b25b-a531d1937779.jpg?1783920555"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "At the beginning of your end step, if you control an Employee, a Performer, or a Robot, you may get {TK} or create a Treasure token. If you control all three, you may put a sticker on a nonland permanent you own.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Treasure"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "3e84ff6c-0380-4dec-879d-610876b2f57d",
+      "component": "combo_piece",
+      "name": "Done for the Day",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/3e84ff6c-0380-4dec-879d-610876b2f57d"
+    },
+    {
+      "object": "related_card",
+      "id": "fab1ec58-5299-4604-8feb-212a6c5e7ffd",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/fab1ec58-5299-4604-8feb-212a6c5e7ffd"
+    },
+    {
+      "object": "related_card",
+      "id": "52942a5c-0552-4a9b-9c0f-7a9ffd04d0af",
+      "component": "combo_piece",
+      "name": "Ticket Bucket-Bot",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/52942a5c-0552-4a9b-9c0f-7a9ffd04d0af"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "banned",
+    "pauper": "not_legal",
+    "vintage": "banned",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "banned",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "banned",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set": "unf",
+  "set_name": "Unfinity",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aunf&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/unf?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0aba0d7c-1e1e-4378-b25b-a531d1937779/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2a248d6a-aa83-4e59-848b-46de8204b538&unique=prints",
+  "collector_number": "136",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Punchy was programmed to do two things: punch tickets and love punching tickets.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Caroline Gariba",
+  "artist_ids": [
+    "61a4c572-3d1b-4b71-aeb0-1a5a6b82c524"
+  ],
+  "illustration_id": "c9e6db2c-da18-45e8-8491-57f33bc3e561",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 22918,
+  "preview": {
+    "source": "TCGplayer",
+    "source_uri": "https://twitter.com/MTGatTCGplayer/status/1572963939557965824",
+    "previewed_at": "2022-09-22"
+  },
+  "prices": {
+    "usd": "0.06",
+    "usd_foil": "0.08",
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": "0.30",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580686&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDone%2Bfor%2Bthe%2BDay",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDone%2Bfor%2Bthe%2BDay",
+    "edhrec": "https://edhrec.com/route/?cc=Done+for+the+Day"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F287191%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=676495&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Done+for+the+Day&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

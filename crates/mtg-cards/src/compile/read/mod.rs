@@ -253,6 +253,7 @@ mod r5510_fortified;
 mod r5510_own_cost;
 mod r5510_wholes;
 mod r5517_wholes;
+mod r5519_wholes;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -625,6 +626,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
             .iter()
             .any(|written| same_text(written, text))
             .then_some(ability);
+    }
+    if let Some(found) = r5519_wholes::r5519_whole_read(text) {
+        return Some(found);
     }
     if let Some(found) =
         r5510_fortified::r5510_read(text, |twin| clause_with(twin, kind, x_free, own))

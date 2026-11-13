@@ -36,6 +36,9 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<GameRule> {
     }) {
         return Some(GameRule::CantSearch(who));
     }
+    if r.words("spells and abilities your opponents control can't cause their controller to search their library") {
+        return Some(GameRule::OwnSpellsCantSearch(Ref::Opponents));
+    }
     r.need("if")?;
     if r.words("you would flip a coin") {
         r.punct(',').then_some(())?;
@@ -86,6 +89,12 @@ pub(super) fn texts(rule: &GameRule) -> Vec<String> {
         GameRule::ExtraDie(Ref::You) => {
             return vec![
                 "If you would roll one or more dice, instead roll that many dice plus one and ignore the lowest roll"
+                    .to_owned(),
+            ];
+        }
+        GameRule::OwnSpellsCantSearch(Ref::Opponents) => {
+            return vec![
+                "Spells and abilities your opponents control can't cause their controller to search their library"
                     .to_owned(),
             ];
         }

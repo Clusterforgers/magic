@@ -856,6 +856,9 @@ pub enum GameRule {
     CantDraw(Ref),
     /// The players can't search libraries.
     CantSearch(Ref),
+    /// Spells and abilities the players control can't cause their controller to search their own library: "Spells and
+    /// abilities your opponents control can't cause their controller to search their library."
+    OwnSpellsCantSearch(Ref),
     /// The players may vote an additional time each time they vote: "While voting, you may vote an additional time."
     /// (CR 701.38d).
     VoteAgain(Ref),

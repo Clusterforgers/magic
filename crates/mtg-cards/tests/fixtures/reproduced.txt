@@ -523,6 +523,7 @@ Dokuchi Shadow-Walker
 Domesticated Hydra
 Dominate
 Donal, Herald of Wings
+Done for the Day
 Doom Blade
 Doom Whisperer
 Door of Destinies
@@ -1124,6 +1125,7 @@ Lawmage's Binding
 Lay Bare the Heart
 Lazotep Reaver
 Leader, Super-Genius
+Leadership Vacuum
 Leafkin Druid
 Legerdemain
 Legion Loyalty
@@ -2090,6 +2092,7 @@ Tivash, Gloom Summoner
 Tivit, Seller of Secrets
 Toll of the Invasion
 Tomb Tyrant
+Tomik, Distinguished Advokist
 Topiary Lecturer
 Topography Tracker
 Torrent of Stone

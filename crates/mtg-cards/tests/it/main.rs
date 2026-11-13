@@ -100,6 +100,7 @@ mod r5507_cards;
 mod r5504_cards;
 mod r5510_cards;
 mod r5517_cards;
+mod r5519_cards;
 mod r6e;
 mod read_sheet;
 mod read_tier;

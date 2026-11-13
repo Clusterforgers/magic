@@ -100,6 +100,8 @@ mod r4a_enters_with;
 mod r4i_granter;
 mod r5510_fortify_crew;
 mod r5517_reveal_life;
+mod r5519_ashiok;
+mod r5519_tomik;
 mod r5e_done_once;
 mod r8p2_enters;
 mod reflexive;

@@ -323,6 +323,18 @@ fn zone_change(_: &Ctx, what: &str, from: Option<ZoneKind>, to: Option<ZoneKind>
     }
 }
 
+/// "they can't search libraries", "spells and abilities they control can't make them search their own library".
+fn searches(ctx: &Ctx, rule: &GameRule) -> String {
+    match rule {
+        GameRule::OwnSpellsCantSearch(who) => format!(
+            "spells and abilities {} control can't make them search their own library",
+            phrase::who(ctx, who)
+        ),
+        GameRule::CantSearch(who) => format!("{} can't search libraries", phrase::who(ctx, who)),
+        _ => String::new(),
+    }
+}
+
 /// A rule of the game a static ability or an effect sets.
 pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
     match rule {
@@ -347,7 +359,7 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
         }
         GameRule::CantGainLife(who) => format!("{} can't gain life", phrase::who(ctx, who)),
         GameRule::CantDraw(who) => format!("{} can't draw cards", phrase::who(ctx, who)),
-        GameRule::CantSearch(who) => format!("{} can't search libraries", phrase::who(ctx, who)),
+        GameRule::CantSearch(_) | GameRule::OwnSpellsCantSearch(_) => searches(ctx, rule),
         GameRule::NoMaxHandSize(who) => {
             format!("{} has no maximum hand size", phrase::who(ctx, who))
         }
