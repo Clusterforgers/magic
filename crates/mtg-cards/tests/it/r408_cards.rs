@@ -94,7 +94,7 @@ fn r408_probe() {
 #[case("Gor Muldrak, Amphinologist")]
 #[case("Sekki, Seasons' Guide")]
 #[case("Catalyst Stone")]
-#[case("Days Undoing")]
+#[case("Day's Undoing")]
 #[case("Mental Modulation")]
 #[case("Murderous Betrayal")]
 fn r408_reads_back_whole(#[case] name: &str) {
