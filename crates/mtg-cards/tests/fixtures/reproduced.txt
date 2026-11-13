@@ -1003,6 +1003,7 @@ It's Clobberin' Time!
 Ivory Mask
 Ixalli's Lorekeeper
 Izzet Charm
+Izzet Generatorium
 J. Jonah Jameson
 Jace Beleren
 Jace's Archivist
@@ -1676,6 +1677,7 @@ Scytheclaw
 Sea Gate
 Sea Gate Wreckage
 Search the Premises
+Season of the Witch
 Seasoned Hallowblade
 Secluded Courtyard
 Secluded Glen

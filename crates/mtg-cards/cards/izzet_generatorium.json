@@ -9,41 +9,21 @@
       "abilities": [
         {
           "Replacement": {
-            "when": {
-              "CountersPut": {
-                "on": "You",
-                "counter": {
-                  "Other": "energy"
-                }
-              }
-            },
-            "by": {
-              "Add": 1
-            }
+            "when": { "CountersPut": { "on": "You", "counter": { "Other": "energy" } } },
+            "by": { "Add": 1 }
           }
         },
         {
           "Activated": {
-            "cost": [
-              "Tap"
-            ],
+            "cost": ["Tap"],
             "condition": {
               "Compare": {
-                "left": {
-                  "Tallied": {
-                    "who": "You",
-                    "what": "EnergyPaidOrLost"
-                  }
-                },
+                "left": { "Tallied": { "who": "You", "what": "EnergyPaidOrLost" } },
                 "op": "Ge",
                 "right": 4
               }
             },
-            "effects": [
-              {
-                "Draw": {}
-              }
-            ]
+            "effects": [{ "Draw": {} }]
           }
         }
       ]

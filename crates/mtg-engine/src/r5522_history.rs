@@ -19,10 +19,11 @@ pub(crate) fn r5522_note_turn_began(state: &mut GameState) {
             .object(*id)
             .and_then(crate::object::GameObject::permanent)
             .is_some_and(|permanent| !permanent.tapped());
-        if untapped && chars.types.contains(mtg_core::card::CardType::Land) {
-            if let Some(controller) = crate::characteristics::controller_of(state, *id) {
-                *counts.entry(controller).or_insert(0) += 1;
-            }
+        if untapped
+            && chars.types.contains(mtg_core::card::CardType::Land)
+            && let Some(controller) = crate::characteristics::controller_of(state, *id)
+        {
+            *counts.entry(controller).or_insert(0) += 1;
         }
     }
     state.r5522_untapped_lands = counts;
@@ -38,6 +39,34 @@ pub(crate) fn r5522_note_could_attack(state: &mut GameState) {
         .map(crate::object::GameObject::reference)
         .collect();
     state.tallies.r5522_could_attack.extend(could);
+}
+
+/// Counts a spell cast from anywhere other than its caster's hand, read before it moves to the stack.
+pub(crate) fn r5522_note_played(state: &mut GameState, player: PlayerId, object: ObjectId) {
+    if state
+        .object(object)
+        .is_some_and(|card| card.zone() != crate::zones::Zone::Hand(player))
+    {
+        state.tally(player, crate::state::Tally::R5522PlayedNotFromHand);
+    }
+}
+
+/// Turns an object that moved face down as its cause says, counting a permanent that entered the battlefield face down.
+pub(crate) fn r5522_put_face_down(
+    state: &mut GameState,
+    object: ObjectId,
+    how: crate::object::FaceDown,
+    to: crate::zones::Zone,
+) {
+    let Some(moved) = state.objects.get_mut(&object) else {
+        return;
+    };
+    let was_face_down = moved.face_down.is_some();
+    moved.face_down = Some(how);
+    let controller = moved.controller;
+    if to == crate::zones::Zone::Battlefield && !was_face_down {
+        state.tally(controller, crate::state::Tally::R5522EnteredFaceDown);
+    }
 }
 
 /// Counts a card cycled for its name and the player who cycled it.

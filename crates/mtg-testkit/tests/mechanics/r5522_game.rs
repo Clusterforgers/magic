@@ -403,3 +403,74 @@ fn r5522_season_spares_attackers_and_creatures_that_couldnt_attack(
         "only the active player attacks"
     );
 }
+
+#[rstest]
+fn r5522_glyph_of_delusion_marks_what_the_wall_blocked(#[values(2, 3, 4)] seats: usize) {
+    use mtg_testkit::cards::{giant, island};
+    let wall = Arc::new(
+        CardDefinition::new("Stone Wall")
+            .with_type(CardType::Creature)
+            .with_subtype("Wall")
+            .with_power_toughness(0, 8),
+    );
+    let scenario = Scenario::new(seats)
+        .at(3, 0, Step::Main1)
+        .battlefield(0, [ready(giant()), ready(bear()), ready(island())])
+        .battlefield(1, [ready(wall)])
+        .hand(0, [card("Glyph of Delusion").unwrap()]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.pass_until(Step::DeclareAttackers).unwrap();
+    driver
+        .attack(&[("Craw Wurm", 1), ("Grizzly Bears", 1)])
+        .unwrap();
+    for _ in 0..80 {
+        if driver.state().turn().step() == Step::Main2 {
+            break;
+        }
+        let decision = driver.decision().unwrap().clone();
+        if matches!(decision.kind, DecisionKind::DeclareBlockers(_)) {
+            driver.block(&[("Stone Wall", "Craw Wurm")]).unwrap();
+        } else {
+            driver.answer_passively().unwrap();
+        }
+    }
+    driver.begin_cast("Glyph of Delusion").unwrap();
+    let wall = driver.target_named("Stone Wall").unwrap();
+    let mut offered: Vec<String> = Vec::new();
+    for _ in 0..6 {
+        let decision = driver.decision().unwrap().clone();
+        match &decision.kind {
+            DecisionKind::ChooseTargets(options) if options.legal.contains(&wall) => {
+                driver.choose_targets(&[wall]).unwrap();
+            }
+            DecisionKind::ChooseTargets(options) => {
+                offered = options
+                    .legal
+                    .iter()
+                    .filter_map(|t| t.object())
+                    .map(|o| driver.state().object(o.id).unwrap().card().name.clone())
+                    .collect();
+                let wurm = driver.target_named("Craw Wurm").unwrap();
+                driver.choose_targets(&[wurm]).unwrap();
+            }
+            DecisionKind::PayMana(_) => {
+                driver.answer(Answer::PayMana(PayChoice::Auto)).unwrap();
+                break;
+            }
+            _ => {
+                driver.answer_passively().unwrap();
+            }
+        }
+    }
+    assert_eq!(offered, ["Craw Wurm"], "only the creature the Wall blocked");
+    r5522_run(&mut driver, &mut r5522_first);
+    let wurm = driver.id_of("Craw Wurm").unwrap();
+    let glyphs = driver
+        .state()
+        .object(wurm)
+        .unwrap()
+        .permanent()
+        .unwrap()
+        .counters_of(&CounterKind::Other("glyph".to_owned()));
+    assert_eq!(glyphs, 4, "its power");
+}

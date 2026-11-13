@@ -445,13 +445,7 @@ fn spell_cast(
     {
         state.tally(player, Tally::R287PlayedFromExile);
     }
-    if state
-        .objects
-        .get(&object)
-        .is_some_and(|card| card.zone() != Zone::Hand(player))
-    {
-        state.tally(player, Tally::R5522PlayedNotFromHand);
-    }
+    crate::r5522_history::r5522_note_played(state, player, object);
     if choices.way == Some(CastWay::Warp) {
         state.tally(player, Tally::Warped);
     }
@@ -637,15 +631,8 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             {
                 card.adventure = before;
             }
-            if let Some(how) = cause.face_down(state.turn.number())
-                && let Some(object) = state.objects.get_mut(object)
-            {
-                let was_face_down = object.face_down.is_some();
-                object.face_down = Some(how);
-                if *to == Zone::Battlefield && !was_face_down {
-                    let controller = object.controller;
-                    state.tally(controller, Tally::R5522EnteredFaceDown);
-                }
+            if let Some(how) = cause.face_down(state.turn.number()) {
+                crate::r5522_history::r5522_put_face_down(state, *object, how, *to);
             }
             if let ZoneCause::ExiledUntil { by } = cause {
                 exiled_until(state, *object, *by, *from);
