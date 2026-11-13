@@ -109,6 +109,7 @@ fn dk27_most_counted(state: &GameState, player: PlayerId, spell: ObjectId) -> Op
         source: spell,
         barred: &[],
         granter: None,
+        pays: crate::r4707_pay_costs::PaysFor::Cost,
     };
     crate::ability_reader::printed_rules(card.card())
         .filter_map(|rule| match &**rule {

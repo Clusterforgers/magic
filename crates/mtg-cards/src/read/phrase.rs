@@ -367,6 +367,10 @@ fn part(ctx: &Ctx, pred: &Pred) -> Part {
         }
         Pred::HasAnyCounter => Part::After("with a counter".to_owned()),
         Pred::Named(name) => Part::After(format!("named {name}")),
+        Pred::OriginallyPrintedIn(set) => Part::After(format!(
+            "with a name originally printed in the {} expansion",
+            set.title()
+        )),
         Pred::Compare { stat, op, to } => Part::After(format!(
             "with {} {}",
             stat_text(*stat),

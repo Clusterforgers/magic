@@ -2019,6 +2019,12 @@ impl<'a> Scope<'a> {
             Pred::Named(name) => seen.card.is_some_and(|c| {
                 crate::un34_stickers::name_with(&seen.chars.name_words, &c.card().name) == *name
             }),
+            Pred::OriginallyPrintedIn(set) => seen.card.is_some_and(|c| {
+                set.has(&crate::un34_stickers::name_with(
+                    &seen.chars.name_words,
+                    &c.card().name,
+                ))
+            }),
             Pred::ChosenColor | Pred::ChosenSubtype | Pred::ChosenName | Pred::ChosenAs(_) => {
                 self.chosen_pred(pred, seen)
             }

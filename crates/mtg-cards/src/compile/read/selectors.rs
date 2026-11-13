@@ -631,6 +631,9 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if let Some(pred) = r.attempt(|r| super::t17b_attached::suffix(r, form)) {
         return Some(pred);
     }
+    if let Some(pred) = r.attempt(super::r4707_printed::r4707_suffix) {
+        return Some(pred);
+    }
     if r.words("you control") {
         return Some(Pred::ControlledBy(Ref::You));
     }
@@ -766,6 +769,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
     suffix_text_main(pred, form)
         .or_else(|| super::w19d_suffixes::w19d_suffix_text(pred, form))
         .or_else(|| super::vp20_atoms::vp20_suffix_text(pred, form))
+        .or_else(|| super::r4707_printed::r4707_suffix_text(pred))
 }
 
 #[allow(clippy::too_many_lines)]

@@ -168,6 +168,9 @@ pub enum Rule {
     FlipTwoCoins(Vec<PlayerId>),
     /// The players roll one die more for each roll of one or more dice and ignore the lowest roll.
     ExtraDie(Vec<PlayerId>),
+    /// A rule about planar dice or planeswalking (Ichor Elixir, Susan Foreman): no game the engine plays has a planar
+    /// deck, so it changes nothing.
+    Planar,
     /// The players keep unspent mana of the type (every type when absent) as steps and phases end (CR 500.4).
     KeepUnspentMana(Vec<PlayerId>, Option<ManaType>),
     /// Unspent mana the players would lose becomes mana of the type instead.
@@ -1116,6 +1119,7 @@ impl RulesInForce {
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
             Rule::FlipTwoCoins(players) => self.flip_two.extend(players),
             Rule::ExtraDie(players) => self.extra_die.extend(players),
+            Rule::Planar => {}
             Rule::KeepUnspentMana(players, mana) => {
                 self.keep_mana.extend(players.iter().map(|p| (*p, *mana)));
             }
@@ -1493,6 +1497,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::SkipExtraTurns(who) => Rule::SkipExtraTurns(scope.players(who)?),
         GameRule::FlipTwoCoins(who) => Rule::FlipTwoCoins(scope.players(who)?),
         GameRule::ExtraDie(who) => Rule::ExtraDie(scope.players(who)?),
+        GameRule::ExtraPlanarDie(_) | GameRule::PlaneswalkLookTwo(_) => Rule::Planar,
         GameRule::KeepUnspentMana { who, mana } => {
             Rule::KeepUnspentMana(scope.players(who)?, *mana)
         }
@@ -1751,6 +1756,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::ReverseTurnOrder
         | Rule::DamageAsWither
         | Rule::ManaBurn => false,
+        Rule::Planar => true,
         Rule::AttackOnlyNearest(left) => left.is_none(),
         Rule::PreventDamage(shield) => {
             shield.to.as_ref().is_some_and(Vec::is_empty)

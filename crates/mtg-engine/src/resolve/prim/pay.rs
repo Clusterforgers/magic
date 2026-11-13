@@ -84,6 +84,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     if times > 1 && template.moves_source() {
         return Err(ResolveError::Unsupported(leaving_name(template.leaves)));
     }
+    let floor = w6c_pay_x::r4707_floor(cost);
     let state = cx.state();
     let mut journal = cx
         .journal()
@@ -94,7 +95,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     for player in asked_order(cx.scope.players(who)?, cx.journal()) {
         let Some((_, asked)) = journal.next_if(|entry| entry.0 == player) else {
             if state.is_alive(player) {
-                return Ok(Run::Ask(question(cx, player, &template)));
+                return Ok(Run::Ask(question(cx, player, &template, floor)));
             }
             continue;
         };
@@ -102,11 +103,16 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             Choice::YesNo(false) => {}
             Choice::YesNo(true) => {
                 let cap = w6c_pay_x::r306_cap(cx, cost)?;
-                let (price, x) =
-                    match w6c_pay_x::announced(cx, player, &template, cap, &mut journal)? {
-                        w6c_pay_x::Announced::Ask(decision) => return Ok(Run::Ask(decision)),
-                        w6c_pay_x::Announced::Price(price, x) => (price, x),
-                    };
+                let (price, x) = match w6c_pay_x::announced(
+                    cx,
+                    player,
+                    &template,
+                    (floor, cap),
+                    &mut journal,
+                )? {
+                    w6c_pay_x::Announced::Ask(decision) => return Ok(Run::Ask(decision)),
+                    w6c_pay_x::Announced::Price(price, x) => (price, x),
+                };
                 match settle(cx, player, &price, &mut journal)? {
                     Settled::Ask(decision) => return Ok(Run::Ask(decision)),
                     Settled::Paid(events) => {
@@ -303,7 +309,8 @@ fn source_leaves(state: &GameState, source: ObjectId, leaves: Leaves) -> Option<
 /// engine pays (life, counters removed from the source, energy, objects picked). A cost that loses the source, taps it or
 /// has a part that counts X is refused by name.
 pub(super) fn price_of(cost: &Cost) -> Result<Price, ResolveError> {
-    let price = Price::announced(cost).map_err(ResolveError::Unsupported)?;
+    let mut price = Price::announced(cost).map_err(ResolveError::Unsupported)?;
+    price.r4707_effect = true;
     // Only an activated ability untaps its source as a cost.
     if price.untap {
         return Err(ResolveError::Unsupported("Cost.Untap"));
@@ -353,12 +360,12 @@ pub(super) fn can_pay(cx: &Cx<'_>, player: PlayerId, price: &Price) -> bool {
 }
 
 /// "Pay {2}?", "Pay {X}{R}?", "Pay 2 life?", "Discard a card?": the parts of the cost as a card says them, with No the
-/// only answer when the player cannot pay it with X = 0.
-fn question(cx: &Cx<'_>, player: PlayerId, price: &Price) -> Decision {
+/// only answer when the player cannot pay it with the least X the cost allows (`floor`, 0 unless "one or more").
+fn question(cx: &Cx<'_>, player: PlayerId, price: &Price, floor: u32) -> Decision {
     Decision {
         player,
         kind: DecisionKind::YesNo(YesNoOptions {
-            only_no: !can_pay(cx, player, &w6c_pay_x::at(price, 0)),
+            only_no: !can_pay(cx, player, &w6c_pay_x::at(price, floor)),
             unseen: needs_hand(cx, player, price),
             ..YesNoOptions::new(cx.scope.source.id, wording::pay(&said(price)))
         }),
@@ -424,6 +431,7 @@ pub(super) fn settle<'a>(
             source,
             barred: &barred,
             granter: price.granter,
+            pays: crate::r4707_pay_costs::PaysFor::Effect,
         });
         // Too few cards, or too little power or mana value among them (a pick by total).
         if pick.short(state, &candidates) {

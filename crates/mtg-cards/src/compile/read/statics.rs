@@ -686,6 +686,9 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     if let Some(rule) = r.attempt(super::c4_rules::read) {
         return Some(rule);
     }
+    if let Some(rule) = r.attempt(super::r4707_costs::read) {
+        return Some(rule);
+    }
     if let Some(rule) = r.attempt(|r| {
         r.need("while voting")?;
         r.punct(',').then_some(())?;
@@ -1905,7 +1908,9 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             GameRule::CantSearch(_)
             | GameRule::SkipExtraTurns(_)
             | GameRule::FlipTwoCoins(_)
-            | GameRule::ExtraDie(_),
+            | GameRule::ExtraDie(_)
+            | GameRule::ExtraPlanarDie(_)
+            | GameRule::PlaneswalkLookTwo(_),
             ZoneKind::Battlefield,
         ) => super::c4_rules::texts(rule),
         (

@@ -48,6 +48,7 @@ impl Pass<'_> {
             source: object,
             barred: &barred,
             granter: None,
+            pays: crate::r4707_pay_costs::PaysFor::Effect,
         });
         let possible = !pick.short(self.state, &options);
         let pays = if optional {

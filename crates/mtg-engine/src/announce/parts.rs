@@ -84,6 +84,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             source: ctx.source,
             barred: &barred,
             granter: price.granter,
+            pays: crate::r4707_pay_costs::PaysFor::Cost,
         });
         if pick.short(ctx.state, &candidates) {
             return Some(Next::Drop);
@@ -124,6 +125,7 @@ pub(super) fn most(ctx: &Ctx<'_>, choices: &Choices) -> Option<u32> {
                 source: ctx.source,
                 barred: &barred,
                 granter: price.granter,
+                pays: crate::r4707_pay_costs::PaysFor::Cost,
             })
         })
         .min()
@@ -161,6 +163,7 @@ pub(super) fn r301_x_without_picks(
                     source: ctx.source,
                     barred: &barred,
                     granter: price.granter,
+                    pays: crate::r4707_pay_costs::PaysFor::Cost,
                 });
                 pick.short(ctx.state, &candidates)
             })

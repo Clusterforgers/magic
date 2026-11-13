@@ -657,6 +657,21 @@ pub enum Prohibited {
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
         sources: Selector,
     },
+    /// Pay costs of casting spells or activating abilities with life or with the permanents `sacrifice` picks (CR 601.2h,
+    /// 602.2b): a spell or ability whose cost needs it can't be cast or activated, a Phyrexian symbol is paid with mana,
+    /// paying 0 life stays open, and a resolving effect still makes them pay. Mana abilities are left out with
+    /// `but_mana_abilities`: "Players can't pay life or sacrifice creatures to cast spells or activate abilities."
+    PayCosts {
+        /// Life can't be paid.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        life: bool,
+        /// The permanents that can't be sacrificed; none when sacrifices stay open.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        sacrifice: Option<Selector>,
+        /// The costs of mana abilities stay open ("abilities that aren't mana abilities").
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        but_mana_abilities: bool,
+    },
 }
 
 /// What the next spell of a `GameRule::NextSpell` gets.
@@ -853,6 +868,14 @@ pub enum GameRule {
     /// A player in the group who would roll one or more dice rolls that many plus one instead and ignores the lowest roll
     /// (Wyll, Blade of Frontiers); each such rule adds one more die and one more ignored roll.
     ExtraDie(Ref),
+    /// A player in the group who would roll one or more planar dice rolls that many plus one instead and ignores one
+    /// (CR 901.9): "If you would roll one or more planar dice, instead roll that many planar dice plus one and ignore
+    /// one." No game the engine plays has a planar deck, so it never applies (the rulings of Fractured Powerstone).
+    ExtraPlanarDie(Ref),
+    /// A player in the group who would planeswalk first looks at the top two cards of their planar deck, puts one on the
+    /// bottom and the other on top (CR 901.10, Susan Foreman). No game the engine plays has a planar deck, so it never
+    /// applies.
+    PlaneswalkLookTwo(Ref),
     /// The players play with the top card of their library revealed to every seat.
     RevealTop(Ref),
     /// The players play with their hands revealed.
