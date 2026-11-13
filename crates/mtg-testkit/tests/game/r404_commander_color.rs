@@ -87,6 +87,13 @@ fn each_owner_chooses_a_color_for_their_commander_before_the_hands(
             "no hand before the color"
         );
         assert_eq!(options.options.len(), 5);
+        let shown = driver.engine().decisions();
+        assert!(
+            shown.len() == 1
+                && shown[0].player == player
+                && shown[0].kind == driver.decision().unwrap().kind,
+            "every seat sees only the color question"
+        );
         let ChoiceOption::Color(color) = options.options[pick] else {
             panic!("a color is offered");
         };

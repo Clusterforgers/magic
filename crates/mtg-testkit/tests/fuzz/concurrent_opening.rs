@@ -1,7 +1,7 @@
-//! Goal: the opening asks every seat at once, and any mix of keep and mulligan answers in any arrival order reaches the state that answering in turn order reaches; the log keeps the arrival order and replays to the same state, also from the middle of an opening.
+//! Goal: the opening asks every seat at once (after any commander color chosen before the game begins), and any mix of keep and mulligan answers in any arrival order reaches the state that answering in turn order reaches; the log keeps the arrival order and replays to the same state, also from the middle of an opening.
 
 use mtg_core::ids::{ObjectId, PlayerId};
-use mtg_engine::choose::CardsChoice;
+use mtg_engine::choose::{CardsChoice, OptionChoice};
 use mtg_engine::decision::{Answer, Decision, DecisionKind, MulliganChoice};
 use mtg_engine::state::Stage;
 use mtg_engine::zones::Zone;
@@ -52,6 +52,20 @@ fn permutations(items: &[PlayerId]) -> Vec<Vec<PlayerId>> {
     out
 }
 
+/// The game of `setup` at its first keep-or-mulligan round: a commander that chooses a color before the game begins
+/// takes the first color, ahead of the hands.
+fn opened(setup: GameSetup) -> Result<Engine, ScriptError> {
+    let mut engine = Engine::new(setup)?;
+    while let Some(Decision {
+        player,
+        kind: DecisionKind::ChooseOption(_),
+    }) = engine.decisions().first().cloned()
+    {
+        engine.apply_for(player, Answer::ChooseOption(OptionChoice(0)))?;
+    }
+    Ok(engine)
+}
+
 fn asked(engine: &Engine) -> Vec<PlayerId> {
     engine.decisions().iter().map(|d| d.player).collect()
 }
@@ -73,7 +87,7 @@ fn every_seat_is_asked_at_once_and_the_first_is_the_engines_decision(
     #[values(Table::Plain, Table::Commander)] table: Table,
     #[values(2, 3, 4, 6)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let engine = Engine::new(setup(table, seats, 7)?)?;
+    let engine = opened(setup(table, seats, 7)?)?;
     let decisions = engine.decisions();
     let first = engine.state().first_player();
     let order: Vec<PlayerId> = engine.state().turn_order_from(first);
@@ -103,7 +117,7 @@ fn at_six_seats_any_mix_in_any_order_matches_answering_in_turn_order(
     #[values(Table::Plain, Table::Commander)] table: Table,
 ) -> Result<(), ScriptError> {
     let setup = setup(table, 6, 11)?;
-    let start = Engine::new(setup.clone())?;
+    let start = opened(setup.clone())?;
     let order = asked(&start);
     for mix in 0..1u32 << 6 {
         // The game after each set of seats answered; the empty set is the start.
@@ -136,7 +150,7 @@ fn any_mix_in_any_order_matches_answering_in_turn_order(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
     let setup = setup(table, seats, 11)?;
-    let mut engine = Engine::new(setup.clone())?;
+    let mut engine = opened(setup.clone())?;
     let start = engine.checkpoint();
     let order = asked(&engine);
     let orders = permutations(&order);
@@ -187,7 +201,7 @@ fn any_mix_in_any_order_matches_answering_in_turn_order(
 fn a_seat_with_nothing_to_answer_is_refused(
     #[values(Table::Plain, Table::Commander)] table: Table,
 ) -> Result<(), ScriptError> {
-    let mut engine = Engine::new(setup(table, 4, 3)?)?;
+    let mut engine = opened(setup(table, 4, 3)?)?;
     let last = *asked(&engine).last().ok_or(EngineError::NoDecision)?;
     engine.apply_for(last, choice(0, last))?;
     let before = engine.events().len();
@@ -210,7 +224,7 @@ fn an_opening_resumed_from_its_log_asks_the_same_seats_and_ends_the_same(
     #[values(0, 1)] answered: usize,
 ) -> Result<(), ScriptError> {
     let setup = setup(table, seats, 5)?;
-    let mut live = Engine::new(setup.clone())?;
+    let mut live = opened(setup.clone())?;
     // The last seats answer first, the first of them with a mulligan.
     let order = asked(&live);
     for (at, seat) in order.iter().rev().take(answered + 1).enumerate() {
