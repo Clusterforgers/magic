@@ -1,14 +1,17 @@
 {
   "oracle_id": "740aa9d9-91a9-431e-8bf9-1344e5273e27",
   "name": "Twists and Turns // Mycoid Maze",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Twists and Turns",
       "oracle_fingerprint": "1770d574359e7e81929adf054f22d830",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 89 } }
+          "Replacement": {
+            "when": { "Explores": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "by": { "Instead": [{ "Scry": {} }, { "Explore": { "what": "Triggering" } }] }
+          }
         },
         {
           "Triggered": {

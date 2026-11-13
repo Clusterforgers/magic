@@ -589,6 +589,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     let mut texts = super::written_memo::or_last_resort(ability, texts, written_variants);
     super::wf27_writers::wf27_last_wordings(ability, &mut texts);
     super::r285_writers::r285_wordings(ability, &mut texts);
+    super::r406_actions::r406_wordings(ability, &mut texts);
     super::r303c_writers::r303c_wordings(ability, written_variants, &mut texts);
     super::r303_forms::r303_wordings(ability, &mut texts);
     super::r302c_writers::r302c_wordings(ability, &mut texts);
@@ -2822,6 +2823,7 @@ impl Writer<'_> {
             Effect::Destroy { what, .. } => format!("destroy {}", self.object(what)?),
             Effect::Tap { what, bind: None } => format!("tap {}", self.object(what)?),
             Effect::Untap { what } => format!("untap {}", self.object(what)?),
+            Effect::Unattach { what } => format!("unattach {}", self.object(what)?),
             Effect::TapOrUntap { what } => format!("tap or untap {}", self.object(what)?),
             Effect::Goad { what } if self.named && self.single(what) => "goad it".to_owned(),
             Effect::Goad { what } => format!("goad {}", self.object(what)?),
@@ -2965,6 +2967,7 @@ impl Writer<'_> {
             | Effect::Suspect { .. }
             | Effect::Fight { .. }
             | Effect::Regenerate { .. }
+            | Effect::Unattach { .. }
             | Effect::Counter { .. } => self.on_objects(effect)?,
             Effect::Continuous {
                 affected,

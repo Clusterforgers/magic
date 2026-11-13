@@ -104,6 +104,7 @@ mod one_of;
 mod pair;
 mod r301b_exchange_toughness;
 mod r372_gain_suspend;
+mod r406_actions;
 mod reflexive;
 mod remember;
 mod restart_game;

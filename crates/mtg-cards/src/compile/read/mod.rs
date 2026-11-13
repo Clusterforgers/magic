@@ -215,6 +215,7 @@ mod r376_nearest;
 mod r376_seats;
 mod r376_secret;
 mod r379_atoms;
+mod r406_actions;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -483,7 +484,9 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
     let tokens = tokenize(text);
     let mut reader = Reader::new(&tokens, x_free);
     reader.subtypes.clone_from(&own.subtypes);
-    let found = if let Some(found) = dk27_pairs::dk27_any_number_less(text) {
+    let found = if let Some(found) = r406_actions::r406_pair_read(text) {
+        found
+    } else if let Some(found) = dk27_pairs::dk27_any_number_less(text) {
         found
     } else if let Some(found) = ce29_arrest::ce29_arrest(text, x_free, own) {
         found
@@ -583,6 +586,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
             .iter()
             .any(|written| same_text(written, text))
     {
+        return Some(found);
+    }
+    if let Some(found) = r406_actions::r406_read(text) {
         return Some(found);
     }
     if kind == ClauseKind::Static

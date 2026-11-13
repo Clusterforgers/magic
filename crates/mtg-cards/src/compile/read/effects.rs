@@ -1288,12 +1288,12 @@ pub(super) fn object(r: &mut Reader<'_>) -> Option<Ref> {
 }
 
 /// "Destroy target creature.", "Exile all creatures.", "Counter target spell.", "Tap target creature.", "Untap
-/// target land.", "Regenerate ~."
+/// target land.", "Regenerate ~.", "Unattach enchanted Equipment."
 fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let verb = r.take_word()?;
     if !matches!(
         verb,
-        "destroy" | "exile" | "counter" | "tap" | "untap" | "regenerate"
+        "destroy" | "exile" | "counter" | "tap" | "untap" | "regenerate" | "unattach"
     ) {
         return None;
     }
@@ -1363,6 +1363,7 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         "tap" => Effect::Tap { what, bind: None },
         "untap" => Effect::Untap { what },
         "regenerate" => Effect::Regenerate { what },
+        "unattach" => Effect::Unattach { what },
         _ => Effect::Counter { what, bind: None },
     }])
 }

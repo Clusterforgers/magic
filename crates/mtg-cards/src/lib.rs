@@ -30,6 +30,7 @@ pub mod modify;
 pub mod pretty;
 pub mod proposal;
 pub mod r301_filter_x;
+pub mod r406_actions;
 pub mod read;
 pub mod reference;
 pub mod refs;

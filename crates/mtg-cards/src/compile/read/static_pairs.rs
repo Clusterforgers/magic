@@ -45,6 +45,10 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
 /// abilities.
 #[allow(clippy::too_many_lines)]
 pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
+    let r406 = super::r406_actions::r406_pair_texts(first, second);
+    if !r406.is_empty() {
+        return r406;
+    }
     let owner = super::r371_owner::r371_pair_texts(first, second);
     if !owner.is_empty() {
         return owner;
