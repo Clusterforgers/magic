@@ -21,6 +21,11 @@ pub fn g13g_activation_texts(
     if !per.is_one() {
         return Vec::new();
     }
+    if let Some(text) =
+        super::r4702_names::r4702_named_activation_text(kind, applies_to, change, mana)
+    {
+        return vec![text];
+    }
     let word = match kind {
         ActivationKind::Equip => "Equip",
         ActivationKind::Cycling => "Cycling",

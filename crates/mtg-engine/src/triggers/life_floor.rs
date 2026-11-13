@@ -2,7 +2,7 @@
 
 use mtg_core::ids::PlayerId;
 
-use crate::combat::{DamageForm, DamageTarget};
+use crate::combat::DamageTarget;
 use crate::events::Event;
 use crate::state::GameState;
 
@@ -29,8 +29,8 @@ pub(super) fn damage_lost(
                 amount,
                 form,
                 ..
-            } if *who == player && !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss) => {
-                life.saturating_sub(capped(life, *amount))
+            } if *who == player && form.life_lost(*amount) > 0 => {
+                life.saturating_sub(capped(life, form.life_lost(*amount)))
             }
             Event::LifeLost {
                 player: who,

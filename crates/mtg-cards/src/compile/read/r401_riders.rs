@@ -299,10 +299,18 @@ fn lowered(text: &str) -> String {
 /// The sentences that word the riders of the permission.
 fn rider_texts(permission: &CastPermission) -> Vec<String> {
     if permission.riders == [CastRider::ExiledInstead] {
-        return vec![
+        let mut texts = vec![
             "If a spell cast this way would be put into your graveyard, exile it instead"
                 .to_owned(),
         ];
+        // The card's own permission (Glimpse the Cosmos).
+        if permission.what.0 == [crate::refs::Pred::This] {
+            texts.push(
+                "If you cast this card this way and it would be put into your graveyard, exile it instead"
+                    .to_owned(),
+            );
+        }
+        return texts;
     }
     let [first, rest @ ..] = permission.riders.as_slice() else {
         return Vec::new();

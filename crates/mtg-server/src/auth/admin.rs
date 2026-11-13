@@ -55,7 +55,7 @@ impl Auth {
 
     /// The signed-in admin, or the error to send: 503 on a server without accounts, 401 without a
     /// valid session, 403 `forbidden` for an account that is not an admin.
-    async fn require_admin(&self, headers: &HeaderMap) -> Result<User, ApiError> {
+    pub(crate) async fn require_admin(&self, headers: &HeaderMap) -> Result<User, ApiError> {
         let user = self.require_user(headers).await?;
         if user.is_admin {
             Ok(user)

@@ -130,6 +130,13 @@ pub(crate) enum Command {
     Table {
         reply: oneshot::Sender<Option<Box<Engine>>>,
     },
+    /// Ends the game for an admin: every seat and spectator hears why, and the actor stops.
+    Abort {
+        /// What the admin wrote.
+        reason: Option<String>,
+        /// False, with nothing changed, when the game already had a result.
+        reply: oneshot::Sender<bool>,
+    },
 }
 
 /// A cheap-to-clone reference to one game; the game lives while any handle does.
@@ -276,6 +283,18 @@ impl GameHandle {
         let (reply, answer) = oneshot::channel();
         self.commands
             .send(Command::Closing { on, reply })
+            .await
+            .map_err(|_| GameClosed)?;
+        answer.await.map_err(|_| GameClosed)
+    }
+
+    /// Ends the game for an admin, in the actor's own order of commands: every connected seat and spectator is sent
+    /// `EndedByAdmin` and the actor stops, so nothing more is played or recorded. False, with nothing changed, when
+    /// the game already had a result.
+    pub(crate) async fn abort(&self, reason: Option<String>) -> Result<bool, GameClosed> {
+        let (reply, answer) = oneshot::channel();
+        self.commands
+            .send(Command::Abort { reason, reply })
             .await
             .map_err(|_| GameClosed)?;
         answer.await.map_err(|_| GameClosed)

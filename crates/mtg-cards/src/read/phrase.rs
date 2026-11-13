@@ -56,9 +56,11 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::Monarch => "the monarch".to_owned(),
         Ref::Chosen => "the chosen object".to_owned(),
         Ref::Promised => "the promised object".to_owned(),
+        Ref::R4700OtherChosen => "the other chosen player".to_owned(),
         Ref::Defending => "the defending player".to_owned(),
         Ref::Attacked => "the attacked player".to_owned(),
         Ref::MostLife => "the player with the most life".to_owned(),
+        Ref::Teammates => "your teammates".to_owned(),
         Ref::ActivePlayer => "the active player".to_owned(),
         Ref::Chooser => "the player choosing".to_owned(),
         Ref::Asker => "the player asking".to_owned(),
@@ -207,6 +209,7 @@ fn targetable(ctx: &Ctx, what: &Targetable, plural: bool) -> String {
                 TargetSet::DifferentControllers => "controlled by different players".to_owned(),
                 TargetSet::DifferentNames => "with different names".to_owned(),
                 TargetSet::DifferentManaValues => "with different mana values".to_owned(),
+                TargetSet::DifferentPowers => "with different powers".to_owned(),
                 TargetSet::SameToughness => "with equal toughness".to_owned(),
                 TargetSet::TotalManaValueAtMost(most) => {
                     format!("with total mana value {} or less", amount(ctx, most))
@@ -369,6 +372,10 @@ fn part(ctx: &Ctx, pred: &Pred) -> Part {
         }
         Pred::HasAnyCounter => Part::After("with a counter".to_owned()),
         Pred::Named(name) => Part::After(format!("named {name}")),
+        Pred::OriginallyPrintedIn(set) => Part::After(format!(
+            "with a name originally printed in the {} expansion",
+            set.title()
+        )),
         Pred::Compare { stat, op, to } => Part::After(format!(
             "with {} {}",
             stat_text(*stat),
@@ -468,6 +475,7 @@ fn stat_text(stat: StatKind) -> &'static str {
         StatKind::R374Toxic => "total toxic value",
         StatKind::R374ManaCost => "mana cost",
         StatKind::R374ColorSet => "color combination",
+        StatKind::R4700ChosenColors => "number of the chosen colors it is",
         StatKind::Subtypes => "subtypes",
     }
 }

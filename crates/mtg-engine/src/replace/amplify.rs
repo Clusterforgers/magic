@@ -60,6 +60,7 @@ impl Pass<'_> {
                             min: 0,
                             text: "Choose creature cards to reveal.".into(),
                             can_cancel: false,
+                            groups: Vec::new(),
                         }),
                     }));
                 }

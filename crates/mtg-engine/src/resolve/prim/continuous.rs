@@ -92,6 +92,29 @@ const fn loses_abilities(wanted: &Wanted) -> bool {
     )
 }
 
+/// The objects the effect names as it begins: permanents and spells (what a spell gains stays with the permanent it
+/// becomes, CR 608.3, `follow_spell`), and cards in a graveyard when it only adds keywords ("gains flashback until end
+/// of turn").
+fn named_objects(
+    cx: &Cx<'_>,
+    affected: &mtg_cards::refs::Ref,
+    mods: &[Wanted],
+) -> Result<Vec<ObjectRef>, ResolveError> {
+    let keywords_only = mods
+        .iter()
+        .all(|wanted| matches!(wanted, Wanted::AddKeyword(_)));
+    Ok(cx
+        .scope
+        .live_objects(affected)?
+        .into_iter()
+        .filter(|object| {
+            matches!(object.zone(), Zone::Battlefield | Zone::Stack)
+                || (keywords_only && matches!(object.zone(), Zone::Graveyard(_)))
+        })
+        .map(GameObject::reference)
+        .collect())
+}
+
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Continuous {
         affected,
@@ -102,14 +125,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Err(wrong_effect("Continuous"));
     };
     let state = cx.state();
-    let named: Vec<ObjectRef> = cx
-        .scope
-        .live_objects(affected)?
-        .into_iter()
-        // A spell on the stack counts: what it gains stays with the permanent it becomes (CR 608.3, `follow_spell`).
-        .filter(|object| matches!(object.zone(), Zone::Battlefield | Zone::Stack))
-        .map(GameObject::reference)
-        .collect();
+    let named = named_objects(cx, affected, mods)?;
     if named.is_empty() {
         return Ok(Run::events(Vec::new()));
     }

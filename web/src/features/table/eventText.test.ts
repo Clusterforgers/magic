@@ -1203,6 +1203,7 @@ describe('events with more than one shape', () => {
     [ruleEffect('DamageAsWither', 'Forever'), 'Damage is dealt as though its source had wither'],
     [ruleEffect('ManaBurn', 'Forever'), 'Unspent mana makes its player lose that much life'],
     [ruleEffect('ReverseTurnOrder', 'Forever'), 'Turn order is reversed'],
+    [ruleEffect('Planar', 'Forever'), 'A rule about the planar die or planeswalking is in force'],
     [
       ruleEffect({ AttackAsThoughHasteAt: [1] }, 'Forever'),
       'Creatures can attack Bo as though they had haste',
@@ -1365,6 +1366,16 @@ describe('the choice a permanent enters with', () => {
         Entered: { object: 3, tapped: false, controller: 0, chosen: { Colors: ['Red', 'Green'] } },
       },
       "Forest enters under Ana's control, choosing red and green",
+    ],
+    [
+      {
+        Entered: { object: 3, tapped: false, controller: 0, chosen: { ColorAndType: ['Blue', 'Merfolk'] } },
+      },
+      "Forest enters under Ana's control, choosing blue and Merfolk",
+    ],
+    [
+      { Entered: { object: 3, tapped: false, controller: 0, chosen: { Players: [0, 1] } } },
+      "Forest enters under Ana's control, choosing Ana and Bo",
     ],
     [
       { Entered: { object: 3, tapped: false, controller: 0, chosen: { Player: 1 } } },

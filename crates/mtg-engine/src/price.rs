@@ -52,6 +52,8 @@ pub(crate) struct Price {
     pub(crate) changes: Vec<CostItem>,
     /// The permanent whose static ability gave the ability this pays for (`Ref::Granter`).
     pub(crate) granter: Option<ObjectId>,
+    /// What the price is paid for: a cost, or a resolving effect (`r4707_pay_costs`).
+    pub(crate) pays: crate::r4707_pay_costs::PaysFor,
 }
 
 /// The name `Caps` gives a cost part, for the parts the engine does not pay.
@@ -72,6 +74,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::DiscardRandom(_) => "Cost.DiscardRandom",
         CostItem::DamageToYou(_) => "Cost.DamageToYou",
         CostItem::OthersGainLife(_) => "Cost.OthersGainLife",
+        CostItem::GetPoison(_) => "Cost.GetPoison",
         CostItem::Unattach => "Cost.Unattach",
         CostItem::ExileTop(_) => "Cost.ExileTop",
         CostItem::CollectEvidence(_) => "Cost.CollectEvidence",
@@ -250,6 +253,7 @@ impl Price {
             casting: false,
             changes,
             granter: None,
+            pays: crate::r4707_pay_costs::PaysFor::Cost,
         })
     }
 
@@ -350,6 +354,7 @@ impl Price {
                 source,
                 barred: &barred,
                 granter: self.granter,
+                pays: self.pays,
             };
             taken.push(part.payable(&owner, &spare)?);
         }
@@ -535,6 +540,7 @@ mod tests {
                 waterbend: 0,
                 parts: Vec::new(),
                 casting: false,
+                pays: crate::r4707_pay_costs::PaysFor::Cost,
                 changes: Vec::new(),
                 granter: None,
             })

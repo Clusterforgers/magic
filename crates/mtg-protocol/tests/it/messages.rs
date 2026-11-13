@@ -55,7 +55,7 @@ use serde::de::DeserializeOwned;
 use serde_json::json;
 
 const CLIENT_VARIANTS: usize = 23;
-const SERVER_VARIANTS: usize = 24;
+const SERVER_VARIANTS: usize = 25;
 
 const YIELDS: [YieldUntil; 3] = [
     YieldUntil::Resolve,
@@ -146,6 +146,7 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::TakeBackAsked { .. } => 21,
         ServerMessage::TakeBackEnded { .. } => 22,
         ServerMessage::TakeBackRefused { .. } => 23,
+        ServerMessage::EndedByAdmin { .. } => 24,
     }
 }
 
@@ -459,6 +460,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             max: 1,
             text: String::new(),
             can_cancel: true,
+            groups: Vec::new(),
         }),
         DecisionKind::OrderCards(OrderOptions {
             source: b,
@@ -790,6 +792,10 @@ fn server_samples() -> Vec<ServerMessage> {
         },
         ServerMessage::GameOver {
             result: GameResult::Draw,
+        },
+        ServerMessage::EndedByAdmin { reason: None },
+        ServerMessage::EndedByAdmin {
+            reason: Some("cleaning up".into()),
         },
         ServerMessage::Forecast {
             decision: DecisionId(41),
@@ -1226,6 +1232,11 @@ fn client_wire_shape_is_flat_and_tagged(
     ServerMessage::GameOver { result: GameResult::Draw },
     json!({"type": "GameOver", "result": "Draw"})
 )]
+#[case(
+    ServerMessage::EndedByAdmin { reason: Some("late".into()) },
+    json!({"type": "EndedByAdmin", "reason": "late"})
+)]
+#[case(ServerMessage::EndedByAdmin { reason: None }, json!({"type": "EndedByAdmin"}))]
 #[case(
     ServerMessage::Forecast { decision: DecisionId(7), forecast: None },
     json!({"type": "Forecast", "decision": 7, "forecast": null})
@@ -1686,6 +1697,7 @@ fn pipeline_events() -> Vec<Event> {
             choices,
             cause: Some(Cause {
                 dealers: Vec::new(),
+                counters: Vec::new(),
                 subjects: vec![target],
                 snapshots: vec![shot.clone()],
                 amount: 0,

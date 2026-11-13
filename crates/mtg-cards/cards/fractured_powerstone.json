@@ -1,7 +1,7 @@
 {
   "oracle_id": "af4f192a-9565-4377-b359-835fe4396e85",
   "name": "Fractured Powerstone",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Fractured Powerstone",
@@ -14,9 +14,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 14, "end": 67 }
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "effects": [{ "Planechase": { "act": "RollPlanarDie" } }]
           }
         }
       ]

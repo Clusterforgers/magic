@@ -51,6 +51,7 @@ fn stat_word(stat: StatKind) -> &'static str {
         StatKind::R374Bushido => "bushido",
         StatKind::R374Toxic => "total toxic value",
         StatKind::R374ManaCost => "mana cost",
+        StatKind::R4700ChosenColors => "chosen colors it is",
         StatKind::R374ColorSet => "color pairs",
         StatKind::Subtypes => "subtypes",
     }
@@ -290,6 +291,7 @@ fn kind_of(what: &Targetable) -> (String, String) {
                 TargetSet::DifferentControllers => "controlled by different players".to_owned(),
                 TargetSet::DifferentNames => "with different names".to_owned(),
                 TargetSet::DifferentManaValues => "with different mana values".to_owned(),
+                TargetSet::DifferentPowers => "with different powers".to_owned(),
                 TargetSet::SameToughness => "with equal toughness".to_owned(),
                 TargetSet::TotalManaValueAtMost(Amount::Fixed(most)) => {
                     format!("with total mana value {most} or less")
