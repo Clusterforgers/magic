@@ -1,6 +1,7 @@
 //! Goal: game flow through the testkit: turns, priority, players, Commander, house rules and manual play; one binary of the `mtg-testkit` families (`docs/testing.md`).
 
 mod bot_block_tax;
+mod brain_clock;
 mod brain_heuristics;
 mod brain_matches;
 mod brain_suite;
@@ -87,6 +88,13 @@ mod r376_cards;
 mod r377_skips;
 mod r404_commander_color;
 mod r404_durations;
+mod r4705_carth;
+mod r4705_devour_x;
+mod r4705_dralnu;
+mod r4705_liege;
+mod r4705_loyalty_any_time;
+mod r4705_rowans_talent;
+mod r4705_vecna;
 mod r5500_tax_life;
 mod ring;
 mod rmt7_lose_printed;

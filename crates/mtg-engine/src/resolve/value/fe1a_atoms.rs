@@ -26,6 +26,24 @@ impl Scope<'_> {
         }))
     }
 
+    /// Whether the object is blocked by one of the named objects or, with `blocks`, blocks one of them.
+    fn fe1a_blocked(
+        &self,
+        named: &Ref,
+        reference: ObjectRef,
+        blocks: bool,
+    ) -> Result<bool, ResolveError> {
+        let others = self.objects(named)?;
+        let named = |id| others.iter().any(|o| o.id == id);
+        Ok(self.state.combat().attackers().iter().any(|attacker| {
+            if blocks {
+                named(attacker.object()) && attacker.blockers().contains(&reference.id)
+            } else {
+                attacker.object() == reference.id && attacker.blockers().iter().any(|b| named(*b))
+            }
+        }))
+    }
+
     /// Whether a predicate of this module holds for the object; false for any other predicate.
     pub(super) fn fe1a_pred(
         &self,
@@ -80,22 +98,12 @@ impl Scope<'_> {
                     && self.state.zone(seen.zone).last() == Some(&reference.id)
             }
             Pred::TopCreatureOfGraveyard => self.top_creature_of_graveyard(reference, seen)?,
+            Pred::R4700TopOfGraveyard { .. } => self.r4700_top(reference, seen, pred)?,
             Pred::BandedWith(named) => self.l290_banded_with(named, reference)?,
-            Pred::BlockedBy(named) => {
-                let blockers = self.objects(named)?;
-                self.state.combat().attackers().iter().any(|attacker| {
-                    attacker.object() == reference.id
-                        && blockers.iter().any(|b| attacker.blockers().contains(&b.id))
-                })
-            }
+            Pred::BlockedBy(named) => self.fe1a_blocked(named, reference, false)?,
             Pred::BlockedThisTurnBy(named) => self.r378_blocked_this_turn_by(named, reference)?,
-            Pred::Blocks(named) => {
-                let attackers = self.objects(named)?;
-                self.state.combat().attackers().iter().any(|attacker| {
-                    attacker.blockers().contains(&reference.id)
-                        && attackers.iter().any(|a| a.id == attacker.object())
-                })
-            }
+            Pred::CastBefore(named) => self.r4703_cast_before(named, reference)?,
+            Pred::Blocks(named) => self.fe1a_blocked(named, reference, true)?,
             Pred::TargetedBy(named) => self.fe1a_targeted_by(named, reference)?,
             Pred::SingleTarget => {
                 seen.zone == Zone::Stack
@@ -137,7 +145,15 @@ impl Scope<'_> {
         })
     }
 
-    /// The card of a spell on the stack or of a permanent, the only objects that were cast.
+    /// Whether the object was cast this turn before one of the spells `named` names (`Pred::CastBefore`).
+    fn r4703_cast_before(&self, named: &Ref, reference: ObjectRef) -> Result<bool, ResolveError> {
+        Ok(self
+            .refs(named)?
+            .into_iter()
+            .filter_map(crate::choose::Target::object)
+            .any(|spell| self.state.r4703_cast_before(reference, spell)))
+    }
+
     /// Whether a creature the reference names blocked the object this turn, read from the turn's log of blocks; the
     /// blocker counts as it was named, even if it has left the battlefield since.
     fn r378_blocked_this_turn_by(
@@ -159,6 +175,7 @@ impl Scope<'_> {
         }))
     }
 
+    /// The card of a spell on the stack or of a permanent, the only objects that were cast.
     pub(super) fn fe1a_cast_object<'s>(seen: &Seen<'s>) -> Option<&'s GameObject> {
         seen.card.filter(|_| {
             seen.zone == Zone::Battlefield
@@ -219,6 +236,37 @@ impl Scope<'_> {
             };
             if self.selects(&creature, object.reference())? {
                 return Ok(*id == reference.id);
+            }
+        }
+        Ok(false)
+    }
+
+    /// Whether the card is among the topmost `count` cards of its owner's graveyard that `among` selects.
+    fn r4700_top(
+        &self,
+        reference: ObjectRef,
+        seen: &Seen<'_>,
+        pred: &Pred,
+    ) -> Result<bool, ResolveError> {
+        let Pred::R4700TopOfGraveyard { among, count } = pred else {
+            return Ok(false);
+        };
+        if !matches!(seen.zone, Zone::Graveyard(_)) {
+            return Ok(false);
+        }
+        let mut left = *count;
+        for id in self.state.zone(seen.zone).iter().rev() {
+            if left == 0 {
+                break;
+            }
+            let Some(object) = self.state.object(*id) else {
+                continue;
+            };
+            if self.selects(among, object.reference())? {
+                if *id == reference.id {
+                    return Ok(true);
+                }
+                left -= 1;
             }
         }
         Ok(false)

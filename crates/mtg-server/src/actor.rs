@@ -363,6 +363,20 @@ impl<S: EventStore> GameActor<S> {
                 // A caller that stopped waiting needs no answer.
                 let _ = reply.send(table);
             }
+            Command::Abort { reason, reply } => {
+                let over = matches!(&self.phase, Phase::Running(running) if running.engine.result().is_some());
+                if over {
+                    // A caller that stopped waiting needs no answer.
+                    let _ = reply.send(false);
+                } else {
+                    self.closing = true;
+                    self.seats
+                        .broadcast(&ServerMessage::EndedByAdmin { reason });
+                    let _ = reply.send(true);
+                    // Not a fault: an ended game must not play on, so the actor stops as it would on one.
+                    return Err(Fatal);
+                }
+            }
         }
         Ok(())
     }

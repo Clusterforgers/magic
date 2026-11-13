@@ -399,6 +399,7 @@ fn w20a_effects(items: Vec<W20aTake>, before: usize) -> Vec<Effect> {
             count: item.bounds,
             bind: bind.clone(),
             rest_as: None,
+            differ: None,
         });
         if item.reveal {
             effects.push(Effect::Reveal {
@@ -552,6 +553,7 @@ pub fn w20a_sequence(effects: &[Effect]) -> Option<(String, usize)> {
             count: bounds,
             bind,
             rest_as: None,
+            differ: None,
         },
         after @ ..,
     ] = tail

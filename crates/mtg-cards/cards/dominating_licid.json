@@ -1,16 +1,31 @@
 {
   "oracle_id": "ae2804c6-fb38-4845-ae21-7f41a766cbba",
   "name": "Dominating Licid",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Dominating Licid",
       "oracle_fingerprint": "9ca207c9f5a6bd9c4bf00462a7547ede",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 169 }
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}{U}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddSubtype": "Aura" },
+                    { "SetTypes": ["Enchantment"] },
+                    { "AddKeyword": { "Enchant": [{ "Type": "Creature" }] } },
+                    "LoseThisAbility"
+                  ],
+                  "duration": { "UntilPaid": "{U}" }
+                }
+              },
+              { "Attach": { "what": "This", "to": { "Target": 0 } } }
+            ]
           }
         },
         { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }

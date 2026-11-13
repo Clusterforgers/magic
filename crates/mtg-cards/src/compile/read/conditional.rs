@@ -191,6 +191,9 @@ fn counted(condition: &Condition) -> Option<&CounterKind> {
 
 /// The condition as the card words it, after "if", one text for each wording.
 pub fn condition_texts(condition: &Condition) -> Vec<String> {
+    if let Some(chosen) = super::r4700_writers::r4700_condition_text(condition) {
+        return vec![chosen];
+    }
     if let Some(won) = super::l293_events::l293_condition_text(condition) {
         return vec![won];
     }

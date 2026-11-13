@@ -36,6 +36,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .players(who)?
         .into_iter()
         .filter(|player| cx.state().is_alive(*player))
+        .filter(|player| !crate::rules::r4702_spared_discard(cx.state(), *player, cx.controller()))
         .collect();
     let (picks, chosen) = if *random {
         c6_eg_at_random(cx, &players, take)
@@ -59,6 +60,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     max: take,
                     from,
                     text,
+                    groups: Vec::new(),
                 })
             })
             .collect::<Result<_, ResolveError>>()?;
@@ -278,6 +280,7 @@ mod tests {
                     max: 1,
                     text: "Discard a card.".into(),
                     can_cancel: false,
+                    groups: Vec::new(),
                 }),
             }
         );

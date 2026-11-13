@@ -38,7 +38,8 @@ fn worth(seen: &Seen<'_>, target: Target) -> (f64, bool) {
 }
 
 /// The targets `options` offers, likeliest first: the most valuable opposing permanent or spell, then the seat's own
-/// most valuable one, then the opponent most worth hitting, and so on alternating, then the seat's side's players.
+/// most valuable one, then the opponent most worth hitting, and so on alternating, then the seat's side's players;
+/// removal, burn and pacifying auras keep only opposing targets while there are any.
 pub fn rank_targets(seen: &Seen<'_>, options: &TargetOptions) -> Vec<Target> {
     let mut theirs: Vec<(f64, Target)> = Vec::new();
     let mut ours: Vec<(f64, Target)> = Vec::new();
@@ -69,6 +70,17 @@ pub fn rank_targets(seen: &Seen<'_>, options: &TargetOptions) -> Vec<Target> {
         }
     }
     ranked.extend(our_players.into_iter().map(|(_, target)| target));
+    // Removal, burn and pacifying auras never aim at the seat's side while an opposing target is offered.
+    let harmful = seen.card(options.source).is_some_and(|card| {
+        let traits = super::threat::traits(card);
+        traits.removal || traits.burn || {
+            let text = format!("{:?}", card.rules);
+            text.contains("CantAttack") || text.contains("CantBlock")
+        }
+    });
+    if harmful && ranked.iter().any(|target| worth(seen, *target).1) {
+        ranked.retain(|target| worth(seen, *target).1);
+    }
     ranked
 }
 
