@@ -789,16 +789,7 @@ impl<'a> Scope<'a> {
         let Some(card) = seen.card else {
             return false;
         };
-        let says = card.card().rules.iter().any(|rules| {
-            matches!(
-                &**rules,
-                mtg_cards::ability::Ability::Rule {
-                    rule: mtg_cards::modify::GameRule::CountsAsNamed(named),
-                    from: mtg_cards::refs::ZoneKind::Graveyard,
-                    condition: None,
-                } if named == name
-            )
-        });
+        let says = crate::ability_reader::r4703_counts_as_named(card.card(), name);
         says && self.state.object(self.source.id).is_some_and(|source| {
             source.reference() == self.source
                 && source.zone == Zone::Stack

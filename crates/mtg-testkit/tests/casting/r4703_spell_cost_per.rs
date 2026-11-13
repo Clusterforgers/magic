@@ -11,7 +11,7 @@ use mtg_cards::ability::Ability;
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::mana::ManaCost;
-use mtg_testkit::cards::{cost, creature, swamp};
+use mtg_testkit::cards::{cost, creature, forest, mountain, swamp};
 use mtg_testkit::{Driver, Scenario, ScriptError};
 use rstest::rstest;
 
@@ -54,7 +54,10 @@ fn wurm_cost(
     color: Color,
 ) -> Result<String, ScriptError> {
     let scenario = Scenario::new(seats)
-        .battlefield(0, lands(8, swamp))
+        .battlefield(
+            0,
+            [lands(4, swamp), lands(4, mountain), lands(4, forest)].concat(),
+        )
         .hand(
             0,
             vec![
