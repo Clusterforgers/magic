@@ -7,8 +7,8 @@ use crate::ability::Ability;
 use crate::card::{Card, Span};
 use crate::compile::{
     Clause, ClauseKind, block_plan, creature_at, die_row, die_row_texts, either_way_pair_texts,
-    ep23_three_texts, own_names, r304b_triple_texts, read_keyword, read_keywords,
-    same_written_text, static_pair_texts, written_variants,
+    ep23_three_texts, own_names, r304b_triple_texts, r4708_reveal_group_texts, read_keyword,
+    read_keywords, same_written_text, static_pair_texts, written_variants,
 };
 use crate::effect::Effect;
 use crate::keyword::Keyword;
@@ -104,6 +104,13 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
     match ability {
         Ability::Spell { .. } => &[ClauseKind::Spell, ClauseKind::Modal],
         Ability::Triggered { .. } => &[ClauseKind::Triggered],
+        // On an instant or sorcery the reveal (Providence) and a rule of the draft (Garbage Fire) are sentences of the
+        // spell's text.
+        Ability::OpeningReveal { .. }
+        | Ability::Rule {
+            rule: crate::modify::GameRule::Draft(_),
+            ..
+        } => &[ClauseKind::Static, ClauseKind::Spell],
         Ability::Replacement { .. }
         | Ability::Rule { .. }
         | Ability::Static { .. }
@@ -118,8 +125,6 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
         | Ability::OpeningHandWith { .. }
         | Ability::Sticker(_)
         | Ability::CostModifier { .. } => &[ClauseKind::Static],
-        // On an instant or sorcery the reveal is a sentence of the spell's text (Providence).
-        Ability::OpeningReveal { .. } => &[ClauseKind::Static, ClauseKind::Spell],
         Ability::Loyalty { .. } => &[ClauseKind::Loyalty],
         Ability::Activated { .. } => &[ClauseKind::Activated],
         // Exert is a sentence of the card ("You may exert this creature as it attacks."), read by the static templates.
@@ -769,6 +774,7 @@ impl<'a> Pairer<'a> {
     fn static_pairs(&mut self) {
         let abilities = self.abilities;
         self.r304b_static_triples();
+        self.r4708_reveal_groups();
         for at in 1..abilities.len() {
             if self.taken[at - 1] || self.taken[at] {
                 continue;
@@ -806,6 +812,35 @@ impl<'a> Pairer<'a> {
                     self.taken[second] = true;
                     self.slot_of[second] = Some(slot);
                     self.places[second] = self.places[first];
+                    break;
+                }
+            }
+        }
+    }
+
+    /// A reveal of the first card drawn each turn and the one or two triggers on it that follow it are one line of the
+    /// card (Primitive Etchings, Keranos).
+    fn r4708_reveal_groups(&mut self) {
+        let abilities = self.abilities;
+        for at in 0..abilities.len() {
+            for size in [3, 2] {
+                let Some(group) = abilities.get(at..at + size) else {
+                    continue;
+                };
+                if (at..at + size).any(|index| self.taken[index]) {
+                    continue;
+                }
+                let written = r4708_reveal_group_texts(group);
+                if written.is_empty() {
+                    continue;
+                }
+                if let Some(slot) = self.find_text(&[ClauseKind::Static], &written, false) {
+                    self.settle(at, slot, ClauseState::Reads { ability: at });
+                    for later in at + 1..at + size {
+                        self.taken[later] = true;
+                        self.slot_of[later] = Some(slot);
+                        self.places[later] = self.places[at];
+                    }
                     break;
                 }
             }

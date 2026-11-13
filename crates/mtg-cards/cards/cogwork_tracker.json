@@ -1,7 +1,7 @@
 {
   "oracle_id": "c60ba5e9-dbfa-441b-a96f-9cc7fdfd2d76",
   "name": "Cogwork Tracker",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Cogwork Tracker",
@@ -10,9 +10,15 @@
         { "Rule": { "rule": { "Draft": "NotePasser" } } },
         { "Rule": { "rule": { "MustAttack": "This" } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 118, "end": 211 }
+          "Rule": {
+            "rule": {
+              "MustAttackPlayers": {
+                "who": "This",
+                "players": {
+                  "PlayersWhere": { "who": "EachPlayer", "test": { "Drafted": "NotedPlayer" } }
+                }
+              }
+            }
           }
         }
       ]

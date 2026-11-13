@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f343e5c8-7c43-4c97-b922-2002c7ab51ab",
+  "name": "Volatile Chimera",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Volatile Chimera",
+      "oracle_fingerprint": "a34e698863a8c0d9ab16fe7a5566c7bf",
+      "abilities": [
+        { "Rule": { "rule": { "Draft": "ExileDraftedCreatures" } } },
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "In": "Exile" }, { "Drafted": "ExiledWith" }] },
+                  "as": "card"
+                }
+              },
+              {
+                "BecomeCopy": {
+                  "what": "This",
+                  "of": { "Bound": "card" },
+                  "except": ["ThisAbility"],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

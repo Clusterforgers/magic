@@ -808,6 +808,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 false,
             )
         }
+        TriggerPattern::FirstDrawRevealed { .. } => (
+            "you reveal the first card you drew this turn this way".to_owned(),
+            false,
+        ),
         TriggerPattern::Surveilled { who: by } => {
             let (name, s) = who(by);
             (
@@ -1365,6 +1369,15 @@ pub(crate) const OPENING_REVEAL: &str =
 
 /// What a surveil asks about the cards looked at.
 pub(crate) const SURVEIL: &str = "Put any number of the cards into your graveyard.";
+
+/// What an optional reveal of the first card drawn this turn asks as the card is drawn.
+pub(crate) const R4708_REVEAL_FIRST_DRAW: &str =
+    "Choose the card to reveal as you draw it, or none.";
+
+/// What a surveil asks before looking when a replacement offers more cards.
+pub(crate) fn r4708_surveil_more(more: usize) -> String {
+    format!("Look at {more} more cards as you surveil?")
+}
 
 /// What a proliferate asks about the permanents with counters.
 pub(crate) const PROLIFERATE: &str =

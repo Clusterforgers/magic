@@ -1,7 +1,7 @@
 {
   "oracle_id": "80ea63fd-691a-45ba-a4bf-862e5ec2922d",
   "name": "Aether Searcher",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Aether Searcher",
@@ -9,9 +9,30 @@
       "abilities": [
         { "Rule": { "rule": { "Draft": "NoteNextName" } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 84, "end": 315 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "also": ["Hand"],
+                        "filter": [{ "Drafted": "NameNotedAsDrafted" }],
+                        "as": "found"
+                      }
+                    },
+                    { "CastFromZone": { "what": { "Bound": "found" }, "free": true } },
+                    {
+                      "If": {
+                        "condition": { "Searched": { "zone": "Library" } },
+                        "then": [{ "Shuffle": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

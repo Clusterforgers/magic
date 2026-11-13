@@ -472,11 +472,23 @@ fn texts_are_written(
     }))
 }
 
-/// Whether an opening-hand reveal of the face writes the line, which is then no line of the face's spell (Providence).
+/// Whether the ability is a rule of the booster draft, a spell line on an instant or sorcery (Garbage Fire).
+fn is_draft_rule(ability: &Ability) -> bool {
+    matches!(
+        ability,
+        Ability::Rule {
+            rule: mtg_cards::modify::GameRule::Draft(_),
+            ..
+        }
+    )
+}
+
+/// Whether an opening-hand reveal of the face writes the line, which is then no line of the face's spell (Providence) or a
+/// rule of the draft does (Garbage Fire).
 fn revealed_line(listed: &[(usize, &Ability)], face: usize, line: &str) -> bool {
     listed.iter().any(|&(other, ability)| {
         other == face
-            && matches!(ability, Ability::OpeningReveal { .. })
+            && (matches!(ability, Ability::OpeningReveal { .. }) || is_draft_rule(ability))
             && written_variants(ability)
                 .iter()
                 .any(|text| same_written_text(text, line))
@@ -491,9 +503,14 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
     let listed: Vec<(usize, &Ability)> = by_hand.abilities().collect();
     let mut skip_next = false;
     let mut skip_two = false;
+    let mut skip_left = 0usize;
     // The first static of a pair was printed apart from the second, so the second needs its own line too.
     let mut pair_apart = false;
     for (at, &(face, ability)) in listed.iter().enumerate() {
+        if skip_left > 0 {
+            skip_left -= 1;
+            continue;
+        }
         if std::mem::take(&mut skip_two) {
             skip_next = true;
             continue;
@@ -514,6 +531,25 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             continue;
         }
         assert_escalate_line(&printed.name, compiled, face, ability);
+        // A reveal of the first card drawn each turn and its triggers are one line of the card (Keranos).
+        if let Some(size) = [3, 2].into_iter().find(|size| {
+            listed.get(at..at + size).is_some_and(|group| {
+                group.iter().all(|(same, _)| *same == face) && {
+                    let abilities: Vec<Ability> =
+                        group.iter().map(|(_, each)| (*each).clone()).collect();
+                    texts_are_written(
+                        printed,
+                        compiled,
+                        face,
+                        &mtg_cards::compile::r4708_reveal_group_texts(&abilities),
+                    ) == Some(true)
+                }
+            })
+        }) {
+            skip_left = size - 1;
+            rendered += size;
+            continue;
+        }
         // Three rules of the attached permanent may be one sentence of the card (Bound in Gold).
         if let (Some(&(second_face, second)), Some(&(third_face, third))) =
             (listed.get(at + 1), listed.get(at + 2))
@@ -565,6 +601,8 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             Ability::Spell { .. } => &[ClauseKind::Spell, ClauseKind::Modal],
             Ability::Triggered { .. } => &[ClauseKind::Triggered],
             Ability::Loyalty { .. } => &[ClauseKind::Loyalty],
+            // On an instant or sorcery a rule of the draft is a spell line (Garbage Fire).
+            _ if is_draft_rule(ability) => &[ClauseKind::Static, ClauseKind::Spell],
             Ability::Replacement { .. }
             | Ability::Rule { .. }
             | Ability::Static { .. }

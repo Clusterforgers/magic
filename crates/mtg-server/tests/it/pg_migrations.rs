@@ -44,6 +44,9 @@ async fn the_server_alone_creates_only_its_own_tables_and_can_rerun(pool: PgPool
             tables(&pool).await,
             [
                 MIGRATIONS_TABLE,
+                "delve_events",
+                "delve_members",
+                "delves",
                 "game_events",
                 "games",
                 "seats",

@@ -1,7 +1,7 @@
 {
   "oracle_id": "2bd6f13a-ae02-426d-8f99-c20c5c08cf55",
   "name": "Keranos, God of Storms",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Keranos, God of Storms",
@@ -17,10 +17,18 @@
             }
           }
         },
+        { "Rule": { "rule": { "RevealFirstDraw": { "your_turns": true } } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 102, "end": 293 }
+          "Triggered": {
+            "when": { "FirstDrawRevealed": { "what": [{ "Type": "Land" }] } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "FirstDrawRevealed": { "what": [{ "Not": { "Type": "Land" } }] } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
           }
         }
       ]

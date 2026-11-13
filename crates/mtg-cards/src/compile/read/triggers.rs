@@ -698,6 +698,8 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         Some(first_time(r, TriggerPattern::LifeLost { who: by }))
     } else if verb == if third { "draws" } else { "draw" } {
         draw_event(r, by, whose)
+    } else if verb == "reveal" {
+        super::r4708_reveal::r4708_revealed(r, &by)
     } else if verb == if third { "discards" } else { "discard" } {
         if r.words("one or more") {
             let batch = super::dk27_batches::dk27_discarded_batch(r, by)?;
@@ -1822,6 +1824,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             counter_text(what, counter.as_ref(), "removed from")
         }
         TriggerPattern::Nth { event, nth } => nth_text(event, *nth),
+        TriggerPattern::FirstDrawRevealed { .. } => {
+            super::r4708_reveal::r4708_revealed_text(pattern)
+        }
         TriggerPattern::Batch(inner) => super::r7e_events::r7e_one_object_damage(inner)
             .or_else(|| batch_text(inner))
             .or_else(|| super::r7e_events::r7e_player_batch(inner)),
