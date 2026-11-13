@@ -42,11 +42,16 @@ const C11A_EACH: [(&str, Ref, TurnTally); 5] = [
 ];
 
 /// The tallies after "where X is".
-const C11A_X: [(&str, Ref, TurnTally); 3] = [
+const C11A_X: [(&str, Ref, TurnTally); 4] = [
     (
         "the amount of life you gained this turn",
         Ref::You,
         TurnTally::LifeGainedTotal,
+    ),
+    (
+        "the amount of life you lost this turn",
+        Ref::You,
+        TurnTally::LifeLost,
     ),
     (
         "the amount of life your opponents have lost this turn",

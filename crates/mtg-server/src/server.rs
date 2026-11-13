@@ -13,7 +13,7 @@ use axum::http::header::{
 };
 use axum::http::{HeaderValue, Method};
 use axum::middleware;
-use axum::routing::{delete, get, post, put};
+use axum::routing::{delete, get, patch, post, put};
 use axum::serve::ListenerExt;
 use sqlx::PgPool;
 use tokio::net::TcpListener;
@@ -32,8 +32,8 @@ use crate::records::RecordError;
 use crate::registry::{Registry, ResumeReport};
 use crate::tournaments::Tournaments;
 use crate::{
-    api, bulk_reads, decks, delves, favourites, fix_marks, lobbies, my_games, precon_api, prefs,
-    printings, reads, tournaments, tutorial, ws,
+    api, bulk_reads, deck_groups, decks, delves, favourites, fix_marks, lobbies, my_games,
+    precon_api, prefs, printings, reads, tournaments, tutorial, ws,
 };
 
 struct Inner {
@@ -319,6 +319,8 @@ fn account_routes() -> Router<AppState> {
         )
         .route("/api/admin/users/{id}", delete(auth::remove_account))
         .route("/api/admin/users/{id}/password", post(auth::reset_password))
+        .route("/api/admin/games", get(crate::admin_games::list))
+        .route("/api/admin/games/{id}/end", post(crate::admin_games::end))
 }
 
 /// The Delves routes: the content the web draws, the player's runs, creating, joining by code and acting.
@@ -444,6 +446,16 @@ pub(crate) fn router(state: AppState) -> Router {
         )
         .route("/api/decks/{id}/export", get(decks::export))
         .route("/api/decks/{id}/printing", put(printings::set_line))
+        .route("/api/decks/{id}/group", put(deck_groups::file))
+        .route(
+            "/api/deck-groups",
+            get(deck_groups::list).post(deck_groups::create),
+        )
+        .route("/api/deck-groups/order", put(deck_groups::reorder))
+        .route(
+            "/api/deck-groups/{id}",
+            patch(deck_groups::change).delete(deck_groups::remove),
+        )
         .route("/api/me/printings", get(printings::preferred))
         .route(
             "/api/me/printings/{oracle_id}",

@@ -1,7 +1,8 @@
 //! Priority granted in the batch in which its player leaves the game: a draw step's draw, replaced by "you lose the
 //! game" (Forbidden Crypt with an empty graveyard), is in one batch with the grant of priority to the active player,
 //! worked out before the draw. A player who has left gets no priority (CR 800.4a), so the grant passes to the next
-//! player in turn order who is still in the game.
+//! player in turn order who is still in the game. A player leaves once: a second loss in the batch (two damage events
+//! each replaced by "you lose the game") is dropped.
 
 use std::collections::BTreeSet;
 
@@ -11,7 +12,7 @@ use crate::events::Event;
 use crate::state::GameState;
 
 /// `events` with each grant of priority to a player who left the game earlier in the batch passed on to the next player
-/// in turn order still in it, and dropped when none is.
+/// in turn order still in it, and dropped when none is; a repeated loss of the same player is dropped.
 pub(crate) fn r304b_passed_on(state: &GameState, events: Vec<Event>) -> Vec<Event> {
     if !events
         .iter()
@@ -24,8 +25,9 @@ pub(crate) fn r304b_passed_on(state: &GameState, events: Vec<Event>) -> Vec<Even
     for event in events {
         match event {
             Event::PlayerLost { player, .. } => {
-                lost.insert(player);
-                kept.push(event);
+                if lost.insert(player) {
+                    kept.push(event);
+                }
             }
             Event::PriorityGranted { player } if lost.contains(&player) => {
                 if let Some(next) = state
@@ -45,7 +47,8 @@ pub(crate) fn r304b_passed_on(state: &GameState, events: Vec<Event>) -> Vec<Even
 #[cfg(test)]
 mod tests {
     //! Goal: a grant of priority to a player who lost earlier in the same batch goes to the next player in turn order
-    //! still in the game, at two to four seats, and a grant to a player still in it or before the loss is kept.
+    //! still in the game, at two to four seats, and a grant to a player still in it or before the loss is kept; a player
+    //! loses once in a batch.
     use super::*;
     use crate::fixtures::state;
     use crate::player::LossReason;
@@ -62,6 +65,15 @@ mod tests {
         Event::PriorityGranted {
             player: PlayerId::from_index(seat),
         }
+    }
+
+    #[rstest]
+    #[case::three_seats(3)]
+    #[case::four_seats(4)]
+    fn a_second_loss_of_the_same_player_is_dropped(#[case] seats: usize) {
+        let game = state(vec![vec![]; seats], vec![vec![]; seats]);
+        let after = r304b_passed_on(&game, vec![lost(1), lost(0), lost(1), granted(0)]);
+        assert_eq!(after, vec![lost(1), lost(0), granted(2)]);
     }
 
     #[rstest]

@@ -32,6 +32,7 @@ pub(super) fn text(effects: &[Effect]) -> Option<(String, usize)> {
             count: one,
             bind: chosen,
             rest_as: Some(rest),
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(taken),

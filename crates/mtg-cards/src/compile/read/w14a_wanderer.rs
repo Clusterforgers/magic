@@ -95,6 +95,7 @@ pub fn w14a_keep_one(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
                 count: Bounds::default(),
                 bind: "kept".to_owned(),
                 rest_as: Some("rest".to_owned()),
+                differ: None,
             },
             Effect::Sacrifice {
                 who: player,

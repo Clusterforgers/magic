@@ -82,6 +82,7 @@ pub fn scorn(name: &str) -> Arc<CardDefinition> {
                 count: Bounds::default(),
                 bind: "victim".into(),
                 rest_as: None,
+                differ: None,
             },
             Effect::LoseLife {
                 who: Ref::Bound("victim".into()),

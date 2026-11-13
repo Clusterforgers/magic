@@ -89,6 +89,7 @@ mod required_cost_hidden;
 mod rest;
 mod rest_art;
 mod rest_cards;
+mod rest_deck_groups;
 mod rest_decks;
 mod rest_favourites;
 mod rest_fix_marks;
