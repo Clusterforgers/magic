@@ -78,6 +78,13 @@ Stickers (CR 123, `un34_stickers.rs`) are implemented once in the engine; a shee
 - `StickerPut` reads as `Did { PutSticker }` and, by kind, `PutNameSticker`, `PutAbilitySticker` or `PutArtSticker`; `Condition::TriggeringSticker(kind)` reads the kind of the sticker that triggered.
 - The table sees each seat's sheets and used stickers (`PlayerView.sticker_sheets`) and a permanent's stickers (`ObjectView.stickers`).
 
+## Campaign seats
+
+Seat rules for Delves fights (`docs/delves.md`), each set up in `PlayerSetup`:
+- `emblems`: emblems in the seat's command zone from the start, built with `emblem_definition(name, abilities)`; relics and boss cards. Cost modifiers work from emblems as from permanents.
+- `spirit` (`spirits.rs`): a seat at 0 life with a living teammate becomes a Spirit (`BecameSpirit`) instead of losing: its cards outside the library and command zone leave the game, it gets the Spirit emblem (haunt abilities) and loses no more on its own. A team with no living player loses with its Spirits, so a Spirit never wins alone.
+- `phases` (`phases.rs`): a boss seat's phase emblems; the next one arrives (`PhaseBegan`) as a state-based action once its life is at or below that phase's threshold, one per pass. The view shows the phases (`PlayerView.boss`) and Spirits (`PlayerView.spirit`).
+
 ## Determinism and recovery
 
 - Random choices use a ChaCha8 substream keyed by (seed, counter in state). Events carry the results (a shuffle logs its whole order, a roll its result), so replay needs no RNG. A fold that draws a substream moves the counter on.

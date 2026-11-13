@@ -16,6 +16,7 @@ mod c6_eg_cards;
 mod c6_gap_batches;
 mod c6_kw_renown_exploit;
 mod c8_eg_cards;
+mod campaign_seats;
 mod card_lists;
 mod cipher;
 #[path = "../common/mod.rs"]

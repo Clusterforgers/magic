@@ -26,6 +26,7 @@ export type { BlockOptions } from "./BlockOptions";
 export type { BlockTax } from "./BlockTax";
 export type { BlockerOption } from "./BlockerOption";
 export type { Borrowed } from "./Borrowed";
+export type { BossView } from "./BossView";
 export type { BottomOptions } from "./BottomOptions";
 export type { BulkApproval } from "./BulkApproval";
 export type { BulkApprovalBody } from "./BulkApprovalBody";
