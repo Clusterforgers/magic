@@ -100,6 +100,7 @@ pub fn roll(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         plus: Amount::zero(),
         highest,
         results: Vec::new(),
+        count: None,
     }])
 }
 
@@ -127,6 +128,7 @@ fn r4703_several_dice(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         plus: Amount::zero(),
         highest: None,
         results: Vec::new(),
+        count: None,
     }])
 }
 
@@ -161,12 +163,16 @@ pub(super) fn c11e_result(r: &mut Reader<'_>) -> Option<Amount> {
 }
 
 /// The words of a result of the latest roll.
-pub(super) const fn c11e_result_text(which: DieResult) -> &'static str {
+pub(super) fn c11e_result_text(which: DieResult) -> String {
     match which {
-        DieResult::Only => "the result",
-        DieResult::Chosen => "that result",
-        DieResult::Other => "the other result",
-        DieResult::Distinct => "the number of different results",
+        DieResult::Only => "the result".to_owned(),
+        DieResult::Chosen => "that result".to_owned(),
+        DieResult::Other => "the other result".to_owned(),
+        DieResult::Odd => "the number of odd results".to_owned(),
+        DieResult::Even => "the number of even results".to_owned(),
+        DieResult::Total => "the total of those results".to_owned(),
+        DieResult::Times(result) => format!("the number of times you rolled {result}"),
+        DieResult::Distinct => "the number of different results".to_owned(),
     }
 }
 

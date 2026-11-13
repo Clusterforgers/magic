@@ -22,7 +22,7 @@ use crate::modify::{CastPermission, Duration, GameRule, Modification, Prohibited
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable, ZoneKind};
 use crate::spend::{SpendOn, WhenSpent};
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
-use crate::trigger::{ReplaceBy, ReplaceWhen, ShieldShape, Step, TriggerPattern};
+use crate::trigger::{EntersChoice, ReplaceBy, ReplaceWhen, ShieldShape, Step, TriggerPattern};
 use crate::value::CastWay;
 use crate::value::{Amount, Condition, StatKind, TurnTally};
 
@@ -81,6 +81,9 @@ fn prevents_in_part(by: &ReplaceBy) -> bool {
             | ReplaceBy::PreventCountedAnd { .. }
             | ReplaceBy::PreventHalf
             | ReplaceBy::PreventAllBut(_)
+            | ReplaceBy::PreventByCounters(_)
+            | ReplaceBy::PreventHalfNext
+            | ReplaceBy::PreventAllButNext(_)
             | ReplaceBy::PreventNext
             | ReplaceBy::PreventNextAnd(_)
     )
@@ -1781,6 +1784,7 @@ impl<'a> Walker<'a> {
                     CostItem::Mana(_)
                     | CostItem::OwnManaCost
                     | CostItem::OwnManaValue
+                    | CostItem::OwnManaCostLess(_)
                     | CostItem::Tap
                     | CostItem::Exert
                     | CostItem::Untap
@@ -2362,6 +2366,7 @@ impl<'a> Walker<'a> {
             }
             // The cost of these is paid as the cost of an activated ability the keyword adds.
             Keyword::Equip(cost)
+            | Keyword::Fortify(cost)
             | Keyword::Reconfigure(cost)
             | Keyword::Cycling(cost)
             | Keyword::Unearth(cost)
@@ -2451,7 +2456,9 @@ impl<'a> Walker<'a> {
                 self.parts_that_need_an_announcement("Keyword", "Cost", cost);
             }
             // Only mana is paid for the cost; the cleaved spell is walked as the spell it is when cast that way.
-            Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),
+            Keyword::Crew(0) | Keyword::CrewOnce(0) => {
+                self.problem("crew needs a power of at least 1");
+            }
             Keyword::Backup { count, abilities } => self.backup(*count, abilities),
             Keyword::Saddle(0) => self.problem("saddle needs a power of at least 1"),
             Keyword::Enchant(selector) => self.enchant(selector),
@@ -2548,7 +2555,9 @@ impl<'a> Walker<'a> {
                     );
                 }
             }
-            Modification::AddChosenSubtype | Modification::SetChosenColor => {
+            Modification::AddChosenSubtype
+            | Modification::SetChosenColor
+            | Modification::AddChosenColor => {
                 if !self.scope.in_static {
                     self.problem(
                         "the choice the source made as it entered is read by its static ability only",
@@ -3753,6 +3762,10 @@ impl Walker<'_> {
                 ..
             } => self.uses("Effect", "Move.Battlefield"),
             Effect::Move {
+                to: Destination::Command,
+                ..
+            } => self.uses("Effect", "Move.Command"),
+            Effect::Move {
                 to: Destination::BattlefieldAttached { .. },
                 ..
             } => {
@@ -4057,8 +4070,10 @@ impl Walker<'_> {
                     w.uses("Search", "Zones");
                     let zones: Vec<_> = std::iter::once(zone).chain(also).collect();
                     let searchable = |z: &&ZoneKind| matches!(z, ZoneKind::Library | ZoneKind::Hand | ZoneKind::Graveyard | ZoneKind::Exile);
-                    if !zones.iter().all(searchable) || zones.iter().enumerate().any(|(at, z)| zones[..at].contains(z)) {
-                        w.problem("a search of several zones names a library, hand, graveyard or exile, each once");
+                    // Outside the game finds nothing in Commander (no sideboard), so it is only ever one more zone named.
+                    let named = |(at, z): (usize, &&ZoneKind)| searchable(z) || (at > 0 && **z == ZoneKind::Outside && of.is_none());
+                    if !zones.iter().enumerate().all(named) || zones.iter().enumerate().any(|(at, z)| zones[..at].contains(z)) {
+                        w.problem("a search of several zones names a library, hand, graveyard or exile, each once, and outside the game only after them");
                     }
                 }
                 w.at("who", |w| w.reference(who, Kind::Player));
@@ -4086,12 +4101,17 @@ impl Walker<'_> {
                 who,
                 filter,
                 count,
+                most,
                 bind,
                 revealed_as,
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("filter", |w| w.selector(filter));
                 w.at("count", |w| w.amount(count));
+                if let Some(most) = most {
+                    w.uses("RevealUntil", "Most");
+                    w.at("most", |w| w.amount(most));
+                }
                 w.at("as", |w| w.bind(bind, Kind::Object));
                 w.at("revealed_as", |w| w.bind(revealed_as, Kind::Object));
             }
@@ -4406,11 +4426,22 @@ impl Walker<'_> {
                 plus,
                 highest,
                 results,
+                count,
             } => {
                 if let Some(highest) = highest {
                     w.at("highest", |w| w.amount(highest));
+                    if count.is_some() {
+                        w.problem("a roll keeping the highest of one die each has no count of dice");
+                    }
                 }
                 w.roll_dice(who, *sides, (*dice, *choose), plus, results);
+                if let Some(count) = count {
+                    w.uses("RollDice", "Count");
+                    w.at("count", |w| w.amount(count));
+                    if *dice != 1 || *choose || !plus.is_zero() || !results.is_empty() {
+                        w.problem("a roll of a number of dice worked out has no other dice, choice, addition or table");
+                    }
+                }
             }
             Effect::FlipCoin {
                 who,
@@ -5606,6 +5637,7 @@ impl Walker<'_> {
             | GameRule::LifeTotalCantChange(who)
             | GameRule::CantDraw(who)
             | GameRule::CantSearch(who)
+            | GameRule::OwnSpellsCantSearch(who)
             | GameRule::VoteAgain(who)
             | GameRule::ExtraVote(who)
             | GameRule::SkipExtraTurns(who)
@@ -5958,8 +5990,13 @@ impl Walker<'_> {
                     self.at("on", |w| w.reference(on, Kind::Either));
                 }
             }
-            ReplaceWhen::LifeGain { who }
-            | ReplaceWhen::LifeLoss { who }
+            ReplaceWhen::LifeGain { who, caused_own } => {
+                if *caused_own {
+                    self.uses("LifeGain", "CausedOwn");
+                }
+                self.at("who", |w| w.reference(who, Kind::Player));
+            }
+            ReplaceWhen::LifeLoss { who }
             | ReplaceWhen::LoseGame { who }
             | ReplaceWhen::Mill { who }
             | ReplaceWhen::Proliferates { who }
@@ -6086,6 +6123,8 @@ impl Walker<'_> {
                 | ReplaceBy::Redirect { .. }
                 | ReplaceBy::PreventCounted(_)
                 | ReplaceBy::PreventCountedAnd { .. }
+                | ReplaceBy::PreventHalfNext
+                | ReplaceBy::PreventAllButNext(_)
         ) {
             self.problem("only a shield changes the next damage");
         }
@@ -6218,6 +6257,18 @@ impl Walker<'_> {
     #[allow(clippy::too_many_lines)]
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
+        if matches!(by, ReplaceBy::UnderYourControl)
+            && !matches!(
+                when,
+                ReplaceWhen::Enters { .. }
+                    | ReplaceWhen::TokenCreation {
+                        controller: Ref::Opponents,
+                        ..
+                    }
+            )
+        {
+            self.problem("only a permanent entering or tokens an opponent would get come under your control instead");
+        }
         if let ReplaceBy::Choose(kind) = by
             && let Some(shape) = crate::r4702_names::r4702_choice_shape(*kind)
         {
@@ -6330,6 +6381,18 @@ impl Walker<'_> {
                     self.problem("needs at least one effect");
                 }
                 self.effect_list("AsEnters", effects, false);
+            }
+            ReplaceBy::ChooseAfter { first, choice } => {
+                if !enters {
+                    self.problem("only an `Enters` event has effects as it enters");
+                }
+                if first.is_empty() {
+                    self.problem("needs at least one effect before the choice");
+                }
+                if matches!(choice, EntersChoice::Chapter) {
+                    self.problem("a chapter is chosen alone");
+                }
+                self.effect_list("ChooseAfter", first, false);
             }
             ReplaceBy::AsEntersWith { effects, count, .. } => {
                 if !enters {
@@ -6958,6 +7021,8 @@ fn lists(k: &Keyword, keyword: &str) -> bool {
             && Keyword::Partner.name().eq_ignore_ascii_case(keyword))
         // Scryfall lists `Enchant` for an Aura that enchants a player as it does for any other.
         || (matches!(k, Keyword::EnchantPlayer { .. }) && "Enchant".eq_ignore_ascii_case(keyword))
+        // Scryfall lists `Crew` for a crew that may be activated only once each turn.
+        || (matches!(k, Keyword::CrewOnce(_)) && "Crew".eq_ignore_ascii_case(keyword))
         // Scryfall lists `Equip` for an Equipment that equips only some creatures as for any other.
         || (matches!(k, Keyword::EquipTo { .. })
             && Keyword::Equip(Cost::default()).name().eq_ignore_ascii_case(keyword))
@@ -7140,15 +7205,15 @@ mod tests {
     )]
     #[case::the_same_zone_twice(
         r#"{"Spell":{"effects":[{"Search":{"also":["Hand","Hand"],"filter":[],"as":"card"}}]}}"#.to_owned(),
-        &["faces[0].abilities[0].Spell.effects[0].Search: a search of several zones names a library, hand, graveyard or exile, each once"]
+        &["faces[0].abilities[0].Spell.effects[0].Search: a search of several zones names a library, hand, graveyard or exile, each once, and outside the game only after them"]
     )]
     #[case::the_zone_of_the_search_again(
         r#"{"Spell":{"effects":[{"Search":{"also":["Library"],"filter":[],"as":"card"}}]}}"#.to_owned(),
-        &["faces[0].abilities[0].Spell.effects[0].Search: a search of several zones names a library, hand, graveyard or exile, each once"]
+        &["faces[0].abilities[0].Spell.effects[0].Search: a search of several zones names a library, hand, graveyard or exile, each once, and outside the game only after them"]
     )]
     #[case::a_zone_nobody_searches(
         r#"{"Spell":{"effects":[{"Search":{"also":["Battlefield"],"filter":[],"as":"card"}}]}}"#.to_owned(),
-        &["faces[0].abilities[0].Spell.effects[0].Search: a search of several zones names a library, hand, graveyard or exile, each once"]
+        &["faces[0].abilities[0].Spell.effects[0].Search: a search of several zones names a library, hand, graveyard or exile, each once, and outside the game only after them"]
     )]
     #[case::a_table_cost(r#"{"AltCast":{"way":"Surge","cost":[{"Mana":"{R}"}]}}"#.to_owned(), &[])]
     #[case::a_free_cast_from_exile(r#"{"AltCast":{"way":"Warp","from":"Exile"}}"#.to_owned(), &[])]
@@ -7333,6 +7398,7 @@ mod tests {
     #[case::a_move_shuffled_in(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Shuffled","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_beneath_the_top_of_a_library(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":{"Below":2}}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_beneath_the_top_in_a_random_order(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":{"Below":2},"order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Random.Below"])]
+    #[case::a_move_to_the_command_zone(r#"{"Spell":{"effects":[{"Move":{"what":{"Each":["Commander"]},"to":"Command"}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Command"])]
     #[case::a_move_to_the_battlefield_attached(r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Move":{"what":"This","to":{"BattlefieldAttached":{"to":{"Target":0}}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield", "Effect.Move.Attached"])]
     #[case::a_move_to_the_battlefield(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Battlefield":{}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield"])]
     #[case::a_cast_transformed(r#"{"Spell":{"effects":[{"Exile":{"what":"This","as":"card"}},{"CastFromZone":{"what":{"Bound":"card"},"free":true,"transformed":true}}]}}"#, &["Ability.Spell", "Effect.Exile", "Effect.CastFromZone", "Effect.CastFromZone.Transformed"])]

@@ -22,6 +22,7 @@ pub fn sequence(effects: &[Effect]) -> Option<(String, usize)> {
         who,
         filter,
         count,
+        most: None,
         bind,
         revealed_as,
     } = reveal

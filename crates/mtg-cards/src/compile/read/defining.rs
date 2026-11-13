@@ -356,7 +356,7 @@ pub(super) fn counting_text(amount: &Amount) -> Option<String> {
         Amount::Players(Ref::PlayersWhere { .. }) => super::r9w_players::r9w_number_texts(amount)
             .into_iter()
             .next(),
-        Amount::DieResult(which) => Some(super::chance::c11e_result_text(*which).to_owned()),
+        Amount::DieResult(which) => Some(super::chance::c11e_result_text(*which)),
         Amount::Tallied {
             who: Ref::You,
             what: TurnTally::LifeGainedTotal,

@@ -105,6 +105,78 @@ pub(crate) fn rolls(
     }
 }
 
+/// The name a number of a roll of several dice is kept under (`DieResult::Odd`, `Even`, `Total`, `Times`).
+pub(crate) fn r5507_kept(which: mtg_cards::value::DieResult) -> String {
+    use mtg_cards::value::DieResult;
+    match which {
+        DieResult::Odd => "~dice:odd".to_owned(),
+        DieResult::Even => "~dice:even".to_owned(),
+        DieResult::Total => "~dice:total".to_owned(),
+        DieResult::Times(result) => format!("~dice:times:{result}"),
+        DieResult::Only | DieResult::Chosen | DieResult::Other | DieResult::Distinct => {
+            "~dice:one".to_owned()
+        }
+    }
+}
+
+/// "Roll X six-sided dice": the first player the effect names who is still in the game rolls the number of dice the
+/// amount works out to, each logged as `DieRolled`; how many came up odd and even, their total and how many rolled each
+/// number are kept for the effects after it, fresh for this roll (zero when no die is rolled).
+fn r5507_roll_many(
+    cx: &Cx<'_>,
+    who: &mtg_cards::refs::Ref,
+    sides: u32,
+    count: &mtg_cards::value::Amount,
+) -> Result<Run, ResolveError> {
+    use mtg_cards::value::DieResult;
+    let state = cx.state();
+    let player = cx
+        .scope
+        .players(who)?
+        .into_iter()
+        .find(|player| state.is_alive(*player));
+    let dice = u32::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(0);
+    let rolled = player.map_or_else(Vec::new, |player| rolls(state, player, sides, dice));
+    let odd = rolled.iter().filter(|result| *result % 2 == 1).count();
+    let total: u64 = rolled.iter().map(|result| u64::from(*result)).sum();
+    let mut kept = vec![
+        (DieResult::Odd, i64::try_from(odd).unwrap_or(0)),
+        (
+            DieResult::Even,
+            i64::try_from(rolled.len() - odd).unwrap_or(0),
+        ),
+        (DieResult::Total, i64::try_from(total).unwrap_or(0)),
+    ];
+    for face in 1..=sides {
+        let times = rolled.iter().filter(|result| **result == face).count();
+        kept.push((DieResult::Times(face), i64::try_from(times).unwrap_or(0)));
+    }
+    let bound = kept
+        .into_iter()
+        .map(|(which, value)| {
+            (
+                format!("{}{value}:{}", crate::resolve::LET, r5507_kept(which)),
+                Vec::new(),
+            )
+        })
+        .collect();
+    Ok(Run::Done {
+        events: player.map_or_else(Vec::new, |player| {
+            rolled
+                .iter()
+                .map(|result| Event::DieRolled {
+                    player,
+                    sides,
+                    result: *result,
+                })
+                .collect()
+        }),
+        bound,
+        snapshots: Vec::new(),
+        next: Next::Sibling,
+    })
+}
+
 /// The first player the effect names who is still in the game rolls the die: the next substream of the game's random
 /// stream gives a number from 1 to the sides, logged as `DieRolled`, and the step goes on into the first row that holds
 /// that number plus `plus`, past the effect when no row does.
@@ -117,10 +189,14 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         plus,
         highest,
         results,
+        count,
     } = effect
     else {
         return Err(wrong_effect("RollDice"));
     };
+    if let Some(count) = count {
+        return r5507_roll_many(cx, who, *sides, count);
+    }
     let state = cx.state();
     let Some(player) = cx
         .scope
@@ -387,6 +463,77 @@ mod tests {
                 _ => Next::Enter(2),
             };
             assert_eq!(next, expected, "seed {seed}: {rolled:?}");
+        }
+    }
+
+    /// The rolls logged and the numbers kept by a roll of `dice` d6 in the game of `seed`.
+    fn r5507_many(seed: u64, dice: u32) -> (Vec<u32>, Vec<(String, i64)>) {
+        let json = format!(r#"{{"RollDice":{{"sides":6,"results":[],"count":{dice}}}}}"#);
+        let Run::Done {
+            events,
+            bound,
+            next,
+            ..
+        } = roll(&game(seed), &json).unwrap()
+        else {
+            panic!("a roll asks nothing");
+        };
+        assert_eq!(next, Next::Sibling);
+        let rolled = events
+            .iter()
+            .map(|event| match event {
+                Event::DieRolled {
+                    result,
+                    sides: 6,
+                    player: ME,
+                } => *result,
+                other => panic!("{other:?}"),
+            })
+            .collect();
+        let kept = bound
+            .into_iter()
+            .map(|(name, _)| {
+                let (value, kept) = name
+                    .strip_prefix(crate::resolve::LET)
+                    .unwrap()
+                    .split_once(':')
+                    .unwrap();
+                (kept.to_owned(), value.parse().unwrap())
+            })
+            .collect();
+        (rolled, kept)
+    }
+
+    #[rstest]
+    #[case::none(0)]
+    #[case::one(1)]
+    #[case::five(5)]
+    #[case::twelve(12)]
+    fn r5507_a_number_of_dice_keeps_odd_even_total_and_each_face(#[case] dice: u32) {
+        use mtg_cards::value::DieResult;
+        for seed in 0..16 {
+            let (rolled, kept) = r5507_many(seed, dice);
+            assert_eq!(rolled.len(), usize::try_from(dice).unwrap());
+            let value = |which| {
+                kept.iter()
+                    .find(|(name, _)| *name == r5507_kept(which))
+                    .map(|(_, value)| *value)
+                    .unwrap()
+            };
+            let odd = rolled.iter().filter(|r| *r % 2 == 1).count();
+            assert_eq!(value(DieResult::Odd), i64::try_from(odd).unwrap());
+            assert_eq!(
+                value(DieResult::Even),
+                i64::try_from(rolled.len() - odd).unwrap()
+            );
+            assert_eq!(
+                value(DieResult::Total),
+                rolled.iter().map(|r| i64::from(*r)).sum::<i64>()
+            );
+            for face in 1..=6 {
+                let times = rolled.iter().filter(|r| **r == face).count();
+                assert_eq!(value(DieResult::Times(face)), i64::try_from(times).unwrap());
+            }
         }
     }
 

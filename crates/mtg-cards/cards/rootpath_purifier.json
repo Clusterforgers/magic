@@ -1,0 +1,25 @@
+{
+  "oracle_id": "442d06e6-8cf6-4980-b2bf-73cfb4d3a468",
+  "name": "Rootpath Purifier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rootpath Purifier",
+      "oracle_fingerprint": "2253f6e4138965110f80565b5294f560",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Land" },
+                { "ControlledBy": "You" },
+                { "AnyOf": [{ "In": "Battlefield" }, { "In": "Library" }] }
+              ]
+            },
+            "mods": [{ "AddSupertype": "Basic" }]
+          }
+        }
+      ]
+    }
+  ]
+}

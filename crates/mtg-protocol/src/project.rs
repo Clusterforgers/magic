@@ -627,11 +627,13 @@ impl PlayerView {
             enchanted_by: state.attachments_of_player(seat),
             effects: mtg_engine::rules::player_effects(state, seat),
             spirit: player.is_spirit(),
-            boss: match player.phases() {
-                (0, _) => None,
-                (_, begun) => Some(crate::view::BossView {
+            boss: match (player.phases(), player.schemes()) {
+                ((0, _), None) => None,
+                ((_, begun), schemes) => Some(crate::view::BossView {
                     phases: player.phase_names().map(str::to_owned).collect(),
                     begun: u32::try_from(begun).unwrap_or(u32::MAX),
+                    scheme: schemes.and_then(|(now, _)| now).map(str::to_owned),
+                    omen: schemes.map(|(_, omen)| omen.to_owned()),
                 }),
             },
             mulligans: player.mulligans(),

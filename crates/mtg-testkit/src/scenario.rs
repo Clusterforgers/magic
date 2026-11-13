@@ -391,6 +391,28 @@ impl Scenario {
         self
     }
 
+    /// Gives a player a scheme deck (`mtg_engine::schemes`).
+    #[must_use]
+    pub fn schemes(
+        mut self,
+        player: usize,
+        deck: impl IntoIterator<Item = Arc<CardDefinition>>,
+    ) -> Self {
+        if let Some(seat) = self.seat(player) {
+            seat.schemes.extend(deck);
+        }
+        self
+    }
+
+    /// Makes a player the minion of `leader`: it loses when the leader does (`mtg_engine::schemes`).
+    #[must_use]
+    pub fn leader(mut self, player: usize, leader: usize) -> Self {
+        if let Some(seat) = self.seat(player) {
+            seat.leader = Some(PlayerId::from_index(leader));
+        }
+        self
+    }
+
     /// The setup this scenario describes (decks are not validated).
     pub fn setup(self) -> Result<GameSetup, ScenarioError> {
         if let Some(error) = self.error {

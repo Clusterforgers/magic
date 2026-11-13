@@ -37,6 +37,15 @@ pub(super) fn predicates(mods: &[Modification], plural: bool) -> Vec<String> {
                     vec![format!("{} {given}", verb(plural, "has", "have"))],
                 )
             }
+            // "are the chosen type": the creature types replaced by the type the source chose.
+            Modification::SetCreatureTypes(none)
+                if none.is_empty() && tail.first() == Some(&Modification::AddChosenSubtype) =>
+            {
+                (
+                    2,
+                    vec![format!("{} the chosen type", verb(plural, "is", "are"))],
+                )
+            }
             _ => (1, single(first, tail.is_empty(), plural)),
         };
         if found.is_empty() {
@@ -105,6 +114,7 @@ fn single(modification: &Modification, _last: bool, plural: bool) -> Vec<String>
         }
         Modification::AddSupertype(Supertype::Legendary) => vec![format!("{is} legendary")],
         Modification::AddSupertype(Supertype::Snow) => vec![format!("{is} snow")],
+        Modification::AddSupertype(Supertype::Basic) => vec![format!("{is} basic")],
         Modification::AddType(card_type) => {
             let name = type_name(*card_type);
             if name.is_empty() {
@@ -135,6 +145,9 @@ fn single(modification: &Modification, _last: bool, plural: bool) -> Vec<String>
             format!("{is} the chosen creature type in addition to {its} other types"),
         ],
         Modification::SetChosenColor => vec![format!("{is} the chosen color")],
+        Modification::AddChosenColor => vec![format!(
+            "{is} the chosen color in addition to {its} other colors"
+        )],
         Modification::Goaded => vec![format!("{is} goaded")],
         Modification::CantBeBlockedBy(blockers) => phrase_text(blockers, Form::All)
             .map(|group| format!("can't be blocked by {group}"))

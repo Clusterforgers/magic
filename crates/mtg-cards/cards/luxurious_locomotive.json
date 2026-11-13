@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c68c2a98-9a6d-4199-af3a-78eb92beda48",
+  "name": "Luxurious Locomotive",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Luxurious Locomotive",
+      "oracle_fingerprint": "26ef6ecb7231eba621f11f5135746c4a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": { "Count": [{ "Type": "Creature" }, { "Crewed": "This" }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "CrewOnce": 1 } }
+      ]
+    }
+  ]
+}

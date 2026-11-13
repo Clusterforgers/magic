@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e3b8d70b-17aa-4a31-a4f9-319907d088c2",
+  "name": "Gather Specimens",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gather Specimens",
+      "oracle_fingerprint": "2f967534537324fa14870cb6031b660b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Enters": { "what": [{ "Type": "Creature" }] } },
+                  "by": "UnderYourControl",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "TokenCreation": { "controller": "Opponents", "what": [{ "Type": "Creature" }] }
+                  },
+                  "by": "UnderYourControl",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

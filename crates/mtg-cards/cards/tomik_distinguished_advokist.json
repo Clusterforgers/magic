@@ -1,7 +1,7 @@
 {
   "oracle_id": "9895a33f-9bbd-4440-8c1a-0d401431b77f",
   "name": "Tomik, Distinguished Advokist",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tomik, Distinguished Advokist",
@@ -9,15 +9,28 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 7, "end": 128 }
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": {
+                  "Each": [
+                    { "Type": "Land" },
+                    { "AnyOf": [{ "In": "Battlefield" }, { "In": "Graveyard" }] }
+                  ]
+                },
+                "action": { "BeTargeted": [{ "ControlledBy": "Opponents" }] }
+              }
+            }
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 129, "end": 182 }
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "Opponents",
+                "action": { "PlayLands": [{ "Type": "Land" }, { "In": "Graveyard" }] }
+              }
+            }
           }
         }
       ]

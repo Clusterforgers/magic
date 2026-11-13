@@ -1,0 +1,21 @@
+{
+  "oracle_id": "9769ed80-b546-49f5-9329-689e619dabdd",
+  "name": "Rebound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rebound",
+      "oracle_fingerprint": "1e15bb6d5527331dc0cdd5e5f1c839ed",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": ["Spell", { "TargetsPlayer": "EachPlayer" }, "SingleTarget"] } }
+            ],
+            "effects": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "AnotherPlayer" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

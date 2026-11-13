@@ -129,6 +129,7 @@ impl Writer<'_> {
                 plus,
                 highest: None,
                 results,
+                count: None,
             } if plus.is_zero()
                 && matches!(results.as_slice(), [DieRow { from: 1, to: Some(highest), .. }] if highest < sides) =>
             {
@@ -152,6 +153,7 @@ impl Writer<'_> {
                 choose: false,
                 plus,
                 highest: Some(highest),
+                count: None,
                 ..
             } if plus.is_zero() && **highest == Amount::Players(Ref::Attacked) => Some((
                 vec![format!(
@@ -166,6 +168,7 @@ impl Writer<'_> {
                 choose: false,
                 plus,
                 highest: None,
+                count: None,
                 ..
             } if plus.is_zero() => Some((vec![format!("roll a d{sides}")], 1)),
             Effect::RollDice {
@@ -173,6 +176,7 @@ impl Writer<'_> {
                 sides,
                 dice: 2,
                 choose: true,
+                count: None,
                 ..
             } => Some((vec![format!("roll two d{sides} and choose one result")], 1)),
             Effect::RollDice {
@@ -183,6 +187,7 @@ impl Writer<'_> {
                 plus,
                 highest: None,
                 results,
+                count: None,
             } if *dice > 1 && plus.is_zero() && results.is_empty() => {
                 self.r4703_several_dice(*sides, *dice, &effects[1..])
             }

@@ -3,4 +3,4 @@
 /**
  * Why a player lost the game.
  */
-export type LossReason = "ZeroLife" | "EmptyLibrary" | "Poison" | "Conceded" | { "Format": string } | "OpponentReachedLife" | "CommanderDamage";
+export type LossReason = "ZeroLife" | "EmptyLibrary" | "Poison" | "Conceded" | { "Format": string } | "OpponentReachedLife" | "CommanderDamage" | "LeaderFell";

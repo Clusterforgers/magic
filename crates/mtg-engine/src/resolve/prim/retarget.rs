@@ -74,6 +74,8 @@ pub(super) enum Way {
     ChooseCopy,
     /// The only target becomes another legal target, if there is one (CR 115.7a).
     Another,
+    /// As `Another`, and the new target must be a player ("The new target must be a player.").
+    AnotherPlayer,
 }
 
 /// The questions of `way` for `original`, whose new choices start as `copy`. The first player answers them and the second
@@ -95,7 +97,8 @@ pub(super) fn ask(
         let Some(kept) = original.choices.targets.get(at).filter(|t| !t.is_empty()) else {
             continue;
         };
-        if way == Way::Keep || (way == Way::Another && !single) {
+        let another = matches!(way, Way::Another | Way::AnotherPlayer);
+        if way == Way::Keep || (another && !single) {
             break;
         }
         let mut legal = legal_from(
@@ -108,8 +111,11 @@ pub(super) fn ask(
             original.choices.x,
             &original.choices.targets[bases.get(at).copied().unwrap_or(0).min(at)..at],
         );
-        if way == Way::Another {
-            legal.retain(|target| !kept.contains(target));
+        if another {
+            legal.retain(|target| {
+                !kept.contains(target)
+                    && (way == Way::Another || matches!(target, Target::Player(_)))
+            });
             if !legal.is_empty() {
                 changeable.push((at, wording::spec(spec), legal));
             }
@@ -124,7 +130,7 @@ pub(super) fn ask(
     if changeable.is_empty() {
         return Ok(Retargeted::Done(copy));
     }
-    if way != Way::Another {
+    if !matches!(way, Way::Another | Way::AnotherPlayer) {
         match answers.next() {
             None => {
                 let of = if way == Way::ChooseCopy {

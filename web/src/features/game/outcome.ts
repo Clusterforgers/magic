@@ -18,6 +18,8 @@ export function describeLoss(reason: LossReason): string {
       return 'lost to commander damage'
     case 'OpponentReachedLife':
       return 'lost to a player at the winning life total'
+    case 'LeaderFell':
+      return 'fell with their leader'
   }
 }
 

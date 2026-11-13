@@ -113,6 +113,7 @@ Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `
 
 ## Statics, attachments and mutate
 
+- [ ] (r5504a) `ReplaceBy::ChooseAfter` folds the look before the choice is asked, then joins `Caps` (Sorcerous Spyglass, Anointed Peacekeeper, Arachne)
 - [ ] (c7l) The attacking player who chooses the target and the mode of a trigger the Curse controls (Curse of Inertia)
 - [ ] (c7m) Quoted abilities that are rules or make tokens, and the outlaw spend restriction (Nerd Rage, Tarmogoyf Nest, Discreet Retreat)
 - [ ] (c7n) "they gain decayed" after a choice of a card in each player's graveyard (Ghouls' Night Out)
@@ -238,3 +239,4 @@ Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `
 
 - [ ] (c11) The initiative, dungeons and the remaining long-tail mechanics found by the report, one task each
 - [ ] (c11c) The other 24 transforming Sagas, the two precon flip cards and the `prepare` layout's back face; frees about 37 cards (Budoka Gardener, Nezumi Graverobber)
+- [ ] (r5510b) A flashback cost that removes X counters from among permanents with "X can't be 0" (`Keyword.Flashback.Cost.RemoveCountersAmong.X`, `Cost.XAtLeast.Elsewhere`); frees Light Up the Night

@@ -24,7 +24,10 @@ pub(super) fn replacement(r: &mut Reader<'_>) -> Option<Ability> {
     };
     r.word("instead").then_some(())?;
     Some(Ability::Replacement {
-        when: ReplaceWhen::LifeGain { who: Ref::You },
+        when: ReplaceWhen::LifeGain {
+            who: Ref::You,
+            caused_own: false,
+        },
         by,
         condition: None,
         from: ZoneKind::Battlefield,
@@ -34,7 +37,11 @@ pub(super) fn replacement(r: &mut Reader<'_>) -> Option<Ability> {
 /// What `replacement` reads, written back; empty for any other ability.
 pub(super) fn replacement_sentences(ability: &Ability) -> Vec<String> {
     let Ability::Replacement {
-        when: ReplaceWhen::LifeGain { who: Ref::You },
+        when:
+            ReplaceWhen::LifeGain {
+                who: Ref::You,
+                caused_own: false,
+            },
         by,
         condition: None,
         from: ZoneKind::Battlefield,

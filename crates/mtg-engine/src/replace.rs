@@ -719,7 +719,10 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::PreventHalf
         | ReplaceBy::PreventRemovingCounter(_)
         | ReplaceBy::PreventAnd(_)
-        | ReplaceBy::PreventAllBut(_) => {
+        | ReplaceBy::PreventAllBut(_)
+        | ReplaceBy::PreventByCounters(_)
+        | ReplaceBy::PreventHalfNext
+        | ReplaceBy::PreventAllButNext(_) => {
             matches!(unit, Unit::Damage { .. })
         }
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
@@ -796,9 +799,11 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::Mill(_)
         | ReplaceBy::AsEnters(_)
         | ReplaceBy::AsEntersWith { .. }
+        | ReplaceBy::ChooseAfter { .. }
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::Instead(_) => !matches!(unit, Unit::Other),
         ReplaceBy::Plus(_) => matches!(unit, Unit::Tokens { .. }),
+        ReplaceBy::UnderYourControl => matches!(unit, Unit::Tokens { .. } | Unit::Enter { .. }),
         ReplaceBy::InsteadNext(_) => {
             matches!(
                 unit,
@@ -839,6 +844,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::Mill(_)
                 | ReplaceBy::AsEnters(_)
                 | ReplaceBy::AsEntersWith { .. }
+                | ReplaceBy::ChooseAfter { .. }
         )
     )
 }
@@ -866,6 +872,8 @@ impl Action {
                     | ReplaceBy::PreventAnd(_)
                     | ReplaceBy::PreventCountedAnd { .. }
                     | ReplaceBy::PreventAllBut(_)
+                    | ReplaceBy::PreventHalfNext
+                    | ReplaceBy::PreventAllButNext(_)
             )
         )
     }
@@ -1159,7 +1167,7 @@ impl Pass<'_> {
                     ..
                 },
             ) => scope.players(who)?.contains(player),
-            (ReplaceWhen::LifeGain { who }, Unit::Life { player })
+            (ReplaceWhen::LifeGain { who, .. }, Unit::Life { player })
             | (ReplaceWhen::LoseGame { who }, Unit::Loss { player })
             | (ReplaceWhen::Draw { who, .. }, Unit::Draw { player }) => {
                 scope.players(who)?.contains(player)
@@ -1271,6 +1279,9 @@ impl Pass<'_> {
                 || (unpreventable && Action::Replace(by.clone()).prevents())
                 || matches!(by, ReplaceBy::Dredge(cards) if !step.can_dredge(at, source.object.id, *cards))
                 || !step.c6_blk_matches(at, source, when, &unit)?
+                || !step.r5517_caused_own(at, when, &unit)
+                || (matches!(by, ReplaceBy::UnderYourControl)
+                    && !step.r5517_from_opponent(source.controller, &unit))
             {
                 return Ok(());
             }
@@ -1982,10 +1993,17 @@ impl Pass<'_> {
                 continue;
             } else {
                 let selfs: Vec<&Candidate> = candidates.iter().filter(|c| c.is_self).collect();
-                let pool: Vec<&Candidate> = if selfs.is_empty() {
-                    candidates.iter().collect()
-                } else {
+                // After the self-replacements, one that changes who controls what enters goes first (CR 616.1b).
+                let control: Vec<&Candidate> = candidates
+                    .iter()
+                    .filter(|c| matches!(c.action, Action::Replace(ReplaceBy::UnderYourControl)))
+                    .collect();
+                let pool: Vec<&Candidate> = if !selfs.is_empty() {
                     selfs
+                } else if !control.is_empty() {
+                    control
+                } else {
+                    candidates.iter().collect()
                 };
                 // Preventing all of it twice is the same whichever comes first.
                 let alike = pool
@@ -2205,10 +2223,16 @@ impl Pass<'_> {
         };
         match (by, &unit) {
             (
-                ReplaceBy::Prevent | ReplaceBy::PreventUpTo(_) | ReplaceBy::PreventHalf,
+                ReplaceBy::Prevent
+                | ReplaceBy::PreventUpTo(_)
+                | ReplaceBy::PreventHalf
+                | ReplaceBy::PreventHalfNext,
                 Unit::Damage { .. },
             ) => {
                 self.prevent(at, candidate, by, applied);
+            }
+            (ReplaceBy::PreventByCounters(kind), Unit::Damage { .. }) => {
+                self.r5507_prevent_by_counters(at, candidate, kind, applied);
             }
             (ReplaceBy::PreventRemovingCounter(kind), Unit::Damage { .. }) => {
                 self.prevent(at, candidate, &ReplaceBy::Prevent, applied.clone());
@@ -2223,7 +2247,10 @@ impl Pass<'_> {
                 }
                 self.slots.remove(at);
             }
-            (ReplaceBy::PreventAllBut(kept), Unit::Damage { .. }) => {
+            (
+                ReplaceBy::PreventAllBut(kept) | ReplaceBy::PreventAllButNext(kept),
+                Unit::Damage { .. },
+            ) => {
                 self.w9c_prevent_all_but(at, candidate, *kept, applied);
             }
             (ReplaceBy::Instead(effects) | ReplaceBy::Plus(effects), _)
@@ -2289,6 +2316,10 @@ impl Pass<'_> {
                 self.slots[at].applied.clone_from(&applied);
                 self.pull_drawn_commander(at, *player, &applied);
             }
+            (ReplaceBy::UnderYourControl, _) => {
+                self.r5517_under_you(at, candidate.controller, &unit);
+                self.slots[at].applied = applied;
+            }
             (_, Unit::Enter { object, controller }) => {
                 let entering = (*object, *controller);
                 return self.w13b_apply_enter(at, candidate, by, entering, applied);
@@ -2346,6 +2377,10 @@ impl Pass<'_> {
                 let unit = Unit::Enter { object, controller };
                 let with = (effects.as_slice(), counter, count);
                 Ok(self.r304_as_enters_with(at, candidate, with, &unit, applied))
+            }
+            ReplaceBy::ChooseAfter { first, choice } => {
+                let unit = Unit::Enter { object, controller };
+                self.r5504_choose_after(at, candidate, (first, *choice), &unit, applied)
             }
             _ => self.enter(at, candidate, by, object, controller, applied),
         }
@@ -2462,6 +2497,7 @@ impl Pass<'_> {
         let most = match by {
             ReplaceBy::PreventUpTo(most) => *most,
             ReplaceBy::PreventHalf => amount.div_ceil(2),
+            ReplaceBy::PreventHalfNext => amount / 2,
             _ => u32::MAX,
         };
         let taken = most.min(amount);
@@ -3722,6 +3758,10 @@ pub(crate) mod r406_actions;
 mod r4700_choices;
 pub(crate) mod r4708_actions;
 mod r4708_reveal;
+mod r5504_look;
+mod r5507_counters;
+mod r5517_life;
+mod r5517_under;
 mod rmt5_next;
 use rmt5_next::rmt5_next_as_instead;
 mod e19_mill;

@@ -24,6 +24,9 @@ pub(super) fn ep24_retarget_text(effect: &Effect, spec: &TargetSpec) -> Option<S
     let target = target_text(spec)?;
     Some(match (to, onto) {
         (NewTargets::Another, None) => format!("change the target of {target}"),
+        (NewTargets::AnotherPlayer, None) => {
+            format!("change the target of {target}. The new target must be a player")
+        }
         (NewTargets::Choose, None) => format!("you may choose new targets for {target}"),
         (NewTargets::One, Some(Ref::This)) if target.ends_with(SINGLE) => {
             format!("change the target of {target} to ~")
@@ -65,6 +68,10 @@ fn target_text(spec: &TargetSpec) -> Option<String> {
             "instant or sorcery spell"
         }
         [Pred::Spell, Pred::Type(CardType::Instant)] => "instant spell",
+        // "Targets only a player": its one target is a player.
+        [Pred::Spell, Pred::TargetsPlayer(Ref::EachPlayer)] if !single.is_empty() => {
+            return Some("target spell that targets only a player".to_owned());
+        }
         _ => return None,
     };
     Some(format!("target {kind}{single}"))

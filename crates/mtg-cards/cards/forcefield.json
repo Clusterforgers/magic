@@ -1,0 +1,39 @@
+{
+  "oracle_id": "bd6823fb-a696-4e6d-9c5e-3b55dfe03730",
+  "name": "Forcefield",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forcefield",
+      "oracle_fingerprint": "57311067d683869c6adc1bbe2e86e897",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": ["Unblocked", { "Type": "Creature" }] },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": "You",
+                      "source": [{ "Is": { "Bound": "source" } }],
+                      "combat": true
+                    }
+                  },
+                  "by": { "PreventAllButNext": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

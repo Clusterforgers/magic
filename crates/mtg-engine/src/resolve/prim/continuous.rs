@@ -266,6 +266,9 @@ fn entered(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, ResolveEr
         (Wanted::SetChosenColor, Some(Chosen::Color(color))) => {
             Ok(Modification::SetColors(std::iter::once(*color).collect()))
         }
+        (Wanted::AddChosenColor, Some(Chosen::Color(color))) => {
+            Ok(Modification::AddColors(std::iter::once(*color).collect()))
+        }
         _ => Err(ResolveError::Invalid(
             "the source chose no value of the kind".into(),
         )),
@@ -417,7 +420,9 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             from: chosen_word(scope, from)?,
             to: chosen_word(scope, to)?,
         },
-        Wanted::AddChosenSubtype | Wanted::SetChosenColor => entered(scope, wanted)?,
+        Wanted::AddChosenSubtype | Wanted::SetChosenColor | Wanted::AddChosenColor => {
+            entered(scope, wanted)?
+        }
         // The color its owner chose for it as a commander, read by its id in any zone; none was chosen for another card.
         Wanted::SetCommanderColor => {
             match crate::r404_commander_color::chosen(scope.state, scope.source.id) {

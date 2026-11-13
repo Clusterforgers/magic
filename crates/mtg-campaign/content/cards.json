@@ -1164,7 +1164,7 @@
   "kind": "Boss",
   "type_line": "Boss — Advantage",
   "art": "reinforcements",
-  "text": "At the beginning of your upkeep, draw a card and create a 2/2 black Zombie creature token. (A boss gets one Reinforcements for each hero after the first.)",
+  "text": "At the beginning of your upkeep, draw a card and create a 2/2 black Zombie creature token. (A boss gets Reinforcements against a party of three or more.)",
   "abilities": [
    {
     "Triggered": {
@@ -1178,6 +1178,494 @@
       {
        "Draw": {}
       },
+      {
+       "CreateToken": {
+        "token": {
+         "Custom": {
+          "name": "Zombie",
+          "colors": [
+           "Black"
+          ],
+          "types": [
+           "Creature"
+          ],
+          "subtypes": [
+           "Zombie"
+          ],
+          "power": 2,
+          "toughness": 2
+         }
+        }
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "warpath",
+  "name": "Warpath",
+  "kind": "Boss",
+  "type_line": "Boss — Advantage",
+  "art": "warpath",
+  "text": "At end of combat on your turn, if it's the first combat phase of the turn, untap all creatures you control. After this phase, there is an additional combat phase followed by an additional main phase. (A boss gets Warpath against a big party.)",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "EndCombat",
+       "whose": "You"
+      }
+     },
+     "if": "FirstCombat",
+     "effects": [
+      {
+       "Untap": {
+        "what": {
+         "Each": [
+          {
+           "Type": "Creature"
+          },
+          {
+           "ControlledBy": "You"
+          }
+         ]
+        }
+       }
+      },
+      {
+       "AddPhase": {
+        "phases": [
+         "Combat",
+         "Main"
+        ]
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "escalation",
+  "name": "Escalation",
+  "kind": "Boss",
+  "type_line": "Boss — Advantage",
+  "art": "escalation",
+  "text": "At the beginning of your end step, each opponent loses 1 life for every four turns you have taken.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "End",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "LoseLife": {
+        "who": "Opponents",
+        "amount": {
+         "Quotient": {
+          "of": {
+           "TurnsTaken": "You"
+          },
+          "by": 4,
+          "up": false
+         }
+        }
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "enrage",
+  "name": "Enrage",
+  "kind": "Boss",
+  "type_line": "Boss — Advantage",
+  "art": "enrage",
+  "text": "At the beginning of your upkeep, if you have taken ten or more turns, each opponent loses life equal to the number of turns you have taken minus nine.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "if": {
+      "Compare": {
+       "left": {
+        "TurnsTaken": "You"
+       },
+       "op": "Ge",
+       "right": 10
+      }
+     },
+     "effects": [
+      {
+       "LoseLife": {
+        "who": "Opponents",
+        "amount": {
+         "Difference": [
+          {
+           "TurnsTaken": "You"
+          },
+          9
+         ]
+        }
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "bulwark",
+  "name": "Last Bulwark",
+  "kind": "Phase",
+  "type_line": "Boss Phase",
+  "art": "bulwark",
+  "text": "No more than three creatures can attack you each combat.",
+  "abilities": [
+   {
+    "Rule": {
+     "rule": {
+      "AttackLimitAt": {
+       "most": 3,
+       "at": "You"
+      }
+     }
+    }
+   }
+  ]
+ },
+ {
+  "id": "horde_gathers",
+  "name": "The Horde Gathers",
+  "kind": "Scheme",
+  "type_line": "Scheme",
+  "art": "horde_gathers",
+  "text": "At the beginning of your upkeep, create a 1/1 black Rat creature token for each opponent.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "CreateToken": {
+        "token": {
+         "Custom": {
+          "name": "Rat",
+          "colors": [
+           "Black"
+          ],
+          "types": [
+           "Creature"
+          ],
+          "subtypes": [
+           "Rat"
+          ],
+          "power": 1,
+          "toughness": 1
+         }
+        },
+        "count": {
+         "Players": "Opponents"
+        }
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "feast_of_rats",
+  "name": "Feast of Rats",
+  "kind": "Scheme",
+  "type_line": "Scheme",
+  "art": "feast_of_rats",
+  "text": "At the beginning of your upkeep, each opponent loses 1 life and you gain 1 life.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "LoseLife": {
+        "who": "Opponents",
+        "amount": 1
+       }
+      },
+      {
+       "GainLife": {
+        "amount": 1
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "ambush",
+  "name": "Ambush in the Dark",
+  "kind": "Scheme",
+  "type_line": "Scheme",
+  "art": "ambush",
+  "text": "Until your next scheme, creatures you control get +1/+0 and have menace.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "ModifyPT": {
+        "power": 1,
+        "toughness": 0
+       }
+      }
+     ]
+    }
+   },
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "AddKeyword": "Menace"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "bone_wall",
+  "name": "Bone Wall",
+  "kind": "Scheme",
+  "type_line": "Scheme",
+  "art": "bone_wall",
+  "text": "Until your next scheme, creatures you control get +0/+2 and have vigilance.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "ModifyPT": {
+        "power": 0,
+        "toughness": 2
+       }
+      }
+     ]
+    }
+   },
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "AddKeyword": "Vigilance"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "tunnel_collapse",
+  "name": "Tunnel Collapse",
+  "kind": "Scheme",
+  "type_line": "Scheme",
+  "art": "tunnel_collapse",
+  "text": "At the beginning of your upkeep, Tunnel Collapse deals 1 damage to each creature your opponents control.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "DealDamage": {
+        "to": {
+         "Each": [
+          {
+           "Type": "Creature"
+          },
+          {
+           "ControlledBy": "Opponents"
+          }
+         ]
+        },
+        "amount": 1
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "hunting_party",
+  "name": "Hunting Party",
+  "kind": "Scheme",
+  "type_line": "Scheme",
+  "art": "hunting_party",
+  "text": "At the beginning of your upkeep, each opponent sacrifices a creature.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "Sacrifice": {
+        "who": "Opponents",
+        "filter": [
+         {
+          "Type": "Creature"
+         }
+        ]
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "dark_tithe",
+  "name": "Dark Tithe",
+  "kind": "Scheme",
+  "type_line": "Scheme",
+  "art": "dark_tithe",
+  "text": "At the beginning of your upkeep, draw a card.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "Draw": {}
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "plunder",
+  "name": "Plunder the Camp",
+  "kind": "Scheme",
+  "type_line": "Scheme",
+  "art": "plunder",
+  "text": "At the beginning of your upkeep, each opponent discards a card.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "Discard": {
+        "who": "Opponents"
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "reserves",
+  "name": "Reserves",
+  "kind": "Boss",
+  "type_line": "Boss — Advantage",
+  "art": "reserves",
+  "text": "At the beginning of your upkeep, create a 2/2 black Zombie creature token. (A boss gets Reserves against a party of two.)",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "effects": [
       {
        "CreateToken": {
         "token": {

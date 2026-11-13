@@ -1,16 +1,35 @@
 {
   "oracle_id": "9794e31f-e73d-4aa0-a421-dc496080c987",
   "name": "Invasion of Arcavios // Invocation of the Founders",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Invasion of Arcavios",
       "oracle_fingerprint": "4417f4208e771d198109831f0049b997",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 141, "end": 344 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "also": ["Graveyard", "Outside"],
+                  "filter": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "You" }
+                  ],
+                  "reveal": true,
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
           }
         }
       ]

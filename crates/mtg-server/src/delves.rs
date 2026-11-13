@@ -329,6 +329,30 @@ fn deck_refused(refusal: Refused) -> ApiError {
     }
 }
 
+/// The deck of a seat on the boss's side, from its card names and copies.
+async fn boss_side_deck(
+    app: &AppState,
+    name: &str,
+    deck: &[(String, u32)],
+) -> Result<ChosenDeck, ApiError> {
+    let names: Vec<String> = deck
+        .iter()
+        .flat_map(|(card, n)| std::iter::repeat_n(card.clone(), usize::try_from(*n).unwrap_or(0)))
+        .collect();
+    let (ids, cards): (Vec<String>, Vec<Arc<CardDefinition>>) =
+        cards_named(app, &names).await?.into_iter().unzip();
+    let note = SeatDeck {
+        name: name.to_owned(),
+        format: "commander".to_owned(),
+        manual_cards: 0,
+        warnings: 0,
+    };
+    ChosenDeck::stored(ids, cards, note).map_err(|error| {
+        tracing::error!(%error, "a boss deck could not be fingerprinted");
+        ApiError::internal()
+    })
+}
+
 /// Makes the boss fight's game when the party is in a fight that has none.
 async fn make_fight(app: &AppState, loaded: &mut Loaded) -> Result<(), ApiError> {
     if loaded.run.status != (Status::Fight { game: None }) {
@@ -380,31 +404,18 @@ async fn make_fight(app: &AppState, loaded: &mut Loaded) -> Result<(), ApiError>
             });
         }
     }
-    let boss_names: Vec<String> = plan
-        .boss
-        .deck
-        .iter()
-        .flat_map(|(name, n)| std::iter::repeat_n(name.clone(), usize::try_from(*n).unwrap_or(0)))
-        .collect();
-    let boss_cards = cards_named(app, &boss_names).await?;
-    let (ids, cards): (Vec<String>, Vec<Arc<CardDefinition>>) = boss_cards.into_iter().unzip();
-    let note = SeatDeck {
-        name: plan.boss.name.clone(),
-        format: "commander".to_owned(),
-        manual_cards: 0,
-        warnings: 0,
-    };
-    let boss_deck = ChosenDeck::stored(ids, cards, note).map_err(|error| {
-        tracing::error!(%error, "a boss deck could not be fingerprinted");
-        ApiError::internal()
-    })?;
-    decks.push(Some(boss_deck));
-    names.push(plan.boss.name.clone());
-    accounts.push(None);
-    bots.push(BotSeat {
-        seat: plan.boss_seat(),
-        level: bot_level(plan.boss.brain),
-    });
+    // The boss's side: the boss, then its minions, each a bot seat with its deck.
+    let side = std::iter::once((plan.boss.name.as_str(), plan.boss.brain))
+        .chain(plan.minions.iter().map(|m| (m.name.as_str(), m.brain)));
+    for (at, ((name, brain), deck)) in side.zip(plan.boss_decks()).enumerate() {
+        decks.push(Some(boss_side_deck(app, name, deck).await?));
+        names.push(name.to_owned());
+        accounts.push(None);
+        bots.push(BotSeat {
+            seat: PlayerId::from_index(plan.heroes.len() + at),
+            level: bot_level(brain),
+        });
+    }
     let options = GameOptions {
         format: FormatKind::Commander,
         visibility: Visibility::Invite,

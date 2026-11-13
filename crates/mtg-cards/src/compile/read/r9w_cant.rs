@@ -462,6 +462,10 @@ fn activate(kind: ActivationKind, sources: &Selector) -> Option<String> {
         {
             Some("Enchanted creature's activated abilities can't be activated".to_owned())
         }
+        ActivationKind::Any if sources.0 == [Pred::ChosenName] => Some(
+            "Activated abilities of sources with the chosen name can't be activated unless they're mana abilities"
+                .to_owned(),
+        ),
         ActivationKind::Every if !sources.0.is_empty() => Some(format!(
             "Activated abilities of {} can't be activated",
             sources_text(sources)?
