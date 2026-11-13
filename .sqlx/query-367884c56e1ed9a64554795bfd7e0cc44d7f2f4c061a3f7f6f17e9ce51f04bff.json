@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO deck_group_members (deck_id, group_id)\n             SELECT $2, id FROM deck_groups WHERE owner = $1 AND id = $3\n             ON CONFLICT (deck_id) DO UPDATE SET group_id = EXCLUDED.group_id",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "367884c56e1ed9a64554795bfd7e0cc44d7f2f4c061a3f7f6f17e9ce51f04bff"
+}

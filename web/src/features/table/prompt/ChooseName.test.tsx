@@ -1,4 +1,4 @@
-/** Goal: the ChooseName prompt searches the whole catalog by what is typed (no list comes with the decision), offers at most eight hits and drops lands when the card says nonland, answers with the name of the hit clicked, Enter takes the exact or only hit, and "Name no card" answers with an empty name. */
+/** Goal: the ChooseName prompt searches the whole catalog by what is typed (no list comes with the decision), offers at most eight hits and drops lands when the card says nonland (creatures for noncreature, all but nonbasic lands for a nonbasic land name), answers with the name of the hit clicked, Enter takes the exact or only hit, and "Name no card" answers with an empty name. */
 import { screen, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cardsApi } from '@/net/cards'
@@ -70,6 +70,18 @@ describe('nameable', () => {
     ['Basic Land — Forest', false, true],
     ['Artifact', true, true],
   ])('"%s" with nonland %s is %s', (type, nonland, kept) => {
-    expect(nameable([hit('X', type)], nonland)).toHaveLength(kept ? 1 : 0)
+    expect(nameable([hit('X', type)], { nonland })).toHaveLength(kept ? 1 : 0)
+  })
+
+  it.each([
+    ['Creature — Elf', { nonland: true, noncreature: true }, false],
+    ['Artifact Creature — Golem', { nonland: true, noncreature: true }, false],
+    ['Instant', { nonland: true, noncreature: true }, true],
+    ['Land', { nonbasic_land: true }, true],
+    ['Basic Land — Forest', { nonbasic_land: true }, false],
+    ['Basic Snow Land — Forest', { nonbasic_land: true }, false],
+    ['Artifact', { nonbasic_land: true }, false],
+  ])('"%s" with %o is %s', (type, kinds, kept) => {
+    expect(nameable([hit('X', type)], kinds)).toHaveLength(kept ? 1 : 0)
   })
 })

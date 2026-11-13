@@ -7,6 +7,7 @@ import { useAuth } from '@/features/auth/context'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { decksApi } from '@/net/decks'
 import type { DecksApi } from '@/net/decks'
+import type { DeckGroupsApi } from '@/net/deckGroups'
 import { DeckLibrary } from './DeckLibrary'
 
 interface DecksPageProps {
@@ -14,13 +15,15 @@ interface DecksPageProps {
   api?: DecksApi
   /** The time the ages are counted to; the real clock unless a test fixes it. */
   clock?: () => number
+  /** The deck-group endpoints; the shared client unless a test brings its own. */
+  groupsApi?: DeckGroupsApi
 }
 
 /**
  * `/decks`: the signed-in user's decks. Someone who is not signed in is sent to the sign-in form and back; a server
  * without accounts has no decks to show.
  */
-export function DecksPage({ api = decksApi, clock = Date.now }: DecksPageProps) {
+export function DecksPage({ api = decksApi, clock = Date.now, groupsApi }: DecksPageProps) {
   usePageTitle('Decks')
   const status = useAuth((state) => state.status)
 
@@ -61,5 +64,5 @@ export function DecksPage({ api = decksApi, clock = Date.now }: DecksPageProps) 
       </PageShell>
     )
   }
-  return <DeckLibrary api={api} clock={clock} />
+  return <DeckLibrary api={api} clock={clock} groupsApi={groupsApi} />
 }

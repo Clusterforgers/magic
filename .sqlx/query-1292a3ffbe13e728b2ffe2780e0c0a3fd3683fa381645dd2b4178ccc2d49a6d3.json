@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE deck_groups g SET position = o.position - 1\n             FROM unnest($2::uuid[]) WITH ORDINALITY AS o(id, position)\n             WHERE g.owner = $1 AND g.id = o.id",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "UuidArray"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "1292a3ffbe13e728b2ffe2780e0c0a3fd3683fa381645dd2b4178ccc2d49a6d3"
+}

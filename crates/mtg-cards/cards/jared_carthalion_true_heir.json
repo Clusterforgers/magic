@@ -1,16 +1,25 @@
 {
   "oracle_id": "b48da54c-002f-4afb-9fdf-2a3e1cf77383",
   "name": "Jared Carthalion, True Heir",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Jared Carthalion, True Heir",
       "oracle_fingerprint": "6f4d1b59d3b1924b5e0822afe0a12073",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 0, "end": 106 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "BecomeMonarch": { "who": { "Target": 0 } } },
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": "You", "action": "BecomeMonarch" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         },
         {

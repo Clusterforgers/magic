@@ -1,18 +1,13 @@
 {
   "oracle_id": "81b06e8d-ed30-4f90-b729-0aa93b0d870f",
   "name": "Ichor Elixir",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ichor Elixir",
       "oracle_fingerprint": "9940001fb96676b0f4f46840fcd723f7",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 102 }
-          }
-        },
+        { "Rule": { "rule": { "ExtraPlanarDie": "You" } } },
         {
           "Activated": {
             "cost": ["Tap"],

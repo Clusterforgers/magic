@@ -242,6 +242,7 @@ fn a_player_exiles_a_card_of_their_own_graveyard_or_hand(
                 count: Bounds::default(),
                 bind: EXILED_CARD.to_owned(),
                 rest_as: None,
+                differ: None,
             },
             Effect::Exile {
                 what: Ref::Bound(EXILED_CARD.to_owned()),

@@ -39,6 +39,37 @@ pub struct CardsOptions {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub one_per_name: bool,
+    /// The group of each card of `from`, in its order: no two cards chosen may be of one group ("with different
+    /// powers"); no such rule when empty.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<u32>>", optional))]
+    pub groups: Vec<u32>,
+}
+
+impl CardsOptions {
+    /// The options cut to the first card of each group, so any pick of them is legal; unchanged without groups.
+    #[must_use]
+    pub fn one_per_group(&self) -> CardsOptions {
+        if self.groups.is_empty() {
+            return self.clone();
+        }
+        let mut seen: Vec<u32> = Vec::new();
+        let mut from = Vec::new();
+        for (card, group) in self.from.iter().zip(&self.groups) {
+            if !seen.contains(group) {
+                seen.push(*group);
+                from.push(*card);
+            }
+        }
+        let max = self.max.min(u32::try_from(from.len()).unwrap_or(u32::MAX));
+        CardsOptions {
+            from,
+            max,
+            min: self.min.min(max),
+            groups: Vec::new(),
+            ..self.clone()
+        }
+    }
 }
 
 /// The cards chosen.
@@ -54,6 +85,23 @@ pub(crate) fn check(options: &CardsOptions, cards: &[ObjectId]) -> Result<(), Il
         }
         if !options.from.contains(card) {
             return Err(IllegalAnswer::NotOffered("card"));
+        }
+    }
+    if !options.groups.is_empty() {
+        let group_of = |card: &ObjectId| {
+            options
+                .from
+                .iter()
+                .position(|offered| offered == card)
+                .and_then(|at| options.groups.get(at))
+        };
+        for (at, card) in cards.iter().enumerate() {
+            if cards[..at]
+                .iter()
+                .any(|earlier| group_of(earlier) == group_of(card))
+            {
+                return Err(IllegalAnswer::Duplicate("card of one kind"));
+            }
         }
     }
     let count = u32::try_from(cards.len()).unwrap_or(u32::MAX);
@@ -155,6 +203,7 @@ pub(crate) fn pick_cards(cx: &Cx<'_>, choosers: &[Chooser]) -> Result<Picked, Re
             min: chooser.take,
             max: chooser.take,
             text: chooser.text.clone(),
+            groups: Vec::new(),
         })
         .collect();
     pick_selections(cx, &selections)
@@ -165,6 +214,8 @@ pub(crate) fn pick_cards(cx: &Cx<'_>, choosers: &[Chooser]) -> Result<Picked, Re
 pub(crate) struct Selection {
     /// No two cards taken may share a name; the most is then the number of names on offer.
     pub(crate) one_per_name: bool,
+    /// The group of each card of `from`: no two cards taken may be of one group; no such rule when empty.
+    pub(crate) groups: Vec<u32>,
     /// Who chooses; any seat.
     pub(crate) player: PlayerId,
     /// The cards they may take.
@@ -190,6 +241,11 @@ pub(crate) fn pick_selections(
     for selection in selections {
         let offered = if selection.one_per_name {
             names_among(cx.state(), &selection.from)
+        } else if !selection.groups.is_empty() {
+            let mut seen: Vec<u32> = selection.groups.clone();
+            seen.sort_unstable();
+            seen.dedup();
+            seen.len()
         } else {
             selection.from.len()
         };
@@ -207,6 +263,7 @@ pub(crate) fn pick_selections(
                 text: selection.text.clone(),
                 can_cancel: false,
                 one_per_name: selection.one_per_name,
+                groups: selection.groups.clone(),
             };
             match answers.next() {
                 None => {
@@ -264,6 +321,7 @@ mod tests {
             max,
             text: "Discard a card.".into(),
             can_cancel: false,
+            groups: Vec::new(),
         }
     }
 
@@ -388,6 +446,7 @@ mod tests {
                     max: 2,
                     text: "Discard a card.".into(),
                     can_cancel: false,
+                    groups: Vec::new(),
                 }),
             })
         );
