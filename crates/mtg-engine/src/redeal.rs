@@ -168,7 +168,7 @@ mod tests {
                 (Zone::Hand(opponent), &hidden),
                 (Zone::Library(opponent), &library),
             ] {
-                for id in ids.iter() {
+                for id in ids {
                     if let Some(object) = state.objects.get_mut(id) {
                         object.zone = zone;
                     }
