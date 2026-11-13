@@ -75,6 +75,7 @@ mod r404_commander_color;
 mod r4701_boast;
 mod r4707_pay_costs;
 mod r5512_until_cast;
+mod r6013_winds;
 mod r5523_sentinels;
 mod replace_dry;
 mod rmt3_skips;

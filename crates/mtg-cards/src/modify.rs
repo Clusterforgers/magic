@@ -933,6 +933,18 @@ pub enum GameRule {
     /// Spells and abilities the players control can't cause their controller to search their own library: "Spells and
     /// abilities your opponents control can't cause their controller to search their library."
     OwnSpellsCantSearch(Ref),
+    /// The players search only the top `count` cards of any library they would search (CR 614.1a): "If an opponent
+    /// would search a library, that player searches the top four cards of that library instead."
+    SearchTop {
+        /// Who searches that way.
+        who: Ref,
+        /// How many cards from the top they search.
+        count: u32,
+    },
+    /// A permanent with a counter of this kind that would untap during its controller's untap step loses all counters
+    /// of the kind instead and stays tapped (CR 614.1a): "If a permanent with a wind counter on it would untap during
+    /// its controller's untap step, remove all wind counters from it instead."
+    UntapRemovesCounters(CounterKind),
     /// The players may vote an additional time each time they vote: "While voting, you may vote an additional time."
     /// (CR 701.38d).
     VoteAgain(Ref),

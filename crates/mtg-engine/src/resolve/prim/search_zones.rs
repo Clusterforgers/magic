@@ -139,7 +139,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         for kind in &searched {
             let place = zone_of(*kind, owner.unwrap_or(player))?;
             places.push(place);
-            for id in state.zone(place) {
+            for id in super::search::r6013_searched(state, player, place) {
                 if let Some(card) = state.object(*id)
                     && cx.scope.selects(filter, card.reference())?
                 {

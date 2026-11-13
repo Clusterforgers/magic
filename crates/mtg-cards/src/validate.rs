@@ -5926,6 +5926,7 @@ impl Walker<'_> {
             | GameRule::CantDraw(who)
             | GameRule::CantSearch(who)
             | GameRule::OwnSpellsCantSearch(who)
+            | GameRule::SearchTop { who, .. }
             | GameRule::VoteAgain(who)
             | GameRule::ExtraVote(who)
             | GameRule::SkipExtraTurns(who)
@@ -5954,6 +5955,7 @@ impl Walker<'_> {
                 self.at(tag, |w| w.reference(who, Kind::Player));
             }
             GameRule::EchoRather(cost) => self.at(tag, |w| w.cost(cost)),
+            GameRule::UntapRemovesCounters(_) => self.at(tag, |_| {}),
             GameRule::MayCast(permission) => self.at(tag, |w| w.cast_permission(permission)),
             GameRule::LookAtExiled { who, what, only } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
@@ -6765,6 +6767,9 @@ impl Walker<'_> {
                 if *count < 2 || kinds.len() <= *count as usize =>
             {
                 self.problem("a choice of different counters offers more kinds than it takes, and takes two or more");
+            }
+            ReplaceBy::HealFirst if !matches!(when, ReplaceWhen::Damage { .. }) => {
+                self.problem("`HealFirst` replaces a `Damage`");
             }
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");

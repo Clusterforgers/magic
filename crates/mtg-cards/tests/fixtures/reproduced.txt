@@ -114,6 +114,7 @@ Avalanche Caller
 Avatar of Woe
 Aven Eternal
 Aven Initiate
+Aven Mindcensor
 Aven Riftwatcher
 Aven Soulgazer
 Aven Squire

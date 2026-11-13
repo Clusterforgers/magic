@@ -2005,6 +2005,7 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
         (
             GameRule::CantSearch(_)
             | GameRule::OwnSpellsCantSearch(_)
+            | GameRule::SearchTop { .. }
             | GameRule::SkipExtraTurns(_)
             | GameRule::FlipTwoCoins(_)
             | GameRule::ExtraDie(_)

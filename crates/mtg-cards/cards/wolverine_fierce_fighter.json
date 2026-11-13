@@ -1,7 +1,7 @@
 {
   "oracle_id": "8429ba6a-6c06-4a83-a6ee-023b64b825f8",
   "name": "Wolverine, Fierce Fighter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Wolverine, Fierce Fighter",
@@ -20,12 +20,7 @@
             "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 72, "end": 193 }
-          }
-        }
+        { "Replacement": { "when": { "Damage": { "to": "This" } }, "by": "HealFirst" } }
       ]
     }
   ]

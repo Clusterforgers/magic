@@ -8,9 +8,12 @@
       "oracle_fingerprint": "eecb3b00b7aa0094db1dfdbae60fae0e",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 98 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Instead": [{ "Exile": { "what": "Triggering" } }] },
+            "condition": {
+              "Compare": { "left": { "ManaSpent": { "of": null } }, "op": "Eq", "right": 0 }
+            }
           }
         },
         { "Keyword": "Vigilance" },

@@ -1,0 +1,60 @@
+{
+  "oracle_id": "a2f5a5fd-14dc-48e8-bdb0-984a83288023",
+  "name": "Mana Clash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mana Clash",
+      "oracle_fingerprint": "5098a83364b41430fe80a9860e19933f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "Not": {
+                      "All": [
+                        { "Compare": { "left": { "Bound": "mine" }, "op": "Eq", "right": 1 } },
+                        { "Compare": { "left": { "Bound": "theirs" }, "op": "Eq", "right": 1 } }
+                      ]
+                    }
+                  },
+                  "effects": [
+                    { "FlipCoin": { "won_as": "mine", "heads": true } },
+                    { "FlipCoin": { "who": { "Target": 0 }, "won_as": "theirs", "heads": true } },
+                    {
+                      "Together": {
+                        "effects": [
+                          {
+                            "If": {
+                              "condition": {
+                                "Compare": { "left": { "Bound": "mine" }, "op": "Eq", "right": 0 }
+                              },
+                              "then": [{ "DealDamage": { "to": "You", "amount": 1 } }]
+                            }
+                          },
+                          {
+                            "If": {
+                              "condition": {
+                                "Compare": { "left": { "Bound": "theirs" }, "op": "Eq", "right": 0 }
+                              },
+                              "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "most": 1000,
+                  "at_least_once": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

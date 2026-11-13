@@ -734,6 +734,13 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::RedirectUpTo { .. }
         | ReplaceBy::RedirectCounted { .. }
         | ReplaceBy::Redirect { .. } => matches!(unit, Unit::Damage { .. }),
+        ReplaceBy::HealFirst => matches!(
+            unit,
+            Unit::Damage {
+                target: DamageTarget::Object(_),
+                ..
+            }
+        ),
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
         ReplaceBy::LossTimes(_) => matches!(
             unit,
@@ -2315,6 +2322,15 @@ impl Pass<'_> {
                 self.g12a_into_library(at, (*object, *from), (*place, *reveal), &applied);
             }
             (ReplaceBy::Dredge(cards), Unit::Draw { .. }) => self.dredge(at, candidate, *cards),
+            (
+                ReplaceBy::HealFirst,
+                Unit::Damage {
+                    target: DamageTarget::Object(object),
+                    ..
+                },
+            ) => {
+                self.r6013_heal_first(at, *object, applied);
+            }
             (ReplaceBy::UmbraArmor, Unit::Move { object, .. }) => {
                 self.umbra(at, candidate, *object);
             }
@@ -2398,6 +2414,27 @@ impl Pass<'_> {
     /// The Aura's umbra armor saves the creature: its damage is removed in place of its destruction, and the Aura is
     /// destroyed (CR 702.89a). That destruction is an event of its own that other effects replace, unless the batch
     /// already moves the Aura or it is indestructible.
+    /// The damage at `at` is dealt as it was, and the damage already marked on `object` is removed just before it
+    /// (Wolverine, Fierce Fighter); a permanent with none marked loses nothing.
+    fn r6013_heal_first(&mut self, at: usize, object: ObjectId, applied: Vec<Origin>) {
+        self.slots[at].applied = applied;
+        let marked = self
+            .state
+            .object(object)
+            .and_then(|object| object.permanent.as_ref())
+            .is_some_and(|permanent| permanent.damage() > 0 || permanent.deathtouched());
+        if marked {
+            self.slots.insert(
+                at,
+                Slot {
+                    item: Item::One(Event::DamageRemoved { object }),
+                    applied: Vec::new(),
+                    frozen: true,
+                },
+            );
+        }
+    }
+
     fn umbra(&mut self, at: usize, candidate: &Candidate, creature: ObjectId) {
         let aura = candidate.object;
         let mut slots = vec![Slot {

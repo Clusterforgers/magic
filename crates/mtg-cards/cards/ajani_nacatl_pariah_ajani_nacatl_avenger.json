@@ -1,7 +1,7 @@
 {
   "oracle_id": "2588f348-d7a3-46c8-9ace-dca53ed5ef99",
   "name": "Ajani, Nacatl Pariah // Ajani, Nacatl Avenger",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ajani, Nacatl Pariah",
@@ -117,9 +117,89 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 237, "end": 396 }
+          "Loyalty": {
+            "cost": { "Minus": 4 },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "ControlledBy": "Chooser" },
+                      { "Type": "Artifact" }
+                    ]
+                  },
+                  "as": "artifact"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "ControlledBy": "Chooser" },
+                      { "Type": "Creature" },
+                      { "Not": { "Is": { "Bound": "artifact" } } }
+                    ]
+                  },
+                  "as": "creature"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "ControlledBy": "Chooser" },
+                      { "Type": "Enchantment" },
+                      { "Not": { "Is": { "Bound": "artifact" } } },
+                      { "Not": { "Is": { "Bound": "creature" } } }
+                    ]
+                  },
+                  "as": "enchantment"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "ControlledBy": "Chooser" },
+                      { "Type": "Planeswalker" },
+                      { "Not": { "Is": { "Bound": "artifact" } } },
+                      { "Not": { "Is": { "Bound": "creature" } } },
+                      { "Not": { "Is": { "Bound": "enchantment" } } }
+                    ]
+                  },
+                  "as": "planeswalker"
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    { "Not": { "Is": { "Bound": "artifact" } } },
+                    { "Not": { "Is": { "Bound": "creature" } } },
+                    { "Not": { "Is": { "Bound": "enchantment" } } },
+                    { "Not": { "Is": { "Bound": "planeswalker" } } }
+                  ],
+                  "count": {
+                    "Count": [
+                      { "Not": { "Type": "Land" } },
+                      { "Not": { "Is": { "Bound": "artifact" } } },
+                      { "Not": { "Is": { "Bound": "creature" } } },
+                      { "Not": { "Is": { "Bound": "enchantment" } } },
+                      { "Not": { "Is": { "Bound": "planeswalker" } } }
+                    ]
+                  }
+                }
+              }
+            ]
           }
         }
       ]
