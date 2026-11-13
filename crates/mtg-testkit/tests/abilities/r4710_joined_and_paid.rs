@@ -131,21 +131,23 @@ fn r4710_shark_shredder_returns_a_creature_attacking_that_player(
     let bears = driver.id_of("Grizzly Bears")?;
     let state = driver.state();
     assert_eq!(
-        state.object(bears).map(|o| o.controller()),
+        state
+            .object(bears)
+            .map(mtg_engine::object::GameObject::controller),
         Some(PlayerId::from_index(0))
     );
     assert!(
         state
             .object(bears)
             .and_then(|o| o.permanent())
-            .is_some_and(|p| p.tapped())
+            .is_some_and(mtg_engine::object::PermanentState::tapped)
     );
     let attacking = state
         .combat()
         .attackers()
         .iter()
         .find(|a| a.object() == bears)
-        .map(|a| a.target());
+        .map(mtg_engine::combat::Attacker::target);
     assert_eq!(
         attacking,
         Some(AttackTarget::Player(PlayerId::from_index(defender)))

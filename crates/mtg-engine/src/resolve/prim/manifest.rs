@@ -72,7 +72,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         bind,
     } = fields(effect)?;
     if let Some(cards) = cards {
-        return r4710_named(cx, cloak, who, cards, bind);
+        return r4710_named(cx, cloak, who, cards, bind.as_ref());
     }
     let wanted = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(usize::MAX);
     let state = cx.state();
@@ -135,7 +135,7 @@ fn r4710_named(
     cloak: bool,
     who: &Ref,
     cards: &Ref,
-    bind: &Option<String>,
+    bind: Option<&String>,
 ) -> Result<Run, ResolveError> {
     let state = cx.state();
     let mut events = Vec::new();
@@ -186,7 +186,7 @@ fn r4710_named(
         events,
         bound: bind
             .iter()
-            .map(|name| (name.clone(), made.clone()))
+            .map(|name| ((*name).clone(), made.clone()))
             .collect(),
         snapshots: Vec::new(),
         next: Next::Sibling,
