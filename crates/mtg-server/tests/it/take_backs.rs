@@ -230,7 +230,7 @@ async fn a_refusal_reaches_the_asker_alone() {
         let log = table.log().await;
         let received = table.poke(0, ClientMessage::TakeBack).await;
         assert_eq!(received[0], vec![ServerMessage::TakeBackRefused { reason }]);
-        assert!(received[1].is_empty());
+        assert_eq!(received[1], Vec::<ServerMessage>::new());
         assert_eq!(table.log().await, log);
     }
 }
