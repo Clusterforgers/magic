@@ -113,10 +113,14 @@ fn each_owner_chooses_a_color_for_their_commander_before_the_hands(
         .filter(|seat| seat.index() + 1 < seats)
         .collect();
     assert_eq!(asked, order, "asked in turn order from the first player");
-    assert!(matches!(
-        driver.decision().unwrap().kind,
-        DecisionKind::Mulligan(_)
-    ));
+    let DecisionKind::Mulligan(mulligan) = &driver.decision().unwrap().kind else {
+        panic!("the mulligan follows the colors");
+    };
+    assert_eq!(
+        (mulligan.hand.len(), mulligan.free_mulligans),
+        (7, 1),
+        "the first mulligan stays free"
+    );
     for seat in 0..seats {
         let colors = colors_of(&driver, &format!("Piper {seat}"));
         if seat + 1 < seats {
