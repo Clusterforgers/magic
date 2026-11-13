@@ -10,18 +10,28 @@ const R5510_SWAPS: [(&str, &str); 2] = [
     ("fortified land", "enchanted land"),
 ];
 
-/// The clause with every Fortification word turned into its Aura twin; `None` when it names no fortified land.
-fn r5510_twin_text(text: &str) -> Option<String> {
-    R5510_SWAPS
+/// Whether the text names lands by their attachment ("enchanted lands"): lands with an Aura attached, which have no
+/// Fortification twin.
+fn r5510_names_a_group(text: &str) -> bool {
+    ["ortified lands", "nchanted lands"]
         .iter()
-        .any(|(fortified, _)| text.contains(fortified))
-        .then(|| {
-            R5510_SWAPS
-                .iter()
-                .fold(text.to_owned(), |text, (fortified, enchanted)| {
-                    text.replace(fortified, enchanted)
-                })
-        })
+        .any(|group| text.contains(group))
+}
+
+/// The clause with every Fortification word turned into its Aura twin; `None` when it names no fortified land, or a
+/// group of them.
+fn r5510_twin_text(text: &str) -> Option<String> {
+    (!r5510_names_a_group(text)
+        && R5510_SWAPS
+            .iter()
+            .any(|(fortified, _)| text.contains(fortified)))
+    .then(|| {
+        R5510_SWAPS
+            .iter()
+            .fold(text.to_owned(), |text, (fortified, enchanted)| {
+                text.replace(fortified, enchanted)
+            })
+    })
 }
 
 /// Reads a clause about a fortified land through its twin about an enchanted land.
@@ -34,9 +44,10 @@ pub(super) fn r5510_wordings(texts: &mut Vec<String>) {
     let fortified: Vec<String> = texts
         .iter()
         .filter(|text| {
-            R5510_SWAPS
-                .iter()
-                .any(|(_, enchanted)| text.contains(enchanted))
+            !r5510_names_a_group(text)
+                && R5510_SWAPS
+                    .iter()
+                    .any(|(_, enchanted)| text.contains(enchanted))
         })
         .map(|text| {
             R5510_SWAPS
@@ -73,6 +84,7 @@ mod tests {
     )]
     #[case::no_fortification("Enchanted creature gets +1/+1.", None)]
     #[case::other_land("Target land becomes tapped.", None)]
+    #[case::a_group("Fortified lands you control have hexproof.", None)]
     fn r5510_twins(#[case] text: &str, #[case] twin: Option<&str>) {
         assert_eq!(r5510_twin_text(text).as_deref(), twin);
     }
@@ -80,6 +92,7 @@ mod tests {
     #[rstest]
     #[case::land("Enchanted land has indestructible", true)]
     #[case::creature("Enchanted creature has indestructible", false)]
+    #[case::a_group("Enchanted lands you control have hexproof.", false)]
     fn r5510_writes_the_fortified_wording(#[case] text: &str, #[case] added: bool) {
         let mut texts = vec![text.to_owned()];
         r5510_wordings(&mut texts);

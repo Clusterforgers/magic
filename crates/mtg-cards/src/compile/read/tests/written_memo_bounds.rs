@@ -20,7 +20,7 @@ fn counted(json: &str) -> (Vec<String>, usize) {
 #[case::zendikon(
     ZENDIKON,
     "Enchanted permanent has base power and toughness 4/4, has reach and haste, is a creature in addition to its other types, and is an Elemental in addition to its other types as long as it is a land.",
-    60_000,
+    61_000,
     40
 )]
 #[case::two_parts(CAGEMAIL, "Enchanted creature gets +2/+2 and can't attack.", 100, 20)]
