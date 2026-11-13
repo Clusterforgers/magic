@@ -282,7 +282,7 @@ describe('the sentence and the way out', () => {
   it('takes a spell back with Cancel, which nothing is paid for yet', async () => {
     const { answer, user } = mount(two)
     await user.click(screen.getByRole('button', { name: 'Cancel the spell' }))
-    expect(answer).toHaveBeenCalledWith({ ChooseTargets: 'Cancel' })
+    expect(answer).toHaveBeenCalledWith('Undo')
   })
 
   it('calls the way out of an activated ability the ability', () => {

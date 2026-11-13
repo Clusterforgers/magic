@@ -301,7 +301,7 @@ async fn a_cast_backed_out_of_untaps_the_mana_tapped_for_it() {
     table
         .answer(Answer::Priority(PriorityAction::CastSpell(spell)))
         .await;
-    let backed = table.answer(Answer::PayMana(PayChoice::Cancel)).await;
+    let backed = table.answer(Answer::Undo).await;
     for seen in &backed {
         let Some(ServerMessage::Snapshot { state, .. }) = rewound(seen) else {
             panic!("every seat gets a rewound snapshot: {seen:?}");

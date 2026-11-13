@@ -100,7 +100,7 @@ export const ChooseModePrompt: PromptComponent<'ChooseMode'> = ({ options }) => 
           ref={cancel}
           zone={source?.zone}
           className="h-9 px-4"
-          onUndo={() => void answer({ ChooseMode: 'Cancel' })}
+          onUndo={() => void answer('Undo')}
         />
       ) : null}
       <div

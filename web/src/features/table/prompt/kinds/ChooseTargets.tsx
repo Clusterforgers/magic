@@ -154,7 +154,7 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
         Undo
       </Button>
       {options.can_cancel ? (
-        <UndoButton zone={source?.zone} onUndo={() => void answer({ ChooseTargets: 'Cancel' })} />
+        <UndoButton zone={source?.zone} onUndo={() => void answer('Undo')} />
       ) : null}
       <CardChoices
         cards={objectIds}

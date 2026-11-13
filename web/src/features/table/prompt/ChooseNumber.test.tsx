@@ -122,7 +122,7 @@ describe('answers', () => {
     expect(cancel).toHaveLength(buttons)
     if (canCancel) {
       await user.click(must(cancel[0]))
-      expect(answer.mock.calls).toEqual([[{ ChooseNumber: 'Cancel' }]])
+      expect(answer.mock.calls).toEqual([['Undo']])
     }
   })
 })

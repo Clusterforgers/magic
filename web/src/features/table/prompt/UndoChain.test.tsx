@@ -18,13 +18,13 @@ function kindOf(name: string, canCancel = true): DecisionKind {
 
 const CHAIN: [string, string, string, Answer][] = [
   ['way', 'ChooseOption', 'Cancel the spell', 'Undo'],
-  ['mode', 'ChooseMode', 'Cancel the spell', { ChooseMode: 'Cancel' }],
-  ['costs', 'ChooseCosts', 'Cancel the spell', { ChooseCosts: 'Cancel' }],
-  ['x', 'ChooseNumber', 'Cancel the spell', { ChooseNumber: 'Cancel' }],
-  ['targets', 'ChooseTargets', 'Cancel the spell', { ChooseTargets: 'Cancel' }],
-  ['divide', 'DivideAmount', 'Cancel the spell', { DivideAmount: 'Cancel' }],
+  ['mode', 'ChooseMode', 'Cancel the spell', 'Undo'],
+  ['costs', 'ChooseCosts', 'Cancel the spell', 'Undo'],
+  ['x', 'ChooseNumber', 'Cancel the spell', 'Undo'],
+  ['targets', 'ChooseTargets', 'Cancel the spell', 'Undo'],
+  ['divide', 'DivideAmount', 'Cancel the spell', 'Undo'],
   ['sacrifice-cost', 'ChooseCards', 'Cancel the ability', 'Undo'],
-  ['pay', 'PayMana', 'Cancel the spell', { PayMana: 'Cancel' }],
+  ['pay', 'PayMana', 'Cancel the spell', 'Undo'],
 ]
 
 describe('Cancel in the prompts of an announcement', () => {
@@ -75,6 +75,6 @@ describe('Escape that belongs to something else', () => {
   it('pressed in the X field still backs out', () => {
     const { answer } = renderDecision(kindOf('x'))
     fireEvent.keyDown(screen.getByRole('spinbutton'), { key: 'Escape' })
-    expect(answer.mock.calls).toEqual([[{ ChooseNumber: 'Cancel' }]])
+    expect(answer.mock.calls).toEqual([['Undo']])
   })
 })

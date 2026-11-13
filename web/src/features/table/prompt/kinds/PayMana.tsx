@@ -399,7 +399,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
             {options.attack === true ? 'Back to attackers' : 'Back to blockers'}
           </Button>
         ) : (
-          <UndoButton zone={spellZone} onUndo={() => void answer({ PayMana: 'Cancel' })} />
+          <UndoButton zone={spellZone} onUndo={() => void answer('Undo')} />
         )
       ) : null}
     </PromptLayout>

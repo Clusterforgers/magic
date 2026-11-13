@@ -744,7 +744,7 @@ describe('the tax of an attack', () => {
     )
     expect(text()).toContain(words)
     await user.click(screen.getByRole('button', { name: back }))
-    expect(answer.mock.calls).toEqual([[{ PayMana: 'Cancel' }]])
+    expect(answer.mock.calls).toEqual([[attack ? { PayMana: 'Cancel' } : 'Undo']])
   })
 })
 
@@ -857,7 +857,7 @@ describe('Pay automatically, Cancel and Confirm', () => {
   ])('Cancel answers Cancel %s', async (_what, given) => {
     const { answer, user } = renderPay(given)
     await user.click(screen.getByRole('button', { name: /^Cancel the (spell|ability)$/ }))
-    expect(answer.mock.calls).toEqual([[{ PayMana: 'Cancel' }]])
+    expect(answer.mock.calls).toEqual([['Undo']])
   })
 
   it('Cancel works with a payment half made', async () => {
@@ -869,7 +869,7 @@ describe('Pay automatically, Cancel and Confirm', () => {
     )
     await steps(['0'])
     await user.click(screen.getByRole('button', { name: /^Cancel the (spell|ability)$/ }))
-    expect(answer.mock.calls).toEqual([[{ PayMana: 'Cancel' }]])
+    expect(answer.mock.calls).toEqual([['Undo']])
   })
 
   it('Confirm cannot be pressed before the payment covers the cost', async () => {
@@ -888,7 +888,7 @@ describe('Pay automatically, Cancel and Confirm', () => {
   it.each([
     ['Pay automatically', [], { PayMana: 'Auto' }],
     ['Pay the rest for me', ['0'], { PayMana: { Complete: payment([], [[0, 0]]) } }],
-    [/^Cancel the (spell|ability)$/, [], { PayMana: 'Cancel' }],
+    [/^Cancel the (spell|ability)$/, [], 'Undo'],
     [
       'Confirm payment',
       ['0', '1'],

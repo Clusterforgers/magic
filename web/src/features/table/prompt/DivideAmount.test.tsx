@@ -203,7 +203,7 @@ describe('answers', () => {
     expect(cancel).toHaveLength(buttons)
     if (canCancel === true) {
       await user.click(must(cancel[0]))
-      expect(answer.mock.calls).toEqual([[{ DivideAmount: 'Cancel' }]])
+      expect(answer.mock.calls).toEqual([['Undo']])
     }
   })
 })

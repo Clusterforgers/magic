@@ -233,7 +233,8 @@ impl Engine {
         let player = decision.player;
         let priority = matches!(decision.kind, crate::decision::DecisionKind::Priority(_));
         let pass = given == Answer::Priority(crate::decision::PriorityAction::Pass);
-        if matches!(outcome, Outcome::CancelCast)
+        if given == Answer::Undo
+            && matches!(outcome, Outcome::CancelCast)
             && let Some(from) = self.mana_run_to_undo(player)
         {
             return self.rewind(from, None);
@@ -275,7 +276,7 @@ impl Engine {
             .then_some(run.from)
     }
 
-    /// Lets backing out of a cast also undo the mana abilities its player activated just before it, which cuts the log
+    /// Lets `Answer::Undo` of a cast also undo the mana abilities its player activated just before it, which cuts the log
     /// ([`cut_since`](Engine::cut_since)); off by default, so a caller that only appends events never sees a cut.
     pub fn set_rewind_on_cancel(&mut self, on: bool) {
         self.rewind_on_cancel = on;

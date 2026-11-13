@@ -102,7 +102,7 @@ export const ChooseCostsPrompt: PromptComponent<'ChooseCosts'> = ({ options }) =
         Confirm costs
       </Button>
       {options.can_cancel === true ? (
-        <UndoButton zone={source?.zone} onUndo={() => void answer({ ChooseCosts: 'Cancel' })} />
+        <UndoButton zone={source?.zone} onUndo={() => void answer('Undo')} />
       ) : null}
       <p data-slot="costs-total" className="flex items-center gap-1.5 text-sm">
         {none ? (

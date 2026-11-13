@@ -92,7 +92,7 @@ describe('backing out', () => {
     expect(cancel).toHaveFocus()
     await user.keyboard('{Enter}')
     expect(answer).toHaveBeenCalledTimes(1)
-    expect(sent()).toEqual({ ChooseMode: 'Cancel' })
+    expect(sent()).toEqual('Undo')
   })
 
   it('names the ability when a permanent asks', () => {

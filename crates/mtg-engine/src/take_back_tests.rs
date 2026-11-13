@@ -310,9 +310,7 @@ enum Backed {
 
 #[rstest]
 #[case::at_the_target(Backed::AtTheTarget, Answer::Undo)]
-#[case::at_the_target_with_cancel(Backed::AtTheTarget, Answer::ChooseTargets(TargetChoice::Cancel))]
 #[case::at_the_payment(Backed::AtThePayment, Answer::Undo)]
-#[case::at_the_payment_with_cancel(Backed::AtThePayment, Answer::PayMana(PayChoice::Cancel))]
 fn backing_out_of_a_cast_untaps_the_mana_tapped_for_it(#[case] at: Backed, #[case] back: Answer) {
     let mut engine = game(HouseRules::default());
     engine.set_rewind_on_cancel(true);
