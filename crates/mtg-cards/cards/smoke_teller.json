@@ -1,0 +1,20 @@
+{
+  "oracle_id": "387a5937-cdbd-4e8e-8efb-4d444aa9cbc9",
+  "name": "Smoke Teller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smoke Teller",
+      "oracle_fingerprint": "16dcb6219281e9e760b4dc9167be7539",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "FaceDown"] } }],
+            "effects": [{ "LookAtFaceDown": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

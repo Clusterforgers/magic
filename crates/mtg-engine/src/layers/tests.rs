@@ -284,6 +284,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             // Only a static ability has these, and they read what its source chose as it entered (`g9b_chosen`).
             | mtg_cards::modify::Modification::AddChosenSubtype
             | mtg_cards::modify::Modification::SetChosenColor
+            | mtg_cards::modify::Modification::SetCommanderColor
             | mtg_cards::modify::Modification::RemoveKeyword(_)
             | mtg_cards::modify::Modification::RemoveKeywordKind(_)
             | mtg_cards::modify::Modification::LockKeyword(_)

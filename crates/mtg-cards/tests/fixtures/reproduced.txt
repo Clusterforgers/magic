@@ -109,6 +109,7 @@ Avatar of Woe
 Aven Eternal
 Aven Initiate
 Aven Riftwatcher
+Aven Soulgazer
 Aven Squire
 Aven Tactician
 Aven Trailblazer
@@ -641,6 +642,7 @@ Eye of Nidhogg
 Eyeblight Massacre
 Eyetwitch
 Ezzaroot Channeler
+Faceless One
 Fain, the Broker
 Faith Unbroken
 Faithful Watchdog
@@ -1711,6 +1713,7 @@ Slitherhead
 Sluiceway Scorpion
 Smell Fear
 Smoke
+Smoke Teller
 Smuggler's Buggy
 Smuggler's Copter
 Snake Umbra
@@ -1916,6 +1919,7 @@ The Moment
 The Most Dangerous Gamer
 The Mycosynth Gardens
 The Parting of the Ways
+The Prismatic Piper
 The Scorpion God
 The Seriema
 The Spear of Bashenga

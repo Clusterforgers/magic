@@ -395,6 +395,17 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             to: chosen_word(scope, to)?,
         },
         Wanted::AddChosenSubtype | Wanted::SetChosenColor => entered(scope, wanted)?,
+        // The color its owner chose for it as a commander, read by its id in any zone; none was chosen for another card.
+        Wanted::SetCommanderColor => {
+            match crate::r404_commander_color::chosen(scope.state, scope.source.id) {
+                Some(color) => Modification::SetColors(std::iter::once(color).collect()),
+                None => {
+                    return Err(ResolveError::Invalid(
+                        "no color was chosen for this commander".into(),
+                    ));
+                }
+            }
+        }
         Wanted::SetColors(colors) => Modification::SetColors(colors.iter().copied().collect()),
         Wanted::AddColors(colors) => Modification::AddColors(colors.iter().copied().collect()),
         Wanted::AddKeyword(keyword) => Modification::AddKeyword(chosen_in(scope, keyword)),

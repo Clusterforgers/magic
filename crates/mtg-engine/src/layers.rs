@@ -768,7 +768,8 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         Wanted::SetColors(_)
         | Wanted::AddColors(_)
         | Wanted::SetColorsChosen(_)
-        | Wanted::SetChosenColor => Layer::Color,
+        | Wanted::SetChosenColor
+        | Wanted::SetCommanderColor => Layer::Color,
         Wanted::AddKeyword(_)
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType

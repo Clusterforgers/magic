@@ -14,8 +14,8 @@
             "when": {
               "Enters": {
                 "what": [
-                  { "Supertype": "Snow" },
                   { "Type": "Land" },
+                  { "Supertype": "Snow" },
                   { "ControlledBy": "Opponents" }
                 ]
               }

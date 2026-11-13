@@ -714,14 +714,15 @@ impl ContinuousEffect {
     fn stays_enchanted(&self, state: &GameState) -> bool {
         match &self.selector {
             Selector::Objects(named) => named.iter().all(|r| {
-                state.object(r.id).is_some_and(|o| {
-                    o.counter() == r.counter && o.zone() == Zone::Battlefield
-                }) && state.attachments_of(r.id).into_iter().any(|id| {
-                    // Read from the card (or the copy it shows), not the layers, which call this as they apply.
-                    state.object(id).is_some_and(|aura| {
-                        aura.bestowed() || aura.card().subtypes.iter().any(|s| s.0 == "Aura")
+                state
+                    .object(r.id)
+                    .is_some_and(|o| o.counter() == r.counter && o.zone() == Zone::Battlefield)
+                    && state.attachments_of(r.id).into_iter().any(|id| {
+                        // Read from the card (or the copy it shows), not the layers, which call this as they apply.
+                        state.object(id).is_some_and(|aura| {
+                            aura.bestowed() || aura.card().subtypes.iter().any(|s| s.0 == "Aura")
+                        })
                     })
-                })
             }),
             Selector::AllCreatures | Selector::CreaturesControlledBy(_) => false,
         }

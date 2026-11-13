@@ -248,6 +248,7 @@ function durationWords(
 ): string {
   if (typeof duration === 'object') {
     if ('UntilPaid' in duration) return ` until its controller pays ${duration.UntilPaid} to end it`
+    if ('WhileMonarch' in duration) return ' while that player is the monarch'
     const counter = `${counterName(duration.WhileHasCounter)} counter`
     return several ? ` while each has a ${counter}` : ` while it has a ${counter}`
   }
@@ -281,6 +282,8 @@ function durationWords(
       source === null
         ? ' until its source is cast from exile'
         : ` until ${n.card(source.id)} is cast from exile`,
+    WhileEnchanted: several ? ' while each is enchanted' : ' while it is enchanted',
+    UntilItsControllersNextUntapStep: " until its controller's next untap step",
     Forever: '',
   }
   return UNTIL[duration]
@@ -896,6 +899,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     }
   }
   if ('FirstPlayerChosen' in event) return line(`${n.seat(event.FirstPlayerChosen.player)} goes first`)
+  if ('CommanderColorChosen' in event) {
+    const { player, object, color } = event.CommanderColorChosen
+    return line(`${n.seat(player)} chooses ${color.toLowerCase()} for ${n.card(object)}`)
+  }
   if ('LibraryShuffled' in event)
     return quiet(`${n.seat(event.LibraryShuffled.player)} shuffles their library`)
   if ('AttractionDeckShuffled' in event)
@@ -1096,6 +1103,8 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(
       `${n.seat(event.TurnedFaceDown.player)} turns ${n.card(event.TurnedFaceDown.object)} face down`,
     )
+  if ('FaceDownLooked' in event)
+    return line(`${n.seat(event.FaceDownLooked.player)} looks at ${n.card(event.FaceDownLooked.object)}`)
   if ('DoorLocked' in event) {
     const { player, object, door } = event.DoorLocked
     return line(`${n.seat(player)} locks ${n.door?.(object, door) ?? `a door of ${n.card(object)}`}`)

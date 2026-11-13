@@ -207,7 +207,9 @@ mod r307c_events;
 mod r372_suspend;
 mod r375_events;
 mod r375_phase;
+mod r404_commander;
 mod r404_land;
+mod r404_look;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -569,6 +571,11 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         && written_variants(&found)
             .iter()
             .any(|written| same_text(written, text))
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Static
+        && let Some(found) = r404_commander::r404_commander_read(text)
     {
         return Some(found);
     }

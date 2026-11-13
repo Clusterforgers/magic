@@ -19,6 +19,8 @@ pub struct ManaTrigger<'a> {
     pub by: &'a Ref,
     /// Only a tap that makes mana of this type ("for {C}").
     pub produced: Option<mtg_core::mana::ManaType>,
+    /// Only a tap that makes mana of the color the source chose.
+    pub chosen_color: bool,
     /// What must hold as the permanent is tapped (an intervening "if").
     pub condition: Option<&'a Condition>,
     /// Who adds the mana: the controller of the ability (`You`) or the player who tapped the permanent (`Triggering`).
@@ -31,7 +33,13 @@ pub struct ManaTrigger<'a> {
 /// targets, and one `AddMana` for the player who tapped it, once, with no restriction on spending it.
 pub fn mana_trigger(ability: &Ability) -> Option<ManaTrigger<'_>> {
     let Ability::Triggered {
-        when: TriggerPattern::TappedForMana { what, by, produced },
+        when:
+            TriggerPattern::TappedForMana {
+                what,
+                by,
+                produced,
+                chosen_color,
+            },
         intervening_if,
         limit: None,
         from: ZoneKind::Battlefield,
@@ -75,6 +83,7 @@ pub fn mana_trigger(ability: &Ability) -> Option<ManaTrigger<'_>> {
             what,
             by,
             produced: *produced,
+            chosen_color: *chosen_color,
             condition: intervening_if.as_ref(),
             who,
             mana,

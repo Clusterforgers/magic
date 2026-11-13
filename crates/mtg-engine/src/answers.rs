@@ -253,6 +253,12 @@ pub(crate) fn handle(
         (DecisionKind::YesNo(options), Answer::YesNo(choice)) => {
             choose::yes_no_answer(player, options, choice)
         }
+        // In the opening the only question of options is a commander's color.
+        (DecisionKind::ChooseOption(options), Answer::ChooseOption(choice))
+            if state.stage() == Stage::Mulligan =>
+        {
+            crate::r404_commander_color::answer(player, options, choice)
+        }
         (DecisionKind::ChooseOption(options), Answer::ChooseOption(choice)) => {
             choose::option_answer(player, options, choice, pending.is_some())
         }

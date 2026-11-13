@@ -437,6 +437,12 @@ pub enum Effect {
         /// Whose hand.
         of: Ref,
     },
+    /// The controller looks at each face-down permanent the reference names (CR 708.5): only they learn what it is, and
+    /// they may identify it for as long as it stays that object; a face-up one is passed over.
+    LookAtFaceDown {
+        /// What is looked at.
+        what: Ref,
+    },
     /// The objects are revealed to every player.
     Reveal {
         /// What is revealed.

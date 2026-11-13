@@ -102,6 +102,7 @@ mod one_of;
 mod pair;
 mod r301b_exchange_toughness;
 mod r372_gain_suspend;
+mod r404_look_face_down;
 mod reflexive;
 mod remember;
 mod restart_game;
@@ -198,6 +199,7 @@ fn fe1n(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::RepeatWhile { .. } => fe1n_repeat_while::run(cx, effect),
         Effect::SeparatePiles { .. } => fe1n_piles::run(cx, effect),
         Effect::LookAtHand { .. } => look_at_hand::run(cx, effect),
+        Effect::LookAtFaceDown { .. } => r404_look_face_down::run(cx, effect),
         Effect::Let { .. } => let_amount::run(cx, effect),
         Effect::Bind { .. } => bind_ref::run(cx, effect),
         Effect::CopySpell { .. } => copy_spell::run(cx, effect),
@@ -380,7 +382,7 @@ mod tests {
 
     /// One effect of every variant of the vocabulary.
     const EFFECTS: &str = r#"[
-        {"Draw":{}}, {"Discard":{}}, {"Mill":{}}, {"Scry":{}}, {"LookAtTop":{"as":"top"}}, {"LookAtHand":{"of":"You"}},
+        {"Draw":{}}, {"Discard":{}}, {"Mill":{}}, {"Scry":{}}, {"LookAtTop":{"as":"top"}}, {"LookAtHand":{"of":"You"}}, {"LookAtFaceDown":{"what":"This"}},
         {"Reveal":{"what":"This"}}, {"Search":{"filter":[],"as":"found"}},
         {"Choose":{"from":"This","as":"chosen"}}, {"ChooseAtRandom":{"from":"This","as":"picked"}}, {"ChooseValue":{"kind":"Color","as":"hue"}}, {"Shuffle":{}}, {"Move":{"what":"This","to":"Hand"}},
         {"Destroy":{"what":"This"}}, {"Exile":{"what":"This"}}, {"Sacrifice":{"filter":[]}}, {"SacrificeUpTo":{"filter":[],"count":2}},
@@ -434,7 +436,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 133, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 134, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -475,6 +477,7 @@ mod tests {
         "Effect.Scry",
         "Effect.LookAtTop",
         "Effect.LookAtHand",
+        "Effect.LookAtFaceDown",
         "Effect.Reveal",
         "Effect.Search",
         "Effect.Choose",

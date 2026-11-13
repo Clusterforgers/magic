@@ -12,6 +12,7 @@ import type { Choice } from "./Choice";
 import type { Choices } from "./Choices";
 import type { Chosen } from "./Chosen";
 import type { CoinSide } from "./CoinSide";
+import type { Color } from "./Color";
 import type { ContinuousEffect } from "./ContinuousEffect";
 import type { CountersChanged } from "./CountersChanged";
 import type { DamageForm } from "./DamageForm";
@@ -1076,6 +1077,26 @@ player: PlayerId, } } | { "TurnedFaceDown": {
 object: ObjectId, 
 /**
  * Its controller, who turned it.
+ */
+player: PlayerId, } } | { "CommanderColorChosen": { 
+/**
+ * Who chose.
+ */
+player: PlayerId, 
+/**
+ * The commander.
+ */
+object: ObjectId, 
+/**
+ * The color.
+ */
+color: Color, } } | { "FaceDownLooked": { 
+/**
+ * The permanent looked at.
+ */
+object: ObjectId, 
+/**
+ * Who looked.
  */
 player: PlayerId, } } | { "DoorUnlocked": { 
 /**

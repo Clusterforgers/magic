@@ -77,7 +77,6 @@ fn compiled_text() {
     }
 }
 
-
 /// Prints every wording the writers give the ability JSON in `R404_WRITE`; a tool for writing rules files.
 #[test]
 fn written() {
@@ -93,6 +92,16 @@ fn written() {
 #[rstest]
 #[case("Rootwater Matriarch")]
 #[case("Garland, Royal Kidnapper")]
+#[case("Orcish Farmer")]
+#[case("Arcum's Weathervane")]
+#[case("Navigator's Compass")]
+#[case("Gaea's Liege")]
+#[case("Aven Soulgazer")]
+#[case("Smoke Teller")]
+#[case("Gauntlet of Power")]
+#[case("Clara Oswald")]
+#[case("Faceless One")]
+#[case("The Prismatic Piper")]
 fn reads_back_whole(#[case] name: &str) {
     let report = report(name);
     assert_eq!(
@@ -115,11 +124,7 @@ fn altered(name: &str, from: &str, to: &str) -> String {
 
 #[rstest]
 #[case::for_good("Rootwater Matriarch", r#","duration":"WhileEnchanted""#, "")]
-#[case::while_tapped(
-    "Rootwater Matriarch",
-    r#""WhileEnchanted""#,
-    r#""WhileSourceTapped""#
-)]
+#[case::while_tapped("Rootwater Matriarch", r#""WhileEnchanted""#, r#""WhileSourceTapped""#)]
 #[case::enchanted_artifact(
     "Rootwater Matriarch",
     r#"{"Type":"Creature"}"#,
@@ -140,6 +145,52 @@ fn altered(name: &str, from: &str, to: &str) -> String {
     r#","duration":{"WhileMonarch":"Triggering"}"#,
     ""
 )]
+#[case::until_your_next_turn(
+    "Orcish Farmer",
+    r#""UntilItsControllersNextUntapStep""#,
+    r#""UntilYourNextTurn""#
+)]
+#[case::farmer_for_the_turn(
+    "Orcish Farmer",
+    r#""UntilItsControllersNextUntapStep""#,
+    r#""UntilEndOfTurn""#
+)]
+#[case::snow_kept(
+    "Arcum's Weathervane",
+    r#"{"RemoveSupertype":"Snow"}"#,
+    r#"{"AddSupertype":"Snow"}"#
+)]
+#[case::snow_for_the_turn("Arcum's Weathervane", r#""Forever""#, r#""UntilEndOfTurn""#)]
+#[case::legendary_not_snow(
+    "Arcum's Weathervane",
+    r#"{"RemoveSupertype":"Snow"}"#,
+    r#"{"RemoveSupertype":"Legendary"}"#
+)]
+#[case::any_snow_land("Arcum's Weathervane", r#"{"Not":{"Supertype":"Snow"}},"#, "")]
+#[case::type_replaced(
+    "Navigator's Compass",
+    r#"{"AddLandTypeChosen":"chosen"}"#,
+    r#"{"SetLandTypesChosen":"chosen"}"#
+)]
+#[case::compass_for_good("Navigator's Compass", r#""UntilEndOfTurn""#, r#""Forever""#)]
+#[case::any_land("Navigator's Compass", r#",{"ControlledBy":"You"}"#, "")]
+#[case::liege_while_controlled(
+    "Gaea's Liege",
+    r#""WhileSourceOnBattlefield""#,
+    r#""WhileYouControlSource""#
+)]
+#[case::any_creature("Aven Soulgazer", r#","FaceDown""#, "")]
+#[case::look_reveals(
+    "Smoke Teller",
+    r#"{"LookAtFaceDown":{"what":{"Target":0}}}"#,
+    r#"{"Reveal":{"what":{"Target":0}}}"#
+)]
+#[case::any_color("Gauntlet of Power", r#""chosen_color":true,"#, "")]
+#[case::nonbasic_too("Gauntlet of Power", r#",{"Supertype":"Basic"}]"#, "]")]
+#[case::two_more("Gauntlet of Power", r#"{"ChosenColor":1}"#, r#"{"ChosenColor":2}"#)]
+#[case::you_add("Gauntlet of Power", r#""who":"Triggering""#, r#""who":"You""#)]
+#[case::chosen_as_it_enters("Faceless One", r#""SetCommanderColor""#, r#""SetChosenColor""#)]
+#[case::only_on_the_battlefield("The Prismatic Piper", r#""defining":true,"#, "")]
 fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let report = report_of(name, &altered(name, from, to));
     assert_ne!(

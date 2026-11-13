@@ -2284,6 +2284,13 @@ impl<'a> Walker<'a> {
                     self.problem("a limit on blockers needs a count of at least one");
                 }
             }
+            Modification::SetCommanderColor => {
+                if !self.scope.in_static {
+                    self.problem(
+                        "the color chosen for a commander is read by its static ability only",
+                    );
+                }
+            }
             Modification::AddChosenSubtype | Modification::SetChosenColor => {
                 if !self.scope.in_static {
                     self.problem(
@@ -2404,6 +2411,7 @@ impl<'a> Walker<'a> {
                     | Modification::SetPower(_)
                     | Modification::SetToughness(_)
                     | Modification::SetColors(_)
+                    | Modification::SetCommanderColor
                     | Modification::AddColors(_)
                     | Modification::AddType(_)
                     | Modification::AddSubtype(_)
@@ -2546,6 +2554,15 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Cycled { what, by } => {
                 self.at("what", |w| w.selector(what));
                 self.at("by", |w| w.reference(by, Kind::Player));
+                if matches!(
+                    pattern,
+                    TriggerPattern::TappedForMana {
+                        chosen_color: true,
+                        ..
+                    }
+                ) {
+                    self.uses("Trigger", "TappedForMana.ChosenColor");
+                }
             }
             TriggerPattern::Tapped { what }
             | TriggerPattern::TappedNotAttacking { what }
@@ -3612,6 +3629,7 @@ impl Walker<'_> {
                 }
             }
             Effect::LookAtHand { of } => w.at("of", |w| w.reference(of, Kind::Player)),
+            Effect::LookAtFaceDown { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::Reveal { what }
             | Effect::Untap { what }
             | Effect::TapOrUntap { what }

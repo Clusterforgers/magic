@@ -95,8 +95,14 @@ const CHOSEN: &str = "chosen";
 /// Turns the one continuous effect that makes a land a Swamp for the turn into the choice of a basic land type and the
 /// effect that adds it.
 fn chosen_from_swamp(value: &mut Value) -> Option<()> {
-    let swamp = (json!([{ "SetLandTypes": ["Swamp"] }]), json!("UntilEndOfTurn"));
-    let added = (json!([{ "AddLandTypeChosen": CHOSEN }]), json!("UntilEndOfTurn"));
+    let swamp = (
+        json!([{ "SetLandTypes": ["Swamp"] }]),
+        json!("UntilEndOfTurn"),
+    );
+    let added = (
+        json!([{ "AddLandTypeChosen": CHOSEN }]),
+        json!("UntilEndOfTurn"),
+    );
     let mut paths = Vec::new();
     continuous_paths(value, &mut Vec::new(), &mut paths);
     let mut found = paths
@@ -134,7 +140,10 @@ fn forms(change: Change, duration: Option<&str>) -> Option<((Value, Value), (Val
             (json!([{ "RemoveSupertype": "Snow" }]), kept(duration)),
         ),
         Change::Lasts(to) => ((Value::Null, end), (Value::Null, json!(to))),
-        Change::ChosenAdded => ((json!("SetLandTypesChosen"), end.clone()), (json!("AddLandTypeChosen"), end)),
+        Change::ChosenAdded => (
+            (json!("SetLandTypesChosen"), end.clone()),
+            (json!("AddLandTypeChosen"), end),
+        ),
     })
 }
 
@@ -242,9 +251,9 @@ fn moved_duration(text: &str) -> Option<String> {
 /// The same text with "Until end of turn, " put before the sentence that ends with `phrase`, which it leaves.
 fn leading_duration(text: &str, phrase: &str) -> Option<String> {
     let end = text.find(phrase)?;
-    let start = text[..end]
-        .rfind([':', '.'])
-        .map_or(0, |at| at + 1 + usize::from(text[at + 1..].starts_with(' ')));
+    let start = text[..end].rfind([':', '.']).map_or(0, |at| {
+        at + 1 + usize::from(text[at + 1..].starts_with(' '))
+    });
     let sentence = &text[start..end];
     let mut chars = sentence.chars();
     let first = chars.next()?.to_ascii_lowercase();
@@ -289,7 +298,9 @@ pub(super) fn r404_land_read(
         }
     }
     // A twin duration stands for one "until end of turn" only.
-    if rules.iter().any(|rule| matches!(rule.change, Change::Lasts(_)))
+    if rules
+        .iter()
+        .any(|rule| matches!(rule.change, Change::Lasts(_)))
         && twin.matches(" until end of turn").count() != 1
     {
         return None;

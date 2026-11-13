@@ -479,6 +479,10 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::ClassLevelGained { .. }
         | Event::TurnedFaceUp { .. }
         | Event::TurnedFaceDown { .. }
+        // Which permanent is public; what it is, the view tells the looker alone (`may_look_at`).
+        | Event::FaceDownLooked { .. }
+        // The color of a commander is public, as the card is.
+        | Event::CommanderColorChosen { .. }
         | Event::DoorUnlocked { .. }
         | Event::DoorLocked { .. }
         | Event::Mutated { .. }

@@ -468,6 +468,10 @@ pub(crate) fn next(state: &GameState) -> Progress {
             .collect()
     };
 
+    // A commander's color is chosen before the game begins, before any hand is dealt.
+    if let Some(decision) = crate::r404_commander_color::question(state) {
+        return Progress::Decide(decision);
+    }
     let needs_hand = with_status(|s| s == MulliganStatus::NeedsHand);
     if !needs_hand.is_empty() {
         return Progress::Events(deal(state, &needs_hand));

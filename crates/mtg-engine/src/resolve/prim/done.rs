@@ -30,6 +30,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Scry { .. }
         | Effect::Reveal { .. }
         | Effect::LookAtHand { .. }
+        | Effect::LookAtFaceDown { .. }
         | Effect::Search { .. }
         | Effect::Shuffle { .. }
         | Effect::Move { .. }

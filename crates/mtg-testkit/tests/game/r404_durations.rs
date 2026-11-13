@@ -176,14 +176,23 @@ fn control_lasts_while_that_player_is_the_monarch(
             .hand(
                 0,
                 [
-                    instant("Crown Them", serde_json::json!({"Spell": {
+                    instant(
+                        "Crown Them",
+                        serde_json::json!({"Spell": {
                         "targets": [{"what": "Opponent"}],
-                        "effects": [{"BecomeMonarch": {"who": {"Target": 0}}}]}})),
-                    instant("Crown Another", serde_json::json!({"Spell": {
+                        "effects": [{"BecomeMonarch": {"who": {"Target": 0}}}]}}),
+                    ),
+                    instant(
+                        "Crown Another",
+                        serde_json::json!({"Spell": {
                         "targets": [{"what": "Opponent"}],
-                        "effects": [{"BecomeMonarch": {"who": {"Target": 0}}}]}})),
-                    instant("Crown Me", serde_json::json!({"Spell": {
-                        "effects": [{"BecomeMonarch": {"who": "You"}}]}})),
+                        "effects": [{"BecomeMonarch": {"who": {"Target": 0}}}]}}),
+                    ),
+                    instant(
+                        "Crown Me",
+                        serde_json::json!({"Spell": {
+                        "effects": [{"BecomeMonarch": {"who": "You"}}]}}),
+                    ),
                 ],
             );
         for seat in 0..seats {

@@ -102,6 +102,10 @@ pub enum Modification {
     /// Makes the colour the source chose as it entered the only colour (layer 5): "is the chosen color". Only a static
     /// ability has it; with no colour chosen it changes nothing.
     SetChosenColor,
+    /// Sets the color to the one the card's owner chose for it before the game began as their commander (layer 5): "If ~
+    /// is your commander, choose a color before the game begins. ~ is the chosen color." Only the card's own
+    /// characteristic-defining static ability has it; a card nobody chose a color for keeps its colors.
+    SetCommanderColor,
     /// Adds a keyword ability (layer 6).
     AddKeyword(Keyword),
     /// Adds protection from a colour the controller chooses as the effect begins (layer 6): "protection from the
@@ -205,7 +209,8 @@ impl Modification {
             Modification::SetColors(_)
             | Modification::AddColors(_)
             | Modification::SetColorsChosen(_)
-            | Modification::SetChosenColor => Some("5"),
+            | Modification::SetChosenColor
+            | Modification::SetCommanderColor => Some("5"),
             Modification::AddKeyword(_)
             | Modification::AddProtectionFromChosenColor
             | Modification::AddProtectionFromChosenCardType
@@ -291,7 +296,7 @@ pub enum Duration {
     /// For as long as the player the reference names as the effect begins is the monarch ("for as long as they're the
     /// monarch", CR 724): it ends when that player stops being the monarch, and at once when they are not the monarch
     /// as it begins. Only a continuous effect lasts this way.
-    WhileMonarch(Ref),
+    WhileMonarch(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Ref),
     /// Until the next untap step of the player who controls a permanent it applies to as it begins ("target land
     /// becomes a Swamp until its controller's next untap step"): it ends as that player's next turn begins. Only a
     /// continuous effect lasts this way.
