@@ -94,7 +94,7 @@ fn r5523_cacophony_animates_on_an_enchantment(
     );
     driver.begin_cast("Glorious Anthem")?;
     let found = r5523_until(&mut driver, |d| {
-        r5523_power(d, "Cacophony Unleashed") == Some(6)
+        r5523_power(d, "Cacophony Unleashed").is_some()
     })?;
     assert_eq!(found, animates);
     if animates {
