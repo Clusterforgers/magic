@@ -1511,6 +1511,11 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         Some((Pred::Spell, rest)) => (true, rest),
         _ => (false, selector.0.as_slice()),
     };
+    // "Spells with the chosen name" only: of a permanent or a source the card says it otherwise ("sources with the
+    // chosen name"), and those words have writers of their own.
+    if !spell && preds.contains(&Pred::ChosenName) {
+        return None;
+    }
     let preds = &super::w21a_atoms::w21a_zone_first(preds);
     let (mut adjectives, mut types, mut suffixes) = (Vec::new(), Vec::new(), Vec::new());
     let (mut subtypes, mut card, mut token) = (Vec::<&str>::new(), false, false);
