@@ -1,23 +1,71 @@
 {
   "oracle_id": "93cddbad-92ef-4b30-a0e7-981aee714bce",
   "name": "Radiant Grace // Radiant Restraints",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Radiant Grace",
       "oracle_fingerprint": "7559632ad72805d426ba0608652cb51b",
       "abilities": [
-        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
         {
-          "Static": {
-            "affected": "Attached",
-            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Vigilance" }]
+          "Keyword": {
+            "Enchant": [
+              {
+                "Type": "Creature"
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 66, "end": 191 }
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": 1,
+                  "toughness": 0
+                }
+              },
+              {
+                "AddKeyword": "Vigilance"
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "Is": "Attached"
+                  }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [
+              {
+                "what": "Opponent"
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": {
+                    "BattlefieldAttached": {
+                      "to": {
+                        "Target": 0
+                      },
+                      "transformed": true,
+                      "under": "You"
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]
@@ -26,11 +74,24 @@
       "name": "Radiant Restraints",
       "oracle_fingerprint": "24a262926a557045ec782bb5291d8399",
       "abilities": [
-        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Keyword": {
+            "EnchantPlayer": {}
+          }
+        },
         {
           "Replacement": {
             "when": {
-              "Enters": { "what": [{ "Type": "Creature" }, { "ControlledBy": "AttachedPlayer" }] }
+              "Enters": {
+                "what": [
+                  {
+                    "Type": "Creature"
+                  },
+                  {
+                    "ControlledBy": "AttachedPlayer"
+                  }
+                ]
+              }
             },
             "by": "Tapped"
           }

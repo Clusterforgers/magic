@@ -64,6 +64,10 @@ pub enum Limit {
     TimesPerTurn(u32),
     /// "Do this only once each turn" on a trigger whose first step is optional: spent only when that step is done.
     OncePerTurnDone,
+    /// A power-up ability ("Power-up — {cost}: effect"): activated only once for the object that has it, once more for
+    /// each `GameRule::PowerUpAgain` that reaches it, and its cost is reduced by the object's mana cost while the object
+    /// entered the battlefield this turn.
+    PowerUp,
 }
 
 impl Limit {
@@ -135,6 +139,8 @@ pub enum ActivationKind {
     Mana,
     /// Every activated ability, mana abilities included (CR 605.1a).
     Every,
+    /// A power-up ability (`Limit::PowerUp`).
+    PowerUp,
     /// An activated ability with {T} in its cost, a mana ability included ("activated abilities with {T} in their costs").
     TapCost,
     /// Unlocking a door of a Room (CR 709.5e): a special action, not an ability, whose cost only a modifier of this kind

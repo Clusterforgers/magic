@@ -1186,7 +1186,9 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(`Turn ${number} begins: ${n.seat(active)}'s ${extra ? 'extra turn' : 'turn'}`)
   }
   if ('ExtraTurnAdded' in event) {
-    return line(`${n.seat(event.ExtraTurnAdded.player)} takes an extra turn after this one`)
+    const { player, no_power_up } = event.ExtraTurnAdded
+    const banned = no_power_up ? ", during which power-up abilities can't be activated" : ''
+    return line(`${n.seat(player)} takes an extra turn after this one${banned}`)
   }
   if ('ExtraTurnSkipped' in event) {
     return quiet(`${n.seat(event.ExtraTurnSkipped.player)} skips an extra turn`)

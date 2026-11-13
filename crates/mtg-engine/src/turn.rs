@@ -116,12 +116,25 @@ impl Step {
 }
 
 /// An extra turn waiting to be taken (CR 500.7).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct ExtraTurn {
     /// Who takes it.
     pub player: PlayerId,
     /// Whether its untap step is skipped.
     pub skip_untap: bool,
+    /// Whether power-up abilities can't be activated during it.
+    pub no_power_up: bool,
+}
+
+// An extra turn that allows power-up abilities hashes as it did before the rule existed.
+impl Hash for ExtraTurn {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.player.hash(state);
+        self.skip_untap.hash(state);
+        if self.no_power_up {
+            self.no_power_up.hash(state);
+        }
+    }
 }
 
 /// The bit of a kind of step in the masks of the steps begun this turn.
@@ -142,6 +155,8 @@ pub struct TurnState {
     pub(crate) regular: PlayerId,
     /// Whether this turn is an extra turn.
     pub(crate) extra: bool,
+    /// Whether power-up abilities can't be activated this turn (an extra turn taken with that rule).
+    pub(crate) no_power_up: bool,
     /// The combat phases begun so far this turn.
     pub(crate) combats: u32,
     /// The phases still to begin when the added ones come after the current phase (CR 500.8), each as the step it
@@ -182,6 +197,9 @@ impl Hash for TurnState {
         }
         if self.r306_again != 0 {
             self.r306_again.hash(state);
+        }
+        if self.no_power_up {
+            self.no_power_up.hash(state);
         }
         if self.ending {
             self.ending.hash(state);

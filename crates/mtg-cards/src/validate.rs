@@ -1733,6 +1733,9 @@ impl<'a> Walker<'a> {
                     CostItem::TapPower { filter, .. } => {
                         w.at("filter", |w| w.selector(filter));
                     }
+                    CostItem::ManaCostOf(of) => {
+                        w.at("ManaCostOf", |w| w.reference(of, Kind::Object));
+                    }
                     CostItem::Changed { per, condition, .. } => {
                         w.at("per", |w| w.amount(per));
                         if let Some(condition) = condition {
@@ -3125,8 +3128,14 @@ impl Walker<'_> {
             | Destination::BattlefieldFaceDown { under: Some(who) } => {
                 self.at("under", |w| w.reference(who, Kind::Player));
             }
-            Destination::BattlefieldAttached { to } => {
-                self.at("to", |w| w.reference(to, Kind::Object));
+            Destination::BattlefieldAttached { to, under, .. } => {
+                self.at("to", |w| w.reference(to, Kind::Either));
+                if let Some(who) = under {
+                    self.at("under", |w| w.reference(who, Kind::Player));
+                }
+            }
+            Destination::BattlefieldEnchanting { only } => {
+                self.at("only", |w| w.selector(only));
             }
             _ => {}
         }
@@ -3640,6 +3649,9 @@ impl Walker<'_> {
                 to: Destination::Battlefield {
                     transformed: true,
                     ..
+                } | Destination::BattlefieldAttached {
+                    transformed: true,
+                    ..
                 },
                 ..
             }
@@ -3666,6 +3678,13 @@ impl Walker<'_> {
             } => {
                 self.uses("Effect", "Move.Battlefield");
                 self.uses("Effect", "Move.Attached");
+            }
+            Effect::Move {
+                to: Destination::BattlefieldEnchanting { .. },
+                ..
+            } => {
+                self.uses("Effect", "Move.Battlefield");
+                self.uses("Effect", "Move.Enchanting");
             }
             Effect::Move {
                 to: Destination::BattlefieldFaceDown { .. },
@@ -4081,7 +4100,7 @@ impl Walker<'_> {
             }
             Effect::Attach { what, to, bind } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
-                w.at("to", |w| w.reference(to, Kind::Object));
+                w.at("to", |w| w.reference(to, Kind::Either));
                 if let Some(name) = bind {
                     w.at("as", |w| w.bind(name, Kind::Object));
                 }
@@ -4987,6 +5006,13 @@ impl Walker<'_> {
         if limit {
             self.uses("Ability", "Limit");
         }
+        if let Ability::Activated {
+            limit: Some(crate::ability::Limit::PowerUp),
+            ..
+        } = ability
+        {
+            self.uses("Limit", "PowerUp");
+        }
         // The limit counted as a choice is done needs a triggered ability whose first step is that choice.
         let counted_done = match ability {
             Ability::Triggered {
@@ -5373,6 +5399,9 @@ impl Walker<'_> {
         match rule {
             GameRule::DamageCantBePrevented { source, .. } => {
                 self.at(tag, |w| w.at("source", |w| w.selector(source)));
+            }
+            GameRule::PowerUpAgain(which) => {
+                self.at(tag, |w| w.selector(which));
             }
             GameRule::MustAttack(who)
             | GameRule::MustBlock(who)
@@ -7140,6 +7169,8 @@ mod tests {
     #[case::a_move_beneath_the_top_in_a_random_order(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":{"Below":2},"order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Random.Below"])]
     #[case::a_move_to_the_battlefield_attached(r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Move":{"what":"This","to":{"BattlefieldAttached":{"to":{"Target":0}}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield", "Effect.Move.Attached"])]
     #[case::a_move_to_the_battlefield(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Battlefield":{}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield"])]
+    #[case::r5515_a_move_attached_to_a_player_transformed(r#"{"Spell":{"targets":[{"what":"Opponent"}],"effects":[{"Move":{"what":"This","to":{"BattlefieldAttached":{"to":{"Target":0},"transformed":true,"under":"You"}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield", "Effect.Move.Attached", "Effect.Move.Transformed"])]
+    #[case::r5515_a_move_enchanting_only_creatures(r#"{"Spell":{"effects":[{"Move":{"what":{"Each":[{"Subtype":"Aura"},{"In":"Graveyard"},{"OwnedBy":"You"}]},"to":{"BattlefieldEnchanting":{"only":[{"Type":"Creature"}]}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield", "Effect.Move.Enchanting"])]
     #[case::a_cast_transformed(r#"{"Spell":{"effects":[{"Exile":{"what":"This","as":"card"}},{"CastFromZone":{"what":{"Bound":"card"},"free":true,"transformed":true}}]}}"#, &["Ability.Spell", "Effect.Exile", "Effect.CastFromZone", "Effect.CastFromZone.Transformed"])]
     #[case::a_move_to_the_battlefield_transformed(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Battlefield":{"transformed":true}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield", "Effect.Move.Transformed"])]
     #[case::a_move_to_the_top_in_a_random_order(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Top","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Random.Top"])]

@@ -35,6 +35,7 @@ mod e16c_player_counters;
 mod e19_return_changed;
 mod elimination;
 mod enchant_player;
+mod r5515_auras;
 mod entered_this_turn;
 mod ep27_lose_game_instead;
 mod ep28_last_turn;

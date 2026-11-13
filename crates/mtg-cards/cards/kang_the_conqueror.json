@@ -1,17 +1,32 @@
 {
   "oracle_id": "da6e24a4-8adc-41a1-b5eb-3e31dc1250c9",
   "name": "Kang the Conqueror",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kang the Conqueror",
       "oracle_fingerprint": "f1eec4a1d08a2787dec68cb29cc77514",
       "abilities": [
-        { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 254 }
+          "Keyword": "Flying"
+        },
+        {
+          "Activated": {
+            "cost": "{5}{U}{U}{U}",
+            "limit": "PowerUp",
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1"
+                }
+              },
+              {
+                "ExtraTurn": {
+                  "no_power_up": true
+                }
+              }
+            ]
           }
         }
       ]

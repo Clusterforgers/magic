@@ -275,6 +275,8 @@ mod rmt4_untap_limit;
 mod rmt4_wordings;
 pub(crate) mod rmt7_atoms;
 mod rmt8_conditions;
+mod r5515_enchanting;
+mod r5515_power_up;
 mod selectors;
 mod shortened;
 mod soulbond;
@@ -574,7 +576,8 @@ pub struct Own {
 
 /// The words before an activated ability that are rules, not flavor: the ability works from another zone (a hand, an
 /// exile) or only after something happened ("Boast \u{2014} {1}: ...").
-const MEANINGFUL_WORDS: [&str; 5] = [
+const MEANINGFUL_WORDS: [&str; 6] = [
+    "Power-up \u{2014} ",
     "Channel \u{2014} ",
     "Bloodrush \u{2014} ",
     "Boast \u{2014} ",
@@ -614,6 +617,16 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         && let Some(found) = dk27_animate::dk27_animate_read(text)
     {
         return Some(found);
+    }
+    if kind == ClauseKind::Static
+        && let Some(found) = r5515_power_up::r5515_power_up_again(text)
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Activated
+        && let Some(body) = r5515_power_up::r5515_power_up_body(text)
+    {
+        return r5515_power_up::r5515_power_up(clause_with(body, kind, x_free, own)?);
     }
     if let Some(found) = l31d_any_number::l31d_any_number_read(text, kind, |twin, kind, x_free| {
         clause_with(twin, kind, x_free, own)

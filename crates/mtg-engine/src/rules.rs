@@ -164,6 +164,8 @@ pub enum Rule {
     AttackOnlyNearest(Option<bool>),
     /// The players skip each extra turn they would begin (CR 500.7).
     SkipExtraTurns(Vec<PlayerId>),
+    /// Each power-up ability of the permanents can be activated an additional time.
+    PowerUpAgain(Vec<ObjectRef>),
     /// The players flip two coins for each coin they would flip and ignore one (CR 705.3).
     FlipTwoCoins(Vec<PlayerId>),
     /// The players roll one die more for each roll of one or more dice and ignore the lowest roll.
@@ -695,6 +697,8 @@ pub(crate) struct RulesInForce {
     /// The sides each player may attack only the nearest opponent on, left `true`, one entry for each rule.
     r376_nearest: Vec<bool>,
     skip_extra_turns: BTreeSet<PlayerId>,
+    /// One entry for each rule that lets a permanent's power-up abilities be activated an additional time.
+    power_up_again: Vec<ObjectRef>,
     /// One entry for each rule that doubles a player's coins: a player listed twice flips four.
     flip_two: Vec<PlayerId>,
     /// One entry for each rule that adds a die to a player's rolls: a player listed twice rolls two more.
@@ -1124,6 +1128,7 @@ impl RulesInForce {
             Rule::ReverseTurnOrder => self.r376_reversals += 1,
             Rule::AttackOnlyNearest(left) => self.r376_nearest.extend(left),
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
+            Rule::PowerUpAgain(objects) => self.power_up_again.extend(objects),
             Rule::FlipTwoCoins(players) => self.flip_two.extend(players),
             Rule::ExtraDie(players) => self.extra_die.extend(players),
             Rule::KeepUnspentMana(players, mana) => {
@@ -1505,6 +1510,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             })
         }
         GameRule::SkipExtraTurns(who) => Rule::SkipExtraTurns(scope.players(who)?),
+        GameRule::PowerUpAgain(which) => Rule::PowerUpAgain(objects(
+            &mtg_cards::refs::Ref::Each(which.clone()),
+            Zone::Battlefield,
+        )?),
         GameRule::FlipTwoCoins(who) => Rule::FlipTwoCoins(scope.players(who)?),
         GameRule::ExtraDie(who) => Rule::ExtraDie(scope.players(who)?),
         GameRule::KeepUnspentMana { who, mana } => {
@@ -1906,6 +1915,7 @@ static NONE: RulesInForce = RulesInForce {
     r376_reversals: 0,
     r376_nearest: Vec::new(),
     skip_extra_turns: BTreeSet::new(),
+    power_up_again: Vec::new(),
     flip_two: Vec::new(),
     extra_die: Vec::new(),
     keep_mana: Vec::new(),
@@ -2289,6 +2299,18 @@ pub(crate) fn granted_player_keywords(state: &GameState, player: PlayerId) -> Ve
         .filter(|(who, _)| *who == player)
         .map(|(_, keyword)| keyword)
         .collect()
+}
+
+/// How many times each power-up ability of `source` can be activated: once, and once more for each rule that lets it be
+/// activated an additional time.
+pub(crate) fn power_up_allowance(state: &GameState, source: ObjectRef) -> u32 {
+    let again = state
+        .rules()
+        .power_up_again
+        .iter()
+        .filter(|object| object.id == source.id)
+        .count();
+    u32::try_from(again).unwrap_or(u32::MAX).saturating_add(1)
 }
 
 /// Whether `player` skips each extra turn they would begin: the one place the turn order reads this rule.

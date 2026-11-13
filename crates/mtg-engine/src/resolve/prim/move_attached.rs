@@ -2,7 +2,9 @@
 //! Goal: an Aura enters attached only to a permanent its enchant ability allows (hexproof does not matter, nothing is
 //! targeted; protection from Auras does) and stays where it was otherwise, an Equipment or a Fortification enters
 //! attached when the permanent may hold it and unattached when it may not, a host that is gone leaves an Aura where it was
-//! and lets the others in unattached, and the move binds a name again to the permanents that arrived.
+//! and lets the others in unattached, and the move binds a name again to the permanents that arrived. An Aura that
+//! enchants players enters attached to a player it may enchant (an opponent-only one never to its owner) and stays where
+//! it was otherwise; an Equipment named a player enters unattached.
 
 use std::sync::Arc;
 
@@ -41,10 +43,12 @@ const ENCHANT_CREATURE: &str = r#"{"Keyword":{"Enchant":[{"Type":"Creature"}]}}"
 const ENCHANT_LAND: &str = r#"{"Keyword":{"Enchant":[{"Type":"Land"}]}}"#;
 const NO_AURAS: &str = r#"{"Keyword":{"Protection":[{"Subtype":"Aura"}]}}"#;
 const HEXPROOF: &str = r#"{"Keyword":"Hexproof"}"#;
+const ENCHANT_PLAYER: &str = r#"{"Keyword":{"EnchantPlayer":{}}}"#;
+const ENCHANT_OPPONENT: &str = r#"{"Keyword":{"EnchantPlayer":{"opponent":true}}}"#;
 
 /// Seat 0 has a Bear, a Forest, a Warded creature (protection from Auras) and a Hexy creature (hexproof) on the
 /// battlefield, and in the graveyard a Halo (Aura: creatures), a Rune (Aura: lands), a Blade (Equipment) and a Crusher
-/// (Fortification).
+/// (Fortification), a Curse (Aura: players) and a Hex (Aura: opponents).
 fn game() -> GameState {
     let mut setup = crate::fixtures::setup(
         vec![vec![], vec![]],
@@ -68,6 +72,8 @@ fn game() -> GameState {
         card("Rune", &[CardType::Enchantment], "Aura", &[ENCHANT_LAND]),
         card("Blade", &[CardType::Artifact], "Equipment", &[]),
         card("Crusher", &[CardType::Artifact], "Fortification", &[]),
+        card("Curse", &[CardType::Enchantment], "Aura", &[ENCHANT_PLAYER]),
+        card("Hex", &[CardType::Enchantment], "Aura", &[ENCHANT_OPPONENT]),
     ];
     GameState::from_setup(&setup).unwrap()
 }
@@ -191,5 +197,62 @@ fn a_name_is_bound_again_to_the_permanent_that_arrived() {
     assert_eq!(
         arrived.counter,
         game.object(arrived.id).unwrap().counter() + 1
+    );
+}
+
+/// Runs the move of the card named `mover` onto the battlefield attached to the player `seat`, and returns its events.
+fn r5515_onto_player(game: &GameState, mover: &str, seat: usize) -> Vec<Event> {
+    let source = game.object(id(game, "Bear")).unwrap();
+    let mut resolving = Resolving::begin(source.id());
+    let card = Target::Object(game.object(id(game, mover)).unwrap().reference());
+    resolving.bindings.insert("a".into(), vec![card]);
+    resolving
+        .bindings
+        .insert("h".into(), vec![Target::Player(PlayerId::from_index(seat))]);
+    let cx = Cx {
+        scope: Scope {
+            bindings: &resolving.bindings,
+            ..Scope::announcing(game, ME, source.reference())
+        },
+        resolving: &resolving,
+    };
+    let effect: Effect = serde_json::from_str(
+        r#"{"Move":{"what":{"Bound":"a"},"to":{"BattlefieldAttached":{"to":{"Bound":"h"}}}}}"#,
+    )
+    .unwrap();
+    let Ok(Run::Done { events, .. }) = run(&cx, &effect) else {
+        panic!("the move is done");
+    };
+    events
+}
+
+#[rstest]
+#[case::r5515_a_curse_on_an_opponent("Curse", 1, true, true)]
+#[case::r5515_a_curse_on_its_owner("Curse", 0, true, true)]
+#[case::r5515_an_opponent_curse_on_an_opponent("Hex", 1, true, true)]
+#[case::r5515_an_opponent_curse_on_its_owner("Hex", 0, false, false)]
+#[case::r5515_a_creature_aura_on_a_player("Halo", 1, false, false)]
+#[case::r5515_an_equipment_on_a_player("Blade", 1, true, false)]
+fn r5515_a_card_enters_attached_to_a_player_it_may_enchant(
+    #[case] mover: &str,
+    #[case] seat: usize,
+    #[case] enters: bool,
+    #[case] attached: bool,
+) {
+    let game = game();
+    let events = r5515_onto_player(&game, mover, seat);
+    let mover_id = id(&game, mover);
+    let entered = events.iter().any(|event| {
+        matches!(event, Event::ZoneChanged { object, to: Zone::Battlefield, .. } if *object == mover_id)
+    });
+    let on_player = events.iter().find_map(|event| match event {
+        Event::AttachedToPlayer { object, player } if *object == mover_id => Some(*player),
+        _ => None,
+    });
+    assert_eq!(entered, enters, "{mover} on seat {seat}");
+    assert_eq!(
+        on_player,
+        attached.then(|| PlayerId::from_index(seat)),
+        "{mover} on seat {seat}"
     );
 }

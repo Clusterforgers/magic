@@ -141,6 +141,18 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 pub(super) fn c6_eg_counted(cx: &Cx<'_>, cost: &Cost) -> Result<Cost, ResolveError> {
     let mut counted = cost.clone();
     for item in &mut counted.0 {
+        if let CostItem::ManaCostOf(of) = item {
+            let state = cx.state();
+            let mana = cx
+                .scope
+                .objects(of)?
+                .into_iter()
+                .find_map(|named| state.object(named.id))
+                .and_then(|object| object.mana_cost().cloned())
+                .unwrap_or(ManaCost::ZERO);
+            *item = CostItem::Mana(mtg_cards::mana::ManaCostX::new(0, mana));
+            continue;
+        }
         if let CostItem::Discard { count: amount, .. }
         | CostItem::ExileFromGraveyard { count: amount, .. } = item
             && !matches!(amount, Amount::Fixed(_) | Amount::X)

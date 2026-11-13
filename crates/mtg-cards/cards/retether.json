@@ -1,0 +1,45 @@
+{
+  "oracle_id": "b693c24f-07d9-40fa-aa4a-8f7ba61f3452",
+  "name": "Retether",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Retether",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      {
+                        "Subtype": "Aura"
+                      },
+                      {
+                        "In": "Graveyard"
+                      },
+                      {
+                        "OwnedBy": "You"
+                      }
+                    ]
+                  },
+                  "to": {
+                    "BattlefieldEnchanting": {
+                      "only": [
+                        {
+                          "Type": "Creature"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

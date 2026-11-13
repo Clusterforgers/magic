@@ -1,17 +1,68 @@
 {
   "oracle_id": "98950aaf-d0b8-420b-9e6a-c7d07d0f8588",
   "name": "Soul Seizer // Ghastly Haunting",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Soul Seizer",
       "oracle_fingerprint": "daff807ef63eb041e2f015e879108044",
       "abilities": [
-        { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 142 }
+          "Keyword": "Flying"
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  "This"
+                ],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "Type": "Creature"
+                    },
+                    {
+                      "ControlledBy": "Triggering"
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Transform": {
+                        "what": "This"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Attach": {
+                        "what": "This",
+                        "to": {
+                          "Target": 0
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
@@ -20,8 +71,25 @@
       "name": "Ghastly Haunting",
       "oracle_fingerprint": "d486ad0002ddd59bd73e52f10a69857c",
       "abilities": [
-        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
-        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }
+        {
+          "Keyword": {
+            "Enchant": [
+              {
+                "Type": "Creature"
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "SetController": "You"
+              }
+            ]
+          }
+        }
       ]
     }
   ]

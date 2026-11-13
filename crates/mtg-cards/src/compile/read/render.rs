@@ -217,6 +217,20 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     if let Some(texts) = super::r408_pact::r408_pact_variants(ability, variants) {
         return texts;
     }
+    if let Ability::Activated {
+        limit: Some(Limit::PowerUp),
+        ..
+    } = ability
+    {
+        return super::r5515_power_up::r5515_power_up_texts(ability, variants);
+    }
+    if let Ability::Rule {
+        rule: crate::modify::GameRule::PowerUpAgain(_),
+        ..
+    } = ability
+    {
+        return super::r5515_power_up::r5515_power_up_again_texts(ability);
+    }
     let mut texts = plain_variants(ability);
     super::r371_copy_except::r371_not_legendary_too(&mut texts);
     super::r371_copy_except::r371_that_creature_dies(ability, &mut texts);
@@ -2164,8 +2178,11 @@ fn restriction_texts(timing: Timing, limit: Option<Limit>) -> Vec<String> {
             "Activate only as a sorcery and only once each turn.".to_owned(),
             "Activate only once each turn and only as a sorcery.".to_owned(),
         ],
-        // A limit counted as a triggered ability's choice is done, which no activation has.
-        (_, Some(Limit::OncePerTurnDone)) | (Timing::AsInstant, Some(_)) => Vec::new(),
+        // A limit counted as a triggered ability's choice is done, which no activation has; a power-up ability is
+        // worded by its keyword (`r5515_power_up`).
+        (_, Some(Limit::OncePerTurnDone | Limit::PowerUp)) | (Timing::AsInstant, Some(_)) => {
+            Vec::new()
+        }
         (timing, Some(Limit::TimesPerTurn(most))) => {
             let times = match most {
                 2 => "twice".to_owned(),

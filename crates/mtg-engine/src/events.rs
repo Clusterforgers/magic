@@ -138,6 +138,9 @@ pub enum Event {
         /// Whether its untap step is skipped.
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         skip_untap: bool,
+        /// Whether power-up abilities can't be activated during it.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        no_power_up: bool,
     },
     /// The latest extra turn added is not taken, because its player has left the game or a rule skips it.
     ExtraTurnSkipped {

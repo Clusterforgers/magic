@@ -1,17 +1,66 @@
 {
   "oracle_id": "67466d56-9f28-4bbe-ae54-6fd834581e77",
   "name": "Bitterheart Witch",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Bitterheart Witch",
       "oracle_fingerprint": "d2db31b62956a05d64f13e6a2ffd8619",
       "abilities": [
-        { "Keyword": "Deathtouch" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 11, "end": 150 }
+          "Keyword": "Deathtouch"
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  "This"
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [
+              {
+                "what": "Player"
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [
+                          {
+                            "Subtype": "Curse"
+                          }
+                        ],
+                        "as": "found"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": {
+                          "Bound": "found"
+                        },
+                        "to": {
+                          "BattlefieldAttached": {
+                            "to": {
+                              "Target": 0
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "Shuffle": {}
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

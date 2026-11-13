@@ -7,16 +7,39 @@
       "name": "Jack of Hearts, Volatile Hero",
       "oracle_fingerprint": "803e89a26c7bc0b50123c16b701c5ae2",
       "abilities": [
-        { "Keyword": "Flying" },
-        { "Keyword": "Haste" },
+        {
+          "Keyword": "Flying"
+        },
+        {
+          "Keyword": "Haste"
+        },
         {
           "Triggered": {
-            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  "This"
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
             "effects": [
               {
                 "DealDamage": {
-                  "to": { "Each": [{ "Type": "Creature" }] },
-                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                  "to": {
+                    "Each": [
+                      {
+                        "Type": "Creature"
+                      }
+                    ]
+                  },
+                  "amount": {
+                    "Stat": {
+                      "of": "This",
+                      "stat": "Power"
+                    }
+                  }
                 }
               }
             ]
@@ -26,10 +49,34 @@
           "Activated": {
             "cost": "{4}{R}{R}",
             "effects": [
-              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
-              { "Draw": { "count": 3 } },
-              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }
-            ]
+              {
+                "Discard": {
+                  "count": {
+                    "Count": [
+                      {
+                        "In": "Hand"
+                      },
+                      {
+                        "OwnedBy": "You"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "Draw": {
+                  "count": 3
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": 2
+                }
+              }
+            ],
+            "limit": "PowerUp"
           }
         }
       ]

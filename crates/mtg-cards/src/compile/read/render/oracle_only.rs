@@ -220,6 +220,7 @@ mod r378_wholes;
 mod r400_wholes;
 mod r409_wordings;
 mod r4711_wholes;
+mod r5515_wholes;
 mod regen_this_way;
 mod repeat_modes;
 mod return_damager;
@@ -292,6 +293,7 @@ mod w16a_entry_if;
 mod w16a_named_yours;
 // dk1b
 mod dk1b_attached;
+mod r5515_attached;
 mod r281_wordings;
 mod r408_turn_cost;
 mod r408_wordings;
@@ -501,6 +503,8 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_t17b(ability, texts);
     // dk1b
     dk1b_attached::add(ability, texts);
+    r5515_attached::r5515_add(ability, texts);
+    r5515_attached::r5515_add_enchanting(ability, texts);
     // deck-auras
     // t19c
     t19c_put_many::add(ability, texts);
@@ -798,6 +802,7 @@ fn add_c11g(ability: &Ability, texts: &mut Vec<String>) {
     r370_wholes::r370_add_wholes(ability, texts);
     r378_wholes::r378_add_wholes(ability, texts);
     r4711_wholes::r4711_add_wholes(ability, texts);
+    r5515_wholes::r5515_add_wholes(ability, texts);
     r307_wholes::r307_add_wholes(ability, texts);
     r301_wholes::r301_add_wholes(ability, texts);
     r302_wholes::r302_add_wholes(ability, texts);

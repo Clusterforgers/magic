@@ -16,7 +16,7 @@ use super::selectors::{
 use super::tokens::Reader;
 use super::triggers::article;
 use crate::effect::{Destination, Effect, Order, Place};
-use crate::refs::{Bounds, Pred, Ref, Selector, Targetable, ZoneKind};
+use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::value::Amount;
 
 /// The types of a permanent, which "permanent card" stands for.
@@ -284,6 +284,13 @@ fn pronoun(r: &mut Reader<'_>, plural: bool) -> Option<()> {
 
 /// Where a search puts what it finds: "onto the battlefield", "onto the battlefield tapped", "into your hand".
 pub(super) fn found_destination(r: &mut Reader<'_>) -> Option<Destination> {
+    if r.words("onto the battlefield attached to") {
+        return r5515_attached_host(r).map(|to| Destination::BattlefieldAttached {
+            to,
+            transformed: false,
+            under: None,
+        });
+    }
     if r.words("onto the battlefield") {
         let tapped = r.word("tapped");
         return Some(Destination::Battlefield {
@@ -656,6 +663,25 @@ pub(super) fn top_text(count: &Amount) -> Option<String> {
     }
 }
 
+/// The player a found card is put onto the battlefield attached to: "target player", "target opponent" (a target of
+/// the ability) or "you".
+fn r5515_attached_host(r: &mut Reader<'_>) -> Option<Ref> {
+    let what = if r.words("target player") {
+        Targetable::Player
+    } else if r.words("target opponent") {
+        Targetable::Opponent
+    } else {
+        return r.word("you").then_some(Ref::You);
+    };
+    let index = u8::try_from(r.targets.len()).ok()?;
+    r.targets.push(TargetSpec {
+        what,
+        bounds: Bounds::default(),
+        divide: None,
+    });
+    Some(Ref::Target(index))
+}
+
 /// Where a search puts what it finds, as the card words it.
 pub(super) fn destination_text(to: &Destination) -> Option<String> {
     match to {
@@ -668,6 +694,11 @@ pub(super) fn destination_text(to: &Destination) -> Option<String> {
             "onto the battlefield{}",
             if *tapped { " tapped" } else { "" }
         )),
+        Destination::BattlefieldAttached {
+            to: Ref::You,
+            transformed: false,
+            under: None,
+        } => Some("onto the battlefield attached to you".to_owned()),
         Destination::Hand => Some("into your hand".to_owned()),
         Destination::Graveyard => Some("into your graveyard".to_owned()),
         _ => None,

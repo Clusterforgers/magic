@@ -94,6 +94,9 @@ pub enum CostItem {
     },
     /// Exert the source (CR 701.43): it does not untap during its controller's next untap step.
     Exert,
+    /// The mana cost of the object the reference names, as it is when the cost is paid ("pay that spell's mana cost",
+    /// CR 202.1): nothing for an object with no mana cost; `{X}` in it is 0 (CR 107.3).
+    ManaCostOf(crate::refs::Ref),
     /// The mana cost printed on the card the keyword is on: a static ability that gives a keyword to cards of other zones
     /// ("its escape cost is equal to its mana cost") writes it, and the layers read it off each card it reaches.
     OwnManaCost,

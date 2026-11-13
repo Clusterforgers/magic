@@ -7,18 +7,34 @@
       "name": "Hulk, Gamma Goliath",
       "oracle_fingerprint": "15ca6c1ce7a650ac6c7050f70a1e968f",
       "abilities": [
-        { "Keyword": "Reach" },
-        { "Keyword": "Trample" },
+        {
+          "Keyword": "Reach"
+        },
+        {
+          "Keyword": "Trample"
+        },
         {
           "Manual": {
             "reason": "you apply this clause by hand",
-            "span": { "start": 15, "end": 91 }
+            "span": {
+              "start": 15,
+              "end": 91
+            }
           }
         },
         {
           "Activated": {
             "cost": "{6}{R}{G}",
-            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 5 } }]
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": 5
+                }
+              }
+            ],
+            "limit": "PowerUp"
           }
         }
       ]

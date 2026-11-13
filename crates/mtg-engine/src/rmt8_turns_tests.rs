@@ -81,7 +81,7 @@ fn an_extra_turn_is_one_of_the_players_turns(#[case] seats: usize) {
         &mut game,
         &Event::ExtraTurnAdded {
             player: PlayerId(0),
-            skip_untap: false,
+            skip_untap: false, no_power_up: false,
         },
     )
     .unwrap();
