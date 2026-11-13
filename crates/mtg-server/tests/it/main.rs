@@ -51,6 +51,7 @@ mod pg_commander_pairs;
 mod pg_commander_real;
 mod pg_companion;
 mod pg_conjure;
+mod pg_deck_groups;
 mod pg_deck_import_printings;
 mod pg_decks;
 mod pg_delves;

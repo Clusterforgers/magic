@@ -5,6 +5,7 @@ pub mod cards;
 pub mod codec;
 pub mod colors;
 pub mod database;
+pub mod deck_groups;
 pub mod decks;
 pub mod drafts;
 pub mod error;
@@ -26,6 +27,7 @@ pub use cards::{
     PrintingPictures, SortKey, TokenPictures,
 };
 pub use database::{Database, RowCounts};
+pub use deck_groups::{CreateGroupError, DeckGroupRepo, Filing, GroupChange, StoredGroup};
 pub use decks::{
     CardDemand, CreateDeckError, DeckDraft, DeckId, DeckLine, DeckRepo, DeckZone, PrintingChoice,
     StoredDeck,

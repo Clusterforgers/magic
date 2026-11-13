@@ -14,9 +14,10 @@ use crate::rest::{
     AccountDeletion, AccountList, AccountOptions, AccountRow, AuthErrorCode, BulkApprovalBody,
     BulkApprovalResult, BulkReads, CardDetail, CardSearchPage, CheckRequest, ChooseDeck,
     CreatedAccount, Credentials, DeckBlockedBody, DeckBody, DeckChoiceErrorCode, DeckErrorCode,
-    DeckList, DeckView, FavouritePrecons, FixMarkBody, FixMarkList, GameInfo, ImportRequest,
-    ImportResult, JoinCodeRequest, JoinRequest, Joined, LinePrintingBody, LobbyErrorCode,
-    LobbyList, MyGames, PasswordChange, PasswordReset, PreconErrorCode, PreconList, PreconView,
+    DeckGroupChange, DeckGroupChoice, DeckGroupOrder, DeckGroups, DeckList, DeckView,
+    FavouritePrecons, FixMarkBody, FixMarkList, GameInfo, ImportRequest, ImportResult,
+    JoinCodeRequest, JoinRequest, Joined, LinePrintingBody, LobbyErrorCode, LobbyList, MyGames,
+    NewDeckGroup, PasswordChange, PasswordReset, PreconErrorCode, PreconList, PreconView,
     PreferredPrintingBody, PreferredPrintings, PrintingList, ReadBody, ReadCard, ReadQueue, Replay,
     SeatTeamBody, TeamsBody, UserPrefs, UserView, VisibilityBody,
 };
@@ -93,6 +94,11 @@ pub fn export_to(dir: &Path) -> Result<(), BindingsError> {
     ImportResult::export_all(&config)?;
     DeckErrorCode::export_all(&config)?;
     FavouritePrecons::export_all(&config)?;
+    DeckGroups::export_all(&config)?;
+    NewDeckGroup::export_all(&config)?;
+    DeckGroupChange::export_all(&config)?;
+    DeckGroupOrder::export_all(&config)?;
+    DeckGroupChoice::export_all(&config)?;
     UserPrefs::export_all(&config)?;
     FixMarkBody::export_all(&config)?;
     FixMarkList::export_all(&config)?;

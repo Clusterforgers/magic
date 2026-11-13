@@ -19,7 +19,7 @@ import { PageShell } from '@/components/PageShell'
 import { Pill } from '@/components/Pill'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button, buttonVariants } from '@/components/ui/button'
-import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
+import { NativeSelect, NativeSelectOptGroup, NativeSelectOption } from '@/components/ui/native-select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { delvesApi } from '@/net/delves'
@@ -38,7 +38,7 @@ import type {
 } from '@/protocol/generated'
 import { CustomCardFrame } from './CustomCardFrame'
 import { DelveOffer } from './DelveOffer'
-import { POLL_MS, deckOptions, errorText } from './words'
+import { POLL_MS, deckOptions, errorText, optionGroups, rememberChoice } from './words'
 import type { DeckOption } from './words'
 
 const ROOM: Record<RoomKind, string> = {
@@ -142,13 +142,20 @@ function Lobby({
                 aria-label={`Deck for ${hero.name}`}
                 value={hero.deck?.id ?? ''}
                 disabled={busy}
-                onChange={(e) => act({ kind: 'choose_deck', hero: i, deck: e.target.value })}
+                onChange={(e) => {
+                  rememberChoice(decks, e.target.value)
+                  act({ kind: 'choose_deck', hero: i, deck: e.target.value })
+                }}
               >
                 <NativeSelectOption value="">Choose a Commander deck…</NativeSelectOption>
-                {decks.map((d) => (
-                  <NativeSelectOption key={d.value} value={d.value}>
-                    {d.label}
-                  </NativeSelectOption>
+                {optionGroups(decks).map(([group, options]) => (
+                  <NativeSelectOptGroup key={group} label={group}>
+                    {options.map((d) => (
+                      <NativeSelectOption key={d.value} value={d.value}>
+                        {d.label}
+                      </NativeSelectOption>
+                    ))}
+                  </NativeSelectOptGroup>
                 ))}
               </NativeSelect>
             ) : (

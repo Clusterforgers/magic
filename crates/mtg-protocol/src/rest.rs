@@ -10,6 +10,7 @@
 
 mod bulk_reads;
 mod cards;
+mod deck_groups;
 mod decks;
 mod delves;
 mod favourites;
@@ -35,6 +36,10 @@ pub use cards::{
     CardColor, CardDetail, CardFaceView, CardHit, CardImages, CardSearchPage, DEFAULT_PER_PAGE,
     ImageLinks, MAX_PAGE, MAX_PER_PAGE, PreferredPrintingBody, PreferredPrintings, PrintingList,
     PrintingView, RulingView,
+};
+pub use deck_groups::{
+    DeckGroupChange, DeckGroupChoice, DeckGroupOrder, DeckGroupView, DeckGroups,
+    MAX_DECK_GROUP_NAME_CHARS, MAX_DECK_GROUPS_PER_USER, NewDeckGroup,
 };
 pub use decks::{
     CardSuggestion, CheckRequest, DeckBody, DeckErrorCode, DeckLineBody, DeckLineView, DeckList,

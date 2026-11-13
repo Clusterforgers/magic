@@ -1,4 +1,4 @@
-import { SearchIcon, XIcon } from 'lucide-react'
+import { ChevronRightIcon, SearchIcon, XIcon } from 'lucide-react'
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
@@ -6,6 +6,9 @@ import { Input } from '@/components/ui/input'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { DISC } from '@/features/builder/discs'
+import { groupOf, sections } from '@/features/decks/groups/grouping'
+import type { GroupLike } from '@/features/decks/groups/grouping'
+import { lastGroup, rememberGroup } from '@/features/decks/groups/lastGroup'
 import { cn } from '@/lib/utils'
 import { filterEntries, isFiltered, isSortKey, NO_FILTER, SORT_CHOICES, sortEntries } from './deckEntries'
 import type { DeckEntry, DeckFilter, SortKey, SupportFilter } from './deckEntries'
@@ -16,6 +19,8 @@ export type ListState =
   | { status: 'loading' }
   | { status: 'failed'; message: string }
   | { status: 'ready'; entries: readonly DeckEntry[] }
+
+const NO_GROUPS: readonly GroupLike[] = []
 
 const SUPPORT_CHOICES: readonly { value: SupportFilter; label: string }[] = [
   { value: 'all', label: 'All decks' },
@@ -60,6 +65,8 @@ interface DeckListProps {
   onRetry(): void
   /** Select the first deck, or the chosen one, as soon as the list has decks and none is selected. */
   autoSelect: boolean
+  /** The account's deck groups: with any, the rows show in collapsible groups. */
+  groups?: readonly GroupLike[]
 }
 
 function Rows() {
@@ -99,25 +106,56 @@ export function DeckList({
   onChoose,
   onRetry,
   autoSelect,
+  groups = NO_GROUPS,
 }: DeckListProps) {
   const [filter, setFilter] = useState<DeckFilter>(NO_FILTER)
   const searchId = useId()
-  const list = useRef<HTMLUListElement>(null)
+  const listId = useId()
+  const list = useRef<HTMLDivElement>(null)
+  // Null until the player opens or closes a group: the group of the chosen deck, else the last used one, is open.
+  const [opened, setOpened] = useState<ReadonlySet<string> | null>(null)
   const entries = state.status === 'ready' ? state.entries : null
   const shown = useMemo(
     () => (entries === null ? [] : sortEntries(filterEntries(entries, filter), sort)),
     [entries, filter, sort],
   )
+  const grouped = useMemo(() => (groups.length === 0 ? null : sections(shown, groups)), [groups, shown])
+  const searching = filter.query.trim() !== ''
+  const open = useMemo(() => {
+    if (opened !== null || grouped === null) return opened ?? new Set<string>()
+    const wanted = (chosenId === null ? null : groupOf(groups, chosenId)) ?? lastGroup()
+    const first = grouped.find((section) => section.key === wanted) ?? grouped[0]
+    return new Set(first === undefined ? [] : [first.key])
+  }, [opened, grouped, groups, chosenId])
+  const isOpen = (key: string): boolean => searching || open.has(key)
+  const visible = useMemo(
+    () =>
+      grouped === null
+        ? shown
+        : grouped.flatMap((section) => (searching || open.has(section.key) ? section.items : [])),
+    [grouped, shown, searching, open],
+  )
+  const toggleGroup = (key: string): void =>
+    setOpened(() => {
+      const next = new Set(open)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
+  const choose = (entry: DeckEntry): void => {
+    if (groups.length > 0) rememberGroup(groupOf(groups, entry.id))
+    onChoose(entry)
+  }
 
   // A selection the search or a filter hides moves to the first row shown, or goes, so the preview and "Use this deck"
   // never stay on a deck the list no longer shows.
   useEffect(() => {
     if (!autoSelect || entries === null) return
     if (selectedId !== null && shown.some((entry) => entry.id === selectedId)) return
-    const first = shown.find((entry) => entry.id === chosenId) ?? shown[0]
+    const first = shown.find((entry) => entry.id === chosenId) ?? visible[0] ?? shown[0]
     if (first !== undefined) onSelect(first)
     else if (selectedId !== null) onClear?.()
-  }, [autoSelect, entries, selectedId, shown, chosenId, onSelect, onClear])
+  }, [autoSelect, entries, selectedId, shown, visible, chosenId, onSelect, onClear])
 
   if (state.status === 'loading') return <Rows />
   if (state.status === 'failed') {
@@ -135,14 +173,14 @@ export function DeckList({
   if (state.entries.length === 0) return <>{empty}</>
 
   const move = (key: string, from: string): void => {
-    const at = shown.findIndex((entry) => entry.id === from)
+    const at = visible.findIndex((entry) => entry.id === from)
     const next =
       key === 'Home'
         ? 0
         : key === 'End'
-          ? shown.length - 1
-          : Math.min(shown.length - 1, Math.max(0, at + (key === 'ArrowDown' ? 1 : -1)))
-    const entry = shown[next]
+          ? visible.length - 1
+          : Math.min(visible.length - 1, Math.max(0, at + (key === 'ArrowDown' ? 1 : -1)))
+    const entry = visible[next]
     if (entry === undefined) return
     onSelect(entry)
     list.current?.querySelectorAll<HTMLElement>('[role="option"]')[next]?.focus()
@@ -154,8 +192,26 @@ export function DeckList({
         ? was.colours.filter((entry) => entry !== letter)
         : [...was.colours, letter],
     }))
-  const anchor = shown.some((entry) => entry.id === selectedId) ? selectedId : (shown[0]?.id ?? null)
+  const anchor = visible.some((entry) => entry.id === selectedId) ? selectedId : (visible[0]?.id ?? null)
 
+  const option = (entry: DeckEntry) => (
+    <DeckOption
+      key={entry.id}
+      entry={entry}
+      selected={entry.id === selectedId}
+      chosen={entry.id === chosenId}
+      pending={entry.id === pendingId}
+      tabStop={entry.id === anchor}
+      fallback={pictures(entry.id)}
+      showHand={sort === 'hand'}
+      onSelect={(picked) => {
+        onSelect(picked)
+        onActivate?.(picked)
+      }}
+      onChoose={choose}
+      onMove={(key) => move(key, entry.id)}
+    />
+  )
   return (
     <div data-slot="deck-list" className="flex min-h-0 flex-1 flex-col gap-3">
       <div className="grid gap-2">
@@ -248,32 +304,49 @@ export function DeckList({
           ) : null}
         </p>
       </div>
-      <ul
+      <div
         ref={list}
-        role="listbox"
-        aria-label={label}
         data-slot="deck-options"
         className="grid min-h-0 flex-1 content-start gap-2 overflow-y-auto overscroll-contain pr-1 pb-1"
       >
-        {shown.map((entry) => (
-          <DeckOption
-            key={entry.id}
-            entry={entry}
-            selected={entry.id === selectedId}
-            chosen={entry.id === chosenId}
-            pending={entry.id === pendingId}
-            tabStop={entry.id === anchor}
-            fallback={pictures(entry.id)}
-            showHand={sort === 'hand'}
-            onSelect={(picked) => {
-              onSelect(picked)
-              onActivate?.(picked)
-            }}
-            onChoose={onChoose}
-            onMove={(key) => move(key, entry.id)}
-          />
-        ))}
-      </ul>
+        {grouped === null ? (
+          <ul role="listbox" aria-label={label} className="grid content-start gap-2">
+            {shown.map(option)}
+          </ul>
+        ) : (
+          grouped.map((section) => {
+            const name = section.group?.name ?? 'Ungrouped'
+            const unfolded = isOpen(section.key)
+            const body = `${listId}-${section.key}`
+            return (
+              <div key={section.key} data-group={section.key} className="grid gap-2">
+                <button
+                  type="button"
+                  aria-expanded={unfolded}
+                  aria-controls={body}
+                  disabled={searching}
+                  onClick={() => toggleGroup(section.key)}
+                  className="flex min-h-8 w-full min-w-0 items-center gap-2 rounded-md px-1 text-left text-sm font-semibold hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:cursor-default disabled:hover:bg-transparent pointer-coarse:min-h-11"
+                >
+                  <ChevronRightIcon
+                    aria-hidden="true"
+                    className={cn('size-4 shrink-0 transition-transform', unfolded ? 'rotate-90' : '')}
+                  />
+                  <span className="min-w-0 truncate">{name}</span>
+                  <span className="shrink-0 text-xs font-normal text-muted-foreground">
+                    {section.items.length}
+                  </span>
+                </button>
+                {unfolded ? (
+                  <ul id={body} role="listbox" aria-label={`${label}: ${name}`} className="grid gap-2">
+                    {section.items.map(option)}
+                  </ul>
+                ) : null}
+              </div>
+            )
+          })
+        )}
+      </div>
       {note}
     </div>
   )
