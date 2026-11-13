@@ -52,7 +52,12 @@ fn probe() {
             continue;
         }
         let report = report_of(name, &file(name));
-        println!("== {name}: {:?}\n{:#?}\n{:#?}", report.verdict(), report.clauses, report.problems);
+        println!(
+            "== {name}: {:?}\n{:#?}\n{:#?}",
+            report.verdict(),
+            report.clauses,
+            report.problems
+        );
     }
 }
 
@@ -73,7 +78,11 @@ fn reads_back_whole(#[case] name: &str) {
 }
 
 #[rstest]
-#[case::in_addition("Conspiracy", r#"[{"SetCreatureTypes":[]},"AddChosenSubtype"]"#, r#"["AddChosenSubtype"]"#)]
+#[case::in_addition(
+    "Conspiracy",
+    r#"[{"SetCreatureTypes":[]},"AddChosenSubtype"]"#,
+    r#"["AddChosenSubtype"]"#
+)]
 #[case::only_the_color("Painter's Servant", r#""AddChosenColor""#, r#""SetChosenColor""#)]
 #[case::the_hand("Rootpath Purifier", r#"{"In":"Library"}"#, r#"{"In":"Hand"}"#)]
 #[case::tokens_too("Rukarumel, Biologist", r#"{"Not":"Token"}"#, r#""Token""#)]
@@ -99,6 +108,14 @@ fn dawn_reads(text: &str) -> bool {
 fn celestial_dawns_colors_read_back_and_another_color_does_not() {
     let name = "Celestial Dawn";
     assert!(dawn_reads(&file(name)));
-    assert!(!dawn_reads(&altered(name, r#"{"SetColors":["White"]}"#, r#"{"SetColors":["Blue"]}"#)));
-    assert!(!dawn_reads(&altered(name, r#"{"Not":{"Type":"Land"}}"#, r#"{"Type":"Land"}"#)));
+    assert!(!dawn_reads(&altered(
+        name,
+        r#"{"SetColors":["White"]}"#,
+        r#"{"SetColors":["Blue"]}"#
+    )));
+    assert!(!dawn_reads(&altered(
+        name,
+        r#"{"Not":{"Type":"Land"}}"#,
+        r#"{"Type":"Land"}"#
+    )));
 }

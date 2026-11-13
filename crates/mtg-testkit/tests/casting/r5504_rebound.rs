@@ -57,7 +57,9 @@ fn the_new_target_is_another_player(#[values(2, 3, 4)] seats: usize) {
                 assert_eq!(legal, players, "only the other players");
                 let to = if new == 1 { 0 } else { new };
                 driver
-                    .answer(Answer::ChooseTargets(TargetChoice::Targets(vec![driver.target_player(to)])))
+                    .answer(Answer::ChooseTargets(TargetChoice::Targets(vec![
+                        driver.target_player(to),
+                    ])))
                     .unwrap();
             }
             DecisionKind::Priority(_) if !driver.state().stack().is_empty() => {

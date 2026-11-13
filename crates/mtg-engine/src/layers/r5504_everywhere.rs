@@ -52,11 +52,19 @@ fn land(name: &str) -> Arc<CardDefinition> {
 /// source in play, which entered having chosen `chosen`.
 fn table(seats: usize, source: Arc<CardDefinition>, chosen: Option<Chosen>) -> GameState {
     let hands = (0..seats)
-        .map(|seat| vec![elf(&format!("Hand elf {seat}")), land(&format!("Hand land {seat}"))])
+        .map(|seat| {
+            vec![
+                elf(&format!("Hand elf {seat}")),
+                land(&format!("Hand land {seat}")),
+            ]
+        })
         .collect();
     let battlefields = (0..seats)
         .map(|seat| {
-            let mut cards = vec![elf(&format!("Play elf {seat}")), land(&format!("Play land {seat}"))];
+            let mut cards = vec![
+                elf(&format!("Play elf {seat}")),
+                land(&format!("Play land {seat}")),
+            ];
             if seat == 0 {
                 cards.insert(0, source.clone());
             }
@@ -65,8 +73,14 @@ fn table(seats: usize, source: Arc<CardDefinition>, chosen: Option<Chosen>) -> G
         .collect();
     let mut setup = setup(hands, battlefields);
     for (seat, player) in setup.players.iter_mut().enumerate() {
-        player.library = vec![elf(&format!("Library elf {seat}")), land(&format!("Library land {seat}"))];
-        player.graveyard = vec![elf(&format!("Grave elf {seat}")), land(&format!("Grave land {seat}"))];
+        player.library = vec![
+            elf(&format!("Library elf {seat}")),
+            land(&format!("Library land {seat}")),
+        ];
+        player.graveyard = vec![
+            elf(&format!("Grave elf {seat}")),
+            land(&format!("Grave land {seat}")),
+        ];
     }
     let mut game = GameState::from_setup(&setup).unwrap();
     let on = game.zone(Zone::Battlefield)[0];
@@ -145,11 +159,23 @@ fn the_controllers_creatures_are_only_the_chosen_type_in_every_zone(#[case] seat
     let elf = Subtype("Elf".to_owned());
     for place in PLACES {
         let mine = chars(&game, &format!("{place} elf 0"));
-        assert!(mine.creature_types_set && mine.subtypes == vec![rat.clone()], "{place}: {mine:?}");
+        assert!(
+            mine.creature_types_set && mine.subtypes == vec![rat.clone()],
+            "{place}: {mine:?}"
+        );
         for seat in 1..seats {
             let theirs = chars(&game, &format!("{place} elf {seat}"));
-            assert!(!theirs.creature_types_set && !theirs.subtypes.contains(&rat), "{place}");
-            assert!(game.object(named(&game, &format!("{place} elf {seat}"))).unwrap().card().subtypes.contains(&elf));
+            assert!(
+                !theirs.creature_types_set && !theirs.subtypes.contains(&rat),
+                "{place}"
+            );
+            assert!(
+                game.object(named(&game, &format!("{place} elf {seat}")))
+                    .unwrap()
+                    .card()
+                    .subtypes
+                    .contains(&elf)
+            );
         }
     }
 }
@@ -163,8 +189,16 @@ fn the_controllers_nonland_cards_are_white_in_every_zone(#[case] seats: usize) {
     let white = ColorSet::EMPTY.with(Color::White);
     assert_eq!(chars(&game, "Source").colors, white);
     for place in PLACES {
-        assert_eq!(chars(&game, &format!("{place} elf 0")).colors, white, "{place}");
-        assert_eq!(chars(&game, &format!("{place} land 0")).colors, ColorSet::EMPTY, "{place}");
+        assert_eq!(
+            chars(&game, &format!("{place} elf 0")).colors,
+            white,
+            "{place}"
+        );
+        assert_eq!(
+            chars(&game, &format!("{place} land 0")).colors,
+            ColorSet::EMPTY,
+            "{place}"
+        );
         for seat in 1..seats {
             assert_eq!(
                 chars(&game, &format!("{place} elf {seat}")).colors,
