@@ -1,7 +1,7 @@
 {
   "oracle_id": "898ee071-dd37-4a02-895d-a41b568d7eef",
   "name": "Unlawful Entry",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Unlawful Entry",
@@ -25,9 +25,12 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 63, "end": 168 }
+          "Triggered": {
+            "when": {
+              "Did": { "action": "PutArtSticker", "who": "You", "what": [{ "Type": "Creature" }] }
+            },
+            "from": "Graveyard",
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
           }
         }
       ]

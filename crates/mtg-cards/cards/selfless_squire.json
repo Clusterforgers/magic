@@ -1,7 +1,7 @@
 {
   "oracle_id": "7d079c78-b2a9-444f-ab54-c61c041baa6d",
   "name": "Selfless Squire",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Selfless Squire",
@@ -23,9 +23,11 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 90, "end": 193 }
+          "Triggered": {
+            "when": { "DamagePrevented": { "who": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+            ]
           }
         }
       ]

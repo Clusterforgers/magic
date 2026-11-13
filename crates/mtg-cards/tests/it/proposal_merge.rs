@@ -64,13 +64,33 @@ fn the_merge_of_the_compiler_and_the_rest_of_the_hand_written_file_is_the_hand_w
                 printed.name
             );
         }
-        let once: BTreeSet<(usize, String)> = card
-            .abilities()
-            .filter(|(_, a)| !a.is_manual())
-            .map(|(face, a)| (face, data(a)))
-            .collect();
-        let count = card.abilities().filter(|(_, a)| !a.is_manual()).count();
-        assert_eq!(count, once.len(), "{}: an ability twice", printed.name);
+        // An ability is merged at most as many times as the hand-written face has it ("Cascade, cascade").
+        let tally = |abilities: Vec<(usize, String)>| {
+            let mut counts = std::collections::BTreeMap::<(usize, String), usize>::new();
+            for key in abilities {
+                *counts.entry(key).or_default() += 1;
+            }
+            counts
+        };
+        let merged_counts = tally(
+            card.abilities()
+                .filter(|(_, a)| !a.is_manual())
+                .map(|(face, a)| (face, data(a)))
+                .collect(),
+        );
+        let hand_counts = tally(
+            by_hand
+                .abilities()
+                .map(|(face, a)| (face, data(a)))
+                .collect(),
+        );
+        for (key, count) in &merged_counts {
+            assert!(
+                *count <= hand_counts.get(key).copied().unwrap_or(0),
+                "{}: an ability twice",
+                printed.name
+            );
+        }
         if card.impl_status == ImplStatus::Full && merged.problems.is_empty() {
             whole += 1;
             assert!(

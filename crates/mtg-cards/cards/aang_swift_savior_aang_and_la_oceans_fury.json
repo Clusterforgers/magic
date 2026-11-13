@@ -1,7 +1,7 @@
 {
   "oracle_id": "cbf09050-39d0-463b-96db-9e22011ae0d8",
   "name": "Aang, Swift Savior // Aang and La, Ocean's Fury",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Aang, Swift Savior",
@@ -10,9 +10,28 @@
         { "Keyword": "Flash" },
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 13, "end": 168 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": [{ "Type": "Creature" }, "Other"] },
+                    { "Object": ["Spell"] }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "airbent" } },
+              {
+                "Rule": {
+                  "rule": { "MayCastRather": { "only": { "Bound": "airbent" }, "cost": "{2}" } },
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         },
         {

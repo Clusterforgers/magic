@@ -36,4 +36,20 @@ digital: boolean,
 /**
  * The printing's pictures.
  */
-images: CardImages, };
+images: CardImages, 
+/**
+ * Name of the set; null when unknown.
+ */
+set_name: string | null, 
+/**
+ * Frame edition (`1993`, `1997`, `2003`, `2015`, `future`); null when unknown.
+ */
+frame: string | null, 
+/**
+ * Finishes the printing exists in (`nonfoil`, `foil`, `etched`).
+ */
+finishes: Array<string>, 
+/**
+ * Whether the art covers the whole card.
+ */
+full_art: boolean, };

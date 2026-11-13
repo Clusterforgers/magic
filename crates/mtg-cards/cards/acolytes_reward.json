@@ -1,0 +1,34 @@
+{
+  "oracle_id": "944689b2-f9f7-45c3-952c-54287b9824d5",
+  "name": "Acolyte's Reward",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Acolyte's Reward",
+      "oracle_fingerprint": "8878d56ed01806a13f4bb91784173d01",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }, { "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": {
+                    "PreventCountedAnd": {
+                      "most": { "Devotion": ["White"] },
+                      "effects": [
+                        { "DealDamage": { "to": { "Target": 1 }, "amount": "Triggering" } }
+                      ]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

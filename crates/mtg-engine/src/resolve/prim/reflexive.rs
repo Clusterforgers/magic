@@ -54,7 +54,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             // What the earlier steps took away (a sacrificed creature) stays readable as it was (CR 608.2h).
             cause: Cause {
                 snapshots: cx.resolving.snapshots().to_vec(),
-                amount: times_before(cx),
+                amount: times_before(cx).max(sticker_vowels_before(cx)),
                 ..Cause::default()
             },
             snapshot,
@@ -106,4 +106,15 @@ fn before_was_done(cx: &Cx<'_>) -> bool {
                 .strip_prefix(&inside)
                 .is_some_and(|rest| !rest.contains('.'))
     })
+}
+
+/// The unique vowels of the name sticker the step before put on when it put stickers on ("When you do, up to X target
+/// creatures ..., where X is the number of unique vowels on that sticker"); 0 otherwise.
+fn sticker_vowels_before(cx: &Cx<'_>) -> u32 {
+    cx.resolving
+        .lets
+        .iter()
+        .find(|(kept, _)| kept == crate::un34_stickers::VOWELS)
+        .and_then(|(_, value)| u32::try_from(*value).ok())
+        .unwrap_or(0)
 }

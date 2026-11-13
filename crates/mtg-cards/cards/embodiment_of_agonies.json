@@ -1,7 +1,7 @@
 {
   "oracle_id": "9d6686a0-1648-42f6-a606-16d2a84138a7",
   "name": "Embodiment of Agonies",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Embodiment of Agonies",
@@ -10,9 +10,23 @@
         { "Keyword": "Flying" },
         { "Keyword": "Deathtouch" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 19, "end": 196 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Distinct": {
+                    "of": [
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ],
+                    "stat": "R374ManaCost"
+                  }
+                }
+              }
+            }
           }
         }
       ]

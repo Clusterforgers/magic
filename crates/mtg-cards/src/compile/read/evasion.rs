@@ -43,6 +43,18 @@ pub(super) fn block_only(r: &mut Reader<'_>) -> Option<Ability> {
     ))
 }
 
+/// The predicate of `Modification::BlockedByAll`.
+pub(super) const R377_BLOCKED_BY_ALL: &str =
+    "can't be blocked unless all creatures defending player controls block it";
+
+/// "~ can't be blocked unless all creatures defending player controls block it.": the creature, held to being blocked
+/// by every creature of the defending player or by none.
+pub(super) fn r377_blocked_by_all(r: &mut Reader<'_>) -> Option<Ability> {
+    let (affected, _) = subject(r, true)?;
+    r.need(R377_BLOCKED_BY_ALL)?;
+    Some(statics(affected, vec![Modification::BlockedByAll], None))
+}
+
 /// "two or more creatures" after "can't be blocked except by": the fewest creatures that may block together.
 pub(super) fn or_more(r: &mut Reader<'_>) -> Option<u32> {
     r.attempt(|r| {
