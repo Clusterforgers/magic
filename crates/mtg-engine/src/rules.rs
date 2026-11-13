@@ -1653,8 +1653,6 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::CantBeCopied => return Err(ResolveError::Unsupported("Rule.CantBeCopied")),
         // The announcement reads it from the permanents as targets are chosen (`announce::r5509_flagbearer`).
         GameRule::Flagbearers => return Err(ResolveError::Unsupported("Rule.Flagbearers")),
-        // The limits of activated abilities read it from the permanents (`r5509_exhaust`).
-        GameRule::ExhaustAgain => return Err(ResolveError::Unsupported("Rule.ExhaustAgain")),
         GameRule::CantSpendMana => return Err(ResolveError::Unsupported("Rule.CantSpendMana")),
         GameRule::GraveyardCardsUntargetable
         | GameRule::CantLoseGame { .. }

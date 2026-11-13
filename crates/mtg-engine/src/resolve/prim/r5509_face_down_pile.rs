@@ -12,7 +12,7 @@ use crate::object::ObjectKind;
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::zones::Zone;
 
-/// The named objects still where they were named (an ability, the resolving spell and a card already in exile are left
+/// The named objects still where they were named, or one zone change on for a card the triggering event moved (an ability, the resolving spell and a card already in exile are left
 /// out) and the top `top` cards of the controller's library each move to exile face down, seen by no player; a
 /// `ChosenAtRandom` logs the shuffled order, spending a substream of the generator. Each card then moves in that order:
 /// onto the battlefield face down under the controller's control (manifested or cloaked, an `Entered` after it when it
@@ -31,10 +31,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let state = cx.state();
     let player = cx.controller();
     let named = cx.scope.objects(what)?.len();
+    // A card that left the battlefield by the triggering event is followed to where it went ("exile it" after it died).
     let live: Vec<ObjectId> = cx
         .scope
         .live_objects(what)?
         .into_iter()
+        .chain(cx.scope.followed_cards(what))
         .filter(|object| {
             let resolving_spell =
                 object.zone() == Zone::Stack && object.id() == cx.resolving.object();

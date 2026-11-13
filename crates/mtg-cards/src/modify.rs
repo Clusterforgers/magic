@@ -1010,9 +1010,6 @@ pub enum GameRule {
     /// While an opponent chooses targets as they cast a spell or activate an ability, they must choose at least one
     /// Flagbearer on the battlefield if able.
     Flagbearers,
-    /// During your turn, as long as you haven't activated an exhaust ability this turn, you may activate exhaust
-    /// abilities as though they haven't been activated.
-    ExhaustAgain,
     /// All damage is dealt as though its source had wither (CR 702.80): damage to a creature is dealt as -1/-1
     /// counters.
     DamageAsWither,
@@ -1408,7 +1405,6 @@ mod tests {
         r#""GraveyardCardsUntargetable""#
     )]
     #[case(GameRule::Flagbearers, r#""Flagbearers""#)]
-    #[case(GameRule::ExhaustAgain, r#""ExhaustAgain""#)]
     #[case(
         GameRule::CantLoseGame { who: Ref::You, opponents_cant_win: true, life_only: false },
         r#"{"CantLoseGame":{"who":"You","opponents_cant_win":true}}"#

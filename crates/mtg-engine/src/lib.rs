@@ -159,7 +159,6 @@ mod r304b_lost_priority;
 mod r371_token_loyalty;
 mod r400_attack_follow;
 mod r400_no_mana;
-mod r5509_exhaust;
 mod redeal;
 pub mod replace;
 pub mod resolve;

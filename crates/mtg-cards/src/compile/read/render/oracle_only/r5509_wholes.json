@@ -171,62 +171,6 @@
  ],
  [
   {
-   "Spell": {
-    "effects": [
-     {
-      "Shield": {
-       "when": {
-        "ZoneChange": {
-         "what": [
-          {
-           "ControlledBy": "You"
-          }
-         ],
-         "from": "Battlefield",
-         "to": "Graveyard"
-        }
-       },
-       "by": {
-        "Instead": [
-         {
-          "Exile": {
-           "what": "Triggering",
-           "as": "exiled"
-          }
-         },
-         {
-          "DelayedTrigger": {
-           "when": {
-            "StepBegins": {
-             "step": "End"
-            }
-           },
-           "effects": [
-            {
-             "Move": {
-              "what": {
-               "Bound": "exiled"
-              },
-              "to": {
-               "Battlefield": {}
-              }
-             }
-            }
-           ]
-          }
-         }
-        ]
-       },
-       "duration": "UntilEndOfTurn"
-      }
-     }
-    ]
-   }
-  },
-  "If a permanent you control would be put into a graveyard from the battlefield this turn, exile it instead. Return it to the battlefield under its owner's control at the beginning of the next end step."
- ],
- [
-  {
    "Triggered": {
     "when": {
      "DealsDamage": {

@@ -996,7 +996,6 @@ const RUNS: &[&str] = &[
     "Rule.Draft",
     "Rule.CantBeCopied",
     "Rule.Flagbearers",
-    "Rule.ExhaustAgain",
     "Rule.CantSpendMana",
     "Pred.Modified",
     "Pred.RingBearer",
@@ -1444,7 +1443,6 @@ mod tests {
     #[case::r5509_face_down_pile("Effect.FaceDownPile", true)]
     #[case::r5509_become_foretold("Effect.BecomeForetold", true)]
     #[case::r5509_flagbearers("Rule.Flagbearers", true)]
-    #[case::r5509_exhaust_again("Rule.ExhaustAgain", true)]
     #[case::casting_during_a_resolution("Effect.CastFromZone", true)]
     #[case::casting_during_a_resolution_transformed("Effect.CastFromZone.Transformed", true)]
     #[case::cascading("Keyword.Cascade", true)]

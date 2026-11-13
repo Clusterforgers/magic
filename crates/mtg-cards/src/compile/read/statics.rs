@@ -1936,7 +1936,7 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::CountersRemain,
             ZoneKind::Battlefield,
         ) => super::w17b_statics::w17b_texts(rule),
-        (GameRule::Flagbearers | GameRule::ExhaustAgain, ZoneKind::Battlefield) => {
+        (GameRule::Flagbearers, ZoneKind::Battlefield) => {
             super::r5509_rules::r5509_rule_texts(rule)
         }
         (

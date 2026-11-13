@@ -113,11 +113,9 @@ fn r5509_probe() {
 #[case("Become Anonymous")]
 #[case("Jeskai Infiltrator")]
 #[case("Triumph of Saint Katherine")]
-#[case("Cosmic Intervention")]
 #[case("Wildgrowth Archaic")]
 #[case("Overclocked Electromancer")]
 #[case("Braided Net // Braided Quipu")]
-#[case("Elvish Refueler")]
 #[case("The Foretold Soldier")]
 fn r5509_reads_back_whole(#[case] name: &str) {
     let report = r5509_report(name, &r5509_file(name));
@@ -155,11 +153,6 @@ fn r5509_reads_back_whole(#[case] name: &str) {
     r#""then": "OnTop""#,
     r#""then": "Manifest""#
 )]
-#[case::cosmic_creatures_only(
-    "Cosmic Intervention",
-    r#"[{ "ControlledBy": "You" }]"#,
-    r#"[{ "Type": "Creature" }, { "ControlledBy": "You" }]"#
-)]
 #[case::archaic_fixed_count(
     "Wildgrowth Archaic",
     r#""count": { "Stat": { "of": "Triggering", "stat": "ColorsSpent" } }"#,
@@ -171,7 +164,6 @@ fn r5509_reads_back_whole(#[case] name: &str) {
     r#""event": "Damaged" }"#
 )]
 #[case::net_for_ever("Braided Net // Braided Quipu", r#""WhileTapped""#, r#""Forever""#)]
-#[case::refueler_flagbearers("Elvish Refueler", r#""ExhaustAgain""#, r#""Flagbearers""#)]
 #[case::soldier_exiled_face_up(
     "The Foretold Soldier",
     r#"{ "BecomeForetold": { "what": "This" } }"#,

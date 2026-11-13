@@ -19,10 +19,10 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
     match event {
         Event::AbilityPutOnStack(put) => put_on_stack(state, put),
         Event::AbilityActivated {
-            player,
             source,
             ability,
             origin,
+            ..
         } => {
             let Some(object) = state.source_object(source.id) else {
                 return Err(invalid(format!(
@@ -49,13 +49,6 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 return Err(invalid(format!(
                     "ability {ability} of {source:?} was already used"
                 )));
-            }
-            if let Ability::Activated {
-                limit: Some(Limit::OncePerGame),
-                ..
-            } = &*rules
-            {
-                state.tally(*player, Tally::R5509Exhausted);
             }
             // A planeswalker has one loyalty ability activated each turn, whichever it is, or two under a rule that
             // allows it (CR 606.3).

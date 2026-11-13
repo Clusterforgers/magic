@@ -60,7 +60,7 @@ fn r5509_object(driver: &Driver, id: ObjectId) -> Target {
 }
 
 fn r5509_options(driver: &Driver) -> TargetOptions {
-    match driver.decision().unwrap().kind {
+    match driver.decision().unwrap().kind.clone() {
         DecisionKind::ChooseTargets(options) => options,
         other => panic!("targets are asked, not {}", other.name()),
     }

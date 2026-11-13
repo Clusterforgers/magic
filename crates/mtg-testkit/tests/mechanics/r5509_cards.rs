@@ -1,8 +1,8 @@
 //! Goal: the r55-09 cards play as their rulings say at two to four seats: a face-down pile is exiled, shuffled and
 //! manifested, cloaked tapped or put back on top of the library (Ghastly Conscription, Become Anonymous, Triumph of Saint
 //! Katherine, whose pile does nothing when the library is short: "If you have fewer than six cards in your library ... no
-//! cards will be exiled"), a permanent that would die after Cosmic Intervention is exiled and returns at the next end
-//! step, and Braided Net's prohibition lasts while the permanent stays tapped.
+//! cards will be exiled"), Braided Net's prohibition lasts while the permanent stays tapped, and The Foretold
+//! Soldier, Overclocked Electromancer and Wildgrowth Archaic do what they print.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -217,51 +217,6 @@ fn r5509_triumph_goes_back_on_top_with_six_cards_or_not_at_all(
     Ok(())
 }
 
-#[rstest]
-#[case::two_seats(2)]
-#[case::three_seats(3)]
-#[case::four_seats(4)]
-fn r5509_cosmic_intervention_exiles_and_returns_at_the_next_end_step(
-    #[case] seats: usize,
-) -> Result<(), ScriptError> {
-    let mut scenario = Scenario::new(seats)
-        .battlefield(0, {
-            let mut permanents = r5509_lands(plains, 4);
-            permanents.extend(r5509_lands(swamp, 2));
-            permanents.push(ready(card("Grizzly Bears").unwrap()));
-            permanents
-        })
-        .hand(
-            0,
-            [
-                card("Cosmic Intervention").unwrap(),
-                card("Doom Blade").unwrap(),
-            ],
-        );
-    for seat in 1..seats {
-        scenario = scenario.battlefield(seat, vec![ready(free_creature("Pip", 1, 1))]);
-    }
-    let mut driver = Driver::from_scenario(scenario.at(1, 0, Step::Main1))?;
-    driver.cast("Cosmic Intervention")?;
-    r5509_settle(&mut driver)?;
-    let target = driver.target_named("Grizzly Bears")?;
-    driver.cast_at("Doom Blade", &[target])?;
-    r5509_settle(&mut driver)?;
-    let bears = |driver: &Driver, zone: Zone| {
-        driver
-            .state()
-            .zone(zone)
-            .iter()
-            .any(|id| driver.state().object(*id).unwrap().card().name == "Grizzly Bears")
-    };
-    assert!(bears(&driver, Zone::Exile), "exiled instead");
-    assert!(!bears(&driver, Zone::Graveyard(r5509_seat(0))));
-    driver.idle_until(1, Step::End)?;
-    r5509_settle(&mut driver)?;
-    assert!(bears(&driver, Zone::Battlefield), "back at the end step");
-    Ok(())
-}
-
 /// A creature with "{0}: You gain 1 life.", an ability without {T}.
 fn r5509_totem() -> Arc<CardDefinition> {
     let ability: mtg_cards::ability::Ability = serde_json::from_str(
@@ -331,62 +286,6 @@ fn r5509_braided_net_bans_activations_while_the_permanent_stays_tapped(
     assert!(
         !driver.offered_abilities("Totem")?.is_empty(),
         "the ban ends as it untaps"
-    );
-    Ok(())
-}
-
-/// A creature with "Exhaust — {G}: Put a +1/+1 counter on this creature." and no other rule.
-fn r5509_exhauster() -> Arc<CardDefinition> {
-    let ability: mtg_cards::ability::Ability = serde_json::from_str(
-        r#"{"Activated":{"cost":"{G}","limit":"OncePerGame","effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}}]}}"#,
-    )
-    .unwrap();
-    Arc::new(
-        CardDefinition::new("Exhauster")
-            .with_type(mtg_core::card::CardType::Creature)
-            .with_power_toughness(1, 1)
-            .with_rules(ability),
-    )
-}
-
-#[rstest]
-#[case::refueler_two_seats(2, true)]
-#[case::refueler_three_seats(3, true)]
-#[case::refueler_four_seats(4, true)]
-#[case::without_refueler_two_seats(2, false)]
-#[case::without_refueler_four_seats(4, false)]
-fn r5509_elvish_refueler_frees_exhaust_once_each_of_your_turns(
-    #[case] seats: usize,
-    #[case] refueler: bool,
-) -> Result<(), ScriptError> {
-    let mut permanents = r5509_lands(forest, 4);
-    permanents.push(ready(r5509_exhauster()));
-    if refueler {
-        permanents.push(ready(card("Elvish Refueler").unwrap()));
-    }
-    let mut scenario = Scenario::new(seats).battlefield(0, permanents);
-    for seat in 0..seats {
-        scenario = scenario.library(seat, (0..10).map(|_| island()).collect::<Vec<_>>());
-    }
-    let mut driver = Driver::from_scenario(scenario.at(1, 0, Step::Main1))?;
-    assert!(!driver.offered_abilities("Exhauster")?.is_empty());
-    driver.begin_activation("Exhauster")?;
-    if !matches!(driver.decision()?.kind, DecisionKind::Priority(_)) {
-        driver.answer(mtg_engine::decision::Answer::PayMana(
-            mtg_engine::decision::PayChoice::Auto,
-        ))?;
-    }
-    r5509_settle(&mut driver)?;
-    assert!(
-        driver.offered_abilities("Exhauster")?.is_empty(),
-        "an exhaust ability was activated this turn"
-    );
-    let next = u32::try_from(seats).unwrap() + 1;
-    driver.idle_until(next, Step::Main1)?;
-    assert_eq!(
-        driver.offered_abilities("Exhauster")?.is_empty(),
-        !refueler,
-        "on a later turn of its controller the exhaust ability is free again only with the Refueler"
     );
     Ok(())
 }
@@ -485,7 +384,12 @@ fn r5509_wildgrowth_archaic_adds_a_counter_per_color_spent(
         .battlefield(
             0,
             vec![
-                ready(card("Wildgrowth Archaic").unwrap()),
+                // A 0/0 that entered with its converge counters.
+                with_counters(
+                    ready(card("Wildgrowth Archaic").unwrap()),
+                    mtg_cards::value::CounterKind::PlusOnePlusOne,
+                    2,
+                ),
                 ready(forest()),
                 second,
             ],

@@ -100,8 +100,6 @@ pub(crate) struct Possible {
 /// ("becomes the target for the first time each turn").
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub(crate) enum Tally {
-    /// An exhaust ability activated (`r5509_exhaust`).
-    R5509Exhausted,
     /// An investigation (CR 701.16a).
     L31aInvestigated,
     /// A card drawn.
@@ -595,9 +593,6 @@ impl GameState {
         if let Limit::TimesPerTurn(most) = limit {
             return self.tallies.limit_uses.get(&key).copied().unwrap_or(0) >= most;
         }
-        if limit == Limit::OncePerGame && crate::r5509_exhaust::r5509_again(self, source) {
-            return false;
-        }
         self.limits_spent.contains(&key) || self.game_limits_spent.contains(&key)
     }
 
@@ -641,10 +636,7 @@ impl GameState {
         let key = (source, origin, ability);
         match limit {
             Limit::OncePerTurn | Limit::OncePerTurnDone => self.limits_spent.insert(key),
-            Limit::OncePerGame => {
-                let again = crate::r5509_exhaust::r5509_again(self, source);
-                self.game_limits_spent.insert(key) || again
-            }
+            Limit::OncePerGame => self.game_limits_spent.insert(key),
             Limit::TimesPerTurn(most) => {
                 let used = self.tallies.limit_uses.entry(key).or_insert(0);
                 *used < most && {

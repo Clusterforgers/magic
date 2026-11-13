@@ -5524,7 +5524,6 @@ impl Walker<'_> {
             | GameRule::CantBeCopied
             | GameRule::CantSpendMana
             | GameRule::Flagbearers
-            | GameRule::ExhaustAgain
             | GameRule::RevealFirstDraw { .. } => {}
             GameRule::UpToInDeck(most) => {
                 if *most < 2 {
