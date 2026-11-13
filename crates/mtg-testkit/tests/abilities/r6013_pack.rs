@@ -44,7 +44,11 @@ fn r6013_kin(name: &str, subtype: &str) -> Arc<CardDefinition> {
 
 /// Answers passively until the stack is empty and nothing resolves, choosing `discard` when a card may be discarded
 /// and `target` when a target is asked.
-fn r6013_settle(driver: &mut Driver, discard: Option<&str>, target: Option<&str>) -> Result<(), ScriptError> {
+fn r6013_settle(
+    driver: &mut Driver,
+    discard: Option<&str>,
+    target: Option<&str>,
+) -> Result<(), ScriptError> {
     for _ in 0..300 {
         if driver.state().stack().is_empty() && driver.state().resolving().is_none() {
             if let Ok(decision) = driver.decision()
@@ -56,7 +60,11 @@ fn r6013_settle(driver: &mut Driver, discard: Option<&str>, target: Option<&str>
         match &driver.decision()?.kind {
             DecisionKind::ChooseCards(options) if discard.is_some() => {
                 let id = driver.id_of(discard.unwrap())?;
-                let picked = if options.from.contains(&id) { vec![id] } else { Vec::new() };
+                let picked = if options.from.contains(&id) {
+                    vec![id]
+                } else {
+                    Vec::new()
+                };
                 driver.answer(Answer::ChooseCards(CardsChoice(picked)))?;
             }
             DecisionKind::Discard(_) if discard.is_some() => {
@@ -112,12 +120,17 @@ fn r6013_masticore_destroys_up_to_the_discarded_value(
         assert_eq!(r6013_zone_of(&driver, target), Zone::Battlefield);
     }
     assert_eq!(r6013_zone_of(&driver, "Fodder"), Zone::Graveyard(pid(0)));
-    assert_eq!(r6013_zone_of(&driver, "Argentum Masticore"), Zone::Battlefield);
+    assert_eq!(
+        r6013_zone_of(&driver, "Argentum Masticore"),
+        Zone::Battlefield
+    );
     Ok(())
 }
 
 #[rstest]
-fn r6013_masticore_is_sacrificed_without_a_discard(#[values(2, 3, 4)] seats: usize) -> Result<(), ScriptError> {
+fn r6013_masticore_is_sacrificed_without_a_discard(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
     let scenario = Scenario::new(seats)
         .battlefield(0, [ready(card("Argentum Masticore").unwrap())])
         .battlefield(1, [ready(r6013_relic("Cheap Relic", 2))]);
@@ -190,7 +203,9 @@ fn r6013_return_all() -> Arc<CardDefinition> {
 }
 
 #[rstest]
-fn r6013_spawn_put_onto_the_battlefield_is_exiled(#[values(2, 3, 4)] seats: usize) -> Result<(), ScriptError> {
+fn r6013_spawn_put_onto_the_battlefield_is_exiled(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
     let scenario = Scenario::new(seats)
         .at(1, 0, Step::Main1)
         .graveyard(0, [card("Primeval Spawn").unwrap()])
@@ -239,7 +254,9 @@ fn r6013_mindcensor_limits_an_opponents_search(
     #[case] searcher: usize,
     #[case] offered: usize,
 ) -> Result<(), ScriptError> {
-    let library: Vec<_> = (1..=6).map(|at| r6013_kin(&format!("Deep {at}"), "Elf")).collect();
+    let library: Vec<_> = (1..=6)
+        .map(|at| r6013_kin(&format!("Deep {at}"), "Elf"))
+        .collect();
     let tutor = r6013_instant(
         "Tutor",
         r#"{"Spell":{"effects":[{"Search":{"filter":[{"Type":"Creature"}],"as":"found"}}]}}"#,
@@ -292,7 +309,9 @@ fn r6013_wolverine_heals_before_each_damage(
     let zap = format!(
         r#"{{"Spell":{{"targets":[{{"what":{{"Object":[{{"Type":"Creature"}}]}}}}],"effects":[{{"DealDamage":{{"to":{{"Target":0}},"amount":{each}}}}}]}}}}"#
     );
-    let zaps: Vec<_> = (0..hits).map(|at| r6013_instant(&format!("Zap {at}"), &zap)).collect();
+    let zaps: Vec<_> = (0..hits)
+        .map(|at| r6013_instant(&format!("Zap {at}"), &zap))
+        .collect();
     let scenario = Scenario::new(seats)
         .at(1, 0, Step::Main1)
         .battlefield(0, [ready(card("Wolverine, Fierce Fighter").unwrap())])
@@ -310,13 +329,18 @@ fn r6013_wolverine_heals_before_each_damage(
         assert!(matches!(object.zone(), Zone::Graveyard(_)));
     } else {
         assert_eq!(object.zone(), Zone::Battlefield);
-        assert_eq!(object.permanent().unwrap().damage(), u32::try_from(each).unwrap());
+        assert_eq!(
+            object.permanent().unwrap().damage(),
+            u32::try_from(each).unwrap()
+        );
     }
     Ok(())
 }
 
 #[rstest]
-fn r6013_winds_hold_a_permanent_with_wind_counters(#[values(2, 3, 4)] seats: usize) -> Result<(), ScriptError> {
+fn r6013_winds_hold_a_permanent_with_wind_counters(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
     let wind = CounterKind::Other("wind".to_owned());
     let scenario = Scenario::new(seats)
         .battlefield(0, [ready(card("Freyalise's Winds").unwrap())])
@@ -340,8 +364,12 @@ fn r6013_winds_hold_a_permanent_with_wind_counters(#[values(2, 3, 4)] seats: usi
 
 /// An instant that does what the ability at `path` (face, then index) of the card file does.
 fn r6013_effects_of(slug: &str, face: usize, index: usize, kind: &str) -> Arc<CardDefinition> {
-    let path = format!("{}/../mtg-cards/cards/{slug}.json", env!("CARGO_MANIFEST_DIR"));
-    let file: serde_json::Value = serde_json::from_str(&std::fs::read_to_string(path).unwrap()).unwrap();
+    let path = format!(
+        "{}/../mtg-cards/cards/{slug}.json",
+        env!("CARGO_MANIFEST_DIR")
+    );
+    let file: serde_json::Value =
+        serde_json::from_str(&std::fs::read_to_string(path).unwrap()).unwrap();
     let effects = file["faces"][face]["abilities"][index][kind]["effects"].clone();
     assert!(effects.is_array(), "{slug} has {kind} effects");
     r6013_instant(
@@ -351,7 +379,9 @@ fn r6013_effects_of(slug: &str, face: usize, index: usize, kind: &str) -> Arc<Ca
 }
 
 #[rstest]
-fn r6013_ajani_minus_four_keeps_one_of_each_type(#[values(2, 3, 4)] seats: usize) -> Result<(), ScriptError> {
+fn r6013_ajani_minus_four_keeps_one_of_each_type(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
     let borrowed = r6013_effects_of("ajani_nacatl_pariah_ajani_nacatl_avenger", 1, 2, "Loyalty");
     let mut scenario = Scenario::new(seats)
         .at(1, 0, Step::Main1)
@@ -378,7 +408,10 @@ fn r6013_ajani_minus_four_keeps_one_of_each_type(#[values(2, 3, 4)] seats: usize
             .filter(|name| name.starts_with(&format!("Relic {seat}")))
             .count();
         assert_eq!(kept, 1, "seat {seat} keeps one artifact");
-        assert_eq!(r6013_zone_of(&driver, &format!("Bear {seat}")), Zone::Battlefield);
+        assert_eq!(
+            r6013_zone_of(&driver, &format!("Bear {seat}")),
+            Zone::Battlefield
+        );
     }
     assert_eq!(
         common::names(driver.state(), Zone::Battlefield)
@@ -437,16 +470,31 @@ fn r6013_mana_clash_repeats_until_both_coins_come_up_heads(
             _ => None,
         })
         .collect();
-    let mine: Vec<bool> = flips.iter().filter(|(who, _)| *who == 0).map(|(_, heads)| *heads).collect();
-    let theirs: Vec<bool> = flips.iter().filter(|(who, _)| *who == 1).map(|(_, heads)| *heads).collect();
+    let mine: Vec<bool> = flips
+        .iter()
+        .filter(|(who, _)| *who == 0)
+        .map(|(_, heads)| *heads)
+        .collect();
+    let theirs: Vec<bool> = flips
+        .iter()
+        .filter(|(who, _)| *who == 1)
+        .map(|(_, heads)| *heads)
+        .collect();
     assert_eq!(mine.len(), theirs.len());
     let pairs: Vec<(bool, bool)> = mine.iter().copied().zip(theirs.iter().copied()).collect();
     let (last, before) = pairs.split_last().unwrap();
     assert_eq!(*last, (true, true));
     assert!(before.iter().all(|pair| *pair != (true, true)));
-    let tails = |side: &[bool]| i32::try_from(side.iter().filter(|heads| !**heads).count()).unwrap();
-    assert_eq!(driver.state().player(pid(0)).unwrap().life(), 20 - tails(&mine));
-    assert_eq!(driver.state().player(pid(1)).unwrap().life(), 20 - tails(&theirs));
+    let tails =
+        |side: &[bool]| i32::try_from(side.iter().filter(|heads| !**heads).count()).unwrap();
+    assert_eq!(
+        driver.state().player(pid(0)).unwrap().life(),
+        20 - tails(&mine)
+    );
+    assert_eq!(
+        driver.state().player(pid(1)).unwrap().life(),
+        20 - tails(&theirs)
+    );
     Ok(())
 }
 

@@ -91,18 +91,73 @@ fn r6013_clause_reads_back(#[case] name: &str, #[case] start: &str) {
     r#""ControlledBy": "Opponents""#,
     r#""ControlledBy": "You""#
 )]
-#[case::grist_a_zombie("Grist, the Hunger Tide", "+1:", r#""Subtype": "Insect""#, r#""Subtype": "Zombie""#)]
-#[case::grist_two_loyalty("Grist, the Hunger Tide", "+1:", r#""counter": "loyalty""#, r#""counter": "loyalty", "count": 2"#)]
-#[case::spawn_to_graveyard("Primeval Spawn", "If this creature would enter", r#""Exile": { "what": "Triggering" }"#, r#""Destroy": { "what": "Triggering" }"#)]
-#[case::spawn_one_mana("Primeval Spawn", "If this creature would enter", r#""right": 0"#, r#""right": 1"#)]
-#[case::mindcensor_three_cards("Aven Mindcensor", "If an opponent", r#""count": 4"#, r#""count": 3"#)]
-#[case::mindcensor_every_player("Aven Mindcensor", "If an opponent", r#""Opponents""#, r#""EachPlayer""#)]
-#[case::wolverine_prevented("Wolverine, Fierce Fighter", "If damage would", r#""HealFirst""#, r#""Prevent""#)]
-#[case::wolverine_any_recipient("Wolverine, Fierce Fighter", "If damage would", r#""to": "This""#, r#""to": "Attached""#)]
-#[case::winds_ice_counters("Freyalise's Winds", "If a permanent", r#""UntapRemovesCounters": { "Other": "wind""#, r#""UntapRemovesCounters": { "Other": "ice""#)]
+#[case::grist_a_zombie(
+    "Grist, the Hunger Tide",
+    "+1:",
+    r#""Subtype": "Insect""#,
+    r#""Subtype": "Zombie""#
+)]
+#[case::grist_two_loyalty(
+    "Grist, the Hunger Tide",
+    "+1:",
+    r#""counter": "loyalty""#,
+    r#""counter": "loyalty", "count": 2"#
+)]
+#[case::spawn_to_graveyard(
+    "Primeval Spawn",
+    "If this creature would enter",
+    r#""Exile": { "what": "Triggering" }"#,
+    r#""Destroy": { "what": "Triggering" }"#
+)]
+#[case::spawn_one_mana(
+    "Primeval Spawn",
+    "If this creature would enter",
+    r#""right": 0"#,
+    r#""right": 1"#
+)]
+#[case::mindcensor_three_cards(
+    "Aven Mindcensor",
+    "If an opponent",
+    r#""count": 4"#,
+    r#""count": 3"#
+)]
+#[case::mindcensor_every_player(
+    "Aven Mindcensor",
+    "If an opponent",
+    r#""Opponents""#,
+    r#""EachPlayer""#
+)]
+#[case::wolverine_prevented(
+    "Wolverine, Fierce Fighter",
+    "If damage would",
+    r#""HealFirst""#,
+    r#""Prevent""#
+)]
+#[case::wolverine_any_recipient(
+    "Wolverine, Fierce Fighter",
+    "If damage would",
+    r#""to": "This""#,
+    r#""to": "Attached""#
+)]
+#[case::winds_ice_counters(
+    "Freyalise's Winds",
+    "If a permanent",
+    r#""UntapRemovesCounters": { "Other": "wind""#,
+    r#""UntapRemovesCounters": { "Other": "ice""#
+)]
 #[case::clash_two_damage("Mana Clash", "You and target", r#""amount": 1"#, r#""amount": 2"#)]
-#[case::valentin_your_creatures("Valentin, Dean of the Vein // Lisette, Dean of the Root", "If a nontoken", r#""ControlledBy": "Opponents""#, r#""ControlledBy": "You""#)]
-#[case::ajani_keeps_lands("Ajani, Nacatl Pariah // Ajani, Nacatl Avenger", "\u{2212}4", r#""Type": "Planeswalker""#, r#""Type": "Battle""#)]
+#[case::valentin_your_creatures(
+    "Valentin, Dean of the Vein // Lisette, Dean of the Root",
+    "If a nontoken",
+    r#""ControlledBy": "Opponents""#,
+    r#""ControlledBy": "You""#
+)]
+#[case::ajani_keeps_lands(
+    "Ajani, Nacatl Pariah // Ajani, Nacatl Avenger",
+    "\u{2212}4",
+    r#""Type": "Planeswalker""#,
+    r#""Type": "Battle""#
+)]
 fn r6013_a_near_miss_does_not_read_back(
     #[case] name: &str,
     #[case] start: &str,
