@@ -408,6 +408,7 @@ fn lowest_returned(ability: &Ability) -> Vec<String> {
             count,
             bind,
             rest_as: None,
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(moved),

@@ -459,6 +459,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             max: 1,
             text: String::new(),
             can_cancel: true,
+            groups: Vec::new(),
         }),
         DecisionKind::OrderCards(OrderOptions {
             source: b,
@@ -1685,6 +1686,7 @@ fn pipeline_events() -> Vec<Event> {
             choices,
             cause: Some(Cause {
                 dealers: Vec::new(),
+                counters: Vec::new(),
                 subjects: vec![target],
                 snapshots: vec![shot.clone()],
                 amount: 0,

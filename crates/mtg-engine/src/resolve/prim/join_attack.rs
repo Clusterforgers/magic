@@ -1,6 +1,7 @@
 //! `Effect::JoinAttack`: a creature put onto the battlefield joins the attack of the creature the cost returned (CR 702.49a).
 
 use mtg_cards::effect::Effect;
+use mtg_cards::refs::Ref;
 
 use super::wrong_effect;
 use crate::characteristics::characteristics;
@@ -22,12 +23,26 @@ fn attackable(state: &GameState, target: AttackTarget) -> bool {
     }
 }
 
-/// What the creatures attack: what the object picked for the cost was attacking as it left combat (ninjutsu), or, with no
+/// What the creatures attack: the player `against` names, or what the object picked for the cost was attacking as it left combat (ninjutsu), or, with no
 /// pick for the cost, what their controller chooses among the defenders of their own attack (CR 508.4, asked only when there
 /// is more than one). Nothing when no attack is under way or what the pick attacked is gone.
-fn aim(cx: &Cx<'_>) -> Result<Result<Option<AttackTarget>, Decision>, ResolveError> {
+fn aim(
+    cx: &Cx<'_>,
+    against: Option<&Ref>,
+) -> Result<Result<Option<AttackTarget>, Decision>, ResolveError> {
     let state = cx.state();
     let combat = state.combat();
+    if let Some(against) = against {
+        // The player the effect names, while an attack is under way and that player can still be attacked.
+        return Ok(Ok(cx
+            .scope
+            .players(against)?
+            .into_iter()
+            .map(AttackTarget::Player)
+            .find(|target| {
+                combat.attackers_declared() && attackable(state, *target)
+            })));
+    }
     let mut picks = cx.scope.choices.cost_picks().iter().flatten().peekable();
     if picks.peek().is_some() {
         return Ok(Ok(picks
@@ -59,7 +74,7 @@ fn aim(cx: &Cx<'_>) -> Result<Result<Option<AttackTarget>, Decision>, ResolveErr
 /// the attack as what `aim` says; the creature is never declared as an attacker, so nothing that triggers on attacking sees
 /// it (CR 508.4). Nobody joins, nobody is asked.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::JoinAttack { what } = effect else {
+    let Effect::JoinAttack { what, against } = effect else {
         return Err(wrong_effect("JoinAttack"));
     };
     let state = cx.state();
@@ -78,7 +93,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     if joining.is_empty() {
         return Ok(Run::events(Vec::new()));
     }
-    let target = match aim(cx)? {
+    let target = match aim(cx, against.as_ref())? {
         Err(decision) => return Ok(Run::Ask(decision)),
         Ok(None) => return Ok(Run::events(Vec::new())),
         Ok(Some(target)) => target,

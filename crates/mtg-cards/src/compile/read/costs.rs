@@ -10,7 +10,7 @@ use super::w2f_any_counters::w2f_text;
 use crate::ability::Ability;
 use crate::cost::{Cost, CostItem};
 use crate::mana::ManaCostX;
-use crate::refs::{Pred, Ref, Selector, ZoneKind};
+use crate::refs::{Pred, Ref, Selector, TargetSet, ZoneKind};
 use crate::value::{Amount, CounterKind};
 use mtg_core::card::Subtype;
 
@@ -103,7 +103,7 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
         return Some(CostItem::PayLife(amount));
     }
     if r.word("discard") {
-        return discard(r);
+        return discard(r).map(|item| r4709_apart(r, item));
     }
     if r.word("tap") {
         return tap(r);
@@ -134,7 +134,89 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
     if r.source() {
         return Some(CostItem::SacrificeSelf);
     }
-    sacrifice(r)
+    sacrifice(r).map(|item| r4709_apart(r, item))
+}
+
+/// A discard or sacrifice of several followed by "with different names": its filter keeps them apart.
+fn r4709_apart(r: &mut Reader<'_>, item: CostItem) -> CostItem {
+    let several = matches!(&item, CostItem::Discard { count: Amount::Fixed(n), .. }
+        | CostItem::Sacrifice { count: Amount::Fixed(n), .. } if *n > 1);
+    if !several || !r.words("with different names") {
+        return item;
+    }
+    let apart = Pred::Apart(TargetSet::DifferentNames);
+    match item {
+        CostItem::Discard { count, filter } => {
+            let mut filter = filter.unwrap_or_default();
+            filter.0.push(apart);
+            CostItem::Discard {
+                count,
+                filter: Some(filter),
+            }
+        }
+        CostItem::Sacrifice { mut filter, count } => {
+            filter.0.push(apart);
+            CostItem::Sacrifice { filter, count }
+        }
+        other => other,
+    }
+}
+
+/// The words of a discard or sacrifice whose filter keeps what it takes apart: the cost without the rule, then the
+/// rule ("Discard three cards with different names").
+fn r4709_apart_text(item: &CostItem) -> Option<String> {
+    let (filter, rebuild): (&Selector, fn(Selector, &CostItem) -> CostItem) = match item {
+        CostItem::Discard {
+            filter: Some(filter),
+            ..
+        } => (filter, |rest, item| match item {
+            CostItem::Discard { count, .. } => CostItem::Discard {
+                count: count.clone(),
+                filter: (!rest.0.is_empty()).then_some(rest),
+            },
+            other => other.clone(),
+        }),
+        CostItem::Sacrifice { filter, .. } => (filter, |rest, item| match item {
+            CostItem::Sacrifice { count, .. } => CostItem::Sacrifice {
+                filter: rest,
+                count: count.clone(),
+            },
+            other => other.clone(),
+        }),
+        _ => return None,
+    };
+    let [rule] = filter
+        .0
+        .iter()
+        .filter_map(|pred| match pred {
+            Pred::Apart(rule) => Some(rule),
+            _ => None,
+        })
+        .collect::<Vec<_>>()[..]
+    else {
+        return None;
+    };
+    let words = match rule {
+        TargetSet::DifferentNames => "with different names",
+        TargetSet::DifferentPowers => "with different powers",
+        TargetSet::DifferentManaValues => "with different mana values",
+        _ => return Some(String::new()),
+    };
+    let rest = Selector(
+        filter
+            .0
+            .iter()
+            .filter(|pred| !matches!(pred, Pred::Apart(_)))
+            .cloned()
+            .collect(),
+    );
+    let plain = rebuild(rest, item);
+    let several = matches!(&plain, CostItem::Discard { count: Amount::Fixed(n), .. }
+        | CostItem::Sacrifice { count: Amount::Fixed(n), .. } if *n > 1);
+    if !several {
+        return Some(String::new());
+    }
+    Some(format!("{} {words}", item_text(&plain)?))
 }
 
 /// "Discard a card", "Discard two cards", "Discard a land card", "Discard X creature cards".
@@ -489,6 +571,9 @@ pub fn text(cost: &Cost) -> Option<String> {
 
 #[allow(clippy::too_many_lines)]
 fn item_text(item: &CostItem) -> Option<String> {
+    if let Some(text) = r4709_apart_text(item) {
+        return (!text.is_empty()).then_some(text);
+    }
     Some(match item {
         CostItem::Mana(mana) => mana.to_string(),
         CostItem::Tap => "{T}".to_owned(),
@@ -540,6 +625,13 @@ fn item_text(item: &CostItem) -> Option<String> {
         }
         CostItem::TapPermanents { filter, count } => tap_text(filter, count)?,
         CostItem::Waterbend(generic) => format!("Waterbend {{{generic}}}"),
+        CostItem::ExileFromGraveyard {
+            filter,
+            count,
+            any_player: false,
+        } if super::r4700_writers::r4700_top_cards_text(filter, count).is_some() => {
+            super::r4700_writers::r4700_top_cards_text(filter, count)?
+        }
         CostItem::ExileFromGraveyard {
             filter,
             count,
@@ -892,4 +984,25 @@ fn r408_half_life(r: &mut Reader<'_>) -> Option<Amount> {
         of: Box::new(Amount::Life(Ref::You)),
         up,
     })
+}
+
+/// The part of "by tapping three untapped creatures you control with flying" after the verb: untapped permanents the
+/// payer controls, of a kind and with any keyword.
+pub(super) fn r4701_tap(r: &mut Reader<'_>) -> Option<CostItem> {
+    let (form, count) = how_many(r)?;
+    let mut filter = phrase(r, form)?;
+    without(&mut filter, &Pred::Untapped)?;
+    without(&mut filter, &Pred::ControlledBy(Ref::You))?;
+    // "with flying" after "you control", which the phrase leaves.
+    if r.word("with") {
+        filter
+            .0
+            .push(Pred::HasKeyword(super::selectors::keyword(r)?));
+    }
+    filter
+        .0
+        .iter()
+        .all(|pred| is_cost_filter(pred) || matches!(pred, Pred::HasKeyword(_)))
+        .then_some(())?;
+    Some(CostItem::TapPermanents { filter, count })
 }

@@ -351,6 +351,7 @@ pub(super) fn w21a_suffix_text(pred: &Pred, form: Form) -> Option<String> {
     Some(match pred {
         Pred::ChosenSubtype => "of the chosen type".to_owned(),
         Pred::ChosenColor => "of the chosen color".to_owned(),
+        Pred::ChosenName => "with the chosen name".to_owned(),
         Pred::GravedThisTurn => W21A_GRAVED.to_owned(),
         Pred::ArrivedFrom(ZoneKind::Battlefield) => W21A_ARRIVED.to_owned(),
         Pred::TargetsPlayer(Ref::You) => "that targets you".to_owned(),

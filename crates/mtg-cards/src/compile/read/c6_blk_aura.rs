@@ -30,6 +30,7 @@ pub fn c6_blk_aura_effects() -> Vec<Effect> {
             who: Ref::You,
             count: crate::value::Amount::one(),
             from: None,
+            cards: None,
             bind: Some(C6_BLK_MANIFESTED.to_owned()),
         },
         Effect::Attach {

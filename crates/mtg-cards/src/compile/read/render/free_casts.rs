@@ -26,6 +26,7 @@ pub(super) fn text(effects: &[Effect]) -> Option<(String, usize)> {
             count,
             bind,
             rest_as: None,
+            differ: None,
         },
         Effect::CastFromZone {
             rather: None,

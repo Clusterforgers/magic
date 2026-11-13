@@ -132,6 +132,7 @@ pub(crate) fn r301_offering_cost(
         source: id,
         barred: &[id],
         granter: None,
+        pays: crate::r4707_pay_costs::PaysFor::Cost,
     };
     pick.candidates(&sacrificer)
         .into_iter()

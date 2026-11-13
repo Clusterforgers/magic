@@ -1,7 +1,7 @@
 {
   "oracle_id": "6dc23410-4d8f-4c8a-92b4-a8b3fae1af4e",
   "name": "Yasharn, Implacable Earth",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Yasharn, Implacable Earth",
@@ -36,9 +36,15 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 149, "end": 241 }
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "PayCosts": { "life": true, "sacrifice": [{ "Not": { "Type": "Land" } }] }
+                }
+              }
+            }
           }
         }
       ]
