@@ -3085,6 +3085,26 @@ impl<'a> Scope<'a> {
         }
     }
 
+    /// Whether every named permanent, still the one named, has a level that compares with `level` by `op`.
+    fn level_holds(
+        &self,
+        of: &Ref,
+        op: mtg_cards::value::Cmp,
+        level: u32,
+    ) -> Result<bool, ResolveError> {
+        let named = self.objects(of)?;
+        Ok(!named.is_empty()
+            && named.iter().all(|named| {
+                self.state
+                    .object(named.id)
+                    .filter(|object| object.counter() == named.counter)
+                    .and_then(GameObject::permanent)
+                    .is_some_and(|permanent| {
+                        op.holds(i64::from(permanent.level()), i64::from(level))
+                    })
+            }))
+    }
+
     /// Whether a condition is true now.
     pub fn holds(&self, condition: &Condition) -> Result<bool, ResolveError> {
         Ok(match condition {
@@ -3166,19 +3186,7 @@ impl<'a> Scope<'a> {
             }
             Condition::AfterCombat => self.state.turn().step() >= crate::turn::Step::Main2,
             Condition::TriggeringSticker(kind) => self.r378_triggering_sticker(*kind),
-            Condition::Level { of, op, level } => {
-                let named = self.objects(of)?;
-                !named.is_empty()
-                    && named.iter().all(|named| {
-                        self.state
-                            .object(named.id)
-                            .filter(|object| object.counter() == named.counter)
-                            .and_then(GameObject::permanent)
-                            .is_some_and(|permanent| {
-                                op.holds(i64::from(permanent.level()), i64::from(*level))
-                            })
-                    })
-            }
+            Condition::Level { of, op, level } => self.level_holds(of, *op, *level)?,
             Condition::NewlyControlled(what) => {
                 let named = self.objects(what)?;
                 !named.is_empty()
