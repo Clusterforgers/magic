@@ -81,7 +81,7 @@ fn r5510_fortified_land_is_indestructible(#[values(2, 3, 4)] seats: usize) {
         .state()
         .object(garrison)
         .and_then(|object| object.permanent())
-        .and_then(|permanent| permanent.attached_to())
+        .and_then(mtg_engine::object::PermanentState::attached_to)
         .map(|host| host.id);
     assert_eq!(attached, Some(land));
     assert!(fortified.contains(&&Keyword::Indestructible));

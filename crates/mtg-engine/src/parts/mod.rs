@@ -356,6 +356,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
 impl Part {
     /// The part a cost item is, `None` for the items that are not one of these (`{T}`, mana, losing the source), or the
     /// name of the part whose amount the engine cannot count.
+    #[allow(clippy::too_many_lines)]
     pub(crate) fn read(item: &CostItem) -> Result<Option<Part>, &'static str> {
         if let Some(whole) = whole_part(item) {
             return Ok(Some(whole));

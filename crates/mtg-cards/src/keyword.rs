@@ -955,6 +955,25 @@ impl Keyword {
     }
 }
 
+/// `mana` with up to `less` generic mana taken off; its colored symbols stay (the reduction of a cost reduces only its
+/// generic part).
+fn r5510_less_generic(mana: &mtg_core::mana::ManaCost, less: u32) -> mtg_core::mana::ManaCost {
+    let mut left = less;
+    let symbols: Vec<mtg_core::mana::ManaSymbol> = mana
+        .symbols()
+        .iter()
+        .filter_map(|symbol| match symbol {
+            mtg_core::mana::ManaSymbol::Generic(n) => {
+                let taken = (*n).min(left);
+                left -= taken;
+                (*n > taken).then_some(mtg_core::mana::ManaSymbol::Generic(*n - taken))
+            }
+            other => Some(*other),
+        })
+        .collect();
+    mtg_core::mana::ManaCost::from_symbols(symbols)
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: every keyword has a unique Scryfall name listed in `NAMES`, and keywords serialize as plain words or single-key maps.
@@ -1246,23 +1265,4 @@ mod tests {
             "\"Flying\""
         );
     }
-}
-
-/// `mana` with up to `less` generic mana taken off; its colored symbols stay (the reduction of a cost reduces only its
-/// generic part).
-fn r5510_less_generic(mana: &mtg_core::mana::ManaCost, less: u32) -> mtg_core::mana::ManaCost {
-    let mut left = less;
-    let symbols: Vec<mtg_core::mana::ManaSymbol> = mana
-        .symbols()
-        .iter()
-        .filter_map(|symbol| match symbol {
-            mtg_core::mana::ManaSymbol::Generic(n) => {
-                let taken = (*n).min(left);
-                left -= taken;
-                (*n > taken).then_some(mtg_core::mana::ManaSymbol::Generic(*n - taken))
-            }
-            other => Some(*other),
-        })
-        .collect();
-    mtg_core::mana::ManaCost::from_symbols(symbols)
 }
