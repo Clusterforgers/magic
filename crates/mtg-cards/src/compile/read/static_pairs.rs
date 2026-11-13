@@ -14,6 +14,12 @@ use crate::refs::{Ref, ZoneKind};
 
 /// The two statics of the sentence, when the card gets a bonus and a group gets a bonus or a keyword.
 pub(super) fn read(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
+    if let Some(found) = r.attempt(super::r371_owner::r371_attacks_unsacrificed) {
+        return Some(found);
+    }
+    if let Some(found) = r.attempt(super::r371_owner::r371_attacks_and_cant) {
+        return Some(found);
+    }
     if let Some(found) = r.attempt(super::c10_uc::c10_uc_enters_held) {
         return Some(found);
     }
@@ -46,6 +52,10 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     let r408 = super::r408_lands::r408_hand_and_life_texts(first, second);
     if !r408.is_empty() {
         return r408;
+    }
+    let owner = super::r371_owner::r371_pair_texts(first, second);
+    if !owner.is_empty() {
+        return owner;
     }
     let escapes = super::r304b_writers::r304b_escapes_instead(first, second);
     if !escapes.is_empty() {

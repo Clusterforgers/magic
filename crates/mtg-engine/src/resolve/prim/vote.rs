@@ -124,9 +124,84 @@ fn leaders(votes: &[Target]) -> Vec<Target> {
     leading
 }
 
-/// Each voter chooses one of the players or objects the reference names; the ones with the most votes, all of them
-/// when tied, are bound.
-fn of(cx: &Cx<'_>, of: &mtg_cards::refs::Ref, bind: &str) -> Result<Run, ResolveError> {
+/// The ballots of a vote on players: each voter chooses one of the players, never themselves when `another`, face down
+/// when `secret`; an additional ballot may be left blank. A voter with no player to vote for casts no vote.
+fn r376_player_votes(
+    cx: &Cx<'_>,
+    players: &[PlayerId],
+    another: bool,
+    secret: bool,
+) -> Result<Result<Vec<Target>, Run>, ResolveError> {
+    let mut ballots: Vec<Vec<PlayerId>> = Vec::new();
+    let mut choosers: Vec<OptionChooser> = Vec::new();
+    for (voter, again) in voters(cx) {
+        let open: Vec<PlayerId> = players
+            .iter()
+            .copied()
+            .filter(|player| !another || *player != voter)
+            .collect();
+        if open.is_empty() {
+            continue;
+        }
+        let mut options: Vec<ChoiceOption> = open
+            .iter()
+            .map(|player| {
+                if secret {
+                    ChoiceOption::SecretPlayer(*player)
+                } else {
+                    ChoiceOption::Player(*player)
+                }
+            })
+            .collect();
+        if again {
+            options.push(if secret {
+                ChoiceOption::Secret(W17C_NO_VOTE.to_owned())
+            } else {
+                ChoiceOption::Label(W17C_NO_VOTE.to_owned())
+            });
+        }
+        ballots.push(open);
+        choosers.push(OptionChooser {
+            player: voter,
+            options,
+            text: if another {
+                "Vote for another player.".to_owned()
+            } else {
+                "Vote for a player.".to_owned()
+            },
+        });
+    }
+    Ok(match pick_options(cx, &choosers)? {
+        Optioned::Ask(decision) => Err(Run::Ask(decision)),
+        Optioned::Done(taken) => Ok(taken
+            .into_iter()
+            .zip(&ballots)
+            .filter_map(|((_, index), open)| open.get(index).copied().map(Target::Player))
+            .collect()),
+    })
+}
+
+/// The names a vote on players or objects binds: the leaders under `bind`, every vote under `tally`.
+fn r376_bound(
+    votes: &[Target],
+    bind: Option<&str>,
+    tally: Option<&str>,
+) -> Vec<(String, Vec<Target>)> {
+    bind.map(|name| (name.to_owned(), leaders(votes)))
+        .into_iter()
+        .chain(tally.map(|name| (name.to_owned(), votes.to_vec())))
+        .collect()
+}
+
+/// Each voter chooses one of the players or objects the reference names (face down on players when `secret`); the
+/// ones with the most votes, all of them when tied, are bound to `bind` and every vote to `tally`.
+fn of(
+    cx: &Cx<'_>,
+    of: &mtg_cards::refs::Ref,
+    secret: bool,
+    bind: Option<&str>,
+    tally: Option<&str>,
+) -> Result<Run, ResolveError> {
     let candidates = cx.scope.refs(of)?;
     let players: Vec<PlayerId> = candidates.iter().filter_map(|t| t.player()).collect();
     let objects: Vec<ObjectId> = candidates
@@ -139,19 +214,18 @@ fn of(cx: &Cx<'_>, of: &mtg_cards::refs::Ref, bind: &str) -> Result<Run, Resolve
             "a vote is on players or on objects, not both".into(),
         ));
     }
+    if secret && !objects.is_empty() {
+        return Err(ResolveError::Invalid(
+            "a vote on objects is never secret".into(),
+        ));
+    }
     let seats = voters(cx);
     let votes: Vec<Target> = if candidates.is_empty() {
         Vec::new()
     } else if objects.is_empty() {
-        let options: Vec<ChoiceOption> = players.iter().map(|p| ChoiceOption::Player(*p)).collect();
-        let blank = ChoiceOption::Label(W17C_NO_VOTE.to_owned());
-        let choosers = w17c_choosers(cx, &options, &blank, "Vote for a player.");
-        match pick_options(cx, &choosers)? {
-            Optioned::Ask(decision) => return Ok(Run::Ask(decision)),
-            Optioned::Done(taken) => taken
-                .into_iter()
-                .filter_map(|(_, index)| players.get(index).copied().map(Target::Player))
-                .collect(),
+        match r376_player_votes(cx, &players, false, secret)? {
+            Ok(votes) => votes,
+            Err(ask) => return Ok(ask),
         }
     } else {
         let selections: Vec<Selection> = seats
@@ -179,7 +253,7 @@ fn of(cx: &Cx<'_>, of: &mtg_cards::refs::Ref, bind: &str) -> Result<Run, Resolve
                 .collect(),
         }
     };
-    Ok(done(vec![(bind.to_owned(), leaders(&votes))]))
+    Ok(done(r376_bound(&votes, bind, tally)))
 }
 
 /// The players vote: on named choices each name is bound to the players who voted for it, once for each of their votes;
@@ -189,25 +263,33 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         options,
         secret,
         bind,
+        tally,
     } = effect
     else {
         return Err(wrong_effect("Vote"));
     };
-    match (options, bind) {
-        (VoteFor::Named(names), _) => named(cx, names, *secret),
-        (VoteFor::Of(_), _) if *secret => Err(ResolveError::Invalid(
-            "only a vote on named choices is secret".into(),
-        )),
-        (VoteFor::Of(reference), Some(bind)) => of(cx, reference, bind),
-        (VoteFor::Of(_), None) => Err(ResolveError::Invalid(
+    if !matches!(options, VoteFor::Named(_)) && bind.is_none() && tally.is_none() {
+        return Err(ResolveError::Invalid(
             "a vote on players or objects names its winners".into(),
-        )),
+        ));
+    }
+    let (bind, tally) = (bind.as_deref(), tally.as_deref());
+    match options {
+        VoteFor::Named(names) => named(cx, names, *secret),
+        VoteFor::Of(reference) => of(cx, reference, *secret, bind, tally),
+        VoteFor::AnotherPlayer => {
+            let players = cx.state().turn_order_from(cx.scope.controller);
+            match r376_player_votes(cx, &players, true, *secret)? {
+                Ok(votes) => Ok(done(r376_bound(&votes, bind, tally))),
+                Err(ask) => Ok(ask),
+            }
+        }
     }
 }
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a vote asks the controller first and then the others in turn order whoever is the active player, offers the named choices (face down for a secret vote), keeps every tied leader and nothing else, and refuses a secret vote on players or objects, a vote on them that names no winner and another effect, by name.
+    //! Goal: a vote asks the controller first and then the others in turn order whoever is the active player, offers the named choices (face down for a secret vote), offers players face down for a secret vote on them and every other player for a vote for another player at two to four seats, keeps every tied leader and nothing else, binds every vote to the tally, and refuses a secret vote on objects, a vote on players or objects that names no winner nor tally and another effect, by name.
     use rstest::rstest;
 
     use super::*;
@@ -296,15 +378,106 @@ mod tests {
     }
 
     #[rstest]
-    #[case::secret_on_players(
-        r#"{"Vote":{"options":{"Of":"EachPlayer"},"secret":true,"as":"won"}}"#
+    #[case::secret_on_objects(
+        r#"{"Vote":{"options":{"Of":{"Each":[{"Type":"Creature"}]}},"secret":true,"as":"won"}}"#
     )]
     #[case::no_name_for_the_winners(r#"{"Vote":{"options":{"Of":"EachPlayer"}}}"#)]
+    #[case::no_name_for_another_player(r#"{"Vote":{"options":"AnotherPlayer","secret":true}}"#)]
     fn a_vote_on_players_that_cannot_be_played_is_refused(#[case] json: &str) {
         assert!(matches!(
             play(&game(2), 0, json),
             Err(ResolveError::Invalid(_))
         ));
+    }
+
+    #[rstest]
+    #[case::three_seats(3, 0, &[1, 2])]
+    #[case::three_seats_from_the_last(3, 2, &[0, 1])]
+    #[case::four_seats_from_seat_two(4, 2, &[3, 0, 1])]
+    fn a_vote_for_another_player_offers_every_other_player_face_down(
+        #[case] seats: usize,
+        #[case] controller: u64,
+        #[case] offered: &[u64],
+    ) {
+        let json = r#"{"Vote":{"options":"AnotherPlayer","secret":true,"tally":"votes"}}"#;
+        let Run::Ask(decision) = play(&game(seats), controller, json).unwrap() else {
+            panic!("a vote asks the first voter");
+        };
+        assert_eq!(decision.player, PlayerId(controller));
+        let DecisionKind::ChooseOption(options) = decision.kind else {
+            panic!("players are options");
+        };
+        let want: Vec<ChoiceOption> = offered
+            .iter()
+            .map(|seat| ChoiceOption::SecretPlayer(PlayerId(*seat)))
+            .collect();
+        assert_eq!(options.options, want);
+        assert_eq!(options.text, "Vote for another player.");
+    }
+
+    #[test]
+    fn at_two_seats_each_votes_for_the_other_unasked() {
+        let json = r#"{"Vote":{"options":"AnotherPlayer","secret":true,"tally":"votes"}}"#;
+        let Run::Done { bound, .. } = play(&game(2), 0, json).unwrap() else {
+            panic!("one option each is not asked");
+        };
+        assert_eq!(
+            bound,
+            vec![(
+                "votes".to_owned(),
+                vec![Target::Player(PlayerId(1)), Target::Player(PlayerId(0))]
+            )]
+        );
+    }
+
+    #[rstest]
+    #[case::open(false)]
+    #[case::secret(true)]
+    fn a_vote_on_players_offers_each_player_face_down_when_secret(#[case] secret: bool) {
+        let json = format!(
+            r#"{{"Vote":{{"options":{{"Of":"EachPlayer"}},"secret":{secret},"as":"won"}}}}"#
+        );
+        let Run::Ask(decision) = play(&game(3), 0, &json).unwrap() else {
+            panic!("a vote asks the first voter");
+        };
+        let DecisionKind::ChooseOption(options) = decision.kind else {
+            panic!("players are options");
+        };
+        let want: Vec<ChoiceOption> = (0..3)
+            .map(|seat| {
+                if secret {
+                    ChoiceOption::SecretPlayer(PlayerId(seat))
+                } else {
+                    ChoiceOption::Player(PlayerId(seat))
+                }
+            })
+            .collect();
+        assert_eq!(options.options, want);
+    }
+
+    #[rstest]
+    #[case::leaders_only(Some("won"), None, &[("won", &[2][..])])]
+    #[case::tally_only(None, Some("votes"), &[("votes", &[1, 2, 2][..])])]
+    #[case::both(Some("won"), Some("votes"), &[("won", &[2][..]), ("votes", &[1, 2, 2][..])])]
+    fn the_tally_holds_every_vote_and_the_leaders_each_once(
+        #[case] bind: Option<&str>,
+        #[case] tally: Option<&str>,
+        #[case] want: &[(&str, &[u64])],
+    ) {
+        let votes: Vec<Target> = [1, 2, 2]
+            .iter()
+            .map(|n| Target::Player(PlayerId(*n)))
+            .collect();
+        let want: Vec<(String, Vec<Target>)> = want
+            .iter()
+            .map(|(name, seats)| {
+                (
+                    (*name).to_owned(),
+                    seats.iter().map(|n| Target::Player(PlayerId(*n))).collect(),
+                )
+            })
+            .collect();
+        assert_eq!(r376_bound(&votes, bind, tally), want);
     }
 
     #[test]

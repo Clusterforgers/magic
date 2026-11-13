@@ -1,0 +1,50 @@
+{
+  "oracle_id": "76dfa5c2-1ea6-4f89-9903-26998636845e",
+  "name": "Hithlain Rope",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hithlain Rope",
+      "oracle_fingerprint": "4ca475652b0661f3951bfe9b54fe82de",
+      "abilities": [
+        { "Rule": { "rule": { "Cant": { "who": "This", "action": "Sacrifice" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              {
+                "Search": { "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }], "as": "land" }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "Seated": { "of": "You", "side": "Right" } } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              { "Draw": {} },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "Seated": { "of": "You", "side": "Right" } } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

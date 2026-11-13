@@ -1,7 +1,7 @@
 {
   "oracle_id": "9aa2f27b-4c00-44c1-8bc4-014350f05b6d",
   "name": "Tromokratis",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tromokratis",
@@ -21,12 +21,7 @@
             }
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 60, "end": 234 }
-          }
-        }
+        { "Static": { "affected": "This", "mods": ["BlockedByAll"] } }
       ]
     }
   ]

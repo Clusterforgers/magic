@@ -50,6 +50,7 @@ fn item(code: &str, state: DeckState) -> PreconListItem {
         pictures: vec![DeckPicture {
             oracle_id: "4457ed35-7c10-48c8-9776-456485fdf070".to_owned(),
             name: "Estrid, the Masked".to_owned(),
+            printing_id: None,
         }],
         color_identity: vec![CardColor::W],
         card_count: 100,

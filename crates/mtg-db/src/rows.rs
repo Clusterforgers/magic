@@ -81,6 +81,10 @@ pub(crate) struct PrintingRow {
     pub lang: String,
     pub digital: bool,
     pub images: Json<PrintingImages>,
+    pub set_name: Option<String>,
+    pub frame: Option<String>,
+    pub finishes: Vec<String>,
+    pub full_art: bool,
 }
 
 impl TryFrom<PrintingRow> for Printing {
@@ -106,6 +110,10 @@ impl TryFrom<PrintingRow> for Printing {
             lang: row.lang,
             digital: row.digital,
             images: row.images.0,
+            set_name: row.set_name,
+            frame: row.frame,
+            finishes: row.finishes,
+            full_art: row.full_art,
         })
     }
 }

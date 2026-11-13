@@ -31,6 +31,7 @@ fn a_picture_is_an_oracle_id_and_a_name() {
     let picture = DeckPicture {
         oracle_id: "4457ed35-7c10-48c8-9776-456485fdf070".to_owned(),
         name: "Sol Ring".to_owned(),
+        printing_id: None,
     };
     let json = serde_json::to_value(&picture).unwrap();
     assert_eq!(json.as_object().unwrap().len(), 2);

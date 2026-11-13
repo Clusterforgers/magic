@@ -1,0 +1,19 @@
+{
+  "oracle_id": "5f56a303-b3da-41df-a959-7823a87ee60c",
+  "name": "Mathemagics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mathemagics",
+      "oracle_fingerprint": "acae3363fc06a520ee98095252a5fe1e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Draw": { "who": { "Target": 0 }, "count": { "TwoToThe": "X" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

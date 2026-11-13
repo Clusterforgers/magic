@@ -462,8 +462,9 @@ fn prohibitions(value: &Value) -> Vec<String> {
     };
     let creatures = |zone: &str| json!({ "Each": [{ "Type": "Creature" }, { "In": zone }] });
     let zone = |zone: &str| json!({ "In": zone });
-    let text = if who == "Opponents" && action == &json!({ "Cast": { "unless": "SorceryTiming" } })
-    {
+    let text = if who == "This" && action == "Sacrifice" {
+        "~ can't be sacrificed"
+    } else if who == "Opponents" && action == &json!({ "Cast": { "unless": "SorceryTiming" } }) {
         "Each opponent can cast spells only any time they could cast a sorcery"
     } else if action == "EnterBattlefield" && who == &creatures("Graveyard") {
         "Creature cards in graveyards can't enter the battlefield"

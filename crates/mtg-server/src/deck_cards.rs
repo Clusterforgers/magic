@@ -36,7 +36,8 @@ pub(crate) struct Line {
     pub(crate) by_hand: bool,
 }
 
-fn stored_zone(zone: DeckZone) -> StoredZone {
+/// The zone of a line as the database names it.
+pub(crate) fn stored_zone(zone: DeckZone) -> StoredZone {
     match zone {
         DeckZone::Main => StoredZone::Main,
         DeckZone::Sideboard => StoredZone::Sideboard,
