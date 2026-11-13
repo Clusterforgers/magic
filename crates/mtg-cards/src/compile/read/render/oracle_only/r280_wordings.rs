@@ -216,8 +216,8 @@ fn source_controller(ability: &Ability, texts: &mut Vec<String>) {
     );
 }
 
-/// "Transform ~. X can't be 0. Activate only as a sorcery.": an activation whose X is at least 1, written from the twin
-/// without that part of the cost.
+/// "Transform ~. X can't be 0. Activate only as a sorcery." and "Kicker {X}. X can't be 0.": an activation or a keyword
+/// cost whose X is at least 1, written from the twin without that part of the cost.
 fn x_not_zero(ability: &Ability, texts: &mut Vec<String>) {
     let Some(twin) = json_twin(ability, r#",{"XAtLeast":1}"#, "") else {
         return;
@@ -227,6 +227,8 @@ fn x_not_zero(ability: &Ability, texts: &mut Vec<String>) {
         .filter(|text| text.contains("{X}"))
         .map(|text| match text.find(" Activate only") {
             Some(at) => format!("{} X can't be 0.{}", &text[..at], &text[at..]),
+            // A keyword's cost ("Kicker {X}. X can't be 0.") ends with no stop of its own.
+            None if matches!(ability, Ability::Keyword(_)) => format!("{text}. X can't be 0."),
             None => format!("{text} X can't be 0."),
         })
         .collect();

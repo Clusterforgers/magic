@@ -310,7 +310,7 @@ pub struct GameState {
     /// The once-each-game abilities used, as `limits_spent`; a new turn keeps them.
     pub(crate) game_limits_spent: BTreeSet<(ObjectRef, AbilitySource, usize)>,
     /// The planeswalkers that had a loyalty ability activated this turn: no more than one for each (CR 606.3).
-    pub(crate) loyalty_used: BTreeSet<ObjectRef>,
+    pub(crate) loyalty_used: BTreeMap<ObjectRef, u32>,
     /// The modes the abilities that choose a mode not yet chosen chose, in any turn, as (source, where the ability comes
     /// from, its index, the mode); a source that changed zones is a new object with none.
     pub(crate) modes_ever: BTreeSet<(ObjectRef, AbilitySource, usize, usize)>,
@@ -792,7 +792,10 @@ impl GameState {
 
     /// Whether a loyalty ability of the planeswalker `permanent` has been activated this turn (CR 606.3).
     pub(crate) fn loyalty_spent(&self, permanent: ObjectRef) -> bool {
-        self.loyalty_used.contains(&permanent)
+        let used = self.loyalty_used.get(&permanent).copied().unwrap_or(0);
+        let limit = crate::characteristics::controller_of(self, permanent.id)
+            .map_or(1, |player| crate::rules::loyalty_activations(self, player));
+        used >= limit
     }
 
     /// The id the next object created during the game gets (abilities on the stack, and tokens later).

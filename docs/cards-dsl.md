@@ -299,6 +299,10 @@ A copy effect gives an object the copiable values of another (`CreateToken` with
 | Owner-only activation | `Activators::Owner`: only the owner of the permanent is offered the ability, whoever controls it ("Only this creature's owner may activate this ability"). |
 | Upkeep costs paid or not | Cumulative upkeep and echo log `Event::UpkeepSettled` after the payment or before the sacrifice, read as `Did { PaidCumulativeUpkeep }`, `Did { DeclinedCumulativeUpkeep }` and `Did { PaidEcho }` with the permanent as `what` ("When a player doesn't pay this enchantment's cumulative upkeep"). |
 | Some shared types | `Pred::SharesTypeOf { with, types }` holds when the object shares one of `types` with an object `with` names: "two target permanents that share a permanent type", "another target permanent that shares one of those types with it". |
+| Kicker X | `Kicker` with `{X}` (and `XAtLeast` for "X can't be 0"): X is asked only once the spell is kicked, its least from the kicker, and the permanent's enters trigger reads it (`Keyword.Kicker.X`, `r409_kicker_x.rs`). |
+| Turn-up X | A morph, megamorph or disguise cost with `{X}` asks X as the permanent is turned face up; `TurnedFaceUp.x` carries it to "when this creature is turned face up" (`Keyword.TurnUp.X`, `r409_turn_up_x.rs`). |
+| Tokens with a mana cost | `TokenSpec.mana_cost` gives a token a mana cost of its own, its colours read from it (the predefined Spellgorger Weird). |
+| Loyalty twice | `GameRule::LoyaltyTwice(who)` lets the players activate each planeswalker's loyalty abilities twice each turn (Oath of Teferi; for the turn as an `Effect::Rule`, Urza Assembles the Titans; `r409_loyalty_twice.rs`). |
 
 ## Validation
 

@@ -35,6 +35,8 @@ const SCALAR_KEYS: &[&str] = &[
     "Toxic",
     // The time counters of a Suspend keyword a card shows ("Suspend 6").
     "time",
+    // The chapter a read-ahead Saga entered at (`Chosen::Chapter`).
+    "Chapter",
     "counts",
     "combat_end",
     "turn_end",

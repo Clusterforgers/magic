@@ -1,7 +1,7 @@
 {
   "oracle_id": "40e5c7fe-4d7a-41c0-8b90-ea0b46a01c9d",
   "name": "Warbreak Trumpeter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Warbreak Trumpeter",
@@ -9,9 +9,25 @@
       "abilities": [
         { "Keyword": { "Morph": "{X}{X}{R}" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 123, "end": 201 }
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": "X"
+                }
+              }
+            ]
           }
         }
       ]

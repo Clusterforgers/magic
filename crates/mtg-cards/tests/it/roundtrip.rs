@@ -788,6 +788,7 @@ fn token_ref() -> impl Strategy<Value = TokenRef> {
                     power: Some(1),
                     toughness: Some(1),
                     abilities: keywords.into_iter().map(Ability::Keyword).collect(),
+                    mana_cost: None,
                 }))
             }),
         (reference(), vec(modification(), 0..2)).prop_map(|(of, except)| TokenRef::CopyOf {

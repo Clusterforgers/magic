@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7779e3be-5c3d-454f-88c1-9c0a97ebff09",
+  "name": "Crag Saurian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crag Saurian",
+      "oracle_fingerprint": "d6b01d05f01f7012d0a955e8778e2cb8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "This" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "ControllerOf": "Dealer" } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

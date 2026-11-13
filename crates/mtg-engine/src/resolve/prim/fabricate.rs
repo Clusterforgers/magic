@@ -71,6 +71,7 @@ fn servos(cx: &Cx<'_>, count: &Amount) -> Result<Run, ResolveError> {
         power: Some(1),
         toughness: Some(1),
         abilities: Vec::new(),
+        mana_cost: None,
     };
     let make = Effect::CreateToken {
         who: Ref::You,

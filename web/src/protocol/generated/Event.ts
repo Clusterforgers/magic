@@ -1115,7 +1115,11 @@ object: ObjectId,
 /**
  * Its controller, who turned it.
  */
-player: PlayerId, } } | { "TurnedFaceDown": { 
+player: PlayerId, 
+/**
+ * The X of the morph, megamorph or disguise cost paid, which a trigger on turning it face up reads (CR 107.3).
+ */
+x?: number, } } | { "TurnedFaceDown": { 
 /**
  * The permanent that was turned face down.
  */

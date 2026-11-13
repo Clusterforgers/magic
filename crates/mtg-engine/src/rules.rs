@@ -215,6 +215,8 @@ pub enum Rule {
     ExileFound(Vec<PlayerId>),
     /// The players have no maximum hand size (CR 402.2).
     NoMaxHandSize(Vec<PlayerId>),
+    /// The players may activate each of their planeswalkers' loyalty abilities twice each turn (CR 606.3).
+    LoyaltyTwice(Vec<PlayerId>),
     /// The players' maximum hand size is this many cards (CR 402.2).
     MaxHandSize(Vec<(PlayerId, u32)>),
     /// The players' maximum hand size changes by this many cards, after any size that is set (CR 402.2).
@@ -710,6 +712,8 @@ pub(crate) struct RulesInForce {
     /// Whose searches exile what they find, with the controller and source of each rule that says so.
     exile_found: Vec<(PlayerId, PlayerId, Option<ObjectRef>)>,
     no_hand_limit: BTreeSet<PlayerId>,
+    /// The players who may activate each planeswalker's loyalty abilities twice each turn.
+    loyalty_twice: BTreeSet<PlayerId>,
     skip_draw: BTreeSet<PlayerId>,
     look_top: BTreeSet<PlayerId>,
     extra_lands: BTreeMap<PlayerId, u32>,
@@ -1152,6 +1156,7 @@ impl RulesInForce {
                 .control_searches
                 .extend(players.iter().map(|player| (*player, controller))),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
+            Rule::LoyaltyTwice(players) => self.loyalty_twice.extend(players),
             Rule::MaxHandSize(_)
             | Rule::HandSizeChange(_)
             | Rule::NoLegendRule(_)
@@ -1579,6 +1584,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             what: what.clone(),
         },
         GameRule::NoMaxHandSize(who) => Rule::NoMaxHandSize(scope.players(who)?),
+        GameRule::LoyaltyTwice(who) => Rule::LoyaltyTwice(scope.players(who)?),
         GameRule::SkipDrawStep(who) => Rule::SkipDrawStep(scope.players(who)?),
         GameRule::AdditionalLandPlays { who, count } => {
             let count = u32::try_from(scope.amount(count)?.max(0)).unwrap_or(u32::MAX);
@@ -1715,6 +1721,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::SkipDrawStep(players)
         | Rule::NoLegendRule(players)
         | Rule::NoMaxHandSize(players)
+        | Rule::LoyaltyTwice(players)
         | Rule::AttackAsThoughHasteAt(players) => players.is_empty(),
         Rule::MayCastRather { casts, .. } => casts.is_empty(),
         Rule::MaxHandSize(sizes) => sizes.is_empty(),
@@ -1894,6 +1901,7 @@ static NONE: RulesInForce = RulesInForce {
     control_searches: Vec::new(),
     exile_found: Vec::new(),
     no_hand_limit: BTreeSet::new(),
+    loyalty_twice: BTreeSet::new(),
     skip_draw: BTreeSet::new(),
     look_top: BTreeSet::new(),
     extra_lands: BTreeMap::new(),
@@ -2249,6 +2257,16 @@ pub(crate) fn granted_player_keywords(state: &GameState, player: PlayerId) -> Ve
 /// Whether `player` skips each extra turn they would begin: the one place the turn order reads this rule.
 pub fn skips_extra_turns(state: &GameState, player: PlayerId) -> bool {
     state.rules().skip_extra_turns.contains(&player)
+}
+
+/// How many times each turn `player` may activate the loyalty abilities of one planeswalker they control: twice under a
+/// rule that allows it (Oath of Teferi), else once (CR 606.3).
+pub fn loyalty_activations(state: &GameState, player: PlayerId) -> u32 {
+    if state.rules().loyalty_twice.contains(&player) {
+        2
+    } else {
+        1
+    }
 }
 
 /// Whether `player` can't draw cards: the one place a draw reads this rule.

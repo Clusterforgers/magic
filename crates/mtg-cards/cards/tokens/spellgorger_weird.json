@@ -1,0 +1,20 @@
+{
+  "id": "spellgorger_weird",
+  "token": {
+    "name": "Spellgorger Weird",
+    "colors": ["Red"],
+    "types": ["Creature"],
+    "subtypes": ["Weird"],
+    "power": 2,
+    "toughness": 2,
+    "abilities": [
+      {
+        "Triggered": {
+          "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+          "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+        }
+      }
+    ],
+    "mana_cost": "{2}{R}"
+  }
+}

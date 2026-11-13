@@ -45,6 +45,10 @@ pub(crate) struct Optional {
     /// Whether the engine pays it. A cost with a part it does not pay stays in the list, so the indices that name a cost
     /// are the same wherever they are read, and is never offered.
     pub(crate) offerable: bool,
+    /// The `{X}` symbols of a kicker paid once ("Kicker {X}"), whose X the spell announces once kicked (CR 601.2b).
+    pub(crate) x: u32,
+    /// The least X such a kicker allows ("X can't be 0").
+    pub(crate) least_x: u32,
 }
 
 impl Optional {
@@ -58,6 +62,8 @@ impl Optional {
             repeatable,
             kind: OptionalKind::Kicker,
             offerable: true,
+            x: 0,
+            least_x: 0,
         }
     }
 }
@@ -126,6 +132,8 @@ fn read_cost(printed: Printed) -> Optional {
         repeatable,
         kind,
         offerable: false,
+        x: 0,
+        least_x: 0,
     };
     // A promise costs nothing and is always offered; who gets the gift is chosen with it (`offered_once`).
     if kind == OptionalKind::Gift {
@@ -138,9 +146,23 @@ fn read_cost(printed: Printed) -> Optional {
         return none(name.to_owned());
     };
     let mana = price.mana.clone().unwrap_or_default();
+    // A kicker paid once may hold `{X}`: the spell announces X once it is kicked.
+    let x = if kind == OptionalKind::Kicker && !repeatable {
+        price.x
+    } else {
+        0
+    };
     let mut words: Vec<String> = Vec::new();
-    if price.mana.is_some() {
-        words.push(mana.to_string());
+    if price.mana.is_some() || x > 0 {
+        words.push(format!(
+            "{}{}",
+            "{X}".repeat(x as usize),
+            if price.mana.is_some() {
+                mana.to_string()
+            } else {
+                String::new()
+            }
+        ));
     }
     words.extend(price.parts.iter().map(Part::text));
     let label = if name.is_empty() {
@@ -148,7 +170,9 @@ fn read_cost(printed: Printed) -> Optional {
     } else {
         format!("{name} {}", words.join(", "))
     };
-    let payable = payable(&price) && (price.mana.is_some() || !price.parts.is_empty());
+    let mut counted = price.clone();
+    counted.x -= x;
+    let payable = payable(&counted) && (price.mana.is_some() || x > 0 || !price.parts.is_empty());
     Optional {
         label,
         mana,
@@ -156,6 +180,8 @@ fn read_cost(printed: Printed) -> Optional {
         repeatable,
         kind,
         offerable: payable,
+        least_x: if x > 0 { super::x::least_of(&cost) } else { 0 },
+        x,
     }
 }
 
@@ -170,6 +196,36 @@ pub(super) fn payable(price: &Price) -> bool {
             .parts
             .iter()
             .all(|part| !part.is_counted() && !matches!(part, Part::Counters { .. }))
+}
+
+/// The most `{X}` symbols a kicker of `card` holds: a card kicked for one announces X (CR 601.2b).
+pub(super) fn kicker_x(card: &CardDefinition) -> u32 {
+    printed(card)
+        .map(read_cost)
+        .map(|cost| cost.x)
+        .max()
+        .unwrap_or(0)
+}
+
+/// The `{X}` symbols of the optional costs chosen in `choices`.
+pub(super) fn chosen_x(ctx: &Ctx<'_>, choices: &Choices) -> u32 {
+    choices
+        .optional_costs
+        .iter()
+        .filter_map(|index| ctx.needs.optional.get(*index))
+        .map(|cost| cost.x)
+        .sum()
+}
+
+/// The least X the optional costs chosen in `choices` allow.
+pub(super) fn chosen_least_x(ctx: &Ctx<'_>, choices: &Choices) -> u32 {
+    choices
+        .optional_costs
+        .iter()
+        .filter_map(|index| ctx.needs.optional.get(*index))
+        .map(|cost| cost.least_x)
+        .max()
+        .unwrap_or(0)
 }
 
 /// The optional costs of a card, by index.

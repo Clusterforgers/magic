@@ -1,7 +1,7 @@
 {
   "oracle_id": "0d406496-e1c3-4e1c-976c-618d5ad67d0b",
   "name": "Urza Assembles the Titans",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Urza Assembles the Titans",
@@ -67,9 +67,11 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 383, "end": 495 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Rule": { "rule": { "LoyaltyTwice": "You" }, "duration": "UntilEndOfTurn" } }
+            ]
           }
         }
       ]

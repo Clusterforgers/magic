@@ -129,7 +129,7 @@ spend_as: unknown,
 /**
  * The spells it is for; everything when absent.
  */
-spells: unknown, } } | { "RevealTop": Array<PlayerId> } | { "RevealHand": Array<PlayerId> } | { "ControlSearches": Array<PlayerId> } | { "ExileFound": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "MaxHandSize": Array<[PlayerId, number]> } | { "HandSizeChange": Array<[PlayerId, number]> } | { "NoLegendRule": Array<PlayerId> } | { "NoLegendRuleFor": unknown } | { "AbilitiesAsThoughHaste": unknown } | { "UntapDuring": { 
+spells: unknown, } } | { "RevealTop": Array<PlayerId> } | { "RevealHand": Array<PlayerId> } | { "ControlSearches": Array<PlayerId> } | { "ExileFound": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "LoyaltyTwice": Array<PlayerId> } | { "MaxHandSize": Array<[PlayerId, number]> } | { "HandSizeChange": Array<[PlayerId, number]> } | { "NoLegendRule": Array<PlayerId> } | { "NoLegendRuleFor": unknown } | { "AbilitiesAsThoughHaste": unknown } | { "UntapDuring": { 
 /**
  * The permanents, judged when the step untaps.
  */

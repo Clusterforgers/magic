@@ -117,6 +117,7 @@ pub(crate) fn w11d_definition(dungeon: &W11dDungeon) -> CardDefinition {
         power: None,
         toughness: None,
         abilities,
+        mana_cost: None,
     };
     token_definition(&spec, &crate::caps::caps())
 }
