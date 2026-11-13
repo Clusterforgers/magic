@@ -20,6 +20,7 @@ const LEVELS: readonly { level: BotLevel; label: string }[] = [
   { level: 'easy', label: 'Easy — random plays' },
   { level: 'normal', label: 'Normal — plays sensibly' },
   { level: 'hard', label: 'Hard — thinks ahead' },
+  { level: 'very_hard', label: 'Very Hard — weighs what you might hold (slower)' },
 ]
 
 /** How many of the other seats bots play (none, or from one up to every seat but the creator's) and how well. */

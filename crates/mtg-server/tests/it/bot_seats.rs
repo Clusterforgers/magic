@@ -12,7 +12,7 @@ use mtg_engine::decision::{Answer, Decision, PriorityAction};
 use mtg_engine::state::GameResult;
 use mtg_protocol::{ClientMessage, ServerMessage};
 use mtg_server::Pace;
-use mtg_server::bots::{BotBrain, BotLevel, BotSeat, spawn_bot_seat_with};
+use mtg_server::bots::{BotBrain, BotLevel, BotPace, BotSeat, Thinkers, spawn_bot_seat_with};
 use mtg_server::config::ServerConfig;
 use mtg_server::demo;
 use mtg_server::registry::Removal;
@@ -330,7 +330,10 @@ async fn duel_reaches_turn_three(brain: Broken, deadline: Duration, pace: Option
         bot,
         5,
         first,
-        Duration::from_millis(10),
+        BotPace {
+            delay: Duration::from_millis(10),
+            thinkers: Thinkers::new(2),
+        },
         removed,
     );
     let mut me = Client::join(&handle, 0).await;
