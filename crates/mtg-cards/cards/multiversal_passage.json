@@ -1,0 +1,26 @@
+{
+  "oracle_id": "17770eeb-ecbf-4510-af2d-acececfbe146",
+  "name": "Multiversal Passage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Multiversal Passage",
+      "oracle_fingerprint": "f43a5dbfe2e89b94d6000d2f2b0be4b3",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "BasicLandType" }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "PayLifeOrTapped": 2 }
+          }
+        },
+        { "Static": { "affected": "This", "mods": [{ "SetLandTypes": [] }, "AddChosenSubtype"] } }
+      ]
+    }
+  ]
+}

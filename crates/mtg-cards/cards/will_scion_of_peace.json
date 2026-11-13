@@ -1,7 +1,7 @@
 {
   "oracle_id": "4ecb8653-db8c-468a-853d-420ff62a7a8a",
   "name": "Will, Scion of Peace",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Will, Scion of Peace",
@@ -9,9 +9,28 @@
       "abilities": [
         { "Keyword": "Vigilance" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 10, "end": 170 }
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "SpellCost": {
+                      "applies_to": [
+                        "Spell",
+                        { "ControlledBy": "You" },
+                        { "AnyOf": [{ "Color": "White" }, { "Color": "Blue" }] }
+                      ],
+                      "change": "Reduce",
+                      "mana": "{1}",
+                      "per": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

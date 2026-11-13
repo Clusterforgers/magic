@@ -1,7 +1,7 @@
 {
   "oracle_id": "555f9e75-8892-4c8e-9c5e-8ab14a589118",
   "name": "Kangee, Aerie Keeper",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kangee, Aerie Keeper",
@@ -10,9 +10,11 @@
         { "Keyword": { "Kicker": "{X}{2}" } },
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 80, "end": 147 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "feather" }, "count": "X" } }
+            ]
           }
         },
         {

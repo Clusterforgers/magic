@@ -283,9 +283,12 @@ pub(super) fn affordable(ctx: &Ctx<'_>, total: &Total) -> bool {
     let Some(seat) = ctx.state.player(ctx.player) else {
         return false;
     };
-    let life = seat
-        .life()
-        .saturating_sub(i32::try_from(total.life).unwrap_or(i32::MAX));
+    let life = crate::r4707_pay_costs::r4707_phyrexian_life(
+        ctx.state,
+        ctx.player,
+        seat.life()
+            .saturating_sub(i32::try_from(total.life).unwrap_or(i32::MAX)),
+    );
     let alone = |cost: &ManaCost| {
         can_afford_with(
             cost,

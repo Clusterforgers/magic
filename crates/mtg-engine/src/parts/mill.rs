@@ -86,6 +86,7 @@ mod tests {
             source: state.zone(Zone::Battlefield)[0],
             barred: &[],
             granter: None,
+            pays: crate::r4707_pay_costs::PaysFor::Cost,
         }
     }
 

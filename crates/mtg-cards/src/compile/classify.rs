@@ -62,7 +62,9 @@ const SPELL_RULES: [&str; 7] = [
 /// this spell's mana cost.", or a cost change in some turns ("During turns other than yours, this spell costs {3} more to
 /// cast."), or a permission to cast it as though it had flash ("You may cast this spell as though it had flash if ...",
 /// "If there are two or more ..., you may cast this spell as though it had flash."), or a condition under
-/// which the spell can't be countered ("If you controlled a Dragon as you cast this spell, this spell can't be countered.").
+/// which the spell can't be countered ("If you controlled a Dragon as you cast this spell, this spell can't be countered."),
+/// or its cast from a graveyard for another cost under a condition ("As long as you control a Giant, you may cast this card
+/// from your graveyard by paying {U} rather than paying its mana cost.").
 fn is_spell_rule(body: &str) -> bool {
     SPELL_RULES.iter().any(|rule| body.starts_with(rule))
         || (body.starts_with("If ")
@@ -76,6 +78,9 @@ fn is_spell_rule(body: &str) -> bool {
         || (body.starts_with("If ")
             && body.contains(", you may cast this spell as though it had flash"))
         || r302c_conditional_rule(body)
+        || (body.starts_with("As long as ")
+            && (body.contains(", you may cast this card from your graveyard by paying ")
+                || body.contains(", you may cast ~ from your graveyard by paying ")))
 }
 
 /// Whether a line is a rule about the spell under a condition: "If you revealed a Dragon card ..., this spell can't be
@@ -540,6 +545,16 @@ mod tests {
     #[case::r302c_split_second_if("If this spell was kicked, it has split second.", true, Static)]
     #[case::r302c_an_effect_after_if(
         "If you control a Swamp, destroy target nonblack creature.",
+        true,
+        Spell
+    )]
+    #[case::r4701_graveyard_for_another_cost(
+        "As long as you control a Giant, you may cast this card from your graveyard by paying {U} rather than paying its mana cost.",
+        true,
+        Static
+    )]
+    #[case::r4701_a_step_under_a_condition(
+        "As long as you control a Giant, you may draw a card.",
         true,
         Spell
     )]

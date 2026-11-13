@@ -1,7 +1,7 @@
 {
   "oracle_id": "89812139-9fc1-4fc9-b1d0-d07067d62083",
   "name": "Azor, the Lawbringer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Azor, the Lawbringer",
@@ -9,9 +9,35 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 107 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "foe",
+                  "effects": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "Cant": {
+                            "who": { "Bound": "foe" },
+                            "action": {
+                              "Cast": {
+                                "filter": [
+                                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                                ]
+                              }
+                            }
+                          }
+                        },
+                        "duration": "TheirNextTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

@@ -12,6 +12,7 @@ pub(super) fn text(effects: &[Effect]) -> Option<(String, usize)> {
             count,
             bind,
             rest_as: None,
+            differ: None,
         },
         Effect::Untap {
             what: Ref::Bound(chosen),
