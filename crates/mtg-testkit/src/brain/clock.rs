@@ -17,7 +17,10 @@ use super::threat;
 pub const DECISION_CAP: Duration = Duration::from_millis(4_500);
 
 /// The most an important decision multiplies its level's budget by.
-pub const MOST: f64 = 2.0;
+pub const MOST: f64 = 3.0;
+
+/// The time a search leaves before the cap for the answer to come back (a rollout step finishing, the reply).
+const SLACK: Duration = Duration::from_millis(300);
 
 /// How much of its level's search budget `decision` deserves, from 0 (nothing to think about) to [`MOST`].
 pub fn importance(seen: &Seen<'_>, decision: &Decision) -> f64 {
@@ -27,7 +30,7 @@ pub fn importance(seen: &Seen<'_>, decision: &Decision) -> f64 {
             if lethal {
                 MOST
             } else {
-                1.2
+                1.5
             }
         }
         DecisionKind::Priority(options) => match priority::window(seen) {
@@ -38,9 +41,9 @@ pub fn importance(seen: &Seen<'_>, decision: &Decision) -> f64 {
                     .last()
                     .map_or(0.0, |top| threat::spell_threat(seen, *top));
                 if threat >= threat::hold_value(seen) || lethal {
-                    1.6
+                    2.5
                 } else {
-                    0.8
+                    0.6
                 }
             }
             Window::Main => {
@@ -48,21 +51,21 @@ pub fn importance(seen: &Seen<'_>, decision: &Decision) -> f64 {
                 if lethal {
                     MOST
                 } else if big {
-                    1.2
+                    1.5
                 } else {
-                    0.8
+                    0.6
                 }
             }
             Window::Combat => {
                 if lethal {
-                    1.6
+                    2.0
                 } else {
                     1.0
                 }
             }
-            Window::EndStep => 0.7,
+            Window::EndStep => 0.5,
         },
-        DecisionKind::ChooseTargets(_) => 0.8,
+        DecisionKind::ChooseTargets(_) => 1.0,
         _ => 0.5,
     }
 }
@@ -109,7 +112,7 @@ impl Budget {
         // In range: at most MOST times the level's iterations.
         #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
         let iterations = (f64::from(iterations) * scale).round() as u32;
-        let cap = started + DECISION_CAP;
+        let cap = started + DECISION_CAP - SLACK;
         let soft = time.map(|time| (Instant::now() + time.mul_f64(scale)).min(cap));
         let hard = time.map(|time| (Instant::now() + time.mul_f64(scale * 1.5)).min(cap));
         Budget {
@@ -141,7 +144,7 @@ mod tests {
     #[case(0.0, 0)]
     #[case(0.5, 300)]
     #[case(1.0, 600)]
-    #[case(5.0, 1200)]
+    #[case(5.0, 1800)]
     fn iterations_follow_importance(#[case] importance: f64, #[case] expected: u32) {
         let budget = Budget::new(Instant::now(), 600, None, importance, 1.0);
         assert_eq!(budget.iterations, expected);

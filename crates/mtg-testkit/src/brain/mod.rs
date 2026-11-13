@@ -411,7 +411,8 @@ impl HeuristicBot {
             budget,
             &mut self.history,
         )
-        .unwrap_or(prior);
+        .unwrap_or_else(|| prior.clone());
+        deep::count_search(chosen != prior);
         self.played = before;
         if let Answer::Priority(play) = &chosen
             && *play != PriorityAction::Pass
