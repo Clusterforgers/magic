@@ -1,7 +1,7 @@
 {
   "oracle_id": "4abb227a-534e-4300-9009-065a10f10e8a",
   "name": "Inquisitive Glimmer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Inquisitive Glimmer",
@@ -15,9 +15,11 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 51, "end": 86 }
+          "CostModifier": {
+            "applies_to": [{ "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "activating": "Unlock"
           }
         }
       ]

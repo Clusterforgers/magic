@@ -1,16 +1,22 @@
 {
   "oracle_id": "70d2f5f7-f727-48e1-9532-8d365b1c1ae5",
   "name": "Battlefield Thaumaturge",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Battlefield Thaumaturge",
       "oracle_fingerprint": "6ecd06898a122486244f798560611803",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 92 }
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "CastTargetsOf": [{ "Type": "Creature" }] }
           }
         },
         {

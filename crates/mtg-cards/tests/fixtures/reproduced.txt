@@ -144,6 +144,7 @@ Batterskull
 Battle Frenzy
 Battle Sliver
 Battlefield Forge
+Battlefield Thaumaturge
 Baxter Building
 Baxter, Fly in the Ointment
 Beamsaw Prospector
@@ -630,6 +631,7 @@ Exalted Angel
 Excavation Technique
 Excise the Imperfect
 Exhumer Thrull
+Exiled Doomsayer
 Exocrine
 Exotic Disease
 Exotic Orchard
@@ -912,6 +914,7 @@ Howlpack Resurgence
 Howltooth Hollow
 Hua Tuo, Honored Physician
 Hulking Raptor
+Hum of the Radix
 Hundred-Talon Strike
 Hungry Graffalon
 Hungry Lynx
@@ -946,6 +949,7 @@ Infesting Radroach
 Infiltration Lens
 Inkwell Leviathan
 Inquisition of Kozilek
+Inquisitive Glimmer
 Insatiable Hemophage
 Inspired Skypainter // Maestro's Gift
 Inspired Sphinx
@@ -1103,6 +1107,7 @@ Llanowar Behemoth
 Llanowar Elves
 Llanowar Loamspeaker
 Llanowar Reborn
+Locket of Yesterdays
 Loki's Scepter
 Loki, the Deceiver
 Loot, Exuberant Explorer

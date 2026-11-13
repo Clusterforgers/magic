@@ -455,6 +455,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::TriggeringTargets
         | Amount::PlayersLost
         | Amount::CastTargets
+        | Amount::CastTargetsOf(_)
         | Amount::Chosen
         | Amount::ChosenAs(_)
         | Amount::Triggering => Traits::NONE,

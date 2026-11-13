@@ -768,6 +768,9 @@ pub enum Amount {
     /// How many targets the spell being cast has, every specification's targets counted ("for each target"): read by a
     /// cost modifier as the cost is determined (CR 601.2f).
     CastTargets,
+    /// How many objects the selector matches among the targets of the spell being cast, each counted once ("for each
+    /// creature it targets"): read by a cost modifier as the cost is determined (CR 601.2f).
+    CastTargetsOf(Selector),
     /// A result of the latest die roll of the resolving spell or ability ("X, where X is the result", "equal to that result").
     DieResult(DieResult),
     /// The first amount when the condition holds when the effect runs, else the second ("X is 3 if you control a Goblin, else 1").
@@ -1015,6 +1018,7 @@ enum Tagged {
     TriggeringTargets,
     PlayersLost,
     CastTargets,
+    CastTargetsOf(Selector),
     DieResult(DieResult),
     When {
         condition: Box<Condition>,
@@ -1197,6 +1201,7 @@ enum TaggedRef<'a> {
     TriggeringTargets,
     PlayersLost,
     CastTargets,
+    CastTargetsOf(&'a Selector),
     DieResult(DieResult),
     When {
         condition: &'a Condition,
@@ -1321,6 +1326,7 @@ impl From<Tagged> for Amount {
             Tagged::TriggeringTargets => Amount::TriggeringTargets,
             Tagged::PlayersLost => Amount::PlayersLost,
             Tagged::CastTargets => Amount::CastTargets,
+            Tagged::CastTargetsOf(selector) => Amount::CastTargetsOf(selector),
             Tagged::When {
                 condition,
                 then,
@@ -1486,6 +1492,9 @@ impl Serialize for Amount {
             Amount::TriggeringTargets => TaggedRef::TriggeringTargets.serialize(serializer),
             Amount::PlayersLost => TaggedRef::PlayersLost.serialize(serializer),
             Amount::CastTargets => TaggedRef::CastTargets.serialize(serializer),
+            Amount::CastTargetsOf(selector) => {
+                TaggedRef::CastTargetsOf(selector).serialize(serializer)
+            }
             Amount::When {
                 condition,
                 then,

@@ -1,7 +1,7 @@
 {
   "oracle_id": "97a85a3e-258e-49b7-8ebe-7efee808da7a",
   "name": "Nalfeshnee",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Nalfeshnee",
@@ -9,9 +9,27 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 7, "end": 255 }
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "CastFrom": "Exile" }], "by": "You" } },
+            "effects": [
+              {
+                "CopySpell": {
+                  "what": "Triggering",
+                  "new_targets": true,
+                  "except": [
+                    { "AddKeyword": "Haste" },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "StepBegins": { "step": "End" } },
+                          "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -217,6 +217,8 @@ mod r376_secret;
 mod r379_atoms;
 mod r401_flash;
 mod r401_riders;
+mod r402_copy_riders;
+mod r402_spell_costs;
 mod r405_cast_target;
 mod r405_events;
 mod r406_actions;
@@ -601,6 +603,29 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r406_actions::r406_read(text) {
+        return Some(found);
+    }
+    if kind == ClauseKind::Triggered
+        && let Some(found) =
+            r402_copy_riders::r402_rider_read(text, |head| clause_with(head, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Static
+        && let Some(found) = r402_spell_costs::r402_special_cost_read(text)
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Static
+        && let Some(twin) = r402_spell_costs::r402_spells_twin(text)
+        && let Some(found) = clause_with(&twin, kind, x_free, own)
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
+    {
         return Some(found);
     }
     if kind == ClauseKind::Static

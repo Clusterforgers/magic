@@ -223,6 +223,9 @@ pub fn variants(ability: &Ability) -> Vec<String> {
 /// [`variants`] before the wordings every copy exception has twice.
 #[allow(clippy::too_many_lines)]
 fn plain_variants(ability: &Ability) -> Vec<String> {
+    if let Some(texts) = super::r402_copy_riders::r402_rider_variants(ability, variants) {
+        return texts;
+    }
     if let Some(texts) = super::r372_suspend::r372_variants(ability, variants) {
         return texts;
     }

@@ -1316,6 +1316,10 @@ impl<'a> Walker<'a> {
             }
             Amount::PlayersLost => self.uses("Amount", "PlayersLost"),
             Amount::CastTargets => self.uses("Amount", "CastTargets"),
+            Amount::CastTargetsOf(selector) => {
+                self.uses("Amount", "CastTargetsOf");
+                self.at("CastTargetsOf", |w| w.selector(selector));
+            }
             Amount::When {
                 condition,
                 then,
@@ -5054,7 +5058,10 @@ impl Walker<'_> {
         let own = self.nested == 0 && applies_to.0.as_slice() == [Pred::This];
         let now = self.x_now || own;
         let saved = std::mem::replace(&mut self.x_now, now);
+        // Another permanent's modifier counts for the spell being cast, which `Affected` names ("its controller").
+        self.scope.in_static = !own;
         self.at("per", |w| w.amount(per));
+        self.scope.in_static = false;
         self.x_now = saved;
         if let Some(condition) = condition {
             self.at("condition", |w| w.condition(condition));
