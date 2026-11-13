@@ -1,0 +1,31 @@
+Pair o' Dice Lost	dice and coins: several dice, modify results, roll history, stored results [B]	spell: Roll N N-sided dice. Return any number of cards with total mana value X or less from your graveyard to your hand, where X is the total of those results. Exile ~.
+Resolute Veggiesaur	dice and coins: several dice, modify results, roll history, stored results [B]	triggered: Whenever you roll your third die each turn, put a +N/+N counter on this creature.
+The Space Family Goblinson	dice and coins: several dice, modify results, roll history, stored results [B]	static: ~ has trample as long as you've rolled N or more dice this turn.
+Vedalken Squirrel-Whacker	dice and coins: several dice, modify results, roll history, stored results [B]	static: As this creature enters, roll a N-sided die twice. Its base power becomes the first result and its base toughness becomes the second result.
+Xenosquirrels	dice and coins: several dice, modify results, roll history, stored results [B]	static: After you roll a die, you may remove a +N/+N counter from this creature. If you do, increase or decrease the result by N.
+Bounty of the Hunt	divide damage or counters among any number of targets [A]	spell: Distribute N +N/+N counters among N, N, or N target creatures. For each +N/+N counter you put on a creature this way, remove a +N/+N counter from that creature at the beginning of the next cleanup step.
+Crashing Wave	divide damage or counters among any number of targets [A]	spell: Tap up to X target creatures, then distribute N stun counters among any number of tapped creatures your opponents control.
+Impact Resonance	divide damage or counters among any number of targets [A]	spell: ~ deals X damage divided as you choose among any number of target creatures, where X is the greatest amount of damage dealt by a source to a permanent or player this turn.
+Nahiri's Sacrifice	divide damage or counters among any number of targets [A]	spell: ~ deals X damage divided as you choose among any number of target creatures.
+Shambling Swarm	divide damage or counters among any number of targets [A]	triggered: When this creature dies, distribute N -N/-N counters among N, N, or N target creatures. For each -N/-N counter you put on a creature this way, remove a -N/-N counter from that creature at the beginning of the next end step.
+Spoils of War	divide damage or counters among any number of targets [A]	spell: Distribute X +N/+N counters among any number of target creatures.
+Stumpsquall Hydra	divide damage or counters among any number of targets [A]	triggered: When this creature enters, distribute X +N/+N counters among it and any number of commanders.
+Vastwood Hydra	divide damage or counters among any number of targets [A]	triggered: When this creature dies, you may distribute a number of +N/+N counters equal to the number of +N/+N counters on this creature among any number of creatures you control.
+Blinding Beam	doesn't untap during next untap step(s) (reader) [A]	modal: Choose N — | • Tap N target creatures. | • Creatures don't untap during target player's next untap step.
+Illithid Harvester // Plant Tadpoles	doesn't untap during next untap step(s) (reader) [A]	spell: Tap X target creatures. They don't untap during their controllers' next untap steps.
+Alms Collector	draw replacements: draw extra, reveal, from the bottom [A]	static: If an opponent would draw N or more cards, instead you and that player each draw a card.
+Breathstealer's Crypt	draw replacements: draw extra, reveal, from the bottom [A]	static: If a player would draw a card, instead they draw a card and reveal it. If it's a creature card, that player discards it unless they pay N life.
+Quantum Riddler	draw replacements: draw extra, reveal, from the bottom [A]	static: As long as you have N or fewer cards in hand, if you would draw N or more cards, you draw that many cards plus N instead.
+Reed Richards, Smartest Man	draw replacements: draw extra, reveal, from the bottom [A]	static: The first time you would draw a card each turn except the first card you draw during each of your draw steps, you draw N cards instead.
+River Song	draw replacements: draw extra, reveal, from the bottom [A]	static: Meet in Reverse — You draw cards from the bottom of your library rather than the top.
+Zur's Weirding	draw replacements: draw extra, reveal, from the bottom [A]	static: If a player would draw a card, they reveal it instead. Then any other player may pay N life. If a player does, put that card into its owner's graveyard. Otherwise, that player draws a card.
+Catch // Release	each player chooses what to keep and sacrifices the rest [A]	spell: Each player sacrifices an artifact, a creature, an enchantment, a land, and a planeswalker of their choice.
+Destined Confrontation	each player chooses what to keep and sacrifices the rest [A]	spell: Each player chooses any number of creatures they control with total power N or less, then sacrifices all other creatures they control.
+Slaughter the Strong	each player chooses what to keep and sacrifices the rest [A]	spell: Each player chooses any number of creatures they control with total power N or less, then sacrifices all other creatures they control.
+Jace, Reality Sculptor	empower [B]	loyalty: +N: Empower ~ X, where X is the number of Islands you control.
+Theorist's Sanctum	empower [B]	activated: {M}, {T}: Empower Jace N.
+Way of the Mind Sculptor	empower [B]	triggered: When ~ enters, empower Jace N.
+Dragon's Disciple	enters with counters: new counts and conditions (reader) [A]	static: As this creature enters, you may reveal a Dragon card from your hand. If you do or if you control a Dragon, this creature enters with a +N/+N counter on it.
+Dralnu's Pet	enters with counters: new counts and conditions (reader) [A]	static: If this creature was kicked, it enters with flying and with X +N/+N counters on it, where X is the discarded card's mana value.
+Emblazoned Golem	enters with counters: new counts and conditions (reader) [A]	static: If this creature was kicked, it enters with X +N/+N counters on it.
+Ulamog, the Defiler	enters with counters: new counts and conditions (reader) [A]	static: ~ enters with a number of +N/+N counters on it equal to the greatest mana value among cards in exile.

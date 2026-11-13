@@ -1,0 +1,31 @@
+Fossil Find	spell oddities needing engine work [B]	spell: Return a card at random from your graveyard to your hand, then reorder your graveyard as you choose.
+Esper Origins // Summon: Esper Maduin	spell oddities (reader) [A]	spell: Surveil N. You gain N life. If this spell was cast from a graveyard, exile it, then put it onto the battlefield transformed under its owner's control with a finality counter on it.
+Eventide's Shadow	spell oddities (reader) [A]	spell: Remove any number of counters from among permanents on the battlefield. You draw cards and lose life equal to the number of counters removed this way.
+Heroic Return	spell oddities (reader) [A]	spell: Return target creature card from your graveyard to the battlefield. If a Hero enters this way, it enters with N additional +N/+N counters on it.
+Invasion of Alara // Awaken the Maelstrom	spell oddities (reader) [A]	spell: Target player draws N cards. You may put an artifact card from your hand onto the battlefield. Create a token that's a copy of a permanent you control. Distribute N +N/+N counters among N, N, or N creatures you control. Destroy target permanent an opponent controls.
+Leadership Vacuum	spell oddities (reader) [A]	spell: Target player returns each commander they control from the battlefield to the command zone.
+Primitive Justice	spell oddities (reader) [A]	spell: Destroy target artifact. For each additional {M} you paid, destroy another target artifact. For each additional {M} you paid, destroy another target artifact, and you gain N life.
+Soul Immolation	spell oddities (reader) [A]	spell: ~ deals X damage to each opponent and each creature they control.
+Stolen Uniform	spell oddities (reader) [A]	spell: Choose target creature you control and target Equipment. Gain control of that Equipment until end of turn. Attach it to the chosen creature. When you lose control of that Equipment this turn, if it's attached to a creature you control, unattach it.
+Averna, the Chaos Bloom	static oddities needing engine work [B]	static: As you cascade, you may put a land card from among the exiled cards onto the battlefield tapped.
+Circling Vultures	static oddities needing engine work [B]	static: You may discard this card any time you could cast an instant.
+Deification	static oddities needing engine work [B]	static: As long as you control a creature, if damage dealt to a planeswalker you control of the chosen type would result in all loyalty counters on it being removed, instead all but N of those counters are removed.
+Ogre Enforcer	static oddities needing engine work [B]	static: This creature can't be destroyed by lethal damage unless lethal damage dealt by a single source is marked on it.
+Serum Powder	static oddities needing engine work [B]	static: Any time you could mulligan and this card is in your hand, you may exile all the cards from your hand, then draw that many cards.
+Spy Kit	static oddities needing engine work [B]	static: Equipped creature gets +N/+N and has all names of nonlegendary creature cards in addition to its name.
+Storage Matrix	static oddities needing engine work [B]	static: As long as this artifact is untapped, each player chooses artifact, creature, or land during their untap step. That player can untap only permanents of the chosen type this step.
+Tapestry Warden	static oddities needing engine work [B]	static: Each creature you control with toughness greater than its power stations permanents using its toughness rather than its power.
+Ashiok, Dream Render	static oddities (reader) [A]	static: Spells and abilities your opponents control can't cause their controller to search their library.
+Gift of Doom	static oddities (reader) [A]	static: As this Aura is turned face up, you may attach it to a creature.
+Guardian Beast	static oddities (reader) [A]	static: As long as this creature is untapped, noncreature artifacts you control can't be enchanted, they have indestructible, and other players can't gain control of them. This effect doesn't remove Auras already attached to those artifacts.
+Magnigoth Treefolk	static oddities (reader) [A]	static: Domain — For each basic land type among lands you control, this creature has landwalk of that type.
+Minthara, Merciless Soul	static oddities (reader) [A]	static: ~ has ward {M}, where X is the number of experience counters you have.
+Nils, Discipline Enforcer	static oddities (reader) [A]	static: Each creature with N or more counters on it can't attack you or planeswalkers you control unless its controller pays {M}, where X is the number of counters on that creature.
+Rasputin Dreamweaver	static oddities (reader) [A]	static: ~ can't have more than N dream counters on it.
+Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel	static oddities (reader) [A]	static: Super Nova — As this creature transforms into ~, you get an emblem with "Whenever a creature dies, target opponent loses N life and you gain N life."
+Tomik, Distinguished Advokist	static oddities (reader) [A]	static: Lands on the battlefield and land cards in graveyards can't be the targets of spells or abilities your opponents control.
+Witness Protection	static oddities (reader) [A]	static: Enchanted creature loses all abilities and is a green and white Citizen creature with base power and toughness N/N named Legitimate Businessperson.
+Ambassador Blorpityblorpboop	stickers: name/art/ability kinds, vowels, sticker triggers and costs [B]	triggered: At the beginning of each combat, you may have ~'s base power become equal to the total power of all stickers on permanents you control and its base toughness become equal to those stickers' total toughness.
+_____ Balls of Fire	stickers: name/art/ability kinds, vowels, sticker triggers and costs [B]	triggered: When this enchantment enters, you may put a name sticker on it.
+Clandestine Chameleon	stickers: name/art/ability kinds, vowels, sticker triggers and costs [B]	static: ~ has all abilities of ability stickers on other permanents you own and cards in your graveyard.
+Done for the Day	stickers: name/art/ability kinds, vowels, sticker triggers and costs [B]	triggered: At the beginning of your end step, if you control an Employee, a Performer, or a Robot, you may get {TK} or create a Treasure token. If you control all N, you may put a sticker on a nonland permanent you own.

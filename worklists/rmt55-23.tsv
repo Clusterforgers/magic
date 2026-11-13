@@ -1,0 +1,59 @@
+Suffocation	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	spell: Draw a card at the beginning of the next turn's upkeep.
+Syrix, Carrier of the Flame	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	triggered: At the beginning of each end step, if a creature card left your graveyard this turn, target Phoenix you control deals damage equal to its power to any target.
+The Celestial Toymaker	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	triggered: At the beginning of each end step, each opponent loses N life for each spell or ability that caused N or more players to guess or to group cards or permanents into a pile this turn.
+The Fallen	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	triggered: At the beginning of your upkeep, this creature deals N damage to each opponent and planeswalker it has dealt damage to this game.
+Unstable Glyphbridge // Sandswirl Wanderglyph	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	static: Each opponent who attacked you or a planeswalker you control this turn can't cast spells.
+Vodalian War Machine	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	triggered: When this creature dies, destroy all Merfolk tapped this turn to pay for its abilities.
+Vren, the Relentless	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	triggered: At the beginning of each end step, create X N/N black Rat creature tokens with "This token gets +N/+N for each other Rat you control," where X is the number of creatures that were exiled under your opponents' control this turn.
+Weathered Sentinels	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	static: This creature can attack players who attacked you during their last turn as though it didn't have defender.
+Accursed Witch // Infectious Curse	(unsorted)	
+Agent's Toolkit	(unsorted)	
+Animus of Predation	(unsorted)	
+Archnemesis	(unsorted)	
+Bullseye, Death Dealer	(unsorted)	
+Cacophony Unleashed	(unsorted)	
+Caller of the Untamed	(unsorted)	
+Chance for Glory	(unsorted)	
+Deathmist Raptor	(unsorted)	
+Doc Aurlock, Grizzled Genius	(unsorted)	
+Face Yourself	(unsorted)	
+Fast Forward	(unsorted)	
+Genju of the Realm	(unsorted)	
+Heartwood Storyteller	(unsorted)	
+Hundred-Battle Veteran	(unsorted)	
+Jegantha, the Wellspring	(unsorted)	
+Khârn the Betrayer	(unsorted)	
+Kozilek, the Great Distortion	(unsorted)	
+March of Reckless Joy	(unsorted)	
+Martyrdom	(unsorted)	
+Omnath, Locus of Mana	(unsorted)	
+Paliano, the High City	(unsorted)	
+Prairie Dog	(unsorted)	
+Raphael, Tag Team Tough	(unsorted)	
+Strixhaven Stadium	(unsorted)	
+Tazri, Stalwart Survivor	(unsorted)	
+Terra, Magical Adept // Esper Terra	(unsorted)	
+The Curse of Fenric	(unsorted)	
+The Kami War // O-Kagachi Made Manifest	(unsorted)	
+The Masamune	(unsorted)	
+The Master, Multiplied	(unsorted)	
+Vault 11: Voter's Dilemma	(unsorted)	
+Vazi, Keen Negotiator	(unsorted)	
+Wolverine, Best There Is	(unsorted)	
+Yuna, Grand Summoner	(unsorted)	
+Blade of the Swarm	warp [B]	triggered: When this creature enters, choose N — | • Put N +N/+N counters on this creature. | • Put target exiled card with warp on the bottom of its owner's library.
+Tannuk, Steadfast Second	warp [B]	static: Artifact cards and red creature cards in your hand have warp {M}.
+Peter Parker // Amazing Spider-Man	web-slinging [B]	static: Each legendary spell you cast that's N or more colors has web-slinging {M}.
+Scarlet Spider, Ben Reilly	web-slinging [B]	static: Sensational Save — If ~ was cast using web-slinging, he enters with X +N/+N counters on him, where X is the mana value of the returned creature.
+Brass Infiniscope	when you next cast a spell this turn (delayed, reader) [A]	activated: {T}: Add {M}. When you next cast a spell with {M} in its mana cost this turn, you draw a card and gain half X life, rounded down.
+Eye of Ojer Taq // Apex Observatory	when you next cast a spell this turn (delayed, reader) [A]	activated: {T}: The next spell you cast this turn of the chosen type can be cast without paying its mana cost.
+Merseine	who may activate and when (any player, opponents only, while on stack) [A]	activated: Pay enchanted creature's mana cost: Remove a net counter from this Aura. Only the controller of the enchanted creature may activate this ability.
+Katara, Water Tribe's Hope	X restrictions and X colour rules (X cannot be N, up to players) [A]	activated: Waterbend {M}: Creatures you control have base power and toughness X/X until end of turn. X can't be N. Activate only during your turn.
+Ludevic, Necrogenius // Olag, Ludevic's Hubris	X restrictions and X colour rules (X cannot be N, up to players) [A]	activated: {M}, Exile X creature cards from your graveyard: Transform ~. X can't be N. Activate only as a sorcery.
+Open the Way	X restrictions and X colour rules (X cannot be N, up to players) [A]	spell: X can't be greater than the number of players in the game.
+Brutal Hordechief	you choose how other players attack, block or vote [B]	activated: {M}: Creatures your opponents control block this turn if able, and you choose how those creatures block.
+Illusion of Choice	you choose how other players attack, block or vote [B]	spell: You choose how each player votes this turn.
+Invasion Plans	you choose how other players attack, block or vote [B]	static: The attacking player chooses how each creature blocks each combat.
+Master Warcraft	you choose how other players attack, block or vote [B]	spell: You choose which creatures attack this turn.
+Melee	you choose how other players attack, block or vote [B]	spell: You choose which creatures block this combat and how those creatures block.
+Odric, Master Tactician	you choose how other players attack, block or vote [B]	triggered: Whenever ~ and at least N other creatures attack, you choose which creatures block this combat and how those creatures block.
