@@ -1,0 +1,22 @@
+{
+  "oracle_id": "88222fd2-8316-426c-8218-64f6be5ca0f8",
+  "name": "_____ Goblin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "_____ Goblin",
+      "oracle_fingerprint": "e058e09ffb523d68eaa063bb0a2e4288",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "May": { "effects": [{ "PutSticker": { "on": ["This"], "kind": "Name" } }] } },
+              { "AddMana": { "mana": { "Fixed": ["Red"] }, "times": "StickerVowels" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
