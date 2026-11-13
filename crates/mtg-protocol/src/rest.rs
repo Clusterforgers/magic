@@ -3,11 +3,12 @@
 //! (`/api/decks`), of the fix-mark endpoints (`/api/fix-marks`), of the read endpoints
 //! (`/api/reads`), of the precon endpoints
 //! (`/api/precons`), of the game browser (`/api/lobbies`, joining) and of tournaments
-//! (`/api/tournaments`) and of Delves (`/api/delves`), with TypeScript bindings.
+//! (`/api/tournaments`), of Delves (`/api/delves`) and of the admin's games (`/api/admin/games`), with TypeScript bindings.
 //!
 //! These are the REST types the web takes from the generated bindings. The body of
 //! `POST /api/games` is still written by hand on both sides.
 
+mod admin_games;
 mod bulk_reads;
 mod cards;
 mod decks;
@@ -27,6 +28,7 @@ use mtg_engine::state::GameResult;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
+pub use admin_games::{AdminGame, AdminGameList, AdminGameSeat, EndGameBody, MAX_END_REASON_CHARS};
 pub use bulk_reads::{
     BulkApproval, BulkApprovalBody, BulkApprovalResult, BulkCard, BulkClause, BulkReads, BulkRule,
     MAX_BULK_APPROVALS,

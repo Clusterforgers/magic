@@ -80,6 +80,7 @@
 
 mod accounts;
 mod actor;
+mod admin_games;
 mod api;
 mod auth;
 mod auto_skips;

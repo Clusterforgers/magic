@@ -20,6 +20,7 @@ use crate::rest::{
     PreferredPrintingBody, PreferredPrintings, PrintingList, ReadBody, ReadCard, ReadQueue, Replay,
     SeatTeamBody, TeamsBody, UserPrefs, UserView, VisibilityBody,
 };
+use crate::rest::{AdminGame, AdminGameList, AdminGameSeat, EndGameBody};
 use crate::rest::{CreateDelve, DelveAction, DelveContent, DelveList, DelveView};
 use crate::rest::{
     CreateTournament, JoinTournament, SetMatchOutcome, TournamentCreated, TournamentErrorCode,
@@ -117,6 +118,10 @@ pub fn export_to(dir: &Path) -> Result<(), BindingsError> {
     BulkReads::export_all(&config)?;
     BulkApprovalBody::export_all(&config)?;
     BulkApprovalResult::export_all(&config)?;
+    AdminGameSeat::export_all(&config)?;
+    AdminGame::export_all(&config)?;
+    AdminGameList::export_all(&config)?;
+    EndGameBody::export_all(&config)?;
     fs::write(dir.join("index.ts"), index(dir)?)?;
     Ok(())
 }
