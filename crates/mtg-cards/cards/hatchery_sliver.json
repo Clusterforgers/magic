@@ -1,17 +1,44 @@
 {
   "oracle_id": "6227fb65-d7ef-4bc6-a076-9aa10941632c",
   "name": "Hatchery Sliver",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Hatchery Sliver",
       "oracle_fingerprint": "c22b02fca631eb75d8e81c930843516b",
       "abilities": [
-        { "Keyword": { "Replicate": "{1}{G}" } },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 96, "end": 230 }
+          "Keyword": {
+            "Replicate": "{1}{G}"
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "Subtype": "Sliver"
+                },
+                {
+                  "ControlledBy": "You"
+                },
+                {
+                  "WasCast": {}
+                },
+                {
+                  "In": "Stack"
+                }
+              ]
+            },
+            "mods": [
+              {
+                "AddKeyword": {
+                  "Replicate": [
+                    "OwnManaCost"
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

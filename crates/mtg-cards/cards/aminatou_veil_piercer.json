@@ -1,7 +1,7 @@
 {
   "oracle_id": "bf45f5ee-4d5f-4920-b612-b5492c2f035d",
   "name": "Aminatou, Veil Piercer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Aminatou, Veil Piercer",
@@ -9,14 +9,47 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
-            "effects": [{ "Surveil": { "count": 2 } }]
+            "when": {
+              "StepBegins": {
+                "step": "Upkeep",
+                "whose": "You"
+              }
+            },
+            "effects": [
+              {
+                "Surveil": {
+                  "count": 2
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 187, "end": 396 }
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "Type": "Enchantment"
+                },
+                {
+                  "OwnedBy": "You"
+                },
+                {
+                  "In": "Hand"
+                }
+              ]
+            },
+            "mods": [
+              {
+                "AddKeyword": {
+                  "Miracle": [
+                    {
+                      "OwnManaCostLess": 4
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

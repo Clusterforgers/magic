@@ -359,6 +359,15 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
             ways.push(way);
         }
     }
+    // An emerge cost a static ability gives the spell ("Each creature spell you cast has emerge", CR 702.119).
+    let own_keywords: Vec<Keyword> = keywords_of(state, id).into_iter().cloned().collect();
+    for keyword in crate::spell_keywords::given_to_spell(state, player, id) {
+        if matches!(keyword, Keyword::Emerge(_)) && !own_keywords.contains(&keyword) {
+            ways.extend(crate::c9_emerge_ways::c9_emerge_ways(
+                state, id, &keyword, instant,
+            ));
+        }
+    }
     r282_ways(state, player, id, instant, &mut ways);
     // The back face of a card with disturb is cast from its graveyard (CR 702.146a).
     ways.extend(keywords::disturb::way(state, id, instant));

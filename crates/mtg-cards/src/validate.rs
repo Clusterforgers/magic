@@ -1742,6 +1742,7 @@ impl<'a> Walker<'a> {
                     CostItem::Mana(_)
                     | CostItem::OwnManaCost
                     | CostItem::OwnManaValue
+                    | CostItem::OwnManaCostLess(_)
                     | CostItem::Tap
                     | CostItem::Exert
                     | CostItem::Untap
@@ -2314,6 +2315,7 @@ impl<'a> Walker<'a> {
             }
             // The cost of these is paid as the cost of an activated ability the keyword adds.
             Keyword::Equip(cost)
+            | Keyword::Fortify(cost)
             | Keyword::Reconfigure(cost)
             | Keyword::Cycling(cost)
             | Keyword::Unearth(cost)
@@ -2401,7 +2403,9 @@ impl<'a> Walker<'a> {
                 self.parts_that_need_an_announcement("Keyword", "Cost", cost);
             }
             // Only mana is paid for the cost; the cleaved spell is walked as the spell it is when cast that way.
-            Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),
+            Keyword::Crew(0) | Keyword::CrewOnce(0) => {
+                self.problem("crew needs a power of at least 1");
+            }
             Keyword::Backup { count, abilities } => self.backup(*count, abilities),
             Keyword::Saddle(0) => self.problem("saddle needs a power of at least 1"),
             Keyword::Enchant(selector) => self.enchant(selector),
@@ -6766,6 +6770,8 @@ fn lists(k: &Keyword, keyword: &str) -> bool {
             && Keyword::Partner.name().eq_ignore_ascii_case(keyword))
         // Scryfall lists `Enchant` for an Aura that enchants a player as it does for any other.
         || (matches!(k, Keyword::EnchantPlayer { .. }) && "Enchant".eq_ignore_ascii_case(keyword))
+        // Scryfall lists `Crew` for a crew that may be activated only once each turn.
+        || (matches!(k, Keyword::CrewOnce(_)) && "Crew".eq_ignore_ascii_case(keyword))
         // Scryfall lists `Equip` for an Equipment that equips only some creatures as for any other.
         || (matches!(k, Keyword::EquipTo { .. })
             && Keyword::Equip(Cost::default()).name().eq_ignore_ascii_case(keyword))

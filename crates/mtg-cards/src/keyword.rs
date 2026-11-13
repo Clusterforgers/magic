@@ -83,6 +83,9 @@ pub enum Keyword {
     Ward(Cost),
     /// Equip with its cost.
     Equip(Cost),
+    /// Fortify with its cost (CR 702.67): "[Cost]: Attach this Fortification to target land you control. Fortify only as
+    /// a sorcery."
+    Fortify(Cost),
     /// Reconfigure with its cost.
     Reconfigure(Cost),
     /// Living weapon: when the Equipment enters, a 0/0 black Phyrexian Germ is created and the Equipment attached to it.
@@ -143,6 +146,8 @@ pub enum Keyword {
     Myriad,
     /// Crew with its power: tapping creatures with that total power turns a Vehicle into a creature (CR 702.122).
     Crew(u32),
+    /// Crew with its power that may be activated only once each turn ("Crew 1. Activate only once each turn.").
+    CrewOnce(u32),
     /// Mutate with its cost: the spell may be cast onto a non-Human creature (CR 702.140).
     Mutate(Cost),
     /// Encore with its cost: exiled from a graveyard, a token copy attacks each opponent (CR 702.141).
@@ -514,6 +519,7 @@ impl Keyword {
         "Fuse",
         "Ward",
         "Equip",
+        "Fortify",
         "Reconfigure",
         "Living weapon",
         "Enchant",
@@ -617,6 +623,7 @@ impl Keyword {
         "Start your engines!",
         "Job select",
         "Equip to",
+        "Crew once",
         "Scavenge",
         "Transmute",
         "Awaken",
@@ -705,6 +712,7 @@ impl Keyword {
             Keyword::Fuse => "Fuse",
             Keyword::Ward(_) => "Ward",
             Keyword::Equip(_) => "Equip",
+            Keyword::Fortify(_) => "Fortify",
             Keyword::Reconfigure(_) => "Reconfigure",
             Keyword::LivingWeapon => "Living weapon",
             Keyword::Enchant(_) => "Enchant",
@@ -816,6 +824,7 @@ impl Keyword {
             Keyword::StartYourEngines => "Start your engines!",
             Keyword::JobSelect => "Job select",
             Keyword::EquipTo { .. } => "Equip to",
+            Keyword::CrewOnce(_) => "Crew once",
             Keyword::Scavenge(_) => "Scavenge",
             Keyword::Transmute(_) => "Transmute",
             Keyword::Awaken { .. } => "Awaken",
@@ -868,23 +877,46 @@ impl Keyword {
     /// `OwnManaValue` part as generic mana of its mana value; the keywords a
     /// static ability gives with "equal to its mana cost" (escape, replicate, scavenge, encore, emerge, flashback).
     #[must_use]
-    pub fn with_own_mana_cost(mut self, mana: &mtg_core::mana::ManaCost) -> Keyword {
+    pub fn with_own_mana_cost(self, mana: &mtg_core::mana::ManaCost) -> Keyword {
+        self.with_own_mana_cost_x(mana, 0)
+    }
+
+    /// [`Keyword::with_own_mana_cost`] for a card whose mana cost holds `x` X symbols, which the cost keeps (the X of
+    /// a replicate cost equal to its mana cost is the spell's X); `OwnManaCostLess(n)` is that cost with up to `n`
+    /// generic mana taken off ("its miracle cost is equal to its mana cost reduced by {4}").
+    #[must_use]
+    pub fn with_own_mana_cost_x(mut self, mana: &mtg_core::mana::ManaCost, x: u8) -> Keyword {
         if let Keyword::Escape(cost)
         | Keyword::Replicate(cost)
         | Keyword::Scavenge(cost)
         | Keyword::Encore(cost)
         | Keyword::Emerge(cost)
+        | Keyword::Miracle(cost)
+        | Keyword::Foretell(cost)
         | Keyword::Flashback(cost) = &mut self
         {
             for item in &mut cost.0 {
-                if matches!(item, crate::cost::CostItem::OwnManaCost) {
-                    *item =
-                        crate::cost::CostItem::Mana(crate::mana::ManaCostX::new(0, mana.clone()));
-                } else if matches!(item, crate::cost::CostItem::OwnManaValue) {
-                    let generic = mtg_core::mana::ManaCost::from_symbols([
-                        mtg_core::mana::ManaSymbol::Generic(mana.mana_value()),
-                    ]);
-                    *item = crate::cost::CostItem::Mana(crate::mana::ManaCostX::new(0, generic));
+                match item {
+                    crate::cost::CostItem::OwnManaCost => {
+                        *item = crate::cost::CostItem::Mana(crate::mana::ManaCostX::new(
+                            x,
+                            mana.clone(),
+                        ));
+                    }
+                    crate::cost::CostItem::OwnManaCostLess(less) => {
+                        *item = crate::cost::CostItem::Mana(crate::mana::ManaCostX::new(
+                            x,
+                            r5510_less_generic(mana, *less),
+                        ));
+                    }
+                    crate::cost::CostItem::OwnManaValue => {
+                        let generic = mtg_core::mana::ManaCost::from_symbols([
+                            mtg_core::mana::ManaSymbol::Generic(mana.mana_value()),
+                        ]);
+                        *item =
+                            crate::cost::CostItem::Mana(crate::mana::ManaCostX::new(0, generic));
+                    }
+                    _ => {}
                 }
             }
         }
@@ -964,6 +996,7 @@ mod tests {
             Keyword::Fuse,
             Keyword::Ward(cost.clone()),
             Keyword::Equip(cost.clone()),
+            Keyword::Fortify(cost.clone()),
             Keyword::Reconfigure(cost.clone()),
             Keyword::LivingWeapon,
             Keyword::Enchant(Selector::default()),
@@ -992,6 +1025,7 @@ mod tests {
             Keyword::Infect,
             Keyword::Myriad,
             Keyword::Crew(3),
+            Keyword::CrewOnce(1),
             Keyword::Mutate(cost.clone()),
             Keyword::Encore(cost.clone()),
             Keyword::Squad(cost.clone()),
@@ -1211,4 +1245,23 @@ mod tests {
             "\"Flying\""
         );
     }
+}
+
+/// `mana` with up to `less` generic mana taken off; its colored symbols stay (the reduction of a cost reduces only its
+/// generic part).
+fn r5510_less_generic(mana: &mtg_core::mana::ManaCost, less: u32) -> mtg_core::mana::ManaCost {
+    let mut left = less;
+    let symbols: Vec<mtg_core::mana::ManaSymbol> = mana
+        .symbols()
+        .iter()
+        .filter_map(|symbol| match symbol {
+            mtg_core::mana::ManaSymbol::Generic(n) => {
+                let taken = (*n).min(left);
+                left -= taken;
+                (*n > taken).then_some(mtg_core::mana::ManaSymbol::Generic(*n - taken))
+            }
+            other => Some(*other),
+        })
+        .collect();
+    mtg_core::mana::ManaCost::from_symbols(symbols)
 }

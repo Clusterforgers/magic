@@ -166,6 +166,8 @@ pub(crate) struct Held {
     locked: Vec<Keyword>,
     /// The mana cost its card prints, which a keyword given "equal to its mana cost" reads.
     own_cost: Option<mtg_core::mana::ManaCost>,
+    /// How many X symbols that mana cost holds.
+    own_x: u8,
     /// The subtypes its card prints, which a text change can replace (CR 612).
     printed_subtypes: Vec<mtg_core::card::Subtype>,
     /// Whether it has the ability "This creature can't block" its suspected designation gives (CR 701.60c): an effect
@@ -222,6 +224,7 @@ impl Held {
             counter_keywords: Vec::new(),
             locked: Vec::new(),
             own_cost: object.mana_cost().cloned(),
+            own_x: object.card().x_in_cost,
             printed_subtypes: object.card().subtypes.clone(),
             suspect_cant_block: suspected,
             applied: Vec::new(),
@@ -362,13 +365,23 @@ impl Held {
             Modification::SetController(player) => self.controller = *player,
             Modification::AddKeyword(keyword) => {
                 let own = self.own_cost.clone().unwrap_or_default();
-                let read = keyword.clone().with_own_mana_cost(&own);
+                let read = keyword.clone().with_own_mana_cost_x(&own, self.own_x);
                 let keyword = &read;
                 if self.locked.contains(keyword) {
                     return;
                 }
                 if !self.keywords.contains(keyword) {
                     self.keywords.push(keyword.clone());
+                }
+                // Every replicate payment counts once as a kick, and one copy trigger copies the spell for all of them:
+                // a second replicate (printed and given, CR 702.56b) adds a cost to pay, not a second trigger.
+                if matches!(keyword, Keyword::Replicate(_))
+                    && self
+                        .abilities
+                        .iter()
+                        .any(|held| matches!(held.keyword, Some(Keyword::Replicate(_))))
+                {
+                    return;
                 }
                 // Each instance of a keyword adds its abilities, which trigger separately (CR 702.21c, 702.91b,
                 // 702.108b), so a keyword the object already has adds them again.

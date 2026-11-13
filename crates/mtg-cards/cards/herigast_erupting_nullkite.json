@@ -1,24 +1,87 @@
 {
   "oracle_id": "76243b38-cab1-465f-aa7d-5bc617541753",
   "name": "Herigast, Erupting Nullkite",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Herigast, Erupting Nullkite",
       "oracle_fingerprint": "c78522a30da07e142f4ed9b4266542b2",
       "abilities": [
-        { "Keyword": { "Emerge": "{6}{R}{R}" } },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 135, "end": 214 }
+          "Keyword": {
+            "Emerge": "{6}{R}{R}"
           }
         },
-        { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 222, "end": 305 }
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  "This"
+                ],
+                "by": "You"
+              }
+            },
+            "from": "Stack",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Exile": {
+                        "what": {
+                          "Each": [
+                            {
+                              "In": "Hand"
+                            },
+                            {
+                              "OwnedBy": "You"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "Draw": {
+                        "count": 3
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": "Flying"
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "Type": "Creature"
+                },
+                {
+                  "ControlledBy": "You"
+                },
+                {
+                  "WasCast": {}
+                },
+                {
+                  "In": "Stack"
+                }
+              ]
+            },
+            "mods": [
+              {
+                "AddKeyword": {
+                  "Emerge": [
+                    "OwnManaCost"
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

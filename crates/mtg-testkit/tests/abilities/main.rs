@@ -86,6 +86,7 @@ mod r4711_clergy;
 mod r4711_starfish;
 mod r4a_enters_with;
 mod r4i_granter;
+mod r5510_fortify_crew;
 mod r5e_done_once;
 mod r8p2_enters;
 mod reflexive;
