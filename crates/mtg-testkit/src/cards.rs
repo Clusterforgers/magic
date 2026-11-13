@@ -578,6 +578,8 @@ pub fn un34_stickerer(name: &str) -> Arc<CardDefinition> {
                         Pred::Not(Box::new(Pred::Type(CardType::Land))),
                         Pred::OwnedBy(Ref::You),
                     ]),
+                    kind: None,
+                    up_to: 0,
                 }],
             }),
     )

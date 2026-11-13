@@ -1,0 +1,46 @@
+{
+  "oracle_id": "570cb560-c246-4652-b230-ab34f966c78a",
+  "name": "Balthier and Fran",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balthier and Fran",
+      "oracle_fingerprint": "b2435b3c7d8112dba492a084ed7dbe44",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Vehicle" }, { "ControlledBy": "You" }] },
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddKeyword": "Reach" },
+              { "AddKeyword": "Vigilance" }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Subtype": "Vehicle" },
+                  {
+                    "Test": {
+                      "left": { "CountOf": { "of": "This", "filter": [{ "Crewed": "Candidate" }] } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                ]
+              }
+            },
+            "if": "FirstCombat",
+            "effects": [
+              { "Pay": { "cost": "{1}{R}{G}", "paid": [{ "AddPhase": { "phases": ["Combat"] } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

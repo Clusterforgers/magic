@@ -1,0 +1,30 @@
+{
+  "oracle_id": "49a5c149-5067-4840-8385-c2989d7e5a34",
+  "name": "Leyline of Combustion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leyline of Combustion",
+      "oracle_fingerprint": "1ed6bb8b2d5cc6a3ad6e904ffbe27544",
+      "abilities": [
+        "OpeningHand",
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "PlayerBecomesTarget": { "who": "You", "by": [{ "ControlledBy": "Opponents" }] } },
+                {
+                  "BecomesTarget": {
+                    "what": [{ "ControlledBy": "You" }],
+                    "by": [{ "ControlledBy": "Opponents" }]
+                  }
+                }
+              ]
+            },
+            "effects": [{ "DealDamage": { "to": { "ControllerOf": "Dealer" }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

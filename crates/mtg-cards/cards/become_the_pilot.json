@@ -1,7 +1,7 @@
 {
   "oracle_id": "7e079dd3-3397-491f-a6c5-7be5ade687d3",
   "name": "Become the Pilot",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Become the Pilot",
@@ -10,9 +10,12 @@
         { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "Not": "Commander" }] } },
         { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 62, "end": 179 }
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              "CantBeBlockedUnlessAttackingOwner"
+            ]
           }
         }
       ]

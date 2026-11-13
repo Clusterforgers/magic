@@ -1,0 +1,38 @@
+{
+  "oracle_id": "a3b3e02f-c75d-4cd6-8c57-d85ce00975fb",
+  "name": "Glyph of Doom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glyph of Doom",
+      "oracle_fingerprint": "d4000a0f87ec15a90ef50082561d789b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Subtype": "Wall" }, { "Type": "Creature" }] } }],
+            "effects": [
+              { "Bind": { "what": { "Target": 0 }, "as": "wall" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [
+                    {
+                      "Destroy": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "BlockedThisTurnBy": { "Bound": "wall" } }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

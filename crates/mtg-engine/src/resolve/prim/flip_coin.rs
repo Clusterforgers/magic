@@ -30,6 +30,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         win,
         until,
         won_as,
+        heads,
         ..
     } = effect
     else {
@@ -50,6 +51,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             Ok(found) => (found.call, found.kept, found.coins),
             Err(asked) => return Ok(asked),
         }
+    } else if *heads {
+        // Nobody calls an uncalled coin: heads is the side that counts.
+        (
+            CoinSide::Heads,
+            side(state.seed(), state.rng_index()),
+            Vec::new(),
+        )
     } else {
         let chooser = OptionChooser {
             player,
@@ -65,7 +73,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         };
         (call, side(state.seed(), state.rng_index()), Vec::new())
     };
-    let won = call == side;
+    let won = if *heads {
+        side == CoinSide::Heads
+    } else {
+        call == side
+    };
     // A won flip until a loss runs its `win` list again: the names the last pass bound are freed for this one.
     let mut bound: Vec<(String, Vec<crate::choose::Target>)> = if won && *until {
         let held = cx.resolving.bindings();

@@ -59,6 +59,8 @@ pub enum Modification {
     /// Gives the copiable values of a copy the ability that is resolving: "except it has this ability". Only the
     /// exceptions of a `BecomeCopy` have it.
     ThisAbility,
+    /// Sets the starting loyalty of a copy: "except its starting loyalty is 1". Only the exceptions of a copy have it.
+    SetLoyalty(Amount),
     /// Adds a subtype (layer 4).
     AddSubtype(Subtype),
     /// Replaces the creature types with these (layer 4): "becomes a red Weird" (CR 205.1b).
@@ -137,6 +139,11 @@ pub enum Modification {
     /// The object can't attack the controller of the effect or ability ("you"), the planeswalkers they control or both
     /// (a restriction, no layer).
     CantAttackYou(Attacked),
+    /// The object can't attack its owner, the planeswalkers its owner controls or both (a restriction, no layer).
+    CantAttackOwner(Attacked),
+    /// The object can't be blocked unless it is attacking its owner or a permanent its owner controls (a restriction, no
+    /// layer).
+    CantBeBlockedUnlessAttackingOwner,
     /// The object can't block (a restriction, no layer).
     CantBlock,
     /// The object does not untap during its controller's untap step (a restriction, no layer).
@@ -155,6 +162,8 @@ pub enum Modification {
     MinBlockers(u32),
     /// The object can't be blocked by more than this many creatures (a restriction, no layer).
     MaxBlockers(u32),
+    /// The object can't be blocked unless all creatures the defending player controls block it (a restriction, no layer).
+    BlockedByAll,
     /// The object can block this many creatures beyond the first each combat (a restriction, no layer): "can block an
     /// additional creature each combat" (CR 509.1a).
     BlocksAdditional(u32),
@@ -183,7 +192,8 @@ impl Modification {
         match self {
             Modification::AddSupertype(_)
             | Modification::SetName(_)
-            | Modification::ThisAbility => Some("1"),
+            | Modification::ThisAbility
+            | Modification::SetLoyalty(_) => Some("1"),
             Modification::SetController(_) => Some("2"),
             Modification::ChangeTextChosen { .. } => Some("3"),
             Modification::AddType(_)
@@ -221,6 +231,8 @@ impl Modification {
             Modification::SwitchPT => Some("7d"),
             Modification::CantAttack
             | Modification::CantAttackYou(_)
+            | Modification::CantAttackOwner(_)
+            | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
             | Modification::DoesntUntap
             | Modification::CantBeTurnedFaceUp
@@ -229,6 +241,7 @@ impl Modification {
             | Modification::CanBlockOnly(_)
             | Modification::MinBlockers(_)
             | Modification::MaxBlockers(_)
+            | Modification::BlockedByAll
             | Modification::BlocksAdditional(_)
             | Modification::BlocksAdditionalPer(_)
             | Modification::Goaded => None,
@@ -262,6 +275,9 @@ pub enum Duration {
     UntilEndOfCombatOnYourNextTurn,
     /// For as long as the source stays on the battlefield.
     WhileSourceOnBattlefield,
+    /// For as long as the source stays attached to the permanent the effect changes ("for as long as this Equipment
+    /// remains attached to it", CR 611.2b): only a copy effect lasts this long.
+    WhileSourceAttached,
     /// For as long as the controller of the effect controls the source ("gain control of target creature for as long as you control ~"): it ends when the source leaves the battlefield or another player controls it (CR 611.2b).
     WhileYouControlSource,
     /// For as long as the source stays tapped ("for as long as ~ remains tapped", CR 611.2b): it ends when the source untaps, leaves
@@ -288,6 +304,10 @@ pub enum Duration {
     UntilSkipped,
     /// As `UntilSkipped`, and it also ends with the turn ("skips their next combat phase this turn").
     UntilSkippedThisTurn,
+    /// During the next turn of the player the rule names, begun after this one: it applies from that turn's start and ends
+    /// with it ("skips all combat phases of their next turn", CR 614.10); only the rule that a player skips steps or combat
+    /// lasts this way.
+    TheirNextTurn,
     /// Until the card the source became when its ability exiled it is cast from exile ("until this card is cast from
     /// exile"); it lasts for good once that card leaves exile another way.
     UntilCastFromExile,
@@ -386,6 +406,15 @@ pub enum Attacked {
     Both,
 }
 
+/// Which side of the table a rule means: one chosen as its source entered or by its resolution ("left" or "right").
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum SideOf {
+    /// The word "left" or "right" the source chose as it entered ("the chosen direction"); no side without one.
+    Entered,
+    /// The word "left" or "right" the resolution chose under this name ("the last chosen direction").
+    ChosenAs(String),
+}
+
 /// How many creatures must block an attacker that "must be blocked".
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Blocking {
@@ -441,6 +470,8 @@ pub enum CombatQuirk {
     AssignsAsUnblocked,
     /// They assign combat damage equal to their toughness rather than their power (CR 510.1a).
     AssignsByToughness,
+    /// While their power is negative, they assign combat damage as though it were positive (its absolute value).
+    AssignsAsThoughPositive,
     /// They must be blocked if able: a requirement on the block declaration (CR 509.1c).
     MustBeBlocked(Blocking),
     /// Every creature the selector picks that is able to block them does so (CR 509.1c), judged for their controller:
@@ -480,6 +511,9 @@ pub enum Prohibited {
     Activate(Selector),
     /// Be the target of spells and abilities from the sources the selector picks (CR 115); every source when empty.
     BeTargeted(Selector),
+    /// Be the target of spells or abilities that can target only Walls: a specification whose every kind of object is a
+    /// Wall.
+    BeTargetedByWallsOnly,
     /// Play lands as the special action (CR 305.1).
     PlayLand,
     /// Sacrifice permanents, or be sacrificed (CR 701.21).
@@ -735,6 +769,11 @@ pub enum GameRule {
     VoteAgain(Ref),
     /// The players get an additional vote each time they vote: "While voting, you get an additional vote." (CR 701.38d).
     ExtraVote(Ref),
+    /// The game's turn order runs the other way round the table (Aeon Engine); two such rules cancel out.
+    ReverseTurnOrder,
+    /// Each player may attack only the nearest opponent on a side of them and planeswalkers that opponent controls
+    /// (Pramikon, Sky Rampart); several such rules all apply, so sides that disagree leave nobody to attack.
+    AttackOnlyNearest(SideOf),
     /// A player in the group who would begin an extra turn skips that turn instead (CR 500.7).
     SkipExtraTurns(Ref),
     /// A player in the group who would flip a coin flips two instead and ignores one (CR 705.3, Krark's Thumb); each such
@@ -909,6 +948,25 @@ pub enum GameRule {
     },
     /// Each creature the players control assigns combat damage equal to its toughness rather than its power (CR 510.1a).
     ToughnessAssignsDamage(Ref),
+    /// Lethal damage dealt to each creature the players control is determined by its power rather than its toughness
+    /// (CR 704.5g, 120.6): damage marked at least equal to its power destroys it.
+    LethalByPower(Ref),
+    /// While it applies, all damage dealt to the players is dealt as though its source had infect (CR 702.90b).
+    DamageAsInfect(Ref),
+    /// The players can't venture into the dungeon more than this many times each turn (CR 701.49).
+    VentureLimit {
+        /// Who is limited.
+        who: Ref,
+        /// The ventures each turn.
+        per_turn: u32,
+    },
+    /// The players' devotion to each color and each combination of colors is greater by this much (CR 700.5).
+    DevotionIncreased {
+        /// Whose devotion.
+        who: Ref,
+        /// By how much.
+        by: u32,
+    },
     /// Counters remain on the card as it moves to any zone other than a hand or a library (CR 122.2); the card reads it
     /// in every zone, so the rule is written without `from`.
     CountersRemain,

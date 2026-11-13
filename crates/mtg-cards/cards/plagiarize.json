@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ba4f9450-d468-4686-9f48-00fa08c6ac52",
+  "name": "Plagiarize",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plagiarize",
+      "oracle_fingerprint": "73d869548d366e3e78ee6577f2109c5f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Draw": { "who": { "Target": 0 } } },
+                  "by": { "Instead": [{ "Draw": {} }] },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

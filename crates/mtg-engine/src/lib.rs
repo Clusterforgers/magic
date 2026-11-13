@@ -68,6 +68,8 @@ mod price;
 mod r303b_blocked_by;
 mod r303b_haste_at;
 mod r372_suspend;
+mod r377_skips;
+mod r379_since;
 mod replace_dry;
 mod rmt3_skips;
 mod saga;
@@ -151,6 +153,8 @@ mod r301_offering;
 #[cfg(test)]
 mod r301b_spend_facts;
 mod r304b_lost_priority;
+mod r371_token_loyalty;
+mod redeal;
 pub mod replace;
 pub mod resolve;
 mod restart;
@@ -204,3 +208,5 @@ pub use mana_ability::mana_ways;
 pub use setup::{GameSetup, PlayerSetup, PresetPermanent, Start};
 pub use snapshot::{Snapshot, snapshot};
 pub use state::{GameResult, GameState};
+#[cfg(test)]
+mod r376_nearest_tests;

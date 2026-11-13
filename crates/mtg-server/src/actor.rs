@@ -209,7 +209,8 @@ fn launch<S: EventStore>(
         previews: PreviewLimits::new(setup.players.len(), Instant::now()),
         presence: Presence::new(setup.players.len()),
         yields: Yields::new(setup.players.len()),
-        stops: Stops::with_mode(setup.players.len(), config.pace.mode()),
+        stops: Stops::with_mode(setup.players.len(), config.pace.mode())
+            .with_teams(setup.house_rules.teams.as_ref()),
         pace: config.pace,
         setup,
         phase,

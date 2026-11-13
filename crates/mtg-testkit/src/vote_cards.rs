@@ -51,6 +51,7 @@ fn ballot(name: &str, secret: bool) -> Arc<CardDefinition> {
                         options: VoteFor::Named(vec!["heads".to_owned(), "tails".to_owned()]),
                         secret,
                         bind: None,
+                        tally: None,
                     },
                     Effect::Draw {
                         bind: None,

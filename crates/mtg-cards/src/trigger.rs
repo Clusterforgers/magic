@@ -211,6 +211,16 @@ pub enum TriggerPattern {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         combat: Option<bool>,
     },
+    /// Damage that would be dealt to a player is prevented ("whenever damage that would be dealt to you is prevented");
+    /// the amount of the event is the damage prevented.
+    DamagePrevented {
+        /// The player it would have been dealt to.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
     /// A player gains life.
     LifeGained {
         /// Who gains it.
@@ -1134,6 +1144,10 @@ pub enum ReplaceBy {
         /// It is a copy until the end of the turn only ("becomes a copy ... until end of turn").
         #[serde(default, skip_serializing_if = "is_false")]
         until_end_of_turn: bool,
+        /// It enters as a copy with no choice to decline whenever there is something to copy ("creatures you control
+        /// enter as a copy of this creature").
+        #[serde(default, skip_serializing_if = "is_false")]
+        must: bool,
         /// Counters it enters with when it is a copy, each only when the copied object matches its selector ("except it
         /// enters with an additional +1/+1 counter on it if it's a creature").
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -1284,6 +1298,8 @@ impl ShieldShape {
                 ReplaceWhen::Draw { .. } | ReplaceWhen::LoseGame { .. },
                 ReplaceBy::InsteadNext(_),
             ) => Some(Self::Next),
+            // "Until end of turn, if target player would draw a card, instead ...": every draw of the players.
+            (ReplaceWhen::Draw { .. }, ReplaceBy::Instead(_)) => Some(Self::Class),
             _ => None,
         }
     }

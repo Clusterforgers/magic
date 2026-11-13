@@ -74,7 +74,13 @@ pub(crate) fn strike_power(state: &GameState, id: ObjectId, pass: DamagePass) ->
     } else {
         chars.power
     };
-    Some(u32::try_from(power.unwrap_or(0).max(0)).unwrap_or(0))
+    let power = power.unwrap_or(0);
+    let power = if crate::combat_quirks::r377_assigns_as_positive(state, id) {
+        power.saturating_abs()
+    } else {
+        power
+    };
+    Some(u32::try_from(power.max(0)).unwrap_or(0))
 }
 
 /// Damage that is lethal to `id` from a source that does or does not have deathtouch (CR 120.6, 702.2c).
@@ -82,14 +88,21 @@ pub(crate) fn strike_power(state: &GameState, id: ObjectId, pass: DamagePass) ->
 /// It is what the toughness leaves after the damage marked, and 1 at most from deathtouch: any damage from such
 /// a source is lethal, but a creature already holding lethal damage needs none.
 pub(crate) fn lethal_damage(state: &GameState, id: ObjectId, deathtouch: bool) -> u32 {
-    let toughness = characteristics(state, id)
-        .and_then(|c| c.toughness)
+    let chars = characteristics(state, id);
+    let by_power = crate::w17b_statics::r377_lethal_by_power(state, id);
+    let lethal_at = chars
+        .and_then(|c| if by_power { c.power } else { c.toughness })
         .unwrap_or(0);
     let marked = state
         .object(id)
         .and_then(GameObject::permanent)
         .map_or(0, crate::object::PermanentState::damage);
-    let left = u32::try_from((i64::from(toughness) - i64::from(marked)).max(0)).unwrap_or(u32::MAX);
+    let mut left =
+        u32::try_from((i64::from(lethal_at) - i64::from(marked)).max(0)).unwrap_or(u32::MAX);
+    // By power, a creature of power 0 or less needs some damage marked on it (CR 704.5g).
+    if by_power && marked == 0 {
+        left = left.max(1);
+    }
     if deathtouch { left.min(1) } else { left }
 }
 
@@ -443,6 +456,11 @@ fn deal(
     let mut form = dealer.keywords.form();
     if form == DamageForm::Normal && state.rules().damage_as_wither {
         form = DamageForm::Wither;
+    }
+    if let DamageTarget::Player(player) = target
+        && crate::w17b_statics::r377_damage_as_infect(state, player)
+    {
+        form = DamageForm::Infect;
     }
     if let DamageTarget::Player(player) = target
         && form != DamageForm::Infect

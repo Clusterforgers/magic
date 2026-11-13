@@ -87,6 +87,7 @@ mod read_view;
 mod refill_hidden;
 mod required_cost_hidden;
 mod rest;
+mod rest_art;
 mod rest_cards;
 mod rest_decks;
 mod rest_favourites;

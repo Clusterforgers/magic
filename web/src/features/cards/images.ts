@@ -33,6 +33,10 @@ export function imageSizeFor(width: number): 'small' | 'normal' | 'large' {
 
 const enc = encodeURIComponent
 
+/** The identity of a card in a printing, or in its default art for null. */
+export const identityOf = (oracleId: string, printingId: string | null): CardIdentity =>
+  printingId === null ? { oracle_id: oracleId } : { oracle_id: oracleId, printing_id: printingId }
+
 /** The URL of one face (0 for the front) of a picture source at a size. */
 export function cardImageUrl(source: ImageSource, face: number, size: ImageSize): string {
   const at = Math.max(0, Math.trunc(face))

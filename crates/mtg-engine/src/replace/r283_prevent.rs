@@ -9,9 +9,28 @@ use mtg_cards::trigger::ReplaceBy;
 use super::{Candidate, Item, Origin, Pass, Slot, Unit, slots_of};
 use crate::decision::Decision;
 use crate::events::Event;
-use crate::resolve::{Inline, w5d_run_instead};
+use crate::resolve::{Inline, r370_run_instead_bound};
+use crate::rules::Rule;
 
 impl Pass<'_> {
+    /// The targets the shield behind the candidate fixed as it began; none for any other replacement.
+    fn r370_shield_bound(
+        &self,
+        candidate: &Candidate,
+    ) -> Vec<(String, Vec<crate::choose::Target>)> {
+        let Origin::Shield(id) = candidate.origin else {
+            return Vec::new();
+        };
+        self.shields
+            .iter()
+            .find(|effect| effect.id == id)
+            .and_then(|effect| match &effect.rule {
+                Rule::PreventDamage(shield) => Some(shield.bound.clone()),
+                _ => None,
+            })
+            .unwrap_or_default()
+    }
+
     /// Prevents up to `most` of the damage at `at` and adds the events of `effects`, read with the damage prevented.
     pub(super) fn r283_prevent_counted_and(
         &mut self,
@@ -33,13 +52,14 @@ impl Pass<'_> {
             Vec::new()
         } else {
             let state = self.state;
+            let bound = self.r370_shield_bound(candidate);
             let answers = &mut self.answers;
-            match w5d_run_instead(
+            match r370_run_instead_bound(
                 state,
-                candidate.controller,
-                candidate.object,
+                (candidate.controller, candidate.object),
                 &cause,
                 effects,
+                &bound,
                 &mut || answers.next().cloned(),
             ) {
                 Ok(Inline::Events(events)) => events,

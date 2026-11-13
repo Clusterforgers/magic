@@ -450,7 +450,19 @@ object: ObjectId, } } | { "DamageRemoved": {
 /**
  * The permanent.
  */
-object: ObjectId, } } | { "ShieldUsed": { 
+object: ObjectId, } } | { "DamagePrevented": { 
+/**
+ * The source of the damage.
+ */
+source: ObjectId, 
+/**
+ * Who or what it would have been dealt to.
+ */
+target: DamageTarget, 
+/**
+ * How much was prevented.
+ */
+amount: number, } } | { "ShieldUsed": { 
 /**
  * The shield, one of the rule changes (they share the counter of continuous effects).
  */
@@ -776,7 +788,11 @@ object: ObjectId,
 /**
  * The player whose next turn began: the copies until that turn end; none for those until end of turn.
  */
-next_turn_of?: PlayerId, } } | { "MonarchChanged": { 
+next_turn_of?: PlayerId, 
+/**
+ * The object whose staying attached kept the copy going ("for as long as this Equipment remains attached to it").
+ */
+attached_by?: ObjectRef, } } | { "MonarchChanged": { 
 /**
  * The new monarch.
  */
@@ -1169,7 +1185,11 @@ opponent: PlayerId,
 /**
  * The clashing player won.
  */
-won: boolean, } } | { "Exerted": { 
+won: boolean, } } | { "VotesFinished": { 
+/**
+ * The voter and the place of their choice, for each vote cast.
+ */
+ballots: Array<[PlayerId, number]>, } } | { "Exerted": { 
 /**
  * The creature exerted.
  */

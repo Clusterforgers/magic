@@ -1,0 +1,78 @@
+{
+  "oracle_id": "118da256-d1ea-44e8-9026-317e49694d29",
+  "name": "Forger's Foundry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forger's Foundry",
+      "oracle_fingerprint": "dc99539bebbceda7ddaeac64a9a9ae27",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Blue"] },
+                  "when_spent": {
+                    "spell": { "types": ["Instant", "Sorcery"] },
+                    "effects": [
+                      {
+                        "If": {
+                          "condition": {
+                            "Matches": {
+                              "subject": "Triggering",
+                              "selector": [
+                                { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                              ]
+                            }
+                          },
+                          "then": [
+                            {
+                              "May": {
+                                "effects": [
+                                  {
+                                    "Shield": {
+                                      "when": {
+                                        "ZoneChange": {
+                                          "what": [{ "Is": "Triggering" }],
+                                          "from": "Stack",
+                                          "to": "Graveyard"
+                                        }
+                                      },
+                                      "by": { "MoveTo": "Exile" },
+                                      "duration": "UntilEndOfTurn"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{U}{U}" }, "Tap"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "as": "card",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "card" }, "free": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "af471455-6b9f-4c14-bb90-a74a44ecd247",
   "name": "Aeon Engine",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Aeon Engine",
@@ -9,9 +9,9 @@
       "abilities": [
         { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 29, "end": 180 }
+          "Activated": {
+            "cost": ["Tap", "ExileSelf"],
+            "effects": [{ "Rule": { "rule": "ReverseTurnOrder", "duration": "Forever" } }]
           }
         }
       ]

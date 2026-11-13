@@ -26,7 +26,7 @@ export interface DeckEntry {
   /** The commanders the list knows a picture of. */
   commanders: { oracleId: string; name: string }[]
   /** The cards whose pictures stand for the deck in the list: its commanders, else its first card; none where the list knows no card. */
-  pictures: { oracleId: string; name: string }[]
+  pictures: { oracleId: string; name: string; printingId?: string }[]
   /** The commanders' names, also where the list holds no picture. */
   commanderNames: string[]
   /** Colour identity letters in WUBRG order; null where the list does not say. */
@@ -81,9 +81,10 @@ function identityOf(letters: readonly (readonly string[])[]): string[] {
 // A card the game cannot play is played by hand too: such a deck still goes to a game.
 const handCopies = (counts: Counts): number => byHandCopies(counts) + counts.unplayable
 
-const pictureOf = (picture: DeckPicture): { oracleId: string; name: string } => ({
+const pictureOf = (picture: DeckPicture): { oracleId: string; name: string; printingId?: string } => ({
   oracleId: picture.oracle_id,
   name: picture.name,
+  ...(picture.printing_id === undefined ? {} : { printingId: picture.printing_id }),
 })
 
 /** A stored deck as a row; the commanders' pictures and identity come with the list. */

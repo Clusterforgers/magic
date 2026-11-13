@@ -1,0 +1,66 @@
+{
+  "oracle_id": "8b4715b0-63d9-4ff8-a667-21a762518687",
+  "name": "Sutured Ghoul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sutured Ghoul",
+      "oracle_fingerprint": "7854bf66b5c47bb847cb5e9d86885475",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                {
+                  "Choose": {
+                    "from": {
+                      "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                    },
+                    "count": {
+                      "min": 0,
+                      "max": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" }
+                        ]
+                      }
+                    },
+                    "as": "chosen"
+                  }
+                },
+                { "Exile": { "what": { "Bound": "chosen" } } }
+              ]
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Total": {
+                      "of": [{ "ExiledWith": "This" }, { "In": "Exile" }],
+                      "stat": "Power"
+                    }
+                  },
+                  "toughness": {
+                    "Total": {
+                      "of": [{ "ExiledWith": "This" }, { "In": "Exile" }],
+                      "stat": "Toughness"
+                    }
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}
