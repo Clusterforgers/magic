@@ -15,6 +15,17 @@ pub(super) fn r379_suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if !form.plural() && r.words("that entered since your last turn ended") {
         return Some(Pred::EnteredSinceLastTurn(Ref::You));
     }
+    if !form.plural()
+        && let Some(found) = r.attempt(|r| {
+            r.need("that dealt damage to")?;
+            (r.word("a") || r.word("an") || r.peek_word() == Some("another")).then_some(())?;
+            let to = phrase(r, Form::Subject)?;
+            r.need("this turn")?;
+            Some(Pred::DealtDamageThisTurn(to))
+        })
+    {
+        return Some(found);
+    }
     if form.plural() || !r.words("that blocked or was blocked") {
         return None;
     }
@@ -32,6 +43,16 @@ pub(super) fn r379_suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
 pub(super) fn r379_suffix_text(pred: &Pred, form: Form) -> Option<String> {
     if *pred == Pred::EnteredSinceLastTurn(Ref::You) && !form.plural() {
         return Some("that entered since your last turn ended".to_owned());
+    }
+    if let Pred::DealtDamageThisTurn(to) = pred {
+        let words = phrase_text(to, Form::Subject)?;
+        let article = if words.starts_with("another ") {
+            String::new()
+        } else {
+            format!("{} ", super::triggers::article(&words))
+        };
+        return (!form.plural())
+            .then(|| format!("that dealt damage to {article}{words} this turn"));
     }
     let Pred::BlockedThisTurn(with) = pred else {
         return None;

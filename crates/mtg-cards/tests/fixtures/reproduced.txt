@@ -673,6 +673,7 @@ Fanatic of Rhonas
 Far Wanderings
 Faramir, Steward of Gondor
 Farewell
+Fast Forward
 Favorable Winds
 Fear of Failed Tests
 Fearless Skald
@@ -2200,6 +2201,7 @@ Wastescape Battlemage
 Weaponcraft Enthusiast
 Wear // Tear
 Wear Away
+Weathered Sentinels
 Wedgelight Rammer
 Wei Scout
 Weigh Down

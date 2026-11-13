@@ -162,6 +162,20 @@ pub fn for_each(r: &mut Reader<'_>) -> Option<Amount> {
         if let Some(tally) = super::vote::w2d_tally(r, false) {
             return Some(tally);
         }
+        if let Some(found) = r.attempt(|r| {
+            r.need("unspent")?;
+            let color = super::selectors::color(r.take_word()?)?;
+            r.need("mana you have")?;
+            Some(Amount::ManaInPoolOf {
+                who: Ref::You,
+                mana: mtg_core::mana::ManaType::from(color),
+            })
+        }) {
+            return Some(found);
+        }
+        if r.words("opponent you attacked this turn") {
+            return Some(Amount::Players(Ref::AttackedThisTurn));
+        }
         if r.words("opponent you attacked") {
             return Some(Amount::Players(Ref::Attacked));
         }
@@ -323,6 +337,14 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
         }
         Amount::Players(Ref::Opponents) => "opponent".to_owned(),
         Amount::Players(Ref::Attacked) => "opponent you attacked".to_owned(),
+        Amount::Players(Ref::AttackedThisTurn) => "opponent you attacked this turn".to_owned(),
+        Amount::ManaInPoolOf {
+            who: Ref::You,
+            mana,
+        } => format!(
+            "unspent {} mana you have",
+            super::selectors::color_name(mana.color()?)
+        ),
         Amount::Players(Ref::PlayersWhere { .. }) => super::r9w_players::r9w_each_text(counted)?,
         Amount::Players(Ref::Bound(_)) => super::vote::w2d_tally_text(counted, false)?,
         Amount::Party(Ref::You) => "creature in your party".to_owned(),

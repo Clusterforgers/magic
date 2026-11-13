@@ -828,6 +828,14 @@ pub enum Amount {
     },
     /// How much mana the players the reference names hold in their pools, restricted mana included.
     ManaInPool(Ref),
+    /// How much mana of one type the players the reference names hold in their pools ("for each unspent green mana you
+    /// have"), restricted mana included.
+    ManaInPoolOf {
+        /// Whose pools.
+        who: Ref,
+        /// The type of mana counted.
+        mana: ManaType,
+    },
     /// The doors unlocked among the Rooms the selector names (CR 709.5), both doors of a Room counting twice.
     Doors(Selector),
     /// The number the controller of the source chose as the source entered the battlefield; 0 when it chose none.
@@ -1065,6 +1073,10 @@ enum Tagged {
         max: i32,
     },
     ManaInPool(Ref),
+    ManaInPoolOf {
+        who: Ref,
+        mana: ManaType,
+    },
     Doors(Selector),
     Chosen,
     ChosenAs(String),
@@ -1253,6 +1265,10 @@ enum TaggedRef<'a> {
         max: i32,
     },
     ManaInPool(&'a Ref),
+    ManaInPoolOf {
+        who: &'a Ref,
+        mana: &'a ManaType,
+    },
     Doors(&'a Selector),
     Chosen,
     ChosenAs(&'a String),
@@ -1373,6 +1389,7 @@ impl From<Tagged> for Amount {
             Tagged::MostCommon { of, stat } => Amount::MostCommon { of, stat },
             Tagged::Random { min, max } => Amount::Random { min, max },
             Tagged::ManaInPool(who) => Amount::ManaInPool(who),
+            Tagged::ManaInPoolOf { who, mana } => Amount::ManaInPoolOf { who, mana },
             Tagged::Doors(of) => Amount::Doors(of),
             Tagged::Chosen => Amount::Chosen,
             Tagged::ChosenAs(name) => Amount::ChosenAs(name),
@@ -1554,6 +1571,9 @@ impl Serialize for Amount {
             }
             .serialize(serializer),
             Amount::ManaInPool(who) => TaggedRef::ManaInPool(who).serialize(serializer),
+            Amount::ManaInPoolOf { who, mana } => {
+                TaggedRef::ManaInPoolOf { who, mana }.serialize(serializer)
+            }
             Amount::Doors(of) => TaggedRef::Doors(of).serialize(serializer),
             Amount::Chosen => TaggedRef::Chosen.serialize(serializer),
             Amount::ChosenAs(name) => TaggedRef::ChosenAs(name).serialize(serializer),
@@ -1898,6 +1918,10 @@ mod tests {
     #[case::all_mana_spent(Amount::ManaSpent { of: None, from: None }, r#"{"ManaSpent":{"of":null}}"#)]
     #[case::mana_colors(Amount::ManaColors(Ref::You), r#"{"ManaColors":"You"}"#)]
     #[case::mana_in_pool(Amount::ManaInPool(Ref::You), r#"{"ManaInPool":"You"}"#)]
+    #[case::mana_in_pool_of(
+        Amount::ManaInPoolOf { who: Ref::You, mana: ManaType::Green },
+        r#"{"ManaInPoolOf":{"who":"You","mana":"Green"}}"#
+    )]
     #[case::most_common(Amount::MostCommon { of: Selector(vec![Pred::Type(CardType::Creature)]), stat: StatKind::Colors }, r#"{"MostCommon":{"of":[{"Type":"Creature"}],"stat":"Colors"}}"#)]
     #[case::random(Amount::Random { min: 1, max: 6 }, r#"{"Random":{"min":1,"max":6}}"#)]
     #[case::doors(Amount::Doors(Selector(vec![Pred::Type(CardType::Enchantment)])), r#"{"Doors":[{"Type":"Enchantment"}]}"#)]

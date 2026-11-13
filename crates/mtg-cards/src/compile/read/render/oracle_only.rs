@@ -400,6 +400,8 @@ mod r301b_wholes;
 mod r306_wholes;
 mod r306b_wholes;
 mod r379_wholes;
+mod r5523_wholes;
+pub(in crate::compile::read) use r5523_wholes::r5523_read_whole;
 mod rmt5_wholes;
 // r30-0
 mod r300_wholes;
@@ -556,6 +558,7 @@ fn add_latest(ability: &Ability, texts: &mut Vec<String>) {
     r306b_wholes::r306b_add_wholes(ability, texts);
     l291_wholes::add(ability, texts);
     r379_wholes::add(ability, texts);
+    r5523_wholes::add(ability, texts);
     r306_wholes::add(ability, texts);
     // r28-9
     r289_wholes::r289_add_wholes(ability, texts);

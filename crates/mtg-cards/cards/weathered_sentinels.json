@@ -1,7 +1,7 @@
 {
   "oracle_id": "0903b941-82f1-4d3e-9717-29ab7d0c8cef",
   "name": "Weathered Sentinels",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Weathered Sentinels",
@@ -12,9 +12,10 @@
         { "Keyword": "Vigilance" },
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 36, "end": 143 }
+          "Rule": {
+            "rule": {
+              "Combat": { "who": "This", "quirk": "AttackLastTurnAttackersDespiteDefender" }
+            }
           }
         },
         {

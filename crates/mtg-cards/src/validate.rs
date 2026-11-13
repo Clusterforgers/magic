@@ -608,6 +608,7 @@ impl<'a> Walker<'a> {
             | Ref::Chosen
             | Ref::Promised
             | Ref::Attacked
+            | Ref::AttackedThisTurn
             | Ref::MostLife
             | Ref::ActivePlayer
             | Ref::Chooser
@@ -903,6 +904,10 @@ impl<'a> Walker<'a> {
             Pred::BlockedThisTurn(with) => {
                 self.uses("Pred", "BlockedThisTurn");
                 self.at("BlockedThisTurn", |w| w.selector(with));
+            }
+            Pred::DealtDamageThisTurn(to) => {
+                self.uses("Pred", "DealtDamageThisTurn");
+                self.at("DealtDamageThisTurn", |w| w.selector(to));
             }
             Pred::Targeting(inner) | Pred::HasAttached(inner) | Pred::AbilityFrom(inner) => {
                 self.selector(inner);
@@ -1360,6 +1365,7 @@ impl<'a> Walker<'a> {
             }
             Amount::ManaColors(who) => self.player_amount("ManaColors", who),
             Amount::ManaInPool(who) => self.player_amount("ManaInPool", who),
+            Amount::ManaInPoolOf { who, .. } => self.player_amount("ManaInPoolOf", who),
             Amount::MostCommon { of, .. } => self.w2c_selector_amount("MostCommon", of),
             Amount::Doors(of) => self.w2c_selector_amount("Doors", of),
             Amount::CountOf { of, filter } => {
@@ -3296,6 +3302,7 @@ impl Walker<'_> {
             | Ref::Chosen
             | Ref::Promised
             | Ref::Attacked
+            | Ref::AttackedThisTurn
             | Ref::MostLife
             | Ref::ActivePlayer
             | Ref::Chooser
@@ -3602,6 +3609,7 @@ impl Walker<'_> {
             | Produce::OrChosenColor(_)
             | Produce::CommanderIdentity(_)
             | Produce::Devotion
+            | Produce::DraftedColors
             | Produce::OfTapped => {}
         }
         // Mana the engine adds without a choice is a primitive of its own; a choice of mana is not.

@@ -1,19 +1,14 @@
 {
   "oracle_id": "1da3a0c0-43f0-4feb-b20a-414b023e710c",
   "name": "Genju of the Realm",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Genju of the Realm",
       "oracle_fingerprint": "b809c3ff21ccfda9c6d72d2e76af55ab",
       "abilities": [
         { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 13, "end": 124 }
-          }
-        },
+        {"Activated":{"cost":"{2}","effects":[{"Continuous":{"affected":"Attached","mods":[{"SetPT":{"power":8,"toughness":12}},{"SetCreatureTypes":["Spirit"]},{"AddSupertype":"Legendary"},{"AddType":"Creature"},{"AddKeyword":"Trample"}],"duration":"UntilEndOfTurn"}}]}},
         {
           "Triggered": {
             "when": { "ZoneChange": { "what": [{ "Is": "Attached" }], "to": "Graveyard" } },

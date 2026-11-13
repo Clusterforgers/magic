@@ -39,6 +39,7 @@ impl Scope<'_> {
             Amount::ManaSpent { of, from } => Ok(self.spent_of(*of, from.as_deref())),
             Amount::ManaColors(who) => self.pooled_colors(who),
             Amount::ManaInPool(who) => self.pooled(who),
+            Amount::ManaInPoolOf { who, mana } => self.r5523_pooled_of(who, *mana),
             Amount::MostCommon { of, stat } => self.most_common(of, *stat),
             Amount::Doors(of) => self.unlocked_doors(of),
             Amount::CountOf { of, filter } => self.count_of(of, filter),
@@ -118,6 +119,18 @@ impl Scope<'_> {
                 .iter()
                 .map(|n| i64::from(*n))
                 .sum::<i64>();
+        }
+        Ok(total)
+    }
+
+    /// How much mana of the type the players named hold in their pools (`Amount::ManaInPoolOf`).
+    fn r5523_pooled_of(&self, who: &Ref, mana: ManaType) -> Result<i64, ResolveError> {
+        let mut total = 0i64;
+        for player in self.players(who)? {
+            total += self
+                .pool_counts(player)
+                .get(mana.index())
+                .map_or(0, |n| i64::from(*n));
         }
         Ok(total)
     }

@@ -1,7 +1,7 @@
 {
   "oracle_id": "9ed6aa5b-4369-42f7-9853-aae1ac9b17e2",
   "name": "Hundred-Battle Veteran",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Hundred-Battle Veteran",
@@ -25,12 +25,7 @@
             }
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 118, "end": 213 }
-          }
-        }
+        {"Rule":{"rule":{"MayCast":{"what":["This"],"from":"Graveyard","riders":[{"EntersWithCounter":{"Other":"finality"}}]}},"from":"Graveyard"}}
       ]
     }
   ]

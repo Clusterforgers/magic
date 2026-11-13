@@ -5,7 +5,7 @@
 
 use std::sync::Arc;
 
-use mtg_core::card::{CardType, Subtype};
+use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 
 use super::abilities;
@@ -23,6 +23,7 @@ use crate::value::Amount;
 
 const END_OF_TURN: &str = "until end of turn";
 const STILL_A_LAND: &str = "It's still a land";
+const STILL_AN_ENCHANTMENT: &str = "It's still an enchantment";
 const IN_ADDITION: &str = "in addition to its other types";
 const ARTIFACT_TOO: &str = "an artifact in addition to its other types";
 
@@ -34,6 +35,8 @@ pub(super) fn creature(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         .is_some();
     let affected = if r.source() {
         Ref::This
+    } else if r.words("enchanted land") {
+        Ref::Attached
     } else {
         target_object(r)?
     };
@@ -45,7 +48,11 @@ pub(super) fn creature(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let quoted = matches!(mods.last(), Some(Modification::GrantAbility(_)));
     let mut effects = vec![until_end_of_turn(affected.clone(), mods)];
     let still = r
-        .attempt(|r| ((quoted || r.punct('.')) && r.words("it's still a land")).then_some(()))
+        .attempt(|r| {
+            ((quoted || r.punct('.'))
+                && (r.words("it's still a land") || r.words("it's still an enchantment")))
+            .then_some(())
+        })
         .is_some();
     let unblockable = r
         .attempt(|r| {
@@ -125,6 +132,7 @@ pub(super) fn animate_text(subject: &str, mods: &[Modification]) -> Option<Strin
 /// What the card becomes: a size, colors, creature types, "artifact", "creature" and what it has.
 fn description(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
     (r.word("a") || r.word("an")).then_some(())?;
+    let legendary = r.word("legendary");
     let power = side(r)?;
     r.punct('/').then_some(())?;
     let toughness = side(r)?;
@@ -144,6 +152,9 @@ fn description(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
         mods.push(Modification::AddType(CardType::Artifact));
     }
     r.word("creature").then_some(())?;
+    if legendary {
+        mods.push(Modification::AddSupertype(Supertype::Legendary));
+    }
     mods.push(Modification::AddType(CardType::Creature));
     if r.word("with") {
         mods.extend(given(r)?);
@@ -322,6 +333,10 @@ pub(super) fn text_for(subject: &str, mods: &[Modification]) -> Option<String> {
         Some((Modification::AddType(CardType::Artifact), after)) => ("artifact ", after),
         _ => ("", rest),
     };
+    let (legendary, rest) = match rest.split_first() {
+        Some((Modification::AddSupertype(Supertype::Legendary), after)) => ("legendary ", after),
+        _ => ("", rest),
+    };
     let [Modification::AddType(CardType::Creature), given @ ..] = rest else {
         return None;
     };
@@ -340,8 +355,8 @@ pub(super) fn text_for(subject: &str, mods: &[Modification]) -> Option<String> {
         " until end of turn"
     };
     Some(format!(
-        "{subject} becomes {} {size} {colors}{types}{artifact}creature{with}{addition}{tail}",
-        article(&size)
+        "{subject} becomes {} {legendary}{size} {colors}{types}{artifact}creature{with}{addition}{tail}",
+        article(&format!("{legendary}{size}"))
     ))
 }
 
@@ -357,6 +372,7 @@ fn becoming(effect: &Effect, ability: &Ability) -> Option<String> {
     };
     match affected {
         Ref::This => text(affected, mods),
+        Ref::Attached => text_for("enchanted land", mods),
         Ref::Target(0) => {
             let spec = ability
                 .targets()
@@ -378,10 +394,15 @@ fn leading(sentence: &str) -> String {
 
 /// The sentence followed by "It's still a land": the period of a quote is inside it already.
 fn still_a_land(sentence: &str) -> String {
+    still(sentence, STILL_A_LAND)
+}
+
+/// The sentence followed by `kept` ("It's still a land", "It's still an enchantment").
+fn still(sentence: &str, kept: &str) -> String {
     if sentence.ends_with('"') {
-        format!("{sentence} {STILL_A_LAND}")
+        format!("{sentence} {kept}")
     } else {
-        format!("{sentence}. {STILL_A_LAND}")
+        format!("{sentence}. {kept}")
     }
 }
 
@@ -394,6 +415,33 @@ pub(super) fn wordings(ability: &Ability, texts: &[String]) -> Vec<String> {
         .filter_map(|effect| becoming(effect, ability))
         .collect();
     let mut found = Vec::new();
+    // An Aura that enchants a land names it "enchanted land" where the renderer says "enchanted creature".
+    let lands: Vec<String> = if ability.effects().iter().any(|effect| {
+        matches!(
+            effect,
+            Effect::Continuous {
+                affected: Ref::Attached,
+                ..
+            }
+        ) && becoming(effect, ability).is_some()
+    }) {
+        texts
+            .iter()
+            .filter(|text| text.contains("Enchanted creature becomes a"))
+            .map(|text| {
+                text.replacen(
+                    "Enchanted creature becomes a",
+                    "Enchanted land becomes a",
+                    1,
+                )
+            })
+            .collect()
+    } else {
+        Vec::new()
+    };
+    let texts: Vec<String> = texts.iter().chain(&lands).cloned().collect();
+    let texts = texts.as_slice();
+    found.extend(lands.iter().cloned());
     for sentence in sentences
         .iter()
         .flat_map(|sentence| [sentence.clone(), capitalize(sentence)])
@@ -404,6 +452,8 @@ pub(super) fn wordings(ability: &Ability, texts: &[String]) -> Vec<String> {
             still_a_land(sentence),
             leading(sentence),
             still_a_land(&leading(sentence)),
+            still(sentence, STILL_AN_ENCHANTMENT),
+            still(&leading(sentence), STILL_AN_ENCHANTMENT),
         ];
         for text in texts.iter().filter(|text| text.contains(&closed)) {
             for form in &forms {

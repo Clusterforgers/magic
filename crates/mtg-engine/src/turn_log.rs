@@ -262,4 +262,23 @@ impl Scope<'_> {
                         && selects(record.shot.as_ref()))
             })
     }
+
+    /// Whether the object dealt damage this turn to an object `to` selects as it was when the damage was dealt
+    /// (`Pred::DealtDamageThisTurn`); damage to a player never counts.
+    pub(crate) fn r5523_dealt_damage_this_turn(&self, to: &Selector, object: ObjectRef) -> bool {
+        self.state
+            .tallies
+            .records
+            .iter()
+            .filter(|record| record.event == TallyEvent::Damaged && record.subject == Some(object))
+            .filter(|record| matches!(record.other, Some(Target::Object(_))))
+            .any(|record| {
+                record.other_shot.as_ref().is_some_and(|shot| {
+                    let mut one = self.clone();
+                    one.as_was = true;
+                    one.snapshots.insert(0, shot);
+                    one.selects(to, shot.reference()).unwrap_or(false)
+                })
+            })
+    }
 }

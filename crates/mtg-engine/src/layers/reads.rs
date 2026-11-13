@@ -242,6 +242,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Promised
         | Ref::Defending
         | Ref::Attacked
+        | Ref::AttackedThisTurn
         | Ref::MostLife
         | Ref::ActivePlayer
         | Ref::Chooser
@@ -340,6 +341,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::AdditionalCostPaid
         | Pred::Suspended
         | Pred::BlockedThisTurn(_)
+        | Pred::DealtDamageThisTurn(_)
         | Pred::EnteredSinceLastTurn(_) => Traits::NONE,
         Pred::WasCast { by, .. } => by.as_ref().map_or(Traits::NONE, reads_of_ref),
         Pred::DidThisTurn { by, to, .. } => by
@@ -461,6 +463,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::ManaSpent { .. }
         | Amount::ManaColors(_)
         | Amount::ManaInPool(_)
+        | Amount::ManaInPoolOf { .. }
         | Amount::Random { .. }
         | Amount::TriggeringTargets
         | Amount::PlayersLost

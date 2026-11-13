@@ -192,6 +192,9 @@ pub enum Produce {
     /// One mana of any one color among the objects the selector picks, chosen when added ("Add one mana of any color
     /// among legendary permanents you control"); none while they have no color.
     AnyColorAmong(Selector),
+    /// One mana of any color chosen as the controller drafted cards named like the source ("Add one mana of any color
+    /// chosen as you drafted cards named ~"); none in a game without a draft, where no color was chosen (Paliano ruling).
+    DraftedColors,
     /// Mana of one color chosen when added, as many as the controller's devotion to that color (CR 700.5): "Choose a
     /// color. Add an amount of mana of that color equal to your devotion to that color."
     Devotion,

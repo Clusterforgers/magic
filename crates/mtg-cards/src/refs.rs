@@ -108,6 +108,9 @@ pub enum Ref {
     /// The opponents of the controller that their creatures attacked this combat, directly or through a planeswalker
     /// ("each opponent you attacked this combat"); a creature that left combat still counts.
     Attacked,
+    /// The opponents of the controller that their creatures attacked this turn, directly or through a planeswalker
+    /// ("each opponent you attacked this turn"); an attack of an earlier combat of the turn still counts.
+    AttackedThisTurn,
     /// The player with the most life, or each of the players tied for it.
     MostLife,
     /// The player whose turn it is; nobody once they have left the game.
@@ -513,6 +516,9 @@ pub enum Pred {
     /// Blocked or was blocked this turn by a creature the selector matches as it was when the block was declared ("that
     /// blocked or was blocked by a Zombie this turn"); by any creature when the selector is empty.
     BlockedThisTurn(Selector),
+    /// Dealt damage this turn to an object the selector matches as it was when the damage was dealt ("that dealt damage
+    /// to another creature this turn"); a creature the damage destroyed still counts.
+    DealtDamageThisTurn(Selector),
     /// Is the card one of the objects the reference names is, in whatever zone it is now: a card that went to a graveyard is a
     /// new object there (CR 400.7), and this finds it again by its card.
     SameCard(Ref),
