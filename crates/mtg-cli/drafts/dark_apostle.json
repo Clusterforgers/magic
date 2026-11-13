@@ -1,0 +1,31 @@
+{
+  "oracle_id": "8a446307-d9ff-4854-90e6-9cdff5b77aa6",
+  "name": "Dark Apostle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dark Apostle",
+      "oracle_fingerprint": "70e8131c81d45bf020201de0a5b44404",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": {
+                      "what": [{ "Not": { "Type": "Creature" } }],
+                      "benefit": { "Keyword": "Cascade" }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

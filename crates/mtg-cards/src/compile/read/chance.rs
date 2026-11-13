@@ -48,6 +48,7 @@ pub fn flip(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         lose,
         until,
         won_as: None,
+        heads: false,
     }])
 }
 

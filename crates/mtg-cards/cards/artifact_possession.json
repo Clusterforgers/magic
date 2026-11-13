@@ -1,7 +1,7 @@
 {
   "oracle_id": "5c641df8-97d7-484b-8d0e-790279fd6177",
   "name": "Artifact Possession",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Artifact Possession",
@@ -9,9 +9,14 @@
       "abilities": [
         { "Keyword": { "Enchant": [{ "Type": "Artifact" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 17, "end": 206 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Tapped": { "what": [{ "Is": "Attached" }] } },
+                { "Did": { "action": "ActivatedWithoutTap", "what": [{ "Is": "Attached" }] } }
+              ]
+            },
+            "effects": [{ "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": 2 } }]
           }
         }
       ]

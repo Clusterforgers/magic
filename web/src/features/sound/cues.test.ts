@@ -1,4 +1,4 @@
-// Goal: each change of the play store calls for at most one sound cue, the strongest that applies (a win of the viewer or its team, the viewer's own turn, a decision after none), and a first view, a spectator, another seat's turn or decision, a draw and a loss call for none.
+// Goal: each change of the play store calls for at most one sound cue, the strongest that applies (a win of the viewer or its team, the viewer's own turn or their team's shared turn, a decision after none), and a first view, a spectator, another seat's turn or decision, a draw and a loss call for none.
 import { describe, expect, it } from 'vitest'
 import { initialPlayState } from '@/play/store'
 import type { PlayState } from '@/play/store'
@@ -16,6 +16,7 @@ interface At {
   spectator?: boolean
   noView?: boolean
   teams?: number[]
+  giant?: boolean
 }
 
 function at(over: At = {}): PlayState {
@@ -32,7 +33,9 @@ function at(over: At = {}): PlayState {
             turn,
             spectator: over.spectator,
             house_rules:
-              over.teams === undefined ? undefined : { teams: { mode: 'teams', seats: over.teams } },
+              over.teams === undefined
+                ? undefined
+                : { teams: { mode: over.giant === true ? 'two_headed_giant' : 'teams', seats: over.teams } },
           },
     pending: over.pending === undefined || over.pending === null ? null : { id: 7, decision: over.pending },
     result: over.result ?? null,
@@ -53,6 +56,13 @@ const cases: [string, At, At, SoundCue | null][] = [
   ['the viewer’s turn begins', {}, { turn: 4, active: ME }, 'turn'],
   ['the viewer’s turn begins with a decision', {}, { turn: 4, active: ME, pending: mine }, 'turn'],
   ['another seat’s turn begins', { active: ME }, { turn: 4, active: FOE }, null],
+  [
+    'the team’s shared turn begins in Two-Headed Giant',
+    {},
+    { turn: 4, active: FOE, teams: [0, 0], giant: true },
+    'turn',
+  ],
+  ['a teammate’s own turn begins in Teams', {}, { turn: 4, active: FOE, teams: [0, 0] }, null],
   ['a decision arrives while none was pending', {}, { pending: mine }, 'decision'],
   ['a decision follows a decision', { pending: mine }, { pending: mine }, null],
   ['another seat’s decision', {}, { pending: theirs }, null],

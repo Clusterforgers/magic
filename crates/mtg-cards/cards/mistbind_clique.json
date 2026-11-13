@@ -1,7 +1,7 @@
 {
   "oracle_id": "d1946f91-0653-4647-b3de-95d78b9597c4",
   "name": "Mistbind Clique",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Mistbind Clique",
@@ -45,9 +45,27 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 181, "end": 266 }
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": {
+                  "ZoneChange": {
+                    "what": [{ "Subtype": "Faerie" }],
+                    "from": "Battlefield",
+                    "to": "Exile"
+                  }
+                },
+                "source": ["This"]
+              }
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Tap": {
+                  "what": { "Each": [{ "Type": "Land" }, { "ControlledBy": { "Target": 0 } }] }
+                }
+              }
+            ]
           }
         }
       ]

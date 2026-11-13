@@ -672,6 +672,9 @@ impl CardDefinition {
                 self.power = Some(*power);
                 self.toughness = Some(*toughness);
             }
+            Modification::SetLoyalty(Amount::Fixed(loyalty)) => {
+                self.loyalty = Some(u32::try_from(*loyalty).unwrap_or(0));
+            }
             _ => return false,
         }
         true

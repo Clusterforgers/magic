@@ -1,7 +1,7 @@
 {
   "oracle_id": "3bf3e503-0628-4550-84a9-7c1dd0a97457",
   "name": "Baaallerina",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Baaallerina",
@@ -9,12 +9,39 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 92 } }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "PutSticker": {
+                        "on": [{ "Not": { "Type": "Land" } }, { "OwnedBy": "You" }],
+                        "kind": "Name"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 93, "end": 182 }
+          "Activated": {
+            "cost": "{2}{U}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "WithSticker": "Name" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

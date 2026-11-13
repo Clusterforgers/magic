@@ -809,3 +809,34 @@ async fn the_printing_a_deck_line_chose_names_the_cards_of_the_game_and_survives
     assert_eq!(handle.status().await.unwrap().state_hash, hash);
     assert_eq!(identities(&handle).await, before);
 }
+
+#[sqlx::test(migrations = false)]
+async fn the_art_an_account_prefers_names_the_cards_whose_line_chose_none(pool: PgPool) {
+    let server = start(&pool).await;
+    let ann = register(server.addr, "ann", PASSWORD).await;
+    let path = format!("/api/me/printings/{}", oracle("Forest"));
+    let body = json!({"printing_id": printing("Forest")}).to_string();
+    assert_eq!(ann.put(server.addr, &path, &body).await.status, 204);
+    let stored = store(&server, &ann, &bears()).await;
+    let game = create(&server, &ann, "mono-green").await;
+    let bo = register(server.addr, "bob", PASSWORD).await;
+    let joined = bo
+        .post(
+            server.addr,
+            &format!("/api/games/{game}/join"),
+            &json!({"deck": "mono-red"}).to_string(),
+        )
+        .await;
+    assert_eq!(joined.status, 200, "{}", joined.text());
+    assert_eq!(choose(&server, &ann, &game, 0, &stored).await.status, 200);
+    lobby::start(&server.registry, &game, 2).await;
+
+    let handle = server.registry.handle(game.parse().unwrap()).unwrap();
+    let seen = identities(&handle).await;
+    assert!(seen.iter().any(|object| object.name == "Forest"));
+    for object in &seen {
+        let identity = object.identity.as_ref().expect("a stored card has one");
+        let wanted = (object.name == "Forest").then(|| printing("Forest"));
+        assert_eq!(identity.printing_id, wanted, "{}", object.name);
+    }
+}

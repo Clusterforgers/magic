@@ -264,6 +264,9 @@ pub(super) fn r7e_did_text(pattern: &TriggerPattern) -> Option<String> {
     if *action == Action::ActivatedAny {
         return super::l294_activations::text(who, what);
     }
+    if let Some(text) = super::un34_stickers::un34_sticker_event_text(*action, who, what) {
+        return Some(text);
+    }
     if what.is_empty() {
         return Some(format!("Whenever {}", player_action(*action, who)?));
     }

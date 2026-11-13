@@ -1,16 +1,41 @@
 {
   "oracle_id": "d7b69fd7-e575-4009-8549-f576249ba641",
   "name": "Model of Unity",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Model of Unity",
       "oracle_fingerprint": "03e1e2dc02a193cf1fd8d7f9967ff462",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 102 }
+          "Triggered": {
+            "when": { "Did": { "action": "FinishedVoting" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Union": [
+                      "You",
+                      {
+                        "PlayersWhere": {
+                          "who": "Opponents",
+                          "test": { "VotedAs": { "with": "Asker", "same": true } }
+                        }
+                      }
+                    ]
+                  },
+                  "as": "scrier",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "scrier" },
+                        "effects": [{ "Scry": { "who": { "Bound": "scrier" }, "count": 2 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "de45de7e-5bba-4612-8bb7-755710d93ecf",
+  "name": "Tusk and Whiskers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tusk and Whiskers",
+      "oracle_fingerprint": "830df15bb368ac78dace457c878ca8fe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "PutAbilitySticker",
+                "who": "You",
+                "what": [{ "Type": "Creature" }]
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}{G}" }, "Tap"],
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "ticket" } } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "PutSticker": { "on": [{ "Not": { "Type": "Land" } }, { "OwnedBy": "You" }] }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

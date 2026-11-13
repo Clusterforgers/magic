@@ -47,6 +47,9 @@ pub enum TeamError {
     /// Two-Headed Giant is two teams of two.
     #[error("teams: Two-Headed Giant is two teams of two")]
     NotTwoByTwo,
+    /// A team number is not below the seat count.
+    #[error("teams: there is no team {0} at this table")]
+    NoSuchTeam(u32),
 }
 
 impl Teams {
@@ -89,6 +92,47 @@ impl Teams {
         self.mode == TeamMode::TwoHeadedGiant
     }
 
+    /// Checks an assignment the lobby holds while players choose: one team per seat, each numbered below the seat
+    /// count. Team sizes are checked at the start ([`Teams::validate_for`]).
+    pub fn validate_draft(&self, seats: usize) -> Result<(), TeamError> {
+        if self.seats.len() != seats {
+            return Err(TeamError::SeatCount {
+                given: self.seats.len(),
+                seats,
+            });
+        }
+        match self
+            .seats
+            .iter()
+            .find(|team| usize::try_from(**team).map_or(true, |t| t >= seats))
+        {
+            Some(team) => Err(TeamError::NoSuchTeam(*team)),
+            None => Ok(()),
+        }
+    }
+
+    /// The same teams numbered from 0 in the order of their numbers, so a team nobody chose leaves no gap.
+    #[must_use]
+    pub fn compacted(&self) -> Teams {
+        let mut used: Vec<u32> = self.seats.clone();
+        used.sort_unstable();
+        used.dedup();
+        let seats = self
+            .seats
+            .iter()
+            .map(|team| {
+                used.iter()
+                    .position(|each| each == team)
+                    .and_then(|index| u32::try_from(index).ok())
+                    .unwrap_or(*team)
+            })
+            .collect();
+        Teams {
+            mode: self.mode,
+            seats,
+        }
+    }
+
     /// Checks the assignment for a table of `seats`: every seat has a team, at least two teams play, no team number is
     /// skipped, and Two-Headed Giant is two teams of two.
     pub fn validate_for(&self, seats: usize) -> Result<(), TeamError> {
@@ -116,7 +160,7 @@ impl Teams {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: even assignments seat Two-Headed Giant teammates together and alternate other teams, and the check refuses a wrong seat count, a single team, a skipped team number and a Two-Headed Giant that is not two by two.
+    //! Goal: even assignments seat Two-Headed Giant teammates together and alternate other teams, and the check refuses a wrong seat count, a single team, a skipped team number and a Two-Headed Giant that is not two by two; the lobby's draft check takes any grouping of the seats, and compacting renumbers without regrouping.
     use rstest::rstest;
 
     use super::*;
@@ -157,6 +201,36 @@ mod tests {
             seats: seats.to_vec(),
         };
         assert_eq!(teams.validate_for(table).err(), error);
+    }
+
+    #[rstest]
+    #[case::uneven_giant(TeamMode::TwoHeadedGiant, &[0, 0, 0, 1], 4, None)]
+    #[case::one_team(TeamMode::Teams, &[1, 1, 1, 1], 4, None)]
+    #[case::short(TeamMode::Teams, &[0, 1], 4, Some(TeamError::SeatCount { given: 2, seats: 4 }))]
+    #[case::past_the_seats(TeamMode::Teams, &[0, 1, 4, 1], 4, Some(TeamError::NoSuchTeam(4)))]
+    fn the_draft_check_takes_any_grouping_of_the_seats(
+        #[case] mode: TeamMode,
+        #[case] seats: &[u32],
+        #[case] table: usize,
+        #[case] error: Option<TeamError>,
+    ) {
+        let teams = Teams {
+            mode,
+            seats: seats.to_vec(),
+        };
+        assert_eq!(teams.validate_draft(table).err(), error);
+    }
+
+    #[rstest]
+    #[case(&[0, 2, 0, 2], &[0, 1, 0, 1])]
+    #[case(&[3, 1, 3, 1], &[1, 0, 1, 0])]
+    #[case(&[0, 1, 2, 2, 1, 0], &[0, 1, 2, 2, 1, 0])]
+    fn compacting_keeps_who_plays_with_whom(#[case] seats: &[u32], #[case] want: &[u32]) {
+        let teams = Teams {
+            mode: TeamMode::Teams,
+            seats: seats.to_vec(),
+        };
+        assert_eq!(teams.compacted().seats, want);
     }
 
     #[test]

@@ -1,0 +1,94 @@
+{
+  "oracle_id": "33e88072-3840-4090-8d0b-7fb38279e150",
+  "name": "Megatron, Tyrant // Megatron, Destructive Force",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Megatron, Tyrant",
+      "oracle_fingerprint": "47a69db5e075efa0be1bcac4bb6c026f",
+      "abilities": [
+        { "Keyword": { "MoreThanMeetsTheEye": "{1}{W}{B}{R}" } },
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": "Opponents", "action": { "Cast": {} } } },
+            "condition": "InCombat"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "effects": [
+              { "May": { "effects": [{ "Transform": { "what": "This" } }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "AddMana": {
+                        "mana": { "Fixed": ["Colorless"] },
+                        "times": { "Tallied": { "who": "Opponents", "what": "LifeLost" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Megatron, Destructive Force",
+      "oracle_fingerprint": "5cc86f715bd1973e00a4440a55c4ce78",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "living metal", "amount": 0 } } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Artifact" }, "Other"],
+                        "as": "sacrificed"
+                      }
+                    },
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": { "Target": 0 },
+                              "amount": {
+                                "Stat": { "of": { "Bound": "sacrificed" }, "stat": "ManaValue" }
+                              },
+                              "excess": {
+                                "as": "excess",
+                                "to": { "ControllerOf": { "Target": 0 } }
+                              }
+                            }
+                          },
+                          {
+                            "If": {
+                              "condition": {
+                                "Compare": { "left": { "Bound": "excess" }, "op": "Gt", "right": 0 }
+                              },
+                              "then": [{ "Transform": { "what": "This" } }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

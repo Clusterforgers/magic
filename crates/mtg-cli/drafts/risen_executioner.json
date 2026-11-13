@@ -1,0 +1,54 @@
+{
+  "oracle_id": "8587ec98-f35d-476c-ba67-0ef8bcd1f253",
+  "name": "Risen Executioner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Risen Executioner",
+      "oracle_fingerprint": "ab7f08196aff0885493a51440d433990",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                "Other",
+                { "Subtype": "Zombie" },
+                { "Type": "Creature" },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": ["This"],
+                "from": "Graveyard",
+                "additional": [
+                  {
+                    "Changed": {
+                      "change": "Increase",
+                      "mana": "{1}",
+                      "per": {
+                        "Count": [
+                          "Other",
+                          { "Type": "Creature" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

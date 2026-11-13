@@ -5,6 +5,7 @@ import { CardPicture, HoverPicture } from '@/features/cards/CardPicture'
 import { SupportMark, supportEdge } from '@/features/decks/SupportMark'
 import { cn } from '@/lib/utils'
 import type { CardHit } from '@/protocol/generated'
+import type { ArtActions } from './LineControls'
 import type { Line } from './deckEdit'
 import { identityWords } from './identity'
 import { IdentityPips } from './IdentityPips'
@@ -30,6 +31,8 @@ interface CommanderSlotProps {
   onPreview: (card: CardHit, opener: HTMLElement) => void
   /** Sets the search to look for a kind of card and takes the person to it. */
   onFind: (kind: FindKind) => void
+  /** The art of the commanders; with it a commander's picture opens the art picker. */
+  art?: ArtActions
 }
 
 function Tile({
@@ -37,14 +40,26 @@ function Tile({
   check,
   onRemove,
   onPreview,
+  art,
 }: {
   line: Line
+  art?: ArtActions | undefined
   check: LineCheck
   onRemove: () => void
   onPreview: (opener: HTMLElement) => void
 }) {
   const { card, count } = line
   const issue = isIssue(check.support)
+  const picture = (
+    <CardPicture
+      oracleId={card.oracle_id}
+      printingId={art?.of(line) ?? null}
+      name={card.name}
+      size="normal"
+      alt=""
+      className="w-20 sm:w-28"
+    />
+  )
   return (
     <li
       data-line={`commander:${card.oracle_id}`}
@@ -56,19 +71,28 @@ function Tile({
       )}
     >
       <HoverPicture
-        pin
+        pin={art === undefined}
         oracleId={card.oracle_id}
+        printingId={art?.of(line) ?? null}
         name={card.name}
         info={{ typeLine: card.type_line, count, support: check.support }}
         className="shrink-0 self-start"
       >
-        <CardPicture
-          oracleId={card.oracle_id}
-          name={card.name}
-          size="normal"
-          alt=""
-          className="w-20 sm:w-28"
-        />
+        {art === undefined ? (
+          picture
+        ) : (
+          <button
+            type="button"
+            aria-haspopup="dialog"
+            aria-label={`Art of ${card.name}`}
+            title={`Choose the art of ${card.name}`}
+            data-slot="card-art"
+            onClick={(event) => art.choose(line, event.currentTarget)}
+            className="block rounded-sm outline-offset-2"
+          >
+            {picture}
+          </button>
+        )}
       </HoverPicture>
       <div className="grid min-w-0 flex-1 content-start gap-1">
         <button
@@ -115,6 +139,7 @@ export function CommanderSlot({
   onRemove,
   onPreview,
   onFind,
+  art,
 }: CommanderSlotProps) {
   const id = useId()
   const first = lines.length === 0
@@ -155,6 +180,7 @@ export function CommanderSlot({
             check={checkOf(line)}
             onRemove={() => onRemove(line.card)}
             onPreview={(opener) => onPreview(line.card, opener)}
+            art={art}
           />
         ))}
         {first ? (

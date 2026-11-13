@@ -19,12 +19,13 @@ import { useGame, usePlay } from './gameContext'
 import { Invites } from './Invites'
 import { JoinInvite } from './JoinInvite'
 import { lobbyRows, lobbyStatus, mayReady, removable, summaryText } from './lobbyModel'
-import type { ReadyFacts } from './lobbyModel'
+import type { LobbyRow, ReadyFacts } from './lobbyModel'
 import { ReadyBar } from './ReadyBar'
 import { LobbyQuestion } from './LobbyQuestion'
 import { LobbyRules } from './LobbyRules'
 import { LobbySeatRow } from './LobbySeatRow'
 import { LobbyVisibility } from './LobbyVisibility'
+import { TeamColumns } from './TeamColumns'
 import { seatListClasses } from './seatListShape'
 import { useDeckChoice } from './useDeckChoice'
 import { useLobbyAnnouncement } from './useLobbyAnnouncement'
@@ -118,6 +119,43 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
   // A seat the roster shows without a deck cannot press Ready: the server would refuse it, so the button says why.
   const needsDeck = !ready && mine !== undefined && !mayReady(mine)
   const editable = controls.stopped === null
+  // The host puts any seat on a team, a player their own seat.
+  const seatRow = (row: LobbyRow) => {
+    const team = teamOf(shownTeams, row.seat)
+    const changes = editable && (host || row.you)
+    return (
+      <LobbySeatRow
+        key={row.seat}
+        row={row}
+        host={row.seat === HOST_SEAT}
+        account={accounts.bySeat.get(row.seat) ?? null}
+        team={
+          team === null || shownTeams === null
+            ? undefined
+            : {
+                team,
+                ...(changes
+                  ? {
+                      change: {
+                        choices: teamChoices(shownTeams),
+                        disabled: controls.busy,
+                        onChange: (next: number) => teams.choose(row.seat, next, row.name),
+                      },
+                    }
+                  : {}),
+              }
+        }
+        remove={
+          host && editable && removable(row, HOST_SEAT, issued)
+            ? {
+                disabled: controls.busy,
+                onPress: (opener) => controls.ask({ kind: 'remove', seat: row.seat, name: row.name }, opener),
+              }
+            : undefined
+        }
+      />
+    )
+  }
   const signedIn = useAuth((state) => state.status === 'signed-in')
   const deckChoice = useDeckChoice({
     api,
@@ -212,44 +250,13 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
           <p data-slot="lobby-headline" className="text-base font-medium">
             {summary.headline}
           </p>
-          <ul aria-label="Seats" className={cn('divide-y rounded-lg border', seatListClasses(rows.length))}>
-            {rows.map((row) => {
-              const team = teamOf(shownTeams, row.seat)
-              return (
-                <LobbySeatRow
-                  key={row.seat}
-                  row={row}
-                  host={row.seat === HOST_SEAT}
-                  account={accounts.bySeat.get(row.seat) ?? null}
-                  team={
-                    team === null || shownTeams === null
-                      ? undefined
-                      : {
-                          team,
-                          ...(host && editable
-                            ? {
-                                change: {
-                                  choices: teamChoices(shownTeams),
-                                  disabled: controls.busy,
-                                  onChange: (next: number) => teams.choose(row.seat, next, row.name),
-                                },
-                              }
-                            : {}),
-                        }
-                  }
-                  remove={
-                    host && editable && removable(row, HOST_SEAT, issued)
-                      ? {
-                          disabled: controls.busy,
-                          onPress: (opener) =>
-                            controls.ask({ kind: 'remove', seat: row.seat, name: row.name }, opener),
-                        }
-                      : undefined
-                  }
-                />
-              )
-            })}
-          </ul>
+          {shownTeams === null ? (
+            <ul aria-label="Seats" className={cn('divide-y rounded-lg border', seatListClasses(rows.length))}>
+              {rows.map((row) => seatRow(row))}
+            </ul>
+          ) : (
+            <TeamColumns teams={shownTeams} rows={rows} renderRow={seatRow} />
+          )}
           {shownTeams === null ? null : (
             <>
               <p data-slot="teams-note" aria-live="polite" className="text-sm empty:hidden">
@@ -258,6 +265,11 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
               {teams.problem === null ? null : (
                 <p data-slot="teams-problem" role="alert" className="text-sm text-destructive">
                   {teams.problem}
+                </p>
+              )}
+              {teams.unready === null ? null : (
+                <p data-slot="teams-unready" className="text-sm text-muted-foreground">
+                  Before the game can start: {teams.unready}
                 </p>
               )}
             </>

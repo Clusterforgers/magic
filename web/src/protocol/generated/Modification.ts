@@ -61,7 +61,7 @@ controller: PlayerId,
 /**
  * What "this" is for the selector.
  */
-source: ObjectRef, } } | { "MinBlockers": number } | { "MaxBlockers": number } | { "BlocksAdditional": number } | { "CantAttackYou": { 
+source: ObjectRef, } } | { "MinBlockers": number } | { "MaxBlockers": number } | "BlockedByAll" | { "BlocksAdditional": number } | { "CantAttackYou": { 
 /**
  * The player it protects: the controller of the effect or ability.
  */
@@ -69,7 +69,11 @@ you: PlayerId,
 /**
  * Whether it protects the player, their planeswalkers or both.
  */
-attacked: "Player" | "Planeswalkers" | "Both", } } | { "Goaded": { 
+attacked: "Player" | "Planeswalkers" | "Both", } } | { "CantAttackOwner": { 
+/**
+ * Whether it protects the owner, their planeswalkers or both.
+ */
+attacked: "Player" | "Planeswalkers" | "Both", } } | "CantBeBlockedUnlessAttackingOwner" | { "Goaded": { 
 /**
  * The goader.
  */

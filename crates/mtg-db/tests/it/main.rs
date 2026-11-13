@@ -10,6 +10,7 @@ mod card_rules;
 mod card_update;
 mod color_identity;
 mod common;
+mod deck_printings;
 mod decks;
 mod drafts;
 mod favourites;

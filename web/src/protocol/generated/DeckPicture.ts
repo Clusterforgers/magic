@@ -11,4 +11,8 @@ oracle_id: string,
 /**
  * The card's name.
  */
-name: string, };
+name: string, 
+/**
+ * The printing the deck chose for the card; absent for the default one.
+ */
+printing_id?: string, };

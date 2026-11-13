@@ -731,7 +731,9 @@ fn keyword_way(
             | CastWay::Mutate
             | CastWay::Prototype
     ) {
-        cast_cost(cost)?
+        // A part that counts X is paid at the X of the mana cost, announced for the cast (Conflagrate's flashback).
+        let counted = state.object(id)?.card().x_in_cost > 0;
+        cast_cost_counting(cost, counted)?
     } else if matches!(
         way,
         CastWay::Cleave | CastWay::Freerunning | CastWay::Foretold

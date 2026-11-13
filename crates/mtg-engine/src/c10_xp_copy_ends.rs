@@ -20,6 +20,7 @@ pub(crate) fn c10_xp_copies_ending(state: &GameState, active: PlayerId) -> Vec<E
                 events.push(Event::CopyEnded {
                     object: object.id(),
                     next_turn_of: Some(player),
+                    attached_by: None,
                 });
             }
         }

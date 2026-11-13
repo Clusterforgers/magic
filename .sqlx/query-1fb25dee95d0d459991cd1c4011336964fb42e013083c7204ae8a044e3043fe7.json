@@ -1,0 +1,172 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT printing_id, oracle_id, set_code, collector_number, rarity, released_at,\n                      lang, digital, images AS \"images: _\", set_name, frame, finishes, full_art\n               FROM printings WHERE oracle_id = $1\n               ORDER BY released_at DESC NULLS LAST, printing_id",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "printing_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "printing_id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "oracle_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "oracle_id"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "set_code",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "set_code"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "collector_number",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "collector_number"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "rarity",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "rarity"
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "released_at",
+        "type_info": "Date",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "released_at"
+          }
+        }
+      },
+      {
+        "ordinal": 6,
+        "name": "lang",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "lang"
+          }
+        }
+      },
+      {
+        "ordinal": 7,
+        "name": "digital",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "digital"
+          }
+        }
+      },
+      {
+        "ordinal": 8,
+        "name": "images: _",
+        "type_info": "Jsonb",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "images"
+          }
+        }
+      },
+      {
+        "ordinal": 9,
+        "name": "set_name",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "set_name"
+          }
+        }
+      },
+      {
+        "ordinal": 10,
+        "name": "frame",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "frame"
+          }
+        }
+      },
+      {
+        "ordinal": 11,
+        "name": "finishes",
+        "type_info": "TextArray",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "finishes"
+          }
+        }
+      },
+      {
+        "ordinal": 12,
+        "name": "full_art",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "full_art"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "1fb25dee95d0d459991cd1c4011336964fb42e013083c7204ae8a044e3043fe7"
+}

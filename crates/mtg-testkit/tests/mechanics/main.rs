@@ -2,6 +2,7 @@
 
 mod activation_moments;
 mod affected_amounts;
+mod bz39_blast_zone;
 mod c10_any_cards;
 mod c10_dice_per_player;
 mod c10_pa_monstrous;
@@ -124,7 +125,17 @@ mod r306_steps;
 mod r307_cards;
 mod r307c_exiled;
 mod r307c_rooms;
+mod r370_attached_copies;
+mod r370_balance;
+mod r370_battles;
+mod r370_copies;
+mod r370_prevented;
+mod r374_draw_shield;
 mod r375_phasing;
+mod r377_rules;
+mod r378_history;
+mod r378_teamwork;
+mod r379_since_last_turn;
 mod r3e;
 mod r3f_airbend;
 mod r3f_waterbend;
