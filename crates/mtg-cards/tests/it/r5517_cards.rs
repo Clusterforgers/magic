@@ -50,6 +50,8 @@ const ARCAVIOS: &str = "Invasion of Arcavios // Invocation of the Founders";
 #[case("Old Stickfingers")]
 #[case("Thought Dissector")]
 #[case("Rain of Gore")]
+#[case("Crafty Cutpurse")]
+#[case("Gather Specimens")]
 fn reads_back_whole(#[case] name: &str) {
     let report = report_of(name, &file(name));
     assert_eq!(
@@ -82,6 +84,22 @@ fn reads_back_whole(#[case] name: &str) {
 #[case::kept_dissector("Thought Dissector", r#",{"Sacrifice":{"filter":["This"]}}"#, "")]
 #[case::any_life_gain("Rain of Gore", r#""caused_own":true,"#, "")]
 #[case::only_opponents("Rain of Gore", r#""EachPlayer""#, r#""Opponents""#)]
+#[case::your_own_tokens(
+    "Crafty Cutpurse",
+    r#""controller":"Opponents""#,
+    r#""controller":"EachPlayer""#
+)]
+#[case::forever("Crafty Cutpurse", r#""UntilEndOfTurn""#, r#""Forever""#)]
+#[case::no_tokens(
+    "Gather Specimens",
+    r#",{"Shield":{"by":"UnderYourControl","duration":"UntilEndOfTurn","when":{"TokenCreation":{"controller":"Opponents","what":[{"Type":"Creature"}]}}}}"#,
+    ""
+)]
+#[case::any_token(
+    "Gather Specimens",
+    r#""controller":"Opponents","what":[{"Type":"Creature"}]"#,
+    r#""controller":"Opponents""#
+)]
 fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let report = report_of(name, &altered(name, from, to));
     assert_ne!(
@@ -107,6 +125,16 @@ fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case
     ARCAVIOS,
     r#""also":["Graveyard","Outside"]"#,
     r#""also":["Outside","Outside"]"#
+)]
+#[case::under_you_for_draws(
+    "Crafty Cutpurse",
+    r#"{"TokenCreation":{"controller":"Opponents"}}"#,
+    r#"{"Draw":{}}"#
+)]
+#[case::under_you_for_your_tokens(
+    "Crafty Cutpurse",
+    r#"{"TokenCreation":{"controller":"Opponents"}}"#,
+    r#"{"TokenCreation":{}}"#
 )]
 #[case::most_of_nothing("Thought Dissector", r#""most":"X""#, r#""most":"Nothing""#)]
 fn the_validator_refuses_other_shapes(#[case] name: &str, #[case] from: &str, #[case] to: &str) {

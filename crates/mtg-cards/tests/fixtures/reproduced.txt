@@ -376,6 +376,7 @@ Courser of Kruphix
 Court of Bounty
 Court of Grace
 Crack in Time
+Crafty Cutpurse
 Cram Session
 Crash
 Crawlspace
@@ -754,6 +755,7 @@ Garruk, Primal Hunter
 Garza's Assassin
 Gastal Raider
 Gatebreaker Ram
+Gather Specimens
 Gatta and Luzzu
 Gavony Dawnguard
 Gaze of Granite

@@ -6055,6 +6055,18 @@ impl Walker<'_> {
     #[allow(clippy::too_many_lines)]
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
+        if matches!(by, ReplaceBy::UnderYourControl)
+            && !matches!(
+                when,
+                ReplaceWhen::Enters { .. }
+                    | ReplaceWhen::TokenCreation {
+                        controller: Ref::Opponents,
+                        ..
+                    }
+            )
+        {
+            self.problem("only a permanent entering or tokens an opponent would get come under your control instead");
+        }
         self.g11b_replace_by(when, by);
         self.g12a_moves(when, by);
         self.e19_mill(when, by);

@@ -327,3 +327,78 @@ fn r5517_invasion_of_arcavios_finds_a_spell_in_the_graveyard(
     );
     Ok(())
 }
+
+/// Seat 0 casts `first` (when given) and then each spell of `then`, all for no mana, answering everything with the first
+/// legal choice; every other seat has a library of Forests.
+fn r5517_cast_in_turn(
+    seats: usize,
+    first: Option<&str>,
+    then: &[&str],
+) -> Result<Driver, ScriptError> {
+    let hand: Vec<_> = first
+        .into_iter()
+        .chain(then.iter().copied())
+        .map(free)
+        .collect();
+    let mut scenario = Scenario::new(seats).hand(0, hand);
+    for seat in 0..seats {
+        scenario = scenario.library(seat, (0..5).map(|_| forest()));
+    }
+    let mut driver = Driver::from_scenario(scenario)?;
+    for name in first.into_iter().chain(then.iter().copied()) {
+        driver.begin_cast(name)?;
+        settle(&mut driver, 0, None)?;
+    }
+    Ok(driver)
+}
+
+fn r5517_controllers(driver: &Driver, name: &str) -> Vec<PlayerId> {
+    let state = driver.state();
+    state
+        .zone(Zone::Battlefield)
+        .iter()
+        .filter_map(|id| state.object(*id))
+        .filter(|object| object.card().name == name)
+        .map(|object| object.controller())
+        .collect()
+}
+
+#[rstest]
+#[case::crafty_cutpurse(Some("Crafty Cutpurse"), true)]
+#[case::gather_specimens(Some("Gather Specimens"), true)]
+#[case::neither(None, false)]
+fn r5517_tokens_an_opponent_would_get_come_to_you(
+    #[case] first: Option<&str>,
+    #[case] taken: bool,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    // Hunted Horror: "When this creature enters, target opponent creates two 3/3 green Centaur creature tokens".
+    let driver = r5517_cast_in_turn(seats, first, &["Hunted Horror"])?;
+    let centaurs = r5517_controllers(&driver, "Centaur");
+    assert_eq!(centaurs.len(), 2);
+    assert!(
+        centaurs
+            .iter()
+            .all(|controller| (*controller == PlayerId(0)) == taken),
+        "{centaurs:?}"
+    );
+    Ok(())
+}
+
+#[rstest]
+#[case::gather_specimens(Some("Gather Specimens"), true)]
+#[case::crafty_cutpurse_takes_only_tokens(Some("Crafty Cutpurse"), false)]
+#[case::neither(None, false)]
+fn r5517_a_creature_entering_under_an_opponent_enters_under_you(
+    #[case] first: Option<&str>,
+    #[case] taken: bool,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    // Xantcha enters under an opponent's control (its own replacement first, CR 616.1a), then Gather Specimens moves it
+    // to its caster (CR 616.1b).
+    let driver = r5517_cast_in_turn(seats, first, &["Xantcha, Sleeper Agent"])?;
+    let xantcha = r5517_controllers(&driver, "Xantcha, Sleeper Agent");
+    assert_eq!(xantcha.len(), 1);
+    assert_eq!(xantcha[0] == PlayerId(0), taken, "{xantcha:?}");
+    Ok(())
+}

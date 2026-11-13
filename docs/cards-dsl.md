@@ -117,6 +117,7 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - "Search your library, graveyard, and/or outside the game" names `Outside` last in `Search.also`: nothing is outside a Commander game, so it is no choice and finds nothing (the wish rulings).
 - `RevealUntil.most` also ends the revealing once that many cards are revealed ("until an artifact card or X cards are revealed, whichever comes first"); an `If` on what was found reads `CountOf` of the bound cards, since `Matches` holds for an empty set.
 - `ReplaceWhen::LifeGain.caused_own` covers only life a resolving spell or ability gives its own controller ("If a spell or ability would cause its controller to gain life"); the life of lifelink is caused by the damage and is left alone (Rain of Gore ruling).
+- `ReplaceBy::UnderYourControl` puts what an opponent would get under the replacement's controller: a permanent entering (`Enters`) or tokens (`TokenCreation` of `Opponents`); as a shield until end of turn it is a class shield, and it applies before the other replacements of the event after the self-replacements (CR 616.1b, Gather Specimens rulings).
 - Sentences no shared reader words are read and written whole from `compile/read/r5517_wholes.json` (`[ability, wording]` pairs).
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 

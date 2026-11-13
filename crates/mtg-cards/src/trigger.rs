@@ -1295,6 +1295,10 @@ pub enum ReplaceBy {
     /// The controller of the replacement may add this many to the number of the action as it happens ("you may look at
     /// an additional two cards each time you surveil"); only a `Surveils` uses it.
     MayAddAmount(Amount),
+    /// The permanent enters, or the tokens are created, under the control of the replacement's controller instead of an
+    /// opponent's ("it enters under your control instead", "is created under your control instead"); only an `Enters`
+    /// or a `TokenCreation` uses it, and only for what an opponent would get.
+    UnderYourControl,
 }
 
 /// The kinds of shield (`Effect::Shield`) the engine plays; the validator and the engine both read a shield by it.
@@ -1366,6 +1370,11 @@ impl ShieldShape {
             }
             // "Until end of turn, if one or more tokens would be created under your control, twice that many ..."
             (ReplaceWhen::TokenCreation { .. }, ReplaceBy::Multiply(_) | ReplaceBy::Add(_)) => {
+                Some(Self::Class)
+            }
+            // "If a creature would enter under an opponent's control this turn, it enters under your control instead."
+            (ReplaceWhen::TokenCreation { .. }, ReplaceBy::UnderYourControl) => Some(Self::Class),
+            (ReplaceWhen::Enters { what }, ReplaceBy::UnderYourControl) if !names_objects(what) => {
                 Some(Self::Class)
             }
             (
