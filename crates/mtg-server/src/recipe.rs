@@ -363,6 +363,10 @@ pub struct GameRecipe {
     /// while empty.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub bots: Vec<crate::bots::BotSeat>,
+    /// The Delves fight the game is (`docs/delves.md`): the seats' emblems, Spirit rule and boss phases, laid over the
+    /// decks whenever the game is built. Left out while none.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub campaign: Option<mtg_campaign::FightPlan>,
 }
 
 /// The fingerprint of each conjurable card, by name.
@@ -452,6 +456,9 @@ pub enum RecipeError {
     /// The decks and seats do not make a valid game for the format.
     #[error("invalid game setup: {0}")]
     Setup(#[from] SetupError),
+    /// The Delves fight the recipe names does not fit the campaign's content.
+    #[error("the Delves fight does not build: {0}")]
+    Campaign(#[from] mtg_campaign::CampaignError),
 }
 
 impl GameRecipe {
@@ -481,6 +488,7 @@ impl GameRecipe {
             reads: BTreeMap::new(),
             conjured: BTreeMap::new(),
             bots: Vec::new(),
+            campaign: None,
         }
     }
 
@@ -621,6 +629,9 @@ impl GameRecipe {
             .with_conjurable(conjured);
         // Legality only warns (`docs/deck-check.md`), so the engine does not judge the decks.
         setup.validate_decks = false;
+        if let Some(plan) = &self.campaign {
+            setup = crate::delves::fight_setup(plan, setup)?;
+        }
         setup.validate()?;
         Ok(setup)
     }

@@ -72,6 +72,14 @@ pub struct Player {
     pub(crate) counters: BTreeMap<CounterKind, u32>,
     /// Cards still to exile from the hand for a card that began the game on the battlefield (Gemstone Caverns).
     pub(crate) opening_exile: u32,
+    /// The emblem the player gets on becoming a Spirit; `None` for a player who loses at 0 life as usual.
+    pub(crate) spirit_form: Option<std::sync::Arc<mtg_cards::CardDefinition>>,
+    /// Whether the player is a Spirit ([`crate::spirits`]).
+    pub(crate) spirit: bool,
+    /// A boss seat's phases, in the order they begin ([`crate::phases`]).
+    pub(crate) phases: Vec<crate::phases::BossPhase>,
+    /// How many of them have begun.
+    pub(crate) phase: u8,
 }
 
 impl Player {
@@ -92,6 +100,10 @@ impl Player {
             keywords,
             counters: BTreeMap::new(),
             opening_exile: 0,
+            spirit_form: None,
+            spirit: false,
+            phases: Vec::new(),
+            phase: 0,
         }
     }
 
@@ -108,6 +120,21 @@ impl Player {
     /// Whether the player is in the game or has lost.
     pub const fn status(&self) -> &PlayerStatus {
         &self.status
+    }
+
+    /// How many boss phases the player has, and how many of them have begun.
+    pub fn phases(&self) -> (usize, usize) {
+        (self.phases.len(), usize::from(self.phase))
+    }
+
+    /// The names of the player's boss phases, in order.
+    pub fn phase_names(&self) -> impl Iterator<Item = &str> {
+        self.phases.iter().map(|phase| phase.emblem.name.as_str())
+    }
+
+    /// Whether the player is a Spirit: at 0 life, kept in the game by a living teammate.
+    pub const fn is_spirit(&self) -> bool {
+        self.spirit
     }
 
     /// Whether the player is still in the game.

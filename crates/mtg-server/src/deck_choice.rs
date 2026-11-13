@@ -191,21 +191,42 @@ async fn precon(app: &AppState, code: &str) -> Result<ChosenDeck, Refused> {
 }
 
 async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenDeck, Refused> {
-    let (Some(source), Ok(id)) = (app.cards(), Uuid::parse_str(id.trim())) else {
+    let Some(user) = app.auth().session_user(headers).await? else {
         return Err(Refused::Unknown);
     };
-    let Some(user) = app.auth().session_user(headers).await? else {
+    stored_of(app, user.id.uuid(), id).await
+}
+
+/// The deck with this id as `owner` would choose it, for a game the server makes for its players (a Delves fight):
+/// a built-in deck, a precon, or one of `owner`'s stored decks.
+pub(crate) async fn resolve_as(
+    app: &AppState,
+    owner: Uuid,
+    id: &str,
+) -> Result<ChosenDeck, Refused> {
+    if let Some(code) = precon_code(id) {
+        return precon(app, code).await;
+    }
+    if demo::find(id).is_some() {
+        return built_in(id);
+    }
+    stored_of(app, owner, id).await
+}
+
+/// One of `owner`'s stored decks.
+async fn stored_of(app: &AppState, owner: Uuid, id: &str) -> Result<ChosenDeck, Refused> {
+    let (Some(source), Ok(id)) = (app.cards(), Uuid::parse_str(id.trim())) else {
         return Err(Refused::Unknown);
     };
     let deck = source
         .database()
         .decks()
-        .get(user.id.uuid(), DeckId(id))
+        .get(owner, DeckId(id))
         .await
         .map_err(|error| Refused::Failed(failed(&error)))?
         .ok_or(Refused::Unknown)?;
     // A line without art of its own plays in the art the account prefers for the card.
-    let preferred = preferred_of(source, user.id.uuid()).await;
+    let preferred = preferred_of(source, owner).await;
     let lines = with_preferred(lines_of(&deck), &preferred);
     let loaded = Loaded::load(source, &lines).await?;
     let report = loaded.report_off(&deck.format, &lines).await?;

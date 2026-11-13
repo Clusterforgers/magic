@@ -615,6 +615,8 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             }
         }
         Event::PlayerLost { player, reason } => player_lost(state, *player, reason)?,
+        Event::BecameSpirit { player, emblem } => crate::spirits::fold(state, *player, *emblem)?,
+        Event::PhaseBegan { player, emblem } => crate::phases::fold(state, *player, *emblem)?,
         Event::GameEnded { result } => end_game(state, *result),
         other => return c6_kw_fold_rest(state, other),
     }

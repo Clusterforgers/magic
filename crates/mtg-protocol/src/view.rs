@@ -403,6 +403,15 @@ const fn is_zero_level(level: &u8) -> bool {
     *level == 0
 }
 
+/// The phases of a boss seat (public).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct BossView {
+    /// The phases' names, in the order they begin.
+    pub phases: Vec<String>,
+    /// How many have begun.
+    pub begun: u32,
+}
+
 /// A sticker sheet a seat plays with (public).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct StickerSheetView {
@@ -509,6 +518,15 @@ pub struct PlayerView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<PlayerEffect>>", optional)]
     pub effects: Vec<PlayerEffect>,
+    /// Whether the player is a Spirit: at 0 life, kept in the game by a living teammate (campaign fights); left out
+    /// while false.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[ts(as = "Option<bool>", optional)]
+    pub spirit: bool,
+    /// A boss seat's phases: their names in order and how many have begun; left out for a seat with none.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub boss: Option<BossView>,
     /// Mulligans taken.
     pub mulligans: u32,
     /// Opening-hand progress.

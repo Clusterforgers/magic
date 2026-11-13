@@ -96,6 +96,7 @@ mod deck_cards;
 mod deck_choice;
 mod deck_import;
 mod decks;
+mod delves;
 pub mod demo;
 mod dwell;
 mod favourites;

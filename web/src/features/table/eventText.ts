@@ -1318,6 +1318,13 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     }
     return line(`${n.card(event.CreatureDied.object)} dies ${HOW[event.CreatureDied.cause]}`)
   }
+  if ('BecameSpirit' in event) {
+    return line(`${n.seat(event.BecameSpirit.player)} fell and rises as a Spirit`)
+  }
+  if ('PhaseBegan' in event) {
+    const { player, emblem } = event.PhaseBegan
+    return line(`${n.seat(player)} enters ${n.card(emblem)}`)
+  }
   if ('PlayerLost' in event) {
     return line(`${n.seat(event.PlayerLost.player)} ${describeLoss(event.PlayerLost.reason)}`)
   }

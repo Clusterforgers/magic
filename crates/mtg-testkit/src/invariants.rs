@@ -1024,6 +1024,8 @@ impl InvariantChecker {
             Event::TokenCreated(_)
                 | Event::CardConjured(_)
                 | Event::EmblemCreated(_)
+                | Event::BecameSpirit { .. }
+                | Event::PhaseBegan { .. }
                 | Event::CompanionBrought { .. }
         ) {
             self.expected_objects += 1;

@@ -321,6 +321,8 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     'Grizzly Bears dies from lethal damage',
   ],
   PlayerLost: [{ PlayerLost: { player: 1, reason: 'ZeroLife' } }, 'Bo ran out of life'],
+  BecameSpirit: [{ BecameSpirit: { player: 1, emblem: 9 } }, 'Bo fell and rises as a Spirit'],
+  PhaseBegan: [{ PhaseBegan: { player: 1, emblem: 9 } }, 'Bo enters a card'],
   ObjectLeftGame: [{ ObjectLeftGame: { object: 2 } }, 'Hill Giant leaves the game'],
   GameEnded: [{ GameEnded: { result: { Winner: 0 } } }, 'Ana wins the game'],
   AbilityPutOnStack: [

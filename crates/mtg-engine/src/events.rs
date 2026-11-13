@@ -515,6 +515,20 @@ pub enum Event {
         /// Why.
         reason: LossReason,
     },
+    /// A player at 0 life became a Spirit ([`crate::spirits`]) and got its Spirit emblem.
+    BecameSpirit {
+        /// Who.
+        player: PlayerId,
+        /// The Spirit emblem's new object.
+        emblem: ObjectId,
+    },
+    /// A boss seat's next phase began ([`crate::phases`]): its emblem is a new object in their command zone.
+    PhaseBegan {
+        /// Whose phase.
+        player: PlayerId,
+        /// The phase emblem's new object.
+        emblem: ObjectId,
+    },
     /// An object left the game because its owner did.
     ObjectLeftGame {
         /// The object.
@@ -1549,6 +1563,7 @@ impl Event {
             Event::TokenCreated(token) => vec![token.object],
             Event::CardConjured(card) => vec![card.object],
             Event::EmblemCreated(emblem) => vec![emblem.object],
+            Event::BecameSpirit { emblem, .. } | Event::PhaseBegan { emblem, .. } => vec![*emblem],
             Event::Ventured(ventured) => vec![ventured.object],
             Event::BecameCopy(copy) => vec![copy.object],
             Event::SpellCopied(copy) => vec![copy.object],

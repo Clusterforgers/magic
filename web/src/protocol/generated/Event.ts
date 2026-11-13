@@ -516,7 +516,23 @@ player: PlayerId,
 /**
  * Why.
  */
-reason: LossReason, } } | { "ObjectLeftGame": { 
+reason: LossReason, } } | { "BecameSpirit": { 
+/**
+ * Who.
+ */
+player: PlayerId, 
+/**
+ * The Spirit emblem's new object.
+ */
+emblem: ObjectId, } } | { "PhaseBegan": { 
+/**
+ * Whose phase.
+ */
+player: PlayerId, 
+/**
+ * The phase emblem's new object.
+ */
+emblem: ObjectId, } } | { "ObjectLeftGame": { 
 /**
  * The object.
  */
