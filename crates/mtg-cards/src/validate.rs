@@ -2034,6 +2034,16 @@ impl<'a> Walker<'a> {
             return;
         };
         self.cost_modifier(applies_to, mana, per, condition.as_ref());
+        // A change of the cost of a kind read off the limits of an ability, or of a buyback cost (r55-06).
+        let kind = match activating {
+            Some(crate::ability::ActivationKind::Exhaust) => Some("Exhaust"),
+            Some(crate::ability::ActivationKind::Boast) => Some("Boast"),
+            Some(crate::ability::ActivationKind::Buyback) => Some("Buyback"),
+            _ => None,
+        };
+        if let Some(kind) = kind {
+            self.uses("CostModifier", kind);
+        }
         if *life > 0 && (*change != crate::ability::CostChange::Increase || activating.is_some()) {
             self.problem("life is added only to the cost of spells, by an increase");
         }
@@ -2054,10 +2064,12 @@ impl<'a> Walker<'a> {
         {
             self.uses("Cost", whole);
         } else if !is_fixed(item) {
-            let activated = match (self.activated_cost, self.rather_cost) {
-                (true, _) => ".Activated",
-                (false, true) => ".Rather",
-                (false, false) => "",
+            // A spell's required additional cost is counted as the cast is announced (r55-06).
+            let activated = match (self.activated_cost, self.rather_cost, self.choosing) {
+                (true, _, _) => ".Activated",
+                (false, true, _) => ".Rather",
+                (false, false, true) => ".Required",
+                (false, false, false) => "",
             };
             self.uses("Cost", &format!("{}.Counted{activated}", tag_of(item)));
         }

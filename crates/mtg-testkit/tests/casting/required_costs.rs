@@ -1,4 +1,4 @@
-//! Goal: a cost a spell must pay in addition ("As an additional cost to cast this spell, discard a card", sacrifice a creature, a land or an artifact, pay 3 life, exile a creature card from your graveyard) is part of every cast at 2, 3 and 4 seats: a spell whose caster cannot pay it is not offered, the pick is asked of the caster alone when more than one card or permanent qualifies and not when there is only one, the cost is paid before the spell is cast and stays paid when the spell is countered, a copy of the spell pays nothing, the cost adds to an alternative cost, a cost increase and the commander tax, and the mana of a permanent the cost sacrifices is not there to pay with.
+//! Goal: a cost a spell must pay in addition ("As an additional cost to cast this spell, discard a card", sacrifice a creature, a land or an artifact, pay 3 life, exile a creature card from your graveyard) is part of every cast at 2, 3 and 4 seats: a spell whose caster cannot pay it is not offered, the pick is asked of the caster alone when more than one card or permanent qualifies and not when there is only one, the cost is paid before the spell is cast and stays paid when the spell is countered, a copy of the spell pays nothing, the cost adds to an alternative cost, a cost increase and the commander tax, and the mana of a permanent the cost sacrifices may pay for it, the permanent tapped for mana before it is sacrificed (CR 601.2g, 601.2h).
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -572,9 +572,9 @@ fn the_commander_is_offered_only_with_a_card_to_discard_and_the_mana(
 }
 
 #[test]
-fn the_mana_of_the_artifact_a_cost_sacrifices_is_not_there_to_pay_with() -> Result<(), ScriptError>
-{
-    // Reshape costs {X}{U}{U} and sacrifices an artifact: Sol Ring cannot pay for the X it is sacrificed to.
+fn the_artifact_a_cost_sacrifices_may_be_tapped_for_mana_first() -> Result<(), ScriptError> {
+    // Reshape costs {X}{U}{U} and sacrifices an artifact: Sol Ring is tapped for mana (CR 601.2g) before it is sacrificed
+    // (CR 601.2h), so its two mana pay for the X it is sacrificed to.
     let table = |extra: usize| {
         let mut battlefield = lands(2 + extra, island);
         battlefield.push(ready(mtg_testkit::corpus::card("Sol Ring").unwrap()));
@@ -582,16 +582,14 @@ fn the_mana_of_the_artifact_a_cost_sacrifices_is_not_there_to_pay_with() -> Resu
             .hand_named(0, ["Reshape"])
             .battlefield(0, battlefield)
     };
-    // No spare Island: X is 0 and not asked. One spare Island: X can be 1 and no more, since Sol Ring is sacrificed.
-    let mut none = Driver::from_scenario(table(0))?;
-    none.begin_cast("Reshape")?;
-    assert_eq!(none.pay_options()?.cost, ManaCost::parse("{U}{U}").unwrap());
-    let mut one = Driver::from_scenario(table(1))?;
-    one.begin_cast("Reshape")?;
-    let DecisionKind::ChooseNumber(options) = &one.decision()?.kind else {
-        panic!("X is asked, not {}", one.decision()?.kind.name());
-    };
-    assert_eq!(options.max, Some(1));
+    for (extra, most) in [(0, 2), (1, 3)] {
+        let mut driver = Driver::from_scenario(table(extra))?;
+        driver.begin_cast("Reshape")?;
+        let DecisionKind::ChooseNumber(options) = &driver.decision()?.kind else {
+            panic!("X is asked, not {}", driver.decision()?.kind.name());
+        };
+        assert_eq!(options.max, Some(most));
+    }
     Ok(())
 }
 
@@ -607,7 +605,8 @@ struct Seen {
 /// Whether the events right before the cast at `at` pay what the spell takes: the cards moved out of the zone the cost
 /// names (the picks, as announced) or the life lost.
 fn paid_before(events: &[Event], at: usize, takes: Takes, picks: &[ObjectId]) -> bool {
-    let window = &events[at.saturating_sub(8)..at];
+    // A permanent the cost sacrifices that the payment taps for mana goes after its mana ability (CR 601.2g, 601.2h).
+    let window = &events[at.saturating_sub(8)..events.len().min(at + 24)];
     match takes {
         Takes::Life(amount) => window
             .iter()

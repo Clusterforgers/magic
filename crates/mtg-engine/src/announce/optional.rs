@@ -364,18 +364,29 @@ pub(super) fn entwined(ctx: &Ctx<'_>, choices: &Choices) -> bool {
 
 /// `mana` with the mana of the optional costs chosen added, a cost once for each time it was paid.
 pub(super) fn add(ctx: &Ctx<'_>, choices: &Choices, mana: Option<ManaCost>) -> Option<ManaCost> {
-    let paid: Vec<&ManaCost> = choices
+    // A buyback cost is paid with the changes of buyback costs in play applied (Memory Crystal).
+    let paid: Vec<ManaCost> = choices
         .optional_costs
         .iter()
         .filter_map(|index| ctx.needs.optional.get(*index))
-        .map(|cost| &cost.mana)
+        .map(|cost| {
+            if cost.kind == OptionalKind::Buyback {
+                crate::activation_kind::r5506_buyback_modified(
+                    ctx.state,
+                    ctx.source,
+                    cost.mana.clone(),
+                )
+            } else {
+                cost.mana.clone()
+            }
+        })
         .collect();
     if paid.is_empty() {
         return mana;
     }
     let symbols = mana
         .iter()
-        .chain(paid)
+        .chain(paid.iter())
         .flat_map(|cost| cost.symbols().iter().copied());
     Some(ManaCost::from_symbols(symbols))
 }

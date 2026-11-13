@@ -248,6 +248,7 @@ mod r4711_drafted;
 mod r5504_everywhere;
 mod r5504_look;
 mod r5505_convert;
+mod r5506_costs;
 mod r5507_dice;
 mod r5507_prevent;
 mod r5510_fortified;
@@ -733,6 +734,11 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         && written_variants(&found)
             .iter()
             .any(|written| same_text(written, text))
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Static
+        && let Some(found) = r5506_costs::r5506_cost_read(text)
     {
         return Some(found);
     }
