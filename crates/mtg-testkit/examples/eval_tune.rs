@@ -163,7 +163,7 @@ fn main() {
                     }
                     let seed = 50_000 + game;
                     let (a, b) = pairs[usize::try_from(game).unwrap() % pairs.len()];
-                    let pod = pods > 0 && game % pods == 0;
+                    let pod = pods > 0 && game.is_multiple_of(pods);
                     let (setup, seats) = if pod {
                         (
                             mtg_testkit::commander_cards::commander_fuzz_setup(4, seed).unwrap(),

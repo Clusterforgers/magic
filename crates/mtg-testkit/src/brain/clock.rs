@@ -112,7 +112,7 @@ impl Budget {
         // In range: at most MOST times the level's iterations.
         #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
         let iterations = (f64::from(iterations) * scale).round() as u32;
-        let cap = started + DECISION_CAP - SLACK;
+        let cap = started + DECISION_CAP.saturating_sub(SLACK);
         let soft = time.map(|time| (Instant::now() + time.mul_f64(scale)).min(cap));
         let hard = time.map(|time| (Instant::now() + time.mul_f64(scale * 1.5)).min(cap));
         Budget {

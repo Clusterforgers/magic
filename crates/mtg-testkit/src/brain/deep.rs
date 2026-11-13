@@ -724,6 +724,36 @@ mod tests {
     }
 
     #[rstest]
+    #[case::trusted_by_a_margin(0.05, 1.0, 0)]
+    #[case::one_standard_error(0.0, 1.0, 1)]
+    #[case::means_alone(0.0, 0.0, 1)]
+    fn the_search_overrides_by_its_calibrated_margin(
+        #[case] trust: f64,
+        #[case] doubt: f64,
+        #[case] chosen: usize,
+    ) {
+        // 0.56 against 0.5 with a standard error of the difference near 0.045.
+        let mut root = vec![child(40, 0.5 * 40.0, 80), child(60, 0.56 * 60.0, 80)];
+        for c in &mut root {
+            let mean = c.mean();
+            c.squares = f64::from(c.visits) * (mean * mean + 0.04);
+        }
+        root[1].answer = Answer::Priority(PriorityAction::BringCompanion);
+        assert_eq!(choose(&root, trust, doubt).unwrap(), root[chosen].answer);
+    }
+
+    #[test]
+    fn the_tally_counts_searches_and_overrides_per_thread() {
+        reset_tally();
+        count_search(false);
+        count_search(true);
+        count_search(true);
+        assert_eq!(tally(), (3, 2));
+        reset_tally();
+        assert_eq!(tally(), (0, 0));
+    }
+
+    #[rstest]
     #[case::clearly_worse(0.3, true)]
     #[case::close(0.48, false)]
     fn root_answers_clearly_below_the_best_are_pruned(#[case] mean: f64, #[case] pruned: bool) {
