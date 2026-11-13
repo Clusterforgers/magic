@@ -61,6 +61,7 @@ fn schemes_minions_and_scaling_cards_exist() {
     let content = content().unwrap();
     for id in [
         mtg_campaign::scale::REINFORCEMENTS,
+        mtg_campaign::scale::RESERVES,
         mtg_campaign::scale::WARPATH,
         mtg_campaign::scale::ESCALATION,
         mtg_campaign::scale::ENRAGE,

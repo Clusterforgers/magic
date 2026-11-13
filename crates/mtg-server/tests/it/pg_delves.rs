@@ -1,7 +1,7 @@
 //! Goal: Delves work end to end on Postgres: a player creates a run and hosts its lobby, a friend joins by its code,
 //! the host adds a bot ally and chooses its deck while each player chooses their own, only the host starts, and the
 //! start leads the party to the first boss, whose fight is a game made at once; the content the web draws lists the
-//! bosses and custom cards; strangers and unknown runs are refused.
+//! bosses and custom cards; a party of four meets the boss with a minion seat; strangers and unknown runs are refused.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::{net, pg_commander};
@@ -161,6 +161,81 @@ async fn a_party_gathers_and_the_start_makes_the_first_boss_fight(pool: PgPool) 
     )
     .await;
     assert_eq!(missing.status, 404);
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_party_of_four_meets_the_boss_and_a_minion(pool: PgPool) {
+    let server = pg_commander::start(&pool).await;
+    let host = register(server.addr, "hostess", PASSWORD).await;
+    let created = call(
+        &server,
+        "POST",
+        "/api/delves",
+        Some(&host),
+        Some(json!({"heat": 0, "seed": "HORDE"})),
+    )
+    .await
+    .json();
+    let id = created["id"].as_str().unwrap().to_owned();
+    for _ in 0..3 {
+        let bot = act(
+            &server,
+            &id,
+            &host,
+            json!({"kind": "add_bot", "level": "Normal"}),
+        )
+        .await;
+        assert_eq!(bot.status, 200, "{}", bot.text());
+    }
+    for hero in 0..4 {
+        let chosen = act(
+            &server,
+            &id,
+            &host,
+            json!({"kind": "choose_deck", "hero": hero, "deck": pg_commander::on(pg_commander::BEAST)}),
+        )
+        .await;
+        assert_eq!(chosen.status, 200, "{}", chosen.text());
+    }
+    let start = act(&server, &id, &host, json!({"kind": "start"})).await;
+    assert_eq!(start.status, 200, "{}", start.text());
+    let view = start.json();
+    let game = view["run"]["status"]["Fight"]["game"]
+        .as_str()
+        .unwrap_or_default()
+        .to_owned();
+    assert!(
+        !game.is_empty(),
+        "the fight is made: {}",
+        view["run"]["status"]
+    );
+    let table = call(
+        &server,
+        "GET",
+        &format!("/api/games/{game}"),
+        Some(&host),
+        None,
+    )
+    .await
+    .json();
+    let names: Vec<&str> = table["seats"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|seat| seat["name"].as_str().unwrap())
+        .collect();
+    assert_eq!(
+        names.len(),
+        6,
+        "four heroes, the boss and one minion: {names:?}"
+    );
+    let content = mtg_campaign::content().unwrap();
+    let theme = &content.themes[0];
+    assert!(theme.bosses.iter().any(|b| b.name == names[4]), "{names:?}");
+    assert!(
+        theme.minions.iter().any(|m| m.name == names[5]),
+        "{names:?}"
+    );
 }
 
 #[sqlx::test(migrations = false)]

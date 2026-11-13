@@ -1164,7 +1164,7 @@
   "kind": "Boss",
   "type_line": "Boss — Advantage",
   "art": "reinforcements",
-  "text": "At the beginning of your upkeep, draw a card and create a 2/2 black Zombie creature token. (A boss gets one Reinforcements for each hero after the first.)",
+  "text": "At the beginning of your upkeep, draw a card and create a 2/2 black Zombie creature token. (A boss gets Reinforcements against a party of three or more.)",
   "abilities": [
    {
     "Triggered": {
@@ -1254,7 +1254,7 @@
   "kind": "Boss",
   "type_line": "Boss — Advantage",
   "art": "escalation",
-  "text": "At the beginning of your end step, each opponent loses 1 life for every three turns you have taken.",
+  "text": "At the beginning of your end step, each opponent loses 1 life for every four turns you have taken.",
   "abilities": [
    {
     "Triggered": {
@@ -1273,7 +1273,7 @@
           "of": {
            "TurnsTaken": "You"
           },
-          "by": 3,
+          "by": 4,
           "up": false
          }
         }
@@ -1354,7 +1354,7 @@
   "kind": "Scheme",
   "type_line": "Scheme",
   "art": "horde_gathers",
-  "text": "At the beginning of your upkeep, create a 2/2 black Zombie creature token for each opponent.",
+  "text": "At the beginning of your upkeep, create a 1/1 black Rat creature token for each opponent.",
   "abilities": [
    {
     "Triggered": {
@@ -1369,7 +1369,7 @@
        "CreateToken": {
         "token": {
          "Custom": {
-          "name": "Zombie",
+          "name": "Rat",
           "colors": [
            "Black"
           ],
@@ -1377,10 +1377,10 @@
            "Creature"
           ],
           "subtypes": [
-           "Zombie"
+           "Rat"
           ],
-          "power": 2,
-          "toughness": 2
+          "power": 1,
+          "toughness": 1
          }
         },
         "count": {
@@ -1399,7 +1399,7 @@
   "kind": "Scheme",
   "type_line": "Scheme",
   "art": "feast_of_rats",
-  "text": "At the beginning of your upkeep, each opponent loses 2 life and you gain 2 life.",
+  "text": "At the beginning of your upkeep, each opponent loses 1 life and you gain 1 life.",
   "abilities": [
    {
     "Triggered": {
@@ -1413,12 +1413,12 @@
       {
        "LoseLife": {
         "who": "Opponents",
-        "amount": 2
+        "amount": 1
        }
       },
       {
        "GainLife": {
-        "amount": 2
+        "amount": 1
        }
       }
      ]
@@ -1534,7 +1534,7 @@
   "kind": "Scheme",
   "type_line": "Scheme",
   "art": "tunnel_collapse",
-  "text": "At the beginning of your upkeep, Tunnel Collapse deals 2 damage to each creature your opponents control.",
+  "text": "At the beginning of your upkeep, Tunnel Collapse deals 1 damage to each creature your opponents control.",
   "abilities": [
    {
     "Triggered": {
@@ -1557,7 +1557,7 @@
           }
          ]
         },
-        "amount": 2
+        "amount": 1
        }
       }
      ]
@@ -1603,7 +1603,7 @@
   "kind": "Scheme",
   "type_line": "Scheme",
   "art": "dark_tithe",
-  "text": "At the beginning of your upkeep, draw a card for each opponent.",
+  "text": "At the beginning of your upkeep, draw a card.",
   "abilities": [
    {
     "Triggered": {
@@ -1615,11 +1615,7 @@
      },
      "effects": [
       {
-       "Draw": {
-        "count": {
-         "Players": "Opponents"
-        }
-       }
+       "Draw": {}
       }
      ]
     }
@@ -1646,6 +1642,48 @@
       {
        "Discard": {
         "who": "Opponents"
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "reserves",
+  "name": "Reserves",
+  "kind": "Boss",
+  "type_line": "Boss — Advantage",
+  "art": "reserves",
+  "text": "At the beginning of your upkeep, create a 2/2 black Zombie creature token. (A boss gets Reserves against a party of two.)",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "CreateToken": {
+        "token": {
+         "Custom": {
+          "name": "Zombie",
+          "colors": [
+           "Black"
+          ],
+          "types": [
+           "Creature"
+          ],
+          "subtypes": [
+           "Zombie"
+          ],
+          "power": 2,
+          "toughness": 2
+         }
+        }
        }
       }
      ]

@@ -4,8 +4,10 @@
 
 use crate::content::{Boss, Brain, Minion, Theme};
 
-/// The boss card a boss gets once for each hero after the first: a card and a 2/2 Zombie each upkeep.
+/// The boss card that gives a boss a card and a 2/2 Zombie each upkeep, once or more against a big party.
 pub const REINFORCEMENTS: &str = "reinforcements";
+/// The boss card that gives a boss a 2/2 Zombie each upkeep against a small party.
+pub const RESERVES: &str = "reserves";
 /// The boss card that gives a boss an extra combat each turn.
 pub const WARPATH: &str = "warpath";
 /// The boss card whose anthem grows with the boss's turns.
@@ -17,15 +19,21 @@ pub const BULWARK: &str = "bulwark";
 /// The most heroes a table is scaled for.
 pub const MOST: usize = 6;
 
+/// The boss's life by party size, in percent of its base and the life it gets for each hero after the first.
+const LIFE: [i32; MOST + 1] = [100, 100, 115, 100, 85, 100, 90];
+/// Reserves a boss gets, by party size.
+const RESERVED: [usize; MOST + 1] = [0, 0, 1, 0, 0, 0, 0];
+/// Reinforcements a boss gets, by party size.
+const REINFORCED: [usize; MOST + 1] = [0, 0, 0, 1, 1, 2, 2];
 /// Extra combats a boss gets each turn, by party size.
-const COMBATS: [usize; MOST + 1] = [0, 0, 0, 1, 1, 1, 2];
+const COMBATS: [usize; MOST + 1] = [0, 0, 0, 0, 0, 0, 1];
 /// Minions a boss fields, by party size.
 const MINIONS: [usize; MOST + 1] = [0, 0, 0, 0, 1, 1, 2];
 /// The smallest party a boss raises the Last Bulwark against.
 const BULWARK_FROM: usize = 3;
 /// Cards a boss's opening hand has fewer than its base against a single hero; it gets one more for each hero after the
 /// first.
-const SOLO_HAND: u32 = 4;
+const SOLO_HAND: u32 = 5;
 /// Life each Heat adds, in percent.
 const HEAT_LIFE: i32 = 20;
 
@@ -56,9 +64,11 @@ impl Scale {
         life + life * HEAT_LIFE * i32::from(self.heat) / 100
     }
 
-    /// The boss's starting life: its base, more for each hero after the first, raised by the Heat.
+    /// The boss's starting life: its base and more for each hero after the first, scaled by party size and raised by
+    /// the Heat.
     pub fn life(self, boss: &Boss) -> i32 {
-        self.heated(boss.life + boss.life_per_hero * self.extra_heroes())
+        let base = boss.life + boss.life_per_hero * self.extra_heroes();
+        self.heated(base * LIFE[self.heroes] / 100)
     }
 
     /// The boss's opening hand: its base less [`SOLO_HAND`], and one card for each hero after the first.
@@ -81,15 +91,19 @@ impl Scale {
         COMBATS[self.heroes]
     }
 
-    /// The custom cards in the boss's command zone from the start: its own, Escalation and Enrage, Reinforcements
-    /// for each hero after the first and Warpath for each extra combat.
+    /// The custom cards in the boss's command zone from the start: its own, Escalation and Enrage, and by party size
+    /// Reinforcements, Reserves and Warpath for each extra combat.
     pub fn rules(self, boss: &Boss) -> Vec<String> {
         let mut rules = boss.rules.clone();
         rules.push(ESCALATION.to_owned());
         rules.push(ENRAGE.to_owned());
         rules.extend(std::iter::repeat_n(
             REINFORCEMENTS.to_owned(),
-            self.heroes - 1,
+            REINFORCED[self.heroes],
+        ));
+        rules.extend(std::iter::repeat_n(
+            RESERVES.to_owned(),
+            RESERVED[self.heroes],
         ));
         rules.extend(std::iter::repeat_n(
             WARPATH.to_owned(),
