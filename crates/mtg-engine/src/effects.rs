@@ -486,7 +486,7 @@ pub(crate) fn lasts(
         // later turn on (`r377_waits`).
         | Duration::TheirNextTurn
         // An effect or rule that follows its objects' tapped state reads its own record (`r5509_stays_tapped`).
-        | Duration::WhileTapped => true,
+        | Duration::WhileTapped
         // `UntilCreatureSpellCast` reads the effect's own timestamp (`lasts_by`).
         | Duration::UntilCreatureSpellCast => true,
         // `DuringItsControllersNextTurn` is begun for the player whose turn it waits for (`continuous.rs`).
