@@ -1,0 +1,20 @@
+{
+  "oracle_id": "38c5c952-8153-4d98-89b5-a75260383345",
+  "name": "False Orders",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "False Orders",
+      "oracle_fingerprint": "a329b5821ee40770dd8d1289122b0afb",
+      "abilities": [
+        { "CastOnly": { "condition": { "Step": "DeclareBlockers" } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 55, "end": 278 }
+          }
+        }
+      ]
+    }
+  ]
+}

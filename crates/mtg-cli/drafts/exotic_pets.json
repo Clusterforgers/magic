@@ -1,0 +1,36 @@
+{
+  "oracle_id": "497cb281-e057-42fc-937d-512855b74159",
+  "name": "Exotic Pets",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exotic Pets",
+      "oracle_fingerprint": "fcf564146c7b28195eb91196d1b536c8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Fish",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fish"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Static": { "affected": "This", "mods": ["CantBeBlocked"] } }]
+                    }
+                  },
+                  "count": 2,
+                  "as": "fish"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

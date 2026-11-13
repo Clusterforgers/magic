@@ -1,0 +1,103 @@
+{
+  "oracle_id": "afcfcb74-ee64-4528-8498-2e8109ad5142",
+  "name": "Grenzo's Rebuttal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grenzo's Rebuttal",
+      "oracle_fingerprint": "b113c5690f08f07358378c3e1c39eb26",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ogre",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ogre"],
+                      "power": 4,
+                      "toughness": 4
+                    }
+                  }
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Artifact" },
+                            {
+                              "ControlledBy": {
+                                "Seated": { "of": { "Bound": "player" }, "side": "Left" }
+                              }
+                            }
+                          ]
+                        },
+                        "as": "artifact"
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            {
+                              "ControlledBy": {
+                                "Seated": { "of": { "Bound": "player" }, "side": "Left" }
+                              }
+                            }
+                          ]
+                        },
+                        "as": "creature"
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Land" },
+                            {
+                              "ControlledBy": {
+                                "Seated": { "of": { "Bound": "player" }, "side": "Left" }
+                              }
+                            }
+                          ]
+                        },
+                        "as": "land"
+                      }
+                    },
+                    {
+                      "Bind": {
+                        "what": {
+                          "Union": [
+                            { "Bound": "artifact" },
+                            { "Bound": "creature" },
+                            { "Bound": "land" }
+                          ]
+                        },
+                        "as": "chosen",
+                        "adds": true
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Destroy": { "what": { "Bound": "chosen" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

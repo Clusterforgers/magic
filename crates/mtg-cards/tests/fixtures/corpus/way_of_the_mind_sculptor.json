@@ -132,18 +132,18 @@
   "textless": false,
   "booster": false,
   "story_spotlight": false,
-  "edhrec_rank": 14416,
+  "edhrec_rank": 12272,
   "preview": {
     "source": "Josh Hass",
     "source_uri": "https://bsky.app/profile/joshhass.bsky.social/post/3mvl2xcc7ss2d",
     "previewed_at": "2026-09-15"
   },
   "prices": {
-    "usd": "0.25",
-    "usd_foil": "0.32",
+    "usd": "0.31",
+    "usd_foil": "0.30",
     "usd_etched": null,
-    "eur": "0.05",
-    "eur_foil": "0.27",
+    "eur": "0.11",
+    "eur_foil": "0.18",
     "tix": "0.01"
   },
   "related_uris": {

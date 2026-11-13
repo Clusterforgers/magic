@@ -1,0 +1,72 @@
+{
+  "oracle_id": "a75b02ba-b0c8-47e3-a05c-e9ba221a7578",
+  "name": "Tarrian's Journal // The Tomb of Aclazotz",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tarrian's Journal",
+      "oracle_fingerprint": "5ad8f42a81ff0c6ed39be39e2da63422",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              {
+                "Sacrifice": {
+                  "filter": ["Other", { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "timing": "Sorcery",
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              "Tap",
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } }
+            ],
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "The Tomb of Aclazotz",
+      "oracle_fingerprint": "f82a9089fdb1eb84f25d5586b19ac60a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Type": "Creature" }],
+                      "from": "Graveyard",
+                      "once": true,
+                      "riders": [
+                        { "EntersWithCounter": { "Other": "finality" } },
+                        { "AlsoSubtype": "Vampire" }
+                      ]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
