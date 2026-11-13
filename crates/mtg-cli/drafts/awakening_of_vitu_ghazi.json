@@ -1,0 +1,34 @@
+{
+  "oracle_id": "5c326102-005d-463c-b9f7-14b034b66baa",
+  "name": "Awakening of Vitu-Ghazi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Awakening of Vitu-Ghazi",
+      "oracle_fingerprint": "face1b14c48b07052a5eafe99de1e774",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 9 } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddSupertype": "Legendary" },
+                    { "AddType": "Creature" },
+                    { "SetPT": { "power": 0, "toughness": 0 } },
+                    { "AddSubtype": "Elemental" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

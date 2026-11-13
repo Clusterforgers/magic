@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "fb567441-1880-4b34-9c48-6d2c45062eb0",
+  "oracle_id": "82c2a58b-0ee2-454b-9ddd-670c1e788166",
+  "multiverse_ids": [
+    580666
+  ],
+  "tcgplayer_id": 287714,
+  "cardmarket_id": 676766,
+  "name": "_____ Balls of Fire",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/fb567441-1880-4b34-9c48-6d2c45062eb0",
+  "scryfall_uri": "https://scryfall.com/card/unf/100/_____-balls-of-fire?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:29:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/b/fb567441-1880-4b34-9c48-6d2c45062eb0.jpg?1783920572",
+    "normal": "https://cards.scryfall.io/normal/front/f/b/fb567441-1880-4b34-9c48-6d2c45062eb0.jpg?1783920572",
+    "large": "https://cards.scryfall.io/large/front/f/b/fb567441-1880-4b34-9c48-6d2c45062eb0.jpg?1783920572",
+    "png": "https://cards.scryfall.io/png/front/f/b/fb567441-1880-4b34-9c48-6d2c45062eb0.png?1783920572",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/b/fb567441-1880-4b34-9c48-6d2c45062eb0.jpg?1783920572",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/b/fb567441-1880-4b34-9c48-6d2c45062eb0.jpg?1783920572",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/b/fb567441-1880-4b34-9c48-6d2c45062eb0.webp?1783920572",
+    "grid": "https://cards.scryfall.io/grid/front/f/b/fb567441-1880-4b34-9c48-6d2c45062eb0.webp?1783920572",
+    "display": "https://cards.scryfall.io/display/front/f/b/fb567441-1880-4b34-9c48-6d2c45062eb0.webp?1783920572",
+    "art": "https://cards.scryfall.io/art/front/f/b/fb567441-1880-4b34-9c48-6d2c45062eb0.webp?1783920572",
+    "crop": "https://cards.scryfall.io/crop/front/f/b/fb567441-1880-4b34-9c48-6d2c45062eb0.webp?1783920572",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/b/fb567441-1880-4b34-9c48-6d2c45062eb0.jpg?1783920572"
+  },
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, you may put a name sticker on it.\nWhenever you put a sticker on this enchantment, it deals damage equal to the number of o's in name stickers on this enchantment to any target.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "banned",
+    "pauper": "not_legal",
+    "vintage": "banned",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "banned",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "banned",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set": "unf",
+  "set_name": "Unfinity",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aunf&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/unf?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fb567441-1880-4b34-9c48-6d2c45062eb0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A82c2a58b-0ee2-454b-9ddd-670c1e788166&unique=prints",
+  "collector_number": "100",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Employees were instructed to refer to meteor showers as \"impromptu fireworks.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "David Sladek",
+  "artist_ids": [
+    "1eb883e9-886a-4ae4-958d-e8b9ade47cd5"
+  ],
+  "illustration_id": "e6542e6f-8429-4309-ad96-b328d70414e4",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30688,
+  "preview": {
+    "source": "Ruu",
+    "source_uri": "https://twitter.com/Ruu_TV/status/1573492745452376064",
+    "previewed_at": "2022-09-23"
+  },
+  "prices": {
+    "usd": "0.05",
+    "usd_foil": "0.10",
+    "usd_etched": null,
+    "eur": "0.04",
+    "eur_foil": "0.14",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580666&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3D_____%2BBalls%2Bof%2BFire",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3D_____%2BBalls%2Bof%2BFire",
+    "edhrec": "https://edhrec.com/route/?cc=_____+Balls+of+Fire"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F287714%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=676766&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=_____+Balls+of+Fire&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

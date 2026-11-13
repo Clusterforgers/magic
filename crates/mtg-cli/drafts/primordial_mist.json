@@ -1,0 +1,38 @@
+{
+  "oracle_id": "afc9e1d3-b012-49e9-8d22-89abbee03c22",
+  "name": "Primordial Mist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primordial Mist",
+      "oracle_fingerprint": "b9e3794234b4a5556cfcac3e44f9f7c2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [{ "May": { "effects": [{ "Manifest": {} }] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "ExilePermanents": { "filter": ["FaceDown", { "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Arrived": { "of": "Paid", "zone": "Exile" } },
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,244 @@
+{
+  "oracle_id": "393b9d9e-9d71-43e7-aede-eac7f85d2365",
+  "name": "Demonic Covenant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demonic Covenant",
+      "oracle_fingerprint": "55377933cb09523ef49dfd609ed67801",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacksAt": {
+                "what": [{ "Subtype": "Demon" }, { "ControlledBy": "You" }],
+                "at": "EachPlayer"
+              }
+            },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Demon",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Demon"],
+                      "power": 5,
+                      "toughness": 5,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              },
+              { "Mill": { "count": 2, "as": "milled" } },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "CountOf": {
+                          "subject": { "Bound": "milled" },
+                          "selector": [],
+                          "op": "Eq",
+                          "right": 2
+                        }
+                      },
+                      {
+                        "Any": [
+                          {
+                            "CountOf": {
+                              "subject": { "Bound": "milled" },
+                              "selector": [{ "Type": "Artifact" }],
+                              "op": "Eq",
+                              "right": 2
+                            }
+                          },
+                          {
+                            "CountOf": {
+                              "subject": { "Bound": "milled" },
+                              "selector": [{ "Type": "Artifact" }],
+                              "op": "Eq",
+                              "right": 0
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "Any": [
+                          {
+                            "CountOf": {
+                              "subject": { "Bound": "milled" },
+                              "selector": [{ "Type": "Battle" }],
+                              "op": "Eq",
+                              "right": 2
+                            }
+                          },
+                          {
+                            "CountOf": {
+                              "subject": { "Bound": "milled" },
+                              "selector": [{ "Type": "Battle" }],
+                              "op": "Eq",
+                              "right": 0
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "Any": [
+                          {
+                            "CountOf": {
+                              "subject": { "Bound": "milled" },
+                              "selector": [{ "Type": "Creature" }],
+                              "op": "Eq",
+                              "right": 2
+                            }
+                          },
+                          {
+                            "CountOf": {
+                              "subject": { "Bound": "milled" },
+                              "selector": [{ "Type": "Creature" }],
+                              "op": "Eq",
+                              "right": 0
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "Any": [
+                          {
+                            "CountOf": {
+                              "subject": { "Bound": "milled" },
+                              "selector": [{ "Type": "Enchantment" }],
+                              "op": "Eq",
+                              "right": 2
+                            }
+                          },
+                          {
+                            "CountOf": {
+                              "subject": { "Bound": "milled" },
+                              "selector": [{ "Type": "Enchantment" }],
+                              "op": "Eq",
+                              "right": 0
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "Any": [
+                          {
+                            "CountOf": {
+                              "subject": { "Bound": "milled" },
+                              "selector": [{ "Type": "Instant" }],
+                              "op": "Eq",
+                              "right": 2
+                            }
+                          },
+                          {
+                            "CountOf": {
+                              "subject": { "Bound": "milled" },
+                              "selector": [{ "Type": "Instant" }],
+                              "op": "Eq",
+                              "right": 0
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "Any": [
+                          {
+                            "CountOf": {
+                              "subject": { "Bound": "milled" },
+                              "selector": [{ "Type": "Kindred" }],
+                              "op": "Eq",
+                              "right": 2
+                            }
+                          },
+                          {
+                            "CountOf": {
+                              "subject": { "Bound": "milled" },
+                              "selector": [{ "Type": "Kindred" }],
+                              "op": "Eq",
+                              "right": 0
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "Any": [
+                          {
+                            "CountOf": {
+                              "subject": { "Bound": "milled" },
+                              "selector": [{ "Type": "Land" }],
+                              "op": "Eq",
+                              "right": 2
+                            }
+                          },
+                          {
+                            "CountOf": {
+                              "subject": { "Bound": "milled" },
+                              "selector": [{ "Type": "Land" }],
+                              "op": "Eq",
+                              "right": 0
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "Any": [
+                          {
+                            "CountOf": {
+                              "subject": { "Bound": "milled" },
+                              "selector": [{ "Type": "Planeswalker" }],
+                              "op": "Eq",
+                              "right": 2
+                            }
+                          },
+                          {
+                            "CountOf": {
+                              "subject": { "Bound": "milled" },
+                              "selector": [{ "Type": "Planeswalker" }],
+                              "op": "Eq",
+                              "right": 0
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "Any": [
+                          {
+                            "CountOf": {
+                              "subject": { "Bound": "milled" },
+                              "selector": [{ "Type": "Sorcery" }],
+                              "op": "Eq",
+                              "right": 2
+                            }
+                          },
+                          {
+                            "CountOf": {
+                              "subject": { "Bound": "milled" },
+                              "selector": [{ "Type": "Sorcery" }],
+                              "op": "Eq",
+                              "right": 0
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

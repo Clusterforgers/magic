@@ -1187,8 +1187,11 @@ pub(crate) fn sacrifice_up_to(filter: &Selector, count: usize) -> String {
 /// `count` of what `filter` describes, with `place` after them: "a creature you control", "2 creatures you control".
 pub(crate) fn counted(filter: &Selector, count: usize, extra: &str) -> String {
     let (head, tail) = phrase(filter);
+    // A filter that names the controller already says what `extra` would add ("you control").
     let tail = if tail.is_empty() {
         extra.to_owned()
+    } else if extra.is_empty() || tail.contains(extra) {
+        tail
     } else {
         format!("{tail} {extra}")
     };

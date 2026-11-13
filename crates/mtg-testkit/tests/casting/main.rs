@@ -88,6 +88,7 @@ mod free_casts;
 mod free_loops;
 mod freerunning;
 mod fuse;
+mod fz49_resolution_picks;
 mod g10a_convoked;
 mod g10d_spell_costs;
 mod g11c_taxes_draws;

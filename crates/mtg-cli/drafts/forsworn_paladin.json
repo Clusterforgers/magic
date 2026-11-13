@@ -1,0 +1,55 @@
+{
+  "oracle_id": "d3564614-4463-4683-83f0-07561ab3431c",
+  "name": "Forsworn Paladin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forsworn Paladin",
+      "oracle_fingerprint": "9a0ded6224a63311488b5b61c3843866",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "Tap", { "PayLife": 1 }],
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{B}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "ManaSpent": { "of": null, "from": { "subtypes": ["Treasure"] } } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Deathtouch" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

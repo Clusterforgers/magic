@@ -1,0 +1,63 @@
+{
+  "oracle_id": "e5a95145-dc29-4bfc-bb14-b7a269268366",
+  "name": "Tezzeret, Cruel Machinist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tezzeret, Cruel Machinist",
+      "oracle_fingerprint": "582f84bc0dfcc3f4fc14ecc6eb41e13a",
+      "abilities": [
+        { "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "Draw": {} }] } },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetPT": { "power": 5, "toughness": 5 } }, { "AddType": "Creature" }],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": { "min": 0, "max": null },
+                  "as": "cards"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "cards" },
+                  "to": { "BattlefieldFaceDown": {} },
+                  "as": "facedown"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "facedown" },
+                  "mods": [
+                    { "SetPT": { "power": 5, "toughness": 5 } },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
