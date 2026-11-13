@@ -627,6 +627,7 @@ impl PlayerView {
             enchanted_by: state.attachments_of_player(seat),
             effects: mtg_engine::rules::player_effects(state, seat),
             spirit: player.is_spirit(),
+            eyes: mtg_engine::spotlight::focus(state, seat),
             boss: match (player.phases(), player.schemes()) {
                 ((0, _), None) => None,
                 ((_, begun), schemes) => Some(crate::view::BossView {

@@ -96,6 +96,7 @@ pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineErr
     w14b_note_exiled(state, event);
     crate::memory::forget_object(state, event);
     crate::triggers::g10c_note_crime(state, event);
+    crate::spotlight::note(state, event);
     let folded = fold_event(state, event);
     // A read in the middle of the fold saw the state before the rest of the event: forget it.
     if changes_layers {
@@ -845,9 +846,16 @@ fn w14b_note_exiled(state: &mut GameState, event: &Event) {
 
 /// A player loses life to an effect: the loss, and the sum "the life lost this way" reads while a spell or ability resolves.
 fn lose_life(state: &mut GameState, id: PlayerId, amount: u32) -> Result<(), EngineError> {
-    change_life(state, id, amount, false)?;
+    // The spotlight's grace keeps a hero at 1 against the boss's side's spells and abilities.
+    let life = player_mut(state, id)?.life;
+    let wanted = i32::try_from(amount).unwrap_or(i32::MAX);
+    let lost =
+        u32::try_from(crate::spotlight::graced_life_loss(state, id, wanted, life)).unwrap_or(0);
+    if lost > 0 || lost == amount {
+        change_life(state, id, lost, false)?;
+    }
     if let Some(resolving) = state.resolving.as_mut() {
-        resolving.lost = resolving.lost.saturating_add(amount);
+        resolving.lost = resolving.lost.saturating_add(lost);
     }
     Ok(())
 }

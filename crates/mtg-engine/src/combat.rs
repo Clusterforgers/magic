@@ -330,6 +330,7 @@ pub(crate) fn can_attack(state: &GameState, id: ObjectId, player: PlayerId) -> b
     // A Two-Headed Giant team attacks as one: the active player declares the attacks of the team.
     controller_of(state, id)
         .is_some_and(|c| c == player || (state.shares_turns() && state.are_teammates(c, player)))
+        && !crate::spotlight::lull(state, player)
         && !cant_attack(state, id)
         && (!keywords::summoning_sick(state, id)
             || crate::combat_quirks::attacks_as_though_haste(state, id)

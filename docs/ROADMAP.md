@@ -48,6 +48,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Polish: replays of finished games from any seat's side with only what the viewer may know, block options that read each attacker and blocker once, solo play with bot seats that never stall a game at four levels (Easy random, Normal and Hard searching engine copies, Very Hard an information-set Monte Carlo tree search, Hard and Very Hard in worlds whose hidden cards are redealt, team-aware, capped thinking slots on the server, a threat model and interaction policy scored by a decision-quality suite, chess-style search with a decision clock, minimax block replies and an endgame probe, SPRT match testing on interaction decks), synthesized sound cues with a mute (`docs/server.md`, `docs/web.md`, `docs/bots.md`).
 - Deployment: two amd64 images, the Helm chart and ArgoCD app in `k3s-cluster-manifests`, `scripts/release.sh` (build, push, roll out, roll back) and a nightly `pg_dump` onto its own volume (`docs/deploy.md`).
 - Delves: the co-op boss rush with own Commander decks for 1 to 6 heroes, the Warrens ladder of four bosses with phases, relics, loot, shop, campfire and events, Spirits at 0 life, runs stored as event logs with fights as recorded games, the web pages and the bot simulator (`docs/delves.md`).
+- Delves fairness: the spotlight spreads the boss's side's attacks, removal and spotlight schemes over the heroes with a cap on any one hero's share, the grace and the lull open each fight, a boss takes commander damage but never loses to 21, and the table shows whom each boss-side seat eyes (`docs/delves.md`).
 - Delves difficulty: one scaling table by party size and Heat (life, hand, Reserves, Reinforcements, Warpath, minion seats that fall with the boss, the Last Bulwark), Escalation and Enrage, the scheme deck with its Omen, measured per party size (`docs/delves.md`).
 
 ## Live game
@@ -115,7 +116,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 ## Delves
 
 - [ ] (dl2) The party shares one team turn against the boss (CR 805 beyond Two-Headed Giant), so four heroes do not wait three turns
-- [ ] (dl3) Boss personalities and fair targeting: a boss spreads its attacks and removal across the heroes, and each boss shows whom it focuses
+- [ ] (dl3a) Boss personalities: each boss weighs threats its own way (the healer, the biggest board, the combo) within the spotlight's cap
 - [ ] (dl4) A won card names the card it replaces (a basic land today), chosen from the hero's deck list on the loot screen
 - [ ] (dl5) Campfire upgrades put a sticker on a card of the hero's deck for the rest of the run
 - [ ] (dl6) Risky relics are party decisions: the party votes to take one, and events can be party votes with a shared outcome

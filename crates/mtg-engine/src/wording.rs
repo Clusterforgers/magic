@@ -531,6 +531,7 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 Ref::AttachedPlayer => "enchanted player",
                 Ref::You => "you",
                 Ref::Monarch => "the monarch",
+                Ref::Spotlit => "the hero in the spotlight",
                 Ref::Chosen => "the chosen player",
                 _ => "a player",
             };
@@ -632,6 +633,7 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 Ref::You => "your",
                 Ref::Opponents => "an opponent's",
                 Ref::Monarch => "the monarch's",
+                Ref::Spotlit => "the spotlit hero's",
                 Ref::Chosen => "the chosen player's",
                 _ => "each",
             };

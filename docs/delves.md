@@ -15,8 +15,30 @@ Design of Delves, the co-op campaign: a party of 1 to 6 heroes fights a ladder o
 - A boss (`content/<theme>.json`) has a 40-card deck of verified real cards, a brain (Hard by default), a base life and life per hero, an opening hand, a boss card and two phases.
 - Its advantages are open: its boss cards are emblems in its command zone from the start; each phase is an emblem that arrives when its life falls to a share of its starting life (66 % and 33 %). The table shows the boss's phase and the next one on the seat's chips.
 - Every boss has Escalation (each of its end steps, every hero loses 1 life for every four turns it has taken) and Enrage (from its tenth turn, every hero loses its turns minus nine each upkeep), so a stalled fight ends.
-- Schemes: the theme's scheme deck, shuffled from the seed for each fight, sets one scheme in motion as each boss turn begins (CR 314 in the manner of Archenemy); the next one is public as the Omen. Their effects count the heroes: a Rat per hero, a sacrifice and a discard from each hero, a drain of each hero.
+- Schemes: the theme's scheme deck, shuffled from the seed for each fight, sets one scheme in motion as each boss turn begins from its third (CR 314 in the manner of Archenemy); the next one is public as the Omen. Their effects count the heroes (a Rat per hero, a sacrifice and a discard from each hero, a drain of each hero) or name the hero in the spotlight.
 - Minions: a lieutenant seat on the boss's side with another boss's deck, its own life, turn and bot brain; it falls with the boss (`LossReason::LeaderFell`), so the party wins when the boss falls.
+
+## Spotlight
+
+The boss's side spreads its pressure over the party (`mtg-engine`, `spotlight.rs`; bots in `mtg-testkit`, `brain/spotlight.rs`).
+
+- Attention: damage a boss-side source deals a hero, life a hero loses to a boss-side spell or ability, and each permanent of a hero that one removes (3, a token 1) count as pressure on that hero. The window is the last three rounds of the table, or one round per hero for a bigger party.
+- Cap: a hero who took more than 40 % of the window's pressure (60 % with two heroes standing, from 6 pressure on) is capped. The boss's side neither attacks a capped hero nor aims removal or player effects at them while another hero is a fair target, unless the capped hero is an overwhelming threat: a presence at least twice every other hero's (and 15 or more), or creatures whose power reaches the boss's life.
+- Focus: the boss eyes the uncapped hero with the most presence (creature power, 2 per other nonland permanent, cards in hand) less attention, ties going round the table with the boss's turns; each minion eyes the next hero of that order, so the boss's side splits its targets. The bots weigh a hero by threat less attention (1 per point) plus 6 for the eyed hero, never by low life alone. The table shows the eyed hero on each boss-side seat ("Eyes Ann").
+- "The hero in the spotlight" (`Ref::Spotlit`) is the controller's focus: a scheme that names it (Marked Prey) goes round the party as its own drain adds attention.
+- Grace: until every standing hero has finished three turns, damage and life loss from the boss's side leave a hero at 1 life at least. A hero's own cards are not held back.
+- Politics-free: the boss's side reads only the board, the spotlight and the life totals; no deals, no kingmaking.
+
+## Ramp-up
+
+- Lull: the boss's side's creatures can't attack and its schemes wait until the boss's third turn, so the heroes have three turns before the first attack. The Omen shows the first scheme from the start.
+- The boss bots hold back sweepers (wipes, and damage or sacrifice to each player or creature without a target) through the boss's first three turns.
+- Reserves and Reinforcements begin on the boss's second turn and Warpath on its fourth; Escalation grows by 1 every four boss turns and Enrage begins on the tenth.
+
+## Commander rules in a fight
+
+- Heroes play their Commander decks under the Commander rules: 40 life at the start of a run (carried after), the commander tax, 21 combat damage from one commander eliminates a hero.
+- The boss and its minions have no commander. They take commander damage as normal damage but never lose to 21 of it, so a big commander shortens the fight without ending it in one hit.
 
 ## Scaling
 
@@ -31,7 +53,7 @@ One table (`scale.rs`) sets the boss for the party's size, so every size meets t
 | 5 | 100 % | base − 1 | | 2 | | 1 | yes |
 | 6 | 90 % | base | | 2 | 1 | 2 | yes |
 
-- Life is a share of `life + life_per_hero × (heroes − 1)`. Reserves is a 2/2 Zombie each upkeep; Reinforcements a card and a 2/2 Zombie; Warpath untaps the boss's creatures after its first combat and adds a combat and a main phase; the Last Bulwark begins with the last phase: no more than three creatures can attack the boss each combat.
+- Life is a share of `life + life_per_hero × (heroes − 1)`. Reserves is a 2/2 Zombie each upkeep from the boss's second turn; Reinforcements a card and a 2/2 Zombie from its second; Warpath, from its fourth turn, untaps the boss's creatures after its first combat and adds a combat and a main phase; the Last Bulwark begins with the last phase: no more than three creatures can attack the boss each combat.
 - Heat raises the difficulty: each Heat gives the boss a card more in its opening hand and the boss and its minions a fifth more life; Heat 2 gives them a stronger brain.
 
 ## Loot

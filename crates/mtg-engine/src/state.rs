@@ -417,6 +417,8 @@ pub struct GameState {
     pub(crate) memory: crate::memory::Memory,
     /// The restart under way (CR 727): who restarted the game and the cards that enter after the opening.
     pub(crate) restart: Option<crate::restart::Restart>,
+    /// The pressure the boss's side put on each hero of a campaign fight (`spotlight`).
+    pub(crate) spotlight: crate::spotlight::Spotlight,
 }
 
 impl GameState {
@@ -959,6 +961,10 @@ impl Hash for GameState {
         self.next_timestamp.hash(state);
         self.next_object.hash(state);
         self.resolving.hash(state);
+        // A game outside a campaign fight hashes as it did before the spotlight.
+        if !self.spotlight.is_empty() {
+            self.spotlight.hash(state);
+        }
         self.pending_triggers.hash(state);
         self.trigger_round.hash(state);
         self.delayed.hash(state);

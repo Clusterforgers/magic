@@ -211,6 +211,10 @@ impl FormatRules for Commander {
     }
 
     fn loss_condition(&self, state: &GameState, player: PlayerId) -> Option<LossReason> {
+        // A boss's side takes commander damage as damage, but 21 of it does not make them lose (`docs/delves.md`).
+        if crate::spotlight::is_boss_side(state, player) {
+            return None;
+        }
         let threshold = state.ruleset().commander_damage()?;
         (damage_dealt_to(state, player) >= threshold).then_some(LossReason::CommanderDamage)
     }

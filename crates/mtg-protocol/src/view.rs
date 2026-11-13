@@ -531,6 +531,10 @@ pub struct PlayerView {
     #[serde(default, skip_serializing_if = "is_false")]
     #[ts(as = "Option<bool>", optional)]
     pub spirit: bool,
+    /// The hero a seat of a boss's side eyes next under the spotlight (campaign fights); left out for other seats.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub eyes: Option<PlayerId>,
     /// A boss seat's phases: their names in order and how many have begun; left out for a seat with none.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]

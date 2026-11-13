@@ -192,6 +192,7 @@ pub mod snapshot;
 pub mod speed;
 pub mod spend;
 pub mod spirits;
+pub mod spotlight;
 pub mod stack;
 pub mod state;
 pub mod take_back;

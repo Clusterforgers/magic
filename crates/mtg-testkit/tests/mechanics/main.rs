@@ -179,6 +179,7 @@ mod rmt5_engine;
 mod rmt7_keyword_kinds;
 mod rmt8_mechanics;
 mod runed_crown;
+mod spotlight;
 mod t19b_reminder_duals;
 mod tail_alone;
 mod tail_pairs;

@@ -76,6 +76,7 @@ pub fn plays(seen: &Seen<'_>, options: &PriorityOptions) -> Vec<PriorityAction> 
     if options.companion {
         plays.push(PriorityAction::BringCompanion);
     }
+    plays.retain(|play| !super::spotlight::held_back(seen, play));
     plays
 }
 
