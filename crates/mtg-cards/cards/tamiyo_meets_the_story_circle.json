@@ -53,6 +53,17 @@
                     ]
                   }
                 }
+              },
+              {
+                "Performed": {
+                  "action": "Investigated",
+                  "times": {
+                    "Product": [
+                      { "Count": [{ "Is": { "Bound": "discarded" } }, { "In": "Graveyard" }] },
+                      2
+                    ]
+                  }
+                }
               }
             ]
           }
