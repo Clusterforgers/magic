@@ -479,7 +479,7 @@
    "colors": "B",
    "brain": "Hard",
    "life": 30,
-   "life_per_hero": 25,
+   "life_per_hero": 35,
    "hand": 9,
    "line": "My children are hungry.",
    "deck": [
@@ -557,7 +557,7 @@
    "colors": "G",
    "brain": "Hard",
    "life": 36,
-   "life_per_hero": 25,
+   "life_per_hero": 35,
    "hand": 10,
    "line": "Moss grows on the bones of the bold.",
    "deck": [
@@ -635,7 +635,7 @@
    "colors": "BR",
    "brain": "Hard",
    "life": 30,
-   "life_per_hero": 25,
+   "life_per_hero": 35,
    "hand": 9,
    "rules": [
     "vex"
@@ -720,8 +720,8 @@
    "name": "Grimgut, the Warren King",
    "colors": "BR",
    "brain": "Hard",
-   "life": 36,
-   "life_per_hero": 30,
+   "life": 32,
+   "life_per_hero": 35,
    "hand": 9,
    "rules": [
     "grimgut"

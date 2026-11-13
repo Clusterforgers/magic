@@ -756,7 +756,7 @@
   "kind": "Boss",
   "type_line": "Boss — Troll Patriarch",
   "art": "mossjaw",
-  "text": "Mossjaw starts with two extra cards and more life for each hero.\nCreatures you control get +1/+1.",
+  "text": "Mossjaw starts with three extra cards and more life for each hero.\nCreatures you control get +1/+1 and have trample.",
   "abilities": [
    {
     "Static": {
@@ -779,6 +779,25 @@
       }
      ]
     }
+   },
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "AddKeyword": "Trample"
+      }
+     ]
+    }
    }
   ]
  },
@@ -788,7 +807,7 @@
   "kind": "Phase",
   "type_line": "Boss Phase",
   "art": "regrowth",
-  "text": "At the beginning of your upkeep, you gain 3 life.",
+  "text": "At the beginning of your upkeep, you gain 3 life and create a 3/3 green Troll creature token.",
   "abilities": [
    {
     "Triggered": {
@@ -802,6 +821,26 @@
       {
        "GainLife": {
         "amount": 3
+       }
+      },
+      {
+       "CreateToken": {
+        "token": {
+         "Custom": {
+          "name": "Troll",
+          "colors": [
+           "Green"
+          ],
+          "types": [
+           "Creature"
+          ],
+          "subtypes": [
+           "Troll"
+          ],
+          "power": 3,
+          "toughness": 3
+         }
+        }
        }
       }
      ]
@@ -1125,7 +1164,7 @@
   "kind": "Boss",
   "type_line": "Boss — Advantage",
   "art": "reinforcements",
-  "text": "At the beginning of your upkeep, draw a card. (A boss gets one Reinforcements for each hero after the first.)",
+  "text": "At the beginning of your upkeep, draw a card and create a 2/2 black Zombie creature token. (A boss gets one Reinforcements for each hero after the first.)",
   "abilities": [
    {
     "Triggered": {
@@ -1138,6 +1177,26 @@
      "effects": [
       {
        "Draw": {}
+      },
+      {
+       "CreateToken": {
+        "token": {
+         "Custom": {
+          "name": "Zombie",
+          "colors": [
+           "Black"
+          ],
+          "types": [
+           "Creature"
+          ],
+          "subtypes": [
+           "Zombie"
+          ],
+          "power": 2,
+          "toughness": 2
+         }
+        }
+       }
       }
      ]
     }

@@ -12,7 +12,7 @@ Design of Delves, the co-op campaign: a party of 1 to 4 heroes fights a ladder o
 
 ## Bosses
 
-- A boss (`content/<theme>.json`) has a 40-card deck of verified real cards, a brain (Hard by default), life `life + life_per_hero × (heroes − 1)`, an opening hand of 9, a boss card and two phases.
+- A boss (`content/<theme>.json`) has a 40-card deck of verified real cards, a brain (Hard by default), life `life + life_per_hero × (heroes − 1)`, an opening hand of 9 (Mossjaw 10), a boss card and two phases. For each hero after the first it also gets a Reinforcements emblem: a card and a 2/2 Zombie at each of its upkeeps.
 - Its advantages are open: the boss card is an emblem in its command zone from the start; each phase is an emblem that arrives when its life falls to a share of its starting life (66 % and 33 %). The table shows the boss's phase and the next one on the seat's chips.
 - Heat raises the difficulty: Heat 1 gives bosses a fifth more life, Heat 2 a stronger brain.
 
@@ -32,3 +32,8 @@ Design of Delves, the co-op campaign: a party of 1 to 4 heroes fights a ladder o
 
 - Custom cards are not on Scryfall: id, name, type line, rules text, art placeholder key, role and price, and their abilities in the card DSL. The engine plays each as an emblem; the web draws them from the content endpoint.
 - A content test checks that every boss and reward card is Verified in the corpus, every boss deck has 40 cards and every custom card keeps all its abilities.
+
+## Tuning
+
+- `cargo run --release -p mtg-campaign --example delve_sim -- fights <games> <heroes> <level>` plays each boss against a fresh party of bot heroes on the three fixture precons; `runs` plays whole runs with life carried and loot taken. Games are untimed and seeded, so each result replays.
+- The target at Heat 0 for a party of Normal bots: each lieutenant falls in half to two thirds of fights, the final boss is the hardest. A fight takes 6 to 9 rounds, 10 to 15 minutes at a human pace.
