@@ -1,0 +1,79 @@
+{
+  "oracle_id": "5ae50388-7e36-4a83-a618-0148944c5099",
+  "name": "The Motherlode, Excavator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Motherlode, Excavator",
+      "oracle_fingerprint": "c70322c81e79a259279143947bd7cdc1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "You",
+                  "counter": { "Other": "energy" },
+                  "count": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "Not": { "Supertype": "Basic" } },
+                      { "ControlledBy": { "Target": 0 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 4 }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Type": "Land" },
+                                { "Not": { "Supertype": "Basic" } },
+                                { "ControlledBy": "Defending" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          { "Destroy": { "what": { "Target": 0 } } },
+                          {
+                            "Continuous": {
+                              "affected": {
+                                "Each": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "Defending" },
+                                  { "Not": { "HasKeyword": "Flying" } }
+                                ]
+                              },
+                              "mods": ["CantBlock"],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

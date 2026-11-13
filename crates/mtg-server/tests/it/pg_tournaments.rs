@@ -2,8 +2,8 @@
 //! each round's matches become games whose seats are bound to their players, results come from the
 //! game records and the organiser's corrections, Swiss rounds avoid rematches and hand out byes,
 //! elimination ends with one entrant, drops stop pairings, and strangers, players and guests are
-//! refused what is the organiser's; a match game has no player host, and one dropped without a result (closed or
-//! expired) is made again when the tournament is read; an entrant dropped mid-game concedes it;
+//! refused what is the organiser's; a match game has no player host, and one dropped without a result (closed,
+//! expired or ended by an admin) is made again when the tournament is read; an entrant dropped mid-game concedes it;
 //! a match played to its end on sockets reports its result by itself, the standings carry the tiebreakers through
 //! draws, drops and corrections, an elimination bracket of three gives a bye, and a 2v2 match is one team game.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
@@ -650,6 +650,26 @@ async fn a_match_game_has_no_player_host_and_one_dropped_without_a_result_is_mad
     let retried = act(&server, &id, "games", &org).await;
     assert_eq!(retried.status, 200, "{}", retried.text());
     assert_eq!(remade(&retried.json()), again);
+
+    // An admin ends the game: it counts as not played, and the next read makes another.
+    let ended = server
+        .registry
+        .end_by_admin(again.parse().unwrap(), Some("stuck".to_owned()))
+        .await
+        .unwrap();
+    assert_eq!(ended, mtg_server::registry::AdminEnd::Ended);
+    let after_admin = remade(&view(&server, &id, &org).await);
+    assert!(
+        ![&game, &fresh, &again].contains(&&after_admin),
+        "{after_admin}"
+    );
+    assert!(
+        server
+            .registry
+            .handle(after_admin.parse().unwrap())
+            .is_some()
+    );
+    assert!(round(&view(&server, &id, &org).await, 1)[0]["outcome"].is_null());
 }
 
 /// A tournament server that also holds the cards, so players bring Commander decks to their match games.

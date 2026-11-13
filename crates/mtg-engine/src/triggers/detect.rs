@@ -840,11 +840,7 @@ fn ordinal(post: &GameState, later: &[Event], player: PlayerId, kind: Tally) -> 
                 form,
                 ..
             },
-        ) => {
-            *who == player
-                && *amount > 0
-                && !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss)
-        }
+        ) => *who == player && form.life_lost(*amount) > 0,
         _ => false,
     };
     let after = post.tallied(player, kind);
@@ -1160,7 +1156,12 @@ fn about_players_and_permanents(
                 && !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss)
             {
                 // A life floor lets damage take less life than it deals (CR 614.1): the trigger sees the life lost.
-                let lost = super::life_floor::damage_lost(look.pre, look.earlier, *player, *amount);
+                let lost = super::life_floor::damage_lost(
+                    look.pre,
+                    look.earlier,
+                    *player,
+                    form.life_lost(*amount),
+                );
                 if lost > 0 || *amount == 0 {
                     found.push(Happened::LifeLost {
                         player: *player,
@@ -1458,6 +1459,7 @@ fn counted(state: &GameState, subjects: Vec<Target>, amount: u32) -> Cause {
         amount,
         source: None,
         against: None,
+        counters: Vec::new(),
     }
 }
 
@@ -2194,8 +2196,13 @@ fn matching_permanents(
         ) => {
             let putting = matches!(pattern, TriggerPattern::CountersPut { .. });
             let on = object(*on)?;
-            ((*delta > 0) == putting && of_kind(counter, kind) && picks(what, on)?)
-                .then(|| counted(state, vec![Target::Object(on)], happened.amount()))
+            ((*delta > 0) == putting && of_kind(counter, kind) && picks(what, on)?).then(|| {
+                let mut found = counted(state, vec![Target::Object(on)], happened.amount());
+                if putting {
+                    found.counters = vec![(kind.clone(), delta.unsigned_abs())];
+                }
+                found
+            })
         }
         // A chapter ability triggers when lore counters take the Saga from below its number to its number or more
         // (CR 714.2b), so several chapters trigger on one change that passes them.
@@ -2548,7 +2555,7 @@ fn e16a_first_discards(post: &GameState, members: &[Happened], member: &Happened
 const fn names_players(to: Option<&Ref>) -> bool {
     matches!(
         to,
-        Some(Ref::EachPlayer | Ref::Opponents | Ref::You | Ref::Defending)
+        Some(Ref::EachPlayer | Ref::Opponents | Ref::You | Ref::Defending | Ref::Chosen)
     )
 }
 
@@ -2624,6 +2631,12 @@ fn batch_causes<'a>(
             }
         }
         group.amount = group.amount.saturating_add(weight);
+        for (kind, count) in found.counters {
+            match group.counters.iter_mut().find(|(had, _)| *had == kind) {
+                Some((_, sum)) => *sum = sum.saturating_add(count),
+                None => group.counters.push((kind, count)),
+            }
+        }
     }
     groups.into_iter().map(|(_, cause)| cause).collect()
 }

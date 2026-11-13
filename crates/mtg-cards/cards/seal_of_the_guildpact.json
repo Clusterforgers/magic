@@ -1,0 +1,27 @@
+{
+  "oracle_id": "9a2d60bc-3024-4a1b-ad74-81645fd227c4",
+  "name": "Seal of the Guildpact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seal of the Guildpact",
+      "oracle_fingerprint": "a7a569d1997fbd5862624427926b5f8a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": { "Colors": 2 } }
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Stat": { "of": "Affected", "stat": "R4700ChosenColors" } }
+          }
+        }
+      ]
+    }
+  ]
+}

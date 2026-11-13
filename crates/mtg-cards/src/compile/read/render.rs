@@ -53,6 +53,7 @@ mod put_onto;
 mod r11w_batch;
 mod r11w_leaves;
 mod r11w_returned_as;
+mod r4710_steps;
 mod r7d;
 mod r9w_dread;
 mod r9w_manifest;
@@ -590,6 +591,10 @@ fn produced_wordings(texts: &mut Vec<String>) {
 /// and the wordings of the oracle text that no template reads ("you" after another player's event, "Then" opening a
 /// sentence, "deals damage equal to its power").
 pub fn written_variants(ability: &Ability) -> Vec<String> {
+    // A choice whose chosen objects differ in a quality is worded only with that rule.
+    if let Some(texts) = super::r4709_differ::r4709_differ_texts(ability, written_variants) {
+        return texts;
+    }
     // A permission with riders is worded only as the permission without them and its riders.
     if let Some(texts) = super::r401_riders::r401_rider_texts(ability, written_variants) {
         return texts;
@@ -750,6 +755,7 @@ fn written_anew(ability: &Ability) -> Vec<String> {
     super::r375_phase::r375_wordings(ability, written_variants, &mut texts);
     super::r404_land::r404_land_wordings(ability, written_variants, &mut texts);
     super::r404_commander::r404_commander_wordings(ability, &mut texts);
+    super::r4700_writers::r4700_wordings(ability, written_variants, &mut texts);
     let more = super::t18_words::t18_wordings(&texts);
     for text in more {
         if !texts.contains(&text) {
@@ -1597,6 +1603,7 @@ fn put_back_text(choose: &Effect, moved: &Effect) -> Option<String> {
             count,
             bind,
             rest_as: None,
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(name),
@@ -1646,6 +1653,7 @@ fn returned_text(choose: &Effect, moved: &Effect) -> Option<String> {
             count,
             bind,
             rest_as: None,
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(name),
@@ -1854,6 +1862,7 @@ fn c10_vp_planar_text(effect: &Effect) -> Option<String> {
         match act {
             crate::effect::PlanarAct::Planeswalk => "planeswalk",
             crate::effect::PlanarAct::ChaosEnsues => "chaos ensues",
+            crate::effect::PlanarAct::RollPlanarDie => "roll the planar die",
         }
         .to_owned(),
     )
@@ -2378,6 +2387,23 @@ impl Writer<'_> {
             _ => false,
         }
     }
+    /// "put the same number and kind of counters on ~": the counters the triggering event put (`PutCountersOf.put`).
+    fn r4706_same_counters(&mut self, effect: &Effect, on: &Ref) -> Option<String> {
+        let Effect::PutCountersOf {
+            of: Ref::Triggering,
+            each: None,
+            one_kind: false,
+            per_kind: None,
+            ..
+        } = effect
+        else {
+            return None;
+        };
+        Some(format!(
+            "put the same number and kind of counters on {}",
+            self.counter_place(on, false)?
+        ))
+    }
 
     /// The object counters are put on, taken from or moved: "~", one target, or (with `several`) "each
     /// creature you control".
@@ -2555,6 +2581,7 @@ impl Writer<'_> {
                 each,
                 one_kind,
                 per_kind,
+                ..
             } => self.l292_counters_of(on, of, each.as_ref(), *one_kind, *per_kind)?,
             Effect::MoveCounters {
                 from,
@@ -2969,6 +2996,7 @@ impl Writer<'_> {
             } if super::w7b_player_counters::w7b_player_kind(counter) => {
                 super::w7b_player_counters::w7b_player_gets(effect)?
             }
+            Effect::PutCountersOf { on, put: true, .. } => self.r4706_same_counters(effect, on)?,
             effect if is_counters(effect) => self.counters(effect)?,
             Effect::CreateToken { .. } => self.created(effect)?,
             Effect::DealDamage {
@@ -3600,6 +3628,9 @@ impl Writer<'_> {
             .or_else(|| self.g8e_shield_pair(effects))
             .or_else(|| self.w22_shields(effects))
             .or_else(|| self.mill_then_change(effects))
+            .or_else(|| self.r4710_if_they_do(effects))
+            .or_else(|| r4710_steps::r4710_may_put_revealed(effects))
+            .or_else(|| r4710_steps::r4710_from_hand(effects))
             .or_else(|| self.move_instead(effects))
             .or_else(|| self.either_way(effects))
             .or_else(|| self.flicker_targets(effects))
@@ -3630,6 +3661,7 @@ impl Writer<'_> {
             .or_else(|| self.c7_untap_held(effects))
             .or_else(|| self.r7d_countered_exiled(effects))
             .or_else(|| self.rmt2_countered_into_library(effects))
+            .or_else(|| super::r4703_reads::r4703_copy_all_text(effects))
             .or_else(|| Self::rmt2_destroy_either(effects))
             .or_else(|| self.r7d_tapped_held(effects))
             .or_else(|| self.taken_and_typed(effects))
@@ -3689,11 +3721,20 @@ impl Writer<'_> {
     /// Tokens created: "create a Treasure token" for you, "target opponent creates a Treasure token" for another player.
     fn created(&mut self, effect: &Effect) -> Option<String> {
         match effect {
-            Effect::CreateToken { who, .. } if *who != Ref::You => Some(format!(
-                "{} {}",
-                self.player(who)?,
-                create::text(effect, self.per)?
-            )),
+            Effect::CreateToken { who, .. } if *who != Ref::You => {
+                let player = self.player(who)?;
+                // A copy another player makes: "each of your teammates creates a token that's a copy of ~".
+                let made = create::text(effect, self.per).or_else(|| {
+                    let mut yours = effect.clone();
+                    if let Effect::CreateToken { who, .. } = &mut yours {
+                        *who = Ref::You;
+                    }
+                    self.copy_token(&yours, false)?
+                        .strip_prefix("create ")
+                        .map(|rest| format!("creates {rest}"))
+                })?;
+                Some(format!("{player} {made}"))
+            }
             _ => create::text(effect, self.per).or_else(|| self.copy_token(effect, false)),
         }
     }
@@ -3721,6 +3762,7 @@ impl Writer<'_> {
             .or_else(|| self.w22_next(effect))
             .or_else(|| self.rmt2_divided_prevention(effect))
             .or_else(|| self.rmt2_no_lands(effect))
+            .or_else(|| self.r4710_no_monarch(effect))
             .or_else(|| self.r301_cant_phase_out(effect))
             .or_else(|| self.rmt2_reverberation(effect))
             .or_else(|| self.rmt2_target_spell_uncounterable(effect))
@@ -3758,6 +3800,7 @@ impl Writer<'_> {
             Ref::You => "you".to_owned(),
             Ref::Opponents => "each opponent".to_owned(),
             Ref::EachPlayer => "each player".to_owned(),
+            Ref::Teammates => "each of your teammates".to_owned(),
             Ref::Target(0)
                 if self.target_is(|what| {
                     matches!(what, Targetable::Player | Targetable::Opponent)
@@ -3791,6 +3834,16 @@ impl Writer<'_> {
     fn life(&self, amount: &Amount) -> Option<String> {
         if let Some(life) = r307c_words::r307c_life(amount) {
             return Some(life);
+        }
+        if let Amount::Stat {
+            stat: crate::value::StatKind::R4700ChosenColors,
+            ..
+        } = amount
+        {
+            return Some(format!(
+                "1 life for each {}",
+                super::amounts::for_each_text(amount)?
+            ));
         }
         Some(match amount {
             Amount::Stat { of, stat } if *of == Ref::Target(0) && self.named => {

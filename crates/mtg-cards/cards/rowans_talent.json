@@ -1,7 +1,7 @@
 {
   "oracle_id": "0af6f3ce-59e8-4797-aa1b-dbdb5288fe3d",
   "name": "Rowan's Talent",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rowan's Talent",
@@ -42,9 +42,11 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 147, "end": 273 }
+          "Triggered": {
+            "when": {
+              "Did": { "action": "ActivatedLoyalty", "who": "You", "what": [{ "Is": "Attached" }] }
+            },
+            "effects": [{ "CopyAbility": { "what": "Dealer", "new_targets": true } }]
           }
         }
       ]

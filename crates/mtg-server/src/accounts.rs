@@ -7,7 +7,7 @@
 use std::fmt;
 use std::time::Duration;
 
-use mtg_db::{DeckRepo, FavouritePreconRepo, FixMarkRepo, PrefsRepo, ReadRepo};
+use mtg_db::{DeckGroupRepo, DeckRepo, FavouritePreconRepo, FixMarkRepo, PrefsRepo, ReadRepo};
 use sqlx::PgPool;
 use thiserror::Error;
 
@@ -260,13 +260,16 @@ impl Accounts {
         Ok(Outcome::Done)
     }
 
-    /// Deletes the account with everything that refers to it, in one transaction: its decks, its fix
+    /// Deletes the account with everything that refers to it, in one transaction: its deck groups, its decks, its fix
     /// marks, its read verdicts, its favourite precons, its preferred art, its sessions (by cascade) and its hold on seats (a seat stays and loses its account). The admin's account stays ([`Outcome::Admin`]), since nothing makes another one.
     pub(crate) async fn delete_user(&self, user: UserId) -> Result<Outcome, AccountError> {
         let mut tx = self.pool.begin().await?;
         if let Some(stop) = lock_unless_admin(&mut tx, user).await? {
             return Ok(stop);
         }
+        DeckGroupRepo::delete_all_of(&mut tx, user.uuid())
+            .await
+            .map_err(|error| AccountError::Unavailable(error.to_string()))?;
         DeckRepo::delete_all_of(&mut tx, user.uuid())
             .await
             .map_err(|error| AccountError::Unavailable(error.to_string()))?;

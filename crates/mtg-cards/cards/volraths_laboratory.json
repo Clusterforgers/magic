@@ -1,0 +1,25 @@
+{
+  "oracle_id": "f2a6e26c-6bd6-4fca-ba9f-d52d01fc03ef",
+  "name": "Volrath's Laboratory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Volrath's Laboratory",
+      "oracle_fingerprint": "9a3153ba0647cdfd5e3985884cc647f3",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "ColorAndCreatureType" }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap"],
+            "effects": [{ "CreateToken": { "token": { "R4700OfChosen": { "size": 2 } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

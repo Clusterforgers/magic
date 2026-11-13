@@ -135,6 +135,7 @@ pub fn warp_riders() -> Vec<Ability> {
                 count: Bounds::default(),
                 bind: WARPED.to_owned(),
                 rest_as: None,
+                differ: None,
             },
             Effect::DelayedTrigger {
                 until: None,

@@ -1276,7 +1276,11 @@ pub(crate) fn grantable_as_is(
                                 seat.mana(),
                                 &sources,
                                 help.help(),
-                                seat.life(),
+                                crate::r4707_pay_costs::r4707_phyrexian_life(
+                                    state,
+                                    player,
+                                    seat.life(),
+                                ),
                                 &spend,
                             )
                         },
@@ -1372,6 +1376,7 @@ pub(crate) fn hindrance_as_is(
     sources: &[ManaOption],
     life: i32,
 ) -> Option<Unplayable> {
+    let life = crate::r4707_pay_costs::r4707_phyrexian_life(state, player, life);
     let Some(card) = state.object(id) else {
         return Some(Unplayable::Cost);
     };
@@ -1381,10 +1386,11 @@ pub(crate) fn hindrance_as_is(
     let printed_spend = Spend::for_spell(state, id, player, card.card().x_in_cost > 0);
     let sources = &for_card(state, sources, id);
     let no_pool = ManaPool::default();
+    let only_from = crate::r4705_spend_from::r4705_pool(state, id, pool);
     let pool = if crate::r400_no_mana::r400_no_mana(state, id) {
         &no_pool
     } else {
-        pool
+        only_from.as_ref().unwrap_or(pool)
     };
     let base = help::offered(state, player, id, &[]);
     let timing = sorcery_timing(state, player);

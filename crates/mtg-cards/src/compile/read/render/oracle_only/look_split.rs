@@ -27,6 +27,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             count: first,
             bind: kept,
             rest_as: Some(others),
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(moved_kept),
@@ -39,6 +40,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             count: second,
             bind: bottomed,
             rest_as: Some(exiled),
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(moved_bottomed),

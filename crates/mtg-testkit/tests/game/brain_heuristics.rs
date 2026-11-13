@@ -280,7 +280,9 @@ fn ramp_and_the_right_land_come_first(#[values(Level::Normal, Level::Hard)] leve
 }
 
 #[rstest]
-fn a_hand_is_kept_with_two_to_five_lands(#[values(1, 2, 3, 4, 5, 6, 7, 8)] seed: u64) {
+fn a_hand_is_kept_with_three_to_five_lands_or_two_and_an_early_play(
+    #[values(1, 2, 3, 4, 5, 6, 7, 8)] seed: u64,
+) {
     let engine =
         Engine::new(duel_setup(&[Duel::Gruul, Duel::Orzhov], seed, HouseRules::default()).unwrap())
             .unwrap();
@@ -302,9 +304,14 @@ fn a_hand_is_kept_with_two_to_five_lands(#[values(1, 2, 3, 4, 5, 6, 7, 8)] seed:
                     .contains(&mtg_core::card::CardType::Land)
             })
             .count();
+        let early = options.hand.iter().any(|id| {
+            seen.chars(*id)
+                .is_some_and(|c| !c.types.contains(mtg_core::card::CardType::Land))
+                && seen.mana_value(*id) <= 2
+        });
         assert_eq!(
             keep(&seen, options),
-            (2..=5).contains(&lands),
+            (3..=5).contains(&lands) || (lands == 2 && early),
             "{lands} lands"
         );
     }

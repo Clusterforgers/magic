@@ -143,6 +143,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             min: found,
             max: most.max(fewest),
             text: text.clone(),
+            groups: Vec::new(),
         });
     }
     let taken = match pick_selections(cx, &selections)? {

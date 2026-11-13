@@ -74,6 +74,7 @@ pub(super) fn at_next_end_step(way: CastWay, name: &str, effect: Effect) -> Abil
                 count: Bounds::default(),
                 bind: name.to_owned(),
                 rest_as: None,
+                differ: None,
             },
             Effect::DelayedTrigger {
                 until: None,

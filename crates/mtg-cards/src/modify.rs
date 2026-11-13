@@ -623,6 +623,8 @@ pub enum Prohibited {
     Crew,
     /// Become suspected (CR 701.60): an effect that would suspect it does nothing to it.
     BecomeSuspected,
+    /// Become the monarch (CR 724): "You can't become the monarch this turn."; the monarch stays who it was.
+    BecomeMonarch,
     /// Phase in (CR 702.26): a phased-out permanent covered stays phased out through its controller's untap step and any
     /// other moment it would phase in.
     PhaseIn,
@@ -661,6 +663,21 @@ pub enum Prohibited {
         /// The sources; every source when empty.
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
         sources: Selector,
+    },
+    /// Pay costs of casting spells or activating abilities with life or with the permanents `sacrifice` picks (CR 601.2h,
+    /// 602.2b): a spell or ability whose cost needs it can't be cast or activated, a Phyrexian symbol is paid with mana,
+    /// paying 0 life stays open, and a resolving effect still makes them pay. Mana abilities are left out with
+    /// `but_mana_abilities`: "Players can't pay life or sacrifice creatures to cast spells or activate abilities."
+    PayCosts {
+        /// Life can't be paid.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        life: bool,
+        /// The permanents that can't be sacrificed; none when sacrifices stay open.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        sacrifice: Option<Selector>,
+        /// The costs of mana abilities stay open ("abilities that aren't mana abilities").
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        but_mana_abilities: bool,
     },
 }
 
@@ -858,6 +875,14 @@ pub enum GameRule {
     /// A player in the group who would roll one or more dice rolls that many plus one instead and ignores the lowest roll
     /// (Wyll, Blade of Frontiers); each such rule adds one more die and one more ignored roll.
     ExtraDie(Ref),
+    /// A player in the group who would roll one or more planar dice rolls that many plus one instead and ignores one
+    /// (CR 901.9): "If you would roll one or more planar dice, instead roll that many planar dice plus one and ignore
+    /// one." No game the engine plays has a planar deck, so it never applies (the rulings of Fractured Powerstone).
+    ExtraPlanarDie(Ref),
+    /// A player in the group who would planeswalk first looks at the top two cards of their planar deck, puts one on the
+    /// bottom and the other on top (CR 901.10, Susan Foreman). No game the engine plays has a planar deck, so it never
+    /// applies.
+    PlaneswalkLookTwo(Ref),
     /// The players play with the top card of their library revealed to every seat.
     RevealTop(Ref),
     /// The players play with their hands revealed.
@@ -905,6 +930,20 @@ pub enum GameRule {
         /// Whether it works only on the controller's turns.
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         your_turns: bool,
+    },
+    /// Creatures the players control can boast twice during each of their turns rather than once (CR 702.142c): a boast
+    /// ability is an activated ability limited to once each turn that works only if its source attacked this turn.
+    BoastTwice(Ref),
+    /// The players may activate loyalty abilities of planeswalkers they control on any player's turn any time they could
+    /// cast an instant (Teferi's Talent's emblem).
+    LoyaltyAnyTime(Ref),
+    /// Loyalty abilities of planeswalkers the players activate cost an additional `[+plus]` to activate ("Planeswalkers'
+    /// loyalty abilities you activate cost an additional [+1] to activate.").
+    LoyaltyCostsMore {
+        /// The players who activate.
+        who: Ref,
+        /// The loyalty counters the cost adds.
+        plus: u32,
     },
     /// The players' maximum hand size is `size` (CR 402.2): the least of the sizes in force.
     MaxHandSize {
@@ -970,11 +1009,17 @@ pub enum GameRule {
     UpToInDeck(u32),
     /// A booster draft rule: nothing in a game; no `from`.
     Draft(DraftRule),
+    /// "If this card is in a graveyard, effects from spells named Muscle Burst count it as a card named Muscle Burst.": a
+    /// resolving spell of that name reads the card as named so; from the graveyard only.
+    CountsAsNamed(String),
     /// "This spell can't be copied." (CR 707.10): an effect that would copy the spell makes no copy of it; no `from`.
     CantBeCopied,
     /// "You can't spend mana to cast this spell.": the cast of the card offers no mana of the pool and no mana ability, so
     /// only what pays without mana (convoke, delve) pays its cost; no `from`.
     CantSpendMana,
+    /// "Spend only mana produced by basic lands to cast this spell.": the cast of the card spends only mana whose source
+    /// the filter holds for, from the pool or from mana abilities of such sources; no `from`.
+    SpendOnlyFrom(crate::spend::SpendFilter),
     /// The next spell the rule's controller casts that `what` selects gets the benefit, and the rule ends with that cast
     /// ("the next creature spell you cast this turn costs {1} less"); with the duration `UntilEndOfTurn` it also ends with
     /// the turn. `what` names the cards, not the stack object (no `Spell`).
@@ -994,6 +1039,10 @@ pub enum GameRule {
         change: crate::ability::CostChange,
         /// The mana added or removed.
         mana: ManaCostX,
+        /// How many times the mana changes the cost, counted as each spell is cast ("where X is the amount of life you
+        /// lost this turn").
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        per: Amount,
     },
     /// A triggered ability of a permanent the rule's controller controls triggers an additional time when the event
     /// `cause` describes makes it trigger ("if a creature dying causes a triggered ability ... to trigger"), or any event
@@ -1128,6 +1177,9 @@ pub enum GameRule {
     /// Spells and abilities the opponents of the players control can't cause them to sacrifice permanents; costs they pay
     /// themselves still can.
     OpponentsCantMakeSacrifice(Ref),
+    /// Spells and abilities the opponents of the players control can't cause them to discard cards or sacrifice
+    /// permanents; costs they pay themselves still can.
+    OpponentsCantMakeDiscardOrSacrifice(Ref),
     /// The players may spend mana as though it were mana of any color or of any type (CR 609.4b): "You may spend mana as
     /// though it were mana of any color", "... to cast creature spells".
     SpendManaAs {
