@@ -215,6 +215,7 @@ mod r376_nearest;
 mod r376_seats;
 mod r376_secret;
 mod r379_atoms;
+mod r400_reads;
 mod r401_flash;
 mod r401_riders;
 mod r402_copy_riders;
@@ -644,6 +645,19 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     if kind == ClauseKind::Static
         && let Some(found) = r375_phase::r375_no_phase_in_read(text)
     {
+        return Some(found);
+    }
+    if kind == ClauseKind::Static
+        && let Some(found) = r400_reads::r400_static_read(text)
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Triggered
+        && let Some(found) = r400_reads::r400_triggered_read(text)
+    {
+        return Some(found);
+    }
+    if let Some(found) = r400_reads::r400_alt_cost_read(text) {
         return Some(found);
     }
     if let Some(found) =

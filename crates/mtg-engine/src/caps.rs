@@ -149,6 +149,7 @@ const RUNS: &[&str] = &[
     "Cost.OwnManaValue",
     "Cost.RemoveCountersAmong",
     "Cost.Discard.Hand",
+    "Cost.RevealFromHand.Hand",
     "Cost.Sacrifice.All",
     "Cost.PayLife.Counted.Activated",
     "Cost.PayEnergy.Counted.Activated",
@@ -425,6 +426,7 @@ const RUNS: &[&str] = &[
     "Rule.MustBlock",
     "Rule.MustBlockAttacker",
     "Rule.Combat",
+    "Rule.Combat.AttackIfAnyAttacks",
     "Rule.IgnoreHexproof",
     "Rule.CantBeCountered",
     "Rule.CantBeRegenerated",
@@ -971,6 +973,7 @@ const RUNS: &[&str] = &[
     "Rule.UpToInDeck",
     "Rule.Draft",
     "Rule.CantBeCopied",
+    "Rule.CantSpendMana",
     "Pred.Modified",
     "Pred.RingBearer",
     "Pred.HasAdventure",
@@ -1087,6 +1090,8 @@ mod tests {
     #[case::paying_life("Cost.PayLife", true)]
     #[case::paying_a_counted_amount_of_life("Cost.PayLife.Counted", false)]
     #[case::r303c_discarding_the_hand_to_cast("Cost.Discard.Hand", true)]
+    #[case::r400_revealing_the_hand_to_cast("Cost.RevealFromHand.Hand", true)]
+    #[case::r400_following_another_attacker("Rule.Combat.AttackIfAnyAttacks", true)]
     #[case::r303c_sacrificing_all_of_a_kind_to_cast("Cost.Sacrifice.All", true)]
     #[case::once_a_turn("Ability.Limit", true)]
     #[case::other_activators("Ability.By", true)]
@@ -1307,6 +1312,7 @@ mod tests {
     #[case::modes_with_an_extra_cost("Effect.Modal.ExtraModeCost", true)]
     #[case::r302_modes_counted_in_pawprints("Effect.Modal.Pawprints", true)]
     #[case::r302_a_spell_that_cant_be_copied("Rule.CantBeCopied", true)]
+    #[case::r400_a_spell_cast_without_mana("Rule.CantSpendMana", true)]
     #[case::every_mode_under_a_condition("Effect.Modal.AllIf", true)]
     #[case::voting("Effect.Vote", true)]
     #[case::a_kept_number("Effect.Let", true)]

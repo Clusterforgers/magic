@@ -498,6 +498,10 @@ pub enum CombatQuirk {
     /// creature attacks, all creatures you control attack if able."): a declaration with them and without such a creature is
     /// refused.
     AttackWithAll,
+    /// Each of them attacks if able once any creature the selector picks attacks, judged for its controller ("If a
+    /// creature you control attacks, this creature also attacks if able."): a declaration with such a creature and
+    /// without one of them that can attack for nothing is refused.
+    AttackIfAnyAttacks(Selector),
     /// They can attack as though they did not have defender.
     AttackDespiteDefender,
     /// They can attack as though they had haste (CR 302.6): "Enchanted creature can attack as though it had haste."
@@ -928,6 +932,9 @@ pub enum GameRule {
     Draft(DraftRule),
     /// "This spell can't be copied." (CR 707.10): an effect that would copy the spell makes no copy of it; no `from`.
     CantBeCopied,
+    /// "You can't spend mana to cast this spell.": the cast of the card offers no mana of the pool and no mana ability, so
+    /// only what pays without mana (convoke, delve) pays its cost; no `from`.
+    CantSpendMana,
     /// The next spell the rule's controller casts that `what` selects gets the benefit, and the rule ends with that cast
     /// ("the next creature spell you cast this turn costs {1} less"); with the duration `UntilEndOfTurn` it also ends with
     /// the turn. `what` names the cards, not the stack object (no `Spell`).

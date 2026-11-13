@@ -1,15 +1,13 @@
 {
   "oracle_id": "97acd977-164d-49d5-b3a1-72e0d75c9016",
   "name": "Hogaak, Arisen Necropolis",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Hogaak, Arisen Necropolis",
       "oracle_fingerprint": "e9aaa162645426977a606ae6764fc30c",
       "abilities": [
-        {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 40 } }
-        },
+        { "Rule": { "rule": "CantSpendMana" } },
         { "Keyword": "Convoke" },
         { "Keyword": "Delve" },
         {

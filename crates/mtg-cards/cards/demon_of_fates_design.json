@@ -1,7 +1,7 @@
 {
   "oracle_id": "53716e0b-4d4e-40b0-8370-38e11f73d195",
   "name": "Demon of Fate's Design",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Demon of Fate's Design",
@@ -10,9 +10,15 @@
         { "Keyword": "Flying" },
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 16, "end": 154 }
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Type": "Enchantment" }],
+                "once": true,
+                "rather": [{ "PayLife": { "Stat": { "of": "This", "stat": "ManaValue" } } }],
+                "any_cast": true
+              }
+            }
           }
         },
         {

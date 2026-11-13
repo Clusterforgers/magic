@@ -126,6 +126,8 @@ pub(crate) enum Part {
     Unattach,
     /// The payer discards every card in their hand ("Discard your hand"): nothing to choose, an empty hand pays it.
     DiscardHand,
+    /// The payer reveals every card in their hand ("reveal your hand"): nothing to choose, an empty hand pays it.
+    RevealHand,
     /// The payer sacrifices every permanent they control that matches ("sacrifice all permanents you control"): nothing
     /// to choose, none pays it.
     SacrificeAll(Selector),
@@ -472,6 +474,7 @@ impl Part {
                 Part::ExileTop(_) => Part::ExileTop(x),
                 Part::Unattach => Part::Unattach,
                 Part::DiscardHand => Part::DiscardHand,
+                Part::RevealHand => Part::RevealHand,
                 Part::SacrificeAll(filter) => Part::SacrificeAll(filter.clone()),
                 Part::Counters { counter, .. } => Part::Counters {
                     counter: counter.clone(),
@@ -541,6 +544,7 @@ impl Part {
             Part::Exert
             | Part::Unattach
             | Part::DiscardHand
+            | Part::RevealHand
             | Part::SacrificeAll(_)
             | Part::OthersGainLife(_)
             | Part::X(_) => return None,
@@ -560,6 +564,7 @@ impl Part {
             Part::OthersGainLife(_) => "Cost.OthersGainLife",
             Part::Unattach => "Cost.Unattach",
             Part::DiscardHand => "Cost.Discard",
+            Part::RevealHand => "Cost.RevealFromHand",
             Part::SacrificeAll(_) => "Cost.Sacrifice",
             Part::ExileTop(_) => "Cost.ExileTop",
             Part::Counters { .. } => "Cost.RemoveCounters",
@@ -604,6 +609,7 @@ impl Part {
             Part::OthersGainLife(amount) => format!("Each other player gains {amount} life"),
             Part::Unattach => "Unattach this permanent".to_owned(),
             Part::DiscardHand => "Discard your hand".to_owned(),
+            Part::RevealHand => "Reveal your hand".to_owned(),
             Part::SacrificeAll(_) => "Sacrifice all of them you control".to_owned(),
             Part::ExileTop(1) => "Exile the top card of your library".to_owned(),
             Part::ExileTop(amount) => format!("Exile the top {amount} cards of your library"),
@@ -658,7 +664,7 @@ impl Part {
             Part::DiscardRandom(amount) => random::payable(payer, *amount).then(Vec::new),
             Part::Damage(_) => payer.state.object(payer.source).is_some().then(Vec::new),
             Part::Unattach => unattach::payable(payer).then(Vec::new),
-            Part::DiscardHand | Part::OthersGainLife(_) => Some(Vec::new()),
+            Part::DiscardHand | Part::RevealHand | Part::OthersGainLife(_) => Some(Vec::new()),
             Part::SacrificeAll(filter) => r303c_sacrifice_all::r303c_all(payer, filter),
             Part::ExileTop(amount) => exile_top::payable(payer, *amount).then(Vec::new),
             Part::Pick(pick) if pick.kind == Kind::Evidence => {
@@ -742,6 +748,7 @@ impl Part {
                 .iter()
                 .map(|object| discard::event(player, *object))
                 .collect(),
+            Part::RevealHand => reveal::hand_events(state, player, source),
             Part::ExileTop(amount) => exile_top::events(state, player, *amount),
             Part::Counters { counter, count } => counters::events(state, source, counter, *count),
             Part::PutCounters { counter, count } => source::put(state, source, counter, *count),
@@ -1088,6 +1095,9 @@ mod tests;
 fn whole_part(item: &CostItem) -> Option<Part> {
     if discards_the_hand(item) {
         return Some(Part::DiscardHand);
+    }
+    if reveal::reveals_the_hand(item) {
+        return Some(Part::RevealHand);
     }
     r303c_sacrifice_all::r303c_reads(item).map(Part::SacrificeAll)
 }

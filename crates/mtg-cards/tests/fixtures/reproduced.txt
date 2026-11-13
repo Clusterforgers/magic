@@ -460,6 +460,7 @@ Deluxe Dragster
 Delver of Secrets // Insectile Aberration
 Demolition Field
 Demon Bolt
+Demon of Fate's Design
 Demon of Wailing Agonies
 Demonic Embrace
 Demotion
@@ -570,6 +571,7 @@ Eel Umbra
 Eiganjo Dynastorian // Replenish
 Eiganjo Free-Riders
 Eivor, Battle-Ready
+Ekundu Cyclops
 Elder Deep-Fiend
 Elder Owyn Lyons
 Eldrazi Conscription
@@ -906,6 +908,7 @@ High Ground
 Highspire Artisan
 History of Benalia
 Hoarder's Greed
+Hogaak, Arisen Necropolis
 Holdout Settlement
 Honor Troll
 Honor's Reward
@@ -1024,6 +1027,7 @@ Kellogg, Dangerous Mind
 Kemba's Banner
 Kenrith's Transformation
 Kess, Dissident Mage
+Kentaro, the Smiling Cat
 Kessig Wolf Run
 Kill! Maim! Burn!
 Kimoyo Beads
@@ -1066,6 +1070,7 @@ Krosan Verge
 Kulrath Knight
 Kydele, Chosen of Kruphix
 Kyler, Sigardian Emissary
+Land Grant
 Landslide
 Lantern Flare
 Laquatus's Disdain
@@ -1144,6 +1149,7 @@ Magical Hack
 Magistrate's Scepter
 Magmatic Galleon
 Magmatic Insight
+Magnetic Web
 Magus of the Moon
 Make Disappear
 Makeshift Mauler

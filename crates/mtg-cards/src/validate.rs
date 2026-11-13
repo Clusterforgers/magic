@@ -97,7 +97,8 @@ fn tag_of<T: Serialize>(value: &T) -> String {
 }
 
 /// The name of a part of a cost that takes all of a kind the payer has, with nothing to choose: "discard your hand"
-/// (`Cost.Discard.Hand`), "sacrifice all permanents you control" (`Cost.Sacrifice.All`).
+/// (`Cost.Discard.Hand`), "reveal your hand" (`Cost.RevealFromHand.Hand`), "sacrifice all permanents you control"
+/// (`Cost.Sacrifice.All`).
 fn r303c_whole(item: &CostItem) -> Option<&'static str> {
     match item {
         CostItem::Discard {
@@ -105,6 +106,14 @@ fn r303c_whole(item: &CostItem) -> Option<&'static str> {
             filter: None,
         } if counted.0 == [Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)] => {
             Some("Discard.Hand")
+        }
+        CostItem::RevealFromHand {
+            count: Amount::Count(counted),
+            filter,
+        } if filter.is_empty()
+            && counted.0 == [Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)] =>
+        {
+            Some("RevealFromHand.Hand")
         }
         CostItem::Sacrifice {
             filter,
@@ -421,6 +430,9 @@ struct Walker<'a> {
     r379_alt_x: bool,
     /// Whether a choice between costs is walked as the required additional cost of a spell, the one place the engine asks it.
     choosing: bool,
+    /// Whether the cost walked is what a spell's caster pays in place of its mana cost, which pays all of a kind with
+    /// nothing to choose ("reveal your hand").
+    r400_alternative: bool,
     /// Whether a choice between costs is the whole cost of a payment an effect asks once ("unless they sacrifice a creature or
     /// pay 3 life"), which the engine asks of the payer.
     r281_paying: bool,
@@ -469,6 +481,7 @@ impl<'a> Walker<'a> {
             x_now: false,
             r379_alt_x: false,
             choosing: false,
+            r400_alternative: false,
             r281_paying: false,
             r306_paying: false,
             amounting: Amounting::Other,
@@ -1672,17 +1685,7 @@ impl<'a> Walker<'a> {
                 if matches!(item, CostItem::Untap) && !w.activated_cost {
                     w.uses("Cost", "Untap.Elsewhere");
                 }
-                // Only the caster of a spell pays all of a kind with nothing to choose; an effect's payer may be another player.
-                if let Some(whole) = r303c_whole(item).filter(|_| w.choosing && !w.activated_cost) {
-                    w.uses("Cost", whole);
-                } else if !is_fixed(item) {
-                    let activated = match (w.activated_cost, w.rather_cost) {
-                        (true, _) => ".Activated",
-                        (false, true) => ".Rather",
-                        (false, false) => "",
-                    };
-                    w.uses("Cost", &format!("{}.Counted{activated}", tag_of(item)));
-                }
+                w.r400_counted(item);
                 match item {
                     CostItem::PayLife(amount)
                     | CostItem::PayEnergy(amount)
@@ -1886,7 +1889,9 @@ impl<'a> Walker<'a> {
             .any(|item| r301_pick_filter(item).is_some_and(Selector::r301_reads_x));
         let held = self.x_now;
         self.x_now |= reads_x;
+        let alternative = std::mem::replace(&mut self.r400_alternative, true);
         self.at("cost", |w| w.cost(cost));
+        self.r400_alternative = alternative;
         self.x_now = held;
         if reads_x {
             self.uses("Cost", "Pick.FilterX");
@@ -1992,6 +1997,23 @@ impl<'a> Walker<'a> {
             self.problem("a spell's targets are read with Targeting in what it applies to");
         }
         self.at("targeting", |w| w.selector(targeting));
+    }
+
+    /// The name of a counted part of a cost: a part that takes all of a kind (only the caster of a spell pays all of a
+    /// kind with nothing to choose; an effect's payer may be another player), or a count the engine may not pay there.
+    fn r400_counted(&mut self, item: &CostItem) {
+        if let Some(whole) = r303c_whole(item)
+            .filter(|_| (self.choosing || self.r400_alternative) && !self.activated_cost)
+        {
+            self.uses("Cost", whole);
+        } else if !is_fixed(item) {
+            let activated = match (self.activated_cost, self.rather_cost) {
+                (true, _) => ".Activated",
+                (false, true) => ".Rather",
+                (false, false) => "",
+            };
+            self.uses("Cost", &format!("{}.Counted{activated}", tag_of(item)));
+        }
     }
 
     /// What a cast pays rather than the mana cost: a permission cost whose counted amounts the engine counts for the card.
@@ -4544,6 +4566,9 @@ impl Walker<'_> {
                 if matches!(rule, GameRule::Draft(_)) {
                     w.problem("a card follows a draft rule by a static ability, not by an effect");
                 }
+                if matches!(rule, GameRule::CantSpendMana) {
+                    w.problem("a spell is cast without mana by a static ability of its own, not by an effect");
+                }
                 if matches!(rule, GameRule::CantBeCopied) {
                     w.problem("a spell can't be copied by a static ability of its own, not by an effect");
                 }
@@ -5298,7 +5323,17 @@ impl Walker<'_> {
             | GameRule::MustBlock(who)
             | GameRule::CantBeCountered(who)
             | GameRule::CantBeRegenerated(who)
-            | GameRule::Combat { who, .. } => self.at(tag, |w| w.reference(who, Kind::Object)),
+            | GameRule::Combat { who, .. } => {
+                if let GameRule::Combat {
+                    quirk: crate::modify::CombatQuirk::AttackIfAnyAttacks(among),
+                    ..
+                } = rule
+                {
+                    self.uses("Rule", "Combat.AttackIfAnyAttacks");
+                    self.at(tag.clone(), |w| w.at("among", |w| w.selector(among)));
+                }
+                self.at(tag, |w| w.reference(who, Kind::Object));
+            }
             GameRule::MustBlockAttacker { .. } | GameRule::IgnoreHexproof { .. } => {
                 self.at(tag, |w| w.targeting_rule(rule));
             }
@@ -5420,7 +5455,8 @@ impl Walker<'_> {
             | GameRule::AttackOnlyNearest(_)
             | GameRule::DamageAsWither
             | GameRule::ManaBurn
-            | GameRule::CantBeCopied => {}
+            | GameRule::CantBeCopied
+            | GameRule::CantSpendMana => {}
             GameRule::UpToInDeck(most) => {
                 if *most < 2 {
                     self.at(tag, |w| w.problem("a deck rule allows at least two copies"));
@@ -5641,6 +5677,7 @@ impl Walker<'_> {
                     | GameRule::UpToInDeck(_)
                     | GameRule::Draft(_)
                     | GameRule::CantBeCopied
+                    | GameRule::CantSpendMana
             ) => self.at("from", |w| {
                 w.problem("a deck rule holds outside the game: write the rule without `from`");
             }),

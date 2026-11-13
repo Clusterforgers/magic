@@ -1,0 +1,25 @@
+{
+  "oracle_id": "6c89e4e6-c4d7-416c-b985-41739c6f5b50",
+  "name": "Ekundu Cyclops",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ekundu Cyclops",
+      "oracle_fingerprint": "596936918b71d95c403eb4ff3fcc281e",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": "This",
+                "quirk": {
+                  "AttackIfAnyAttacks": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
