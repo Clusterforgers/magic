@@ -100,6 +100,20 @@ fn r4702_lose_land_types(ability: &Ability, texts: &mut Vec<String>) {
     }
     let gain = gain.clone();
     *mods = vec![gain];
+    // The chosen name is worded here, after the group: "Lands your opponents control with the chosen name".
+    let mut named = "";
+    if let Some(preds) = value
+        .get_mut("Static")
+        .and_then(|body| body.get_mut("affected"))
+        .and_then(|affected| affected.get_mut("Each"))
+        .and_then(Value::as_array_mut)
+    {
+        let before = preds.len();
+        preds.retain(|pred| *pred != json!("ChosenName"));
+        if preds.len() != before {
+            named = " with the chosen name";
+        }
+    }
     let Ok(twin) = serde_json::from_value::<Ability>(value) else {
         return;
     };
@@ -109,7 +123,7 @@ fn r4702_lose_land_types(ability: &Ability, texts: &mut Vec<String>) {
         .map(|text| {
             text.replacen(
                 " have \"",
-                " lose all land types and abilities, and they gain \"",
+                &format!("{named} lose all land types and abilities, and they gain \""),
                 1,
             )
         })
