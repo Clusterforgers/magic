@@ -158,6 +158,7 @@ pub(super) fn r4710_from_hand(effects: &[Effect]) -> Option<(String, usize)> {
             count,
             bind,
             rest_as: None,
+            differ: None,
         },
         put @ (Effect::Manifest { .. } | Effect::Cloak { .. }),
         ..,

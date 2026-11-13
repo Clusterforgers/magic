@@ -170,7 +170,7 @@ const TEMPLATES: [Template; 126] = [
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
-pub(super) const IMPERATIVES: [Template; 19] = [
+pub(super) const IMPERATIVES: [Template; 20] = [
     super::r4706_counters::r4706_same_counters,
     super::actions::goad,
     super::actions::suspect,
