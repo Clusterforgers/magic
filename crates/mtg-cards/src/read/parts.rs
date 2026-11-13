@@ -659,6 +659,17 @@ pub(super) fn replace_by(ctx: &Ctx, by: &ReplaceBy, depth: u8, out: &mut Vec<Ste
             out.push(Step::new(depth, "as it enters, first:"));
             effects::list(ctx, list, depth + 1, out);
         }
+        ReplaceBy::R4700ThenChoose {
+            effects: list,
+            choice,
+        } => {
+            out.push(Step::new(depth, "as it enters, first:"));
+            effects::list(ctx, list, depth + 1, out);
+            out.push(Step::new(
+                depth,
+                format!("then choose {}", generic::node(ctx, choice)),
+            ));
+        }
         ReplaceBy::Plus(list) => {
             out.push(Step::new(depth, "it happens, and with it:"));
             effects::list(ctx, list, depth + 1, out);

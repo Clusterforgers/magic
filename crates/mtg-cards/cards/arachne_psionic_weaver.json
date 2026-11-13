@@ -1,7 +1,7 @@
 {
   "oracle_id": "28d500ea-720f-4332-891e-404fb03acb5c",
   "name": "Arachne, Psionic Weaver",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Arachne, Psionic Weaver",
@@ -21,9 +21,17 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 121, "end": 212 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "R4700ThenChoose": {
+                "effects": [
+                  { "Choose": { "from": "Opponents", "as": "opponent" } },
+                  { "LookAtHand": { "of": { "Bound": "opponent" } } }
+                ],
+                "choice": { "CardTypeOf": 507 }
+              }
+            }
           }
         },
         {

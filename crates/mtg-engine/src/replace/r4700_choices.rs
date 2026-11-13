@@ -7,7 +7,8 @@ use mtg_core::card::Subtype;
 use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
 
-use super::{Asked, Pass};
+use super::w5d_instead::Ran;
+use super::{Applied, Asked, Candidate, Origin, Pass, Unit, slots_of};
 use crate::choose::{Choice, ChoiceOption, OptionOptions};
 use crate::decision::{Decision, DecisionKind};
 use crate::error::EngineError;
@@ -102,6 +103,38 @@ impl Pass<'_> {
             }
             _ => Ok(Asked::Got(None)),
         }
+    }
+
+    /// Runs `effects` for the permanent entering at `at`, then asks its controller `choice` and has the permanent
+    /// remember it ("As ~ enters, look at an opponent's hand, then choose a card type other than creature"); the
+    /// effects' events come first in the batch.
+    pub(super) fn r4700_then_choose(
+        &mut self,
+        at: usize,
+        candidate: &Candidate,
+        (effects, choice): (&[mtg_cards::effect::Effect], EntersChoice),
+        (object, controller): (ObjectId, PlayerId),
+        unit: &Unit,
+        applied: Vec<Origin>,
+    ) -> Result<Applied, EngineError> {
+        let events = match self.w5d_run(at, candidate, effects, unit) {
+            Ran::Events(events) => events,
+            Ran::Ask(decision) => return Ok(Applied::Ask(decision)),
+            Ran::Kept => Vec::new(),
+        };
+        let chosen = match self.chooses(candidate.object.id, controller, choice)? {
+            Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
+            Asked::Got(chosen) => chosen,
+        };
+        let events = self.w9c_fresh_tokens(events);
+        let mut entering = self.slots[at].clone();
+        entering.applied = applied;
+        let mut slots = slots_of(events);
+        slots.push(entering);
+        let entered = at + slots.len() - 1;
+        self.slots.splice(at..=at, slots);
+        self.w2b_remember(entered, object, controller, chosen);
+        Ok(Applied::Done)
     }
 
     /// The index of the option `controller` picks: asked unless there is one option or none.

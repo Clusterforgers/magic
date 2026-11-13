@@ -194,6 +194,7 @@ mod r405_pieces;
 mod r408_flashback_x;
 mod r409_kicker_x;
 mod r4700_choices;
+mod r4700_look_then_choose;
 mod r4700_top_cards;
 mod r4f_stack_move;
 mod r4i_may_flash;
