@@ -138,3 +138,44 @@ fn r403_reads_back_whole(#[case] name: &str) {
         report.clauses
     );
 }
+
+#[rstest]
+#[case::legendary_only(
+    "Stunning Strike",
+    r#"{ "Not": { "Supertype": "Legendary" } }"#,
+    r#"{ "Supertype": "Legendary" }"#
+)]
+#[case::no_vigilance("Denry Klin, Editor in Chief", r#", { "Other": "vigilance" }"#, "")]
+#[case::two_counters_needed(
+    "Denry Klin, Editor in Chief",
+    r#""op": "Ge", "right": 1"#,
+    r#""op": "Ge", "right": 2"#
+)]
+#[case::two_trample_counters(
+    "Voidpouncer",
+    r#"{ "Other": "trample" }, "count": 1 }"#,
+    r#"{ "Other": "trample" }, "count": 2 }"#
+)]
+#[case::a_flying_counter("Voidpouncer", r#"{ "Other": "trample" }"#, r#"{ "Other": "flying" }"#)]
+#[case::three_kinds("Grimdancer", r#""count": 2"#, r#""count": 3"#)]
+#[case::plus_two("Far Fortune, End Boss", r#""Add": 1"#, r#""Add": 2"#)]
+#[case::plus_one("Aether Revolt", r#""Add": 2"#, r#""Add": 1"#)]
+#[case::triple("Anthem of Rakdos", r#""Multiply": 2"#, r#""Multiply": 3"#)]
+#[case::paid("Thought Lash", "DeclinedCumulativeUpkeep", "PaidCumulativeUpkeep")]
+#[case::declined(
+    "Hibernation's End",
+    "PaidCumulativeUpkeep",
+    "DeclinedCumulativeUpkeep"
+)]
+#[case::without_battles("Role Reversal", "\"Battle\",\n", "")]
+#[case::artifacts_only(
+    "Legerdemain",
+    r#""types": ["Artifact", "Creature"]"#,
+    r#""types": ["Artifact"]"#
+)]
+fn r403_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
+    let file = r403_file(name);
+    assert!(file.contains(from), "{name} has {from}");
+    let report = r403_report(name, &file.replacen(from, to, 1));
+    assert_ne!(report.verdict(), Verdict::Accepted, "{name}: {to}");
+}
