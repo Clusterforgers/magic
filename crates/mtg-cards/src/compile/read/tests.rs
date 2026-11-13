@@ -402,6 +402,7 @@ mod r371_owner;
 mod r378_stickers;
 mod r3g_outside;
 mod r4h_writers;
+mod r5512_mana_writers;
 mod r5b_writers;
 mod r5c;
 mod r5e_writers;

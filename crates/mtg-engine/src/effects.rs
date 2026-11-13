@@ -475,7 +475,9 @@ pub(crate) fn lasts(
         | Duration::UntilSkippedThisTurn
         // `TheirNextTurn` ends with the first later turn of the player it names (`r377_skips`), and applies only from a
         // later turn on (`r377_waits`).
-        | Duration::TheirNextTurn => true,
+        | Duration::TheirNextTurn
+        // `UntilCreatureSpellCast` reads the effect's own timestamp (`lasts_by`).
+        | Duration::UntilCreatureSpellCast => true,
         // `DuringItsControllersNextTurn` is begun for the player whose turn it waits for (`continuous.rs`).
         Duration::UntilEndOfYourNextTurn | Duration::DuringItsControllersNextTurn => {
             state.is_alive(controller)
@@ -714,6 +716,9 @@ impl ContinuousEffect {
             Duration::WhileHasCounter(kind) => self.holds_counter(state, kind),
             Duration::WhileEnchanted => self.stays_enchanted(state),
             Duration::WhileMonarch(_) => self.anchor.is_some() && state.monarch == self.anchor,
+            Duration::UntilCreatureSpellCast => {
+                !crate::r5512_until_cast::r5512_creature_cast_since(state, self.timestamp)
+            }
             other => lasts(state, other, self.turn, self.controller, self.source),
         }
     }

@@ -278,6 +278,9 @@ pub enum Pred {
     },
     /// Is an Aura card that could enchant the source ("an Aura card in your hand that could enchant this creature", CR 303.4).
     CanEnchantSource,
+    /// Is a permanent that one of the Auras the reference names could be attached to now ("another permanent it can
+    /// enchant", CR 303.4, 701.3b).
+    EnchantableBy(Ref),
     /// Has {X} in its mana cost ("a spell with {X} in its mana cost", CR 107.3).
     XInCost,
     /// Has a Phyrexian symbol in its mana cost ("a spell with {H} in its mana cost", CR 107.4f).
@@ -532,6 +535,9 @@ pub enum Pred {
         /// The fewest mana from such sources.
         least: u32,
     },
+    /// A spell on the stack cast using mana made by one of the permanents the reference names, as that object ("using mana
+    /// produced by ~"); mana a permanent made before it last changed zones is another object's.
+    ManaFrom(Ref),
     /// Is a card in a graveyard that was put there from the battlefield this turn ("creature cards in your graveyard that were
     /// put there from the battlefield this turn").
     GravedThisTurn,

@@ -320,6 +320,8 @@ pub struct GameState {
     pub(crate) r379_votes: Vec<Vec<(PlayerId, u32)>>,
     /// The spells each player has cast this game.
     pub(crate) r379_cast_game: BTreeMap<PlayerId, u32>,
+    /// The timestamp clock as the latest creature spell of the game was cast (`r5512_until_cast.rs`).
+    pub(crate) r5512_creature_cast_at: Option<u64>,
     /// The "since your last turn" history (`r379_since.rs`); derived from the turn events and left out of the hash, so a
     /// game hashes as it did before it was kept.
     pub(crate) r379_since: crate::r379_since::Since,
@@ -955,6 +957,10 @@ impl Hash for GameState {
         // A game hashes as it did before the spells of the game were counted until a spell is cast.
         if !self.r379_cast_game.is_empty() {
             self.r379_cast_game.hash(state);
+        }
+        // A game hashes as it did before until a creature spell is cast.
+        if let Some(at) = self.r5512_creature_cast_at {
+            at.hash(state);
         }
         // Likewise a game in which no seat looked at its library by hand.
         if !self.looked_by_hand.is_empty() {

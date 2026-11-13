@@ -129,7 +129,11 @@ spend_as: unknown,
 /**
  * The spells it is for; everything when absent.
  */
-spells: unknown, } } | { "RevealTop": Array<PlayerId> } | { "RevealHand": Array<PlayerId> } | { "ControlSearches": Array<PlayerId> } | { "ExileFound": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "LoyaltyTwice": Array<PlayerId> } | { "RevealFirstDraw": { 
+spells: unknown, 
+/**
+ * With `spells`, the permanents whose abilities it is also for.
+ */
+abilities: unknown, } } | { "RevealTop": Array<PlayerId> } | { "RevealHand": Array<PlayerId> } | { "ControlSearches": Array<PlayerId> } | { "ExileFound": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "LoyaltyTwice": Array<PlayerId> } | { "RevealFirstDraw": { 
 /**
  * Whether the reveal is optional.
  */

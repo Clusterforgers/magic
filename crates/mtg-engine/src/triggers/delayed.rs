@@ -192,7 +192,8 @@ impl Delayed {
             | Duration::UntilSkipped
             | Duration::UntilSkippedThisTurn
             | Duration::TheirNextTurn
-            | Duration::UntilCastFromExile => true,
+            | Duration::UntilCastFromExile
+            | Duration::UntilCreatureSpellCast => true,
         }
     }
 }

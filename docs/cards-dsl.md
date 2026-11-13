@@ -114,6 +114,13 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - A vote on players or objects binds `tally` to every vote cast ("for each vote they received" counts it); `VoteFor::AnotherPlayer` leaves the voter out, and a vote on players may be secret (`ChoiceOption::SecretPlayer`). `ChooseWords` is a choice of words that is no vote ("each opponent secretly chooses silence or snitch").
 - What a booster draft notes for cards of a name is `Amount`/`Pred`/`Condition::Drafted(DraftNote)`: a game has no draft, so a noted number is 0 and no name, type, color, player, guess or card exiled before the game is noted (the Conspiracy rulings); the rules of the draft itself are `GameRule::Draft`, a spell line on an instant or sorcery.
 - "If ~ would be destroyed, regenerate it." is a replacement `Destroyed` by `ReplaceBy::Regenerate`: never used up, and not while the permanent can't be regenerated. Each regeneration is logged as `TallyEvent::Regenerated` ("for each time it regenerated this turn").
+- "Attach it to another permanent it can enchant" is a `Choose` among `Pred::EnchantableBy` (the permanents the Aura could be attached to now, CR 303.4) other than its host, then `Attach`; Enchantment Alteration adds `SharesTypeOf` with the host.
+- "Until a player casts a creature spell" is `Duration::UntilCreatureSpellCast`: the game keeps the timestamp clock as the latest creature spell was cast, and a continuous effect created before it ends.
+- "Exile an instant or sorcery spell you control" is `CostItem::ExileSpell`: a spell of the payer on the stack leaves it and never resolves; `Ref::Paid` names it ("the exiled spell's mana value").
+- Mana remembers the permanent that made it and that permanent's zone-change count (`SpendTraits::made_by`), so "a spell cast using mana produced by ~" is `Pred::ManaFrom(This)` in a `SpellCast` pattern; mana an earlier object of the card made is not its.
+- `GameRule::SpendManaAs.abilities` extends a permission for some spells to the abilities of the permanents it selects ("or to activate abilities of permanents you control but don't own").
+- `SpendOn::CumulativeUpkeep` is mana only for the payment of a cumulative upkeep trigger ("Spend this mana only to pay cumulative upkeep costs"); such a payment is also an other cost.
+- "Two mana of any one color and two mana of any other color" is `Produce::two_pairs_of_colors`: ten lists, each of two distinct colors twice.
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 
 ## Support records

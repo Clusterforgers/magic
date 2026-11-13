@@ -1,0 +1,61 @@
+{
+  "oracle_id": "9ac01998-6e26-4ba5-b66c-614ec831caef",
+  "name": "Open the Omenpaths",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Open the Omenpaths",
+      "oracle_fingerprint": "aaf221dfe1c4a08c7a46daaa4fb27388",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "AddMana": {
+                            "mana": {
+                              "OneOfLists": [
+                                ["White", "White", "Blue", "Blue"],
+                                ["White", "White", "Black", "Black"],
+                                ["White", "White", "Red", "Red"],
+                                ["White", "White", "Green", "Green"],
+                                ["Blue", "Blue", "Black", "Black"],
+                                ["Blue", "Blue", "Red", "Red"],
+                                ["Blue", "Blue", "Green", "Green"],
+                                ["Black", "Black", "Red", "Red"],
+                                ["Black", "Black", "Green", "Green"],
+                                ["Red", "Red", "Green", "Green"]
+                              ]
+                            },
+                            "only": [{ "Spell": { "types": ["Creature", "Enchantment"] } }]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            },
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

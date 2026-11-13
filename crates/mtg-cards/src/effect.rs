@@ -218,6 +218,20 @@ pub enum Produce {
 }
 
 impl Produce {
+    /// "Two mana of any one color and two mana of any other color": one list for each pair of distinct colors, each
+    /// color twice, in WUBRG order.
+    pub fn two_pairs_of_colors() -> Self {
+        let Produce::OneOfLists(lists) = Produce::two_different_colors() else {
+            return Produce::two_different_colors();
+        };
+        Produce::OneOfLists(
+            lists
+                .into_iter()
+                .map(|pair| pair.iter().flat_map(|color| [*color, *color]).collect())
+                .collect(),
+        )
+    }
+
     /// "Two mana of different colors": one list for each pair of distinct colors, in WUBRG order.
     pub fn two_different_colors() -> Self {
         let colors = [

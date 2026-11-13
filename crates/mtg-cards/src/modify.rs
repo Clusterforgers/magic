@@ -332,6 +332,9 @@ pub enum Duration {
     /// Until the card the source became when its ability exiled it is cast from exile ("until this card is cast from
     /// exile"); it lasts for good once that card leaves exile another way.
     UntilCastFromExile,
+    /// Until any player casts a creature spell after the effect began ("until a player casts a creature spell"). Only a
+    /// continuous effect lasts this way.
+    UntilCreatureSpellCast,
     /// Without end (until the object or the game is gone).
     Forever,
     /// Until the controller of the effect pays this mana as a special action, any time they have priority ("you may pay
@@ -1133,6 +1136,10 @@ pub enum GameRule {
         /// Only to cast the spells this selects, judged as they are cast; every spell and ability when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         spells: Option<Selector>,
+        /// With `spells`, also to activate the abilities of the permanents this selects ("or to activate abilities of
+        /// permanents you control but don't own").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        abilities: Option<Selector>,
     },
     /// Unspent mana the players would lose as a step or phase ends becomes mana of `into` instead and stays: "If you would
     /// lose unspent mana, that mana becomes colorless instead."

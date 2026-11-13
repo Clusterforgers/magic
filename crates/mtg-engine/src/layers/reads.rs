@@ -372,6 +372,8 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::DamagedBy(who)
         | Pred::DamagedThisTurnBy(who)
         | Pred::AttachedTo(who)
+        | Pred::EnchantableBy(who)
+        | Pred::ManaFrom(who)
         | Pred::PairedWith(who)
         | Pred::SameCard(who)
         | Pred::SourceOf(who)

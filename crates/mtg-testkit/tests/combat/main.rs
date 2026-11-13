@@ -67,6 +67,7 @@ mod r400_attack_follow;
 mod r409_combat_triggers;
 mod r4a_champion;
 mod r4a_tribute;
+mod r5512_aloy_discover;
 mod riot;
 mod rmt1_become_blocked;
 mod rmt7_blocks_per;

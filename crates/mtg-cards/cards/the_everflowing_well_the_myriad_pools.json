@@ -1,7 +1,7 @@
 {
   "oracle_id": "1f57a9f1-6b95-4395-bdf0-c5289b786ab1",
   "name": "The Everflowing Well // The Myriad Pools",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Everflowing Well",
@@ -54,9 +54,40 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 54, "end": 223 }
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Type": "Battle" },
+                      { "Type": "Creature" },
+                      { "Type": "Enchantment" },
+                      { "Type": "Land" },
+                      { "Type": "Planeswalker" }
+                    ]
+                  },
+                  { "ManaFrom": "This" }
+                ],
+                "by": "You"
+              }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "ControlledBy": "You" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": { "Target": 0 },
+                  "of": "Triggering",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

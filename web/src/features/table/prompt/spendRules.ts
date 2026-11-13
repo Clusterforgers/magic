@@ -91,8 +91,10 @@ export function spendAllows(spend: PaySpend | undefined, only: readonly SpendOn[
   return uses.some((on) => {
     if (on === 'Snow') return false
     if (on === 'CostWithX') return kind !== 'Other' && spend?.has_x === true
-    // A special action is paid as a cost that is neither a spell's nor an ability's.
-    if (on === 'OtherCosts') return kind === 'Other' || typeof kind === 'object'
+    // A special action and a cumulative upkeep cost are paid as costs that are neither a spell's nor an ability's.
+    if (on === 'OtherCosts')
+      return kind === 'Other' || kind === 'CumulativeUpkeep' || typeof kind === 'object'
+    if (on === 'CumulativeUpkeep') return kind === 'CumulativeUpkeep'
     if ('Special' in on) return typeof kind === 'object' && kind.Special === on.Special
     if ('Spell' in on) return kind === 'Spell' && traits !== undefined && filterHolds(on.Spell, traits)
     if ('Ability' in on) return kind === 'Ability' && traits !== undefined && filterHolds(on.Ability, traits)
@@ -112,6 +114,7 @@ export function useWords(on: SpendOn): string {
   if (on === 'Snow') return 'anything'
   if (on === 'CostWithX') return 'costs with {X}'
   if (on === 'OtherCosts') return 'other costs'
+  if (on === 'CumulativeUpkeep') return 'cumulative upkeep costs'
   if ('Ability' in on) return 'abilities'
   if ('Special' in on) return SPECIAL_WORDS[on.Special]
   if ('Spell' in on) {

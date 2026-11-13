@@ -1,5 +1,6 @@
 //! Priority: who may act, what they may do, and when a round of passes is complete.
 
+use mtg_cards::modify::SpendAs;
 use std::collections::BTreeSet;
 use std::sync::Arc;
 
@@ -381,6 +382,12 @@ pub(crate) fn activation(
     {
         let Some(mana) = crate::price::chosen_color_only(state, object.id(), &cost, mana) else {
             return Hindered(Unplayable::Mana, None);
+        };
+        // Mana spent as though of any color or type pays the total (`announce/total.rs`).
+        let mana = match crate::rules::ep24_spend_as(state, player, None, Some(object.id())) {
+            SpendAs::AnyType => mana.paid_by_any_mana(),
+            SpendAs::AnyColor => mana.paid_by_any_color(),
+            SpendAs::Normal => mana,
         };
         let mana = &mana;
         let Some(seat) = state.player(player) else {

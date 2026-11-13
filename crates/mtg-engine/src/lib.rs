@@ -72,6 +72,7 @@ mod r377_skips;
 mod r379_since;
 mod r401_riders;
 mod r404_commander_color;
+mod r5512_until_cast;
 mod replace_dry;
 mod rmt3_skips;
 mod saga;

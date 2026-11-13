@@ -409,7 +409,7 @@ fn ep24_rule_costs(
     ways: &mut [Way],
     printed: Option<&ManaCost>,
 ) {
-    let spend_as = crate::rules::ep24_spend_as(state, player, Some(id));
+    let spend_as = crate::rules::ep24_spend_as(state, player, Some(id), None);
     for way in ways {
         let cost = way.cost(printed).map(|cost| match spend_as {
             SpendAs::AnyType => cost.paid_by_any_mana(),

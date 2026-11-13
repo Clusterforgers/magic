@@ -133,6 +133,28 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     })
 }
 
+/// What the payment is for: a cumulative upkeep cost when the resolving ability is the trigger of cumulative upkeep (its
+/// payment is logged as `PaidCumulativeUpkeep`, CR 702.24a), else a cost that is neither a spell's nor an ability's.
+fn r5512_spend(cx: &Cx<'_>) -> Spend {
+    let cumulative = cx
+        .state()
+        .object(cx.resolving.object())
+        .and_then(|object| object.ability())
+        .is_some_and(|ability| {
+            ability.shared_rules().effects().iter().any(|effect| {
+                matches!(effect, Effect::Pay { paid, .. } if paid.iter().any(|step| matches!(
+                    step,
+                    Effect::Performed { action: mtg_cards::did::Action::PaidCumulativeUpkeep, .. }
+                )))
+            })
+        });
+    if cumulative {
+        Spend::cumulative_upkeep()
+    } else {
+        Spend::other()
+    }
+}
+
 /// The cost with the life of a counted amount ("pay that much life", "pay X life, where X is ..."), the cards of a counted
 /// draw ("you may draw cards equal to its power") and the cards of a counted
 /// discard ("discard your hand") or exile from a graveyard ("exiles all cards from their graveyard") counted as the
@@ -347,7 +369,7 @@ pub(super) fn can_pay(cx: &Cx<'_>, player: PlayerId, price: &Price) -> bool {
             let life = seat
                 .life()
                 .saturating_sub(i32::try_from(price.life()).unwrap_or(i32::MAX));
-            can_afford(mana, seat.mana(), &sources, life, &Spend::other())
+            can_afford(mana, seat.mana(), &sources, life, &r5512_spend(cx))
         })
     })
 }
@@ -506,7 +528,7 @@ fn payment(
         mana,
         sources,
         Offered::default(),
-        Spend::other(),
+        r5512_spend(cx),
         false,
         price.life(),
     )

@@ -1,7 +1,7 @@
 {
   "oracle_id": "ed69b907-272c-4a87-a943-06aaad976fb1",
   "name": "Nathan Drake, Treasure Hunter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Nathan Drake, Treasure Hunter",
@@ -9,15 +9,37 @@
       "abilities": [
         { "Keyword": "FirstStrike" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 13, "end": 162 }
+          "Rule": {
+            "rule": {
+              "SpendManaAs": {
+                "who": "You",
+                "spend_as": "AnyColor",
+                "spells": [{ "Not": { "OwnedBy": "You" } }],
+                "abilities": [{ "ControlledBy": "You" }, { "Not": { "OwnedBy": "You" } }]
+              }
+            }
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 163, "end": 283 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "ExileTop": { "who": "EachPlayer", "as": "exiled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "exiled" } },
+                      { "In": "Exile" },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "card" } } }
+            ]
           }
         }
       ]
