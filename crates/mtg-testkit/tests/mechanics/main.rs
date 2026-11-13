@@ -149,6 +149,7 @@ mod r4b_skip;
 mod r5508_dice;
 mod r5508_draws;
 mod r5508_empower;
+mod r5508_untap;
 mod r5g;
 mod r6f;
 mod repeat_each;

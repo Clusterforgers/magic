@@ -110,6 +110,7 @@ fn r5508_probe() {
 #[case("Slaughter the Strong")]
 #[case("Destined Confrontation")]
 #[case("Pair o' Dice Lost")]
+#[case("Blinding Beam")]
 fn r5508_reads_back_whole(#[case] name: &str) {
     let report = r5508_report(name, &r5508_file(name));
     assert_eq!(

@@ -7,30 +7,13 @@
       "name": "Resolute Veggiesaur",
       "oracle_fingerprint": "998b2fb70af611df7845306052a0b29d",
       "abilities": [
-        {
-          "Keyword": "Trample"
-        },
+        { "Keyword": "Trample" },
         {
           "Triggered": {
             "when": {
-              "Nth": {
-                "event": {
-                  "DiceRolled": {
-                    "who": "You",
-                    "each": true
-                  }
-                },
-                "nth": 3
-              }
+              "Nth": { "event": { "DiceRolled": { "who": "You", "each": true } }, "nth": 3 }
             },
-            "effects": [
-              {
-                "PutCounters": {
-                  "on": "This",
-                  "counter": "+1/+1"
-                }
-              }
-            ]
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
           }
         }
       ]

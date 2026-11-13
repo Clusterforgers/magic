@@ -10,19 +10,10 @@
         {
           "Static": {
             "affected": "This",
-            "mods": [
-              {
-                "AddKeyword": "Trample"
-              }
-            ],
+            "mods": [{ "AddKeyword": "Trample" }],
             "condition": {
               "Compare": {
-                "left": {
-                  "Tallied": {
-                    "who": "You",
-                    "what": "DiceRolled"
-                  }
-                },
+                "left": { "Tallied": { "who": "You", "what": "DiceRolled" } },
                 "op": "Ge",
                 "right": 3
               }
@@ -31,20 +22,8 @@
         },
         {
           "Triggered": {
-            "when": {
-              "DiceRolled": {
-                "who": "You",
-                "each": true
-              }
-            },
-            "effects": [
-              {
-                "PutCounters": {
-                  "on": "This",
-                  "counter": "+1/+1"
-                }
-              }
-            ]
+            "when": { "DiceRolled": { "who": "You", "each": true } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
           }
         }
       ]

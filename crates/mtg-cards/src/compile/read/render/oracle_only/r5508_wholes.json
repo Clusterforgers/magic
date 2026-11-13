@@ -230,5 +230,73 @@
    }
   },
   "Whenever an opponent scries, surveils, or searches their library, put a +1/+1 counter on ~. Then ~ deals damage to that player equal to its power."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Modal": {
+       "modes": [
+        {
+         "targets": [
+          {
+           "what": {
+            "Object": [
+             {
+              "Type": "Creature"
+             }
+            ]
+           },
+           "bounds": {
+            "min": 2,
+            "max": 2
+           }
+          }
+         ],
+         "effects": [
+          {
+           "Tap": {
+            "what": {
+             "Target": 0
+            }
+           }
+          }
+         ]
+        },
+        {
+         "targets": [
+          {
+           "what": "Player"
+          }
+         ],
+         "effects": [
+          {
+           "Rule": {
+            "rule": {
+             "UntapLimit": {
+              "who": {
+               "Target": 0
+              },
+              "what": [
+               {
+                "Type": "Creature"
+               }
+              ],
+              "count": 0
+             }
+            },
+            "duration": "NextUntapStep"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Choose one \u2014\n\u2022 Tap two target creatures.\n\u2022 Creatures don't untap during target player's next untap step."
  ]
 ]

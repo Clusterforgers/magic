@@ -4620,7 +4620,9 @@ impl Walker<'_> {
                 if *duration == Duration::UntilCastFromExile {
                     w.problem(E17A_CAST_ONLY);
                 }
-                if *duration == Duration::NextUntapStep {
+                // An untap limit lasts through the next untap step of the players it limits ("creatures don't untap
+                // during target player's next untap step").
+                if *duration == Duration::NextUntapStep && !matches!(rule, GameRule::UntapLimit { .. }) {
                     w.problem(C7_UNTAP_ONLY);
                 }
                 if *duration == Duration::DuringItsControllersNextTurn {
