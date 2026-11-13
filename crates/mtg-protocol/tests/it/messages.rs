@@ -1660,8 +1660,6 @@ fn pipeline_events() -> Vec<Event> {
     let choices = Choices {
         modes: vec![1],
         random_modes: true,
-        modes_by: Some(1),
-        random_targets: 0,
         x: Some(3),
         targets: vec![vec![target, Target::Player(player)]],
         division: vec![(target, 2)],
@@ -1670,6 +1668,7 @@ fn pipeline_events() -> Vec<Event> {
         face: Some(1),
         spent: Some(Box::new(vec![ManaType::Red, ManaType::Green])),
         cost_taken: Some(Box::new(w2f_cost_taken(a, b, shot.clone()))),
+        ..Choices::default()
     };
     vec![
         Event::SpellCast {

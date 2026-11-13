@@ -286,7 +286,7 @@ fn portal_forest(life: u32) -> Arc<CardDefinition> {
     ))
     .unwrap();
     let mut definition = (*forest()).clone();
-    definition.name = "Portal Forest".to_owned();
+    "Portal Forest".clone_into(&mut definition.name);
     Arc::new(definition.with_rules(modifier))
 }
 

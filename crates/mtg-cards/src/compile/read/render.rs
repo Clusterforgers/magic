@@ -260,7 +260,9 @@ fn plain_variants(ability: &Ability) -> Vec<String> {
     if let Some(texts) = super::r303b_writers::r303b_whole(ability) {
         return texts;
     }
-    if let Some(texts) = super::w20b_reflexive::w20b_variants(ability, variants) {
+    if !super::r5514_pieces::r5514_is_energy_sized(ability)
+        && let Some(texts) = super::w20b_reflexive::w20b_variants(ability, variants)
+    {
         return texts;
     }
     if let Some(texts) = super::fix16_kicked::fix16_kicked_variants(ability, variants) {
