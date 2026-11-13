@@ -39,7 +39,7 @@
                 "AddMana": {
                   "mana": { "Fixed": ["Colorless"] },
                   "times": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
-                  "only": [{ "Spell": { "types": ["Artifact"] } }, { "Ability": {} }],
+                  "only": [{ "Spell": { "types": ["Artifact"] } }, { "Ability": {} }, "OtherCosts"],
                   "lasts": "Turn"
                 }
               }

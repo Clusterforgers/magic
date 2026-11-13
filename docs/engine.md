@@ -296,7 +296,7 @@ The rules of the data are in [cards-dsl.md](cards-dsl.md) (Triggers, replacement
 
 ## Control of players and spells
 
-- Player control (CR 722, `player_control.rs`): `PlayerControlGained {player, by, extra_turn}` schedules it; the player's next `TurnBegan` starts it and the one after ends it. The latest wins, one whose controller left ends, and `extra_turn` (Emrakul, the Promised End) adds the extra turn. `GameState::player_controller` and `sees_as` read it.
+- Player control (CR 722, `player_control.rs`): `PlayerControlGained {player, by, extra_turn}` schedules it (`by` is the effect's controller, or the player `Effect::ControlPlayer.by` names: Cruel Entertainment); the player's next `TurnBegan` starts it and the one after ends it. The latest wins, one whose controller left ends, and `extra_turn` (Emrakul, the Promised End) adds the extra turn. `GameState::player_controller` and `sees_as` read it.
 - The engine asks the controlled player's decisions as before (`Engine::decision_owned`); `Engine::decision` shows each to its answerer (`player_control::answerer`), so routing by `Decision.player` is unchanged. `ControlSearches` (Opposition Agent) hands over a choice among the player's own library.
 - The controller sees what the controlled player sees (CR 722.3): hand, face-down cards, cards shown and offered (`sight.rs`, `zone_is_visible_in`).
 - Spell control (CR 110.2): a `Continuous` `SetController` naming a stack object logs `SpellControlGained`, so it resolves for the new controller and a permanent spell enters under them; `ChangeTargets` asks the new controller.

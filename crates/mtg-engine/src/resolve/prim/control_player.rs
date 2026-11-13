@@ -1,19 +1,38 @@
 //! `Effect::ControlPlayer`: the controller of the effect controls a player during that player's next turn (CR 722).
 
 use mtg_cards::effect::Effect;
+use mtg_cards::refs::Ref;
 
 use super::wrong_effect;
 use crate::events::Event;
 use crate::resolve::{Cx, ResolveError, Run};
 
 /// One `PlayerControlGained` for each player the effect names who is still in the game, controlled by the controller of
-/// the effect; `player_control` starts it with that player's next turn.
+/// the effect or by the player `by` names; `player_control` starts it with that player's next turn. Nothing happens
+/// when `by` names no player still in the game.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::ControlPlayer { who, extra_turn } = effect else {
+    let Effect::ControlPlayer {
+        who,
+        by,
+        extra_turn,
+    } = effect
+    else {
         return Err(wrong_effect("ControlPlayer"));
     };
     let state = cx.state();
-    let by = cx.controller();
+    let by = if *by == Ref::You {
+        cx.controller()
+    } else {
+        match cx
+            .scope
+            .players(by)?
+            .into_iter()
+            .find(|player| state.is_alive(*player))
+        {
+            Some(by) => by,
+            None => return Ok(Run::events(Vec::new())),
+        }
+    };
     Ok(Run::events(
         cx.scope
             .players(who)?

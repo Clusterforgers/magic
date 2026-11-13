@@ -97,6 +97,7 @@ mod r4709_cards;
 mod r4710_cards;
 mod r4711_cards;
 mod r5504_cards;
+mod r5505_cards;
 mod r5507_cards;
 mod r5510_cards;
 mod r5517_cards;

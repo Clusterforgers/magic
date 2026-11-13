@@ -3699,6 +3699,10 @@ impl Walker<'_> {
         if matches!(effect, Effect::Discard { random: true, .. }) {
             self.uses("Effect", "Discard.Random");
         }
+        // Another player than the effect's controller takes control of a player (Cruel Entertainment).
+        if matches!(effect, Effect::ControlPlayer { by, .. } if *by != Ref::You) {
+            self.uses("Effect", "ControlPlayer.By");
+        }
         // A choice whose chosen objects differ in a quality needs the engine to keep them apart.
         if matches!(
             effect,
@@ -7371,6 +7375,7 @@ mod tests {
     #[case::a_discard_of_your_choice(r#"{"Spell":{"effects":[{"Discard":{"count":2}}]}}"#, &["Ability.Spell", "Effect.Discard"])]
     #[case::a_choice_with_different_powers(r#"{"Spell":{"effects":[{"Choose":{"from":{"Each":[{"Type":"Creature"}]},"count":{"min":0,"max":null},"as":"chosen","differ":"DifferentPowers"}}]}}"#, &["Ability.Spell", "Effect.Choose", "Effect.Choose.Differ"])]
     #[case::a_discard_at_random(r#"{"Spell":{"effects":[{"Discard":{"random":true}}]}}"#, &["Ability.Spell", "Effect.Discard", "Effect.Discard.Random"])]
+    #[case::r5505_a_player_controlled_by_another(r#"{"Spell":{"targets":[{"what":"Player"},{"what":"Player"}],"effects":[{"ControlPlayer":{"who":{"Target":1},"by":{"Target":0}}}]}}"#, &["Ability.Spell", "Effect.ControlPlayer", "Effect.ControlPlayer.By"])]
     #[case::a_discard_of_matching_cards(r#"{"Spell":{"effects":[{"Discard":{"filter":[{"Type":"Creature"}]}}]}}"#, &["Ability.Spell", "Effect.Discard", "Effect.Discard.Filter"])]
     #[case::a_move_to_the_hand(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":"Hand"}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_to_the_top_of_a_library(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Top","order":"Chosen"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]

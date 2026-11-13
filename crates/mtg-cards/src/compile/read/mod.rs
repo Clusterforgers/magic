@@ -247,6 +247,7 @@ mod r4710_atoms;
 mod r4711_drafted;
 mod r5504_everywhere;
 mod r5504_look;
+mod r5505_convert;
 mod r5507_dice;
 mod r5507_prevent;
 mod r5510_fortified;
