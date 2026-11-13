@@ -1,0 +1,20 @@
+{
+  "oracle_id": "b2b09dc3-8239-4f3b-91d2-e7cbbdc062f7",
+  "name": "Hulking Metamorph",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hulking Metamorph",
+      "oracle_fingerprint": "23a4ad2f436f372c06221b90fb89c667",
+      "abilities": [
+        { "Keyword": { "Prototype": { "cost": "{2}{U}{U}", "power": 3, "toughness": 3 } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 129, "end": 354 }
+          }
+        }
+      ]
+    }
+  ]
+}

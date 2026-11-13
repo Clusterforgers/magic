@@ -118,6 +118,15 @@ pub fn candidates(
     answers
 }
 
+/// The cost (of `costs`, by root answer) of the root answer `path` starts with.
+fn root_cost(path: &[(usize, usize)], costs: &[f64]) -> f64 {
+    path.first()
+        .filter(|(at, _)| *at == 0)
+        .and_then(|(_, pick)| costs.get(*pick))
+        .copied()
+        .unwrap_or(0.0)
+}
+
 /// The reward of a rollout that scored `score` from a position scored `base`: 1 for a won game, 0 for a lost one, else
 /// a logistic of the gain over `scale`.
 fn reward(score: f64, base: f64, scale: f64) -> f64 {
@@ -198,12 +207,16 @@ fn select(children: &[Child], open: &[usize], explore: f64) -> Option<usize> {
 }
 
 /// The answer to the decision `seat` faces in `engine` among `root` (the heuristic answer first) that the most
-/// iterations of the tree search chose, the earlier on a tie; `budget` scales the iterations and the clock (a busy
-/// server thinks less). `None` when no iteration ran.
+/// iterations of the tree search chose, the earlier on a tie; `costs` (by root answer) are taken off the scores of
+/// the rollouts through each, for what the evaluation does not see (mana kept for held interaction); `budget` scales
+/// the iterations and the clock (a busy server thinks less). `None` when no iteration ran.
+// One search's inputs.
+#[allow(clippy::too_many_arguments)]
 pub fn ismcts(
     engine: &Engine,
     seat: PlayerId,
     root: &[Answer],
+    costs: &[f64],
     deep: Deep,
     weights: Weights,
     seed: u64,
@@ -231,7 +244,6 @@ pub fn ismcts(
         rollout.prime(&world);
         let start = Start {
             turn: world.state().turn().number(),
-            stack: world.state().stack().len(),
         };
         let mut path: Vec<(usize, usize)> = Vec::new();
         let mut node = Some(0);
@@ -295,7 +307,8 @@ pub fn ismcts(
                 }
             }
         }
-        let score = evaluate_with(&Seen::new(world.state(), seat), weights);
+        let score =
+            evaluate_with(&Seen::new(world.state(), seat), weights) - root_cost(&path, costs);
         let gained = reward(score, base, deep.scale);
         for (at, pick) in path {
             let child = &mut tree[at][pick];
@@ -303,13 +316,29 @@ pub fn ismcts(
             child.reward += gained;
         }
     }
+    choose(&tree[0])
+}
+
+/// The mean reward by which the tree's favourite must beat the heuristic answer (the first root child) to replace it:
+/// rollouts are noisy, and the heuristic answer carries the policy's knowledge the rollouts lack.
+const OVERRIDE: f64 = 0.05;
+
+/// The root answer to play: the most visited child, the earlier on a tie, unless the first (the heuristic answer) was
+/// tried and the favourite's mean reward does not beat it by [`OVERRIDE`].
+fn choose(root: &[Child]) -> Option<Answer> {
     let mut best: Option<&Child> = None;
-    for child in &tree[0] {
+    for child in root {
         if child.visits > 0 && best.is_none_or(|held| child.visits > held.visits) {
             best = Some(child);
         }
     }
-    best.map(|child| child.answer.clone())
+    let prior = root.first().filter(|child| child.visits > 0);
+    match (best, prior) {
+        (Some(best), Some(prior)) if best.mean() < prior.mean() + OVERRIDE => {
+            Some(prior.answer.clone())
+        }
+        (best, _) => best.map(|child| child.answer.clone()),
+    }
 }
 
 #[cfg(test)]
@@ -337,6 +366,21 @@ mod tests {
             available,
             ..Child::new(Answer::Priority(PriorityAction::Pass))
         }
+    }
+
+    #[rstest]
+    #[case::clearly_better(0.6, 0.5, 1)]
+    #[case::barely_better(0.53, 0.5, 0)]
+    #[case::worse(0.4, 0.5, 0)]
+    fn the_heuristic_answer_stands_unless_clearly_beaten(
+        #[case] other: f64,
+        #[case] prior: f64,
+        #[case] chosen: usize,
+    ) {
+        let mut root = vec![child(20, prior * 20.0, 30), child(40, other * 40.0, 30)];
+        root[1].answer = Answer::Priority(PriorityAction::BringCompanion);
+        let picked = choose(&root).unwrap();
+        assert_eq!(picked, root[chosen].answer);
     }
 
     #[test]

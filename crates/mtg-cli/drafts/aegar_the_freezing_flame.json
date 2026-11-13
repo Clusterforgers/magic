@@ -1,0 +1,41 @@
+{
+  "oracle_id": "592d847e-e3f3-425d-89f9-01ab533ad581",
+  "name": "Aegar, the Freezing Flame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aegar, the Freezing Flame",
+      "oracle_fingerprint": "fa6a66e0616536ccb331d821148028a2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealtExcess": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                  { "ControlledBy": "Opponents" }
+                ]
+              }
+            },
+            "if": {
+              "Matches": {
+                "subject": "Triggering",
+                "selector": [
+                  {
+                    "DamagedBy": {
+                      "Each": [
+                        { "AnyOf": [{ "Subtype": "Giant" }, { "Subtype": "Wizard" }, "Spell"] },
+                        { "ControlledBy": "You" }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

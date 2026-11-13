@@ -1,0 +1,47 @@
+{
+  "oracle_id": "4f452ce7-1166-4810-afed-ea5e156a6f52",
+  "name": "Aurelia's Vindicator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aurelia's Vindicator",
+      "oracle_fingerprint": "2ef0c7c98c63871c3090abd015929ef2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        { "Keyword": { "Ward": "{2}" } },
+        { "Keyword": { "Disguise": "{X}{3}{W}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": [{ "Type": "Creature" }, "Other"] },
+                    { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] }
+                  ]
+                },
+                "bounds": { "min": 0, "max": "X" }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

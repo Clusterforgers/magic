@@ -1,0 +1,53 @@
+{
+  "oracle_id": "8ffe9e3f-fd9f-4d8b-9467-4cd301e3c8b4",
+  "name": "Voltaic Visionary // Volt-Charged Berserker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voltaic Visionary",
+      "oracle_fingerprint": "fad841fd560d2e7f985ac83d78003846",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "effects": [
+              { "DealDamage": { "source": "This", "to": "You", "amount": 2 } },
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "SpellCast": { "what": [{ "ExiledWith": "This" }], "by": "You" } },
+                {
+                  "Did": {
+                    "action": "PlayedLand",
+                    "who": "You",
+                    "what": [{ "ExiledWith": "This" }]
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Volt-Charged Berserker",
+      "oracle_fingerprint": "6789c3591d527fd5afdf867fd8025deb",
+      "abilities": [{ "Static": { "affected": "This", "mods": ["CantBlock"] } }]
+    }
+  ]
+}
