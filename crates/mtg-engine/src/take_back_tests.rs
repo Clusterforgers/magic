@@ -315,6 +315,7 @@ enum Backed {
 #[case::at_the_payment_with_cancel(Backed::AtThePayment, Answer::PayMana(PayChoice::Cancel))]
 fn backing_out_of_a_cast_untaps_the_mana_tapped_for_it(#[case] at: Backed, #[case] back: Answer) {
     let mut engine = game(HouseRules::default());
+    engine.set_rewind_on_cancel(true);
     let before = fingerprint(&engine);
     tap_a_forest(&mut engine);
     tap_a_forest(&mut engine);
@@ -344,6 +345,7 @@ fn backing_out_of_a_cast_untaps_the_mana_tapped_for_it(#[case] at: Backed, #[cas
 #[test]
 fn mana_tapped_and_then_left_is_not_undone_by_a_later_cancel() {
     let mut engine = game(HouseRules::default());
+    engine.set_rewind_on_cancel(true);
     tap_a_forest(&mut engine);
     let land = named(&engine, SEAT, "Forest");
     priority(&mut engine, PriorityAction::PlayLand(land));

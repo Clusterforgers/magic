@@ -195,7 +195,8 @@ mod opening;
 
 impl Running {
     /// Wraps `engine`; call [`settle`](Running::settle) to issue the first decision id.
-    pub(crate) fn new(engine: Engine, pace: Pace) -> Running {
+    pub(crate) fn new(mut engine: Engine, pace: Pace) -> Running {
+        engine.set_rewind_on_cancel(true);
         let mut banks = Banks::new(engine.state().players().len(), pace.extension.is_some());
         banks.watch(engine.state());
         let mut times = TurnTimes::new(engine.state().players().len());

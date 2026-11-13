@@ -93,7 +93,7 @@ Stickers (CR 123, `un34_stickers.rs`) are implemented once in the engine; a shee
 - It stays on offer through passes, the player's own later questions (targets of their triggers) and their own mana abilities. Another player's answer or action makes it `OtherPlayerActed`; the player's own later action, a manual action or a concession `MovedOn`.
 - `Engine::take_back_offer(player)` names it (`TakeBackOffer`: kind, card name, log position) or the `TakeBackRefusal`: `Off` (`HouseRules::take_backs` false), `Nothing`, `OtherPlayerActed`, and from the events since, judged by an exhaustive match: `CardDrawn`, `CardRevealed` (a reveal, a look, a card out of a library or another hand, a manual action), `LibrarySearched`, `LibraryShuffled`, `Random` (a coin, die or random pick, or any draw of the generator), `MovedOn` (a resolution, a new step, the end of the game).
 - `Engine::take_back(player)` rebuilds the engine from the log before the action (`resume`) and logs `TookBack {player, kind, name}`, a note without the object id, which may name a card back in a hand.
-- Backing out of a cast after mana abilities of the `ManaRun` rebuilds from the run's start the same way, without a note, when the same judgement finds nothing in the run.
+- With `set_rewind_on_cancel` (the server sets it; off by default, so a caller that only appends events never sees a cut), backing out of a cast after mana abilities of the `ManaRun` rebuilds from the run's start the same way, without a note, when the same judgement finds nothing in the run.
 - A rewind keeps the events it cut, so `restore` of a checkpoint taken before it brings them back; `cut_since(checkpoint)` tells the server where the log was cut.
 
 ### Fail-soft resolution

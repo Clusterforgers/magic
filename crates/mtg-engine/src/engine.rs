@@ -87,6 +87,8 @@ pub struct Engine {
     mana_run: Option<ManaRun>,
     /// Each rewind of the log: where it cut and the events it cut, so a checkpoint from before it can be restored.
     dropped: Vec<(usize, Vec<Event>)>,
+    /// Whether backing out of a cast also undoes the mana tapped for it, cutting the log ([`Engine::set_rewind_on_cancel`]).
+    rewind_on_cancel: bool,
 }
 
 impl Engine {
@@ -110,6 +112,7 @@ impl Engine {
             last: None,
             mana_run: None,
             dropped: Vec::new(),
+            rewind_on_cancel: false,
         };
         engine.advance()?;
         Ok(engine)
@@ -260,6 +263,9 @@ impl Engine {
     /// Where the mana abilities `player` activated just before the cast they back out of begin, when the log can be cut
     /// back to there: nothing hidden or random came of them.
     fn mana_run_to_undo(&self, player: PlayerId) -> Option<usize> {
+        if !self.rewind_on_cancel {
+            return None;
+        }
         let run = self.mana_run.filter(|run| run.player == player)?;
         let casting = self.pending.as_ref().is_some_and(|pending| {
             pending.player == player && matches!(pending.what, What::Spell(_) | What::Ability(_))
@@ -267,6 +273,12 @@ impl Engine {
         let since = self.events.get(run.from..)?;
         (casting && take_back::refusal(since, player, run.rng, &self.state).is_none())
             .then_some(run.from)
+    }
+
+    /// Lets backing out of a cast also undo the mana abilities its player activated just before it, which cuts the log
+    /// ([`cut_since`](Engine::cut_since)); off by default, so a caller that only appends events never sees a cut.
+    pub fn set_rewind_on_cancel(&mut self, on: bool) {
+        self.rewind_on_cancel = on;
     }
 
     /// What `player` could take back now, or why nothing can be.
@@ -314,6 +326,7 @@ impl Engine {
         }
         let cut = self.events.split_off(from);
         rebuilt.dropped = std::mem::take(&mut self.dropped);
+        rebuilt.rewind_on_cancel = self.rewind_on_cancel;
         rebuilt.dropped.push((from, cut));
         *self = rebuilt;
         Ok(self.events[from..].to_vec())
