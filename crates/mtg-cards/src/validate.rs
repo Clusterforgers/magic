@@ -819,6 +819,7 @@ impl<'a> Walker<'a> {
             Pred::SharesName(r)
             | Pred::SharesType(r)
             | Pred::SharesColor(r)
+            | Pred::SharesTypeOf { with: r, .. }
             | Pred::SharesManaValue(r) => {
                 self.scope.tests += 1;
                 self.reference(r, Kind::Object);
@@ -2675,6 +2676,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::DoorUnlocked { .. }
             | TriggerPattern::Visit {}
             | TriggerPattern::Prize {} => {}
+            TriggerPattern::DealtExcess { what, .. } => self.at("what", |w| w.selector(what)),
             TriggerPattern::DealsDamage { source, to, .. } => {
                 self.at("source", |w| w.selector(source));
                 if let Some(to) = to {
@@ -5981,8 +5983,19 @@ impl Walker<'_> {
                 self.at("count", |w| w.amount(count));
             }
             ReplaceBy::WithCountersAnd {
-                count, mods: given, ..
-            } => self.enters_with_changes(enters, count, given),
+                count,
+                mods: given,
+                also,
+                ..
+            } => {
+                if !also.is_empty() {
+                    self.uses("ReplaceBy", "WithCountersAnd.Also");
+                }
+                for (i, more) in also.iter().enumerate() {
+                    self.at("also", |w| w.at(i.to_string(), |w| w.amount(&more.count)));
+                }
+                self.enters_with_changes(enters, count, given);
+            }
             ReplaceBy::Tapped
             | ReplaceBy::Untapped
             | ReplaceBy::Choose(_)
@@ -5995,6 +6008,7 @@ impl Walker<'_> {
             | ReplaceBy::Riot
             | ReplaceBy::DayIfNeither
             | ReplaceBy::WithCounterOf(_)
+            | ReplaceBy::WithCountersOf { .. }
             | ReplaceBy::EntersPrepared
             | ReplaceBy::ChooseWord(_)
             | ReplaceBy::UnderChosenOpponent
@@ -6045,6 +6059,11 @@ impl Walker<'_> {
             }
             ReplaceBy::WithCounterOf(kinds) if kinds.len() < 2 => {
                 self.problem("a choice of a counter offers two kinds or more");
+            }
+            ReplaceBy::WithCountersOf { kinds, count }
+                if *count < 2 || kinds.len() <= *count as usize =>
+            {
+                self.problem("a choice of different counters offers more kinds than it takes, and takes two or more");
             }
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");
@@ -8588,11 +8607,14 @@ impl Walker<'_> {
             Action::Discovered => value.is_some() && to.is_none(),
             Action::ManifestedDread => value.is_none() && to.is_none(),
             Action::GaveGift => card.is_none() && value.is_none() && to.is_some(),
+            Action::PaidCumulativeUpkeep | Action::DeclinedCumulativeUpkeep | Action::PaidEcho => {
+                card.is_some() && value.is_none() && to.is_none()
+            }
             _ => false,
         };
         if !fits {
             self.problem(format!(
-                "`Performed` logs investigate, discover (with a value), manifest dread or a gift (to a player), not {action:?} with these parts"
+                "`Performed` logs investigate, discover (with a value), manifest dread, a gift (to a player) or an upkeep cost paid or not (of a card), not {action:?} with these parts"
             ));
         }
     }

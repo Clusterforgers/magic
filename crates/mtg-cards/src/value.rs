@@ -425,6 +425,9 @@ pub enum TallyEvent {
     Died,
     /// Damage was dealt (the dealer; an amount counts the damage dealt, `Pred::DidThisTurn` reads who it went to).
     Damaged,
+    /// A permanent was dealt excess damage (CR 120.10): the permanent, for its controller then; an amount counts the
+    /// excess.
+    DealtExcess,
     /// A creature was declared as an attacker (the attacker; `Pred::DidThisTurn` reads who it attacks).
     Attacked,
     /// A creature was declared as a blocker (the blocker; `Pred::DidThisTurn` reads the attacker it blocks).

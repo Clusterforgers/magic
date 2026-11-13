@@ -622,6 +622,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     let prepared = super::prepare::r405_it_becomes(&texts);
     texts.extend(prepared);
     super::r371_copy_except::r371_that_creature_dies(ability, &mut texts);
+    super::r403_hooks::r403_wordings(ability, written_variants, &mut texts);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.

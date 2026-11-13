@@ -143,6 +143,12 @@ pub enum Action {
     /// The players finished a vote (CR 701.38); the amount is the number of the vote in the game, which
     /// `Condition::VotedAs` reads.
     FinishedVoting,
+    /// A player paid the cumulative upkeep of a permanent (CR 702.24a); `what` is the permanent.
+    PaidCumulativeUpkeep,
+    /// A player didn't pay the cumulative upkeep of a permanent (CR 702.24a); `what` is the permanent.
+    DeclinedCumulativeUpkeep,
+    /// A player paid the echo cost of a permanent (CR 702.30a); `what` is the permanent.
+    PaidEcho,
 }
 
 impl Action {
@@ -185,6 +191,7 @@ impl Action {
 
     /// The verb phrase of the action for the subject "you" (first) and for a third person (second).
     #[must_use]
+    #[allow(clippy::too_many_lines)] // one arm for each action
     pub const fn verbs(self) -> (&'static str, &'static str) {
         match self {
             // `Activated` leaves out the mana abilities (CR 605.3b), so the words say so; `ActivatedAny` counts them.
@@ -264,6 +271,12 @@ impl Action {
                 "activate an eternalize or embalm ability",
                 "activates an eternalize or embalm ability",
             ),
+            Action::PaidCumulativeUpkeep => ("pay a cumulative upkeep", "pays a cumulative upkeep"),
+            Action::DeclinedCumulativeUpkeep => (
+                "don't pay a cumulative upkeep",
+                "doesn't pay a cumulative upkeep",
+            ),
+            Action::PaidEcho => ("pay an echo cost", "pays an echo cost"),
             Action::ControlTakenByOpponent => (
                 "have an opponent gain control of a permanent from you",
                 "has an opponent gain control of a permanent from them",

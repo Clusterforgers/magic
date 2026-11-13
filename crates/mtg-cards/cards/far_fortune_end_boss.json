@@ -1,7 +1,7 @@
 {
   "oracle_id": "8b9734c1-7185-40f6-8582-9f87109e3a09",
   "name": "Far Fortune, End Boss",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Far Fortune, End Boss",
@@ -17,9 +17,26 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 211, "end": 358 }
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Replacement": {
+                    "when": {
+                      "Damage": {
+                        "to": {
+                          "Union": ["Opponents", { "Each": [{ "ControlledBy": "Opponents" }] }]
+                        },
+                        "source": [{ "ControlledBy": "You" }]
+                      }
+                    },
+                    "by": { "Add": 1 }
+                  }
+                }
+              }
+            ],
+            "condition": { "MaxSpeed": "You" }
           }
         }
       ]

@@ -770,6 +770,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::UnderChosenOpponent
         | ReplaceBy::Riot
         | ReplaceBy::WithCounterOf(_)
+        | ReplaceBy::WithCountersOf { .. }
         | ReplaceBy::BecomesChoice(_)
         | ReplaceBy::Mill(_)
         | ReplaceBy::AsEnters(_)
@@ -809,6 +810,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::Riot
                 | ReplaceBy::DayIfNeither
                 | ReplaceBy::WithCounterOf(_)
+                | ReplaceBy::WithCountersOf { .. }
                 | ReplaceBy::EntersPrepared
                 | ReplaceBy::ChooseWord(_)
                 | ReplaceBy::UnderChosenOpponent
@@ -2252,6 +2254,9 @@ impl Pass<'_> {
             ReplaceBy::WithCounterOf(kinds) => {
                 self.e15b_counter_of(at, (object, controller), kinds, applied)
             }
+            ReplaceBy::WithCountersOf { kinds, count } => {
+                self.r403_counters_of(at, (object, controller), (kinds, *count), applied)
+            }
             ReplaceBy::Amplify(per) => {
                 self.amplify(at, candidate, (object, controller), *per, applied)
             }
@@ -2894,8 +2899,19 @@ impl Pass<'_> {
                 counter,
                 count,
                 mods,
+                also,
             } => {
                 self.enter_with_counters(at, candidate, object, counter, count, &applied)?;
+                for more in also {
+                    self.enter_with_counters(
+                        at,
+                        candidate,
+                        object,
+                        &more.counter,
+                        &more.count,
+                        &applied,
+                    )?;
+                }
                 self.enter_with_changes(at, object, controller, mods, &applied)?;
             }
             ReplaceBy::Tribute(count) => {
@@ -3652,6 +3668,7 @@ mod e15b_counter_of;
 mod e15f_word;
 mod r303_forms;
 mod r303_mills;
+mod r403_counters_of;
 mod riot;
 mod tribute;
 

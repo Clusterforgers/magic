@@ -31,6 +31,7 @@ const RUNS: &[&str] = &[
     "Ability.Sorcery",
     "Ability.Condition",
     "Trigger.ZoneChange",
+    "Trigger.DealtExcess",
     "Trigger.State",
     "Trigger.Attacks",
     "Trigger.AttacksPlayer",
@@ -812,6 +813,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Tapped",
     "ReplaceBy.WithCounters",
     "ReplaceBy.WithCountersAnd",
+    "ReplaceBy.WithCountersAnd.Also",
     "ReplaceBy.Tribute",
     "ReplaceBy.Amplify",
     "ReplaceBy.MayWithCounters",
@@ -885,6 +887,7 @@ const RUNS: &[&str] = &[
     "Keyword.Decayed",
     "ReplaceBy.Riot",
     "ReplaceBy.WithCounterOf",
+    "ReplaceBy.WithCountersOf",
     "Keyword.Fabricate",
     "Keyword.Ascend",
     "Keyword.Storied",
@@ -1129,6 +1132,7 @@ mod tests {
     #[case::entering_tapped("ReplaceBy.Tapped", true)]
     #[case::entering_with_counters("ReplaceBy.WithCounters", true)]
     #[case::entering_with_counters_and_a_change("ReplaceBy.WithCountersAnd", true)]
+    #[case::entering_with_counters_of_two_kinds("ReplaceBy.WithCountersAnd.Also", true)]
     #[case::tribute("ReplaceBy.Tribute", true)]
     #[case::amplify("ReplaceBy.Amplify", true)]
     #[case::entering_with_counters_by_choice("ReplaceBy.MayWithCounters", true)]
@@ -1600,6 +1604,7 @@ mod tests {
     #[case::decayed("Keyword.Decayed", true)]
     #[case::choosing_a_counter_or_haste_as_it_enters("ReplaceBy.Riot", true)]
     #[case::choosing_the_kind_of_a_counter_as_it_enters("ReplaceBy.WithCounterOf", true)]
+    #[case::choosing_different_counters_as_it_enters("ReplaceBy.WithCountersOf", true)]
     #[case::copies_for_the_other_defenders("Effect.MyriadCopies", true)]
     #[case::jump_start("Keyword.JumpStart", true)]
     #[case::retrace("Keyword.Retrace", true)]

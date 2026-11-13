@@ -1,7 +1,7 @@
 {
   "oracle_id": "1e1d8c64-4cea-4c2c-8933-be19d13bf07c",
   "name": "Heart of Bogardan",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Heart of Bogardan",
@@ -9,9 +9,65 @@
       "abilities": [
         { "Keyword": { "CumulativeUpkeep": "{2}" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 172, "end": 447 }
+          "Triggered": {
+            "when": { "Did": { "action": "DeclinedCumulativeUpkeep", "what": ["This"] } },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 0 },
+                        "amount": {
+                          "Sum": [
+                            {
+                              "Times": {
+                                "by": 2,
+                                "of": {
+                                  "Counters": { "on": "This", "counter": { "Other": "age" } }
+                                }
+                              }
+                            },
+                            -2
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            {
+                              "AnyOf": [
+                                { "ControlledBy": { "Target": 0 } },
+                                { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
+                              ]
+                            }
+                          ]
+                        },
+                        "amount": {
+                          "Sum": [
+                            {
+                              "Times": {
+                                "by": 2,
+                                "of": {
+                                  "Counters": { "on": "This", "counter": { "Other": "age" } }
+                                }
+                              }
+                            },
+                            -2
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

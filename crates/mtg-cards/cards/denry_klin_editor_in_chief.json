@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ba477a45-84cc-4a85-98e4-50dca3e58788",
+  "name": "Denry Klin, Editor in Chief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Denry Klin, Editor in Chief",
+      "oracle_fingerprint": "c560d373a6831eaa0d249bee8e5eb63c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounterOf": ["+1/+1", { "Other": "first strike" }, { "Other": "vigilance" }]
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "if": { "Compare": { "left": { "AnyCounters": "This" }, "op": "Ge", "right": 1 } },
+            "effects": [{ "PutCountersOf": { "on": "Triggering", "of": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

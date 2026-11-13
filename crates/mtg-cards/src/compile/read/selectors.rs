@@ -829,6 +829,7 @@ fn suffix_text_main(pred: &Pred, form: Form) -> Option<String> {
         | Pred::GenericCost(_)
         | Pred::SharesName(_)
         | Pred::SharesType(_)
+        | Pred::SharesTypeOf { .. }
         | Pred::SharesColor(_)
         | Pred::HasAttached(_)
         | Pred::AnyOf(_)) => w6d_shares::w6d_suffix_text(pred, form)

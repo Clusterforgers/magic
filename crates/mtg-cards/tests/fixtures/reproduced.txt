@@ -649,6 +649,7 @@ Faith Unbroken
 Faithful Watchdog
 Faithless Looting
 Fall from Favor
+Fall of Cair Andros
 Fall of the Hammer
 Fallen Ideal
 False Floor
@@ -895,6 +896,7 @@ Heroes' Podium
 Heronblade Elite
 Hexavus
 Hexhaven Dueling Arena
+Hibernation's End
 Hidden Dragonslayer
 Hidden Hideout
 Hideous Laughter
@@ -1077,6 +1079,7 @@ Lay Bare the Heart
 Lazotep Reaver
 Leader, Super-Genius
 Leafkin Druid
+Legerdemain
 Legion Loyalty
 Legolas Greenleaf
 Leonardo, the Balance
@@ -1138,6 +1141,7 @@ Mage Hunter
 Magewright's Stone
 Magical Hack
 Magistrate's Scepter
+Magmatic Galleon
 Magmatic Insight
 Magus of the Moon
 Make Disappear
@@ -1552,6 +1556,7 @@ Rishkar's Expertise
 Rishkar, Peema Renegade
 Rising Miasma
 Rite of Replication
+Rith, Liberated Primeval
 River of Tears
 Riveteers Overlook
 Riveteers Requisitioner
@@ -1649,6 +1654,7 @@ Shabraz, the Skyshark
 Shacklegeist
 Shadowmage Infiltrator
 Shadowspear
+Shah of Naar Isle
 Shaman of the Great Hunt
 Shamanic Revelation
 Shambling Shell

@@ -63,6 +63,14 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     .filter(|to| state.is_alive(**to))
                     .map(|to| Event::GiftGiven { player, to: *to }),
             ),
+            Action::PaidCumulativeUpkeep | Action::DeclinedCumulativeUpkeep | Action::PaidEcho => {
+                events.extend(card.map(|object| Event::UpkeepSettled {
+                    player,
+                    object,
+                    echo: *action == Action::PaidEcho,
+                    paid: *action != Action::DeclinedCumulativeUpkeep,
+                }));
+            }
             _ => return Err(ResolveError::Unsupported("Effect.Performed")),
         }
     }

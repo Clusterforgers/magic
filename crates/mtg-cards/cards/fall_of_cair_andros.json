@@ -1,16 +1,21 @@
 {
   "oracle_id": "33c0a8c0-d1d9-4b03-869d-65dab8ace3df",
   "name": "Fall of Cair Andros",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Fall of Cair Andros",
       "oracle_fingerprint": "17c2bf22427f7ce267178710e5ecf6df",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 264 }
+          "Triggered": {
+            "when": {
+              "DealtExcess": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "combat": false
+              }
+            },
+            "effects": [{ "Amass": { "subtype": "Orc", "count": "Triggering" } }]
           }
         },
         {

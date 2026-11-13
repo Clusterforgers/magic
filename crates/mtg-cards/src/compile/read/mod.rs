@@ -219,6 +219,8 @@ mod r401_flash;
 mod r401_riders;
 mod r402_copy_riders;
 mod r402_spell_costs;
+mod r403_excess;
+mod r403_hooks;
 mod r405_cast_target;
 mod r405_events;
 mod r406_actions;
@@ -573,6 +575,14 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
             .iter()
             .any(|written| same_text(written, text))
             .then_some(ability);
+    }
+    if let Some(found) =
+        r403_hooks::r403_read(text, kind, |twin| clause_with(twin, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
+    {
+        return Some(found);
     }
     if kind == ClauseKind::Triggered
         && let Some(found) = dk27_animate::dk27_animate_read(text)

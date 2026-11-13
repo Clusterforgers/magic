@@ -35,7 +35,14 @@ impl KeywordRules for Echo {
                 who: Ref::You,
                 cost: cost.clone(),
                 times: Amount::one(),
-                paid: Vec::new(),
+                paid: vec![Effect::Performed {
+                    action: mtg_cards::did::Action::PaidEcho,
+                    who: Ref::You,
+                    times: Amount::one(),
+                    card: Some(Ref::This),
+                    value: None,
+                    to: None,
+                }],
                 unpaid: vec![Effect::Sacrifice {
                     who: Ref::You,
                     filter: Selector::this(),

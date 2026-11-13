@@ -1,0 +1,24 @@
+{
+  "oracle_id": "4afd88fa-f8bb-46d4-9ba7-09419e6f858c",
+  "name": "Grimdancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grimdancer",
+      "oracle_fingerprint": "f8c96ba5d96111a05dabbf36e758c4e1",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCountersOf": {
+                "kinds": [{ "Other": "menace" }, { "Other": "deathtouch" }, { "Other": "lifelink" }],
+                "count": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

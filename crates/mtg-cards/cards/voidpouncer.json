@@ -1,7 +1,7 @@
 {
   "oracle_id": "bb4ebe30-2501-48aa-879a-2402a9eb1be7",
   "name": "Voidpouncer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Voidpouncer",
@@ -10,9 +10,17 @@
         { "Keyword": "Devoid" },
         { "Keyword": { "Kicker": "{2}{C}" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 106, "end": 212 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCountersAnd": {
+                "counter": "+1/+1",
+                "count": 2,
+                "mods": [{ "AddKeyword": "Haste" }],
+                "also": [{ "counter": { "Other": "trample" }, "count": 1 }]
+              }
+            },
+            "condition": "Kicked"
           }
         }
       ]

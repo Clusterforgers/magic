@@ -211,6 +211,16 @@ pub enum TriggerPattern {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         combat: Option<bool>,
     },
+    /// A permanent the selector picks is dealt excess damage (CR 120.10): more damage at once than is lethal to it, its
+    /// toughness less the damage marked for a creature, its loyalty for a planeswalker; `Amount::Triggering` is the
+    /// excess, and the permanent is the one triggering.
+    DealtExcess {
+        /// The permanents.
+        what: Selector,
+        /// Only combat damage (`true`) or only other damage (`false`); both when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        combat: Option<bool>,
+    },
     /// Damage that would be dealt to a player is prevented ("whenever damage that would be dealt to you is prevented");
     /// the amount of the event is the damage prevented.
     DamagePrevented {
@@ -974,6 +984,16 @@ pub enum EntersChoice {
     },
 }
 
+/// Counters of one kind a permanent enters with besides the kind its replacement names first.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct MoreCounters {
+    /// The kind of counter.
+    pub counter: CounterKind,
+    /// How many.
+    pub count: Amount,
+}
+
 /// Counters a permanent entering as a copy enters with (`ReplaceBy::AsCopy`), when the object it copies matches `of`.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -1108,6 +1128,9 @@ pub enum ReplaceBy {
         count: Amount,
         /// What it gets besides: a keyword or an ability.
         mods: Vec<Modification>,
+        /// Counters of other kinds it enters with besides ("two +1/+1 counters and a trample counter on it").
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        also: Vec<MoreCounters>,
     },
     /// Amplify N (CR 702.38): as the permanent enters, its controller reveals any number of creature cards from their hand that
     /// share a creature type with it, and it enters with N +1/+1 counters for each.
@@ -1186,6 +1209,14 @@ pub enum ReplaceBy {
     /// The permanent enters with one counter of the kind its controller chooses among these, as it enters ("enters
     /// with your choice of a deathtouch counter or a lifelink counter on it").
     WithCounterOf(Vec<CounterKind>),
+    /// The permanent enters with one counter of each of `count` different kinds its controller chooses among these, as it
+    /// enters ("enters with your choice of two different counters on it from among menace, deathtouch, and lifelink").
+    WithCountersOf {
+        /// The kinds offered.
+        kinds: Vec<CounterKind>,
+        /// How many different kinds are chosen.
+        count: u32,
+    },
     /// The permanent enters prepared (a prepare card; its controller may then cast a copy of its spell face).
     EntersPrepared,
     /// As the permanent enters, its controller chooses one of these words ("choose Khans or Dragons"), which

@@ -1857,6 +1857,7 @@ impl<'a> Scope<'a> {
             }
             Pred::SharesName(_)
             | Pred::SharesType(_)
+            | Pred::SharesTypeOf { .. }
             | Pred::SharesColor(_)
             | Pred::SharesManaValue(_)
             | Pred::XInCost

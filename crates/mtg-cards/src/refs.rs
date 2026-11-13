@@ -268,6 +268,14 @@ pub enum Pred {
     /// Has the mana value of one of the objects the reference names ("protection from each mana value among artifacts you
     /// control").
     SharesManaValue(Ref),
+    /// Shares one of these card types with one of the objects the reference names ("that share a permanent type",
+    /// "that shares one of those types with it").
+    SharesTypeOf {
+        /// The objects compared with.
+        with: Ref,
+        /// The card types that count.
+        types: Vec<mtg_core::card::CardType>,
+    },
     /// Is an Aura card that could enchant the source ("an Aura card in your hand that could enchant this creature", CR 303.4).
     CanEnchantSource,
     /// Has {X} in its mana cost ("a spell with {X} in its mana cost", CR 107.3).
