@@ -50,7 +50,7 @@ fn land(name: &str) -> Arc<CardDefinition> {
 
 /// A game where every seat has an Elf and a land in hand, library and graveyard and an Elf in play; seat 0 also has the
 /// source in play, which entered having chosen `chosen`.
-fn table(seats: usize, source: Arc<CardDefinition>, chosen: Option<Chosen>) -> GameState {
+fn table(seats: usize, source: &Arc<CardDefinition>, chosen: Option<Chosen>) -> GameState {
     let hands = (0..seats)
         .map(|seat| {
             vec![
@@ -117,7 +117,7 @@ const PLACES: [&str; 4] = ["Hand", "Play", "Library", "Grave"];
 fn every_card_spell_and_permanent_is_also_the_chosen_color(#[case] seats: usize) {
     let game = table(
         seats,
-        source(EVERY_ZONE, r#""AddChosenColor""#),
+        &source(EVERY_ZONE, r#""AddChosenColor""#),
         Some(Chosen::Color(Color::Blue)),
     );
     let both = ColorSet::EMPTY.with(Color::Red).with(Color::Blue);
@@ -136,7 +136,7 @@ fn every_card_spell_and_permanent_is_also_the_chosen_color(#[case] seats: usize)
 #[case::no_color_chosen(None)]
 #[case::a_type_is_no_color(Some(Chosen::CreatureType(Subtype("Rat".to_owned()))))]
 fn nothing_chosen_adds_no_color(#[case] chosen: Option<Chosen>) {
-    let game = table(3, source(EVERY_ZONE, r#""AddChosenColor""#), chosen);
+    let game = table(3, &source(EVERY_ZONE, r#""AddChosenColor""#), chosen);
     for place in PLACES {
         assert_eq!(
             chars(&game, &format!("{place} elf 1")).colors,
@@ -152,7 +152,7 @@ fn the_controllers_creatures_are_only_the_chosen_type_in_every_zone(#[case] seat
     let selector = format!(r#"{{"Type":"Creature"}},{{"ControlledBy":"You"}},{EVERY_ZONE}"#);
     let game = table(
         seats,
-        source(&selector, r#"{"SetCreatureTypes":[]},"AddChosenSubtype""#),
+        &source(&selector, r#"{"SetCreatureTypes":[]},"AddChosenSubtype""#),
         Some(Chosen::CreatureType(Subtype("Rat".to_owned()))),
     );
     let rat = Subtype("Rat".to_owned());
@@ -185,7 +185,11 @@ fn the_controllers_creatures_are_only_the_chosen_type_in_every_zone(#[case] seat
 #[case::three_seats(3)]
 fn the_controllers_nonland_cards_are_white_in_every_zone(#[case] seats: usize) {
     let selector = format!(r#"{{"Not":{{"Type":"Land"}}}},{{"ControlledBy":"You"}},{EVERY_ZONE}"#);
-    let game = table(seats, source(&selector, r#"{"SetColors":["White"]}"#), None);
+    let game = table(
+        seats,
+        &source(&selector, r#"{"SetColors":["White"]}"#),
+        None,
+    );
     let white = ColorSet::EMPTY.with(Color::White);
     assert_eq!(chars(&game, "Source").colors, white);
     for place in PLACES {
@@ -213,7 +217,11 @@ fn the_controllers_nonland_cards_are_white_in_every_zone(#[case] seats: usize) {
 #[case::four_seats(4)]
 fn the_controllers_lands_and_library_lands_are_basic(#[case] seats: usize) {
     let selector = r#"{"Type":"Land"},{"ControlledBy":"You"},{"AnyOf":[{"In":"Battlefield"},{"In":"Library"}]}"#;
-    let game = table(seats, source(selector, r#"{"AddSupertype":"Basic"}"#), None);
+    let game = table(
+        seats,
+        &source(selector, r#"{"AddSupertype":"Basic"}"#),
+        None,
+    );
     let basic = |name: &str| chars(&game, name).supertypes.contains(&Supertype::Basic);
     assert!(basic("Play land 0"));
     assert!(basic("Library land 0"));

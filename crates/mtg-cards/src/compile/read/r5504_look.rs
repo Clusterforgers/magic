@@ -19,6 +19,7 @@ fn look_at_an_opponents_hand() -> Vec<Effect> {
             count: crate::refs::Bounds::default(),
             bind: OPPONENT.to_owned(),
             rest_as: None,
+            differ: None,
         },
         Effect::LookAtHand {
             of: Ref::Bound(OPPONENT.to_owned()),

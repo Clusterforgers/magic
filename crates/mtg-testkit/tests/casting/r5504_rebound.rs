@@ -21,6 +21,12 @@ fn free(name: &str) -> Arc<CardDefinition> {
     Arc::new(definition)
 }
 
+/// The spell on top of the stack as a target.
+fn on_stack(driver: &Driver) -> Target {
+    let top = *driver.state().stack().last().unwrap();
+    Target::Object(driver.state().object(top).unwrap().reference())
+}
+
 fn life(driver: &Driver, seat: usize) -> i32 {
     driver.state().player(PlayerId(seat as u64)).unwrap().life()
 }
@@ -38,7 +44,7 @@ fn the_new_target_is_another_player(#[values(2, 3, 4)] seats: usize) {
     let mut driver = table(seats);
     let aim = driver.target_player(1);
     driver.cast_at("Lightning Bolt", &[aim]).unwrap();
-    let bolt = driver.target_named("Lightning Bolt").unwrap();
+    let bolt = on_stack(&driver);
     driver.cast_at("Rebound", &[bolt]).unwrap();
     let new = seats - 1;
     let mut asked = false;
@@ -79,6 +85,6 @@ fn a_spell_aimed_at_a_creature_is_no_target(#[values(2, 4)] seats: usize) {
     let mut driver = table(seats);
     let bears = driver.target_named("Grizzly Bears").unwrap();
     driver.cast_at("Lightning Bolt", &[bears]).unwrap();
-    let bolt = driver.target_named("Lightning Bolt").unwrap();
+    let bolt = on_stack(&driver);
     assert!(driver.cast_at("Rebound", &[bolt]).is_err());
 }

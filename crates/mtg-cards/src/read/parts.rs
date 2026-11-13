@@ -646,14 +646,7 @@ pub(super) fn replace_by(ctx: &Ctx, by: &ReplaceBy, depth: u8, out: &mut Vec<Ste
             out.push(Step::new(depth, "instead:"));
             effects::list(ctx, list, depth + 1, out);
         }
-        ReplaceBy::ChooseAfter { first, choice } => {
-            out.push(Step::new(depth, "as it enters, first:"));
-            effects::list(ctx, first, depth + 1, out);
-            out.push(Step::new(
-                depth,
-                format!("then its controller chooses {}", generic::node(ctx, choice)),
-            ));
-        }
+        ReplaceBy::ChooseAfter { first, choice } => choose_after(ctx, first, choice, depth, out),
         ReplaceBy::AsEntersWith {
             effects: list,
             counter,
@@ -790,6 +783,22 @@ fn combat_quirk(who: &str, quirk: &CombatQuirk) -> String {
             format!("{who} can block some creatures with flying as though they had reach")
         }
     }
+}
+
+/// The steps of effects as a permanent enters followed by the choice it keeps.
+fn choose_after(
+    ctx: &Ctx,
+    first: &[crate::effect::Effect],
+    choice: &crate::trigger::EntersChoice,
+    depth: u8,
+    out: &mut Vec<Step>,
+) {
+    out.push(Step::new(depth, "as it enters, first:"));
+    effects::list(ctx, first, depth + 1, out);
+    out.push(Step::new(
+        depth,
+        format!("then its controller chooses {}", generic::node(ctx, choice)),
+    ));
 }
 
 #[cfg(test)]
