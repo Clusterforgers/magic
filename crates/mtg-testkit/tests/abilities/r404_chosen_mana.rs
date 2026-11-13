@@ -30,7 +30,7 @@ fn gauntlet() -> Arc<CardDefinition> {
 /// A Forest that is not basic, with the Forest's mana ability.
 fn nonbasic_forest() -> Arc<CardDefinition> {
     let mut definition = (*forest()).clone();
-    definition.name = "Wild Grove".to_owned();
+    "Wild Grove".clone_into(&mut definition.name);
     definition.supertypes.clear();
     Arc::new(definition)
 }

@@ -153,7 +153,7 @@ position: Array<number>, } } | { "AbilityTriggered": {
 /**
  * The object with the ability, as it was; none while the viewer cannot identify it (a card in a hand).
  */
-source?: ObjectRef | null, 
+source?: ObjectRef, 
 /**
  * Its index among the rules of the source's card.
  */
@@ -169,7 +169,7 @@ object: ObjectId,
 /**
  * The object with the ability, as it was; none while the viewer cannot identify it (a card in a hand).
  */
-source?: ObjectRef | null, 
+source?: ObjectRef, 
 /**
  * Who controls it.
  */
@@ -177,7 +177,7 @@ controller: PlayerId, } } | { "AbilityLeftToTable": {
 /**
  * The object with the ability, as it was; none while the viewer cannot identify it (a card in a hand).
  */
-source?: ObjectRef | null, 
+source?: ObjectRef, 
 /**
  * Who controls it.
  */
