@@ -86,11 +86,7 @@ fn r400_hogaak_is_cast_without_mana(
         })
         .count();
     assert_eq!(tapped_forests, 0, "no land is tapped for mana");
-    assert!(
-        state
-            .zone(Zone::Graveyard(crate::common::pid(0)))
-            .is_empty()
-    );
+    assert_eq!(state.zone(Zone::Graveyard(crate::common::pid(0))).len(), 0);
     let replayed = replay(driver.engine().setup(), driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.state().state_hash());
     Ok(())
