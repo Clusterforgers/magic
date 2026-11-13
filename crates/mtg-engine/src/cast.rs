@@ -333,6 +333,7 @@ fn payment_events(
             r282_keep_paid(choices, convoked, payment.life);
         }
     }
+    let (later, announced) = r5506_sacrificed_after_mana(announced, &spent.steps);
     events.extend(announced);
     // The creatures and artifacts tapped and the cards exiled to help pay (CR 702.51, CR 702.126, CR 702.66), before the mana.
     for object in payment
@@ -379,6 +380,7 @@ fn payment_events(
             .unwrap_or_default();
         events.extend(activate(option, &picked)?);
     }
+    events.extend(later);
     if !spent.mana.is_empty() {
         events.push(Event::ManaSpent {
             player,
@@ -387,6 +389,19 @@ fn payment_events(
         });
     }
     Ok(events)
+}
+
+/// The sacrifices among `announced` of permanents the payment `steps` tap for mana, taken out to follow the mana
+/// activations (CR 601.2g, 601.2h), and the rest of `announced`.
+fn r5506_sacrificed_after_mana(
+    announced: Vec<Event>,
+    steps: &[crate::spend::Step],
+) -> (Vec<Event>, Vec<Event>) {
+    let tapping: Vec<ObjectId> = steps.iter().map(|step| step.source.object).collect();
+    announced.into_iter().partition(|event| {
+        matches!(event, Event::ZoneChanged { object, from: Zone::Battlefield, cause: ZoneCause::Sacrificed, .. }
+            if tapping.contains(object))
+    })
 }
 
 /// Validates a payment choice and produces the events of the cast, the activation or the effect it pays for.

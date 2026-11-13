@@ -28,7 +28,7 @@ pub(crate) fn specific(
     address: AbilityRef,
     rules: &Ability,
 ) -> Option<ActivationKind> {
-    of_keyword(rules, keyword_adding(state, address))
+    of_keyword(rules, keyword_adding(state, address).as_ref())
 }
 
 /// [`specific`] for an ability whose source has left since `shot` was taken.
@@ -40,29 +40,46 @@ pub(crate) fn specific_as_it_was(
 ) -> Option<ActivationKind> {
     of_keyword(
         rules,
-        crate::ability_reader::keyword_adding_as_it_was(state, address, shot),
+        crate::ability_reader::keyword_adding_as_it_was(state, address, shot).as_ref(),
     )
 }
 
 /// The kind of `rules`, which `keyword` adds when a keyword adds it.
-fn of_keyword(rules: &Ability, keyword: Option<Keyword>) -> Option<ActivationKind> {
+fn of_keyword(rules: &Ability, keyword: Option<&Keyword>) -> Option<ActivationKind> {
     if matches!(rules, Ability::Loyalty { .. }) {
         return Some(ActivationKind::Loyalty);
     }
-    match keyword? {
-        Keyword::Equip(_) | Keyword::EquipTo { .. } => Some(ActivationKind::Equip),
-        Keyword::Cycling(_) | Keyword::Typecycling { .. } => Some(ActivationKind::Cycling),
-        Keyword::Unearth(_) => Some(ActivationKind::Unearth),
-        Keyword::Ninjutsu(_) => Some(ActivationKind::Ninjutsu),
-        _ => None,
+    match keyword {
+        Some(Keyword::Equip(_) | Keyword::EquipTo { .. }) => Some(ActivationKind::Equip),
+        Some(Keyword::Cycling(_) | Keyword::Typecycling { .. }) => Some(ActivationKind::Cycling),
+        Some(Keyword::Unearth(_)) => Some(ActivationKind::Unearth),
+        Some(Keyword::Ninjutsu(_)) => Some(ActivationKind::Ninjutsu),
+        _ => r5506_labelled(rules),
     }
+}
+
+/// The kind of an ability the shape of its limits names: exhaust (once each game) or boast (only after its source
+/// attacked, once each turn), the same reading as `Did { ActivatedExhaust }` and `Did { ActivatedBoast }`.
+fn r5506_labelled(rules: &Ability) -> Option<ActivationKind> {
+    use mtg_cards::did::Action;
+    Action::activation_kinds(rules)
+        .into_iter()
+        .find_map(|action| match action {
+            Action::ActivatedExhaust => Some(ActivationKind::Exhaust),
+            Action::ActivatedBoast => Some(ActivationKind::Boast),
+            _ => None,
+        })
 }
 
 /// Whether an ability whose specific kind is `own` is of the kind `wanted`.
 pub(crate) fn is_kind(wanted: ActivationKind, own: Option<ActivationKind>) -> bool {
-    // Unlocking and turning face up are no abilities: only a change of their own costs applies to them.
-    let special =
-        |kind: ActivationKind| matches!(kind, ActivationKind::Unlock | ActivationKind::Morph);
+    // Unlocking, turning face up and buyback are no abilities: only a change of their own costs applies to them.
+    let special = |kind: ActivationKind| {
+        matches!(
+            kind,
+            ActivationKind::Unlock | ActivationKind::Morph | ActivationKind::Buyback
+        )
+    };
     if own.is_some_and(special) || special(wanted) {
         return own == Some(wanted);
     }
@@ -139,6 +156,16 @@ pub(crate) fn r402_unlock_modified(state: &GameState, room: ObjectId, mana: Mana
 /// costs in play applied ("All morph costs cost {2} more").
 pub(crate) fn r402_morph_modified(state: &GameState, id: ObjectId, mana: ManaCost) -> ManaCost {
     modified_as(state, id, Some(ActivationKind::Morph), mana, Some(&[]))
+}
+
+/// The mana of the buyback cost of the spell `spell` with the changes of buyback costs in play applied ("Buyback costs
+/// cost {2} less").
+pub(crate) fn r5506_buyback_modified(
+    state: &GameState,
+    spell: ObjectId,
+    mana: ManaCost,
+) -> ManaCost {
+    modified_as(state, spell, Some(ActivationKind::Buyback), mana, Some(&[]))
 }
 
 /// The mana of an activation of an ability of the specific kind `own` with the cost modifiers in play applied.
@@ -256,7 +283,50 @@ mod r301_tests {
         #[case] keyword: Keyword,
         #[case] kind: Option<ActivationKind>,
     ) {
-        assert_eq!(of_keyword(&activated(), Some(keyword)), kind);
+        assert_eq!(of_keyword(&activated(), Some(&keyword)), kind);
         assert_eq!(of_keyword(&activated(), None), None);
+    }
+}
+
+#[cfg(test)]
+mod r5506_tests {
+    //! Goal: an ability's limits name its kind when no keyword adds it: once each game is exhaust, only after its source
+    //! attacked and once each turn is boast, and a near miss of either has no kind; a buyback change reaches buyback only.
+    use mtg_cards::ability::{Ability, ActivationKind};
+    use rstest::rstest;
+
+    use super::{is_kind, of_keyword};
+
+    const ATTACKED: &str =
+        r#""condition":{"Matches":{"subject":"This","selector":["AttackedThisTurn"]}}"#;
+
+    #[rstest]
+    #[case::exhaust(r#""limit":"OncePerGame""#, Some(ActivationKind::Exhaust))]
+    #[case::boast(&format!(r#"{ATTACKED},"limit":"OncePerTurn""#), Some(ActivationKind::Boast))]
+    #[case::attacked_without_the_limit(ATTACKED, None)]
+    #[case::once_each_turn_alone(r#""limit":"OncePerTurn""#, None)]
+    #[case::no_limit(r#""timing":"Sorcery""#, None)]
+    fn r5506_the_kind_of_a_labelled_ability(
+        #[case] rest: &str,
+        #[case] kind: Option<ActivationKind>,
+    ) {
+        let json =
+            format!(r#"{{"Activated":{{"cost":"{{1}}",{rest},"effects":[{{"Draw":{{}}}}]}}}}"#);
+        let ability: Ability = serde_json::from_str(&json).unwrap();
+        assert_eq!(of_keyword(&ability, None), kind);
+    }
+
+    #[rstest]
+    #[case::buyback_itself(ActivationKind::Buyback, Some(ActivationKind::Buyback), true)]
+    #[case::any_skips_buyback(ActivationKind::Any, Some(ActivationKind::Buyback), false)]
+    #[case::buyback_skips_abilities(ActivationKind::Buyback, None, false)]
+    #[case::any_covers_exhaust(ActivationKind::Any, Some(ActivationKind::Exhaust), true)]
+    #[case::boast_skips_exhaust(ActivationKind::Boast, Some(ActivationKind::Exhaust), false)]
+    fn r5506_which_changes_reach_a_kind(
+        #[case] wanted: ActivationKind,
+        #[case] own: Option<ActivationKind>,
+        #[case] reached: bool,
+    ) {
+        assert_eq!(is_kind(wanted, own), reached);
     }
 }

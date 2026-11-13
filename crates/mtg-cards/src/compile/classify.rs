@@ -115,6 +115,7 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
         || head.starts_with("Dash costs you pay ")
         || head.starts_with("Flashback costs you pay ")
         || head.starts_with("Flashback costs your opponents pay ")
+        || head.starts_with("Buyback costs cost ")
     {
         return ClauseKind::Static;
     }
@@ -370,6 +371,8 @@ mod tests {
     #[case::equip_costs_you_pay("Equip costs you pay cost {1} less.", false, Static)]
     #[case::r301_dash_costs("Dash costs you pay cost {2} less.", false, Static)]
     #[case::r408_flashback_costs("Flashback costs you pay cost {2} less.", false, Static)]
+    #[case::r5506_buyback_costs("Buyback costs cost {2} less.", false, Static)]
+    #[case::r5506_buyback_keyword("Buyback {3}", false, Keyword)]
     #[case::r408_flashback_costs_of_opponents(
         "Flashback costs your opponents pay cost {2} more.",
         false,

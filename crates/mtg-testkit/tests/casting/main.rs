@@ -195,6 +195,7 @@ mod r408_flashback_x;
 mod r409_kicker_x;
 mod r4f_stack_move;
 mod r4i_may_flash;
+mod r5506_kind_costs;
 mod r6q1_face_down_cost;
 mod r7p3_next_spell;
 mod rebound;

@@ -1211,6 +1211,7 @@ Mawloc
 Mayhem Patrol
 Megaton's Fate
 Megrim
+Memory Crystal
 Memory Guardian
 Memory Plunder
 Menacing Ogre
@@ -1940,6 +1941,7 @@ Teacher's Pest
 Team Pennant
 Teapot Slinger
 Tectonic Reformation
+Tectonic Split
 Teferi's Ageless Insight
 Teferi's Imp
 Teferi's Protection

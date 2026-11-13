@@ -121,6 +121,32 @@ fn builds_on_x(amount: &Amount) -> bool {
     }
 }
 
+/// `cost` with each part that counts something other than a fixed number or X counted now, for `player` paying it for
+/// `source` as it is announced ("Sacrifice a creature for each opponent", "sacrifice half the lands you control, rounded
+/// up"); a part built on X is left to the X announced.
+pub(crate) fn settled(cost: &Cost, state: &GameState, player: PlayerId, source: ObjectId) -> Cost {
+    let mut settled = cost.clone();
+    if let Some(object) = state.object(source) {
+        let scope = Scope::announcing(state, player, object.reference());
+        for item in &mut settled.0 {
+            let Some(amount) = item.amount_mut() else {
+                continue;
+            };
+            // An amount built on X has no value before X is announced: left as it is, the engine refuses to pay it
+            // rather than count it as 0 and make the part free.
+            if matches!(amount, Amount::Fixed(_) | Amount::X) || builds_on_x(amount) {
+                continue;
+            }
+            if let Ok(number) = scope.amount(amount)
+                && let Ok(number) = i32::try_from(number)
+            {
+                *amount = Amount::Fixed(number);
+            }
+        }
+    }
+    settled
+}
+
 impl Price {
     /// The price of a cost paid in the middle of a resolution, or the name of the first part the engine does not pay:
     /// another kind of cost, a part that needs the announcement of an ability to pick what it takes, an `{X}`
@@ -155,25 +181,7 @@ impl Price {
         source: ObjectId,
         granter: Option<ObjectId>,
     ) -> Result<Price, &'static str> {
-        let mut settled = cost.clone();
-        if let Some(object) = state.object(source) {
-            let scope = Scope::announcing(state, player, object.reference());
-            for item in &mut settled.0 {
-                let Some(amount) = item.amount_mut() else {
-                    continue;
-                };
-                // An amount built on X has no value before X is announced: left as it is, the engine refuses to pay it
-                // rather than count it as 0 and make the part free.
-                if matches!(amount, Amount::Fixed(_) | Amount::X) || builds_on_x(amount) {
-                    continue;
-                }
-                if let Ok(number) = scope.amount(amount)
-                    && let Ok(number) = i32::try_from(number)
-                {
-                    *amount = Amount::Fixed(number);
-                }
-            }
-        }
+        let settled = settled(cost, state, player, source);
         Price::read(&settled, true).map(|price| Price { granter, ..price })
     }
 
@@ -334,6 +342,18 @@ impl Price {
         source: ObjectId,
         leave: &[ObjectId],
     ) -> Option<Vec<ObjectId>> {
+        self.r5506_claimed_parts(state, player, source, leave)
+            .map(|taken| taken.into_iter().flatten().collect())
+    }
+
+    /// [`Self::claimed_leaving`] part by part: what each part of the price would take, in order.
+    pub(crate) fn r5506_claimed_parts(
+        &self,
+        state: &GameState,
+        player: PlayerId,
+        source: ObjectId,
+        leave: &[ObjectId],
+    ) -> Option<Vec<Vec<ObjectId>>> {
         let mut spare: Vec<ObjectId> = mana_options(state, player)
             .iter()
             .map(|option| option.source.object)
@@ -351,7 +371,7 @@ impl Price {
             };
             taken.push(part.payable(&owner, &spare)?);
         }
-        Some(taken.into_iter().flatten().collect())
+        Some(taken)
     }
 
     /// The energy the parts of the price pay.

@@ -1,7 +1,7 @@
 {
   "oracle_id": "06b77a80-4968-4385-960a-fb66bb4faa94",
   "name": "Dragonkin Berserker",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Dragonkin Berserker",
@@ -9,9 +9,12 @@
       "abilities": [
         { "Keyword": "FirstStrike" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 13, "end": 96 }
+          "CostModifier": {
+            "applies_to": [{ "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Count": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }] },
+            "activating": "Boast"
           }
         },
         {

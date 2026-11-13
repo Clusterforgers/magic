@@ -143,6 +143,13 @@ pub enum ActivationKind {
     /// Turning a face-down permanent face up for its morph or megamorph cost (CR 702.37e): a special action, not an
     /// ability, whose cost only a modifier of this kind changes ("All morph costs cost {2} more").
     Morph,
+    /// An exhaust ability (CR 702.177): an activated ability activated only once ("Exhaust abilities ... cost {2} less").
+    Exhaust,
+    /// A boast ability (CR 702.142): activated only if its source attacked this turn and only once each turn.
+    Boast,
+    /// The buyback cost of a spell (CR 702.27): an additional cost, not an ability, whose mana only a modifier of this
+    /// kind changes ("Buyback costs cost {2} less").
+    Buyback,
 }
 
 /// Whether a count is zero, so serialization can leave it out.
