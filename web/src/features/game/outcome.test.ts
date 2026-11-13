@@ -26,6 +26,7 @@ describe('describeLoss', () => {
     ['Conceded', 'conceded'],
     ['OpponentReachedLife', 'lost to a player at the winning life total'],
     ['CommanderDamage', 'lost to commander damage'],
+    ['LeaderFell', 'fell with their leader'],
     [{ Format: 'commander damage' }, 'lost: commander damage'],
   ])('puts %j as "%s"', (reason, words) => {
     expect(describeLoss(reason)).toBe(words)

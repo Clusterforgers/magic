@@ -106,6 +106,10 @@ pub struct PlayerSetup {
     pub spirit: Option<Arc<CardDefinition>>,
     /// A boss seat's phases, in the order they begin ([`crate::phases`]).
     pub phases: Vec<crate::phases::BossPhase>,
+    /// A boss seat's scheme deck, in the order its schemes are set in motion ([`crate::schemes`]).
+    pub schemes: Vec<Arc<CardDefinition>>,
+    /// The seat whose loss makes this one lose too ([`crate::schemes::leaders_fall`]).
+    pub leader: Option<PlayerId>,
 }
 
 /// Where the game starts.
@@ -230,6 +234,24 @@ impl GameSetup {
     pub fn with_phases(mut self, phases: Vec<Vec<crate::phases::BossPhase>>) -> Self {
         for (player, list) in self.players.iter_mut().zip(phases) {
             player.phases = list;
+        }
+        self
+    }
+
+    /// The setup with these scheme decks, one for each seat in table order.
+    #[must_use]
+    pub fn with_schemes(mut self, schemes: Vec<Vec<Arc<CardDefinition>>>) -> Self {
+        for (player, deck) in self.players.iter_mut().zip(schemes) {
+            player.schemes = deck;
+        }
+        self
+    }
+
+    /// The setup with these leaders, one entry for each seat in table order.
+    #[must_use]
+    pub fn with_leaders(mut self, leaders: Vec<Option<PlayerId>>) -> Self {
+        for (player, leader) in self.players.iter_mut().zip(leaders) {
+            player.leader = leader;
         }
         self
     }
@@ -422,6 +444,8 @@ fn starting_player(
     );
     player.spirit_form.clone_from(&setup.spirit);
     player.phases.clone_from(&setup.phases);
+    player.schemes.clone_from(&setup.schemes);
+    player.leader = setup.leader;
     for (kind, count) in &setup.counters {
         if *count > 0 {
             *player.counters.entry(kind.clone()).or_default() += count;

@@ -151,7 +151,7 @@ export function PartyLobby({
             Gather the party
           </h2>
           <p className="text-sm text-muted-foreground">
-            Up to four heroes, each with a Commander deck. Bot allies fill the gaps.
+            Up to six heroes, each with a Commander deck. Bot allies fill the gaps.
           </p>
         </div>
         <div className="flex items-center gap-2 text-sm">
@@ -195,7 +195,7 @@ export function PartyLobby({
             </NativeSelect>
             <Button
               variant="outline"
-              disabled={busy || heroes.length >= 4}
+              disabled={busy || heroes.length >= 6}
               onClick={() => act({ kind: 'add_bot', level })}
             >
               Add a bot ally

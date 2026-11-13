@@ -1331,6 +1331,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { player, emblem } = event.PhaseBegan
     return line(`${n.seat(player)} enters ${n.card(emblem)}`)
   }
+  if ('SchemeSetInMotion' in event) {
+    const { player, emblem } = event.SchemeSetInMotion
+    return line(`${n.seat(player)} sets ${n.card(emblem)} in motion`)
+  }
   if ('PlayerLost' in event) {
     return line(`${n.seat(event.PlayerLost.player)} ${describeLoss(event.PlayerLost.reason)}`)
   }
