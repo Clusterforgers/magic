@@ -109,6 +109,7 @@ mod replacement_fuzz;
 mod restricted_fuzz;
 mod restriction_fuzz;
 mod reveal_until_fuzz;
+mod r402_smoke;
 mod rmt1_smoke;
 mod rules_fuzz;
 mod rules_games;
