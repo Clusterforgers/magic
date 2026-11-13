@@ -1,0 +1,85 @@
+{
+  "oracle_id": "12469cb5-a383-47ab-84cd-414b9ced8a8c",
+  "name": "Charmed Pendant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Charmed Pendant",
+      "oracle_fingerprint": "ed3adbee56d09b4d4e7336ca24bda9e1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Mill": 1 }],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["White"] },
+                  "times": {
+                    "ManaSymbols": {
+                      "color": "White",
+                      "of": {
+                        "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, "TopOfGraveyard"]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Blue"] },
+                  "times": {
+                    "ManaSymbols": {
+                      "color": "Blue",
+                      "of": {
+                        "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, "TopOfGraveyard"]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Black"] },
+                  "times": {
+                    "ManaSymbols": {
+                      "color": "Black",
+                      "of": {
+                        "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, "TopOfGraveyard"]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "times": {
+                    "ManaSymbols": {
+                      "color": "Red",
+                      "of": {
+                        "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, "TopOfGraveyard"]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Green"] },
+                  "times": {
+                    "ManaSymbols": {
+                      "color": "Green",
+                      "of": {
+                        "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, "TopOfGraveyard"]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

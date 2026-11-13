@@ -1,0 +1,36 @@
+{
+  "oracle_id": "886e00ab-c694-4839-b3fb-7a72048db4b2",
+  "name": "Clandestine Chameleon",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Clandestine Chameleon",
+      "oracle_fingerprint": "a8cc0f34b51e2b45de3d435c11965c0d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "ticket" }, "count": 2 } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "PutSticker": { "on": [{ "Not": { "Type": "Land" } }, { "OwnedBy": "You" }] }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 112, "end": 228 }
+          }
+        }
+      ]
+    }
+  ]
+}

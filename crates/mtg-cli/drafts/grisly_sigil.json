@@ -1,0 +1,45 @@
+{
+  "oracle_id": "b9d9d118-a073-4e73-90fe-026462d1d895",
+  "name": "Grisly Sigil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grisly Sigil",
+      "oracle_fingerprint": "fa61c9c46f925408fa20a087da6dce0f",
+      "abilities": [
+        { "Keyword": { "Casualty": 1 } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "DidThisTurn": { "event": "Damaged", "to": { "Target": 0 } } }]
+                    }
+                  },
+                  "then": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+                    { "GainLife": { "amount": 3 } }
+                  ],
+                  "otherwise": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+                    { "GainLife": { "amount": 1 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
