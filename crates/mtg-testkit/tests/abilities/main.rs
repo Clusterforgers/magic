@@ -44,6 +44,7 @@ mod l294_damage_by_to;
 mod l294_mana_activations;
 mod l294_turn_window;
 mod layers;
+mod lg1_abundance_draws;
 mod life_floor_triggers;
 mod lords;
 mod mana_abilities;
