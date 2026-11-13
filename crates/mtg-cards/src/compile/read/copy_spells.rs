@@ -39,6 +39,11 @@ pub fn copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     } else {
         (
             r.attempt(times)
+                .or_else(|| {
+                    (what == Ref::Triggering)
+                        .then(|| r.attempt(r4703_cast_before))
+                        .flatten()
+                })
                 .or_else(|| r.attempt(for_each))
                 .unwrap_or_else(Amount::one),
             r.attempt(spell_exceptions).unwrap_or_default(),
@@ -77,6 +82,26 @@ fn cast_spell(r: &mut Reader<'_>) -> Option<Ref> {
     } else {
         Ref::Triggering
     })
+}
+
+/// The instant and sorcery spells the controller cast this turn before the spell the trigger is about.
+pub(super) fn r4703_cast_before_count() -> Amount {
+    Amount::Tally {
+        event: crate::value::TallyEvent::SpellCast,
+        who: Ref::You,
+        filter: crate::refs::Selector(vec![
+            instant_or_sorcery(),
+            Pred::CastBefore(Ref::Triggering),
+        ]),
+    }
+}
+
+/// The words of [`r4703_cast_before_count`] after "copy it".
+const R4703_CAST_BEFORE: &str = "for each other instant and sorcery spell you've cast before it this turn";
+
+/// "for each other instant and sorcery spell you've cast before it this turn" (Thousand-Year Storm).
+fn r4703_cast_before(r: &mut Reader<'_>) -> Option<Amount> {
+    r.words(R4703_CAST_BEFORE).then(r4703_cast_before_count)
 }
 
 /// "twice", "three times", "X times": how many copies there are.
@@ -265,6 +290,7 @@ fn tail_text(count: &Amount, new_targets: bool, except: &[Modification]) -> Opti
             format!(" {} times", count_word(u32::try_from(*number).ok()?)?)
         }
         Amount::X => " X times".to_owned(),
+        counted if *counted == r4703_cast_before_count() => format!(" {R4703_CAST_BEFORE}"),
         counted @ (Amount::CommanderCasts(_)
         | Amount::Distinct {
             stat: crate::value::StatKind::CounterKinds,

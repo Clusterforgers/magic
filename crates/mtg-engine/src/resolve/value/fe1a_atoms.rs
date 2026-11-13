@@ -89,6 +89,16 @@ impl Scope<'_> {
                 })
             }
             Pred::BlockedThisTurnBy(named) => self.r378_blocked_this_turn_by(named, reference)?,
+            Pred::CastBefore(named) => {
+                let spells: Vec<ObjectRef> = self
+                    .refs(named)?
+                    .into_iter()
+                    .filter_map(crate::choose::Target::object)
+                    .collect();
+                spells
+                    .iter()
+                    .any(|spell| self.state.r4703_cast_before(reference, *spell))
+            }
             Pred::Blocks(named) => {
                 let attackers = self.objects(named)?;
                 self.state.combat().attackers().iter().any(|attacker| {

@@ -130,11 +130,11 @@ fn damage_player(
     if in_combat && amount > 0 {
         record_hit(state, source);
     }
-    let loses_life = !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss);
+    let loses_life = form.life_lost(amount) > 0;
     // The damage is dealt in full; a life floor only changes the life lost (CR 120.3a, 614.1).
     let lost = if loses_life {
         let before = player_mut(state, id)?.life;
-        let wanted = i32::try_from(amount).unwrap_or(i32::MAX);
+        let wanted = i32::try_from(form.life_lost(amount)).unwrap_or(i32::MAX);
         match crate::rules::damage_life_floor(state, id, before) {
             Some(floor) => wanted.min(before.saturating_sub(floor)),
             _ => wanted,

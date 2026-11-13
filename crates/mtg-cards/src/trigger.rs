@@ -902,6 +902,12 @@ pub enum ReplaceWhen {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// A player would lose life: by an effect or by damage (CR 120.3a), not by paying it; only `LossTimes`.
+    LifeLoss {
+        /// Who would lose it.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
     /// A player would lose the game; only `Instead`.
     LoseGame {
         /// Who.
@@ -1020,6 +1026,9 @@ pub enum ReplaceBy {
     Multiply(u32),
     /// The number or amount in the event is increased.
     Add(u32),
+    /// The life lost is this many times as much (CR 614.1): "they lose twice that much life instead"; damage stays as it
+    /// was dealt, only the life it takes changes. Only `LifeLoss`.
+    LossTimes(u32),
     /// The number in the event is halved, rounded down ("they put half that many of each of those kinds of counters
     /// on that permanent or player instead, rounded down").
     Half,

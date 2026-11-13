@@ -203,6 +203,7 @@ Blood for the Blood God!
 Bloodbraid Elf
 Bloodghast
 Bloodletter Quill
+Bloodletter of Aclazotz
 Bloodline Pretender
 Bloom Hulk
 Body Count
@@ -1605,6 +1606,7 @@ Rope
 Rosheen Meanderer
 Rousing Refrain
 Rout
+Rowan, Scion of War
 Rowdy Research
 Rugged Prairie
 Ruinous Path

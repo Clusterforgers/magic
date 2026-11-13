@@ -185,6 +185,7 @@ mod r3f_mana;
 mod r400_no_mana;
 mod r400_rather_permissions;
 mod r400_reveal_hand;
+mod r4703_spell_cost_per;
 mod r401_flash_on_cast;
 mod r402_copy_riders;
 mod r402_special_costs;

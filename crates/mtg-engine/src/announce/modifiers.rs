@@ -16,7 +16,7 @@ use mtg_cards::keyword::Keyword;
 use mtg_cards::mana::ManaCostX;
 use mtg_cards::modify::SpellBenefit;
 use mtg_cards::refs::{Pred, Selector, TargetSpec};
-use mtg_cards::value::CastWay;
+use mtg_cards::value::{Amount, CastWay};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaSymbol};
 
@@ -222,6 +222,7 @@ fn spell_cost_rules(state: &GameState, spell: ObjectId) -> Vec<Modifier> {
                     applies_to,
                     change,
                     mana,
+                    per,
                 } = rule
                 else {
                     return None;
@@ -229,7 +230,7 @@ fn spell_cost_rules(state: &GameState, spell: ObjectId) -> Vec<Modifier> {
                 Some(cost_modifier(
                     *source,
                     *controller,
-                    (applies_to, *change, mana),
+                    (applies_to, *change, mana, per),
                 ))
             });
     let effects = state
@@ -241,6 +242,7 @@ fn spell_cost_rules(state: &GameState, spell: ObjectId) -> Vec<Modifier> {
                 applies_to,
                 change,
                 mana,
+                per,
             } = &effect.rule
             else {
                 return None;
@@ -258,7 +260,7 @@ fn spell_cost_rules(state: &GameState, spell: ObjectId) -> Vec<Modifier> {
             Some(cost_modifier(
                 source,
                 effect.controller,
-                (applies_to, *change, mana),
+                (applies_to, *change, mana, per),
             ))
         });
     statics.chain(effects).collect()
@@ -268,7 +270,7 @@ fn spell_cost_rules(state: &GameState, spell: ObjectId) -> Vec<Modifier> {
 fn cost_modifier(
     source: ObjectRef,
     controller: PlayerId,
-    (applies_to, change, mana): (&Selector, CostChange, &ManaCostX),
+    (applies_to, change, mana, per): (&Selector, CostChange, &ManaCostX, &Amount),
 ) -> Modifier {
     Modifier {
         source,
@@ -278,7 +280,7 @@ fn cost_modifier(
             applies_to: applies_to.clone(),
             change,
             mana: mana.clone(),
-            per: mtg_cards::value::Amount::one(),
+            per: per.clone(),
             condition: None,
             activating: None,
             least: 0,

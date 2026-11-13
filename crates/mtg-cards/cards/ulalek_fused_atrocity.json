@@ -1,17 +1,70 @@
 {
   "oracle_id": "9f6828e3-39d9-45d9-9bf1-0e3737a0321e",
   "name": "Ulalek, Fused Atrocity",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ulalek, Fused Atrocity",
-      "oracle_fingerprint": "8bfbf1e56659b5b26bed75ab456ef718",
+      "oracle_fingerprint": "",
       "abilities": [
-        { "Keyword": "Devoid" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 33, "end": 272 }
+          "Keyword": "Devoid"
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "Subtype": "Eldrazi"
+                  }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{C}{C}",
+                  "paid": [
+                    {
+                      "CopySpell": {
+                        "what": {
+                          "Each": [
+                            "Spell",
+                            {
+                              "ControlledBy": "You"
+                            }
+                          ]
+                        },
+                        "new_targets": true
+                      }
+                    },
+                    {
+                      "CopyAbility": {
+                        "what": {
+                          "Each": [
+                            {
+                              "AnyOf": [
+                                {
+                                  "Ability": "Activated"
+                                },
+                                {
+                                  "Ability": "Triggered"
+                                }
+                              ]
+                            },
+                            {
+                              "ControlledBy": "You"
+                            }
+                          ]
+                        },
+                        "new_targets": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

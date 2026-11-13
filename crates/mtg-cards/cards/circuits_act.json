@@ -1,0 +1,51 @@
+{
+  "oracle_id": "14421f6a-2cd6-4438-9ac9-dc06d2c7befb",
+  "name": "Circuits Act",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Circuits Act",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "dice": 3,
+                  "results": []
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Clown Robot",
+                      "colors": [
+                        "White"
+                      ],
+                      "types": [
+                        "Artifact",
+                        "Creature"
+                      ],
+                      "subtypes": [
+                        "Clown",
+                        "Robot"
+                      ],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "DieResult": "Distinct"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

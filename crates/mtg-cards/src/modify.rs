@@ -954,6 +954,9 @@ pub enum GameRule {
     UpToInDeck(u32),
     /// A booster draft rule: nothing in a game; no `from`.
     Draft(DraftRule),
+    /// "If this card is in a graveyard, effects from spells named Muscle Burst count it as a card named Muscle Burst.": a
+    /// resolving spell of that name reads the card as named so; from the graveyard only.
+    CountsAsNamed(String),
     /// "This spell can't be copied." (CR 707.10): an effect that would copy the spell makes no copy of it; no `from`.
     CantBeCopied,
     /// "You can't spend mana to cast this spell.": the cast of the card offers no mana of the pool and no mana ability, so
@@ -978,6 +981,10 @@ pub enum GameRule {
         change: crate::ability::CostChange,
         /// The mana added or removed.
         mana: ManaCostX,
+        /// How many times the mana changes the cost, counted as each spell is cast ("where X is the amount of life you
+        /// lost this turn").
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        per: Amount,
     },
     /// A triggered ability of a permanent the rule's controller controls triggers an additional time when the event
     /// `cause` describes makes it trigger ("if a creature dying causes a triggered ability ... to trigger"), or any event

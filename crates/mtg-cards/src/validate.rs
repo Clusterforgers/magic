@@ -760,6 +760,10 @@ impl<'a> Walker<'a> {
                 self.uses("Pred", "BlockedThisTurnBy");
                 self.reference(who, Kind::Object);
             }
+            Pred::CastBefore(who) => {
+                self.uses("Pred", "CastBefore");
+                self.reference(who, Kind::Object);
+            }
             Pred::BandedWith(who) => {
                 self.uses("Pred", "BandedWith");
                 self.reference(who, Kind::Object);
@@ -924,6 +928,7 @@ impl<'a> Walker<'a> {
             | Pred::TopCreatureOfGraveyard
             | Pred::BlockedBy(_)
             | Pred::BlockedThisTurnBy(_)
+            | Pred::CastBefore(_)
             | Pred::BandedWith(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
@@ -1051,7 +1056,12 @@ impl<'a> Walker<'a> {
     fn hand_or_life_lost(&mut self, amount: &Amount) {
         match amount {
             Amount::LowestHand(who) => self.player_amount("LowestHand", who),
-            Amount::DieResult(_) => self.uses("Amount", "DieResult"),
+            Amount::DieResult(which) => {
+                self.uses("Amount", "DieResult");
+                if *which == crate::value::DieResult::Distinct {
+                    self.uses("Amount", "DieResult.Distinct");
+                }
+            }
             Amount::DamageDealtThisWay => self.uses("Amount", "DamageDealtThisWay"),
             _ => self.uses("Amount", "LifeLostThisWay"),
         }
@@ -1310,13 +1320,14 @@ impl<'a> Walker<'a> {
             Amount::StickerVowels => self.uses("Amount", "StickerVowels"),
             Amount::CastSameNameThisGame(who) => self.player_amount("CastSameNameThisGame", who),
             Amount::TallyLastTurn { event, who, filter }
+            | Amount::TallyTypes { event, who, filter }
             | Amount::TallyTotal {
                 event, who, filter, ..
             } => {
-                let tag = if matches!(amount, Amount::TallyTotal { .. }) {
-                    "TallyTotal"
-                } else {
-                    "TallyLastTurn"
+                let tag = match amount {
+                    Amount::TallyTotal { .. } => "TallyTotal",
+                    Amount::TallyTypes { .. } => "TallyTypes",
+                    _ => "TallyLastTurn",
                 };
                 self.uses("Amount", tag);
                 if matches!(
@@ -3390,10 +3401,15 @@ impl Walker<'_> {
         if sides < 2 {
             self.problem("a die has at least two sides");
         }
-        if choose != (dice > 1) {
-            self.problem(
-                "a choice of one result is among two or more dice, and only a choice rolls several",
-            );
+        if choose && dice < 2 {
+            self.problem("a choice of one result is among two or more dice");
+        }
+        if !choose && dice > 1 {
+            // Several dice with no choice are read together ("for each different result").
+            self.uses("Effect", "RollDice.Several");
+            if !results.is_empty() || !plus.is_zero() {
+                self.problem("several dice read together have no table and add nothing");
+            }
         }
         if choose && (!results.is_empty() || !plus.is_zero()) {
             self.problem("a chosen result has no table and adds nothing");
@@ -4622,6 +4638,9 @@ impl Walker<'_> {
                 if matches!(rule, GameRule::CantBeCopied) {
                     w.problem("a spell can't be copied by a static ability of its own, not by an effect");
                 }
+                if matches!(rule, GameRule::CountsAsNamed(_)) {
+                    w.problem("a card counts as another name by a static ability of its own, not by an effect");
+                }
                 if matches!(rule, GameRule::AnyNumberInDeck | GameRule::UpToInDeck(_)) {
                     w.problem("a deck holds more than one of a card by a static ability, not by an effect");
                 }
@@ -5509,6 +5528,11 @@ impl Walker<'_> {
             | GameRule::ManaBurn
             | GameRule::CantBeCopied
             | GameRule::CantSpendMana => {}
+            GameRule::CountsAsNamed(name) => {
+                if name.trim().is_empty() {
+                    self.at(tag, |w| w.problem("a card counts as a card with a name"));
+                }
+            }
             GameRule::UpToInDeck(most) => {
                 if *most < 2 {
                     self.at(tag, |w| w.problem("a deck rule allows at least two copies"));
@@ -5718,6 +5742,10 @@ impl Walker<'_> {
             ZoneKind::Stack if spell => {}
             ZoneKind::Graveyard | ZoneKind::Exile if c8_eg_itself => {}
             ZoneKind::Hand if ep27_flash => {}
+            ZoneKind::Graveyard if matches!(rule, GameRule::CountsAsNamed(_)) => {}
+            _ if matches!(rule, GameRule::CountsAsNamed(_)) => self.at("from", |w| {
+                w.problem("a card counts as another name from a graveyard: write the rule with `from` Graveyard");
+            }),
             // Eminence: "As long as ~ is in the command zone or on the battlefield, ...".
             ZoneKind::Command if matches!(rule, GameRule::SpellCost { .. }) => {}
             _ if matches!(rule, GameRule::CanBeCommander) => self.at("from", |w| {
@@ -5783,6 +5811,7 @@ impl Walker<'_> {
                 }
             }
             ReplaceWhen::LifeGain { who }
+            | ReplaceWhen::LifeLoss { who }
             | ReplaceWhen::LoseGame { who }
             | ReplaceWhen::Mill { who }
             | ReplaceWhen::Proliferates { who }
@@ -5798,6 +5827,9 @@ impl Walker<'_> {
             && !matches!(by, ReplaceBy::Instead(_) | ReplaceBy::InsteadNext(_))
         {
             self.problem("a loss of the game is replaced only by steps that happen instead");
+        }
+        if matches!(when, ReplaceWhen::LifeLoss { .. }) != matches!(by, ReplaceBy::LossTimes(_)) {
+            self.problem("a loss of life is replaced only by a multiple of it, and only it is");
         }
         crate::r406_actions::r406_check(when, by, |problem| self.problem(problem));
     }
@@ -7016,13 +7048,17 @@ mod tests {
     #[rstest]
     #[case::a_choice_of_two(r#""dice":2,"choose":true,"results":[]"#, 0)]
     #[case::one_die_with_no_table(r#""results":[]"#, 0)]
-    #[case::two_dice_without_a_choice(r#""dice":2,"results":[]"#, 1)]
+    #[case::two_dice_read_together(r#""dice":2,"results":[]"#, 0)]
+    #[case::two_dice_read_together_with_a_table(
+        r#""dice":2,"results":[{"from":1,"effects":[{"Draw":{}}]}]"#,
+        1
+    )]
     #[case::a_choice_of_one_die(r#""choose":true,"results":[]"#, 1)]
     #[case::a_choice_with_a_table(
         r#""dice":2,"choose":true,"results":[{"from":1,"effects":[{"Draw":{}}]}]"#,
         1
     )]
-    fn c11e_several_dice_are_only_a_choice_of_one_result_with_no_table(
+    fn c11e_several_dice_have_no_table(
         #[case] fields: &str,
         #[case] expected: usize,
     ) {

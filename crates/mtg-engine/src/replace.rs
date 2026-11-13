@@ -565,7 +565,11 @@ enum Unit {
     Damage {
         source: ObjectId,
         target: DamageTarget,
+        /// The damage would make a player lose life.
+        loses_life: bool,
     },
+    /// A player would lose life by an effect (not by damage, which is `Damage`).
+    LifeLoss { player: PlayerId },
     /// Counters would be put on a permanent or a player.
     Counters { on: Target, counter: CounterKind },
     /// A player would gain life.
@@ -671,6 +675,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         ReplaceWhen::TokenCreation { .. }
         | ReplaceWhen::Mill { .. }
         | ReplaceWhen::LifeGain { .. }
+        | ReplaceWhen::LifeLoss { .. }
         | ReplaceWhen::LoseGame { .. }
         | ReplaceWhen::Explores { .. }
         | ReplaceWhen::Connives { .. }
@@ -713,6 +718,14 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
             matches!(unit, Unit::Damage { .. })
         }
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
+        ReplaceBy::LossTimes(_) => matches!(
+            unit,
+            Unit::LifeLoss { .. }
+                | Unit::Damage {
+                    loses_life: true,
+                    ..
+                }
+        ),
         // Only a shield counts its amount, and it begins as `PreventUpTo`; one with effects names the damage left to it.
         ReplaceBy::PreventCounted(_) | ReplaceBy::PreventNextAnd(_) => false,
         ReplaceBy::PreventCountedAnd { most, .. } => {
@@ -939,10 +952,18 @@ impl Pass<'_> {
             };
         }
         match event {
-            Event::DamageDealt { source, target, .. } => Unit::Damage {
+            Event::DamageDealt {
+                source,
+                target,
+                amount,
+                form,
+                ..
+            } => Unit::Damage {
                 source: *source,
                 target: *target,
+                loses_life: matches!(target, DamageTarget::Player(_)) && form.life_lost(*amount) > 0,
             },
+            Event::LifeLost { player, .. } => Unit::LifeLoss { player: *player },
             Event::CountersChanged(CountersChanged { on, counter, delta }) if *delta > 0 => {
                 // What a planeswalker pays to activate a loyalty ability is a cost, not an effect.
                 let cost =
@@ -1050,6 +1071,7 @@ impl Pass<'_> {
                 Unit::Damage {
                     source: dealer,
                     target,
+                    ..
                 },
             ) => {
                 if combat.is_some_and(|wanted| wanted != self.combat_damage()) {
@@ -1120,6 +1142,15 @@ impl Pass<'_> {
                     }
             }
             (ReplaceWhen::LifeGain { who }, Unit::Life { player })
+            | (ReplaceWhen::LifeLoss { who }, Unit::LifeLoss { player })
+            | (
+                ReplaceWhen::LifeLoss { who },
+                Unit::Damage {
+                    target: DamageTarget::Player(player),
+                    loses_life: true,
+                    ..
+                },
+            )
             | (ReplaceWhen::LoseGame { who }, Unit::Loss { player })
             | (ReplaceWhen::Draw { who, .. }, Unit::Draw { player }) => {
                 scope.players(who)?.contains(player)
@@ -1196,7 +1227,7 @@ impl Pass<'_> {
         let regeneration = self.regeneration_candidate(&slot.item);
         let unpreventable = self.unpreventable(slot, &unit);
         if !unpreventable
-            && let Unit::Damage { source, target } = &unit
+            && let Unit::Damage { source, target, .. } = &unit
             && let Some(protection) = self.protection_candidate(*source, *target)
         {
             return Ok(vec![protection]);
@@ -1617,7 +1648,7 @@ impl Pass<'_> {
     /// The prevention shields that cover the damage the slot holds and have not been applied to it.
     fn shield_candidates(&self, slot: &Slot, unit: &Unit) -> Result<Vec<Candidate>, EngineError> {
         let mut found = self.replaces_candidates(slot, unit)?;
-        let Unit::Damage { source, target } = unit else {
+        let Unit::Damage { source, target, .. } = unit else {
             return Ok(found);
         };
         for effect in &self.shields {
@@ -1805,7 +1836,10 @@ impl Pass<'_> {
         };
         match unit {
             Unit::Tokens { controller } | Unit::Enter { controller, .. } => *controller,
-            Unit::Life { player } | Unit::Draw { player } | Unit::Loss { player } => *player,
+            Unit::Life { player }
+            | Unit::Draw { player }
+            | Unit::Loss { player }
+            | Unit::LifeLoss { player } => *player,
             Unit::Damage { target, .. } => match target {
                 DamageTarget::Player(player) => *player,
                 DamageTarget::Object(object) => controller_of(*object),
@@ -2182,6 +2216,9 @@ impl Pass<'_> {
             (ReplaceBy::Redirect { .. }, Unit::Damage { .. }) => {
                 self.end_once_shield(candidate);
                 self.r6f_redirect_up_to(at, candidate, u32::MAX, applied);
+            }
+            (ReplaceBy::LossTimes(times), _) => {
+                self.r4703_loss_times(at, *times, &applied);
             }
             (by, _) if scales(by) => {
                 self.scale(at, by, &applied);
@@ -3708,6 +3745,7 @@ mod w13a_moved;
 mod w5d_instead;
 
 mod r283_prevent;
+mod r4703_loss;
 mod r304c_amounts;
 mod w9c_prevent;
 

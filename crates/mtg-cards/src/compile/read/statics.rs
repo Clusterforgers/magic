@@ -1142,6 +1142,9 @@ pub(super) fn cost_times(r: &mut Reader<'_>, itself: bool, x: bool) -> Option<Am
     if let Some(tallied) = r.attempt(|r| super::c11a_turn_costs::c11a_turn_count(r, x)) {
         return Some(tallied);
     }
+    if !x && let Some(types) = r.attempt(super::r4703_reads::r4703_sacrificed_types) {
+        return Some(types);
+    }
     if !itself
         && !x
         && let Some(counted) = r.attempt(super::r402_spell_costs::r402_for_each)
@@ -1348,6 +1351,7 @@ pub(super) fn cost_sentences(
     } else if let Some(each) = (!itself)
         .then(|| super::r402_spell_costs::r402_for_each_text(per))
         .flatten()
+        .or_else(|| super::r4703_reads::r4703_sacrificed_types_text(per))
         .or_else(|| for_each_text(per))
     {
         (mana.to_string(), format!(" for each {each}"))

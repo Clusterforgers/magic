@@ -1,0 +1,11 @@
+{
+  "oracle_id": "37e44e1c-481d-4f5d-b76b-036f40e9124e",
+  "name": "Flame Burst",
+  "impl_status": "Manual",
+  "faces": [
+    {
+      "name": "Flame Burst",
+      "abilities": []
+    }
+  ]
+}

@@ -779,6 +779,34 @@ impl<'a> Scope<'a> {
         self.logged_for(event, &self.players(who)?, filter)
     }
 
+    /// Whether a card in a graveyard counts as a card named `name` for the resolving spell: it says so for effects of
+    /// spells of that name, and the source is such a spell ("effects from spells named Muscle Burst count it as a card
+    /// named Muscle Burst").
+    fn r4703_counts_as_named(&self, name: &str, seen: &Seen<'_>) -> bool {
+        if !matches!(seen.zone, Zone::Graveyard(_)) {
+            return false;
+        }
+        let Some(card) = seen.card else {
+            return false;
+        };
+        let says = card.card().rules.iter().any(|rules| {
+            matches!(
+                &**rules,
+                mtg_cards::ability::Ability::Rule {
+                    rule: mtg_cards::modify::GameRule::CountsAsNamed(named),
+                    from: mtg_cards::refs::ZoneKind::Graveyard,
+                    condition: None,
+                } if named == name
+            )
+        });
+        says && self.state.object(self.source.id).is_some_and(|source| {
+            source.reference() == self.source
+                && source.zone == Zone::Stack
+                && source.kind != ObjectKind::Ability
+                && source.card().name == name
+        })
+    }
+
     /// [`Self::logged`] for the players themselves.
     pub(crate) fn logged_for(
         &self,
@@ -2016,9 +2044,11 @@ impl<'a> Scope<'a> {
             Pred::CounterCount { kind, op, to } => {
                 op.holds(i64::from(seen.counters.of(kind)), i64::from(*to))
             }
-            Pred::Named(name) => seen.card.is_some_and(|c| {
-                crate::un34_stickers::name_with(&seen.chars.name_words, &c.card().name) == *name
-            }),
+            Pred::Named(name) => {
+                seen.card.is_some_and(|c| {
+                    crate::un34_stickers::name_with(&seen.chars.name_words, &c.card().name) == *name
+                }) || self.r4703_counts_as_named(name, seen)
+            }
             Pred::ChosenColor | Pred::ChosenSubtype | Pred::ChosenName | Pred::ChosenAs(_) => {
                 self.chosen_pred(pred, seen)
             }
@@ -2057,6 +2087,7 @@ impl<'a> Scope<'a> {
             | Pred::TopCreatureOfGraveyard
             | Pred::BlockedBy(_)
             | Pred::BlockedThisTurnBy(_)
+            | Pred::CastBefore(_)
             | Pred::BandedWith(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
@@ -2294,6 +2325,9 @@ impl<'a> Scope<'a> {
                 None => self.w2c_distinct(of, *stat)?,
             },
             Amount::CardTypes(of) => self.card_types_among(of)?,
+            Amount::TallyTypes { event, who, filter } => {
+                self.r4703_logged_types(*event, &self.players(who)?, filter)?
+            }
             Amount::Players(who) => i64::try_from(self.players(who)?.len())
                 .map_err(|_| ResolveError::Invalid("too many players".into()))?,
             Amount::LowestLife(who) => self.lives(who)?.min().unwrap_or(i64::from(i32::MAX)),
@@ -2668,23 +2702,61 @@ impl<'a> Scope<'a> {
 
     /// How many of the card types there are among the objects the selector matches, each counted once.
     fn card_types_among(&self, of: &Selector) -> Result<i64, ResolveError> {
-        const TYPES: [CardType; 9] = [
-            CardType::Artifact,
-            CardType::Battle,
-            CardType::Creature,
-            CardType::Enchantment,
-            CardType::Instant,
-            CardType::Kindred,
-            CardType::Land,
-            CardType::Planeswalker,
-            CardType::Sorcery,
-        ];
         let seen: Vec<Seen<'a>> = self
             .matching(of)?
             .into_iter()
             .filter_map(|object| self.seen(object))
             .collect();
-        let among = TYPES
+        Self::types_among(&seen)
+    }
+
+    /// How many card types the objects of the turn's log of `event` for `players` that `filter` selects had, as they
+    /// were then (`Amount::TallyTypes`).
+    fn r4703_logged_types(
+        &self,
+        event: TallyEvent,
+        players: &[PlayerId],
+        filter: &Selector,
+    ) -> Result<i64, ResolveError> {
+        let log = self.state.tallies.logged.as_slice();
+        let mut scope = self.clone();
+        scope.snapshots.extend(log.iter().map(|(_, _, shot)| shot));
+        scope.as_was = true;
+        let mut seen = Vec::new();
+        for (kind, player, shot) in log {
+            let reference = ObjectRef {
+                id: shot.id,
+                counter: shot.counter,
+            };
+            if *kind == event && players.contains(player) && scope.selects(filter, reference)? {
+                seen.extend(scope.seen(reference).map(|one| one.chars.types));
+            }
+        }
+        Ok(i64::try_from(
+            Self::TYPES
+                .iter()
+                .filter(|card_type| seen.iter().any(|types| types.contains(**card_type)))
+                .count(),
+        )
+        .unwrap_or(0))
+    }
+
+    /// Every card type.
+    const TYPES: [CardType; 9] = [
+        CardType::Artifact,
+        CardType::Battle,
+        CardType::Creature,
+        CardType::Enchantment,
+        CardType::Instant,
+        CardType::Kindred,
+        CardType::Land,
+        CardType::Planeswalker,
+        CardType::Sorcery,
+    ];
+
+    /// How many card types there are among the objects seen.
+    fn types_among(seen: &[Seen<'_>]) -> Result<i64, ResolveError> {
+        let among = Self::TYPES
             .iter()
             .filter(|card_type| seen.iter().any(|one| one.chars.types.contains(**card_type)))
             .count();
@@ -2731,6 +2803,12 @@ impl<'a> Scope<'a> {
             .resolving
             .as_ref()
             .map_or(&[][..], |resolving| &resolving.rolled[..]);
+        if which == DieResult::Distinct {
+            let mut distinct: Vec<u32> = rolled.to_vec();
+            distinct.sort_unstable();
+            distinct.dedup();
+            return i64::try_from(distinct.len()).unwrap_or(0);
+        }
         let back = usize::from(which == DieResult::Other);
         rolled
             .len()
