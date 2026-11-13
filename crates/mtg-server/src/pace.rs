@@ -1191,6 +1191,8 @@ mod tests {
             source: ObjectId(1),
             text: String::new(),
             nonland: true,
+            noncreature: false,
+            nonbasic_land: false,
         }),
         Some(Answer::ChooseName(mtg_engine::choose::NameChoice(String::new())))
     )]

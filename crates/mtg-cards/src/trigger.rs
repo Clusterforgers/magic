@@ -1000,6 +1000,13 @@ pub enum EntersChoice {
     CardName,
     /// The name of a card that is not a land ("choose a nonland card name").
     NonlandCardName,
+    /// The name of a card that is neither a creature nor a land ("choose a noncreature, nonland card name").
+    NoncreatureNonlandCardName,
+    /// The name of a land card that is not basic ("choose a nonbasic land card name").
+    NonbasicLandCardName,
+    /// Each opponent reveals their hand and the controller chooses the name of a nonland card revealed this way; no name
+    /// when none was revealed.
+    RevealedNonlandName,
     /// A card type.
     CardType,
     /// One of these card types ("choose artifact, creature, enchantment, instant, or sorcery").

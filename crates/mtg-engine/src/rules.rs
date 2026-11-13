@@ -195,6 +195,8 @@ pub enum Rule {
     },
     /// Spells and abilities of the players' opponents can't make them sacrifice permanents.
     OpponentsCantMakeSacrifice(Vec<PlayerId>),
+    /// Spells and abilities of the players' opponents can't make them discard cards or sacrifice permanents.
+    OpponentsCantMakeDiscardOrSacrifice(Vec<PlayerId>),
     /// The players may spend mana as though it were mana of any color or type (CR 609.4b), to cast the spells the selector
     /// picks or for everything when there is none.
     SpendManaAs {
@@ -723,6 +725,8 @@ pub(crate) struct RulesInForce {
     life_for_one: Vec<(PlayerId, mtg_core::color::Color, Selector)>,
     /// The players whose opponents' spells and abilities can't make them sacrifice.
     spared_sacrifice: BTreeSet<PlayerId>,
+    /// The players whose opponents' spells and abilities can't make them discard.
+    spared_discard: BTreeSet<PlayerId>,
     /// The players who may spend mana as though it were of any color or type, with the spells it is for.
     spend_mana_as: Vec<(PlayerId, mtg_cards::modify::SpendAs, Option<Selector>)>,
     reveal_top: BTreeSet<PlayerId>,
@@ -1155,6 +1159,10 @@ impl RulesInForce {
                 self.draw_limit.extend(players.iter().map(|p| (*p, *most)));
             }
             Rule::OpponentsCantMakeSacrifice(players) => self.spared_sacrifice.extend(players),
+            Rule::OpponentsCantMakeDiscardOrSacrifice(players) => {
+                self.spared_sacrifice.extend(players);
+                self.spared_discard.extend(players);
+            }
             Rule::PayLifeForOneSymbol {
                 players,
                 color,
@@ -1548,6 +1556,9 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::OpponentsCantMakeSacrifice(who) => {
             Rule::OpponentsCantMakeSacrifice(scope.players(who)?)
         }
+        GameRule::OpponentsCantMakeDiscardOrSacrifice(who) => {
+            Rule::OpponentsCantMakeDiscardOrSacrifice(scope.players(who)?)
+        }
         GameRule::UnspentManaBecomes { who, into } => {
             Rule::UnspentManaBecomes(scope.players(who)?, *into)
         }
@@ -1752,6 +1763,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::PayLifeForMana(players, _)
         | Rule::PayLifeForOneSymbol { players, .. }
         | Rule::OpponentsCantMakeSacrifice(players)
+        | Rule::OpponentsCantMakeDiscardOrSacrifice(players)
         | Rule::SpendManaAs { players, .. }
         | Rule::RevealTop(players)
         | Rule::RevealHand(players)
@@ -1938,6 +1950,7 @@ static NONE: RulesInForce = RulesInForce {
     life_for_mana: Vec::new(),
     life_for_one: Vec::new(),
     spared_sacrifice: BTreeSet::new(),
+    spared_discard: BTreeSet::new(),
     spend_mana_as: Vec::new(),
     reveal_top: BTreeSet::new(),
     reveal_hand: BTreeSet::new(),
@@ -2428,6 +2441,12 @@ pub(crate) fn ep24_draws_left(state: &GameState, player: PlayerId) -> Option<usi
 /// opponents' effects.
 pub(crate) fn ep24_spared_sacrifice(state: &GameState, player: PlayerId, by: PlayerId) -> bool {
     state.is_opponent(by, player) && state.rules().spared_sacrifice.contains(&player)
+}
+
+/// Whether a spell or ability `by` controls can't make `player` discard cards: a rule spares `player` from their
+/// opponents' effects.
+pub(crate) fn r4702_spared_discard(state: &GameState, player: PlayerId, by: PlayerId) -> bool {
+    state.is_opponent(by, player) && state.rules().spared_discard.contains(&player)
 }
 
 /// How `player` may spend mana on the spell `spell` (an ability when `None`) under the rules in force: any type over any

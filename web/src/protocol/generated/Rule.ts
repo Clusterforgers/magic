@@ -117,7 +117,7 @@ color: unknown,
 /**
  * The spells it is for.
  */
-spells: unknown, } } | { "OpponentsCantMakeSacrifice": Array<PlayerId> } | { "SpendManaAs": { 
+spells: unknown, } } | { "OpponentsCantMakeSacrifice": Array<PlayerId> } | { "OpponentsCantMakeDiscardOrSacrifice": Array<PlayerId> } | { "SpendManaAs": { 
 /**
  * The players.
  */

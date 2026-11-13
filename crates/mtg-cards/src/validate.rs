@@ -442,6 +442,9 @@ struct Walker<'a> {
     amounting: Amounting,
     /// How many abilities deep the walk stands inside abilities that other abilities grant or tokens carry.
     nested: u32,
+    /// The values chosen before an emblem is made, which its abilities may read: the engine writes them in as the
+    /// emblem is made.
+    r4702_emblem_values: BTreeSet<String>,
     /// Where the walk stands in an effect list, for "if you do".
     after: After,
     /// The effect before the one being walked is a `May`, whose acceptance "if you do" asks about.
@@ -486,6 +489,7 @@ impl<'a> Walker<'a> {
             r306_paying: false,
             amounting: Amounting::Other,
             nested: 0,
+            r4702_emblem_values: BTreeSet::new(),
             after: After::Nothing,
             after_may: false,
             face: 0,
@@ -543,6 +547,7 @@ impl<'a> Walker<'a> {
         match self.scope.lookup(name) {
             Some(Kind::Value) => {}
             Some(_) => self.problem(format!("`{name}` is not a chosen value")),
+            None if self.r4702_emblem_values.contains(name) => {}
             None => self.problem(format!("`{name}` is not bound by an earlier step")),
         }
     }
@@ -3292,6 +3297,16 @@ impl Walker<'_> {
         if abilities.is_empty() {
             self.problem("an emblem needs at least one ability");
         }
+        let values: BTreeSet<String> = self
+            .scope
+            .names
+            .iter()
+            .flat_map(|names| names.iter())
+            .chain(self.scope.moved.iter())
+            .filter(|(_, kind)| **kind == Kind::Value)
+            .map(|(name, _)| name.clone())
+            .collect();
+        let outer_values = std::mem::replace(&mut self.r4702_emblem_values, values);
         let saved = std::mem::take(&mut self.scope);
         self.nested += 1;
         for (i, ability) in abilities.iter().enumerate() {
@@ -3305,6 +3320,7 @@ impl Walker<'_> {
         }
         self.nested -= 1;
         self.scope = saved;
+        self.r4702_emblem_values = outer_values;
     }
 
     fn effect_list(&mut self, field: &str, list: &[Effect], top: bool) {
@@ -5520,6 +5536,7 @@ impl Walker<'_> {
             | GameRule::DrawLimit { who, .. }
             | GameRule::PayLifeForMana { who, .. }
             | GameRule::OpponentsCantMakeSacrifice(who)
+            | GameRule::OpponentsCantMakeDiscardOrSacrifice(who)
             | GameRule::SpendManaAs {
                 who, spells: None, ..
             }
@@ -6113,6 +6130,11 @@ impl Walker<'_> {
     #[allow(clippy::too_many_lines)]
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
+        if let ReplaceBy::Choose(kind) = by
+            && let Some(shape) = crate::r4702_names::r4702_choice_shape(*kind)
+        {
+            self.uses("ReplaceBy", shape);
+        }
         self.g11b_replace_by(when, by);
         self.g12a_moves(when, by);
         self.e19_mill(when, by);

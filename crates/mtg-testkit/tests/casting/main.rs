@@ -197,6 +197,7 @@ mod r4703_spell_cost_per;
 mod r4700_choices;
 mod r4700_top_cards;
 mod r4701_cast_rules;
+mod r4702_names;
 mod r4f_stack_move;
 mod r4i_may_flash;
 mod r6q1_face_down_cost;

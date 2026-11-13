@@ -342,6 +342,9 @@ fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
     if let Some(kind) = super::e15b_entering::read_choose_type(r) {
         return Some(replacement(ReplaceBy::Choose(kind), None));
     }
+    if let Some(kind) = super::r4702_names::r4702_read_name(r) {
+        return Some(replacement(ReplaceBy::Choose(kind), None));
+    }
     if r.words("choose a player") {
         return Some(replacement(ReplaceBy::Choose(EntersChoice::Player), None));
     }
@@ -1111,10 +1114,21 @@ pub(super) fn cost_subject(r: &mut Reader<'_>) -> Option<(Selector, bool)> {
     };
     let mut applies_to = cost_conditions::more_spells(r, first)?;
     (applies_to.0.first() == Some(&Pred::Spell)).then_some(())?;
+    // "Spells with the chosen name you cast": read here only, where the name is the one the permanent chose.
+    if r.words("with the chosen name") {
+        applies_to.0.push(Pred::ChosenName);
+    }
     if r.words("you cast") {
         applies_to.0.push(Pred::ControlledBy(Ref::You));
     } else if r.words("your opponents cast") {
         applies_to.0.push(Pred::ControlledBy(Ref::Opponents));
+    }
+    // "Spells your opponents cast with the chosen name": the name belongs to the spells, before who casts them.
+    if let Some(Pred::ControlledBy(_)) = applies_to.0.last()
+        && r.words("with the chosen name")
+    {
+        let at = applies_to.0.len() - 1;
+        applies_to.0.insert(at, Pred::ChosenName);
     }
     // "Creature spells you cast with power 4 or greater": a number of the spell after who casts it.
     if let Some(number) = r.attempt(|r| match selectors::suffix(r, Form::All)? {
@@ -1615,6 +1629,16 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
             ),
             None,
         ) => super::e15b_entering::choose_type_texts(*kind),
+        (
+            ReplaceBy::Choose(
+                kind @ (EntersChoice::CardName
+                | EntersChoice::NonlandCardName
+                | EntersChoice::NoncreatureNonlandCardName
+                | EntersChoice::NonbasicLandCardName
+                | EntersChoice::RevealedNonlandName),
+            ),
+            None,
+        ) => super::r4702_names::r4702_name_texts(*kind),
         (ReplaceBy::PayLifeOrTapped(life), None) => vec![format!(
             "As ~ enters, you may pay {life} life. If you don't, it enters tapped"
         )],
@@ -1950,7 +1974,8 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::AbilitiesAsThoughHaste(_)
             | GameRule::PayLifeForMana { .. }
             | GameRule::PayLifeForOneSymbol { .. }
-            | GameRule::OpponentsCantMakeSacrifice(_),
+            | GameRule::OpponentsCantMakeSacrifice(_)
+            | GameRule::OpponentsCantMakeDiscardOrSacrifice(_),
             ZoneKind::Battlefield,
         ) => super::ep24_rules::ep24_rule_texts(rule),
         (GameRule::VoteAgain(Ref::You) | GameRule::ExtraVote(Ref::You), ZoneKind::Battlefield) => {

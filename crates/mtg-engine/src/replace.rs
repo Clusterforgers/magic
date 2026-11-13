@@ -41,8 +41,8 @@ use crate::announce::payments;
 use crate::characteristics::controller_of_object;
 use crate::choose::values;
 use crate::choose::{
-    CardsOptions, Choice, ChoiceOption, NameOptions, NumberOptions, OptionOptions,
-    ReplacementCandidate, ReplacementOptions, Target, YesNoOptions,
+    CardsOptions, Choice, ChoiceOption, NumberOptions, OptionOptions, ReplacementCandidate,
+    ReplacementOptions, Target, YesNoOptions,
 };
 use crate::combat::DamageTarget;
 use crate::copies::{BecameCopy, copiable_values, may_be_copied};
@@ -3012,6 +3012,9 @@ impl Pass<'_> {
                 }
             }
             ReplaceBy::EntersPrepared => self.enters_prepared(at, object, controller),
+            ReplaceBy::Choose(EntersChoice::RevealedNonlandName) => {
+                return self.r4702_revealed_name(at, source, object, controller, applied);
+            }
             ReplaceBy::Choose(_) | ReplaceBy::ChooseWord(_) => {
                 let chosen = match self.e15f_chosen(source, controller, by)? {
                     Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
@@ -3478,35 +3481,6 @@ impl Pass<'_> {
         }
     }
 
-    /// A card name that `controller` names as the card enters (CR 201.3); nothing when they name nothing.
-    fn chooses_name(
-        &mut self,
-        source: ObjectId,
-        controller: PlayerId,
-        nonland: bool,
-    ) -> Result<Asked<Option<Chosen>>, EngineError> {
-        match self.answer() {
-            None => Ok(Asked::Ask(Decision {
-                player: controller,
-                kind: DecisionKind::ChooseName(NameOptions {
-                    source,
-                    text: if nonland {
-                        "Choose a nonland card name.".to_owned()
-                    } else {
-                        "Choose a card name.".to_owned()
-                    },
-                    nonland,
-                }),
-            })),
-            Some((who, Choice::Name(name))) if *who == controller => Ok(Asked::Got(
-                (!name.is_empty()).then(|| Chosen::Name(name.clone())),
-            )),
-            Some(other) => Err(Self::invalid(format!(
-                "{other:?} is no answer to the choice of a name of {controller:?}"
-            ))),
-        }
-    }
-
     /// A number from `min` to `max` that `controller` chooses as the card enters; the smallest when only one is allowed.
     fn chooses_number(
         &mut self,
@@ -3555,8 +3529,14 @@ impl Pass<'_> {
         if let EntersChoice::Number { min, max } = kind {
             return self.chooses_number(source, controller, min, max);
         }
-        if matches!(kind, EntersChoice::CardName | EntersChoice::NonlandCardName) {
-            return self.chooses_name(source, controller, kind == EntersChoice::NonlandCardName);
+        if matches!(
+            kind,
+            EntersChoice::CardName
+                | EntersChoice::NonlandCardName
+                | EntersChoice::NoncreatureNonlandCardName
+                | EntersChoice::NonbasicLandCardName
+        ) {
+            return self.r4702_chooses_name(source, controller, kind);
         }
         if matches!(
             kind,
@@ -3570,29 +3550,7 @@ impl Pass<'_> {
             [_] => Some(0),
             _ => match self.answer() {
                 None => {
-                    let text = match kind {
-                        EntersChoice::Color => "Choose a color.".to_owned(),
-                        EntersChoice::ColorOtherThan(other) => {
-                            format!(
-                                "Choose a color other than {}.",
-                                format!("{other:?}").to_lowercase()
-                            )
-                        }
-                        EntersChoice::CreatureType => "Choose a creature type.".to_owned(),
-                        EntersChoice::LandType => "Choose a land type.".to_owned(),
-                        EntersChoice::BasicLandType => "Choose a basic land type.".to_owned(),
-                        EntersChoice::Player => "Choose a player.".to_owned(),
-                        EntersChoice::Opponent => "Choose an opponent.".to_owned(),
-                        EntersChoice::Chapter => "Choose a chapter to start with.".to_owned(),
-                        EntersChoice::CardName
-                        | EntersChoice::NonlandCardName
-                        | EntersChoice::CardType
-                        | EntersChoice::CardTypeOf(_) => "Choose a card type.".to_owned(),
-                        EntersChoice::Number { .. }
-                        | EntersChoice::Colors(_)
-                        | EntersChoice::Players(_)
-                        | EntersChoice::ColorAndCreatureType => String::new(),
-                    };
+                    let text = entering_question(kind);
                     return Ok(Asked::Ask(Decision {
                         player: controller,
                         kind: DecisionKind::ChooseOption(OptionOptions {
@@ -3636,7 +3594,14 @@ impl Pass<'_> {
                         .map(Chosen::CardType)
                 }
                 ChoiceOption::Label(name)
-                    if matches!(kind, EntersChoice::CardName | EntersChoice::NonlandCardName) =>
+                    if matches!(
+                        kind,
+                        EntersChoice::CardName
+                            | EntersChoice::NonlandCardName
+                            | EntersChoice::NoncreatureNonlandCardName
+                            | EntersChoice::NonbasicLandCardName
+                            | EntersChoice::RevealedNonlandName
+                    ) =>
                 {
                     Some(Chosen::Name(name))
                 }
@@ -3679,6 +3644,9 @@ impl Pass<'_> {
             EntersChoice::BasicLandType => values::basic_land_types(),
             EntersChoice::CardName
             | EntersChoice::NonlandCardName
+            | EntersChoice::NoncreatureNonlandCardName
+            | EntersChoice::NonbasicLandCardName
+            | EntersChoice::RevealedNonlandName
             | EntersChoice::Number { .. }
             | EntersChoice::Colors(_)
             | EntersChoice::Players(_)
@@ -3697,6 +3665,36 @@ impl Pass<'_> {
                 .map(ChoiceOption::Player)
                 .collect(),
         }
+    }
+}
+
+/// The question of a choice made as a permanent enters, in words.
+fn entering_question(kind: EntersChoice) -> String {
+    match kind {
+        EntersChoice::Color => "Choose a color.".to_owned(),
+        EntersChoice::ColorOtherThan(other) => {
+            format!(
+                "Choose a color other than {}.",
+                format!("{other:?}").to_lowercase()
+            )
+        }
+        EntersChoice::CreatureType => "Choose a creature type.".to_owned(),
+        EntersChoice::LandType => "Choose a land type.".to_owned(),
+        EntersChoice::BasicLandType => "Choose a basic land type.".to_owned(),
+        EntersChoice::Player => "Choose a player.".to_owned(),
+        EntersChoice::Opponent => "Choose an opponent.".to_owned(),
+        EntersChoice::Chapter => "Choose a chapter to start with.".to_owned(),
+        EntersChoice::CardName
+        | EntersChoice::NonlandCardName
+        | EntersChoice::NoncreatureNonlandCardName
+        | EntersChoice::NonbasicLandCardName
+        | EntersChoice::RevealedNonlandName
+        | EntersChoice::CardType
+        | EntersChoice::CardTypeOf(_) => "Choose a card type.".to_owned(),
+        EntersChoice::Number { .. }
+        | EntersChoice::Colors(_)
+        | EntersChoice::Players(_)
+        | EntersChoice::ColorAndCreatureType => String::new(),
     }
 }
 
@@ -3777,6 +3775,7 @@ mod umbra;
 #[cfg(test)]
 mod ep21_plus;
 mod ep28_under;
+mod r4702_names;
 mod r6f_redirect;
 mod w13a_moved;
 mod w5d_instead;
