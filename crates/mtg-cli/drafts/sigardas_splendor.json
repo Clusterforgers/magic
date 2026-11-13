@@ -1,0 +1,50 @@
+{
+  "oracle_id": "71a3d0ce-052b-41eb-a70f-0c716149a55f",
+  "name": "Sigarda's Splendor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sigarda's Splendor",
+      "oracle_fingerprint": "6aa9dac4439908bdc829928bd59eb3b3",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                { "RememberValue": { "value": { "Life": "You" }, "slot": "noted_life" } }
+              ]
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Life": "You" },
+                      "op": "Ge",
+                      "right": { "Remembered": { "on": "This", "slot": "noted_life" } }
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              },
+              { "Forget": { "slot": "noted_life" } },
+              { "RememberValue": { "value": { "Life": "You" }, "slot": "noted_life" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Color": "White" }], "by": "You" } },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

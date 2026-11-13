@@ -1,0 +1,68 @@
+{
+  "oracle_id": "3155c833-8170-4166-8f47-c3c1fad1575a",
+  "name": "Dracoplasm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dracoplasm",
+      "oracle_fingerprint": "92bd5c6c5c5d020a5f795b3c7f7015a1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                {
+                  "SacrificeUpTo": {
+                    "filter": [{ "Type": "Creature" }],
+                    "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                    "as": "sacrificed"
+                  }
+                },
+                {
+                  "Continuous": {
+                    "affected": "This",
+                    "mods": [
+                      {
+                        "SetPT": {
+                          "power": {
+                            "Total": {
+                              "of": [{ "Is": { "Bound": "sacrificed" } }],
+                              "stat": "Power"
+                            }
+                          },
+                          "toughness": {
+                            "Total": {
+                              "of": [{ "Is": { "Bound": "sacrificed" } }],
+                              "stat": "Toughness"
+                            }
+                          }
+                        }
+                      }
+                    ],
+                    "duration": "Forever"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

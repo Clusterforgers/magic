@@ -1,0 +1,40 @@
+{
+  "oracle_id": "201f2434-96b3-408c-a5ce-74d0675920ed",
+  "name": "Sword of the Ages",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sword of the Ages",
+      "oracle_fingerprint": "d3f7e44db40c4b0fc92e6dace3f1201f",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              "SacrificeSelf",
+              {
+                "Sacrifice": {
+                  "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "count": "X"
+                }
+              }
+            ],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Total": { "of": [{ "Is": "Paid" }, { "Type": "Creature" }], "stat": "Power" }
+                  }
+                }
+              },
+              { "Exile": { "what": { "Arrived": { "of": "Paid", "zone": "Graveyard" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
