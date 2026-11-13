@@ -380,7 +380,6 @@ const RUNS: &[&str] = &[
     "ReplaceBy.DayIfNeither",
     "ReplaceBy.EntersPrepared",
     "ReplaceBy.ChooseWord",
-    "ReplaceBy.R4700ThenChoose",
     "ReplaceBy.BecomesChoice",
     "ReplaceBy.Mill",
     "ReplaceBy.UnderChosenOpponent",

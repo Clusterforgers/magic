@@ -6146,13 +6146,6 @@ impl Walker<'_> {
                 }
                 self.at("count", |w| w.amount(count));
             }
-            ReplaceBy::R4700ThenChoose { effects, .. } => {
-                if !enters {
-                    self.problem("only an `Enters` event has effects as it enters");
-                }
-                self.uses("ReplaceBy", "R4700ThenChoose");
-                self.effect_list("R4700ThenChoose", effects, false);
-            }
             ReplaceBy::AsEnters(effects) => {
                 if !enters {
                     self.problem("only an `Enters` event has effects as it enters");

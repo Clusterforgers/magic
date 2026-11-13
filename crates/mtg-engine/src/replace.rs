@@ -775,7 +775,6 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::Mill(_)
         | ReplaceBy::AsEnters(_)
         | ReplaceBy::AsEntersWith { .. }
-        | ReplaceBy::R4700ThenChoose { .. }
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::Instead(_) => !matches!(unit, Unit::Other),
         ReplaceBy::Plus(_) => matches!(unit, Unit::Tokens { .. }),
@@ -819,7 +818,6 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::Mill(_)
                 | ReplaceBy::AsEnters(_)
                 | ReplaceBy::AsEntersWith { .. }
-                | ReplaceBy::R4700ThenChoose { .. }
         )
     )
 }
@@ -2280,11 +2278,6 @@ impl Pass<'_> {
             ReplaceBy::AsEnters(effects) => {
                 let unit = Unit::Enter { object, controller };
                 Ok(self.r304_as_enters(at, candidate, effects, &unit, applied))
-            }
-            ReplaceBy::R4700ThenChoose { effects, choice } => {
-                let unit = Unit::Enter { object, controller };
-                let who = (object, controller);
-                self.r4700_then_choose(at, candidate, (effects, *choice), who, &unit, applied)
             }
             ReplaceBy::AsEntersWith {
                 effects,

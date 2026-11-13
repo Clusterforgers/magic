@@ -16,15 +16,6 @@ pub(super) fn r4700_wordings(
     written: fn(&Ability) -> Vec<String>,
     texts: &mut Vec<String>,
 ) {
-    if r4700_looks_then_chooses(ability) {
-        let text =
-            "As ~ enters, look at an opponent's hand, then choose a card type other than creature."
-                .to_owned();
-        if !texts.contains(&text) {
-            texts.push(text);
-        }
-        return;
-    }
     if r4700_other_chosen(ability) {
         let text = "Whenever damage is dealt to one of the chosen players, the other chosen player also loses that much life.".to_owned();
         if !texts.contains(&text) {
@@ -223,48 +214,4 @@ fn r4700_other_chosen(ability: &Ability) -> bool {
                 who: Ref::R4700OtherChosen,
                 amount: Amount::Triggering,
             }]
-}
-
-/// Whether the ability is "As ~ enters, look at an opponent's hand, then choose a card type other than creature.": an
-/// opponent chosen and their hand looked at as the card enters, then a card type other than creature chosen.
-fn r4700_looks_then_chooses(ability: &Ability) -> bool {
-    use crate::effect::Effect;
-    use crate::trigger::EntersChoice;
-    use mtg_core::card::CardType;
-    let Some(ReplaceBy::R4700ThenChoose {
-        effects,
-        choice: EntersChoice::CardTypeOf(kinds),
-    }) = own_entering(ability)
-    else {
-        return false;
-    };
-    let others = [
-        CardType::Artifact,
-        CardType::Battle,
-        CardType::Enchantment,
-        CardType::Instant,
-        CardType::Kindred,
-        CardType::Land,
-        CardType::Planeswalker,
-        CardType::Sorcery,
-    ];
-    let [
-        Effect::Choose {
-            who: Ref::You,
-            from: Ref::Opponents,
-            count,
-            bind,
-            rest_as: None,
-        },
-        Effect::LookAtHand {
-            of: Ref::Bound(looked),
-        },
-    ] = effects.as_slice()
-    else {
-        return false;
-    };
-    count.is_one()
-        && bind == looked
-        && !kinds.contains(CardType::Creature)
-        && others.iter().all(|kind| kinds.contains(*kind))
 }

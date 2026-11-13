@@ -1162,14 +1162,6 @@ pub enum ReplaceBy {
     },
     /// As the permanent enters, its controller makes this choice, which the permanent remembers for its abilities.
     Choose(EntersChoice),
-    /// As the permanent enters, the effects happen, then its controller makes the choice, which the permanent remembers
-    /// ("As ~ enters, look at an opponent's hand, then choose a card type other than creature").
-    R4700ThenChoose {
-        /// What happens first.
-        effects: Vec<crate::effect::Effect>,
-        /// The choice made after them.
-        choice: EntersChoice,
-    },
     /// As the permanent enters, its controller may pay this much life; if they don't (or can't) it enters tapped.
     PayLifeOrTapped(u32),
     /// As the permanent enters, its controller may have it enter tapped; if they do, they get the counters ("you may have
