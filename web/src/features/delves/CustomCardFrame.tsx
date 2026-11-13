@@ -3,7 +3,15 @@
  * name, an art panel tinted by what the card is for, the type line, the rules text and a relic's role. A risky relic,
  * whose effect helps the boss too, wears a hazard edge and a "Dangerous" badge.
  */
-import { CrownIcon, EyeIcon, FlameIcon, GemIcon, GhostIcon, SwordsIcon, TriangleAlertIcon } from 'lucide-react'
+import {
+  CrownIcon,
+  EyeIcon,
+  FlameIcon,
+  GemIcon,
+  GhostIcon,
+  SwordsIcon,
+  TriangleAlertIcon,
+} from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
