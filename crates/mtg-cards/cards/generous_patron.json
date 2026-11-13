@@ -22,8 +22,16 @@
         {
           "Triggered": {
             "when": {
-              "CountersPut": {
-                "what": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
+              "Caused": {
+                "inner": {
+                  "Batch": {
+                    "CountersPut": {
+                      "what": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }],
+                      "each": true
+                    }
+                  }
+                },
+                "by": "You"
               }
             },
             "effects": [{ "Draw": {} }]

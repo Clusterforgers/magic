@@ -231,8 +231,19 @@ mod r406_actions;
 mod r407_wordings;
 mod r408_lands;
 mod r408_pact;
+mod r4700_writers;
+mod r4701_flash;
+mod r4701_pairs;
+mod r4702_names;
+pub(crate) mod r4703_reads;
+mod r4705_reads;
+mod r4706_counters;
+mod r4707_costs;
+mod r4707_printed;
 mod r4708_actions;
 mod r4708_reveal;
+mod r4709_differ;
+mod r4710_atoms;
 mod r4711_drafted;
 mod r5521_conditions;
 mod r5521_wholes;
@@ -513,7 +524,9 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
     let tokens = tokenize(text);
     let mut reader = Reader::new(&tokens, x_free);
     reader.subtypes.clone_from(&own.subtypes);
-    let found = if let Some(found) = r406_actions::r406_pair_read(text) {
+    let found = if let Some(found) = r4705_reads::r4705_pair_read(text) {
+        found
+    } else if let Some(found) = r406_actions::r406_pair_read(text) {
         found
     } else if let Some(found) = dk27_pairs::dk27_any_number_less(text) {
         found
@@ -540,6 +553,11 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
         .iter()
         .any(|written| same_text(written, &said))
         .then_some(found)
+}
+
+/// Reads a whole ability of the r47-05 table of wordings one card prints (a keyword line among them).
+pub fn r4705_whole(text: &str) -> Option<Ability> {
+    r4705_reads::r4705_read(text)
 }
 
 /// A line of the table of a die roll ("1—9 | Each player sacrifices a permanent of their choice.") as a row: its totals and
@@ -587,6 +605,9 @@ const MEANINGFUL_WORDS: [&str; 5] = [
 /// Reads a clause like `clause`, with what the face itself says (`Own`).
 #[allow(clippy::too_many_lines)]
 pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
+    if let Some(found) = r4705_reads::r4705_read(text) {
+        return Some(found);
+    }
     if kind == ClauseKind::Spell
         && let Some(joined) = rmt0_x_is::rmt0_joined(text)
     {
@@ -690,6 +711,11 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     }
     if kind == ClauseKind::Static
         && let Some(found) = r400_reads::r400_static_read(text)
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Static
+        && let Some(found) = r4703_reads::r4703_static_read(text)
     {
         return Some(found);
     }

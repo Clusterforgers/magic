@@ -85,6 +85,7 @@ pub mod madness_cards;
 pub mod manifest_cards;
 pub mod manual_cards;
 pub mod manual_script;
+pub mod match_stats;
 pub mod mayhem_cards;
 pub mod miracle_cards;
 pub mod monarch_cards;

@@ -1,0 +1,147 @@
+{
+  "object": "card",
+  "id": "f21045d6-638e-4267-b353-c2c11db8d965",
+  "oracle_id": "14421f6a-2cd6-4438-9ac9-dc06d2c7befb",
+  "multiverse_ids": [
+    580668
+  ],
+  "tcgplayer_id": 288071,
+  "cardmarket_id": 677313,
+  "name": "Circuits Act",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/f21045d6-638e-4267-b353-c2c11db8d965",
+  "scryfall_uri": "https://scryfall.com/card/unf/103/circuits-act?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:29:31Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/2/f21045d6-638e-4267-b353-c2c11db8d965.jpg?1783920571",
+    "normal": "https://cards.scryfall.io/normal/front/f/2/f21045d6-638e-4267-b353-c2c11db8d965.jpg?1783920571",
+    "large": "https://cards.scryfall.io/large/front/f/2/f21045d6-638e-4267-b353-c2c11db8d965.jpg?1783920571",
+    "png": "https://cards.scryfall.io/png/front/f/2/f21045d6-638e-4267-b353-c2c11db8d965.png?1783920571",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/2/f21045d6-638e-4267-b353-c2c11db8d965.jpg?1783920571",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/2/f21045d6-638e-4267-b353-c2c11db8d965.jpg?1783920571",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/2/f21045d6-638e-4267-b353-c2c11db8d965.webp?1783920571",
+    "grid": "https://cards.scryfall.io/grid/front/f/2/f21045d6-638e-4267-b353-c2c11db8d965.webp?1783920571",
+    "display": "https://cards.scryfall.io/display/front/f/2/f21045d6-638e-4267-b353-c2c11db8d965.webp?1783920571",
+    "art": "https://cards.scryfall.io/art/front/f/2/f21045d6-638e-4267-b353-c2c11db8d965.webp?1783920571",
+    "crop": "https://cards.scryfall.io/crop/front/f/2/f21045d6-638e-4267-b353-c2c11db8d965.webp?1783920571",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/2/f21045d6-638e-4267-b353-c2c11db8d965.jpg?1783920571"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Roll three six-sided dice. For each different result, create a 1/1 white Clown Robot artifact creature token.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "b96b2ddc-9da9-4375-b044-f2c9a53c2e1e",
+      "component": "combo_piece",
+      "name": "Circuits Act",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/b96b2ddc-9da9-4375-b044-f2c9a53c2e1e"
+    },
+    {
+      "object": "related_card",
+      "id": "7fcd324b-8325-40f3-8a02-b84102cc63ab",
+      "component": "token",
+      "name": "Clown Robot",
+      "type_line": "Token Artifact Creature — Clown Robot",
+      "uri": "https://api.scryfall.com/cards/7fcd324b-8325-40f3-8a02-b84102cc63ab"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set": "unf",
+  "set_name": "Unfinity",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aunf&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/unf?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f21045d6-638e-4267-b353-c2c11db8d965/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A14421f6a-2cd6-4438-9ac9-dc06d2c7befb&unique=prints",
+  "collector_number": "103",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "Another day, another item Pietra has to add to the \"do not juggle\" database.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jakub Kasper",
+  "artist_ids": [
+    "36901417-ce61-4636-8b77-6db14a9cb68a"
+  ],
+  "illustration_id": "b7e47858-2e79-44de-b8d3-6d43a8df84c6",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 8385,
+  "prices": {
+    "usd": "0.33",
+    "usd_foil": "0.35",
+    "usd_etched": null,
+    "eur": "0.29",
+    "eur_foil": "0.23",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580668&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCircuits%2BAct",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCircuits%2BAct",
+    "edhrec": "https://edhrec.com/route/?cc=Circuits+Act"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F288071%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=677313&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Circuits+Act&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

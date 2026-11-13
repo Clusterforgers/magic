@@ -15,6 +15,7 @@ import type { TableMode } from './layout'
 import { TurnBadge } from './TurnBadge'
 import { StepLadder } from './turn/StepLadder'
 import { TurnBanner } from './turn/TurnBanner'
+import { PhaseBanner } from './campaign/PhaseBanner'
 
 const HOME = cn(
   buttonVariants({ variant: 'ghost', size: 'sm' }),
@@ -74,6 +75,7 @@ export function TopBar({ mode, onMode, pinnedFocus, onFollow, stopsInMenu, compa
       <TurnBadge />
       <StepLadder />
       <TurnBanner />
+      <PhaseBanner />
       <HelpMenu compact={compact} />
       <TableRules />
       <SpectatorCount />

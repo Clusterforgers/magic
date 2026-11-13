@@ -139,7 +139,7 @@ impl Registry {
 }
 
 /// `time` as `YYYY-MM-DDTHH:MM:SSZ` (UTC), the layout of the other timestamps on the wire.
-fn utc_stamp(time: SystemTime) -> String {
+pub(super) fn utc_stamp(time: SystemTime) -> String {
     let seconds = time.duration_since(UNIX_EPOCH).map_or(0, |d| d.as_secs());
     let (days, rest) = (seconds / 86_400, seconds % 86_400);
     let (year, month, day) = civil_from_days(i64::try_from(days).unwrap_or(0));

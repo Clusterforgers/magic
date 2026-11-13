@@ -65,6 +65,8 @@ pub struct Settings {
     pub votes: u32,
     /// A wall-clock cap per decision; `None` searches by count alone, so the answers replay with the seed.
     pub time: Option<Duration>,
+    /// Whether the seat's own decisions first look for a forced win this turn ([`super::endgame::forced_win`]).
+    pub endgame: bool,
 }
 
 impl Settings {
@@ -84,16 +86,31 @@ impl Settings {
         deep: None,
         votes: 1,
         time: Some(Duration::from_millis(300)),
+        endgame: false,
     };
 
-    /// The first Normal: [`Settings::NORMAL`] without careful play, kept as a fixed yardstick for measuring the levels.
+    /// The first Normal (heuristic combat, a shallow search of plays and targets, careless), kept as a fixed
+    /// yardstick for measuring the levels.
     pub const BASELINE: Settings = Settings {
+        sims: 40,
+        forecasts: 160,
+        targets: 3,
+        depth: 1,
+        combat_search: false,
+        lookahead: false,
         careful: false,
-        ..Settings::NORMAL
+        sequences: false,
+        fair: false,
+        weights: Weights::NORMAL,
+        deep: None,
+        votes: 1,
+        time: Some(Duration::from_millis(300)),
+        endgame: false,
     };
 
     /// Hard: simulated attacks, blocks and main-phase plays through the next turn's combat in a world whose hidden
-    /// cards are redealt, more candidates and searched targets inside simulations, about 1 s at most.
+    /// cards are redealt, more candidates and searched targets inside simulations, then a light tree search over the
+    /// decisions that matter ([`Deep::LIGHT`]), about 2 s at most.
     pub const HARD: Settings = Settings {
         sims: 160,
         forecasts: 500,
@@ -105,14 +122,14 @@ impl Settings {
         sequences: true,
         fair: true,
         weights: Weights::NORMAL,
-        deep: None,
+        deep: Some(Deep::LIGHT),
         votes: 1,
         time: Some(Duration::from_millis(1000)),
+        endgame: true,
     };
 
-    /// Very Hard: Hard's answer to every decision, and for the decisions that matter (casts, attacks, blocks, targets)
-    /// a tree search over that answer and its alternatives in worlds redealt from what the seat has seen
-    /// ([`Deep::FULL`]), about 2.5 s at most.
+    /// Very Hard: Hard with the full tree search over the decisions that matter (casts, attacks, blocks, targets) in
+    /// worlds redealt from what the seat has seen ([`Deep::FULL`]), at most 4.5 s ([`super::clock::DECISION_CAP`]).
     pub const VERY_HARD: Settings = Settings {
         deep: Some(Deep::FULL),
         ..Settings::HARD
@@ -329,6 +346,10 @@ impl Search {
                 break;
             };
             if engine.result().is_some() || reached(&engine, &decision, start, horizon, step) {
+                break;
+            }
+            // A simulation cut by the clock is scored where it stands.
+            if step % 16 == 15 && self.late() {
                 break;
             }
             if self.branches(&engine, &decision, depth) {
@@ -552,10 +573,11 @@ pub(crate) fn reached(
     }
 }
 
-/// Whether `state` (with `stack` objects on the stack) is past the combat of turn `end`.
+/// Whether `state` (with `stack` objects on the stack) is past the combat of turn `end`, with an empty stack: a search
+/// never stops with a spell waiting to resolve (a quiescence rule).
 fn reached_turn(state: &mtg_engine::state::GameState, end: u32, stack: usize) -> bool {
     let turn = state.turn().number();
-    turn > end || (turn == end && stack == 0 && after_combat(state.turn().step()))
+    stack == 0 && (turn > end || (turn == end && after_combat(state.turn().step())))
 }
 
 /// The answer that decides least, when a quick answer was refused: a pass, the fewest targets, a keep; `None` for a

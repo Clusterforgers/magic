@@ -69,10 +69,14 @@ pub enum Chosen {
     Colors(Vec<mtg_core::color::Color>),
     /// A creature type.
     CreatureType(mtg_core::card::Subtype),
+    /// A colour and a creature type chosen together ("choose a color and a creature type").
+    ColorAndType(mtg_core::color::Color, mtg_core::card::Subtype),
     /// A land type, which a landwalk the source grants names (CR 702.14).
     LandType(mtg_core::card::Subtype),
     /// A player (public, like every choice made as a permanent enters).
     Player(PlayerId),
+    /// Several different players ("choose two players"), in the order they were chosen.
+    Players(Vec<PlayerId>),
     /// A card type.
     CardType(mtg_core::card::CardType),
     /// A card name (CR 201.3).
