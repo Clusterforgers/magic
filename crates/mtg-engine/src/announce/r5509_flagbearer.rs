@@ -110,6 +110,7 @@ pub(super) fn r5509_narrow(
             ctx.player,
             ctx.cause(),
             choices.x,
+            choices.modes_chooser(),
             &choices.targets,
         )
         .iter()
