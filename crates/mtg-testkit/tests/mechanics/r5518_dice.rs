@@ -56,13 +56,25 @@ fn r5518_iron_mastiff_rolls_for_each_attacked_player_and_keeps_the_highest(
     let rolls: Vec<u32> = log
         .iter()
         .filter_map(|event| match event {
-            Event::DieRolled { result, sides: 20, .. } => Some(*result),
+            Event::DieRolled {
+                result, sides: 20, ..
+            } => Some(*result),
             _ => None,
         })
         .collect();
-    assert_eq!(rolls.len(), attacked, "one d20 per attacked player: {rolls:?}");
+    assert_eq!(
+        rolls.len(),
+        attacked,
+        "one d20 per attacked player: {rolls:?}"
+    );
     let highest = *rolls.iter().max().unwrap();
-    let life = |seat: usize| driver.state().player(PlayerId::from_index(seat)).unwrap().life();
+    let life = |seat: usize| {
+        driver
+            .state()
+            .player(PlayerId::from_index(seat))
+            .unwrap()
+            .life()
+    };
     // The Mastiff is a 4/4 and combat damage has not been dealt yet.
     let lost: Vec<i32> = (0..seats).map(|seat| 20 - life(seat)).collect();
     let mut expected = vec![0; seats];

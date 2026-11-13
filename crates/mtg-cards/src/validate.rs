@@ -3621,7 +3621,13 @@ impl Walker<'_> {
             self.uses("Effect", "Discard.Random");
         }
         // One die for each of an amount, the highest kept, is a roll only an engine that knows it runs.
-        if matches!(effect, Effect::RollDice { highest: Some(_), .. }) {
+        if matches!(
+            effect,
+            Effect::RollDice {
+                highest: Some(_),
+                ..
+            }
+        ) {
             self.uses("Effect", "RollDice.Highest");
         }
         if matches!(

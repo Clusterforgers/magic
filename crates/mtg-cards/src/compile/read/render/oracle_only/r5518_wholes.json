@@ -333,5 +333,126 @@
    }
   },
   "{3}{W}, {T}: Create a token that's a copy of target artifact or enchantment you control, except it's legendary. Activate only as a sorcery."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "End",
+      "whose": "You"
+     }
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "AnyOf": [
+          {
+           "Type": "Artifact"
+          },
+          {
+           "Type": "Battle"
+          },
+          {
+           "Type": "Creature"
+          },
+          {
+           "Type": "Enchantment"
+          },
+          {
+           "Type": "Land"
+          },
+          {
+           "Type": "Planeswalker"
+          }
+         ]
+        },
+        {
+         "OwnedBy": "You"
+        },
+        {
+         "In": "Graveyard"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "Sacrifice": {
+          "filter": [
+           {
+            "SharesType": {
+             "Target": 0
+            }
+           }
+          ],
+          "as": "s"
+         }
+        },
+        {
+         "If": {
+          "condition": {
+           "Compare": {
+            "left": {
+             "Bound": "s~moved"
+            },
+            "op": "Ge",
+            "right": 1
+           }
+          },
+          "then": [
+           {
+            "Move": {
+             "what": {
+              "Target": 0
+             },
+             "to": {
+              "Battlefield": {}
+             }
+            }
+           },
+           {
+            "Continuous": {
+             "affected": {
+              "Target": 0
+             },
+             "mods": [
+              {
+               "GrantAbility": {
+                "Replacement": {
+                 "when": {
+                  "ZoneChange": {
+                   "what": [
+                    "This"
+                   ],
+                   "from": "Battlefield"
+                  }
+                 },
+                 "by": {
+                  "MoveTo": "Exile"
+                 }
+                }
+               }
+              }
+             ],
+             "duration": "Forever"
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your end step, choose target permanent card in your graveyard. You may sacrifice a permanent that shares a card type with the chosen card. If you do, return the chosen card from your graveyard to the battlefield and it gains \"If this permanent would leave the battlefield, exile it instead of putting it anywhere else.\""
  ]
 ]

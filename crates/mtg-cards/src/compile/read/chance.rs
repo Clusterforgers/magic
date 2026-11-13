@@ -152,7 +152,16 @@ pub fn range_text(from: u32, to: Option<u32>) -> String {
 /// controller, who a row's plain verb names.
 fn r5518_with_subject(text: String) -> Vec<String> {
     const VERBS: [&str; 10] = [
-        "Draw", "Create", "Gain", "Lose", "Scry", "Surveil", "Mill", "Discard", "Sacrifice", "Return",
+        "Draw",
+        "Create",
+        "Gain",
+        "Lose",
+        "Scry",
+        "Surveil",
+        "Mill",
+        "Discard",
+        "Sacrifice",
+        "Return",
     ];
     let subject = text
         .split_once(' ')

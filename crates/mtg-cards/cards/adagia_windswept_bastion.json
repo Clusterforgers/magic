@@ -7,56 +7,21 @@
       "name": "Adagia, Windswept Bastion",
       "oracle_fingerprint": "5c5b073aca231aec6be183708d6c102d",
       "abilities": [
-        {
-          "Replacement": {
-            "when": {
-              "Enters": {
-                "what": [
-                  "This"
-                ]
-              }
-            },
-            "by": "Tapped"
-          }
-        },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
         {
           "Activated": {
-            "cost": [
-              "Tap"
-            ],
-            "effects": [
-              {
-                "AddMana": {
-                  "mana": {
-                    "Fixed": [
-                      "White"
-                    ]
-                  }
-                }
-              }
-            ]
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] } } }]
           }
         },
-        {
-          "Keyword": "Station"
-        },
+        { "Keyword": "Station" },
         {
           "Activated": {
-            "cost": [
-              {
-                "Mana": "{3}{W}"
-              },
-              "Tap"
-            ],
+            "cost": [{ "Mana": "{3}{W}" }, "Tap"],
             "timing": "Sorcery",
             "condition": {
               "Compare": {
-                "left": {
-                  "Counters": {
-                    "on": "This",
-                    "counter": "charge"
-                  }
-                },
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
                 "op": "Ge",
                 "right": 12
               }
@@ -65,19 +30,8 @@
               {
                 "what": {
                   "Object": [
-                    {
-                      "AnyOf": [
-                        {
-                          "Type": "Artifact"
-                        },
-                        {
-                          "Type": "Enchantment"
-                        }
-                      ]
-                    },
-                    {
-                      "ControlledBy": "You"
-                    }
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "ControlledBy": "You" }
                   ]
                 }
               }
@@ -86,16 +40,7 @@
               {
                 "CreateToken": {
                   "token": {
-                    "CopyOf": {
-                      "of": {
-                        "Target": 0
-                      },
-                      "except": [
-                        {
-                          "AddSupertype": "Legendary"
-                        }
-                      ]
-                    }
+                    "CopyOf": { "of": { "Target": 0 }, "except": [{ "AddSupertype": "Legendary" }] }
                   }
                 }
               }

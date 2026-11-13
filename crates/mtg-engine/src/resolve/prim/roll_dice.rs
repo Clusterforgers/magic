@@ -376,7 +376,11 @@ mod tests {
                 assert_eq!(next, Next::Sibling);
                 continue;
             };
-            assert_eq!(rolled.last(), Some(highest), "seed {seed}: the highest is read");
+            assert_eq!(
+                rolled.last(),
+                Some(highest),
+                "seed {seed}: the highest is read"
+            );
             let expected = match highest {
                 1..=2 => Next::Enter(0),
                 3..=4 => Next::Enter(1),

@@ -97,7 +97,10 @@ fn r5518_probe() {
             for text in mtg_cards::compile::written_variants(ability).iter().take(6) {
                 println!("  written: {text}");
             }
-            for (at, row) in mtg_cards::compile::die_row_texts(ability).iter().enumerate() {
+            for (at, row) in mtg_cards::compile::die_row_texts(ability)
+                .iter()
+                .enumerate()
+            {
                 println!("  row {at}: {:?}", row.iter().take(3).collect::<Vec<_>>());
             }
         }
@@ -110,6 +113,9 @@ fn r5518_probe() {
 #[case("Mathise, Surge Channeler")]
 #[case("Druid of the Emerald Grove")]
 #[case("Iron Mastiff")]
+#[case("Druid Class")]
+#[case("Adagia, Windswept Bastion")]
+#[case("Spirit-Sister's Call")]
 fn r5518_reads_back_whole(#[case] name: &str) {
     let report = r5518_report(name, &r5518_file(name));
     assert_eq!(
@@ -122,13 +128,47 @@ fn r5518_reads_back_whole(#[case] name: &str) {
 
 #[rstest]
 #[case::niambi_library_only("Niambi, Faithful Healer", r#""also": ["Graveyard"],"#, "")]
-#[case::niambi_another_name("Niambi, Faithful Healer", "Teferi, Timebender", "Teferi, Hero of Dominaria")]
-#[case::mathise_you_draw("Mathise, Surge Channeler", r#"{ "Draw": { "who": "EachPlayer" } }"#, r#"{ "Draw": {} }"#)]
+#[case::niambi_another_name(
+    "Niambi, Faithful Healer",
+    "Teferi, Timebender",
+    "Teferi, Hero of Dominaria"
+)]
+#[case::mathise_you_draw(
+    "Mathise, Surge Channeler",
+    r#"{ "Draw": { "who": "EachPlayer" } }"#,
+    r#"{ "Draw": {} }"#
+)]
 #[case::mathise_rows_shifted("Mathise, Surge Channeler", r#""to": 9"#, r#""to": 8"#)]
-#[case::druid_untapped("Druid of the Emerald Grove", r#"{ "Battlefield": { "tapped": true } }"#, r#""Battlefield""#)]
+#[case::druid_untapped(
+    "Druid of the Emerald Grove",
+    r#"{ "Battlefield": { "tapped": true } }"#,
+    r#""Battlefield""#
+)]
 #[case::druid_or_less_from_two("Druid of the Emerald Grove", r#""from": 1"#, r#""from": 2"#)]
 #[case::mastiff_one_die("Iron Mastiff", r#""highest": { "Players": "Attacked" },"#, "")]
 #[case::mastiff_defending_not_you("Iron Mastiff", r#""to": "You""#, r#""to": "Defending""#)]
+#[case::druid_class_without_haste("Druid Class", r#"{ "AddKeyword": "Haste" },"#, "")]
+#[case::druid_class_lands_of_anyone(
+    "Druid Class",
+    r#"{ "Type": "Land" }, { "ControlledBy": "You" }]"#,
+    r#"{ "Type": "Land" }]"#
+)]
+#[case::adagia_eleven("Adagia, Windswept Bastion", r#""right": 12"#, r#""right": 11"#)]
+#[case::adagia_not_legendary(
+    "Adagia, Windswept Bastion",
+    r#""except": [{ "AddSupertype": "Legendary" }]"#,
+    r#""except": []"#
+)]
+#[case::call_any_permanent(
+    "Spirit-Sister's Call",
+    r#"{ "SharesType": { "Target": 0 } }"#,
+    r#"{ "Type": "Creature" }"#
+)]
+#[case::call_not_exiled(
+    "Spirit-Sister's Call",
+    r#"{ "MoveTo": "Exile" }"#,
+    r#"{ "MoveTo": "Hand" }"#
+)]
 fn r5518_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let file = r5518_file(name);
     assert!(file.contains(from), "{name} has {from}");

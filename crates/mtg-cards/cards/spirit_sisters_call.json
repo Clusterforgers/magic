@@ -1,0 +1,75 @@
+{
+  "oracle_id": "83914a83-4de2-4d64-9770-f68a12014167",
+  "name": "Spirit-Sister's Call",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spirit-Sister's Call",
+      "oracle_fingerprint": "faed8faae1ec6a48ffa010662feb65bb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Sacrifice": { "filter": [{ "SharesType": { "Target": 0 } }], "as": "s" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": { "left": { "Bound": "s~moved" }, "op": "Ge", "right": 1 }
+                        },
+                        "then": [
+                          { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [
+                                {
+                                  "GrantAbility": {
+                                    "Replacement": {
+                                      "when": {
+                                        "ZoneChange": { "what": ["This"], "from": "Battlefield" }
+                                      },
+                                      "by": { "MoveTo": "Exile" }
+                                    }
+                                  }
+                                }
+                              ],
+                              "duration": "Forever"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
