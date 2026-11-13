@@ -1212,7 +1212,7 @@ mod tests;
 
 /// A part that takes all of a kind the payer has, with nothing to choose: "discard your hand", "sacrifice all
 /// permanents you control".
-fn whole_part(item: &CostItem) -> Option<Part> {
+pub(crate) fn whole_part(item: &CostItem) -> Option<Part> {
     if discards_the_hand(item) {
         return Some(Part::DiscardHand);
     }

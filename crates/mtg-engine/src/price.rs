@@ -136,6 +136,10 @@ pub(crate) fn settled(cost: &Cost, state: &GameState, player: PlayerId, source: 
     if let Some(object) = state.object(source) {
         let scope = Scope::announcing(state, player, object.reference());
         for item in &mut settled.0 {
+            // A part that takes all of a kind ("discard your hand") is paid whole, never as a count read now.
+            if crate::parts::whole_part(item).is_some() {
+                continue;
+            }
             let Some(amount) = item.amount_mut() else {
                 continue;
             };
