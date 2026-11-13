@@ -159,6 +159,8 @@ mod r5511_linked_types;
 mod r5512_until_creature_cast;
 mod r5513_exploited;
 mod r5514_pieces;
+mod r5520_foretold_named;
+mod r5520_paid_discard;
 mod r5522_game;
 mod r5522_history;
 mod r5g;

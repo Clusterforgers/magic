@@ -644,6 +644,7 @@ const RUNS: &[&str] = &[
     "Effect.Rephase",
     "Effect.Reattack",
     "Effect.Pay.Counted",
+    "Effect.Pay.Took",
     "Effect.Pay.X",
     "Effect.Pay.X.Energy",
     "Effect.Pay.X.Among",
@@ -1124,6 +1125,8 @@ const RUNS: &[&str] = &[
     "Pred.HasKeywordNamed",
     "Pred.CounterCount",
     "Pred.Suspended",
+    "Pred.Foretold",
+    "Pred.HasName",
     "Pred.Kicked",
     "Pred.AdditionalCostPaid",
 ];

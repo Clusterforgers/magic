@@ -120,8 +120,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 };
                 match settle(cx, player, &price, &mut journal)? {
                     Settled::Ask(decision) => return Ok(Run::Ask(decision)),
-                    Settled::Paid(events) => {
-                        paid = Some((events, x));
+                    Settled::Paid(events, took) => {
+                        paid = Some((events, x, took));
                         break;
                     }
                 }
@@ -135,12 +135,15 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         ));
     }
     let next = Next::Enter(usize::from(paid.is_none()));
-    let (events, x) = paid.unwrap_or_default();
+    let (events, x, took) = paid.unwrap_or_default();
+    let (took, snapshots) = crate::resolve::value::r5520_took(cx.state(), &took);
+    let mut bound = w6c_pay_x::bound(x);
+    bound.extend(took);
     Ok(Run::Done {
         next,
         events,
-        bound: w6c_pay_x::bound(x),
-        snapshots: Vec::new(),
+        bound,
+        snapshots,
     })
 }
 
@@ -449,8 +452,8 @@ pub(super) fn said(price: &Price) -> Vec<String> {
 pub(super) enum Settled {
     /// The next question: which objects to take, or the payment of the mana.
     Ask(Decision),
-    /// Everything is paid, with these events.
-    Paid(Vec<Event>),
+    /// Everything is paid, with these events; the objects the parts took.
+    Paid(Vec<Event>, Vec<ObjectId>),
 }
 
 /// The picks of the parts and the payment of the mana of a player who said yes, read from the journal in the order
@@ -524,6 +527,7 @@ pub(super) fn settle<'a>(
             Some((_, other)) => return Err(unexpected(other, player)),
         }
     }
+    let took: Vec<ObjectId> = taken.iter().flatten().copied().collect();
     let mut picks = taken.iter();
     let mut events = Vec::new();
     for part in &price.parts {
@@ -535,7 +539,7 @@ pub(super) fn settle<'a>(
         events.extend(part.events(state, player, source, picked));
     }
     events.extend(source_leaves(state, source, price.leaves));
-    Ok(Settled::Paid(events))
+    Ok(Settled::Paid(events, took))
 }
 
 /// The payment decision of a player who said yes: no way back, since saying no was the way out. The permanents the other

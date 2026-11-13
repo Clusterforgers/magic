@@ -841,6 +841,8 @@ impl<'a> Walker<'a> {
             Pred::Kicked => self.uses("Pred", "Kicked"),
             Pred::AdditionalCostPaid => self.uses("Pred", "AdditionalCostPaid"),
             Pred::CounterCount { .. } => self.uses("Pred", "CounterCount"),
+            Pred::Foretold => self.uses("Pred", "Foretold"),
+            Pred::HasName => self.uses("Pred", "HasName"),
             _ => self.uses("Pred", "Suspended"),
         }
     }
@@ -1005,6 +1007,8 @@ impl<'a> Walker<'a> {
             | Pred::Kicked
             | Pred::AdditionalCostPaid
             | Pred::CounterCount { .. }
+            | Pred::Foretold
+            | Pred::HasName
             | Pred::Suspended => self.fe1a_pred(pred),
             Pred::Not(inner) => self.pred(inner),
             Pred::AnyOf(preds) => {
@@ -1759,7 +1763,15 @@ impl<'a> Walker<'a> {
         self.x_free |= announces_x(cost);
         // The resolution reads the X the payer announced (`Effect.Pay.X`), wherever the ability stands.
         self.x_now |= announces_x(cost);
+        // "If you do, ... the discarded card's mana value": the steps read what the payment took (`Effect.Pay.Took`),
+        // unless the ability's own cost took something, which `Paid` names first.
+        let took = !self.pays_objects && picks(cost);
+        if took && serde_json::to_string(paid).is_ok_and(|text| text.contains("\"Paid\"")) {
+            self.uses("Effect", "Pay.Took");
+        }
+        self.pays_objects |= took;
         self.effect_list("paid", paid, false);
+        self.pays_objects &= !took;
         (self.x_free, self.x_now) = (saved, saved_now);
     }
 
