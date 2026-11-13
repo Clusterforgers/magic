@@ -526,6 +526,16 @@ pub(super) fn amount(ctx: &Ctx, value: &Amount) -> String {
                 selectors(ctx, of)
             )
         }
+        Amount::GreatestCast {
+            who: who_text_of,
+            of,
+            stat,
+        } => format!(
+            "the greatest {} among {} {} cast this turn",
+            stat_text(*stat),
+            selectors(ctx, of),
+            who(ctx, who_text_of)
+        ),
         Amount::Total { of, stat } => {
             format!("the total {} of {}", stat_text(*stat), selectors(ctx, of))
         }

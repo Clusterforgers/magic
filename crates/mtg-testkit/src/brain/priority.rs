@@ -56,7 +56,7 @@ pub fn window(seen: &Seen<'_>) -> Window {
 }
 
 /// The plays the seat may make now, likeliest worth first (the costliest spells).
-fn plays(seen: &Seen<'_>, options: &PriorityOptions) -> Vec<PriorityAction> {
+pub fn plays(seen: &Seen<'_>, options: &PriorityOptions) -> Vec<PriorityAction> {
     let mut casts: Vec<ObjectId> = options.castable.clone();
     casts.sort_by_key(|id| std::cmp::Reverse(seen.mana_value(*id)));
     let mut plays: Vec<PriorityAction> = casts.into_iter().map(PriorityAction::CastSpell).collect();
@@ -153,10 +153,12 @@ pub fn plan_priority(
     let combat = window == Window::Combat;
     let horizon = if combat {
         Horizon::EndOfCombat
+    } else if window == Window::Main && search.settings().lookahead {
+        Horizon::NextTurn
     } else {
         Horizon::Settle
     };
-    let follow_ups = window == Window::Main && search.settings().lookahead;
+    let follow_ups = window == Window::Main && search.settings().sequences;
     let pass = Answer::Priority(PriorityAction::Pass);
     let Some(baseline) = search.outcome(engine, pass, horizon) else {
         return PriorityAction::Pass;
@@ -179,7 +181,7 @@ pub fn plan_priority(
         } else {
             0.0
         };
-        let score = outcome.score + ramp;
+        let score = outcome.score + ramp - held_back(search, &seen, window, &play);
         if follow_ups {
             scored.push((score, play.clone(), after));
         }
@@ -191,6 +193,26 @@ pub fn plan_priority(
         best = best_sequence(search, scored, baseline.score + MARGIN).or(best);
     }
     best.map_or(PriorityAction::Pass, |(_, play)| play)
+}
+
+/// What casting an instant in the seat's main phase or at an opponent's end step must gain beyond the margin when the
+/// seat plays carefully: removal and tricks wait for a target worth them, or for combat and responses.
+const HOLD: f64 = 5.0;
+
+/// What `play` must gain beyond the margin in `window` ([`HOLD`] for a careful seat's instant outside combat and
+/// responses, else nothing).
+fn held_back(search: &Search, seen: &Seen<'_>, window: Window, play: &PriorityAction) -> f64 {
+    let PriorityAction::CastSpell(id) = play else {
+        return 0.0;
+    };
+    let instant = seen
+        .chars(*id)
+        .is_some_and(|chars| chars.types.contains(mtg_core::card::CardType::Instant));
+    if search.settings().careful && instant && matches!(window, Window::Main | Window::EndStep) {
+        HOLD
+    } else {
+        0.0
+    }
 }
 
 /// How many of the best plays a lookahead tries a second play after.

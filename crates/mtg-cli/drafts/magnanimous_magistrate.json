@@ -1,0 +1,70 @@
+{
+  "oracle_id": "ecd3ddd7-2fa8-466b-9319-ae51c744a05f",
+  "name": "Magnanimous Magistrate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magnanimous Magistrate",
+      "oracle_fingerprint": "3150c2e33c59b334648efbb90922ac8c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "reprieve" }, "count": 5 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  "Other",
+                  { "Not": "Token" },
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "RemoveCounters": {
+                        "from": "This",
+                        "counter": { "Other": "reprieve" },
+                        "count": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [
+                          {
+                            "Move": {
+                              "what": { "Arrived": { "of": "Triggering", "zone": "Graveyard" } },
+                              "to": { "Battlefield": {} }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

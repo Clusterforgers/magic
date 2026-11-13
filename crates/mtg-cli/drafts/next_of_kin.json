@@ -1,0 +1,78 @@
+{
+  "oracle_id": "5b079914-1302-40b5-8060-7c3e5b6e9eae",
+  "name": "Next of Kin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Next of Kin",
+      "oracle_fingerprint": "6e7e6df29bc1c8aea8b0b19834916538",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "AnyOf": [{ "In": "Hand" }, { "In": "Command" }] },
+                            { "OwnedBy": "You" },
+                            { "Type": "Creature" },
+                            {
+                              "Compare": {
+                                "stat": "ManaValue",
+                                "op": "Lt",
+                                "to": {
+                                  "Stat": {
+                                    "of": { "Departed": "Triggering" },
+                                    "stat": "ManaValue"
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "as": "creature"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "creature" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": "This",
+                              "to": { "BattlefieldAttached": { "to": { "Bound": "creature" } } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

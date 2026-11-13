@@ -226,7 +226,9 @@ pub fn keyword_line(abilities: &[Ability]) -> Option<(String, usize)> {
     } else {
         0
     };
-    if abilities.first() != Some(&alt_cast(*way, mana.clone()))
+    // A warp cost may add other parts to its mana ("Warp—{B}, Pay 2 life"), written after a dash.
+    let extra = r379_warp_parts(*way, cost);
+    if (extra.is_none() && abilities.first() != Some(&alt_cast(*way, mana.clone())))
         || (!matches!(way, CastWay::Surge | CastWay::Sneak) && condition.is_some())
     {
         return None;
@@ -235,12 +237,28 @@ pub fn keyword_line(abilities: &[Ability]) -> Option<(String, usize)> {
     if abilities.get(1..=after.len()) != Some(after.as_slice()) {
         return None;
     }
-    let line = if *way == CastWay::Impending {
+    let line = if let Some(extra) = extra {
+        format!("{name}\u{2014}{mana}, {extra}")
+    } else if *way == CastWay::Impending {
         format!("{name} {count}\u{2014}{mana}")
     } else {
         format!("{name} {mana}")
     };
     Some((line, 1 + after.len()))
+}
+
+/// The parts a warp cost pays besides its mana, in words ("Pay 2 life"), when it has some.
+fn r379_warp_parts(way: CastWay, cost: &Cost) -> Option<String> {
+    let [CostItem::Mana(_), rest @ ..] = cost.0.as_slice() else {
+        return None;
+    };
+    if way != CastWay::Warp
+        || rest.is_empty()
+        || rest.iter().any(|item| matches!(item, CostItem::Mana(_)))
+    {
+        return None;
+    }
+    crate::compile::render_cost(&Cost(rest.to_vec()))
 }
 
 /// The number of time counters an impending replacement puts on the permanent.

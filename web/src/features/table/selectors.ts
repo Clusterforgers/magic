@@ -3,6 +3,7 @@
  * ids of its cards. Those that return a new array are meant for `useShallow`, which keeps the old one while the
  * items are the same, so a batch that changes one card redraws that card and nothing around it.
  */
+import { sharesTurn, teammates } from '@/lib/teams'
 import type { PlayState } from '@/play/store'
 import type { ObjectId, ObjectView, PlayerId, PlayerView, StateView } from '@/protocol/generated'
 import { combatRoleOf, rowOf } from './cardModel'
@@ -111,9 +112,18 @@ export function turnsRunning(state: PlayState): boolean {
   return view !== null && view.stage === 'Turns' && view.result === null
 }
 
-/** Whether `seat` has the turn of a running game. Every seat sees the same, so a cue made from it leaks nothing. */
+/**
+ * Whether `seat` has the turn of a running game: the active player, and in Two-Headed Giant their teammate too. Every
+ * seat sees the same, so a cue made from it leaks nothing.
+ */
 export function isActiveSeat(state: PlayState, seat: PlayerId): boolean {
-  return turnsRunning(state) && !turnLeft(state) && state.view?.turn.active === seat
+  const view = state.view
+  return (
+    view !== null &&
+    turnsRunning(state) &&
+    !turnLeft(state) &&
+    sharesTurn(view.house_rules?.teams, seat, view.turn.active)
+  )
 }
 
 /** Whether the turn goes on without an active player, whose seat has left the game (CR 800.4); no seat is then the active one. */
@@ -144,4 +154,11 @@ export function canConcede(state: PlayState): boolean {
 /** Whether stops and Full Control mean anything: the seat is still in a running game. */
 export function canSetStops(state: PlayState): boolean {
   return canConcede(state)
+}
+
+/** In Two-Headed Giant, the teammate who shares the active player's turn (CR 805.3); undefined in any other game. */
+export function turnTeammate(state: PlayState): PlayerId | undefined {
+  const view = state.view
+  if (view === null || view.house_rules?.teams?.mode !== 'two_headed_giant') return undefined
+  return teammates(view.house_rules.teams, view.turn.active)[0]
 }

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "16d0aea2-4ca4-4a9d-8674-2863e085f514",
+  "name": "Chaos Lord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chaos Lord",
+      "oracle_fingerprint": "49389a3f30d1e8db15221e60d231c81f",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [] },
+                      "op": "Eq",
+                      "right": {
+                        "Times": {
+                          "by": 2,
+                          "of": { "Quotient": { "of": { "Count": [] }, "by": 2, "up": false } }
+                        }
+                      }
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "SetController": { "Target": 0 } }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": "AttackAsThoughHaste" } },
+            "condition": {
+              "Not": { "Matches": { "subject": "This", "selector": ["EnteredThisTurn"] } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

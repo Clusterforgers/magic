@@ -1,0 +1,77 @@
+{
+  "oracle_id": "48534bbf-06b6-46a0-8a86-b14f38caee58",
+  "name": "Sin, Unending Cataclysm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sin, Unending Cataclysm",
+      "oracle_fingerprint": "1bbf60dbac3588f6e2b9f9644ca3fcba",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEntersWith": {
+                "effects": [
+                  {
+                    "Choose": {
+                      "from": {
+                        "Each": [
+                          {
+                            "AnyOf": [
+                              { "Type": "Artifact" },
+                              { "Type": "Creature" },
+                              { "Type": "Enchantment" }
+                            ]
+                          }
+                        ]
+                      },
+                      "count": {
+                        "min": 0,
+                        "max": {
+                          "Count": [
+                            {
+                              "AnyOf": [
+                                { "Type": "Artifact" },
+                                { "Type": "Creature" },
+                                { "Type": "Enchantment" }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      "as": "chosen"
+                    }
+                  },
+                  { "Let": { "as": "removed", "amount": { "AnyCounters": { "Bound": "chosen" } } } },
+                  { "RemoveAllCounters": { "from": { "Bound": "chosen" } } }
+                ],
+                "counter": "+1/+1",
+                "count": { "Times": { "by": 2, "of": { "Bound": "removed" } } }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCountersOf": { "on": { "Target": 0 }, "of": "This" } },
+              {
+                "Move": {
+                  "what": { "Arrived": { "of": "This", "zone": "Graveyard" } },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

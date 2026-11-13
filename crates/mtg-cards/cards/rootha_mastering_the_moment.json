@@ -1,0 +1,49 @@
+{
+  "oracle_id": "348c67ef-9ccc-4651-9038-efdf1ad1b36a",
+  "name": "Rootha, Mastering the Moment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rootha, Mastering the Moment",
+      "oracle_fingerprint": "6a066099b726b64ce0b50485d404c456",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "InstantsAndSorceriesCast" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": {
+                        "GreatestCast": {
+                          "who": "You",
+                          "of": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                          "stat": "ManaValue"
+                        }
+                      },
+                      "token": {
+                        "name": "Elemental",
+                        "colors": ["Blue", "Red"],
+                        "types": ["Creature"],
+                        "subtypes": ["Elemental"],
+                        "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Haste" }]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

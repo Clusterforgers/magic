@@ -1,0 +1,29 @@
+{
+  "oracle_id": "78d47e49-42bf-404d-b47b-3fbea765ca9a",
+  "name": "Premature Burial",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Premature Burial",
+      "oracle_fingerprint": "8764c32e913dc79cd7d092a09c705bf7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Color": "Black" } },
+                    { "EnteredSinceLastTurn": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -141,6 +141,7 @@ pub(super) fn move_object(
     crate::effects::follow_spell(&mut state.effects, entered, resolved);
     if to == Zone::Battlefield {
         state.tally_object(entered, None, Tally::Entered);
+        state.r379_entered(entered);
     }
     w21a_tally_graveyards(state, (from, to), (owner, controlled_by), entered);
     if from == Zone::Battlefield && matches!(to, Zone::Graveyard(_)) {
@@ -423,6 +424,7 @@ fn spell_cast(
     choices: &Choices,
 ) -> Result<(), EngineError> {
     state.tally(player, Tally::Cast);
+    *state.r379_cast_game.entry(player).or_insert(0) += 1;
     if state
         .objects
         .get(&object)
