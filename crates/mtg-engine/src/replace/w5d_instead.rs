@@ -78,7 +78,7 @@ impl Pass<'_> {
         unit: &Unit,
     ) -> Ran {
         let cause = self.w5d_cause(at, unit);
-        let taken = self.r37_taken_from_libraries(at);
+        let taken = self.taken_by_the_batch(at);
         let state = taken.as_ref().unwrap_or(self.state);
         let answers = &mut self.answers;
         match w5d_run_instead(
@@ -95,10 +95,10 @@ impl Pass<'_> {
         }
     }
 
-    /// The state with the cards the batch's other events take from a library already gone, when there are such cards:
-    /// effects run in place of two events of one batch (two combat damage events that each become "exile that many cards
-    /// from the top of their library") take different cards.
-    fn r37_taken_from_libraries(&self, at: usize) -> Option<GameState> {
+    /// The state with the cards the batch's other events take from a library or a graveyard already gone, when there are
+    /// such cards: effects run in place of two events of one batch (two combat damage events that each become "exile that
+    /// many cards from the top of their library" or "exile that many cards from your graveyard") take different cards.
+    fn taken_by_the_batch(&self, at: usize) -> Option<GameState> {
         let taken: Vec<&Event> = self
             .slots
             .iter()
@@ -107,7 +107,7 @@ impl Pass<'_> {
             .filter_map(|(_, slot)| match &slot.item {
                 Item::One(
                     event @ Event::ZoneChanged {
-                        from: Zone::Library(_),
+                        from: Zone::Library(_) | Zone::Graveyard(_),
                         ..
                     },
                 ) => Some(event),
@@ -244,7 +244,9 @@ mod tests {
     use rstest::rstest;
 
     use super::super::{Processed, process};
+    use crate::choose::Choice;
     use crate::combat::DamageTarget;
+    use crate::decision::DecisionKind;
     use crate::events::{Event, ZoneCause};
     use crate::fixtures::{creature, state};
     use crate::state::GameState;
@@ -381,18 +383,39 @@ mod tests {
 
     const SANCTUARY: &str = r#"{"Replacement":{"when":{"Damage":{"to":"EachPlayer"}},"by":{"Instead":[{"ExileTop":{"who":"Triggering","count":"Triggering","as":"exiled"}}]}}}"#;
 
-    /// Two damage events of one batch that each become "exile that many cards from the top of their library" exile
-    /// different cards, as many as the damage of both (Crumbling Sanctuary under two attackers).
+    const LICH: &str = r#"{"Replacement":{"when":{"Damage":{"to":"You"}},"by":{"Instead":[{"Choose":{"from":{"Each":[{"In":"Graveyard"},{"OwnedBy":"You"}]},"count":{"min":"Triggering","max":"Triggering"},"as":"lich"}},{"Exile":{"what":{"Bound":"lich"}}}]}}}"#;
+
+    /// Two damage events of one batch that each become "exile that many cards from the top of their library" or
+    /// "exile that many cards from your graveyard" exile different cards, as many as the damage of both (Crumbling
+    /// Sanctuary or Nefarious Lich under two attackers); each choice is answered with the first cards offered.
     #[rstest]
-    #[case::one_and_two(1, 2)]
-    #[case::two_and_two(2, 2)]
-    #[case::two_and_three(2, 3)]
+    #[case::library_one_and_two(SANCTUARY, 1, 2)]
+    #[case::library_two_and_two(SANCTUARY, 2, 2)]
+    #[case::library_two_and_three(SANCTUARY, 2, 3)]
+    #[case::graveyard_one_and_one(LICH, 1, 1)]
+    #[case::graveyard_one_and_two(LICH, 1, 2)]
+    #[case::graveyard_two_and_three(LICH, 2, 3)]
     fn two_damage_events_turned_into_exiles_take_different_cards(
+        #[case] rules: &str,
         #[case] first: u32,
         #[case] second: u32,
     ) {
-        let game = game(SANCTUARY);
-        let bear = at(&game, 2);
+        let rule: Ability = serde_json::from_str(rules).unwrap();
+        let source = CardDefinition::new("Source")
+            .with_type(CardType::Enchantment)
+            .with_rules(rule);
+        let mut setup = crate::fixtures::setup(
+            vec![vec![], vec![]],
+            vec![
+                vec![std::sync::Arc::new(source)],
+                vec![creature("Bear", 2, 2)],
+            ],
+        );
+        setup.players[0].graveyard = (0..6)
+            .map(|n| creature(&format!("Dead {n}"), 1, 1))
+            .collect();
+        let game = GameState::from_setup(&setup).unwrap();
+        let bear = at(&game, 1);
         let dealt = |amount| Event::DamageDealt {
             source: bear,
             target: DamageTarget::Player(PlayerId(0)),
@@ -402,12 +425,25 @@ mod tests {
             toxic: 0,
             unpreventable: false,
         };
-        let exiled: Vec<ObjectId> = events(&game, vec![dealt(first), dealt(second)])
+        let mut journal = Vec::new();
+        let replaced = loop {
+            match process(&game, vec![dealt(first), dealt(second)], &journal).unwrap() {
+                Processed::Events(events) => break events,
+                Processed::Ask { decision, .. } => {
+                    let DecisionKind::ChooseCards(options) = decision.kind else {
+                        panic!("only cards are asked: {decision:?}");
+                    };
+                    let picked = options.from.iter().take(options.min as usize).copied();
+                    journal.push((decision.player, Choice::Cards(picked.collect())));
+                }
+            }
+        };
+        let exiled: Vec<ObjectId> = replaced
             .iter()
             .filter_map(|event| match event {
                 Event::ZoneChanged {
                     object,
-                    from: Zone::Library(_),
+                    from: Zone::Library(_) | Zone::Graveyard(_),
                     to: Zone::Exile,
                     ..
                 } => Some(*object),
