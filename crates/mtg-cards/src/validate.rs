@@ -1512,6 +1512,8 @@ impl<'a> Walker<'a> {
         }
     }
 
+    // One arm for each part of a cost.
+    #[allow(clippy::too_many_lines)]
     fn cost(&mut self, cost: &Cost) {
         for (i, item) in cost.0.iter().enumerate() {
             self.at(format!("[{i}]"), |w| {

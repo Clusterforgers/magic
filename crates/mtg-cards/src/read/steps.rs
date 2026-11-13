@@ -272,6 +272,8 @@ fn sticker_steps(sticker: &crate::ability::Sticker, depth: u8, out: &mut Vec<Ste
 }
 
 /// The abilities about the cost of casting a spell, and the keywords and clauses left to the table.
+// One arm for each kind of ability.
+#[allow(clippy::too_many_lines)]
 fn costs(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
     let ctx = Ctx::none();
     match ability {

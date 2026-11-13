@@ -506,12 +506,15 @@ fn qualifier_text(filter: &SpendFilter) -> String {
                 text.push_str(" that shares a creature type with your commander");
             }
             SpendFact::OnBattlefield => text.push_str(" on the battlefield"),
-            // Colorless is written before the noun (`kind_text`), your commander alone (`ep33_spend_text`); `text` writes no
-            // face-down spells.
+            // Colorless and monocolored are written before the noun (`kind_text`), your commander alone
+            // (`ep33_spend_text`), equip abilities and disturb costs by `text`; `text` writes no face-down spells.
             SpendFact::Colorless
             | SpendFact::Kicked
             | SpendFact::YourCommander
-            | SpendFact::FaceDown => {}
+            | SpendFact::FaceDown
+            | SpendFact::Monocolored
+            | SpendFact::Equip
+            | SpendFact::Disturb => {}
             SpendFact::FromExile => text.push_str(" from exile"),
             SpendFact::NotFromHand => text.push_str(" from anywhere other than your hand"),
             SpendFact::Devoid => text.push_str(" with devoid"),
@@ -521,8 +524,6 @@ fn qualifier_text(filter: &SpendFilter) -> String {
             // One spell's words: `text` writes a filter with them one spell at a time.
             SpendFact::Colored => text.push_str(" that's one or more colors"),
             SpendFact::NoXInCost => text.push_str(" without {X} in its mana cost"),
-            // Monocolored is written before the noun (`kind_text`); equip abilities and disturb costs by `text`.
-            SpendFact::Monocolored | SpendFact::Equip | SpendFact::Disturb => {}
         }
     }
     text
@@ -559,6 +560,9 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
     if let Some(text) = super::ep33_spend::ep33_spend_text(only) {
         return Some(text);
     }
+    if let Some(text) = r405_text(only) {
+        return Some(text);
+    }
     // The facts no other wording says are left to `ep33_spend_text`.
     let unsaid = |filter: &SpendFilter| {
         filter
@@ -579,35 +583,8 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
         [SpendOn::Ability(filter)] if *filter == SpendFilter::default() => {
             "Spend this mana only to activate abilities".to_owned()
         }
-        // "Spend this mana only to cast a spell that's one or more colors without {X} in its mana cost."
-        [SpendOn::Spell(filter)]
-            if filter
-                .facts
-                .iter()
-                .any(|fact| matches!(fact, SpendFact::Colored | SpendFact::NoXInCost)) =>
-        {
-            format!("Spend this mana only to cast {}", one_spell_text(filter)?)
-        }
         [SpendOn::Spell(filter)] if !unworded(filter) => {
             format!("Spend this mana only to cast {}", spells_text(filter)?)
-        }
-        // "Spend this mana only to pay a disturb cost or cast an instant or sorcery spell."
-        [SpendOn::Spell(first), SpendOn::Spell(spell)]
-            if *first == disturb() && !unworded(spell) =>
-        {
-            format!(
-                "Spend this mana only to pay a disturb cost or cast {}",
-                one_spell_text(spell)?
-            )
-        }
-        // "Spend this mana only to cast Equipment spells or activate equip abilities."
-        [SpendOn::Spell(spell), SpendOn::Ability(source)]
-            if *source == equip() && !unworded(spell) =>
-        {
-            format!(
-                "Spend this mana only to cast {} or activate equip abilities",
-                spells_text(spell)?
-            )
         }
         [
             SpendOn::Spell(spell),
@@ -669,6 +646,41 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
                 spells_text(second)?
             }
         ),
+        _ => return None,
+    })
+}
+
+/// The sentences of the r40-5 uses: a spell that's one or more colors without {X}, a disturb cost, equip abilities;
+/// `None` for any other uses.
+fn r405_text(only: &[SpendOn]) -> Option<String> {
+    Some(match only {
+        // "Spend this mana only to cast a spell that's one or more colors without {X} in its mana cost."
+        [SpendOn::Spell(filter)]
+            if filter
+                .facts
+                .iter()
+                .any(|fact| matches!(fact, SpendFact::Colored | SpendFact::NoXInCost)) =>
+        {
+            format!("Spend this mana only to cast {}", one_spell_text(filter)?)
+        }
+        // "Spend this mana only to pay a disturb cost or cast an instant or sorcery spell."
+        [SpendOn::Spell(first), SpendOn::Spell(spell)]
+            if *first == disturb() && !unworded(spell) =>
+        {
+            format!(
+                "Spend this mana only to pay a disturb cost or cast {}",
+                one_spell_text(spell)?
+            )
+        }
+        // "Spend this mana only to cast Equipment spells or activate equip abilities."
+        [SpendOn::Spell(spell), SpendOn::Ability(source)]
+            if *source == equip() && !unworded(spell) =>
+        {
+            format!(
+                "Spend this mana only to cast {} or activate equip abilities",
+                spells_text(spell)?
+            )
+        }
         _ => return None,
     })
 }
