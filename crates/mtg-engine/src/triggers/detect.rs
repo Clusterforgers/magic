@@ -2517,7 +2517,7 @@ fn e16a_first_discards(post: &GameState, members: &[Happened], member: &Happened
 const fn names_players(to: Option<&Ref>) -> bool {
     matches!(
         to,
-        Some(Ref::EachPlayer | Ref::Opponents | Ref::You | Ref::Defending)
+        Some(Ref::EachPlayer | Ref::Opponents | Ref::You | Ref::Defending | Ref::Chosen)
     )
 }
 

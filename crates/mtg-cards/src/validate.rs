@@ -599,8 +599,12 @@ impl<'a> Walker<'a> {
     // One arm for each kind of reference.
     #[allow(clippy::too_many_lines)]
     fn reference(&mut self, r: &Ref, want: Kind) {
+        if *r == Ref::R4700OtherChosen {
+            self.uses("Ref", "R4700OtherChosen");
+        }
         match r {
-            Ref::You
+            Ref::R4700OtherChosen
+            | Ref::You
             | Ref::Opponents
             | Ref::EachPlayer
             | Ref::AttachedPlayer
@@ -822,6 +826,10 @@ impl<'a> Walker<'a> {
     #[allow(clippy::too_many_lines)]
     fn pred(&mut self, pred: &Pred) {
         match pred {
+            Pred::R4700TopOfGraveyard { among, .. } => {
+                self.uses("Pred", "R4700TopOfGraveyard");
+                self.at("among", |w| w.selector(among));
+            }
             Pred::Subtype(subtype) => self.known_subtype(subtype),
             Pred::HasAbility(_) => self.uses("Pred", "HasAbility"),
             Pred::Drafted(_) => self.uses("Pred", "Drafted"),
@@ -1243,6 +1251,7 @@ impl<'a> Walker<'a> {
             StatKind::R374Toxic => "R374Toxic",
             StatKind::R374ManaCost => "R374ManaCost",
             StatKind::R374ColorSet => "R374ColorSet",
+            StatKind::R4700ChosenColors => "R4700ChosenColors",
             _ => return,
         };
         self.uses("Stat", name);
@@ -3183,6 +3192,10 @@ impl Walker<'_> {
                 self.at("of", |w| w.reference(of, Kind::Object));
                 self.ep23_token_copy_exceptions(except);
             }
+            TokenRef::R4700OfChosen { size } => {
+                self.at("size", |w| w.amount(size));
+                self.uses("Effect", "CreateToken.R4700OfChosen");
+            }
         }
     }
 
@@ -3301,7 +3314,8 @@ impl Walker<'_> {
     /// What a reference names: a player, an object, or either when it is a name or a target of either kind.
     fn kind_of(&self, r: &Ref) -> Kind {
         match r {
-            Ref::You
+            Ref::R4700OtherChosen
+            | Ref::You
             | Ref::Opponents
             | Ref::EachPlayer
             | Ref::AttachedPlayer

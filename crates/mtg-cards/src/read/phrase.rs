@@ -56,6 +56,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::Monarch => "the monarch".to_owned(),
         Ref::Chosen => "the chosen object".to_owned(),
         Ref::Promised => "the promised object".to_owned(),
+        Ref::R4700OtherChosen => "the other chosen player".to_owned(),
         Ref::Defending => "the defending player".to_owned(),
         Ref::Attacked => "the attacked player".to_owned(),
         Ref::MostLife => "the player with the most life".to_owned(),
@@ -467,6 +468,7 @@ fn stat_text(stat: StatKind) -> &'static str {
         StatKind::R374Toxic => "total toxic value",
         StatKind::R374ManaCost => "mana cost",
         StatKind::R374ColorSet => "color combination",
+        StatKind::R4700ChosenColors => "number of the chosen colors it is",
         StatKind::Subtypes => "subtypes",
     }
 }

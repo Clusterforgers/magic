@@ -544,6 +544,13 @@ fn item_text(item: &CostItem) -> Option<String> {
             filter,
             count,
             any_player: false,
+        } if super::r4700_writers::r4700_top_cards_text(filter, count).is_some() => {
+            super::r4700_writers::r4700_top_cards_text(filter, count)?
+        }
+        CostItem::ExileFromGraveyard {
+            filter,
+            count,
+            any_player: false,
         } => {
             let mut said = filter.clone();
             said.0

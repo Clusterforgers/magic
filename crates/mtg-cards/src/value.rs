@@ -58,6 +58,8 @@ pub enum StatKind {
     /// Its colors as one value: no number, so only `Amount::Distinct` reads it ("different color pairs" among objects of two
     /// colors); a colorless object has none.
     R374ColorSet,
+    /// How many of the colors its source chose as the source entered it is ("for each of the chosen colors it is").
+    R4700ChosenColors,
     /// Its subtypes: no number, so only `Amount::Distinct` reads it (each subtype once among the objects: "the number of
     /// planeswalker types among planeswalkers you control").
     Subtypes,

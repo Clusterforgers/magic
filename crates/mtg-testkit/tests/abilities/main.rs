@@ -88,6 +88,8 @@ mod r4707_first_sets;
 mod r4707_one_or_more;
 mod r4707_pay_costs;
 mod r4707_planar;
+mod r4700_lands;
+mod r4700_players;
 mod r4a_enters_with;
 mod r4i_granter;
 mod r5e_done_once;

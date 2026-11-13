@@ -259,6 +259,12 @@ pub enum TokenRef {
         /// The rest of the token.
         token: Box<TokenSpec>,
     },
+    /// An X/X creature token of the colour and creature type its source chose as the source entered ("an X/X creature
+    /// token of the chosen color and type"); none when the source chose no colour and type.
+    R4700OfChosen {
+        /// Its power and toughness.
+        size: Amount,
+    },
     /// A token that is a copy of the referenced object, with exceptions.
     CopyOf {
         /// The object copied.
