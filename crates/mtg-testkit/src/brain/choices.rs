@@ -16,9 +16,6 @@ use super::seen::Seen;
 use super::sim::{Horizon, Search};
 use crate::bot::RandomBot;
 
-/// Lands the seat wants in play before more lands stop helping.
-const LANDS_WANTED: usize = 6;
-
 /// Whether `id` is a land, as the seat reads it.
 fn is_land(seen: &Seen<'_>, id: ObjectId) -> bool {
     seen.chars(id)
@@ -53,7 +50,7 @@ pub fn keep(seen: &Seen<'_>, options: &MulliganOptions) -> bool {
 /// rest by how far out of reach they are.
 fn usefulness(seen: &Seen<'_>, id: ObjectId, lands: usize) -> f64 {
     if is_land(seen, id) {
-        return if lands < LANDS_WANTED {
+        return if count(lands) < super::knobs::knobs().lands_wanted {
             8.0 - 0.5 * count(lands)
         } else {
             0.5

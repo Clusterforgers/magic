@@ -4,8 +4,8 @@
 use mtg_core::card::CardType;
 use mtg_core::ids::ObjectId;
 use mtg_engine::choose::{
-    CardsChoice, CardsOptions, ModeChoice, NumberChoice, OptionChoice, ScryChoice, ScryOptions,
-    YesNoChoice,
+    CardsChoice, CardsOptions, ChoiceOption, ModeChoice, NumberChoice, OptionChoice, ScryChoice,
+    ScryOptions, YesNoChoice,
 };
 use mtg_engine::decision::{Answer, DecisionKind, MulliganOptions, PayChoice};
 use mtg_engine::zones::Zone;
@@ -179,8 +179,57 @@ pub fn quick_choice(engine: &Engine, decision: &Decision, random: &mut RandomBot
         DecisionKind::PayMana(options) if options.auto_available => {
             Answer::PayMana(PayChoice::Auto)
         }
+        DecisionKind::ChooseOption(options) => threatening_color(&seen, &options.options)
+            .map_or_else(
+                || random.choose_in(decision, engine.state()),
+                |at| Answer::ChooseOption(OptionChoice(at)),
+            ),
         _ => random.choose_in(decision, engine.state()),
     }
+}
+
+/// Among colour options, the colour of the opposing spell or ability nearest the top of the stack, else the colour
+/// most opposing permanents share: what protection or a hoser is best named for.
+fn threatening_color(seen: &Seen<'_>, options: &[ChoiceOption]) -> Option<usize> {
+    let colors: Vec<(usize, mtg_core::color::Color)> = options
+        .iter()
+        .enumerate()
+        .filter_map(|(at, option)| match option {
+            ChoiceOption::Color(color) => Some((at, *color)),
+            _ => None,
+        })
+        .collect();
+    if colors.is_empty() {
+        return None;
+    }
+    let opposing = |id: &mtg_core::ids::ObjectId| {
+        seen.controller(*id)
+            .is_some_and(|player| !seen.is_teammate(player))
+    };
+    for id in seen.stack().iter().rev().filter(|id| opposing(id)) {
+        if let Some(chars) = seen.chars(*id)
+            && let Some((at, _)) = colors
+                .iter()
+                .find(|(_, color)| chars.colors.contains(*color))
+        {
+            return Some(*at);
+        }
+    }
+    let bodies = seen.bodies();
+    colors
+        .iter()
+        .map(|(at, color)| {
+            let shared = bodies
+                .iter()
+                .filter(|body| {
+                    !seen.is_teammate(body.controller) && body.chars.colors.contains(*color)
+                })
+                .count();
+            (shared, std::cmp::Reverse(*at))
+        })
+        .max()
+        .filter(|(shared, _)| *shared > 0)
+        .map(|(_, std::cmp::Reverse(at))| at)
 }
 
 /// A few candidate answers to a choice that a search can tell apart: the quick answer, then each simple alternative.

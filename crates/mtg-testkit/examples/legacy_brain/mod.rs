@@ -1,7 +1,4 @@
-//! The brains of the main branch before the threat model, frozen as a yardstick for `bot_tournament`.
-//!
-//! Bot brains: what answers a seat's decisions for a server bot or a test harness, from random play to a heuristic
-//! player that searches clones of the engine.
+//! Frozen copy of the bot brains of main before ai50, kept as the yardstick for match testing.
 //!
 //! Every brain implements [`SeatBrain`]. [`Level::Easy`] is [`EasyBrain`] (a land when it can, else a random legal
 //! answer); [`Level::Normal`], [`Level::Hard`] and [`Level::VeryHard`] are a [`HeuristicBot`] with
@@ -19,6 +16,7 @@ pub mod priority;
 pub mod seen;
 pub mod sim;
 pub mod targets;
+pub mod threat;
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice, PriorityAction};
@@ -330,10 +328,22 @@ impl HeuristicBot {
         }
         answers.retain(|answer| *answer != prior);
         answers.insert(0, prior.clone());
+        let seen = Seen::new(engine.state(), self.seat);
+        let window = priority::window(&seen);
+        let costs: Vec<f64> = answers
+            .iter()
+            .map(|answer| match answer {
+                Answer::Priority(play) => {
+                    priority::hold_cost(self.settings.careful, &seen, window, play)
+                }
+                _ => 0.0,
+            })
+            .collect();
         let chosen = deep::ismcts(
             engine,
             self.seat,
             &answers,
+            &costs,
             deep,
             self.settings.weights,
             key,

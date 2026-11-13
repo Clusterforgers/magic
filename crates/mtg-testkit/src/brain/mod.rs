@@ -10,15 +10,20 @@
 //! seat's candidate answers that a level's settings may add.
 
 pub mod choices;
+pub mod clock;
 pub mod combat;
 pub mod deep;
+pub mod endgame;
 pub mod eval;
+pub mod knobs;
 pub mod priority;
 pub mod seen;
 pub mod sim;
 pub mod suite;
 pub mod targets;
 pub mod threat;
+
+use std::time::Instant;
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice, PriorityAction};
@@ -113,7 +118,14 @@ pub struct HeuristicBot {
     played: Vec<PriorityAction>,
     /// The share of the deep search's budget it may spend ([`SeatBrain::set_budget`]).
     budget: f64,
+    /// What the tree search learnt about the seat's answers this game ([`deep::History`]).
+    history: deep::History,
+    /// When the decision being answered was asked.
+    started: Instant,
 }
+
+/// The longest a timed bot looks for a forced win ([`endgame::forced_win`]).
+const ENDGAME_TIME: std::time::Duration = std::time::Duration::from_millis(400);
 
 /// How often one play (an ability, say) may be made in a turn.
 const REPEATS: usize = 3;
@@ -133,6 +145,8 @@ impl HeuristicBot {
             turn: 0,
             played: Vec::new(),
             budget: 1.0,
+            history: deep::History::default(),
+            started: Instant::now(),
         }
     }
 
@@ -167,6 +181,24 @@ impl HeuristicBot {
         );
         if pending && matters && self.settings.votes > 1 {
             return self.voted(decision, engine);
+        }
+        if pending
+            && matters
+            && self.settings.endgame
+            && let Some(win) = endgame::forced_win(
+                engine,
+                self.seat,
+                decision,
+                key,
+                self.settings.time.map(|_| self.started + ENDGAME_TIME),
+            )
+        {
+            if let Answer::Priority(play) = &win
+                && *play != PriorityAction::Pass
+            {
+                self.played.push(play.clone());
+            }
+            return win;
         }
         if pending
             && matters
@@ -339,7 +371,24 @@ impl HeuristicBot {
         }
         answers.retain(|answer| *answer != prior);
         answers.insert(0, prior.clone());
+        let answers = deep::distinct(engine, answers);
         let seen = Seen::new(engine.state(), self.seat);
+        let budget = clock::Budget::new(
+            self.started,
+            deep.iterations,
+            deep.time,
+            clock::importance(&seen, decision),
+            self.budget,
+        );
+        if budget.iterations == 0 {
+            self.played = before;
+            if let Answer::Priority(play) = &prior
+                && *play != PriorityAction::Pass
+            {
+                self.played.push(play.clone());
+            }
+            return prior;
+        }
         let window = priority::window(&seen);
         let costs: Vec<f64> = answers
             .iter()
@@ -358,7 +407,8 @@ impl HeuristicBot {
             deep,
             self.settings.weights,
             key,
-            self.budget,
+            budget,
+            &mut self.history,
         )
         .unwrap_or(prior);
         self.played = before;
@@ -377,6 +427,7 @@ impl SeatBrain for HeuristicBot {
     }
 
     fn choose(&mut self, decision: &Decision, table: Option<&Engine>) -> Answer {
+        self.started = Instant::now();
         match table {
             Some(engine) => self.answer(decision, engine),
             None => self.random.choose(decision),

@@ -124,7 +124,7 @@ fn count(n: usize) -> f64 {
     f64::from(u32::try_from(n).unwrap_or(u32::MAX))
 }
 
-/// How an evaluation weighs the damage each side's creatures threaten next turn.
+/// The weights of the evaluation's terms ([`Terms`]); [`Weights::NORMAL`] is tuned by self-play (`docs/bots.md`).
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Weights {
     /// The share of the life the seat's team stands to lose that counts against it.
@@ -137,17 +137,141 @@ pub struct Weights {
     pub life: f64,
     /// How much permanents count against the rest of a team's standing.
     pub board: f64,
+    /// What each of a player's first [`RAMP_SOURCES`] mana sources is worth.
+    pub early_source: f64,
+    /// What each mana source past those is worth.
+    pub late_source: f64,
+    /// The share of its hold value interaction in the seat's hand counts for.
+    pub held: f64,
+    /// How much more the strongest opposing team counts than the others.
+    pub strongest: f64,
+    /// What a lethal attack threatened against the seat's team costs.
+    pub lethal_against: f64,
+    /// What a lethal attack the seat's team threatens is worth.
+    pub lethal_for: f64,
+    /// What each point of a team's creature power adds beyond the bodies.
+    pub power: f64,
+    /// What each point of evasive (flying, menace, trample) power adds.
+    pub evasion: f64,
 }
 
 impl Weights {
-    /// The weights of [`evaluate`].
-    pub const NORMAL: Weights = Weights {
+    /// The hand-set weights before tuning, kept as a yardstick.
+    pub const HAND_SET: Weights = Weights {
         defend: 0.5,
         press: 0.25,
         card: CARD,
         life: 1.0,
         board: 1.0,
+        early_source: EARLY_SOURCE,
+        late_source: LATE_SOURCE,
+        held: HELD_SHARE,
+        strongest: 0.5,
+        lethal_against: 30.0,
+        lethal_for: 8.0,
+        power: 0.0,
+        evasion: 0.0,
     };
+
+    /// The weights of [`evaluate`].
+    pub const NORMAL: Weights = Weights::HAND_SET;
+}
+
+/// One team's standing as raw sums, before weighting.
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
+pub struct TeamTerms {
+    /// Cards in hand (up to eight a player).
+    pub cards: f64,
+    /// Permanents' values with their engine values ([`permanent_value`], [`engine_value`]).
+    pub board: f64,
+    /// Each player's first mana sources.
+    pub early: f64,
+    /// The mana sources past those.
+    pub late: f64,
+    /// [`life_value`] of the team's life (once for a shared total).
+    pub life: f64,
+    /// Fixed terms: an empty library, poison counters.
+    pub fixed: f64,
+    /// Creature power.
+    pub power: f64,
+    /// Evasive creature power.
+    pub evasion: f64,
+}
+
+impl TeamTerms {
+    /// The weighted standing.
+    pub fn score(&self, w: &Weights) -> f64 {
+        w.card * self.cards
+            + w.board * self.board
+            + w.early_source * self.early
+            + w.late_source * self.late
+            + w.life * self.life
+            + self.fixed
+            + w.power * self.power
+            + w.evasion * self.evasion
+    }
+}
+
+/// The next attacks between the seat's team and one opposing team.
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
+pub struct Threats {
+    /// What the life the seat's team stands to lose is worth, unless lethal.
+    pub against: f64,
+    /// Whether that attack is lethal.
+    pub against_lethal: bool,
+    /// What the life the opposing team stands to lose is worth, unless lethal.
+    pub ours: f64,
+    /// Whether that attack is lethal.
+    pub ours_lethal: bool,
+}
+
+/// A position's evaluation as raw terms: [`Terms::score`] with [`Weights`] is [`evaluate_with`], so the weights can be
+/// fitted to game results (Texel tuning, `examples/eval_tune.rs`).
+#[derive(Debug, Clone, Default, PartialEq)]
+pub struct Terms {
+    /// A decided game: `Some(true)` won, `Some(false)` lost.
+    pub decided: Option<bool>,
+    /// The seat's team.
+    pub own: TeamTerms,
+    /// Each opposing team still in the game.
+    pub others: Vec<TeamTerms>,
+    /// Interaction held in the seat's hand at its full hold value.
+    pub held: f64,
+    /// The next attacks with each opposing team.
+    pub threats: Vec<Threats>,
+}
+
+impl Terms {
+    /// The evaluation with `w`.
+    pub fn score(&self, w: &Weights) -> f64 {
+        if let Some(won) = self.decided {
+            return if won { DECIDED } else { -DECIDED };
+        }
+        let mut others = 0.0;
+        let mut strongest = f64::MIN;
+        for team in &self.others {
+            let score = team.score(w);
+            others += score;
+            strongest = strongest.max(score);
+        }
+        if strongest > f64::MIN {
+            others += w.strongest * strongest;
+        }
+        let mut balance = 0.0;
+        for threat in &self.threats {
+            balance -= if threat.against_lethal {
+                w.lethal_against
+            } else {
+                w.defend * threat.against
+            };
+            balance += if threat.ours_lethal {
+                w.lethal_for
+            } else {
+                w.press * threat.ours
+            };
+        }
+        self.own.score(w) + w.held * self.held - others + balance
+    }
 }
 
 /// The position as `seen`'s seat reads it, from its team's side: its team's standing (engines and combo pieces counted
@@ -158,72 +282,92 @@ pub fn evaluate(seen: &Seen<'_>) -> f64 {
     evaluate_with(seen, Weights::NORMAL)
 }
 
-/// [`evaluate`] with the threats of the coming turn weighed by `weights`.
+/// [`evaluate`] with `weights`.
 pub fn evaluate_with(seen: &Seen<'_>, weights: Weights) -> f64 {
-    if let Some(won) = seen.over() {
-        return if won { DECIDED } else { -DECIDED };
-    }
-    if !seen.is_alive(seen.seat()) && seen.alive().iter().all(|p| !seen.is_teammate(*p)) {
-        return -DECIDED;
-    }
-    let bodies = seen.bodies();
-    let teams = team_scores(seen, &bodies, weights);
-    let own_team = seen.team_of(seen.seat());
-    let mut own = 0.0;
-    let mut others = 0.0;
-    let mut strongest = f64::MIN;
-    for (team, score) in &teams {
-        if *team == own_team {
-            own = *score;
-        } else {
-            others += score;
-            strongest = strongest.max(*score);
-        }
-    }
-    if strongest > f64::MIN {
-        others += 0.5 * strongest;
-    }
-    own + held_interaction(seen, HELD_SHARE) - others + pressure_balance(seen, &bodies, weights)
+    terms(seen).score(&weights)
 }
 
-/// Each team still in the game and its standing: life, cards in hand, permanents and mana.
-fn team_scores(seen: &Seen<'_>, bodies: &[Body], weights: Weights) -> BTreeMap<u32, f64> {
-    let mut scores: BTreeMap<u32, f64> = BTreeMap::new();
+/// The raw terms of the position as `seen`'s seat reads it ([`Terms`]).
+pub fn terms(seen: &Seen<'_>) -> Terms {
+    if let Some(won) = seen.over() {
+        return Terms {
+            decided: Some(won),
+            ..Terms::default()
+        };
+    }
+    if !seen.is_alive(seen.seat()) && seen.alive().iter().all(|p| !seen.is_teammate(*p)) {
+        return Terms {
+            decided: Some(false),
+            ..Terms::default()
+        };
+    }
+    let bodies = seen.bodies();
+    let own_team = seen.team_of(seen.seat());
+    let mut own = TeamTerms::default();
+    let mut others = Vec::new();
+    for (team, terms) in team_terms(seen, &bodies) {
+        if team == own_team {
+            own = terms;
+        } else {
+            others.push(terms);
+        }
+    }
+    Terms {
+        decided: None,
+        own,
+        others,
+        held: held_interaction(seen, 1.0),
+        threats: threats(seen, &bodies),
+    }
+}
+
+/// Each team still in the game and its standing's terms.
+fn team_terms(seen: &Seen<'_>, bodies: &[Body]) -> BTreeMap<u32, TeamTerms> {
+    let mut teams: BTreeMap<u32, TeamTerms> = BTreeMap::new();
     let mut life_counted: Vec<u32> = Vec::new();
     for player in seen.alive() {
         let team = seen.team_of(player);
-        let mut score = standing_with(seen, player, bodies, weights);
+        let standing = teams.entry(team).or_default();
+        add_standing(seen, player, bodies, standing);
         // Two-Headed Giant: one life total for the team, counted once.
         if !seen.shares_life() || !life_counted.contains(&team) {
-            score +=
-                weights.life * life_value(seen.life(player)) - 4.0 * f64::from(seen.poison(player));
+            standing.life += life_value(seen.life(player));
+            standing.fixed -= 4.0 * f64::from(seen.poison(player));
             life_counted.push(team);
         }
-        *scores.entry(team).or_default() += score;
     }
-    scores
+    teams
 }
 
 /// What `player` has apart from life: cards in hand, permanents and mana sources.
 pub fn player_standing(seen: &Seen<'_>, player: PlayerId, bodies: &[Body]) -> f64 {
-    standing_with(seen, player, bodies, Weights::NORMAL)
+    let mut terms = TeamTerms::default();
+    add_standing(seen, player, bodies, &mut terms);
+    terms.score(&Weights::NORMAL)
 }
 
-/// [`player_standing`] with cards and permanents weighed by `weights`.
-fn standing_with(seen: &Seen<'_>, player: PlayerId, bodies: &[Body], weights: Weights) -> f64 {
-    let hand = seen.hand_size(player).min(8);
-    let mut score = weights.card * count(hand);
+/// Adds `player`'s cards in hand, permanents and mana sources to `terms`.
+fn add_standing(seen: &Seen<'_>, player: PlayerId, bodies: &[Body], terms: &mut TeamTerms) {
+    terms.cards += count(seen.hand_size(player).min(8));
     if seen.library_size(player) == 0 {
-        score -= 30.0;
+        terms.fixed -= 30.0;
     }
     let mut sources = 0;
     for body in bodies.iter().filter(|body| body.controller == player) {
-        score += weights.board * (permanent_value(body) + engine_value(seen, body, bodies));
+        terms.board += permanent_value(body) + engine_value(seen, body, bodies);
         if body.is_land() || body.makes_mana {
             sources += 1;
         }
+        if body.is_creature() && !body.keys.defender && !body.cant_attack {
+            let power = f64::from(body.power().max(0));
+            terms.power += power;
+            if body.keys.flying || body.keys.menace || body.keys.trample {
+                terms.evasion += power;
+            }
+        }
     }
-    score + mana_value_of(sources)
+    terms.early += count(sources.min(RAMP_SOURCES));
+    terms.late += count(sources.saturating_sub(RAMP_SOURCES));
 }
 
 /// The damage the creatures of `attackers` could deal to `defender` on their next attack, after `defender`'s team blocks
@@ -275,9 +419,9 @@ pub fn pressure(seen: &Seen<'_>, bodies: &[Body], attackers: u32, defender: u32)
     through
 }
 
-/// The life the seat's team stands to lose to each opposing team's next attack, against what it threatens them with:
-/// the losses at their life totals, a lethal threat against the team weighing like most of a lost game.
-fn pressure_balance(seen: &Seen<'_>, bodies: &[Body], weights: Weights) -> f64 {
+/// The life the seat's team stands to lose to each opposing team's next attack, and what it threatens them with: the
+/// losses at their life totals, or whether the attack is lethal.
+fn threats(seen: &Seen<'_>, bodies: &[Body]) -> Vec<Threats> {
     let own_team = seen.team_of(seen.seat());
     let mut teams: Vec<(u32, i32)> = Vec::new();
     for player in seen.alive() {
@@ -290,22 +434,20 @@ fn pressure_balance(seen: &Seen<'_>, bodies: &[Body], weights: Weights) -> f64 {
         .iter()
         .find(|(team, _)| *team == own_team)
         .map_or(0, |(_, life)| *life);
-    let mut balance = 0.0;
-    for (team, life) in teams.iter().filter(|(team, _)| *team != own_team) {
-        let against_us = pressure(seen, bodies, *team, own_team);
-        balance -= if against_us >= own_life {
-            30.0
-        } else {
-            weights.defend * life_loss(own_life, against_us)
-        };
-        let ours = pressure(seen, bodies, own_team, *team);
-        balance += if ours >= *life {
-            8.0
-        } else {
-            weights.press * life_loss(*life, ours)
-        };
-    }
-    balance
+    teams
+        .iter()
+        .filter(|(team, _)| *team != own_team)
+        .map(|(team, life)| {
+            let against_us = pressure(seen, bodies, *team, own_team);
+            let ours = pressure(seen, bodies, own_team, *team);
+            Threats {
+                against: life_loss(own_life, against_us),
+                against_lethal: against_us >= own_life,
+                ours: life_loss(*life, ours),
+                ours_lethal: ours >= *life,
+            }
+        })
+        .collect()
 }
 
 #[cfg(test)]

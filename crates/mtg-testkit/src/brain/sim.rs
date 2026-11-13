@@ -65,6 +65,8 @@ pub struct Settings {
     pub votes: u32,
     /// A wall-clock cap per decision; `None` searches by count alone, so the answers replay with the seed.
     pub time: Option<Duration>,
+    /// Whether the seat's own decisions first look for a forced win this turn ([`super::endgame::forced_win`]).
+    pub endgame: bool,
 }
 
 impl Settings {
@@ -84,6 +86,7 @@ impl Settings {
         deep: None,
         votes: 1,
         time: Some(Duration::from_millis(300)),
+        endgame: false,
     };
 
     /// The first Normal: [`Settings::NORMAL`] without careful play, kept as a fixed yardstick for measuring the levels.
@@ -108,6 +111,7 @@ impl Settings {
         deep: None,
         votes: 1,
         time: Some(Duration::from_millis(1000)),
+        endgame: true,
     };
 
     /// Very Hard: Hard's answer to every decision, and for the decisions that matter (casts, attacks, blocks, targets)
@@ -331,6 +335,10 @@ impl Search {
             if engine.result().is_some() || reached(&engine, &decision, start, horizon, step) {
                 break;
             }
+            // A simulation cut by the clock is scored where it stands.
+            if step % 16 == 15 && self.late() {
+                break;
+            }
             if self.branches(&engine, &decision, depth) {
                 return self.branch(&engine, &decision, start, horizon, depth);
             }
@@ -552,10 +560,11 @@ pub(crate) fn reached(
     }
 }
 
-/// Whether `state` (with `stack` objects on the stack) is past the combat of turn `end`.
+/// Whether `state` (with `stack` objects on the stack) is past the combat of turn `end`, with an empty stack: a search
+/// never stops with a spell waiting to resolve (a quiescence rule).
 fn reached_turn(state: &mtg_engine::state::GameState, end: u32, stack: usize) -> bool {
     let turn = state.turn().number();
-    turn > end || (turn == end && stack == 0 && after_combat(state.turn().step()))
+    stack == 0 && (turn > end || (turn == end && after_combat(state.turn().step())))
 }
 
 /// The answer that decides least, when a quick answer was refused: a pass, the fewest targets, a keep; `None` for a
