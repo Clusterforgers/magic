@@ -1,0 +1,69 @@
+{
+  "oracle_id": "a7c96442-706b-4fd8-9b38-052872dafe58",
+  "name": "Throne of the Grim Captain // The Grim Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Throne of the Grim Captain",
+      "oracle_fingerprint": "74daf160c26478540840e8f7a24f8b44",
+      "abilities": [
+        { "Activated": { "cost": ["Tap"], "effects": [{ "Mill": { "count": 2 } }] } },
+        {
+          "Keyword": {
+            "Craft": [
+              { "Mana": "{4}" },
+              { "Craft": { "filter": [{ "Subtype": "Dinosaur" }] } },
+              { "Craft": { "filter": [{ "Subtype": "Merfolk" }] } },
+              { "Craft": { "filter": [{ "Subtype": "Pirate" }] } },
+              { "Craft": { "filter": [{ "Subtype": "Vampire" }] } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "The Grim Captain",
+      "oracle_fingerprint": "e31aa882c0d8a8582edc22f36e1c8355",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Lifelink" },
+        { "Keyword": "Hexproof" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "Sacrifice": { "who": "Opponents", "filter": [{ "Not": { "Type": "Land" } }] } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Exile" },
+                            { "Type": "Creature" },
+                            { "ExiledWith": "This" }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "card" },
+                        "to": { "Battlefield": { "tapped": true, "under": "You" } },
+                        "as": "creature"
+                      }
+                    },
+                    { "JoinAttack": { "what": { "Bound": "creature" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

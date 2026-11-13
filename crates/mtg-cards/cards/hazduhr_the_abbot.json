@@ -1,0 +1,38 @@
+{
+  "oracle_id": "35844d8b-8f68-4248-b921-e766757a9e26",
+  "name": "Hazduhr the Abbot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hazduhr the Abbot",
+      "oracle_fingerprint": "bfeb8cd64a761c6f21d716ba1d694d08",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Color": "White" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "RedirectCounted": { "most": "X", "to": "This" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

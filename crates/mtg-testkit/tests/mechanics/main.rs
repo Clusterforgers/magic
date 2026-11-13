@@ -135,6 +135,7 @@ mod r375_phasing;
 mod r377_rules;
 mod r378_history;
 mod r378_teamwork;
+mod r379_since_last_turn;
 mod r3e;
 mod r3f_airbend;
 mod r3f_waterbend;

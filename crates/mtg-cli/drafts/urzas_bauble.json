@@ -1,0 +1,33 @@
+{
+  "oracle_id": "17dbbca3-ac1c-4d4e-9618-3e66ac3ccd24",
+  "name": "Urza's Bauble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urza's Bauble",
+      "oracle_fingerprint": "8578368c888554882b6d18a964720f8a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "card"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

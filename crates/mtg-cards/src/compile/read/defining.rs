@@ -410,6 +410,9 @@ pub(super) fn counting_text(amount: &Amount) -> Option<String> {
             stat_text(*stat)?,
             counted_text(of)?
         )),
+        Amount::GreatestCast { who, of, stat } => {
+            super::r379_atoms::r379_greatest_cast_text(who, of, stat_text(*stat)?)
+        }
         Amount::Total { of, stat } => Some(format!(
             "the total {} of {}",
             stat_text(*stat)?,

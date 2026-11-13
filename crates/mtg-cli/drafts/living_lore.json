@@ -1,0 +1,80 @@
+{
+  "oracle_id": "7c48c341-1d56-4210-9d86-181ebb206098",
+  "name": "Living Lore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Living Lore",
+      "oracle_fingerprint": "12f31b6cd528f7739f55a8bce8cee085",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                {
+                  "Choose": {
+                    "from": {
+                      "Each": [
+                        { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                        { "In": "Graveyard" },
+                        { "OwnedBy": "You" }
+                      ]
+                    },
+                    "as": "card"
+                  }
+                },
+                { "Exile": { "what": { "Bound": "card" }, "as": "exiled" } },
+                { "Remember": { "what": { "Bound": "exiled" }, "slot": "exiled" } }
+              ]
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Stat": {
+                      "of": { "Remembered": { "on": "This", "slot": "exiled" } },
+                      "stat": "ManaValue"
+                    }
+                  },
+                  "toughness": {
+                    "Stat": {
+                      "of": { "Remembered": { "on": "This", "slot": "exiled" } },
+                      "stat": "ManaValue"
+                    }
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "combat": true } },
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Remembered": { "on": "This", "slot": "exiled" } },
+                  "as": "lore"
+                }
+              },
+              { "May": { "effects": [{ "Sacrifice": { "filter": ["This"] } }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [{ "CastFromZone": { "what": { "Bound": "lore" }, "free": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

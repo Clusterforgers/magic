@@ -1,0 +1,50 @@
+{
+  "oracle_id": "66742e88-88cd-4c89-b04b-806577fe5f67",
+  "name": "Molten Sentry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Molten Sentry",
+      "oracle_fingerprint": "0382f836ef7597e9ce40e60075790f2a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                {
+                  "FlipCoin": {
+                    "win": [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [
+                            { "SetPT": { "power": 5, "toughness": 2 } },
+                            { "AddKeyword": "Haste" }
+                          ],
+                          "duration": "Forever"
+                        }
+                      }
+                    ],
+                    "lose": [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [
+                            { "SetPT": { "power": 2, "toughness": 5 } },
+                            { "AddKeyword": "Defender" }
+                          ],
+                          "duration": "Forever"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

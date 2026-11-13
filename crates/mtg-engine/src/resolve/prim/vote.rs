@@ -8,6 +8,7 @@ use super::wrong_effect;
 use crate::choose::{
     ChoiceOption, OptionChooser, Optioned, Picked, Selection, Target, pick_options, pick_selections,
 };
+use crate::events::Event;
 use crate::resolve::{Cx, Next, ResolveError, Run};
 
 /// The ballots of a vote, the controller first, in turn order; a player who has left the game does not vote. A player
@@ -55,10 +56,11 @@ fn w17c_choosers(
         .collect()
 }
 
-/// The step is done with these names bound and goes on with the next effect.
-fn done(bound: Vec<(String, Vec<Target>)>) -> Run {
+/// The step is done with these names bound and goes on with the next effect; the ballots are logged as the vote
+/// finishing.
+fn done(bound: Vec<(String, Vec<Target>)>, ballots: Vec<(PlayerId, u32)>) -> Run {
     Run::Done {
-        events: Vec::new(),
+        events: vec![Event::VotesFinished { ballots }],
         bound,
         snapshots: Vec::new(),
         next: Next::Sibling,
@@ -108,7 +110,29 @@ fn named(cx: &Cx<'_>, names: &[String], secret: bool) -> Result<Run, ResolveErro
             (name.clone(), for_it)
         })
         .collect();
-    Ok(done(bound))
+    let ballots = taken
+        .iter()
+        .map(|(player, index)| (*player, place(*index)))
+        .collect();
+    Ok(done(bound, ballots))
+}
+
+/// The place of a choice among the options, as a ballot holds it.
+fn place(index: usize) -> u32 {
+    u32::try_from(index).unwrap_or(u32::MAX)
+}
+
+/// Each vote as a ballot: the voter and the place of their choice among the candidates.
+fn ballots(votes: &[(PlayerId, Target)], candidates: &[Target]) -> Vec<(PlayerId, u32)> {
+    votes
+        .iter()
+        .filter_map(|(voter, target)| {
+            candidates
+                .iter()
+                .position(|candidate| candidate == target)
+                .map(|index| (*voter, place(index)))
+        })
+        .collect()
 }
 
 /// The targets with the most votes, each once, in the order they were first voted for.
@@ -131,7 +155,7 @@ fn r376_player_votes(
     players: &[PlayerId],
     another: bool,
     secret: bool,
-) -> Result<Result<Vec<Target>, Run>, ResolveError> {
+) -> Result<Result<Vec<(PlayerId, Target)>, Run>, ResolveError> {
     let mut ballots: Vec<Vec<PlayerId>> = Vec::new();
     let mut choosers: Vec<OptionChooser> = Vec::new();
     for (voter, again) in voters(cx) {
@@ -176,7 +200,11 @@ fn r376_player_votes(
         Optioned::Done(taken) => Ok(taken
             .into_iter()
             .zip(&ballots)
-            .filter_map(|((_, index), open)| open.get(index).copied().map(Target::Player))
+            .filter_map(|((voter, index), open)| {
+                open.get(index)
+                    .copied()
+                    .map(|player| (voter, Target::Player(player)))
+            })
             .collect()),
     })
 }
@@ -220,7 +248,7 @@ fn of(
         ));
     }
     let seats = voters(cx);
-    let votes: Vec<Target> = if candidates.is_empty() {
+    let votes: Vec<(PlayerId, Target)> = if candidates.is_empty() {
         Vec::new()
     } else if objects.is_empty() {
         match r376_player_votes(cx, &players, false, secret)? {
@@ -243,17 +271,19 @@ fn of(
             Picked::Ask(decision) => return Ok(Run::Ask(decision)),
             Picked::Done(taken) => taken
                 .into_iter()
-                .flat_map(|(_, cards)| cards)
-                .filter_map(|id| {
+                .flat_map(|(voter, cards)| cards.into_iter().map(move |id| (voter, id)))
+                .filter_map(|(voter, id)| {
                     candidates
                         .iter()
                         .find(|t| t.object().is_some_and(|o| o.id == id))
+                        .map(|target| (voter, *target))
                 })
-                .copied()
                 .collect(),
         }
     };
-    Ok(done(r376_bound(&votes, bind, tally)))
+    let ballots = ballots(&votes, &candidates);
+    let votes: Vec<Target> = votes.into_iter().map(|(_, target)| target).collect();
+    Ok(done(r376_bound(&votes, bind, tally), ballots))
 }
 
 /// The players vote: on named choices each name is bound to the players who voted for it, once for each of their votes;
@@ -280,7 +310,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         VoteFor::AnotherPlayer => {
             let players = cx.state().turn_order_from(cx.scope.controller);
             match r376_player_votes(cx, &players, true, *secret)? {
-                Ok(votes) => Ok(done(r376_bound(&votes, bind, tally))),
+                Ok(votes) => {
+                    let candidates: Vec<Target> =
+                        players.iter().copied().map(Target::Player).collect();
+                    let ballots = ballots(&votes, &candidates);
+                    let votes: Vec<Target> = votes.into_iter().map(|(_, target)| target).collect();
+                    Ok(done(r376_bound(&votes, bind, tally), ballots))
+                }
                 Err(ask) => Ok(ask),
             }
         }

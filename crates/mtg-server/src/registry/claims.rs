@@ -348,6 +348,45 @@ impl Registry {
             return Err(TableError::NotAllowed);
         }
         let _turn = table.turn.lock().await;
+        self.install_teams(&table, game, teams).await
+    }
+
+    /// Puts `seat` on `team` before the game starts, every other seat staying where it is, and answers the teams now in
+    /// force. The host moves any seat and a player their own; a table without teams has none to choose.
+    pub async fn set_seat_team(
+        &self,
+        game: GameId,
+        by: PlayerId,
+        seat: PlayerId,
+        team: u32,
+    ) -> Result<Teams, TableError> {
+        let table = self.table(game, |_| true).ok_or(TableError::NotFound)?;
+        if by != HOST && by != seat {
+            return Err(TableError::NotAllowed);
+        }
+        let _turn = table.turn.lock().await;
+        let current = self
+            .games()
+            .get(&game)
+            .map(|entry| entry.house_rules.teams.clone())
+            .ok_or(TableError::NotFound)?;
+        let mut teams = current.ok_or(TableError::NotAllowed)?;
+        let place = teams
+            .seats
+            .get_mut(seat.index())
+            .ok_or(TableError::NotFound)?;
+        *place = team;
+        self.install_teams(&table, game, Some(teams.clone()))
+            .await?;
+        Ok(teams)
+    }
+
+    async fn install_teams(
+        &self,
+        table: &Table,
+        game: GameId,
+        teams: Option<Teams>,
+    ) -> Result<(), TableError> {
         match table.handle.set_teams(teams.clone()).await {
             Ok(Ok(())) => {}
             Ok(Err(TeamsRefusal::Started)) => return Err(TableError::Started),

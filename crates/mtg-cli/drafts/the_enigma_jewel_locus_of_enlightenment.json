@@ -1,0 +1,65 @@
+{
+  "oracle_id": "c0d2bdd9-1e68-4d3a-83f8-ec2ba440a494",
+  "name": "The Enigma Jewel // Locus of Enlightenment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Enigma Jewel",
+      "oracle_fingerprint": "2f888ee346030650717cc6ecc0f6b6b1",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless", "Colorless"] },
+                  "only": [{ "Ability": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Craft": [
+              { "Mana": "{8}{U}" },
+              {
+                "Craft": {
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    { "AnyOf": [{ "HasAbility": "Mana" }, { "HasAbility": "NonManaActivated" }] },
+                    "Other"
+                  ],
+                  "count": 4,
+                  "least": 4
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Locus of Enlightenment",
+      "oracle_fingerprint": "d19f62fa7abc49dc33154bf3bec09086",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "GainAbilitiesOf": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Activated", "who": "You" } },
+            "effects": [{ "CopyAbility": { "what": "Triggering", "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

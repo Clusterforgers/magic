@@ -388,7 +388,8 @@ impl<S: EventStore> GameActor<S> {
     /// Answers for the seat whose clock ran out, with a pass or no blocks, as if the seat had, unless the seat holds an
     /// extension: that is spent instead, the deadline moves and the table is told the new bank. The same step passes for
     /// a seat that cannot act once its dwell is over: the decision was never sent, and the pass is saved, projected and
-    /// sent like the seat's own, as a batch of its own.
+    /// sent like the seat's own, as a batch of its own. A fallback the engine refuses concedes the seat, so no decision holds the
+    /// table for ever.
     pub(crate) async fn expire(&mut self) -> Result<(), Fatal> {
         let Phase::Running(running) = &mut self.phase else {
             return Ok(());
@@ -404,16 +405,34 @@ impl<S: EventStore> GameActor<S> {
         if sent.is_some() {
             running.clock_ran_out();
         }
-        if let Ok(step) = running.fall_back() {
-            if let Some((seat, kind)) = sent {
-                tracing::info!(game = %self.id, seat = seat.index(), kind, "clock ran out; the table answered for the seat");
+        match running.fall_back() {
+            Ok(step) => {
+                if let Some((seat, kind)) = sent {
+                    tracing::info!(game = %self.id, seat = seat.index(), kind, "clock ran out; the table answered for the seat");
+                }
+                // If the move cannot be saved the decision stays; trying again at once would spin.
+                running.postpone(Instant::now() + RETRY_AFTER);
+                self.publish(step).await
             }
-            // If the move cannot be saved the decision stays; trying again at once would spin.
-            running.postpone(Instant::now() + RETRY_AFTER);
-            self.publish(step).await
-        } else {
-            running.stop_clock();
-            Ok(())
+            // The fallback itself was refused: no answer moves this decision on, so the seat that ran out of time
+            // concedes and the table plays on without it.
+            Err(refused)
+                if matches!(refused.code, ErrorCode::IllegalAnswer | ErrorCode::Internal)
+                    && let Some((seat, kind)) = sent =>
+            {
+                tracing::warn!(game = %self.id, seat = seat.index(), kind, reason = %refused.message, "clock ran out and the fallback was refused; the seat concedes");
+                if let Ok(step) = running.concede(seat) {
+                    running.postpone(Instant::now() + RETRY_AFTER);
+                    self.publish(step).await
+                } else {
+                    running.stop_clock();
+                    Ok(())
+                }
+            }
+            Err(_) => {
+                running.stop_clock();
+                Ok(())
+            }
         }
     }
 
@@ -531,7 +550,7 @@ impl<S: EventStore> GameActor<S> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: the pace rules give the clock, the safe default and the priority test exactly to the decisions they are meant for, whatever the settings, and a seat starts in the mode its auto-pass default names.
+    //! Goal: the pace rules give the clock, the safe default and the priority test exactly to the decisions they are meant for, whatever the settings, and a seat starts in the mode its auto-pass default names, and a bot of every level answers every kind of decision, the rare ones included.
     use super::*;
     use mtg_core::ids::ObjectId;
     use mtg_engine::choose::TriggersChoice;
@@ -681,6 +700,65 @@ mod tests {
     /// The kinds that are asked before any turn exists, which never have a clock.
     fn opening_kinds() -> Vec<DecisionKind> {
         vec![mulligan(), bottoming(7, 1)]
+    }
+
+    /// One sample of every kind a seat can be asked, the rare ones included.
+    fn asked_kinds() -> Vec<DecisionKind> {
+        let mut all = think_kinds();
+        all.extend(opening_kinds());
+        all.extend([
+            priority(true),
+            priority(false),
+            blockers(),
+            targets(false),
+            targets(true),
+            order(3),
+            replacements(2),
+            question(),
+            options(3, false),
+            options(2, true),
+            modes(3, 1, 2, false, false),
+            number(0, Some(5), false),
+            number(1, None, true),
+            costs(2, false),
+            division(5, 2, false),
+            cards(4, 1, 2),
+            cards(3, 0, 3),
+            ordering(4),
+        ]);
+        all
+    }
+
+    /// The variant name of a decision kind or an answer, as its `Debug` starts.
+    fn variant(value: &impl std::fmt::Debug) -> String {
+        let shown = format!("{value:?}");
+        shown
+            .split(['(', ' ', '{'])
+            .next()
+            .unwrap_or_default()
+            .to_owned()
+    }
+
+    #[rstest]
+    fn a_bot_of_every_level_and_its_safe_answer_answer_every_kind(
+        #[values(
+            crate::bots::BotLevel::Easy,
+            crate::bots::BotLevel::Normal,
+            crate::bots::BotLevel::Hard
+        )]
+        level: crate::bots::BotLevel,
+        #[values(1, 2, 3)] seed: u64,
+    ) {
+        for kind in asked_kinds() {
+            let asked = decision(OTHER, kind);
+            let mut bot = crate::bots::BotBrain::new(seed, OTHER, level);
+            for answer in [bot.answer(&asked, None), crate::bots::safe_answer(&asked)] {
+                assert!(
+                    variant(&answer) == variant(&asked.kind) || answer == Answer::Undo,
+                    "{answer:?} does not answer {asked:?}"
+                );
+            }
+        }
     }
 
     fn targets(can_cancel: bool) -> DecisionKind {

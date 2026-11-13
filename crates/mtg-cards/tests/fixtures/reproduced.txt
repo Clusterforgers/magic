@@ -1408,6 +1408,7 @@ Pramikon, Sky Rampart
 Prava of the Steel Legion
 Predator Dragon
 Predator Ooze
+Premature Burial
 Prey Upon
 Preyseizer Dragon
 Price of Fame
@@ -1961,6 +1962,7 @@ Time Sieve
 Time Stretch
 Time Walk
 Time Warp
+Time to Reflect
 Timeless Lotus
 Timeless Witness
 Timin, Youthful Geist
@@ -2176,6 +2178,7 @@ Wurmwall Sweeper
 Wyll, Blade of Frontiers
 Wyrm's Crossing Patrol
 Yisan, the Wanderer Bard
+You Cannot Pass!
 Young Wolf
 Yurlok of Scorch Thrash
 Zanikev Locust

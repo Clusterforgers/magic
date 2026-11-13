@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e0457123-7ba1-44fa-8e0d-6f1f17534b29",
+  "name": "Ulamog's Despoiler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ulamog's Despoiler",
+      "oracle_fingerprint": "a0daa01bb39393947496810c95193681",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                {
+                  "Pay": {
+                    "cost": [
+                      {
+                        "ExiledToGraveyard": { "filter": [{ "OwnedBy": "Opponents" }], "count": 2 }
+                      }
+                    ],
+                    "paid": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 4 } }]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

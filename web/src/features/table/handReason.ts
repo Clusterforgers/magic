@@ -4,6 +4,7 @@
  * name, the timing, the land played and too little mana are read off public state.
  */
 import type { ManaCost, ObjectView, PriorityOptions, StateView, Unplayable } from '@/protocol/generated'
+import { sharesTurn } from '@/lib/teams'
 import type { CardNote, CardNotes } from './prompt/marks'
 import { manaValue } from './prompt/payment'
 import { whyLine } from './whyWords'
@@ -37,10 +38,14 @@ function offered(options: PriorityOptions): Set<number> {
   ])
 }
 
-/** Whether the viewer could act at sorcery speed now: their own main phase with an empty stack. */
+/** Whether the viewer could act at sorcery speed now: a main phase of their turn (their team's in Two-Headed Giant) with an empty stack. */
 export function sorceryWindow(view: StateView): boolean {
   const { turn, stack, viewer } = view
-  return turn.active === viewer && (turn.step === 'Main1' || turn.step === 'Main2') && stack.count === 0
+  return (
+    sharesTurn(view.house_rules?.teams, viewer, turn.active) &&
+    (turn.step === 'Main1' || turn.step === 'Main2') &&
+    stack.count === 0
+  )
 }
 
 /** The most mana the holder could have: the pool and one use of each permanent with a mana ability. */
