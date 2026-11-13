@@ -296,5 +296,63 @@
    }
   },
   "When ~ enters, you may search your hand and/or library for a card with a name noted as you drafted cards named ~. You may cast it without paying its mana cost. If you search your library this way, shuffle."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "End"
+     }
+    },
+    "if": {
+     "Compare": {
+      "left": {
+       "Tally": {
+        "event": "Regenerated",
+        "who": "EachPlayer",
+        "filter": [
+         "This"
+        ]
+       }
+      },
+      "op": "Ge",
+      "right": 1
+     }
+    },
+    "effects": [
+     {
+      "CreateToken": {
+       "token": {
+        "Custom": {
+         "name": "Starfish",
+         "colors": [
+          "Blue"
+         ],
+         "types": [
+          "Creature"
+         ],
+         "subtypes": [
+          "Starfish"
+         ],
+         "power": 0,
+         "toughness": 1
+        }
+       },
+       "count": {
+        "Tally": {
+         "event": "Regenerated",
+         "who": "EachPlayer",
+         "filter": [
+          "This"
+         ]
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of each end step, if ~ regenerated this turn, create a 0/1 blue Starfish creature token for each time it regenerated this turn."
  ]
 ]

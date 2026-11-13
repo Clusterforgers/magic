@@ -118,6 +118,7 @@ fn r4711_probe() {
 #[case("Arcane Savant")]
 #[case("Volatile Chimera")]
 #[case("Aether Searcher")]
+#[case("Spiny Starfish")]
 fn r4711_reads_back_whole(#[case] name: &str) {
     let report = r4711_report(name, &r4711_file(name));
     assert_eq!(
@@ -163,6 +164,16 @@ fn r4711_reads_back_whole(#[case] name: &str) {
 )]
 #[case::chimera_until_end_of_turn("Volatile Chimera", r#""Forever""#, r#""UntilEndOfTurn""#)]
 #[case::searcher_graveyard("Aether Searcher", r#""also": ["Hand"]"#, r#""also": ["Graveyard"]"#)]
+#[case::starfish_sacrificed(
+    "Spiny Starfish",
+    r#""event": "Regenerated""#,
+    r#""event": "Sacrificed""#
+)]
+#[case::starfish_its_controllers_end_step(
+    "Spiny Starfish",
+    r#"{ "step": "End" }"#,
+    r#"{ "step": "End", "whose": "You" }"#
+)]
 fn r4711_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let file = r4711_file(name);
     assert!(file.contains(from), "{name} has {from}");

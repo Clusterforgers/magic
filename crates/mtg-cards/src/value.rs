@@ -456,6 +456,9 @@ pub enum TallyEvent {
     /// A card was discarded (the card as it lies in the graveyard it went to, for the player who discarded it): "the first
     /// time each turn you discard one or more nonland cards".
     Discarded,
+    /// A permanent regenerated (CR 701.19), as it was then, for its controller: "if this creature regenerated this turn",
+    /// "for each time it regenerated this turn".
+    Regenerated,
 }
 
 /// Which result of the latest die roll an amount reads.
