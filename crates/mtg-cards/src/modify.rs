@@ -426,6 +426,10 @@ pub enum CombatQuirk {
     /// creature attacks, all creatures you control attack if able."): a declaration with them and without such a creature is
     /// refused.
     AttackWithAll,
+    /// Each of them attacks if able once any creature the selector picks attacks, judged for its controller ("If a
+    /// creature you control attacks, this creature also attacks if able."): a declaration with such a creature and
+    /// without one of them that can attack for nothing is refused.
+    AttackIfAnyAttacks(Selector),
     /// They can attack as though they did not have defender.
     AttackDespiteDefender,
     /// They can attack as though they had haste (CR 302.6): "Enchanted creature can attack as though it had haste."

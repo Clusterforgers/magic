@@ -147,6 +147,7 @@ const RUNS: &[&str] = &[
     "Cost.OwnManaValue",
     "Cost.RemoveCountersAmong",
     "Cost.Discard.Hand",
+    "Cost.RevealFromHand.Hand",
     "Cost.Sacrifice.All",
     "Cost.PayLife.Counted.Activated",
     "Cost.PayEnergy.Counted.Activated",
@@ -410,6 +411,7 @@ const RUNS: &[&str] = &[
     "Rule.MustBlock",
     "Rule.MustBlockAttacker",
     "Rule.Combat",
+    "Rule.Combat.AttackIfAnyAttacks",
     "Rule.IgnoreHexproof",
     "Rule.CantBeCountered",
     "Rule.CantBeRegenerated",
@@ -1028,6 +1030,8 @@ mod tests {
     #[case::paying_life("Cost.PayLife", true)]
     #[case::paying_a_counted_amount_of_life("Cost.PayLife.Counted", false)]
     #[case::r303c_discarding_the_hand_to_cast("Cost.Discard.Hand", true)]
+    #[case::r400_revealing_the_hand_to_cast("Cost.RevealFromHand.Hand", true)]
+    #[case::r400_following_another_attacker("Rule.Combat.AttackIfAnyAttacks", true)]
     #[case::r303c_sacrificing_all_of_a_kind_to_cast("Cost.Sacrifice.All", true)]
     #[case::once_a_turn("Ability.Limit", true)]
     #[case::other_activators("Ability.By", true)]

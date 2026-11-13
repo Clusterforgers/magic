@@ -207,6 +207,7 @@ mod r307c_events;
 mod r372_suspend;
 mod r375_events;
 mod r375_phase;
+mod r400_reads;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -574,6 +575,19 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     if kind == ClauseKind::Static
         && let Some(found) = r375_phase::r375_no_phase_in_read(text)
     {
+        return Some(found);
+    }
+    if kind == ClauseKind::Static
+        && let Some(found) = r400_reads::r400_static_read(text)
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Triggered
+        && let Some(found) = r400_reads::r400_triggered_read(text)
+    {
+        return Some(found);
+    }
+    if let Some(found) = r400_reads::r400_alt_cost_read(text) {
         return Some(found);
     }
     if let Some(found) =

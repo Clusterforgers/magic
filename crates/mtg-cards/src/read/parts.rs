@@ -335,6 +335,14 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
             },
             phrase::who(ctx, attacker)
         ),
+        GameRule::Combat {
+            who,
+            quirk: CombatQuirk::AttackIfAnyAttacks(among),
+        } => format!(
+            "if {} attacks, {} attack if able",
+            phrase::selector(ctx, among),
+            phrase::who(ctx, who)
+        ),
         GameRule::Combat { who, quirk } => combat_quirk(&phrase::who(ctx, who), quirk),
         GameRule::CantBeCountered(who) => format!("{} can't be countered", phrase::who(ctx, who)),
         GameRule::CantBeRegenerated(who) => {
@@ -693,6 +701,9 @@ fn combat_quirk(who: &str, quirk: &CombatQuirk) -> String {
         CombatQuirk::AttackAlone => format!("{who} can attack only alone"),
         CombatQuirk::AttackWithAll => {
             format!("if {who} attack, all creatures their controller controls attack if able")
+        }
+        CombatQuirk::AttackIfAnyAttacks(_) => {
+            format!("{who} attack if able once a chosen creature attacks")
         }
         CombatQuirk::AttackDespiteDefender => {
             format!("{who} can attack as though they didn't have defender")

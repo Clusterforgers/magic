@@ -151,6 +151,7 @@ mod r301_offering;
 #[cfg(test)]
 mod r301b_spend_facts;
 mod r304b_lost_priority;
+mod r400_attack_follow;
 pub mod replace;
 pub mod resolve;
 mod restart;

@@ -560,6 +560,7 @@ Eel Umbra
 Eiganjo Dynastorian // Replenish
 Eiganjo Free-Riders
 Eivor, Battle-Ready
+Ekundu Cyclops
 Elder Deep-Fiend
 Elder Owyn Lyons
 Eldrazi Conscription
@@ -1043,6 +1044,7 @@ Krosan Verge
 Kulrath Knight
 Kydele, Chosen of Kruphix
 Kyler, Sigardian Emissary
+Land Grant
 Landslide
 Lantern Flare
 Laquatus's Disdain
@@ -1116,6 +1118,7 @@ Mage Hunter
 Magical Hack
 Magistrate's Scepter
 Magmatic Insight
+Magnetic Web
 Magus of the Moon
 Make Disappear
 Makeshift Mauler

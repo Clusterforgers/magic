@@ -499,6 +499,11 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
         .map(|option| option.object)
         .collect();
     options
+        .joins
+        .extend(crate::r400_attack_follow::r400_follow_joins(
+            state, &offered, &free,
+        ));
+    options
 }
 
 /// What declaring `attackers` costs in mana (CR 508.1h): the taxes in force added up, each attacker for what it attacks.
