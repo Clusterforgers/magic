@@ -2,6 +2,8 @@
 //! seat's evaluation terms at the start of every main phase, labels them with the game's result, and fits the weights
 //! by coordinate descent on the squared error of a logistic of the evaluation. `cargo run --release -p mtg-testkit
 //! --example eval_tune -- [games] [level] [threads]`; prints the fitted [`Weights`] and the loss on held-out games.
+//! `DECKS=interaction` plays only the pairings with an interaction deck; `PODS=<n>` makes every n-th game a four-seat
+//! pod of random Commander decks.
 #![allow(
     clippy::unwrap_used,
     clippy::expect_used,
@@ -131,14 +133,23 @@ fn main() {
         _ => Level::Hard,
     };
     let threads: u64 = args.get(2).map_or(4, |a| a.parse().unwrap());
+    let firsts: Vec<Duel> = if std::env::var("DECKS").is_ok_and(|v| v == "interaction") {
+        Duel::INTERACTION.to_vec()
+    } else {
+        Duel::ALL.to_vec()
+    };
     let mut pairs: Vec<(Duel, Duel)> = Vec::new();
-    for a in Duel::ALL {
+    for a in firsts {
         for b in Duel::ALL {
             if !pairs.contains(&(b, a)) {
                 pairs.push((a, b));
             }
         }
     }
+    let pods: u64 = std::env::var("PODS")
+        .ok()
+        .and_then(|v| v.parse().ok())
+        .unwrap_or(0);
     let records: Arc<Mutex<Vec<Record>>> = Arc::new(Mutex::new(Vec::new()));
     let results: Mutex<Vec<(u64, Option<usize>)>> = Mutex::new(Vec::new());
     let next = AtomicU64::new(0);
@@ -152,8 +163,16 @@ fn main() {
                     }
                     let seed = 50_000 + game;
                     let (a, b) = pairs[usize::try_from(game).unwrap() % pairs.len()];
-                    let setup = duel_setup(&[a, b], seed, HouseRules::default()).unwrap();
-                    let mut brains: Vec<Box<dyn SeatBrain>> = (0..2)
+                    let pod = pods > 0 && game.is_multiple_of(pods);
+                    let (setup, seats) = if pod {
+                        (
+                            mtg_testkit::commander_cards::commander_fuzz_setup(4, seed).unwrap(),
+                            4,
+                        )
+                    } else {
+                        (duel_setup(&[a, b], seed, HouseRules::default()).unwrap(), 2)
+                    };
+                    let mut brains: Vec<Box<dyn SeatBrain>> = (0..seats)
                         .map(|seat| {
                             Box::new(Recorder {
                                 inner: brain(level, seed, PlayerId::from_index(seat), false),

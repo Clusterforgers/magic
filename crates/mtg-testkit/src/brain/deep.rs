@@ -41,10 +41,19 @@ pub struct Deep {
     /// The mean reward by which the tree's favourite must beat the heuristic answer (the first root answer) to replace
     /// it: rollouts are noisy, and the heuristic answer carries the policy's knowledge the rollouts lack.
     pub trust: f64,
+    /// The standard errors of the difference the favourite must also clear to replace the heuristic answer.
+    pub doubt: f64,
+    /// The mean reward added to `trust` where rollouts see least: spending interaction the heuristics keep, and attacks
+    /// at a table of more than two.
+    pub guard: f64,
+    /// Whether rollouts judge each seat's main-phase casts by trying them ([`Search::judged`]) rather than casting the
+    /// costliest.
+    pub judged: bool,
 }
 
 impl Deep {
-    /// A full budget: up to 600 iterations through the combat of the turn after next, about 2.5 s at most.
+    /// A full budget: up to 600 iterations through the combat of the turn after next, about 2.5 s for a decision of
+    /// ordinary importance; the search replaces the heuristic answer once its favourite is a standard error ahead.
     pub const FULL: Deep = Deep {
         iterations: 600,
         turns: 2,
@@ -53,7 +62,10 @@ impl Deep {
         forecasts: 40,
         targets: 4,
         time: Some(Duration::from_millis(2500)),
-        trust: 0.05,
+        trust: 0.0,
+        doubt: 1.0,
+        guard: 0.05,
+        judged: true,
     };
 
     /// A light budget for Hard: up to 150 iterations, about 0.6 s for a decision of ordinary importance.
@@ -69,6 +81,29 @@ impl Deep {
         self.time = None;
         self
     }
+}
+
+thread_local! {
+    /// Tree searches run on this thread and how many of them replaced the heuristic answer ([`tally`]).
+    static TALLY: std::cell::Cell<(u64, u64)> = const { std::cell::Cell::new((0, 0)) };
+}
+
+/// The tree searches run on this thread since the last [`reset_tally`] and how many replaced the heuristic answer.
+pub fn tally() -> (u64, u64) {
+    TALLY.with(std::cell::Cell::get)
+}
+
+/// Clears this thread's [`tally`].
+pub fn reset_tally() {
+    TALLY.with(|cell| cell.set((0, 0)));
+}
+
+/// Counts one tree search on this thread, `overrode` when it replaced the heuristic answer.
+pub(crate) fn count_search(overrode: bool) {
+    TALLY.with(|cell| {
+        let (searches, overrides) = cell.get();
+        cell.set((searches + 1, overrides + u64::from(overrode)));
+    });
 }
 
 /// The answers worth searching for `decision`, the seat's, pending in `engine`, the likeliest first; none when the
@@ -131,6 +166,48 @@ pub fn candidates(
         return Vec::new();
     }
     answers
+}
+
+/// The counterspells (one per name) an opponent of `seat` may cast at the priority `options` offer in `engine` while a
+/// spell of `seat`'s team is on top of the stack: the replies an opponent's node of the tree chooses between, against
+/// the seat.
+fn counter_replies(
+    engine: &Engine,
+    seat: PlayerId,
+    options: &mtg_engine::decision::PriorityOptions,
+) -> Vec<mtg_core::ids::ObjectId> {
+    let state = engine.state();
+    let Some(top) = state.stack().last() else {
+        return Vec::new();
+    };
+    let Some(player) = engine.decision().map(|d| d.player) else {
+        return Vec::new();
+    };
+    let seen = Seen::new(state, player);
+    if engine.announcing()
+        || seen
+            .controller(*top)
+            .is_none_or(|owner| !Seen::new(state, seat).is_teammate(owner))
+    {
+        return Vec::new();
+    }
+    let mut names: Vec<String> = Vec::new();
+    options
+        .castable
+        .iter()
+        .copied()
+        .filter(|id| {
+            seen.card(*id).is_some_and(|card| {
+                let fresh = !names.contains(&card.name);
+                if fresh && super::threat::traits(card).counter {
+                    names.push(card.name.clone());
+                    true
+                } else {
+                    false
+                }
+            })
+        })
+        .collect()
 }
 
 /// The cost (of `costs`, by root answer) of the root answer `path` starts with.
@@ -438,7 +515,7 @@ pub fn ismcts(
         let key = seed ^ u64::from(world_index).wrapping_mul(0x9E37_79B9_7F4A_7C15);
         let mut world = engine.clone();
         world.redeal(seat, key);
-        let mut rollout = Search::new(seat, settings, key);
+        let mut rollout = Search::new(seat, settings, key).judged(deep.judged);
         rollout.prime(&world);
         let start = Start {
             turn: world.state().turn().number(),
@@ -461,39 +538,60 @@ pub fn ismcts(
             }
             let mut answer = None;
             let own = decision.player == seat;
-            let opposing_blocks = !own
+            let opposing_reply = !own
                 && node.is_some()
-                && matches!(decision.kind, DecisionKind::DeclareBlockers(_))
-                && !Seen::new(world.state(), seat).is_teammate(decision.player);
-            if let Some(at) = node
-                && (own || opposing_blocks)
-            {
-                match owners.get(at).copied().flatten() {
-                    Some(owner) if owner != decision.player => node = None,
-                    Some(_) => {}
-                    None => {
-                        if let Some(slot) = owners.get_mut(at) {
-                            *slot = Some(decision.player);
-                        }
+                && !Seen::new(world.state(), seat).is_teammate(decision.player)
+                && match &decision.kind {
+                    DecisionKind::DeclareBlockers(_) => true,
+                    DecisionKind::Priority(options) => {
+                        !counter_replies(&world, seat, options).is_empty()
                     }
-                }
-            }
+                    _ => false,
+                };
             if let Some(at) = node
-                && (own || opposing_blocks)
+                && (own || opposing_reply)
             {
                 let offered = if step == 0 {
                     Vec::new()
                 } else if own {
                     candidates(&world, seat, &decision, &[], deep.forecasts, deep.targets)
-                } else if let DecisionKind::DeclareBlockers(options) = &decision.kind {
-                    combat::block_candidates(&world, decision.player, options, deep.forecasts)
+                } else {
+                    match &decision.kind {
+                        DecisionKind::DeclareBlockers(options) => combat::block_candidates(
+                            &world,
+                            decision.player,
+                            options,
+                            deep.forecasts,
+                        )
                         .into_iter()
                         .map(Answer::DeclareBlockers)
-                        .collect()
-                } else {
-                    Vec::new()
+                        .collect(),
+                        DecisionKind::Priority(options) => {
+                            let mut replies = vec![Answer::Priority(PriorityAction::Pass)];
+                            replies.extend(
+                                counter_replies(&world, seat, options)
+                                    .into_iter()
+                                    .map(|id| Answer::Priority(PriorityAction::CastSpell(id))),
+                            );
+                            replies
+                        }
+                        _ => Vec::new(),
+                    }
                 };
-                let available: Vec<usize> = if step == 0 {
+                // A node belongs to whoever first chose there; a choice of another seat passes it by (the rollout
+                // answers it) and the walk goes on at the owner's next choice.
+                let owner = owners.get(at).copied().flatten();
+                let mine = step == 0
+                    || (!offered.is_empty() && owner.is_none_or(|o| o == decision.player));
+                if mine
+                    && owner.is_none()
+                    && let Some(slot) = owners.get_mut(at)
+                {
+                    *slot = Some(decision.player);
+                }
+                let available: Vec<usize> = if !mine {
+                    Vec::new()
+                } else if step == 0 {
                     order.clone()
                 } else {
                     offered
@@ -564,12 +662,12 @@ pub fn ismcts(
             }
         }
     }
-    choose(&tree[0], deep.trust)
+    choose(&tree[0], deep.trust, deep.doubt)
 }
 
 /// The root answer to play: the most visited child, the earlier on a tie, unless the first (the heuristic answer) was
 /// tried and the favourite's mean reward does not beat it by `trust` plus one standard error of the difference.
-fn choose(root: &[Child], trust: f64) -> Option<Answer> {
+fn choose(root: &[Child], trust: f64, doubt: f64) -> Option<Answer> {
     let mut best: Option<&Child> = None;
     for child in root {
         if child.visits > 0 && best.is_none_or(|held| child.visits > held.visits) {
@@ -579,7 +677,7 @@ fn choose(root: &[Child], trust: f64) -> Option<Answer> {
     let prior = root.first().filter(|child| child.visits > 0);
     match (best, prior) {
         (Some(best), Some(prior))
-            if best.mean() < prior.mean() + trust + best.spread().hypot(prior.spread()) =>
+            if best.mean() < prior.mean() + trust + doubt * best.spread().hypot(prior.spread()) =>
         {
             Some(prior.answer.clone())
         }
@@ -625,8 +723,38 @@ mod tests {
     ) {
         let mut root = vec![child(20, prior * 20.0, 30), child(40, other * 40.0, 30)];
         root[1].answer = Answer::Priority(PriorityAction::BringCompanion);
-        let picked = choose(&root, 0.05).unwrap();
+        let picked = choose(&root, 0.05, 1.0).unwrap();
         assert_eq!(picked, root[chosen].answer);
+    }
+
+    #[rstest]
+    #[case::trusted_by_a_margin(0.05, 1.0, 0)]
+    #[case::one_standard_error(0.0, 1.0, 1)]
+    #[case::means_alone(0.0, 0.0, 1)]
+    fn the_search_overrides_by_its_calibrated_margin(
+        #[case] trust: f64,
+        #[case] doubt: f64,
+        #[case] chosen: usize,
+    ) {
+        // 0.56 against 0.5 with a standard error of the difference near 0.045.
+        let mut root = vec![child(40, 0.5 * 40.0, 80), child(60, 0.56 * 60.0, 80)];
+        for c in &mut root {
+            let mean = c.mean();
+            c.squares = f64::from(c.visits) * (mean * mean + 0.04);
+        }
+        root[1].answer = Answer::Priority(PriorityAction::BringCompanion);
+        assert_eq!(choose(&root, trust, doubt).unwrap(), root[chosen].answer);
+    }
+
+    #[test]
+    fn the_tally_counts_searches_and_overrides_per_thread() {
+        reset_tally();
+        count_search(false);
+        count_search(true);
+        count_search(true);
+        assert_eq!(tally(), (3, 2));
+        reset_tally();
+        assert_eq!(tally(), (0, 0));
     }
 
     #[rstest]
