@@ -39,6 +39,10 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
 /// abilities.
 #[allow(clippy::too_many_lines)]
 pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
+    let r406 = super::r406_actions::r406_pair_texts(first, second);
+    if !r406.is_empty() {
+        return r406;
+    }
     let escapes = super::r304b_writers::r304b_escapes_instead(first, second);
     if !escapes.is_empty() {
         return escapes;

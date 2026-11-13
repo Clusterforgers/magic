@@ -1,16 +1,27 @@
 {
   "oracle_id": "a75d5b54-5cc9-49c4-8e8c-3bef22d4c01c",
   "name": "Ashes of the Abhorrent",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ashes of the Abhorrent",
       "oracle_fingerprint": "5995a02c92b78af9a5714b536072c6e3",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 87 }
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": { "Cast": { "filter": [{ "In": "Graveyard" }] } }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": "EachPlayer", "action": { "Activate": [{ "In": "Graveyard" }] } }
+            }
           }
         },
         {

@@ -88,6 +88,7 @@ Artificial Evolution
 Artistic Refusal
 Arvad the Cursed
 Ash Barrens
+Ashes of the Abhorrent
 Assassin's Trophy
 Assemble the Entmoot
 Atlantean Skirmisher
@@ -1055,6 +1056,7 @@ Lavacore Elemental
 Lawmage's Binding
 Lay Bare the Heart
 Lazotep Reaver
+Leader, Super-Genius
 Leafkin Druid
 Legion Loyalty
 Legolas Greenleaf
@@ -1855,6 +1857,7 @@ Tectonic Reformation
 Teferi's Ageless Insight
 Teferi's Imp
 Teferi's Protection
+Tekuthal, Inquiry Dominus
 Telepathy
 Tempestra, Dame of Games
 Temple Altisaur
@@ -1953,6 +1956,7 @@ Tivit, Seller of Secrets
 Toll of the Invasion
 Tomb Tyrant
 Topiary Lecturer
+Topography Tracker
 Torrent of Stone
 Torrential Gearhulk
 Totentanz, Swarm Piper

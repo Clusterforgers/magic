@@ -5432,6 +5432,8 @@ impl Walker<'_> {
             | ReplaceWhen::Destroyed { what }
             | ReplaceWhen::Countered { what }
             | ReplaceWhen::TurnedFaceUp { what }
+            | ReplaceWhen::Explores { what }
+            | ReplaceWhen::Connives { what }
             | ReplaceWhen::Enters { what } => {
                 self.at("what", |w| w.selector(what));
             }
@@ -5452,6 +5454,7 @@ impl Walker<'_> {
             ReplaceWhen::LifeGain { who }
             | ReplaceWhen::LoseGame { who }
             | ReplaceWhen::Mill { who }
+            | ReplaceWhen::Proliferates { who }
             | ReplaceWhen::Draw { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
@@ -5465,6 +5468,7 @@ impl Walker<'_> {
         {
             self.problem("a loss of the game is replaced only by steps that happen instead");
         }
+        crate::r406_actions::r406_check(when, by, |problem| self.problem(problem));
     }
 
     /// What happens instead reads the event it replaces as a trigger reads its event: `Triggering` is the player or object

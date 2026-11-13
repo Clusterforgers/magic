@@ -29,11 +29,14 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .into_iter()
         .filter(|player| state.is_alive(*player))
         .collect();
+    if let Some(run) = super::r406_actions::r406_proliferated(cx, &players)? {
+        return Ok(run);
+    }
     Stop::settle(proliferations(cx, &players).map(Run::events))
 }
 
 /// The proliferation of each player, asking in turn.
-fn proliferations(cx: &Cx<'_>, players: &[PlayerId]) -> Result<Vec<Event>, Stop> {
+pub(super) fn proliferations(cx: &Cx<'_>, players: &[PlayerId]) -> Result<Vec<Event>, Stop> {
     let state = cx.state();
     let mut questions = Questions::new(cx);
     let mut events = Vec::new();

@@ -907,6 +907,25 @@ pub enum ReplaceWhen {
         /// The permanent that would enter.
         what: Selector,
     },
+    /// A creature matching the selector would explore (CR 701.44); only `Instead`, whose `Explore` of `Triggering` is
+    /// the replaced exploration ("instead it explores, then it explores again").
+    Explores {
+        /// The creature that would explore.
+        what: Selector,
+    },
+    /// A creature matching the selector would connive (CR 701.50); only `Instead`, whose `Connive` of `Triggering` is
+    /// the replaced connive ("instead you draw a card, then that creature connives").
+    Connives {
+        /// The creature that would connive.
+        what: Selector,
+    },
+    /// A player would proliferate (CR 701.34); only `Instead`, whose `Proliferate` of that player is the replaced
+    /// proliferation ("proliferate twice instead").
+    Proliferates {
+        /// Who would proliferate.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
 }
 
 /// What a permanent's controller chooses as it enters the battlefield.

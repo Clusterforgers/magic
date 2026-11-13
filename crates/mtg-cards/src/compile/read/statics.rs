@@ -1447,6 +1447,12 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             condition: None,
             from: ZoneKind::Battlefield,
         } if replacements::handles(when) => replacements::sentences(when, by),
+        Ability::Replacement {
+            when,
+            by,
+            condition: None,
+            from: ZoneKind::Battlefield,
+        } if crate::r406_actions::r406_is_action(when) => super::r406_actions::r406_texts(when, by),
         Ability::Static { defining: true, .. } => defining::sentences(ability),
         _ => Vec::new(),
     };

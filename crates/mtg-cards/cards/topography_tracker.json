@@ -1,7 +1,7 @@
 {
   "oracle_id": "0171861e-98d5-4e58-834f-899d8ad7acea",
   "name": "Topography Tracker",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Topography Tracker",
@@ -14,9 +14,14 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 171, "end": 256 }
+          "Replacement": {
+            "when": { "Explores": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "by": {
+              "Instead": [
+                { "Explore": { "what": "Triggering" } },
+                { "Explore": { "what": "Triggering" } }
+              ]
+            }
           }
         }
       ]
