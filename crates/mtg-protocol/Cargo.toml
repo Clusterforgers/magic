@@ -10,6 +10,7 @@ publish.workspace = true
 mtg-cards = { workspace = true, features = ["ts"] }
 mtg-core = { workspace = true, features = ["ts"] }
 mtg-engine = { workspace = true, features = ["ts"] }
+mtg-campaign = { workspace = true, features = ["ts"] }
 serde.workspace = true
 thiserror.workspace = true
 ts-rs.workspace = true

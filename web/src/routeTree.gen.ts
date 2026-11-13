@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AccountsRouteImport } from './routes/accounts'
 import { Route as DecksRouteImport } from './routes/decks'
+import { Route as DelvesRouteImport } from './routes/delves'
 import { Route as GamesRouteImport } from './routes/games'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as LoginRouteImport } from './routes/login'
@@ -24,6 +25,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as TournamentsRouteImport } from './routes/tournaments'
 import { Route as DecksDeckIdRouteImport } from './routes/decks_.$deckId'
 import { Route as DecksUnvalidatedRouteImport } from './routes/decks_.unvalidated'
+import { Route as DelvesDelveIdRouteImport } from './routes/delves_.$delveId'
 import { Route as DevAccountsRouteImport } from './routes/dev.accounts'
 import { Route as DevBuilderRouteImport } from './routes/dev.builder'
 import { Route as DevLobbyRouteImport } from './routes/dev.lobby'
@@ -54,6 +56,11 @@ const AccountsRoute = AccountsRouteImport.update({
 const DecksRoute = DecksRouteImport.update({
   id: '/decks',
   path: '/decks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DelvesRoute = DelvesRouteImport.update({
+  id: '/delves',
+  path: '/delves',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GamesRoute = GamesRouteImport.update({
@@ -114,6 +121,11 @@ const DecksDeckIdRoute = DecksDeckIdRouteImport.update({
 const DecksUnvalidatedRoute = DecksUnvalidatedRouteImport.update({
   id: '/decks_/unvalidated',
   path: '/decks/unvalidated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DelvesDelveIdRoute = DelvesDelveIdRouteImport.update({
+  id: '/delves_/$delveId',
+  path: '/delves/$delveId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DevAccountsRoute = DevAccountsRouteImport.update({
@@ -201,6 +213,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
   '/decks': typeof DecksRoute
+  '/delves': typeof DelvesRoute
   '/games': typeof GamesRoute
   '/learn': typeof LearnRoute
   '/login': typeof LoginRoute
@@ -213,6 +226,7 @@ export interface FileRoutesByFullPath {
   '/tournaments': typeof TournamentsRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
   '/decks/unvalidated': typeof DecksUnvalidatedRoute
+  '/delves/$delveId': typeof DelvesDelveIdRoute
   '/dev/accounts': typeof DevAccountsRoute
   '/dev/builder': typeof DevBuilderRoute
   '/dev/lobby': typeof DevLobbyRoute
@@ -234,6 +248,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
   '/decks': typeof DecksRoute
+  '/delves': typeof DelvesRoute
   '/games': typeof GamesRoute
   '/learn': typeof LearnRoute
   '/login': typeof LoginRoute
@@ -246,6 +261,7 @@ export interface FileRoutesByTo {
   '/tournaments': typeof TournamentsRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
   '/decks/unvalidated': typeof DecksUnvalidatedRoute
+  '/delves/$delveId': typeof DelvesDelveIdRoute
   '/dev/accounts': typeof DevAccountsRoute
   '/dev/builder': typeof DevBuilderRoute
   '/dev/lobby': typeof DevLobbyRoute
@@ -268,6 +284,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
   '/decks': typeof DecksRoute
+  '/delves': typeof DelvesRoute
   '/games': typeof GamesRoute
   '/learn': typeof LearnRoute
   '/login': typeof LoginRoute
@@ -280,6 +297,7 @@ export interface FileRoutesById {
   '/tournaments': typeof TournamentsRoute
   '/decks_/$deckId': typeof DecksDeckIdRoute
   '/decks_/unvalidated': typeof DecksUnvalidatedRoute
+  '/delves_/$delveId': typeof DelvesDelveIdRoute
   '/dev/accounts': typeof DevAccountsRoute
   '/dev/builder': typeof DevBuilderRoute
   '/dev/lobby': typeof DevLobbyRoute
@@ -303,6 +321,7 @@ export interface FileRouteTypes {
     | '/'
     | '/accounts'
     | '/decks'
+    | '/delves'
     | '/games'
     | '/learn'
     | '/login'
@@ -315,6 +334,7 @@ export interface FileRouteTypes {
     | '/tournaments'
     | '/decks/$deckId'
     | '/decks/unvalidated'
+    | '/delves/$delveId'
     | '/dev/accounts'
     | '/dev/builder'
     | '/dev/lobby'
@@ -336,6 +356,7 @@ export interface FileRouteTypes {
     | '/'
     | '/accounts'
     | '/decks'
+    | '/delves'
     | '/games'
     | '/learn'
     | '/login'
@@ -348,6 +369,7 @@ export interface FileRouteTypes {
     | '/tournaments'
     | '/decks/$deckId'
     | '/decks/unvalidated'
+    | '/delves/$delveId'
     | '/dev/accounts'
     | '/dev/builder'
     | '/dev/lobby'
@@ -369,6 +391,7 @@ export interface FileRouteTypes {
     | '/'
     | '/accounts'
     | '/decks'
+    | '/delves'
     | '/games'
     | '/learn'
     | '/login'
@@ -381,6 +404,7 @@ export interface FileRouteTypes {
     | '/tournaments'
     | '/decks_/$deckId'
     | '/decks_/unvalidated'
+    | '/delves_/$delveId'
     | '/dev/accounts'
     | '/dev/builder'
     | '/dev/lobby'
@@ -403,6 +427,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountsRoute: typeof AccountsRoute
   DecksRoute: typeof DecksRoute
+  DelvesRoute: typeof DelvesRoute
   GamesRoute: typeof GamesRoute
   LearnRoute: typeof LearnRoute
   LoginRoute: typeof LoginRoute
@@ -415,6 +440,7 @@ export interface RootRouteChildren {
   TournamentsRoute: typeof TournamentsRoute
   DecksDeckIdRoute: typeof DecksDeckIdRoute
   DecksUnvalidatedRoute: typeof DecksUnvalidatedRoute
+  DelvesDelveIdRoute: typeof DelvesDelveIdRoute
   DevAccountsRoute: typeof DevAccountsRoute
   DevBuilderRoute: typeof DevBuilderRoute
   DevLobbyRoute: typeof DevLobbyRoute
@@ -454,6 +480,13 @@ declare module '@tanstack/react-router' {
       path: '/decks'
       fullPath: '/decks'
       preLoaderRoute: typeof DecksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/delves': {
+      id: '/delves'
+      path: '/delves'
+      fullPath: '/delves'
+      preLoaderRoute: typeof DelvesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/games': {
@@ -538,6 +571,13 @@ declare module '@tanstack/react-router' {
       path: '/decks/unvalidated'
       fullPath: '/decks/unvalidated'
       preLoaderRoute: typeof DecksUnvalidatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/delves_/$delveId': {
+      id: '/delves_/$delveId'
+      path: '/delves/$delveId'
+      fullPath: '/delves/$delveId'
+      preLoaderRoute: typeof DelvesDelveIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dev/accounts': {
@@ -659,6 +699,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountsRoute: AccountsRoute,
   DecksRoute: DecksRoute,
+  DelvesRoute: DelvesRoute,
   GamesRoute: GamesRoute,
   LearnRoute: LearnRoute,
   LoginRoute: LoginRoute,
@@ -671,6 +712,7 @@ const rootRouteChildren: RootRouteChildren = {
   TournamentsRoute: TournamentsRoute,
   DecksDeckIdRoute: DecksDeckIdRoute,
   DecksUnvalidatedRoute: DecksUnvalidatedRoute,
+  DelvesDelveIdRoute: DelvesDelveIdRoute,
   DevAccountsRoute: DevAccountsRoute,
   DevBuilderRoute: DevBuilderRoute,
   DevLobbyRoute: DevLobbyRoute,

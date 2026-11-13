@@ -277,7 +277,8 @@ pub(crate) fn reads_of_selector(selector: &Selector) -> Traits {
 fn reads_of_pred(pred: &Pred) -> Traits {
     match pred {
         Pred::Supertype(_) => Traits::SUPERTYPES,
-        Pred::This
+        Pred::Drafted(_)
+        | Pred::This
         | Pred::Other
         | Pred::Token
         | Pred::Commander
@@ -428,6 +429,7 @@ fn reads_of_stat(stat: StatKind) -> Traits {
 }
 
 /// What an amount reads when it is worked out.
+#[allow(clippy::too_many_lines)] // one arm for each kind of amount
 pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
     match amount {
         Amount::Fixed(_)
@@ -466,7 +468,8 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::CastTargetsOf(_)
         | Amount::Chosen
         | Amount::ChosenAs(_)
-        | Amount::Triggering => Traits::NONE,
+        | Amount::Triggering
+        | Amount::Drafted(_) => Traits::NONE,
         Amount::Count(selector) => reads_of_selector(selector),
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),
         Amount::Life(who)
@@ -553,7 +556,8 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
             .or(reads_of_amount(right)),
         Condition::YourTurn => Traits::CONTROL,
         Condition::NewlyControlled(what) => reads_of_ref(what).or(Traits::CONTROL),
-        Condition::Kicked
+        Condition::Drafted(_)
+        | Condition::Kicked
         | Condition::KickedWith(_)
         | Condition::AdditionalCostPaid
         | Condition::CastWith(_)

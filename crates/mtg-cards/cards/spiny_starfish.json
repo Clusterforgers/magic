@@ -1,7 +1,7 @@
 {
   "oracle_id": "663d6c61-e269-4f2f-9d8f-49c4c23f05d8",
   "name": "Spiny Starfish",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Spiny Starfish",
@@ -9,9 +9,36 @@
       "abilities": [
         { "Activated": { "cost": "{U}", "effects": [{ "Regenerate": { "what": "This" } }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 31, "end": 187 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": { "event": "Regenerated", "who": "EachPlayer", "filter": ["This"] }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Starfish",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Starfish"],
+                      "power": 0,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "Tally": { "event": "Regenerated", "who": "EachPlayer", "filter": ["This"] }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

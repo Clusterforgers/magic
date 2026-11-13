@@ -51,6 +51,7 @@ const RUNS: &[&str] = &[
     "Trigger.DamagePrevented",
     "Trigger.LifeLost",
     "Trigger.Drew",
+    "Trigger.FirstDrawRevealed",
     "Trigger.Discarded",
     "Trigger.Tapped",
     "Trigger.TappedNotAttacking",
@@ -383,6 +384,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Mill",
     "ReplaceBy.UnderChosenOpponent",
     "ReplaceBy.AddAmount",
+    "ReplaceBy.MayAddAmount",
     "ReplaceBy.PreventAmount",
     "ReplaceBy.PreventAtMost",
     "Effect.CreateToken",
@@ -466,6 +468,7 @@ const RUNS: &[&str] = &[
     "Rule.ExileFound",
     "Rule.NoMaxHandSize",
     "Rule.LoyaltyTwice",
+    "Rule.RevealFirstDraw",
     "Rule.MaxHandSize",
     "Rule.HandSizeChange",
     "Rule.NoLegendRule",
@@ -761,6 +764,7 @@ const RUNS: &[&str] = &[
     "Amount.TalliedLastTurn",
     "Amount.Party",
     "Amount.Tally",
+    "Amount.Drafted",
     "Amount.CommanderColors",
     "Amount.Remembered",
     "Amount.DamageDealtByTo",
@@ -803,6 +807,8 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.Explores",
     "ReplaceWhen.Connives",
     "ReplaceWhen.Proliferates",
+    "ReplaceWhen.Scries",
+    "ReplaceWhen.Surveils",
     "ReplaceBy.Multiply",
     "ReplaceBy.Add",
     "ReplaceBy.Half",
@@ -965,6 +971,7 @@ const RUNS: &[&str] = &[
     "Keyword.Cleave",
     "ReplaceWhen.Destroyed",
     "ReplaceBy.UmbraArmor",
+    "ReplaceBy.Regenerate",
     "Condition.NewlyControlled",
     "Condition.Level",
     "Condition.Searched",
@@ -974,6 +981,7 @@ const RUNS: &[&str] = &[
     "Condition.InCombat",
     "Condition.FirstCombat",
     "Condition.FirstStep",
+    "Condition.Drafted",
     "Condition.AttackedThisCombat",
     "Condition.SorceryTiming",
     "Condition.AfterCombat",
@@ -988,6 +996,7 @@ const RUNS: &[&str] = &[
     "Pred.RingBearer",
     "Pred.HasAdventure",
     "Pred.HasAbility",
+    "Pred.Drafted",
     "Pred.FaceDown",
     "Pred.TargetsPlayer",
     "Pred.SpentFrom",
@@ -1143,6 +1152,9 @@ mod tests {
     #[case::r406_replacing_an_exploration("ReplaceWhen.Explores", true)]
     #[case::r406_replacing_a_connive("ReplaceWhen.Connives", true)]
     #[case::r406_replacing_a_proliferation("ReplaceWhen.Proliferates", true)]
+    #[case::r4708_replacing_a_scry("ReplaceWhen.Scries", true)]
+    #[case::r4708_replacing_a_surveil("ReplaceWhen.Surveils", true)]
+    #[case::r4708_more_cards_to_surveil("ReplaceBy.MayAddAmount", true)]
     #[case::replacing_mills("ReplaceWhen.Mill", true)]
     #[case::replacing_draws("ReplaceWhen.Draw", true)]
     #[case::replacing_entering("ReplaceWhen.Enters", true)]
@@ -1490,6 +1502,8 @@ mod tests {
     #[case::life_gain_triggers("Trigger.LifeGained", true)]
     #[case::life_loss_triggers("Trigger.LifeLost", true)]
     #[case::draw_triggers("Trigger.Drew", true)]
+    #[case::r4708_first_draws_revealed("Trigger.FirstDrawRevealed", true)]
+    #[case::r4708_reveals_of_first_draws("Rule.RevealFirstDraw", true)]
     #[case::discard_triggers("Trigger.Discarded", true)]
     #[case::tap_triggers("Trigger.Tapped", true)]
     #[case::untap_triggers("Trigger.Untapped", true)]

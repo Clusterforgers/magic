@@ -154,11 +154,23 @@ struct Modifier {
     ability: Arc<Ability>,
 }
 
-/// The cost modifiers that may apply to `spell`, cast by `caster`: its own, and those of the permanents of the
-/// players still in the game.
+/// The cost modifiers that may apply to `spell`, cast by `caster`: its own, and those of the permanents and emblems of
+/// the players still in the game.
 fn gathered(state: &GameState, spell: ObjectId, caster: PlayerId) -> Vec<Modifier> {
     let mut found = Vec::new();
-    for id in std::iter::once(spell).chain(state.zone(Zone::Battlefield).iter().copied()) {
+    let emblems = state
+        .players()
+        .iter()
+        .flat_map(|player| state.zone(Zone::Command(player.id())).iter().copied())
+        .filter(|id| {
+            state
+                .object(*id)
+                .is_some_and(|object| object.kind() == ObjectKind::Emblem)
+        });
+    for id in std::iter::once(spell)
+        .chain(state.zone(Zone::Battlefield).iter().copied())
+        .chain(emblems)
+    {
         let Some(object) = state
             .object(id)
             .filter(|object| object.kind() != ObjectKind::Ability)

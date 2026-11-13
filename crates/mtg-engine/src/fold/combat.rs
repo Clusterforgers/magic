@@ -409,6 +409,13 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             }
         }
         Event::Regenerated { object } => {
+            if let Some(controller) = crate::characteristics::controller_of(state, *object) {
+                state.log_event(
+                    mtg_cards::value::TallyEvent::Regenerated,
+                    controller,
+                    *object,
+                );
+            }
             remove_damage(state, *object)?.tapped = true;
             state.combat.remove_object(*object);
         }

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "dddda9a2-dc59-446d-bfc4-3240d12a3654",
+  "name": "Primitive Etchings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primitive Etchings",
+      "oracle_fingerprint": "0a7bb89affb08600e58fae46a64e8449",
+      "abilities": [
+        { "Rule": { "rule": { "RevealFirstDraw": {} } } },
+        {
+          "Triggered": {
+            "when": { "FirstDrawRevealed": { "what": [{ "Type": "Creature" }] } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

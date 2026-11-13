@@ -16,6 +16,7 @@ mtg-import = { path = "crates/mtg-import" }
 mtg-db = { path = "crates/mtg-db" }
 mtg-protocol = { path = "crates/mtg-protocol" }
 mtg-testkit = { path = "crates/mtg-testkit" }
+mtg-campaign = { path = "crates/mtg-campaign" }
 
 serde = { version = "1", features = ["derive", "rc"] }
 thiserror = "2"

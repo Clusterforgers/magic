@@ -1,7 +1,7 @@
 {
   "oracle_id": "f10898a5-87ec-4a30-a383-9f9bcba3e4d0",
   "name": "Cogwork Grinder",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Cogwork Grinder",
@@ -10,9 +10,9 @@
         { "Rule": { "rule": { "Draft": "FaceUp" } } },
         { "Rule": { "rule": { "Draft": { "RemoveDrafted": { "face_up": false } } } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 130, "end": 271 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": { "Drafted": "CardsRemoved" } } }
           }
         }
       ]

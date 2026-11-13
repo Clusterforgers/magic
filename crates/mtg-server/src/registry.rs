@@ -124,6 +124,8 @@ pub struct GameOptions {
     /// The account each held seat is bound to, by seat, for a game the server makes for its players
     /// (a tournament match); empty binds only the creator to seat 0.
     pub accounts: Vec<Option<UserId>>,
+    /// The Delves fight a game made with [`Registry::create_decked`] is: laid over its decks and kept in its recipe.
+    pub campaign: Option<mtg_campaign::FightPlan>,
 }
 
 /// A new game and the secret credential of each seat that is held.
@@ -525,6 +527,7 @@ impl Registry {
             reads,
             conjured: crate::recipe::fingerprints_of(&conjured).map_err(RecipeError::from)?,
             bots: options.bots.clone(),
+            campaign: options.campaign.clone(),
         };
         let libraries = held.iter().map(|deck| deck.cards().to_vec()).collect();
         let commanders = held.iter().map(|deck| deck.commanders().to_vec()).collect();
@@ -543,6 +546,9 @@ impl Registry {
             .with_conjurable(conjured);
         // Legality only warns (`docs/deck-check.md`), so the engine does not judge the decks.
         setup.validate_decks = false;
+        if let Some(plan) = &options.campaign {
+            setup = crate::delves::fight_setup(plan, setup).map_err(RecipeError::from)?;
+        }
         // Refused like a recipe that does not build: too few seats, a command zone in a Normal game.
         setup.validate().map_err(RecipeError::from)?;
         let (bots, seed) = (options.bots.clone(), recipe.seed);
@@ -685,6 +691,7 @@ impl Registry {
             SeatDecks::new(format, setup.seed, defaults)
                 .with_house_rules(house_rules.clone())
                 .with_bots(options.bots.clone())
+                .with_campaign(recipe.as_ref().and_then(|recipe| recipe.campaign.clone()))
         });
         let handle = self
             .start(

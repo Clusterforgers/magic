@@ -626,6 +626,14 @@ impl PlayerView {
             ring_bearer: state.ring_bearer(seat),
             enchanted_by: state.attachments_of_player(seat),
             effects: mtg_engine::rules::player_effects(state, seat),
+            spirit: player.is_spirit(),
+            boss: match player.phases() {
+                (0, _) => None,
+                (_, begun) => Some(crate::view::BossView {
+                    phases: player.phase_names().map(str::to_owned).collect(),
+                    begun: u32::try_from(begun).unwrap_or(u32::MAX),
+                }),
+            },
             mulligans: player.mulligans(),
             mulligan: player.mulligan_status(),
             hand: zone_view(state, viewer, Zone::Hand(seat)),

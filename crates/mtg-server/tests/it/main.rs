@@ -54,6 +54,7 @@ mod pg_conjure;
 mod pg_deck_groups;
 mod pg_deck_import_printings;
 mod pg_decks;
+mod pg_delves;
 mod pg_failed_games;
 mod pg_favourites;
 mod pg_ffa_games;

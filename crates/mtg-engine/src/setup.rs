@@ -98,6 +98,14 @@ pub struct PlayerSetup {
     /// The seat's sticker sheets (CR 123): outside the game; it plays with three of them, chosen at random as the game
     /// begins.
     pub stickers: Vec<Arc<CardDefinition>>,
+    /// Emblems the seat starts with in its command zone (CR 114), each made with
+    /// [`emblem_definition`](crate::w6b_emblems::emblem_definition).
+    pub emblems: Vec<Arc<CardDefinition>>,
+    /// The emblem the seat gets when it becomes a Spirit; with one, the seat at 0 life stays in the game as a Spirit
+    /// while a teammate lives ([`crate::spirits`]).
+    pub spirit: Option<Arc<CardDefinition>>,
+    /// A boss seat's phases, in the order they begin ([`crate::phases`]).
+    pub phases: Vec<crate::phases::BossPhase>,
 }
 
 /// Where the game starts.
@@ -195,6 +203,33 @@ impl GameSetup {
     pub fn with_stickers(mut self, sheets: Vec<Vec<Arc<CardDefinition>>>) -> Self {
         for (player, sheets) in self.players.iter_mut().zip(sheets) {
             player.stickers = sheets;
+        }
+        self
+    }
+
+    /// The setup with these starting emblems, one list for each seat in table order.
+    #[must_use]
+    pub fn with_emblems(mut self, emblems: Vec<Vec<Arc<CardDefinition>>>) -> Self {
+        for (player, cards) in self.players.iter_mut().zip(emblems) {
+            player.emblems = cards;
+        }
+        self
+    }
+
+    /// The setup with these Spirit emblems, one entry for each seat in table order.
+    #[must_use]
+    pub fn with_spirits(mut self, spirits: Vec<Option<Arc<CardDefinition>>>) -> Self {
+        for (player, card) in self.players.iter_mut().zip(spirits) {
+            player.spirit = card;
+        }
+        self
+    }
+
+    /// The setup with these boss phases, one list for each seat in table order.
+    #[must_use]
+    pub fn with_phases(mut self, phases: Vec<Vec<crate::phases::BossPhase>>) -> Self {
+        for (player, list) in self.players.iter_mut().zip(phases) {
+            player.phases = list;
         }
         self
     }
@@ -385,6 +420,8 @@ fn starting_player(
         status,
         setup.keywords.clone(),
     );
+    player.spirit_form.clone_from(&setup.spirit);
+    player.phases.clone_from(&setup.phases);
     for (kind, count) in &setup.counters {
         if *count > 0 {
             *player.counters.entry(kind.clone()).or_default() += count;
@@ -416,6 +453,7 @@ impl GameState {
         let mut un33 = crate::un33_attractions::Attractions::default();
         let mut un34 = crate::un34_stickers::Stickers::default();
         let mut placed: BTreeMap<(usize, usize), ObjectId> = BTreeMap::new();
+        let mut emblems = Vec::new();
         for (seat, setup_player) in setup.players.iter().enumerate() {
             let owner = PlayerId::from_index(seat);
             for card in setup_player.library.iter().rev() {
@@ -439,6 +477,9 @@ impl GameState {
             for attraction in setup_player.attractions.iter().rev() {
                 let id = create(owner, &attraction.card, Zone::Command(owner));
                 un33.add(owner, id, attraction.lights);
+            }
+            for card in &setup_player.emblems {
+                emblems.push(create(owner, card, Zone::Command(owner)));
             }
             un34.bring(owner, setup_player.stickers.clone());
             let status = match setup.start {
@@ -464,6 +505,11 @@ impl GameState {
                     stage,
                 );
                 next_id += 1;
+            }
+        }
+        for id in &emblems {
+            if let Some(object) = objects.get_mut(id) {
+                object.kind = crate::object::ObjectKind::Emblem;
             }
         }
         // The cards of the Attraction decks lie face down (CR 717.2).

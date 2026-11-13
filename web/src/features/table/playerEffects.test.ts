@@ -1,8 +1,8 @@
-// Goal: every effect the server can name on a player has a short label, a sentence that names the player and a tone, each once per seat; the emblems of a seat's command zone come first and say their rules; and the effects' group name lists the labels.
+// Goal: a campaign seat says whether it is a Spirit and which boss phase it is in; every effect the server can name on a player has a short label, a sentence that names the player and a tone, each once per seat; the emblems of a seat's command zone come first and say their rules; and the effects' group name lists the labels.
 import { describe, expect, it } from 'vitest'
 import type { ObjectView, PlayerEffect, PlayerView } from '@/protocol/generated'
 import { card } from '@/test-utils/cards'
-import { effectFacts, effectsName, emblemFacts, seatEffects } from './playerEffects'
+import { campaignFacts, effectFacts, effectsName, emblemFacts, seatEffects } from './playerEffects'
 
 const EVERY: PlayerEffect[] = [
   'CantLose',
@@ -81,5 +81,22 @@ describe('emblemFacts and seatEffects', () => {
 
   it('has nothing for a seat without effects', () => {
     expect(seatEffects(player({}), objects, 'Bo')).toEqual([])
+  })
+})
+
+describe('campaignFacts', () => {
+  it.each([
+    [0, 'Phase 1 of 3', 'next comes Rage'],
+    [1, 'Phase 2 of 3', 'next comes Storm'],
+    [2, 'Phase 3 of 3', 'last phase'],
+  ])('a boss with %i phases begun is in its next phase', (begun, label, detail) => {
+    const [fact] = campaignFacts(player({ boss: { phases: ['Rage', 'Storm'], begun } }), 'Grimgut')
+    expect(fact?.label).toBe(label)
+    expect(fact?.detail).toContain(detail)
+  })
+
+  it('a Spirit says so, and an ordinary seat has no campaign facts', () => {
+    expect(campaignFacts(player({ spirit: true }), 'Bo').map((f) => f.label)).toEqual(['Spirit'])
+    expect(campaignFacts(player({}), 'Bo')).toEqual([])
   })
 })
