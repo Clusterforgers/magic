@@ -976,6 +976,11 @@ pub enum Effect {
         /// What becomes prepared.
         what: Ref,
     },
+    /// Makes prepared permanents unprepared ("It becomes unprepared."): one that is not prepared is passed over.
+    Unprepare {
+        /// What becomes unprepared.
+        what: Ref,
+    },
     /// Suspects creatures on the battlefield (CR 701.60): while one is suspected, it has menace and can't block. One that
     /// is suspected already, is no creature or is not on the battlefield is passed over.
     Suspect {

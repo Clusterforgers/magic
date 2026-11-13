@@ -1,0 +1,29 @@
+{
+  "oracle_id": "871c4b27-990a-4947-b962-8a6d0bfd85ad",
+  "name": "Unblinking Observer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unblinking Observer",
+      "oracle_fingerprint": "fd8d651d2e63563c5f1e51ff85669f62",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Blue"] },
+                  "only": [
+                    { "Spell": { "facts": ["Disturb"] } },
+                    { "Spell": { "types": ["Instant", "Sorcery"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

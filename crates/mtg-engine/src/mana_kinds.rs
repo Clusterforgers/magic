@@ -196,6 +196,13 @@ fn collect(
 }
 
 /// Adds to `found` the types the permanent `id` could produce.
+/// The types of mana the permanent `id` could produce with its mana abilities, costs and restrictions ignored (CR 106.7).
+pub(crate) fn could_produce(state: &GameState, id: ObjectId) -> Vec<ManaType> {
+    let mut found = Vec::new();
+    types_of(state, id, &mut Vec::new(), &mut found);
+    found
+}
+
 fn types_of(
     state: &GameState,
     id: ObjectId,

@@ -1,7 +1,7 @@
 {
   "oracle_id": "cb5aa38e-6a76-4c0c-be14-3c546acd353d",
   "name": "Vizier of the Anointed",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Vizier of the Anointed",
@@ -20,16 +20,15 @@
                           { "Type": "Creature" },
                           {
                             "AnyOf": [
-                              { "HasKeywordNamed": "Embalm" },
-                              { "HasKeywordNamed": "Eternalize" }
+                              { "HasKeywordNamed": "Eternalize" },
+                              { "HasKeywordNamed": "Embalm" }
                             ]
-                          },
-                          { "ControlledBy": "You" }
+                          }
                         ],
-                        "as": "found"
+                        "as": "card"
                       }
                     },
-                    { "Move": { "what": { "Bound": "found" }, "to": "Graveyard" } },
+                    { "Move": { "what": { "Bound": "card" }, "to": "Graveyard" } },
                     { "Shuffle": {} }
                   ]
                 }
@@ -38,9 +37,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 151, "end": 218 }
+          "Triggered": {
+            "when": { "Did": { "action": "ActivatedEternalizeOrEmbalm", "who": "You" } },
+            "effects": [{ "Draw": {} }]
           }
         }
       ]

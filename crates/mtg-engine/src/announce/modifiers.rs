@@ -129,7 +129,7 @@ fn dk27_most_counted(state: &GameState, player: PlayerId, spell: ObjectId) -> Op
 /// Every target specification `spell` may announce: its enchant restriction as an Aura spell, else the targets of its
 /// spell ability in each of its modes.
 fn possible_specs(state: &GameState, spell: ObjectId) -> Vec<TargetSpec> {
-    if let Some(spec) = crate::attach::spell_target(state, spell) {
+    if let Some(spec) = crate::attach::cast_target(state, spell) {
         return vec![spec];
     }
     let Some((_, rules)) = crate::resolve::spell_ability(state, spell) else {

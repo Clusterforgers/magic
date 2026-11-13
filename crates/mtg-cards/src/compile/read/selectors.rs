@@ -666,6 +666,9 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if let Some(pred) = r.attempt(|r| w6d_shares::w6d_suffix(r, form)) {
         return Some(pred);
     }
+    if r.words("with eternalize or embalm") {
+        return Some(super::w21a_atoms::eternalize_or_embalm());
+    }
     if let Some(keyword) = r.attempt(|r| {
         r.need("without")?;
         keyword(r)

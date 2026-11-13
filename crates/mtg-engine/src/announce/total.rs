@@ -88,6 +88,13 @@ pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
     let mana = modifiers::apply(ctx, choices, mana);
     let mana = c9_emerge_reduce::c9_emerge_reduce(ctx, choices, mana);
     let mana = r301_offering_reduce(ctx, choices, mana);
+    // "Spend only mana of the chosen color to activate this ability" colors the total.
+    let mana = match (ctx.what, ctx.ability, mana) {
+        (What::Ability(address), Some(Ability::Activated { cost, .. }), Some(mana)) => Some(
+            crate::price::chosen_color_only(ctx.state, address.object, cost, mana)?,
+        ),
+        (_, _, mana) => mana,
+    };
     let spell = match ctx.what {
         What::Spell(spell) => Some(*spell),
         _ => None,

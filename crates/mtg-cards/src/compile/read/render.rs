@@ -225,6 +225,9 @@ fn plain_variants(ability: &Ability) -> Vec<String> {
     if let Some(texts) = super::l31d_x_color::l31d_x_color_variants(ability, variants) {
         return texts;
     }
+    if let Some(texts) = super::l31d_x_color::r405_chosen_only_variants(ability, variants) {
+        return texts;
+    }
     if let Some(texts) = super::l31d_any_number::l31d_any_number_variants(ability, variants) {
         return texts;
     }
@@ -605,6 +608,8 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r301b_writers::r301b_wordings(ability, written_variants, &mut texts);
     super::r301b_writers::r301b_flip_wordings(&mut texts);
     super::us38_quotes::us38_nested_wordings(&mut texts);
+    let prepared = super::prepare::r405_it_becomes(&texts);
+    texts.extend(prepared);
     super::r371_copy_except::r371_that_creature_dies(ability, &mut texts);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
@@ -2069,6 +2074,7 @@ fn mana_text(mana: &Produce) -> Option<String> {
         }
         Produce::AnyCombination { count, among } => combination_text(count, among)?,
         Produce::ChosenColor(1) => "one mana of the chosen color".to_owned(),
+        Produce::ChosenColor(count) => format!("{} mana of the chosen color", count_word(*count)?),
         Produce::OrChosenColor(mana) => {
             format!("{{{}}} or one mana of the chosen color", mana.symbol())
         }
@@ -3395,7 +3401,9 @@ impl Writer<'_> {
             Effect::GainSuspend { what, unless_has } => {
                 super::r372_suspend::gain_text(&self.object(what)?, *unless_has)
             }
-            Effect::Prepare { .. } => super::prepare::becomes_prepared_text(effect)?,
+            Effect::Prepare { what } | Effect::Unprepare { what } => {
+                super::prepare::becomes_prepared_text(effect, &self.object(what)?)?
+            }
             Effect::If {
                 condition: Condition::Not(_),
                 ..

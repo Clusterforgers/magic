@@ -286,6 +286,27 @@ pub(crate) fn spell_target(state: &GameState, id: ObjectId) -> Option<TargetSpec
     Some(aura_target(what))
 }
 
+/// The target an Aura spell announces as it is cast: `spell_target` without the objects its "You can't choose an
+/// untapped creature as this spell's target as you cast it" abilities name (CR 601.2c); its target is judged without them
+/// as it resolves.
+pub(crate) fn cast_target(state: &GameState, id: ObjectId) -> Option<TargetSpec> {
+    let mut spec = spell_target(state, id)?;
+    let object = state.object(id)?;
+    if let Targetable::Object(selector) = &mut spec.what {
+        for rule in crate::ability_reader::printed_rules(object.card()) {
+            if let mtg_cards::ability::Ability::CantTargetAsCast { what } = &**rule {
+                let outside = what
+                    .0
+                    .iter()
+                    .map(|pred| mtg_cards::refs::Pred::Not(Box::new(pred.clone())))
+                    .collect();
+                selector.0.push(mtg_cards::refs::Pred::AnyOf(outside));
+            }
+        }
+    }
+    Some(spec)
+}
+
 /// The one target of an Aura spell (CR 303.4a).
 fn aura_target(what: Targetable) -> TargetSpec {
     TargetSpec {
@@ -343,7 +364,7 @@ impl Host {
 /// Whether `player` can cast the spell `id` as far as its target goes: an Aura spell needs something to enchant that it
 /// may target (CR 601.2c); any other spell asks nothing here.
 pub(crate) fn announceable(state: &GameState, player: PlayerId, id: ObjectId) -> bool {
-    spell_target(state, id).is_none_or(|spec| {
+    cast_target(state, id).is_none_or(|spec| {
         options_for(
             state,
             id,

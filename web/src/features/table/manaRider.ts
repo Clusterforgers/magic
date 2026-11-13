@@ -66,6 +66,11 @@ const FACTS: Record<SpendFact, string> = {
   Kicked: 'that is kicked',
   Freerunning: 'with freerunning',
   NoAbilities: 'with no abilities',
+  Colored: "that's one or more colors",
+  NoXInCost: 'without {X} in its cost',
+  Monocolored: 'that is monocolored',
+  Equip: 'that is an equip ability',
+  Disturb: 'cast for its disturb cost',
 }
 
 const lower = (text: string): string => text.toLowerCase()
@@ -78,13 +83,17 @@ export function spendFilterWords(filter: SpendFilter): string {
     .filter((part) => part.length > 0)
     .map((part) => part.map(lower).join(' or '))
     .join(' ')
-  const without = (filter.without ?? []).map((kind) => `non${lower(kind)}`).join(' ')
+  const without = [
+    ...(filter.without ?? []).map((kind) => `non${lower(kind)}`),
+    ...(filter.not_subtypes ?? []).map((kind) => `non-${kind}`),
+  ].join(' ')
   const head = [
     (filter.supertypes ?? []).map(lower).join(' or '),
     without,
     filter.multicolored === true ? 'multicolored' : '',
     colours,
     filter.chosen_type === true ? 'chosen-type' : '',
+    filter.chosen_color === true ? 'chosen-color' : '',
     kinds,
     'spell',
   ].filter((part) => part !== '')

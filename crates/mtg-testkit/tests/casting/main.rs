@@ -182,6 +182,7 @@ mod r379_alt_x;
 mod r379_first_spell;
 mod r379_warp_life;
 mod r3f_mana;
+mod r405_pieces;
 mod r4f_stack_move;
 mod r4i_may_flash;
 mod r6q1_face_down_cost;

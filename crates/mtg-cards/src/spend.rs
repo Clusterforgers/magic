@@ -49,6 +49,15 @@ pub struct SpendFilter {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<SpendFact>>", optional))]
     pub facts: Vec<SpendFact>,
+    /// Has none of these subtypes ("a non-Human creature spell").
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Subtype>>", optional))]
+    pub not_subtypes: Vec<Subtype>,
+    /// Has the color chosen as the source entered the battlefield ("spells of that color"); the engine puts that color
+    /// in `colors` when the mana is added.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub chosen_color: bool,
 }
 
 /// A fact about a spell that a restriction reads.
@@ -87,6 +96,16 @@ pub enum SpendFact {
     Freerunning,
     /// It has no abilities ("creature spells with no abilities", CR 113.1).
     NoAbilities,
+    /// It has one or more colors ("a spell that's one or more colors").
+    Colored,
+    /// It has no {X} in its mana cost ("without {X} in its mana cost").
+    NoXInCost,
+    /// It has exactly one color ("monocolored spells", CR 105.2a).
+    Monocolored,
+    /// The ability activated is an equip ability ("activate an equip ability", CR 702.6).
+    Equip,
+    /// It is cast for its disturb cost ("pay a disturb cost", CR 702.146).
+    Disturb,
 }
 
 /// A special action (CR 116.2) whose cost restricted mana may pay.
@@ -209,6 +228,14 @@ pub struct SpendTraits {
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub no_abilities: bool,
+    /// The ability activated is an equip ability.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub equip: bool,
+    /// It is cast for its disturb cost.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub disturb: bool,
 }
 
 impl SpendFilter {
@@ -232,10 +259,28 @@ impl SpendFilter {
         })
     }
 
-    /// Whether something with these traits is of the kind; a filter whose chosen type is not resolved holds for nothing.
+    /// The filter with the chosen color put in its colors; `None` when it asks for one and none was chosen.
+    pub fn with_color(&self, chosen: Option<Color>) -> Option<SpendFilter> {
+        if !self.chosen_color {
+            return Some(self.clone());
+        }
+        Some(SpendFilter {
+            colors: vec![chosen?],
+            chosen_color: false,
+            ..self.clone()
+        })
+    }
+
+    /// Whether something with these traits is of the kind; a filter whose chosen type or color is not resolved holds
+    /// for nothing.
     pub fn holds(&self, traits: &SpendTraits) -> bool {
         let any = |wanted: &[CardType]| wanted.iter().any(|t| traits.types.contains(*t));
         !self.chosen_type
+            && !self.chosen_color
+            && !self
+                .not_subtypes
+                .iter()
+                .any(|s| traits.subtypes.contains(s))
             && (self.types.is_empty() || any(&self.types))
             && !any(&self.without)
             && (self.supertypes.is_empty()
@@ -265,6 +310,11 @@ impl SpendFilter {
                 SpendFact::Kicked => traits.kicked,
                 SpendFact::Freerunning => traits.freerunning,
                 SpendFact::NoAbilities => traits.no_abilities,
+                SpendFact::Colored => traits.colors >= 1,
+                SpendFact::NoXInCost => !traits.x_in_cost,
+                SpendFact::Monocolored => traits.colors == 1,
+                SpendFact::Equip => traits.equip,
+                SpendFact::Disturb => traits.disturb,
             })
     }
 }
@@ -445,6 +495,21 @@ impl SpendOn {
     pub fn abilities() -> Self {
         SpendOn::Ability(SpendFilter::default())
     }
+}
+
+/// The uses with the chosen color put in their filters; the uses that ask for a color when none was chosen are dropped,
+/// and `None` when that leaves a restriction no use satisfies.
+pub fn resolve_color(only: &[SpendOn], chosen: Option<Color>) -> Option<Vec<SpendOn>> {
+    let kept: Vec<SpendOn> = only
+        .iter()
+        .filter_map(|on| match on {
+            SpendOn::Spell(filter) => filter.with_color(chosen).map(SpendOn::Spell),
+            SpendOn::Ability(filter) => filter.with_color(chosen).map(SpendOn::Ability),
+            other => Some(other.clone()),
+        })
+        .collect();
+    let restricted = only.iter().any(SpendOn::restricts);
+    (!restricted || kept.iter().any(SpendOn::restricts)).then_some(kept)
 }
 
 /// The uses with the chosen creature type put in them; the uses that ask for a type when none was chosen are dropped,
@@ -691,6 +756,81 @@ mod tests {
         let both = [SpendOn::Spell(chosen_creature()), rider];
         assert_eq!(resolve_uses(&both, None), None);
         assert_eq!(SpendOn::riders(&kept).count(), 1);
+    }
+
+    #[rstest]
+    #[case::colored(r#"{"facts":["Colored"]}"#, 1, false, false, false, true)]
+    #[case::colorless_is_not_colored(r#"{"facts":["Colored"]}"#, 0, false, false, false, false)]
+    #[case::no_x(r#"{"facts":["NoXInCost"]}"#, 2, false, false, false, true)]
+    #[case::x_refused(r#"{"facts":["Colored","NoXInCost"]}"#, 2, true, false, false, false)]
+    #[case::monocolored(r#"{"facts":["Monocolored"]}"#, 1, false, false, false, true)]
+    #[case::two_colors_are_not_monocolored(
+        r#"{"facts":["Monocolored"]}"#,
+        2,
+        false,
+        false,
+        false,
+        false
+    )]
+    #[case::equip(r#"{"facts":["Equip"]}"#, 0, false, true, false, true)]
+    #[case::another_ability(r#"{"facts":["Equip"]}"#, 0, false, false, false, false)]
+    #[case::disturb(r#"{"facts":["Disturb"]}"#, 1, false, false, true, true)]
+    #[case::cast_from_a_hand(r#"{"facts":["Disturb"]}"#, 1, false, false, false, false)]
+    fn the_r405_facts_read_colors_x_equip_and_disturb(
+        #[case] json: &str,
+        #[case] colors: u8,
+        #[case] x_in_cost: bool,
+        #[case] equip: bool,
+        #[case] disturb: bool,
+        #[case] holds: bool,
+    ) {
+        let filter: SpendFilter = serde_json::from_str(json).unwrap();
+        let spell = SpendTraits {
+            colors,
+            x_in_cost,
+            equip,
+            disturb,
+            ..SpendTraits::default()
+        };
+        assert_eq!(filter.holds(&spell), holds);
+    }
+
+    #[rstest]
+    #[case::an_elf(&["Elf"], true)]
+    #[case::a_human(&["Human"], false)]
+    #[case::a_human_elf(&["Human", "Elf"], false)]
+    #[case::no_type(&[], true)]
+    fn a_filter_refuses_the_subtypes_it_lacks(#[case] subtypes: &[&str], #[case] holds: bool) {
+        let filter: SpendFilter =
+            serde_json::from_str(r#"{"types":["Creature"],"not_subtypes":["Human"]}"#).unwrap();
+        assert_eq!(
+            filter.holds(&traits(&[CardType::Creature], &[], subtypes, 1)),
+            holds
+        );
+    }
+
+    #[rstest]
+    #[case::the_color_chosen(Some(Color::Red), &[Color::Red], true)]
+    #[case::another_color(Some(Color::Red), &[Color::Green], false)]
+    #[case::no_color_chosen(None, &[Color::Red], false)]
+    fn a_filter_of_the_chosen_color_holds_for_that_color_once_resolved(
+        #[case] chosen: Option<Color>,
+        #[case] colors: &[Color],
+        #[case] holds: bool,
+    ) {
+        let filter: SpendFilter =
+            serde_json::from_str(r#"{"chosen_color":true,"facts":["Monocolored"]}"#).unwrap();
+        let spell = SpendTraits {
+            colors: u8::try_from(colors.len()).unwrap(),
+            color_set: colors.iter().fold(ColorSet::EMPTY, |set, c| set.with(*c)),
+            ..SpendTraits::default()
+        };
+        assert!(!filter.holds(&spell), "unresolved, it holds for nothing");
+        let uses = resolve_color(&[SpendOn::Spell(filter)], chosen);
+        assert_eq!(
+            uses.is_some_and(|uses| matches!(&uses[..], [SpendOn::Spell(f)] if f.holds(&spell))),
+            holds
+        );
     }
 
     #[test]

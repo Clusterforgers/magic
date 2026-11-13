@@ -223,6 +223,7 @@ Brainstorm
 Bramble Elemental
 Branchblight Stalker
 Brave the Sands
+Break the Ice
 Breath of Life
 Breezekeeper
 Briarblade Adept
@@ -708,6 +709,7 @@ Foundry Inspector
 Four Knocks
 Franklin Richards, Ascendant
 Frenzied Saddlebrute
+Freya Crescent
 Freyalise, Llanowar's Fury
 Frogtosser Banneret
 Frost Titan
@@ -888,6 +890,7 @@ Hero's Heirloom
 Heroes' Podium
 Heronblade Elite
 Hexavus
+Hexhaven Dueling Arena
 Hidden Dragonslayer
 Hidden Hideout
 Hideous Laughter
@@ -1124,6 +1127,7 @@ Mabel, Bitter Recluse
 Machine God's Effigy
 Maestros Theater
 Mage Hunter
+Magewright's Stone
 Magical Hack
 Magistrate's Scepter
 Magmatic Insight
@@ -1694,6 +1698,7 @@ Skullbriar, the Walking Grave
 Skullclamp
 Skullmulcher
 Skycloud Expanse
+Skycoach Waypoint
 Skyhunter Strike Force
 Skymarcher Aspirant
 Skyreach Manta
@@ -1949,6 +1954,7 @@ Thriving Isle
 Thriving Moor
 Throatseeker
 Throes of Chaos
+Throne of Eldraine
 Throne of Makindi
 Throne of the High City
 Thrull Champion
@@ -1974,6 +1980,7 @@ Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
 Titania, Nature's Force
 Titania, Proud Pummeler
+Titans' Nest
 Titans' Vanguard
 Tithe Drinker
 Tithebearer Giant
@@ -2030,6 +2037,7 @@ Umaro, Raging Yeti
 Umbral Collar Zealot
 Unable to Scream
 Unblinking Bleb
+Unblinking Observer
 Unbreakable Bond
 Unclaimed Territory
 Underworld Dreams
@@ -2093,6 +2101,7 @@ Vivid Creek
 Vivid Grove
 Vivid Marsh
 Vivid Meadow
+Vizier of the Anointed
 Voice of All
 Voice of the Blessed
 Voidmage Husher

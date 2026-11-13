@@ -1,0 +1,22 @@
+{
+  "oracle_id": "9e500094-c430-4c10-89cc-97f4f18b08bc",
+  "name": "Magewright's Stone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magewright's Stone",
+      "oracle_fingerprint": "301464b99074f0a83aaa2299d3107230",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasAbility": "TapCost" }] } }
+            ],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

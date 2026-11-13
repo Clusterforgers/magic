@@ -385,7 +385,8 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         }
         Pred::ControlledBy(who) => Traits::CONTROL.or(reads_of_ref(who)),
         Pred::HasKeyword(_) | Pred::HasKeywordNamed(_) => Traits::KEYWORDS,
-        Pred::HasAbility(_) => Traits::KEYWORDS.or(Traits::RULES),
+        // What a permanent could produce is read from its mana abilities.
+        Pred::HasAbility(_) | Pred::CouldProduce(_) => Traits::KEYWORDS.or(Traits::RULES),
         Pred::Compare { stat, to, .. } => reads_of_stat(*stat).or(reads_of_amount(to)),
         Pred::Test { left, right, .. } => reads_of_amount(left).or(reads_of_amount(right)),
         Pred::Not(inner) => reads_of_pred(inner),

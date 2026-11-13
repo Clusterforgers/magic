@@ -87,6 +87,7 @@ fn is_card_adjective(pred: &Pred) -> bool {
 fn is_card_suffix(pred: &Pred) -> bool {
     match pred {
         Pred::Compare { .. } | Pred::HasKeyword(_) | Pred::GenericCost(_) => true,
+        pred if *pred == super::w21a_atoms::eternalize_or_embalm() => true,
         Pred::AnyOf(costs) => costs
             .iter()
             .all(|pred| matches!(pred, Pred::GenericCost(_))),

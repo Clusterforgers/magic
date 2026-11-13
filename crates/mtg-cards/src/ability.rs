@@ -460,6 +460,13 @@ pub enum Ability {
         /// What must hold as the spell is cast.
         condition: Condition,
     },
+    /// "You can't choose an untapped creature as this spell's target as you cast it." (CR 601.2c): an object `what`
+    /// selects is not offered as a target of the spell as it is cast; the targets are not judged by it again as the
+    /// spell resolves.
+    CantTargetAsCast {
+        /// The objects the caster can't choose.
+        what: crate::refs::Selector,
+    },
     /// "If this card is in your opening hand, you may begin the game with it on the battlefield." (CR 103.6): the card
     /// is asked about once its owner has kept a hand.
     OpeningHand,

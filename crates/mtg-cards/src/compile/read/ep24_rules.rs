@@ -164,6 +164,8 @@ pub(super) fn ep24_rule_texts(rule: &GameRule) -> Vec<String> {
                 Some([Pred::Type(kind)]) => {
                     format!(" to cast {} spells", format!("{kind:?}").to_lowercase())
                 }
+                // "to cast Case spells".
+                Some([Pred::Subtype(subtype)]) => format!(" to cast {} spells", subtype.0),
                 Some(_) => return Vec::new(),
             };
             let mut texts = vec![format!(

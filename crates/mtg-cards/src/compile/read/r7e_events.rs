@@ -240,6 +240,9 @@ pub(super) fn r7e_did_text(pattern: &TriggerPattern) -> Option<String> {
     if let Some(text) = super::r375_events::r375_did_text(pattern) {
         return Some(text);
     }
+    if let Some(text) = super::r405_events::r405_did_text(pattern) {
+        return Some(text);
+    }
     let TriggerPattern::Did { action, who, what } = pattern else {
         return None;
     };

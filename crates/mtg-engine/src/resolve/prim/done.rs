@@ -67,6 +67,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Harness { .. }
         | Effect::Plot { .. }
         | Effect::Prepare { .. }
+        | Effect::Unprepare { .. }
         | Effect::Suspect { .. }
         | Effect::Unsuspect { .. }
         | Effect::Solve { .. }

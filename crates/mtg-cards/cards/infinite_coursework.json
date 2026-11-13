@@ -1,7 +1,7 @@
 {
   "oracle_id": "666b34b5-a0c2-43e3-befd-7c3979313682",
   "name": "Infinite Coursework",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Infinite Coursework",
@@ -9,9 +9,9 @@
       "abilities": [
         { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 17, "end": 86 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Tap": { "what": "Attached" } }, { "Unprepare": { "what": "Attached" } }]
           }
         },
         { "Static": { "affected": "Attached", "mods": ["LoseAbilities"] } },

@@ -236,6 +236,9 @@ pub enum HeldAbility {
     Mana,
     /// An activated ability that isn't a mana ability, a loyalty ability included.
     NonManaActivated,
+    /// An activated ability with {T} in its cost, a mana ability included ("that has an activated ability with {T} in its
+    /// cost").
+    TapCost,
 }
 
 /// A condition on one object; selectors hold a list of them that must all be true.
@@ -346,6 +349,9 @@ pub enum Pred {
     Suspected,
     /// Is solved (CR 719.3): a Case on the battlefield that has been solved.
     Solved,
+    /// Is a permanent one of whose mana abilities could produce mana of the type, costs and restrictions ignored ("could
+    /// produce {C}", CR 106.7).
+    CouldProduce(mtg_core::mana::ManaType),
     /// Is stickered (CR 123): has one or more stickers on it, a permanent or a card elsewhere.
     Stickered,
     /// Has a sticker of the kind on it (CR 123): "with an art sticker on it", on the battlefield or a card elsewhere

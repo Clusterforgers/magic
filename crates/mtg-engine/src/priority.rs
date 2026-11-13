@@ -374,6 +374,9 @@ pub(crate) fn activation(
     if let Some(mana) =
         crate::c11a_less::c11a_mana(state, player, (object.id(), address, rules), &price, None)
     {
+        let Some(mana) = crate::price::chosen_color_only(state, object.id(), &cost, mana) else {
+            return Hindered(Unplayable::Mana, None);
+        };
         let mana = &mana;
         let Some(seat) = state.player(player) else {
             return Never;
@@ -385,7 +388,8 @@ pub(crate) fn activation(
         let life = seat
             .life()
             .saturating_sub(i32::try_from(price.life()).unwrap_or(i32::MAX));
-        let spend = Spend::for_ability(state, object.id(), price.x > 0);
+        let spend =
+            Spend::for_ability(state, object.id(), price.x > 0).of_ability(state, address, rules);
         let helpers = waterbend_help(state, player, object.id(), &price, &claimed);
         if !can_afford_with(mana, seat.mana(), &sources, helpers.help(), life, &spend) {
             return Hindered(

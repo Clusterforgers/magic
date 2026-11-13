@@ -1,19 +1,14 @@
 {
   "oracle_id": "2f94cb83-1f48-4293-b219-67830c074aeb",
   "name": "Enthralling Hold",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Enthralling Hold",
       "oracle_fingerprint": "5fcedd81d8776650b2ff69dd22c4c0ad",
       "abilities": [
         { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 17, "end": 93 }
-          }
-        },
+        { "CantTargetAsCast": { "what": [{ "Type": "Creature" }, "Untapped"] } },
         { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }
       ]
     }
