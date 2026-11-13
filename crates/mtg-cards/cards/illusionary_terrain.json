@@ -7,45 +7,19 @@
       "name": "Illusionary Terrain",
       "oracle_fingerprint": "cc4560634120b47a0d120b3abb7788b4",
       "abilities": [
-        {
-          "Keyword": {
-            "CumulativeUpkeep": "{2}"
-          }
-        },
+        { "Keyword": { "CumulativeUpkeep": "{2}" } },
         {
           "Replacement": {
-            "when": {
-              "Enters": {
-                "what": [
-                  "This"
-                ]
-              }
-            },
-            "by": {
-              "Choose": "TwoBasicLandTypes"
-            }
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "TwoBasicLandTypes" }
           }
         },
         {
           "Static": {
             "affected": {
-              "Each": [
-                {
-                  "Supertype": "Basic"
-                },
-                {
-                  "Type": "Land"
-                },
-                {
-                  "NthChosenLandType": 0
-                }
-              ]
+              "Each": [{ "Supertype": "Basic" }, { "Type": "Land" }, { "NthChosenLandType": 0 }]
             },
-            "mods": [
-              {
-                "SetLandTypesNthChosen": 1
-              }
-            ]
+            "mods": [{ "SetLandTypesNthChosen": 1 }]
           }
         }
       ]

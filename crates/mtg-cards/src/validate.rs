@@ -318,6 +318,8 @@ struct Scope {
     in_trigger: bool,
     /// The changes of a static ability are being checked: `Affected` names the object each one applies to.
     in_static: bool,
+    /// The count of counters an entering permanent gets: `Affected` is the entering card.
+    r5511_entering: bool,
     /// How many `Pred::Test` are being checked around this point: `Candidate` names the object the innermost judges.
     tests: u8,
     /// `Dealer` names something: a triggered ability, or a replacement of damage.
@@ -346,6 +348,7 @@ impl Scope {
             in_trigger,
             dealer: in_trigger,
             in_static: false,
+            r5511_entering: false,
             tests: 0,
             names: vec![BTreeMap::new()],
             numbers: BTreeSet::new(),
@@ -679,7 +682,7 @@ impl<'a> Walker<'a> {
                 self.expect(Kind::Either, want);
             }
             Ref::Affected => {
-                if !self.scope.in_static {
+                if !self.scope.in_static && !self.scope.r5511_entering {
                     self.problem("`Affected` is only valid in the changes of a static ability");
                 }
                 self.expect(Kind::Object, want);
@@ -6138,7 +6141,10 @@ impl Walker<'_> {
                 if !enters && !matches!(when, ReplaceWhen::TurnedFaceUp { .. }) {
                     self.problem("`WithCounters` replaces an `Enters` or a `TurnedFaceUp`");
                 }
+                let held = self.scope.r5511_entering;
+                self.scope.r5511_entering = enters;
                 self.at("count", |w| w.amount(count));
+                self.scope.r5511_entering = held;
             }
             ReplaceBy::WithCountersAnd {
                 count,
@@ -7532,6 +7538,10 @@ mod tests {
     #[case::a_spell_word_as_an_added_subtype(
         r#"{"Static":{"affected":"This","mods":[{"AddSubtype":"Spell"}]}}"#,
         "`Spell` is not a subtype"
+    )]
+    #[case::r5511_affected_outside_an_entering_count(
+        r#"{"Replacement":{"when":{"Destroyed":{"what":["This"]}},"by":"Regenerate","condition":{"Compare":{"left":{"Stat":{"of":"Affected","stat":"Power"}},"op":"Ge","right":1}}}}"#,
+        "`Affected` is only valid in the changes of a static ability"
     )]
     #[case::affected_outside_a_static_ability(
         r#"{"Spell":{"effects":[{"Draw":{"count":{"Counters":{"on":"Affected","counter":"charge"}}}}]}}"#,

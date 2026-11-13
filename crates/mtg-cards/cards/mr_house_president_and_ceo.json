@@ -5,59 +5,31 @@
   "faces": [
     {
       "name": "Mr. House, President and CEO",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "20bc2ff61c619b4c49af72db12c8e4c9",
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "DiceRolled": {
-                "who": "You"
-              }
-            },
-            "if": {
-              "Compare": {
-                "left": "Triggering",
-                "op": "Ge",
-                "right": 4
-              }
-            },
+            "when": { "DiceRolled": { "who": "You" } },
+            "if": { "Compare": { "left": "Triggering", "op": "Ge", "right": 4 } },
             "effects": [
               {
                 "If": {
-                  "condition": {
-                    "Compare": {
-                      "left": "Triggering",
-                      "op": "Ge",
-                      "right": 6
-                    }
-                  },
+                  "condition": { "Compare": { "left": "Triggering", "op": "Ge", "right": 6 } },
                   "then": [
                     {
                       "CreateToken": {
                         "token": {
                           "Custom": {
                             "name": "Robot",
-                            "colors": [],
-                            "types": [
-                              "Artifact",
-                              "Creature"
-                            ],
-                            "subtypes": [
-                              "Robot"
-                            ],
+                            "types": ["Artifact", "Creature"],
+                            "subtypes": ["Robot"],
                             "power": 3,
                             "toughness": 3
                           }
                         }
                       }
                     },
-                    {
-                      "CreateToken": {
-                        "token": {
-                          "Named": "treasure"
-                        }
-                      }
-                    }
+                    { "CreateToken": { "token": { "Named": "treasure" } } }
                   ],
                   "otherwise": [
                     {
@@ -65,14 +37,8 @@
                         "token": {
                           "Custom": {
                             "name": "Robot",
-                            "colors": [],
-                            "types": [
-                              "Artifact",
-                              "Creature"
-                            ],
-                            "subtypes": [
-                              "Robot"
-                            ],
+                            "types": ["Artifact", "Creature"],
+                            "subtypes": ["Robot"],
                             "power": 3,
                             "toughness": 3
                           }
@@ -87,44 +53,17 @@
         },
         {
           "Activated": {
-            "cost": [
-              {
-                "Mana": "{4}"
-              },
-              "Tap"
-            ],
+            "cost": [{ "Mana": "{4}" }, "Tap"],
             "effects": [
               {
                 "RepeatWhile": {
-                  "condition": {
-                    "Compare": {
-                      "left": 0,
-                      "op": "Eq",
-                      "right": 0
-                    }
-                  },
-                  "effects": [
-                    {
-                      "RollDice": {
-                        "sides": 6,
-                        "results": []
-                      }
-                    }
-                  ],
+                  "condition": { "Compare": { "left": 0, "op": "Eq", "right": 0 } },
+                  "effects": [{ "RollDice": { "sides": 6, "results": [] } }],
                   "most": 1000,
                   "times": {
                     "Sum": [
                       1,
-                      {
-                        "ManaSpent": {
-                          "of": null,
-                          "from": {
-                            "subtypes": [
-                              "Treasure"
-                            ]
-                          }
-                        }
-                      }
+                      { "ManaSpent": { "of": null, "from": { "subtypes": ["Treasure"] } } }
                     ]
                   }
                 }

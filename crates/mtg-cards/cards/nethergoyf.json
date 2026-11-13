@@ -13,30 +13,9 @@
             "mods": [
               {
                 "SetPT": {
-                  "power": {
-                    "CardTypes": [
-                      {
-                        "In": "Graveyard"
-                      },
-                      {
-                        "OwnedBy": "You"
-                      }
-                    ]
-                  },
+                  "power": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
                   "toughness": {
-                    "Sum": [
-                      {
-                        "CardTypes": [
-                          {
-                            "In": "Graveyard"
-                          },
-                          {
-                            "OwnedBy": "You"
-                          }
-                        ]
-                      },
-                      1
-                    ]
+                    "Sum": [{ "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] }, 1]
                   }
                 }
               }
@@ -44,18 +23,7 @@
             "defining": true
           }
         },
-        {
-          "Keyword": {
-            "Escape": [
-              {
-                "Mana": "{2}{B}"
-              },
-              {
-                "ExileCardTypes": 4
-              }
-            ]
-          }
-        }
+        { "Keyword": { "Escape": [{ "Mana": "{2}{B}" }, { "ExileCardTypes": 4 }] } }
       ]
     }
   ]

@@ -9,45 +9,19 @@
       "abilities": [
         {
           "Replacement": {
-            "when": {
-              "Enters": {
-                "what": [
-                  {
-                    "Type": "Creature"
-                  },
-                  {
-                    "ControlledBy": "You"
-                  }
-                ]
-              }
-            },
+            "when": { "Enters": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
             "by": {
               "WithCounters": {
                 "counter": "+1/+1",
-                "count": {
-                  "Stat": {
-                    "of": "Affected",
-                    "stat": "ArtifactManaSpent"
-                  }
-                }
+                "count": { "Stat": { "of": "Affected", "stat": "ArtifactManaSpent" } }
               }
             }
           }
         },
         {
           "Activated": {
-            "cost": [
-              "Tap"
-            ],
-            "effects": [
-              {
-                "CreateToken": {
-                  "token": {
-                    "Named": "treasure"
-                  }
-                }
-              }
-            ]
+            "cost": ["Tap"],
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
           }
         }
       ]

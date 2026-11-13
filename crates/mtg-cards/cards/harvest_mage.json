@@ -5,29 +5,17 @@
   "faces": [
     {
       "name": "Harvest Mage",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "2f9399ca9a2a17a98cc529122018d03d",
       "abilities": [
         {
           "Activated": {
-            "cost": [
-              {
-                "Mana": "{G}"
-              },
-              "Tap",
-              {
-                "Discard": {}
-              }
-            ],
+            "cost": [{ "Mana": "{G}" }, "Tap", { "Discard": {} }],
             "effects": [
               {
                 "Rule": {
                   "rule": {
                     "ManaProduced": {
-                      "what": [
-                        {
-                          "Type": "Land"
-                        }
-                      ],
+                      "what": [{ "Type": "Land" }],
                       "who": "You",
                       "change": "OneChosenColor"
                     }

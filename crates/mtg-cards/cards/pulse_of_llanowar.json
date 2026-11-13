@@ -5,23 +5,13 @@
   "faces": [
     {
       "name": "Pulse of Llanowar",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "fb068bfae55e6269dcd1bb18c1eeda9a",
       "abilities": [
         {
           "Rule": {
             "rule": {
               "ManaProduced": {
-                "what": [
-                  {
-                    "Supertype": "Basic"
-                  },
-                  {
-                    "Type": "Land"
-                  },
-                  {
-                    "ControlledBy": "You"
-                  }
-                ],
+                "what": [{ "Supertype": "Basic" }, { "Type": "Land" }, { "ControlledBy": "You" }],
                 "who": "You",
                 "change": "OnlyChosenColor"
               }

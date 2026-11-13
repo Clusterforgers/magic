@@ -7,28 +7,11 @@
       "name": "Elemental Resonance",
       "oracle_fingerprint": "78923d8ce8986bf5feae318fd223a587",
       "abilities": [
-        {
-          "Keyword": {
-            "Enchant": []
-          }
-        },
+        { "Keyword": { "Enchant": [] } },
         {
           "Triggered": {
-            "when": {
-              "StepBegins": {
-                "step": "Main1",
-                "whose": "You"
-              }
-            },
-            "effects": [
-              {
-                "AddMana": {
-                  "mana": {
-                    "CostOf": "Attached"
-                  }
-                }
-              }
-            ]
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [{ "AddMana": { "mana": { "CostOf": "Attached" } } }]
           }
         }
       ]

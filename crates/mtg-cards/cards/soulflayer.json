@@ -7,9 +7,7 @@
       "name": "Soulflayer",
       "oracle_fingerprint": "1190cb9713ac0ff1e296074761fd06bd",
       "abilities": [
-        {
-          "Keyword": "Delve"
-        },
+        { "Keyword": "Delve" },
         {
           "Static": {
             "affected": "This",
@@ -17,17 +15,7 @@
               {
                 "KeywordsOf": {
                   "from": {
-                    "Each": [
-                      {
-                        "Is": "Delved"
-                      },
-                      {
-                        "In": "Exile"
-                      },
-                      {
-                        "Type": "Creature"
-                      }
-                    ]
+                    "Each": [{ "Is": "Delved" }, { "In": "Exile" }, { "Type": "Creature" }]
                   },
                   "keywords": [
                     "Flying",

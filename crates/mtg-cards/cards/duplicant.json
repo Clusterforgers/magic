@@ -9,43 +9,9 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
-            "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    },
-                    {
-                      "Not": "Token"
-                    }
-                  ]
-                }
-              }
-            ],
-            "effects": [
-              {
-                "May": {
-                  "effects": [
-                    {
-                      "Exile": {
-                        "what": {
-                          "Target": 0
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Not": "Token" }] } }],
+            "effects": [{ "May": { "effects": [{ "Exile": { "what": { "Target": 0 } } }] } }]
           }
         },
         {
@@ -59,14 +25,7 @@
                       "of": {
                         "LastExiledWith": {
                           "on": "This",
-                          "filter": [
-                            {
-                              "In": "Exile"
-                            },
-                            {
-                              "Type": "Creature"
-                            }
-                          ]
+                          "filter": [{ "In": "Exile" }, { "Type": "Creature" }]
                         }
                       },
                       "stat": "Power"
@@ -77,14 +36,7 @@
                       "of": {
                         "LastExiledWith": {
                           "on": "This",
-                          "filter": [
-                            {
-                              "In": "Exile"
-                            },
-                            {
-                              "Type": "Creature"
-                            }
-                          ]
+                          "filter": [{ "In": "Exile" }, { "Type": "Creature" }]
                         }
                       },
                       "stat": "Toughness"
@@ -96,35 +48,16 @@
                 "SetCreatureTypesOf": {
                   "LastExiledWith": {
                     "on": "This",
-                    "filter": [
-                      {
-                        "In": "Exile"
-                      },
-                      {
-                        "Type": "Creature"
-                      }
-                    ]
+                    "filter": [{ "In": "Exile" }, { "Type": "Creature" }]
                   }
                 }
               },
-              {
-                "AddSubtype": "Shapeshifter"
-              }
+              { "AddSubtype": "Shapeshifter" }
             ],
             "condition": {
               "Compare": {
                 "left": {
-                  "Count": [
-                    {
-                      "In": "Exile"
-                    },
-                    {
-                      "ExiledWith": "This"
-                    },
-                    {
-                      "Type": "Creature"
-                    }
-                  ]
+                  "Count": [{ "In": "Exile" }, { "ExiledWith": "This" }, { "Type": "Creature" }]
                 },
                 "op": "Ge",
                 "right": 1

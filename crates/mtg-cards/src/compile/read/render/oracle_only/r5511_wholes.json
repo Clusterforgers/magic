@@ -227,6 +227,20 @@
             ],
             "duration": "UntilEndOfTurn"
            }
+          },
+          {
+           "DelayedTrigger": {
+            "when": {
+             "StepBegins": {
+              "step": "Upkeep"
+             }
+            },
+            "effects": [
+             {
+              "Draw": {}
+             }
+            ]
+           }
           }
          ]
         },
@@ -255,22 +269,22 @@
             ],
             "duration": "UntilEndOfTurn"
            }
+          },
+          {
+           "DelayedTrigger": {
+            "when": {
+             "StepBegins": {
+              "step": "Upkeep"
+             }
+            },
+            "effects": [
+             {
+              "Draw": {}
+             }
+            ]
+           }
           }
          ]
-        }
-       ]
-      }
-     },
-     {
-      "DelayedTrigger": {
-       "when": {
-        "StepBegins": {
-         "step": "Upkeep"
-        }
-       },
-       "effects": [
-        {
-         "Draw": {}
         }
        ]
       }

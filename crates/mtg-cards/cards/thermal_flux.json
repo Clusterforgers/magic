@@ -5,7 +5,7 @@
   "faces": [
     {
       "name": "Thermal Flux",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "22ade96633d4b6f9c26e4e29c65d3e06",
       "abilities": [
         {
           "Spell": {
@@ -40,6 +40,20 @@
                             ],
                             "duration": "UntilEndOfTurn"
                           }
+                        },
+                        {
+                          "DelayedTrigger": {
+                            "when": {
+                              "StepBegins": {
+                                "step": "Upkeep"
+                              }
+                            },
+                            "effects": [
+                              {
+                                "Draw": {}
+                              }
+                            ]
+                          }
                         }
                       ]
                     },
@@ -68,22 +82,22 @@
                             ],
                             "duration": "UntilEndOfTurn"
                           }
+                        },
+                        {
+                          "DelayedTrigger": {
+                            "when": {
+                              "StepBegins": {
+                                "step": "Upkeep"
+                              }
+                            },
+                            "effects": [
+                              {
+                                "Draw": {}
+                              }
+                            ]
+                          }
                         }
                       ]
-                    }
-                  ]
-                }
-              },
-              {
-                "DelayedTrigger": {
-                  "when": {
-                    "StepBegins": {
-                      "step": "Upkeep"
-                    }
-                  },
-                  "effects": [
-                    {
-                      "Draw": {}
                     }
                   ]
                 }

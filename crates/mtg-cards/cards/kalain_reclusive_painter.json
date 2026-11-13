@@ -9,49 +9,19 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
-            "effects": [
-              {
-                "CreateToken": {
-                  "token": {
-                    "Named": "treasure"
-                  }
-                }
-              }
-            ]
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
           }
         },
         {
           "Replacement": {
             "when": {
-              "Enters": {
-                "what": [
-                  {
-                    "Type": "Creature"
-                  },
-                  "Other",
-                  {
-                    "ControlledBy": "You"
-                  }
-                ]
-              }
+              "Enters": { "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] }
             },
             "by": {
               "WithCounters": {
                 "counter": "+1/+1",
-                "count": {
-                  "Stat": {
-                    "of": "Affected",
-                    "stat": "TreasureManaSpent"
-                  }
-                }
+                "count": { "Stat": { "of": "Affected", "stat": "TreasureManaSpent" } }
               }
             }
           }

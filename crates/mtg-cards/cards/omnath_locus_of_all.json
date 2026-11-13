@@ -7,41 +7,18 @@
       "name": "Omnath, Locus of All",
       "oracle_fingerprint": "03904dfaacc69e8954412756b7438afd",
       "abilities": [
-        {
-          "Rule": {
-            "rule": {
-              "UnspentManaBecomes": {
-                "who": "You",
-                "into": "Black"
-              }
-            }
-          }
-        },
+        { "Rule": { "rule": { "UnspentManaBecomes": { "who": "You", "into": "Black" } } } },
         {
           "Triggered": {
-            "when": {
-              "StepBegins": {
-                "step": "Main1",
-                "whose": "You"
-              }
-            },
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
             "effects": [
-              {
-                "LookAtTop": {
-                  "as": "card"
-                }
-              },
+              { "LookAtTop": { "as": "card" } },
               {
                 "If": {
                   "condition": {
                     "Compare": {
                       "left": {
-                        "Stat": {
-                          "of": {
-                            "Bound": "card"
-                          },
-                          "stat": "ColoredManaSymbols"
-                        }
+                        "Stat": { "of": { "Bound": "card" }, "stat": "ColoredManaSymbols" }
                       },
                       "op": "Ge",
                       "right": 3
@@ -51,25 +28,13 @@
                     {
                       "May": {
                         "effects": [
-                          {
-                            "Reveal": {
-                              "what": {
-                                "Bound": "card"
-                              }
-                            }
-                          },
+                          { "Reveal": { "what": { "Bound": "card" } } },
                           {
                             "AddMana": {
                               "mana": {
                                 "AnyColorAmong": [
-                                  {
-                                    "Is": {
-                                      "Bound": "card"
-                                    }
-                                  },
-                                  {
-                                    "In": "Library"
-                                  }
+                                  { "Is": { "Bound": "card" } },
+                                  { "In": "Library" }
                                 ]
                               },
                               "times": 3
@@ -81,14 +46,7 @@
                   ]
                 }
               },
-              {
-                "Move": {
-                  "what": {
-                    "Bound": "card"
-                  },
-                  "to": "Hand"
-                }
-              }
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
             ]
           }
         }
