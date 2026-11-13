@@ -1017,6 +1017,13 @@ pub enum Effect {
         /// How many cards.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
+        /// The name the cards put into the graveyard are bound to, as the cards they become ("if you put a nonland card
+        /// into your graveyard this way").
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
+        /// The name the cards put back on top are bound to ("for each card you put on top of your library").
+        #[serde(rename = "kept_as", default, skip_serializing_if = "Option::is_none")]
+        kept: Option<String>,
     },
     /// The player proliferates (CR 701.34): chooses permanents and players with counters and gives each another.
     Proliferate {

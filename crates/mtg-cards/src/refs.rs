@@ -272,6 +272,8 @@ pub enum Pred {
     CanEnchantSource,
     /// Has {X} in its mana cost ("a spell with {X} in its mana cost", CR 107.3).
     XInCost,
+    /// Has a Phyrexian symbol in its mana cost ("a spell with {H} in its mana cost", CR 107.4f).
+    PhyrexianInCost,
     /// Has a mana cost of exactly that many generic mana and nothing else ("with mana cost {1}"): `{0}` is a cost, no cost
     /// is not, and a coloured, hybrid, Phyrexian or {X} symbol is another cost with the same mana value.
     GenericCost(u32),

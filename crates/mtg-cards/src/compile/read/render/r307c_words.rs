@@ -33,6 +33,7 @@ pub(super) fn r307c_text(effect: &Effect) -> Option<String> {
         Effect::Surveil {
             who: Ref::You,
             count,
+            ..
         } if r307c_opponents_attacked(count) => {
             Some("surveil X, where X is the number of opponents being attacked".to_owned())
         }

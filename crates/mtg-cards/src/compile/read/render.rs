@@ -863,6 +863,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     super::e16c_attacks::add(ability, &mut texts);
     super::e17b_exile_until::add(ability, &mut texts);
     super::rmt4_wordings::add(ability, &mut texts);
+    super::r407_wordings::add(ability, &mut texts);
     super::l293_events::l293_wordings(ability, &mut texts);
     super::r307c_events::r307c_wordings(ability, &mut texts);
     oracle_only::add_last(ability, &mut texts);
@@ -3360,6 +3361,7 @@ impl Writer<'_> {
             Effect::Surveil {
                 who: Ref::You,
                 count,
+                ..
             } => format!("surveil {}", points_text(count)?),
             Effect::Proliferate { who: Ref::You } => "proliferate".to_owned(),
             Effect::Incubate { who, count } => match who {

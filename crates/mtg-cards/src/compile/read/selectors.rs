@@ -825,6 +825,7 @@ fn suffix_text_main(pred: &Pred, form: Form) -> Option<String> {
             format!("with {words} on it")
         }
         pred @ (Pred::XInCost
+        | Pred::PhyrexianInCost
         | Pred::GenericCost(_)
         | Pred::SharesName(_)
         | Pred::SharesType(_)

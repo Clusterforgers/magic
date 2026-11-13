@@ -159,7 +159,7 @@ impl Scope<'_> {
         }))
     }
 
-    fn fe1a_cast_object<'s>(seen: &Seen<'s>) -> Option<&'s GameObject> {
+    pub(super) fn fe1a_cast_object<'s>(seen: &Seen<'s>) -> Option<&'s GameObject> {
         seen.card.filter(|_| {
             seen.zone == Zone::Battlefield
                 || (seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability)

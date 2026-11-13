@@ -131,7 +131,9 @@ pub const fn stat_name(stat: StatKind) -> Option<&'static str> {
         | StatKind::CreatureType
         | StatKind::BasePower
         | StatKind::BaseToughness
-        | StatKind::ManaSpent => None,
+        | StatKind::ManaSpent
+        | StatKind::ColorsSpent
+        | StatKind::Kicks => None,
     }
 }
 
@@ -181,6 +183,13 @@ pub fn for_each(r: &mut Reader<'_>) -> Option<Amount> {
             return Some(Amount::Stat {
                 of: Ref::Triggering,
                 stat: StatKind::Colors,
+            });
+        }
+        // "for each color of mana spent to cast that spell" (Magmablood Archaic).
+        if r.words("color of mana spent to cast that spell") {
+            return Some(Amount::Stat {
+                of: Ref::Triggering,
+                stat: StatKind::ColorsSpent,
             });
         }
         if let Some(colors) = super::t17b_attached::of_its_colors(r) {
@@ -326,6 +335,10 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
             of: Ref::Triggering,
             stat: StatKind::Colors,
         } => "of that spell's colors".to_owned(),
+        Amount::Stat {
+            of: Ref::Triggering,
+            stat: StatKind::ColorsSpent,
+        } => "color of mana spent to cast that spell".to_owned(),
         Amount::Counters {
             on: Ref::This,
             counter,

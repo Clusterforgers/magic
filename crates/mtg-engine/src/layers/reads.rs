@@ -317,6 +317,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::CounterCount { .. }
         | Pred::CanEnchantSource
         | Pred::XInCost
+        | Pred::PhyrexianInCost
         | Pred::GenericCost(_)
         | Pred::SingleTarget
         | Pred::HasAnyCounter
@@ -413,6 +414,8 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         StatKind::ManaValue
         | StatKind::Loyalty
         | StatKind::ManaSpent
+        | StatKind::ColorsSpent
+        | StatKind::Kicks
         | StatKind::Name
         | StatKind::CounterKinds
         | StatKind::R374ManaCost => Traits::NONE,

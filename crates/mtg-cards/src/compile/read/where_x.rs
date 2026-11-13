@@ -290,6 +290,9 @@ fn tails(of: &Ref, stat: StatKind) -> Vec<String> {
     if stat == StatKind::Colors && *of == Ref::Triggering {
         return vec!["the number of colors that spell is".to_owned()];
     }
+    if stat == StatKind::Kicks && *of == Ref::Triggering {
+        return vec!["the number of times that spell was kicked".to_owned()];
+    }
     let Some(name) = stat_name(stat) else {
         return Vec::new();
     };

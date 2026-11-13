@@ -454,6 +454,8 @@ fn stat_text(stat: StatKind) -> &'static str {
         StatKind::BasePower => "base power",
         StatKind::BaseToughness => "base toughness",
         StatKind::ManaSpent => "mana spent",
+        StatKind::ColorsSpent => "number of colors of mana spent",
+        StatKind::Kicks => "number of times kicked",
         StatKind::CounterKinds => "kinds of counters",
         StatKind::R374Types => "number of types",
         StatKind::R374CreatureTypes => "number of creature types",

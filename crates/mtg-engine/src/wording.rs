@@ -40,6 +40,8 @@ fn stat_word(stat: StatKind) -> &'static str {
         StatKind::BasePower => "base power",
         StatKind::BaseToughness => "base toughness",
         StatKind::ManaSpent => "mana spent",
+        StatKind::ColorsSpent => "colors of mana spent",
+        StatKind::Kicks => "times kicked",
         StatKind::CounterKinds => "kinds of counters",
         StatKind::R374Types => "types",
         StatKind::R374CreatureTypes => "creature types",
@@ -1417,6 +1419,7 @@ fn verb_phrase(effect: &Effect) -> Option<String> {
         Effect::Surveil {
             who: Ref::You,
             count: Amount::Fixed(n),
+            ..
         } => format!("surveil {n}"),
         Effect::GainLife {
             who: Ref::You,

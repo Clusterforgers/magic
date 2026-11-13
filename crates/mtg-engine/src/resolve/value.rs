@@ -1860,6 +1860,7 @@ impl<'a> Scope<'a> {
             | Pred::SharesColor(_)
             | Pred::SharesManaValue(_)
             | Pred::XInCost
+            | Pred::PhyrexianInCost
             | Pred::GenericCost(_)
             | Pred::Goaded
             | Pred::HasAttached(_)
@@ -2105,6 +2106,17 @@ impl<'a> Scope<'a> {
             StatKind::ManaSpent => seen
                 .card
                 .and_then(|c| i64::try_from(c.mana_spent().len()).ok()),
+            StatKind::Kicks => Self::fe1a_cast_object(seen).and_then(|card| {
+                i64::try_from(payments(
+                    card.card(),
+                    card.paid_costs(),
+                    OptionalKind::Kicker,
+                ))
+                .ok()
+            }),
+            StatKind::ColorsSpent => seen
+                .card
+                .and_then(|c| i64::try_from(colors_among(c.mana_spent())).ok()),
             // A spell on the stack counts the X it was cast with for each {X} of its cost (CR 202.3e).
             StatKind::ManaValue => seen
                 .card
