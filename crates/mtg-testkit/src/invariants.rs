@@ -1026,6 +1026,7 @@ impl InvariantChecker {
                 | Event::EmblemCreated(_)
                 | Event::BecameSpirit { .. }
                 | Event::PhaseBegan { .. }
+                | Event::SchemeSetInMotion { .. }
                 | Event::CompanionBrought { .. }
         ) {
             self.expected_objects += 1;

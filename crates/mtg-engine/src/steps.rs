@@ -565,6 +565,7 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
         active,
         extra: extra.is_some(),
     });
+    events.extend(crate::schemes::at_turn_start(state, active));
     events.extend(spent);
     events.extend(crate::c10_xp_copy_ends::c10_xp_copies_ending(state, active));
     // The spells the ending turn's active player cast are counted before the new turn clears the count (CR 726.3a).

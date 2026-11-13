@@ -408,6 +408,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::PlayerLost { .. }
         | Event::BecameSpirit { .. }
         | Event::PhaseBegan { .. }
+        | Event::SchemeSetInMotion { .. }
         | Event::GameEnded { .. }
         // The ability on the stack is public, and so is what was announced for it.
         | Event::AbilityActivated { .. }

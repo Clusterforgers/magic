@@ -403,13 +403,21 @@ const fn is_zero_level(level: &u8) -> bool {
     *level == 0
 }
 
-/// The phases of a boss seat (public).
+/// The phases and schemes of a boss seat (public).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct BossView {
     /// The phases' names, in the order they begin.
     pub phases: Vec<String>,
     /// How many have begun.
     pub begun: u32,
+    /// The name of the scheme in motion.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub scheme: Option<String>,
+    /// The name of the Omen: the scheme set in motion next.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub omen: Option<String>,
 }
 
 /// A sticker sheet a seat plays with (public).

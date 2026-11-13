@@ -174,6 +174,7 @@ pub mod rng;
 #[cfg(test)]
 mod rule_options;
 pub mod rules;
+pub mod schemes;
 pub mod setup;
 pub mod sight;
 pub mod smart_stops;
