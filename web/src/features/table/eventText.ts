@@ -269,6 +269,7 @@ function durationWords(
     UntilEndOfCombat: ' until end of combat',
     UntilYourNextTurn: " until their controller's next turn",
     UntilYourNextUpkeep: " until their controller's next upkeep",
+    UntilEndOfYourNextUpkeep: " until the end of their controller's next upkeep",
     UntilYourNextEndStep: " until their controller's next end step",
     UntilEndOfYourNextTurn: " until the end of their controller's next turn",
     DuringItsControllersNextTurn: " during its controller's next turn",
@@ -330,7 +331,16 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
     what = rule.MustAttackPlayers.map(
       ([object, player]) => `${n.card(object.id)} must attack ${n.seat(player)} if able`,
     ).join(', ')
-  else if ('MustBlock' in rule) what = `${named(rule.MustBlock)} must block if able`
+  else if ('MustAttackAt' in rule) {
+    const { creatures, players, at } = rule.MustAttackAt
+    const who = [
+      creatures.length > 0 ? named(creatures) : '',
+      players.length > 0
+        ? `${creatures.length > 0 ? 'creatures' : 'Creatures'} ${seats(players)} controls`
+        : '',
+    ].filter((part) => part !== '')
+    what = `${joinWords(who)} must attack ${n.card(at.id)} if able`
+  } else if ('MustBlock' in rule) what = `${named(rule.MustBlock)} must block if able`
   else if ('CantBeCountered' in rule) what = `${named(rule.CantBeCountered)} can't be countered`
   else if ('EntersWith' in rule) {
     const { spell, counters, keyword, this_turn } = rule.EntersWith

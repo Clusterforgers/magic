@@ -18,6 +18,7 @@ pub(crate) fn r377_their_turn_over(state: &GameState) -> Vec<Event> {
         .filter(|effect| effect.duration == Duration::TheirNextTurn && turn.number() > effect.turn)
         .filter(|effect| match &effect.rule {
             Rule::Cant { who, .. } => covers(who, Some(active), None),
+            Rule::MustAttackAt { turn_of, .. } => turn_of.contains(&active),
             _ => true,
         })
         .map(|effect| Event::RuleExpired { id: effect.id })

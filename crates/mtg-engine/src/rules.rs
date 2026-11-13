@@ -48,6 +48,19 @@ pub enum Rule {
     MustAttack(Vec<ObjectRef>),
     /// Each creature attacks the player paired with it each combat of its duration if able (Encore, CR 702.141).
     MustAttackPlayers(Vec<(ObjectRef, PlayerId)>),
+    /// Creatures attack the planeswalker each combat if able (CR 508.1d): the creatures named and every creature the
+    /// players control as attackers are declared.
+    MustAttackAt {
+        /// The creatures named.
+        creatures: Vec<ObjectRef>,
+        /// The players whose creatures attack it.
+        players: Vec<PlayerId>,
+        /// The planeswalker they attack.
+        at: ObjectRef,
+        /// The players whose next turn the rule lasts through: the named players, or the controllers of the named
+        /// creatures as it began.
+        turn_of: Vec<PlayerId>,
+    },
     /// The creatures block each combat if able (CR 509.1c).
     MustBlock(Vec<ObjectRef>),
     /// The creatures block the attacker if able (Provoke, CR 509.1c).
@@ -217,6 +230,14 @@ pub enum Rule {
     NoMaxHandSize(Vec<PlayerId>),
     /// The players may activate each of their planeswalkers' loyalty abilities twice each turn (CR 606.3).
     LoyaltyTwice(Vec<PlayerId>),
+    /// The players may pay the cost rather than the echo cost of each permanent they control (CR 702.30).
+    EchoRather {
+        /// The players it covers.
+        players: Vec<PlayerId>,
+        /// The cost they may pay instead.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        cost: mtg_cards::cost::Cost,
+    },
     /// The controller reveals the first card they draw each turn (only on their turns with `your_turns`, only when
     /// they choose to with `may`).
     RevealFirstDraw {
@@ -623,6 +644,12 @@ impl RuleEffect {
                 gone(named) && !cast_now
             }),
             Rule::MustAttackPlayers(pairs) => pairs.iter().all(|(named, _)| gone(named)),
+            Rule::MustAttackAt {
+                creatures,
+                players,
+                at,
+                ..
+            } => gone(at) || (players.is_empty() && creatures.iter().all(gone)),
             Rule::MustBlockAttacker { blockers, attacker } => {
                 gone(attacker) || blockers.iter().all(gone)
             }
@@ -637,6 +664,15 @@ impl RuleEffect {
             _ => false,
         }
     }
+}
+
+/// What a requirement to attack a planeswalker binds: one creature, or every creature of a player.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub(crate) enum AttackerOf {
+    /// The creature named.
+    Creature(ObjectRef),
+    /// Each creature the player controls.
+    Player(PlayerId),
 }
 
 /// A trigger that triggers an additional time: whose permanents, and the event that causes it.
@@ -674,6 +710,8 @@ pub(crate) struct RulesInForce {
     pub(crate) quirks: crate::combat_quirks::QuirkRules,
     must_attack: BTreeSet<ObjectId>,
     attack_players: Vec<(ObjectId, PlayerId)>,
+    /// The planeswalkers creatures attack if able: by creature, and by the player whose creatures do.
+    attack_at: Vec<(AttackerOf, ObjectRef)>,
     must_block: BTreeSet<ObjectId>,
     uncounterable: BTreeSet<ObjectId>,
     unregenerable: BTreeSet<ObjectId>,
@@ -722,6 +760,8 @@ pub(crate) struct RulesInForce {
     no_hand_limit: BTreeSet<PlayerId>,
     /// The players who may activate each planeswalker's loyalty abilities twice each turn.
     loyalty_twice: BTreeSet<PlayerId>,
+    /// The costs each player may pay rather than the echo cost of a permanent they control, in the order the rules began.
+    echo_rather: Vec<(PlayerId, mtg_cards::cost::Cost)>,
     /// The reveals of first draws in force: the controller, the source, whether optional, whether on their turns only.
     reveal_first_draw: Vec<(PlayerId, Option<ObjectRef>, bool, bool)>,
     skip_draw: BTreeSet<PlayerId>,
@@ -1070,6 +1110,23 @@ impl RulesInForce {
             Rule::MustAttackPlayers(pairs) => self
                 .attack_players
                 .extend(pairs.iter().map(|(named, player)| (named.id, *player))),
+            Rule::MustAttackAt {
+                creatures,
+                players,
+                at,
+                ..
+            } => {
+                self.attack_at.extend(
+                    creatures
+                        .iter()
+                        .map(|named| (AttackerOf::Creature(*named), *at))
+                        .chain(
+                            players
+                                .iter()
+                                .map(|player| (AttackerOf::Player(*player), *at)),
+                        ),
+                );
+            }
             Rule::MustBlock(named) => self.must_block.extend(ids(named)),
             Rule::MustBlockAttacker { .. } | Rule::Combat { .. } | Rule::IgnoreHexproof { .. } => {
                 self.quirks.put(rule);
@@ -1167,6 +1224,9 @@ impl RulesInForce {
                 .extend(players.iter().map(|player| (*player, controller))),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
             Rule::LoyaltyTwice(players) => self.loyalty_twice.extend(players),
+            Rule::EchoRather { players, cost } => self
+                .echo_rather
+                .extend(players.iter().map(|player| (*player, cost.clone()))),
             Rule::RevealFirstDraw { may, your_turns } => {
                 self.reveal_first_draw
                     .push((controller, source, *may, *your_turns));
@@ -1441,6 +1501,39 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 .zip(scope.players(players)?)
                 .collect(),
         ),
+        GameRule::MustAttackAt { who, of, at } => {
+            let creatures = match who {
+                Some(who) => objects(who, Zone::Battlefield)?,
+                None => Vec::new(),
+            };
+            let players = match of {
+                Some(of) => scope.players(of)?,
+                None => Vec::new(),
+            };
+            let mut turn_of = players.clone();
+            for creature in &creatures {
+                if let Some(controller) =
+                    crate::characteristics::controller_of(scope.state, creature.id)
+                    && !turn_of.contains(&controller)
+                {
+                    turn_of.push(controller);
+                }
+            }
+            match objects(at, Zone::Battlefield)?.first() {
+                Some(at) => Rule::MustAttackAt {
+                    creatures,
+                    players,
+                    at: *at,
+                    turn_of,
+                },
+                None => Rule::MustAttackAt {
+                    creatures: Vec::new(),
+                    players: Vec::new(),
+                    at: scope.source,
+                    turn_of,
+                },
+            }
+        }
         GameRule::MustBlock(who) => Rule::MustBlock(objects(who, Zone::Battlefield)?),
         GameRule::MustBlockAttacker { .. }
         | GameRule::Combat { .. }
@@ -1599,6 +1692,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::NoMaxHandSize(who) => Rule::NoMaxHandSize(scope.players(who)?),
         GameRule::LoyaltyTwice(who) => Rule::LoyaltyTwice(scope.players(who)?),
+        GameRule::EchoRather(cost) => Rule::EchoRather {
+            players: scope.players(&Ref::You)?,
+            cost: cost.clone(),
+        },
         GameRule::RevealFirstDraw { may, your_turns } => Rule::RevealFirstDraw {
             may: *may,
             your_turns: *your_turns,
@@ -1707,6 +1804,9 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
             counters, keyword, ..
         } => *counters == 0 && keyword.is_none(),
         Rule::MustAttackPlayers(pairs) => pairs.is_empty(),
+        Rule::MustAttackAt {
+            creatures, players, ..
+        } => creatures.is_empty() && players.is_empty(),
         Rule::MustBlockAttacker { blockers, .. } => blockers.is_empty(),
         Rule::Combat { creatures, .. } => creatures.is_empty(),
         Rule::IgnoreHexproof {
@@ -1740,6 +1840,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::NoLegendRule(players)
         | Rule::NoMaxHandSize(players)
         | Rule::LoyaltyTwice(players)
+        | Rule::EchoRather { players, .. }
         | Rule::AttackAsThoughHasteAt(players) => players.is_empty(),
         Rule::MayCastRather { casts, .. } => casts.is_empty(),
         Rule::MaxHandSize(sizes) => sizes.is_empty(),
@@ -1889,6 +1990,7 @@ static NONE: RulesInForce = RulesInForce {
     quirks: crate::combat_quirks::QuirkRules::NONE,
     must_attack: BTreeSet::new(),
     attack_players: Vec::new(),
+    attack_at: Vec::new(),
     must_block: BTreeSet::new(),
     uncounterable: BTreeSet::new(),
     unregenerable: BTreeSet::new(),
@@ -1921,6 +2023,7 @@ static NONE: RulesInForce = RulesInForce {
     exile_found: Vec::new(),
     no_hand_limit: BTreeSet::new(),
     loyalty_twice: BTreeSet::new(),
+    echo_rather: Vec::new(),
     reveal_first_draw: Vec::new(),
     skip_draw: BTreeSet::new(),
     look_top: BTreeSet::new(),
@@ -2231,6 +2334,28 @@ pub fn must_attack_players(state: &GameState, id: ObjectId) -> Vec<PlayerId> {
         .collect()
 }
 
+/// The planeswalkers the creature `id` attacks this combat if able, in the order the rules named them: those a rule names
+/// it for, and those a rule names its controller for.
+pub fn must_attack_at(state: &GameState, id: ObjectId) -> Vec<ObjectId> {
+    let controller = crate::characteristics::controller_of(state, id);
+    let counter = state.object(id).map(crate::object::GameObject::counter);
+    state
+        .rules()
+        .attack_at
+        .iter()
+        .filter(|(by, _)| match by {
+            AttackerOf::Creature(named) => named.id == id && Some(named.counter) == counter,
+            AttackerOf::Player(player) => Some(*player) == controller,
+        })
+        .filter(|(_, at)| {
+            state
+                .object(at.id)
+                .is_some_and(|o| o.counter() == at.counter)
+        })
+        .map(|(_, at)| at.id)
+        .collect()
+}
+
 /// Whether the creature `id` blocks each combat if able: the one place the block declaration reads this requirement.
 pub fn must_block(state: &GameState, id: ObjectId) -> bool {
     state.rules().must_block.contains(&id)
@@ -2304,6 +2429,18 @@ pub fn loyalty_activations(state: &GameState, player: PlayerId) -> u32 {
     } else {
         1
     }
+}
+
+/// The costs `player` may pay rather than the echo cost of a permanent they control (Thick-Skinned Goblin), in the
+/// order the rules began, each once.
+pub(crate) fn echo_rather(state: &GameState, player: PlayerId) -> Vec<mtg_cards::cost::Cost> {
+    let mut costs: Vec<mtg_cards::cost::Cost> = Vec::new();
+    for (whose, cost) in &state.rules().echo_rather {
+        if *whose == player && !costs.contains(cost) {
+            costs.push(cost.clone());
+        }
+    }
+    costs
 }
 
 /// Whether `player` can't draw cards: the one place a draw reads this rule.

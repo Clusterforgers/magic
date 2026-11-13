@@ -1,16 +1,24 @@
 {
   "oracle_id": "7340dbcb-4b26-4038-be8c-a89e76294221",
   "name": "Gideon Jura",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Gideon Jura",
       "oracle_fingerprint": "248d3f53dfa8cc50aaddd27d12227788",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 0, "end": 98 }
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MustAttackAt": { "of": { "Target": 0 }, "at": "This" } },
+                  "duration": "TheirNextTurn"
+                }
+              }
+            ]
           }
         },
         {

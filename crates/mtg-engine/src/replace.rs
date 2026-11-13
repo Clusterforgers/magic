@@ -775,6 +775,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::DayIfNeither
         | ReplaceBy::EntersPrepared
         | ReplaceBy::ChooseWord(_)
+        | ReplaceBy::OpponentChooses(_)
         | ReplaceBy::UnderChosenOpponent
         | ReplaceBy::Riot
         | ReplaceBy::WithCounterOf(_)
@@ -821,6 +822,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::WithCountersOf { .. }
                 | ReplaceBy::EntersPrepared
                 | ReplaceBy::ChooseWord(_)
+                | ReplaceBy::OpponentChooses(_)
                 | ReplaceBy::UnderChosenOpponent
                 | ReplaceBy::BecomesChoice(_)
                 | ReplaceBy::Mill(_)
@@ -2974,7 +2976,7 @@ impl Pass<'_> {
                 }
             }
             ReplaceBy::EntersPrepared => self.enters_prepared(at, object, controller),
-            ReplaceBy::Choose(_) | ReplaceBy::ChooseWord(_) => {
+            ReplaceBy::Choose(_) | ReplaceBy::ChooseWord(_) | ReplaceBy::OpponentChooses(_) => {
                 let chosen = match self.e15f_chosen(source, controller, by)? {
                     Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
                     Asked::Got(chosen) => chosen,

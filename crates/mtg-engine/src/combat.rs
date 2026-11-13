@@ -386,6 +386,11 @@ fn paired_defender(
     must_attack_players(state, object)
         .into_iter()
         .map(AttackTarget::Player)
+        .chain(
+            crate::rules::must_attack_at(state, object)
+                .into_iter()
+                .map(AttackTarget::Planeswalker),
+        )
         .find(|target| defenders.contains(target))
 }
 

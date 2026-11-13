@@ -131,6 +131,7 @@ mod r281_lock_door;
 mod r281_pay_one_of;
 mod r376_choose_words;
 mod r378_parade;
+mod r5501_echo_rather;
 mod regenerate;
 mod remove_counters;
 mod remove_from_combat;

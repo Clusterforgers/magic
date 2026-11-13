@@ -1135,6 +1135,13 @@ describe('events with more than one shape', () => {
       'Grizzly Bears must attack Ana if able until end of turn',
     ],
     [
+      ruleEffect(
+        { MustAttackAt: { creatures: [], players: [1], at: { id: 2, counter: 0 }, turn_of: [1] } },
+        'UntilEndOfTurn',
+      ),
+      'Creatures Bo controls must attack Hill Giant if able until end of turn',
+    ],
+    [
       ruleEffect({ MustAttack: [{ id: 1, counter: 0 }] }, 'UntilEndOfTurn'),
       'Grizzly Bears must attack if able until end of turn',
     ],

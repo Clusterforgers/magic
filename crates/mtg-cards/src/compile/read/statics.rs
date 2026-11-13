@@ -344,6 +344,18 @@ fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
     if r.words("choose a player") {
         return Some(replacement(ReplaceBy::Choose(EntersChoice::Player), None));
     }
+    if r.words("an opponent chooses a creature type") {
+        return Some(replacement(
+            ReplaceBy::OpponentChooses(EntersChoice::CreatureType),
+            None,
+        ));
+    }
+    if r.words("an opponent chooses a color") {
+        return Some(replacement(
+            ReplaceBy::OpponentChooses(EntersChoice::Color),
+            None,
+        ));
+    }
     if r.words("choose an opponent") {
         return Some(replacement(ReplaceBy::Choose(EntersChoice::Opponent), None));
     }
@@ -598,6 +610,8 @@ fn rule(r: &mut Reader<'_>) -> Option<Ability> {
     } else if let Some(rule) = r.attempt(super::r303b_statics::r303b_rule_read) {
         rule
     } else if let Some(rule) = r.attempt(super::w17b_statics::w17b_read) {
+        rule
+    } else if let Some(rule) = r.attempt(super::r5501_echo::r5501_echo_rather) {
         rule
     } else if let Some(rule) = r.attempt(player_rule) {
         rule
@@ -1581,6 +1595,12 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
         (ReplaceBy::Choose(EntersChoice::Opponent), None) => {
             vec!["As ~ enters, choose an opponent".to_owned()]
         }
+        (ReplaceBy::OpponentChooses(EntersChoice::CreatureType), None) => {
+            vec!["As ~ enters, an opponent chooses a creature type".to_owned()]
+        }
+        (ReplaceBy::OpponentChooses(EntersChoice::Color), None) => {
+            vec!["As ~ enters, an opponent chooses a color".to_owned()]
+        }
         (
             ReplaceBy::Choose(
                 kind @ (EntersChoice::CardType
@@ -1869,6 +1889,12 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
         && let Some(texts) = player_rule_texts(rule)
     {
         return texts;
+    }
+    if from == ZoneKind::Battlefield
+        && condition.is_none()
+        && let Some(text) = super::r5501_echo::r5501_echo_rather_text(rule)
+    {
+        return vec![text];
     }
     // Only a card that casts itself from its graveyard words a condition here; the others are said without one.
     if matches!(from, ZoneKind::Graveyard | ZoneKind::Exile) {
