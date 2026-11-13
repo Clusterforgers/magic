@@ -565,11 +565,11 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     {
         return Some(found);
     }
-    if let Some(found) = l31d_x_color::r405_chosen_only_read(text, kind, |head| {
-        clause_with(head, kind, x_free, own)
-    }) && written_variants(&found)
-        .iter()
-        .any(|written| same_text(written, text))
+    if let Some(found) =
+        l31d_x_color::r405_chosen_only_read(text, kind, |head| clause_with(head, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
     {
         return Some(found);
     }

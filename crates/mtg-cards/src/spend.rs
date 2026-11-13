@@ -764,7 +764,14 @@ mod tests {
     #[case::no_x(r#"{"facts":["NoXInCost"]}"#, 2, false, false, false, true)]
     #[case::x_refused(r#"{"facts":["Colored","NoXInCost"]}"#, 2, true, false, false, false)]
     #[case::monocolored(r#"{"facts":["Monocolored"]}"#, 1, false, false, false, true)]
-    #[case::two_colors_are_not_monocolored(r#"{"facts":["Monocolored"]}"#, 2, false, false, false, false)]
+    #[case::two_colors_are_not_monocolored(
+        r#"{"facts":["Monocolored"]}"#,
+        2,
+        false,
+        false,
+        false,
+        false
+    )]
     #[case::equip(r#"{"facts":["Equip"]}"#, 0, false, true, false, true)]
     #[case::another_ability(r#"{"facts":["Equip"]}"#, 0, false, false, false, false)]
     #[case::disturb(r#"{"facts":["Disturb"]}"#, 1, false, false, true, true)]

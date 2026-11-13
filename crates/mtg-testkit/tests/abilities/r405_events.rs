@@ -98,9 +98,7 @@ fn the_auditor_triggers_when_a_case_is_solved(#[case] seats: usize) -> Result<()
         if driver.state().turn().step() == Step::End
             && driver.state().stack().is_empty()
             && driver.state().pending_triggers().is_empty()
-            && events
-                .iter()
-                .any(|e| matches!(e, Event::Solved { .. }))
+            && events.iter().any(|e| matches!(e, Event::Solved { .. }))
         {
             break;
         }

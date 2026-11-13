@@ -196,7 +196,10 @@ fn the_attendant_gives_a_counter_to_non_humans(
     let object = driver.state().object(spell).unwrap();
     assert_eq!(object.zone(), Zone::Battlefield);
     assert_eq!(
-        object.permanent().unwrap().counters_of(&CounterKind::PlusOne),
+        object
+            .permanent()
+            .unwrap()
+            .counters_of(&CounterKind::PlusOne),
         counters
     );
     r405_replays(&driver);
@@ -277,9 +280,7 @@ fn the_throne_pays_for_monocolored_spells_of_its_color(
 #[rstest]
 #[case::two_seats(2)]
 #[case::three_seats(3)]
-fn the_thrones_draw_is_paid_with_the_chosen_color(
-    #[case] seats: usize,
-) -> Result<(), ScriptError> {
+fn the_thrones_draw_is_paid_with_the_chosen_color(#[case] seats: usize) -> Result<(), ScriptError> {
     let spell = || r405_spell(&[Instant], &[], "{9}", 0);
     let red = r405_throne(seats, &["Mountain", "Mountain", "Mountain"], spell())?;
     let mixed = r405_throne(seats, &["Mountain", "Forest", "Forest"], spell())?;
@@ -347,9 +348,7 @@ fn the_hold_targets_only_tapped_creatures_as_it_is_cast(
 #[rstest]
 #[case::two_seats(2)]
 #[case::four_seats(4)]
-fn the_stone_targets_creatures_with_a_tap_ability(
-    #[case] seats: usize,
-) -> Result<(), ScriptError> {
+fn the_stone_targets_creatures_with_a_tap_ability(#[case] seats: usize) -> Result<(), ScriptError> {
     let mut scenario = Scenario::new(seats).at(2, 0, Step::Main1).battlefield(
         0,
         [
@@ -375,7 +374,15 @@ fn the_stone_targets_creatures_with_a_tap_ability(
     driver.answer(Answer::PayMana(PayChoice::Auto))?;
     driver.pass()?;
     let id = driver.id_of("Llanowar Elves")?;
-    assert!(!driver.state().object(id).unwrap().permanent().unwrap().tapped());
+    assert!(
+        !driver
+            .state()
+            .object(id)
+            .unwrap()
+            .permanent()
+            .unwrap()
+            .tapped()
+    );
     r405_replays(&driver);
     Ok(())
 }
@@ -384,9 +391,7 @@ fn the_stone_targets_creatures_with_a_tap_ability(
 #[rstest]
 #[case::two_seats(2)]
 #[case::three_seats(3)]
-fn break_the_ice_targets_snow_or_colorless_lands(
-    #[case] seats: usize,
-) -> Result<(), ScriptError> {
+fn break_the_ice_targets_snow_or_colorless_lands(#[case] seats: usize) -> Result<(), ScriptError> {
     let foe = seats - 1;
     let mut scenario = Scenario::new(seats)
         .at(2, 0, Step::Main1)

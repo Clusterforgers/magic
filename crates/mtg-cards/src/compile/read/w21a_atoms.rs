@@ -209,12 +209,11 @@ pub(super) fn w21a_adjective_text(pred: &Pred) -> Option<String> {
 /// A suffix of this module after the noun.
 pub(super) fn w21a_suffix(r: &mut Reader<'_>) -> Option<Pred> {
     // "that is snow or could produce {C}".
-    if r
-        .attempt(|r| {
-            r.need("that is snow or could produce")?;
-            (r.symbol()? == "C").then_some(())
-        })
-        .is_some()
+    if r.attempt(|r| {
+        r.need("that is snow or could produce")?;
+        (r.symbol()? == "C").then_some(())
+    })
+    .is_some()
     {
         return Some(snow_or_colorless());
     }
@@ -228,13 +227,12 @@ pub(super) fn w21a_suffix(r: &mut Reader<'_>) -> Option<Pred> {
         return Some(pred);
     }
     // "that has an activated ability with {T} in its cost": the symbol is a token of its own.
-    if r
-        .attempt(|r| {
-            r.need("that has an activated ability with")?;
-            (r.symbol()? == "T").then_some(())?;
-            r.need("in its cost")
-        })
-        .is_some()
+    if r.attempt(|r| {
+        r.need("that has an activated ability with")?;
+        (r.symbol()? == "T").then_some(())?;
+        r.need("in its cost")
+    })
+    .is_some()
     {
         return Some(Pred::HasAbility(HeldAbility::TapCost));
     }

@@ -316,7 +316,8 @@ fn equip() -> SpendFilter {
 fn equip_abilities(r: &mut Reader<'_>) -> Option<SpendOn> {
     r.attempt(|r| {
         r.need("activate")?;
-        (r.words("an equip ability") || r.words("equip abilities")).then(|| SpendOn::Ability(equip()))
+        (r.words("an equip ability") || r.words("equip abilities"))
+            .then(|| SpendOn::Ability(equip()))
     })
 }
 
@@ -579,21 +580,30 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
             "Spend this mana only to activate abilities".to_owned()
         }
         // "Spend this mana only to cast a spell that's one or more colors without {X} in its mana cost."
-        [SpendOn::Spell(filter)] if filter.facts.iter().any(|fact| matches!(fact, SpendFact::Colored | SpendFact::NoXInCost)) => {
+        [SpendOn::Spell(filter)]
+            if filter
+                .facts
+                .iter()
+                .any(|fact| matches!(fact, SpendFact::Colored | SpendFact::NoXInCost)) =>
+        {
             format!("Spend this mana only to cast {}", one_spell_text(filter)?)
         }
         [SpendOn::Spell(filter)] if !unworded(filter) => {
             format!("Spend this mana only to cast {}", spells_text(filter)?)
         }
         // "Spend this mana only to pay a disturb cost or cast an instant or sorcery spell."
-        [SpendOn::Spell(first), SpendOn::Spell(spell)] if *first == disturb() && !unworded(spell) => {
+        [SpendOn::Spell(first), SpendOn::Spell(spell)]
+            if *first == disturb() && !unworded(spell) =>
+        {
             format!(
                 "Spend this mana only to pay a disturb cost or cast {}",
                 one_spell_text(spell)?
             )
         }
         // "Spend this mana only to cast Equipment spells or activate equip abilities."
-        [SpendOn::Spell(spell), SpendOn::Ability(source)] if *source == equip() && !unworded(spell) => {
+        [SpendOn::Spell(spell), SpendOn::Ability(source)]
+            if *source == equip() && !unworded(spell) =>
+        {
             format!(
                 "Spend this mana only to cast {} or activate equip abilities",
                 spells_text(spell)?
