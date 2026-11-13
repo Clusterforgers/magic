@@ -1,5 +1,6 @@
 //! Goal: objects and zones through the testkit: copies, tokens, faces, attachments, counters and zone moves; one binary of the `mtg-testkit` families (`docs/testing.md`).
 
+mod aeve_storm;
 mod amass;
 mod attachments;
 mod bestow;

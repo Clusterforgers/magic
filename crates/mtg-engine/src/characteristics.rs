@@ -110,7 +110,7 @@ pub fn characteristics(state: &GameState, id: ObjectId) -> Option<Characteristic
 }
 
 /// Whether the object `id` has `supertype`: printed on its card or given by an effect (CR 205.4).
-pub(crate) fn has_supertype(state: &GameState, id: ObjectId, supertype: Supertype) -> bool {
+pub fn has_supertype(state: &GameState, id: ObjectId, supertype: Supertype) -> bool {
     let printed = state
         .object(id)
         .is_some_and(|object| object.card().supertypes.contains(&supertype));
