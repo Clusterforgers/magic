@@ -1,7 +1,7 @@
 {
   "oracle_id": "01efde9a-a20d-4972-b17f-c2d9eb024b0b",
   "name": "Sword-Swallowing Seraph",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sword-Swallowing Seraph",
@@ -10,15 +10,32 @@
         { "Keyword": "Flying" },
         { "Keyword": "Vigilance" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 18, "end": 103 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "PutSticker": {
+                        "on": [{ "Not": { "Type": "Land" } }, { "OwnedBy": "You" }],
+                        "kind": "Name"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 104, "end": 218 }
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "WithSticker": "Name" }, "Other"] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
           }
         }
       ]

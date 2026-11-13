@@ -1,0 +1,781 @@
+[
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Did": {
+      "action": "PutSticker",
+      "who": "You"
+     }
+    },
+    "effects": [
+     {
+      "If": {
+       "condition": {
+        "TriggeringSticker": "Art"
+       },
+       "then": [
+        {
+         "PutCounters": {
+          "on": "This",
+          "counter": "+1/+1"
+         }
+        }
+       ],
+       "otherwise": [
+        {
+         "Continuous": {
+          "affected": "This",
+          "mods": [
+           {
+            "ModifyPT": {
+             "power": 1,
+             "toughness": 1
+            }
+           }
+          ],
+          "duration": "UntilEndOfTurn"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever you place a sticker, this creature gets +1/+1 until end of turn. If it's an art sticker, instead put a +1/+1 counter on this creature."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "PutSticker": {
+          "on": [
+           "This"
+          ],
+          "kind": "Name"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "LookAtTop": {
+       "count": "StickerVowels",
+       "as": "top"
+      }
+     },
+     {
+      "Choose": {
+       "from": {
+        "Bound": "top"
+       },
+       "as": "kept",
+       "rest_as": "rest"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "kept"
+       },
+       "to": "Hand"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "rest"
+       },
+       "to": {
+        "Library": {
+         "place": "Bottom",
+         "order": "Chosen"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "When this creature enters, you may put a name sticker on it, then look at the top X cards of your library, where X is the number of unique vowels on that sticker. Put one of those cards into your hand and the rest on the bottom of your library in any order."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "PutSticker": {
+          "on": [
+           "This"
+          ],
+          "kind": "Name"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "Reflexive": {
+       "targets": [
+        {
+         "what": {
+          "Object": [
+           {
+            "Type": "Creature"
+           }
+          ]
+         },
+         "bounds": {
+          "min": 0,
+          "max": "StickerVowels"
+         }
+        }
+       ],
+       "effects": [
+        {
+         "Continuous": {
+          "affected": {
+           "Target": 0
+          },
+          "mods": [
+           {
+            "ModifyPT": {
+             "power": -1,
+             "toughness": -1
+            }
+           }
+          ],
+          "duration": "UntilEndOfTurn"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "When this creature enters, you may put a name sticker on it. When you do, up to X target creatures each get -1/-1 until end of turn, where X is the number of unique vowels on that sticker."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "This",
+    "mods": [
+     {
+      "SetPT": {
+       "power": {
+        "Sum": [
+         {
+          "Count": [
+           {
+            "WithSticker": "Art"
+           },
+           {
+            "ControlledBy": "You"
+           }
+          ]
+         },
+         {
+          "Count": [
+           {
+            "WithSticker": "Art"
+           },
+           {
+            "In": "Graveyard"
+           },
+           {
+            "OwnedBy": "You"
+           }
+          ]
+         }
+        ]
+       },
+       "toughness": 4
+      }
+     }
+    ],
+    "defining": true
+   }
+  },
+  "Roxi's power is equal to the number of permanents you control with an art sticker plus the number of cards in your graveyard with an art sticker."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "PutSticker": {
+       "on": [
+        {
+         "Not": {
+          "Type": "Land"
+         }
+        },
+        {
+         "OwnedBy": "You"
+        }
+       ],
+       "kind": "Art",
+       "up_to": 2
+      }
+     }
+    ]
+   }
+  },
+  "When Roxi enters, distribute up to two art stickers among one or two nonland permanents you own."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": "{3}{B}",
+    "timing": "Sorcery",
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "In": "Graveyard"
+        },
+        {
+         "OwnedBy": "You"
+        },
+        "Stickered"
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Move": {
+       "what": {
+        "Target": 0
+       },
+       "to": {
+        "Battlefield": {}
+       }
+      }
+     },
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        {
+         "AddKeyword": "Haste"
+        }
+       ],
+       "duration": "Forever"
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "when": {
+        "StepBegins": {
+         "step": "End"
+        }
+       },
+       "effects": [
+        {
+         "Exile": {
+          "what": {
+           "Target": 0
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "{3}{B}: Return target creature card with a sticker on it from your graveyard to the battlefield. That creature gains haste. Exile it at the beginning of the next end step. Activate only as a sorcery."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "PutSticker": {
+          "on": [
+           "This"
+          ],
+          "kind": "Name"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "GainLife": {
+       "amount": "StickerVowels"
+      }
+     }
+    ]
+   }
+  },
+  "When this creature enters, you may put a name sticker on it. You gain X life, where X is the number of unique vowels on that sticker."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "PutSticker": {
+          "on": [
+           "This"
+          ],
+          "kind": "Name"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "PutCounters": {
+       "on": "This",
+       "counter": "+1/+1",
+       "count": "StickerVowels"
+      }
+     }
+    ]
+   }
+  },
+  "When this creature enters, you may put a name sticker on it. Put a +1/+1 counter on it for each unique vowel on that sticker."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "AnyOf": [
+      {
+       "Tapped": {
+        "what": [
+         {
+          "Type": "Artifact"
+         }
+        ]
+       }
+      },
+      {
+       "Did": {
+        "action": "ActivatedWithoutTap",
+        "what": [
+         {
+          "Type": "Artifact"
+         }
+        ]
+       }
+      }
+     ]
+    },
+    "effects": [
+     {
+      "DealDamage": {
+       "to": {
+        "ControllerOf": "Triggering"
+       },
+       "amount": 1
+      }
+     }
+    ]
+   }
+  },
+  "Whenever an artifact becomes tapped or a player activates an artifact's ability without {T} in its activation cost, this enchantment deals 1 damage to that artifact's controller."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "AnyOf": [
+      {
+       "Tapped": {
+        "what": [
+         {
+          "Type": "Artifact"
+         },
+         {
+          "ControlledBy": "Opponents"
+         }
+        ]
+       }
+      },
+      {
+       "Did": {
+        "action": "ActivatedWithoutTap",
+        "who": "Opponents",
+        "what": [
+         {
+          "Type": "Artifact"
+         }
+        ]
+       }
+      }
+     ]
+    },
+    "effects": [
+     {
+      "GainLife": {
+       "amount": 1
+      }
+     }
+    ]
+   }
+  },
+  "Whenever an artifact an opponent controls becomes tapped or an opponent activates an artifact's ability without {T} in its activation cost, you gain 1 life."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "AnyOf": [
+      {
+       "Tapped": {
+        "what": [
+         {
+          "Is": "Attached"
+         }
+        ]
+       }
+      },
+      {
+       "Did": {
+        "action": "ActivatedWithoutTap",
+        "what": [
+         {
+          "Is": "Attached"
+         }
+        ]
+       }
+      }
+     ]
+    },
+    "effects": [
+     {
+      "DealDamage": {
+       "to": {
+        "ControllerOf": "Triggering"
+       },
+       "amount": 2
+      }
+     }
+    ]
+   }
+  },
+  "Whenever enchanted artifact becomes tapped or a player activates an ability of enchanted artifact without {T} in its activation cost, this Aura deals 2 damage to that artifact's controller."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "Upkeep"
+     }
+    },
+    "if": {
+     "Compare": {
+      "left": {
+       "TallyLastTurn": {
+        "event": "Entered",
+        "who": "You",
+        "filter": [
+         {
+          "Type": "Creature"
+         },
+         "Other"
+        ]
+       }
+      },
+      "op": "Ge",
+      "right": 1
+     }
+    },
+    "effects": [
+     {
+      "Draw": {}
+     }
+    ]
+   }
+  },
+  "At the beginning of each upkeep, if you had another creature enter the battlefield under your control last turn, draw a card."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "DealDamage": {
+       "to": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "Opponents"
+         }
+        ]
+       },
+       "amount": {
+        "TallyTotal": {
+         "event": "SpellCast",
+         "who": "You",
+         "filter": [
+          "Other"
+         ],
+         "stat": "ManaValue"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Call Forth the Tempest deals damage to each creature your opponents control equal to the total mana value of other spells you've cast this turn."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Subtype": "Wall"
+        },
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Bind": {
+       "what": {
+        "Target": 0
+       },
+       "as": "wall"
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "when": {
+        "StepBegins": {
+         "step": "EndCombat"
+        }
+       },
+       "effects": [
+        {
+         "Destroy": {
+          "what": {
+           "Each": [
+            {
+             "Type": "Creature"
+            },
+            {
+             "BlockedThisTurnBy": {
+              "Bound": "wall"
+             }
+            }
+           ]
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Choose target Wall creature. At this turn's next end of combat, destroy all creatures that were blocked by that creature this turn."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "SpellCast": {
+      "what": [
+       {
+        "HasKeywordNamed": "Teamwork"
+       },
+       "AdditionalCostPaid"
+      ],
+      "by": "You"
+     }
+    },
+    "effects": [
+     {
+      "CreateToken": {
+       "token": {
+        "Custom": {
+         "name": "Robot Hero",
+         "types": [
+          "Artifact",
+          "Creature"
+         ],
+         "subtypes": [
+          "Robot",
+          "Hero"
+         ],
+         "power": 1,
+         "toughness": 1,
+         "abilities": [
+          {
+           "Keyword": "Flying"
+          }
+         ]
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Whenever you cast a spell using teamwork, create a 1/1 colorless Robot Hero artifact creature token with flying."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "If": {
+       "condition": {
+        "All": [
+         {
+          "Matches": {
+           "subject": "This",
+           "selector": [
+            {
+             "CastFrom": "Hand"
+            }
+           ]
+          }
+         },
+         {
+          "Compare": {
+           "left": {
+            "CastSameNameThisGame": "You"
+           },
+           "op": "Ge",
+           "right": 2
+          }
+         }
+        ]
+       },
+       "then": [
+        {
+         "WinGame": {}
+        }
+       ],
+       "otherwise": [
+        {
+         "Move": {
+          "what": "This",
+          "to": {
+           "Library": {
+            "place": {
+             "Below": 6
+            }
+           }
+          }
+         }
+        },
+        {
+         "GainLife": {
+          "amount": 7
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "If this spell was cast from your hand and you've cast another spell named Approach of the Second Sun this game, you win the game. Otherwise, put Approach of the Second Sun into its owner's library seventh from the top and you gain 7 life."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "BeginCombat",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "Parade": {
+       "what": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Parade! \u2014 At the beginning of combat on your turn, choose creatures you control one at a time until each creature you control has been chosen. Each of those creatures gets +1/+1 until end of turn for each creature chosen before it."
+ ]
+]

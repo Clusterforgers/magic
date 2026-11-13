@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { CircleAlertIcon } from 'lucide-react'
 import { PageShell } from '@/components/PageShell'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -12,6 +12,8 @@ import { cn } from '@/lib/utils'
 import type { CardsApi } from '@/net/cards'
 import type { DecksApi } from '@/net/decks'
 import type { FixMarksApi } from '@/net/fixMarks'
+import type { PrintingsApi } from '@/net/printings'
+import { ArtPicker } from '@/features/cards/ArtPicker'
 import type { CardHit, DeckView, DeckZone } from '@/protocol/generated'
 import {
   addCard,
@@ -26,10 +28,11 @@ import {
   openingPane,
   removeLine,
   setByHand,
+  setPrinting,
   sameDeck,
   totalOf,
 } from './deckEdit'
-import type { Draft } from './deckEdit'
+import type { Draft, Line } from './deckEdit'
 import { CardPreview } from './CardPreview'
 import { judgeCommander } from './commanderCheck'
 import type { FindKind } from './CommanderSlot'
@@ -86,17 +89,20 @@ interface BuilderProps {
   cards: CardsApi
   /** The fix-mark endpoints; with them a card's preview offers "Mark important to fix". */
   fixMarks?: FixMarksApi
+  /** The art endpoints; with them a card's picture opens the art picker, whose choice is saved at once. */
+  printings?: PrintingsApi
 }
 
 /**
  * The deck builder for one stored deck: card search beside the deck. Edits stay in the browser until Save sends the
  * whole deck; the server checks it and answers the report that the deck pane then shows, with the marker. While the
  * draft's cards differ from the saved ones the deck is checked live (`useLiveCheck`), so the counts, marks and reasons
- * follow the draft. A card's name opens its preview. Leaving with unsaved changes asks first. From the `sm` breakpoint
+ * follow the draft. A card's name opens its preview; its picture opens the art picker, whose choice is stored at once
+ * for a line the server holds and kept in the draft for one it does not hold yet. Leaving with unsaved changes asks first. From the `sm` breakpoint
  * the page is as tall as the window under the header and the two panes scroll inside their own regions; under `lg` a
  * Search or Deck switch shows one at a time.
  */
-export function Builder({ view, api, cards, fixMarks }: BuilderProps) {
+export function Builder({ view, api, cards, fixMarks, printings }: BuilderProps) {
   const [stored, setStored] = useState(() => ({ view, draft: draftOf(view) }))
   const [draft, setDraft] = useState<Draft>(stored.draft)
   const [saving, setSaving] = useState(false)
@@ -111,6 +117,23 @@ export function Builder({ view, api, cards, fixMarks }: BuilderProps) {
   // The card whose preview is open, kept after it closes so it fades out whole, and the control that opened it.
   const [preview, setPreview] = useState<{ card: CardHit; open: boolean } | null>(null)
   const opener = useRef<HTMLElement | null>(null)
+  const [preferred, setPreferred] = useState<Record<string, string>>({})
+  const [artFor, setArtFor] = useState<{ zone: DeckZone; card: CardHit } | null>(null)
+
+  useEffect(() => {
+    if (printings === undefined) return
+    let live = true
+    // Without the preferred art the default stands; nothing to report.
+    printings.preferred().then(
+      (found) => {
+        if (live) setPreferred(found)
+      },
+      () => undefined,
+    )
+    return () => {
+      live = false
+    }
+  }, [printings])
   const nameRef = useRef<HTMLInputElement>(null)
   const savingRef = useRef(false)
   // The commander being checked, the choice the check refused, and the search the slot asked for.
@@ -183,6 +206,39 @@ export function Builder({ view, api, cards, fixMarks }: BuilderProps) {
     setPreview({ card, open: true })
   }
 
+  const artOf = (line: Line): string | null => line.printingId ?? preferred[line.card.oracle_id] ?? null
+
+  function openArt(line: Line, from: HTMLElement | null): void {
+    opener.current = from
+    setArtFor({ zone: line.zone, card: line.card })
+  }
+
+  // A line the server holds is stored at once, and the saved copy follows, so the choice never reads as unsaved.
+  async function chooseArt(
+    zone: DeckZone,
+    card: CardHit,
+    printingId: string | null,
+    everywhere: boolean,
+  ): Promise<void> {
+    if (printings === undefined) return
+    const id = card.oracle_id
+    if (lineIn(stored.draft, zone, id) !== undefined) {
+      await printings.setLine(stored.view.id, zone, id, printingId)
+      setStored((current) => ({ ...current, draft: setPrinting(current.draft, zone, id, printingId) }))
+    }
+    setDraft((current) => setPrinting(current, zone, id, printingId))
+    if (everywhere) {
+      await printings.prefer(id, printingId)
+      setPreferred((current) => {
+        const { [id]: _, ...rest } = current
+        return printingId === null ? rest : { ...rest, [id]: printingId }
+      })
+    }
+    setAnnouncement(
+      printingId === null ? `${card.name} shows its default art.` : `Saved the art of ${card.name}.`,
+    )
+  }
+
   async function save(): Promise<void> {
     if (savingRef.current || !dirty) return
     const problem = checkName(draft.name)
@@ -246,7 +302,19 @@ export function Builder({ view, api, cards, fixMarks }: BuilderProps) {
       setDraft((current) => setByHand(current, id, on))
     },
     preview: showPreview,
+    ...(printings === undefined ? {} : { art: { of: artOf, choose: openArt } }),
   }
+  const previewLine =
+    preview === null || printings === undefined
+      ? undefined
+      : draft.lines.find((line) => line.card.oracle_id === preview.card.oracle_id)
+  const artTarget =
+    artFor === null
+      ? null
+      : (() => {
+          const line = lineIn(draft, artFor.zone, artFor.card.oracle_id)
+          return { oracleId: artFor.card.oracle_id, name: artFor.card.name, chosen: line?.printingId ?? null }
+        })()
 
   return (
     <PageShell width="wider" className="flex flex-col gap-3 py-4 sm:h-[calc(100dvh-3.5rem-1px)] sm:py-4">
@@ -303,7 +371,32 @@ export function Builder({ view, api, cards, fixMarks }: BuilderProps) {
         fixMarks={fixMarks}
         finalFocus={opener}
         onClose={() => setPreview((current) => current && { ...current, open: false })}
+        {...(previewLine === undefined
+          ? {}
+          : {
+              art: {
+                printingId: artOf(previewLine),
+                choose: () => {
+                  setPreview((current) => current && { ...current, open: false })
+                  openArt(previewLine, opener.current)
+                },
+              },
+            })}
       />
+      {printings === undefined ? null : (
+        <ArtPicker
+          target={artTarget}
+          api={printings}
+          offerEverywhere
+          onChoose={(printingId, everywhere) =>
+            artFor === null ? Promise.resolve() : chooseArt(artFor.zone, artFor.card, printingId, everywhere)
+          }
+          onClose={() => {
+            setArtFor(null)
+            opener.current?.focus()
+          }}
+        />
+      )}
       <LeaveDialog blocker={blocker} name={draft.name} />
     </PageShell>
   )

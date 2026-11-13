@@ -31,6 +31,7 @@ use crate::deck_cards::{Line, Loaded, by_hand_ids};
 use crate::decks::lines_of;
 use crate::demo;
 use crate::precon_api::judged_precon;
+use crate::printings::{preferred_of, with_preferred};
 use crate::recipe::FormatKind;
 use crate::seat_deck::ChosenDeck;
 use crate::server::AppState;
@@ -203,7 +204,9 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
         .await
         .map_err(|error| Refused::Failed(failed(&error)))?
         .ok_or(Refused::Unknown)?;
-    let lines = lines_of(&deck);
+    // A line without art of its own plays in the art the account prefers for the card.
+    let preferred = preferred_of(source, user.id.uuid()).await;
+    let lines = with_preferred(lines_of(&deck), &preferred);
     let loaded = Loaded::load(source, &lines).await?;
     let report = loaded.report_off(&deck.format, &lines).await?;
     // A card the database no longer holds stays out of the game; the report counts it as played by hand.

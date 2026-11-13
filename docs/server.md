@@ -228,6 +228,15 @@ Public and read-only (`card_api.rs`). `GET /api/cards` searches the deck cards (
 - Import (`POST /api/decks/import`, nothing saved) reads a pasted list in any `mtg-import` format (`source` detected when absent; `format: commander` takes Moxfield's first line, and a pairable second, as commanders), at most 100 000 characters and 1 000 lines, and answers `cards`, `unresolved` (with suggestions), `problems` and `ignored`, resolving names through the card index ([data-sources.md](data-sources.md), Name resolution).
 - Export (`GET /api/decks/{id}/export?format=text|arena|mtgo`) writes split cards as the format does and other multi-faced cards by their front face, with printings where the format has them. A deck the format cannot hold (MTGO text with a commander and nothing else) answers 422 `export_failed`.
 
+### Art
+
+`printings.rs`. A printing's look (`set_name`, `frame`, `finishes`, `full_art`) comes from the Scryfall import; a printing stored before it reads as unknown until the next import.
+
+- `GET /api/cards/{oracle_id}/printings` lists a card's printings newest first (`PrintingList`); public, an unknown card is 404.
+- `PUT /api/decks/{id}/printing` with `{zone, oracle_id, printing_id}` sets the art of the card's lines in that zone of the account's deck, or the default with `null`; 204, no check runs (the art is no part of the deck hash). Another account's deck, an unknown one and a zone without the card are 404; a printing that is not the card's is 400 `invalid_deck`.
+- `GET /api/me/printings`, `PUT` and `DELETE /api/me/printings/{oracle_id}` (`{printing_id}`) keep the art an account plays a card in where a line chooses none (`preferred_printings`, deleted with the account). A seat's stored deck and the deck list's pictures take it; the deck view keeps each line's own choice.
+- Import keeps the printing a line names by set and collector number (`(SET) 123`) when it is a printing of the resolved card. Games carry each card's printing in `CardIdentity`, so every seat sees the art the owner chose; tokens keep their token pictures.
+
 ### Precons
 
 `precon_api.rs`, `precons.rs`. Public and read-only: 503 `cards_unavailable` without a database; every request counts per address (`AttemptLimits::precon_requests_per_ip`; 429 `rate_limited` with `Retry-After`). `GET /api/precons` lists every precon, newest first; `GET /api/precons/{code}` returns one with issues and cards by board. Codes are case-insensitive; an unknown or malformed one is 404 `not_found`.
@@ -240,7 +249,7 @@ Public and read-only (`card_api.rs`). `GET /api/cards` searches the deck cards (
 
 ### Favourite precons
 
-`favourites.rs`: a favourite points to a precon and follows its cards and check. Needs an account (401 `unauthenticated`; 503 `cards_unavailable`). `PUT` and `DELETE /api/favourites/precons/{code}` are idempotent (204); unknown or malformed codes are 404 `not_found`; writes count per account (`AttemptLimits::favourite_writes_per_user`, 429 `rate_limited`). `PreconListItem.pictures` and `DeckListItem.pictures` are a deck's commanders, else its first card.
+`favourites.rs`: a favourite points to a precon and follows its cards and check. Needs an account (401 `unauthenticated`; 503 `cards_unavailable`). `PUT` and `DELETE /api/favourites/precons/{code}` are idempotent (204); unknown or malformed codes are 404 `not_found`; writes count per account (`AttemptLimits::favourite_writes_per_user`, 429 `rate_limited`). `PreconListItem.pictures` and `DeckListItem.pictures` are a deck's commanders, else its first card, each with the printing its line names.
 
 ### Account preferences
 

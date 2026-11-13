@@ -1,7 +1,7 @@
 {
   "oracle_id": "b3ab43f2-4f2b-4439-9254-0110ce443fdb",
   "name": "Ratadrabik of Urborg",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ratadrabik of Urborg",
@@ -16,9 +16,36 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 62, "end": 259 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Supertype": "Legendary" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": "Triggering",
+                      "except": [
+                        { "RemoveSupertype": "Legendary" },
+                        { "SetPT": { "power": 2, "toughness": 2 } },
+                        { "AddColors": ["Black"] },
+                        { "AddSubtype": "Zombie" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

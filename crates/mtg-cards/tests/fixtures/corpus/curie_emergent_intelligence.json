@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "54870f19-96f3-4cde-ae44-a9c5bbb0dbc1",
+  "oracle_id": "48cf6b88-6bca-49d4-9951-36d98befa588",
+  "multiverse_ids": [
+    652117
+  ],
+  "mtgo_id": 132307,
+  "tcgplayer_id": 541400,
+  "cardmarket_id": 758328,
+  "name": "Curie, Emergent Intelligence",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/54870f19-96f3-4cde-ae44-a9c5bbb0dbc1",
+  "scryfall_uri": "https://scryfall.com/card/pip/30/curie-emergent-intelligence?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:33Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/4/54870f19-96f3-4cde-ae44-a9c5bbb0dbc1.jpg?1783912413",
+    "normal": "https://cards.scryfall.io/normal/front/5/4/54870f19-96f3-4cde-ae44-a9c5bbb0dbc1.jpg?1783912413",
+    "large": "https://cards.scryfall.io/large/front/5/4/54870f19-96f3-4cde-ae44-a9c5bbb0dbc1.jpg?1783912413",
+    "png": "https://cards.scryfall.io/png/front/5/4/54870f19-96f3-4cde-ae44-a9c5bbb0dbc1.png?1783912413",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/4/54870f19-96f3-4cde-ae44-a9c5bbb0dbc1.jpg?1783912413",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/4/54870f19-96f3-4cde-ae44-a9c5bbb0dbc1.jpg?1783912413",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/4/54870f19-96f3-4cde-ae44-a9c5bbb0dbc1.webp?1783912413",
+    "grid": "https://cards.scryfall.io/grid/front/5/4/54870f19-96f3-4cde-ae44-a9c5bbb0dbc1.webp?1783912413",
+    "display": "https://cards.scryfall.io/display/front/5/4/54870f19-96f3-4cde-ae44-a9c5bbb0dbc1.webp?1783912413",
+    "art": "https://cards.scryfall.io/art/front/5/4/54870f19-96f3-4cde-ae44-a9c5bbb0dbc1.webp?1783912413",
+    "crop": "https://cards.scryfall.io/crop/front/5/4/54870f19-96f3-4cde-ae44-a9c5bbb0dbc1.webp?1783912413",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/4/54870f19-96f3-4cde-ae44-a9c5bbb0dbc1.jpg?1783912413"
+  },
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Legendary Artifact Creature — Robot",
+  "oracle_text": "Whenever Curie deals combat damage to a player, draw cards equal to its base power.\n{1}{U}, Exile another nontoken artifact creature you control: Curie becomes a copy of the exiled creature, except it has \"Whenever this creature deals combat damage to a player, draw cards equal to its base power.\"",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/54870f19-96f3-4cde-ae44-a9c5bbb0dbc1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A48cf6b88-6bca-49d4-9951-36d98befa588&unique=prints",
+  "collector_number": "30",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daniel Romanovsky",
+  "artist_ids": [
+    "878a38c8-617b-4c02-9b93-719c19413490"
+  ],
+  "illustration_id": "d0e69bcf-14ad-4936-920f-25b39ea54c4e",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 9140,
+  "prices": {
+    "usd": "0.30",
+    "usd_foil": "1.97",
+    "usd_etched": null,
+    "eur": "0.39",
+    "eur_foil": "0.93",
+    "tix": "11.61"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652117&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCurie%252C%2BEmergent%2BIntelligence",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCurie%252C%2BEmergent%2BIntelligence",
+    "edhrec": "https://edhrec.com/route/?cc=Curie%2C+Emergent+Intelligence"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F541400%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=758328&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132307?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

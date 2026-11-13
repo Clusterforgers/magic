@@ -1,4 +1,4 @@
-//! Postgres schema and repositories for card data: oracle cards, printings, rulings, precon decks, import runs, the compiled rules of cards, the decks accounts store and the cards they mark as important to fix, and the read-tier drafts with the verdicts players give them.
+//! Postgres schema and repositories for card data: oracle cards, printings, rulings, precon decks, import runs, the compiled rules of cards, the decks accounts store, the art they prefer and the cards they mark as important to fix, and the read-tier drafts with the verdicts players give them.
 
 pub mod card_rules;
 pub mod cards;
@@ -13,6 +13,7 @@ pub mod fix_marks;
 pub mod import;
 pub mod model;
 pub mod precons;
+pub mod preferred;
 pub mod prefs;
 pub mod ranks;
 pub mod reads;
@@ -26,7 +27,8 @@ pub use cards::{
 };
 pub use database::{Database, RowCounts};
 pub use decks::{
-    CardDemand, CreateDeckError, DeckDraft, DeckId, DeckLine, DeckRepo, DeckZone, StoredDeck,
+    CardDemand, CreateDeckError, DeckDraft, DeckId, DeckLine, DeckRepo, DeckZone, PrintingChoice,
+    StoredDeck,
 };
 pub use drafts::{
     DraftKey, DraftRepo, DraftsVersion, NewDraft, SOURCE_FORGE, SOURCE_SWEEP, StoredDraft,
@@ -43,6 +45,7 @@ pub use precons::{
     DeckBoard, PreconDeckDetail, PreconDeckId, PreconDeckSummary, PreconEntry, PreconRepo,
     PreconVersion,
 };
+pub use preferred::PreferredPrintingRepo;
 pub use prefs::{PrefsRepo, StoredPrefs, default_stops};
 pub use ranks::{RankRepo, by_rank};
 pub use reads::{AccountRead, DraftRead, ReadRepo, ReadState, StoredRead, Verdict};

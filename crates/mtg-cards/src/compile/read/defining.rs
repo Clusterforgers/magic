@@ -109,6 +109,9 @@ pub(super) fn counting(r: &mut Reader<'_>) -> Option<Amount> {
             stat,
         });
     }
+    if let Some(toxic) = super::r374_counts::r374_toxic(r) {
+        return Some(toxic);
+    }
     if r.words("your life total") {
         return Some(Amount::Life(Ref::You));
     }
@@ -337,6 +340,9 @@ pub(super) fn value_text(amount: &Amount) -> Option<String> {
 }
 
 pub(super) fn counting_text(amount: &Amount) -> Option<String> {
+    if let Some(text) = super::r374_counts::r374_toxic_text(amount) {
+        return Some(text);
+    }
     if let Some(text) = super::rmt8_conditions::amount_text(amount) {
         return Some(text);
     }

@@ -1,7 +1,7 @@
 {
   "oracle_id": "5968ecb5-5728-429f-9324-0c108820ebe8",
   "name": "Ephara, God of the Polis",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ephara, God of the Polis",
@@ -18,9 +18,22 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 103, "end": 228 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "TallyLastTurn": {
+                    "event": "Entered",
+                    "who": "You",
+                    "filter": [{ "Type": "Creature" }, "Other"]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
           }
         }
       ]

@@ -56,6 +56,7 @@ impl Policy<'_> {
                             self.types.first().is_some_and(|want| label == want)
                         }
                         ChoiceOption::Player(_)
+                        | ChoiceOption::SecretPlayer(_)
                         | ChoiceOption::Secret(_)
                         | ChoiceOption::Side(_) => false,
                     })

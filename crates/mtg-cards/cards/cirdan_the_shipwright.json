@@ -1,7 +1,7 @@
 {
   "oracle_id": "063e05b0-554f-4b55-9feb-e11f3927f3a6",
   "name": "Círdan the Shipwright",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Círdan the Shipwright",
@@ -9,9 +9,74 @@
       "abilities": [
         { "Keyword": "Vigilance" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 10, "end": 284 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              { "Vote": { "options": { "Of": "EachPlayer" }, "secret": true, "tally": "votes" } },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "voter",
+                  "effects": [
+                    {
+                      "Draw": {
+                        "who": { "Bound": "voter" },
+                        "count": {
+                          "Players": {
+                            "PlayersWhere": {
+                              "who": { "Bound": "votes" },
+                              "test": { "Among": { "Bound": "voter" } }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": { "Not": { "Among": { "Bound": "votes" } } }
+                    }
+                  },
+                  "as": "unvoted",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "unvoted" },
+                        "from": {
+                          "Each": [
+                            { "OwnedBy": { "Bound": "unvoted" } },
+                            {
+                              "AnyOf": [
+                                { "Type": "Artifact" },
+                                { "Type": "Battle" },
+                                { "Type": "Creature" },
+                                { "Type": "Enchantment" },
+                                { "Type": "Land" },
+                                { "Type": "Planeswalker" }
+                              ]
+                            },
+                            { "In": "Hand" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
