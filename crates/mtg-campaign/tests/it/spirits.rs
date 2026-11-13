@@ -379,3 +379,4 @@ fn the_boss_bot_attacks_only_the_living() -> Result<(), ScriptError> {
     }
     Ok(())
 }
+

@@ -89,7 +89,8 @@ pub(crate) fn settle(state: &GameState, losses: Vec<Event>) -> Vec<Event> {
     events
 }
 
-/// The objects a Spirit loses: its cards outside its library and the command zone leave the game.
+/// The objects a Spirit loses: its cards outside its library and the command zone leave the game; its haunt abilities
+/// on the stack stay.
 pub(crate) fn fading(state: &GameState) -> Vec<Event> {
     if state.players().iter().all(|p| !p.spirit) {
         return Vec::new();
@@ -100,7 +101,7 @@ pub(crate) fn fading(state: &GameState) -> Vec<Event> {
             state
                 .player(o.owner())
                 .is_some_and(|p| p.spirit && p.is_in_game())
-                && !matches!(o.zone(), Zone::Command(_) | Zone::Library(_))
+                && !matches!(o.zone(), Zone::Command(_) | Zone::Library(_) | Zone::Stack)
         })
         .map(|o| Event::ObjectLeftGame { object: o.id() })
         .collect()
