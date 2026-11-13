@@ -1854,6 +1854,25 @@ pub enum Condition {
         /// The attackers that count, as they were when declared.
         by: Selector,
     },
+    /// The Ring has tempted a player the reference names `times` or more times this game (CR 701.54), 1 to 4: "if the
+    /// Ring has tempted you two or more times this game".
+    RingTempted {
+        /// The players read.
+        who: Ref,
+        /// The fewest temptations, at most 4 (the Ring's level).
+        times: u32,
+    },
+    /// Every player the reference names has a speed greater than each other player's speed (CR 702.179): "if that
+    /// opponent's speed is greater than each other player's speed"; false when it names nobody.
+    FastestPlayer(Ref),
+    /// A player the reference names has completed the dungeon of this name this game (CR 309.7): "if you haven't
+    /// completed Tomb of Annihilation" is its negation.
+    CompletedNamedDungeon {
+        /// The players read.
+        who: Ref,
+        /// The dungeon's name.
+        dungeon: String,
+    },
 }
 
 #[cfg(test)]

@@ -265,6 +265,8 @@ mod r5516_actions;
 mod r5516_reflexive;
 mod r5517_wholes;
 mod r5519_wholes;
+mod r5521_conditions;
+mod r5521_wholes;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -668,6 +670,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
             .iter()
             .any(|written| same_text(written, text))
     {
+        return Some(found);
+    }
+    if let Some(found) = r5521_wholes::r5521_read(text, kind) {
         return Some(found);
     }
     if let Some(found) =

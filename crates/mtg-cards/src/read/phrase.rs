@@ -627,6 +627,23 @@ pub(super) fn condition(ctx: &Ctx, cond: &Condition) -> String {
         Condition::InCombat => "it is combat".to_owned(),
         Condition::Monarch(Ref::You) => "you are the monarch".to_owned(),
         Condition::Monarch(player) => format!("{} is the monarch", who(ctx, player)),
+        Condition::RingTempted {
+            who: players,
+            times,
+        } => format!(
+            "the Ring has tempted {} {times} or more times this game",
+            who(ctx, players)
+        ),
+        Condition::CompletedNamedDungeon {
+            who: players,
+            dungeon,
+        } => {
+            format!("{} completed {dungeon}", who(ctx, players))
+        }
+        Condition::FastestPlayer(players) => format!(
+            "the speed of {} is greater than each other player's speed",
+            who(ctx, players)
+        ),
         other => generic::node(ctx, other),
     }
 }

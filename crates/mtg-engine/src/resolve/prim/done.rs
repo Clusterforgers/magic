@@ -78,6 +78,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Goad { .. }
         | Effect::Fight { .. }
         | Effect::BecomeMonarch { .. }
+        | Effect::ReduceSpeed { .. }
         | Effect::ControlPlayer { .. }
         | Effect::RestartGame { .. }
         | Effect::RingTempts { .. }

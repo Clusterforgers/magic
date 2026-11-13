@@ -3384,6 +3384,26 @@ impl<'a> Scope<'a> {
             | Condition::CitysBlessing(who)
             | Condition::EnduringStory(who)
             | Condition::MaxSpeed(who) => self.w11d_designation(condition, who)?,
+            Condition::RingTempted { who, times } => self
+                .players(who)?
+                .iter()
+                .any(|player| u32::from(self.state.ring_level(*player)) >= *times),
+            Condition::FastestPlayer(who) => {
+                let named = self.players(who)?;
+                let alive = self.state.turn_order_from(self.controller);
+                !named.is_empty()
+                    && named.iter().all(|player| {
+                        let speed = self.state.speed(*player);
+                        alive
+                            .iter()
+                            .filter(|other| *other != player)
+                            .all(|other| self.state.speed(*other) < speed)
+                    })
+            }
+            Condition::CompletedNamedDungeon { who, dungeon } => self
+                .players(who)?
+                .iter()
+                .any(|player| self.state.r5521_completed_named(*player, dungeon)),
             Condition::IsDay => self.state.day_night() == Some(DayNight::Day),
             Condition::IsNight => self.state.day_night() == Some(DayNight::Night),
             Condition::NeitherDayNorNight => self.state.day_night().is_none(),

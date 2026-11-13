@@ -478,6 +478,9 @@ fn game(ctx: &Ctx, effect: &Effect) -> Option<String> {
             &format!("{} extra", phrase::counted(ctx, count, "turn")),
         ),
         Effect::BecomeMonarch { who } => act(ctx, who, "become", "the monarch"),
+        Effect::ReduceSpeed { who } => {
+            act(ctx, who, "lose", "1 speed, keeping a speed of at least 1")
+        }
         Effect::RestartGame { keep } => format!(
             "restart the game, leaving in exile each {}, then put those cards onto the battlefield under your control",
             phrase::selector(ctx, keep)

@@ -109,6 +109,7 @@ mod r5516_pack;
 mod r5517_reveal_life;
 mod r5519_ashiok;
 mod r5519_tomik;
+mod r5521_cards;
 mod r5e_done_once;
 mod r8p2_enters;
 mod reflexive;

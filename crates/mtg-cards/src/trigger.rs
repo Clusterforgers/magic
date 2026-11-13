@@ -119,7 +119,8 @@ pub enum TriggerPattern {
         who: Ref,
     },
     /// A player attacks a player with one or more creatures ("whenever a player attacks enchanted player with one or
-    /// more creatures"). It triggers once for each attacking player; `Triggering` is the attacking player.
+    /// more creatures"). It triggers once for each attacking player and player attacked; `Triggering` is the attacking
+    /// player and `Against` the player attacked.
     PlayerAttacks {
         /// The attacking player.
         #[serde(

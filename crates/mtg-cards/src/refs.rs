@@ -86,7 +86,7 @@ pub enum Ref {
     /// combat damage to a player, put a +1/+1 counter on it"); nobody for an event with no such object.
     Dealer,
     /// What the subject of the trigger event went against: the player, planeswalker or battle an attacker attacks, the
-    /// attacker a creature blocks; nobody for an event with no such thing.
+    /// player a player attacks, the attacker a creature blocks; nobody for an event with no such thing.
     Against,
     /// What the source is attached to ("enchanted creature", "equipped creature").
     Attached,

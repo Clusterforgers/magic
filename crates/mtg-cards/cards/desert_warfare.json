@@ -1,16 +1,54 @@
 {
   "oracle_id": "de301ef8-8ba0-423d-9117-a8492a58d01b",
   "name": "Desert Warfare",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Desert Warfare",
       "oracle_fingerprint": "2a83ad155ab3f4ff8372ff7a391b14a1",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 206 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Sacrificed": { "what": [{ "Subtype": "Desert" }], "by": "You" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Subtype": "Desert" }, { "OwnedBy": "You" }],
+                    "from": "Hand",
+                    "to": "Graveyard"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Subtype": "Desert" }, { "OwnedBy": "You" }],
+                    "from": "Library",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Arrived": { "of": "Triggering", "zone": "Graveyard" } },
+                  "as": "card"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "card" },
+                        "to": { "Battlefield": { "under": "You" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

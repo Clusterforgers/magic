@@ -603,6 +603,9 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::CitysBlessing(who)
         | Condition::EnduringStory(who)
         | Condition::MaxSpeed(who)
+        | Condition::RingTempted { who, .. }
+        | Condition::FastestPlayer(who)
+        | Condition::CompletedNamedDungeon { who, .. }
         | Condition::Among(who)
         | Condition::StartingPlayer(who)
         | Condition::Searched { who, .. }

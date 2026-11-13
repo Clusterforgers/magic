@@ -1088,6 +1088,29 @@ impl<'a> Walker<'a> {
         self.at(name, |w| w.reference(who, Kind::Player));
     }
 
+    /// The player conditions of the r55-21 pack: the Ring's temptations (1 to 4), the fastest player and a dungeon
+    /// completed by name.
+    fn r5521_condition(&mut self, condition: &Condition) {
+        match condition {
+            Condition::RingTempted { who, times } => {
+                if !(1..=4).contains(times) {
+                    self.problem("`RingTempted` counts 1 to 4 temptations (the Ring's level)");
+                }
+                self.player_condition("RingTempted", who);
+            }
+            Condition::FastestPlayer(who) => self.player_condition("FastestPlayer", who),
+            Condition::CompletedNamedDungeon { who, dungeon } => {
+                if !crate::w11d_dungeon::w11d_dungeons()
+                    .is_ok_and(|all| all.iter().any(|known| known.name == *dungeon))
+                {
+                    self.problem("`CompletedNamedDungeon` names no known dungeon");
+                }
+                self.player_condition("CompletedNamedDungeon", who);
+            }
+            _ => {}
+        }
+    }
+
     /// The fewest cards in a hand of the players a reference names, and the life lost or the dice rolled by the resolving
     /// ability.
     fn hand_or_life_lost(&mut self, amount: &Amount) {
@@ -1646,6 +1669,9 @@ impl<'a> Walker<'a> {
                 self.player_condition("AttackedThisTurnBy", player);
                 self.at("by", |w| w.selector(by));
             }
+            Condition::RingTempted { .. }
+            | Condition::FastestPlayer(_)
+            | Condition::CompletedNamedDungeon { .. } => self.r5521_condition(condition),
             Condition::AttackedThisCombat(who) => self.player_condition("AttackedThisCombat", who),
             Condition::SorceryTiming => self.uses("Condition", "SorceryTiming"),
             Condition::AfterCombat => self.uses("Condition", "AfterCombat"),
@@ -4290,6 +4316,7 @@ impl Walker<'_> {
             | Effect::Proliferate { who }
             | Effect::ControlPlayer { who, .. }
             | Effect::BecomeMonarch { who }
+            | Effect::ReduceSpeed { who }
             | Effect::RingTempts { who }
             | Effect::TakeInitiative { who }
             | Effect::Venture { who, .. }

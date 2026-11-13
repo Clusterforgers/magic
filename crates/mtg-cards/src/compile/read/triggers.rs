@@ -1289,6 +1289,8 @@ pub fn monarch_condition(r: &mut Reader<'_>) -> Option<Condition> {
         Some(Condition::CompletedDungeon(Ref::You))
     } else if r.words("you have the initiative") {
         Some(Condition::Initiative(Ref::You))
+    } else if let Some(found) = super::r5521_conditions::r5521_condition(r) {
+        Some(found)
     } else {
         super::day_night::condition(r)
     }
@@ -1316,7 +1318,10 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
         Condition::CompletedDungeon(Ref::You) => "you've completed a dungeon".to_owned(),
         Condition::Initiative(Ref::You) => "you have the initiative".to_owned(),
         condition if *condition == no_monarch() => "there is no monarch".to_owned(),
-        _ => return super::day_night::condition_text(condition),
+        _ => {
+            return super::r5521_conditions::r5521_condition_text(condition)
+                .or_else(|| super::day_night::condition_text(condition));
+        }
     })
 }
 
