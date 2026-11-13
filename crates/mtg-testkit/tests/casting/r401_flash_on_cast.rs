@@ -114,7 +114,10 @@ fn r401_flash_photography_is_cast_on_another_turn_only_at_your_permanent(
         .iter()
         .find(|target| {
             target.object().is_some_and(|object| {
-                state.object(object.id).map(|o| o.controller()) == Some(crate::common::pid(wanted))
+                state
+                    .object(object.id)
+                    .map(mtg_engine::object::GameObject::controller)
+                    == Some(crate::common::pid(wanted))
             })
         })
         .expect("a permanent of the seat");

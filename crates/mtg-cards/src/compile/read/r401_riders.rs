@@ -87,16 +87,16 @@ fn r401_from_graveyard(r: &mut Reader<'_>) -> Option<Ability> {
         return None;
     };
     // The phrase may take "from your graveyard" in as the zone of the spell's card.
-    let kinds = match kinds {
-        [
-            kinds @ ..,
-            Pred::In(crate::refs::ZoneKind::Graveyard),
-            Pred::OwnedBy(crate::refs::Ref::You),
-        ] => kinds,
-        _ => {
-            r.need("from your graveyard")?;
-            kinds
-        }
+    let kinds = if let [
+        kinds @ ..,
+        Pred::In(crate::refs::ZoneKind::Graveyard),
+        Pred::OwnedBy(crate::refs::Ref::You),
+    ] = kinds
+    {
+        kinds
+    } else {
+        r.need("from your graveyard")?;
+        kinds
     };
     (!kinds.is_empty()).then_some(())?;
     Some(Ability::Rule {
