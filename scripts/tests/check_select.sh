@@ -19,11 +19,11 @@ case_diff() {
   expect "$name" "$(scripts/check.sh affected --list "$head" "$commit")" "$other" "$pg" "$web"
 }
 
-all_other="mtg-cards mtg-core mtg-engine mtg-import mtg-protocol mtg-testkit"
+all_other="mtg-campaign mtg-cards mtg-core mtg-engine mtg-import mtg-protocol mtg-testkit"
 all_pg="mtg-cli mtg-db mtg-server"
 case_diff "only docs" - - none -- docs/ROADMAP.md CLAUDE.md
 case_diff "other scripts" - - none -- scripts/agent-status.sh
-case_diff "mtg-cards" "mtg-cards mtg-engine mtg-protocol mtg-testkit" "mtg-cli mtg-server" none -- crates/mtg-cards/src/lib.rs
+case_diff "mtg-cards" "mtg-campaign mtg-cards mtg-engine mtg-protocol mtg-testkit" "mtg-cli mtg-server" none -- crates/mtg-cards/src/lib.rs
 case_diff "mtg-core" "$all_other" "$all_pg" none -- crates/mtg-core/src/lib.rs
 case_diff "only web" - - changed -- web/src/lib/flash.ts
 case_diff "web config" - - full -- web/src/lib/flash.ts web/package.json
