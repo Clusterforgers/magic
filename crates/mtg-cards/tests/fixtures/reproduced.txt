@@ -644,6 +644,7 @@ Faith Unbroken
 Faithful Watchdog
 Faithless Looting
 Fall from Favor
+Fall of Cair Andros
 Fall of the Hammer
 Fallen Ideal
 False Floor
@@ -1126,6 +1127,7 @@ Maestros Theater
 Mage Hunter
 Magical Hack
 Magistrate's Scepter
+Magmatic Galleon
 Magmatic Insight
 Magus of the Moon
 Make Disappear
@@ -1253,6 +1255,7 @@ Nardole, Resourceful Cyborg
 Narset's Rebuke
 Nature's Embrace
 Necklace of Girion
+Necroduality
 Necroplasm
 Necropolis Regent
 Necroskitter
@@ -1303,6 +1306,7 @@ Okiba Reckoner Raid // Nezumi Road Captain
 Olivia's Wrath
 Ominous Harvest
 Onakke Oathkeeper
+Ondu Spiritdancer
 Oona's Blackguard
 Opposition Agent
 Opt
@@ -1530,12 +1534,14 @@ Rienne, Angel of Rebirth
 Rift Bolt
 Righteous Avengers
 Righteous Confluence
+Riku of Two Reflections
 Rionya, Fire Dancer
 Riptide Survivor
 Rishkar's Expertise
 Rishkar, Peema Renegade
 Rising Miasma
 Rite of Replication
+Rith, Liberated Primeval
 River of Tears
 Riveteers Overlook
 Riveteers Requisitioner

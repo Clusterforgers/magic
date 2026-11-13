@@ -9,73 +9,32 @@
       "abilities": [
         {
           "Rule": {
-            "rule": {
-              "Combat": {
-                "who": "This",
-                "quirk": {
-                  "MustBeBlocked": "AtLeastOne"
-                }
-              }
-            }
+            "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "AtLeastOne" } } }
           }
         },
         {
           "Static": {
             "affected": "This",
-            "mods": [
-              {
-                "AddKeyword": "Indestructible"
-              }
-            ],
+            "mods": [{ "AddKeyword": "Indestructible" }],
             "condition": "YourTurn"
           }
         },
         {
           "Triggered": {
             "when": {
-              "DealsDamage": {
-                "source": [
-                  "This"
-                ],
-                "to": {
-                  "Each": [
-                    {
-                      "Type": "Creature"
-                    }
-                  ]
-                }
-              }
+              "DealsDamage": { "source": ["This"], "to": { "Each": [{ "Type": "Creature" }] } }
             },
             "if": {
               "Matches": {
                 "subject": "Triggering",
-                "selector": [
-                  {
-                    "DidThisTurn": {
-                      "event": "DealtExcess"
-                    }
-                  }
-                ]
+                "selector": [{ "DidThisTurn": { "event": "DealtExcess" } }]
               }
             },
             "effects": [
               {
                 "Sacrifice": {
-                  "who": {
-                    "ControllerOf": "Triggering"
-                  },
-                  "filter": [
-                    {
-                      "Not": {
-                        "Type": "Creature"
-                      }
-                    },
-                    {
-                      "Not": {
-                        "Type": "Land"
-                      }
-                    }
-                  ]
+                  "who": { "ControllerOf": "Triggering" },
+                  "filter": [{ "Not": { "Type": "Creature" } }, { "Not": { "Type": "Land" } }]
                 }
               }
             ]

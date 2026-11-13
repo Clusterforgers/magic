@@ -11,51 +11,18 @@
           "Triggered": {
             "when": {
               "DealtExcess": {
-                "what": [
-                  {
-                    "Type": "Creature"
-                  },
-                  {
-                    "ControlledBy": "Opponents"
-                  }
-                ],
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
                 "combat": false
               }
             },
-            "effects": [
-              {
-                "Amass": {
-                  "subtype": "Orc",
-                  "count": "Triggering"
-                }
-              }
-            ]
+            "effects": [{ "Amass": { "subtype": "Orc", "count": "Triggering" } }]
           }
         },
         {
           "Activated": {
             "cost": "{7}{R}",
-            "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    }
-                  ]
-                }
-              }
-            ],
-            "effects": [
-              {
-                "DealDamage": {
-                  "to": {
-                    "Target": 0
-                  },
-                  "amount": 7
-                }
-              }
-            ]
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 7 } }]
           }
         }
       ]

@@ -9,38 +9,11 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    },
-                    {
-                      "ControlledBy": "Opponents"
-                    }
-                  ]
-                }
-              }
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
             ],
-            "effects": [
-              {
-                "DealDamage": {
-                  "to": {
-                    "Target": 0
-                  },
-                  "amount": 5
-                }
-              }
-            ]
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
           }
         },
         {
@@ -48,34 +21,15 @@
             "when": {
               "Batch": {
                 "DealtExcess": {
-                  "what": [
-                    {
-                      "Type": "Creature"
-                    },
-                    {
-                      "ControlledBy": "Opponents"
-                    }
-                  ],
+                  "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
                   "combat": false
                 }
               }
             },
-            "effects": [
-              {
-                "CreateToken": {
-                  "token": {
-                    "Named": "treasure"
-                  }
-                }
-              }
-            ]
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
           }
         },
-        {
-          "Keyword": {
-            "Crew": 2
-          }
-        }
+        { "Keyword": { "Crew": 2 } }
       ]
     }
   ]

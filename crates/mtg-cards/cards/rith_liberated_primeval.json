@@ -7,62 +7,24 @@
       "name": "Rith, Liberated Primeval",
       "oracle_fingerprint": "be4436fd51762f4f1c0773e4cc048a12",
       "abilities": [
-        {
-          "Keyword": "Flying"
-        },
-        {
-          "Keyword": {
-            "Ward": "{2}"
-          }
-        },
+        { "Keyword": "Flying" },
+        { "Keyword": { "Ward": "{2}" } },
         {
           "Static": {
-            "affected": {
-              "Each": [
-                {
-                  "Subtype": "Dragon"
-                },
-                "Other",
-                {
-                  "ControlledBy": "You"
-                }
-              ]
-            },
-            "mods": [
-              {
-                "AddKeyword": {
-                  "Ward": "{2}"
-                }
-              }
-            ]
+            "affected": { "Each": [{ "Subtype": "Dragon" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": { "Ward": "{2}" } }]
           }
         },
         {
           "Triggered": {
-            "when": {
-              "StepBegins": {
-                "step": "End",
-                "whose": "You"
-              }
-            },
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
             "if": {
               "Compare": {
                 "left": {
                   "Tally": {
                     "event": "DealtExcess",
                     "who": "Opponents",
-                    "filter": [
-                      {
-                        "AnyOf": [
-                          {
-                            "Type": "Creature"
-                          },
-                          {
-                            "Type": "Planeswalker"
-                          }
-                        ]
-                      }
-                    ]
+                    "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
                   }
                 },
                 "op": "Ge",
@@ -75,22 +37,12 @@
                   "token": {
                     "Custom": {
                       "name": "Dragon",
-                      "colors": [
-                        "Red"
-                      ],
-                      "types": [
-                        "Creature"
-                      ],
-                      "subtypes": [
-                        "Dragon"
-                      ],
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dragon"],
                       "power": 4,
                       "toughness": 4,
-                      "abilities": [
-                        {
-                          "Keyword": "Flying"
-                        }
-                      ]
+                      "abilities": [{ "Keyword": "Flying" }]
                     }
                   }
                 }
