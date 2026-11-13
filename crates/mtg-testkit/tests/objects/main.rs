@@ -82,6 +82,7 @@ mod r378_stickers;
 mod r3f_exiled;
 mod r404_look_face_down;
 mod r409_turn_up_x;
+mod r4710_from_hand;
 mod r4b_dig;
 mod r4i_can_enchant;
 mod r4i_or_controller;

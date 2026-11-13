@@ -100,3 +100,66 @@ fn r4710_probe() {
         }
     }
 }
+
+#[rstest]
+#[case("Jared Carthalion, True Heir")]
+#[case("Kangee, Aerie Keeper")]
+#[case("Matter Reshaper")]
+#[case("Gisa's Favorite Shovel")]
+#[case("Imperial Mask")]
+fn r4710_reads_back_whole(#[case] name: &str) {
+    let report = r4710_report(name, &r4710_file(name));
+    assert_eq!(
+        report.verdict(),
+        Verdict::Accepted,
+        "{name}: {:#?}",
+        report.clauses
+    );
+}
+
+#[rstest]
+#[case::opponents_kept_out(
+    "Jared Carthalion, True Heir",
+    r#""Cant": { "who": "You""#,
+    r#""Cant": { "who": "Opponents""#
+)]
+#[case::you_become_it(
+    "Jared Carthalion, True Heir",
+    r#""BecomeMonarch": { "who": { "Target": 0 } }"#,
+    r#""BecomeMonarch": {}"#
+)]
+#[case::until_your_next_turn(
+    "Jared Carthalion, True Heir",
+    r#""duration": "UntilEndOfTurn""#,
+    r#""duration": "UntilYourNextTurn""#
+)]
+#[case::plus_one_counters(
+    "Kangee, Aerie Keeper",
+    r#""counter": { "Other": "feather" }, "count": "X""#,
+    r#""counter": "+1/+1", "count": "X""#
+)]
+#[case::one_feather("Kangee, Aerie Keeper", r#""count": "X""#, r#""count": 1"#)]
+#[case::mana_value_two("Matter Reshaper", r#""Le", "to": 3"#, r#""Le", "to": 2"#)]
+#[case::otherwise_milled("Matter Reshaper", r#""to": "Hand""#, r#""to": "Graveyard""#)]
+#[case::each_opponent_sacrifices(
+    "Gisa's Favorite Shovel",
+    r#""who": "Defending""#,
+    r#""who": "Opponents""#
+)]
+#[case::a_token_regardless(
+    "Gisa's Favorite Shovel",
+    r#""op": "Ge", "right": 1"#,
+    r#""op": "Ge", "right": 0"#
+)]
+#[case::each_opponent_copies("Imperial Mask", r#""who": "Teammates""#, r#""who": "Opponents""#)]
+#[case::tokens_copy_too(
+    "Imperial Mask",
+    r#""if": { "Not": { "Matches": { "subject": "This", "selector": ["Token"] } } },"#,
+    ""
+)]
+fn r4710_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
+    let file = r4710_file(name);
+    assert!(file.contains(from), "{name} has {from}");
+    let report = r4710_report(name, &file.replacen(from, to, 1));
+    assert_ne!(report.verdict(), Verdict::Accepted, "{name}: {to}");
+}

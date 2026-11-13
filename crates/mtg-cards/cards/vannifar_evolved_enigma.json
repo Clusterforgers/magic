@@ -1,0 +1,77 @@
+{
+  "oracle_id": "e8aa0d7d-e5f6-4d66-bdc1-315483e1b256",
+  "name": "Vannifar, Evolved Enigma",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vannifar, Evolved Enigma",
+      "oracle_fingerprint": "1dbdbf94c21bd95ac245e4b0cdbe6e69",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "StepBegins": {
+                "step": "BeginCombat",
+                "whose": "You"
+              }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                {
+                                  "In": "Hand"
+                                },
+                                {
+                                  "OwnedBy": "You"
+                                }
+                              ]
+                            },
+                            "as": "cloaked"
+                          }
+                        },
+                        {
+                          "Cloak": {
+                            "cards": {
+                              "Bound": "cloaked"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": {
+                              "Each": [
+                                {
+                                  "Type": "Creature"
+                                },
+                                "Colorless",
+                                {
+                                  "ControlledBy": "You"
+                                }
+                              ]
+                            },
+                            "counter": "+1/+1"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

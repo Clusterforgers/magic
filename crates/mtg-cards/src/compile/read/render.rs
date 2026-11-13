@@ -53,6 +53,7 @@ mod put_onto;
 mod r11w_batch;
 mod r11w_leaves;
 mod r11w_returned_as;
+mod r4710_steps;
 mod r7d;
 mod r9w_dread;
 mod r9w_manifest;
@@ -3597,6 +3598,9 @@ impl Writer<'_> {
             .or_else(|| self.g8e_shield_pair(effects))
             .or_else(|| self.w22_shields(effects))
             .or_else(|| self.mill_then_change(effects))
+            .or_else(|| self.r4710_if_they_do(effects))
+            .or_else(|| r4710_steps::r4710_may_put_revealed(effects))
+            .or_else(|| r4710_steps::r4710_from_hand(effects))
             .or_else(|| self.move_instead(effects))
             .or_else(|| self.either_way(effects))
             .or_else(|| self.flicker_targets(effects))
@@ -3686,11 +3690,20 @@ impl Writer<'_> {
     /// Tokens created: "create a Treasure token" for you, "target opponent creates a Treasure token" for another player.
     fn created(&mut self, effect: &Effect) -> Option<String> {
         match effect {
-            Effect::CreateToken { who, .. } if *who != Ref::You => Some(format!(
-                "{} {}",
-                self.player(who)?,
-                create::text(effect, self.per)?
-            )),
+            Effect::CreateToken { who, .. } if *who != Ref::You => {
+                let player = self.player(who)?;
+                // A copy another player makes: "each of your teammates creates a token that's a copy of ~".
+                let made = create::text(effect, self.per).or_else(|| {
+                    let mut yours = effect.clone();
+                    if let Effect::CreateToken { who, .. } = &mut yours {
+                        *who = Ref::You;
+                    }
+                    self.copy_token(&yours, false)?
+                        .strip_prefix("create ")
+                        .map(|rest| format!("creates {rest}"))
+                })?;
+                Some(format!("{player} {made}"))
+            }
             _ => create::text(effect, self.per).or_else(|| self.copy_token(effect, false)),
         }
     }
@@ -3718,6 +3731,7 @@ impl Writer<'_> {
             .or_else(|| self.w22_next(effect))
             .or_else(|| self.rmt2_divided_prevention(effect))
             .or_else(|| self.rmt2_no_lands(effect))
+            .or_else(|| self.r4710_no_monarch(effect))
             .or_else(|| self.r301_cant_phase_out(effect))
             .or_else(|| self.rmt2_reverberation(effect))
             .or_else(|| self.rmt2_target_spell_uncounterable(effect))
@@ -3755,6 +3769,7 @@ impl Writer<'_> {
             Ref::You => "you".to_owned(),
             Ref::Opponents => "each opponent".to_owned(),
             Ref::EachPlayer => "each player".to_owned(),
+            Ref::Teammates => "each of your teammates".to_owned(),
             Ref::Target(0)
                 if self.target_is(|what| {
                     matches!(what, Targetable::Player | Targetable::Opponent)

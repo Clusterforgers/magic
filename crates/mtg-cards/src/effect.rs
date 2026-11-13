@@ -626,6 +626,10 @@ pub enum Effect {
         /// Whose library the cards come from: their own unless the effect names another player's ("that player's library").
         #[serde(rename = "library", default, skip_serializing_if = "Option::is_none")]
         from: Option<Ref>,
+        /// The cards put down in place of the top of a library ("cloak a card from your hand"): the named cards, from the
+        /// zone they are in; `count` and `from` are not read.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        cards: Option<Ref>,
         /// The name the permanents are bound to, as the objects they become on the battlefield.
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
@@ -641,6 +645,10 @@ pub enum Effect {
         /// Whose library the cards come from: their own unless the effect names another player's.
         #[serde(rename = "library", default, skip_serializing_if = "Option::is_none")]
         from: Option<Ref>,
+        /// The cards put down in place of the top of a library ("cloak a card from your hand"): the named cards, from the
+        /// zone they are in; `count` and `from` are not read.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        cards: Option<Ref>,
         /// The name the permanents are bound to, as the objects they become on the battlefield.
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,

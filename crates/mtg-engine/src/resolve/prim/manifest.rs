@@ -19,6 +19,7 @@ struct Fields<'a> {
     who: &'a Ref,
     count: &'a mtg_cards::value::Amount,
     from: &'a Option<Ref>,
+    cards: &'a Option<Ref>,
     bind: &'a Option<String>,
 }
 
@@ -28,24 +29,28 @@ fn fields(effect: &Effect) -> Result<Fields<'_>, ResolveError> {
             who,
             count,
             from,
+            cards,
             bind,
         } => Ok(Fields {
             cloak: false,
             who,
             count,
             from,
+            cards,
             bind,
         }),
         Effect::Cloak {
             who,
             count,
             from,
+            cards,
             bind,
         } => Ok(Fields {
             cloak: true,
             who,
             count,
             from,
+            cards,
             bind,
         }),
         _ => Err(wrong_effect("Manifest")),
@@ -63,8 +68,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         who,
         count,
         from,
+        cards,
         bind,
     } = fields(effect)?;
+    if let Some(cards) = cards {
+        return r4710_named(cx, cloak, who, cards, bind);
+    }
     let wanted = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(usize::MAX);
     let state = cx.state();
     let mut events = Vec::new();
@@ -106,6 +115,72 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 }));
             }
         }
+    }
+    Ok(Run::Done {
+        events,
+        bound: bind
+            .iter()
+            .map(|name| (name.clone(), made.clone()))
+            .collect(),
+        snapshots: Vec::new(),
+        next: Next::Sibling,
+    })
+}
+
+/// The cards `cards` names, each still in a hand, put onto the battlefield face down under the control of the first
+/// player `who` names who is in the game ("cloak a card from your hand", "each manifest two cards from their hands"): one
+/// `ZoneChanged` each, and an `Entered` after it when that player is not the card's owner; bound as `run` binds them.
+fn r4710_named(
+    cx: &Cx<'_>,
+    cloak: bool,
+    who: &Ref,
+    cards: &Ref,
+    bind: &Option<String>,
+) -> Result<Run, ResolveError> {
+    let state = cx.state();
+    let mut events = Vec::new();
+    let mut made = Vec::new();
+    let named = cx.scope.objects(cards)?;
+    let players = cx.scope.players(who)?;
+    for card in named {
+        let Some(object) = state.object(card.id).filter(|o| o.reference() == card) else {
+            continue;
+        };
+        let Zone::Hand(owner) = object.zone() else {
+            continue;
+        };
+        // Each player puts down the cards of their own hand; a card of another hand goes to the first player named.
+        let Some(player) = players
+            .iter()
+            .copied()
+            .find(|player| *player == owner)
+            .or_else(|| players.first().copied())
+            .filter(|player| state.is_alive(*player))
+        else {
+            continue;
+        };
+        events.push(Event::ZoneChanged {
+            object: card.id,
+            from: Zone::Hand(owner),
+            to: Zone::Battlefield,
+            cause: if cloak {
+                ZoneCause::Cloaked { by: player }
+            } else {
+                ZoneCause::Manifested { by: player }
+            },
+        });
+        if owner != player {
+            events.push(Event::Entered {
+                object: card.id,
+                tapped: false,
+                controller: player,
+                chosen: None,
+            });
+        }
+        made.push(Target::Object(ObjectRef {
+            id: card.id,
+            counter: card.counter + 1,
+        }));
     }
     Ok(Run::Done {
         events,

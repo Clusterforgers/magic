@@ -1122,6 +1122,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                     who,
                     count,
                     from,
+                    cards: None,
                     bind,
                 }
             } else {
@@ -1129,6 +1130,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                     who,
                     count,
                     from,
+                    cards: None,
                     bind,
                 }
             }),

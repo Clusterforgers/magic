@@ -5,39 +5,17 @@
   "faces": [
     {
       "name": "Jared Carthalion, True Heir",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "6f4d1b59d3b1924b5e0822afe0a12073",
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
-            "targets": [
-              {
-                "what": "Opponent"
-              }
-            ],
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
             "effects": [
-              {
-                "BecomeMonarch": {
-                  "who": {
-                    "Target": 0
-                  }
-                }
-              },
+              { "BecomeMonarch": { "who": { "Target": 0 } } },
               {
                 "Rule": {
-                  "rule": {
-                    "Cant": {
-                      "who": "You",
-                      "action": "BecomeMonarch"
-                    }
-                  },
+                  "rule": { "Cant": { "who": "You", "action": "BecomeMonarch" } },
                   "duration": "UntilEndOfTurn"
                 }
               }
@@ -46,25 +24,13 @@
         },
         {
           "Replacement": {
-            "when": {
-              "Damage": {
-                "to": "This"
-              }
-            },
+            "when": { "Damage": { "to": "This" } },
             "by": {
               "PreventAnd": [
-                {
-                  "PutCounters": {
-                    "on": "This",
-                    "counter": "+1/+1",
-                    "count": "Triggering"
-                  }
-                }
+                { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
               ]
             },
-            "condition": {
-              "Monarch": "You"
-            }
+            "condition": { "Monarch": "You" }
           }
         }
       ]

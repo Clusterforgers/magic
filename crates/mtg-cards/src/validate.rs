@@ -609,6 +609,7 @@ impl<'a> Walker<'a> {
             | Ref::Promised
             | Ref::Attacked
             | Ref::MostLife
+            | Ref::Teammates
             | Ref::ActivePlayer
             | Ref::Chooser
             | Ref::Asker
@@ -3293,6 +3294,7 @@ impl Walker<'_> {
             | Ref::Promised
             | Ref::Attacked
             | Ref::MostLife
+            | Ref::Teammates
             | Ref::ActivePlayer
             | Ref::Chooser
             | Ref::Asker
@@ -3779,15 +3781,20 @@ impl Walker<'_> {
                 who,
                 count,
                 from,
+                cards,
                 bind,
             }
             | Effect::Cloak {
                 who,
                 count,
                 from,
+                cards,
                 bind,
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
+                if let Some(cards) = cards {
+                    w.at("cards", |w| w.reference(cards, Kind::Object));
+                }
                 w.at("count", |w| w.amount(count));
                 if let Some(library) = from {
                     w.at("library", |w| w.reference(library, Kind::Player));

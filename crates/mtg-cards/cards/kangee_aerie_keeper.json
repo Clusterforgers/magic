@@ -1,28 +1,76 @@
 {
   "oracle_id": "555f9e75-8892-4c8e-9c5e-8ab14a589118",
   "name": "Kangee, Aerie Keeper",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kangee, Aerie Keeper",
       "oracle_fingerprint": "7b2678e131f52f93802e03f04270440b",
       "abilities": [
-        { "Keyword": { "Kicker": "{X}{2}" } },
-        { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 80, "end": 147 }
+          "Keyword": {
+            "Kicker": "{X}{2}"
+          }
+        },
+        {
+          "Keyword": "Flying"
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  "This",
+                  "Kicked"
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": {
+                    "Other": "feather"
+                  },
+                  "count": "X"
+                }
+              }
+            ]
           }
         },
         {
           "Static": {
-            "affected": { "Each": [{ "Type": "Creature" }, { "Subtype": "Bird" }, "Other"] },
+            "affected": {
+              "Each": [
+                {
+                  "Type": "Creature"
+                },
+                {
+                  "Subtype": "Bird"
+                },
+                "Other"
+              ]
+            },
             "mods": [
               {
                 "ModifyPT": {
-                  "power": { "Counters": { "on": "This", "counter": { "Other": "feather" } } },
-                  "toughness": { "Counters": { "on": "This", "counter": { "Other": "feather" } } }
+                  "power": {
+                    "Counters": {
+                      "on": "This",
+                      "counter": {
+                        "Other": "feather"
+                      }
+                    }
+                  },
+                  "toughness": {
+                    "Counters": {
+                      "on": "This",
+                      "counter": {
+                        "Other": "feather"
+                      }
+                    }
+                  }
                 }
               }
             ]
