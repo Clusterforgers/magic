@@ -135,6 +135,7 @@ async fn a_game_made_under_house_rules_comes_back_under_them_and_ends_as_the_sam
                 "draw_step_cards": 2,
                 "land_plays_per_turn": 2,
                 "mana_burn": true,
+                "take_backs": false,
                 "empty_library": "reshuffle_graveyard",
                 "turn_limit": 30,
                 "winning_life": 60,

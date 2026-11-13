@@ -297,7 +297,8 @@ impl<S: EventStore> GameActor<S> {
         }
     }
 
-    /// Sends saved events to their seats, then each notice of a change (yields, then stops and Full Control), then
+    /// Sends saved events to their seats, then each notice of a change (yields, then stops and Full Control, then what each
+    /// seat may take back), then
     /// each next decision to the seat it names, then the result.
     ///
     /// A yield that ended is told before the decision that ended it, so the prompt never appears under a
@@ -314,6 +315,7 @@ impl<S: EventStore> GameActor<S> {
         for (seat, notice) in notices {
             self.seats.send(seat, notice);
         }
+        self.take_back_news();
         for Issued {
             id,
             decision,
@@ -345,6 +347,5 @@ impl<S: EventStore> GameActor<S> {
         if let Some(result) = result {
             self.seats.broadcast(&ServerMessage::GameOver { result });
         }
-        self.take_back_news();
     }
 }

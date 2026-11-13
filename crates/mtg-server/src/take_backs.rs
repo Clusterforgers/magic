@@ -241,8 +241,11 @@ impl<S: EventStore> GameActor<S> {
         };
         let offer = running.engine.take_back_offer(seat).ok();
         self.take_backs.tell(seat, offer.clone());
-        self.seats
-            .send(seat, ServerMessage::TakeBackOffer { offer });
+        // A client starts with no offer, so only one to show is sent.
+        if offer.is_some() {
+            self.seats
+                .send(seat, ServerMessage::TakeBackOffer { offer });
+        }
         if let Some(request) = &self.take_backs.request {
             let asked = request.asked();
             self.seats.send(seat, asked);

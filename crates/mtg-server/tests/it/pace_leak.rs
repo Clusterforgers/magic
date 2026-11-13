@@ -284,8 +284,16 @@ fn dwell_range() -> std::ops::RangeInclusive<u64> {
 /// presence of the other seats (public: a client that went once the game ended, the same in both games) and who the game
 /// waits for (`Deciding`, the same for a seat that can act and one the table passes for). Anything else
 /// (`Yielding`, `Stops`, `FullControl`, a snapshot, an error) can depend on somebody else's hand.
-const MAY_BE_SENT: [&str; 7] = [
-    "Welcome", "Lobby", "Events", "GameOver", "Decision", "Presence", "Deciding",
+// `TakeBackOffer` is about the seat's own last action; the other seats' answers end it the same way in both games.
+const MAY_BE_SENT: [&str; 8] = [
+    "Welcome",
+    "Lobby",
+    "Events",
+    "GameOver",
+    "Decision",
+    "Presence",
+    "Deciding",
+    "TakeBackOffer",
 ];
 
 /// Everything that differs between what the seats that do not hold the card were sent in the two games, and everything
