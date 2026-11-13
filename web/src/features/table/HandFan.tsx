@@ -17,7 +17,7 @@ import type {
   DragOverEvent,
   DragStartEvent,
 } from '@dnd-kit/core'
-import { Crown } from 'lucide-react'
+import { Crown, Library } from 'lucide-react'
 import { useLayoutEffect, useRef, useState } from 'react'
 import type { CSSProperties, KeyboardEvent, ReactNode } from 'react'
 import { createPortal } from 'react-dom'
@@ -44,16 +44,20 @@ interface HandFanProps {
   cost?: boolean
   /** The box, gap, rows and lift from the dock's room; without it the cards take their usual size, side by side. */
   layout?: HandLayout | undefined
-  /** Cards that wait in the command zone, by id: the tax their cast costs more and the words that say so. */
+  /** Cards that stand at the head of the hand from another zone, by id: a commander in the command zone (the tax its cast
+   * costs more) or the top card of the library you may see, with the words that say so. */
   commanders?: ReadonlyMap<ObjectId, HandCommander>
   /** Lets the viewer reorder the cards by drag and drop and by Alt with an arrow key, Home or End. */
   onMove?: ((from: number, to: number) => void) | undefined
 }
 
-/** A commander at the head of the hand: the tax on its cast and the words its spoken name gets. */
+/** A card at the head of the hand: the tax on its cast, the words its spoken name gets and, for the top card of the
+ * library, where it is. */
 export interface HandCommander {
   tax: number
   words: string
+  /** The top card of your library (Sigarda, Future Sight), not a commander. */
+  top?: boolean
 }
 
 /** How far a mouse moves with the button down before a drag starts; a click moves less. */
@@ -172,7 +176,8 @@ export function HandFan({ ids, label, size, cost = false, layout, commanders, on
             // A row another row lies over keeps only its top as its slot, so the slots of the row below start right under it.
             back={rows > 1 && Math.floor(index / perRow) < rows - 1}
             lifts={rows === 1 || Math.floor(index / perRow) < rows - 1}
-            commander={commander !== undefined}
+            commander={commander !== undefined && commander.top !== true}
+            top={commander?.top === true}
             drop={
               over === id && from >= 0 && from !== index ? (from < index ? 'after' : 'before') : undefined
             }
@@ -185,7 +190,11 @@ export function HandFan({ ids, label, size, cost = false, layout, commanders, on
               tabbable={id === roving.current}
               words={commander?.words}
             />
-            {commander === undefined ? null : <TaxPill tax={commander.tax} />}
+            {commander === undefined ? null : commander.top === true ? (
+              <TopPill />
+            ) : (
+              <TaxPill tax={commander.tax} />
+            )}
           </HandSlot>
         )
       })}
@@ -240,6 +249,7 @@ function HandSlot({
   back,
   lifts,
   commander,
+  top,
   drop,
   children,
 }: {
@@ -248,6 +258,7 @@ function HandSlot({
   back: boolean
   lifts: boolean
   commander: boolean
+  top: boolean
   drop: 'before' | 'after' | undefined
   children: ReactNode
 }) {
@@ -262,6 +273,7 @@ function HandSlot({
       data-slot="hand-slot"
       data-back={back || undefined}
       data-commander={commander || undefined}
+      data-library-top={top || undefined}
       data-drag={drag.isDragging || undefined}
       data-drop={drop}
       style={back ? { height: HAND_HEAD_PX } : undefined}
@@ -351,6 +363,20 @@ function TaxPill({ tax }: { tax: number }) {
           />
         </>
       )}
+    </span>
+  )
+}
+
+/** The mark on the top card of your library at the head of the hand: the library's icon and "Top". */
+function TopPill() {
+  return (
+    <span
+      aria-hidden="true"
+      data-slot="hand-library-top"
+      className="pointer-events-none absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-0.5 rounded-full bg-background/90 px-1 py-px text-xs leading-4 font-semibold whitespace-nowrap text-foreground shadow-sm ring-1 ring-foreground/20"
+    >
+      <Library className="size-3 shrink-0 text-primary" />
+      Top
     </span>
   )
 }
