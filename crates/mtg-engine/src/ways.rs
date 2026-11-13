@@ -532,7 +532,7 @@ pub(crate) fn instead_way(
     for item in &mut settled.0 {
         if matches!(item, CostItem::OwnManaValue) {
             *item = CostItem::Mana(r400_generic(
-                &scope
+                scope
                     .amount(&Amount::Stat {
                         of: mtg_cards::refs::Ref::This,
                         stat: mtg_cards::value::StatKind::ManaValue,
@@ -562,8 +562,8 @@ pub(crate) fn instead_way(
 }
 
 /// `count` generic mana as a cost ("pay {X} ..., where X is that spell's mana value"): none for a negative count.
-fn r400_generic(count: &i64) -> Option<mtg_cards::mana::ManaCostX> {
-    let count = u32::try_from(*count).ok()?;
+fn r400_generic(count: i64) -> Option<mtg_cards::mana::ManaCostX> {
+    let count = u32::try_from(count).ok()?;
     format!("{{{count}}}").parse().ok()
 }
 
