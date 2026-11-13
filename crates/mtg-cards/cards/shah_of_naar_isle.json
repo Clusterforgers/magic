@@ -1,18 +1,64 @@
 {
   "oracle_id": "31c978b4-06d7-4e9d-82da-bfa4ef16f470",
   "name": "Shah of Naar Isle",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Shah of Naar Isle",
       "oracle_fingerprint": "f4bd39948183e4c74d812ad13970f7df",
       "abilities": [
-        { "Keyword": "Trample" },
-        { "Keyword": { "Echo": "{0}" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 168, "end": 249 }
+          "Keyword": "Trample"
+        },
+        {
+          "Keyword": {
+            "Echo": "{0}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "PaidEcho",
+                "what": [
+                  "This"
+                ]
+              }
+            },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "ChooseValue": {
+                        "who": {
+                          "Bound": "opponent"
+                        },
+                        "kind": {
+                          "Number": [
+                            0,
+                            3
+                          ]
+                        },
+                        "as": "drawn"
+                      }
+                    },
+                    {
+                      "Draw": {
+                        "who": {
+                          "Bound": "opponent"
+                        },
+                        "count": {
+                          "ChosenAs": "drawn"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

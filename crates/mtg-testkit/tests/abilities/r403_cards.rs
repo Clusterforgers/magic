@@ -11,7 +11,9 @@ use crate::common;
 
 use common::{name_of, pid};
 use mtg_cards::value::CounterKind;
-use mtg_engine::choose::{CardsChoice, CostsChoice, OptionChoice, TargetChoice, YesNoChoice};
+use mtg_engine::choose::{
+    CardsChoice, CostsChoice, NumberChoice, OptionChoice, TargetChoice, YesNoChoice,
+};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::replay;
 use mtg_engine::turn::Step;
@@ -32,6 +34,8 @@ struct R403Answers {
     picks: Vec<&'static str>,
     /// The player seat a target is chosen from, when the target is a player.
     target_seat: Option<usize>,
+    /// The number chosen when one is asked.
+    number: u32,
 }
 
 /// Answers until the stack is empty and nothing is pending.
@@ -67,6 +71,7 @@ fn r403_settle(driver: &mut Driver, how: &R403Answers) -> Result<(), ScriptError
                 Answer::ChooseTargets(TargetChoice::Targets(vec![driver.target_player(seat)]))
             }
             DecisionKind::PayMana(_) => Answer::PayMana(PayChoice::Auto),
+            DecisionKind::ChooseNumber(_) => Answer::ChooseNumber(NumberChoice::Number(how.number)),
             _ => Driver::passive_answer(&decision),
         };
         driver.answer(answer)?;
@@ -506,6 +511,45 @@ fn r403_heart_of_bogardan_burns_when_not_paid(
     let life = driver.state().player(pid(foe)).unwrap().life();
     assert_eq!(life, if paid { 20 } else { 18 });
     assert_eq!(r403_on_battlefield(&driver, "Bear"), paid);
+    r403_replays(&driver);
+    Ok(())
+}
+
+/// Shah of Naar Isle's echo paid lets each opponent draw the number of cards they choose up to three; declined, the
+/// creature is sacrificed and nobody draws.
+#[rstest]
+fn r403_shah_lets_each_opponent_draw_when_its_echo_is_paid(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] paid: bool,
+    #[values(0, 3)] number: u32,
+) -> Result<(), ScriptError> {
+    let mut scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .hand(0, [card("Shah of Naar Isle").unwrap()])
+        .battlefield(0, (0..4).map(|_| ready(mountain())));
+    for seat in 0..seats {
+        scenario = scenario.library(seat, (0..8).map(|_| forest()));
+    }
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.begin_cast("Shah of Naar Isle")?;
+    r403_settle(&mut driver, &R403Answers::default())?;
+    driver.idle_until(1 + u32::try_from(seats).unwrap(), Step::Upkeep)?;
+    let hands = |driver: &Driver| -> Vec<usize> {
+        (1..seats)
+            .map(|seat| driver.state().zone(Zone::Hand(pid(seat))).len())
+            .collect()
+    };
+    let before = hands(&driver);
+    let how = R403Answers {
+        yes: paid,
+        number,
+        ..R403Answers::default()
+    };
+    r403_settle(&mut driver, &how)?;
+    let drawn = usize::try_from(if paid { number } else { 0 }).unwrap();
+    let after: Vec<usize> = before.iter().map(|count| count + drawn).collect();
+    assert_eq!(hands(&driver), after);
+    assert_eq!(r403_on_battlefield(&driver, "Shah of Naar Isle"), paid);
     r403_replays(&driver);
     Ok(())
 }

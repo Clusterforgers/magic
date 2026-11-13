@@ -172,6 +172,29 @@ fn r403_own(text: &str) -> String {
     own
 }
 
+/// The step of a trigger by which each opponent may draw up to three cards.
+const R403_EACH_DRAWS: &str = "each opponent may draw up to three cards.";
+
+/// Each opponent in turn chooses a number from 0 to 3 and draws that many cards.
+fn r403_each_draws() -> Effect {
+    Effect::RepeatEach {
+        over: Ref::Opponents,
+        bind: "opponent".to_owned(),
+        effects: vec![
+            Effect::ChooseValue {
+                who: Ref::Bound("opponent".to_owned()),
+                kind: crate::effect::ValueKind::Number(Amount::Fixed(0), Amount::Fixed(3)),
+                bind: "drawn".to_owned(),
+            },
+            Effect::Draw {
+                who: Ref::Bound("opponent".to_owned()),
+                count: Amount::ChosenAs("drawn".to_owned()),
+                bind: None,
+            },
+        ],
+    }
+}
+
 /// Every card in the library of the player a trigger is about.
 fn r403_their_library() -> Ref {
     Ref::Each(crate::refs::Selector(vec![
@@ -208,6 +231,16 @@ fn r403_upkeep_read(text: &str, read: &impl Fn(&str) -> Option<Ability>) -> Opti
         *read_when = when;
         r403_each_amount(effects, &Amount::Fixed(1), &r403_age_x()).then_some(())?;
         return Some(ability);
+    }
+    if body == R403_EACH_DRAWS {
+        return Some(Ability::Triggered {
+            when,
+            intervening_if: None,
+            limit: None,
+            from: crate::refs::ZoneKind::Battlefield,
+            targets: Vec::new(),
+            effects: vec![r403_each_draws()],
+        });
     }
     if body == R403_EXILES_LIBRARY {
         return Some(Ability::Triggered {
@@ -262,6 +295,10 @@ fn r403_upkeep_wordings(
         bind: None,
         duration: None,
     };
+    if effects.as_slice() == [r403_each_draws()] {
+        more.push(format!("{head}, {R403_EACH_DRAWS}"));
+        return;
+    }
     if effects.as_slice() == [exile] {
         more.push(format!("{head}, {R403_EXILES_LIBRARY}"));
         return;

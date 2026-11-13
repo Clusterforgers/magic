@@ -134,6 +134,7 @@ fn r403_probe() {
 #[case("Maarika, Brutal Gladiator")]
 #[case("Rith, Liberated Primeval")]
 #[case("Heart of Bogardan")]
+#[case("Shah of Naar Isle")]
 fn r403_reads_back_whole(#[case] name: &str) {
     let report = r403_report(name, &r403_file(name));
     assert_eq!(
