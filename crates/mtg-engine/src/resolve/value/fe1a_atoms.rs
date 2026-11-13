@@ -26,6 +26,24 @@ impl Scope<'_> {
         }))
     }
 
+    /// Whether the object is blocked by one of the named objects or, with `blocks`, blocks one of them.
+    fn fe1a_blocked(
+        &self,
+        named: &Ref,
+        reference: ObjectRef,
+        blocks: bool,
+    ) -> Result<bool, ResolveError> {
+        let others = self.objects(named)?;
+        let named = |id| others.iter().any(|o| o.id == id);
+        Ok(self.state.combat().attackers().iter().any(|attacker| {
+            if blocks {
+                named(attacker.object()) && attacker.blockers().contains(&reference.id)
+            } else {
+                attacker.object() == reference.id && attacker.blockers().iter().any(|b| named(*b))
+            }
+        }))
+    }
+
     /// Whether a predicate of this module holds for the object; false for any other predicate.
     pub(super) fn fe1a_pred(
         &self,
@@ -82,22 +100,10 @@ impl Scope<'_> {
             Pred::TopCreatureOfGraveyard => self.top_creature_of_graveyard(reference, seen)?,
             Pred::R4700TopOfGraveyard { .. } => self.r4700_top(reference, seen, pred)?,
             Pred::BandedWith(named) => self.l290_banded_with(named, reference)?,
-            Pred::BlockedBy(named) => {
-                let blockers = self.objects(named)?;
-                self.state.combat().attackers().iter().any(|attacker| {
-                    attacker.object() == reference.id
-                        && blockers.iter().any(|b| attacker.blockers().contains(&b.id))
-                })
-            }
+            Pred::BlockedBy(named) => self.fe1a_blocked(named, reference, false)?,
             Pred::BlockedThisTurnBy(named) => self.r378_blocked_this_turn_by(named, reference)?,
             Pred::CastBefore(named) => self.r4703_cast_before(named, reference)?,
-            Pred::Blocks(named) => {
-                let attackers = self.objects(named)?;
-                self.state.combat().attackers().iter().any(|attacker| {
-                    attacker.blockers().contains(&reference.id)
-                        && attackers.iter().any(|a| a.id == attacker.object())
-                })
-            }
+            Pred::Blocks(named) => self.fe1a_blocked(named, reference, true)?,
             Pred::TargetedBy(named) => self.fe1a_targeted_by(named, reference)?,
             Pred::SingleTarget => {
                 seen.zone == Zone::Stack
