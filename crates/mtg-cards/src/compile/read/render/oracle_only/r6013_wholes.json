@@ -16,46 +16,30 @@
       }
      },
      {
-      "If": {
-       "condition": "Performed",
-       "then": [
+      "Reflexive": {
+       "targets": [
         {
-         "Reflexive": {
-          "targets": [
+         "what": {
+          "Object": [
            {
-            "what": {
-             "Object": [
-              {
-               "Not": {
-                "Type": "Land"
-               }
-              },
-              {
-               "ControlledBy": "Opponents"
-              },
-              {
-               "Compare": {
-                "stat": "ManaValue",
-                "op": "Le",
-                "to": {
-                 "Stat": {
-                  "of": {
-                   "Bound": "discarded"
-                  },
-                  "stat": "ManaValue"
-                 }
-                }
-               }
-              }
-             ]
+            "Not": {
+             "Type": "Land"
             }
-           }
-          ],
-          "effects": [
+           },
            {
-            "Destroy": {
-             "what": {
-              "Target": 0
+            "ControlledBy": "Opponents"
+           },
+           {
+            "Compare": {
+             "stat": "ManaValue",
+             "op": "Le",
+             "to": {
+              "Stat": {
+               "of": {
+                "Bound": "discarded"
+               },
+               "stat": "ManaValue"
+              }
              }
             }
            }
@@ -63,7 +47,34 @@
          }
         }
        ],
-       "otherwise": [
+       "effects": [
+        {
+         "Destroy": {
+          "what": {
+           "Target": 0
+          }
+         }
+        }
+       ]
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "CountOf": {
+           "of": {
+            "Bound": "discarded"
+           },
+           "filter": []
+          }
+         },
+         "op": "Eq",
+         "right": 0
+        }
+       },
+       "then": [
         {
          "Sacrifice": {
           "filter": [

@@ -14,7 +14,8 @@ use mtg_cards::ability::Ability;
 use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_engine::choose::{CardsChoice, Target};
-use mtg_engine::decision::{Answer, DecisionKind};
+use mtg_core::ids::ObjectId;
+use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_testkit::cards::{cost, forest, island, mountain, plains, swamp};
@@ -59,7 +60,7 @@ fn r6013_settle(
         }
         match &driver.decision()?.kind {
             DecisionKind::ChooseCards(options) if discard.is_some() => {
-                let id = driver.id_of(discard.unwrap())?;
+                let id = r6013_find(driver, discard.unwrap());
                 let picked = if options.from.contains(&id) {
                     vec![id]
                 } else {
@@ -68,7 +69,7 @@ fn r6013_settle(
                 driver.answer(Answer::ChooseCards(CardsChoice(picked)))?;
             }
             DecisionKind::Discard(_) if discard.is_some() => {
-                let id = driver.id_of(discard.unwrap())?;
+                let id = r6013_find(driver, discard.unwrap());
                 driver.answer(Answer::Discard(vec![id]))?;
             }
             DecisionKind::ChooseTargets(_) if target.is_some() => {
@@ -83,9 +84,41 @@ fn r6013_settle(
     Err(ScriptError::Stuck("the stack".into()))
 }
 
+/// The object named `name` in any zone.
+fn r6013_find(driver: &Driver, name: &str) -> ObjectId {
+    let state = driver.state();
+    let mut zones = vec![Zone::Battlefield, Zone::Exile, Zone::Stack];
+    for seat in 0..state.players().len() {
+        zones.extend([Zone::Hand(pid(seat)), Zone::Graveyard(pid(seat)), Zone::Library(pid(seat))]);
+    }
+    zones
+        .into_iter()
+        .flat_map(|zone| state.zone(zone).iter().copied())
+        .find(|id| state.object(*id).is_some_and(|object| object.card().name == name))
+        .unwrap_or_else(|| panic!("{name} is somewhere"))
+}
+
 fn r6013_zone_of(driver: &Driver, name: &str) -> Zone {
-    let id = driver.id_of(name).unwrap();
+    let id = r6013_find(driver, name);
     driver.state().object(id).unwrap().zone()
+}
+
+/// Casts `name`, choosing `target` when a target is asked, and pays automatically.
+fn r6013_cast(driver: &mut Driver, name: &str, target: Option<Target>) -> Result<(), ScriptError> {
+    driver.begin_cast(name)?;
+    for _ in 0..10 {
+        match &driver.decision()?.kind {
+            DecisionKind::ChooseTargets(_) => {
+                driver.choose_targets(&[target.expect("a target is asked")])?;
+            }
+            DecisionKind::PayMana(_) => {
+                driver.answer(Answer::PayMana(PayChoice::Auto))?;
+                return Ok(());
+            }
+            _ => return Ok(()),
+        }
+    }
+    Ok(())
 }
 
 #[rstest]
@@ -192,12 +225,13 @@ fn r6013_grist_repeats_while_insects_are_milled(
 /// An instant that returns every creature card from its controller's graveyard to the battlefield.
 fn r6013_return_all() -> Arc<CardDefinition> {
     let spell: Ability = serde_json::from_str(
-        r#"{"Spell":{"effects":[{"Move":{"what":{"Each":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]},"to":"Battlefield"}}]}}"#,
+        r#"{"Spell":{"effects":[{"Move":{"what":{"Each":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]},"to":{"Battlefield":{}}}}]}}"#,
     )
     .unwrap();
     Arc::new(
         CardDefinition::new("Return All")
             .with_type(CardType::Instant)
+            .with_mana_cost(cost(0, &[]))
             .with_rules(spell),
     )
 }
@@ -242,6 +276,7 @@ fn r6013_instant(name: &str, spell: &str) -> Arc<CardDefinition> {
     Arc::new(
         CardDefinition::new(name)
             .with_type(CardType::Instant)
+            .with_mana_cost(cost(0, &[]))
             .with_rules(spell),
     )
 }
@@ -319,9 +354,8 @@ fn r6013_wolverine_heals_before_each_damage(
     let mut driver = Driver::from_scenario(scenario)?;
     let wolverine = driver.id_of("Wolverine, Fierce Fighter")?;
     for at in 0..hits {
-        driver.cast(&format!("Zap {at}"))?;
         let target = driver.target_named("Wolverine, Fierce Fighter")?;
-        driver.choose_targets(&[target])?;
+        r6013_cast(&mut driver, &format!("Zap {at}"), Some(target))?;
         r6013_settle(&mut driver, None, None)?;
     }
     let object = driver.state().object(wolverine).unwrap();
@@ -457,9 +491,8 @@ fn r6013_mana_clash_repeats_until_both_coins_come_up_heads(
         .hand(0, [card("Mana Clash").unwrap()]);
     let mut driver = Driver::from_scenario(scenario)?;
     let begun = driver.engine().events().len();
-    driver.cast("Mana Clash")?;
     let foe = driver.target_player(1);
-    driver.choose_targets(&[foe])?;
+    r6013_cast(&mut driver, "Mana Clash", Some(foe))?;
     r6013_settle(&mut driver, None, None)?;
     let flips: Vec<(usize, bool)> = driver.engine().events()[begun..]
         .iter()
@@ -519,9 +552,8 @@ fn r6013_valentin_exiles_an_opponents_dying_creature(
         .battlefield(1, [ready(r6013_kin("Victim", "Bear"))])
         .hand(0, [r6013_instant("Zap", zap)]);
     let mut driver = Driver::from_scenario(scenario)?;
-    driver.cast("Zap")?;
     let victim = driver.target_named("Victim")?;
-    driver.choose_targets(&[victim])?;
+    r6013_cast(&mut driver, "Zap", Some(victim))?;
     for _ in 0..200 {
         if driver.state().stack().is_empty()
             && driver.state().resolving().is_none()
@@ -549,3 +581,4 @@ fn r6013_valentin_exiles_an_opponents_dying_creature(
     assert_eq!(pests, usize::from(pay));
     Ok(())
 }
+
