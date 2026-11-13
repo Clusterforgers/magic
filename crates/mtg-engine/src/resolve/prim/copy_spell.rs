@@ -26,6 +26,7 @@ use crate::zones::Zone;
 ///
 /// A step with k questions runs k + 1 times; every copy's questions are read from the journal in the order of the copies.
 /// A replacement that adds copies (`ReplaceWhen::CopiesSpell`) adds them after the others, each with new targets.
+#[allow(clippy::too_many_lines)]
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::CopySpell {
         who,

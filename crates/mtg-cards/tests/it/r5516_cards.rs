@@ -116,7 +116,7 @@ fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case
 )]
 #[case::a_learn_replaced_by_a_draw(
     "Retriever Phoenix",
-    r#"[{"Move":{"what":"This","to":{"Battlefield":{}}}}]"#,
+    r#"[{"Move":{"what":"This","to":"Battlefield"}}]"#,
     r#"[{"Draw":{}}]"#
 )]
 #[case::steps_without_a_learn("Retriever Phoenix", r#"{"Learns":{}}"#, r#"{"Draw":{}}"#)]

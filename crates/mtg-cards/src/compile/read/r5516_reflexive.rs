@@ -1,6 +1,6 @@
-//! r55-16 reflexive triggers worded after the steps they follow: "S. When you do, if C, T." (an intervening "if" of the
-//! trigger, CR 603.4) and "S. When you do, T." where T is worded as a spell with the trigger's own targets; a pronoun
-//! may stand for the source as T's subject ("he deals damage ...").
+//! r55-16 reflexive triggers with an intervening "if" worded after the steps they follow: "S. When you do, if C, T."
+//! (CR 603.4), where T is worded as a spell with the trigger's own targets; a pronoun may stand for the source as T's
+//! subject ("he deals damage ...").
 
 use serde_json::json;
 
@@ -93,7 +93,8 @@ pub(super) fn r5516_reflexive_wordings(
     else {
         return;
     };
-    if before.is_empty() {
+    // Without an intervening "if" the other writers word the trigger (`w20b_reflexive`).
+    if before.is_empty() || condition.is_none() {
         return;
     }
     let Some(head) = r5516_with_steps(ability, before) else {
