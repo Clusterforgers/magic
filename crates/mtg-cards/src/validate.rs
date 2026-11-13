@@ -949,6 +949,7 @@ impl<'a> Walker<'a> {
             | Pred::ChosenColor
             | Pred::CanEnchantSource
             | Pred::XInCost
+            | Pred::PhyrexianInCost
             | Pred::GenericCost(_)
             | Pred::Goaded
             | Pred::ChosenSubtype

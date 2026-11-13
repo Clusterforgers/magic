@@ -101,6 +101,7 @@ fn written() {
 #[case("Magmablood Archaic")]
 #[case("Void Mirror")]
 #[case("Rumbling Aftershocks")]
+#[case("Rage Extractor")]
 fn reads_back_whole(#[case] name: &str) {
     let report = report(name);
     assert_eq!(
@@ -141,6 +142,9 @@ fn altered(name: &str, from: &str, to: &str) -> String {
     r#"{"May":{"effects":[{"DealDamage":{"amount":{"Stat":{"of":"Triggering","stat":"Kicks"}},"to":{"Target":0}}}]}}"#,
     r#"{"DealDamage":{"amount":{"Stat":{"of":"Triggering","stat":"Kicks"}},"to":{"Target":0}}}"#
 )]
+#[case::x_in_cost("Rage Extractor", r#""PhyrexianInCost""#, r#""XInCost""#)]
+#[case::its_power("Rage Extractor", r#""stat":"ManaValue""#, r#""stat":"Power""#)]
+#[case::opponents_cast("Rage Extractor", r#""by":"You""#, r#""by":"Opponents""#)]
 fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let report = report_of(name, &altered(name, from, to));
     assert_ne!(

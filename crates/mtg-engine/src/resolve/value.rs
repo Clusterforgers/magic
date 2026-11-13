@@ -1728,6 +1728,7 @@ impl<'a> Scope<'a> {
             | Pred::SharesType(_)
             | Pred::SharesColor(_)
             | Pred::XInCost
+            | Pred::PhyrexianInCost
             | Pred::GenericCost(_)
             | Pred::Goaded
             | Pred::HasAttached(_)

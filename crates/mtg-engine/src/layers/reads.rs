@@ -304,6 +304,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::CounterCount { .. }
         | Pred::CanEnchantSource
         | Pred::XInCost
+        | Pred::PhyrexianInCost
         | Pred::GenericCost(_)
         | Pred::SingleTarget
         | Pred::HasAnyCounter

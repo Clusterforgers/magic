@@ -1,8 +1,9 @@
 //! Goal: the colors of mana spent to cast the spell of a cast trigger play as printed at tables of two, three and four
 //! seats: Void Mirror counters a spell cast with colorless mana alone, whoever casts it, and lets one cast with colored
 //! mana resolve; Magmablood Archaic gives its controller's creatures +1/+0 for each color spent on an instant; Rumbling
-//! Aftershocks deals as much damage as its controller's spell was kicked and does not trigger on an unkicked one; and the
-//! log replays to the state it was played to.
+//! Aftershocks deals as much damage as its controller's spell was kicked and does not trigger on an unkicked one; Rage
+//! Extractor deals damage equal to the mana value of its controller's spell with a Phyrexian symbol and ignores one
+//! without; and the log replays to the state it was played to.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -14,7 +15,7 @@ use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::replay;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_testkit::cards::{bear, creature, forest, instant, mountain, wastes};
+use mtg_testkit::cards::{bear, creature, forest, instant, mountain, phyrexian_bear, wastes};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
@@ -154,6 +155,28 @@ fn r407_aftershocks_deal_damage_for_each_kick(
     r407_settle(&mut driver)?;
     let life = driver.state().player(pid(1)).unwrap().life();
     assert_eq!(life, 20 - i32::try_from(kicks).unwrap());
+    r407_replays(&driver);
+    Ok(())
+}
+
+#[rstest]
+fn r407_rage_extractor_burns_for_spells_with_a_phyrexian_symbol(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] phyrexian: bool,
+) -> Result<(), ScriptError> {
+    let spell = if phyrexian { phyrexian_bear() } else { bear() };
+    let name = spell.name.clone();
+    let mut permanents = vec![ready(card("Rage Extractor").unwrap())];
+    permanents.extend((0..3).map(|_| ready(forest())));
+    let scenario = r407_table(seats)
+        .battlefield(0, permanents)
+        .hand(0, [spell]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.begin_cast(&name)?;
+    driver.pay_tapping(&["Forest", "Forest"], 0)?;
+    r407_settle(&mut driver)?;
+    let life = driver.state().player(pid(1)).unwrap().life();
+    assert_eq!(life, if phyrexian { 18 } else { 20 });
     r407_replays(&driver);
     Ok(())
 }
