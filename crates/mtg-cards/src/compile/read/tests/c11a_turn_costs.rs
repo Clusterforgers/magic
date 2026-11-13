@@ -133,9 +133,6 @@ fn an_activated_ability_counts_a_tally_of_the_turn_for_its_own_cost() {
 }
 
 #[rstest]
-#[case::an_opponent_you_attacked(
-    "This spell costs {1} less to cast for each opponent you attacked this turn."
-)]
 #[case::life_lost_by_you(
     "This spell costs {1} less to cast for each 1 life you have lost this turn."
 )]

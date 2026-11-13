@@ -91,15 +91,15 @@ mod tests {
 
     #[rstest]
     #[case::drafted(
-        r#"{"Activated":{"cost":"{T}","effects":[{"AddMana":{"mana":"DraftedColors"}}]}}"#,
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":"DraftedColors"}}]}}"#,
         true
     )]
     #[case::any_color(
-        r#"{"Activated":{"cost":"{T}","effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
         false
     )]
     #[case::twice(
-        r#"{"Activated":{"cost":"{T}","effects":[{"AddMana":{"mana":"DraftedColors"}},{"AddMana":{"mana":"DraftedColors"}}]}}"#,
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":"DraftedColors"}},{"AddMana":{"mana":"DraftedColors"}}]}}"#,
         false
     )]
     fn r5523_only_one_drafted_mana_has_a_twin(#[case] json: &str, #[case] twinned: bool) {
@@ -120,7 +120,7 @@ mod tests {
     fn r5523_only_the_drafted_words_read(#[case] text: &str, #[case] read: bool) {
         let found = r5523_read(text, |twin| {
             (twin == "{T}: Add one mana of any color.")
-                .then(|| ability(r#"{"Activated":{"cost":"{T}","effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#))
+                .then(|| ability(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#))
         });
         assert_eq!(found.is_some(), read, "{text}");
         if let Some(found) = found {
