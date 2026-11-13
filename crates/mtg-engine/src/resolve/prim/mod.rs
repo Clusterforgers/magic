@@ -469,7 +469,7 @@ mod tests {
                     );
                     false
                 }
-                Ok(_) | Err(ResolveError::Invalid(_)) => true,
+                Ok(_) | Err(ResolveError::Invalid(_) | ResolveError::Illegal(_)) => true,
             };
             assert_eq!(plays, caps().runs(&name), "{name}");
             if plays {

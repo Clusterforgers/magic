@@ -22,6 +22,10 @@ use mtg_testkit::brain::{HeuristicBot, Level, SeatBrain, Settings, brain};
 use mtg_testkit::brain_decks::{Duel, duel_setup};
 use mtg_testkit::harness::{PlayOptions, play_brains};
 
+#[allow(dead_code, clippy::all, clippy::pedantic)]
+#[path = "legacy_brain/mod.rs"]
+mod legacy;
+
 /// A brain that times its answers.
 struct Timed {
     inner: Box<dyn SeatBrain>,
@@ -130,6 +134,8 @@ enum Who {
     Level(Level),
     Baseline,
     Exp,
+    /// A level of the frozen brains of the main branch before the threat model.
+    Old(legacy::Level),
 }
 
 fn level(name: &str) -> Who {
@@ -139,6 +145,9 @@ fn level(name: &str) -> Who {
         "hard" => Who::Level(Level::Hard),
         "veryhard" => Who::Level(Level::VeryHard),
         "baseline" => Who::Baseline,
+        "old-normal" => Who::Old(legacy::Level::Normal),
+        "old-hard" => Who::Old(legacy::Level::Hard),
+        "old-veryhard" => Who::Old(legacy::Level::VeryHard),
         "exp" => Who::Exp,
         other => panic!("unknown level {other}"),
     }
@@ -159,6 +168,7 @@ fn number<T: std::str::FromStr>(name: &str, default: T) -> T {
 fn make(who: Who, seed: u64, seat: PlayerId, timed: bool) -> Box<dyn SeatBrain> {
     match who {
         Who::Level(level) => brain(level, seed, seat, timed),
+        Who::Old(level) => legacy::brain(level, seed, seat, timed),
         Who::Baseline => Box::new(HeuristicBot::new(seed, seat, Settings::BASELINE.untimed())),
         Who::Exp => {
             let base = Settings::HARD.untimed();
@@ -223,11 +233,12 @@ fn main() {
                     }
                     // Each deal is played once with the strong side in each place, so both sides get the same luck.
                     let seed = first + game / seats as u64;
-                    let duel = if (seed / 2).is_multiple_of(2) {
-                        Duel::Gruul
+                    let rotation: &[Duel] = if std::env::var("DECKS").is_ok_and(|d| d == "3") {
+                        &[Duel::Gruul, Duel::Orzhov, Duel::Izzet]
                     } else {
-                        Duel::Orzhov
+                        &[Duel::Gruul, Duel::Orzhov]
                     };
+                    let duel = rotation[usize::try_from(seed / 2).unwrap() % rotation.len()];
                     let house = HouseRules {
                         teams: teams.clone(),
                         ..HouseRules::default()

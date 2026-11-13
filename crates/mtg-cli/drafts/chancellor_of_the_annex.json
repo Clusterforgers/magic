@@ -1,0 +1,57 @@
+{
+  "oracle_id": "85c0a376-da6f-4f69-853c-a093708d0952",
+  "name": "Chancellor of the Annex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chancellor of the Annex",
+      "oracle_fingerprint": "aa71188c11d5779f399013787989ac34",
+      "abilities": [
+        {
+          "OpeningReveal": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tallied": { "who": "TriggeringPlayer", "what": "SpellsCastThisGame" }
+                      },
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Pay": {
+                        "who": "TriggeringPlayer",
+                        "cost": "{1}",
+                        "unpaid": [{ "Counter": { "what": "Triggering" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "TriggeringPlayer",
+                  "cost": "{1}",
+                  "unpaid": [{ "Counter": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

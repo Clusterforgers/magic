@@ -3,6 +3,7 @@
 mod bot_block_tax;
 mod brain_heuristics;
 mod brain_matches;
+mod brain_suite;
 mod c10_vp_planar_votes;
 mod c4_attacked_untap;
 mod c4_party;

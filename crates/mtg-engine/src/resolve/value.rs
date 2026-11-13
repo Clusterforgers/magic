@@ -68,11 +68,17 @@ pub enum ResolveError {
     /// The data does not make sense in the game as it is.
     #[error("{0}")]
     Invalid(String),
+    /// A player's answer to a question of the resolution does not do what it must; the answer is refused.
+    #[error("{0}")]
+    Illegal(crate::error::IllegalAnswer),
 }
 
 impl From<ResolveError> for crate::error::EngineError {
     fn from(error: ResolveError) -> Self {
-        crate::error::EngineError::Resolution(error.to_string())
+        match error {
+            ResolveError::Illegal(illegal) => crate::error::EngineError::Illegal(illegal),
+            other => crate::error::EngineError::Resolution(other.to_string()),
+        }
     }
 }
 

@@ -1,0 +1,124 @@
+{
+  "oracle_id": "71ff4603-9f7a-459e-b5b3-9b39583f1dc7",
+  "name": "Genesis of the Daleks",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Genesis of the Daleks",
+      "oracle_fingerprint": "e14ed5d33742342937a3ab0aa7c5e751",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dalek",
+                      "colors": ["Black"],
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Dalek"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Menace" }]
+                    }
+                  },
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "lore" } } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dalek",
+                      "colors": ["Black"],
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Dalek"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Menace" }]
+                    }
+                  },
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "lore" } } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dalek",
+                      "colors": ["Black"],
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Dalek"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Menace" }]
+                    }
+                  },
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "lore" } } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "VillainousChoice": {
+                  "who": { "Target": 0 },
+                  "first": [
+                    {
+                      "Destroy": {
+                        "what": { "Each": [{ "Type": "Creature" }, { "Subtype": "Dalek" }] }
+                      }
+                    },
+                    {
+                      "LoseLife": {
+                        "who": "Opponents",
+                        "amount": {
+                          "TallyTotal": {
+                            "event": "Died",
+                            "who": "EachPlayer",
+                            "filter": [{ "Subtype": "Dalek" }],
+                            "stat": "Power"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Destroy": {
+                        "what": {
+                          "Each": [{ "Type": "Creature" }, { "Not": { "Subtype": "Dalek" } }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

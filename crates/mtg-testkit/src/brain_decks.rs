@@ -1,6 +1,6 @@
-//! Two duel decks for measuring bot brains against each other: a red-green deck of ramp, burn, pumps and tramplers and
-//! a white-black deck of removal, auras, flyers and first strikers, each 60 cards of basics, corpus cards and
-//! keyworded creatures.
+//! Duel decks for measuring bot brains against each other: a red-green deck of ramp, burn, pumps and tramplers, a
+//! white-black deck of removal, auras, flyers and first strikers and a blue-red deck of counters, burn and flash
+//! creatures, each 60 cards of basics, corpus cards and keyworded creatures.
 
 use std::sync::Arc;
 
@@ -14,13 +14,15 @@ use mtg_engine::format::Normal;
 use crate::cards::{keyworded_creature, land};
 use crate::corpus::{self, CorpusError};
 
-/// One of the two duel decks.
+/// One of the duel decks.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Duel {
     /// Red-green: Llanowar Elves, Rampant Growth, Lightning Bolt, Giant Growth, Rancor, Fireball and big tramplers.
     Gruul,
     /// White-black: Doom Blade, Swords to Plowshares, Pacifism, Serra Angel, flyers, lifelinkers and first strikers.
     Orzhov,
+    /// Blue-red: Counterspell, Dissipate, Lightning Bolt, flash creatures and flyers.
+    Izzet,
 }
 
 /// A creature line: name, generic mana, coloured symbols, power, toughness, keywords, copies.
@@ -170,11 +172,50 @@ const ORZHOV_SPELLS: &[(&str, usize)] = &[
     ("Serra Angel", 3),
 ];
 
+const IZZET: &[Line] = &[
+    (
+        "Duel Drake",
+        1,
+        &[Color::Blue],
+        2,
+        2,
+        &[Keyword::Flying, Keyword::Flash],
+        4,
+    ),
+    ("Duel Wizard", 1, &[Color::Blue], 1, 3, &[Keyword::Flash], 4),
+    ("Duel Elemental", 2, &[Color::Red], 3, 3, &[], 4),
+    (
+        "Duel Sphinx",
+        3,
+        &[Color::Blue, Color::Blue],
+        4,
+        4,
+        &[Keyword::Flying],
+        4,
+    ),
+    (
+        "Duel Raptor",
+        1,
+        &[Color::Red],
+        2,
+        1,
+        &[Keyword::FirstStrike, Keyword::Haste],
+        4,
+    ),
+    ("Duel Brute", 1, &[Color::Red], 3, 2, &[], 4),
+    ("Duel Serpent", 4, &[Color::Blue], 5, 5, &[], 4),
+    ("Duel Ogre", 2, &[Color::Red], 3, 3, &[], 4),
+];
+
+const IZZET_SPELLS: &[(&str, usize)] =
+    &[("Counterspell", 4), ("Dissipate", 3), ("Lightning Bolt", 4)];
+
 /// The 60 cards of `duel`, lands first.
 pub fn duel_deck(duel: Duel) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
     let (colors, lines, spells) = match duel {
         Duel::Gruul => ([Color::Green, Color::Red], GRUUL, GRUUL_SPELLS),
         Duel::Orzhov => ([Color::White, Color::Black], ORZHOV, ORZHOV_SPELLS),
+        Duel::Izzet => ([Color::Blue, Color::Red], IZZET, IZZET_SPELLS),
     };
     let mut deck: Vec<Arc<CardDefinition>> = (0..17).map(|i| land(colors[i % 2])).collect();
     for (name, copies) in spells {
@@ -198,14 +239,16 @@ pub fn duel_setup(decks: &[Duel], seed: u64, house: HouseRules) -> Result<GameSe
 
 #[cfg(test)]
 mod tests {
-    //! Goal: both duel decks are legal 60-card Normal decks built from cards the corpus has.
+    //! Goal: every duel deck is legal 60-card Normal decks built from cards the corpus has.
     use mtg_engine::format::FormatRules;
     use rstest::rstest;
 
     use super::*;
 
     #[rstest]
-    fn each_duel_deck_is_a_legal_sixty(#[values(Duel::Gruul, Duel::Orzhov)] duel: Duel) {
+    fn each_duel_deck_is_a_legal_sixty(
+        #[values(Duel::Gruul, Duel::Orzhov, Duel::Izzet)] duel: Duel,
+    ) {
         let deck = duel_deck(duel).unwrap();
         assert_eq!(deck.len(), 60);
         assert!(Normal.validate_deck(&deck).is_ok());

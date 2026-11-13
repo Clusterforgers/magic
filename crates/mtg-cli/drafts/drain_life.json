@@ -1,0 +1,63 @@
+{
+  "oracle_id": "e75ba79f-4cc2-4ede-8641-559ab94e7e36",
+  "name": "Drain Life",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drain Life",
+      "oracle_fingerprint": "8e20812f3381a7ae6f4714f779123f34",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "XColor": "Black" }], "required": true } },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Let": {
+                  "as": "cap",
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Matches": {
+                          "subject": { "Target": 0 },
+                          "selector": [{ "Type": "Creature" }]
+                        }
+                      },
+                      "then": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } },
+                      "otherwise": {
+                        "When": {
+                          "condition": {
+                            "Matches": {
+                              "subject": { "Target": 0 },
+                              "selector": [{ "Type": "Planeswalker" }]
+                            }
+                          },
+                          "then": { "Stat": { "of": { "Target": 0 }, "stat": "Loyalty" } },
+                          "otherwise": { "Life": { "Target": 0 } }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": "DamageDealtThisWay",
+                      "op": "Le",
+                      "right": { "Bound": "cap" }
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": "DamageDealtThisWay" } }],
+                  "otherwise": [{ "GainLife": { "amount": { "Bound": "cap" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
