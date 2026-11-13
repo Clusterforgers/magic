@@ -583,7 +583,10 @@ fn without_earlier_reads(what: &Targetable) -> Targetable {
             | Pred::SharesSubtype(by)
             | Pred::SharesName(by)
             | Pred::SharesColor(by)
-            | Pred::SharesManaValue(by) => reads(by),
+            | Pred::SharesManaValue(by)
+            | Pred::BlockedThisTurnBy(by)
+            | Pred::BlockedBy(by)
+            | Pred::Blocks(by) => reads(by),
             Pred::Not(inner) => earlier(inner),
             _ => false,
         }
