@@ -1,9 +1,8 @@
 //! r40-9 wordings written from a twin another writer words: "If that artifact is an Equipment, attach it to this
 //! creature." after a step on a target artifact (Thieving Skydiver), and "that source's controller" as the player of a
 //! step after "Whenever a source deals damage to ~" (Crag Saurian), and the loyalty rule for the turn ("You may activate
-//! the loyalty abilities of planeswalkers you control twice this turn rather than only once."), a delayed trigger that
-//! lasts until the controller's next turn ("Until your next turn, whenever ...") and the combat phase added after the
-//! combat a combat damage trigger happens in ("After this combat phase, there is an additional combat phase.").
+//! the loyalty abilities of planeswalkers you control twice this turn rather than only once."), and a delayed trigger
+//! that lasts until the controller's next turn ("Until your next turn, whenever ...").
 
 use serde_json::{Value, json};
 
@@ -15,7 +14,6 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     r409_source_controller(ability, texts);
     r409_loyalty_twice_this_turn(ability, texts);
     r409_until_your_next_turn(ability, texts);
-    r409_after_this_combat(ability, texts);
 }
 
 /// "Until your next turn, whenever a creature attacks you ..., it gets -2/-0 until end of turn.": the one step sets up
@@ -55,32 +53,6 @@ fn r409_until_your_next_turn(ability: &Ability, texts: &mut Vec<String>) {
         .into_iter()
         .filter(|text| text.matches("Whenever ").count() == 1)
         .map(|text| text.replacen("Whenever ", "Until your next turn, whenever ", 1))
-        .filter(|text| !texts.contains(text))
-        .collect();
-    texts.extend(found);
-}
-
-/// "After this combat phase, there is an additional combat phase." in a trigger on combat damage: the phase the step
-/// adds after is the combat phase, written from the wording "After this phase".
-fn r409_after_this_combat(ability: &Ability, texts: &mut Vec<String>) {
-    const PHASE: &str = "After this phase, there is an additional combat phase.";
-    let Ability::Triggered { when, .. } = ability else {
-        return;
-    };
-    let combat = serde_json::to_string(when).is_ok_and(|text| text.contains(r#""combat":true"#));
-    if !combat {
-        return;
-    }
-    let found: Vec<String> = texts
-        .iter()
-        .filter(|text| text.matches(PHASE).count() == 1)
-        .map(|text| {
-            text.replacen(
-                PHASE,
-                "After this combat phase, there is an additional combat phase.",
-                1,
-            )
-        })
         .filter(|text| !texts.contains(text))
         .collect();
     texts.extend(found);

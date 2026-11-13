@@ -112,6 +112,9 @@ fn r409_probe() {
 #[case("Crag Saurian")]
 #[case("Oath of Teferi")]
 #[case("Urza Assembles the Titans")]
+#[case("Belltower Sphinx")]
+#[case("Reaper of Sheoldred")]
+#[case("Tamiyo Meets the Story Circle")]
 fn r409_reads_back_whole(#[case] name: &str) {
     let report = r409_report(name, &r409_file(name));
     assert_eq!(
@@ -181,6 +184,12 @@ fn r409_reads_back_whole(#[case] name: &str) {
     r#""LoyaltyTwice": "You" }, "duration": "UntilEndOfTurn""#,
     r#""LoyaltyTwice": "You" }"#
 )]
+#[case::for_ever(
+    "Tamiyo Meets the Story Circle",
+    r#", "until": "UntilYourNextTurn""#,
+    ""
+)]
+#[case::minus_three("Tamiyo Meets the Story Circle", r#""power": -2"#, r#""power": -3"#)]
 #[case::attach_always("Thieving Skydiver", r#""right": 1"#, r#""right": 0"#)]
 fn r409_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let file = r409_file(name);
