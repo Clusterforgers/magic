@@ -228,6 +228,8 @@ pub enum Rule {
         /// Whether it works only on the controller's turns.
         your_turns: bool,
     },
+    /// Creatures the players control can boast twice during each of their turns (CR 702.142c).
+    BoastTwice(Vec<PlayerId>),
     /// The players' maximum hand size is this many cards (CR 402.2).
     MaxHandSize(Vec<(PlayerId, u32)>),
     /// The players' maximum hand size changes by this many cards, after any size that is set (CR 402.2).
@@ -734,6 +736,8 @@ pub(crate) struct RulesInForce {
     loyalty_twice: BTreeSet<PlayerId>,
     /// The reveals of first draws in force: the controller, the source, whether optional, whether on their turns only.
     reveal_first_draw: Vec<(PlayerId, Option<ObjectRef>, bool, bool)>,
+    /// The players whose creatures can boast twice during each of their turns.
+    pub(crate) boast_twice: BTreeSet<PlayerId>,
     skip_draw: BTreeSet<PlayerId>,
     look_top: BTreeSet<PlayerId>,
     extra_lands: BTreeMap<PlayerId, u32>,
@@ -1181,6 +1185,7 @@ impl RulesInForce {
                 self.reveal_first_draw
                     .push((controller, source, *may, *your_turns));
             }
+            Rule::BoastTwice(players) => self.boast_twice.extend(players),
             Rule::MaxHandSize(_)
             | Rule::HandSizeChange(_)
             | Rule::NoLegendRule(_)
@@ -1617,6 +1622,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             may: *may,
             your_turns: *your_turns,
         },
+        GameRule::BoastTwice(who) => Rule::BoastTwice(scope.players(who)?),
         GameRule::SkipDrawStep(who) => Rule::SkipDrawStep(scope.players(who)?),
         GameRule::AdditionalLandPlays { who, count } => {
             let count = u32::try_from(scope.amount(count)?.max(0)).unwrap_or(u32::MAX);
@@ -1756,6 +1762,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::NoLegendRule(players)
         | Rule::NoMaxHandSize(players)
         | Rule::LoyaltyTwice(players)
+        | Rule::BoastTwice(players)
         | Rule::AttackAsThoughHasteAt(players) => players.is_empty(),
         Rule::MayCastRather { casts, .. } => casts.is_empty(),
         Rule::MaxHandSize(sizes) => sizes.is_empty(),
@@ -1939,6 +1946,7 @@ static NONE: RulesInForce = RulesInForce {
     no_hand_limit: BTreeSet::new(),
     loyalty_twice: BTreeSet::new(),
     reveal_first_draw: Vec::new(),
+    boast_twice: BTreeSet::new(),
     skip_draw: BTreeSet::new(),
     look_top: BTreeSet::new(),
     extra_lands: BTreeMap::new(),
@@ -2626,8 +2634,8 @@ pub(crate) fn c11b_once_source(
 }
 
 /// The riders a cast of `card` by `player` from `from` for `way` takes from the permission it goes through: a cast for the
-/// mana cost from a zone other than a hand or the command zone, or a free cast, goes through the first permission that
-/// covers it, one that works once each turn after the others (as [`c11b_once_source`] counts it). None for any other
+/// mana cost from a zone other than a hand or the command zone, a free cast, or a cast for the cost a permission puts in
+/// place of the mana cost goes through the first permission that covers it, one that works once each turn after the others (as [`c11b_once_source`] counts it). None for any other
 /// cast.
 pub(crate) fn r401_cast_riders(
     state: &GameState,
@@ -2637,7 +2645,9 @@ pub(crate) fn r401_cast_riders(
     way: Option<mtg_cards::value::CastWay>,
 ) -> Vec<CastRider> {
     let free = way == Some(mtg_cards::value::CastWay::Free);
-    if (way.is_some() && !free) || matches!(from, Zone::Hand(_) | Zone::Command(_)) {
+    // A cast for the cost a permission puts in place of the mana cost (Glimpse the Cosmos) takes that permission's riders.
+    let rather = way == Some(mtg_cards::value::CastWay::Alternative);
+    if (way.is_some() && !free && !rather) || matches!(from, Zone::Hand(_) | Zone::Command(_)) {
         return Vec::new();
     }
     let Some(card) = state.object(card) else {
@@ -2651,6 +2661,8 @@ pub(crate) fn r401_cast_riders(
                 && cast.from == Some(zone)
                 && (if free {
                     cast.free
+                } else if rather {
+                    cast.rather.is_some() || cast.instead.is_some()
                 } else {
                     cast.adds_to_printed(zone)
                 })

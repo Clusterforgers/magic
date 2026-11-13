@@ -120,6 +120,9 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - "If this card is in a graveyard, effects from spells named Muscle Burst count it as a card named Muscle Burst" is `GameRule::CountsAsNamed` from the graveyard: `Pred::Named` of a resolving spell of that name selects the card; it is no rule of the game.
 - "For each card type among permanents you've sacrificed this turn" is `Amount::TallyTypes` over the turn's log of sacrifices, each permanent as it last was.
 - "Roll three six-sided dice. For each different result, S" rolls several dice with no choice and no table; `DieResult::Distinct` counts the different numbers the resolution rolled.
+- "You may cast this card from your graveyard, but not from anywhere else." is a `MayCast` of the card from its graveyard followed by `CastOnly` with the card `In(Graveyard)`; "as though it had flash if you behold a Dragon as an additional cost to cast it" and "by tapping three untapped creatures you control with flying in addition to paying its other costs" are a flash `MayCast` whose `additional` is that one part.
+- `GameRule::BoastTwice`: during each of the player's turns, a boast ability (an activated ability once each turn, only if its source attacked this turn) of a creature they control is used up to twice. "Each opponent can't cast instant or sorcery spells during that player's next turn" is a `RepeatEach` over the opponents of a `Cant` `Cast` with `TheirNextTurn`, which holds only while that player is the active player.
+- A cast for the cost a permission puts in place of the mana cost takes that permission's riders ("If you cast this card this way and it would be put into your graveyard, exile it instead."). "..., and mana of any type can be spent to cast that spell" after the cast of a target is `CastFromZone` with `spend_as: AnyType`.
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 
 ## Support records

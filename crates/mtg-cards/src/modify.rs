@@ -924,6 +924,9 @@ pub enum GameRule {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         your_turns: bool,
     },
+    /// Creatures the players control can boast twice during each of their turns rather than once (CR 702.142c): a boast
+    /// ability is an activated ability limited to once each turn that works only if its source attacked this turn.
+    BoastTwice(Ref),
     /// The players' maximum hand size is `size` (CR 402.2): the least of the sizes in force.
     MaxHandSize {
         /// The players.

@@ -900,3 +900,24 @@ fn r408_half_life(r: &mut Reader<'_>) -> Option<Amount> {
         up,
     })
 }
+
+/// The part of "by tapping three untapped creatures you control with flying" after the verb: untapped permanents the
+/// payer controls, of a kind and with any keyword.
+pub(super) fn r4701_tap(r: &mut Reader<'_>) -> Option<CostItem> {
+    let (form, count) = how_many(r)?;
+    let mut filter = phrase(r, form)?;
+    without(&mut filter, &Pred::Untapped)?;
+    without(&mut filter, &Pred::ControlledBy(Ref::You))?;
+    // "with flying" after "you control", which the phrase leaves.
+    if r.word("with") {
+        filter
+            .0
+            .push(Pred::HasKeyword(super::selectors::keyword(r)?));
+    }
+    filter
+        .0
+        .iter()
+        .all(|pred| is_cost_filter(pred) || matches!(pred, Pred::HasKeyword(_)))
+        .then_some(())?;
+    Some(CostItem::TapPermanents { filter, count })
+}

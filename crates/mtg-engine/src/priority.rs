@@ -342,7 +342,12 @@ pub(crate) fn activation(
         return Never;
     }
     if let Some(limit) = limit
-        && state.limit_spent(*limit, object.reference(), address.source, address.ability)
+        && match crate::r4701_boast::r4701_boast_most(state, object.id(), rules) {
+            Some(most) => {
+                state.r4701_boast_spent(most, object.reference(), address.source, address.ability)
+            }
+            None => state.limit_spent(*limit, object.reference(), address.source, address.ability),
+        }
     {
         return Hindered(Unplayable::Restricted, Some(Why::LimitSpent));
     }

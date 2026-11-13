@@ -4648,6 +4648,9 @@ impl Walker<'_> {
                             ..
                         }
                     )
+                    // "can't cast instant or sorcery spells during that player's next turn" (Azor).
+                    && !(*duration == Duration::TheirNextTurn
+                        && matches!(rule, GameRule::Cant { action: Prohibited::Cast { .. }, .. }))
                 {
                     w.problem(RMT3_SKIP_ONLY);
                 }
@@ -5525,7 +5528,8 @@ impl Walker<'_> {
             | GameRule::LookAtTopAnyTime(who)
             | GameRule::SkipDrawStep(who)
             | GameRule::NoMaxHandSize(who)
-            | GameRule::LoyaltyTwice(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
+            | GameRule::LoyaltyTwice(who)
+            | GameRule::BoastTwice(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
             GameRule::MayCast(permission) => self.at(tag, |w| w.cast_permission(permission)),
             GameRule::LookAtExiled { who, what, only } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));

@@ -91,6 +91,7 @@ mod r4707_planar;
 mod r4700_lands;
 mod r4700_players;
 mod r4706_same_counters;
+mod r4701_cast_from_among;
 mod r4a_enters_with;
 mod r4i_granter;
 mod r5e_done_once;
