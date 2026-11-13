@@ -126,6 +126,9 @@ fn r4706_probe() {
 #[case("Terrasymbiosis")]
 #[case("Earth Kingdom General")]
 #[case("Inspired Tethermage")]
+#[case("Nest of Scarabs")]
+#[case("Obelisk Spider")]
+#[case("Stocking the Pantry")]
 fn r4706_reads_back_whole(#[case] name: &str) {
     let report = r4706_report(name, &r4706_file(name));
     assert_eq!(
