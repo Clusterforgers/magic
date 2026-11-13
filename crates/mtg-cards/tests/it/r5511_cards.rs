@@ -136,7 +136,7 @@ fn r5511_reads_back_whole(#[case] name: &str) {
 #[case::pulse_one_mana("Pulse of Llanowar", r#""OnlyChosenColor""#, r#""OneChosenColor""#)]
 #[case::pulse_any_land("Pulse of Llanowar", r#"{ "Supertype": "Basic" }, "#, "")]
 #[case::mage_same_amount("Harvest Mage", r#""OneChosenColor""#, r#""OnlyChosenColor""#)]
-#[case::mage_for_ever("Harvest Mage", r#", "duration": "UntilEndOfTurn""#, "")]
+#[case::mage_for_ever("Harvest Mage", r#""duration": "UntilEndOfTurn""#, r#""duration": "Forever""#)]
 #[case::kalain_artifacts(
     "Kalain, Reclusive Painter",
     r#""TreasureManaSpent""#,
@@ -157,7 +157,7 @@ fn r5511_reads_back_whole(#[case] name: &str) {
     r#"{ "Life": "You" }"#,
     r#"{ "Life": "Opponents" }"#
 )]
-#[case::hellion_preventable("Volcano Hellion", r#", "unpreventable": true"#, "")]
+#[case::hellion_preventable("Volcano Hellion", r#""unpreventable": true"#, r#""unpreventable": false"#)]
 #[case::resonance_your_upkeep("Elemental Resonance", r#""Main1""#, r#""Upkeep""#)]
 #[case::resonance_its_own_cost("Elemental Resonance", r#""Attached""#, r#""This""#)]
 #[case::omnath_two_symbols("Omnath, Locus of All", r#""right": 3"#, r#""right": 2"#)]
@@ -178,7 +178,7 @@ fn r5511_reads_back_whole(#[case] name: &str) {
     r#""SetLandTypesNthChosen": 0"#
 )]
 #[case::terrain_any_land("Illusionary Terrain", r#"{ "Supertype": "Basic" }, "#, "")]
-#[case::soulflayer_without_reach("Soulflayer", r#""Reach", "#, "")]
+#[case::soulflayer_menace_for_reach("Soulflayer", r#""Reach""#, r#""Menace""#)]
 #[case::soulflayer_any_card("Soulflayer", r#", { "Type": "Creature" }"#, "")]
 #[case::goyf_colors_count(
     "Nethergoyf",

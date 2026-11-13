@@ -14,87 +14,37 @@
                 "Modal": {
                   "modes": [
                     {
-                      "targets": [
-                        {
-                          "what": {
-                            "Object": [
-                              {
-                                "Not": {
-                                  "Supertype": "Snow"
-                                }
-                              }
-                            ]
-                          }
-                        }
-                      ],
+                      "targets": [{ "what": { "Object": [{ "Not": { "Supertype": "Snow" } }] } }],
                       "effects": [
                         {
                           "Continuous": {
-                            "affected": {
-                              "Target": 0
-                            },
-                            "mods": [
-                              {
-                                "AddSupertype": "Snow"
-                              }
-                            ],
+                            "affected": { "Target": 0 },
+                            "mods": [{ "AddSupertype": "Snow" }],
                             "duration": "UntilEndOfTurn"
                           }
                         },
                         {
                           "DelayedTrigger": {
-                            "when": {
-                              "StepBegins": {
-                                "step": "Upkeep"
-                              }
-                            },
-                            "effects": [
-                              {
-                                "Draw": {}
-                              }
-                            ]
+                            "when": { "StepBegins": { "step": "Upkeep" } },
+                            "effects": [{ "Draw": {} }]
                           }
                         }
                       ]
                     },
                     {
-                      "targets": [
-                        {
-                          "what": {
-                            "Object": [
-                              {
-                                "Supertype": "Snow"
-                              }
-                            ]
-                          }
-                        }
-                      ],
+                      "targets": [{ "what": { "Object": [{ "Supertype": "Snow" }] } }],
                       "effects": [
                         {
                           "Continuous": {
-                            "affected": {
-                              "Target": 0
-                            },
-                            "mods": [
-                              {
-                                "RemoveSupertype": "Snow"
-                              }
-                            ],
+                            "affected": { "Target": 0 },
+                            "mods": [{ "RemoveSupertype": "Snow" }],
                             "duration": "UntilEndOfTurn"
                           }
                         },
                         {
                           "DelayedTrigger": {
-                            "when": {
-                              "StepBegins": {
-                                "step": "Upkeep"
-                              }
-                            },
-                            "effects": [
-                              {
-                                "Draw": {}
-                              }
-                            ]
+                            "when": { "StepBegins": { "step": "Upkeep" } },
+                            "effects": [{ "Draw": {} }]
                           }
                         }
                       ]
