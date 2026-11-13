@@ -505,6 +505,13 @@ fn spell_cast(
     note_rebound(state, object, from);
     note_aftermath(state, object, from);
     state.log_event(TallyEvent::SpellCast, player, object);
+    if let Some(name) = state
+        .objects
+        .get(&object)
+        .map(|spell| spell.card().name.clone())
+    {
+        *state.cast_names.entry((player, name)).or_default() += 1;
+    }
     // A spell cast for its flashback cost, or with its buyback cost paid, is moved by a replacement effect.
     let bought_back = state.objects.get(&object).is_some_and(|spell| {
         payments(spell.card(), &choices.optional_costs, OptionalKind::Buyback) > 0

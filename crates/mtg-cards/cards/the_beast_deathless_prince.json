@@ -1,7 +1,7 @@
 {
   "oracle_id": "ca187570-3634-4296-92b2-1fcd99d150e3",
   "name": "The Beast, Deathless Prince",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Beast, Deathless Prince",
@@ -37,9 +37,15 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 256, "end": 342 }
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }],
+                "to": { "OwnerOf": "Dealer" },
+                "combat": true
+              }
+            },
+            "effects": [{ "Untap": { "what": "This" } }, { "Draw": {} }]
           }
         }
       ]

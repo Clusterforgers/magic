@@ -1,14 +1,15 @@
 //! Stickers (CR 123): the sticker sheets a seat brings, three of them chosen at random as the game begins; putting a
-//! sticker on a permanent its player owns for the sticker's ticket cost; and the stickers each permanent has, whose
-//! changes are continuous effects without end on that permanent (a name sticker in layer 3, an ability sticker in
-//! layer 6, a power/toughness sticker in layer 7b), so they stay while the permanent is on the battlefield.
+//! sticker on a permanent or card its player owns for the sticker's ticket cost; and the stickers each card has, which
+//! stay on it in every zone. While it is on the battlefield each sticker's change applies as a continuous effect
+//! derived with the layers (a name sticker in layer 3, an ability sticker in layer 6, a power/toughness sticker in
+//! layer 7b), timestamped when the sticker was put on or the permanent entered, whichever is later.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::hash::{Hash, Hasher};
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
-use mtg_cards::ability::{Ability, Sticker};
+use mtg_cards::ability::{Ability, Sticker, StickerKind};
 use mtg_cards::value::CounterKind;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
@@ -18,6 +19,20 @@ use crate::events::Event;
 use crate::fold::invalid;
 use crate::object::ObjectRef;
 use crate::state::GameState;
+
+/// The name under which a resolution keeps the unique vowels of the last name sticker it put on (`Amount::StickerVowels`).
+pub(crate) const VOWELS: &str = "~sticker-vowels";
+
+/// The number a trigger on putting a sticker on carries as its amount for the sticker's kind
+/// (`Condition::TriggeringSticker`).
+pub(crate) const fn kind_code(kind: StickerKind) -> u32 {
+    match kind {
+        StickerKind::Name => 1,
+        StickerKind::Ability => 2,
+        StickerKind::PowerToughness => 3,
+        StickerKind::Art => 4,
+    }
+}
 
 /// How many sticker sheets a seat plays with (CR 123).
 pub const SHEETS_IN_PLAY: usize = 3;
@@ -47,6 +62,7 @@ pub struct Stickers {
     pub(crate) chosen: BTreeMap<PlayerId, Vec<usize>>,
     pub(crate) used: BTreeSet<StickerAt>,
     pub(crate) on: BTreeMap<ObjectId, Vec<StickerAt>>,
+    pub(crate) put_at: BTreeMap<StickerAt, u64>,
 }
 
 impl Hash for Stickers {
@@ -60,6 +76,7 @@ impl Hash for Stickers {
         self.chosen.hash(state);
         self.used.hash(state);
         self.on.hash(state);
+        self.put_at.hash(state);
     }
 }
 
@@ -79,6 +96,38 @@ impl Stickers {
             .insert(player, (0..sheets.len().min(SHEETS_IN_PLAY)).collect());
         self.brought.insert(player, sheets);
     }
+}
+
+/// Whether the object, as the reference names it, has a sticker on it, of the kind when one is given; a card keeps its
+/// stickers in every zone, and an object that has changed zones since the reference is another object.
+pub(crate) fn has_sticker(
+    state: &GameState,
+    reference: ObjectRef,
+    kind: Option<StickerKind>,
+) -> bool {
+    stickers_of_kind(state, reference, kind) > 0
+}
+
+/// How many stickers are on the object, of the kind when one is given; none on an object the reference no longer names.
+pub(crate) fn stickers_of_kind(
+    state: &GameState,
+    reference: ObjectRef,
+    kind: Option<StickerKind>,
+) -> u32 {
+    if state.un34.on.is_empty()
+        || state
+            .object(reference.id)
+            .is_none_or(|object| object.counter() != reference.counter)
+    {
+        return 0;
+    }
+    let count = state
+        .stickers_on(reference.id)
+        .iter()
+        .filter_map(|at| state.sticker(*at))
+        .filter(|sticker| kind.is_none_or(|kind| sticker.kind() == kind))
+        .count();
+    u32::try_from(count).unwrap_or(u32::MAX)
 }
 
 /// The stickers a sheet lists, in order.
@@ -209,8 +258,7 @@ fn modification(sticker: &Sticker) -> Option<Modification> {
     }
 }
 
-/// The events of putting the sticker `at` on `on`: the tickets paid, the sticker put on and the continuous
-/// effect it makes, which lasts as long as the permanent is on the battlefield (the effect names that very object).
+/// The events of putting the sticker `at` on `on`: the tickets paid and the sticker put on.
 pub(crate) fn put_events(state: &GameState, at: StickerAt, on: ObjectRef) -> Vec<Event> {
     let Some(sticker) = state.sticker(at) else {
         return Vec::new();
@@ -230,20 +278,6 @@ pub(crate) fn put_events(state: &GameState, at: StickerAt, on: ObjectRef) -> Vec
         sheet: at.sheet,
         sticker: at.sticker,
     });
-    if let Some(modification) = modification(sticker) {
-        events.push(Event::EffectCreated {
-            effect: Box::new(
-                ContinuousEffect::new(
-                    EffectId(state.next_effect),
-                    Selector::Objects(vec![on]),
-                    modification,
-                    mtg_cards::modify::Duration::Forever,
-                    state.next_timestamp,
-                )
-                .begun(at.player, state.turn().number()),
-            ),
-        });
-    }
     events
 }
 
@@ -312,14 +346,56 @@ pub(crate) fn fold_put(
         )));
     }
     state.un34.on.entry(object).or_default().push(at);
+    state.un34.put_at.insert(at, state.next_timestamp);
+    state.next_timestamp += 1;
     Ok(())
 }
 
-/// A permanent that leaves the battlefield is a new object with no sticker (CR 400.7).
+/// A token that leaves the battlefield ceases to exist with its stickers; a card keeps them in every zone.
 pub(crate) fn fold_left(state: &mut GameState, object: ObjectId) {
-    if !state.un34.on.is_empty() {
+    if !state.un34.on.is_empty()
+        && state
+            .object(object)
+            .is_some_and(|found| found.kind() == crate::object::ObjectKind::Token)
+    {
         state.un34.on.remove(&object);
     }
+}
+
+/// The continuous effects of the stickers on permanents (CR 123): one per sticker that changes something, on that
+/// permanent as it is now, timestamped when the sticker was put on or the permanent entered, whichever is later.
+pub(crate) fn effects(state: &GameState) -> Vec<ContinuousEffect> {
+    let mut found = Vec::new();
+    for (id, stickers) in &state.un34.on {
+        let Some(object) = state
+            .object(*id)
+            .filter(|object| object.zone() == crate::zones::Zone::Battlefield)
+        else {
+            continue;
+        };
+        let entered = object
+            .permanent()
+            .map_or(0, crate::object::PermanentState::timestamp);
+        for (index, at) in stickers.iter().enumerate() {
+            let Some(modification) = state.sticker(*at).and_then(modification) else {
+                continue;
+            };
+            let put = state.un34.put_at.get(at).copied().unwrap_or(0);
+            // An id far past any the game hands out keeps these apart from the registered effects and from each other.
+            let offset = id.0.saturating_mul(64).saturating_add(index as u64);
+            found.push(
+                ContinuousEffect::new(
+                    EffectId((u64::MAX / 2).saturating_sub(offset)),
+                    Selector::Objects(vec![object.reference()]),
+                    modification,
+                    mtg_cards::modify::Duration::Forever,
+                    put.max(entered),
+                )
+                .begun(at.player, 0),
+            );
+        }
+    }
+    found
 }
 
 #[cfg(test)]

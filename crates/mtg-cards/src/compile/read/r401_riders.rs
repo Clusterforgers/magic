@@ -354,6 +354,19 @@ fn entering_text(rider: &CastRider) -> Option<String> {
     }
 }
 
+/// The suffix `r401_with_power_or_toughness` reads, else the suffixes of `w21a_atoms`.
+pub(super) fn r401_suffix(r: &mut Reader<'_>) -> Option<Pred> {
+    r401_with_power_or_toughness(r).or_else(|| super::w21a_atoms::w21a_suffix(r))
+}
+
+/// "with power or toughness 1 or less": either stat compared with one number.
+pub(super) fn r401_with_power_or_toughness(r: &mut Reader<'_>) -> Option<Pred> {
+    r.attempt(|r| {
+        r.need("with")?;
+        r401_power_or_toughness(r)
+    })
+}
+
 /// "power or toughness 1 or less", after "with": either stat compared with one number.
 pub(super) fn r401_power_or_toughness(r: &mut Reader<'_>) -> Option<Pred> {
     r.need("power or toughness")?;

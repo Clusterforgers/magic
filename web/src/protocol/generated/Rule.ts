@@ -105,7 +105,7 @@ who: Array<PlayerId>,
 /**
  * The change.
  */
-change: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "ExtraVote": Array<PlayerId> } | { "SkipExtraTurns": Array<PlayerId> } | { "FlipTwoCoins": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "PayLifeForOneSymbol": { 
+change: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "ExtraVote": Array<PlayerId> } | "ReverseTurnOrder" | { "AttackOnlyNearest": boolean | null } | { "SkipExtraTurns": Array<PlayerId> } | { "FlipTwoCoins": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "PayLifeForOneSymbol": { 
 /**
  * The players.
  */
@@ -297,7 +297,12 @@ when: unknown,
 /**
  * What happens instead.
  */
-by: unknown, } } | "GraveyardCardsUntargetable" | "DamageAsWither" | "ManaBurn" | { "AttackAsThoughHasteAt": Array<PlayerId> } | { "CantLoseGame": { 
+by: unknown, 
+/**
+ * The players a draw shield covers, fixed as it began ("if target player would draw a card"); empty when its
+ * event names them.
+ */
+players?: Array<PlayerId>, } } | "GraveyardCardsUntargetable" | "DamageAsWither" | "ManaBurn" | { "AttackAsThoughHasteAt": Array<PlayerId> } | { "CantLoseGame": { 
 /**
  * The players who can't lose.
  */
@@ -317,7 +322,23 @@ who: Array<PlayerId>,
 /**
  * The player during whose turns they can't; every turn when absent.
  */
-turn: PlayerId | null, } } | { "ToughnessAssignsDamage": Array<PlayerId> } | { "Cant": { 
+turn: PlayerId | null, } } | { "ToughnessAssignsDamage": Array<PlayerId> } | { "LethalByPower": Array<PlayerId> } | { "DamageAsInfect": Array<PlayerId> } | { "VentureLimit": { 
+/**
+ * Who is limited.
+ */
+who: Array<PlayerId>, 
+/**
+ * The ventures each turn.
+ */
+per_turn: number, } } | { "DevotionIncreased": { 
+/**
+ * Whose devotion.
+ */
+who: Array<PlayerId>, 
+/**
+ * By how much.
+ */
+by: number, } } | { "Cant": { 
 /**
  * The players and objects it is about.
  */

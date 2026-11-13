@@ -1,0 +1,65 @@
+{
+  "oracle_id": "cb91e09e-f7fb-44bc-b78f-de29705bd2d6",
+  "name": "Mob Verdict",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mob Verdict",
+      "oracle_fingerprint": "e3066ce261292f8c2d905e0662e473af",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Vote": { "options": "AnotherPlayer", "secret": true, "tally": "votes" } },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "voter",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "Union": [
+                            { "Bound": "voter" },
+                            {
+                              "Each": [
+                                { "Type": "Creature" },
+                                { "ControlledBy": { "Bound": "voter" } }
+                              ]
+                            }
+                          ]
+                        },
+                        "amount": {
+                          "Times": {
+                            "by": 2,
+                            "of": {
+                              "Players": {
+                                "PlayersWhere": {
+                                  "who": { "Bound": "votes" },
+                                  "test": { "Among": { "Bound": "voter" } }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": { "who": { "Bound": "votes" }, "test": { "Among": "Asker" } }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

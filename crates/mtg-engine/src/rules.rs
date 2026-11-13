@@ -157,6 +157,11 @@ pub enum Rule {
     VoteAgain(Vec<PlayerId>),
     /// The players get an additional vote (CR 701.38d).
     ExtraVote(Vec<PlayerId>),
+    /// The turn order runs the other way round the table.
+    ReverseTurnOrder,
+    /// Each player may attack only the nearest opponent on the left (`Some(true)`) or the right of them and the
+    /// planeswalkers that opponent controls; nothing when no side was chosen.
+    AttackOnlyNearest(Option<bool>),
     /// The players skip each extra turn they would begin (CR 500.7).
     SkipExtraTurns(Vec<PlayerId>),
     /// The players flip two coins for each coin they would flip and ignore one (CR 705.3).
@@ -400,6 +405,11 @@ pub enum Rule {
         /// What happens instead.
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
         by: ReplaceBy,
+        /// The players a draw shield covers, fixed as it began ("if target player would draw a card"); empty when its
+        /// event names them.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[cfg_attr(feature = "ts", ts(optional, as = "Option<Vec<PlayerId>>"))]
+        players: Vec<PlayerId>,
     },
     /// Cards in graveyards can't be the targets of spells or abilities (CR 115.4).
     GraveyardCardsUntargetable,
@@ -428,6 +438,24 @@ pub enum Rule {
     },
     /// Each creature the players control assigns combat damage equal to its toughness (CR 510.1a).
     ToughnessAssignsDamage(Vec<PlayerId>),
+    /// Lethal damage to each creature the players control is determined by its power (CR 704.5g): `GameRule::LethalByPower`.
+    LethalByPower(Vec<PlayerId>),
+    /// All damage dealt to the players is dealt as though its source had infect: `GameRule::DamageAsInfect`.
+    DamageAsInfect(Vec<PlayerId>),
+    /// The players can't venture more than `per_turn` times each turn: `GameRule::VentureLimit`.
+    VentureLimit {
+        /// Who is limited.
+        who: Vec<PlayerId>,
+        /// The ventures each turn.
+        per_turn: u32,
+    },
+    /// The players' devotion is greater by `by`: `GameRule::DevotionIncreased`.
+    DevotionIncreased {
+        /// Whose devotion.
+        who: Vec<PlayerId>,
+        /// By how much.
+        by: u32,
+    },
     /// The players and objects can't do the action (CR 101.2): `GameRule::Cant`.
     Cant {
         /// The players and objects it is about.
@@ -494,6 +522,11 @@ pub struct DamageShield {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub redirect: Option<Target>,
+    /// The targets of the ability that made it, by the names its effects read them under, fixed when it was made
+    /// ("if damage is prevented this way, ~ deals that much damage to any target").
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub bound: Vec<(String, Vec<Target>)>,
 }
 
 impl DamageShield {
@@ -647,6 +680,10 @@ pub(crate) struct RulesInForce {
     vote_again: BTreeSet<PlayerId>,
     /// The players who get an additional vote (CR 701.38d), once for each rule that gives one.
     extra_vote: Vec<PlayerId>,
+    /// How many rules reverse the turn order; an odd count runs it the other way.
+    r376_reversals: usize,
+    /// The sides each player may attack only the nearest opponent on, left `true`, one entry for each rule.
+    r376_nearest: Vec<bool>,
     skip_extra_turns: BTreeSet<PlayerId>,
     /// One entry for each rule that doubles a player's coins: a player listed twice flips four.
     flip_two: Vec<PlayerId>,
@@ -1070,6 +1107,8 @@ impl RulesInForce {
             }
             Rule::VoteAgain(players) => self.vote_again.extend(players),
             Rule::ExtraVote(players) => self.extra_vote.extend(players),
+            Rule::ReverseTurnOrder => self.r376_reversals += 1,
+            Rule::AttackOnlyNearest(left) => self.r376_nearest.extend(left),
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
             Rule::FlipTwoCoins(players) => self.flip_two.extend(players),
             Rule::ExtraDie(players) => self.extra_die.extend(players),
@@ -1262,7 +1301,11 @@ impl RulesInForce {
             Rule::GraveyardCardsUntargetable
             | Rule::CantLoseGame { .. }
             | Rule::CantCastSpells { .. }
-            | Rule::ToughnessAssignsDamage(_) => self.w17b.w17b_put(rule, source),
+            | Rule::ToughnessAssignsDamage(_)
+            | Rule::LethalByPower(_)
+            | Rule::DevotionIncreased { .. }
+            | Rule::DamageAsInfect(_)
+            | Rule::VentureLimit { .. } => self.w17b.w17b_put(rule, source),
         }
     }
 }
@@ -1430,6 +1473,18 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::VoteAgain(who) => Rule::VoteAgain(scope.players(who)?),
         GameRule::ExtraVote(who) => Rule::ExtraVote(scope.players(who)?),
+        GameRule::ReverseTurnOrder => Rule::ReverseTurnOrder,
+        GameRule::AttackOnlyNearest(side) => {
+            let word = match side {
+                mtg_cards::modify::SideOf::Entered => scope.entered_choice(),
+                mtg_cards::modify::SideOf::ChosenAs(name) => scope.chosen_value(name),
+            };
+            Rule::AttackOnlyNearest(match word {
+                Some(crate::object::Chosen::Word(word)) if word == "left" => Some(true),
+                Some(crate::object::Chosen::Word(word)) if word == "right" => Some(false),
+                _ => None,
+            })
+        }
         GameRule::SkipExtraTurns(who) => Rule::SkipExtraTurns(scope.players(who)?),
         GameRule::FlipTwoCoins(who) => Rule::FlipTwoCoins(scope.players(who)?),
         GameRule::ExtraDie(who) => Rule::ExtraDie(scope.players(who)?),
@@ -1559,6 +1614,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         | GameRule::CantLoseGame { .. }
         | GameRule::CantCastSpells { .. }
         | GameRule::ToughnessAssignsDamage(_)
+        | GameRule::LethalByPower(_)
+        | GameRule::DevotionIncreased { .. }
+        | GameRule::DamageAsInfect(_)
+        | GameRule::VentureLimit { .. }
         | GameRule::CountersRemain => crate::w17b_statics::w17b_lower(scope, wanted)?,
     })
 }
@@ -1681,8 +1740,10 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::BlockLimit(_)
         | Rule::NoLegendRuleFor(_)
         | Rule::AbilitiesAsThoughHaste(_)
+        | Rule::ReverseTurnOrder
         | Rule::DamageAsWither
         | Rule::ManaBurn => false,
+        Rule::AttackOnlyNearest(left) => left.is_none(),
         Rule::PreventDamage(shield) => {
             shield.to.as_ref().is_some_and(Vec::is_empty)
                 || shield.from.as_ref().is_some_and(Vec::is_empty)
@@ -1691,7 +1752,11 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::GraveyardCardsUntargetable
         | Rule::CantLoseGame { .. }
         | Rule::CantCastSpells { .. }
-        | Rule::ToughnessAssignsDamage(_) => crate::w17b_statics::w17b_names_nothing(rule),
+        | Rule::ToughnessAssignsDamage(_)
+        | Rule::LethalByPower(_)
+        | Rule::DevotionIncreased { .. }
+        | Rule::DamageAsInfect(_)
+        | Rule::VentureLimit { .. } => crate::w17b_statics::w17b_names_nothing(rule),
     }
 }
 
@@ -1722,7 +1787,7 @@ fn gather(state: &GameState) -> RulesInForce {
     for effect in state
         .rule_effects()
         .iter()
-        .filter(|effect| effect.is_active(state))
+        .filter(|effect| effect.is_active(state) && !crate::r377_skips::r377_waits(state, effect))
     {
         found.put(&effect.rule, effect.controller, effect.source);
     }
@@ -1811,6 +1876,8 @@ static NONE: RulesInForce = RulesInForce {
     mana: Vec::new(),
     vote_again: BTreeSet::new(),
     extra_vote: Vec::new(),
+    r376_reversals: 0,
+    r376_nearest: Vec::new(),
     skip_extra_turns: BTreeSet::new(),
     flip_two: Vec::new(),
     extra_die: Vec::new(),
@@ -2369,6 +2436,28 @@ pub fn ep33_extra_votes(state: &GameState, player: PlayerId) -> usize {
         .iter()
         .filter(|seat| **seat == player)
         .count()
+}
+
+/// The sides on which each player may attack only the nearest opponent, one for each rule in force; none when no rule
+/// limits attacks so.
+pub(crate) fn r376_nearest_sides(state: &GameState) -> Vec<mtg_cards::refs::Side> {
+    state
+        .rules()
+        .r376_nearest
+        .iter()
+        .map(|left| {
+            if *left {
+                mtg_cards::refs::Side::Left
+            } else {
+                mtg_cards::refs::Side::Right
+            }
+        })
+        .collect()
+}
+
+/// Whether the game's turn order runs the other way round the table: an odd number of rules reverse it.
+pub fn r376_turn_order_reversed(state: &GameState) -> bool {
+    state.rules().r376_reversals % 2 == 1
 }
 
 /// Whether `player` may vote an additional time while voting (CR 701.38d).

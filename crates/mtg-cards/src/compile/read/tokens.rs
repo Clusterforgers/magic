@@ -586,6 +586,18 @@ impl<'a> Reader<'a> {
             .is_some()
     }
 
+    /// Reads the tokens of this text, all or none: a printed sentence a whole-text template matches word for word.
+    pub fn r376_text(&mut self, text: &str) -> bool {
+        let wanted = tokenize(text);
+        let end = self.at + wanted.len();
+        if self.tokens.get(self.at..end) == Some(wanted.as_slice()) {
+            self.at = end;
+            true
+        } else {
+            false
+        }
+    }
+
     /// Reads these words or fails.
     pub fn need(&mut self, phrase: &str) -> Option<()> {
         self.words(phrase).then_some(())

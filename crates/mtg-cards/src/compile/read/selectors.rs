@@ -667,14 +667,14 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     }
     r.attempt(|r| {
         r.need("with")?;
-        if let Some(pred) = r.attempt(super::r401_riders::r401_power_or_toughness) {
-            return Some(pred);
-        }
         if let Some(kind) = r.attempt(counter_on_it) {
             return Some(Pred::HasCounter(kind));
         }
         if r.words("a counter on it") || r.words("counters on them") || r.words("counters on it") {
             return Some(Pred::HasAnyCounter);
+        }
+        if let Some(pred) = r.attempt(super::un34_stickers::un34_with_sticker) {
+            return Some(pred);
         }
         if let Some(keyword) = keyword(r) {
             return Some(Pred::HasKeyword(keyword));
@@ -712,7 +712,7 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
         };
         Some(Pred::Compare { stat, op, to })
     })
-    .or_else(|| super::w21a_atoms::w21a_suffix(r))
+    .or_else(|| super::r401_riders::r401_suffix(r))
     .or_else(|| super::w19d_suffixes::w19d_suffix(r))
     .or_else(|| super::r283_atoms::r283_suffix(r, form))
     .or_else(|| super::r301b_atoms::r301b_suffix(r, form))
@@ -821,6 +821,10 @@ fn suffix_text_main(pred: &Pred, form: Form) -> Option<String> {
         | Pred::HasAttached(_)
         | Pred::AnyOf(_)) => w6d_shares::w6d_suffix_text(pred, form)
             .or_else(|| super::w21a_atoms::w21a_suffix_text(pred, form))?,
+        Pred::WithSticker(kind) if form.plural() => {
+            format!("with {} stickers on them", kind.word())
+        }
+        Pred::WithSticker(kind) => format!("with {} {} sticker on it", kind.article(), kind.word()),
         Pred::HasAnyCounter if form.plural() => "with counters on them".to_owned(),
         Pred::HasAnyCounter => "with a counter on it".to_owned(),
         Pred::Not(inner) => match &**inner {

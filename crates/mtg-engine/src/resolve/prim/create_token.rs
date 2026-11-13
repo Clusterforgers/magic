@@ -323,6 +323,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     blocking: blocked,
                     definition: Arc::clone(definition),
                 }));
+                events.extend(crate::r371_token_loyalty::entering(
+                    ObjectId(first + made),
+                    definition,
+                ));
                 made += 1;
             }
         }

@@ -86,6 +86,19 @@ pub struct DeckLine {
     pub by_hand: bool,
 }
 
+/// What [`DeckRepo::set_printing`] did.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PrintingChoice {
+    /// The lines show the printing now.
+    Set,
+    /// The owner holds no such deck.
+    NoDeck,
+    /// The deck has no line of the card in that zone.
+    NoLine,
+    /// The printing does not exist or is one of another card.
+    NotOfCard,
+}
+
 /// What a save writes: a deck as the owner sent it, and the check run on it.
 #[derive(Debug, Clone, PartialEq)]
 pub struct DeckDraft {
@@ -438,6 +451,68 @@ impl DeckRepo {
         let stored = load(&mut tx, owner, deck).await?;
         tx.commit().await?;
         Ok(stored)
+    }
+
+    /// Sets the printing of the lines of `oracle` in `zone` of the deck `id` of `owner`, or clears it with `None`.
+    /// A printing of another card, an unknown one and a missing deck or line change nothing and say so.
+    pub async fn set_printing(
+        &self,
+        owner: Uuid,
+        id: DeckId,
+        zone: DeckZone,
+        oracle: &OracleId,
+        printing: Option<&PrintingId>,
+    ) -> Result<PrintingChoice, DbError> {
+        let Ok(card) = Uuid::parse_str(oracle.as_str()) else {
+            return Ok(PrintingChoice::NoLine);
+        };
+        let chosen = match printing {
+            None => None,
+            Some(printing) => match Uuid::parse_str(printing.as_str()) {
+                Ok(uuid) => Some(uuid),
+                Err(_) => return Ok(PrintingChoice::NotOfCard),
+            },
+        };
+        let mut tx = self.pool.begin().await?;
+        let held = sqlx::query_scalar!(
+            "SELECT id FROM decks WHERE owner = $1 AND id = $2 FOR UPDATE",
+            owner,
+            id.0
+        )
+        .fetch_optional(&mut *tx)
+        .await?;
+        if held.is_none() {
+            return Ok(PrintingChoice::NoDeck);
+        }
+        if let Some(chosen) = chosen {
+            let of_card = sqlx::query_scalar!(
+                r#"SELECT EXISTS (SELECT 1 FROM printings WHERE printing_id = $1 AND oracle_id = $2) AS "of_card!""#,
+                chosen,
+                card
+            )
+            .fetch_one(&mut *tx)
+            .await?;
+            if !of_card {
+                return Ok(PrintingChoice::NotOfCard);
+            }
+        }
+        let changed = sqlx::query!(
+            "UPDATE deck_cards SET printing_id = $4 WHERE deck_id = $1 AND zone = $2 AND oracle_id = $3",
+            id.0,
+            zone.keyword(),
+            card,
+            chosen
+        )
+        .execute(&mut *tx)
+        .await?;
+        if changed.rows_affected() == 0 {
+            return Ok(PrintingChoice::NoLine);
+        }
+        sqlx::query!("UPDATE decks SET updated_at = now() WHERE id = $1", id.0)
+            .execute(&mut *tx)
+            .await?;
+        tx.commit().await?;
+        Ok(PrintingChoice::Set)
     }
 
     /// Deletes the deck `id` of `owner`; false if the owner holds no such deck.
