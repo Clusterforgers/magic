@@ -197,13 +197,9 @@ pub fn plan_priority(
     best.map_or(PriorityAction::Pass, |(_, play)| play)
 }
 
-/// What a careful seat's other instant must gain beyond the margin in its main phase: it waits for an
-/// opponent's turn.
+/// What a careful seat's instant must gain beyond the margin in its main phase: it waits for an opponent's turn (an
+/// answer also pays its hold value in the evaluation).
 const INSTANT_WAIT: f64 = 1.0;
-
-/// What a careful seat's instant-speed answer (removal, burn, a trick) must gain beyond the margin in its main phase:
-/// it waits for combat, a reply or a target worth it.
-const ANSWER_WAIT: f64 = 5.0;
 
 /// What a careful seat's flash permanent must gain beyond the margin in its main phase: it waits for an opponent's end
 /// step, keeping mana up for the seat's interaction meanwhile.
@@ -250,8 +246,6 @@ pub fn hold_cost(careful: bool, seen: &Seen<'_>, window: Window, play: &Priority
     if opponents && traits.fast {
         cost += if traits.permanent {
             FLASH_WAIT
-        } else if threat::interaction(card).is_some() {
-            ANSWER_WAIT
         } else {
             INSTANT_WAIT
         };
