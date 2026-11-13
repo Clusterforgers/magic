@@ -632,8 +632,11 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r403_hooks::r403_wordings(ability, written_variants, &mut texts);
     super::r4711_drafted::r4711_wordings(ability, written_variants, &mut texts);
     super::r5523_drafted::r5523_wordings(ability, written_variants, &mut texts);
-    let more = becomes::still_an_enchantment(&texts);
-    texts.extend(more);
+    // Only a triggered animation is printed on an enchantment; an activated one, on a land, keeps its room.
+    if matches!(ability, Ability::Triggered { .. }) {
+        let more = becomes::still_an_enchantment(&texts);
+        texts.extend(more);
+    }
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.

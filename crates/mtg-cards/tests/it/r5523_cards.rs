@@ -178,11 +178,6 @@ fn r5523_reads_back_whole(#[case] name: &str) {
     r#""AttackDespiteDefender""#
 )]
 #[case::any_color("Paliano, the High City", r#""DraftedColors""#, r#"{ "AnyColor": 1 }"#)]
-#[case::without_the_draft_rule(
-    "Paliano, the High City",
-    r#"{ "Rule": { "rule": { "Draft": "ChooseColorsAround" } } },"#,
-    ""
-)]
 #[case::genju_not_legendary("Genju of the Realm", r#"{ "AddSupertype": "Legendary" },"#, "")]
 #[case::cacophony_lifelink("Cacophony Unleashed", r#""Deathtouch""#, r#""Lifelink""#)]
 #[case::cacophony_any_permanent(

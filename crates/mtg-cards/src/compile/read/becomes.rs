@@ -46,6 +46,7 @@ pub(super) fn creature(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     (leading != trailing).then_some(())?;
     // The period of an ability in quotes is inside the quotes.
     let quoted = matches!(mods.last(), Some(Modification::GrantAbility(_)));
+    let legendary = mods.contains(&Modification::AddSupertype(Supertype::Legendary));
     let mut effects = vec![until_end_of_turn(affected.clone(), mods)];
     let still = r
         .attempt(|r| {
@@ -54,6 +55,11 @@ pub(super) fn creature(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             .then_some(())
         })
         .is_some();
+    // A legendary permanent that becomes a creature and stops being a planeswalker (Sarkhan) keeps no other type; only
+    // one that stays what it was says so.
+    if legendary && !still {
+        return None;
+    }
     let unblockable = r
         .attempt(|r| {
             (((quoted && !still) || r.punct('.')) && r.words("it can't be blocked this turn"))
