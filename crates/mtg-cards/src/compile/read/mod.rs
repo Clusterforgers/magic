@@ -207,6 +207,8 @@ mod r307c_events;
 mod r372_suspend;
 mod r375_events;
 mod r375_phase;
+mod r401_flash;
+mod r401_riders;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;

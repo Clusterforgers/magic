@@ -1389,6 +1389,14 @@ impl<'a> Walker<'a> {
             Condition::CastWith(_) => self.uses("Condition", "CastWith"),
             Condition::CastOffSorceryTiming => self.uses("Condition", "CastOffSorceryTiming"),
             Condition::AsCast(inner) => self.as_cast(inner),
+            Condition::R401OnCast(inner) => {
+                self.uses("Condition", "R401OnCast");
+                self.at("R401OnCast", |w| w.condition(inner));
+            }
+            Condition::R401Targets(what) => {
+                self.uses("Condition", "R401Targets");
+                self.at("R401Targets", |w| w.selector(what));
+            }
             Condition::ManaSpent(_) => self.uses("Condition", "ManaSpent"),
             Condition::YourTurn => {}
             Condition::ExtraTurn => self.uses("Condition", "ExtraTurn"),
@@ -1789,6 +1797,16 @@ impl<'a> Walker<'a> {
         }
         if let Some(when) = &permission.when {
             self.at("when", |w| w.condition(when));
+        }
+        for rider in &permission.riders {
+            let tag = match rider {
+                crate::modify::CastRider::EntersTapped => "EntersTapped",
+                crate::modify::CastRider::EntersWithCounter(_) => "EntersWithCounter",
+                crate::modify::CastRider::GainsThisTurn(_) => "GainsThisTurn",
+                crate::modify::CastRider::AlsoSubtype(_) => "AlsoSubtype",
+                crate::modify::CastRider::ExiledInstead => "ExiledInstead",
+            };
+            self.uses("CastRider", tag);
         }
         if matches!(
             permission.from,

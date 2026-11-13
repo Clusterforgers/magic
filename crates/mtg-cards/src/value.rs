@@ -1452,6 +1452,12 @@ pub enum Condition {
     /// The inner condition held for the caster as the spell was cast ("if you controlled a Dragon as you cast this spell");
     /// a permanent and its abilities read the spell it came from.
     AsCast(Box<Condition>),
+    /// The inner condition holds for the spell as its announcement ends, read with its X and its targets (CR 601.2e): the
+    /// condition of a permission to cast it as though it had flash ("if it targets a permanent you control", "if X is 3 or
+    /// less"); it is taken to hold before then, so the cast may begin.
+    R401OnCast(Box<Condition>),
+    /// The spell being announced has a target the selector picks: "it targets a commander".
+    R401Targets(crate::refs::Selector),
     /// At least one mana of this type was spent to cast the spell (CR 601.2h): "if {R} was spent to cast this spell"; a
     /// permanent and its abilities read the spell it came from, as the mana it was cast with.
     ManaSpent(ManaType),

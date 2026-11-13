@@ -1,7 +1,7 @@
 {
   "oracle_id": "f5092c14-eec4-472c-999c-ba96c36b2fbb",
   "name": "Kess, Dissident Mage",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kess, Dissident Mage",
@@ -9,9 +9,15 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 7, "end": 177 }
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "from": "Graveyard",
+                "once": true,
+                "riders": ["ExiledInstead"]
+              }
+            }
           }
         }
       ]

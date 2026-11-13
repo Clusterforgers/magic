@@ -30,10 +30,14 @@ pub(super) fn wordings(ability: &Ability) -> Vec<String> {
         spend_as: crate::modify::SpendAs::Normal,
         when: None,
         any_cast: false,
+        riders,
     } = permission
     else {
         return Vec::new();
     };
+    if !riders.is_empty() {
+        return Vec::new();
+    }
     let [Pred::Spell, kinds] = preds.as_slice() else {
         return Vec::new();
     };

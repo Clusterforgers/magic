@@ -1,7 +1,7 @@
 {
   "oracle_id": "74e3243b-6707-4769-8767-7cf2ef71009a",
   "name": "Leonardo, Sewer Samurai",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Leonardo, Sewer Samurai",
@@ -36,9 +36,23 @@
         },
         { "Keyword": "DoubleStrike" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 30, "end": 288 }
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  { "Type": "Creature" },
+                  {
+                    "AnyOf": [
+                      { "Compare": { "stat": "Power", "op": "Le", "to": 1 } },
+                      { "Compare": { "stat": "Toughness", "op": "Le", "to": 1 } }
+                    ]
+                  }
+                ],
+                "from": "Graveyard",
+                "when": "YourTurn",
+                "riders": [{ "EntersWithCounter": { "Other": "finality" } }]
+              }
+            }
           }
         }
       ]

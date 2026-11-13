@@ -496,6 +496,9 @@ pub struct GameObject {
     /// The amounts of the card counted "as you cast this spell" (`Amount::CountedAsCast`) with what each counted then; it
     /// stays with the permanent the spell becomes as `cast` does.
     pub(crate) counted_as_cast: Vec<(mtg_cards::value::Amount, i64)>,
+    /// What the spell gets from the permission it was cast through ("If you cast a spell this way, ..."); it stays with
+    /// the permanent the spell becomes as `cast` does.
+    pub(crate) cast_riders: Vec<mtg_cards::modify::CastRider>,
     pub(crate) kind: ObjectKind,
     pub(crate) choices: Choices,
     pub(crate) ability: Option<Box<AbilityObject>>,
@@ -556,6 +559,7 @@ impl GameObject {
             off_sorcery_timing: false,
             held_as_cast: Vec::new(),
             counted_as_cast: Vec::new(),
+            cast_riders: Vec::new(),
             cast: None,
             kind: ObjectKind::Card,
             choices: Choices::default(),
@@ -598,6 +602,7 @@ impl GameObject {
             off_sorcery_timing: false,
             held_as_cast: Vec::new(),
             counted_as_cast: Vec::new(),
+            cast_riders: Vec::new(),
             cast: None,
             kind: ObjectKind::Ability,
             choices,
@@ -832,7 +837,13 @@ impl GameObject {
             self.off_sorcery_timing = false;
             self.held_as_cast.clear();
             self.counted_as_cast.clear();
+            self.cast_riders.clear();
         }
+    }
+
+    /// What the spell gets from the permission it was cast through, kept by the permanent it becomes.
+    pub fn cast_riders(&self) -> &[mtg_cards::modify::CastRider] {
+        &self.cast_riders
     }
 
     /// Whether `condition`, one the card asks "as you cast this spell", held as the spell was cast; kept by the permanent it
@@ -977,6 +988,7 @@ impl PartialEq for GameObject {
             && self.off_sorcery_timing == other.off_sorcery_timing
             && self.held_as_cast == other.held_as_cast
             && self.counted_as_cast == other.counted_as_cast
+            && self.cast_riders == other.cast_riders
             && self.counter == other.counter
             && self.kind == other.kind
             && self.choices == other.choices
@@ -1034,6 +1046,9 @@ impl Hash for GameObject {
         }
         if !self.counted_as_cast.is_empty() {
             self.counted_as_cast.hash(state);
+        }
+        if !self.cast_riders.is_empty() {
+            self.cast_riders.hash(state);
         }
         self.counter.hash(state);
         self.kind.hash(state);

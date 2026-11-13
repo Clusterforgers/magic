@@ -268,6 +268,9 @@ enum Origin {
     /// A permanent with a finality counter that would be put into a graveyard from the battlefield, which is exiled instead
     /// (CR 122.1g).
     Finality,
+    /// The rider at this index of the permission a spell was cast through ("If you cast a spell this way, that artifact
+    /// enters tapped").
+    R401Rider(usize),
 }
 
 impl Origin {
@@ -1279,6 +1282,7 @@ impl Pass<'_> {
         }
         found.extend(self.commander_candidates(at, &unit));
         found.extend(self.junkyard_candidate(&unit));
+        found.extend(self.r401_rider_candidates(slot, &unit));
         found.sort_by_key(|candidate| candidate.origin);
         Ok(found)
     }
@@ -1866,6 +1870,9 @@ impl Pass<'_> {
             }
             Origin::Commander(_) => {
                 "If ~ would be put into a hand or library, its owner may put it into the command zone instead."
+            }
+            Origin::R401Rider(index) => {
+                r401_riders::r401_rider_words(self.state, candidate.object.id, index)
             }
             Origin::Junkyard(_) => {
                 "If ~ would be put into a hand, library or graveyard, its owner puts it into their junkyard instead."
@@ -3642,6 +3649,7 @@ mod c7_untap_dies;
 mod r3d_replaces;
 
 mod finality;
+mod r401_riders;
 
 /// The event that keeps how many permanents `object` devoured as it entered, which its abilities read once it is on
 /// the battlefield; none when it devoured nothing.

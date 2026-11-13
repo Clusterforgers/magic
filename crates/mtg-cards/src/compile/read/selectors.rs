@@ -667,6 +667,9 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     }
     r.attempt(|r| {
         r.need("with")?;
+        if let Some(pred) = r.attempt(super::r401_riders::r401_power_or_toughness) {
+            return Some(pred);
+        }
         if let Some(kind) = r.attempt(counter_on_it) {
             return Some(Pred::HasCounter(kind));
         }
@@ -862,6 +865,7 @@ fn suffix_text_main(pred: &Pred, form: Form) -> Option<String> {
         }
         _ => {
             return super::w21a_atoms::w21a_suffix_text(pred, form)
+                .or_else(|| super::r401_riders::r401_power_or_toughness_text(pred))
                 .or_else(|| super::r283_atoms::r283_suffix_text(pred, form))
                 .or_else(|| super::r301b_atoms::r301b_suffix_text(pred, form));
         }

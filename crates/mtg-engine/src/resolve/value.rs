@@ -2852,6 +2852,15 @@ impl<'a> Scope<'a> {
             Condition::CastWith(way) => self.cast_way() == Some(*way),
             Condition::CastOffSorceryTiming => self.off_sorcery_timing(),
             Condition::AsCast(inner) => self.held_as_cast(inner),
+            // Judged as the announcement ends (`announce/legality.rs`); before then the cast may begin.
+            Condition::R401OnCast(_) => true,
+            Condition::R401Targets(what) => {
+                let mut picked = false;
+                for target in self.choices.targeted_objects() {
+                    picked = picked || self.selects(what, target)?;
+                }
+                picked
+            }
             Condition::ManaSpent(mana) => self.mana_spent().contains(mana),
             Condition::ChosenWord { name, word } => {
                 matches!(self.chosen_value(name), Some(Chosen::Word(chosen)) if chosen == word)

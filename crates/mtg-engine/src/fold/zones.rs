@@ -455,6 +455,7 @@ fn spell_cast(
     if let Some(source) = crate::rules::c11b_once_source(state, player, object, from, choices.way) {
         state.tally_object(source, None, Tally::C11bOnceUsed);
     }
+    let riders = crate::rules::r401_cast_riders(state, player, object, from, choices.way);
     // The tax counts casts from the command zone (CR 903.8).
     state.commanders.cast(object, from);
     // Read before the spell joins the stack; a spell cast while another resolves is cast off sorcery timing.
@@ -486,6 +487,7 @@ fn spell_cast(
         spell.cast_from_graveyard = matches!(from, Zone::Graveyard(_));
         spell.cast = Some((crate::resolve::zone_kind(from), player));
         spell.off_sorcery_timing = off_sorcery_timing;
+        spell.cast_riders = riders;
         if choices.way == Some(CastWay::FaceDown) {
             spell.face_down = Some(FaceDown::cast_as(&spell.def));
         }

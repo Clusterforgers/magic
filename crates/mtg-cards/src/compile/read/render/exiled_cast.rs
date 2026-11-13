@@ -44,6 +44,7 @@ impl Writer<'_> {
             spend_as: crate::modify::SpendAs::Normal,
             when: None,
             any_cast: false,
+            riders: Vec::new(),
         };
         (bind == FOUND && exiled_as == EXILED && *permission == allowed).then_some(())?;
         (self.single(&Ref::Target(0))

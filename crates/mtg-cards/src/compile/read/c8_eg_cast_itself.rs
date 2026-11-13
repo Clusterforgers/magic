@@ -54,6 +54,7 @@ fn c8_eg_permission(additional: Option<Cost>, zone: ZoneKind) -> CastPermission 
         spend_as: crate::modify::SpendAs::Normal,
         when: None,
         any_cast: false,
+        riders: Vec::new(),
     }
 }
 

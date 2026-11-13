@@ -19,7 +19,7 @@ use mtg_cards::ability::Ability;
 use mtg_cards::cost::Cost;
 use mtg_cards::effect::Place;
 use mtg_cards::keyword::Keyword;
-use mtg_cards::modify::{Attacked, GameRule, ManaChange, Prohibited, SpendAs};
+use mtg_cards::modify::{Attacked, CastRider, GameRule, ManaChange, Prohibited, SpendAs};
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use mtg_cards::value::Condition;
@@ -308,6 +308,10 @@ pub enum Rule {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         #[cfg_attr(feature = "ts", ts(optional, as = "Option<bool>"))]
         any_cast: bool,
+        /// What a spell cast through it gets ("If you cast a spell this way, that artifact enters tapped").
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
+        riders: Vec<CastRider>,
     },
     /// Each owner may cast the exiled card paired with them for `cost` rather than its mana cost (CR 118.9, 601.2f), while it
     /// stays exiled.
@@ -769,6 +773,8 @@ pub(crate) struct Cast {
     pub(crate) instead: Option<Cost>,
     /// It opens no zone: it covers only a card its player may cast anyway.
     pub(crate) opens_no_zone: bool,
+    /// What a spell cast through it gets.
+    pub(crate) riders: Vec<CastRider>,
 }
 
 impl Cast {
@@ -1182,9 +1188,11 @@ impl RulesInForce {
                 spend_as,
                 when,
                 any_cast,
+                riders,
             } => {
                 if let Some(source) = source {
                     self.casts.push(Cast {
+                        riders: riders.clone(),
                         opens_no_zone: *any_cast,
                         controller,
                         source,
@@ -1471,6 +1479,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             spend_as: permission.spend_as,
             when: permission.when.clone().map(Box::new),
             any_cast: permission.any_cast,
+            riders: permission.riders.clone(),
         },
         GameRule::NextSpell { what, benefit } => next_spell(scope, what, benefit)?,
         GameRule::SpellCost {
@@ -2448,6 +2457,45 @@ pub(crate) fn c11b_once_source(
     covering.first().map(|cast| cast.source)
 }
 
+/// The riders a cast of `card` by `player` from `from` for `way` takes from the permission it goes through: a cast for the
+/// mana cost from a zone other than a hand or the command zone, or a free cast, goes through the first permission that
+/// covers it, one that works once each turn after the others (as [`c11b_once_source`] counts it). None for any other
+/// cast.
+pub(crate) fn r401_cast_riders(
+    state: &GameState,
+    player: PlayerId,
+    card: ObjectId,
+    from: Zone,
+    way: Option<mtg_cards::value::CastWay>,
+) -> Vec<CastRider> {
+    let free = way == Some(mtg_cards::value::CastWay::Free);
+    if (way.is_some() && !free) || matches!(from, Zone::Hand(_) | Zone::Command(_)) {
+        return Vec::new();
+    }
+    let Some(card) = state.object(card) else {
+        return Vec::new();
+    };
+    let zone = crate::resolve::zone_kind(from);
+    let mut covering: Vec<&Cast> = cast_permissions(state)
+        .iter()
+        .filter(|cast| {
+            !cast.opens_no_zone
+                && cast.from == Some(zone)
+                && (if free {
+                    cast.free
+                } else {
+                    cast.adds_to_printed(zone)
+                })
+                && cast.covers(state, player, card)
+        })
+        .collect();
+    covering.sort_by_key(|cast| cast.once);
+    covering
+        .first()
+        .map(|cast| cast.riders.clone())
+        .unwrap_or_default()
+}
+
 /// The taxes on blocking in force: the one place the block declaration reads this rule (`block_tax`).
 pub(crate) fn block_taxes(state: &GameState) -> &[crate::block_tax::BlockTaxing] {
     &state.rules().block_taxes
@@ -2864,6 +2912,7 @@ mod tests {
             spend_as: SpendAs::Normal,
             when: None,
             any_cast: false,
+            riders: Vec::new(),
         }
     }
 

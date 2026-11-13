@@ -349,6 +349,49 @@ pub struct CastPermission {
     /// a command zone or a zone another permission opens ("You may cast Dragon spells without paying their mana costs").
     #[serde(default, skip_serializing_if = "crate::effect::is_false")]
     pub any_cast: bool,
+    /// What a spell cast through it gets: "If you cast a spell this way, that artifact enters tapped."
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub riders: Vec<CastRider>,
+}
+
+impl Default for CastPermission {
+    /// A permission for the controller to cast every card from a hand, with nothing waived, limited or added.
+    fn default() -> Self {
+        CastPermission {
+            who: Ref::You,
+            what: Selector::default(),
+            from: None,
+            free: false,
+            flash: false,
+            only: None,
+            play: false,
+            once: false,
+            additional: None,
+            rather: None,
+            spend_as: SpendAs::Normal,
+            when: None,
+            any_cast: false,
+            riders: Vec::new(),
+        }
+    }
+}
+
+/// What a spell cast through a permission gets ("If you cast a spell this way, ..."), applied by the engine as the spell
+/// leaves the stack or enters as a permanent.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub enum CastRider {
+    /// The permanent the spell becomes enters tapped: "that artifact enters tapped".
+    EntersTapped,
+    /// The permanent enters with one counter of the kind on it: "that creature enters with a finality counter on it".
+    EntersWithCounter(CounterKind),
+    /// The permanent gains the keyword until end of turn: "it gains haste until end of turn".
+    GainsThisTurn(Keyword),
+    /// The permanent has the subtype in addition to its other types: "is a Vampire in addition to its other types".
+    AlsoSubtype(Subtype),
+    /// The spell is exiled rather than put into its owner's graveyard from the stack: "If a spell cast this way would be
+    /// put into your graveyard, exile it instead."
+    ExiledInstead,
 }
 
 /// Which mana may pay for a cast through a permission.
