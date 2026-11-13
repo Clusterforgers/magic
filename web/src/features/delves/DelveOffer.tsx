@@ -337,6 +337,7 @@ export function DelveOffer({
                 className="h-auto min-h-11 w-full justify-start py-2 text-left whitespace-normal"
                 disabled={busy}
                 onClick={() => take(i)}
+                aria-label={label}
               >
                 <span
                   aria-hidden="true"
