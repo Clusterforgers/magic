@@ -950,7 +950,8 @@ fn counters(state: &GameState, on: &str, counter: CounterKind, delta: i32) -> Ev
 )]
 #[case::removal_is_not_putting(r#"{"CountersPut":{}}"#, "Bear", CounterKind::PlusOnePlusOne, -1, 0)]
 #[case::removal(r#"{"CountersRemoved":{}}"#, "Bear", CounterKind::PlusOnePlusOne, -1, 1)]
-#[case::removal_of_the_kind(r#"{"CountersRemoved":{"what":["This"],"counter":"+1/+1"}}"#, "Watcher", CounterKind::PlusOnePlusOne, -2, 1)]
+#[case::removal_of_the_kind_once_per_counter(r#"{"CountersRemoved":{"what":["This"],"counter":"+1/+1"}}"#, "Watcher", CounterKind::PlusOnePlusOne, -2, 2)]
+#[case::removal_of_three_in_a_batch_once(r#"{"Batch":{"CountersRemoved":{"what":["This"],"counter":"+1/+1"}}}"#, "Watcher", CounterKind::PlusOnePlusOne, -3, 1)]
 #[case::removal_of_another_kind(r#"{"CountersRemoved":{"counter":"+1/+1"}}"#, "Bear", CounterKind::MinusOneMinusOne, -1, 0)]
 #[case::putting_is_not_removal(
     r#"{"CountersRemoved":{}}"#,

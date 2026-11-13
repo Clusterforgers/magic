@@ -103,6 +103,8 @@ fn written() {
 #[case("Rumbling Aftershocks")]
 #[case("Rage Extractor")]
 #[case("Nev, the Practical Dean")]
+#[case("Adeline, Resplendent Cathar")]
+#[case("Protean Hydra")]
 fn reads_back_whole(#[case] name: &str) {
     let report = report(name);
     assert_eq!(
@@ -153,6 +155,19 @@ fn altered(name: &str, from: &str, to: &str) -> String {
     r#"{"SpellCast":{"by":"You","what":["XInCost"]}}"#
 )]
 #[case::one_counter("Nev, the Practical Dean", r#""count":"X","#, "")]
+#[case::only_that_player(
+    "Adeline, Resplendent Cathar",
+    r#"{"Union":[{"Bound":"opponent"},{"Each":[{"Type":"Planeswalker"},{"ControlledBy":{"Bound":"opponent"}}]}]}"#,
+    r#"{"Bound":"opponent"}"#
+)]
+#[case::any_walker(
+    "Adeline, Resplendent Cathar",
+    r#"{"ControlledBy":{"Bound":"opponent"}}"#,
+    r#"{"ControlledBy":"Opponents"}"#
+)]
+#[case::untapped("Adeline, Resplendent Cathar", r#""tapped":true,"#, "")]
+#[case::one_counter_back("Protean Hydra", r#""count":2,"#, "")]
+#[case::counter_put("Protean Hydra", r#"{"CountersRemoved""#, r#"{"CountersPut""#)]
 fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let report = report_of(name, &altered(name, from, to));
     assert_ne!(

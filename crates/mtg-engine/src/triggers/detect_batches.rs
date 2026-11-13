@@ -343,7 +343,8 @@ fn life_gained_is_counted_for_each_event(
 #[case::life_gained(r#"{"LifeGained":{}}"#, "gain", 3)]
 #[case::life_lost(r#"{"LifeLost":{"who":"You"}}"#, "loss", 3)]
 #[case::counters_put(r#"{"CountersPut":{"what":[]}}"#, "put", 2)]
-#[case::counters_removed(r#"{"CountersRemoved":{"what":[]}}"#, "removed", 2)]
+#[case::a_counter_removed_once_per_counter(r#"{"CountersRemoved":{"what":[]}}"#, "removed", 1)]
+#[case::counters_removed_in_a_batch(r#"{"Batch":{"CountersRemoved":{"what":[]}}}"#, "removed", 2)]
 #[case::attackers(r#"{"GroupAttacks":{"what":[]}}"#, "attack", 2)]
 #[case::scried(r#"{"Did":{"action":"Scried","who":"You"}}"#, "scry", 3)]
 fn the_cause_carries_the_amount_of_the_event(

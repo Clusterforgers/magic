@@ -81,7 +81,7 @@ fn each_opponent_attacked(ability: &Ability) -> Vec<String> {
         Effect::CreateToken {
             tapped: true,
             attacking: true,
-            against: Some(Ref::Bound(against)),
+            against: Some(against),
             blocking: None,
             bind: None,
             ..
@@ -90,9 +90,14 @@ fn each_opponent_attacked(ability: &Ability) -> Vec<String> {
     else {
         return Vec::new();
     };
-    if against != bind {
+    // "that player", or "that player or a planeswalker they control" (r40-7: the controller chooses among them).
+    let walkers = if *against == Ref::Bound(bind.clone()) {
+        false
+    } else if *against == r407_player_or_walkers(bind) {
+        true
+    } else {
         return Vec::new();
-    }
+    };
     let mut plain = ability.clone();
     if let Ability::Triggered { effects, .. } = &mut plain {
         let mut token = inner.clone();
@@ -110,12 +115,28 @@ fn each_opponent_attacked(ability: &Ability) -> Vec<String> {
             continue;
         };
         for (subject, player) in [("", "player"), ("you ", "opponent")] {
+            let or = if walkers {
+                " or a planeswalker they control"
+            } else {
+                ""
+            };
             found.push(format!(
-                "{head}, for each opponent, {subject}create {token} that's tapped and attacking that {player}."
+                "{head}, for each opponent, {subject}create {token} that's tapped and attacking that {player}{or}."
             ));
         }
     }
     found
+}
+
+/// The defenders "that player or a planeswalker they control" for the player bound as `bind`.
+fn r407_player_or_walkers(bind: &str) -> Ref {
+    Ref::Union(vec![
+        Ref::Bound(bind.to_owned()),
+        Ref::Each(crate::refs::Selector(vec![
+            Pred::Type(mtg_core::card::CardType::Planeswalker),
+            Pred::ControlledBy(Ref::Bound(bind.to_owned())),
+        ])),
+    ])
 }
 
 /// The other wordings of a static ability over creatures of several subtypes: the articles of a list after "that's"

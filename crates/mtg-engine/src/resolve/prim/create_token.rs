@@ -126,6 +126,26 @@ pub(super) fn attackable(state: &GameState, player: PlayerId) -> Vec<(AttackTarg
         .collect()
 }
 
+/// The players and planeswalkers a union names as what the tokens may attack ("that player or a planeswalker they
+/// control"); a permanent that left and came back is no longer named (CR 400.7).
+fn r407_defenders(cx: &Cx<'_>, against: &Ref) -> Result<Vec<AttackTarget>, ResolveError> {
+    let state = cx.state();
+    Ok(cx
+        .scope
+        .refs(against)?
+        .into_iter()
+        .filter_map(|target| match target {
+            Target::Player(seat) => Some(AttackTarget::Player(seat)),
+            Target::Object(named)
+                if state.object(named.id).map(GameObject::reference) == Some(named) =>
+            {
+                Some(AttackTarget::Planeswalker(named.id))
+            }
+            Target::Object(_) => None,
+        })
+        .collect())
+}
+
 /// What a player's tokens attack when the effect names it (CR 508.4a): the first player, planeswalker or battle
 /// `against` names, while that player may still attack it; otherwise nothing.
 fn named_defender(
@@ -179,11 +199,18 @@ fn ep23_blocked(
 fn chosen_defenders(
     cx: &Cx<'_>,
     aims: &mut [(PlayerId, Option<AttackTarget>)],
+    among: Option<&[AttackTarget]>,
 ) -> Result<Option<Run>, ResolveError> {
     let state = cx.state();
     let options: Vec<(PlayerId, Vec<(AttackTarget, ChoiceOption)>)> = aims
         .iter()
-        .map(|(player, _)| (*player, attackable(state, *player)))
+        .map(|(player, _)| {
+            let mut targets = attackable(state, *player);
+            if let Some(among) = among {
+                targets.retain(|(target, _)| among.contains(target));
+            }
+            (*player, targets)
+        })
         .filter(|(_, targets)| !targets.is_empty())
         .collect();
     let choosers: Vec<OptionChooser> = options
@@ -296,11 +323,17 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     // Where each player's tokens attack: chosen by their controller, once for all of them.
     let mut aims: Vec<(PlayerId, Option<AttackTarget>)> =
         players.iter().map(|player| (*player, None)).collect();
-    if let (true, Some(against)) = (*attacking, against) {
+    if let (true, Some(against @ Ref::Union(_))) = (*attacking, against) {
+        // "Tapped and attacking that player or a planeswalker they control": the controller chooses among them.
+        let named = r407_defenders(cx, against)?;
+        if let Some(asked) = chosen_defenders(cx, &mut aims, Some(&named))? {
+            return Ok(asked);
+        }
+    } else if let (true, Some(against)) = (*attacking, against) {
         for aim in &mut aims {
             aim.1 = named_defender(cx, against, aim.0)?;
         }
-    } else if *attacking && let Some(asked) = chosen_defenders(cx, &mut aims)? {
+    } else if *attacking && let Some(asked) = chosen_defenders(cx, &mut aims, None)? {
         return Ok(asked);
     }
     let first = state.next_object().get();

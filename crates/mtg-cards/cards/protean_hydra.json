@@ -1,7 +1,7 @@
 {
   "oracle_id": "6e32b958-70d3-4f3d-b10e-d6c8cb27dd93",
   "name": "Protean Hydra",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Protean Hydra",
@@ -24,9 +24,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 158, "end": 281 }
+          "Triggered": {
+            "when": { "CountersRemoved": { "what": ["This"], "counter": "+1/+1" } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+                }
+              }
+            ]
           }
         }
       ]

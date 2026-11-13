@@ -2411,6 +2411,16 @@ fn causes(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> V
             batch_causes(inner, firsts, scope)
         }
         (TriggerPattern::Batch(_), _) | (_, Happened::Batch(_)) => Vec::new(),
+        // "Whenever a +1/+1 counter is removed from ~" triggers once for each counter removed (CR 603.2c), each with
+        // an amount of one; "one or more counters" is a `Batch`.
+        (TriggerPattern::CountersRemoved { .. }, Happened::Counters { delta, .. }) => {
+            matching(pattern, happened, scope)
+                .map(|cause| {
+                    let one = Cause { amount: 1, ..cause };
+                    (0..delta.unsigned_abs()).map(|_| one.clone()).collect()
+                })
+                .unwrap_or_default()
+        }
         _ => matching(pattern, happened, scope).into_iter().collect(),
     }
 }
