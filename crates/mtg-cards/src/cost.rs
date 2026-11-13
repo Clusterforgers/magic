@@ -165,6 +165,20 @@ pub enum CostItem {
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
     },
+    /// Discard or reveal cards from the payer's hand that match and are alike as a set ("Discard two nonland cards with
+    /// the same name", "Reveal two cards from your hand that share a color").
+    AlikeFromHand {
+        /// Discarded rather than revealed.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        discard: bool,
+        /// Which cards may be chosen.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        filter: Selector,
+        /// How many.
+        count: Amount,
+        /// What the chosen cards have in common.
+        alike: Alike,
+    },
     /// The source deals damage to the payer ("{CARDNAME} deals 2 damage to you").
     DamageToYou(Amount),
     /// Each other player gains this much life ("you may have each other player gain 6 life").
@@ -257,6 +271,15 @@ pub enum CostItem {
     },
 }
 
+/// What the cards of a set have in common (`CostItem::AlikeFromHand`).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum Alike {
+    /// They all have the same name.
+    SameName,
+    /// They all have one color in common.
+    ShareColor,
+}
+
 /// The parts of a cost, paid together; a cost of one mana part is written as its mana text.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Default)]
 pub struct Cost(pub Vec<CostItem>);
@@ -283,6 +306,7 @@ impl CostItem {
             | CostItem::ExileFromGraveyard { count, .. }
             | CostItem::ExileFromHand { count, .. }
             | CostItem::RevealFromHand { count, .. }
+            | CostItem::AlikeFromHand { count, .. }
             | CostItem::ReturnToHand { count, .. }
             | CostItem::ExilePermanents { count, .. }
             | CostItem::Behold { count, .. }
@@ -321,6 +345,7 @@ impl Cost {
             | CostItem::ExileFromGraveyard { count, .. }
             | CostItem::ExileFromHand { count, .. }
             | CostItem::RevealFromHand { count, .. }
+            | CostItem::AlikeFromHand { count, .. }
             | CostItem::ReturnToHand { count, .. }
             | CostItem::ExilePermanents { count, .. }
             | CostItem::Behold { count, .. }

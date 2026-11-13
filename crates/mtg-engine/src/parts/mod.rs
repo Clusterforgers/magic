@@ -28,6 +28,7 @@ mod random;
 mod rmt5_top_shots;
 pub(crate) use r300_random_shots::r300_random_shots;
 pub(crate) use rmt5_top_shots::rmt5_top_shots;
+mod r5518_alike;
 mod reveal;
 mod sacrifice;
 mod source;
@@ -38,7 +39,7 @@ mod untap;
 
 pub(crate) use counters::after_removal;
 
-use mtg_cards::cost::CostItem;
+use mtg_cards::cost::{Alike, CostItem};
 use mtg_cards::refs::{Pred, Selector, ZoneKind};
 use mtg_cards::value::{Amount, CounterKind};
 use mtg_core::card::CardType;
@@ -104,6 +105,8 @@ pub(crate) struct Pick {
     pub(crate) count: usize,
     /// The filter reads the X announced ("a red card with mana value X"): the part waits for X, then picks by it.
     pub(crate) reads_x: bool,
+    /// What the picked cards have in common as a set ("with the same name", "that share a color").
+    pub(crate) alike: Option<Alike>,
 }
 
 /// One part of a cost the engine pays besides `{T}`, mana and the loss of the source.
@@ -235,6 +238,7 @@ fn pick(
             filter: filter.clone(),
             count,
             reads_x,
+            alike: None,
         }),
         x || reads_x,
     ))
@@ -273,6 +277,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     filter,
                     count,
                     reads_x: false,
+                    alike: None,
                 }),
                 false,
             )
@@ -287,6 +292,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     filter,
                     count,
                     reads_x: false,
+                    alike: None,
                 }),
                 false,
             )
@@ -304,6 +310,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     filter,
                     count: 1,
                     reads_x: false,
+                    alike: None,
                 }),
                 false,
             )
@@ -345,6 +352,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     filter,
                     count: 1,
                     reads_x: false,
+                    alike: None,
                 }),
                 false,
             )
@@ -447,6 +455,27 @@ impl Part {
                 pick(Kind::ExileHand, filter, count, item)?
             }
             CostItem::RevealFromHand { filter, count } => pick(Kind::Reveal, filter, count, item)?,
+            CostItem::AlikeFromHand {
+                discard,
+                filter,
+                count,
+                alike,
+            } => {
+                let kind = if *discard {
+                    Kind::Discard
+                } else {
+                    Kind::Reveal
+                };
+                let (part, x) = pick(kind, filter, count, item)?;
+                let part = match part {
+                    Part::Pick(pick) => Part::Pick(Pick {
+                        alike: Some(*alike),
+                        ..pick
+                    }),
+                    other => other,
+                };
+                (part, x)
+            }
             CostItem::TapPermanents { filter, count } => pick(Kind::Tap, filter, count, item)?,
             CostItem::ReturnToHand { filter, count } => pick(Kind::Return, filter, count, item)?,
             CostItem::ExilePermanents { filter, count } => {
@@ -886,6 +915,7 @@ impl Pick {
                 .filter
                 .r301_with_x(i32::try_from(x).unwrap_or(i32::MAX)),
             reads_x: false,
+            alike: None,
             ..self.clone()
         }
     }
@@ -945,6 +975,9 @@ impl Pick {
 
     /// Whether `candidates` cannot pay the part: too few of them, or too little power among them.
     pub(crate) fn short(&self, state: &GameState, candidates: &[ObjectId]) -> bool {
+        if let Some(alike) = self.alike {
+            return !r5518_alike::r5518_has_set(state, candidates, self.count, alike);
+        }
         match self.kind {
             Kind::TapPower => usize::try_from(tap::total_power(state, candidates))
                 .is_ok_and(|total| total < self.count),
@@ -969,7 +1002,12 @@ impl Pick {
                         .is_ok_and(|total| total == self.count)
             }
             Kind::Forage => forage::alone(state, candidates),
-            _ => candidates.len() == self.count,
+            _ => {
+                candidates.len() == self.count
+                    && self
+                        .alike
+                        .is_none_or(|alike| r5518_alike::r5518_alike(state, candidates, alike))
+            }
         };
         if alone {
             Some(candidates.to_vec())
@@ -996,6 +1034,14 @@ impl Pick {
     /// Why `picked` cannot pay the part, when they cannot: too little power or mana value for a pick by total, or not one
     /// Food or three cards for a forage.
     pub(crate) fn weak(&self, state: &GameState, picked: &[ObjectId]) -> Option<IllegalAnswer> {
+        if let Some(alike) = self.alike
+            && !r5518_alike::r5518_alike(state, picked, alike)
+        {
+            return Some(IllegalAnswer::WrongPick(match alike {
+                Alike::SameName => "cards with the same name",
+                Alike::ShareColor => "cards that share a color",
+            }));
+        }
         let needed = u32::try_from(self.count).unwrap_or(u32::MAX);
         match self.kind {
             Kind::TapPower => {
@@ -1015,6 +1061,19 @@ impl Pick {
 
     /// What the question asks of the player, in the words of a card.
     pub(crate) fn text(&self) -> String {
+        let text = self.r5518_kind_text();
+        match self.alike {
+            Some(alike) => format!(
+                "{}{}",
+                text.trim_end_matches('.'),
+                r5518_alike::r5518_words(alike)
+            ),
+            None => text,
+        }
+    }
+
+    /// What the question asks of the player for the kind of pick, before the set's words.
+    fn r5518_kind_text(&self) -> String {
         match self.kind {
             Kind::Sacrifice => crate::wording::sacrifice(&self.filter, self.count),
             Kind::Discard => crate::wording::discard(self.count),

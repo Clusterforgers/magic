@@ -1802,6 +1802,7 @@ Spellbreaker Behemoth
 Sphere of Safety
 Sphinx of Jwar Isle
 Sphinx of Magosi
+Sphinx of the Chimes
 Sphinx of the Final Word
 Sphinx of the Steel Wind
 Spider-Islanders

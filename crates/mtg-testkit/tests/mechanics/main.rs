@@ -146,6 +146,7 @@ mod r4711_draft_notes;
 mod r4_audit;
 mod r4a_amplify;
 mod r4b_skip;
+mod r5518_alike;
 mod r5518_dice;
 mod r5518_shares;
 mod r5g;

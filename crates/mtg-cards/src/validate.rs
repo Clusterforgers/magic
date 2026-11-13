@@ -1714,6 +1714,7 @@ impl<'a> Walker<'a> {
                     | CostItem::ExileFromHand { filter, count }
                     | CostItem::UntapPermanents { filter, count }
                     | CostItem::RevealFromHand { filter, count }
+                    | CostItem::AlikeFromHand { filter, count, .. }
                     | CostItem::ReturnToHand { filter, count }
                     | CostItem::ExilePermanents { filter, count }
                     | CostItem::Behold { filter, count, .. }
@@ -2091,6 +2092,7 @@ impl<'a> Walker<'a> {
                     | CostItem::ExileFromGraveyard { .. }
                     | CostItem::ExileFromHand { .. }
                     | CostItem::RevealFromHand { .. }
+                    | CostItem::AlikeFromHand { .. }
                     | CostItem::TapPermanents { .. }
                     | CostItem::TapPower { .. }
                     | CostItem::ReturnToHand { .. }
@@ -6381,6 +6383,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::ExileFromGraveyard { .. }
                 | CostItem::ExileFromHand { .. }
                 | CostItem::RevealFromHand { .. }
+                | CostItem::AlikeFromHand { .. }
                 | CostItem::ReturnToHand { .. }
                 | CostItem::ExilePermanents { .. }
                 | CostItem::TapPermanents { .. }

@@ -116,6 +116,8 @@ fn r5518_probe() {
 #[case("Druid Class")]
 #[case("Adagia, Windswept Bastion")]
 #[case("Spirit-Sister's Call")]
+#[case("Sphinx of the Chimes")]
+#[case("Illuminated Folio")]
 fn r5518_reads_back_whole(#[case] name: &str) {
     let report = r5518_report(name, &r5518_file(name));
     assert_eq!(
@@ -169,9 +171,53 @@ fn r5518_reads_back_whole(#[case] name: &str) {
     r#"{ "MoveTo": "Exile" }"#,
     r#"{ "MoveTo": "Hand" }"#
 )]
+#[case::sphinx_share_color(
+    "Sphinx of the Chimes",
+    r#""alike": "SameName""#,
+    r#""alike": "ShareColor""#
+)]
+#[case::sphinx_lands_too(
+    "Sphinx of the Chimes",
+    r#""filter": [{ "Not": { "Type": "Land" } }],"#,
+    ""
+)]
+#[case::folio_three("Illuminated Folio", r#""count": 2"#, r#""count": 3"#)]
+#[case::folio_discarded(
+    "Illuminated Folio",
+    r#"{ "AlikeFromHand": { "count""#,
+    r#"{ "AlikeFromHand": { "discard": true, "count""#
+)]
 fn r5518_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let file = r5518_file(name);
     assert!(file.contains(from), "{name} has {from}");
     let report = r5518_report(name, &file.replacen(from, to, 1));
     assert_ne!(report.verdict(), Verdict::Accepted, "{name}: {to}");
+}
+
+#[rstest]
+#[case::same_name("Discard two nonland cards with the same name: Draw four cards.", true)]
+#[case::share_color(
+    "Reveal two cards from your hand that share a color: Draw a card.",
+    true
+)]
+#[case::reveal_same_name(
+    "Reveal two cards from your hand with the same name: Draw a card.",
+    false
+)]
+#[case::one_card("Discard a nonland card with the same name: Draw four cards.", false)]
+fn r5518_the_compiler_reads_cards_alike_as_a_cost(#[case] line: &str, #[case] read: bool) {
+    let cards = common::printed();
+    let mut card = cards
+        .into_iter()
+        .find(|card| card.name == "Sphinx of the Chimes")
+        .unwrap();
+    if let Some(face) = card.faces.first_mut() {
+        face.oracle_text = line.to_owned();
+    }
+    let compiled = mtg_cards::compile::compile(&card);
+    let found = compiled.clauses.iter().any(|clause| clause.read)
+        && serde_json::to_string(&compiled.card)
+            .unwrap()
+            .contains("AlikeFromHand");
+    assert_eq!(found, read, "{line}: {:?}", compiled.clauses);
 }

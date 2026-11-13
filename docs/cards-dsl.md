@@ -114,6 +114,8 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - A vote on players or objects binds `tally` to every vote cast ("for each vote they received" counts it); `VoteFor::AnotherPlayer` leaves the voter out, and a vote on players may be secret (`ChoiceOption::SecretPlayer`). `ChooseWords` is a choice of words that is no vote ("each opponent secretly chooses silence or snitch").
 - What a booster draft notes for cards of a name is `Amount`/`Pred`/`Condition::Drafted(DraftNote)`: a game has no draft, so a noted number is 0 and no name, type, color, player, guess or card exiled before the game is noted (the Conspiracy rulings); the rules of the draft itself are `GameRule::Draft`, a spell line on an instant or sorcery.
 - "If ~ would be destroyed, regenerate it." is a replacement `Destroyed` by `ReplaceBy::Regenerate`: never used up, and not while the permanent can't be regenerated. Each regeneration is logged as `TallyEvent::Regenerated` ("for each time it regenerated this turn").
+- A die table row reads "1—9 |", "1-9 |", "20+ |" or "9 or less |"; a row's plain verb may also be written with "You" ("You draw a card."). `RollDice.highest` rolls one die for each of an amount and only the highest counts ("roll a d20 for each player being attacked and ignore all but the highest roll", `Effect.RollDice.Highest`).
+- `CostItem::AlikeFromHand` discards or reveals cards of the hand that are alike as a set (`Alike::SameName`, `Alike::ShareColor`): the cost is payable only while such a set exists, and a pick that is not one is refused (`IllegalAnswer::WrongPick`).
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 
 ## Support records
