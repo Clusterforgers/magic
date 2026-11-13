@@ -12,6 +12,7 @@ use mtg_engine::forecast::CombatForecast;
 use super::eval::{creature_value, life_value, pressure};
 use super::seen::{Body, Seen};
 use super::sim::{Horizon, Search};
+use super::threat;
 
 /// A declaration of attackers.
 pub type Attack = Vec<(ObjectId, AttackTarget)>;
@@ -54,9 +55,15 @@ fn punishes(blocker: &Body, attacker: &Body) -> bool {
     }
     let blocker_first = (blocker.keys.first_strike || blocker.keys.double_strike)
         && !(attacker.keys.first_strike || attacker.keys.double_strike);
-    // A blocker that strikes first kills the attacker before it deals its damage.
-    blocker_first || !kills(attacker, blocker)
+    // A blocker that strikes first kills the attacker before it deals its damage; a cheap one (a deathtouch chump)
+    // trades far up.
+    blocker_first
+        || !kills(attacker, blocker)
+        || creature_value(blocker) < TRADE_UP * creature_value(attacker)
 }
+
+/// The share of an attacker's value below which a blocker that dies killing it still makes the attack a loss.
+const TRADE_UP: f64 = 0.6;
 
 /// Every permanent `seen` reads, by id.
 fn bodies_by_id(seen: &Seen<'_>) -> BTreeMap<ObjectId, Body> {
@@ -66,8 +73,11 @@ fn bodies_by_id(seen: &Seen<'_>) -> BTreeMap<ObjectId, Body> {
         .collect()
 }
 
+/// What each untapped creature that would punish the seat's attackers takes off a player's appeal as a target.
+const WALL: f64 = 8.0;
+
 /// The opponent the seat's attacks go at among `offered`: one its creatures can kill this turn, else the one who
-/// threatens its team most (the leader). Teammates choose the same way, so they focus on one opponent.
+/// threatens its team most ([`threat::player_threat`], the archenemy), less for each untapped creature of theirs that punishes the seat's attackers. Teammates choose the same way, so they focus on one opponent.
 pub fn focus(
     seen: &Seen<'_>,
     bodies: &BTreeMap<ObjectId, Body>,
@@ -78,18 +88,30 @@ pub fn focus(
         .filter(|body| body.is_creature() && body.controller == seen.seat() && !body.tapped)
         .map(Body::power)
         .sum();
+    let all: Vec<Body> = bodies.values().cloned().collect();
     let mut best: Option<(f64, PlayerId)> = None;
     for player in offered.iter().copied().filter(|p| !seen.is_teammate(*p)) {
         let life = seen.life(player);
-        let board: f64 = bodies
+        let board = threat::player_threat(seen, player, &all);
+        // Untapped creatures that punish the seat's attackers make a player a worse target.
+        let walls = bodies
             .values()
-            .filter(|body| body.controller == player && body.is_creature())
-            .map(creature_value)
-            .sum();
+            .filter(|blocker| {
+                blocker.controller == player && blocker.is_creature() && !blocker.tapped
+            })
+            .filter(|blocker| {
+                bodies.values().any(|attacker| {
+                    attacker.controller == seen.seat()
+                        && attacker.is_creature()
+                        && punishes(blocker, attacker)
+                })
+            })
+            .count();
         let score = if life <= power {
             1_000.0 - f64::from(life)
         } else {
             board + 0.5 * f64::from(40 - life.min(40))
+                - WALL * f64::from(u32::try_from(walls).unwrap_or(u32::MAX))
         };
         if best.is_none_or(|(held, _)| score > held) {
             best = Some((score, player));
