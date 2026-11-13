@@ -1,0 +1,42 @@
+{
+  "oracle_id": "aede5485-7b8c-4e29-a3a4-9a3513dc733f",
+  "name": "Summons of Saruman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Summons of Saruman",
+      "oracle_fingerprint": "fdced537da996536437db0c5019b2167",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Amass": { "subtype": "Orc", "count": "X" } },
+              { "Mill": { "count": "X", "as": "milled" } },
+              {
+                "CastFromZone": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "milled" } },
+                      { "In": "Graveyard" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                    ]
+                  },
+                  "free": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Flashback": [
+              { "Mana": "{3}{U}{R}" },
+              { "ExileFromGraveyard": { "filter": [], "count": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

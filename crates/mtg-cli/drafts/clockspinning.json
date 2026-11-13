@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3e1b32a9-27a4-4550-a644-ebe254e1f512",
+  "name": "Clockspinning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clockspinning",
+      "oracle_fingerprint": "e960303fe8f60092dd8e0d9afb5649b7",
+      "abilities": [
+        { "Keyword": { "Buyback": "{3}" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Either": [{ "Object": [] }, { "Object": [{ "In": "Exile" }, "Suspended"] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "PutCountersOf": {
+                  "on": { "Target": 0 },
+                  "of": { "Target": 0 },
+                  "one_kind": true,
+                  "per_kind": "PutOrRemove"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

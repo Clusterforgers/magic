@@ -1,0 +1,38 @@
+{
+  "oracle_id": "a8b018a7-0350-4ee0-9582-8d391018bdee",
+  "name": "Azog, Moria's Ruin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Azog, Moria's Ruin",
+      "oracle_fingerprint": "849c0f362490fa842753da326996a5aa",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Departed": { "Target": 0 } },
+                      "selector": [{ "ControlledBy": "You" }]
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "33761c1a-9848-45bf-b934-123cebab566b",
+  "name": "Cyber Conversion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cyber Conversion",
+      "oracle_fingerprint": "2a43e196ce35362652af93435989b552",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "TurnFaceDown": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 2 } },
+                    { "AddType": "Artifact" },
+                    { "AddSubtype": "Cyberman" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
