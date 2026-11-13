@@ -123,7 +123,8 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
       cardsProgress(asker, chosen.length, bounds)
     )
   const totalWords = cardsTotalWords(from, cardsTotal, chosen)
-  const progress = (total > 0 && hi > 0 ? ` · ${chosen.length} chosen` : '') + (totalWords === '' ? '' : ` · ${totalWords}`)
+  const progress =
+    (total > 0 && hi > 0 ? ` · ${chosen.length} chosen` : '') + (totalWords === '' ? '' : ` · ${totalWords}`)
 
   return (
     <PromptLayout text={text}>
