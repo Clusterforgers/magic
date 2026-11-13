@@ -261,6 +261,10 @@ Public and read-only (`card_api.rs`). `GET /api/cards` searches the deck cards (
 
 `favourites.rs`: a favourite points to a precon and follows its cards and check. Needs an account (401 `unauthenticated`; 503 `cards_unavailable`). `PUT` and `DELETE /api/favourites/precons/{code}` are idempotent (204); unknown or malformed codes are 404 `not_found`; writes count per account (`AttemptLimits::favourite_writes_per_user`, 429 `rate_limited`). `PreconListItem.pictures` and `DeckListItem.pictures` are a deck's commanders, else its first card, each with the printing its line names.
 
+### Deck groups
+
+`deck_groups.rs` and `DeckGroupRepo` (`deck_groups`, `deck_group_members`; deleted with the account): an account sorts its decks into named groups (at most `MAX_DECK_GROUPS_PER_USER`, names of 1 to 60 characters once trimmed), each kept collapsed or open. `GET`/`POST /api/deck-groups`, `PATCH`/`DELETE /api/deck-groups/{id}`, `PUT /api/deck-groups/order` (every group id once, else 400 `invalid_request`) and `PUT /api/decks/{id}/group` (`{group: null}` ungroups). A deck sits in one group at most; deleting a group or a deck removes its membership, so the decks stay, ungrouped. Another account's group or deck is 404 `not_found`; 409 `group_limit`; 401 `unauthenticated`; 503 `decks_unavailable`.
+
 ### Account preferences
 
 `prefs.rs` and `PrefsRepo` (`user_prefs`, deleted with the account) keep the default stops, "End my turn by hand", the always-yield list (`auto_yields`, at most `MAX_AUTO_YIELDS`), the auto choices and the hand sort (`hand_sort`, null for the default) across browsers. Unsaved stops default to the own declare attackers and postcombat main (`default_stops`); a saved empty list stays empty. A sort naming a group twice is refused; missing groups are appended in starting order. `PUT /api/me/prefs` takes at most `MAX_DEFAULT_STOPS` lasting stops at priority steps, one per side and step, else 400 `invalid_request`. 401 `unauthenticated`; 503 `cards_unavailable`; bodies at most 8 KiB.
