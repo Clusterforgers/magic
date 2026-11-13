@@ -216,6 +216,7 @@ const RUNS: &[&str] = &[
     "Effect.Draw",
     "Effect.Discard",
     "Effect.Discard.Random",
+    "Effect.Choose.Differ",
     "Effect.Discard.Filter",
     "Effect.Discard.Chooser",
     "Effect.Mill",
@@ -1014,6 +1015,7 @@ const RUNS: &[&str] = &[
     "Pred.HasAdventure",
     "Pred.HasAbility",
     "Pred.Drafted",
+    "Pred.Apart",
     "Pred.FaceDown",
     "Pred.TargetsPlayer",
     "Pred.SpentFrom",
@@ -1103,6 +1105,7 @@ mod tests {
     #[case::drawing("Effect.Draw", true)]
     #[case::discarding("Effect.Discard", true)]
     #[case::discarding_at_random("Effect.Discard.Random", true)]
+    #[case::choosing_apart("Effect.Choose.Differ", true)]
     #[case::discarding_matching_cards("Effect.Discard.Filter", true)]
     #[case::discarding_cards_another_player_chooses("Effect.Discard.Chooser", true)]
     #[case::milling("Effect.Mill", true)]

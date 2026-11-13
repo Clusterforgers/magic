@@ -254,6 +254,9 @@ pub enum Pred {
     This,
     /// Is not the source object.
     Other,
+    /// True of each object alone; in the filter of a cost that takes several, no two taken share the quality ("Discard
+    /// three cards with different names").
+    Apart(TargetSet),
     /// Is one of the objects the reference names (`{"Is": {"Bound": "creature"}}`).
     Is(Ref),
     /// Shares a subtype with one of the objects the reference names (`{"SharesSubtype": {"Bound": "land"}}`).
@@ -648,6 +651,8 @@ pub enum TargetSet {
     DifferentNames,
     /// No two have one mana value.
     DifferentManaValues,
+    /// No two have one power ("with different powers").
+    DifferentPowers,
     /// They all have one toughness ("with equal toughness").
     SameToughness,
     /// Their mana values add up to at most this ("with total mana value 3 or less").

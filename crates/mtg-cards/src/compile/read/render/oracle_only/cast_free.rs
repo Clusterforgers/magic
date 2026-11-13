@@ -43,6 +43,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             count,
             bind,
             rest_as: None,
+            differ: None,
         },
         Effect::CastFromZone {
             rather: None,

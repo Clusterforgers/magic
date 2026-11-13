@@ -196,6 +196,7 @@ fn choose_then_draw(
             count,
             bind,
             rest_as: None,
+            differ: None,
         },
         Effect::Draw {
             who: Ref::You,

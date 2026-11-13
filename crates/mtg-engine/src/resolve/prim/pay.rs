@@ -456,6 +456,7 @@ pub(super) fn settle<'a>(
             }
             None => {
                 let (min, max) = pick.bounds(candidates.len());
+                let groups = pick.r4709_groups(state, &candidates);
                 return Ok(Settled::Ask(Decision {
                     player,
                     kind: DecisionKind::ChooseCards(CardsOptions {
@@ -466,6 +467,7 @@ pub(super) fn settle<'a>(
                         max,
                         text: pick.text(),
                         can_cancel: false,
+                        groups,
                     }),
                 }));
             }

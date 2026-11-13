@@ -506,6 +506,7 @@ fn put_back(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             count,
             bind: BACK.to_owned(),
             rest_as: None,
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(BACK.to_owned()),
@@ -807,6 +808,7 @@ fn exiles_from_graveyard(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
             count: Bounds::default(),
             bind: EXILED_CARD.to_owned(),
             rest_as: None,
+            differ: None,
         },
         Effect::Exile {
             what: Ref::Bound(EXILED_CARD.to_owned()),
@@ -1070,6 +1072,7 @@ fn itself_to_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             count: Bounds::default(),
             bind: LATER.to_owned(),
             rest_as: None,
+            differ: None,
         },
         Effect::DelayedTrigger {
             until: None,
@@ -1126,6 +1129,7 @@ fn return_chosen(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             count: Bounds::default(),
             bind: RETURNED.to_owned(),
             rest_as: None,
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(RETURNED.to_owned()),
@@ -1158,6 +1162,7 @@ fn return_any_number(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             count: Bounds::up_to(None),
             bind: RETURNED.to_owned(),
             rest_as: None,
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(RETURNED.to_owned()),

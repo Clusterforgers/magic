@@ -207,6 +207,7 @@ fn targetable(ctx: &Ctx, what: &Targetable, plural: bool) -> String {
                 TargetSet::DifferentControllers => "controlled by different players".to_owned(),
                 TargetSet::DifferentNames => "with different names".to_owned(),
                 TargetSet::DifferentManaValues => "with different mana values".to_owned(),
+                TargetSet::DifferentPowers => "with different powers".to_owned(),
                 TargetSet::SameToughness => "with equal toughness".to_owned(),
                 TargetSet::TotalManaValueAtMost(most) => {
                     format!("with total mana value {} or less", amount(ctx, most))

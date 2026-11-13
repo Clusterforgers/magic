@@ -91,6 +91,7 @@ pub(super) fn next(
                 max,
                 text: pick.text(),
                 can_cancel: true,
+                groups: Vec::new(),
             }),
         });
     }

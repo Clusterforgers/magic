@@ -85,6 +85,7 @@ fn put_from_zone(ability: &Ability, steps: &[Effect]) -> Option<String> {
         count,
         bind,
         rest_as: None,
+        differ: None,
     } = choose
     else {
         return None;

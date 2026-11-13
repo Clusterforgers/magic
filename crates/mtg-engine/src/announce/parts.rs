@@ -96,6 +96,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             continue;
         }
         let (min, max) = pick.bounds(candidates.len());
+        let groups = pick.r4709_groups(ctx.state, &candidates);
         return Some(ctx.ask(DecisionKind::ChooseCards(CardsOptions {
             one_per_name: false,
             source: ctx.source,
@@ -104,6 +105,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             max,
             text: pick.text(),
             can_cancel: ctx.can_cancel(),
+            groups,
         })));
     }
     super::w2f_counter_kinds::w2f_run(ctx, work, &price)

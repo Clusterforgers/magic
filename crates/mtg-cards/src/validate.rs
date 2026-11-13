@@ -965,6 +965,17 @@ impl<'a> Walker<'a> {
                     self.at(format!("[{i}]"), |w| w.pred(inner));
                 }
             }
+            Pred::Apart(rule) => {
+                self.uses("Pred", "Apart");
+                if !matches!(
+                    rule,
+                    TargetSet::DifferentNames
+                        | TargetSet::DifferentPowers
+                        | TargetSet::DifferentManaValues
+                ) {
+                    self.problem("objects taken apart differ in names, powers or mana values");
+                }
+            }
             Pred::This
             | Pred::Other
             | Pred::Type(_)
@@ -3676,6 +3687,16 @@ impl Walker<'_> {
         if matches!(effect, Effect::Discard { random: true, .. }) {
             self.uses("Effect", "Discard.Random");
         }
+        // A choice whose chosen objects differ in a quality needs the engine to keep them apart.
+        if matches!(
+            effect,
+            Effect::Choose {
+                differ: Some(_),
+                ..
+            }
+        ) {
+            self.uses("Effect", "Choose.Differ");
+        }
         if matches!(
             effect,
             Effect::Discard {
@@ -4111,12 +4132,27 @@ impl Walker<'_> {
                 count,
                 bind,
                 rest_as,
+                differ,
             } => {
                 // A choice among players ("an opponent", CR 800.4) binds players; any other binds objects.
                 let kind = match w.kind_of(from) {
                     Kind::Player => Kind::Player,
                     _ => Kind::Object,
                 };
+                match differ {
+                    Some(_) if kind == Kind::Player => {
+                        w.at("differ", |w| w.problem("players chosen differ by nothing"));
+                    }
+                    None
+                    | Some(
+                        TargetSet::DifferentNames
+                        | TargetSet::DifferentPowers
+                        | TargetSet::DifferentManaValues,
+                    ) => {}
+                    Some(_) => w.at("differ", |w| {
+                        w.problem("a choice keeps apart names, powers or mana values");
+                    }),
+                }
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("from", |w| w.reference(from, kind));
                 w.at("count", |w| w.bounds(count));
@@ -7260,6 +7296,7 @@ mod tests {
     #[case::ep27_cast_itself_with_flash_from_a_hand(r#"{"Rule":{"rule":{"MayCast":{"what":["This"],"flash":true}},"condition":"YourTurn","from":"Hand"}}"#, &["Ability.From", "Ability.Rule", "Rule.MayCast"])]
     #[case::affinity_given_to_spells(r#"{"Static":{"affected":{"Each":["Spell",{"Type":"Enchantment"}]},"mods":[{"AddKeyword":{"Affinity":[{"Subtype":"Aura"}]}}]}}"#, &["Ability.Static", "Ability.Static.SpellKeywords", "Keyword.Affinity", "Mod.AddKeyword"])]
     #[case::a_discard_of_your_choice(r#"{"Spell":{"effects":[{"Discard":{"count":2}}]}}"#, &["Ability.Spell", "Effect.Discard"])]
+    #[case::a_choice_with_different_powers(r#"{"Spell":{"effects":[{"Choose":{"from":{"Each":[{"Type":"Creature"}]},"count":{"min":0,"max":null},"as":"chosen","differ":"DifferentPowers"}}]}}"#, &["Ability.Spell", "Effect.Choose", "Effect.Choose.Differ"])]
     #[case::a_discard_at_random(r#"{"Spell":{"effects":[{"Discard":{"random":true}}]}}"#, &["Ability.Spell", "Effect.Discard", "Effect.Discard.Random"])]
     #[case::a_discard_of_matching_cards(r#"{"Spell":{"effects":[{"Discard":{"filter":[{"Type":"Creature"}]}}]}}"#, &["Ability.Spell", "Effect.Discard", "Effect.Discard.Filter"])]
     #[case::a_move_to_the_hand(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":"Hand"}}]}}"#, &["Ability.Spell", "Effect.Move"])]

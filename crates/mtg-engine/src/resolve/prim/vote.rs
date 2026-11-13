@@ -265,6 +265,7 @@ fn of(
                 min: usize::from(!again),
                 max: 1,
                 text: "Vote for a permanent or card.".to_owned(),
+                groups: Vec::new(),
             })
             .collect();
         match pick_selections(cx, &selections)? {
