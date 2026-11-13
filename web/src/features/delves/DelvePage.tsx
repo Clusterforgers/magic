@@ -86,7 +86,7 @@ function FightPanel({ view, content }: { view: DelveView; content: DelveContent 
             <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
               <ColourPips colours={boss.colors} />
               <span>{bossLife(boss.life, view.run.heroes.length, view.run.heat)} life</span>
-              <span>· {boss.phases.length + 1} phases</span>
+              {boss.phases.length > 0 ? <span>· {boss.phases.length + 1} phases</span> : null}
             </p>
           ) : null}
           {boss ? <p className="text-sm italic">“{boss.line}”</p> : null}

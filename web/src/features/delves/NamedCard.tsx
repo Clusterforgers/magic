@@ -41,7 +41,7 @@ export function NamedCard({
     <figure
       data-slot="named-card"
       aria-label={name}
-      className={cn('grid w-44 max-w-full content-start gap-2', sold && 'opacity-60', className)}
+      className={cn('grid w-full content-start gap-2 sm:w-44', sold && 'opacity-60', className)}
     >
       <div className="relative aspect-[5/7] overflow-hidden rounded-[4.75%/3.393%] border bg-raised shadow-e1">
         {picture ? (

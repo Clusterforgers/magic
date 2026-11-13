@@ -184,7 +184,7 @@ export function DelveOffer({
         title="Pick a card"
         blurb="It replaces a basic land of your deck for the rest of the run."
       >
-        <ul className="flex flex-wrap justify-center gap-4 sm:justify-start">
+        <ul className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:gap-4">
           {offer.Cards.cards.map((name, i) => (
             <li key={name}>
               <NamedCard name={name} find={find}>
@@ -210,7 +210,7 @@ export function DelveOffer({
         title="Pick a relic"
         blurb="Relics last the whole run. Dangerous ones help the boss too."
       >
-        <ul className="flex flex-wrap justify-center gap-4 sm:justify-start">
+        <ul className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:gap-4">
           {relics.map((relic, i) => (
             <li key={relic.id}>
               <CustomCardFrame card={relic}>
@@ -243,12 +243,12 @@ export function DelveOffer({
         blurb="“Shiny things for shiny coins.” Buy as much as your purse allows."
         gold={gold}
       >
-        <ul className="flex flex-wrap justify-center gap-4 sm:justify-start">
+        <ul className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:gap-4">
           {offer.Shop.items.map((item, i) => {
             if (item === 'Draught') {
               const short = gold < DRAUGHT_PRICE
               return (
-                <li key="draught" className="grid w-44 content-start gap-2">
+                <li key="draught" className="grid w-full content-start gap-2 sm:w-44">
                   <div className="grid aspect-[5/7] place-items-center rounded-xl border-2 border-success bg-surface shadow-e1">
                     <FlaskConicalIcon aria-hidden="true" className="size-12 text-success" />
                   </div>

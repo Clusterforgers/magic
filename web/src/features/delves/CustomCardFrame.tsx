@@ -55,7 +55,7 @@ export function CustomCardFrame({
       data-risky={risky || undefined}
       aria-label={card.name}
       className={cn(
-        'flex w-56 max-w-full flex-col overflow-hidden rounded-xl border-2 bg-card shadow-e1',
+        'flex w-full flex-col sm:w-56 overflow-hidden rounded-xl border-2 bg-card shadow-e1',
         risky ? 'border-destructive' : (art?.edge ?? 'border-border-strong'),
         className,
       )}

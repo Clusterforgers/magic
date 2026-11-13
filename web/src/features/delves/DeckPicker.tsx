@@ -279,7 +279,7 @@ export function DeckPicker({
         </div>
         <aside
           aria-label="Picked deck"
-          className="order-first lg:sticky lg:top-0 lg:order-none lg:self-start"
+          className="order-first hidden sm:block lg:sticky lg:top-0 lg:order-none lg:self-start"
         >
           <DeckPreview entry={pickedEntry} />
         </aside>
