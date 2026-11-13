@@ -470,6 +470,8 @@ pub enum DieResult {
     Chosen,
     /// The result they did not choose ("the other result").
     Other,
+    /// How many different numbers the dice of the resolution rolled ("for each different result").
+    Distinct,
 }
 
 /// A number, fixed or worked out when the effect runs.
@@ -777,6 +779,16 @@ pub enum Amount {
         /// The stat added up.
         stat: StatKind,
     },
+    /// How many card types there are among the objects of the turn's log of the kind, as they were then ("for each card
+    /// type among permanents you've sacrificed this turn").
+    TallyTypes {
+        /// The kind of event.
+        event: TallyEvent,
+        /// The players whose events are counted.
+        who: Ref,
+        /// The objects the events were about, as they were then; empty selects every one.
+        filter: Selector,
+    },
     /// The number of unique vowels on the name sticker the resolving spell or ability put on last ("where X is the
     /// number of unique vowels on that sticker"); 0 when it put none.
     StickerVowels,
@@ -1040,6 +1052,11 @@ enum Tagged {
         filter: Selector,
         stat: StatKind,
     },
+    TallyTypes {
+        event: TallyEvent,
+        who: Ref,
+        filter: Selector,
+    },
     TriggeringTargets,
     PlayersLost,
     CastTargets,
@@ -1228,6 +1245,11 @@ enum TaggedRef<'a> {
         filter: &'a Selector,
         stat: StatKind,
     },
+    TallyTypes {
+        event: TallyEvent,
+        who: &'a Ref,
+        filter: &'a Selector,
+    },
     TriggeringTargets,
     PlayersLost,
     CastTargets,
@@ -1355,6 +1377,7 @@ impl From<Tagged> for Amount {
                 filter,
                 stat,
             },
+            Tagged::TallyTypes { event, who, filter } => Amount::TallyTypes { event, who, filter },
             Tagged::TriggeringTargets => Amount::TriggeringTargets,
             Tagged::PlayersLost => Amount::PlayersLost,
             Tagged::CastTargets => Amount::CastTargets,
@@ -1521,6 +1544,12 @@ impl Serialize for Amount {
                 who,
                 filter,
                 stat: *stat,
+            }
+            .serialize(serializer),
+            Amount::TallyTypes { event, who, filter } => TaggedRef::TallyTypes {
+                event: *event,
+                who,
+                filter,
             }
             .serialize(serializer),
             Amount::TriggeringTargets => TaggedRef::TriggeringTargets.serialize(serializer),

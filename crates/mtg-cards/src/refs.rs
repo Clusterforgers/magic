@@ -561,6 +561,9 @@ pub enum Pred {
     /// Was blocked this turn by one of the creatures the reference names (read from the turn's log of blocks), whether or
     /// not it is still attacking ("all creatures that were blocked by that creature this turn").
     BlockedThisTurnBy(Ref),
+    /// Was cast this turn before the spell the reference names, read from the turn's log of casts ("each other instant
+    /// and sorcery spell you've cast before it this turn"); a spell never before itself.
+    CastBefore(Ref),
     /// Is an attacking creature blocked by one of the creatures the reference names.
     BlockedBy(Ref),
     /// Is an attacking creature in the band of one of the creatures the reference names, other than that creature

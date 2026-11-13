@@ -234,6 +234,7 @@ mod r408_pact;
 mod r4708_actions;
 mod r4708_reveal;
 mod r4711_drafted;
+pub(crate) mod r4703_reads;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -685,6 +686,11 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     }
     if kind == ClauseKind::Static
         && let Some(found) = r400_reads::r400_static_read(text)
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Static
+        && let Some(found) = r4703_reads::r4703_static_read(text)
     {
         return Some(found);
     }

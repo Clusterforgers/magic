@@ -114,6 +114,12 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - A vote on players or objects binds `tally` to every vote cast ("for each vote they received" counts it); `VoteFor::AnotherPlayer` leaves the voter out, and a vote on players may be secret (`ChoiceOption::SecretPlayer`). `ChooseWords` is a choice of words that is no vote ("each opponent secretly chooses silence or snitch").
 - What a booster draft notes for cards of a name is `Amount`/`Pred`/`Condition::Drafted(DraftNote)`: a game has no draft, so a noted number is 0 and no name, type, color, player, guess or card exiled before the game is noted (the Conspiracy rulings); the rules of the draft itself are `GameRule::Draft`, a spell line on an instant or sorcery.
 - "If ~ would be destroyed, regenerate it." is a replacement `Destroyed` by `ReplaceBy::Regenerate`: never used up, and not while the permanent can't be regenerated. Each regeneration is logged as `TallyEvent::Regenerated` ("for each time it regenerated this turn").
+- "Spells you cast this turn that are black and/or red cost {X} less to cast, where X is the amount of life you lost this turn" is a `SpellCost` rule with `per`: the count is read as each spell is cast, so life lost after the rule began counts.
+- "If an opponent would lose life during your turn, they lose twice that much life instead" is a `LifeLoss` replacement by `LossTimes`: a loss by an effect is that much larger, and damage to a player is dealt as it was while the life it takes grows (`DamageForm::LossTimes`), so lifelink and damage triggers read the damage and life-loss triggers the loss.
+- "Copy it for each other instant and sorcery spell you've cast before it this turn" counts the turn's casts with `Pred::CastBefore(Triggering)`: a spell cast in response to the trigger was cast after it and is not counted.
+- "If this card is in a graveyard, effects from spells named Muscle Burst count it as a card named Muscle Burst" is `GameRule::CountsAsNamed` from the graveyard: `Pred::Named` of a resolving spell of that name selects the card; it is no rule of the game.
+- "For each card type among permanents you've sacrificed this turn" is `Amount::TallyTypes` over the turn's log of sacrifices, each permanent as it last was.
+- "Roll three six-sided dice. For each different result, S" rolls several dice with no choice and no table; `DieResult::Distinct` counts the different numbers the resolution rolled.
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 
 ## Support records

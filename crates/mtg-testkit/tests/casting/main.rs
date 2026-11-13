@@ -193,6 +193,7 @@ mod r402_spell_costs;
 mod r405_pieces;
 mod r408_flashback_x;
 mod r409_kicker_x;
+mod r4703_spell_cost_per;
 mod r4f_stack_move;
 mod r4i_may_flash;
 mod r6q1_face_down_cost;

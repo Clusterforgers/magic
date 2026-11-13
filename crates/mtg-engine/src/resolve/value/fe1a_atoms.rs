@@ -89,6 +89,7 @@ impl Scope<'_> {
                 })
             }
             Pred::BlockedThisTurnBy(named) => self.r378_blocked_this_turn_by(named, reference)?,
+            Pred::CastBefore(named) => self.r4703_cast_before(named, reference)?,
             Pred::Blocks(named) => {
                 let attackers = self.objects(named)?;
                 self.state.combat().attackers().iter().any(|attacker| {
@@ -137,7 +138,15 @@ impl Scope<'_> {
         })
     }
 
-    /// The card of a spell on the stack or of a permanent, the only objects that were cast.
+    /// Whether the object was cast this turn before one of the spells `named` names (`Pred::CastBefore`).
+    fn r4703_cast_before(&self, named: &Ref, reference: ObjectRef) -> Result<bool, ResolveError> {
+        Ok(self
+            .refs(named)?
+            .into_iter()
+            .filter_map(crate::choose::Target::object)
+            .any(|spell| self.state.r4703_cast_before(reference, spell)))
+    }
+
     /// Whether a creature the reference names blocked the object this turn, read from the turn's log of blocks; the
     /// blocker counts as it was named, even if it has left the battlefield since.
     fn r378_blocked_this_turn_by(
@@ -159,6 +168,7 @@ impl Scope<'_> {
         }))
     }
 
+    /// The card of a spell on the stack or of a permanent, the only objects that were cast.
     pub(super) fn fe1a_cast_object<'s>(seen: &Seen<'s>) -> Option<&'s GameObject> {
         seen.card.filter(|_| {
             seen.zone == Zone::Battlefield

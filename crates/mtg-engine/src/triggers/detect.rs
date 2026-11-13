@@ -822,11 +822,7 @@ fn ordinal(post: &GameState, later: &[Event], player: PlayerId, kind: Tally) -> 
                 form,
                 ..
             },
-        ) => {
-            *who == player
-                && *amount > 0
-                && !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss)
-        }
+        ) => *who == player && form.life_lost(*amount) > 0,
         _ => false,
     };
     let after = post.tallied(player, kind);
@@ -1142,7 +1138,12 @@ fn about_players_and_permanents(
                 && !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss)
             {
                 // A life floor lets damage take less life than it deals (CR 614.1): the trigger sees the life lost.
-                let lost = super::life_floor::damage_lost(look.pre, look.earlier, *player, *amount);
+                let lost = super::life_floor::damage_lost(
+                    look.pre,
+                    look.earlier,
+                    *player,
+                    form.life_lost(*amount),
+                );
                 if lost > 0 || *amount == 0 {
                     found.push(Happened::LifeLost {
                         player: *player,

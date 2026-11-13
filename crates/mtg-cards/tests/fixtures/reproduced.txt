@@ -203,6 +203,7 @@ Blood for the Blood God!
 Bloodbraid Elf
 Bloodghast
 Bloodletter Quill
+Bloodletter of Aclazotz
 Bloodline Pretender
 Bloom Hulk
 Body Count
@@ -314,6 +315,7 @@ Chromatic Lantern
 Cinderhaze Wretch
 Circle of Dreams Druid
 Circuitous Route
+Circuits Act
 Citadel Gate
 Citanul Hierophants
 Clan Defiance
@@ -484,6 +486,7 @@ Devoted Druid
 Diamond Faerie
 Diffusion Sliver
 Dig Up
+Diligent Farmhand
 Diligent Zookeeper
 Dimir Cutpurse
 Dimir Infiltrator
@@ -1388,6 +1391,7 @@ Panther Robot
 Paradise Druid
 Paradise Plume
 Parasitic Grasp
+Pardic Firecat
 Parhelion Patrol
 Pariah
 Pariah's Shield
@@ -1608,6 +1612,7 @@ Rope
 Rosheen Meanderer
 Rousing Refrain
 Rout
+Rowan, Scion of War
 Rowdy Research
 Rowen
 Rugged Prairie
@@ -2004,6 +2009,7 @@ Thought Reflection
 Thought-Knot Seer
 Thoughtcast
 Thoughtseize
+Thousand-Year Storm
 Thrashing Mossdog
 Thrill of Possibility
 Thriving Bluff

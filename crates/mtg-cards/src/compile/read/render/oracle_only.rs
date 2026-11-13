@@ -220,6 +220,7 @@ mod r378_wholes;
 mod r400_wholes;
 mod r409_wordings;
 mod r4711_wholes;
+mod r4703_wholes;
 mod regen_this_way;
 mod repeat_modes;
 mod return_damager;
@@ -807,6 +808,7 @@ fn add_c11g(ability: &Ability, texts: &mut Vec<String>) {
     r305c_random_keyword::r305c_add_random_keyword(ability, texts);
     r306c_wholes::r306c_add_wholes(ability, texts);
     r400_wholes::r400_add_wholes(ability, texts);
+    r4703_wholes::r4703_add_wholes(ability, texts);
 }
 
 /// Adds the wordings of the single-wording tail of the stored proposals of the names A to L (r2dge): whole abilities.

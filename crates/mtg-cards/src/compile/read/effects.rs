@@ -40,7 +40,7 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 123] = [
+const TEMPLATES: [Template; 125] = [
     super::keyword_actions::keyword_action,
     super::r404_look::r404_look_face_down,
     super::w20c_counter::w20c_counter_unless,
@@ -72,6 +72,7 @@ const TEMPLATES: [Template; 123] = [
     super::w9b_clash::w9b_clash,
     super::r376_seats::r376_roll_treasures,
     super::chance::roll,
+    super::chance::r4703_each_result,
     super::vote::named,
     super::dk27_numbers::dk27_numbers,
     super::r376_secret::r376_secret,
@@ -130,6 +131,7 @@ const TEMPLATES: [Template; 123] = [
     super::kicked_copies::kicked_copies,
     copies::token_copy,
     copies::populate,
+    super::r4703_reads::r4703_copy_all,
     copy_spells::copy,
     super::w2g_next_cast::w2g_next_cast,
     super::group_copies::group_becomes_copy,
@@ -167,7 +169,7 @@ const TEMPLATES: [Template; 123] = [
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
-pub(super) const IMPERATIVES: [Template; 18] = [
+pub(super) const IMPERATIVES: [Template; 19] = [
     super::actions::goad,
     super::actions::suspect,
     super::manifest::manifest,
@@ -177,6 +179,7 @@ pub(super) const IMPERATIVES: [Template; 18] = [
     return_card,
     return_chosen,
     copies::token_copy,
+    super::r4703_reads::r4703_copy_all,
     copy_spells::copy,
     create::tokens,
     counters::put,

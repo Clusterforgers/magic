@@ -366,6 +366,13 @@ pub enum Rule {
         /// The mana added or removed.
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
         mana: mtg_cards::mana::ManaCostX,
+        /// How many times, counted as each spell is cast.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        #[serde(
+            default = "mtg_cards::value::Amount::one",
+            skip_serializing_if = "mtg_cards::value::Amount::is_one"
+        )]
+        per: mtg_cards::value::Amount,
     },
     /// Damage from the sources can't be prevented (CR 614.17); every source when the selector is empty.
     DamageCantBePrevented {
@@ -1563,10 +1570,12 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             applies_to,
             change,
             mana,
+            per,
         } => Rule::SpellCost {
             applies_to: applies_to.clone(),
             change: *change,
             mana: mana.clone(),
+            per: per.clone(),
         },
         GameRule::MayCastRather { only, cost } => may_cast_rather(scope, only, cost)?,
         GameRule::TriggerAgain { cause, source } => Rule::TriggerAgain {
@@ -1634,6 +1643,8 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::AttackAsThoughHasteAt(who) => Rule::AttackAsThoughHasteAt(scope.players(who)?),
         // A copy effect reads it from the spell's card (`copy_spell`); it is no rule of the game.
         GameRule::CantBeCopied => return Err(ResolveError::Unsupported("Rule.CantBeCopied")),
+        // A resolving spell reads it from the card in the graveyard (`Pred::Named`); it is no rule of the game.
+        GameRule::CountsAsNamed(_) => return Err(ResolveError::Unsupported("Rule.CountsAsNamed")),
         GameRule::CantSpendMana => return Err(ResolveError::Unsupported("Rule.CantSpendMana")),
         GameRule::GraveyardCardsUntargetable
         | GameRule::CantLoseGame { .. }

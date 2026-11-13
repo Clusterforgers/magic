@@ -269,7 +269,11 @@ change: unknown,
 /**
  * The mana added or removed.
  */
-mana: unknown, } } | { "DamageCantBePrevented": { 
+mana: unknown, 
+/**
+ * How many times, counted as each spell is cast.
+ */
+per?: unknown, } } | { "DamageCantBePrevented": { 
 /**
  * The sources, judged when the damage would be dealt.
  */

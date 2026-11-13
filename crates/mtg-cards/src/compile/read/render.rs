@@ -3630,6 +3630,7 @@ impl Writer<'_> {
             .or_else(|| self.c7_untap_held(effects))
             .or_else(|| self.r7d_countered_exiled(effects))
             .or_else(|| self.rmt2_countered_into_library(effects))
+            .or_else(|| super::r4703_reads::r4703_copy_all_text(effects))
             .or_else(|| Self::rmt2_destroy_either(effects))
             .or_else(|| self.r7d_tapped_held(effects))
             .or_else(|| self.taken_and_typed(effects))

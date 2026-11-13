@@ -33,7 +33,7 @@ impl Pass<'_> {
         let object = |id| self.reference(id).map(Target::Object);
         let (subject, source) = match unit {
             Unit::Tokens { controller } => (Some(Target::Player(*controller)), None),
-            Unit::Damage { source, target } => (
+            Unit::Damage { source, target, .. } => (
                 match target {
                     DamageTarget::Player(player) => Some(Target::Player(*player)),
                     DamageTarget::Object(id) => object(*id),
@@ -41,9 +41,10 @@ impl Pass<'_> {
                 self.reference(*source),
             ),
             Unit::Counters { on, .. } => (Some(*on), None),
-            Unit::Life { player } | Unit::Draw { player } | Unit::Loss { player } => {
-                (Some(Target::Player(*player)), None)
-            }
+            Unit::Life { player }
+            | Unit::Draw { player }
+            | Unit::Loss { player }
+            | Unit::LifeLoss { player } => (Some(Target::Player(*player)), None),
             Unit::Move { object: id, .. } | Unit::Enter { object: id, .. } => (object(*id), None),
             Unit::Other => (None, None),
         };
