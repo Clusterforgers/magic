@@ -153,7 +153,11 @@ fn r5513_reads_back_whole(#[case] name: &str) {
     r#""Fought", "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }]"#,
     r#""Fought", "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]"#
 )]
-#[case::witches_both_yours("Cuombajj Witches", r#"{ "ChosenBy": { "who": "Opponents", "what": "AnyTarget" } }"#, r#""AnyTarget""#)]
+#[case::witches_both_yours(
+    "Cuombajj Witches",
+    r#"{ "ChosenBy": { "who": "Opponents", "what": "AnyTarget" } }"#,
+    r#""AnyTarget""#
+)]
 #[case::pentacle_your_choice(
     "Nova Pentacle",
     r#""ChosenBy": { "who": "Opponents", "what": { "Object": [{ "Type": "Creature" }] } }"#,
