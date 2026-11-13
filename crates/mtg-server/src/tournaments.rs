@@ -1064,7 +1064,11 @@ mod tests {
         let teams = rules.teams.unwrap();
         assert_eq!(teams.mode, TeamMode::Teams);
         assert_eq!(teams.seats, [0, 1, 0, 1]);
-        assert_eq!(rules.take_backs, Some(false), "tournament games allow no take-backs");
+        assert_eq!(
+            rules.take_backs,
+            Some(false),
+            "tournament games allow no take-backs"
+        );
         assert_eq!(
             match_rules(TournamentFormat::Commander1v1),
             HouseRules {
