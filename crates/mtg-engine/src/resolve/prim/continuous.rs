@@ -555,6 +555,21 @@ fn this_ability(cx: &Cx<'_>) -> Option<crate::abilities::AbilityRef> {
     })
 }
 
+/// Whether `held` is the keyword `wanted` or one of its variants: "hexproof from white" is a hexproof, a protection or a
+/// landwalk of any quality is one of its kind (Soulflayer's rulings).
+fn r5511_variant_of(held: &Keyword, wanted: &Keyword) -> bool {
+    held == wanted
+        || matches!(
+            (wanted, held),
+            (Keyword::Hexproof, Keyword::HexproofFrom(_))
+                | (
+                    Keyword::Protection(_),
+                    Keyword::Protection(_) | Keyword::ProtectionSparing { .. }
+                )
+                | (Keyword::Landwalk(_), Keyword::Landwalk(_))
+        )
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: a continuous effect begins as the card says: one effect for each modification, in the order of the text, with the next ids and timestamps of the state, naming the permanents the reference names now and no object that has since changed zones or is not a permanent, with its source, controller, turn and duration, its amounts worked out at that moment, and the modifications the engine does not run refuse by their own names.
@@ -889,19 +904,4 @@ mod tests {
             Err(ResolveError::Invalid(_))
         ));
     }
-}
-
-/// Whether `held` is the keyword `wanted` or one of its variants: "hexproof from white" is a hexproof, a protection or a
-/// landwalk of any quality is one of its kind (Soulflayer's rulings).
-fn r5511_variant_of(held: &Keyword, wanted: &Keyword) -> bool {
-    held == wanted
-        || matches!(
-            (wanted, held),
-            (Keyword::Hexproof, Keyword::HexproofFrom(_))
-                | (
-                    Keyword::Protection(_),
-                    Keyword::Protection(_) | Keyword::ProtectionSparing { .. }
-                )
-                | (Keyword::Landwalk(_), Keyword::Landwalk(_))
-        )
 }

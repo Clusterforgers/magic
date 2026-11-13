@@ -3351,6 +3351,36 @@ impl<'a> Scope<'a> {
     }
 }
 
+/// How much of `spent` came from Treasures or from artifact sources, as `stat` names (CR 106.4a: mana knows its source).
+fn r5511_spent_from(spent: &[mtg_cards::spend::SpentFrom], stat: StatKind) -> i64 {
+    let wanted = |traits: &mtg_cards::spend::SpendTraits| match stat {
+        StatKind::TreasureManaSpent => traits
+            .subtypes
+            .iter()
+            .any(|subtype| subtype.0 == "Treasure"),
+        _ => traits.types.contains(mtg_core::card::CardType::Artifact),
+    };
+    spent
+        .iter()
+        .filter(|from| wanted(&from.traits))
+        .map(|from| i64::from(from.count))
+        .sum()
+}
+
+/// Whether a mana symbol is a colored mana symbol (CR 107.4: it has a color; a hybrid symbol of two colors is one symbol).
+const fn r5511_is_colored(symbol: mtg_core::mana::ManaSymbol) -> bool {
+    use mtg_core::mana::ManaSymbol;
+    matches!(
+        symbol,
+        ManaSymbol::Colored(_)
+            | ManaSymbol::Hybrid(..)
+            | ManaSymbol::MonoHybrid(_)
+            | ManaSymbol::Phyrexian(_)
+            | ManaSymbol::HybridPhyrexian(..)
+            | ManaSymbol::ColorlessHybrid(_)
+    )
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: references, selectors, amounts and conditions read the game as the rules say, an object that changed zones is read as it was when a snapshot of it exists, a target that an earlier step of the resolution moved away stays named while any other illegal target is ignored, and what the engine cannot evaluate yet refuses by name.
@@ -4408,34 +4438,4 @@ mod tests {
             Err(ResolveError::Unsupported(lacks))
         );
     }
-}
-
-/// How much of `spent` came from Treasures or from artifact sources, as `stat` names (CR 106.4a: mana knows its source).
-fn r5511_spent_from(spent: &[mtg_cards::spend::SpentFrom], stat: StatKind) -> i64 {
-    let wanted = |traits: &mtg_cards::spend::SpendTraits| match stat {
-        StatKind::TreasureManaSpent => traits
-            .subtypes
-            .iter()
-            .any(|subtype| subtype.0 == "Treasure"),
-        _ => traits.types.contains(mtg_core::card::CardType::Artifact),
-    };
-    spent
-        .iter()
-        .filter(|from| wanted(&from.traits))
-        .map(|from| i64::from(from.count))
-        .sum()
-}
-
-/// Whether a mana symbol is a colored mana symbol (CR 107.4: it has a color; a hybrid symbol of two colors is one symbol).
-const fn r5511_is_colored(symbol: mtg_core::mana::ManaSymbol) -> bool {
-    use mtg_core::mana::ManaSymbol;
-    matches!(
-        symbol,
-        ManaSymbol::Colored(_)
-            | ManaSymbol::Hybrid(..)
-            | ManaSymbol::MonoHybrid(_)
-            | ManaSymbol::Phyrexian(_)
-            | ManaSymbol::HybridPhyrexian(..)
-            | ManaSymbol::ColorlessHybrid(_)
-    )
 }

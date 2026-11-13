@@ -270,6 +270,7 @@ fn tap_events(player: PlayerId, option: &ManaOption) -> Vec<Event> {
 /// The events of a valid payment, with the `announced` events of what it is for between the life and the mana.
 ///
 /// `activate` gives the events of using one mana source: its cost, the mana and what else it does (`mana_ability.rs`).
+#[allow(clippy::too_many_lines)] // one step for each part of a payment
 fn payment_events(
     player: PlayerId,
     options: &PayOptions,

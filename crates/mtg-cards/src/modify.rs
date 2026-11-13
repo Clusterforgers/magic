@@ -70,7 +70,7 @@ pub enum Modification {
     /// delve ability, this creature has flying. The same is true for ..." (Soulflayer).
     KeywordsOf {
         /// The objects whose keywords are read.
-        from: Ref,
+        from: Box<Ref>,
         /// The keywords given.
         keywords: Vec<Keyword>,
     },

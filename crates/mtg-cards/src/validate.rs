@@ -312,6 +312,8 @@ fn w5d_skipped(effects: &[Effect]) -> BTreeSet<&'static str> {
 
 /// The target specifications and bound names an ability body can see.
 #[derive(Default)]
+// Each flag is a separate place a reference may stand in.
+#[allow(clippy::struct_excessive_bools)]
 struct Scope {
     targets: Vec<(Kind, bool, bool)>,
     used: BTreeSet<usize>,
@@ -2468,6 +2470,7 @@ impl<'a> Walker<'a> {
         }
     }
 
+    #[allow(clippy::too_many_lines)] // one arm for each kind of modification
     fn modification(&mut self, modification: &Modification) {
         self.uses("Mod", &tag_of(modification));
         // A name the card's own effect gives ("named Fenric") is a name its other abilities may refer to.
@@ -3345,6 +3348,8 @@ impl Walker<'_> {
             | Ref::PlayersWhere { .. }
             | Ref::Seated { .. } => Kind::Player,
             Ref::Affected
+            | Ref::LastExiledWith { .. }
+            | Ref::Delved
             | Ref::Candidate
             | Ref::This
             | Ref::Dealer
@@ -3367,7 +3372,6 @@ impl Walker<'_> {
             | Ref::Against
             | Ref::Remembered { .. }
             | Ref::Union(_) => Kind::Either,
-            Ref::LastExiledWith { .. } | Ref::Delved => Kind::Object,
         }
     }
 

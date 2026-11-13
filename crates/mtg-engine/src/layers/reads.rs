@@ -106,14 +106,17 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         Wanted::AddSubtype(_)
         | Wanted::SetCreatureTypes(_)
         | Wanted::SetCreatureTypesOf(_)
-        | Wanted::AddAllCreatureTypes => Traits::SUBTYPES,
+        | Wanted::AddAllCreatureTypes
+        | Wanted::SetCreatureTypesChosen(_)
+        | Wanted::AddCreatureTypeChosen(_)
+        | Wanted::AddChosenSubtype => Traits::SUBTYPES,
         Wanted::SetLandTypes(_)
         | Wanted::SetLandTypesChosen(_)
         | Wanted::SetLandTypesNthChosen(_)
-        | Wanted::AddLandTypeChosen(_) => Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES),
-        Wanted::SetCreatureTypesChosen(_)
-        | Wanted::AddCreatureTypeChosen(_)
-        | Wanted::AddChosenSubtype => Traits::SUBTYPES,
+        | Wanted::AddLandTypeChosen(_)
+        | Wanted::ChangeTextChosen { .. } => {
+            Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES)
+        }
         Wanted::SetColors(_)
         | Wanted::AddColors(_)
         | Wanted::SetColorsChosen(_)
@@ -130,7 +133,6 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::LoseAbilitiesExceptMana
         | Wanted::LoseThisAbility
         | Wanted::LosePrinted(_) => Traits::KEYWORDS.or(Traits::RULES),
-        Wanted::ChangeTextChosen { .. } => Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES),
         Wanted::SetController(_) => Traits::CONTROL,
         Wanted::SetPT { .. }
         | Wanted::SetPower(_)

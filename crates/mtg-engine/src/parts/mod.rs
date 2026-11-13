@@ -983,13 +983,12 @@ impl Pick {
         candidates: &[ObjectId],
     ) -> Option<Vec<ObjectId>> {
         let alone = match self.kind {
-            Kind::TapPower => candidates.len() == 1,
+            Kind::TapPower | Kind::R5511CardTypes => candidates.len() == 1,
             Kind::Evidence => {
                 candidates.len() == 1
                     || usize::try_from(evidence::total_value(state, candidates))
                         .is_ok_and(|total| total == self.count)
             }
-            Kind::R5511CardTypes => candidates.len() == 1,
             Kind::Forage => forage::alone(state, candidates),
             _ => candidates.len() == self.count,
         };

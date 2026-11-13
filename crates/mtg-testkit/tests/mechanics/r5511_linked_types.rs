@@ -141,7 +141,7 @@ fn r5511_illusionary_terrain_makes_the_first_type_the_second(
         .find(|object| {
             object.card().name == land && object.controller() == mtg_core::ids::PlayerId(1)
         })
-        .map(|object| object.id())
+        .map(mtg_engine::object::GameObject::id)
         .unwrap();
     let chars = characteristics(driver.state(), theirs).unwrap();
     assert!(!chars.has_subtype(&[], &Subtype(land.into())));

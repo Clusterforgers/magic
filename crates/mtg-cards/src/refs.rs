@@ -144,7 +144,7 @@ pub enum Ref {
         /// The object whose exiled cards are read.
         on: Box<Ref>,
         /// Which of them count.
-        filter: Selector,
+        filter: Box<Selector>,
     },
     /// The cards exiled with the delve of the spell the source is or came from (CR 702.66), while they are still in exile.
     Delved,
