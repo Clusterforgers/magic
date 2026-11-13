@@ -18,8 +18,10 @@ pub(super) struct Crew;
 
 impl KeywordRules for Crew {
     fn adds_abilities(&self, keyword: &Keyword) -> Vec<Ability> {
-        let Keyword::Crew(power) = keyword else {
-            return Vec::new();
+        let (power, limit) = match keyword {
+            Keyword::Crew(power) => (power, None),
+            Keyword::CrewOnce(power) => (power, Some(mtg_cards::ability::Limit::OncePerTurn)),
+            _ => return Vec::new(),
         };
         vec![Ability::Activated {
             cost: Cost(vec![CostItem::TapPower {
@@ -28,7 +30,7 @@ impl KeywordRules for Crew {
             }]),
             timing: Timing::Instant,
             condition: None,
-            limit: None,
+            limit,
             by: mtg_cards::ability::Activators::Controller,
             from: ZoneKind::Battlefield,
             targets: Vec::new(),

@@ -47,7 +47,8 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Testing: scenarios, invariants and fuzz decks, `scripts/check.sh` with the `gate` and `affected` modes, content stamps, side-by-side test binaries, family test binaries in `mtg-testkit` and a throwaway Postgres per database test binary, and Playwright specs (a trace kept for every failed test) including the four-seat Commander game with precons or the owner's deck (`E2E_DECK=owner`).
 - Polish: replays of finished games from any seat's side with only what the viewer may know, block options that read each attacker and blocker once, solo play with bot seats that never stall a game at four levels (Easy random, Normal and Hard searching engine copies, Very Hard an information-set Monte Carlo tree search, Hard and Very Hard in worlds whose hidden cards are redealt, team-aware, capped thinking slots on the server, a threat model and interaction policy scored by a decision-quality suite, chess-style search with a decision clock, minimax block replies and an endgame probe, SPRT match testing on interaction decks), synthesized sound cues with a mute (`docs/server.md`, `docs/web.md`, `docs/bots.md`).
 - Deployment: two amd64 images, the Helm chart and ArgoCD app in `k3s-cluster-manifests`, `scripts/release.sh` (build, push, roll out, roll back) and a nightly `pg_dump` onto its own volume (`docs/deploy.md`).
-- Delves: the co-op boss rush with own Commander decks, the Warrens ladder of four bosses with phases, relics, loot, shop, campfire and events, Spirits at 0 life, runs stored as event logs with fights as recorded games, the web pages and the bot simulator (`docs/delves.md`).
+- Delves: the co-op boss rush with own Commander decks for 1 to 6 heroes, the Warrens ladder of four bosses with phases, relics, loot, shop, campfire and events, Spirits at 0 life, runs stored as event logs with fights as recorded games, the web pages and the bot simulator (`docs/delves.md`).
+- Delves difficulty: one scaling table by party size and Heat (life, hand, Reserves, Reinforcements, Warpath, minion seats that fall with the boss, the Last Bulwark), Escalation and Enrage, the scheme deck with its Omen, measured per party size (`docs/delves.md`).
 
 ## Live game
 
@@ -113,14 +114,14 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 ## Delves
 
-- [ ] (dl1) Bosses set a scheme in motion each turn from a scheme deck (CR 314), the next one face up as an Omen for the party (`docs/delves.md`)
 - [ ] (dl2) The party shares one team turn against the boss (CR 805 beyond Two-Headed Giant), so four heroes do not wait three turns
 - [ ] (dl3) Boss personalities and fair targeting: a boss spreads its attacks and removal across the heroes, and each boss shows whom it focuses
 - [ ] (dl4) A won card names the card it replaces (a basic land today), chosen from the hero's deck list on the loot screen
 - [ ] (dl5) Campfire upgrades put a sticker on a card of the hero's deck for the rest of the run
 - [ ] (dl6) Risky relics are party decisions: the party votes to take one, and events can be party votes with a shared outcome
 - [ ] (dl7) The scouts' forecast: background bot fights measure each boss of a new ladder and the ladder shows the measured win rate
-- [ ] (dl8) Boss tuning for parties of four (they win every fight today) and in runs mode with relics and won cards, to a measured table kept with the content
+- [ ] (dl8a) Boss brain priorities: the boss and its minions focus the biggest threat, punish the healer and break combos, at Very Hard once its clock suits the server
+- [ ] (dl8b) Whole runs won in 20 to 35 % at every party size, measured for 1 to 6 heroes and with Very Hard heroes
 - [ ] (dl9) A boss fight whose game is closed or expires without a result counts as lost and is made again, and the host can retreat from a fight
 - [ ] (dl10) The run page follows the run over a socket instead of reading it every 4 s
 - [ ] (dl11) Custom cards open in the card inspector at the table with their frame and text, and the boss's phases sit in the top bar

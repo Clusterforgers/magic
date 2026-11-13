@@ -10,7 +10,7 @@ use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::zones::Zone;
 
 /// Each player the effect names who is in the game reveals cards from the top of their library, one at a time, until
-/// `count` of them match the filter or the library is empty; the cards revealed are one `Revealed` of that player, seen by
+/// `count` of them match the filter, `most` cards are revealed or the library is empty; the cards revealed are one `Revealed` of that player, seen by
 /// every seat, and stay in the library. The matching cards are bound to `as` and every card revealed, the matching ones
 /// included, to `revealed_as`, top first. With several players each reveals from their own library, in turn order.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
@@ -18,6 +18,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         who,
         filter,
         count,
+        most,
         bind,
         revealed_as,
     } = effect
@@ -25,6 +26,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Err(wrong_effect("RevealUntil"));
     };
     let wanted = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(usize::MAX);
+    let most = match most {
+        Some(most) => usize::try_from(cx.scope.amount(most)?.max(0)).unwrap_or(usize::MAX),
+        None => usize::MAX,
+    };
     let state = cx.state();
     let mut events = Vec::new();
     let mut found = Vec::new();
@@ -36,7 +41,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         let mut cards = Vec::new();
         let mut matches = 0;
         for &id in state.zone(Zone::Library(owner)).iter().rev() {
-            if matches >= wanted {
+            if matches >= wanted || cards.len() >= most {
                 break;
             }
             let Some(card) = state.object(id) else {

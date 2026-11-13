@@ -11,7 +11,7 @@ use crate::events::{Event, ZoneCause};
 use crate::library::{CardsFound, Revealed};
 use crate::object::ObjectRef;
 use crate::resolve::{Cx, Next, ResolveError, Run};
-use crate::rules::{Rule, RuleEffect, cant_search};
+use crate::rules::{Rule, RuleEffect, cant_search, own_spells_cant_search};
 use crate::wording;
 use crate::zones::Zone;
 
@@ -121,6 +121,14 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     {
         // A player who can't search libraries does not search: no question and no event.
         if *zone == ZoneKind::Library && cant_search(state, player) {
+            continue;
+        }
+        // Their own spell or ability can't make them search their own library (Ashiok, Dream Render).
+        if *zone == ZoneKind::Library
+            && player == cx.scope.controller
+            && owner.is_none_or(|owner| owner == player)
+            && own_spells_cant_search(state, player)
+        {
             continue;
         }
         let place = zone_of(*zone, owner.unwrap_or(player))?;

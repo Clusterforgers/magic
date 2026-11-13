@@ -27,6 +27,8 @@ pub enum LossReason {
     OpponentReachedLife,
     /// Dealt 21 or more combat damage by one commander (CR 903.10a).
     CommanderDamage,
+    /// The seat's leader lost, a campaign rule: a boss's minion falls with the boss ([`crate::schemes`]).
+    LeaderFell,
 }
 
 /// Whether a player is still in the game.
@@ -80,6 +82,14 @@ pub struct Player {
     pub(crate) phases: Vec<crate::phases::BossPhase>,
     /// How many of them have begun.
     pub(crate) phase: u8,
+    /// A boss seat's scheme deck, in the order its schemes are set in motion ([`crate::schemes`]).
+    pub(crate) schemes: Vec<std::sync::Arc<mtg_cards::CardDefinition>>,
+    /// How many schemes it has set in motion.
+    pub(crate) schemes_set: u32,
+    /// The emblem of the scheme in motion.
+    pub(crate) scheme: Option<mtg_core::ids::ObjectId>,
+    /// The seat whose loss makes this one lose too: a boss's minion ([`crate::schemes::leaders_fall`]).
+    pub(crate) leader: Option<PlayerId>,
 }
 
 impl Player {
@@ -104,6 +114,10 @@ impl Player {
             spirit: false,
             phases: Vec::new(),
             phase: 0,
+            schemes: Vec::new(),
+            schemes_set: 0,
+            scheme: None,
+            leader: None,
         }
     }
 
@@ -130,6 +144,24 @@ impl Player {
     /// The names of the player's boss phases, in order.
     pub fn phase_names(&self) -> impl Iterator<Item = &str> {
         self.phases.iter().map(|phase| phase.emblem.name.as_str())
+    }
+
+    /// The player's scheme in motion and its Omen (the scheme set in motion next), by name; `None` without a scheme
+    /// deck.
+    pub fn schemes(&self) -> Option<(Option<&str>, &str)> {
+        let deck = &self.schemes;
+        let len = u32::try_from(deck.len()).ok().filter(|n| *n > 0)?;
+        let at = |n: u32| {
+            deck.get(usize::try_from(n % len).unwrap_or(0))
+                .map(|c| c.name.as_str())
+        };
+        let current = self.schemes_set.checked_sub(1).and_then(at);
+        Some((current, at(self.schemes_set)?))
+    }
+
+    /// The seat whose loss makes this one lose too.
+    pub const fn leader(&self) -> Option<PlayerId> {
+        self.leader
     }
 
     /// Whether the player is a Spirit: at 0 life, kept in the game by a living teammate.

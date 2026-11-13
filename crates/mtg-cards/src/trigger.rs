@@ -908,6 +908,10 @@ pub enum ReplaceWhen {
         /// Who would gain it.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
+        /// Only life a resolving spell or ability causes its own controller to gain ("If a spell or ability would cause
+        /// its controller to gain life"); not the life of lifelink, which the damage causes.
+        #[serde(default, skip_serializing_if = "is_false")]
+        caused_own: bool,
     },
     /// A player would lose life: by an effect or by damage (CR 120.3a), not by paying it; only `LossTimes`.
     LifeLoss {
@@ -1140,6 +1144,18 @@ pub enum ReplaceBy {
     /// All of the damage is prevented and the permanent with the ability loses one counter of this kind, if it has one
     /// ("prevent that damage. Remove a +1/+1 counter from this creature").
     PreventRemovingCounter(CounterKind),
+    /// For each 1 damage, while the permanent with the ability has a counter of this kind, one such counter is removed
+    /// and that 1 damage is prevented; damage that can't be prevented still removes the counters ("For each 1 damage that
+    /// would be dealt to this creature, if it has a +1/+1 counter on it, remove a +1/+1 counter from it and prevent that
+    /// 1 damage.").
+    PreventByCounters(CounterKind),
+    /// The next damage event a shield covers loses half of it, rounded down, and the shield ends ("the next time a source
+    /// of your choice would deal damage to you this turn, prevent half that damage, rounded down"); only a shield uses it.
+    PreventHalfNext,
+    /// The next damage event a shield covers loses all but this much of it, and the shield ends ("the next time an
+    /// unblocked creature of your choice would deal combat damage to you this turn, prevent all but 1 of that damage");
+    /// only a shield uses it.
+    PreventAllButNext(u32),
     /// A draw is skipped: the player mills this many cards and returns the card with the ability from its graveyard to
     /// their hand (dredge, CR 702.52a).
     Dredge(u32),
@@ -1199,6 +1215,14 @@ pub enum ReplaceBy {
     },
     /// As the permanent enters, its controller makes this choice, which the permanent remembers for its abilities.
     Choose(EntersChoice),
+    /// As the permanent enters, these effects happen first and then its controller makes the choice the permanent
+    /// remembers (CR 614.1c): "As this artifact enters, look at an opponent's hand, then choose any card name."
+    ChooseAfter {
+        /// What happens before the choice.
+        first: Vec<Effect>,
+        /// What is chosen.
+        choice: EntersChoice,
+    },
     /// As the permanent enters, its controller may pay this much life; if they don't (or can't) it enters tapped.
     PayLifeOrTapped(u32),
     /// As the permanent enters, its controller may have it enter tapped; if they do, they get the counters ("you may have
@@ -1313,6 +1337,10 @@ pub enum ReplaceBy {
     /// The controller of the replacement may add this many to the number of the action as it happens ("you may look at
     /// an additional two cards each time you surveil"); only a `Surveils` uses it.
     MayAddAmount(Amount),
+    /// The permanent enters, or the tokens are created, under the control of the replacement's controller instead of an
+    /// opponent's ("it enters under your control instead", "is created under your control instead"); only an `Enters`
+    /// or a `TokenCreation` uses it, and only for what an opponent would get.
+    UnderYourControl,
 }
 
 /// The kinds of shield (`Effect::Shield`) the engine plays; the validator and the engine both read a shield by it.
@@ -1383,7 +1411,14 @@ impl ShieldShape {
                 Some(Self::Class)
             }
             // "Until end of turn, if one or more tokens would be created under your control, twice that many ..."
-            (ReplaceWhen::TokenCreation { .. }, ReplaceBy::Multiply(_) | ReplaceBy::Add(_)) => {
+            // "If a creature would enter under an opponent's control this turn, it enters under your control instead."
+            (
+                ReplaceWhen::TokenCreation { .. },
+                ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::UnderYourControl,
+            )
+            // "Until end of turn, if target player would draw a card, instead ...": every draw of the players.
+            | (ReplaceWhen::Draw { .. }, ReplaceBy::Instead(_)) => Some(Self::Class),
+            (ReplaceWhen::Enters { what }, ReplaceBy::UnderYourControl) if !names_objects(what) => {
                 Some(Self::Class)
             }
             (
@@ -1391,6 +1426,8 @@ impl ShieldShape {
                 ReplaceBy::Prevent
                 | ReplaceBy::PreventNext
                 | ReplaceBy::PreventNextAnd(_)
+                | ReplaceBy::PreventHalfNext
+                | ReplaceBy::PreventAllButNext(_)
                 | ReplaceBy::PreventUpTo(_)
                 | ReplaceBy::PreventCounted(_)
                 | ReplaceBy::PreventCountedAnd { .. }
@@ -1407,8 +1444,6 @@ impl ShieldShape {
                 ReplaceWhen::Draw { .. } | ReplaceWhen::LoseGame { .. },
                 ReplaceBy::InsteadNext(_),
             ) => Some(Self::Next),
-            // "Until end of turn, if target player would draw a card, instead ...": every draw of the players.
-            (ReplaceWhen::Draw { .. }, ReplaceBy::Instead(_)) => Some(Self::Class),
             _ => None,
         }
     }

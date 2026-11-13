@@ -24,6 +24,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     };
     let way = match to {
         NewTargets::Another => Way::Another,
+        NewTargets::AnotherPlayer => Way::AnotherPlayer,
         NewTargets::Choose | NewTargets::One => Way::Choose,
     };
     // "To ~" with nothing left to name changes nothing.

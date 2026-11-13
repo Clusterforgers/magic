@@ -359,6 +359,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
 impl Part {
     /// The part a cost item is, `None` for the items that are not one of these (`{T}`, mana, losing the source), or the
     /// name of the part whose amount the engine cannot count.
+    #[allow(clippy::too_many_lines)]
     pub(crate) fn read(item: &CostItem) -> Result<Option<Part>, &'static str> {
         if let Some(whole) = whole_part(item) {
             return Ok(Some(whole));
@@ -412,7 +413,9 @@ impl Part {
             }
             CostItem::Exert => (Part::Exert, false),
             // Read off the card by the layers before any cost is paid: an unread one is a part nobody can pay.
-            CostItem::OwnManaCost | CostItem::OwnManaValue => return Err(own_part(item)),
+            CostItem::OwnManaCost | CostItem::OwnManaValue | CostItem::OwnManaCostLess(_) => {
+                return Err(own_part(item));
+            }
             CostItem::RemoveCountersAmong {
                 counter,
                 count,
@@ -1190,6 +1193,8 @@ fn discards_the_hand(item: &CostItem) -> bool {
 const fn own_part(item: &CostItem) -> &'static str {
     if matches!(item, CostItem::OwnManaCost) {
         "OwnManaCost"
+    } else if matches!(item, CostItem::OwnManaCostLess(_)) {
+        "OwnManaCostLess"
     } else {
         "OwnManaValue"
     }

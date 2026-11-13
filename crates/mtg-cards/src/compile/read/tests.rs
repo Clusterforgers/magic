@@ -1256,6 +1256,7 @@ mod g12a_writers;
 mod g13d_writers;
 mod r376_seats;
 mod r376_secret;
+mod r5519_oddities;
 mod tc34_control;
 mod w20_attached;
 mod w22_moves;

@@ -1,7 +1,7 @@
 {
   "oracle_id": "d870a93a-8399-4004-9b45-2b49b001f165",
   "name": "Luck Bobblehead",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Luck Bobblehead",
@@ -14,9 +14,32 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 32, "end": 222 }
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [],
+                  "count": { "Count": [{ "Subtype": "Bobblehead" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": { "DieResult": "Even" },
+                  "tapped": true
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "DieResult": { "Times": 6 } }, "op": "Eq", "right": 7 }
+                  },
+                  "then": [{ "WinGame": {} }]
+                }
+              }
+            ]
           }
         }
       ]

@@ -46,6 +46,7 @@ Altar's Reap
 Alter Reality
 Amass the Components
 Ambitious Aetherborn
+Aminatou, Veil Piercer
 Amulet of Safekeeping
 Amy Pond
 Anafenza, Kin-Tree Spirit
@@ -338,6 +339,7 @@ Cloud Sprite
 Cloudfin Raptor
 Cloudform
 Cloudskate
+Clown Car
 Clutch of Currents
 Clutch of the Undercity
 Coastal Breach
@@ -382,6 +384,7 @@ Courser of Kruphix
 Court of Bounty
 Court of Grace
 Crack in Time
+Crafty Cutpurse
 Cram Session
 Crash
 Crawlspace
@@ -439,6 +442,7 @@ Damping Field
 Danny Pink
 Dark Inquiry
 Darkblast
+Darksteel Garrison
 Darksteel Juggernaut
 Darksteel Mutation
 Darksteel Splicer
@@ -519,6 +523,7 @@ Dokuchi Shadow-Walker
 Domesticated Hydra
 Dominate
 Donal, Herald of Wings
+Done for the Day
 Doom Blade
 Doom Whisperer
 Door of Destinies
@@ -765,6 +770,7 @@ Garruk, Primal Hunter
 Garza's Assassin
 Gastal Raider
 Gatebreaker Ram
+Gather Specimens
 Gatta and Luzzu
 Gavony Dawnguard
 Gaze of Granite
@@ -912,6 +918,7 @@ Hellkite Tyrant
 Helm of Chatzuk
 Helm of the Host
 Hengegate Pathway // Mistgate Pathway
+Henry Wu, InGen Geneticist
 Herald of Anguish
 Herald of Eternal Dawn
 Herald of Hoofbeats
@@ -999,6 +1006,7 @@ Intrepid Adversary
 Intrepid Rabbit
 Intrepid Stablemaster
 Invading Manticore
+Invasion of Arcavios // Invocation of the Founders
 Invasion of Muraganda // Primordial Plasm
 Invasion of Segovia // Caetus, Sea Tyrant of Segovia
 Invasion of Theros // Ephara, Ever-Sheltering
@@ -1117,6 +1125,7 @@ Lawmage's Binding
 Lay Bare the Heart
 Lazotep Reaver
 Leader, Super-Genius
+Leadership Vacuum
 Leafkin Druid
 Legerdemain
 Legion Loyalty
@@ -1167,10 +1176,12 @@ Loxodon Smiter
 Loyal Retainers
 Lu Bu, Master-at-Arms
 Lu Xun, Scholar General
+Luck Bobblehead
 Ludevic's Test Subject // Ludevic's Abomination
 Lumen-Class Frigate
 Lunar Rejection
 Lurching Rotbeast
+Luxurious Locomotive
 M'Baku, Jabari Chieftain
 MACH-1, Swooping Scoundrel
 Mabel, Bitter Recluse
@@ -1323,6 +1334,7 @@ Nest of Scarabs
 Netherese Puzzle-Ward
 Nettlecyst
 Neverwinter Dryad
+Neverwinter Hydra
 New Horizons
 Niblis of Frost
 Nicanzil, Current Conductor
@@ -1364,6 +1376,7 @@ Octomancer
 Octopus Umbra
 Ohran Yeti
 Okiba Reckoner Raid // Nezumi Road Captain
+Old Stickfingers
 Olivia's Wrath
 Ominous Harvest
 On Thin Ice
@@ -1528,6 +1541,7 @@ Raffine's Informant
 Rafter Demon
 Rage-Scarred Berserker
 Raging Goblinoids
+Rain of Gore
 Rain of Thorns
 Rakdos Headliner
 Rakish Heir
@@ -2023,6 +2037,7 @@ Thopter Fabricator
 Thorin Oakenshield
 Thorn-Thrash Viashino
 Thornvault Forager
+Thought Dissector
 Thought Erasure
 Thought Monitor
 Thought Reflection
@@ -2077,6 +2092,7 @@ Tivash, Gloom Summoner
 Tivit, Seller of Secrets
 Toll of the Invasion
 Tomb Tyrant
+Tomik, Distinguished Advokist
 Topiary Lecturer
 Topography Tracker
 Torrent of Stone

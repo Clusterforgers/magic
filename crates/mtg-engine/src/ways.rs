@@ -257,7 +257,24 @@ fn spend_as_any(permissions: &[&Cast], ways: &mut [Way], printed: Option<&ManaCo
     }
 }
 
+/// The ways of an emerge cost a static ability gives the spell and its card does not have ("Each creature spell you cast
+/// has emerge", CR 702.119).
+fn r5510_given_emerge(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    instant: bool,
+) -> Vec<Way> {
+    let own_keywords: Vec<Keyword> = keywords_of(state, id).into_iter().cloned().collect();
+    crate::spell_keywords::given_to_spell(state, player, id)
+        .into_iter()
+        .filter(|keyword| matches!(keyword, Keyword::Emerge(_)) && !own_keywords.contains(keyword))
+        .flat_map(|keyword| crate::c9_emerge_ways::c9_emerge_ways(state, id, &keyword, instant))
+        .collect()
+}
+
 /// The ways of [`of`] before the required additional costs.
+#[allow(clippy::too_many_lines)]
 fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
     let Some(card) = state.object(id) else {
         return Vec::new();
@@ -359,6 +376,7 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
             ways.push(way);
         }
     }
+    ways.extend(r5510_given_emerge(state, player, id, instant));
     r282_ways(state, player, id, instant, &mut ways);
     // The back face of a card with disturb is cast from its graveyard (CR 702.146a).
     ways.extend(keywords::disturb::way(state, id, instant));

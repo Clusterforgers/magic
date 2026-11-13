@@ -1,0 +1,44 @@
+{
+  "oracle_id": "d94a792f-a48b-4181-b656-86fe452a4875",
+  "name": "Henry Wu, InGen Geneticist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Henry Wu, InGen Geneticist",
+      "oracle_fingerprint": "b7293dc161b85e8460b85f8b4dcc1581",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "AnyOf": ["This", { "Subtype": "Human" }] }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Exploit" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "ExploitedNonHuman",
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+              }
+            },
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "Triggering", "op": "Ge", "right": 3 } },
+                  "then": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

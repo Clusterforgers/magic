@@ -1,0 +1,51 @@
+{
+  "oracle_id": "4669926b-93f9-4d80-aee3-492fbf8e0a0a",
+  "name": "Light Up the Night",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Light Up the Night",
+      "oracle_fingerprint": "2ab85b9316b93325a3a7fd62a9d1e178",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": [
+                        { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                      ]
+                    }
+                  },
+                  "then": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": { "Sum": ["X", 1] } } }
+                  ],
+                  "otherwise": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Flashback": [
+              { "Mana": "{3}{R}" },
+              {
+                "RemoveCountersAmong": {
+                  "counter": "loyalty",
+                  "count": "X",
+                  "from": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }]
+                }
+              },
+              { "XAtLeast": 1 }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

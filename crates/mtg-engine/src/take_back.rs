@@ -269,6 +269,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::PlayerLost { .. }
         | Event::BecameSpirit { .. }
         | Event::PhaseBegan { .. }
+        | Event::SchemeSetInMotion { .. }
         | Event::GameRestarted { .. }
         | Event::MulliganPhaseBegan
         | Event::MulliganDeclared { .. }

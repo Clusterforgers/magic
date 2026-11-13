@@ -128,13 +128,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let mut events = Vec::new();
     let mut snapshots = Vec::new();
     match to {
-        Destination::Hand | Destination::Graveyard => {
+        Destination::Hand | Destination::Graveyard | Destination::Command => {
             for object in objects {
                 let owner = object.owner();
-                let there = if matches!(to, Destination::Hand) {
-                    Zone::Hand(owner)
-                } else {
-                    Zone::Graveyard(owner)
+                let there = match to {
+                    Destination::Hand => Zone::Hand(owner),
+                    Destination::Command => Zone::Command(owner),
+                    _ => Zone::Graveyard(owner),
                 };
                 if object.zone() != there {
                     let (event, shot) = moved(state, object.id(), object.zone(), there);

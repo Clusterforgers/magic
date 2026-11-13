@@ -107,7 +107,7 @@ fn losses(state: &GameState) -> Vec<Event> {
             })
         })
         .collect();
-    crate::spirits::settle(state, lost)
+    crate::schemes::leaders_fall(state, crate::spirits::settle(state, lost))
 }
 
 /// The refills of this pass: the graveyard of each player who failed to draw and loses for nothing else is shuffled

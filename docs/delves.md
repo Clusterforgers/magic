@@ -1,20 +1,38 @@
 # Delves
 
-Design of Delves, the co-op campaign: a party of 1 to 4 heroes fights a ladder of bosses with their own Commander decks.
+Design of Delves, the co-op campaign: a party of 1 to 6 heroes fights a ladder of bosses with their own Commander decks.
 
 ## Shape
 
 - A run is a boss rush. Its ladder (`mtg-campaign`, `map.rs`) holds the theme's lieutenants in an order drawn from the seed, then the final boss; between two bosses the party votes for one of two camps: Treasure, Shop, Event or Campfire.
-- Every boss fight is a fresh, normally recorded Commander game: board, hand and library reset. The party is one team of seats from seat 0, the boss one seat after them (`FightPlan`).
+- Every boss fight is a fresh, normally recorded Commander game: board, hand and library reset. The party is one team of seats from seat 0, the boss one seat after them and its minions after it (`FightPlan`).
 - Life carries over between fights. After a won fight each hero keeps their end life and heals 10; a hero who ended it as a Spirit comes back at 10 first. A Campfire rest heals 20, the shop's draught 15; nothing heals above 40 plus relic bonuses.
 - The party has 3 hearts. A lost fight costs one, every hero regroups at half life and the fight is retried; with no hearts left the run ends in defeat.
 - Within a fight a hero at 0 life is a Spirit while a teammate lives (`docs/engine.md`, Campaign seats): their cards leave and the Restless Spirit emblem taps a boss creature each boss upkeep and drains the boss each of their end steps. The party loses when every hero has fallen.
 
 ## Bosses
 
-- A boss (`content/<theme>.json`) has a 40-card deck of verified real cards, a brain (Hard by default), life `life + life_per_hero × (heroes − 1)`, an opening hand of 9 (Mossjaw 10), a boss card and two phases. For each hero after the first it also gets a Reinforcements emblem: a card and a 2/2 Zombie at each of its upkeeps.
-- Its advantages are open: the boss card is an emblem in its command zone from the start; each phase is an emblem that arrives when its life falls to a share of its starting life (66 % and 33 %). The table shows the boss's phase and the next one on the seat's chips.
-- Heat raises the difficulty: Heat 1 gives bosses a fifth more life, Heat 2 a stronger brain.
+- A boss (`content/<theme>.json`) has a 40-card deck of verified real cards, a brain (Hard by default), a base life and life per hero, an opening hand, a boss card and two phases.
+- Its advantages are open: its boss cards are emblems in its command zone from the start; each phase is an emblem that arrives when its life falls to a share of its starting life (66 % and 33 %). The table shows the boss's phase and the next one on the seat's chips.
+- Every boss has Escalation (each of its end steps, every hero loses 1 life for every four turns it has taken) and Enrage (from its tenth turn, every hero loses its turns minus nine each upkeep), so a stalled fight ends.
+- Schemes: the theme's scheme deck, shuffled from the seed for each fight, sets one scheme in motion as each boss turn begins (CR 314 in the manner of Archenemy); the next one is public as the Omen. Their effects count the heroes: a Rat per hero, a sacrifice and a discard from each hero, a drain of each hero.
+- Minions: a lieutenant seat on the boss's side with another boss's deck, its own life, turn and bot brain; it falls with the boss (`LossReason::LeaderFell`), so the party wins when the boss falls.
+
+## Scaling
+
+One table (`scale.rs`) sets the boss for the party's size, so every size meets the same challenge:
+
+| Heroes | Life | Hand | Reserves | Reinforcements | Warpath | Minions | Last Bulwark |
+|---|---|---|---|---|---|---|---|
+| 1 | 100 % | base − 5 | | | | | |
+| 2 | 100 % | base − 4 | 1 | | | | |
+| 3 | 100 % | base − 3 | | 1 | | | yes |
+| 4 | 85 % | base − 2 | | 1 | | 1 | yes |
+| 5 | 100 % | base − 1 | | 2 | | 1 | yes |
+| 6 | 90 % | base | | 2 | 1 | 2 | yes |
+
+- Life is a share of `life + life_per_hero × (heroes − 1)`. Reserves is a 2/2 Zombie each upkeep; Reinforcements a card and a 2/2 Zombie; Warpath untaps the boss's creatures after its first combat and adds a combat and a main phase; the Last Bulwark begins with the last phase: no more than three creatures can attack the boss each combat.
+- Heat raises the difficulty: each Heat gives the boss a card more in its opening hand and the boss and its minions a fifth more life; Heat 2 gives them a stronger brain.
 
 ## Loot
 
@@ -40,5 +58,20 @@ Design of Delves, the co-op campaign: a party of 1 to 4 heroes fights a ladder o
 
 ## Tuning
 
-- `cargo run --release -p mtg-campaign --example delve_sim -- fights <games> <heroes> <level>` plays each boss against a fresh party of bot heroes on the three fixture precons; `runs` plays whole runs with life carried and loot taken. Games are untimed and seeded, so each result replays.
-- The target at Heat 0 for a party of Normal bots: each lieutenant falls in half to two thirds of fights, the final boss is the hardest. A fight takes 6 to 9 rounds, 10 to 15 minutes at a human pace.
+- `cargo run --release -p mtg-campaign --example delve_sim -- fights <games> <heroes> <level> [first seed] [threads] [heat]` plays each boss in turn against a fresh party of bot heroes on the four fixture Commander decks; `runs` plays whole runs with life carried and loot taken. Games are untimed and seeded, so each result replays. `DELVE_SIM_DROP` (boss cards, phases or schemes by id), `DELVE_SIM_LIFE` (percent), `DELVE_SIM_HAND` and `DELVE_SIM_MINIONS` change the plan to measure what each part is worth.
+- Minutes are estimated at 0.6 per hero turn and 0.5 per turn of the boss's side.
+- The target at Heat 0 for a party of Hard bots, at every size: each fight won in 50 to 60 % of fights, a whole run in 20 to 35 %, a fight in 15 to 40 minutes for three or more heroes.
+
+Measured with Hard heroes at Heat 0, seeds from 1 (`fights`, each boss in turn):
+
+| Heroes | Fights won | Turns (boss side) | Minutes |
+|---|---|---|---|
+| 1 | 28/48 (58 %) | 14.7 (7.3) | 8 |
+| 2 | 24/48 (50 %) | 22.5 (7.6) | 13 |
+| 3 | 10/24 (42 %) | 34.8 (8.8) | 20 |
+| 4 | 13/24 (54 %) | 50.8 (15.2) | 29 |
+| 5 | 8/16 (50 %) | 54.2 (13.8) | 31 |
+| 6 | 7/16 (44 %) | 59.9 (18.7) | 34 |
+
+- Heat 1: one hero wins 20/48 fights (42 %), two heroes 14/32 (44 %).
+- Whole runs at Heat 0 (`runs`): one hero wins 2/16 (12 %), two heroes 1/16 (6 %); life carried between fights makes each later fight harder than the table.

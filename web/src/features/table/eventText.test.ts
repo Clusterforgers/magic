@@ -323,6 +323,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   PlayerLost: [{ PlayerLost: { player: 1, reason: 'ZeroLife' } }, 'Bo ran out of life'],
   BecameSpirit: [{ BecameSpirit: { player: 1, emblem: 9 } }, 'Bo fell and rises as a Spirit'],
   PhaseBegan: [{ PhaseBegan: { player: 1, emblem: 9 } }, 'Bo enters a card'],
+  SchemeSetInMotion: [{ SchemeSetInMotion: { player: 1, emblem: 9 } }, 'Bo sets a card in motion'],
   ObjectLeftGame: [{ ObjectLeftGame: { object: 2 } }, 'Hill Giant leaves the game'],
   GameEnded: [{ GameEnded: { result: { Winner: 0 } } }, 'Ana wins the game'],
   AbilityPutOnStack: [
