@@ -1,5 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router'
 import {
+  FolderPlusIcon,
   ListChecksIcon,
   CircleAlertIcon,
   LibraryIcon,
@@ -14,10 +15,16 @@ import { PageShell } from '@/components/PageShell'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { deckGroupsApi as sharedGroups } from '@/net/deckGroups'
+import type { DeckGroupsApi } from '@/net/deckGroups'
 import type { DecksApi } from '@/net/decks'
-import type { DeckListItem, DeckView } from '@/protocol/generated'
+import type { DeckGroupView, DeckListItem, DeckView } from '@/protocol/generated'
 import { DeckRow } from './DeckRow'
 import { DeleteDeckDialog } from './DeleteDeckDialog'
+import { GroupedDecks } from './groups/GroupedDecks'
+import { GroupNameDialog } from './groups/GroupNameDialog'
+import { PRESET_GROUPS } from './groups/grouping'
+import { useDeckGroups } from './groups/useDeckGroups'
 import { ImportDialog } from './ImportDialog'
 import { NewDeckDialog } from './NewDeckDialog'
 import { useDeckList } from './useDeckList'
@@ -26,6 +33,7 @@ type Overlay =
   | { key: number; kind: 'new' }
   | { key: number; kind: 'import' }
   | { key: number; kind: 'delete'; deck: DeckListItem }
+  | { key: number; kind: 'group'; group?: DeckGroupView }
 
 const NO_DECKS: DeckListItem[] = []
 
@@ -43,14 +51,17 @@ function RowsSkeleton() {
 interface DeckLibraryProps {
   api: DecksApi
   clock: () => number
+  /** The deck groups; the shared client by default. */
+  groupsApi?: DeckGroupsApi
 }
 
 /**
  * The signed-in user's decks: the list with each deck's check state, and New deck, Import and Delete. From the `sm`
  * breakpoint up the page is as tall as the window under the header and the list scrolls inside its own region.
  */
-export function DeckLibrary({ api, clock }: DeckLibraryProps) {
+export function DeckLibrary({ api, clock, groupsApi = sharedGroups }: DeckLibraryProps) {
   const { state, reload } = useDeckList(api)
+  const groups = useDeckGroups(groupsApi, state.status === 'ready')
   const [overlay, setOverlay] = useState<Overlay | null>(null)
   const [announcement, setAnnouncement] = useState('')
   const opened = useRef(0)
@@ -59,7 +70,13 @@ export function DeckLibrary({ api, clock }: DeckLibraryProps) {
   const navigate = useNavigate()
 
   const open = useCallback(
-    (next: { kind: 'new' } | { kind: 'import' } | { kind: 'delete'; deck: DeckListItem }): void => {
+    (
+      next:
+        | { kind: 'new' }
+        | { kind: 'import' }
+        | { kind: 'delete'; deck: DeckListItem }
+        | { kind: 'group'; group?: DeckGroupView },
+    ): void => {
       opened.current += 1
       setOverlay({ ...next, key: opened.current })
     },
@@ -67,6 +84,8 @@ export function DeckLibrary({ api, clock }: DeckLibraryProps) {
   )
   // Stable, so the memoised rows draw again only when their deck changes.
   const askDelete = useCallback((target: DeckListItem) => open({ kind: 'delete', deck: target }), [open])
+  const { file } = groups
+  const fileDeck = useCallback((deck: DeckListItem, group: string | null) => file(deck.id, group), [file])
   // A dialog that finishes closing after another one opened must not take the new one down with it.
   const closed = (key: number): void => {
     setOverlay((current) => (current?.key === key ? null : current))
@@ -142,6 +161,17 @@ export function DeckLibrary({ api, clock }: DeckLibraryProps) {
                 <ListChecksIcon aria-hidden="true" />
                 Review cards
               </Link>
+              {groups.ready ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  aria-haspopup="dialog"
+                  onClick={() => open({ kind: 'group' })}
+                >
+                  <FolderPlusIcon aria-hidden="true" />
+                  New group
+                </Button>
+              ) : null}
               {newAction}
               {importAction}
             </div>
@@ -150,6 +180,32 @@ export function DeckLibrary({ api, clock }: DeckLibraryProps) {
         <p role="status" className="sr-only">
           {announcement}
         </p>
+        {groups.problem === null ? null : (
+          <Alert variant="destructive">
+            <CircleAlertIcon aria-hidden="true" />
+            <AlertTitle>The groups were not saved</AlertTitle>
+            <AlertDescription>{groups.problem}</AlertDescription>
+          </Alert>
+        )}
+        {groups.ready && groups.groups.length === 0 && decks.length > 1 ? (
+          <div
+            data-slot="group-presets"
+            className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground"
+          >
+            <span>Sort your decks into groups and fold away the ones you are not playing.</span>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                groups.create(PRESET_GROUPS)
+                setAnnouncement(`Added the groups ${PRESET_GROUPS.join(', ')}.`)
+              }}
+            >
+              Add {PRESET_GROUPS.slice(0, -1).join(', ')} and {PRESET_GROUPS.at(-1)}
+            </Button>
+          </div>
+        ) : null}
 
         {state.status === 'loading' ? (
           <Loading label="Loading your decks…">
@@ -211,18 +267,56 @@ export function DeckLibrary({ api, clock }: DeckLibraryProps) {
         {decks.length > 0 ? (
           // The gutter is kept, so the rows do not change width when a deleted deck ends the scrolling.
           <div className="min-h-0 flex-1 sm:overflow-y-auto sm:[scrollbar-gutter:stable]">
-            <ul
-              aria-label="Your decks"
-              aria-busy={state.status === 'ready' && state.refreshing}
-              className="grid gap-3"
-            >
-              {decks.map((deck) => (
-                <DeckRow key={deck.id} deck={deck} api={api} now={now} onDelete={askDelete} />
-              ))}
-            </ul>
+            {groups.ready && groups.groups.length > 0 ? (
+              <GroupedDecks
+                decks={decks}
+                groups={groups}
+                onRename={(group) => open({ kind: 'group', group })}
+                onAnnounce={setAnnouncement}
+                renderRow={(deck, groupId) => (
+                  <DeckRow
+                    key={deck.id}
+                    deck={deck}
+                    api={api}
+                    now={now}
+                    onDelete={askDelete}
+                    groups={groups.groups}
+                    groupId={groupId}
+                    onFile={fileDeck}
+                  />
+                )}
+              />
+            ) : (
+              <ul
+                aria-label="Your decks"
+                aria-busy={state.status === 'ready' && state.refreshing}
+                className="grid gap-3"
+              >
+                {decks.map((deck) => (
+                  <DeckRow key={deck.id} deck={deck} api={api} now={now} onDelete={askDelete} />
+                ))}
+              </ul>
+            )}
           </div>
         ) : null}
       </section>
+
+      {overlay?.kind === 'group' ? (
+        <GroupNameDialog
+          key={overlay.key}
+          initial={overlay.group?.name}
+          onSubmit={(name) => {
+            if (overlay.group === undefined) {
+              groups.create([name])
+              setAnnouncement(`Added the group “${name}”.`)
+            } else {
+              groups.rename(overlay.group.id, name)
+              setAnnouncement(`Renamed the group to “${name}”.`)
+            }
+          }}
+          onClosed={() => closed(overlay.key)}
+        />
+      ) : null}
 
       {overlay?.kind === 'new' ? (
         <NewDeckDialog key={overlay.key} api={api} onSaved={saved} onClosed={() => closed(overlay.key)} />

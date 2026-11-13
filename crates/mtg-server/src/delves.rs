@@ -254,7 +254,7 @@ async fn save(delves: &Delves, loaded: &Loaded, from: usize) -> Result<(), ApiEr
         .map_err(|e| unavailable(&e))
 }
 
-/// Reads a finished fight back into the run.
+/// Reads a finished fight back into the run; a fight whose game ended unplayed waits for a new one.
 async fn sync_fight(app: &AppState, loaded: &mut Loaded) -> Result<(), ApiError> {
     let Status::Fight { game: Some(game) } = &loaded.run.status else {
         return Ok(());
@@ -262,9 +262,13 @@ async fn sync_fight(app: &AppState, loaded: &mut Loaded) -> Result<(), ApiError>
     let Ok(game) = game.parse::<GameId>() else {
         return Ok(());
     };
-    let Ok(Some((RecordStatus::Finished, Some(result)))) = app.registry().record_result(game).await
-    else {
-        return Ok(());
+    let result = match app.registry().record_result(game).await {
+        Ok(Some((RecordStatus::Finished, Some(result)))) => result,
+        Ok(Some((RecordStatus::Lobby | RecordStatus::Running, _))) | Err(_) => return Ok(()),
+        // Still in the registry: the record is behind the table, which may yet end.
+        _ if app.registry().handle(game).is_some() => return Ok(()),
+        // Ended unplayed (an admin ended it, it expired, failed or is gone): the fight gets a new game.
+        _ => return push(loaded, RunEvent::FightVoided),
     };
     let Ok(Some(seats)) = app.registry().final_seats(game).await else {
         return Ok(());

@@ -1,4 +1,4 @@
-// Goal: the header offers exactly what the sign-in state allows (nothing while unknown or without accounts, "Sign in" and "Register" for a guest, no "Register" where the admin makes the accounts, a menu named after the username with "Sign out" for an account and "Accounts" for the admin only, "My games" in the main navigation), signing out clears the account and the games list and leaves a page that needs one, and a sign-out the server did not get is reported, not faked.
+// Goal: the header offers exactly what the sign-in state allows (nothing while unknown or without accounts, "Sign in" and "Register" for a guest, no "Register" where the admin makes the accounts, a menu named after the username with "Sign out" for an account and "Accounts" and "Live games" for the admin only, "My games" in the main navigation), signing out clears the account and the games list and leaves a page that needs one, and a sign-out the server did not get is reported, not faked.
 import { screen, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { authError, listed } from '@/test-utils/accountsServer'
@@ -206,10 +206,25 @@ describe('the entry for the admin in the menu', () => {
 
   it('offers Accounts first to the admin, who reaches the page with it', async () => {
     const app = await open('/', { admins: [ADA.username], signedIn: ADA.username })
-    expect(await menuItems(app)).toEqual(['Accounts', 'Account settings', 'Sign out'])
+    expect(await menuItems(app)).toEqual(['Accounts', 'Live games', 'Account settings', 'Sign out'])
     await app.user.click(screen.getByRole('menuitem', { name: 'Accounts' }))
     expect(await screen.findByRole('heading', { level: 1, name: 'Accounts' })).toBeInTheDocument()
     expect(app.router.state.location.pathname).toBe('/accounts')
+  })
+
+  it('takes the admin to the live games with the second entry', async () => {
+    const app = await open('/', { admins: [ADA.username], signedIn: ADA.username })
+    await menuItems(app)
+    await app.user.click(screen.getByRole('menuitem', { name: 'Live games' }))
+    expect(await screen.findByRole('heading', { level: 1, name: 'Live games' })).toBeInTheDocument()
+    expect(app.router.state.location.pathname).toBe('/admin/games')
+  })
+
+  it('tells anyone else at the live games that only an admin sees them', async () => {
+    await open('/admin/games', { admins: ['someone_else'], signedIn: ADA.username })
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Only an admin can see the live games.' }),
+    ).toBeInTheDocument()
   })
 
   it('offers nobody else the entry', async () => {
