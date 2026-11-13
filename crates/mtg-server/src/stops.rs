@@ -14,6 +14,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::teams::Teams;
 use mtg_engine::events::ResolutionOutcome;
 use mtg_engine::turn::Step;
 use mtg_engine::{Event, GameState};
@@ -69,6 +70,8 @@ struct Held {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct Stops {
     seats: Vec<Held>,
+    /// The teams of a table whose teams share their turns (Two-Headed Giant), so a teammate's turn is `Own`.
+    shared: Option<Teams>,
 }
 
 /// Where the game is: whose turn it is and in which step.
@@ -110,7 +113,19 @@ impl Stops {
                 };
                 seats
             ],
+            shared: None,
         }
+    }
+
+    /// The stops with the teams of the table: a Two-Headed Giant teammate's turn is on the seat's `Own` side (CR 805.3).
+    pub(crate) fn with_teams(mut self, teams: Option<&Teams>) -> Stops {
+        self.share_turns(teams);
+        self
+    }
+
+    /// Follows a change of the table's teams in the lobby.
+    pub(crate) fn share_turns(&mut self, teams: Option<&Teams>) {
+        self.shared = teams.filter(|teams| teams.shared()).cloned();
     }
 
     /// Whether `seat` holds a stop at `step` of a turn on `side`, one-turn or lasting.
@@ -318,8 +333,12 @@ impl Stops {
 
     /// Removes every seat's one-turn stop at the side that `place` is for that seat, and the step.
     fn over(&mut self, (active, step): Place) {
+        let shared = self.shared.as_ref();
         for (seat, held) in self.seats.iter_mut().enumerate() {
-            let side = if PlayerId::from_index(seat) == active {
+            let seat = PlayerId::from_index(seat);
+            let side = if seat == active
+                || shared.is_some_and(|teams| teams.team_of(seat) == teams.team_of(active))
+            {
                 StopSide::Own
             } else {
                 StopSide::Opponent
@@ -595,8 +614,9 @@ impl<S: EventStore> GameActor<S> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a seat holds one stop per side and step with the `keep` it was last given, only in a step where a player gets priority, a refusal changes nothing, seats are independent, the list is told in a fixed order whenever it changes (a changed `keep` too) and not otherwise, a one-turn stop goes once the game has left its step (and a lasting one never does), a pass ends `NextWindow` and no other mode, auto-pass is every mode but `Held`, a seat that left the game or a finished game holds nothing, and a seat that changes hands in the lobby starts from the defaults again; a seat owes the clauses of its own object that resolved with clauses left to the table, or the text of its own ability the game left to the table, or its own by-hand line that came due, until it passes, and is never told so. and the objects it holds a seat for are those the wire flags (`ObjectView::manual_owed`), for a spell and for an ability.
+    //! Goal: a seat holds one stop per side and step with the `keep` it was last given, only in a step where a player gets priority, a refusal changes nothing, seats are independent, the list is told in a fixed order whenever it changes (a changed `keep` too) and not otherwise, a one-turn stop goes once the game has left its step (and a lasting one never does), a pass ends `NextWindow` and no other mode, auto-pass is every mode but `Held`, a seat that left the game or a finished game holds nothing, and a seat that changes hands in the lobby starts from the defaults again, and a Two-Headed Giant teammate's turn is on the seat's own side; a seat owes the clauses of its own object that resolved with clauses left to the table, or the text of its own ability the game left to the table, or its own by-hand line that came due, until it passes, and is never told so. and the objects it holds a seat for are those the wire flags (`ObjectView::manual_owed`), for a spell and for an ability.
     use super::*;
+    use mtg_core::teams::TeamMode;
     use mtg_engine::Engine;
     use mtg_protocol::ObjectView;
     use mtg_testkit::cards::{by_hand, free_creature, healer};
@@ -1066,6 +1086,27 @@ mod tests {
         let (one_turn, lasting) = after(side, step, at, &events);
         assert_eq!(one_turn.is_empty(), gone, "{one_turn:?}");
         assert_eq!(lasting.len(), 1, "a lasting stop always stays");
+    }
+
+    #[rstest]
+    #[case::giant_teammate_own(TeamMode::TwoHeadedGiant, StopSide::Own, true)]
+    #[case::giant_teammate_opponent(TeamMode::TwoHeadedGiant, StopSide::Opponent, false)]
+    #[case::teams_teammate_own(TeamMode::Teams, StopSide::Own, false)]
+    #[case::teams_teammate_opponent(TeamMode::Teams, StopSide::Opponent, true)]
+    fn a_shared_turn_is_the_own_side_of_both_teammates(
+        #[case] mode: TeamMode,
+        #[case] side: StopSide,
+        #[case] gone: bool,
+    ) {
+        // Seats 0 and 1 are teammates; seat 0's precombat main phase ends.
+        let teams = Teams {
+            mode,
+            seats: vec![0, 0, 1, 1],
+        };
+        let mut stops = Stops::new(4).with_teams(Some(&teams));
+        stops.set(ME, stop(side, Step::Main1, false)).unwrap();
+        stops.left((FOE, Step::Main1), &[began(Step::BeginCombat)]);
+        assert_eq!(stops.stops(ME).is_empty(), gone);
     }
 
     #[test]

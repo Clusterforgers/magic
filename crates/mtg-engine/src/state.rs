@@ -316,6 +316,13 @@ pub struct GameState {
     pub(crate) modes_ever: BTreeSet<(ObjectRef, AbilitySource, usize, usize)>,
     /// What the game has counted this turn, from zero at the turn's start.
     pub(crate) tallies: Tallies,
+    /// The ballots of every vote of the game, in order: each voter with the place of the choice they voted for.
+    pub(crate) r379_votes: Vec<Vec<(PlayerId, u32)>>,
+    /// The spells each player has cast this game.
+    pub(crate) r379_cast_game: BTreeMap<PlayerId, u32>,
+    /// The "since your last turn" history (`r379_since.rs`); derived from the turn events and left out of the hash, so a
+    /// game hashes as it did before it was kept.
+    pub(crate) r379_since: crate::r379_since::Since,
     /// Whether any card of the game has a triggered ability or sets up a delayed one; derived from the setup.
     pub(crate) triggers_possible: bool,
     /// Whether any card of the game has a static ability; derived from the setup and the tokens made.
@@ -931,6 +938,14 @@ impl Hash for GameState {
         }
         if !self.modes_ever.is_empty() {
             self.modes_ever.hash(state);
+        }
+        // A game with no vote hashes as it did before votes were logged.
+        if !self.r379_votes.is_empty() {
+            self.r379_votes.hash(state);
+        }
+        // A game hashes as it did before the spells of the game were counted until a spell is cast.
+        if !self.r379_cast_game.is_empty() {
+            self.r379_cast_game.hash(state);
         }
         // Likewise a game in which no seat looked at its library by hand.
         if !self.looked_by_hand.is_empty() {

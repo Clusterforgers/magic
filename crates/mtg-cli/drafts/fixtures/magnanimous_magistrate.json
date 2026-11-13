@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "a6649e6c-bbd8-43db-9f3f-a24b32aed4e4",
+  "oracle_id": "ecd3ddd7-2fa8-466b-9319-ae51c744a05f",
+  "multiverse_ids": [
+    589561
+  ],
+  "mtgo_id": 137726,
+  "tcgplayer_id": 454888,
+  "cardmarket_id": 686372,
+  "name": "Magnanimous Magistrate",
+  "lang": "en",
+  "released_at": "2022-12-02",
+  "uri": "https://api.scryfall.com/cards/a6649e6c-bbd8-43db-9f3f-a24b32aed4e4",
+  "scryfall_uri": "https://scryfall.com/card/j22/7/magnanimous-magistrate?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:06:34Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/6/a6649e6c-bbd8-43db-9f3f-a24b32aed4e4.jpg?1783919194",
+    "normal": "https://cards.scryfall.io/normal/front/a/6/a6649e6c-bbd8-43db-9f3f-a24b32aed4e4.jpg?1783919194",
+    "large": "https://cards.scryfall.io/large/front/a/6/a6649e6c-bbd8-43db-9f3f-a24b32aed4e4.jpg?1783919194",
+    "png": "https://cards.scryfall.io/png/front/a/6/a6649e6c-bbd8-43db-9f3f-a24b32aed4e4.png?1783919194",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/6/a6649e6c-bbd8-43db-9f3f-a24b32aed4e4.jpg?1783919194",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/6/a6649e6c-bbd8-43db-9f3f-a24b32aed4e4.jpg?1783919194",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/6/a6649e6c-bbd8-43db-9f3f-a24b32aed4e4.webp?1783919194",
+    "grid": "https://cards.scryfall.io/grid/front/a/6/a6649e6c-bbd8-43db-9f3f-a24b32aed4e4.webp?1783919194",
+    "display": "https://cards.scryfall.io/display/front/a/6/a6649e6c-bbd8-43db-9f3f-a24b32aed4e4.webp?1783919194",
+    "art": "https://cards.scryfall.io/art/front/a/6/a6649e6c-bbd8-43db-9f3f-a24b32aed4e4.webp?1783919194",
+    "crop": "https://cards.scryfall.io/crop/front/a/6/a6649e6c-bbd8-43db-9f3f-a24b32aed4e4.webp?1783919194",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/6/a6649e6c-bbd8-43db-9f3f-a24b32aed4e4.jpg?1783919194"
+  },
+  "mana_cost": "{5}{W}",
+  "cmc": 6.0,
+  "type_line": "Creature — Human Advisor",
+  "oracle_text": "This creature enters with five reprieve counters on it.\nWhenever another nontoken creature you control dies, if its mana value was 1 or greater, you may remove that many reprieve counters from this creature. If you do, return that card to the battlefield under its owner's control.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "247df475-e4ce-4e5e-9317-11892d2211e0",
+  "set": "j22",
+  "set_name": "Jumpstart 2022",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/247df475-e4ce-4e5e-9317-11892d2211e0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aj22&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/j22?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a6649e6c-bbd8-43db-9f3f-a24b32aed4e4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aecd3ddd7-2fa8-466b-9319-ae51c744a05f&unique=prints",
+  "collector_number": "7",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Marie Magny",
+  "artist_ids": [
+    "fa463dea-41ba-4c0d-9277-c176d2b2509f"
+  ],
+  "illustration_id": "ef8247e5-b60a-478c-a398-8401b3c419a7",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 24807,
+  "prices": {
+    "usd": "0.16",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.16",
+    "eur_foil": null,
+    "tix": "0.32"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=589561&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMagnanimous%2BMagistrate",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMagnanimous%2BMagistrate",
+    "edhrec": "https://edhrec.com/route/?cc=Magnanimous+Magistrate"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F454888%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=686372&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/137726?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

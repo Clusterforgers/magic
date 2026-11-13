@@ -1,0 +1,34 @@
+{
+  "oracle_id": "494f8c29-7626-43ed-b0b8-fb9afd4cd5d3",
+  "name": "Dust Animus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dust Animus",
+      "oracle_fingerprint": "a96219cc98f23114557a6f35303a77b2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEntersWith": {
+                "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "lifelink" } } }],
+                "counter": "+1/+1",
+                "count": 2
+              }
+            },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }, "Untapped"] },
+                "op": "Ge",
+                "right": 5
+              }
+            }
+          }
+        },
+        { "Keyword": { "Plot": "{1}{W}" } }
+      ]
+    }
+  ]
+}

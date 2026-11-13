@@ -1,0 +1,22 @@
+{
+  "oracle_id": "c13079d5-6749-43e5-a8ee-ef3af31ff679",
+  "name": "Blast-Furnace Hellkite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blast-Furnace Hellkite",
+      "oracle_fingerprint": "3185ce8272af87063e8ee105a56954de",
+      "abilities": [
+        { "Keyword": { "Offering": [{ "Type": "Artifact" }] } },
+        { "Keyword": "Flying" },
+        { "Keyword": "DoubleStrike" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "AttackingPlayer": "Opponents" }] },
+            "mods": [{ "AddKeyword": "DoubleStrike" }]
+          }
+        }
+      ]
+    }
+  ]
+}

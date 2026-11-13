@@ -1,0 +1,58 @@
+{
+  "oracle_id": "7b515c56-7b1e-42a8-82b0-1b30201fb162",
+  "name": "Zirda, the Dawnwaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zirda, the Dawnwaker",
+      "oracle_fingerprint": "44032b97efa8421c270c676c0bf168ea",
+      "abilities": [
+        {
+          "Keyword": {
+            "Companion": {
+              "Has": {
+                "of": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Type": "Battle" },
+                      { "Type": "Creature" },
+                      { "Type": "Enchantment" },
+                      { "Type": "Land" },
+                      { "Type": "Planeswalker" }
+                    ]
+                  }
+                ],
+                "fact": "ActivatedAbility"
+              }
+            }
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [],
+            "change": "Reduce",
+            "mana": "{2}",
+            "activating": "Any",
+            "least": 1
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

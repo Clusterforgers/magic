@@ -1,7 +1,7 @@
 {
   "oracle_id": "7209f2b6-8851-42ab-bac6-5cf06e211e46",
   "name": "Invasion of Fiora // Marchesa, Resolute Monarch",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Invasion of Fiora",
@@ -62,9 +62,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 99, "end": 230 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": { "Not": { "CombatDamagedSinceLastTurn": "You" } },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
           }
         }
       ]

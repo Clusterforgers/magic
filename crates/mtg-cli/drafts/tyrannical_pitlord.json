@@ -1,0 +1,49 @@
+{
+  "oracle_id": "776ea0c7-fc5b-44b4-9302-5a3514ff843b",
+  "name": "Tyrannical Pitlord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tyrannical Pitlord",
+      "oracle_fingerprint": "0f634cc4cde551e2f51f12aed3017c58",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                {
+                  "Choose": {
+                    "from": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                    "as": "chosen"
+                  }
+                },
+                { "Remember": { "what": { "Bound": "chosen" }, "slot": "chosen" } }
+              ]
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Remembered": { "on": "This", "slot": "chosen" } },
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }, { "AddKeyword": "Flying" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "Is": { "Remembered": { "on": "This", "slot": "chosen" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
