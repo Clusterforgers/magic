@@ -2159,6 +2159,7 @@ impl<'a> Scope<'a> {
             | StatKind::R374CreatureTypes
             | StatKind::R374Bushido
             | StatKind::R374Toxic
+            | StatKind::R4700ChosenColors
             | StatKind::R374ManaCost
             | StatKind::R374ColorSet
             | StatKind::Subtypes => None,
@@ -2567,6 +2568,10 @@ impl<'a> Scope<'a> {
         };
         match chosen {
             Chosen::Color(color) => seen.chars.colors.contains(*color),
+            // A colour and a type chosen together: an object of either has what was chosen.
+            Chosen::ColorAndType(color, subtype) => {
+                seen.chars.colors.contains(*color) || has_subtype(subtype)
+            }
             Chosen::Colors(colors) => colors
                 .iter()
                 .any(|color| seen.chars.colors.contains(*color)),

@@ -3499,6 +3499,12 @@ impl Pass<'_> {
         if matches!(kind, EntersChoice::CardName | EntersChoice::NonlandCardName) {
             return self.chooses_name(source, controller, kind == EntersChoice::NonlandCardName);
         }
+        if matches!(
+            kind,
+            EntersChoice::Colors(_) | EntersChoice::ColorAndCreatureType
+        ) {
+            return self.r4700_chooses(source, controller, kind);
+        }
         let options = self.options_of(kind, controller, source);
         let picked = match options.as_slice() {
             [] => None,
@@ -3523,7 +3529,9 @@ impl Pass<'_> {
                         | EntersChoice::NonlandCardName
                         | EntersChoice::CardType
                         | EntersChoice::CardTypeOf(_) => "Choose a card type.".to_owned(),
-                        EntersChoice::Number { .. } => String::new(),
+                        EntersChoice::Number { .. }
+                        | EntersChoice::Colors(_)
+                        | EntersChoice::ColorAndCreatureType => String::new(),
                     };
                     return Ok(Asked::Ask(Decision {
                         player: controller,
@@ -3611,7 +3619,9 @@ impl Pass<'_> {
             EntersChoice::BasicLandType => values::basic_land_types(),
             EntersChoice::CardName
             | EntersChoice::NonlandCardName
-            | EntersChoice::Number { .. } => Vec::new(),
+            | EntersChoice::Number { .. }
+            | EntersChoice::Colors(_)
+            | EntersChoice::ColorAndCreatureType => Vec::new(),
             EntersChoice::Player => self
                 .state
                 .turn_order_from(controller)
@@ -3647,6 +3657,7 @@ mod r304_as_enters;
 #[cfg(test)]
 mod r304_skip;
 pub(crate) mod r406_actions;
+mod r4700_choices;
 mod rmt5_next;
 use rmt5_next::rmt5_next_as_instead;
 mod e19_mill;

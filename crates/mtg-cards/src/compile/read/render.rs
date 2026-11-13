@@ -747,6 +747,7 @@ fn written_anew(ability: &Ability) -> Vec<String> {
     super::r375_phase::r375_wordings(ability, written_variants, &mut texts);
     super::r404_land::r404_land_wordings(ability, written_variants, &mut texts);
     super::r404_commander::r404_commander_wordings(ability, &mut texts);
+    super::r4700_writers::r4700_wordings(ability, written_variants, &mut texts);
     let more = super::t18_words::t18_wordings(&texts);
     for text in more {
         if !texts.contains(&text) {
@@ -3788,6 +3789,16 @@ impl Writer<'_> {
     fn life(&self, amount: &Amount) -> Option<String> {
         if let Some(life) = r307c_words::r307c_life(amount) {
             return Some(life);
+        }
+        if let Amount::Stat {
+            stat: crate::value::StatKind::R4700ChosenColors,
+            ..
+        } = amount
+        {
+            return Some(format!(
+                "1 life for each {}",
+                super::amounts::for_each_text(amount)?
+            ));
         }
         Some(match amount {
             Amount::Stat { of, stat } if *of == Ref::Target(0) && self.named => {

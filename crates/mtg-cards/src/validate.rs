@@ -1231,6 +1231,7 @@ impl<'a> Walker<'a> {
             StatKind::R374Toxic => "R374Toxic",
             StatKind::R374ManaCost => "R374ManaCost",
             StatKind::R374ColorSet => "R374ColorSet",
+            StatKind::R4700ChosenColors => "R4700ChosenColors",
             _ => return,
         };
         self.uses("Stat", name);
@@ -3165,6 +3166,10 @@ impl Walker<'_> {
             TokenRef::CopyOf { of, except, .. } => {
                 self.at("of", |w| w.reference(of, Kind::Object));
                 self.ep23_token_copy_exceptions(except);
+            }
+            TokenRef::R4700OfChosen { size } => {
+                self.at("size", |w| w.amount(size));
+                self.uses("Effect", "CreateToken.R4700OfChosen");
             }
         }
     }

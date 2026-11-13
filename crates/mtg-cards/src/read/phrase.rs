@@ -463,6 +463,7 @@ fn stat_text(stat: StatKind) -> &'static str {
         StatKind::R374Toxic => "total toxic value",
         StatKind::R374ManaCost => "mana cost",
         StatKind::R374ColorSet => "color combination",
+        StatKind::R4700ChosenColors => "number of the chosen colors it is",
         StatKind::Subtypes => "subtypes",
     }
 }

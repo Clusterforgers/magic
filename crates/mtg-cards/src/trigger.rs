@@ -979,6 +979,10 @@ pub enum EntersChoice {
     CardTypeOf(mtg_core::card::CardTypes),
     /// A basic land type (CR 205.3i: Plains, Island, Swamp, Mountain or Forest).
     BasicLandType,
+    /// This many different colours ("choose two colors").
+    Colors(u32),
+    /// A colour and a creature type ("choose a color and a creature type").
+    ColorAndCreatureType,
     /// A number from `min` to `max`.
     Number {
         /// The smallest number.
