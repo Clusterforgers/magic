@@ -1,0 +1,1122 @@
+[
+ {
+  "id": "restless_spirit",
+  "name": "Restless Spirit",
+  "kind": "Haunt",
+  "type_line": "Emblem — Spirit",
+  "text": "At the beginning of each opponent's upkeep, tap up to one target creature that player controls.\nAt the beginning of your end step, each opponent loses 1 life.",
+  "art": "spirit",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "Opponents"
+      }
+     },
+     "targets": [
+      {
+       "what": {
+        "Object": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "ActivePlayer"
+         }
+        ]
+       },
+       "bounds": {
+        "min": 0,
+        "max": 1
+       }
+      }
+     ],
+     "effects": [
+      {
+       "Tap": {
+        "what": {
+         "Target": 0
+        }
+       }
+      }
+     ]
+    }
+   },
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "End",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "LoseLife": {
+        "who": "Opponents",
+        "amount": 1
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "ember_idol",
+  "name": "Ember Idol",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 70,
+  "art": "idol",
+  "text": "Creatures you control get +1/+0.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "ModifyPT": {
+        "power": 1,
+        "toughness": 0
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Damage"
+ },
+ {
+  "id": "trollhide_cloak",
+  "name": "Trollhide Cloak",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 60,
+  "art": "cloak",
+  "text": "Creatures you control get +0/+1.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "ModifyPT": {
+        "power": 0,
+        "toughness": 1
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Support"
+ },
+ {
+  "id": "hearthstone",
+  "name": "Hearthstone",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 50,
+  "art": "hearth",
+  "text": "At the beginning of your upkeep, you gain 2 life.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "GainLife": {
+        "amount": 2
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Healer"
+ },
+ {
+  "id": "seers_lantern",
+  "name": "Seer's Lantern",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 50,
+  "art": "lantern",
+  "text": "At the beginning of your upkeep, scry 1.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "Scry": {
+        "count": 1
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Support"
+ },
+ {
+  "id": "miners_satchel",
+  "name": "Miner's Satchel",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 60,
+  "art": "satchel",
+  "text": "You may play an additional land on each of your turns.",
+  "abilities": [
+   {
+    "Rule": {
+     "rule": {
+      "AdditionalLandPlays": {}
+     }
+    }
+   }
+  ],
+  "role": "Support"
+ },
+ {
+  "id": "wardens_horn",
+  "name": "Warden's Horn",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 55,
+  "art": "horn",
+  "text": "You start each fight with 10 more life.",
+  "life": 10,
+  "abilities": [],
+  "role": "Healer"
+ },
+ {
+  "id": "lucky_charm",
+  "name": "Lucky Charm",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 65,
+  "art": "charm",
+  "text": "You start each fight with one more card in your opening hand.",
+  "hand": 1,
+  "abilities": [],
+  "role": "Support"
+ },
+ {
+  "id": "kindling_torch",
+  "name": "Kindling Torch",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 75,
+  "art": "torch",
+  "text": "At the beginning of your end step, each opponent loses 1 life.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "End",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "LoseLife": {
+        "who": "Opponents",
+        "amount": 1
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Damage"
+ },
+ {
+  "id": "wellspring_flask",
+  "name": "Wellspring Flask",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 60,
+  "art": "flask",
+  "text": "At the beginning of your upkeep, if you have 15 or less life, draw a card.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "if": {
+      "Compare": {
+       "left": {
+        "Life": "You"
+       },
+       "op": "Le",
+       "right": 15
+      }
+     },
+     "effects": [
+      {
+       "Draw": {}
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Healer"
+ },
+ {
+  "id": "hunters_mark",
+  "name": "Hunter's Mark",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Removal",
+  "price": 70,
+  "art": "hunters_mark",
+  "text": "At the beginning of your upkeep, Hunter's Mark deals 1 damage to up to one target creature an opponent controls.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "DealDamage": {
+        "to": {
+         "Target": 0
+        },
+        "amount": 1
+       }
+      }
+     ],
+     "targets": [
+      {
+       "what": {
+        "Object": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "Opponents"
+         }
+        ]
+       },
+       "bounds": {
+        "min": 0,
+        "max": 1
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "binding_chains",
+  "name": "Binding Chains",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Removal",
+  "price": 65,
+  "art": "binding_chains",
+  "text": "At the beginning of your upkeep, tap up to one target creature an opponent controls.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "Tap": {
+        "what": {
+         "Target": 0
+        }
+       }
+      }
+     ],
+     "targets": [
+      {
+       "what": {
+        "Object": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "Opponents"
+         }
+        ]
+       },
+       "bounds": {
+        "min": 0,
+        "max": 1
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "ruby_focus",
+  "name": "Ruby Focus",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Support",
+  "price": 55,
+  "art": "ruby_focus",
+  "text": "Red spells you cast cost {1} less to cast.",
+  "abilities": [
+   {
+    "CostModifier": {
+     "applies_to": [
+      "Spell",
+      {
+       "Color": "Red"
+      },
+      {
+       "ControlledBy": "You"
+      }
+     ],
+     "change": "Reduce",
+     "mana": "{1}"
+    }
+   }
+  ]
+ },
+ {
+  "id": "emerald_focus",
+  "name": "Emerald Focus",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Support",
+  "price": 55,
+  "art": "emerald_focus",
+  "text": "Green spells you cast cost {1} less to cast.",
+  "abilities": [
+   {
+    "CostModifier": {
+     "applies_to": [
+      "Spell",
+      {
+       "Color": "Green"
+      },
+      {
+       "ControlledBy": "You"
+      }
+     ],
+     "change": "Reduce",
+     "mana": "{1}"
+    }
+   }
+  ]
+ },
+ {
+  "id": "sapphire_focus",
+  "name": "Sapphire Focus",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Support",
+  "price": 55,
+  "art": "sapphire_focus",
+  "text": "Blue spells you cast cost {1} less to cast.",
+  "abilities": [
+   {
+    "CostModifier": {
+     "applies_to": [
+      "Spell",
+      {
+       "Color": "Blue"
+      },
+      {
+       "ControlledBy": "You"
+      }
+     ],
+     "change": "Reduce",
+     "mana": "{1}"
+    }
+   }
+  ]
+ },
+ {
+  "id": "pearl_focus",
+  "name": "Pearl Focus",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Support",
+  "price": 55,
+  "art": "pearl_focus",
+  "text": "White spells you cast cost {1} less to cast.",
+  "abilities": [
+   {
+    "CostModifier": {
+     "applies_to": [
+      "Spell",
+      {
+       "Color": "White"
+      },
+      {
+       "ControlledBy": "You"
+      }
+     ],
+     "change": "Reduce",
+     "mana": "{1}"
+    }
+   }
+  ]
+ },
+ {
+  "id": "jet_focus",
+  "name": "Jet Focus",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Support",
+  "price": 55,
+  "art": "jet_focus",
+  "text": "Black spells you cast cost {1} less to cast.",
+  "abilities": [
+   {
+    "CostModifier": {
+     "applies_to": [
+      "Spell",
+      {
+       "Color": "Black"
+      },
+      {
+       "ControlledBy": "You"
+      }
+     ],
+     "change": "Reduce",
+     "mana": "{1}"
+    }
+   }
+  ]
+ },
+ {
+  "id": "wildfire_pact",
+  "name": "Wildfire Pact",
+  "kind": "Relic",
+  "type_line": "Relic — Risky",
+  "role": "Risky",
+  "price": 0,
+  "art": "wildfire_pact",
+  "text": "All red spells cost {2} less to cast — including the boss's.",
+  "abilities": [
+   {
+    "CostModifier": {
+     "applies_to": [
+      "Spell",
+      {
+       "Color": "Red"
+      }
+     ],
+     "change": "Reduce",
+     "mana": "{2}"
+    }
+   }
+  ]
+ },
+ {
+  "id": "font_of_plenty",
+  "name": "Font of Plenty",
+  "kind": "Relic",
+  "type_line": "Relic — Risky",
+  "role": "Risky",
+  "price": 0,
+  "art": "font_of_plenty",
+  "text": "At the beginning of each player's draw step, that player draws an additional card — the boss too.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Draw"
+      }
+     },
+     "effects": [
+      {
+       "Draw": {
+        "who": "Triggering"
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "battle_frenzy",
+  "name": "Battle Frenzy",
+  "kind": "Relic",
+  "type_line": "Relic — Risky",
+  "role": "Risky",
+  "price": 0,
+  "art": "battle_frenzy",
+  "text": "All creatures get +2/+0 — the boss's too.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "ModifyPT": {
+        "power": 2,
+        "toughness": 0
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "skrix",
+  "name": "Skrix, the Rat Queen",
+  "kind": "Boss",
+  "type_line": "Boss — Rat Queen",
+  "art": "skrix",
+  "text": "Skrix starts with two extra cards and more life for each hero.\nAt the beginning of your upkeep, create a 1/1 black Rat creature token.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "CreateToken": {
+        "token": {
+         "Custom": {
+          "name": "Rat",
+          "colors": [
+           "Black"
+          ],
+          "types": [
+           "Creature"
+          ],
+          "subtypes": [
+           "Rat"
+          ],
+          "power": 1,
+          "toughness": 1
+         }
+        }
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "nest_stirs",
+  "name": "Phase II — The Nest Stirs",
+  "kind": "Phase",
+  "type_line": "Boss Phase",
+  "art": "nest_stirs",
+  "text": "At the beginning of your upkeep, create a 1/1 black Rat creature token.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "CreateToken": {
+        "token": {
+         "Custom": {
+          "name": "Rat",
+          "colors": [
+           "Black"
+          ],
+          "types": [
+           "Creature"
+          ],
+          "subtypes": [
+           "Rat"
+          ],
+          "power": 1,
+          "toughness": 1
+         }
+        }
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "plague_tide",
+  "name": "Phase III — Plague Tide",
+  "kind": "Phase",
+  "type_line": "Boss Phase",
+  "art": "plague_tide",
+  "text": "Creatures you control get +1/+0.\nAt the beginning of your end step, each opponent loses 1 life.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "ModifyPT": {
+        "power": 1,
+        "toughness": 0
+       }
+      }
+     ]
+    }
+   },
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "End",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "LoseLife": {
+        "who": "Opponents",
+        "amount": 1
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "mossjaw",
+  "name": "Old Mossjaw, Troll Patriarch",
+  "kind": "Boss",
+  "type_line": "Boss — Troll Patriarch",
+  "art": "mossjaw",
+  "text": "Mossjaw starts with two extra cards and more life for each hero.\nCreatures you control get +1/+1.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "ModifyPT": {
+        "power": 1,
+        "toughness": 1
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "regrowth",
+  "name": "Phase II — Regrowth",
+  "kind": "Phase",
+  "type_line": "Boss Phase",
+  "art": "regrowth",
+  "text": "At the beginning of your upkeep, you gain 3 life.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "GainLife": {
+        "amount": 3
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "primal_rage",
+  "name": "Phase III — Primal Rage",
+  "kind": "Phase",
+  "type_line": "Boss Phase",
+  "art": "primal_rage",
+  "text": "Creatures you control have trample and haste.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "AddKeyword": "Trample"
+      }
+     ]
+    }
+   },
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "AddKeyword": "Haste"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "vex",
+  "name": "Bonecaller Vex",
+  "kind": "Boss",
+  "type_line": "Boss — Bonecaller",
+  "art": "vex",
+  "text": "Vex starts with two extra cards and more life for each hero.\nAt the beginning of your end step, each opponent loses 1 life.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "End",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "LoseLife": {
+        "who": "Opponents",
+        "amount": 1
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "grave_tide",
+  "name": "Phase II — Grave Tide",
+  "kind": "Phase",
+  "type_line": "Boss Phase",
+  "art": "grave_tide",
+  "text": "At the beginning of your upkeep, create a 2/2 black Zombie creature token.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "CreateToken": {
+        "token": {
+         "Custom": {
+          "name": "Zombie",
+          "colors": [
+           "Black"
+          ],
+          "types": [
+           "Creature"
+          ],
+          "subtypes": [
+           "Zombie"
+          ],
+          "power": 2,
+          "toughness": 2
+         }
+        }
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "bone_storm",
+  "name": "Phase III — Bone Storm",
+  "kind": "Phase",
+  "type_line": "Boss Phase",
+  "art": "bone_storm",
+  "text": "Creatures you control have menace and get +1/+0.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "AddKeyword": "Menace"
+      }
+     ]
+    }
+   },
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "ModifyPT": {
+        "power": 1,
+        "toughness": 0
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "grimgut",
+  "name": "Grimgut, the Warren King",
+  "kind": "Boss",
+  "type_line": "Boss — Goblin King",
+  "art": "grimgut",
+  "text": "Grimgut starts with two extra cards and more life for each hero.\nAt the beginning of your upkeep, create a 1/1 red Goblin creature token with haste.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "CreateToken": {
+        "token": {
+         "Custom": {
+          "name": "Goblin",
+          "colors": [
+           "Red"
+          ],
+          "types": [
+           "Creature"
+          ],
+          "subtypes": [
+           "Goblin"
+          ],
+          "power": 1,
+          "toughness": 1,
+          "abilities": [
+           {
+            "Keyword": "Haste"
+           }
+          ]
+         }
+        }
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "warren_wakes",
+  "name": "Phase II — The Warren Wakes",
+  "kind": "Phase",
+  "type_line": "Boss Phase",
+  "art": "warren_wakes",
+  "text": "Creatures you control get +1/+0 and have haste.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "ModifyPT": {
+        "power": 1,
+        "toughness": 0
+       }
+      }
+     ]
+    }
+   },
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "AddKeyword": "Haste"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": "kings_last_stand",
+  "name": "Phase III — The King's Last Stand",
+  "kind": "Phase",
+  "type_line": "Boss Phase",
+  "art": "kings_last_stand",
+  "text": "At the beginning of your upkeep, draw a card.\nAt the beginning of your end step, each opponent loses 1 life.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "Draw": {}
+      }
+     ]
+    }
+   },
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "End",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "LoseLife": {
+        "who": "Opponents",
+        "amount": 1
+       }
+      }
+     ]
+    }
+   }
+  ]
+ }
+]

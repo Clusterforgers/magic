@@ -1410,6 +1410,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "mtg-campaign"
+version = "0.1.0"
+dependencies = [
+ "mtg-cards",
+ "mtg-core",
+ "mtg-engine",
+ "mtg-testkit",
+ "proptest",
+ "rstest",
+ "serde",
+ "serde_json",
+ "thiserror",
+]
+
+[[package]]
 name = "mtg-cards"
 version = "0.1.0"
 dependencies = [

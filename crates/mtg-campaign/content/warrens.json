@@ -1,0 +1,813 @@
+{
+ "id": "warrens",
+ "name": "The Warrens",
+ "text": "Grimgut, the Warren King, rules the tunnels under the old mines. Three of his lieutenants stand between the party and his throne.",
+ "events": [
+  {
+   "id": "goblin_toll",
+   "title": "The Goblin Toll",
+   "text": "A goblin with a crooked crown blocks a bridge and demands payment.",
+   "options": [
+    {
+     "label": "Pay 25 gold",
+     "outcomes": [
+      {
+       "Gold": -25
+      },
+      "CardPick"
+     ]
+    },
+    {
+     "label": "Push past (lose 8 life)",
+     "outcomes": [
+      {
+       "Life": -8
+      },
+      {
+       "Gold": 40
+      }
+     ]
+    },
+    {
+     "label": "Turn back",
+     "outcomes": []
+    }
+   ]
+  },
+  {
+   "id": "glittering_pool",
+   "title": "Glittering Pool",
+   "text": "Coins shine at the bottom of a cold, still pool.",
+   "options": [
+    {
+     "label": "Dive for the coins",
+     "outcomes": [
+      {
+       "Gamble": {
+        "odds": 60,
+        "win": [
+         {
+          "Gold": 60
+         }
+        ],
+        "lose": [
+         {
+          "Life": -8
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "label": "Leave it",
+     "outcomes": []
+    }
+   ]
+  },
+  {
+   "id": "trapped_miner",
+   "title": "The Trapped Miner",
+   "text": "A miner is pinned under fallen timber, begging for help.",
+   "options": [
+    {
+     "label": "Free him",
+     "outcomes": [
+      {
+       "Gold": 20
+      },
+      "Relic"
+     ]
+    },
+    {
+     "label": "Take his pack and go",
+     "outcomes": [
+      {
+       "Gold": 45
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "old_shrine",
+   "title": "An Old Shrine",
+   "text": "A forgotten shrine hums with warm light.",
+   "options": [
+    {
+     "label": "Pray",
+     "outcomes": [
+      {
+       "Life": 8
+      }
+     ]
+    },
+    {
+     "label": "Pry out the gems",
+     "outcomes": [
+      {
+       "Gold": 50
+      },
+      {
+       "Gamble": {
+        "odds": 50,
+        "win": [],
+        "lose": [
+         {
+          "Life": -8
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "rat_kings_hoard",
+   "title": "The Rat King's Hoard",
+   "text": "A tangle of rats guards a pile of trinkets.",
+   "options": [
+    {
+     "label": "Reach in",
+     "outcomes": [
+      {
+       "Gamble": {
+        "odds": 50,
+        "win": [
+         "Relic"
+        ],
+        "lose": [
+         {
+          "Life": -8
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "label": "Walk around",
+     "outcomes": []
+    }
+   ]
+  },
+  {
+   "id": "wandering_merchant",
+   "title": "Wandering Merchant",
+   "text": "A hooded figure offers a single wrapped card.",
+   "options": [
+    {
+     "label": "Buy it (30 gold)",
+     "outcomes": [
+      {
+       "Gold": -30
+      },
+      "CardPick"
+     ]
+    },
+    {
+     "label": "Decline",
+     "outcomes": []
+    }
+   ]
+  },
+  {
+   "id": "mushroom_grove",
+   "title": "Mushroom Grove",
+   "text": "Pale mushrooms glow in a damp cave. Some look edible.",
+   "options": [
+    {
+     "label": "Eat one",
+     "outcomes": [
+      {
+       "Gamble": {
+        "odds": 65,
+        "win": [
+         {
+          "Life": 8
+         }
+        ],
+        "lose": [
+         {
+          "Life": -8
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "label": "Gather them to sell",
+     "outcomes": [
+      {
+       "Gold": 25
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "collapsed_tunnel",
+   "title": "Collapsed Tunnel",
+   "text": "The way ahead is half buried. Digging through will take effort.",
+   "options": [
+    {
+     "label": "Dig through",
+     "outcomes": [
+      {
+       "Gold": 30
+      }
+     ]
+    },
+    {
+     "label": "Squeeze through the gap",
+     "outcomes": [
+      {
+       "Gamble": {
+        "odds": 70,
+        "win": [
+         "CardPick"
+        ],
+        "lose": [
+         {
+          "Life": -8
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "duelling_statue",
+   "title": "The Duelling Statue",
+   "text": "A stone warrior offers a challenge: strike true and claim its prize.",
+   "options": [
+    {
+     "label": "Accept the challenge",
+     "outcomes": [
+      {
+       "Gamble": {
+        "odds": 50,
+        "win": [
+         "Relic",
+         {
+          "Gold": 20
+         }
+        ],
+        "lose": [
+         {
+          "Life": -8
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "label": "Bow and leave",
+     "outcomes": [
+      {
+       "Gold": 10
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "campfire_tales",
+   "title": "Campfire Tales",
+   "text": "Another band of adventurers shares their fire and their stories.",
+   "options": [
+    {
+     "label": "Trade stories",
+     "outcomes": [
+      "CardPick"
+     ]
+    },
+    {
+     "label": "Trade supplies",
+     "outcomes": [
+      {
+       "Gold": 30
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "pool": [
+  [
+   "Swords to Plowshares",
+   "W"
+  ],
+  [
+   "Serra Angel",
+   "W"
+  ],
+  [
+   "Pacifism",
+   "W"
+  ],
+  [
+   "Path to Exile",
+   "W"
+  ],
+  [
+   "Ajani's Pridemate",
+   "W"
+  ],
+  [
+   "Glorious Anthem",
+   "W"
+  ],
+  [
+   "Banishing Light",
+   "W"
+  ],
+  [
+   "Wrath of God",
+   "W"
+  ],
+  [
+   "Counterspell",
+   "U"
+  ],
+  [
+   "Brainstorm",
+   "U"
+  ],
+  [
+   "Mulldrifter",
+   "U"
+  ],
+  [
+   "Mana Drain",
+   "U"
+  ],
+  [
+   "Ponder",
+   "U"
+  ],
+  [
+   "Opt",
+   "U"
+  ],
+  [
+   "Fact or Fiction",
+   "U"
+  ],
+  [
+   "Doom Blade",
+   "B"
+  ],
+  [
+   "Duress",
+   "B"
+  ],
+  [
+   "Pestilence",
+   "B"
+  ],
+  [
+   "Feed the Swarm",
+   "B"
+  ],
+  [
+   "Lightning Bolt",
+   "R"
+  ],
+  [
+   "Fireball",
+   "R"
+  ],
+  [
+   "Fiery Temper",
+   "R"
+  ],
+  [
+   "Blasphemous Act",
+   "R"
+  ],
+  [
+   "Chaos Warp",
+   "R"
+  ],
+  [
+   "Dragon Tempest",
+   "R"
+  ],
+  [
+   "Llanowar Elves",
+   "G"
+  ],
+  [
+   "Giant Growth",
+   "G"
+  ],
+  [
+   "Rancor",
+   "G"
+  ],
+  [
+   "Kodama's Reach",
+   "G"
+  ],
+  [
+   "Beast Within",
+   "G"
+  ],
+  [
+   "Cultivate",
+   "G"
+  ],
+  [
+   "Rampant Growth",
+   "G"
+  ],
+  [
+   "Prey Upon",
+   "G"
+  ],
+  [
+   "Lignify",
+   "G"
+  ],
+  [
+   "Eternal Witness",
+   "G"
+  ],
+  [
+   "Exploration",
+   "G"
+  ],
+  [
+   "Kolaghan's Command",
+   "BR"
+  ],
+  [
+   "Sol Ring",
+   ""
+  ],
+  [
+   "Arcane Signet",
+   ""
+  ],
+  [
+   "Swiftfoot Boots",
+   ""
+  ],
+  [
+   "Fellwar Stone",
+   ""
+  ],
+  [
+   "Skullclamp",
+   ""
+  ],
+  [
+   "Howling Mine",
+   ""
+  ]
+ ],
+ "bosses": [
+  {
+   "id": "skrix_nest",
+   "name": "Skrix, the Rat Queen",
+   "colors": "B",
+   "brain": "Hard",
+   "life": 30,
+   "life_per_hero": 15,
+   "hand": 9,
+   "line": "My children are hungry.",
+   "deck": [
+    [
+     "Swamp",
+     17
+    ],
+    [
+     "Sewer Rats",
+     3
+    ],
+    [
+     "Innocuous Rat",
+     3
+    ],
+    [
+     "Crypt Rats",
+     2
+    ],
+    [
+     "Ichor Rats",
+     2
+    ],
+    [
+     "Lord Skitter's Butcher",
+     2
+    ],
+    [
+     "Dirty Wererat",
+     2
+    ],
+    [
+     "Locust Miser",
+     1
+    ],
+    [
+     "Gnat Miser",
+     2
+    ],
+    [
+     "Doom Blade",
+     3
+    ],
+    [
+     "Duress",
+     1
+    ],
+    [
+     "Pestilence",
+     1
+    ],
+    [
+     "Dreaded Bat-Cloud",
+     1
+    ]
+   ],
+   "rules": [
+    "skrix"
+   ],
+   "phases": [
+    [
+     "nest_stirs",
+     66
+    ],
+    [
+     "plague_tide",
+     33
+    ]
+   ],
+   "final": false
+  },
+  {
+   "id": "mossjaw_hall",
+   "name": "Old Mossjaw, Troll Patriarch",
+   "colors": "G",
+   "brain": "Hard",
+   "life": 30,
+   "life_per_hero": 15,
+   "hand": 9,
+   "line": "Moss grows on the bones of the bold.",
+   "deck": [
+    [
+     "Forest",
+     17
+    ],
+    [
+     "Pygmy Troll",
+     3
+    ],
+    [
+     "Icehide Troll",
+     3
+    ],
+    [
+     "Ribtruss Roaster",
+     2
+    ],
+    [
+     "Thrun, Breaker of Silence",
+     1
+    ],
+    [
+     "Feasting Troll King",
+     1
+    ],
+    [
+     "Inexorable Blob",
+     2
+    ],
+    [
+     "Lone Wolf",
+     2
+    ],
+    [
+     "Dire Wolves",
+     2
+    ],
+    [
+     "Llanowar Elves",
+     3
+    ],
+    [
+     "Giant Growth",
+     2
+    ],
+    [
+     "Rancor",
+     1
+    ],
+    [
+     "Rampant Growth",
+     1
+    ]
+   ],
+   "rules": [
+    "mossjaw"
+   ],
+   "phases": [
+    [
+     "regrowth",
+     66
+    ],
+    [
+     "primal_rage",
+     33
+    ]
+   ],
+   "final": false
+  },
+  {
+   "id": "vex_crypt",
+   "name": "Bonecaller Vex",
+   "colors": "BR",
+   "brain": "Hard",
+   "life": 30,
+   "life_per_hero": 15,
+   "hand": 9,
+   "rules": [
+    "vex"
+   ],
+   "line": "Rise, all of you. Rise and feast.",
+   "deck": [
+    [
+     "Swamp",
+     9
+    ],
+    [
+     "Mountain",
+     8
+    ],
+    [
+     "Bolg's Company",
+     2
+    ],
+    [
+     "Hellhole Flailer",
+     2
+    ],
+    [
+     "Lightning Skelemental",
+     2
+    ],
+    [
+     "Kolaghan's Command",
+     2
+    ],
+    [
+     "Rakdos Charm",
+     1
+    ],
+    [
+     "Gutterbones",
+     2
+    ],
+    [
+     "Kjeldoran Dead",
+     2
+    ],
+    [
+     "Goblin Brawler",
+     2
+    ],
+    [
+     "Bile-Vial Boggart",
+     2
+    ],
+    [
+     "Lightning Bolt",
+     2
+    ],
+    [
+     "Doom Blade",
+     2
+    ],
+    [
+     "Death Tyrant",
+     1
+    ],
+    [
+     "Deep Goblin Skulltaker",
+     1
+    ]
+   ],
+   "phases": [
+    [
+     "grave_tide",
+     66
+    ],
+    [
+     "bone_storm",
+     33
+    ]
+   ],
+   "final": false
+  },
+  {
+   "id": "grimgut_court",
+   "name": "Grimgut, the Warren King",
+   "colors": "BR",
+   "brain": "Hard",
+   "life": 40,
+   "life_per_hero": 20,
+   "hand": 9,
+   "rules": [
+    "grimgut"
+   ],
+   "line": "Kneel, or be eaten. Or both!",
+   "phases": [
+    [
+     "warren_wakes",
+     66
+    ],
+    [
+     "kings_last_stand",
+     33
+    ]
+   ],
+   "deck": [
+    [
+     "Mountain",
+     9
+    ],
+    [
+     "Swamp",
+     8
+    ],
+    [
+     "Frogtosser Banneret",
+     2
+    ],
+    [
+     "Boggart Prankster",
+     1
+    ],
+    [
+     "Bolg's Company",
+     2
+    ],
+    [
+     "Dropkick Bomber",
+     2
+    ],
+    [
+     "Goblin Brawler",
+     2
+    ],
+    [
+     "Broadside Bombardiers",
+     2
+    ],
+    [
+     "Deep Goblin Skulltaker",
+     2
+    ],
+    [
+     "Goblin Arsonist",
+     1
+    ],
+    [
+     "Lightning Bolt",
+     2
+    ],
+    [
+     "Kolaghan's Command",
+     1
+    ],
+    [
+     "Rakdos Charm",
+     1
+    ],
+    [
+     "Doom Blade",
+     2
+    ],
+    [
+     "Fireball",
+     1
+    ],
+    [
+     "Heartless Hidetsugu",
+     1
+    ],
+    [
+     "Ogre Chitterlord",
+     1
+    ]
+   ],
+   "final": true
+  }
+ ]
+}
