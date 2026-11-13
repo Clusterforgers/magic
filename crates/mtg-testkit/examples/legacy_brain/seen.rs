@@ -250,6 +250,23 @@ impl<'a> Seen<'a> {
         self.visible(id).then(|| self.state.object(id)).flatten()
     }
 
+    /// The face-up card of `id`, when the seat may identify it.
+    pub fn card(&self, id: ObjectId) -> Option<&'a mtg_cards::CardDefinition> {
+        self.object(id)
+            .filter(|object| object.face_down().is_none())
+            .map(GameObject::card)
+    }
+
+    /// Whether `id` is a player's commander.
+    pub fn is_commander(&self, id: ObjectId) -> bool {
+        self.state.is_commander(id)
+    }
+
+    /// The combat damage the commander `id` has dealt `player` this game.
+    pub fn commander_damage(&self, id: ObjectId, player: PlayerId) -> u32 {
+        self.state.commander_damage(id, player)
+    }
+
     /// Who controls `id`, when the seat may identify it.
     pub fn controller(&self, id: ObjectId) -> Option<PlayerId> {
         self.object(id)?;

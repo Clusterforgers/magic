@@ -87,6 +87,7 @@ const MESSAGE_TYPES: Record<ServerMessage['type'], true> = {
   TakeBackAsked: true,
   TakeBackEnded: true,
   TakeBackRefused: true,
+  EndedByAdmin: true,
 }
 
 const ERROR_CODES: Record<ErrorCode, true> = {
@@ -742,6 +743,9 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
     case 'TakeBackRefused':
       if (!isTakeBackRefusal(v.reason)) return '"reason" is not a known take-back refusal'
       return { type, reason: v.reason }
+    case 'EndedByAdmin':
+      if (v.reason !== undefined && !isText(v.reason)) return '"reason" must be text when present'
+      return v.reason === undefined ? { type } : { type, reason: v.reason }
     default: {
       // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.
       const unhandled: never = type

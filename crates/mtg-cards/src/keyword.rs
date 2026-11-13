@@ -305,7 +305,8 @@ pub enum Keyword {
     },
     /// Devour (CR 702.82): as it enters, its controller may sacrifice any number of other permanents `of` matches, and it enters with `counters` +1/+1 counters for each.
     Devour {
-        /// The +1/+1 counters for each permanent sacrificed.
+        /// The +1/+1 counters for each permanent sacrificed; 0 is "Devour X, where X is the number of creatures devoured
+        /// this way" (the number sacrificed for each).
         counters: u32,
         /// What may be sacrificed: creatures, artifacts, lands or Foods.
         of: Selector,

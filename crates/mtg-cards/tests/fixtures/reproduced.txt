@@ -536,6 +536,7 @@ Dragonlord Ojutai
 Dragonspeaker Shaman
 Dragonstorm Globe
 Dragonwing Glider
+Dralnu, Lich Lord
 Dramatist's Puppet
 Dread Fugue
 Dreadship Reef
@@ -752,6 +753,7 @@ Fury Storm
 Fíli the Pathfinder
 Gadwick, the Wizened
 Gaea's Cradle
+Gaea's Liege
 Gaea's Might
 Galactic Wayfarer
 Galadhrim Brigade
@@ -971,6 +973,7 @@ Ilysian Caryatid
 Imi Statue
 Immoral Bargain
 Imperial Hellkite
+Imperiosaur
 Imperious Oligarch
 Imposter Mech
 Impostor of the Sixth Pride
@@ -1300,6 +1303,7 @@ Muscle Sliver
 Mutavault
 Mycoloth
 Myr Retriever
+Myr Superion
 Myriad Landscape
 Mystic Confluence
 Mystic Gate
@@ -2006,6 +2010,7 @@ The Parting of the Ways
 The Prismatic Piper
 The Scorpion God
 The Seriema
+The Serpent Society
 The Spear of Bashenga
 The Squadron Sinister
 The Thing, Ben Grimm
@@ -2038,6 +2043,7 @@ Thriving Isle
 Thriving Moor
 Throatseeker
 Throes of Chaos
+Thromok the Insatiable
 Throne of Eldraine
 Throne of Makindi
 Throne of the High City

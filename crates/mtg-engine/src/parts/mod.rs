@@ -122,6 +122,8 @@ pub(crate) enum Part {
     Damage(u32),
     /// Each other player gains this much life.
     OthersGainLife(u32),
+    /// The payer gets this many poison counters.
+    Poison(u32),
     /// The source stops being attached.
     Unattach,
     /// The payer discards every card in their hand ("Discard your hand"): nothing to choose, an empty hand pays it.
@@ -263,6 +265,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
         }
         CostItem::Unattach => (Part::Unattach, false),
         CostItem::OthersGainLife(amount) => (Part::OthersGainLife(*amount), false),
+        CostItem::GetPoison(amount) => (Part::Poison(*amount), false),
         CostItem::TapPower { filter, power } => {
             let count = usize::try_from(*power).unwrap_or(usize::MAX);
             let kind = Kind::TapPower;
@@ -474,6 +477,7 @@ impl Part {
                 Part::DiscardRandom(_) => Part::DiscardRandom(x),
                 Part::Damage(_) => Part::Damage(x),
                 Part::OthersGainLife(amount) => Part::OthersGainLife(*amount),
+                Part::Poison(amount) => Part::Poison(*amount),
                 Part::ExileTop(_) => Part::ExileTop(x),
                 Part::Unattach => Part::Unattach,
                 Part::DiscardHand => Part::DiscardHand,
@@ -556,6 +560,7 @@ impl Part {
             | Part::RevealHand
             | Part::SacrificeAll(_)
             | Part::OthersGainLife(_)
+            | Part::Poison(_)
             | Part::X(_) => return None,
         };
         Some(number)
@@ -571,6 +576,7 @@ impl Part {
             Part::DiscardRandom(_) => "Cost.DiscardRandom",
             Part::Damage(_) => "Cost.DamageToYou",
             Part::OthersGainLife(_) => "Cost.OthersGainLife",
+            Part::Poison(_) => "Cost.GetPoison",
             Part::Unattach => "Cost.Unattach",
             Part::DiscardHand => "Cost.Discard",
             Part::RevealHand => "Cost.RevealFromHand",
@@ -616,6 +622,7 @@ impl Part {
             }
             Part::Damage(amount) => format!("Take {amount} damage"),
             Part::OthersGainLife(amount) => format!("Each other player gains {amount} life"),
+            Part::Poison(amount) => format!("Get {amount} poison counters"),
             Part::Unattach => "Unattach this permanent".to_owned(),
             Part::DiscardHand => "Discard your hand".to_owned(),
             Part::RevealHand => "Reveal your hand".to_owned(),
@@ -673,7 +680,9 @@ impl Part {
             Part::DiscardRandom(amount) => random::payable(payer, *amount).then(Vec::new),
             Part::Damage(_) => payer.state.object(payer.source).is_some().then(Vec::new),
             Part::Unattach => unattach::payable(payer).then(Vec::new),
-            Part::DiscardHand | Part::RevealHand | Part::OthersGainLife(_) => Some(Vec::new()),
+            Part::DiscardHand | Part::RevealHand | Part::OthersGainLife(_) | Part::Poison(_) => {
+                Some(Vec::new())
+            }
             Part::SacrificeAll(filter) => r303c_sacrifice_all::r303c_all(payer, filter),
             Part::ExileTop(amount) => exile_top::payable(payer, *amount).then(Vec::new),
             Part::Pick(pick) if pick.kind == Kind::Evidence => {
@@ -747,6 +756,7 @@ impl Part {
             Part::DiscardRandom(amount) => random::events(state, player, *amount),
             Part::Damage(amount) => damage::events(state, player, source, *amount),
             Part::OthersGainLife(amount) => r286_others_gain(state, player, *amount),
+            Part::Poison(amount) => r4705_poison(player, *amount),
             Part::Unattach => vec![unattach::event(source)],
             Part::SacrificeAll(filter) => r303c_sacrifice_all::r303c_events(
                 &r303c_sacrifice_all::r303c_payer(state, player, source),
@@ -1191,6 +1201,22 @@ const fn own_part(item: &CostItem) -> &'static str {
 }
 
 /// The life each other player still in the game gains as the cost is paid; one who can't gain life gains none.
+/// The payer gets `amount` poison counters ("Ward—Get five poison counters.").
+fn r4705_poison(payer: PlayerId, amount: u32) -> Vec<Event> {
+    i32::try_from(amount)
+        .ok()
+        .filter(|delta| *delta > 0)
+        .map(|delta| {
+            Event::CountersChanged(crate::counters::CountersChanged {
+                on: crate::choose::Target::Player(payer),
+                counter: CounterKind::Poison,
+                delta,
+            })
+        })
+        .into_iter()
+        .collect()
+}
+
 fn r286_others_gain(state: &GameState, payer: PlayerId, amount: u32) -> Vec<Event> {
     if amount == 0 {
         return Vec::new();

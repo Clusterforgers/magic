@@ -1,0 +1,14 @@
+{
+  "oracle_id": "e9ced5d8-8337-403f-86a3-bddb9c77d658",
+  "name": "Imperiosaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Imperiosaur",
+      "oracle_fingerprint": "efb05a48a58459d146298ad8473f3e55",
+      "abilities": [
+        { "Rule": { "rule": { "SpendOnlyFrom": { "types": ["Land"], "supertypes": ["Basic"] } } } }
+      ]
+    }
+  ]
+}

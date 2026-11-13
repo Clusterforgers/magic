@@ -1252,7 +1252,7 @@ pub enum ReplaceBy {
     },
     /// Devour (CR 702.82): as the permanent enters, its controller may sacrifice any number of other permanents they control that match the selector, and it enters with this many +1/+1 counters for each.
     Devour {
-        /// The +1/+1 counters for each permanent sacrificed.
+        /// The +1/+1 counters for each permanent sacrificed; 0 is the number sacrificed for each ("Devour X").
         counters: u32,
         /// The permanents that may be sacrificed.
         of: Selector,
