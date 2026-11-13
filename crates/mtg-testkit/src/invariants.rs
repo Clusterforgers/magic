@@ -1374,7 +1374,9 @@ impl InvariantChecker {
                         .iter()
                         .any(|(_, rules)| matches!(**rules, Ability::InstantActivation { .. }))
             });
-        if instant_too {
+        // An emblem may let its owner activate loyalty abilities any time they could cast an instant (Teferi's Talent).
+        let loyalty_open = loyalty && mtg_engine::rules::loyalty_any_time(&self.shadow, player);
+        if instant_too || loyalty_open {
             return Ok(());
         }
         let turn = self.shadow.turn();

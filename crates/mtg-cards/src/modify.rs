@@ -890,6 +890,17 @@ pub enum GameRule {
     /// The players may activate the loyalty abilities of planeswalkers they control twice each turn rather than only
     /// once (CR 606.3).
     LoyaltyTwice(Ref),
+    /// The players may activate loyalty abilities of planeswalkers they control on any player's turn any time they could
+    /// cast an instant (Teferi's Talent's emblem).
+    LoyaltyAnyTime(Ref),
+    /// Loyalty abilities of planeswalkers the players activate cost an additional `[+plus]` to activate ("Planeswalkers'
+    /// loyalty abilities you activate cost an additional [+1] to activate.").
+    LoyaltyCostsMore {
+        /// The players who activate.
+        who: Ref,
+        /// The loyalty counters the cost adds.
+        plus: u32,
+    },
     /// The players' maximum hand size is `size` (CR 402.2): the least of the sizes in force.
     MaxHandSize {
         /// The players.
@@ -959,6 +970,9 @@ pub enum GameRule {
     /// "You can't spend mana to cast this spell.": the cast of the card offers no mana of the pool and no mana ability, so
     /// only what pays without mana (convoke, delve) pays its cost; no `from`.
     CantSpendMana,
+    /// "Spend only mana produced by basic lands to cast this spell.": the cast of the card spends only mana whose source
+    /// the filter holds for, from the pool or from mana abilities of such sources; no `from`.
+    SpendOnlyFrom(crate::spend::SpendFilter),
     /// The next spell the rule's controller casts that `what` selects gets the benefit, and the rule ends with that cast
     /// ("the next creature spell you cast this turn costs {1} less"); with the duration `UntilEndOfTurn` it also ends with
     /// the turn. `what` names the cards, not the stack object (no `Spell`).

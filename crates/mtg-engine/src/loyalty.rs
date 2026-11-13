@@ -54,16 +54,20 @@ pub(crate) fn can_activate(
     cost: LoyaltyCost,
 ) -> bool {
     if object.zone() != Zone::Battlefield
-        || !sorcery_timing(state, player)
+        || !(sorcery_timing(state, player) || crate::rules::loyalty_any_time(state, player))
         || state.loyalty_spent(object.reference())
     {
         return false;
     }
+    let more = crate::rules::loyalty_costs_more(state, player);
     match cost {
         LoyaltyCost::Plus(_) | LoyaltyCost::Zero | LoyaltyCost::MinusX => true,
-        LoyaltyCost::Minus(removed) => object
-            .permanent()
-            .is_some_and(|permanent| permanent.counters_of(&CounterKind::Loyalty) >= removed),
+        LoyaltyCost::Minus(removed) => object.permanent().is_some_and(|permanent| {
+            permanent
+                .counters_of(&CounterKind::Loyalty)
+                .saturating_add(more)
+                >= removed
+        }),
     }
 }
 
@@ -76,10 +80,25 @@ pub(crate) fn paid_change(cost: LoyaltyCost, x: Option<u32>) -> Option<i32> {
     }
 }
 
+/// [`paid_change`] with the counters a rule adds to the cost (Carth the Lion's additional `[+1]`).
+pub(crate) fn paid_change_with(cost: LoyaltyCost, x: Option<u32>, more: u32) -> Option<i32> {
+    paid_change(cost, x)?.checked_add(i32::try_from(more).ok()?)
+}
+
 /// The change of counters that pays `cost` on `object`, with the X announced for a `-X`; `None` when the cost
 /// changes nothing (`0`, `-0`) or has no number yet.
 pub(crate) fn payment(object: &GameObject, cost: LoyaltyCost, x: Option<u32>) -> Option<Event> {
-    let delta = paid_change(cost, x).filter(|delta| *delta != 0)?;
+    payment_with(object, cost, x, 0)
+}
+
+/// [`payment`] with the counters a rule adds to the cost (Carth the Lion's additional `[+1]`).
+pub(crate) fn payment_with(
+    object: &GameObject,
+    cost: LoyaltyCost,
+    x: Option<u32>,
+    more: u32,
+) -> Option<Event> {
+    let delta = paid_change_with(cost, x, more).filter(|delta| *delta != 0)?;
     Some(Event::CountersChanged(CountersChanged {
         on: Target::Object(object.reference()),
         counter: CounterKind::Loyalty,

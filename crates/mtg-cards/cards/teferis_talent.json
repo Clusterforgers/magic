@@ -1,7 +1,7 @@
 {
   "oracle_id": "efc23669-1bbb-487f-94b3-cc07f3cd35f6",
   "name": "Teferi's Talent",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Teferi's Talent",
@@ -9,9 +9,24 @@
       "abilities": [
         { "Keyword": { "Enchant": [{ "Type": "Planeswalker" }] } },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 21, "end": 202 }
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Loyalty": {
+                    "cost": { "Minus": 12 },
+                    "effects": [
+                      {
+                        "CreateEmblem": {
+                          "abilities": [{ "Rule": { "rule": { "LoyaltyAnyTime": "You" } } }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
           }
         },
         {

@@ -59,6 +59,8 @@ mod e16b_as_cast;
 mod e17a_until_cast;
 mod e18a_first_free;
 mod e19_ward_costs;
+mod r4705_spend_from;
+mod r4705_ward_poison;
 mod embalm;
 mod encore;
 mod energy_payments;

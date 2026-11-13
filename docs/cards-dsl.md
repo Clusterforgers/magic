@@ -303,6 +303,11 @@ A copy effect gives an object the copiable values of another (`CreateToken` with
 | Turn-up X | A morph, megamorph or disguise cost with `{X}` asks X as the permanent is turned face up; `TurnedFaceUp.x` carries it to "when this creature is turned face up" (`Keyword.TurnUp.X`, `r409_turn_up_x.rs`). |
 | Tokens with a mana cost | `TokenSpec.mana_cost` gives a token a mana cost of its own, its colours read from it (the predefined Spellgorger Weird). |
 | Loyalty twice | `GameRule::LoyaltyTwice(who)` lets the players activate each planeswalker's loyalty abilities twice each turn (Oath of Teferi; for the turn as an `Effect::Rule`, Urza Assembles the Titans; `r409_loyalty_twice.rs`). |
+| Loyalty at instant speed, at a price | `GameRule::LoyaltyAnyTime(who)` lets the players activate loyalty abilities whenever they could cast an instant (Teferi's Talent's emblem); `GameRule::LoyaltyCostsMore { who, plus }` adds `[+plus]` to each loyalty cost they pay, so a `[−3]` removes two counters and needs two (Carth the Lion). |
+| Devour X | `Devour { counters: 0 }` is "Devour X, where X is the number of creatures devoured this way": X counters for each, X² in all (`Keyword.Devour.X`). |
+| Spending only some mana | `GameRule::SpendOnlyFrom(filter)` ("Spend only mana produced by basic lands to cast this spell.") offers the cast only the pool's mana whose known source the filter holds for and the mana abilities of such sources (`r4705_spend_from.rs`). |
+| Poison as a cost | `CostItem::GetPoison(n)` ("Ward—Get five poison counters.") gives the payer n poison counters. |
+| Keywords of graveyard cards | A `Continuous` that only adds keywords reaches a card in a graveyard and lasts while it stays there ("Target instant or sorcery card in your graveyard gains flashback until end of turn."). |
 
 ## Validation
 
@@ -319,6 +324,7 @@ Errors name the file and the path inside it; all are collected.
 - The oracle-text compiler (`compile/`) writes `Card`s with `mtg_cards::load::canonical`, validated by the same functions, with the fingerprint of the text it read.
 - `compile::compile(&PrintedCard) -> Compiled { card, clauses }` is pure: reminder text and the card's own name (`~`) are stripped with a map back to the original text, and the text splits into clauses. Templates live in `compile/read/`, one module per family of wording, each with goldens and near-misses in `compile/read/tests/`.
 - Every reader has a writer (`compile/read/render/`). The checker accepts a proposal only when the writer reproduces the printed clause; wordings only the checker needs live in `render/oracle_only/`.
+- `r4705_wholes.json` pairs whole abilities with the one wording a card prints; the reader (`r4705_reads`) reads exactly that wording, of any clause kind, and the writer writes it back, so a near miss of the data reads as other text.
 - A last-resort pass (`written_memo::or_last_resort`) writes shapes whose wordings would hide another writer's only for an ability nothing else writes, so a known wording never turns into `Differs`.
 - The object of the event as the object of a step ("destroy it", "counter that spell") is written from the twin acting on the card, its "~" renamed after the trigger's head (`wf25_writers`); "it" stands only where nothing else names the card, and "that <noun>" only for a noun the head says.
 - Many shapes are written from a twin another writer words, with one part changed (`wf26_writers`, `wf27_writers`, `r280_steps`, `oracle_only/r280_wordings`; e.g. a card chosen from a revealed hand, never a "permanent"). Two steps joined by "and" read the same in either order, and an ability name of up to forty letters is flavor to the checker as to the compiler.

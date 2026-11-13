@@ -102,12 +102,17 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Err(wrong_effect("Continuous"));
     };
     let state = cx.state();
+    // A card in a graveyard gains a keyword while it stays there ("gains flashback until end of turn").
+    let keywords_only = mods.iter().all(|wanted| matches!(wanted, Wanted::AddKeyword(_)));
     let named: Vec<ObjectRef> = cx
         .scope
         .live_objects(affected)?
         .into_iter()
         // A spell on the stack counts: what it gains stays with the permanent it becomes (CR 608.3, `follow_spell`).
-        .filter(|object| matches!(object.zone(), Zone::Battlefield | Zone::Stack))
+        .filter(|object| {
+            matches!(object.zone(), Zone::Battlefield | Zone::Stack)
+                || (keywords_only && matches!(object.zone(), Zone::Graveyard(_)))
+        })
         .map(GameObject::reference)
         .collect();
     if named.is_empty() {

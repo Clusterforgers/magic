@@ -3088,9 +3088,15 @@ impl Pass<'_> {
         if let Some(slot) = self.slots.get_mut(entering) {
             slot.applied.clone_from(&applied);
         }
+        // "Devour X, where X is the number of creatures devoured this way" is `counters` 0.
+        let each = if *counters == 0 {
+            u32::try_from(made).unwrap_or(u32::MAX)
+        } else {
+            *counters
+        };
         let gained = u32::try_from(made)
             .ok()
-            .and_then(|made| made.checked_mul(*counters))
+            .and_then(|made| made.checked_mul(each))
             .and_then(|total| i32::try_from(total).ok())
             .filter(|total| *total > 0);
         if let Some(slot) = w7e_devoured_slot(object, made) {

@@ -313,6 +313,10 @@ fn read_clause(
     x_free: bool,
     (own, partners): (&read::Own, Partners<'_>),
 ) -> (Option<Ability>, Vec<Ability>) {
+    // A wording of the r47-05 table reads whole whatever its kind and reminder text.
+    if let Some(found) = read::r4705_whole(text) {
+        return (Some(found), Vec::new());
+    }
     match kind {
         ClauseKind::Keyword => {
             // `check_printed` accepts Enchant on an Aura only.
@@ -518,7 +522,8 @@ fn is_unread_keyword_line(text: &str, kind: ClauseKind, x_free: bool, own: &read
         && !clauses::is_station_block(text)
         && !text.contains('\n')
         && !text.trim_end().ends_with(['.', '"', '\u{201d}'])
-        && read::clause_with(text, kind, x_free, own).is_none()
+        && (read::clause_with(text, kind, x_free, own).is_none()
+            || matches!(read::r4705_whole(text), Some(Ability::Keyword(_))))
 }
 
 /// The face name, and for a legendary face the part of the name before the comma.

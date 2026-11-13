@@ -138,8 +138,9 @@ pub(crate) fn activation_events(
         // The loyalty counters of the cost are paid first (CR 606.4); the source stays, and the ability remembers it as it
         // stands once they are paid.
         Ability::Loyalty { cost, .. } => {
-            let delta = loyalty::paid_change(*cost, choices.x)?;
-            if let Some(paid) = loyalty::payment(source, *cost, choices.x) {
+            let more = crate::rules::loyalty_costs_more(state, player);
+            let delta = loyalty::paid_change_with(*cost, choices.x, more)?;
+            if let Some(paid) = loyalty::payment_with(source, *cost, choices.x, more) {
                 events.push(paid);
                 loyalty::after_payment(&mut before.counters, delta);
             }
@@ -193,7 +194,8 @@ pub(crate) fn payment_decision(
     let pool = if crate::r400_no_mana::r400_no_mana(state, object) {
         crate::mana::ManaPool::default()
     } else {
-        seat.mana().clone()
+        crate::r4705_spend_from::r4705_pool(state, object, seat.mana())
+            .unwrap_or_else(|| seat.mana().clone())
     };
     let narrowed = match crate::mana_takes::for_card(state, &sources, object) {
         std::borrow::Cow::Owned(narrowed) => Some(narrowed),
