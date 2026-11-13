@@ -1,7 +1,7 @@
 {
   "oracle_id": "7240037f-ddea-425e-9824-866e2bb0dc84",
   "name": "Teferi, Timeless Voyager",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Teferi, Timeless Voyager",
@@ -18,9 +18,17 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 72, "end": 251 }
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "PhaseOut": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "held": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
           }
         }
       ]

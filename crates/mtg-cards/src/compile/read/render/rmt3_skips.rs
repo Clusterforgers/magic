@@ -1,6 +1,6 @@
 //! A skip of the next step or combat phase of a player's turn: "You skip your next untap step.", "Target player skips
 //! their next draw step.", "That player skips their next untap step." and "Target player skips their next combat phase
-//! this turn." (`Duration::UntilSkipped`).
+//! this turn." (`Duration::UntilSkipped`), and "Target player skips all combat phases of their next turn."
 
 use super::{Effect, Ref, Writer};
 use crate::modify::{Duration, GameRule, Prohibited};
@@ -17,6 +17,9 @@ impl Writer<'_> {
         else {
             return None;
         };
+        if *duration == Duration::TheirNextTurn {
+            return self.r377_skip_next_turn(who, action);
+        }
         let turn = match duration {
             Duration::UntilSkipped => "",
             Duration::UntilSkippedThisTurn => " this turn",
@@ -39,5 +42,19 @@ impl Writer<'_> {
             other => self.player(other)?,
         };
         Some(format!("{subject} skips their next {what}{turn}"))
+    }
+
+    /// "Target player skips all combat phases of their next turn." (`Duration::TheirNextTurn`).
+    fn r377_skip_next_turn(&mut self, who: &Ref, action: &Prohibited) -> Option<String> {
+        if *action != Prohibited::SkipCombat {
+            return None;
+        }
+        if *who == Ref::You {
+            return Some("you skip all combat phases of your next turn".to_owned());
+        }
+        let subject = self.player(who)?;
+        Some(format!(
+            "{subject} skips all combat phases of their next turn"
+        ))
     }
 }

@@ -1,7 +1,7 @@
 {
   "oracle_id": "92de7cf0-ac3e-46ae-86b2-7d8ebb0276e4",
   "name": "A Good Day to Pie",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "A Good Day to Pie",
@@ -16,9 +16,12 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 32, "end": 137 }
+          "Triggered": {
+            "when": {
+              "Did": { "action": "PutNameSticker", "who": "You", "what": [{ "Type": "Creature" }] }
+            },
+            "from": "Graveyard",
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
           }
         }
       ]

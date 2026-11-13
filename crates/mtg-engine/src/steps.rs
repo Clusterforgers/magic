@@ -532,6 +532,7 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
             .filter(|e| ends_with_turn(state, &e.duration, e.turn, e.controller))
             .map(|e| Event::RuleExpired { id: e.id }),
     );
+    events.extend(crate::r377_skips::r377_their_turn_over(state));
     // "Until end of turn" copy effects end with the other effects of the turn (CR 514.2).
     events.extend(
         state
@@ -543,6 +544,7 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
             .map(|o| Event::CopyEnded {
                 object: o.id(),
                 next_turn_of: None,
+                attached_by: None,
             }),
     );
     events.extend(pool_emptying(state, ManaLasts::Turn));

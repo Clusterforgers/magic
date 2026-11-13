@@ -82,6 +82,18 @@ fn is_card_adjective(pred: &Pred) -> bool {
     }
 }
 
+/// What a card a search finds is said to have after "card": "with mana value 3 or less", "with flying", "with mana cost
+/// {0} or {1}".
+fn is_card_suffix(pred: &Pred) -> bool {
+    match pred {
+        Pred::Compare { .. } | Pred::HasKeyword(_) | Pred::GenericCost(_) => true,
+        Pred::AnyOf(costs) => costs
+            .iter()
+            .all(|pred| matches!(pred, Pred::GenericCost(_))),
+        _ => false,
+    }
+}
+
 /// One predicate or an `AnyOf` of several.
 fn one_of(mut preds: Vec<Pred>) -> Pred {
     if preds.len() == 1 {
@@ -165,10 +177,7 @@ pub(super) fn filter(r: &mut Reader<'_>, plural: bool) -> Option<Selector> {
     if plural && let Some(lands) = r.attempt(|r| lands_and_or(r, &preds)) {
         return Some(lands);
     }
-    if let Some(extra) = r.attempt(|r| {
-        suffix(r, Form::Subject)
-            .filter(|pred| matches!(pred, Pred::Compare { .. } | Pred::HasKeyword(_)))
-    }) {
+    if let Some(extra) = r.attempt(|r| suffix(r, Form::Subject).filter(is_card_suffix)) {
         preds.push(extra);
     }
     Some(Selector(preds))
@@ -598,7 +607,7 @@ pub(super) fn filter_text(filter: &Selector, plural: bool) -> Option<String> {
             }
             stage = slot;
             head.push(text);
-        } else if matches!(pred, Pred::Compare { .. } | Pred::HasKeyword(_)) {
+        } else if is_card_suffix(pred) {
             tail.push(suffix_text(pred, Form::Subject)?);
         } else if let Pred::Named(name) = pred {
             // "a card named Avarax" (r7c); the name of the face itself reads as `~` in the clause.

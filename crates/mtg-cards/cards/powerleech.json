@@ -1,0 +1,30 @@
+{
+  "oracle_id": "877d42be-f74d-4521-87b7-bb59824d0acc",
+  "name": "Powerleech",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Powerleech",
+      "oracle_fingerprint": "136809dda9bf26592af1841eadea749c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Tapped": { "what": [{ "Type": "Artifact" }, { "ControlledBy": "Opponents" }] } },
+                {
+                  "Did": {
+                    "action": "ActivatedWithoutTap",
+                    "who": "Opponents",
+                    "what": [{ "Type": "Artifact" }]
+                  }
+                }
+              ]
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

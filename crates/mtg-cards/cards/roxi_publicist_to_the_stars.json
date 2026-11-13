@@ -1,7 +1,7 @@
 {
   "oracle_id": "5e24a352-7c90-458b-9bb2-bd4bc22bc748",
   "name": "Roxi, Publicist to the Stars",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Roxi, Publicist to the Stars",
@@ -9,15 +9,42 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 152 }
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Sum": [
+                      { "Count": [{ "WithSticker": "Art" }, { "ControlledBy": "You" }] },
+                      {
+                        "Count": [
+                          { "WithSticker": "Art" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" }
+                        ]
+                      }
+                    ]
+                  },
+                  "toughness": 4
+                }
+              }
+            ],
+            "defining": true
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 153, "end": 249 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "PutSticker": {
+                  "on": [{ "Not": { "Type": "Land" } }, { "OwnedBy": "You" }],
+                  "kind": "Art",
+                  "up_to": 2
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "0623c51a-e829-413f-a3a0-817c0902821e",
+  "name": "Call Forth the Tempest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Call Forth the Tempest",
+      "oracle_fingerprint": "76ac5f196cc8742954c916af5e9ca76a",
+      "abilities": [
+        { "Keyword": "Cascade" },
+        { "Keyword": "Cascade" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "amount": {
+                    "TallyTotal": {
+                      "event": "SpellCast",
+                      "who": "You",
+                      "filter": ["Other"],
+                      "stat": "ManaValue"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

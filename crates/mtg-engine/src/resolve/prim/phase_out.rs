@@ -3,9 +3,15 @@
 use mtg_cards::effect::Effect;
 use mtg_cards::modify::Duration;
 
+use mtg_cards::modify::Prohibited;
+use mtg_core::ids::EffectId;
+
 use super::wrong_effect;
+use crate::choose::Target;
+use crate::events::Event;
 use crate::object::GameObject;
 use crate::resolve::{Cx, ResolveError, Run};
+use crate::rules::{Rule, RuleEffect};
 use crate::zones::Zone;
 
 /// Each permanent the effect names that is on the battlefield phases out, all together in the order the reference lists
@@ -17,6 +23,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         what,
         duration,
         tapped,
+        held,
     } = effect
     else {
         return Err(wrong_effect("PhaseOut"));
@@ -43,9 +50,42 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .filter(|object| object.zone() == Zone::Battlefield)
         .map(GameObject::id)
         .collect();
-    Ok(Run::events(crate::phasing::w11b_out_events(
-        cx.state(),
-        &named,
-        hold,
-    )))
+    let mut events = crate::phasing::w11b_out_events(cx.state(), &named, hold);
+    if let Some(held) = held {
+        events.extend(held_rule(cx, &events, held));
+    }
+    Ok(Run::events(events))
+}
+
+/// The rule that the permanents the effect itself phased out (not what went with them) can't phase in while `held`
+/// lasts; none when nothing phased out.
+fn held_rule(cx: &Cx<'_>, events: &[Event], held: &Duration) -> Option<Event> {
+    let state = cx.state();
+    let who: Vec<Target> = events
+        .iter()
+        .filter_map(|event| match event {
+            Event::PermanentPhasedOut {
+                object,
+                indirect: false,
+                ..
+            } => state.object(*object).map(|o| Target::Object(o.reference())),
+            _ => None,
+        })
+        .collect();
+    if who.is_empty() {
+        return None;
+    }
+    Some(Event::RuleCreated {
+        effect: Box::new(RuleEffect {
+            id: EffectId(state.next_effect),
+            rule: Rule::Cant {
+                who,
+                action: Box::new(Prohibited::PhaseIn),
+            },
+            duration: held.clone(),
+            source: Some(cx.scope.source),
+            controller: cx.controller(),
+            turn: crate::effects::began_turn(state, held, cx.controller()),
+        }),
+    })
 }

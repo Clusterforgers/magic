@@ -96,10 +96,11 @@ fn pictures_of(deck: &PreconDeckDetail) -> Vec<DeckPicture> {
         deck.entries
             .iter()
             .filter(move |entry| entry.board == board)
-            .filter_map(|entry| entry.card.as_ref())
-            .map(|card| DeckPicture {
+            .filter_map(|entry| entry.card.as_ref().map(|card| (entry, card)))
+            .map(|(entry, card)| DeckPicture {
                 oracle_id: card.oracle_id.to_string(),
                 name: card.name.clone(),
+                printing_id: entry.printing_id.as_ref().map(ToString::to_string),
             })
     };
     let leaders: Vec<DeckPicture> = cards(DeckBoard::Commander)

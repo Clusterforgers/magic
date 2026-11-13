@@ -208,6 +208,9 @@ impl Held {
         if suspected && !keywords.contains(&Keyword::Menace) {
             keywords.push(Keyword::Menace);
         }
+        if crate::r372_suspend::cast_hasty(object) && !keywords.contains(&Keyword::Haste) {
+            keywords.push(Keyword::Haste);
+        }
         let chars = base(object);
         Held {
             id,
@@ -455,6 +458,8 @@ impl Held {
             | Modification::SwitchPowerToughness
             | Modification::CantAttack
             | Modification::CantAttackYou { .. }
+            | Modification::CantAttackOwner { .. }
+            | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
             | Modification::DoesntUntap
             | Modification::CantBeTurnedFaceUp
@@ -463,6 +468,7 @@ impl Held {
             | Modification::CanBlockOnly { .. }
             | Modification::MinBlockers(_)
             | Modification::MaxBlockers(_)
+            | Modification::BlockedByAll
             | Modification::BlocksAdditional(_)
             | Modification::Goaded { .. } => {}
         }
@@ -549,6 +555,7 @@ impl GameState {
     pub(crate) fn layers(&self) -> &Layers {
         let nothing_to_derive = self.effects.is_empty()
             && self.ring.is_empty()
+            && self.un34.on.is_empty()
             && !self.statics_possible
             && !self.possible.counters
             && !self.possible.suspected;
@@ -753,6 +760,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::AddSupertype(_)
         | Wanted::SetName(_)
         | Wanted::ThisAbility
+        | Wanted::SetLoyalty(_)
         | Wanted::AddSubtype(_)
         | Wanted::SetCreatureTypes(_)
         | Wanted::SetLandTypes(_)
@@ -785,6 +793,8 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         Wanted::SwitchPT => Layer::PtSwitch,
         Wanted::CantAttack
         | Wanted::CantAttackYou(_)
+        | Wanted::CantAttackOwner(_)
+        | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
         | Wanted::DoesntUntap
         | Wanted::CantBeTurnedFaceUp
@@ -793,6 +803,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::CanBlockOnly(_)
         | Wanted::MinBlockers(_)
         | Wanted::MaxBlockers(_)
+        | Wanted::BlockedByAll
         | Wanted::BlocksAdditional(_)
         | Wanted::BlocksAdditionalPer(_)
         | Wanted::Goaded => return None,
@@ -894,10 +905,12 @@ struct Pass<'a> {
 /// it and never the control as a stale state records it (CR 611.2b, 613.7).
 fn compute(state: &GameState) -> Layers {
     let rings = crate::ring::effects(state);
+    let stickers = crate::un34_stickers::effects(state);
     let mut registered: Vec<&ContinuousEffect> = state
         .effects()
         .iter()
         .chain(&rings)
+        .chain(&stickers)
         .filter(|effect| effect.is_active_before_control(state))
         .collect();
     loop {
@@ -953,7 +966,18 @@ fn compute_with(state: &GameState, registered: &[&ContinuousEffect]) -> Layers {
             .iter()
             .filter_map(|id| state.object(*id)?.permanent())
             .any(crate::object::PermanentState::suspected);
-    if registered.is_empty() && !statics_in_play && !counters_in_play && !suspected_in_play {
+    let hasty_in_play = state.possible.elsewhere
+        && state
+            .zone(Zone::Battlefield)
+            .iter()
+            .filter_map(|id| state.object(*id))
+            .any(crate::r372_suspend::cast_hasty);
+    if registered.is_empty()
+        && !statics_in_play
+        && !counters_in_play
+        && !suspected_in_play
+        && !hasty_in_play
+    {
         return Layers {
             held: BTreeMap::new(),
             players: BTreeMap::new(),
@@ -980,12 +1004,13 @@ fn compute_with(state: &GameState, registered: &[&ContinuousEffect]) -> Layers {
         }
     }
     // A spell an effect names on the stack is changed by it like a permanent ("target spell becomes red"), and the change
-    // stays with the permanent it becomes (CR 400.7a, `effects::follow_spell`).
+    // stays with the permanent it becomes (CR 400.7a, `effects::follow_spell`); a card an effect names in exile is changed
+    // by it while it stays there (it gains suspend).
     for effect in &registered {
         if let Selector::Objects(named) = &effect.selector {
             for reference in named {
                 if let Some(object) = state.object(reference.id).filter(|object| {
-                    object.zone() == Zone::Stack
+                    matches!(object.zone(), Zone::Stack | Zone::Exile)
                         && object.kind() != ObjectKind::Ability
                         && object.reference() == *reference
                 }) {

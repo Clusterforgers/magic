@@ -30,8 +30,13 @@ const R304B_TAILS: &[(&str, &str)] = &[(
 )];
 
 /// Every wording of three abilities as one sentence about the attached permanent: the first two as their pair writes
-/// them, then the third after a comma (Bound in Gold); empty for any other three.
+/// them, then the third after a comma (Bound in Gold), or the card's own three rules of combat (`r371_owner`); empty for
+/// any other three.
 pub fn r304b_triple_texts(first: &Ability, second: &Ability, third: &Ability) -> Vec<String> {
+    let owner = super::r371_owner::r371_three_texts(first, second, third);
+    if !owner.is_empty() {
+        return owner;
+    }
     let Ok(value) = serde_json::to_value(third) else {
         return Vec::new();
     };

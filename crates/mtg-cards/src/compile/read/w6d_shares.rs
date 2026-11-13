@@ -49,6 +49,9 @@ pub(super) fn w6d_suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if let Some(pred) = r.attempt(|r| w6d_enchanted_suffix(r, form)) {
         return Some(pred);
     }
+    if let Some(pred) = r.attempt(w6d_mana_cost) {
+        return Some(pred);
+    }
     if r.words("with the same name as") {
         return (r.words("that creature") || r.words("that permanent") || r.word("it"))
             .then(|| Pred::SharesName(w6d_it(r)));
@@ -72,6 +75,38 @@ pub(super) fn w6d_suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
         return None;
     }
     None
+}
+
+/// "with mana cost {1}", "with mana cost {0} or {1}": a mana cost of exactly that many generic mana, one of several.
+fn w6d_mana_cost(r: &mut Reader<'_>) -> Option<Pred> {
+    r.need("with mana cost")?;
+    let mut costs = vec![w6d_generic(r)?];
+    while r.word("or") {
+        costs.push(w6d_generic(r)?);
+    }
+    Some(if costs.len() == 1 {
+        costs.remove(0)
+    } else {
+        Pred::AnyOf(costs)
+    })
+}
+
+/// A generic mana symbol as the cost it is alone: `{1}`.
+fn w6d_generic(r: &mut Reader<'_>) -> Option<Pred> {
+    r.symbol()?.parse().ok().map(Pred::GenericCost)
+}
+
+/// The words of `w6d_mana_cost`: "with mana cost {0} or {1}".
+fn w6d_mana_cost_text(costs: &[Pred]) -> Option<String> {
+    let symbols: Option<Vec<String>> = costs
+        .iter()
+        .map(|pred| match pred {
+            Pred::GenericCost(n) => Some(format!("{{{n}}}")),
+            _ => None,
+        })
+        .collect();
+    let symbols = symbols.filter(|symbols| symbols.len() > 1)?;
+    Some(format!("with mana cost {}", symbols.join(" or ")))
 }
 
 /// "that isn't enchanted" and "that aren't enchanted": no Aura is attached to the object.
@@ -107,6 +142,13 @@ pub(super) fn w6d_suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::XInCost if form.plural() => "with {X} in their mana costs".to_owned(),
         Pred::XInCost => "with {X} in its mana cost".to_owned(),
         Pred::GenericCost(n) => format!("with mana cost {{{n}}}"),
+        Pred::AnyOf(costs)
+            if costs
+                .iter()
+                .all(|pred| matches!(pred, Pred::GenericCost(_))) =>
+        {
+            w6d_mana_cost_text(costs)?
+        }
         Pred::SharesName(Ref::Target(0) | Ref::Triggering) => {
             "with the same name as that creature".to_owned()
         }

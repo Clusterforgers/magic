@@ -1,7 +1,7 @@
 {
   "oracle_id": "bfecd486-8326-426b-ac2b-54946f6ae707",
   "name": "Blade of Shared Souls",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Blade of Shared Souls",
@@ -9,9 +9,34 @@
       "abilities": [
         { "Keyword": "ForMirrodin" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 107, "end": 297 }
+          "Triggered": {
+            "when": { "Attached": { "what": ["This"], "to": [{ "Type": "Creature" }] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Not": { "Is": "Triggering" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "BecomeCopy": {
+                        "what": "Triggering",
+                        "of": { "Target": 0 },
+                        "duration": "WhileSourceAttached"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         { "Keyword": { "Equip": "{2}" } }

@@ -67,6 +67,26 @@ impl CardRepo {
             .collect())
     }
 
+    /// The printings of the card `id`, newest first; none for an unknown or malformed id.
+    pub async fn printings_of(&self, id: &OracleId) -> Result<Vec<Printing>, DbError> {
+        let Ok(uuid) = Uuid::parse_str(id.as_str()) else {
+            return Ok(Vec::new());
+        };
+        sqlx::query_as!(
+            PrintingRow,
+            r#"SELECT printing_id, oracle_id, set_code, collector_number, rarity, released_at,
+                      lang, digital, images AS "images: _", set_name, frame, finishes, full_art
+               FROM printings WHERE oracle_id = $1
+               ORDER BY released_at DESC NULLS LAST, printing_id"#,
+            uuid
+        )
+        .fetch_all(&self.pool)
+        .await?
+        .into_iter()
+        .map(Printing::try_from)
+        .collect()
+    }
+
     /// The printings with the given ids; unknown and malformed ids are omitted.
     pub async fn printings(&self, ids: &[PrintingId]) -> Result<Vec<Printing>, DbError> {
         let uuids: Vec<Uuid> = ids
@@ -76,7 +96,7 @@ impl CardRepo {
         sqlx::query_as!(
             PrintingRow,
             r#"SELECT printing_id, oracle_id, set_code, collector_number, rarity, released_at,
-                      lang, digital, images AS "images: _"
+                      lang, digital, images AS "images: _", set_name, frame, finishes, full_art
                FROM printings WHERE printing_id = ANY($1)
                ORDER BY printing_id"#,
             &uuids
@@ -97,7 +117,7 @@ impl CardRepo {
         sqlx::query_as!(
             PrintingRow,
             r#"SELECT printing_id, oracle_id, set_code, collector_number, rarity, released_at,
-                      lang, digital, images AS "images: _"
+                      lang, digital, images AS "images: _", set_name, frame, finishes, full_art
                FROM printings WHERE set_code = lower($1) AND collector_number = $2
                ORDER BY digital, lang <> 'en', printing_id LIMIT 1"#,
             set,

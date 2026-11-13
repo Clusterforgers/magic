@@ -70,6 +70,8 @@ pub(crate) enum Doing {
     BecomeSuspected { object: ObjectId },
     /// `target` becomes the target of a spell or ability of `by`, controlled by `controller`.
     BeTargeted { target: Target, by: ObjectRef },
+    /// `object` becomes the target of a spell or ability that can target only Walls.
+    BeTargetedByWallsOnly { object: ObjectId },
     /// `player` plays a land.
     PlayLand { player: PlayerId },
     /// `player` sacrifices `object`.
@@ -90,6 +92,8 @@ pub(crate) enum Doing {
     PhaseOut { object: ObjectId },
     /// `object` untaps.
     Untap { object: ObjectId },
+    /// The phased-out permanent `object` phases in.
+    PhaseIn { object: ObjectId },
     /// `object` moves onto the battlefield from another zone.
     EnterBattlefield { object: ObjectId },
     /// The turn of `player` skips `step`.
@@ -178,6 +182,9 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
                     .object(source)
                     .is_some_and(|o| picks(state, ban, sources, o.reference()))
         }
+        (Prohibited::BeTargetedByWallsOnly, Doing::BeTargetedByWallsOnly { object }) => {
+            covers(who, None, Some(object))
+        }
         (Prohibited::BeTargeted(by), Doing::BeTargeted { target, by: source }) => {
             let (player, object) = match target {
                 Target::Player(p) => (Some(p), None),
@@ -220,6 +227,7 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
         (Prohibited::Transform, Doing::Transform { object })
         | (Prohibited::PhaseOut, Doing::PhaseOut { object })
         | (Prohibited::Untap, Doing::Untap { object })
+        | (Prohibited::PhaseIn, Doing::PhaseIn { object })
         | (Prohibited::Crew, Doing::Crew { object })
         | (Prohibited::BecomeSuspected, Doing::BecomeSuspected { object })
         | (Prohibited::EnterBattlefield, Doing::EnterBattlefield { object }) => {

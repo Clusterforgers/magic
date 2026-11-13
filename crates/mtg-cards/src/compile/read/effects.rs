@@ -40,7 +40,7 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 118] = [
+const TEMPLATES: [Template; 122] = [
     super::keyword_actions::keyword_action,
     super::w20c_counter::w20c_counter_unless,
     super::w20c_owners::w20c_each_owner,
@@ -69,9 +69,13 @@ const TEMPLATES: [Template; 118] = [
     super::w15c_clash::w15c_clash,
     super::w11c_clash::w11c_clash,
     super::w9b_clash::w9b_clash,
+    super::r376_seats::r376_roll_treasures,
     super::chance::roll,
     super::vote::named,
     super::dk27_numbers::dk27_numbers,
+    super::r376_secret::r376_secret,
+    super::r376_seats::r376_seat_control,
+    super::r376_seats::r376_reverse_turn_order,
     super::dk27_bid::dk27_bid,
     super::w2d_villainous::w2d_villainous,
     super::repeat::each_player,
@@ -248,6 +252,25 @@ fn sentence_shapes(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
     if r.attempt(|r| cast::after_exiling(r, effects)).is_some() {
         return true;
     }
+    if r.attempt(|r| super::r372_suspend::r372_after(r, effects))
+        .is_some()
+    {
+        return true;
+    }
+    for template in [
+        super::r372_suspend::r372_exile_gains as Template,
+        super::r372_suspend::r372_until_counters,
+        super::r372_suspend::r372_top_suspended,
+        super::r372_suspend::r372_from_hand,
+        super::r372_suspend::r372_delay,
+        super::r372_suspend::r372_copy_then_exile,
+        super::r372_suspend::r372_sped_up,
+    ] {
+        if let Some(found) = r.attempt(|r| template(r).filter(|_| r.sentence_end())) {
+            effects.extend(found);
+            return true;
+        }
+    }
     if r.attempt(|r| super::c11b_cast_target::c11b_exile_instead(r, effects))
         .is_some()
     {
@@ -290,6 +313,8 @@ fn sentence_shapes(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
         }
     }
     r.attempt(|r| super::joined::and_you(r, effects)).is_some()
+        || r.attempt(|r| super::r371_owner::r371_and_draw(r, effects))
+            .is_some()
         || r.attempt(|r| super::w11a_joins::w11a_and_after(r, effects))
             .is_some()
         || r.attempt(|r| super::joined::then_you(r, effects)).is_some()
@@ -603,6 +628,9 @@ pub(super) fn sacrifice_itself(r: &mut Reader<'_>) -> Option<Effect> {
 pub(super) fn player(r: &mut Reader<'_>) -> Option<Ref> {
     if r.word("you") {
         return Some(Ref::You);
+    }
+    if let Some(seated) = super::r376_seats::r376_seated(r) {
+        return Some(seated);
     }
     if r.words("each opponent") {
         return Some(Ref::Opponents);

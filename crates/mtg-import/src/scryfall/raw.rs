@@ -61,6 +61,14 @@ pub struct RawCard {
     pub layout: Option<String>,
     /// Set code.
     pub set: Option<String>,
+    /// Name of the set.
+    pub set_name: Option<String>,
+    /// Frame edition (`1993`, `1997`, `2003`, `2015`, `future`).
+    pub frame: Option<String>,
+    /// Finishes the printing exists in (`nonfoil`, `foil`, `etched`).
+    pub finishes: Option<Vec<String>>,
+    /// Whether the art covers the whole card.
+    pub full_art: Option<bool>,
     /// Collector number within the set.
     pub collector_number: Option<String>,
     /// Rarity keyword.

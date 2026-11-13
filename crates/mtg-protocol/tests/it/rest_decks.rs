@@ -284,6 +284,7 @@ fn an_unresolved_line_and_a_list_item_have_the_documented_wire_shape() {
         pictures: vec![DeckPicture {
             oracle_id: ID.into(),
             name: "Atraxa, Praetors' Voice".into(),
+            printing_id: None,
         }],
     };
     let value = serde_json::to_value(DeckList {

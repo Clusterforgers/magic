@@ -57,9 +57,11 @@ pub fn canonical(text: &str) -> String {
             .get(at + 1)
             .map(|next| next.trim_end_matches(|c: char| !c.is_alphanumeric()));
         let investigate = word.trim_end_matches(|c: char| !c.is_alphanumeric());
-        // A quote may open the word: "This token can't block.".
-        let quote = &word[..word.len() - word.trim_start_matches('"').len()];
-        if word.trim_start_matches('"').eq_ignore_ascii_case("this")
+        // A quote may open the word: "This token can't block.", also a single one inside another quote.
+        let quote = &word[..word.len() - word.trim_start_matches(['"', '\'']).len()];
+        if word
+            .trim_start_matches(['"', '\''])
+            .eq_ignore_ascii_case("this")
             && let Some(noun) = noun
             && let Some(next) = words.get(at + 1)
             && let stem = noun.strip_suffix("'s").unwrap_or(noun)
@@ -582,6 +584,18 @@ impl<'a> Reader<'a> {
     pub fn words(&mut self, phrase: &str) -> bool {
         self.attempt(|r| phrase.split(' ').all(|word| r.word(word)).then_some(()))
             .is_some()
+    }
+
+    /// Reads the tokens of this text, all or none: a printed sentence a whole-text template matches word for word.
+    pub fn r376_text(&mut self, text: &str) -> bool {
+        let wanted = tokenize(text);
+        let end = self.at + wanted.len();
+        if self.tokens.get(self.at..end) == Some(wanted.as_slice()) {
+            self.at = end;
+            true
+        } else {
+            false
+        }
     }
 
     /// Reads these words or fails.

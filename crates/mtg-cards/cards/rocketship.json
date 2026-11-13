@@ -9,7 +9,16 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 75 } }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutSticker": { "on": ["This"], "kind": "Name", "up_to": 2 } }]
+                }
+              }
+            ]
+          }
         },
         {
           "Manual": {

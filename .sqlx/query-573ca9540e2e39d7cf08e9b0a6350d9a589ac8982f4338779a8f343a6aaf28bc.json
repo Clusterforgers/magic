@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO preferred_printings (owner, oracle_id, printing_id)\n             SELECT $1, oracle_id, printing_id FROM printings WHERE printing_id = $3 AND oracle_id = $2\n             ON CONFLICT (owner, oracle_id) DO UPDATE SET printing_id = EXCLUDED.printing_id, updated_at = now()",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "573ca9540e2e39d7cf08e9b0a6350d9a589ac8982f4338779a8f343a6aaf28bc"
+}

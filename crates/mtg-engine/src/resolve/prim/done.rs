@@ -88,6 +88,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::OpenAttraction { .. }
         | Effect::RollToVisit { .. }
         | Effect::PutSticker { .. }
+        | Effect::Parade { .. }
         | Effect::ClaimPrize { .. }
         | Effect::UnlockDoor { .. }
         | Effect::LockOrUnlockDoor { .. }
@@ -109,6 +110,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::RevealUntil { .. }
         | Effect::ExileTop { .. }
         | Effect::TimeTravel { .. }
+        | Effect::GainSuspend { .. }
         | Effect::ExtraTurn { .. }
         | Effect::AddPhase { .. }
         | Effect::AddStep { .. }
@@ -135,6 +137,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::ExchangeLife { .. }
         | Effect::ExchangeLifeWithToughness { .. }
         | Effect::RemoveDamage { .. }
+        | Effect::Balance { .. }
         | Effect::Planechase { .. }
         | Effect::Reattack { .. } => Reports::Events,
         Effect::Pay { .. } => Reports::Paid,
@@ -145,7 +148,7 @@ fn reports(effect: &Effect) -> Reports {
         Effect::LookAtTop { .. } | Effect::Choose { .. } | Effect::ChooseAtRandom { .. } | Effect::Encode { .. } | Effect::Haunt { .. }
         | Effect::Remember { .. } | Effect::Forget { .. } | Effect::RememberValue { .. } | Effect::DelayedTrigger { .. } | Effect::Reflexive { .. }
         | Effect::If { .. } | Effect::Modal { .. } | Effect::RepeatEach { .. } | Effect::Together { .. } | Effect::RollDice { .. }
-        | Effect::FlipCoin { .. } | Effect::Clash { .. } | Effect::Vote { .. } | Effect::ChooseNumbers { .. } | Effect::BidLife { .. } | Effect::VillainousChoice { .. }
+        | Effect::FlipCoin { .. } | Effect::Clash { .. } | Effect::Vote { .. } | Effect::ChooseNumbers { .. } | Effect::ChooseWords { .. } | Effect::BidLife { .. } | Effect::VillainousChoice { .. }
         | Effect::ChooseValue { .. } | Effect::Let { .. } | Effect::Bind { .. } | Effect::RepeatWhile { .. } | Effect::SeparatePiles { .. }
         | Effect::Either { .. }
         | Effect::OneOf { .. }

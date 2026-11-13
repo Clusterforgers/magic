@@ -1,7 +1,7 @@
 {
   "oracle_id": "88188cc1-3211-4bf8-a591-613b66192695",
   "name": "Kodama of the Center Tree",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kodama of the Center Tree",
@@ -22,9 +22,11 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 101, "end": 310 }
+          "Keyword": {
+            "MacroX": {
+              "name": "soulshift",
+              "x": { "Count": [{ "Subtype": "Spirit" }, { "ControlledBy": "You" }] }
+            }
           }
         }
       ]

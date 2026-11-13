@@ -134,6 +134,40 @@ pub struct PrintingView {
     pub digital: bool,
     /// The printing's pictures.
     pub images: CardImages,
+    /// Name of the set; null when unknown.
+    #[serde(default)]
+    pub set_name: Option<String>,
+    /// Frame edition (`1993`, `1997`, `2003`, `2015`, `future`); null when unknown.
+    #[serde(default)]
+    pub frame: Option<String>,
+    /// Finishes the printing exists in (`nonfoil`, `foil`, `etched`).
+    #[serde(default)]
+    pub finishes: Vec<String>,
+    /// Whether the art covers the whole card.
+    #[serde(default)]
+    pub full_art: bool,
+}
+
+/// The answer of `GET /api/cards/{oracle_id}/printings`: the card's printings, newest first.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct PrintingList {
+    /// The printings.
+    pub printings: Vec<PrintingView>,
+}
+
+/// The answer of `GET /api/me/printings`: the art the account plays each card in when a deck line chooses none.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct PreferredPrintings {
+    /// Printing id by oracle id.
+    pub printings: std::collections::BTreeMap<String, String>,
+}
+
+/// The body of `PUT /api/me/printings/{oracle_id}`: the printing to play the card in.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[serde(deny_unknown_fields)]
+pub struct PreferredPrintingBody {
+    /// A printing of the card.
+    pub printing_id: String,
 }
 
 /// A ruling on a card.

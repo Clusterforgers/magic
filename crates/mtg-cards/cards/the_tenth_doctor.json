@@ -1,16 +1,34 @@
 {
   "oracle_id": "23af0a0a-1d12-47c7-b191-2bd3f84eea93",
   "name": "The Tenth Doctor",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Tenth Doctor",
       "oracle_fingerprint": "abb89135cf1dd12b7cf9bfd676ac9a24",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 0, "end": 182 }
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "ExileUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "found" },
+                  "counter": { "Other": "time" },
+                  "count": 3
+                }
+              },
+              { "GainSuspend": { "what": { "Bound": "found" }, "unless_has": true } }
+            ]
           }
         },
         {

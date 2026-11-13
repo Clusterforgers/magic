@@ -114,9 +114,42 @@ pub enum Action {
     ManifestedDread,
     /// A player gave a gift (CR 702.174); `what` is nothing, the player given it is the second subject.
     GaveGift,
+    /// A player paid life (CR 119.4), as a cost or for an effect; the amount is the life paid.
+    PaidLife,
+    /// A creature exploited a creature that was not a token (CR 702.110b), judged as the battlefield was before the
+    /// sacrifice; `what` is the creature that exploited.
+    ExploitedNontoken,
+    /// An opponent of a player gained control of a permanent that player controlled (CR 613.1b); the player is the one
+    /// who lost control, `what` the permanent.
+    ControlTakenByOpponent,
+    /// A creature explored and revealed a land card (CR 701.44); `what` is the creature.
+    ExploredLand,
+    /// A creature explored and revealed a card that is not a land card (CR 701.44); `what` is the creature.
+    ExploredNonland,
+    /// A player put a sticker on an object (CR 123); `what` is the object.
+    PutSticker,
+    /// A player put a name sticker on an object; `what` is the object.
+    PutNameSticker,
+    /// A player put an ability sticker on an object; `what` is the object.
+    PutAbilitySticker,
+    /// A player put an art sticker on an object; `what` is the object.
+    PutArtSticker,
+    /// An ability without {T} in its activation cost was activated, a mana ability included; `what` is its source.
+    ActivatedWithoutTap,
 }
 
 impl Action {
+    /// The action of putting a sticker of the kind on an object; the power/toughness sticker has none of its own.
+    #[must_use]
+    pub const fn sticker_put(kind: crate::ability::StickerKind) -> Option<Action> {
+        match kind {
+            crate::ability::StickerKind::Name => Some(Action::PutNameSticker),
+            crate::ability::StickerKind::Ability => Some(Action::PutAbilitySticker),
+            crate::ability::StickerKind::Art => Some(Action::PutArtSticker),
+            crate::ability::StickerKind::PowerToughness => None,
+        }
+    }
+
     /// The keyword kinds an activation of the ability also is: exhaust, once each game (CR 702.177), and boast, only
     /// if the source attacked this turn and only once each turn (CR 702.142).
     #[must_use]
@@ -212,6 +245,34 @@ impl Action {
             Action::Discovered => ("discover", "discovers"),
             Action::ManifestedDread => ("manifest dread", "manifests dread"),
             Action::GaveGift => ("give a gift", "gives a gift"),
+            Action::PaidLife => ("pay life", "pays life"),
+            Action::ExploitedNontoken => (
+                "exploit a nontoken creature",
+                "exploits a nontoken creature",
+            ),
+            Action::ExploredLand => ("explore a land card", "explores a land card"),
+            Action::ExploredNonland => ("explore a nonland card", "explores a nonland card"),
+            Action::ControlTakenByOpponent => (
+                "have an opponent gain control of a permanent from you",
+                "has an opponent gain control of a permanent from them",
+            ),
+            Action::PutSticker => ("place a sticker", "places a sticker"),
+            Action::PutNameSticker => (
+                "put a name sticker on a permanent",
+                "puts a name sticker on a permanent",
+            ),
+            Action::PutAbilitySticker => (
+                "put an ability sticker on a permanent",
+                "puts an ability sticker on a permanent",
+            ),
+            Action::PutArtSticker => (
+                "put an art sticker on a permanent",
+                "puts an art sticker on a permanent",
+            ),
+            Action::ActivatedWithoutTap => (
+                "activate an ability without {T} in its activation cost",
+                "activates an ability without {T} in its activation cost",
+            ),
         }
     }
 
@@ -221,6 +282,7 @@ impl Action {
         matches!(
             self,
             Action::Activated
+                | Action::ActivatedWithoutTap
                 | Action::ActivatedLoyalty
                 | Action::ActivatedExhaust
                 | Action::ActivatedBoast
@@ -229,6 +291,7 @@ impl Action {
                 | Action::Exiled
                 | Action::Sacrificed
                 | Action::Exploited
+                | Action::ExploitedNontoken
                 | Action::LostGame
         )
     }

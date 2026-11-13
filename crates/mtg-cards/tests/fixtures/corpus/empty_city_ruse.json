@@ -1,0 +1,128 @@
+{
+  "object": "card",
+  "id": "4d37c84c-80e5-453d-bd2e-4f77ff864c89",
+  "oracle_id": "b0391ea4-e37d-48c9-91df-79aefe376bcc",
+  "multiverse_ids": [
+    10504
+  ],
+  "tcgplayer_id": 453,
+  "cardmarket_id": 11196,
+  "name": "Empty City Ruse",
+  "lang": "en",
+  "released_at": "1999-05-01",
+  "uri": "https://api.scryfall.com/cards/4d37c84c-80e5-453d-bd2e-4f77ff864c89",
+  "scryfall_uri": "https://scryfall.com/card/ptk/3/empty-city-ruse?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:35:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/d/4d37c84c-80e5-453d-bd2e-4f77ff864c89.jpg?1783946132",
+    "normal": "https://cards.scryfall.io/normal/front/4/d/4d37c84c-80e5-453d-bd2e-4f77ff864c89.jpg?1783946132",
+    "large": "https://cards.scryfall.io/large/front/4/d/4d37c84c-80e5-453d-bd2e-4f77ff864c89.jpg?1783946132",
+    "png": "https://cards.scryfall.io/png/front/4/d/4d37c84c-80e5-453d-bd2e-4f77ff864c89.png?1783946132",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/d/4d37c84c-80e5-453d-bd2e-4f77ff864c89.jpg?1783946132",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/d/4d37c84c-80e5-453d-bd2e-4f77ff864c89.jpg?1783946132",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/d/4d37c84c-80e5-453d-bd2e-4f77ff864c89.webp?1783946132",
+    "grid": "https://cards.scryfall.io/grid/front/4/d/4d37c84c-80e5-453d-bd2e-4f77ff864c89.webp?1783946132",
+    "display": "https://cards.scryfall.io/display/front/4/d/4d37c84c-80e5-453d-bd2e-4f77ff864c89.webp?1783946132",
+    "art": "https://cards.scryfall.io/art/front/4/d/4d37c84c-80e5-453d-bd2e-4f77ff864c89.webp?1783946132",
+    "crop": "https://cards.scryfall.io/crop/front/4/d/4d37c84c-80e5-453d-bd2e-4f77ff864c89.webp?1783946132",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/d/4d37c84c-80e5-453d-bd2e-4f77ff864c89.jpg?1783946132"
+  },
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Target opponent skips all combat phases of their next turn.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "2676ff2e-9d86-4b5b-b935-e84e41b0755e",
+  "set": "ptk",
+  "set_name": "Portal Three Kingdoms",
+  "set_type": "starter",
+  "set_uri": "https://api.scryfall.com/sets/2676ff2e-9d86-4b5b-b935-e84e41b0755e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aptk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ptk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4d37c84c-80e5-453d-bd2e-4f77ff864c89/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab0391ea4-e37d-48c9-91df-79aefe376bcc&unique=prints",
+  "collector_number": "3",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Out of time and options, Kongming was forced to bluff at Xicheng. He tricked an army of 150,000 Wei by leaving the city gates open and calmly playing the zither.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Qu Xin",
+  "artist_ids": [
+    "e7eb4904-b4de-49f4-8139-a7ec2a9b6ba5"
+  ],
+  "illustration_id": "86c73cfa-24da-4094-b9dd-8dfafcbf8304",
+  "border_color": "white",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 16984,
+  "prices": {
+    "usd": "39.98",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "11.78",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=10504&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEmpty%2BCity%2BRuse",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEmpty%2BCity%2BRuse",
+    "edhrec": "https://edhrec.com/route/?cc=Empty+City+Ruse"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F453%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=11196&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Empty+City+Ruse&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -52,6 +52,7 @@ fn begin(game: &mut GameState, when: &str, by: &ReplaceBy) {
         rule: Rule::Replaces {
             when: serde_json::from_str::<ReplaceWhen>(when).unwrap(),
             by: by.clone(),
+            players: Vec::new(),
         },
         duration: Duration::UntilEndOfTurn,
         source: Some(bear.reference()),

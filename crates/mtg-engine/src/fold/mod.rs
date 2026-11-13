@@ -28,6 +28,8 @@ mod p12_amounts;
 mod p12_arrived;
 mod r285_ruin;
 #[cfg(test)]
+mod r374_counts;
+#[cfg(test)]
 mod r3d_atoms;
 mod resolution;
 #[cfg(test)]
@@ -161,9 +163,11 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::StepDone { .. }
         | Event::ResolutionEnded { .. } => resolution::apply(state, event),
         // A note for the table: the game state does not change.
-        Event::AbilityLeftToTable(_) | Event::ManaAbilityActivated { .. } | Event::ByHandDue(_) => {
-            Ok(())
-        }
+        // A prevention changes nothing of its own; triggers read it.
+        Event::AbilityLeftToTable(_)
+        | Event::ManaAbilityActivated { .. }
+        | Event::ByHandDue(_)
+        | Event::DamagePrevented { .. } => Ok(()),
         Event::AbilityTriggered(triggered) => crate::triggers::fold_triggered(state, triggered),
         Event::TriggersOrdered { player, order } => {
             crate::triggers::fold_ordered(state, *player, order)
@@ -637,6 +641,15 @@ fn create_effect(
         )
     ) {
         state.possible.protection = true;
+    }
+    // A card that gains suspend in exile triggers from there (CR 702.62a).
+    if matches!(
+        &effect.modification,
+        Modification::AddKeyword(mtg_cards::keyword::Keyword::Suspend { .. })
+    ) {
+        state.possible.elsewhere = true;
+        state.triggers_possible = true;
+        state.statics_possible = true;
     }
     // A spell that gains rebound on the stack is exiled by a replacement effect as it resolves (CR 702.88a).
     if matches!(

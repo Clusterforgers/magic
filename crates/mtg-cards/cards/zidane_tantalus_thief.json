@@ -1,7 +1,7 @@
 {
   "oracle_id": "f267fb54-1881-464c-81af-9e03c3f3b41d",
   "name": "Zidane, Tantalus Thief",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Zidane, Tantalus Thief",
@@ -33,9 +33,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 149, "end": 237 }
+          "Triggered": {
+            "when": { "Did": { "action": "ControlTakenByOpponent", "who": "You" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
           }
         }
       ]
