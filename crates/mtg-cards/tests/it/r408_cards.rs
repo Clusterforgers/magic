@@ -97,6 +97,13 @@ fn r408_probe() {
 #[case("Day's Undoing")]
 #[case("Mental Modulation")]
 #[case("Murderous Betrayal")]
+#[case("Pact of Negation")]
+#[case("Pact of the Titan")]
+#[case("Slaughter Pact")]
+#[case("Sundial of the Infinite")]
+#[case("Temur Battlecrier")]
+#[case("Time Stop")]
+#[case("Ultima")]
 fn r408_reads_back_whole(#[case] name: &str) {
     let report = r408_report(name, &r408_file(name));
     assert_eq!(
