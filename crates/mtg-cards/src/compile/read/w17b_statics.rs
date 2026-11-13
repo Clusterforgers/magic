@@ -57,6 +57,13 @@ pub(super) fn w17b_read(r: &mut Reader<'_>) -> Option<GameRule> {
         r.need("as it moves to any zone other than a player's hand or library")?;
         return Some(GameRule::CountersRemain);
     }
+    if r.words("your devotion to each color and each combination of colors is increased by") {
+        let by = super::amounts::number_word(r.take_word()?)?;
+        return Some(GameRule::DevotionIncreased { who: Ref::You, by });
+    }
+    if r.words("lethal damage dealt to creatures you control is determined by their power rather than their toughness") {
+        return Some(GameRule::LethalByPower(Ref::You));
+    }
     r.need("each creature")?;
     let who = if r.words("you control") {
         Ref::You
@@ -96,6 +103,14 @@ pub(super) fn w17b_texts(rule: &GameRule) -> Vec<String> {
         }
         GameRule::ToughnessAssignsDamage(Ref::You) => {
             format!("Each creature you control {W17B_TOUGHNESS}")
+        }
+        GameRule::DevotionIncreased { who: Ref::You, by } if super::amounts::count_word(*by).is_some() => format!(
+            "Your devotion to each color and each combination of colors is increased by {}",
+            super::amounts::count_word(*by).unwrap_or("many")
+        ),
+        GameRule::LethalByPower(Ref::You) => {
+            "Lethal damage dealt to creatures you control is determined by their power rather than their toughness"
+                .to_owned()
         }
         GameRule::ToughnessAssignsDamage(Ref::EachPlayer) => {
             format!("Each creature {W17B_TOUGHNESS}")

@@ -180,6 +180,7 @@ impl Delayed {
             | Duration::DuringItsControllersNextTurn
             | Duration::WhileYouControlSource
             | Duration::WhileSourceTapped
+            | Duration::WhileSourceAttached
             | Duration::WhileYouControlSourceTapped
             | Duration::WhileHasCounter(_)
             | Duration::NextUntapStep
@@ -187,6 +188,7 @@ impl Delayed {
             | Duration::UntilTurnSkipped
             | Duration::UntilSkipped
             | Duration::UntilSkippedThisTurn
+            | Duration::TheirNextTurn
             | Duration::UntilCastFromExile => true,
         }
     }

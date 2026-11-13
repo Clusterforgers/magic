@@ -59,6 +59,10 @@ impl Scope<'_> {
                 })?
             }
             Pred::SharesColor(named) => self.w6d_shares_color(named, seen)?,
+            Pred::SharesManaValue(named) => self.w6d_any_named(named, seen, |mine, theirs| {
+                let value = |seen: &Seen<'_>| seen.card.map(GameObject::mana_value);
+                value(mine).is_some() && value(mine) == value(theirs)
+            })?,
             Pred::XInCost => Self::w6d_x_in_cost(seen),
             Pred::GenericCost(n) => Self::generic_cost(*n, seen),
             Pred::Goaded => self.w6d_goaded(seen),

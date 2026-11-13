@@ -121,6 +121,12 @@ pub const fn stat_name(stat: StatKind) -> Option<&'static str> {
         | StatKind::BasicLandTypes
         | StatKind::Name
         | StatKind::CounterKinds
+        | StatKind::R374Types
+        | StatKind::R374CreatureTypes
+        | StatKind::R374Bushido
+        | StatKind::R374Toxic
+        | StatKind::R374ManaCost
+        | StatKind::R374ColorSet
         | StatKind::Subtypes
         | StatKind::CreatureType
         | StatKind::BasePower
@@ -136,6 +142,9 @@ pub fn for_each(r: &mut Reader<'_>) -> Option<Amount> {
         r.need("for each")?;
         if let Some(counted) = r.attempt(counters::counted) {
             return Some(counted);
+        }
+        if let Some(stickers) = r.attempt(super::un34_stickers::un34_stickers_on) {
+            return Some(stickers);
         }
         if r.words("creature in your party") {
             return Some(Amount::Party(Ref::You));
@@ -185,6 +194,9 @@ pub fn for_each(r: &mut Reader<'_>) -> Option<Amount> {
         }
         if let Some(distinct) = super::w2c_counts::w2c_distinct(r, false) {
             return Some(distinct);
+        }
+        if let Some(own) = super::r374_counts::r374_each(r) {
+            return Some(own);
         }
         let selector = phrase(r, Form::Count)?;
         // A group that no one holds stands on the battlefield.
@@ -282,6 +294,9 @@ fn exiled_this_way(selector: &Selector) -> Option<String> {
 
 /// What "for each" counts, as the card words it after "for each ".
 pub fn for_each_text(counted: &Amount) -> Option<String> {
+    if let Some(text) = super::r374_counts::r374_each_text(counted) {
+        return Some(text);
+    }
     Some(match counted {
         Amount::Count(selector) if exiled_this_way(selector).is_some() => {
             exiled_this_way(selector)?
@@ -316,6 +331,13 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
             counter,
         } => format!("{} counter on ~", counters::kind_text(counter)?),
         Amount::AnyCounters(Ref::This) => "counter on ~".to_owned(),
+        Amount::Stickers {
+            on: Ref::This,
+            kind,
+        } => format!(
+            "{}sticker on it",
+            kind.map_or(String::new(), |kind| format!("{} ", kind.word()))
+        ),
         Amount::RemovedThisWay(kind) => {
             format!("{} counter removed this way", counters::kind_text(kind)?)
         }

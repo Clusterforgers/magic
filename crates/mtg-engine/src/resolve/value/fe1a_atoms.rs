@@ -88,6 +88,7 @@ impl Scope<'_> {
                         && blockers.iter().any(|b| attacker.blockers().contains(&b.id))
                 })
             }
+            Pred::BlockedThisTurnBy(named) => self.r378_blocked_this_turn_by(named, reference)?,
             Pred::Blocks(named) => {
                 let attackers = self.objects(named)?;
                 self.state.combat().attackers().iter().any(|attacker| {
@@ -137,6 +138,27 @@ impl Scope<'_> {
     }
 
     /// The card of a spell on the stack or of a permanent, the only objects that were cast.
+    /// Whether a creature the reference names blocked the object this turn, read from the turn's log of blocks; the
+    /// blocker counts as it was named, even if it has left the battlefield since.
+    fn r378_blocked_this_turn_by(
+        &self,
+        named: &Ref,
+        reference: ObjectRef,
+    ) -> Result<bool, ResolveError> {
+        let blockers: Vec<ObjectRef> = self
+            .refs(named)?
+            .into_iter()
+            .filter_map(crate::choose::Target::object)
+            .collect();
+        Ok(self.state.tallies.records.iter().any(|record| {
+            record.event == mtg_cards::value::TallyEvent::Blocked
+                && record.other == Some(crate::choose::Target::Object(reference))
+                && record
+                    .subject
+                    .is_some_and(|blocker| blockers.iter().any(|b| b.id == blocker.id))
+        }))
+    }
+
     fn fe1a_cast_object<'s>(seen: &Seen<'s>) -> Option<&'s GameObject> {
         seen.card.filter(|_| {
             seen.zone == Zone::Battlefield

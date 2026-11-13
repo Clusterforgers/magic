@@ -1,7 +1,7 @@
 {
   "oracle_id": "0dfdf1a1-a3a9-490f-bd9d-dcba088c6785",
   "name": "Teyo, Geometric Tactician",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Teyo, Geometric Tactician",
@@ -37,9 +37,17 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 129, "end": 301 }
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              { "ChooseValue": { "kind": { "Options": ["left", "right"] }, "as": "direction" } },
+              {
+                "Rule": {
+                  "rule": { "AttackOnlyNearest": { "ChosenAs": "direction" } },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
           }
         }
       ]

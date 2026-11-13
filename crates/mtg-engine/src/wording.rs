@@ -41,6 +41,12 @@ fn stat_word(stat: StatKind) -> &'static str {
         StatKind::BaseToughness => "base toughness",
         StatKind::ManaSpent => "mana spent",
         StatKind::CounterKinds => "kinds of counters",
+        StatKind::R374Types => "types",
+        StatKind::R374CreatureTypes => "creature types",
+        StatKind::R374Bushido => "bushido",
+        StatKind::R374Toxic => "total toxic value",
+        StatKind::R374ManaCost => "mana cost",
+        StatKind::R374ColorSet => "color pairs",
         StatKind::Subtypes => "subtypes",
     }
 }
@@ -163,6 +169,11 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
             }
             Pred::HasKeywordNamed(name) => tail.push(format!("with {}", name.to_lowercase())),
             Pred::HasCounter(kind) => tail.push(format!("with a {} counter on it", kind.name())),
+            Pred::WithSticker(kind) => tail.push(format!(
+                "with {} {} sticker on it",
+                kind.article(),
+                kind.word()
+            )),
             Pred::HasAnyCounter => tail.push("with a counter on it".to_owned()),
             Pred::CounterCount { kind, op, to } => {
                 tail.push(counter_count(kind.name(), *op, *to));
@@ -274,6 +285,7 @@ fn kind_of(what: &Targetable) -> (String, String) {
                 TargetSet::DifferentControllers => "controlled by different players".to_owned(),
                 TargetSet::DifferentNames => "with different names".to_owned(),
                 TargetSet::DifferentManaValues => "with different mana values".to_owned(),
+                TargetSet::SameToughness => "with equal toughness".to_owned(),
                 TargetSet::TotalManaValueAtMost(Amount::Fixed(most)) => {
                     format!("with total mana value {most} or less")
                 }
@@ -646,6 +658,13 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         TriggerPattern::LifeGained { who: by } => {
             let (name, s) = who(by);
             (format!("{name} gain{s} life"), false)
+        }
+        TriggerPattern::DamagePrevented { who: by } => {
+            let (name, _) = who(by);
+            (
+                format!("damage that would be dealt to {name} is prevented"),
+                false,
+            )
         }
         TriggerPattern::LifeLost { who: by } => {
             let (name, s) = who(by);
@@ -1135,6 +1154,14 @@ pub(crate) fn sacrifice(filter: &Selector, count: usize) -> String {
     }
     let (head, tail) = phrase(filter);
     format!("Sacrifice {count} {}.", join(&plural(&head), &tail))
+}
+
+/// "Choose 2 lands to keep; you sacrifice the rest.": the question of a balance of permanents.
+pub(crate) fn r370_keep(filter: &Selector, count: usize) -> String {
+    format!(
+        "Choose {} to keep; you sacrifice the rest.",
+        counted(filter, count, "you control")
+    )
 }
 
 /// "Sacrifice up to 3 lands.": the question of a sacrifice that may stop short.

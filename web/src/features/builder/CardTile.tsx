@@ -28,10 +28,29 @@ interface CardTileProps {
  * One line of the deck as a picture: the card large enough to read with a badge for its copies, its name (a button that
  * opens the preview, as in the list), minus and plus under it and a menu that moves or removes it. A card the game does
  * not run whole has a ring in its state's colour, its mark under the picture and the flag that marks it important to fix.
+ * Where the art can be chosen the picture, drawn in the line's art, opens the art picker and the name the preview.
  */
 export function CardTile({ line, format, room, check, outside = null, actions, fixMarks }: CardTileProps) {
   const { zone, card, count } = line
   const issue = isIssue(check.support)
+  const art = actions.art
+  const picture = (
+    <span
+      className={cn(
+        'block rounded-[4.75%/3.393%] transition-transform duration-fast ease-out hover:-translate-y-0.5',
+        issue ? `ring-2 ${supportRing(check.support)}` : outside !== null && 'ring-2 ring-destructive',
+      )}
+    >
+      <CardPicture
+        oracleId={card.oracle_id}
+        printingId={art?.of(line) ?? null}
+        name={card.name}
+        size="normal"
+        alt=""
+        className="w-full"
+      />
+    </span>
+  )
   return (
     <li
       data-line={`${zone}:${card.oracle_id}`}
@@ -40,39 +59,58 @@ export function CardTile({ line, format, room, check, outside = null, actions, f
       className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-1"
     >
       <div className="relative">
-        <HoverPicture
-          oracleId={card.oracle_id}
-          name={card.name}
-          info={{ typeLine: card.type_line, count, support: check.support }}
-          className="block"
-        >
-          <button
-            type="button"
-            aria-haspopup="dialog"
-            title={card.name}
-            data-slot="card-name"
-            onClick={(event) => actions.preview(card, event.currentTarget)}
-            className="block w-full min-w-0 rounded-sm text-left outline-offset-2"
+        {art === undefined ? (
+          <HoverPicture
+            oracleId={card.oracle_id}
+            name={card.name}
+            info={{ typeLine: card.type_line, count, support: check.support }}
+            className="block"
           >
-            <span
-              className={cn(
-                'block rounded-[4.75%/3.393%] transition-transform duration-fast ease-out hover:-translate-y-0.5',
-                issue
-                  ? `ring-2 ${supportRing(check.support)}`
-                  : outside !== null && 'ring-2 ring-destructive',
-              )}
+            <button
+              type="button"
+              aria-haspopup="dialog"
+              title={card.name}
+              data-slot="card-name"
+              onClick={(event) => actions.preview(card, event.currentTarget)}
+              className="block w-full min-w-0 rounded-sm text-left outline-offset-2"
             >
-              <CardPicture
-                oracleId={card.oracle_id}
-                name={card.name}
-                size="normal"
-                alt=""
-                className="w-full"
-              />
-            </span>
-            <span className="mt-1 block truncate text-xs font-medium">{card.name}</span>
-          </button>
-        </HoverPicture>
+              {picture}
+              <span className="mt-1 block truncate text-xs font-medium">{card.name}</span>
+            </button>
+          </HoverPicture>
+        ) : (
+          <>
+            <HoverPicture
+              oracleId={card.oracle_id}
+              printingId={art.of(line)}
+              name={card.name}
+              info={{ typeLine: card.type_line, count, support: check.support }}
+              className="block"
+            >
+              <button
+                type="button"
+                aria-haspopup="dialog"
+                aria-label={`Art of ${card.name}`}
+                title={`Choose the art of ${card.name}`}
+                data-slot="card-art"
+                onClick={(event) => art.choose(line, event.currentTarget)}
+                className="block w-full min-w-0 rounded-sm text-left outline-offset-2"
+              >
+                {picture}
+              </button>
+            </HoverPicture>
+            <button
+              type="button"
+              aria-haspopup="dialog"
+              title={card.name}
+              data-slot="card-name"
+              onClick={(event) => actions.preview(card, event.currentTarget)}
+              className="mt-1 block w-full min-w-0 truncate rounded-sm text-left text-xs font-medium outline-offset-2"
+            >
+              {card.name}
+            </button>
+          </>
+        )}
         {count > 1 ? (
           <span
             data-slot="count-badge"

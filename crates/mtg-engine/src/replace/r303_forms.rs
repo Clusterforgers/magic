@@ -89,6 +89,7 @@ impl Pass<'_> {
                 definition: Arc::new(values),
                 until_end_of_turn: false,
                 until_next_turn_of: None,
+                attached_by: None,
             },
             applied,
         );

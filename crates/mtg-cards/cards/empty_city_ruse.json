@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b0391ea4-e37d-48c9-91df-79aefe376bcc",
+  "name": "Empty City Ruse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Empty City Ruse",
+      "oracle_fingerprint": "ee252a92f36166189864a8be6bfaa99c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": { "Target": 0 }, "action": "SkipCombat" } },
+                  "duration": "TheirNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

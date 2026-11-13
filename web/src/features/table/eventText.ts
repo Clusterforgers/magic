@@ -142,7 +142,10 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
       CantBlock: "can't block",
       DoesntUntap: `${group ? "don't" : "doesn't"} untap during their controller's untap step`,
       CantBeBlocked: "can't be blocked",
+      CantBeBlockedUnlessAttackingOwner:
+        "can't be blocked unless it's attacking its owner or a permanent its owner controls",
       CantBeTurnedFaceUp: "can't be turned face up",
+      BlockedByAll: "can't be blocked unless all creatures defending player controls block it",
       AddAllCreatureTypes: `${becomes} every creature type`,
     }[modification]
   }
@@ -214,6 +217,14 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
     }[attacked]
     return `can't attack ${whom}`
   }
+  if ('CantAttackOwner' in modification) {
+    const whom = {
+      Player: 'its owner',
+      Planeswalkers: 'planeswalkers its owner controls',
+      Both: 'its owner or planeswalkers its owner controls',
+    }[modification.CantAttackOwner.attacked]
+    return `can't attack ${whom}`
+  }
   if ('ChangeText' in modification) {
     const word = (text: TextWord) => ('Color' in text ? text.Color.toLowerCase() : text.Subtype)
     const { from, to } = modification.ChangeText
@@ -262,6 +273,8 @@ function durationWords(
     UntilEndOfCombatOnYourNextTurn: " until end of combat on their controller's next turn",
     WhileSourceOnBattlefield:
       source === null ? ' while its source stays' : ` while ${n.card(source.id)} stays`,
+    WhileSourceAttached:
+      source === null ? ' while its source stays attached' : ` while ${n.card(source.id)} stays attached`,
     WhileYouControlSource:
       source === null
         ? ' while its controller controls its source'
@@ -277,6 +290,7 @@ function durationWords(
     UntilTurnSkipped: ' until the turn it skips',
     UntilSkipped: ' until the step or combat it skips',
     UntilSkippedThisTurn: ' until the step or combat it skips this turn',
+    TheirNextTurn: " during that player's next turn",
     UntilCastFromExile:
       source === null
         ? ' until its source is cast from exile'
@@ -304,6 +318,7 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
   if (rule === 'GraveyardCardsUntargetable') what = "Cards in graveyards can't be targeted"
   else if (rule === 'DamageAsWither') what = 'Damage is dealt as though its source had wither'
   else if (rule === 'ManaBurn') what = 'Unspent mana makes its player lose that much life'
+  else if (rule === 'ReverseTurnOrder') what = 'Turn order is reversed'
   else if ('AttackAsThoughHasteAt' in rule)
     what = `Creatures can attack ${seats(rule.AttackAsThoughHasteAt)} as though they had haste`
   else if ('MustAttack' in rule) what = `${named(rule.MustAttack)} must attack if able`
@@ -1274,6 +1289,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(`${n.card(event.DamageRemoved.object)} has all its damage removed`)
   }
   if ('ShieldUsed' in event) return quiet(`A prevention shield has ${event.ShieldUsed.left} left`)
+  if ('DamagePrevented' in event) {
+    const { source, target, amount } = event.DamagePrevented
+    return line(`${amount} damage ${n.card(source)} would deal to ${damageTarget(target, n)} is prevented`)
+  }
   if ('CreatureDied' in event) {
     const HOW: Record<DeathCause, string> = {
       LethalDamage: 'from lethal damage',

@@ -165,6 +165,18 @@ pub enum Ref {
     /// Every player and object any of these references names, as one recipient ("you and/or permanents you control"): a
     /// damage shield used up by what it covers shares what it has left among them.
     Union(Vec<Ref>),
+    /// The next player still in the game seated on `side` of each player `of` names (CR 101.4: turns pass to the left):
+    /// "the player to your right"; with `opponent`, the nearest opponent of that player on that side ("the opponent to
+    /// your left"). Nobody when no other player is left.
+    Seated {
+        /// The players whose neighbour is named.
+        of: Box<Ref>,
+        /// Which side of them.
+        side: Side,
+        /// Only an opponent of theirs counts.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        opponent: bool,
+    },
     /// The players `who` names for whom the condition holds, each taken as "you" ("each opponent who lost life this turn",
     /// "a player with seven or more cards in their graveyard"); nobody when it holds for none.
     PlayersWhere {
@@ -195,6 +207,15 @@ impl Ref {
     pub const fn is_each_player(&self) -> bool {
         matches!(self, Ref::EachPlayer)
     }
+}
+
+/// A side of a player at the table (CR 101.4): turns pass from each player to the player on their left.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum Side {
+    /// The side turns pass to: the next seat.
+    Left,
+    /// The side turns come from: the seat before.
+    Right,
 }
 
 /// Which kind of ability on the stack a predicate selects.
@@ -229,6 +250,11 @@ pub enum Pred {
     Is(Ref),
     /// Shares a subtype with one of the objects the reference names (`{"SharesSubtype": {"Bound": "land"}}`).
     SharesSubtype(Ref),
+    /// Shares a creature type with each of the objects the reference names ("that shares a creature type with each
+    /// creature tapped this way"); true when it names none.
+    SharesCreatureTypeWithEach(Ref),
+    /// Is a dungeon a player is in (CR 309): the object in a command zone that holds a venture marker.
+    Dungeon,
     /// Has the same name as one of the objects the reference names ("with the same name as that creature"); a nameless
     /// object (a face-down one) shares no name.
     SharesName(Ref),
@@ -236,6 +262,9 @@ pub enum Pred {
     SharesType(Ref),
     /// Shares a color with one of the objects the reference names ("that shares a color with it").
     SharesColor(Ref),
+    /// Has the mana value of one of the objects the reference names ("protection from each mana value among artifacts you
+    /// control").
+    SharesManaValue(Ref),
     /// Shares one of these card types with one of the objects the reference names ("that share a permanent type",
     /// "that shares one of those types with it").
     SharesTypeOf {
@@ -325,8 +354,11 @@ pub enum Pred {
     Suspected,
     /// Is solved (CR 719.3): a Case on the battlefield that has been solved.
     Solved,
-    /// Is stickered (CR 123): a permanent on the battlefield with one or more stickers on it.
+    /// Is stickered (CR 123): has one or more stickers on it, a permanent or a card elsewhere.
     Stickered,
+    /// Has a sticker of the kind on it (CR 123): "with an art sticker on it", on the battlefield or a card elsewhere
+    /// (stickers stay on a card as it changes zones).
+    WithSticker(crate::ability::StickerKind),
     /// Is a harnessed permanent: its ∞ ability works.
     Harnessed,
     /// Attacked, blocked or became blocked (as marked) since your last upkeep.
@@ -371,6 +403,8 @@ pub enum Pred {
     ControlledBy(Ref),
     /// Is owned by the player.
     OwnedBy(Ref),
+    /// Is a battle one of the players protects (CR 310.5): "if an opponent protects it".
+    ProtectedBy(Ref),
     /// Is in the zone (without it, the battlefield).
     In(ZoneKind),
     /// Is a spell cast from the zone, a hand, a graveyard or exile (the spell being cast included).
@@ -507,6 +541,9 @@ pub enum Pred {
     TopOfGraveyard,
     /// Is the topmost creature card of its owner's graveyard.
     TopCreatureOfGraveyard,
+    /// Was blocked this turn by one of the creatures the reference names (read from the turn's log of blocks), whether or
+    /// not it is still attacking ("all creatures that were blocked by that creature this turn").
+    BlockedThisTurnBy(Ref),
     /// Is an attacking creature blocked by one of the creatures the reference names.
     BlockedBy(Ref),
     /// Is an attacking creature in the band of one of the creatures the reference names, other than that creature
@@ -575,6 +612,8 @@ pub enum TargetSet {
     DifferentNames,
     /// No two have one mana value.
     DifferentManaValues,
+    /// They all have one toughness ("with equal toughness").
+    SameToughness,
     /// Their mana values add up to at most this ("with total mana value 3 or less").
     TotalManaValueAtMost(Amount),
     /// Their powers add up to at most this ("with total power 10 or less").

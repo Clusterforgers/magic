@@ -180,7 +180,12 @@ pub(crate) fn check(state: &GameState) -> Vec<Event> {
         let toughness = chars.toughness.unwrap_or(0);
         let damage = object.permanent().map_or(0, PermanentState::damage);
         let deathtouched = object.permanent().is_some_and(PermanentState::deathtouched);
-        let Some(cause) = death_cause(toughness, damage, deathtouched, || {
+        let lethal_at = if crate::w17b_statics::r377_lethal_by_power(state, id) {
+            chars.power.unwrap_or(0)
+        } else {
+            toughness
+        };
+        let Some(cause) = death_cause_at(toughness, lethal_at, damage, deathtouched, || {
             keywords::is_indestructible(state, id)
         }) else {
             continue;
@@ -261,8 +266,21 @@ fn annihilation(state: &GameState, died: &[ObjectId]) -> Vec<Event> {
 ///
 /// Zero toughness kills whatever else is true (CR 704.5f). Lethal damage and a mark from deathtouch destroy
 /// it (CR 704.5g, 704.5h) unless it is indestructible, which is asked only when one of them applies.
+#[cfg(test)]
 pub(crate) fn death_cause(
     toughness: i32,
+    damage: u32,
+    deathtouched: bool,
+    indestructible: impl FnOnce() -> bool,
+) -> Option<DeathCause> {
+    death_cause_at(toughness, toughness, damage, deathtouched, indestructible)
+}
+
+/// As `death_cause`, with the damage marked judged lethal against `lethal_at` (the power where a rule says lethal damage
+/// is determined by power): some damage marked, at least that much (CR 704.5g).
+pub(crate) fn death_cause_at(
+    toughness: i32,
+    lethal_at: i32,
     damage: u32,
     deathtouched: bool,
     indestructible: impl FnOnce() -> bool,
@@ -270,7 +288,7 @@ pub(crate) fn death_cause(
     if toughness <= 0 {
         return Some(DeathCause::ZeroToughness);
     }
-    let lethal = i64::from(damage) >= i64::from(toughness);
+    let lethal = damage > 0 && i64::from(damage) >= i64::from(lethal_at);
     if !(lethal || deathtouched) || indestructible() {
         return None;
     }
@@ -338,6 +356,7 @@ pub(crate) fn housekeeping(state: &GameState) -> Vec<Event> {
             .filter(|d| d.lapsed(state))
             .map(|d| Event::DelayedTriggerExpired { id: d.id() }),
     );
+    expired.extend(crate::copies::r370_unattached_copies(state));
     if !expired.is_empty() {
         return expired;
     }

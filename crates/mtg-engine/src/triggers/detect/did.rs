@@ -59,6 +59,15 @@ fn activated_on_stack(
     })
 }
 
+/// Whether the activated ability has no {T} in its activation cost; a loyalty ability never has one.
+fn without_tap(rules: &Ability) -> bool {
+    match rules {
+        Ability::Activated { cost, .. } => !cost.0.contains(&mtg_cards::cost::CostItem::Tap),
+        Ability::Loyalty { .. } => true,
+        _ => false,
+    }
+}
+
 /// The action a move between zones is, from its cause.
 const fn moved_action(cause: ZoneCause) -> Option<Action> {
     Some(match cause {
@@ -118,6 +127,30 @@ pub(super) fn did_happened(
             Some(triggered.controller),
             Some(triggered.source.id),
         )),
+        Event::StickerPut {
+            player,
+            object,
+            sheet,
+            sticker,
+        } => {
+            let at = crate::un34_stickers::StickerAt {
+                player: *player,
+                sheet: *sheet,
+                sticker: *sticker,
+            };
+            if let Some(kind) = post.sticker(at).map(mtg_cards::ability::Sticker::kind) {
+                let amount = crate::un34_stickers::kind_code(kind);
+                for action in std::iter::once(Action::PutSticker).chain(Action::sticker_put(kind)) {
+                    found.push(Happened::Did {
+                        action,
+                        player: Some(*player),
+                        object: Some(*object),
+                        ability: None,
+                        amount,
+                    });
+                }
+            }
+        }
         Event::LandPlayed { player, object, .. } => {
             found.push(did(Action::PlayedLand, Some(*player), Some(*object)));
         }
@@ -430,17 +463,31 @@ fn activated(
     };
     let rules = ability_reader::ability(pre, address);
     let mana = rules.as_ref().is_some_and(|rules| rules.is_mana_ability());
+    // "Without {T} in its activation cost" counts a mana ability too: a mana ability that does not tap logs this event
+    // beside `ManaAbilityActivated`.
+    let untapped = rules
+        .as_deref()
+        .is_some_and(without_tap)
+        .then(|| Happened::Did {
+            action: Action::ActivatedWithoutTap,
+            player: Some(player),
+            object: Some(source),
+            ability: activated_on_stack(post, source, index, origin),
+            amount: 0,
+        });
     // A mana ability of a shape the payment runs logs its activation as `ManaAbilityActivated`, and this event stands
     // for it only for a limit; one of another shape is announced, and this event is its activation.
     if mana {
         let announced = rules
             .as_ref()
             .is_some_and(|rules| mana_shape(rules).is_none());
-        return if announced {
+        let mut found = if announced {
             vec![did(Action::ActivatedAny, Some(player), Some(source))]
         } else {
             Vec::new()
         };
+        found.extend(untapped);
+        return found;
     }
     let on_stack = activated_on_stack(post, source, index, origin);
     let kinds = rules
@@ -459,5 +506,6 @@ fn activated(
             ability: on_stack,
             amount: 0,
         })
+        .chain(untapped)
         .collect()
 }

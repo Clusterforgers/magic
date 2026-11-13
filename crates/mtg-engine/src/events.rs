@@ -455,6 +455,15 @@ pub enum Event {
         /// The permanent.
         object: ObjectId,
     },
+    /// Damage a source would have dealt was prevented (CR 615): "whenever damage that would be dealt to you is prevented".
+    DamagePrevented {
+        /// The source of the damage.
+        source: ObjectId,
+        /// Who or what it would have been dealt to.
+        target: DamageTarget,
+        /// How much was prevented.
+        amount: u32,
+    },
     /// A shield that prevents a given amount of damage prevented some and has this much left (CR 615.7).
     ShieldUsed {
         /// The shield, one of the rule changes (they share the counter of continuous effects).
@@ -817,6 +826,10 @@ pub enum Event {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[cfg_attr(feature = "ts", ts(optional))]
         next_turn_of: Option<PlayerId>,
+        /// The object whose staying attached kept the copy going ("for as long as this Equipment remains attached to it").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        attached_by: Option<ObjectRef>,
     },
     /// A player became the monarch (CR 724).
     MonarchChanged {
@@ -1385,6 +1398,7 @@ impl Event {
             | Event::RuleCreated { .. }
             | Event::RuleExpired { .. }
             | Event::ShieldUsed { .. }
+            | Event::DamagePrevented { .. }
             | Event::FirstPlayerChosen { .. }
             | Event::GameRestarted { .. }
             | Event::MulliganPhaseBegan

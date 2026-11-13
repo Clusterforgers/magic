@@ -106,6 +106,8 @@ enum Happened {
         amount: u32,
         nth: u32,
     },
+    /// Damage that would have been dealt to a player was prevented.
+    DamagePrevented { player: PlayerId, amount: u32 },
     /// A player gained life, the `nth` time of their turn.
     LifeGained {
         player: PlayerId,
@@ -349,6 +351,7 @@ impl Happened {
     const fn amount(&self) -> u32 {
         match self {
             Happened::Damaged { amount, .. }
+            | Happened::DamagePrevented { amount, .. }
             | Happened::DealtExcess { amount, .. }
             | Happened::LifeGained { amount, .. }
             | Happened::LifeLost { amount, .. }
@@ -1137,6 +1140,14 @@ fn about_players_and_permanents(
                 }
             }
         }
+        Event::DamagePrevented {
+            target: DamageTarget::Player(player),
+            amount,
+            ..
+        } => found.push(Happened::DamagePrevented {
+            player: *player,
+            amount: *amount,
+        }),
         Event::LifeGained { player, amount } => found.push(Happened::LifeGained {
             player: *player,
             amount: *amount,
@@ -1802,6 +1813,12 @@ fn matching_event(
                 // "Defending" is the player the damage dealer attacks, whatever the ability's own source is (an Aura).
                 if matches!(to, Ref::Defending) {
                     scope.defending_of(dealer.id).map(Target::Player) == Some(recipient)
+                } else if matches!(to, Ref::OwnerOf(of) if **of == Ref::Dealer) {
+                    // "its owner": the owner of the creature that deals the damage.
+                    state
+                        .object(dealer.id)
+                        .map(|object| Target::Player(object.owner()))
+                        == Some(recipient)
                 } else {
                     scope.refs(to).is_ok_and(|named| named.contains(&recipient))
                 }
@@ -1841,6 +1858,7 @@ fn matching_event(
             fits.then(|| counted(state, subjects, happened.amount()))
         }
         (TriggerPattern::LifeGained { who }, Happened::LifeGained { player, .. })
+        | (TriggerPattern::DamagePrevented { who }, Happened::DamagePrevented { player, .. })
         | (TriggerPattern::LifeLost { who }, Happened::LifeLost { player, .. })
         | (TriggerPattern::BecomesMonarch { who }, Happened::BecameMonarch { player })
         | (TriggerPattern::TakesInitiative { who }, Happened::TookInitiative { player })
@@ -2628,8 +2646,9 @@ fn object_triggers(
                 snapshot: shot.clone(),
                 delayed: None,
             };
-            // An ability that triggers only once each turn does so once, whatever else is said of it.
-            if limit.is_none() && zone == ZoneKind::Battlefield {
+            // An ability that triggers only once each turn does so once, whatever else is said of it; one that works
+            // from another zone than the battlefield triggers again only when the rule names its zone (`again_watches`).
+            if limit.is_none() {
                 for _ in 0..repeats(state, happened, controller, source) {
                     found.push(trigger.clone());
                 }
@@ -2803,27 +2822,30 @@ fn delayed(
         // The event it waits for may name what the resolution bound ("whenever that creature deals combat damage").
         let mut scope = Scope::announcing(state, controller, source).with_caused(used.caused);
         scope.bindings = &waiting.bindings;
-        let Some(cause) = matching(pattern, happened, &scope) else {
-            continue;
-        };
         let live = snapshot(state, source.id)
             .filter(|shot| shot.counter == source.counter)
             .map(|shot| Snapshot {
                 x: waiting.snapshot.x,
                 ..shot
             });
-        if waiting.once {
-            used.delayed.insert(waiting.id());
+        // A batch pattern finds one cause for each group of the events together ("whenever that creature deals damage").
+        for cause in causes(pattern, happened, &scope) {
+            if waiting.once {
+                if used.delayed.contains(&waiting.id()) {
+                    break;
+                }
+                used.delayed.insert(waiting.id());
+            }
+            found.push(Triggered {
+                source,
+                ability: waiting.ability,
+                origin: AbilitySource::Printed,
+                controller,
+                cause,
+                snapshot: live.clone().unwrap_or_else(|| waiting.snapshot.clone()),
+                delayed: Some(waiting.id()),
+            });
         }
-        found.push(Triggered {
-            source,
-            ability: waiting.ability,
-            origin: AbilitySource::Printed,
-            controller,
-            cause,
-            snapshot: live.unwrap_or_else(|| waiting.snapshot.clone()),
-            delayed: Some(waiting.id()),
-        });
     }
 }
 
@@ -2898,6 +2920,8 @@ pub fn detect(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Trigge
             let first = found.len();
             permanents(state, watching, &together, &mut found, &mut used);
             elsewhere(state, &together, &mut found, &mut used);
+            // A delayed trigger waits for a batch as a printed one does ("whenever that creature deals damage this turn").
+            delayed(state, post, &together, &mut found, &mut used);
             forbid_triggers(state, &together, &mut found, first);
         }
     }

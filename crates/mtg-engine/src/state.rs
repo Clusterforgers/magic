@@ -104,6 +104,8 @@ pub(crate) enum Tally {
     L31aInvestigated,
     /// A card drawn.
     Drawn,
+    /// A venture into the dungeon (counted for the player).
+    R377Ventured,
     /// A card drawn (counted for the card as it lies in the hand it was drawn into).
     Dk26Drawn,
     /// A card drawn by the active player in the draw step under way (cleared as each draw step begins).
@@ -333,6 +335,8 @@ pub struct GameState {
     pub(crate) seat_turns: BTreeMap<PlayerId, crate::turn_summary::TurnSummary>,
     /// The seat whose turn ended last.
     pub(crate) last_turn_of: Option<PlayerId>,
+    /// How many spells of each name each player has cast this game ("you've cast another spell named ~ this game").
+    pub(crate) cast_names: BTreeMap<(PlayerId, String), u32>,
     /// How many turns each player has begun this game (`rmt8_turns`).
     pub(crate) rmt8_turns: BTreeMap<PlayerId, u32>,
     /// Each player's life total as the current turn began (`rmt8_turns`).
@@ -804,8 +808,9 @@ impl GameState {
     /// Players still in the game in turn order, starting at `start` (or the next living seat).
     pub fn turn_order_from(&self, start: PlayerId) -> Vec<PlayerId> {
         let n = self.players.len();
+        let reversed = crate::rules::r376_turn_order_reversed(self);
         (0..n)
-            .map(|i| (start.index() + i) % n.max(1))
+            .map(|i| r376_seat_after(start.index(), i, n, reversed))
             .filter(|i| self.players[*i].is_in_game())
             .map(PlayerId::from_index)
             .collect()
@@ -830,7 +835,14 @@ impl GameState {
     /// from the first player, so a round opens when the order wraps round to or past the seat that just played.
     pub(crate) fn opens_round(&self, previous: PlayerId, next: PlayerId) -> bool {
         let (seats, first) = (self.players.len().max(1), self.first_player.index());
-        let place = |seat: PlayerId| (seat.index() + seats - first % seats) % seats;
+        let reversed = crate::rules::r376_turn_order_reversed(self);
+        let place = |seat: PlayerId| {
+            if reversed {
+                (first % seats + seats - seat.index() % seats) % seats
+            } else {
+                (seat.index() + seats - first % seats) % seats
+            }
+        };
         place(next) <= place(previous)
     }
 
@@ -841,11 +853,30 @@ impl GameState {
             && self.opens_round(regular, self.next_turn_seat(regular).unwrap_or(regular))
     }
 
+    /// The other players still in the game, nearest first, going round the table from `player` to the given side
+    /// (CR 101.4): the left is the next seat, whichever way the turns pass.
+    pub fn r376_seats_from(&self, player: PlayerId, side: mtg_cards::refs::Side) -> Vec<PlayerId> {
+        let n = self.players.len().max(1);
+        (1..n)
+            .map(|i| match side {
+                mtg_cards::refs::Side::Left => (player.index() + i) % n,
+                mtg_cards::refs::Side::Right => (player.index() + n - i) % n,
+            })
+            .filter(|i| {
+                self.players
+                    .get(*i)
+                    .is_some_and(crate::player::Player::is_in_game)
+            })
+            .map(PlayerId::from_index)
+            .collect()
+    }
+
     /// The next living player after `player` in turn order (possibly `player` itself).
     pub fn next_alive_after(&self, player: PlayerId) -> Option<PlayerId> {
         let n = self.players.len();
+        let reversed = crate::rules::r376_turn_order_reversed(self);
         (1..=n)
-            .map(|i| (player.index() + i) % n.max(1))
+            .map(|i| r376_seat_after(player.index(), i, n, reversed))
             .find(|i| self.players[*i].is_in_game())
             .map(PlayerId::from_index)
     }
@@ -961,6 +992,10 @@ impl Hash for GameState {
             day_night.hash(state);
         }
         self.hash_turn_summaries(state);
+        // A game where no spell was cast hashes as it did before the names were counted.
+        if !self.cast_names.is_empty() {
+            self.cast_names.hash(state);
+        }
         self.rmt8_turns.hash(state);
         self.rmt8_lives.hash(state);
         self.rmt8_upkeeps.hash(state);
@@ -1008,6 +1043,17 @@ impl Hash for GameState {
         self.commanders.hash(state);
         // Likewise a game without companions.
         self.companions.hash(state);
+    }
+}
+
+/// The seat `steps` places on from `seat` in turn order among `seats` seats: to the left, or to the right while the turn
+/// order is reversed.
+fn r376_seat_after(seat: usize, steps: usize, seats: usize, reversed: bool) -> usize {
+    let seats = seats.max(1);
+    if reversed {
+        (seat % seats + seats - steps % seats) % seats
+    } else {
+        (seat + steps) % seats
     }
 }
 

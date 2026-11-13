@@ -25,6 +25,16 @@ export interface LineActions {
   byHand: (oracleId: string, on: boolean) => void
   /** Opens the preview of a card; `opener` is the control focus returns to. */
   preview: (card: CardHit, opener: HTMLElement) => void
+  /** The art of the lines: absent where the art cannot be chosen. */
+  art?: ArtActions
+}
+
+/** The art a line shows and how to choose another. */
+export interface ArtActions {
+  /** The printing a line is drawn in: its own, else the account's preferred one; null for the default. */
+  of: (line: Line) => string | null
+  /** Opens the art picker of a line; `opener` is the control focus returns to. */
+  choose: (line: Line, opener: HTMLElement) => void
 }
 
 /** The copies of a line with minus and plus; the last copy removed takes the line out. */
