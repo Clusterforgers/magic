@@ -270,6 +270,8 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             show_learned(state, event);
             Ok(())
         }
+        // The `Revealed` before it showed the card; triggers read it from the log.
+        Event::FirstDrawRevealed { .. } => Ok(()),
         _ => apply_misc(state, event),
     }
 }

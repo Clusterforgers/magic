@@ -7,86 +7,28 @@
       "name": "Keranos, God of Storms",
       "oracle_fingerprint": "2258499f7d8fbde005d812d183b7be89",
       "abilities": [
-        {
-          "Keyword": "Indestructible"
-        },
+        { "Keyword": "Indestructible" },
         {
           "Static": {
             "affected": "This",
-            "mods": [
-              {
-                "RemoveType": "Creature"
-              }
-            ],
+            "mods": [{ "RemoveType": "Creature" }],
             "condition": {
-              "Compare": {
-                "left": {
-                  "Devotion": [
-                    "Blue",
-                    "Red"
-                  ]
-                },
-                "op": "Lt",
-                "right": 7
-              }
+              "Compare": { "left": { "Devotion": ["Blue", "Red"] }, "op": "Lt", "right": 7 }
             }
           }
         },
+        { "Rule": { "rule": { "RevealFirstDraw": { "your_turns": true } } } },
         {
-          "Rule": {
-            "rule": {
-              "RevealFirstDraw": {
-                "your_turns": true
-              }
-            }
+          "Triggered": {
+            "when": { "FirstDrawRevealed": { "what": [{ "Type": "Land" }] } },
+            "effects": [{ "Draw": {} }]
           }
         },
         {
           "Triggered": {
-            "when": {
-              "FirstDrawRevealed": {
-                "what": [
-                  {
-                    "Type": "Land"
-                  }
-                ]
-              }
-            },
-            "effects": [
-              {
-                "Draw": {}
-              }
-            ]
-          }
-        },
-        {
-          "Triggered": {
-            "when": {
-              "FirstDrawRevealed": {
-                "what": [
-                  {
-                    "Not": {
-                      "Type": "Land"
-                    }
-                  }
-                ]
-              }
-            },
-            "effects": [
-              {
-                "DealDamage": {
-                  "to": {
-                    "Target": 0
-                  },
-                  "amount": 3
-                }
-              }
-            ],
-            "targets": [
-              {
-                "what": "AnyTarget"
-              }
-            ]
+            "when": { "FirstDrawRevealed": { "what": [{ "Not": { "Type": "Land" } }] } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
           }
         }
       ]

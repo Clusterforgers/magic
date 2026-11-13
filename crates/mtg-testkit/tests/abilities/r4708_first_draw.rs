@@ -111,7 +111,11 @@ fn primitive_etchings_reveals_the_first_draw_and_draws_for_a_creature(
     #[values("creature", "basic land")] top: &str,
 ) {
     let mut driver = table(seats, owner, "Primitive Etchings", top);
-    let first = driver.state().zone(Zone::Library(seat(owner)))[0];
+    let first = *driver
+        .state()
+        .zone(Zone::Library(seat(owner)))
+        .last()
+        .unwrap();
     driver.cast("Words of Wisdom").unwrap();
     settle(&mut driver);
     // Only the owner's first card is revealed, whoever's turn it is; the second card (a creature) never triggers.
@@ -170,7 +174,7 @@ fn eisenhorn_asks_and_makes_cherubael_for_a_revealed_instant(
     #[values(false, true)] reveal: bool,
 ) {
     let mut driver = table(seats, 0, "Inquisitor Eisenhorn", top);
-    let first = driver.state().zone(Zone::Library(seat(0)))[0];
+    let first = *driver.state().zone(Zone::Library(seat(0))).last().unwrap();
     driver.cast("Words of Wisdom").unwrap();
     settle(&mut driver);
     let asked = driver.decision().unwrap().clone();

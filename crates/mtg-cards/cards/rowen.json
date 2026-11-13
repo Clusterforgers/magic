@@ -5,34 +5,15 @@
   "faces": [
     {
       "name": "Rowen",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "4fae0a0c33542762930ade52f3dfc9cc",
       "abilities": [
-        {
-          "Rule": {
-            "rule": {
-              "RevealFirstDraw": {}
-            }
-          }
-        },
+        { "Rule": { "rule": { "RevealFirstDraw": {} } } },
         {
           "Triggered": {
             "when": {
-              "FirstDrawRevealed": {
-                "what": [
-                  {
-                    "Supertype": "Basic"
-                  },
-                  {
-                    "Type": "Land"
-                  }
-                ]
-              }
+              "FirstDrawRevealed": { "what": [{ "Supertype": "Basic" }, { "Type": "Land" }] }
             },
-            "effects": [
-              {
-                "Draw": {}
-              }
-            ]
+            "effects": [{ "Draw": {} }]
           }
         }
       ]

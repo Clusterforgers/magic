@@ -7,31 +7,12 @@
       "name": "Inquisitor Eisenhorn",
       "oracle_fingerprint": "bafae34ab884c0d53a041051322d1162",
       "abilities": [
-        {
-          "Rule": {
-            "rule": {
-              "RevealFirstDraw": {
-                "may": true
-              }
-            }
-          }
-        },
+        { "Rule": { "rule": { "RevealFirstDraw": { "may": true } } } },
         {
           "Triggered": {
             "when": {
               "FirstDrawRevealed": {
-                "what": [
-                  {
-                    "AnyOf": [
-                      {
-                        "Type": "Instant"
-                      },
-                      {
-                        "Type": "Sorcery"
-                      }
-                    ]
-                  }
-                ]
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
               }
             },
             "effects": [
@@ -40,25 +21,13 @@
                   "token": {
                     "Custom": {
                       "name": "Cherubael",
-                      "colors": [
-                        "Black"
-                      ],
-                      "supertypes": [
-                        "Legendary"
-                      ],
-                      "types": [
-                        "Creature"
-                      ],
-                      "subtypes": [
-                        "Demon"
-                      ],
+                      "colors": ["Black"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Creature"],
+                      "subtypes": ["Demon"],
                       "power": 4,
                       "toughness": 4,
-                      "abilities": [
-                        {
-                          "Keyword": "Flying"
-                        }
-                      ]
+                      "abilities": [{ "Keyword": "Flying" }]
                     }
                   }
                 }
@@ -68,30 +37,10 @@
         },
         {
           "Triggered": {
-            "when": {
-              "DealsDamage": {
-                "source": [
-                  "This"
-                ],
-                "to": "EachPlayer",
-                "combat": true
-              }
-            },
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
             "effects": [
-              {
-                "CreateToken": {
-                  "token": {
-                    "Named": "clue"
-                  },
-                  "count": "Triggering"
-                }
-              },
-              {
-                "Performed": {
-                  "action": "Investigated",
-                  "times": "Triggering"
-                }
-              }
+              { "CreateToken": { "token": { "Named": "clue" }, "count": "Triggering" } },
+              { "Performed": { "action": "Investigated", "times": "Triggering" } }
             ]
           }
         }

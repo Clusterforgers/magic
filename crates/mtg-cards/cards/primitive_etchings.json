@@ -5,31 +5,13 @@
   "faces": [
     {
       "name": "Primitive Etchings",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "0a7bb89affb08600e58fae46a64e8449",
       "abilities": [
-        {
-          "Rule": {
-            "rule": {
-              "RevealFirstDraw": {}
-            }
-          }
-        },
+        { "Rule": { "rule": { "RevealFirstDraw": {} } } },
         {
           "Triggered": {
-            "when": {
-              "FirstDrawRevealed": {
-                "what": [
-                  {
-                    "Type": "Creature"
-                  }
-                ]
-              }
-            },
-            "effects": [
-              {
-                "Draw": {}
-              }
-            ]
+            "when": { "FirstDrawRevealed": { "what": [{ "Type": "Creature" }] } },
+            "effects": [{ "Draw": {} }]
           }
         }
       ]
