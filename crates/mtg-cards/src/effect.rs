@@ -1568,6 +1568,10 @@ pub enum Effect {
         /// Added to the number rolled before the rows are read ("roll a d20 and add the number of cards in your hand").
         #[serde(default = "Amount::zero", skip_serializing_if = "Amount::is_zero")]
         plus: Amount,
+        /// One die for each of this many ("roll a d20 for each player being attacked and ignore all but the highest
+        /// roll"): every die is rolled and only the highest counts; none is rolled when the amount is 0.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        highest: Option<Amount>,
         /// What the total does.
         results: Vec<DieRow>,
     },
@@ -2351,7 +2355,7 @@ mod tests {
         r#"{"Bind":{"what":{"Bound":"pick"},"as":"picks","adds":true}}"#
     )]
     #[case::roll_a_die_with_a_table(
-        Effect::RollDice { who: Ref::You, sides: 20, dice: 1, choose: false, plus: Amount::Fixed(2), results: vec![DieRow { from: 1, to: Some(9), effects: vec![Effect::Shuffle { who: Ref::You }] }, DieRow { from: 10, to: None, effects: vec![Effect::Shuffle { who: Ref::You }] }] },
+        Effect::RollDice { who: Ref::You, sides: 20, dice: 1, choose: false, plus: Amount::Fixed(2), highest: None, results: vec![DieRow { from: 1, to: Some(9), effects: vec![Effect::Shuffle { who: Ref::You }] }, DieRow { from: 10, to: None, effects: vec![Effect::Shuffle { who: Ref::You }] }] },
         r#"{"RollDice":{"sides":20,"plus":2,"results":[{"from":1,"to":9,"effects":[{"Shuffle":{}}]},{"from":10,"effects":[{"Shuffle":{}}]}]}}"#
     )]
     #[case::flip_a_coin(

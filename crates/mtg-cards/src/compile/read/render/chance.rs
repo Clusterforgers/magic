@@ -5,6 +5,7 @@ use super::super::vote::{VOTER, more_votes};
 use super::{Effect, Writer};
 use crate::effect::{DieRow, VoteFor};
 use crate::refs::Ref;
+use crate::value::Amount;
 use crate::value::Condition;
 
 /// The sentences of the whole texts (secret numbers, bids and the texts of card pack r37-6) at the head of `effects`,
@@ -94,6 +95,7 @@ impl Writer<'_> {
                 dice: 1,
                 choose: false,
                 plus,
+                highest: None,
                 results,
             } if plus.is_zero()
                 && matches!(results.as_slice(), [DieRow { from: 1, to: Some(highest), .. }] if highest < sides) =>
@@ -117,6 +119,21 @@ impl Writer<'_> {
                 dice: 1,
                 choose: false,
                 plus,
+                highest: Some(Amount::Players(Ref::Attacked)),
+                ..
+            } if plus.is_zero() => Some((
+                vec![format!(
+                    "roll a d{sides} for each player being attacked and ignore all but the highest roll"
+                )],
+                1,
+            )),
+            Effect::RollDice {
+                who: Ref::You,
+                sides,
+                dice: 1,
+                choose: false,
+                plus,
+                highest: None,
                 ..
             } if plus.is_zero() => Some((vec![format!("roll a d{sides}")], 1)),
             Effect::RollDice {

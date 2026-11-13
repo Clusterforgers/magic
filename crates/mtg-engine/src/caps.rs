@@ -213,6 +213,7 @@ const RUNS: &[&str] = &[
     "Effect.Draw",
     "Effect.Discard",
     "Effect.Discard.Random",
+    "Effect.RollDice.Highest",
     "Effect.Discard.Filter",
     "Effect.Discard.Chooser",
     "Effect.Mill",
@@ -1082,6 +1083,7 @@ mod tests {
     #[case::drawing("Effect.Draw", true)]
     #[case::discarding("Effect.Discard", true)]
     #[case::discarding_at_random("Effect.Discard.Random", true)]
+    #[case::r5518_dice_keeping_the_highest("Effect.RollDice.Highest", true)]
     #[case::discarding_matching_cards("Effect.Discard.Filter", true)]
     #[case::discarding_cards_another_player_chooses("Effect.Discard.Chooser", true)]
     #[case::milling("Effect.Mill", true)]

@@ -1,0 +1,204 @@
+[
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "Search": {
+       "filter": [
+        {
+         "Supertype": "Basic"
+        },
+        {
+         "Type": "Land"
+        }
+       ],
+       "count": {
+        "min": 0,
+        "max": 2
+       },
+       "reveal": true,
+       "as": "lands"
+      }
+     },
+     {
+      "RollDice": {
+       "sides": 20,
+       "results": [
+        {
+         "from": 1,
+         "to": 9,
+         "effects": [
+          {
+           "Move": {
+            "what": {
+             "Bound": "lands"
+            },
+            "to": "Hand"
+           }
+          },
+          {
+           "Shuffle": {}
+          }
+         ]
+        },
+        {
+         "from": 10,
+         "to": 19,
+         "effects": [
+          {
+           "Choose": {
+            "from": {
+             "Bound": "lands"
+            },
+            "as": "kept",
+            "rest_as": "rest"
+           }
+          },
+          {
+           "Move": {
+            "what": {
+             "Bound": "kept"
+            },
+            "to": {
+             "Battlefield": {
+              "tapped": true
+             }
+            }
+           }
+          },
+          {
+           "Move": {
+            "what": {
+             "Bound": "rest"
+            },
+            "to": "Hand"
+           }
+          },
+          {
+           "Shuffle": {}
+          }
+         ]
+        },
+        {
+         "from": 20,
+         "effects": [
+          {
+           "Move": {
+            "what": {
+             "Bound": "lands"
+            },
+            "to": {
+             "Battlefield": {
+              "tapped": true
+             }
+            }
+           }
+          },
+          {
+           "Shuffle": {}
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "When this creature enters, search your library for up to two basic land cards and reveal them, then roll a d20."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Move": {
+       "what": {
+        "Bound": "lands"
+       },
+       "to": "Hand"
+      }
+     },
+     {
+      "Shuffle": {}
+     }
+    ]
+   }
+  },
+  "Put those cards into your hand, then shuffle."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Choose": {
+       "from": {
+        "Bound": "lands"
+       },
+       "as": "kept",
+       "rest_as": "rest"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "kept"
+       },
+       "to": {
+        "Battlefield": {
+         "tapped": true
+        }
+       }
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "rest"
+       },
+       "to": "Hand"
+      }
+     },
+     {
+      "Shuffle": {}
+     }
+    ]
+   }
+  },
+  "Put one of those cards onto the battlefield tapped and the other into your hand, then shuffle."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Move": {
+       "what": {
+        "Bound": "lands"
+       },
+       "to": {
+        "Battlefield": {
+         "tapped": true
+        }
+       }
+      }
+     },
+     {
+      "Shuffle": {}
+     }
+    ]
+   }
+  },
+  "Put those cards onto the battlefield tapped, then shuffle."
+ ]
+]

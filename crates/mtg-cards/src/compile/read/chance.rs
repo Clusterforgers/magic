@@ -67,7 +67,8 @@ fn branch(r: &mut Reader<'_>, they: bool) -> Option<(bool, Vec<Effect>)> {
 }
 
 /// "Roll a d20.": a die of that many faces rolled by you, with a table of rows the lines after it fill in. "Roll two d4
-/// and choose one result.": two dice, one result chosen, which the effects after it read.
+/// and choose one result.": two dice, one result chosen, which the effects after it read. "Roll a d20 for each player
+/// being attacked and ignore all but the highest roll.": one die per attacked player, the highest counting.
 pub fn roll(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("roll")?;
     let dice = if r.word("a") {
@@ -85,12 +86,16 @@ pub fn roll(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     if choose {
         r.need("and choose one result")?;
     }
+    let highest = (dice == 1
+        && r.words("for each player being attacked and ignore all but the highest roll"))
+    .then_some(Amount::Players(Ref::Attacked));
     Some(vec![Effect::RollDice {
         who: Ref::You,
         sides,
         dice,
         choose,
         plus: Amount::zero(),
+        highest,
         results: Vec::new(),
     }])
 }
@@ -117,13 +122,15 @@ pub(super) const fn c11e_result_text(which: DieResult) -> &'static str {
     }
 }
 
-/// A row of the table of a die roll: the totals it holds and the text after the bar. "1—9 | S", "20 | S" (that total
-/// only) and "15+ | S" (that total and more).
+/// A row of the table of a die roll: the totals it holds and the text after the bar. "1—9 | S" (or "1-9 | S"), "20 | S"
+/// (that total only), "15+ | S" (that total and more) and "9 or less | S" (from 1 to that total).
 pub fn die_row(text: &str) -> Option<(u32, Option<u32>, &str)> {
     let (range, body) = text.split_once(" | ")?;
     let (from, to) = if let Some(from) = range.strip_suffix('+') {
         (from.parse().ok()?, None)
-    } else if let Some((from, to)) = range.split_once('\u{2014}') {
+    } else if let Some(to) = range.strip_suffix(" or less") {
+        (1, Some(to.parse().ok()?))
+    } else if let Some((from, to)) = range.split_once(['\u{2014}', '-']) {
         (from.parse().ok()?, Some(to.parse().ok()?))
     } else {
         let only = range.parse().ok()?;
@@ -139,6 +146,31 @@ pub fn range_text(from: u32, to: Option<u32>) -> String {
         Some(to) if to == from => from.to_string(),
         Some(to) => format!("{from}\u{2014}{to}"),
     }
+}
+
+/// A row's wording, and the same words with "You" before an imperative verb ("You draw a card."): the roller is the
+/// controller, who a row's plain verb names.
+fn r5518_with_subject(text: String) -> Vec<String> {
+    const VERBS: [&str; 10] = [
+        "Draw", "Create", "Gain", "Lose", "Scry", "Surveil", "Mill", "Discard", "Sacrifice", "Return",
+    ];
+    let subject = text
+        .split_once(' ')
+        .filter(|(verb, _)| VERBS.contains(verb))
+        .map(|(verb, rest)| format!("You {} {rest}", verb.to_lowercase()));
+    std::iter::once(text).chain(subject).collect()
+}
+
+/// Every way a card prints the totals of a row: the dash may be a hyphen, and a range from 1 may read "N or less".
+pub fn r5518_range_texts(from: u32, to: Option<u32>) -> Vec<String> {
+    let mut texts = vec![range_text(from, to)];
+    if let Some(to) = to.filter(|&to| to > from) {
+        texts.push(format!("{from}-{to}"));
+        if from == 1 {
+            texts.push(format!("{to} or less"));
+        }
+    }
+    texts
 }
 
 /// The effects of an ability whose last effect may be the die roll that the rows after the ability's clause belong to.
@@ -198,9 +230,16 @@ pub fn row_texts(ability: &Ability) -> Vec<Vec<String>> {
                 targets: Vec::new(),
                 effects: row.effects,
             };
+            let ranges = r5518_range_texts(row.from, row.to);
             super::render::written_variants(&spell)
                 .into_iter()
-                .map(|text| format!("{} | {text}", range_text(row.from, row.to)))
+                .flat_map(r5518_with_subject)
+                .flat_map(|text| {
+                    ranges
+                        .iter()
+                        .map(move |range| format!("{range} | {text}"))
+                        .collect::<Vec<_>>()
+                })
                 .collect()
         })
         .collect()

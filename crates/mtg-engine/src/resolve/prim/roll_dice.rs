@@ -69,6 +69,20 @@ fn ep29_with_extra(state: &crate::state::GameState, sides: u32, dice: u32, extra
         .collect()
 }
 
+/// "Ignore all but the highest roll": the highest number rolled (the earliest of equal ones) moves last, where the total
+/// is read.
+fn r5518_highest_last(rolled: &mut Vec<u32>) {
+    let at = rolled
+        .iter()
+        .enumerate()
+        .max_by_key(|(at, result)| (**result, std::cmp::Reverse(*at)))
+        .map(|(at, _)| at);
+    if let Some(at) = at {
+        let kept = rolled.remove(at);
+        rolled.push(kept);
+    }
+}
+
 /// The dice the player rolls, in the order rolled: `dice` dice of `sides` faces, one substream of the game's random
 /// stream each, or with the extra dice of `GameRule::ExtraDie` and the lowest ignored.
 pub(crate) fn rolls(
@@ -101,6 +115,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         dice,
         choose,
         plus,
+        highest,
         results,
     } = effect
     else {
@@ -115,7 +130,17 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     else {
         return Ok(Run::events(Vec::new()));
     };
-    let mut rolled = rolls(state, player, *sides, *dice);
+    let dice = match highest {
+        Some(count) => u32::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(0),
+        None => *dice,
+    };
+    let mut rolled = rolls(state, player, *sides, dice);
+    if highest.is_some() {
+        if rolled.is_empty() {
+            return Ok(Run::events(Vec::new()));
+        }
+        r5518_highest_last(&mut rolled);
+    }
     if *choose {
         match c11e_chosen_last(cx, player, &rolled)? {
             Optioned::Done(taken) => {
@@ -155,7 +180,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a roll is a number from 1 to the sides from the game's random stream (the same seed gives the same number and the seeds give every face), logged for the player who rolled, and the step enters the first row of the table that holds the number plus the amount added, none when no row does; two dice with a choice ask between the different numbers and log the chosen one last; a player who has left the game rolls nothing, and another effect is refused by name.
+    //! Goal: a roll is a number from 1 to the sides from the game's random stream (the same seed gives the same number and the seeds give every face), logged for the player who rolled, and the step enters the first row of the table that holds the number plus the amount added, none when no row does; two dice with a choice ask between the different numbers and log the chosen one last; a player who has left the game rolls nothing; one die for each of an amount keeps only the highest (none for 0); and another effect is refused by name.
     use mtg_core::ids::PlayerId;
     use rstest::rstest;
 
@@ -325,6 +350,39 @@ mod tests {
                 "seed {seed}: the chosen result is logged last"
             );
             assert_ne!(rolled[0], rolled[1]);
+        }
+    }
+
+    #[rstest]
+    #[case::none(0)]
+    #[case::one(1)]
+    #[case::three(3)]
+    #[case::four(4)]
+    fn r5518_one_die_for_each_and_only_the_highest_counts(#[case] count: u32) {
+        let json = d6(0).replace(r#""sides":6"#, &format!(r#""sides":6,"highest":{count}"#));
+        for seed in 0..32 {
+            let Run::Done { events, next, .. } = roll(&game(seed), &json).unwrap() else {
+                panic!("a roll asks nothing");
+            };
+            let rolled: Vec<u32> = events
+                .iter()
+                .map(|event| match event {
+                    Event::DieRolled { result, .. } => *result,
+                    other => panic!("{other:?}"),
+                })
+                .collect();
+            assert_eq!(rolled.len(), count as usize, "seed {seed}");
+            let Some(highest) = rolled.iter().max() else {
+                assert_eq!(next, Next::Sibling);
+                continue;
+            };
+            assert_eq!(rolled.last(), Some(highest), "seed {seed}: the highest is read");
+            let expected = match highest {
+                1..=2 => Next::Enter(0),
+                3..=4 => Next::Enter(1),
+                _ => Next::Enter(2),
+            };
+            assert_eq!(next, expected, "seed {seed}: {rolled:?}");
         }
     }
 

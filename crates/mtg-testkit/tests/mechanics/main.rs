@@ -143,6 +143,7 @@ mod r3f_waterbend;
 mod r406_actions;
 mod r407_attack_tokens;
 mod r4711_draft_notes;
+mod r5518_dice;
 mod r4_audit;
 mod r4a_amplify;
 mod r4b_skip;

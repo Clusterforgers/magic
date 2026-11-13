@@ -3620,6 +3620,10 @@ impl Walker<'_> {
         if matches!(effect, Effect::Discard { random: true, .. }) {
             self.uses("Effect", "Discard.Random");
         }
+        // One die for each of an amount, the highest kept, is a roll only an engine that knows it runs.
+        if matches!(effect, Effect::RollDice { highest: Some(_), .. }) {
+            self.uses("Effect", "RollDice.Highest");
+        }
         if matches!(
             effect,
             Effect::Discard {
@@ -4280,8 +4284,14 @@ impl Walker<'_> {
                 dice,
                 choose,
                 plus,
+                highest,
                 results,
-            } => w.roll_dice(who, *sides, (*dice, *choose), plus, results),
+            } => {
+                if let Some(highest) = highest {
+                    w.at("highest", |w| w.amount(highest));
+                }
+                w.roll_dice(who, *sides, (*dice, *choose), plus, results);
+            }
             Effect::FlipCoin {
                 who,
                 win,
@@ -7132,6 +7142,7 @@ mod tests {
     #[case::affinity_given_to_spells(r#"{"Static":{"affected":{"Each":["Spell",{"Type":"Enchantment"}]},"mods":[{"AddKeyword":{"Affinity":[{"Subtype":"Aura"}]}}]}}"#, &["Ability.Static", "Ability.Static.SpellKeywords", "Keyword.Affinity", "Mod.AddKeyword"])]
     #[case::a_discard_of_your_choice(r#"{"Spell":{"effects":[{"Discard":{"count":2}}]}}"#, &["Ability.Spell", "Effect.Discard"])]
     #[case::a_discard_at_random(r#"{"Spell":{"effects":[{"Discard":{"random":true}}]}}"#, &["Ability.Spell", "Effect.Discard", "Effect.Discard.Random"])]
+    #[case::r5518_dice_keeping_the_highest(r#"{"Spell":{"effects":[{"RollDice":{"sides":20,"highest":2,"results":[]}}]}}"#, &["Ability.Spell", "Effect.RollDice", "Effect.RollDice.Highest"])]
     #[case::a_discard_of_matching_cards(r#"{"Spell":{"effects":[{"Discard":{"filter":[{"Type":"Creature"}]}}]}}"#, &["Ability.Spell", "Effect.Discard", "Effect.Discard.Filter"])]
     #[case::a_move_to_the_hand(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":"Hand"}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_to_the_top_of_a_library(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Top","order":"Chosen"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
