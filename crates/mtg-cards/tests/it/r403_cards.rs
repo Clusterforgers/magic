@@ -174,6 +174,13 @@ fn r403_reads_back_whole(#[case] name: &str) {
     "DeclinedCumulativeUpkeep"
 )]
 #[case::without_battles("Role Reversal", "\"Battle\",\n", "")]
+#[case::thrice_the_counters("Heart of Bogardan", r#""by": 2"#, r#""by": 3"#)]
+#[case::when_paid(
+    "Heart of Bogardan",
+    "DeclinedCumulativeUpkeep",
+    "PaidCumulativeUpkeep"
+)]
+#[case::upkeep_paid("Shah of Naar Isle", "PaidEcho", "PaidCumulativeUpkeep")]
 #[case::artifacts_only(
     "Legerdemain",
     r#""types": ["Artifact", "Creature"]"#,
