@@ -98,6 +98,7 @@ const samples: Record<string, Record<string, unknown>> = {
   Presence: { type: 'Presence', seat: 1, connected: false },
   Deciding: { type: 'Deciding', seats: [{ seat: 1, kind: 'ChooseTargets' }] },
   Spectators: { type: 'Spectators', count: 2 },
+  EndedByAdmin: { type: 'EndedByAdmin' },
   TakeBackOffer: { type: 'TakeBackOffer', offer: { player: 0, kind: 'Cast', name: 'Shock', at: 12 } },
   TakeBackAsked: {
     type: 'TakeBackAsked',
@@ -464,6 +465,8 @@ describe('parseFrame checks the fields of each message', () => {
     ['Error', 'a code from the prototype', ['code'], 'toString'],
     ['Error', 'message as null', ['message'], null],
     ['GameOver', 'an unknown word as result', ['result'], 'Win'],
+    ['EndedByAdmin', 'a reason that is a number', ['reason'], 5],
+    ['EndedByAdmin', 'a reason that is null', ['reason'], null],
     ['GameOver', 'a winner that is text', ['result'], { Winner: 'x' }],
     ['GameOver', 'a winner with company', ['result'], { Winner: 0, Draw: true }],
     ['GameOver', 'a team that is negative', ['result'], { Team: -1 }],

@@ -319,6 +319,8 @@ fn account_routes() -> Router<AppState> {
         )
         .route("/api/admin/users/{id}", delete(auth::remove_account))
         .route("/api/admin/users/{id}/password", post(auth::reset_password))
+        .route("/api/admin/games", get(crate::admin_games::list))
+        .route("/api/admin/games/{id}/end", post(crate::admin_games::end))
 }
 
 /// The Delves routes: the content the web draws, the player's runs, creating, joining by code and acting.

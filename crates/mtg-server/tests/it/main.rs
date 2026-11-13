@@ -38,6 +38,7 @@ mod pay_leak;
 mod pg_account_settings;
 mod pg_accounts;
 mod pg_admin;
+mod pg_admin_end;
 mod pg_admin_manage;
 mod pg_admins;
 mod pg_art;
