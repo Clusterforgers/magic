@@ -1,0 +1,51 @@
+{
+  "oracle_id": "1fa20b05-cc06-4fb7-ae76-677a29e2185a",
+  "name": "Yedora, Grave Gardener",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yedora, Grave Gardener",
+      "oracle_fingerprint": "e75a65505cf150643ad7eb196dffd42e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  "Other",
+                  { "Not": "Token" },
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Arrived": { "of": "Triggering", "zone": "Graveyard" } },
+                        "to": { "BattlefieldFaceDown": { "under": { "OwnerOf": "Triggering" } } },
+                        "as": "back"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "back" },
+                        "mods": [{ "SetTypes": ["Land"] }, { "SetLandTypes": ["Forest"] }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

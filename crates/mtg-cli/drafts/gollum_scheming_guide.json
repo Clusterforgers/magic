@@ -1,0 +1,114 @@
+{
+  "oracle_id": "3fb5c9a6-3fab-4109-875b-83c92518c5eb",
+  "name": "Gollum, Scheming Guide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gollum, Scheming Guide",
+      "oracle_fingerprint": "8ffedc9aaed51790fd8b7f36c4e82337",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              },
+              { "ChooseValue": { "kind": { "Options": ["land", "nonland"] }, "as": "kind" } },
+              { "Choose": { "from": "Opponents", "as": "guesser" } },
+              {
+                "ChooseValue": {
+                  "who": { "Bound": "guesser" },
+                  "kind": { "Options": ["yes", "no"] },
+                  "as": "guess"
+                }
+              },
+              {
+                "Bind": {
+                  "what": { "Each": ["TopOfLibrary", { "OwnedBy": "You" }, { "In": "Library" }] },
+                  "as": "topcard"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "topcard" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Any": [
+                      {
+                        "All": [
+                          { "ChosenWord": { "name": "kind", "word": "land" } },
+                          { "ChosenWord": { "name": "guess", "word": "yes" } },
+                          {
+                            "Matches": {
+                              "subject": { "Bound": "topcard" },
+                              "selector": [{ "Type": "Land" }]
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "All": [
+                          { "ChosenWord": { "name": "kind", "word": "land" } },
+                          { "ChosenWord": { "name": "guess", "word": "no" } },
+                          {
+                            "Not": {
+                              "Matches": {
+                                "subject": { "Bound": "topcard" },
+                                "selector": [{ "Type": "Land" }]
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "All": [
+                          { "ChosenWord": { "name": "kind", "word": "nonland" } },
+                          { "ChosenWord": { "name": "guess", "word": "yes" } },
+                          {
+                            "Not": {
+                              "Matches": {
+                                "subject": { "Bound": "topcard" },
+                                "selector": [{ "Type": "Land" }]
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "All": [
+                          { "ChosenWord": { "name": "kind", "word": "nonland" } },
+                          { "ChosenWord": { "name": "guess", "word": "no" } },
+                          {
+                            "Matches": {
+                              "subject": { "Bound": "topcard" },
+                              "selector": [{ "Type": "Land" }]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "then": [{ "RemoveFromCombat": { "what": "This" } }],
+                  "otherwise": [
+                    { "Draw": {} },
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": ["CantBeBlocked"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

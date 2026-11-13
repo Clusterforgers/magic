@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ae1f2ab5-c6a5-4d49-a746-3cb4668bf805",
+  "name": "Mycosynth Lattice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mycosynth Lattice",
+      "oracle_fingerprint": "406c93a32e9ee67d5feb3326f074db8d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "In": "Battlefield" }] },
+            "mods": [{ "AddType": "Artifact" }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    { "In": "Battlefield" },
+                    { "In": "Stack" },
+                    { "In": "Hand" },
+                    { "In": "Library" },
+                    { "In": "Graveyard" },
+                    { "In": "Exile" },
+                    { "In": "Command" }
+                  ]
+                }
+              ]
+            },
+            "mods": [{ "SetColors": [] }]
+          }
+        },
+        { "Rule": { "rule": { "SpendManaAs": { "who": "EachPlayer", "spend_as": "AnyColor" } } } }
+      ]
+    }
+  ]
+}

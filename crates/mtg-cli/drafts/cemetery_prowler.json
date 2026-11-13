@@ -1,0 +1,251 @@
+{
+  "oracle_id": "fa53cc50-f06f-44b0-850f-cfa6e0caa4c5",
+  "name": "Cemetery Prowler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cemetery Prowler",
+      "oracle_fingerprint": "a543267ca4eef788c3aded2ec8119a2e",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              { "Choose": { "from": { "Each": [{ "In": "Graveyard" }] }, "as": "card" } },
+              { "Exile": { "what": { "Bound": "card" } } }
+            ]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Sum": [
+                {
+                  "When": {
+                    "condition": {
+                      "All": [
+                        {
+                          "Matches": { "subject": "Affected", "selector": [{ "Type": "Artifact" }] }
+                        },
+                        {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "In": "Exile" },
+                                { "ExiledWith": "This" },
+                                { "Type": "Artifact" }
+                              ]
+                            },
+                            "op": "Gt",
+                            "right": 0
+                          }
+                        }
+                      ]
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                {
+                  "When": {
+                    "condition": {
+                      "All": [
+                        { "Matches": { "subject": "Affected", "selector": [{ "Type": "Battle" }] } },
+                        {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "In": "Exile" },
+                                { "ExiledWith": "This" },
+                                { "Type": "Battle" }
+                              ]
+                            },
+                            "op": "Gt",
+                            "right": 0
+                          }
+                        }
+                      ]
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                {
+                  "When": {
+                    "condition": {
+                      "All": [
+                        {
+                          "Matches": { "subject": "Affected", "selector": [{ "Type": "Creature" }] }
+                        },
+                        {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "In": "Exile" },
+                                { "ExiledWith": "This" },
+                                { "Type": "Creature" }
+                              ]
+                            },
+                            "op": "Gt",
+                            "right": 0
+                          }
+                        }
+                      ]
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                {
+                  "When": {
+                    "condition": {
+                      "All": [
+                        {
+                          "Matches": {
+                            "subject": "Affected",
+                            "selector": [{ "Type": "Enchantment" }]
+                          }
+                        },
+                        {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "In": "Exile" },
+                                { "ExiledWith": "This" },
+                                { "Type": "Enchantment" }
+                              ]
+                            },
+                            "op": "Gt",
+                            "right": 0
+                          }
+                        }
+                      ]
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                {
+                  "When": {
+                    "condition": {
+                      "All": [
+                        {
+                          "Matches": { "subject": "Affected", "selector": [{ "Type": "Instant" }] }
+                        },
+                        {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "In": "Exile" },
+                                { "ExiledWith": "This" },
+                                { "Type": "Instant" }
+                              ]
+                            },
+                            "op": "Gt",
+                            "right": 0
+                          }
+                        }
+                      ]
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                {
+                  "When": {
+                    "condition": {
+                      "All": [
+                        {
+                          "Matches": { "subject": "Affected", "selector": [{ "Type": "Kindred" }] }
+                        },
+                        {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "In": "Exile" },
+                                { "ExiledWith": "This" },
+                                { "Type": "Kindred" }
+                              ]
+                            },
+                            "op": "Gt",
+                            "right": 0
+                          }
+                        }
+                      ]
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                {
+                  "When": {
+                    "condition": {
+                      "All": [
+                        {
+                          "Matches": {
+                            "subject": "Affected",
+                            "selector": [{ "Type": "Planeswalker" }]
+                          }
+                        },
+                        {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "In": "Exile" },
+                                { "ExiledWith": "This" },
+                                { "Type": "Planeswalker" }
+                              ]
+                            },
+                            "op": "Gt",
+                            "right": 0
+                          }
+                        }
+                      ]
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                {
+                  "When": {
+                    "condition": {
+                      "All": [
+                        {
+                          "Matches": { "subject": "Affected", "selector": [{ "Type": "Sorcery" }] }
+                        },
+                        {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "In": "Exile" },
+                                { "ExiledWith": "This" },
+                                { "Type": "Sorcery" }
+                              ]
+                            },
+                            "op": "Gt",
+                            "right": 0
+                          }
+                        }
+                      ]
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
