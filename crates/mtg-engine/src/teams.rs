@@ -30,6 +30,13 @@ impl GameState {
         !self.are_teammates(player, other)
     }
 
+    /// The teammates of `player` still in the game, themself left out, in turn order from the active player.
+    pub fn r4710_teammates_of(&self, player: PlayerId) -> Vec<PlayerId> {
+        let mut order = self.turn_order_from(self.turn().active());
+        order.retain(|other| *other != player && self.are_teammates(player, *other));
+        order
+    }
+
     /// The opponents of `player` still in the game, in turn order from the active player.
     pub fn opponents_of(&self, player: PlayerId) -> Vec<PlayerId> {
         let mut order = self.turn_order_from(self.turn().active());

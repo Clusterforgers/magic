@@ -84,6 +84,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             source: ctx.source,
             barred: &barred,
             granter: price.granter,
+            pays: crate::r4707_pay_costs::PaysFor::Cost,
         });
         if pick.short(ctx.state, &candidates) {
             return Some(Next::Drop);
@@ -95,6 +96,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             continue;
         }
         let (min, max) = pick.bounds(candidates.len());
+        let groups = pick.r4709_groups(ctx.state, &candidates);
         return Some(ctx.ask(DecisionKind::ChooseCards(CardsOptions {
             one_per_name: false,
             source: ctx.source,
@@ -103,6 +105,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             max,
             text: pick.text(),
             can_cancel: ctx.can_cancel(),
+            groups,
         })));
     }
     super::w2f_counter_kinds::w2f_run(ctx, work, &price)
@@ -124,6 +127,7 @@ pub(super) fn most(ctx: &Ctx<'_>, choices: &Choices) -> Option<u32> {
                 source: ctx.source,
                 barred: &barred,
                 granter: price.granter,
+                pays: crate::r4707_pay_costs::PaysFor::Cost,
             })
         })
         .min()
@@ -161,6 +165,7 @@ pub(super) fn r301_x_without_picks(
                     source: ctx.source,
                     barred: &barred,
                     granter: price.granter,
+                    pays: crate::r4707_pay_costs::PaysFor::Cost,
                 });
                 pick.short(ctx.state, &candidates)
             })

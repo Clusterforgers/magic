@@ -5,7 +5,7 @@ use super::super::vote::{VOTER, more_votes};
 use super::{Effect, Writer};
 use crate::effect::{DieRow, VoteFor};
 use crate::refs::Ref;
-use crate::value::Condition;
+use crate::value::{Amount, Condition, DieResult};
 
 /// The sentences of the whole texts (secret numbers, bids and the texts of card pack r37-6) at the head of `effects`,
 /// and how many effects they cover.
@@ -17,6 +17,38 @@ fn r376_whole_text(effects: &[Effect]) -> Option<(Vec<String>, usize)> {
 }
 
 impl Writer<'_> {
+    /// "roll three six-sided dice" and, after it, "for each different result, S" when the next step counts the different
+    /// results; the sentences and the number of effects they take.
+    fn r4703_several_dice(
+        &mut self,
+        sides: u32,
+        dice: u32,
+        after: &[Effect],
+    ) -> Option<(Vec<String>, usize)> {
+        let (words, _) = super::super::chance::R4703_SIDES
+            .iter()
+            .find(|(_, faces)| *faces == sides)?;
+        let head = format!(
+            "roll {} {words} dice",
+            super::super::amounts::count_word(dice)?
+        );
+        let Some(
+            next @ Effect::CreateToken {
+                count: Amount::DieResult(DieResult::Distinct),
+                ..
+            },
+        ) = after.first()
+        else {
+            return Some((vec![head], 1));
+        };
+        let mut once = next.clone();
+        if let Effect::CreateToken { count, .. } = &mut once {
+            *count = Amount::one();
+        }
+        let steps = self.effect(&once)?;
+        Some((vec![head, format!("for each different result, {steps}")], 2))
+    }
+
     /// "flip five coins. Take an extra turn after this one for each coin that comes up heads": two or more flips of yours
     /// in a row, each with the same `win` list and nothing on a loss, and the number of effects they cover.
     fn ep22_flips(&mut self, effects: &[Effect]) -> Option<(Vec<String>, usize)> {
@@ -50,6 +82,7 @@ impl Writer<'_> {
 
     /// "flip a coin", "if you win the flip, S" and "if you lose the flip, S" as sentences, or "roll a d20", and the number
     /// of effects they cover.
+    #[allow(clippy::too_many_lines)]
     pub(super) fn chance(&mut self, effects: &[Effect]) -> Option<(Vec<String>, usize)> {
         let whole = (self.ep22_flips(effects)).or_else(|| r376_whole_text(effects));
         if whole.is_some() {
@@ -126,6 +159,16 @@ impl Writer<'_> {
                 choose: true,
                 ..
             } => Some((vec![format!("roll two d{sides} and choose one result")], 1)),
+            Effect::RollDice {
+                who: Ref::You,
+                sides,
+                dice,
+                choose: false,
+                plus,
+                results,
+            } if *dice > 1 && plus.is_zero() && results.is_empty() => {
+                self.r4703_several_dice(*sides, *dice, &effects[1..])
+            }
             Effect::Vote {
                 options: VoteFor::Named(names),
                 secret,

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "10d482fd-e034-4187-b148-51fe15885360",
+  "name": "Sunbird's Invocation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunbird's Invocation",
+      "oracle_fingerprint": "057b29566fc9dd4b4f164acf02ee7463",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "CastFrom": "Hand" }], "by": "You" } },
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                  "as": "top"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Not": { "Type": "Land" } },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "kept" }, "free": true } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

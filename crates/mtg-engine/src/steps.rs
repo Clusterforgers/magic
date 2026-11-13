@@ -114,6 +114,7 @@ fn untap_step(state: &GameState) -> Progress {
                     "Choose the permanents to keep tapped.".to_owned()
                 },
                 can_cancel: false,
+                groups: Vec::new(),
             }),
         }),
         _ => Progress::Events(events),

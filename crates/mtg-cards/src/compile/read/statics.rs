@@ -42,7 +42,8 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 53] = [
+const TEMPLATES: [Template; 54] = [
+    super::r4701_flash::r4701_flash,
     super::r376_nearest::r376_rooms_again,
     super::r376_nearest::r376_nearest,
     super::r376_nearest::r376_side_entering,
@@ -339,6 +340,9 @@ fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
         return Some(replacement(ReplaceBy::Choose(EntersChoice::LandType), None));
     }
     if let Some(kind) = super::e15b_entering::read_choose_type(r) {
+        return Some(replacement(ReplaceBy::Choose(kind), None));
+    }
+    if let Some(kind) = super::r4702_names::r4702_read_name(r) {
         return Some(replacement(ReplaceBy::Choose(kind), None));
     }
     if r.words("choose a player") {
@@ -639,6 +643,10 @@ fn rule(r: &mut Reader<'_>) -> Option<Ability> {
 }
 
 /// "You may activate the loyalty abilities of planeswalkers you control twice each turn rather than only once."
+/// The rule that lets a player's creatures boast twice on each of their turns (Birgi).
+const R4701_BOAST_TWICE: &str =
+    "creatures you control can boast twice during each of your turns rather than once";
+
 const LOYALTY_TWICE: &str = "you may activate the loyalty abilities of planeswalkers you control twice each turn rather than only once";
 
 /// The rules about a player's hand, land plays and library: "You have no maximum hand size.", "You may play an
@@ -652,6 +660,9 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     }
     if r.words(LOYALTY_TWICE) {
         return Some(GameRule::LoyaltyTwice(Ref::You));
+    }
+    if r.words(R4701_BOAST_TWICE) {
+        return Some(GameRule::BoastTwice(Ref::You));
     }
     if r.words("you control your opponents while they're searching their libraries") {
         return Some(GameRule::ControlSearches(Ref::Opponents));
@@ -684,6 +695,9 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
         return Some(rule);
     }
     if let Some(rule) = r.attempt(super::c4_rules::read) {
+        return Some(rule);
+    }
+    if let Some(rule) = r.attempt(super::r4707_costs::read) {
         return Some(rule);
     }
     if let Some(rule) = r.attempt(|r| {
@@ -1100,10 +1114,21 @@ pub(super) fn cost_subject(r: &mut Reader<'_>) -> Option<(Selector, bool)> {
     };
     let mut applies_to = cost_conditions::more_spells(r, first)?;
     (applies_to.0.first() == Some(&Pred::Spell)).then_some(())?;
+    // "Spells with the chosen name you cast": read here only, where the name is the one the permanent chose.
+    if r.words("with the chosen name") {
+        applies_to.0.push(Pred::ChosenName);
+    }
     if r.words("you cast") {
         applies_to.0.push(Pred::ControlledBy(Ref::You));
     } else if r.words("your opponents cast") {
         applies_to.0.push(Pred::ControlledBy(Ref::Opponents));
+    }
+    // "Spells your opponents cast with the chosen name": the name belongs to the spells, before who casts them.
+    if let Some(Pred::ControlledBy(_)) = applies_to.0.last()
+        && r.words("with the chosen name")
+    {
+        let at = applies_to.0.len() - 1;
+        applies_to.0.insert(at, Pred::ChosenName);
     }
     // "Creature spells you cast with power 4 or greater": a number of the spell after who casts it.
     if let Some(number) = r.attempt(|r| match selectors::suffix(r, Form::All)? {
@@ -1141,6 +1166,9 @@ pub(super) fn cost_mana(r: &mut Reader<'_>) -> Option<(ManaCostX, bool)> {
 pub(super) fn cost_times(r: &mut Reader<'_>, itself: bool, x: bool) -> Option<Amount> {
     if let Some(tallied) = r.attempt(|r| super::c11a_turn_costs::c11a_turn_count(r, x)) {
         return Some(tallied);
+    }
+    if !x && let Some(types) = r.attempt(super::r4703_reads::r4703_sacrificed_types) {
+        return Some(types);
     }
     if !itself
         && !x
@@ -1348,6 +1376,7 @@ pub(super) fn cost_sentences(
     } else if let Some(each) = (!itself)
         .then(|| super::r402_spell_costs::r402_for_each_text(per))
         .flatten()
+        .or_else(|| super::r4703_reads::r4703_sacrificed_types_text(per))
         .or_else(|| for_each_text(per))
     {
         (mana.to_string(), format!(" for each {each}"))
@@ -1572,6 +1601,17 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
         (ReplaceBy::Choose(EntersChoice::CreatureType), None) => {
             vec!["As ~ enters, choose a creature type".to_owned()]
         }
+        (ReplaceBy::Choose(EntersChoice::Colors(n)), None) => super::amounts::count_word(*n)
+            .map(|n| format!("As ~ enters, choose {n} colors"))
+            .into_iter()
+            .collect(),
+        (ReplaceBy::Choose(EntersChoice::Players(n)), None) => super::amounts::count_word(*n)
+            .map(|n| format!("As ~ enters, choose {n} players"))
+            .into_iter()
+            .collect(),
+        (ReplaceBy::Choose(EntersChoice::ColorAndCreatureType), None) => {
+            vec!["As ~ enters, choose a color and a creature type".to_owned()]
+        }
         (ReplaceBy::Choose(EntersChoice::LandType), None) => {
             vec!["As ~ enters, choose a land type".to_owned()]
         }
@@ -1589,6 +1629,16 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
             ),
             None,
         ) => super::e15b_entering::choose_type_texts(*kind),
+        (
+            ReplaceBy::Choose(
+                kind @ (EntersChoice::CardName
+                | EntersChoice::NonlandCardName
+                | EntersChoice::NoncreatureNonlandCardName
+                | EntersChoice::NonbasicLandCardName
+                | EntersChoice::RevealedNonlandName),
+            ),
+            None,
+        ) => super::r4702_names::r4702_name_texts(*kind),
         (ReplaceBy::PayLifeOrTapped(life), None) => vec![format!(
             "As ~ enters, you may pay {life} life. If you don't, it enters tapped"
         )],
@@ -1822,6 +1872,7 @@ fn ep27_rule_texts(
             let mut texts = super::ep27_flash::ep27_flash_texts(rule, condition, from);
             texts.extend(super::r401_flash::r401_flash_texts(rule, condition, from));
             texts.extend(super::ep29_flash::ep29_flash_texts(rule, condition));
+            texts.extend(super::r4701_flash::r4701_flash_texts(rule, condition));
             Some(texts)
         }
         (GameRule::RevealHand(who), ZoneKind::Battlefield) if condition.is_none() => {
@@ -1848,6 +1899,11 @@ fn player_rule_texts(rule: &GameRule) -> Option<Vec<String>> {
         GameRule::NoMaxHandSize(Ref::EachPlayer) => "Players have no maximum hand size".to_owned(),
         GameRule::LoyaltyTwice(Ref::You) => {
             let mut text = LOYALTY_TWICE.to_owned();
+            text[..1].make_ascii_uppercase();
+            text
+        }
+        GameRule::BoastTwice(Ref::You) => {
+            let mut text = R4701_BOAST_TWICE.to_owned();
             text[..1].make_ascii_uppercase();
             text
         }
@@ -1906,7 +1962,9 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::OwnSpellsCantSearch(_)
             | GameRule::SkipExtraTurns(_)
             | GameRule::FlipTwoCoins(_)
-            | GameRule::ExtraDie(_),
+            | GameRule::ExtraDie(_)
+            | GameRule::ExtraPlanarDie(_)
+            | GameRule::PlaneswalkLookTwo(_),
             ZoneKind::Battlefield,
         ) => super::c4_rules::texts(rule),
         (
@@ -1917,7 +1975,8 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::AbilitiesAsThoughHaste(_)
             | GameRule::PayLifeForMana { .. }
             | GameRule::PayLifeForOneSymbol { .. }
-            | GameRule::OpponentsCantMakeSacrifice(_),
+            | GameRule::OpponentsCantMakeSacrifice(_)
+            | GameRule::OpponentsCantMakeDiscardOrSacrifice(_),
             ZoneKind::Battlefield,
         ) => super::ep24_rules::ep24_rule_texts(rule),
         (GameRule::VoteAgain(Ref::You) | GameRule::ExtraVote(Ref::You), ZoneKind::Battlefield) => {

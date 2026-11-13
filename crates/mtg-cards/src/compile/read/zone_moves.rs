@@ -145,6 +145,7 @@ pub fn return_from_graveyard(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             count: Bounds::default(),
             bind: super::effects::RETURNED.to_owned(),
             rest_as: None,
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(super::effects::RETURNED.to_owned()),
@@ -178,6 +179,7 @@ pub fn may_put_from_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
                 count: Bounds::default(),
                 bind: CHOSEN.to_owned(),
                 rest_as: None,
+                differ: None,
             },
             Effect::Move {
                 what: Ref::Bound(CHOSEN.to_owned()),

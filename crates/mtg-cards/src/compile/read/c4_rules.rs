@@ -5,6 +5,16 @@ use super::tokens::Reader;
 use crate::modify::GameRule;
 use crate::refs::Ref;
 
+/// The event of Ichor Elixir's rule.
+const R4707_PLANAR_DICE: &str = "you would roll one or more planar dice";
+/// What Ichor Elixir's rule does instead.
+const R4707_MORE_PLANAR_DICE: &str = "instead roll that many planar dice plus one and ignore one";
+/// The event of Susan Foreman's rule.
+const R4707_PLANESWALK: &str = "you would planeswalk";
+/// What Susan Foreman's rule does instead.
+const R4707_LOOK_TWO: &str = "instead look at the top two cards of your planar deck, put one on the bottom of your \
+                              planar deck and the other on top, then planeswalk";
+
 /// The group a rule names: "your opponents" and "an opponent", "players" and "a player".
 fn group(r: &mut Reader<'_>, opponents: &str, everyone: &str) -> Option<Ref> {
     if r.words(opponents) {
@@ -40,6 +50,21 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<GameRule> {
         r.need("instead roll that many dice plus one and ignore the lowest roll")?;
         return Some(GameRule::ExtraDie(Ref::You));
     }
+    if r.words(R4707_PLANAR_DICE) {
+        r.punct(',').then_some(())?;
+        r.need(R4707_MORE_PLANAR_DICE)?;
+        return Some(GameRule::ExtraPlanarDie(Ref::You));
+    }
+    if r.words(R4707_PLANESWALK) {
+        r.punct(',').then_some(())?;
+        for (at, part) in R4707_LOOK_TWO.split(", ").enumerate() {
+            if at > 0 {
+                r.punct(',').then_some(())?;
+            }
+            r.need(part)?;
+        }
+        return Some(GameRule::PlaneswalkLookTwo(Ref::You));
+    }
     let who = group(r, "an opponent", "a player")?;
     r.need("would begin an extra turn")?;
     r.punct(',').then_some(())?;
@@ -54,6 +79,12 @@ pub(super) fn texts(rule: &GameRule) -> Vec<String> {
             return vec![
                 "If you would flip a coin, instead flip two coins and ignore one".to_owned(),
             ];
+        }
+        GameRule::ExtraPlanarDie(Ref::You) => {
+            return vec![format!("If {R4707_PLANAR_DICE}, {R4707_MORE_PLANAR_DICE}")];
+        }
+        GameRule::PlaneswalkLookTwo(Ref::You) => {
+            return vec![format!("If {R4707_PLANESWALK}, {R4707_LOOK_TWO}")];
         }
         GameRule::ExtraDie(Ref::You) => {
             return vec![

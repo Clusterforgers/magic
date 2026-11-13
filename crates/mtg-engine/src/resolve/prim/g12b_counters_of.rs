@@ -22,12 +22,21 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         each,
         one_kind,
         per_kind,
+        put,
     } = effect
     else {
         return Err(wrong_effect("PutCountersOf"));
     };
     let mut kinds: Vec<(CounterKind, u32)> = Vec::new();
-    for named in cx.scope.refs(of)? {
+    if *put {
+        // "The same number and kind of counters": what the triggering event put, whatever the holder has now.
+        kinds = cx
+            .scope
+            .cause
+            .map(|cause| cause.counters.clone())
+            .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?;
+    }
+    for named in cx.scope.refs(of)?.into_iter().filter(|_| !*put) {
         let held = match named {
             Target::Player(player) => cx
                 .state()

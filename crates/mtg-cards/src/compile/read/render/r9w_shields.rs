@@ -69,6 +69,7 @@ impl Writer<'_> {
                     count,
                     bind,
                     rest_as: None,
+                    differ: None,
                 },
                 Effect::Shield {
                     when:
@@ -103,6 +104,7 @@ impl Writer<'_> {
                     count,
                     bind,
                     rest_as: None,
+                    differ: None,
                 },
                 Effect::Shield {
                     when:
@@ -142,6 +144,7 @@ impl Writer<'_> {
                     count,
                     bind,
                     rest_as: None,
+                    differ: None,
                 },
                 Effect::Shield {
                     when:
@@ -199,6 +202,7 @@ impl Writer<'_> {
                     count,
                     bind,
                     rest_as: None,
+                    differ: None,
                 },
                 Effect::Shield {
                     when:
