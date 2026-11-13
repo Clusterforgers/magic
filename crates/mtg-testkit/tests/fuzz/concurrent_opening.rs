@@ -282,12 +282,12 @@ fn answer_of(script: &Script, decision: &Decision) -> Answer {
     }
 }
 
-/// Seed 317 deals a commander that chooses its color before the hands; the opening still ends the same in any order.
+/// Seed 434 deals a commander that chooses its color before the hands; the opening still ends the same in any order.
 #[rstest]
 fn a_color_chosen_before_the_hands_keeps_any_order_the_same(
     #[values(3, 4, 6)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let setup = setup(Table::Commander, seats, 317)?;
+    let setup = setup(Table::Commander, seats, 434)?;
     assert!(matches!(
         Engine::new(setup.clone())?
             .decisions()

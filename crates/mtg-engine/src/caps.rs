@@ -29,6 +29,7 @@ const RUNS: &[&str] = &[
     "CostModifier.Exhaust",
     "CostModifier.Boast",
     "CostModifier.Buyback",
+    "CostModifier.ManaLife",
     "Ability.By",
     "Ability.From",
     "Ability.Sorcery",
