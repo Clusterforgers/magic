@@ -83,7 +83,7 @@ fn r5511_yuriko_enters_from_the_command_zone_tapped_and_attacking(
     driver.answer(Answer::PayMana(PayChoice::Auto))?;
     settle(&mut driver)?;
     let id = on_battlefield(driver.state(), yuriko).expect("Yuriko entered");
-    assert!(driver.state().zone(Zone::Command(pid(0))).is_empty());
+    assert_eq!(driver.state().zone(Zone::Command(pid(0))), []);
     assert_eq!(
         driver
             .state()
@@ -110,6 +110,6 @@ fn r5511_plain_ninjutsu_is_not_offered_from_the_command_zone(
     let ninja = "Ninja of the Deep Hours";
     let mut driver = Driver::from_scenario(scenario(seats, ninja))?;
     to_blockers(&mut driver, seats - 1)?;
-    assert!(driver.offered_abilities(ninja)?.is_empty());
+    assert_eq!(driver.offered_abilities(ninja)?, [] as [usize; 0]);
     Ok(())
 }

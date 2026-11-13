@@ -127,7 +127,7 @@ fn flamewar_returns_only_its_owners_intel_cards(#[values(2, 3, 4)] seats: usize)
     let before = driver.state().zone(Zone::Hand(PlayerId(0))).len();
     driver.begin_ability(FLAMEWAR_FRONT, 2).unwrap();
     drive(&mut driver);
-    assert!(driver.state().zone(Zone::Exile).is_empty());
+    assert_eq!(driver.state().zone(Zone::Exile), []);
     assert_eq!(
         driver.state().zone(Zone::Hand(PlayerId(0))).len(),
         before + 3,

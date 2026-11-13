@@ -1951,6 +1951,7 @@ pub(crate) fn repeated(cost: &ManaCost, times: usize) -> ManaCost {
 }
 
 /// Whether a rule names no player and no object, so putting it in force changes nothing.
+#[allow(clippy::too_many_lines)] // one arm for every rule
 pub(crate) fn names_nothing(rule: &Rule) -> bool {
     match rule {
         Rule::AttackTax(tax) => {

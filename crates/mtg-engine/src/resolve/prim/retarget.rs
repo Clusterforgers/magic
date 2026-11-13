@@ -80,6 +80,38 @@ pub(super) enum Way {
     Random,
 }
 
+/// The question whether to choose new targets: `Some` ends the change (the question, or the copy kept as it is), `None`
+/// goes on to the new targets.
+fn ask_to_change(
+    player: PlayerId,
+    answers: &mut Iter<'_, (PlayerId, Choice)>,
+    original: Original<'_>,
+    copy: &Choices,
+    way: Way,
+) -> Result<Option<Retargeted>, ResolveError> {
+    match answers.next() {
+        None => {
+            let of = if way == Way::ChooseCopy {
+                "the copy of "
+            } else {
+                ""
+            };
+            Ok(Some(Retargeted::Ask(Decision {
+                player,
+                kind: DecisionKind::YesNo(YesNoOptions::new(
+                    original.id,
+                    format!("Choose new targets for {of}{}?", original.name),
+                )),
+            })))
+        }
+        Some((who, Choice::YesNo(false))) if *who == player => {
+            Ok(Some(Retargeted::Done(copy.clone())))
+        }
+        Some((who, Choice::YesNo(true))) if *who == player => Ok(None),
+        Some(other) => Err(unexpected(other)),
+    }
+}
+
 /// The questions of `way` for `original`, whose new choices start as `copy`. The first player answers them and the second
 /// is the one the new targets must be legal for: the controller of the object.
 pub(super) fn ask(
@@ -140,28 +172,10 @@ pub(super) fn ask(
             cx, original, copy, changeable,
         )));
     }
-    if !matches!(way, Way::Another | Way::AnotherPlayer) {
-        match answers.next() {
-            None => {
-                let of = if way == Way::ChooseCopy {
-                    "the copy of "
-                } else {
-                    ""
-                };
-                return Ok(Retargeted::Ask(Decision {
-                    player,
-                    kind: DecisionKind::YesNo(YesNoOptions::new(
-                        original.id,
-                        format!("Choose new targets for {of}{}?", original.name),
-                    )),
-                }));
-            }
-            Some((who, Choice::YesNo(false))) if *who == player => {
-                return Ok(Retargeted::Done(copy));
-            }
-            Some((who, Choice::YesNo(true))) if *who == player => {}
-            Some(other) => return Err(unexpected(other)),
-        }
+    if !matches!(way, Way::Another | Way::AnotherPlayer)
+        && let Some(done) = ask_to_change(player, answers, original, &copy, way)?
+    {
+        return Ok(done);
     }
     for (at, wording, legal) in changeable {
         let count = original.choices.targets[at].len();

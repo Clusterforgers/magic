@@ -137,7 +137,7 @@ fn the_folly_copies_twice_and_sacrifices_the_reflections(#[values(2, 3, 4)] seat
     assert_eq!(tokens(&driver).len(), 2);
     // Chapter III: both Reflections are sacrificed, the nontoken creatures stay.
     next_turn(&mut driver, "Hero", &mut offered);
-    assert!(tokens(&driver).is_empty());
+    assert_eq!(tokens(&driver), [] as [mtg_core::ids::ObjectId; 0]);
     assert!(driver.id_of("Hero").is_ok());
     assert!(driver.id_of(&bear().name).is_ok());
 }

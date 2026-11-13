@@ -1316,15 +1316,7 @@ impl<'a> Scope<'a> {
             // Nobody outside the candidates of a choice made by each player.
             Ref::Chooser => self.chooser.get().map(Target::Player).into_iter().collect(),
             Ref::Asker => vec![Target::Player(self.asker.unwrap_or(self.controller))],
-            Ref::ModesChooser => {
-                let chooser = self.choices.modes_chooser().unwrap_or(self.controller);
-                self.state
-                    .player(chooser)
-                    .filter(|player| player.is_in_game())
-                    .map(|_| Target::Player(chooser))
-                    .into_iter()
-                    .collect()
-            }
+            Ref::ModesChooser => self.modes_chooser_ref(),
             Ref::Candidate => {
                 let object = self.candidate.get().ok_or_else(|| {
                     ResolveError::Invalid("there is no candidate object here".into())
@@ -1343,15 +1335,7 @@ impl<'a> Scope<'a> {
                 .cause
                 .map(|cause| cause.subjects.first().copied().into_iter().collect())
                 .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
-            Ref::TriggeringPlayer => self
-                .cause
-                .map(|cause| {
-                    (cause.subjects.iter())
-                        .filter(|subject| matches!(subject, Target::Player(_)))
-                        .copied()
-                        .collect()
-                })
-                .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
+            Ref::TriggeringPlayer => self.triggering_players()?,
             Ref::Dealer => self.dealer(),
             Ref::Against => self.against(),
             Ref::Attached => self.host().map(Target::Object).into_iter().collect(),
@@ -1405,6 +1389,29 @@ impl<'a> Scope<'a> {
                 .collect(),
             Ref::Union(parts) => self.union_refs(parts)?,
         })
+    }
+
+    /// The player who chose the modes (`Ref::ModesChooser`), the controller when nobody else did; nobody once out of the game.
+    fn modes_chooser_ref(&self) -> Vec<Target> {
+        let chooser = self.choices.modes_chooser().unwrap_or(self.controller);
+        self.state
+            .player(chooser)
+            .filter(|player| player.is_in_game())
+            .map(|_| Target::Player(chooser))
+            .into_iter()
+            .collect()
+    }
+
+    /// The players among the subjects of the triggering event (`Ref::TriggeringPlayer`).
+    fn triggering_players(&self) -> Result<Vec<Target>, ResolveError> {
+        self.cause
+            .map(|cause| {
+                (cause.subjects.iter())
+                    .filter(|subject| matches!(subject, Target::Player(_)))
+                    .copied()
+                    .collect()
+            })
+            .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))
     }
 
     /// Every player and object any of the references names, each once, in the order the references give them.

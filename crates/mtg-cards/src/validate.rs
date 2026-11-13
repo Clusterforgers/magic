@@ -1652,10 +1652,6 @@ impl<'a> Walker<'a> {
                 self.at("right", |w| w.amount(right));
             }
             Condition::AtTrigger(inner) => self.at("inner", |w| w.condition(inner)),
-            Condition::DamagedThisGameBy { by, .. } => {
-                self.uses("Condition", "DamagedThisGameBy");
-                self.at("by", |w| w.selector(by));
-            }
             Condition::Matches { subject, selector }
             | Condition::CountOf {
                 subject, selector, ..
@@ -1710,15 +1706,9 @@ impl<'a> Walker<'a> {
             Condition::FirstCombat => self.uses("Condition", "FirstCombat"),
             Condition::FirstStep => self.uses("Condition", "FirstStep"),
             Condition::Drafted(_) => self.uses("Condition", "Drafted"),
-            Condition::Exploited { by, what } => {
-                self.uses("Condition", "Exploited");
-                self.at("by", |w| w.reference(by, Kind::Object));
-                self.at("what", |w| w.reference(what, Kind::Object));
-            }
-            Condition::AttackedThisTurnBy { player, by } => {
-                self.player_condition("AttackedThisTurnBy", player);
-                self.at("by", |w| w.selector(by));
-            }
+            Condition::DamagedThisGameBy { .. }
+            | Condition::Exploited { .. }
+            | Condition::AttackedThisTurnBy { .. } => self.history_condition(condition),
             Condition::RingTempted { .. }
             | Condition::FastestPlayer(_)
             | Condition::CompletedNamedDungeon { .. } => self.r5521_condition(condition),
@@ -1739,6 +1729,26 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "Searched");
                 self.at("Searched", |w| w.reference(who, Kind::Player));
             }
+        }
+    }
+
+    /// A condition on what creatures did earlier: damage dealt this game, an exploit, an attack this turn.
+    fn history_condition(&mut self, condition: &Condition) {
+        match condition {
+            Condition::DamagedThisGameBy { by, .. } => {
+                self.uses("Condition", "DamagedThisGameBy");
+                self.at("by", |w| w.selector(by));
+            }
+            Condition::Exploited { by, what } => {
+                self.uses("Condition", "Exploited");
+                self.at("by", |w| w.reference(by, Kind::Object));
+                self.at("what", |w| w.reference(what, Kind::Object));
+            }
+            Condition::AttackedThisTurnBy { player, by } => {
+                self.player_condition("AttackedThisTurnBy", player);
+                self.at("by", |w| w.selector(by));
+            }
+            _ => {}
         }
     }
 

@@ -405,7 +405,10 @@ fn r5521_desert_warfare_returns_a_sacrificed_desert_at_the_end_step(
     driver.pass_until(Step::End)?;
     r5521_settle(&mut driver, true)?;
     assert!(common::names(driver.state(), Zone::Battlefield).contains(&"Dune".to_owned()));
-    assert!(common::names(driver.state(), Zone::Graveyard(pid(0))).is_empty());
+    assert_eq!(
+        common::names(driver.state(), Zone::Graveyard(pid(0))),
+        [] as [std::string::String; 0]
+    );
     r5521_replays(&driver);
     Ok(())
 }

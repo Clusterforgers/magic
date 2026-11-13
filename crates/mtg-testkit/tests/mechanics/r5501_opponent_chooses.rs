@@ -90,7 +90,7 @@ fn the_chosen_opponent_names_the_type_the_oppressor_cant_take(
         .copied()
         .filter(|id| crate::common::name_of(driver.state(), *id) == "Llanowar Elves")
         .collect();
-    assert!(!elves.is_empty());
+    assert_ne!(elves, [] as [mtg_core::ids::ObjectId; 0]);
     assert!(
         options
             .legal

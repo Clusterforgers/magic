@@ -145,7 +145,7 @@ fn r5522_vermin_targets_only_an_opponent_it_hurt(
         assert_eq!(offered, [foe]);
         assert_eq!(r5522_life(&driver, 1), 20 - 1 - 3);
     } else {
-        assert!(offered.is_empty());
+        assert_eq!(offered, [] as [mtg_engine::choose::Target; 0]);
         assert_eq!(r5522_life(&driver, 1), 20);
     }
     for seat in 2..seats {

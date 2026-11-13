@@ -438,6 +438,22 @@ fn note_aftermath(state: &mut GameState, spell: ObjectId, from: Zone) {
     }
 }
 
+/// Tallies the use of a permission that works once each turn, or a limited number of times, that the cast relies on.
+fn note_permission_used(
+    state: &mut GameState,
+    player: PlayerId,
+    object: ObjectId,
+    from: Zone,
+    way: Option<CastWay>,
+) {
+    if let Some(source) = crate::rules::c11b_once_source(state, player, object, from, way) {
+        state.tally_object(source, None, Tally::C11bOnceUsed);
+    }
+    if let Some((source, used)) = crate::rules::r5503_limit_use(state, player, object, from) {
+        state.tally_object(source, None, used);
+    }
+}
+
 /// A card is cast: it moves to the stack as the spell, with what was announced for it, and lies face down when it is cast that way.
 fn spell_cast(
     state: &mut GameState,
@@ -479,12 +495,7 @@ fn spell_cast(
     let uncounterable = crate::rules::spend_next_spells(state, player, object);
     // Read before the tally below closes a permission that works once each turn.
     let riders = crate::rules::r401_cast_riders(state, player, object, from, choices.way);
-    if let Some(source) = crate::rules::c11b_once_source(state, player, object, from, choices.way) {
-        state.tally_object(source, None, Tally::C11bOnceUsed);
-    }
-    if let Some((source, used)) = crate::rules::r5503_limit_use(state, player, object, from) {
-        state.tally_object(source, None, used);
-    }
+    note_permission_used(state, player, object, from, choices.way);
     // The tax counts casts from the command zone (CR 903.8).
     state.commanders.cast(object, from);
     // Read before the spell joins the stack; a spell cast while another resolves is cast off sorcery timing.

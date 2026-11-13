@@ -590,18 +590,7 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
     if let Some(text) = r405_text(only) {
         return Some(text);
     }
-    // The facts no other wording says are left to `ep33_spend_text`.
-    let unsaid = |filter: &SpendFilter| {
-        filter
-            .facts
-            .iter()
-            .any(|fact| matches!(fact, SpendFact::YourCommander | SpendFact::FaceDown))
-    };
-    if only.iter().any(|on| match on {
-        SpendOn::Spell(filter) | SpendOn::Ability(filter) => unsaid(filter),
-        SpendOn::Special(_) => true,
-        _ => false,
-    }) {
+    if left_unsaid(only) {
         return None;
     }
     Some(match only {
@@ -690,6 +679,21 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
             }
         ),
         _ => return None,
+    })
+}
+
+/// Whether the uses hold a fact no other wording says; those are left to `ep33_spend_text`.
+fn left_unsaid(only: &[SpendOn]) -> bool {
+    let unsaid = |filter: &SpendFilter| {
+        filter
+            .facts
+            .iter()
+            .any(|fact| matches!(fact, SpendFact::YourCommander | SpendFact::FaceDown))
+    };
+    only.iter().any(|on| match on {
+        SpendOn::Spell(filter) | SpendOn::Ability(filter) => unsaid(filter),
+        SpendOn::Special(_) => true,
+        _ => false,
     })
 }
 

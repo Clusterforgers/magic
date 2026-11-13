@@ -101,6 +101,6 @@ fn r5503_grip_ignores_a_spell_without_targets(#[case] seats: usize) -> Result<()
     let mut driver = Driver::from_scenario(scenario)?;
     driver.cast("Grizzly Bears")?;
     assert_eq!(driver.state().zone(Zone::Stack).len(), 1);
-    assert!(driver.state().pending_triggers().is_empty());
+    assert_eq!(driver.state().pending_triggers(), []);
     Ok(())
 }

@@ -727,9 +727,13 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::PreventAllBut(_)
         | ReplaceBy::PreventByCounters(_)
         | ReplaceBy::PreventHalfNext
-        | ReplaceBy::PreventAllButNext(_) => {
-            matches!(unit, Unit::Damage { .. })
-        }
+        | ReplaceBy::PreventAllButNext(_)
+        | ReplaceBy::Cap(_)
+        | ReplaceBy::PreventAmount(_)
+        | ReplaceBy::PreventAtMost(_)
+        | ReplaceBy::RedirectUpTo { .. }
+        | ReplaceBy::RedirectCounted { .. }
+        | ReplaceBy::Redirect { .. } => matches!(unit, Unit::Damage { .. }),
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
         ReplaceBy::LossTimes(_) => matches!(
             unit,
@@ -757,9 +761,6 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         ),
         ReplaceBy::Half | ReplaceBy::Subtract(_) => {
             matches!(unit, Unit::Counters { .. } | Unit::Damage { .. })
-        }
-        ReplaceBy::Cap(_) | ReplaceBy::PreventAmount(_) | ReplaceBy::PreventAtMost(_) => {
-            matches!(unit, Unit::Damage { .. })
         }
         ReplaceBy::Multiply(_)
         | ReplaceBy::Add(_)
@@ -816,11 +817,6 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
                 unit,
                 Unit::Damage { .. } | Unit::Draw { .. } | Unit::Loss { .. }
             )
-        }
-        ReplaceBy::RedirectUpTo { .. }
-        | ReplaceBy::RedirectCounted { .. }
-        | ReplaceBy::Redirect { .. } => {
-            matches!(unit, Unit::Damage { .. })
         }
     }
 }

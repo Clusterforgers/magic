@@ -253,7 +253,7 @@ fn r5509_braided_net_bans_activations_while_the_permanent_stays_tapped(
         scenario = scenario.library(seat, (0..10).map(|_| island()).collect::<Vec<_>>());
     }
     let mut driver = Driver::from_scenario(scenario.at(1, 0, Step::Main1))?;
-    assert!(!driver.offered_abilities("Totem")?.is_empty());
+    assert_ne!(driver.offered_abilities("Totem")?, [] as [usize; 0]);
     let target = driver.target_named("Totem")?;
     driver.begin_activation("Braided Net")?;
     driver.choose_targets(&[target])?;
