@@ -340,6 +340,9 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::FaceDown
         | Pred::SpentFrom { .. }
         | Pred::GravedThisTurn
+        | Pred::GravedThisCombat
+        | Pred::SharesColorWithLastCast
+        | Pred::CouldAttackThisTurn
         | Pred::ArrivedFrom(_)
         | Pred::CastWith(_)
         | Pred::TopOfLibrary
@@ -470,6 +473,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::StickerVowels
         | Amount::TallyLastTurn { .. }
         | Amount::CastSameNameThisGame(_)
+        | Amount::CycledSameNameThisGame(_)
         | Amount::TallyTotal { .. }
         | Amount::TallyTypes { .. }
         | Amount::ManaSpent { .. }
@@ -574,7 +578,8 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         Condition::NewlyControlled(what) => reads_of_ref(what).or(Traits::CONTROL),
         Condition::AttackedThisTurnBy { player, .. } => reads_of_ref(player),
         Condition::Exploited { by, what } => reads_of_ref(by).or(reads_of_ref(what)),
-        Condition::Drafted(_)
+        Condition::DamagedThisGameBy { .. }
+        | Condition::Drafted(_)
         | Condition::Kicked
         | Condition::KickedWith(_)
         | Condition::AdditionalCostPaid

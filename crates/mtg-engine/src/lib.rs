@@ -166,6 +166,7 @@ mod r4705_spend_from;
 mod r5502_attack_with_one;
 mod r5502_blocked_by_one;
 mod r5516_damage;
+mod r5522_history;
 mod redeal;
 pub mod replace;
 pub mod resolve;

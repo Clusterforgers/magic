@@ -268,6 +268,7 @@ mod r5517_wholes;
 mod r5519_wholes;
 mod r5521_conditions;
 mod r5521_wholes;
+mod r5522_facts;
 mod r5523_drafted;
 mod r5a_order;
 mod r5a_wordings;
@@ -675,6 +676,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r5521_wholes::r5521_read(text, kind) {
+        return Some(found);
+    }
+    if let Some(found) = render::r5522_read_whole(text, same_text) {
         return Some(found);
     }
     if let Some(found) =

@@ -1,7 +1,7 @@
 {
   "oracle_id": "9d1c5987-3572-4bf9-b01c-eb6e98a7da77",
   "name": "Churning Reservoir",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Churning Reservoir",
@@ -26,9 +26,48 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 113, "end": 335 }
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "condition": {
+              "Any": [
+                {
+                  "Compare": {
+                    "left": { "Tallied": { "who": "You", "what": "OilCountersRemovedUnder" } },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": {
+                      "Tally": {
+                        "event": "Died",
+                        "who": "EachPlayer",
+                        "filter": [{ "HasCounter": { "Other": "oil" } }]
+                      }
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Phyrexian Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Phyrexian", "Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

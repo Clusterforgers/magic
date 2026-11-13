@@ -408,6 +408,7 @@ mod r5502_attack_with_one;
 mod r5502_blocked_by_one;
 mod r5502_next_combat;
 mod r5502_walkers;
+mod r5522_triggers;
 mod r5b_writers;
 mod r5c;
 mod r5e_writers;

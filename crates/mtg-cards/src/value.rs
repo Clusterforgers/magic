@@ -406,6 +406,24 @@ pub enum TurnTally {
     /// The cards the player played from exile this turn: spells cast and lands played from exile ("if you didn't play a
     /// card from exile this turn"). Added up over the players.
     PlayedFromExile,
+    /// The lands the player played and the spells they cast this turn from anywhere other than their hand ("if you've
+    /// played a land or cast a spell this turn from anywhere other than your hand"). Added up over the players.
+    PlayedNotFromHand,
+    /// The energy counters the player paid or lost this turn, by the number ("if you've paid or lost four or more {E}
+    /// this turn"). Added up over the players.
+    EnergyPaidOrLost,
+    /// The oil counters removed this turn from permanents the players controlled, by the number ("if an oil counter was
+    /// removed from a permanent you controlled this turn"). Added up over the players.
+    OilCountersRemovedUnder,
+    /// The permanents that entered the battlefield face down under the players' control this turn ("if a permanent
+    /// entered the battlefield face down under your control this turn"). Added up over the players.
+    EnteredFaceDownUnder,
+    /// The permanents the players turned face up this turn ("you turned a permanent face up this turn"). Added up over
+    /// the players.
+    TurnedFaceUp,
+    /// The untapped lands the player controlled as the turn began, before its untap step ("the number of untapped lands
+    /// they controlled at the beginning of this turn"). Added up over the players.
+    UntappedLandsAsTurnBegan,
     /// The cards the players drew this turn ("for each card your opponents have drawn this turn"). Added up over the
     /// players.
     CardsDrawnTotal,
@@ -774,6 +792,9 @@ pub enum Amount {
     /// The spells the players named have cast this game with the same name as the object with the ability, that object
     /// included when it was cast ("if ... you've cast another spell named ~ this game": 2 or more).
     CastSameNameThisGame(Ref),
+    /// The times the players named have cycled a card with the same name as the object with the ability this game, that
+    /// object included ("if you've cycled a card named ~ four or more times this game").
+    CycledSameNameThisGame(Ref),
     /// `Tally` over the turn that ended last ("if you had another creature enter the battlefield under your control last
     /// turn"); only the kinds kept as objects (`Entered`, `SpellCast`, `Died` and the like), not the records.
     TallyLastTurn {
@@ -1067,6 +1088,7 @@ enum Tagged {
     },
     StickerVowels,
     CastSameNameThisGame(Ref),
+    CycledSameNameThisGame(Ref),
     TallyLastTurn {
         event: TallyEvent,
         who: Ref,
@@ -1265,6 +1287,7 @@ enum TaggedRef<'a> {
     },
     StickerVowels,
     CastSameNameThisGame(&'a Ref),
+    CycledSameNameThisGame(&'a Ref),
     TallyLastTurn {
         event: TallyEvent,
         who: &'a Ref,
@@ -1399,6 +1422,7 @@ impl From<Tagged> for Amount {
             Tagged::Stickers { on, kind } => Amount::Stickers { on, kind },
             Tagged::StickerVowels => Amount::StickerVowels,
             Tagged::CastSameNameThisGame(who) => Amount::CastSameNameThisGame(who),
+            Tagged::CycledSameNameThisGame(who) => Amount::CycledSameNameThisGame(who),
             Tagged::TallyLastTurn { event, who, filter } => {
                 Amount::TallyLastTurn { event, who, filter }
             }
@@ -1568,6 +1592,9 @@ impl Serialize for Amount {
             Amount::CastSameNameThisGame(who) => {
                 TaggedRef::CastSameNameThisGame(who).serialize(serializer)
             }
+            Amount::CycledSameNameThisGame(who) => {
+                TaggedRef::CycledSameNameThisGame(who).serialize(serializer)
+            }
             Amount::TallyLastTurn { event, who, filter } => TaggedRef::TallyLastTurn {
                 event: *event,
                 who,
@@ -1709,6 +1736,16 @@ pub enum Condition {
         subject: Ref,
         /// The predicates it must satisfy.
         selector: Selector,
+    },
+    /// "You" (the player tested, in a `PlayersWhere`) were dealt damage this game by a source the selector matches as it
+    /// was when it dealt it ("each opponent dealt combat damage this game by a creature named ~", "target opponent
+    /// previously dealt damage by it": an object that left and came back is another); only combat damage with `combat`.
+    DamagedThisGameBy {
+        /// The sources, as they were when they dealt the damage.
+        by: Selector,
+        /// Only combat damage.
+        #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+        combat: bool,
     },
     /// The inner condition is checked as the ability triggers and not again as it resolves (an "if" that is no intervening
     /// "if", Forge's `NoResolvingCheck`).

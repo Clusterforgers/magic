@@ -1,7 +1,7 @@
 {
   "oracle_id": "6a618c4a-e604-4dce-a078-755fd35ac5d9",
   "name": "Izzet Generatorium",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Izzet Generatorium",
@@ -14,9 +14,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 92, "end": 174 }
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "EnergyPaidOrLost" } },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [{ "Draw": {} }]
           }
         }
       ]

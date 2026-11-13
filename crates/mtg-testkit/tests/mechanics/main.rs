@@ -156,6 +156,8 @@ mod r5507_prevent;
 mod r5509_cards;
 mod r5513_exploited;
 mod r5514_pieces;
+mod r5522_game;
+mod r5522_history;
 mod r5g;
 mod r6f;
 mod repeat_each;

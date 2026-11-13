@@ -557,6 +557,15 @@ pub enum Pred {
     /// Is a card in a graveyard that was put there from the battlefield this turn ("creature cards in your graveyard that were
     /// put there from the battlefield this turn").
     GravedThisTurn,
+    /// Is a card in a graveyard that was put there, from anywhere, during the combat phase now going on or the latest one
+    /// this turn ("that wasn't put there this combat" is its negation).
+    GravedThisCombat,
+    /// Shares a color with the spell most recently cast this turn, by any player, as it was cast ("spells that share a
+    /// color with the spell most recently cast this turn"); nothing does before a spell is cast this turn.
+    SharesColorWithLastCast,
+    /// Could have been declared as an attacker in a declare attackers step this turn, as the same object: one of the
+    /// creatures the attacking player could choose among then ("except for creatures that couldn't attack").
+    CouldAttackThisTurn,
     /// Went into the zone it is in now this turn from a zone of the kind ("creature cards put into your graveyard from your
     /// library this turn"); an object that moved again counts only for its latest move, and a token made there came from nowhere.
     ArrivedFrom(ZoneKind),

@@ -386,6 +386,7 @@ fn begin_turn(
         state.turn.regular = active;
     }
     state.rmt8_count_turn(active);
+    crate::r5522_history::r5522_note_turn_began(state);
     state.turn.number = number;
     state.turn.active = active;
     state.turn.extra = extra;
@@ -526,7 +527,10 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::CoinFlipped { .. } => {
             c11e_draw_random(state, event);
         }
-        Event::Cycled { player, .. } => state.tally(*player, Tally::Cycled),
+        Event::Cycled { player, object, .. } => {
+            state.tally(*player, Tally::Cycled);
+            crate::r5522_history::r5522_note_cycled(state, *player, *object);
+        }
         Event::PriorityGranted { player } => {
             state.priority = Some(PriorityState {
                 holder: *player,
@@ -558,6 +562,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::ClassLevelGained { object, level, .. } => set_level(state, *object, *level)?,
         Event::TurnedFaceUp { object, player, .. } => {
             turn_face_up(state, *object)?;
+            state.tally(*player, Tally::R5522TurnedFaceUp);
             state.record(
                 mtg_cards::value::TallyEvent::TurnedFaceUp,
                 Some(*player),

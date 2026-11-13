@@ -207,6 +207,16 @@ pub(crate) enum Tally {
     R287GravedElsewhere,
     /// A card the player played from exile, cast or as a land (`TurnTally::PlayedFromExile`).
     R287PlayedFromExile,
+    /// A land the player played or a spell they cast from anywhere other than their hand (`TurnTally::PlayedNotFromHand`).
+    R5522PlayedNotFromHand,
+    /// Energy counters removed from the player, by the number (`TurnTally::EnergyPaidOrLost`).
+    R5522EnergyLost,
+    /// Oil counters removed from a permanent, by the number, counted for its controller (`TurnTally::OilCountersRemovedUnder`).
+    R5522OilRemoved,
+    /// A permanent that entered the battlefield face down, counted for its controller (`TurnTally::EnteredFaceDownUnder`).
+    R5522EnteredFaceDown,
+    /// A permanent turned face up, counted for the player who turned it (`TurnTally::TurnedFaceUp`).
+    R5522TurnedFaceUp,
     G10cCardsGraved,
     /// A creature card put into a graveyard from anywhere, a token excepted (counted for its owner).
     G10cCreatureCardsGraved,
@@ -257,6 +267,8 @@ pub(crate) struct Tallies {
     pub(crate) records: Vec<crate::turn_log::Record>,
     /// Where in `records` the combat phase now going on, or the latest, began.
     pub(crate) combat_from: usize,
+    /// The cards put into a graveyard this combat and the creatures that could attack this turn (`r5522_history`).
+    pub(crate) r5522: Box<crate::r5522_history::R5522Turn>,
 }
 
 /// A creature that dealt combat damage to a player this turn, as it was then (prowl, CR 702.76).
@@ -349,6 +361,8 @@ pub struct GameState {
     pub(crate) last_turn_of: Option<PlayerId>,
     /// How many spells of each name each player has cast this game ("you've cast another spell named ~ this game").
     pub(crate) cast_names: BTreeMap<(PlayerId, String), u32>,
+    /// The cards each player cycled by name, the damage dealt to players and the lands untapped as the turn began (`r5522_history`).
+    pub(crate) r5522: Box<crate::r5522_history::R5522Game>,
     /// How many turns each player has begun this game (`rmt8_turns`).
     pub(crate) rmt8_turns: BTreeMap<PlayerId, u32>,
     /// Each player's life total as the current turn began (`rmt8_turns`).
@@ -1020,6 +1034,9 @@ impl Hash for GameState {
             self.tallies.records.hash(state);
             self.tallies.combat_from.hash(state);
         }
+        if !self.tallies.r5522.is_empty() {
+            self.tallies.r5522.hash(state);
+        }
         if !self.tallies.logged.is_empty() {
             self.tallies.logged.hash(state);
         }
@@ -1035,6 +1052,10 @@ impl Hash for GameState {
         // A game where no spell was cast hashes as it did before the names were counted.
         if !self.cast_names.is_empty() {
             self.cast_names.hash(state);
+        }
+        // Likewise a game where no card was cycled and no player was dealt damage.
+        if !self.r5522.is_empty() {
+            self.r5522.hash(state);
         }
         self.rmt8_turns.hash(state);
         self.rmt8_lives.hash(state);

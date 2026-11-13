@@ -63,6 +63,24 @@ impl Scope<'_> {
                         .object_tallied(reference, None, Tally::W21aGraved)
                         > 0
             }
+            Pred::SharesColorWithLastCast => self
+                .state
+                .tallies
+                .logged
+                .iter()
+                .rev()
+                .find(|(event, _, _)| *event == mtg_cards::value::TallyEvent::SpellCast)
+                .is_some_and(|(_, _, last)| {
+                    seen.chars
+                        .colors
+                        .iter()
+                        .any(|color| last.characteristics.colors.contains(color))
+                }),
+            Pred::CouldAttackThisTurn => self.state.tallies.r5522.could_attack.contains(&reference),
+            Pred::GravedThisCombat => {
+                matches!(seen.zone, Zone::Graveyard(_))
+                    && self.state.tallies.r5522.combat_graved.contains(&reference)
+            }
             Pred::SpentFrom { from, least } => {
                 seen.zone == Zone::Stack
                     && seen.card.is_some_and(|card| {

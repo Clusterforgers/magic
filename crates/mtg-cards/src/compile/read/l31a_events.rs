@@ -49,15 +49,26 @@ pub(super) fn l31a_targeted(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         let by = targeting(r)?;
         return Some(TriggerPattern::PlayerBecomesTarget { who: Ref::You, by });
     }
-    r.need("or a permanent you control becomes")?;
+    r.word("or").then_some(())?;
+    // "you or another permanent you control" leaves the source out (Valkmira, Protector's Shield).
+    let another = r.word("another");
+    if !another {
+        r.word("a").then_some(())?;
+    }
+    r.need("permanent you control becomes")?;
     let by = targeting(r)?;
+    let what = if another {
+        vec![Pred::Other, Pred::ControlledBy(Ref::You)]
+    } else {
+        vec![Pred::ControlledBy(Ref::You)]
+    };
     Some(TriggerPattern::AnyOf(vec![
         TriggerPattern::PlayerBecomesTarget {
             who: Ref::You,
             by: by.clone(),
         },
         TriggerPattern::BecomesTarget {
-            what: Selector(vec![Pred::ControlledBy(Ref::You)]),
+            what: Selector(what),
             by,
         },
     ]))
@@ -73,9 +84,14 @@ pub(super) fn l31a_targeted_text(patterns: &[TriggerPattern]) -> Option<String> 
     else {
         return None;
     };
-    (by == also && what.0 == [Pred::ControlledBy(Ref::You)]).then_some(())?;
+    (by == also).then_some(())?;
+    let permanent = match what.0.as_slice() {
+        [Pred::ControlledBy(Ref::You)] => "a permanent",
+        [Pred::Other, Pred::ControlledBy(Ref::You)] => "another permanent",
+        _ => return None,
+    };
     Some(format!(
-        "Whenever you or a permanent you control becomes the target of {}",
+        "Whenever you or {permanent} you control becomes the target of {}",
         targeting_text(by)?
     ))
 }

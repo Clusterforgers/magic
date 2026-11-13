@@ -108,6 +108,7 @@ mod r5516_cards;
 mod r5517_cards;
 mod r5519_cards;
 mod r5521_cards;
+mod r5522_cards;
 mod r5523_cards;
 mod r6e;
 mod read_sheet;

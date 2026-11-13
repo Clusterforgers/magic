@@ -843,6 +843,9 @@ impl<'a> Walker<'a> {
                 self.at("TargetsPlayer", |w| w.reference(who, Kind::Player));
             }
             Pred::ArrivedFrom(_) => self.uses("Pred", "ArrivedFrom"),
+            Pred::GravedThisCombat => self.uses("Pred", "GravedThisCombat"),
+            Pred::SharesColorWithLastCast => self.uses("Pred", "SharesColorWithLastCast"),
+            Pred::CouldAttackThisTurn => self.uses("Pred", "CouldAttackThisTurn"),
             _ => self.uses("Pred", "GravedThisTurn"),
         }
     }
@@ -953,6 +956,9 @@ impl<'a> Walker<'a> {
             | Pred::TargetsPlayer(_)
             | Pred::SpentFrom { .. }
             | Pred::GravedThisTurn
+            | Pred::GravedThisCombat
+            | Pred::SharesColorWithLastCast
+            | Pred::CouldAttackThisTurn
             | Pred::ArrivedFrom(_) => {
                 self.w21a_pred(pred);
             }
@@ -1394,6 +1400,9 @@ impl<'a> Walker<'a> {
             }
             Amount::StickerVowels => self.uses("Amount", "StickerVowels"),
             Amount::CastSameNameThisGame(who) => self.player_amount("CastSameNameThisGame", who),
+            Amount::CycledSameNameThisGame(who) => {
+                self.player_amount("CycledSameNameThisGame", who);
+            }
             Amount::TallyLastTurn { event, who, filter }
             | Amount::TallyTypes { event, who, filter }
             | Amount::TallyTotal {
@@ -1619,6 +1628,10 @@ impl<'a> Walker<'a> {
                 self.at("right", |w| w.amount(right));
             }
             Condition::AtTrigger(inner) => self.at("inner", |w| w.condition(inner)),
+            Condition::DamagedThisGameBy { by, .. } => {
+                self.uses("Condition", "DamagedThisGameBy");
+                self.at("by", |w| w.selector(by));
+            }
             Condition::Matches { subject, selector }
             | Condition::CountOf {
                 subject, selector, ..

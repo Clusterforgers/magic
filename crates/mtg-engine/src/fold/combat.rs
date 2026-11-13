@@ -143,6 +143,7 @@ fn damage_player(
         0
     };
     if amount > 0 {
+        crate::r5522_history::r5522_note_hit(state, source, id, in_combat);
         state.tally_by(id, Tally::Hurt, amount);
         if in_combat {
             state.r379_combat_hurt(id);
@@ -229,6 +230,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     "attacker {bad:?} is not on the battlefield"
                 )));
             }
+            crate::r5522_history::r5522_note_could_attack(state);
             state.combat.attackers = attackers
                 .iter()
                 .map(|(object, target)| Attacker {

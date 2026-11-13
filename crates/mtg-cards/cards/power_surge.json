@@ -1,0 +1,28 @@
+{
+  "oracle_id": "156b2228-f7b2-4816-b894-c4953a32c05f",
+  "name": "Power Surge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Power Surge",
+      "oracle_fingerprint": "82c2f9ca0acb2fc0def1552adcca68ba",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": {
+                    "Tallied": { "who": "Triggering", "what": "UntappedLandsAsTurnBegan" }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
