@@ -22,7 +22,7 @@ use crate::modify::{CastPermission, Duration, GameRule, Modification, Prohibited
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable, ZoneKind};
 use crate::spend::{SpendOn, WhenSpent};
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
-use crate::trigger::{ReplaceBy, ReplaceWhen, ShieldShape, Step, TriggerPattern};
+use crate::trigger::{EntersChoice, ReplaceBy, ReplaceWhen, ShieldShape, Step, TriggerPattern};
 use crate::value::CastWay;
 use crate::value::{Amount, Condition, StatKind, TurnTally};
 
@@ -5793,7 +5793,8 @@ impl Walker<'_> {
             | ReplaceWhen::TurnedFaceUp { what }
             | ReplaceWhen::Explores { what }
             | ReplaceWhen::Connives { what }
-            | ReplaceWhen::Enters { what } => {
+            | ReplaceWhen::Enters { what }
+            | ReplaceWhen::BecomesAttached { what } => {
                 self.at("what", |w| w.selector(what));
             }
             ReplaceWhen::Discarded { what, by } => {
@@ -5831,6 +5832,16 @@ impl Walker<'_> {
         }
         crate::r406_actions::r406_check(when, by, |problem| self.problem(problem));
         crate::r4708_actions::r4708_check(when, by, |problem| self.problem(problem));
+        if matches!(when, ReplaceWhen::BecomesAttached { .. })
+            && !matches!(
+                by,
+                ReplaceBy::Choose(EntersChoice::Color | EntersChoice::CreatureType)
+            )
+        {
+            self.problem(
+                "an attachment chooses only a color or a creature type as it becomes attached",
+            );
+        }
     }
 
     /// What happens instead reads the event it replaces as a trigger reads its event: `Triggering` is the player or object
@@ -6075,7 +6086,10 @@ impl Walker<'_> {
         {
             self.problem("turning face up only puts counters on the permanent itself");
         }
-        let enters = matches!(when, ReplaceWhen::Enters { .. });
+        let enters = matches!(
+            when,
+            ReplaceWhen::Enters { .. } | ReplaceWhen::BecomesAttached { .. }
+        );
         let zone_move = matches!(
             when,
             ReplaceWhen::ZoneChange { .. }

@@ -72,6 +72,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     "Forest enters tapped under Bo's control",
   ],
   Attached: [{ Attached: { object: 3, to: 1 } }, 'Forest becomes attached to Grizzly Bears'],
+  ChosenAsAttached: [
+    { ChosenAsAttached: { object: 3, chosen: { Color: 'Red' } } },
+    'Forest becomes attached, choosing red',
+  ],
   AttachedToPlayer: [{ AttachedToPlayer: { object: 3, player: 1 } }, 'Forest enchants Bo'],
   Unattached: [{ Unattached: { object: 3 } }, 'Forest becomes unattached'],
   Paired: [{ Paired: { object: 3, with: 1 } }, 'Forest is paired with Grizzly Bears'],

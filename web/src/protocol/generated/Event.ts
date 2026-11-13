@@ -726,7 +726,15 @@ object: ObjectId,
 /**
  * The permanent it is attached to.
  */
-to: ObjectId, } } | { "AttachedToPlayer": { 
+to: ObjectId, } } | { "ChosenAsAttached": { 
+/**
+ * The attachment.
+ */
+object: ObjectId, 
+/**
+ * What it chose.
+ */
+chosen: Chosen, } } | { "AttachedToPlayer": { 
 /**
  * The Aura.
  */

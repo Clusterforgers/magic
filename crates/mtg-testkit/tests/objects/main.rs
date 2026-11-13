@@ -85,6 +85,7 @@ mod r409_turn_up_x;
 mod r4b_dig;
 mod r4i_can_enchant;
 mod r4i_or_controller;
+mod r5501_attach_choice;
 mod random_pick;
 mod reconfigure;
 mod recursion;

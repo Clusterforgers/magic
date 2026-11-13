@@ -311,6 +311,7 @@ A copy effect gives an object the copiable values of another (`CreateToken` with
 | Attacking a planeswalker | `GameRule::MustAttackAt { who, of, at }`: the creatures `who` names, and every creature the players `of` names control as attackers are declared, attack the planeswalker `at` if able (CR 508.1d); with `TheirNextTurn` ("During target opponent's next turn, creatures that player controls attack ~ if able") or `DuringItsControllersNextTurn` it lasts through the next turn of those players, or of the creatures' controllers as it began. |
 | An opponent's choice as it enters | `ReplaceBy::OpponentChooses(kind)` ("As this creature enters, an opponent chooses a creature type."): the controller names the opponent when there are several, and that opponent's choice is the permanent's. |
 | Through the next upkeep | `Duration::UntilEndOfYourNextUpkeep` lasts through the controller's next upkeep of a later turn and ends as its draw step begins (Halfdane). |
+| Chosen as it becomes attached | `ReplaceWhen::BecomesAttached` with `ReplaceBy::Choose` ("As this Equipment becomes attached to a creature, choose a color."): the controller of the attachment chooses as the `Attached` event is replaced, and `Event::ChosenAsAttached` puts the choice on it in place of the earlier one, so its static abilities read "the last chosen color"; an equip to the creature it is on attaches nothing and asks nothing. |
 
 ## Validation
 

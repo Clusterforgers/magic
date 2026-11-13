@@ -798,6 +798,7 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.Damage",
     "ReplaceWhen.ZoneChange",
     "ReplaceWhen.Countered",
+    "ReplaceWhen.BecomesAttached",
     "ReplaceWhen.Discarded",
     "ReplaceWhen.TurnedFaceUp",
     "ReplaceWhen.CountersPut",

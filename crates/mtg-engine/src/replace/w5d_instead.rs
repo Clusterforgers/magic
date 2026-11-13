@@ -44,7 +44,9 @@ impl Pass<'_> {
             Unit::Life { player } | Unit::Draw { player } | Unit::Loss { player } => {
                 (Some(Target::Player(*player)), None)
             }
-            Unit::Move { object: id, .. } | Unit::Enter { object: id, .. } => (object(*id), None),
+            Unit::Move { object: id, .. }
+            | Unit::Enter { object: id, .. }
+            | Unit::Attach { object: id } => (object(*id), None),
             Unit::Other => (None, None),
         };
         let amount = match &self.slots[at].item {

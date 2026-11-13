@@ -938,6 +938,13 @@ pub enum ReplaceWhen {
         /// The permanent that would enter.
         what: Selector,
     },
+    /// An Aura, Equipment or Fortification matching the selector would become attached to a permanent (CR 701.3): "As
+    /// this Equipment becomes attached to a creature, choose a color." Only `Choose`; one attached again to the same
+    /// permanent does not become attached, so nothing is chosen anew.
+    BecomesAttached {
+        /// The attachment.
+        what: Selector,
+    },
     /// A creature matching the selector would explore (CR 701.44); only `Instead`, whose `Explore` of `Triggering` is
     /// the replaced exploration ("instead it explores, then it explores again").
     Explores {

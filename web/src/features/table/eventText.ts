@@ -976,6 +976,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
       `${n.card(object)} enters${tapped ? ' tapped' : ''} under ${n.seat(controller)}'s control${chose}`,
     )
   }
+  if ('ChosenAsAttached' in event) {
+    const { object, chosen } = event.ChosenAsAttached
+    return line(`${n.card(object)} becomes attached${chosenWords(chosen, n)}`)
+  }
   if ('Attached' in event) {
     return line(`${n.card(event.Attached.object)} becomes attached to ${n.card(event.Attached.to)}`)
   }

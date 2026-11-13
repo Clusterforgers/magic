@@ -42,7 +42,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 53] = [
+const TEMPLATES: [Template; 54] = [
     super::r376_nearest::r376_rooms_again,
     super::r376_nearest::r376_nearest,
     super::r376_nearest::r376_side_entering,
@@ -67,6 +67,7 @@ const TEMPLATES: [Template; 53] = [
     no_life_loss,
     copies::enters_as_copy,
     as_entering,
+    super::r5501_attached::r5501_as_attached,
     super::day_night::starts_the_day,
     super::prepare::enters_prepared,
     super::ep28_under::enters_under_opponent,
@@ -1428,6 +1429,7 @@ fn group_enters(ability: &Ability) -> Option<String> {
 
 /// Every wording of a static ability, a replacement of the entering or a rule the readers produce;
 /// empty for any other ability.
+#[allow(clippy::too_many_lines)] // one arm for every kind of ability
 pub fn texts(ability: &Ability) -> Vec<String> {
     let mut group =
         super::w5d_replaced::w5d_or_sentences(super::c11h_prevent::c11h_texts(ability), ability);
@@ -1496,6 +1498,8 @@ pub fn texts(ability: &Ability) -> Vec<String> {
                 mods,
                 condition.as_ref(),
             ));
+            let last = super::r5501_attached::r5501_last_chosen(&written);
+            written.extend(last);
             written
         }
         Ability::CostModifier { .. } => cost_change_texts(ability),
@@ -1515,6 +1519,12 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             condition: None,
             from: ZoneKind::Battlefield,
         } if crate::r406_actions::r406_is_action(when) => super::r406_actions::r406_texts(when, by),
+        Ability::Replacement {
+            when: ReplaceWhen::BecomesAttached { what },
+            by,
+            condition: None,
+            from: ZoneKind::Battlefield,
+        } => super::r5501_attached::r5501_as_attached_texts(what, by),
         Ability::Static { defining: true, .. } => defining::sentences(ability),
         _ => Vec::new(),
     };
