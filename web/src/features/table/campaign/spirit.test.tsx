@@ -7,9 +7,17 @@ import { batchOf, clone, must } from '@/test-utils/batches'
 import { renderCueTable } from '@/test-utils/cueTable'
 import { pass } from '@/test-utils/turnEvents'
 import { describeEvent } from '../eventText'
-import { HAUNT_ACTIONS, ectoplasmOf, hauntOptions, hauntWords, SPIRIT_EMBLEM, spiritEmblem } from './haunt'
+import {
+  fellBetween,
+  HAUNT_ACTIONS,
+  ectoplasmOf,
+  hauntOptions,
+  hauntWords,
+  SPIRIT_EMBLEM,
+  spiritEmblem,
+} from './haunt'
 import { SpiritPanel } from './SpiritPanel'
-import { fellBetween, SpiritMoment } from './SpiritMoment'
+import { SpiritMoment } from './SpiritMoment'
 
 const EMBLEM = 40
 
@@ -124,9 +132,7 @@ describe('the moment of falling', () => {
     const view = clone(must(state.view))
     fall(view)
     view.priority = { holder: 1, passed: [] }
-    act(() =>
-      applyBatchToStore(table.store, batchOf(view, { from_seq: must(state.seq), events: [pass(0)] })),
-    )
+    act(() => applyBatchToStore(table.store, batchOf(view, { from_seq: must(state.seq), events: [pass(0)] })))
     const dialog = screen.getByRole('dialog', { name: 'You are a Restless Spirit' })
     expect(dialog).toHaveTextContent('ectoplasm')
     expect(dialog).toHaveTextContent('Rise Again')

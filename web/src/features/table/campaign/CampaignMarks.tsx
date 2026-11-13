@@ -6,6 +6,7 @@ import { CrownIcon, GhostIcon } from 'lucide-react'
 import type { BossView } from '@/protocol/generated'
 import { cn } from '@/lib/utils'
 import { phaseSteps } from './bossPhase'
+import { SPIRIT_TIP } from './haunt'
 
 /** The crown chip beside a boss's name. */
 export function BossChip({ compact = false }: { compact?: boolean }) {
@@ -58,10 +59,6 @@ export function BossTrack({ boss, named = true }: { boss: BossView; named?: bool
     </div>
   )
 }
-
-/** What the Spirit mark's tooltip says. */
-export const SPIRIT_TIP =
-  "Restless Spirit: fell in this fight. Enemies can't attack or target them; they spend ectoplasm on haunt actions and can rise again."
 
 /** The mark beside a fallen hero's name: a ghost and "Spirit", with what a Spirit is as its tooltip. */
 export function SpiritMark({ compact = false }: { compact?: boolean }) {

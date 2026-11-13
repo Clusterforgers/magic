@@ -7,21 +7,8 @@ import { GhostIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useGame } from '@/features/game/gameContext'
 import { Button } from '@/components/ui/button'
-import type { PlayerView } from '@/protocol/generated'
 import { batchBetween } from '../fx/batch'
-import { SPIRIT_LINES } from './haunt'
-
-/** Whether the viewer's seat became a Spirit between the two seat lists. */
-export function fellBetween(
-  before: readonly PlayerView[],
-  after: readonly PlayerView[],
-  seat: number | null,
-): boolean {
-  if (seat === null) return false
-  const was = before.find((player) => player.seat === seat)
-  const now = after.find((player) => player.seat === seat)
-  return was?.spirit !== true && now?.spirit === true
-}
+import { fellBetween, SPIRIT_LINES } from './haunt'
 
 export function SpiritMoment() {
   const { session } = useGame()

@@ -1,7 +1,8 @@
 // Goal: the Delves rules in short say how Spirits work and how a fallen hero comes back, folded until opened, and the run page's revival note lists every way back.
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { DelvesRules, REVIVAL_WAYS, RevivalNote, SPIRIT_RULES } from './DelvesRules'
+import { DelvesRules, RevivalNote } from './DelvesRules'
+import { REVIVAL_WAYS, SPIRIT_RULES } from './spiritRules'
 
 describe('the rules in short', () => {
   it.each([

@@ -41,7 +41,8 @@ export const HAUNT_ACTIONS: readonly HauntAction[] = [
     index: 3,
     name: 'Whisper',
     ectoplasm: 1,
-    plain: 'Whisper to your allies: each of them looks at the top 2 cards of their library and keeps the best on top.',
+    plain:
+      'Whisper to your allies: each of them looks at the top 2 cards of their library and keeps the best on top.',
     preview: 'Each ally scries 2',
   },
   {
@@ -137,3 +138,19 @@ export function hauntWords(sourceName: string, ability: number): string | undefi
   const action = hauntAction(ability)
   return action === undefined ? undefined : action.name
 }
+
+/** Whether the viewer's seat became a Spirit between the two seat lists. */
+export function fellBetween(
+  before: readonly PlayerView[],
+  after: readonly PlayerView[],
+  seat: number | null,
+): boolean {
+  if (seat === null) return false
+  const was = before.find((player) => player.seat === seat)
+  const now = after.find((player) => player.seat === seat)
+  return was?.spirit !== true && now?.spirit === true
+}
+
+/** What the Spirit mark's tooltip says. */
+export const SPIRIT_TIP =
+  "Restless Spirit: fell in this fight. Enemies can't attack or target them; they spend ectoplasm on haunt actions and can rise again."

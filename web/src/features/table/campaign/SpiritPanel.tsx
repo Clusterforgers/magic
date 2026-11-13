@@ -18,9 +18,7 @@ export function EctoplasmPips({ count }: { count: number }) {
           <span key={at} className="size-2 rounded-full bg-spirit" />
         ))}
       </span>
-      <span>
-        {count} ectoplasm
-      </span>
+      <span>{count} ectoplasm</span>
     </span>
   )
 }
@@ -83,7 +81,9 @@ export function SpiritPanel({
                 <span id={`haunt-${action.index}`} className="text-xs">
                   {action.plain}
                 </span>
-                <span className="text-xs font-medium">{ready === undefined ? action.why : action.preview}</span>
+                <span className="text-xs font-medium">
+                  {ready === undefined ? action.why : action.preview}
+                </span>
               </button>
             </li>
           )
