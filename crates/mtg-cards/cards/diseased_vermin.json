@@ -1,7 +1,7 @@
 {
   "oracle_id": "4d18bea4-c9b2-4fc7-948f-2583589994d7",
   "name": "Diseased Vermin",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Diseased Vermin",
@@ -14,9 +14,28 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 88, "end": 250 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "PlayerAmong": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": { "DamagedThisGameBy": { "by": [{ "Is": "This" }] } }
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Counters": { "on": "This", "counter": { "Other": "infection" } } }
+                }
+              }
+            ]
           }
         }
       ]

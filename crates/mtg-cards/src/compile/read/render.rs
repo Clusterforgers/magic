@@ -46,6 +46,7 @@ mod multi;
 mod opponent_picks;
 mod optional_return;
 mod oracle_only;
+pub(super) use oracle_only::r5522_read_whole;
 mod otherwise;
 mod player_events;
 mod populated;

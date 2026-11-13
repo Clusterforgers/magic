@@ -1,7 +1,7 @@
 {
   "oracle_id": "6c0e22f2-f0f3-43e6-87c5-c543032112d8",
   "name": "Yidaro, Wandering Monster",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Yidaro, Wandering Monster",
@@ -11,9 +11,27 @@
         { "Keyword": "Haste" },
         { "Keyword": { "Cycling": "{1}{R}" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 30, "end": 275 }
+          "Triggered": {
+            "when": { "Cycled": { "what": ["This"], "by": "You" } },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "CycledSameNameThisGame": "You" },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }],
+                  "otherwise": [
+                    { "Move": { "what": "This", "to": { "Library": { "place": "Top" } } } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

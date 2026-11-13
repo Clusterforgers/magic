@@ -498,6 +498,7 @@ impl<'a> Scope<'a> {
                     | TurnTally::SpellsCastThisGame
                     | TurnTally::DamageDealtTo
                     | TurnTally::CountersPut
+                    | TurnTally::UntappedLandsAsTurnBegan
             )
         {
             return Err(ResolveError::Unsupported("Amount.TalliedLastTurn.Kind"));
@@ -531,6 +532,18 @@ impl<'a> Scope<'a> {
                     .sum();
                 return Ok(i64::from(total));
             }
+            TurnTally::UntappedLandsAsTurnBegan => {
+                let total: u32 = (self.players(who)?.into_iter())
+                    .map(|player| {
+                        self.state
+                            .r5522_untapped_lands
+                            .get(&player)
+                            .copied()
+                            .unwrap_or(0)
+                    })
+                    .sum();
+                return Ok(i64::from(total));
+            }
             TurnTally::SpellsCastThisGame => {
                 let total: u32 = (self.players(who)?.into_iter())
                     .map(|player| self.state.r379_cast_game.get(&player).copied().unwrap_or(0))
@@ -552,6 +565,11 @@ impl<'a> Scope<'a> {
             | TurnTally::PermanentsToHand
             | TurnTally::CardsGravedNotFromBattlefield
             | TurnTally::PlayedFromExile
+            | TurnTally::PlayedNotFromHand
+            | TurnTally::EnergyPaidOrLost
+            | TurnTally::OilCountersRemovedUnder
+            | TurnTally::EnteredFaceDownUnder
+            | TurnTally::TurnedFaceUp
             | TurnTally::CardsLeftGraveyard
             | TurnTally::CardsDrawnTotal
             | TurnTally::NoncombatDamageTakenTotal => {
@@ -562,6 +580,11 @@ impl<'a> Scope<'a> {
                     TurnTally::PermanentsToHand => Tally::R287ToHand,
                     TurnTally::CardsGravedNotFromBattlefield => Tally::R287GravedElsewhere,
                     TurnTally::PlayedFromExile => Tally::R287PlayedFromExile,
+                    TurnTally::PlayedNotFromHand => Tally::R5522PlayedNotFromHand,
+                    TurnTally::EnergyPaidOrLost => Tally::R5522EnergyLost,
+                    TurnTally::OilCountersRemovedUnder => Tally::R5522OilRemoved,
+                    TurnTally::EnteredFaceDownUnder => Tally::R5522EnteredFaceDown,
+                    TurnTally::TurnedFaceUp => Tally::R5522TurnedFaceUp,
                     TurnTally::NonlandPermanentsLeft => Tally::NonlandLeft,
                     TurnTally::CreaturesLeftUnder => Tally::CreaturesLeftUnder,
                     TurnTally::SpellsWarped => Tally::Warped,
@@ -2048,6 +2071,9 @@ impl<'a> Scope<'a> {
             | Pred::SpentFrom { .. }
             | Pred::TargetsPlayer(_)
             | Pred::GravedThisTurn
+            | Pred::GravedThisCombat
+            | Pred::SharesColorWithLastCast
+            | Pred::CouldAttackThisTurn
             | Pred::ArrivedFrom(_) => self.w21a_pred(pred, reference, seen)?,
             Pred::Attacking
             | Pred::AttackingPlayer(_)
@@ -2389,6 +2415,7 @@ impl<'a> Scope<'a> {
             | Amount::ManaInPool(_)
             | Amount::Doors(_) => self.fill_amount(amount, share)?,
             Amount::Tally { event, who, filter } => self.logged(*event, who, filter)?,
+            Amount::CycledSameNameThisGame(who) => self.r5522_cycled_same_name(who)?,
             Amount::CastSameNameThisGame(who) => {
                 let name = self
                     .state
@@ -3199,6 +3226,9 @@ impl<'a> Scope<'a> {
                     == i64::try_from(self.objects(subject)?.len()).unwrap_or(i64::MAX)
             }
             Condition::AtTrigger(inner) => self.holds(inner)?,
+            Condition::DamagedThisGameBy { by, combat } => {
+                self.r5522_damaged_this_game(by, *combat)?
+            }
             Condition::CountOf {
                 subject,
                 selector,

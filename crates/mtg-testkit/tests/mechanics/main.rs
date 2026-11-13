@@ -146,6 +146,8 @@ mod r4711_draft_notes;
 mod r4_audit;
 mod r4a_amplify;
 mod r4b_skip;
+mod r5522_game;
+mod r5522_history;
 mod r5g;
 mod r6f;
 mod repeat_each;

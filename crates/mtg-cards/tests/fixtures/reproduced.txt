@@ -311,6 +311,7 @@ Chittering Witch
 Chomping Kavu
 Chromanticore
 Chromatic Lantern
+Churning Reservoir
 Cinderhaze Wretch
 Circle of Dreams Druid
 Circuitous Route
@@ -495,6 +496,7 @@ Dirgur Focusmage // Braingeyser
 Disallow
 Disciple of Griselbrand
 Discourtesy Clerk
+Diseased Vermin
 Disembowel
 Dismantling Blow
 Dismantling Wave
@@ -809,6 +811,7 @@ Glowstone Recluse
 Gluttonous Cyclops
 Gluttonous Slime
 Gluttonous Troll
+Glyph of Delusion
 Gnarled Professor
 Gnarlwood Dryad
 Goblin Archaeologist
@@ -826,6 +829,7 @@ Golden-Scale Aeronaut
 Goldlust Triad
 Goldwarden's Helm
 Goliath Truck
+Gollum, Obsessed Stalker
 Gonti's Machinations
 Goreclaw, Terror of Qal Sisma
 Gorger Wurm
@@ -1174,6 +1178,7 @@ Makeshift Mauler
 Malakir Blood-Priest
 Malleable Impostor
 Mana Bloom
+Mana Maze
 Manabarbs
 Manaweft Sliver
 Manor Gate
@@ -1338,6 +1343,7 @@ Oath of Jace
 Oathsworn Vampire
 Ob Nixilis Reignited
 Ob Nixilis, the Ascended
+Oblivious Bookworm
 Obscura Storefront
 Obscuring Haze
 Observed Stasis
@@ -1453,6 +1459,7 @@ Pouncing Jaguar
 Pouncing Shoreshark
 Powder Ganger
 Power Conduit
+Power Surge
 Pramikon, Sky Rampart
 Prava of the Steel Legion
 Predator Dragon
@@ -1862,6 +1869,7 @@ Storm-Kiln Artist
 Stormchaser's Talent
 Stormscape Battlemage
 Stormsurge Kraken
+Storrev, Devkarin Lich
 Storvald, Frost Giant Jarl
 Strangleroot Geist
 Stratus Dancer
@@ -2254,6 +2262,7 @@ Writ of Return
 Wurmwall Sweeper
 Wyll, Blade of Frontiers
 Wyrm's Crossing Patrol
+Yidaro, Wandering Monster
 Yisan, the Wanderer Bard
 You Cannot Pass!
 Young Wolf

@@ -370,6 +370,7 @@ A permanent that phases out (CR 702.26) is treated as though it does not exist u
 The turn sequence is the fixed run of steps (`turn.rs`, `steps.rs`) with two queues over it (CR 500.7, 500.8).
 
 - `GameState::extra_turns` holds the extra turns to take (`ExtraTurn { player, skip_untap }`), the latest taken first; `TurnState::ahead` lists the phases still to begin, added ones first. A skipped untap step does not begin (CR 614.10); `GameRule::SkipExtraTurns` skips extra turns (`ExtraTurnSkipped`). `rmt8_turns` counts each player's turns (`Amount::TurnsTaken`), `rmt8_lives` the life totals at turn start (`Amount::LifeAsTurnBegan`), `rmt8_upkeeps` the two latest upkeeps, which `Pred::FoughtSinceYourLastUpkeep` compares with the turns a permanent last attacked, blocked and became blocked in. They are hashed only when used.
+- `r5522_history` keeps facts of the whole game: the cards of each name each player cycled (`Amount::CycledSameNameThisGame`), every damage dealt to a player with its source's snapshot (`Condition::DamagedThisGameBy`) and the untapped lands each player controlled as the turn began, before its untap step (`TurnTally::UntappedLandsAsTurnBegan`). The cards put into a graveyard during the latest combat (`Pred::GravedThisCombat`) are cleared as each combat begins.
 
 ## Combat forecast
 

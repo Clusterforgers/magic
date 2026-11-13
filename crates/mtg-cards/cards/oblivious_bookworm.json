@@ -1,0 +1,53 @@
+{
+  "oracle_id": "300fd0a2-23e6-4da9-bfaa-ad626097d5b5",
+  "name": "Oblivious Bookworm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oblivious Bookworm",
+      "oracle_fingerprint": "55caab1f82310e81091a10469346fedc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "May": { "effects": [{ "Draw": {} }] } },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      "Performed",
+                      {
+                        "Not": {
+                          "Any": [
+                            {
+                              "Compare": {
+                                "left": {
+                                  "Tallied": { "who": "You", "what": "EnteredFaceDownUnder" }
+                                },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            {
+                              "Compare": {
+                                "left": { "Tallied": { "who": "You", "what": "TurnedFaceUp" } },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "Discard": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

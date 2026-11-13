@@ -189,10 +189,20 @@ fn w21a_tally_graveyards(
         let controller = state.object(card.id).map(GameObject::controller);
         if let Some(controller) = controller {
             state.log_event(TallyEvent::Entered, controller, card.id);
+            if state
+                .object(card.id)
+                .is_some_and(|object| object.face_down().is_some())
+            {
+                state.tally(controller, Tally::R5522EnteredFaceDown);
+            }
         }
     }
     if from == Zone::Battlefield && matches!(to, Zone::Graveyard(_)) {
         state.tally_object(card, None, Tally::W21aGraved);
+    }
+    if matches!(to, Zone::Graveyard(_)) && state.turn().step().phase() == crate::turn::Phase::Combat
+    {
+        state.tallies.r5522_combat_graved.push(card);
     }
     let permanent_card = state.object(card.id).is_some_and(|object| {
         object.kind() != ObjectKind::Token
@@ -350,6 +360,9 @@ fn land_played(
     if from == Zone::Exile {
         state.tally(player, Tally::R287PlayedFromExile);
     }
+    if from != Zone::Hand(player) {
+        state.tally(player, Tally::R5522PlayedNotFromHand);
+    }
     move_object(state, object, Zone::Battlefield, Placement::Top)?;
     set_controller(state, object, player);
     if let Some(permanent) = state
@@ -431,6 +444,13 @@ fn spell_cast(
         .is_some_and(|card| card.zone() == Zone::Exile)
     {
         state.tally(player, Tally::R287PlayedFromExile);
+    }
+    if state
+        .objects
+        .get(&object)
+        .is_some_and(|card| card.zone() != Zone::Hand(player))
+    {
+        state.tally(player, Tally::R5522PlayedNotFromHand);
     }
     if choices.way == Some(CastWay::Warp) {
         state.tally(player, Tally::Warped);
@@ -620,7 +640,12 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             if let Some(how) = cause.face_down(state.turn.number())
                 && let Some(object) = state.objects.get_mut(object)
             {
+                let was_face_down = object.face_down.is_some();
                 object.face_down = Some(how);
+                if *to == Zone::Battlefield && !was_face_down {
+                    let controller = object.controller;
+                    state.tally(controller, Tally::R5522EnteredFaceDown);
+                }
             }
             if let ZoneCause::ExiledUntil { by } = cause {
                 exiled_until(state, *object, *by, *from);

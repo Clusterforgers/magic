@@ -1,7 +1,7 @@
 {
   "oracle_id": "19845456-3d96-48a4-89fa-9b8e583774c9",
   "name": "Spider-Man 2099",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Spider-Man 2099",
@@ -22,9 +22,24 @@
         { "Keyword": "DoubleStrike" },
         { "Keyword": "Vigilance" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 129, "end": 312 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PlayedNotFromHand" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
           }
         }
       ]

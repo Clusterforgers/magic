@@ -87,6 +87,7 @@ mod r408_cards;
 mod r409_cards;
 mod r4708_cards;
 mod r4711_cards;
+mod r5522_cards;
 mod r6e;
 mod read_sheet;
 mod read_tier;
