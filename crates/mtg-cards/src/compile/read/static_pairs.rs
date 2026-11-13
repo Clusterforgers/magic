@@ -49,6 +49,14 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     if !r406.is_empty() {
         return r406;
     }
+    let r408 = super::r408_lands::r408_pair_texts(first, second);
+    if !r408.is_empty() {
+        return r408;
+    }
+    let r408 = super::r408_lands::r408_hand_and_life_texts(first, second);
+    if !r408.is_empty() {
+        return r408;
+    }
     let owner = super::r371_owner::r371_pair_texts(first, second);
     if !owner.is_empty() {
         return owner;

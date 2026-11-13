@@ -1028,6 +1028,11 @@ pub enum ReplaceBy {
     /// The next damage event it covers does not happen, and the shield ends ("the next time a source of your choice would
     /// deal damage to you this turn, prevent that damage"); only a shield uses it.
     PreventNext,
+    /// The next damage event a shield covers does not happen, the effects follow it reading the damage prevented as the
+    /// amount of the event (`Amount::Triggering`), and the shield ends ("the next time a source of your choice would deal
+    /// damage to you this turn, prevent that damage. You gain life equal to the damage prevented this way"); only a shield
+    /// uses it.
+    PreventNextAnd(Vec<Effect>),
     /// Up to this much of the damage is prevented (CR 615). In a shield it is the total the shield prevents ("the next
     /// 3 damage"); in a static ability it is the most each event loses.
     PreventUpTo(u32),
@@ -1332,6 +1337,7 @@ impl ShieldShape {
                 ReplaceWhen::Damage { .. },
                 ReplaceBy::Prevent
                 | ReplaceBy::PreventNext
+                | ReplaceBy::PreventNextAnd(_)
                 | ReplaceBy::PreventUpTo(_)
                 | ReplaceBy::PreventCounted(_)
                 | ReplaceBy::PreventCountedAnd { .. }

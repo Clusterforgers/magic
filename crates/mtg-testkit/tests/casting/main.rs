@@ -187,6 +187,7 @@ mod r402_copy_riders;
 mod r402_special_costs;
 mod r402_spell_costs;
 mod r405_pieces;
+mod r408_flashback_x;
 mod r4f_stack_move;
 mod r4i_may_flash;
 mod r6q1_face_down_cost;

@@ -1,7 +1,7 @@
 {
   "oracle_id": "9660b7c4-7b04-4ec3-b867-299c141f77e6",
   "name": "Garza's Assassin",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Garza's Assassin",
@@ -17,9 +17,8 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 59, "end": 301 }
+          "Keyword": {
+            "Recover": [{ "PayLife": { "Half": { "of": { "Life": "You" }, "up": true } } }]
           }
         }
       ]

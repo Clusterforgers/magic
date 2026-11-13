@@ -95,6 +95,9 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
         if let Some(energy) = r.attempt(energy) {
             return Some(CostItem::PayEnergy(energy));
         }
+        if let Some(half) = r.attempt(r408_half_life) {
+            return Some(CostItem::PayLife(half));
+        }
         let amount = points(r)?;
         r.word("life").then_some(())?;
         return Some(CostItem::PayLife(amount));
@@ -490,6 +493,12 @@ fn item_text(item: &CostItem) -> Option<String> {
         CostItem::Mana(mana) => mana.to_string(),
         CostItem::Tap => "{T}".to_owned(),
         CostItem::Untap => "{Q}".to_owned(),
+        CostItem::PayLife(Amount::Half { of, up }) if **of == Amount::Life(Ref::You) => {
+            format!(
+                "Pay half your life, rounded {}",
+                if *up { "up" } else { "down" }
+            )
+        }
         CostItem::PayLife(amount) => format!("Pay {} life", points_text(amount)?),
         CostItem::SacrificeSelf => "Sacrifice ~".to_owned(),
         CostItem::ExileSelf => "Exile ~ from your graveyard".to_owned(),
@@ -869,4 +878,18 @@ fn ep29_remove_all_text(counter: Option<&CounterKind>, count: &Amount) -> Option
         "Remove all {} counters from ~",
         super::counters::kind_text(all)?
     ))
+}
+
+/// "half your life, rounded up" after "pay": half the payer's life total, rounded as it says.
+fn r408_half_life(r: &mut Reader<'_>) -> Option<Amount> {
+    r.need("half your life")?;
+    r.punct(',').then_some(())?;
+    let up = r.words("rounded up");
+    if !up {
+        r.need("rounded down")?;
+    }
+    Some(Amount::Half {
+        of: Box::new(Amount::Life(Ref::You)),
+        up,
+    })
 }

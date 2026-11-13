@@ -1,4 +1,4 @@
-//! Goal: a `GameRule::Cant` read from a static ability keeps its subjects from the action it names in every place the engine does it: a land play, an activation, a target and a cost are not offered and the answer that takes them is refused, an effect that would sacrifice, discard, exile or put counters does nothing without asking for the impossible or leaving the game stuck, a trigger does not trigger, steps and turns are skipped, and `Effect::EndTurn` exiles the stack and goes to the cleanup step from any step; each game replays to the state it reached.
+//! Goal: a `GameRule::Cant` read from a static ability keeps its subjects from the action it names in every place the engine does it: a land play, an activation, a target and a cost are not offered and the answer that takes them is refused, an effect that would sacrifice, discard, exile or put counters does nothing without asking for the impossible or leaving the game stuck, a trigger does not trigger, steps and turns are skipped, and `Effect::EndTurn` exiles the stack, the resolving spell included, and goes to the cleanup step from any step; each game replays to the state it reached.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -445,15 +445,15 @@ fn ending_the_turn_exiles_the_stack_and_goes_to_the_next_turn(#[case] step: Step
     assert_eq!(state.stack().len(), 0);
     assert_eq!(
         count(state, Zone::Exile),
-        1,
-        "the spell it answered is exiled"
+        2,
+        "the spell it answered and the resolving spell are exiled (CR 723.1a)"
     );
     assert_eq!(
         state.player(PlayerId(0)).unwrap().life(),
         life,
         "and did nothing"
     );
-    assert_eq!(count(state, Zone::Graveyard(PlayerId(0))), 1);
+    assert_eq!(count(state, Zone::Graveyard(PlayerId(0))), 0);
     driver.idle_until(3, Step::Upkeep).unwrap();
     assert_eq!(driver.state().turn().active(), PlayerId(1));
     assert_replays(&driver);

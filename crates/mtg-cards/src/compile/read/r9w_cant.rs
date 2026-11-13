@@ -41,6 +41,7 @@ pub(super) fn r9w_cant_texts(
             let mut texts: Vec<String> = plain(who, action).into_iter().collect();
             texts.extend(super::rmt7_atoms::rmt7_cant_activate_text(who, action));
             texts.extend(cast_passive(who, action));
+            texts.extend(super::r408_lands::r408_cant_texts(who, action));
             // The older wording of the same rule names the battlefield.
             if let Some(text) = texts.first().and_then(|text| text.strip_suffix(ENTERING)) {
                 texts.push(format!(

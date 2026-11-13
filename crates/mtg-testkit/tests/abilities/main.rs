@@ -75,6 +75,7 @@ mod r403_cards;
 mod r405_events;
 mod r407_cast_triggers;
 mod r407_surveil_this_way;
+mod r408_rules;
 mod r4a_enters_with;
 mod r4i_granter;
 mod r5e_done_once;

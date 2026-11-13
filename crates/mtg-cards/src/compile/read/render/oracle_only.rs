@@ -290,6 +290,8 @@ mod w16a_named_yours;
 // dk1b
 mod dk1b_attached;
 mod r281_wordings;
+mod r408_turn_cost;
+mod r408_wordings;
 mod r9w_countered_value;
 mod w16a_owner;
 mod w16a_return_cost;
@@ -630,6 +632,8 @@ fn add_w8c(ability: &Ability, texts: &mut Vec<String>) {
     w8c_still_kind::add(ability, texts);
     w8c_return_both::add(ability, texts);
     w8c_other_turns::add(ability, texts);
+    r408_turn_cost::add(ability, texts);
+    r408_wordings::add(ability, texts);
     w8c_then_discards::add(ability, texts);
     w8c_spell_colors::add(ability, texts);
 }

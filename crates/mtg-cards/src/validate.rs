@@ -82,6 +82,7 @@ fn prevents_in_part(by: &ReplaceBy) -> bool {
             | ReplaceBy::PreventHalf
             | ReplaceBy::PreventAllBut(_)
             | ReplaceBy::PreventNext
+            | ReplaceBy::PreventNextAnd(_)
     )
 }
 
@@ -1249,6 +1250,10 @@ impl<'a> Walker<'a> {
                 self.player_amount("Largest", who);
                 self.at("of", |w| w.selector(of));
             }
+            Amount::Smallest { who, of } => {
+                self.player_amount("Smallest", who);
+                self.at("of", |w| w.selector(of));
+            }
             Amount::HighestCounters { who, .. } => self.player_amount("HighestCounters", who),
             Amount::StartingLife(who) => self.player_amount("StartingLife", who),
             Amount::TurnsTaken(who) => self.player_amount("TurnsTaken", who),
@@ -2271,7 +2276,13 @@ impl<'a> Walker<'a> {
                     self.at("payable", |w| w.condition(payable));
                 }
             }
-            Keyword::Echo(cost) | Keyword::CumulativeUpkeep(cost) | Keyword::Recover(cost) => {
+            // Recover's trigger pays its cost through `Effect::Pay` by the card's owner, so a counted amount ("half
+            // your life, rounded up") is counted as that payment resolves.
+            Keyword::Recover(cost) => {
+                self.at("cost", |w| w.c6_eg_paid_cost(cost, &Ref::You));
+                self.payment_of_the_source(cost);
+            }
+            Keyword::Echo(cost) | Keyword::CumulativeUpkeep(cost) => {
                 self.at("cost", |w| w.cost(cost));
                 // Ward, echo, cumulative upkeep and recover ask the player for their cost through a payment.
                 self.payment_of_the_source(cost);
@@ -5533,6 +5544,7 @@ impl Walker<'_> {
         match action {
             Prohibited::ActivateKind { sources, .. }
             | Prohibited::Activate(sources)
+            | Prohibited::PlayLands(sources)
             | Prohibited::BeTargeted(sources) => {
                 self.at("action", |w| w.selector(sources));
             }
@@ -5795,6 +5807,7 @@ impl Walker<'_> {
         if matches!(
             by,
             ReplaceBy::PreventNext
+                | ReplaceBy::PreventNextAnd(_)
                 | ReplaceBy::InsteadNext(_)
                 | ReplaceBy::RedirectUpTo { .. }
                 | ReplaceBy::RedirectCounted { .. }
@@ -5975,7 +5988,9 @@ impl Walker<'_> {
                 self.r6f_redirect(when, u32::MAX, to);
                 self.at("most", |w| w.amount(most));
             }
-            ReplaceBy::PreventAnd(effects) => self.w9c_prevent_and(when, effects),
+            ReplaceBy::PreventAnd(effects) | ReplaceBy::PreventNextAnd(effects) => {
+                self.w9c_prevent_and(when, effects);
+            }
             ReplaceBy::WithCounters { count, .. } => {
                 if !enters && !matches!(when, ReplaceWhen::TurnedFaceUp { .. }) {
                     self.problem("`WithCounters` replaces an `Enters` or a `TurnedFaceUp`");

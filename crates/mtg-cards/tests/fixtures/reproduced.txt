@@ -737,6 +737,7 @@ Galvanizing Sawship
 Game-Trail Changeling
 Garruk Wildspeaker
 Garruk, Primal Hunter
+Garza's Assassin
 Gastal Raider
 Gatebreaker Ram
 Gatta and Luzzu
@@ -1250,6 +1251,7 @@ Mukotai Ambusher
 Mulldrifter
 Multani, Maro-Sorcerer
 Mungha Wurm
+Murderous Betrayal
 Murderous Cut
 Murmuring Bosk
 Muscle Sliver

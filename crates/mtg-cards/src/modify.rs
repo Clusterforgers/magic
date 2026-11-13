@@ -559,6 +559,9 @@ pub enum Prohibited {
     BeTargetedByWallsOnly,
     /// Play lands as the special action (CR 305.1).
     PlayLand,
+    /// Play the land cards the selector picks, judged where they are as they would be played (CR 305.1): "You can't play
+    /// lands from your hand."
+    PlayLands(Selector),
     /// Sacrifice permanents, or be sacrificed (CR 701.21).
     Sacrifice,
     /// Have counters put on them (CR 122).

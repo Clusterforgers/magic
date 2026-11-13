@@ -214,6 +214,9 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     if let Some(texts) = super::r401_riders::r401_rider_texts(ability, variants) {
         return texts;
     }
+    if let Some(texts) = super::r408_pact::r408_pact_variants(ability, variants) {
+        return texts;
+    }
     let mut texts = plain_variants(ability);
     super::r371_copy_except::r371_not_legendary_too(&mut texts);
     super::r371_copy_except::r371_that_creature_dies(ability, &mut texts);
@@ -3406,6 +3409,8 @@ impl Writer<'_> {
             Effect::TurnFaceDown { what } | Effect::Harness { what } => {
                 self.rmt8_action(effect, what)?
             }
+            Effect::EndTurn => "end the turn".to_owned(),
+            Effect::LoseGame { who: Ref::You } => "you lose the game".to_owned(),
             Effect::Plot { what } => format!("exile {}. It becomes plotted", self.object(what)?),
             // The card an earlier step exiled and named is "it".
             Effect::GainSuspend {
@@ -3761,6 +3766,7 @@ impl Writer<'_> {
                 "its controller".to_owned()
             }
             Ref::Triggering | Ref::TriggeringPlayer => "that player".to_owned(),
+            Ref::PlayersWhere { .. } => super::r9w_players::r408_fewest_players(who)?,
             Ref::Seated { .. } => super::r376_seats::r376_seated_text(who)?,
             Ref::ControllerOf(inner) if **inner == Ref::Triggering => {
                 "that permanent's controller".to_owned()

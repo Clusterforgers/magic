@@ -714,7 +714,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         }
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
         // Only a shield counts its amount, and it begins as `PreventUpTo`; one with effects names the damage left to it.
-        ReplaceBy::PreventCounted(_) => false,
+        ReplaceBy::PreventCounted(_) | ReplaceBy::PreventNextAnd(_) => false,
         ReplaceBy::PreventCountedAnd { most, .. } => {
             matches!(most, Amount::Fixed(_)) && matches!(unit, Unit::Damage { .. })
         }

@@ -303,3 +303,23 @@ pub(super) fn r9w_target_text(among: &Ref) -> Option<String> {
     };
     Some(format!("target {} {}", noun(who)?.0, fact(test)?.one))
 }
+
+/// "each player who controls the fewest creatures": the players whose count of their own permanents of a type is the
+/// smallest among all players (`Amount::Smallest`); none for any other group.
+pub(super) fn r408_fewest_players(group: &Ref) -> Option<String> {
+    let Ref::PlayersWhere { who, test } = group else {
+        return None;
+    };
+    (**who == Ref::EachPlayer).then_some(())?;
+    let Condition::Compare {
+        left: Amount::Count(mine),
+        op: Cmp::Le,
+        right: Amount::Smallest { who: among, of },
+    } = &**test
+    else {
+        return None;
+    };
+    (mine == of && *among == Ref::EachPlayer).then_some(())?;
+    let noun = controlled(mine, &Ref::You)?;
+    Some(format!("each player who controls the fewest {noun}"))
+}

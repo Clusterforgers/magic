@@ -225,6 +225,8 @@ mod r405_cast_target;
 mod r405_events;
 mod r406_actions;
 mod r407_wordings;
+mod r408_lands;
+mod r408_pact;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
