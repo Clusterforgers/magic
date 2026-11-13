@@ -101,7 +101,7 @@ fn flash_of_insight_exiles_x_blue_cards_and_looks_at_x(
     #[case] seats: usize,
     #[case] x: u32,
 ) -> Result<(), ScriptError> {
-    let blue = (0..3).map(|i| instant(&format!("Blue {i}"), 1, &[Color::Blue]));
+    let blue = (0..4).map(|i| instant(&format!("Blue {i}"), 1, &[Color::Blue]));
     let red = (0..2).map(|i| instant(&format!("Red {i}"), 1, &[Color::Red]));
     let mut scenario = Scenario::new(seats)
         .battlefield(
@@ -120,7 +120,7 @@ fn flash_of_insight_exiles_x_blue_cards_and_looks_at_x(
     let mut driver = Driver::from_scenario(scenario)?;
     let hand_before = names(driver.state(), Zone::Hand(pid(0))).len();
     let offered = cast(&mut driver, "Flash of Insight", x)?;
-    assert_eq!(offered.len(), 3, "the blue cards alone: {offered:?}");
+    assert_eq!(offered.len(), 4, "the blue cards alone: {offered:?}");
     assert!(offered.iter().all(|name| name.starts_with("Blue")));
     resolve(&mut driver)?;
     let exile = names(driver.state(), Zone::Exile);
