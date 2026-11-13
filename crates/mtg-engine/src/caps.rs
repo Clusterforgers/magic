@@ -31,6 +31,7 @@ const RUNS: &[&str] = &[
     "Ability.Sorcery",
     "Ability.Condition",
     "Trigger.ZoneChange",
+    "Trigger.DealtExcess",
     "Trigger.State",
     "Trigger.Attacks",
     "Trigger.AttacksPlayer",

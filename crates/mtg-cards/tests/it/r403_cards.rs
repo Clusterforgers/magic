@@ -129,6 +129,10 @@ fn r403_probe() {
 #[case("Hibernation's End")]
 #[case("Role Reversal")]
 #[case("Legerdemain")]
+#[case("Fall of Cair Andros")]
+#[case("Magmatic Galleon")]
+#[case("Maarika, Brutal Gladiator")]
+#[case("Rith, Liberated Primeval")]
 fn r403_reads_back_whole(#[case] name: &str) {
     let report = r403_report(name, &r403_file(name));
     assert_eq!(

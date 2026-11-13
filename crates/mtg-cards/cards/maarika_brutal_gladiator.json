@@ -1,7 +1,7 @@
 {
   "oracle_id": "a46f9f5c-775c-470d-8935-9556e1bbb23d",
   "name": "Maarika, Brutal Gladiator",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Maarika, Brutal Gladiator",
@@ -9,20 +9,76 @@
       "abilities": [
         {
           "Rule": {
-            "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "AtLeastOne" } } }
+            "rule": {
+              "Combat": {
+                "who": "This",
+                "quirk": {
+                  "MustBeBlocked": "AtLeastOne"
+                }
+              }
+            }
           }
         },
         {
           "Static": {
             "affected": "This",
-            "mods": [{ "AddKeyword": "Indestructible" }],
+            "mods": [
+              {
+                "AddKeyword": "Indestructible"
+              }
+            ],
             "condition": "YourTurn"
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 106, "end": 274 }
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  "This"
+                ],
+                "to": {
+                  "Each": [
+                    {
+                      "Type": "Creature"
+                    }
+                  ]
+                }
+              }
+            },
+            "if": {
+              "Matches": {
+                "subject": "Triggering",
+                "selector": [
+                  {
+                    "DidThisTurn": {
+                      "event": "DealtExcess"
+                    }
+                  }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": {
+                    "ControllerOf": "Triggering"
+                  },
+                  "filter": [
+                    {
+                      "Not": {
+                        "Type": "Creature"
+                      }
+                    },
+                    {
+                      "Not": {
+                        "Type": "Land"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

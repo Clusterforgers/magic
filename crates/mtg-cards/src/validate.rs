@@ -2513,6 +2513,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::DoorUnlocked { .. }
             | TriggerPattern::Visit {}
             | TriggerPattern::Prize {} => {}
+            TriggerPattern::DealtExcess { what, .. } => self.at("what", |w| w.selector(what)),
             TriggerPattern::DealsDamage { source, to, .. } => {
                 self.at("source", |w| w.selector(source));
                 if let Some(to) = to {

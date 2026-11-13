@@ -207,6 +207,7 @@ mod r307c_events;
 mod r372_suspend;
 mod r375_events;
 mod r375_phase;
+mod r403_excess;
 mod r403_hooks;
 mod r5a_order;
 mod r5a_wordings;

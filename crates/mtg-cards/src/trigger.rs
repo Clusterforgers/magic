@@ -211,6 +211,16 @@ pub enum TriggerPattern {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         combat: Option<bool>,
     },
+    /// A permanent the selector picks is dealt excess damage (CR 120.10): more damage at once than is lethal to it, its
+    /// toughness less the damage marked for a creature, its loyalty for a planeswalker; `Amount::Triggering` is the
+    /// excess, and the permanent is the one triggering.
+    DealtExcess {
+        /// The permanents.
+        what: Selector,
+        /// Only combat damage (`true`) or only other damage (`false`); both when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        combat: Option<bool>,
+    },
     /// A player gains life.
     LifeGained {
         /// Who gains it.

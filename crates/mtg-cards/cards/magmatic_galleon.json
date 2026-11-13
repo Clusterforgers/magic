@@ -1,7 +1,7 @@
 {
   "oracle_id": "59322432-591a-4e8d-aff5-12ca1feb1028",
   "name": "Magmatic Galleon",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Magmatic Galleon",
@@ -9,20 +9,73 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  "This"
+                ],
+                "to": "Battlefield"
+              }
+            },
             "targets": [
-              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "Type": "Creature"
+                    },
+                    {
+                      "ControlledBy": "Opponents"
+                    }
+                  ]
+                }
+              }
             ],
-            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Target": 0
+                  },
+                  "amount": 5
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 85, "end": 198 }
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealtExcess": {
+                  "what": [
+                    {
+                      "Type": "Creature"
+                    },
+                    {
+                      "ControlledBy": "Opponents"
+                    }
+                  ],
+                  "combat": false
+                }
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Named": "treasure"
+                  }
+                }
+              }
+            ]
           }
         },
-        { "Keyword": { "Crew": 2 } }
+        {
+          "Keyword": {
+            "Crew": 2
+          }
+        }
       ]
     }
   ]

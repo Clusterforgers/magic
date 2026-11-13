@@ -103,7 +103,10 @@ impl GameState {
 const fn weighs(event: TallyEvent) -> bool {
     matches!(
         event,
-        TallyEvent::Damaged | TallyEvent::CountersPut | TallyEvent::PlusOneCountersPut
+        TallyEvent::Damaged
+            | TallyEvent::DealtExcess
+            | TallyEvent::CountersPut
+            | TallyEvent::PlusOneCountersPut
     )
 }
 
@@ -117,6 +120,7 @@ pub(crate) const fn is_record(event: TallyEvent) -> bool {
     matches!(
         event,
         TallyEvent::Damaged
+            | TallyEvent::DealtExcess
             | TallyEvent::Attacked
             | TallyEvent::Blocked
             | TallyEvent::Activated

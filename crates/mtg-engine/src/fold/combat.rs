@@ -359,6 +359,12 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     Target::Player(*id)
                 }
                 DamageTarget::Object(id) => {
+                    // The excess is read before the damage is marked (CR 120.10); damage dealt at once after it reads
+                    // the damage this event marks.
+                    let excess = crate::damage::lethal_for_excess(state, *id, *deathtouch)
+                        .map_or(0, |lethal| amount.saturating_sub(lethal));
+                    let controller = crate::characteristics::controller_of(state, *id);
+                    state.record(TallyEvent::DealtExcess, controller, (*id, None), excess);
                     damage_object(state, (*source, *id), *amount, *deathtouch, *form)?;
                     if *amount > 0 {
                         state.note_damaged_by(*id, *source);

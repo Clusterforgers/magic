@@ -20,6 +20,7 @@ mod by_hand;
 mod did;
 mod l293_discards;
 mod r288_final_chapter;
+mod r403_excess;
 
 pub use by_hand::{ByHandDue, due};
 
@@ -317,6 +318,12 @@ enum Happened {
         /// How much it was: the cards a scry looked at; zero for the rest.
         amount: u32,
     },
+    /// A permanent was dealt excess damage by the damage of the batch together (CR 120.10).
+    DealtExcess {
+        object: ObjectId,
+        amount: u32,
+        combat: bool,
+    },
     /// Everything of one kind of state (before or after) that happened in the batch, for the patterns of events that
     /// happen together.
     Batch(Vec<Happened>),
@@ -342,6 +349,7 @@ impl Happened {
     const fn amount(&self) -> u32 {
         match self {
             Happened::Damaged { amount, .. }
+            | Happened::DealtExcess { amount, .. }
             | Happened::LifeGained { amount, .. }
             | Happened::LifeLost { amount, .. }
             | Happened::Did { amount, .. } => *amount,
@@ -568,7 +576,7 @@ fn c10_pa_attacked_players(
 
 #[allow(clippy::too_many_lines)]
 fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happened> {
-    let mut found = Vec::new();
+    let mut found = r403_excess::r403_dealt_excess(pre, events, post);
     // Permanents tapped in this batch whose mana has not been added yet: tapping for mana is the tap that adds it.
     let mut tapped = Vec::new();
     for (at, event) in events.iter().enumerate() {
@@ -1806,6 +1814,18 @@ fn matching_event(
             )
         }
         (
+            TriggerPattern::DealtExcess { what, combat },
+            Happened::DealtExcess {
+                object: hit,
+                amount,
+                combat: was,
+            },
+        ) => {
+            let hit = object(*hit)?;
+            (combat.is_none_or(|wanted| wanted == *was) && picks(what, hit)?)
+                .then(|| counted(state, vec![Target::Object(hit)], *amount))
+        }
+        (
             TriggerPattern::RingTempts {
                 who,
                 bearer: wanted,
@@ -2808,15 +2828,14 @@ fn delayed(
 }
 
 /// Whether [`detect`] reads the state before `events`: only a move out of the battlefield, a death, a discard, a change
-/// of day or night (which was something else before), damage to a player (a life floor cuts the life it takes), an arrival on the battlefield and a
+/// of day or night (which was something else before), damage (a life floor cuts the life it takes, the excess to a
+/// permanent is over what was lethal before), an arrival on the battlefield and a
 /// spell or ability that ends without resolving look back at it. Any other batch is judged by the state after it
 /// alone, which saves copying the whole state for it.
 pub(crate) fn needs_before(events: &[Event]) -> bool {
     events.iter().any(|event| match event {
-        Event::DamageDealt {
-            target: DamageTarget::Player(_),
-            ..
-        }
+        // Damage to a permanent: its excess is what goes beyond the damage that was lethal before (CR 120.10).
+        Event::DamageDealt { .. }
         | Event::CreatureDied { .. }
         | Event::CardDiscarded { .. }
         | Event::DayNightChanged { .. }

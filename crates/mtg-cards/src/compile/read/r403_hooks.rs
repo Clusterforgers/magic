@@ -52,6 +52,11 @@ pub(super) fn r403_read(
     kind: ClauseKind,
     read: impl Fn(&str) -> Option<Ability>,
 ) -> Option<Ability> {
+    if kind == ClauseKind::Triggered
+        && let Some(found) = super::r403_excess::r403_excess_read(text, &read)
+    {
+        return Some(found);
+    }
     if let Some(found) = r403_shared_read(text, &read) {
         return Some(found);
     }
@@ -582,6 +587,7 @@ pub(super) fn r403_wordings(
     }
     r403_upkeep_wordings(ability, written, &mut more);
     r403_shared_wordings(ability, written, &mut more);
+    super::r403_excess::r403_excess_wordings(ability, written, &mut more);
     r403_counter_wordings(ability, written, &mut more, texts);
     texts.extend(more);
 }

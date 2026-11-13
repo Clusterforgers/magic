@@ -383,3 +383,94 @@ fn r403_exchanges_need_a_shared_type_of_the_spell(
     r403_replays(&driver);
     Ok(())
 }
+
+/// Seat 0 casts a burn of `amount` at a 2/2 of the last seat: excess noncombat damage beyond 2 amasses that many Orcs
+/// for Fall of Cair Andros and makes one Treasure for Magmatic Galleon; 2 damage is no excess and does neither.
+#[rstest]
+fn r403_excess_noncombat_damage_triggers(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(2, 5)] amount: i32,
+    #[values("Fall of Cair Andros", "Magmatic Galleon")] permanent: &str,
+) -> Result<(), ScriptError> {
+    let foe = seats - 1;
+    let scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .hand(0, [burn("Blast", amount)])
+        .battlefield(0, [ready(card(permanent).unwrap()), ready(mountain())])
+        .battlefield(foe, [ready(free_creature("Bear", 2, 2))]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.begin_cast("Blast")?;
+    let bear = driver.target_named("Bear")?;
+    driver.choose_targets(&[bear])?;
+    r403_settle(&mut driver, &R403Answers::default())?;
+    let excess = u32::try_from(amount - 2).unwrap();
+    if permanent == "Fall of Cair Andros" {
+        let army = driver
+            .state()
+            .zone(Zone::Battlefield)
+            .iter()
+            .copied()
+            .find(|id| {
+                driver
+                    .state()
+                    .object(*id)
+                    .is_some_and(|o| o.card().name.contains("Army"))
+            });
+        let counters = army.map_or(0, |id| {
+            driver
+                .state()
+                .object(id)
+                .unwrap()
+                .permanent()
+                .unwrap()
+                .counters_of(&CounterKind::PlusOnePlusOne)
+        });
+        assert_eq!(counters, excess);
+    } else {
+        let treasures = driver
+            .state()
+            .zone(Zone::Battlefield)
+            .iter()
+            .filter(|id| name_of(driver.state(), **id) == "Treasure")
+            .count();
+        assert_eq!(treasures, usize::from(excess > 0));
+    }
+    r403_replays(&driver);
+    Ok(())
+}
+
+/// Rith makes a Dragon at its controller's end step only when an opponent's creature was dealt excess damage this turn.
+#[rstest]
+fn r403_rith_counts_excess_damage_this_turn(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(2, 3)] amount: i32,
+) -> Result<(), ScriptError> {
+    let foe = seats - 1;
+    let scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .hand(0, [burn("Blast", amount)])
+        .battlefield(
+            0,
+            [
+                ready(card("Rith, Liberated Primeval").unwrap()),
+                ready(mountain()),
+            ],
+        )
+        .battlefield(foe, [ready(free_creature("Bear", 2, 2))]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.begin_cast("Blast")?;
+    let bear = driver.target_named("Bear")?;
+    driver.choose_targets(&[bear])?;
+    r403_settle(&mut driver, &R403Answers::default())?;
+    driver.idle_until(1, Step::End)?;
+    r403_settle(&mut driver, &R403Answers::default())?;
+    let dragons = driver
+        .state()
+        .zone(Zone::Battlefield)
+        .iter()
+        .filter(|id| name_of(driver.state(), **id) == "Dragon")
+        .count();
+    assert_eq!(dragons, usize::from(amount > 2));
+    r403_replays(&driver);
+    Ok(())
+}
