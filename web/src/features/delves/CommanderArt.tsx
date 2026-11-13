@@ -9,6 +9,7 @@ import { faceCosts } from '@/features/builder/manaText'
 import { cardImageUrl, identityOf } from '@/features/cards/images'
 import { ManaPips } from '@/features/table/ManaPips'
 import { cn } from '@/lib/utils'
+import { colourGround } from './art'
 import { COLOUR_NAME } from './deckPicker'
 
 /** A card whose art stands for a deck. */
@@ -16,32 +17,6 @@ export interface ArtCard {
   oracleId: string
   name: string
   printingId?: string
-}
-
-// Whole class names, so Tailwind can see them.
-const FROM: Record<string, string> = {
-  W: 'from-mana-white',
-  U: 'from-mana-blue',
-  B: 'from-mana-black',
-  R: 'from-mana-red',
-  G: 'from-mana-green',
-}
-const TO: Record<string, string> = {
-  W: 'to-mana-white',
-  U: 'to-mana-blue',
-  B: 'to-mana-black',
-  R: 'to-mana-red',
-  G: 'to-mana-green',
-}
-
-/** The gradient classes of a set of colours: first to last, colourless grey, several colours over gold. */
-export function colourGround(colours: string): string {
-  const letters = [...colours].filter((c) => c in FROM)
-  const first = letters[0]
-  const last = letters[letters.length - 1]
-  if (first === undefined || last === undefined) return 'from-mana-colorless to-mana-colorless'
-  if (letters.length === 1) return cn(FROM[first], 'to-mana-gold')
-  return cn(FROM[first], TO[last])
 }
 
 function Crop({ card, onMiss }: { card: ArtCard; onMiss: () => void }) {
@@ -84,11 +59,7 @@ export function CommanderArt({
       role={label === undefined ? undefined : 'img'}
       aria-label={label}
       aria-hidden={label === undefined ? true : undefined}
-      className={cn(
-        'relative flex overflow-hidden bg-linear-to-br',
-        colourGround(colours),
-        className,
-      )}
+      className={cn('relative flex overflow-hidden bg-linear-to-br', colourGround(colours), className)}
     >
       {shown.length > 0 ? (
         shown.map((card) => <Crop key={card.oracleId} card={card} onMiss={() => setMissed(true)} />)

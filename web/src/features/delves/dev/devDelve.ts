@@ -20,8 +20,7 @@ export const DEV_STATES = [
 export type DevState = (typeof DEV_STATES)[number]
 
 /** Reads `?state=`; the lobby when missing or unknown. */
-export const devState = (value: unknown): DevState =>
-  DEV_STATES.find((state) => state === value) ?? 'lobby'
+export const devState = (value: unknown): DevState => DEV_STATES.find((state) => state === value) ?? 'lobby'
 
 /** The content: the test theme with a third boss and more relics. */
 export const DEV_CONTENT: DelveContent = {
@@ -61,15 +60,51 @@ export const DEV_CONTENT: DelveContent = {
   ],
   bosses: [
     ...CONTENT.bosses.filter((b) => b.id !== 'grimgut'),
-    { id: 'hollow', name: 'The Hollow Choir', colors: 'UB', line: 'Sing with us.', card: null, phases: [], life: [32, 36] },
-    { id: 'grimgut', name: 'Grimgut', colors: 'BR', line: 'Kneel.', card: 'grim', phases: [['nest', 50]], life: [36, 40] },
+    {
+      id: 'hollow',
+      name: 'The Hollow Choir',
+      colors: 'UB',
+      line: 'Sing with us.',
+      card: null,
+      phases: [],
+      life: [32, 36],
+    },
+    {
+      id: 'grimgut',
+      name: 'Grimgut',
+      colors: 'BR',
+      line: 'Kneel.',
+      card: 'grim',
+      phases: [['nest', 50]],
+      life: [36, 40],
+    },
   ],
 }
 
 const party = [
-  hero({ name: 'Ana', deck: { id: 'd-atraxa', name: 'Atraxa Counters', colors: 'WUBG' }, life: 31, gold: 60, relics: ['idol', 'mend'] }),
-  hero({ name: 'Bo', user: 'u1', deck: { id: 'precon:cmm', name: 'Draconic Dissent', colors: 'UBR' }, life: 18, gold: 25, relics: ['pact'] }),
-  hero({ name: 'Cyra', user: null, bot: 'Normal', deck: { id: 'precon:x', name: 'Elven Council', colors: 'G' }, life: 40, gold: 50 }),
+  hero({
+    name: 'Ana',
+    deck: { id: 'd-atraxa', name: 'Atraxa Counters', colors: 'WUBG' },
+    life: 31,
+    gold: 60,
+    relics: ['idol', 'mend'],
+  }),
+  hero({
+    name: 'Bo',
+    user: 'u1',
+    deck: { id: 'precon:cmm', name: 'Draconic Dissent', colors: 'UBR' },
+    life: 18,
+    gold: 25,
+    relics: ['pact'],
+  }),
+  hero({
+    name: 'Cyra',
+    user: null,
+    bot: 'Normal',
+    deck: { id: 'precon:x', name: 'Elven Council', colors: 'G' },
+    life: 40,
+    gold: 50,
+  }),
 ]
 
 const map = {

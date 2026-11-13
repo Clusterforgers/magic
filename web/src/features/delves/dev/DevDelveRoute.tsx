@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import { fakeDelves } from '../fakeDelves'
 import { DelvePage } from '../DelvePage'
 import { DEV_CONTENT, devState, devView } from './devDelve'
-import { devDecks } from './devDecks'
+import { pickerDecks } from '../fakePickerDecks'
 
 const route = getRouteApi('/dev/delve')
 
@@ -14,5 +14,5 @@ export function DevDelveRoute() {
     const fake = fakeDelves(devView(devState(state)))
     return { ...fake, content: async () => DEV_CONTENT }
   }, [state])
-  return <DelvePage key={state} id="dev" client={client} loadDecks={devDecks} />
+  return <DelvePage key={state} id="dev" client={client} loadDecks={pickerDecks} />
 }

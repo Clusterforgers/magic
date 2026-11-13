@@ -103,7 +103,7 @@ function NewDelveForm({ client }: { client: DelvesApi }) {
 function DelveRow({ delve }: { delve: DelveSummary }) {
   return (
     <li className="flex flex-wrap items-center justify-between gap-2 border-b p-3 last:border-b-0">
-      <div className="grid gap-0.5">
+      <div className="grid gap-1">
         <Link
           to="/delves/$delveId"
           params={{ delveId: delve.id }}

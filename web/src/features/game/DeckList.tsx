@@ -1,4 +1,4 @@
-import { ChevronRightIcon, SearchIcon, XIcon } from 'lucide-react'
+import { SearchIcon, XIcon } from 'lucide-react'
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
@@ -8,7 +8,9 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { DISC } from '@/features/builder/discs'
 import { groupOf, sections } from '@/features/decks/groups/grouping'
 import type { GroupLike } from '@/features/decks/groups/grouping'
-import { lastGroup, rememberGroup } from '@/features/decks/groups/lastGroup'
+import { firstOpen, useFolds } from '@/features/decks/groups/folds'
+import { GroupToggle } from '@/features/decks/groups/GroupFolds'
+import { rememberGroup } from '@/features/decks/groups/lastGroup'
 import { cn } from '@/lib/utils'
 import { filterEntries, isFiltered, isSortKey, NO_FILTER, SORT_CHOICES, sortEntries } from './deckEntries'
 import type { DeckEntry, DeckFilter, SortKey, SupportFilter } from './deckEntries'
@@ -112,8 +114,6 @@ export function DeckList({
   const searchId = useId()
   const listId = useId()
   const list = useRef<HTMLDivElement>(null)
-  // Null until the player opens or closes a group: the group of the chosen deck, else the last used one, is open.
-  const [opened, setOpened] = useState<ReadonlySet<string> | null>(null)
   const entries = state.status === 'ready' ? state.entries : null
   const shown = useMemo(
     () => (entries === null ? [] : sortEntries(filterEntries(entries, filter), sort)),
@@ -121,27 +121,24 @@ export function DeckList({
   )
   const grouped = useMemo(() => (groups.length === 0 ? null : sections(shown, groups)), [groups, shown])
   const searching = filter.query.trim() !== ''
-  const open = useMemo(() => {
-    if (opened !== null || grouped === null) return opened ?? new Set<string>()
-    const wanted = (chosenId === null ? null : groupOf(groups, chosenId)) ?? lastGroup()
-    const first = grouped.find((section) => section.key === wanted) ?? grouped[0]
-    return new Set(first === undefined ? [] : [first.key])
-  }, [opened, grouped, groups, chosenId])
-  const isOpen = (key: string): boolean => searching || open.has(key)
+  // The group of the chosen deck, else the last used one, is open until the player opens or closes a group.
+  const initial = useMemo(() => {
+    const first =
+      grouped === null
+        ? null
+        : firstOpen(
+            grouped.map((section) => section.key),
+            groups,
+            chosenId,
+          )
+    return new Set(first === null ? [] : [first])
+  }, [grouped, groups, chosenId])
+  const { isOpen, toggle: toggleGroup } = useFolds(initial, searching)
   const visible = useMemo(
     () =>
-      grouped === null
-        ? shown
-        : grouped.flatMap((section) => (searching || open.has(section.key) ? section.items : [])),
-    [grouped, shown, searching, open],
+      grouped === null ? shown : grouped.flatMap((section) => (isOpen(section.key) ? section.items : [])),
+    [grouped, shown, isOpen],
   )
-  const toggleGroup = (key: string): void =>
-    setOpened(() => {
-      const next = new Set(open)
-      if (next.has(key)) next.delete(key)
-      else next.add(key)
-      return next
-    })
   const choose = (entry: DeckEntry): void => {
     if (groups.length > 0) rememberGroup(groupOf(groups, entry.id))
     onChoose(entry)
@@ -320,23 +317,14 @@ export function DeckList({
             const body = `${listId}-${section.key}`
             return (
               <div key={section.key} data-group={section.key} className="grid gap-2">
-                <button
-                  type="button"
-                  aria-expanded={unfolded}
-                  aria-controls={body}
-                  disabled={searching}
-                  onClick={() => toggleGroup(section.key)}
-                  className="flex min-h-8 w-full min-w-0 items-center gap-2 rounded-md px-1 text-left text-sm font-semibold hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:cursor-default disabled:hover:bg-transparent pointer-coarse:min-h-11"
-                >
-                  <ChevronRightIcon
-                    aria-hidden="true"
-                    className={cn('size-4 shrink-0 transition-transform', unfolded ? 'rotate-90' : '')}
-                  />
-                  <span className="min-w-0 truncate">{name}</span>
-                  <span className="shrink-0 text-xs font-normal text-muted-foreground">
-                    {section.items.length}
-                  </span>
-                </button>
+                <GroupToggle
+                  name={name}
+                  count={section.items.length}
+                  open={unfolded}
+                  controls={body}
+                  searching={searching}
+                  onToggle={() => toggleGroup(section.key)}
+                />
                 {unfolded ? (
                   <ul id={body} role="listbox" aria-label={`${label}: ${name}`} className="grid gap-2">
                     {section.items.map(option)}

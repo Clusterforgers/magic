@@ -3,26 +3,29 @@
  * validity and last delve, in collapsible sections with search and a color filter, beside a large preview of the deck
  * picked. Nothing is sent before "Take".
  */
-import { CheckIcon, ChevronDownIcon, SearchIcon } from 'lucide-react'
+import { CheckIcon, SearchIcon } from 'lucide-react'
 import { useId, useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
 import { timeSince } from '@/lib/timeSince'
 import { cn } from '@/lib/utils'
+import { firstOpen, useFolds } from '@/features/decks/groups/folds'
+import { GroupToggle } from '@/features/decks/groups/GroupFolds'
+import { groupOf } from '@/features/decks/groups/grouping'
+import type { GroupLike } from '@/features/decks/groups/grouping'
+import { lastGroup, rememberGroup } from '@/features/decks/groups/lastGroup'
 import type { DeckEntry } from '@/features/game/deckEntries'
 import { ColourPips, CommanderArt } from './CommanderArt'
 import { COLOUR_NAME, COLOURS, deckValidity, pickerSections } from './deckPicker'
 import type { LastPlayed } from './deckPicker'
+import { lettersOf } from './model'
 
 const TONE = {
   ok: 'border-success/40 text-success',
   warn: 'border-warning/40 text-warning',
   bad: 'border-destructive/40 text-destructive',
 } as const
-
-/** The identity letters of an entry as one string. */
-export const lettersOf = (entry: DeckEntry): string => (entry.identity ?? []).join('')
 
 /** A deck's validity as a small chip. */
 export function ValidityChip({ entry }: { entry: DeckEntry }) {
@@ -131,41 +134,56 @@ export function DeckPreview({ entry }: { entry: DeckEntry | undefined }) {
 export function DeckPicker({
   heroName,
   entries,
+  groups = [],
   current,
   played,
-  now = Date.now(),
+  now,
   onTake,
   onCancel,
 }: {
   heroName: string
   entries: readonly DeckEntry[] | null
+  /** The player's deck groups, which their decks show in. */
+  groups?: readonly GroupLike[]
   /** The deck the hero brings now. */
   current: string | null
   played: LastPlayed
-  now?: number
+  /** The time "last delve" is counted to. */
+  now: number
   onTake: (id: string) => void
   onCancel: () => void
 }) {
   const [query, setQuery] = useState('')
   const [colours, setColours] = useState<string[]>([])
   const [picked, setPicked] = useState<string | null>(current)
-  const [closed, setClosed] = useState<ReadonlySet<string>>(new Set())
+  const [last] = useState(lastGroup)
   const searchId = useId()
+  const listId = useId()
   const sections = useMemo(
-    () => pickerSections(entries ?? [], { query, colours }, played),
-    [entries, query, colours, played],
+    () => pickerSections(entries ?? [], groups, { query, colours }, played, last),
+    [entries, groups, query, colours, played, last],
   )
+  const searching = query.trim() !== '' || colours.length > 0
+  // The section of the hero's deck opens first, else the last used group, else the first section.
+  const initial = useMemo(() => {
+    const holding = sections.find((section) => section.decks.some((deck) => deck.id === current))
+    if (holding !== undefined) return new Set([holding.key])
+    const first = firstOpen(
+      sections.map((section) => section.key),
+      groups,
+      current,
+    )
+    return new Set(first === null ? [] : [first])
+  }, [sections, groups, current])
+  const { isOpen, toggle } = useFolds(initial, searching)
   const pickedEntry = entries?.find((e) => e.id === picked)
   const shown = sections.reduce((sum, s) => sum + s.decks.length, 0)
   const toggleColour = (letter: string) =>
-    setColours((now) => (now.includes(letter) ? now.filter((c) => c !== letter) : [...now, letter]))
-  const toggleSection = (id: string) =>
-    setClosed((now) => {
-      const next = new Set(now)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
-    })
+    setColours((was) => (was.includes(letter) ? was.filter((c) => c !== letter) : [...was, letter]))
+  const take = (id: string) => {
+    if (pickedEntry?.kind === 'own' && groups.length > 0) rememberGroup(groupOf(groups, id))
+    onTake(id)
+  }
   return (
     <div className="grid min-h-0 gap-4" data-slot="deck-picker">
       <div className="flex flex-wrap items-center gap-2">
@@ -183,7 +201,7 @@ export function DeckPicker({
             value={query}
             placeholder="Search by deck or commander"
             onChange={(e) => setQuery(e.target.value)}
-            className="pl-9"
+            className="pl-8"
           />
         </span>
         <div role="group" aria-label="Filter by color" className="flex gap-1">
@@ -203,7 +221,7 @@ export function DeckPicker({
         </div>
       </div>
       <p aria-live="polite" className="sr-only">
-        {entries === null ? 'Loading decks' : `${shown} decks`}
+        {entries === null ? 'Loading decks' : `${shown} ${shown === 1 ? 'deck' : 'decks'}`}
       </p>
       <div className="grid min-h-0 gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]">
         <div className="grid min-h-0 content-start gap-4">
@@ -221,26 +239,27 @@ export function DeckPicker({
             </p>
           ) : (
             sections.map((section) => {
-              const open = !closed.has(section.id)
+              const open = isOpen(section.key)
+              const body = `${listId}-${section.key}`
               return (
-                <section key={section.id} aria-label={section.title} className="grid gap-2">
+                <section
+                  key={section.key}
+                  data-group={section.key}
+                  aria-label={section.title}
+                  className="grid gap-2"
+                >
                   <h3>
-                    <button
-                      type="button"
-                      aria-expanded={open}
-                      onClick={() => toggleSection(section.id)}
-                      className="flex w-full items-center gap-2 rounded-lg py-1 text-sm font-semibold"
-                    >
-                      <ChevronDownIcon
-                        aria-hidden="true"
-                        className={cn('size-4 transition-transform duration-fast', !open && '-rotate-90')}
-                      />
-                      {section.title}
-                      <span className="font-normal text-muted-foreground">{section.decks.length}</span>
-                    </button>
+                    <GroupToggle
+                      name={section.title}
+                      count={section.decks.length}
+                      open={open}
+                      controls={body}
+                      searching={searching}
+                      onToggle={() => toggle(section.key)}
+                    />
                   </h3>
                   {open ? (
-                    <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                    <ul id={body} className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                       {section.decks.map((entry) => (
                         <DeckCard
                           key={entry.id}
@@ -258,21 +277,24 @@ export function DeckPicker({
             })
           )}
         </div>
-        <aside aria-label="Picked deck" className="order-first lg:order-none lg:sticky lg:top-0 lg:self-start">
+        <aside
+          aria-label="Picked deck"
+          className="order-first lg:sticky lg:top-0 lg:order-none lg:self-start"
+        >
           <DeckPreview entry={pickedEntry} />
         </aside>
       </div>
-      <div className="sticky bottom-0 -mx-1 flex flex-wrap justify-end gap-2 bg-popover px-1 pt-2">
+      <div className="sticky bottom-0 flex flex-wrap justify-end gap-2 border-t bg-popover pt-3">
         <Button type="button" variant="ghost" onClick={onCancel}>
           Cancel
         </Button>
         <Button
           type="button"
           disabled={pickedEntry === undefined || picked === current}
-          onClick={() => picked !== null && onTake(picked)}
+          onClick={() => picked !== null && take(picked)}
+          aria-label={`${pickedEntry === undefined ? 'Take a deck' : `Take ${pickedEntry.name}`} for ${heroName}`}
         >
           {pickedEntry === undefined ? 'Take a deck' : `Take ${pickedEntry.name}`}
-          <span className="sr-only"> for {heroName}</span>
         </Button>
       </div>
     </div>

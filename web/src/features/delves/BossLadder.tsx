@@ -17,38 +17,8 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import type { DelveAction, DelveContent, DelveView, Node, RoomKind, Run } from '@/protocol/generated'
 import { BossPortrait } from './CommanderArt'
-
-/** Where a room stands for the party. */
-export type NodeState = 'cleared' | 'current' | 'next' | 'locked'
-
-/** The rooms the party votes between now: the next rooms of where it is, while it chooses a path. */
-export function openChoices(run: Run): number[] {
-  if (run.status !== 'Map' || run.at === null) return []
-  return run.map.nodes.find((n) => n.id === run.at)?.next ?? []
-}
-
-/** The state of a room: the room the party is in, one it cleared, one it may vote for now, or one still out of reach. */
-export function nodeState(node: Node, run: Run): NodeState {
-  const over = run.status === 'Victory' || run.status === 'Defeat' || run.status === 'Abandoned'
-  if (run.at === node.id && !over && run.status !== 'Map') return 'current'
-  if (run.cleared.includes(node.id)) return 'cleared'
-  if (openChoices(run).includes(node.id)) return 'next'
-  if (run.at === node.id) return 'current'
-  return 'locked'
-}
-
-/** The heroes who voted for a room, by name. */
-export function votersOf(run: Run, node: number): string[] {
-  return Object.entries(run.votes)
-    .filter(([, v]) => v === node)
-    .map(([hero]) => run.heroes[Number(hero)]?.name ?? hero)
-}
-
-/** A boss's life for this party and Heat (`docs/delves.md`, Bosses): a fifth more from Heat 1. */
-export function bossLife(life: readonly [number, number], heroes: number, heat: number): number {
-  const base = life[0] + life[1] * Math.max(0, heroes - 1)
-  return heat >= 1 ? Math.round(base * 1.2) : base
-}
+import { bossLife, nodeState, openChoices, votersOf } from './model'
+import type { NodeState } from './model'
 
 const ROOM: Record<RoomKind, { label: string; icon: LucideIcon; blurb: string }> = {
   boss: { label: 'Boss', icon: SwordsIcon, blurb: '' },
@@ -69,7 +39,8 @@ const initials = (name: string): string => name.trim().slice(0, 1).toUpperCase()
 
 /** The mark of a room's state beside its name. */
 function StateMark({ state }: { state: NodeState }) {
-  const Icon = state === 'cleared' ? CheckIcon : state === 'current' ? MapPinIcon : state === 'locked' ? LockIcon : null
+  const Icon =
+    state === 'cleared' ? CheckIcon : state === 'current' ? MapPinIcon : state === 'locked' ? LockIcon : null
   return (
     <span
       data-state-mark={state}
@@ -136,13 +107,16 @@ function BossStop({
           state === 'current' && 'border-delve shadow-e2',
           state === 'next' && 'border-delve',
           state === 'cleared' && 'border-success/60',
-          state === 'locked' && 'border-dashed opacity-75',
+          state === 'locked' && 'border-dashed text-muted-foreground',
         )}
       >
         <span className="relative shrink-0">
           <BossPortrait
             colours={boss?.colors ?? ''}
-            className={cn('size-14 rounded-full border-2 border-surface', state === 'cleared' && 'grayscale')}
+            className={cn(
+              'size-14 rounded-full border-2 border-surface',
+              (state === 'cleared' || state === 'locked') && 'grayscale',
+            )}
           />
           {state === 'cleared' ? (
             <span className="absolute -right-1 -bottom-1 grid size-6 place-items-center rounded-full border-2 border-surface bg-success text-background">
@@ -150,7 +124,7 @@ function BossStop({
             </span>
           ) : null}
         </span>
-        <span className="grid min-w-0 flex-1 gap-0.5">
+        <span className="grid min-w-0 flex-1 gap-1">
           <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
             {last ? 'Final boss' : 'Boss'}
           </span>
@@ -202,12 +176,12 @@ function CampStop({
       data-current={state === 'current' || undefined}
       aria-label={`${room.label}, ${STATE_WORDS[state]}`}
       className={cn(
-        'relative z-10 grid min-w-0 flex-1 basis-40 gap-2 rounded-xl border bg-surface p-3 shadow-e1 transition-[opacity,box-shadow,border-color] duration-base',
+        'relative z-10 grid max-w-xs min-w-0 flex-1 basis-40 gap-2 rounded-xl border bg-surface p-3 shadow-e1 transition-[opacity,box-shadow,border-color] duration-base',
         state === 'next' && 'border-2 border-delve',
         mine && 'ring-2 ring-delve ring-offset-2 ring-offset-delve-stone',
         state === 'current' && 'border-2 border-delve shadow-e2',
         state === 'cleared' && 'border-success/60',
-        state === 'locked' && 'border-dashed opacity-75',
+        state === 'locked' && 'border-dashed text-muted-foreground',
       )}
     >
       <span className="flex items-center gap-2">

@@ -7,6 +7,9 @@ import { decksApi } from '@/net/decks'
 import { preconsApi } from '@/net/precons'
 import { entryOfDeck, entryOfPrecon, filterEntries } from '@/features/game/deckEntries'
 import type { DeckEntry } from '@/features/game/deckEntries'
+import { sections } from '@/features/decks/groups/grouping'
+import type { GroupLike } from '@/features/decks/groups/grouping'
+import { deckGroupsApi } from '@/net/deckGroups'
 
 /** The colours of the filter, in WUBRG order. */
 export const COLOURS = ['W', 'U', 'B', 'R', 'G'] as const
@@ -26,15 +29,22 @@ export interface PickerFilter {
   colours: readonly string[]
 }
 
-/** One collapsible group of the picker. */
+/** When the player last took each deck on a delve, by deck id, as ISO times. */
+export type LastPlayed = Readonly<Record<string, string>>
+
+/** One collapsible section of the picker: a deck group of the player's, their decks in none, or the precons. */
 export interface PickerSection {
-  id: 'own' | 'precon'
+  /** A group's id, `ungrouped`, `own` (a player without groups) or `precons`. */
+  key: string
   title: string
   decks: DeckEntry[]
 }
 
-/** When the player last took each deck on a delve, by deck id, as ISO times. */
-export type LastPlayed = Readonly<Record<string, string>>
+/** The decks a hero may bring and the player's deck groups. */
+export interface PickerDecks {
+  entries: DeckEntry[]
+  groups: GroupLike[]
+}
 
 const byRecency =
   (played: LastPlayed) =>
@@ -45,21 +55,36 @@ const byRecency =
     return a.name.localeCompare(b.name)
   }
 
-/** The player's decks, then the precons, each narrowed by the filter and led by the decks last played; empty sections are left out. */
+/**
+ * The player's Commander decks in their deck groups (the last used group first, then the owner's order, then
+ * Ungrouped; one "Your decks" section without groups), then the precons; each narrowed by the filter, led by the decks
+ * last played on a delve, and left out when empty.
+ */
 export function pickerSections(
   entries: readonly DeckEntry[],
+  groups: readonly GroupLike[],
   filter: PickerFilter,
   played: LastPlayed = {},
+  last: string | null = null,
 ): PickerSection[] {
   const shown = filterEntries(
     entries.filter((entry) => entry.format === 'commander'),
     { query: filter.query, colours: filter.colours, support: 'all' },
-  )
-  const sections: PickerSection[] = [
-    { id: 'own', title: 'Your decks', decks: shown.filter((e) => e.kind === 'own').sort(byRecency(played)) },
-    { id: 'precon', title: 'Precons', decks: shown.filter((e) => e.kind === 'precon').sort(byRecency(played)) },
-  ]
-  return sections.filter((section) => section.decks.length > 0)
+  ).sort(byRecency(played))
+  const own = shown.filter((e) => e.kind === 'own')
+  const ordered = [...groups].sort((a, b) => Number(b.id === last) - Number(a.id === last))
+  const mine: PickerSection[] =
+    groups.length === 0
+      ? [{ key: 'own', title: 'Your decks', decks: own }]
+      : sections(own, ordered).map((section) => ({
+          key: section.key,
+          title: section.group?.name ?? 'Ungrouped',
+          decks: section.items,
+        }))
+  return [
+    ...mine,
+    { key: 'precons', title: 'Precons', decks: shown.filter((e) => e.kind === 'precon') },
+  ].filter((section) => section.decks.length > 0)
 }
 
 /** A deck's fitness for a delve, in words and a tone: legal and fully run, legal with cards played by hand, or not legal. */
@@ -109,14 +134,18 @@ export function notePlayed(id: string, now: Date, store: KeyValueStore | null = 
   return next
 }
 
-/** The player's Commander decks and the precons as picker entries; a list that fails to load is left out. */
-export async function loadPickerDecks(): Promise<DeckEntry[]> {
-  const [precons, decks] = await Promise.all([
+/** The player's Commander decks, their deck groups and the precons; a list that fails to load is left out. */
+export async function loadPickerDecks(): Promise<PickerDecks> {
+  const [precons, decks, groups] = await Promise.all([
     preconsApi.list().catch(() => ({ precons: [] })),
     decksApi.list().catch(() => []),
+    deckGroupsApi.list().catch(() => []),
   ])
-  return [
-    ...decks.filter((d) => d.format === 'commander').map(entryOfDeck),
-    ...precons.precons.filter((p) => p.format === 'commander').map((p) => entryOfPrecon(p)),
-  ]
+  return {
+    entries: [
+      ...decks.filter((d) => d.format === 'commander').map(entryOfDeck),
+      ...precons.precons.filter((p) => p.format === 'commander').map((p) => entryOfPrecon(p)),
+    ],
+    groups,
+  }
 }

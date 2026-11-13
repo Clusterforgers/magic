@@ -9,19 +9,15 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { cn } from '@/lib/utils'
+import type { GroupLike } from '@/features/decks/groups/grouping'
 import type { DeckEntry } from '@/features/game/deckEntries'
 import type { Brain, DelveAction, DelveView, Hero } from '@/protocol/generated'
 import { ColourPips, CommanderArt } from './CommanderArt'
 import { DeckPicker } from './DeckPicker'
 import type { LastPlayed } from './deckPicker'
+import { brainText, isReady } from './model'
 
 const BRAINS: Brain[] = ['Easy', 'Normal', 'Hard', 'VeryHard']
-
-/** A brain's name in words. */
-export const brainText = (brain: Brain): string => (brain === 'VeryHard' ? 'Very hard' : brain)
-
-/** Whether a hero is ready to descend: they bring a deck. */
-export const isReady = (hero: Hero): boolean => hero.deck !== null
 
 /** One hero of the lobby. */
 export function HeroCard({
@@ -61,7 +57,7 @@ export function HeroCard({
         />
         <span
           className={cn(
-            'absolute top-2 right-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold shadow-e2',
+            'absolute top-2 right-2 inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold shadow-e2',
             ready ? 'border border-success bg-raised text-success' : 'border bg-raised text-foreground',
           )}
         >
@@ -78,20 +74,20 @@ export function HeroCard({
           <Icon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
           <span className="min-w-0 truncate font-medium">{hero.name}</span>
           {you ? <span className="text-xs text-muted-foreground">(you)</span> : null}
-          {hero.bot !== null ? (
-            <span className="text-xs text-muted-foreground">Bot · {brainText(hero.bot)}</span>
+          {hero.deck ? (
+            <span className="ml-auto shrink-0">
+              <ColourPips colours={hero.deck.colors} />
+            </span>
           ) : null}
         </div>
-        <div className="flex min-h-6 items-center justify-between gap-2 text-sm">
-          {hero.deck ? (
-            <>
-              <span className="min-w-0 truncate">{hero.deck.name}</span>
-              <ColourPips colours={hero.deck.colors} />
-            </>
-          ) : (
-            <span className="text-muted-foreground">No deck yet</span>
-          )}
-        </div>
+        <p className="grid min-h-10 text-sm">
+          <span className={cn('truncate', !hero.deck && 'text-muted-foreground')}>
+            {hero.deck?.name ?? 'No deck yet'}
+          </span>
+          {hero.bot !== null ? (
+            <span className="text-xs text-muted-foreground">Bot ally · {brainText(hero.bot)}</span>
+          ) : null}
+        </p>
         {onChoose || onRemove ? (
           <div className="flex flex-wrap gap-2">
             {onChoose ? (
@@ -123,6 +119,7 @@ export function PartyLobby({
   act,
   busy,
   entries,
+  groups,
   played,
   onPlayed,
 }: {
@@ -131,11 +128,15 @@ export function PartyLobby({
   busy: boolean
   /** The decks the player may bring; null while they load. */
   entries: readonly DeckEntry[] | null
+  /** The player's deck groups. */
+  groups: readonly GroupLike[]
   played: LastPlayed
   onPlayed: (deck: string) => void
 }) {
   const [level, setLevel] = useState<Brain>('Normal')
   const [picking, setPicking] = useState<number | null>(null)
+  const [now] = useState(() => Date.now())
+  const pick = setPicking
   const heroes = view.run.heroes
   const mayChoose = (hero: Hero, i: number) => i === view.me || (view.host && hero.bot !== null)
   const readyCount = heroes.filter(isReady).length
@@ -167,7 +168,7 @@ export function PartyLobby({
             you={i === view.me}
             entry={entryOf(hero)}
             busy={busy}
-            onChoose={mayChoose(hero, i) ? () => setPicking(i) : undefined}
+            onChoose={mayChoose(hero, i) ? () => pick(i) : undefined}
             onRemove={view.host && i > 0 ? () => act({ kind: 'remove', hero: i }) : undefined}
           />
         ))}
@@ -204,7 +205,9 @@ export function PartyLobby({
             </Button>
           </>
         ) : (
-          <p className="text-sm text-muted-foreground">The host leads the party in once every hero is ready.</p>
+          <p className="text-sm text-muted-foreground">
+            The host leads the party in once every hero is ready.
+          </p>
         )}
       </div>
       <Dialog open={pickingHero !== undefined} onOpenChange={(open) => !open && setPicking(null)}>
@@ -217,6 +220,8 @@ export function PartyLobby({
             <DeckPicker
               heroName={pickingHero.name}
               entries={entries}
+              groups={groups}
+              now={now}
               current={pickingHero.deck?.id ?? null}
               played={played}
               onCancel={() => setPicking(null)}
