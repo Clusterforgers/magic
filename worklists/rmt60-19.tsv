@@ -1,0 +1,15 @@
+Blade of the Swarm	warp [B]	triggered: When this creature enters, choose N — | • Put N +N/+N counters on this creature. | • Put target exiled card with warp on the bottom of its owner's library.
+Tannuk, Steadfast Second	warp [B]	static: Artifact cards and red creature cards in your hand have warp {M}.
+Peter Parker // Amazing Spider-Man	web-slinging [B]	static: Each legendary spell you cast that's N or more colors has web-slinging {M}.
+Scarlet Spider, Ben Reilly	web-slinging [B]	static: Sensational Save — If ~ was cast using web-slinging, he enters with X +N/+N counters on him, where X is the mana value of the returned creature.
+Brass Infiniscope	when you next cast a spell this turn (delayed, reader) [A]	activated: {T}: Add {M}. When you next cast a spell with {M} in its mana cost this turn, you draw a card and gain half X life, rounded down.
+Eye of Ojer Taq // Apex Observatory	when you next cast a spell this turn (delayed, reader) [A]	activated: {T}: The next spell you cast this turn of the chosen type can be cast without paying its mana cost.
+Merseine	who may activate and when (any player, opponents only, while on stack) [A]	activated: Pay enchanted creature's mana cost: Remove a net counter from this Aura. Only the controller of the enchanted creature may activate this ability.
+Katara, Water Tribe's Hope	X restrictions and X colour rules (X cannot be N, up to players) [A]	activated: Waterbend {M}: Creatures you control have base power and toughness X/X until end of turn. X can't be N. Activate only during your turn.
+Ludevic, Necrogenius // Olag, Ludevic's Hubris	X restrictions and X colour rules (X cannot be N, up to players) [A]	activated: {M}, Exile X creature cards from your graveyard: Transform ~. X can't be N. Activate only as a sorcery.
+Brutal Hordechief	you choose how other players attack, block or vote [B]	activated: {M}: Creatures your opponents control block this turn if able, and you choose how those creatures block.
+Illusion of Choice	you choose how other players attack, block or vote [B]	spell: You choose how each player votes this turn.
+Invasion Plans	you choose how other players attack, block or vote [B]	static: The attacking player chooses how each creature blocks each combat.
+Master Warcraft	you choose how other players attack, block or vote [B]	spell: You choose which creatures attack this turn.
+Melee	you choose how other players attack, block or vote [B]	spell: You choose which creatures block this combat and how those creatures block.
+Odric, Master Tactician	you choose how other players attack, block or vote [B]	triggered: Whenever ~ and at least N other creatures attack, you choose which creatures block this combat and how those creatures block.

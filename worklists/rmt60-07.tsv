@@ -1,0 +1,23 @@
+Blinding Beam	doesn't untap during next untap step(s) (reader) [A]	modal: Choose N — | • Tap N target creatures. | • Creatures don't untap during target player's next untap step.
+Illithid Harvester // Plant Tadpoles	doesn't untap during next untap step(s) (reader) [A]	spell: Tap X target creatures. They don't untap during their controllers' next untap steps.
+Alms Collector	draw replacements: draw extra, reveal, from the bottom [A]	static: If an opponent would draw N or more cards, instead you and that player each draw a card.
+Breathstealer's Crypt	draw replacements: draw extra, reveal, from the bottom [A]	static: If a player would draw a card, instead they draw a card and reveal it. If it's a creature card, that player discards it unless they pay N life.
+Quantum Riddler	draw replacements: draw extra, reveal, from the bottom [A]	static: As long as you have N or fewer cards in hand, if you would draw N or more cards, you draw that many cards plus N instead.
+Reed Richards, Smartest Man	draw replacements: draw extra, reveal, from the bottom [A]	static: The first time you would draw a card each turn except the first card you draw during each of your draw steps, you draw N cards instead.
+River Song	draw replacements: draw extra, reveal, from the bottom [A]	static: Meet in Reverse — You draw cards from the bottom of your library rather than the top.
+Zur's Weirding	draw replacements: draw extra, reveal, from the bottom [A]	static: If a player would draw a card, they reveal it instead. Then any other player may pay N life. If a player does, put that card into its owner's graveyard. Otherwise, that player draws a card.
+Catch // Release	each player chooses what to keep and sacrifices the rest [A]	spell: Each player sacrifices an artifact, a creature, an enchantment, a land, and a planeswalker of their choice.
+Destined Confrontation	each player chooses what to keep and sacrifices the rest [A]	spell: Each player chooses any number of creatures they control with total power N or less, then sacrifices all other creatures they control.
+Slaughter the Strong	each player chooses what to keep and sacrifices the rest [A]	spell: Each player chooses any number of creatures they control with total power N or less, then sacrifices all other creatures they control.
+Jace, Reality Sculptor	empower [B]	loyalty: +N: Empower ~ X, where X is the number of Islands you control.
+Theorist's Sanctum	empower [B]	activated: {M}, {T}: Empower Jace N.
+Way of the Mind Sculptor	empower [B]	triggered: Whenever you activate a loyalty ability, if you removed N or more loyalty counters to activate it, draw a card.
+Dragon's Disciple	enters with counters: new counts and conditions (reader) [A]	static: As this creature enters, you may reveal a Dragon card from your hand. If you do or if you control a Dragon, this creature enters with a +N/+N counter on it.
+Dralnu's Pet	enters with counters: new counts and conditions (reader) [A]	static: If this creature was kicked, it enters with flying and with X +N/+N counters on it, where X is the discarded card's mana value.
+Emblazoned Golem	enters with counters: new counts and conditions (reader) [A]	static: If this creature was kicked, it enters with X +N/+N counters on it.
+Ulamog, the Defiler	enters with counters: new counts and conditions (reader) [A]	static: ~ enters with a number of +N/+N counters on it equal to the greatest mana value among cards in exile.
+Elvish Refueler	exhaust abilities (rules, cost changes) [B]	static: During your turn, as long as you haven't activated an exhaust ability this turn, you may activate exhaust abilities as though they haven't been activated.
+Cosmic Intervention	exile and return at the next end step (with Auras, replacement form) [A]	spell: If a permanent you control would be put into a graveyard from the battlefield this turn, exile it instead. Return it to the battlefield under its owner's control at the beginning of the next end step.
+Waterbender's Restoration	exile and return at the next end step (with Auras, replacement form) [A]	spell: Exile X target creatures you control. Return those cards to the battlefield under their owner's control at the beginning of the next end step.
+Ertai's Meddling	exile with time counters and gain suspend [B]	spell: Target spell's controller exiles it with X delay counters on it.
+Gandalf of the Secret Fire	exile with time counters and gain suspend [B]	triggered: Whenever you cast an instant or sorcery spell from your hand during an opponent's turn, exile that card with N time counters on it instead of putting it into your graveyard as it resolves. Then if the exiled card doesn't have suspend, it gains suspend.

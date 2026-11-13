@@ -1,0 +1,27 @@
+Hand of Vecna	ungrouped: partial	triggered: At the beginning of combat on your turn, equipped creature or a creature you control named Vecna gets +X/+X until end of turn, where X is the number of cards in your hand.
+Korvold, Gleeful Glutton	ungrouped: partial	triggered: Whenever ~ deals combat damage to a player, put X +N/+N counters on ~ and draw X cards, where X is the number of permanent types among cards in your graveyard.
+Accursed Witch // Infectious Curse	(unsorted)	triggered: When this creature dies, return it to the battlefield transformed under your control attached to target opponent.
+Agent's Toolkit	(unsorted)	static: This artifact enters with a +N/+N counter, a flying counter, a deathtouch counter, and a shield counter on it.
+Animus of Predation	(unsorted)	static: If you removed a creature card with flying from the draft with cards named ~, this creature has flying. The same is true for first strike, double strike, deathtouch, haste, hexproof, indestructible, lifelink, menace, reach, and vigilance.
+Archnemesis	(unsorted)	triggered: Whenever a player attacks you, you may attach this Aura to that player.
+Bullseye, Death Dealer	(unsorted)	activated: {M}, {T}, Sacrifice an artifact or discard a nonland card: ~ deals N damage to any target.
+Caller of the Untamed	(unsorted)	activated: {M}, {T}: Create a token that's a copy of a card you exiled with cards named ~. X is the mana value of that card.
+Chance for Glory	(unsorted)	spell: Creatures you control gain indestructible. Take an extra turn after this N. At the beginning of that turn's end step, you lose the game.
+Deathmist Raptor	(unsorted)	triggered: Whenever a permanent you control is turned face up, you may return this card from your graveyard to the battlefield face up or face down.
+Doc Aurlock, Grizzled Genius	(unsorted)	static: Plotting cards from your hand costs {M} less.
+Face Yourself	(unsorted)	spell: For each creature target player controls, create a token that's a copy of that creature, except it has haste and "At the beginning of the end step, if you don't control a planeswalker, sacrifice this creature."
+Jegantha, the Wellspring	(unsorted)	activated: {T}: Add {M}. This mana can't be spent to pay generic mana costs.
+Khârn the Betrayer	(unsorted)	static: The Betrayer — If damage would be dealt to ~, prevent that damage and an opponent of your choice gains control of it.
+Kozilek, the Great Distortion	(unsorted)	activated: Discard a card with mana value X: Counter target spell with mana value X.
+March of Reckless Joy	(unsorted)	spell: Exile the top X cards of your library. You may play up to N of those cards until the end of your next turn.
+Martyrdom	(unsorted)	spell: Until end of turn, target creature you control gains "{M}: The next N damage that would be dealt to target creature, planeswalker, or player this turn is dealt to this creature instead." Only you may activate this ability.
+Raphael, Tag Team Tough	(unsorted)	triggered: Whenever ~ deals combat damage to a player for the first time each turn, untap all attacking creatures. After this combat phase, there is an additional combat phase.
+Strixhaven Stadium	(unsorted)	triggered: Whenever a creature you control deals combat damage to an opponent, put a point counter on this artifact. Then if it has N or more point counters on it, remove them all and that player loses the game.
+Tazri, Stalwart Survivor	(unsorted)	static: Each creature you control has "{T}: Add N mana of any of this creature's colors. Spend this mana only to activate an ability of a creature. Activate only if this creature has another activated ability."
+Terra, Magical Adept // Esper Terra	(unsorted)	triggered: I, II, III — Create a token that's a copy of target nonlegendary enchantment you control. It gains haste. If it's a Saga, put up to N lore counters on it. Sacrifice it at the beginning of your next end step.
+The Curse of Fenric	(unsorted)	triggered: II — Target nontoken creature becomes a N/N legendary Horror creature named Fenric and loses all abilities.
+The Kami War // O-Kagachi Made Manifest	(unsorted)	triggered: Whenever this creature attacks, defending player chooses a nonland card in your graveyard. Return that card to your hand. This creature gets +X/+N until end of turn, where X is the mana value of that card.
+The Masamune	(unsorted)	static: Equipped creature has "If a creature dying causes a triggered ability of this creature or an emblem you own to trigger, that ability triggers an additional time."
+The Master, Multiplied	(unsorted)	static: Triggered abilities you control can't cause you to sacrifice or exile creature tokens you control.
+Vault 11: Voter's Dilemma	(unsorted)	triggered: II, III — Each player secretly votes for up to N creature, then those votes are revealed. If no creature got votes, each player draws a card. Otherwise, destroy each creature with the most votes or tied for most votes.
+Vazi, Keen Negotiator	(unsorted)	triggered: Whenever an opponent casts a spell or activates an ability, if mana from a Treasure was spent to cast it or activate it, put a +N/+N counter on target creature, then draw a card.
