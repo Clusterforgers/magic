@@ -147,6 +147,7 @@ fn create(cx: &Cx<'_>, subtype: &Subtype, marker: String) -> Run {
         power: Some(0),
         toughness: Some(0),
         abilities: Vec::new(),
+        mana_cost: None,
     };
     let definition = Arc::new(token_definition(&spec, &caps()));
     let object = cx.state().next_object();

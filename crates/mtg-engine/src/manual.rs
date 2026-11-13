@@ -211,6 +211,7 @@ impl CommonToken {
             } else {
                 Vec::new()
             },
+            mana_cost: None,
         };
         let artifact_creature = |name: &str, flying: bool| TokenSpec {
             types: vec![CardType::Artifact, CardType::Creature],
@@ -322,6 +323,7 @@ impl CustomToken {
             power: stats.map(|(power, _)| power),
             toughness: stats.map(|(_, toughness)| toughness),
             abilities: self.abilities(),
+            mana_cost: None,
         })
     }
 }

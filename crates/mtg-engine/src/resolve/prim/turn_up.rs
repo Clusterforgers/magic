@@ -31,6 +31,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             let mut events = vec![Event::TurnedFaceUp {
                 object: object.id(),
                 player: controller_of_object(state, object),
+                x: 0,
             }];
             events.extend(crate::announce::turn_up::turned_up_counters(
                 state,
@@ -116,7 +117,7 @@ mod tests {
         events
             .iter()
             .map(|event| match event {
-                Event::TurnedFaceUp { object, player } => (
+                Event::TurnedFaceUp { object, player, .. } => (
                     game.object(*object).unwrap().whole_card().name.clone(),
                     *player,
                 ),

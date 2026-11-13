@@ -138,6 +138,7 @@ fn creature(subtype: &str, size: i32) -> TokenRef {
         power: Some(size),
         toughness: Some(size),
         abilities: Vec::new(),
+        mana_cost: None,
     }))
 }
 

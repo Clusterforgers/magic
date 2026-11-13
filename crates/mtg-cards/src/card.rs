@@ -147,6 +147,9 @@ pub struct TokenSpec {
     /// Its abilities.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub abilities: Vec<Ability>,
+    /// Its mana cost, for a token that has one ("It's a {2}{R} 2/2 Weird creature"); its colours then come from it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mana_cost: Option<crate::mana::ManaCostX>,
 }
 
 /// A predefined token in `cards/tokens/`.

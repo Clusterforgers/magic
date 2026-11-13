@@ -1086,6 +1086,9 @@ pub enum Event {
         object: ObjectId,
         /// Its controller, who turned it.
         player: PlayerId,
+        /// The X of the morph, megamorph or disguise cost paid, which a trigger on turning it face up reads (CR 107.3).
+        #[serde(default, skip_serializing_if = "is_zero")]
+        x: u32,
     },
     /// A permanent was turned face down by an effect (CR 708.2a): it is a face-down 2/2 from now on.
     TurnedFaceDown {

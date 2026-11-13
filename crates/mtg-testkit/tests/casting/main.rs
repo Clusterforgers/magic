@@ -175,6 +175,7 @@ mod r306b_spend_any;
 mod r307c_exile;
 mod r372_suspend;
 mod r3f_mana;
+mod r409_kicker_x;
 mod r4f_stack_move;
 mod r4i_may_flash;
 mod r6q1_face_down_cost;

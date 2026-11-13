@@ -45,6 +45,7 @@ pub(crate) fn w6b_definition(abilities: &[Ability]) -> CardDefinition {
         power: None,
         toughness: None,
         abilities: abilities.iter().map(w6b_from_command).collect(),
+        mana_cost: None,
     };
     token_definition(&spec, &crate::caps::caps())
 }

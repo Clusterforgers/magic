@@ -75,6 +75,7 @@ fn w15a_definition() -> Arc<CardDefinition> {
                     whose: Ref::You,
                 }),
             ],
+            mana_cost: None,
         };
         Arc::new(token_definition(&spec, &crate::caps::caps()))
     }))

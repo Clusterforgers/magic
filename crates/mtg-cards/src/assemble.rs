@@ -937,11 +937,13 @@ fn same_kind(a: &Effect, b: &Effect) -> bool {
 
 /// The definition of a token from the description of what creates it.
 ///
-/// Its colours are a colour indicator (a token has no mana cost), and it keeps the abilities `caps` says the engine
-/// runs, as a card does ([`assemble()`]).
+/// Its colours are a colour indicator, unless it has a mana cost of its own (a Spellgorger Weird), and it keeps the
+/// abilities `caps` says the engine runs, as a card does ([`assemble()`]).
 pub fn token_definition(spec: &TokenSpec, caps: &Caps) -> CardDefinition {
     let mut definition = CardDefinition::new(spec.name.clone());
-    if !spec.colors.is_empty() {
+    if let Some(cost) = &spec.mana_cost {
+        definition.mana_cost = Some(cost.rest().clone());
+    } else if !spec.colors.is_empty() {
         definition.color_indicator = Some(spec.colors.iter().copied().collect());
     }
     definition.supertypes = spec.supertypes.iter().copied().collect();

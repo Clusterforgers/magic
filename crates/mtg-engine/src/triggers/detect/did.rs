@@ -283,7 +283,7 @@ fn from_found(fresh: &[Happened], of: &dyn Fn(Action, ObjectId) -> Happened) -> 
             Happened::Adapted { object, player } => {
                 found.push(did(Action::Adapted, Some(*player), Some(*object)));
             }
-            Happened::TurnedFaceUp { object, player } => {
+            Happened::TurnedFaceUp { object, player, .. } => {
                 found.push(did(Action::TurnedFaceUp, Some(*player), Some(*object)));
             }
             _ => {}

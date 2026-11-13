@@ -2133,6 +2133,15 @@ impl<'a> Walker<'a> {
             | Keyword::Outlast(cost) => {
                 self.at("cost", |w| w.cost(cost));
             }
+            // "Kicker {X}. X can't be 0.": the X is announced once the spell is kicked, and the least X with it.
+            Keyword::Kicker(cost) if cost.has_x() => {
+                self.uses("Keyword", "Kicker.X");
+                let held = (self.x_now, self.activated_cost);
+                (self.x_now, self.activated_cost) = (true, true);
+                self.at("cost", |w| w.cost(cost));
+                (self.x_now, self.activated_cost) = held;
+                self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost, false);
+            }
             // The cost of these is paid as the spell is announced: the mana, and the parts the engine pays there.
             Keyword::Kicker(cost)
             | Keyword::Squad(cost)
@@ -5652,6 +5661,10 @@ impl Walker<'_> {
     }
 
     fn turn_up_cost(&mut self, cost: &Cost) {
+        // "Morph {X}{B}{B}": X is announced as the permanent is turned face up.
+        if cost.has_x() {
+            self.uses("Keyword", "TurnUp.X");
+        }
         self.at("cost", |w| w.cost(cost));
         self.parts_that_need_an_announcement("Keyword", "TurnUp.Cost", cost);
     }
@@ -5858,11 +5871,13 @@ impl Walker<'_> {
 }
 
 /// Whether the trigger is on an action of the card itself whose cost may hold an `{X}`: "when you cycle this card",
-/// "when this creature becomes monstrous". It reads the X of that cost.
+/// "when this creature becomes monstrous", "when this creature is turned face up". It reads the X of that cost.
 fn w6c_reads_cost_x(when: &TriggerPattern) -> bool {
     matches!(
         when,
-        TriggerPattern::Cycled { what, .. } | TriggerPattern::BecomesMonstrous { what }
+        TriggerPattern::Cycled { what, .. }
+        | TriggerPattern::BecomesMonstrous { what }
+        | TriggerPattern::TurnedFaceUp { what }
             if what.0.contains(&Pred::This)
     )
 }
@@ -5901,9 +5916,13 @@ fn r283_keyword_x(face: &Face) -> bool {
 /// Whether the face has an `{X}` in a cycling cost or in the cost of an activated ability that makes it monstrous.
 fn w6c_cost_x(face: &Face) -> bool {
     face.abilities.iter().any(|ability| match ability {
-        Ability::Keyword(Keyword::Cycling(cost) | Keyword::Typecycling { cost, .. }) => {
-            has_x_mana(cost)
-        }
+        Ability::Keyword(
+            Keyword::Cycling(cost)
+            | Keyword::Typecycling { cost, .. }
+            | Keyword::Morph(cost)
+            | Keyword::Megamorph(cost)
+            | Keyword::Disguise(cost),
+        ) => has_x_mana(cost),
         Ability::Activated { cost, effects, .. } => {
             has_x_mana(cost)
                 && effects
@@ -6284,7 +6303,13 @@ pub(crate) fn check_printed(
         }
     }
     for (face, path) in x_uses {
-        if !printed.faces[face].mana_cost.contains("{X}") {
+        // "Kicker {X}": a kicked spell announces X, which its permanent's enters trigger reads (CR 107.3m).
+        let kicker_x = card.faces.get(face).is_some_and(|face| {
+            face.abilities.iter().any(|ability| {
+                matches!(ability, Ability::Keyword(Keyword::Kicker(cost)) if cost.has_x())
+            })
+        });
+        if !printed.faces[face].mana_cost.contains("{X}") && !kicker_x {
             walker.path = vec![path];
             walker.problem("uses X but the imported mana cost has none");
         }

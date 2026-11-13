@@ -426,7 +426,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "equip" => equip(rest),
         "reconfigure" => cost(rest).map(Keyword::Reconfigure),
         "cycling" => cost(rest).map(Keyword::Cycling),
-        "kicker" => spell_cost(rest).map(Keyword::Kicker),
+        "kicker" => kicker(rest),
         "multikicker" => cost(rest).map(Keyword::Multikicker),
         "buyback" => spell_cost(rest).map(Keyword::Buyback),
         "entwine" => spell_cost(rest).map(Keyword::Entwine),
@@ -1196,6 +1196,20 @@ fn prototype(rest: &str) -> Option<Keyword> {
 }
 
 /// `4—{U}`: the time counters and the mana cost.
+/// `{X}. X can't be 0.`: a kicker cost, its X at least 1 when the line says so.
+fn kicker(rest: &str) -> Option<Keyword> {
+    let Some(price) = rest
+        .strip_suffix(". X can't be 0.")
+        .or_else(|| rest.strip_suffix(". X can\u{2019}t be 0."))
+    else {
+        return spell_cost(rest).map(Keyword::Kicker);
+    };
+    let mut cost = spell_cost(price)?;
+    cost.has_x().then_some(())?;
+    cost.0.push(crate::cost::CostItem::XAtLeast(1));
+    Some(Keyword::Kicker(cost))
+}
+
 fn suspend(rest: &str) -> Option<Keyword> {
     let (time, price) = rest.split_once('\u{2014}')?;
     Some(Keyword::Suspend {

@@ -301,7 +301,11 @@ enum Happened {
         level: u32,
     },
     /// A permanent was turned face up.
-    TurnedFaceUp { object: ObjectId, player: PlayerId },
+    TurnedFaceUp {
+        object: ObjectId,
+        player: PlayerId,
+        x: u32,
+    },
     /// A mutating creature spell merged with a creature.
     Mutated { object: ObjectId, player: PlayerId },
     /// A creature adapted.
@@ -348,7 +352,9 @@ impl Happened {
             Happened::Counters { delta, .. } | Happened::PlayerCounters { delta, .. } => {
                 delta.unsigned_abs()
             }
-            Happened::Monstrous { x, .. } | Happened::Cycled { x, .. } => *x,
+            Happened::Monstrous { x, .. }
+            | Happened::Cycled { x, .. }
+            | Happened::TurnedFaceUp { x, .. } => *x,
             Happened::Cast { before, .. } => *before,
             _ => 0,
         }
@@ -1343,9 +1349,10 @@ fn about_players_and_permanents(
             player: *player,
             level: *level,
         }),
-        Event::TurnedFaceUp { object, player } => found.push(Happened::TurnedFaceUp {
+        Event::TurnedFaceUp { object, player, x } => found.push(Happened::TurnedFaceUp {
             object: *object,
             player: *player,
+            x: *x,
         }),
         Event::Mutated { object, player, .. } => found.push(Happened::Mutated {
             object: *object,
@@ -1799,9 +1806,15 @@ fn matching_event(
                 }
             });
             (combat.is_none_or(|wanted| wanted == *was) && named && picks(source, dealer)?).then(
-                || Cause {
-                    source: Some(dealer),
-                    ..counted(state, vec![recipient], *amount)
+                || {
+                    let mut cause = counted(state, vec![recipient], *amount);
+                    // The source as it dealt the damage, so "that source's controller" is known once a spell that dealt
+                    // it has left the stack (CR 608.2h).
+                    cause.snapshots.extend(snapshot(state, dealer.id));
+                    Cause {
+                        source: Some(dealer),
+                        ..cause
+                    }
                 },
             )
         }
@@ -1989,6 +2002,7 @@ fn matching_permanents(
             Happened::TurnedFaceUp {
                 object: actor,
                 player,
+                ..
             },
         )
         | (

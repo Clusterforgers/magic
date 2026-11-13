@@ -8,10 +8,11 @@ use mtg_cards::refs::Selector;
 use mtg_cards::trigger::{ReplaceBy, ReplaceWhen};
 use mtg_cards::value::CounterKind;
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::mana::ManaSymbol;
 
 use super::{Done, Next, Phase, suspend};
 use crate::characteristics::controller_of;
-use crate::choose::{CardsOptions, Choices, Target};
+use crate::choose::{CardsOptions, Choices, NumberOptions, Target};
 use crate::counters::CountersChanged;
 use crate::decision::{Decision, DecisionKind};
 use crate::events::Event;
@@ -33,6 +34,24 @@ pub(super) fn next(
     };
     if controller_of(state, card) != Some(player) {
         return Next::Drop;
+    }
+    // "Morph {X}{X}{R}": X is announced first (CR 601.2b by way of 702.37e), and the cost takes X mana per `{X}`.
+    if up.x > 0 && !done.x {
+        done.asked = Some(Phase::X);
+        return Next::Ask(Decision {
+            player,
+            kind: DecisionKind::ChooseNumber(NumberOptions {
+                source: card,
+                min: 0,
+                max: None,
+                except: Vec::new(),
+                text: "Choose a value for X.".to_owned(),
+                can_cancel: true,
+                cost: Some(up.mana.clone()),
+                per_x: up.x,
+                secret: false,
+            }),
+        });
     }
     let mut settled = 0;
     for part in &up.parts {
@@ -79,7 +98,10 @@ pub(super) fn next(
     }
     let paid = choices.clone();
     let spend = crate::spend::Spend::special(mtg_cards::spend::SpecialAction::TurnFaceUp);
-    suspend::pay_for(state, player, card, (up.mana, spend), || {
+    let mana = up.mana.with(ManaSymbol::Generic(
+        up.x.saturating_mul(choices.x.unwrap_or(0)),
+    ));
+    suspend::pay_for(state, player, card, (mana, spend), || {
         events(state, player, card, &paid)
     })
 }
@@ -123,6 +145,7 @@ pub(crate) fn events(
     events.push(Event::TurnedFaceUp {
         object: card,
         player: controller_of(state, card)?,
+        x: if up.x > 0 { choices.x.unwrap_or(0) } else { 0 },
     });
     if up.megamorph {
         events.push(Event::CountersChanged(CountersChanged {
