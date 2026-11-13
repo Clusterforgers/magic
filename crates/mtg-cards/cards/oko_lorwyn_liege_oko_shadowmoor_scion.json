@@ -1,7 +1,7 @@
 {
   "oracle_id": "a0c956dc-d7de-4f11-b76f-7537fbee1731",
   "name": "Oko, Lorwyn Liege // Oko, Shadowmoor Scion",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Oko, Lorwyn Liege",
@@ -9,21 +9,57 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
-            "effects": [{ "Pay": { "cost": "{G}", "paid": [{ "Transform": { "what": "This" } }] } }]
+            "when": {
+              "StepBegins": {
+                "step": "Main1",
+                "whose": "You"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{G}",
+                  "paid": [
+                    {
+                      "Transform": {
+                        "what": "This"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
           "Loyalty": {
-            "cost": { "Plus": 2 },
+            "cost": {
+              "Plus": 2
+            },
             "targets": [
-              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "Type": "Creature"
+                    }
+                  ]
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": 1
+                }
+              }
             ],
             "effects": [
               {
                 "Continuous": {
-                  "affected": { "Target": 0 },
-                  "mods": ["AddAllCreatureTypes"],
+                  "affected": {
+                    "Target": 0
+                  },
+                  "mods": [
+                    "AddAllCreatureTypes"
+                  ],
                   "duration": "Forever"
                 }
               }
@@ -32,13 +68,34 @@
         },
         {
           "Loyalty": {
-            "cost": { "Plus": 1 },
-            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "cost": {
+              "Plus": 1
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "Type": "Creature"
+                    }
+                  ]
+                }
+              }
+            ],
             "effects": [
               {
                 "Continuous": {
-                  "affected": { "Target": 0 },
-                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "affected": {
+                    "Target": 0
+                  },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": -2,
+                        "toughness": 0
+                      }
+                    }
+                  ],
                   "duration": "UntilYourNextTurn"
                 }
               }
@@ -53,53 +110,114 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
-            "effects": [{ "Pay": { "cost": "{U}", "paid": [{ "Transform": { "what": "This" } }] } }]
-          }
-        },
-        {
-          "Loyalty": {
-            "cost": { "Minus": 1 },
+            "when": {
+              "StepBegins": {
+                "step": "Main1",
+                "whose": "You"
+              }
+            },
             "effects": [
-              { "Mill": { "count": 3, "as": "milled" } },
               {
-                "Choose": {
-                  "from": {
-                    "Each": [
-                      { "Is": { "Bound": "milled" } },
-                      { "In": "Graveyard" },
-                      {
-                        "AnyOf": [
-                          { "Type": "Artifact" },
-                          { "Type": "Creature" },
-                          { "Type": "Enchantment" },
-                          { "Type": "Land" },
-                          { "Type": "Planeswalker" },
-                          { "Type": "Battle" }
-                        ]
+                "Pay": {
+                  "cost": "{U}",
+                  "paid": [
+                    {
+                      "Transform": {
+                        "what": "This"
                       }
-                    ]
-                  },
-                  "count": { "min": 0, "max": 1 },
-                  "as": "kept"
+                    }
+                  ]
                 }
-              },
-              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } }
+              }
             ]
           }
         },
         {
           "Loyalty": {
-            "cost": { "Minus": 3 },
+            "cost": {
+              "Minus": 1
+            },
+            "effects": [
+              {
+                "Mill": {
+                  "count": 3,
+                  "as": "milled"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "Is": {
+                          "Bound": "milled"
+                        }
+                      },
+                      {
+                        "In": "Graveyard"
+                      },
+                      {
+                        "AnyOf": [
+                          {
+                            "Type": "Artifact"
+                          },
+                          {
+                            "Type": "Creature"
+                          },
+                          {
+                            "Type": "Enchantment"
+                          },
+                          {
+                            "Type": "Land"
+                          },
+                          {
+                            "Type": "Planeswalker"
+                          },
+                          {
+                            "Type": "Battle"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": 1
+                  },
+                  "as": "kept"
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Bound": "kept"
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": {
+              "Minus": 3
+            },
             "effects": [
               {
                 "CreateToken": {
                   "token": {
                     "Custom": {
                       "name": "Elk",
-                      "colors": ["Green"],
-                      "types": ["Creature"],
-                      "subtypes": ["Elk"],
+                      "colors": [
+                        "Green"
+                      ],
+                      "types": [
+                        "Creature"
+                      ],
+                      "subtypes": [
+                        "Elk"
+                      ],
                       "power": 3,
                       "toughness": 3
                     }
@@ -111,9 +229,55 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 215, "end": 351 }
+          "Loyalty": {
+            "cost": {
+              "Minus": 6
+            },
+            "effects": [
+              {
+                "ChooseValue": {
+                  "kind": "CreatureType",
+                  "as": "type"
+                }
+              },
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Static": {
+                        "affected": {
+                          "Each": [
+                            {
+                              "Type": "Creature"
+                            },
+                            {
+                              "ControlledBy": "You"
+                            },
+                            {
+                              "ChosenAs": "type"
+                            }
+                          ]
+                        },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": 3,
+                              "toughness": 3
+                            }
+                          },
+                          {
+                            "AddKeyword": "Vigilance"
+                          },
+                          {
+                            "AddKeyword": "Hexproof"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -1112,6 +1112,9 @@ pub enum GameRule {
     /// Spells and abilities the opponents of the players control can't cause them to sacrifice permanents; costs they pay
     /// themselves still can.
     OpponentsCantMakeSacrifice(Ref),
+    /// Spells and abilities the opponents of the players control can't cause them to discard cards or sacrifice
+    /// permanents; costs they pay themselves still can.
+    OpponentsCantMakeDiscardOrSacrifice(Ref),
     /// The players may spend mana as though it were mana of any color or of any type (CR 609.4b): "You may spend mana as
     /// though it were mana of any color", "... to cast creature spells".
     SpendManaAs {

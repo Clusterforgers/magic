@@ -1,0 +1,66 @@
+{
+  "oracle_id": "8b46b50c-f824-4c4e-86de-38065c6f9a64",
+  "name": "Alpine Moon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alpine Moon",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Enters": {
+                "what": [
+                  "This"
+                ]
+              }
+            },
+            "by": {
+              "Choose": "NonbasicLandCardName"
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "Type": "Land"
+                },
+                {
+                  "ControlledBy": "Opponents"
+                },
+                "ChosenName"
+              ]
+            },
+            "mods": [
+              {
+                "SetLandTypes": []
+              },
+              "LoseAbilities",
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [
+                      "Tap"
+                    ],
+                    "effects": [
+                      {
+                        "AddMana": {
+                          "mana": {
+                            "AnyColor": 1
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

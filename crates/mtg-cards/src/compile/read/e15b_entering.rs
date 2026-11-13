@@ -77,10 +77,17 @@ pub(super) fn counter_of_texts(kinds: &[CounterKind]) -> Vec<String> {
         .collect()
 }
 
-/// "Spells you cast of the chosen type" beside "Spells of the chosen type you cast".
+/// "Spells you cast of the chosen type" beside "Spells of the chosen type you cast", and "Spells your opponents cast
+/// with the chosen name" beside "Spells with the chosen name your opponents cast".
 pub(super) fn cast_before_chosen(subject: &str) -> Option<String> {
-    let head = subject.strip_suffix(" of the chosen type you cast")?;
-    Some(format!("{head} you cast of the chosen type"))
+    ["of the chosen type", "with the chosen name"]
+        .iter()
+        .find_map(|chosen| {
+            ["you cast", "your opponents cast"].iter().find_map(|cast| {
+                let head = subject.strip_suffix(&format!(" {chosen} {cast}"))?;
+                Some(format!("{head} {cast} {chosen}"))
+            })
+        })
 }
 
 /// "artifact, creature, or sorcery"; "creature or land" for two.
