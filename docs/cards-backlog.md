@@ -112,6 +112,7 @@ Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `
 
 ## Statics, attachments and mutate
 
+- [ ] (r5504a) `ReplaceBy::ChooseAfter` folds the look before the choice is asked, then joins `Caps` (Sorcerous Spyglass, Anointed Peacekeeper, Arachne)
 - [ ] (c7l) The attacking player who chooses the target and the mode of a trigger the Curse controls (Curse of Inertia)
 - [ ] (c7m) Quoted abilities that are rules or make tokens, and the outlaw spend restriction (Nerd Rage, Tarmogoyf Nest, Discreet Retreat)
 - [ ] (c7n) "they gain decayed" after a choice of a card in each player's graveyard (Ghouls' Night Out)

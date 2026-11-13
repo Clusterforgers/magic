@@ -1604,6 +1604,9 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
         }
         (ReplaceBy::WithCounterOf(kinds), None) => super::e15b_entering::counter_of_texts(kinds),
         (ReplaceBy::AsEnters(effects), None) => super::r304_as_enters::texts(effects),
+        (ReplaceBy::ChooseAfter { first, choice }, None) => {
+            super::r5504_look::r5504_texts(first, *choice)
+        }
         (
             ReplaceBy::AsEntersWith {
                 effects,

@@ -14,9 +14,25 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 30, "end": 169 }
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Not": { "Type": "Land" } },
+                { "ControlledBy": "You" },
+                {
+                  "AnyOf": [
+                    { "In": "Battlefield" },
+                    { "In": "Stack" },
+                    { "In": "Hand" },
+                    { "In": "Library" },
+                    { "In": "Graveyard" },
+                    { "In": "Exile" },
+                    { "In": "Command" }
+                  ]
+                }
+              ]
+            },
+            "mods": [{ "SetColors": ["White"] }]
           }
         },
         {

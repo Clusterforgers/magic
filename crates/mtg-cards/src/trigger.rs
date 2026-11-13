@@ -1177,6 +1177,14 @@ pub enum ReplaceBy {
     },
     /// As the permanent enters, its controller makes this choice, which the permanent remembers for its abilities.
     Choose(EntersChoice),
+    /// As the permanent enters, these effects happen first and then its controller makes the choice the permanent
+    /// remembers (CR 614.1c): "As this artifact enters, look at an opponent's hand, then choose any card name."
+    ChooseAfter {
+        /// What happens before the choice.
+        first: Vec<Effect>,
+        /// What is chosen.
+        choice: EntersChoice,
+    },
     /// As the permanent enters, its controller may pay this much life; if they don't (or can't) it enters tapped.
     PayLifeOrTapped(u32),
     /// As the permanent enters, its controller may have it enter tapped; if they do, they get the counters ("you may have

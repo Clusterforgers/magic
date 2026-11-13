@@ -22,7 +22,7 @@ use crate::modify::{CastPermission, Duration, GameRule, Modification, Prohibited
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable, ZoneKind};
 use crate::spend::{SpendOn, WhenSpent};
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
-use crate::trigger::{ReplaceBy, ReplaceWhen, ShieldShape, Step, TriggerPattern};
+use crate::trigger::{EntersChoice, ReplaceBy, ReplaceWhen, ShieldShape, Step, TriggerPattern};
 use crate::value::CastWay;
 use crate::value::{Amount, Condition, StatKind, TurnTally};
 
@@ -2498,7 +2498,9 @@ impl<'a> Walker<'a> {
                     );
                 }
             }
-            Modification::AddChosenSubtype | Modification::SetChosenColor => {
+            Modification::AddChosenSubtype
+            | Modification::SetChosenColor
+            | Modification::AddChosenColor => {
                 if !self.scope.in_static {
                     self.problem(
                         "the choice the source made as it entered is read by its static ability only",
@@ -6150,6 +6152,18 @@ impl Walker<'_> {
                     self.problem("needs at least one effect");
                 }
                 self.effect_list("AsEnters", effects, false);
+            }
+            ReplaceBy::ChooseAfter { first, choice } => {
+                if !enters {
+                    self.problem("only an `Enters` event has effects as it enters");
+                }
+                if first.is_empty() {
+                    self.problem("needs at least one effect before the choice");
+                }
+                if matches!(choice, EntersChoice::Chapter) {
+                    self.problem("a chapter is chosen alone");
+                }
+                self.effect_list("ChooseAfter", first, false);
             }
             ReplaceBy::AsEntersWith { effects, count, .. } => {
                 if !enters {

@@ -783,6 +783,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::Mill(_)
         | ReplaceBy::AsEnters(_)
         | ReplaceBy::AsEntersWith { .. }
+        | ReplaceBy::ChooseAfter { .. }
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::Instead(_) => !matches!(unit, Unit::Other),
         ReplaceBy::Plus(_) => matches!(unit, Unit::Tokens { .. }),
@@ -826,6 +827,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::Mill(_)
                 | ReplaceBy::AsEnters(_)
                 | ReplaceBy::AsEntersWith { .. }
+                | ReplaceBy::ChooseAfter { .. }
         )
     )
 }
@@ -2309,6 +2311,10 @@ impl Pass<'_> {
                 let with = (effects.as_slice(), counter, count);
                 Ok(self.r304_as_enters_with(at, candidate, with, &unit, applied))
             }
+            ReplaceBy::ChooseAfter { first, choice } => {
+                let unit = Unit::Enter { object, controller };
+                self.r5504_choose_after(at, candidate, (first, *choice), &unit, applied)
+            }
             _ => self.enter(at, candidate, by, object, controller, applied),
         }
     }
@@ -3665,6 +3671,7 @@ fn zone_word(zone: Zone) -> &'static str {
 
 mod day;
 mod r304_as_enters;
+mod r5504_look;
 #[cfg(test)]
 mod r304_skip;
 pub(crate) mod r406_actions;

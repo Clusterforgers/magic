@@ -226,5 +226,6 @@ mod w19_conditional_flash;
 mod w2g_next_cast;
 mod x_after;
 mod x_costs;
+mod r5504_rebound;
 mod x_modes;
 mod x_places;

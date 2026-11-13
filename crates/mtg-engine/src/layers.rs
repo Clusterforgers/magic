@@ -774,6 +774,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::AddColors(_)
         | Wanted::SetColorsChosen(_)
         | Wanted::SetChosenColor
+        | Wanted::AddChosenColor
         | Wanted::SetCommanderColor => Layer::Color,
         Wanted::AddKeyword(_)
         | Wanted::AddProtectionFromChosenColor
@@ -1772,6 +1773,8 @@ mod keyword_counters;
 mod lands;
 #[cfg(test)]
 mod outside;
+#[cfg(test)]
+mod r5504_everywhere;
 #[cfg(test)]
 mod tests;
 #[cfg(test)]

@@ -104,6 +104,9 @@ pub enum Modification {
     /// Makes the colour the source chose as it entered the only colour (layer 5): "is the chosen color". Only a static
     /// ability has it; with no colour chosen it changes nothing.
     SetChosenColor,
+    /// Adds the colour the source chose as it entered to the colours it has (layer 5): "are the chosen color in addition
+    /// to their other colors". Only a static ability has it; with no colour chosen it changes nothing.
+    AddChosenColor,
     /// Sets the color to the one the card's owner chose for it before the game began as their commander (layer 5): "If ~
     /// is your commander, choose a color before the game begins. ~ is the chosen color." Only the card's own
     /// characteristic-defining static ability has it; a card nobody chose a color for keeps its colors.
@@ -220,6 +223,7 @@ impl Modification {
             | Modification::AddColors(_)
             | Modification::SetColorsChosen(_)
             | Modification::SetChosenColor
+            | Modification::AddChosenColor
             | Modification::SetCommanderColor => Some("5"),
             Modification::AddKeyword(_)
             | Modification::AddProtectionFromChosenColor
@@ -1254,6 +1258,7 @@ mod tests {
     #[case(Modification::SetColors(vec![Color::Blue]), Some("5"))]
     #[case(Modification::AddChosenSubtype, Some("4"))]
     #[case(Modification::SetChosenColor, Some("5"))]
+    #[case(Modification::AddChosenColor, Some("5"))]
     #[case(Modification::AddKeyword(Keyword::Flying), Some("6"))]
     #[case(Modification::RemoveKeyword(Keyword::Flying), Some("6"))]
     #[case(Modification::LockKeyword(Keyword::Flying), Some("6"))]
