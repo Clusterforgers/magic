@@ -977,6 +977,7 @@ impl<'a> Walker<'a> {
             | Pred::SummoningSick
             | Pred::MilledThisTurn
             | Pred::DrawnThisTurn
+            | Pred::LastDrawnThisTurn
             | Pred::DamagedThisTurn
             | Pred::AttackedThisTurn
             | Pred::AttackedLastTurn
@@ -1949,6 +1950,14 @@ impl<'a> Walker<'a> {
         }
         if let Some(when) = &permission.when {
             self.at("when", |w| w.condition(when));
+        }
+        if permission.any_turn {
+            if !permission.once {
+                self.problem(
+                    "only a permission that works once each turn works on any player's turn",
+                );
+            }
+            self.uses("MayCast", "AnyTurn");
         }
         for rider in &permission.riders {
             let tag = match rider {
@@ -3505,6 +3514,8 @@ impl Walker<'_> {
                             // An exchange happens whole or not at all, and a payment any number of times binds whether it paid.
                             | Effect::ExchangeControl { .. }
                             | Effect::PayAnyTimes { .. }
+                            // A transformation (or conversion) logs its event only when the permanent turns over.
+                            | Effect::Transform { .. }
                     )
                 );
             self.at(format!("{field}[{i}]"), |w| w.effect(effect, only));
@@ -4626,6 +4637,9 @@ impl Walker<'_> {
                 if matches!(rule, GameRule::CantBeCopied) {
                     w.problem("a spell can't be copied by a static ability of its own, not by an effect");
                 }
+                if matches!(rule, GameRule::TaxAsLife(_)) {
+                    w.problem("a commander tax is paid as life by a static ability of its own, not by an effect");
+                }
                 if matches!(rule, GameRule::AnyNumberInDeck | GameRule::UpToInDeck(_)) {
                     w.problem("a deck holds more than one of a card by a static ability, not by an effect");
                 }
@@ -5514,6 +5528,13 @@ impl Walker<'_> {
             | GameRule::CantBeCopied
             | GameRule::CantSpendMana
             | GameRule::RevealFirstDraw { .. } => {}
+            GameRule::TaxAsLife(life) => {
+                if *life == 0 {
+                    self.at(tag, |w| {
+                        w.problem("a commander tax paid as life costs at least 1 life a cast");
+                    });
+                }
+            }
             GameRule::UpToInDeck(most) => {
                 if *most < 2 {
                     self.at(tag, |w| w.problem("a deck rule allows at least two copies"));
@@ -5735,6 +5756,7 @@ impl Walker<'_> {
                     | GameRule::Draft(_)
                     | GameRule::CantBeCopied
                     | GameRule::CantSpendMana
+                    | GameRule::TaxAsLife(_)
             ) => self.at("from", |w| {
                 w.problem("a deck rule holds outside the game: write the rule without `from`");
             }),
@@ -5808,6 +5830,9 @@ impl Walker<'_> {
         }
         crate::r406_actions::r406_check(when, by, |problem| self.problem(problem));
         crate::r4708_actions::r4708_check(when, by, |problem| self.problem(problem));
+        if matches!((when, by), (ReplaceWhen::Scries { .. }, ReplaceBy::Add(_))) {
+            self.uses("Scries", "Add");
+        }
     }
 
     /// What happens instead reads the event it replaces as a trigger reads its event: `Triggering` is the player or object

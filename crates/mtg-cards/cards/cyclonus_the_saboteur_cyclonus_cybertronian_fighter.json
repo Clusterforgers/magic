@@ -1,7 +1,7 @@
 {
   "oracle_id": "7ead01b9-def3-4f9d-a860-af64e94cb45e",
   "name": "Cyclonus, the Saboteur // Cyclonus, Cybertronian Fighter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Cyclonus, the Saboteur",
@@ -38,9 +38,17 @@
         { "Keyword": { "Macro": { "name": "living metal", "amount": 0 } } },
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 73, "end": 269 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "Transform": { "what": "This" } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [{ "AddPhase": { "phases": ["Beginning"] } }]
+                }
+              }
+            ]
           }
         }
       ]

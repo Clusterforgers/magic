@@ -1207,7 +1207,13 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     )
   }
   if ('PhasesAdded' in event) {
-    return line(`${event.PhasesAdded.steps.length} additional phase(s) follow this phase`)
+    const { steps, lone } = event.PhasesAdded
+    const first = steps[0]
+    if (lone && first !== undefined) {
+      const step = STEP_LABEL[first].toLowerCase()
+      return line(`${steps.length} additional ${step} step(s) follow this phase`)
+    }
+    return line(`${steps.length} additional phase(s) follow this phase`)
   }
   if ('StepAdded' in event)
     return line(`An additional ${STEP_LABEL[event.StepAdded.step].toLowerCase()} follows this step`)

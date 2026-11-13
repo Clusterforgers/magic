@@ -141,6 +141,7 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
             Pred::SummoningSick => tail.push("with summoning sickness".to_owned()),
             Pred::MilledThisTurn => tail.push("that was milled this turn".to_owned()),
             Pred::DrawnThisTurn => tail.push("drawn this turn".to_owned()),
+            Pred::LastDrawnThisTurn => tail.push("drawn last this turn".to_owned()),
             Pred::HasAdventure => tail.push("that has an Adventure".to_owned()),
             Pred::ArrivedFrom(origin) => tail.push(format!(
                 "that was put there from {} this turn",
@@ -1377,6 +1378,16 @@ pub(crate) const R4708_REVEAL_FIRST_DRAW: &str =
 /// What a surveil asks before looking when a replacement offers more cards.
 pub(crate) fn r4708_surveil_more(more: usize) -> String {
     format!("Look at {more} more cards as you surveil?")
+}
+
+/// What a player is asked whose scry of `wanted` cards one replacement adds `added` cards to and another replaces by
+/// drawing that many cards: whether the cards are added first.
+pub(crate) fn r5500_scry_more_first(wanted: usize, added: usize) -> String {
+    format!(
+        "Scry {} cards instead of {wanted} before the scry is replaced by drawing? Yes draws {}, no draws {wanted}.",
+        wanted.saturating_add(added),
+        wanted.saturating_add(added)
+    )
 }
 
 /// What a proliferate asks about the permanents with counters.

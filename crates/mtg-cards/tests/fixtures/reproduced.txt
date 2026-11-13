@@ -89,6 +89,7 @@ Artful Maneuver
 Artificial Evolution
 Artistic Refusal
 Arvad the Cursed
+As Foretold
 Ash Barrens
 Ashes of the Abhorrent
 Assassin's Trophy
@@ -1113,6 +1114,7 @@ Leyline Binding
 Lhurgoyf
 Lich Lord of Unx
 Licia, Sanguine Tribune
+Liesa, Shroud of Dusk
 Life of Toshiro Umezawa // Memory of Toshiro
 Life's Legacy
 Lifted by Clouds

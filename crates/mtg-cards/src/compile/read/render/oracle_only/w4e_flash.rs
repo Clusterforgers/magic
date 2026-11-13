@@ -26,6 +26,7 @@ pub(super) fn wordings(ability: &Ability) -> Vec<String> {
         only: None,
         play: false,
         once: false,
+        any_turn: false,
         additional: None,
         spend_as: crate::modify::SpendAs::Normal,
         when: None,

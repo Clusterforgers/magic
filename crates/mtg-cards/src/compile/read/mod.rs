@@ -234,6 +234,7 @@ mod r408_pact;
 mod r4708_actions;
 mod r4708_reveal;
 mod r4711_drafted;
+mod r5500_reads;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -637,6 +638,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
             .iter()
             .any(|written| same_text(written, text))
     {
+        return Some(found);
+    }
+    if let Some(found) = r5500_reads::r5500_read(text, kind) {
         return Some(found);
     }
     if let Some(found) = r406_actions::r406_read(text) {

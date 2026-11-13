@@ -171,7 +171,12 @@ kept: Array<ObjectId>, } } | { "PhasesAdded": {
 /**
  * The first step of each added phase.
  */
-steps: Array<Step>, } } | { "StepAdded": { 
+steps: Array<Step>, 
+/**
+ * Each entry is a step on its own, not a phase: it is followed by what comes after it, not by the rest of its
+ * phase ("additional upkeep steps after this phase").
+ */
+lone?: boolean, } } | { "StepAdded": { 
 /**
  * The step added.
  */

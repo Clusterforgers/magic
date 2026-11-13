@@ -404,7 +404,7 @@ pub(crate) fn leave_step(state: &GameState) -> Vec<Event> {
     let step = state.turn().step();
     let natural = next_step(state, step);
     // Mana kept through the steps of a phase goes as the phase ends; a phase added after it (CR 500.8) comes next.
-    let ends_phase = natural.phase() != step.phase();
+    let ends_phase = natural.phase() != step.phase() || state.turn().step_is_lone();
     let (next, through) = match (
         state.turn().steps_ahead().first(),
         state.turn().phases_ahead().first(),

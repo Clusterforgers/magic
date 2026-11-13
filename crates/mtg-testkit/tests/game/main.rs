@@ -87,6 +87,7 @@ mod r376_cards;
 mod r377_skips;
 mod r404_commander_color;
 mod r404_durations;
+mod r5500_tax_life;
 mod ring;
 mod rmt7_lose_printed;
 mod rmt7_turn_rules;

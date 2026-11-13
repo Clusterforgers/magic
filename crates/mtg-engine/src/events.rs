@@ -176,6 +176,11 @@ pub enum Event {
     PhasesAdded {
         /// The first step of each added phase.
         steps: Vec<Step>,
+        /// Each entry is a step on its own, not a phase: it is followed by what comes after it, not by the rest of its
+        /// phase ("additional upkeep steps after this phase").
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(optional, as = "Option<bool>"))]
+        lone: bool,
     },
     /// A step was added right after the current one, before any step added earlier (`Effect::AddStep`).
     StepAdded {

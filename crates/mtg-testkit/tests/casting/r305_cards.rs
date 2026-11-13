@@ -82,6 +82,7 @@ fn bolt_from(
             only: None,
             play: false,
             once: false,
+            any_turn: false,
             additional: None,
             rather: None,
             spend_as: SpendAs::Normal,
