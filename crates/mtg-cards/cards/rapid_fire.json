@@ -1,0 +1,53 @@
+{
+  "oracle_id": "63c7248e-a7a2-4e32-b4d2-55dbc63e51e5",
+  "name": "Rapid Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rapid Fire",
+      "oracle_fingerprint": "7e73bbdbd7781d51437b401a559209fe",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": { "All": [{ "Not": "AfterBlockers" }, { "Not": "AfterCombat" }] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Not": {
+                      "Matches": {
+                        "subject": { "Target": 0 },
+                        "selector": [{ "HasKeywordNamed": "Rampage" }]
+                      }
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": { "Macro": { "name": "rampage", "amount": 2 } } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

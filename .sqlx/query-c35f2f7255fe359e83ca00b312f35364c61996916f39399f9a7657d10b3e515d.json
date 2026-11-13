@@ -1,0 +1,24 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT EXISTS (SELECT 1 FROM printings WHERE printing_id = $1 AND oracle_id = $2) AS \"of_card!\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "of_card!",
+        "type_info": "Bool",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "c35f2f7255fe359e83ca00b312f35364c61996916f39399f9a7657d10b3e515d"
+}

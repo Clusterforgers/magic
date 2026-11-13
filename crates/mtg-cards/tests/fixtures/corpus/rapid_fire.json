@@ -1,0 +1,127 @@
+{
+  "object": "card",
+  "id": "e26e7c9c-e6de-47f4-8394-7e853408f84c",
+  "oracle_id": "63c7248e-a7a2-4e32-b4d2-55dbc63e51e5",
+  "multiverse_ids": [
+    1630
+  ],
+  "tcgplayer_id": 3992,
+  "cardmarket_id": 7175,
+  "name": "Rapid Fire",
+  "lang": "en",
+  "released_at": "1994-06-01",
+  "uri": "https://api.scryfall.com/cards/e26e7c9c-e6de-47f4-8394-7e853408f84c",
+  "scryfall_uri": "https://scryfall.com/card/leg/32/rapid-fire?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T13:08:02Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/2/e26e7c9c-e6de-47f4-8394-7e853408f84c.jpg?1783948082",
+    "normal": "https://cards.scryfall.io/normal/front/e/2/e26e7c9c-e6de-47f4-8394-7e853408f84c.jpg?1783948082",
+    "large": "https://cards.scryfall.io/large/front/e/2/e26e7c9c-e6de-47f4-8394-7e853408f84c.jpg?1783948082",
+    "png": "https://cards.scryfall.io/png/front/e/2/e26e7c9c-e6de-47f4-8394-7e853408f84c.png?1783948082",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/2/e26e7c9c-e6de-47f4-8394-7e853408f84c.jpg?1783948082",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/2/e26e7c9c-e6de-47f4-8394-7e853408f84c.jpg?1783948082",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/2/e26e7c9c-e6de-47f4-8394-7e853408f84c.webp?1783948082",
+    "grid": "https://cards.scryfall.io/grid/front/e/2/e26e7c9c-e6de-47f4-8394-7e853408f84c.webp?1783948082",
+    "display": "https://cards.scryfall.io/display/front/e/2/e26e7c9c-e6de-47f4-8394-7e853408f84c.webp?1783948082",
+    "art": "https://cards.scryfall.io/art/front/e/2/e26e7c9c-e6de-47f4-8394-7e853408f84c.webp?1783948082",
+    "crop": "https://cards.scryfall.io/crop/front/e/2/e26e7c9c-e6de-47f4-8394-7e853408f84c.webp?1783948082",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/2/e26e7c9c-e6de-47f4-8394-7e853408f84c.jpg?1783948082"
+  },
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Cast this spell only before blockers are declared.\nTarget creature gains first strike until end of turn. If it doesn't have rampage, that creature gains rampage 2 until end of turn. (Whenever the creature becomes blocked, it gets +2/+2 until end of turn for each creature blocking it beyond the first.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "78c50b4b-b220-455b-a2d5-cee458fa56f3",
+  "set": "leg",
+  "set_name": "Legends",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/78c50b4b-b220-455b-a2d5-cee458fa56f3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aleg&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/leg?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e26e7c9c-e6de-47f4-8394-7e853408f84c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A63c7248e-a7a2-4e32-b4d2-55dbc63e51e5&unique=prints",
+  "collector_number": "32",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Justin Hampton",
+  "artist_ids": [
+    "9af01712-e56b-4865-80d8-c77a69750077"
+  ],
+  "illustration_id": "c3b52403-4332-42ef-a9a4-58e29a8b1253",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 31536,
+  "prices": {
+    "usd": "11.09",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "11.21",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=1630&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRapid%2BFire",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRapid%2BFire",
+    "edhrec": "https://edhrec.com/route/?cc=Rapid+Fire"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F3992%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=7175&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Rapid+Fire&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

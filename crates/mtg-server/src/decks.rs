@@ -19,8 +19,9 @@ use mtg_cards::deck::{DeckReport, DeckState, DeckZone, StoredCheck};
 use mtg_core::house::HouseRules;
 use mtg_db::{CreateDeckError, DeckDraft, DeckId, DeckRepo, StoredDeck};
 use mtg_import::decklist::ExportFormat;
+use mtg_import::ids::{OracleId, PrintingId};
 use mtg_protocol::rest::{
-    CardHit, CheckRequest, DeckBody, DeckErrorCode, DeckList, DeckListItem, DeckPicture, DeckView,
+    CheckRequest, DeckBody, DeckErrorCode, DeckList, DeckListItem, DeckPicture, DeckView,
     ImportRequest, ImportResult, MAX_DECK_PICTURES, MAX_DECKS_PER_USER, TableRules,
 };
 use serde_json::Value;
@@ -35,6 +36,7 @@ use crate::deck_choice::{judge_at_table, precon_code};
 use crate::deck_import;
 use crate::game_id::GameId;
 use crate::precon_api;
+use crate::printings::{preferred_of, with_preferred};
 use crate::recipe::FormatKind;
 use crate::server::AppState;
 
@@ -152,29 +154,39 @@ async fn deck_view_off(loaded: &Loaded, deck: StoredDeck) -> Result<DeckView, Ap
 }
 
 /// The cards whose pictures stand for a deck in a list: its commanders, else the first card of its main zone.
-fn pictures_of(loaded: &Loaded, lines: &[Line], commanders: &[CardHit]) -> Vec<DeckPicture> {
-    let picture = |card: &CardHit| DeckPicture {
-        oracle_id: card.oracle_id.clone(),
-        name: card.name.clone(),
+/// Each picture names the printing of its line.
+fn pictures_of(loaded: &Loaded, lines: &[Line]) -> Vec<DeckPicture> {
+    let picture = |line: &Line| {
+        loaded.view(line).map(|view| DeckPicture {
+            oracle_id: view.card.oracle_id,
+            name: view.card.name,
+            printing_id: line.printing_id.clone(),
+        })
     };
-    if !commanders.is_empty() {
-        return commanders
-            .iter()
-            .take(MAX_DECK_PICTURES)
-            .map(picture)
-            .collect();
+    let leaders: Vec<DeckPicture> = lines
+        .iter()
+        .filter(|line| line.zone == DeckZone::Commander)
+        .filter_map(picture)
+        .take(MAX_DECK_PICTURES)
+        .collect();
+    if !leaders.is_empty() {
+        return leaders;
     }
     lines
         .iter()
         .filter(|line| line.zone == DeckZone::Main)
-        .find_map(|line| loaded.view(line))
-        .map(|view| picture(&view.card))
+        .find_map(picture)
         .into_iter()
         .collect()
 }
 
-fn list_item(loaded: &Loaded, deck: &StoredDeck) -> DeckListItem {
-    let lines = lines_of(deck);
+/// A deck as the list shows it, in the owner's art: a line without a printing of its own takes the preferred one.
+fn list_item(
+    loaded: &Loaded,
+    deck: &StoredDeck,
+    preferred: &HashMap<OracleId, PrintingId>,
+) -> DeckListItem {
+    let lines = with_preferred(lines_of(deck), preferred);
     let report = loaded.report(&deck.format, &lines);
     let commanders = lines
         .iter()
@@ -182,7 +194,7 @@ fn list_item(loaded: &Loaded, deck: &StoredDeck) -> DeckListItem {
         .filter_map(|line| loaded.view(line))
         .map(|view| view.card)
         .collect::<Vec<_>>();
-    let pictures = pictures_of(loaded, &lines, &commanders);
+    let pictures = pictures_of(loaded, &lines);
     let check = stored_check(deck);
     let state = report.summary.state;
     DeckListItem {
@@ -242,10 +254,19 @@ pub(crate) async fn list(
 ) -> Result<Json<DeckList>, ApiError> {
     let s = session(&app, &headers).await?;
     let decks = s.repo.list(s.owner).await.map_err(|error| failed(&error))?;
-    let lines: Vec<Line> = decks.iter().flat_map(lines_of).collect();
+    let preferred = preferred_of(s.cards, s.owner).await;
+    let lines: Vec<Line> = decks
+        .iter()
+        .flat_map(|deck| with_preferred(lines_of(deck), &preferred))
+        .collect();
     let loaded = Loaded::load(s.cards, &lines).await?;
     let items = loaded
-        .off(move |loaded| decks.iter().map(|deck| list_item(loaded, deck)).collect())
+        .off(move |loaded| {
+            decks
+                .iter()
+                .map(|deck| list_item(loaded, deck, &preferred))
+                .collect()
+        })
         .await?;
     Ok(Json(DeckList { decks: items }))
 }

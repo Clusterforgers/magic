@@ -1,7 +1,7 @@
 {
   "oracle_id": "d077d54c-6f1b-4795-a241-6073b0dc1dc8",
   "name": "V.A.T.S.",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "V.A.T.S.",
@@ -9,9 +9,19 @@
       "abilities": [
         { "Keyword": "SplitSecond" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 130, "end": 219 }
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "Type": "Creature" }] },
+                    "rule": "SameToughness"
+                  }
+                },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
           }
         }
       ]

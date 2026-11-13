@@ -1,0 +1,66 @@
+{
+  "oracle_id": "85c799e9-74d5-459e-b168-b95ed78cd4e9",
+  "name": "Etched Host Doombringer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Etched Host Doombringer",
+      "oracle_fingerprint": "b6bef0f0a444d5af62fe7c36000cc469",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        { "LoseLife": { "who": { "Target": 0 }, "amount": 2 } },
+                        { "GainLife": { "amount": 2 } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Battle" }] } }],
+                      "effects": [
+                        {
+                          "If": {
+                            "condition": {
+                              "Matches": {
+                                "subject": { "Target": 0 },
+                                "selector": [{ "ProtectedBy": "Opponents" }]
+                              }
+                            },
+                            "then": [
+                              {
+                                "RemoveCounters": {
+                                  "from": { "Target": 0 },
+                                  "counter": { "Other": "defense" },
+                                  "count": 3
+                                }
+                              }
+                            ],
+                            "otherwise": [
+                              {
+                                "PutCounters": {
+                                  "on": { "Target": 0 },
+                                  "counter": { "Other": "defense" },
+                                  "count": 3
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

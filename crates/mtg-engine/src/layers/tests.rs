@@ -262,6 +262,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::AddSupertype(_)
             | mtg_cards::modify::Modification::SetName(_)
             | mtg_cards::modify::Modification::ThisAbility
+            | mtg_cards::modify::Modification::SetLoyalty(_)
             | mtg_cards::modify::Modification::AddSubtype(_)
             | mtg_cards::modify::Modification::SetCreatureTypes(_)
             | mtg_cards::modify::Modification::SetLandTypes(_)
@@ -297,6 +298,8 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::SetController(_)
             | mtg_cards::modify::Modification::CantAttack
             | mtg_cards::modify::Modification::CantAttackYou(_)
+            | mtg_cards::modify::Modification::CantAttackOwner(_)
+            | mtg_cards::modify::Modification::CantBeBlockedUnlessAttackingOwner
             | mtg_cards::modify::Modification::CantBlock
             | mtg_cards::modify::Modification::DoesntUntap
             | mtg_cards::modify::Modification::CantBeTurnedFaceUp
@@ -305,6 +308,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::CanBlockOnly(_)
             | mtg_cards::modify::Modification::MinBlockers(_)
             | mtg_cards::modify::Modification::MaxBlockers(_)
+            | mtg_cards::modify::Modification::BlockedByAll
             | mtg_cards::modify::Modification::BlocksAdditional(_)
             | mtg_cards::modify::Modification::BlocksAdditionalPer(_)
             | mtg_cards::modify::Modification::Goaded => {}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "c4d65bcd-f6c5-40c3-825d-06b5183e7dbe",
   "name": "Goliath Hatchery",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Goliath Hatchery",
@@ -31,9 +31,28 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 162, "end": 335 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "HighestCounters": { "who": "Opponents", "counter": "poison" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "chosen"
+                }
+              },
+              {
+                "Draw": {
+                  "count": { "Stat": { "of": { "Bound": "chosen" }, "stat": "R374Toxic" } }
+                }
+              }
+            ]
           }
         }
       ]

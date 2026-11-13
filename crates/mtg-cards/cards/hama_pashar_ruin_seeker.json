@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c7371040-160c-4502-b7f9-77b7f54cc020",
+  "name": "Hama Pashar, Ruin Seeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hama Pashar, Ruin Seeker",
+      "oracle_fingerprint": "4119fc8474e7d36f8de95bac6d4fb060",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": { "source": [{ "In": "Command" }, "Dungeon", { "OwnedBy": "You" }] }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

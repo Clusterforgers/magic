@@ -24,7 +24,7 @@ use crate::spend::{SpendOn, WhenSpent};
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
 use crate::trigger::{ReplaceBy, ReplaceWhen, ShieldShape, Step, TriggerPattern};
 use crate::value::CastWay;
-use crate::value::{Amount, Condition, TurnTally};
+use crate::value::{Amount, Condition, StatKind, TurnTally};
 
 /// One problem found in a file: where, and what.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -606,6 +606,10 @@ impl<'a> Walker<'a> {
                 self.condition(test);
                 self.expect(Kind::Player, want);
             }
+            Ref::Seated { of, .. } => {
+                self.reference(of, Kind::Player);
+                self.expect(Kind::Player, want);
+            }
             Ref::Remembered { on, .. } => {
                 self.reference(on, Kind::Object);
                 self.expect(Kind::Either, want);
@@ -735,6 +739,10 @@ impl<'a> Walker<'a> {
                 self.uses("Pred", "BlockedBy");
                 self.reference(who, Kind::Object);
             }
+            Pred::BlockedThisTurnBy(who) => {
+                self.uses("Pred", "BlockedThisTurnBy");
+                self.reference(who, Kind::Object);
+            }
             Pred::BandedWith(who) => {
                 self.uses("Pred", "BandedWith");
                 self.reference(who, Kind::Object);
@@ -797,6 +805,7 @@ impl<'a> Walker<'a> {
             Pred::HasAbility(_) => self.uses("Pred", "HasAbility"),
             Pred::ControlledBy(r)
             | Pred::OwnedBy(r)
+            | Pred::ProtectedBy(r)
             | Pred::DamagedThisTurnBy(r)
             | Pred::AttackingPlayer(r)
             | Pred::AttackingPlaneswalkerOf(r)
@@ -804,7 +813,10 @@ impl<'a> Walker<'a> {
                 self.reference(r, Kind::Player);
             }
             // The objects a share names are read with the object tested as `Candidate`.
-            Pred::SharesName(r) | Pred::SharesType(r) | Pred::SharesColor(r) => {
+            Pred::SharesName(r)
+            | Pred::SharesType(r)
+            | Pred::SharesColor(r)
+            | Pred::SharesManaValue(r) => {
                 self.scope.tests += 1;
                 self.reference(r, Kind::Object);
                 self.scope.tests -= 1;
@@ -812,6 +824,7 @@ impl<'a> Walker<'a> {
             Pred::Is(r)
             | Pred::SourceOf(r)
             | Pred::SharesSubtype(r)
+            | Pred::SharesCreatureTypeWithEach(r)
             | Pred::ExiledWith(r)
             | Pred::EncodedWith(r)
             | Pred::HauntedBy(r)
@@ -884,6 +897,7 @@ impl<'a> Walker<'a> {
             | Pred::TopOfGraveyard
             | Pred::TopCreatureOfGraveyard
             | Pred::BlockedBy(_)
+            | Pred::BlockedThisTurnBy(_)
             | Pred::BandedWith(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
@@ -915,6 +929,7 @@ impl<'a> Walker<'a> {
             | Pred::Token
             | Pred::Commander
             | Pred::Spell
+            | Pred::Dungeon
             | Pred::Ability(_)
             | Pred::Tapped
             | Pred::Untapped
@@ -924,6 +939,7 @@ impl<'a> Walker<'a> {
             | Pred::Suspected
             | Pred::Solved
             | Pred::Stickered
+            | Pred::WithSticker(_)
             | Pred::Harnessed
             | Pred::FoughtSinceYourLastUpkeep { .. }
             | Pred::DoubleFaced
@@ -1053,7 +1069,8 @@ impl<'a> Walker<'a> {
                 }
             }
             Amount::Count(selector) => self.selector(selector),
-            Amount::Stat { of, .. } | Amount::CastsFromCommand(of) => {
+            Amount::Stat { of, stat } => self.r374_stat_of(of, *stat),
+            Amount::CastsFromCommand(of) => {
                 self.at("of", |w| w.reference(of, Kind::Object));
             }
             Amount::Life(who) => self.reference(who, Kind::Player),
@@ -1067,7 +1084,10 @@ impl<'a> Walker<'a> {
                     self.at(format!("[{i}]"), |w| w.amount(part));
                 }
             }
-            Amount::Times { of, .. } | Amount::Half { of, .. } | Amount::AtMost { of, .. } => {
+            Amount::Times { of, .. }
+            | Amount::Half { of, .. }
+            | Amount::TwoToThe(of)
+            | Amount::AtMost { of, .. } => {
                 self.amounting = Amounting::of(sharing);
                 self.at("of", |w| w.amount(of));
             }
@@ -1116,7 +1136,7 @@ impl<'a> Walker<'a> {
                 self.uses("Amount", "Total");
                 self.at("of", |w| w.selector(of));
             }
-            Amount::Distinct { of, .. } => self.w2c_selector_amount("Distinct", of),
+            Amount::Distinct { of, stat } => self.r374_distinct_of(of, *stat),
             Amount::CardTypes(of) => self.w2c_selector_amount("CardTypes", of),
             Amount::Destroyed(of) => self.w2c_selector_amount("Destroyed", of),
             Amount::Exiled(of) => self.w2c_selector_amount("Exiled", of),
@@ -1154,6 +1174,32 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// `Amount::Stat`: the object, and the characteristic when only some engines read it.
+    fn r374_stat_of(&mut self, of: &Ref, stat: StatKind) {
+        self.at("of", |w| w.reference(of, Kind::Object));
+        self.r374_stat(stat);
+    }
+
+    /// `Amount::Distinct`: the objects, and the characteristic when only some engines read it.
+    fn r374_distinct_of(&mut self, of: &Selector, stat: StatKind) {
+        self.w2c_selector_amount("Distinct", of);
+        self.r374_stat(stat);
+    }
+
+    /// Names a characteristic only some engines read (`StatKind::R374*`).
+    fn r374_stat(&mut self, stat: StatKind) {
+        let name = match stat {
+            StatKind::R374Types => "R374Types",
+            StatKind::R374CreatureTypes => "R374CreatureTypes",
+            StatKind::R374Bushido => "R374Bushido",
+            StatKind::R374Toxic => "R374Toxic",
+            StatKind::R374ManaCost => "R374ManaCost",
+            StatKind::R374ColorSet => "R374ColorSet",
+            _ => return,
+        };
+        self.uses("Stat", name);
+    }
+
     /// The amounts of the general kinds: a logged tally, the commanders' colors, the turn and the targets of the trigger.
     #[allow(clippy::too_many_lines)]
     fn general_amount(&mut self, amount: &Amount) {
@@ -1164,6 +1210,10 @@ impl<'a> Walker<'a> {
             Amount::Tally { who, filter, .. } => {
                 self.player_amount("Tally", who);
                 self.at("filter", |w| w.selector(filter));
+            }
+            Amount::R374AtMost(inner, _) => {
+                self.uses("Amount", "R374AtMost");
+                self.at("0", |w| w.amount(inner));
             }
             Amount::CountedAsCast(inner) => {
                 self.uses("Amount", "CountedAsCast");
@@ -1212,6 +1262,37 @@ impl<'a> Walker<'a> {
             Amount::Speed(who) => self.player_amount("Speed", who),
             Amount::TriggeringTargets => self.triggering_targets(),
             Amount::TurnNumber => self.uses("Amount", "TurnNumber"),
+            Amount::Stickers { on, .. } => {
+                self.uses("Amount", "Stickers");
+                self.at("on", |w| w.reference(on, Kind::Object));
+            }
+            Amount::StickerVowels => self.uses("Amount", "StickerVowels"),
+            Amount::CastSameNameThisGame(who) => self.player_amount("CastSameNameThisGame", who),
+            Amount::TallyLastTurn { event, who, filter }
+            | Amount::TallyTotal {
+                event, who, filter, ..
+            } => {
+                let tag = if matches!(amount, Amount::TallyTotal { .. }) {
+                    "TallyTotal"
+                } else {
+                    "TallyLastTurn"
+                };
+                self.uses("Amount", tag);
+                if matches!(
+                    event,
+                    crate::value::TallyEvent::Damaged
+                        | crate::value::TallyEvent::Attacked
+                        | crate::value::TallyEvent::Blocked
+                        | crate::value::TallyEvent::Activated
+                        | crate::value::TallyEvent::KindActivated(_)
+                        | crate::value::TallyEvent::CountersPut
+                        | crate::value::TallyEvent::PlusOneCountersPut
+                ) {
+                    self.problem("only the kinds kept as objects are read last turn or added up");
+                }
+                self.at("who", |w| w.reference(who, Kind::Player));
+                self.at("filter", |w| w.selector(filter));
+            }
             Amount::PlayersLost => self.uses("Amount", "PlayersLost"),
             Amount::CastTargets => self.uses("Amount", "CastTargets"),
             Amount::When {
@@ -1257,6 +1338,7 @@ impl<'a> Walker<'a> {
             | Amount::Quotient { .. }
             | Amount::Difference(..)
             | Amount::Times { .. }
+            | Amount::TwoToThe(_)
             | Amount::AtMost { .. }
             | Amount::Half { .. }
             | Amount::Divided
@@ -1427,6 +1509,7 @@ impl<'a> Walker<'a> {
             Condition::AttackedThisCombat(who) => self.player_condition("AttackedThisCombat", who),
             Condition::SorceryTiming => self.uses("Condition", "SorceryTiming"),
             Condition::AfterCombat => self.uses("Condition", "AfterCombat"),
+            Condition::TriggeringSticker(_) => self.uses("Condition", "TriggeringSticker"),
             Condition::NeitherDayNorNight => self.uses("Condition", "NeitherDayNorNight"),
             Condition::NewlyControlled(what) => {
                 self.uses("Condition", "NewlyControlled");
@@ -2299,6 +2382,7 @@ impl<'a> Walker<'a> {
             | Modification::AddSupertype(_)
             | Modification::SetName(_)
             | Modification::ThisAbility
+            | Modification::SetLoyalty(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)
@@ -2319,10 +2403,13 @@ impl<'a> Walker<'a> {
             | Modification::RemoveKeywordKind(_)
             | Modification::CantAttack
             | Modification::CantAttackYou(_)
+            | Modification::CantAttackOwner(_)
+            | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
             | Modification::DoesntUntap
             | Modification::CantBeTurnedFaceUp
             | Modification::CantBeBlocked
+            | Modification::BlockedByAll
             | Modification::Goaded => {}
         }
     }
@@ -2434,7 +2521,7 @@ impl<'a> Walker<'a> {
                 w.modification(modification);
                 if matches!(
                     modification,
-                    Modification::SetName(_) | Modification::ThisAbility
+                    Modification::SetName(_) | Modification::ThisAbility | Modification::SetLoyalty(_)
                 ) || matches!(
                     modification,
                     Modification::AddSupertype(_) | Modification::RemoveSupertype(_)
@@ -2517,6 +2604,7 @@ impl<'a> Walker<'a> {
                 }
             }
             TriggerPattern::LifeGained { who }
+            | TriggerPattern::DamagePrevented { who }
             | TriggerPattern::LifeLost { who }
             | TriggerPattern::BecomesMonarch { who }
             | TriggerPattern::TakesInitiative { who }
@@ -3077,7 +3165,8 @@ impl Walker<'_> {
             | Ref::ControllerOf(_)
             | Ref::OrController(_)
             | Ref::OwnerOf(_)
-            | Ref::PlayersWhere { .. } => Kind::Player,
+            | Ref::PlayersWhere { .. }
+            | Ref::Seated { .. } => Kind::Player,
             Ref::Affected
             | Ref::Candidate
             | Ref::This
@@ -3185,31 +3274,38 @@ impl Walker<'_> {
     }
 
     /// `Vote`: at least two named choices that are names of their own, or the players or objects to vote for with the
-    /// name of the winners.
-    fn vote(&mut self, options: &VoteFor, secret: bool, bind: Option<&str>) {
-        match options {
+    /// name of the winners or of every vote; only a vote on named choices or on players is secret.
+    fn vote(&mut self, options: &VoteFor, secret: bool, bind: Option<&str>, tally: Option<&str>) {
+        let kind = match options {
             VoteFor::Named(names) => {
                 if names.len() < 2 {
                     self.problem("a vote has at least two choices");
                 }
-                if bind.is_some() {
+                if bind.is_some() || tally.is_some() {
                     self.problem("a vote on named choices binds the choices, not a winner");
                 }
                 for name in names {
                     self.at("options", |w| w.bind(name, Kind::Player));
                 }
+                return;
             }
             VoteFor::Of(of) => {
-                if secret {
-                    self.problem("only a vote on named choices is secret");
-                }
                 self.at("options", |w| w.reference(of, Kind::Either));
-                let kind = self.kind_of(of);
-                match bind {
-                    Some(name) => self.at("as", |w| w.bind(name, kind)),
-                    None => self.problem("a vote on players or objects names its winners"),
-                }
+                self.kind_of(of)
             }
+            VoteFor::AnotherPlayer => Kind::Player,
+        };
+        if secret && kind != Kind::Player {
+            self.problem("only a vote on named choices or on players is secret");
+        }
+        if bind.is_none() && tally.is_none() {
+            self.problem("a vote on players or objects names its winners");
+        }
+        if let Some(name) = bind {
+            self.at("as", |w| w.bind(name, kind));
+        }
+        if let Some(name) = tally {
+            self.at("tally", |w| w.bind(name, kind));
         }
     }
 
@@ -3664,9 +3760,13 @@ impl Walker<'_> {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("as", |w| w.bind(bind, Kind::Object));
             }
-            Effect::PutSticker { who, on } => {
+            Effect::Parade { what } => w.at("what", |w| w.selector(what)),
+            Effect::PutSticker { who, on, up_to, .. } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("on", |w| w.selector(on));
+                if *up_to == 1 {
+                    w.problem("one sticker is `up_to` 0");
+                }
             }
             Effect::Incubate { who, count } | Effect::OpenAttraction { who, count } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
@@ -3897,6 +3997,11 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind_moved(name));
                 }
             }
+            Effect::Balance { what } => {
+                if let crate::effect::Balanced::Permanents(filter) = what {
+                    w.at("what", |w| w.selector(filter));
+                }
+            }
             Effect::DealDamage { source, to, amount, excess, unpreventable } => {
                 if *unpreventable {
                     w.uses("Effect", "DealDamage.Unpreventable");
@@ -4070,7 +4175,8 @@ impl Walker<'_> {
                 options,
                 secret,
                 bind,
-            } => w.vote(options, *secret, bind.as_deref()),
+                tally,
+            } => w.vote(options, *secret, bind.as_deref(), tally.as_deref()),
             Effect::BidLife {
                 who,
                 start,
@@ -4086,6 +4192,15 @@ impl Walker<'_> {
                 }
                 w.at("as", |w| w.bind(bind, Kind::Value));
                 w.at("winner", |w| w.bind(winner, Kind::Player));
+            }
+            Effect::ChooseWords { who, words, .. } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                if words.len() < 2 {
+                    w.problem("a choice of words has at least two words");
+                }
+                for word in words {
+                    w.at("words", |w| w.bind(word, Kind::Player));
+                }
             }
             Effect::ChooseNumbers {
                 who,
@@ -4220,6 +4335,9 @@ impl Walker<'_> {
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Duration", "WhileSourceTapped");
                 }
+                if *duration == Duration::WhileSourceAttached {
+                    w.problem("only a copy effect lasts while its source stays attached");
+                }
                 if *duration == Duration::WhileYouControlSourceTapped {
                     w.uses("Duration", "WhileYouControlSourceTapped");
                 }
@@ -4266,7 +4384,7 @@ impl Walker<'_> {
                 if *duration == Duration::UntilTurnSkipped {
                     w.problem(SKIP_ONLY);
                 }
-                if matches!(duration, Duration::UntilSkipped | Duration::UntilSkippedThisTurn) {
+                if matches!(duration, Duration::UntilSkipped | Duration::UntilSkippedThisTurn | Duration::TheirNextTurn) {
                     w.problem(RMT3_SKIP_ONLY);
                 }
                 if *duration == Duration::UntilCastFromExile {
@@ -4303,7 +4421,7 @@ impl Walker<'_> {
                 if *duration == Duration::UntilTurnSkipped && !matches!(rule, GameRule::Cant { action: Prohibited::SkipTurn, .. }) {
                     w.problem(SKIP_ONLY);
                 }
-                if matches!(duration, Duration::UntilSkipped | Duration::UntilSkippedThisTurn)
+                if matches!(duration, Duration::UntilSkipped | Duration::UntilSkippedThisTurn | Duration::TheirNextTurn)
                     && !matches!(
                         rule,
                         GameRule::Cant {
@@ -4380,7 +4498,7 @@ impl Walker<'_> {
                 if *duration == Duration::UntilTurnSkipped {
                     w.problem(SKIP_ONLY);
                 }
-                if matches!(duration, Duration::UntilSkipped | Duration::UntilSkippedThisTurn) {
+                if matches!(duration, Duration::UntilSkipped | Duration::UntilSkippedThisTurn | Duration::TheirNextTurn) {
                     w.problem(RMT3_SKIP_ONLY);
                 }
                 if *duration == Duration::UntilCastFromExile {
@@ -5185,6 +5303,8 @@ impl Walker<'_> {
             GameRule::CanBeCommander
             | GameRule::AnyNumberInDeck
             | GameRule::Draft(_)
+            | GameRule::ReverseTurnOrder
+            | GameRule::AttackOnlyNearest(_)
             | GameRule::DamageAsWither
             | GameRule::ManaBurn
             | GameRule::CantBeCopied => {}
@@ -5197,6 +5317,10 @@ impl Walker<'_> {
             | GameRule::CantLoseGame { .. }
             | GameRule::CantCastSpells { .. }
             | GameRule::ToughnessAssignsDamage(_)
+            | GameRule::LethalByPower(_)
+            | GameRule::DevotionIncreased { .. }
+            | GameRule::DamageAsInfect(_)
+            | GameRule::VentureLimit { .. }
             | GameRule::CountersRemain => self.w17b_rule(&tag, rule),
             GameRule::AttackAsThoughHasteAt(who) => {
                 self.at(tag, |w| w.reference(who, Kind::Player));
@@ -5347,7 +5471,11 @@ impl Walker<'_> {
         }
         if let GameRule::CantLoseGame { who, .. }
         | GameRule::CantCastSpells { who, .. }
-        | GameRule::ToughnessAssignsDamage(who) = rule
+        | GameRule::ToughnessAssignsDamage(who)
+        | GameRule::LethalByPower(who)
+        | GameRule::DevotionIncreased { who, .. }
+        | GameRule::DamageAsInfect(who)
+        | GameRule::VentureLimit { who, .. } = rule
         {
             self.at(tag, |w| w.reference(who, Kind::Player));
         }
@@ -5551,10 +5679,7 @@ impl Walker<'_> {
                 if matches!(when, ReplaceWhen::Damage { .. }) =>
             {
                 self.at("most", |w| w.amount(most));
-                // The effects run as each damage event is lessened, where no target of the spell is read.
-                if serde_json::to_string(effects).is_ok_and(|json| json.contains("\"Target\"")) {
-                    self.problem("the effects of a counted prevention read no target; `Triggering` is the damaged one");
-                }
+                // The effects run as each damage event is lessened, reading the targets fixed as the shield began.
                 self.w9c_prevent_and(when, effects);
             }
             ReplaceBy::Redirect { to, .. } => self.r6f_redirect(when, 1, to),
@@ -7563,7 +7688,7 @@ mod tests {
     )]
     #[case::a_secret_vote_on_objects(
         r#"{"Spell":{"effects":[{"Vote":{"options":{"Of":{"Each":[]}},"secret":true,"as":"won"}}]}}"#,
-        "faces[0].abilities[0].Spell.effects[0].Vote: only a vote on named choices is secret"
+        "faces[0].abilities[0].Spell.effects[0].Vote: only a vote on named choices or on players is secret"
     )]
     #[case::a_vote_name_bound_twice(
         r#"{"Spell":{"effects":[{"Vote":{"options":{"Named":["a","b"]}}},{"Vote":{"options":{"Named":["b","c"]}}}]}}"#,

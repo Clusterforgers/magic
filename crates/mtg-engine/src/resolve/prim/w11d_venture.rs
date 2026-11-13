@@ -38,6 +38,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .players(who)?
         .into_iter()
         .filter(|player| state.is_alive(*player))
+        .filter(|player| !crate::w17b_statics::r377_ventured_enough(state, *player))
         .map(|player| (player, w11d_plan(state, player, *undercity)))
         .collect();
     let choosers: Vec<OptionChooser> = plans

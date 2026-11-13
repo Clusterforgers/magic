@@ -1,7 +1,7 @@
 {
   "oracle_id": "0e6ff89e-9ae7-4dc3-98b7-05401c5df266",
   "name": "Wall of Shadows",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Wall of Shadows",
@@ -19,12 +19,7 @@
             "by": "Prevent"
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 123, "end": 237 }
-          }
-        }
+        { "Rule": { "rule": { "Cant": { "who": "This", "action": "BeTargetedByWallsOnly" } } } }
       ]
     }
   ]

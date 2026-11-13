@@ -44,7 +44,7 @@ pub(crate) fn run_inline(
         player,
         source: source.reference(),
     };
-    match drive(&base, source.id, effects, &mut || None, None)?.0 {
+    match drive(&base, source.id, effects, &mut || None, (None, &[]))?.0 {
         Inline::Events(events) => Ok(events),
         Inline::Declined => Ok(Vec::new()),
         Inline::Ask(_) => Err(ResolveError::Invalid(
@@ -72,7 +72,25 @@ pub(crate) fn w5d_run_instead(
         source,
         cause,
     };
-    drive(&base, source.id, effects, answer, None).map(|(ran, _)| ran)
+    drive(&base, source.id, effects, answer, (None, &[])).map(|(ran, _)| ran)
+}
+
+/// `w5d_run_instead` with names bound before the first step: the targets a damage shield fixed as it began.
+pub(crate) fn r370_run_instead_bound(
+    state: &GameState,
+    (player, source): (PlayerId, ObjectRef),
+    cause: &Cause,
+    effects: &[Effect],
+    bound: &[(String, Vec<crate::choose::Target>)],
+    answer: Answers<'_>,
+) -> Result<Inline, ResolveError> {
+    let base = Base::Instead {
+        state,
+        player,
+        source,
+        cause,
+    };
+    drive(&base, source.id, effects, answer, (None, bound)).map(|(ran, _)| ran)
 }
 
 /// [`w5d_run_instead`] that also works out `count` once the effects have run, in the scope their steps leave (the names
@@ -91,7 +109,7 @@ pub(crate) fn r304_run_then_count(
         source,
         cause,
     };
-    drive(&base, source.id, effects, answer, Some(count))
+    drive(&base, source.id, effects, answer, (Some(count), &[]))
 }
 
 /// Runs the effect tree from its first effect to its end: a question takes the next answer and runs the step again, and
@@ -105,9 +123,13 @@ fn drive(
     object: ObjectId,
     effects: &[Effect],
     answer: Answers<'_>,
-    count: Option<&mtg_cards::value::Amount>,
+    (count, bound): (
+        Option<&mtg_cards::value::Amount>,
+        &[(String, Vec<crate::choose::Target>)],
+    ),
 ) -> Result<(Inline, i64), ResolveError> {
     let mut resolving = Resolving::begin(object);
+    resolving.bindings.extend(bound.iter().cloned());
     let mut events = Vec::new();
     let mut steps = 0_usize;
     let mut moved = std::collections::BTreeSet::new();

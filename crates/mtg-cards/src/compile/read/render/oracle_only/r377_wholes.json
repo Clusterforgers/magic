@@ -1,0 +1,274 @@
+[
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Together": {
+        "what": {
+         "Object": [
+          {
+           "Type": "Creature"
+          }
+         ]
+        },
+        "rule": "SameToughness"
+       }
+      },
+      "bounds": {
+       "min": 0,
+       "max": null
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Destroy": {
+       "what": {
+        "Target": 0
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Choose any number of target creatures with equal toughness. Destroy the chosen creatures."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 7
+    },
+    "targets": [
+     {
+      "what": "Opponent"
+     }
+    ],
+    "effects": [
+     {
+      "FlipCoin": {
+       "win": [
+        {
+         "Rule": {
+          "rule": {
+           "Cant": {
+            "who": {
+             "Target": 0
+            },
+            "action": "SkipTurn"
+           }
+          },
+          "duration": "UntilTurnSkipped"
+         }
+        }
+       ],
+       "heads": true
+      }
+     },
+     {
+      "FlipCoin": {
+       "win": [
+        {
+         "Rule": {
+          "rule": {
+           "Cant": {
+            "who": {
+             "Target": 0
+            },
+            "action": "SkipTurn"
+           }
+          },
+          "duration": "UntilTurnSkipped"
+         }
+        }
+       ],
+       "heads": true
+      }
+     },
+     {
+      "FlipCoin": {
+       "win": [
+        {
+         "Rule": {
+          "rule": {
+           "Cant": {
+            "who": {
+             "Target": 0
+            },
+            "action": "SkipTurn"
+           }
+          },
+          "duration": "UntilTurnSkipped"
+         }
+        }
+       ],
+       "heads": true
+      }
+     },
+     {
+      "FlipCoin": {
+       "win": [
+        {
+         "Rule": {
+          "rule": {
+           "Cant": {
+            "who": {
+             "Target": 0
+            },
+            "action": "SkipTurn"
+           }
+          },
+          "duration": "UntilTurnSkipped"
+         }
+        }
+       ],
+       "heads": true
+      }
+     },
+     {
+      "FlipCoin": {
+       "win": [
+        {
+         "Rule": {
+          "rule": {
+           "Cant": {
+            "who": {
+             "Target": 0
+            },
+            "action": "SkipTurn"
+           }
+          },
+          "duration": "UntilTurnSkipped"
+         }
+        }
+       ],
+       "heads": true
+      }
+     }
+    ]
+   }
+  },
+  "−7: Flip five coins. Target opponent skips their next X turns, where X is the number of coins that came up heads."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": "Player"
+     }
+    ],
+    "effects": [
+     {
+      "Draw": {
+       "who": {
+        "Target": 0
+       },
+       "count": {
+        "TwoToThe": "X"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Target player draws 2ˣ cards."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "Combat": {
+      "who": "This",
+      "quirk": "AssignsAsThoughPositive"
+     }
+    }
+   }
+  },
+  "If ~'s power is negative, he assigns combat damage as though his power were positive."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "DamageAsInfect": "You"
+    },
+    "condition": {
+     "Compare": {
+      "left": {
+       "Life": "You"
+      },
+      "op": "Le",
+      "right": 0
+     }
+    }
+   }
+  },
+  "As long as you have 0 or less life, all damage is dealt to you as though its source had infect."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "VentureLimit": {
+      "who": "Opponents",
+      "per_turn": 1
+     }
+    }
+   }
+  },
+  "Each opponent can't venture into the dungeon more than once each turn."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "Cant": {
+      "who": "This",
+      "action": "BeTargetedByWallsOnly"
+     }
+    }
+   }
+  },
+  "This creature can't be the target of spells that can target only Walls or of abilities that can target only Walls."
+ ],
+ [
+  {
+   "Static": {
+    "affected": {
+     "Each": [
+      {
+       "Type": "Artifact"
+      },
+      {
+       "ControlledBy": "You"
+      }
+     ]
+    },
+    "mods": [
+     {
+      "AddKeyword": {
+       "Protection": [
+        {
+         "SharesManaValue": {
+          "Each": [
+           {
+            "Type": "Artifact"
+           },
+           {
+            "ControlledBy": "You"
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Artifacts you control have protection from each mana value among artifacts you control."
+ ]
+]
