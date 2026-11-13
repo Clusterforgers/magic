@@ -89,6 +89,14 @@ pub fn was_spent_text(condition: &Condition, spell: bool) -> Option<String> {
 /// How much mana was spent to cast the spell of the event, as a cast trigger's condition: "at least four mana was spent to
 /// cast it", "no mana was spent to cast that spell".
 pub fn amount_spent(r: &mut Reader<'_>) -> Option<Condition> {
+    if r.words("no colored mana was spent to cast") {
+        (r.word("it") || r.words("that spell")).then_some(())?;
+        return Some(Condition::Compare {
+            left: colors_spent_on_the_cast(),
+            op: Cmp::Eq,
+            right: Amount::Fixed(0),
+        });
+    }
     let (op, right) = if r.word("no") {
         (Cmp::Eq, 0)
     } else {
@@ -116,6 +124,9 @@ pub fn amount_spent_text(condition: &Condition) -> Option<String> {
     else {
         return None;
     };
+    if *left == colors_spent_on_the_cast() && *op == Cmp::Eq && *right == 0 {
+        return Some("no colored mana was spent to cast it".to_owned());
+    }
     if *left != spent_on_the_cast() {
         return None;
     }
@@ -128,6 +139,14 @@ pub fn amount_spent_text(condition: &Condition) -> Option<String> {
         _ => return None,
     };
     Some(format!("{amount} mana was spent to cast it"))
+}
+
+/// How many colors of mana were spent to cast the spell of the event (none: "no colored mana was spent").
+fn colors_spent_on_the_cast() -> Amount {
+    Amount::Stat {
+        of: Ref::Triggering,
+        stat: StatKind::ColorsSpent,
+    }
 }
 
 /// The mana spent to cast the spell of the event.

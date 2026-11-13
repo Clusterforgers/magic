@@ -64,6 +64,7 @@ mod r301b_dealt_this_turn;
 mod r301b_reveal_mana;
 mod r302_token_shield;
 mod r375_events;
+mod r407_cast_triggers;
 mod r4a_enters_with;
 mod r4i_granter;
 mod r5e_done_once;

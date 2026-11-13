@@ -137,7 +137,7 @@ impl Scope<'_> {
     }
 
     /// The card of a spell on the stack or of a permanent, the only objects that were cast.
-    fn fe1a_cast_object<'s>(seen: &Seen<'s>) -> Option<&'s GameObject> {
+    pub(super) fn fe1a_cast_object<'s>(seen: &Seen<'s>) -> Option<&'s GameObject> {
         seen.card.filter(|_| {
             seen.zone == Zone::Battlefield
                 || (seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability)

@@ -35,6 +35,10 @@ pub enum StatKind {
     BaseToughness,
     /// The mana spent to cast it, while it is a spell or when it was cast.
     ManaSpent,
+    /// How many colors there are among the mana spent to cast it (CR 105.4): none when no colored mana was spent.
+    ColorsSpent,
+    /// How many times its kicker costs were paid, while it is a spell or the permanent it became (CR 702.33).
+    Kicks,
     /// Its name: no number, so only `Amount::Distinct` reads it (the different names among the objects).
     Name,
     /// Its creature types: no number, so only `Amount::MostCommon` reads it (the most creatures sharing one type).

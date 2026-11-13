@@ -1,0 +1,26 @@
+{
+  "oracle_id": "08aaafc7-5fc0-4c28-a361-2a22536ec080",
+  "name": "Void Mirror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Void Mirror",
+      "oracle_fingerprint": "3cbf6b70d6668112832a98d2eb8f524c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": {} },
+            "if": {
+              "Compare": {
+                "left": { "Stat": { "of": "Triggering", "stat": "ColorsSpent" } },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "Counter": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}
