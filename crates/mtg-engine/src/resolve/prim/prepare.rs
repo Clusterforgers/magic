@@ -44,7 +44,7 @@ pub(super) fn run_unprepare(cx: &Cx<'_>, effect: &Effect) -> Result<Run, Resolve
         .into_iter()
         .filter(|object| {
             object.zone() == Zone::Battlefield
-                && object.permanent().is_some_and(|held| held.prepared())
+                && object.permanent().is_some_and(crate::object::PermanentState::prepared)
         })
         .map(|object| Event::Unprepared {
             object: object.id(),

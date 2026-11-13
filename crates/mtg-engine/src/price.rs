@@ -215,11 +215,10 @@ impl Price {
                 CostItem::Untap => untap = true,
                 CostItem::Changed { .. } => changes.push(item.clone()),
                 // The least X is read where X is announced (`announce/x.rs`), the most where an effect asks the payment
-                // (`resolve/prim/w6c_pay_x.rs`).
-                CostItem::XAtLeast(_) | CostItem::XAtMost(_) => {}
+                // (`resolve/prim/w6c_pay_x.rs`); "spend only mana of the chosen color" where the total of an activation
+                // is worked out (`chosen_color_only`).
+                CostItem::XAtLeast(_) | CostItem::XAtMost(_) | CostItem::ChosenColorOnly => {}
                 CostItem::XColor(color) => x_color = Some(*color),
-                // Read where the total of an activation is worked out (`chosen_color_only`).
-                CostItem::ChosenColorOnly => {}
                 CostItem::Waterbend(_) if !waterbend_ok => return Err(unpaid(item)),
                 CostItem::Waterbend(number) => {
                     mana = true;
