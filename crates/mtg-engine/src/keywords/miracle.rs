@@ -52,6 +52,39 @@ impl KeywordRules for Miracle {
     }
 }
 
+/// The reveal a miracle trigger makes as it triggers (CR 702.94a: the card is revealed as it is drawn, and the reveal
+/// is what triggers it): a `Revealed` of the card by its owner when `trigger` is a miracle trigger of a card in a hand.
+pub(crate) fn reveal(
+    state: &crate::state::GameState,
+    trigger: &crate::triggers::Triggered,
+) -> Option<crate::events::Event> {
+    let card = state.object(trigger.source.id)?;
+    if card.reference() != trigger.source || !matches!(card.zone(), crate::zones::Zone::Hand(_)) {
+        return None;
+    }
+    let address = crate::abilities::AbilityRef {
+        object: trigger.source.id,
+        ability: trigger.ability,
+        source: trigger.origin,
+    };
+    let ability = crate::ability_reader::ability(state, address)?;
+    let miracle = ability.effects().iter().any(|effect| {
+        matches!(
+            effect,
+            Effect::CastFromZone {
+                way: Some(CastWay::Miracle),
+                ..
+            }
+        )
+    });
+    miracle.then(|| {
+        crate::events::Event::Revealed(crate::library::Revealed {
+            player: card.owner(),
+            cards: vec![trigger.source.id],
+        })
+    })
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: Miracle adds one trigger that works from a hand, fires on the first draw of the turn of this card and casts it for the miracle way, and no other keyword adds it.

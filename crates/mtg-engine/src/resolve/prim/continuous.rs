@@ -42,6 +42,17 @@ const CARD_TYPES: [CardType; 9] = [
     CardType::Sorcery,
 ];
 
+/// The player a "for as long as they're the monarch" effect follows, read as it begins; none for any other duration.
+fn anchor(
+    cx: &Cx<'_>,
+    duration: &mtg_cards::modify::Duration,
+) -> Result<Option<PlayerId>, ResolveError> {
+    Ok(match duration {
+        mtg_cards::modify::Duration::WhileMonarch(who) => cx.scope.players(who)?.first().copied(),
+        _ => None,
+    })
+}
+
 /// The players the effects are begun for, each with the objects of theirs: the controller of the resolving spell or
 /// ability for every object, or for `DuringItsControllersNextTurn` the controller of each object as the effect begins,
 /// whose next turn it waits for.
@@ -165,11 +176,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         };
         modifications.push(modification);
     }
-    // The player a "for as long as they're the monarch" effect follows, read as it begins.
-    let anchor = match duration {
-        mtg_cards::modify::Duration::WhileMonarch(who) => cx.scope.players(who)?.first().copied(),
-        _ => None,
-    };
+    let anchor = anchor(cx, duration)?;
     let mut made = 0u64;
     for (player, objects) in l294_turn_holders(cx, duration, &named) {
         for modification in &modifications {

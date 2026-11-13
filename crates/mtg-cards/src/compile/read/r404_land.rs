@@ -127,10 +127,10 @@ fn chosen_from_swamp(value: &mut Value) -> Option<()> {
 const LEADING: &str = "Until end of turn, ";
 
 /// The twin mods and duration of a change, as JSON, and the printed ones.
-fn forms(change: Change, duration: Option<&str>) -> Option<((Value, Value), (Value, Value))> {
+fn forms(change: Change, duration: Option<&str>) -> ((Value, Value), (Value, Value)) {
     let end = json!("UntilEndOfTurn");
     let kept = |d: Option<&str>| d.map_or_else(|| end.clone(), |d| json!(d));
-    Some(match change {
+    match change {
         Change::SnowAdded => (
             (json!([{ "AddKeyword": "Flying" }]), end.clone()),
             (json!([{ "AddSupertype": "Snow" }]), kept(duration)),
@@ -144,7 +144,7 @@ fn forms(change: Change, duration: Option<&str>) -> Option<((Value, Value), (Val
             (json!("SetLandTypesChosen"), end.clone()),
             (json!("AddLandTypeChosen"), end),
         ),
-    })
+    }
 }
 
 /// The paths of the continuous effects of a JSON value, each a list of keys and indexes.
@@ -311,7 +311,7 @@ pub(super) fn r404_land_read(
             chosen_from_swamp(&mut value)?;
             continue;
         }
-        let (from, to) = forms(rule.change, rule.duration)?;
+        let (from, to) = forms(rule.change, rule.duration);
         (convert_by_path(&mut value, &from, &to) == 1).then_some(())?;
     }
     serde_json::from_value(value).ok()
@@ -331,9 +331,7 @@ pub(super) fn r404_land_wordings(
         return;
     }
     for rule in &RULES {
-        let Some((from, to)) = forms(rule.change, rule.duration) else {
-            continue;
-        };
+        let (from, to) = forms(rule.change, rule.duration);
         let mut twin = value.clone();
         // The printed form back to the twin form: one effect only.
         if convert_by_path(&mut twin, &to, &from) != 1 {

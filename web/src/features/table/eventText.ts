@@ -1308,6 +1308,11 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   return line(String(unhandled))
 }
 
+/** The name of the source of a hidden ability, or "a hidden card" when the viewer cannot identify it. */
+function unseen(source: ObjectRef | null | undefined, n: EventNames): string {
+  return source ? n.card(source.id) : 'a hidden card'
+}
+
 function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
   if (typeof event === 'string') return quiet('A card leaves the game')
   if ('Remembered' in event) return quiet('A source remembers objects')
@@ -1367,15 +1372,15 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
   }
   if ('ChoiceMade' in event) return quiet(`${n.seat(event.ChoiceMade.player)} chooses`)
   if ('AbilityTriggered' in event) {
-    return line(`An ability of ${n.card(event.AbilityTriggered.source.id)} triggers`)
+    return line(`An ability of ${unseen(event.AbilityTriggered.source, n)} triggers`)
   }
   if ('AbilityPutOnStack' in event) {
-    return quiet(`An ability of ${n.card(event.AbilityPutOnStack.source.id)} goes on the stack`)
+    return quiet(`An ability of ${unseen(event.AbilityPutOnStack.source, n)} goes on the stack`)
   }
   if ('AbilityLeftToTable' in event) {
     const { source, controller } = event.AbilityLeftToTable
     return line(
-      `An ability of ${n.card(source.id)} could not be run by the game: ${n.seat(controller)} applies it by hand`,
+      `An ability of ${unseen(source, n)} could not be run by the game: ${n.seat(controller)} applies it by hand`,
     )
   }
   if ('TriggerRemoved' in event) {

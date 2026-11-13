@@ -540,7 +540,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             state.commander_colors.push((*object, *color));
         }
         Event::FaceDownLooked { object, player } => {
-            crate::sight::look_face_down(state, *player, *object)
+            crate::sight::look_face_down(state, *player, *object);
         }
         Event::DoorUnlocked { object, door, .. } => unlock(state, *object, *door)?,
         Event::DoorLocked { object, door, .. } => {
