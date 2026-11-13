@@ -210,11 +210,6 @@ fn w7c_then_incubate(texts: &[String]) -> Vec<String> {
 /// sentence ("you draw a card and gain 3 life") or several ("draw a card. You gain 3 life"), and
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
 pub fn variants(ability: &Ability) -> Vec<String> {
-<<<<<<< HEAD
-    if let Some(texts) = super::r402_copy_riders::r402_rider_variants(ability, variants) {
-        return texts;
-    }
-=======
     let mut texts = plain_variants(ability);
     super::r371_copy_except::r371_not_legendary_too(&mut texts);
     super::r371_copy_except::r371_that_creature_dies(ability, &mut texts);
@@ -224,7 +219,9 @@ pub fn variants(ability: &Ability) -> Vec<String> {
 /// [`variants`] before the wordings every copy exception has twice.
 #[allow(clippy::too_many_lines)]
 fn plain_variants(ability: &Ability) -> Vec<String> {
->>>>>>> origin/main
+    if let Some(texts) = super::r402_copy_riders::r402_rider_variants(ability, variants) {
+        return texts;
+    }
     if let Some(texts) = super::r372_suspend::r372_variants(ability, variants) {
         return texts;
     }

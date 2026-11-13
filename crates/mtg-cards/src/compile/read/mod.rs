@@ -211,14 +211,11 @@ mod r374_champion;
 mod r374_counts;
 mod r375_events;
 mod r375_phase;
-<<<<<<< HEAD
-mod r402_copy_riders;
-mod r402_spell_costs;
-=======
 mod r376_nearest;
 mod r376_seats;
 mod r376_secret;
->>>>>>> origin/main
+mod r402_copy_riders;
+mod r402_spell_costs;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
