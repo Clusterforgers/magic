@@ -152,6 +152,7 @@ mod r301_offering;
 mod r301b_spend_facts;
 mod r304b_lost_priority;
 mod r400_attack_follow;
+mod r400_no_mana;
 pub mod replace;
 pub mod resolve;
 mod restart;

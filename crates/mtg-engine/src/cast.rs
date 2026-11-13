@@ -190,7 +190,11 @@ pub(crate) fn payment_decision(
     let life = seat
         .life()
         .saturating_sub(i32::try_from(reserved_life).unwrap_or(i32::MAX));
-    let pool = seat.mana().clone();
+    let pool = if crate::r400_no_mana::r400_no_mana(state, object) {
+        crate::mana::ManaPool::default()
+    } else {
+        seat.mana().clone()
+    };
     let narrowed = match crate::mana_takes::for_card(state, &sources, object) {
         std::borrow::Cow::Owned(narrowed) => Some(narrowed),
         std::borrow::Cow::Borrowed(_) => None,

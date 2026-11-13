@@ -100,6 +100,9 @@ fn r400_probe() {
 #[case("Ekundu Cyclops")]
 #[case("Magnetic Web")]
 #[case("Land Grant")]
+#[case("Kentaro, the Smiling Cat")]
+#[case("Demon of Fate's Design")]
+#[case("Hogaak, Arisen Necropolis")]
 fn r400_reads_back_whole(#[case] name: &str) {
     let report = r400_report(name, &r400_file(name));
     assert_eq!(
@@ -139,6 +142,15 @@ fn r400_reads_back_whole(#[case] name: &str) {
     r#""count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }"#,
     r#""count": 1"#
 )]
+#[case::ninja_spells("Kentaro, the Smiling Cat", r#""Samurai""#, r#""Ninja""#)]
+#[case::its_mana_cost("Kentaro, the Smiling Cat", r#""OwnManaValue""#, r#""OwnManaCost""#)]
+#[case::every_turn("Demon of Fate's Design", r#""once": true,"#, "")]
+#[case::creature_spells(
+    "Demon of Fate's Design",
+    r#""what": [{ "Type": "Enchantment" }]"#,
+    r#""what": [{ "Type": "Creature" }]"#
+)]
+#[case::copied("Hogaak, Arisen Necropolis", r#""CantSpendMana""#, r#""CantBeCopied""#)]
 fn r400_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let file = r400_file(name);
     assert!(file.contains(from), "{name} has {from}");
@@ -152,6 +164,9 @@ fn r400_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #
 #[case("Magnetic Web", 0)]
 #[case("Magnetic Web", 1)]
 #[case("Land Grant", 0)]
+#[case("Kentaro, the Smiling Cat", 1)]
+#[case("Demon of Fate's Design", 2)]
+#[case("Hogaak, Arisen Necropolis", 0)]
 fn r400_compiler_reads_the_wording(#[case] name: &str, #[case] ability: usize) {
     let card = common::printed()
         .into_iter()

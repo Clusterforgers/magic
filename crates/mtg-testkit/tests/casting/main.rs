@@ -175,6 +175,8 @@ mod r306b_spend_any;
 mod r307c_exile;
 mod r372_suspend;
 mod r3f_mana;
+mod r400_no_mana;
+mod r400_rather_permissions;
 mod r400_reveal_hand;
 mod r4f_stack_move;
 mod r4i_may_flash;

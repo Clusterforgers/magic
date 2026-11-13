@@ -452,6 +452,7 @@ Deluxe Dragster
 Delver of Secrets // Insectile Aberration
 Demolition Field
 Demon Bolt
+Demon of Fate's Design
 Demon of Wailing Agonies
 Demonic Embrace
 Demotion
@@ -888,6 +889,7 @@ High Ground
 Highspire Artisan
 History of Benalia
 Hoarder's Greed
+Hogaak, Arisen Necropolis
 Holdout Settlement
 Honor Troll
 Honor's Reward
@@ -1003,6 +1005,7 @@ Keleth, Sunmane Familiar
 Kellogg, Dangerous Mind
 Kemba's Banner
 Kenrith's Transformation
+Kentaro, the Smiling Cat
 Kessig Wolf Run
 Kill! Maim! Burn!
 Kimoyo Beads

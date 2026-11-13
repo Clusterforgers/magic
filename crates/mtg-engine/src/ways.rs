@@ -530,6 +530,17 @@ pub(crate) fn instead_way(
     let scope = Scope::announcing(state, player, card.reference());
     let mut settled = cost.clone();
     for item in &mut settled.0 {
+        if matches!(item, CostItem::OwnManaValue) {
+            *item = CostItem::Mana(r400_generic(
+                &scope
+                    .amount(&Amount::Stat {
+                        of: mtg_cards::refs::Ref::This,
+                        stat: mtg_cards::value::StatKind::ManaValue,
+                    })
+                    .ok()?,
+            )?);
+            continue;
+        }
         let Some(amount) = item.amount_mut() else {
             continue;
         };
@@ -548,6 +559,12 @@ pub(crate) fn instead_way(
         variant: 0,
         parts,
     })
+}
+
+/// `count` generic mana as a cost ("pay {X} ..., where X is that spell's mana value"): none for a negative count.
+fn r400_generic(count: &i64) -> Option<mtg_cards::mana::ManaCostX> {
+    let count = u32::try_from(*count).ok()?;
+    format!("{{{count}}}").parse().ok()
 }
 
 fn free_way(instant: bool) -> Way {
@@ -1361,6 +1378,12 @@ pub(crate) fn hindrance_as_is(
     }
     let printed_spend = Spend::for_spell(state, id, player, card.card().x_in_cost > 0);
     let sources = &for_card(state, sources, id);
+    let no_pool = ManaPool::default();
+    let pool = if crate::r400_no_mana::r400_no_mana(state, id) {
+        &no_pool
+    } else {
+        pool
+    };
     let base = help::offered(state, player, id, &[]);
     let timing = sorcery_timing(state, player);
     // The checks of one way, cheapest first within the order of `Unplayable`.

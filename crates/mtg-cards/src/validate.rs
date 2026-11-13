@@ -4342,6 +4342,9 @@ impl Walker<'_> {
                 if matches!(rule, GameRule::Draft(_)) {
                     w.problem("a card follows a draft rule by a static ability, not by an effect");
                 }
+                if matches!(rule, GameRule::CantSpendMana) {
+                    w.problem("a spell is cast without mana by a static ability of its own, not by an effect");
+                }
                 if matches!(rule, GameRule::CantBeCopied) {
                     w.problem("a spell can't be copied by a static ability of its own, not by an effect");
                 }
@@ -5219,7 +5222,8 @@ impl Walker<'_> {
             | GameRule::Draft(_)
             | GameRule::DamageAsWither
             | GameRule::ManaBurn
-            | GameRule::CantBeCopied => {}
+            | GameRule::CantBeCopied
+            | GameRule::CantSpendMana => {}
             GameRule::UpToInDeck(most) => {
                 if *most < 2 {
                     self.at(tag, |w| w.problem("a deck rule allows at least two copies"));
@@ -5431,6 +5435,7 @@ impl Walker<'_> {
                     | GameRule::UpToInDeck(_)
                     | GameRule::Draft(_)
                     | GameRule::CantBeCopied
+                    | GameRule::CantSpendMana
             ) => self.at("from", |w| {
                 w.problem("a deck rule holds outside the game: write the rule without `from`");
             }),

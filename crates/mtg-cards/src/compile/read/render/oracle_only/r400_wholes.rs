@@ -15,6 +15,47 @@ pub(super) fn r400_add_wholes(ability: &Ability, texts: &mut Vec<String>) {
     texts.extend(r400_follow(ability));
     texts.extend(r400_blocked_by_all(ability));
     texts.extend(r400_reveal_hand(ability));
+    texts.extend(r400_rather_permission(ability));
+    if *ability == super::super::super::r400_reads::r400_no_mana() {
+        texts.push(R400_NO_MANA.to_owned());
+    }
+}
+
+/// The words of `GameRule::CantSpendMana`.
+const R400_NO_MANA: &str = "You can't spend mana to cast this spell.";
+
+/// "You may pay {X} rather than pay the mana cost for Samurai spells you cast, where X is that spell's mana value." and
+/// "Once during each of your turns, you may cast an enchantment spell by paying life equal to its mana value rather than
+/// paying its mana cost.": a permission that puts another cost in place of the mana cost of the spells it covers.
+fn r400_rather_permission(ability: &Ability) -> Option<String> {
+    let Ability::Rule {
+        rule: GameRule::MayCast(permission),
+        ..
+    } = ability
+    else {
+        return None;
+    };
+    let what = &permission.what;
+    let mut preds = vec![Pred::Spell];
+    preds.extend(what.0.iter().cloned());
+    let spells = Selector(preds);
+    let read = super::super::super::r400_reads::r400_value_cast(what);
+    if read.as_ref() == Some(ability) {
+        let all = phrase_text(&spells, Form::All)?;
+        return Some(format!(
+            "You may pay {{X}} rather than pay the mana cost for {all} you cast, where X is that spell's mana value."
+        ));
+    }
+    let read = super::super::super::r400_reads::r400_life_cast_once(what);
+    if read.as_ref() == Some(ability) {
+        let one = phrase_text(&spells, Form::Subject)?;
+        return Some(format!(
+            "Once during each of your turns, you may cast {} {one} by paying life equal to its mana value rather than \
+             paying its mana cost.",
+            r400_article(&one)
+        ));
+    }
+    None
 }
 
 /// "If <condition>, you may reveal your hand rather than pay this spell's mana cost."

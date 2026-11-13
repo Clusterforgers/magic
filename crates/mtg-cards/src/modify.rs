@@ -847,6 +847,9 @@ pub enum GameRule {
     Draft(DraftRule),
     /// "This spell can't be copied." (CR 707.10): an effect that would copy the spell makes no copy of it; no `from`.
     CantBeCopied,
+    /// "You can't spend mana to cast this spell.": the cast of the card offers no mana of the pool and no mana ability, so
+    /// only what pays without mana (convoke, delve) pays its cost; no `from`.
+    CantSpendMana,
     /// The next spell the rule's controller casts that `what` selects gets the benefit, and the rule ends with that cast
     /// ("the next creature spell you cast this turn costs {1} less"); with the duration `UntilEndOfTurn` it also ends with
     /// the turn. `what` names the cards, not the stack object (no `Spell`).

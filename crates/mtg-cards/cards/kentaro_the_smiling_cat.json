@@ -1,7 +1,7 @@
 {
   "oracle_id": "bfaf20a7-a11c-4f57-8eb6-b03b5223704d",
   "name": "Kentaro, the Smiling Cat",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kentaro, the Smiling Cat",
@@ -9,9 +9,14 @@
       "abilities": [
         { "Keyword": { "Macro": { "name": "bushido", "amount": 1 } } },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 95, "end": 205 }
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Subtype": "Samurai" }],
+                "rather": ["OwnManaValue"],
+                "any_cast": true
+              }
+            }
           }
         }
       ]

@@ -1543,6 +1543,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::AttackAsThoughHasteAt(who) => Rule::AttackAsThoughHasteAt(scope.players(who)?),
         // A copy effect reads it from the spell's card (`copy_spell`); it is no rule of the game.
         GameRule::CantBeCopied => return Err(ResolveError::Unsupported("Rule.CantBeCopied")),
+        GameRule::CantSpendMana => return Err(ResolveError::Unsupported("Rule.CantSpendMana")),
         GameRule::GraveyardCardsUntargetable
         | GameRule::CantLoseGame { .. }
         | GameRule::CantCastSpells { .. }
@@ -2433,6 +2434,9 @@ pub(crate) fn c11b_once_source(
     from: Zone,
     way: Option<mtg_cards::value::CastWay>,
 ) -> Option<ObjectRef> {
+    if way == Some(mtg_cards::value::CastWay::Alternative) {
+        return r400_rather_once_source(state, player, card);
+    }
     if way.is_some() || matches!(from, Zone::Hand(_) | Zone::Command(_)) {
         return None;
     }
@@ -2446,6 +2450,21 @@ pub(crate) fn c11b_once_source(
         return None;
     }
     covering.first().map(|cast| cast.source)
+}
+
+/// The source of the permission that works once each turn whose cost a cast of `card` by `player` for an alternative cost
+/// pays: the first permission that covers the card with a cost in place of the mana cost, which is the way that cast
+/// takes (`ways::rather_way`); none when that permission works every time.
+fn r400_rather_once_source(
+    state: &GameState,
+    player: PlayerId,
+    card: ObjectId,
+) -> Option<ObjectRef> {
+    let card = state.object(card)?;
+    let rather = cast_permissions(state)
+        .iter()
+        .find(|cast| cast.instead.is_some() && cast.covers(state, player, card))?;
+    rather.once.then_some(rather.source)
 }
 
 /// The taxes on blocking in force: the one place the block declaration reads this rule (`block_tax`).
