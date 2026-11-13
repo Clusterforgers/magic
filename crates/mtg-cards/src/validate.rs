@@ -4729,10 +4729,11 @@ impl Walker<'_> {
                             ..
                         }
                     )
-                    && !(attack_at && *duration == Duration::TheirNextTurn)
-                    // "can't cast instant or sorcery spells during that player's next turn" (Azor).
+                    // "can't cast instant or sorcery spells during that player's next turn" (Azor), and a requirement
+                    // to attack a planeswalker through that turn.
                     && !(*duration == Duration::TheirNextTurn
-                        && matches!(rule, GameRule::Cant { action: Prohibited::Cast { .. }, .. }))
+                        && (attack_at
+                            || matches!(rule, GameRule::Cant { action: Prohibited::Cast { .. }, .. })))
                 {
                     w.problem(RMT3_SKIP_ONLY);
                 }
