@@ -44,7 +44,12 @@ impl Writer<'_> {
 
     /// "you control target player during that player's next turn", or the gain of control with the extra turn after.
     pub(super) fn tc34_control_player(&mut self, effect: &Effect) -> Option<String> {
-        let Effect::ControlPlayer { who, extra_turn } = effect else {
+        let Effect::ControlPlayer {
+            who,
+            by: Ref::You,
+            extra_turn,
+        } = effect
+        else {
             return None;
         };
         (*who == Ref::Target(0)

@@ -286,6 +286,27 @@ fn not_from_hand() -> SpendFilter {
     }
 }
 
+/// "This mana can't be spent to cast nonartifact spells.": the spells of the type, the abilities and the other costs.
+fn not_of_type(r: &mut Reader<'_>) -> Option<Vec<SpendOn>> {
+    r.need("this mana can't be spent to cast")?;
+    let card_type = card_type(r.peek_word()?.strip_prefix("non")?)?;
+    r.skip();
+    r.need("spells")?;
+    Some(vec![
+        SpendOn::Spell(of_type(card_type)),
+        SpendOn::abilities(),
+        SpendOn::OtherCosts,
+    ])
+}
+
+/// The spells of one card type.
+fn of_type(card_type: CardType) -> SpendFilter {
+    SpendFilter {
+        types: vec![card_type],
+        ..SpendFilter::default()
+    }
+}
+
 /// "or to activate an ability" after the spells: the abilities of any source.
 fn any_ability(r: &mut Reader<'_>) -> Option<SpendOn> {
     r.attempt(|r| {
@@ -331,6 +352,9 @@ pub(super) fn only(r: &mut Reader<'_>) -> Option<Vec<SpendOn>> {
                 SpendOn::abilities(),
                 SpendOn::OtherCosts,
             ]);
+        }
+        if let Some(only) = r.attempt(not_of_type) {
+            return Some(only);
         }
         r.need(LEAD)?;
         if r.words("on costs that contain") {
@@ -592,6 +616,19 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
             SpendOn::OtherCosts,
         ] if *source == SpendFilter::default() && *spell == not_from_hand() => {
             NOT_FROM_HAND.to_owned()
+        }
+        [
+            SpendOn::Spell(spell),
+            SpendOn::Ability(source),
+            SpendOn::OtherCosts,
+        ] if *source == SpendFilter::default()
+            && let [card_type] = spell.types[..]
+            && *spell == of_type(card_type) =>
+        {
+            format!(
+                "This mana can't be spent to cast non{} spells",
+                type_name(card_type)
+            )
         }
         // "Spend this mana only to cast a colorless spell or to activate an ability."
         [SpendOn::Spell(spell), SpendOn::Ability(source)]

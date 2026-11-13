@@ -478,14 +478,23 @@ fn game(ctx: &Ctx, effect: &Effect) -> Option<String> {
             "restart the game, leaving in exile each {}, then put those cards onto the battlefield under your control",
             phrase::selector(ctx, keep)
         ),
-        Effect::ControlPlayer { who, extra_turn } => {
+        Effect::ControlPlayer {
+            who,
+            by,
+            extra_turn,
+        } => {
             let then = if *extra_turn {
                 ", then that player takes an extra turn"
             } else {
                 ""
             };
+            let controls = if *by == Ref::You {
+                "you control".to_owned()
+            } else {
+                format!("{} controls", phrase::who(ctx, by))
+            };
             format!(
-                "you control {} during that player's next turn{then}",
+                "{controls} {} during that player's next turn{then}",
                 phrase::who(ctx, who)
             )
         }

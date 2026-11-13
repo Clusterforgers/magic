@@ -1122,11 +1122,15 @@ pub enum Effect {
         /// The Room.
         what: Ref,
     },
-    /// The controller of the effect controls the player during that player's next turn (CR 722): "You control target
-    /// player during that player's next turn."
+    /// The controller of the effect, or the player `by` names, controls the player during that player's next turn
+    /// (CR 722): "You control target player during that player's next turn."
     ControlPlayer {
         /// The player controlled.
         who: Ref,
+        /// The player who controls them: the controller of the effect when left out ("The first player controls the
+        /// second player during the second player's next turn").
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        by: Ref,
         /// Whether that player takes an extra turn after that turn (Emrakul, the Promised End).
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         extra_turn: bool,

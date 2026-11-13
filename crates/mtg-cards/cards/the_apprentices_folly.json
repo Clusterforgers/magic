@@ -1,0 +1,92 @@
+{
+  "oracle_id": "f45542a0-0d49-4b56-9c3e-663ff8d0529a",
+  "name": "The Apprentice's Folly",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Apprentice's Folly",
+      "oracle_fingerprint": "21ed0189677cb8fff3dcff68a5ee88bd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": "Token" },
+                    { "ControlledBy": "You" },
+                    { "Not": { "SharesName": { "Each": ["Token", { "ControlledBy": "You" }] } } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [
+                        { "RemoveSupertype": "Legendary" },
+                        { "AddSubtype": "Reflection" },
+                        { "AddKeyword": "Haste" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": "Token" },
+                    { "ControlledBy": "You" },
+                    { "Not": { "SharesName": { "Each": ["Token", { "ControlledBy": "You" }] } } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [
+                        { "RemoveSupertype": "Legendary" },
+                        { "AddSubtype": "Reflection" },
+                        { "AddKeyword": "Haste" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "Subtype": "Reflection" }, { "ControlledBy": "You" }],
+                  "count": { "Count": [{ "Subtype": "Reflection" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
