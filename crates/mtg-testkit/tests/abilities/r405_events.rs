@@ -52,11 +52,18 @@ fn the_vizier_draws_for_its_controllers_embalm(
     #[case] embalmer: usize,
     #[case] drawn: usize,
 ) -> Result<(), ScriptError> {
-    let mut scenario = Scenario::new(seats)
-        .at(2, embalmer, Step::Main1)
-        .battlefield(0, [ready(card("Vizier of the Anointed").unwrap())])
-        .battlefield(embalmer, (0..7).map(|_| ready(island())))
-        .graveyard(embalmer, [card("Aven Initiate").unwrap()]);
+    let islands: Vec<_> = (0..7).map(|_| ready(island())).collect();
+    let vizier = ready(card("Vizier of the Anointed").unwrap());
+    // One list for each seat: the Vizier's seat holds the Islands too when it is the one that embalms.
+    let mut scenario = Scenario::new(seats).at(2, embalmer, Step::Main1);
+    scenario = if embalmer == 0 {
+        scenario.battlefield(0, std::iter::once(vizier).chain(islands))
+    } else {
+        scenario
+            .battlefield(0, [vizier])
+            .battlefield(embalmer, islands)
+    };
+    scenario = scenario.graveyard(embalmer, [card("Aven Initiate").unwrap()]);
     for seat in 0..seats {
         scenario = scenario.library(seat, (0..5).map(|_| bear()));
     }
@@ -66,9 +73,13 @@ fn the_vizier_draws_for_its_controllers_embalm(
         .offered_abilities("Aven Initiate")?
         .first()
         .expect("embalm is offered");
-    driver.begin_ability("Aven Initiate", ability)?;
-    driver.answer(Answer::PayMana(PayChoice::Auto))?;
-    r405_settle(&mut driver)?;
+    let mut seen = driver.begin_ability("Aven Initiate", ability)?;
+    seen.extend(driver.answer(Answer::PayMana(PayChoice::Auto))?);
+    seen.extend(r405_settle(&mut driver)?);
+    assert!(
+        seen.iter()
+            .any(|e| matches!(e, Event::AbilityActivated { .. }))
+    );
     assert_eq!(r405_hand(&driver, 0), before + drawn);
     r405_replays(&driver);
     Ok(())

@@ -79,6 +79,28 @@ fn r405_castable(driver: &Driver) -> Result<bool, ScriptError> {
     }
 }
 
+/// A Forest that is snow, named apart from the plain one.
+fn r405_snowy_forest() -> Arc<CardDefinition> {
+    let mut land = CardDefinition::clone(&forest()).with_supertype(mtg_core::card::Supertype::Snow);
+    land.name = "Snowy Forest".to_owned();
+    Arc::new(land)
+}
+
+/// Answers passively until the stack and the pending triggers are empty.
+fn r405_settle(driver: &mut Driver) -> Result<(), ScriptError> {
+    for _ in 0..80 {
+        let decision = driver.decision()?.clone();
+        if matches!(decision.kind, DecisionKind::Priority(_))
+            && driver.state().stack().is_empty()
+            && driver.state().pending_triggers().is_empty()
+        {
+            return Ok(());
+        }
+        driver.answer(Driver::passive_answer(&decision))?;
+    }
+    Err(ScriptError::Stuck("the stack did not empty".to_owned()))
+}
+
 fn r405_replays(driver: &Driver) {
     let state = replay(driver.engine().setup(), driver.engine().events()).unwrap();
     assert_eq!(state.state_hash(), driver.state().state_hash());
@@ -99,11 +121,21 @@ fn the_nest_pays_for_colored_spells_without_x(
     #[case] x: u8,
     #[case] offered: bool,
 ) -> Result<(), ScriptError> {
-    let driver = r405_table(
+    let mut driver = r405_table(
         seats,
         r405_spell(types, &[], cost, x),
         &["Titans' Nest", "Forest"],
     )?;
+    // The Nest's mana floats first: it exiles the Grizzly Bears card from the graveyard.
+    let ability = *driver
+        .offered_abilities("Titans' Nest")?
+        .first()
+        .expect("the Nest's mana ability is offered");
+    driver.begin_ability("Titans' Nest", ability)?;
+    while !matches!(driver.decision()?.kind, DecisionKind::Priority(_)) {
+        let decision = driver.decision()?.clone();
+        driver.answer(Driver::passive_answer(&decision))?;
+    }
     assert_eq!(r405_castable(&driver)?, offered);
     Ok(())
 }
@@ -142,7 +174,7 @@ fn freya_pays_for_an_equip_ability(#[case] seats: usize) -> Result<(), ScriptErr
     let target = driver.target_named("Freya Crescent")?;
     driver.choose_targets(&[target])?;
     driver.answer(Answer::PayMana(PayChoice::Auto))?;
-    driver.pass()?;
+    r405_settle(&mut driver)?;
     let splitter = driver.id_of("Bonesplitter")?;
     let freya = driver.id_of("Freya Crescent")?;
     assert_eq!(
@@ -150,7 +182,8 @@ fn freya_pays_for_an_equip_ability(#[case] seats: usize) -> Result<(), ScriptErr
             .state()
             .object(splitter)
             .and_then(|o| o.permanent())
-            .and_then(|p| p.attached_to()),
+            .and_then(|p| p.attached_to())
+            .map(|host| host.id),
         Some(freya)
     );
     r405_replays(&driver);
@@ -191,7 +224,7 @@ fn the_attendant_gives_a_counter_to_non_humans(
         &["Animal Attendant"],
     )?;
     driver.cast(SPELL)?;
-    driver.pass()?;
+    r405_settle(&mut driver)?;
     let spell = driver.id_of(SPELL)?;
     let object = driver.state().object(spell).unwrap();
     assert_eq!(object.zone(), Zone::Battlefield);
@@ -199,7 +232,7 @@ fn the_attendant_gives_a_counter_to_non_humans(
         object
             .permanent()
             .unwrap()
-            .counters_of(&CounterKind::PlusOne),
+            .counters_of(&CounterKind::PlusOnePlusOne),
         counters
     );
     r405_replays(&driver);
@@ -334,7 +367,7 @@ fn the_hold_targets_only_tapped_creatures_as_it_is_cast(
     assert!(!options.legal.contains(&elves), "an untapped creature");
     driver.choose_targets(&[bears])?;
     driver.answer(Answer::PayMana(PayChoice::Auto))?;
-    driver.pass()?;
+    r405_settle(&mut driver)?;
     let id = driver.id_of("Grizzly Bears")?;
     assert_eq!(
         mtg_engine::characteristics::controller_of(driver.state(), id),
@@ -372,7 +405,7 @@ fn the_stone_targets_creatures_with_a_tap_ability(#[case] seats: usize) -> Resul
     assert!(!options.legal.contains(&bears));
     driver.choose_targets(&[elves])?;
     driver.answer(Answer::PayMana(PayChoice::Auto))?;
-    driver.pass()?;
+    r405_settle(&mut driver)?;
     let id = driver.id_of("Llanowar Elves")?;
     assert!(
         !driver
@@ -399,17 +432,13 @@ fn break_the_ice_targets_snow_or_colorless_lands(#[case] seats: usize) -> Result
         .battlefield(0, (0..2).map(|_| ready(mtg_testkit::cards::swamp())))
         .battlefield(
             foe,
-            [
-                ready(wastes()),
-                ready(forest()),
-                ready(card("Snow-Covered Forest").unwrap()),
-            ],
+            [ready(wastes()), ready(forest()), ready(r405_snowy_forest())],
         );
     for seat in 0..seats {
         scenario = scenario.library(seat, (0..5).map(|_| bear()));
     }
     let mut driver = Driver::from_scenario(scenario)?;
-    let snow = driver.target_named("Snow-Covered Forest")?;
+    let snow = driver.target_named("Snowy Forest")?;
     let forest = driver.target_named("Forest")?;
     let wastes = driver.target_named("Wastes")?;
     driver.begin_cast("Break the Ice")?;
