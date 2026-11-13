@@ -349,11 +349,13 @@ pub enum DeckErrorCode {
     StaleRead,
     /// 409: the account holds as many fix marks as allowed; taking one back makes room.
     FixMarkLimit,
+    /// 409: the account holds as many deck groups as allowed.
+    GroupLimit,
 }
 
 impl DeckErrorCode {
     /// Every code, in declaration order.
-    pub const ALL: [DeckErrorCode; 17] = [
+    pub const ALL: [DeckErrorCode; 18] = [
         DeckErrorCode::InvalidRequest,
         DeckErrorCode::InvalidDeck,
         DeckErrorCode::UnknownCards,
@@ -371,6 +373,7 @@ impl DeckErrorCode {
         DeckErrorCode::RateLimited,
         DeckErrorCode::StaleRead,
         DeckErrorCode::FixMarkLimit,
+        DeckErrorCode::GroupLimit,
     ];
 
     /// The text on the wire.
@@ -393,6 +396,7 @@ impl DeckErrorCode {
             DeckErrorCode::RateLimited => "rate_limited",
             DeckErrorCode::StaleRead => "stale_read",
             DeckErrorCode::FixMarkLimit => "fix_mark_limit",
+            DeckErrorCode::GroupLimit => "group_limit",
         }
     }
 }

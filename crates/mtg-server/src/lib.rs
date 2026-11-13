@@ -94,6 +94,7 @@ mod cookie;
 mod credentials;
 mod deck_cards;
 mod deck_choice;
+mod deck_groups;
 mod deck_import;
 mod decks;
 pub mod demo;
