@@ -4760,7 +4760,8 @@ impl Walker<'_> {
                 if *duration == Duration::NextUntapStep {
                     w.problem(C7_UNTAP_ONLY);
                 }
-                if *duration == Duration::DuringItsControllersNextTurn {
+                let attack_at = matches!(rule, GameRule::MustAttackAt { .. });
+                if *duration == Duration::DuringItsControllersNextTurn && !attack_at {
                     w.problem(L294_TURN_ONLY);
                 }
                 if *duration == Duration::UntilTurnSkipped && !matches!(rule, GameRule::Cant { action: Prohibited::SkipTurn, .. }) {
@@ -4774,11 +4775,21 @@ impl Walker<'_> {
                             ..
                         }
                     )
-                    // "can't cast instant or sorcery spells during that player's next turn" (Azor).
+                    // "can't cast instant or sorcery spells during that player's next turn" (Azor), and a requirement
+                    // to attack a planeswalker through that turn.
                     && !(*duration == Duration::TheirNextTurn
-                        && matches!(rule, GameRule::Cant { action: Prohibited::Cast { .. }, .. }))
+                        && (attack_at
+                            || matches!(rule, GameRule::Cant { action: Prohibited::Cast { .. }, .. })))
                 {
                     w.problem(RMT3_SKIP_ONLY);
+                }
+                if attack_at
+                    && !matches!(
+                        duration,
+                        Duration::TheirNextTurn | Duration::DuringItsControllersNextTurn
+                    )
+                {
+                    w.problem("a requirement to attack a planeswalker lasts through a player's next turn");
                 }
                 if matches!(rule, GameRule::CanBeCommander) {
                     w.problem("a card can be a commander by a static ability, not by an effect");
@@ -5575,6 +5586,18 @@ impl Walker<'_> {
             GameRule::MustBlockAttacker { .. } | GameRule::IgnoreHexproof { .. } => {
                 self.at(tag, |w| w.targeting_rule(rule));
             }
+            GameRule::MustAttackAt { who, of, at } => self.at(tag, |w| {
+                if who.is_none() && of.is_none() {
+                    w.problem("a requirement to attack names creatures or players");
+                }
+                if let Some(who) = who {
+                    w.at("who", |w| w.reference(who, Kind::Object));
+                }
+                if let Some(of) = of {
+                    w.at("of", |w| w.reference(of, Kind::Player));
+                }
+                w.at("at", |w| w.reference(at, Kind::Object));
+            }),
             GameRule::MustAttackPlayers { who, players } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Object));
                 w.at("players", |w| w.reference(players, Kind::Player));
@@ -5676,6 +5699,7 @@ impl Walker<'_> {
             | GameRule::LoyaltyCostsMore { who, .. } => {
                 self.at(tag, |w| w.reference(who, Kind::Player));
             }
+            GameRule::EchoRather(cost) => self.at(tag, |w| w.cost(cost)),
             GameRule::MayCast(permission) => self.at(tag, |w| w.cast_permission(permission)),
             GameRule::LookAtExiled { who, what, only } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
@@ -5985,7 +6009,8 @@ impl Walker<'_> {
             | ReplaceWhen::TurnedFaceUp { what }
             | ReplaceWhen::Explores { what }
             | ReplaceWhen::Connives { what }
-            | ReplaceWhen::Enters { what } => {
+            | ReplaceWhen::Enters { what }
+            | ReplaceWhen::BecomesAttached { what } => {
                 self.at("what", |w| w.selector(what));
             }
             ReplaceWhen::Discarded { what, by } => {
@@ -6040,6 +6065,16 @@ impl Walker<'_> {
         {
             self.problem(
                 "a copy of a spell is replaced only by a fixed number of additional copies",
+            );
+        }
+        if matches!(when, ReplaceWhen::BecomesAttached { .. })
+            && !matches!(
+                by,
+                ReplaceBy::Choose(EntersChoice::Color | EntersChoice::CreatureType)
+            )
+        {
+            self.problem(
+                "an attachment chooses only a color or a creature type as it becomes attached",
             );
         }
     }
@@ -6305,7 +6340,10 @@ impl Walker<'_> {
         {
             self.problem("turning face up only puts counters on the permanent itself");
         }
-        let enters = matches!(when, ReplaceWhen::Enters { .. });
+        let enters = matches!(
+            when,
+            ReplaceWhen::Enters { .. } | ReplaceWhen::BecomesAttached { .. }
+        );
         let zone_move = matches!(
             when,
             ReplaceWhen::ZoneChange { .. }
@@ -6382,6 +6420,7 @@ impl Walker<'_> {
             | ReplaceBy::WithCountersOf { .. }
             | ReplaceBy::EntersPrepared
             | ReplaceBy::ChooseWord(_)
+            | ReplaceBy::OpponentChooses(_)
             | ReplaceBy::UnderChosenOpponent
                 if !enters =>
             {

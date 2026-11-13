@@ -150,6 +150,7 @@ mod r4711_draft_notes;
 mod r4_audit;
 mod r4a_amplify;
 mod r4b_skip;
+mod r5501_opponent_chooses;
 mod r5507_dice;
 mod r5507_prevent;
 mod r5g;

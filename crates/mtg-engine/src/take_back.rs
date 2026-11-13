@@ -337,6 +337,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::CardConjured(_)
         | Event::Entered { .. }
         | Event::Attached { .. }
+        | Event::ChosenAsAttached { .. }
         | Event::AttachedToPlayer { .. }
         | Event::JoinedAttack { .. }
         | Event::AttackRedirected { .. }

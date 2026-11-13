@@ -192,6 +192,16 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             crate::attach::fold_attached_to_player(state, *object, *player)
         }
         Event::Unattached { object } => crate::attach::fold_unattached(state, *object),
+        Event::ChosenAsAttached { object, chosen } => {
+            if let Some(permanent) = state
+                .objects
+                .get_mut(object)
+                .and_then(|attachment| attachment.permanent.as_mut())
+            {
+                permanent.chosen = Some(chosen.clone());
+            }
+            Ok(())
+        }
         Event::Paired { object, with } => crate::soulbond::fold_paired(state, *object, *with),
         Event::Unpaired { object, with } => crate::soulbond::fold_unpaired(state, *object, *with),
         Event::TokenCreated(token) => crate::tokens::fold(state, token),

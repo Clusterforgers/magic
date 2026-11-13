@@ -746,6 +746,14 @@ pub enum Event {
         /// The permanent it is attached to.
         to: ObjectId,
     },
+    /// An attachment chose a value as it became attached ("As this Equipment becomes attached to a creature, choose a
+    /// color."): it replaces any value it chose before.
+    ChosenAsAttached {
+        /// The attachment.
+        object: ObjectId,
+        /// What it chose.
+        chosen: Chosen,
+    },
     /// An Aura became attached to a player (CR 303.4); it takes a new timestamp (CR 613.7a).
     AttachedToPlayer {
         /// The Aura.
@@ -1592,6 +1600,7 @@ impl Event {
             | Event::JoinedAttack { object, .. }
             | Event::AttackRedirected { object, .. }
             | Event::AttachedToPlayer { object, .. }
+            | Event::ChosenAsAttached { object, .. }
             | Event::Transformed { object, .. }
             | Event::Flipped { object }
             | Event::Prepared { object }

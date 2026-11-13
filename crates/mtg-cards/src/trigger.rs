@@ -948,6 +948,13 @@ pub enum ReplaceWhen {
         /// The permanent that would enter.
         what: Selector,
     },
+    /// An Aura, Equipment or Fortification matching the selector would become attached to a permanent (CR 701.3): "As
+    /// this Equipment becomes attached to a creature, choose a color." Only `Choose`; one attached again to the same
+    /// permanent does not become attached, so nothing is chosen anew.
+    BecomesAttached {
+        /// The attachment.
+        what: Selector,
+    },
     /// A creature matching the selector would explore (CR 701.44); only `Instead`, whose `Explore` of `Triggering` is
     /// the replaced exploration ("instead it explores, then it explores again").
     Explores {
@@ -1316,6 +1323,10 @@ pub enum ReplaceBy {
     /// As the permanent enters, its controller chooses one of these words ("choose Khans or Dragons"), which
     /// `Condition::EnteredAs` reads for as long as it stays.
     ChooseWord(Vec<String>),
+    /// As the permanent enters, an opponent of its controller chooses what the kind names ("As ~ enters, an opponent
+    /// chooses a creature type."): the controller chooses which opponent when there are several, and the choice is the
+    /// permanent's as if its controller had made it. Nothing is chosen when there is no opponent.
+    OpponentChooses(EntersChoice),
     /// The permanent enters under the control of an opponent its controller chooses as it enters ("~ enters under the
     /// control of an opponent of your choice"); under its controller's own control when there is no opponent.
     UnderChosenOpponent,

@@ -170,6 +170,11 @@ impl Delayed {
                     && state.is_active(self.controller)
                     && turn.step() >= Step::Upkeep
             }
+            Duration::UntilEndOfYourNextUpkeep => {
+                turn.number() != self.turn
+                    && state.is_active(self.controller)
+                    && turn.step() > Step::Upkeep
+            }
             Duration::WhileSourceOnBattlefield => !state.object(self.source.id).is_some_and(|o| {
                 o.counter() == self.source.counter && o.zone().is_permanent_zone()
             }),

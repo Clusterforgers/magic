@@ -336,8 +336,12 @@ fn searches(ctx: &Ctx, rule: &GameRule) -> String {
 }
 
 /// A rule of the game a static ability or an effect sets.
+#[allow(clippy::too_many_lines)] // one arm for every rule
 pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
     match rule {
+        GameRule::MustAttackAt { who, of, at } => {
+            r5501_attack_at(ctx, who.as_ref(), of.as_ref(), at)
+        }
         GameRule::MustAttack(who) => {
             format!("{} must attack each combat if able", phrase::who(ctx, who))
         }
@@ -360,6 +364,10 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
         GameRule::CantGainLife(who) => format!("{} can't gain life", phrase::who(ctx, who)),
         GameRule::CantDraw(who) => format!("{} can't draw cards", phrase::who(ctx, who)),
         GameRule::CantSearch(_) | GameRule::OwnSpellsCantSearch(_) => searches(ctx, rule),
+        GameRule::EchoRather(rather) => format!(
+            "you may pay {} rather than the echo cost of permanents you control",
+            cost(ctx, rather)
+        ),
         GameRule::NoMaxHandSize(who) => {
             format!("{} has no maximum hand size", phrase::who(ctx, who))
         }
@@ -590,6 +598,9 @@ pub(super) fn replace_when(ctx: &Ctx, when: &ReplaceWhen) -> String {
             phrase::who(ctx, by),
             phrase::selector(ctx, what)
         ),
+        ReplaceWhen::BecomesAttached { what } => {
+            format!("{} would become attached", phrase::selector(ctx, what))
+        }
         ReplaceWhen::Countered { what } => {
             format!("{} would be countered", phrase::selector(ctx, what))
         }
@@ -825,6 +836,24 @@ fn choose_after(
         depth,
         format!("then its controller chooses {}", generic::node(ctx, choice)),
     ));
+}
+
+/// "creatures that player controls must attack ~ each combat if able": a requirement to attack a planeswalker.
+fn r5501_attack_at(ctx: &Ctx, who: Option<&Ref>, of: Option<&Ref>, at: &Ref) -> String {
+    let attackers = match (who, of) {
+        (Some(who), None) => phrase::who(ctx, who),
+        (None, Some(of)) => format!("creatures {} controls", phrase::who(ctx, of)),
+        (Some(who), Some(of)) => format!(
+            "{} and creatures {} controls",
+            phrase::who(ctx, who),
+            phrase::who(ctx, of)
+        ),
+        (None, None) => "no creature".to_owned(),
+    };
+    format!(
+        "{attackers} must attack {} each combat if able",
+        phrase::who(ctx, at)
+    )
 }
 
 #[cfg(test)]

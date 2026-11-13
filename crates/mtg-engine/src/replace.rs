@@ -593,6 +593,8 @@ enum Unit {
         /// The move is the end of a countered spell (CR 701.6).
         countered: bool,
     },
+    /// An attachment would become attached to a permanent.
+    Attach { object: ObjectId },
     /// A card would enter the battlefield.
     Enter {
         object: ObjectId,
@@ -671,7 +673,8 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::Destroyed { what }
         | ReplaceWhen::Countered { what }
         | ReplaceWhen::TurnedFaceUp { what }
-        | ReplaceWhen::Discarded { what, .. } => only_this(what),
+        | ReplaceWhen::Discarded { what, .. }
+        | ReplaceWhen::BecomesAttached { what } => only_this(what),
         ReplaceWhen::Damage { to, .. } | ReplaceWhen::CountersPut { on: to, .. } => {
             matches!(to, Some(Ref::This))
         }
@@ -785,7 +788,6 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::Tribute(_)
         | ReplaceBy::Amplify(_)
         | ReplaceBy::MayWithCounters { .. }
-        | ReplaceBy::Choose(_)
         | ReplaceBy::PayLifeOrTapped(_)
         | ReplaceBy::TappedForCounters { .. }
         | ReplaceBy::RevealOrTapped(_)
@@ -794,6 +796,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::DayIfNeither
         | ReplaceBy::EntersPrepared
         | ReplaceBy::ChooseWord(_)
+        | ReplaceBy::OpponentChooses(_)
         | ReplaceBy::UnderChosenOpponent
         | ReplaceBy::Riot
         | ReplaceBy::WithCounterOf(_)
@@ -804,7 +807,8 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::AsEntersWith { .. }
         | ReplaceBy::ChooseAfter { .. }
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
-        ReplaceBy::Instead(_) => !matches!(unit, Unit::Other),
+        ReplaceBy::Choose(_) => matches!(unit, Unit::Enter { .. } | Unit::Attach { .. }),
+        ReplaceBy::Instead(_) => !matches!(unit, Unit::Other | Unit::Attach { .. }),
         ReplaceBy::Plus(_) => matches!(unit, Unit::Tokens { .. }),
         ReplaceBy::UnderYourControl => matches!(unit, Unit::Tokens { .. } | Unit::Enter { .. }),
         ReplaceBy::InsteadNext(_) => {
@@ -842,6 +846,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::WithCountersOf { .. }
                 | ReplaceBy::EntersPrepared
                 | ReplaceBy::ChooseWord(_)
+                | ReplaceBy::OpponentChooses(_)
                 | ReplaceBy::UnderChosenOpponent
                 | ReplaceBy::BecomesChoice(_)
                 | ReplaceBy::Mill(_)
@@ -998,6 +1003,7 @@ impl Pass<'_> {
                 }
             }
             Event::LifeGained { player, .. } => Unit::Life { player: *player },
+            Event::Attached { object, .. } => Unit::Attach { object: *object },
             Event::PlayerLost { player, .. } => Unit::Loss { player: *player },
             Event::CardDrawn { player, .. } | Event::DrewFromEmptyLibrary { player } => {
                 Unit::Draw { player: *player }
@@ -1210,6 +1216,7 @@ impl Pass<'_> {
                     ..
                 },
             )
+            | (ReplaceWhen::BecomesAttached { what }, Unit::Attach { object })
             | (ReplaceWhen::Enters { what }, Unit::Enter { object, .. }) => {
                 let Some(reference) = self.reference(*object) else {
                     return Ok(false);
@@ -1876,7 +1883,7 @@ impl Pass<'_> {
                 Target::Player(player) => *player,
                 Target::Object(object) => controller_of(object.id),
             },
-            Unit::Move { object, .. } => controller_of(*object),
+            Unit::Move { object, .. } | Unit::Attach { object } => controller_of(*object),
             Unit::Other => self.state.active_or_next(),
         }
     }
@@ -2322,6 +2329,9 @@ impl Pass<'_> {
             (ReplaceBy::UnderYourControl, _) => {
                 self.r5517_under_you(at, candidate.controller, &unit);
                 self.slots[at].applied = applied;
+            }
+            (ReplaceBy::Choose(kind), Unit::Attach { object }) => {
+                return self.r5501_choose_as_attached(at, candidate, *kind, *object, applied);
             }
             (_, Unit::Enter { object, controller }) => {
                 let entering = (*object, *controller);
@@ -3054,7 +3064,7 @@ impl Pass<'_> {
             ReplaceBy::Choose(EntersChoice::RevealedNonlandName) => {
                 return self.r4702_revealed_name(at, source, object, controller, applied);
             }
-            ReplaceBy::Choose(_) | ReplaceBy::ChooseWord(_) => {
+            ReplaceBy::Choose(_) | ReplaceBy::ChooseWord(_) | ReplaceBy::OpponentChooses(_) => {
                 let chosen = match self.e15f_chosen(source, controller, by)? {
                     Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
                     Asked::Got(chosen) => chosen,
@@ -3831,6 +3841,7 @@ mod w5d_instead;
 mod r283_prevent;
 mod r304c_amounts;
 mod r4703_loss;
+mod r5501_attached;
 mod w9c_prevent;
 
 /// The counters for each permanent devoured: "Devour X, where X is the number of creatures devoured this way" is

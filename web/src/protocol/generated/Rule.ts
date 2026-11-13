@@ -13,7 +13,24 @@ import type { Target } from "./Target";
  * A rule of the game as the engine plays it: the players or objects the data's references named, found when the rule
  * began (an effect) or whenever the state changes (a static ability).
  */
-export type Rule = { "MustAttack": Array<ObjectRef> } | { "MustAttackPlayers": Array<[ObjectRef, PlayerId]> } | { "MustBlock": Array<ObjectRef> } | { "MustBlockAttacker": { 
+export type Rule = { "MustAttack": Array<ObjectRef> } | { "MustAttackPlayers": Array<[ObjectRef, PlayerId]> } | { "MustAttackAt": { 
+/**
+ * The creatures named.
+ */
+creatures: Array<ObjectRef>, 
+/**
+ * The players whose creatures attack it.
+ */
+players: Array<PlayerId>, 
+/**
+ * The planeswalker they attack.
+ */
+at: ObjectRef, 
+/**
+ * The players whose next turn the rule lasts through: the named players, or the controllers of the named
+ * creatures as it began.
+ */
+turn_of: Array<PlayerId>, } } | { "MustBlock": Array<ObjectRef> } | { "MustBlockAttacker": { 
 /**
  * The creatures that must block it.
  */
@@ -129,7 +146,15 @@ spend_as: unknown,
 /**
  * The spells it is for; everything when absent.
  */
-spells: unknown, } } | { "RevealTop": Array<PlayerId> } | { "RevealHand": Array<PlayerId> } | { "ControlSearches": Array<PlayerId> } | { "ExileFound": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "LoyaltyTwice": Array<PlayerId> } | { "RevealFirstDraw": { 
+spells: unknown, } } | { "RevealTop": Array<PlayerId> } | { "RevealHand": Array<PlayerId> } | { "ControlSearches": Array<PlayerId> } | { "ExileFound": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "LoyaltyTwice": Array<PlayerId> } | { "EchoRather": { 
+/**
+ * The players it covers.
+ */
+players: Array<PlayerId>, 
+/**
+ * The cost they may pay instead.
+ */
+cost: unknown, } } | { "RevealFirstDraw": { 
 /**
  * Whether the reveal is optional.
  */

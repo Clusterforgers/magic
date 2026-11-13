@@ -92,6 +92,8 @@ mod r280_steps;
 mod r287_words;
 mod r301_phasing;
 mod r307c_words;
+mod r5501_attack_at;
+mod r5501_base_equal;
 mod rmt3_enters;
 mod rmt3_skips;
 
@@ -3233,6 +3235,8 @@ impl Writer<'_> {
             .or_else(|| rmt3_enters::rmt3_shield_text(effect))
             .or_else(|| rmt3_enters::rmt3_spell_enters_text(effect))
             .or_else(|| self.rmt3_skip(effect))
+            .or_else(|| self.r5501_attack_at(effect))
+            .or_else(|| self.r5501_base_equal(effect))
             .or_else(|| Self::r280_skip_turn(effect))
             .or_else(|| rmt3_enters::rmt3_flash_text(effect))
             .or_else(|| r287_words::r287_text(effect))

@@ -277,6 +277,9 @@ pub enum Duration {
     /// Until the controller's next upkeep begins: the one of a later turn, so one begun in their upkeep lasts until the
     /// upkeep of their next turn.
     UntilYourNextUpkeep,
+    /// Until the end of the controller's next upkeep: the one of a later turn, so one begun in their upkeep lasts
+    /// through the upkeep of their next turn and ends as its draw step begins.
+    UntilEndOfYourNextUpkeep,
     /// Until the end of the controller's next turn.
     UntilEndOfYourNextTurn,
     /// Only during the next turn of the player who controls the permanent it applies to as it begins ("that creature can't
@@ -732,6 +735,20 @@ pub enum GameRule {
         /// The players, in the order they are paired.
         players: Ref,
     },
+    /// Creatures attack the planeswalker `at` names each combat if able (CR 508.1d): the creatures `who` names, and
+    /// every creature the players `of` names control as attackers are declared, whenever it came under their control
+    /// ("creatures that player controls attack ~ if able"). A creature that can't attack it may attack as it could
+    /// otherwise.
+    MustAttackAt {
+        /// The creatures that attack it; none when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        who: Option<Ref>,
+        /// The players whose creatures attack it; none when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        of: Option<Ref>,
+        /// The planeswalker they attack.
+        at: Ref,
+    },
     /// The creatures block each combat if able: a requirement on the declaration (CR 509.1c).
     MustBlock(Ref),
     /// Each creature `who` names blocks the attacker `attacker` names if able (Provoke): a requirement on the block
@@ -922,6 +939,9 @@ pub enum GameRule {
     /// The players may activate the loyalty abilities of planeswalkers they control twice each turn rather than only
     /// once (CR 606.3).
     LoyaltyTwice(Ref),
+    /// The controller may pay this cost rather than the echo cost of each permanent they control (CR 702.30, CR 118.9):
+    /// "You may pay {0} rather than pay the echo cost for permanents you control." Paying it counts as paying echo.
+    EchoRather(Cost),
     /// The controller reveals the first card they draw each turn as they draw it ("Reveal the first card you draw each
     /// turn."): only on their own turns with `your_turns`, and only when they choose to with `may` ("You may reveal
     /// the first card you draw each turn as you draw it."). `TriggerPattern::FirstDrawRevealed` triggers on the reveal.
@@ -1452,6 +1472,14 @@ mod tests {
     #[case(
         GameRule::AdditionalLandPlays { who: Ref::EachPlayer, count: Amount::Fixed(2) },
         r#"{"AdditionalLandPlays":{"who":"EachPlayer","count":2}}"#
+    )]
+    #[case(
+        GameRule::EchoRather(serde_json::from_str(r#""{0}""#).unwrap()),
+        r#"{"EchoRather":"{0}"}"#
+    )]
+    #[case(
+        GameRule::MustAttackAt { who: None, of: Some(Ref::Target(0)), at: Ref::This },
+        r#"{"MustAttackAt":{"of":{"Target":0},"at":"This"}}"#
     )]
     #[case(GameRule::CanBeCommander, r#""CanBeCommander""#)]
     #[case(GameRule::AnyNumberInDeck, r#""AnyNumberInDeck""#)]

@@ -72,6 +72,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     "Forest enters tapped under Bo's control",
   ],
   Attached: [{ Attached: { object: 3, to: 1 } }, 'Forest becomes attached to Grizzly Bears'],
+  ChosenAsAttached: [
+    { ChosenAsAttached: { object: 3, chosen: { Color: 'Red' } } },
+    'Forest becomes attached, choosing red',
+  ],
   AttachedToPlayer: [{ AttachedToPlayer: { object: 3, player: 1 } }, 'Forest enchants Bo'],
   Unattached: [{ Unattached: { object: 3 } }, 'Forest becomes unattached'],
   Paired: [{ Paired: { object: 3, with: 1 } }, 'Forest is paired with Grizzly Bears'],
@@ -1134,6 +1138,13 @@ describe('events with more than one shape', () => {
     [
       ruleEffect({ MustAttackPlayers: [[{ id: 1, counter: 0 }, 0]] }, 'UntilEndOfTurn'),
       'Grizzly Bears must attack Ana if able until end of turn',
+    ],
+    [
+      ruleEffect(
+        { MustAttackAt: { creatures: [], players: [1], at: { id: 2, counter: 0 }, turn_of: [1] } },
+        'UntilEndOfTurn',
+      ),
+      'Creatures Bo controls must attack Hill Giant if able until end of turn',
     ],
     [
       ruleEffect({ MustAttack: [{ id: 1, counter: 0 }] }, 'UntilEndOfTurn'),

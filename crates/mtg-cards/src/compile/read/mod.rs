@@ -245,6 +245,8 @@ mod r4708_reveal;
 mod r4709_differ;
 mod r4710_atoms;
 mod r4711_drafted;
+mod r5501_attached;
+mod r5501_echo;
 mod r5504_everywhere;
 mod r5504_look;
 mod r5505_convert;

@@ -349,6 +349,11 @@ A copy effect gives an object the copiable values of another (`CreateToken` with
 | Spending only some mana | `GameRule::SpendOnlyFrom(filter)` ("Spend only mana produced by basic lands to cast this spell.") offers the cast only the pool's mana whose known source the filter holds for and the mana abilities of such sources (`r4705_spend_from.rs`). |
 | Poison as a cost | `CostItem::GetPoison(n)` ("Ward—Get five poison counters.") gives the payer n poison counters. |
 | Keywords of graveyard cards | A `Continuous` that only adds keywords reaches a card in a graveyard and lasts while it stays there ("Target instant or sorcery card in your graveyard gains flashback until end of turn."). |
+| Echo paid another way | `GameRule::EchoRather(cost)` ("You may pay {0} rather than pay the echo cost for permanents you control."): the echo payment of a permanent its controller controls offers that cost beside the echo cost, as a payment of one of several costs; paying it counts as paying echo (`r5501_echo_rather.rs`). |
+| Attacking a planeswalker | `GameRule::MustAttackAt { who, of, at }`: the creatures `who` names, and every creature the players `of` names control as attackers are declared, attack the planeswalker `at` if able (CR 508.1d); with `TheirNextTurn` ("During target opponent's next turn, creatures that player controls attack ~ if able") or `DuringItsControllersNextTurn` it lasts through the next turn of those players, or of the creatures' controllers as it began. |
+| An opponent's choice as it enters | `ReplaceBy::OpponentChooses(kind)` ("As this creature enters, an opponent chooses a creature type."): the controller names the opponent when there are several, and that opponent's choice is the permanent's. |
+| Through the next upkeep | `Duration::UntilEndOfYourNextUpkeep` lasts through the controller's next upkeep of a later turn and ends as its draw step begins (Halfdane). |
+| Chosen as it becomes attached | `ReplaceWhen::BecomesAttached` with `ReplaceBy::Choose` ("As this Equipment becomes attached to a creature, choose a color."): the controller of the attachment chooses as the `Attached` event is replaced, and `Event::ChosenAsAttached` puts the choice on it in place of the earlier one, so its static abilities read "the last chosen color"; an equip to the creature it is on attaches nothing and asks nothing. |
 
 ## Validation
 

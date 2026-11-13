@@ -67,6 +67,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     {
         return super::r281_pay_one_of::run(cx, who, alternatives);
     }
+    if times == 1
+        && let Some(alternatives) = super::r5501_echo_rather::r5501_alternatives(cx, effect)
+    {
+        return super::r281_pay_one_of::run(cx, who, &alternatives);
+    }
     // A cost paid no times is paid, and nobody is asked.
     if times == 0 {
         return Ok(Run::Done {

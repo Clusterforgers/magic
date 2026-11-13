@@ -1,7 +1,7 @@
 //! `Effect::Rule`: a rule of the game changes for a while (CR 611).
 
 use mtg_cards::effect::Effect;
-use mtg_cards::modify::GameRule;
+use mtg_cards::modify::{Duration, GameRule};
 use mtg_cards::refs::Pred;
 use mtg_core::ids::EffectId;
 use serde_json::Value;
@@ -23,14 +23,21 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     if names_nothing(&rule) {
         return Ok(Run::events(Vec::new()));
     }
+    // "During its controller's next turn" of a requirement to attack is the next turn of the players it waits for.
+    let duration = match (&rule, duration) {
+        (crate::rules::Rule::MustAttackAt { .. }, Duration::DuringItsControllersNextTurn) => {
+            Duration::TheirNextTurn
+        }
+        (_, other) => other.clone(),
+    };
     Ok(Run::events(vec![Event::RuleCreated {
         effect: Box::new(RuleEffect {
             id: EffectId(state.next_effect),
             rule,
-            duration: duration.clone(),
+            turn: crate::effects::began_turn(state, &duration, cx.controller()),
+            duration,
             source: Some(cx.scope.source),
             controller: cx.controller(),
-            turn: crate::effects::began_turn(state, duration, cx.controller()),
         }),
     }]))
 }
