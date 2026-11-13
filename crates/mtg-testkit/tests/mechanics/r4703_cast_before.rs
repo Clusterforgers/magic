@@ -45,7 +45,7 @@ fn life(driver: &Driver, seat: usize) -> i32 {
 fn settle(driver: &mut Driver) -> Result<(), ScriptError> {
     for _ in 0..200 {
         if driver.state().zone(Zone::Stack).is_empty()
-            && driver.state().pending_triggers.is_empty()
+            && driver.state().pending_triggers().is_empty()
         {
             return Ok(());
         }

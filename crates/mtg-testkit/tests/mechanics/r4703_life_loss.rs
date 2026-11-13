@@ -70,7 +70,7 @@ fn bleed(
     driver.cast("Bleed")?;
     // The sorcery resolves, then each loss's trigger goes on the stack and resolves.
     for _ in 0..40 {
-        if driver.state().zone(Zone::Stack).is_empty() && driver.state().pending_triggers.is_empty() {
+        if driver.state().zone(Zone::Stack).is_empty() && driver.state().pending_triggers().is_empty() {
             break;
         }
         driver.answer_passively()?;
