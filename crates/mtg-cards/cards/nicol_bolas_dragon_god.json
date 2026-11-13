@@ -10,31 +10,97 @@
         {
           "Manual": {
             "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 84 }
-          }
-        },
-        {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 85, "end": 178 }
+            "span": {
+              "start": 0,
+              "end": 84
+            }
           }
         },
         {
           "Loyalty": {
-            "cost": { "Minus": 3 },
+            "cost": {
+              "Plus": 1
+            },
+            "effects": [
+              {
+                "Draw": {}
+              },
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": {
+                    "Union": [
+                      {
+                        "Each": [
+                          {
+                            "In": "Hand"
+                          },
+                          {
+                            "OwnedBy": "Chooser"
+                          }
+                        ]
+                      },
+                      {
+                        "Each": [
+                          {
+                            "ControlledBy": "Chooser"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Exile": {
+                  "what": {
+                    "Bound": "exiled"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": {
+              "Minus": 3
+            },
             "targets": [
               {
                 "what": {
-                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Type": "Creature"
+                        },
+                        {
+                          "Type": "Planeswalker"
+                        }
+                      ]
+                    }
+                  ]
                 }
               }
             ],
-            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Target": 0
+                  }
+                }
+              }
+            ]
           }
         },
         {
           "Loyalty": {
-            "cost": { "Minus": 8 },
+            "cost": {
+              "Minus": 8
+            },
             "effects": [
               {
                 "LoseGame": {
@@ -45,9 +111,22 @@
                         "Compare": {
                           "left": {
                             "Count": [
-                              { "Supertype": "Legendary" },
-                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
-                              { "ControlledBy": "You" }
+                              {
+                                "Supertype": "Legendary"
+                              },
+                              {
+                                "AnyOf": [
+                                  {
+                                    "Type": "Creature"
+                                  },
+                                  {
+                                    "Type": "Planeswalker"
+                                  }
+                                ]
+                              },
+                              {
+                                "ControlledBy": "You"
+                              }
                             ]
                           },
                           "op": "Eq",

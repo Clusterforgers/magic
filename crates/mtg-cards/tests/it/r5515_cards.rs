@@ -115,6 +115,7 @@ fn r5515_probe() {
 #[case("Marvel Boy, Noh-Varr")]
 #[case("Jack of Hearts, Volatile Hero")]
 #[case("Ice Cave")]
+#[case("Hulk, Gamma Goliath")]
 fn r5515_reads_back_whole(#[case] name: &str) {
     let report = r5515_report(name, &r5515_file(name));
     assert_eq!(

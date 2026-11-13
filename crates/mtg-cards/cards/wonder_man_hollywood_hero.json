@@ -7,33 +7,13 @@
       "name": "Wonder Man, Hollywood Hero",
       "oracle_fingerprint": "e4bd120029d04d1d669ab9a716c84ed0",
       "abilities": [
-        {
-          "Keyword": "Flying"
-        },
-        {
-          "Rule": {
-            "rule": {
-              "PowerUpAgain": [
-                {
-                  "ControlledBy": "You"
-                }
-              ]
-            }
-          }
-        },
+        { "Keyword": "Flying" },
+        { "Rule": { "rule": { "PowerUpAgain": [{ "ControlledBy": "You" }] } } },
         {
           "Activated": {
             "cost": "{5}{R}{R}",
-            "effects": [
-              {
-                "PutCounters": {
-                  "on": "This",
-                  "counter": "+1/+1",
-                  "count": 2
-                }
-              }
-            ],
-            "limit": "PowerUp"
+            "limit": "PowerUp",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
           }
         }
       ]

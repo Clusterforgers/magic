@@ -7,24 +7,11 @@
       "name": "Maddening Hex",
       "oracle_fingerprint": "bd792ce2adb03426f8759cee177831bc",
       "abilities": [
-        {
-          "Keyword": {
-            "EnchantPlayer": {}
-          }
-        },
+        { "Keyword": { "EnchantPlayer": {} } },
         {
           "Triggered": {
             "when": {
-              "SpellCast": {
-                "what": [
-                  {
-                    "Not": {
-                      "Type": "Creature"
-                    }
-                  }
-                ],
-                "by": "AttachedPlayer"
-              }
+              "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "AttachedPlayer" }
             },
             "effects": [
               {
@@ -36,12 +23,8 @@
                       "effects": [
                         {
                           "DealDamage": {
-                            "to": {
-                              "ControllerOf": "Triggering"
-                            },
-                            "amount": {
-                              "DieResult": "Only"
-                            }
+                            "to": { "ControllerOf": "Triggering" },
+                            "amount": { "DieResult": "Only" }
                           }
                         }
                       ]
@@ -54,24 +37,13 @@
                   "from": {
                     "PlayersWhere": {
                       "who": "Opponents",
-                      "test": {
-                        "Not": {
-                          "Among": "AttachedPlayer"
-                        }
-                      }
+                      "test": { "Not": { "Among": "AttachedPlayer" } }
                     }
                   },
                   "as": "opponent"
                 }
               },
-              {
-                "Attach": {
-                  "what": "This",
-                  "to": {
-                    "Bound": "opponent"
-                  }
-                }
-              }
+              { "Attach": { "what": "This", "to": { "Bound": "opponent" } } }
             ]
           }
         }

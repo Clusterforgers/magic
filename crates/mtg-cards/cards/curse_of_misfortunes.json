@@ -7,18 +7,10 @@
       "name": "Curse of Misfortunes",
       "oracle_fingerprint": "b87d3e6d184991801d6b4d1295eb0066",
       "abilities": [
-        {
-          "Keyword": {
-            "EnchantPlayer": {}
-          }
-        },
+        { "Keyword": { "EnchantPlayer": {} } },
         {
           "Triggered": {
-            "when": {
-              "StepBegins": {
-                "step": "Upkeep"
-              }
-            },
+            "when": { "StepBegins": { "step": "Upkeep" } },
             "effects": [
               {
                 "May": {
@@ -26,20 +18,11 @@
                     {
                       "Search": {
                         "filter": [
-                          {
-                            "Subtype": "Curse"
-                          },
+                          { "Subtype": "Curse" },
                           {
                             "Not": {
                               "SharesName": {
-                                "Each": [
-                                  {
-                                    "Subtype": "Curse"
-                                  },
-                                  {
-                                    "AttachedTo": "AttachedPlayer"
-                                  }
-                                ]
+                                "Each": [{ "Subtype": "Curse" }, { "AttachedTo": "AttachedPlayer" }]
                               }
                             }
                           }
@@ -49,19 +32,11 @@
                     },
                     {
                       "Move": {
-                        "what": {
-                          "Bound": "found"
-                        },
-                        "to": {
-                          "BattlefieldAttached": {
-                            "to": "AttachedPlayer"
-                          }
-                        }
+                        "what": { "Bound": "found" },
+                        "to": { "BattlefieldAttached": { "to": "AttachedPlayer" } }
                       }
                     },
-                    {
-                      "Shuffle": {}
-                    }
+                    { "Shuffle": {} }
                   ]
                 }
               }

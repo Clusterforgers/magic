@@ -7,56 +7,23 @@
       "name": "Bitterheart Witch",
       "oracle_fingerprint": "d2db31b62956a05d64f13e6a2ffd8619",
       "abilities": [
-        {
-          "Keyword": "Deathtouch"
-        },
+        { "Keyword": "Deathtouch" },
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "from": "Battlefield",
-                "to": "Graveyard"
-              }
-            },
-            "targets": [
-              {
-                "what": "Player"
-              }
-            ],
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "Player" }],
             "effects": [
               {
                 "May": {
                   "effects": [
-                    {
-                      "Search": {
-                        "filter": [
-                          {
-                            "Subtype": "Curse"
-                          }
-                        ],
-                        "as": "found"
-                      }
-                    },
+                    { "Search": { "filter": [{ "Subtype": "Curse" }], "as": "found" } },
                     {
                       "Move": {
-                        "what": {
-                          "Bound": "found"
-                        },
-                        "to": {
-                          "BattlefieldAttached": {
-                            "to": {
-                              "Target": 0
-                            }
-                          }
-                        }
+                        "what": { "Bound": "found" },
+                        "to": { "BattlefieldAttached": { "to": { "Target": 0 } } }
                       }
                     },
-                    {
-                      "Shuffle": {}
-                    }
+                    { "Shuffle": {} }
                   ]
                 }
               }

@@ -7,58 +7,30 @@
       "name": "Radiant Grace",
       "oracle_fingerprint": "7559632ad72805d426ba0608652cb51b",
       "abilities": [
-        {
-          "Keyword": {
-            "Enchant": [
-              {
-                "Type": "Creature"
-              }
-            ]
-          }
-        },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
         {
           "Static": {
             "affected": "Attached",
-            "mods": [
-              {
-                "ModifyPT": {
-                  "power": 1,
-                  "toughness": 0
-                }
-              },
-              {
-                "AddKeyword": "Vigilance"
-              }
-            ]
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Vigilance" }]
           }
         },
         {
           "Triggered": {
             "when": {
               "ZoneChange": {
-                "what": [
-                  {
-                    "Is": "Attached"
-                  }
-                ],
+                "what": [{ "Is": "Attached" }],
                 "from": "Battlefield",
                 "to": "Graveyard"
               }
             },
-            "targets": [
-              {
-                "what": "Opponent"
-              }
-            ],
+            "targets": [{ "what": "Opponent" }],
             "effects": [
               {
                 "Move": {
                   "what": "This",
                   "to": {
                     "BattlefieldAttached": {
-                      "to": {
-                        "Target": 0
-                      },
+                      "to": { "Target": 0 },
                       "transformed": true,
                       "under": "You"
                     }
@@ -74,24 +46,11 @@
       "name": "Radiant Restraints",
       "oracle_fingerprint": "24a262926a557045ec782bb5291d8399",
       "abilities": [
-        {
-          "Keyword": {
-            "EnchantPlayer": {}
-          }
-        },
+        { "Keyword": { "EnchantPlayer": {} } },
         {
           "Replacement": {
             "when": {
-              "Enters": {
-                "what": [
-                  {
-                    "Type": "Creature"
-                  },
-                  {
-                    "ControlledBy": "AttachedPlayer"
-                  }
-                ]
-              }
+              "Enters": { "what": [{ "Type": "Creature" }, { "ControlledBy": "AttachedPlayer" }] }
             },
             "by": "Tapped"
           }

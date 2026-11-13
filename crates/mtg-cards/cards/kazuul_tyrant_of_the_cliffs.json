@@ -5,31 +5,18 @@
   "faces": [
     {
       "name": "Kazuul, Tyrant of the Cliffs",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "ceb3e7a46b561e84de52b934a3553cb3",
       "abilities": [
         {
           "Triggered": {
             "when": {
-              "Attacks": {
-                "what": [
-                  {
-                    "Type": "Creature"
-                  },
-                  {
-                    "ControlledBy": "Opponents"
-                  }
-                ]
-              }
+              "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
             },
-            "if": {
-              "Among": "Defending"
-            },
+            "if": { "Among": "Defending" },
             "effects": [
               {
                 "Pay": {
-                  "who": {
-                    "ControllerOf": "Triggering"
-                  },
+                  "who": { "ControllerOf": "Triggering" },
                   "cost": "{3}",
                   "unpaid": [
                     {
@@ -37,15 +24,9 @@
                         "token": {
                           "Custom": {
                             "name": "Ogre",
-                            "colors": [
-                              "Red"
-                            ],
-                            "types": [
-                              "Creature"
-                            ],
-                            "subtypes": [
-                              "Ogre"
-                            ],
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Ogre"],
                             "power": 3,
                             "toughness": 3
                           }

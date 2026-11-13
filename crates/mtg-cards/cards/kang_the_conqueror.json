@@ -7,25 +7,14 @@
       "name": "Kang the Conqueror",
       "oracle_fingerprint": "f1eec4a1d08a2787dec68cb29cc77514",
       "abilities": [
-        {
-          "Keyword": "Flying"
-        },
+        { "Keyword": "Flying" },
         {
           "Activated": {
             "cost": "{5}{U}{U}{U}",
             "limit": "PowerUp",
             "effects": [
-              {
-                "PutCounters": {
-                  "on": "This",
-                  "counter": "+1/+1"
-                }
-              },
-              {
-                "ExtraTurn": {
-                  "no_power_up": true
-                }
-              }
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "ExtraTurn": { "no_power_up": true } }
             ]
           }
         }

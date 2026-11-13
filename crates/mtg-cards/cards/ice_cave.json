@@ -5,40 +5,22 @@
   "faces": [
     {
       "name": "Ice Cave",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "6d1e68a85633f62c0039ea56ec161d6c",
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "SpellCast": {}
-            },
+            "when": { "SpellCast": {} },
             "effects": [
               {
                 "Pay": {
                   "who": {
                     "PlayersWhere": {
                       "who": "EachPlayer",
-                      "test": {
-                        "Not": {
-                          "Among": {
-                            "ControllerOf": "Triggering"
-                          }
-                        }
-                      }
+                      "test": { "Not": { "Among": { "ControllerOf": "Triggering" } } }
                     }
                   },
-                  "cost": [
-                    {
-                      "ManaCostOf": "Triggering"
-                    }
-                  ],
-                  "paid": [
-                    {
-                      "Counter": {
-                        "what": "Triggering"
-                      }
-                    }
-                  ]
+                  "cost": [{ "ManaCostOf": "Triggering" }],
+                  "paid": [{ "Counter": { "what": "Triggering" } }]
                 }
               }
             ]
