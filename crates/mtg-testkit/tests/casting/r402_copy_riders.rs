@@ -81,11 +81,12 @@ fn r402_cast_with(
     let mut permanents = lands(4, forest);
     permanents.extend(lands(4, mountain));
     permanents.push(ready(copier));
+    let name = spell.name.clone();
     let scenario = Scenario::new(seats)
         .battlefield(0, permanents)
-        .hand(0, vec![spell.clone()]);
+        .hand(0, vec![spell]);
     let mut driver = Driver::from_scenario(scenario)?;
-    driver.begin_cast(&spell.name)?;
+    driver.begin_cast(&name)?;
     for seat in targets {
         let target = driver.target_player(*seat);
         driver.choose_targets(&[target])?;
