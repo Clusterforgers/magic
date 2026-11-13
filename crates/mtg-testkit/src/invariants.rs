@@ -1164,14 +1164,7 @@ impl InvariantChecker {
                 origin,
             } => self.check_loyalty_activation(*player, *source, *ability, *origin),
             Event::LifePaid { player, amount } => self.lose_life(*player, *amount, "life paid"),
-            Event::LifeLost { player, amount } => {
-                // The spotlight's grace cuts the life a boss's side takes from a hero.
-                let before = self.expected_life.get(player.index()).copied().unwrap_or(0);
-                let wanted = i32::try_from(*amount).unwrap_or(i32::MAX);
-                let lost =
-                    mtg_engine::spotlight::graced_life_loss(&self.shadow, *player, wanted, before);
-                self.lose_life(*player, u32::try_from(lost).unwrap_or(0), "life lost")
-            }
+            Event::LifeLost { player, amount } => self.life_lost(*player, *amount),
             Event::LifeGained { player, amount } => {
                 self.change_life(*player, i64::from(*amount), "life gained")
             }
@@ -1524,6 +1517,14 @@ impl InvariantChecker {
             }
         }
         Ok(())
+    }
+
+    /// A `LifeLost`, less what the spotlight's grace holds back from a hero.
+    fn life_lost(&mut self, player: PlayerId, amount: u32) -> Result<(), Violation> {
+        let before = self.expected_life.get(player.index()).copied().unwrap_or(0);
+        let wanted = i32::try_from(amount).unwrap_or(i32::MAX);
+        let lost = mtg_engine::spotlight::graced_life_loss(&self.shadow, player, wanted, before);
+        self.lose_life(player, u32::try_from(lost).unwrap_or(0), "life lost")
     }
 
     /// Takes `amount` off the independent life history of `player` and compares it with the shadow state.
