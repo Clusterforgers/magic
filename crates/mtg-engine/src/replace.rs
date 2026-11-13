@@ -803,6 +803,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::Instead(_) => !matches!(unit, Unit::Other),
         ReplaceBy::Plus(_) => matches!(unit, Unit::Tokens { .. }),
+        ReplaceBy::UnderYourControl => matches!(unit, Unit::Tokens { .. } | Unit::Enter { .. }),
         ReplaceBy::InsteadNext(_) => {
             matches!(
                 unit,
@@ -1166,7 +1167,7 @@ impl Pass<'_> {
                     ..
                 },
             ) => scope.players(who)?.contains(player),
-            (ReplaceWhen::LifeGain { who }, Unit::Life { player })
+            (ReplaceWhen::LifeGain { who, .. }, Unit::Life { player })
             | (ReplaceWhen::LoseGame { who }, Unit::Loss { player })
             | (ReplaceWhen::Draw { who, .. }, Unit::Draw { player }) => {
                 scope.players(who)?.contains(player)
@@ -1278,6 +1279,9 @@ impl Pass<'_> {
                 || (unpreventable && Action::Replace(by.clone()).prevents())
                 || matches!(by, ReplaceBy::Dredge(cards) if !step.can_dredge(at, source.object.id, *cards))
                 || !step.c6_blk_matches(at, source, when, &unit)?
+                || !step.r5517_caused_own(at, when, &unit)
+                || (matches!(by, ReplaceBy::UnderYourControl)
+                    && !step.r5517_from_opponent(source.controller, &unit))
             {
                 return Ok(());
             }
@@ -1989,10 +1993,17 @@ impl Pass<'_> {
                 continue;
             } else {
                 let selfs: Vec<&Candidate> = candidates.iter().filter(|c| c.is_self).collect();
-                let pool: Vec<&Candidate> = if selfs.is_empty() {
-                    candidates.iter().collect()
-                } else {
+                // After the self-replacements, one that changes who controls what enters goes first (CR 616.1b).
+                let control: Vec<&Candidate> = candidates
+                    .iter()
+                    .filter(|c| matches!(c.action, Action::Replace(ReplaceBy::UnderYourControl)))
+                    .collect();
+                let pool: Vec<&Candidate> = if !selfs.is_empty() {
                     selfs
+                } else if !control.is_empty() {
+                    control
+                } else {
+                    candidates.iter().collect()
                 };
                 // Preventing all of it twice is the same whichever comes first.
                 let alike = pool
@@ -2304,6 +2315,10 @@ impl Pass<'_> {
             (ReplaceBy::MoveTo(ZoneKind::Command), Unit::Draw { player }) => {
                 self.slots[at].applied.clone_from(&applied);
                 self.pull_drawn_commander(at, *player, &applied);
+            }
+            (ReplaceBy::UnderYourControl, _) => {
+                self.r5517_under_you(at, candidate.controller, &unit);
+                self.slots[at].applied = applied;
             }
             (_, Unit::Enter { object, controller }) => {
                 let entering = (*object, *controller);
@@ -3745,6 +3760,8 @@ pub(crate) mod r4708_actions;
 mod r4708_reveal;
 mod r5507_counters;
 mod r5504_look;
+mod r5517_life;
+mod r5517_under;
 mod rmt5_next;
 use rmt5_next::rmt5_next_as_instead;
 mod e19_mill;

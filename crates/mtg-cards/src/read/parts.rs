@@ -581,7 +581,17 @@ pub(super) fn replace_when(ctx: &Ctx, when: &ReplaceWhen) -> String {
         ReplaceWhen::Countered { what } => {
             format!("{} would be countered", phrase::selector(ctx, what))
         }
-        ReplaceWhen::LifeGain { who } => format!("{} would gain life", phrase::who(ctx, who)),
+        ReplaceWhen::LifeGain {
+            who,
+            caused_own: false,
+        } => format!("{} would gain life", phrase::who(ctx, who)),
+        ReplaceWhen::LifeGain {
+            who,
+            caused_own: true,
+        } => format!(
+            "a spell or ability {} control would cause them to gain life",
+            phrase::who(ctx, who)
+        ),
         ReplaceWhen::LifeLoss { who } => format!("{} would lose life", phrase::who(ctx, who)),
         ReplaceWhen::Mill { who } => {
             format!("{} would mill one or more cards", phrase::who(ctx, who))

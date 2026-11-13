@@ -1346,6 +1346,10 @@ pub enum Effect {
         /// How many matching cards end the revealing.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
+        /// The revealing also ends once this many cards are revealed, whichever comes first ("until an artifact card or
+        /// X cards are revealed"); no such end when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        most: Option<Amount>,
         /// The name the matching cards are bound to.
         #[serde(rename = "as")]
         bind: String,

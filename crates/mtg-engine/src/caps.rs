@@ -229,6 +229,9 @@ const RUNS: &[&str] = &[
     "Effect.Reveal",
     "Effect.Search",
     "Search.Zones",
+    "RevealUntil.Most",
+    "LifeGain.CausedOwn",
+    "ReplaceBy.UnderYourControl",
     "Search.Of",
     "Search.OfZones",
     "Effect.Shuffle",
@@ -1136,6 +1139,9 @@ mod tests {
     #[case::moving_in_a_random_order_to_the_top("Effect.Move.Random.Top", false)]
     #[case::searching("Effect.Search", true)]
     #[case::searching_several_zones("Search.Zones", true)]
+    #[case::r5517_revealing_until_a_most("RevealUntil.Most", true)]
+    #[case::r5517_life_its_own_spell_gives("LifeGain.CausedOwn", true)]
+    #[case::r5517_under_your_control_instead("ReplaceBy.UnderYourControl", true)]
     #[case::searching_another_library("Search.Of", true)]
     #[case::searching_another_players_zones("Search.OfZones", true)]
     #[case::sacrificing("Effect.Sacrifice", true)]

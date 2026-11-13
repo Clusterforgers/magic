@@ -384,6 +384,7 @@ Courser of Kruphix
 Court of Bounty
 Court of Grace
 Crack in Time
+Crafty Cutpurse
 Cram Session
 Crash
 Crawlspace
@@ -768,6 +769,7 @@ Garruk, Primal Hunter
 Garza's Assassin
 Gastal Raider
 Gatebreaker Ram
+Gather Specimens
 Gatta and Luzzu
 Gavony Dawnguard
 Gaze of Granite
@@ -1003,6 +1005,7 @@ Intrepid Adversary
 Intrepid Rabbit
 Intrepid Stablemaster
 Invading Manticore
+Invasion of Arcavios // Invocation of the Founders
 Invasion of Muraganda // Primordial Plasm
 Invasion of Segovia // Caetus, Sea Tyrant of Segovia
 Invasion of Theros // Ephara, Ever-Sheltering
@@ -1371,6 +1374,7 @@ Octomancer
 Octopus Umbra
 Ohran Yeti
 Okiba Reckoner Raid // Nezumi Road Captain
+Old Stickfingers
 Olivia's Wrath
 Ominous Harvest
 On Thin Ice
@@ -1535,6 +1539,7 @@ Raffine's Informant
 Rafter Demon
 Rage-Scarred Berserker
 Raging Goblinoids
+Rain of Gore
 Rain of Thorns
 Rakdos Headliner
 Rakish Heir
@@ -2030,6 +2035,7 @@ Thopter Fabricator
 Thorin Oakenshield
 Thorn-Thrash Viashino
 Thornvault Forager
+Thought Dissector
 Thought Erasure
 Thought Monitor
 Thought Reflection

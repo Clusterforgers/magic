@@ -908,6 +908,10 @@ pub enum ReplaceWhen {
         /// Who would gain it.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
+        /// Only life a resolving spell or ability causes its own controller to gain ("If a spell or ability would cause
+        /// its controller to gain life"); not the life of lifelink, which the damage causes.
+        #[serde(default, skip_serializing_if = "is_false")]
+        caused_own: bool,
     },
     /// A player would lose life: by an effect or by damage (CR 120.3a), not by paying it; only `LossTimes`.
     LifeLoss {
@@ -1333,6 +1337,10 @@ pub enum ReplaceBy {
     /// The controller of the replacement may add this many to the number of the action as it happens ("you may look at
     /// an additional two cards each time you surveil"); only a `Surveils` uses it.
     MayAddAmount(Amount),
+    /// The permanent enters, or the tokens are created, under the control of the replacement's controller instead of an
+    /// opponent's ("it enters under your control instead", "is created under your control instead"); only an `Enters`
+    /// or a `TokenCreation` uses it, and only for what an opponent would get.
+    UnderYourControl,
 }
 
 /// The kinds of shield (`Effect::Shield`) the engine plays; the validator and the engine both read a shield by it.
@@ -1403,7 +1411,14 @@ impl ShieldShape {
                 Some(Self::Class)
             }
             // "Until end of turn, if one or more tokens would be created under your control, twice that many ..."
-            (ReplaceWhen::TokenCreation { .. }, ReplaceBy::Multiply(_) | ReplaceBy::Add(_)) => {
+            // "If a creature would enter under an opponent's control this turn, it enters under your control instead."
+            (
+                ReplaceWhen::TokenCreation { .. },
+                ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::UnderYourControl,
+            )
+            // "Until end of turn, if target player would draw a card, instead ...": every draw of the players.
+            | (ReplaceWhen::Draw { .. }, ReplaceBy::Instead(_)) => Some(Self::Class),
+            (ReplaceWhen::Enters { what }, ReplaceBy::UnderYourControl) if !names_objects(what) => {
                 Some(Self::Class)
             }
             (
@@ -1429,8 +1444,6 @@ impl ShieldShape {
                 ReplaceWhen::Draw { .. } | ReplaceWhen::LoseGame { .. },
                 ReplaceBy::InsteadNext(_),
             ) => Some(Self::Next),
-            // "Until end of turn, if target player would draw a card, instead ...": every draw of the players.
-            (ReplaceWhen::Draw { .. }, ReplaceBy::Instead(_)) => Some(Self::Class),
             _ => None,
         }
     }

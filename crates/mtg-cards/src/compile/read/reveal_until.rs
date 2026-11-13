@@ -28,6 +28,7 @@ fn reveal(filter: Selector, count: Amount) -> Effect {
         who: Ref::You,
         filter,
         count,
+        most: None,
         bind: FOUND.to_owned(),
         revealed_as: REVEALED.to_owned(),
     }
@@ -113,6 +114,7 @@ pub fn sequence(effects: &[Effect]) -> Option<(String, usize)> {
             who: Ref::You,
             filter,
             count,
+            most: None,
             bind,
             revealed_as,
         },

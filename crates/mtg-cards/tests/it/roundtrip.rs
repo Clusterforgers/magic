@@ -1099,6 +1099,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 who,
                 filter,
                 count,
+                most: None,
                 bind,
                 revealed_as
             }
@@ -1378,7 +1379,8 @@ fn ability() -> impl Strategy<Value = Ability> {
                         by: None,
                         effect: false,
                     }),
-                reference().prop_map(|who| ReplaceWhen::LifeGain { who }),
+                (reference(), any::<bool>())
+                    .prop_map(|(who, caused_own)| ReplaceWhen::LifeGain { who, caused_own }),
                 reference().prop_map(|who| ReplaceWhen::LoseGame { who }),
                 reference().prop_map(|who| ReplaceWhen::Mill { who }),
                 (reference(), 0..3u32).prop_map(|(who, except_draw_step)| ReplaceWhen::Draw {

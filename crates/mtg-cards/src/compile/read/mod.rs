@@ -252,6 +252,7 @@ mod r5507_prevent;
 mod r5510_fortified;
 mod r5510_own_cost;
 mod r5510_wholes;
+mod r5517_wholes;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -610,6 +611,9 @@ const MEANINGFUL_WORDS: [&str; 5] = [
 /// Reads a clause like `clause`, with what the face itself says (`Own`).
 #[allow(clippy::too_many_lines)]
 pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
+    if let Some(found) = r5517_wholes::r5517_read(text) {
+        return Some(found);
+    }
     if let Some(found) = r4705_reads::r4705_read(text) {
         return Some(found);
     }

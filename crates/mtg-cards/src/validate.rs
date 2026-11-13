@@ -4054,8 +4054,10 @@ impl Walker<'_> {
                     w.uses("Search", "Zones");
                     let zones: Vec<_> = std::iter::once(zone).chain(also).collect();
                     let searchable = |z: &&ZoneKind| matches!(z, ZoneKind::Library | ZoneKind::Hand | ZoneKind::Graveyard | ZoneKind::Exile);
-                    if !zones.iter().all(searchable) || zones.iter().enumerate().any(|(at, z)| zones[..at].contains(z)) {
-                        w.problem("a search of several zones names a library, hand, graveyard or exile, each once");
+                    // Outside the game finds nothing in Commander (no sideboard), so it is only ever one more zone named.
+                    let named = |(at, z): (usize, &&ZoneKind)| searchable(z) || (at > 0 && **z == ZoneKind::Outside && of.is_none());
+                    if !zones.iter().enumerate().all(named) || zones.iter().enumerate().any(|(at, z)| zones[..at].contains(z)) {
+                        w.problem("a search of several zones names a library, hand, graveyard or exile, each once, and outside the game only after them");
                     }
                 }
                 w.at("who", |w| w.reference(who, Kind::Player));
@@ -4083,12 +4085,17 @@ impl Walker<'_> {
                 who,
                 filter,
                 count,
+                most,
                 bind,
                 revealed_as,
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("filter", |w| w.selector(filter));
                 w.at("count", |w| w.amount(count));
+                if let Some(most) = most {
+                    w.uses("RevealUntil", "Most");
+                    w.at("most", |w| w.amount(most));
+                }
                 w.at("as", |w| w.bind(bind, Kind::Object));
                 w.at("revealed_as", |w| w.bind(revealed_as, Kind::Object));
             }
@@ -5959,8 +5966,13 @@ impl Walker<'_> {
                     self.at("on", |w| w.reference(on, Kind::Either));
                 }
             }
-            ReplaceWhen::LifeGain { who }
-            | ReplaceWhen::LifeLoss { who }
+            ReplaceWhen::LifeGain { who, caused_own } => {
+                if *caused_own {
+                    self.uses("LifeGain", "CausedOwn");
+                }
+                self.at("who", |w| w.reference(who, Kind::Player));
+            }
+            ReplaceWhen::LifeLoss { who }
             | ReplaceWhen::LoseGame { who }
             | ReplaceWhen::Mill { who }
             | ReplaceWhen::Proliferates { who }
@@ -6221,6 +6233,18 @@ impl Walker<'_> {
     #[allow(clippy::too_many_lines)]
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
+        if matches!(by, ReplaceBy::UnderYourControl)
+            && !matches!(
+                when,
+                ReplaceWhen::Enters { .. }
+                    | ReplaceWhen::TokenCreation {
+                        controller: Ref::Opponents,
+                        ..
+                    }
+            )
+        {
+            self.problem("only a permanent entering or tokens an opponent would get come under your control instead");
+        }
         if let ReplaceBy::Choose(kind) = by
             && let Some(shape) = crate::r4702_names::r4702_choice_shape(*kind)
         {
@@ -7156,15 +7180,15 @@ mod tests {
     )]
     #[case::the_same_zone_twice(
         r#"{"Spell":{"effects":[{"Search":{"also":["Hand","Hand"],"filter":[],"as":"card"}}]}}"#.to_owned(),
-        &["faces[0].abilities[0].Spell.effects[0].Search: a search of several zones names a library, hand, graveyard or exile, each once"]
+        &["faces[0].abilities[0].Spell.effects[0].Search: a search of several zones names a library, hand, graveyard or exile, each once, and outside the game only after them"]
     )]
     #[case::the_zone_of_the_search_again(
         r#"{"Spell":{"effects":[{"Search":{"also":["Library"],"filter":[],"as":"card"}}]}}"#.to_owned(),
-        &["faces[0].abilities[0].Spell.effects[0].Search: a search of several zones names a library, hand, graveyard or exile, each once"]
+        &["faces[0].abilities[0].Spell.effects[0].Search: a search of several zones names a library, hand, graveyard or exile, each once, and outside the game only after them"]
     )]
     #[case::a_zone_nobody_searches(
         r#"{"Spell":{"effects":[{"Search":{"also":["Battlefield"],"filter":[],"as":"card"}}]}}"#.to_owned(),
-        &["faces[0].abilities[0].Spell.effects[0].Search: a search of several zones names a library, hand, graveyard or exile, each once"]
+        &["faces[0].abilities[0].Spell.effects[0].Search: a search of several zones names a library, hand, graveyard or exile, each once, and outside the game only after them"]
     )]
     #[case::a_table_cost(r#"{"AltCast":{"way":"Surge","cost":[{"Mana":"{R}"}]}}"#.to_owned(), &[])]
     #[case::a_free_cast_from_exile(r#"{"AltCast":{"way":"Warp","from":"Exile"}}"#.to_owned(), &[])]

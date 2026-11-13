@@ -114,6 +114,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         let named: Vec<ZoneKind> = std::iter::once(*zone)
             .chain(also.iter().copied())
             .filter(|kind| *kind != ZoneKind::Library || !cant_search(state, player))
+            // Nothing is outside a Commander game (no sideboard): searching there finds nothing, so it is no choice.
+            .filter(|kind| *kind != ZoneKind::Outside)
             .collect();
         if named.is_empty() {
             continue;
