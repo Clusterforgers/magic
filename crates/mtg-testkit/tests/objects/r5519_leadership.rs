@@ -38,7 +38,7 @@ fn r5519_zone(driver: &Driver, name: &str) -> Zone {
         .state()
         .objects()
         .filter(|object| object.card().name == name)
-        .map(|object| object.zone())
+        .map(mtg_engine::object::GameObject::zone)
         .collect::<Vec<_>>();
     assert_eq!(found.len(), 1, "{name}: {found:?}");
     found[0]
