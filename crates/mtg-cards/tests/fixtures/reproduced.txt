@@ -691,6 +691,7 @@ Fanatic of Rhonas
 Far Wanderings
 Faramir, Steward of Gondor
 Farewell
+Fast Forward
 Fatal Lore
 Favorable Winds
 Fear of Failed Tests
@@ -914,6 +915,7 @@ Haughty Djinn
 Headless Skaab
 Hearthhull, the Worldseed
 Heartless Act
+Heartwood Storyteller
 Hei Bai, Spirit of Balance
 Heidar, Rimewind Master
 Heliod, God of the Sun
@@ -1392,6 +1394,7 @@ On Thin Ice
 Onakke Oathkeeper
 Ondu Spiritdancer
 Oona's Blackguard
+Open the Way
 Opposition Agent
 Opt
 Oran-Rief, the Vastwood
@@ -2263,6 +2266,7 @@ Wastescape Battlemage
 Weaponcraft Enthusiast
 Wear // Tear
 Wear Away
+Weathered Sentinels
 Wedgelight Rammer
 Wei Scout
 Weigh Down

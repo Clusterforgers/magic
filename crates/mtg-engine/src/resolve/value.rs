@@ -32,6 +32,7 @@ mod r302b_sources;
 mod r305b_amounts;
 mod r374_counts;
 mod r402_cast;
+mod r5523_attacked;
 mod soulbond;
 mod w21a_atoms;
 mod w6d_shares;
@@ -1308,6 +1309,11 @@ impl<'a> Scope<'a> {
                 .into_iter()
                 .map(Target::Player)
                 .collect(),
+            Ref::AttackedThisTurn => self
+                .r5523_attacked_this_turn()
+                .into_iter()
+                .map(Target::Player)
+                .collect(),
             Ref::MostLife => self.most_life().into_iter().map(Target::Player).collect(),
             Ref::ActivePlayer => state
                 .active_player()
@@ -1325,6 +1331,7 @@ impl<'a> Scope<'a> {
             Ref::PlayersWhere { who, test } => self.players_where(who, test)?,
             Ref::Seated { of, side, opponent } => self.r376_seated(of, *side, *opponent)?,
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
+            Ref::OpponentsOf(inner) => self.r5523_opponents_of(inner)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,
             Ref::OrController(inner) => self.players_or_controllers(inner)?,
             Ref::Each(selector) => self
@@ -2026,6 +2033,7 @@ impl<'a> Scope<'a> {
                 combat,
             } => self.did_this_turn(*event, (by.as_ref(), to.as_ref()), *combat, reference),
             Pred::BlockedThisTurn(with) => self.r379_blocked_this_turn(with, reference),
+            Pred::DealtDamageThisTurn(to) => self.r5523_dealt_damage_this_turn(to, reference),
             Pred::EnteredSinceLastTurn(who) => self
                 .players(who)?
                 .iter()
@@ -2437,6 +2445,7 @@ impl<'a> Scope<'a> {
             | Amount::CountOf { .. }
             | Amount::Random { .. }
             | Amount::ManaInPool(_)
+            | Amount::ManaInPoolOf { .. }
             | Amount::Doors(_) => self.fill_amount(amount, share)?,
             Amount::Tally { event, who, filter } => self.logged(*event, who, filter)?,
             Amount::SourcesDealtDamage(who) => self.r5502_sources_dealt_damage(&self.players(who)?),

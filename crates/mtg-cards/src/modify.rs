@@ -543,6 +543,9 @@ pub enum CombatQuirk {
     AttackIfAnyAttacks(Selector),
     /// They can attack as though they did not have defender.
     AttackDespiteDefender,
+    /// They can attack the players who attacked their controller during those players' last turn as though they did not
+    /// have defender (Weathered Sentinels); planeswalkers and battles stay out of reach.
+    AttackLastTurnAttackersDespiteDefender,
     /// They can attack as though they had haste (CR 302.6): "Enchanted creature can attack as though it had haste."
     AttackAsThoughHaste,
     /// They can block as though they were untapped.

@@ -323,7 +323,8 @@ fn rule_mana(
                     .flat_map(|count| COLORS.iter().map(move |c| vec![*c; count]))
                     .collect()
             }
-            ManaProduced::Instead { .. } => Vec::new(),
+            // No color was chosen without a draft: no way to add mana.
+            ManaProduced::Instead { .. } | ManaProduced::DraftedColors => Vec::new(),
             ManaProduced::OneOf(types) => types.iter().map(|t| vec![*t]).collect(),
             ManaProduced::AnyCombination { count, among } => {
                 let counts: Vec<u32> = match x_most {

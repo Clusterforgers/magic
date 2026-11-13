@@ -178,6 +178,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         Produce::OneOf(types) => (types.clone(), 1),
         Produce::AnyColorAmong(among) => (colors_among(&cx.scope, among), 1),
+        // A game has no draft, so no color was chosen and no mana is added (Paliano, the High City ruling).
+        Produce::DraftedColors => (Vec::new(), 1),
         Produce::OneOfLists(lists) => {
             let added = Added {
                 players: &players,
@@ -261,7 +263,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 })
                 .collect()
         }
-        Produce::CommanderIdentity(_) | Produce::AnyColorAmong(_) => kinds
+        Produce::CommanderIdentity(_) | Produce::AnyColorAmong(_) | Produce::DraftedColors => kinds
             .iter()
             .filter_map(|kind| kind.color().map(ChoiceOption::Color))
             .collect(),

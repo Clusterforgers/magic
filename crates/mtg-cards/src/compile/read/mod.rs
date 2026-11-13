@@ -268,6 +268,7 @@ mod r5517_wholes;
 mod r5519_wholes;
 mod r5521_conditions;
 mod r5521_wholes;
+mod r5523_drafted;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -678,6 +679,17 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     }
     if let Some(found) =
         r4711_drafted::r4711_read(text, |twin| clause_with(twin, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
+    {
+        return Some(found);
+    }
+    if let Some(found) = render::r5523_read_whole(text) {
+        return Some(found);
+    }
+    if let Some(found) =
+        r5523_drafted::r5523_read(text, |twin| clause_with(twin, kind, x_free, own))
         && written_variants(&found)
             .iter()
             .any(|written| same_text(written, text))

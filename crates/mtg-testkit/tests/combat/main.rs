@@ -73,6 +73,8 @@ mod r5502_blocked_by_one;
 mod r5502_next_combat;
 mod r5502_walkers;
 mod r5513_fights;
+mod r5523_attack_history;
+mod r5523_dealt_damage;
 mod riot;
 mod rmt1_become_blocked;
 mod rmt7_blocks_per;

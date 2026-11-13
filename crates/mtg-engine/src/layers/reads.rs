@@ -245,6 +245,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Promised
         | Ref::Defending
         | Ref::Attacked
+        | Ref::AttackedThisTurn
         | Ref::MostLife
         | Ref::Teammates
         | Ref::ActivePlayer
@@ -260,7 +261,9 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         Ref::ControllerOf(inner) | Ref::OrController(inner) => {
             Traits::CONTROL.or(reads_of_ref(inner))
         }
-        Ref::OwnerOf(inner) | Ref::Seated { of: inner, .. } => reads_of_ref(inner),
+        Ref::OwnerOf(inner) | Ref::Seated { of: inner, .. } | Ref::OpponentsOf(inner) => {
+            reads_of_ref(inner)
+        }
         Ref::Arrived { of, .. } | Ref::Departed(of) | Ref::SourceOf(of) => reads_of_ref(of),
         Ref::Each(selector) => reads_of_selector(selector),
         Ref::Union(parts) => parts
@@ -348,6 +351,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::AdditionalCostPaid
         | Pred::Suspended
         | Pred::BlockedThisTurn(_)
+        | Pred::DealtDamageThisTurn(_)
         | Pred::EnteredSinceLastTurn(_) => Traits::NONE,
         Pred::WasCast { by, .. } => by.as_ref().map_or(Traits::NONE, reads_of_ref),
         Pred::DidThisTurn { by, to, .. } => by
@@ -471,6 +475,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::ManaSpent { .. }
         | Amount::ManaColors(_)
         | Amount::ManaInPool(_)
+        | Amount::ManaInPoolOf { .. }
         | Amount::Random { .. }
         | Amount::TriggeringTargets
         | Amount::PlayersLost

@@ -334,7 +334,9 @@ pub(crate) fn can_attack(state: &GameState, id: ObjectId, player: PlayerId) -> b
         && (!keywords::summoning_sick(state, id)
             || crate::combat_quirks::attacks_as_though_haste(state, id)
             || crate::r303b_haste_at::r303b_attacks_sick(state, id))
-        && (!keywords::forbids_attacking(state, id) || attacks_despite_defender(state, id))
+        && (!keywords::forbids_attacking(state, id)
+            || attacks_despite_defender(state, id)
+            || crate::r5523_sentinels::r5523_attacks_some_despite_defender(state, id))
         && is_untapped_creature(state, id)
 }
 
@@ -466,6 +468,7 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
             // a creature it leaves nothing to attack is not offered.
             let mut allowed = allowed_defenders(state, object, &defenders);
             crate::r303b_haste_at::r303b_sick_defenders(state, object, &mut allowed);
+            crate::r5523_sentinels::r5523_defender_targets(state, object, &mut allowed);
             if allowed.is_empty() && !defenders.is_empty() {
                 return None;
             }

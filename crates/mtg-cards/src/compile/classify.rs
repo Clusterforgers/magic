@@ -46,13 +46,14 @@ const COST_WORDS: [&str; 17] = [
 ];
 
 /// Lines of a spell that are rules about the spell itself rather than what it does.
-const SPELL_RULES: [&str; 7] = [
+const SPELL_RULES: [&str; 8] = [
     "This spell ",
     "~ costs ",
     "~ can't be countered",
     "As an additional cost",
     "Cast this spell only ",
     "Spend only ",
+    "X can't be greater than ",
     "If ~ would be put into a graveyard from anywhere, ",
 ];
 

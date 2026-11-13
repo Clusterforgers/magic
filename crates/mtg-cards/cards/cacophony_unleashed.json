@@ -1,7 +1,7 @@
 {
   "oracle_id": "1f6056be-67c8-40a9-86ef-1606961644eb",
   "name": "Cacophony Unleashed",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Cacophony Unleashed",
@@ -25,9 +25,44 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 84, "end": 290 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Enchantment" } },
+                            { "Not": { "ControlledBy": "You" } },
+                            { "Not": "Other" }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 6, "toughness": 6 } },
+                    { "SetCreatureTypes": ["Nightmare", "God"] },
+                    { "AddSupertype": "Legendary" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Menace" },
+                    { "AddKeyword": "Deathtouch" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

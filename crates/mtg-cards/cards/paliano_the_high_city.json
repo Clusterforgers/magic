@@ -1,0 +1,17 @@
+{
+  "oracle_id": "cf682012-de36-4ab4-ad94-c3c0fd7bce3f",
+  "name": "Paliano, the High City",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Paliano, the High City",
+      "oracle_fingerprint": "1be8e09fd99e6b41988dc1f91972ae08",
+      "abilities": [
+        { "Rule": { "rule": { "Draft": "ChooseColorsAround" } } },
+        {
+          "Activated": { "cost": ["Tap"], "effects": [{ "AddMana": { "mana": "DraftedColors" } }] }
+        }
+      ]
+    }
+  ]
+}

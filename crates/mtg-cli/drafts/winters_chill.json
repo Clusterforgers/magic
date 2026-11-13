@@ -13,6 +13,18 @@
           }
         },
         {
+          "AdditionalCost": {
+            "cost": [
+              {
+                "XAtMost": {
+                  "Count": [{ "Type": "Land" }, { "Supertype": "Snow" }, { "ControlledBy": "You" }]
+                }
+              }
+            ],
+            "required": true
+          }
+        },
+        {
           "Spell": {
             "targets": [
               {

@@ -26,6 +26,7 @@ mod payment;
 pub(crate) mod plot;
 mod price;
 mod r401_flash;
+mod r5523_x_cap;
 pub(crate) mod r5509_flagbearer;
 pub(crate) mod required;
 mod splice;

@@ -223,6 +223,17 @@ pub(crate) fn definition_gives_supertype(definition: &CardDefinition) -> bool {
     })
 }
 
+/// Whether a card with this definition has a static ability that reads a mana pool (`Amount::ManaInPoolOf`,
+/// `Amount::ManaInPool`).
+pub(crate) fn r5523_static_reads_pool(definition: &CardDefinition) -> bool {
+    definition.rules.iter().any(|rules| {
+        matches!(&**rules, Ability::Static { .. })
+            && serde_json::to_string(&**rules).is_ok_and(|text| {
+                text.contains("\"ManaInPoolOf\"") || text.contains("\"ManaInPool\"")
+            })
+    })
+}
+
 /// Whether a card with this definition has a static ability that makes it the color chosen for it as a commander.
 pub(crate) fn definition_sets_commander_color(definition: &CardDefinition) -> bool {
     definition.rules.iter().any(|rules| {

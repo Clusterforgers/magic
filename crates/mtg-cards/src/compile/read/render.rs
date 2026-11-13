@@ -46,6 +46,7 @@ mod multi;
 mod opponent_picks;
 mod optional_return;
 mod oracle_only;
+pub(super) use oracle_only::r5523_read_whole;
 mod otherwise;
 mod player_events;
 mod populated;
@@ -602,7 +603,8 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
         return texts;
     }
     // A permission with riders is worded only as the permission without them and its riders.
-    if let Some(texts) = super::r401_riders::r401_rider_texts(ability, written_variants) {
+    if let Some(mut texts) = super::r401_riders::r401_rider_texts(ability, written_variants) {
+        oracle_only::r5523_add_whole(ability, &mut texts);
         return texts;
     }
     // An investigation is worded as the Clue tokens it makes.
@@ -656,6 +658,12 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r5505_convert::r5505_convert_wordings(ability, &mut texts);
     super::r5506_costs::r5506_wordings(ability, &mut texts);
     super::r5521_wholes::r5521_wordings(ability, &mut texts);
+    super::r5523_drafted::r5523_wordings(ability, written_variants, &mut texts);
+    // Only a triggered animation is printed on an enchantment; an activated one, on a land, keeps its room.
+    if matches!(ability, Ability::Triggered { .. }) {
+        let more = becomes::still_an_enchantment(&texts);
+        texts.extend(more);
+    }
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.

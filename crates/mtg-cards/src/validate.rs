@@ -447,6 +447,8 @@ struct Walker<'a> {
     r281_paying: bool,
     /// Whether the cost walked is the cost of a payment an effect asks (`Effect::Pay`), the one place an `XAtMost` is read.
     r306_paying: bool,
+    /// Walking a required additional cost of the card, which caps the X its spell announces (Open the Way).
+    r5523_spell_cap: bool,
     /// What the amount being walked is the amount of, which says whether a divided amount has recipients to read it.
     amounting: Amounting,
     /// How many abilities deep the walk stands inside abilities that other abilities grant or tokens carry.
@@ -496,6 +498,7 @@ impl<'a> Walker<'a> {
             r400_alternative: false,
             r281_paying: false,
             r306_paying: false,
+            r5523_spell_cap: false,
             amounting: Amounting::Other,
             nested: 0,
             r4702_emblem_values: BTreeSet::new(),
@@ -626,6 +629,7 @@ impl<'a> Walker<'a> {
             | Ref::Chosen
             | Ref::Promised
             | Ref::Attacked
+            | Ref::AttackedThisTurn
             | Ref::MostLife
             | Ref::Teammates
             | Ref::ActivePlayer
@@ -718,6 +722,10 @@ impl<'a> Walker<'a> {
             Ref::ControllerOf(inner) | Ref::OwnerOf(inner) => {
                 self.expect(Kind::Player, want);
                 self.at("of", |w| w.reference(inner, Kind::Object));
+            }
+            Ref::OpponentsOf(inner) => {
+                self.expect(Kind::Player, want);
+                self.at("of", |w| w.reference(inner, Kind::Player));
             }
             Ref::OrController(inner) => {
                 self.expect(Kind::Player, want);
@@ -931,6 +939,10 @@ impl<'a> Walker<'a> {
             Pred::BlockedThisTurn(with) => {
                 self.uses("Pred", "BlockedThisTurn");
                 self.at("BlockedThisTurn", |w| w.selector(with));
+            }
+            Pred::DealtDamageThisTurn(to) => {
+                self.uses("Pred", "DealtDamageThisTurn");
+                self.at("DealtDamageThisTurn", |w| w.selector(to));
             }
             Pred::Targeting(inner) | Pred::HasAttached(inner) | Pred::AbilityFrom(inner) => {
                 self.selector(inner);
@@ -1432,6 +1444,7 @@ impl<'a> Walker<'a> {
             }
             Amount::ManaColors(who) => self.player_amount("ManaColors", who),
             Amount::ManaInPool(who) => self.player_amount("ManaInPool", who),
+            Amount::ManaInPoolOf { who, .. } => self.player_amount("ManaInPoolOf", who),
             Amount::MostCommon { of, .. } => self.w2c_selector_amount("MostCommon", of),
             Amount::Doors(of) => self.w2c_selector_amount("Doors", of),
             Amount::CountOf { of, filter } => {
@@ -1846,7 +1859,9 @@ impl<'a> Walker<'a> {
                     CostItem::ChosenColorOnly => w.uses("Cost", "ChosenColorOnly"),
                     CostItem::XAtMost(most) => {
                         // The most X is read where an effect asks the payment and announces its X.
-                        if !w.r306_paying || !w.x_free {
+                        if w.r5523_spell_cap {
+                            w.uses("Cost", "XAtMost.Spell");
+                        } else if !w.r306_paying || !w.x_free {
                             w.uses("Cost", "XAtMost.Elsewhere");
                         }
                         w.at("XAtMost", |w| w.amount(most));
@@ -1903,10 +1918,12 @@ impl<'a> Walker<'a> {
         // The X a required cost counts is the one the caster announces as the spell is cast.
         let saved = std::mem::replace(&mut self.x_now, required && cost.has_x());
         let choosing = std::mem::replace(&mut self.choosing, required);
+        let capping = std::mem::replace(&mut self.r5523_spell_cap, required && self.nested == 0);
         if cost.0.len() > 1 && cost.0.iter().any(|item| matches!(item, CostItem::OneOf(_))) {
             self.problem("a choice between costs is the only part of an additional cost");
         }
         self.at("cost", |w| w.cost(cost));
+        self.r5523_spell_cap = capping;
         self.choosing = choosing;
         self.x_now = saved;
         let by_the_source = cost.0.iter().any(|item| {
@@ -3447,6 +3464,7 @@ impl Walker<'_> {
             | Ref::Chosen
             | Ref::Promised
             | Ref::Attacked
+            | Ref::AttackedThisTurn
             | Ref::MostLife
             | Ref::Teammates
             | Ref::ActivePlayer
@@ -3456,6 +3474,7 @@ impl Walker<'_> {
             | Ref::Defending
             | Ref::TriggeringPlayer
             | Ref::ControllerOf(_)
+            | Ref::OpponentsOf(_)
             | Ref::OrController(_)
             | Ref::OwnerOf(_)
             | Ref::PlayersWhere { .. }
@@ -3760,6 +3779,7 @@ impl Walker<'_> {
             | Produce::OrChosenColor(_)
             | Produce::CommanderIdentity(_)
             | Produce::Devotion
+            | Produce::DraftedColors
             | Produce::OfTapped => {}
         }
         // Mana the engine adds without a choice is a primitive of its own; a choice of mana is not.
