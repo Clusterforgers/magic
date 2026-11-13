@@ -34,7 +34,7 @@ fn r5510_settle(driver: &mut Driver) {
 }
 
 fn r5510_replays(driver: &Driver, scenario: &Scenario) {
-    let setup = scenario.setup().unwrap();
+    let setup = scenario.clone().setup().unwrap();
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.engine().state_hash());
 }

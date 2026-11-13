@@ -199,6 +199,13 @@ pub(super) fn r5510_wordings(
     let Some((name, cost)) = r5510_parts(keyword) else {
         return;
     };
+    // Graveyard keywords keep their own writer (`r285_writers`); a spell is named by who cast it.
+    let named = matches!(affected, crate::refs::Ref::Each(selector) if selector.0.iter().any(|pred| {
+        matches!(pred, crate::refs::Pred::WasCast { .. } | crate::refs::Pred::In(crate::refs::ZoneKind::Hand))
+    }));
+    if !named || matches!(name, "flashback" | "escape") {
+        return;
+    }
     let sentences = r5510_cost_sentences(name, cost);
     if sentences.is_empty() {
         return;

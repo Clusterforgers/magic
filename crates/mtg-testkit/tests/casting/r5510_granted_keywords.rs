@@ -307,17 +307,9 @@ fn r5510_henry_wu_draws_for_an_exploited_non_human(
     let scenario = table(
         seats,
         vec![card("Henry Wu, InGen Geneticist")],
-        vec![card(sacrificed)],
+        vec![card(sacrificed), swamp(), mtg_testkit::cards::forest()],
         island,
-        0,
-    )
-    .battlefield(
-        0,
-        [
-            ready(swamp()),
-            ready(mtg_testkit::cards::forest()),
-            ready(island()),
-        ],
+        1,
     );
     let mut driver = Driver::from_scenario(scenario)?;
     let picked = driver.id_of(sacrificed)?;

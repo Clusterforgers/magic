@@ -929,7 +929,6 @@ mod tests {
             Keyword::Infect,
             Keyword::Myriad,
             Keyword::Crew(3),
-            Keyword::CrewOnce(1),
             Keyword::Mutate(cost()),
             Keyword::Encore(cost()),
             Keyword::Squad(cost()),
@@ -1023,6 +1022,7 @@ mod tests {
                 to: Box::default(),
                 cost: cost(),
             },
+            Keyword::CrewOnce(1),
             Keyword::Scavenge(cost()),
             Keyword::Transmute(cost()),
             Keyword::Awaken {
