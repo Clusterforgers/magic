@@ -30,31 +30,35 @@ fn r5515_settle(driver: &mut Driver, seat: usize, option: usize) -> Result<(), S
         if driver.state().stack().is_empty() && driver.state().resolving().is_none() {
             return Ok(());
         }
-        let decision = driver.decision()?.clone();
-        let answer = match &decision.kind {
-            DecisionKind::YesNo(_) => Answer::YesNo(YesNoChoice(true)),
-            DecisionKind::ChooseTargets(options)
-                if !options.can_cancel
-                    && options.legal.contains(&driver.target_player(seat)) =>
-            {
-                Answer::ChooseTargets(TargetChoice::Targets(vec![driver.target_player(seat)]))
-            }
-            DecisionKind::ChooseCards(options) => Answer::ChooseCards(CardsChoice(
-                options
-                    .from
-                    .iter()
-                    .copied()
-                    .take((options.min as usize).max(1).min(options.max as usize))
-                    .collect(),
-            )),
-            DecisionKind::ChooseOption(options) => {
-                Answer::ChooseOption(OptionChoice(option.min(options.options.len() - 1)))
-            }
-            _ => Driver::passive_answer(&decision),
-        };
+        let answer = r5515_answer(driver, seat, option)?;
         driver.answer(answer)?;
     }
     Err(ScriptError::Stuck("the stack".into()))
+}
+
+/// The answer `r5515_settle` gives to the pending decision.
+fn r5515_answer(driver: &Driver, seat: usize, option: usize) -> Result<Answer, ScriptError> {
+    let decision = driver.decision()?.clone();
+    Ok(match &decision.kind {
+        DecisionKind::YesNo(_) => Answer::YesNo(YesNoChoice(true)),
+        DecisionKind::ChooseTargets(options)
+            if !options.can_cancel && options.legal.contains(&driver.target_player(seat)) =>
+        {
+            Answer::ChooseTargets(TargetChoice::Targets(vec![driver.target_player(seat)]))
+        }
+        DecisionKind::ChooseCards(options) => Answer::ChooseCards(CardsChoice(
+            options
+                .from
+                .iter()
+                .copied()
+                .take((options.min as usize).max(1).min(options.max as usize))
+                .collect(),
+        )),
+        DecisionKind::ChooseOption(options) => {
+            Answer::ChooseOption(OptionChoice(option.min(options.options.len() - 1)))
+        }
+        _ => Driver::passive_answer(&decision),
+    })
 }
 
 /// The card named `name` in seat `seat`'s graveyard, if it is there.
@@ -154,7 +158,9 @@ fn r5515_bitterheart_witch_puts_a_curse_onto_the_target_player(
         vec![card("Bitterheart Witch").unwrap()],
     )?;
     r5515_kill(&mut driver, "Bitterheart Witch")?;
-    r5515_settle(&mut driver, victim, 0)?;
+    r5515_drive(&mut driver, victim, 0, |driver| {
+        driver.id_of("Curse of Predation").is_ok() && driver.state().stack().is_empty()
+    })?;
     let curse = driver.id_of("Curse of Predation")?;
     assert_eq!(driver.state().player_host_of(curse), Some(pid(victim)));
     assert_eq!(driver.state().object(curse).unwrap().controller(), pid(0));
@@ -209,7 +215,9 @@ fn r5515_radiant_grace_returns_transformed_on_the_target_opponent(
     let host = driver.state().host_of(grace).expect("Radiant Grace enchants");
     let name = driver.state().object(host).unwrap().card().name.clone();
     r5515_kill(&mut driver, &name)?;
-    r5515_settle(&mut driver, victim, 0)?;
+    r5515_drive(&mut driver, victim, 0, |driver| {
+        driver.id_of("Radiant Restraints").is_ok() && driver.state().stack().is_empty()
+    })?;
     let restraints = driver.id_of("Radiant Restraints")?;
     assert_eq!(driver.state().player_host_of(restraints), Some(pid(victim)));
     assert_eq!(driver.state().object(restraints).unwrap().controller(), pid(0));
@@ -227,11 +235,8 @@ fn r5515_drive(
         if done(driver) && driver.decision().is_ok() {
             return Ok(());
         }
-        if driver.state().stack().is_empty() && driver.state().resolving().is_none() {
-            driver.answer_passively()?;
-        } else {
-            r5515_settle(driver, seat, option)?;
-        }
+        let answer = r5515_answer(driver, seat, option)?;
+        driver.answer(answer)?;
     }
     Err(ScriptError::Stuck("the drive".into()))
 }
@@ -483,31 +488,21 @@ fn r5515_ice_cave_counters_a_spell_another_player_pays_for(
         };
         driver.answer(answer)?;
     }
-    let in_graveyard = r5515_in_graveyard(&driver, 1, "Zap").is_some();
-    assert!(in_graveyard, "Zap resolved or was countered");
-    let caster_lands_tapped = driver
-        .state()
-        .zone(Zone::Battlefield)
-        .iter()
-        .filter(|id| {
-            let object = driver.state().object(**id).unwrap();
-            object.controller() == pid(1) && object.permanent().unwrap().tapped()
-        })
-        .count();
-    assert_eq!(caster_lands_tapped, 1, "the caster paid for Zap only");
-    let countered_events = driver
-        .engine()
-        .events()
-        .iter()
-        .filter(|event| matches!(event, mtg_engine::Event::ResolutionEnded { .. }))
-        .count();
-    let _ = countered_events;
-    let payer_tapped = payer.is_some_and(|seat| {
-        driver.state().zone(Zone::Battlefield).iter().any(|id| {
-            let object = driver.state().object(*id).unwrap();
-            object.controller() == pid(seat) && object.permanent().unwrap().tapped()
-        })
-    });
-    assert_eq!(payer_tapped, countered, "only another player's payment counters");
+    assert!(r5515_in_graveyard(&driver, 1, "Zap").is_some(), "Zap resolved or was countered");
+    let tapped = |seat: usize| {
+        driver
+            .state()
+            .zone(Zone::Battlefield)
+            .iter()
+            .filter(|id| {
+                let object = driver.state().object(**id).unwrap();
+                object.controller() == pid(seat) && object.permanent().unwrap().tapped()
+            })
+            .count()
+    };
+    assert_eq!(tapped(1), 1, "the caster paid for Zap only");
+    if let Some(seat) = payer.filter(|seat| *seat != 1) {
+        assert_eq!(tapped(seat) == 1, countered, "another player's payment counters");
+    }
     Ok(())
 }

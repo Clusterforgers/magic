@@ -354,6 +354,17 @@
     },
     "effects": [
      {
+      "Choose": {
+       "from": {
+        "Arrived": {
+         "of": "Triggering",
+         "zone": "Graveyard"
+        }
+       },
+       "as": "curse"
+      }
+     },
+     {
       "DelayedTrigger": {
        "when": {
         "StepBegins": {
@@ -363,7 +374,9 @@
        "effects": [
         {
          "Move": {
-          "what": "Triggering",
+          "what": {
+           "Bound": "curse"
+          },
           "to": {
            "BattlefieldAttached": {
             "to": "You"

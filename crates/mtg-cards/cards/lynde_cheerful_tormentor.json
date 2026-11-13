@@ -7,25 +7,55 @@
       "name": "Lynde, Cheerful Tormentor",
       "oracle_fingerprint": "2cd5550ba8dda2d1070957bcd208fedf",
       "abilities": [
-        { "Keyword": "Deathtouch" },
+        {
+          "Keyword": "Deathtouch"
+        },
         {
           "Triggered": {
             "when": {
               "ZoneChange": {
-                "what": [{ "Subtype": "Curse" }, { "OwnedBy": "You" }],
+                "what": [
+                  {
+                    "Subtype": "Curse"
+                  },
+                  {
+                    "OwnedBy": "You"
+                  }
+                ],
                 "from": "Battlefield",
                 "to": "Graveyard"
               }
             },
             "effects": [
               {
+                "Choose": {
+                  "from": {
+                    "Arrived": {
+                      "of": "Triggering",
+                      "zone": "Graveyard"
+                    }
+                  },
+                  "as": "curse"
+                }
+              },
+              {
                 "DelayedTrigger": {
-                  "when": { "StepBegins": { "step": "End" } },
+                  "when": {
+                    "StepBegins": {
+                      "step": "End"
+                    }
+                  },
                   "effects": [
                     {
                       "Move": {
-                        "what": "Triggering",
-                        "to": { "BattlefieldAttached": { "to": "You" } }
+                        "what": {
+                          "Bound": "curse"
+                        },
+                        "to": {
+                          "BattlefieldAttached": {
+                            "to": "You"
+                          }
+                        }
                       }
                     }
                   ]
@@ -36,22 +66,44 @@
         },
         {
           "Triggered": {
-            "when": { "StepBegins": { "step": "Upkeep" } },
+            "when": {
+              "StepBegins": {
+                "step": "Upkeep"
+              }
+            },
             "effects": [
               {
                 "May": {
                   "effects": [
                     {
                       "Choose": {
-                        "from": { "Each": [{ "Subtype": "Curse" }, { "AttachedTo": "You" }] },
+                        "from": {
+                          "Each": [
+                            {
+                              "Subtype": "Curse"
+                            },
+                            {
+                              "AttachedTo": "You"
+                            }
+                          ]
+                        },
                         "as": "curse"
                       }
                     },
-                    { "Choose": { "from": "Opponents", "as": "opponent" } },
+                    {
+                      "Choose": {
+                        "from": "Opponents",
+                        "as": "opponent"
+                      }
+                    },
                     {
                       "Attach": {
-                        "what": { "Bound": "curse" },
-                        "to": { "Bound": "opponent" },
+                        "what": {
+                          "Bound": "curse"
+                        },
+                        "to": {
+                          "Bound": "opponent"
+                        },
                         "as": "attached"
                       }
                     },
@@ -59,12 +111,26 @@
                       "If": {
                         "condition": {
                           "Compare": {
-                            "left": { "Count": [{ "Is": { "Bound": "attached" } }] },
+                            "left": {
+                              "Count": [
+                                {
+                                  "Is": {
+                                    "Bound": "attached"
+                                  }
+                                }
+                              ]
+                            },
                             "op": "Ge",
                             "right": 1
                           }
                         },
-                        "then": [{ "Draw": { "count": 2 } }]
+                        "then": [
+                          {
+                            "Draw": {
+                              "count": 2
+                            }
+                          }
+                        ]
                       }
                     }
                   ]
