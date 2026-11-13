@@ -87,4 +87,12 @@ freerunning?: boolean,
 /**
  * It has no abilities.
  */
-no_abilities?: boolean, };
+no_abilities?: boolean, 
+/**
+ * The ability activated is an equip ability.
+ */
+equip?: boolean, 
+/**
+ * It is cast for its disturb cost.
+ */
+disturb?: boolean, };
