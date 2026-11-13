@@ -148,7 +148,9 @@ type Block = Vec<(ObjectId, ObjectId)>;
 /// An attack or a block the engine refuses because its player cannot pay for it (CR 508.1h, 509.1d) is taken back
 /// one creature at a time, the creatures that are not required first, until the engine accepts it; so a game of bots
 /// never fails on the cost of attacking or blocking, whatever mana its attack budget (`AttackOptions::mana`) left out
-/// of account or its random block never counted. The engine is untouched by a refusal.
+/// of account or its random block never counted. A pick for a cost by total power or mana value (crew, collect
+/// evidence) refused as too little takes every card offered, which the engine asked only because together they have
+/// enough. The engine is untouched by a refusal.
 pub fn apply_answer(
     engine: &mut Engine,
     decision: &Decision,
@@ -159,12 +161,20 @@ pub fn apply_answer(
         let refused = match engine.apply(answer.clone()) {
             Err(
                 error @ EngineError::Illegal(
-                    IllegalAnswer::AttackUnaffordable(_) | IllegalAnswer::BlockUnaffordable(_),
+                    IllegalAnswer::AttackUnaffordable(_)
+                    | IllegalAnswer::BlockUnaffordable(_)
+                    | IllegalAnswer::TooLittlePower { .. }
+                    | IllegalAnswer::TooLittleValue { .. },
                 ),
             ) => error,
             result => return result,
         };
         let smaller = match (&decision.kind, &answer) {
+            (DecisionKind::ChooseCards(options), Answer::ChooseCards(CardsChoice(cards)))
+                if cards.len() < options.from.len() =>
+            {
+                Some(Answer::ChooseCards(CardsChoice(options.from.clone())))
+            }
             (DecisionKind::DeclareBlockers(options), Answer::DeclareBlockers(blocks)) => {
                 smaller_block(options, blocks).map(Answer::DeclareBlockers)
             }
@@ -385,7 +395,7 @@ impl Repeats {
 /// leaves it as it was.
 /// The picked targets that fit the total the options set ("with total power 10 or less"), the smallest values first;
 /// all of them when the options set none. The engine offers only sets whose smallest values reach the least count.
-pub(crate) fn rmt1_within_total(
+pub fn rmt1_within_total(
     options: &mtg_engine::choose::TargetOptions,
     picked: Vec<Target>,
 ) -> Vec<Target> {

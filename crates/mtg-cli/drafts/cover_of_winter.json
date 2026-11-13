@@ -1,0 +1,36 @@
+{
+  "oracle_id": "f85a157f-d7ec-4e61-97df-2ca851b6c666",
+  "name": "Cover of Winter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cover of Winter",
+      "oracle_fingerprint": "d7df2d25be8262541954d5ed760b5103",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{S}" } },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": {
+                  "Union": ["You", { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }]
+                },
+                "source": [{ "Type": "Creature" }],
+                "combat": true
+              }
+            },
+            "by": {
+              "PreventAmount": { "Counters": { "on": "This", "counter": { "Other": "age" } } }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{S}",
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "age" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "d22ea32b-2128-4dcc-8b1c-c4c52f0b2f45",
+  "name": "Rejoin the Fight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rejoin the Fight",
+      "oracle_fingerprint": "e3988220db45033164056058eb9c3c68",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "count": 3 } },
+              { "Forget": { "slot": "chosen" } },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "opp" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "OwnedBy": "You" },
+                            { "In": "Graveyard" },
+                            {
+                              "Not": { "Is": { "Remembered": { "on": "This", "slot": "chosen" } } }
+                            }
+                          ]
+                        },
+                        "as": "pick"
+                      }
+                    },
+                    { "Remember": { "what": { "Bound": "pick" }, "slot": "chosen" } }
+                  ]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Remembered": { "on": "This", "slot": "chosen" } },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

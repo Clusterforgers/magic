@@ -1,0 +1,51 @@
+{
+  "oracle_id": "1a20e805-c80b-4710-917b-706d29ec395e",
+  "name": "Hope of Ghirapur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hope of Ghirapur",
+      "oracle_fingerprint": "c2526d95dac4d8eea7eaeb2e9e223ed3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "PlayerAmong": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "Matches": {
+                          "subject": "This",
+                          "selector": [
+                            { "DidThisTurn": { "event": "Damaged", "to": "You", "combat": true } }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": { "Target": 0 },
+                      "action": { "Cast": { "filter": [{ "Not": { "Type": "Creature" } }] } }
+                    }
+                  },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

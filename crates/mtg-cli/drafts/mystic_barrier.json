@@ -1,0 +1,27 @@
+{
+  "oracle_id": "0caf42f5-abff-48aa-9bbf-df6cba169ef3",
+  "name": "Mystic Barrier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mystic Barrier",
+      "oracle_fingerprint": "47bbaa80c804281cbdae23db2c107eba",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "StepBegins": { "step": "Upkeep", "whose": "You" } }
+              ]
+            },
+            "effects": [
+              { "ChooseValue": { "kind": { "Options": ["left", "right"] }, "as": "direction" } }
+            ]
+          }
+        },
+        { "Rule": { "rule": { "AttackOnlyNearest": { "ChosenAs": "direction" } } } }
+      ]
+    }
+  ]
+}
