@@ -83,7 +83,7 @@ mod tests {
     fn r5523_only_the_exact_wording_reads() {
         for (shape, text) in R5523_SHAPES.iter() {
             assert_eq!(r5523_read_whole(text).as_ref(), Some(shape));
-            assert_eq!(r5523_read_whole(&text.replacen(" ", "  ", 1)), None);
+            assert_eq!(r5523_read_whole(&text.replacen(' ', "  ", 1)), None);
         }
     }
 }

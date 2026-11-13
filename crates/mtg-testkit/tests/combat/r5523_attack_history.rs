@@ -60,16 +60,27 @@ fn r5523_sentinels_attack_only_last_turn_attackers(
         Some(at) => driver.attack(&[("Raider", at)])?,
         None => driver.attack(&[])?,
     };
-    r5523_to_attacks(&mut driver, 0)?;
     let sentinels = driver.id_of("Weathered Sentinels")?;
-    let DecisionKind::DeclareAttackers(options) = driver.decision()?.kind.clone() else {
-        panic!("attackers are declared");
-    };
-    let offered = options
-        .attackers
-        .iter()
-        .find(|option| option.object == sentinels)
-        .map(|option| option.defenders.clone());
+    // Without a creature that may attack, seat 0 is asked nothing and its turn goes on past the declaration.
+    let mut offered = None;
+    for _ in 0..400 {
+        let decision = driver.decision()?.clone();
+        let turn = driver.state().turn();
+        if turn.active().index() == 0 {
+            if let DecisionKind::DeclareAttackers(options) = &decision.kind {
+                offered = options
+                    .attackers
+                    .iter()
+                    .find(|option| option.object == sentinels)
+                    .map(|option| option.defenders.clone());
+                break;
+            }
+            if turn.step() == Step::Main2 {
+                break;
+            }
+        }
+        driver.answer(Driver::passive_answer(&decision))?;
+    }
     let expected = defenders.map(|seats| {
         seats
             .into_iter()
