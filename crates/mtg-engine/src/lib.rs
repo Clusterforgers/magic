@@ -153,12 +153,9 @@ mod r301_offering;
 #[cfg(test)]
 mod r301b_spend_facts;
 mod r304b_lost_priority;
-<<<<<<< HEAD
+mod r371_token_loyalty;
 mod r400_attack_follow;
 mod r400_no_mana;
-=======
-mod r371_token_loyalty;
->>>>>>> origin/main
 pub mod replace;
 pub mod resolve;
 mod restart;

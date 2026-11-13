@@ -214,13 +214,10 @@ mod r305c_rules;
 mod r305c_you_and;
 mod r306c_wholes;
 mod r307_wholes;
-<<<<<<< HEAD
-mod r400_wholes;
-=======
 mod r370_wholes;
 mod r377_wholes;
 mod r378_wholes;
->>>>>>> origin/main
+mod r400_wholes;
 mod regen_this_way;
 mod repeat_modes;
 mod return_damager;

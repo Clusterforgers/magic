@@ -75,12 +75,9 @@ mod r372_cards;
 mod r374_cards;
 mod r374_writers;
 mod r375_cards;
-<<<<<<< HEAD
-mod r400_cards;
-=======
 mod r376_cards;
 mod r377_cards;
->>>>>>> origin/main
+mod r400_cards;
 mod r6e;
 mod read_sheet;
 mod read_tier;
