@@ -1,0 +1,12 @@
+[
+  [{"Replacement":{"when":"R6001DamageBetweenChosen","by":{"Multiply":2}}},
+    "If a source controlled by one of the chosen players would deal damage to the other chosen player or a permanent that player controls, that source deals double that damage to that player or permanent instead."],
+  [{"Triggered":{"when":{"StepBegins":{"step":"EndCombat"}},"if":{"All":[{"Compare":{"left":{"Count":["This",{"DidThisTurn":{"event":"Attacked","combat":true}}]},"op":"Ge","right":1}},{"Compare":{"left":{"Tally":{"event":"Attacked","who":"EachPlayer","filter":[{"Type":"Creature"},"Other",{"DidThisTurn":{"event":"Attacked","combat":true}}]}},"op":"Ge","right":2}}]},"effects":[{"Exile":{"what":"This","as":"exiled"}},{"Move":{"what":{"Bound":"exiled"},"to":{"Battlefield":{"transformed":true}}}}]}},
+    "At end of combat, if ~ and at least two other creatures attacked this combat, exile ~, then return him to the battlefield transformed under his owner's control."],
+  [{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"Choose":{"R6001Abilities":2}}}},
+    "As ~ enters, choose two abilities from among first strike, vigilance, and lifelink."],
+  [{"Static":{"affected":{"Each":[{"Subtype":"Human"},{"ControlledBy":"You"}]},"mods":["R6001AddChosenAbilities"]}},
+    "Humans you control have each of the chosen abilities."],
+  [{"Rule":{"rule":{"SpellCost":{"applies_to":["Spell",{"Targeting":["This"]}],"change":"Increase","mana":"{2}"}},"from":"Stack"}},
+    "As long as ~ is on the stack, spells that target it cost {2} more to cast."]
+]

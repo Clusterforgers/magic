@@ -2731,6 +2731,7 @@ impl<'a> Walker<'a> {
             Modification::AddChosenSubtype
             | Modification::SetChosenColor
             | Modification::AddChosenColor
+            | Modification::R6001AddChosenAbilities
             | Modification::SetLandTypesNthChosen(_) => {
                 if !self.scope.in_static {
                     self.problem(
@@ -5820,6 +5821,18 @@ impl Walker<'_> {
                     self.uses("Rule", "Combat.MustBeBlockedByOne");
                     self.at(tag.clone(), |w| w.at("blockers", |w| w.selector(blockers)));
                 }
+                if let GameRule::Combat {
+                    quirk: crate::modify::CombatQuirk::R6001MustBeBlockedByAtLeast(count),
+                    ..
+                } = rule
+                {
+                    self.uses("Rule", "Combat.R6001MustBeBlockedByAtLeast");
+                    if *count < 2 {
+                        self.problem(
+                            "\"must be blocked by N or more creatures\" needs N of 2 or more",
+                        );
+                    }
+                }
                 self.at(tag, |w| w.reference(who, Kind::Object));
             }
             GameRule::MustBlockAttacker { .. } | GameRule::IgnoreHexproof { .. } => {
@@ -6235,6 +6248,10 @@ impl Walker<'_> {
             }),
             // Eminence: "As long as ~ is in the command zone or on the battlefield, ...".
             ZoneKind::Command if matches!(rule, GameRule::SpellCost { .. }) => {}
+            // "As long as ~ is on the stack, spells that target it cost {2} more to cast."
+            ZoneKind::Stack
+                if matches!(rule, GameRule::SpellCost { applies_to, .. }
+                    if applies_to.0.contains(&Pred::Targeting(Selector::this()))) => {}
             _ if matches!(rule, GameRule::CanBeCommander) => self.at("from", |w| {
                 w.problem("a card can be a commander in every zone: write the rule without `from`");
             }),
@@ -6264,6 +6281,7 @@ impl Walker<'_> {
             self.uses("ReplaceWhen", "Draw.ExceptDrawStep");
         }
         match when {
+            ReplaceWhen::R6001DamageBetweenChosen => {}
             ReplaceWhen::TokenCreation { controller, what } => {
                 self.at("controller", |w| w.reference(controller, Kind::Player));
                 if !what.is_empty() {

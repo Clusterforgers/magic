@@ -71,6 +71,7 @@ function chosenWords(chosen: Chosen, n: EventNames): string {
   if ('Name' in chosen) return `, choosing ${chosen.Name}`
   if ('Number' in chosen) return `, choosing ${chosen.Number}`
   if ('Word' in chosen) return `, choosing ${chosen.Word}`
+  if ('Words' in chosen) return `, choosing ${joinWords(chosen.Words)}`
   if ('ColorAndType' in chosen) {
     const [color, type] = chosen.ColorAndType
     return `, choosing ${color.toLowerCase()} and ${type}`

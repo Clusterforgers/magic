@@ -217,6 +217,7 @@ mod r5511_delved;
 mod r5511_entering_spent;
 mod r5512_mana_from;
 mod r5512_nathan_spend;
+mod r6001_torch;
 mod r6q1_face_down_cost;
 mod r7p3_next_spell;
 mod rebound;

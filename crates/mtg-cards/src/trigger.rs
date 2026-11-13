@@ -859,6 +859,10 @@ pub enum ReplaceWhen {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         combat: Option<bool>,
     },
+    /// A source controlled by one of the players the source chose as it entered would deal damage to another of those
+    /// players or a permanent that player controls ("a source controlled by one of the chosen players would deal damage
+    /// to the other chosen player or a permanent that player controls").
+    R6001DamageBetweenChosen,
     /// An object matching the selector would move between zones, except a card drawn, a land played, a spell cast and
     /// a permanent entering (`Enters`).
     ZoneChange {
@@ -1059,6 +1063,9 @@ pub enum EntersChoice {
     ColorAndCreatureType,
     /// This many different players ("choose two players").
     Players(u32),
+    /// This many different abilities from among first strike, vigilance, and lifelink ("choose two abilities from among
+    /// first strike, vigilance, and lifelink"), read by `Modification::R6001AddChosenAbilities`.
+    R6001Abilities(u32),
     /// A number from `min` to `max`.
     Number {
         /// The smallest number.

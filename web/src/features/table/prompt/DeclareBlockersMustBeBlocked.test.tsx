@@ -87,3 +87,36 @@ describe('an attacker a rule says must be blocked by a creature of a kind', () =
     expect(t.button('Confirm blocks')).toBeEnabled()
   })
 })
+
+describe('an attacker a rule says must be blocked by two or more creatures', () => {
+  function several(free: number) {
+    const attackers = creaturesOf(fixtureOf(2), 1).slice(0, 1) as [ObjectId]
+    const mine = creaturesOf(fixtureOf(2), 0).slice(0, free) as ObjectId[]
+    const options: BlockOptions = {
+      blockers: mine.map((object) => ({ object, can_block: [...attackers] })),
+      must_be_blocked: [attackers[0]],
+      r6001_at_least: [[attackers[0], 2]],
+    }
+    return { ...renderCombat({ DeclareBlockers: options }, { seats: 2 }), mine, attackers }
+  }
+
+  it('waits for a second blocker while one is free', async () => {
+    const t = several(2)
+    const [a, b] = t.mine as [ObjectId, ObjectId]
+    expect(t.notes().get(t.attackers[0])).toBe('Must be blocked')
+    await t.user.click(t.card(a))
+    await t.user.click(t.card(t.attackers[0]))
+    expect(t.button('Confirm blocks')).toBeDisabled()
+    await t.user.click(t.card(b))
+    await t.user.click(t.card(t.attackers[0]))
+    expect(t.button('Confirm blocks')).toBeEnabled()
+  })
+
+  it('takes one blocker when no other creature could join', async () => {
+    const t = several(1)
+    const [a] = t.mine as [ObjectId]
+    await t.user.click(t.card(a))
+    await t.user.click(t.card(t.attackers[0]))
+    expect(t.button('Confirm blocks')).toBeEnabled()
+  })
+})

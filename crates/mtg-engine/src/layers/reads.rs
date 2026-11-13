@@ -124,6 +124,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::AddChosenColor
         | Wanted::SetCommanderColor => Traits::COLORS,
         Wanted::AddKeyword(_)
+        | Wanted::R6001AddChosenAbilities
         | Wanted::KeywordsOf { .. }
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType
@@ -204,6 +205,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::AddChosenSubtype
         | Wanted::SetChosenColor
         | Wanted::AddChosenColor
+        | Wanted::R6001AddChosenAbilities
         | Wanted::SetCommanderColor
         | Wanted::AddAllCreatureTypes
         | Wanted::SetColors(_)

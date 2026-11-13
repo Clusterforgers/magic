@@ -122,6 +122,9 @@ pub enum Modification {
     /// Adds the colour the source chose as it entered to the colours it has (layer 5): "are the chosen color in addition
     /// to their other colors". Only a static ability has it; with no colour chosen it changes nothing.
     AddChosenColor,
+    /// Adds each ability the source chose as it entered from among first strike, vigilance, and lifelink (layer 6):
+    /// "have each of the chosen abilities". Only a static ability has it; with nothing chosen it changes nothing.
+    R6001AddChosenAbilities,
     /// Sets the color to the one the card's owner chose for it before the game began as their commander (layer 5): "If ~
     /// is your commander, choose a color before the game begins. ~ is the chosen color." Only the card's own
     /// characteristic-defining static ability has it; a card nobody chose a color for keeps its colors.
@@ -244,6 +247,7 @@ impl Modification {
             | Modification::SetCommanderColor => Some("5"),
             Modification::AddKeyword(_)
             | Modification::KeywordsOf { .. }
+            | Modification::R6001AddChosenAbilities
             | Modification::AddProtectionFromChosenColor
             | Modification::AddProtectionFromChosenCardType
             | Modification::LockKeyword(_)
@@ -600,6 +604,9 @@ pub enum CombatQuirk {
     /// They must be blocked by at least one creature the selector picks if able (CR 509.1c), judged for their controller:
     /// "must be blocked by an Eldrazi if able"; a block by another creature does not meet it.
     MustBeBlockedByOne(Selector),
+    /// They must be blocked by this many creatures or more if able (CR 509.1c): "must be blocked by two or more creatures
+    /// if able"; a block by fewer meets it only while no other creature could join it.
+    R6001MustBeBlockedByAtLeast(u32),
     /// They can be blocked as though they did not have the landwalk ability the selector names (CR 702.14).
     IgnoreLandwalk(Selector),
     /// They can be blocked as though they did not have any landwalk ability.

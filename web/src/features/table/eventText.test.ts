@@ -1438,6 +1438,10 @@ describe('the choice a permanent enters with', () => {
       { Entered: { object: 3, tapped: false, controller: 0, chosen: { Word: 'odd' } } },
       "Forest enters under Ana's control, choosing odd",
     ],
+    [
+      { Entered: { object: 3, tapped: false, controller: 0, chosen: { Words: ['first strike', 'lifelink'] } } },
+      "Forest enters under Ana's control, choosing first strike and lifelink",
+    ],
   ])('%j reads "%s"', (event, text) => {
     expect(say(event)).toBe(text)
   })

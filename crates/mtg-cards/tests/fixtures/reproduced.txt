@@ -11,6 +11,7 @@ Abzan Falconer
 Abzan Skycaptain
 Academy Elite
 Accomplished Automaton
+Ace's Baseball Bat
 Acererak the Archlich
 Act of Aggression
 Act of Treason
@@ -859,6 +860,7 @@ Gollum, Obsessed Stalker
 Gonti's Machinations
 Goreclaw, Terror of Qal Sisma
 Gorger Wurm
+Gorm the Great
 Gorma, the Gullet
 Grabby Tabby
 Grafted Wargear
@@ -876,6 +878,7 @@ Greater Mossdog
 Green Goblin, Back for More
 Gremlin Mine
 Grenzo's Cutthroat
+Greymond, Avacyn's Stalwart
 Grief
 Griffin Aerie
 Grim Flayer

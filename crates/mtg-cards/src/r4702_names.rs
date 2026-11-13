@@ -9,6 +9,7 @@ pub fn r4702_choice_shape(kind: EntersChoice) -> Option<&'static str> {
         EntersChoice::NoncreatureNonlandCardName => "Choose.NoncreatureNonlandCardName",
         EntersChoice::NonbasicLandCardName => "Choose.NonbasicLandCardName",
         EntersChoice::RevealedNonlandName => "Choose.RevealedNonlandName",
+        EntersChoice::R6001Abilities(_) => "Choose.R6001Abilities",
         _ => return None,
     })
 }

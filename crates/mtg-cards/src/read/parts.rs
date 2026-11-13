@@ -804,6 +804,9 @@ fn combat_quirk(who: &str, quirk: &CombatQuirk) -> String {
         CombatQuirk::MustBeBlockedByOne(_) => {
             format!("{who} must be blocked by a chosen kind of creature if able")
         }
+        CombatQuirk::R6001MustBeBlockedByAtLeast(count) => {
+            format!("{who} must be blocked by {count} or more creatures if able")
+        }
         CombatQuirk::IgnoreLandwalk(_) | CombatQuirk::IgnoreAllLandwalk => {
             format!("{who} can be blocked as though they didn't have landwalk")
         }

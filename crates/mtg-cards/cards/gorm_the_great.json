@@ -1,0 +1,25 @@
+{
+  "oracle_id": "a7195e9f-53fa-4fb5-b1f1-099c0a772090",
+  "name": "Gorm the Great",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gorm the Great",
+      "oracle_fingerprint": "2fa098101ad7e1980fa784c7d9c08e00",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Virtus the Veiled" } },
+        { "Keyword": "Vigilance" },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "AtLeastOne" } } }
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "R6001MustBeBlockedByAtLeast": 2 } } }
+          }
+        }
+      ]
+    }
+  ]
+}
