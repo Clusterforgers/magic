@@ -233,7 +233,7 @@ mod tests {
     }
 
     #[rstest]
-    #[case::the_rest_exiled(r#""to":"Graveyard""#, r#""to":"Exile""#)]
+    #[case::the_rest_to_hand(r#""to":"Graveyard""#, r#""to":"Hand""#)]
     #[case::any_name(r#"[{"Not":{"Type":"Land"}}]"#, "[]")]
     #[case::kept_without_the_name(r#",{"ChosenAs":"name"}"#, "")]
     #[case::three_cards(r#""count":4"#, r#""count":3"#)]
