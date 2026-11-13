@@ -161,7 +161,7 @@ fn keranos_reveals_only_on_its_controllers_turn(
         assert_eq!(damage, if land { 0 } else { 3 });
     } else {
         // Seat 0's turn is no turn of Keranos's controller.
-        assert!(reveals(&driver).is_empty());
+        assert_eq!(reveals(&driver), Vec::new());
         assert_eq!(hand(&driver, owner), 1);
         assert_eq!(damage, 0);
     }

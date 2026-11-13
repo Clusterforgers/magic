@@ -75,7 +75,7 @@ fn eligeth_draws_instead_of_its_controllers_scry(
         driver.answer_passively().unwrap();
         settle(&mut driver);
     }
-    assert!(driver.state().stack().is_empty());
+    assert_eq!(driver.state().stack(), []);
     assert_eq!(hand(&driver, 0), if mine { 2 } else { 1 });
 }
 
