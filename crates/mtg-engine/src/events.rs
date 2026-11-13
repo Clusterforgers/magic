@@ -527,6 +527,14 @@ pub enum Event {
         /// The Spirit emblem's new object.
         emblem: ObjectId,
     },
+    /// A Spirit returned to life ([`crate::spirits`]): it is a living player again with this life total; its haunt
+    /// emblem left the game just before.
+    SpiritRevived {
+        /// Who.
+        player: PlayerId,
+        /// The life total it returns with.
+        life: i32,
+    },
     /// A boss seat's next phase began ([`crate::phases`]): its emblem is a new object in their command zone.
     PhaseBegan {
         /// Whose phase.
@@ -1476,6 +1484,7 @@ impl Event {
     pub fn touched_objects(&self) -> Vec<ObjectId> {
         match self {
             Event::LibraryShuffled { .. }
+            | Event::SpiritRevived { .. }
             | Event::AttractionDeckShuffled { .. }
             | Event::RolledToVisit { .. }
             | Event::PrizeClaimed { .. }

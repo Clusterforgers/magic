@@ -21,9 +21,13 @@
   transition: opacity var(--phase-banner-out) cubic-bezier(0.3, 0, 1, 1);
 }
 
-/* A Spirit's pod and tile: faded and drained of colour, so the fallen hero reads at a glance. */
+/* A Spirit's pod and tile: a ghost, faded, drained of colour and edged with a dashed spirit line, so the fallen hero
+   reads at a glance. */
 [data-spirit] {
   filter: saturate(0.35);
+  opacity: 0.85;
+  outline: 2px dashed var(--spirit);
+  outline-offset: -2px;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -361,6 +361,7 @@ pub(crate) fn w7d_leave_on_control_change(state: &mut GameState) {
 /// they protect (CR 508.1b).
 pub(crate) fn defenders_for(state: &GameState, player: PlayerId) -> Vec<AttackTarget> {
     let mut seats = state.ruleset().defending_seats(state, player);
+    seats.retain(|seat| crate::spirits::attackable(state, *seat));
     // "Each player may attack only the nearest opponent in the chosen direction and planeswalkers controlled by that
     // opponent": every such rule keeps one seat, and battles are no such planeswalker.
     let sides = crate::rules::r376_nearest_sides(state);

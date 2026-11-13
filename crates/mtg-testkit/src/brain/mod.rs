@@ -15,6 +15,7 @@ pub mod combat;
 pub mod deep;
 pub mod endgame;
 pub mod eval;
+pub mod haunt;
 pub mod knobs;
 pub mod priority;
 pub mod seen;
@@ -173,6 +174,15 @@ impl HeuristicBot {
         self.asked += 1;
         let key = self.seed ^ self.asked.wrapping_mul(0x9E37_79B9_7F4A_7C15);
         let pending = engine.decision() == Some(decision);
+        if pending
+            && let DecisionKind::Priority(options) = &decision.kind
+            && let Some(play) = haunt::plan(engine, self.seat, options)
+        {
+            if play != PriorityAction::Pass {
+                self.played.push(play.clone());
+            }
+            return Answer::Priority(play);
+        }
         let matters = matches!(
             decision.kind,
             DecisionKind::Priority(_)

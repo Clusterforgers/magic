@@ -142,6 +142,7 @@ mod repeat_each;
 mod rephase;
 mod reveal;
 mod reveal_until;
+mod revive;
 mod rmt1_become_blocked;
 mod rmt1_beneath;
 mod rmt1_unspent;
@@ -296,6 +297,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::RestartGame { .. } => restart_game::run(cx, effect),
         Effect::RingTempts { .. } => ring_tempts::run(cx, effect),
         Effect::CreateEmblem { .. } => w6b_create_emblem::run(cx, effect),
+        Effect::Revive { .. } => revive::run(cx, effect),
         Effect::BecomeDayNight { .. } => become_day_night::run(cx, effect),
         Effect::Amass { .. } => amass::run(cx, effect),
         Effect::Incubate { .. } => w7c_incubate::run(cx, effect),

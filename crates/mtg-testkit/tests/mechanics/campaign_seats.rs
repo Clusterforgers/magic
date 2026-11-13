@@ -2,7 +2,8 @@
 //! teammate lives (its cards outside the library leave, its emblem arrives) and its team loses once nobody on it lives;
 //! boss phases begin one by one at their life thresholds; a scheme deck sets one scheme in motion as each of its
 //! seat's turns begins, the last one leaving and the next shown as the Omen; a minion loses with its leader; emblems
-//! placed at setup work from the start, cost modifiers on emblems included; and such games replay from their logs.
+//! placed at setup work from the start, cost modifiers on emblems included; such games replay from their logs; and a
+//! Spirit is out of its opponents' reach: no attack option and no target of theirs names it, while its team still can.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -17,6 +18,9 @@ use mtg_core::house::HouseRules;
 use mtg_core::teams::{TeamMode, Teams};
 use mtg_engine::GameResult;
 use mtg_engine::characteristics::characteristics;
+use mtg_engine::choose::Target;
+use mtg_engine::combat::AttackTarget;
+use mtg_engine::decision::DecisionKind;
 use mtg_engine::object::ObjectKind;
 use mtg_engine::phases::BossPhase;
 use mtg_engine::player::LossReason;
@@ -24,7 +28,7 @@ use mtg_engine::replay;
 use mtg_engine::turn::Step;
 use mtg_engine::w6b_emblems::emblem_definition;
 use mtg_engine::zones::Zone;
-use mtg_testkit::cards::{bear, free_creature, instant, mountain};
+use mtg_testkit::cards::{bear, burn, free_creature, instant, mountain};
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
@@ -301,5 +305,55 @@ fn a_minion_loses_when_its_leader_concedes() -> Result<(), ScriptError> {
     driver.concede(pid(1))?;
     assert!(!in_game(&driver, 2));
     assert_eq!(driver.state().result(), Some(GameResult::Team(0)));
+    Ok(())
+}
+
+/// Seat 0 fallen with a living teammate (seat 1) against seat 2; seats 1 and 2 hold a Bolt and a Mountain.
+fn haunted() -> Result<Driver, ScriptError> {
+    let scenario = table(&[0, 20, 20], Some(vec![0, 0, 1]))
+        .spirit(0, haunt())
+        .battlefield(1, [ready(mountain())])
+        .battlefield(2, [ready(mountain())])
+        .hand(1, [burn("Bolt", 3)])
+        .hand(2, [burn("Bolt", 3)]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.pass()?;
+    assert!(driver.state().player(pid(0)).unwrap().is_spirit());
+    Ok(driver)
+}
+
+#[test]
+fn no_attack_option_names_a_spirit() -> Result<(), ScriptError> {
+    let mut driver = haunted()?;
+    driver.idle_until(3, Step::DeclareAttackers)?;
+    let DecisionKind::DeclareAttackers(options) = &driver.decision()?.kind else {
+        panic!("seat 2 attacks");
+    };
+    assert!(!options.attackers.is_empty());
+    for attacker in &options.attackers {
+        assert_eq!(attacker.defenders, [AttackTarget::Player(pid(1))]);
+    }
+    Ok(())
+}
+
+#[rstest]
+#[case::an_opponent_cannot(2, false)]
+#[case::a_teammate_can(1, true)]
+fn only_the_spirits_team_may_target_it(
+    #[case] caster: usize,
+    #[case] legal: bool,
+) -> Result<(), ScriptError> {
+    let mut driver = haunted()?;
+    for _ in 0..10 {
+        if driver.decision()?.player == pid(caster) {
+            break;
+        }
+        driver.pass()?;
+    }
+    driver.begin_cast("Bolt")?;
+    let DecisionKind::ChooseTargets(options) = &driver.decision()?.kind else {
+        panic!("Bolt asks for its target");
+    };
+    assert_eq!(options.legal.contains(&Target::Player(pid(0))), legal);
     Ok(())
 }

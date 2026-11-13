@@ -360,6 +360,7 @@ pub(crate) fn legal_from(
         }
         Target::Player(player) => {
             !keywords::protects_player(state, *player, controller)
+                && !crate::spirits::shielded(state, *player, controller)
                 && !keywords::hexproof::ep23_player_hexproof_from(
                     state, *player, source.id, controller,
                 )

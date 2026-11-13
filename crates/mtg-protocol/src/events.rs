@@ -407,6 +407,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::CreatureDied { .. }
         | Event::PlayerLost { .. }
         | Event::BecameSpirit { .. }
+        | Event::SpiritRevived { .. }
         | Event::PhaseBegan { .. }
         | Event::SchemeSetInMotion { .. }
         | Event::GameEnded { .. }

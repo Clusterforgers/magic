@@ -215,7 +215,7 @@ export function campaignFacts(player: PlayerView, owner: string): EffectFacts[] 
       icon: 'spirit',
       label: 'Spirit',
       tone: 'neutral',
-      detail: `${owner} fell and haunts the fight as a Spirit; the party loses only if every hero falls.`,
+      detail: `${owner} fell and haunts the fight as a Spirit: enemies can't attack or target them, and they spend ectoplasm on haunt actions or save 5 to rise again. The party loses only if every hero falls.`,
     })
   }
   return facts

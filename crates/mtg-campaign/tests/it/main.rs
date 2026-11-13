@@ -4,3 +4,4 @@
 mod content;
 mod fights;
 mod runs;
+mod spirits;

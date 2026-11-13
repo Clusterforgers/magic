@@ -29,6 +29,7 @@ import type { FindCard } from './findCard'
 import { PartyLobby } from './PartyLobby'
 import { RunHeader } from './RunHeader'
 import { POLL_MS, errorText } from './words'
+import { RevivalNote } from './DelvesRules'
 
 function bossOf(content: DelveContent, id: string | null | undefined): DelveBossView | undefined {
   return content.bosses.find((b) => b.id === id)
@@ -106,6 +107,7 @@ function FightPanel({ view, content }: { view: DelveView; content: DelveContent 
         )}
       </div>
       {boss ? <BossPanel content={content} boss={boss} /> : null}
+      <RevivalNote />
     </section>
   )
 }
