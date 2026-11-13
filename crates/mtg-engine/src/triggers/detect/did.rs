@@ -259,7 +259,13 @@ pub(super) fn did_happened(
             .is_some_and(|o| o.kind() != crate::object::ObjectKind::Token) =>
         {
             found.push(did(Action::ExploitedNontoken, Some(*player), Some(*object)));
+            found.extend(r5510_non_human(pre, *object, *sacrificed, *player));
         }
+        Event::Exploited {
+            object,
+            sacrificed,
+            player,
+        } => found.extend(r5510_non_human(pre, *object, *sacrificed, *player)),
         Event::CountersChanged(changed) => {
             if let Some(object) = crate::rmt8_turns::evolved(pre, post, changed) {
                 found.push(of(Action::Evolved, object));
@@ -525,4 +531,28 @@ fn activated(
         })
         .chain(untapped)
         .collect()
+}
+
+/// "Whenever a creature you control exploits a non-Human creature": the action when the creature sacrificed was not a
+/// Human as it last was on the battlefield, with its power then as the amount (none below 0).
+fn r5510_non_human(
+    pre: &GameState,
+    object: ObjectId,
+    sacrificed: ObjectId,
+    player: PlayerId,
+) -> Option<Happened> {
+    let (types, every) = crate::characteristics::creature_types(pre, sacrificed);
+    if every || types.iter().any(|subtype| subtype.0 == "Human") {
+        return None;
+    }
+    let power = crate::characteristics::characteristics(pre, sacrificed)?
+        .power
+        .unwrap_or(0);
+    Some(Happened::Did {
+        action: Action::ExploitedNonHuman,
+        player: Some(player),
+        object: Some(object),
+        ability: None,
+        amount: u32::try_from(power).unwrap_or(0),
+    })
 }

@@ -99,6 +99,7 @@ mod melee;
 mod menace;
 mod mentor;
 mod miracle;
+mod r5510_fortify;
 pub(crate) use miracle::reveal as miracle_reveal;
 mod morph;
 mod multikicker;
@@ -444,6 +445,7 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Fuse => &fuse::Fuse,
         Keyword::Ward(_) => &ward::Ward,
         Keyword::Equip(_) => &equip::Equip,
+        Keyword::Fortify(_) => &r5510_fortify::Fortify,
         Keyword::Reconfigure(_) => &reconfigure::Reconfigure,
         Keyword::LivingWeapon => &living_weapon::LivingWeapon,
         Keyword::Enchant(_) => &enchant::Enchant,
@@ -467,7 +469,7 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Devoid => &devoid::Devoid,
         Keyword::Infect => &infect::Infect,
         Keyword::Myriad => &myriad::Myriad,
-        Keyword::Crew(_) => &crew::Crew,
+        Keyword::Crew(_) | Keyword::CrewOnce(_) => &crew::Crew,
         Keyword::Mutate(_) => &mutate::Mutate,
         Keyword::Encore(_) => &encore::Encore,
         Keyword::Squad(_) => &squad::Squad,
@@ -898,6 +900,7 @@ mod tests {
             Keyword::Fuse,
             Keyword::Ward(cost()),
             Keyword::Equip(cost()),
+            Keyword::Fortify(cost()),
             Keyword::Reconfigure(cost()),
             Keyword::LivingWeapon,
             Keyword::Enchant(Selector::default()),
@@ -1019,6 +1022,7 @@ mod tests {
                 to: Box::default(),
                 cost: cost(),
             },
+            Keyword::CrewOnce(1),
             Keyword::Scavenge(cost()),
             Keyword::Transmute(cost()),
             Keyword::Awaken {
@@ -1109,6 +1113,7 @@ mod tests {
         "Keyword.Enchant",
         "Keyword.EnchantPlayer",
         "Keyword.Equip",
+        "Keyword.Fortify",
         "Keyword.Reconfigure",
         "Keyword.LivingWeapon",
         "Keyword.Kicker",
@@ -1225,6 +1230,7 @@ mod tests {
         "Keyword.StartYourEngines",
         "Keyword.JobSelect",
         "Keyword.EquipTo",
+        "Keyword.CrewOnce",
         "Keyword.Encore",
         "Keyword.Scavenge",
         "Keyword.Transmute",
@@ -1357,9 +1363,11 @@ mod tests {
     #[case::enchant(Keyword::Enchant(Selector::default()), Hooks::none())]
     #[case::enchant_player(Keyword::EnchantPlayer { opponent: true }, Hooks::none())]
     #[case::equip(Keyword::Equip(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::fortify(Keyword::Fortify(Cost::mana("{3}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::reconfigure(Keyword::Reconfigure(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 3, ..Hooks::none() })]
     #[case::living_weapon(Keyword::LivingWeapon, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::crew(Keyword::Crew(3), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::crew_once(Keyword::CrewOnce(1), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::saddle(Keyword::Saddle(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::saddled(Keyword::Saddled, Hooks::none())]
     #[case::station(Keyword::Station, Hooks { abilities: 1, ..Hooks::none() })]

@@ -11,7 +11,7 @@ use std::sync::Arc;
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::{Modification, SpellBenefit};
-use mtg_cards::refs::{Pred, Ref, Selector};
+use mtg_cards::refs::{Pred, Ref, Selector, ZoneKind};
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::ability_reader::{abilities_of, definition_has_static};
@@ -60,10 +60,11 @@ pub(crate) fn given_to_spell(state: &GameState, caster: PlayerId, spell: ObjectI
                 continue;
             }
             for modification in mods {
-                if let Modification::AddKeyword(keyword) = modification
-                    && !given.contains(keyword)
-                {
-                    given.push(keyword.clone());
+                if let Modification::AddKeyword(keyword) = modification {
+                    let keyword = r5510_read_own_cost(state, spell, keyword);
+                    if !given.contains(&keyword) {
+                        given.push(keyword);
+                    }
                 }
             }
         }
@@ -102,6 +103,19 @@ fn naming_spells(ability: &Arc<Ability>) -> Option<(&Selector, &[Modification])>
     else {
         return None;
     };
-    (from.is_battlefield() && selector.0.contains(&Pred::Spell))
-        .then_some((selector, mods.as_slice()))
+    (from.is_battlefield()
+        && (selector.0.contains(&Pred::Spell) || selector.0.contains(&Pred::In(ZoneKind::Stack))))
+    .then_some((selector, mods.as_slice()))
+}
+
+/// The keyword with a cost read off the spell's card ("The replicate cost is equal to its mana cost"), as the layers
+/// read it once the spell is on the stack.
+fn r5510_read_own_cost(state: &GameState, spell: ObjectId, keyword: &Keyword) -> Keyword {
+    let Some(object) = state.object(spell) else {
+        return keyword.clone();
+    };
+    let own = object.mana_cost().cloned().unwrap_or_default();
+    keyword
+        .clone()
+        .with_own_mana_cost_x(&own, object.card().x_in_cost)
 }

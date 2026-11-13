@@ -46,6 +46,7 @@ Altar's Reap
 Alter Reality
 Amass the Components
 Ambitious Aetherborn
+Aminatou, Veil Piercer
 Amulet of Safekeeping
 Amy Pond
 Anafenza, Kin-Tree Spirit
@@ -440,6 +441,7 @@ Damping Field
 Danny Pink
 Dark Inquiry
 Darkblast
+Darksteel Garrison
 Darksteel Juggernaut
 Darksteel Mutation
 Darksteel Splicer
@@ -913,6 +915,7 @@ Hellkite Tyrant
 Helm of Chatzuk
 Helm of the Host
 Hengegate Pathway // Mistgate Pathway
+Henry Wu, InGen Geneticist
 Herald of Anguish
 Herald of Eternal Dawn
 Herald of Hoofbeats
@@ -1173,6 +1176,7 @@ Ludevic's Test Subject // Ludevic's Abomination
 Lumen-Class Frigate
 Lunar Rejection
 Lurching Rotbeast
+Luxurious Locomotive
 M'Baku, Jabari Chieftain
 MACH-1, Swooping Scoundrel
 Mabel, Bitter Recluse

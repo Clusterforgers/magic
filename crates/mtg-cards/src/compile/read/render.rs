@@ -603,9 +603,11 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     if let Some(unlogged) = super::l31a_performed::l31a_unlogged(ability) {
         return written_variants(&unlogged);
     }
-    // A keyword given twice ("Cascade, cascade.") is not worded as one list.
+    // A keyword given twice is not worded as one list, only as a quoted "Cascade, cascade.".
     if matches!(ability, Ability::Static { mods, .. } if statics::repeated_keyword(mods)) {
-        return Vec::new();
+        let mut texts = Vec::new();
+        super::r5510_own_cost::r5510_wordings_twice(ability, written_variants, &mut texts);
+        return texts;
     }
     let texts = super::written_memo::written(ability, ep23_written_anew);
     let mut texts = super::written_memo::or_last_resort(ability, texts, written_variants);
@@ -637,6 +639,9 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r371_copy_except::r371_that_creature_dies(ability, &mut texts);
     super::r403_hooks::r403_wordings(ability, written_variants, &mut texts);
     super::r4711_drafted::r4711_wordings(ability, written_variants, &mut texts);
+    super::r5510_own_cost::r5510_wordings(ability, written_variants, &mut texts);
+    super::r5510_wholes::r5510_add_wholes(ability, &mut texts);
+    super::r5510_fortified::r5510_wordings(&mut texts);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.
