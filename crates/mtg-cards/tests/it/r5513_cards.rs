@@ -107,6 +107,8 @@ fn r5513_probe() {
 #[case("Silumgar Scavenger")]
 #[case("Foe-Razer Regent")]
 #[case("Neyith of the Dire Hunt")]
+#[case("Cuombajj Witches")]
+#[case("Nova Pentacle")]
 fn r5513_reads_back_whole(#[case] name: &str) {
     let report = r5513_report(name, &r5513_file(name));
     assert_eq!(
@@ -150,6 +152,12 @@ fn r5513_reads_back_whole(#[case] name: &str) {
     "Neyith of the Dire Hunt",
     r#""Fought", "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }]"#,
     r#""Fought", "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]"#
+)]
+#[case::witches_both_yours("Cuombajj Witches", r#"{ "ChosenBy": { "who": "Opponents", "what": "AnyTarget" } }"#, r#""AnyTarget""#)]
+#[case::pentacle_your_choice(
+    "Nova Pentacle",
+    r#""ChosenBy": { "who": "Opponents", "what": { "Object": [{ "Type": "Creature" }] } }"#,
+    r#""Object": [{ "Type": "Creature" }]"#
 )]
 #[case::neyith_block_not_blocked("Neyith of the Dire Hunt", r#""BecomesBlocked""#, r#""Blocks""#)]
 fn r5513_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
