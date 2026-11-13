@@ -1,7 +1,7 @@
 {
   "oracle_id": "8e576de0-0846-4665-a07c-83fe483ac196",
   "name": "Overclocked Electromancer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Overclocked Electromancer",
@@ -42,9 +42,35 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 181, "end": 336 }
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "if": {
+              "Matches": {
+                "subject": "Triggering",
+                "selector": [{ "DidThisTurn": { "event": "DealtExcess" } }]
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "You",
+                  "counter": { "Other": "energy" },
+                  "count": {
+                    "Tally": {
+                      "event": "DealtExcess",
+                      "who": "EachPlayer",
+                      "filter": [{ "Is": "Triggering" }]
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

@@ -39,6 +39,8 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::ExileHidden { .. }
         | Effect::Manifest { .. }
         | Effect::Cloak { .. }
+        | Effect::FaceDownPile { .. }
+        | Effect::BecomeForetold { .. }
         | Effect::Sacrifice { .. }
         | Effect::SacrificeUpTo { .. }
         | Effect::Counter { .. }

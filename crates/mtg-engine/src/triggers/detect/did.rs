@@ -289,10 +289,15 @@ fn from_found(fresh: &[Happened], of: &dyn Fn(Action, ObjectId) -> Happened) -> 
         match happened {
             Happened::Moved {
                 object,
+                from,
                 cause: Some(cause),
                 ..
             } => {
-                if let Some(action) = moved_action(*cause) {
+                // Only the special action exiles a card from a hand as it is foretold (CR 702.143b); a card an effect
+                // makes foretold was not foretold by anyone.
+                let foretelling =
+                    !matches!(cause, ZoneCause::Foretold) || matches!(from, Zone::Hand(_));
+                if let Some(action) = moved_action(*cause).filter(|_| foretelling) {
                     found.push(of(action, *object));
                 }
             }

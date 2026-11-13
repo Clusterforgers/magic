@@ -357,6 +357,21 @@ pub enum Balanced {
     Hand,
 }
 
+/// What becomes of the face-down pile of an `Effect::FaceDownPile` once it is shuffled.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum PileFate {
+    /// "then manifest those cards".
+    Manifest,
+    /// "then cloak those cards", with "They enter tapped." when `tapped`.
+    Cloak {
+        /// The permanents enter tapped.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        tapped: bool,
+    },
+    /// "put it back on top of your library".
+    OnTop,
+}
+
 /// What an `Effect::ChooseValue` asks a player for.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum ValueKind {
@@ -650,6 +665,28 @@ pub enum Effect {
         /// The name the permanents are bound to, as the objects they become on the battlefield.
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
+    },
+    /// Exiles the objects face down and they become foretold ("exile it face down. It becomes foretold."): each owner may
+    /// cast theirs on a later turn for its foretell cost. This is not foretelling (CR 702.143b).
+    BecomeForetold {
+        /// What is exiled.
+        what: Ref,
+    },
+    /// Exiles the objects `what` names and the top `top` cards of the controller's library in a face-down pile, shuffles
+    /// that pile, then manifests or cloaks its cards in the shuffled order or puts it on top of the controller's library.
+    /// With `whole` nothing happens unless every object named is still there and the library holds `top` cards ("If you
+    /// do"). An object named that is gone is left out.
+    FaceDownPile {
+        /// The objects exiled with the cards of the library.
+        what: Ref,
+        /// How many cards from the top of the controller's library join them.
+        #[serde(default = "Amount::zero", skip_serializing_if = "Amount::is_zero")]
+        top: Amount,
+        /// What becomes of the pile.
+        then: PileFate,
+        /// Nothing happens unless the whole pile can be exiled.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        whole: bool,
     },
     /// As `Manifest`, and each permanent has ward {2} (cloak, CR 701.58a).
     Cloak {

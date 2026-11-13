@@ -190,6 +190,7 @@ impl Delayed {
             | Duration::WhileYouControlSourceTapped
             | Duration::WhileHasCounter(_)
             | Duration::WhileEnchanted
+            | Duration::WhileTapped
             | Duration::WhileMonarch(_)
             | Duration::UntilItsControllersNextUntapStep
             | Duration::NextUntapStep

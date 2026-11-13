@@ -1,7 +1,7 @@
 {
   "oracle_id": "6f8a4998-35c7-4e30-a9e7-7d4ec933238a",
   "name": "Triumph of Saint Katherine",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Triumph of Saint Katherine",
@@ -9,9 +9,17 @@
       "abilities": [
         { "Keyword": "Lifelink" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 9, "end": 237 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "OwnedBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "FaceDownPile": { "what": "Triggering", "top": 6, "then": "OnTop", "whole": true } }
+            ]
           }
         },
         { "Keyword": { "Miracle": "{1}{W}" } }

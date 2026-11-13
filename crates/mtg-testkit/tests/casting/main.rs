@@ -206,6 +206,7 @@ mod r4i_may_flash;
 mod r5502_flash_teamwork;
 mod r5504_rebound;
 mod r5506_kind_costs;
+mod r5509_flagbearers;
 mod r5510_granted_keywords;
 mod r6q1_face_down_cost;
 mod r7p3_next_spell;

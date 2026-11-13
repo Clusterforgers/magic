@@ -320,6 +320,10 @@ pub enum Duration {
     /// target creature for as long as that creature is enchanted", CR 611.2b): it ends when one of them is no longer
     /// enchanted or leaves. Only a continuous effect that names its objects lasts this way.
     WhileEnchanted,
+    /// For as long as every object the effect names is still on the battlefield and tapped ("for as long as it remains
+    /// tapped"): it ends when one of them untaps or leaves. A continuous effect or a rule that names its objects lasts
+    /// this way.
+    WhileTapped,
     /// For as long as the player the reference names as the effect begins is the monarch ("for as long as they're the
     /// monarch", CR 724): it ends when that player stops being the monarch, and at once when they are not the monarch
     /// as it begins. Only a continuous effect lasts this way.
@@ -1101,6 +1105,9 @@ pub enum GameRule {
     },
     /// Cards in graveyards can't be the targets of spells or abilities (CR 115.4).
     GraveyardCardsUntargetable,
+    /// While an opponent chooses targets as they cast a spell or activate an ability, they must choose at least one
+    /// Flagbearer on the battlefield if able.
+    Flagbearers,
     /// All damage is dealt as though its source had wither (CR 702.80): damage to a creature is dealt as -1/-1
     /// counters.
     DamageAsWither,
@@ -1515,6 +1522,7 @@ mod tests {
         GameRule::GraveyardCardsUntargetable,
         r#""GraveyardCardsUntargetable""#
     )]
+    #[case(GameRule::Flagbearers, r#""Flagbearers""#)]
     #[case(
         GameRule::CantLoseGame { who: Ref::You, opponents_cant_win: true, life_only: false },
         r#"{"CantLoseGame":{"who":"You","opponents_cant_win":true}}"#

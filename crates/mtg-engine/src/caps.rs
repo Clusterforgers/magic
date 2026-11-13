@@ -258,6 +258,8 @@ const RUNS: &[&str] = &[
     "Effect.CopyCard",
     "Effect.Manifest",
     "Effect.Cloak",
+    "Effect.FaceDownPile",
+    "Effect.BecomeForetold",
     "Effect.CastFromZone",
     "Effect.CastFromZone.Transformed",
     "Effect.Destroy",
@@ -428,6 +430,8 @@ const RUNS: &[&str] = &[
     "Duration.DuringItsControllersNextTurn",
     "Duration.WhileHasCounter",
     "Duration.WhileEnchanted",
+    "Duration.WhileTapped",
+    "Rule.Duration.WhileTapped",
     "Duration.WhileMonarch",
     "Duration.UntilItsControllersNextUntapStep",
     "Duration.UntilPaid",
@@ -1051,6 +1055,7 @@ const RUNS: &[&str] = &[
     "Rule.Draft",
     "Rule.CantBeCopied",
     "Rule.KeepsDamage",
+    "Rule.Flagbearers",
     "Rule.CountsAsNamed",
     "Rule.CantSpendMana",
     "Rule.SpendOnlyFrom",
@@ -1525,6 +1530,9 @@ mod tests {
     #[case::copying_a_card("Effect.CopyCard", true)]
     #[case::manifesting("Effect.Manifest", true)]
     #[case::cloaking("Effect.Cloak", true)]
+    #[case::r5509_face_down_pile("Effect.FaceDownPile", true)]
+    #[case::r5509_become_foretold("Effect.BecomeForetold", true)]
+    #[case::r5509_flagbearers("Rule.Flagbearers", true)]
     #[case::casting_during_a_resolution("Effect.CastFromZone", true)]
     #[case::casting_during_a_resolution_transformed("Effect.CastFromZone.Transformed", true)]
     #[case::cascading("Keyword.Cascade", true)]

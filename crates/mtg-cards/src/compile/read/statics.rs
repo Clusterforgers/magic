@@ -618,6 +618,8 @@ fn rule(r: &mut Reader<'_>) -> Option<Ability> {
         rule
     } else if let Some(rule) = r.attempt(super::r5501_echo::r5501_echo_rather) {
         rule
+    } else if let Some(rule) = r.attempt(super::r5509_rules::r5509_rule_read) {
+        rule
     } else if let Some(rule) = r.attempt(player_rule) {
         rule
     } else if let Some(rule) = r.attempt(super::w8a_declaration_limits::w8a_limit) {
@@ -2037,6 +2039,9 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::CountersRemain,
             ZoneKind::Battlefield,
         ) => super::w17b_statics::w17b_texts(rule),
+        (GameRule::Flagbearers, ZoneKind::Battlefield) => {
+            super::r5509_rules::r5509_rule_texts(rule)
+        }
         (
             GameRule::DamageAsWither
             | GameRule::ManaBurn

@@ -479,7 +479,9 @@ pub(crate) fn lasts(
         | Duration::UntilSkippedThisTurn
         // `TheirNextTurn` ends with the first later turn of the player it names (`r377_skips`), and applies only from a
         // later turn on (`r377_waits`).
-        | Duration::TheirNextTurn => true,
+        | Duration::TheirNextTurn
+        // An effect or rule that follows its objects' tapped state reads its own record (`r5509_stays_tapped`).
+        | Duration::WhileTapped => true,
         // `DuringItsControllersNextTurn` is begun for the player whose turn it waits for (`continuous.rs`).
         Duration::UntilEndOfYourNextTurn | Duration::DuringItsControllersNextTurn => {
             state.is_alive(controller)
@@ -729,6 +731,10 @@ impl ContinuousEffect {
         match duration {
             Duration::WhileHasCounter(kind) => self.holds_counter(state, kind),
             Duration::WhileEnchanted => self.stays_enchanted(state),
+            Duration::WhileTapped => match &self.selector {
+                Selector::Objects(named) => r5509_stays_tapped(state, named),
+                Selector::AllCreatures | Selector::CreaturesControlledBy(_) => false,
+            },
             Duration::WhileMonarch(_) => self.anchor.is_some() && state.monarch == self.anchor,
             other => lasts(state, other, self.turn, self.controller, self.source),
         }
@@ -801,6 +807,19 @@ pub(crate) fn follow_spell(effects: &mut [ContinuousEffect], entered: ObjectRef,
             }
         }
     }
+}
+
+/// Whether every object named is still the object it named, on the battlefield and tapped ("for as long as it remains
+/// tapped").
+pub(crate) fn r5509_stays_tapped(state: &GameState, named: &[ObjectRef]) -> bool {
+    !named.is_empty()
+        && named.iter().all(|r| {
+            state.object(r.id).is_some_and(|o| {
+                o.counter() == r.counter
+                    && o.zone() == Zone::Battlefield
+                    && o.permanent().is_some_and(|p| p.tapped)
+            })
+        })
 }
 
 #[cfg(test)]

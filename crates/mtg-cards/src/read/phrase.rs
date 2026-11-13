@@ -684,6 +684,7 @@ pub(super) fn duration(value: &Duration) -> String {
             format!("while it has a {} counter", counter_text(counter))
         }
         Duration::WhileEnchanted => "while it is enchanted".to_owned(),
+        Duration::WhileTapped => "while it stays tapped".to_owned(),
         Duration::WhileMonarch(_) => "while that player is the monarch".to_owned(),
         Duration::UntilItsControllersNextUntapStep => {
             "until its controller's next untap step".to_owned()

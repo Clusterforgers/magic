@@ -256,6 +256,7 @@ mod r5505_convert;
 mod r5506_costs;
 mod r5507_dice;
 mod r5507_prevent;
+mod r5509_rules;
 mod r5510_fortified;
 mod r5510_own_cost;
 mod r5510_wholes;
