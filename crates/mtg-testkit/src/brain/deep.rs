@@ -43,6 +43,9 @@ pub struct Deep {
     pub trust: f64,
     /// The standard errors of the difference the favourite must also clear to replace the heuristic answer.
     pub doubt: f64,
+    /// The mean reward added to `trust` where rollouts see least: spending interaction the heuristics keep, and attacks
+    /// at a table of more than two.
+    pub guard: f64,
     /// Whether rollouts judge each seat's main-phase casts by trying them ([`Search::judged`]) rather than casting the
     /// costliest.
     pub judged: bool,
@@ -61,6 +64,7 @@ impl Deep {
         time: Some(Duration::from_millis(2500)),
         trust: 0.0,
         doubt: 1.0,
+        guard: 0.05,
         judged: true,
     };
 
