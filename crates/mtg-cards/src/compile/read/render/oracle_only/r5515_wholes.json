@@ -417,54 +417,5 @@
    }
   },
   "Whenever another creature you control enters and whenever you activate a power-up ability, put a +1/+1 counter on ~."
- ],
- [
-  {
-   "Loyalty": {
-    "cost": {
-     "Plus": 1
-    },
-    "effects": [
-     {
-      "Draw": {}
-     },
-     {
-      "Choose": {
-       "who": "Opponents",
-       "from": {
-        "Union": [
-         {
-          "Each": [
-           {
-            "In": "Hand"
-           },
-           {
-            "OwnedBy": "Chooser"
-           }
-          ]
-         },
-         {
-          "Each": [
-           {
-            "ControlledBy": "Chooser"
-           }
-          ]
-         }
-        ]
-       },
-       "as": "exiled"
-      }
-     },
-     {
-      "Exile": {
-       "what": {
-        "Bound": "exiled"
-       }
-      }
-     }
-    ]
-   }
-  },
-  "+1: You draw a card. Each opponent exiles a card from their hand or a permanent they control."
  ]
 ]

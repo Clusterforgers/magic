@@ -87,6 +87,7 @@ pub(crate) fn fold(state: &mut GameState, by: PlayerId, kept: &[ObjectId]) {
         round: 0,
         regular: by,
         extra: false,
+        no_power_up: false,
         combats: 0,
         ahead: Vec::new(),
         r306_steps: Vec::new(),

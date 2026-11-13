@@ -128,13 +128,22 @@ fn r5515_reads_back_whole(#[case] name: &str) {
 
 #[rstest]
 #[case::witch_to_this("Bitterheart Witch", r#""to": { "Target": 0 }"#, r#""to": "This""#)]
-#[case::witch_without_shuffle("Bitterheart Witch", r#", { "Shuffle": {} }"#, "")]
-#[case::misfortunes_any_curse("Curse of Misfortunes", r#", { "Not": { "SharesName": { "Each": [{ "Subtype": "Curse" }, { "AttachedTo": "AttachedPlayer" }] } } }"#, "")]
+#[case::witch_an_aura("Bitterheart Witch", r#"{ "Subtype": "Curse" }"#, r#"{ "Subtype": "Aura" }"#)]
+#[case::misfortunes_curses_on_you("Curse of Misfortunes", r#"{ "AttachedTo": "AttachedPlayer" }"#, r#"{ "AttachedTo": "You" }"#)]
 #[case::misfortunes_to_you("Curse of Misfortunes", r#""to": "AttachedPlayer""#, r#""to": "You""#)]
 #[case::retether_lands("Retether", r#""only": [{ "Type": "Creature" }]"#, r#""only": [{ "Type": "Land" }]"#)]
 #[case::retether_hand("Retether", r#""In": "Graveyard""#, r#""In": "Hand""#)]
-#[case::grace_untransformed("Radiant Grace // Radiant Restraints", r#""transformed": true, "#, "")]
+#[case::grace_untransformed("Radiant Grace // Radiant Restraints", r#""transformed": true,"#, r#""transformed": false,"#)]
 #[case::grace_any_player("Radiant Grace // Radiant Restraints", r#""what": "Opponent""#, r#""what": "Player""#)]
+#[case::lynde_to_an_opponent("Lynde, Cheerful Tormentor", r#""to": "You""#, r#""to": "Opponents""#)]
+#[case::hex_any_opponent("Maddening Hex", r#"{ "Not": { "Among": "AttachedPlayer" } }"#, r#""YourTurn""#)]
+#[case::kazuul_four_mana("Kazuul, Tyrant of the Cliffs", r#""{3}""#, r#""{4}""#)]
+#[case::kang_power_ups_allowed("Kang the Conqueror", r#""no_power_up": true"#, r#""no_power_up": false"#)]
+#[case::kang_once_each_turn("Kang the Conqueror", r#""limit": "PowerUp""#, r#""limit": "OncePerTurn""#)]
+#[case::wonder_man_opponents("Wonder Man, Hollywood Hero", r#"{ "ControlledBy": "You" }"#, r#"{ "ControlledBy": "Opponents" }"#)]
+#[case::marvel_boy_exhaust("Marvel Boy, Noh-Varr", r#""ActivatedPowerUp""#, r#""ActivatedExhaust""#)]
+#[case::ice_cave_any_player("Ice Cave", r#"{ "Not": { "Among": { "ControllerOf": "Triggering" } } }"#, r#""YourTurn""#)]
+#[case::soul_seizer_without_transform("Soul Seizer // Ghastly Haunting", r#""Transform""#, r#""Tap""#)]
 fn r5515_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let file = r5515_file(name);
     assert!(file.contains(from), "{name} has {from}");

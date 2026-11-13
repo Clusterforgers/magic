@@ -1711,7 +1711,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::MustAttack(named)
         | Rule::MustBlock(named)
         | Rule::CantBeCountered(named)
-        | Rule::CantBeRegenerated(named) => named.is_empty(),
+        | Rule::CantBeRegenerated(named)
+        | Rule::PowerUpAgain(named) => named.is_empty(),
         Rule::EntersWith {
             counters, keyword, ..
         } => *counters == 0 && keyword.is_none(),
