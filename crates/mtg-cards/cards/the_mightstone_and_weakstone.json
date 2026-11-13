@@ -40,7 +40,7 @@
               {
                 "AddMana": {
                   "mana": { "Fixed": ["Colorless", "Colorless"] },
-                  "only": [{ "Spell": { "types": ["Artifact"] } }, { "Ability": {} }]
+                  "only": [{ "Spell": { "types": ["Artifact"] } }, { "Ability": {} }, "OtherCosts"]
                 }
               }
             ]

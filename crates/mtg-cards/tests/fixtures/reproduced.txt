@@ -1046,6 +1046,7 @@ Karametra, God of Harvests
 Karn Liberated
 Karn's Bastion
 Karn's Sylex
+Karn, Legacy Reforged
 Kathari Screecher
 Kaya's Wrath
 Kazandu Tuskcaller
@@ -1994,6 +1995,7 @@ The Gaffer
 The Great Henge
 The Locust God
 The Mechanist, Aerial Artisan
+The Mightstone and Weakstone
 The Modern Age // Vector Glider
 The Moment
 The Most Dangerous Gamer
