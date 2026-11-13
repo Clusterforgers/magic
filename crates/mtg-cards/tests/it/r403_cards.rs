@@ -127,6 +127,8 @@ fn r403_probe() {
 #[case("Anthem of Rakdos")]
 #[case("Thought Lash")]
 #[case("Hibernation's End")]
+#[case("Role Reversal")]
+#[case("Legerdemain")]
 fn r403_reads_back_whole(#[case] name: &str) {
     let report = r403_report(name, &r403_file(name));
     assert_eq!(

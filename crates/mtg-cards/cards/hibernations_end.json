@@ -7,22 +7,10 @@
       "name": "Hibernation's End",
       "oracle_fingerprint": "a578ea4fece27bf0298842b3cb55c4c0",
       "abilities": [
-        {
-          "Keyword": {
-            "CumulativeUpkeep": "{1}"
-          }
-        },
+        { "Keyword": { "CumulativeUpkeep": "{1}" } },
         {
           "Triggered": {
-            "when": {
-              "Did": {
-                "action": "PaidCumulativeUpkeep",
-                "who": "You",
-                "what": [
-                  "This"
-                ]
-              }
-            },
+            "when": { "Did": { "action": "PaidCumulativeUpkeep", "who": "You", "what": ["This"] } },
             "effects": [
               {
                 "May": {
@@ -30,40 +18,20 @@
                     {
                       "Search": {
                         "filter": [
-                          {
-                            "Type": "Creature"
-                          },
+                          { "Type": "Creature" },
                           {
                             "Compare": {
                               "stat": "ManaValue",
                               "op": "Eq",
-                              "to": {
-                                "Counters": {
-                                  "on": "This",
-                                  "counter": {
-                                    "Other": "age"
-                                  }
-                                }
-                              }
+                              "to": { "Counters": { "on": "This", "counter": { "Other": "age" } } }
                             }
                           }
                         ],
                         "as": "card"
                       }
                     },
-                    {
-                      "Move": {
-                        "what": {
-                          "Bound": "card"
-                        },
-                        "to": {
-                          "Battlefield": {}
-                        }
-                      }
-                    },
-                    {
-                      "Shuffle": {}
-                    }
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} }
                   ]
                 }
               }

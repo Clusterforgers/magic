@@ -302,3 +302,84 @@ fn r403_anthem_doubles_damage_only_with_an_empty_hand(
     r403_replays(&driver);
     Ok(())
 }
+
+/// A noncreature permanent of seat `seat` with the card types given, named `name`.
+fn r403_typed(
+    name: &str,
+    types: &[mtg_core::card::CardType],
+) -> std::sync::Arc<mtg_cards::CardDefinition> {
+    let definition = types.iter().fold(
+        mtg_cards::CardDefinition::new(name),
+        |definition, card_type| definition.with_type(*card_type),
+    );
+    std::sync::Arc::new(definition)
+}
+
+/// The exchange spells refuse a second target that shares none of their types with the first (Role Reversal: a Kindred
+/// artifact and a Kindred enchantment share a card type but no permanent type; Legerdemain: a creature and a
+/// noncreature artifact share neither of its types) and exchange two creatures.
+#[rstest]
+fn r403_exchanges_need_a_shared_type_of_the_spell(
+    #[values(2, 3, 4)] seats: usize,
+    #[values("Role Reversal", "Legerdemain")] spell: &str,
+) -> Result<(), ScriptError> {
+    use mtg_core::card::CardType;
+    let (mine, theirs): (&str, &str) = if spell == "Role Reversal" {
+        ("Totem", "Idol")
+    } else {
+        ("Mine", "Relic")
+    };
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(1, 0, Step::Main1)
+            .hand(0, [card(spell).unwrap()])
+            .battlefield(
+                0,
+                (0..2)
+                    .map(|_| ready(island()))
+                    .chain((0..2).map(|_| ready(mountain())))
+                    .chain([
+                        ready(free_creature("Mine", 1, 1)),
+                        ready(r403_typed(
+                            "Totem",
+                            &[CardType::Kindred, CardType::Artifact],
+                        )),
+                    ]),
+            )
+            .battlefield(
+                1,
+                [
+                    ready(free_creature("Theirs", 3, 3)),
+                    ready(r403_typed(
+                        "Idol",
+                        &[CardType::Kindred, CardType::Enchantment],
+                    )),
+                    ready(r403_typed("Relic", &[CardType::Artifact])),
+                ],
+            ),
+    )?;
+    driver.begin_cast(spell)?;
+    let first = driver.target_named(mine)?;
+    driver.choose_targets(&[first])?;
+    let refused = driver.target_named(theirs)?;
+    assert!(
+        driver.choose_targets(&[refused]).is_err(),
+        "{mine} and {theirs} share no type of {spell}"
+    );
+    if spell == "Role Reversal" {
+        driver.answer(Answer::ChooseTargets(TargetChoice::Cancel))?;
+        driver.begin_cast(spell)?;
+        let mine = driver.target_named("Mine")?;
+        driver.choose_targets(&[mine])?;
+    }
+    let theirs = driver.target_named("Theirs")?;
+    driver.choose_targets(&[theirs])?;
+    r403_settle(&mut driver, &R403Answers::default())?;
+    let controller = |name: &str| {
+        mtg_engine::characteristics::controller_of(driver.state(), driver.id_of(name).unwrap())
+    };
+    assert_eq!(controller("Mine"), Some(pid(1)));
+    assert_eq!(controller("Theirs"), Some(pid(0)));
+    r403_replays(&driver);
+    Ok(())
+}

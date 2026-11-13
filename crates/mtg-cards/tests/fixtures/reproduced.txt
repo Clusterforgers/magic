@@ -879,6 +879,7 @@ Hero's Heirloom
 Heroes' Podium
 Heronblade Elite
 Hexavus
+Hibernation's End
 Hidden Dragonslayer
 Hidden Hideout
 Hideous Laughter
@@ -1056,6 +1057,7 @@ Lawmage's Binding
 Lay Bare the Heart
 Lazotep Reaver
 Leafkin Druid
+Legerdemain
 Legion Loyalty
 Legolas Greenleaf
 Leonardo, the Balance

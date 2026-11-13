@@ -52,6 +52,9 @@ pub(super) fn r403_read(
     kind: ClauseKind,
     read: impl Fn(&str) -> Option<Ability>,
 ) -> Option<Ability> {
+    if let Some(found) = r403_shared_read(text, &read) {
+        return Some(found);
+    }
     if kind == ClauseKind::Triggered
         && let Some(found) = r403_upkeep_read(text, &read)
     {
@@ -257,6 +260,127 @@ fn r403_upkeep_wordings(
     }
 }
 
+/// The permanent types (CR 110.4), in the order of the comprehensive rules.
+const R403_PERMANENT_TYPES: [mtg_core::card::CardType; 6] = [
+    mtg_core::card::CardType::Artifact,
+    mtg_core::card::CardType::Battle,
+    mtg_core::card::CardType::Creature,
+    mtg_core::card::CardType::Enchantment,
+    mtg_core::card::CardType::Land,
+    mtg_core::card::CardType::Planeswalker,
+];
+/// The wordings of a shared type of some types, and the wording of the twin that shares any card type.
+const R403_SHARED: [(&str, &str); 3] = [
+    ("share a permanent type", "share a card type"),
+    ("shares a permanent type", "shares a card type"),
+    (
+        "shares one of those types with it",
+        "shares a card type with it",
+    ),
+];
+
+/// The ability with each `SharesType` of its JSON made a `SharesTypeOf` of these types, or the reverse.
+fn r403_swap_shared(
+    ability: &Ability,
+    types: Option<&[mtg_core::card::CardType]>,
+) -> Option<Ability> {
+    fn walk(value: &mut serde_json::Value, types: Option<&serde_json::Value>, changed: &mut bool) {
+        match value {
+            serde_json::Value::Object(map) => {
+                if let Some(types) = types
+                    && let Some(with) = map.remove("SharesType")
+                {
+                    map.insert(
+                        "SharesTypeOf".to_owned(),
+                        serde_json::json!({ "with": with, "types": types }),
+                    );
+                    *changed = true;
+                } else if types.is_none()
+                    && let Some(of) = map.remove("SharesTypeOf")
+                {
+                    map.insert(
+                        "SharesType".to_owned(),
+                        of.get("with").cloned().unwrap_or_default(),
+                    );
+                    *changed = true;
+                }
+                map.values_mut()
+                    .for_each(|inner| walk(inner, types, changed));
+            }
+            serde_json::Value::Array(items) => items
+                .iter_mut()
+                .for_each(|inner| walk(inner, types, changed)),
+            _ => {}
+        }
+    }
+    let mut value = serde_json::to_value(ability).ok()?;
+    let types = types.map(serde_json::to_value).transpose().ok()?;
+    let mut changed = false;
+    walk(&mut value, types.as_ref(), &mut changed);
+    changed.then_some(())?;
+    serde_json::from_value(value).ok()
+}
+
+/// The card types the first target of a spell names as alternatives ("target artifact or creature").
+fn r403_first_types(ability: &Ability) -> Option<Vec<mtg_core::card::CardType>> {
+    let Ability::Spell { targets, .. } = ability else {
+        return None;
+    };
+    let crate::refs::Targetable::Object(selector) = &targets.first()?.what else {
+        return None;
+    };
+    let [crate::refs::Pred::AnyOf(any)] = selector.0.as_slice() else {
+        return None;
+    };
+    any.iter()
+        .map(|pred| match pred {
+            crate::refs::Pred::Type(card_type) => Some(*card_type),
+            _ => None,
+        })
+        .collect()
+}
+
+/// "that share a permanent type", "that shares one of those types with it" read from the twin that shares a card type.
+fn r403_shared_read(text: &str, read: &impl Fn(&str) -> Option<Ability>) -> Option<Ability> {
+    let (words, twin) = R403_SHARED
+        .iter()
+        .find(|(words, _)| text.contains(*words))?;
+    let found = read(&text.replacen(words, twin, 1))?;
+    let types = if words.contains("those") {
+        r403_first_types(&found)?
+    } else {
+        R403_PERMANENT_TYPES.to_vec()
+    };
+    r403_swap_shared(&found, Some(&types))
+}
+
+/// The wordings of a spell whose target shares some types with another, from the twin that shares any card type.
+fn r403_shared_wordings(
+    ability: &Ability,
+    written: fn(&Ability) -> Vec<String>,
+    more: &mut Vec<String>,
+) {
+    let Some(twin) = r403_swap_shared(ability, None) else {
+        return;
+    };
+    let Some(back) = r403_swap_shared(&twin, Some(&R403_PERMANENT_TYPES)) else {
+        return;
+    };
+    let permanent = back == *ability;
+    let those = r403_first_types(&twin)
+        .and_then(|types| r403_swap_shared(&twin, Some(&types)))
+        .is_some_and(|back| back == *ability);
+    for text in written(&twin) {
+        for (words, twin_words) in R403_SHARED {
+            if (words.contains("those") && those || !words.contains("those") && permanent)
+                && text.contains(twin_words)
+            {
+                more.push(text.replacen(twin_words, words, 1));
+            }
+        }
+    }
+}
+
 /// A draw of one card by the controller.
 fn r403_draw() -> Effect {
     Effect::Draw {
@@ -457,6 +581,7 @@ pub(super) fn r403_wordings(
         more.extend(texts.iter().filter_map(|text| r403_as_long_as(text)));
     }
     r403_upkeep_wordings(ability, written, &mut more);
+    r403_shared_wordings(ability, written, &mut more);
     r403_counter_wordings(ability, written, &mut more, texts);
     texts.extend(more);
 }

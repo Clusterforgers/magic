@@ -1,0 +1,52 @@
+{
+  "oracle_id": "8be783b2-7394-411a-8ab5-a8fffe8d714c",
+  "name": "Role Reversal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Role Reversal",
+      "oracle_fingerprint": "18f4ddf6d552ec53a336233e2b811fb5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [] } },
+              {
+                "what": {
+                  "Another": {
+                    "what": {
+                      "Object": [
+                        {
+                          "SharesTypeOf": {
+                            "with": { "Target": 0 },
+                            "types": [
+                              "Artifact",
+                              "Battle",
+                              "Creature",
+                              "Enchantment",
+                              "Land",
+                              "Planeswalker"
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    "earlier": [0]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "ExchangeControl": {
+                  "what": [{ "Target": 0 }, { "Target": 1 }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

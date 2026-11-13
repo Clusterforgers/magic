@@ -7,38 +7,14 @@
       "name": "Thought Lash",
       "oracle_fingerprint": "16d624a98d3afda9bc10e3ac453624aa",
       "abilities": [
-        {
-          "Keyword": {
-            "CumulativeUpkeep": [
-              {
-                "ExileTop": 1
-              }
-            ]
-          }
-        },
+        { "Keyword": { "CumulativeUpkeep": [{ "ExileTop": 1 }] } },
         {
           "Triggered": {
-            "when": {
-              "Did": {
-                "action": "DeclinedCumulativeUpkeep",
-                "what": [
-                  "This"
-                ]
-              }
-            },
+            "when": { "Did": { "action": "DeclinedCumulativeUpkeep", "what": ["This"] } },
             "effects": [
               {
                 "Exile": {
-                  "what": {
-                    "Each": [
-                      {
-                        "In": "Library"
-                      },
-                      {
-                        "OwnedBy": "TriggeringPlayer"
-                      }
-                    ]
-                  }
+                  "what": { "Each": [{ "In": "Library" }, { "OwnedBy": "TriggeringPlayer" }] }
                 }
               }
             ]
@@ -46,22 +22,12 @@
         },
         {
           "Activated": {
-            "cost": [
-              {
-                "ExileTop": 1
-              }
-            ],
+            "cost": [{ "ExileTop": 1 }],
             "effects": [
               {
                 "Shield": {
-                  "when": {
-                    "Damage": {
-                      "to": "You"
-                    }
-                  },
-                  "by": {
-                    "PreventUpTo": 1
-                  },
+                  "when": { "Damage": { "to": "You" } },
+                  "by": { "PreventUpTo": 1 },
                   "duration": "UntilEndOfTurn"
                 }
               }
