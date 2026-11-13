@@ -1,6 +1,9 @@
 //! r40-9 wordings written from a twin another writer words: "If that artifact is an Equipment, attach it to this
 //! creature." after a step on a target artifact (Thieving Skydiver), and "that source's controller" as the player of a
-//! step after "Whenever a source deals damage to ~" (Crag Saurian).
+//! step after "Whenever a source deals damage to ~" (Crag Saurian), and the loyalty rule for the turn ("You may activate
+//! the loyalty abilities of planeswalkers you control twice this turn rather than only once."), a delayed trigger that
+//! lasts until the controller's next turn ("Until your next turn, whenever ...") and the combat phase added after the
+//! combat a combat damage trigger happens in ("After this combat phase, there is an additional combat phase.").
 
 use serde_json::{Value, json};
 
@@ -10,6 +13,119 @@ use crate::ability::Ability;
 pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     r409_equipment_attached(ability, texts);
     r409_source_controller(ability, texts);
+    r409_loyalty_twice_this_turn(ability, texts);
+    r409_until_your_next_turn(ability, texts);
+    r409_after_this_combat(ability, texts);
+}
+
+/// "Until your next turn, whenever a creature attacks you ..., it gets -2/-0 until end of turn.": the one step sets up
+/// a trigger that lasts until the controller's next turn, written from the twin whose trigger has no end.
+fn r409_until_your_next_turn(ability: &Ability, texts: &mut Vec<String>) {
+    let Ok(mut value) = serde_json::to_value(ability) else {
+        return;
+    };
+    let Some(effects) = value
+        .as_object_mut()
+        .and_then(|kinds| kinds.values_mut().next())
+        .and_then(|body| body.get_mut("effects"))
+        .and_then(Value::as_array_mut)
+    else {
+        return;
+    };
+    let [only] = effects.as_mut_slice() else {
+        return;
+    };
+    let Some(delayed) = only
+        .get_mut("DelayedTrigger")
+        .and_then(Value::as_object_mut)
+    else {
+        return;
+    };
+    if delayed.get("until") != Some(&json!("UntilYourNextTurn"))
+        || delayed.get("once") != Some(&json!(false))
+        || delayed.contains_key("this_turn")
+    {
+        return;
+    }
+    delayed.remove("until");
+    let Ok(twin) = serde_json::from_value::<Ability>(value) else {
+        return;
+    };
+    let found: Vec<String> = crate::compile::written_variants(&twin)
+        .into_iter()
+        .filter(|text| text.matches("Whenever ").count() == 1)
+        .map(|text| text.replacen("Whenever ", "Until your next turn, whenever ", 1))
+        .filter(|text| !texts.contains(text))
+        .collect();
+    texts.extend(found);
+}
+
+/// "After this combat phase, there is an additional combat phase." in a trigger on combat damage: the phase the step
+/// adds after is the combat phase, written from the wording "After this phase".
+fn r409_after_this_combat(ability: &Ability, texts: &mut Vec<String>) {
+    const PHASE: &str = "After this phase, there is an additional combat phase.";
+    let Ability::Triggered { when, .. } = ability else {
+        return;
+    };
+    let combat = serde_json::to_string(when).is_ok_and(|text| text.contains(r#""combat":true"#));
+    if !combat {
+        return;
+    }
+    let found: Vec<String> = texts
+        .iter()
+        .filter(|text| text.matches(PHASE).count() == 1)
+        .map(|text| {
+            text.replacen(
+                PHASE,
+                "After this combat phase, there is an additional combat phase.",
+                1,
+            )
+        })
+        .filter(|text| !texts.contains(text))
+        .collect();
+    texts.extend(found);
+}
+
+/// The step that lets the controller activate loyalty abilities twice for the turn.
+const R409_TWICE: &str = "you may activate the loyalty abilities of planeswalkers you control twice this turn rather than only once";
+
+/// "You may activate the loyalty abilities of planeswalkers you control twice this turn rather than only once." as the
+/// only step, written from the twin that draws a card instead.
+fn r409_loyalty_twice_this_turn(ability: &Ability, texts: &mut Vec<String>) {
+    let rule = json!({"Rule": {"rule": {"LoyaltyTwice": "You"}, "duration": "UntilEndOfTurn"}});
+    let Ok(mut value) = serde_json::to_value(ability) else {
+        return;
+    };
+    let Some(effects) = value
+        .as_object_mut()
+        .and_then(|kinds| kinds.values_mut().next())
+        .and_then(|body| body.get_mut("effects"))
+    else {
+        return;
+    };
+    if *effects != json!([rule]) {
+        return;
+    }
+    *effects = json!([{"Draw": {}}]);
+    let Ok(twin) = serde_json::from_value::<Ability>(value) else {
+        return;
+    };
+    let mut capital = R409_TWICE.to_owned();
+    capital[..1].make_ascii_uppercase();
+    let found: Vec<String> = crate::compile::written_variants(&twin)
+        .into_iter()
+        .filter_map(|text| {
+            if text.matches("raw a card").count() != 1 {
+                return None;
+            }
+            Some(
+                text.replacen("Draw a card", &capital, 1)
+                    .replacen("draw a card", R409_TWICE, 1),
+            )
+        })
+        .filter(|text| !texts.contains(text))
+        .collect();
+    texts.extend(found);
 }
 
 /// "Whenever a source deals damage to ~, that source's controller gains control of ~.": the controller of the source of

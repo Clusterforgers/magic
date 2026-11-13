@@ -777,6 +777,9 @@ pub enum GameRule {
     },
     /// The players have no maximum hand size (CR 402.2).
     NoMaxHandSize(Ref),
+    /// The players may activate the loyalty abilities of planeswalkers they control twice each turn rather than only
+    /// once (CR 606.3).
+    LoyaltyTwice(Ref),
     /// The players' maximum hand size is `size` (CR 402.2): the least of the sizes in force.
     MaxHandSize {
         /// The players.

@@ -35,11 +35,19 @@ fn r409_crag_saurian_goes_to_the_controller_of_the_source(
     #[case] caster: usize,
     #[case] owner: usize,
 ) -> Result<(), ScriptError> {
-    let scenario = Scenario::new(seats)
-        .battlefield(0, [ready(card("Crag Saurian").unwrap())])
-        .battlefield(caster, [ready(mountain())])
-        .hand(caster, [card("Lightning Bolt").unwrap()])
-        .at(1, caster, Step::Main1);
+    let mut saurian_side = vec![ready(card("Crag Saurian").unwrap())];
+    let mut caster_side = vec![ready(mountain())];
+    if caster == 0 {
+        saurian_side.append(&mut caster_side);
+    }
+    let mut scenario = Scenario::new(seats).battlefield(0, saurian_side);
+    if caster != 0 {
+        scenario = scenario.battlefield(caster, caster_side);
+    }
+    let scenario =
+        scenario
+            .hand(caster, [card("Lightning Bolt").unwrap()])
+            .at(1, caster, Step::Main1);
     let mut driver = Driver::from_scenario(scenario)?;
     let saurian = driver.id_of("Crag Saurian")?;
     driver.begin_cast("Lightning Bolt")?;

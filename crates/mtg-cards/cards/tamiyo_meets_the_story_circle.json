@@ -1,35 +1,98 @@
 {
   "oracle_id": "d53d5d03-b180-4bdb-8801-260f8a75644d",
   "name": "Tamiyo Meets the Story Circle",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tamiyo Meets the Story Circle",
       "oracle_fingerprint": "4304c0279549338f79fba80638ccd113",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 89, "end": 210 }
+          "Triggered": {
+            "when": {
+              "Chapter": {
+                "number": 1
+              }
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "AttacksPlayerOrPlaneswalker": {
+                      "what": [
+                        {
+                          "Type": "Creature"
+                        }
+                      ],
+                      "at": "You"
+                    }
+                  },
+                  "once": false,
+                  "until": "UntilYourNextTurn",
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "Triggering",
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": -2,
+                              "toughness": 0
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
           "Triggered": {
-            "when": { "Chapter": { "number": 2 } },
+            "when": {
+              "Chapter": {
+                "number": 2
+              }
+            },
             "effects": [
               {
                 "Discard": {
-                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": {
+                    "Count": [
+                      {
+                        "In": "Hand"
+                      },
+                      {
+                        "OwnedBy": "You"
+                      }
+                    ]
+                  },
                   "optional": true,
                   "as": "discarded"
                 }
               },
               {
                 "CreateToken": {
-                  "token": { "Named": "clue" },
+                  "token": {
+                    "Named": "clue"
+                  },
                   "count": {
                     "Product": [
-                      { "Count": [{ "Is": { "Bound": "discarded" } }, { "In": "Graveyard" }] },
+                      {
+                        "Count": [
+                          {
+                            "Is": {
+                              "Bound": "discarded"
+                            }
+                          },
+                          {
+                            "In": "Graveyard"
+                          }
+                        ]
+                      },
                       2
                     ]
                   }
@@ -40,15 +103,42 @@
         },
         {
           "Triggered": {
-            "when": { "Chapter": { "number": 3 } },
+            "when": {
+              "Chapter": {
+                "number": 3
+              }
+            },
             "targets": [
               {
-                "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
-                "bounds": { "min": 0, "max": 3 }
+                "what": {
+                  "Object": [
+                    {
+                      "In": "Graveyard"
+                    },
+                    {
+                      "OwnedBy": "You"
+                    }
+                  ]
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": 3
+                }
               }
             ],
             "effects": [
-              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Shuffled" } } } }
+              {
+                "Move": {
+                  "what": {
+                    "Target": 0
+                  },
+                  "to": {
+                    "Library": {
+                      "place": "Shuffled"
+                    }
+                  }
+                }
+              }
             ]
           }
         }

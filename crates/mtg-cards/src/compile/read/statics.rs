@@ -620,6 +620,9 @@ fn rule(r: &mut Reader<'_>) -> Option<Ability> {
     })
 }
 
+/// "You may activate the loyalty abilities of planeswalkers you control twice each turn rather than only once."
+const LOYALTY_TWICE: &str = "you may activate the loyalty abilities of planeswalkers you control twice each turn rather than only once";
+
 /// The rules about a player's hand, land plays and library: "You have no maximum hand size.", "You may play an
 /// additional land on each of your turns.", "You may look at the top card of your library any time."
 fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
@@ -628,6 +631,9 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     }
     if r.words("players have no maximum hand size") {
         return Some(GameRule::NoMaxHandSize(Ref::EachPlayer));
+    }
+    if r.words(LOYALTY_TWICE) {
+        return Some(GameRule::LoyaltyTwice(Ref::You));
     }
     if r.words("you control your opponents while they're searching their libraries") {
         return Some(GameRule::ControlSearches(Ref::Opponents));
@@ -1789,6 +1795,11 @@ fn player_rule_texts(rule: &GameRule) -> Option<Vec<String>> {
     Some(vec![match rule {
         GameRule::NoMaxHandSize(Ref::You) => "You have no maximum hand size".to_owned(),
         GameRule::NoMaxHandSize(Ref::EachPlayer) => "Players have no maximum hand size".to_owned(),
+        GameRule::LoyaltyTwice(Ref::You) => {
+            let mut text = LOYALTY_TWICE.to_owned();
+            text[..1].make_ascii_uppercase();
+            text
+        }
         GameRule::SkipDrawStep(Ref::You) => "Skip your draw step".to_owned(),
         GameRule::ControlSearches(Ref::Opponents) => {
             "You control your opponents while they're searching their libraries".to_owned()

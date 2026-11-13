@@ -1,34 +1,67 @@
 {
   "oracle_id": "0d406496-e1c3-4e1c-976c-618d5ad67d0b",
   "name": "Urza Assembles the Titans",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Urza Assembles the Titans",
       "oracle_fingerprint": "3d06f7c0b987832b04699e8d32e1f31a",
       "abilities": [
-        { "Keyword": "ReadAhead" },
+        {
+          "Keyword": "ReadAhead"
+        },
         {
           "Triggered": {
-            "when": { "Chapter": { "number": 1 } },
+            "when": {
+              "Chapter": {
+                "number": 1
+              }
+            },
             "effects": [
-              { "Scry": { "count": 4 } },
+              {
+                "Scry": {
+                  "count": 4
+                }
+              },
               {
                 "May": {
                   "effects": [
                     {
                       "Bind": {
                         "what": {
-                          "Each": ["TopOfLibrary", { "OwnedBy": "You" }, { "In": "Library" }]
+                          "Each": [
+                            "TopOfLibrary",
+                            {
+                              "OwnedBy": "You"
+                            },
+                            {
+                              "In": "Library"
+                            }
+                          ]
                         },
                         "as": "top"
                       }
                     },
-                    { "Reveal": { "what": { "Bound": "top" } } },
+                    {
+                      "Reveal": {
+                        "what": {
+                          "Bound": "top"
+                        }
+                      }
+                    },
                     {
                       "Move": {
                         "what": {
-                          "Each": [{ "Is": { "Bound": "top" } }, { "Type": "Planeswalker" }]
+                          "Each": [
+                            {
+                              "Is": {
+                                "Bound": "top"
+                              }
+                            },
+                            {
+                              "Type": "Planeswalker"
+                            }
+                          ]
                         },
                         "to": "Hand"
                       }
@@ -41,7 +74,11 @@
         },
         {
           "Triggered": {
-            "when": { "Chapter": { "number": 2 } },
+            "when": {
+              "Chapter": {
+                "number": 2
+              }
+            },
             "effects": [
               {
                 "May": {
@@ -50,16 +87,37 @@
                       "Choose": {
                         "from": {
                           "Each": [
-                            { "In": "Hand" },
-                            { "OwnedBy": "You" },
-                            { "Type": "Planeswalker" },
-                            { "Compare": { "stat": "ManaValue", "op": "Le", "to": 6 } }
+                            {
+                              "In": "Hand"
+                            },
+                            {
+                              "OwnedBy": "You"
+                            },
+                            {
+                              "Type": "Planeswalker"
+                            },
+                            {
+                              "Compare": {
+                                "stat": "ManaValue",
+                                "op": "Le",
+                                "to": 6
+                              }
+                            }
                           ]
                         },
                         "as": "card"
                       }
                     },
-                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
+                    {
+                      "Move": {
+                        "what": {
+                          "Bound": "card"
+                        },
+                        "to": {
+                          "Battlefield": {}
+                        }
+                      }
+                    }
                   ]
                 }
               }
@@ -67,9 +125,22 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 383, "end": 495 }
+          "Triggered": {
+            "when": {
+              "Chapter": {
+                "number": 3
+              }
+            },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "LoyaltyTwice": "You"
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

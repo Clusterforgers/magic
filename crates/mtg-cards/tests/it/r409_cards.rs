@@ -109,6 +109,9 @@ fn r409_probe() {
 #[case("Bane of the Living")]
 #[case("Warbreak Trumpeter")]
 #[case("Ral and the Implicit Maze")]
+#[case("Crag Saurian")]
+#[case("Oath of Teferi")]
+#[case("Urza Assembles the Titans")]
 fn r409_reads_back_whole(#[case] name: &str) {
     let report = r409_report(name, &r409_file(name));
     assert_eq!(
@@ -163,8 +166,20 @@ fn r409_reads_back_whole(#[case] name: &str) {
 )]
 #[case::two_weirds(
     "Ral and the Implicit Maze",
-    "\"spellgorger_weird\"\n                  }\n",
-    "\"spellgorger_weird\"\n                  },\n \"count\": 2\n"
+    r#"{ "Named": "spellgorger_weird" } }"#,
+    r#"{ "Named": "spellgorger_weird" }, "count": 2 }"#
+)]
+#[case::you_take_it("Crag Saurian", r#"{ "ControllerOf": "Dealer" }"#, r#""You""#)]
+#[case::only_combat_damage("Crag Saurian", r#""to": "This""#, r#""to": "This", "combat": true"#)]
+#[case::everyone_twice(
+    "Oath of Teferi",
+    r#""LoyaltyTwice": "You""#,
+    r#""LoyaltyTwice": "EachPlayer""#
+)]
+#[case::twice_for_ever(
+    "Urza Assembles the Titans",
+    r#""LoyaltyTwice": "You" }, "duration": "UntilEndOfTurn""#,
+    r#""LoyaltyTwice": "You" }"#
 )]
 #[case::attach_always("Thieving Skydiver", r#""right": 1"#, r#""right": 0"#)]
 fn r409_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {

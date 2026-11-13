@@ -441,6 +441,7 @@ const RUNS: &[&str] = &[
     "Rule.ControlSearches",
     "Rule.ExileFound",
     "Rule.NoMaxHandSize",
+    "Rule.LoyaltyTwice",
     "Rule.MaxHandSize",
     "Rule.HandSizeChange",
     "Rule.NoLegendRule",

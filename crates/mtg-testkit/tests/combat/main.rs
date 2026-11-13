@@ -58,6 +58,7 @@ mod poisoned_defender;
 mod r2g_combat;
 mod r306c_cards;
 mod r307c_cards;
+mod r409_combat_triggers;
 mod r4a_champion;
 mod r4a_tribute;
 mod riot;
