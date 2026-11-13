@@ -101,7 +101,7 @@ function wordsFor(
       }
     case 'closed':
       return {
-        title: 'The host closed this game.',
+        title: connection.reason ?? 'The host closed this game.',
         body: 'Nobody can join it any more. Go back to Play to join another game, or create your own.',
         alert: true,
       }

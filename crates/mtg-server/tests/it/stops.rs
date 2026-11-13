@@ -122,7 +122,7 @@ fn order(messages: &[ServerMessage]) -> Vec<&'static str> {
             ServerMessage::AutoYields { .. } => "auto yields",
             ServerMessage::AutoSkips { .. } => "auto skips",
             ServerMessage::Yielding { .. } => "yielding",
-            ServerMessage::GameOver { .. } => "game over",
+            ServerMessage::GameOver { .. } | ServerMessage::EndedByAdmin { .. } => "game over",
             ServerMessage::Error { .. } => "error",
             ServerMessage::Snapshot { .. } => "snapshot",
             ServerMessage::Welcome { .. } => "welcome",
