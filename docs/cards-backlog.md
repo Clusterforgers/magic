@@ -239,3 +239,4 @@ Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `
 
 - [ ] (c11) The initiative, dungeons and the remaining long-tail mechanics found by the report, one task each
 - [ ] (c11c) The other 24 transforming Sagas, the two precon flip cards and the `prepare` layout's back face; frees about 37 cards (Budoka Gardener, Nezumi Graverobber)
+- [ ] (r5510b) A flashback cost that removes X counters from among permanents with "X can't be 0" (`Keyword.Flashback.Cost.RemoveCountersAmong.X`, `Cost.XAtLeast.Elsewhere`); frees Light Up the Night
