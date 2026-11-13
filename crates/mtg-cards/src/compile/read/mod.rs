@@ -234,6 +234,8 @@ mod r408_pact;
 mod r4708_actions;
 mod r4708_reveal;
 mod r4711_drafted;
+mod r5521_conditions;
+mod r5521_wholes;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -593,6 +595,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
             .iter()
             .any(|written| same_text(written, text))
             .then_some(ability);
+    }
+    if let Some(found) = r5521_wholes::r5521_read(text, kind) {
+        return Some(found);
     }
     if let Some(found) =
         r4711_drafted::r4711_read(text, |twin| clause_with(twin, kind, x_free, own))

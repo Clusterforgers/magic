@@ -1,7 +1,7 @@
 {
   "oracle_id": "fa81e7ff-0f2c-40df-9169-c0a22f00cd76",
   "name": "Conspiracy Theorist",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Conspiracy Theorist",
@@ -18,9 +18,38 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 92, "end": 224 }
+          "Triggered": {
+            "when": {
+              "Batch": { "Discarded": { "what": [{ "Not": { "Type": "Land" } }], "by": "You" } }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "In": "Graveyard" }, { "Is": "Triggering" }] },
+                        "as": "chosen"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "chosen" }, "as": "exiled" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": { "MayCast": { "from": "Exile", "only": { "Bound": "exiled" } } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

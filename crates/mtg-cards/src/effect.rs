@@ -1136,6 +1136,12 @@ pub enum Effect {
         /// The exiled cards kept.
         keep: Selector,
     },
+    /// Each player the reference names who has a speed above 1 has it reduced by 1 (CR 702.179): "reduce that opponent's
+    /// speed by 1. This effect can't reduce their speed below 1."
+    ReduceSpeed {
+        /// The players slowed.
+        who: Ref,
+    },
     /// The player becomes the monarch (CR 724).
     BecomeMonarch {
         /// Who becomes it.

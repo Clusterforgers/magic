@@ -1,7 +1,7 @@
 {
   "oracle_id": "36396a14-9d0b-4670-bf8a-5c346fdda197",
   "name": "King Solomon's Frogs",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "King Solomon's Frogs",
@@ -9,9 +9,36 @@
       "abilities": [
         { "Keyword": "Flash" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 6, "end": 223 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "WasCast": { "by": "You" } }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "Opponents",
+                    "what": [{ "Compare": { "stat": "ManaValue", "op": "Ge", "to": 3 } }]
+                  }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "exiled" },
+                  "as": "each2",
+                  "effects": [
+                    { "Draw": { "who": { "ControllerOf": { "Departed": { "Bound": "each2" } } } } }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

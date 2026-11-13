@@ -11,6 +11,7 @@ Abzan Falconer
 Abzan Skycaptain
 Academy Elite
 Accomplished Automaton
+Acererak the Archlich
 Act of Aggression
 Act of Treason
 Adaptive Snapjaw
@@ -232,6 +233,7 @@ Branchblight Stalker
 Brave the Sands
 Break the Ice
 Breath of Life
+Breena, the Demagogue
 Breezekeeper
 Briarblade Adept
 Bribe Taker
@@ -261,6 +263,7 @@ Calciderm
 Calciform Pools
 Caldaia Strongarm
 Caldera Hellion
+Call the Spirit Dragons
 Caller of the Pack
 Canoptek Tomb Sentinel
 Caprichrome
@@ -730,6 +733,7 @@ Franklin Richards, Ascendant
 Frenzied Saddlebrute
 Freya Crescent
 Freyalise, Llanowar's Fury
+Frodo, Adventurous Hobbit
 Frogtosser Banneret
 Frost Titan
 Fruit of Tizerus
@@ -1051,6 +1055,7 @@ Kill! Maim! Burn!
 Kimoyo Beads
 Kindred Boon
 Kindred Discovery
+King Solomon's Frogs
 Kingpin's Pet
 Kinjalli's Sunwing
 Kinsbaile Courier
@@ -1806,6 +1811,7 @@ Sphinx of the Final Word
 Sphinx of the Steel Wind
 Spider-Islanders
 Spider-Man, New Champion
+Spikeshell Harrier
 Spikewheel Acrobat
 Spinerock Knoll
 Spinnerette, Arachnobat

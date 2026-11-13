@@ -1570,7 +1570,10 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
             },
         ) => (scope.players(by).ok()?.contains(attacking)
             && scope.players(at).ok()?.contains(defending))
-        .then(|| cause(state, vec![Target::Player(*attacking)])),
+        .then(|| Cause {
+            against: Some(Target::Player(*defending)),
+            ..cause(state, vec![Target::Player(*attacking)])
+        }),
         (TriggerPattern::SpellCopied { what, by }, Happened::Copied { player, spell }) => {
             let reference = object(*spell)?;
             let subjects = vec![Target::Player(*player), Target::Object(reference)];
