@@ -222,6 +222,9 @@ mod r402_copy_riders;
 mod r402_spell_costs;
 mod r403_excess;
 mod r403_hooks;
+mod r404_commander;
+mod r404_land;
+mod r404_look;
 mod r405_cast_target;
 mod r405_events;
 mod r406_actions;
@@ -643,6 +646,11 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if kind == ClauseKind::Static
+        && let Some(found) = r404_commander::r404_commander_read(text)
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Static
         && let Some(found) = r375_phase::r375_no_phase_in_read(text)
     {
         return Some(found);
@@ -658,6 +666,14 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r400_reads::r400_alt_cost_read(text) {
+        return Some(found);
+    }
+    if let Some(found) =
+        r404_land::r404_land_read(text, |twin| clause_with(twin, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
+    {
         return Some(found);
     }
     if let Some(found) =

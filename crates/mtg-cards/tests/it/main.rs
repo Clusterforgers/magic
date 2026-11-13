@@ -79,6 +79,7 @@ mod r376_cards;
 mod r377_cards;
 mod r400_cards;
 mod r403_cards;
+mod r404_cards;
 mod r405_cards;
 mod r406_cards;
 mod r407_cards;

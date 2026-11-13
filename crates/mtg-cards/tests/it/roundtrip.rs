@@ -681,7 +681,8 @@ fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
         (selector(), reference()).prop_map(|(what, by)| TriggerPattern::TappedForMana {
             what,
             by,
-            produced: None
+            produced: None,
+            chosen_color: false
         }),
         selector().prop_map(|what| TriggerPattern::Blocks {
             what,

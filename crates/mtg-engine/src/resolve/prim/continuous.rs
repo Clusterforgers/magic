@@ -42,6 +42,17 @@ const CARD_TYPES: [CardType; 9] = [
     CardType::Sorcery,
 ];
 
+/// The player a "for as long as they're the monarch" effect follows, read as it begins; none for any other duration.
+fn anchor(
+    cx: &Cx<'_>,
+    duration: &mtg_cards::modify::Duration,
+) -> Result<Option<PlayerId>, ResolveError> {
+    Ok(match duration {
+        mtg_cards::modify::Duration::WhileMonarch(who) => cx.scope.players(who)?.first().copied(),
+        _ => None,
+    })
+}
+
 /// The players the effects are begun for, each with the objects of theirs: the controller of the resolving spell or
 /// ability for every object, or for `DuringItsControllersNextTurn` the controller of each object as the effect begins,
 /// whose next turn it waits for.
@@ -50,7 +61,11 @@ fn l294_turn_holders(
     duration: &mtg_cards::modify::Duration,
     named: &[ObjectRef],
 ) -> Vec<(PlayerId, Vec<ObjectRef>)> {
-    if *duration != mtg_cards::modify::Duration::DuringItsControllersNextTurn {
+    if !matches!(
+        duration,
+        mtg_cards::modify::Duration::DuringItsControllersNextTurn
+            | mtg_cards::modify::Duration::UntilItsControllersNextUntapStep
+    ) {
         return vec![(cx.controller(), named.to_vec())];
     }
     let mut holders: Vec<(PlayerId, Vec<ObjectRef>)> = Vec::new();
@@ -161,6 +176,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         };
         modifications.push(modification);
     }
+    let anchor = anchor(cx, duration)?;
     let mut made = 0u64;
     for (player, objects) in l294_turn_holders(cx, duration, &named) {
         for modification in &modifications {
@@ -174,6 +190,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                         state.next_timestamp + made,
                     )
                     .from_source(cx.scope.source)
+                    .anchored(anchor)
                     .begun(player, crate::effects::began_turn(state, duration, player)),
                 ),
             });
@@ -312,6 +329,10 @@ fn chosen_types(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, Reso
             Some(Chosen::CreatureType(kind)) => Ok(Modification::AddSubtype(kind.clone())),
             _ => Err(ResolveError::Invalid("no creature type was chosen".into())),
         },
+        Wanted::AddLandTypeChosen(name) => match scope.chosen_value(name) {
+            Some(Chosen::LandType(land)) => Ok(Modification::AddSubtype(land.clone())),
+            _ => Err(ResolveError::Invalid("no land type was chosen".into())),
+        },
         _ => Err(ResolveError::Invalid("no chosen type".into())),
     }
 }
@@ -374,12 +395,24 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         },
         Wanted::SetLandTypesChosen(_)
         | Wanted::SetCreatureTypesChosen(_)
-        | Wanted::AddCreatureTypeChosen(_) => chosen_types(scope, wanted)?,
+        | Wanted::AddCreatureTypeChosen(_)
+        | Wanted::AddLandTypeChosen(_) => chosen_types(scope, wanted)?,
         Wanted::ChangeTextChosen { from, to } => Modification::ChangeText {
             from: chosen_word(scope, from)?,
             to: chosen_word(scope, to)?,
         },
         Wanted::AddChosenSubtype | Wanted::SetChosenColor => entered(scope, wanted)?,
+        // The color its owner chose for it as a commander, read by its id in any zone; none was chosen for another card.
+        Wanted::SetCommanderColor => {
+            match crate::r404_commander_color::chosen(scope.state, scope.source.id) {
+                Some(color) => Modification::SetColors(std::iter::once(color).collect()),
+                None => {
+                    return Err(ResolveError::Invalid(
+                        "no color was chosen for this commander".into(),
+                    ));
+                }
+            }
+        }
         Wanted::SetColors(colors) => Modification::SetColors(colors.iter().copied().collect()),
         Wanted::AddColors(colors) => Modification::AddColors(colors.iter().copied().collect()),
         Wanted::AddKeyword(keyword) => Modification::AddKeyword(chosen_in(scope, keyword)),

@@ -1012,10 +1012,21 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 what.0 == [Pred::This],
             )
         }
-        TriggerPattern::TappedForMana { what, by, produced } => {
+        TriggerPattern::TappedForMana {
+            what,
+            by,
+            produced,
+            chosen_color,
+        } => {
             let (name, s) = who(by);
             let made = produced.map_or_else(
-                || "mana".to_owned(),
+                || {
+                    if *chosen_color {
+                        "mana of the chosen color".to_owned()
+                    } else {
+                        "mana".to_owned()
+                    }
+                },
                 |mana| format!("{{{}}}", mana.symbol()),
             );
             (format!("{name} tap{s} {} for {made}", subject(what)), false)

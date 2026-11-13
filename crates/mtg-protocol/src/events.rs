@@ -159,8 +159,10 @@ pub enum HiddenEvent {
     },
     /// A triggered ability triggered on a card the viewer cannot see (a card drawn, say): which ability, never the card.
     AbilityTriggered {
-        /// The object with the ability, as it was.
-        source: ObjectRef,
+        /// The object with the ability, as it was; none while the viewer cannot identify it (a card in a hand).
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[ts(optional)]
+        source: Option<ObjectRef>,
         /// Its index among the rules of the source's card.
         ability: usize,
         /// Who controls it.
@@ -170,16 +172,20 @@ pub enum HiddenEvent {
     AbilityPutOnStack {
         /// The ability's new object.
         object: ObjectId,
-        /// The object it comes from, as it was.
-        source: ObjectRef,
+        /// The object with the ability, as it was; none while the viewer cannot identify it (a card in a hand).
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[ts(optional)]
+        source: Option<ObjectRef>,
         /// Who controls it.
         controller: PlayerId,
     },
     /// An ability that triggered on a card the viewer cannot see could not be run by the game: which ability, never the card or
     /// its words.
     AbilityLeftToTable {
-        /// The object with the ability, as it was.
-        source: ObjectRef,
+        /// The object with the ability, as it was; none while the viewer cannot identify it (a card in a hand).
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[ts(optional)]
+        source: Option<ObjectRef>,
         /// Who controls it.
         controller: PlayerId,
     },
@@ -483,6 +489,10 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::ClassLevelGained { .. }
         | Event::TurnedFaceUp { .. }
         | Event::TurnedFaceDown { .. }
+        // Which permanent is public; what it is, the view tells the looker alone (`may_look_at`).
+        | Event::FaceDownLooked { .. }
+        // The color of a commander is public, as the card is.
+        | Event::CommanderColorChosen { .. }
         | Event::DoorUnlocked { .. }
         | Event::DoorLocked { .. }
         | Event::Mutated { .. }
@@ -655,12 +665,14 @@ fn redact_triggers(before: &GameState, event: &Event, viewer: PlayerId) -> Optio
                 .source
                 .is_some_and(|object| !knows(before, object.id, viewer))
     };
+    // The source is named only to a viewer who can identify it: a card in a hand stays unnamed.
+    let seen = |source: ObjectRef| knows(before, source.id, viewer).then_some(source);
     match event {
         Event::AbilityTriggered(t)
             if !snapshot_known(before, &t.snapshot, viewer) || unseen_cause(&t.cause) =>
         {
             Some(HiddenEvent::AbilityTriggered {
-                source: t.source,
+                source: seen(t.source),
                 ability: t.ability,
                 controller: t.controller,
             })
@@ -672,7 +684,7 @@ fn redact_triggers(before: &GameState, event: &Event, viewer: PlayerId) -> Optio
         {
             Some(HiddenEvent::AbilityPutOnStack {
                 object: put.object,
-                source: put.source,
+                source: seen(put.source),
                 controller: put.controller,
             })
         }
@@ -698,7 +710,7 @@ fn redact_triggers(before: &GameState, event: &Event, viewer: PlayerId) -> Optio
                 }) =>
         {
             Some(HiddenEvent::AbilityLeftToTable {
-                source: left.source,
+                source: seen(left.source),
                 controller: left.controller,
             })
         }
@@ -1491,7 +1503,7 @@ mod tests {
         assert_eq!(
             told(&t.state, &event, OTHER),
             Err(HiddenEvent::AbilityTriggered {
-                source,
+                source: Some(source),
                 ability: 1,
                 controller: OWNER
             })
@@ -1519,7 +1531,7 @@ mod tests {
             told(&t.state, &put(&in_hand), OTHER),
             Err(HiddenEvent::AbilityPutOnStack {
                 object: ObjectId(900),
-                source,
+                source: Some(source),
                 controller: OWNER
             })
         );
@@ -1557,7 +1569,7 @@ mod tests {
         assert_eq!(
             told(&t.state, &dealer(t.hand), OTHER),
             Err(HiddenEvent::AbilityTriggered {
-                source,
+                source: Some(source),
                 ability: 1,
                 controller: OWNER
             })

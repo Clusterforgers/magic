@@ -80,6 +80,7 @@ mod r306c_attractions;
 mod r371_copy_except;
 mod r378_stickers;
 mod r3f_exiled;
+mod r404_look_face_down;
 mod r4b_dig;
 mod r4i_can_enchant;
 mod r4i_or_controller;

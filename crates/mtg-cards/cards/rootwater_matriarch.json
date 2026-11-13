@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1d260526-db57-486d-b0bc-d523139a0148",
+  "name": "Rootwater Matriarch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rootwater Matriarch",
+      "oracle_fingerprint": "0c262d4067796debd9469fc63159e23e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "WhileEnchanted"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

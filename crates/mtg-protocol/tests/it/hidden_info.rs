@@ -41,6 +41,8 @@ const SCALAR_KEYS: &[&str] = &[
     "life",
     "life_after",
     "count",
+    // A player's speed (CR 702.179).
+    "speed",
     "number",
     "lands_played",
     "mulligans",

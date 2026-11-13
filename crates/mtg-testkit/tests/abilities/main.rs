@@ -72,6 +72,7 @@ mod r379_cast_greatest;
 mod r379_votes;
 mod r401_cast_riders;
 mod r403_cards;
+mod r404_chosen_mana;
 mod r405_events;
 mod r407_cast_triggers;
 mod r407_surveil_this_way;

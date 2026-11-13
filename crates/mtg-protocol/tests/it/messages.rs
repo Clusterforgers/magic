@@ -984,10 +984,10 @@ fn every_event_view_variant_round_trips() {
             position: vec![1, 0, 2],
         },
         HiddenEvent::AbilityLeftToTable {
-            source: ObjectRef {
+            source: Some(ObjectRef {
                 id: ObjectId(4),
                 counter: 1,
-            },
+            }),
             controller: player,
         },
     ];

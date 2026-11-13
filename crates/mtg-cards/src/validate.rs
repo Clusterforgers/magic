@@ -2479,6 +2479,13 @@ impl<'a> Walker<'a> {
                     self.problem("a limit on blockers needs a count of at least one");
                 }
             }
+            Modification::SetCommanderColor => {
+                if !self.scope.in_static {
+                    self.problem(
+                        "the color chosen for a commander is read by its static ability only",
+                    );
+                }
+            }
             Modification::AddChosenSubtype | Modification::SetChosenColor => {
                 if !self.scope.in_static {
                     self.problem(
@@ -2501,6 +2508,7 @@ impl<'a> Walker<'a> {
             | Modification::SetLandTypesChosen(_)
             | Modification::SetCreatureTypesChosen(_)
             | Modification::AddCreatureTypeChosen(_)
+            | Modification::AddLandTypeChosen(_)
             | Modification::ChangeTextChosen { .. }
             | Modification::SetColorsChosen(_)
             | Modification::AddAllCreatureTypes
@@ -2602,6 +2610,7 @@ impl<'a> Walker<'a> {
                     | Modification::SetPower(_)
                     | Modification::SetToughness(_)
                     | Modification::SetColors(_)
+                    | Modification::SetCommanderColor
                     | Modification::AddColors(_)
                     | Modification::AddType(_)
                     | Modification::AddSubtype(_)
@@ -2634,12 +2643,8 @@ impl<'a> Walker<'a> {
                 if matches!(
                     modification,
                     Modification::SetName(_) | Modification::ThisAbility | Modification::SetLoyalty(_)
-                ) || matches!(
-                    modification,
-                    Modification::AddSupertype(_) | Modification::RemoveSupertype(_)
-                ) && !w.scope.in_static
-                {
-                    w.problem("a supertype, a name or this ability changes only the copiable values of a copy (`except`)");
+                ) {
+                    w.problem("a name, a loyalty or this ability changes only the copiable values of a copy (`except`)");
                 }
             });
         }
@@ -2750,6 +2755,15 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Cycled { what, by } => {
                 self.at("what", |w| w.selector(what));
                 self.at("by", |w| w.reference(by, Kind::Player));
+                if matches!(
+                    pattern,
+                    TriggerPattern::TappedForMana {
+                        chosen_color: true,
+                        ..
+                    }
+                ) {
+                    self.uses("Trigger", "TappedForMana.ChosenColor");
+                }
             }
             TriggerPattern::Tapped { what }
             | TriggerPattern::TappedNotAttacking { what }
@@ -3838,6 +3852,7 @@ impl Walker<'_> {
                 }
             }
             Effect::LookAtHand { of } => w.at("of", |w| w.reference(of, Kind::Player)),
+            Effect::LookAtFaceDown { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::Reveal { what }
             | Effect::Untap { what }
             | Effect::TapOrUntap { what }
@@ -4460,6 +4475,16 @@ impl Walker<'_> {
                 if matches!(duration, Duration::WhileHasCounter(_)) {
                     w.uses("Duration", "WhileHasCounter");
                 }
+                if *duration == Duration::WhileEnchanted {
+                    w.uses("Duration", "WhileEnchanted");
+                }
+                if *duration == Duration::UntilItsControllersNextUntapStep {
+                    w.uses("Duration", "UntilItsControllersNextUntapStep");
+                }
+                if let Duration::WhileMonarch(who) = duration {
+                    w.uses("Duration", "WhileMonarch");
+                    w.at("duration", |w| w.reference(who, Kind::Player));
+                }
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Duration", "WhileSourceTapped");
                 }
@@ -4483,6 +4508,14 @@ impl Walker<'_> {
                 }
             }
             Effect::ExchangeControl { what, duration } => {
+                if matches!(
+                    duration,
+                    Duration::WhileEnchanted
+                        | Duration::WhileMonarch(_)
+                        | Duration::UntilItsControllersNextUntapStep
+                ) {
+                    w.uses("Exchange", &format!("Duration.{}", tag_of(duration)));
+                }
                 if matches!(duration, Duration::WhileHasCounter(_)) {
                     w.problem(COUNTER_DURATION_ONLY);
                 }
@@ -4520,6 +4553,14 @@ impl Walker<'_> {
                 }
             }
             Effect::Rule { rule, duration } => w.at("rule", |w| {
+                if matches!(
+                    duration,
+                    Duration::WhileEnchanted
+                        | Duration::WhileMonarch(_)
+                        | Duration::UntilItsControllersNextUntapStep
+                ) {
+                    w.uses("Rule", &format!("Duration.{}", tag_of(duration)));
+                }
                 if matches!(duration, Duration::WhileHasCounter(_)) {
                     w.problem(COUNTER_DURATION_ONLY);
                 }
@@ -4996,6 +5037,7 @@ impl Walker<'_> {
                     | Modification::SetLandTypesChosen(_)
                     | Modification::SetCreatureTypesChosen(_)
                     | Modification::AddCreatureTypeChosen(_)
+                    | Modification::AddLandTypeChosen(_)
                     | Modification::ChangeTextChosen { .. }
             )
         }) {
@@ -7262,9 +7304,9 @@ mod tests {
         r#"{"Static":{"affected":"This","mods":["AddProtectionFromChosenColor"]}}"#,
         "a colour or card type is chosen as an effect begins, so only a `Continuous` effect adds protection from it"
     )]
-    #[case::a_supertype_goes_with_a_copy_only(
+    #[case::this_ability_goes_with_a_copy_only(
         r#"{"Static":{"affected":"This","mods":["ThisAbility"]}}"#,
-        "a supertype, a name or this ability changes only the copiable values of a copy (`except`)"
+        "a name, a loyalty or this ability changes only the copiable values of a copy (`except`)"
     )]
     #[case::a_player_takes_only_the_keywords_players_have(
         r#"{"Static":{"affected":"You","mods":[{"AddKeyword":"Flying"}]}}"#,

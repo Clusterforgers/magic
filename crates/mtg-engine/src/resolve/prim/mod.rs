@@ -104,6 +104,7 @@ mod one_of;
 mod pair;
 mod r301b_exchange_toughness;
 mod r372_gain_suspend;
+mod r404_look_face_down;
 mod r406_actions;
 mod reflexive;
 mod remember;
@@ -204,6 +205,7 @@ fn fe1n(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::SeparatePiles { .. } => fe1n_piles::run(cx, effect),
         Effect::Balance { .. } => r370_balance::run(cx, effect),
         Effect::LookAtHand { .. } => look_at_hand::run(cx, effect),
+        Effect::LookAtFaceDown { .. } => r404_look_face_down::run(cx, effect),
         Effect::Let { .. } => let_amount::run(cx, effect),
         Effect::Bind { .. } => bind_ref::run(cx, effect),
         Effect::CopySpell { .. } => copy_spell::run(cx, effect),
@@ -389,7 +391,7 @@ mod tests {
 
     /// One effect of every variant of the vocabulary.
     const EFFECTS: &str = r#"[
-        {"Draw":{}}, {"Discard":{}}, {"Mill":{}}, {"Scry":{}}, {"LookAtTop":{"as":"top"}}, {"LookAtHand":{"of":"You"}},
+        {"Draw":{}}, {"Discard":{}}, {"Mill":{}}, {"Scry":{}}, {"LookAtTop":{"as":"top"}}, {"LookAtHand":{"of":"You"}}, {"LookAtFaceDown":{"what":"This"}},
         {"Reveal":{"what":"This"}}, {"Search":{"filter":[],"as":"found"}},
         {"Choose":{"from":"This","as":"chosen"}}, {"ChooseAtRandom":{"from":"This","as":"picked"}}, {"ChooseValue":{"kind":"Color","as":"hue"}}, {"Shuffle":{}}, {"Move":{"what":"This","to":"Hand"}},
         {"Destroy":{"what":"This"}}, {"Exile":{"what":"This"}}, {"Sacrifice":{"filter":[]}}, {"SacrificeUpTo":{"filter":[],"count":2}}, {"Balance":{"what":"Hand"}},
@@ -485,6 +487,7 @@ mod tests {
         "Effect.Scry",
         "Effect.LookAtTop",
         "Effect.LookAtHand",
+        "Effect.LookAtFaceDown",
         "Effect.Reveal",
         "Effect.Search",
         "Effect.Choose",

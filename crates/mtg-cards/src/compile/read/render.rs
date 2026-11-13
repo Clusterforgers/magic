@@ -745,6 +745,8 @@ fn written_anew(ability: &Ability) -> Vec<String> {
     super::l32a_paid::l32a_exchange_wordings(ability, written_variants, &mut texts);
     super::r289_writers::r289_wordings(ability, written_variants, &mut texts);
     super::r375_phase::r375_wordings(ability, written_variants, &mut texts);
+    super::r404_land::r404_land_wordings(ability, written_variants, &mut texts);
+    super::r404_commander::r404_commander_wordings(ability, &mut texts);
     let more = super::t18_words::t18_wordings(&texts);
     for text in more {
         if !texts.contains(&text) {
@@ -2942,6 +2944,8 @@ impl Writer<'_> {
             // "look at target player's hand" (wf26).
             Effect::LookAtHand { of: Ref::You } => "look at your hand".to_owned(),
             Effect::LookAtHand { of } => format!("look at {}'s hand", self.player(of)?),
+            // "look at target face-down creature" (r40-4).
+            Effect::LookAtFaceDown { what } => format!("look at {}", self.object(what)?),
             Effect::RingTempts { who: Ref::You } => "the Ring tempts you".to_owned(),
             // "you get {E}{E}": energy is a counter on the player, written with its symbol.
             // "you get {TK}{TK}": tickets are counters on the player too (CR 107.17).

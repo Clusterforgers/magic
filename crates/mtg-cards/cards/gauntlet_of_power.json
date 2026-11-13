@@ -1,7 +1,7 @@
 {
   "oracle_id": "1182591d-8660-4a2e-8d77-2fc544b02b66",
   "name": "Gauntlet of Power",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Gauntlet of Power",
@@ -17,9 +17,14 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 82, "end": 201 }
+          "Triggered": {
+            "when": {
+              "TappedForMana": {
+                "what": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                "chosen_color": true
+              }
+            },
+            "effects": [{ "AddMana": { "who": "Triggering", "mana": { "ChosenColor": 1 } } }]
           }
         }
       ]

@@ -2090,6 +2090,7 @@ fn matching_permanents(
                 what,
                 by: who,
                 produced,
+                chosen_color,
             },
             Happened::TappedForMana {
                 object: tapped,
@@ -2101,6 +2102,7 @@ fn matching_permanents(
             // The event holds the permanent ("that land doesn't untap") and the player who tapped it ("that player").
             (by(who, player)
                 && produced.is_none_or(|kind| made.contains(&kind))
+                && (!chosen_color || crate::mana_bonus::makes_chosen(state, scope.source, made))
                 && picks(what, tapped)?)
             .then(|| cause(state, vec![Target::Object(tapped), Target::Player(*player)]))
         }

@@ -1129,6 +1129,23 @@ pub enum Event {
         /// Its controller, who turned it.
         player: PlayerId,
     },
+    /// A commander's owner chose its color before the game began ("If ~ is your commander, choose a color before the game
+    /// begins."): the card is that color in every zone.
+    CommanderColorChosen {
+        /// Who chose.
+        player: PlayerId,
+        /// The commander.
+        object: ObjectId,
+        /// The color.
+        color: mtg_core::color::Color,
+    },
+    /// A player looked at a face-down permanent by an effect (CR 708.5): they may identify it while it stays that object.
+    FaceDownLooked {
+        /// The permanent looked at.
+        object: ObjectId,
+        /// Who looked.
+        player: PlayerId,
+    },
     /// A door of a Room was unlocked (CR 709.5e): by the special action of its controller or by an effect. The
     /// permanent has that door's characteristics from now on.
     DoorUnlocked {
@@ -1416,6 +1433,7 @@ impl Event {
             | Event::ShieldUsed { .. }
             | Event::DamagePrevented { .. }
             | Event::FirstPlayerChosen { .. }
+            | Event::CommanderColorChosen { .. }
             | Event::GameRestarted { .. }
             | Event::MulliganPhaseBegan
             | Event::MulliganDeclared { .. }
@@ -1567,6 +1585,7 @@ impl Event {
             | Event::ClassLevelGained { object, .. }
             | Event::TurnedFaceUp { object, .. }
             | Event::TurnedFaceDown { object, .. }
+            | Event::FaceDownLooked { object, .. }
             | Event::DoorUnlocked { object, .. }
             | Event::DoorLocked { object, .. }
             | Event::Adapted { object, .. }

@@ -19,11 +19,14 @@ const owed = ({ controller, manual_owed, name }: ObjectView): Owed => ({
 export const UNSEEN_SOURCE = 'a card'
 
 /** The source and controller of an ability the game could not run (`AbilityLeftToTable`, public or hidden), or null. */
-function leftToTable(view: EventView): { source: ObjectId; controller: PlayerId } | null {
+function leftToTable(view: EventView): { source: ObjectId | null; controller: PlayerId } | null {
   if ('Hidden' in view) {
     const hidden = view.Hidden
     if (typeof hidden === 'string' || !('AbilityLeftToTable' in hidden)) return null
-    return { source: hidden.AbilityLeftToTable.source.id, controller: hidden.AbilityLeftToTable.controller }
+    return {
+      source: hidden.AbilityLeftToTable.source?.id ?? null,
+      controller: hidden.AbilityLeftToTable.controller,
+    }
   }
   const event = view.Public
   if (typeof event === 'string' || !('AbilityLeftToTable' in event)) return null
@@ -62,7 +65,12 @@ export function owesByHand(
   for (const view of events) {
     const left = leftToTable(view)
     if (left !== null) {
-      if (left.controller === seat) held = (before[left.source] ?? after[left.source])?.name ?? UNSEEN_SOURCE
+      if (left.controller === seat) {
+        held =
+          left.source === null
+            ? UNSEEN_SOURCE
+            : ((before[left.source] ?? after[left.source])?.name ?? UNSEEN_SOURCE)
+      }
       continue
     }
     if (!('Public' in view) || typeof view.Public === 'string') continue

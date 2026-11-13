@@ -99,6 +99,7 @@ mod melee;
 mod menace;
 mod mentor;
 mod miracle;
+pub(crate) use miracle::reveal as miracle_reveal;
 mod morph;
 mod multikicker;
 mod mutate;

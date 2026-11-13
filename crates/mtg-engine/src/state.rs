@@ -375,6 +375,12 @@ pub struct GameState {
     /// The cards of a library its owner looked at by hand (`ManualAction::LookTop`), known to that seat while each is
     /// still the object it looked at and the library has not been shuffled.
     pub(crate) looked_by_hand: Vec<(PlayerId, crate::object::ObjectRef)>,
+    /// The face-down permanents a seat looked at by an effect (`Effect::LookAtFaceDown`), known to that seat while each
+    /// is still the object it looked at.
+    pub(crate) looked_face_down: Vec<(PlayerId, crate::object::ObjectRef)>,
+    /// The colors chosen before the game began for commanders that are the chosen color, by card id
+    /// (`r404_commander_color`).
+    pub(crate) commander_colors: Vec<(ObjectId, mtg_core::color::Color)>,
     /// The cards a seat showed to every seat by hand (`ManualAction::Reveal`), identified by all while each is still the
     /// object it showed in the place it was shown in (a shuffle ends it for a library).
     pub(crate) revealed_by_hand: Vec<crate::object::ObjectRef>,
@@ -950,6 +956,14 @@ impl Hash for GameState {
         // Likewise a game in which no seat looked at its library by hand.
         if !self.looked_by_hand.is_empty() {
             self.looked_by_hand.hash(state);
+        }
+        // Likewise a game in which no seat looked at a face-down permanent.
+        if !self.looked_face_down.is_empty() {
+            self.looked_face_down.hash(state);
+        }
+        // Likewise a game with no color chosen for a commander.
+        if !self.commander_colors.is_empty() {
+            self.commander_colors.hash(state);
         }
         // Likewise a game in which nothing was shown or noted by hand.
         if !self.revealed_by_hand.is_empty() {

@@ -29,6 +29,10 @@ impl GameState {
                 .into_iter()
                 .any(|seen| self.may_look_as(how, object.owner(), controller, seen))
                 || crate::rules::grants_look(self, viewer, object)
+                || self
+                    .looked_face_down
+                    .iter()
+                    .any(|(seat, card)| *card == object.reference() && self.sees_for(viewer, *seat))
         })
     }
 
@@ -107,6 +111,27 @@ pub fn known_top(state: &GameState, seat: PlayerId) -> Vec<ObjectId> {
         .take_while(|id| state.is_shown_to(seat, **id))
         .copied()
         .collect()
+}
+
+/// Records that `seat` looked at the face-down permanent `object`, and forgets the looks at objects that are gone.
+pub(crate) fn look_face_down(state: &mut GameState, seat: PlayerId, object: ObjectId) {
+    let still = |state: &GameState, card: &ObjectRef| {
+        state
+            .object(card.id)
+            .is_some_and(|found| found.reference() == *card)
+    };
+    let mut kept: Vec<_> = state
+        .looked_face_down
+        .iter()
+        .filter(|(_, card)| still(state, card))
+        .copied()
+        .collect();
+    if let Some(card) = state.object(object).map(GameObject::reference)
+        && !kept.contains(&(seat, card))
+    {
+        kept.push((seat, card));
+    }
+    state.looked_face_down = kept;
 }
 
 /// Records that `seat` looked at the top `count` cards of its library by hand, and forgets what it looked at before

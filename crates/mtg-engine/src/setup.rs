@@ -582,6 +582,8 @@ impl GameState {
             commanders: Commanders::of(commander_ids),
             companions,
             looked_by_hand: Vec::new(),
+            looked_face_down: Vec::new(),
+            commander_colors: Vec::new(),
             revealed_by_hand: Vec::new(),
             notes: Vec::new(),
             memory: crate::memory::Memory::new(),

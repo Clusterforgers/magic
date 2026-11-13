@@ -58,6 +58,7 @@ const RUNS: &[&str] = &[
     "Trigger.PhasedOut",
     "Trigger.PhasedIn",
     "Trigger.TappedForMana",
+    "Trigger.TappedForMana.ChosenColor",
     "Trigger.Blocks",
     "Trigger.BecomesBlocked",
     "Trigger.Unblocked",
@@ -217,6 +218,7 @@ const RUNS: &[&str] = &[
     "Effect.Scry",
     "Effect.LookAtTop",
     "Effect.LookAtHand",
+    "Effect.LookAtFaceDown",
     "Effect.Reveal",
     "Effect.Search",
     "Search.Zones",
@@ -402,6 +404,9 @@ const RUNS: &[&str] = &[
     "Duration.WhileYouControlSourceTapped",
     "Duration.DuringItsControllersNextTurn",
     "Duration.WhileHasCounter",
+    "Duration.WhileEnchanted",
+    "Duration.WhileMonarch",
+    "Duration.UntilItsControllersNextUntapStep",
     "Duration.UntilPaid",
     "Duration.UntilCastFromExile",
     "Effect.Rule",
@@ -543,8 +548,10 @@ const RUNS: &[&str] = &[
     "Mod.ChangeTextChosen",
     "Mod.SetCreatureTypesChosen",
     "Mod.AddCreatureTypeChosen",
+    "Mod.AddLandTypeChosen",
     "Mod.AddChosenSubtype",
     "Mod.SetChosenColor",
+    "Mod.SetCommanderColor",
     "Mod.RemoveKeyword",
     "Mod.RemoveKeywordKind",
     "Mod.LockKeyword",
@@ -1069,6 +1076,7 @@ mod tests {
     #[case::scrying("Effect.Scry", true)]
     #[case::looking_at_the_top("Effect.LookAtTop", true)]
     #[case::looking_at_a_hand("Effect.LookAtHand", true)]
+    #[case::looking_at_a_face_down_permanent("Effect.LookAtFaceDown", true)]
     #[case::revealing("Effect.Reveal", true)]
     #[case::shuffling("Effect.Shuffle", true)]
     #[case::moving("Effect.Move", true)]
@@ -1174,6 +1182,8 @@ mod tests {
     #[case::continuous_effects("Effect.Continuous", true)]
     #[case::control_for_as_long_as_you_control_the_source("Duration.WhileYouControlSource", true)]
     #[case::continuous_for_as_long_as_it_has_a_counter("Duration.WhileHasCounter", true)]
+    #[case::control_for_as_long_as_it_is_enchanted("Duration.WhileEnchanted", true)]
+    #[case::control_for_as_long_as_they_are_the_monarch("Duration.WhileMonarch", true)]
     #[case::continuous_for_as_long_as_the_source_is_tapped("Duration.WhileSourceTapped", true)]
     #[case::continuous_while_you_control_the_tapped_source(
         "Duration.WhileYouControlSourceTapped",
@@ -1209,9 +1219,15 @@ mod tests {
     #[case::colours("Mod.SetColors", true)]
     #[case::chosen_colours("Mod.SetColorsChosen", true)]
     #[case::chosen_land_types("Mod.SetLandTypesChosen", true)]
+    #[case::chosen_land_type_added("Mod.AddLandTypeChosen", true)]
+    #[case::until_its_controllers_next_untap_step(
+        "Duration.UntilItsControllersNextUntapStep",
+        true
+    )]
     #[case::chosen_creature_types("Mod.SetCreatureTypesChosen", true)]
     #[case::the_type_chosen_as_it_entered("Mod.AddChosenSubtype", true)]
     #[case::the_color_chosen_as_it_entered("Mod.SetChosenColor", true)]
+    #[case::the_color_chosen_for_a_commander("Mod.SetCommanderColor", true)]
     #[case::granted_abilities("Mod.GrantAbility", true)]
     #[case::abilities_of_other_cards("Mod.GainAbilitiesOf", true)]
     #[case::lost_abilities("Mod.LoseAbilities", true)]
@@ -1475,6 +1491,7 @@ mod tests {
     #[case::tap_triggers("Trigger.Tapped", true)]
     #[case::untap_triggers("Trigger.Untapped", true)]
     #[case::mana_triggers("Trigger.TappedForMana", true)]
+    #[case::mana_triggers_of_the_chosen_color("Trigger.TappedForMana.ChosenColor", true)]
     #[case::block_triggers("Trigger.Blocks", true)]
     #[case::blocked_triggers("Trigger.BecomesBlocked", true)]
     #[case::w2e_unblocked_triggers("Trigger.Unblocked", true)]
