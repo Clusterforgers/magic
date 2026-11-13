@@ -7,43 +7,18 @@
       "name": "Djinn Illuminatus",
       "oracle_fingerprint": "3dfd9ebe43328395c0eb8430f900ed07",
       "abilities": [
-        {
-          "Keyword": "Flying"
-        },
+        { "Keyword": "Flying" },
         {
           "Static": {
             "affected": {
               "Each": [
-                {
-                  "AnyOf": [
-                    {
-                      "Type": "Instant"
-                    },
-                    {
-                      "Type": "Sorcery"
-                    }
-                  ]
-                },
-                {
-                  "ControlledBy": "You"
-                },
-                {
-                  "WasCast": {}
-                },
-                {
-                  "In": "Stack"
-                }
+                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                { "ControlledBy": "You" },
+                { "WasCast": {} },
+                { "In": "Stack" }
               ]
             },
-            "mods": [
-              {
-                "AddKeyword": {
-                  "Replicate": [
-                    "OwnManaCost"
-                  ]
-                }
-              }
-            ]
+            "mods": [{ "AddKeyword": { "Replicate": ["OwnManaCost"] } }]
           }
         }
       ]

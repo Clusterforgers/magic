@@ -5,62 +5,26 @@
   "faces": [
     {
       "name": "Light Up the Night",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "2ab85b9316b93325a3a7fd62a9d1e178",
       "abilities": [
         {
           "Spell": {
-            "targets": [
-              {
-                "what": "AnyTarget"
-              }
-            ],
+            "targets": [{ "what": "AnyTarget" }],
             "effects": [
               {
                 "If": {
                   "condition": {
                     "Matches": {
-                      "subject": {
-                        "Target": 0
-                      },
+                      "subject": { "Target": 0 },
                       "selector": [
-                        {
-                          "AnyOf": [
-                            {
-                              "Type": "Creature"
-                            },
-                            {
-                              "Type": "Planeswalker"
-                            }
-                          ]
-                        }
+                        { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
                       ]
                     }
                   },
                   "then": [
-                    {
-                      "DealDamage": {
-                        "to": {
-                          "Target": 0
-                        },
-                        "amount": {
-                          "Sum": [
-                            "X",
-                            1
-                          ]
-                        }
-                      }
-                    }
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": { "Sum": ["X", 1] } } }
                   ],
-                  "otherwise": [
-                    {
-                      "DealDamage": {
-                        "to": {
-                          "Target": 0
-                        },
-                        "amount": "X"
-                      }
-                    }
-                  ]
+                  "otherwise": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
                 }
               }
             ]
@@ -69,26 +33,15 @@
         {
           "Keyword": {
             "Flashback": [
-              {
-                "Mana": "{3}{R}"
-              },
+              { "Mana": "{3}{R}" },
               {
                 "RemoveCountersAmong": {
                   "counter": "loyalty",
                   "count": "X",
-                  "from": [
-                    {
-                      "Type": "Planeswalker"
-                    },
-                    {
-                      "ControlledBy": "You"
-                    }
-                  ]
+                  "from": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }]
                 }
               },
-              {
-                "XAtLeast": 1
-              }
+              { "XAtLeast": 1 }
             ]
           }
         }

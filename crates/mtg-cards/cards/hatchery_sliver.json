@@ -7,38 +7,18 @@
       "name": "Hatchery Sliver",
       "oracle_fingerprint": "c22b02fca631eb75d8e81c930843516b",
       "abilities": [
-        {
-          "Keyword": {
-            "Replicate": "{1}{G}"
-          }
-        },
+        { "Keyword": { "Replicate": "{1}{G}" } },
         {
           "Static": {
             "affected": {
               "Each": [
-                {
-                  "Subtype": "Sliver"
-                },
-                {
-                  "ControlledBy": "You"
-                },
-                {
-                  "WasCast": {}
-                },
-                {
-                  "In": "Stack"
-                }
+                { "Subtype": "Sliver" },
+                { "ControlledBy": "You" },
+                { "WasCast": {} },
+                { "In": "Stack" }
               ]
             },
-            "mods": [
-              {
-                "AddKeyword": {
-                  "Replicate": [
-                    "OwnManaCost"
-                  ]
-                }
-              }
-            ]
+            "mods": [{ "AddKeyword": { "Replicate": ["OwnManaCost"] } }]
           }
         }
       ]

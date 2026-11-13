@@ -5,65 +5,25 @@
   "faces": [
     {
       "name": "Darksteel Garrison",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "e525990b7f4e29b5dbc305395590d9d5",
       "abilities": [
-        {
-          "Static": {
-            "affected": "Attached",
-            "mods": [
-              {
-                "AddKeyword": "Indestructible"
-              }
-            ]
-          }
-        },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Indestructible" }] } },
         {
           "Triggered": {
-            "when": {
-              "Tapped": {
-                "what": [
-                  {
-                    "Is": "Attached"
-                  }
-                ]
-              }
-            },
-            "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    }
-                  ]
-                }
-              }
-            ],
+            "when": { "Tapped": { "what": [{ "Is": "Attached" }] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
             "effects": [
               {
                 "Continuous": {
-                  "affected": {
-                    "Target": 0
-                  },
-                  "mods": [
-                    {
-                      "ModifyPT": {
-                        "power": 1,
-                        "toughness": 1
-                      }
-                    }
-                  ],
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
                   "duration": "UntilEndOfTurn"
                 }
               }
             ]
           }
         },
-        {
-          "Keyword": {
-            "Fortify": "{3}"
-          }
-        }
+        { "Keyword": { "Fortify": "{3}" } }
       ]
     }
   ]

@@ -669,6 +669,7 @@ impl Keyword {
         match self {
             Keyword::ProtectionSparing { .. } => "Protection".to_owned(),
             Keyword::CumulativeUpkeepActs { .. } => "Cumulative upkeep".to_owned(),
+            Keyword::CrewOnce(_) => "Crew".to_owned(),
             Keyword::Macro { name, .. } | Keyword::MacroX { name, .. } => {
                 let mut chars = name.chars();
                 chars

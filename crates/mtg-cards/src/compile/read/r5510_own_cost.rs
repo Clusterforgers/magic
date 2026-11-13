@@ -235,7 +235,7 @@ pub(super) fn r5510_wordings(
 mod tests {
     //! Goal: a keyword whose cost is read off each card reads and writes back with its subject and the sentence of its
     //! cost, and a near miss (another keyword in the sentence, a cost of no number, a keyword without a cost) is refused.
-    use super::{r5510_read, r5510_read_twice, r5510_wordings, r5510_wordings_twice};
+    use super::{r5510_read, r5510_wordings, r5510_wordings_twice};
     use crate::ability::Ability;
     use crate::compile::written_variants;
     use rstest::rstest;
@@ -251,25 +251,46 @@ mod tests {
         })
     }
 
-    #[rstest]
-    #[case::replicate(
-        "Each instant and sorcery spell you cast has replicate. The replicate cost is equal to its mana cost."
-    )]
-    #[case::sliver_replicate(
-        "Each Sliver spell you cast has replicate. The replicate cost is equal to its mana cost."
-    )]
-    #[case::emerge(
-        "Each creature spell you cast has emerge. The emerge cost is equal to its mana cost."
-    )]
-    #[case::miracle(
-        "Each enchantment card in your hand has miracle. Its miracle cost is equal to its mana cost reduced by {4}."
-    )]
-    fn r5510_reads_and_writes_back(#[case] text: &str) {
+    #[test]
+    fn r5510_reads_and_writes_back_a_card_in_hand() {
+        let text = "Each enchantment card in your hand has miracle. Its miracle cost is equal to its mana cost reduced by {4}.";
         let ability = read(text).unwrap_or_else(|| panic!("reads {text}"));
         let mut texts = Vec::new();
         r5510_wordings(&ability, written_variants, &mut texts);
-        let wanted = text.trim_end_matches('.');
-        assert!(texts.iter().any(|t| t == wanted), "{texts:?}");
+        assert!(
+            texts.iter().any(|t| t == text.trim_end_matches('.')),
+            "{texts:?}"
+        );
+    }
+
+    const SPELLS: &str = r#"[{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]},{"ControlledBy":"You"},{"WasCast":{}},{"In":"Stack"}]"#;
+
+    // A spell subject is read only in the Forge translator's form, so these are judged by their wordings.
+    #[rstest]
+    #[case::replicate(
+        r#"{"Replicate":["OwnManaCost"]}"#,
+        Some(
+            "Each instant and sorcery spell you cast has replicate. The replicate cost is equal to its mana cost"
+        )
+    )]
+    #[case::emerge(
+        r#"{"Emerge":["OwnManaCost"]}"#,
+        Some(
+            "Each instant and sorcery spell you cast has emerge. The emerge cost is equal to its mana cost"
+        )
+    )]
+    #[case::printed_cost(r#"{"Replicate":"{2}"}"#, None)]
+    fn r5510_writes_spell_grants(#[case] keyword: &str, #[case] wanted: Option<&str>) {
+        let json = format!(
+            r#"{{"Static":{{"affected":{{"Each":{SPELLS}}},"mods":[{{"AddKeyword":{keyword}}}]}}}}"#
+        );
+        let ability: Ability = serde_json::from_str(&json).unwrap();
+        let mut texts = Vec::new();
+        r5510_wordings(&ability, written_variants, &mut texts);
+        match wanted {
+            Some(wanted) => assert!(texts.iter().any(|t| t == wanted), "{texts:?}"),
+            None => assert!(texts.is_empty(), "{texts:?}"),
+        }
     }
 
     #[rstest]
@@ -290,35 +311,18 @@ mod tests {
     }
 
     #[rstest]
-    #[case::twice(
-        "Colorless spells you cast from your hand with mana value 7 or greater have \"Cascade, cascade.\"",
-        true
-    )]
-    #[case::once(
-        "Colorless spells you cast from your hand with mana value 7 or greater have cascade.",
+    #[case::twice(r#"[{"AddKeyword":"Cascade"},{"AddKeyword":"Cascade"}]"#, true)]
+    #[case::once(r#"[{"AddKeyword":"Cascade"}]"#, false)]
+    #[case::thrice(
+        r#"[{"AddKeyword":"Cascade"},{"AddKeyword":"Cascade"},{"AddKeyword":"Cascade"}]"#,
         false
     )]
-    #[case::other_keywords(
-        "Colorless spells you cast from your hand with mana value 7 or greater have \"Flying, cascade.\"",
-        false
-    )]
-    fn r5510_cascade_twice(#[case] text: &str, #[case] reads: bool) {
-        let found = r5510_read_twice(text, |twin| {
-            crate::compile::read::clause_with(
-                twin,
-                crate::compile::ClauseKind::Static,
-                false,
-                &crate::compile::read::Own::default(),
-            )
-        });
-        assert_eq!(found.is_some(), reads);
-        if let Some(ability) = found {
-            let mut texts = Vec::new();
-            r5510_wordings_twice(&ability, written_variants, &mut texts);
-            assert!(
-                texts.iter().any(|t| t == text.trim_end_matches('.')),
-                "{texts:?}"
-            );
-        }
+    fn r5510_cascade_twice(#[case] mods: &str, #[case] written: bool) {
+        let json = format!(r#"{{"Static":{{"affected":{{"Each":{SPELLS}}},"mods":{mods}}}}}"#);
+        let ability: Ability = serde_json::from_str(&json).unwrap();
+        let mut texts = Vec::new();
+        r5510_wordings_twice(&ability, written_variants, &mut texts);
+        let wanted = "Instant and sorcery spells you cast have \"Cascade, cascade.\"";
+        assert_eq!(texts.iter().any(|t| t == wanted), written, "{texts:?}");
     }
 }

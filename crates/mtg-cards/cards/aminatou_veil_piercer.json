@@ -9,47 +9,16 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "StepBegins": {
-                "step": "Upkeep",
-                "whose": "You"
-              }
-            },
-            "effects": [
-              {
-                "Surveil": {
-                  "count": 2
-                }
-              }
-            ]
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Surveil": { "count": 2 } }]
           }
         },
         {
           "Static": {
             "affected": {
-              "Each": [
-                {
-                  "Type": "Enchantment"
-                },
-                {
-                  "OwnedBy": "You"
-                },
-                {
-                  "In": "Hand"
-                }
-              ]
+              "Each": [{ "Type": "Enchantment" }, { "In": "Hand" }, { "OwnedBy": "You" }]
             },
-            "mods": [
-              {
-                "AddKeyword": {
-                  "Miracle": [
-                    {
-                      "OwnManaCostLess": 4
-                    }
-                  ]
-                }
-              }
-            ]
+            "mods": [{ "AddKeyword": { "Miracle": [{ "OwnManaCostLess": 4 }] } }]
           }
         }
       ]

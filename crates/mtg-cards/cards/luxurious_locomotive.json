@@ -5,43 +5,22 @@
   "faces": [
     {
       "name": "Luxurious Locomotive",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "26ef6ecb7231eba621f11f5135746c4a",
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "Attacks": {
-                "what": [
-                  "This"
-                ]
-              }
-            },
+            "when": { "Attacks": { "what": ["This"] } },
             "effects": [
               {
                 "CreateToken": {
-                  "token": {
-                    "Named": "treasure"
-                  },
-                  "count": {
-                    "Count": [
-                      {
-                        "Type": "Creature"
-                      },
-                      {
-                        "Crewed": "This"
-                      }
-                    ]
-                  }
+                  "token": { "Named": "treasure" },
+                  "count": { "Count": [{ "Type": "Creature" }, { "Crewed": "This" }] }
                 }
               }
             ]
           }
         },
-        {
-          "Keyword": {
-            "CrewOnce": 1
-          }
-        }
+        { "Keyword": { "CrewOnce": 1 } }
       ]
     }
   ]

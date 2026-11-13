@@ -5,44 +5,21 @@
   "faces": [
     {
       "name": "Zhulodok, Void Gorger",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "e9c8e380b7f6ad86f551e5881e8317af",
       "abilities": [
         {
           "Static": {
             "affected": {
               "Each": [
                 "Colorless",
-                {
-                  "Compare": {
-                    "stat": "ManaValue",
-                    "op": "Ge",
-                    "to": 7
-                  }
-                },
-                {
-                  "ControlledBy": "You"
-                },
-                {
-                  "WasCast": {
-                    "from": "Hand"
-                  }
-                },
-                {
-                  "OwnedBy": "You"
-                },
-                {
-                  "In": "Stack"
-                }
+                { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 7 } },
+                { "ControlledBy": "You" },
+                { "WasCast": { "from": "Hand" } },
+                { "OwnedBy": "You" },
+                { "In": "Stack" }
               ]
             },
-            "mods": [
-              {
-                "AddKeyword": "Cascade"
-              },
-              {
-                "AddKeyword": "Cascade"
-              }
-            ]
+            "mods": [{ "AddKeyword": "Cascade" }, { "AddKeyword": "Cascade" }]
           }
         }
       ]
