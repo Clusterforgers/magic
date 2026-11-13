@@ -3052,6 +3052,7 @@ impl Pass<'_> {
                             min: 0,
                             text: "Choose permanents to sacrifice.".into(),
                             can_cancel: false,
+                            groups: Vec::new(),
                         }),
                     }));
                 }
@@ -3199,6 +3200,7 @@ impl Pass<'_> {
                         max: 1,
                         text: "Choose a permanent to copy.".into(),
                         can_cancel: false,
+                        groups: Vec::new(),
                     }),
                 }));
             }

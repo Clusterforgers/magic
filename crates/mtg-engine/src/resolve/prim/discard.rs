@@ -59,6 +59,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     max: take,
                     from,
                     text,
+                    groups: Vec::new(),
                 })
             })
             .collect::<Result<_, ResolveError>>()?;
@@ -278,6 +279,7 @@ mod tests {
                     max: 1,
                     text: "Discard a card.".into(),
                     can_cancel: false,
+                    groups: Vec::new(),
                 }),
             }
         );

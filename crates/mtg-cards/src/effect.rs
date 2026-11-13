@@ -517,6 +517,9 @@ pub enum Effect {
         /// The name the objects not chosen are bound to.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         rest_as: Option<String>,
+        /// What no two chosen objects may share ("with different powers", "with different names"); anything when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        differ: Option<crate::refs::TargetSet>,
     },
     /// A player chooses a value that is not an object or a player and the resolution remembers it under the name:
     /// `Pred::ChosenAs` and `Amount::ChosenAs` read it. A player with one option (or none) is not asked.
@@ -2248,6 +2251,7 @@ pub fn hideaway(count: Amount) -> Vec<Effect> {
             count: Bounds::default(),
             bind: HIDDEN.to_owned(),
             rest_as: Some(UNHIDDEN.to_owned()),
+            differ: None,
         },
         Effect::ExileHidden {
             what: Ref::Bound(HIDDEN.to_owned()),

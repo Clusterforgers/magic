@@ -127,6 +127,7 @@ impl Pass<'_> {
                     max,
                     text: pick.text(),
                     can_cancel: false,
+                    groups: Vec::new(),
                 }),
             })),
             Some((who, Choice::Cards(cards)))

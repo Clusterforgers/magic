@@ -206,6 +206,7 @@ mod tests {
                     max: 3,
                     text: "Put any number of the cards into your graveyard.".into(),
                     can_cancel: false,
+                    groups: Vec::new(),
                 })
             }
         );

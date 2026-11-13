@@ -1862,6 +1862,8 @@ impl<'a> Scope<'a> {
         Ok(match pred {
             Pred::This => reference.id == self.source.id,
             Pred::Other => reference.id != self.source.id,
+            // True of each alone: the cost that takes several keeps them apart (`parts::Pick`).
+            Pred::Apart(_) => true,
             Pred::Is(named) => self.objects(named)?.contains(&reference),
             Pred::CanEnchantSource => {
                 crate::attach::legal_host_entering(state, reference.id, self.source.id)

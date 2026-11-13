@@ -590,6 +590,10 @@ fn produced_wordings(texts: &mut Vec<String>) {
 /// and the wordings of the oracle text that no template reads ("you" after another player's event, "Then" opening a
 /// sentence, "deals damage equal to its power").
 pub fn written_variants(ability: &Ability) -> Vec<String> {
+    // A choice whose chosen objects differ in a quality is worded only with that rule.
+    if let Some(texts) = super::r4709_differ::r4709_differ_texts(ability, written_variants) {
+        return texts;
+    }
     // A permission with riders is worded only as the permission without them and its riders.
     if let Some(texts) = super::r401_riders::r401_rider_texts(ability, written_variants) {
         return texts;
@@ -1594,6 +1598,7 @@ fn put_back_text(choose: &Effect, moved: &Effect) -> Option<String> {
             count,
             bind,
             rest_as: None,
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(name),
@@ -1643,6 +1648,7 @@ fn returned_text(choose: &Effect, moved: &Effect) -> Option<String> {
             count,
             bind,
             rest_as: None,
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(name),

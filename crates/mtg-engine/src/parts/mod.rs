@@ -945,6 +945,12 @@ impl Pick {
 
     /// Whether `candidates` cannot pay the part: too few of them, or too little power among them.
     pub(crate) fn short(&self, state: &GameState, candidates: &[ObjectId]) -> bool {
+        if self.r4709_rule().is_some() {
+            let mut groups = self.r4709_groups(state, candidates);
+            groups.sort_unstable();
+            groups.dedup();
+            return groups.len() < self.count;
+        }
         match self.kind {
             Kind::TapPower => usize::try_from(tap::total_power(state, candidates))
                 .is_ok_and(|total| total < self.count),
@@ -969,6 +975,12 @@ impl Pick {
                         .is_ok_and(|total| total == self.count)
             }
             Kind::Forage => forage::alone(state, candidates),
+            _ if self.r4709_rule().is_some() => {
+                let mut groups = self.r4709_groups(state, candidates);
+                groups.sort_unstable();
+                groups.dedup();
+                candidates.len() == self.count && groups.len() == self.count
+            }
             _ => candidates.len() == self.count,
         };
         if alone {
@@ -978,6 +990,37 @@ impl Pick {
         } else {
             None
         }
+    }
+
+    /// What the objects taken must not share ("with different names"), from the filter.
+    pub(crate) fn r4709_rule(&self) -> Option<&mtg_cards::refs::TargetSet> {
+        self.filter.0.iter().find_map(|pred| match pred {
+            mtg_cards::refs::Pred::Apart(rule) => Some(rule),
+            _ => None,
+        })
+    }
+
+    /// The group of each object by what the objects taken must not share, numbered in order of first sight; empty
+    /// when they may share anything.
+    pub(crate) fn r4709_groups(&self, state: &GameState, objects: &[ObjectId]) -> Vec<u32> {
+        let Some(rule) = self.r4709_rule() else {
+            return Vec::new();
+        };
+        let mut keys: Vec<u64> = Vec::new();
+        objects
+            .iter()
+            .map(|id| {
+                let key = crate::choose::object_key(state, rule, *id);
+                let at = keys
+                    .iter()
+                    .position(|seen| *seen == key)
+                    .unwrap_or_else(|| {
+                        keys.push(key);
+                        keys.len() - 1
+                    });
+                u32::try_from(at).unwrap_or(u32::MAX)
+            })
+            .collect()
     }
 
     /// The fewest and the most objects the question takes from `offered` candidates.
@@ -996,6 +1039,15 @@ impl Pick {
     /// Why `picked` cannot pay the part, when they cannot: too little power or mana value for a pick by total, or not one
     /// Food or three cards for a forage.
     pub(crate) fn weak(&self, state: &GameState, picked: &[ObjectId]) -> Option<IllegalAnswer> {
+        if self.r4709_rule().is_some() {
+            let groups = self.r4709_groups(state, picked);
+            let mut apart = groups.clone();
+            apart.sort_unstable();
+            apart.dedup();
+            if apart.len() < groups.len() {
+                return Some(IllegalAnswer::Duplicate("card of one kind"));
+            }
+        }
         let needed = u32::try_from(self.count).unwrap_or(u32::MAX);
         match self.kind {
             Kind::TapPower => {

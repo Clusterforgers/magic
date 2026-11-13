@@ -13,6 +13,7 @@ pub(super) fn text(effects: &[Effect]) -> Option<(String, usize)> {
             count,
             bind,
             rest_as: Some(rest),
+            differ: None,
         },
         Effect::Destroy {
             what: Ref::Bound(left),

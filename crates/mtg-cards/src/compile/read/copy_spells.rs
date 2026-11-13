@@ -392,6 +392,7 @@ pub fn choose_and_become(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             count: Bounds::default(),
             bind: COPIED.to_owned(),
             rest_as: None,
+            differ: None,
         },
         Effect::BecomeCopy {
             what,
@@ -427,6 +428,7 @@ pub(super) fn become_texts(choose: &Effect, copy: &Effect, target: &str) -> Opti
             count,
             bind,
             rest_as: None,
+            differ: None,
         },
         Effect::BecomeCopy {
             what: Ref::Target(0),

@@ -32,6 +32,7 @@ fn chosen_exile(who: &Ref, kind: Vec<Pred>) -> Vec<Effect> {
             count: crate::refs::Bounds::default(),
             bind: PICKED.to_owned(),
             rest_as: None,
+            differ: None,
         },
         Effect::Exile {
             what: Ref::Bound(PICKED.to_owned()),

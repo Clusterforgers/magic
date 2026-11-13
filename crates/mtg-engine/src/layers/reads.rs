@@ -279,6 +279,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::Supertype(_) => Traits::SUPERTYPES,
         Pred::This
         | Pred::Other
+        | Pred::Apart(_)
         | Pred::Token
         | Pred::Commander
         | Pred::Spell

@@ -62,6 +62,7 @@ fn activation(cost: &Cost) -> Ability {
                 count: Bounds::default(),
                 bind: NINJA.to_owned(),
                 rest_as: None,
+                differ: None,
             },
             Effect::Move {
                 what: ninja(),
