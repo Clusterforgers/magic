@@ -1,0 +1,38 @@
+{
+  "oracle_id": "fe4a9464-1581-40a3-a50f-fc4df8f91444",
+  "name": "Divine Deflection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Divine Deflection",
+      "oracle_fingerprint": "13a52c899e95d1e68b243c68985677fa",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": { "Union": ["You", { "Each": [{ "ControlledBy": "You" }] }] }
+                    }
+                  },
+                  "by": {
+                    "PreventCountedAnd": {
+                      "most": "X",
+                      "effects": [
+                        { "DealDamage": { "to": { "Target": 0 }, "amount": "Triggering" } }
+                      ]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

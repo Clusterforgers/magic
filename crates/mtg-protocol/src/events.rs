@@ -161,7 +161,7 @@ pub enum HiddenEvent {
     AbilityTriggered {
         /// The object with the ability, as it was; none while the viewer cannot identify it (a card in a hand).
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        #[cfg_attr(feature = "ts", ts(optional))]
+        #[ts(optional)]
         source: Option<ObjectRef>,
         /// Its index among the rules of the source's card.
         ability: usize,
@@ -174,7 +174,7 @@ pub enum HiddenEvent {
         object: ObjectId,
         /// The object with the ability, as it was; none while the viewer cannot identify it (a card in a hand).
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        #[cfg_attr(feature = "ts", ts(optional))]
+        #[ts(optional)]
         source: Option<ObjectRef>,
         /// Who controls it.
         controller: PlayerId,
@@ -184,7 +184,7 @@ pub enum HiddenEvent {
     AbilityLeftToTable {
         /// The object with the ability, as it was; none while the viewer cannot identify it (a card in a hand).
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        #[cfg_attr(feature = "ts", ts(optional))]
+        #[ts(optional)]
         source: Option<ObjectRef>,
         /// Who controls it.
         controller: PlayerId,
@@ -398,6 +398,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Regenerated { .. }
         | Event::DamageRemoved { .. }
         | Event::ShieldUsed { .. }
+        | Event::DamagePrevented { .. }
         | Event::EffectCreated { .. }
         | Event::EffectExpired { .. }
         | Event::RuleCreated { .. }
@@ -471,6 +472,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         // A by-hand line comes due only on a permanent, which every seat sees.
         | Event::ByHandDue(_)
         | Event::Clashed { .. }
+        | Event::VotesFinished { .. }
         | Event::Proliferated { .. }
         | Event::Explored { .. }
         | Event::Connived { .. }
@@ -1426,6 +1428,9 @@ mod tests {
                 player: OWNER,
                 opponent: OTHER,
                 won: false,
+            },
+            Event::VotesFinished {
+                ballots: vec![(OWNER, 0), (OTHER, 1)],
             },
             Event::CoinFlipped {
                 player: OTHER,

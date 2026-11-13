@@ -3,7 +3,7 @@ import { Pill } from '@/components/Pill'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import { useSeatNamer } from './names'
-import { isYourTurn, turnLeft } from './selectors'
+import { isYourTurn, turnLeft, turnTeammate } from './selectors'
 import { PhaseTag } from './turn/PhaseTag'
 import { usePhase } from './turn/usePhase'
 import { badgeText } from './turnText'
@@ -31,6 +31,7 @@ export function TurnBadge() {
       step: state.view?.turn.step ?? 'Untap',
       left: turnLeft(state),
       controlledBy: state.view?.turn.controlled_by,
+      teammate: turnTeammate(state),
     })),
   )
   const seat = usePlay((state) => state.seat)

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "96d88811-d0d8-4c64-b7f2-8304d81c8cfa",
+  "name": "Noble Banneret",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Noble Banneret",
+      "oracle_fingerprint": "b1868bd366111d13fd046e176f1f7e85",
+      "abilities": [
+        { "Rule": { "rule": { "Draft": "FaceUp" } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 25, "end": 119 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 120, "end": 281 }
+          }
+        }
+      ]
+    }
+  ]
+}

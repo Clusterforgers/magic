@@ -1,0 +1,45 @@
+{
+  "oracle_id": "81ba75af-eddc-4344-befb-419ebfb855a3",
+  "name": "Rikku, Resourceful Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rikku, Resourceful Guardian",
+      "oracle_fingerprint": "ff186516a36f83966fd28f0872c245f0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": { "CountersPut": { "what": [{ "Type": "Creature" }] } },
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    { "CantBeBlockedBy": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [{ "MoveCounters": { "from": { "Target": 1 }, "to": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

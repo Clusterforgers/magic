@@ -28,6 +28,8 @@ pub(crate) struct Record {
     pub(crate) shot: Option<Snapshot>,
     /// What it was done to, when that is a player or a public object.
     pub(crate) other: Option<Target>,
+    /// The object it was done to as it was when the record was made (the attacker a creature blocked).
+    pub(crate) other_shot: Option<Snapshot>,
     /// How much: the damage dealt, the counters put; 1 for the rest.
     pub(crate) amount: u32,
 }
@@ -59,6 +61,10 @@ impl GameState {
             Target::Object(object) => self.public_object(object.id).map(Target::Object),
             player @ Target::Player(_) => Some(player),
         });
+        let other_shot = match other {
+            Some(Target::Object(object)) => crate::snapshot::snapshot(self, object.id),
+            _ => None,
+        };
         let shot = self
             .public_object(subject)
             .and_then(|_| crate::snapshot::snapshot(self, subject));
@@ -69,6 +75,7 @@ impl GameState {
             subject,
             shot,
             other,
+            other_shot,
             amount,
         });
     }
@@ -217,5 +224,38 @@ impl Scope<'_> {
             }
         }
         total
+    }
+
+    /// Whether the object blocked or was blocked this turn by a creature `with` selects as it was when the block was
+    /// declared; by any creature when `with` is empty.
+    pub(crate) fn r379_blocked_this_turn(&self, with: &Selector, object: ObjectRef) -> bool {
+        let state = self.state;
+        // Each block is judged by the snapshot of its own record, put first.
+        let selects = |shot: Option<&Snapshot>| {
+            with.is_empty()
+                || shot.is_some_and(|shot| {
+                    let mut one = self.clone();
+                    one.as_was = true;
+                    one.snapshots.insert(0, shot);
+                    one.selects(with, shot.reference()).unwrap_or(false)
+                })
+        };
+        state
+            .tallies
+            .records
+            .iter()
+            .filter(|record| record.event == TallyEvent::Blocked)
+            .any(|record| {
+                let attacker = match record.other {
+                    Some(Target::Object(attacker)) => Some(attacker),
+                    _ => None,
+                };
+                (record.subject == Some(object)
+                    && attacker.is_some()
+                    && selects(record.other_shot.as_ref()))
+                    || (attacker == Some(object)
+                        && record.subject.is_some()
+                        && selects(record.shot.as_ref()))
+            })
     }
 }

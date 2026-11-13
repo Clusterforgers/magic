@@ -224,6 +224,9 @@ pub enum Modification {
     /// The object can't be blocked by more than this many creatures together: a restriction with no layer that the
     /// block rules read.
     MaxBlockers(u32),
+    /// The object can't be blocked unless every creature the defending player controls blocks it: a restriction with no
+    /// layer that the block rules read beside menace.
+    BlockedByAll,
     /// The object can block this many creatures beyond the first each combat (a restriction, no layer): "can block an
     /// additional creature each combat" (CR 509.1a).
     BlocksAdditional(u32),
@@ -236,6 +239,16 @@ pub enum Modification {
         #[cfg_attr(feature = "ts", ts(type = "\"Player\" | \"Planeswalkers\" | \"Both\""))]
         attacked: mtg_cards::modify::Attacked,
     },
+    /// The object can't attack its owner, the planeswalkers its owner controls or both: a restriction with no layer that
+    /// the attack declaration reads.
+    CantAttackOwner {
+        /// Whether it protects the owner, their planeswalkers or both.
+        #[cfg_attr(feature = "ts", ts(type = "\"Player\" | \"Planeswalkers\" | \"Both\""))]
+        attacked: mtg_cards::modify::Attacked,
+    },
+    /// The object can't be blocked unless it is attacking its owner or a permanent its owner controls: a restriction with
+    /// no layer that the block declaration reads.
+    CantBeBlockedUnlessAttackingOwner,
     /// The object is goaded by `by` (CR 701.15): a restriction with no layer that the attack declaration reads; it attacks
     /// each combat if able and attacks a player other than the goader if able.
     Goaded {
@@ -277,6 +290,8 @@ impl Modification {
             Modification::SwitchPowerToughness => Layer::PtSwitch,
             Modification::CantAttack
             | Modification::CantAttackYou { .. }
+            | Modification::CantAttackOwner { .. }
+            | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
             | Modification::DoesntUntap
             | Modification::CantBeTurnedFaceUp
@@ -285,6 +300,7 @@ impl Modification {
             | Modification::CanBlockOnly { .. }
             | Modification::MinBlockers(_)
             | Modification::MaxBlockers(_)
+            | Modification::BlockedByAll
             | Modification::BlocksAdditional(_)
             | Modification::Goaded { .. } => return None,
         })
@@ -380,6 +396,8 @@ impl Modification {
             | Modification::GainAbilities(_)
             | Modification::CantAttack
             | Modification::CantAttackYou { .. }
+            | Modification::CantAttackOwner { .. }
+            | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
             | Modification::DoesntUntap
             | Modification::CantBeTurnedFaceUp
@@ -388,6 +406,7 @@ impl Modification {
             | Modification::CanBlockOnly { .. }
             | Modification::MinBlockers(_)
             | Modification::MaxBlockers(_)
+            | Modification::BlockedByAll
             | Modification::BlocksAdditional(_)
             | Modification::Goaded { .. }
             // The plain mana abilities in `abilities` are all mana abilities, so they stay.
@@ -453,7 +472,10 @@ pub(crate) fn lasts(
         | Duration::UntilTurnSkipped
         // `UntilSkipped` ends with the step or combat it skips (`rmt3_skips`).
         | Duration::UntilSkipped
-        | Duration::UntilSkippedThisTurn => true,
+        | Duration::UntilSkippedThisTurn
+        // `TheirNextTurn` ends with the first later turn of the player it names (`r377_skips`), and applies only from a
+        // later turn on (`r377_waits`).
+        | Duration::TheirNextTurn => true,
         // `DuringItsControllersNextTurn` is begun for the player whose turn it waits for (`continuous.rs`).
         Duration::UntilEndOfYourNextTurn | Duration::DuringItsControllersNextTurn => {
             state.is_alive(controller)
@@ -529,11 +551,13 @@ pub(crate) fn lasts(
         // Only an exile lasts until an opponent becomes the monarch (a card in exile waits, `exile_return.rs`); no continuous
         // effect does.
         // Only a continuous effect that names its objects follows a counter on them (`ContinuousEffect::holds_counter`).
-        // An effect that follows Auras on its objects or a player fixed as it began reads its own record (`lasts_by`).
+        // An effect that follows Auras on its objects or a player fixed as it began reads its own record (`lasts_by`);
+        // only a copy effect lasts while its source stays attached (`copies::C10XpCopyEnds::Unattached`).
         Duration::UntilOpponentBecomesMonarch
         | Duration::WhileHasCounter(_)
         | Duration::WhileEnchanted
-        | Duration::WhileMonarch(_) => false,
+        | Duration::WhileMonarch(_)
+        | Duration::WhileSourceAttached => false,
         Duration::UntilCastFromExile => !source.is_some_and(|source| cast_from_exile(state, source)),
     }
 }

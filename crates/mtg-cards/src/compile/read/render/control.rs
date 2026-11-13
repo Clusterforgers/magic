@@ -56,6 +56,10 @@ impl Writer<'_> {
             {
                 Some(format!("{} gains control of ~", self.name_target()?))
             }
+            (Ref::This, Ref::Seated { .. }) if *duration == Duration::Forever => Some(format!(
+                "{} gains control of ~",
+                crate::compile::read::r376_seats::r376_seated_text(new)?
+            )),
             (_, Ref::You) => Some(format!(
                 "gain control of {}{until}",
                 self.w6e_taken(affected)?

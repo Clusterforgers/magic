@@ -14,6 +14,7 @@ pub(super) fn is_next(rule: &Rule) -> bool {
         Rule::Replaces {
             when: ReplaceWhen::Draw { .. } | ReplaceWhen::LoseGame { .. },
             by: ReplaceBy::InsteadNext(_),
+            ..
         }
     )
 }

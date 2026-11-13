@@ -47,6 +47,7 @@ const RUNS: &[&str] = &[
     "Trigger.AnyOf",
     "Trigger.DealsDamage",
     "Trigger.LifeGained",
+    "Trigger.DamagePrevented",
     "Trigger.LifeLost",
     "Trigger.Drew",
     "Trigger.Discarded",
@@ -189,6 +190,14 @@ const RUNS: &[&str] = &[
     "Cost.Waterbend",
     "Cost.XAtLeast",
     "Cost.XColor",
+    "Stat.R374Types",
+    "Stat.R374CreatureTypes",
+    "Stat.R374Bushido",
+    "Stat.R374Toxic",
+    "Stat.R374ManaCost",
+    "Stat.R374ColorSet",
+    "Amount.R374AtMost",
+    "Cost.Alternative.X",
     "Cost.XAtMost",
     "Cost.ExiledToGraveyard",
     "Cost.DamageToYou.Counted.Activated",
@@ -300,6 +309,7 @@ const RUNS: &[&str] = &[
     "Effect.RemoveDamage",
     "Effect.RepeatWhile",
     "Effect.SeparatePiles",
+    "Effect.Balance",
     "Effect.ExtraTurn",
     "Effect.EndTurn",
     "Effect.AddPhase",
@@ -335,6 +345,7 @@ const RUNS: &[&str] = &[
     "Effect.OpenAttraction",
     "Effect.RollToVisit",
     "Effect.PutSticker",
+    "Effect.Parade",
     "Effect.ClaimPrize",
     "Trigger.VisitedAttraction",
     "Trigger.Prize",
@@ -378,6 +389,7 @@ const RUNS: &[&str] = &[
     "Effect.ChangeTargets",
     "Effect.BecomeCopy",
     "Copy.Duration.UntilYourNextTurn",
+    "Copy.Duration.WhileSourceAttached",
     "Copy.Except.ThisAbility",
     "Copy.Except.SetPT.Amount",
     "Effect.Continuous",
@@ -430,6 +442,8 @@ const RUNS: &[&str] = &[
     "Rule.CantSearch",
     "Rule.VoteAgain",
     "Rule.ExtraVote",
+    "Rule.ReverseTurnOrder",
+    "Rule.AttackOnlyNearest",
     "Rule.SkipExtraTurns",
     "Rule.FlipTwoCoins",
     "Rule.ExtraDie",
@@ -465,6 +479,10 @@ const RUNS: &[&str] = &[
     "Rule.CantLoseGame",
     "Rule.CantCastSpells",
     "Rule.ToughnessAssignsDamage",
+    "Rule.LethalByPower",
+    "Rule.DevotionIncreased",
+    "Rule.DamageAsInfect",
+    "Rule.VentureLimit",
     "Rule.DamageAsWither",
     "Rule.ManaBurn",
     "Rule.AttackAsThoughHasteAt",
@@ -472,6 +490,7 @@ const RUNS: &[&str] = &[
     "Rule.Cant",
     "Rule.Cant.Activate",
     "Rule.Cant.BeTargeted",
+    "Rule.Cant.BeTargetedByWallsOnly",
     "Rule.Cant.PlayLand",
     "Rule.Cant.Sacrifice",
     "Rule.Cant.PutCounter",
@@ -511,6 +530,7 @@ const RUNS: &[&str] = &[
     "Mod.AddSupertype",
     "Mod.SetName",
     "Mod.ThisAbility",
+    "Mod.SetLoyalty",
     "Mod.AddSubtype",
     "Mod.SetCreatureTypes",
     "Mod.SetLandTypes",
@@ -538,6 +558,8 @@ const RUNS: &[&str] = &[
     "Mod.SetController",
     "Mod.CantAttack",
     "Mod.CantAttackYou",
+    "Mod.CantAttackOwner",
+    "Mod.CantBeBlockedUnlessAttackingOwner",
     "Mod.CantBlock",
     "Mod.DoesntUntap",
     "Mod.CantBeTurnedFaceUp",
@@ -546,6 +568,7 @@ const RUNS: &[&str] = &[
     "Mod.CanBlockOnly",
     "Mod.MinBlockers",
     "Mod.MaxBlockers",
+    "Mod.BlockedByAll",
     "Mod.BlocksAdditional",
     "Mod.BlocksAdditionalPer",
     "Mod.Goaded",
@@ -586,6 +609,7 @@ const RUNS: &[&str] = &[
     "Effect.Modal.AllIf",
     "Effect.Vote",
     "Effect.ChooseNumbers",
+    "Effect.ChooseWords",
     "Effect.BidLife",
     "Effect.Let",
     "Effect.Bind",
@@ -721,6 +745,11 @@ const RUNS: &[&str] = &[
     "Amount.Remembered",
     "Amount.DamageDealtByTo",
     "Amount.TurnNumber",
+    "Amount.Stickers",
+    "Amount.StickerVowels",
+    "Amount.TallyLastTurn",
+    "Amount.CastSameNameThisGame",
+    "Amount.TallyTotal",
     "Amount.TriggeringTargets",
     "Amount.PlayersLost",
     "Amount.CastTargets",
@@ -858,6 +887,8 @@ const RUNS: &[&str] = &[
     "Keyword.EquipTo",
     "Condition.CitysBlessing",
     "Condition.EnduringStory",
+    "Condition.VotedAs",
+    "Amount.GreatestCast",
     "Condition.MaxSpeed",
     "Effect.MyriadCopies",
     "Keyword.JumpStart",
@@ -919,6 +950,7 @@ const RUNS: &[&str] = &[
     "Condition.AttackedThisCombat",
     "Condition.SorceryTiming",
     "Condition.AfterCombat",
+    "Condition.TriggeringSticker",
     "Rule.CanBeCommander",
     "Rule.AnyNumberInDeck",
     "Rule.UpToInDeck",
@@ -934,6 +966,9 @@ const RUNS: &[&str] = &[
     "Pred.GravedThisTurn",
     "Pred.ArrivedFrom",
     "Pred.DidThisTurn",
+    "Pred.BlockedThisTurn",
+    "Pred.EnteredSinceLastTurn",
+    "Condition.CombatDamagedSinceLastTurn",
     "Pred.WasCast",
     "Pred.CastWith",
     "Pred.Test",
@@ -942,6 +977,7 @@ const RUNS: &[&str] = &[
     "Pred.TopOfGraveyard",
     "Pred.TopCreatureOfGraveyard",
     "Pred.BlockedBy",
+    "Pred.BlockedThisTurnBy",
     "Pred.BandedWith",
     "Pred.Blocks",
     "Pred.TargetedBy",
@@ -953,6 +989,7 @@ const RUNS: &[&str] = &[
     "Pred.CounterCount",
     "Pred.Suspended",
     "Pred.Kicked",
+    "Pred.AdditionalCostPaid",
 ];
 
 /// The capabilities of this engine.
@@ -1146,6 +1183,7 @@ mod tests {
     #[case::copy_names("Mod.SetName", true)]
     #[case::copy_keeps_this_ability("Copy.Except.ThisAbility", true)]
     #[case::the_ability_kept_as_a_modification("Mod.ThisAbility", true)]
+    #[case::r371_a_copy_with_a_starting_loyalty("Mod.SetLoyalty", true)]
     #[case::subtypes("Mod.AddSubtype", true)]
     #[case::colours("Mod.SetColors", true)]
     #[case::chosen_colours("Mod.SetColorsChosen", true)]
@@ -1165,6 +1203,8 @@ mod tests {
     #[case::changes_of_control("Mod.SetController", true)]
     #[case::attack_restrictions("Mod.CantAttack", true)]
     #[case::attack_restrictions_on_you("Mod.CantAttackYou", true)]
+    #[case::r371_attacks_on_the_owner("Mod.CantAttackOwner", true)]
+    #[case::r371_blocks_unless_at_the_owner("Mod.CantBeBlockedUnlessAttackingOwner", true)]
     #[case::block_restrictions("Mod.CantBlock", true)]
     #[case::no_turning_face_up("Mod.CantBeTurnedFaceUp", true)]
     #[case::static_abilities("Ability.Static", true)]
@@ -1324,6 +1364,9 @@ mod tests {
     #[case::the_ring_tempting_triggers("Trigger.RingTempts", true)]
     #[case::the_ring_bearer("Pred.RingBearer", true)]
     #[case::did_this_turn("Pred.DidThisTurn", true)]
+    #[case::r379_blocked_either_way("Pred.BlockedThisTurn", true)]
+    #[case::r379_entered_since_your_last_turn("Pred.EnteredSinceLastTurn", true)]
+    #[case::r379_hurt_since_your_last_turn("Condition.CombatDamagedSinceLastTurn", true)]
     #[case::adventure_cards("Pred.HasAdventure", true)]
     #[case::amassing("Effect.Amass", true)]
     #[case::monstrosity("Effect.Monstrosity", true)]
@@ -1357,6 +1400,7 @@ mod tests {
     #[case::ending_the_turn("Effect.EndTurn", true)]
     #[case::cant_activate("Rule.Cant.Activate", true)]
     #[case::cant_be_targeted("Rule.Cant.BeTargeted", true)]
+    #[case::r377_cant_be_targeted_by_walls_only("Rule.Cant.BeTargetedByWallsOnly", true)]
     #[case::cant_play_land("Rule.Cant.PlayLand", true)]
     #[case::cant_sacrifice("Rule.Cant.Sacrifice", true)]
     #[case::cant_put_counter("Rule.Cant.PutCounter", true)]
@@ -1466,6 +1510,8 @@ mod tests {
     #[case::the_monarch_as_the_turn_began("Condition.MonarchAtTurnStart", true)]
     #[case::the_citys_blessing("Condition.CitysBlessing", true)]
     #[case::rmt6_an_enduring_story("Condition.EnduringStory", true)]
+    #[case::r379_how_players_voted("Condition.VotedAs", true)]
+    #[case::r379_greatest_among_spells_cast("Amount.GreatestCast", true)]
     #[case::rmt6_a_draft_rule("Rule.Draft", true)]
     #[case::max_speed("Condition.MaxSpeed", true)]
     #[case::becoming_day_or_night("Effect.BecomeDayNight", true)]
@@ -1479,6 +1525,7 @@ mod tests {
     #[case::creatures_that_can_block_only_some("Mod.CanBlockOnly", true)]
     #[case::creatures_that_need_several_blockers("Mod.MinBlockers", true)]
     #[case::creatures_that_are_blocked_by_few("Mod.MaxBlockers", true)]
+    #[case::r377_blocked_by_all("Mod.BlockedByAll", true)]
     #[case::goaded_creatures("Mod.Goaded", true)]
     #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", true)]
     #[case::looking_at_face_down_cards_in_exile("Rule.LookAtExiled", true)]
@@ -1490,6 +1537,10 @@ mod tests {
     #[case::w17b_cant_lose("Rule.CantLoseGame", true)]
     #[case::w17b_cant_cast("Rule.CantCastSpells", true)]
     #[case::w17b_toughness_damage("Rule.ToughnessAssignsDamage", true)]
+    #[case::r377_lethal_by_power("Rule.LethalByPower", true)]
+    #[case::r377_devotion_increased("Rule.DevotionIncreased", true)]
+    #[case::r377_damage_as_infect("Rule.DamageAsInfect", true)]
+    #[case::r377_venture_limit("Rule.VentureLimit", true)]
     #[case::w17b_counters_remain("Rule.CountersRemain", true)]
     #[case::partner("Keyword.Partner", true)]
     #[case::partner_with("Keyword.PartnerWith", true)]
@@ -1633,6 +1684,7 @@ mod tests {
     #[case::squad("Keyword.Squad", true)]
     #[case::x_costs(X_COST, true)]
     #[case::x_read_after_resolving("Amount.X.Elsewhere", false)]
+    #[case::r379_x_of_an_alternative_cost("Cost.Alternative.X", true)]
     #[case::paying_x_in_an_effect("Effect.Pay.X", true)]
     #[case::paying_energy_of_a_chosen_amount_in_an_effect("Effect.Pay.X.Energy", true)]
     #[case::paying_a_part_that_counts_x_in_an_effect("Effect.Pay.X.Parts", false)]

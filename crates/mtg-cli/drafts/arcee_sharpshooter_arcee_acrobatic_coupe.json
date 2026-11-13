@@ -1,0 +1,69 @@
+{
+  "oracle_id": "9fba3097-d53f-4ea4-b5d2-8adddaa09524",
+  "name": "Arcee, Sharpshooter // Arcee, Acrobatic Coupe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcee, Sharpshooter",
+      "oracle_fingerprint": "60d1975619b1e982ab9e14d051bec8f1",
+      "abilities": [
+        { "Keyword": { "MoreThanMeetsTheEye": "{W}{R}" } },
+        { "Keyword": "FirstStrike" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "RemoveCounters": { "counter": "+1/+1", "count": "X" } },
+              { "XAtLeast": 1 }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": { "RemovedThisWay": "+1/+1" } } },
+              { "Transform": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Arcee, Acrobatic Coupe",
+      "oracle_fingerprint": "7bb251e615e64851c03b24f68189f8da",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "living metal", "amount": 0 } } },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "Targeting": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                      { "ControlledBy": "You" },
+                      { "TargetedBy": "Triggering" }
+                    ]
+                  }
+                }
+              },
+              { "Transform": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

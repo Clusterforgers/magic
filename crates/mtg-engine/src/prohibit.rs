@@ -70,6 +70,8 @@ pub(crate) enum Doing {
     BecomeSuspected { object: ObjectId },
     /// `target` becomes the target of a spell or ability of `by`, controlled by `controller`.
     BeTargeted { target: Target, by: ObjectRef },
+    /// `object` becomes the target of a spell or ability that can target only Walls.
+    BeTargetedByWallsOnly { object: ObjectId },
     /// `player` plays a land.
     PlayLand { player: PlayerId },
     /// `player` sacrifices `object`.
@@ -179,6 +181,9 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
                 && state
                     .object(source)
                     .is_some_and(|o| picks(state, ban, sources, o.reference()))
+        }
+        (Prohibited::BeTargetedByWallsOnly, Doing::BeTargetedByWallsOnly { object }) => {
+            covers(who, None, Some(object))
         }
         (Prohibited::BeTargeted(by), Doing::BeTargeted { target, by: source }) => {
             let (player, object) = match target {
@@ -499,14 +504,23 @@ pub(crate) fn filter(state: &GameState, events: Vec<Event>) -> Vec<Event> {
     if state.rules().cants.is_empty() {
         return events;
     }
-    // A card that may not enter stays where it is, so how it would have entered (tapped, under whom, transformed) goes too.
+    // A card that may not enter stays where it is, so how it would have entered (tapped, under whom, transformed, with
+    // counters, attached) goes too: those events name the permanent it would have become (CR 400.7).
     let mut stays = Vec::new();
     let mut stayed: Vec<ObjectId> = Vec::new();
     let kept: Vec<Event> = events
         .into_iter()
         .filter(|event| match event {
-            Event::Entered { object, .. } | Event::Transformed { object, .. }
+            Event::Entered { object, .. }
+            | Event::Transformed { object, .. }
+            | Event::Attached { object, .. }
+            | Event::AttachedToPlayer { object, .. }
                 if stays.contains(object) =>
+            {
+                false
+            }
+            Event::CountersChanged(changed)
+                if matches!(changed.on, Target::Object(named) if stays.contains(&named.id)) =>
             {
                 false
             }
@@ -747,14 +761,48 @@ mod tests {
         assert_eq!(kept, expected);
     }
 
-    #[test]
-    fn a_card_that_may_not_enter_does_not_enter_tapped_either() {
+    /// Grafdigger's Cage kept a card returned "tapped with two +1/+1 counters" in the graveyard, and the counters for the
+    /// permanent it would have become were left in the batch for an object that never existed.
+    #[rstest]
+    #[case::tapped("tapped")]
+    #[case::with_counters_on_the_new_object("counters")]
+    #[case::transformed("transformed")]
+    #[case::attached("attached")]
+    #[case::attached_to_a_player("attached_to_player")]
+    fn a_card_that_may_not_enter_does_not_enter_in_any_way_either(#[case] how: &str) {
         let game =
             game(r#"{"Cant":{"who":{"Each":[{"Type":"Creature"}]},"action":"EnterBattlefield"}}"#);
-        let bear = id(&game, "Bear");
+        let (bear, wolf) = (id(&game, "Bear"), id(&game, "Wolf"));
+        let mut arriving = game.object(bear).unwrap().reference();
+        arriving.counter += 1;
         let other = Event::LifeGained {
             player: ME,
             amount: 1,
+        };
+        let entry = match how {
+            "tapped" => Event::Entered {
+                object: bear,
+                tapped: true,
+                controller: FOE,
+                chosen: None,
+            },
+            "counters" => Event::CountersChanged(CountersChanged {
+                on: Target::Object(arriving),
+                counter: CounterKind::PlusOnePlusOne,
+                delta: 2,
+            }),
+            "transformed" => Event::Transformed {
+                object: bear,
+                face: Some(1),
+            },
+            "attached" => Event::Attached {
+                object: bear,
+                to: wolf,
+            },
+            _ => Event::AttachedToPlayer {
+                object: bear,
+                player: ME,
+            },
         };
         let events = vec![
             Event::ZoneChanged {
@@ -763,12 +811,7 @@ mod tests {
                 to: Zone::Battlefield,
                 cause: ZoneCause::Moved,
             },
-            Event::Entered {
-                object: bear,
-                tapped: true,
-                controller: FOE,
-                chosen: None,
-            },
+            entry,
             other.clone(),
         ];
         assert_eq!(filter(&game, events), vec![other]);

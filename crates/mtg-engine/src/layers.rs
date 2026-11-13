@@ -458,6 +458,8 @@ impl Held {
             | Modification::SwitchPowerToughness
             | Modification::CantAttack
             | Modification::CantAttackYou { .. }
+            | Modification::CantAttackOwner { .. }
+            | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
             | Modification::DoesntUntap
             | Modification::CantBeTurnedFaceUp
@@ -466,6 +468,7 @@ impl Held {
             | Modification::CanBlockOnly { .. }
             | Modification::MinBlockers(_)
             | Modification::MaxBlockers(_)
+            | Modification::BlockedByAll
             | Modification::BlocksAdditional(_)
             | Modification::Goaded { .. } => {}
         }
@@ -552,6 +555,7 @@ impl GameState {
     pub(crate) fn layers(&self) -> &Layers {
         let nothing_to_derive = self.effects.is_empty()
             && self.ring.is_empty()
+            && self.un34.on.is_empty()
             && !self.statics_possible
             && !self.possible.counters
             && !self.possible.suspected;
@@ -756,6 +760,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::AddSupertype(_)
         | Wanted::SetName(_)
         | Wanted::ThisAbility
+        | Wanted::SetLoyalty(_)
         | Wanted::AddSubtype(_)
         | Wanted::SetCreatureTypes(_)
         | Wanted::SetLandTypes(_)
@@ -790,6 +795,8 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         Wanted::SwitchPT => Layer::PtSwitch,
         Wanted::CantAttack
         | Wanted::CantAttackYou(_)
+        | Wanted::CantAttackOwner(_)
+        | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
         | Wanted::DoesntUntap
         | Wanted::CantBeTurnedFaceUp
@@ -798,6 +805,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::CanBlockOnly(_)
         | Wanted::MinBlockers(_)
         | Wanted::MaxBlockers(_)
+        | Wanted::BlockedByAll
         | Wanted::BlocksAdditional(_)
         | Wanted::BlocksAdditionalPer(_)
         | Wanted::Goaded => return None,
@@ -899,10 +907,12 @@ struct Pass<'a> {
 /// it and never the control as a stale state records it (CR 611.2b, 613.7).
 fn compute(state: &GameState) -> Layers {
     let rings = crate::ring::effects(state);
+    let stickers = crate::un34_stickers::effects(state);
     let mut registered: Vec<&ContinuousEffect> = state
         .effects()
         .iter()
         .chain(&rings)
+        .chain(&stickers)
         .filter(|effect| effect.is_active_before_control(state))
         .collect();
     loop {

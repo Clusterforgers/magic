@@ -645,10 +645,12 @@ fn granted_ability(state: &GameState, grant: Grant) -> Option<Arc<Ability>> {
     match grant {
         Grant::Effect(id) => {
             let ring = crate::ring::effects(state);
+            let stickers = crate::un34_stickers::effects(state);
             state
                 .effects()
                 .iter()
                 .chain(&ring)
+                .chain(&stickers)
                 .find(|effect| effect.id == id)
                 .and_then(|effect| match &effect.modification {
                     Modification::GrantAbility(granted) => Some(Arc::clone(granted)),

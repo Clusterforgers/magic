@@ -35,6 +35,8 @@ mod l31a_performed;
 mod let_amount;
 mod r282_plot;
 mod r306_add_step;
+mod r370_balance;
+mod r370_bound;
 mod retarget;
 mod ring_tempts;
 mod rmt2_shares;
@@ -126,6 +128,8 @@ mod proliferate;
 mod put_counters;
 mod r281_lock_door;
 mod r281_pay_one_of;
+mod r376_choose_words;
+mod r378_parade;
 mod regenerate;
 mod remove_counters;
 mod remove_from_combat;
@@ -198,6 +202,7 @@ fn fe1n(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::RemoveDamage { .. } => fe1n_damage::run(cx, effect),
         Effect::RepeatWhile { .. } => fe1n_repeat_while::run(cx, effect),
         Effect::SeparatePiles { .. } => fe1n_piles::run(cx, effect),
+        Effect::Balance { .. } => r370_balance::run(cx, effect),
         Effect::LookAtHand { .. } => look_at_hand::run(cx, effect),
         Effect::LookAtFaceDown { .. } => r404_look_face_down::run(cx, effect),
         Effect::Let { .. } => let_amount::run(cx, effect),
@@ -290,6 +295,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             un33_attractions::run(cx, effect)
         }
         Effect::PutSticker { .. } | Effect::ClaimPrize { .. } => un34_stickers::run(cx, effect),
+        Effect::Parade { .. } => r378_parade::run(cx, effect),
         Effect::UnlockDoor { .. } => dk1c5_unlock::run(cx, effect),
         Effect::LockOrUnlockDoor { .. } => r281_lock_door::run(cx, effect),
         Effect::TakeInitiative { .. } => w15a_take_initiative::run(cx, effect),
@@ -353,6 +359,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Clash { .. } => w9b_clash::run(cx, effect),
         Effect::Vote { .. } => vote::run(cx, effect),
         Effect::ChooseNumbers { .. } => dk27_numbers::run(cx, effect),
+        Effect::ChooseWords { .. } => r376_choose_words::run(cx, effect),
         Effect::BidLife { .. } => dk27_bid::run(cx, effect),
         Effect::Planechase { .. } => c10_vp_planechase::run(cx, effect),
         Effect::VillainousChoice { .. } => w2d_villainous::run(cx, effect),
@@ -385,7 +392,7 @@ mod tests {
         {"Draw":{}}, {"Discard":{}}, {"Mill":{}}, {"Scry":{}}, {"LookAtTop":{"as":"top"}}, {"LookAtHand":{"of":"You"}}, {"LookAtFaceDown":{"what":"This"}},
         {"Reveal":{"what":"This"}}, {"Search":{"filter":[],"as":"found"}},
         {"Choose":{"from":"This","as":"chosen"}}, {"ChooseAtRandom":{"from":"This","as":"picked"}}, {"ChooseValue":{"kind":"Color","as":"hue"}}, {"Shuffle":{}}, {"Move":{"what":"This","to":"Hand"}},
-        {"Destroy":{"what":"This"}}, {"Exile":{"what":"This"}}, {"Sacrifice":{"filter":[]}}, {"SacrificeUpTo":{"filter":[],"count":2}},
+        {"Destroy":{"what":"This"}}, {"Exile":{"what":"This"}}, {"Sacrifice":{"filter":[]}}, {"SacrificeUpTo":{"filter":[],"count":2}}, {"Balance":{"what":"Hand"}},
         {"Counter":{"what":"This"}}, {"DealDamage":{"to":"You","amount":1}}, {"GainLife":{"amount":1}},
         {"LoseLife":{"amount":1}}, {"AddMana":{"mana":{"Fixed":["Green"]}}},
         {"PutCounters":{"on":"This","counter":"+1/+1"}}, {"RemoveCounters":{"from":"This","counter":"+1/+1"}},
@@ -394,7 +401,7 @@ mod tests {
         {"TurnFaceDown":{"what":"This"}}, {"Harness":{"what":"This"}}, {"Plot":{"what":"This"}},
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"ControlPlayer":{"who":"Opponents"}}, {"RestartGame":{"keep":[]}},
-        {"BecomeMonarch":{}}, {"RingTempts":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Incubate":{"count":1}}, {"Conjure":{"name":"Island","zone":"Hand"}}, {"Seek":{"filter":[]}}, {"Venture":{}}, {"OpenAttraction":{}}, {"RollToVisit":{}}, {"PutSticker":{"on":[]}}, {"ClaimPrize":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"Enlist":{"what":"This"}}, {"BecomeLevel":{"level":2}},
+        {"BecomeMonarch":{}}, {"RingTempts":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Incubate":{"count":1}}, {"Conjure":{"name":"Island","zone":"Hand"}}, {"Seek":{"filter":[]}}, {"Venture":{}}, {"OpenAttraction":{}}, {"RollToVisit":{}}, {"PutSticker":{"on":[]}}, {"Parade":{"what":[]}}, {"ClaimPrize":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"Enlist":{"what":"This"}}, {"BecomeLevel":{"level":2}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Crewed":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
         {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Remember":{"what":"This","slot":"s"}}, {"Forget":{"slot":"s"}}, {"Manifest":{}}, {"Cloak":{}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"GainSuspend":{"what":"This"}}, {"ExtraTurn":{}}, "EndTurn",
         {"ChangeTargets":{"what":"This","to":"Another"}},
@@ -417,7 +424,8 @@ mod tests {
         {"Vote":{"options":{"Named":["time","knowledge"]}}}, {"Planechase":{"act":"Planeswalk"}},
         {"VillainousChoice":{"who":"Opponents","first":[],"second":[]}},
         {"Either":{"first":[],"second":[]}},
-        {"OneOf":{"options":[[],[],[]]}}
+        {"OneOf":{"options":[[],[],[]]}},
+        {"ChooseWords":{"words":["silence","snitch"],"secret":true}}
     ]"#;
 
     fn tag(effect: &Effect) -> String {
@@ -436,7 +444,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 134, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 137, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -489,6 +497,7 @@ mod tests {
         "Effect.Exile",
         "Effect.Sacrifice",
         "Effect.SacrificeUpTo",
+        "Effect.Balance",
         "Effect.Counter",
         "Effect.DealDamage",
         "Effect.GainLife",
@@ -543,6 +552,7 @@ mod tests {
         "Effect.OpenAttraction",
         "Effect.RollToVisit",
         "Effect.PutSticker",
+        "Effect.Parade",
         "Effect.ClaimPrize",
         "Effect.TakeInitiative",
         "Effect.Monstrosity",
@@ -605,5 +615,6 @@ mod tests {
         "Effect.VillainousChoice",
         "Effect.Either",
         "Effect.OneOf",
+        "Effect.ChooseWords",
     ];
 }

@@ -127,12 +127,17 @@ impl Gives {
                 return;
             }
             Modification::CantAttack => GivenRule::CantAttack,
-            Modification::CantAttackYou { .. } => GivenRule::CantAttackYou,
+            Modification::CantAttackYou { .. } | Modification::CantAttackOwner { .. } => {
+                GivenRule::CantAttackYou
+            }
             Modification::CantBlock => GivenRule::CantBlock,
             Modification::CanBlockOnly { .. } => GivenRule::CanBlockOnly,
             Modification::CantBeBlocked => GivenRule::CantBeBlocked,
-            Modification::CantBeBlockedBy { .. } => GivenRule::CantBeBlockedBy,
-            Modification::MinBlockers(_) | Modification::MaxBlockers(_) => GivenRule::BlockerLimit,
+            Modification::CantBeBlockedBy { .. }
+            | Modification::CantBeBlockedUnlessAttackingOwner => GivenRule::CantBeBlockedBy,
+            Modification::MinBlockers(_)
+            | Modification::MaxBlockers(_)
+            | Modification::BlockedByAll => GivenRule::BlockerLimit,
             Modification::BlocksAdditional(_) => GivenRule::BlocksAdditional,
             Modification::DoesntUntap => GivenRule::DoesntUntap,
             Modification::CantBeTurnedFaceUp => GivenRule::CantBeTurnedFaceUp,

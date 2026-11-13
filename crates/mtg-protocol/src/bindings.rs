@@ -15,9 +15,10 @@ use crate::rest::{
     BulkApprovalResult, BulkReads, CardDetail, CardSearchPage, CheckRequest, ChooseDeck,
     CreatedAccount, Credentials, DeckBlockedBody, DeckBody, DeckChoiceErrorCode, DeckErrorCode,
     DeckList, DeckView, FavouritePrecons, FixMarkBody, FixMarkList, GameInfo, ImportRequest,
-    ImportResult, JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode, LobbyList, MyGames,
-    PasswordChange, PasswordReset, PreconErrorCode, PreconList, PreconView, ReadBody, ReadCard,
-    ReadQueue, Replay, TeamsBody, UserPrefs, UserView, VisibilityBody,
+    ImportResult, JoinCodeRequest, JoinRequest, Joined, LinePrintingBody, LobbyErrorCode,
+    LobbyList, MyGames, PasswordChange, PasswordReset, PreconErrorCode, PreconList, PreconView,
+    PreferredPrintingBody, PreferredPrintings, PrintingList, ReadBody, ReadCard, ReadQueue, Replay,
+    SeatTeamBody, TeamsBody, UserPrefs, UserView, VisibilityBody,
 };
 use crate::rest::{
     CreateTournament, JoinTournament, SetMatchOutcome, TournamentCreated, TournamentErrorCode,
@@ -74,6 +75,10 @@ pub fn export_to(dir: &Path) -> Result<(), BindingsError> {
     TournamentErrorCode::export_all(&config)?;
     CardSearchPage::export_all(&config)?;
     CardDetail::export_all(&config)?;
+    PrintingList::export_all(&config)?;
+    PreferredPrintings::export_all(&config)?;
+    PreferredPrintingBody::export_all(&config)?;
+    LinePrintingBody::export_all(&config)?;
     DeckBody::export_all(&config)?;
     DeckView::export_all(&config)?;
     DeckList::export_all(&config)?;
@@ -92,6 +97,7 @@ pub fn export_to(dir: &Path) -> Result<(), BindingsError> {
     Joined::export_all(&config)?;
     VisibilityBody::export_all(&config)?;
     TeamsBody::export_all(&config)?;
+    SeatTeamBody::export_all(&config)?;
     LobbyErrorCode::export_all(&config)?;
     ChooseDeck::export_all(&config)?;
     DeckChoiceErrorCode::export_all(&config)?;

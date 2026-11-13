@@ -1,4 +1,4 @@
-// Goal: /dev/lobby reads seats, ready, away, me and names from the address (shrugging off nonsense), serves the real lobby over a fixture roster whose Ready and Not ready work, and answers "not found" with no fixture in a production build; the fixture's long names are as long as the server allows.
+// Goal: /dev/lobby reads seats, ready, away, me, names and the team mode from the address (shrugging off nonsense), serves the real lobby over a fixture roster whose Ready and Not ready work, and answers "not found" with no fixture in a production build; the fixture's long names are as long as the server allows.
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
 import { act, cleanup, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -91,6 +91,16 @@ describe('parseDevLobbySearch', () => {
     expect(parsed.away).toEqual([1])
     expect(parsed.me).toBe(0)
     expect(parseDevLobbySearch({ names: 'huge' }).names).toBeUndefined()
+  })
+
+  it.each([
+    ['two_headed_giant', 'two_headed_giant', [0, 0, 1, 1]],
+    ['teams', 'teams', [0, 1, 0, 1]],
+    ['pairs', undefined, undefined],
+  ] as const)('reads the team mode %s with its default teams', (asked, mode, seats) => {
+    const parsed = parseDevLobbySearch({ mode: asked })
+    expect(parsed.mode).toBe(mode)
+    expect(fixtureRoster(parsed).teams?.seats).toEqual(seats)
   })
 })
 

@@ -8,6 +8,7 @@ import { deckView, lineOf, startDecks } from '@/features/decks/fakeDecks'
 import type { DecksScript } from '@/features/decks/fakeDecks'
 import { createDecksApi } from '@/net/decks'
 import type { FixMarksApi } from '@/net/fixMarks'
+import type { PrintingsApi } from '@/net/printings'
 import type { CardHit, DeckView } from '@/protocol/generated'
 import { startAccounts } from '@/test-utils/accountsServer'
 import { renderInRouter } from '@/test-utils/router'
@@ -73,6 +74,8 @@ export interface BuilderScript {
   look?: DeckLook
   /** The fix-mark endpoints the builder is given, if any. */
   fixMarks?: FixMarksApi
+  /** The art endpoints the builder is given, if any. */
+  printings?: PrintingsApi
 }
 
 /** The builder signed in as Ada over `script`'s servers; resolves once the deck pane is drawn. */
@@ -99,7 +102,13 @@ export async function renderBuilder(script: BuilderScript = {}) {
   const store = createAuthStore({ api: accounts.api })
   const rendered = await renderInRouter(
     <AuthProvider store={store}>
-      <BuilderPage deckId={view.id} api={api} cards={cards.api} fixMarks={script.fixMarks} />
+      <BuilderPage
+        deckId={view.id}
+        api={api}
+        cards={cards.api}
+        fixMarks={script.fixMarks}
+        printings={script.printings}
+      />
     </AuthProvider>,
   )
   if (script.wait !== false) await screen.findByRole('region', { name: 'Deck' })

@@ -1,0 +1,50 @@
+{
+  "oracle_id": "6985c8a9-9299-461b-8bef-bd2b2c739c11",
+  "name": "Obosh, the Preypiercer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Obosh, the Preypiercer",
+      "oracle_fingerprint": "6a6a673a09b41b18db406a455b8ee598",
+      "abilities": [
+        {
+          "Keyword": {
+            "Companion": {
+              "Has": { "of": [{ "Not": { "Type": "Land" } }], "fact": "OddManaValue" }
+            }
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "source": [
+                  { "ControlledBy": "You" },
+                  {
+                    "Test": {
+                      "left": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                      "op": "Ne",
+                      "right": {
+                        "Times": {
+                          "by": 2,
+                          "of": {
+                            "Quotient": {
+                              "of": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                              "by": 2,
+                              "up": false
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "by": { "Multiply": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

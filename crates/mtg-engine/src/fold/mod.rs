@@ -28,6 +28,8 @@ mod p12_amounts;
 mod p12_arrived;
 mod r285_ruin;
 #[cfg(test)]
+mod r374_counts;
+#[cfg(test)]
 mod r3d_atoms;
 mod resolution;
 #[cfg(test)]
@@ -161,9 +163,11 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::StepDone { .. }
         | Event::ResolutionEnded { .. } => resolution::apply(state, event),
         // A note for the table: the game state does not change.
-        Event::AbilityLeftToTable(_) | Event::ManaAbilityActivated { .. } | Event::ByHandDue(_) => {
-            Ok(())
-        }
+        // A prevention changes nothing of its own; triggers read it.
+        Event::AbilityLeftToTable(_)
+        | Event::ManaAbilityActivated { .. }
+        | Event::ByHandDue(_)
+        | Event::DamagePrevented { .. } => Ok(()),
         Event::AbilityTriggered(triggered) => crate::triggers::fold_triggered(state, triggered),
         Event::TriggersOrdered { player, order } => {
             crate::triggers::fold_ordered(state, *player, order)
@@ -357,6 +361,7 @@ fn begin_turn(
     if before != 0 {
         let ending = state.turn.active;
         state.summarize_turn(ending);
+        state.r379_turn_ended(ending, before);
     }
     if extra {
         if state.extra_turns.pop().map(|turn| turn.player) != Some(active) {
@@ -496,6 +501,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Foraged { .. }
         | Event::Clashed { .. }
         | Event::Proliferated { .. } => {}
+        Event::VotesFinished { ballots } => state.r379_votes.push(ballots.clone()),
         Event::ChosenAtRandom { .. }
         | Event::PlayersChosenAtRandom { .. }
         | Event::Sought { .. }

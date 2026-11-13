@@ -76,6 +76,15 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
             condition(ctx, test)
         ),
         Ref::OrController(inner) => format!("{} or its controller", who(ctx, inner)),
+        Ref::Seated { of, side, opponent } => format!(
+            "the {} to the {} of {}",
+            if *opponent { "opponent" } else { "player" },
+            match side {
+                crate::refs::Side::Left => "left",
+                crate::refs::Side::Right => "right",
+            },
+            who(ctx, of)
+        ),
         Ref::Arrived { of, .. } => format!("the card {} became", who(ctx, of)),
         Ref::Departed(of) => format!("{} as it was", who(ctx, of)),
         Ref::SourceOf(of) => format!("the source of {}", who(ctx, of)),
@@ -196,6 +205,7 @@ fn targetable(ctx: &Ctx, what: &Targetable, plural: bool) -> String {
                 TargetSet::DifferentControllers => "controlled by different players".to_owned(),
                 TargetSet::DifferentNames => "with different names".to_owned(),
                 TargetSet::DifferentManaValues => "with different mana values".to_owned(),
+                TargetSet::SameToughness => "with equal toughness".to_owned(),
                 TargetSet::TotalManaValueAtMost(most) => {
                     format!("with total mana value {} or less", amount(ctx, most))
                 }
@@ -335,6 +345,7 @@ fn part(ctx: &Ctx, pred: &Pred) -> Part {
         Pred::Token => Part::Before("token".to_owned()),
         Pred::Commander => Part::Before("commander".to_owned()),
         Pred::Spell => Part::Kind("spell".to_owned()),
+        Pred::Dungeon => Part::Kind("dungeon".to_owned()),
         Pred::Ability(kind) => Part::Kind(format!("{} ability", lower(kind))),
         Pred::Tapped => Part::Before("tapped".to_owned()),
         Pred::Untapped => Part::Before("untapped".to_owned()),
@@ -444,6 +455,12 @@ fn stat_text(stat: StatKind) -> &'static str {
         StatKind::BaseToughness => "base toughness",
         StatKind::ManaSpent => "mana spent",
         StatKind::CounterKinds => "kinds of counters",
+        StatKind::R374Types => "number of types",
+        StatKind::R374CreatureTypes => "number of creature types",
+        StatKind::R374Bushido => "bushido",
+        StatKind::R374Toxic => "total toxic value",
+        StatKind::R374ManaCost => "mana cost",
+        StatKind::R374ColorSet => "color combination",
         StatKind::Subtypes => "subtypes",
     }
 }
@@ -491,6 +508,7 @@ pub(super) fn amount(ctx: &Ctx, value: &Amount) -> String {
         Amount::AnyCounters(on) => format!("the number of counters on {}", who(ctx, on)),
         Amount::Sum(parts) => sum(ctx, parts),
         Amount::Times { by, of } => format!("{by} times {}", amount(ctx, of)),
+        Amount::TwoToThe(of) => format!("2 to the power of {}", amount(ctx, of)),
         Amount::Half { of, up } => {
             format!(
                 "half of {}, rounded {}",
@@ -508,6 +526,16 @@ pub(super) fn amount(ctx: &Ctx, value: &Amount) -> String {
                 selectors(ctx, of)
             )
         }
+        Amount::GreatestCast {
+            who: who_text_of,
+            of,
+            stat,
+        } => format!(
+            "the greatest {} among {} {} cast this turn",
+            stat_text(*stat),
+            selectors(ctx, of),
+            who(ctx, who_text_of)
+        ),
         Amount::Total { of, stat } => {
             format!("the total {} of {}", stat_text(*stat), selectors(ctx, of))
         }
@@ -604,6 +632,7 @@ pub(super) fn duration(value: &Duration) -> String {
         Duration::WhileSourceOnBattlefield => "while this stays on the battlefield".to_owned(),
         Duration::WhileYouControlSource => "while you control this".to_owned(),
         Duration::WhileSourceTapped => "while this stays tapped".to_owned(),
+        Duration::WhileSourceAttached => "while this stays attached to it".to_owned(),
         Duration::WhileYouControlSourceTapped => {
             "while you control this and it stays tapped".to_owned()
         }
@@ -612,6 +641,7 @@ pub(super) fn duration(value: &Duration) -> String {
         Duration::UntilTurnSkipped => "until the turn is skipped".to_owned(),
         Duration::UntilSkipped => "until it is skipped".to_owned(),
         Duration::UntilSkippedThisTurn => "until it is skipped this turn".to_owned(),
+        Duration::TheirNextTurn => "during their next turn".to_owned(),
         Duration::UntilCastFromExile => "until this card is cast from exile".to_owned(),
         Duration::WhileHasCounter(counter) => {
             format!("while it has a {} counter", counter_text(counter))

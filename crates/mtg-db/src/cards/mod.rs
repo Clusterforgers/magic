@@ -81,7 +81,7 @@ impl CardRepo {
         let printings = sqlx::query_as!(
             PrintingRow,
             r#"SELECT printing_id, oracle_id, set_code, collector_number, rarity, released_at,
-                      lang, digital, images AS "images: _"
+                      lang, digital, images AS "images: _", set_name, frame, finishes, full_art
                FROM printings WHERE oracle_id = $1
                ORDER BY released_at DESC NULLS LAST, printing_id"#,
             uuid
