@@ -326,6 +326,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::SingleTarget
         | Pred::HasAnyCounter
         | Pred::Named(_)
+        | Pred::OriginallyPrintedIn(_)
         | Pred::ChosenName
         | Pred::FaceDown
         | Pred::SpentFrom { .. }

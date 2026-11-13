@@ -545,6 +545,9 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
         "proliferate" => Effect::Proliferate { who },
         "venture" => w11d_venture(r, who)?,
         "open" => super::un33_attractions::un33_open(r, who)?,
+        "roll" if r.words("the planar die") => Effect::Planechase {
+            act: PlanarAct::RollPlanarDie,
+        },
         "roll" if r.word_at(0) == Some("to") => super::un33_attractions::un33_roll(r, who)?,
         "claim" if r.words("the prize") => Effect::ClaimPrize { who },
         "unlock" => super::dk1c5_rooms::dk1c5_unlock(r, who)?,

@@ -848,6 +848,8 @@ pub(crate) struct Payer<'a> {
     pub(crate) barred: &'a [ObjectId],
     /// The permanent whose static ability gave the ability being paid for (`Ref::Granter`).
     pub(crate) granter: Option<ObjectId>,
+    /// What the payment is for: a ban on paying costs reads only costs (`r4707_pay_costs`).
+    pub(crate) pays: crate::r4707_pay_costs::PaysFor,
 }
 
 impl Payer<'_> {
@@ -930,7 +932,15 @@ impl Pick {
         };
         // A prohibition keeps an object out of the cost it forbids (`prohibit.rs`).
         found.retain(|id| match self.kind {
-            Kind::Sacrifice => crate::prohibit::may_sacrifice(payer.state, payer.player, *id),
+            Kind::Sacrifice => {
+                crate::prohibit::may_sacrifice(payer.state, payer.player, *id)
+                    && !crate::r4707_pay_costs::r4707_sacrifice_barred(
+                        payer.state,
+                        payer.player,
+                        *id,
+                        payer.pays,
+                    )
+            }
             Kind::Discard => crate::prohibit::may_discard(payer.state, payer.player, *id),
             Kind::Exile
             | Kind::ExileHand

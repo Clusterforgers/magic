@@ -2048,6 +2048,12 @@ impl<'a> Scope<'a> {
                     crate::un34_stickers::name_with(&seen.chars.name_words, &c.card().name) == *name
                 }) || self.r4703_counts_as_named(name, seen)
             }
+            Pred::OriginallyPrintedIn(set) => seen.card.is_some_and(|c| {
+                set.has(&crate::un34_stickers::name_with(
+                    &seen.chars.name_words,
+                    &c.card().name,
+                ))
+            }),
             Pred::ChosenColor | Pred::ChosenSubtype | Pred::ChosenName | Pred::ChosenAs(_) => {
                 self.chosen_pred(pred, seen)
             }

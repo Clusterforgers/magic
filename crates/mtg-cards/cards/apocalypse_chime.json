@@ -1,0 +1,26 @@
+{
+  "oracle_id": "995e2412-3f69-4aaf-a5d6-ae0ecbb95061",
+  "name": "Apocalypse Chime",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Apocalypse Chime",
+      "oracle_fingerprint": "9a09da637dd09e1169dc02ab8109d51c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Not": "Token" }, { "OriginallyPrintedIn": "Homelands" }] },
+                  "regenerate": false
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

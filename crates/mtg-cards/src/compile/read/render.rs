@@ -1854,6 +1854,7 @@ fn c10_vp_planar_text(effect: &Effect) -> Option<String> {
         match act {
             crate::effect::PlanarAct::Planeswalk => "planeswalk",
             crate::effect::PlanarAct::ChaosEnsues => "chaos ensues",
+            crate::effect::PlanarAct::RollPlanarDie => "roll the planar die",
         }
         .to_owned(),
     )

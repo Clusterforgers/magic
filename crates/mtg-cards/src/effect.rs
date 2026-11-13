@@ -318,6 +318,9 @@ pub enum PlanarAct {
     Planeswalk,
     /// "chaos ensues": the chaos abilities of the face-up plane trigger.
     ChaosEnsues,
+    /// "roll the planar die" (CR 901.9): only a Planechase game has the die's results act (the ruling of Fractured
+    /// Powerstone: "In non-Planechase games, Fractured Powerstone's second ability will have no effect.").
+    RollPlanarDie,
 }
 
 /// What the players of a `Vote` vote for.

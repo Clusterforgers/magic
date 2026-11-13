@@ -49,6 +49,10 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     if !r406.is_empty() {
         return r406;
     }
+    let printed = super::r4707_printed::r4707_pair_texts(first, second);
+    if !printed.is_empty() {
+        return printed;
+    }
     let r408 = super::r408_lands::r408_pair_texts(first, second);
     if !r408.is_empty() {
         return r408;

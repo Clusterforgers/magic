@@ -584,6 +584,10 @@ fn its_controller(r: &mut Reader<'_>) -> Option<Pred> {
 
 /// What happened this turn or what the source did: "that entered the battlefield this turn", "that crewed it this turn".
 fn this_turn_suffix(r: &mut Reader<'_>) -> Option<Pred> {
+    // "with a name originally printed in the Antiquities expansion" is read beside them.
+    if let Some(pred) = r.attempt(super::r4707_printed::r4707_suffix) {
+        return Some(pred);
+    }
     // What came onto the battlefield this turn: "creature token that entered the battlefield this turn".
     if r.words("that entered the battlefield this turn") || r.words("that entered this turn") {
         return Some(Pred::EnteredThisTurn);
@@ -766,6 +770,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
     suffix_text_main(pred, form)
         .or_else(|| super::w19d_suffixes::w19d_suffix_text(pred, form))
         .or_else(|| super::vp20_atoms::vp20_suffix_text(pred, form))
+        .or_else(|| super::r4707_printed::r4707_suffix_text(pred))
 }
 
 #[allow(clippy::too_many_lines)]

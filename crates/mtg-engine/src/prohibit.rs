@@ -110,6 +110,17 @@ pub(crate) enum Doing {
         object: ObjectId,
         defender: PlayerId,
     },
+    /// `player` pays life for the cost of a spell or an ability, a mana ability when `mana_ability`.
+    PayLifeForCost {
+        player: PlayerId,
+        mana_ability: bool,
+    },
+    /// `player` sacrifices `object` for the cost of a spell or an ability, a mana ability when `mana_ability`.
+    SacrificeForCost {
+        player: PlayerId,
+        object: ObjectId,
+        mana_ability: bool,
+    },
 }
 
 /// Whether a prohibition's subjects cover the player or the object an action is about.
@@ -278,6 +289,35 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
                         .holds(unless)
                         .unwrap_or(false)
                 })
+        }
+        (
+            Prohibited::PayCosts {
+                life,
+                but_mana_abilities,
+                ..
+            },
+            Doing::PayLifeForCost {
+                player,
+                mana_ability,
+            },
+        ) => *life && !(mana_ability && *but_mana_abilities) && covers(who, Some(player), None),
+        (
+            Prohibited::PayCosts {
+                sacrifice: Some(filter),
+                but_mana_abilities,
+                ..
+            },
+            Doing::SacrificeForCost {
+                player,
+                object,
+                mana_ability,
+            },
+        ) => {
+            !(mana_ability && *but_mana_abilities)
+                && covers(who, Some(player), None)
+                && state
+                    .object(object)
+                    .is_some_and(|o| picks(state, ban, filter, o.reference()))
         }
         _ => false,
     }

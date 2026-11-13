@@ -6,9 +6,11 @@ use super::Payer;
 use crate::events::Event;
 
 /// The most life the payer can pay: all of it while it is above 0, nothing otherwise, and nothing while their life total
-/// can't change (CR 119.8).
+/// can't change (CR 119.8) or a rule bars paying life for the cost (`r4707_pay_costs`).
 pub(super) fn most(payer: &Payer<'_>) -> u32 {
-    if crate::rules::life_total_cant_change(payer.state, payer.player) {
+    if crate::rules::life_total_cant_change(payer.state, payer.player)
+        || crate::r4707_pay_costs::r4707_life_barred(payer.state, payer.player, payer.pays)
+    {
         return 0;
     }
     payer

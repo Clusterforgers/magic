@@ -440,6 +440,9 @@ pub enum Pred {
     },
     /// Has exactly this card name.
     Named(String),
+    /// Has a name first printed in the expansion: "with a name originally printed in the Antiquities expansion" (a
+    /// reprint with another expansion symbol counts, the ruling of City in a Bottle).
+    OriginallyPrintedIn(crate::r4707_first_sets::FirstSet),
     /// Is the colour the controller of the source chose as the source entered the battlefield.
     ChosenColor,
     /// Has the creature type the controller of the source chose as the source entered the battlefield; in a landwalk the land type.

@@ -1003,6 +1003,7 @@ impl<'a> Walker<'a> {
             | Pred::Goaded
             | Pred::ChosenSubtype
             | Pred::ChosenName
+            | Pred::OriginallyPrintedIn(_)
             | Pred::In(_) => {}
         }
     }
@@ -1777,8 +1778,9 @@ impl<'a> Walker<'a> {
                         if *least == 0 {
                             w.problem("an X of at least 0 is any X");
                         }
-                        // The least X is announced for an activated ability only.
-                        if !w.activated_cost {
+                        // The least X is announced for an activated ability, and where an effect asks the payment and
+                        // announces its X ("you may pay one or more {E}").
+                        if !w.activated_cost && (!w.r306_paying || !w.x_free) {
                             w.uses("Cost", "XAtLeast.Elsewhere");
                         }
                     }
@@ -3250,13 +3252,13 @@ impl Walker<'_> {
             self.problem("a token needs at least one card type");
         }
         let creature = spec.types.contains(&mtg_core::card::CardType::Creature);
+        // A Vehicle has a printed power and toughness too (CR 301.7): "create an X/X colorless Vehicle artifact token".
+        let vehicle = spec.subtypes.iter().any(|subtype| subtype.0 == "Vehicle");
         if sized {
-            if !creature || spec.power.is_some() || spec.toughness.is_some() {
-                self.problem("a token sized by an amount is a creature with no power and toughness of its own");
+            if !(creature || vehicle) || spec.power.is_some() || spec.toughness.is_some() {
+                self.problem("a token sized by an amount is a creature or a Vehicle with no power and toughness of its own");
             }
-        } else if (creature || spec.subtypes.iter().any(|subtype| subtype.0 == "Vehicle"))
-            != (spec.power.is_some() && spec.toughness.is_some())
-        {
+        } else if (creature || vehicle) != (spec.power.is_some() && spec.toughness.is_some()) {
             self.problem(
                 "a creature token needs power and toughness (a Vehicle token too), any other token none",
             );
@@ -5489,6 +5491,8 @@ impl Walker<'_> {
             | GameRule::SkipExtraTurns(who)
             | GameRule::FlipTwoCoins(who)
             | GameRule::ExtraDie(who)
+            | GameRule::ExtraPlanarDie(who)
+            | GameRule::PlaneswalkLookTwo(who)
             | GameRule::KeepUnspentMana { who, .. }
             | GameRule::UnspentManaBecomes { who, .. }
             | GameRule::DrawLimit { who, .. }
@@ -5678,6 +5682,17 @@ impl Walker<'_> {
             }
             Prohibited::Attack { unless } => {
                 self.at("unless", |w| w.condition(unless));
+            }
+            Prohibited::PayCosts {
+                life, sacrifice, ..
+            } => {
+                if let Some(sacrifice) = sacrifice {
+                    self.at("sacrifice", |w| w.selector(sacrifice));
+                } else if !life {
+                    self.at("action", |w| {
+                        w.problem("a ban on paying costs bans life or sacrifices");
+                    });
+                }
             }
             Prohibited::SkipStep(Step::Cleanup) => {
                 self.at("action", |w| w.problem("the cleanup step can't be skipped"));

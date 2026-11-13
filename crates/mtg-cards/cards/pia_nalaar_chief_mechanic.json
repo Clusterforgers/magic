@@ -1,7 +1,7 @@
 {
   "oracle_id": "31cb87bf-1020-4fd5-95f7-8ecb197d823b",
   "name": "Pia Nalaar, Chief Mechanic",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Pia Nalaar, Chief Mechanic",
@@ -28,9 +28,32 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 122, "end": 334 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": "X" }, { "XAtLeast": 1 }],
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Sized": {
+                            "size": "X",
+                            "token": {
+                              "name": "Nalaar Aetherjet",
+                              "types": ["Artifact"],
+                              "subtypes": ["Vehicle"],
+                              "abilities": [{ "Keyword": "Flying" }, { "Keyword": { "Crew": 2 } }]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
