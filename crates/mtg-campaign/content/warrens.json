@@ -478,7 +478,7 @@
    "name": "Skrix, the Rat Queen",
    "colors": "B",
    "brain": "Hard",
-   "life": 30,
+   "life": 39,
    "life_per_hero": 35,
    "hand": 9,
    "line": "My children are hungry.",
@@ -556,7 +556,7 @@
    "name": "Old Mossjaw, Troll Patriarch",
    "colors": "G",
    "brain": "Hard",
-   "life": 36,
+   "life": 47,
    "life_per_hero": 35,
    "hand": 10,
    "line": "Moss grows on the bones of the bold.",
@@ -634,7 +634,7 @@
    "name": "Bonecaller Vex",
    "colors": "BR",
    "brain": "Hard",
-   "life": 30,
+   "life": 39,
    "life_per_hero": 35,
    "hand": 9,
    "rules": [
@@ -720,7 +720,7 @@
    "name": "Grimgut, the Warren King",
    "colors": "BR",
    "brain": "Hard",
-   "life": 32,
+   "life": 42,
    "life_per_hero": 35,
    "hand": 9,
    "rules": [
@@ -808,6 +808,36 @@
     ]
    ],
    "final": true
+  }
+ ],
+ "schemes": [
+  "horde_gathers",
+  "feast_of_rats",
+  "ambush",
+  "bone_wall",
+  "tunnel_collapse",
+  "hunting_party",
+  "dark_tithe",
+  "plunder"
+ ],
+ "minions": [
+  {
+   "id": "skrix_brood",
+   "name": "Brood of Skrix",
+   "deck_of": "skrix_nest",
+   "life": 25
+  },
+  {
+   "id": "mossjaw_whelp",
+   "name": "Mossjaw's Whelp",
+   "deck_of": "mossjaw_hall",
+   "life": 25
+  },
+  {
+   "id": "vex_acolyte",
+   "name": "Acolyte of Vex",
+   "deck_of": "vex_crypt",
+   "life": 25
   }
  ]
 }

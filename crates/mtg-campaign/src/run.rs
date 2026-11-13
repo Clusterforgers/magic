@@ -8,12 +8,13 @@ use serde::{Deserialize, Serialize};
 
 use crate::CampaignError;
 use crate::content::{Brain, Content, Outcome, Theme};
-use crate::fight::{BossSeat, FightPlan, HAND, HeroSeat};
+use crate::fight::{BossSeat, FightPlan, HAND, HeroSeat, MinionSeat};
 use crate::map::{FloorMap, RoomKind, generate};
 use crate::rng::Stream;
+use crate::scale::Scale;
 
 /// The most heroes a party has.
-pub const PARTY: usize = 4;
+pub const PARTY: usize = crate::scale::MOST;
 /// A hero's life with no relic.
 pub const LIFE: i32 = 40;
 /// The fights the party may lose and retry.
@@ -30,8 +31,6 @@ pub const SKIP_GOLD: u32 = 10;
 pub const CARD_PRICE: u32 = 35;
 /// The price of the shop's healing draught.
 pub const DRAUGHT_PRICE: u32 = 30;
-/// The boss card a boss gets once for each hero after the first.
-pub const REINFORCEMENTS: &str = "reinforcements";
 /// Life the draught gives.
 pub const DRAUGHT: i32 = 15;
 
@@ -828,25 +827,28 @@ impl Run {
                 relics: h.relics.clone(),
             })
             .collect();
-        let extras = heroes.len().saturating_sub(1);
-        let extra = i32::try_from(extras).unwrap_or(0);
-        let mut life = boss.life + boss.life_per_hero * extra;
-        if self.heat >= 1 {
-            life += life / 5;
-        }
-        let brain = if self.heat >= 2 {
-            boss.brain.stronger()
-        } else {
-            boss.brain
-        };
-        let phases = boss
-            .phases
-            .iter()
-            .map(|(id, percent)| {
-                let at = life * i32::try_from(*percent).unwrap_or(0) / 100;
-                (id.clone(), at.max(1))
+        let scale = Scale::new(heroes.len(), self.heat);
+        let life = scale.life(boss);
+        let schemes = Stream::new(self.seed, "schemes", u64::from(node), 0)
+            .pick(&theme.schemes, theme.schemes.len());
+        let minions = scale
+            .minions(theme, boss)
+            .into_iter()
+            .map(|minion| {
+                let lieutenant = theme
+                    .boss(&minion.deck_of)
+                    .ok_or_else(|| refused(format!("no boss {}", minion.deck_of)))?;
+                Ok(MinionSeat {
+                    minion: minion.id.clone(),
+                    name: minion.name.clone(),
+                    life: scale.minion_life(minion),
+                    hand: HAND,
+                    brain: scale.brain(lieutenant.brain),
+                    deck: lieutenant.deck.clone(),
+                    rules: minion.rules.clone(),
+                })
             })
-            .collect();
+            .collect::<Result<Vec<_>, CampaignError>>()?;
         Ok(Some(FightPlan {
             node,
             heroes,
@@ -854,17 +856,14 @@ impl Run {
                 boss: boss.id.clone(),
                 name: boss.name.clone(),
                 life,
-                hand: boss.hand,
-                brain,
+                hand: scale.hand(boss),
+                brain: scale.brain(boss.brain),
                 deck: boss.deck.clone(),
-                rules: boss
-                    .rules
-                    .iter()
-                    .cloned()
-                    .chain(std::iter::repeat_n(REINFORCEMENTS.to_owned(), extras))
-                    .collect(),
-                phases,
+                rules: scale.rules(boss),
+                phases: scale.phases(boss, life),
+                schemes,
             },
+            minions,
         }))
     }
 

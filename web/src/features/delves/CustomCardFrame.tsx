@@ -1,8 +1,8 @@
 /**
- * A card that is not on Scryfall (a relic, a boss card, a boss phase, the Spirit's haunt), drawn as a text frame:
+ * A card that is not on Scryfall (a relic, a boss card, a boss phase, a scheme, the Spirit's haunt), drawn as a text frame:
  * name, an art placeholder tinted by what the card is for, the type line, the rules text and a relic's role.
  */
-import { CrownIcon, FlameIcon, GemIcon, GhostIcon, SwordsIcon } from 'lucide-react'
+import { CrownIcon, EyeIcon, FlameIcon, GemIcon, GhostIcon, SwordsIcon } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
@@ -14,6 +14,7 @@ const ART: Record<CardKind, { icon: LucideIcon; tint: string }> = {
   Boss: { icon: CrownIcon, tint: 'from-rose-300 to-rose-700 dark:from-rose-800 dark:to-rose-950' },
   Phase: { icon: FlameIcon, tint: 'from-orange-300 to-red-600 dark:from-orange-800 dark:to-red-950' },
   Haunt: { icon: GhostIcon, tint: 'from-sky-200 to-indigo-500 dark:from-sky-800 dark:to-indigo-950' },
+  Scheme: { icon: EyeIcon, tint: 'from-violet-300 to-purple-700 dark:from-violet-800 dark:to-purple-950' },
 }
 
 export function CustomCardFrame({

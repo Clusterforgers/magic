@@ -152,7 +152,7 @@ function DelveList({ client }: { client: DelvesApi }) {
   if (list.length === 0) {
     return (
       <EmptyState icon={SkullIcon} title="No delves yet">
-        Gather up to four friends and bot allies, bring your Commander decks and fight through a ladder of
+        Gather up to five friends and bot allies, bring your Commander decks and fight through a ladder of
         bosses.
       </EmptyState>
     )

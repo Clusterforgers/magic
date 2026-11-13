@@ -468,7 +468,8 @@ fn check_counters_settled(state: &GameState) -> Result<(), Violation> {
             )));
         }
     }
-    let can_lose = |p: &&Player| p.is_in_game() && !w17b_cant_lose(state, p.id());
+    // A Spirit loses no more on its own (`mtg_engine::spirits`).
+    let can_lose = |p: &&Player| p.is_in_game() && !p.is_spirit() && !w17b_cant_lose(state, p.id());
     for player in state.players().iter().filter(can_lose) {
         if player.counters_of(&CounterKind::Poison) >= state.ruleset().poison_threshold() {
             return Err(Violation::Counters(format!(

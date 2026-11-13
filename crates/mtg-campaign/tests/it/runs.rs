@@ -66,7 +66,7 @@ fn the_lobby_refuses_what_cannot_start() {
     };
     assert!(run.apply(content, &again).is_err(), "joined twice");
     assert!(run.apply(content, &RunEvent::Started).is_err(), "no deck");
-    for n in 0..3 {
+    for n in 0..5 {
         let bot = RunEvent::Joined {
             name: format!("Bot {n}"),
             user: None,
@@ -74,13 +74,13 @@ fn the_lobby_refuses_what_cannot_start() {
         };
         run.apply(content, &bot).unwrap();
     }
-    let fifth = RunEvent::Joined {
+    let seventh = RunEvent::Joined {
         name: "Late".into(),
         user: None,
         bot: Some(Brain::Easy),
     };
-    assert!(run.apply(content, &fifth).is_err(), "a fifth hero");
-    assert_eq!(run.heroes.len(), 4);
+    assert!(run.apply(content, &seventh).is_err(), "a seventh hero");
+    assert_eq!(run.heroes.len(), 6);
     assert!(
         run.apply(content, &RunEvent::Voted { hero: 0, node: 0 })
             .is_err(),

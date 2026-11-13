@@ -1,5 +1,5 @@
 //! Goal: the shipped content holds together: every boss deck card and reward card is a real card the engine verifies, every boss deck has 40 cards, every custom card keeps all its abilities as an emblem, every content id a boss
-//! names exists, and relics carry a role.
+//! names exists, relics carry a role, the scheme deck holds schemes and every boss has two minions to field.
 use mtg_campaign::{CardKind, content};
 use mtg_cards::support::Support;
 use mtg_testkit::corpus;
@@ -51,6 +51,45 @@ fn boss_decks_have_forty_cards_and_their_rules_exist() {
                 assert_eq!(content.card(id).unwrap().kind, CardKind::Phase, "{id}");
                 assert!(*percent < last, "{}: phases go down", boss.id);
                 last = *percent;
+            }
+        }
+    }
+}
+
+#[test]
+fn schemes_minions_and_scaling_cards_exist() {
+    let content = content().unwrap();
+    for id in [
+        mtg_campaign::scale::REINFORCEMENTS,
+        mtg_campaign::scale::WARPATH,
+        mtg_campaign::scale::ESCALATION,
+        mtg_campaign::scale::ENRAGE,
+    ] {
+        assert_eq!(content.card(id).unwrap().kind, CardKind::Boss, "{id}");
+    }
+    assert_eq!(
+        content.card(mtg_campaign::scale::BULWARK).unwrap().kind,
+        CardKind::Phase
+    );
+    for theme in &content.themes {
+        assert!(theme.schemes.len() >= 6, "{}: a scheme deck", theme.id);
+        for id in &theme.schemes {
+            assert_eq!(content.card(id).unwrap().kind, CardKind::Scheme, "{id}");
+        }
+        // The biggest party meets two minions in every fight.
+        for boss in &theme.bosses {
+            let fielded = theme
+                .minions
+                .iter()
+                .filter(|m| m.deck_of != boss.id)
+                .count();
+            assert!(fielded >= 2, "{}: minions", boss.id);
+        }
+        for minion in &theme.minions {
+            assert!(theme.boss(&minion.deck_of).is_some(), "{}", minion.id);
+            assert!(minion.life > 0, "{}", minion.id);
+            for id in &minion.rules {
+                assert_eq!(content.card(id).unwrap().kind, CardKind::Boss, "{id}");
             }
         }
     }
