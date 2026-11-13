@@ -36,7 +36,10 @@ mod tests {
     #[rstest]
     #[case::your_turn(r#"{"CostModifier":{"applies_to":["This"],"change":"Reduce","mana":"{2}{U}{U}","condition":"YourTurn"}}"#, true)]
     #[case::other_turns(r#"{"CostModifier":{"applies_to":["This"],"change":"Reduce","mana":"{2}{U}{U}","condition":{"Not":"YourTurn"}}}"#, false)]
-    #[case::always(r#"{"CostModifier":{"applies_to":["This"],"change":"Reduce","mana":"{2}{U}{U}"}}"#, false)]
+    #[case::always(
+        r#"{"CostModifier":{"applies_to":["This"],"change":"Reduce","mana":"{2}{U}{U}"}}"#,
+        false
+    )]
     fn r408_during_your_turn(#[case] json: &str, #[case] added: bool) {
         let ability: Ability = serde_json::from_str(json).unwrap();
         let mut texts = vec!["If it's your turn, ~ costs {2}{U}{U} less to cast.".to_owned()];

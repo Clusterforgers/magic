@@ -22,7 +22,11 @@ fn options(driver: &Driver) -> PriorityOptions {
     }
 }
 
-fn libraries(mut scenario: Scenario, seats: usize, top: fn() -> std::sync::Arc<mtg_cards::CardDefinition>) -> Scenario {
+fn libraries(
+    mut scenario: Scenario,
+    seats: usize,
+    top: fn() -> std::sync::Arc<mtg_cards::CardDefinition>,
+) -> Scenario {
     for seat in 0..seats {
         scenario = scenario.library(seat, (0..10).map(|_| top()));
     }
@@ -55,8 +59,16 @@ fn experimental_frenzy_closes_the_hand_and_opens_the_library(
         !frenzy,
         "the land in hand"
     );
-    assert_eq!(offered.playable_lands.contains(&top), frenzy, "the top land");
-    assert_eq!(offered.castable.iter().any(|id| hand.contains(id)), !frenzy, "the spell in hand");
+    assert_eq!(
+        offered.playable_lands.contains(&top),
+        frenzy,
+        "the top land"
+    );
+    assert_eq!(
+        offered.castable.iter().any(|id| hand.contains(id)),
+        !frenzy,
+        "the spell in hand"
+    );
     if frenzy {
         driver.play_land("Mountain").unwrap();
         assert_eq!(names(driver.state(), Zone::Hand(pid(0))).len(), 2);
@@ -70,10 +82,7 @@ fn experimental_frenzy_closes_the_hand_and_opens_the_library(
 #[case::four_seats_a_named_land(4, true)]
 #[case::four_seats_no_such_permanent(4, false)]
 fn cornered_market_keeps_a_named_nonbasic_land_in_hand(#[case] seats: usize, #[case] named: bool) {
-    let mut board = vec![
-        ready(card("Cornered Market").unwrap()),
-        ready(mountain()),
-    ];
+    let mut board = vec![ready(card("Cornered Market").unwrap()), ready(mountain())];
     if named {
         board.push(ready(card("Command Tower").unwrap()));
     }
@@ -94,7 +103,10 @@ fn cornered_market_keeps_a_named_nonbasic_land_in_hand(#[case] seats: usize, #[c
         .iter()
         .map(|id| crate::common::name_of(driver.state(), *id))
         .collect();
-    assert!(offered.contains(&"Mountain".to_owned()), "a basic land is always open");
+    assert!(
+        offered.contains(&"Mountain".to_owned()),
+        "a basic land is always open"
+    );
     assert_eq!(offered.contains(&"Command Tower".to_owned()), !named);
 }
 
@@ -137,8 +149,20 @@ fn discontinuity_costs_its_full_price_on_another_turn() {
 fn pact_against_shock(seats: usize, lands: usize) -> Driver {
     let scenario = Scenario::new(seats)
         .at(2, 0, Step::Main1)
-        .battlefield(0, (0..lands).map(|_| ready(plains())).chain([ready(mountain()), ready(mountain())]))
-        .hand(0, [burn("Shock", 2), burn("Shock", 2), card("Intervention Pact").unwrap()]);
+        .battlefield(
+            0,
+            (0..lands)
+                .map(|_| ready(plains()))
+                .chain([ready(mountain()), ready(mountain())]),
+        )
+        .hand(
+            0,
+            [
+                burn("Shock", 2),
+                burn("Shock", 2),
+                card("Intervention Pact").unwrap(),
+            ],
+        );
     let mut driver = Driver::from_scenario(libraries(scenario, seats, forest)).unwrap();
     let me = driver.target_player(0);
     driver.begin_cast("Shock").unwrap();
@@ -157,7 +181,9 @@ fn pact_against_shock(seats: usize, lands: usize) -> Driver {
                     .copied()
                     .find(|id| crate::common::name_of(driver.state(), *id) == "Shock")
                     .unwrap();
-                driver.answer(Answer::ChooseCards(CardsChoice(vec![shock]))).unwrap();
+                driver
+                    .answer(Answer::ChooseCards(CardsChoice(vec![shock])))
+                    .unwrap();
             }
             _ => {
                 driver.answer_passively().unwrap();
@@ -199,7 +225,9 @@ fn intervention_pact_is_paid_at_the_next_upkeep_or_the_game_is_lost(
 ) {
     let mut driver = pact_against_shock(seats, 3);
     for _ in 0..400 {
-        if !driver.state().is_alive(pid(0)) || driver.state().turn().number() > u32::try_from(seats).unwrap() + 2 {
+        if !driver.state().is_alive(pid(0))
+            || driver.state().turn().number() > u32::try_from(seats).unwrap() + 2
+        {
             break;
         }
         match &driver.decision().unwrap().kind.clone() {
@@ -239,7 +267,8 @@ fn garzas_assassin_recovers_for_half_the_life_rounded_up(
     driver.answer(Answer::PayMana(PayChoice::Auto)).unwrap();
     for _ in 0..30 {
         if driver.state().stack().is_empty()
-            && !names(driver.state(), Zone::Graveyard(pid(0))).contains(&"Garza's Assassin".to_owned())
+            && !names(driver.state(), Zone::Graveyard(pid(0)))
+                .contains(&"Garza's Assassin".to_owned())
         {
             break;
         }
@@ -326,6 +355,10 @@ fn catalyst_stone_changes_flashback_costs(
         scenario = scenario.battlefield(seat, board);
     }
     let driver = Driver::from_scenario(libraries(scenario, seats, forest)).unwrap();
-    let flash = *driver.state().zone(Zone::Graveyard(pid(0))).first().unwrap();
+    let flash = *driver
+        .state()
+        .zone(Zone::Graveyard(pid(0)))
+        .first()
+        .unwrap();
     assert_eq!(options(&driver).castable.contains(&flash), castable);
 }

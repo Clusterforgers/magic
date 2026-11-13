@@ -139,5 +139,8 @@ pub(super) fn r408_hand_and_life_texts(first: &Ability, second: &Ability) -> Vec
     else {
         return Vec::new();
     };
-    vec!["You have no maximum hand size and don't lose the game for having 0 or less life.".to_owned()]
+    vec![
+        "You have no maximum hand size and don't lose the game for having 0 or less life."
+            .to_owned(),
+    ]
 }

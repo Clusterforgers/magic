@@ -367,7 +367,11 @@ mod tests {
     #[case::equip_costs_you_pay("Equip costs you pay cost {1} less.", false, Static)]
     #[case::r301_dash_costs("Dash costs you pay cost {2} less.", false, Static)]
     #[case::r408_flashback_costs("Flashback costs you pay cost {2} less.", false, Static)]
-    #[case::r408_flashback_costs_of_opponents("Flashback costs your opponents pay cost {2} more.", false, Static)]
+    #[case::r408_flashback_costs_of_opponents(
+        "Flashback costs your opponents pay cost {2} more.",
+        false,
+        Static
+    )]
     #[case::r301_ninjutsu_costs(
         "Ninjutsu abilities you activate cost {1} less to activate.",
         false,

@@ -122,7 +122,12 @@ pub(crate) fn unplayable(
 }
 
 /// The detail of `reason`, which [`land_reason`] gave: the timing, or the rule that forbids the land play.
-fn land_why(state: &GameState, player: PlayerId, card: ObjectId, reason: Unplayable) -> Option<Why> {
+fn land_why(
+    state: &GameState,
+    player: PlayerId,
+    card: ObjectId,
+    reason: Unplayable,
+) -> Option<Why> {
     match reason {
         Unplayable::Timing => Some(Why::SorcerySpeed),
         Unplayable::Restricted => {

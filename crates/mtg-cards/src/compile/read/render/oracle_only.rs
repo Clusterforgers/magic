@@ -287,6 +287,8 @@ mod w16a_named_yours;
 // dk1b
 mod dk1b_attached;
 mod r281_wordings;
+mod r408_turn_cost;
+mod r408_wordings;
 mod r9w_countered_value;
 mod w16a_owner;
 mod w16a_return_cost;
@@ -342,8 +344,6 @@ mod w8c_damage_and;
 mod w8c_kind_controller;
 mod w8c_on_top;
 mod w8c_opponent_graveyard;
-mod r408_turn_cost;
-mod r408_wordings;
 mod w8c_other_turns;
 mod w8c_prevent_next;
 mod w8c_return_both;

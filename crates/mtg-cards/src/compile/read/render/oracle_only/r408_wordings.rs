@@ -99,9 +99,16 @@ mod tests {
         ];
         assert_eq!(
             listed(&texts),
-            ["If damage would be dealt to ~, prevent that damage, remove that many +1/+1 counters from ~, and create that many 1/1 colorless Spirit creature tokens."]
+            [
+                "If damage would be dealt to ~, prevent that damage, remove that many +1/+1 counters from ~, and create that many 1/1 colorless Spirit creature tokens."
+            ]
         );
-        assert!(listed(&["If damage would be dealt to ~, prevent that damage and draw a card.".to_owned()]).is_empty());
+        assert!(
+            listed(&[
+                "If damage would be dealt to ~, prevent that damage and draw a card.".to_owned()
+            ])
+            .is_empty()
+        );
     }
 
     #[rstest]
