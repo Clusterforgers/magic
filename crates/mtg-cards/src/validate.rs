@@ -1534,19 +1534,7 @@ impl<'a> Walker<'a> {
                 if matches!(item, CostItem::Untap) && !w.activated_cost {
                     w.uses("Cost", "Untap.Elsewhere");
                 }
-                // Only the caster of a spell pays all of a kind with nothing to choose; an effect's payer may be another player.
-                if let Some(whole) = r303c_whole(item)
-                    .filter(|_| (w.choosing || w.r400_alternative) && !w.activated_cost)
-                {
-                    w.uses("Cost", whole);
-                } else if !is_fixed(item) {
-                    let activated = match (w.activated_cost, w.rather_cost) {
-                        (true, _) => ".Activated",
-                        (false, true) => ".Rather",
-                        (false, false) => "",
-                    };
-                    w.uses("Cost", &format!("{}.Counted{activated}", tag_of(item)));
-                }
+                w.r400_counted(item);
                 match item {
                     CostItem::PayLife(amount)
                     | CostItem::PayEnergy(amount)
@@ -1847,6 +1835,23 @@ impl<'a> Walker<'a> {
             self.problem("a spell's targets are read with Targeting in what it applies to");
         }
         self.at("targeting", |w| w.selector(targeting));
+    }
+
+    /// The name of a counted part of a cost: a part that takes all of a kind (only the caster of a spell pays all of a
+    /// kind with nothing to choose; an effect's payer may be another player), or a count the engine may not pay there.
+    fn r400_counted(&mut self, item: &CostItem) {
+        if let Some(whole) = r303c_whole(item)
+            .filter(|_| (self.choosing || self.r400_alternative) && !self.activated_cost)
+        {
+            self.uses("Cost", whole);
+        } else if !is_fixed(item) {
+            let activated = match (self.activated_cost, self.rather_cost) {
+                (true, _) => ".Activated",
+                (false, true) => ".Rather",
+                (false, false) => "",
+            };
+            self.uses("Cost", &format!("{}.Counted{activated}", tag_of(item)));
+        }
     }
 
     /// What a cast pays rather than the mana cost: a permission cost whose counted amounts the engine counts for the card.

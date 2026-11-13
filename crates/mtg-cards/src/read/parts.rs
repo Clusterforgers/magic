@@ -335,15 +335,7 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
             },
             phrase::who(ctx, attacker)
         ),
-        GameRule::Combat {
-            who,
-            quirk: CombatQuirk::AttackIfAnyAttacks(among),
-        } => format!(
-            "if {} attacks, {} attack if able",
-            phrase::selector(ctx, among),
-            phrase::who(ctx, who)
-        ),
-        GameRule::Combat { who, quirk } => combat_quirk(&phrase::who(ctx, who), quirk),
+        GameRule::Combat { who, quirk } => r400_combat_words(ctx, who, quirk),
         GameRule::CantBeCountered(who) => format!("{} can't be countered", phrase::who(ctx, who)),
         GameRule::CantBeRegenerated(who) => {
             format!("{} can't be regenerated", phrase::who(ctx, who))
@@ -685,6 +677,18 @@ pub(super) fn replace_by(ctx: &Ctx, by: &ReplaceBy, depth: u8, out: &mut Vec<Ste
 /// "you": a reference of a static ability's subject.
 pub(super) fn affected(ctx: &Ctx, subject: &Ref) -> String {
     phrase::who(ctx, subject)
+}
+
+/// The words of a combat rule about the creatures `who`, the creatures a following attacker follows named.
+fn r400_combat_words(ctx: &Ctx, who: &Ref, quirk: &CombatQuirk) -> String {
+    if let CombatQuirk::AttackIfAnyAttacks(among) = quirk {
+        return format!(
+            "if {} attacks, {} attack if able",
+            phrase::selector(ctx, among),
+            phrase::who(ctx, who)
+        );
+    }
+    combat_quirk(&phrase::who(ctx, who), quirk)
 }
 
 /// The words of a combat rule about the creatures `who`.
