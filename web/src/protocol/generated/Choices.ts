@@ -19,6 +19,11 @@ modes?: Array<number>,
  */
 random_modes?: boolean, 
 /**
+ * The seat of the player who chose the modes when it is not the controller ("an opponent chooses one"), for
+ * `Ref::ModesChooser`; a seat index keeps the choices, which events carry, small.
+ */
+modes_by?: number, 
+/**
  * How many target specifications the game filled with its random source ("any target chosen at random"), each with
  * the next substream after the modes: the event that carries these choices spends them.
  */

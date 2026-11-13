@@ -1,7 +1,7 @@
 {
   "oracle_id": "926ce6a2-7bdd-4380-ac65-bc902ba0c284",
   "name": "Thran Portal",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Thran Portal",
@@ -30,9 +30,12 @@
         },
         { "Static": { "affected": "This", "mods": ["AddChosenSubtype"] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 177, "end": 243 }
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Increase",
+            "mana": "{0}",
+            "activating": "Mana",
+            "life": 1
           }
         }
       ]

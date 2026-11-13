@@ -495,7 +495,10 @@ pub(crate) fn lasts(
                     && turn.step() > Step::EndCombat)
         }
         // Begun for the player who controls the permanent (`continuous.rs`): their next untap step opens their next turn.
-        Duration::UntilYourNextTurn | Duration::UntilItsControllersNextUntapStep => {
+        // A rule that lasts until that player's next turn is begun for that player (`resolve/prim/rule.rs`).
+        Duration::UntilYourNextTurn
+        | Duration::UntilItsControllersNextUntapStep
+        | Duration::UntilTheirNextTurn => {
             state.is_alive(controller) && !(turn.number() != began && state.is_active(controller))
         }
         // It lasts through the untap step of that turn and ends as its upkeep begins.

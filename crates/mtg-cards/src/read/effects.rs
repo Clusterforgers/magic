@@ -371,6 +371,9 @@ fn permanents(ctx: &Ctx, effect: &Effect) -> Option<String> {
             phrase::who(ctx, what)
         ),
         Effect::StillResolves => "it still resolves if its targets become illegal".to_owned(),
+        Effect::Rephase => {
+            "simultaneously, all phased-out creatures phase in and all creatures with phasing phase out".to_owned()
+        }
         Effect::Explore { what } => format!("{} explores", phrase::who(ctx, what)),
         _ => return None,
     })

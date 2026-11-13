@@ -1,0 +1,48 @@
+{
+  "oracle_id": "aeb85786-16fc-45d8-9383-60054a878c40",
+  "name": "Fatal Lore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fatal Lore",
+      "oracle_fingerprint": "3ac3a0f3a48249f787cdcb7a4d1331fd",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "who": "Opponents",
+                  "modes": [
+                    { "effects": [{ "Draw": { "count": 3 } }] },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "ControlledBy": "ModesChooser" }]
+                          },
+                          "bounds": { "min": 0, "max": 2 }
+                        }
+                      ],
+                      "effects": [
+                        { "Destroy": { "what": { "Target": 0 }, "regenerate": false } },
+                        {
+                          "ChooseValue": {
+                            "who": "ModesChooser",
+                            "kind": { "Number": [0, 3] },
+                            "as": "drawn"
+                          }
+                        },
+                        { "Draw": { "who": "ModesChooser", "count": { "ChosenAs": "drawn" } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

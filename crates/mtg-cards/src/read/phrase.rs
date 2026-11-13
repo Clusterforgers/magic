@@ -64,6 +64,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::ActivePlayer => "the active player".to_owned(),
         Ref::Chooser => "the player choosing".to_owned(),
         Ref::Asker => "the player asking".to_owned(),
+        Ref::ModesChooser => "the player who chose the modes".to_owned(),
         Ref::Bound(name) => format!("\u{201c}{name}\u{201d}"),
         Ref::Paid => "what was paid".to_owned(),
         Ref::Convoked => "the creatures that convoked it".to_owned(),
@@ -657,6 +658,7 @@ pub(super) fn duration(value: &Duration) -> String {
         Duration::UntilSkipped => "until it is skipped".to_owned(),
         Duration::UntilSkippedThisTurn => "until it is skipped this turn".to_owned(),
         Duration::TheirNextTurn => "during their next turn".to_owned(),
+        Duration::UntilTheirNextTurn => "until that player's next turn".to_owned(),
         Duration::UntilCastFromExile => "until this card is cast from exile".to_owned(),
         Duration::WhileHasCounter(counter) => {
             format!("while it has a {} counter", counter_text(counter))

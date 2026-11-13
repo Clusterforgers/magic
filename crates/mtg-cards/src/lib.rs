@@ -35,6 +35,7 @@ pub mod r4702_names;
 pub mod r4707_first_sets;
 pub mod r4708_actions;
 pub mod r4711_noted;
+pub mod r5514_players;
 pub mod r5516_learn;
 pub mod read;
 pub mod reference;

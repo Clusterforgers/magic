@@ -19,6 +19,18 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Err(wrong_effect("Rule"));
     };
     let state = cx.state();
+    // "Until that player's next turn": the rule lasts as one until that player's own next turn would.
+    let (duration, controller) = if *duration == Duration::UntilTheirNextTurn {
+        let who = mtg_cards::r5514_players::r5514_rule_player(rule).ok_or(
+            ResolveError::Unsupported("Rule.Duration.UntilTheirNextTurn"),
+        )?;
+        let Some(player) = cx.scope.players(who)?.first().copied() else {
+            return Ok(Run::events(Vec::new()));
+        };
+        (&Duration::UntilYourNextTurn, player)
+    } else {
+        (duration, cx.controller())
+    };
     let rule = lower_rule(&cx.scope, &fixed_choices(&cx.scope, rule))?;
     if names_nothing(&rule) {
         return Ok(Run::events(Vec::new()));
@@ -34,10 +46,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         effect: Box::new(RuleEffect {
             id: EffectId(state.next_effect),
             rule,
-            turn: crate::effects::began_turn(state, &duration, cx.controller()),
+            turn: crate::effects::began_turn(state, &duration, controller),
             duration,
             source: Some(cx.scope.source),
-            controller: cx.controller(),
+            controller,
         }),
     }]))
 }

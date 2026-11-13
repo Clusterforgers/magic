@@ -1991,6 +1991,10 @@ pub enum Effect {
     /// The ability resolves even when every target it chose became illegal, so CR 608.2b does not stop it ("This ability
     /// still resolves if its target becomes illegal."); as a step it does nothing.
     StillResolves,
+    /// Simultaneously, every phased-out creature phases in and every creature with phasing phases out ("Simultaneously,
+    /// all phased-out creatures phase in and all creatures with phasing phase out.", CR 702.26): both sets are judged
+    /// before either moves, and what is attached goes with each.
+    Rephase,
     /// For each attacking creature `what` names, the controller may choose again what it attacks, among the players,
     /// planeswalkers and battles its controller could attack ("you may reselect which player or permanent target
     /// attacking creature is attacking"); it stays an attacking creature that was declared (CR 506.4 does not apply).

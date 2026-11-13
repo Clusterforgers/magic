@@ -285,6 +285,11 @@ fn sentence_shapes(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
     if r.attempt(|r| regeneration(r, effects)).is_some() {
         return true;
     }
+    if r.attempt(|r| super::r5514_pieces::r5514_sentence(r, effects))
+        .is_some()
+    {
+        return true;
+    }
     if r.attempt(|r| payments::after_may(r, effects)).is_some() {
         return true;
     }

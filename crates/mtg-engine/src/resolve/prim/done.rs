@@ -57,6 +57,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Untap { .. }
         | Effect::TapOrUntap { .. }
         | Effect::PhaseOut { .. }
+        | Effect::Rephase
         | Effect::Attach { .. }
         | Effect::Unattach { .. }
         | Effect::JoinAttack { .. }

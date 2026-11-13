@@ -117,6 +117,11 @@ pub struct Choices {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub random_modes: bool,
+    /// The seat of the player who chose the modes when it is not the controller ("an opponent chooses one"), for
+    /// `Ref::ModesChooser`; a seat index keeps the choices, which events carry, small.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub modes_by: Option<u8>,
     /// How many target specifications the game filled with its random source ("any target chosen at random"), each with
     /// the next substream after the modes: the event that carries these choices spends them.
     #[serde(default, skip_serializing_if = "is_zero")]
@@ -228,6 +233,12 @@ const fn is_zero(count: &u8) -> bool {
 }
 
 impl Choices {
+    /// The player who chose the modes when it is not the controller.
+    pub fn modes_chooser(&self) -> Option<PlayerId> {
+        self.modes_by
+            .map(|seat| PlayerId::from_index(usize::from(seat)))
+    }
+
     /// The mana spent to cast the spell, as it was paid (CR 601.2h).
     pub fn spent(&self) -> &[mtg_core::mana::ManaType] {
         self.spent.as_deref().map_or(&[], Vec::as_slice)

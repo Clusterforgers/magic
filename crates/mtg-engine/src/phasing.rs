@@ -200,6 +200,41 @@ pub fn w7e_keyword_out_events(state: &GameState, player: PlayerId) -> Vec<Event>
     out_events(state, &named)
 }
 
+/// The events of "Simultaneously, all phased-out creatures phase in and all creatures with phasing phase out." (CR
+/// 702.26): both sets are judged on the state before either moves. Each phased-out creature that phased out on its own,
+/// and that no rule keeps out, phases in with what phased out with it; each creature with phasing on the battlefield
+/// phases out with what is attached to it.
+pub(crate) fn r5514_rephase_events(state: &GameState) -> Vec<Event> {
+    let creature = |id: ObjectId| {
+        crate::characteristics::characteristics(state, id).is_some_and(|chars| chars.is_creature())
+    };
+    let leaving: Vec<ObjectId> = state
+        .zone(Zone::Battlefield)
+        .iter()
+        .copied()
+        .filter(|id| {
+            creature(*id)
+                && crate::keywords::has_keyword(state, *id, &mtg_cards::keyword::Keyword::Phasing)
+        })
+        .collect();
+    let mut events: Vec<Event> = state
+        .zone(Zone::PhasedOut)
+        .iter()
+        .copied()
+        .filter(|id| {
+            let indirect = state
+                .object(*id)
+                .and_then(GameObject::permanent)
+                .and_then(PermanentState::phasing)
+                .is_some_and(|own| own.indirect);
+            !indirect && creature(*id) && !held(state, *id)
+        })
+        .flat_map(|id| w11b_with_attachments(state, id))
+        .collect();
+    events.extend(out_events(state, &leaving));
+    events
+}
+
 /// The fold of `Event::PermanentPhasedOut`: the permanent phases out as the event says.
 pub(crate) fn w11b_fold_out_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     let Event::PermanentPhasedOut {

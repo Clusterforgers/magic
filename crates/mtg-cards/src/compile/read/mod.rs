@@ -257,6 +257,7 @@ mod r5510_fortified;
 mod r5510_own_cost;
 mod r5510_wholes;
 mod r5513_events;
+mod r5514_pieces;
 mod r5516_actions;
 mod r5516_reflexive;
 mod r5517_wholes;
@@ -729,6 +730,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r5516_actions::r5516_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r5514_pieces::r5514_read(text) {
         return Some(found);
     }
     if kind == ClauseKind::Static

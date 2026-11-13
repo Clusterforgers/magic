@@ -85,6 +85,7 @@ impl From<ResolveError> for crate::error::EngineError {
 static NO_CHOICES: Choices = Choices {
     modes: Vec::new(),
     random_modes: false,
+    modes_by: None,
     random_targets: 0,
     x: None,
     targets: Vec::new(),
@@ -1107,6 +1108,7 @@ impl<'a> Scope<'a> {
             self.controller,
             self.cause,
             Some(self.x_value()),
+            self.choices.modes_chooser(),
             self.earlier(index),
         );
         set.iter()
@@ -1167,6 +1169,7 @@ impl<'a> Scope<'a> {
             self.controller,
             self.cause,
             Some(self.x_value()),
+            self.choices.modes_chooser(),
             self.earlier(index),
         ))
     }
@@ -1250,6 +1253,15 @@ impl<'a> Scope<'a> {
             // Nobody outside the candidates of a choice made by each player.
             Ref::Chooser => self.chooser.get().map(Target::Player).into_iter().collect(),
             Ref::Asker => vec![Target::Player(self.asker.unwrap_or(self.controller))],
+            Ref::ModesChooser => {
+                let chooser = self.choices.modes_chooser().unwrap_or(self.controller);
+                self.state
+                    .player(chooser)
+                    .filter(|player| player.is_in_game())
+                    .map(|_| Target::Player(chooser))
+                    .into_iter()
+                    .collect()
+            }
             Ref::Candidate => {
                 let object = self.candidate.get().ok_or_else(|| {
                     ResolveError::Invalid("there is no candidate object here".into())

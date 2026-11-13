@@ -161,6 +161,7 @@ Beast Walkers
 Beast Within
 Beastmaster Ascension
 Befriending the Moths // Imperial Moth
+Behemoth of Vault 0
 Behold the Multiverse
 Belfry Spirit
 Belisarius Cawl
@@ -687,6 +688,7 @@ Fanatic of Rhonas
 Far Wanderings
 Faramir, Steward of Gondor
 Farewell
+Fatal Lore
 Favorable Winds
 Fear of Failed Tests
 Fearless Skald
@@ -1982,6 +1984,7 @@ Tectonic Split
 Teferi's Ageless Insight
 Teferi's Imp
 Teferi's Protection
+Teferi's Reproach
 Tegwyll's Scouring
 Tekuthal, Inquiry Dominus
 Telepathy
@@ -2078,6 +2081,7 @@ Time Sieve
 Time Stretch
 Time Walk
 Time Warp
+Time and Tide
 Time to Reflect
 Timeless Lotus
 Timeless Witness

@@ -123,6 +123,9 @@ pub enum Ref {
     /// Inside the test of a `PlayersWhere`, the player whose ability asks it, while "you" is the player tested ("an
     /// opponent who controls more lands than you"); the controller everywhere else.
     Asker,
+    /// The player who chose the modes of the modal spell or ability ("An opponent chooses one — ... that player
+    /// controls"); the controller when no one else chose them, and nobody once that player has left the game.
+    ModesChooser,
     /// The result an earlier step bound with `as`.
     Bound(String),
     /// The objects picked for the cost of the ability ("the creature tapped to pay it"): their characteristics are those they

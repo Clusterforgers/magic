@@ -136,6 +136,7 @@ mod regenerate;
 mod remove_counters;
 mod remove_from_combat;
 mod repeat_each;
+mod rephase;
 mod reveal;
 mod reveal_until;
 mod rmt1_become_blocked;
@@ -264,6 +265,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Untap { .. } => untap::run(cx, effect),
         Effect::TapOrUntap { .. } => w5d_tap_or_untap::run(cx, effect),
         Effect::PhaseOut { .. } => phase_out::run(cx, effect),
+        Effect::Rephase => rephase::run(cx, effect),
         Effect::Attach { .. } => attach::run(cx, effect),
         Effect::Unattach { .. } => unattach::run(cx, effect),
         Effect::JoinAttack { .. } => join_attack::run(cx, effect),
@@ -421,7 +423,7 @@ mod tests {
         {"Shield":{"when":{"Damage":{}},"by":"Prevent","duration":"UntilEndOfTurn"}},
         {"DelayedTrigger":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[]}},
         {"Reflexive":{"effects":[]}},
-        {"If":{"condition":"YourTurn","then":[]}}, {"May":{"effects":[]}}, {"Together":{"effects":[]}}, {"Pay":{"cost":"{1}"}}, {"PayAnyTimes":{"cost":"{1}"}}, "StillResolves", {"Reattack":{"what":"This"}},
+        {"If":{"condition":"YourTurn","then":[]}}, {"May":{"effects":[]}}, {"Together":{"effects":[]}}, {"Pay":{"cost":"{1}"}}, {"PayAnyTimes":{"cost":"{1}"}}, "StillResolves", "Rephase", {"Reattack":{"what":"This"}},
         {"Modal":{"modes":[]}}, {"RepeatEach":{"over":"EachPlayer","as":"each","effects":[{"Draw":{}}]}},
         {"RollDice":{"sides":6,"results":[{"from":1,"effects":[]}]}}, {"FlipCoin":{"win":[]}}, {"Clash":{}},
         {"Vote":{"options":{"Named":["time","knowledge"]}}}, {"Planechase":{"act":"Planeswalk"}},
@@ -447,7 +449,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 138, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 139, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -608,6 +610,7 @@ mod tests {
         "Effect.Pay",
         "Effect.PayAnyTimes",
         "Effect.StillResolves",
+        "Effect.Rephase",
         "Effect.Reattack",
         "Effect.Modal",
         "Effect.RepeatEach",

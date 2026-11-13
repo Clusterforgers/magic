@@ -336,6 +336,9 @@ pub enum Duration {
     /// with it ("skips all combat phases of their next turn", CR 614.10); only the rule that a player skips steps or combat
     /// lasts this way.
     TheirNextTurn,
+    /// Until the next turn of the one player the rule names ("Until that player's next turn, they gain protection from
+    /// everything"): it lasts as `UntilYourNextTurn` does for that player; only a rule lasts this way.
+    UntilTheirNextTurn,
     /// Until the card the source became when its ability exiled it is cast from exile ("until this card is cast from
     /// exile"); it lasts for good once that card leaves exile another way.
     UntilCastFromExile,
