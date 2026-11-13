@@ -42,7 +42,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 52] = [
+const TEMPLATES: [Template; 53] = [
     super::r376_nearest::r376_rooms_again,
     super::r376_nearest::r376_nearest,
     super::r376_nearest::r376_side_entering,
