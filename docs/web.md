@@ -8,7 +8,7 @@ React, Vite, Tailwind, shadcn/ui on Base UI, TanStack Router and zustand. Comman
 
 - Pages live in `src/features`, one folder per area; `src/routes` only picks them. The Vite plugin rewrites `routeTree.gen.ts` on `pnpm dev` and `pnpm build`; commit it with the route change.
 - `src/net` (REST, socket) and `src/play` (session, store) hold the client. `src/components` has the shell and the pieces pages share; `src/components/ui` is shadcn (`pnpm exec shadcn add <name>`) and is edited to the tokens. `src/protocol` has the ts-rs bindings and the transcripts Rust writes.
-- Each page is a chunk of its own (`autoCodeSplitting`), fetched while the pointer rests on a link to it (`routerOptions.ts`, `defaultPreload: 'intent'`). `bundleBudget.test.ts` holds each chunk to a gzip budget: the entry 135 kB, the table 250 kB, any other 52 kB.
+- Each page is a chunk of its own (`autoCodeSplitting`), fetched while the pointer rests on a link to it (`routerOptions.ts`, `defaultPreload: 'intent'`). React and the router sit in a `vendor` chunk whose name survives a release (`vite.config.ts`). The build preloads the Latin font from the page and writes a level-9 `.gz` beside each text file for nginx. `bundleBudget.test.ts` holds each chunk to a gzip budget: the entry 70 kB, `vendor` 105 kB, the table 250 kB, any other 52 kB.
 - Long lists stay cheap: `DeckRow` is memoised on stable props, and a row off screen is not laid out (`content-visibility: auto`).
 - The dev and preview servers proxy `/api` and `/ws` to `MTG_SERVER_URL` (default `http://127.0.0.1:8080`) and keep the browser's `Host`, which the server's Origin check compares with the page's `Origin`.
 
