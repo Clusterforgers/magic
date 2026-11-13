@@ -64,6 +64,7 @@ impl KeywordRules for Soulbond {
                         count: Bounds::default(),
                         bind: PARTNER.to_owned(),
                         rest_as: None,
+                        differ: None,
                     },
                     Effect::Pair {
                         what: Ref::This,

@@ -99,7 +99,9 @@ pub(crate) fn r5507_kept(which: mtg_cards::value::DieResult) -> String {
         DieResult::Even => "~dice:even".to_owned(),
         DieResult::Total => "~dice:total".to_owned(),
         DieResult::Times(result) => format!("~dice:times:{result}"),
-        DieResult::Only | DieResult::Chosen | DieResult::Other => "~dice:one".to_owned(),
+        DieResult::Only | DieResult::Chosen | DieResult::Other | DieResult::Distinct => {
+            "~dice:one".to_owned()
+        }
     }
 }
 

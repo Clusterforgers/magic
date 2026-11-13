@@ -185,6 +185,23 @@ describe('a choice with different names', () => {
   })
 })
 
+describe('a choice with different powers', () => {
+  it('closes a second card of a chosen group and opens it again when the first is put back', async () => {
+    const from = permanents.slice(0, 3)
+    if (from.length < 3) return
+    const table = renderDecision({
+      ChooseCards: { source, from, min: 0, max: 3, groups: [0, 0, 1] },
+    })
+    const group = within(screen.getByRole('group', { name: 'Cards to choose from' }))
+    const [first, second, third] = group.getAllByRole('button')
+    await table.user.click(must(first))
+    expect(must(second)).toHaveAttribute('aria-disabled', 'true')
+    expect(must(third)).not.toHaveAttribute('aria-disabled')
+    await table.user.click(must(first))
+    expect(must(second)).not.toHaveAttribute('aria-disabled')
+  })
+})
+
 describe('a choice of several', () => {
   it('opens Confirm at the fewest, closes the rest at the most and sends the order chosen', async () => {
     const { card, confirm, chosen, count, user, answer, sent } = mount(hand, 2, 2)

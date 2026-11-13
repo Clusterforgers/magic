@@ -1,7 +1,7 @@
 {
   "oracle_id": "5f6aa548-0ab3-451f-b291-10cac3f3ea1a",
   "name": "Diligent Farmhand",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Diligent Farmhand",
@@ -21,12 +21,7 @@
             ]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 133, "end": 242 }
-          }
-        }
+        { "Rule": { "rule": { "CountsAsNamed": "Muscle Burst" }, "from": "Graveyard" } }
       ]
     }
   ]

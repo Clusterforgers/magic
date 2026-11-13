@@ -94,6 +94,7 @@ pub(super) fn one_text(choose: &Effect, moved: &Effect) -> Option<String> {
             count,
             bind,
             rest_as: None,
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(name),

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "38538aff-b6f9-4c30-992e-7fd78da3c44a",
+  "name": "Matter Reshaper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Matter Reshaper",
+      "oracle_fingerprint": "0bf55ad28d8762006fb9cbb181637bd3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "top" },
+                      "selector": [
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Battle" },
+                            { "Type": "Creature" },
+                            { "Type": "Enchantment" },
+                            { "Type": "Land" },
+                            { "Type": "Planeswalker" }
+                          ]
+                        },
+                        { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                      ]
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          { "Move": { "what": { "Bound": "top" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Move": { "what": { "Bound": "top" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -148,6 +148,7 @@ pub(crate) fn c9_emerge_most(
         source: id,
         barred: &[],
         granter: None,
+        pays: crate::r4707_pay_costs::PaysFor::Cost,
     };
     pick.candidates(&owner)
         .into_iter()

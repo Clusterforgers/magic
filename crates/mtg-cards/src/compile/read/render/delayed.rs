@@ -92,6 +92,7 @@ impl Writer<'_> {
                 count,
                 bind,
                 rest_as: None,
+                differ: None,
             },
             Effect::DelayedTrigger {
                 until: None,

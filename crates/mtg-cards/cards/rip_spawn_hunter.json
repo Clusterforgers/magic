@@ -1,0 +1,48 @@
+{
+  "oracle_id": "c027f369-e445-46a8-94ad-93396321295a",
+  "name": "Rip, Spawn Hunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rip, Spawn Hunter",
+      "oracle_fingerprint": "1ec056ecb5fd1be002f1510397bea512",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Tapped"], "op": "Ge", "right": 1 }
+            },
+            "effects": [
+              {
+                "LookAtTop": { "count": { "Stat": { "of": "This", "stat": "Power" } }, "as": "top" }
+              },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept",
+                  "differ": "DifferentPowers"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

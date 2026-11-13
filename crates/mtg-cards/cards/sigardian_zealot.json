@@ -1,0 +1,43 @@
+{
+  "oracle_id": "30aecffc-bbbf-44d0-8002-0ee5982f27b9",
+  "name": "Sigardian Zealot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sigardian Zealot",
+      "oracle_fingerprint": "4cad052fd159987a1f92430fbb70f947",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }] },
+                  "count": { "min": 0, "max": null },
+                  "as": "chosen",
+                  "differ": "DifferentPowers"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "chosen" },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "This", "stat": "Power" } },
+                        "toughness": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    },
+                    { "AddKeyword": "Vigilance" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

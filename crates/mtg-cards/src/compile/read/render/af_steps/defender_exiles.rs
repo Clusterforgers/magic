@@ -22,6 +22,7 @@ pub(super) fn text(effects: &[Effect]) -> Option<(String, usize)> {
             count,
             bind,
             rest_as: None,
+            differ: None,
         },
         Effect::Exile {
             what: Ref::Bound(name),

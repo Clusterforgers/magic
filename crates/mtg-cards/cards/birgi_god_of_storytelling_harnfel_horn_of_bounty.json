@@ -1,7 +1,7 @@
 {
   "oracle_id": "fb81e4d3-1d8c-4779-be62-87cf49277e51",
   "name": "Birgi, God of Storytelling // Harnfel, Horn of Bounty",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Birgi, God of Storytelling",
@@ -13,12 +13,7 @@
             "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] }, "lasts": "Turn" } }]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 105, "end": 186 }
-          }
-        }
+        { "Rule": { "rule": { "BoastTwice": "You" } } }
       ]
     },
     {

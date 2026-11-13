@@ -1,7 +1,7 @@
 {
   "oracle_id": "147d8a1f-fe82-4078-a281-29a2eed4c750",
   "name": "Sigarda's Vanguard",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sigarda's Vanguard",
@@ -10,9 +10,30 @@
         { "Keyword": "Flash" },
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 13, "end": 162 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }] },
+                  "count": { "min": 0, "max": null },
+                  "as": "chosen",
+                  "differ": "DifferentPowers"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "chosen" },
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]
