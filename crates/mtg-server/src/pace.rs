@@ -294,6 +294,7 @@ fn pay_fallback(options: &PayOptions) -> Option<PayChoice> {
 /// The first `min` cards of the list in the order it was offered, all of them when fewer are offered. `min <= max`, so
 /// the answer never has more than the most.
 fn first_cards(options: &CardsOptions) -> CardsChoice {
+    let options = options.one_per_group();
     let wanted = usize::try_from(options.min).unwrap_or(usize::MAX);
     CardsChoice(options.from.iter().copied().take(wanted).collect())
 }
@@ -930,6 +931,7 @@ mod tests {
             max,
             text: String::new(),
             can_cancel: false,
+            groups: Vec::new(),
         })
     }
 
@@ -1193,6 +1195,8 @@ mod tests {
             source: ObjectId(1),
             text: String::new(),
             nonland: true,
+            noncreature: false,
+            nonbasic_land: false,
         }),
         Some(Answer::ChooseName(mtg_engine::choose::NameChoice(String::new())))
     )]

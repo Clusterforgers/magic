@@ -517,7 +517,9 @@ async fn play(
                     None => return Ended::Over,
                 }
             }
-            ServerMessage::GameOver { .. } => return Ended::Over,
+            ServerMessage::GameOver { .. } | ServerMessage::EndedByAdmin { .. } => {
+                return Ended::Over;
+            }
             _ => {}
         }
     }

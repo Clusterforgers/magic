@@ -6,6 +6,11 @@ import { Input } from '@/components/ui/input'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { DISC } from '@/features/builder/discs'
+import { groupOf, sections } from '@/features/decks/groups/grouping'
+import type { GroupLike } from '@/features/decks/groups/grouping'
+import { firstOpen, useFolds } from '@/features/decks/groups/folds'
+import { GroupToggle } from '@/features/decks/groups/GroupFolds'
+import { rememberGroup } from '@/features/decks/groups/lastGroup'
 import { cn } from '@/lib/utils'
 import { filterEntries, isFiltered, isSortKey, NO_FILTER, SORT_CHOICES, sortEntries } from './deckEntries'
 import type { DeckEntry, DeckFilter, SortKey, SupportFilter } from './deckEntries'
@@ -16,6 +21,8 @@ export type ListState =
   | { status: 'loading' }
   | { status: 'failed'; message: string }
   | { status: 'ready'; entries: readonly DeckEntry[] }
+
+const NO_GROUPS: readonly GroupLike[] = []
 
 const SUPPORT_CHOICES: readonly { value: SupportFilter; label: string }[] = [
   { value: 'all', label: 'All decks' },
@@ -60,6 +67,8 @@ interface DeckListProps {
   onRetry(): void
   /** Select the first deck, or the chosen one, as soon as the list has decks and none is selected. */
   autoSelect: boolean
+  /** The account's deck groups: with any, the rows show in collapsible groups. */
+  groups?: readonly GroupLike[]
 }
 
 function Rows() {
@@ -99,25 +108,51 @@ export function DeckList({
   onChoose,
   onRetry,
   autoSelect,
+  groups = NO_GROUPS,
 }: DeckListProps) {
   const [filter, setFilter] = useState<DeckFilter>(NO_FILTER)
   const searchId = useId()
-  const list = useRef<HTMLUListElement>(null)
+  const listId = useId()
+  const list = useRef<HTMLDivElement>(null)
   const entries = state.status === 'ready' ? state.entries : null
   const shown = useMemo(
     () => (entries === null ? [] : sortEntries(filterEntries(entries, filter), sort)),
     [entries, filter, sort],
   )
+  const grouped = useMemo(() => (groups.length === 0 ? null : sections(shown, groups)), [groups, shown])
+  const searching = filter.query.trim() !== ''
+  // The group of the chosen deck, else the last used one, is open until the player opens or closes a group.
+  const initial = useMemo(() => {
+    const first =
+      grouped === null
+        ? null
+        : firstOpen(
+            grouped.map((section) => section.key),
+            groups,
+            chosenId,
+          )
+    return new Set(first === null ? [] : [first])
+  }, [grouped, groups, chosenId])
+  const { isOpen, toggle: toggleGroup } = useFolds(initial, searching)
+  const visible = useMemo(
+    () =>
+      grouped === null ? shown : grouped.flatMap((section) => (isOpen(section.key) ? section.items : [])),
+    [grouped, shown, isOpen],
+  )
+  const choose = (entry: DeckEntry): void => {
+    if (groups.length > 0) rememberGroup(groupOf(groups, entry.id))
+    onChoose(entry)
+  }
 
   // A selection the search or a filter hides moves to the first row shown, or goes, so the preview and "Use this deck"
   // never stay on a deck the list no longer shows.
   useEffect(() => {
     if (!autoSelect || entries === null) return
     if (selectedId !== null && shown.some((entry) => entry.id === selectedId)) return
-    const first = shown.find((entry) => entry.id === chosenId) ?? shown[0]
+    const first = shown.find((entry) => entry.id === chosenId) ?? visible[0] ?? shown[0]
     if (first !== undefined) onSelect(first)
     else if (selectedId !== null) onClear?.()
-  }, [autoSelect, entries, selectedId, shown, chosenId, onSelect, onClear])
+  }, [autoSelect, entries, selectedId, shown, visible, chosenId, onSelect, onClear])
 
   if (state.status === 'loading') return <Rows />
   if (state.status === 'failed') {
@@ -135,14 +170,14 @@ export function DeckList({
   if (state.entries.length === 0) return <>{empty}</>
 
   const move = (key: string, from: string): void => {
-    const at = shown.findIndex((entry) => entry.id === from)
+    const at = visible.findIndex((entry) => entry.id === from)
     const next =
       key === 'Home'
         ? 0
         : key === 'End'
-          ? shown.length - 1
-          : Math.min(shown.length - 1, Math.max(0, at + (key === 'ArrowDown' ? 1 : -1)))
-    const entry = shown[next]
+          ? visible.length - 1
+          : Math.min(visible.length - 1, Math.max(0, at + (key === 'ArrowDown' ? 1 : -1)))
+    const entry = visible[next]
     if (entry === undefined) return
     onSelect(entry)
     list.current?.querySelectorAll<HTMLElement>('[role="option"]')[next]?.focus()
@@ -154,8 +189,26 @@ export function DeckList({
         ? was.colours.filter((entry) => entry !== letter)
         : [...was.colours, letter],
     }))
-  const anchor = shown.some((entry) => entry.id === selectedId) ? selectedId : (shown[0]?.id ?? null)
+  const anchor = visible.some((entry) => entry.id === selectedId) ? selectedId : (visible[0]?.id ?? null)
 
+  const option = (entry: DeckEntry) => (
+    <DeckOption
+      key={entry.id}
+      entry={entry}
+      selected={entry.id === selectedId}
+      chosen={entry.id === chosenId}
+      pending={entry.id === pendingId}
+      tabStop={entry.id === anchor}
+      fallback={pictures(entry.id)}
+      showHand={sort === 'hand'}
+      onSelect={(picked) => {
+        onSelect(picked)
+        onActivate?.(picked)
+      }}
+      onChoose={choose}
+      onMove={(key) => move(key, entry.id)}
+    />
+  )
   return (
     <div data-slot="deck-list" className="flex min-h-0 flex-1 flex-col gap-3">
       <div className="grid gap-2">
@@ -248,32 +301,40 @@ export function DeckList({
           ) : null}
         </p>
       </div>
-      <ul
+      <div
         ref={list}
-        role="listbox"
-        aria-label={label}
         data-slot="deck-options"
         className="grid min-h-0 flex-1 content-start gap-2 overflow-y-auto overscroll-contain pr-1 pb-1"
       >
-        {shown.map((entry) => (
-          <DeckOption
-            key={entry.id}
-            entry={entry}
-            selected={entry.id === selectedId}
-            chosen={entry.id === chosenId}
-            pending={entry.id === pendingId}
-            tabStop={entry.id === anchor}
-            fallback={pictures(entry.id)}
-            showHand={sort === 'hand'}
-            onSelect={(picked) => {
-              onSelect(picked)
-              onActivate?.(picked)
-            }}
-            onChoose={onChoose}
-            onMove={(key) => move(key, entry.id)}
-          />
-        ))}
-      </ul>
+        {grouped === null ? (
+          <ul role="listbox" aria-label={label} className="grid content-start gap-2">
+            {shown.map(option)}
+          </ul>
+        ) : (
+          grouped.map((section) => {
+            const name = section.group?.name ?? 'Ungrouped'
+            const unfolded = isOpen(section.key)
+            const body = `${listId}-${section.key}`
+            return (
+              <div key={section.key} data-group={section.key} className="grid gap-2">
+                <GroupToggle
+                  name={name}
+                  count={section.items.length}
+                  open={unfolded}
+                  controls={body}
+                  searching={searching}
+                  onToggle={() => toggleGroup(section.key)}
+                />
+                {unfolded ? (
+                  <ul id={body} role="listbox" aria-label={`${label}: ${name}`} className="grid gap-2">
+                    {section.items.map(option)}
+                  </ul>
+                ) : null}
+              </div>
+            )
+          })
+        )}
+      </div>
       {note}
     </div>
   )

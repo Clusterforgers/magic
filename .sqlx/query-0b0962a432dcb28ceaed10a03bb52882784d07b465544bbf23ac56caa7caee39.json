@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE deck_groups SET name = COALESCE($3, name), collapsed = COALESCE($4, collapsed)\n             WHERE owner = $1 AND id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Text",
+        "Bool"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "0b0962a432dcb28ceaed10a03bb52882784d07b465544bbf23ac56caa7caee39"
+}

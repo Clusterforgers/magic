@@ -62,6 +62,8 @@ pub enum DamageForm {
     Infect,
     /// Damage to a player who loses no life from damage (Archon of Coronation): dealt, but no life is lost.
     NoLifeLoss,
+    /// Damage to a player who loses this many times as much life as the damage dealt (Bloodletter of Aclazotz).
+    LossTimes(u32),
 }
 
 impl DamageForm {
@@ -75,6 +77,16 @@ impl DamageForm {
     #[must_use]
     pub const fn makes_counters(self) -> bool {
         matches!(self, DamageForm::Wither | DamageForm::Infect)
+    }
+
+    /// The life a player dealt `amount` damage of this form loses (CR 120.3a, 120.3b).
+    #[must_use]
+    pub const fn life_lost(self, amount: u32) -> u32 {
+        match self {
+            DamageForm::Infect | DamageForm::NoLifeLoss => 0,
+            DamageForm::LossTimes(times) => amount.saturating_mul(times),
+            DamageForm::Normal | DamageForm::Wither => amount,
+        }
     }
 }
 

@@ -176,6 +176,9 @@ pub enum Rule {
     FlipTwoCoins(Vec<PlayerId>),
     /// The players roll one die more for each roll of one or more dice and ignore the lowest roll.
     ExtraDie(Vec<PlayerId>),
+    /// A rule about planar dice or planeswalking (Ichor Elixir, Susan Foreman): no game the engine plays has a planar
+    /// deck, so it changes nothing.
+    Planar,
     /// The players keep unspent mana of the type (every type when absent) as steps and phases end (CR 500.4).
     KeepUnspentMana(Vec<PlayerId>, Option<ManaType>),
     /// Unspent mana the players would lose becomes mana of the type instead.
@@ -200,6 +203,8 @@ pub enum Rule {
     },
     /// Spells and abilities of the players' opponents can't make them sacrifice permanents.
     OpponentsCantMakeSacrifice(Vec<PlayerId>),
+    /// Spells and abilities of the players' opponents can't make them discard cards or sacrifice permanents.
+    OpponentsCantMakeDiscardOrSacrifice(Vec<PlayerId>),
     /// The players may spend mana as though it were mana of any color or type (CR 609.4b), to cast the spells the selector
     /// picks or for everything when there is none.
     SpendManaAs {
@@ -233,6 +238,12 @@ pub enum Rule {
         /// Whether it works only on the controller's turns.
         your_turns: bool,
     },
+    /// Creatures the players control can boast twice during each of their turns (CR 702.142c).
+    BoastTwice(Vec<PlayerId>),
+    /// The players may activate loyalty abilities of planeswalkers they control whenever they could cast an instant.
+    LoyaltyAnyTime(Vec<PlayerId>),
+    /// Each player's loyalty abilities cost this many more loyalty counters to activate.
+    LoyaltyCostsMore(Vec<(PlayerId, u32)>),
     /// The players' maximum hand size is this many cards (CR 402.2).
     MaxHandSize(Vec<(PlayerId, u32)>),
     /// The players' maximum hand size changes by this many cards, after any size that is set (CR 402.2).
@@ -374,6 +385,13 @@ pub enum Rule {
         /// The mana added or removed.
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
         mana: mtg_cards::mana::ManaCostX,
+        /// How many times, counted as each spell is cast.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        #[serde(
+            default = "mtg_cards::value::Amount::one",
+            skip_serializing_if = "mtg_cards::value::Amount::is_one"
+        )]
+        per: mtg_cards::value::Amount,
     },
     /// Damage from the sources can't be prevented (CR 614.17); every source when the selector is empty.
     DamageCantBePrevented {
@@ -721,6 +739,8 @@ pub(crate) struct RulesInForce {
     life_for_one: Vec<(PlayerId, mtg_core::color::Color, Selector)>,
     /// The players whose opponents' spells and abilities can't make them sacrifice.
     spared_sacrifice: BTreeSet<PlayerId>,
+    /// The players whose opponents' spells and abilities can't make them discard.
+    spared_discard: BTreeSet<PlayerId>,
     /// The players who may spend mana as though it were of any color or type, with the spells it is for.
     spend_mana_as: Vec<(PlayerId, mtg_cards::modify::SpendAs, Option<Selector>)>,
     reveal_top: BTreeSet<PlayerId>,
@@ -734,6 +754,12 @@ pub(crate) struct RulesInForce {
     loyalty_twice: BTreeSet<PlayerId>,
     /// The reveals of first draws in force: the controller, the source, whether optional, whether on their turns only.
     reveal_first_draw: Vec<(PlayerId, Option<ObjectRef>, bool, bool)>,
+    /// The players whose creatures can boast twice during each of their turns.
+    pub(crate) boast_twice: BTreeSet<PlayerId>,
+    /// The players who may activate loyalty abilities whenever they could cast an instant.
+    loyalty_any_time: BTreeSet<PlayerId>,
+    /// The loyalty counters each player's loyalty abilities cost in addition.
+    loyalty_more: BTreeMap<PlayerId, u32>,
     skip_draw: BTreeSet<PlayerId>,
     look_top: BTreeSet<PlayerId>,
     extra_lands: BTreeMap<PlayerId, u32>,
@@ -1154,6 +1180,10 @@ impl RulesInForce {
                 self.draw_limit.extend(players.iter().map(|p| (*p, *most)));
             }
             Rule::OpponentsCantMakeSacrifice(players) => self.spared_sacrifice.extend(players),
+            Rule::OpponentsCantMakeDiscardOrSacrifice(players) => {
+                self.spared_sacrifice.extend(players);
+                self.spared_discard.extend(players);
+            }
             Rule::PayLifeForOneSymbol {
                 players,
                 color,
@@ -1183,6 +1213,14 @@ impl RulesInForce {
             Rule::RevealFirstDraw { may, your_turns } => {
                 self.reveal_first_draw
                     .push((controller, source, *may, *your_turns));
+            }
+            Rule::BoastTwice(players) => self.boast_twice.extend(players),
+            Rule::LoyaltyAnyTime(players) => self.loyalty_any_time.extend(players),
+            Rule::LoyaltyCostsMore(more) => {
+                for (player, plus) in more {
+                    let held = self.loyalty_more.entry(*player).or_insert(0);
+                    *held = held.saturating_add(*plus);
+                }
             }
             Rule::MaxHandSize(_)
             | Rule::HandSizeChange(_)
@@ -1319,6 +1357,7 @@ impl RulesInForce {
             // Shields are read by the replacement step, spell costs by the cost step and the bonuses of a spell's mana
             // where it resolves (`spend_rider::entering`), from the rule changes themselves.
             Rule::EntersWith { .. }
+            | Rule::Planar
             | Rule::SpellCost { .. }
             | Rule::PreventDamage(_)
             | Rule::Regenerate(_)
@@ -1528,6 +1567,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::SkipExtraTurns(who) => Rule::SkipExtraTurns(scope.players(who)?),
         GameRule::FlipTwoCoins(who) => Rule::FlipTwoCoins(scope.players(who)?),
         GameRule::ExtraDie(who) => Rule::ExtraDie(scope.players(who)?),
+        GameRule::ExtraPlanarDie(_) | GameRule::PlaneswalkLookTwo(_) => Rule::Planar,
         GameRule::KeepUnspentMana { who, mana } => {
             Rule::KeepUnspentMana(scope.players(who)?, *mana)
         }
@@ -1551,6 +1591,9 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::OpponentsCantMakeSacrifice(who) => {
             Rule::OpponentsCantMakeSacrifice(scope.players(who)?)
+        }
+        GameRule::OpponentsCantMakeDiscardOrSacrifice(who) => {
+            Rule::OpponentsCantMakeDiscardOrSacrifice(scope.players(who)?)
         }
         GameRule::UnspentManaBecomes { who, into } => {
             Rule::UnspentManaBecomes(scope.players(who)?, *into)
@@ -1584,10 +1627,12 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             applies_to,
             change,
             mana,
+            per,
         } => Rule::SpellCost {
             applies_to: applies_to.clone(),
             change: *change,
             mana: mana.clone(),
+            per: per.clone(),
         },
         GameRule::MayCastRather { only, cost } => may_cast_rather(scope, only, cost)?,
         GameRule::TriggerAgain { cause, source } => Rule::TriggerAgain {
@@ -1624,6 +1669,15 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             may: *may,
             your_turns: *your_turns,
         },
+        GameRule::BoastTwice(who) => Rule::BoastTwice(scope.players(who)?),
+        GameRule::LoyaltyAnyTime(who) => Rule::LoyaltyAnyTime(scope.players(who)?),
+        GameRule::LoyaltyCostsMore { who, plus } => Rule::LoyaltyCostsMore(
+            scope
+                .players(who)?
+                .into_iter()
+                .map(|player| (player, *plus))
+                .collect(),
+        ),
         GameRule::SkipDrawStep(who) => Rule::SkipDrawStep(scope.players(who)?),
         GameRule::AdditionalLandPlays { who, count } => {
             let count = u32::try_from(scope.amount(count)?.max(0)).unwrap_or(u32::MAX);
@@ -1655,7 +1709,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::AttackAsThoughHasteAt(who) => Rule::AttackAsThoughHasteAt(scope.players(who)?),
         // A copy effect reads it from the spell's card (`copy_spell`); it is no rule of the game.
         GameRule::CantBeCopied => return Err(ResolveError::Unsupported("Rule.CantBeCopied")),
+        // A resolving spell reads it from the card in the graveyard (`Pred::Named`); it is no rule of the game.
+        GameRule::CountsAsNamed(_) => return Err(ResolveError::Unsupported("Rule.CountsAsNamed")),
         GameRule::CantSpendMana => return Err(ResolveError::Unsupported("Rule.CantSpendMana")),
+        GameRule::SpendOnlyFrom(_) => return Err(ResolveError::Unsupported("Rule.SpendOnlyFrom")),
         GameRule::GraveyardCardsUntargetable
         | GameRule::CantLoseGame { .. }
         | GameRule::CantCastSpells { .. }
@@ -1752,6 +1809,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::PayLifeForMana(players, _)
         | Rule::PayLifeForOneSymbol { players, .. }
         | Rule::OpponentsCantMakeSacrifice(players)
+        | Rule::OpponentsCantMakeDiscardOrSacrifice(players)
         | Rule::SpendManaAs { players, .. }
         | Rule::RevealTop(players)
         | Rule::RevealHand(players)
@@ -1762,9 +1820,12 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::NoLegendRule(players)
         | Rule::NoMaxHandSize(players)
         | Rule::LoyaltyTwice(players)
+        | Rule::BoastTwice(players)
+        | Rule::LoyaltyAnyTime(players)
         | Rule::AttackAsThoughHasteAt(players) => players.is_empty(),
         Rule::MayCastRather { casts, .. } => casts.is_empty(),
         Rule::MaxHandSize(sizes) => sizes.is_empty(),
+        Rule::LoyaltyCostsMore(more) => more.iter().all(|(_, plus)| *plus == 0),
         Rule::HandSizeChange(changes) => changes.is_empty(),
         Rule::UntapDuring { whose, .. } => whose.is_empty(),
         Rule::AttackLimitAt { at, .. } => at.is_empty(),
@@ -1792,6 +1853,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::DamageAsWither
         | Rule::ManaBurn
         | Rule::RevealFirstDraw { .. } => false,
+        Rule::Planar => true,
         Rule::AttackOnlyNearest(left) => left.is_none(),
         Rule::PreventDamage(shield) => {
             shield.to.as_ref().is_some_and(Vec::is_empty)
@@ -1937,6 +1999,7 @@ static NONE: RulesInForce = RulesInForce {
     life_for_mana: Vec::new(),
     life_for_one: Vec::new(),
     spared_sacrifice: BTreeSet::new(),
+    spared_discard: BTreeSet::new(),
     spend_mana_as: Vec::new(),
     reveal_top: BTreeSet::new(),
     reveal_hand: BTreeSet::new(),
@@ -1945,6 +2008,9 @@ static NONE: RulesInForce = RulesInForce {
     no_hand_limit: BTreeSet::new(),
     loyalty_twice: BTreeSet::new(),
     reveal_first_draw: Vec::new(),
+    boast_twice: BTreeSet::new(),
+    loyalty_any_time: BTreeSet::new(),
+    loyalty_more: BTreeMap::new(),
     skip_draw: BTreeSet::new(),
     look_top: BTreeSet::new(),
     extra_lands: BTreeMap::new(),
@@ -2329,6 +2395,21 @@ pub fn loyalty_activations(state: &GameState, player: PlayerId) -> u32 {
     }
 }
 
+/// Whether `player` may activate loyalty abilities whenever they could cast an instant (Teferi's Talent's emblem).
+pub fn loyalty_any_time(state: &GameState, player: PlayerId) -> bool {
+    state.rules().loyalty_any_time.contains(&player)
+}
+
+/// The loyalty counters the loyalty abilities `player` activates cost in addition (Carth the Lion), 0 under no such rule.
+pub fn loyalty_costs_more(state: &GameState, player: PlayerId) -> u32 {
+    state
+        .rules()
+        .loyalty_more
+        .get(&player)
+        .copied()
+        .unwrap_or(0)
+}
+
 /// Whether `player` can't draw cards: the one place a draw reads this rule.
 pub fn cant_draw(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_draw.contains(&player)
@@ -2426,6 +2507,12 @@ pub(crate) fn ep24_draws_left(state: &GameState, player: PlayerId) -> Option<usi
 /// opponents' effects.
 pub(crate) fn ep24_spared_sacrifice(state: &GameState, player: PlayerId, by: PlayerId) -> bool {
     state.is_opponent(by, player) && state.rules().spared_sacrifice.contains(&player)
+}
+
+/// Whether a spell or ability `by` controls can't make `player` discard cards: a rule spares `player` from their
+/// opponents' effects.
+pub(crate) fn r4702_spared_discard(state: &GameState, player: PlayerId, by: PlayerId) -> bool {
+    state.is_opponent(by, player) && state.rules().spared_discard.contains(&player)
 }
 
 /// How `player` may spend mana on the spell `spell` (an ability when `None`) under the rules in force: any type over any
@@ -2632,8 +2719,8 @@ pub(crate) fn c11b_once_source(
 }
 
 /// The riders a cast of `card` by `player` from `from` for `way` takes from the permission it goes through: a cast for the
-/// mana cost from a zone other than a hand or the command zone, or a free cast, goes through the first permission that
-/// covers it, one that works once each turn after the others (as [`c11b_once_source`] counts it). None for any other
+/// mana cost from a zone other than a hand or the command zone, a free cast, or a cast for the cost a permission puts in
+/// place of the mana cost goes through the first permission that covers it, one that works once each turn after the others (as [`c11b_once_source`] counts it). None for any other
 /// cast.
 pub(crate) fn r401_cast_riders(
     state: &GameState,
@@ -2643,7 +2730,9 @@ pub(crate) fn r401_cast_riders(
     way: Option<mtg_cards::value::CastWay>,
 ) -> Vec<CastRider> {
     let free = way == Some(mtg_cards::value::CastWay::Free);
-    if (way.is_some() && !free) || matches!(from, Zone::Hand(_) | Zone::Command(_)) {
+    // A cast for the cost a permission puts in place of the mana cost (Glimpse the Cosmos) takes that permission's riders.
+    let rather = way == Some(mtg_cards::value::CastWay::Alternative);
+    if (way.is_some() && !free && !rather) || matches!(from, Zone::Hand(_) | Zone::Command(_)) {
         return Vec::new();
     }
     let Some(card) = state.object(card) else {
@@ -2657,6 +2746,8 @@ pub(crate) fn r401_cast_riders(
                 && cast.from == Some(zone)
                 && (if free {
                     cast.free
+                } else if rather {
+                    cast.rather.is_some() || cast.instead.is_some()
                 } else {
                     cast.adds_to_printed(zone)
                 })

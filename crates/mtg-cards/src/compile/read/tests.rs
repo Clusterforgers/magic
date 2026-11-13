@@ -213,6 +213,7 @@ mod g9b;
 mod g9d_writers;
 mod r401_flash;
 mod r401_riders;
+mod r4701_readers;
 mod rmt1_writers;
 // dk1b
 mod c6_blk_aura;

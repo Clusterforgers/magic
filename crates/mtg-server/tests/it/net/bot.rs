@@ -201,7 +201,8 @@ impl WsBot {
             | ServerMessage::TakeBackOffer { .. }
             | ServerMessage::TakeBackAsked { .. }
             | ServerMessage::TakeBackEnded { .. }
-            | ServerMessage::TakeBackRefused { .. } => {}
+            | ServerMessage::TakeBackRefused { .. }
+            | ServerMessage::EndedByAdmin { .. } => {}
             ServerMessage::GameOver { result } => return Some(Stop::Over(result)),
             ServerMessage::Forecast { .. } => {
                 panic!("a bot never previews, so it is sent no forecast")

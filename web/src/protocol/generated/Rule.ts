@@ -113,7 +113,7 @@ who: Array<PlayerId>,
 /**
  * The change.
  */
-change: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "ExtraVote": Array<PlayerId> } | "ReverseTurnOrder" | { "AttackOnlyNearest": boolean | null } | { "SkipExtraTurns": Array<PlayerId> } | { "FlipTwoCoins": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "PayLifeForOneSymbol": { 
+change: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "ExtraVote": Array<PlayerId> } | "ReverseTurnOrder" | { "AttackOnlyNearest": boolean | null } | { "SkipExtraTurns": Array<PlayerId> } | { "FlipTwoCoins": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | "Planar" | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "PayLifeForOneSymbol": { 
 /**
  * The players.
  */
@@ -125,7 +125,7 @@ color: unknown,
 /**
  * The spells it is for.
  */
-spells: unknown, } } | { "OpponentsCantMakeSacrifice": Array<PlayerId> } | { "SpendManaAs": { 
+spells: unknown, } } | { "OpponentsCantMakeSacrifice": Array<PlayerId> } | { "OpponentsCantMakeDiscardOrSacrifice": Array<PlayerId> } | { "SpendManaAs": { 
 /**
  * The players.
  */
@@ -145,7 +145,7 @@ may: boolean,
 /**
  * Whether it works only on the controller's turns.
  */
-your_turns: boolean, } } | { "MaxHandSize": Array<[PlayerId, number]> } | { "HandSizeChange": Array<[PlayerId, number]> } | { "NoLegendRule": Array<PlayerId> } | { "NoLegendRuleFor": unknown } | { "AbilitiesAsThoughHaste": unknown } | { "UntapDuring": { 
+your_turns: boolean, } } | { "BoastTwice": Array<PlayerId> } | { "LoyaltyAnyTime": Array<PlayerId> } | { "LoyaltyCostsMore": Array<[PlayerId, number]> } | { "MaxHandSize": Array<[PlayerId, number]> } | { "HandSizeChange": Array<[PlayerId, number]> } | { "NoLegendRule": Array<PlayerId> } | { "NoLegendRuleFor": unknown } | { "AbilitiesAsThoughHaste": unknown } | { "UntapDuring": { 
 /**
  * The permanents, judged when the step untaps.
  */
@@ -277,7 +277,11 @@ change: unknown,
 /**
  * The mana added or removed.
  */
-mana: unknown, } } | { "DamageCantBePrevented": { 
+mana: unknown, 
+/**
+ * How many times, counted as each spell is cast.
+ */
+per?: unknown, } } | { "DamageCantBePrevented": { 
 /**
  * The sources, judged when the damage would be dealt.
  */

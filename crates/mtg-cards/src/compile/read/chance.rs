@@ -70,6 +70,9 @@ fn branch(r: &mut Reader<'_>, they: bool) -> Option<(bool, Vec<Effect>)> {
 /// and choose one result.": two dice, one result chosen, which the effects after it read.
 pub fn roll(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("roll")?;
+    if let Some(several) = r.attempt(r4703_several_dice) {
+        return Some(several);
+    }
     let dice = if r.word("a") {
         1
     } else {
@@ -95,6 +98,49 @@ pub fn roll(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     }])
 }
 
+/// The words of the faces of a die rolled with others: "six-sided".
+pub(super) const R4703_SIDES: [(&str, u32); 4] = [
+    ("four-sided", 4),
+    ("six-sided", 6),
+    ("eight-sided", 8),
+    ("twenty-sided", 20),
+];
+
+/// "Roll three six-sided dice": several dice whose results are read together, none chosen.
+fn r4703_several_dice(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    let dice = super::amounts::number_word(r.take_word()?).filter(|dice| *dice > 1)?;
+    let sides = R4703_SIDES
+        .iter()
+        .find(|(words, _)| r.word(words))
+        .map(|(_, sides)| *sides)?;
+    r.word("dice").then_some(())?;
+    Some(vec![Effect::RollDice {
+        who: Ref::You,
+        sides,
+        dice,
+        choose: false,
+        plus: Amount::zero(),
+        results: Vec::new(),
+    }])
+}
+
+/// "For each different result, S.": the steps once for each different number the dice rolled; one token creation, made
+/// that many times.
+pub fn r4703_each_result(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("for each different result")?;
+    r.punct(',').then_some(())?;
+    let effects = body(r)?;
+    let [Effect::CreateToken { count, .. }] = effects.as_slice() else {
+        return None;
+    };
+    count.is_one().then_some(())?;
+    let mut effects = effects;
+    if let Some(Effect::CreateToken { count, .. }) = effects.first_mut() {
+        *count = Amount::DieResult(DieResult::Distinct);
+    }
+    Some(effects)
+}
+
 /// "the result" of a die, "that result" chosen among two and "the other result": a result of the latest roll.
 pub(super) fn c11e_result(r: &mut Reader<'_>) -> Option<Amount> {
     let which = if r.words("the result") {
@@ -114,6 +160,7 @@ pub(super) const fn c11e_result_text(which: DieResult) -> &'static str {
         DieResult::Only => "the result",
         DieResult::Chosen => "that result",
         DieResult::Other => "the other result",
+        DieResult::Distinct => "the number of different results",
     }
 }
 

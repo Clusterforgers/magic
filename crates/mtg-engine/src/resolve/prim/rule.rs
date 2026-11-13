@@ -65,7 +65,7 @@ fn fixed_choices(scope: &Scope<'_>, rule: &GameRule) -> GameRule {
 }
 
 /// Writes the chosen values into `value`; whether it wrote any.
-fn fix(scope: &Scope<'_>, value: &mut Value) -> bool {
+pub(super) fn fix(scope: &Scope<'_>, value: &mut Value) -> bool {
     match value {
         Value::Object(fields) => {
             if fields.len() == 1

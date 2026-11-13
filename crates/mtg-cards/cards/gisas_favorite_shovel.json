@@ -1,0 +1,51 @@
+{
+  "oracle_id": "9c298c7b-9c63-4a66-a0fc-977491b623c7",
+  "name": "Gisa's Favorite Shovel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gisa's Favorite Shovel",
+      "oracle_fingerprint": "41be33c40148743681a057f3100d189f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }, { "AddKeyword": "Menace" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              { "Sacrifice": { "who": "Defending", "filter": [{ "Type": "Creature" }], "as": "s" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "s~moved" }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Walker",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Zombie"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}
