@@ -978,6 +978,7 @@ impl RulesInForce {
                         rather: None,
                         instead: Some(cost.clone()),
                         opens_no_zone: false,
+                        riders: Vec::new(),
                     });
                 }
                 return;
@@ -1004,6 +1005,7 @@ impl RulesInForce {
                 rather: None,
                 instead: None,
                 opens_no_zone: false,
+                riders: Vec::new(),
             });
         }
     }
@@ -1232,6 +1234,7 @@ impl RulesInForce {
                             rather: Some(cost.clone()),
                             instead: None,
                             opens_no_zone: false,
+                            riders: Vec::new(),
                         });
                     }
                 }
