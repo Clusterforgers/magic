@@ -89,6 +89,7 @@ mod rmt7_lose_printed;
 mod rmt7_turn_rules;
 mod tc34_player_control;
 mod tm1_teams;
+mod tm38_team_turns;
 mod turn_burn;
 mod turn_structure;
 mod untap_choice;

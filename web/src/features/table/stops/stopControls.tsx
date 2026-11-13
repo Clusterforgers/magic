@@ -49,7 +49,7 @@ export function StopControlsProvider({ inBar, children }: { inBar: boolean; chil
       step: state.view?.stage === 'Turns' ? state.view.turn.step : null,
       turn:
         state.view?.stage === 'Turns' && state.seat !== null
-          ? turnSide(state.view.turn.active, state.seat)
+          ? turnSide(state.view.turn.active, state.seat, state.view.house_rules?.teams)
           : null,
     })),
   )

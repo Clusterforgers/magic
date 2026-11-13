@@ -112,7 +112,7 @@ const isChange = (path: string, method: string | undefined): boolean =>
   method === 'PATCH' ||
   method === 'DELETE' ||
   (method === 'POST' && /\/(leave|seats\/\d+\/release)$/.test(path)) ||
-  (method === 'PUT' && path.endsWith('/teams'))
+  (method === 'PUT' && (path.endsWith('/teams') || /\/seats\/\d+\/team$/.test(path)))
 
 /** Builds a REST client whose `fetch` is answered by `script`; unknown paths get the server's 404. */
 export function startServer(script: ServerScript = {}, decks: DeckInfo[] = DECKS): FakeServer {

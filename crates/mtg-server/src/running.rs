@@ -427,7 +427,13 @@ impl Running {
         let clock = if state.stage() == Stage::Mulligan {
             Pace::OPENING_CLOCK
         } else {
-            self.pace.clock_for(&decision, state.turn().active())
+            // A Two-Headed Giant teammate of the active player plays on the turn's clock too (CR 805.3).
+            let active = if state.is_active(decision.player) {
+                decision.player
+            } else {
+                state.turn().active()
+            };
+            self.pace.clock_for(&decision, active)
         };
         let now = Instant::now();
         let due = clock.and_then(|span| now.checked_add(span));

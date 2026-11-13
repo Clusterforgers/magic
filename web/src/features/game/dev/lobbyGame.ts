@@ -11,6 +11,7 @@ import type { LobbyRoster } from '@/play/store'
 import type { GameFormat } from '@/lib/houseRules'
 import type { Counts, DeckListItem, DeckState, HouseRules, Issue, SeatDeck } from '@/protocol/generated'
 import { legalityIssue, reportCard, reportOf } from '@/features/decks/fakeDecks'
+import { defaultTeams } from '@/lib/teams'
 import type { DevLobbySearch } from './lobbySearch'
 
 /** The text the dev page prints, so a production bundle can be searched for any trace of the fixture. */
@@ -144,7 +145,7 @@ export const STORED_DECKS: DeckListItem[] = [
 ]
 
 /** The roster `options` describe: everybody connected unless away, and the ready seats ready. */
-export function fixtureRoster({ seats, ready, away, names, nodeck }: DevLobbySearch): LobbyRoster {
+export function fixtureRoster({ seats, ready, away, names, nodeck, mode }: DevLobbySearch): LobbyRoster {
   const listed = Array.from({ length: seats }, (_, seat) => {
     const deck = SEAT_DECKS[seat % SEAT_DECKS.length]
     return {
@@ -155,7 +156,10 @@ export function fixtureRoster({ seats, ready, away, names, nodeck }: DevLobbySea
       ...(deck === undefined || nodeck?.includes(seat) === true ? {} : { deck }),
     }
   })
-  return { seats: listed, needed: listed.filter((entry) => !entry.ready).length }
+  const needed = listed.filter((entry) => !entry.ready).length
+  return mode === undefined
+    ? { seats: listed, needed }
+    : { seats: listed, needed, teams: defaultTeams(mode, seats) }
 }
 
 /**
@@ -241,6 +245,23 @@ export function lobbyApi(
 ): LobbyApi {
   return {
     setVisibility: async (_game, visibility) => visibility,
+    setSeatTeam: async (_game, seat, team) => {
+      const now = session.store.getState().lobby?.teams
+      if (now === undefined || now === null) return null
+      const teams = { ...now, seats: now.seats.map((each, index) => (index === seat ? team : each)) }
+      session.store.setState((state) =>
+        state.lobby === null
+          ? {}
+          : {
+              lobby: {
+                ...state.lobby,
+                seats: state.lobby.seats.map((entry) => ({ ...entry, ready: false })),
+                teams,
+              },
+            },
+      )
+      return teams
+    },
     setTeams: async (_game, teams) => {
       session.store.setState((state) =>
         state.lobby === null

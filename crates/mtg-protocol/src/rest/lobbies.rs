@@ -186,6 +186,15 @@ pub struct TeamsBody {
     pub teams: Option<Teams>,
 }
 
+/// The body of `PUT /api/games/{id}/seats/{n}/team`: the team the seat plays on, counted from 0 and below the seat
+/// count. The host moves any seat, a player their own; every Ready is taken back.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[serde(deny_unknown_fields)]
+pub struct SeatTeamBody {
+    /// The team the seat plays on.
+    pub team: u32,
+}
+
 /// The body of `PUT /api/games/{id}/seats/{n}/deck`: the deck the seat plays.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[serde(deny_unknown_fields)]
