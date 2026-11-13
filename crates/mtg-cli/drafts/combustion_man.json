@@ -1,0 +1,28 @@
+{
+  "oracle_id": "533b107c-fd66-45ef-b74e-e6bd9b75ea8f",
+  "name": "Combustion Man",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Combustion Man",
+      "oracle_fingerprint": "a21ca469dc4d048e80af2a3c6db973e7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": [{ "DamageToYou": { "Stat": { "of": "This", "stat": "Power" } } }],
+                  "unpaid": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

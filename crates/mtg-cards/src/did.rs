@@ -126,9 +126,33 @@ pub enum Action {
     ExploredLand,
     /// A creature explored and revealed a card that is not a land card (CR 701.44); `what` is the creature.
     ExploredNonland,
+    /// A player put a sticker on an object (CR 123); `what` is the object.
+    PutSticker,
+    /// A player put a name sticker on an object; `what` is the object.
+    PutNameSticker,
+    /// A player put an ability sticker on an object; `what` is the object.
+    PutAbilitySticker,
+    /// A player put an art sticker on an object; `what` is the object.
+    PutArtSticker,
+    /// An ability without {T} in its activation cost was activated, a mana ability included; `what` is its source.
+    ActivatedWithoutTap,
+    /// The players finished a vote (CR 701.38); the amount is the number of the vote in the game, which
+    /// `Condition::VotedAs` reads.
+    FinishedVoting,
 }
 
 impl Action {
+    /// The action of putting a sticker of the kind on an object; the power/toughness sticker has none of its own.
+    #[must_use]
+    pub const fn sticker_put(kind: crate::ability::StickerKind) -> Option<Action> {
+        match kind {
+            crate::ability::StickerKind::Name => Some(Action::PutNameSticker),
+            crate::ability::StickerKind::Ability => Some(Action::PutAbilitySticker),
+            crate::ability::StickerKind::Art => Some(Action::PutArtSticker),
+            crate::ability::StickerKind::PowerToughness => None,
+        }
+    }
+
     /// The keyword kinds an activation of the ability also is: exhaust, once each game (CR 702.177), and boast, only
     /// if the source attacked this turn and only once each turn (CR 702.142).
     #[must_use]
@@ -235,6 +259,24 @@ impl Action {
                 "have an opponent gain control of a permanent from you",
                 "has an opponent gain control of a permanent from them",
             ),
+            Action::PutSticker => ("place a sticker", "places a sticker"),
+            Action::PutNameSticker => (
+                "put a name sticker on a permanent",
+                "puts a name sticker on a permanent",
+            ),
+            Action::PutAbilitySticker => (
+                "put an ability sticker on a permanent",
+                "puts an ability sticker on a permanent",
+            ),
+            Action::PutArtSticker => (
+                "put an art sticker on a permanent",
+                "puts an art sticker on a permanent",
+            ),
+            Action::ActivatedWithoutTap => (
+                "activate an ability without {T} in its activation cost",
+                "activates an ability without {T} in its activation cost",
+            ),
+            Action::FinishedVoting => ("finish voting", "finish voting"),
         }
     }
 
@@ -244,6 +286,7 @@ impl Action {
         matches!(
             self,
             Action::Activated
+                | Action::ActivatedWithoutTap
                 | Action::ActivatedLoyalty
                 | Action::ActivatedExhaust
                 | Action::ActivatedBoast

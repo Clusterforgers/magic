@@ -1,0 +1,103 @@
+{
+  "oracle_id": "48e913c0-efeb-47f5-9dcb-b795751e6b6d",
+  "name": "Ultra Magnus, Tactician // Ultra Magnus, Armored Carrier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ultra Magnus, Tactician",
+      "oracle_fingerprint": "7ef4aa89806e4c2669bebd67568134b5",
+      "abilities": [
+        { "Keyword": { "MoreThanMeetsTheEye": "{2}{W}{R}{G}" } },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" },
+                            { "Type": "Artifact" },
+                            { "Type": "Creature" }
+                          ]
+                        },
+                        "as": "c"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "c" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "JoinAttack": { "what": { "Bound": "c" } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "EndCombat" } },
+                        "effects": [{ "Transform": { "what": "This" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ultra Magnus, Armored Carrier",
+      "oracle_fingerprint": "e1d2dbc0f54cb21ebf9632b598cdd0a0",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "living metal", "amount": 0 } } },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Bind": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }]
+                  },
+                  "as": "atk"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "atk" },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Total": { "of": [{ "Is": { "Bound": "atk" } }], "stat": "Power" } },
+                      "op": "Ge",
+                      "right": 8
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

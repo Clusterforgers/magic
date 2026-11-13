@@ -1,4 +1,4 @@
-//! Goal: stickers (CR 123) play at tables of two to four seats: a seat puts a sticker of one of its sheets on a permanent it owns for the sticker's tickets, a name sticker adds its words to the name the game reads (layer 3), an ability sticker gives its ability (layer 6) and a power/toughness sticker sets both (layer 7b); a sticker is used once, one the seat cannot pay for is not offered, the stickers go when the permanent leaves, the other seats are untouched and the log replays to the same state. Claiming the prize of an Attraction triggers its prize ability and "whenever you claim the prize", and each Attraction visited triggers "whenever you visit an Attraction".
+//! Goal: stickers (CR 123) play at tables of two to four seats: a seat puts a sticker of one of its sheets on a permanent it owns for the sticker's tickets, a name sticker adds its words to the name the game reads (layer 3), an ability sticker gives its ability (layer 6) and a power/toughness sticker sets both (layer 7b); a sticker is used once, one the seat cannot pay for is not offered, the card keeps its stickers when it leaves but they change nothing there, the other seats are untouched and the log replays to the same state. Claiming the prize of an Attraction triggers its prize ability and "whenever you claim the prize", and each Attraction visited triggers "whenever you visit an Attraction".
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -166,7 +166,7 @@ fn only_the_stickers_the_seat_can_pay_for_are_offered(
 }
 
 #[test]
-fn a_sticker_is_used_once_and_leaves_with_the_permanent() -> Result<(), ScriptError> {
+fn a_sticker_is_used_once_and_stays_on_the_card() -> Result<(), ScriptError> {
     let scenario = table(2, 3).hand(
         0,
         [un34_stickerer("Stickerer"), un34_stickerer("Stickerer")],
@@ -205,7 +205,16 @@ fn a_sticker_is_used_once_and_leaves_with_the_permanent() -> Result<(), ScriptEr
         },
     )
     .unwrap();
-    assert_eq!(moved.stickers_on(bear), []);
+    assert_eq!(
+        moved.stickers_on(bear).len(),
+        2,
+        "the card keeps its stickers"
+    );
+    assert_eq!(
+        moved.name_of(bear).unwrap(),
+        "Grizzly Bears",
+        "a name sticker changes nothing off the battlefield"
+    );
     Ok(())
 }
 

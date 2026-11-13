@@ -30,6 +30,7 @@ mod r287_above;
 mod r302_sources;
 mod r302b_sources;
 mod r305b_amounts;
+mod r374_counts;
 mod soulbond;
 mod w21a_atoms;
 mod w6d_shares;
@@ -478,7 +479,10 @@ impl<'a> Scope<'a> {
         if last
             && matches!(
                 what,
-                TurnTally::DungeonsCompleted | TurnTally::DamageDealtTo | TurnTally::CountersPut
+                TurnTally::DungeonsCompleted
+                    | TurnTally::SpellsCastThisGame
+                    | TurnTally::DamageDealtTo
+                    | TurnTally::CountersPut
             )
         {
             return Err(ResolveError::Unsupported("Amount.TalliedLastTurn.Kind"));
@@ -509,6 +513,12 @@ impl<'a> Scope<'a> {
             TurnTally::DungeonsCompleted => {
                 let total: u32 = (self.players(who)?.into_iter())
                     .map(|player| self.state.w11d_completed(player))
+                    .sum();
+                return Ok(i64::from(total));
+            }
+            TurnTally::SpellsCastThisGame => {
+                let total: u32 = (self.players(who)?.into_iter())
+                    .map(|player| self.state.r379_cast_game.get(&player).copied().unwrap_or(0))
                     .sum();
                 return Ok(i64::from(total));
             }
@@ -612,6 +622,30 @@ impl<'a> Scope<'a> {
             };
             if each.holds(test)? {
                 found.push(Target::Player(player));
+            }
+        }
+        Ok(found)
+    }
+
+    /// The next player still in the game on `side` of each player `of` names, the nearest opponent of theirs with
+    /// `opponent` (`Ref::Seated`); each once, in the order of the players named.
+    fn r376_seated(
+        &self,
+        of: &Ref,
+        side: mtg_cards::refs::Side,
+        opponent: bool,
+    ) -> Result<Vec<Target>, ResolveError> {
+        let mut found: Vec<Target> = Vec::new();
+        for player in self.players(of)? {
+            let next = self
+                .state
+                .r376_seats_from(player, side)
+                .into_iter()
+                .find(|seat| !opponent || self.state.is_opponent(player, *seat));
+            if let Some(next) = next.map(Target::Player)
+                && !found.contains(&next)
+            {
+                found.push(next);
             }
         }
         Ok(found)
@@ -751,6 +785,45 @@ impl<'a> Scope<'a> {
             }
         }
         Ok(count)
+    }
+
+    /// Whether the sticker whose putting on triggered the ability is of the kind.
+    fn r378_triggering_sticker(&self, kind: mtg_cards::ability::StickerKind) -> bool {
+        self.cause
+            .is_some_and(|cause| cause.amount == crate::un34_stickers::kind_code(kind))
+    }
+
+    /// How many events of the kind the players had in the snapshot log given, among the objects the filter selects, or
+    /// the stat of those objects added up.
+    fn r378_logged_in(
+        &self,
+        log: &[(TallyEvent, PlayerId, crate::snapshot::Snapshot)],
+        event: TallyEvent,
+        players: &[PlayerId],
+        filter: &Selector,
+        stat: Option<StatKind>,
+    ) -> Result<i64, ResolveError> {
+        let mut scope = self.clone();
+        scope.snapshots.extend(log.iter().map(|(_, _, shot)| shot));
+        scope.as_was = true;
+        let mut total = 0i64;
+        for (kind, player, shot) in log {
+            let reference = ObjectRef {
+                id: shot.id,
+                counter: shot.counter,
+            };
+            if *kind != event || !players.contains(player) || !scope.selects(filter, reference)? {
+                continue;
+            }
+            total += match stat {
+                None => 1,
+                Some(stat) => scope
+                    .seen(reference)
+                    .and_then(|seen| Self::stat(&seen, stat))
+                    .unwrap_or(0),
+            };
+        }
+        Ok(total)
     }
 
     /// How many permanents the source devoured as it entered (CR 702.82); zero once it is a new object.
@@ -1196,6 +1269,7 @@ impl<'a> Scope<'a> {
             Ref::Departed(of) => self.departed_of(of)?,
             Ref::SourceOf(of) => self.r302b_sources(of)?,
             Ref::PlayersWhere { who, test } => self.players_where(who, test)?,
+            Ref::Seated { of, side, opponent } => self.r376_seated(of, *side, *opponent)?,
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,
             Ref::OrController(inner) => self.players_or_controllers(inner)?,
@@ -1708,6 +1782,51 @@ impl<'a> Scope<'a> {
         Ok(false)
     }
 
+    /// Whether the object seen shares a creature type with each object `named` names (`Pred::SharesCreatureTypeWithEach`):
+    /// a creature type both have, every creature type counting for one with all of them (changeling).
+    fn r376_shares_creature_type(
+        &self,
+        named: &Ref,
+        seen: &Seen<'_>,
+    ) -> Result<bool, ResolveError> {
+        let types = |one: &Seen<'_>| -> (Vec<Subtype>, bool, Vec<Subtype>) {
+            let printed = one
+                .card
+                .map(|c| c.card().subtypes.clone())
+                .unwrap_or_default();
+            let listed = one
+                .chars
+                .subtypes
+                .iter()
+                .chain(&printed)
+                .filter(|subtype| {
+                    subtype.is_creature_type() && one.chars.has_subtype(&printed, subtype)
+                })
+                .cloned()
+                .collect();
+            (listed, one.chars.all_creature_types, printed)
+        };
+        let (mine, all_mine, my_printed) = types(seen);
+        for other in self.objects(named)? {
+            let Some(theirs) = self.seen(other) else {
+                return Ok(false);
+            };
+            let (listed, all_theirs, their_printed) = types(&theirs);
+            let shares = (all_mine && (all_theirs || !listed.is_empty()))
+                || (all_theirs && !mine.is_empty())
+                || mine
+                    .iter()
+                    .any(|subtype| theirs.chars.has_subtype(&their_printed, subtype))
+                || listed
+                    .iter()
+                    .any(|subtype| seen.chars.has_subtype(&my_printed, subtype));
+            if !shares {
+                return Ok(false);
+            }
+        }
+        Ok(true)
+    }
+
     #[allow(clippy::too_many_lines)]
     fn pred(
         &self,
@@ -1724,9 +1843,13 @@ impl<'a> Scope<'a> {
                 crate::attach::legal_host_entering(state, reference.id, self.source.id)
             }
             Pred::SharesSubtype(named) => self.shares_subtype(named, seen)?,
+            Pred::SharesCreatureTypeWithEach(named) => {
+                self.r376_shares_creature_type(named, seen)?
+            }
             Pred::SharesName(_)
             | Pred::SharesType(_)
             | Pred::SharesColor(_)
+            | Pred::SharesManaValue(_)
             | Pred::XInCost
             | Pred::GenericCost(_)
             | Pred::Goaded
@@ -1769,6 +1892,7 @@ impl<'a> Scope<'a> {
             Pred::Token => seen.kind == ObjectKind::Token,
             Pred::Commander => state.is_commander(reference.id),
             Pred::Spell => seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability,
+            Pred::Dungeon => state.r376_is_dungeon(reference.id),
             Pred::Ability(kind) => is_ability(seen, *kind),
             Pred::AbilityFrom(sources) => self.r302_ability_from(sources, seen)?,
             Pred::SourceOf(named) => self.r302_source_of(named, reference)?,
@@ -1780,9 +1904,9 @@ impl<'a> Scope<'a> {
             Pred::Prepared => matches!(seen.counters, Counted::Live(held) if held.prepared()),
             Pred::Suspected => seen.suspected,
             Pred::Solved => matches!(seen.counters, Counted::Live(held) if held.solved()),
-            Pred::Stickered => {
-                matches!(seen.counters, Counted::Live(_))
-                    && !state.stickers_on(reference.id).is_empty()
+            Pred::Stickered => crate::un34_stickers::has_sticker(state, reference, None),
+            Pred::WithSticker(kind) => {
+                crate::un34_stickers::has_sticker(state, reference, Some(*kind))
             }
             Pred::Harnessed => matches!(seen.counters, Counted::Live(held) if held.harnessed()),
             Pred::FoughtSinceYourLastUpkeep {
@@ -1827,6 +1951,11 @@ impl<'a> Scope<'a> {
                 to,
                 combat,
             } => self.did_this_turn(*event, (by.as_ref(), to.as_ref()), *combat, reference),
+            Pred::BlockedThisTurn(with) => self.r379_blocked_this_turn(with, reference),
+            Pred::EnteredSinceLastTurn(who) => self
+                .players(who)?
+                .iter()
+                .any(|player| state.r379_since.entered_since(reference, *player)),
             Pred::DamagedBy(named) => self.objects(named)?.iter().any(|source| {
                 state.damaged_by(reference, *source)
                     || state.damaged_by_departed(reference, *source)
@@ -1838,6 +1967,11 @@ impl<'a> Scope<'a> {
             Pred::Targeting(inner) => self.targets_match(inner, reference, seen)?,
             Pred::ControlledBy(who) => self.players(who)?.contains(&seen.controller),
             Pred::OwnedBy(who) => self.players(who)?.contains(&seen.owner),
+            Pred::ProtectedBy(who) => {
+                let players = self.players(who)?;
+                crate::battle::protector(state, reference.id)
+                    .is_some_and(|protector| players.contains(&protector))
+            }
             Pred::In(kind) => zone_kind(seen.zone) == *kind,
             Pred::CastFrom(kind) => self.cast_from(seen, *kind),
             // An object that has changed zones since it was named has the keywords its snapshot holds (CR 608.2h).
@@ -1892,6 +2026,7 @@ impl<'a> Scope<'a> {
             | Pred::TopOfGraveyard
             | Pred::TopCreatureOfGraveyard
             | Pred::BlockedBy(_)
+            | Pred::BlockedThisTurnBy(_)
             | Pred::BandedWith(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
@@ -1979,6 +2114,12 @@ impl<'a> Scope<'a> {
             StatKind::Name
             | StatKind::CreatureType
             | StatKind::CounterKinds
+            | StatKind::R374Types
+            | StatKind::R374CreatureTypes
+            | StatKind::R374Bushido
+            | StatKind::R374Toxic
+            | StatKind::R374ManaCost
+            | StatKind::R374ColorSet
             | StatKind::Subtypes => None,
         }
     }
@@ -2016,6 +2157,16 @@ impl<'a> Scope<'a> {
             Amount::X => i64::from(self.x_value()),
             Amount::Count(selector) => i64::try_from(self.matching(selector)?.len())
                 .map_err(|_| ResolveError::Invalid("too many objects".into()))?,
+            Amount::Stat { of, stat } if r374_counts::is_r374(*stat) => {
+                let mut total = 0i64;
+                for object in self.objects(of)? {
+                    if let Some(seen) = self.seen(self.as_it_left(object)) {
+                        total = total.saturating_add(self.r374_stat(&seen, *stat)?);
+                    }
+                }
+                total
+            }
+            Amount::R374AtMost(inner, most) => self.r374_at_most(inner, *most)?,
             Amount::Stat { of, stat } => self
                 .objects(of)?
                 .iter()
@@ -2050,6 +2201,11 @@ impl<'a> Scope<'a> {
                 sum
             }
             Amount::Times { by, of } => i64::from(*by) * self.amount_of(of, share)?,
+            // Past 2^62 the number is past any count a game can use.
+            Amount::TwoToThe(of) => match self.amount_of(of, share)? {
+                power if power < 0 => 0,
+                power => 1i64 << power.min(62),
+            },
             Amount::AtMost { of, most } => self.amount_of(of, share)?.min(i64::from(*most)),
             Amount::Half { of, up } => {
                 let whole = self.amount_of(of, share)?.max(0);
@@ -2090,8 +2246,12 @@ impl<'a> Scope<'a> {
             Amount::CardsAbove { filter, directly } => self.r287_cards_above(filter, *directly)?,
             Amount::ManaSymbols { color, of } => self.mana_symbols(*color, of)?,
             Amount::Greatest { of, stat } => self.stats(of, *stat)?.into_iter().max().unwrap_or(0),
+            Amount::GreatestCast { who, of, stat } => self.r379_greatest_cast(who, of, *stat)?,
             Amount::Total { of, stat } => self.stats(of, *stat)?.into_iter().sum(),
-            Amount::Distinct { of, stat } => self.w2c_distinct(of, *stat)?,
+            Amount::Distinct { of, stat } => match self.r374_distinct(of, *stat)? {
+                Some(found) => found,
+                None => self.w2c_distinct(of, *stat)?,
+            },
             Amount::CardTypes(of) => self.card_types_among(of)?,
             Amount::Players(who) => i64::try_from(self.players(who)?.len())
                 .map_err(|_| ResolveError::Invalid("too many players".into()))?,
@@ -2146,6 +2306,29 @@ impl<'a> Scope<'a> {
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
             Amount::CommanderColors(who) => self.commander_colors(who)?,
             Amount::TurnNumber => i64::from(self.state.turn().number()),
+            Amount::Stickers { on, kind } => {
+                let mut total = 0i64;
+                for named in self.refs(on)? {
+                    if let Target::Object(object) = named {
+                        total += i64::from(crate::un34_stickers::stickers_of_kind(
+                            self.state, object, *kind,
+                        ));
+                    }
+                }
+                total
+            }
+            // Kept by the resolution that put the sticker on, else carried by the reflexive trigger it set off.
+            Amount::StickerVowels => self
+                .own_run()
+                .and_then(|resolving| {
+                    resolving
+                        .lets
+                        .iter()
+                        .find(|(kept, _)| kept == crate::un34_stickers::VOWELS)
+                        .map(|(_, value)| *value)
+                })
+                .or_else(|| self.cause.map(|cause| i64::from(cause.amount)))
+                .unwrap_or(0),
             Amount::TriggeringTargets => self.triggering_targets()?,
             Amount::PlayersLost => self.r305b_players_lost(),
             Amount::CastTargets => self.r305b_cast_targets()?,
@@ -2159,6 +2342,40 @@ impl<'a> Scope<'a> {
             | Amount::ManaInPool(_)
             | Amount::Doors(_) => self.fill_amount(amount, share)?,
             Amount::Tally { event, who, filter } => self.logged(*event, who, filter)?,
+            Amount::CastSameNameThisGame(who) => {
+                let name = self
+                    .state
+                    .source_object(self.source.id)
+                    .map(|source| source.card().name.clone())
+                    .unwrap_or_default();
+                self.players(who)?
+                    .into_iter()
+                    .map(|player| {
+                        i64::from(
+                            self.state
+                                .cast_names
+                                .get(&(player, name.clone()))
+                                .copied()
+                                .unwrap_or(0),
+                        )
+                    })
+                    .sum()
+            }
+            Amount::TallyLastTurn { event, who, filter } => {
+                let players = self.players(who)?;
+                let log = self.state.logged_last_turn();
+                self.r378_logged_in(log, *event, &players, filter, None)?
+            }
+            Amount::TallyTotal {
+                event,
+                who,
+                filter,
+                stat,
+            } => {
+                let players = self.players(who)?;
+                let log = self.state.tallies.logged.as_slice();
+                self.r378_logged_in(log, *event, &players, filter, Some(*stat))?
+            }
             Amount::Remembered { on, slot, per } => {
                 let slots = match per {
                     Some(per) => self
@@ -2326,6 +2543,38 @@ impl<'a> Scope<'a> {
     }
 
     /// A characteristic of each object the selector matches that has one.
+    fn r379_greatest_cast(
+        &self,
+        who: &Ref,
+        of: &Selector,
+        stat: StatKind,
+    ) -> Result<i64, ResolveError> {
+        let players = self.players(who)?;
+        let mut greatest = 0;
+        for (_, _, shot) in self
+            .state
+            .tallies
+            .logged
+            .iter()
+            .filter(|(event, player, _)| {
+                *event == TallyEvent::SpellCast && players.contains(player)
+            })
+        {
+            // Each spell is judged as it was cast, by its own snapshot put first.
+            let mut one = self.clone();
+            one.as_was = true;
+            one.snapshots.insert(0, shot);
+            let reference = shot.reference();
+            if !of.is_empty() && !one.selects(of, reference)? {
+                continue;
+            }
+            if let Some(value) = one.seen(reference).and_then(|seen| Self::stat(&seen, stat)) {
+                greatest = greatest.max(value);
+            }
+        }
+        Ok(greatest)
+    }
+
     fn stats(&self, of: &Selector, stat: StatKind) -> Result<Vec<i64>, ResolveError> {
         Ok(self
             .matching(of)?
@@ -2355,7 +2604,11 @@ impl<'a> Scope<'a> {
                 .count();
             total += i64::try_from(counted).unwrap_or(i64::MAX);
         }
-        Ok(total)
+        Ok(total
+            + i64::from(crate::w17b_statics::r377_devotion_bonus(
+                self.state,
+                self.controller,
+            )))
     }
 
     /// The mana symbols of `color` in the mana costs of the objects `of` names (chroma): a hybrid symbol counts once.
@@ -2781,6 +3034,28 @@ impl<'a> Scope<'a> {
         }))
     }
 
+    /// Whether "you" voted, in the vote that triggered the ability, for a choice a player `with` names voted for (`same`),
+    /// or for a choice none of them voted for; false outside such a trigger.
+    fn r379_voted_as(&self, with: &Ref, same: bool) -> Result<bool, ResolveError> {
+        let others = self.players(with)?;
+        let Some(ballots) = self
+            .cause
+            .and_then(|cause| usize::try_from(cause.amount).ok()?.checked_sub(1))
+            .and_then(|at| self.state.r379_votes.get(at))
+        else {
+            return Ok(false);
+        };
+        let theirs: Vec<u32> = ballots
+            .iter()
+            .filter(|(voter, _)| others.contains(voter))
+            .map(|(_, choice)| *choice)
+            .collect();
+        Ok(ballots
+            .iter()
+            .filter(|(voter, _)| *voter == self.controller)
+            .any(|(_, choice)| theirs.contains(choice) == same))
+    }
+
     /// Whether a player `who` names searched their own zone of the kind earlier in the resolution (also for no card found).
     fn searched(&self, who: &Ref, zone: ZoneKind) -> Result<bool, ResolveError> {
         let Some(resolving) = self.state.resolving.as_ref() else {
@@ -2814,6 +3089,26 @@ impl<'a> Scope<'a> {
             Condition::ExtraTurn => self.state.turn().is_extra(),
             _ => self.state.is_active(self.controller),
         }
+    }
+
+    /// Whether every named permanent, still the one named, has a level that compares with `level` by `op`.
+    fn level_holds(
+        &self,
+        of: &Ref,
+        op: mtg_cards::value::Cmp,
+        level: u32,
+    ) -> Result<bool, ResolveError> {
+        let named = self.objects(of)?;
+        Ok(!named.is_empty()
+            && named.iter().all(|named| {
+                self.state
+                    .object(named.id)
+                    .filter(|object| object.counter() == named.counter)
+                    .and_then(GameObject::permanent)
+                    .is_some_and(|permanent| {
+                        op.holds(i64::from(permanent.level()), i64::from(level))
+                    })
+            }))
     }
 
     /// Whether a condition is true now.
@@ -2865,6 +3160,11 @@ impl<'a> Scope<'a> {
             Condition::EnteredAs(word) => self.e15f_entered_as(word),
             Condition::Performed => return Err(ResolveError::Unsupported("\"if you do\"")),
             Condition::Searched { who, zone } => self.searched(who, *zone)?,
+            Condition::VotedAs { with, same } => self.r379_voted_as(with, *same)?,
+            Condition::CombatDamagedSinceLastTurn(who) => self
+                .players(who)?
+                .iter()
+                .any(|player| self.state.r379_since.hurt_since(*player)),
             Condition::AttackedYouLastTurn(who) => self.r305b_attacked_you(who)?,
             Condition::CompletedDungeon(who)
             | Condition::Initiative(who)
@@ -2891,19 +3191,8 @@ impl<'a> Scope<'a> {
                 crate::priority::sorcery_timing(self.state, self.controller)
             }
             Condition::AfterCombat => self.state.turn().step() >= crate::turn::Step::Main2,
-            Condition::Level { of, op, level } => {
-                let named = self.objects(of)?;
-                !named.is_empty()
-                    && named.iter().all(|named| {
-                        self.state
-                            .object(named.id)
-                            .filter(|object| object.counter() == named.counter)
-                            .and_then(GameObject::permanent)
-                            .is_some_and(|permanent| {
-                                op.holds(i64::from(permanent.level()), i64::from(*level))
-                            })
-                    })
-            }
+            Condition::TriggeringSticker(kind) => self.r378_triggering_sticker(*kind),
+            Condition::Level { of, op, level } => self.level_holds(of, *op, *level)?,
             Condition::NewlyControlled(what) => {
                 let named = self.objects(what)?;
                 !named.is_empty()

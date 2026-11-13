@@ -1,7 +1,7 @@
 {
   "oracle_id": "7ef7d902-1f05-40b3-8997-dec197b0b678",
   "name": "Spider-Verse",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Spider-Verse",
@@ -13,9 +13,50 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 56, "end": 265 }
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "CastFrom": "Hand" } }], "by": "You" } },
+            "limit": "OncePerTurnDone",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": {
+                            "subject": "Triggering",
+                            "selector": [
+                              {
+                                "AnyOf": [
+                                  { "Type": "Artifact" },
+                                  { "Type": "Creature" },
+                                  { "Type": "Enchantment" },
+                                  { "Type": "Planeswalker" },
+                                  { "Type": "Battle" },
+                                  { "Type": "Land" }
+                                ]
+                              }
+                            ]
+                          }
+                        },
+                        "then": [
+                          {
+                            "CopySpell": {
+                              "what": "Triggering",
+                              "new_targets": true,
+                              "except": [{ "AddKeyword": "Haste" }]
+                            }
+                          }
+                        ],
+                        "otherwise": [
+                          { "CopySpell": { "what": "Triggering", "new_targets": true } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

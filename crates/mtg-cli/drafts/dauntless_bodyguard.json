@@ -1,0 +1,43 @@
+{
+  "oracle_id": "70973a2d-66e6-4662-ab10-99678775dda1",
+  "name": "Dauntless Bodyguard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dauntless Bodyguard",
+      "oracle_fingerprint": "8682202af65d141ccc5a55f516bf6285",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                {
+                  "Choose": {
+                    "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] },
+                    "as": "chosen"
+                  }
+                },
+                { "Remember": { "what": { "Bound": "chosen" }, "slot": "chosen" } }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Remembered": { "on": "This", "slot": "chosen" } },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

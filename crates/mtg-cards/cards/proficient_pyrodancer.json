@@ -1,0 +1,52 @@
+{
+  "oracle_id": "ddd3f530-1ea4-4b1e-9f9b-5d34fa626529",
+  "name": "Proficient Pyrodancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Proficient Pyrodancer",
+      "oracle_fingerprint": "38a7276e0db7c36971dabf7dd2bf5f7d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "PutSticker": {
+                        "on": [{ "Not": { "Type": "Land" } }, { "OwnedBy": "You" }],
+                        "kind": "Art"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{R}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "WithSticker": "Art" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "Menace" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

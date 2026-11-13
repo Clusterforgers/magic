@@ -31,8 +31,8 @@ use crate::records::RecordError;
 use crate::registry::{Registry, ResumeReport};
 use crate::tournaments::Tournaments;
 use crate::{
-    api, bulk_reads, decks, favourites, fix_marks, lobbies, my_games, precon_api, prefs, reads,
-    tournaments, tutorial, ws,
+    api, bulk_reads, decks, favourites, fix_marks, lobbies, my_games, precon_api, prefs, printings,
+    reads, tournaments, tutorial, ws,
 };
 
 struct Inner {
@@ -354,6 +354,10 @@ fn game_routes() -> Router<AppState> {
                 .delete(lobbies::close),
         )
         .route("/api/games/{id}/teams", put(lobbies::set_teams))
+        .route(
+            "/api/games/{id}/seats/{seat}/team",
+            put(lobbies::set_seat_team),
+        )
         .route("/api/games/{id}/join", post(lobbies::join_game))
         .route("/api/games/{id}/replay", get(api::replay))
         .route("/api/games/{id}/leave", post(lobbies::leave))
@@ -396,6 +400,7 @@ pub(crate) fn router(state: AppState) -> Router {
         .route("/api/demo-decks", get(api::decks))
         .route("/api/cards", get(card_api::search))
         .route("/api/cards/{oracle_id}", get(card_api::detail))
+        .route("/api/cards/{oracle_id}/printings", get(printings::of_card))
         .route(
             "/api/images/oracle/{oracle_id}/{face}/{size}",
             get(images::by_oracle),
@@ -415,6 +420,12 @@ pub(crate) fn router(state: AppState) -> Router {
                 .delete(decks::remove),
         )
         .route("/api/decks/{id}/export", get(decks::export))
+        .route("/api/decks/{id}/printing", put(printings::set_line))
+        .route("/api/me/printings", get(printings::preferred))
+        .route(
+            "/api/me/printings/{oracle_id}",
+            put(printings::prefer).delete(printings::forget),
+        )
         .route("/api/favourites/precons", get(favourites::list))
         .route(
             "/api/favourites/precons/{code}",

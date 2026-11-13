@@ -44,6 +44,7 @@ pub fn named(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         options: VoteFor::Named(vec![first.clone(), second.clone()]),
         secret,
         bind: None,
+        tally: None,
     }];
     if let Some(outcome) = r.attempt(|r| outcome(r, &first, &second)) {
         effects.push(outcome);

@@ -115,6 +115,7 @@ Azorius Herald
 Azorius Signet
 Azure Fleet Admiral
 Azusa, Lost but Seeking
+Baaallerina
 Back in Town
 Baird, Steward of Argive
 Bandit's Haul
@@ -240,6 +241,7 @@ Broodhatch Nantuko
 Brooding Saurian
 Broodstar
 Bubble Matrix
+Bucknard's Everfull Purse
 Buried Alive
 Butcher's Cleaver
 Cabaretti Confluence
@@ -272,6 +274,7 @@ Cave Tiger
 Cavern Whisperer
 Caverns of Despair
 Cayth, Famed Mechanist
+Ceaseless Searblades
 Celebrate the Harvest
 Celestial Archon
 Celestial Colonnade
@@ -382,6 +385,7 @@ Crypt Ghast
 Crypt Rats
 Crypt of Agadeem
 Cryptcaller Chariot
+Cryptic Gateway
 Crystal Barricade
 Crystal Quarry
 Crystal Spray
@@ -411,6 +415,7 @@ Cut the Earthly Bond
 Cybermen Squadron
 Cyclonic Rift
 Cytoshape
+Círdan the Shipwright
 Dalek Squadron
 Damocles Base, Sword of Kang
 Dampen Thought
@@ -467,6 +472,7 @@ Devastation Tide
 Devoted Druid
 Diffusion Sliver
 Dig Up
+Diligent Zookeeper
 Dimir Cutpurse
 Dimir Infiltrator
 Dina, Soul Steeper
@@ -577,6 +583,7 @@ Elspeth's Nightmare
 Elven Ambush
 Elvish Aberration
 Elvish Rejuvenator
+Embiggen
 Emergency Eject
 Emmara Tandris
 Empowered Autogenerator
@@ -843,6 +850,7 @@ Hada Spy Patrol
 Hagra Mauling // Hagra Broodpit
 Hall of Triumph
 Hallowed Spiritkeeper
+Hama Pashar, Ruin Seeker
 Hammer Dropper
 Hangar Scrounger
 Hangarback Walker
@@ -1035,6 +1043,7 @@ Korozda Monitor
 Koth, Fire of Resistance
 Kozilek's Translator
 Krark's Thumb
+Kraum, Violent Cacophony
 Krav, the Unredeemed
 Krenko's Enforcer
 Krenko, Tin Street Kingpin
@@ -1162,6 +1171,7 @@ Megaton's Fate
 Megrim
 Memory Guardian
 Memory Plunder
+Menacing Ogre
 Mer-Ek Nightblade
 Mercadia's Downfall
 Merchant of Truth
@@ -1200,6 +1210,7 @@ Mishra, Excavation Prodigy
 Misleading Signpost
 Mistmeadow Skulk
 Mizzium Mortars
+Mob Verdict
 Mobilizer Mech
 Moldgraf Millipede
 Molecule Man
@@ -1242,6 +1253,7 @@ Nardole, Resourceful Cyborg
 Narset's Rebuke
 Nature's Embrace
 Necklace of Girion
+Necroduality
 Necroplasm
 Necropolis Regent
 Necroskitter
@@ -1292,6 +1304,7 @@ Okiba Reckoner Raid // Nezumi Road Captain
 Olivia's Wrath
 Ominous Harvest
 Onakke Oathkeeper
+Ondu Spiritdancer
 Oona's Blackguard
 Opposition Agent
 Opt
@@ -1393,9 +1406,11 @@ Pouncing Jaguar
 Pouncing Shoreshark
 Powder Ganger
 Power Conduit
+Pramikon, Sky Rampart
 Prava of the Steel Legion
 Predator Dragon
 Predator Ooze
+Premature Burial
 Prey Upon
 Preyseizer Dragon
 Price of Fame
@@ -1410,11 +1425,13 @@ Primordial Hydra
 Prismatic Geoscope
 Prismatic Lens
 Prison Sentence
+Prisoner's Dilemma
 Prize Wall
 Prizefight
 Profane Command
 Professional Face-Breaker
 Professor of Symbology
+Proficient Pyrodancer
 Propaganda
 Propeller Pioneer
 Prosperous Bandit
@@ -1455,6 +1472,7 @@ Rampant Growth
 Ramses Overdark
 Rancor
 Ransom Note
+Ratadrabik of Urborg
 Ravenous Leucrocota
 Ravenous Slime
 Ray Fillet, Wave Warrior
@@ -1515,6 +1533,7 @@ Rienne, Angel of Rebirth
 Rift Bolt
 Righteous Avengers
 Righteous Confluence
+Riku of Two Reflections
 Rionya, Fire Dancer
 Riptide Survivor
 Rishkar's Expertise
@@ -1613,6 +1632,7 @@ Serpent-Blade Assailant
 Serra Angel
 Serra Avatar
 Servant of the Conduit
+Setessan Champion
 Shabraz, the Skyshark
 Shacklegeist
 Shadowmage Infiltrator
@@ -1810,6 +1830,7 @@ Sunhome Stalwart
 Sunken Ruins
 Sunrise Cavalier
 Sunscorch Regent
+Sunstar Lightsmith
 Suntouched Myr
 Super Combo
 Supernatural Rescue
@@ -1829,6 +1850,7 @@ Swift Kick
 Swiftfoot Boots
 Switcheroo
 Sword of Body and Mind
+Sword-Swallowing Seraph
 Swords to Plowshares
 Sylvok Battle-Chair
 Syndic of Tithes
@@ -1841,6 +1863,7 @@ Tah-Crop Skirmisher
 Tainted Adversary
 Tainted Isle
 Tainted Remedy
+Takeno, Samurai General
 Tamiyo's Logbook
 Tandem Lookout
 Tangle Tumbler
@@ -1875,6 +1898,7 @@ Terrus Wurm
 Teshar, Ancestor's Apostle
 Teval's Judgment
 Textbook Tabulator
+Teyo, Geometric Tactician
 Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Birth of Meletis
@@ -1884,6 +1908,7 @@ The Dalek Emperor
 The Elder Dragon War
 The Eleventh Doctor
 The Gaffer
+The Great Henge
 The Locust God
 The Mechanist, Aerial Artisan
 The Modern Age // Vector Glider
@@ -1940,6 +1965,7 @@ Time Sieve
 Time Stretch
 Time Walk
 Time Warp
+Time to Reflect
 Timeless Lotus
 Timeless Witness
 Timin, Youthful Geist
@@ -2155,6 +2181,7 @@ Wurmwall Sweeper
 Wyll, Blade of Frontiers
 Wyrm's Crossing Patrol
 Yisan, the Wanderer Bard
+You Cannot Pass!
 Young Wolf
 Yurlok of Scorch Thrash
 Zanikev Locust
@@ -2163,6 +2190,7 @@ Zellix, Sanity Flayer
 Zendikar Farguide
 Zendikar Resurgent
 Zhang Fei, Fierce Warrior
+Zilortha, Strength Incarnate
 Zimone, Quandrix Prodigy
 Zndrsplt, Eye of Wisdom
 Zodiac Goat

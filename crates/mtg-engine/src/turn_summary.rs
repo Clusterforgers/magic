@@ -20,6 +20,8 @@ pub struct TurnSummary {
     pub(crate) tallies: BTreeMap<(PlayerId, Tally), u32>,
     /// The creatures declared as attackers during the turn, as the objects they were.
     pub(crate) attackers: Vec<ObjectRef>,
+    /// The turn's log of objects (what entered, was cast, died and the like), as they were then.
+    pub(crate) logged: Vec<(TallyEvent, PlayerId, crate::snapshot::Snapshot)>,
     /// The players attacked during the turn (not their planeswalkers), each once.
     pub(crate) attacked: Vec<PlayerId>,
 }
@@ -53,10 +55,18 @@ impl GameState {
                 cast,
                 tallies,
                 attackers,
+                logged: self.tallies.logged.clone(),
                 attacked,
             },
         );
         self.last_turn_of = Some(active);
+    }
+
+    /// The log of objects of the turn that ended last; empty before any turn has ended.
+    pub(crate) fn logged_last_turn(&self) -> &[(TallyEvent, PlayerId, crate::snapshot::Snapshot)] {
+        self.last_turn_of
+            .and_then(|seat| self.seat_turns.get(&seat))
+            .map_or(&[], |summary| summary.logged.as_slice())
     }
 
     /// Whether the object attacked during its controller's latest finished turn (`Pred::AttackedLastTurn`).

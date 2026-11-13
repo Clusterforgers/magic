@@ -1,0 +1,46 @@
+{
+  "oracle_id": "0dd4bc7b-2ddf-4ca4-912c-59685c41c3b5",
+  "name": "Indoraptor, the Perfect Hybrid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Indoraptor, the Perfect Hybrid",
+      "oracle_fingerprint": "02a2ac9e36e8ba654cdc2651000f9598",
+      "abilities": [
+        {
+          "Keyword": {
+            "MacroX": {
+              "name": "bloodthirst",
+              "x": { "Tallied": { "who": "Opponents", "what": "DamageTaken" } }
+            }
+          }
+        },
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "This" } },
+            "effects": [
+              { "ChooseAtRandom": { "from": "Opponents", "as": "opp" } },
+              {
+                "Pay": {
+                  "who": { "Bound": "opp" },
+                  "cost": [
+                    { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Not": "Token" }] } }
+                  ],
+                  "unpaid": [
+                    {
+                      "DealDamage": {
+                        "to": { "Bound": "opp" },
+                        "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

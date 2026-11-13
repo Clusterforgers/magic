@@ -9,12 +9,7 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "Nth": {
-                "event": { "SpellCast": { "what": [{ "ControlledBy": "You" }], "by": "You" } },
-                "nth": 2
-              }
-            },
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 2 } },
             "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }, { "Draw": {} }]
           }
         }

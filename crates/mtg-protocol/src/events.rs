@@ -392,6 +392,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Regenerated { .. }
         | Event::DamageRemoved { .. }
         | Event::ShieldUsed { .. }
+        | Event::DamagePrevented { .. }
         | Event::EffectCreated { .. }
         | Event::EffectExpired { .. }
         | Event::RuleCreated { .. }
@@ -465,6 +466,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         // A by-hand line comes due only on a permanent, which every seat sees.
         | Event::ByHandDue(_)
         | Event::Clashed { .. }
+        | Event::VotesFinished { .. }
         | Event::Proliferated { .. }
         | Event::Explored { .. }
         | Event::Connived { .. }
@@ -1414,6 +1416,9 @@ mod tests {
                 player: OWNER,
                 opponent: OTHER,
                 won: false,
+            },
+            Event::VotesFinished {
+                ballots: vec![(OWNER, 0), (OTHER, 1)],
             },
             Event::CoinFlipped {
                 player: OTHER,

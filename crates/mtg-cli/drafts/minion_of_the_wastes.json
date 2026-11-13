@@ -1,0 +1,46 @@
+{
+  "oracle_id": "2593944c-1bde-4307-b3ca-f7ecbeb027c1",
+  "name": "Minion of the Wastes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Minion of the Wastes",
+      "oracle_fingerprint": "6afc408fcc9626ae1c4aad0ec81d3ffb",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                { "ChooseValue": { "kind": { "Number": [0, { "Life": "You" }] }, "as": "life" } },
+                {
+                  "Pay": {
+                    "cost": [{ "PayLife": { "ChosenAs": "life" } }],
+                    "paid": [
+                      { "RememberValue": { "value": { "ChosenAs": "life" }, "slot": "life_paid" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Remembered": { "on": "This", "slot": "life_paid" } },
+                  "toughness": { "Remembered": { "on": "This", "slot": "life_paid" } }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

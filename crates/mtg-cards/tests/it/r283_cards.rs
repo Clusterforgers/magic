@@ -298,11 +298,11 @@ fn r283_x_is_allowed_only_where_a_keyword_cost_holds_one(
     r#"{"PutCounters":{"on":"Triggering","counter":"+1/+1","count":"Triggering"}}"#,
     true
 )]
-#[case::a_target(
+#[case::the_target(
     r#"{"PutCounters":{"on":{"Target":0},"counter":"+1/+1","count":"Triggering"}}"#,
-    false
+    true
 )]
-fn r283_a_counted_prevention_reads_no_target(#[case] effect: &str, #[case] valid: bool) {
+fn r283_a_counted_prevention_reads_its_creature(#[case] effect: &str, #[case] valid: bool) {
     let text = "Prevent the next 3 damage that would be dealt to target creature this turn. For each 1 damage prevented this way, put a +1/+1 counter on that creature.";
     let abilities = format!(
         r#"{{"Spell":{{"targets":[{{"what":{{"Object":[{{"Type":"Creature"}}]}}}}],"effects":[{{"Shield":{{"when":{{"Damage":{{"to":{{"Target":0}}}}}},"by":{{"PreventCountedAnd":{{"most":3,"effects":[{effect}]}}}},"duration":"UntilEndOfTurn"}}}}]}}}}"#

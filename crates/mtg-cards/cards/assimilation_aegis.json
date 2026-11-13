@@ -1,7 +1,7 @@
 {
   "oracle_id": "6d39d218-254a-4886-907a-89df605d7ce4",
   "name": "Assimilation Aegis",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Assimilation Aegis",
@@ -19,9 +19,17 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 105, "end": 290 }
+          "Triggered": {
+            "when": { "Attached": { "what": ["This"], "to": [{ "Type": "Creature" }] } },
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": "Triggering",
+                  "of": { "Each": [{ "Type": "Creature" }, { "ExiledWith": "This" }] },
+                  "duration": "WhileSourceAttached"
+                }
+              }
+            ]
           }
         },
         { "Keyword": { "Equip": "{2}" } }

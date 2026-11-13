@@ -395,7 +395,10 @@ mod put_back;
 mod r303c_writers;
 mod r304b_writers;
 mod r306c_wordings;
+mod r371_copy_except;
+mod r371_owner;
 mod r373_writers;
+mod r378_stickers;
 mod r3g_outside;
 mod r4h_writers;
 mod r5b_writers;
@@ -1229,6 +1232,8 @@ mod r6b;
 mod r7b;
 // r9w
 mod r9w;
+// r379
+mod r379_writers;
 // r11w
 mod r11w;
 // e10c
@@ -1247,6 +1252,8 @@ mod g10d_writers;
 mod g11a_writers;
 mod g12a_writers;
 mod g13d_writers;
+mod r376_seats;
+mod r376_secret;
 mod tc34_control;
 mod w20_attached;
 mod w22_moves;

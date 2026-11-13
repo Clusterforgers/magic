@@ -1,7 +1,7 @@
 {
   "oracle_id": "8efcd591-c576-4d25-9670-578c5e3263a1",
   "name": "Menacing Ogre",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Menacing Ogre",
@@ -10,9 +10,25 @@
         { "Keyword": "Trample" },
         { "Keyword": "Haste" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 15, "end": 245 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "ChooseNumbers": {
+                  "secret": true,
+                  "as": "number",
+                  "highest": "highest",
+                  "lowest": "lowest"
+                }
+              },
+              { "LoseLife": { "who": { "Bound": "highest" }, "amount": { "ChosenAs": "number" } } },
+              {
+                "If": {
+                  "condition": { "Among": { "Bound": "highest" } },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+                }
+              }
+            ]
           }
         }
       ]

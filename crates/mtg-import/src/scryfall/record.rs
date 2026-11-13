@@ -305,6 +305,18 @@ pub struct CardRecord {
     pub images: Option<ImageUris>,
     /// Set code; empty if absent.
     pub set: String,
+    /// Name of the set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub set_name: Option<String>,
+    /// Frame edition (`1993`, `1997`, `2003`, `2015`, `future`).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub frame: Option<String>,
+    /// Finishes the printing exists in (`nonfoil`, `foil`, `etched`).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub finishes: Vec<String>,
+    /// Whether the art covers the whole card.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub full_art: bool,
     /// Collector number; empty if absent.
     pub collector_number: String,
     /// Rarity, if recognized.

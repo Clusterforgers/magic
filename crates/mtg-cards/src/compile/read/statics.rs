@@ -42,7 +42,10 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 47] = [
+const TEMPLATES: [Template; 51] = [
+    super::r376_nearest::r376_rooms_again,
+    super::r376_nearest::r376_nearest,
+    super::r376_nearest::r376_side_entering,
     super::ep32_discard::ep32_discarded_by_opponent,
     super::ep29_flash::ep29_flash,
     super::ep27_flash::ep27_flash,
@@ -85,6 +88,7 @@ const TEMPLATES: [Template; 47] = [
     evasion::cannot_block,
     super::untap_rules::doesnt_untap,
     evasion::block_only,
+    evasion::r377_blocked_by_all,
     free_cast,
     super::w14c_alt_costs::w14c_alt_cost,
     super::t15a_alt_costs::t15a_alt_cost,
@@ -764,6 +768,8 @@ fn cannot(r: &mut Reader<'_>) -> Option<Ability> {
                 Form::All,
             )?)?)]
         }
+    } else if r.words(super::r371_owner::UNLESS_AT_OWNER) {
+        vec![Modification::CantBeBlockedUnlessAttackingOwner]
     } else if r.words("be blocked") {
         vec![Modification::CantBeBlocked]
     } else if let Some(restriction) = r.attempt(|r| {
@@ -885,6 +891,8 @@ pub(super) fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Mod
     let tail = |r: &mut Reader<'_>| {
         if r.words(&format!("and {is} goaded")) {
             Some(Modification::Goaded)
+        } else if r.words(&format!("and can't {}", super::r371_owner::UNLESS_AT_OWNER)) {
+            Some(Modification::CantBeBlockedUnlessAttackingOwner)
         } else if r.words("and can't be blocked by more than one creature") {
             Some(Modification::MaxBlockers(1))
         } else if let Some(restriction) = r.attempt(|r| {
@@ -1570,6 +1578,7 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
                 except,
                 tapped,
                 until_end_of_turn,
+                must: false,
                 counters,
             },
             None,
@@ -1580,6 +1589,7 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
                 except,
                 tapped,
                 until_end_of_turn,
+                must: false,
                 counters,
             },
             None,
@@ -1875,6 +1885,10 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::CantLoseGame { .. }
             | GameRule::CantCastSpells { .. }
             | GameRule::ToughnessAssignsDamage(_)
+            | GameRule::LethalByPower(_)
+            | GameRule::DevotionIncreased { .. }
+            | GameRule::DamageAsInfect(_)
+            | GameRule::VentureLimit { .. }
             | GameRule::CountersRemain,
             ZoneKind::Battlefield,
         ) => super::w17b_statics::w17b_texts(rule),
@@ -2248,7 +2262,14 @@ fn last_part(mods: &[Modification], plural: bool) -> (&[Modification], Option<St
         Some((Modification::Goaded, rest)) if !rest.is_empty() => {
             (rest, Some(format!("{is} goaded")))
         }
-        Some((restriction @ Modification::CantAttackYou(_), rest)) if !rest.is_empty() => (
+        Some((Modification::CantBeBlockedUnlessAttackingOwner, rest)) if !rest.is_empty() => (
+            rest,
+            Some(format!("can't {}", super::r371_owner::UNLESS_AT_OWNER)),
+        ),
+        Some((
+            restriction @ (Modification::CantAttackYou(_) | Modification::CantAttackOwner(_)),
+            rest,
+        )) if !rest.is_empty() => (
             rest,
             w6a_attacks_you::w6a_text(restriction).map(str::to_owned),
         ),
@@ -2275,6 +2296,7 @@ fn last_part(mods: &[Modification], plural: bool) -> (&[Modification], Option<St
 
 /// "can't attack or block", "gets +1/+1 and has flying", "have haste". The card itself gets a bonus or a keyword only
 /// under a condition, and a restriction is not read under one.
+#[allow(clippy::too_many_lines)]
 pub(super) fn predicate(
     mods: &[Modification],
     plural: bool,
@@ -2292,7 +2314,10 @@ pub(super) fn predicate(
             return Some("can't attack or block".to_owned());
         }
         [Modification::CantAttack] => return Some("can't attack".to_owned()),
-        [restriction @ Modification::CantAttackYou(_)] => {
+        [Modification::CantBeBlockedUnlessAttackingOwner] => {
+            return Some(format!("can't {}", super::r371_owner::UNLESS_AT_OWNER));
+        }
+        [restriction @ (Modification::CantAttackYou(_) | Modification::CantAttackOwner(_))] => {
             return w6a_attacks_you::w6a_text(restriction).map(str::to_owned);
         }
         [Modification::CantBlock] => return Some("can't block".to_owned()),
@@ -2304,6 +2329,9 @@ pub(super) fn predicate(
         }
         [Modification::MaxBlockers(1)] => {
             return Some("can't be blocked by more than one creature".to_owned());
+        }
+        [Modification::BlockedByAll] if !plural => {
+            return Some(evasion::R377_BLOCKED_BY_ALL.to_owned());
         }
         [more @ Modification::BlocksAdditional(_)] => {
             return super::w14c_block_capacity::w14c_blocks_additional_text(more);

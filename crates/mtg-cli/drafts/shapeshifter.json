@@ -1,0 +1,65 @@
+{
+  "oracle_id": "82a6d89d-9215-4540-b7d5-26cdd6afb05b",
+  "name": "Shapeshifter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shapeshifter",
+      "oracle_fingerprint": "0f91b097a99b4ec16cf092e204d718c1",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                { "ChooseValue": { "kind": { "Number": [0, 7] }, "as": "n" } },
+                { "Forget": { "slot": "number" } },
+                { "RememberValue": { "value": { "ChosenAs": "n" }, "slot": "number" } }
+              ]
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "ChooseValue": { "kind": { "Number": [0, 7] }, "as": "n" } },
+                    { "Forget": { "slot": "number" } },
+                    { "RememberValue": { "value": { "ChosenAs": "n" }, "slot": "number" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Remembered": { "on": "This", "slot": "number" } },
+                  "toughness": {
+                    "Sum": [
+                      7,
+                      {
+                        "Times": {
+                          "by": -1,
+                          "of": { "Remembered": { "on": "This", "slot": "number" } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

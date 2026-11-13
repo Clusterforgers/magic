@@ -1,0 +1,40 @@
+{
+  "oracle_id": "8b7335e2-0e79-4406-84c1-d6b707cb72c3",
+  "name": "Embiggen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Embiggen",
+      "oracle_fingerprint": "b83774cb762cc878e9f6bbe14be6d453",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "Not": { "Subtype": "Brushwagg" } }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": { "Target": 0 }, "stat": "R374Types" } },
+                        "toughness": { "Stat": { "of": { "Target": 0 }, "stat": "R374Types" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

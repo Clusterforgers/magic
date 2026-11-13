@@ -31,8 +31,8 @@
               "ZoneChange": {
                 "what": [
                   { "Type": "Creature" },
-                  "Other",
                   { "Not": "Token" },
+                  "Other",
                   { "ControlledBy": "You" }
                 ],
                 "to": "Battlefield"

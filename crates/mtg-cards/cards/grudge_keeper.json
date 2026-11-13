@@ -1,0 +1,31 @@
+{
+  "oracle_id": "ffbf8459-fda2-4c1d-9841-c001c37d2141",
+  "name": "Grudge Keeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grudge Keeper",
+      "oracle_fingerprint": "6697c4e4b6c4da1f0dd17a95161716ae",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "FinishedVoting" } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": { "VotedAs": { "with": "Asker", "same": false } }
+                    }
+                  },
+                  "amount": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
