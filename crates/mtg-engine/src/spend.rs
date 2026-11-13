@@ -229,8 +229,10 @@ pub(crate) fn source_kind(state: &GameState, id: ObjectId) -> SpendTraits {
         types: full.types,
         supertypes: full.supertypes,
         subtypes: full.subtypes,
+        // Only a permanent is remembered ("mana produced by ~"); a card making mana from a hand stays hidden.
         made_by: state
             .object(id)
+            .filter(|object| object.zone() == Zone::Battlefield)
             .map(|object| (id, object.reference().counter)),
         ..SpendTraits::default()
     }
