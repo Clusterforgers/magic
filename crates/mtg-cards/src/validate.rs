@@ -3687,11 +3687,10 @@ impl Walker<'_> {
         if matches!(effect, Effect::Discard { random: true, .. }) {
             self.uses("Effect", "Discard.Random");
         }
-<<<<<<< HEAD
         // Another player than the effect's controller takes control of a player (Cruel Entertainment).
         if matches!(effect, Effect::ControlPlayer { by, .. } if *by != Ref::You) {
             self.uses("Effect", "ControlPlayer.By");
-=======
+        }
         // A choice whose chosen objects differ in a quality needs the engine to keep them apart.
         if matches!(
             effect,
@@ -3701,7 +3700,6 @@ impl Walker<'_> {
             }
         ) {
             self.uses("Effect", "Choose.Differ");
->>>>>>> origin/main
         }
         if matches!(
             effect,
