@@ -2375,6 +2375,23 @@ impl Writer<'_> {
             _ => false,
         }
     }
+    /// "put the same number and kind of counters on ~": the counters the triggering event put (`PutCountersOf.put`).
+    fn r4706_same_counters(&mut self, effect: &Effect, on: &Ref) -> Option<String> {
+        let Effect::PutCountersOf {
+            of: Ref::Triggering,
+            each: None,
+            one_kind: false,
+            per_kind: None,
+            ..
+        } = effect
+        else {
+            return None;
+        };
+        Some(format!(
+            "put the same number and kind of counters on {}",
+            self.counter_place(on, false)?
+        ))
+    }
 
     /// The object counters are put on, taken from or moved: "~", one target, or (with `several`) "each
     /// creature you control".
@@ -2548,22 +2565,11 @@ impl Writer<'_> {
             }
             Effect::PutCountersOf {
                 on,
-                of: Ref::Triggering,
-                each: None,
-                one_kind: false,
-                per_kind: None,
-                put: true,
-            } => format!(
-                "put the same number and kind of counters on {}",
-                self.counter_place(on, false)?
-            ),
-            Effect::PutCountersOf {
-                on,
                 of,
                 each,
                 one_kind,
                 per_kind,
-                put: false,
+                ..
             } => self.l292_counters_of(on, of, each.as_ref(), *one_kind, *per_kind)?,
             Effect::MoveCounters {
                 from,
@@ -2978,6 +2984,7 @@ impl Writer<'_> {
             } if super::w7b_player_counters::w7b_player_kind(counter) => {
                 super::w7b_player_counters::w7b_player_gets(effect)?
             }
+            Effect::PutCountersOf { on, put: true, .. } => self.r4706_same_counters(effect, on)?,
             effect if is_counters(effect) => self.counters(effect)?,
             Effect::CreateToken { .. } => self.created(effect)?,
             Effect::DealDamage {

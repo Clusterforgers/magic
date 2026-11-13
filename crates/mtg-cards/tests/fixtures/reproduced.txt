@@ -1304,6 +1304,7 @@ Necroplasm
 Necropolis Regent
 Necroskitter
 Nessian Asp
+Nest of Scarabs
 Netherese Puzzle-Ward
 Nettlecyst
 Neverwinter Dryad
@@ -1849,6 +1850,7 @@ Stinkdrinker Bandit
 Stir the Grave
 Stitch in Time
 Stitched Drake
+Stocking the Pantry
 Stoic Angel
 Stoke the Flames
 Stolen Identity
