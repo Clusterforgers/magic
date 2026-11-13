@@ -151,9 +151,9 @@ impl Writer<'_> {
                 dice: 1,
                 choose: false,
                 plus,
-                highest: Some(Amount::Players(Ref::Attacked)),
+                highest: Some(highest),
                 ..
-            } if plus.is_zero() => Some((
+            } if plus.is_zero() && **highest == Amount::Players(Ref::Attacked) => Some((
                 vec![format!(
                     "roll a d{sides} for each player being attacked and ignore all but the highest roll"
                 )],

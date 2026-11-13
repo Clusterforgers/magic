@@ -91,7 +91,7 @@ pub fn roll(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     }
     let highest = (dice == 1
         && r.words("for each player being attacked and ignore all but the highest roll"))
-    .then_some(Amount::Players(Ref::Attacked));
+    .then(|| Box::new(Amount::Players(Ref::Attacked)));
     Some(vec![Effect::RollDice {
         who: Ref::You,
         sides,

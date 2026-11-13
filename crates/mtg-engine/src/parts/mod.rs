@@ -246,11 +246,39 @@ fn pick(
     ))
 }
 
+/// The pick of cards alike as a set (`CostItem::AlikeFromHand`): a discard or a reveal from the hand that keeps `alike`.
+fn r5518_alike_part(item: &CostItem) -> Result<(Part, bool), &'static str> {
+    let CostItem::AlikeFromHand {
+        discard,
+        filter,
+        count,
+        alike,
+    } = item
+    else {
+        return Err("not a pick of cards alike");
+    };
+    let kind = if *discard {
+        Kind::Discard
+    } else {
+        Kind::Reveal
+    };
+    let (part, x) = pick(kind, filter, count, item)?;
+    let part = match part {
+        Part::Pick(pick) => Part::Pick(Pick {
+            alike: Some(*alike),
+            ..pick
+        }),
+        other => other,
+    };
+    Ok((part, x))
+}
+
 /// The parts of the cost items beyond the common picks: damage, unattaching, exiling the top, evidence, blight, behold,
 /// a move into the library and forage.
 #[allow(clippy::too_many_lines)]
 fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
     Ok(Some(match item {
+        CostItem::AlikeFromHand { .. } => r5518_alike_part(item)?,
         CostItem::DamageToYou(count) => {
             let (number, x) = amount(count, item)?;
             (Part::Damage(number), x)
@@ -458,27 +486,6 @@ impl Part {
                 pick(Kind::ExileHand, filter, count, item)?
             }
             CostItem::RevealFromHand { filter, count } => pick(Kind::Reveal, filter, count, item)?,
-            CostItem::AlikeFromHand {
-                discard,
-                filter,
-                count,
-                alike,
-            } => {
-                let kind = if *discard {
-                    Kind::Discard
-                } else {
-                    Kind::Reveal
-                };
-                let (part, x) = pick(kind, filter, count, item)?;
-                let part = match part {
-                    Part::Pick(pick) => Part::Pick(Pick {
-                        alike: Some(*alike),
-                        ..pick
-                    }),
-                    other => other,
-                };
-                (part, x)
-            }
             CostItem::TapPermanents { filter, count } => pick(Kind::Tap, filter, count, item)?,
             CostItem::ReturnToHand { filter, count } => pick(Kind::Return, filter, count, item)?,
             CostItem::ExilePermanents { filter, count } => {

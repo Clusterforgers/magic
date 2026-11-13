@@ -1599,7 +1599,7 @@ pub enum Effect {
         /// One die for each of this many ("roll a d20 for each player being attacked and ignore all but the highest
         /// roll"): every die is rolled and only the highest counts; none is rolled when the amount is 0.
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        highest: Option<Amount>,
+        highest: Option<Box<Amount>>,
         /// What the total does.
         results: Vec<DieRow>,
     },
