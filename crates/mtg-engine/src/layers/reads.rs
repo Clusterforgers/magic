@@ -356,6 +356,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::GravedThisCombat
         | Pred::SharesColorWithLastCast
         | Pred::CouldAttackThisTurn
+        | Pred::ArrivedThisTurn
         | Pred::ArrivedFrom(_)
         | Pred::CastWith(_)
         | Pred::TopOfLibrary

@@ -594,6 +594,7 @@ fn game_rule() -> impl Strategy<Value = GameRule> {
                     when: None,
                     any_cast: false,
                     riders: Vec::new(),
+                    limit: None,
                 })
             }),
         (trigger_pattern(), proptest::option::of(selector())).prop_map(|(cause, source)| {

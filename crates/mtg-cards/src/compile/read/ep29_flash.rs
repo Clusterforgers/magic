@@ -26,6 +26,7 @@ fn ep29_permission(mana: ManaCostX) -> CastPermission {
         when: None,
         any_cast: false,
         riders: Vec::new(),
+        limit: None,
     }
 }
 

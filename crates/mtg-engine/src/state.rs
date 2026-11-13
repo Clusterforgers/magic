@@ -125,6 +125,9 @@ pub(crate) enum Tally {
     C11aArtifactCast,
     /// A spell cast through a permission that works once each turn (counted for the permission's source).
     C11bOnceUsed,
+    /// A card cast or played through a permission with a limit, keyed by the first object the permission names (counted
+    /// for the permission's source).
+    R5503LimitUsed(crate::object::ObjectRef),
     /// A creature exerted (counted for the object, and for the player who exerted it).
     W11aExerted,
     /// Life gained, once for each event.

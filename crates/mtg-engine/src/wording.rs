@@ -592,6 +592,15 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 false,
             )
         }
+        TriggerPattern::PutOnStack { what } => {
+            let thing = if what.is_empty() {
+                "a spell or ability".to_owned()
+            } else {
+                let noun = noun(what);
+                format!("{} {noun} spell or ability", article(&noun))
+            };
+            (format!("{thing} is put onto the stack"), false)
+        }
         TriggerPattern::SpellCast { what, by } | TriggerPattern::SpellCopied { what, by } => {
             let (who, s) = who(by);
             let spell = if what.is_empty() {

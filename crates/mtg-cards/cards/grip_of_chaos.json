@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ca2e0c8f-7ece-465f-9103-ba60712eacf7",
+  "name": "Grip of Chaos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grip of Chaos",
+      "oracle_fingerprint": "b647eaf60b4eb86130dcc7988b97cfab",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "PutOnStack": {} },
+            "if": { "Matches": { "subject": "Triggering", "selector": ["SingleTarget"] } },
+            "effects": [{ "ChangeTargets": { "what": "Triggering", "to": "Random" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -58,6 +58,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         when: None,
         any_cast: false,
         riders: Vec::new(),
+        limit: None,
     };
     if !targets.is_empty() || *permission != wanted {
         return;

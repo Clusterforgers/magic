@@ -61,6 +61,7 @@ fn r305c_plays_from_the_top(permission: &CastPermission) -> bool {
             when: None,
             any_cast: false,
             riders: Vec::new(),
+            limit: None,
         }
 }
 

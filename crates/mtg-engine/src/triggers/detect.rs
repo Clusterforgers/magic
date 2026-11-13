@@ -46,6 +46,8 @@ use crate::zones::Zone;
 /// One thing that happened, as the patterns of triggered abilities see it.
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum Happened {
+    /// A spell or ability was put onto the stack under the player's control.
+    R5503Stacked { object: ObjectId, player: PlayerId },
     /// An object moved between zones.
     Moved {
         object: ObjectId,
@@ -682,15 +684,27 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                     nth,
                     before: cast_before(post, look.later),
                 });
+                found.push(Happened::R5503Stacked {
+                    object: *object,
+                    player: *player,
+                });
                 found.extend(w9a_expended(post, look.later, *player, choices));
                 found.extend(w11c_crime(post, *player, choices));
                 found.extend(targeted(look, choices, (*object, *player)));
             }
             Event::AbilityPutOnStack(put) => {
+                found.push(Happened::R5503Stacked {
+                    object: put.object,
+                    player: put.controller,
+                });
                 found.extend(w11c_crime(post, put.controller, &put.choices));
                 found.extend(targeted(look, &put.choices, (put.object, put.controller)));
             }
             Event::SpellCopied(copy) => {
+                found.push(Happened::R5503Stacked {
+                    object: copy.object,
+                    player: copy.controller,
+                });
                 found.push(Happened::Copied {
                     player: copy.controller,
                     spell: copy.object,
@@ -702,6 +716,10 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                 ));
             }
             Event::AbilityCopied(copy) => {
+                found.push(Happened::R5503Stacked {
+                    object: copy.object,
+                    player: copy.controller,
+                });
                 found.extend(targeted(
                     look,
                     &copy.choices,
@@ -1582,6 +1600,20 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
             against: Some(Target::Player(*defending)),
             ..cause(state, vec![Target::Player(*attacking)])
         }),
+        (
+            TriggerPattern::PutOnStack { what },
+            Happened::R5503Stacked {
+                object: put,
+                player,
+            },
+        ) => {
+            let reference = object(*put)?;
+            let subjects = vec![Target::Object(reference), Target::Player(*player)];
+            scope
+                .selects(what, reference)
+                .ok()?
+                .then(|| cause(state, subjects))
+        }
         (TriggerPattern::SpellCopied { what, by }, Happened::Copied { player, spell }) => {
             let reference = object(*spell)?;
             let subjects = vec![Target::Player(*player), Target::Object(reference)];

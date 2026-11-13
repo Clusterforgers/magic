@@ -2169,6 +2169,7 @@ impl<'a> Scope<'a> {
             | Pred::GravedThisCombat
             | Pred::SharesColorWithLastCast
             | Pred::CouldAttackThisTurn
+            | Pred::ArrivedThisTurn
             | Pred::ArrivedFrom(_) => self.w21a_pred(pred, reference, seen)?,
             Pred::Attacking
             | Pred::AttackingPlayer(_)

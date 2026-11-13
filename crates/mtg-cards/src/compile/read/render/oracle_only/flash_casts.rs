@@ -31,6 +31,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         when,
         any_cast,
         riders,
+        limit: _,
     } = permission;
     if *who != Ref::You
         || *any_cast

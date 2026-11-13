@@ -1,0 +1,51 @@
+{
+  "oracle_id": "928d977e-cff0-4e0e-83bb-16d73a754f35",
+  "name": "Gix, Yawgmoth Praetor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gix, Yawgmoth Praetor",
+      "oracle_fingerprint": "571c9dd650a4b525b070e48699a74258",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }],
+                "to": "Opponents",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "cost": [{ "PayLife": 1 }],
+                  "paid": [{ "Draw": { "who": { "ControllerOf": "Triggering" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{B}{B}{B}" }, { "Discard": { "count": "X" } }],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ExileTop": { "who": { "Target": 0 }, "count": "X", "as": "exiled" } },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "exiled" },
+                  "as": "card",
+                  "effects": [
+                    { "CastFromZone": { "what": { "Bound": "card" }, "free": true, "play": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

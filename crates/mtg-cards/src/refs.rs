@@ -582,6 +582,9 @@ pub enum Pred {
     /// Went into the zone it is in now this turn from a zone of the kind ("creature cards put into your graveyard from your
     /// library this turn"); an object that moved again counts only for its latest move, and a token made there came from nowhere.
     ArrivedFrom(ZoneKind),
+    /// Went into the zone it is in now this turn from anywhere ("a card in a graveyard that was put there from anywhere this
+    /// turn"); an object that moved again counts only for its latest move, and a token made there came from nowhere.
+    ArrivedThisTurn,
     /// Is a spell cast, or a permanent that entered as a spell cast, by one of the players `by` names (anyone when absent)
     /// from the kind of zone `from` (anywhere when absent); a copy or a token was never cast.
     WasCast {

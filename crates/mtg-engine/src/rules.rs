@@ -369,6 +369,10 @@ pub enum Rule {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
         riders: Vec<CastRider>,
+        /// At most this many of the `only` objects may be cast or played through it within the turn.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        limit: Option<u32>,
     },
     /// Each owner may cast the exiled card paired with them for `cost` rather than its mana cost (CR 118.9, 601.2f), while it
     /// stays exiled.
@@ -922,6 +926,8 @@ pub(crate) struct Cast {
     pub(crate) opens_no_zone: bool,
     /// What a spell cast through it gets.
     pub(crate) riders: Vec<CastRider>,
+    /// At most this many of the `only` objects may be cast or played through it within the turn.
+    pub(crate) limit: Option<u32>,
 }
 
 impl Cast {
@@ -935,6 +941,7 @@ impl Cast {
     pub(crate) fn covers(&self, state: &GameState, player: PlayerId, card: &GameObject) -> bool {
         (!self.opens_no_zone || r305c_cast_anyway(state, player, card))
             && self.c11b_open(state)
+            && self.r5503_open(state)
             && self.when_holds(state)
             && self.who.contains(&player)
             && self
@@ -965,6 +972,22 @@ impl Cast {
         !self.once
             || (state.is_active(self.controller)
                 && state.object_tallied(self.source, None, Tally::C11bOnceUsed) == 0)
+    }
+
+    /// Whether a permission with a limit has room for another card this turn (`Tally::R5503LimitUsed` of its source,
+    /// keyed by the first object it names). Any other permission always has.
+    fn r5503_open(&self, state: &GameState) -> bool {
+        self.limit.is_none_or(|limit| {
+            state.object_tallied(self.source, None, Tally::R5503LimitUsed(self.r5503_key())) < limit
+        })
+    }
+
+    /// The object that keys the uses of a limited permission: the first object it names, else its source.
+    fn r5503_key(&self) -> ObjectRef {
+        self.only
+            .as_ref()
+            .and_then(|only| only.first().copied())
+            .unwrap_or(self.source)
     }
 
     /// Whether the permission lets `player` play the land `card` from the zone it is in.
@@ -1126,6 +1149,7 @@ impl RulesInForce {
                         instead: Some(cost.clone()),
                         opens_no_zone: false,
                         riders: Vec::new(),
+                        limit: None,
                     });
                 }
                 return;
@@ -1153,6 +1177,7 @@ impl RulesInForce {
                 instead: None,
                 opens_no_zone: false,
                 riders: Vec::new(),
+                limit: None,
             });
         }
     }
@@ -1381,9 +1406,11 @@ impl RulesInForce {
                 when,
                 any_cast,
                 riders,
+                limit,
             } => {
                 if let Some(source) = source {
                     self.casts.push(Cast {
+                        limit: *limit,
                         riders: riders.clone(),
                         opens_no_zone: *any_cast,
                         controller,
@@ -1425,6 +1452,7 @@ impl RulesInForce {
                             instead: None,
                             opens_no_zone: false,
                             riders: Vec::new(),
+                            limit: None,
                         });
                     }
                 }
@@ -1736,6 +1764,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             when: permission.when.clone().map(Box::new),
             any_cast: permission.any_cast,
             riders: permission.riders.clone(),
+            limit: permission.limit,
         },
         GameRule::NextSpell { what, benefit } => next_spell(scope, what, benefit)?,
         GameRule::SpellCost {
@@ -2861,9 +2890,36 @@ pub(crate) fn cast_permissions(state: &GameState) -> &[Cast] {
     &state.rules().casts
 }
 
+/// The source and the tally a cast or land play of `card` by `player` from `from` uses up: that of the first permission with
+/// a limit that covers it, when no permission without one for that zone does. None for a card from a hand or the command
+/// zone.
+pub(crate) fn r5503_limit_use(
+    state: &GameState,
+    player: PlayerId,
+    card: ObjectId,
+    from: Zone,
+) -> Option<(ObjectRef, Tally)> {
+    if matches!(from, Zone::Hand(_) | Zone::Command(_)) {
+        return None;
+    }
+    let card = state.object(card)?;
+    let zone = crate::resolve::zone_kind(from);
+    let covering: Vec<&Cast> = cast_permissions(state)
+        .iter()
+        .filter(|cast| cast.from == Some(zone) && cast.covers(state, player, card))
+        .collect();
+    if covering.iter().any(|cast| cast.limit.is_none()) {
+        return None;
+    }
+    covering
+        .first()
+        .map(|cast| (cast.source, Tally::R5503LimitUsed(cast.r5503_key())))
+}
+
 /// The source of the permission that works once each turn which a cast of `card` by `player` from `from` for `way` uses
 /// up: a cast for the mana cost from a zone other than a hand or the command zone that no other permission for that zone
-/// covers, through the first such permission that covers it. None for any other cast.
+/// covers, through the first such permission that covers it; a free cast as `r5503_free_once_source` finds it. None for any
+/// other cast.
 pub(crate) fn c11b_once_source(
     state: &GameState,
     player: PlayerId,
@@ -2874,6 +2930,9 @@ pub(crate) fn c11b_once_source(
     if way == Some(mtg_cards::value::CastWay::Alternative) {
         return r400_rather_once_source(state, player, card);
     }
+    if way == Some(mtg_cards::value::CastWay::Free) {
+        return r5503_free_once_source(state, player, card);
+    }
     if way.is_some() || matches!(from, Zone::Hand(_) | Zone::Command(_)) {
         return None;
     }
@@ -2882,6 +2941,24 @@ pub(crate) fn c11b_once_source(
     let covering: Vec<&Cast> = cast_permissions(state)
         .iter()
         .filter(|cast| cast.adds_to_printed(zone) && cast.covers(state, player, card))
+        .collect();
+    if covering.iter().any(|cast| !cast.once) {
+        return None;
+    }
+    covering.first().map(|cast| cast.source)
+}
+
+/// The source of the permission that works once each turn which a free cast of `card` by `player` uses up: the first free
+/// permission that covers the card, when every free one that does works once each turn; none otherwise.
+fn r5503_free_once_source(
+    state: &GameState,
+    player: PlayerId,
+    card: ObjectId,
+) -> Option<ObjectRef> {
+    let card = state.object(card)?;
+    let covering: Vec<&Cast> = cast_permissions(state)
+        .iter()
+        .filter(|cast| cast.free && cast.covers(state, player, card))
         .collect();
     if covering.iter().any(|cast| !cast.once) {
         return None;
@@ -3364,6 +3441,7 @@ mod tests {
             when: None,
             any_cast: false,
             riders: Vec::new(),
+            limit: None,
         }
     }
 

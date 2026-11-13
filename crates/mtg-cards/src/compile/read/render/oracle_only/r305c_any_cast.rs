@@ -83,6 +83,7 @@ mod tests {
             when: None,
             any_cast,
             riders: Vec::new(),
+            limit: None,
         }
     }
 

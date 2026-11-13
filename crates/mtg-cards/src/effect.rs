@@ -63,6 +63,9 @@ pub enum NewTargets {
     One,
     /// "Change the target ... The new target must be a player.": as `Another`, among the players only.
     AnotherPlayer,
+    /// "Reselect its target at random": the only target becomes a target chosen at random from among all its legal
+    /// targets, the current one included (CR 115.7d).
+    Random,
 }
 
 /// A phase an effect adds to the turn (CR 500.8).
@@ -2320,6 +2323,7 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
                 when: None,
                 any_cast: false,
                 riders: Vec::new(),
+                limit: None,
             }),
             duration,
         },

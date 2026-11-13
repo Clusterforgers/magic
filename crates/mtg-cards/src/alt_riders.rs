@@ -113,6 +113,7 @@ pub fn warp_riders() -> Vec<Ability> {
                 when: None,
                 any_cast: false,
                 riders: Vec::new(),
+                limit: None,
             }),
             duration: Duration::Forever,
         },
