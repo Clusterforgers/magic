@@ -1,19 +1,14 @@
 {
   "oracle_id": "a5575201-0d73-43c4-9290-940bbaefc61b",
   "name": "Keen-Eared Sentry",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Keen-Eared Sentry",
       "oracle_fingerprint": "5955a0d83d8bca9096e6a12aa72d50c7",
       "abilities": [
         { "Static": { "affected": "You", "mods": [{ "AddKeyword": "Hexproof" }] } },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 92, "end": 162 }
-          }
-        }
+        { "Rule": { "rule": { "VentureLimit": { "who": "Opponents", "per_turn": 1 } } } }
       ]
     }
   ]

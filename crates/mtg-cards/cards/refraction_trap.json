@@ -1,7 +1,7 @@
 {
   "oracle_id": "0fc0554d-da45-49d2-941b-3f6c6458e823",
   "name": "Refraction Trap",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Refraction Trap",
@@ -30,9 +30,39 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 118, "end": 318 }
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": { "Union": ["You", { "Each": [{ "ControlledBy": "You" }] }] },
+                      "source": [{ "Is": { "Bound": "source" } }]
+                    }
+                  },
+                  "by": {
+                    "PreventCountedAnd": {
+                      "most": 3,
+                      "effects": [
+                        { "DealDamage": { "to": { "Target": 0 }, "amount": "Triggering" } }
+                      ]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

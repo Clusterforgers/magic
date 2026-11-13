@@ -152,6 +152,7 @@ fn flips_won(counter: crate::value::CounterKind) -> Vec<Effect> {
             lose_first: false,
             until: true,
             won_as: Some(WON.to_owned()),
+            heads: false,
         },
         Effect::PutCounters {
             on: Ref::This,

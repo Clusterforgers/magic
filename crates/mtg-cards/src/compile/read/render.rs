@@ -209,11 +209,22 @@ fn w7c_then_incubate(texts: &[String]) -> Vec<String> {
 /// Every wording of an ability the readers produce. The effects of one player in a row are one
 /// sentence ("you draw a card and gain 3 life") or several ("draw a card. You gain 3 life"), and
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
-#[allow(clippy::too_many_lines)]
 pub fn variants(ability: &Ability) -> Vec<String> {
+<<<<<<< HEAD
     if let Some(texts) = super::r402_copy_riders::r402_rider_variants(ability, variants) {
         return texts;
     }
+=======
+    let mut texts = plain_variants(ability);
+    super::r371_copy_except::r371_not_legendary_too(&mut texts);
+    super::r371_copy_except::r371_that_creature_dies(ability, &mut texts);
+    texts
+}
+
+/// [`variants`] before the wordings every copy exception has twice.
+#[allow(clippy::too_many_lines)]
+fn plain_variants(ability: &Ability) -> Vec<String> {
+>>>>>>> origin/main
     if let Some(texts) = super::r372_suspend::r372_variants(ability, variants) {
         return texts;
     }
@@ -229,6 +240,11 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     }
     if let Some(texts) = super::dk27_animate::dk27_animate_variants(ability) {
         return texts;
+    }
+    let mut r376 = Vec::new();
+    super::r376_nearest::r376_nearest_wordings(ability, &mut r376);
+    if !r376.is_empty() {
+        return r376;
     }
     if let Some(texts) = super::wf25_writers::wf25_whole(ability) {
         return texts;
@@ -517,6 +533,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(more);
     let more = joined::wordings(&texts);
     texts.extend(more);
+    let more = super::r371_owner::r371_and_draw_wordings(&texts);
+    texts.extend(more);
     let more = super::w11a_joins::w11a_wordings(&texts);
     texts.extend(more);
     let more = super::w8b_then::w8b_then_wordings(&texts);
@@ -588,9 +606,11 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::l31b_any_amount::l31b_wordings(ability, written_variants, &mut texts);
     super::l31b_any_amount::l31b_each_paid(ability, written_variants, &mut texts);
     super::l31a_events::l31a_wordings(ability, &mut texts);
+    super::r374_counts::r374_wordings(ability, written_variants, &mut texts);
     super::r301b_writers::r301b_wordings(ability, written_variants, &mut texts);
     super::r301b_writers::r301b_flip_wordings(&mut texts);
     super::us38_quotes::us38_nested_wordings(&mut texts);
+    super::r371_copy_except::r371_that_creature_dies(ability, &mut texts);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.
@@ -2642,6 +2662,8 @@ impl Writer<'_> {
             Ref::This => "~".to_owned(),
             Ref::Attached => "enchanted creature".to_owned(),
             Ref::Paid => "the sacrificed creature".to_owned(),
+            // The creature that died, as it last existed: "create a token that's a copy of that creature".
+            Ref::Triggering => "that creature".to_owned(),
             Ref::Target(0) if self.is_a_permanent(of) => {
                 if self.named {
                     "it".to_owned()
@@ -3410,7 +3432,12 @@ impl Writer<'_> {
             Effect::OpenAttraction { .. }
             | Effect::RollToVisit { .. }
             | Effect::ClaimPrize { .. } => super::un33_attractions::un33_effect_text(effect)?,
-            Effect::PutSticker { who, on } => super::un34_stickers::un34_put_text(who, on)?,
+            Effect::PutSticker {
+                who,
+                on,
+                kind,
+                up_to,
+            } => super::un34_stickers::un34_put_text(who, on, *kind, *up_to)?,
             Effect::Either { first, second } => self.dk1c5_either_text(first, second)?,
             Effect::Venture { who, undercity } => {
                 let into = if *undercity {
@@ -3690,6 +3717,7 @@ impl Writer<'_> {
             .or_else(|| super::w14a_wanderer::w14a_keep_one_text(effect))
             .or_else(|| super::c7_untap::c7_untap_dies_text(effect))
             .or_else(|| super::turns::effect_text(effect, None))
+            .or_else(|| super::r376_seats::r376_reverse_text(effect))
             .or_else(|| c10_vp_planar_text(effect))
     }
 
@@ -3714,6 +3742,7 @@ impl Writer<'_> {
                 "its controller".to_owned()
             }
             Ref::Triggering | Ref::TriggeringPlayer => "that player".to_owned(),
+            Ref::Seated { .. } => super::r376_seats::r376_seated_text(who)?,
             Ref::ControllerOf(inner) if **inner == Ref::Triggering => {
                 "that permanent's controller".to_owned()
             }

@@ -73,6 +73,11 @@ impl GameState {
         self.w11d.at.get(&player).copied()
     }
 
+    /// Whether the object is a dungeon a player is in (`Pred::Dungeon`).
+    pub fn r376_is_dungeon(&self, object: ObjectId) -> bool {
+        self.w11d.at.values().any(|marker| marker.object == object)
+    }
+
     /// How many dungeons the player has completed.
     pub fn w11d_completed(&self, player: PlayerId) -> u32 {
         self.w11d.completed.get(&player).copied().unwrap_or(0)
@@ -144,6 +149,7 @@ pub(crate) fn w11d_fold_ventured(
             event.player, event.object
         )));
     }
+    state.tally(event.player, crate::state::Tally::R377Ventured);
     state.w11d.at.insert(
         event.player,
         W11dMarker {

@@ -191,6 +191,39 @@ pub enum Sticker {
     Art {},
 }
 
+/// The kind of a sticker (CR 123): what "a name sticker", "an art sticker" and the like name.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+pub enum StickerKind {
+    /// A name sticker.
+    Name,
+    /// An ability sticker.
+    Ability,
+    /// A power/toughness sticker.
+    PowerToughness,
+    /// An art sticker.
+    Art,
+}
+
+impl StickerKind {
+    /// The words of the kind before "sticker": "name", "ability", "power/toughness", "art".
+    pub const fn word(self) -> &'static str {
+        match self {
+            StickerKind::Name => "name",
+            StickerKind::Ability => "ability",
+            StickerKind::PowerToughness => "power/toughness",
+            StickerKind::Art => "art",
+        }
+    }
+
+    /// The article before the kind's word: "an" before a vowel sound.
+    pub const fn article(self) -> &'static str {
+        match self {
+            StickerKind::Ability | StickerKind::Art => "an",
+            StickerKind::Name | StickerKind::PowerToughness => "a",
+        }
+    }
+}
+
 impl Sticker {
     /// The tickets it costs to put on a permanent.
     pub const fn tickets(&self) -> u32 {
@@ -200,6 +233,29 @@ impl Sticker {
             | Sticker::PowerToughness { tickets, .. } => *tickets,
             Sticker::Art {} => 0,
         }
+    }
+
+    /// The kind of the sticker.
+    pub const fn kind(&self) -> StickerKind {
+        match self {
+            Sticker::Name { .. } => StickerKind::Name,
+            Sticker::Ability { .. } => StickerKind::Ability,
+            Sticker::PowerToughness { .. } => StickerKind::PowerToughness,
+            Sticker::Art {} => StickerKind::Art,
+        }
+    }
+
+    /// The number of unique vowels on the sticker (A, E, I, O, U and Y, either case); only a name sticker has words.
+    pub fn unique_vowels(&self) -> u32 {
+        let Sticker::Name { words, .. } = self else {
+            return 0;
+        };
+        let found: std::collections::BTreeSet<char> = words
+            .chars()
+            .map(|c| c.to_ascii_lowercase())
+            .filter(|c| matches!(c, 'a' | 'e' | 'i' | 'o' | 'u' | 'y'))
+            .collect();
+        u32::try_from(found.len()).unwrap_or(0)
     }
 }
 

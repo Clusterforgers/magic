@@ -114,6 +114,22 @@ pub struct DeckPicture {
     pub oracle_id: String,
     /// The card's name.
     pub name: String,
+    /// The printing the deck chose for the card; absent for the default one.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub printing_id: Option<String>,
+}
+
+/// The body of `PUT /api/decks/{id}/printing`: the art of a card's lines in one zone of a stored deck.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[serde(deny_unknown_fields)]
+pub struct LinePrintingBody {
+    /// The zone of the lines.
+    pub zone: DeckZone,
+    /// The card's oracle id.
+    pub oracle_id: String,
+    /// A printing of the card; null for the default one.
+    pub printing_id: Option<String>,
 }
 
 /// A deck in the list of `GET /api/decks`.

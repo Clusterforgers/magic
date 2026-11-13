@@ -1,0 +1,30 @@
+{
+  "oracle_id": "786b0b50-adc7-4d58-b578-1e80680b89bd",
+  "name": "Wizards of the _____",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wizards of the _____",
+      "oracle_fingerprint": "4b2bab933f7ee1733bfe130ffba4b513",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "May": { "effects": [{ "PutSticker": { "on": ["This"], "kind": "Name" } }] } },
+              { "LookAtTop": { "count": "StickerVowels", "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

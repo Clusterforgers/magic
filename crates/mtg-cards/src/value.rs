@@ -41,6 +41,19 @@ pub enum StatKind {
     CreatureType,
     /// The kinds of counters on it: no number, so only `Amount::Distinct` reads it (each kind once among the objects).
     CounterKinds,
+    /// How many supertypes, card types and subtypes it has together ("for each supertype, card type, and subtype it has").
+    R374Types,
+    /// How many creature types it has ("for each of its creature types"); a creature with every creature type has each.
+    R374CreatureTypes,
+    /// The total of its bushido values (CR 702.45b, "for each point of bushido it has").
+    R374Bushido,
+    /// Its total toxic value (CR 702.164c): the total of its toxic values.
+    R374Toxic,
+    /// Its mana cost: no number, so only `Amount::Distinct` reads it ("different mana costs"); a card without one has none.
+    R374ManaCost,
+    /// Its colors as one value: no number, so only `Amount::Distinct` reads it ("different color pairs" among objects of two
+    /// colors); a colorless object has none.
+    R374ColorSet,
     /// Its subtypes: no number, so only `Amount::Distinct` reads it (each subtype once among the objects: "the number of
     /// planeswalker types among planeswalkers you control").
     Subtypes,
@@ -494,6 +507,8 @@ pub enum Amount {
         /// The amount multiplied.
         of: Box<Amount>,
     },
+    /// Two to the power of the amount ("draws 2ˣ cards"); a negative power is 0.
+    TwoToThe(Box<Amount>),
     /// The amount, but no more than `most` ("This effect can't reduce the amount of mana this spell costs by more than
     /// {5}" over a reduction of {1} for each).
     AtMost {
@@ -697,6 +712,42 @@ pub enum Amount {
     },
     /// The number of the turn, counting from 1 (CR 500).
     TurnNumber,
+    /// The stickers on the objects the reference names (CR 123), only those of the kind when one is given ("for each name
+    /// sticker on it"); a card keeps its stickers in every zone.
+    Stickers {
+        /// The objects.
+        on: Ref,
+        /// Only stickers of this kind.
+        kind: Option<crate::ability::StickerKind>,
+    },
+    /// The spells the players named have cast this game with the same name as the object with the ability, that object
+    /// included when it was cast ("if ... you've cast another spell named ~ this game": 2 or more).
+    CastSameNameThisGame(Ref),
+    /// `Tally` over the turn that ended last ("if you had another creature enter the battlefield under your control last
+    /// turn"); only the kinds kept as objects (`Entered`, `SpellCast`, `Died` and the like), not the records.
+    TallyLastTurn {
+        /// The kind of event.
+        event: TallyEvent,
+        /// The players whose events are counted.
+        who: Ref,
+        /// The objects the events were about, as they were then; empty selects every one.
+        filter: Selector,
+    },
+    /// The stat of the objects of this turn's events of the kind, added up ("the total mana value of other spells you've
+    /// cast this turn"); only the kinds kept as objects.
+    TallyTotal {
+        /// The kind of event.
+        event: TallyEvent,
+        /// The players whose events are counted.
+        who: Ref,
+        /// The objects the events were about, as they were then; empty selects every one.
+        filter: Selector,
+        /// The stat added up.
+        stat: StatKind,
+    },
+    /// The number of unique vowels on the name sticker the resolving spell or ability put on last ("where X is the
+    /// number of unique vowels on that sticker"); 0 when it put none.
+    StickerVowels,
     /// How many targets the spell or ability that triggered this one has.
     TriggeringTargets,
     /// How many players have lost the game ("for each player who has lost the game").
@@ -773,6 +824,8 @@ pub enum Amount {
     },
     /// How far apart the two amounts are, never negative: "the difference between its power and toughness".
     Difference(Box<Amount>, Box<Amount>),
+    /// The amount, but never more than the number ("to a maximum of 10").
+    R374AtMost(Box<Amount>, u32),
     /// The inner amount for the caster as the spell was cast ("for each creature you controlled as you cast this spell"); a
     /// copy that was not cast reads it now.
     CountedAsCast(Box<Amount>),
@@ -832,6 +885,7 @@ enum Tagged {
         by: i32,
         of: Box<Amount>,
     },
+    TwoToThe(Box<Amount>),
     AtMost {
         of: Box<Amount>,
         most: i32,
@@ -925,6 +979,24 @@ enum Tagged {
     },
     CommanderColors(Ref),
     TurnNumber,
+    Stickers {
+        on: Ref,
+        #[serde(default)]
+        kind: Option<crate::ability::StickerKind>,
+    },
+    StickerVowels,
+    CastSameNameThisGame(Ref),
+    TallyLastTurn {
+        event: TallyEvent,
+        who: Ref,
+        filter: Selector,
+    },
+    TallyTotal {
+        event: TallyEvent,
+        who: Ref,
+        filter: Selector,
+        stat: StatKind,
+    },
     TriggeringTargets,
     PlayersLost,
     CastTargets,
@@ -964,6 +1036,7 @@ enum Tagged {
         up: bool,
     },
     Difference(Box<Amount>, Box<Amount>),
+    R374AtMost(Box<Amount>, u32),
     CountedAsCast(Box<Amount>),
 }
 
@@ -990,6 +1063,7 @@ enum TaggedRef<'a> {
         by: i32,
         of: &'a Amount,
     },
+    TwoToThe(&'a Amount),
     AtMost {
         of: &'a Amount,
         most: i32,
@@ -1083,6 +1157,24 @@ enum TaggedRef<'a> {
     },
     CommanderColors(&'a Ref),
     TurnNumber,
+    Stickers {
+        on: &'a Ref,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        kind: Option<crate::ability::StickerKind>,
+    },
+    StickerVowels,
+    CastSameNameThisGame(&'a Ref),
+    TallyLastTurn {
+        event: TallyEvent,
+        who: &'a Ref,
+        filter: &'a Selector,
+    },
+    TallyTotal {
+        event: TallyEvent,
+        who: &'a Ref,
+        filter: &'a Selector,
+        stat: StatKind,
+    },
     TriggeringTargets,
     PlayersLost,
     CastTargets,
@@ -1122,10 +1214,12 @@ enum TaggedRef<'a> {
         up: bool,
     },
     Difference(&'a Amount, &'a Amount),
+    R374AtMost(&'a Amount, u32),
     CountedAsCast(&'a Amount),
 }
 
 impl From<Tagged> for Amount {
+    #[allow(clippy::too_many_lines)] // one arm for each tagged form
     fn from(tagged: Tagged) -> Amount {
         match tagged {
             Tagged::X => Amount::X,
@@ -1139,6 +1233,7 @@ impl From<Tagged> for Amount {
             Tagged::AnyCounters(on) => Amount::AnyCounters(on),
             Tagged::Sum(parts) => Amount::Sum(parts),
             Tagged::Times { by, of } => Amount::Times { by, of },
+            Tagged::TwoToThe(of) => Amount::TwoToThe(of),
             Tagged::AtMost { of, most } => Amount::AtMost { of, most },
             Tagged::Half { of, up } => Amount::Half { of, up },
             Tagged::Divided => Amount::Divided,
@@ -1187,6 +1282,23 @@ impl From<Tagged> for Amount {
             Tagged::DamageDealtByTo { by, to } => Amount::DamageDealtByTo { by, to },
             Tagged::CommanderColors(who) => Amount::CommanderColors(who),
             Tagged::TurnNumber => Amount::TurnNumber,
+            Tagged::Stickers { on, kind } => Amount::Stickers { on, kind },
+            Tagged::StickerVowels => Amount::StickerVowels,
+            Tagged::CastSameNameThisGame(who) => Amount::CastSameNameThisGame(who),
+            Tagged::TallyLastTurn { event, who, filter } => {
+                Amount::TallyLastTurn { event, who, filter }
+            }
+            Tagged::TallyTotal {
+                event,
+                who,
+                filter,
+                stat,
+            } => Amount::TallyTotal {
+                event,
+                who,
+                filter,
+                stat,
+            },
             Tagged::TriggeringTargets => Amount::TriggeringTargets,
             Tagged::PlayersLost => Amount::PlayersLost,
             Tagged::CastTargets => Amount::CastTargets,
@@ -1212,6 +1324,7 @@ impl From<Tagged> for Amount {
             Tagged::Product(parts) => Amount::Product(parts),
             Tagged::Quotient { of, by, up } => Amount::Quotient { of, by, up },
             Tagged::Difference(left, right) => Amount::Difference(left, right),
+            Tagged::R374AtMost(inner, most) => Amount::R374AtMost(inner, most),
             Tagged::CountedAsCast(inner) => Amount::CountedAsCast(inner),
         }
     }
@@ -1238,6 +1351,7 @@ impl Serialize for Amount {
             Amount::AnyCounters(on) => TaggedRef::AnyCounters(on).serialize(serializer),
             Amount::Sum(parts) => TaggedRef::Sum(parts).serialize(serializer),
             Amount::Times { by, of } => TaggedRef::Times { by: *by, of }.serialize(serializer),
+            Amount::TwoToThe(of) => TaggedRef::TwoToThe(of).serialize(serializer),
             Amount::AtMost { of, most } => {
                 TaggedRef::AtMost { of, most: *most }.serialize(serializer)
             }
@@ -1320,6 +1434,31 @@ impl Serialize for Amount {
             }
             Amount::CommanderColors(who) => TaggedRef::CommanderColors(who).serialize(serializer),
             Amount::TurnNumber => TaggedRef::TurnNumber.serialize(serializer),
+            Amount::Stickers { on, kind } => {
+                TaggedRef::Stickers { on, kind: *kind }.serialize(serializer)
+            }
+            Amount::StickerVowels => TaggedRef::StickerVowels.serialize(serializer),
+            Amount::CastSameNameThisGame(who) => {
+                TaggedRef::CastSameNameThisGame(who).serialize(serializer)
+            }
+            Amount::TallyLastTurn { event, who, filter } => TaggedRef::TallyLastTurn {
+                event: *event,
+                who,
+                filter,
+            }
+            .serialize(serializer),
+            Amount::TallyTotal {
+                event,
+                who,
+                filter,
+                stat,
+            } => TaggedRef::TallyTotal {
+                event: *event,
+                who,
+                filter,
+                stat: *stat,
+            }
+            .serialize(serializer),
             Amount::TriggeringTargets => TaggedRef::TriggeringTargets.serialize(serializer),
             Amount::PlayersLost => TaggedRef::PlayersLost.serialize(serializer),
             Amount::CastTargets => TaggedRef::CastTargets.serialize(serializer),
@@ -1363,6 +1502,9 @@ impl Serialize for Amount {
             }
             Amount::Difference(left, right) => {
                 TaggedRef::Difference(left, right).serialize(serializer)
+            }
+            Amount::R374AtMost(inner, most) => {
+                TaggedRef::R374AtMost(inner, *most).serialize(serializer)
             }
             Amount::CountedAsCast(inner) => TaggedRef::CountedAsCast(inner).serialize(serializer),
         }
@@ -1547,6 +1689,9 @@ pub enum Condition {
     SorceryTiming,
     /// The turn is past its combat phase: "Cast this spell only after combat" (the postcombat main phase and the end phase).
     AfterCombat,
+    /// The sticker whose putting on triggered the ability is of this kind ("If it's an art sticker"), read only in a
+    /// trigger on putting a sticker on.
+    TriggeringSticker(crate::ability::StickerKind),
     /// The referenced Class compares to the level this way (CR 716.2): a Class that has gained no level is level 1.
     Level {
         /// The Class read; `This` for the Class with the ability.

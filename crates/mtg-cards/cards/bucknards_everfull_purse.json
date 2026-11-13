@@ -1,0 +1,45 @@
+{
+  "oracle_id": "f70b9eee-3874-4391-8df8-e10bbd19307e",
+  "name": "Bucknard's Everfull Purse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bucknard's Everfull Purse",
+      "oracle_fingerprint": "ecb49ed55edac9ce995c62a4ed02dec1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 4,
+                  "results": [
+                    {
+                      "from": 1,
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": { "Named": "treasure" },
+                            "count": { "DieResult": "Only" }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "Seated": { "of": "You", "side": "Right" } } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

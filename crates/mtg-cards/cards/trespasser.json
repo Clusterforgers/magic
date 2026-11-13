@@ -1,0 +1,43 @@
+{
+  "oracle_id": "75854e14-5f15-443d-b342-b27fc3ab4b6e",
+  "name": "_____ _____ _____ Trespasser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "_____ _____ _____ Trespasser",
+      "oracle_fingerprint": "73ae4bd567ac17c540a32ec47afb2a8b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "May": { "effects": [{ "PutSticker": { "on": ["This"], "kind": "Name" } }] } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{U}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stickers": { "on": "This", "kind": "Name" } },
+                        "toughness": 0
+                      }
+                    },
+                    "CantBeBlocked"
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

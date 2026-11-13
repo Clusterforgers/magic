@@ -16,11 +16,13 @@ import { CardImage } from './CardImage'
 import { hoverFit, HOVER_PADDING_PX } from './hoverFit'
 import { hoverPreview, useHoverTarget } from './hoverPreview'
 import { useImageChoice } from './imageSetting'
-import { cardImageUrl } from './images'
+import { cardImageFallbackUrl, cardImageUrl, identityOf } from './images'
 import type { ImageSize } from './images'
 
 interface CardPictureProps {
   oracleId: string
+  /** The printing whose art is drawn; the card's default art when left out or null. */
+  printingId?: string | null
   /** The card's (or face's) name: the picture's accessible name and the skeleton's text. */
   name: string
   face?: number
@@ -42,6 +44,7 @@ interface CardPictureProps {
 /** A card's picture by oracle id outside the table, over a plain skeleton that names it; none with Text only. */
 export function CardPicture({
   oracleId,
+  printingId = null,
   name,
   face = 0,
   size = 'normal',
@@ -56,7 +59,12 @@ export function CardPicture({
   if (choice === 'text') return null
   return (
     <CardImage
-      src={cardImageUrl({ kind: 'card', identity: { oracle_id: oracleId } }, face, size)}
+      src={cardImageUrl({ kind: 'card', identity: identityOf(oracleId, printingId) }, face, size)}
+      fallback={
+        printingId === null
+          ? null
+          : cardImageFallbackUrl({ kind: 'card', identity: identityOf(oracleId, printingId) }, face, size)
+      }
       alt={alt ?? name}
       onSettle={onSettle}
       eager={eager}
@@ -100,6 +108,7 @@ export interface HoverInfo {
  */
 export function HoverPicture({
   oracleId,
+  printingId = null,
   name,
   info,
   children,
@@ -107,6 +116,8 @@ export function HoverPicture({
   pin = false,
 }: {
   oracleId: string
+  /** The printing whose art the preview draws; the default art when left out or null. */
+  printingId?: string | null
   name: string
   info?: HoverInfo
   children: ReactElement
@@ -200,7 +211,13 @@ export function HoverPicture({
                 maxHeight: shown.at.maxHeight,
               }}
             >
-              <CardPicture oracleId={oracleId} name={name} alt="" className="w-full" />
+              <CardPicture
+                oracleId={oracleId}
+                printingId={printingId}
+                name={name}
+                alt=""
+                className="w-full"
+              />
               <span className="grid gap-1">
                 <span className="font-semibold">
                   {name}

@@ -105,6 +105,10 @@ fn a_card_page_has_the_documented_wire_shape() {
             lang: "en".into(),
             digital: false,
             images: CardImages::default(),
+            set_name: Some("Magic 2010".into()),
+            frame: Some("2003".into()),
+            finishes: vec!["nonfoil".into(), "foil".into()],
+            full_art: false,
         }],
         rulings: vec![RulingView {
             source: "wotc".into(),

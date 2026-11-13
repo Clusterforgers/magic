@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "9ed3fc60-9079-486b-a05e-00f926a99b4e",
+  "oracle_id": "25783439-9b22-4882-a7c2-e0b1fc2f7ec6",
+  "multiverse_ids": [
+    580647
+  ],
+  "tcgplayer_id": 287514,
+  "cardmarket_id": 676959,
+  "name": "Black Hole",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/9ed3fc60-9079-486b-a05e-00f926a99b4e",
+  "scryfall_uri": "https://scryfall.com/card/unf/67/black-hole?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:29:46Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/e/9ed3fc60-9079-486b-a05e-00f926a99b4e.jpg?1783920586",
+    "normal": "https://cards.scryfall.io/normal/front/9/e/9ed3fc60-9079-486b-a05e-00f926a99b4e.jpg?1783920586",
+    "large": "https://cards.scryfall.io/large/front/9/e/9ed3fc60-9079-486b-a05e-00f926a99b4e.jpg?1783920586",
+    "png": "https://cards.scryfall.io/png/front/9/e/9ed3fc60-9079-486b-a05e-00f926a99b4e.png?1783920586",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/e/9ed3fc60-9079-486b-a05e-00f926a99b4e.jpg?1783920586",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/e/9ed3fc60-9079-486b-a05e-00f926a99b4e.jpg?1783920586",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/e/9ed3fc60-9079-486b-a05e-00f926a99b4e.webp?1783920586",
+    "grid": "https://cards.scryfall.io/grid/front/9/e/9ed3fc60-9079-486b-a05e-00f926a99b4e.webp?1783920586",
+    "display": "https://cards.scryfall.io/display/front/9/e/9ed3fc60-9079-486b-a05e-00f926a99b4e.webp?1783920586",
+    "art": "https://cards.scryfall.io/art/front/9/e/9ed3fc60-9079-486b-a05e-00f926a99b4e.webp?1783920586",
+    "crop": "https://cards.scryfall.io/crop/front/9/e/9ed3fc60-9079-486b-a05e-00f926a99b4e.webp?1783920586",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/e/9ed3fc60-9079-486b-a05e-00f926a99b4e.jpg?1783920586"
+  },
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Destroy target creature and up to X other target creatures, where X is the number of Attractions you've visited this turn.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set": "unf",
+  "set_name": "Unfinity",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aunf&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/unf?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9ed3fc60-9079-486b-a05e-00f926a99b4e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A25783439-9b22-4882-a7c2-e0b1fc2f7ec6&unique=prints",
+  "collector_number": "67",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Code Dark Donut! Code Dark Donut! All available fun specialists, please report to the Roil Coaster immediately!\"\n—Truss, chief engineer",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Greg Bobrowski",
+  "artist_ids": [
+    "9da322dc-35e0-44f2-b172-c08a062be60b"
+  ],
+  "illustration_id": "186da93d-3bb8-4dbb-bff1-464315e9312c",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 16283,
+  "preview": {
+    "source": "AliasV",
+    "source_uri": "https://twitter.com/coL_AliasV/status/1573137464352702464",
+    "previewed_at": "2022-09-22"
+  },
+  "prices": {
+    "usd": "0.19",
+    "usd_foil": "0.29",
+    "usd_etched": null,
+    "eur": "0.17",
+    "eur_foil": "0.15",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580647&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBlack%2BHole",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBlack%2BHole",
+    "edhrec": "https://edhrec.com/route/?cc=Black+Hole"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F287514%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=676959&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Black+Hole&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -12,15 +12,19 @@ use crate::refs::{Pred, Ref, Selector};
 use crate::value::{Amount, Cmp, Condition, StatKind};
 
 /// The characteristics a card compares for "different", singular and plural.
-const W2C_STATS: [(&str, &str, StatKind); 2] = [
+const W2C_STATS: [(&str, &str, StatKind); 3] = [
     ("power", "powers", StatKind::Power),
     ("mana value", "mana values", StatKind::ManaValue),
+    ("mana cost", "mana costs", StatKind::R374ManaCost),
 ];
 
 /// "different powers among creatures you control" after "the number of", or "different power among ..." after "for
 /// each" (`plural` false).
 pub(super) fn w2c_distinct(r: &mut Reader<'_>, plural: bool) -> Option<Amount> {
     r.attempt(|r| {
+        if plural && let Some(pairs) = super::r374_counts::r374_color_pairs(r) {
+            return Some(pairs);
+        }
         if r.words(if plural {
             "basic land types among"
         } else {
@@ -59,6 +63,11 @@ pub(super) fn w2c_distinct_text(amount: &Amount, plural: bool) -> Option<String>
     let Amount::Distinct { of, stat } = amount else {
         return None;
     };
+    if *stat == StatKind::R374ColorSet {
+        return plural
+            .then(|| super::r374_counts::r374_color_pairs_text(amount))
+            .flatten();
+    }
     if let Some(text) = super::r300b_writers::r300b_distinct_colors_text(of, *stat, plural) {
         return Some(text);
     }
