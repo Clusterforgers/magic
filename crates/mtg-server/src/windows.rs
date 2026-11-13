@@ -39,7 +39,7 @@ use crate::yields::Yields;
 pub(crate) struct Window {
     /// The step the game is in.
     pub(crate) step: Step,
-    /// Whether it is the seat's own turn.
+    /// Whether it is the seat's own turn, a Two-Headed Giant team's shared turn included (CR 805.3).
     pub(crate) own_turn: bool,
     /// Whether the stack holds an object, of any seat.
     pub(crate) stack: bool,
@@ -53,7 +53,7 @@ impl Window {
         let turn = state.turn();
         Window {
             step: turn.step(),
-            own_turn: turn.active() == seat,
+            own_turn: state.is_active(seat),
             stack: !state.stack().is_empty(),
             others_object: state.stack().iter().any(|id| {
                 state

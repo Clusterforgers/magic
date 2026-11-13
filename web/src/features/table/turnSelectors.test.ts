@@ -1,11 +1,11 @@
-// Goal: the turn selectors read the stage, the result, the active seat and the priority holder alone: turns run at the stage Turns while the game has no result, a seat is the active one only then and only if the view names it, the viewer's turn is that for the viewer's own seat, and priority is whoever the view names, so every seat that looks draws the same marks.
+// Goal: the turn selectors read the stage, the result, the active seat and the priority holder alone: turns run at the stage Turns while the game has no result, a seat is the active one only then and only if the view names it, the viewer's turn is that for the viewer's own seat, and priority is whoever the view names, so every seat that looks draws the same marks; in Two-Headed Giant the active player's teammate has the turn too.
 import { describe, expect, it } from 'vitest'
 import type { PlayState } from '@/play/store'
-import type { GameResult, Stage } from '@/protocol/generated'
+import type { GameResult, Stage, TeamMode } from '@/protocol/generated'
 import { clone, must } from '@/test-utils/batches'
 import { fixtureState } from './dev/devGame'
 import { buildFixture } from './dev/fixture'
-import { holdsPriority, isActiveSeat, isYourTurn, turnsRunning } from './selectors'
+import { holdsPriority, isActiveSeat, isYourTurn, turnsRunning, turnTeammate } from './selectors'
 
 /** A four-seat game as seat 0 sees it: Bo (seat 1) has the turn and Alice, the viewer, holds priority. */
 function state(edit: (state: PlayState) => void = () => undefined): PlayState {
@@ -61,6 +61,20 @@ describe('isActiveSeat', () => {
 
   it('is false for every seat while there is no view', () => {
     expect(isActiveSeat({ ...state(), view: null }, 1)).toBe(false)
+  })
+
+  it.each<[TeamMode, number[], number | undefined]>([
+    ['two_headed_giant', [0, 1], 0],
+    ['teams', [1], undefined],
+  ])('in %s gives the turn of seat 1 to %j, the teammate shown with it', (mode, seats, teammate) => {
+    const game = state((draft) => {
+      must(draft.view).house_rules = {
+        teams: { mode, seats: mode === 'two_headed_giant' ? [0, 0, 1, 1] : [0, 1, 0, 1] },
+      }
+    })
+    expect([0, 1, 2, 3].filter((seat) => isActiveSeat(game, seat))).toEqual(seats)
+    expect(isYourTurn(game)).toBe(seats.includes(0))
+    expect(turnTeammate(game)).toBe(teammate)
   })
 })
 

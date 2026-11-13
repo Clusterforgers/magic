@@ -40,6 +40,9 @@ impl Pass<'_> {
     /// The library of `player`, top card first, as the slot at `at` finds it: the draws of the batch before it have taken
     /// their cards and the cards that left the library in place of being drawn are gone.
     pub(super) fn library_at(&self, at: usize, player: PlayerId) -> Vec<ObjectId> {
+        if self.draws_changed {
+            return self.lg1_library_at(at, player);
+        }
         let before = self.slots[..at]
             .iter()
             .filter(|slot| {

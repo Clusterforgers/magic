@@ -378,6 +378,8 @@ pub enum TurnTally {
     Crimes,
     /// The dungeons the player has completed this game (CR 309.7), each completion once; not reset by the turn.
     DungeonsCompleted,
+    /// The spells the player has cast this game; not reset by the turn ("the first spell you've cast this game").
+    SpellsCastThisGame,
     /// The nonland permanents that left the battlefield for any zone while the players read controlled them (void).
     /// Added up over the players.
     NonlandPermanentsLeft,
@@ -544,6 +546,17 @@ pub enum Amount {
     /// The greatest value of the characteristic among the objects that match the selector; zero when none match.
     Greatest {
         /// The objects compared.
+        of: Selector,
+        /// The characteristic.
+        stat: StatKind,
+    },
+    /// The greatest value of the characteristic among the spells the players `who` names cast this turn that the selector
+    /// matched as they were cast ("the greatest mana value among instant and sorcery spells you've cast this turn"); zero
+    /// when there are none.
+    GreatestCast {
+        /// The players whose spells are read.
+        who: Ref,
+        /// The spells compared, as they were cast.
         of: Selector,
         /// The characteristic.
         stat: StatKind,
@@ -903,6 +916,11 @@ enum Tagged {
         of: Selector,
         stat: StatKind,
     },
+    GreatestCast {
+        who: Ref,
+        of: Selector,
+        stat: StatKind,
+    },
     Total {
         of: Selector,
         stat: StatKind,
@@ -1080,6 +1098,11 @@ enum TaggedRef<'a> {
         of: &'a Selector,
         stat: StatKind,
     },
+    GreatestCast {
+        who: &'a Ref,
+        of: &'a Selector,
+        stat: StatKind,
+    },
     Total {
         of: &'a Selector,
         stat: StatKind,
@@ -1237,6 +1260,7 @@ impl From<Tagged> for Amount {
             Tagged::Devotion(colors) => Amount::Devotion(colors),
             Tagged::ManaSymbols { color, of } => Amount::ManaSymbols { color, of },
             Tagged::Greatest { of, stat } => Amount::Greatest { of, stat },
+            Tagged::GreatestCast { who, of, stat } => Amount::GreatestCast { who, of, stat },
             Tagged::Total { of, stat } => Amount::Total { of, stat },
             Tagged::CardTypes(of) => Amount::CardTypes(of),
             Tagged::Players(who) => Amount::Players(who),
@@ -1360,6 +1384,12 @@ impl Serialize for Amount {
             Amount::Greatest { of, stat } => {
                 TaggedRef::Greatest { of, stat: *stat }.serialize(serializer)
             }
+            Amount::GreatestCast { who, of, stat } => TaggedRef::GreatestCast {
+                who,
+                of,
+                stat: *stat,
+            }
+            .serialize(serializer),
             Amount::Total { of, stat } => {
                 TaggedRef::Total { of, stat: *stat }.serialize(serializer)
             }
@@ -1646,6 +1676,18 @@ pub enum Condition {
     CitysBlessing(Ref),
     /// A player the reference names has an enduring story (storied).
     EnduringStory(Ref),
+    /// A player the reference names was dealt combat damage since their latest turn ended ("if you haven't been dealt combat
+    /// damage since your last turn" is its negation).
+    CombatDamagedSinceLastTurn(Ref),
+    /// In the vote that triggered the ability (`TriggerPattern::Did` with `FinishedVoting`), "you" voted for a choice a
+    /// player `with` names voted for (`same`), or for a choice none of them voted for ("each opponent who voted for a
+    /// choice you didn't vote for").
+    VotedAs {
+        /// The players whose votes are compared with those of "you".
+        with: Ref,
+        /// A shared choice when true; a choice they did not vote for when false.
+        same: bool,
+    },
     /// A player the reference names has max speed, a speed of 4 (CR 702.179): "Max speed — ...".
     MaxSpeed(Ref),
     /// It is day (CR 726): "if it's day".

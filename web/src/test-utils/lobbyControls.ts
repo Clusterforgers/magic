@@ -1,6 +1,7 @@
 import type { Teams, Visibility } from '@/protocol/generated'
 import { jsonResponse } from './fakeFetch'
-import { tokenOf } from './fakeServer'
+import type { FetchCall } from './fakeFetch'
+import { changedReply, tokenOf } from './fakeServer'
 import type { FakeServer, ServerScript } from './fakeServer'
 import { renderGame } from './gameHarness'
 import type { GameHarness } from './gameHarness'
@@ -47,7 +48,10 @@ export async function openLobby(scene: LobbyScene = {}): Promise<GameHarness> {
     routed: true,
     link: scene.account === undefined ? { seat, token: tokenOf(seat) } : null,
     account: scene.account ?? null,
-    script: { game: info, change: scene.change },
+    script: {
+      game: info,
+      change: scene.change ?? (scene.teams === undefined ? undefined : seatTeamReply(scene.teams)),
+    },
   })
   h.join(seat, names.length)
   const roster = lobbyMessage(names.map((name): SeatFlags => [name, name !== '', false]))
@@ -107,4 +111,22 @@ export const FAILURES = {
 
 /** The rows of the seat list, in seat order; found even while a dialog hides the page behind it (and its names). */
 export const seatItems = (): HTMLElement[] =>
-  Array.from(document.querySelectorAll<HTMLElement>('ul[aria-label="Seats"] > li'))
+  Array.from(document.querySelectorAll<HTMLElement>('li[data-seat-row]')).sort(
+    (a, b) => Number(a.dataset.seatRow) - Number(b.dataset.seatRow),
+  )
+
+/**
+ * The good answer of a server that holds `teams` to a change of one seat's team (`PUT .../seats/{n}/team`): the teams
+ * with that seat moved, every other seat where it was; any other change gets the usual good answer.
+ */
+export function seatTeamReply(teams: Teams): (call: FetchCall) => Response {
+  return (call) => {
+    const seat = /\/seats\/(\d+)\/team$/.exec(call.url)?.[1]
+    if (seat === undefined) return changedReply(call)
+    const body: unknown = typeof call.init?.body === 'string' ? JSON.parse(call.init.body) : null
+    const team = typeof body === 'object' && body !== null && 'team' in body ? Number(body.team) : -1
+    return jsonResponse(200, {
+      teams: { ...teams, seats: teams.seats.map((each, index) => (index === Number(seat) ? team : each)) },
+    })
+  }
+}

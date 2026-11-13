@@ -1,7 +1,7 @@
 {
   "oracle_id": "a89f9072-cf06-429f-a9b8-c11b5731ddd3",
   "name": "Case of the Gorgon's Kiss",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Case of the Gorgon's Kiss",
@@ -20,20 +20,32 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 90, "end": 235 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "All": [
+                { "Not": { "Matches": { "subject": "This", "selector": ["Solved"] } } },
+                {
+                  "Compare": {
+                    "left": { "Tallied": { "who": "EachPlayer", "what": "CreatureCardsGraved" } },
+                    "op": "Ge",
+                    "right": 3
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Solve": { "what": "This" } }]
           }
         },
         {
           "Static": {
             "affected": "This",
             "mods": [
+              { "AddType": "Creature" },
+              { "AddSubtype": "Gorgon" },
               { "SetPT": { "power": 4, "toughness": 4 } },
               { "AddKeyword": "Deathtouch" },
-              { "AddKeyword": "Lifelink" },
-              { "AddType": "Creature" },
-              { "AddSubtype": "Gorgon" }
+              { "AddKeyword": "Lifelink" }
             ],
             "condition": { "Matches": { "subject": "This", "selector": ["Solved"] } }
           }

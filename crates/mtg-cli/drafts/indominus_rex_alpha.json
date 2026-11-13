@@ -1,0 +1,256 @@
+{
+  "oracle_id": "723a66c3-2c2c-411c-bba5-922e8601981b",
+  "name": "Indominus Rex, Alpha",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Indominus Rex, Alpha",
+      "oracle_fingerprint": "8d0fb18ea7b29dc26a49c2ab7cc64ebc",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                {
+                  "Discard": {
+                    "count": {
+                      "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Creature" }]
+                    },
+                    "filter": [{ "Type": "Creature" }],
+                    "optional": true,
+                    "as": "d"
+                  }
+                },
+                {
+                  "If": {
+                    "condition": {
+                      "Compare": {
+                        "left": {
+                          "CountOf": {
+                            "of": { "Bound": "d" },
+                            "filter": [{ "HasKeyword": "Flying" }]
+                          }
+                        },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": [{ "PutCounters": { "on": "This", "counter": { "Other": "flying" } } }]
+                  }
+                },
+                {
+                  "If": {
+                    "condition": {
+                      "Compare": {
+                        "left": {
+                          "CountOf": {
+                            "of": { "Bound": "d" },
+                            "filter": [{ "HasKeyword": "FirstStrike" }]
+                          }
+                        },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": [
+                      { "PutCounters": { "on": "This", "counter": { "Other": "first strike" } } }
+                    ]
+                  }
+                },
+                {
+                  "If": {
+                    "condition": {
+                      "Compare": {
+                        "left": {
+                          "CountOf": {
+                            "of": { "Bound": "d" },
+                            "filter": [{ "HasKeyword": "DoubleStrike" }]
+                          }
+                        },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": [
+                      { "PutCounters": { "on": "This", "counter": { "Other": "double strike" } } }
+                    ]
+                  }
+                },
+                {
+                  "If": {
+                    "condition": {
+                      "Compare": {
+                        "left": {
+                          "CountOf": {
+                            "of": { "Bound": "d" },
+                            "filter": [{ "HasKeyword": "Deathtouch" }]
+                          }
+                        },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": [
+                      { "PutCounters": { "on": "This", "counter": { "Other": "deathtouch" } } }
+                    ]
+                  }
+                },
+                {
+                  "If": {
+                    "condition": {
+                      "Compare": {
+                        "left": {
+                          "CountOf": {
+                            "of": { "Bound": "d" },
+                            "filter": [{ "HasKeyword": "Hexproof" }]
+                          }
+                        },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": [
+                      { "PutCounters": { "on": "This", "counter": { "Other": "hexproof" } } }
+                    ]
+                  }
+                },
+                {
+                  "If": {
+                    "condition": {
+                      "Compare": {
+                        "left": {
+                          "CountOf": {
+                            "of": { "Bound": "d" },
+                            "filter": [{ "HasKeyword": "Haste" }]
+                          }
+                        },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": [{ "PutCounters": { "on": "This", "counter": { "Other": "haste" } } }]
+                  }
+                },
+                {
+                  "If": {
+                    "condition": {
+                      "Compare": {
+                        "left": {
+                          "CountOf": {
+                            "of": { "Bound": "d" },
+                            "filter": [{ "HasKeyword": "Indestructible" }]
+                          }
+                        },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": [
+                      { "PutCounters": { "on": "This", "counter": { "Other": "indestructible" } } }
+                    ]
+                  }
+                },
+                {
+                  "If": {
+                    "condition": {
+                      "Compare": {
+                        "left": {
+                          "CountOf": {
+                            "of": { "Bound": "d" },
+                            "filter": [{ "HasKeyword": "Lifelink" }]
+                          }
+                        },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": [
+                      { "PutCounters": { "on": "This", "counter": { "Other": "lifelink" } } }
+                    ]
+                  }
+                },
+                {
+                  "If": {
+                    "condition": {
+                      "Compare": {
+                        "left": {
+                          "CountOf": {
+                            "of": { "Bound": "d" },
+                            "filter": [{ "HasKeyword": "Menace" }]
+                          }
+                        },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": [{ "PutCounters": { "on": "This", "counter": { "Other": "menace" } } }]
+                  }
+                },
+                {
+                  "If": {
+                    "condition": {
+                      "Compare": {
+                        "left": {
+                          "CountOf": {
+                            "of": { "Bound": "d" },
+                            "filter": [{ "HasKeyword": "Reach" }]
+                          }
+                        },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": [{ "PutCounters": { "on": "This", "counter": { "Other": "reach" } } }]
+                  }
+                },
+                {
+                  "If": {
+                    "condition": {
+                      "Compare": {
+                        "left": {
+                          "CountOf": {
+                            "of": { "Bound": "d" },
+                            "filter": [{ "HasKeyword": "Trample" }]
+                          }
+                        },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": [{ "PutCounters": { "on": "This", "counter": { "Other": "trample" } } }]
+                  }
+                },
+                {
+                  "If": {
+                    "condition": {
+                      "Compare": {
+                        "left": {
+                          "CountOf": {
+                            "of": { "Bound": "d" },
+                            "filter": [{ "HasKeyword": "Vigilance" }]
+                          }
+                        },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": [
+                      { "PutCounters": { "on": "This", "counter": { "Other": "vigilance" } } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": { "AnyCounters": "This" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

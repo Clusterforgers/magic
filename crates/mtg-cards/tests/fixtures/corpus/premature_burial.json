@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "b42f83e3-631b-432e-8d2f-f62d3207e95e",
+  "oracle_id": "78d47e49-42bf-404d-b47b-3fbea765ca9a",
+  "multiverse_ids": [
+    509496
+  ],
+  "mtgo_id": 86625,
+  "tcgplayer_id": 233882,
+  "cardmarket_id": 543896,
+  "name": "Premature Burial",
+  "lang": "en",
+  "released_at": "2021-03-19",
+  "uri": "https://api.scryfall.com/cards/b42f83e3-631b-432e-8d2f-f62d3207e95e",
+  "scryfall_uri": "https://scryfall.com/card/tsr/131/premature-burial?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:30:12Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/4/b42f83e3-631b-432e-8d2f-f62d3207e95e.jpg?1783927812",
+    "normal": "https://cards.scryfall.io/normal/front/b/4/b42f83e3-631b-432e-8d2f-f62d3207e95e.jpg?1783927812",
+    "large": "https://cards.scryfall.io/large/front/b/4/b42f83e3-631b-432e-8d2f-f62d3207e95e.jpg?1783927812",
+    "png": "https://cards.scryfall.io/png/front/b/4/b42f83e3-631b-432e-8d2f-f62d3207e95e.png?1783927812",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/4/b42f83e3-631b-432e-8d2f-f62d3207e95e.jpg?1783927812",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/4/b42f83e3-631b-432e-8d2f-f62d3207e95e.jpg?1783927812",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/4/b42f83e3-631b-432e-8d2f-f62d3207e95e.webp?1783927812",
+    "grid": "https://cards.scryfall.io/grid/front/b/4/b42f83e3-631b-432e-8d2f-f62d3207e95e.webp?1783927812",
+    "display": "https://cards.scryfall.io/display/front/b/4/b42f83e3-631b-432e-8d2f-f62d3207e95e.webp?1783927812",
+    "art": "https://cards.scryfall.io/art/front/b/4/b42f83e3-631b-432e-8d2f-f62d3207e95e.webp?1783927812",
+    "crop": "https://cards.scryfall.io/crop/front/b/4/b42f83e3-631b-432e-8d2f-f62d3207e95e.webp?1783927812",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/4/b42f83e3-631b-432e-8d2f-f62d3207e95e.jpg?1783927812"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Destroy target nonblack creature that entered since your last turn ended.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "11e90d1b-0502-43e6-b056-e24836523c13",
+  "set": "tsr",
+  "set_name": "Time Spiral Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/11e90d1b-0502-43e6-b056-e24836523c13",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atsr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tsr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b42f83e3-631b-432e-8d2f-f62d3207e95e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A78d47e49-42bf-404d-b47b-3fbea765ca9a&unique=prints",
+  "collector_number": "131",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"This soil knows well the taste of the dead. Give it the hunger for a living meal, and it can become a deadly ally.\"\n—Ezrith, druid of the Dark Hours",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Clint Langley",
+  "artist_ids": [
+    "0f670587-9f7b-47b3-89cc-8dca80df4cdf"
+  ],
+  "illustration_id": "080fcf0f-e714-421f-b647-048c2036b038",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30344,
+  "penny_rank": 17730,
+  "preview": {
+    "source": "Face to Face Games",
+    "source_uri": "https://magic.facetofacegames.com/exclusive-time-spiral-remastered-spoilers/",
+    "previewed_at": "2021-03-01"
+  },
+  "prices": {
+    "usd": "0.04",
+    "usd_foil": "0.21",
+    "usd_etched": null,
+    "eur": "0.03",
+    "eur_foil": "0.18",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=509496&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPremature%2BBurial",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPremature%2BBurial",
+    "edhrec": "https://edhrec.com/route/?cc=Premature+Burial"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F233882%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=543896&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/86625?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
