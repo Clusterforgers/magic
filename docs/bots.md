@@ -19,7 +19,7 @@ The 5 s server deadline rules out deep full-game search per decision; the levels
 - **Evaluation** (`brain/eval.rs`): life, cards, permanents and mana per team, the threat model's engine values, and interaction in the seat's own hand counted at its hold value (4 plus 1.6 per card in the opponents' hands, up to five; wipes 1.4 of it, counters 1.0, removal 0.8, fogs 0.6, burn 0.5, tricks 0.35; each further piece half the one before). Spending a counter or removal therefore has to beat what keeping it is worth: the bomb, the engine, the combo piece, the wipe on the seat's board and lethal burn are answered; a mana dork, a bear or a shock at a high life total are not.
 - **Interaction policy** (`brain/priority.rs`): a main-phase play that taps the seat below a held counterspell pays its hold value (a quarter of it for removal and tricks), unless the hand would overflow; instant-speed answers, flash creatures and other instants wait for the opponents' turn; colour choices name the colour of the opposing spell on the stack (protection).
 - **Search** (Normal, Hard): plays, attacks, blocks and targets are simulated on engine copies with quick policies for every seat and scored by the shared evaluation. Responses settle the whole stack (counter wars), combat plays run to the end of the turn (pumps wear off before scoring). In rollouts a seat holding a counterspell counters an opposing spell that threatens more than the counter's hold value, so opponents keeping mana up are modelled as holding interaction when their redealt hands have it.
-- **ISMCTS** (Very Hard): one tree over redealt worlds per decision with the heuristic answer first, the same evaluation at the cut-off, and the policy's tap-out costs charged to the root answers.
+- **ISMCTS** (Very Hard): one tree over redealt worlds per decision with the heuristic answer first, the same evaluation at the cut-off, and the policy's tap-out costs charged to the root answers; the tree's favourite replaces the heuristic answer only when its mean reward is 0.05 higher.
 
 ## Decision-quality suite
 
@@ -27,4 +27,13 @@ The 5 s server deadline rules out deep full-game search per decision; the levels
 
 ## Measured
 
-Suite scores (66 cases, untimed, seed 7) before the threat model: Easy 38%, Normal 76%, Hard 71%, Very Hard 73%.
+Decision-quality suite (66 cases, untimed, seed 7):
+
+| Level | Before | Now |
+| --- | --- | --- |
+| Easy | 38% | 39% |
+| Normal | 76% | 95% |
+| Hard | 71% | 97% |
+| Very Hard | 73% | 91% |
+
+Seeded games against the brains of main before this work (`bot_tournament <level> old-<level>`, the three duel decks, `DECKS=3`): Normal 48% in 1v1 (240 games) and 24% of 4-player pods (160 games, 25% even); Hard 52% in 1v1 (240) and 25% of pods (160); Very Hard VH_RESULT. The duel decks are creature mirrors where the suite's skills (counters, engines, combo pieces, wipes) rarely decide a game, so the judgement gains do not show as wins there; the evaluation weights moved by half either way also stay at 50%.

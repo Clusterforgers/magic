@@ -316,13 +316,29 @@ pub fn ismcts(
             child.reward += gained;
         }
     }
+    choose(&tree[0])
+}
+
+/// The mean reward by which the tree's favourite must beat the heuristic answer (the first root child) to replace it:
+/// rollouts are noisy, and the heuristic answer carries the policy's knowledge the rollouts lack.
+const OVERRIDE: f64 = 0.05;
+
+/// The root answer to play: the most visited child, the earlier on a tie, unless the first (the heuristic answer) was
+/// tried and the favourite's mean reward does not beat it by [`OVERRIDE`].
+fn choose(root: &[Child]) -> Option<Answer> {
     let mut best: Option<&Child> = None;
-    for child in &tree[0] {
+    for child in root {
         if child.visits > 0 && best.is_none_or(|held| child.visits > held.visits) {
             best = Some(child);
         }
     }
-    best.map(|child| child.answer.clone())
+    let prior = root.first().filter(|child| child.visits > 0);
+    match (best, prior) {
+        (Some(best), Some(prior)) if best.mean() < prior.mean() + OVERRIDE => {
+            Some(prior.answer.clone())
+        }
+        (best, _) => best.map(|child| child.answer.clone()),
+    }
 }
 
 #[cfg(test)]
@@ -350,6 +366,21 @@ mod tests {
             available,
             ..Child::new(Answer::Priority(PriorityAction::Pass))
         }
+    }
+
+    #[rstest]
+    #[case::clearly_better(0.6, 0.5, 1)]
+    #[case::barely_better(0.53, 0.5, 0)]
+    #[case::worse(0.4, 0.5, 0)]
+    fn the_heuristic_answer_stands_unless_clearly_beaten(
+        #[case] other: f64,
+        #[case] prior: f64,
+        #[case] chosen: usize,
+    ) {
+        let mut root = vec![child(20, prior * 20.0, 30), child(40, other * 40.0, 30)];
+        root[1].answer = Answer::Priority(PriorityAction::BringCompanion);
+        let picked = choose(&root).unwrap();
+        assert_eq!(picked, root[chosen].answer);
     }
 
     #[test]
