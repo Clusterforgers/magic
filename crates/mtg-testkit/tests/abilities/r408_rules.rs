@@ -262,3 +262,70 @@ fn garzas_assassin_recovers_for_half_the_life_rounded_up(
         assert!(names(driver.state(), Zone::Exile).contains(&"Garza's Assassin".to_owned()));
     }
 }
+
+#[rstest]
+#[case::two_seats(2, 2)]
+#[case::three_seats(3, 3)]
+#[case::four_seats(4, 2)]
+fn sekki_turns_damage_into_spirits(#[case] seats: usize, #[case] amount: i32) {
+    use mtg_cards::value::CounterKind;
+    let sekki = mtg_testkit::scenario::with_counters(
+        ready(card("Sekki, Seasons' Guide").unwrap()),
+        CounterKind::PlusOnePlusOne,
+        8,
+    );
+    let scenario = Scenario::new(seats)
+        .at(2, 0, Step::Main1)
+        .battlefield(0, [sekki, ready(mountain())])
+        .hand(0, [burn("Blast", amount)]);
+    let mut driver = Driver::from_scenario(libraries(scenario, seats, forest)).unwrap();
+    let at = driver.target_named("Sekki, Seasons' Guide").unwrap();
+    driver.begin_cast("Blast").unwrap();
+    driver.choose_targets(&[at]).unwrap();
+    driver.answer(Answer::PayMana(PayChoice::Auto)).unwrap();
+    while !driver.state().stack().is_empty() {
+        driver.answer_passively().unwrap();
+    }
+    let id = driver.id_of("Sekki, Seasons' Guide").unwrap();
+    let permanent = driver.state().object(id).unwrap().permanent().unwrap();
+    let amount = u32::try_from(amount).unwrap();
+    assert_eq!(permanent.damage(), 0, "the damage is prevented");
+    assert_eq!(
+        permanent.counters_of(&CounterKind::PlusOnePlusOne),
+        8 - amount
+    );
+    let board = names(driver.state(), Zone::Battlefield);
+    assert_eq!(
+        board.iter().filter(|name| *name == "Spirit").count(),
+        usize::try_from(amount).unwrap()
+    );
+}
+
+#[rstest]
+#[case::mine_with_one_island(2, Some(0), 1, true)]
+#[case::none_with_one_island(3, None, 1, false)]
+#[case::theirs_with_three_islands(4, Some(1), 3, false)]
+#[case::none_with_three_islands(2, None, 3, true)]
+fn catalyst_stone_changes_flashback_costs(
+    #[case] seats: usize,
+    #[case] stone: Option<usize>,
+    #[case] islands: usize,
+    #[case] castable: bool,
+) {
+    let mut scenario = Scenario::new(seats)
+        .at(2, 0, Step::Main1)
+        .battlefield(0, (0..islands).map(|_| ready(island())))
+        .graveyard(0, [card("Flash of Insight").unwrap()]);
+    if let Some(seat) = stone {
+        let mut board: Vec<_> = if seat == 0 {
+            (0..islands).map(|_| ready(island())).collect()
+        } else {
+            Vec::new()
+        };
+        board.push(ready(card("Catalyst Stone").unwrap()));
+        scenario = scenario.battlefield(seat, board);
+    }
+    let driver = Driver::from_scenario(libraries(scenario, seats, forest)).unwrap();
+    let flash = *driver.state().zone(Zone::Graveyard(pid(0))).first().unwrap();
+    assert_eq!(options(&driver).castable.contains(&flash), castable);
+}
