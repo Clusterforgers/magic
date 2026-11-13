@@ -242,14 +242,14 @@ impl DeckGroupRepo {
         group: Option<Uuid>,
     ) -> Result<Filing, DbError> {
         let mut tx = self.pool.begin().await?;
-        let owned = sqlx::query_scalar!(
+        let deck_held = sqlx::query_scalar!(
             r#"SELECT EXISTS (SELECT 1 FROM decks WHERE owner = $1 AND id = $2) AS "owned!""#,
             owner,
             deck.0
         )
         .fetch_one(&mut *tx)
         .await?;
-        if !owned {
+        if !deck_held {
             return Ok(Filing::NoDeck);
         }
         let Some(group) = group else {

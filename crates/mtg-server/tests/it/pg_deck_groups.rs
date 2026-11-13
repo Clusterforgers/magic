@@ -141,7 +141,7 @@ async fn every_group_route_needs_a_signed_in_account(pool: PgPool) {
 async fn groups_are_created_in_order_renamed_collapsed_and_reordered(pool: PgPool) {
     let server = start(&pool).await;
     let ann = register(server.addr, "ann", PASSWORD).await;
-    assert!(groups(&server, &ann).await.is_empty());
+    assert_eq!(groups(&server, &ann).await.len(), 0);
     let fun = group(&server, &ann, " Fun ").await;
     let hard = group(&server, &ann, "Hardcore").await;
     let dungeon = group(&server, &ann, "Dungeon").await;
@@ -230,7 +230,7 @@ async fn a_deck_sits_in_one_group_and_deleting_the_group_ungroups_it(pool: PgPoo
     );
     assert_eq!(file(&server, &ann, &one, None).await.status, 204);
     assert_eq!(file(&server, &ann, &one, None).await.status, 204);
-    assert!(shelf(&server, &ann).await[1].2.is_empty());
+    assert_eq!(shelf(&server, &ann).await[1].2.len(), 0);
 
     assert_eq!(
         ann.delete(server.addr, &format!("{ROUTE}/{fun}"))
@@ -256,7 +256,7 @@ async fn a_deck_sits_in_one_group_and_deleting_the_group_ungroups_it(pool: PgPoo
             .status,
         204
     );
-    assert!(shelf(&server, &ann).await[0].2.is_empty());
+    assert_eq!(shelf(&server, &ann).await[0].2.len(), 0);
 }
 
 #[sqlx::test(migrations = false)]
