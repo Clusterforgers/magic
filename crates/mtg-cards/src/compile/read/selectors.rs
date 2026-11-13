@@ -584,6 +584,10 @@ fn its_controller(r: &mut Reader<'_>) -> Option<Pred> {
 
 /// What happened this turn or what the source did: "that entered the battlefield this turn", "that crewed it this turn".
 fn this_turn_suffix(r: &mut Reader<'_>) -> Option<Pred> {
+    // "with a name originally printed in the Antiquities expansion" is read beside them.
+    if let Some(pred) = r.attempt(super::r4707_printed::r4707_suffix) {
+        return Some(pred);
+    }
     // What came onto the battlefield this turn: "creature token that entered the battlefield this turn".
     if r.words("that entered the battlefield this turn") || r.words("that entered this turn") {
         return Some(Pred::EnteredThisTurn);
@@ -731,6 +735,7 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     .or_else(|| super::r283_atoms::r283_suffix(r, form))
     .or_else(|| super::r379_atoms::r379_suffix(r, form))
     .or_else(|| super::r301b_atoms::r301b_suffix(r, form))
+    .or_else(|| super::r4710_atoms::r4710_suffix(r, form))
 }
 
 /// "greater power", "power less than this creature's power": a stat compared with the same stat of the source.
@@ -766,6 +771,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
     suffix_text_main(pred, form)
         .or_else(|| super::w19d_suffixes::w19d_suffix_text(pred, form))
         .or_else(|| super::vp20_atoms::vp20_suffix_text(pred, form))
+        .or_else(|| super::r4707_printed::r4707_suffix_text(pred))
 }
 
 #[allow(clippy::too_many_lines)]
@@ -889,7 +895,8 @@ fn suffix_text_main(pred: &Pred, form: Form) -> Option<String> {
                 .or_else(|| super::r401_riders::r401_power_or_toughness_text(pred))
                 .or_else(|| super::r283_atoms::r283_suffix_text(pred, form))
                 .or_else(|| super::r379_atoms::r379_suffix_text(pred, form))
-                .or_else(|| super::r301b_atoms::r301b_suffix_text(pred, form));
+                .or_else(|| super::r301b_atoms::r301b_suffix_text(pred, form))
+                .or_else(|| super::r4710_atoms::r4710_suffix_text(pred, form));
         }
     })
 }
@@ -1514,6 +1521,11 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         Some((Pred::Spell, rest)) => (true, rest),
         _ => (false, selector.0.as_slice()),
     };
+    // "Spells with the chosen name" only: of a permanent or a source the card says it otherwise ("sources with the
+    // chosen name"), and those words have writers of their own.
+    if !spell && preds.contains(&Pred::ChosenName) {
+        return None;
+    }
     let preds = &super::w21a_atoms::w21a_zone_first(preds);
     let (mut adjectives, mut types, mut suffixes) = (Vec::new(), Vec::new(), Vec::new());
     let (mut subtypes, mut card, mut token) = (Vec::<&str>::new(), false, false);

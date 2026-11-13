@@ -1,16 +1,29 @@
 {
   "oracle_id": "58ebaaba-7e35-4588-9679-23b22e39789b",
   "name": "Tegwyll's Scouring",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tegwyll's Scouring",
       "oracle_fingerprint": "4cae3e0040160044134ef533e13e7604",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 145 }
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": ["This"],
+                "flash": true,
+                "additional": [
+                  {
+                    "TapPermanents": {
+                      "filter": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }],
+                      "count": 3
+                    }
+                  }
+                ]
+              }
+            },
+            "from": "Hand"
           }
         },
         {

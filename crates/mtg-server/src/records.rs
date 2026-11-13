@@ -61,6 +61,8 @@ pub enum RecordStatus {
     Expired,
     /// The recipe, a deck that changed since the game was created, or the log could not be loaded on boot.
     Failed,
+    /// An admin ended it before it had a result.
+    Aborted,
 }
 
 impl RecordStatus {
@@ -72,6 +74,7 @@ impl RecordStatus {
             RecordStatus::Finished => "finished",
             RecordStatus::Expired => "expired",
             RecordStatus::Failed => "failed",
+            RecordStatus::Aborted => "aborted",
         }
     }
 
@@ -82,6 +85,7 @@ impl RecordStatus {
             RecordStatus::Finished,
             RecordStatus::Expired,
             RecordStatus::Failed,
+            RecordStatus::Aborted,
         ]
         .into_iter()
         .find(|status| status.as_str() == text)
@@ -470,6 +474,24 @@ impl GameRecords {
         Ok(())
     }
 
+    /// Notes that an admin ended an unfinished game, with the reason the players were given. True when it was
+    /// unfinished; a game that already ended keeps its record.
+    pub(crate) async fn mark_aborted(
+        &self,
+        id: GameId,
+        reason: Option<&str>,
+    ) -> Result<bool, RecordError> {
+        let done = sqlx::query!(
+            "UPDATE games SET status = 'aborted', end_reason = $2, finished_at = now()
+             WHERE id = $1 AND status IN ('lobby', 'running')",
+            id.uuid(),
+            reason,
+        )
+        .execute(&self.pool)
+        .await?;
+        Ok(done.rows_affected() > 0)
+    }
+
     /// Notes that the game could not be loaded: `detail` is the operator's account of why, `reason`
     /// the sentence its players read.
     pub(crate) async fn mark_failed(
@@ -555,6 +577,7 @@ mod tests {
     #[case(RecordStatus::Running, "running")]
     #[case(RecordStatus::Finished, "finished")]
     #[case(RecordStatus::Expired, "expired")]
+    #[case(RecordStatus::Aborted, "aborted")]
     #[case(RecordStatus::Failed, "failed")]
     fn statuses_round_trip(#[case] status: RecordStatus, #[case] text: &str) {
         assert_eq!(status.as_str(), text);

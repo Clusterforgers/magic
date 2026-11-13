@@ -127,6 +127,7 @@ pub const fn stat_name(stat: StatKind) -> Option<&'static str> {
         | StatKind::R374Toxic
         | StatKind::R374ManaCost
         | StatKind::R374ColorSet
+        | StatKind::R4700ChosenColors
         | StatKind::Subtypes
         | StatKind::CreatureType
         | StatKind::BasePower
@@ -325,6 +326,13 @@ fn exiled_this_way(selector: &Selector) -> Option<String> {
 
 /// What "for each" counts, as the card words it after "for each ".
 pub fn for_each_text(counted: &Amount) -> Option<String> {
+    if let Amount::Stat {
+        of: Ref::Affected | Ref::Triggering | Ref::Target(0),
+        stat: StatKind::R4700ChosenColors,
+    } = counted
+    {
+        return Some("of the chosen colors it is".to_owned());
+    }
     if let Some(text) = super::r374_counts::r374_each_text(counted) {
         return Some(text);
     }

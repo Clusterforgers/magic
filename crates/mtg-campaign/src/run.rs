@@ -223,6 +223,8 @@ pub enum RunEvent {
         /// The heroes who ended it as Spirits.
         spirits: Vec<u8>,
     },
+    /// The fight's game ended unplayed (an admin ended it, or it expired): the fight waits for a new game.
+    FightVoided,
     /// A hero answered their first offer.
     Picked {
         /// Their index.
@@ -420,6 +422,12 @@ impl Run {
                     return Err(refused("no fight is running"));
                 }
                 self.fight_ended(content, *won, lives, spirits)?;
+            }
+            RunEvent::FightVoided => {
+                if !matches!(self.status, Status::Fight { game: Some(_) }) {
+                    return Err(refused("no fight is running"));
+                }
+                self.status = Status::Fight { game: None };
             }
             RunEvent::Picked { hero, pick } => {
                 if self.status != Status::Room {

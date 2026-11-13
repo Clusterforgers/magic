@@ -44,7 +44,10 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             if let Ability::Activated {
                 limit: Some(limit), ..
             } = &*rules
-                && !state.spend_limit(*limit, *source, *origin, *ability)
+                && !match crate::r4701_boast::r4701_boast_most(state, source.id, &rules) {
+                    Some(most) => state.r4701_spend_boast(most, *source, *origin, *ability),
+                    None => state.spend_limit(*limit, *source, *origin, *ability),
+                }
             {
                 return Err(invalid(format!(
                     "ability {ability} of {source:?} was already used"

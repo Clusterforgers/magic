@@ -46,6 +46,8 @@ async fn applies_to_an_empty_database_and_can_be_rerun(pool: PgPool) {
             "card_rules",
             "cards",
             "deck_cards",
+            "deck_group_members",
+            "deck_groups",
             "decks",
             "favourite_precons",
             "import_runs",

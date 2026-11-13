@@ -1,7 +1,7 @@
 {
   "oracle_id": "a0c956dc-d7de-4f11-b76f-7537fbee1731",
   "name": "Oko, Lorwyn Liege // Oko, Shadowmoor Scion",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Oko, Lorwyn Liege",
@@ -111,9 +111,33 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 215, "end": 351 }
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "type" } },
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Static": {
+                        "affected": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": "You" },
+                            { "ChosenAs": "type" }
+                          ]
+                        },
+                        "mods": [
+                          { "ModifyPT": { "power": 3, "toughness": 3 } },
+                          { "AddKeyword": "Vigilance" },
+                          { "AddKeyword": "Hexproof" }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

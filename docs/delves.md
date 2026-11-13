@@ -28,6 +28,11 @@ Design of Delves, the co-op campaign: a party of 1 to 4 heroes fights a ladder o
 - Every random draw comes from the seed keyed by room, hero and purpose (`rng.rs`), so a reload never rerolls loot.
 - Votes: when every hero voted, the room with the most votes wins and a tie goes to the torch bearer, a role that moves one hero on with every cleared room. Bot allies vote once the players did, with the majority, and answer offers with the first choice (rest when hurt, the first affordable relic at the shop).
 
+## Interface
+
+- The run page reads as a descent: a header with the party's life, hearts, Heat and seed; the ladder as a path from the first boss to the final one, every room cleared, current, next or locked; votes show who chose which camp.
+- Each camp is a scene of its own (loot, shop, campfire, event); a risky relic is always marked Dangerous. Implementation in [web.md](web.md), Delves.
+
 ## Content
 
 - Custom cards are not on Scryfall: id, name, type line, rules text, art placeholder key, role and price, and their abilities in the card DSL. The engine plays each as an emblem; the web draws them from the content endpoint.

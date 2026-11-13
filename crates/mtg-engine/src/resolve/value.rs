@@ -787,6 +787,25 @@ impl<'a> Scope<'a> {
         self.logged_for(event, &self.players(who)?, filter)
     }
 
+    /// Whether a card in a graveyard counts as a card named `name` for the resolving spell: it says so for effects of
+    /// spells of that name, and the source is such a spell ("effects from spells named Muscle Burst count it as a card
+    /// named Muscle Burst").
+    fn r4703_counts_as_named(&self, name: &str, seen: &Seen<'_>) -> bool {
+        if !matches!(seen.zone, Zone::Graveyard(_)) {
+            return false;
+        }
+        let Some(card) = seen.card else {
+            return false;
+        };
+        let says = crate::ability_reader::r4703_counts_as_named(card.card(), name);
+        says && self.state.object(self.source.id).is_some_and(|source| {
+            source.reference() == self.source
+                && source.zone == Zone::Stack
+                && source.kind != ObjectKind::Ability
+                && source.card().name == name
+        })
+    }
+
     /// [`Self::logged`] for the players themselves.
     pub(crate) fn logged_for(
         &self,
@@ -1216,11 +1235,7 @@ impl<'a> Scope<'a> {
         let state = self.state;
         Ok(match reference {
             Ref::You => vec![Target::Player(self.controller)],
-            Ref::Opponents => state
-                .opponents_of(self.controller)
-                .into_iter()
-                .map(Target::Player)
-                .collect(),
+            Ref::Opponents | Ref::Teammates => self.r4710_side(reference),
             Ref::EachPlayer => state
                 .turn_order_from(state.turn().active())
                 .into_iter()
@@ -1275,11 +1290,8 @@ impl<'a> Scope<'a> {
             Ref::Granter => self.granter_on_battlefield(),
             Ref::Monarch => state.monarch().map(Target::Player).into_iter().collect(),
             Ref::Promised => self.promised().map(Target::Player).into_iter().collect(),
-            Ref::Chosen => self
-                .chosen_player()
-                .map(Target::Player)
-                .into_iter()
-                .collect(),
+            Ref::Chosen => self.r4700_chosen_targets(false)?,
+            Ref::R4700OtherChosen => self.r4700_chosen_targets(true)?,
             Ref::Defending => self.defending().into_iter().map(Target::Player).collect(),
             Ref::Attacked => self
                 .attacked_opponents()
@@ -1344,6 +1356,16 @@ impl<'a> Scope<'a> {
             .and_then(|cause| cause.against)
             .into_iter()
             .collect()
+    }
+
+    /// The controller's opponents, or their teammates, still in the game in turn order.
+    fn r4710_side(&self, reference: &Ref) -> Vec<Target> {
+        let players = if *reference == Ref::Teammates {
+            self.state.r4710_teammates_of(self.controller)
+        } else {
+            self.state.opponents_of(self.controller)
+        };
+        players.into_iter().map(Target::Player).collect()
     }
 
     /// The objects the cost picked, in the order of its parts: one the cost took out of its zone is theobject it was
@@ -1879,6 +1901,8 @@ impl<'a> Scope<'a> {
             Pred::Drafted(_) => false,
             Pred::This => reference.id == self.source.id,
             Pred::Other => reference.id != self.source.id,
+            // True of each alone: the cost that takes several keeps them apart (`parts::Pick`).
+            Pred::Apart(_) => true,
             Pred::Is(named) => self.objects(named)?.contains(&reference),
             Pred::CanEnchantSource => {
                 crate::attach::legal_host_entering(state, reference.id, self.source.id)
@@ -2033,8 +2057,16 @@ impl<'a> Scope<'a> {
             Pred::CounterCount { kind, op, to } => {
                 op.holds(i64::from(seen.counters.of(kind)), i64::from(*to))
             }
-            Pred::Named(name) => seen.card.is_some_and(|c| {
-                crate::un34_stickers::name_with(&seen.chars.name_words, &c.card().name) == *name
+            Pred::Named(name) => {
+                seen.card.is_some_and(|c| {
+                    crate::un34_stickers::name_with(&seen.chars.name_words, &c.card().name) == *name
+                }) || self.r4703_counts_as_named(name, seen)
+            }
+            Pred::OriginallyPrintedIn(set) => seen.card.is_some_and(|c| {
+                set.has(&crate::un34_stickers::name_with(
+                    &seen.chars.name_words,
+                    &c.card().name,
+                ))
             }),
             Pred::ChosenColor | Pred::ChosenSubtype | Pred::ChosenName | Pred::ChosenAs(_) => {
                 self.chosen_pred(pred, seen)
@@ -2072,8 +2104,10 @@ impl<'a> Scope<'a> {
             | Pred::BottomOfLibrary
             | Pred::TopOfGraveyard
             | Pred::TopCreatureOfGraveyard
+            | Pred::R4700TopOfGraveyard { .. }
             | Pred::BlockedBy(_)
             | Pred::BlockedThisTurnBy(_)
+            | Pred::CastBefore(_)
             | Pred::BandedWith(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
@@ -2177,6 +2211,7 @@ impl<'a> Scope<'a> {
             | StatKind::R374CreatureTypes
             | StatKind::R374Bushido
             | StatKind::R374Toxic
+            | StatKind::R4700ChosenColors
             | StatKind::R374ManaCost
             | StatKind::R374ColorSet
             | StatKind::Subtypes => None,
@@ -2314,6 +2349,9 @@ impl<'a> Scope<'a> {
                 None => self.w2c_distinct(of, *stat)?,
             },
             Amount::CardTypes(of) => self.card_types_among(of)?,
+            Amount::TallyTypes { event, who, filter } => {
+                self.r4703_logged_types(*event, &self.players(who)?, filter)?
+            }
             Amount::Players(who) => i64::try_from(self.players(who)?.len())
                 .map_err(|_| ResolveError::Invalid("too many players".into()))?,
             Amount::LowestLife(who) => self.lives(who)?.min().unwrap_or(i64::from(i32::MAX)),
@@ -2587,6 +2625,10 @@ impl<'a> Scope<'a> {
         };
         match chosen {
             Chosen::Color(color) => seen.chars.colors.contains(*color),
+            // A colour and a type chosen together: an object of either has what was chosen.
+            Chosen::ColorAndType(color, subtype) => {
+                seen.chars.colors.contains(*color) || has_subtype(subtype)
+            }
             Chosen::Colors(colors) => colors
                 .iter()
                 .any(|color| seen.chars.colors.contains(*color)),
@@ -2595,7 +2637,11 @@ impl<'a> Scope<'a> {
             Chosen::Name(name) => seen.card.is_some_and(|c| {
                 crate::un34_stickers::name_with(&seen.chars.name_words, &c.card().name) == *name
             }),
-            Chosen::Player(_) | Chosen::Chapter(_) | Chosen::Number(_) | Chosen::Word(_) => false,
+            Chosen::Player(_)
+            | Chosen::Players(_)
+            | Chosen::Chapter(_)
+            | Chosen::Number(_)
+            | Chosen::Word(_) => false,
         }
     }
 
@@ -2688,23 +2734,61 @@ impl<'a> Scope<'a> {
 
     /// How many of the card types there are among the objects the selector matches, each counted once.
     fn card_types_among(&self, of: &Selector) -> Result<i64, ResolveError> {
-        const TYPES: [CardType; 9] = [
-            CardType::Artifact,
-            CardType::Battle,
-            CardType::Creature,
-            CardType::Enchantment,
-            CardType::Instant,
-            CardType::Kindred,
-            CardType::Land,
-            CardType::Planeswalker,
-            CardType::Sorcery,
-        ];
         let seen: Vec<Seen<'a>> = self
             .matching(of)?
             .into_iter()
             .filter_map(|object| self.seen(object))
             .collect();
-        let among = TYPES
+        Self::types_among(&seen)
+    }
+
+    /// How many card types the objects of the turn's log of `event` for `players` that `filter` selects had, as they
+    /// were then (`Amount::TallyTypes`).
+    fn r4703_logged_types(
+        &self,
+        event: TallyEvent,
+        players: &[PlayerId],
+        filter: &Selector,
+    ) -> Result<i64, ResolveError> {
+        let log = self.state.tallies.logged.as_slice();
+        let mut scope = self.clone();
+        scope.snapshots.extend(log.iter().map(|(_, _, shot)| shot));
+        scope.as_was = true;
+        let mut seen = Vec::new();
+        for (kind, player, shot) in log {
+            let reference = ObjectRef {
+                id: shot.id,
+                counter: shot.counter,
+            };
+            if *kind == event && players.contains(player) && scope.selects(filter, reference)? {
+                seen.extend(scope.seen(reference).map(|one| one.chars.types));
+            }
+        }
+        Ok(i64::try_from(
+            Self::TYPES
+                .iter()
+                .filter(|card_type| seen.iter().any(|types| types.contains(**card_type)))
+                .count(),
+        )
+        .unwrap_or(0))
+    }
+
+    /// Every card type.
+    const TYPES: [CardType; 9] = [
+        CardType::Artifact,
+        CardType::Battle,
+        CardType::Creature,
+        CardType::Enchantment,
+        CardType::Instant,
+        CardType::Kindred,
+        CardType::Land,
+        CardType::Planeswalker,
+        CardType::Sorcery,
+    ];
+
+    /// How many card types there are among the objects seen.
+    fn types_among(seen: &[Seen<'_>]) -> Result<i64, ResolveError> {
+        let among = Self::TYPES
             .iter()
             .filter(|card_type| seen.iter().any(|one| one.chars.types.contains(**card_type)))
             .count();
@@ -2751,6 +2835,12 @@ impl<'a> Scope<'a> {
             .resolving
             .as_ref()
             .map_or(&[][..], |resolving| &resolving.rolled[..]);
+        if which == DieResult::Distinct {
+            let mut distinct: Vec<u32> = rolled.to_vec();
+            distinct.sort_unstable();
+            distinct.dedup();
+            return i64::try_from(distinct.len()).unwrap_or(0);
+        }
         let back = usize::from(which == DieResult::Other);
         rolled
             .len()
@@ -2936,11 +3026,34 @@ impl<'a> Scope<'a> {
     }
 
     /// The player the source chose as it entered, while they are still in the game.
-    fn chosen_player(&self) -> Option<PlayerId> {
-        match self.entered_choice() {
-            Some(Chosen::Player(player)) if self.state.is_alive(*player) => Some(*player),
-            _ => None,
-        }
+    /// The players the source chose as it entered who are still in the game, without those the trigger event is
+    /// about when `other` is set ("the other chosen player").
+    fn r4700_chosen_targets(&self, other: bool) -> Result<Vec<Target>, ResolveError> {
+        let about = if other {
+            self.refs(&Ref::Triggering)?
+        } else {
+            Vec::new()
+        };
+        Ok(self
+            .chosen_players()
+            .into_iter()
+            .map(Target::Player)
+            .filter(|player| !about.contains(player))
+            .collect())
+    }
+
+    /// The players the source chose as it entered who are still in the game.
+    fn chosen_players(&self) -> Vec<PlayerId> {
+        let chosen: &[PlayerId] = match self.entered_choice() {
+            Some(Chosen::Player(player)) => std::slice::from_ref(player),
+            Some(Chosen::Players(players)) => players,
+            _ => &[],
+        };
+        chosen
+            .iter()
+            .copied()
+            .filter(|player| self.state.is_alive(*player))
+            .collect()
     }
 
     /// The opponent a gift was promised to as the spell was cast, while they are still in the game (CR 702.174).
@@ -3916,6 +4029,7 @@ mod tests {
             amount: 0,
             source: None,
             against: None,
+            counters: Vec::new(),
         };
         let mut scope = scope(&game);
         let triggering: Ref = serde_json::from_str(r#""Triggering""#).unwrap();
