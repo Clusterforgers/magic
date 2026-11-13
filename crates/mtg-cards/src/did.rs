@@ -126,6 +126,12 @@ pub enum Action {
     ExploredLand,
     /// A creature explored and revealed a card that is not a land card (CR 701.44); `what` is the creature.
     ExploredNonland,
+    /// A player paid the cumulative upkeep of a permanent (CR 702.24a); `what` is the permanent.
+    PaidCumulativeUpkeep,
+    /// A player didn't pay the cumulative upkeep of a permanent (CR 702.24a); `what` is the permanent.
+    DeclinedCumulativeUpkeep,
+    /// A player paid the echo cost of a permanent (CR 702.30a); `what` is the permanent.
+    PaidEcho,
 }
 
 impl Action {
@@ -231,6 +237,12 @@ impl Action {
             ),
             Action::ExploredLand => ("explore a land card", "explores a land card"),
             Action::ExploredNonland => ("explore a nonland card", "explores a nonland card"),
+            Action::PaidCumulativeUpkeep => ("pay a cumulative upkeep", "pays a cumulative upkeep"),
+            Action::DeclinedCumulativeUpkeep => (
+                "don't pay a cumulative upkeep",
+                "doesn't pay a cumulative upkeep",
+            ),
+            Action::PaidEcho => ("pay an echo cost", "pays an echo cost"),
             Action::ControlTakenByOpponent => (
                 "have an opponent gain control of a permanent from you",
                 "has an opponent gain control of a permanent from them",

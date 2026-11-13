@@ -804,7 +804,10 @@ impl<'a> Walker<'a> {
                 self.reference(r, Kind::Player);
             }
             // The objects a share names are read with the object tested as `Candidate`.
-            Pred::SharesName(r) | Pred::SharesType(r) | Pred::SharesColor(r) => {
+            Pred::SharesName(r)
+            | Pred::SharesType(r)
+            | Pred::SharesColor(r)
+            | Pred::SharesTypeOf { with: r, .. } => {
                 self.scope.tests += 1;
                 self.reference(r, Kind::Object);
                 self.scope.tests -= 1;
@@ -8347,11 +8350,14 @@ impl Walker<'_> {
             Action::Discovered => value.is_some() && to.is_none(),
             Action::ManifestedDread => value.is_none() && to.is_none(),
             Action::GaveGift => card.is_none() && value.is_none() && to.is_some(),
+            Action::PaidCumulativeUpkeep | Action::DeclinedCumulativeUpkeep | Action::PaidEcho => {
+                card.is_some() && value.is_none() && to.is_none()
+            }
             _ => false,
         };
         if !fits {
             self.problem(format!(
-                "`Performed` logs investigate, discover (with a value), manifest dread or a gift (to a player), not {action:?} with these parts"
+                "`Performed` logs investigate, discover (with a value), manifest dread, a gift (to a player) or an upkeep cost paid or not (of a card), not {action:?} with these parts"
             ));
         }
     }

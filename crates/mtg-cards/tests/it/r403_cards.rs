@@ -122,6 +122,11 @@ fn r403_probe() {
 #[case("Denry Klin, Editor in Chief")]
 #[case("Voidpouncer")]
 #[case("Grimdancer")]
+#[case("Far Fortune, End Boss")]
+#[case("Aether Revolt")]
+#[case("Anthem of Rakdos")]
+#[case("Thought Lash")]
+#[case("Hibernation's End")]
 fn r403_reads_back_whole(#[case] name: &str) {
     let report = r403_report(name, &r403_file(name));
     assert_eq!(

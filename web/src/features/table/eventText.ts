@@ -1004,6 +1004,11 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('GiftGiven' in event) {
     return line(`${n.seat(event.GiftGiven.player)} gives ${n.seat(event.GiftGiven.to)} a gift`)
   }
+  if ('UpkeepSettled' in event) {
+    const { player, object, echo, paid } = event.UpkeepSettled
+    const cost = echo ? 'echo cost' : 'cumulative upkeep'
+    return line(`${n.seat(player)} ${paid ? 'pays' : "doesn't pay"} the ${cost} of ${n.card(object)}`)
+  }
   if ('Foraged' in event) return line(`${n.seat(event.Foraged.player)} forages`)
   if ('DieRolled' in event) {
     const { player, sides, result } = event.DieRolled

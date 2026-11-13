@@ -117,6 +117,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Discovered: [{ Discovered: { player: 1, value: 3, card: 3 } }, 'Bo discovers 3, finding Forest'],
   DreadManifested: [{ DreadManifested: { player: 0, card: null } }, 'Ana manifests dread'],
   GiftGiven: [{ GiftGiven: { player: 0, to: 1 } }, 'Ana gives Bo a gift'],
+  UpkeepSettled: [
+    { UpkeepSettled: { player: 1, object: 3, echo: false, paid: false } },
+    "Bo doesn't pay the cumulative upkeep of Forest",
+  ],
   Foraged: [{ Foraged: { player: 1 } }, 'Bo forages'],
   DieRolled: [{ DieRolled: { player: 1, sides: 20, result: 14 } }, 'Bo rolls a d20: 14'],
   CoinFlipped: [

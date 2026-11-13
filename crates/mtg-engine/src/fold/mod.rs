@@ -493,6 +493,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Discovered { .. }
         | Event::DreadManifested { .. }
         | Event::GiftGiven { .. }
+        | Event::UpkeepSettled { .. }
         | Event::Foraged { .. }
         | Event::Clashed { .. }
         | Event::Proliferated { .. } => {}

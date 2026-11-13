@@ -8,9 +8,10 @@
 use super::ClauseKind;
 use super::tokens::{Reader, tokenize};
 use crate::ability::Ability;
+use crate::did::Action;
 use crate::effect::Effect;
 use crate::refs::Ref;
-use crate::trigger::{MoreCounters, ReplaceBy};
+use crate::trigger::{MoreCounters, ReplaceBy, TriggerPattern};
 use crate::value::{Amount, CounterKind};
 
 /// The step a trigger that copies the counters of the card is written with.
@@ -51,6 +52,14 @@ pub(super) fn r403_read(
     kind: ClauseKind,
     read: impl Fn(&str) -> Option<Ability>,
 ) -> Option<Ability> {
+    if kind == ClauseKind::Triggered
+        && let Some(found) = r403_upkeep_read(text, &read)
+    {
+        return Some(found);
+    }
+    if let Some(twin) = r403_while_twin(text) {
+        return read(&twin).filter(|found| matches!(found, Ability::Replacement { .. }));
+    }
     if kind == ClauseKind::Triggered
         && let Some((joined, twin)) =
             r403_combat_pairs().find(|(joined, _)| text.contains(joined.as_str()))
@@ -99,6 +108,152 @@ fn r403_has_counters() -> crate::value::Condition {
         left: Amount::AnyCounters(Ref::This),
         op: crate::value::Cmp::Ge,
         right: Amount::Fixed(1),
+    }
+}
+
+/// "As long as C, if X, R" as the twin "If X while C, R".
+fn r403_while_twin(text: &str) -> Option<String> {
+    let rest = text.strip_prefix("As long as ")?;
+    let (condition, rest) = rest.split_once(", if ")?;
+    let (event, result) = rest.split_once(", ")?;
+    Some(format!("If {event} while {condition}, {result}"))
+}
+
+/// "If X while C, R" as "As long as C, if X, R".
+fn r403_as_long_as(text: &str) -> Option<String> {
+    let rest = text.strip_prefix("If ")?;
+    let (head, result) = rest.split_once(", ")?;
+    let (event, condition) = head.split_once(" while ")?;
+    Some(format!("As long as {condition}, if {event}, {result}"))
+}
+
+/// The heads of a trigger on an upkeep cost of the card paid or not, with the action each logs and who pays.
+const R403_UPKEEP_HEADS: [(&str, Action, Ref); 3] = [
+    (
+        "Whenever you pay ~'s cumulative upkeep",
+        Action::PaidCumulativeUpkeep,
+        Ref::You,
+    ),
+    (
+        "When a player doesn't pay ~'s cumulative upkeep",
+        Action::DeclinedCumulativeUpkeep,
+        Ref::EachPlayer,
+    ),
+    (
+        "When ~'s echo cost is paid",
+        Action::PaidEcho,
+        Ref::EachPlayer,
+    ),
+];
+/// The head of the twin a trigger on an upkeep cost is read and written with.
+const R403_TWIN_HEAD: &str = "Whenever you investigate";
+/// The step of a trigger on a player who didn't pay: they exile their library.
+const R403_EXILES_LIBRARY: &str = "that player exiles all cards from their library.";
+
+/// The words "this <type>'s" of a card naming itself, as "~'s".
+fn r403_own(text: &str) -> String {
+    let mut own = text.to_owned();
+    for noun in [
+        "this enchantment's",
+        "this creature's",
+        "this artifact's",
+        "this permanent's",
+    ] {
+        own = own.replace(noun, "~'s");
+    }
+    own
+}
+
+/// Every card in the library of the player a trigger is about.
+fn r403_their_library() -> Ref {
+    Ref::Each(crate::refs::Selector(vec![
+        crate::refs::Pred::In(crate::refs::ZoneKind::Library),
+        crate::refs::Pred::OwnedBy(Ref::TriggeringPlayer),
+    ]))
+}
+
+/// A trigger on an upkeep cost of the card paid or not, read from the twin "Whenever you investigate, S." or, for "that
+/// player exiles all cards from their library", read whole.
+fn r403_upkeep_read(text: &str, read: &impl Fn(&str) -> Option<Ability>) -> Option<Ability> {
+    let own = r403_own(text);
+    let (head, action, who) = R403_UPKEEP_HEADS
+        .iter()
+        .find(|(head, ..)| own.starts_with(&format!("{head}, ")))?;
+    let body = &own[head.len() + 2..];
+    let when = TriggerPattern::Did {
+        action: *action,
+        who: who.clone(),
+        what: crate::refs::Selector::this(),
+    };
+    if body == R403_EXILES_LIBRARY {
+        return Some(Ability::Triggered {
+            when,
+            intervening_if: None,
+            limit: None,
+            from: crate::refs::ZoneKind::Battlefield,
+            targets: Vec::new(),
+            effects: vec![Effect::Exile {
+                what: r403_their_library(),
+                bind: None,
+                duration: None,
+            }],
+        });
+    }
+    let mut ability = read(&format!("{R403_TWIN_HEAD}, {body}"))?;
+    let Ability::Triggered {
+        when: read_when, ..
+    } = &mut ability
+    else {
+        return None;
+    };
+    *read_when = when;
+    Some(ability)
+}
+
+/// The wordings of a trigger on an upkeep cost of the card paid or not.
+fn r403_upkeep_wordings(
+    ability: &Ability,
+    written: fn(&Ability) -> Vec<String>,
+    more: &mut Vec<String>,
+) {
+    let Ability::Triggered {
+        when: TriggerPattern::Did { action, who, what },
+        effects,
+        ..
+    } = ability
+    else {
+        return;
+    };
+    let Some((head, ..)) = R403_UPKEEP_HEADS
+        .iter()
+        .find(|(_, act, by)| act == action && by == who)
+    else {
+        return;
+    };
+    if *what != crate::refs::Selector::this() {
+        return;
+    }
+    let exile = Effect::Exile {
+        what: r403_their_library(),
+        bind: None,
+        duration: None,
+    };
+    if effects.as_slice() == [exile] {
+        more.push(format!("{head}, {R403_EXILES_LIBRARY}"));
+        return;
+    }
+    let mut twin = ability.clone();
+    if let Ability::Triggered { when, .. } = &mut twin {
+        *when = TriggerPattern::Did {
+            action: Action::Investigated,
+            who: Ref::You,
+            what: crate::refs::Selector::default(),
+        };
+    }
+    for text in written(&twin) {
+        if let Some(body) = text.strip_prefix(&format!("{R403_TWIN_HEAD}, ")) {
+            more.push(format!("{head}, {body}"));
+        }
     }
 }
 
@@ -295,6 +450,13 @@ pub(super) fn r403_wordings(
             }
         }
     }
+    if let Ability::Replacement {
+        condition: Some(_), ..
+    } = ability
+    {
+        more.extend(texts.iter().filter_map(|text| r403_as_long_as(text)));
+    }
+    r403_upkeep_wordings(ability, written, &mut more);
     r403_counter_wordings(ability, written, &mut more, texts);
     texts.extend(more);
 }

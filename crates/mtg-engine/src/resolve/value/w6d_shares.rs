@@ -50,6 +50,14 @@ impl Scope<'_> {
         Ok(match pred {
             Pred::SharesName(named) => self.w6d_shares_name(named, seen)?,
             Pred::SharesType(named) => self.w6d_shares_type(named, seen)?,
+            Pred::SharesTypeOf { with, types } => {
+                self.w6d_any_named(with, seen, |mine, theirs| {
+                    types.iter().any(|card_type| {
+                        mine.chars.types.contains(*card_type)
+                            && theirs.chars.types.contains(*card_type)
+                    })
+                })?
+            }
             Pred::SharesColor(named) => self.w6d_shares_color(named, seen)?,
             Pred::XInCost => Self::w6d_x_in_cost(seen),
             Pred::GenericCost(n) => Self::generic_cost(*n, seen),

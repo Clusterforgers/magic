@@ -170,6 +170,20 @@ pub(super) fn did_happened(
             found.push(did(Action::ManifestedDread, Some(*player), *card));
         }
         Event::GiftGiven { player, .. } => found.push(did(Action::GaveGift, Some(*player), None)),
+        Event::UpkeepSettled {
+            player,
+            object,
+            echo,
+            paid,
+        } => {
+            let action = match (echo, paid) {
+                (false, true) => Some(Action::PaidCumulativeUpkeep),
+                (false, false) => Some(Action::DeclinedCumulativeUpkeep),
+                (true, true) => Some(Action::PaidEcho),
+                (true, false) => None,
+            };
+            found.extend(action.map(|action| did(action, Some(*player), Some(*object))));
+        }
         Event::Foraged { player } => found.push(did(Action::Foraged, Some(*player), None)),
         Event::Explored {
             object,

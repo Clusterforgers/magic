@@ -453,6 +453,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Discovered { .. }
         | Event::DreadManifested { .. }
         | Event::GiftGiven { .. }
+        | Event::UpkeepSettled { .. }
         | Event::Foraged { .. }
         | Event::DieRolled { .. }
         | Event::RolledToVisit { .. }

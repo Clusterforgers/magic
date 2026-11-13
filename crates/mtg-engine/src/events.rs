@@ -904,6 +904,18 @@ pub enum Event {
         /// The card they put into their graveyard this way, if any.
         card: Option<ObjectId>,
     },
+    /// A player paid or didn't pay an upkeep cost of a permanent: its cumulative upkeep (CR 702.24a) or its echo cost
+    /// (CR 702.30a); the payment or the sacrifice is the events around it.
+    UpkeepSettled {
+        /// Who paid or didn't.
+        player: PlayerId,
+        /// The permanent whose cost it was.
+        object: ObjectId,
+        /// The cost was an echo cost, else a cumulative upkeep.
+        echo: bool,
+        /// It was paid.
+        paid: bool,
+    },
     /// A player gave a gift (CR 702.174): the gift itself is the events before it.
     GiftGiven {
         /// Who gave it.
@@ -1402,6 +1414,7 @@ impl Event {
             | Event::Discovered { .. }
             | Event::DreadManifested { .. }
             | Event::GiftGiven { .. }
+            | Event::UpkeepSettled { .. }
             | Event::Foraged { .. }
             | Event::DieRolled { .. }
             | Event::CoinFlipped { .. }

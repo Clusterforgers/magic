@@ -1726,6 +1726,7 @@ impl<'a> Scope<'a> {
             Pred::SharesSubtype(named) => self.shares_subtype(named, seen)?,
             Pred::SharesName(_)
             | Pred::SharesType(_)
+            | Pred::SharesTypeOf { .. }
             | Pred::SharesColor(_)
             | Pred::XInCost
             | Pred::GenericCost(_)

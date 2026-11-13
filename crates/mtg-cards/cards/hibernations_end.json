@@ -1,17 +1,73 @@
 {
   "oracle_id": "cf032b80-00d5-42fc-9e1a-16072b5fed55",
   "name": "Hibernation's End",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Hibernation's End",
       "oracle_fingerprint": "a578ea4fece27bf0298842b3cb55c4c0",
       "abilities": [
-        { "Keyword": { "CumulativeUpkeep": "{1}" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 172, "end": 390 }
+          "Keyword": {
+            "CumulativeUpkeep": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "PaidCumulativeUpkeep",
+                "who": "You",
+                "what": [
+                  "This"
+                ]
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [
+                          {
+                            "Type": "Creature"
+                          },
+                          {
+                            "Compare": {
+                              "stat": "ManaValue",
+                              "op": "Eq",
+                              "to": {
+                                "Counters": {
+                                  "on": "This",
+                                  "counter": {
+                                    "Other": "age"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "as": "card"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": {
+                          "Bound": "card"
+                        },
+                        "to": {
+                          "Battlefield": {}
+                        }
+                      }
+                    },
+                    {
+                      "Shuffle": {}
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

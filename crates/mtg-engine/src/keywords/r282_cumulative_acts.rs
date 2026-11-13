@@ -6,6 +6,7 @@
 //! the actions are done no time at all.
 
 use mtg_cards::ability::Ability;
+use mtg_cards::did::Action;
 use mtg_cards::effect::{Effect, MOST_PASSES};
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
@@ -25,12 +26,27 @@ fn age() -> CounterKind {
 
 /// The sacrifice of the permanent, the other choice.
 fn sacrifice() -> Vec<Effect> {
-    vec![Effect::Sacrifice {
+    vec![
+        settled(Action::DeclinedCumulativeUpkeep),
+        Effect::Sacrifice {
+            who: Ref::You,
+            filter: Selector::this(),
+            count: Amount::one(),
+            bind: None,
+        },
+    ]
+}
+
+/// The log that the cumulative upkeep was paid or not, which "whenever you pay ~'s cumulative upkeep" triggers on.
+fn settled(action: Action) -> Effect {
+    Effect::Performed {
+        action,
         who: Ref::You,
-        filter: Selector::this(),
-        count: Amount::one(),
-        bind: None,
-    }]
+        times: Amount::one(),
+        card: Some(Ref::This),
+        value: None,
+        to: None,
+    }
 }
 
 impl KeywordRules for CumulativeUpkeepActs {
@@ -43,18 +59,21 @@ impl KeywordRules for CumulativeUpkeepActs {
             counter: age(),
         };
         // Done once for each age counter: a pass binds its own names, so "an opponent" is chosen anew each time.
-        let pay = vec![Effect::RepeatWhile {
-            condition: Condition::Compare {
-                left: counters.clone(),
-                op: Cmp::Ge,
-                right: Amount::one(),
+        let pay = vec![
+            Effect::RepeatWhile {
+                condition: Condition::Compare {
+                    left: counters.clone(),
+                    op: Cmp::Ge,
+                    right: Amount::one(),
+                },
+                effects: acts.clone(),
+                most: MOST_PASSES,
+                times: Some(counters),
+                at_least_once: false,
+                ask: None,
             },
-            effects: acts.clone(),
-            most: MOST_PASSES,
-            times: Some(counters),
-            at_least_once: false,
-            ask: None,
-        }];
+            settled(Action::PaidCumulativeUpkeep),
+        ];
         let choice = Effect::OneOf {
             who: Ref::You,
             options: vec![pay, sacrifice()],
