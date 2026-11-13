@@ -37,6 +37,10 @@ pub fn r304b_triple_texts(first: &Ability, second: &Ability, third: &Ability) ->
     if !owner.is_empty() {
         return owner;
     }
+    let sacrificed = super::ep23_three::ep23_texts(first, second, third);
+    if !sacrificed.is_empty() {
+        return sacrificed;
+    }
     let Ok(value) = serde_json::to_value(third) else {
         return Vec::new();
     };

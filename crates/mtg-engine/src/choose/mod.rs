@@ -18,6 +18,7 @@ mod replacement;
 mod scry;
 mod sole;
 mod targets;
+pub(crate) use targets::{object_key, together_key};
 mod triggers;
 pub(crate) mod values;
 mod yes_no;

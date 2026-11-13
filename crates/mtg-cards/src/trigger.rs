@@ -909,6 +909,12 @@ pub enum ReplaceWhen {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// A player would lose life: by an effect or by damage (CR 120.3a), not by paying it; only `LossTimes`.
+    LifeLoss {
+        /// Who would lose it.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
     /// A player would lose the game; only `Instead`.
     LoseGame {
         /// Who.
@@ -994,12 +1000,25 @@ pub enum EntersChoice {
     CardName,
     /// The name of a card that is not a land ("choose a nonland card name").
     NonlandCardName,
+    /// The name of a card that is neither a creature nor a land ("choose a noncreature, nonland card name").
+    NoncreatureNonlandCardName,
+    /// The name of a land card that is not basic ("choose a nonbasic land card name").
+    NonbasicLandCardName,
+    /// Each opponent reveals their hand and the controller chooses the name of a nonland card revealed this way; no name
+    /// when none was revealed.
+    RevealedNonlandName,
     /// A card type.
     CardType,
     /// One of these card types ("choose artifact, creature, enchantment, instant, or sorcery").
     CardTypeOf(mtg_core::card::CardTypes),
     /// A basic land type (CR 205.3i: Plains, Island, Swamp, Mountain or Forest).
     BasicLandType,
+    /// This many different colours ("choose two colors").
+    Colors(u32),
+    /// A colour and a creature type ("choose a color and a creature type").
+    ColorAndCreatureType,
+    /// This many different players ("choose two players").
+    Players(u32),
     /// A number from `min` to `max`.
     Number {
         /// The smallest number.
@@ -1041,6 +1060,9 @@ pub enum ReplaceBy {
     Multiply(u32),
     /// The number or amount in the event is increased.
     Add(u32),
+    /// The life lost is this many times as much (CR 614.1): "they lose twice that much life instead"; damage stays as it
+    /// was dealt, only the life it takes changes. Only `LifeLoss`.
+    LossTimes(u32),
     /// The number in the event is halved, rounded down ("they put half that many of each of those kinds of counters
     /// on that permanent or player instead, rounded down").
     Half,

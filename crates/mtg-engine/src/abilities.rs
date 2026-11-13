@@ -4,6 +4,7 @@ use std::hash::{Hash, Hasher};
 use std::sync::Arc;
 
 use mtg_cards::ability::Ability;
+use mtg_cards::value::CounterKind;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
@@ -152,6 +153,11 @@ pub struct Cause {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectRef>>", optional))]
     pub dealers: Vec<ObjectRef>,
+    /// The counters a putting of counters put, by kind and number, in the order put ("the same number and kind of
+    /// counters"); empty for any other event.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<(CounterKind, u32)>>", optional))]
+    pub counters: Vec<(CounterKind, u32)>,
 }
 
 #[allow(clippy::trivially_copy_pass_by_ref)]

@@ -9,6 +9,8 @@ use crate::ability::CostChange;
 use crate::effect::{Effect, ValueKind};
 use crate::modify::{Duration, GameRule, Modification};
 use crate::refs::{Pred, Ref, Selector};
+use crate::value::Amount;
+use mtg_core::color::Color;
 
 /// The sentence: a duration before the spells, after who casts them ("this turn") or at its end, exactly once.
 pub fn g10d_spell_cost(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
@@ -16,12 +18,15 @@ pub fn g10d_spell_cost(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     if leading {
         r.punct(',').then_some(())?;
     }
-    let (applies_to, itself) = cost_subject(r)?;
+    let (mut applies_to, itself) = cost_subject(r)?;
     (!itself && applies_to.0.first() == Some(&Pred::Spell)).then_some(())?;
     let this_turn = r.words("this turn");
+    if this_turn && let Some(colors) = r.attempt(r4703_that_are_colors) {
+        applies_to.0.push(colors);
+    }
     r.need("cost")?;
     let (mana, x) = cost_mana(r)?;
-    (!x && !mana.rest().symbols().is_empty()).then_some(())?;
+    (!mana.rest().symbols().is_empty()).then_some(())?;
     let change = if r.word("more") {
         CostChange::Increase
     } else if r.word("less") {
@@ -30,7 +35,12 @@ pub fn g10d_spell_cost(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         return None;
     };
     r.need("to cast")?;
-    let trailing = r.words("until your next turn");
+    let per = if x {
+        super::c11a_turn_costs::c11a_turn_count(r, true)?
+    } else {
+        Amount::one()
+    };
+    let trailing = !x && r.words("until your next turn");
     let duration = match (leading, this_turn, trailing) {
         (true, false, false) | (false, false, true) => Duration::UntilYourNextTurn,
         (false, true, false) => Duration::UntilEndOfTurn,
@@ -41,9 +51,45 @@ pub fn g10d_spell_cost(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             applies_to,
             change,
             mana,
+            per,
         },
         duration,
     }])
+}
+
+/// The colors a spell may have, joined by "and/or": "that are black and/or red".
+fn r4703_that_are_colors(r: &mut Reader<'_>) -> Option<Pred> {
+    r.need("that are")?;
+    let first = r4703_color(r)?;
+    (r.word("and") && r.punct('/') && r.word("or")).then_some(())?;
+    let second = r4703_color(r)?;
+    Some(Pred::AnyOf(vec![Pred::Color(first), Pred::Color(second)]))
+}
+
+/// One color word.
+fn r4703_color(r: &mut Reader<'_>) -> Option<Color> {
+    Color::ALL
+        .into_iter()
+        .find(|color| r.word(super::selectors::color_name(*color)))
+}
+
+/// The words of a trailing `AnyOf` of two colors: " that are black and/or red".
+fn r4703_that_are_text(applies_to: &Selector) -> Option<(Selector, String)> {
+    let (last, rest) = applies_to.0.split_last()?;
+    let Pred::AnyOf(kinds) = last else {
+        return None;
+    };
+    let [Pred::Color(first), Pred::Color(second)] = kinds.as_slice() else {
+        return None;
+    };
+    let (first, second) = (
+        super::selectors::color_name(*first),
+        super::selectors::color_name(*second),
+    );
+    Some((
+        Selector(rest.to_vec()),
+        format!(" that are {first} and/or {second}"),
+    ))
 }
 
 /// "Until your next turn, spells ... cost {2} more to cast." is also "Spells ... cost {2} more to cast until your next
@@ -122,6 +168,7 @@ pub fn g10d_spell_cost_text(effect: &Effect) -> Option<String> {
                 applies_to,
                 change,
                 mana,
+                per,
             },
         duration,
     } = effect
@@ -131,16 +178,55 @@ pub fn g10d_spell_cost_text(effect: &Effect) -> Option<String> {
     if *applies_to == Selector::this() || mana.has_x() {
         return None;
     }
-    let subject = cost_subject_text(applies_to)?;
+    let (applies_to, colors) = match r4703_that_are_text(applies_to) {
+        Some((rest, colors)) => (rest, colors),
+        None => (applies_to.clone(), String::new()),
+    };
+    let subject = cost_subject_text(&applies_to)?;
     let more = match change {
         CostChange::Increase => "more",
         CostChange::Reduce => "less",
     };
+    if !per.is_one() {
+        // A count is only said as X of a cost change for this turn: "cost {X} less to cast, where X is ...".
+        let wordings = super::c11a_turn_costs::c11a_turn_wordings(mana, per)?;
+        let (mana, tail) = wordings.into_iter().find(|(mana, _)| mana == "{X}")?;
+        return matches!(duration, Duration::UntilEndOfTurn)
+            .then(|| format!("{subject} this turn{colors} cost {mana} {more} to cast{tail}"));
+    }
+    if !colors.is_empty() {
+        return matches!(duration, Duration::UntilEndOfTurn)
+            .then(|| format!("{subject} this turn{colors} cost {mana} {more} to cast"));
+    }
     match duration {
         Duration::UntilEndOfTurn => Some(format!("{subject} this turn cost {mana} {more} to cast")),
         Duration::UntilYourNextTurn => Some(format!(
             "until your next turn, {subject} cost {mana} {more} to cast"
         )),
         _ => None,
+    }
+}
+
+#[cfg(test)]
+mod r4703_tests {
+    //! Goal: a cost change for the turn that counts life lost or gained reads and writes back.
+    use super::*;
+    use crate::compile::read::tokens::{same_text, tokenize};
+    use rstest::rstest;
+
+    #[rstest]
+    #[case(
+        "spells you cast this turn that are black and/or red cost {X} less to cast, where X is the amount of life you lost this turn"
+    )]
+    #[case(
+        "spells you cast this turn that are white and/or blue cost {X} less to cast, where X is the amount of life you gained this turn"
+    )]
+    fn r4703_counted_spell_costs_read_back(#[case] text: &str) {
+        let tokens = tokenize(text);
+        let mut r = Reader::new(&tokens, false);
+        let effects = g10d_spell_cost(&mut r).expect("read");
+        assert!(r.end(), "{text}");
+        let written = g10d_spell_cost_text(&effects[0]).expect("written");
+        assert!(same_text(&written, text), "{written}");
     }
 }

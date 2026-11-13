@@ -218,6 +218,12 @@ fn leaves_from_here(
         Leaves::Sacrificed => {
             object.zone() == Zone::Battlefield
                 && crate::prohibit::may_sacrifice(state, player, object.id())
+                && !crate::r4707_pay_costs::r4707_sacrifice_barred(
+                    state,
+                    player,
+                    object.id(),
+                    crate::r4707_pay_costs::PaysFor::Cost,
+                )
         }
         Leaves::Discarded => {
             matches!(object.zone(), Zone::Hand(_))
@@ -336,7 +342,12 @@ pub(crate) fn activation(
         return Never;
     }
     if let Some(limit) = limit
-        && state.limit_spent(*limit, object.reference(), address.source, address.ability)
+        && match crate::r4701_boast::r4701_boast_most(state, object.id(), rules) {
+            Some(most) => {
+                state.r4701_boast_spent(most, object.reference(), address.source, address.ability)
+            }
+            None => state.limit_spent(*limit, object.reference(), address.source, address.ability),
+        }
     {
         return Hindered(Unplayable::Restricted, Some(Why::LimitSpent));
     }
@@ -390,9 +401,12 @@ pub(crate) fn activation(
         // What the other parts of the cost take is not there to make mana or to be taken by a mana ability's cost (a
         // Cadaverous Bloom), and the life they pay is not there to spend.
         crate::mana_takes::leave(&mut sources, &claimed);
-        let life = seat
-            .life()
-            .saturating_sub(i32::try_from(price.life()).unwrap_or(i32::MAX));
+        let life = crate::r4707_pay_costs::r4707_phyrexian_life(
+            state,
+            player,
+            seat.life()
+                .saturating_sub(i32::try_from(price.life()).unwrap_or(i32::MAX)),
+        );
         let spend =
             Spend::for_ability(state, object.id(), price.x > 0).of_ability(state, address, rules);
         let helpers = waterbend_help(state, player, object.id(), &price, &claimed);
@@ -495,7 +509,8 @@ fn loyalty_mana_affordable(
     };
     let sources = price.sources(state, player, object.id());
     let spend = Spend::for_ability(state, object.id(), false);
-    can_afford(&mana, seat.mana(), &sources, seat.life(), &spend)
+    let life = crate::r4707_pay_costs::r4707_phyrexian_life(state, player, seat.life());
+    can_afford(&mana, seat.mana(), &sources, life, &spend)
 }
 
 /// Whether `player` can pay the mana of `price` with `x` more generic mana for each `{X}`, as `can_activate` judges the
@@ -515,9 +530,12 @@ fn can_pay_x(
     let mana = crate::price::with_x(mana, x.saturating_mul(price.x), price.x_color);
     let mut sources = price.at(x).sources(state, player, object.id());
     sources.retain(|option| !claimed.contains(&option.source.object));
-    let life = seat
-        .life()
-        .saturating_sub(i32::try_from(price.life()).unwrap_or(i32::MAX));
+    let life = crate::r4707_pay_costs::r4707_phyrexian_life(
+        state,
+        player,
+        seat.life()
+            .saturating_sub(i32::try_from(price.life()).unwrap_or(i32::MAX)),
+    );
     let spend = Spend::for_ability(state, object.id(), price.x > 0);
     can_afford(&mana, seat.mana(), &sources, life, &spend)
 }

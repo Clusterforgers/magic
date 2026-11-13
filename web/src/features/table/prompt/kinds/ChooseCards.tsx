@@ -64,9 +64,20 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
   useLayoutEffect(() => {
     latest.current = chosen
   })
-  // "With different names": a card whose name a chosen card has is closed until that card is put back.
+  // "With different names" or "with different powers": a card of a name or group a chosen card has is closed until
+  // that card is put back.
   const sameName = useMemo(() => {
     const shut = new Set<ObjectId>()
+    const groups = options.groups ?? []
+    if (groups.length > 0) {
+      const groupOf = (id: ObjectId): number | undefined => groups[from.indexOf(id)]
+      const taken = new Set(chosen.map(groupOf).filter((group) => group !== undefined))
+      for (const id of from) {
+        const group = groupOf(id)
+        if (!chosen.includes(id) && group !== undefined && taken.has(group)) shut.add(id)
+      }
+      return shut
+    }
     if (options.one_per_name !== true) return shut
     const taken = new Set(chosen.map((id) => byId.get(id)?.name).filter((name) => name !== undefined))
     for (const id of from) {
@@ -74,7 +85,7 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
       if (!chosen.includes(id) && name !== undefined && taken.has(name)) shut.add(id)
     }
     return shut
-  }, [options.one_per_name, chosen, from, byId])
+  }, [options.one_per_name, options.groups, chosen, from, byId])
   const press = (id: ObjectId): void => {
     if (!fromSet.has(id) || sameName.has(id)) return
     const next = pressedCard(latest.current, id, hi)

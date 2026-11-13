@@ -523,7 +523,7 @@ fn token_text(token: &TokenRef) -> Option<Described> {
                 legendary,
             })
         }
-        TokenRef::CopyOf { .. } => None,
+        TokenRef::CopyOf { .. } | TokenRef::R4700OfChosen { .. } => None,
     }
 }
 
@@ -584,6 +584,9 @@ pub fn text(effect: &Effect, per: bool) -> Option<String> {
     else {
         return None;
     };
+    if let TokenRef::R4700OfChosen { size } = token {
+        return super::r4700_writers::r4700_chosen_token_text(who, size, count, effect);
+    }
     let Described {
         mut what,
         name,
