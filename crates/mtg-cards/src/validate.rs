@@ -5610,8 +5610,9 @@ impl Walker<'_> {
             | GameRule::SkipDrawStep(who)
             | GameRule::NoMaxHandSize(who)
             | GameRule::LoyaltyTwice(who)
-            | GameRule::BoastTwice(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
-            GameRule::LoyaltyAnyTime(who) | GameRule::LoyaltyCostsMore { who, .. } => {
+            | GameRule::BoastTwice(who)
+            | GameRule::LoyaltyAnyTime(who)
+            | GameRule::LoyaltyCostsMore { who, .. } => {
                 self.at(tag, |w| w.reference(who, Kind::Player));
             }
             GameRule::MayCast(permission) => self.at(tag, |w| w.cast_permission(permission)),
@@ -5643,13 +5644,13 @@ impl Walker<'_> {
             | GameRule::ManaBurn
             | GameRule::CantBeCopied
             | GameRule::CantSpendMana
-            | GameRule::RevealFirstDraw { .. } => {}
+            | GameRule::RevealFirstDraw { .. }
+            | GameRule::SpendOnlyFrom(_) => {}
             GameRule::CountsAsNamed(name) => {
                 if name.trim().is_empty() {
                     self.at(tag, |w| w.problem("a card counts as a card with a name"));
                 }
             }
-            GameRule::SpendOnlyFrom(_) => {}
             GameRule::UpToInDeck(most) => {
                 if *most < 2 {
                     self.at(tag, |w| w.problem("a deck rule allows at least two copies"));
