@@ -121,12 +121,16 @@ fn r4703_reads_back_whole(#[case] name: &str) {
 #[case::life_gained("Rowan, Scion of War", r#""what": "LifeLost""#, r#""what": "LifeGainedTotal""#)]
 #[case::opponents_lost("Rowan, Scion of War", r#""who": "You", "what""#, r#""who": "Opponents", "what""#)]
 #[case::until_next_turn("Will, Scion of Peace", r#""UntilEndOfTurn""#, r#""UntilYourNextTurn""#)]
-#[case::once("Will, Scion of Peace", r#", "per": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }"#, "")]
-#[case::any_turn("Bloodletter of Aclazotz", r#", "condition": "YourTurn""#, "")]
+#[case::per_spell_of_another_count(
+    "Will, Scion of Peace",
+    r#""what": "LifeGainedTotal""#,
+    r#""what": "LifeGained""#
+)]
+#[case::after_combat("Bloodletter of Aclazotz", r#""condition": "YourTurn""#, r#""condition": "AfterCombat""#)]
 #[case::you("Bloodletter of Aclazotz", r#""who": "Opponents""#, r#""who": "You""#)]
 #[case::thrice("Bloodletter of Aclazotz", r#""LossTimes": 2"#, r#""LossTimes": 3"#)]
-#[case::not_before("Thousand-Year Storm", r#", { "CastBefore": "Triggering" }"#, "")]
-#[case::creatures("Thousand-Year Storm", r#"{ "Type": "Sorcery" }] }, {"#, r#"{ "Type": "Creature" }] }, {"#)]
+#[case::not_before("Thousand-Year Storm", r#"{ "CastBefore": "Triggering" }"#, r#"{ "Type": "Instant" }"#)]
+#[case::by_anyone("Thousand-Year Storm", r#""who": "You","#, r#""who": "EachPlayer","#)]
 #[case::another_name("Pardic Firecat", r#""CountsAsNamed": "Flame Burst""#, r#""CountsAsNamed": "Muscle Burst""#)]
 #[case::from_exile("Diligent Farmhand", r#""from": "Graveyard""#, r#""from": "Exile""#)]
 #[case::sacrificed_by_anyone("Korvold, Gleeful Glutton", r#""who": "You""#, r#""who": "EachPlayer""#)]
