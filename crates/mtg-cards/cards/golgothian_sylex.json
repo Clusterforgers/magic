@@ -1,0 +1,41 @@
+{
+  "oracle_id": "95197f8f-c24e-4d13-a106-7186b3cc59e0",
+  "name": "Golgothian Sylex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Golgothian Sylex",
+      "oracle_fingerprint": "56f46dfe4503223f010f39ad0da4ae3b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "player" },
+                        "filter": [{ "Not": "Token" }, { "OriginallyPrintedIn": "Antiquities" }],
+                        "count": {
+                          "Count": [
+                            { "Not": "Token" },
+                            { "OriginallyPrintedIn": "Antiquities" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

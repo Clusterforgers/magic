@@ -193,7 +193,8 @@ impl Bot {
             | ServerMessage::TakeBackOffer { .. }
             | ServerMessage::TakeBackAsked { .. }
             | ServerMessage::TakeBackEnded { .. }
-            | ServerMessage::TakeBackRefused { .. } => {}
+            | ServerMessage::TakeBackRefused { .. }
+            | ServerMessage::EndedByAdmin { .. } => {}
             ServerMessage::GameOver { result } => return Progress::Over(result),
             ServerMessage::Forecast { .. } => {
                 panic!("a bot never previews, so it is sent no forecast")

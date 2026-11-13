@@ -28,5 +28,6 @@ pub fn g12b_put_of(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         each: None,
         one_kind: false,
         per_kind: None,
+        put: false,
     }])
 }

@@ -242,6 +242,21 @@ pub(crate) fn definition_sets_commander_color(definition: &CardDefinition) -> bo
     })
 }
 
+/// Whether a card with this definition counts as a card named `name` for spells of that name while in a graveyard
+/// (`GameRule::CountsAsNamed`).
+pub(crate) fn r4703_counts_as_named(definition: &CardDefinition, name: &str) -> bool {
+    printed_rules(definition).any(|rules| {
+        matches!(
+            &**rules,
+            Ability::Rule {
+                rule: mtg_cards::modify::GameRule::CountsAsNamed(named),
+                from: mtg_cards::refs::ZoneKind::Graveyard,
+                condition: None,
+            } if named == name
+        )
+    })
+}
+
 /// Whether a card with this definition prints a rule of the game as an ability or a static ability that grants one
 /// (`GameState::rules`).
 pub(crate) fn definition_has_rule(definition: &CardDefinition) -> bool {

@@ -107,6 +107,8 @@ fn pay(
     reserved_life: u32,
     paying: Spend,
 ) -> Next {
+    let reserved_life =
+        crate::r4707_pay_costs::r4707_reserved_life(ctx.state, ctx.player, reserved_life);
     match payment_decision(
         ctx.state,
         ctx.player,

@@ -416,11 +416,13 @@ pub(super) fn add(ctx: &Ctx<'_>, choices: &Choices, mana: Option<ManaCost>) -> O
 /// The largest X the player can announce, or `None` when not even X = 0 can be paid.
 fn largest(ctx: &Ctx<'_>, choices: &Choices) -> Option<u32> {
     match ctx.needs.x.as_ref()? {
+        // An additional `[+N]` (Carth the Lion) leaves N more counters to remove.
         XCost::Loyalty => Some(
             ctx.state
                 .object(ctx.source)?
                 .permanent()?
-                .counters_of(&CounterKind::Loyalty),
+                .counters_of(&CounterKind::Loyalty)
+                .saturating_add(crate::rules::loyalty_costs_more(ctx.state, ctx.player)),
         ),
         XCost::Mana { .. } => {
             let payable = largest_payable(ctx, choices)?;

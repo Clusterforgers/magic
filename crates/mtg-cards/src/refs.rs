@@ -99,6 +99,9 @@ pub enum Ref {
     Monarch,
     /// The player the source chose as it entered ("the chosen player"); nobody before the choice, for a source that chose no player or once that player has left the game.
     Chosen,
+    /// The players the source chose as it entered other than the player the trigger event is about ("the other chosen
+    /// player"); nobody once they have left the game.
+    R4700OtherChosen,
     /// The opponent the gift was promised to as the spell the ability reads was cast (CR 702.174); nobody when none was promised or they have left the game.
     Promised,
     /// The defending player of the attacking creature that triggered the ability, else of the source: whoever it
@@ -113,6 +116,8 @@ pub enum Ref {
     AttackedThisTurn,
     /// The player with the most life, or each of the players tied for it.
     MostLife,
+    /// The controller's teammates still in the game, in turn order (CR 810.2): nobody at a table without teams.
+    Teammates,
     /// The player whose turn it is; nobody once they have left the game.
     ActivePlayer,
     /// The player making the choice of an `Effect::Choose` whose candidates are worked out for each chooser ("each player
@@ -254,6 +259,9 @@ pub enum Pred {
     This,
     /// Is not the source object.
     Other,
+    /// True of each object alone; in the filter of a cost that takes several, no two taken share the quality ("Discard
+    /// three cards with different names").
+    Apart(TargetSet),
     /// Is one of the objects the reference names (`{"Is": {"Bound": "creature"}}`).
     Is(Ref),
     /// Shares a subtype with one of the objects the reference names (`{"SharesSubtype": {"Bound": "land"}}`).
@@ -445,6 +453,9 @@ pub enum Pred {
     },
     /// Has exactly this card name.
     Named(String),
+    /// Has a name first printed in the expansion: "with a name originally printed in the Antiquities expansion" (a
+    /// reprint with another expansion symbol counts, the ruling of City in a Bottle).
+    OriginallyPrintedIn(crate::r4707_first_sets::FirstSet),
     /// Is the colour the controller of the source chose as the source entered the battlefield.
     ChosenColor,
     /// Has the creature type the controller of the source chose as the source entered the battlefield; in a landwalk the land type.
@@ -566,9 +577,20 @@ pub enum Pred {
     TopOfGraveyard,
     /// Is the topmost creature card of its owner's graveyard.
     TopCreatureOfGraveyard,
+    /// Is among the topmost `count` cards of its owner's graveyard that `among` selects ("the top three black cards of
+    /// your graveyard").
+    R4700TopOfGraveyard {
+        /// The cards counted from the top.
+        among: Selector,
+        /// How many of them from the top.
+        count: u32,
+    },
     /// Was blocked this turn by one of the creatures the reference names (read from the turn's log of blocks), whether or
     /// not it is still attacking ("all creatures that were blocked by that creature this turn").
     BlockedThisTurnBy(Ref),
+    /// Was cast this turn before the spell the reference names, read from the turn's log of casts ("each other instant
+    /// and sorcery spell you've cast before it this turn"); a spell never before itself.
+    CastBefore(Ref),
     /// Is an attacking creature blocked by one of the creatures the reference names.
     BlockedBy(Ref),
     /// Is an attacking creature in the band of one of the creatures the reference names, other than that creature
@@ -637,6 +659,8 @@ pub enum TargetSet {
     DifferentNames,
     /// No two have one mana value.
     DifferentManaValues,
+    /// No two have one power ("with different powers").
+    DifferentPowers,
     /// They all have one toughness ("with equal toughness").
     SameToughness,
     /// Their mana values add up to at most this ("with total mana value 3 or less").

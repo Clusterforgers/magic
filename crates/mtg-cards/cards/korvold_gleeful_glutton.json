@@ -8,9 +8,11 @@
       "oracle_fingerprint": "c6fc0cdbb33159ada13a6df45d3e914b",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 98 }
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "TallyTypes": { "event": "Sacrificed", "who": "You", "filter": [] } }
           }
         },
         { "Keyword": "Flying" },

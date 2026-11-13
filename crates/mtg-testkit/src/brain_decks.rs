@@ -1,6 +1,7 @@
 //! Duel decks for measuring bot brains against each other: a red-green deck of ramp, burn, pumps and tramplers, a
-//! white-black deck of removal, auras, flyers and first strikers and a blue-red deck of counters, burn and flash
-//! creatures, each 60 cards of basics, corpus cards and keyworded creatures.
+//! white-black deck of removal, auras, flyers and first strikers, a blue-red deck of counters, burn and flash
+//! creatures, and two interaction-heavy control decks (blue-black and blue-white: counters, instant removal, card draw,
+//! a wipe, flash threats), each 60 cards of basics, corpus cards and keyworded creatures.
 
 use std::sync::Arc;
 
@@ -23,6 +24,26 @@ pub enum Duel {
     Orzhov,
     /// Blue-red: Counterspell, Dissipate, Lightning Bolt, flash creatures and flyers.
     Izzet,
+    /// Blue-black control: Counterspell, Mana Drain, Memory Lapse, Doom Blade, Snuff Out, Fact or Fiction, Opt and
+    /// flash creatures.
+    Dimir,
+    /// Blue-white control: Counterspell, Hinder, Essence Capture, Swords to Plowshares, Path to Exile, Wrath of God,
+    /// Into the Roil, Brainstorm and flash flyers.
+    Azorius,
+}
+
+impl Duel {
+    /// Every duel deck.
+    pub const ALL: [Duel; 5] = [
+        Duel::Gruul,
+        Duel::Orzhov,
+        Duel::Izzet,
+        Duel::Dimir,
+        Duel::Azorius,
+    ];
+
+    /// The decks whose games turn on interaction: counters, instant removal and flash.
+    pub const INTERACTION: [Duel; 3] = [Duel::Izzet, Duel::Dimir, Duel::Azorius];
 }
 
 /// A creature line: name, generic mana, coloured symbols, power, toughness, keywords, copies.
@@ -210,12 +231,135 @@ const IZZET: &[Line] = &[
 const IZZET_SPELLS: &[(&str, usize)] =
     &[("Counterspell", 4), ("Dissipate", 3), ("Lightning Bolt", 4)];
 
+const DIMIR: &[Line] = &[
+    (
+        "Duel Drake",
+        1,
+        &[Color::Blue],
+        2,
+        2,
+        &[Keyword::Flying, Keyword::Flash],
+        4,
+    ),
+    ("Duel Wizard", 1, &[Color::Blue], 1, 3, &[Keyword::Flash], 4),
+    (
+        "Duel Shade",
+        1,
+        &[Color::Black],
+        2,
+        1,
+        &[Keyword::Deathtouch],
+        4,
+    ),
+    (
+        "Duel Horror",
+        3,
+        &[Color::Black],
+        4,
+        4,
+        &[Keyword::Menace],
+        4,
+    ),
+    (
+        "Duel Sphinx",
+        3,
+        &[Color::Blue, Color::Blue],
+        4,
+        4,
+        &[Keyword::Flying],
+        4,
+    ),
+    (
+        "Duel Lurker",
+        3,
+        &[Color::Black],
+        3,
+        3,
+        &[Keyword::Flash],
+        3,
+    ),
+];
+
+const DIMIR_SPELLS: &[(&str, usize)] = &[
+    ("Counterspell", 4),
+    ("Mana Drain", 2),
+    ("Memory Lapse", 2),
+    ("Doom Blade", 4),
+    ("Snuff Out", 2),
+    ("Fact or Fiction", 2),
+    ("Opt", 2),
+    ("Mulldrifter", 2),
+];
+
+const AZORIUS: &[Line] = &[
+    (
+        "Duel Drake",
+        1,
+        &[Color::Blue],
+        2,
+        2,
+        &[Keyword::Flying, Keyword::Flash],
+        4,
+    ),
+    ("Duel Wizard", 1, &[Color::Blue], 1, 3, &[Keyword::Flash], 4),
+    (
+        "Duel Squire",
+        1,
+        &[Color::White],
+        2,
+        2,
+        &[Keyword::FirstStrike],
+        4,
+    ),
+    (
+        "Duel Sphinx",
+        3,
+        &[Color::Blue, Color::Blue],
+        4,
+        4,
+        &[Keyword::Flying],
+        3,
+    ),
+    (
+        "Duel Templar",
+        2,
+        &[Color::White],
+        3,
+        3,
+        &[Keyword::Vigilance],
+        3,
+    ),
+    (
+        "Duel Archon",
+        4,
+        &[Color::White],
+        4,
+        5,
+        &[Keyword::Flying, Keyword::Flash],
+        2,
+    ),
+];
+
+const AZORIUS_SPELLS: &[(&str, usize)] = &[
+    ("Counterspell", 4),
+    ("Hinder", 2),
+    ("Essence Capture", 2),
+    ("Swords to Plowshares", 3),
+    ("Path to Exile", 3),
+    ("Wrath of God", 2),
+    ("Into the Roil", 2),
+    ("Brainstorm", 2),
+    ("Serra Angel", 3),
+];
+
 /// The 60 cards of `duel`, lands first.
 pub fn duel_deck(duel: Duel) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
     let (colors, lines, spells) = match duel {
         Duel::Gruul => ([Color::Green, Color::Red], GRUUL, GRUUL_SPELLS),
         Duel::Orzhov => ([Color::White, Color::Black], ORZHOV, ORZHOV_SPELLS),
         Duel::Izzet => ([Color::Blue, Color::Red], IZZET, IZZET_SPELLS),
+        Duel::Dimir => ([Color::Blue, Color::Black], DIMIR, DIMIR_SPELLS),
+        Duel::Azorius => ([Color::Blue, Color::White], AZORIUS, AZORIUS_SPELLS),
     };
     let mut deck: Vec<Arc<CardDefinition>> = (0..17).map(|i| land(colors[i % 2])).collect();
     for (name, copies) in spells {
@@ -247,7 +391,7 @@ mod tests {
 
     #[rstest]
     fn each_duel_deck_is_a_legal_sixty(
-        #[values(Duel::Gruul, Duel::Orzhov, Duel::Izzet)] duel: Duel,
+        #[values(Duel::Gruul, Duel::Orzhov, Duel::Izzet, Duel::Dimir, Duel::Azorius)] duel: Duel,
     ) {
         let deck = duel_deck(duel).unwrap();
         assert_eq!(deck.len(), 60);

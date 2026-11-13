@@ -1,5 +1,12 @@
 import { Link, useLocation, useNavigate } from '@tanstack/react-router'
-import { ChevronDownIcon, CircleAlertIcon, LogOutIcon, SettingsIcon, UsersIcon } from 'lucide-react'
+import {
+  ChevronDownIcon,
+  CircleAlertIcon,
+  GamepadIcon,
+  LogOutIcon,
+  SettingsIcon,
+  UsersIcon,
+} from 'lucide-react'
 import { useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { PageShell } from '@/components/PageShell'
@@ -18,12 +25,18 @@ import { cn } from '@/lib/utils'
 import { useAuth, useAuthStore } from './context'
 
 // Pages that only mean something while signed in: signing out there goes home instead of to the sign-in form.
-const SIGNED_IN_ONLY: ReadonlySet<string> = new Set(['/games', '/decks', '/settings', '/accounts'])
+const SIGNED_IN_ONLY: ReadonlySet<string> = new Set([
+  '/games',
+  '/decks',
+  '/settings',
+  '/accounts',
+  '/admin/games',
+])
 
 /**
  * The account part of the header. Nothing while the server is still being asked or when it has no accounts; "Sign
  * in" and "Register" for a guest (no "Register" where the admin makes the accounts); for an account a menu named after
- * the username, with "Accounts" for the admin, "Account settings" and "Sign out".
+ * the username, with "Accounts" and "Live games" for the admin, "Account settings" and "Sign out".
  */
 export function AccountNav() {
   const { status, user, registration } = useAuth(
@@ -88,6 +101,12 @@ export function AccountNav() {
             <DropdownMenuItem onClick={() => void navigate({ to: '/accounts' })}>
               <UsersIcon aria-hidden="true" />
               Accounts
+            </DropdownMenuItem>
+          ) : null}
+          {user.is_admin ? (
+            <DropdownMenuItem onClick={() => void navigate({ to: '/admin/games' })}>
+              <GamepadIcon aria-hidden="true" />
+              Live games
             </DropdownMenuItem>
           ) : null}
           <DropdownMenuItem onClick={() => void navigate({ to: '/settings' })}>
