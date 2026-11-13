@@ -12,6 +12,7 @@ mod c11h_statics;
 mod c4_prepare_triggers;
 mod card_grants;
 mod cast_prohibitions;
+#[path = "../common/mod.rs"]
 mod common;
 mod conditional_statics;
 mod continuous_effects;

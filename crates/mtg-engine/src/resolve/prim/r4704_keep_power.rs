@@ -80,6 +80,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 text: crate::wording::r4704_keep_power(what, most, total),
                 can_cancel: false,
                 one_per_name: false,
+                groups: Vec::new(),
             };
             match answers.next() {
                 None => {

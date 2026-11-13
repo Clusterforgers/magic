@@ -231,14 +231,12 @@ mod r406_actions;
 mod r407_wordings;
 mod r408_lands;
 mod r408_pact;
-<<<<<<< HEAD
-mod r4704_hooks;
-=======
 mod r4700_writers;
 mod r4701_flash;
 mod r4701_pairs;
 mod r4702_names;
 pub(crate) mod r4703_reads;
+mod r4704_hooks;
 mod r4705_reads;
 mod r4706_counters;
 mod r4707_costs;
@@ -248,7 +246,6 @@ mod r4708_reveal;
 mod r4709_differ;
 mod r4710_atoms;
 mod r4711_drafted;
->>>>>>> origin/main
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
