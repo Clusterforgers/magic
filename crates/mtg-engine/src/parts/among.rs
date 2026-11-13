@@ -70,6 +70,7 @@ pub(super) fn events(
         source,
         barred: &[],
         granter: None,
+        pays: crate::r4707_pay_costs::PaysFor::Cost,
     };
     let mut left = count;
     let mut events = Vec::new();

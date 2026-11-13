@@ -1,7 +1,7 @@
 {
   "oracle_id": "469956a2-7cd4-4695-b8f4-c841526f160d",
   "name": "Bloodletter of Aclazotz",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Bloodletter of Aclazotz",
@@ -9,9 +9,10 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 125 }
+          "Replacement": {
+            "when": { "LifeLoss": { "who": "Opponents" } },
+            "by": { "LossTimes": 2 },
+            "condition": "YourTurn"
           }
         }
       ]

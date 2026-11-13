@@ -1,7 +1,7 @@
 {
   "oracle_id": "c5e817f9-a003-45b5-8e16-1746e6096166",
   "name": "Karn's Sylex",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Karn's Sylex",
@@ -9,9 +9,13 @@
       "abilities": [
         { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 28, "end": 118 }
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": { "PayCosts": { "life": true, "but_mana_abilities": true } }
+              }
+            }
           }
         },
         {

@@ -149,6 +149,10 @@ pub(super) fn ep24_rule_texts(rule: &GameRule) -> Vec<String> {
             "Spells and abilities your opponents control can't cause you to sacrifice permanents"
                 .to_owned(),
         ],
+        GameRule::OpponentsCantMakeDiscardOrSacrifice(Ref::You) => vec![
+            "Spells and abilities your opponents control can't cause you to discard cards or sacrifice permanents"
+                .to_owned(),
+        ],
         GameRule::SpendManaAs {
             who: Ref::You,
             spend_as,

@@ -375,7 +375,7 @@ fn obelisk_spider_drains_when_you_put_minus_counters_on_a_creature(
     let mut driver = Driver::from_scenario(
         Scenario::new(seats)
             .at(2, 0, Step::DeclareAttackers)
-            .battlefield(0, [ready(draft("obelisk_spider"))])
+            .battlefield(0, [ready(corpus::card("Obelisk Spider").unwrap())])
             .battlefield(1, [ready(free_creature("Wall", 0, 7))]),
     )?;
     let blocks: &[(&str, &str)] = if blocked {

@@ -42,6 +42,7 @@ pub(super) fn r9w_cant_texts(
             texts.extend(super::rmt7_atoms::rmt7_cant_activate_text(who, action));
             texts.extend(cast_passive(who, action));
             texts.extend(super::r408_lands::r408_cant_texts(who, action));
+            texts.extend(super::r4707_costs::r4707_cant_texts(who, action));
             // The older wording of the same rule names the battlefield.
             if let Some(text) = texts.first().and_then(|text| text.strip_suffix(ENTERING)) {
                 texts.push(format!(
@@ -80,6 +81,7 @@ fn plain(who: &Ref, action: &Prohibited) -> Option<String> {
             unless: None,
         } => cast(who, filter, *more_than),
         Prohibited::PlayLand => Some(format!("{} can't play lands", players(who)?)),
+        Prohibited::BecomeMonarch => Some(format!("{} can't become the monarch", players(who)?)),
         Prohibited::BeTargeted(sources) if *who == Ref::This => {
             Some(format!("~ can't be the target of {}", targeted(sources)?))
         }
