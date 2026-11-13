@@ -14,7 +14,7 @@ use crate::common;
 use common::casting::lands;
 use common::{name_of, pid};
 use mtg_cards::value::CounterKind;
-use mtg_engine::choose::{CardsChoice, NumberChoice, OptionChoice, TargetChoice, YesNoChoice};
+use mtg_engine::choose::{CardsChoice, NumberChoice, OptionChoice, YesNoChoice};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::object::FaceDown;
 use mtg_engine::replay;
@@ -86,10 +86,8 @@ fn r4704_run(
             }
             DecisionKind::PayMana(_) => Answer::PayMana(PayChoice::Auto),
             DecisionKind::ChooseNumber(_) => Answer::ChooseNumber(NumberChoice::Number(how.number)),
-            DecisionKind::ChooseTargets(_) => Driver::passive_answer(&decision),
             _ => Driver::passive_answer(&decision),
         };
-        let _ = TargetChoice::Targets(Vec::new());
         driver.answer(answer)?;
     }
     Err(ScriptError::Stuck("the table did not settle".to_owned()))
