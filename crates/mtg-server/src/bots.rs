@@ -1,5 +1,7 @@
 //! Bot seats: a server-side driver that plays a seat of a game the way a client would, through its `GameHandle`.
 
+use std::sync::Arc;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
@@ -9,7 +11,7 @@ use mtg_engine::decision::{Answer, DecisionKind, PriorityAction};
 use mtg_protocol::{ClientMessage, DecisionId, ErrorCode, ServerMessage};
 use mtg_testkit::brain::{self, Level, SeatBrain};
 use serde::{Deserialize, Serialize};
-use tokio::sync::watch;
+use tokio::sync::{Semaphore, watch};
 use tokio::task::JoinHandle;
 use tokio::time::{Instant, sleep, sleep_until};
 
@@ -28,6 +30,79 @@ pub const THINK_DEADLINE: Duration = Duration::from_secs(5);
 /// How long a bot waits before it joins its seat again after its connection was dropped.
 const REJOIN_AFTER: Duration = Duration::from_secs(1);
 
+/// The least share of its budget a searching bot thinks with, however busy the server is.
+const LEAST_SHARE: f64 = 0.2;
+
+/// The share of its budget a searching bot thinks with while `queued` other bots wait for a thinking slot: all of it
+/// on a quiet server, less the longer the queue, never under [`LEAST_SHARE`].
+pub fn share_for(queued: usize) -> f64 {
+    let queued = f64::from(u32::try_from(queued).unwrap_or(u32::MAX));
+    (1.0 / (1.0 + queued)).max(LEAST_SHARE)
+}
+
+/// The server's slots for thinking bots: at most `capacity` bots search at once, each on a blocking thread, and a
+/// bot that finds others waiting thinks with a smaller share of its budget ([`share_for`]). Cheap to clone.
+#[derive(Clone, Debug)]
+pub struct Thinkers {
+    permits: Arc<Semaphore>,
+    queued: Arc<AtomicUsize>,
+}
+
+impl Thinkers {
+    /// Slots for `capacity` bots thinking at once (at least one).
+    pub fn new(capacity: usize) -> Thinkers {
+        Thinkers {
+            permits: Arc::new(Semaphore::new(capacity.max(1))),
+            queued: Arc::new(AtomicUsize::new(0)),
+        }
+    }
+
+    /// The slots a server of this machine gives: one fewer than its cores, at least one.
+    pub fn for_machine() -> usize {
+        std::thread::available_parallelism()
+            .map_or(1, |cores| cores.get().saturating_sub(1))
+            .max(1)
+    }
+
+    /// Runs `work` on a blocking thread once a slot is free, handing it the share of its budget to think with;
+    /// `None` if the thread failed.
+    pub async fn think<T: Send + 'static>(
+        &self,
+        work: impl FnOnce(f64) -> T + Send + 'static,
+    ) -> Option<T> {
+        let permit = {
+            // Counts this bot as waiting until it holds a slot, also when the wait is cancelled (a think deadline).
+            let _waiting = Queued::on(&self.queued);
+            Arc::clone(&self.permits).acquire_owned().await
+        };
+        let permit = permit.ok()?;
+        let share = share_for(self.queued.load(Ordering::SeqCst));
+        tokio::task::spawn_blocking(move || {
+            let _permit = permit;
+            work(share)
+        })
+        .await
+        .ok()
+    }
+}
+
+/// One bot counted as waiting for a slot while it lives.
+struct Queued<'a>(&'a AtomicUsize);
+
+impl<'a> Queued<'a> {
+    /// Counts one more waiting bot in `queued`.
+    fn on(queued: &'a AtomicUsize) -> Queued<'a> {
+        queued.fetch_add(1, Ordering::SeqCst);
+        Queued(queued)
+    }
+}
+
+impl Drop for Queued<'_> {
+    fn drop(&mut self) {
+        self.0.fetch_sub(1, Ordering::SeqCst);
+    }
+}
+
 /// How well a server bot plays: the `level` of a bot seat on the create form.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -39,6 +114,9 @@ pub enum BotLevel {
     Normal,
     /// Heuristics with a deeper search that looks through the next turn's combat.
     Hard,
+    /// Monte Carlo search over sampled hidden cards for casts, attacks, blocks and targets.
+    #[serde(rename = "very_hard")]
+    VeryHard,
 }
 
 impl BotLevel {
@@ -48,6 +126,7 @@ impl BotLevel {
             BotLevel::Easy => Level::Easy,
             BotLevel::Normal => Level::Normal,
             BotLevel::Hard => Level::Hard,
+            BotLevel::VeryHard => Level::VeryHard,
         }
     }
 }
@@ -166,9 +245,15 @@ impl BotBrain {
         }
     }
 
-    /// [`BotBrain::answer`] on a blocking thread, so a search never holds up the runtime. A brain that panics or is not
-    /// done within the deadline is replaced and the decision gets [`safe_answer`].
-    pub async fn think(&mut self, decision: Decision, table: Option<Box<Engine>>) -> Answer {
+    /// [`BotBrain::answer`] on a blocking thread in one of `thinkers`' slots, so a search never holds up the runtime
+    /// and the server's searches stay capped. A brain that panics or is not done within the deadline (the wait for a
+    /// slot included) is replaced and the decision gets [`safe_answer`].
+    pub async fn think(
+        &mut self,
+        decision: Decision,
+        table: Option<Box<Engine>>,
+        thinkers: &Thinkers,
+    ) -> Answer {
         let Some(brain) = self.brain.take() else {
             self.restart();
             return safe_answer(&decision);
@@ -184,18 +269,24 @@ impl BotBrain {
             answers: self.answers,
         };
         let asked = decision.clone();
-        let thinking = tokio::task::spawn_blocking(move || {
+        let thinking = thinkers.think(move |share| {
+            if let Some(brain) = alone.brain.as_mut() {
+                brain.set_budget(share);
+            }
             let answer = alone.answer(&asked, table.as_deref());
             (alone, answer)
         });
         match tokio::time::timeout(self.deadline, thinking).await {
-            Ok(Ok((alone, answer))) => {
+            Ok(Some((alone, answer))) => {
                 self.brain = alone.brain;
                 self.answers = alone.answers;
                 answer
             }
-            Ok(Err(failed)) => {
-                tracing::warn!(seat = self.seat.index(), error = %failed, "bot brain failed; it plays the safe answer");
+            Ok(None) => {
+                tracing::warn!(
+                    seat = self.seat.index(),
+                    "bot brain failed; it plays the safe answer"
+                );
                 self.restart();
                 safe_answer(&decision)
             }
@@ -253,19 +344,19 @@ enum Tried {
 
 /// Plays the seat of `bot` in `handle` at its level until the game ends or leaves the registry (`removed` changes or
 /// closes): joins the seat (again whenever its connection is dropped), says it is ready (again whenever the lobby shows it is
-/// not), and answers each decision after `delay` with [`BotBrain`]. A refused answer (illegal, or one the engine fails
-/// on) is followed by the table's fallback answer, and when that is refused too, or there is none, the bot concedes, so
-/// a bot never stalls a game, and never keeps alive a game the registry let go. A bot whose task dies starts again
-/// with a fresh brain and joins its seat anew.
+/// not), and answers each decision after the pace's delay with [`BotBrain`], thinking in the pace's slots. A refused
+/// answer (illegal, or one the engine fails on) is followed by the table's fallback answer, and when that is refused
+/// too, or there is none, the bot concedes, so a bot never stalls a game, and never keeps alive a game the registry let
+/// go. A bot whose task dies starts again with a fresh brain and joins its seat anew.
 pub fn spawn_bot_seat(
     handle: GameHandle,
     bot: BotSeat,
     seed: u64,
-    delay: Duration,
+    pace: BotPace,
     removed: watch::Receiver<Removal>,
 ) -> JoinHandle<()> {
     let brain = BotBrain::new(seed, bot.seat, bot.level);
-    spawn_bot_seat_with(handle, bot, seed, brain, delay, removed)
+    spawn_bot_seat_with(handle, bot, seed, brain, pace, removed)
 }
 
 /// [`spawn_bot_seat`] whose first brain is `brain`; a brain made after a restart is the level's own.
@@ -274,12 +365,12 @@ pub fn spawn_bot_seat_with(
     bot: BotSeat,
     seed: u64,
     brain: BotBrain,
-    delay: Duration,
+    pace: BotPace,
     mut removed: watch::Receiver<Removal>,
 ) -> JoinHandle<()> {
     tokio::spawn(async move {
         tokio::select! {
-            () = supervise(handle, bot, seed, brain, delay) => {}
+            () = supervise(handle, bot, seed, brain, pace) => {}
             // A change or a dropped sender both mean the game left the registry.
             _ = removed.changed() => {}
         }
@@ -287,14 +378,14 @@ pub fn spawn_bot_seat_with(
 }
 
 /// Runs [`run_seat`] and starts it again, with a fresh brain, whenever its task dies.
-async fn supervise(handle: GameHandle, bot: BotSeat, seed: u64, brain: BotBrain, delay: Duration) {
+async fn supervise(handle: GameHandle, bot: BotSeat, seed: u64, brain: BotBrain, pace: BotPace) {
     let mut brain = Some(brain);
     let mut restarts: u64 = 0;
     loop {
         let first = brain
             .take()
             .unwrap_or_else(|| BotBrain::new(seed ^ restarts, bot.seat, bot.level));
-        let run = tokio::spawn(run_seat(handle.clone(), bot.seat, first, delay));
+        let run = tokio::spawn(run_seat(handle.clone(), bot.seat, first, pace.clone()));
         match run.await {
             Ok(()) => return,
             Err(died) => {
@@ -307,7 +398,7 @@ async fn supervise(handle: GameHandle, bot: BotSeat, seed: u64, brain: BotBrain,
 }
 
 /// The body of [`spawn_bot_seat`]: joins and plays until the game ends or closes.
-async fn run_seat(handle: GameHandle, seat: PlayerId, mut brain: BotBrain, delay: Duration) {
+async fn run_seat(handle: GameHandle, seat: PlayerId, mut brain: BotBrain, pace: BotPace) {
     loop {
         let Ok(mut inbox) = handle.join(seat).await else {
             return;
@@ -316,7 +407,7 @@ async fn run_seat(handle: GameHandle, seat: PlayerId, mut brain: BotBrain, delay
         if handle.send(seat, ClientMessage::Ready).await.is_err() {
             return;
         }
-        match play(&handle, seat, &mut brain, &mut inbox, delay).await {
+        match play(&handle, seat, &mut brain, &mut inbox, &pace).await {
             Ended::Over => return,
             Ended::Dropped => sleep(REJOIN_AFTER).await,
         }
@@ -328,12 +419,21 @@ pub(crate) fn spawn_bot_seats(
     handle: &GameHandle,
     seats: &[BotSeat],
     seed: u64,
-    delay: Duration,
+    pace: &BotPace,
     removed: &watch::Receiver<Removal>,
 ) {
     for bot in seats {
-        spawn_bot_seat(handle.clone(), *bot, seed, delay, removed.clone());
+        spawn_bot_seat(handle.clone(), *bot, seed, pace.clone(), removed.clone());
     }
+}
+
+/// How the server's bots answer: the wait before each answer and the slots they think in.
+#[derive(Clone, Debug)]
+pub struct BotPace {
+    /// How long a bot waits before it answers ([`BOT_DELAY`]).
+    pub delay: Duration,
+    /// The server's thinking slots.
+    pub thinkers: Thinkers,
 }
 
 /// How a run of [`play`] ended.
@@ -350,7 +450,7 @@ async fn play(
     seat: PlayerId,
     brain: &mut BotBrain,
     inbox: &mut tokio::sync::mpsc::Receiver<ServerMessage>,
-    delay: Duration,
+    pace: &BotPace,
 ) -> Ended {
     let mut waiting: Option<Waiting> = None;
     loop {
@@ -366,7 +466,7 @@ async fn play(
                         } else {
                             None
                         };
-                        let answer = brain.think(held.decision.clone(), table).await;
+                        let answer = brain.think(held.decision.clone(), table, &pace.thinkers).await;
                         if send_answer(handle, seat, held.id, answer).await.is_err() {
                             return Ended::Over;
                         }
@@ -385,7 +485,7 @@ async fn play(
                 waiting = Some(Waiting {
                     id,
                     decision,
-                    due: Instant::now() + delay,
+                    due: Instant::now() + pace.delay,
                     tried: Tried::Nothing,
                 });
             }
@@ -457,7 +557,7 @@ fn far_future() -> Instant {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: an Easy bot plays a land whenever it can, and every bot after [`TURN_ANSWERS`] answers in one turn only passes until the turn changes, so a loop of free plays cannot hold the table; only a searching bot fetches the table, and a stored bot seat reads back with its level (a bare seat as Easy).
+    //! Goal: an Easy bot plays a land whenever it can, and every bot after [`TURN_ANSWERS`] answers in one turn only passes until the turn changes, so a loop of free plays cannot hold the table; only a searching bot fetches the table, a stored bot seat reads back with its level (a bare seat as Easy), the thinking slots cap the bots searching at once and shrink their budgets while others wait, and every level's clock ends well before the think deadline.
     #![allow(clippy::unwrap_used)]
     use mtg_core::ids::ObjectId;
     use mtg_engine::decision::PriorityOptions;
@@ -531,6 +631,7 @@ mod tests {
     #[case::easy(BotLevel::Easy, false)]
     #[case::normal(BotLevel::Normal, true)]
     #[case::hard(BotLevel::Hard, true)]
+    #[case::very_hard(BotLevel::VeryHard, true)]
     fn only_a_searching_bot_reads_the_table(#[case] level: BotLevel, #[case] reads: bool) {
         assert_eq!(BotBrain::new(1, SEAT, level).reads_table(), reads);
     }
@@ -538,6 +639,7 @@ mod tests {
     #[rstest]
     #[case::bare_seat(serde_json::json!(2), BotLevel::Easy)]
     #[case::leveled(serde_json::json!({"seat": 2, "level": "hard"}), BotLevel::Hard)]
+    #[case::very_hard(serde_json::json!({"seat": 2, "level": "very_hard"}), BotLevel::VeryHard)]
     fn a_stored_bot_seat_reads_back(#[case] stored: serde_json::Value, #[case] level: BotLevel) {
         let bot: BotSeat = serde_json::from_value(stored).unwrap();
         assert_eq!(
@@ -547,5 +649,59 @@ mod tests {
                 level
             }
         );
+    }
+
+    #[rstest]
+    fn every_level_is_done_well_before_the_think_deadline(
+        #[values(
+            mtg_testkit::brain::Settings::NORMAL,
+            mtg_testkit::brain::Settings::HARD,
+            mtg_testkit::brain::Settings::VERY_HARD
+        )]
+        settings: mtg_testkit::brain::Settings,
+    ) {
+        let search = settings.time.unwrap();
+        let deep = settings
+            .deep
+            .map_or(Duration::ZERO, |deep| deep.time.unwrap());
+        assert!(search + deep <= THINK_DEADLINE.mul_f64(0.75));
+    }
+
+    #[rstest]
+    fn a_longer_queue_leaves_a_smaller_share(#[values(0, 1, 3, 10, 1000)] queued: usize) {
+        assert!(share_for(queued + 1) <= share_for(queued));
+        assert!(share_for(queued) >= LEAST_SHARE);
+        assert!((share_for(0) - 1.0).abs() < f64::EPSILON);
+    }
+
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn thinkers_cap_the_bots_thinking_at_once() {
+        let thinkers = Thinkers::new(2);
+        let running = Arc::new(AtomicUsize::new(0));
+        let most = Arc::new(AtomicUsize::new(0));
+        let mut tasks = Vec::new();
+        for _ in 0..6 {
+            let thinkers = thinkers.clone();
+            let running = Arc::clone(&running);
+            let most = Arc::clone(&most);
+            tasks.push(tokio::spawn(async move {
+                thinkers
+                    .think(move |share| {
+                        let now = running.fetch_add(1, Ordering::SeqCst) + 1;
+                        most.fetch_max(now, Ordering::SeqCst);
+                        std::thread::sleep(Duration::from_millis(40));
+                        running.fetch_sub(1, Ordering::SeqCst);
+                        share
+                    })
+                    .await
+                    .unwrap()
+            }));
+        }
+        let mut shares = Vec::new();
+        for task in tasks {
+            shares.push(task.await.unwrap());
+        }
+        assert!(most.load(Ordering::SeqCst) <= 2);
+        assert!(shares.iter().any(|share| *share < 1.0), "{shares:?}");
     }
 }

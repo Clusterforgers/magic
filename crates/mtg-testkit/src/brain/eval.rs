@@ -127,6 +127,12 @@ pub struct Weights {
     pub defend: f64,
     /// The share of the life an opposing team stands to lose that counts for the seat.
     pub press: f64,
+    /// What a card in hand is worth.
+    pub card: f64,
+    /// How much life counts against the rest of a team's standing.
+    pub life: f64,
+    /// How much permanents count against the rest of a team's standing.
+    pub board: f64,
 }
 
 impl Weights {
@@ -134,6 +140,9 @@ impl Weights {
     pub const NORMAL: Weights = Weights {
         defend: 0.5,
         press: 0.25,
+        card: CARD,
+        life: 1.0,
+        board: 1.0,
     };
 }
 
@@ -152,7 +161,7 @@ pub fn evaluate_with(seen: &Seen<'_>, weights: Weights) -> f64 {
         return -DECIDED;
     }
     let bodies = seen.bodies();
-    let teams = team_scores(seen, &bodies);
+    let teams = team_scores(seen, &bodies, weights);
     let own_team = seen.team_of(seen.seat());
     let mut own = 0.0;
     let mut others = 0.0;
@@ -172,15 +181,16 @@ pub fn evaluate_with(seen: &Seen<'_>, weights: Weights) -> f64 {
 }
 
 /// Each team still in the game and its standing: life, cards in hand, permanents and mana.
-fn team_scores(seen: &Seen<'_>, bodies: &[Body]) -> BTreeMap<u32, f64> {
+fn team_scores(seen: &Seen<'_>, bodies: &[Body], weights: Weights) -> BTreeMap<u32, f64> {
     let mut scores: BTreeMap<u32, f64> = BTreeMap::new();
     let mut life_counted: Vec<u32> = Vec::new();
     for player in seen.alive() {
         let team = seen.team_of(player);
-        let mut score = player_standing(seen, player, bodies);
+        let mut score = standing_with(seen, player, bodies, weights);
         // Two-Headed Giant: one life total for the team, counted once.
         if !seen.shares_life() || !life_counted.contains(&team) {
-            score += life_value(seen.life(player)) - 4.0 * f64::from(seen.poison(player));
+            score +=
+                weights.life * life_value(seen.life(player)) - 4.0 * f64::from(seen.poison(player));
             life_counted.push(team);
         }
         *scores.entry(team).or_default() += score;
@@ -190,14 +200,19 @@ fn team_scores(seen: &Seen<'_>, bodies: &[Body]) -> BTreeMap<u32, f64> {
 
 /// What `player` has apart from life: cards in hand, permanents and mana sources.
 pub fn player_standing(seen: &Seen<'_>, player: PlayerId, bodies: &[Body]) -> f64 {
+    standing_with(seen, player, bodies, Weights::NORMAL)
+}
+
+/// [`player_standing`] with cards and permanents weighed by `weights`.
+fn standing_with(seen: &Seen<'_>, player: PlayerId, bodies: &[Body], weights: Weights) -> f64 {
     let hand = seen.hand_size(player).min(8);
-    let mut score = CARD * count(hand);
+    let mut score = weights.card * count(hand);
     if seen.library_size(player) == 0 {
         score -= 30.0;
     }
     let mut sources = 0;
     for body in bodies.iter().filter(|body| body.controller == player) {
-        score += permanent_value(body);
+        score += weights.board * permanent_value(body);
         if body.is_land() || body.makes_mana {
             sources += 1;
         }

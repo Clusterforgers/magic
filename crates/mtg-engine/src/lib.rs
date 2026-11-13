@@ -154,6 +154,7 @@ mod r301_offering;
 mod r301b_spend_facts;
 mod r304b_lost_priority;
 mod r371_token_loyalty;
+mod redeal;
 pub mod replace;
 pub mod resolve;
 mod restart;

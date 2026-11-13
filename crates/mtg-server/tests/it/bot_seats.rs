@@ -12,7 +12,7 @@ use mtg_engine::decision::{Answer, Decision, PriorityAction};
 use mtg_engine::state::GameResult;
 use mtg_protocol::{ClientMessage, ServerMessage};
 use mtg_server::Pace;
-use mtg_server::bots::{BotBrain, BotLevel, BotSeat, spawn_bot_seat_with};
+use mtg_server::bots::{BotBrain, BotLevel, BotPace, BotSeat, Thinkers, spawn_bot_seat_with};
 use mtg_server::config::ServerConfig;
 use mtg_server::demo;
 use mtg_server::registry::Removal;
@@ -265,6 +265,9 @@ const MAX_BATCHES: usize = 20_000;
 #[case::easy_three(3, BotLevel::Easy, None)]
 #[case::normal_four(4, BotLevel::Normal, None)]
 #[case::hard_four(4, BotLevel::Hard, None)]
+#[case::very_hard_two(2, BotLevel::VeryHard, None)]
+#[case::very_hard_three(3, BotLevel::VeryHard, None)]
+#[case::very_hard_teams(4, BotLevel::VeryHard, Some(TeamMode::Teams))]
 #[case::easy_five(5, BotLevel::Easy, None)]
 #[case::easy_six(6, BotLevel::Easy, None)]
 #[case::normal_six(6, BotLevel::Normal, None)]
@@ -330,7 +333,10 @@ async fn duel_reaches_turn_three(brain: Broken, deadline: Duration, pace: Option
         bot,
         5,
         first,
-        Duration::from_millis(10),
+        BotPace {
+            delay: Duration::from_millis(10),
+            thinkers: Thinkers::new(2),
+        },
         removed,
     );
     let mut me = Client::join(&handle, 0).await;

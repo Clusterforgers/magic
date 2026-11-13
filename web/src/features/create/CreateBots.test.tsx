@@ -47,7 +47,7 @@ describe('the bots of the form', () => {
     expect(toRequest(draft).seats.some((seat) => seat.bot === true)).toBe(false)
   })
 
-  it.each(['easy', 'normal', 'hard'] as const)('sends every bot at level %s', (level) => {
+  it.each(['easy', 'normal', 'hard', 'very_hard'] as const)('sends every bot at level %s', (level) => {
     const draft = chooseBotLevel(
       chooseBots(resizeSeats(defaultDraft(DECKS, undefined, 'normal'), DECKS, 3), 2),
       level,
@@ -134,12 +134,12 @@ describe('the Bots field', () => {
       within(difficulty)
         .getAllByRole('option')
         .map((option) => option.getAttribute('value')),
-    ).toEqual(['easy', 'normal', 'hard'])
-    await user.selectOptions(difficulty, 'hard')
+    ).toEqual(['easy', 'normal', 'hard', 'very_hard'])
+    await user.selectOptions(difficulty, 'very_hard')
     await user.click(create())
     await waitFor(() => expect(server.creates).toHaveLength(1))
     const body = server.creates[0] as { seats: { bot?: boolean; level?: string }[] }
-    expect(body.seats[1]).toMatchObject({ bot: true, level: 'hard' })
+    expect(body.seats[1]).toMatchObject({ bot: true, level: 'very_hard' })
   })
 
   it('asks to go without bots when no precon can be played', async () => {
