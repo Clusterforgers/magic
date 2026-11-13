@@ -1258,8 +1258,16 @@ fn printed_side(face: &PrintedFace) -> CardDefinition {
         .as_ref()
         .map_or((None, 0), |cost| (Some(cost.rest().clone()), cost.x()));
     let from_cost = mana_cost.as_ref().map(ManaCost::colors).unwrap_or_default();
-    // An empty list is no evidence: records of split and adventure faces often leave colors out.
-    let shown = letters(&face.colors);
+    // An empty list is no evidence: records of split and adventure faces often leave colors out. Nor are colors an
+    // ability gives while it says it leaves the color identity alone (Fallaji Wayfarer): that ability sets them.
+    let shown = if face
+        .oracle_text
+        .contains("doesn't affect its color identity")
+    {
+        ColorSet::EMPTY
+    } else {
+        letters(&face.colors)
+    };
     CardDefinition {
         name: face.name.clone(),
         mana_cost,
@@ -1444,6 +1452,17 @@ mod tests {
         let shown = assemble(&card(face("C", text, "Sorcery")), None, &Caps::none()).definition;
         assert_eq!(shown.mana_cost, paid.map(|p| ManaCost::parse(p).unwrap()));
         assert_eq!(shown.x_in_cost, x);
+    }
+
+    #[test]
+    fn colors_an_ability_gives_without_changing_the_identity_are_no_indicator() {
+        let mut front = face("C", "{3}{G}", "Creature \u{2014} Elf");
+        front.colors = ["W", "U", "B", "R", "G"].map(str::to_owned).to_vec();
+        front.oracle_text =
+            "C is all colors. This ability doesn't affect its color identity.".into();
+        let shown = assemble(&card(front), None, &Caps::none()).definition;
+        assert_eq!(shown.color_indicator, None);
+        assert_eq!(shown.color_identity(), letters(&["G".to_owned()]));
     }
 
     #[rstest]
