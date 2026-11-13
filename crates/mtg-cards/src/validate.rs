@@ -2693,7 +2693,7 @@ impl<'a> Walker<'a> {
             }
             Modification::AddChosenSubtype
             | Modification::SetChosenColor
-            | Modification::AddChosenColor => {
+            | Modification::AddChosenColor
             | Modification::SetLandTypesNthChosen(_) => {
                 if !self.scope.in_static {
                     self.problem(
