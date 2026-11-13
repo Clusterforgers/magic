@@ -5,55 +5,27 @@
   "faces": [
     {
       "name": "Alpine Moon",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "5fc5b212e1f6deb3c0a951f783c86940",
       "abilities": [
         {
           "Replacement": {
-            "when": {
-              "Enters": {
-                "what": [
-                  "This"
-                ]
-              }
-            },
-            "by": {
-              "Choose": "NonbasicLandCardName"
-            }
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "NonbasicLandCardName" }
           }
         },
         {
           "Static": {
             "affected": {
-              "Each": [
-                {
-                  "Type": "Land"
-                },
-                {
-                  "ControlledBy": "Opponents"
-                },
-                "ChosenName"
-              ]
+              "Each": [{ "Type": "Land" }, { "ControlledBy": "Opponents" }, "ChosenName"]
             },
             "mods": [
-              {
-                "SetLandTypes": []
-              },
+              { "SetLandTypes": [] },
               "LoseAbilities",
               {
                 "GrantAbility": {
                   "Activated": {
-                    "cost": [
-                      "Tap"
-                    ],
-                    "effects": [
-                      {
-                        "AddMana": {
-                          "mana": {
-                            "AnyColor": 1
-                          }
-                        }
-                      }
-                    ]
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
                   }
                 }
               }

@@ -9,57 +9,21 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "StepBegins": {
-                "step": "Main1",
-                "whose": "You"
-              }
-            },
-            "effects": [
-              {
-                "Pay": {
-                  "cost": "{G}",
-                  "paid": [
-                    {
-                      "Transform": {
-                        "what": "This"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [{ "Pay": { "cost": "{G}", "paid": [{ "Transform": { "what": "This" } }] } }]
           }
         },
         {
           "Loyalty": {
-            "cost": {
-              "Plus": 2
-            },
+            "cost": { "Plus": 2 },
             "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    }
-                  ]
-                },
-                "bounds": {
-                  "min": 0,
-                  "max": 1
-                }
-              }
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
             ],
             "effects": [
               {
                 "Continuous": {
-                  "affected": {
-                    "Target": 0
-                  },
-                  "mods": [
-                    "AddAllCreatureTypes"
-                  ],
+                  "affected": { "Target": 0 },
+                  "mods": ["AddAllCreatureTypes"],
                   "duration": "Forever"
                 }
               }
@@ -68,34 +32,13 @@
         },
         {
           "Loyalty": {
-            "cost": {
-              "Plus": 1
-            },
-            "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    }
-                  ]
-                }
-              }
-            ],
+            "cost": { "Plus": 1 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
             "effects": [
               {
                 "Continuous": {
-                  "affected": {
-                    "Target": 0
-                  },
-                  "mods": [
-                    {
-                      "ModifyPT": {
-                        "power": -2,
-                        "toughness": 0
-                      }
-                    }
-                  ],
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
                   "duration": "UntilYourNextTurn"
                 }
               }
@@ -110,114 +53,53 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "StepBegins": {
-                "step": "Main1",
-                "whose": "You"
-              }
-            },
-            "effects": [
-              {
-                "Pay": {
-                  "cost": "{U}",
-                  "paid": [
-                    {
-                      "Transform": {
-                        "what": "This"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [{ "Pay": { "cost": "{U}", "paid": [{ "Transform": { "what": "This" } }] } }]
           }
         },
         {
           "Loyalty": {
-            "cost": {
-              "Minus": 1
-            },
+            "cost": { "Minus": 1 },
             "effects": [
-              {
-                "Mill": {
-                  "count": 3,
-                  "as": "milled"
-                }
-              },
+              { "Mill": { "count": 3, "as": "milled" } },
               {
                 "Choose": {
                   "from": {
                     "Each": [
-                      {
-                        "Is": {
-                          "Bound": "milled"
-                        }
-                      },
-                      {
-                        "In": "Graveyard"
-                      },
+                      { "Is": { "Bound": "milled" } },
+                      { "In": "Graveyard" },
                       {
                         "AnyOf": [
-                          {
-                            "Type": "Artifact"
-                          },
-                          {
-                            "Type": "Creature"
-                          },
-                          {
-                            "Type": "Enchantment"
-                          },
-                          {
-                            "Type": "Land"
-                          },
-                          {
-                            "Type": "Planeswalker"
-                          },
-                          {
-                            "Type": "Battle"
-                          }
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" },
+                          { "Type": "Battle" }
                         ]
                       }
                     ]
                   },
-                  "count": {
-                    "min": 0,
-                    "max": 1
-                  },
+                  "count": { "min": 0, "max": 1 },
                   "as": "kept"
                 }
               },
-              {
-                "Move": {
-                  "what": {
-                    "Bound": "kept"
-                  },
-                  "to": "Hand"
-                }
-              }
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } }
             ]
           }
         },
         {
           "Loyalty": {
-            "cost": {
-              "Minus": 3
-            },
+            "cost": { "Minus": 3 },
             "effects": [
               {
                 "CreateToken": {
                   "token": {
                     "Custom": {
                       "name": "Elk",
-                      "colors": [
-                        "Green"
-                      ],
-                      "types": [
-                        "Creature"
-                      ],
-                      "subtypes": [
-                        "Elk"
-                      ],
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elk"],
                       "power": 3,
                       "toughness": 3
                     }
@@ -230,16 +112,9 @@
         },
         {
           "Loyalty": {
-            "cost": {
-              "Minus": 6
-            },
+            "cost": { "Minus": 6 },
             "effects": [
-              {
-                "ChooseValue": {
-                  "kind": "CreatureType",
-                  "as": "type"
-                }
-              },
+              { "ChooseValue": { "kind": "CreatureType", "as": "type" } },
               {
                 "CreateEmblem": {
                   "abilities": [
@@ -247,30 +122,15 @@
                       "Static": {
                         "affected": {
                           "Each": [
-                            {
-                              "Type": "Creature"
-                            },
-                            {
-                              "ControlledBy": "You"
-                            },
-                            {
-                              "ChosenAs": "type"
-                            }
+                            { "Type": "Creature" },
+                            { "ControlledBy": "You" },
+                            { "ChosenAs": "type" }
                           ]
                         },
                         "mods": [
-                          {
-                            "ModifyPT": {
-                              "power": 3,
-                              "toughness": 3
-                            }
-                          },
-                          {
-                            "AddKeyword": "Vigilance"
-                          },
-                          {
-                            "AddKeyword": "Hexproof"
-                          }
+                          { "ModifyPT": { "power": 3, "toughness": 3 } },
+                          { "AddKeyword": "Vigilance" },
+                          { "AddKeyword": "Hexproof" }
                         ]
                       }
                     }

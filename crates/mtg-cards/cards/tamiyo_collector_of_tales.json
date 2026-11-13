@@ -7,103 +7,34 @@
       "name": "Tamiyo, Collector of Tales",
       "oracle_fingerprint": "5a12192ff8f4374e1446a29752ba790c",
       "abilities": [
-        {
-          "Rule": {
-            "rule": {
-              "OpponentsCantMakeDiscardOrSacrifice": "You"
-            }
-          }
-        },
+        { "Rule": { "rule": { "OpponentsCantMakeDiscardOrSacrifice": "You" } } },
         {
           "Loyalty": {
-            "cost": {
-              "Plus": 1
-            },
+            "cost": { "Plus": 1 },
             "effects": [
               {
                 "ChooseValue": {
-                  "kind": {
-                    "CardName": [
-                      {
-                        "Not": {
-                          "Type": "Land"
-                        }
-                      }
-                    ]
-                  },
+                  "kind": { "CardName": [{ "Not": { "Type": "Land" } }] },
                   "as": "name"
                 }
               },
-              {
-                "LookAtTop": {
-                  "count": 4,
-                  "as": "top"
-                }
-              },
-              {
-                "Reveal": {
-                  "what": {
-                    "Bound": "top"
-                  }
-                }
-              },
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
               {
                 "Move": {
-                  "what": {
-                    "Each": [
-                      {
-                        "Is": {
-                          "Bound": "top"
-                        }
-                      },
-                      {
-                        "ChosenAs": "name"
-                      }
-                    ]
-                  },
+                  "what": { "Each": [{ "Is": { "Bound": "top" } }, { "ChosenAs": "name" }] },
                   "to": "Hand"
                 }
               },
-              {
-                "Move": {
-                  "what": {
-                    "Bound": "top"
-                  },
-                  "to": "Graveyard"
-                }
-              }
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
             ]
           }
         },
         {
           "Loyalty": {
-            "cost": {
-              "Minus": 3
-            },
-            "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "In": "Graveyard"
-                    },
-                    {
-                      "OwnedBy": "You"
-                    }
-                  ]
-                }
-              }
-            ],
-            "effects": [
-              {
-                "Move": {
-                  "what": {
-                    "Target": 0
-                  },
-                  "to": "Hand"
-                }
-              }
-            ]
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
           }
         }
       ]
