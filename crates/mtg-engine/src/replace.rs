@@ -3718,9 +3718,9 @@ mod r304_as_enters;
 #[cfg(test)]
 mod r304_skip;
 pub(crate) mod r406_actions;
+mod r4700_choices;
 pub(crate) mod r4708_actions;
 mod r4708_reveal;
-mod r4700_choices;
 mod rmt5_next;
 use rmt5_next::rmt5_next_as_instead;
 mod e19_mill;
