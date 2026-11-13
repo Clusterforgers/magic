@@ -234,6 +234,8 @@ mod r408_pact;
 mod r4708_actions;
 mod r4708_reveal;
 mod r4711_drafted;
+mod r5516_actions;
+mod r5516_reflexive;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -643,6 +645,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r4708_actions::r4708_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r5516_actions::r5516_read(text) {
         return Some(found);
     }
     if kind == ClauseKind::Static

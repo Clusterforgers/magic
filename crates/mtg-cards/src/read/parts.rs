@@ -593,6 +593,10 @@ pub(super) fn replace_when(ctx: &Ctx, when: &ReplaceWhen) -> String {
         }
         ReplaceWhen::Scries { who } => format!("{} would scry", phrase::who(ctx, who)),
         ReplaceWhen::Surveils { who } => format!("{} would surveil", phrase::who(ctx, who)),
+        ReplaceWhen::Learns { who } => format!("{} would learn", phrase::who(ctx, who)),
+        ReplaceWhen::CopiesSpell { who } => {
+            format!("{} would copy a spell", phrase::who(ctx, who))
+        }
         other => generic::node(ctx, other),
     }
 }

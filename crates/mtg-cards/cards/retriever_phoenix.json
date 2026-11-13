@@ -1,7 +1,7 @@
 {
   "oracle_id": "279e573d-b7a3-4e62-a708-3ec992d97972",
   "name": "Retriever Phoenix",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Retriever Phoenix",
@@ -17,9 +17,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 186, "end": 301 }
+          "Replacement": {
+            "when": { "Learns": {} },
+            "by": { "MayInstead": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }] },
+            "from": "Graveyard"
           }
         }
       ]

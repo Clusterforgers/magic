@@ -123,8 +123,9 @@ fn w20b_the_trigger_counts_its_targets_from_zero(
             serde_json::from_str(&json).unwrap()
         })
         .collect();
-    let Some(Effect::Reflexive { targets, effects }) =
-        super::super::w20b_reflexive::w20b_trigger(&mut reader, before, &steps)
+    let Some(Effect::Reflexive {
+        targets, effects, ..
+    }) = super::super::w20b_reflexive::w20b_trigger(&mut reader, before, &steps)
     else {
         panic!("no trigger");
     };

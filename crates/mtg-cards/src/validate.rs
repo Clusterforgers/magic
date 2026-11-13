@@ -4626,6 +4626,9 @@ impl Walker<'_> {
                 if matches!(rule, GameRule::CantBeCopied) {
                     w.problem("a spell can't be copied by a static ability of its own, not by an effect");
                 }
+                if matches!(rule, GameRule::KeepsDamage) {
+                    w.problem("a permanent keeps its damage by a static ability of its own, not by an effect");
+                }
                 if matches!(rule, GameRule::AnyNumberInDeck | GameRule::UpToInDeck(_)) {
                     w.problem("a deck holds more than one of a card by a static ability, not by an effect");
                 }
@@ -4722,12 +4725,19 @@ impl Walker<'_> {
                 w.scope.dealer = dealer;
                 w.scope.in_trigger = saved;
             }
-            Effect::Reflexive { targets, effects } => {
+            Effect::Reflexive {
+                targets,
+                effects,
+                condition,
+            } => {
                 // The trigger has targets of its own and sees the names this resolution has bound.
                 let mut inner = Scope::new(targets, true);
                 inner.names.clone_from(&w.scope.names);
                 inner.numbers.clone_from(&w.scope.numbers);
                 let saved = std::mem::replace(&mut w.scope, inner);
+                if let Some(condition) = condition {
+                    w.at("if", |w| w.condition(condition));
+                }
                 w.body_checks(targets, effects, true);
                 w.scope = saved;
             }
@@ -4911,7 +4921,11 @@ impl Walker<'_> {
         for (i, mode) in modes.iter().enumerate() {
             self.at(format!("modes[{i}]"), |w| {
                 let in_trigger = w.scope.in_trigger;
-                let saved = std::mem::replace(&mut w.scope, Scope::new(&mode.targets, in_trigger));
+                // A mode sees the names bound before it, as a reflexive trigger's modes see its resolution's.
+                let mut inner = Scope::new(&mode.targets, in_trigger);
+                inner.names.clone_from(&w.scope.names);
+                inner.numbers.clone_from(&w.scope.numbers);
+                let saved = std::mem::replace(&mut w.scope, inner);
                 w.body_checks(&mode.targets, &mode.effects, false);
                 w.scope = saved;
             });
@@ -5512,6 +5526,7 @@ impl Walker<'_> {
             | GameRule::DamageAsWither
             | GameRule::ManaBurn
             | GameRule::CantBeCopied
+            | GameRule::KeepsDamage
             | GameRule::CantSpendMana
             | GameRule::RevealFirstDraw { .. } => {}
             GameRule::UpToInDeck(most) => {
@@ -5793,6 +5808,8 @@ impl Walker<'_> {
             | ReplaceWhen::Proliferates { who }
             | ReplaceWhen::Scries { who }
             | ReplaceWhen::Surveils { who }
+            | ReplaceWhen::CopiesSpell { who }
+            | ReplaceWhen::Learns { who }
             | ReplaceWhen::Draw { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
@@ -5808,6 +5825,14 @@ impl Walker<'_> {
         }
         crate::r406_actions::r406_check(when, by, |problem| self.problem(problem));
         crate::r4708_actions::r4708_check(when, by, |problem| self.problem(problem));
+        crate::r5516_learn::r5516_check(when, by, |problem| self.problem(problem));
+        if matches!(when, ReplaceWhen::CopiesSpell { .. })
+            && !matches!(by, ReplaceBy::AddAmount(Amount::Fixed(n)) if *n > 0)
+        {
+            self.problem(
+                "a copy of a spell is replaced only by a fixed number of additional copies",
+            );
+        }
     }
 
     /// What happens instead reads the event it replaces as a trigger reads its event: `Triggering` is the player or object

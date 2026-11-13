@@ -72,7 +72,11 @@ pub(super) fn w20b_trigger(r: &mut Reader<'_>, from: usize, steps: &[Effect]) ->
     crate::assemble::shift_targets(&mut value, by).then_some(())?;
     let (targets, effects) = serde_json::from_value(value).ok()?;
     r.targets.truncate(from);
-    Some(Effect::Reflexive { targets, effects })
+    Some(Effect::Reflexive {
+        targets,
+        effects,
+        condition: None,
+    })
 }
 
 /// "If you do" or, for a follow-up that chooses a target, "When you do" after a payment: whether it was the reflexive one.
@@ -308,6 +312,7 @@ fn w20b_flattened(ability: &Ability) -> Option<(Ability, W20bAfter)> {
     let Effect::Reflexive {
         targets: own,
         effects: steps,
+        condition: None,
     } = trigger
     else {
         return None;

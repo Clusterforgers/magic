@@ -60,7 +60,9 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         [
             Effect::AddMana { who: Ref::You, .. },
             Effect::Reflexive {
-                targets, effects, ..
+                targets,
+                effects,
+                condition: None,
             },
         ] if targets.is_empty() => when_you_do(ability, effects, texts),
         [Effect::AddMana { only, .. }] => {

@@ -680,6 +680,8 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::Proliferates { .. }
         | ReplaceWhen::Scries { .. }
         | ReplaceWhen::Surveils { .. }
+        | ReplaceWhen::CopiesSpell { .. }
+        | ReplaceWhen::Learns { .. }
         | ReplaceWhen::Draw { .. } => false,
     }
 }
@@ -722,7 +724,8 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         // More cards to surveil are offered by the surveil itself (`r4708_actions`).
         ReplaceBy::PreventCounted(_)
         | ReplaceBy::PreventNextAnd(_)
-        | ReplaceBy::MayAddAmount(_) => false,
+        | ReplaceBy::MayAddAmount(_)
+        | ReplaceBy::MayInstead(_) => false,
         ReplaceBy::PreventCountedAnd { most, .. } => {
             matches!(most, Amount::Fixed(_)) && matches!(unit, Unit::Damage { .. })
         }
@@ -3670,6 +3673,8 @@ mod r304_skip;
 pub(crate) mod r406_actions;
 pub(crate) mod r4708_actions;
 mod r4708_reveal;
+pub(crate) mod r5516_copies;
+pub(crate) mod r5516_learns;
 mod rmt5_next;
 use rmt5_next::rmt5_next_as_instead;
 mod e19_mill;

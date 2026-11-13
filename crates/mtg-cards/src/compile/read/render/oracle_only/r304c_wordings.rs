@@ -656,7 +656,9 @@ fn exiled_then(ability: &Ability) -> Vec<String> {
             duration: None,
         },
         Effect::Reflexive {
-            targets, effects, ..
+            targets,
+            effects,
+            condition: None,
         },
     ] = steps.as_slice()
     else {
