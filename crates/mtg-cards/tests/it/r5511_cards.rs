@@ -136,7 +136,11 @@ fn r5511_reads_back_whole(#[case] name: &str) {
 #[case::pulse_one_mana("Pulse of Llanowar", r#""OnlyChosenColor""#, r#""OneChosenColor""#)]
 #[case::pulse_any_land("Pulse of Llanowar", r#"{ "Supertype": "Basic" }, "#, "")]
 #[case::mage_same_amount("Harvest Mage", r#""OneChosenColor""#, r#""OnlyChosenColor""#)]
-#[case::mage_for_ever("Harvest Mage", r#""duration": "UntilEndOfTurn""#, r#""duration": "Forever""#)]
+#[case::mage_for_ever(
+    "Harvest Mage",
+    r#""duration": "UntilEndOfTurn""#,
+    r#""duration": "Forever""#
+)]
 #[case::kalain_artifacts(
     "Kalain, Reclusive Painter",
     r#""TreasureManaSpent""#,
@@ -157,7 +161,11 @@ fn r5511_reads_back_whole(#[case] name: &str) {
     r#"{ "Life": "You" }"#,
     r#"{ "Life": "Opponents" }"#
 )]
-#[case::hellion_preventable("Volcano Hellion", r#""unpreventable": true"#, r#""unpreventable": false"#)]
+#[case::hellion_preventable(
+    "Volcano Hellion",
+    r#""unpreventable": true"#,
+    r#""unpreventable": false"#
+)]
 #[case::resonance_your_upkeep("Elemental Resonance", r#""Main1""#, r#""Upkeep""#)]
 #[case::resonance_its_own_cost("Elemental Resonance", r#""Attached""#, r#""This""#)]
 #[case::omnath_two_symbols("Omnath, Locus of All", r#""right": 3"#, r#""right": 2"#)]

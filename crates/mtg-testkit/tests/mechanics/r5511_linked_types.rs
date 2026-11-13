@@ -21,17 +21,33 @@ fn assert_replays(driver: &Driver) {
     assert_eq!(state.state_hash(), driver.state().state_hash());
 }
 
+/// A 6/4 Wurm.
+fn wurm() -> std::sync::Arc<mtg_cards::CardDefinition> {
+    std::sync::Arc::new(
+        mtg_cards::CardDefinition::new("Big Wurm")
+            .with_type(mtg_core::card::CardType::Creature)
+            .with_subtype("Wurm")
+            .with_mana_cost(mtg_core::mana::ManaCost::parse("{4}{G}{G}").unwrap())
+            .with_power_toughness(6, 4),
+    )
+}
+
 /// Seat 0 casts Duplicant with six Plains; seat 1 has `victim`.
 fn duplicant_table(seats: usize, victim: &str) -> Scenario {
+    let victim = if victim == "Big Wurm" {
+        wurm()
+    } else {
+        card(victim).unwrap()
+    };
     Scenario::new(seats)
         .at(1, 0, Step::Main1)
         .hand(0, vec![card("Duplicant").unwrap()])
         .battlefield(0, (0..6).map(|_| ready(plains())))
-        .battlefield_named(1, [victim])
+        .battlefield(1, [ready(victim)])
 }
 
 #[rstest]
-#[case::wurm("Craw Wurm", true, (6, 4), "Wurm")]
+#[case::wurm("Big Wurm", true, (6, 4), "Wurm")]
 #[case::bears("Grizzly Bears", true, (2, 2), "Bear")]
 #[case::declined("Grizzly Bears", false, (2, 4), "")]
 fn r5511_duplicant_takes_the_exiled_creatures_stats_and_types(
@@ -93,6 +109,7 @@ fn r5511_illusionary_terrain_makes_the_first_type_the_second(
                 [
                     ready(island()),
                     ready(island()),
+                    ready(island()),
                     ready(forest()),
                     ready(swamp()),
                 ],
@@ -128,23 +145,10 @@ fn r5511_illusionary_terrain_makes_the_first_type_the_second(
         .unwrap();
     let chars = characteristics(driver.state(), theirs).unwrap();
     assert!(!chars.has_subtype(&[], &Subtype(land.into())));
-    let ours = driver
-        .state()
-        .objects()
-        .find(|object| {
-            object.card().name == land
-                && object.controller() == mtg_core::ids::PlayerId(0)
-                && !object.permanent().is_some_and(|p| p.tapped())
-        })
-        .map(|object| object.id());
-    if let Some(ours) = ours {
-        let made: Vec<ManaType> = mtg_engine::mana_ways(driver.state(), ours)
-            .into_iter()
-            .flat_map(|(_, options)| options)
-            .map(|option| option.produces)
-            .collect();
-        assert_eq!(made, [makes]);
-    }
+    assert!(
+        driver.tap_for_mana_of(land, makes).is_ok(),
+        "our {land} makes the mana of its new type"
+    );
     assert_replays(&driver);
     Ok(())
 }
