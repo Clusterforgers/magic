@@ -29,6 +29,16 @@ pub(crate) fn read(
             to: Some(ZoneKind::Battlefield),
             ..
         } if what.0.contains(&Pred::This) => source.x,
+        // "Whenever you cast your first spell with {X} in its mana cost each turn" reads the X of that spell too.
+        TriggerPattern::Nth { event, .. }
+            if matches!(**event, TriggerPattern::SpellCast { .. }) =>
+        {
+            cause
+                .snapshots
+                .iter()
+                .find(|shot| shot.zone == Zone::Stack)
+                .and_then(|shot| shot.x)
+        }
         TriggerPattern::SpellCast { .. } => cause
             .snapshots
             .iter()
@@ -46,7 +56,7 @@ pub(crate) fn read(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a triggered ability reads X only where the rules give it one: a delayed trigger the X of what set it up, the trigger "when this enters" the X of its spell, a trigger on a spell being cast the X of the spell cast, a trigger on cycling its card or on its card becoming monstrous the X of that cost; any other trigger of a permanent, and a trigger on another zone change, read 0.
+    //! Goal: a triggered ability reads X only where the rules give it one: a delayed trigger the X of what set it up, the trigger "when this enters" the X of its spell, a trigger on a spell being cast (also the nth of the turn) the X of the spell cast, a trigger on cycling its card or on its card becoming monstrous the X of that cost; any other trigger of a permanent, and a trigger on another zone change, read 0.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -95,6 +105,9 @@ mod tests {
     const UPKEEP: &str = r#"{"StepBegins":{"step":"Upkeep","whose":"You"}}"#;
     const CASTS_THIS: &str = r#"{"SpellCast":{"what":["This"],"by":"You"}}"#;
     const CASTS_ANY: &str = r#"{"SpellCast":{"by":"You"}}"#;
+    const CASTS_FIRST_X: &str =
+        r#"{"Nth":{"event":{"SpellCast":{"what":["XInCost"],"by":"You"}},"nth":1}}"#;
+    const DIES_FIRST: &str = r#"{"Nth":{"event":{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}},"nth":1}}"#;
 
     #[rstest]
     #[case::enters(ENTERS, false, Some(4), Some(4))]
@@ -105,6 +118,7 @@ mod tests {
     #[case::upkeep(UPKEEP, false, Some(4), None)]
     #[case::delayed(UPKEEP, true, Some(4), Some(4))]
     #[case::delayed_with_no_x(UPKEEP, true, None, None)]
+    #[case::first_death(DIES_FIRST, false, Some(4), None)]
     fn a_trigger_reads_the_x_the_rules_give_it(
         #[case] when: &str,
         #[case] delayed: bool,
@@ -123,6 +137,7 @@ mod tests {
     #[case::this_spell_with_a_large_x(CASTS_THIS, Some(250))]
     #[case::another_spell(CASTS_ANY, Some(3))]
     #[case::a_spell_without_x(CASTS_ANY, None)]
+    #[case::the_first_x_spell_of_the_turn(CASTS_FIRST_X, Some(4))]
     fn a_trigger_on_a_spell_being_cast_reads_the_x_of_that_spell(
         #[case] when: &str,
         #[case] x: Option<u32>,

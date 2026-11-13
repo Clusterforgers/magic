@@ -1,0 +1,33 @@
+{
+  "oracle_id": "851a2214-5f87-4e5b-b099-1c5c90784a97",
+  "name": "Rumbling Aftershocks",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rumbling Aftershocks",
+      "oracle_fingerprint": "bd2d6f14aab7d45ad93127f4a4934618",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["Kicked"], "by": "You" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": "Triggering", "stat": "Kicks" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

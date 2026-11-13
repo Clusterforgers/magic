@@ -1,7 +1,7 @@
 {
   "oracle_id": "81fe7c5e-503e-488c-b06c-1615ed38e5a3",
   "name": "Thought Lash",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Thought Lash",
@@ -9,9 +9,15 @@
       "abilities": [
         { "Keyword": { "CumulativeUpkeep": [{ "ExileTop": 1 }] } },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 204, "end": 316 }
+          "Triggered": {
+            "when": { "Did": { "action": "DeclinedCumulativeUpkeep", "what": ["This"] } },
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Library" }, { "OwnedBy": "TriggeringPlayer" }] }
+                }
+              }
+            ]
           }
         },
         {

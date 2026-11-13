@@ -1,0 +1,23 @@
+{
+  "oracle_id": "95803a5a-9f98-4764-b6bd-6cf4cdcb740b",
+  "name": "Hum of the Radix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hum of the Radix",
+      "oracle_fingerprint": "d23a6cb5874c37a3e241655c0e81b486",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Type": "Artifact" }],
+            "change": "Increase",
+            "mana": "{1}",
+            "per": {
+              "Count": [{ "Type": "Artifact" }, { "ControlledBy": { "ControllerOf": "Affected" } }]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

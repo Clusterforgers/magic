@@ -64,6 +64,9 @@ pub(super) fn w6d_suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
         };
         return r.words(tail).then_some(Pred::XInCost);
     }
+    if r.words("with") && r.symbol() == Some("H") {
+        return r.words("in its mana cost").then_some(Pred::PhyrexianInCost);
+    }
     if r.word("that") {
         let verb = if form.plural() { "share" } else { "shares" };
         if r.words(&format!("{verb} a color with it")) {
@@ -141,6 +144,7 @@ pub(super) fn w6d_suffix_text(pred: &Pred, form: Form) -> Option<String> {
     Some(match pred {
         Pred::XInCost if form.plural() => "with {X} in their mana costs".to_owned(),
         Pred::XInCost => "with {X} in its mana cost".to_owned(),
+        Pred::PhyrexianInCost if !form.plural() => "with {H} in its mana cost".to_owned(),
         Pred::GenericCost(n) => format!("with mana cost {{{n}}}"),
         Pred::AnyOf(costs)
             if costs

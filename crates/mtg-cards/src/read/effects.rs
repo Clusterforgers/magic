@@ -124,7 +124,7 @@ fn cards(ctx: &Ctx, effect: &Effect) -> Option<String> {
             act(ctx, who, "mill", &phrase::counted(ctx, count, "card"))
         }
         Effect::Scry { who, count } => act(ctx, who, "scry", &phrase::amount(ctx, count)),
-        Effect::Surveil { who, count } => act(ctx, who, "surveil", &phrase::amount(ctx, count)),
+        Effect::Surveil { who, count, .. } => act(ctx, who, "surveil", &phrase::amount(ctx, count)),
         Effect::GainLife { who, amount } => act(
             ctx,
             who,

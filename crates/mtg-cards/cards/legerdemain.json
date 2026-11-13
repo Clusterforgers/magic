@@ -1,0 +1,42 @@
+{
+  "oracle_id": "107d5f67-1395-444f-b612-c5cc770df956",
+  "name": "Legerdemain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Legerdemain",
+      "oracle_fingerprint": "ac6cc87a715ccf58d085ee5783c83aa3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              },
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "SharesTypeOf": { "with": { "Target": 0 }, "types": ["Artifact", "Creature"] }
+                    },
+                    { "Not": { "Is": { "Target": 0 } } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "ExchangeControl": {
+                  "what": [{ "Target": 0 }, { "Target": 1 }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

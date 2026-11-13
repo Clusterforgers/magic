@@ -40,6 +40,8 @@ fn stat_word(stat: StatKind) -> &'static str {
         StatKind::BasePower => "base power",
         StatKind::BaseToughness => "base toughness",
         StatKind::ManaSpent => "mana spent",
+        StatKind::ColorsSpent => "colors of mana spent",
+        StatKind::Kicks => "times kicked",
         StatKind::CounterKinds => "kinds of counters",
         StatKind::R374Types => "types",
         StatKind::R374CreatureTypes => "creature types",
@@ -635,6 +637,14 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 _ => "it".to_owned(),
             };
             (format!("{recipient} is dealt damage"), *hit == Ref::This)
+        }
+        TriggerPattern::DealtExcess { what, combat } => {
+            let kind = match combat {
+                Some(true) => "excess combat damage",
+                Some(false) => "excess noncombat damage",
+                None => "excess damage",
+            };
+            (format!("{} is dealt {kind}", subject(what)), false)
         }
         TriggerPattern::DealsDamage { source, combat, .. } => {
             let kind = match combat {
@@ -1417,6 +1427,7 @@ fn verb_phrase(effect: &Effect) -> Option<String> {
         Effect::Surveil {
             who: Ref::You,
             count: Amount::Fixed(n),
+            ..
         } => format!("surveil {n}"),
         Effect::GainLife {
             who: Ref::You,

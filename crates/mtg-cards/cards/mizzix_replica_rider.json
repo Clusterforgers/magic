@@ -1,7 +1,7 @@
 {
   "oracle_id": "24a7e1d2-0bc9-40a9-a606-f0017bde3dab",
   "name": "Mizzix, Replica Rider",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Mizzix, Replica Rider",
@@ -9,9 +9,34 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 7, "end": 325 }
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "CastFrom": "Hand" } }], "by": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{U/R}",
+                  "paid": [
+                    {
+                      "CopySpell": {
+                        "what": "Triggering",
+                        "new_targets": true,
+                        "except": [
+                          { "AddKeyword": "Haste" },
+                          {
+                            "GrantAbility": {
+                              "Triggered": {
+                                "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                                "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

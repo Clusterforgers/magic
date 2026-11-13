@@ -1,0 +1,21 @@
+{
+  "oracle_id": "7a4c2d47-3489-4e56-b38b-de2dddd942ad",
+  "name": "Exiled Doomsayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exiled Doomsayer",
+      "oracle_fingerprint": "d6de4c2e788aedb377901173a9d19e54",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [],
+            "change": "Increase",
+            "mana": "{2}",
+            "activating": "Morph"
+          }
+        }
+      ]
+    }
+  ]
+}

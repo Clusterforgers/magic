@@ -268,10 +268,20 @@ pub enum Pred {
     /// Has the mana value of one of the objects the reference names ("protection from each mana value among artifacts you
     /// control").
     SharesManaValue(Ref),
+    /// Shares one of these card types with one of the objects the reference names ("that share a permanent type",
+    /// "that shares one of those types with it").
+    SharesTypeOf {
+        /// The objects compared with.
+        with: Ref,
+        /// The card types that count.
+        types: Vec<mtg_core::card::CardType>,
+    },
     /// Is an Aura card that could enchant the source ("an Aura card in your hand that could enchant this creature", CR 303.4).
     CanEnchantSource,
     /// Has {X} in its mana cost ("a spell with {X} in its mana cost", CR 107.3).
     XInCost,
+    /// Has a Phyrexian symbol in its mana cost ("a spell with {H} in its mana cost", CR 107.4f).
+    PhyrexianInCost,
     /// Has a mana cost of exactly that many generic mana and nothing else ("with mana cost {1}"): `{0}` is a cost, no cost
     /// is not, and a coloured, hybrid, Phyrexian or {X} symbol is another cost with the same mana value.
     GenericCost(u32),

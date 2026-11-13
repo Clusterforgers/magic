@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e45f0a12-e1ca-432f-a208-9359dd18513d",
+  "name": "Rage Extractor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rage Extractor",
+      "oracle_fingerprint": "55bae1112a1ffc5eb07e2b1d91317fed",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["PhyrexianInCost"], "by": "You" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

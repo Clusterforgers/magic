@@ -1,7 +1,7 @@
 {
   "oracle_id": "3715e8b8-31df-499b-8a91-1bcd1199d6eb",
   "name": "Experimental Frenzy",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Experimental Frenzy",
@@ -10,9 +10,15 @@
         { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
         { "Rule": { "rule": { "MayCast": { "from": "Library", "play": true } } } },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 120, "end": 171 }
+          "Rule": {
+            "rule": { "Cant": { "who": "You", "action": { "PlayLands": [{ "In": "Hand" }] } } }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": "You", "action": { "Cast": { "filter": [{ "In": "Hand" }] } } }
+            }
           }
         },
         { "Activated": { "cost": "{3}{R}", "effects": [{ "Destroy": { "what": "This" } }] } }

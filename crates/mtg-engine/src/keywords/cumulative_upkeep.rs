@@ -48,13 +48,30 @@ impl KeywordRules for CumulativeUpkeep {
                         on: Ref::This,
                         counter: age(),
                     },
-                    paid: Vec::new(),
-                    unpaid: vec![Effect::Sacrifice {
+                    paid: vec![Effect::Performed {
+                        action: mtg_cards::did::Action::PaidCumulativeUpkeep,
                         who: Ref::You,
-                        filter: Selector::this(),
-                        count: Amount::one(),
-                        bind: None,
+                        times: Amount::one(),
+                        card: Some(Ref::This),
+                        value: None,
+                        to: None,
                     }],
+                    unpaid: vec![
+                        Effect::Performed {
+                            action: mtg_cards::did::Action::DeclinedCumulativeUpkeep,
+                            who: Ref::You,
+                            times: Amount::one(),
+                            card: Some(Ref::This),
+                            value: None,
+                            to: None,
+                        },
+                        Effect::Sacrifice {
+                            who: Ref::You,
+                            filter: Selector::this(),
+                            count: Amount::one(),
+                            bind: None,
+                        },
+                    ],
                 },
             ],
         }]

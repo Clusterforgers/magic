@@ -317,6 +317,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::CounterCount { .. }
         | Pred::CanEnchantSource
         | Pred::XInCost
+        | Pred::PhyrexianInCost
         | Pred::GenericCost(_)
         | Pred::SingleTarget
         | Pred::HasAnyCounter
@@ -371,7 +372,9 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::SameCard(who)
         | Pred::SourceOf(who)
         | Pred::SharesManaValue(who) => reads_of_ref(who),
-        Pred::SharesType(who) => Traits::TYPES.or(reads_of_ref(who)),
+        Pred::SharesType(who) | Pred::SharesTypeOf { with: who, .. } => {
+            Traits::TYPES.or(reads_of_ref(who))
+        }
         Pred::SharesColor(who) => Traits::COLORS.or(reads_of_ref(who)),
         Pred::Type(_) => Traits::TYPES,
         Pred::Subtype(_) => Traits::SUBTYPES,
@@ -413,6 +416,8 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         StatKind::ManaValue
         | StatKind::Loyalty
         | StatKind::ManaSpent
+        | StatKind::ColorsSpent
+        | StatKind::Kicks
         | StatKind::Name
         | StatKind::CounterKinds
         | StatKind::R374ManaCost => Traits::NONE,
@@ -455,6 +460,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::TriggeringTargets
         | Amount::PlayersLost
         | Amount::CastTargets
+        | Amount::CastTargetsOf(_)
         | Amount::Chosen
         | Amount::ChosenAs(_)
         | Amount::Triggering => Traits::NONE,
@@ -513,7 +519,9 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::Tally { who, filter, .. } => reads_of_ref(who).or(reads_of_selector(filter)),
         Amount::Remembered { on, .. } => reads_of_ref(on),
         Amount::CardTypes(of) => reads_of_selector(of).or(Traits::TYPES),
-        Amount::Largest { who, of } => reads_of_ref(who).or(reads_of_selector(of)),
+        Amount::Largest { who, of } | Amount::Smallest { who, of } => {
+            reads_of_ref(who).or(reads_of_selector(of))
+        }
         Amount::Party(who) => reads_of_ref(who)
             .or(Traits::SUBTYPES)
             .or(Traits::CONTROL)
@@ -548,6 +556,8 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::CastWith(_)
         | Condition::CastOffSorceryTiming
         | Condition::AsCast(_)
+        | Condition::R401OnCast(_)
+        | Condition::R401Targets(_)
         | Condition::ManaSpent(_)
         | Condition::IsDay
         | Condition::IsNight

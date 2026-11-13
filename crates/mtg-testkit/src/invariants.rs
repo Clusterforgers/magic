@@ -395,13 +395,19 @@ fn check_legends(engine: &Engine) -> Result<(), Violation> {
             continue;
         };
         let controller = controller_of(state, id).unwrap_or(object.controller());
-        if object.card().supertypes.contains(&Supertype::Legendary)
+        // Legendary as the layers leave it: an effect can take the supertype away (CR 613.1d).
+        if mtg_engine::characteristics::has_supertype(state, id, Supertype::Legendary)
             && state.is_alive(controller)
             && !mtg_engine::rules::no_legend_rule(state, controller)
             && !mtg_engine::rules::no_legend_rule_for(state, id)
         {
             groups
-                .entry((controller, object.card().name.clone()))
+                .entry((
+                    controller,
+                    state
+                        .name_of(id)
+                        .unwrap_or_else(|| object.card().name.clone()),
+                ))
                 .or_default()
                 .push(id);
         }

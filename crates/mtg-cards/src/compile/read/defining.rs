@@ -191,6 +191,13 @@ fn held(r: &mut Reader<'_>) -> Option<Amount> {
     {
         return Some(Amount::Mutations(Ref::This));
     }
+    // "the number of times that spell was kicked" (Rumbling Aftershocks).
+    if r.words("times that spell was kicked") {
+        return Some(Amount::Stat {
+            of: Ref::Triggering,
+            stat: StatKind::Kicks,
+        });
+    }
     counters::counted_plural(r)
 }
 
@@ -382,6 +389,10 @@ pub(super) fn counting_text(amount: &Amount) -> Option<String> {
         Amount::Mutations(Ref::This) => {
             Some("the number of times this creature has mutated".to_owned())
         }
+        Amount::Stat {
+            of: Ref::Triggering,
+            stat: StatKind::Kicks,
+        } => Some("the number of times that spell was kicked".to_owned()),
         Amount::Counters {
             on: Ref::This,
             counter,

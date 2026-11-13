@@ -194,6 +194,11 @@ pub(crate) fn may_play_land_while_resolving(
         && land_play_left(state, player)
 }
 
+/// Whether no rule forbids `player` to play the land card `card` where it is ("You can't play lands from your hand.").
+pub(crate) fn land_card_open(state: &GameState, player: PlayerId, card: ObjectId) -> bool {
+    !crate::prohibit::forbidden(state, crate::prohibit::Doing::PlayLandCard { player, card })
+}
+
 fn hand_land(state: &GameState, id: ObjectId) -> bool {
     state
         .object(id)
@@ -637,7 +642,7 @@ fn face_options(
                 land,
             }
         };
-        if may_play_land && hand.contains(&card) {
+        if may_play_land && hand.contains(&card) && land_card_open(state, player, card) {
             found.extend(
                 faces::land_faces(state, card)
                     .into_iter()
@@ -694,6 +699,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
             .copied()
             .filter(|id| hand_land(state, *id))
             .chain(ways::lands_elsewhere(state, player))
+            .filter(|id| land_card_open(state, player, *id))
             .collect()
     } else {
         Vec::new()

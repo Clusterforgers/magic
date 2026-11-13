@@ -1,7 +1,7 @@
 {
   "oracle_id": "1784bbaa-67b1-4bd1-bf77-53da2bfbf7fc",
   "name": "Cornered Market",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Cornered Market",
@@ -20,9 +20,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 70, "end": 147 }
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "PlayLands": [
+                    { "Type": "Land" },
+                    { "Not": { "Supertype": "Basic" } },
+                    { "SharesName": { "Each": [{ "Not": "Token" }] } }
+                  ]
+                }
+              }
+            }
           }
         }
       ]

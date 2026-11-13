@@ -25,6 +25,7 @@ mod parts;
 mod payment;
 pub(crate) mod plot;
 mod price;
+mod r401_flash;
 pub(crate) mod required;
 mod splice;
 pub(crate) mod suspend;

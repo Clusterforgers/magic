@@ -5,6 +5,7 @@
 use crate::zones::Zone;
 use mtg_cards::refs::{Pred, Ref, Selector};
 use mtg_core::card::CardType;
+use mtg_core::mana::ManaSymbol;
 
 use super::{ResolveError, Scope, Seen};
 use crate::characteristics::{goaded_by, goaders};
@@ -50,12 +51,21 @@ impl Scope<'_> {
         Ok(match pred {
             Pred::SharesName(named) => self.w6d_shares_name(named, seen)?,
             Pred::SharesType(named) => self.w6d_shares_type(named, seen)?,
+            Pred::SharesTypeOf { with, types } => {
+                self.w6d_any_named(with, seen, |mine, theirs| {
+                    types.iter().any(|card_type| {
+                        mine.chars.types.contains(*card_type)
+                            && theirs.chars.types.contains(*card_type)
+                    })
+                })?
+            }
             Pred::SharesColor(named) => self.w6d_shares_color(named, seen)?,
             Pred::SharesManaValue(named) => self.w6d_any_named(named, seen, |mine, theirs| {
                 let value = |seen: &Seen<'_>| seen.card.map(GameObject::mana_value);
                 value(mine).is_some() && value(mine) == value(theirs)
             })?,
             Pred::XInCost => Self::w6d_x_in_cost(seen),
+            Pred::PhyrexianInCost => Self::r407_phyrexian_in_cost(seen),
             Pred::GenericCost(n) => Self::generic_cost(*n, seen),
             Pred::Goaded => self.w6d_goaded(seen),
             Pred::HasAttached(attached) => self.w6d_has_attached(attached, seen)?,
@@ -109,6 +119,23 @@ impl Scope<'_> {
         seen.card
             .filter(|card| card.face_down().is_none())
             .is_some_and(|card| card.card().x_in_cost > 0)
+    }
+
+    /// Whether the object's mana cost holds a Phyrexian symbol (CR 107.4f); a face-down object has no cost.
+    fn r407_phyrexian_in_cost(seen: &Seen<'_>) -> bool {
+        seen.card
+            .filter(|card| card.face_down().is_none())
+            .and_then(|card| card.mana_cost())
+            .is_some_and(|cost| {
+                cost.symbols().iter().any(|symbol| {
+                    matches!(
+                        symbol,
+                        ManaSymbol::Phyrexian(_)
+                            | ManaSymbol::HybridPhyrexian(..)
+                            | ManaSymbol::ColorlessPhyrexian
+                    )
+                })
+            })
     }
 
     /// Whether the object's mana cost is exactly `n` generic mana.

@@ -571,6 +571,7 @@ fn without_earlier_reads(what: &Targetable) -> Targetable {
             | Pred::OwnedBy(by)
             | Pred::Is(by)
             | Pred::SharesType(by)
+            | Pred::SharesTypeOf { with: by, .. }
             | Pred::SharesSubtype(by)
             | Pred::SharesName(by)
             | Pred::SharesColor(by)

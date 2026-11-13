@@ -144,6 +144,7 @@ Batterskull
 Battle Frenzy
 Battle Sliver
 Battlefield Forge
+Battlefield Thaumaturge
 Baxter Building
 Baxter, Fly in the Ointment
 Beamsaw Prospector
@@ -563,6 +564,7 @@ Echo Inspector
 Echo Mage
 Echo Storm
 Echoes of the Kin Tree
+Edgar, Master Machinist
 Edge Rover
 Eel Umbra
 Eiganjo Dynastorian // Replenish
@@ -629,6 +631,7 @@ Exalted Angel
 Excavation Technique
 Excise the Imperfect
 Exhumer Thrull
+Exiled Doomsayer
 Exocrine
 Exotic Disease
 Exotic Orchard
@@ -646,6 +649,7 @@ Faith Unbroken
 Faithful Watchdog
 Faithless Looting
 Fall from Favor
+Fall of Cair Andros
 Fall of the Hammer
 Fallen Ideal
 False Floor
@@ -686,6 +690,7 @@ Flamebraider
 Flamekin Village
 Flamerush Rider
 Flaring Cinder
+Flash Photography
 Flatline
 Flawless Maneuver
 Flayer of Loyalties
@@ -732,6 +737,7 @@ Galvanizing Sawship
 Game-Trail Changeling
 Garruk Wildspeaker
 Garruk, Primal Hunter
+Garza's Assassin
 Gastal Raider
 Gatebreaker Ram
 Gatta and Luzzu
@@ -891,6 +897,7 @@ Heroes' Podium
 Heronblade Elite
 Hexavus
 Hexhaven Dueling Arena
+Hibernation's End
 Hidden Dragonslayer
 Hidden Hideout
 Hideous Laughter
@@ -910,6 +917,7 @@ Howlpack Resurgence
 Howltooth Hollow
 Hua Tuo, Honored Physician
 Hulking Raptor
+Hum of the Radix
 Hundred-Talon Strike
 Hungry Graffalon
 Hungry Lynx
@@ -944,6 +952,7 @@ Infesting Radroach
 Infiltration Lens
 Inkwell Leviathan
 Inquisition of Kozilek
+Inquisitive Glimmer
 Insatiable Hemophage
 Inspired Skypainter // Maestro's Gift
 Inspired Sphinx
@@ -1014,6 +1023,7 @@ Keleth, Sunmane Familiar
 Kellogg, Dangerous Mind
 Kemba's Banner
 Kenrith's Transformation
+Kess, Dissident Mage
 Kessig Wolf Run
 Kill! Maim! Burn!
 Kimoyo Beads
@@ -1070,6 +1080,7 @@ Lay Bare the Heart
 Lazotep Reaver
 Leader, Super-Genius
 Leafkin Druid
+Legerdemain
 Legion Loyalty
 Legolas Greenleaf
 Leonardo, the Balance
@@ -1100,6 +1111,7 @@ Llanowar Behemoth
 Llanowar Elves
 Llanowar Loamspeaker
 Llanowar Reborn
+Locket of Yesterdays
 Loki's Scepter
 Loki, the Deceiver
 Loot, Exuberant Explorer
@@ -1130,6 +1142,7 @@ Mage Hunter
 Magewright's Stone
 Magical Hack
 Magistrate's Scepter
+Magmatic Galleon
 Magmatic Insight
 Magus of the Moon
 Make Disappear
@@ -1238,6 +1251,7 @@ Mukotai Ambusher
 Mulldrifter
 Multani, Maro-Sorcerer
 Mungha Wurm
+Murderous Betrayal
 Murderous Cut
 Murmuring Bosk
 Muscle Sliver
@@ -1544,6 +1558,7 @@ Rishkar's Expertise
 Rishkar, Peema Renegade
 Rising Miasma
 Rite of Replication
+Rith, Liberated Primeval
 River of Tears
 Riveteers Overlook
 Riveteers Requisitioner
@@ -1641,6 +1656,7 @@ Shabraz, the Skyshark
 Shacklegeist
 Shadowmage Infiltrator
 Shadowspear
+Shah of Naar Isle
 Shaman of the Great Hunt
 Shamanic Revelation
 Shambling Shell
@@ -1672,6 +1688,7 @@ Silhana Ledgewalker
 Silumgar's Command
 Silumgar, the Drifting Death
 Silvar, Devourer of the Free
+Silver Scrutiny
 Silver Shroud Costume
 Silversmote Ghoul
 Silverwing Squadron
@@ -1962,6 +1979,7 @@ Thunder-Thrash Elder
 Thunderclap Drake
 Thunderfoot Baloth
 Thunderherd Migration
+Thundermane Dragon
 Thunderous Wrath
 Tiamat's Fanatics
 Tidal Force
@@ -1974,6 +1992,7 @@ Time Warp
 Time to Reflect
 Timeless Lotus
 Timeless Witness
+Timely Ward
 Timin, Youthful Geist
 Tinybones, Pocket Nuisance
 Tireless Hauler // Dire-Strain Brawler

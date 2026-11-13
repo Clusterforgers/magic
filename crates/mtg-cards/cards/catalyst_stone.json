@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d32f7af3-b371-4883-b619-5a569767ff89",
+  "name": "Catalyst Stone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Catalyst Stone",
+      "oracle_fingerprint": "23af4480c5aa6eefa9189381aa8040bc",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "You" }, { "CastWith": "Flashback" }],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "Opponents" }, { "CastWith": "Flashback" }],
+            "change": "Increase",
+            "mana": "{2}"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -454,6 +454,8 @@ fn stat_text(stat: StatKind) -> &'static str {
         StatKind::BasePower => "base power",
         StatKind::BaseToughness => "base toughness",
         StatKind::ManaSpent => "mana spent",
+        StatKind::ColorsSpent => "number of colors of mana spent",
+        StatKind::Kicks => "number of times kicked",
         StatKind::CounterKinds => "kinds of counters",
         StatKind::R374Types => "number of types",
         StatKind::R374CreatureTypes => "number of creature types",
@@ -601,6 +603,10 @@ pub(super) fn condition(ctx: &Ctx, cond: &Condition) -> String {
         Condition::EnteredAs(word) => format!("{word} was chosen as it entered"),
         Condition::AdditionalCostPaid => "the additional cost was paid".to_owned(),
         Condition::AsCast(inner) => format!("{} as this spell was cast", condition(ctx, inner)),
+        Condition::R401OnCast(inner) => {
+            format!("{} once the spell is announced", condition(ctx, inner))
+        }
+        Condition::R401Targets(what) => format!("the spell targets {}", selector(ctx, what)),
         Condition::AtTrigger(inner) => {
             format!("{} (checked as it triggers only)", condition(ctx, inner))
         }

@@ -87,6 +87,7 @@ fn bolt_from(
             spend_as: SpendAs::Normal,
             when: None,
             any_cast: false,
+            riders: Vec::new(),
         },
         Duration::UntilEndOfTurn,
     )?;

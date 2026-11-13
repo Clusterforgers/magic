@@ -183,7 +183,11 @@ pub(crate) fn dk1c5_unlockable(
         .into_iter()
         .filter_map(|(id, door)| {
             let face = dk1c5_door(state, id, door)?;
-            let cost = face.mana_cost.clone().unwrap_or_default();
+            let cost = crate::activation_kind::r402_unlock_modified(
+                state,
+                id,
+                face.mana_cost.clone().unwrap_or_default(),
+            );
             can_afford(
                 &cost,
                 pool,

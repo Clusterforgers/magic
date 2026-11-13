@@ -593,6 +593,7 @@ fn game_rule() -> impl Strategy<Value = GameRule> {
                     spend_as: mtg_cards::modify::SpendAs::Normal,
                     when: None,
                     any_cast: false,
+                    riders: Vec::new(),
                 })
             }),
         (trigger_pattern(), proptest::option::of(selector())).prop_map(|(cause, source)| {
@@ -615,6 +616,7 @@ fn prohibited() -> impl Strategy<Value = Prohibited> {
         selector().prop_map(Prohibited::BeTargeted),
         trigger_pattern().prop_map(Prohibited::Trigger),
         Just(Prohibited::PlayLand),
+        selector().prop_map(Prohibited::PlayLands),
         Just(Prohibited::Sacrifice),
         Just(Prohibited::PutCounter),
         Just(Prohibited::PutCounterOf(
@@ -1014,7 +1016,12 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         }),
         reference().prop_map(|what| Effect::Transform { what }),
         who().prop_map(|who| Effect::WinGame { who }),
-        (who(), amount()).prop_map(|(who, count)| Effect::Surveil { who, count }),
+        (who(), amount()).prop_map(|(who, count)| Effect::Surveil {
+            who,
+            count,
+            bind: None,
+            kept: None,
+        }),
         who().prop_map(|who| Effect::Proliferate { who }),
         reference().prop_map(|what| Effect::Goad { what }),
         (

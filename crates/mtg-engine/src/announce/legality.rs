@@ -40,5 +40,5 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
                     .any(|(named, _)| named == target)
             })
         });
-    (!(legal && shared)).then_some(Next::Drop)
+    (!(legal && shared && super::r401_flash::r401_flash_holds(ctx, work))).then_some(Next::Drop)
 }

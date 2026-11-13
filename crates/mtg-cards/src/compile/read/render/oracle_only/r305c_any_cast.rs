@@ -82,6 +82,7 @@ mod tests {
             spend_as: SpendAs::Normal,
             when: None,
             any_cast,
+            riders: Vec::new(),
         }
     }
 

@@ -1,7 +1,7 @@
 {
   "oracle_id": "a1602bd0-f346-43cf-86ec-1dd300a7f2ed",
   "name": "Thundermane Dragon",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Thundermane Dragon",
@@ -10,9 +10,17 @@
         { "Keyword": "Flying" },
         { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 62, "end": 217 }
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                ],
+                "from": "Library",
+                "riders": [{ "GainsThisTurn": "Haste" }]
+              }
+            }
           }
         }
       ]

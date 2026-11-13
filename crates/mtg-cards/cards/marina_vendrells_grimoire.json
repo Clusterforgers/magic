@@ -1,7 +1,7 @@
 {
   "oracle_id": "096eac52-00c2-4439-b2f3-ff555d15ec88",
   "name": "Marina Vendrell's Grimoire",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Marina Vendrell's Grimoire",
@@ -18,12 +18,8 @@
             "effects": [{ "Draw": { "count": 5 } }]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 73, "end": 153 }
-          }
-        },
+        { "Rule": { "rule": { "NoMaxHandSize": "You" } } },
+        { "Rule": { "rule": { "CantLoseGame": { "who": "You", "life_only": true } } } },
         {
           "Triggered": {
             "when": { "LifeGained": { "who": "You" } },
@@ -31,9 +27,23 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 200, "end": 302 }
+          "Triggered": {
+            "when": { "LifeLost": { "who": "You" } },
+            "effects": [
+              { "Discard": { "count": "Triggering" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "LoseGame": {} }]
+                }
+              }
+            ]
           }
         }
       ]

@@ -52,6 +52,8 @@ pub(crate) fn resolved(state: &GameState, id: ObjectId) -> Vec<Event> {
     let mut events = vec![Event::SpellResolved { object: id }];
     events.extend(entering_counters(state, id));
     events.extend(crate::spend_rider::entering(state, id));
+    let ridden = crate::r401_riders::r401_entering(state, id, &events);
+    events.extend(ridden);
     events.extend(attach::entering(state, id));
     events
 }

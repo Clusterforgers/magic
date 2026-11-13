@@ -31,6 +31,7 @@ mod r302_sources;
 mod r302b_sources;
 mod r305b_amounts;
 mod r374_counts;
+mod r402_cast;
 mod soulbond;
 mod w21a_atoms;
 mod w6d_shares;
@@ -633,6 +634,21 @@ impl<'a> Scope<'a> {
             }
         }
         Ok(found)
+    }
+
+    /// The fewest objects `of` counts for any one of the players `who` names, each taken as "you"; zero for nobody.
+    fn smallest(&self, who: &Ref, of: &Selector) -> Result<i64, ResolveError> {
+        let counted = Amount::Count(of.clone());
+        let mut least: Option<i64> = None;
+        for player in self.players(who)? {
+            let each = Scope {
+                controller: player,
+                ..self.clone()
+            };
+            let count = each.amount(&counted)?;
+            least = Some(least.map_or(count, |least| least.min(count)));
+        }
+        Ok(least.unwrap_or(0))
     }
 
     /// The next player still in the game on `side` of each player `of` names, the nearest opponent of theirs with
@@ -1856,9 +1872,11 @@ impl<'a> Scope<'a> {
             }
             Pred::SharesName(_)
             | Pred::SharesType(_)
+            | Pred::SharesTypeOf { .. }
             | Pred::SharesColor(_)
             | Pred::SharesManaValue(_)
             | Pred::XInCost
+            | Pred::PhyrexianInCost
             | Pred::GenericCost(_)
             | Pred::Goaded
             | Pred::HasAttached(_)
@@ -2104,6 +2122,17 @@ impl<'a> Scope<'a> {
             StatKind::ManaSpent => seen
                 .card
                 .and_then(|c| i64::try_from(c.mana_spent().len()).ok()),
+            StatKind::Kicks => Self::fe1a_cast_object(seen).and_then(|card| {
+                i64::try_from(payments(
+                    card.card(),
+                    card.paid_costs(),
+                    OptionalKind::Kicker,
+                ))
+                .ok()
+            }),
+            StatKind::ColorsSpent => seen
+                .card
+                .and_then(|c| i64::try_from(colors_among(c.mana_spent())).ok()),
             // A spell on the stack counts the X it was cast with for each {X} of its cost (CR 202.3e).
             StatKind::ManaValue => seen
                 .card
@@ -2288,6 +2317,7 @@ impl<'a> Scope<'a> {
             Amount::Tallied { who, what } => self.tallied(who, *what, false)?,
             Amount::TalliedLastTurn { who, what } => self.tallied(who, *what, true)?,
             Amount::Largest { who, of } => self.largest(who, of)?,
+            Amount::Smallest { who, of } => self.smallest(who, of)?,
             Amount::HighestCounters { who, counter } => self.highest_counters(who, counter)?,
             Amount::Party(who) => self.party(who)?,
             Amount::StartingLife(who) => self.w14b_starting_life(who)?,
@@ -2338,6 +2368,7 @@ impl<'a> Scope<'a> {
             Amount::TriggeringTargets => self.triggering_targets()?,
             Amount::PlayersLost => self.r305b_players_lost(),
             Amount::CastTargets => self.r305b_cast_targets()?,
+            Amount::CastTargetsOf(selector) => self.r402_cast_targets_of(selector)?,
             Amount::When { .. }
             | Amount::ManaSpent { .. }
             | Amount::ManaColors(_)
@@ -3097,6 +3128,20 @@ impl<'a> Scope<'a> {
         }
     }
 
+    /// A condition on the spell as it is announced: one judged as the announcement ends (`announce/r401_flash.rs`) holds
+    /// before then, so the cast may begin; "it targets" reads the targets announced.
+    fn r401_on_cast(&self, condition: &Condition) -> Result<bool, ResolveError> {
+        let Condition::R401Targets(what) = condition else {
+            return Ok(true);
+        };
+        for target in self.choices.targeted_objects() {
+            if self.selects(what, target)? {
+                return Ok(true);
+            }
+        }
+        Ok(false)
+    }
+
     /// Whether every named permanent, still the one named, has a level that compares with `level` by `op`.
     fn level_holds(
         &self,
@@ -3118,6 +3163,7 @@ impl<'a> Scope<'a> {
     }
 
     /// Whether a condition is true now.
+    #[allow(clippy::too_many_lines)]
     pub fn holds(&self, condition: &Condition) -> Result<bool, ResolveError> {
         Ok(match condition {
             Condition::Not(inner) => !self.holds(inner)?,
@@ -3158,8 +3204,9 @@ impl<'a> Scope<'a> {
             }
             Condition::CastWith(way) => self.cast_way() == Some(*way),
             Condition::CastOffSorceryTiming => self.off_sorcery_timing(),
-            Condition::AsCast(inner) => self.held_as_cast(inner),
             Condition::ManaSpent(mana) => self.mana_spent().contains(mana),
+            Condition::AsCast(inner) => self.held_as_cast(inner),
+            Condition::R401OnCast(_) | Condition::R401Targets(_) => self.r401_on_cast(condition)?,
             Condition::ChosenWord { name, word } => {
                 matches!(self.chosen_value(name), Some(Chosen::Word(chosen)) if chosen == word)
             }

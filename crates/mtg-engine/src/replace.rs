@@ -105,6 +105,7 @@ pub fn process(
                 || exiles_by_rebound(state, &item)
                 || exiles_by_paradigm(state, &item)
                 || moves_by_a_rule(state, event)
+                || r401_riders::r401_exiled_instead(state, event)
         })
     {
         return Ok(Processed::Events(proposed));
@@ -268,6 +269,9 @@ enum Origin {
     /// A permanent with a finality counter that would be put into a graveyard from the battlefield, which is exiled instead
     /// (CR 122.1g).
     Finality,
+    /// The rider at this index of the permission a spell was cast through ("If you cast a spell this way, that artifact
+    /// enters tapped").
+    R401Rider(usize),
 }
 
 impl Origin {
@@ -710,7 +714,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         }
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
         // Only a shield counts its amount, and it begins as `PreventUpTo`; one with effects names the damage left to it.
-        ReplaceBy::PreventCounted(_) => false,
+        ReplaceBy::PreventCounted(_) | ReplaceBy::PreventNextAnd(_) => false,
         ReplaceBy::PreventCountedAnd { most, .. } => {
             matches!(most, Amount::Fixed(_)) && matches!(unit, Unit::Damage { .. })
         }
@@ -766,6 +770,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::UnderChosenOpponent
         | ReplaceBy::Riot
         | ReplaceBy::WithCounterOf(_)
+        | ReplaceBy::WithCountersOf { .. }
         | ReplaceBy::BecomesChoice(_)
         | ReplaceBy::Mill(_)
         | ReplaceBy::AsEnters(_)
@@ -805,6 +810,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::Riot
                 | ReplaceBy::DayIfNeither
                 | ReplaceBy::WithCounterOf(_)
+                | ReplaceBy::WithCountersOf { .. }
                 | ReplaceBy::EntersPrepared
                 | ReplaceBy::ChooseWord(_)
                 | ReplaceBy::UnderChosenOpponent
@@ -1282,6 +1288,7 @@ impl Pass<'_> {
         }
         found.extend(self.commander_candidates(at, &unit));
         found.extend(self.junkyard_candidate(&unit));
+        found.extend(self.r401_rider_candidates(slot, &unit));
         found.sort_by_key(|candidate| candidate.origin);
         Ok(found)
     }
@@ -1877,6 +1884,9 @@ impl Pass<'_> {
             Origin::Commander(_) => {
                 "If ~ would be put into a hand or library, its owner may put it into the command zone instead."
             }
+            Origin::R401Rider(index) => {
+                r401_riders::r401_rider_words(self.state, candidate.object.id, index)
+            }
             Origin::Junkyard(_) => {
                 "If ~ would be put into a hand, library or graveyard, its owner puts it into their junkyard instead."
             }
@@ -2243,6 +2253,9 @@ impl Pass<'_> {
             ReplaceBy::Riot => self.riot(at, object, controller, applied),
             ReplaceBy::WithCounterOf(kinds) => {
                 self.e15b_counter_of(at, (object, controller), kinds, applied)
+            }
+            ReplaceBy::WithCountersOf { kinds, count } => {
+                self.r403_counters_of(at, (object, controller), (kinds, *count), applied)
             }
             ReplaceBy::Amplify(per) => {
                 self.amplify(at, candidate, (object, controller), *per, applied)
@@ -2886,8 +2899,19 @@ impl Pass<'_> {
                 counter,
                 count,
                 mods,
+                also,
             } => {
                 self.enter_with_counters(at, candidate, object, counter, count, &applied)?;
+                for more in also {
+                    self.enter_with_counters(
+                        at,
+                        candidate,
+                        object,
+                        &more.counter,
+                        &more.count,
+                        &applied,
+                    )?;
+                }
                 self.enter_with_changes(at, object, controller, mods, &applied)?;
             }
             ReplaceBy::Tribute(count) => {
@@ -3644,6 +3668,7 @@ mod e15b_counter_of;
 mod e15f_word;
 mod r303_forms;
 mod r303_mills;
+mod r403_counters_of;
 mod riot;
 mod tribute;
 
@@ -3656,6 +3681,7 @@ mod c7_untap_dies;
 mod r3d_replaces;
 
 mod finality;
+mod r401_riders;
 
 /// The event that keeps how many permanents `object` devoured as it entered, which its abilities read once it is on
 /// the battlefield; none when it devoured nothing.

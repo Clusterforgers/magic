@@ -210,6 +210,13 @@ fn w7c_then_incubate(texts: &[String]) -> Vec<String> {
 /// sentence ("you draw a card and gain 3 life") or several ("draw a card. You gain 3 life"), and
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
 pub fn variants(ability: &Ability) -> Vec<String> {
+    // A permission with riders is worded only as the permission without them and its riders.
+    if let Some(texts) = super::r401_riders::r401_rider_texts(ability, variants) {
+        return texts;
+    }
+    if let Some(texts) = super::r408_pact::r408_pact_variants(ability, variants) {
+        return texts;
+    }
     let mut texts = plain_variants(ability);
     super::r371_copy_except::r371_not_legendary_too(&mut texts);
     super::r371_copy_except::r371_that_creature_dies(ability, &mut texts);
@@ -219,6 +226,9 @@ pub fn variants(ability: &Ability) -> Vec<String> {
 /// [`variants`] before the wordings every copy exception has twice.
 #[allow(clippy::too_many_lines)]
 fn plain_variants(ability: &Ability) -> Vec<String> {
+    if let Some(texts) = super::r402_copy_riders::r402_rider_variants(ability, variants) {
+        return texts;
+    }
     if let Some(texts) = super::r372_suspend::r372_variants(ability, variants) {
         return texts;
     }
@@ -580,6 +590,10 @@ fn produced_wordings(texts: &mut Vec<String>) {
 /// and the wordings of the oracle text that no template reads ("you" after another player's event, "Then" opening a
 /// sentence, "deals damage equal to its power").
 pub fn written_variants(ability: &Ability) -> Vec<String> {
+    // A permission with riders is worded only as the permission without them and its riders.
+    if let Some(texts) = super::r401_riders::r401_rider_texts(ability, written_variants) {
+        return texts;
+    }
     // An investigation is worded as the Clue tokens it makes.
     if let Some(unlogged) = super::l31a_performed::l31a_unlogged(ability) {
         return written_variants(&unlogged);
@@ -611,6 +625,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     let prepared = super::prepare::r405_it_becomes(&texts);
     texts.extend(prepared);
     super::r371_copy_except::r371_that_creature_dies(ability, &mut texts);
+    super::r403_hooks::r403_wordings(ability, written_variants, &mut texts);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.
@@ -852,6 +867,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     super::e16c_attacks::add(ability, &mut texts);
     super::e17b_exile_until::add(ability, &mut texts);
     super::rmt4_wordings::add(ability, &mut texts);
+    super::r407_wordings::add(ability, &mut texts);
     super::l293_events::l293_wordings(ability, &mut texts);
     super::r307c_events::r307c_wordings(ability, &mut texts);
     oracle_only::add_last(ability, &mut texts);
@@ -3349,6 +3365,7 @@ impl Writer<'_> {
             Effect::Surveil {
                 who: Ref::You,
                 count,
+                ..
             } => format!("surveil {}", points_text(count)?),
             Effect::Proliferate { who: Ref::You } => "proliferate".to_owned(),
             Effect::Incubate { who, count } => match who {
@@ -3392,6 +3409,8 @@ impl Writer<'_> {
             Effect::TurnFaceDown { what } | Effect::Harness { what } => {
                 self.rmt8_action(effect, what)?
             }
+            Effect::EndTurn => "end the turn".to_owned(),
+            Effect::LoseGame { who: Ref::You } => "you lose the game".to_owned(),
             Effect::Plot { what } => format!("exile {}. It becomes plotted", self.object(what)?),
             // The card an earlier step exiled and named is "it".
             Effect::GainSuspend {
@@ -3747,6 +3766,7 @@ impl Writer<'_> {
                 "its controller".to_owned()
             }
             Ref::Triggering | Ref::TriggeringPlayer => "that player".to_owned(),
+            Ref::PlayersWhere { .. } => super::r9w_players::r408_fewest_players(who)?,
             Ref::Seated { .. } => super::r376_seats::r376_seated_text(who)?,
             Ref::ControllerOf(inner) if **inner == Ref::Triggering => {
                 "that permanent's controller".to_owned()

@@ -1,7 +1,7 @@
 {
   "oracle_id": "9abdd53a-aa62-447b-9525-02a2227cc44b",
   "name": "Gor Muldrak, Amphinologist",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Gor Muldrak, Amphinologist",
@@ -14,9 +14,41 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 65, "end": 199 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "Compare": {
+                          "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                          "op": "Le",
+                          "right": {
+                            "Smallest": {
+                              "who": "EachPlayer",
+                              "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "token": {
+                    "Custom": {
+                      "name": "Salamander Warrior",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Salamander", "Warrior"],
+                      "power": 4,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

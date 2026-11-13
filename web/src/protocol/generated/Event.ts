@@ -889,7 +889,23 @@ player: PlayerId,
 /**
  * The card they put into their graveyard this way, if any.
  */
-card: ObjectId | null, } } | { "GiftGiven": { 
+card: ObjectId | null, } } | { "UpkeepSettled": { 
+/**
+ * Who paid or didn't.
+ */
+player: PlayerId, 
+/**
+ * The permanent whose cost it was.
+ */
+object: ObjectId, 
+/**
+ * The cost was an echo cost, else a cumulative upkeep.
+ */
+echo: boolean, 
+/**
+ * It was paid.
+ */
+paid: boolean, } } | { "GiftGiven": { 
 /**
  * Who gave it.
  */

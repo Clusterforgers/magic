@@ -94,6 +94,45 @@ impl Writer<'_> {
                     2,
                 ))
             }
+            // "The next time a source of your choice would deal damage to you this turn, prevent that damage. You gain life
+            // equal to the damage prevented this way."
+            [
+                Effect::Choose {
+                    who: Ref::You,
+                    from,
+                    count,
+                    bind,
+                    rest_as: None,
+                },
+                Effect::Shield {
+                    when:
+                        ReplaceWhen::Damage {
+                            to: Some(Ref::You),
+                            source,
+                            combat: None,
+                        },
+                    by: ReplaceBy::PreventNextAnd(and),
+                    duration: Duration::UntilEndOfTurn,
+                },
+                ..,
+            ] if count.is_one()
+                && source.0 == [Pred::Is(Ref::Bound(bind.clone()))]
+                && matches!(
+                    and.as_slice(),
+                    [Effect::GainLife {
+                        who: Ref::You,
+                        amount: crate::value::Amount::Triggering,
+                    }]
+                ) =>
+            {
+                let chosen = chosen_source(from)?;
+                Some((
+                    vec![format!(
+                        "the next time {chosen} would deal damage to you this turn, prevent that damage. You gain life equal to the damage prevented this way"
+                    )],
+                    2,
+                ))
+            }
             // "The next 2 damage that a source of your choice would deal to you and/or permanents you control this turn is
             // dealt to any target instead."
             [

@@ -25,6 +25,7 @@ fn ep27_permission() -> CastPermission {
         spend_as: crate::modify::SpendAs::Normal,
         when: None,
         any_cast: false,
+        riders: Vec::new(),
     }
 }
 

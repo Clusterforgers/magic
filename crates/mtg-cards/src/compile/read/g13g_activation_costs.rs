@@ -25,6 +25,8 @@ pub fn g13g_activation_texts(
         ActivationKind::Equip => "Equip",
         ActivationKind::Cycling => "Cycling",
         ActivationKind::Ninjutsu => "Ninjutsu",
+        ActivationKind::Unlock => "Unlock",
+        ActivationKind::Morph => "Morph",
         _ => return Vec::new(),
     };
     let more = match change {
@@ -38,6 +40,19 @@ pub fn g13g_activation_texts(
         you.clone(),
     ];
     let mut out = Vec::new();
+    if kind == ActivationKind::Morph {
+        if applies_to.0.is_empty() {
+            out.push(format!("All morph costs cost {mana} {more}"));
+        }
+        return out;
+    }
+    if kind == ActivationKind::Unlock {
+        // A special action, not an ability: only the cost a player pays is named.
+        if applies_to.0 == [you] {
+            out.push(format!("Unlock costs you pay cost {mana} {more}"));
+        }
+        return out;
+    }
     if applies_to.0 == [you] {
         out.push(format!(
             "{word} abilities you activate cost {mana} {more} to activate"

@@ -35,6 +35,10 @@ pub enum StatKind {
     BaseToughness,
     /// The mana spent to cast it, while it is a spell or when it was cast.
     ManaSpent,
+    /// How many colors there are among the mana spent to cast it (CR 105.4): none when no colored mana was spent.
+    ColorsSpent,
+    /// How many times its kicker costs were paid, while it is a spell or the permanent it became (CR 702.33).
+    Kicks,
     /// Its name: no number, so only `Amount::Distinct` reads it (the different names among the objects).
     Name,
     /// Its creature types: no number, so only `Amount::MostCommon` reads it (the most creatures sharing one type).
@@ -421,6 +425,9 @@ pub enum TallyEvent {
     Died,
     /// Damage was dealt (the dealer; an amount counts the damage dealt, `Pred::DidThisTurn` reads who it went to).
     Damaged,
+    /// A permanent was dealt excess damage (CR 120.10): the permanent, for its controller then; an amount counts the
+    /// excess.
+    DealtExcess,
     /// A creature was declared as an attacker (the attacker; `Pred::DidThisTurn` reads who it attacks).
     Attacked,
     /// A creature was declared as a blocker (the blocker; `Pred::DidThisTurn` reads the attacker it blocks).
@@ -652,6 +659,15 @@ pub enum Amount {
         /// The objects counted for each, written for "you".
         of: Selector,
     },
+    /// The smallest count of the objects the selector names among the players the reference names, each player taken as
+    /// "you": "each player who controls the fewest creatures" compares their own count with it; zero when no player is
+    /// named.
+    Smallest {
+        /// The players compared.
+        who: Ref,
+        /// The objects counted for each, written for "you".
+        of: Selector,
+    },
     /// The most counters of the kind that any one of the players the reference names holds ("the most poison counters
     /// among your opponents"); never the sum, and zero when no player is named.
     HighestCounters {
@@ -768,6 +784,9 @@ pub enum Amount {
     /// How many targets the spell being cast has, every specification's targets counted ("for each target"): read by a
     /// cost modifier as the cost is determined (CR 601.2f).
     CastTargets,
+    /// How many objects the selector matches among the targets of the spell being cast, each counted once ("for each
+    /// creature it targets"): read by a cost modifier as the cost is determined (CR 601.2f).
+    CastTargetsOf(Selector),
     /// A result of the latest die roll of the resolving spell or ability ("X, where X is the result", "equal to that result").
     DieResult(DieResult),
     /// The first amount when the condition holds when the effect runs, else the second ("X is 3 if you control a Goblin, else 1").
@@ -958,6 +977,10 @@ enum Tagged {
         who: Ref,
         of: Selector,
     },
+    Smallest {
+        who: Ref,
+        of: Selector,
+    },
     HighestCounters {
         who: Ref,
         counter: CounterKind,
@@ -1015,6 +1038,7 @@ enum Tagged {
     TriggeringTargets,
     PlayersLost,
     CastTargets,
+    CastTargetsOf(Selector),
     DieResult(DieResult),
     When {
         condition: Box<Condition>,
@@ -1140,6 +1164,10 @@ enum TaggedRef<'a> {
         who: &'a Ref,
         of: &'a Selector,
     },
+    Smallest {
+        who: &'a Ref,
+        of: &'a Selector,
+    },
     HighestCounters {
         who: &'a Ref,
         counter: &'a CounterKind,
@@ -1197,6 +1225,7 @@ enum TaggedRef<'a> {
     TriggeringTargets,
     PlayersLost,
     CastTargets,
+    CastTargetsOf(&'a Selector),
     DieResult(DieResult),
     When {
         condition: &'a Condition,
@@ -1286,6 +1315,7 @@ impl From<Tagged> for Amount {
             Tagged::PermanentsGraved => Amount::PermanentsGraved,
             Tagged::Tallied { who, what } => Amount::Tallied { who, what },
             Tagged::Largest { who, of } => Amount::Largest { who, of },
+            Tagged::Smallest { who, of } => Amount::Smallest { who, of },
             Tagged::HighestCounters { who, counter } => Amount::HighestCounters { who, counter },
             Tagged::StartingLife(who) => Amount::StartingLife(who),
             Tagged::TurnsTaken(who) => Amount::TurnsTaken(who),
@@ -1321,6 +1351,7 @@ impl From<Tagged> for Amount {
             Tagged::TriggeringTargets => Amount::TriggeringTargets,
             Tagged::PlayersLost => Amount::PlayersLost,
             Tagged::CastTargets => Amount::CastTargets,
+            Tagged::CastTargetsOf(selector) => Amount::CastTargetsOf(selector),
             Tagged::When {
                 condition,
                 then,
@@ -1423,6 +1454,7 @@ impl Serialize for Amount {
                 TaggedRef::Tallied { who, what: *what }.serialize(serializer)
             }
             Amount::Largest { who, of } => TaggedRef::Largest { who, of }.serialize(serializer),
+            Amount::Smallest { who, of } => TaggedRef::Smallest { who, of }.serialize(serializer),
             Amount::HighestCounters { who, counter } => {
                 TaggedRef::HighestCounters { who, counter }.serialize(serializer)
             }
@@ -1486,6 +1518,9 @@ impl Serialize for Amount {
             Amount::TriggeringTargets => TaggedRef::TriggeringTargets.serialize(serializer),
             Amount::PlayersLost => TaggedRef::PlayersLost.serialize(serializer),
             Amount::CastTargets => TaggedRef::CastTargets.serialize(serializer),
+            Amount::CastTargetsOf(selector) => {
+                TaggedRef::CastTargetsOf(selector).serialize(serializer)
+            }
             Amount::When {
                 condition,
                 then,
@@ -1624,6 +1659,12 @@ pub enum Condition {
     /// The inner condition held for the caster as the spell was cast ("if you controlled a Dragon as you cast this spell");
     /// a permanent and its abilities read the spell it came from.
     AsCast(Box<Condition>),
+    /// The inner condition holds for the spell as its announcement ends, read with its X and its targets (CR 601.2e): the
+    /// condition of a permission to cast it as though it had flash ("if it targets a permanent you control", "if X is 3 or
+    /// less"); it is taken to hold before then, so the cast may begin.
+    R401OnCast(Box<Condition>),
+    /// The spell being announced has a target the selector picks: "it targets a commander".
+    R401Targets(crate::refs::Selector),
     /// At least one mana of this type was spent to cast the spell (CR 601.2h): "if {R} was spent to cast this spell"; a
     /// permanent and its abilities read the spell it came from, as the mana it was cast with.
     ManaSpent(ManaType),

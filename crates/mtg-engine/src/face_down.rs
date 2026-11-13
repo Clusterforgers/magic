@@ -104,6 +104,8 @@ pub(crate) struct TurnUp {
     pub(crate) parts: Vec<Part>,
     /// Whether it is a megamorph's, whose permanent gets a +1/+1 counter (CR 702.37b).
     pub(crate) megamorph: bool,
+    /// Whether it is a morph or megamorph cost, which changes of morph costs change.
+    pub(crate) morph: bool,
 }
 
 /// What turning the face-down permanent `id` face up takes: its morph, megamorph or disguise cost. A manifested or
@@ -120,7 +122,12 @@ pub(crate) fn turn_up(state: &GameState, id: ObjectId) -> Option<TurnUp> {
         return None;
     }
     let card = object.whole_card();
-    let printed = keyword_cost(card);
+    let printed = keyword_cost(card).map(|mut printed| {
+        if printed.morph {
+            printed.mana = crate::activation_kind::r402_morph_modified(state, id, printed.mana);
+        }
+        printed
+    });
     let natural = how
         .is_put_face_down_by_an_effect()
         .then(|| card.types.contains(&CardType::Creature))
@@ -130,6 +137,7 @@ pub(crate) fn turn_up(state: &GameState, id: ObjectId) -> Option<TurnUp> {
             mana,
             parts: Vec::new(),
             megamorph: false,
+            morph: false,
         });
     match (printed, natural) {
         (Some(printed), Some(natural)) => Some(
@@ -147,9 +155,10 @@ pub(crate) fn turn_up(state: &GameState, id: ObjectId) -> Option<TurnUp> {
 /// that taps, untaps, moves or unattaches the source.
 fn keyword_cost(card: &CardDefinition) -> Option<TurnUp> {
     printed_rules(card).find_map(|rules| {
-        let (cost, megamorph) = match &**rules {
-            Ability::Keyword(Keyword::Morph(cost) | Keyword::Disguise(cost)) => (cost, false),
-            Ability::Keyword(Keyword::Megamorph(cost)) => (cost, true),
+        let (cost, megamorph, morph) = match &**rules {
+            Ability::Keyword(Keyword::Morph(cost)) => (cost, false, true),
+            Ability::Keyword(Keyword::Disguise(cost)) => (cost, false, false),
+            Ability::Keyword(Keyword::Megamorph(cost)) => (cost, true, true),
             _ => return None,
         };
         let price = Price::announced(cost).ok()?;
@@ -167,6 +176,7 @@ fn keyword_cost(card: &CardDefinition) -> Option<TurnUp> {
             mana: price.mana.unwrap_or_default(),
             parts: price.parts,
             megamorph,
+            morph,
         })
     })
 }

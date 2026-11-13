@@ -42,11 +42,12 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 52] = [
+const TEMPLATES: [Template; 53] = [
     super::r376_nearest::r376_rooms_again,
     super::r376_nearest::r376_nearest,
     super::r376_nearest::r376_side_entering,
     super::ep32_discard::ep32_discarded_by_opponent,
+    super::r401_flash::r401_flash,
     super::ep29_flash::ep29_flash,
     super::ep27_flash::ep27_flash,
     super::w19a_flash::w19a_flash,
@@ -99,12 +100,24 @@ const TEMPLATES: [Template; 52] = [
 
 /// A static ability that is a whole sentence: the shape and its period.
 pub fn ability(r: &mut Reader<'_>) -> Option<Ability> {
-    TEMPLATES.iter().find_map(|template| {
-        r.attempt(|r| {
-            let found = template(r)?;
-            r.sentence_end().then_some(found)
+    let ridden = r.attempt(|r| {
+        super::r401_riders::r401_says_this_way(r)?;
+        let found = super::r401_riders::r401_riders(r, bare)?;
+        r.sentence_end().then_some(found)
+    });
+    ridden.or_else(|| {
+        TEMPLATES.iter().find_map(|template| {
+            r.attempt(|r| {
+                let found = template(r)?;
+                r.sentence_end().then_some(found)
+            })
         })
     })
+}
+
+/// A static shape of [`TEMPLATES`] without its period.
+fn bare(r: &mut Reader<'_>) -> Option<Ability> {
+    TEMPLATES.iter().find_map(|template| r.attempt(template))
 }
 
 /// "Damage doesn't cause you to lose life.", also "As long as you're the monarch, damage doesn't cause you to lose life.": a
@@ -1123,6 +1136,12 @@ pub(super) fn cost_times(r: &mut Reader<'_>, itself: bool, x: bool) -> Option<Am
     if let Some(tallied) = r.attempt(|r| super::c11a_turn_costs::c11a_turn_count(r, x)) {
         return Some(tallied);
     }
+    if !itself
+        && !x
+        && let Some(counted) = r.attempt(super::r402_spell_costs::r402_for_each)
+    {
+        return Some(counted);
+    }
     if x {
         r.punct(',').then_some(())?;
         r.need("where x is")?;
@@ -1275,11 +1294,20 @@ fn cost_modifier_texts(
     subjects.extend(cost_conditions::cast_before_number(&subject));
     subjects.extend(super::e15b_entering::cast_before_chosen(&subject));
     subjects.push(subject);
-    subjects
+    let mut texts: Vec<String> = subjects
         .into_iter()
         .flat_map(|subject| cost_sentences(&subject, applies_to, change, mana, per, condition))
         .flat_map(|sentence| super::w21a_atoms::w21a_colored_only(sentence, change, mana))
-        .collect()
+        .collect();
+    // "Each artifact spell costs ...": the subject of one spell.
+    if condition.is_none() {
+        let each: Vec<String> = texts
+            .iter()
+            .filter_map(|text| super::r402_spell_costs::r402_each_spell(text))
+            .collect();
+        texts.extend(each);
+    }
+    texts
 }
 
 /// The sentences of a cost modifier whose spells are worded as `subject`.
@@ -1311,7 +1339,11 @@ pub(super) fn cost_sentences(
             mana.to_string(),
             " for each target beyond the first".to_owned(),
         )
-    } else if let Some(each) = for_each_text(per) {
+    } else if let Some(each) = (!itself)
+        .then(|| super::r402_spell_costs::r402_for_each_text(per))
+        .flatten()
+        .or_else(|| for_each_text(per))
+    {
         (mana.to_string(), format!(" for each {each}"))
     } else if matches!(per, Amount::Greatest { .. } | Amount::Total { .. })
         && mana.to_string() == "{1}"
@@ -1782,6 +1814,7 @@ fn ep27_rule_texts(
         ]),
         (_, ZoneKind::Hand) => {
             let mut texts = super::ep27_flash::ep27_flash_texts(rule, condition, from);
+            texts.extend(super::r401_flash::r401_flash_texts(rule, condition, from));
             texts.extend(super::ep29_flash::ep29_flash_texts(rule, condition));
             Some(texts)
         }

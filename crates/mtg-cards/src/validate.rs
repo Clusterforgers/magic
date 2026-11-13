@@ -82,6 +82,7 @@ fn prevents_in_part(by: &ReplaceBy) -> bool {
             | ReplaceBy::PreventHalf
             | ReplaceBy::PreventAllBut(_)
             | ReplaceBy::PreventNext
+            | ReplaceBy::PreventNextAnd(_)
     )
 }
 
@@ -819,6 +820,7 @@ impl<'a> Walker<'a> {
             Pred::SharesName(r)
             | Pred::SharesType(r)
             | Pred::SharesColor(r)
+            | Pred::SharesTypeOf { with: r, .. }
             | Pred::SharesManaValue(r) => {
                 self.scope.tests += 1;
                 self.reference(r, Kind::Object);
@@ -977,6 +979,7 @@ impl<'a> Walker<'a> {
             | Pred::ChosenColor
             | Pred::CanEnchantSource
             | Pred::XInCost
+            | Pred::PhyrexianInCost
             | Pred::GenericCost(_)
             | Pred::Goaded
             | Pred::ChosenSubtype
@@ -1247,6 +1250,10 @@ impl<'a> Walker<'a> {
                 self.player_amount("Largest", who);
                 self.at("of", |w| w.selector(of));
             }
+            Amount::Smallest { who, of } => {
+                self.player_amount("Smallest", who);
+                self.at("of", |w| w.selector(of));
+            }
             Amount::HighestCounters { who, .. } => self.player_amount("HighestCounters", who),
             Amount::StartingLife(who) => self.player_amount("StartingLife", who),
             Amount::TurnsTaken(who) => self.player_amount("TurnsTaken", who),
@@ -1316,6 +1323,10 @@ impl<'a> Walker<'a> {
             }
             Amount::PlayersLost => self.uses("Amount", "PlayersLost"),
             Amount::CastTargets => self.uses("Amount", "CastTargets"),
+            Amount::CastTargetsOf(selector) => {
+                self.uses("Amount", "CastTargetsOf");
+                self.at("CastTargetsOf", |w| w.selector(selector));
+            }
             Amount::When {
                 condition,
                 then,
@@ -1447,6 +1458,24 @@ impl<'a> Walker<'a> {
         self.at("inner", |w| w.condition(inner));
     }
 
+    /// A condition judged on the spell as it is announced, or the targets it reads.
+    fn r401_on_cast(&mut self, condition: &Condition) {
+        match condition {
+            Condition::R401OnCast(inner) => {
+                self.uses("Condition", "R401OnCast");
+                // Judged with what the spell announces, so its X is the X it is cast with.
+                let x_now = std::mem::replace(&mut self.x_now, true);
+                self.at("R401OnCast", |w| w.condition(inner));
+                self.x_now = x_now;
+            }
+            Condition::R401Targets(what) => {
+                self.uses("Condition", "R401Targets");
+                self.at("R401Targets", |w| w.selector(what));
+            }
+            _ => {}
+        }
+    }
+
     /// A condition on a kicker or an additional cost the card itself has to offer.
     fn paid_condition(&mut self, condition: &Condition) {
         match condition {
@@ -1503,6 +1532,7 @@ impl<'a> Walker<'a> {
             Condition::CastWith(_) => self.uses("Condition", "CastWith"),
             Condition::CastOffSorceryTiming => self.uses("Condition", "CastOffSorceryTiming"),
             Condition::AsCast(inner) => self.as_cast(inner),
+            Condition::R401OnCast(_) | Condition::R401Targets(_) => self.r401_on_cast(condition),
             Condition::ManaSpent(_) => self.uses("Condition", "ManaSpent"),
             Condition::YourTurn => {}
             Condition::ExtraTurn => self.uses("Condition", "ExtraTurn"),
@@ -1912,6 +1942,16 @@ impl<'a> Walker<'a> {
         if let Some(when) = &permission.when {
             self.at("when", |w| w.condition(when));
         }
+        for rider in &permission.riders {
+            let tag = match rider {
+                crate::modify::CastRider::EntersTapped => "EntersTapped",
+                crate::modify::CastRider::EntersWithCounter(_) => "EntersWithCounter",
+                crate::modify::CastRider::GainsThisTurn(_) => "GainsThisTurn",
+                crate::modify::CastRider::AlsoSubtype(_) => "AlsoSubtype",
+                crate::modify::CastRider::ExiledInstead => "ExiledInstead",
+            };
+            self.uses("CastRider", tag);
+        }
         if matches!(
             permission.from,
             Some(ZoneKind::Battlefield | ZoneKind::Stack)
@@ -2236,7 +2276,13 @@ impl<'a> Walker<'a> {
                     self.at("payable", |w| w.condition(payable));
                 }
             }
-            Keyword::Echo(cost) | Keyword::CumulativeUpkeep(cost) | Keyword::Recover(cost) => {
+            // Recover's trigger pays its cost through `Effect::Pay` by the card's owner, so a counted amount ("half
+            // your life, rounded up") is counted as that payment resolves.
+            Keyword::Recover(cost) => {
+                self.at("cost", |w| w.c6_eg_paid_cost(cost, &Ref::You));
+                self.payment_of_the_source(cost);
+            }
+            Keyword::Echo(cost) | Keyword::CumulativeUpkeep(cost) => {
                 self.at("cost", |w| w.cost(cost));
                 // Ward, echo, cumulative upkeep and recover ask the player for their cost through a payment.
                 self.payment_of_the_source(cost);
@@ -2641,6 +2687,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::DoorUnlocked { .. }
             | TriggerPattern::Visit {}
             | TriggerPattern::Prize {} => {}
+            TriggerPattern::DealtExcess { what, .. } => self.at("what", |w| w.selector(what)),
             TriggerPattern::DealsDamage { source, to, .. } => {
                 self.at("source", |w| w.selector(source));
                 if let Some(to) = to {
@@ -3604,10 +3651,24 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind_moved(name));
                 }
             }
-            Effect::Scry { who, count }
-            | Effect::Surveil { who, count } => {
+            Effect::Scry { who, count } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
+            }
+            Effect::Surveil {
+                who,
+                count,
+                bind,
+                kept,
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("count", |w| w.amount(count));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind_moved(name));
+                }
+                if let Some(name) = kept {
+                    w.at("kept_as", |w| w.bind_kept(name, Kind::Object));
+                }
             }
             Effect::Conjure {
                 who,
@@ -5025,7 +5086,10 @@ impl Walker<'_> {
         let own = self.nested == 0 && applies_to.0.as_slice() == [Pred::This];
         let now = self.x_now || own;
         let saved = std::mem::replace(&mut self.x_now, now);
+        // Another permanent's modifier counts for the spell being cast, which `Affected` names ("its controller").
+        self.scope.in_static = !own;
         self.at("per", |w| w.amount(per));
+        self.scope.in_static = false;
         self.x_now = saved;
         if let Some(condition) = condition {
             self.at("condition", |w| w.condition(condition));
@@ -5480,6 +5544,7 @@ impl Walker<'_> {
         match action {
             Prohibited::ActivateKind { sources, .. }
             | Prohibited::Activate(sources)
+            | Prohibited::PlayLands(sources)
             | Prohibited::BeTargeted(sources) => {
                 self.at("action", |w| w.selector(sources));
             }
@@ -5742,6 +5807,7 @@ impl Walker<'_> {
         if matches!(
             by,
             ReplaceBy::PreventNext
+                | ReplaceBy::PreventNextAnd(_)
                 | ReplaceBy::InsteadNext(_)
                 | ReplaceBy::RedirectUpTo { .. }
                 | ReplaceBy::RedirectCounted { .. }
@@ -5922,7 +5988,9 @@ impl Walker<'_> {
                 self.r6f_redirect(when, u32::MAX, to);
                 self.at("most", |w| w.amount(most));
             }
-            ReplaceBy::PreventAnd(effects) => self.w9c_prevent_and(when, effects),
+            ReplaceBy::PreventAnd(effects) | ReplaceBy::PreventNextAnd(effects) => {
+                self.w9c_prevent_and(when, effects);
+            }
             ReplaceBy::WithCounters { count, .. } => {
                 if !enters && !matches!(when, ReplaceWhen::TurnedFaceUp { .. }) {
                     self.problem("`WithCounters` replaces an `Enters` or a `TurnedFaceUp`");
@@ -5930,8 +5998,19 @@ impl Walker<'_> {
                 self.at("count", |w| w.amount(count));
             }
             ReplaceBy::WithCountersAnd {
-                count, mods: given, ..
-            } => self.enters_with_changes(enters, count, given),
+                count,
+                mods: given,
+                also,
+                ..
+            } => {
+                if !also.is_empty() {
+                    self.uses("ReplaceBy", "WithCountersAnd.Also");
+                }
+                for (i, more) in also.iter().enumerate() {
+                    self.at("also", |w| w.at(i.to_string(), |w| w.amount(&more.count)));
+                }
+                self.enters_with_changes(enters, count, given);
+            }
             ReplaceBy::Tapped
             | ReplaceBy::Untapped
             | ReplaceBy::Choose(_)
@@ -5944,6 +6023,7 @@ impl Walker<'_> {
             | ReplaceBy::Riot
             | ReplaceBy::DayIfNeither
             | ReplaceBy::WithCounterOf(_)
+            | ReplaceBy::WithCountersOf { .. }
             | ReplaceBy::EntersPrepared
             | ReplaceBy::ChooseWord(_)
             | ReplaceBy::UnderChosenOpponent
@@ -5994,6 +6074,11 @@ impl Walker<'_> {
             }
             ReplaceBy::WithCounterOf(kinds) if kinds.len() < 2 => {
                 self.problem("a choice of a counter offers two kinds or more");
+            }
+            ReplaceBy::WithCountersOf { kinds, count }
+                if *count < 2 || kinds.len() <= *count as usize =>
+            {
+                self.problem("a choice of different counters offers more kinds than it takes, and takes two or more");
             }
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");
@@ -6104,14 +6189,22 @@ fn enters_itself(when: &TriggerPattern) -> bool {
     )
 }
 
-/// Whether the trigger is on a spell being cast: it reads the X of that spell.
-const fn casts_a_spell(when: &TriggerPattern) -> bool {
-    matches!(when, TriggerPattern::SpellCast { .. })
+/// Whether the trigger is on a spell being cast, also as the nth such spell of the turn: it reads the X of that spell.
+fn casts_a_spell(when: &TriggerPattern) -> bool {
+    match when {
+        TriggerPattern::SpellCast { .. } => true,
+        TriggerPattern::Nth { event, .. } => matches!(**event, TriggerPattern::SpellCast { .. }),
+        _ => false,
+    }
 }
 
 /// Whether the trigger is on a spell other than the card itself being cast, whose X the card does not print.
 fn casts_another_spell(when: &TriggerPattern) -> bool {
-    matches!(when, TriggerPattern::SpellCast { what, .. } if !what.0.contains(&Pred::This))
+    match when {
+        TriggerPattern::SpellCast { what, .. } => !what.0.contains(&Pred::This),
+        TriggerPattern::Nth { event, .. } => casts_another_spell(event),
+        _ => false,
+    }
 }
 
 /// Whether a static ability affects spells being cast: its selector holds the spell predicate.
@@ -8529,11 +8622,14 @@ impl Walker<'_> {
             Action::Discovered => value.is_some() && to.is_none(),
             Action::ManifestedDread => value.is_none() && to.is_none(),
             Action::GaveGift => card.is_none() && value.is_none() && to.is_some(),
+            Action::PaidCumulativeUpkeep | Action::DeclinedCumulativeUpkeep | Action::PaidEcho => {
+                card.is_some() && value.is_none() && to.is_none()
+            }
             _ => false,
         };
         if !fits {
             self.problem(format!(
-                "`Performed` logs investigate, discover (with a value), manifest dread or a gift (to a player), not {action:?} with these parts"
+                "`Performed` logs investigate, discover (with a value), manifest dread, a gift (to a player) or an upkeep cost paid or not (of a card), not {action:?} with these parts"
             ));
         }
     }
