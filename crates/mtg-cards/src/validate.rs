@@ -5661,7 +5661,7 @@ impl Walker<'_> {
                     self.at("sacrifice", |w| w.selector(sacrifice));
                 } else if !life {
                     self.at("action", |w| {
-                        w.problem("a ban on paying costs bans life or sacrifices")
+                        w.problem("a ban on paying costs bans life or sacrifices");
                     });
                 }
             }

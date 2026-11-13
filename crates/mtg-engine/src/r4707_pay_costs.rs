@@ -9,9 +9,10 @@ use crate::prohibit::{Doing, forbidden};
 use crate::state::GameState;
 
 /// What a payment is for, which decides whether a ban on paying costs reads it.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub(crate) enum PaysFor {
     /// The cost of casting a spell or activating an ability other than a mana ability.
+    #[default]
     Cost,
     /// The cost of activating a mana ability.
     ManaAbility,

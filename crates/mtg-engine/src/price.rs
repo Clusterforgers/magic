@@ -52,8 +52,8 @@ pub(crate) struct Price {
     pub(crate) changes: Vec<CostItem>,
     /// The permanent whose static ability gave the ability this pays for (`Ref::Granter`).
     pub(crate) granter: Option<ObjectId>,
-    /// The price is paid for a resolving effect, not as a cost (`r4707_pay_costs`).
-    pub(crate) r4707_effect: bool,
+    /// What the price is paid for: a cost, or a resolving effect (`r4707_pay_costs`).
+    pub(crate) pays: crate::r4707_pay_costs::PaysFor,
 }
 
 /// The name `Caps` gives a cost part, for the parts the engine does not pay.
@@ -250,7 +250,7 @@ impl Price {
             casting: false,
             changes,
             granter: None,
-            r4707_effect: false,
+            pays: crate::r4707_pay_costs::PaysFor::Cost,
         })
     }
 
@@ -351,11 +351,7 @@ impl Price {
                 source,
                 barred: &barred,
                 granter: self.granter,
-                pays: if self.r4707_effect {
-                    crate::r4707_pay_costs::PaysFor::Effect
-                } else {
-                    crate::r4707_pay_costs::PaysFor::Cost
-                },
+                pays: self.pays,
             };
             taken.push(part.payable(&owner, &spare)?);
         }
@@ -541,7 +537,7 @@ mod tests {
                 waterbend: 0,
                 parts: Vec::new(),
                 casting: false,
-                r4707_effect: false,
+                pays: crate::r4707_pay_costs::PaysFor::Cost,
                 changes: Vec::new(),
                 granter: None,
             })

@@ -584,6 +584,10 @@ fn its_controller(r: &mut Reader<'_>) -> Option<Pred> {
 
 /// What happened this turn or what the source did: "that entered the battlefield this turn", "that crewed it this turn".
 fn this_turn_suffix(r: &mut Reader<'_>) -> Option<Pred> {
+    // "with a name originally printed in the Antiquities expansion" is read beside them.
+    if let Some(pred) = r.attempt(super::r4707_printed::r4707_suffix) {
+        return Some(pred);
+    }
     // What came onto the battlefield this turn: "creature token that entered the battlefield this turn".
     if r.words("that entered the battlefield this turn") || r.words("that entered this turn") {
         return Some(Pred::EnteredThisTurn);
@@ -629,9 +633,6 @@ fn others_control(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
 
 pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if let Some(pred) = r.attempt(|r| super::t17b_attached::suffix(r, form)) {
-        return Some(pred);
-    }
-    if let Some(pred) = r.attempt(super::r4707_printed::r4707_suffix) {
         return Some(pred);
     }
     if r.words("you control") {

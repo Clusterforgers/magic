@@ -1119,7 +1119,6 @@ impl RulesInForce {
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
             Rule::FlipTwoCoins(players) => self.flip_two.extend(players),
             Rule::ExtraDie(players) => self.extra_die.extend(players),
-            Rule::Planar => {}
             Rule::KeepUnspentMana(players, mana) => {
                 self.keep_mana.extend(players.iter().map(|p| (*p, *mana)));
             }
@@ -1296,6 +1295,7 @@ impl RulesInForce {
             // Shields are read by the replacement step, spell costs by the cost step and the bonuses of a spell's mana
             // where it resolves (`spend_rider::entering`), from the rule changes themselves.
             Rule::EntersWith { .. }
+            | Rule::Planar
             | Rule::SpellCost { .. }
             | Rule::PreventDamage(_)
             | Rule::Regenerate(_)

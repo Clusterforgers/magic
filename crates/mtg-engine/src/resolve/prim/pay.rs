@@ -310,7 +310,7 @@ fn source_leaves(state: &GameState, source: ObjectId, leaves: Leaves) -> Option<
 /// has a part that counts X is refused by name.
 pub(super) fn price_of(cost: &Cost) -> Result<Price, ResolveError> {
     let mut price = Price::announced(cost).map_err(ResolveError::Unsupported)?;
-    price.r4707_effect = true;
+    price.pays = crate::r4707_pay_costs::PaysFor::Effect;
     // Only an activated ability untaps its source as a cost.
     if price.untap {
         return Err(ResolveError::Unsupported("Cost.Untap"));
