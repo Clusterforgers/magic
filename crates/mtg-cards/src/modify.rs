@@ -1280,7 +1280,8 @@ pub enum GameRule {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         spells: Option<Selector>,
         /// With `spells`, also to activate the abilities of the permanents this selects ("or to activate abilities of
-        /// permanents you control but don't own").
+        /// permanents you control but don't own"); without, only to activate them ("to activate abilities of creatures
+        /// you control").
         #[serde(default, skip_serializing_if = "Option::is_none")]
         abilities: Option<Selector>,
     },

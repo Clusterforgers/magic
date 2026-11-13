@@ -1,7 +1,7 @@
 {
   "oracle_id": "10764b35-5c6c-4161-8579-1124d5963a0e",
   "name": "Niv-Mizzet Reborn",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Niv-Mizzet Reborn",
@@ -9,9 +9,54 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 7, "end": 250 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 10, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Compare": { "stat": "Colors", "op": "Eq", "to": 2 } }
+                    ]
+                  },
+                  "count": {
+                    "min": {
+                      "Distinct": {
+                        "of": [
+                          { "In": "Library" },
+                          { "Is": { "Bound": "top" } },
+                          { "Compare": { "stat": "Colors", "op": "Eq", "to": 2 } }
+                        ],
+                        "stat": "R374ColorSet"
+                      }
+                    },
+                    "max": {
+                      "Distinct": {
+                        "of": [
+                          { "In": "Library" },
+                          { "Is": { "Bound": "top" } },
+                          { "Compare": { "stat": "Colors", "op": "Eq", "to": 2 } }
+                        ],
+                        "stat": "R374ColorSet"
+                      }
+                    }
+                  },
+                  "as": "chosen",
+                  "differ": "DifferentColorSets"
+                }
+              },
+              { "Move": { "what": { "Bound": "chosen" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
           }
         }
       ]

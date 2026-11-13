@@ -697,6 +697,8 @@ pub enum TargetSet {
     DifferentManaValues,
     /// No two have one power ("with different powers").
     DifferentPowers,
+    /// No two have the same colors ("for each color pair, choose a card that's exactly those colors").
+    DifferentColorSets,
     /// They all have one toughness ("with equal toughness").
     SameToughness,
     /// Their mana values add up to at most this ("with total mana value 3 or less").

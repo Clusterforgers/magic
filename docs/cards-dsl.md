@@ -172,6 +172,11 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - "The power, toughness, and creature types of the last creature card exiled with it" read `Ref::LastExiledWith` (the card the source exiled last among those its filter selects, while still in exile) and `Modification::SetCreatureTypesOf`.
 - "If a creature card with flying was exiled with this creature's delve ability, this creature has flying. The same is true for ..." is `Modification::KeywordsOf` over `Ref::Delved` (the cards the spell's delve exiled, while still in exile): each listed keyword one of them has, with its variant ("hexproof from white").
 - "Choose two basic land types" is `EntersChoice::TwoBasicLandTypes` (`Chosen::LandTypes`, in order); "lands of the first chosen type are the second chosen type" is `Pred::NthChosenLandType(0)` with `Modification::SetLandTypesNthChosen(1)`.
+- "You may put it on top of its owner's library instead" is `ReplaceBy::IntoLibrary { optional: true }`: the replacement's controller is asked yes or no as it applies, and a no lets the event go where it was going.
+- "For each player, choose friend or foe" is `ChooseWords { about }`: the one chooser picks a word for each player `about` names, in turn order from the controller, and each word is bound to the players it was chosen for.
+- "For each color pair, choose a card that's exactly those colors" is a `Choose` of two-colored cards with `differ: DifferentColorSets` and as many as `Amount::Distinct` of `R374ColorSet` counts.
+- "If a source you controlled dealt 5 or more damage this turn" reads `Amount::MostDamageBySource` (one source's damage added up); "damage dealt to ~ this turn by sources they controlled" is `Amount::DamageToFromPlayers`.
+- `SpendManaAs` with `abilities` and no `spells` lets the mana be spent only to activate the abilities of the selected permanents ("to activate abilities of creatures you control").
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 
 ## Support records

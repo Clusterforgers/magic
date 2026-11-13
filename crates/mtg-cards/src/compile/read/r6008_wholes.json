@@ -1,0 +1,620 @@
+[
+ [
+  {
+   "Static": {
+    "affected": {
+     "Each": [
+      {
+       "Subtype": "Sliver"
+      }
+     ]
+    },
+    "mods": [
+     {
+      "GrantAbility": {
+       "Replacement": {
+        "when": {
+         "ZoneChange": {
+          "what": [
+           "This"
+          ],
+          "from": "Battlefield",
+          "to": "Graveyard"
+         }
+        },
+        "by": {
+         "IntoLibrary": {
+          "place": "Top",
+          "optional": true
+         }
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "All Slivers have \"If this permanent would be put into a graveyard, you may put it on top of its owner's library instead.\""
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "ChooseWords": {
+       "who": "You",
+       "words": [
+        "friend",
+        "foe"
+       ],
+       "about": "EachPlayer"
+      }
+     },
+     {
+      "Choose": {
+       "who": {
+        "Bound": "friend"
+       },
+       "from": {
+        "Each": [
+         {
+          "In": "Graveyard"
+         },
+         {
+          "OwnedBy": "Chooser"
+         },
+         {
+          "Type": "Creature"
+         }
+        ]
+       },
+       "as": "returned"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "returned"
+       },
+       "to": "Hand"
+      }
+     },
+     {
+      "Sacrifice": {
+       "who": {
+        "Bound": "foe"
+       },
+       "filter": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "For each player, choose friend or foe. Each friend returns a creature card from their graveyard to their hand. Each foe sacrifices a creature of their choice."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "LookAtTop": {
+       "count": 10,
+       "as": "top"
+      }
+     },
+     {
+      "Reveal": {
+       "what": {
+        "Bound": "top"
+       }
+      }
+     },
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "In": "Library"
+         },
+         {
+          "Is": {
+           "Bound": "top"
+          }
+         },
+         {
+          "Compare": {
+           "stat": "Colors",
+           "op": "Eq",
+           "to": 2
+          }
+         }
+        ]
+       },
+       "count": {
+        "min": {
+         "Distinct": {
+          "of": [
+           {
+            "In": "Library"
+           },
+           {
+            "Is": {
+             "Bound": "top"
+            }
+           },
+           {
+            "Compare": {
+             "stat": "Colors",
+             "op": "Eq",
+             "to": 2
+            }
+           }
+          ],
+          "stat": "R374ColorSet"
+         }
+        },
+        "max": {
+         "Distinct": {
+          "of": [
+           {
+            "In": "Library"
+           },
+           {
+            "Is": {
+             "Bound": "top"
+            }
+           },
+           {
+            "Compare": {
+             "stat": "Colors",
+             "op": "Eq",
+             "to": 2
+            }
+           }
+          ],
+          "stat": "R374ColorSet"
+         }
+        }
+       },
+       "as": "chosen",
+       "differ": "DifferentColorSets"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "chosen"
+       },
+       "to": "Hand"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "top"
+       },
+       "to": {
+        "Library": {
+         "place": "Bottom",
+         "order": "Random"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "When ~ enters, reveal the top ten cards of your library. For each color pair, choose a card that's exactly those colors from among them. Put the chosen cards into your hand and the rest on the bottom of your library in a random order."
+ ],
+ [
+  {
+   "Static": {
+    "affected": {
+     "Each": [
+      {
+       "Type": "Creature"
+      },
+      "Commander",
+      {
+       "OwnedBy": "You"
+      }
+     ]
+    },
+    "mods": [
+     {
+      "GrantAbility": {
+       "Triggered": {
+        "when": {
+         "StepBegins": {
+          "step": "End",
+          "whose": "You"
+         }
+        },
+        "if": {
+         "Compare": {
+          "left": {
+           "MostDamageBySource": "You"
+          },
+          "op": "Ge",
+          "right": 5
+         }
+        },
+        "effects": [
+         {
+          "CreateToken": {
+           "token": {
+            "Custom": {
+             "name": "Dragon",
+             "colors": [
+              "Red"
+             ],
+             "types": [
+              "Creature"
+             ],
+             "subtypes": [
+              "Dragon"
+             ],
+             "power": 4,
+             "toughness": 4,
+             "abilities": [
+              {
+               "Keyword": "Flying"
+              }
+             ]
+            }
+           }
+          }
+         }
+        ]
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Commander creatures you own have \"At the beginning of your end step, if a source you controlled dealt 5 or more damage this turn, create a 4/4 red Dragon creature token with flying.\""
+ ],
+ [
+  {
+   "Static": {
+    "affected": {
+     "Each": [
+      {
+       "Type": "Creature"
+      },
+      "Other"
+     ]
+    },
+    "mods": [
+     {
+      "GrantAbility": {
+       "Triggered": {
+        "when": {
+         "Attacks": {
+          "what": [
+           "This"
+          ]
+         }
+        },
+        "effects": [
+         {
+          "May": {
+           "effects": [
+            {
+             "Fight": {
+              "what": "This",
+              "with": "Granter"
+             }
+            }
+           ]
+          }
+         }
+        ]
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Other creatures have \"Whenever this creature attacks, you may have it fight ~.\""
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "from": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "RepeatEach": {
+       "over": "EachPlayer",
+       "as": "player",
+       "effects": [
+        {
+         "Draw": {
+          "who": {
+           "Bound": "player"
+          },
+          "count": {
+           "DamageToFromPlayers": {
+            "to": "This",
+            "players": {
+             "Bound": "player"
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "When ~ leaves the battlefield, each player draws cards equal to the amount of damage dealt to ~ this turn by sources they controlled."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "DealtExcess": {
+      "what": [
+       {
+        "AnyOf": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "Type": "Planeswalker"
+         }
+        ]
+       },
+       {
+        "ControlledBy": "Opponents"
+       }
+      ],
+      "combat": false
+     }
+    },
+    "targets": [
+     {
+      "what": {
+       "Either": [
+        "Player",
+        {
+         "Object": [
+          {
+           "Not": {
+            "Is": "Triggering"
+           }
+          },
+          {
+           "AnyOf": [
+            {
+             "Type": "Creature"
+            },
+            {
+             "Type": "Planeswalker"
+            },
+            {
+             "Type": "Battle"
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "DealDamage": {
+       "to": {
+        "Target": 0
+       },
+       "amount": "Triggering"
+      }
+     }
+    ]
+   }
+  },
+  "Whenever a creature or planeswalker an opponent controls is dealt excess noncombat damage, ~ deals damage equal to the excess to any target other than that permanent."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "Attached",
+    "mods": [
+     {
+      "GrantAbility": {
+       "Activated": {
+        "cost": [
+         {
+          "Mana": "{1}{R}"
+         },
+         "Tap",
+         "Unattach"
+        ],
+        "targets": [
+         {
+          "what": "AnyTarget"
+         }
+        ],
+        "effects": [
+         {
+          "DealDamage": {
+           "source": "Granter",
+           "to": {
+            "Target": 0
+           },
+           "amount": 3
+          }
+         },
+         {
+          "Move": {
+           "what": "Granter",
+           "to": "Hand"
+          }
+         }
+        ]
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Equipped creature has \"{1}{R}, {T}, Unattach ~: It deals 3 damage to any target. Return ~ to its owner's hand.\""
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "SpendManaAs": {
+      "who": "You",
+      "spend_as": "AnyColor",
+      "abilities": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     }
+    }
+   }
+  },
+  "You may spend mana as though it were mana of any color to activate abilities of creatures you control."
+ ],
+ [
+  {
+   "Static": {
+    "affected": {
+     "Each": [
+      {
+       "Type": "Creature"
+      },
+      {
+       "ControlledBy": "You"
+      },
+      {
+       "HasCounter": "+1/+1"
+      }
+     ]
+    },
+    "mods": [
+     {
+      "GainAbilitiesOf": {
+       "Each": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "In": "Exile"
+        },
+        {
+         "ExiledWith": "This"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Creatures you control with +1/+1 counters on them have all activated abilities of all creature cards exiled with ~."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     "Tap"
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "In": "Graveyard"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Exile": {
+       "what": {
+        "Target": 0
+       },
+       "as": "exiled"
+      }
+     },
+     {
+      "Reflexive": {
+       "if": {
+        "CountOf": {
+         "subject": {
+          "Bound": "exiled"
+         },
+         "selector": [
+          {
+           "Type": "Creature"
+          },
+          {
+           "In": "Exile"
+          }
+         ],
+         "op": "Ge",
+         "right": 1
+        }
+       },
+       "targets": [
+        {
+         "what": {
+          "Object": [
+           {
+            "Type": "Creature"
+           },
+           {
+            "ControlledBy": "You"
+           }
+          ]
+         }
+        }
+       ],
+       "effects": [
+        {
+         "PutCounters": {
+          "on": {
+           "Target": 0
+          },
+          "counter": "+1/+1"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "{T}: Exile target card from a graveyard. When a creature card is exiled this way, put a +1/+1 counter on target creature you control."
+ ]
+]

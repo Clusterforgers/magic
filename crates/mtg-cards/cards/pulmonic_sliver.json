@@ -1,7 +1,7 @@
 {
   "oracle_id": "f578465d-f3a5-48da-bcab-cffbbdd88be8",
   "name": "Pulmonic Sliver",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Pulmonic Sliver",
@@ -14,9 +14,20 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 34, "end": 155 }
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Sliver" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Replacement": {
+                    "when": {
+                      "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" }
+                    },
+                    "by": { "IntoLibrary": { "place": "Top", "optional": true } }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

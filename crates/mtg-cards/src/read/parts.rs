@@ -666,10 +666,19 @@ pub(super) fn replace_by(ctx: &Ctx, by: &ReplaceBy, depth: u8, out: &mut Vec<Ste
             depth,
             format!("it goes to {} instead", phrase::zone_text(*zone)),
         )),
-        ReplaceBy::IntoLibrary { place, reveal } => out.push(Step::new(
+        ReplaceBy::IntoLibrary {
+            place,
+            reveal,
+            optional,
+        } => out.push(Step::new(
             depth,
             format!(
-                "{}it goes into its owner's library instead, {}",
+                "{}{}it goes into its owner's library instead, {}",
+                if *optional {
+                    "if its controller wants, "
+                } else {
+                    ""
+                },
                 if *reveal { "it is revealed and " } else { "" },
                 match place {
                     crate::effect::Place::Top => "on top".to_owned(),

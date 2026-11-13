@@ -26,6 +26,7 @@ Aether Gale
 Aether Hub
 Aethersnatch
 Agate Instigator
+Agatha's Soul Cauldron
 Aggravated Assault
 Ainok Bond-Kin
 Ainok Survivalist
@@ -882,6 +883,7 @@ Grim Flayer
 Grim Haruspex
 Grim Initiate
 Grisly Salvage
+Grothama, All-Devouring
 Ground Seal
 Growing Ranks
 Grumgully, the Generous
@@ -1548,6 +1550,7 @@ Psychic Symbiont
 Psychic Whorl
 Psychosis Crawler
 Pteramander
+Pulmonic Sliver
 Purple Dragon Punks
 Putrid Goblin
 Pygmy Kavu
@@ -2129,6 +2132,7 @@ Tomb Tyrant
 Tomik, Distinguished Advokist
 Topiary Lecturer
 Topography Tracker
+Toralf, God of Fury // Toralf's Hammer
 Torrent of Stone
 Torrential Gearhulk
 Totentanz, Swarm Piper
@@ -2233,6 +2237,7 @@ Village Pillagers
 Village Rites
 Viper's Kiss
 Viridian Corrupter
+Virtus's Maneuver
 Visage of Dread // Dread Osseosaur
 Viscerid Drone
 Vish Kal, Blood Arbiter

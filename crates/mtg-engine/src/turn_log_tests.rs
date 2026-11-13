@@ -1,4 +1,4 @@
-//! Goal: the turn's log records damage, attacks, blocks, activations and counters in event order, `Pred::DidThisTurn` and `Amount::Tally` read it by player, target and combat, `Amount::SourcesDealtDamage` counts each source once, a spell's counters count for its controller and an unattributed one for nobody, a new turn clears it, and an object that is not public leaves a record that counts but that no filter on its characteristics selects.
+//! Goal: the turn's log records damage, attacks, blocks, activations and counters in event order, `Pred::DidThisTurn` and `Amount::Tally` read it by player, target and combat, `Amount::SourcesDealtDamage` counts each source once and `Amount::MostDamageBySource` adds up the hits of one, a spell's counters count for its controller and an unattributed one for nobody, a new turn clears it, and an object that is not public leaves a record that counts but that no filter on its characteristics selects.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -352,4 +352,36 @@ fn r5502_sources_that_dealt_damage_are_counted_once_each(
     };
     assert_eq!(count(Ref::You), mine);
     assert_eq!(count(Ref::Opponents), theirs);
+}
+
+#[rstest]
+#[case::none(&[], 0, 0)]
+#[case::one_hit(&[("Bear", 5)], 5, 0)]
+#[case::one_source_adds_up(&[("Bear", 2), ("Bear", 3)], 5, 0)]
+#[case::two_sources_apart(&[("Bear", 3), ("Wolf", 4)], 4, 0)]
+#[case::theirs_apart(&[("Bear", 2), ("Ogre", 3), ("Ogre", 3)], 2, 6)]
+fn r6008_the_most_damage_one_source_dealt_adds_its_hits_up(
+    #[case] hits: &[(&str, u32)],
+    #[case] mine: i64,
+    #[case] theirs: i64,
+) {
+    let mut game = state(
+        vec![Vec::new(), Vec::new()],
+        vec![
+            vec![creature("Bear", 2, 2), creature("Wolf", 1, 1)],
+            vec![creature("Ogre", 3, 4)],
+        ],
+    );
+    for (source, amount) in hits {
+        let to = if *source == "Ogre" { ME } else { FOE };
+        let event = hit(&game, source, DamageTarget::Player(to), *amount);
+        fold(&mut game, &[event]);
+    }
+    let most = |who: Ref| {
+        Scope::announcing(&game, ME, named(&game, "Bear"))
+            .amount(&Amount::MostDamageBySource(who))
+            .unwrap()
+    };
+    assert_eq!(most(Ref::You), mine);
+    assert_eq!(most(Ref::Opponents), theirs);
 }
