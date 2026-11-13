@@ -81,6 +81,9 @@ fn prevents_in_part(by: &ReplaceBy) -> bool {
             | ReplaceBy::PreventCountedAnd { .. }
             | ReplaceBy::PreventHalf
             | ReplaceBy::PreventAllBut(_)
+            | ReplaceBy::PreventByCounters(_)
+            | ReplaceBy::PreventHalfNext
+            | ReplaceBy::PreventAllButNext(_)
             | ReplaceBy::PreventNext
             | ReplaceBy::PreventNextAnd(_)
     )
@@ -4393,7 +4396,17 @@ impl Walker<'_> {
                 choose,
                 plus,
                 results,
-            } => w.roll_dice(who, *sides, (*dice, *choose), plus, results),
+                count,
+            } => {
+                w.roll_dice(who, *sides, (*dice, *choose), plus, results);
+                if let Some(count) = count {
+                    w.uses("RollDice", "Count");
+                    w.at("count", |w| w.amount(count));
+                    if *dice != 1 || *choose || !plus.is_zero() || !results.is_empty() {
+                        w.problem("a roll of a number of dice worked out has no other dice, choice, addition or table");
+                    }
+                }
+            }
             Effect::FlipCoin {
                 who,
                 win,
@@ -6068,6 +6081,8 @@ impl Walker<'_> {
                 | ReplaceBy::Redirect { .. }
                 | ReplaceBy::PreventCounted(_)
                 | ReplaceBy::PreventCountedAnd { .. }
+                | ReplaceBy::PreventHalfNext
+                | ReplaceBy::PreventAllButNext(_)
         ) {
             self.problem("only a shield changes the next damage");
         }

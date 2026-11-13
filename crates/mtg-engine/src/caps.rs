@@ -840,6 +840,10 @@ const RUNS: &[&str] = &[
     "ReplaceBy.PreventCountedAnd",
     "ReplaceBy.PreventHalf",
     "ReplaceBy.PreventRemovingCounter",
+    "ReplaceBy.PreventByCounters",
+    "RollDice.Count",
+    "ReplaceBy.PreventHalfNext",
+    "ReplaceBy.PreventAllButNext",
     "ReplaceBy.MoveTo",
     "ReplaceBy.Untapped",
     "ReplaceBy.IntoLibrary",
@@ -1181,6 +1185,10 @@ mod tests {
     #[case::r406_replacing_an_exploration("ReplaceWhen.Explores", true)]
     #[case::r406_replacing_a_connive("ReplaceWhen.Connives", true)]
     #[case::r406_replacing_a_proliferation("ReplaceWhen.Proliferates", true)]
+    #[case::r5507_preventing_by_counters("ReplaceBy.PreventByCounters", true)]
+    #[case::r5507_rolling_a_number_of_dice("RollDice.Count", true)]
+    #[case::r5507_preventing_half_the_next("ReplaceBy.PreventHalfNext", true)]
+    #[case::r5507_preventing_all_but_of_the_next("ReplaceBy.PreventAllButNext", true)]
     #[case::r4708_replacing_a_scry("ReplaceWhen.Scries", true)]
     #[case::r4708_replacing_a_surveil("ReplaceWhen.Surveils", true)]
     #[case::r4708_more_cards_to_surveil("ReplaceBy.MayAddAmount", true)]
