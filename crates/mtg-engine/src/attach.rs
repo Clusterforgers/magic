@@ -293,7 +293,7 @@ pub(crate) fn cast_target(state: &GameState, id: ObjectId) -> Option<TargetSpec>
     let mut spec = spell_target(state, id)?;
     let object = state.object(id)?;
     if let Targetable::Object(selector) = &mut spec.what {
-        for rule in &object.card().rules {
+        for rule in crate::ability_reader::printed_rules(object.card()) {
             if let mtg_cards::ability::Ability::CantTargetAsCast { what } = &**rule {
                 let outside = what
                     .0
