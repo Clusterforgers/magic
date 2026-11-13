@@ -1363,6 +1363,11 @@ pub(crate) const OPENING_REVEAL: &str =
 /// What a surveil asks about the cards looked at.
 pub(crate) const SURVEIL: &str = "Put any number of the cards into your graveyard.";
 
+/// What a surveil asks before looking when a replacement offers more cards.
+pub(crate) fn r4708_surveil_more(more: usize) -> String {
+    format!("Look at {more} more cards as you surveil?")
+}
+
 /// What a proliferate asks about the permanents with counters.
 pub(crate) const PROLIFERATE: &str =
     "Choose any number of permanents with counters to proliferate.";

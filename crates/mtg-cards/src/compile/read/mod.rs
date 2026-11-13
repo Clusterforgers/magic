@@ -231,6 +231,7 @@ mod r406_actions;
 mod r407_wordings;
 mod r408_lands;
 mod r408_pact;
+mod r4708_actions;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -620,6 +621,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r406_actions::r406_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r4708_actions::r4708_read(text) {
         return Some(found);
     }
     if kind == ClauseKind::Triggered

@@ -383,6 +383,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Mill",
     "ReplaceBy.UnderChosenOpponent",
     "ReplaceBy.AddAmount",
+    "ReplaceBy.MayAddAmount",
     "ReplaceBy.PreventAmount",
     "ReplaceBy.PreventAtMost",
     "Effect.CreateToken",
@@ -803,6 +804,8 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.Explores",
     "ReplaceWhen.Connives",
     "ReplaceWhen.Proliferates",
+    "ReplaceWhen.Scries",
+    "ReplaceWhen.Surveils",
     "ReplaceBy.Multiply",
     "ReplaceBy.Add",
     "ReplaceBy.Half",
@@ -1143,6 +1146,9 @@ mod tests {
     #[case::r406_replacing_an_exploration("ReplaceWhen.Explores", true)]
     #[case::r406_replacing_a_connive("ReplaceWhen.Connives", true)]
     #[case::r406_replacing_a_proliferation("ReplaceWhen.Proliferates", true)]
+    #[case::r4708_replacing_a_scry("ReplaceWhen.Scries", true)]
+    #[case::r4708_replacing_a_surveil("ReplaceWhen.Surveils", true)]
+    #[case::r4708_more_cards_to_surveil("ReplaceBy.MayAddAmount", true)]
     #[case::replacing_mills("ReplaceWhen.Mill", true)]
     #[case::replacing_draws("ReplaceWhen.Draw", true)]
     #[case::replacing_entering("ReplaceWhen.Enters", true)]

@@ -675,6 +675,8 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::Explores { .. }
         | ReplaceWhen::Connives { .. }
         | ReplaceWhen::Proliferates { .. }
+        | ReplaceWhen::Scries { .. }
+        | ReplaceWhen::Surveils { .. }
         | ReplaceWhen::Draw { .. } => false,
     }
 }
@@ -714,7 +716,10 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         }
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
         // Only a shield counts its amount, and it begins as `PreventUpTo`; one with effects names the damage left to it.
-        ReplaceBy::PreventCounted(_) | ReplaceBy::PreventNextAnd(_) => false,
+        // More cards to surveil are offered by the surveil itself (`r4708_actions`).
+        ReplaceBy::PreventCounted(_)
+        | ReplaceBy::PreventNextAnd(_)
+        | ReplaceBy::MayAddAmount(_) => false,
         ReplaceBy::PreventCountedAnd { most, .. } => {
             matches!(most, Amount::Fixed(_)) && matches!(unit, Unit::Damage { .. })
         }
@@ -3647,6 +3652,7 @@ mod r304_as_enters;
 #[cfg(test)]
 mod r304_skip;
 pub(crate) mod r406_actions;
+pub(crate) mod r4708_actions;
 mod rmt5_next;
 use rmt5_next::rmt5_next_as_instead;
 mod e19_mill;

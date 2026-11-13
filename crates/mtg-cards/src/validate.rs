@@ -5786,6 +5786,8 @@ impl Walker<'_> {
             | ReplaceWhen::LoseGame { who }
             | ReplaceWhen::Mill { who }
             | ReplaceWhen::Proliferates { who }
+            | ReplaceWhen::Scries { who }
+            | ReplaceWhen::Surveils { who }
             | ReplaceWhen::Draw { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
@@ -5800,6 +5802,7 @@ impl Walker<'_> {
             self.problem("a loss of the game is replaced only by steps that happen instead");
         }
         crate::r406_actions::r406_check(when, by, |problem| self.problem(problem));
+        crate::r4708_actions::r4708_check(when, by, |problem| self.problem(problem));
     }
 
     /// What happens instead reads the event it replaces as a trigger reads its event: `Triggering` is the player or object
@@ -6059,7 +6062,9 @@ impl Walker<'_> {
             ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::AddAmount(_) if zone_move => {
                 self.problem("a zone change has no number to change");
             }
-            ReplaceBy::AddAmount(amount) | ReplaceBy::PreventAmount(amount) => {
+            ReplaceBy::AddAmount(amount)
+            | ReplaceBy::PreventAmount(amount)
+            | ReplaceBy::MayAddAmount(amount) => {
                 self.at("amount", |w| w.amount(amount));
             }
             ReplaceBy::PreventAtMost(0) => self.problem("preventing no damage changes nothing"),
