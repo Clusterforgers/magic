@@ -171,7 +171,7 @@ mod tests {
     //! Goal: a prevention that names its damage prevents all of it and does what it says with its amount (counters on
     //! the creature), or all but the amount it keeps, never applies to damage that can't be prevented, and a token
     //! replacement for one kind of token replaces only the tokens of that kind, as many as there are, splitting a run of
-    //! several kinds; at two, three and four seats.
+    //! several kinds, and two creatures one batch shuffles into a library are both in it; at two, three and four seats.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -400,5 +400,44 @@ mod tests {
         assert_eq!(made.len(), 2, "{made:?}");
         assert_ne!(made[0], made[1]);
         assert!(made.iter().all(|id| id.get() >= game.next_object));
+    }
+
+    const SHUFFLE_IN: &str = r#"{"Replacement":{"when":{"Damage":{"to":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}}},"by":{"PreventAnd":[{"Move":{"what":"Triggering","to":{"Library":{"place":"Shuffled"}}}}]}}}"#;
+
+    #[rstest]
+    fn two_creatures_one_batch_shuffles_in_are_both_in_the_library(
+        #[values(2, 3, 4)] seats: usize,
+    ) {
+        let mut game = {
+            let source = CardDefinition::new("Source")
+                .with_type(CardType::Enchantment)
+                .with_rules(ability(SHUFFLE_IN));
+            let mut battlefields = vec![
+                vec![
+                    Arc::new(source),
+                    creature("Wall", 0, 4),
+                    creature("Tower", 0, 5),
+                ],
+                vec![creature("Bear", 2, 2)],
+            ];
+            battlefields.resize(seats, Vec::new());
+            state(vec![vec![]; seats], battlefields)
+        };
+        let (wall, tower, bear) = (at(&game, 1), at(&game, 2), at(&game, 3));
+        let before = game.zone(Zone::Library(PlayerId(0))).len();
+        let out = events(&game, vec![hit(bear, wall, 2), hit(bear, tower, 2)]);
+        let shuffles = out
+            .iter()
+            .filter(|event| matches!(event, Event::LibraryShuffled { .. }))
+            .count();
+        assert_eq!(shuffles, 2, "{out:?}");
+        for event in &out {
+            crate::fold::apply_event(&mut game, event).unwrap();
+        }
+        assert_eq!(
+            game.zone(Zone::Library(PlayerId(0))).len(),
+            before + 2,
+            "{out:?}"
+        );
     }
 }
