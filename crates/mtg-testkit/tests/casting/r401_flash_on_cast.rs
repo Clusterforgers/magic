@@ -4,7 +4,6 @@
 //! cast whatever was announced; at tables of two, three and four seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use mtg_core::ids::PlayerId;
 use mtg_engine::choose::{NumberChoice, TargetChoice};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::turn::Step;
@@ -61,7 +60,10 @@ fn r401_reached_payment(
         driver.answer(Answer::PayMana(PayChoice::Auto))?;
         assert_eq!(names(driver.state(), Zone::Stack), [name]);
     } else {
-        assert_eq!(names(driver.state(), Zone::Hand(PlayerId(holder))), [name]);
+        assert_eq!(
+            names(driver.state(), Zone::Hand(crate::common::pid(holder))),
+            [name]
+        );
     }
     Ok(paying)
 }
@@ -112,7 +114,7 @@ fn r401_flash_photography_is_cast_on_another_turn_only_at_your_permanent(
         .iter()
         .find(|target| {
             target.object().is_some_and(|object| {
-                state.object(object.id).map(|o| o.controller()) == Some(PlayerId(wanted))
+                state.object(object.id).map(|o| o.controller()) == Some(crate::common::pid(wanted))
             })
         })
         .expect("a permanent of the seat");

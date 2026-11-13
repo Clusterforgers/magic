@@ -105,6 +105,7 @@ pub fn process(
                 || exiles_by_rebound(state, &item)
                 || exiles_by_paradigm(state, &item)
                 || moves_by_a_rule(state, event)
+                || r401_riders::r401_exiled_instead(state, event)
         })
     {
         return Ok(Processed::Events(proposed));

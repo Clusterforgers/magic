@@ -452,10 +452,11 @@ fn spell_cast(
     }
     expect_in(state, object, from)?;
     let uncounterable = crate::rules::spend_next_spells(state, player, object);
+    // Read before the tally below closes a permission that works once each turn.
+    let riders = crate::rules::r401_cast_riders(state, player, object, from, choices.way);
     if let Some(source) = crate::rules::c11b_once_source(state, player, object, from, choices.way) {
         state.tally_object(source, None, Tally::C11bOnceUsed);
     }
-    let riders = crate::rules::r401_cast_riders(state, player, object, from, choices.way);
     // The tax counts casts from the command zone (CR 903.8).
     state.commanders.cast(object, from);
     // Read before the spell joins the stack; a spell cast while another resolves is cast off sorcery timing.
@@ -488,6 +489,10 @@ fn spell_cast(
         spell.cast = Some((crate::resolve::zone_kind(from), player));
         spell.off_sorcery_timing = off_sorcery_timing;
         spell.cast_riders = riders;
+        // Entering tapped or with a counter and "exile it instead" are replacement effects of the spell.
+        if !spell.cast_riders.is_empty() {
+            state.possible.replacements = true;
+        }
         if choices.way == Some(CastWay::FaceDown) {
             spell.face_down = Some(FaceDown::cast_as(&spell.def));
         }

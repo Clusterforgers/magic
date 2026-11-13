@@ -1391,7 +1391,10 @@ impl<'a> Walker<'a> {
             Condition::AsCast(inner) => self.as_cast(inner),
             Condition::R401OnCast(inner) => {
                 self.uses("Condition", "R401OnCast");
+                // Judged with what the spell announces, so its X is the X it is cast with.
+                let x_now = std::mem::replace(&mut self.x_now, true);
                 self.at("R401OnCast", |w| w.condition(inner));
+                self.x_now = x_now;
             }
             Condition::R401Targets(what) => {
                 self.uses("Condition", "R401Targets");

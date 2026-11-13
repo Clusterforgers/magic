@@ -11,6 +11,17 @@ use crate::state::GameState;
 use crate::zones::Zone;
 use mtg_core::ids::ObjectId;
 
+/// Whether the event puts a spell cast with the rider "exile it instead" from the stack into a graveyard.
+pub(super) fn r401_exiled_instead(state: &GameState, event: &crate::events::Event) -> bool {
+    super::moving(state, event).is_some_and(|(object, from, to)| {
+        from == Zone::Stack
+            && matches!(to, Zone::Graveyard(_))
+            && state
+                .object(object)
+                .is_some_and(|spell| spell.cast_riders().contains(&CastRider::ExiledInstead))
+    })
+}
+
 /// What the player ordering the replacements reads for the rider at `index` of the spell `spell`.
 pub(super) fn r401_rider_words(state: &GameState, spell: ObjectId, index: usize) -> &'static str {
     match state
