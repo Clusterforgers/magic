@@ -112,8 +112,8 @@ fn mulligan_options(driver: &Driver) -> MulliganOptions {
 #[rstest]
 fn the_first_mulligan_is_free_and_the_second_costs_a_card(#[values(2, 4)] seats: usize) {
     let mut driver =
-        Driver::new(Engine::new(commander_fuzz_setup(seats, 246).unwrap()).unwrap()).unwrap();
-    // One commander at seed 246 chooses a color before the game begins, ahead of the hands.
+        Driver::new(Engine::new(commander_fuzz_setup(seats, 69).unwrap()).unwrap()).unwrap();
+    // One commander at seed 69 chooses a color before the game begins, ahead of the hands.
     let asked = choose_commander_colors(&mut driver);
     assert_eq!(asked, 1, "only the commander whose text says so asks");
     let first = mulligan_options(&driver);

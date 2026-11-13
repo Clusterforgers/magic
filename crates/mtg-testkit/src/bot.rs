@@ -551,6 +551,9 @@ impl RandomBot {
             DecisionKind::ChooseCards(options) if !options.groups.is_empty() => {
                 self.cards(&options.one_per_group())
             }
+            DecisionKind::ChooseCards(options) if options.text.starts_with("Forage:") => {
+                self.r5515_forage(options, state)
+            }
             _ => self.choose(decision),
         }
     }
@@ -1106,6 +1109,22 @@ impl RandomBot {
     fn yes_no(&mut self, options: &YesNoOptions) -> Answer {
         let yes = self.rng.below(2) == 0;
         Answer::YesNo(YesNoChoice(yes && !options.only_no))
+    }
+
+    /// A forage pick: one Food, or three cards of the graveyard (CR 701.61a), never a mix.
+    fn r5515_forage(&mut self, options: &CardsOptions, state: &GameState) -> Answer {
+        let (cards, foods): (Vec<ObjectId>, Vec<ObjectId>) = options.from.iter().partition(|id| {
+            state
+                .object(**id)
+                .is_some_and(|object| matches!(object.zone(), Zone::Graveyard(_)))
+        });
+        let exile = cards.len() >= 3 && (foods.is_empty() || self.rng.index(2) == 0);
+        let picked = if exile {
+            self.subset(&cards, 3)
+        } else {
+            self.subset(&foods, 1)
+        };
+        Answer::ChooseCards(CardsChoice(picked))
     }
 
     /// Any cards among those offered, as many as the bounds allow. A cost that takes any number of creatures for their
