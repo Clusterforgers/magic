@@ -48,7 +48,7 @@ fn r4707_rolling_the_planar_die_does_nothing(
         }
         driver.answer_passively()?;
     }
-    assert!(driver.state().stack().is_empty());
+    assert_eq!(driver.state().stack(), []);
     let powerstone = driver.id_of("Fractured Powerstone")?;
     assert!(
         driver

@@ -70,7 +70,7 @@ fn r4707_pia_pays_one_or_more_energy(
         .map(|o| (o.card().power, o.card().toughness))
         .collect();
     match paid {
-        None => assert!(jets.is_empty()),
+        None => assert_eq!(jets, []),
         Some(x) => {
             let x = i32::try_from(x).unwrap();
             assert_eq!(jets, vec![(Some(x), Some(x))]);

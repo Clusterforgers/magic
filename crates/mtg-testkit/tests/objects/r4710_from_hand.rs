@@ -103,7 +103,7 @@ fn r4710_vannifar_cloaks_from_hand_or_grows_colorless(
         assert_eq!(counters("Golem"), 0);
     } else {
         assert_eq!(hand, 1);
-        assert!(r4710_face_down(state, 0).is_empty());
+        assert_eq!(r4710_face_down(state, 0), []);
         assert_eq!(counters("Golem"), 1);
         assert_eq!(counters("Vannifar, Evolved Enigma"), 0);
     }
