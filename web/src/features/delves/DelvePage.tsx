@@ -1,55 +1,34 @@
 /**
- * `/delves/$delveId`: one run. The lobby (heroes, decks, bot allies), the boss ladder with the party's votes on the
- * next camp, the boss fight (its card, phases and a link to the table), the loot, shop, campfire and event screens,
- * and the end. The page reads the run every few seconds, which also reads a finished fight back.
+ * `/delves/$delveId`: one run, in the dungeon's look. The run header (Heat, hearts, seed, the party's life and relics),
+ * then the stage of the run: the lobby with the deck picker, the boss fight (its portrait, card, phases and a link to
+ * the table), the camp scenes, or the end; then the descent with the votes on the next camp. The page reads the run
+ * every few seconds, which also reads a finished fight back.
  */
 import { Link } from '@tanstack/react-router'
-import {
-  CircleAlertIcon,
-  FlameIcon,
-  HeartIcon,
-  ShieldIcon,
-  SkullIcon,
-  SwordsIcon,
-  TrophyIcon,
-} from 'lucide-react'
+import { CircleAlertIcon, ShieldIcon, SwordsIcon, TrophyIcon } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
+import { CopyButton } from '@/components/CopyButton'
 import { Loading } from '@/components/Loading'
 import { PageShell } from '@/components/PageShell'
-import { Pill } from '@/components/Pill'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button, buttonVariants } from '@/components/ui/button'
-import { NativeSelect, NativeSelectOptGroup, NativeSelectOption } from '@/components/ui/native-select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { delvesApi } from '@/net/delves'
 import type { DelvesApi } from '@/net/delves'
 import { cn } from '@/lib/utils'
-import type {
-  Brain,
-  DelveAction,
-  DelveBossView,
-  DelveContent,
-  DelveView,
-  FloorMap,
-  Hero,
-  Node,
-  RoomKind,
-} from '@/protocol/generated'
+import type { DelveAction, DelveBossView, DelveContent, DelveView } from '@/protocol/generated'
+import { BossLadder } from './BossLadder'
+import { BossPortrait, ColourPips } from './CommanderArt'
 import { CustomCardFrame } from './CustomCardFrame'
 import { DelveOffer } from './DelveOffer'
-import { POLL_MS, deckOptions, errorText, optionGroups, rememberChoice } from './words'
-import type { DeckOption } from './words'
-
-const ROOM: Record<RoomKind, string> = {
-  boss: 'Boss',
-  treasure: 'Treasure',
-  shop: 'Shop',
-  event: 'Event',
-  campfire: 'Campfire',
-}
-
-const BRAINS: Brain[] = ['Easy', 'Normal', 'Hard', 'VeryHard']
+import { loadPickerDecks, notePlayed, readPlayed } from './deckPicker'
+import type { LastPlayed, PickerDecks } from './deckPicker'
+import { bossLife } from './model'
+import type { FindCard } from './findCard'
+import { PartyLobby } from './PartyLobby'
+import { RunHeader } from './RunHeader'
+import { POLL_MS, errorText } from './words'
 
 function bossOf(content: DelveContent, id: string | null | undefined): DelveBossView | undefined {
   return content.bosses.find((b) => b.id === id)
@@ -60,230 +39,24 @@ export function BossPanel({ content, boss }: { content: DelveContent; boss: Delv
   const card = content.cards.find((c) => c.id === boss.card)
   return (
     <section aria-label={`Boss: ${boss.name}`} className="grid gap-2">
-      <p className="text-sm italic text-muted-foreground">“{boss.line}”</p>
-      <div className="flex flex-wrap gap-3">
-        {card ? <CustomCardFrame card={card} /> : null}
-        {boss.phases.map(([id, percent]) => {
+      <ol className="flex flex-wrap justify-center gap-3 sm:justify-start">
+        {card ? (
+          <li className="grid gap-1">
+            <span className="text-xs font-medium text-muted-foreground">From the start</span>
+            <CustomCardFrame card={card} />
+          </li>
+        ) : null}
+        {boss.phases.map(([id, percent], i) => {
           const phase = content.cards.find((c) => c.id === id)
           return phase ? (
-            <div key={id} className="grid gap-1">
-              <span className="text-xs text-muted-foreground">At {percent}% of its life</span>
+            <li key={id} className="grid gap-1">
+              <span className="text-xs font-medium text-muted-foreground">
+                Phase {i + 2} · At {percent}% of its life
+              </span>
               <CustomCardFrame card={phase} />
-            </div>
+            </li>
           ) : null
         })}
-      </div>
-    </section>
-  )
-}
-
-function PartyPanel({ view, content }: { view: DelveView; content: DelveContent }) {
-  const relic = (id: string) => content.cards.find((c) => c.id === id)?.name ?? id
-  return (
-    <section aria-label="Party" className="surface grid gap-2 p-3">
-      <h2 className="flex items-center justify-between font-semibold">
-        Party
-        <span className="flex items-center gap-1 text-sm" aria-label={`${view.run.hearts} hearts left`}>
-          <HeartIcon aria-hidden="true" className="size-4 text-destructive" />
-          {view.run.hearts}
-        </span>
-      </h2>
-      <ul className="grid gap-2">
-        {view.run.heroes.map((hero, i) => (
-          <li key={`${hero.name}-${i}`} className="grid gap-0.5 border-b pb-2 text-sm last:border-b-0">
-            <span className="font-medium">
-              {hero.name}
-              {hero.bot ? <span className="text-muted-foreground"> (bot, {hero.bot})</span> : null}
-              {i === view.me ? <span className="text-muted-foreground"> (you)</span> : null}
-            </span>
-            <span className="text-muted-foreground">
-              {hero.deck?.name ?? 'No deck yet'} · {hero.life} life · {hero.gold} gold
-            </span>
-            {hero.relics.length > 0 ? (
-              <span className="text-xs">Relics: {hero.relics.map(relic).join(', ')}</span>
-            ) : null}
-            {hero.cards.length > 0 ? (
-              <span className="text-xs">Won cards: {hero.cards.join(', ')}</span>
-            ) : null}
-          </li>
-        ))}
-      </ul>
-    </section>
-  )
-}
-
-function Lobby({
-  view,
-  act,
-  busy,
-  decks,
-}: {
-  view: DelveView
-  act: (action: DelveAction) => void
-  busy: boolean
-  decks: DeckOption[]
-}) {
-  const [level, setLevel] = useState<Brain>('Normal')
-  const mayChoose = (hero: Hero, i: number) => i === view.me || (view.host && hero.bot !== null)
-  const ready = view.run.heroes.every((h) => h.deck !== null)
-  return (
-    <section aria-label="Lobby" className="surface grid gap-3 p-4">
-      <h2 className="text-lg font-semibold">Gather the party</h2>
-      <p className="text-sm text-muted-foreground">
-        Share the invite code <strong className="font-mono">{view.code}</strong>. Up to four heroes; bot
-        allies fill the gaps.
-      </p>
-      <ul className="grid gap-2">
-        {view.run.heroes.map((hero, i) => (
-          <li key={`${hero.name}-${i}`} className="flex flex-wrap items-center gap-2">
-            <span className="w-32 font-medium">{hero.name}</span>
-            {mayChoose(hero, i) ? (
-              <NativeSelect
-                aria-label={`Deck for ${hero.name}`}
-                value={hero.deck?.id ?? ''}
-                disabled={busy}
-                onChange={(e) => {
-                  rememberChoice(decks, e.target.value)
-                  act({ kind: 'choose_deck', hero: i, deck: e.target.value })
-                }}
-              >
-                <NativeSelectOption value="">Choose a Commander deck…</NativeSelectOption>
-                {optionGroups(decks).map(([group, options]) => (
-                  <NativeSelectOptGroup key={group} label={group}>
-                    {options.map((d) => (
-                      <NativeSelectOption key={d.value} value={d.value}>
-                        {d.label}
-                      </NativeSelectOption>
-                    ))}
-                  </NativeSelectOptGroup>
-                ))}
-              </NativeSelect>
-            ) : (
-              <span className="text-sm text-muted-foreground">{hero.deck?.name ?? 'Choosing a deck…'}</span>
-            )}
-            {view.host && i > 0 ? (
-              <Button
-                size="sm"
-                variant="ghost"
-                disabled={busy}
-                onClick={() => act({ kind: 'remove', hero: i })}
-              >
-                Remove
-              </Button>
-            ) : null}
-          </li>
-        ))}
-      </ul>
-      {view.host ? (
-        <div className="flex flex-wrap items-center gap-2">
-          <NativeSelect
-            aria-label="Bot ally level"
-            value={level}
-            onChange={(e) => setLevel(e.target.value as Brain)}
-          >
-            {BRAINS.map((b) => (
-              <NativeSelectOption key={b} value={b}>
-                {b === 'VeryHard' ? 'Very hard' : b}
-              </NativeSelectOption>
-            ))}
-          </NativeSelect>
-          <Button
-            variant="outline"
-            disabled={busy || view.run.heroes.length >= 4}
-            onClick={() => act({ kind: 'add_bot', level })}
-          >
-            Add a bot ally
-          </Button>
-          <Button disabled={busy || !ready} onClick={() => act({ kind: 'start' })}>
-            Descend
-          </Button>
-        </div>
-      ) : (
-        <p className="text-sm text-muted-foreground">
-          The host leads the party in once every hero has a deck.
-        </p>
-      )}
-    </section>
-  )
-}
-
-/** The ladder: bosses and the camps between them; the party's next choices take votes. */
-export function Ladder({
-  map,
-  view,
-  content,
-  act,
-  busy,
-}: {
-  map: FloorMap
-  view: DelveView
-  content: DelveContent
-  act: (action: DelveAction) => void
-  busy: boolean
-}) {
-  const run = view.run
-  const choices = run.status === 'Map' ? (run.at === null ? [] : (map.nodes[run.at]?.next ?? [])) : []
-  const rows: Node[][] = []
-  for (const node of map.nodes) (rows[node.row] ??= []).push(node)
-  const voters = (node: number) =>
-    Object.entries(run.votes)
-      .filter(([, v]) => v === node)
-      .map(([hero]) => run.heroes[Number(hero)]?.name ?? hero)
-  const torch = run.heroes.length > 0 ? run.cleared.length % run.heroes.length : 0
-  return (
-    <section aria-label="Ladder" className="surface grid gap-2 p-4">
-      <h2 className="text-lg font-semibold">The ladder</h2>
-      {run.status === 'Map' ? (
-        <p className="text-sm text-muted-foreground">
-          Vote for the next camp. A tie goes to the torch bearer, {run.heroes[torch]?.name}.
-        </p>
-      ) : null}
-      <ol className="grid gap-2">
-        {rows.map((row, r) => (
-          <li key={r} className="flex flex-wrap gap-2">
-            {row.map((node) => {
-              const here = run.at === node.id
-              const done = run.cleared.includes(node.id)
-              const open = choices.includes(node.id)
-              const boss = bossOf(content, node.boss)
-              const label = boss ? boss.name : ROOM[node.kind]
-              const votes = voters(node.id)
-              return (
-                <div
-                  key={node.id}
-                  data-node={node.id}
-                  data-current={here || undefined}
-                  className={cn(
-                    'flex min-w-40 items-center gap-2 rounded-lg border px-3 py-2 text-sm',
-                    here && 'border-primary ring-2 ring-primary/40',
-                    done && 'opacity-60',
-                  )}
-                >
-                  {node.kind === 'boss' ? (
-                    <SkullIcon aria-hidden="true" className="size-4" />
-                  ) : (
-                    <FlameIcon aria-hidden="true" className="size-4" />
-                  )}
-                  <span>{label}</span>
-                  {done ? <Pill>Cleared</Pill> : null}
-                  {votes.length > 0 ? (
-                    <span className="text-xs text-muted-foreground">({votes.join(', ')})</span>
-                  ) : null}
-                  {open && view.me !== undefined ? (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      disabled={busy}
-                      onClick={() => act({ kind: 'vote', node: node.id })}
-                    >
-                      Vote
-                    </Button>
-                  ) : null}
-                </div>
-              )
-            })}
-          </li>
-        ))}
       </ol>
     </section>
   )
@@ -294,22 +67,44 @@ function FightPanel({ view, content }: { view: DelveView; content: DelveContent 
   const game = typeof status === 'object' && 'Fight' in status ? status.Fight.game : null
   const boss = bossOf(content, view.boss)
   return (
-    <section aria-label="Boss fight" className="surface grid gap-3 p-4">
-      <h2 className="flex items-center gap-2 text-lg font-semibold">
-        <SwordsIcon aria-hidden="true" className="size-5" />
-        {boss ? boss.name : 'A boss'} awaits
-      </h2>
-      {game ? (
-        <Link
-          to="/game/$gameId"
-          params={{ gameId: game }}
-          className={cn(buttonVariants(), 'justify-self-start')}
-        >
-          Go to the fight
-        </Link>
-      ) : (
-        <p className="text-sm text-muted-foreground">The fight is being prepared…</p>
-      )}
+    <section
+      aria-label="Boss fight"
+      className="grid gap-4 rounded-xl border-2 border-delve bg-delve-stone p-4 shadow-e2 motion-safe:animate-in motion-safe:fade-in motion-safe:duration-slow sm:p-6"
+    >
+      <div className="flex flex-wrap items-center gap-4">
+        <BossPortrait
+          colours={boss?.colors ?? ''}
+          className="size-20 shrink-0 rounded-full border-2 border-delve"
+        />
+        <div className="grid min-w-0 flex-1 gap-1">
+          <p className="inline-flex items-center gap-1 text-xs font-semibold tracking-wide text-delve uppercase">
+            <SwordsIcon aria-hidden="true" className="size-4" />
+            Boss fight
+          </p>
+          <h2 className="text-2xl font-semibold">{boss ? boss.name : 'A boss'} awaits</h2>
+          {boss ? (
+            <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+              <ColourPips colours={boss.colors} />
+              <span>{bossLife(boss.life, view.run.heroes.length, view.run.heat)} life</span>
+              {boss.phases.length > 0 ? <span>· {boss.phases.length + 1} phases</span> : null}
+            </p>
+          ) : null}
+          {boss ? <p className="text-sm italic">“{boss.line}”</p> : null}
+        </div>
+        {game ? (
+          <Link
+            to="/game/$gameId"
+            params={{ gameId: game }}
+            className={cn(buttonVariants({ size: 'lg' }), 'w-full sm:w-auto')}
+          >
+            Go to the fight
+          </Link>
+        ) : (
+          <p role="status" className="text-sm text-muted-foreground">
+            The fight is being prepared…
+          </p>
+        )}
+      </div>
       {boss ? <BossPanel content={content} boss={boss} /> : null}
     </section>
   )
@@ -318,19 +113,26 @@ function FightPanel({ view, content }: { view: DelveView; content: DelveContent 
 function EndPanel({ view }: { view: DelveView }) {
   const status = view.run.status
   const won = status === 'Victory'
+  const Icon = won ? TrophyIcon : ShieldIcon
   return (
-    <section aria-label="The end" className="surface grid gap-2 p-4">
-      <h2 className="flex items-center gap-2 text-lg font-semibold">
-        {won ? (
-          <TrophyIcon aria-hidden="true" className="size-5" />
-        ) : (
-          <ShieldIcon aria-hidden="true" className="size-5" />
-        )}
+    <section
+      aria-label="The end"
+      className={cn(
+        'grid justify-items-center gap-3 rounded-xl border-2 bg-delve-stone p-6 text-center shadow-e2',
+        won ? 'border-relic' : 'border-border-strong',
+      )}
+    >
+      <Icon aria-hidden="true" className={cn('size-12', won ? 'text-relic' : 'text-muted-foreground')} />
+      <h2 className="text-2xl font-semibold">
         {won ? 'Victory!' : status === 'Defeat' ? 'The party fell' : 'The party turned back'}
       </h2>
-      <p className="text-sm text-muted-foreground">
-        Seed code <strong className="font-mono">{view.seed}</strong> replays this ladder for another party.
+      <p className="max-w-prose text-sm text-muted-foreground">
+        Seed code <strong className="font-mono text-foreground">{view.seed}</strong> replays this ladder for
+        another party.
       </p>
+      <CopyButton text={view.seed} label="Copy seed code">
+        Copy seed code
+      </CopyButton>
     </section>
   )
 }
@@ -340,11 +142,13 @@ function RoomPanel({
   content,
   act,
   busy,
+  find,
 }: {
   view: DelveView
   content: DelveContent
   act: (action: DelveAction) => void
   busy: boolean
+  find?: FindCard
 }) {
   const me = view.me === undefined ? undefined : view.run.heroes[view.me]
   const offer = me?.offers[0]
@@ -355,13 +159,15 @@ function RoomPanel({
         <DelveOffer
           offer={offer}
           gold={me.gold}
+          life={me.life}
           content={content}
           busy={busy}
+          find={find}
           onPick={(pick) => act({ kind: 'pick', pick })}
         />
       ) : null}
       {waiting.length > 0 && !offer ? (
-        <p role="status" className="text-sm text-muted-foreground">
+        <p role="status" className="rounded-xl border bg-surface p-4 text-sm text-muted-foreground">
           Waiting for {waiting.join(', ')}.
         </p>
       ) : null}
@@ -412,20 +218,24 @@ function useDelve(client: DelvesApi, id: string) {
 export function DelvePage({
   id,
   client = delvesApi,
-  loadDecks = deckOptions,
+  loadDecks = loadPickerDecks,
+  find,
 }: {
   id: string
   client?: DelvesApi
-  loadDecks?: () => Promise<DeckOption[]>
+  loadDecks?: () => Promise<PickerDecks>
+  /** Finds offered cards' pictures; the card search by default. */
+  find?: FindCard
 }) {
   usePageTitle('Delve')
   const { view, content, error, busy, act } = useDelve(client, id)
-  const [decks, setDecks] = useState<DeckOption[]>([])
+  const [decks, setDecks] = useState<PickerDecks | null>(null)
+  const [played, setPlayed] = useState<LastPlayed>(() => readPlayed())
   useEffect(() => {
     let live = true
     loadDecks()
       .then((list) => live && setDecks(list))
-      .catch(() => live && setDecks([]))
+      .catch(() => live && setDecks({ entries: [], groups: [] }))
     return () => {
       live = false
     }
@@ -443,9 +253,10 @@ export function DelvePage({
       )
     }
     return (
-      <PageShell width="page">
+      <PageShell width="wide">
         <Loading label="Loading the delve…">
-          <Skeleton className="h-40" />
+          <Skeleton className="h-32" />
+          <Skeleton className="mt-4 h-64" />
         </Loading>
       </PageShell>
     )
@@ -453,41 +264,50 @@ export function DelvePage({
   const status = view.run.status
   const fighting = typeof status === 'object' && 'Fight' in status
   const over = status === 'Victory' || status === 'Defeat' || status === 'Abandoned'
+  const ladder = <BossLadder view={view} content={content} act={act} busy={busy} />
   return (
     <PageShell width="wide" className="grid gap-4 sm:py-6">
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h1 className="text-2xl font-semibold tracking-tight">{content.theme}</h1>
-        <span className="text-sm text-muted-foreground">
-          Invite <span className="font-mono">{view.code}</span> · Seed{' '}
-          <span className="font-mono">{view.seed}</span> · Heat {view.run.heat}
-        </span>
-      </div>
+      <RunHeader view={view} content={content} />
       {error !== null ? (
         <p role="alert" className="text-sm text-destructive">
           {error}
         </p>
       ) : null}
-      <div className="grid gap-4 lg:grid-cols-[1fr_20rem]">
-        <div className="grid content-start gap-4">
-          {status === 'Lobby' ? <Lobby view={view} act={act} busy={busy} decks={decks} /> : null}
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]">
+        <div className="grid min-w-0 content-start gap-4">
+          {status === 'Lobby' ? (
+            <>
+              <PartyLobby
+                view={view}
+                act={act}
+                busy={busy}
+                entries={decks?.entries ?? null}
+                groups={decks?.groups ?? []}
+                played={played}
+                onPlayed={(deck) => setPlayed(notePlayed(deck, new Date()))}
+              />
+              <section aria-label={content.theme} className="rounded-xl border bg-delve-stone p-4 text-sm">
+                {content.text}
+              </section>
+            </>
+          ) : null}
           {fighting ? <FightPanel view={view} content={content} /> : null}
-          {status === 'Room' ? <RoomPanel view={view} content={content} act={act} busy={busy} /> : null}
+          {status === 'Room' ? (
+            <RoomPanel view={view} content={content} act={act} busy={busy} find={find} />
+          ) : null}
           {over ? <EndPanel view={view} /> : null}
-          {status !== 'Lobby' ? (
-            <Ladder map={view.run.map} view={view} content={content} act={act} busy={busy} />
-          ) : (
-            <section aria-label="The Warrens" className="surface p-4 text-sm text-muted-foreground">
-              {content.text}
-            </section>
-          )}
+          {status !== 'Lobby' ? ladder : null}
         </div>
         <aside className="grid content-start gap-4">
-          <PartyPanel view={view} content={content} />
-          <section aria-label="Log" className="surface grid gap-1 p-3 text-sm">
-            <h2 className="font-semibold">Log</h2>
-            <ol className="grid gap-0.5 text-muted-foreground">
+          <section aria-labelledby="log-title" className="surface grid gap-2 p-3 text-sm">
+            <h2 id="log-title" className="font-semibold">
+              Chronicle
+            </h2>
+            <ol className="grid gap-1 text-muted-foreground">
               {view.run.log.slice(-8).map((line, i) => (
-                <li key={`${i}-${line}`}>{line}</li>
+                <li key={`${i}-${line}`} className="border-l-2 border-border pl-2">
+                  {line}
+                </li>
               ))}
             </ol>
           </section>

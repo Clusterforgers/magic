@@ -29,6 +29,7 @@ import { Route as DecksUnvalidatedRouteImport } from './routes/decks_.unvalidate
 import { Route as DelvesDelveIdRouteImport } from './routes/delves_.$delveId'
 import { Route as DevAccountsRouteImport } from './routes/dev.accounts'
 import { Route as DevBuilderRouteImport } from './routes/dev.builder'
+import { Route as DevDelveRouteImport } from './routes/dev.delve'
 import { Route as DevLobbyRouteImport } from './routes/dev.lobby'
 import { Route as DevPreconsRouteImport } from './routes/dev.precons'
 import { Route as DevReadRouteImport } from './routes/dev.read'
@@ -144,6 +145,11 @@ const DevBuilderRoute = DevBuilderRouteImport.update({
   path: '/dev/builder',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DevDelveRoute = DevDelveRouteImport.update({
+  id: '/dev/delve',
+  path: '/dev/delve',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DevLobbyRoute = DevLobbyRouteImport.update({
   id: '/dev/lobby',
   path: '/dev/lobby',
@@ -236,6 +242,7 @@ export interface FileRoutesByFullPath {
   '/delves/$delveId': typeof DelvesDelveIdRoute
   '/dev/accounts': typeof DevAccountsRoute
   '/dev/builder': typeof DevBuilderRoute
+  '/dev/delve': typeof DevDelveRoute
   '/dev/lobby': typeof DevLobbyRoute
   '/dev/precons': typeof DevPreconsRoute
   '/dev/read': typeof DevReadRoute
@@ -272,6 +279,7 @@ export interface FileRoutesByTo {
   '/delves/$delveId': typeof DelvesDelveIdRoute
   '/dev/accounts': typeof DevAccountsRoute
   '/dev/builder': typeof DevBuilderRoute
+  '/dev/delve': typeof DevDelveRoute
   '/dev/lobby': typeof DevLobbyRoute
   '/dev/precons': typeof DevPreconsRoute
   '/dev/read': typeof DevReadRoute
@@ -309,6 +317,7 @@ export interface FileRoutesById {
   '/delves_/$delveId': typeof DelvesDelveIdRoute
   '/dev/accounts': typeof DevAccountsRoute
   '/dev/builder': typeof DevBuilderRoute
+  '/dev/delve': typeof DevDelveRoute
   '/dev/lobby': typeof DevLobbyRoute
   '/dev/precons': typeof DevPreconsRoute
   '/dev/read': typeof DevReadRoute
@@ -347,6 +356,7 @@ export interface FileRouteTypes {
     | '/delves/$delveId'
     | '/dev/accounts'
     | '/dev/builder'
+    | '/dev/delve'
     | '/dev/lobby'
     | '/dev/precons'
     | '/dev/read'
@@ -383,6 +393,7 @@ export interface FileRouteTypes {
     | '/delves/$delveId'
     | '/dev/accounts'
     | '/dev/builder'
+    | '/dev/delve'
     | '/dev/lobby'
     | '/dev/precons'
     | '/dev/read'
@@ -419,6 +430,7 @@ export interface FileRouteTypes {
     | '/delves_/$delveId'
     | '/dev/accounts'
     | '/dev/builder'
+    | '/dev/delve'
     | '/dev/lobby'
     | '/dev/precons'
     | '/dev/read'
@@ -456,6 +468,7 @@ export interface RootRouteChildren {
   DelvesDelveIdRoute: typeof DelvesDelveIdRoute
   DevAccountsRoute: typeof DevAccountsRoute
   DevBuilderRoute: typeof DevBuilderRoute
+  DevDelveRoute: typeof DevDelveRoute
   DevLobbyRoute: typeof DevLobbyRoute
   DevPreconsRoute: typeof DevPreconsRoute
   DevReadRoute: typeof DevReadRoute
@@ -614,6 +627,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DevBuilderRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dev/delve': {
+      id: '/dev/delve'
+      path: '/dev/delve'
+      fullPath: '/dev/delve'
+      preLoaderRoute: typeof DevDelveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dev/lobby': {
       id: '/dev/lobby'
       path: '/dev/lobby'
@@ -736,6 +756,7 @@ const rootRouteChildren: RootRouteChildren = {
   DelvesDelveIdRoute: DelvesDelveIdRoute,
   DevAccountsRoute: DevAccountsRoute,
   DevBuilderRoute: DevBuilderRoute,
+  DevDelveRoute: DevDelveRoute,
   DevLobbyRoute: DevLobbyRoute,
   DevPreconsRoute: DevPreconsRoute,
   DevReadRoute: DevReadRoute,
