@@ -185,6 +185,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Renowned: [{ Renowned: { object: 3, player: 1 } }, 'Forest becomes renowned'],
   Enlisted: [{ Enlisted: { object: 3, enlisted: 1, player: 1 } }, 'Forest enlists Grizzly Bears'],
   Exploited: [{ Exploited: { object: 3, sacrificed: 1, player: 1 } }, 'Forest exploits Grizzly Bears'],
+  Fought: [{ Fought: { object: 3, other: 1 } }, 'Forest fights Grizzly Bears'],
   Crewed: [
     { Crewed: { object: 3, player: 1, creatures: [1, 2] } },
     'Forest is crewed by Grizzly Bears and Hill Giant',

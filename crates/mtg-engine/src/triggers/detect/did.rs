@@ -116,6 +116,7 @@ pub(super) fn did_happened(
             ability,
             origin,
         } => found.extend(activated(pre, post, *player, source.id, *ability, *origin)),
+        Event::Fought { object, .. } => found.push(of(Action::Fought, *object)),
         Event::Enlisted { object, player, .. } => {
             found.push(did(Action::Enlisted, Some(*player), Some(*object)));
         }
@@ -225,6 +226,10 @@ pub(super) fn did_happened(
             found.extend(action.map(|action| did(action, Some(*player), Some(*object))));
         }
         Event::Foraged { player } => found.push(did(Action::Foraged, Some(*player), None)),
+        // The flipper loses a flip whose call missed (CR 705.2); a won flip is `CoinFlipWon`.
+        Event::CoinFlipped {
+            player, won: false, ..
+        } => found.push(did(Action::LostCoinFlip, Some(*player), None)),
         Event::Solved { object } => found.push(did(
             Action::SolvedCase,
             controller_of(post, *object),

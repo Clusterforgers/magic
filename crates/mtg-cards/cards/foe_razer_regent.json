@@ -1,7 +1,7 @@
 {
   "oracle_id": "e7dd3e2c-34a5-4097-b6d1-2ccd097fe57f",
   "name": "Foe-Razer Regent",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Foe-Razer Regent",
@@ -22,9 +22,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 91, "end": 198 }
+          "Triggered": {
+            "when": {
+              "Did": { "action": "Fought", "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1", "count": 2 } }]
+                }
+              }
+            ]
           }
         }
       ]

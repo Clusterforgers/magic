@@ -149,6 +149,10 @@ pub enum Action {
     DeclinedCumulativeUpkeep,
     /// A player paid the echo cost of a permanent (CR 702.30a); `what` is the permanent.
     PaidEcho,
+    /// A player lost a coin flip they flipped (CR 705.2): the flip of a card that says "win" or "lose".
+    LostCoinFlip,
+    /// A creature fought another (CR 701.14); `what` is the creature, judged as it is after the fight.
+    Fought,
 }
 
 impl Action {
@@ -299,6 +303,8 @@ impl Action {
                 "activates an ability without {T} in its activation cost",
             ),
             Action::FinishedVoting => ("finish voting", "finish voting"),
+            Action::LostCoinFlip => ("lose a coin flip", "loses a coin flip"),
+            Action::Fought => ("fight", "fights"),
         }
     }
 

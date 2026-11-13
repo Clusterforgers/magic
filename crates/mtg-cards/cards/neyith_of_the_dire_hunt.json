@@ -1,16 +1,25 @@
 {
   "oracle_id": "aba04455-c13f-48f7-9674-56803b39a42b",
   "name": "Neyith of the Dire Hunt",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Neyith of the Dire Hunt",
       "oracle_fingerprint": "ce25c1099cbddaece24b07b306b72c44",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 0, "end": 80 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "Batch": {
+                    "Did": { "action": "Fought", "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                  }
+                },
+                { "Batch": { "BecomesBlocked": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } } }
+              ]
+            },
+            "effects": [{ "Draw": {} }]
           }
         },
         {

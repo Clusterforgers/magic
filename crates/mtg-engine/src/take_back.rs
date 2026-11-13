@@ -382,6 +382,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::Renowned { .. }
         | Event::Enlisted { .. }
         | Event::Exploited { .. }
+        | Event::Fought { .. }
         | Event::Crewed { .. }
         | Event::ClassLevelGained { .. }
         | Event::TurnedFaceDown { .. }

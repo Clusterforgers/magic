@@ -1786,6 +1786,22 @@ pub enum Condition {
     },
     /// A booster draft made the note ("if you guessed correctly for a card named ~"); never true without a draft.
     Drafted(crate::r4711_noted::DraftNote),
+    /// The creature `by` names exploited the creature `what` names this turn ("if it exploited that creature",
+    /// CR 702.110b).
+    Exploited {
+        /// The creature that exploited.
+        by: Ref,
+        /// The creature sacrificed, named as it was or as it is now.
+        what: Ref,
+    },
+    /// A player `player` names was attacked this turn by a creature `by` selects as it was when declared as an attacker
+    /// ("if they were attacked this turn by an Assassin you controlled"); attacking their planeswalker doesn't count.
+    AttackedThisTurnBy {
+        /// The player attacked.
+        player: Ref,
+        /// The attackers that count, as they were when declared.
+        by: Selector,
+    },
 }
 
 #[cfg(test)]

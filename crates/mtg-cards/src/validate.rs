@@ -1588,6 +1588,15 @@ impl<'a> Walker<'a> {
             Condition::FirstCombat => self.uses("Condition", "FirstCombat"),
             Condition::FirstStep => self.uses("Condition", "FirstStep"),
             Condition::Drafted(_) => self.uses("Condition", "Drafted"),
+            Condition::Exploited { by, what } => {
+                self.uses("Condition", "Exploited");
+                self.at("by", |w| w.reference(by, Kind::Object));
+                self.at("what", |w| w.reference(what, Kind::Object));
+            }
+            Condition::AttackedThisTurnBy { player, by } => {
+                self.player_condition("AttackedThisTurnBy", player);
+                self.at("by", |w| w.selector(by));
+            }
             Condition::AttackedThisCombat(who) => self.player_condition("AttackedThisCombat", who),
             Condition::SorceryTiming => self.uses("Condition", "SorceryTiming"),
             Condition::AfterCombat => self.uses("Condition", "AfterCombat"),

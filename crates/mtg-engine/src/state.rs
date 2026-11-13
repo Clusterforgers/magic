@@ -237,6 +237,8 @@ pub(crate) struct Tallies {
     pub(crate) crews: BTreeSet<(ObjectRef, bool, ObjectRef)>,
     /// The objects that dealt damage to an object this turn, as (the object damaged, the source of the damage).
     pub(crate) damaged_by: BTreeSet<(ObjectRef, ObjectRef)>,
+    /// The creatures exploited this turn, as (the creature that exploited, the creature sacrificed) (CR 702.110b).
+    pub(crate) exploits: BTreeSet<(ObjectRef, ObjectId)>,
     /// The modes the abilities chose, as (source, where the ability comes from, its index, the mode).
     pub(crate) modes: BTreeSet<(ObjectRef, AbilitySource, usize, usize)>,
     /// How many times each ability resolved, as (source, where the ability comes from, its index).
@@ -1001,6 +1003,9 @@ impl Hash for GameState {
         }
         if !self.tallies.damaged_by.is_empty() {
             self.tallies.damaged_by.hash(state);
+        }
+        if !self.tallies.exploits.is_empty() {
+            self.tallies.exploits.hash(state);
         }
         if !self.tallies.modes.is_empty() {
             self.tallies.modes.hash(state);

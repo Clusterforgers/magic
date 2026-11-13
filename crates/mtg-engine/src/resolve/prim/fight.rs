@@ -58,6 +58,17 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     amount,
                 ));
             }
+            // Each creature fought, whatever the damage came to (prevented or none); one fighting itself fought once.
+            events.push(Event::Fought {
+                object: a.id,
+                other: b.id,
+            });
+            if a.id != b.id {
+                events.push(Event::Fought {
+                    object: b.id,
+                    other: a.id,
+                });
+            }
         }
     }
     Ok(Run::events(events))

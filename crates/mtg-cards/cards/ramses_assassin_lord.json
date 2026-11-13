@@ -1,7 +1,7 @@
 {
   "oracle_id": "170182ed-af1d-442a-8868-d74a96e17f03",
   "name": "Ramses, Assassin Lord",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ramses, Assassin Lord",
@@ -15,9 +15,15 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 50, "end": 164 }
+          "Triggered": {
+            "when": { "Did": { "action": "LostGame" } },
+            "if": {
+              "AttackedThisTurnBy": {
+                "player": "Triggering",
+                "by": [{ "Subtype": "Assassin" }, { "ControlledBy": "You" }]
+              }
+            },
+            "effects": [{ "WinGame": {} }]
           }
         }
       ]

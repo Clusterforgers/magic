@@ -1096,6 +1096,13 @@ pub enum Event {
         /// The controller of the enlisting creature.
         player: PlayerId,
     },
+    /// A creature fought another (CR 701.14): one event for each creature of a fight, after the damage of the fight.
+    Fought {
+        /// The creature that fought.
+        object: ObjectId,
+        /// The creature it fought.
+        other: ObjectId,
+    },
     /// A creature exploited a creature (CR 702.110b): its exploit ability resolved and the sacrifice is the event
     /// before it.
     Exploited {
@@ -1610,6 +1617,7 @@ impl Event {
             | Event::Devoured { object, .. }
             | Event::Renowned { object, .. }
             | Event::Exploited { object, .. }
+            | Event::Fought { object, .. }
             | Event::Enlisted { object, .. }
             | Event::Crewed { object, .. }
             | Event::ClassLevelGained { object, .. }
