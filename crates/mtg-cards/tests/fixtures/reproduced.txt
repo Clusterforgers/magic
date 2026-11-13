@@ -881,6 +881,7 @@ Hero's Heirloom
 Heroes' Podium
 Heronblade Elite
 Hexavus
+Hexhaven Dueling Arena
 Hidden Dragonslayer
 Hidden Hideout
 Hideous Laughter
@@ -1675,6 +1676,7 @@ Skullbriar, the Walking Grave
 Skullclamp
 Skullmulcher
 Skycloud Expanse
+Skycoach Waypoint
 Skyhunter Strike Force
 Skymarcher Aspirant
 Skyreach Manta

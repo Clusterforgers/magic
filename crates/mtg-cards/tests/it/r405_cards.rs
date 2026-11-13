@@ -91,6 +91,8 @@ fn compiled_text() {
 #[case("Biblioplex Tomekeeper")]
 #[case("Vizier of the Anointed")]
 #[case("Case File Auditor")]
+#[case("Hexhaven Dueling Arena")]
+#[case("Skycoach Waypoint")]
 fn reads_back_whole(#[case] name: &str) {
     let report = report(name);
     assert_eq!(
