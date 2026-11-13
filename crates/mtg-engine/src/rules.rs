@@ -360,7 +360,10 @@ pub enum Rule {
         mana: mtg_cards::mana::ManaCostX,
         /// How many times, counted as each spell is cast.
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
-        #[serde(default = "mtg_cards::value::Amount::one", skip_serializing_if = "mtg_cards::value::Amount::is_one")]
+        #[serde(
+            default = "mtg_cards::value::Amount::one",
+            skip_serializing_if = "mtg_cards::value::Amount::is_one"
+        )]
         per: mtg_cards::value::Amount,
     },
     /// Damage from the sources can't be prevented (CR 614.17); every source when the selector is empty.

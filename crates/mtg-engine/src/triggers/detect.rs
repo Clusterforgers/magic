@@ -816,9 +816,7 @@ fn ordinal(post: &GameState, later: &[Event], player: PlayerId, kind: Tally) -> 
                 form,
                 ..
             },
-        ) => {
-            *who == player && form.life_lost(*amount) > 0
-        }
+        ) => *who == player && form.life_lost(*amount) > 0,
         _ => false,
     };
     let after = post.tallied(player, kind);

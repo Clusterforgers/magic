@@ -1266,7 +1266,7 @@ impl InvariantChecker {
             _ => {
                 // A life floor cuts the life lost, not the damage (CR 614.1).
                 let before = self.expected_life.get(player.index()).copied().unwrap_or(0);
-                let wanted = i32::try_from(amount).unwrap_or(i32::MAX);
+                let wanted = i32::try_from(form.life_lost(amount)).unwrap_or(i32::MAX);
                 let lost = match mtg_engine::rules::damage_life_floor(&self.shadow, player, before)
                 {
                     Some(floor) => wanted.min(before.saturating_sub(floor)),

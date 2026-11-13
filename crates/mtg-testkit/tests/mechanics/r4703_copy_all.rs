@@ -8,6 +8,7 @@ use std::sync::Arc;
 use crate::common::{names, pid};
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
+use mtg_cards::keyword::Keyword;
 use mtg_core::card::CardType;
 use mtg_engine::choose::YesNoChoice;
 use mtg_engine::decision::{Answer, PayChoice};
@@ -31,9 +32,14 @@ fn spark() -> Arc<CardDefinition> {
     )
 }
 
-/// A free 1/1 Eldrazi creature.
+/// A free 1/1 Eldrazi creature with flash.
 fn spawn() -> Arc<CardDefinition> {
-    Arc::new((*free_creature("Spawn", 1, 1)).clone().with_subtype("Eldrazi"))
+    Arc::new(
+        (*free_creature("Spawn", 1, 1))
+            .clone()
+            .with_subtype("Eldrazi")
+            .with_rules(Ability::Keyword(Keyword::Flash)),
+    )
 }
 
 #[rstest]
@@ -78,7 +84,10 @@ fn the_spells_on_the_stack_are_copied_when_paid(
     assert_eq!(spawns, 1 + copies);
     let damage = i32::try_from(1 + copies).unwrap();
     for seat in 1..seats {
-        assert_eq!(driver.state().player(pid(seat)).unwrap().life(), 20 - damage);
+        assert_eq!(
+            driver.state().player(pid(seat)).unwrap().life(),
+            20 - damage
+        );
     }
     Ok(())
 }

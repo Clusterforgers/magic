@@ -97,7 +97,8 @@ pub(super) fn r4703_cast_before_count() -> Amount {
 }
 
 /// The words of [`r4703_cast_before_count`] after "copy it".
-const R4703_CAST_BEFORE: &str = "for each other instant and sorcery spell you've cast before it this turn";
+const R4703_CAST_BEFORE: &str =
+    "for each other instant and sorcery spell you've cast before it this turn";
 
 /// "for each other instant and sorcery spell you've cast before it this turn" (Thousand-Year Storm).
 fn r4703_cast_before(r: &mut Reader<'_>) -> Option<Amount> {

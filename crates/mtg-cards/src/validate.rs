@@ -7058,10 +7058,7 @@ mod tests {
         r#""dice":2,"choose":true,"results":[{"from":1,"effects":[{"Draw":{}}]}]"#,
         1
     )]
-    fn c11e_several_dice_have_no_table(
-        #[case] fields: &str,
-        #[case] expected: usize,
-    ) {
+    fn c11e_several_dice_have_no_table(#[case] fields: &str, #[case] expected: usize) {
         let json = format!(
             r#"{{"Spell":{{"effects":[{{"RollDice":{{"sides":6,{fields}}}}},{{"Draw":{{"count":{{"DieResult":"Chosen"}}}}}}]}}}}"#
         );

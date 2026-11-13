@@ -87,7 +87,11 @@ fn a_creature_spell_is_not_counted(#[values(2, 3, 4)] seats: usize) -> Result<()
         .battlefield(0, vec![ready(card("Thousand-Year Storm").unwrap())])
         .hand(
             0,
-            vec![spark("Spark0"), free_creature("Bear", 2, 2), spark("Spark1")],
+            vec![
+                spark("Spark0"),
+                free_creature("Bear", 2, 2),
+                spark("Spark1"),
+            ],
         );
     let mut driver = Driver::from_scenario(scenario)?;
     for name in ["Spark0", "Bear", "Spark1"] {

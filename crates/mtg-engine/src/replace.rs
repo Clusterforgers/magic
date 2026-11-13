@@ -961,7 +961,8 @@ impl Pass<'_> {
             } => Unit::Damage {
                 source: *source,
                 target: *target,
-                loses_life: matches!(target, DamageTarget::Player(_)) && form.life_lost(*amount) > 0,
+                loses_life: matches!(target, DamageTarget::Player(_))
+                    && form.life_lost(*amount) > 0,
             },
             Event::LifeLost { player, .. } => Unit::LifeLoss { player: *player },
             Event::CountersChanged(CountersChanged { on, counter, delta }) if *delta > 0 => {
@@ -3745,8 +3746,8 @@ mod w13a_moved;
 mod w5d_instead;
 
 mod r283_prevent;
-mod r4703_loss;
 mod r304c_amounts;
+mod r4703_loss;
 mod w9c_prevent;
 
 #[cfg(test)]

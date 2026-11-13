@@ -191,9 +191,8 @@ pub fn g10d_spell_cost_text(effect: &Effect) -> Option<String> {
         // A count is only said as X of a cost change for this turn: "cost {X} less to cast, where X is ...".
         let wordings = super::c11a_turn_costs::c11a_turn_wordings(mana, per)?;
         let (mana, tail) = wordings.into_iter().find(|(mana, _)| mana == "{X}")?;
-        return matches!(duration, Duration::UntilEndOfTurn).then(|| {
-            format!("{subject} this turn{colors} cost {mana} {more} to cast{tail}")
-        });
+        return matches!(duration, Duration::UntilEndOfTurn)
+            .then(|| format!("{subject} this turn{colors} cost {mana} {more} to cast{tail}"));
     }
     if !colors.is_empty() {
         return matches!(duration, Duration::UntilEndOfTurn)
@@ -216,8 +215,12 @@ mod r4703_tests {
     use rstest::rstest;
 
     #[rstest]
-    #[case("spells you cast this turn that are black and/or red cost {X} less to cast, where X is the amount of life you lost this turn")]
-    #[case("spells you cast this turn that are white and/or blue cost {X} less to cast, where X is the amount of life you gained this turn")]
+    #[case(
+        "spells you cast this turn that are black and/or red cost {X} less to cast, where X is the amount of life you lost this turn"
+    )]
+    #[case(
+        "spells you cast this turn that are white and/or blue cost {X} less to cast, where X is the amount of life you gained this turn"
+    )]
     fn r4703_counted_spell_costs_read_back(#[case] text: &str) {
         let tokens = tokenize(text);
         let mut r = Reader::new(&tokens, false);

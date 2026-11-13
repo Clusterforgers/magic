@@ -6,11 +6,11 @@
 
 use std::sync::Arc;
 
+use crate::common::pid;
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_core::card::CardType;
 use mtg_engine::zones::Zone;
-use crate::common::pid;
 use mtg_testkit::cards::{cost, free_creature};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
@@ -70,7 +70,9 @@ fn bleed(
     driver.cast("Bleed")?;
     // The sorcery resolves, then each loss's trigger goes on the stack and resolves.
     for _ in 0..40 {
-        if driver.state().zone(Zone::Stack).is_empty() && driver.state().pending_triggers().is_empty() {
+        if driver.state().zone(Zone::Stack).is_empty()
+            && driver.state().pending_triggers().is_empty()
+        {
             break;
         }
         driver.answer_passively()?;

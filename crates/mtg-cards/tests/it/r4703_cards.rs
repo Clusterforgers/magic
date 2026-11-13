@@ -117,31 +117,71 @@ fn r4703_reads_back_whole(#[case] name: &str) {
 }
 
 #[rstest]
-#[case::another_color("Rowan, Scion of War", r#"{ "Color": "Red" }"#, r#"{ "Color": "Green" }"#)]
-#[case::life_gained("Rowan, Scion of War", r#""what": "LifeLost""#, r#""what": "LifeGainedTotal""#)]
-#[case::opponents_lost("Rowan, Scion of War", r#""who": "You", "what""#, r#""who": "Opponents", "what""#)]
-#[case::until_next_turn("Will, Scion of Peace", r#""UntilEndOfTurn""#, r#""UntilYourNextTurn""#)]
+#[case::another_color(
+    "Rowan, Scion of War",
+    r#"{ "Color": "Red" }"#,
+    r#"{ "Color": "Green" }"#
+)]
+#[case::life_gained(
+    "Rowan, Scion of War",
+    r#""what": "LifeLost""#,
+    r#""what": "LifeGainedTotal""#
+)]
+#[case::opponents_lost(
+    "Rowan, Scion of War",
+    r#""who": "You", "what""#,
+    r#""who": "Opponents", "what""#
+)]
+#[case::until_next_turn(
+    "Will, Scion of Peace",
+    r#""UntilEndOfTurn""#,
+    r#""UntilYourNextTurn""#
+)]
 #[case::per_spell_of_another_count(
     "Will, Scion of Peace",
     r#""what": "LifeGainedTotal""#,
     r#""what": "LifeGained""#
 )]
-#[case::after_combat("Bloodletter of Aclazotz", r#""condition": "YourTurn""#, r#""condition": "AfterCombat""#)]
+#[case::after_combat(
+    "Bloodletter of Aclazotz",
+    r#""condition": "YourTurn""#,
+    r#""condition": "AfterCombat""#
+)]
 #[case::you("Bloodletter of Aclazotz", r#""who": "Opponents""#, r#""who": "You""#)]
 #[case::thrice("Bloodletter of Aclazotz", r#""LossTimes": 2"#, r#""LossTimes": 3"#)]
-#[case::not_before("Thousand-Year Storm", r#"{ "CastBefore": "Triggering" }"#, r#"{ "Type": "Instant" }"#)]
+#[case::not_before(
+    "Thousand-Year Storm",
+    r#"{ "CastBefore": "Triggering" }"#,
+    r#"{ "Type": "Instant" }"#
+)]
 #[case::by_anyone("Thousand-Year Storm", r#""who": "You","#, r#""who": "EachPlayer","#)]
-#[case::another_name("Pardic Firecat", r#""CountsAsNamed": "Flame Burst""#, r#""CountsAsNamed": "Muscle Burst""#)]
+#[case::another_name(
+    "Pardic Firecat",
+    r#""CountsAsNamed": "Flame Burst""#,
+    r#""CountsAsNamed": "Muscle Burst""#
+)]
 #[case::from_exile("Diligent Farmhand", r#""from": "Graveyard""#, r#""from": "Exile""#)]
-#[case::sacrificed_by_anyone("Korvold, Gleeful Glutton", r#""who": "You""#, r#""who": "EachPlayer""#)]
+#[case::sacrificed_by_anyone(
+    "Korvold, Gleeful Glutton",
+    r#""who": "You""#,
+    r#""who": "EachPlayer""#
+)]
 #[case::sacrificed_creatures(
     "Korvold, Gleeful Glutton",
     r#""filter": []"#,
     r#""filter": [{ "Type": "Creature" }]"#
 )]
 #[case::two_dice("Circuits Act", r#""dice": 3"#, r#""dice": 2"#)]
-#[case::opponents_spells("Ulalek, Fused Atrocity", r#""Spell", { "ControlledBy": "You" }"#, r#""Spell", { "ControlledBy": "Opponents" }"#)]
-#[case::four_less("Dargo, the Shipwrecker", r#""mana": "{2}", "per": "X""#, r#""mana": "{4}", "per": "X""#)]
+#[case::opponents_spells(
+    "Ulalek, Fused Atrocity",
+    r#""Spell", { "ControlledBy": "You" }"#,
+    r#""Spell", { "ControlledBy": "Opponents" }"#
+)]
+#[case::four_less(
+    "Dargo, the Shipwrecker",
+    r#""mana": "{2}", "per": "X""#,
+    r#""mana": "{4}", "per": "X""#
+)]
 fn r4703_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let file = r4703_file(name);
     assert!(file.contains(from), "{name} has {from}");

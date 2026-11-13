@@ -25,7 +25,8 @@ pub(in crate::compile::read) const R4703_LOSERS: [(&str, Ref, &str); 3] = [
 ];
 
 /// The factors of "<n> times that much life": the word and the factor.
-pub(in crate::compile::read) const R4703_TIMES: [(&str, u32); 2] = [("twice", 2), ("three times", 3)];
+pub(in crate::compile::read) const R4703_TIMES: [(&str, u32); 2] =
+    [("twice", 2), ("three times", 3)];
 
 /// The words of [`r4703_copy_all`].
 const R4703_COPY_ALL: &str = "copy all spells you control, then copy all other activated and triggered abilities you control. You may choose new targets for the copies";
@@ -167,10 +168,19 @@ mod tests {
         "If an opponent would lose life during your turn, they lose twice that much life instead.",
         true
     )]
-    #[case::any_time("If an opponent would lose life, they lose twice that much life instead.", true)]
+    #[case::any_time(
+        "If an opponent would lose life, they lose twice that much life instead.",
+        true
+    )]
     #[case::you("If you would lose life, you lose twice that much life instead.", true)]
-    #[case::gain("If an opponent would gain life during your turn, they gain twice that much life instead.", false)]
-    #[case::pronoun("If an opponent would lose life during your turn, you lose twice that much life instead.", false)]
+    #[case::gain(
+        "If an opponent would gain life during your turn, they gain twice that much life instead.",
+        false
+    )]
+    #[case::pronoun(
+        "If an opponent would lose life during your turn, you lose twice that much life instead.",
+        false
+    )]
     #[case::their_turn(
         "If an opponent would lose life during their turn, they lose twice that much life instead.",
         false
@@ -187,7 +197,10 @@ mod tests {
         "If this card is in exile, effects from spells named Muscle Burst count it as a card named Muscle Burst.",
         false
     )]
-    #[case::not_instead("If an opponent would lose life during your turn, they lose twice that much life.", false)]
+    #[case::not_instead(
+        "If an opponent would lose life during your turn, they lose twice that much life.",
+        false
+    )]
     fn r4703_loss_times_reads(#[case] text: &str, #[case] reads: bool) {
         assert_eq!(r4703_static_read(text).is_some(), reads, "{text}");
     }
@@ -205,7 +218,8 @@ mod tests {
     fn r4703_the_compiler_reads(#[case] text: &str, #[case] kind: crate::compile::ClauseKind) {
         let read = super::super::clause_with(text, kind, false, &super::super::Own::default());
         assert!(
-            read.as_ref().is_some_and(|ability| !matches!(ability, Ability::Manual { .. })),
+            read.as_ref()
+                .is_some_and(|ability| !matches!(ability, Ability::Manual { .. })),
             "{text}: {read:?}"
         );
     }

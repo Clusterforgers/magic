@@ -32,7 +32,9 @@ fn one_token_for_each_different_result(
     let mut rolled: Vec<u32> = events
         .iter()
         .filter_map(|event| match event {
-            Event::DieRolled { sides: 6, result, .. } => Some(*result),
+            Event::DieRolled {
+                sides: 6, result, ..
+            } => Some(*result),
             _ => None,
         })
         .collect();

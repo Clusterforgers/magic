@@ -76,9 +76,14 @@ mod tests {
     #[rstest]
     #[case::bloodletter(
         r4703_loss(Ref::Opponents, 2, Some(Condition::YourTurn)),
-        Some("If an opponent would lose life during your turn, they lose twice that much life instead.")
+        Some(
+            "If an opponent would lose life during your turn, they lose twice that much life instead."
+        )
     )]
-    #[case::you(r4703_loss(Ref::You, 2, None), Some("If you would lose life, you lose twice that much life instead."))]
+    #[case::you(
+        r4703_loss(Ref::You, 2, None),
+        Some("If you would lose life, you lose twice that much life instead.")
+    )]
     #[case::four_times(r4703_loss(Ref::Opponents, 4, None), None)]
     #[case::other_condition(r4703_loss(Ref::Opponents, 2, Some(Condition::AfterCombat)), None)]
     fn r4703_loss_is_written_as_printed(#[case] ability: Ability, #[case] text: Option<&str>) {
@@ -88,13 +93,21 @@ mod tests {
     #[rstest]
     #[case::graveyard(ZoneKind::Graveyard, true)]
     #[case::battlefield(ZoneKind::Battlefield, false)]
-    fn r4703_counts_as_named_is_written_from_the_graveyard(#[case] from: ZoneKind, #[case] written: bool) {
+    fn r4703_counts_as_named_is_written_from_the_graveyard(
+        #[case] from: ZoneKind,
+        #[case] written: bool,
+    ) {
         let ability = Ability::Rule {
             rule: crate::modify::GameRule::CountsAsNamed("Muscle Burst".to_owned()),
             condition: None,
             from,
         };
         let texts = r4703_counts_as_named(&ability);
-        assert_eq!(texts.iter().any(|text| text.contains("~ is in a graveyard")), written);
+        assert_eq!(
+            texts
+                .iter()
+                .any(|text| text.contains("~ is in a graveyard")),
+            written
+        );
     }
 }
