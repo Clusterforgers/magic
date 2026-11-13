@@ -149,3 +149,29 @@ pub(super) fn r4700_condition_text(condition: &crate::value::Condition) -> Optio
     };
     Some("it's at least one of the chosen colors".to_owned())
 }
+
+/// "Exile the top three black cards of your graveyard": a cost that exiles exactly the topmost cards of a kind; `None`
+/// for any other filter.
+pub(super) fn r4700_top_cards_text(
+    filter: &crate::refs::Selector,
+    count: &crate::value::Amount,
+) -> Option<String> {
+    use crate::refs::Pred;
+    let (Pred::R4700TopOfGraveyard { among, count: top }, rest) = filter.0.split_last()? else {
+        return None;
+    };
+    (rest == among.0.as_slice()
+        && *count == crate::value::Amount::Fixed(i32::try_from(*top).ok()?))
+    .then_some(())?;
+    let plain = super::costs::text(&crate::cost::Cost(vec![
+        crate::cost::CostItem::ExileFromGraveyard {
+            filter: among.clone(),
+            any_player: false,
+            count: count.clone(),
+        },
+    ]))?;
+    let cards = plain
+        .strip_prefix("Exile ")?
+        .strip_suffix(" from your graveyard")?;
+    Some(format!("Exile the top {cards} of your graveyard"))
+}

@@ -2055,6 +2055,7 @@ impl<'a> Scope<'a> {
             | Pred::BottomOfLibrary
             | Pred::TopOfGraveyard
             | Pred::TopCreatureOfGraveyard
+            | Pred::R4700TopOfGraveyard { .. }
             | Pred::BlockedBy(_)
             | Pred::BlockedThisTurnBy(_)
             | Pred::BandedWith(_)

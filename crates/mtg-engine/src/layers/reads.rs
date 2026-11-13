@@ -335,6 +335,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::BottomOfLibrary
         | Pred::TopOfGraveyard
         | Pred::TopCreatureOfGraveyard
+        | Pred::R4700TopOfGraveyard { .. }
         | Pred::Kicked
         | Pred::AdditionalCostPaid
         | Pred::Suspended

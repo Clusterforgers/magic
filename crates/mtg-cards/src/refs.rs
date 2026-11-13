@@ -555,6 +555,14 @@ pub enum Pred {
     TopOfGraveyard,
     /// Is the topmost creature card of its owner's graveyard.
     TopCreatureOfGraveyard,
+    /// Is among the topmost `count` cards of its owner's graveyard that `among` selects ("the top three black cards of
+    /// your graveyard").
+    R4700TopOfGraveyard {
+        /// The cards counted from the top.
+        among: Selector,
+        /// How many of them from the top.
+        count: u32,
+    },
     /// Was blocked this turn by one of the creatures the reference names (read from the turn's log of blocks), whether or
     /// not it is still attacking ("all creatures that were blocked by that creature this turn").
     BlockedThisTurnBy(Ref),

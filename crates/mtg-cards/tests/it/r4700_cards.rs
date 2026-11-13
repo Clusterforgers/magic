@@ -121,6 +121,7 @@ fn compiled_cards() {
 #[case("Tablet of the Guilds")]
 #[case("Volrath's Laboratory")]
 #[case("Riptide Replicator")]
+#[case("Spinning Darkness")]
 fn reads_back_whole(#[case] name: &str) {
     let report = report(name);
     assert_eq!(
@@ -176,6 +177,21 @@ fn altered(name: &str, from: &str, to: &str) -> String {
     "Riptide Replicator",
     r#"{"token":{"R4700OfChosen""#,
     r#"{"count":2,"token":{"R4700OfChosen""#
+)]
+#[case::top_two(
+    "Spinning Darkness",
+    r#"{"among":[{"Color":"Black"}],"count":3}"#,
+    r#"{"among":[{"Color":"Black"}],"count":2}"#
+)]
+#[case::any_three_black(
+    "Spinning Darkness",
+    r#",{"R4700TopOfGraveyard":{"among":[{"Color":"Black"}],"count":3}}"#,
+    ""
+)]
+#[case::top_red(
+    "Spinning Darkness",
+    r#"{"among":[{"Color":"Black"}]"#,
+    r#"{"among":[{"Color":"Red"}]"#
 )]
 fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let report = report_of(name, &altered(name, from, to));

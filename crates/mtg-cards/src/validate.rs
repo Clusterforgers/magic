@@ -818,6 +818,10 @@ impl<'a> Walker<'a> {
     #[allow(clippy::too_many_lines)]
     fn pred(&mut self, pred: &Pred) {
         match pred {
+            Pred::R4700TopOfGraveyard { among, .. } => {
+                self.uses("Pred", "R4700TopOfGraveyard");
+                self.at("among", |w| w.selector(among));
+            }
             Pred::Subtype(subtype) => self.known_subtype(subtype),
             Pred::HasAbility(_) => self.uses("Pred", "HasAbility"),
             Pred::ControlledBy(r)

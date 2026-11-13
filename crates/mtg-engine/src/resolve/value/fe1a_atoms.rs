@@ -80,6 +80,7 @@ impl Scope<'_> {
                     && self.state.zone(seen.zone).last() == Some(&reference.id)
             }
             Pred::TopCreatureOfGraveyard => self.top_creature_of_graveyard(reference, seen)?,
+            Pred::R4700TopOfGraveyard { .. } => self.r4700_top(reference, seen, pred)?,
             Pred::BandedWith(named) => self.l290_banded_with(named, reference)?,
             Pred::BlockedBy(named) => {
                 let blockers = self.objects(named)?;
@@ -219,6 +220,37 @@ impl Scope<'_> {
             };
             if self.selects(&creature, object.reference())? {
                 return Ok(*id == reference.id);
+            }
+        }
+        Ok(false)
+    }
+
+    /// Whether the card is among the topmost `count` cards of its owner's graveyard that `among` selects.
+    fn r4700_top(
+        &self,
+        reference: ObjectRef,
+        seen: &Seen<'_>,
+        pred: &Pred,
+    ) -> Result<bool, ResolveError> {
+        let Pred::R4700TopOfGraveyard { among, count } = pred else {
+            return Ok(false);
+        };
+        if !matches!(seen.zone, Zone::Graveyard(_)) {
+            return Ok(false);
+        }
+        let mut left = *count;
+        for id in self.state.zone(seen.zone).iter().rev() {
+            if left == 0 {
+                break;
+            }
+            let Some(object) = self.state.object(*id) else {
+                continue;
+            };
+            if self.selects(among, object.reference())? {
+                if *id == reference.id {
+                    return Ok(true);
+                }
+                left -= 1;
             }
         }
         Ok(false)
