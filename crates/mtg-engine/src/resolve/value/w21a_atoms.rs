@@ -76,10 +76,10 @@ impl Scope<'_> {
                         .iter()
                         .any(|color| last.characteristics.colors.contains(color))
                 }),
-            Pred::CouldAttackThisTurn => self.state.tallies.r5522_could_attack.contains(&reference),
+            Pred::CouldAttackThisTurn => self.state.tallies.r5522.could_attack.contains(&reference),
             Pred::GravedThisCombat => {
                 matches!(seen.zone, Zone::Graveyard(_))
-                    && self.state.tallies.r5522_combat_graved.contains(&reference)
+                    && self.state.tallies.r5522.combat_graved.contains(&reference)
             }
             Pred::SpentFrom { from, least } => {
                 seen.zone == Zone::Stack

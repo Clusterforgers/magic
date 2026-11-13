@@ -262,10 +262,8 @@ pub(crate) struct Tallies {
     pub(crate) records: Vec<crate::turn_log::Record>,
     /// Where in `records` the combat phase now going on, or the latest, began.
     pub(crate) combat_from: usize,
-    /// The cards put into a graveyard during the combat phase now going on, or the latest, as they lie there.
-    pub(crate) r5522_combat_graved: Vec<ObjectRef>,
-    /// The creatures that could have been declared as attackers in a declare attackers step this turn.
-    pub(crate) r5522_could_attack: BTreeSet<ObjectRef>,
+    /// The cards put into a graveyard this combat and the creatures that could attack this turn (`r5522_history`).
+    pub(crate) r5522: Box<crate::r5522_history::R5522Turn>,
 }
 
 /// A creature that dealt combat damage to a player this turn, as it was then (prowl, CR 702.76).
@@ -358,12 +356,8 @@ pub struct GameState {
     pub(crate) last_turn_of: Option<PlayerId>,
     /// How many spells of each name each player has cast this game ("you've cast another spell named ~ this game").
     pub(crate) cast_names: BTreeMap<(PlayerId, String), u32>,
-    /// How many cards of each name each player has cycled this game ("you've cycled a card named ~ four or more times").
-    pub(crate) r5522_cycled_names: BTreeMap<(PlayerId, String), u32>,
-    /// Every damage dealt to a player this game: the player, whether it was combat damage, and the source as it was.
-    pub(crate) r5522_hits: Vec<(PlayerId, bool, crate::snapshot::Snapshot)>,
-    /// The untapped lands each player controlled as the current turn began, before its untap step.
-    pub(crate) r5522_untapped_lands: BTreeMap<PlayerId, u32>,
+    /// The cards each player cycled by name, the damage dealt to players and the lands untapped as the turn began (`r5522_history`).
+    pub(crate) r5522: Box<crate::r5522_history::R5522Game>,
     /// How many turns each player has begun this game (`rmt8_turns`).
     pub(crate) rmt8_turns: BTreeMap<PlayerId, u32>,
     /// Each player's life total as the current turn began (`rmt8_turns`).
@@ -1032,11 +1026,8 @@ impl Hash for GameState {
             self.tallies.records.hash(state);
             self.tallies.combat_from.hash(state);
         }
-        if !self.tallies.r5522_combat_graved.is_empty() {
-            self.tallies.r5522_combat_graved.hash(state);
-        }
-        if !self.tallies.r5522_could_attack.is_empty() {
-            self.tallies.r5522_could_attack.hash(state);
+        if !self.tallies.r5522.is_empty() {
+            self.tallies.r5522.hash(state);
         }
         if !self.tallies.logged.is_empty() {
             self.tallies.logged.hash(state);
@@ -1055,14 +1046,8 @@ impl Hash for GameState {
             self.cast_names.hash(state);
         }
         // Likewise a game where no card was cycled and no player was dealt damage.
-        if !self.r5522_cycled_names.is_empty() {
-            self.r5522_cycled_names.hash(state);
-        }
-        if !self.r5522_hits.is_empty() {
-            self.r5522_hits.hash(state);
-        }
-        if !self.r5522_untapped_lands.is_empty() {
-            self.r5522_untapped_lands.hash(state);
+        if !self.r5522.is_empty() {
+            self.r5522.hash(state);
         }
         self.rmt8_turns.hash(state);
         self.rmt8_lives.hash(state);

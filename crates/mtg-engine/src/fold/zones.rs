@@ -202,7 +202,7 @@ fn w21a_tally_graveyards(
     }
     if matches!(to, Zone::Graveyard(_)) && state.turn().step().phase() == crate::turn::Phase::Combat
     {
-        state.tallies.r5522_combat_graved.push(card);
+        state.tallies.r5522.combat_graved.push(card);
     }
     let permanent_card = state.object(card.id).is_some_and(|object| {
         object.kind() != ObjectKind::Token

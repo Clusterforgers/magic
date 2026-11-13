@@ -118,7 +118,7 @@ impl GameState {
     /// The combat phase begins: "this combat" reads the records from here on.
     pub(crate) fn begin_combat_log(&mut self) {
         self.tallies.combat_from = self.tallies.records.len();
-        self.tallies.r5522_combat_graved.clear();
+        self.tallies.r5522.combat_graved.clear();
     }
 }
 

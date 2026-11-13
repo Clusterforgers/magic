@@ -536,7 +536,8 @@ impl<'a> Scope<'a> {
                 let total: u32 = (self.players(who)?.into_iter())
                     .map(|player| {
                         self.state
-                            .r5522_untapped_lands
+                            .r5522
+                            .untapped_lands
                             .get(&player)
                             .copied()
                             .unwrap_or(0)
