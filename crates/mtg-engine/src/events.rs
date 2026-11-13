@@ -1142,6 +1142,17 @@ pub enum Event {
         /// The color.
         color: mtg_core::color::Color,
     },
+    /// A player revealed the first card they drew this turn as they drew it, through the `RevealFirstDraw` rules of
+    /// these sources; a `Revealed` of the card comes just before it. Abilities "whenever you reveal ... this way" of
+    /// those sources trigger on it.
+    FirstDrawRevealed {
+        /// Who revealed it.
+        player: PlayerId,
+        /// The card.
+        card: ObjectId,
+        /// The permanents whose rules revealed it.
+        sources: Vec<ObjectId>,
+    },
     /// A player looked at a face-down permanent by an effect (CR 708.5): they may identify it while it stays that object.
     FaceDownLooked {
         /// The permanent looked at.
@@ -1511,7 +1522,8 @@ impl Event {
             | Event::ChosenAtRandom { .. }
             | Event::PlayersChosenAtRandom { .. }
             | Event::Sought { .. }
-            | Event::Revealed(_) => Vec::new(),
+            | Event::Revealed(_)
+            | Event::FirstDrawRevealed { .. } => Vec::new(),
             Event::CountersChanged(changed) => changed
                 .on
                 .object()

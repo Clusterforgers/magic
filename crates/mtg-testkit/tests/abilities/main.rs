@@ -82,6 +82,8 @@ mod r409_loyalty_twice;
 mod r409_spellgorger;
 mod r4711_clergy;
 mod r4711_starfish;
+mod r4708_first_draw;
+mod r4708_scry_surveil;
 mod r4a_enters_with;
 mod r4i_granter;
 mod r5e_done_once;

@@ -1139,7 +1139,19 @@ object: ObjectId,
 /**
  * The color.
  */
-color: Color, } } | { "FaceDownLooked": { 
+color: Color, } } | { "FirstDrawRevealed": { 
+/**
+ * Who revealed it.
+ */
+player: PlayerId, 
+/**
+ * The card.
+ */
+card: ObjectId, 
+/**
+ * The permanents whose rules revealed it.
+ */
+sources: Array<ObjectId>, } } | { "FaceDownLooked": { 
 /**
  * The permanent looked at.
  */

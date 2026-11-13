@@ -591,6 +591,8 @@ pub(super) fn replace_when(ctx: &Ctx, when: &ReplaceWhen) -> String {
         ReplaceWhen::Proliferates { who } => {
             format!("{} would proliferate", phrase::who(ctx, who))
         }
+        ReplaceWhen::Scries { who } => format!("{} would scry", phrase::who(ctx, who)),
+        ReplaceWhen::Surveils { who } => format!("{} would surveil", phrase::who(ctx, who)),
         other => generic::node(ctx, other),
     }
 }

@@ -7,14 +7,17 @@ use super::wrong_effect;
 use crate::choose::{Questions, Stop};
 use crate::events::Event;
 use crate::library::{Scried, top_cards};
+use crate::replace::r4708_actions::r4708_candidates;
 use crate::resolve::{Cx, ResolveError, Run};
+use crate::steps::draw;
 use crate::wording;
 
 /// Each player the effect names who is still in the game scries the count, in turn order: they look at that many
 /// cards from the top of their library (all of a shorter one) and answer one decision that splits them into the cards
 /// that stay on top and those for the bottom (any number, none or all) and orders both piles. Each player is asked,
 /// always, since seeing the cards is the point. A scry of nothing, or of an empty library, does not happen
-/// (CR 701.22b). All the scries are decided before the library of anyone changes; each is one `Scried`.
+/// (CR 701.22b). All the scries are decided before the library of anyone changes; each is one `Scried`. A player who
+/// would scry while a replacement draws that many cards instead (`ReplaceWhen::Scries`) draws them and is not asked.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Scry { who, count } = effect else {
         return Err(wrong_effect("Scry"));
@@ -37,6 +40,10 @@ fn scries(cx: &Cx<'_>, players: &[PlayerId], wanted: usize) -> Result<Vec<Event>
     for player in players {
         let looked = top_cards(cx.state(), *player, wanted);
         if looked.is_empty() {
+            continue;
+        }
+        if !r4708_candidates(cx.state(), *player, false)?.is_empty() {
+            events.extend(draw(cx.state(), *player, wanted));
             continue;
         }
         let chosen = questions.scry(*player, looked, wording::SCRY.to_owned())?;

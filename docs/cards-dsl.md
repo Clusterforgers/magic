@@ -305,6 +305,8 @@ A copy effect gives an object the copiable values of another (`CreateToken` with
 | Turn-up X | A morph, megamorph or disguise cost with `{X}` asks X as the permanent is turned face up; `TurnedFaceUp.x` carries it to "when this creature is turned face up" (`Keyword.TurnUp.X`, `r409_turn_up_x.rs`). |
 | Tokens with a mana cost | `TokenSpec.mana_cost` gives a token a mana cost of its own, its colours read from it (the predefined Spellgorger Weird). |
 | Loyalty twice | `GameRule::LoyaltyTwice(who)` lets the players activate each planeswalker's loyalty abilities twice each turn (Oath of Teferi; for the turn as an `Effect::Rule`, Urza Assembles the Titans; `r409_loyalty_twice.rs`). |
+| Scry and surveil replaced | `ReplaceWhen::Scries` with `Instead` of drawing `Triggering` cards ("If you would scry a number of cards, draw that many cards instead.") draws in place of a scry of one or more cards, unasked; `ReplaceWhen::Surveils` with `ReplaceBy::MayAddAmount(n)` asks its controller before each surveil of one or more cards whether to look at n more (`r4708_actions.rs`). |
+| First draw revealed | `GameRule::RevealFirstDraw { may, your_turns }` reveals its controller's first card drawn each turn as it is drawn (only on their turns with `your_turns`; an optional one asks a choice of that card or none, per source), after the replacements of the batch: a `Revealed` and a `FirstDrawRevealed` naming the sources follow the draw. `TriggerPattern::FirstDrawRevealed { what }` ("Whenever you reveal a creature card this way") triggers for those sources, with the card as `Triggering`; the rule and its triggers are one line of the card (`r4708_reveal.rs`). |
 
 ## Validation
 

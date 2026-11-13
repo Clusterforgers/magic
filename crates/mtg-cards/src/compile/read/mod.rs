@@ -232,6 +232,8 @@ mod r407_wordings;
 mod r408_lands;
 mod r408_pact;
 mod r4711_drafted;
+mod r4708_actions;
+mod r4708_reveal;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -380,6 +382,7 @@ pub use levels::{Plan as BlockPlan, given as keyword_grant, plan as block_plan, 
 pub use r5g_lines::{escalate_cost, escalate_reads, forecast_lines, reinforce_line};
 pub use r303_forms::form_text;
 pub use r304b_writers::r304b_triple_texts;
+pub use r4708_reveal::r4708_reveal_group_texts;
 pub use render::{
     ability as render_ability, mode as render_mode, variants as render_variants, written_variants,
 };
@@ -497,6 +500,14 @@ pub fn clause(text: &str, kind: ClauseKind, x_free: bool) -> Option<Ability> {
 pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> {
     let head = text.lines().next().unwrap_or_default();
     let text = text.get(classify::ability_word_len(head).unwrap_or(0)..)?;
+    if let Some(found) = r4708_reveal::r4708_reveal_group_read(text, |sentence| {
+        clause_with(sentence, ClauseKind::Triggered, x_free, own)
+    }) {
+        return r4708_reveal::r4708_reveal_group_texts(&found)
+            .iter()
+            .any(|written| same_text(written, text))
+            .then_some(found);
+    }
     let tokens = tokenize(text);
     let mut reader = Reader::new(&tokens, x_free);
     reader.subtypes.clone_from(&own.subtypes);
@@ -629,6 +640,14 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r406_actions::r406_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r4708_actions::r4708_read(text) {
+        return Some(found);
+    }
+    if kind == ClauseKind::Static
+        && let Some(found) = r4708_reveal::r4708_reveal_read(text)
+    {
         return Some(found);
     }
     if kind == ClauseKind::Triggered
