@@ -172,6 +172,7 @@ Biomass Mutation
 Biomechan Engineer
 Biotech Specialist
 Bird Admirer // Wing Shredder
+Birgi, God of Storytelling // Harnfel, Horn of Bounty
 Bitter Triumph
 Black Dragon Gate
 Black Knight
@@ -1255,6 +1256,7 @@ Mobilizer Mech
 Moldgraf Millipede
 Molecule Man
 Molt Tender
+Molten Exhale
 Molten Hydra
 Molten Slagheap
 Mona Lisa, Science Geek
@@ -1939,6 +1941,7 @@ Tectonic Reformation
 Teferi's Ageless Insight
 Teferi's Imp
 Teferi's Protection
+Tegwyll's Scouring
 Tekuthal, Inquiry Dominus
 Telepathy
 Tempestra, Dame of Games

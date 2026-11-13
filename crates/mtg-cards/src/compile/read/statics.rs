@@ -42,7 +42,8 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 53] = [
+const TEMPLATES: [Template; 54] = [
+    super::r4701_flash::r4701_flash,
     super::r376_nearest::r376_rooms_again,
     super::r376_nearest::r376_nearest,
     super::r376_nearest::r376_side_entering,
@@ -639,6 +640,10 @@ fn rule(r: &mut Reader<'_>) -> Option<Ability> {
 }
 
 /// "You may activate the loyalty abilities of planeswalkers you control twice each turn rather than only once."
+/// The rule that lets a player's creatures boast twice on each of their turns (Birgi).
+const R4701_BOAST_TWICE: &str =
+    "creatures you control can boast twice during each of your turns rather than once";
+
 const LOYALTY_TWICE: &str = "you may activate the loyalty abilities of planeswalkers you control twice each turn rather than only once";
 
 /// The rules about a player's hand, land plays and library: "You have no maximum hand size.", "You may play an
@@ -652,6 +657,9 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     }
     if r.words(LOYALTY_TWICE) {
         return Some(GameRule::LoyaltyTwice(Ref::You));
+    }
+    if r.words(R4701_BOAST_TWICE) {
+        return Some(GameRule::BoastTwice(Ref::You));
     }
     if r.words("you control your opponents while they're searching their libraries") {
         return Some(GameRule::ControlSearches(Ref::Opponents));
@@ -1822,6 +1830,7 @@ fn ep27_rule_texts(
             let mut texts = super::ep27_flash::ep27_flash_texts(rule, condition, from);
             texts.extend(super::r401_flash::r401_flash_texts(rule, condition, from));
             texts.extend(super::ep29_flash::ep29_flash_texts(rule, condition));
+            texts.extend(super::r4701_flash::r4701_flash_texts(rule, condition));
             Some(texts)
         }
         (GameRule::RevealHand(who), ZoneKind::Battlefield) if condition.is_none() => {
@@ -1848,6 +1857,11 @@ fn player_rule_texts(rule: &GameRule) -> Option<Vec<String>> {
         GameRule::NoMaxHandSize(Ref::EachPlayer) => "Players have no maximum hand size".to_owned(),
         GameRule::LoyaltyTwice(Ref::You) => {
             let mut text = LOYALTY_TWICE.to_owned();
+            text[..1].make_ascii_uppercase();
+            text
+        }
+        GameRule::BoastTwice(Ref::You) => {
+            let mut text = R4701_BOAST_TWICE.to_owned();
             text[..1].make_ascii_uppercase();
             text
         }

@@ -890,6 +890,9 @@ pub enum GameRule {
     /// The players may activate the loyalty abilities of planeswalkers they control twice each turn rather than only
     /// once (CR 606.3).
     LoyaltyTwice(Ref),
+    /// Creatures the players control can boast twice during each of their turns rather than once (CR 702.142c): a boast
+    /// ability is an activated ability limited to once each turn that works only if its source attacked this turn.
+    BoastTwice(Ref),
     /// The players' maximum hand size is `size` (CR 402.2): the least of the sizes in force.
     MaxHandSize {
         /// The players.

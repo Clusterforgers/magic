@@ -217,6 +217,8 @@ pub enum Rule {
     NoMaxHandSize(Vec<PlayerId>),
     /// The players may activate each of their planeswalkers' loyalty abilities twice each turn (CR 606.3).
     LoyaltyTwice(Vec<PlayerId>),
+    /// Creatures the players control can boast twice during each of their turns (CR 702.142c).
+    BoastTwice(Vec<PlayerId>),
     /// The players' maximum hand size is this many cards (CR 402.2).
     MaxHandSize(Vec<(PlayerId, u32)>),
     /// The players' maximum hand size changes by this many cards, after any size that is set (CR 402.2).
@@ -714,6 +716,8 @@ pub(crate) struct RulesInForce {
     no_hand_limit: BTreeSet<PlayerId>,
     /// The players who may activate each planeswalker's loyalty abilities twice each turn.
     loyalty_twice: BTreeSet<PlayerId>,
+    /// The players whose creatures can boast twice during each of their turns.
+    pub(crate) boast_twice: BTreeSet<PlayerId>,
     skip_draw: BTreeSet<PlayerId>,
     look_top: BTreeSet<PlayerId>,
     extra_lands: BTreeMap<PlayerId, u32>,
@@ -1157,6 +1161,7 @@ impl RulesInForce {
                 .extend(players.iter().map(|player| (*player, controller))),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
             Rule::LoyaltyTwice(players) => self.loyalty_twice.extend(players),
+            Rule::BoastTwice(players) => self.boast_twice.extend(players),
             Rule::MaxHandSize(_)
             | Rule::HandSizeChange(_)
             | Rule::NoLegendRule(_)
@@ -1585,6 +1590,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::NoMaxHandSize(who) => Rule::NoMaxHandSize(scope.players(who)?),
         GameRule::LoyaltyTwice(who) => Rule::LoyaltyTwice(scope.players(who)?),
+        GameRule::BoastTwice(who) => Rule::BoastTwice(scope.players(who)?),
         GameRule::SkipDrawStep(who) => Rule::SkipDrawStep(scope.players(who)?),
         GameRule::AdditionalLandPlays { who, count } => {
             let count = u32::try_from(scope.amount(count)?.max(0)).unwrap_or(u32::MAX);
@@ -1722,6 +1728,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::NoLegendRule(players)
         | Rule::NoMaxHandSize(players)
         | Rule::LoyaltyTwice(players)
+        | Rule::BoastTwice(players)
         | Rule::AttackAsThoughHasteAt(players) => players.is_empty(),
         Rule::MayCastRather { casts, .. } => casts.is_empty(),
         Rule::MaxHandSize(sizes) => sizes.is_empty(),
@@ -1902,6 +1909,7 @@ static NONE: RulesInForce = RulesInForce {
     exile_found: Vec::new(),
     no_hand_limit: BTreeSet::new(),
     loyalty_twice: BTreeSet::new(),
+    boast_twice: BTreeSet::new(),
     skip_draw: BTreeSet::new(),
     look_top: BTreeSet::new(),
     extra_lands: BTreeMap::new(),
