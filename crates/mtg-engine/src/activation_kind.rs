@@ -53,7 +53,9 @@ fn of_keyword(rules: &Ability, keyword: Option<&Keyword>) -> Option<ActivationKi
         Some(Keyword::Equip(_) | Keyword::EquipTo { .. }) => Some(ActivationKind::Equip),
         Some(Keyword::Cycling(_) | Keyword::Typecycling { .. }) => Some(ActivationKind::Cycling),
         Some(Keyword::Unearth(_)) => Some(ActivationKind::Unearth),
-        Some(Keyword::Ninjutsu(_) | Keyword::CommanderNinjutsu(_)) => Some(ActivationKind::Ninjutsu),
+        Some(Keyword::Ninjutsu(_) | Keyword::CommanderNinjutsu(_)) => {
+            Some(ActivationKind::Ninjutsu)
+        }
         _ => r5506_labelled(rules),
     }
 }
