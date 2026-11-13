@@ -210,6 +210,16 @@ fn draft_texts(ability: &Ability) -> Vec<String> {
         DraftRule::NoteCreatureName => {
             "As you draft a creature card, you may reveal it, note its name, then turn ~ face down.".to_owned()
         }
+        DraftRule::ExileDraftedSpell => "Before you shuffle your deck to start the game, you may reveal ~ from your \
+                                         deck and exile an instant or sorcery card you drafted that isn't in your deck."
+            .to_owned(),
+        DraftRule::ExileDraftedCreature => "Before you shuffle your deck to start the game, you may reveal ~ from your \
+                                            deck and exile a creature card you drafted that isn't in your deck."
+            .to_owned(),
+        DraftRule::ExileDraftedCreatures => "Before you shuffle your deck to start the game, you may reveal ~ from \
+                                             your deck and exile three or more creature cards you drafted that aren't in \
+                                             your deck."
+            .to_owned(),
         DraftRule::ChooseColorsAround => "Reveal ~ as you draft it. The player to your right chooses a color, you \
                                           choose another color, then the player to your left chooses a third color."
             .to_owned(),

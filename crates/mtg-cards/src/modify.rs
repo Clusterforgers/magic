@@ -1183,6 +1183,12 @@ pub enum DraftRule {
     NoteCreatureName,
     /// Reveal it as drafted; the drafter's right neighbour, the drafter and the left neighbour each choose a color.
     ChooseColorsAround,
+    /// Before the game, reveal it from the deck and exile an instant or sorcery card drafted that isn't in the deck.
+    ExileDraftedSpell,
+    /// Before the game, reveal it from the deck and exile a creature card drafted that isn't in the deck.
+    ExileDraftedCreature,
+    /// Before the game, reveal it from the deck and exile three or more creature cards drafted that aren't in the deck.
+    ExileDraftedCreatures,
 }
 
 /// How a `GameRule::ManaProduced` changes the mana of a tap.

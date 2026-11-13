@@ -131,3 +131,88 @@ fn r4711_regicide_has_no_legal_target_without_chosen_colors(
     );
     Ok(())
 }
+
+/// Seat 0 casts `name` and passes until the stack is empty, answering every other question passively.
+fn r4711_cast_and_settle(driver: &mut Driver, name: &str) -> Result<(), ScriptError> {
+    driver.cast(name)?;
+    for _ in 0..60 {
+        match driver.decision()?.kind {
+            DecisionKind::Priority(_) if driver.state().stack().is_empty() => break,
+            DecisionKind::Priority(_) => {
+                driver.pass()?;
+            }
+            _ => {
+                driver.answer_passively()?;
+            }
+        }
+    }
+    Ok(())
+}
+
+/// Whether a permanent with this name is on the battlefield.
+fn r4711_on_battlefield(driver: &Driver, name: &str) -> bool {
+    driver.state().zone(Zone::Battlefield).iter().any(|id| {
+        driver
+            .state()
+            .object(*id)
+            .is_some_and(|object| object.card().name == name)
+    })
+}
+
+/// Arcane Savant ("copy a card you exiled with cards named Arcane Savant") and Aether Searcher ("search your hand and/or
+/// library for a card with a name noted as you drafted ...") enter and find nothing: nothing was exiled before the game
+/// and no name was noted ("Unless you also drafted a card named Aether Searcher, you won't cast a card").
+#[rstest]
+#[case::savant_two_seats("Arcane Savant", 2, 5)]
+#[case::savant_four_seats("Arcane Savant", 4, 5)]
+#[case::searcher_three_seats("Aether Searcher", 3, 7)]
+fn r4711_an_enters_ability_of_a_draft_finds_nothing(
+    #[case] name: &str,
+    #[case] seats: usize,
+    #[case] lands: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = r4711_table(seats, name, (0..lands).map(|_| island()).collect())?;
+    let library = driver
+        .state()
+        .zone(Zone::Library(PlayerId::from_index(0)))
+        .len();
+    r4711_cast_and_settle(&mut driver, name)?;
+    assert!(r4711_on_battlefield(&driver, name));
+    assert!(
+        driver.state().stack().is_empty() && driver.state().zone(Zone::Exile).is_empty(),
+        "no copy was made"
+    );
+    let hand = driver.state().zone(Zone::Hand(PlayerId::from_index(0)));
+    assert!(hand.is_empty(), "nothing was found: {hand:?}");
+    assert_eq!(
+        driver
+            .state()
+            .zone(Zone::Library(PlayerId::from_index(0)))
+            .len(),
+        library
+    );
+    Ok(())
+}
+
+/// Volatile Chimera's "{1}{R}: Choose a card at random you exiled with cards named Volatile Chimera. This creature becomes a
+/// copy of that card" picks from no card without a draft, so it stays itself.
+#[rstest]
+#[case::two_seats(2)]
+#[case::three_seats(3)]
+fn r4711_volatile_chimera_stays_itself_without_exiled_cards(
+    #[case] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = r4711_table(
+        seats,
+        "Volatile Chimera",
+        (0..5).map(|_| mountain()).collect(),
+    )?;
+    r4711_cast_and_settle(&mut driver, "Volatile Chimera")?;
+    driver.begin_activation("Volatile Chimera")?;
+    driver.answer(mtg_engine::decision::Answer::PayMana(
+        mtg_engine::decision::PayChoice::Auto,
+    ))?;
+    r4711_settle(&mut driver)?;
+    assert!(r4711_on_battlefield(&driver, "Volatile Chimera"));
+    Ok(())
+}

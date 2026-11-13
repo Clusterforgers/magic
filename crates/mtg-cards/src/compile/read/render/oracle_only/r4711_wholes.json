@@ -153,5 +153,148 @@
    }
   },
   "{1}: ~ can't be regenerated this turn. Only your opponents may activate this ability."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "In": "Exile"
+         },
+         {
+          "Drafted": "ExiledWith"
+         }
+        ]
+       },
+       "as": "card"
+      }
+     },
+     {
+      "CopyCard": {
+       "what": {
+        "Bound": "card"
+       },
+       "as": "copy"
+      }
+     },
+     {
+      "CastFromZone": {
+       "what": {
+        "Bound": "copy"
+       },
+       "free": true
+      }
+     }
+    ]
+   }
+  },
+  "When ~ enters, copy a card you exiled with cards named ~. You may cast the copy without paying its mana cost."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": "{1}{R}",
+    "effects": [
+     {
+      "ChooseAtRandom": {
+       "from": {
+        "Each": [
+         {
+          "In": "Exile"
+         },
+         {
+          "Drafted": "ExiledWith"
+         }
+        ]
+       },
+       "as": "card"
+      }
+     },
+     {
+      "BecomeCopy": {
+       "what": "This",
+       "of": {
+        "Bound": "card"
+       },
+       "except": [
+        "ThisAbility"
+       ],
+       "duration": "Forever"
+      }
+     }
+    ]
+   }
+  },
+  "{1}{R}: Choose a card at random you exiled with cards named ~. ~ becomes a copy of that card, except it has this ability."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "Search": {
+          "also": [
+           "Hand"
+          ],
+          "filter": [
+           {
+            "Drafted": "NameNotedAsDrafted"
+           }
+          ],
+          "as": "found"
+         }
+        },
+        {
+         "CastFromZone": {
+          "what": {
+           "Bound": "found"
+          },
+          "free": true
+         }
+        },
+        {
+         "If": {
+          "condition": {
+           "Searched": {
+            "zone": "Library"
+           }
+          },
+          "then": [
+           {
+            "Shuffle": {}
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "When ~ enters, you may search your hand and/or library for a card with a name noted as you drafted cards named ~. You may cast it without paying its mana cost. If you search your library this way, shuffle."
  ]
 ]

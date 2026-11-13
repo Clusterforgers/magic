@@ -23,6 +23,8 @@ pub enum DraftNote {
     GuessedRight,
     /// "a player you noted for cards named ~", read of each player as "you" (no player without a draft).
     NotedPlayer,
+    /// "a card you exiled with cards named ~" before the game (no card without a draft).
+    ExiledWith,
 }
 
 impl DraftNote {
@@ -41,11 +43,12 @@ impl DraftNote {
             }
             DraftNote::GuessedRight => "you guessed correctly for a card named ~",
             DraftNote::NotedPlayer => "a player you noted for cards named ~",
+            DraftNote::ExiledWith => "you exiled with cards named ~",
         }
     }
 
     /// Every note.
-    pub const ALL: [DraftNote; 8] = [
+    pub const ALL: [DraftNote; 9] = [
         DraftNote::HighestNumber,
         DraftNote::CardsRemoved,
         DraftNote::NotedName,
@@ -54,5 +57,6 @@ impl DraftNote {
         DraftNote::ChosenColors,
         DraftNote::GuessedRight,
         DraftNote::NotedPlayer,
+        DraftNote::ExiledWith,
     ];
 }

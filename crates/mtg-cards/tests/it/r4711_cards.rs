@@ -115,6 +115,9 @@ fn r4711_probe() {
 #[case("Cogwork Tracker")]
 #[case("Spawnsire of Ulamog")]
 #[case("Clergy of the Holy Nimbus")]
+#[case("Arcane Savant")]
+#[case("Volatile Chimera")]
+#[case("Aether Searcher")]
 fn r4711_reads_back_whole(#[case] name: &str) {
     let report = r4711_report(name, &r4711_file(name));
     assert_eq!(
@@ -152,6 +155,14 @@ fn r4711_reads_back_whole(#[case] name: &str) {
     r#""zone": "Outside""#,
     r#""zone": "Library""#
 )]
+#[case::savant_creature("Arcane Savant", r#""ExileDraftedSpell""#, r#""ExileDraftedCreature""#)]
+#[case::chimera_one_creature(
+    "Volatile Chimera",
+    r#""ExileDraftedCreatures""#,
+    r#""ExileDraftedCreature""#
+)]
+#[case::chimera_until_end_of_turn("Volatile Chimera", r#""Forever""#, r#""UntilEndOfTurn""#)]
+#[case::searcher_graveyard("Aether Searcher", r#""also": ["Hand"]"#, r#""also": ["Graveyard"]"#)]
 fn r4711_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let file = r4711_file(name);
     assert!(file.contains(from), "{name} has {from}");
