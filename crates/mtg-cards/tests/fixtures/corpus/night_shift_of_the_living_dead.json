@@ -1,0 +1,152 @@
+{
+  "object": "card",
+  "id": "05ccea2d-5cde-4c30-a498-66199cbc90a2",
+  "oracle_id": "d758fd82-7ccb-441d-a948-0abaf0311892",
+  "multiverse_ids": [
+    580656
+  ],
+  "tcgplayer_id": 287118,
+  "cardmarket_id": 676091,
+  "name": "Night Shift of the Living Dead",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/05ccea2d-5cde-4c30-a498-66199cbc90a2",
+  "scryfall_uri": "https://scryfall.com/card/unf/81/night-shift-of-the-living-dead?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:29:39Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/5/05ccea2d-5cde-4c30-a498-66199cbc90a2.jpg?1783920579",
+    "normal": "https://cards.scryfall.io/normal/front/0/5/05ccea2d-5cde-4c30-a498-66199cbc90a2.jpg?1783920579",
+    "large": "https://cards.scryfall.io/large/front/0/5/05ccea2d-5cde-4c30-a498-66199cbc90a2.jpg?1783920579",
+    "png": "https://cards.scryfall.io/png/front/0/5/05ccea2d-5cde-4c30-a498-66199cbc90a2.png?1783920579",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/5/05ccea2d-5cde-4c30-a498-66199cbc90a2.jpg?1783920579",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/5/05ccea2d-5cde-4c30-a498-66199cbc90a2.jpg?1783920579",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/5/05ccea2d-5cde-4c30-a498-66199cbc90a2.webp?1783920579",
+    "grid": "https://cards.scryfall.io/grid/front/0/5/05ccea2d-5cde-4c30-a498-66199cbc90a2.webp?1783920579",
+    "display": "https://cards.scryfall.io/display/front/0/5/05ccea2d-5cde-4c30-a498-66199cbc90a2.webp?1783920579",
+    "art": "https://cards.scryfall.io/art/front/0/5/05ccea2d-5cde-4c30-a498-66199cbc90a2.webp?1783920579",
+    "crop": "https://cards.scryfall.io/crop/front/0/5/05ccea2d-5cde-4c30-a498-66199cbc90a2.webp?1783920579",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/5/05ccea2d-5cde-4c30-a498-66199cbc90a2.jpg?1783920579"
+  },
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "After you roll a die, you may pay 1 life. If you do, increase or decrease the result by 1. Do this only once each turn.\nWhenever you roll a 6, create a 2/2 black Zombie Employee creature token.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "c6d7d1d3-8989-4c54-9029-c1298c6ff8ca",
+      "component": "token",
+      "name": "Zombie Employee",
+      "type_line": "Token Creature — Zombie Employee",
+      "uri": "https://api.scryfall.com/cards/c6d7d1d3-8989-4c54-9029-c1298c6ff8ca"
+    },
+    {
+      "object": "related_card",
+      "id": "10b9b37f-20e5-4bda-a23b-950a313486e8",
+      "component": "combo_piece",
+      "name": "Night Shift of the Living Dead",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/10b9b37f-20e5-4bda-a23b-950a313486e8"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set": "unf",
+  "set_name": "Unfinity",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aunf&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/unf?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/05ccea2d-5cde-4c30-a498-66199cbc90a2/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad758fd82-7ccb-441d-a948-0abaf0311892&unique=prints",
+  "collector_number": "81",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "At the Astrotorium, even the dead make a living wage.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Sebastian Giacobino",
+  "artist_ids": [
+    "73a56d22-1628-49f3-8d4f-6cc3068bec02"
+  ],
+  "illustration_id": "9b7d2856-c6ab-43b0-8fe7-a4d395483e9b",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 8894,
+  "preview": {
+    "source": "Fábrica de Commander",
+    "source_uri": "https://www.instagram.com/reel/Cix5m6jJalC/",
+    "previewed_at": "2022-09-21"
+  },
+  "prices": {
+    "usd": "0.35",
+    "usd_foil": "0.42",
+    "usd_etched": null,
+    "eur": "0.33",
+    "eur_foil": "0.36",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580656&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNight%2BShift%2Bof%2Bthe%2BLiving%2BDead",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNight%2BShift%2Bof%2Bthe%2BLiving%2BDead",
+    "edhrec": "https://edhrec.com/route/?cc=Night+Shift+of+the+Living+Dead"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F287118%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=676091&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Night+Shift+of+the+Living+Dead&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

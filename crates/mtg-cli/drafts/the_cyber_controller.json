@@ -1,0 +1,58 @@
+{
+  "oracle_id": "06c25d71-f3f4-4089-b9bc-de96fbad73a5",
+  "name": "The Cyber-Controller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Cyber-Controller",
+      "oracle_fingerprint": "01492ef39ff6f03c1cd4acef4bbc36cc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "who": "Opponents", "count": "X", "as": "milled" } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "milled" } },
+                      { "Type": "Creature" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": { "BattlefieldFaceDown": { "under": "You" } },
+                  "as": "cybermen"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "cybermen" },
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 2 } },
+                    { "AddType": "Artifact" },
+                    { "AddSubtype": "Cyberman" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Artifact" },
+                { "Type": "Creature" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

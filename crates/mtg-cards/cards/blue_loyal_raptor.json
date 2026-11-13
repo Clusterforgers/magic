@@ -1,0 +1,20 @@
+{
+  "oracle_id": "4f13ed2e-7790-499f-87bf-07480b567811",
+  "name": "Blue, Loyal Raptor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Blue, Loyal Raptor",
+      "oracle_fingerprint": "14d26ed6c6637f6f219f09511d238ede",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Owen Grady, Raptor Trainer" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 146, "end": 267 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "82c2a58b-0ee2-454b-9ddd-670c1e788166",
+  "name": "_____ Balls of Fire",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "_____ Balls of Fire",
+      "oracle_fingerprint": "88009747a2a5257ac45a1ce5935d440a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "May": { "effects": [{ "PutSticker": { "on": ["This"], "kind": "Name" } }] } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 64, "end": 206 }
+          }
+        }
+      ]
+    }
+  ]
+}

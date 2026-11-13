@@ -1,0 +1,43 @@
+{
+  "oracle_id": "a9aa3bc7-db5a-4792-a53a-40acb6ca4b20",
+  "name": "Bludgeon Brawl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bludgeon Brawl",
+      "oracle_fingerprint": "57c02cabc6d84d1722fb9cd7a0ebf900",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Artifact" },
+                { "Not": { "Type": "Creature" } },
+                { "Not": { "Subtype": "Equipment" } }
+              ]
+            },
+            "mods": [
+              { "AddSubtype": "Equipment" },
+              { "AddKeyword": { "Equip": ["OwnManaValue"] } },
+              {
+                "GrantAbility": {
+                  "Static": {
+                    "affected": "Attached",
+                    "mods": [
+                      {
+                        "ModifyPT": {
+                          "power": { "Stat": { "of": "This", "stat": "ManaValue" } },
+                          "toughness": 0
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "oracle_id": "676935c8-22e0-427f-9566-16778cea0873",
+  "name": "Fatespinner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fatespinner",
+      "oracle_fingerprint": "067410ff1c3b0fed6eb16fd6a78658da",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "effects": [
+              {
+                "ChooseValue": {
+                  "who": "Triggering",
+                  "kind": { "Options": ["draw step", "main phase", "combat phase"] },
+                  "as": "phase"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "phase", "word": "draw step" } },
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "Cant": { "who": "Triggering", "action": { "SkipStep": "Draw" } }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "phase", "word": "main phase" } },
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "Cant": { "who": "Triggering", "action": { "SkipStep": "Main1" } }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "Cant": { "who": "Triggering", "action": { "SkipStep": "Main2" } }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "phase", "word": "combat phase" } },
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": { "Cant": { "who": "Triggering", "action": "SkipCombat" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

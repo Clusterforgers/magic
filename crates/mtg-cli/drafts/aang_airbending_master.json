@@ -1,7 +1,7 @@
 {
   "oracle_id": "f3176779-74f7-4136-a701-438feeead7a0",
   "name": "Aang, Airbending Master",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Aang, Airbending Master",
@@ -23,9 +23,39 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 139, "end": 249 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "Batch": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "from": "Battlefield",
+                      "to": "Exile"
+                    }
+                  }
+                },
+                {
+                  "Batch": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "from": "Battlefield",
+                      "to": "Hand"
+                    }
+                  }
+                },
+                {
+                  "Batch": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "from": "Battlefield",
+                      "to": "Library"
+                    }
+                  }
+                }
+              ]
+            },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "experience" } } }]
           }
         },
         {

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "906881da-6bb3-4a0e-9bd1-d1a5bc484144",
+  "name": "Goblin Airbrusher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Airbrusher",
+      "oracle_fingerprint": "9ff8a55de60a4aa66d7094194fb96e69",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "PutSticker", "who": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": { "TriggeringSticker": "Art" },
+                  "then": [{ "CreateToken": { "token": { "Named": "treasure" }, "count": 2 } }],
+                  "otherwise": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

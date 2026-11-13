@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7d1769d0-d942-45b3-a31c-2bbe45e68661",
+  "name": "Island Sanctuary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Island Sanctuary",
+      "oracle_fingerprint": "7839d3e7fda8b5db3fb79f99859dcaf3",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Draw": {} },
+            "by": { "Instead": [{ "May": { "effects": [] } }] },
+            "condition": { "Step": "Draw" }
+          }
+        }
+      ]
+    }
+  ]
+}
