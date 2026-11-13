@@ -1,0 +1,61 @@
+{
+  "oracle_id": "3fe61a65-b1c0-4d15-b379-e4ce22c96941",
+  "name": "Urabrask, Heretic Praetor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urabrask, Heretic Praetor",
+      "oracle_fingerprint": "a6c20d35917e1944d027782d859a0fa3",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "ExileTop": { "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Draw": { "who": "TriggeringPlayer" } },
+                  "by": {
+                    "InsteadNext": [
+                      { "ExileTop": { "who": "TriggeringPlayer", "as": "impulse" } },
+                      {
+                        "Rule": {
+                          "rule": {
+                            "MayCast": {
+                              "who": "TriggeringPlayer",
+                              "from": "Exile",
+                              "only": { "Bound": "impulse" },
+                              "play": true
+                            }
+                          },
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

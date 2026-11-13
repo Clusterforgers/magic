@@ -1,0 +1,49 @@
+{
+  "oracle_id": "8ceb1acf-5ff3-4f1a-af04-9f07ad454526",
+  "name": "Ronin, Shadow Stalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ronin, Shadow Stalker",
+      "oracle_fingerprint": "e347f35dfb84ead80ee2e72d96018640",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 2 }],
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 2 },
+                  "only": [
+                    { "Spell": { "subtypes": ["Equipment"] } },
+                    { "Ability": { "facts": ["Equip"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Subtype": "Equipment" }, { "AttachedTo": "This" }] } }
+            ],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -4, "toughness": -4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

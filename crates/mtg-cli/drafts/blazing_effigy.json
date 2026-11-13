@@ -1,0 +1,37 @@
+{
+  "oracle_id": "7879b37c-5e2a-4945-9378-47744b715a6c",
+  "name": "Blazing Effigy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blazing Effigy",
+      "oracle_fingerprint": "a5714f5b283db8ac2c5db6639acd15a9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Sum": [
+                      3,
+                      {
+                        "DamageDealtByTo": {
+                          "by": { "Each": ["Other", { "Named": "Blazing Effigy" }] },
+                          "to": "This"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

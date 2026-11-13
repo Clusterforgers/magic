@@ -1,0 +1,76 @@
+{
+  "oracle_id": "f1eb489d-104c-4801-b6d2-3f1a7ee73a75",
+  "name": "Mechtitan Core",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mechtitan Core",
+      "oracle_fingerprint": "34085b047d6acf546e7002fabf024db1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{5}" },
+              "ExileSelf",
+              {
+                "ExilePermanents": {
+                  "filter": [
+                    { "Type": "Artifact" },
+                    { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                    "Other"
+                  ],
+                  "count": 4
+                }
+              }
+            ],
+            "effects": [
+              { "Bind": { "what": "Paid", "as": "exiled" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Mechtitan",
+                      "colors": ["White", "Blue", "Black", "Red", "Green"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Construct"],
+                      "power": 10,
+                      "toughness": 10,
+                      "abilities": [
+                        { "Keyword": "Flying" },
+                        { "Keyword": "Vigilance" },
+                        { "Keyword": "Trample" },
+                        { "Keyword": "Lifelink" },
+                        { "Keyword": "Haste" }
+                      ]
+                    }
+                  },
+                  "as": "mechtitan"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Bound": "mechtitan" } }],
+                      "from": "Battlefield"
+                    }
+                  },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Arrived": { "of": { "Bound": "exiled" }, "zone": "Exile" } },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "227ddf6c-d21a-48da-84fb-395c7e096914",
+  "name": "Scion of Halaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scion of Halaster",
+      "oracle_fingerprint": "a308776563537716070190c3b56eae1d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Replacement": {
+                    "when": { "Draw": {} },
+                    "by": {
+                      "Instead": [
+                        { "LookAtTop": { "count": 2, "as": "top" } },
+                        {
+                          "Choose": {
+                            "from": { "Bound": "top" },
+                            "as": "milled",
+                            "rest_as": "kept"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "milled" }, "to": "Graveyard" } },
+                        {
+                          "Move": {
+                            "what": { "Bound": "kept" },
+                            "to": { "Library": { "place": "Top" } }
+                          }
+                        },
+                        { "Draw": {} }
+                      ]
+                    },
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "You", "what": "Drawn" } },
+                        "op": "Eq",
+                        "right": 0
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
