@@ -28,6 +28,8 @@ import { TurnTimeMark } from './TurnTimeMark'
 import { TeamBadge } from '@/components/TeamBadge'
 import { memberNames, teamLabel } from '@/lib/teams'
 import { useSeatTeam } from './teamLife'
+import { BossChip, SpiritMark } from './campaign/CampaignMarks'
+import { GhostIcon } from 'lucide-react'
 
 interface SeatTileProps {
   seat: PlayerId
@@ -75,6 +77,8 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
       data-tile-seat={seat}
       data-team={team?.team}
       data-away={away || undefined}
+      data-boss={player.boss ? true : undefined}
+      data-spirit={player.spirit ? true : undefined}
       data-state={podState(flags.active, flags.priority)}
       aria-current={focused || undefined}
       aria-label={
@@ -117,6 +121,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
         'relative grid h-full min-w-44 flex-1 grid-cols-[minmax(0,1fr)] content-center gap-0.5 overflow-hidden rounded-lg bg-card px-2 py-0.5 text-left text-xs ring-1 ring-foreground/10 outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-primary',
         focused && 'ring-2 ring-primary',
         eliminated && 'border-l-4 border-destructive',
+        player.boss && 'border-t-2 border-boss',
         flags.active && cn(ACTIVE_TINT, ACTIVE_EDGE),
         defenderOutline(defender.state),
       )}
@@ -126,6 +131,8 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
           <SeatDot seat={seat} />
           <span className="min-w-10 truncate text-sm font-semibold">{name}</span>
           {team === null ? null : <TeamBadge team={team.team} size="chip" />}
+          {player.boss ? <BossChip compact /> : null}
+          {player.spirit ? <SpiritMark compact /> : null}
           {showsPriorityDot(flags.active, flags.priority) ? (
             <PriorityDot label={priorityName(name, false)} />
           ) : null}
@@ -145,6 +152,9 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
             )}
           >
             {team?.life === 'teammate' ? <span className="mr-1 text-xs font-medium">shared</span> : null}
+            {player.spirit ? (
+              <GhostIcon aria-hidden="true" className="mr-1 inline size-4 text-spirit" />
+            ) : null}
             {player.life}
           </LifeFx>
         </span>

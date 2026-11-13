@@ -1,4 +1,4 @@
-import { Crosshair } from 'lucide-react'
+import { Crosshair, GhostIcon } from 'lucide-react'
 import { memo, useRef } from 'react'
 import type { MouseEvent } from 'react'
 import { useShallow } from 'zustand/react/shallow'
@@ -39,6 +39,7 @@ import { TeamBadge } from '@/components/TeamBadge'
 import { memberNames } from '@/lib/teams'
 import { useSeatTeam } from './teamLife'
 import type { SeatTeam } from './teamLife'
+import { BossChip, BossTrack, SpiritMark } from './campaign/CampaignMarks'
 
 interface SeatPanelProps {
   seat: PlayerId
@@ -69,13 +70,15 @@ interface LifeProps {
   className: string
   /** The seat's team in Two-Headed Giant, whose life total its teammates share. */
   team?: SeatTeam | null
+  /** The seat is a fallen hero's Spirit: the figure is drawn in the Spirit's colour beside a ghost. */
+  spirit?: boolean
 }
 
 /**
  * The life total, the largest figure of a pod; red at 5 or less. In Two-Headed Giant the team's first pod shows the
  * shared total large and the teammate's pod shows it small, marked "shared".
  */
-function Life({ seat, life, as, className, team }: LifeProps) {
+function Life({ seat, life, as, className, team, spirit = false }: LifeProps) {
   const shared = team != null && team.life !== 'own'
   const small = team?.life === 'teammate'
   return (
@@ -97,7 +100,10 @@ function Life({ seat, life, as, className, team }: LifeProps) {
           shared
         </span>
       ) : null}
-      <span className={cn(life <= 5 && 'text-destructive')}>{life}</span>
+      {spirit ? (
+        <GhostIcon aria-hidden="true" data-slot="spirit-life" className="mr-1 inline size-5 text-spirit" />
+      ) : null}
+      <span className={cn(spirit ? 'text-spirit' : life <= 5 && 'text-destructive')}>{life}</span>
     </LifeFx>
   )
 }
@@ -149,7 +155,13 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
   // A seat whose client is gone; one that left the game for good is eliminated instead.
   const away = !eliminated && !player.connected
   const marks = {
-    'aria-label': flags.you ? `${owner} (you)` : owner,
+    'aria-label': [
+      flags.you ? `${owner} (you)` : owner,
+      player.boss ? ', boss' : '',
+      player.spirit ? ', Spirit' : '',
+    ].join(''),
+    'data-boss': player.boss ? true : undefined,
+    'data-spirit': player.spirit ? true : undefined,
     'data-seat': seat,
     'data-you': flags.you || undefined,
     'data-active': flags.active || undefined,
@@ -173,6 +185,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
   const mana = <LiveManaPool pool={player.mana} />
   const notes = (
     <>
+      {player.boss ? <BossTrack boss={player.boss} /> : null}
       {player.lost === null ? null : (
         <p className="rounded-md bg-destructive/10 px-2 py-1 text-xs font-medium text-destructive">
           Eliminated: {describeLoss(player.lost)}
@@ -190,6 +203,8 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
       <SeatDot seat={seat} />
       <h3 className="truncate text-sm leading-5 font-semibold">{owner}</h3>
       {team === null ? null : <TeamBadge team={team.team} size="chip" />}
+      {player.boss ? <BossChip compact={line} /> : null}
+      {player.spirit ? <SpiritMark compact={line} /> : null}
       {defender.state === 'chosen' ? (
         <Crosshair aria-hidden="true" className="size-3.5 shrink-0 text-primary" />
       ) : null}
@@ -214,6 +229,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
           '@container flex min-w-0 flex-col gap-1 rounded-xl bg-card px-2 py-1 text-card-foreground',
           ring,
           eliminated && 'border-l-4 border-destructive',
+          player.boss && 'border-t-2 border-boss',
           defenderClass(defender.state),
         )}
       >
@@ -228,6 +244,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
                 as="span"
                 className="text-2xl font-semibold tabular-nums"
                 team={team}
+                spirit={player.spirit === true}
               />
             </div>
           </div>
@@ -318,6 +335,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
         '@container relative grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-2 rounded-xl bg-card p-2 text-card-foreground',
         ring,
         eliminated && 'border-l-4 border-destructive',
+        player.boss && 'border-t-2 border-boss',
         defenderClass(defender.state),
       )}
     >
@@ -341,6 +359,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
               as="p"
               className={cramped ? 'text-3xl font-semibold tabular-nums' : 'text-life'}
               team={team}
+              spirit={player.spirit === true}
             />
           </div>
           {cramped ? null : (
