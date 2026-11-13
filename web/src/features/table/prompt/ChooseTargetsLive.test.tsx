@@ -109,9 +109,7 @@ describe('a target decision from the server', () => {
     const { h, send, user, prompt } = mount()
     send(targets(33, LEGAL))
     await user.click(screen.getByRole('button', { name: 'Cancel the spell' }))
-    expect(h.sentOf('Answer')).toEqual([
-      { type: 'Answer', decision: 33, answer: 'Undo' },
-    ])
+    expect(h.sentOf('Answer')).toEqual([{ type: 'Answer', decision: 33, answer: 'Undo' }])
     expect(prompt()).toBeNull()
   })
 
