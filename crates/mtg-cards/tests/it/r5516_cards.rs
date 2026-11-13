@@ -114,10 +114,10 @@ fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case
     r#"{"AddAmount":1}"#,
     r#"{"Instead":[{"Draw":{}}]}"#
 )]
-#[case::a_learn_replaced_by_a_draw(
+#[case::a_learn_replaced_by_a_return_to_hand(
     "Retriever Phoenix",
-    r#"[{"Move":{"what":"This","to":"Battlefield"}}]"#,
-    r#"[{"Draw":{}}]"#
+    r#"{"Battlefield":{}}"#,
+    r#""Hand""#
 )]
 #[case::steps_without_a_learn("Retriever Phoenix", r#"{"Learns":{}}"#, r#"{"Draw":{}}"#)]
 #[case::no_more_copies("Twinning Staff", r#"{"AddAmount":1}"#, r#"{"AddAmount":0}"#)]
