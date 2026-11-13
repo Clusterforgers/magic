@@ -908,6 +908,10 @@ pub enum ReplaceWhen {
         /// Who would gain it.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
+        /// Only life a resolving spell or ability causes its own controller to gain ("If a spell or ability would cause
+        /// its controller to gain life"); not the life of lifelink, which the damage causes.
+        #[serde(default, skip_serializing_if = "is_false")]
+        caused_own: bool,
     },
     /// A player would lose the game; only `Instead`.
     LoseGame {

@@ -114,6 +114,10 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - A vote on players or objects binds `tally` to every vote cast ("for each vote they received" counts it); `VoteFor::AnotherPlayer` leaves the voter out, and a vote on players may be secret (`ChoiceOption::SecretPlayer`). `ChooseWords` is a choice of words that is no vote ("each opponent secretly chooses silence or snitch").
 - What a booster draft notes for cards of a name is `Amount`/`Pred`/`Condition::Drafted(DraftNote)`: a game has no draft, so a noted number is 0 and no name, type, color, player, guess or card exiled before the game is noted (the Conspiracy rulings); the rules of the draft itself are `GameRule::Draft`, a spell line on an instant or sorcery.
 - "If ~ would be destroyed, regenerate it." is a replacement `Destroyed` by `ReplaceBy::Regenerate`: never used up, and not while the permanent can't be regenerated. Each regeneration is logged as `TallyEvent::Regenerated` ("for each time it regenerated this turn").
+- "Search your library, graveyard, and/or outside the game" names `Outside` last in `Search.also`: nothing is outside a Commander game, so it is no choice and finds nothing (the wish rulings).
+- `RevealUntil.most` also ends the revealing once that many cards are revealed ("until an artifact card or X cards are revealed, whichever comes first"); an `If` on what was found reads `CountOf` of the bound cards, since `Matches` holds for an empty set.
+- `ReplaceWhen::LifeGain.caused_own` covers only life a resolving spell or ability gives its own controller ("If a spell or ability would cause its controller to gain life"); the life of lifelink is caused by the damage and is left alone (Rain of Gore ruling).
+- Sentences no shared reader words are read and written whole from `compile/read/r5517_wholes.json` (`[ability, wording]` pairs).
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 
 ## Support records

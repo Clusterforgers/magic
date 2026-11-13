@@ -1127,7 +1127,7 @@ impl Pass<'_> {
                         Some(on) => self.includes(&scope, on, *put)?,
                     }
             }
-            (ReplaceWhen::LifeGain { who }, Unit::Life { player })
+            (ReplaceWhen::LifeGain { who, .. }, Unit::Life { player })
             | (ReplaceWhen::LoseGame { who }, Unit::Loss { player })
             | (ReplaceWhen::Draw { who, .. }, Unit::Draw { player }) => {
                 scope.players(who)?.contains(player)
@@ -1239,6 +1239,7 @@ impl Pass<'_> {
                 || (unpreventable && Action::Replace(by.clone()).prevents())
                 || matches!(by, ReplaceBy::Dredge(cards) if !step.can_dredge(at, source.object.id, *cards))
                 || !step.c6_blk_matches(at, source, when, &unit)?
+                || !step.r5517_caused_own(at, when, &unit)
             {
                 return Ok(());
             }
@@ -3670,6 +3671,7 @@ mod r304_skip;
 pub(crate) mod r406_actions;
 pub(crate) mod r4708_actions;
 mod r4708_reveal;
+mod r5517_life;
 mod rmt5_next;
 use rmt5_next::rmt5_next_as_instead;
 mod e19_mill;

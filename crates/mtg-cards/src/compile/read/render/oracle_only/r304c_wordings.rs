@@ -571,7 +571,10 @@ fn lich(ability: &Ability) -> Vec<String> {
     let graveyard = Selector(vec![Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)]);
     match (when, steps.as_slice()) {
         (
-            ReplaceWhen::LifeGain { who: Ref::You },
+            ReplaceWhen::LifeGain {
+                who: Ref::You,
+                caused_own: false,
+            },
             [
                 Effect::Draw {
                     who: Ref::You,
