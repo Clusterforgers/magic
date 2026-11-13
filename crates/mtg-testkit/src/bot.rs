@@ -385,7 +385,7 @@ impl Repeats {
 /// leaves it as it was.
 /// The picked targets that fit the total the options set ("with total power 10 or less"), the smallest values first;
 /// all of them when the options set none. The engine offers only sets whose smallest values reach the least count.
-pub(crate) fn rmt1_within_total(
+pub fn rmt1_within_total(
     options: &mtg_engine::choose::TargetOptions,
     picked: Vec<Target>,
 ) -> Vec<Target> {

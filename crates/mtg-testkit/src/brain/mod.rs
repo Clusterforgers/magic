@@ -16,6 +16,7 @@ pub mod eval;
 pub mod priority;
 pub mod seen;
 pub mod sim;
+pub mod suite;
 pub mod targets;
 
 use mtg_core::ids::PlayerId;
