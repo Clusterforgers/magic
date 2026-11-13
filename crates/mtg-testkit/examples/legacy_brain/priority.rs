@@ -8,6 +8,7 @@ use mtg_engine::turn::Step;
 
 use super::seen::Seen;
 use super::sim::{Horizon, Search};
+use super::threat;
 use mtg_testkit::bot::apply_answer;
 
 /// How much a play must beat passing by.
@@ -152,7 +153,7 @@ pub fn plan_priority(
     }
     let combat = window == Window::Combat;
     let horizon = if combat {
-        Horizon::EndOfCombat
+        Horizon::EndOfTurn
     } else if window == Window::Main && search.settings().lookahead {
         Horizon::NextTurn
     } else {
@@ -181,7 +182,8 @@ pub fn plan_priority(
         } else {
             0.0
         };
-        let score = outcome.score + ramp - held_back(search, &seen, window, &play);
+        let score =
+            outcome.score + ramp - hold_cost(search.settings().careful, &seen, window, &play);
         if follow_ups {
             scored.push((score, play.clone(), after));
         }
@@ -195,24 +197,74 @@ pub fn plan_priority(
     best.map_or(PriorityAction::Pass, |(_, play)| play)
 }
 
-/// What casting an instant in the seat's main phase or at an opponent's end step must gain beyond the margin when the
-/// seat plays carefully: removal and tricks wait for a target worth them, or for combat and responses.
-const HOLD: f64 = 5.0;
+/// What a careful seat's instant must gain beyond the margin in its main phase: it waits for an opponent's turn (an
+/// answer also pays its hold value in the evaluation).
+const INSTANT_WAIT: f64 = 1.0;
 
-/// What `play` must gain beyond the margin in `window` ([`HOLD`] for a careful seat's instant outside combat and
-/// responses, else nothing).
-fn held_back(search: &Search, seen: &Seen<'_>, window: Window, play: &PriorityAction) -> f64 {
+/// What a careful seat's flash permanent must gain beyond the margin in its main phase: it waits for an opponent's end
+/// step, keeping mana up for the seat's interaction meanwhile.
+const FLASH_WAIT: f64 = 2.0;
+
+/// The share of the held interaction's value a main-phase play that taps the seat below it must gain beyond the
+/// margin.
+const TAP_OUT: f64 = 1.0;
+
+/// The share of held interaction's worth that tapping below it loses: a counterspell only works in reply, so all of
+/// it; removal and tricks can still be cast on the seat's own turn, so a quarter.
+fn reactive(share: f64) -> f64 {
+    if (share - COUNTER_SHARE).abs() < f64::EPSILON {
+        share
+    } else {
+        share * 0.25
+    }
+}
+
+/// The share of [`threat::hold_value`] a counterspell is held at ([`threat::interaction`]).
+const COUNTER_SHARE: f64 = 1.0;
+
+/// The cards in hand from which the seat spends its mana rather than keep it up: past the maximum hand size it would
+/// discard.
+const CROWDED_HAND: usize = 8;
+
+/// What `play` must gain beyond the margin in `window` when the seat plays carefully: a main-phase play that leaves
+/// too little mana for the instant-speed interaction the seat holds pays for that interaction's worth
+/// ([`threat::hold_value`]); a flash permanent or other instant in the main phase waits for the opponents' turn.
+/// Interaction cast at any time already pays its worth in the evaluation ([`threat::held_interaction`]).
+pub fn hold_cost(careful: bool, seen: &Seen<'_>, window: Window, play: &PriorityAction) -> f64 {
+    if !careful || window != Window::Main {
+        return 0.0;
+    }
     let PriorityAction::CastSpell(id) = play else {
         return 0.0;
     };
-    let instant = seen
-        .chars(*id)
-        .is_some_and(|chars| chars.types.contains(mtg_core::card::CardType::Instant));
-    if search.settings().careful && instant && matches!(window, Window::Main | Window::EndStep) {
-        HOLD
-    } else {
-        0.0
+    let Some(card) = seen.card(*id) else {
+        return 0.0;
+    };
+    let traits = threat::traits(card);
+    let opponents = !seen.opponents().is_empty();
+    let mut cost = 0.0;
+    if opponents && traits.fast {
+        cost += if traits.permanent {
+            FLASH_WAIT
+        } else {
+            INSTANT_WAIT
+        };
     }
+    let bodies = seen.bodies();
+    let open = threat::open_mana(seen, &bodies);
+    let after = open.saturating_sub(seen.mana_value(*id));
+    let held = threat::fast_interaction(seen, Some(*id));
+    let lost: f64 = held
+        .iter()
+        .filter(|(cost, _)| *cost <= open && *cost > after)
+        .map(|(_, share)| reactive(*share))
+        .fold(0.0, f64::max);
+    // A hand that would go past its maximum size at the end of the turn spends rather than discards.
+    let crowded = seen.own_hand().len() >= CROWDED_HAND;
+    if lost > 0.0 && opponents && !crowded {
+        cost += TAP_OUT * lost * threat::hold_value(seen);
+    }
+    cost
 }
 
 /// How many of the best plays a lookahead tries a second play after.

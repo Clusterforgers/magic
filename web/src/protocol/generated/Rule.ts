@@ -137,7 +137,7 @@ may: boolean,
 /**
  * Whether it works only on the controller's turns.
  */
-your_turns: boolean, } } | { "BoastTwice": Array<PlayerId> } | { "MaxHandSize": Array<[PlayerId, number]> } | { "HandSizeChange": Array<[PlayerId, number]> } | { "NoLegendRule": Array<PlayerId> } | { "NoLegendRuleFor": unknown } | { "AbilitiesAsThoughHaste": unknown } | { "UntapDuring": { 
+your_turns: boolean, } } | { "BoastTwice": Array<PlayerId> } | { "LoyaltyAnyTime": Array<PlayerId> } | { "LoyaltyCostsMore": Array<[PlayerId, number]> } | { "MaxHandSize": Array<[PlayerId, number]> } | { "HandSizeChange": Array<[PlayerId, number]> } | { "NoLegendRule": Array<PlayerId> } | { "NoLegendRuleFor": unknown } | { "AbilitiesAsThoughHaste": unknown } | { "UntapDuring": { 
 /**
  * The permanents, judged when the step untaps.
  */

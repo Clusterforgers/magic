@@ -1,0 +1,322 @@
+[
+ [
+  [
+   {
+    "Static": {
+     "affected": "This",
+     "mods": [
+      {
+       "SetPT": {
+        "power": {
+         "Count": [
+          {
+           "Subtype": "Forest"
+          },
+          {
+           "ControlledBy": "You"
+          }
+         ]
+        },
+        "toughness": {
+         "Count": [
+          {
+           "Subtype": "Forest"
+          },
+          {
+           "ControlledBy": "You"
+          }
+         ]
+        }
+       }
+      }
+     ],
+     "condition": {
+      "Not": {
+       "Compare": {
+        "left": {
+         "Count": [
+          "This",
+          "Attacking"
+         ]
+        },
+        "op": "Ge",
+        "right": 1
+       }
+      }
+     }
+    }
+   },
+   {
+    "Static": {
+     "affected": "This",
+     "mods": [
+      {
+       "SetPT": {
+        "power": {
+         "Count": [
+          {
+           "Subtype": "Forest"
+          },
+          {
+           "ControlledBy": "Defending"
+          }
+         ]
+        },
+        "toughness": {
+         "Count": [
+          {
+           "Subtype": "Forest"
+          },
+          {
+           "ControlledBy": "Defending"
+          }
+         ]
+        }
+       }
+      }
+     ],
+     "condition": {
+      "Compare": {
+       "left": {
+        "Count": [
+         "This",
+         "Attacking"
+        ]
+       },
+       "op": "Ge",
+       "right": 1
+      }
+     }
+    }
+   }
+  ],
+  "As long as ~ isn't attacking, its power and toughness are each equal to the number of Forests you control. As long as ~ is attacking, its power and toughness are each equal to the number of Forests defending player controls."
+ ],
+ [
+  {
+   "Keyword": {
+    "Devour": {
+     "counters": 0,
+     "of": [
+      {
+       "Type": "Creature"
+      }
+     ]
+    }
+   }
+  },
+  "Devour X, where X is the number of creatures devoured this way"
+ ],
+ [
+  {
+   "Keyword": {
+    "Ward": [
+     {
+      "GetPoison": 5
+     }
+    ]
+   }
+  },
+  "Ward—Get five poison counters."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "SpendOnlyFrom": {
+      "types": [
+       "Land"
+      ],
+      "supertypes": [
+       "Basic"
+      ]
+     }
+    }
+   }
+  },
+  "Spend only mana produced by basic lands to cast this spell."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "SpendOnlyFrom": {
+      "types": [
+       "Creature"
+      ]
+     }
+    }
+   }
+  },
+  "Spend only mana produced by creatures to cast this spell."
+ ],
+ [
+  {
+   "Keyword": {
+    "Equip": [
+     {
+      "PayLife": {
+       "Count": [
+        {
+         "In": "Hand"
+        },
+        {
+         "OwnedBy": "You"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Equip—Pay 1 life for each card in your hand."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "Damage": {
+      "to": "This"
+     }
+    },
+    "by": {
+     "Instead": [
+      {
+       "Sacrifice": {
+        "filter": [],
+        "count": "Triggering"
+       }
+      }
+     ]
+    }
+   }
+  },
+  "If damage would be dealt to ~, sacrifice that many permanents instead."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     "Tap"
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        },
+        {
+         "In": "Graveyard"
+        },
+        {
+         "OwnedBy": "You"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        {
+         "AddKeyword": {
+          "Flashback": [
+           "OwnManaCost"
+          ]
+         }
+        }
+       ],
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "{T}: Target instant or sorcery card in your graveyard gains flashback until end of turn. The flashback cost is equal to its mana cost."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "Attached",
+    "mods": [
+     {
+      "GrantAbility": {
+       "Loyalty": {
+        "cost": {
+         "Minus": 12
+        },
+        "effects": [
+         {
+          "CreateEmblem": {
+           "abilities": [
+            {
+             "Rule": {
+              "rule": {
+               "LoyaltyAnyTime": "You"
+              }
+             }
+            }
+           ]
+          }
+         }
+        ]
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Enchanted planeswalker has \"[−12]: You get an emblem with 'You may activate loyalty abilities of planeswalkers you control on any player's turn any time you could cast an instant.'\""
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "LoyaltyCostsMore": {
+      "who": "You",
+      "plus": 1
+     }
+    }
+   }
+  },
+  "Planeswalkers' loyalty abilities you activate cost an additional [+1] to activate."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Did": {
+      "action": "ActivatedLoyalty",
+      "who": "You",
+      "what": [
+       {
+        "Is": "Attached"
+       }
+      ]
+     }
+    },
+    "effects": [
+     {
+      "CopyAbility": {
+       "what": "Dealer",
+       "new_targets": true
+      }
+     }
+    ]
+   }
+  },
+  "Whenever you activate a loyalty ability of enchanted planeswalker, copy that ability. You may choose new targets for the copy."
+ ]
+]

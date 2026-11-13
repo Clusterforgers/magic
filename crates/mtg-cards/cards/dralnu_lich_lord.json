@@ -1,0 +1,44 @@
+{
+  "oracle_id": "35ab189a-adc8-48d6-82d2-53eb56a4d5e4",
+  "name": "Dralnu, Lich Lord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dralnu, Lich Lord",
+      "oracle_fingerprint": "60047079b8a8009ae07f052241c7cd4a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "This" } },
+            "by": { "Instead": [{ "Sacrifice": { "filter": [], "count": "Triggering" } }] }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Flashback": ["OwnManaCost"] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
