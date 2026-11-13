@@ -180,7 +180,10 @@ fn sigarda_cast_from_the_hand_opens_the_top_card(
             .battlefield(0, mine),
     )?;
     let top = library(&driver)[1];
-    assert!(mtg_engine::sight::known_top(driver.state(), PlayerId::from_index(0)).is_empty());
+    assert_eq!(
+        mtg_engine::sight::known_top(driver.state(), PlayerId::from_index(0)),
+        Vec::<mtg_core::ids::ObjectId>::new()
+    );
     driver.cast("Sigarda, Font of Blessings")?;
     for _ in 0..seats {
         driver.pass()?;
