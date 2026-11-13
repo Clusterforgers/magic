@@ -10,7 +10,6 @@ use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
-use mtg_core::color::Color;
 use mtg_engine::replay;
 use mtg_engine::turn::Step;
 use mtg_testkit::cards::{cost, island};
@@ -23,8 +22,13 @@ fn rules(json: &str) -> Ability {
 
 /// An artifact Treasure: "{T}, Sacrifice this artifact: Add one mana of any color."
 fn treasure() -> Arc<CardDefinition> {
+    treasure_named("Treasure")
+}
+
+/// A Treasure under another name, so that a payment can name both.
+fn treasure_named(name: &str) -> Arc<CardDefinition> {
     Arc::new(
-        CardDefinition::new("Treasure")
+        CardDefinition::new(name)
             .with_type(CardType::Artifact)
             .with_subtype("Treasure")
             .with_rules(rules(
@@ -57,13 +61,13 @@ fn painter(stat: &str) -> Arc<CardDefinition> {
     )
 }
 
-/// A vanilla creature for `{1}{U}`.
+/// A vanilla creature for `{2}`.
 fn bear() -> Arc<CardDefinition> {
     Arc::new(
         CardDefinition::new("Bear")
             .with_type(CardType::Creature)
             .with_power_toughness(2, 2)
-            .with_mana_cost(cost(1, &[Color::Blue])),
+            .with_mana_cost(cost(2, &[])),
     )
 }
 
@@ -84,7 +88,7 @@ fn counters_on(driver: &Driver, name: &str) -> u32 {
 #[case::treasures_none("TreasureManaSpent", &["Island", "Island"], 0)]
 #[case::treasures_one("TreasureManaSpent", &["Treasure", "Island"], 1)]
 #[case::treasures_not_a_rock("TreasureManaSpent", &["Rock", "Island"], 0)]
-#[case::treasures_both("TreasureManaSpent", &["Treasure", "Treasure"], 2)]
+#[case::treasures_both("TreasureManaSpent", &["Treasure", "Hoard"], 2)]
 #[case::artifacts_rock("ArtifactManaSpent", &["Rock", "Island"], 1)]
 #[case::artifacts_rock_and_treasure("ArtifactManaSpent", &["Rock", "Treasure"], 2)]
 #[case::artifacts_none("ArtifactManaSpent", &["Island", "Island"], 0)]
@@ -103,7 +107,7 @@ fn r5511_the_entering_creature_counts_its_own_mana(
                 [
                     ready(painter(stat)),
                     ready(treasure()),
-                    ready(treasure()),
+                    ready(treasure_named("Hoard")),
                     ready(rock()),
                     ready(island()),
                     ready(island()),
