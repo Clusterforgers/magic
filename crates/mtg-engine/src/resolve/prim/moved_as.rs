@@ -18,6 +18,7 @@ pub(super) fn count_entry(name: &str, moved: usize) -> (String, Vec<Target>) {
 fn name(effect: &Effect) -> Option<&str> {
     match effect {
         Effect::Mill { bind, .. }
+        | Effect::Surveil { bind, .. }
         | Effect::Draw { bind, .. }
         | Effect::Sacrifice { bind, .. }
         | Effect::SacrificeUpTo { bind, .. }

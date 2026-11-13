@@ -535,6 +535,8 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
         "surveil" => Effect::Surveil {
             who,
             count: points(r)?,
+            bind: None,
+            kept: None,
         },
         "proliferate" => Effect::Proliferate { who },
         "venture" => w11d_venture(r, who)?,
@@ -859,6 +861,8 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
         "surveil" if who == Ref::You => Effect::Surveil {
             who,
             count: points(r)?,
+            bind: None,
+            kept: None,
         },
         "take" | "takes" if r.words("the initiative") => Effect::TakeInitiative { who },
         "take" | "takes" => super::turns::extra_turns(r, &who)?,

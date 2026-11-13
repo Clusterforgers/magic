@@ -654,6 +654,8 @@ pub fn surveiler(name: &str, generic: u32, count: i32) -> Arc<CardDefinition> {
                 effects: vec![Effect::Surveil {
                     who: Ref::You,
                     count: Amount::Fixed(count),
+                    bind: None,
+                    kept: None,
                 }],
             }),
     )

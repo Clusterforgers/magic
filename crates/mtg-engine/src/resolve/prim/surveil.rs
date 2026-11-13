@@ -4,10 +4,11 @@ use mtg_cards::effect::Effect;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::wrong_effect;
+use crate::choose::Target;
 use crate::choose::{Questions, Stop};
 use crate::events::{Event, ZoneCause};
 use crate::library::{Surveilled, top_cards};
-use crate::resolve::{Cx, ResolveError, Run};
+use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::wording;
 use crate::zones::Zone;
 
@@ -19,7 +20,10 @@ use crate::zones::Zone;
 /// of anyone changes; each is one `Surveilled` followed by a `ZoneChanged` for each card put into the graveyard,
 /// which is not milling.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Surveil { who, count } = effect else {
+    let Effect::Surveil {
+        who, count, kept, ..
+    } = effect
+    else {
         return Err(wrong_effect("Surveil"));
     };
     let wanted = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(usize::MAX);
@@ -30,7 +34,31 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .into_iter()
         .filter(|player| state.is_alive(*player))
         .collect();
-    Stop::settle(surveils(cx, &players, wanted).map(Run::events))
+    Stop::settle(surveils(cx, &players, wanted).map(|events| {
+        let Some(name) = kept else {
+            return Run::events(events);
+        };
+        // The cards put back on top stay where they are, so each is named as it is.
+        let on_top: Vec<Target> = events
+            .iter()
+            .filter_map(|event| match event {
+                Event::Surveilled(surveilled) => Some(surveilled.top.clone()),
+                _ => None,
+            })
+            .flatten()
+            .filter_map(|id| {
+                cx.state()
+                    .object(id)
+                    .map(|card| Target::Object(card.reference()))
+            })
+            .collect();
+        Run::Done {
+            events,
+            bound: vec![(name.clone(), on_top)],
+            snapshots: Vec::new(),
+            next: Next::Sibling,
+        }
+    }))
 }
 
 /// The surveil of each player who has cards to look at, asking in turn.

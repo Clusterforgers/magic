@@ -105,6 +105,8 @@ fn written() {
 #[case("Nev, the Practical Dean")]
 #[case("Adeline, Resplendent Cathar")]
 #[case("Protean Hydra")]
+#[case("Chandra, Chill of Compliance")]
+#[case("Starving Revenant")]
 fn reads_back_whole(#[case] name: &str) {
     let report = report(name);
     assert_eq!(
@@ -168,6 +170,23 @@ fn altered(name: &str, from: &str, to: &str) -> String {
 #[case::untapped("Adeline, Resplendent Cathar", r#""tapped":true,"#, "")]
 #[case::one_counter_back("Protean Hydra", r#""count":2,"#, "")]
 #[case::counter_put("Protean Hydra", r#"{"CountersRemoved""#, r#"{"CountersPut""#)]
+#[case::creature_back("Chandra, Chill of Compliance", r#"{"Not":{"Type":"Creature"}},"#, "")]
+#[case::to_battlefield(
+    "Chandra, Chill of Compliance",
+    r#""to":"Hand""#,
+    r#""to":{"Battlefield":{}}"#
+)]
+#[case::kept_returns(
+    "Chandra, Chill of Compliance",
+    r#"{"Surveil":{"as":"surveiled"}}"#,
+    r#"{"Surveil":{"kept_as":"surveiled"}}"#
+)]
+#[case::two_life("Starving Revenant", r#""by":3"#, r#""by":2"#)]
+#[case::graved_count(
+    "Starving Revenant",
+    r#"{"Surveil":{"count":2,"kept_as":"kept"}}"#,
+    r#"{"Surveil":{"as":"kept","count":2}}"#
+)]
 fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let report = report_of(name, &altered(name, from, to));
     assert_ne!(

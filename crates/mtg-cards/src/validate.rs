@@ -3561,10 +3561,24 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind_moved(name));
                 }
             }
-            Effect::Scry { who, count }
-            | Effect::Surveil { who, count } => {
+            Effect::Scry { who, count } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
+            }
+            Effect::Surveil {
+                who,
+                count,
+                bind,
+                kept,
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("count", |w| w.amount(count));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind_moved(name));
+                }
+                if let Some(name) = kept {
+                    w.at("kept_as", |w| w.bind_kept(name, Kind::Object));
+                }
             }
             Effect::Conjure {
                 who,

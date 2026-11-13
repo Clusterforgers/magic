@@ -1419,6 +1419,7 @@ fn verb_phrase(effect: &Effect) -> Option<String> {
         Effect::Surveil {
             who: Ref::You,
             count: Amount::Fixed(n),
+            ..
         } => format!("surveil {n}"),
         Effect::GainLife {
             who: Ref::You,

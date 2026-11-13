@@ -1012,7 +1012,12 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         }),
         reference().prop_map(|what| Effect::Transform { what }),
         who().prop_map(|who| Effect::WinGame { who }),
-        (who(), amount()).prop_map(|(who, count)| Effect::Surveil { who, count }),
+        (who(), amount()).prop_map(|(who, count)| Effect::Surveil {
+            who,
+            count,
+            bind: None,
+            kept: None,
+        }),
         who().prop_map(|who| Effect::Proliferate { who }),
         reference().prop_map(|what| Effect::Goad { what }),
         (
