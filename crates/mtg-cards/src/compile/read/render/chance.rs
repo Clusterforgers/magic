@@ -50,6 +50,7 @@ impl Writer<'_> {
 
     /// "flip a coin", "if you win the flip, S" and "if you lose the flip, S" as sentences, or "roll a d20", and the number
     /// of effects they cover.
+    #[allow(clippy::too_many_lines)]
     pub(super) fn chance(&mut self, effects: &[Effect]) -> Option<(Vec<String>, usize)> {
         let whole = (self.ep22_flips(effects)).or_else(|| r376_whole_text(effects));
         if whole.is_some() {

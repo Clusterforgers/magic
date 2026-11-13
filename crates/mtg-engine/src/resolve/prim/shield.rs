@@ -137,8 +137,9 @@ pub(super) fn damage_shield(
             | ReplaceBy::PreventAllButNext(_)
     );
     let instead = match by {
-        ReplaceBy::PreventHalfNext | ReplaceBy::PreventAllButNext(_) => Some(by.clone()),
-        ReplaceBy::Multiply(_)
+        ReplaceBy::PreventHalfNext
+        | ReplaceBy::PreventAllButNext(_)
+        | ReplaceBy::Multiply(_)
         | ReplaceBy::Add(_)
         | ReplaceBy::Instead(_)
         | ReplaceBy::RedirectUpTo { .. }

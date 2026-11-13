@@ -46,9 +46,10 @@ fn roll_of(effect: &Effect) -> Option<(u32, &Amount)> {
 /// The number of an effect that its result may stand for, and the effect with that number set.
 fn with_count(effect: &Effect, count: Amount) -> Option<(Amount, Effect)> {
     let mut twin = effect.clone();
-    let slot = match &mut twin {
-        Effect::CreateToken { count, .. } | Effect::PutCounters { count, .. } => count,
-        _ => return None,
+    let (Effect::CreateToken { count: slot, .. } | Effect::PutCounters { count: slot, .. }) =
+        &mut twin
+    else {
+        return None;
     };
     let old = std::mem::replace(slot, count);
     Some((old, twin))

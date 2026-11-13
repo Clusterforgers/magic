@@ -2183,9 +2183,6 @@ impl Pass<'_> {
             ) => {
                 self.prevent(at, candidate, by, applied);
             }
-            (ReplaceBy::PreventAllButNext(kept), Unit::Damage { .. }) => {
-                self.w9c_prevent_all_but(at, candidate, *kept, applied);
-            }
             (ReplaceBy::PreventByCounters(kind), Unit::Damage { .. }) => {
                 self.r5507_prevent_by_counters(at, candidate, kind, applied);
             }
@@ -2202,7 +2199,10 @@ impl Pass<'_> {
                 }
                 self.slots.remove(at);
             }
-            (ReplaceBy::PreventAllBut(kept), Unit::Damage { .. }) => {
+            (
+                ReplaceBy::PreventAllBut(kept) | ReplaceBy::PreventAllButNext(kept),
+                Unit::Damage { .. },
+            ) => {
                 self.w9c_prevent_all_but(at, candidate, *kept, applied);
             }
             (ReplaceBy::Instead(effects) | ReplaceBy::Plus(effects), _)

@@ -56,7 +56,9 @@ fn table(seats: usize, seed: u64) -> Scenario {
         .fold(Scenario::new(seats), |scenario, seat| {
             scenario.library(
                 seat,
-                (0..10).map(|_| mtg_testkit::cards::forest()).collect::<Vec<_>>(),
+                (0..10)
+                    .map(|_| mtg_testkit::cards::forest())
+                    .collect::<Vec<_>>(),
             )
         })
         .seed(seed)
