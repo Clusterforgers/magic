@@ -1,0 +1,46 @@
+{
+  "oracle_id": "5bbcfb73-cccc-47b0-81ae-17eb7c33ff5e",
+  "name": "Infinite Reflection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infinite Reflection",
+      "oracle_fingerprint": "b913755820e58a5b84f289db29df7e90",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Matches": { "subject": "Attached", "selector": [{ "Type": "Creature" }] } },
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": "Token" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "Is": "Attached" } }
+                    ]
+                  },
+                  "of": "Attached",
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }]
+              }
+            },
+            "by": { "AsCopy": { "of": [{ "Is": "Attached" }], "must": true } }
+          }
+        }
+      ]
+    }
+  ]
+}

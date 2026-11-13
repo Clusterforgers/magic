@@ -438,10 +438,9 @@ pub(super) fn settle<'a>(
         }
         match journal.next_if(|entry| entry.0 == player) {
             Some((_, Choice::Cards(cards))) => {
-                if pick.weak(state, cards).is_some() {
-                    return Err(ResolveError::Invalid(format!(
-                        "{player:?} picked too little for the cost"
-                    )));
+                // Refused like the same pick of an announced cost (`Pending::check_picked`).
+                if let Some(illegal) = pick.weak(state, cards) {
+                    return Err(ResolveError::Illegal(illegal));
                 }
                 taken.push(cards.clone());
             }

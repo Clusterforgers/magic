@@ -1,0 +1,68 @@
+{
+  "oracle_id": "4f7e4aff-ef68-44fe-a0dc-b9ab0ecd7146",
+  "name": "Expose the Culprit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Expose the Culprit",
+      "oracle_fingerprint": "9942b71fc0a2f6dd07ecc32d3ab5fb41",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "modes": [
+                    {
+                      "label": "Turn target face-down creature face up.",
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "FaceDown"] } }],
+                      "effects": [{ "TurnFaceUp": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "label": "Exile any number of face-up creatures you control with disguise in a face-down pile, shuffle that pile, then cloak them.",
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                { "ControlledBy": "You" },
+                                { "Not": "FaceDown" },
+                                { "HasKeywordNamed": "Disguise" }
+                              ]
+                            },
+                            "count": {
+                              "min": 0,
+                              "max": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" },
+                                  { "Not": "FaceDown" },
+                                  { "HasKeywordNamed": "Disguise" }
+                                ]
+                              }
+                            },
+                            "as": "chosen"
+                          }
+                        },
+                        { "ExileHidden": { "what": { "Bound": "chosen" }, "as": "pile" } },
+                        {
+                          "Move": {
+                            "what": { "Bound": "pile" },
+                            "to": { "BattlefieldFaceDown": {} },
+                            "as": "cloaked"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

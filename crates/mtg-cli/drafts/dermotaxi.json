@@ -1,0 +1,44 @@
+{
+  "oracle_id": "b065ef1d-5cba-41f2-a4b4-a6ae479323d3",
+  "name": "Dermotaxi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dermotaxi",
+      "oracle_fingerprint": "cfaf58a1a4c3e692ccac49f88a423ee5",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                {
+                  "Choose": {
+                    "from": { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                    "as": "imprinted"
+                  }
+                },
+                { "Exile": { "what": { "Bound": "imprinted" } } }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }], "count": 2 } }],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": "This",
+                  "of": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "except": [{ "AddSubtype": "Vehicle" }, { "AddType": "Artifact" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

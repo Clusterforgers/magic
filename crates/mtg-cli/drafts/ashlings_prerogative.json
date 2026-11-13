@@ -1,0 +1,91 @@
+{
+  "oracle_id": "b68bc097-482a-4fe5-9fca-df5941f3dc5c",
+  "name": "Ashling's Prerogative",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashling's Prerogative",
+      "oracle_fingerprint": "0df5148299414af0d1346178056a545a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "ChooseWord": ["odd", "even"] }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                {
+                  "Test": {
+                    "left": {
+                      "Sum": [
+                        { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                        {
+                          "Times": {
+                            "by": -2,
+                            "of": {
+                              "Quotient": {
+                                "of": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                "by": 2,
+                                "up": false
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "op": "Eq",
+                    "right": {
+                      "When": { "condition": { "EnteredAs": "odd" }, "then": 1, "otherwise": 0 }
+                    }
+                  }
+                }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": {
+                "what": [
+                  { "Type": "Creature" },
+                  {
+                    "Test": {
+                      "left": {
+                        "Sum": [
+                          { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                          {
+                            "Times": {
+                              "by": -2,
+                              "of": {
+                                "Quotient": {
+                                  "of": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                  "by": 2,
+                                  "up": false
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      "op": "Ne",
+                      "right": {
+                        "When": { "condition": { "EnteredAs": "odd" }, "then": 1, "otherwise": 0 }
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "by": "Tapped"
+          }
+        }
+      ]
+    }
+  ]
+}

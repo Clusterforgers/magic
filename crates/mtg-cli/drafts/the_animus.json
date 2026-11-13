@@ -1,7 +1,7 @@
 {
   "oracle_id": "7e0062fb-aff8-4c41-96eb-1af656d8b195",
   "name": "The Animus",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Animus",
@@ -14,8 +14,8 @@
               {
                 "what": {
                   "Object": [
-                    { "Type": "Creature" },
                     { "Supertype": "Legendary" },
+                    { "Type": "Creature" },
                     { "In": "Graveyard" }
                   ]
                 },
@@ -29,9 +29,38 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 128, "end": 297 }
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Supertype": "Legendary" },
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "In": "Exile" },
+                    { "HasCounter": { "Other": "memory" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": { "Target": 0 },
+                  "of": { "Target": 1 },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
           }
         }
       ]

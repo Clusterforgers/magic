@@ -1,0 +1,52 @@
+{
+  "oracle_id": "957413ae-e756-4afe-886a-b57bf59d5f8d",
+  "name": "Feather, Radiant Arbiter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feather, Radiant Arbiter",
+      "oracle_fingerprint": "9f81d8348d2a0888d99346fcbb117a00",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Not": { "Type": "Creature" } },
+                  "SingleTarget",
+                  { "Targeting": ["This"] }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, "Other"] },
+                  "count": { "min": 0, "max": { "Count": [{ "Type": "Creature" }, "Other"] } },
+                  "as": "chosen"
+                }
+              },
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "times": { "CountOf": { "of": { "Bound": "chosen" }, "filter": [] } },
+                  "paid": [
+                    {
+                      "CopySpell": {
+                        "what": "Triggering",
+                        "each_target": [{ "Is": { "Bound": "chosen" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
