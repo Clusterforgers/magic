@@ -22,7 +22,34 @@
             ]
           }
         },
-        {"Triggered":{"when":{"ZoneChange":{"what":["Other",{"ControlledBy":"You"}],"from":"Battlefield","to":"Graveyard"}},"if":{"Compare":{"left":{"AnyCounters":"Triggering"},"op":"Ge","right":1}},"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"May":{"effects":[{"PutCounters":{"on":{"Target":0},"counter":"+1/+1","count":{"AnyCounters":"Triggering"}}}]}}]}}
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["Other", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "if": { "Compare": { "left": { "AnyCounters": "Triggering" }, "op": "Ge", "right": 1 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "PutCounters": {
+                        "on": { "Target": 0 },
+                        "counter": "+1/+1",
+                        "count": { "AnyCounters": "Triggering" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
       ]
     }
   ]

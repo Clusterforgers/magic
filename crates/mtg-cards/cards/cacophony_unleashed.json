@@ -24,7 +24,47 @@
             ]
           }
         },
-        {"Triggered":{"when":{"ZoneChange":{"what":[{"AnyOf":["This",{"Not":{"AnyOf":[{"Not":{"Type":"Enchantment"}},{"Not":{"ControlledBy":"You"}},{"Not":"Other"}]}}]}],"to":"Battlefield"}},"effects":[{"Continuous":{"affected":"This","mods":[{"SetPT":{"power":6,"toughness":6}},{"SetCreatureTypes":["Nightmare","God"]},{"AddSupertype":"Legendary"},{"AddType":"Creature"},{"AddKeyword":"Menace"},{"AddKeyword":"Deathtouch"}],"duration":"UntilEndOfTurn"}}]}}
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Enchantment" } },
+                            { "Not": { "ControlledBy": "You" } },
+                            { "Not": "Other" }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 6, "toughness": 6 } },
+                    { "SetCreatureTypes": ["Nightmare", "God"] },
+                    { "AddSupertype": "Legendary" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Menace" },
+                    { "AddKeyword": "Deathtouch" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
       ]
     }
   ]

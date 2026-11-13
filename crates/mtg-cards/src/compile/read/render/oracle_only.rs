@@ -401,6 +401,7 @@ mod r306_wholes;
 mod r306b_wholes;
 mod r379_wholes;
 mod r5523_wholes;
+pub(super) use r5523_wholes::add as r5523_add_whole;
 pub(in crate::compile::read) use r5523_wholes::r5523_read_whole;
 mod rmt5_wholes;
 // r30-0

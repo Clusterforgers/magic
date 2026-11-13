@@ -153,6 +153,12 @@ fn r5523_probe_outside() {
 #[case("Fast Forward")]
 #[case("Weathered Sentinels")]
 #[case("Paliano, the High City")]
+#[case("Genju of the Realm")]
+#[case("Cacophony Unleashed")]
+#[case("Wolverine, Best There Is")]
+#[case("Omnath, Locus of Mana")]
+#[case("Hundred-Battle Veteran")]
+#[case("Yuna, Grand Summoner")]
 fn r5523_reads_back_whole(#[case] name: &str) {
     let report = r5523_report(name, &r5523_file(name));
     assert_eq!(
@@ -176,6 +182,29 @@ fn r5523_reads_back_whole(#[case] name: &str) {
     "Paliano, the High City",
     r#"{ "Rule": { "rule": { "Draft": "ChooseColorsAround" } } },"#,
     ""
+)]
+#[case::genju_not_legendary("Genju of the Realm", r#"{ "AddSupertype": "Legendary" },"#, "")]
+#[case::cacophony_lifelink("Cacophony Unleashed", r#""Deathtouch""#, r#""Lifelink""#)]
+#[case::cacophony_any_permanent(
+    "Cacophony Unleashed",
+    r#"{ "Not": { "Type": "Enchantment" } },"#,
+    ""
+)]
+#[case::wolverine_any_creature(
+    "Wolverine, Best There Is",
+    r#"{ "Type": "Creature" }, "Other""#,
+    r#"{ "Type": "Creature" }"#
+)]
+#[case::omnath_red(
+    "Omnath, Locus of Mana",
+    r#""power": { "ManaInPoolOf": { "who": "You", "mana": "Green" } }"#,
+    r#""power": { "ManaInPoolOf": { "who": "You", "mana": "Red" } }"#
+)]
+#[case::veteran_shield("Hundred-Battle Veteran", r#""finality""#, r#""shield""#)]
+#[case::yuna_two_counters(
+    "Yuna, Grand Summoner",
+    r#""op": "Ge", "right": 1"#,
+    r#""op": "Ge", "right": 2"#
 )]
 fn r5523_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let file = r5523_file(name);

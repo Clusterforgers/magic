@@ -8,7 +8,19 @@
       "oracle_fingerprint": "59fd7e695c8b9f0123c3ab09e4e5f7da",
       "abilities": [
         { "Rule": { "rule": { "KeepUnspentMana": { "who": "You", "mana": "Green" } } } },
-        {"Static":{"affected":"This","mods":[{"ModifyPT":{"power":{"ManaInPoolOf":{"who":"You","mana":"Green"}},"toughness":{"ManaInPoolOf":{"who":"You","mana":"Green"}}}}]}}
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "ManaInPoolOf": { "who": "You", "mana": "Green" } },
+                  "toughness": { "ManaInPoolOf": { "who": "You", "mana": "Green" } }
+                }
+              }
+            ]
+          }
+        }
       ]
     }
   ]

@@ -25,7 +25,18 @@
             }
           }
         },
-        {"Rule":{"rule":{"MayCast":{"what":["This"],"from":"Graveyard","riders":[{"EntersWithCounter":{"Other":"finality"}}]}},"from":"Graveyard"}}
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": ["This"],
+                "from": "Graveyard",
+                "riders": [{ "EntersWithCounter": { "Other": "finality" } }]
+              }
+            },
+            "from": "Graveyard"
+          }
+        }
       ]
     }
   ]

@@ -8,7 +8,18 @@
       "oracle_fingerprint": "3355c34e717a119890424f539b845edb",
       "abilities": [
         { "Replacement": { "when": { "Damage": { "source": ["This"] } }, "by": { "Multiply": 2 } } },
-        {"Triggered":{"when":{"StepBegins":{"step":"End"}},"if":{"Matches":{"subject":"This","selector":[{"DealtDamageThisTurn":[{"Type":"Creature"},"Other"]}]}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}}]}},
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "DealtDamageThisTurn": [{ "Type": "Creature" }, "Other"] }]
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
         { "Activated": { "cost": "{1}{G}", "effects": [{ "Regenerate": { "what": "This" } }] } }
       ]
     }

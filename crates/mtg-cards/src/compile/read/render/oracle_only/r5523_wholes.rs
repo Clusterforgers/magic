@@ -38,7 +38,7 @@ static R5523_SHAPES: LazyLock<Vec<(Ability, &'static str)>> = LazyLock::new(|| {
 });
 
 /// Adds the wording of an ability that one of the entries matches whole.
-pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
+pub(in crate::compile::read) fn add(ability: &Ability, texts: &mut Vec<String>) {
     for (shape, text) in R5523_SHAPES.iter() {
         if shape == ability {
             texts.push((*text).to_owned());

@@ -392,6 +392,17 @@ fn leading(sentence: &str) -> String {
     format!("Until end of turn, {body}")
 }
 
+/// The wordings of an animated enchantment: each wording with "It's still a land." closes with "It's still an
+/// enchantment." instead; added after every other writer so it takes none of their room.
+pub(super) fn still_an_enchantment(texts: &[String]) -> Vec<String> {
+    texts
+        .iter()
+        .filter(|text| text.contains(STILL_A_LAND))
+        .map(|text| text.replace(STILL_A_LAND, STILL_AN_ENCHANTMENT))
+        .filter(|text| !texts.contains(text))
+        .collect()
+}
+
 /// The sentence followed by "It's still a land": the period of a quote is inside it already.
 fn still_a_land(sentence: &str) -> String {
     still(sentence, STILL_A_LAND)
@@ -452,8 +463,6 @@ pub(super) fn wordings(ability: &Ability, texts: &[String]) -> Vec<String> {
             still_a_land(sentence),
             leading(sentence),
             still_a_land(&leading(sentence)),
-            still(sentence, STILL_AN_ENCHANTMENT),
-            still(&leading(sentence), STILL_AN_ENCHANTMENT),
         ];
         for text in texts.iter().filter(|text| text.contains(&closed)) {
             for form in &forms {

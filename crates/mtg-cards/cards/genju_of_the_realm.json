@@ -8,7 +8,26 @@
       "oracle_fingerprint": "b809c3ff21ccfda9c6d72d2e76af55ab",
       "abilities": [
         { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
-        {"Activated":{"cost":"{2}","effects":[{"Continuous":{"affected":"Attached","mods":[{"SetPT":{"power":8,"toughness":12}},{"SetCreatureTypes":["Spirit"]},{"AddSupertype":"Legendary"},{"AddType":"Creature"},{"AddKeyword":"Trample"}],"duration":"UntilEndOfTurn"}}]}},
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [
+                    { "SetPT": { "power": 8, "toughness": 12 } },
+                    { "SetCreatureTypes": ["Spirit"] },
+                    { "AddSupertype": "Legendary" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
         {
           "Triggered": {
             "when": { "ZoneChange": { "what": [{ "Is": "Attached" }], "to": "Graveyard" } },

@@ -592,7 +592,8 @@ fn produced_wordings(texts: &mut Vec<String>) {
 /// sentence, "deals damage equal to its power").
 pub fn written_variants(ability: &Ability) -> Vec<String> {
     // A permission with riders is worded only as the permission without them and its riders.
-    if let Some(texts) = super::r401_riders::r401_rider_texts(ability, written_variants) {
+    if let Some(mut texts) = super::r401_riders::r401_rider_texts(ability, written_variants) {
+        oracle_only::r5523_add_whole(ability, &mut texts);
         return texts;
     }
     // An investigation is worded as the Clue tokens it makes.
@@ -631,6 +632,8 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r403_hooks::r403_wordings(ability, written_variants, &mut texts);
     super::r4711_drafted::r4711_wordings(ability, written_variants, &mut texts);
     super::r5523_drafted::r5523_wordings(ability, written_variants, &mut texts);
+    let more = becomes::still_an_enchantment(&texts);
+    texts.extend(more);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.
