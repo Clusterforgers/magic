@@ -243,14 +243,30 @@ fn it_in_a_spell_has_no_antecedent(#[case] text: &str) {
 #[rstest]
 #[case::two_or_more("Whenever two or more +1/+1 counters are put on this creature, draw a card.")]
 #[case::singular("Whenever one or more +1/+1 counter is put on this creature, draw a card.")]
-#[case::you_put(
-    "Whenever you put one or more +1/+1 counters on a creature you control, draw a card."
-)]
 #[case::no_kind_word("Whenever one or more are put on this creature, draw a card.")]
 #[case::rules_counter("Whenever one or more stun counters are put on this creature, draw a card.")]
 #[case::on_a_player("Whenever one or more poison counters are put on target player, draw a card.")]
 fn near_misses_of_the_counter_batch_stay_unread(#[case] text: &str) {
     assert_eq!(trigger(text), None, "{text}");
+}
+
+#[test]
+fn counters_you_put_are_a_batch_caused_by_you() {
+    let text =
+        "Whenever you put one or more +1/+1 counters on a creature you control, draw a card.";
+    assert!(
+        matches!(
+            trigger(text),
+            Some(Ability::Triggered {
+                when: crate::trigger::TriggerPattern::Caused {
+                    by: Some(crate::refs::Ref::You),
+                    ..
+                },
+                ..
+            })
+        ),
+        "{text}"
+    );
 }
 
 #[rstest]

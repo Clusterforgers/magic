@@ -442,6 +442,9 @@ struct Walker<'a> {
     amounting: Amounting,
     /// How many abilities deep the walk stands inside abilities that other abilities grant or tokens carry.
     nested: u32,
+    /// The values chosen before an emblem is made, which its abilities may read: the engine writes them in as the
+    /// emblem is made.
+    r4702_emblem_values: BTreeSet<String>,
     /// Where the walk stands in an effect list, for "if you do".
     after: After,
     /// The effect before the one being walked is a `May`, whose acceptance "if you do" asks about.
@@ -486,6 +489,7 @@ impl<'a> Walker<'a> {
             r306_paying: false,
             amounting: Amounting::Other,
             nested: 0,
+            r4702_emblem_values: BTreeSet::new(),
             after: After::Nothing,
             after_may: false,
             face: 0,
@@ -543,6 +547,7 @@ impl<'a> Walker<'a> {
         match self.scope.lookup(name) {
             Some(Kind::Value) => {}
             Some(_) => self.problem(format!("`{name}` is not a chosen value")),
+            None if self.r4702_emblem_values.contains(name) => {}
             None => self.problem(format!("`{name}` is not bound by an earlier step")),
         }
     }
@@ -599,8 +604,12 @@ impl<'a> Walker<'a> {
     // One arm for each kind of reference.
     #[allow(clippy::too_many_lines)]
     fn reference(&mut self, r: &Ref, want: Kind) {
+        if *r == Ref::R4700OtherChosen {
+            self.uses("Ref", "R4700OtherChosen");
+        }
         match r {
-            Ref::You
+            Ref::R4700OtherChosen
+            | Ref::You
             | Ref::Opponents
             | Ref::EachPlayer
             | Ref::AttachedPlayer
@@ -609,6 +618,7 @@ impl<'a> Walker<'a> {
             | Ref::Promised
             | Ref::Attacked
             | Ref::MostLife
+            | Ref::Teammates
             | Ref::ActivePlayer
             | Ref::Chooser
             | Ref::Asker
@@ -760,6 +770,10 @@ impl<'a> Walker<'a> {
                 self.uses("Pred", "BlockedThisTurnBy");
                 self.reference(who, Kind::Object);
             }
+            Pred::CastBefore(who) => {
+                self.uses("Pred", "CastBefore");
+                self.reference(who, Kind::Object);
+            }
             Pred::BandedWith(who) => {
                 self.uses("Pred", "BandedWith");
                 self.reference(who, Kind::Object);
@@ -822,6 +836,10 @@ impl<'a> Walker<'a> {
     #[allow(clippy::too_many_lines)]
     fn pred(&mut self, pred: &Pred) {
         match pred {
+            Pred::R4700TopOfGraveyard { among, .. } => {
+                self.uses("Pred", "R4700TopOfGraveyard");
+                self.at("among", |w| w.selector(among));
+            }
             Pred::Subtype(subtype) => self.known_subtype(subtype),
             Pred::HasAbility(_) => self.uses("Pred", "HasAbility"),
             Pred::Drafted(_) => self.uses("Pred", "Drafted"),
@@ -931,6 +949,7 @@ impl<'a> Walker<'a> {
             | Pred::TopCreatureOfGraveyard
             | Pred::BlockedBy(_)
             | Pred::BlockedThisTurnBy(_)
+            | Pred::CastBefore(_)
             | Pred::BandedWith(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
@@ -950,6 +969,17 @@ impl<'a> Walker<'a> {
                 }
                 for (i, inner) in preds.iter().enumerate() {
                     self.at(format!("[{i}]"), |w| w.pred(inner));
+                }
+            }
+            Pred::Apart(rule) => {
+                self.uses("Pred", "Apart");
+                if !matches!(
+                    rule,
+                    TargetSet::DifferentNames
+                        | TargetSet::DifferentPowers
+                        | TargetSet::DifferentManaValues
+                ) {
+                    self.problem("objects taken apart differ in names, powers or mana values");
                 }
             }
             Pred::This
@@ -1004,6 +1034,7 @@ impl<'a> Walker<'a> {
             | Pred::Goaded
             | Pred::ChosenSubtype
             | Pred::ChosenName
+            | Pred::OriginallyPrintedIn(_)
             | Pred::In(_) => {}
         }
     }
@@ -1058,7 +1089,12 @@ impl<'a> Walker<'a> {
     fn hand_or_life_lost(&mut self, amount: &Amount) {
         match amount {
             Amount::LowestHand(who) => self.player_amount("LowestHand", who),
-            Amount::DieResult(_) => self.uses("Amount", "DieResult"),
+            Amount::DieResult(which) => {
+                self.uses("Amount", "DieResult");
+                if *which == crate::value::DieResult::Distinct {
+                    self.uses("Amount", "DieResult.Distinct");
+                }
+            }
             Amount::DamageDealtThisWay => self.uses("Amount", "DamageDealtThisWay"),
             _ => self.uses("Amount", "LifeLostThisWay"),
         }
@@ -1238,6 +1274,7 @@ impl<'a> Walker<'a> {
             StatKind::R374Toxic => "R374Toxic",
             StatKind::R374ManaCost => "R374ManaCost",
             StatKind::R374ColorSet => "R374ColorSet",
+            StatKind::R4700ChosenColors => "R4700ChosenColors",
             _ => return,
         };
         self.uses("Stat", name);
@@ -1318,13 +1355,14 @@ impl<'a> Walker<'a> {
             Amount::StickerVowels => self.uses("Amount", "StickerVowels"),
             Amount::CastSameNameThisGame(who) => self.player_amount("CastSameNameThisGame", who),
             Amount::TallyLastTurn { event, who, filter }
+            | Amount::TallyTypes { event, who, filter }
             | Amount::TallyTotal {
                 event, who, filter, ..
             } => {
-                let tag = if matches!(amount, Amount::TallyTotal { .. }) {
-                    "TallyTotal"
-                } else {
-                    "TallyLastTurn"
+                let tag = match amount {
+                    Amount::TallyTotal { .. } => "TallyTotal",
+                    Amount::TallyTypes { .. } => "TallyTypes",
+                    _ => "TallyLastTurn",
                 };
                 self.uses("Amount", tag);
                 if matches!(
@@ -1759,6 +1797,7 @@ impl<'a> Walker<'a> {
                     | CostItem::CollectEvidence(_)
                     | CostItem::Waterbend(_)
                     | CostItem::OthersGainLife(_)
+                    | CostItem::GetPoison(_)
                     | CostItem::XColor(_)
                     | CostItem::Forage => {}
                     CostItem::ChosenColorOnly => w.uses("Cost", "ChosenColorOnly"),
@@ -1773,8 +1812,9 @@ impl<'a> Walker<'a> {
                         if *least == 0 {
                             w.problem("an X of at least 0 is any X");
                         }
-                        // The least X is announced for an activated ability only.
-                        if !w.activated_cost {
+                        // The least X is announced for an activated ability, and where an effect asks the payment and
+                        // announces its X ("you may pay one or more {E}").
+                        if !w.activated_cost && (!w.r306_paying || !w.x_free) {
                             w.uses("Cost", "XAtLeast.Elsewhere");
                         }
                     }
@@ -2137,10 +2177,12 @@ impl<'a> Walker<'a> {
         if has_x_mana(cost) {
             self.uses("Effect", "Pay.X");
         }
-        // Energy of that count is paid once X is announced; any other part is not.
+        // Energy of that count is paid once X is announced, and so are counters from among permanents; any other part is
+        // not.
         if cost.0.iter().any(|item| {
             amount_is_x(item)
                 && !matches!(item, CostItem::PayEnergy(_) | CostItem::PayLife(Amount::X))
+                && !r4710_among_x(item)
         }) {
             self.uses("Effect", "Pay.X.Parts");
         }
@@ -2158,6 +2200,10 @@ impl<'a> Walker<'a> {
             .any(|item| matches!(item, CostItem::PayEnergy(Amount::X)))
         {
             self.uses("Effect", "Pay.X.Energy");
+        }
+        // Counters removed from among permanents, as many as X ("remove any number of +1/+1 counters from among ...").
+        if cost.0.iter().any(r4710_among_x) {
+            self.uses("Effect", "Pay.X.Among");
         }
     }
 
@@ -2332,7 +2378,9 @@ impl<'a> Walker<'a> {
             | Keyword::Ninjutsu(cost)
             | Keyword::LevelUp(cost)
             | Keyword::Outlast(cost) => {
+                let held = std::mem::replace(&mut self.activated_cost, true);
                 self.at("cost", |w| w.cost(cost));
+                self.activated_cost = held;
             }
             // "Kicker {X}. X can't be 0.": the X is announced once the spell is kicked, and the least X with it.
             Keyword::Kicker(cost) if cost.has_x() => {
@@ -2434,7 +2482,7 @@ impl<'a> Walker<'a> {
             Keyword::Ripple(0) => self.problem("ripple needs a number of at least 1"),
             Keyword::Devour { counters, of } => {
                 if *counters == 0 {
-                    self.problem("devour needs a number of at least 1");
+                    self.uses("Keyword", "Devour.X");
                 }
                 self.at("of", |w| w.selector(of));
             }
@@ -3178,6 +3226,10 @@ impl Walker<'_> {
                 self.at("of", |w| w.reference(of, Kind::Object));
                 self.ep23_token_copy_exceptions(except);
             }
+            TokenRef::R4700OfChosen { size } => {
+                self.at("size", |w| w.amount(size));
+                self.uses("Effect", "CreateToken.R4700OfChosen");
+            }
         }
     }
 
@@ -3247,13 +3299,13 @@ impl Walker<'_> {
             self.problem("a token needs at least one card type");
         }
         let creature = spec.types.contains(&mtg_core::card::CardType::Creature);
+        // A Vehicle has a printed power and toughness too (CR 301.7): "create an X/X colorless Vehicle artifact token".
+        let vehicle = spec.subtypes.iter().any(|subtype| subtype.0 == "Vehicle");
         if sized {
-            if !creature || spec.power.is_some() || spec.toughness.is_some() {
-                self.problem("a token sized by an amount is a creature with no power and toughness of its own");
+            if !(creature || vehicle) || spec.power.is_some() || spec.toughness.is_some() {
+                self.problem("a token sized by an amount is a creature or a Vehicle with no power and toughness of its own");
             }
-        } else if (creature || spec.subtypes.iter().any(|subtype| subtype.0 == "Vehicle"))
-            != (spec.power.is_some() && spec.toughness.is_some())
-        {
+        } else if (creature || vehicle) != (spec.power.is_some() && spec.toughness.is_some()) {
             self.problem(
                 "a creature token needs power and toughness (a Vehicle token too), any other token none",
             );
@@ -3274,6 +3326,16 @@ impl Walker<'_> {
         if abilities.is_empty() {
             self.problem("an emblem needs at least one ability");
         }
+        let values: BTreeSet<String> = self
+            .scope
+            .names
+            .iter()
+            .flat_map(|names| names.iter())
+            .chain(self.scope.moved.iter())
+            .filter(|(_, kind)| **kind == Kind::Value)
+            .map(|(name, _)| name.clone())
+            .collect();
+        let outer_values = std::mem::replace(&mut self.r4702_emblem_values, values);
         let saved = std::mem::take(&mut self.scope);
         self.nested += 1;
         for (i, ability) in abilities.iter().enumerate() {
@@ -3287,6 +3349,7 @@ impl Walker<'_> {
         }
         self.nested -= 1;
         self.scope = saved;
+        self.r4702_emblem_values = outer_values;
     }
 
     fn effect_list(&mut self, field: &str, list: &[Effect], top: bool) {
@@ -3296,7 +3359,8 @@ impl Walker<'_> {
     /// What a reference names: a player, an object, or either when it is a name or a target of either kind.
     fn kind_of(&self, r: &Ref) -> Kind {
         match r {
-            Ref::You
+            Ref::R4700OtherChosen
+            | Ref::You
             | Ref::Opponents
             | Ref::EachPlayer
             | Ref::AttachedPlayer
@@ -3305,6 +3369,7 @@ impl Walker<'_> {
             | Ref::Promised
             | Ref::Attacked
             | Ref::MostLife
+            | Ref::Teammates
             | Ref::ActivePlayer
             | Ref::Chooser
             | Ref::Asker
@@ -3402,10 +3467,15 @@ impl Walker<'_> {
         if sides < 2 {
             self.problem("a die has at least two sides");
         }
-        if choose != (dice > 1) {
-            self.problem(
-                "a choice of one result is among two or more dice, and only a choice rolls several",
-            );
+        if choose && dice < 2 {
+            self.problem("a choice of one result is among two or more dice");
+        }
+        if !choose && dice > 1 {
+            // Several dice with no choice are read together ("for each different result").
+            self.uses("Effect", "RollDice.Several");
+            if !results.is_empty() || !plus.is_zero() {
+                self.problem("several dice read together have no table and add nothing");
+            }
         }
         if choose && (!results.is_empty() || !plus.is_zero()) {
             self.problem("a chosen result has no table and adds nothing");
@@ -3631,6 +3701,16 @@ impl Walker<'_> {
         if matches!(effect, Effect::Discard { random: true, .. }) {
             self.uses("Effect", "Discard.Random");
         }
+        // A choice whose chosen objects differ in a quality needs the engine to keep them apart.
+        if matches!(
+            effect,
+            Effect::Choose {
+                differ: Some(_),
+                ..
+            }
+        ) {
+            self.uses("Effect", "Choose.Differ");
+        }
         if matches!(
             effect,
             Effect::Discard {
@@ -3794,15 +3874,20 @@ impl Walker<'_> {
                 who,
                 count,
                 from,
+                cards,
                 bind,
             }
             | Effect::Cloak {
                 who,
                 count,
                 from,
+                cards,
                 bind,
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
+                if let Some(cards) = cards {
+                    w.at("cards", |w| w.reference(cards, Kind::Object));
+                }
                 w.at("count", |w| w.amount(count));
                 if let Some(library) = from {
                     w.at("library", |w| w.reference(library, Kind::Player));
@@ -4061,12 +4146,27 @@ impl Walker<'_> {
                 count,
                 bind,
                 rest_as,
+                differ,
             } => {
                 // A choice among players ("an opponent", CR 800.4) binds players; any other binds objects.
                 let kind = match w.kind_of(from) {
                     Kind::Player => Kind::Player,
                     _ => Kind::Object,
                 };
+                match differ {
+                    Some(_) if kind == Kind::Player => {
+                        w.at("differ", |w| w.problem("players chosen differ by nothing"));
+                    }
+                    None
+                    | Some(
+                        TargetSet::DifferentNames
+                        | TargetSet::DifferentPowers
+                        | TargetSet::DifferentManaValues,
+                    ) => {}
+                    Some(_) => w.at("differ", |w| {
+                        w.problem("a choice keeps apart names, powers or mana values");
+                    }),
+                }
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("from", |w| w.reference(from, kind));
                 w.at("count", |w| w.bounds(count));
@@ -4097,8 +4197,20 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind(name, Kind::Object));
                 }
             }
-            Effect::Unattach { what } | Effect::JoinAttack { what } | Effect::Reattack { what, .. } => {
+            Effect::Unattach { what }
+            | Effect::JoinAttack {
+                what,
+                against: None,
+            }
+            | Effect::Reattack { what, .. } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
+            }
+            Effect::JoinAttack {
+                what,
+                against: Some(against),
+            } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("against", |w| w.reference(against, Kind::Player));
             }
             Effect::MyriadCopies { of, bind } => {
                 w.at("of", |w| w.reference(of, Kind::Object));
@@ -4392,7 +4504,12 @@ impl Walker<'_> {
                     w.problem("a factor below two multiplies the counters by nothing");
                 }
             }
-            Effect::PutCountersOf { on, of, each, .. } => {
+            Effect::PutCountersOf {
+                on, of, each, put, ..
+            } => {
+                if *put && *of != Ref::Triggering {
+                    w.problem("the counters a triggering event put are read from `Triggering`");
+                }
                 w.at("on", |w| w.reference(on, Kind::Either));
                 w.at("of", |w| w.reference(of, Kind::Either));
                 if let Some(each) = each {
@@ -4622,6 +4739,9 @@ impl Walker<'_> {
                             ..
                         }
                     )
+                    // "can't cast instant or sorcery spells during that player's next turn" (Azor).
+                    && !(*duration == Duration::TheirNextTurn
+                        && matches!(rule, GameRule::Cant { action: Prohibited::Cast { .. }, .. }))
                 {
                     w.problem(RMT3_SKIP_ONLY);
                 }
@@ -4631,11 +4751,14 @@ impl Walker<'_> {
                 if matches!(rule, GameRule::Draft(_)) {
                     w.problem("a card follows a draft rule by a static ability, not by an effect");
                 }
-                if matches!(rule, GameRule::CantSpendMana) {
+                if matches!(rule, GameRule::CantSpendMana | GameRule::SpendOnlyFrom(_)) {
                     w.problem("a spell is cast without mana by a static ability of its own, not by an effect");
                 }
                 if matches!(rule, GameRule::CantBeCopied) {
                     w.problem("a spell can't be copied by a static ability of its own, not by an effect");
+                }
+                if matches!(rule, GameRule::CountsAsNamed(_)) {
+                    w.problem("a card counts as another name by a static ability of its own, not by an effect");
                 }
                 if matches!(rule, GameRule::AnyNumberInDeck | GameRule::UpToInDeck(_)) {
                     w.problem("a deck holds more than one of a card by a static ability, not by an effect");
@@ -5481,11 +5604,14 @@ impl Walker<'_> {
             | GameRule::SkipExtraTurns(who)
             | GameRule::FlipTwoCoins(who)
             | GameRule::ExtraDie(who)
+            | GameRule::ExtraPlanarDie(who)
+            | GameRule::PlaneswalkLookTwo(who)
             | GameRule::KeepUnspentMana { who, .. }
             | GameRule::UnspentManaBecomes { who, .. }
             | GameRule::DrawLimit { who, .. }
             | GameRule::PayLifeForMana { who, .. }
             | GameRule::OpponentsCantMakeSacrifice(who)
+            | GameRule::OpponentsCantMakeDiscardOrSacrifice(who)
             | GameRule::SpendManaAs {
                 who, spells: None, ..
             }
@@ -5494,7 +5620,12 @@ impl Walker<'_> {
             | GameRule::LookAtTopAnyTime(who)
             | GameRule::SkipDrawStep(who)
             | GameRule::NoMaxHandSize(who)
-            | GameRule::LoyaltyTwice(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
+            | GameRule::LoyaltyTwice(who)
+            | GameRule::BoastTwice(who)
+            | GameRule::LoyaltyAnyTime(who)
+            | GameRule::LoyaltyCostsMore { who, .. } => {
+                self.at(tag, |w| w.reference(who, Kind::Player));
+            }
             GameRule::MayCast(permission) => self.at(tag, |w| w.cast_permission(permission)),
             GameRule::LookAtExiled { who, what, only } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
@@ -5524,7 +5655,13 @@ impl Walker<'_> {
             | GameRule::ManaBurn
             | GameRule::CantBeCopied
             | GameRule::CantSpendMana
-            | GameRule::RevealFirstDraw { .. } => {}
+            | GameRule::RevealFirstDraw { .. }
+            | GameRule::SpendOnlyFrom(_) => {}
+            GameRule::CountsAsNamed(name) => {
+                if name.trim().is_empty() {
+                    self.at(tag, |w| w.problem("a card counts as a card with a name"));
+                }
+            }
             GameRule::UpToInDeck(most) => {
                 if *most < 2 {
                     self.at(tag, |w| w.problem("a deck rule allows at least two copies"));
@@ -5676,6 +5813,17 @@ impl Walker<'_> {
             Prohibited::Attack { unless } => {
                 self.at("unless", |w| w.condition(unless));
             }
+            Prohibited::PayCosts {
+                life, sacrifice, ..
+            } => {
+                if let Some(sacrifice) = sacrifice {
+                    self.at("sacrifice", |w| w.selector(sacrifice));
+                } else if !life {
+                    self.at("action", |w| {
+                        w.problem("a ban on paying costs bans life or sacrifices");
+                    });
+                }
+            }
             Prohibited::SkipStep(Step::Cleanup) => {
                 self.at("action", |w| w.problem("the cleanup step can't be skipped"));
             }
@@ -5744,6 +5892,10 @@ impl Walker<'_> {
             ZoneKind::Stack if spell => {}
             ZoneKind::Graveyard | ZoneKind::Exile if c8_eg_itself => {}
             ZoneKind::Hand if ep27_flash => {}
+            ZoneKind::Graveyard if matches!(rule, GameRule::CountsAsNamed(_)) => {}
+            _ if matches!(rule, GameRule::CountsAsNamed(_)) => self.at("from", |w| {
+                w.problem("a card counts as another name from a graveyard: write the rule with `from` Graveyard");
+            }),
             // Eminence: "As long as ~ is in the command zone or on the battlefield, ...".
             ZoneKind::Command if matches!(rule, GameRule::SpellCost { .. }) => {}
             _ if matches!(rule, GameRule::CanBeCommander) => self.at("from", |w| {
@@ -5756,6 +5908,7 @@ impl Walker<'_> {
                     | GameRule::Draft(_)
                     | GameRule::CantBeCopied
                     | GameRule::CantSpendMana
+                    | GameRule::SpendOnlyFrom(_)
             ) => self.at("from", |w| {
                 w.problem("a deck rule holds outside the game: write the rule without `from`");
             }),
@@ -5809,6 +5962,7 @@ impl Walker<'_> {
                 }
             }
             ReplaceWhen::LifeGain { who }
+            | ReplaceWhen::LifeLoss { who }
             | ReplaceWhen::LoseGame { who }
             | ReplaceWhen::Mill { who }
             | ReplaceWhen::Proliferates { who }
@@ -5826,6 +5980,9 @@ impl Walker<'_> {
             && !matches!(by, ReplaceBy::Instead(_) | ReplaceBy::InsteadNext(_))
         {
             self.problem("a loss of the game is replaced only by steps that happen instead");
+        }
+        if matches!(when, ReplaceWhen::LifeLoss { .. }) != matches!(by, ReplaceBy::LossTimes(_)) {
+            self.problem("a loss of life is replaced only by a multiple of it, and only it is");
         }
         crate::r406_actions::r406_check(when, by, |problem| self.problem(problem));
         crate::r4708_actions::r4708_check(when, by, |problem| self.problem(problem));
@@ -6064,6 +6221,11 @@ impl Walker<'_> {
     #[allow(clippy::too_many_lines)]
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
+        if let ReplaceBy::Choose(kind) = by
+            && let Some(shape) = crate::r4702_names::r4702_choice_shape(*kind)
+        {
+            self.uses("ReplaceBy", shape);
+        }
         self.g11b_replace_by(when, by);
         self.g12a_moves(when, by);
         self.e19_mill(when, by);
@@ -6184,7 +6346,7 @@ impl Walker<'_> {
                     self.problem("only an `Enters` event devours");
                 }
                 if *counters == 0 {
-                    self.problem("devouring for no counters does nothing");
+                    self.uses("Keyword", "Devour.X");
                 }
                 self.at("of", |w| w.selector(of));
             }
@@ -6432,8 +6594,19 @@ fn announces_x(cost: &Cost) -> bool {
             matches!(
                 item,
                 CostItem::PayEnergy(Amount::X) | CostItem::PayLife(Amount::X)
-            )
+            ) || r4710_among_x(item)
         })
+}
+
+/// Whether the part removes X counters from among permanents.
+fn r4710_among_x(item: &CostItem) -> bool {
+    matches!(
+        item,
+        CostItem::RemoveCountersAmong {
+            count: Amount::X,
+            ..
+        }
+    )
 }
 
 /// The tag of mana read from one player's game (`CommanderIdentity`, `ProducedBy`), through `Instead` on either side.
@@ -7051,16 +7224,17 @@ mod tests {
     #[rstest]
     #[case::a_choice_of_two(r#""dice":2,"choose":true,"results":[]"#, 0)]
     #[case::one_die_with_no_table(r#""results":[]"#, 0)]
-    #[case::two_dice_without_a_choice(r#""dice":2,"results":[]"#, 1)]
+    #[case::two_dice_read_together(r#""dice":2,"results":[]"#, 0)]
+    #[case::two_dice_read_together_with_a_table(
+        r#""dice":2,"results":[{"from":1,"effects":[{"Draw":{}}]}]"#,
+        1
+    )]
     #[case::a_choice_of_one_die(r#""choose":true,"results":[]"#, 1)]
     #[case::a_choice_with_a_table(
         r#""dice":2,"choose":true,"results":[{"from":1,"effects":[{"Draw":{}}]}]"#,
         1
     )]
-    fn c11e_several_dice_are_only_a_choice_of_one_result_with_no_table(
-        #[case] fields: &str,
-        #[case] expected: usize,
-    ) {
+    fn c11e_several_dice_have_no_table(#[case] fields: &str, #[case] expected: usize) {
         let json = format!(
             r#"{{"Spell":{{"effects":[{{"RollDice":{{"sides":6,{fields}}}}},{{"Draw":{{"count":{{"DieResult":"Chosen"}}}}}}]}}}}"#
         );
@@ -7153,6 +7327,7 @@ mod tests {
     #[case::ep27_cast_itself_with_flash_from_a_hand(r#"{"Rule":{"rule":{"MayCast":{"what":["This"],"flash":true}},"condition":"YourTurn","from":"Hand"}}"#, &["Ability.From", "Ability.Rule", "Rule.MayCast"])]
     #[case::affinity_given_to_spells(r#"{"Static":{"affected":{"Each":["Spell",{"Type":"Enchantment"}]},"mods":[{"AddKeyword":{"Affinity":[{"Subtype":"Aura"}]}}]}}"#, &["Ability.Static", "Ability.Static.SpellKeywords", "Keyword.Affinity", "Mod.AddKeyword"])]
     #[case::a_discard_of_your_choice(r#"{"Spell":{"effects":[{"Discard":{"count":2}}]}}"#, &["Ability.Spell", "Effect.Discard"])]
+    #[case::a_choice_with_different_powers(r#"{"Spell":{"effects":[{"Choose":{"from":{"Each":[{"Type":"Creature"}]},"count":{"min":0,"max":null},"as":"chosen","differ":"DifferentPowers"}}]}}"#, &["Ability.Spell", "Effect.Choose", "Effect.Choose.Differ"])]
     #[case::a_discard_at_random(r#"{"Spell":{"effects":[{"Discard":{"random":true}}]}}"#, &["Ability.Spell", "Effect.Discard", "Effect.Discard.Random"])]
     #[case::a_discard_of_matching_cards(r#"{"Spell":{"effects":[{"Discard":{"filter":[{"Type":"Creature"}]}}]}}"#, &["Ability.Spell", "Effect.Discard", "Effect.Discard.Filter"])]
     #[case::a_move_to_the_hand(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":"Hand"}}]}}"#, &["Ability.Spell", "Effect.Move"])]

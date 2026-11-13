@@ -125,6 +125,7 @@ fn each_of_up_to(targets: &[TargetSpec], effects: &[Effect]) -> Option<String> {
                 },
             bind,
             rest_as: None,
+            differ: None,
         },
         Effect::PutCounters {
             on: Ref::Bound(on),

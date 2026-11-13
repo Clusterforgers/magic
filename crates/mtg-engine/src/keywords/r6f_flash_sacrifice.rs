@@ -49,6 +49,7 @@ impl KeywordRules for FlashSacrifice {
                     count: Bounds::default(),
                     bind: FLASHED.to_owned(),
                     rest_as: None,
+                    differ: None,
                 },
                 Effect::DelayedTrigger {
                     until: None,

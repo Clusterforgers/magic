@@ -125,6 +125,8 @@ pub(crate) enum Part {
     Damage(u32),
     /// Each other player gains this much life.
     OthersGainLife(u32),
+    /// The payer gets this many poison counters.
+    Poison(u32),
     /// The source stops being attached.
     Unattach,
     /// The payer discards every card in their hand ("Discard your hand"): nothing to choose, an empty hand pays it.
@@ -267,6 +269,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
         }
         CostItem::Unattach => (Part::Unattach, false),
         CostItem::OthersGainLife(amount) => (Part::OthersGainLife(*amount), false),
+        CostItem::GetPoison(amount) => (Part::Poison(*amount), false),
         CostItem::TapPower { filter, power } => {
             let count = usize::try_from(*power).unwrap_or(usize::MAX);
             let kind = Kind::TapPower;
@@ -475,6 +478,7 @@ impl Part {
                 Part::DiscardRandom(_) => Part::DiscardRandom(x),
                 Part::Damage(_) => Part::Damage(x),
                 Part::OthersGainLife(amount) => Part::OthersGainLife(*amount),
+                Part::Poison(amount) => Part::Poison(*amount),
                 Part::ExileTop(_) => Part::ExileTop(x),
                 Part::Unattach => Part::Unattach,
                 Part::DiscardHand => Part::DiscardHand,
@@ -522,6 +526,12 @@ impl Part {
         matches!(self, Part::X(inner) if matches!(&**inner, Part::Pick(pick) if pick.reads_x))
     }
 
+    /// Whether the part is counters removed from among permanents, as many as the X announced ("remove any number of
+    /// +1/+1 counters from among creatures you control").
+    pub(crate) fn r4710_is_counted_among(&self) -> bool {
+        matches!(self, Part::X(inner) if matches!(**inner, Part::Among { .. }))
+    }
+
     /// Whether the part is energy of the X announced.
     pub(crate) fn is_counted_energy(&self) -> bool {
         matches!(self, Part::X(inner) if matches!(**inner, Part::Energy(_)))
@@ -551,6 +561,7 @@ impl Part {
             | Part::RevealHand
             | Part::SacrificeAll(_)
             | Part::OthersGainLife(_)
+            | Part::Poison(_)
             | Part::X(_) => return None,
         };
         Some(number)
@@ -566,6 +577,7 @@ impl Part {
             Part::DiscardRandom(_) => "Cost.DiscardRandom",
             Part::Damage(_) => "Cost.DamageToYou",
             Part::OthersGainLife(_) => "Cost.OthersGainLife",
+            Part::Poison(_) => "Cost.GetPoison",
             Part::Unattach => "Cost.Unattach",
             Part::DiscardHand => "Cost.Discard",
             Part::RevealHand => "Cost.RevealFromHand",
@@ -612,6 +624,7 @@ impl Part {
             }
             Part::Damage(amount) => format!("Take {amount} damage"),
             Part::OthersGainLife(amount) => format!("Each other player gains {amount} life"),
+            Part::Poison(amount) => format!("Get {amount} poison counters"),
             Part::Unattach => "Unattach this permanent".to_owned(),
             Part::DiscardHand => "Discard your hand".to_owned(),
             Part::RevealHand => "Reveal your hand".to_owned(),
@@ -669,7 +682,9 @@ impl Part {
             Part::DiscardRandom(amount) => random::payable(payer, *amount).then(Vec::new),
             Part::Damage(_) => payer.state.object(payer.source).is_some().then(Vec::new),
             Part::Unattach => unattach::payable(payer).then(Vec::new),
-            Part::DiscardHand | Part::RevealHand | Part::OthersGainLife(_) => Some(Vec::new()),
+            Part::DiscardHand | Part::RevealHand | Part::OthersGainLife(_) | Part::Poison(_) => {
+                Some(Vec::new())
+            }
             Part::SacrificeAll(filter) => r303c_sacrifice_all::r303c_all(payer, filter),
             Part::ExileTop(amount) => exile_top::payable(payer, *amount).then(Vec::new),
             Part::Pick(pick) if pick.kind == Kind::Evidence => {
@@ -743,6 +758,7 @@ impl Part {
             Part::DiscardRandom(amount) => random::events(state, player, *amount),
             Part::Damage(amount) => damage::events(state, player, source, *amount),
             Part::OthersGainLife(amount) => r286_others_gain(state, player, *amount),
+            Part::Poison(amount) => r4705_poison(player, *amount),
             Part::Unattach => vec![unattach::event(source)],
             Part::SacrificeAll(filter) => r303c_sacrifice_all::r303c_events(
                 &r303c_sacrifice_all::r303c_payer(state, player, source),
@@ -853,6 +869,8 @@ pub(crate) struct Payer<'a> {
     pub(crate) barred: &'a [ObjectId],
     /// The permanent whose static ability gave the ability being paid for (`Ref::Granter`).
     pub(crate) granter: Option<ObjectId>,
+    /// What the payment is for: a ban on paying costs reads only costs (`r4707_pay_costs`).
+    pub(crate) pays: crate::r4707_pay_costs::PaysFor,
 }
 
 impl Payer<'_> {
@@ -936,7 +954,15 @@ impl Pick {
         };
         // A prohibition keeps an object out of the cost it forbids (`prohibit.rs`).
         found.retain(|id| match self.kind {
-            Kind::Sacrifice => crate::prohibit::may_sacrifice(payer.state, payer.player, *id),
+            Kind::Sacrifice => {
+                crate::prohibit::may_sacrifice(payer.state, payer.player, *id)
+                    && !crate::r4707_pay_costs::r4707_sacrifice_barred(
+                        payer.state,
+                        payer.player,
+                        *id,
+                        payer.pays,
+                    )
+            }
             Kind::Discard => crate::prohibit::may_discard(payer.state, payer.player, *id),
             Kind::Exile
             | Kind::ExileHand
@@ -952,6 +978,12 @@ impl Pick {
 
     /// Whether `candidates` cannot pay the part: too few of them, or too little power among them.
     pub(crate) fn short(&self, state: &GameState, candidates: &[ObjectId]) -> bool {
+        if self.r4709_rule().is_some() {
+            let mut groups = self.r4709_groups(state, candidates);
+            groups.sort_unstable();
+            groups.dedup();
+            return groups.len() < self.count;
+        }
         match self.kind {
             Kind::TapPower => usize::try_from(tap::total_power(state, candidates))
                 .is_ok_and(|total| total < self.count),
@@ -976,6 +1008,12 @@ impl Pick {
                         .is_ok_and(|total| total == self.count)
             }
             Kind::Forage => forage::alone(state, candidates),
+            _ if self.r4709_rule().is_some() => {
+                let mut groups = self.r4709_groups(state, candidates);
+                groups.sort_unstable();
+                groups.dedup();
+                candidates.len() == self.count && groups.len() == self.count
+            }
             _ => candidates.len() == self.count,
         };
         if alone {
@@ -985,6 +1023,37 @@ impl Pick {
         } else {
             None
         }
+    }
+
+    /// What the objects taken must not share ("with different names"), from the filter.
+    pub(crate) fn r4709_rule(&self) -> Option<&mtg_cards::refs::TargetSet> {
+        self.filter.0.iter().find_map(|pred| match pred {
+            mtg_cards::refs::Pred::Apart(rule) => Some(rule),
+            _ => None,
+        })
+    }
+
+    /// The group of each object by what the objects taken must not share, numbered in order of first sight; empty
+    /// when they may share anything.
+    pub(crate) fn r4709_groups(&self, state: &GameState, objects: &[ObjectId]) -> Vec<u32> {
+        let Some(rule) = self.r4709_rule() else {
+            return Vec::new();
+        };
+        let mut keys: Vec<u64> = Vec::new();
+        objects
+            .iter()
+            .map(|id| {
+                let key = crate::choose::object_key(state, rule, *id);
+                let at = keys
+                    .iter()
+                    .position(|seen| *seen == key)
+                    .unwrap_or_else(|| {
+                        keys.push(key);
+                        keys.len() - 1
+                    });
+                u32::try_from(at).unwrap_or(u32::MAX)
+            })
+            .collect()
     }
 
     /// The fewest and the most objects the question takes from `offered` candidates.
@@ -1003,6 +1072,15 @@ impl Pick {
     /// Why `picked` cannot pay the part, when they cannot: too little power or mana value for a pick by total, or not one
     /// Food or three cards for a forage.
     pub(crate) fn weak(&self, state: &GameState, picked: &[ObjectId]) -> Option<IllegalAnswer> {
+        if self.r4709_rule().is_some() {
+            let groups = self.r4709_groups(state, picked);
+            let mut apart = groups.clone();
+            apart.sort_unstable();
+            apart.dedup();
+            if apart.len() < groups.len() {
+                return Some(IllegalAnswer::Duplicate("card of one kind"));
+            }
+        }
         let needed = u32::try_from(self.count).unwrap_or(u32::MAX);
         match self.kind {
             Kind::TapPower => {
@@ -1128,6 +1206,22 @@ const fn own_part(item: &CostItem) -> &'static str {
 }
 
 /// The life each other player still in the game gains as the cost is paid; one who can't gain life gains none.
+/// The payer gets `amount` poison counters ("Ward—Get five poison counters.").
+fn r4705_poison(payer: PlayerId, amount: u32) -> Vec<Event> {
+    i32::try_from(amount)
+        .ok()
+        .filter(|delta| *delta > 0)
+        .map(|delta| {
+            Event::CountersChanged(crate::counters::CountersChanged {
+                on: crate::choose::Target::Player(payer),
+                counter: CounterKind::Poison,
+                delta,
+            })
+        })
+        .into_iter()
+        .collect()
+}
+
 fn r286_others_gain(state: &GameState, payer: PlayerId, amount: u32) -> Vec<Event> {
     if amount == 0 {
         return Vec::new();

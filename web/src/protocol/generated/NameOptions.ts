@@ -16,4 +16,13 @@ text?: string,
 /**
  * The card must not be a land ("choose a nonland card name"); the client offers only such cards.
  */
-nonland?: boolean, };
+nonland?: boolean, 
+/**
+ * The card must not be a creature ("choose a noncreature, nonland card name"); the client offers only such cards.
+ */
+noncreature?: boolean, 
+/**
+ * The card must be a land that is not basic ("choose a nonbasic land card name"); the client offers only such
+ * cards.
+ */
+nonbasic_land?: boolean, };

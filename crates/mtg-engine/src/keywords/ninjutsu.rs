@@ -64,6 +64,7 @@ fn activation(cost: &Cost) -> Ability {
                 count: Bounds::default(),
                 bind: NINJA.to_owned(),
                 rest_as: None,
+                differ: None,
             },
             Effect::Move {
                 what: ninja(),
@@ -81,7 +82,10 @@ fn activation(cost: &Cost) -> Ability {
                     subject: ninja(),
                     selector: Selector(vec![Pred::In(ZoneKind::Battlefield)]),
                 },
-                then: vec![Effect::JoinAttack { what: ninja() }],
+                then: vec![Effect::JoinAttack {
+                    what: ninja(),
+                    against: None,
+                }],
                 otherwise: Vec::new(),
             },
         ],

@@ -58,6 +58,7 @@ Ancient Ziggurat
 Angel of Finality
 Angel of Flight Alabaster
 Angel of Invention
+Angel of Jubilation
 Angel of Sanctions
 Angel of Vitality
 Angelic Accord
@@ -173,6 +174,7 @@ Biomass Mutation
 Biomechan Engineer
 Biotech Specialist
 Bird Admirer // Wing Shredder
+Birgi, God of Storytelling // Harnfel, Horn of Bounty
 Bitter Triumph
 Black Dragon Gate
 Black Knight
@@ -204,6 +206,7 @@ Blood for the Blood God!
 Bloodbraid Elf
 Bloodghast
 Bloodletter Quill
+Bloodletter of Aclazotz
 Bloodline Pretender
 Bloom Hulk
 Body Count
@@ -266,6 +269,7 @@ Caller of the Pack
 Canoptek Tomb Sentinel
 Caprichrome
 Capsize
+Captain Marvel, Apex Avenger
 Captivating Crew
 Capture of Jingzhou
 Caravan Escort
@@ -275,6 +279,7 @@ Carnival Carnivore
 Carrion Grub
 Cascade Bluffs
 Cascading Cataracts
+Casey Jones, Back Alley Brute
 Cast Out
 Casualties of War
 Cathars' Crusade
@@ -315,6 +320,7 @@ Chromatic Lantern
 Cinderhaze Wretch
 Circle of Dreams Druid
 Circuitous Route
+Circuits Act
 Citadel Gate
 Citanul Hierophants
 Clan Defiance
@@ -485,6 +491,7 @@ Devoted Druid
 Diamond Faerie
 Diffusion Sliver
 Dig Up
+Diligent Farmhand
 Diligent Zookeeper
 Dimir Cutpurse
 Dimir Infiltrator
@@ -528,6 +535,7 @@ Dragonlord Ojutai
 Dragonspeaker Shaman
 Dragonstorm Globe
 Dragonwing Glider
+Dralnu, Lich Lord
 Dramatist's Puppet
 Dread Fugue
 Dreadship Reef
@@ -644,6 +652,7 @@ Evolutionary Leap
 Exalted Angel
 Excavation Technique
 Excise the Imperfect
+Exemplar of Light
 Exhumer Thrull
 Exiled Doomsayer
 Exocrine
@@ -727,6 +736,7 @@ Forum of Amity
 Founding of Omashu
 Foundry Inspector
 Four Knocks
+Fractured Powerstone
 Franklin Richards, Ascendant
 Frenzied Saddlebrute
 Freya Crescent
@@ -742,6 +752,7 @@ Fury Storm
 Fíli the Pathfinder
 Gadwick, the Wizened
 Gaea's Cradle
+Gaea's Liege
 Gaea's Might
 Galactic Wayfarer
 Galadhrim Brigade
@@ -878,6 +889,7 @@ Hama Pashar, Ruin Seeker
 Hammer Dropper
 Hangar Scrounger
 Hangarback Walker
+Hapatra, Vizier of Poisons
 Harabaz Druid
 Harmonic Sliver
 Harmonious Archon
@@ -946,6 +958,7 @@ Hydra Broodmaster
 Icatian Infantry
 Ice-Fang Coatl
 Icefeather Aven
+Ichor Elixir
 Ichor Rats
 Idyllic Beachfront
 Igneous Inspiration
@@ -958,6 +971,7 @@ Ilysian Caryatid
 Imi Statue
 Immoral Bargain
 Imperial Hellkite
+Imperiosaur
 Imperious Oligarch
 Imposter Mech
 Impostor of the Sixth Pride
@@ -1035,6 +1049,7 @@ Karametra's Favor
 Karametra, God of Harvests
 Karn Liberated
 Karn's Bastion
+Karn's Sylex
 Kathari Screecher
 Kaya's Wrath
 Kazandu Tuskcaller
@@ -1258,6 +1273,7 @@ Mobilizer Mech
 Moldgraf Millipede
 Molecule Man
 Molt Tender
+Molten Exhale
 Molten Hydra
 Molten Slagheap
 Mona Lisa, Science Geek
@@ -1284,6 +1300,7 @@ Muscle Sliver
 Mutavault
 Mycoloth
 Myr Retriever
+Myr Superion
 Myriad Landscape
 Mystic Confluence
 Mystic Gate
@@ -1303,6 +1320,7 @@ Necroplasm
 Necropolis Regent
 Necroskitter
 Nessian Asp
+Nest of Scarabs
 Netherese Puzzle-Ward
 Nettlecyst
 Neverwinter Dryad
@@ -1390,6 +1408,7 @@ Panther Robot
 Paradise Druid
 Paradise Plume
 Parasitic Grasp
+Pardic Firecat
 Parhelion Patrol
 Pariah
 Pariah's Shield
@@ -1610,6 +1629,7 @@ Rope
 Rosheen Meanderer
 Rousing Refrain
 Rout
+Rowan, Scion of War
 Rowdy Research
 Rowen
 Rugged Prairie
@@ -1851,6 +1871,7 @@ Stinkdrinker Bandit
 Stir the Grave
 Stitch in Time
 Stitched Drake
+Stocking the Pantry
 Stoic Angel
 Stoke the Flames
 Stolen Identity
@@ -1904,6 +1925,7 @@ Surgehacker Mech
 Surrak Dragonclaw
 Surreal Memoir
 Survivor's Med Kit
+Susan Foreman
 Susurian Dirgecraft
 Suture Priest
 Svyelun of Sea and Sky
@@ -1945,6 +1967,7 @@ Tectonic Reformation
 Teferi's Ageless Insight
 Teferi's Imp
 Teferi's Protection
+Tegwyll's Scouring
 Tekuthal, Inquiry Dominus
 Telepathy
 Tempestra, Dame of Games
@@ -1958,6 +1981,7 @@ Tendrils of Agony
 Tergrid's Shadow
 Termagant Swarm
 Terminus
+Terrasymbiosis
 Territorial Maro
 Terrus Wurm
 Teshar, Ancestor's Apostle
@@ -1984,6 +2008,7 @@ The Parting of the Ways
 The Prismatic Piper
 The Scorpion God
 The Seriema
+The Serpent Society
 The Spear of Bashenga
 The Squadron Sinister
 The Thing, Ben Grimm
@@ -2006,6 +2031,7 @@ Thought Reflection
 Thought-Knot Seer
 Thoughtcast
 Thoughtseize
+Thousand-Year Storm
 Thrashing Mossdog
 Thrill of Possibility
 Thriving Bluff
@@ -2015,6 +2041,7 @@ Thriving Isle
 Thriving Moor
 Throatseeker
 Throes of Chaos
+Thromok the Insatiable
 Throne of Eldraine
 Throne of Makindi
 Throne of the High City
@@ -2039,6 +2066,7 @@ Timeless Witness
 Timely Ward
 Timin, Youthful Geist
 Tinybones, Pocket Nuisance
+Tinybones, the Pickpocket
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
 Titania, Nature's Force
@@ -2256,6 +2284,7 @@ Writ of Return
 Wurmwall Sweeper
 Wyll, Blade of Frontiers
 Wyrm's Crossing Patrol
+Yasharn, Implacable Earth
 Yisan, the Wanderer Bard
 You Cannot Pass!
 Young Wolf

@@ -18,6 +18,8 @@ use crate::registry::{Removal, SeatAccess};
 
 /// Time a closing socket gets to deliver its close frame and see the peer's reply.
 const CLOSE_WAIT: Duration = Duration::from_secs(2);
+/// How long a socket whose actor stopped waits to hear from the registry whether an admin ended the game.
+const ADMIN_END_WAIT: Duration = Duration::from_secs(1);
 
 /// What an authenticated socket needs to run.
 pub(crate) struct Session {
@@ -54,6 +56,8 @@ const REMOVED: Goodbye = Goodbye::new(4001, "removed from the game");
 /// Application code: the host closed the game before it started, so its links and code open
 /// nothing any more and there is nothing to reconnect to.
 const CLOSED: Goodbye = Goodbye::new(4002, "closed by the host");
+/// Application code: an admin ended the game, which is gone for good, so there is nothing to reconnect to.
+const ENDED_BY_ADMIN: Goodbye = Goodbye::new(4003, "ended by an admin");
 
 impl Goodbye {
     const fn new(code: u16, reason: &'static str) -> Goodbye {
@@ -173,7 +177,7 @@ async fn pump(
         // Unbiased on purpose: a long burst from the game must not starve the client's messages.
         tokio::select! {
             () = stopped(stop) => return Exit::Say(SHUTTING_DOWN),
-            _ = access.removed.changed() => return Exit::Say(why_removed(&access.removed)),
+            _ = access.removed.changed() => return removed_exit(socket, &mut queue, access, limits).await,
             outgoing = queue.recv() => match outgoing {
                 Some(message) => {
                     if let Err(exit) = send(socket, &message, limits.send_timeout).await {
@@ -268,11 +272,31 @@ async fn stopped(stop: &mut watch::Receiver<bool>) {
     let _ = stop.wait_for(|stopping| *stopping).await;
 }
 
+/// The exit of a socket whose game left the registry. An admin's end is delivered first: the actor queued
+/// `EndedByAdmin` before the registry let the game go.
+async fn removed_exit(
+    socket: &mut WebSocket,
+    queue: &mut mpsc::Receiver<ServerMessage>,
+    access: &SeatAccess,
+    limits: &SocketLimits,
+) -> Exit {
+    let goodbye = why_removed(&access.removed);
+    if goodbye.code == ENDED_BY_ADMIN.code {
+        while let Ok(message) = queue.try_recv() {
+            if let Err(exit) = send(socket, &message, limits.send_timeout).await {
+                return exit;
+            }
+        }
+    }
+    Exit::Say(goodbye)
+}
+
 /// The registry let the game go: its host closed it, or it was dropped. The value stays readable
 /// after the channel's sender is gone.
 fn why_removed(removed: &watch::Receiver<Removal>) -> Goodbye {
     match *removed.borrow() {
         Removal::ClosedByHost => CLOSED,
+        Removal::EndedByAdmin => ENDED_BY_ADMIN,
         Removal::Dropped => GAME_ENDED,
     }
 }
@@ -284,16 +308,24 @@ async fn why_queue_closed(access: &SeatAccess) -> Goodbye {
         // A spectator's queue closes only when it fell behind or the game ended.
         return match access.handle.status().await {
             Ok(_) => TOO_SLOW,
-            Err(_) => GAME_ENDED,
+            Err(_) => why_actor_stopped(access).await,
         };
     }
     match access.handle.status().await {
-        Err(_) => GAME_ENDED,
+        Err(_) => why_actor_stopped(access).await,
         Ok(status) if status.connected.contains(&access.seat) => REPLACED,
         // An emptied seat has no connection and nobody's name; a slow client's seat is still held.
         Ok(status) if status.open.contains(&access.seat) => REMOVED,
         Ok(_) => TOO_SLOW,
     }
+}
+
+/// The actor stopped: the game ended, or an admin ended it, which the registry says a moment later.
+async fn why_actor_stopped(access: &SeatAccess) -> Goodbye {
+    let mut removed = access.removed.clone();
+    // A dropped sender answers at once; the value it left stays readable.
+    let _ = timeout(ADMIN_END_WAIT, removed.changed()).await;
+    why_removed(&removed)
 }
 
 /// Sends one server message as a text frame; a client that cannot take it in time counts as gone.

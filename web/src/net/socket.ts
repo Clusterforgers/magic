@@ -79,6 +79,7 @@ const NORMAL_CLOSE = 1000
 const REPLACED_CODE = 4000
 const REMOVED_CODE = 4001
 const CLOSED_CODE = 4002
+const ENDED_BY_ADMIN_CODE = 4003
 
 /** The wait before retry number `failures` (1 is the first): 250 ms doubling to 15 s, minus up to half as jitter. */
 export function retryDelay(failures: number, random: number): number {
@@ -104,6 +105,11 @@ const REPLACED_TEXT = 'This seat was opened in another window or tab, which took
 const REMOVED_TEXT = 'You were removed from this game.'
 // The host ended the lobby: its links and code open nothing any more, so the game cannot come back either.
 const CLOSED_TEXT = 'The host closed this game.'
+
+/** What a seat or spectator reads once an admin ended the game, with the admin's reason when there is one. */
+export function endedByAdminText(reason?: string): string {
+  return reason === undefined ? 'Ended by an admin.' : `Ended by an admin: ${reason}`
+}
 
 // Close codes after which retrying cannot help; any other code is treated as a lost connection.
 const STOP_REASONS: Readonly<Record<number, string>> = {
@@ -233,6 +239,9 @@ export class GameSocket {
     if (generation !== this.generation) return
     if (message.type === 'Welcome') {
       this.setStatus('open', null)
+    } else if (message.type === 'EndedByAdmin') {
+      // The game is gone for good: the 4003 that follows must not read as a lost connection.
+      this.halt('closed', endedByAdminText(message.reason))
     } else if (message.type === 'Error') {
       const reason = FATAL_ERRORS[message.code]
       if (reason !== undefined) this.halt('stopped', reason)
@@ -254,6 +263,10 @@ export class GameSocket {
     }
     if (code === CLOSED_CODE) {
       this.halt('closed', CLOSED_TEXT)
+      return
+    }
+    if (code === ENDED_BY_ADMIN_CODE) {
+      this.halt('closed', endedByAdminText())
       return
     }
     const stopped = STOP_REASONS[code]

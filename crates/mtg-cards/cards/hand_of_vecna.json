@@ -14,9 +14,8 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 172, "end": 216 }
+          "Keyword": {
+            "Equip": [{ "PayLife": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } }]
           }
         },
         { "Keyword": { "Equip": "{2}" } }
