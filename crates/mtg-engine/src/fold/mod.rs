@@ -167,7 +167,9 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::AbilityLeftToTable(_)
         | Event::ManaAbilityActivated { .. }
         | Event::ByHandDue(_)
-        | Event::DamagePrevented { .. } => Ok(()),
+        | Event::DamagePrevented { .. }
+        // The `Revealed` before it showed the card; triggers read it from the log.
+        | Event::FirstDrawRevealed { .. } => Ok(()),
         Event::AbilityTriggered(triggered) => crate::triggers::fold_triggered(state, triggered),
         Event::TriggersOrdered { player, order } => {
             crate::triggers::fold_ordered(state, *player, order)
@@ -270,8 +272,6 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             show_learned(state, event);
             Ok(())
         }
-        // The `Revealed` before it showed the card; triggers read it from the log.
-        Event::FirstDrawRevealed { .. } => Ok(()),
         _ => apply_misc(state, event),
     }
 }

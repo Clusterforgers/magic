@@ -1695,7 +1695,6 @@ pub(crate) fn repeated(cost: &ManaCost, times: usize) -> ManaCost {
 /// Whether a rule names no player and no object, so putting it in force changes nothing.
 pub(crate) fn names_nothing(rule: &Rule) -> bool {
     match rule {
-        Rule::RevealFirstDraw { .. } => false,
         Rule::AttackTax(tax) => {
             tax.players.is_empty() || (tax.mana.symbols().is_empty() && tax.life == 0)
         }
@@ -1769,7 +1768,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::AbilitiesAsThoughHaste(_)
         | Rule::ReverseTurnOrder
         | Rule::DamageAsWither
-        | Rule::ManaBurn => false,
+        | Rule::ManaBurn
+        | Rule::RevealFirstDraw { .. } => false,
         Rule::AttackOnlyNearest(left) => left.is_none(),
         Rule::PreventDamage(shield) => {
             shield.to.as_ref().is_some_and(Vec::is_empty)

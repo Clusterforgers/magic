@@ -41,15 +41,12 @@ pub(super) fn r4708_reveals(
             continue;
         };
         out.push(event);
-        let earlier = match drawn.iter_mut().find(|(who, _)| *who == player) {
-            Some((_, count)) => {
-                *count += 1;
-                *count - 1
-            }
-            None => {
-                drawn.push((player, 1));
-                0
-            }
+        let earlier = if let Some((_, count)) = drawn.iter_mut().find(|(who, _)| *who == player) {
+            *count += 1;
+            *count - 1
+        } else {
+            drawn.push((player, 1));
+            0
         };
         if state.tallied(player, Tally::Drawn) + earlier != 0 {
             continue;

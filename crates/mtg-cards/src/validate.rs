@@ -5368,7 +5368,6 @@ impl Walker<'_> {
         let tag = tag_of(rule);
         self.uses("Rule", &tag);
         match rule {
-            GameRule::RevealFirstDraw { .. } => {}
             GameRule::DamageCantBePrevented { source, .. } => {
                 self.at(tag, |w| w.at("source", |w| w.selector(source)));
             }
@@ -5510,7 +5509,8 @@ impl Walker<'_> {
             | GameRule::DamageAsWither
             | GameRule::ManaBurn
             | GameRule::CantBeCopied
-            | GameRule::CantSpendMana => {}
+            | GameRule::CantSpendMana
+            | GameRule::RevealFirstDraw { .. } => {}
             GameRule::UpToInDeck(most) => {
                 if *most < 2 {
                     self.at(tag, |w| w.problem("a deck rule allows at least two copies"));
