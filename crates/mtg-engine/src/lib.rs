@@ -70,6 +70,7 @@ mod r303b_haste_at;
 mod r372_suspend;
 mod r377_skips;
 mod r379_since;
+mod r401_riders;
 mod replace_dry;
 mod rmt3_skips;
 mod saga;

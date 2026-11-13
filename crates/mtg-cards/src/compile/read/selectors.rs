@@ -722,7 +722,7 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
         };
         Some(Pred::Compare { stat, op, to })
     })
-    .or_else(|| super::w21a_atoms::w21a_suffix(r))
+    .or_else(|| super::r401_riders::r401_suffix(r))
     .or_else(|| super::w19d_suffixes::w19d_suffix(r))
     .or_else(|| super::r283_atoms::r283_suffix(r, form))
     .or_else(|| super::r379_atoms::r379_suffix(r, form))
@@ -880,6 +880,7 @@ fn suffix_text_main(pred: &Pred, form: Form) -> Option<String> {
         }
         _ => {
             return super::w21a_atoms::w21a_suffix_text(pred, form)
+                .or_else(|| super::r401_riders::r401_power_or_toughness_text(pred))
                 .or_else(|| super::r283_atoms::r283_suffix_text(pred, form))
                 .or_else(|| super::r379_atoms::r379_suffix_text(pred, form))
                 .or_else(|| super::r301b_atoms::r301b_suffix_text(pred, form));

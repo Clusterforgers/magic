@@ -70,6 +70,7 @@ mod r375_events;
 mod r378_activation_triggers;
 mod r379_cast_greatest;
 mod r379_votes;
+mod r401_cast_riders;
 mod r405_events;
 mod r4a_enters_with;
 mod r4i_granter;

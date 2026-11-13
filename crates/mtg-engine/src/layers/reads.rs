@@ -548,6 +548,8 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::CastWith(_)
         | Condition::CastOffSorceryTiming
         | Condition::AsCast(_)
+        | Condition::R401OnCast(_)
+        | Condition::R401Targets(_)
         | Condition::ManaSpent(_)
         | Condition::IsDay
         | Condition::IsNight

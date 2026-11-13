@@ -563,6 +563,7 @@ Echo Inspector
 Echo Mage
 Echo Storm
 Echoes of the Kin Tree
+Edgar, Master Machinist
 Edge Rover
 Eel Umbra
 Eiganjo Dynastorian // Replenish
@@ -686,6 +687,7 @@ Flamebraider
 Flamekin Village
 Flamerush Rider
 Flaring Cinder
+Flash Photography
 Flatline
 Flawless Maneuver
 Flayer of Loyalties
@@ -1014,6 +1016,7 @@ Keleth, Sunmane Familiar
 Kellogg, Dangerous Mind
 Kemba's Banner
 Kenrith's Transformation
+Kess, Dissident Mage
 Kessig Wolf Run
 Kill! Maim! Burn!
 Kimoyo Beads
@@ -1672,6 +1675,7 @@ Silhana Ledgewalker
 Silumgar's Command
 Silumgar, the Drifting Death
 Silvar, Devourer of the Free
+Silver Scrutiny
 Silver Shroud Costume
 Silversmote Ghoul
 Silverwing Squadron
@@ -1962,6 +1966,7 @@ Thunder-Thrash Elder
 Thunderclap Drake
 Thunderfoot Baloth
 Thunderherd Migration
+Thundermane Dragon
 Thunderous Wrath
 Tiamat's Fanatics
 Tidal Force
@@ -1974,6 +1979,7 @@ Time Warp
 Time to Reflect
 Timeless Lotus
 Timeless Witness
+Timely Ward
 Timin, Youthful Geist
 Tinybones, Pocket Nuisance
 Tireless Hauler // Dire-Strain Brawler

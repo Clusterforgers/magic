@@ -221,7 +221,11 @@ when?: unknown,
 /**
  * It opens no zone: its free cast or cost is offered for the casts the players may make anyway.
  */
-any_cast?: boolean, } } | { "MayCastRather": { 
+any_cast?: boolean, 
+/**
+ * What a spell cast through it gets ("If you cast a spell this way, that artifact enters tapped").
+ */
+riders?: unknown, } } | { "MayCastRather": { 
 /**
  * The owner of each card and the card, as it was named when the rule began.
  */

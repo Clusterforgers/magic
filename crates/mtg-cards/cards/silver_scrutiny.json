@@ -1,0 +1,26 @@
+{
+  "oracle_id": "2b0b4fc1-9ad6-4259-a0a2-9a14484c246e",
+  "name": "Silver Scrutiny",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silver Scrutiny",
+      "oracle_fingerprint": "b3eac9bde7e6d325cd3b515e2e611524",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": ["This"],
+                "flash": true,
+                "when": { "R401OnCast": { "Compare": { "left": "X", "op": "Le", "right": 3 } } }
+              }
+            },
+            "from": "Hand"
+          }
+        },
+        { "Spell": { "effects": [{ "Draw": { "count": "X" } }] } }
+      ]
+    }
+  ]
+}

@@ -210,6 +210,10 @@ fn w7c_then_incubate(texts: &[String]) -> Vec<String> {
 /// sentence ("you draw a card and gain 3 life") or several ("draw a card. You gain 3 life"), and
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
 pub fn variants(ability: &Ability) -> Vec<String> {
+    // A permission with riders is worded only as the permission without them and its riders.
+    if let Some(texts) = super::r401_riders::r401_rider_texts(ability, variants) {
+        return texts;
+    }
     let mut texts = plain_variants(ability);
     super::r371_copy_except::r371_not_legendary_too(&mut texts);
     super::r371_copy_except::r371_that_creature_dies(ability, &mut texts);
@@ -580,6 +584,10 @@ fn produced_wordings(texts: &mut Vec<String>) {
 /// and the wordings of the oracle text that no template reads ("you" after another player's event, "Then" opening a
 /// sentence, "deals damage equal to its power").
 pub fn written_variants(ability: &Ability) -> Vec<String> {
+    // A permission with riders is worded only as the permission without them and its riders.
+    if let Some(texts) = super::r401_riders::r401_rider_texts(ability, written_variants) {
+        return texts;
+    }
     // An investigation is worded as the Clue tokens it makes.
     if let Some(unlogged) = super::l31a_performed::l31a_unlogged(ability) {
         return written_variants(&unlogged);

@@ -3097,6 +3097,20 @@ impl<'a> Scope<'a> {
         }
     }
 
+    /// A condition on the spell as it is announced: one judged as the announcement ends (`announce/r401_flash.rs`) holds
+    /// before then, so the cast may begin; "it targets" reads the targets announced.
+    fn r401_on_cast(&self, condition: &Condition) -> Result<bool, ResolveError> {
+        let Condition::R401Targets(what) = condition else {
+            return Ok(true);
+        };
+        for target in self.choices.targeted_objects() {
+            if self.selects(what, target)? {
+                return Ok(true);
+            }
+        }
+        Ok(false)
+    }
+
     /// Whether every named permanent, still the one named, has a level that compares with `level` by `op`.
     fn level_holds(
         &self,
@@ -3118,6 +3132,7 @@ impl<'a> Scope<'a> {
     }
 
     /// Whether a condition is true now.
+    #[allow(clippy::too_many_lines)]
     pub fn holds(&self, condition: &Condition) -> Result<bool, ResolveError> {
         Ok(match condition {
             Condition::Not(inner) => !self.holds(inner)?,
@@ -3158,8 +3173,9 @@ impl<'a> Scope<'a> {
             }
             Condition::CastWith(way) => self.cast_way() == Some(*way),
             Condition::CastOffSorceryTiming => self.off_sorcery_timing(),
-            Condition::AsCast(inner) => self.held_as_cast(inner),
             Condition::ManaSpent(mana) => self.mana_spent().contains(mana),
+            Condition::AsCast(inner) => self.held_as_cast(inner),
+            Condition::R401OnCast(_) | Condition::R401Targets(_) => self.r401_on_cast(condition)?,
             Condition::ChosenWord { name, word } => {
                 matches!(self.chosen_value(name), Some(Chosen::Word(chosen)) if chosen == word)
             }

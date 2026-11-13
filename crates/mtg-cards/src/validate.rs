@@ -1447,6 +1447,24 @@ impl<'a> Walker<'a> {
         self.at("inner", |w| w.condition(inner));
     }
 
+    /// A condition judged on the spell as it is announced, or the targets it reads.
+    fn r401_on_cast(&mut self, condition: &Condition) {
+        match condition {
+            Condition::R401OnCast(inner) => {
+                self.uses("Condition", "R401OnCast");
+                // Judged with what the spell announces, so its X is the X it is cast with.
+                let x_now = std::mem::replace(&mut self.x_now, true);
+                self.at("R401OnCast", |w| w.condition(inner));
+                self.x_now = x_now;
+            }
+            Condition::R401Targets(what) => {
+                self.uses("Condition", "R401Targets");
+                self.at("R401Targets", |w| w.selector(what));
+            }
+            _ => {}
+        }
+    }
+
     /// A condition on a kicker or an additional cost the card itself has to offer.
     fn paid_condition(&mut self, condition: &Condition) {
         match condition {
@@ -1503,6 +1521,7 @@ impl<'a> Walker<'a> {
             Condition::CastWith(_) => self.uses("Condition", "CastWith"),
             Condition::CastOffSorceryTiming => self.uses("Condition", "CastOffSorceryTiming"),
             Condition::AsCast(inner) => self.as_cast(inner),
+            Condition::R401OnCast(_) | Condition::R401Targets(_) => self.r401_on_cast(condition),
             Condition::ManaSpent(_) => self.uses("Condition", "ManaSpent"),
             Condition::YourTurn => {}
             Condition::ExtraTurn => self.uses("Condition", "ExtraTurn"),
@@ -1911,6 +1930,16 @@ impl<'a> Walker<'a> {
         }
         if let Some(when) = &permission.when {
             self.at("when", |w| w.condition(when));
+        }
+        for rider in &permission.riders {
+            let tag = match rider {
+                crate::modify::CastRider::EntersTapped => "EntersTapped",
+                crate::modify::CastRider::EntersWithCounter(_) => "EntersWithCounter",
+                crate::modify::CastRider::GainsThisTurn(_) => "GainsThisTurn",
+                crate::modify::CastRider::AlsoSubtype(_) => "AlsoSubtype",
+                crate::modify::CastRider::ExiledInstead => "ExiledInstead",
+            };
+            self.uses("CastRider", tag);
         }
         if matches!(
             permission.from,

@@ -239,6 +239,7 @@ fn exiled_as_found(
                     spend_as: SpendAs::AnyColor,
                     when: None,
                     any_cast: false,
+                    riders: Vec::new(),
                 },
                 duration: Duration::Forever,
                 source,

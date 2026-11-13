@@ -215,6 +215,8 @@ mod r376_nearest;
 mod r376_seats;
 mod r376_secret;
 mod r379_atoms;
+mod r401_flash;
+mod r401_riders;
 mod r405_cast_target;
 mod r405_events;
 mod r406_actions;

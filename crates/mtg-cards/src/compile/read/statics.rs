@@ -47,6 +47,7 @@ const TEMPLATES: [Template; 52] = [
     super::r376_nearest::r376_nearest,
     super::r376_nearest::r376_side_entering,
     super::ep32_discard::ep32_discarded_by_opponent,
+    super::r401_flash::r401_flash,
     super::ep29_flash::ep29_flash,
     super::ep27_flash::ep27_flash,
     super::w19a_flash::w19a_flash,
@@ -99,12 +100,24 @@ const TEMPLATES: [Template; 52] = [
 
 /// A static ability that is a whole sentence: the shape and its period.
 pub fn ability(r: &mut Reader<'_>) -> Option<Ability> {
-    TEMPLATES.iter().find_map(|template| {
-        r.attempt(|r| {
-            let found = template(r)?;
-            r.sentence_end().then_some(found)
+    let ridden = r.attempt(|r| {
+        super::r401_riders::r401_says_this_way(r)?;
+        let found = super::r401_riders::r401_riders(r, bare)?;
+        r.sentence_end().then_some(found)
+    });
+    ridden.or_else(|| {
+        TEMPLATES.iter().find_map(|template| {
+            r.attempt(|r| {
+                let found = template(r)?;
+                r.sentence_end().then_some(found)
+            })
         })
     })
+}
+
+/// A static shape of [`TEMPLATES`] without its period.
+fn bare(r: &mut Reader<'_>) -> Option<Ability> {
+    TEMPLATES.iter().find_map(|template| r.attempt(template))
 }
 
 /// "Damage doesn't cause you to lose life.", also "As long as you're the monarch, damage doesn't cause you to lose life.": a
@@ -1782,6 +1795,7 @@ fn ep27_rule_texts(
         ]),
         (_, ZoneKind::Hand) => {
             let mut texts = super::ep27_flash::ep27_flash_texts(rule, condition, from);
+            texts.extend(super::r401_flash::r401_flash_texts(rule, condition, from));
             texts.extend(super::ep29_flash::ep29_flash_texts(rule, condition));
             Some(texts)
         }

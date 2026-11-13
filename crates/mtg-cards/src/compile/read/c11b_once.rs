@@ -48,6 +48,7 @@ fn c11b_permission(what: Selector) -> CastPermission {
         spend_as: crate::modify::SpendAs::Normal,
         when: None,
         any_cast: false,
+        riders: Vec::new(),
     }
 }
 

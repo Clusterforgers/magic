@@ -601,6 +601,10 @@ pub(super) fn condition(ctx: &Ctx, cond: &Condition) -> String {
         Condition::EnteredAs(word) => format!("{word} was chosen as it entered"),
         Condition::AdditionalCostPaid => "the additional cost was paid".to_owned(),
         Condition::AsCast(inner) => format!("{} as this spell was cast", condition(ctx, inner)),
+        Condition::R401OnCast(inner) => {
+            format!("{} once the spell is announced", condition(ctx, inner))
+        }
+        Condition::R401Targets(what) => format!("the spell targets {}", selector(ctx, what)),
         Condition::AtTrigger(inner) => {
             format!("{} (checked as it triggers only)", condition(ctx, inner))
         }
