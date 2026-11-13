@@ -68,11 +68,11 @@ Seeded 1v1 games against main's brains of the same level on the interaction pair
 
 | Level | Games | Score | Elo |
 | --- | --- | --- | --- |
-| Normal | 480 | 59.6% | +67 [+36, +100] |
+| Normal | 960 | 50.1% | +1 [-21, +23] |
 | Hard | 204 | 51.5% | +10 [-38, +59] |
 | Very Hard | 64 | 50.0% | +0 [-87, +87] |
 
-Normal now runs Hard's former searches, so new Hard against new Normal is close: 51.2% in 80 games on the creature mirrors.
+Normal with Hard's former searches scores 59.6% against main's Normal (480 games, +67 Elo) but aims a Pacifism at its own team in Two-Headed Giant, so Normal keeps main's settings.
 
 The longest timed answer is 3.5 s (Very Hard, interaction decks, a loaded machine), under the 4.5 s cap; the clock test asserts 5 s.
 

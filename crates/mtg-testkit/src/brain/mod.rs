@@ -40,7 +40,7 @@ use crate::bot::RandomBot;
 pub enum Level {
     /// Random legal answers, a land whenever it can play one.
     Easy,
-    /// Heuristics with Hard's searches at half the budget ([`Settings::NORMAL`]).
+    /// Heuristics with a shallow search ([`Settings::NORMAL`]).
     #[default]
     Normal,
     /// Heuristics with a deeper search that looks through the next turn's combat, and a light tree search

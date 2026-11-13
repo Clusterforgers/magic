@@ -70,18 +70,18 @@ pub struct Settings {
 }
 
 impl Settings {
-    /// Normal: Hard's searches (simulated attacks, blocks and plays through the next turn's combat in a redealt world)
-    /// with half the simulations and fewer targets, no tree search, about 300 ms at most.
+    /// Normal: heuristic combat and a shallow search of plays and targets with quick answers inside it, about 300 ms
+    /// at most.
     pub const NORMAL: Settings = Settings {
-        sims: 80,
-        forecasts: 250,
-        targets: 4,
+        sims: 40,
+        forecasts: 160,
+        targets: 3,
         depth: 1,
-        combat_search: true,
-        lookahead: true,
+        combat_search: false,
+        lookahead: false,
         careful: true,
-        sequences: true,
-        fair: true,
+        sequences: false,
+        fair: false,
         weights: Weights::NORMAL,
         deep: None,
         votes: 1,
