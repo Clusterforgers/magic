@@ -100,6 +100,21 @@ impl GameState {
             .is_some_and(|(_, _, shot)| shot.id == object.id && shot.counter == object.counter)
     }
 
+    /// Whether `earlier` was cast this turn before `spell`, both read from the turn's log of casts.
+    pub(crate) fn r4703_cast_before(&self, earlier: ObjectRef, spell: ObjectRef) -> bool {
+        let at = |wanted: ObjectRef| {
+            self.tallies
+                .logged
+                .iter()
+                .filter(|(event, _, _)| *event == TallyEvent::SpellCast)
+                .position(|(_, _, shot)| shot.id == wanted.id && shot.counter == wanted.counter)
+        };
+        match (at(earlier), at(spell)) {
+            (Some(first), Some(then)) => first < then,
+            _ => false,
+        }
+    }
+
     /// The combat phase begins: "this combat" reads the records from here on.
     pub(crate) fn begin_combat_log(&mut self) {
         self.tallies.combat_from = self.tallies.records.len();

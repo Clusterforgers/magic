@@ -239,10 +239,12 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::AttachedPlayer
         | Ref::Monarch
         | Ref::Chosen
+        | Ref::R4700OtherChosen
         | Ref::Promised
         | Ref::Defending
         | Ref::Attacked
         | Ref::MostLife
+        | Ref::Teammates
         | Ref::ActivePlayer
         | Ref::Chooser
         | Ref::Asker
@@ -280,6 +282,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::Drafted(_)
         | Pred::This
         | Pred::Other
+        | Pred::Apart(_)
         | Pred::Token
         | Pred::Commander
         | Pred::Spell
@@ -326,6 +329,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::SingleTarget
         | Pred::HasAnyCounter
         | Pred::Named(_)
+        | Pred::OriginallyPrintedIn(_)
         | Pred::ChosenName
         | Pred::FaceDown
         | Pred::SpentFrom { .. }
@@ -339,6 +343,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::BottomOfLibrary
         | Pred::TopOfGraveyard
         | Pred::TopCreatureOfGraveyard
+        | Pred::R4700TopOfGraveyard { .. }
         | Pred::Kicked
         | Pred::AdditionalCostPaid
         | Pred::Suspended
@@ -357,6 +362,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::Is(who)
         | Pred::BlockedBy(who)
         | Pred::BlockedThisTurnBy(who)
+        | Pred::CastBefore(who)
         | Pred::BandedWith(who)
         | Pred::Blocks(who)
         | Pred::TargetedBy(who)
@@ -415,7 +421,7 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         // The base after the effects that set it still depends on the layers that set power and toughness.
         StatKind::Power | StatKind::BasePower => Traits::POWER,
         StatKind::Toughness | StatKind::BaseToughness => Traits::TOUGHNESS,
-        StatKind::Colors | StatKind::R374ColorSet => Traits::COLORS,
+        StatKind::Colors | StatKind::R374ColorSet | StatKind::R4700ChosenColors => Traits::COLORS,
         StatKind::BasicLandTypes | StatKind::CreatureType | StatKind::Subtypes => Traits::SUBTYPES,
         StatKind::R374Types => Traits::TYPES.or(Traits::SUBTYPES).or(Traits::SUPERTYPES),
         StatKind::R374CreatureTypes => Traits::TYPES.or(Traits::SUBTYPES),
@@ -462,6 +468,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::CastSameNameThisGame(_)
         | Amount::CycledSameNameThisGame(_)
         | Amount::TallyTotal { .. }
+        | Amount::TallyTypes { .. }
         | Amount::ManaSpent { .. }
         | Amount::ManaColors(_)
         | Amount::ManaInPool(_)

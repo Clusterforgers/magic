@@ -550,6 +550,12 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::TurnedFaceUp { object, player, .. } => {
             turn_face_up(state, *object)?;
             state.tally(*player, Tally::R5522TurnedFaceUp);
+            state.record(
+                mtg_cards::value::TallyEvent::TurnedFaceUp,
+                Some(*player),
+                (*object, None),
+                1,
+            );
         }
         Event::TurnedFaceDown { object, .. } => crate::rmt8_turns::turn_face_down(state, *object)?,
         Event::CommanderColorChosen { object, color, .. } => {

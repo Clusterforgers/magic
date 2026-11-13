@@ -1,16 +1,31 @@
 {
   "oracle_id": "c6e48eaf-02f8-43b3-90bf-970d4e412fa6",
   "name": "Stinging Licid",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Stinging Licid",
       "oracle_fingerprint": "4b2c43a602a7462ca42c86930fb38613",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 166 }
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddSubtype": "Aura" },
+                    { "SetTypes": ["Enchantment"] },
+                    { "AddKeyword": { "Enchant": [{ "Type": "Creature" }] } },
+                    "LoseThisAbility"
+                  ],
+                  "duration": { "UntilPaid": "{U}" }
+                }
+              },
+              { "Attach": { "what": "This", "to": { "Target": 0 } } }
+            ]
           }
         },
         {

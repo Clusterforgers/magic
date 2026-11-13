@@ -1,7 +1,7 @@
 {
   "oracle_id": "3561cd52-961f-4098-9287-58ee43970f0f",
   "name": "Galloping Lizrog",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Galloping Lizrog",
@@ -9,9 +9,32 @@
       "abilities": [
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 8, "end": 176 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "RemoveCountersAmong": {
+                        "counter": "+1/+1",
+                        "count": "X",
+                        "from": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "PutCounters": {
+                        "on": "This",
+                        "counter": "+1/+1",
+                        "count": { "Times": { "by": 2, "of": "X" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

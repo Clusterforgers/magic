@@ -33,4 +33,9 @@ can_cancel?: boolean,
 /**
  * No two cards chosen may share a name ("with different names", CR 201.3).
  */
-one_per_name?: boolean, };
+one_per_name?: boolean, 
+/**
+ * The group of each card of `from`, in its order: no two cards chosen may be of one group ("with different
+ * powers"); no such rule when empty.
+ */
+groups?: Array<number>, };

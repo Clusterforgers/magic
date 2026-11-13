@@ -1,16 +1,35 @@
 {
   "oracle_id": "39f4bf0e-47d5-4ae8-a504-71acda849850",
   "name": "Kozilek, the Broken Reality",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kozilek, the Broken Reality",
       "oracle_fingerprint": "0869ee8038e8fd0b7f2f0a0c15cdd737",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 291 }
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "targets": [{ "what": "Player", "bounds": { "min": 0, "max": 2 } }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "Chooser" }] },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "chosen"
+                }
+              },
+              {
+                "Manifest": {
+                  "who": { "Target": 0 },
+                  "cards": { "Bound": "chosen" },
+                  "as": "manifested"
+                }
+              },
+              { "Draw": { "count": { "Count": [{ "Is": { "Bound": "manifested" } }] } } }
+            ]
           }
         },
         {

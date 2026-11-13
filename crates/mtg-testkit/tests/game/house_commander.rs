@@ -727,3 +727,19 @@ fn five_seats_under_the_default_rules_play_to_their_end() {
     let outcome = play_game(game_under(5, 7043, &HouseRules::default()), 7043);
     assert!(outcome.is_ok(), "{:?}", outcome.err());
 }
+
+/// The input the proptest above found: two damage events in one combat were each replaced by "you lose the game", and
+/// the player lost twice in one batch.
+#[test]
+fn five_seats_where_one_player_loses_twice_in_a_batch_play_to_their_end() {
+    let house = HouseRules {
+        commander_tax: Some(5),
+        deck: DeckRules {
+            color_identity: Some(false),
+            ..DeckRules::default()
+        },
+        ..HouseRules::default()
+    };
+    let outcome = play_game(game_under(5, 6171, &house), 6171);
+    assert!(outcome.is_ok(), "{:?}", outcome.err());
+}
