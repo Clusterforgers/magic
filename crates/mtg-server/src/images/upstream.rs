@@ -1,12 +1,12 @@
-//! Requests to the Scryfall CDN: polite spacing, retries and a check of what comes back.
+//! Requests to the Scryfall CDN: polite spacing, a cap on requests in flight, retries and a check of what comes back.
 
-use std::sync::OnceLock;
+use std::sync::{Arc, OnceLock};
 use std::time::Duration;
 
 use reqwest::header::{ACCEPT, RETRY_AFTER};
 use reqwest::{Client, StatusCode, Url, redirect};
 use thiserror::Error;
-use tokio::sync::{Mutex, MutexGuard};
+use tokio::sync::{Mutex, OwnedSemaphorePermit, Semaphore};
 use tokio::time::Instant;
 
 use super::config::ImageConfig;
@@ -50,43 +50,42 @@ impl FetchError {
     }
 }
 
-/// Hands out turns that start at least `gap` after the previous turn ended.
+/// Hands out turns: at most `slots` at once, each starting at least `gap` after the previous one started.
 #[derive(Debug)]
 pub(crate) struct Pacer {
     gap: Duration,
-    last_end: Mutex<Option<Instant>>,
+    slots: Arc<Semaphore>,
+    last_start: Mutex<Option<Instant>>,
 }
 
-/// The right to make one request; the next turn is timed from the moment this one is dropped.
-pub(crate) struct Turn<'a> {
-    last_end: MutexGuard<'a, Option<Instant>>,
+/// The right to make one request; its slot is free again once this is dropped.
+pub(crate) struct Turn {
+    _slot: Option<OwnedSemaphorePermit>,
 }
 
 impl Pacer {
-    pub(crate) fn new(gap: Duration) -> Pacer {
+    pub(crate) fn new(gap: Duration, slots: usize) -> Pacer {
         Pacer {
             gap,
-            last_end: Mutex::new(None),
+            slots: Arc::new(Semaphore::new(slots.max(1))),
+            last_start: Mutex::new(None),
         }
     }
 
-    /// Waits for the gap to pass, then holds every other turn back until the result is dropped.
-    pub(crate) async fn turn(&self) -> Turn<'_> {
-        let last_end = self.last_end.lock().await;
-        if let Some(end) = *last_end {
-            tokio::time::sleep_until(end + self.gap).await;
+    /// Waits for a free slot and for the gap since the last start, then starts a turn.
+    pub(crate) async fn turn(&self) -> Turn {
+        // The semaphore is never closed, so the error case cannot happen.
+        let slot = self.slots.clone().acquire_owned().await.ok();
+        let mut last_start = self.last_start.lock().await;
+        if let Some(start) = *last_start {
+            tokio::time::sleep_until(start + self.gap).await;
         }
-        Turn { last_end }
+        *last_start = Some(Instant::now());
+        Turn { _slot: slot }
     }
 }
 
-impl Drop for Turn<'_> {
-    fn drop(&mut self) {
-        *self.last_end = Some(Instant::now());
-    }
-}
-
-/// The CDN client: one per server, so the gap between requests is global.
+/// The CDN client: one per server, so the spacing and the cap on requests in flight are global.
 #[derive(Debug)]
 pub(crate) struct Upstream {
     client: OnceLock<Result<Client, FetchError>>,
@@ -105,7 +104,7 @@ impl Upstream {
             .and_then(|text| Url::parse(text).ok());
         Upstream {
             client: OnceLock::new(),
-            pacer: Pacer::new(config.min_gap),
+            pacer: Pacer::new(config.min_gap, config.in_flight),
             base,
             attempts: config.attempts.max(1),
             backoff: config.backoff,
@@ -208,65 +207,79 @@ impl Upstream {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: the pacer leaves the gap between turns however long they last and however many tasks ask, and only busy or broken answers are tried again.
+    //! Goal: the pacer spaces the starts of turns by the gap and keeps at most its slots in flight however many tasks ask and however long each lasts, and only busy or broken answers are tried again.
     use rstest::rstest;
 
     use super::*;
 
-    const GAP: Duration = Duration::from_millis(100);
+    const GAP: Duration = Duration::from_millis(25);
 
     #[tokio::test(start_paused = true)]
     async fn the_first_turn_starts_at_once() {
         let started = Instant::now();
-        let pacer = Pacer::new(GAP);
+        let pacer = Pacer::new(GAP, 8);
         let _turn = pacer.turn().await;
         assert_eq!(started.elapsed(), Duration::ZERO);
     }
 
-    #[rstest]
-    #[case::instant_requests(Duration::ZERO)]
-    #[case::short_requests(Duration::from_millis(30))]
-    #[case::requests_longer_than_the_gap(Duration::from_millis(450))]
-    #[tokio::test(start_paused = true)]
-    async fn consecutive_turns_are_a_gap_apart(#[case] busy: Duration) {
-        let pacer = Pacer::new(GAP);
-        let mut starts = Vec::new();
-        let mut ends = Vec::new();
-        for _ in 0..4 {
-            let turn = pacer.turn().await;
-            starts.push(Instant::now());
-            tokio::time::sleep(busy).await;
-            ends.push(Instant::now());
-            drop(turn);
-        }
-        for pair in 1..starts.len() {
-            assert!(
-                starts[pair] - ends[pair - 1] >= GAP,
-                "turn {pair} started too soon"
-            );
-        }
-    }
-
-    #[tokio::test(start_paused = true)]
-    async fn tasks_asking_together_are_served_one_gap_apart() {
-        let pacer = std::sync::Arc::new(Pacer::new(GAP));
-        let tasks: Vec<_> = (0..5)
+    /// Runs `tasks` turns that each last `busy` and returns each turn's start and end.
+    async fn run(slots: usize, tasks: usize, busy: Duration) -> Vec<(Instant, Instant)> {
+        let pacer = Arc::new(Pacer::new(GAP, slots));
+        let spawned: Vec<_> = (0..tasks)
             .map(|_| {
                 let pacer = pacer.clone();
                 tokio::spawn(async move {
                     let _turn = pacer.turn().await;
-                    Instant::now()
+                    let start = Instant::now();
+                    tokio::time::sleep(busy).await;
+                    (start, Instant::now())
                 })
             })
             .collect();
-        let mut starts = Vec::new();
-        for task in tasks {
-            starts.push(task.await.unwrap());
+        let mut spans = Vec::new();
+        for task in spawned {
+            spans.push(task.await.unwrap());
         }
-        starts.sort();
-        for pair in starts.windows(2) {
-            assert!(pair[1] - pair[0] >= GAP);
+        spans.sort();
+        spans
+    }
+
+    #[rstest]
+    #[case::one_slot_instant(1, Duration::ZERO)]
+    #[case::one_slot_slow(1, Duration::from_millis(450))]
+    #[case::eight_slots_instant(8, Duration::ZERO)]
+    #[case::eight_slots_short(8, Duration::from_millis(30))]
+    #[case::eight_slots_slow(8, Duration::from_millis(450))]
+    #[case::three_slots_slow(3, Duration::from_millis(450))]
+    #[tokio::test(start_paused = true)]
+    async fn starts_are_a_gap_apart_and_never_more_than_the_slots_run(
+        #[case] slots: usize,
+        #[case] busy: Duration,
+    ) {
+        let spans = run(slots, 20, busy).await;
+        for pair in spans.windows(2) {
+            assert!(pair[1].0 - pair[0].0 >= GAP, "a turn started too soon");
         }
+        for &(start, _) in &spans {
+            let running = spans
+                .iter()
+                .filter(|(s, e)| *s <= start && start < *e)
+                .count();
+            assert!(running <= slots, "{running} turns ran at once");
+        }
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn slow_requests_overlap_so_many_pictures_take_a_fraction_of_the_serial_time() {
+        let busy = Duration::from_millis(200);
+        let first = Instant::now();
+        let spans = run(8, 40, busy).await;
+        let elapsed = spans.iter().map(|(_, end)| *end).max().unwrap() - first;
+        // One at a time they would take 40 × 200 ms; eight at once take five rounds and the spacing.
+        assert!(
+            elapsed < Duration::from_millis(40 * 200 / 6),
+            "took {elapsed:?}"
+        );
     }
 
     #[rstest]
