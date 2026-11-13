@@ -7,6 +7,10 @@ use mtg_core::card::CardType;
 use mtg_core::ids::PlayerId;
 
 use super::seen::{Body, Seen};
+use super::threat::{engine_value, held_interaction};
+
+/// The share of its [`super::threat::hold_value`] a piece of interaction in the seat's hand counts for.
+const HELD_SHARE: f64 = 1.0;
 
 /// What a decided game is worth: far above any position still in play.
 pub const DECIDED: f64 = 1_000_000.0;
@@ -146,8 +150,10 @@ impl Weights {
     };
 }
 
-/// The position as `seen`'s seat reads it, from its team's side: its team's standing less the opposing teams', the
-/// strongest of them counted half again, and the damage each side's creatures threaten the other with next turn.
+/// The position as `seen`'s seat reads it, from its team's side: its team's standing (engines and combo pieces counted
+/// by the threat model, interaction in the seat's hand counted for what keeping it is worth) less the opposing
+/// teams', the strongest of them counted half again, and the damage each side's creatures threaten the other with next
+/// turn.
 pub fn evaluate(seen: &Seen<'_>) -> f64 {
     evaluate_with(seen, Weights::NORMAL)
 }
@@ -177,7 +183,7 @@ pub fn evaluate_with(seen: &Seen<'_>, weights: Weights) -> f64 {
     if strongest > f64::MIN {
         others += 0.5 * strongest;
     }
-    own - others + pressure_balance(seen, &bodies, weights)
+    own + held_interaction(seen, HELD_SHARE) - others + pressure_balance(seen, &bodies, weights)
 }
 
 /// Each team still in the game and its standing: life, cards in hand, permanents and mana.
@@ -212,23 +218,12 @@ fn standing_with(seen: &Seen<'_>, player: PlayerId, bodies: &[Body], weights: We
     }
     let mut sources = 0;
     for body in bodies.iter().filter(|body| body.controller == player) {
-        score += weights.board * permanent_value(body);
+        score += weights.board * (permanent_value(body) + engine_value(seen, body, bodies));
         if body.is_land() || body.makes_mana {
             sources += 1;
         }
     }
     score + mana_value_of(sources)
-}
-
-/// How much `player` threatens the seat's team: their board, their hand and how far ahead they stand.
-pub fn threat(seen: &Seen<'_>, player: PlayerId) -> f64 {
-    let bodies = seen.bodies();
-    let attack: f64 = bodies
-        .iter()
-        .filter(|body| body.controller == player && body.is_creature())
-        .map(creature_value)
-        .sum();
-    attack + player_standing(seen, player, &bodies) * 0.3 + 0.2 * f64::from(seen.life(player))
 }
 
 /// The damage the creatures of `attackers` could deal to `defender` on their next attack, after `defender`'s team blocks
