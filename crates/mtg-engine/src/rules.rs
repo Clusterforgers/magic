@@ -153,6 +153,8 @@ pub enum Rule {
     CantDraw(Vec<PlayerId>),
     /// The players can't search libraries.
     CantSearch(Vec<PlayerId>),
+    /// Spells and abilities the players control can't cause their controller to search their own library.
+    OwnSpellsCantSearch(Vec<PlayerId>),
     /// The players may vote an additional time (CR 701.38d).
     VoteAgain(Vec<PlayerId>),
     /// The players get an additional vote (CR 701.38d).
@@ -705,6 +707,7 @@ pub(crate) struct RulesInForce {
     player_keywords: Vec<(PlayerId, Keyword)>,
     no_draw: BTreeSet<PlayerId>,
     no_search: BTreeSet<PlayerId>,
+    no_own_search: BTreeSet<PlayerId>,
     /// The changes to the mana of a tap.
     pub(crate) mana: Vec<ManaRule>,
     vote_again: BTreeSet<PlayerId>,
@@ -1138,6 +1141,7 @@ impl RulesInForce {
                 .extend(who.iter().map(|player| (*player, keyword.clone()))),
             Rule::CantDraw(players) => self.no_draw.extend(players),
             Rule::CantSearch(players) => self.no_search.extend(players),
+            Rule::OwnSpellsCantSearch(players) => self.no_own_search.extend(players),
             Rule::ManaProduced { what, who, change } => {
                 if let Some(source) = source {
                     self.mana.push(ManaRule {
@@ -1529,6 +1533,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::CantDraw(who) => Rule::CantDraw(scope.players(who)?),
         GameRule::CantSearch(who) => Rule::CantSearch(scope.players(who)?),
+        GameRule::OwnSpellsCantSearch(who) => Rule::OwnSpellsCantSearch(scope.players(who)?),
         GameRule::ManaProduced { what, who, change } => Rule::ManaProduced {
             what: what.clone(),
             who: scope.players(who)?,
@@ -1786,6 +1791,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::LifeTotalCantChange(players)
         | Rule::CantDraw(players)
         | Rule::CantSearch(players)
+        | Rule::OwnSpellsCantSearch(players)
         | Rule::VoteAgain(players)
         | Rule::ExtraVote(players)
         | Rule::SkipExtraTurns(players)
@@ -1972,6 +1978,7 @@ static NONE: RulesInForce = RulesInForce {
     player_keywords: Vec::new(),
     no_draw: BTreeSet::new(),
     no_search: BTreeSet::new(),
+    no_own_search: BTreeSet::new(),
     mana: Vec::new(),
     vote_again: BTreeSet::new(),
     extra_vote: Vec::new(),
@@ -2634,6 +2641,12 @@ pub fn w17c_votes_again(state: &GameState, player: PlayerId) -> bool {
 /// Whether `player` can't search libraries: the one place a search reads this rule.
 pub fn cant_search(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_search.contains(&player)
+}
+
+/// Whether `player`'s own spells and abilities can't cause them to search their own library: the one place a search
+/// reads this rule.
+pub fn own_spells_cant_search(state: &GameState, player: PlayerId) -> bool {
+    state.rules().no_own_search.contains(&player)
 }
 
 /// Whether the damage `dealer` would deal can't be prevented: the one place a prevention effect reads this rule. A source

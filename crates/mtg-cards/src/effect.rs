@@ -61,6 +61,8 @@ pub enum NewTargets {
     Choose,
     /// "Change a target of it to ~": one target becomes the object `onto` names, if that is a legal target (CR 115.7c).
     One,
+    /// "Change the target ... The new target must be a player.": as `Another`, among the players only.
+    AnotherPlayer,
 }
 
 /// A phase an effect adds to the turn (CR 500.8).
@@ -116,6 +118,9 @@ pub enum Destination {
     Hand,
     /// Its owner's graveyard.
     Graveyard,
+    /// Its owner's command zone (CR 408): "returns each commander they control from the battlefield to the command
+    /// zone".
+    Command,
     /// The battlefield.
     Battlefield {
         /// Enters tapped.
@@ -1358,6 +1363,10 @@ pub enum Effect {
         /// How many matching cards end the revealing.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
+        /// The revealing also ends once this many cards are revealed, whichever comes first ("until an artifact card or
+        /// X cards are revealed"); no such end when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        most: Option<Amount>,
         /// The name the matching cards are bound to.
         #[serde(rename = "as")]
         bind: String,
@@ -1616,6 +1625,10 @@ pub enum Effect {
         plus: Amount,
         /// What the total does.
         results: Vec<DieRow>,
+        /// The number of dice, worked out as the roll happens ("roll X six-sided dice"): each die is kept and the effects
+        /// after it read them as `DieResult::Odd`, `Even`, `Total` and `Times`; with no `dice`, choice, `plus` or table.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        count: Option<Amount>,
     },
     /// The player flips a coin (CR 705): `win` is done when they win the flip, `lose` when they lose it. The call carries no
     /// choice, so a flip is won with even odds. The flip comes from the game's random stream and is logged as it happened.
@@ -2398,7 +2411,7 @@ mod tests {
         r#"{"Bind":{"what":{"Bound":"pick"},"as":"picks","adds":true}}"#
     )]
     #[case::roll_a_die_with_a_table(
-        Effect::RollDice { who: Ref::You, sides: 20, dice: 1, choose: false, plus: Amount::Fixed(2), results: vec![DieRow { from: 1, to: Some(9), effects: vec![Effect::Shuffle { who: Ref::You }] }, DieRow { from: 10, to: None, effects: vec![Effect::Shuffle { who: Ref::You }] }] },
+        Effect::RollDice { who: Ref::You, sides: 20, dice: 1, choose: false, plus: Amount::Fixed(2), results: vec![DieRow { from: 1, to: Some(9), effects: vec![Effect::Shuffle { who: Ref::You }] }, DieRow { from: 10, to: None, effects: vec![Effect::Shuffle { who: Ref::You }] }], count: None },
         r#"{"RollDice":{"sides":20,"plus":2,"results":[{"from":1,"to":9,"effects":[{"Shuffle":{}}]},{"from":10,"effects":[{"Shuffle":{}}]}]}}"#
     )]
     #[case::flip_a_coin(

@@ -152,6 +152,7 @@ const RUNS: &[&str] = &[
     "Cost.OwnManaCost",
     "Cost.ManaCostOf",
     "Cost.OwnManaValue",
+    "Cost.OwnManaCostLess",
     "Cost.RemoveCountersAmong",
     "Cost.Discard.Hand",
     "Cost.RevealFromHand.Hand",
@@ -229,6 +230,9 @@ const RUNS: &[&str] = &[
     "Effect.Reveal",
     "Effect.Search",
     "Search.Zones",
+    "RevealUntil.Most",
+    "LifeGain.CausedOwn",
+    "ReplaceBy.UnderYourControl",
     "Search.Of",
     "Search.OfZones",
     "Effect.Shuffle",
@@ -238,6 +242,7 @@ const RUNS: &[&str] = &[
     "Effect.Move.Attached",
     "Effect.Move.FaceDown",
     "Effect.Move.Enchanting",
+    "Effect.Move.Command",
     "Effect.ExileUntil",
     "ExileUntil.Total",
     "Effect.RevealUntil",
@@ -455,6 +460,7 @@ const RUNS: &[&str] = &[
     "Rule.PlayersHave",
     "Rule.CantDraw",
     "Rule.CantSearch",
+    "Rule.OwnSpellsCantSearch",
     "Rule.VoteAgain",
     "Rule.ExtraVote",
     "Rule.ReverseTurnOrder",
@@ -573,6 +579,7 @@ const RUNS: &[&str] = &[
     "Mod.AddLandTypeChosen",
     "Mod.AddChosenSubtype",
     "Mod.SetChosenColor",
+    "Mod.AddChosenColor",
     "Mod.SetCommanderColor",
     "Mod.RemoveKeyword",
     "Mod.RemoveKeywordKind",
@@ -676,6 +683,7 @@ const RUNS: &[&str] = &[
     "Keyword.Enchant.Graveyard",
     "Keyword.EnchantPlayer",
     "Keyword.Equip",
+    "Keyword.Fortify",
     "Keyword.Reconfigure",
     "Keyword.LivingWeapon",
     "Keyword.Kicker",
@@ -844,6 +852,10 @@ const RUNS: &[&str] = &[
     "ReplaceBy.PreventCountedAnd",
     "ReplaceBy.PreventHalf",
     "ReplaceBy.PreventRemovingCounter",
+    "ReplaceBy.PreventByCounters",
+    "RollDice.Count",
+    "ReplaceBy.PreventHalfNext",
+    "ReplaceBy.PreventAllButNext",
     "ReplaceBy.MoveTo",
     "ReplaceBy.Untapped",
     "ReplaceBy.IntoLibrary",
@@ -943,6 +955,7 @@ const RUNS: &[&str] = &[
     "Keyword.StartYourEngines",
     "Keyword.JobSelect",
     "Keyword.EquipTo",
+    "Keyword.CrewOnce",
     "Condition.CitysBlessing",
     "Condition.EnduringStory",
     "Condition.VotedAs",
@@ -1135,6 +1148,9 @@ mod tests {
     #[case::moving_in_a_random_order_to_the_top("Effect.Move.Random.Top", false)]
     #[case::searching("Effect.Search", true)]
     #[case::searching_several_zones("Search.Zones", true)]
+    #[case::r5517_revealing_until_a_most("RevealUntil.Most", true)]
+    #[case::r5517_life_its_own_spell_gives("LifeGain.CausedOwn", true)]
+    #[case::r5517_under_your_control_instead("ReplaceBy.UnderYourControl", true)]
     #[case::searching_another_library("Search.Of", true)]
     #[case::searching_another_players_zones("Search.OfZones", true)]
     #[case::sacrificing("Effect.Sacrifice", true)]
@@ -1188,6 +1204,10 @@ mod tests {
     #[case::r406_replacing_an_exploration("ReplaceWhen.Explores", true)]
     #[case::r406_replacing_a_connive("ReplaceWhen.Connives", true)]
     #[case::r406_replacing_a_proliferation("ReplaceWhen.Proliferates", true)]
+    #[case::r5507_preventing_by_counters("ReplaceBy.PreventByCounters", true)]
+    #[case::r5507_rolling_a_number_of_dice("RollDice.Count", true)]
+    #[case::r5507_preventing_half_the_next("ReplaceBy.PreventHalfNext", true)]
+    #[case::r5507_preventing_all_but_of_the_next("ReplaceBy.PreventAllButNext", true)]
     #[case::r4708_replacing_a_scry("ReplaceWhen.Scries", true)]
     #[case::r4708_replacing_a_surveil("ReplaceWhen.Surveils", true)]
     #[case::r4708_more_cards_to_surveil("ReplaceBy.MayAddAmount", true)]

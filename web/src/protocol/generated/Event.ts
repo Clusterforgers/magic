@@ -536,6 +536,14 @@ player: PlayerId,
 /**
  * The phase emblem's new object.
  */
+emblem: ObjectId, } } | { "SchemeSetInMotion": { 
+/**
+ * Whose scheme.
+ */
+player: PlayerId, 
+/**
+ * The scheme emblem's new object.
+ */
 emblem: ObjectId, } } | { "ObjectLeftGame": { 
 /**
  * The object.

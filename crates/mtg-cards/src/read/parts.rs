@@ -323,6 +323,18 @@ fn zone_change(_: &Ctx, what: &str, from: Option<ZoneKind>, to: Option<ZoneKind>
     }
 }
 
+/// "they can't search libraries", "spells and abilities they control can't make them search their own library".
+fn searches(ctx: &Ctx, rule: &GameRule) -> String {
+    match rule {
+        GameRule::OwnSpellsCantSearch(who) => format!(
+            "spells and abilities {} control can't make them search their own library",
+            phrase::who(ctx, who)
+        ),
+        GameRule::CantSearch(who) => format!("{} can't search libraries", phrase::who(ctx, who)),
+        _ => String::new(),
+    }
+}
+
 /// A rule of the game a static ability or an effect sets.
 pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
     match rule {
@@ -347,7 +359,7 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
         }
         GameRule::CantGainLife(who) => format!("{} can't gain life", phrase::who(ctx, who)),
         GameRule::CantDraw(who) => format!("{} can't draw cards", phrase::who(ctx, who)),
-        GameRule::CantSearch(who) => format!("{} can't search libraries", phrase::who(ctx, who)),
+        GameRule::CantSearch(_) | GameRule::OwnSpellsCantSearch(_) => searches(ctx, rule),
         GameRule::NoMaxHandSize(who) => {
             format!("{} has no maximum hand size", phrase::who(ctx, who))
         }
@@ -581,7 +593,17 @@ pub(super) fn replace_when(ctx: &Ctx, when: &ReplaceWhen) -> String {
         ReplaceWhen::Countered { what } => {
             format!("{} would be countered", phrase::selector(ctx, what))
         }
-        ReplaceWhen::LifeGain { who } => format!("{} would gain life", phrase::who(ctx, who)),
+        ReplaceWhen::LifeGain {
+            who,
+            caused_own: false,
+        } => format!("{} would gain life", phrase::who(ctx, who)),
+        ReplaceWhen::LifeGain {
+            who,
+            caused_own: true,
+        } => format!(
+            "a spell or ability {} control would cause them to gain life",
+            phrase::who(ctx, who)
+        ),
         ReplaceWhen::LifeLoss { who } => format!("{} would lose life", phrase::who(ctx, who)),
         ReplaceWhen::Mill { who } => {
             format!("{} would mill one or more cards", phrase::who(ctx, who))
@@ -646,6 +668,7 @@ pub(super) fn replace_by(ctx: &Ctx, by: &ReplaceBy, depth: u8, out: &mut Vec<Ste
             out.push(Step::new(depth, "instead:"));
             effects::list(ctx, list, depth + 1, out);
         }
+        ReplaceBy::ChooseAfter { first, choice } => choose_after(ctx, first, choice, depth, out),
         ReplaceBy::AsEntersWith {
             effects: list,
             counter,
@@ -782,6 +805,22 @@ fn combat_quirk(who: &str, quirk: &CombatQuirk) -> String {
             format!("{who} can block some creatures with flying as though they had reach")
         }
     }
+}
+
+/// The steps of effects as a permanent enters followed by the choice it keeps.
+fn choose_after(
+    ctx: &Ctx,
+    first: &[crate::effect::Effect],
+    choice: &crate::trigger::EntersChoice,
+    depth: u8,
+    out: &mut Vec<Step>,
+) {
+    out.push(Step::new(depth, "as it enters, first:"));
+    effects::list(ctx, first, depth + 1, out);
+    out.push(Step::new(
+        depth,
+        format!("then its controller chooses {}", generic::node(ctx, choice)),
+    ));
 }
 
 #[cfg(test)]

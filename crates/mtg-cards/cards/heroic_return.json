@@ -1,7 +1,7 @@
 {
   "oracle_id": "4b7a8c05-15cd-452e-b9fc-83800e81793d",
   "name": "Heroic Return",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Heroic Return",
@@ -22,9 +22,34 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 66, "end": 212 }
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Target": 0 }, "selector": [{ "Subtype": "Hero" }] }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Battlefield": { "counters": [["+1/+1", 2]] } }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

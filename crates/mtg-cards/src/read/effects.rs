@@ -272,6 +272,7 @@ fn moved(ctx: &Ctx, what: &Ref, to: &Destination) -> String {
     match to {
         Destination::Hand => format!("return {what} to its owner's hand"),
         Destination::Graveyard => format!("put {what} into its owner's graveyard"),
+        Destination::Command => format!("put {what} into its owner's command zone"),
         Destination::Battlefield {
             tapped,
             under,

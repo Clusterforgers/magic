@@ -1,0 +1,19 @@
+{
+  "oracle_id": "d12b4b66-9453-4494-9547-c737f48277ed",
+  "name": "Rain of Gore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rain of Gore",
+      "oracle_fingerprint": "4ccaa36c0ba7fea259724265facce2ec",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "LifeGain": { "who": "EachPlayer", "caused_own": true } },
+            "by": { "Instead": [{ "LoseLife": { "who": "Triggering", "amount": "Triggering" } }] }
+          }
+        }
+      ]
+    }
+  ]
+}

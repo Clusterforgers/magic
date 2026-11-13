@@ -29,8 +29,11 @@ use Support::{Partial, Verified};
 /// says. Every other card arrives as its file says: Partial when the file leaves a clause to the table, else Verified, with
 /// the abilities of its file the engine runs; a basic land type adds the mana ability of that land type. A Manual card
 /// carries none (the table resolves it).
-const NOT_VERIFIED: &[(&str, Support, usize)] =
-    &[("Aven Mindcensor", Partial, 2), ("Soulblast", Partial, 1)];
+const NOT_VERIFIED: &[(&str, Support, usize)] = &[
+    ("Aven Mindcensor", Partial, 2),
+    ("Light Up the Night", Partial, 1),
+    ("Soulblast", Partial, 1),
+];
 
 /// The abilities a Verified card carries: those of its file the engine runs, the mana ability each basic land type gives and
 /// the two rules of each Siege face (CR 310.11).

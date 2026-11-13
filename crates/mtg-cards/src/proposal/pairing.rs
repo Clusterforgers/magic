@@ -132,6 +132,12 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
         Ability::Keyword(
             Keyword::Exert { .. } | Keyword::FlashSacrifice | Keyword::MacroX { .. },
         ) => &[ClauseKind::Keyword, ClauseKind::Static],
+        // "Crew 1. Activate only once each turn." holds a sentence of an activation rule after the keyword.
+        Ability::Keyword(Keyword::CrewOnce(_)) => &[
+            ClauseKind::Keyword,
+            ClauseKind::Static,
+            ClauseKind::Activated,
+        ],
         Ability::Keyword(_) => &[ClauseKind::Keyword],
         Ability::Manual { .. } => &[],
     }

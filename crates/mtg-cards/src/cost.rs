@@ -103,6 +103,9 @@ pub enum CostItem {
     /// Generic mana equal to the mana value of the card the keyword is on: a static ability that gives a keyword to cards
     /// of other zones ("encore {X}, where X is its mana value") writes it, and the layers read it off each card it reaches.
     OwnManaValue,
+    /// The mana cost printed on the card the keyword is on, reduced by this much generic mana (never below no generic
+    /// mana; colored symbols stay): "Its foretell cost is equal to its mana cost reduced by {2}."
+    OwnManaCostLess(u32),
     /// Remove that many counters in all from among the permanents the payer controls that match ("Remove three counters
     /// from among artifacts you control"), of the kind named or of any kind; the engine takes them from the permanents in
     /// play order.

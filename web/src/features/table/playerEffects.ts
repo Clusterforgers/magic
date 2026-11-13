@@ -179,10 +179,13 @@ export function emblemFacts(
   })
 }
 
-/** A campaign fight's seat states: a hero who became a Spirit, and a boss's phase with the one still to come. */
+/**
+ * A campaign fight's seat states: a hero who became a Spirit, a boss's phase with the one still to come, and the Omen
+ * (the scheme it sets in motion next).
+ */
 export function campaignFacts(player: PlayerView, owner: string): EffectFacts[] {
   const facts: EffectFacts[] = []
-  if (player.boss) {
+  if (player.boss && player.boss.phases.length > 0) {
     const { phases, begun } = player.boss
     const next = phases[begun]
     facts.push({
@@ -194,6 +197,16 @@ export function campaignFacts(player: PlayerView, owner: string): EffectFacts[] 
         next === undefined
           ? `${owner} is in their last phase.`
           : `${owner} is in phase ${begun + 1}; next comes ${next} as their life drops.`,
+    })
+  }
+  const omen = player.boss?.omen
+  if (omen !== undefined) {
+    facts.push({
+      key: 'Omen',
+      icon: 'boss',
+      label: `Omen: ${omen}`,
+      tone: 'neutral',
+      detail: `${owner} sets ${omen} in motion as their next turn begins.`,
     })
   }
   if (player.spirit) {

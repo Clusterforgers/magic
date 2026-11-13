@@ -1,0 +1,289 @@
+[
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Did": {
+      "action": "ExploitedNonHuman",
+      "what": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     }
+    },
+    "effects": [
+     {
+      "Draw": {}
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": "Triggering",
+         "op": "Ge",
+         "right": 3
+        }
+       },
+       "then": [
+        {
+         "CreateToken": {
+          "token": {
+           "Named": "treasure"
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever a creature you control exploits a non-Human creature, draw a card. If the exploited creature had power 3 or greater, create a Treasure token."
+ ],
+ [
+  {
+   "Static": {
+    "affected": {
+     "Each": [
+      {
+       "Type": "Creature"
+      },
+      {
+       "ControlledBy": "You"
+      },
+      {
+       "AnyOf": [
+        "This",
+        {
+         "Subtype": "Human"
+        }
+       ]
+      }
+     ]
+    },
+    "mods": [
+     {
+      "AddKeyword": "Exploit"
+     }
+    ]
+   }
+  },
+  "~ and other Human creatures you control have exploit."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "SpellCast": {
+      "what": [
+       "This"
+      ],
+      "by": "You"
+     }
+    },
+    "from": "Stack",
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "Exile": {
+          "what": {
+           "Each": [
+            {
+             "In": "Hand"
+            },
+            {
+             "OwnedBy": "You"
+            }
+           ]
+          }
+         }
+        },
+        {
+         "Draw": {
+          "count": 3
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "When you cast this spell, you may exile your hand. If you do, draw three cards."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Tapped": {
+      "what": [
+       {
+        "Is": "Attached"
+       }
+      ]
+     }
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        {
+         "ModifyPT": {
+          "power": 1,
+          "toughness": 1
+         }
+        }
+       ],
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "Whenever fortified land becomes tapped, target creature gets +1/+1 until end of turn."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Attacks": {
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "effects": [
+     {
+      "CreateToken": {
+       "token": {
+        "Named": "treasure"
+       },
+       "count": {
+        "Count": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "Crewed": "This"
+         }
+        ]
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Whenever this Vehicle attacks, create a Treasure token for each creature that crewed it this turn."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": "AnyTarget"
+     }
+    ],
+    "effects": [
+     {
+      "If": {
+       "condition": {
+        "Matches": {
+         "subject": {
+          "Target": 0
+         },
+         "selector": [
+          {
+           "AnyOf": [
+            {
+             "Type": "Creature"
+            },
+            {
+             "Type": "Planeswalker"
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "then": [
+        {
+         "DealDamage": {
+          "to": {
+           "Target": 0
+          },
+          "amount": {
+           "Sum": [
+            "X",
+            1
+           ]
+          }
+         }
+        }
+       ],
+       "otherwise": [
+        {
+         "DealDamage": {
+          "to": {
+           "Target": 0
+          },
+          "amount": "X"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "~ deals X damage to any target. It deals X plus 1 damage instead if that target is a creature or planeswalker."
+ ],
+ [
+  {
+   "Keyword": {
+    "Flashback": [
+     {
+      "Mana": "{3}{R}"
+     },
+     {
+      "RemoveCountersAmong": {
+       "counter": "loyalty",
+       "count": "X",
+       "from": [
+        {
+         "Type": "Planeswalker"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     },
+     {
+      "XAtLeast": 1
+     }
+    ]
+   }
+  },
+  "Flashback—{3}{R}, Remove X loyalty counters from among planeswalkers you control. If you cast this spell this way, X can't be 0."
+ ]
+]

@@ -10,7 +10,7 @@ use crate::choose::{ChoiceOption, Questions, Stop, Target};
 use crate::events::Event;
 use crate::library::{CardsFound, Revealed};
 use crate::resolve::{Cx, Next, ResolveError, Run};
-use crate::rules::cant_search;
+use crate::rules::{cant_search, own_spells_cant_search};
 use crate::wording;
 
 /// Every non-empty choice of the zones, the whole list first and then the smaller ones, each in the order the card
@@ -113,7 +113,15 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     {
         let named: Vec<ZoneKind> = std::iter::once(*zone)
             .chain(also.iter().copied())
-            .filter(|kind| *kind != ZoneKind::Library || !cant_search(state, player))
+            .filter(|kind| {
+                *kind != ZoneKind::Library
+                    || !(cant_search(state, player)
+                        || (player == cx.scope.controller
+                            && owner.is_none_or(|owner| owner == player)
+                            && own_spells_cant_search(state, player)))
+            })
+            // Nothing is outside a Commander game (no sideboard): searching there finds nothing, so it is no choice.
+            .filter(|kind| *kind != ZoneKind::Outside)
             .collect();
         if named.is_empty() {
             continue;

@@ -1,16 +1,33 @@
 {
   "oracle_id": "1d85eec2-80db-466c-bd48-d2a12866e8bd",
   "name": "Old Stickfingers",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Old Stickfingers",
       "oracle_fingerprint": "ebd2c38043aec6969a0bde3a599513c2",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 0, "end": 231 }
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Type": "Creature" }],
+                  "count": "X",
+                  "as": "found",
+                  "revealed_as": "revealed"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Graveyard" } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
           }
         },
         {

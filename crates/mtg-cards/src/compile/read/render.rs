@@ -617,9 +617,11 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     if let Some(unlogged) = super::l31a_performed::l31a_unlogged(ability) {
         return written_variants(&unlogged);
     }
-    // A keyword given twice ("Cascade, cascade.") is not worded as one list.
+    // A keyword given twice is not worded as one list, only as a quoted "Cascade, cascade.".
     if matches!(ability, Ability::Static { mods, .. } if statics::repeated_keyword(mods)) {
-        return Vec::new();
+        let mut texts = Vec::new();
+        super::r5510_own_cost::r5510_wordings_twice(ability, written_variants, &mut texts);
+        return texts;
     }
     let texts = super::written_memo::written(ability, ep23_written_anew);
     let mut texts = super::written_memo::or_last_resort(ability, texts, written_variants);
@@ -627,6 +629,11 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r285_writers::r285_wordings(ability, &mut texts);
     super::r406_actions::r406_wordings(ability, &mut texts);
     super::r4708_actions::r4708_wordings(ability, &mut texts);
+    super::r5507_prevent::r5507_wordings(ability, &mut texts);
+    super::r5507_dice::r5507_wordings(ability, written_variants, &mut texts);
+    super::r5504_look::r5504_wordings(ability, &mut texts);
+    super::r5517_wholes::r5517_wordings(ability, &mut texts);
+    super::r5519_wholes::r5519_whole_texts(ability, &mut texts);
     super::r4708_reveal::r4708_reveal_wordings(ability, &mut texts);
     super::r303c_writers::r303c_wordings(ability, written_variants, &mut texts);
     super::r303_forms::r303_wordings(ability, &mut texts);
@@ -648,6 +655,9 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r371_copy_except::r371_that_creature_dies(ability, &mut texts);
     super::r403_hooks::r403_wordings(ability, written_variants, &mut texts);
     super::r4711_drafted::r4711_wordings(ability, written_variants, &mut texts);
+    super::r5510_own_cost::r5510_wordings(ability, written_variants, &mut texts);
+    super::r5510_wholes::r5510_add_wholes(ability, &mut texts);
+    super::r5510_fortified::r5510_wordings(&mut texts);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.
@@ -1941,7 +1951,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::TurnFaceDown { .. }
                 | Effect::CopySpell { .. }
                 | Effect::ChangeTargets {
-                    to: NewTargets::Another | NewTargets::One,
+                    to: NewTargets::Another | NewTargets::One | NewTargets::AnotherPlayer,
                     ..
                 }
         )

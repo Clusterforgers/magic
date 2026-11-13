@@ -88,6 +88,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         ReplaceBy::Prevent
         | ReplaceBy::PreventNext
         | ReplaceBy::PreventNextAnd(_)
+        | ReplaceBy::PreventHalfNext
+        | ReplaceBy::PreventAllButNext(_)
         | ReplaceBy::PreventUpTo(_)
         | ReplaceBy::PreventCounted(_)
         | ReplaceBy::PreventCountedAnd { .. }
@@ -131,9 +133,13 @@ pub(super) fn damage_shield(
             | ReplaceBy::PreventNextAnd(_)
             | ReplaceBy::InsteadNext(_)
             | ReplaceBy::Redirect { next: true, .. }
+            | ReplaceBy::PreventHalfNext
+            | ReplaceBy::PreventAllButNext(_)
     );
     let instead = match by {
-        ReplaceBy::Multiply(_)
+        ReplaceBy::PreventHalfNext
+        | ReplaceBy::PreventAllButNext(_)
+        | ReplaceBy::Multiply(_)
         | ReplaceBy::Add(_)
         | ReplaceBy::Instead(_)
         | ReplaceBy::RedirectUpTo { .. }

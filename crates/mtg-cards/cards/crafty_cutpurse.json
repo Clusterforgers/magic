@@ -1,7 +1,7 @@
 {
   "oracle_id": "2ef53e18-0baf-4eee-b671-4c19b464cbfb",
   "name": "Crafty Cutpurse",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Crafty Cutpurse",
@@ -9,9 +9,17 @@
       "abilities": [
         { "Keyword": "Flash" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 6, "end": 142 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "TokenCreation": { "controller": "Opponents" } },
+                  "by": "UnderYourControl",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

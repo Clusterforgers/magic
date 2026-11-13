@@ -43,6 +43,9 @@ pub(super) fn r375_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     if r.words("explores a nonland card") {
         return Some(did(Action::ExploredNonland, Ref::EachPlayer, what));
     }
+    if r.words("exploits a non-Human creature") {
+        return Some(did(Action::ExploitedNonHuman, Ref::EachPlayer, what));
+    }
     r.need("exploits a nontoken creature")?;
     Some(did(Action::ExploitedNontoken, Ref::EachPlayer, what))
 }
@@ -64,6 +67,9 @@ pub(super) fn r375_did_text(pattern: &TriggerPattern) -> Option<String> {
         }
         (Action::ExploitedNontoken, Ref::EachPlayer) if !what.is_empty() => {
             format!("{} exploits a nontoken creature", subject_text(what)?)
+        }
+        (Action::ExploitedNonHuman, Ref::EachPlayer) if !what.is_empty() => {
+            format!("{} exploits a non-Human creature", subject_text(what)?)
         }
         (Action::ExploredLand, Ref::EachPlayer) if !what.is_empty() => {
             format!("{} explores a land card", subject_text(what)?)

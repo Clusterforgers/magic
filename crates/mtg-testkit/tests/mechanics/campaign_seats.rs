@@ -1,7 +1,8 @@
 //! Goal: the campaign's seat rules work in real games: a seat with a Spirit emblem at 0 life becomes a Spirit while a
 //! teammate lives (its cards outside the library leave, its emblem arrives) and its team loses once nobody on it lives;
-//! boss phases begin one by one at their life thresholds; emblems placed at setup work from the start, cost
-//! modifiers on emblems included; and such games replay from their logs.
+//! boss phases begin one by one at their life thresholds; a scheme deck sets one scheme in motion as each of its
+//! seat's turns begins, the last one leaving and the next shown as the Omen; a minion loses with its leader; emblems
+//! placed at setup work from the start, cost modifiers on emblems included; and such games replay from their logs.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -18,7 +19,9 @@ use mtg_engine::GameResult;
 use mtg_engine::characteristics::characteristics;
 use mtg_engine::object::ObjectKind;
 use mtg_engine::phases::BossPhase;
+use mtg_engine::player::LossReason;
 use mtg_engine::replay;
+use mtg_engine::turn::Step;
 use mtg_engine::w6b_emblems::emblem_definition;
 use mtg_engine::zones::Zone;
 use mtg_testkit::cards::{bear, free_creature, instant, mountain};
@@ -215,5 +218,88 @@ fn a_cost_modifier_on_an_emblem_changes_what_spells_cost(
     let mut driver = Driver::from_scenario(scenario)?;
     let cast = driver.cast_tapping("Spark", &["Mountain"]);
     assert_eq!(cast.is_ok(), cheaper, "{cast:?}");
+    Ok(())
+}
+
+/// At the beginning of your upkeep, you gain 3 life.
+const UPKEEP_GAIN: &str = r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"GainLife":{"amount":3}}]}}"#;
+
+#[rstest]
+#[case::the_first_turn_sets_the_first(2, &["Ambush"], "Feast", 3, 20)]
+#[case::the_next_replaces_it(4, &["Feast"], "Ambush", 2, 23)]
+#[case::the_deck_repeats(6, &["Ambush"], "Feast", 3, 23)]
+fn a_scheme_deck_sets_one_scheme_in_motion_each_turn_of_its_seat(
+    #[case] turn: u32,
+    #[case] in_motion: &[&str],
+    #[case] omen: &str,
+    #[case] power: i32,
+    #[case] life: i32,
+) -> Result<(), ScriptError> {
+    let deck = [emblem("Ambush", &[ANTHEM]), emblem("Feast", &[UPKEEP_GAIN])];
+    let scenario = table(&[20, 20], None).schemes(1, deck);
+    let setup = scenario.clone().setup().unwrap();
+    let mut driver = Driver::from_scenario(scenario)?;
+    assert_eq!(
+        driver.state().player(pid(1)).unwrap().schemes(),
+        Some((None, "Ambush"))
+    );
+    driver.idle_until(turn, Step::Main1)?;
+    assert_eq!(emblem_names(&driver, 1), in_motion);
+    assert_eq!(
+        driver.state().player(pid(1)).unwrap().schemes(),
+        Some((Some(in_motion[0]), omen))
+    );
+    let bear = driver.id_of("Bear 1")?;
+    let state = driver.state();
+    assert_eq!(characteristics(state, bear).unwrap().power, Some(power));
+    assert_eq!(state.player(pid(1)).unwrap().life(), life);
+    assert!(
+        emblem_names(&driver, 0).is_empty(),
+        "the other seat sets none"
+    );
+    let replayed = replay(&setup, driver.engine().events()).unwrap();
+    assert_eq!(replayed.state_hash(), driver.engine().state_hash());
+    Ok(())
+}
+
+#[rstest]
+#[case::the_leader_falls_and_its_minion_with_it(&[20, 0, 20], &[1, 2], Some(GameResult::Team(0)))]
+#[case::a_minion_falls_alone(&[20, 20, 0], &[2], None)]
+#[case::the_last_hero_falls(&[0, 20, 20], &[0], Some(GameResult::Team(1)))]
+fn a_minion_loses_with_its_leader(
+    #[case] lives: &[i32],
+    #[case] lost: &[usize],
+    #[case] result: Option<GameResult>,
+) -> Result<(), ScriptError> {
+    let scenario = table(lives, Some(vec![0, 1, 1])).leader(2, 1);
+    let mut driver = Driver::from_scenario(scenario)?;
+    if driver.state().result().is_none() {
+        driver.pass()?;
+    }
+    for seat in 0..lives.len() {
+        assert_eq!(
+            in_game(&driver, seat),
+            !lost.contains(&seat),
+            "in game {seat}"
+        );
+    }
+    assert_eq!(driver.state().result(), result);
+    let minion = driver.state().player(pid(2)).unwrap();
+    if lost.contains(&1) {
+        assert_eq!(
+            minion.status(),
+            &mtg_engine::player::PlayerStatus::Lost(LossReason::LeaderFell)
+        );
+    }
+    Ok(())
+}
+
+#[test]
+fn a_minion_loses_when_its_leader_concedes() -> Result<(), ScriptError> {
+    let scenario = table(&[20, 20, 20], Some(vec![0, 1, 1])).leader(2, 1);
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.concede(pid(1))?;
+    assert!(!in_game(&driver, 2));
+    assert_eq!(driver.state().result(), Some(GameResult::Team(0)));
     Ok(())
 }

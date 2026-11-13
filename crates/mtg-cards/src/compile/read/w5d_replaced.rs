@@ -47,7 +47,10 @@ fn w5d_life(r: &mut Reader<'_>) -> Option<Ability> {
     r.punct(',').then_some(())?;
     r.need("that player loses that much life instead")?;
     Some(w5d_ability(
-        ReplaceWhen::LifeGain { who },
+        ReplaceWhen::LifeGain {
+            who,
+            caused_own: false,
+        },
         vec![Effect::LoseLife {
             who: Ref::Triggering,
             amount: Amount::Triggering,
@@ -277,7 +280,10 @@ fn w5d_texts(when: &ReplaceWhen, effects: &[Effect]) -> Option<Vec<String>> {
                 .collect()
         }
         (
-            ReplaceWhen::LifeGain { who },
+            ReplaceWhen::LifeGain {
+            who,
+            caused_own: false,
+        },
             [Effect::LoseLife {
                 who: Ref::Triggering,
                 amount: Amount::Triggering,

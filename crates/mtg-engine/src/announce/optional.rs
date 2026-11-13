@@ -11,6 +11,7 @@
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::cost::Cost;
+use mtg_cards::keyword::Keyword;
 use mtg_cards::value::CastWay;
 use mtg_core::mana::ManaCost;
 
@@ -240,11 +241,12 @@ pub(crate) fn payments(card: &CardDefinition, paid: &[usize], kind: OptionalKind
     }
     let kinds: Vec<OptionalKind> = printed(card).map(|cost| cost.kind).collect();
     // A number from `gift::SEAT_BASE` up is a gift promised to a seat.
+    // A number past the printed costs is a replicate cost a static ability gives (`read`), paid as a kick.
     let kind_of = |index: usize| {
         if index >= gift::SEAT_BASE {
             Some(OptionalKind::Gift)
         } else {
-            kinds.get(index).copied()
+            kinds.get(index).copied().or(Some(OptionalKind::Kicker))
         }
     };
     paid.iter()
@@ -259,15 +261,37 @@ pub(crate) fn kicked_with(card: &CardDefinition, paid: &[usize], cost: &Cost) ->
     })
 }
 
-/// The optional costs of a spell, in the order the card prints them.
+/// The optional costs of a spell, in the order the card prints them, then the replicate costs static abilities give it
+/// that it does not print ("Each instant and sorcery spell you cast has replicate", CR 702.56b).
 pub(super) fn read(state: &GameState, what: &What) -> Vec<Optional> {
     let What::Spell(spell) = what else {
         return Vec::new();
     };
-    state
-        .object(*spell)
-        .map(|spell| listed(spell.card()))
-        .unwrap_or_default()
+    let Some(object) = state.object(*spell) else {
+        return Vec::new();
+    };
+    let mut costs = listed(object.card());
+    let printed_keywords: Vec<&Keyword> = ability_reader::printed_rules(object.card())
+        .filter_map(|rule| match &**rule {
+            Ability::Keyword(keyword) => Some(keyword),
+            _ => None,
+        })
+        .collect();
+    let given = crate::spell_keywords::given_to_spell(state, object.controller(), *spell);
+    for keyword in &given {
+        if matches!(keyword, Keyword::Replicate(_))
+            && !printed_keywords.contains(&keyword)
+            && let Some(extra) = keywords::rules(keyword).additional_cost(keyword)
+        {
+            costs.push(read_cost(Printed {
+                kind: extra.kind,
+                name: extra.name,
+                cost: extra.cost,
+                repeatable: extra.repeatable,
+            }));
+        }
+    }
+    costs
 }
 
 pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {

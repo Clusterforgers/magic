@@ -31,7 +31,12 @@ pub(super) fn candidates(payer: &Payer<'_>, filter: &Selector) -> Vec<ObjectId> 
 pub(super) fn crew_candidates(payer: &Payer<'_>, filter: &Selector) -> Vec<ObjectId> {
     let crews = crate::keywords::keywords_of(payer.state, payer.source)
         .iter()
-        .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Crew(_)));
+        .any(|keyword| {
+            matches!(
+                keyword,
+                mtg_cards::keyword::Keyword::Crew(_) | mtg_cards::keyword::Keyword::CrewOnce(_)
+            )
+        });
     let mut found = candidates(payer, filter);
     if crews {
         found.retain(|&object| {

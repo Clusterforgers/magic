@@ -532,6 +532,14 @@ pub enum Event {
         /// The phase emblem's new object.
         emblem: ObjectId,
     },
+    /// A seat set its next scheme in motion as its turn began ([`crate::schemes`]): the scheme is a new emblem in their
+    /// command zone (the one before it left the game just before).
+    SchemeSetInMotion {
+        /// Whose scheme.
+        player: PlayerId,
+        /// The scheme emblem's new object.
+        emblem: ObjectId,
+    },
     /// An object left the game because its owner did.
     ObjectLeftGame {
         /// The object.
@@ -1566,7 +1574,9 @@ impl Event {
             Event::TokenCreated(token) => vec![token.object],
             Event::CardConjured(card) => vec![card.object],
             Event::EmblemCreated(emblem) => vec![emblem.object],
-            Event::BecameSpirit { emblem, .. } | Event::PhaseBegan { emblem, .. } => vec![*emblem],
+            Event::BecameSpirit { emblem, .. }
+            | Event::PhaseBegan { emblem, .. }
+            | Event::SchemeSetInMotion { emblem, .. } => vec![*emblem],
             Event::Ventured(ventured) => vec![ventured.object],
             Event::BecameCopy(copy) => vec![copy.object],
             Event::SpellCopied(copy) => vec![copy.object],
