@@ -24,7 +24,10 @@ export function LifeBar({ hero, className }: { hero: Hero; className?: string })
       <span className="h-2 min-w-12 flex-1 overflow-hidden rounded-full bg-muted">
         <span
           data-tone={tone}
-          className={cn('block h-full rounded-full transition-[width] duration-slow ease-out motion-reduce:transition-none', BAR[tone])}
+          className={cn(
+            'block h-full rounded-full transition-[width] duration-slow ease-out motion-reduce:transition-none',
+            BAR[tone],
+          )}
           style={{ width: `${lifeShare(hero.life) * 100}%` }}
         />
       </span>

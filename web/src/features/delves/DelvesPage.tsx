@@ -18,6 +18,7 @@ import { usePageTitle } from '@/hooks/usePageTitle'
 import { delvesApi } from '@/net/delves'
 import type { DelvesApi } from '@/net/delves'
 import type { DelveSummary } from '@/protocol/generated'
+import { cn } from '@/lib/utils'
 import { errorText, statusText } from './words'
 
 function NewDelveForm({ client }: { client: DelvesApi }) {
@@ -100,10 +101,10 @@ function NewDelveForm({ client }: { client: DelvesApi }) {
   )
 }
 
-function DelveRow({ delve }: { delve: DelveSummary }) {
+export function DelveRow({ delve }: { delve: DelveSummary }) {
   return (
-    <li className="flex flex-wrap items-center justify-between gap-2 border-b p-3 last:border-b-0">
-      <div className="grid gap-1">
+    <li className="flex flex-wrap items-center justify-between gap-3 border-b p-3 last:border-b-0">
+      <div className="grid min-w-0 gap-1">
         <Link
           to="/delves/$delveId"
           params={{ delveId: delve.id }}
@@ -111,8 +112,23 @@ function DelveRow({ delve }: { delve: DelveSummary }) {
         >
           {delve.theme}
         </Link>
-        <span className="text-sm text-muted-foreground">
-          {delve.heroes.join(', ')} · {delve.cleared} of {delve.bosses} bosses
+        <span className="text-sm text-muted-foreground">{delve.heroes.join(', ')}</span>
+        <span
+          role="img"
+          aria-label={`${delve.cleared} of ${delve.bosses} bosses beaten`}
+          className="flex items-center gap-1"
+        >
+          {Array.from({ length: delve.bosses }, (_, i) => (
+            <SkullIcon
+              key={i}
+              aria-hidden="true"
+              data-beaten={i < delve.cleared}
+              className={cn('size-4', i < delve.cleared ? 'text-delve' : 'text-muted-foreground/60')}
+            />
+          ))}
+          <span aria-hidden="true" className="ml-1 text-xs text-muted-foreground">
+            {delve.cleared} of {delve.bosses} bosses
+          </span>
         </span>
       </div>
       <Pill>{statusText(delve.status)}</Pill>

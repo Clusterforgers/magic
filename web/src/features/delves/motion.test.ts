@@ -8,7 +8,8 @@ const SOURCES = readdirSync(DIR)
   .filter((name) => name.endsWith('.tsx') && !name.endsWith('.test.tsx'))
   .map((name) => [name, readFileSync(join(DIR, name), 'utf8')] as const)
 
-const MOVING = /(?<![\w:-])(?:[\w-]+:)*(?:animate-[\w-]+|slide-in-[\w-]+|fade-in|-?translate-y-0\.5)(?![\w-])/g
+const MOVING =
+  /(?<![\w:-])(?:[\w-]+:)*(?:animate-[\w-]+|slide-in-[\w-]+|fade-in|-?translate-y-0\.5)(?![\w-])/g
 
 it.each(SOURCES)('%s moves only under motion-safe', (_, source) => {
   const unsafe = [...source.matchAll(MOVING)].map((m) => m[0]).filter((cls) => !cls.includes('motion-safe:'))
