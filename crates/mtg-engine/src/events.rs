@@ -515,6 +515,20 @@ pub enum Event {
         /// Why.
         reason: LossReason,
     },
+    /// A player at 0 life became a Spirit ([`crate::spirits`]) and got its Spirit emblem.
+    BecameSpirit {
+        /// Who.
+        player: PlayerId,
+        /// The Spirit emblem's new object.
+        emblem: ObjectId,
+    },
+    /// A boss seat's next phase began ([`crate::phases`]): its emblem is a new object in their command zone.
+    PhaseBegan {
+        /// Whose phase.
+        player: PlayerId,
+        /// The phase emblem's new object.
+        emblem: ObjectId,
+    },
     /// An object left the game because its owner did.
     ObjectLeftGame {
         /// The object.
@@ -1142,6 +1156,17 @@ pub enum Event {
         /// The color.
         color: mtg_core::color::Color,
     },
+    /// A player revealed the first card they drew this turn as they drew it, through the `RevealFirstDraw` rules of
+    /// these sources; a `Revealed` of the card comes just before it. Abilities "whenever you reveal ... this way" of
+    /// those sources trigger on it.
+    FirstDrawRevealed {
+        /// Who revealed it.
+        player: PlayerId,
+        /// The card.
+        card: ObjectId,
+        /// The permanents whose rules revealed it.
+        sources: Vec<ObjectId>,
+    },
     /// A player looked at a face-down permanent by an effect (CR 708.5): they may identify it while it stays that object.
     FaceDownLooked {
         /// The permanent looked at.
@@ -1511,7 +1536,8 @@ impl Event {
             | Event::ChosenAtRandom { .. }
             | Event::PlayersChosenAtRandom { .. }
             | Event::Sought { .. }
-            | Event::Revealed(_) => Vec::new(),
+            | Event::Revealed(_)
+            | Event::FirstDrawRevealed { .. } => Vec::new(),
             Event::CountersChanged(changed) => changed
                 .on
                 .object()
@@ -1537,6 +1563,7 @@ impl Event {
             Event::TokenCreated(token) => vec![token.object],
             Event::CardConjured(card) => vec![card.object],
             Event::EmblemCreated(emblem) => vec![emblem.object],
+            Event::BecameSpirit { emblem, .. } | Event::PhaseBegan { emblem, .. } => vec![*emblem],
             Event::Ventured(ventured) => vec![ventured.object],
             Event::BecameCopy(copy) => vec![copy.object],
             Event::SpellCopied(copy) => vec![copy.object],

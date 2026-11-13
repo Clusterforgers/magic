@@ -33,7 +33,7 @@ impl Pass<'_> {
         let object = |id| self.reference(id).map(Target::Object);
         let (subject, source) = match unit {
             Unit::Tokens { controller } => (Some(Target::Player(*controller)), None),
-            Unit::Damage { source, target } => (
+            Unit::Damage { source, target, .. } => (
                 match target {
                     DamageTarget::Player(player) => Some(Target::Player(*player)),
                     DamageTarget::Object(id) => object(*id),
@@ -41,9 +41,10 @@ impl Pass<'_> {
                 self.reference(*source),
             ),
             Unit::Counters { on, .. } => (Some(*on), None),
-            Unit::Life { player } | Unit::Draw { player } | Unit::Loss { player } => {
-                (Some(Target::Player(*player)), None)
-            }
+            Unit::Life { player }
+            | Unit::Draw { player }
+            | Unit::Loss { player }
+            | Unit::LifeLoss { player } => (Some(Target::Player(*player)), None),
             Unit::Move { object: id, .. } | Unit::Enter { object: id, .. } => (object(*id), None),
             Unit::Other => (None, None),
         };
@@ -65,6 +66,14 @@ impl Pass<'_> {
             amount,
             source,
             against: None,
+            counters: match &self.slots[at].item {
+                Item::One(Event::CountersChanged(CountersChanged { counter, delta, .. }))
+                    if *delta > 0 =>
+                {
+                    vec![(counter.clone(), delta.unsigned_abs())]
+                }
+                _ => Vec::new(),
+            },
         }
     }
 
@@ -94,7 +103,16 @@ impl Pass<'_> {
             effects,
             &mut || answers.next().cloned(),
         ) {
-            Ok(Inline::Events(events)) => Ran::Events(events),
+            Ok(Inline::Events(mut events)) => {
+                // A shuffle is drawn once the batch is known (`g12a_order_shuffles`): two effects of one batch that
+                // each shuffle a card into the same library shuffle both cards.
+                for event in &mut events {
+                    if let Event::LibraryShuffled { order, .. } = event {
+                        order.clear();
+                    }
+                }
+                Ran::Events(events)
+            }
             Ok(Inline::Ask(decision)) => Ran::Ask(decision),
             Ok(Inline::Declined) | Err(_) => Ran::Kept,
         }

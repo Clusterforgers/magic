@@ -45,8 +45,9 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Learn: the Learn page, tutorials at a table with a scripted practice bot, the guided and manual-panel lessons and page tours (`docs/web.md`).
 - Card images: a server cache with a warm-up, and pictures in the table, builder and preview (`docs/server.md`, `docs/web.md`).
 - Testing: scenarios, invariants and fuzz decks, `scripts/check.sh` with the `gate` and `affected` modes, content stamps, side-by-side test binaries, family test binaries in `mtg-testkit` and a throwaway Postgres per database test binary, and Playwright specs (a trace kept for every failed test) including the four-seat Commander game with precons or the owner's deck (`E2E_DECK=owner`).
-- Polish: replays of finished games from any seat's side with only what the viewer may know, block options that read each attacker and blocker once, solo play with bot seats that never stall a game at four levels (Easy random, Normal and Hard searching engine copies, Very Hard an information-set Monte Carlo tree search, Hard and Very Hard in worlds whose hidden cards are redealt, team-aware, capped thinking slots on the server), synthesized sound cues with a mute (`docs/server.md`, `docs/web.md`).
+- Polish: replays of finished games from any seat's side with only what the viewer may know, block options that read each attacker and blocker once, solo play with bot seats that never stall a game at four levels (Easy random, Normal and Hard searching engine copies, Very Hard an information-set Monte Carlo tree search, Hard and Very Hard in worlds whose hidden cards are redealt, team-aware, capped thinking slots on the server, a threat model and interaction policy scored by a decision-quality suite, chess-style search with a decision clock, minimax block replies and an endgame probe, SPRT match testing on interaction decks), synthesized sound cues with a mute (`docs/server.md`, `docs/web.md`, `docs/bots.md`).
 - Deployment: two amd64 images, the Helm chart and ArgoCD app in `k3s-cluster-manifests`, `scripts/release.sh` (build, push, roll out, roll back) and a nightly `pg_dump` onto its own volume (`docs/deploy.md`).
+- Delves: the co-op boss rush with own Commander decks, the Warrens ladder of four bosses with phases, relics, loot, shop, campfire and events, Spirits at 0 life, runs stored as event logs with fights as recorded games, the web pages and the bot simulator (`docs/delves.md`).
 
 ## Live game
 
@@ -106,8 +107,25 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (tm2b) A tournament match game offers its seat-0 player no host controls (visibility, Close game, Remove), so no player can strand a match; the organiser's correction stays the way to settle one (`docs/server.md`, Tournaments)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
-- [ ] (ai36a) Hard beats Normal by 70% or more in 1v1 (62%; 71% in 2v2) and Very Hard beats Hard by 65% or more (56%): every level shares one evaluation and the quick policies it models the other seats with, so the next gains are an evaluation and opponent policy tuned from recorded games, and the tree search's rollouts using that policy (`crates/mtg-testkit/src/brain`, `examples/bot_tournament.rs`)
+- [ ] (ai36a) Hard beats Normal by 70% or more in 1v1 and Very Hard beats Hard by 65% or more; Normal with Hard's former searches beats main's Normal 59.6% but aims Pacifism at a teammate in Two-Headed Giant (target ranking of auras), so it waits for that fix (`crates/mtg-testkit/src/brain`, `examples/bot_tournament.rs`)
+- [ ] (ai48a) Very Hard beats main's Very Hard by 65% or more and Hard main's Hard by 60% in 1v1 on the interaction pairings (50% and 51.5%): the tree search seldom overrides the heuristic answer and both sides share one rollout policy, so the next gains are a policy prior learnt from self-play and rollouts that model each opponent apart (`crates/mtg-testkit/src/brain`, `examples/bot_tournament.rs`)
 - [ ] (v1h) A "waiting on <player>" mark on the pods of a table of three or more, beside the strip's line, so a spectator and a player see at a glance whom the game waits for
+
+## Delves
+
+- [ ] (dl1) Bosses set a scheme in motion each turn from a scheme deck (CR 314), the next one face up as an Omen for the party (`docs/delves.md`)
+- [ ] (dl2) The party shares one team turn against the boss (CR 805 beyond Two-Headed Giant), so four heroes do not wait three turns
+- [ ] (dl3) Boss personalities and fair targeting: a boss spreads its attacks and removal across the heroes, and each boss shows whom it focuses
+- [ ] (dl4) A won card names the card it replaces (a basic land today), chosen from the hero's deck list on the loot screen
+- [ ] (dl5) Campfire upgrades put a sticker on a card of the hero's deck for the rest of the run
+- [ ] (dl6) Risky relics are party decisions: the party votes to take one, and events can be party votes with a shared outcome
+- [ ] (dl7) The scouts' forecast: background bot fights measure each boss of a new ladder and the ladder shows the measured win rate
+- [ ] (dl8) Boss tuning for parties of four (they win every fight today) and in runs mode with relics and won cards, to a measured table kept with the content
+- [ ] (dl9) A boss fight whose game is closed or expires without a result counts as lost and is made again, and the host can retreat from a fight
+- [ ] (dl10) The run page follows the run over a socket instead of reading it every 4 s
+- [ ] (dl11) Custom cards open in the card inspector at the table with their frame and text, and the boss's phases sit in the top bar
+- [ ] (dl12) e2e: a one-player run with bot allies from the lobby through the first boss fight to the loot screen
+- [ ] (dl13) A second theme with its bosses, events and reward pool; Heat 3 and above
 
 ## M8 Polish and deploy
 

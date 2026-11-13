@@ -13,7 +13,7 @@ use axum::http::header::{
 };
 use axum::http::{HeaderValue, Method};
 use axum::middleware;
-use axum::routing::{delete, get, post, put};
+use axum::routing::{delete, get, patch, post, put};
 use axum::serve::ListenerExt;
 use sqlx::PgPool;
 use tokio::net::TcpListener;
@@ -26,13 +26,14 @@ use crate::auth::{self, Auth};
 use crate::card_api;
 use crate::cards::CardSource;
 use crate::config::ServerConfig;
+use crate::delves::Delves;
 use crate::images::{self, Images};
 use crate::records::RecordError;
 use crate::registry::{Registry, ResumeReport};
 use crate::tournaments::Tournaments;
 use crate::{
-    api, bulk_reads, decks, favourites, fix_marks, lobbies, my_games, precon_api, prefs, printings,
-    reads, tournaments, tutorial, ws,
+    api, bulk_reads, deck_groups, decks, delves, favourites, fix_marks, lobbies, my_games,
+    precon_api, prefs, printings, reads, tournaments, tutorial, ws,
 };
 
 struct Inner {
@@ -43,6 +44,8 @@ struct Inner {
     cards: Option<CardSource>,
     /// The tournaments; `None` without a database.
     tournaments: Option<Tournaments>,
+    /// The Delves runs; `None` without a database.
+    delves: Option<Delves>,
     stop: watch::Receiver<bool>,
     sessions: mpsc::Sender<()>,
 }
@@ -51,6 +54,7 @@ struct Inner {
 struct Stores {
     cards: Option<CardSource>,
     tournaments: Option<Tournaments>,
+    delves: Option<Delves>,
 }
 
 /// What every handler can reach. Cheap to clone.
@@ -81,6 +85,11 @@ impl AppState {
     /// The tournaments, for their endpoints; `None` on a server without a database.
     pub(crate) fn tournaments(&self) -> Option<&Tournaments> {
         self.inner.tournaments.as_ref()
+    }
+
+    /// The Delves runs, for their endpoints; `None` on a server without a database.
+    pub(crate) fn delves(&self) -> Option<&Delves> {
+        self.inner.delves.as_ref()
     }
 
     /// Whether shutdown has begun.
@@ -117,6 +126,7 @@ impl Server {
         let stores = Stores {
             cards: None,
             tournaments: None,
+            delves: None,
         };
         Server::with_registry(config, registry, auth, stores, ResumeReport::default())
     }
@@ -148,6 +158,7 @@ impl Server {
             .await
             .map_err(|error| RecordError::Unavailable(error.to_string()))?;
         let tournaments = Tournaments::new(pool.clone());
+        let delves = Delves::new(pool.clone());
         let registry = Registry::with_card_source(&config, pool, cards.clone());
         let resumed = registry.resume().await?;
         tracing::info!(
@@ -161,6 +172,7 @@ impl Server {
         let stores = Stores {
             cards: Some(cards),
             tournaments: Some(tournaments),
+            delves: Some(delves),
         };
         Ok(Server::with_registry(
             config, registry, auth, stores, resumed,
@@ -188,6 +200,7 @@ impl Server {
                 auth,
                 cards: stores.cards,
                 tournaments: stores.tournaments,
+                delves: stores.delves,
                 stop: stop_receiver,
                 sessions,
             }),
@@ -306,6 +319,18 @@ fn account_routes() -> Router<AppState> {
         )
         .route("/api/admin/users/{id}", delete(auth::remove_account))
         .route("/api/admin/users/{id}/password", post(auth::reset_password))
+        .route("/api/admin/games", get(crate::admin_games::list))
+        .route("/api/admin/games/{id}/end", post(crate::admin_games::end))
+}
+
+/// The Delves routes: the content the web draws, the player's runs, creating, joining by code and acting.
+fn delve_routes() -> Router<AppState> {
+    Router::new()
+        .route("/api/delves", get(delves::list).post(delves::create))
+        .route("/api/delves/content", get(delves::content_of))
+        .route("/api/delves/join/{code}", post(delves::join))
+        .route("/api/delves/{id}", get(delves::get_one))
+        .route("/api/delves/{id}/act", post(delves::act))
 }
 
 /// The tournament routes: the player's list, creating, signing up by invite and the organiser's controls.
@@ -421,6 +446,16 @@ pub(crate) fn router(state: AppState) -> Router {
         )
         .route("/api/decks/{id}/export", get(decks::export))
         .route("/api/decks/{id}/printing", put(printings::set_line))
+        .route("/api/decks/{id}/group", put(deck_groups::file))
+        .route(
+            "/api/deck-groups",
+            get(deck_groups::list).post(deck_groups::create),
+        )
+        .route("/api/deck-groups/order", put(deck_groups::reorder))
+        .route(
+            "/api/deck-groups/{id}",
+            patch(deck_groups::change).delete(deck_groups::remove),
+        )
         .route("/api/me/printings", get(printings::preferred))
         .route(
             "/api/me/printings/{oracle_id}",
@@ -442,6 +477,7 @@ pub(crate) fn router(state: AppState) -> Router {
         .route("/api/tutorial", post(tutorial::start))
         .merge(game_routes())
         .merge(account_routes())
+        .merge(delve_routes())
         .merge(tournament_routes())
         .route("/api/me/prefs", get(prefs::get).put(prefs::put))
         .route("/api/me/games", get(my_games::list))

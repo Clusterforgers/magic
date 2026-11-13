@@ -8,15 +8,8 @@ use mtg_engine::turn::Step;
 
 use super::seen::Seen;
 use super::sim::{Horizon, Search};
+use super::threat;
 use crate::bot::apply_answer;
-
-/// How much a play must beat passing by.
-const MARGIN: f64 = 0.25;
-
-/// Mana sources below which a play that adds one counts [`RAMP`] more in the seat's main phase: ramp comes first.
-const RAMP_UNTIL: usize = 5;
-/// What each mana source a play adds counts besides its evaluation while the seat has fewer than [`RAMP_UNTIL`].
-const RAMP: f64 = 4.0;
 
 /// When the seat acts at priority, if at all.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -123,7 +116,7 @@ pub fn choose_land(engine: &Engine, lands: &[ObjectId]) -> Option<PriorityAction
     best.map(|(_, action)| action)
 }
 
-/// The seat's play at priority: a land in its main phase, else the play whose outcome beats passing by [`MARGIN`]
+/// The seat's play at priority: a land in its main phase, else the play whose outcome beats passing by the knob `margin`
 /// (and, outside combat, changes something that lasts beyond the turn), else a pass. `held` lists plays the seat will
 /// not repeat this turn.
 pub fn plan_priority(
@@ -152,7 +145,7 @@ pub fn plan_priority(
     }
     let combat = window == Window::Combat;
     let horizon = if combat {
-        Horizon::EndOfCombat
+        Horizon::EndOfTurn
     } else if window == Window::Main && search.settings().lookahead {
         Horizon::NextTurn
     } else {
@@ -176,43 +169,88 @@ pub fn plan_priority(
         if !combat && outcome.lasting == baseline.lasting {
             continue;
         }
-        let ramp = if window == Window::Main && baseline.sources < RAMP_UNTIL {
-            RAMP * count(outcome.sources.saturating_sub(baseline.sources))
+        let knobs = super::knobs::knobs();
+        let ramp = if window == Window::Main && count(baseline.sources) < knobs.ramp_until {
+            knobs.ramp * count(outcome.sources.saturating_sub(baseline.sources))
         } else {
             0.0
         };
-        let score = outcome.score + ramp - held_back(search, &seen, window, &play);
+        let score =
+            outcome.score + ramp - hold_cost(search.settings().careful, &seen, window, &play);
         if follow_ups {
             scored.push((score, play.clone(), after));
         }
-        if score > baseline.score + MARGIN && best.as_ref().is_none_or(|(held, _)| score > *held) {
+        if score > baseline.score + knobs.margin
+            && best.as_ref().is_none_or(|(held, _)| score > *held)
+        {
             best = Some((score, play));
         }
     }
     if follow_ups {
-        best = best_sequence(search, scored, baseline.score + MARGIN).or(best);
+        best = best_sequence(
+            search,
+            scored,
+            baseline.score + super::knobs::knobs().margin,
+        )
+        .or(best);
     }
     best.map_or(PriorityAction::Pass, |(_, play)| play)
 }
 
-/// What casting an instant in the seat's main phase or at an opponent's end step must gain beyond the margin when the
-/// seat plays carefully: removal and tricks wait for a target worth them, or for combat and responses.
-const HOLD: f64 = 5.0;
+/// The share of held interaction's worth that tapping below it loses: a counterspell only works in reply, so all of
+/// it; removal and tricks can still be cast on the seat's own turn, so a quarter.
+fn reactive(share: f64) -> f64 {
+    let knobs = super::knobs::knobs();
+    if (share - knobs.counter).abs() < f64::EPSILON {
+        share
+    } else {
+        share * knobs.reactive
+    }
+}
 
-/// What `play` must gain beyond the margin in `window` ([`HOLD`] for a careful seat's instant outside combat and
-/// responses, else nothing).
-fn held_back(search: &Search, seen: &Seen<'_>, window: Window, play: &PriorityAction) -> f64 {
+/// The cards in hand from which the seat spends its mana rather than keep it up: past the maximum hand size it would
+/// discard.
+const CROWDED_HAND: usize = 8;
+
+/// What `play` must gain beyond the margin in `window` when the seat plays carefully: a main-phase play that leaves
+/// too little mana for the instant-speed interaction the seat holds pays for that interaction's worth
+/// ([`threat::hold_value`]); a flash permanent or other instant in the main phase waits for the opponents' turn.
+/// Interaction cast at any time already pays its worth in the evaluation ([`threat::held_interaction`]).
+pub fn hold_cost(careful: bool, seen: &Seen<'_>, window: Window, play: &PriorityAction) -> f64 {
+    if !careful || window != Window::Main {
+        return 0.0;
+    }
     let PriorityAction::CastSpell(id) = play else {
         return 0.0;
     };
-    let instant = seen
-        .chars(*id)
-        .is_some_and(|chars| chars.types.contains(mtg_core::card::CardType::Instant));
-    if search.settings().careful && instant && matches!(window, Window::Main | Window::EndStep) {
-        HOLD
-    } else {
-        0.0
+    let Some(card) = seen.card(*id) else {
+        return 0.0;
+    };
+    let traits = threat::traits(card);
+    let opponents = !seen.opponents().is_empty();
+    let mut cost = 0.0;
+    if opponents && traits.fast {
+        cost += if traits.permanent {
+            super::knobs::knobs().flash_wait
+        } else {
+            super::knobs::knobs().instant_wait
+        };
     }
+    let bodies = seen.bodies();
+    let open = threat::open_mana(seen, &bodies);
+    let after = open.saturating_sub(seen.mana_value(*id));
+    let held = threat::fast_interaction(seen, Some(*id));
+    let lost: f64 = held
+        .iter()
+        .filter(|(cost, _)| *cost <= open && *cost > after)
+        .map(|(_, share)| reactive(*share))
+        .fold(0.0, f64::max);
+    // A hand that would go past its maximum size at the end of the turn spends rather than discards.
+    let crowded = seen.own_hand().len() >= CROWDED_HAND;
+    if lost > 0.0 && opponents && !crowded {
+        cost += super::knobs::knobs().tap_out * lost * threat::hold_value(seen);
+    }
+    cost
 }
 
 /// How many of the best plays a lookahead tries a second play after.

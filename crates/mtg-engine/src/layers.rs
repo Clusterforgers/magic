@@ -938,6 +938,32 @@ fn compute(state: &GameState) -> Layers {
     }
 }
 
+/// A spell an effect names on the stack is changed by it like a permanent ("target spell becomes red"), and the change
+/// stays with the permanent it becomes (CR 400.7a, `effects::follow_spell`); a card an effect names in exile or a
+/// graveyard is changed by it while it stays there (it gains suspend, it gains flashback until end of turn).
+fn hold_named(
+    state: &GameState,
+    registered: &[&ContinuousEffect],
+    held: &mut BTreeMap<ObjectId, Held>,
+) {
+    for effect in registered {
+        if let Selector::Objects(named) = &effect.selector {
+            for reference in named {
+                if let Some(object) = state.object(reference.id).filter(|object| {
+                    matches!(
+                        object.zone(),
+                        Zone::Stack | Zone::Exile | Zone::Graveyard(_)
+                    ) && object.kind() != ObjectKind::Ability
+                        && object.reference() == *reference
+                }) {
+                    held.entry(reference.id)
+                        .or_insert_with(|| Held::outside(state, object));
+                }
+            }
+        }
+    }
+}
+
 /// The pass over these effects (and the static abilities of the permanents).
 fn compute_with(state: &GameState, registered: &[&ContinuousEffect]) -> Layers {
     let registered: Vec<&ContinuousEffect> = registered.to_vec();
@@ -1005,23 +1031,7 @@ fn compute_with(state: &GameState, registered: &[&ContinuousEffect]) -> Layers {
             }
         }
     }
-    // A spell an effect names on the stack is changed by it like a permanent ("target spell becomes red"), and the change
-    // stays with the permanent it becomes (CR 400.7a, `effects::follow_spell`); a card an effect names in exile is changed
-    // by it while it stays there (it gains suspend).
-    for effect in &registered {
-        if let Selector::Objects(named) = &effect.selector {
-            for reference in named {
-                if let Some(object) = state.object(reference.id).filter(|object| {
-                    matches!(object.zone(), Zone::Stack | Zone::Exile)
-                        && object.kind() != ObjectKind::Ability
-                        && object.reference() == *reference
-                }) {
-                    held.entry(reference.id)
-                        .or_insert_with(|| Held::outside(state, object));
-                }
-            }
-        }
-    }
+    hold_named(state, &registered, &mut held);
     let mut pass = Pass {
         state,
         held,

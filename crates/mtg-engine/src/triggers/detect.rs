@@ -127,6 +127,12 @@ enum Happened {
         nth: u32,
         in_draw_step: u32,
     },
+    /// A player revealed the first card they drew this turn through the reveal rules of these sources.
+    FirstDrawRevealed {
+        player: PlayerId,
+        card: ObjectId,
+        sources: Vec<ObjectId>,
+    },
     /// A permanent became tapped: the `nth` time this turn, and whether as it was declared as an attacker.
     Tapped {
         object: ObjectId,
@@ -816,11 +822,7 @@ fn ordinal(post: &GameState, later: &[Event], player: PlayerId, kind: Tally) -> 
                 form,
                 ..
             },
-        ) => {
-            *who == player
-                && *amount > 0
-                && !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss)
-        }
+        ) => *who == player && form.life_lost(*amount) > 0,
         _ => false,
     };
     let after = post.tallied(player, kind);
@@ -1136,7 +1138,12 @@ fn about_players_and_permanents(
                 && !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss)
             {
                 // A life floor lets damage take less life than it deals (CR 614.1): the trigger sees the life lost.
-                let lost = super::life_floor::damage_lost(look.pre, look.earlier, *player, *amount);
+                let lost = super::life_floor::damage_lost(
+                    look.pre,
+                    look.earlier,
+                    *player,
+                    form.life_lost(*amount),
+                );
                 if lost > 0 || *amount == 0 {
                     found.push(Happened::LifeLost {
                         player: *player,
@@ -1166,6 +1173,15 @@ fn about_players_and_permanents(
                 nth: loss_ordinal(look, *player, *amount),
             });
         }
+        Event::FirstDrawRevealed {
+            player,
+            card,
+            sources,
+        } => found.push(Happened::FirstDrawRevealed {
+            player: *player,
+            card: *card,
+            sources: sources.clone(),
+        }),
         Event::CardDrawn { player, object } => found.push(Happened::Drew {
             player: *player,
             card: *object,
@@ -1425,6 +1441,7 @@ fn counted(state: &GameState, subjects: Vec<Target>, amount: u32) -> Cause {
         amount,
         source: None,
         against: None,
+        counters: Vec::new(),
     }
 }
 
@@ -1914,6 +1931,21 @@ fn matching_event(
                 .then(|| counted(state, vec![Target::Player(*player)], happened.amount()))
         }
         (
+            TriggerPattern::FirstDrawRevealed { what },
+            Happened::FirstDrawRevealed {
+                player,
+                card,
+                sources,
+            },
+        ) => {
+            // Only the reveal of this permanent's own rule triggers it ("this way"), for its controller.
+            let revealed = object(*card)?;
+            (sources.contains(&scope.source.id)
+                && crate::characteristics::controller_of(state, scope.source.id) == Some(*player)
+                && picks(what, revealed)?)
+            .then(|| counted(state, vec![Target::Object(revealed)], 1))
+        }
+        (
             TriggerPattern::Discarded { what, by: who },
             Happened::Moved {
                 object: card,
@@ -2132,8 +2164,13 @@ fn matching_permanents(
         ) => {
             let putting = matches!(pattern, TriggerPattern::CountersPut { .. });
             let on = object(*on)?;
-            ((*delta > 0) == putting && of_kind(counter, kind) && picks(what, on)?)
-                .then(|| counted(state, vec![Target::Object(on)], happened.amount()))
+            ((*delta > 0) == putting && of_kind(counter, kind) && picks(what, on)?).then(|| {
+                let mut found = counted(state, vec![Target::Object(on)], happened.amount());
+                if putting {
+                    found.counters = vec![(kind.clone(), delta.unsigned_abs())];
+                }
+                found
+            })
         }
         // A chapter ability triggers when lore counters take the Saga from below its number to its number or more
         // (CR 714.2b), so several chapters trigger on one change that passes them.
@@ -2486,7 +2523,7 @@ fn e16a_first_discards(post: &GameState, members: &[Happened], member: &Happened
 const fn names_players(to: Option<&Ref>) -> bool {
     matches!(
         to,
-        Some(Ref::EachPlayer | Ref::Opponents | Ref::You | Ref::Defending)
+        Some(Ref::EachPlayer | Ref::Opponents | Ref::You | Ref::Defending | Ref::Chosen)
     )
 }
 
@@ -2562,6 +2599,12 @@ fn batch_causes<'a>(
             }
         }
         group.amount = group.amount.saturating_add(weight);
+        for (kind, count) in found.counters {
+            match group.counters.iter_mut().find(|(had, _)| *had == kind) {
+                Some((_, sum)) => *sum = sum.saturating_add(count),
+                None => group.counters.push((kind, count)),
+            }
+        }
     }
     groups.into_iter().map(|(_, cause)| cause).collect()
 }

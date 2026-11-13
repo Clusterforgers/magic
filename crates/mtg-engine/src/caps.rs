@@ -51,6 +51,7 @@ const RUNS: &[&str] = &[
     "Trigger.DamagePrevented",
     "Trigger.LifeLost",
     "Trigger.Drew",
+    "Trigger.FirstDrawRevealed",
     "Trigger.Discarded",
     "Trigger.Tapped",
     "Trigger.TappedNotAttacking",
@@ -123,6 +124,8 @@ const RUNS: &[&str] = &[
     "Amount.PhasedOut",
     "Amount.Distinct",
     "Amount.DieResult",
+    "Amount.DieResult.Distinct",
+    "Effect.RollDice.Several",
     "Cost.Tap",
     "Cost.Untap",
     "Cost.Mana",
@@ -180,6 +183,7 @@ const RUNS: &[&str] = &[
     "Cost.Changed",
     "Cost.DamageToYou",
     "Cost.OthersGainLife",
+    "Cost.GetPoison",
     "Cost.Unattach",
     "Cost.ExileTop",
     "Cost.Draw",
@@ -199,6 +203,7 @@ const RUNS: &[&str] = &[
     "Stat.R374Toxic",
     "Stat.R374ManaCost",
     "Stat.R374ColorSet",
+    "Stat.R4700ChosenColors",
     "Amount.R374AtMost",
     "Cost.Alternative.X",
     "Cost.XAtMost",
@@ -212,6 +217,7 @@ const RUNS: &[&str] = &[
     "Effect.Draw",
     "Effect.Discard",
     "Effect.Discard.Random",
+    "Effect.Choose.Differ",
     "Effect.Discard.Filter",
     "Effect.Discard.Chooser",
     "Effect.Mill",
@@ -386,11 +392,13 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Mill",
     "ReplaceBy.UnderChosenOpponent",
     "ReplaceBy.AddAmount",
+    "ReplaceBy.MayAddAmount",
     "ReplaceBy.PreventAmount",
     "ReplaceBy.PreventAtMost",
     "Effect.CreateToken",
     "Effect.CreateToken.Copy",
     "Effect.CreateToken.Card",
+    "Effect.CreateToken.R4700OfChosen",
     "Effect.CopySpell",
     "Effect.CopyAbility",
     "Effect.ChangeTargets",
@@ -455,12 +463,15 @@ const RUNS: &[&str] = &[
     "Rule.SkipExtraTurns",
     "Rule.FlipTwoCoins",
     "Rule.ExtraDie",
+    "Rule.ExtraPlanarDie",
+    "Rule.PlaneswalkLookTwo",
     "Rule.KeepUnspentMana",
     "Rule.DrawLimit",
     "Rule.AbilitiesAsThoughHaste",
     "Rule.PayLifeForMana",
     "Rule.PayLifeForOneSymbol",
     "Rule.OpponentsCantMakeSacrifice",
+    "Rule.OpponentsCantMakeDiscardOrSacrifice",
     "Rule.SpendManaAs",
     "Rule.UnspentManaBecomes",
     "Rule.RevealTop",
@@ -469,6 +480,10 @@ const RUNS: &[&str] = &[
     "Rule.ExileFound",
     "Rule.NoMaxHandSize",
     "Rule.LoyaltyTwice",
+    "Rule.RevealFirstDraw",
+    "Rule.BoastTwice",
+    "Rule.LoyaltyAnyTime",
+    "Rule.LoyaltyCostsMore",
     "Rule.MaxHandSize",
     "Rule.HandSizeChange",
     "Rule.NoLegendRule",
@@ -516,6 +531,7 @@ const RUNS: &[&str] = &[
     "Rule.Cant.Untap",
     "Rule.Cant.Crew",
     "Rule.Cant.BecomeSuspected",
+    "Rule.Cant.BecomeMonarch",
     "Rule.Cant.PhaseIn",
     "Rule.Cant.EnterBattlefield",
     "Rule.Cant.SkipStep",
@@ -524,6 +540,7 @@ const RUNS: &[&str] = &[
     "Rule.Cant.Cast",
     "Rule.Cant.Attack",
     "Rule.Cant.ActivateKind",
+    "Rule.Cant.PayCosts",
     VARIABLE_STATS,
     "Mod.ModifyPT",
     "Mod.AddKeyword",
@@ -594,6 +611,7 @@ const RUNS: &[&str] = &[
     "Effect.Pay.Counted",
     "Effect.Pay.X",
     "Effect.Pay.X.Energy",
+    "Effect.Pay.X.Among",
     "Effect.Pay.X.Life",
     "Effect.Pay.SacrificeSelf",
     "Effect.Pay.ExileSelf",
@@ -691,6 +709,7 @@ const RUNS: &[&str] = &[
     "Keyword.Suspend",
     "Keyword.Suspend.X",
     "Keyword.Kicker.X",
+    "Keyword.Devour.X",
     "Keyword.TurnUp.X",
     "Keyword.Foretell",
     "Keyword.Plot",
@@ -765,6 +784,7 @@ const RUNS: &[&str] = &[
     "Amount.TalliedLastTurn",
     "Amount.Party",
     "Amount.Tally",
+    "Amount.Drafted",
     "Amount.CommanderColors",
     "Amount.Remembered",
     "Amount.DamageDealtByTo",
@@ -799,6 +819,7 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.TurnedFaceUp",
     "ReplaceWhen.CountersPut",
     "ReplaceWhen.LifeGain",
+    "ReplaceWhen.LifeLoss",
     "ReplaceWhen.LoseGame",
     "ReplaceWhen.Mill",
     "ReplaceWhen.Draw",
@@ -807,7 +828,10 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.Explores",
     "ReplaceWhen.Connives",
     "ReplaceWhen.Proliferates",
+    "ReplaceWhen.Scries",
+    "ReplaceWhen.Surveils",
     "ReplaceBy.Multiply",
+    "ReplaceBy.LossTimes",
     "ReplaceBy.Add",
     "ReplaceBy.Half",
     "ReplaceBy.Subtract",
@@ -839,6 +863,9 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Amplify",
     "ReplaceBy.MayWithCounters",
     "ReplaceBy.Choose",
+    "ReplaceBy.Choose.NoncreatureNonlandCardName",
+    "ReplaceBy.Choose.NonbasicLandCardName",
+    "ReplaceBy.Choose.RevealedNonlandName",
     "ReplaceBy.PayLifeOrTapped",
     "ReplaceBy.TappedForCounters",
     "ReplaceBy.RevealOrTapped",
@@ -969,6 +996,7 @@ const RUNS: &[&str] = &[
     "Keyword.Cleave",
     "ReplaceWhen.Destroyed",
     "ReplaceBy.UmbraArmor",
+    "ReplaceBy.Regenerate",
     "Condition.NewlyControlled",
     "Condition.Level",
     "Condition.Searched",
@@ -978,6 +1006,7 @@ const RUNS: &[&str] = &[
     "Condition.InCombat",
     "Condition.FirstCombat",
     "Condition.FirstStep",
+    "Condition.Drafted",
     "Condition.AttackedThisCombat",
     "Condition.SorceryTiming",
     "Condition.AfterCombat",
@@ -987,11 +1016,15 @@ const RUNS: &[&str] = &[
     "Rule.UpToInDeck",
     "Rule.Draft",
     "Rule.CantBeCopied",
+    "Rule.CountsAsNamed",
     "Rule.CantSpendMana",
+    "Rule.SpendOnlyFrom",
     "Pred.Modified",
     "Pred.RingBearer",
     "Pred.HasAdventure",
     "Pred.HasAbility",
+    "Pred.Drafted",
+    "Pred.Apart",
     "Pred.FaceDown",
     "Pred.TargetsPlayer",
     "Pred.SpentFrom",
@@ -1008,8 +1041,12 @@ const RUNS: &[&str] = &[
     "Pred.BottomOfLibrary",
     "Pred.TopOfGraveyard",
     "Pred.TopCreatureOfGraveyard",
+    "Pred.R4700TopOfGraveyard",
+    "Ref.R4700OtherChosen",
     "Pred.BlockedBy",
     "Pred.BlockedThisTurnBy",
+    "Pred.CastBefore",
+    "Amount.TallyTypes",
     "Pred.BandedWith",
     "Pred.Blocks",
     "Pred.TargetedBy",
@@ -1077,6 +1114,7 @@ mod tests {
     #[case::drawing("Effect.Draw", true)]
     #[case::discarding("Effect.Discard", true)]
     #[case::discarding_at_random("Effect.Discard.Random", true)]
+    #[case::choosing_apart("Effect.Choose.Differ", true)]
     #[case::discarding_matching_cards("Effect.Discard.Filter", true)]
     #[case::discarding_cards_another_player_chooses("Effect.Discard.Chooser", true)]
     #[case::milling("Effect.Mill", true)]
@@ -1148,6 +1186,9 @@ mod tests {
     #[case::r406_replacing_an_exploration("ReplaceWhen.Explores", true)]
     #[case::r406_replacing_a_connive("ReplaceWhen.Connives", true)]
     #[case::r406_replacing_a_proliferation("ReplaceWhen.Proliferates", true)]
+    #[case::r4708_replacing_a_scry("ReplaceWhen.Scries", true)]
+    #[case::r4708_replacing_a_surveil("ReplaceWhen.Surveils", true)]
+    #[case::r4708_more_cards_to_surveil("ReplaceBy.MayAddAmount", true)]
     #[case::replacing_mills("ReplaceWhen.Mill", true)]
     #[case::replacing_draws("ReplaceWhen.Draw", true)]
     #[case::replacing_entering("ReplaceWhen.Enters", true)]
@@ -1495,6 +1536,8 @@ mod tests {
     #[case::life_gain_triggers("Trigger.LifeGained", true)]
     #[case::life_loss_triggers("Trigger.LifeLost", true)]
     #[case::draw_triggers("Trigger.Drew", true)]
+    #[case::r4708_first_draws_revealed("Trigger.FirstDrawRevealed", true)]
+    #[case::r4708_reveals_of_first_draws("Rule.RevealFirstDraw", true)]
     #[case::discard_triggers("Trigger.Discarded", true)]
     #[case::tap_triggers("Trigger.Tapped", true)]
     #[case::untap_triggers("Trigger.Untapped", true)]

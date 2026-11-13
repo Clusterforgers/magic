@@ -8,6 +8,7 @@ use crate::choose::Target;
 use crate::choose::{Questions, Stop};
 use crate::events::{Event, ZoneCause};
 use crate::library::{Surveilled, top_cards};
+use crate::replace::r4708_actions::r4708_candidates;
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::wording;
 use crate::zones::Zone;
@@ -18,7 +19,8 @@ use crate::zones::Zone;
 /// always, since seeing the cards is the point; an order of fewer than two cards is no question. A surveil of
 /// nothing, or of an empty library, does not happen (CR 701.25c). All the surveils are decided before the library
 /// of anyone changes; each is one `Surveilled` followed by a `ZoneChanged` for each card put into the graveyard,
-/// which is not milling.
+/// which is not milling. Before looking, a player meets each replacement that offers more cards
+/// (`ReplaceWhen::Surveils`): its controller is asked whether to look at that many more.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Surveil {
         who, count, kept, ..
@@ -67,7 +69,16 @@ fn surveils(cx: &Cx<'_>, players: &[PlayerId], wanted: usize) -> Result<Vec<Even
     let mut events = Vec::new();
     let mut moves = Vec::new();
     for player in players {
-        let looked = top_cards(cx.state(), *player, wanted);
+        let mut more = 0;
+        if wanted > 0 {
+            for candidate in r4708_candidates(cx.state(), *player, true)? {
+                let text = wording::r4708_surveil_more(candidate.more);
+                if questions.yes_no(candidate.controller, text)? {
+                    more += candidate.more;
+                }
+            }
+        }
+        let looked = top_cards(cx.state(), *player, wanted.saturating_add(more));
         if looked.is_empty() {
             continue;
         }
@@ -206,6 +217,7 @@ mod tests {
                     max: 3,
                     text: "Put any number of the cards into your graveyard.".into(),
                     can_cancel: false,
+                    groups: Vec::new(),
                 })
             }
         );

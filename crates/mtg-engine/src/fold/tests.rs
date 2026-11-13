@@ -383,6 +383,7 @@ fn cause() -> Cause {
         amount: 0,
         source: None,
         against: None,
+        counters: Vec::new(),
     }
 }
 

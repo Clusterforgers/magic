@@ -13,6 +13,7 @@ use mtg_cards::effect::{Destination, Effect};
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{Bounds, Pred, Ref, Selector, ZoneKind};
 use mtg_cards::value::{Amount, Condition};
+use mtg_core::card::CardType;
 
 use super::KeywordRules;
 
@@ -41,8 +42,9 @@ fn activation(cost: &Cost) -> Ability {
     let mut items = cost.0.clone();
     items.push(CostItem::ReturnToHand {
         filter: Selector(vec![
-            Pred::Attacking,
             Pred::Unblocked,
+            Pred::Attacking,
+            Pred::Type(CardType::Creature),
             Pred::ControlledBy(Ref::You),
         ]),
         count: Amount::one(),
@@ -62,6 +64,7 @@ fn activation(cost: &Cost) -> Ability {
                 count: Bounds::default(),
                 bind: NINJA.to_owned(),
                 rest_as: None,
+                differ: None,
             },
             Effect::Move {
                 what: ninja(),
@@ -79,7 +82,10 @@ fn activation(cost: &Cost) -> Ability {
                     subject: ninja(),
                     selector: Selector(vec![Pred::In(ZoneKind::Battlefield)]),
                 },
-                then: vec![Effect::JoinAttack { what: ninja() }],
+                then: vec![Effect::JoinAttack {
+                    what: ninja(),
+                    against: None,
+                }],
                 otherwise: Vec::new(),
             },
         ],

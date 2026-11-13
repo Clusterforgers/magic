@@ -4,8 +4,8 @@
 use mtg_core::card::CardType;
 use mtg_core::ids::ObjectId;
 use mtg_engine::choose::{
-    CardsChoice, CardsOptions, ModeChoice, NumberChoice, OptionChoice, ScryChoice, ScryOptions,
-    YesNoChoice,
+    CardsChoice, CardsOptions, ChoiceOption, ModeChoice, NumberChoice, OptionChoice, ScryChoice,
+    ScryOptions, YesNoChoice,
 };
 use mtg_engine::decision::{Answer, DecisionKind, MulliganOptions, PayChoice};
 use mtg_engine::zones::Zone;
@@ -15,9 +15,6 @@ use super::eval::permanent_value;
 use super::seen::Seen;
 use super::sim::{Horizon, Search};
 use crate::bot::RandomBot;
-
-/// Lands the seat wants in play before more lands stop helping.
-const LANDS_WANTED: usize = 6;
 
 /// Whether `id` is a land, as the seat reads it.
 fn is_land(seen: &Seen<'_>, id: ObjectId) -> bool {
@@ -33,19 +30,23 @@ fn lands_out(seen: &Seen<'_>) -> usize {
         .count()
 }
 
-/// Whether to keep the opening hand: two to five lands in seven cards (fewer cards ask for fewer), always after two
-/// mulligans or when no mulligan is offered.
+/// Whether to keep the opening hand, by a small opening book: three to five lands in seven cards, two only with a
+/// spell of mana value two or less to cast early (fewer cards ask for fewer lands); always after two mulligans or when
+/// no mulligan is offered.
 pub fn keep(seen: &Seen<'_>, options: &MulliganOptions) -> bool {
     if !options.can_mulligan || options.mulligans_taken >= 2 {
         return true;
     }
     let lands = options.hand.iter().filter(|id| is_land(seen, **id)).count();
     let kept = options.hand.len().saturating_sub(options.bottom_if_keep);
-    let (least, most) = if kept >= 7 {
-        (2, 5)
-    } else {
-        (2.min(kept), kept.saturating_sub(2).max(2))
-    };
+    if kept >= 7 {
+        let early = options
+            .hand
+            .iter()
+            .any(|id| !is_land(seen, *id) && seen.mana_value(*id) <= 2);
+        return (3..=5).contains(&lands) || (lands == 2 && early);
+    }
+    let (least, most) = (2.min(kept), kept.saturating_sub(2).max(2));
     (least..=most).contains(&lands)
 }
 
@@ -53,7 +54,7 @@ pub fn keep(seen: &Seen<'_>, options: &MulliganOptions) -> bool {
 /// rest by how far out of reach they are.
 fn usefulness(seen: &Seen<'_>, id: ObjectId, lands: usize) -> f64 {
     if is_land(seen, id) {
-        return if lands < LANDS_WANTED {
+        return if count(lands) < super::knobs::knobs().lands_wanted {
             8.0 - 0.5 * count(lands)
         } else {
             0.5
@@ -172,15 +173,66 @@ pub fn quick_choice(engine: &Engine, decision: &Decision, random: &mut RandomBot
             Answer::Discard(least_useful(&seen, &options.hand, options.count))
         }
         DecisionKind::Scry(options) => Answer::Scry(scry(&seen, options)),
-        DecisionKind::ChooseCards(options) if !options.one_per_name => {
+        DecisionKind::ChooseCards(options)
+            if !options.one_per_name && options.groups.is_empty() =>
+        {
             Answer::ChooseCards(CardsChoice(pick_cards(&seen, options)))
         }
         DecisionKind::YesNo(options) => Answer::YesNo(YesNoChoice(!options.only_no)),
         DecisionKind::PayMana(options) if options.auto_available => {
             Answer::PayMana(PayChoice::Auto)
         }
+        DecisionKind::ChooseOption(options) => threatening_color(&seen, &options.options)
+            .map_or_else(
+                || random.choose_in(decision, engine.state()),
+                |at| Answer::ChooseOption(OptionChoice(at)),
+            ),
         _ => random.choose_in(decision, engine.state()),
     }
+}
+
+/// Among colour options, the colour of the opposing spell or ability nearest the top of the stack, else the colour
+/// most opposing permanents share: what protection or a hoser is best named for.
+fn threatening_color(seen: &Seen<'_>, options: &[ChoiceOption]) -> Option<usize> {
+    let colors: Vec<(usize, mtg_core::color::Color)> = options
+        .iter()
+        .enumerate()
+        .filter_map(|(at, option)| match option {
+            ChoiceOption::Color(color) => Some((at, *color)),
+            _ => None,
+        })
+        .collect();
+    if colors.is_empty() {
+        return None;
+    }
+    let opposing = |id: &mtg_core::ids::ObjectId| {
+        seen.controller(*id)
+            .is_some_and(|player| !seen.is_teammate(player))
+    };
+    for id in seen.stack().iter().rev().filter(|id| opposing(id)) {
+        if let Some(chars) = seen.chars(*id)
+            && let Some((at, _)) = colors
+                .iter()
+                .find(|(_, color)| chars.colors.contains(*color))
+        {
+            return Some(*at);
+        }
+    }
+    let bodies = seen.bodies();
+    colors
+        .iter()
+        .map(|(at, color)| {
+            let shared = bodies
+                .iter()
+                .filter(|body| {
+                    !seen.is_teammate(body.controller) && body.chars.colors.contains(*color)
+                })
+                .count();
+            (shared, std::cmp::Reverse(*at))
+        })
+        .max()
+        .filter(|(shared, _)| *shared > 0)
+        .map(|(_, std::cmp::Reverse(at))| at)
 }
 
 /// A few candidate answers to a choice that a search can tell apart: the quick answer, then each simple alternative.

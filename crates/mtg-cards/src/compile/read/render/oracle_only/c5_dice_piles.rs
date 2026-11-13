@@ -50,6 +50,7 @@ fn c5_dice_piles_sentence(effects: &[Effect]) -> Option<String> {
             count: one,
             bind: separator,
             rest_as: None,
+            differ: None,
         },
         Effect::Choose {
             who: Ref::Bound(splits),
@@ -57,6 +58,7 @@ fn c5_dice_piles_sentence(effects: &[Effect]) -> Option<String> {
             count: any,
             bind: pile,
             rest_as: Some(other),
+            differ: None,
         },
         Effect::May {
             who: Ref::You,

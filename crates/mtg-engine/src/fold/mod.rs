@@ -167,7 +167,9 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::AbilityLeftToTable(_)
         | Event::ManaAbilityActivated { .. }
         | Event::ByHandDue(_)
-        | Event::DamagePrevented { .. } => Ok(()),
+        | Event::DamagePrevented { .. }
+        // The `Revealed` before it showed the card; triggers read it from the log.
+        | Event::FirstDrawRevealed { .. } => Ok(()),
         Event::AbilityTriggered(triggered) => crate::triggers::fold_triggered(state, triggered),
         Event::TriggersOrdered { player, order } => {
             crate::triggers::fold_ordered(state, *player, order)
@@ -541,7 +543,15 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::Monstrous { object, .. } => set_monstrous(state, *object)?,
         Event::Devoured { object, count } => w7e_set_devoured(state, *object, *count)?,
         Event::ClassLevelGained { object, level, .. } => set_level(state, *object, *level)?,
-        Event::TurnedFaceUp { object, .. } => turn_face_up(state, *object)?,
+        Event::TurnedFaceUp { object, player, .. } => {
+            turn_face_up(state, *object)?;
+            state.record(
+                mtg_cards::value::TallyEvent::TurnedFaceUp,
+                Some(*player),
+                (*object, None),
+                1,
+            );
+        }
         Event::TurnedFaceDown { object, .. } => crate::rmt8_turns::turn_face_down(state, *object)?,
         Event::CommanderColorChosen { object, color, .. } => {
             state.commander_colors.retain(|(card, _)| card != object);
@@ -613,6 +623,8 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             }
         }
         Event::PlayerLost { player, reason } => player_lost(state, *player, reason)?,
+        Event::BecameSpirit { player, emblem } => crate::spirits::fold(state, *player, *emblem)?,
+        Event::PhaseBegan { player, emblem } => crate::phases::fold(state, *player, *emblem)?,
         Event::GameEnded { result } => end_game(state, *result),
         other => return c6_kw_fold_rest(state, other),
     }

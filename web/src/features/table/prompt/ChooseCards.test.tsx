@@ -1,4 +1,4 @@
-/** Goal: for choices of exactly one, of several, of up to some and of at least one card, from a hand, the battlefield and a long list, the prompt asks in the card's words (a sentence from min and max without them), draws the cards on offer from the views, chooses by click and by number key under the rules of one or several, keeps Confirm closed until the number is legal and sends the cards in the order chosen once, marks the table's cards on offer as targets are marked, filters a long list without losing the choice, moves focus along the cards with the arrow keys, and leaves the keys to a text field. */
+/** Goal: for choices of exactly one, of several, of up to some and of at least one card, from a hand, the battlefield and a long list, the prompt asks in the card's words (a sentence from min and max without them), draws the cards on offer from the views, chooses by click and by number key under the rules of one or several, keeps Confirm closed until the number is legal and sends the cards in the order chosen once, marks the table's cards on offer as targets are marked (the attacker a ninjutsu cost returns among several), filters a long list without losing the choice, moves focus along the cards with the arrow keys, and leaves the keys to a text field. */
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { ObjectId } from '@/protocol/generated'
@@ -180,6 +180,23 @@ describe('a choice with different names', () => {
     const [first, second] = group.getAllByRole('button')
     await table.user.click(must(first))
     expect(must(second)).toHaveAttribute('aria-disabled', 'true')
+    await table.user.click(must(first))
+    expect(must(second)).not.toHaveAttribute('aria-disabled')
+  })
+})
+
+describe('a choice with different powers', () => {
+  it('closes a second card of a chosen group and opens it again when the first is put back', async () => {
+    const from = permanents.slice(0, 3)
+    if (from.length < 3) return
+    const table = renderDecision({
+      ChooseCards: { source, from, min: 0, max: 3, groups: [0, 0, 1] },
+    })
+    const group = within(screen.getByRole('group', { name: 'Cards to choose from' }))
+    const [first, second, third] = group.getAllByRole('button')
+    await table.user.click(must(first))
+    expect(must(second)).toHaveAttribute('aria-disabled', 'true')
+    expect(must(third)).not.toHaveAttribute('aria-disabled')
     await table.user.click(must(first))
     expect(must(second)).not.toHaveAttribute('aria-disabled')
   })
@@ -377,5 +394,22 @@ describe('the table', () => {
   it('marks a hand that is on offer, as a discard does', () => {
     const { marks } = mount(hand, 1, 1)
     for (const id of hand) expect(marks().get(id)).toBe('legal')
+  })
+
+  it('asks which of two unblocked attackers a ninjutsu cost returns, offers only those, and sends the one chosen last', async () => {
+    const attackers = mine.slice(0, 2)
+    const words = "Return an unblocked attacking creature you control to its owner's hand."
+    const { text, marks, tableCard, user, confirm, sent } = mount(attackers, 1, 1, words)
+    expect(text()).toContain(`${sourceName}: ${words}`)
+    const offered = [...marks()].filter(([, mark]) => mark === 'legal').map(([id]) => id)
+    expect(offered.sort()).toEqual([...attackers].sort())
+    expect(confirm()).toBeDisabled()
+    await user.click(tableCard(attackers[0] as ObjectId))
+    // With room for one, another click moves the choice.
+    await user.click(tableCard(attackers[1] as ObjectId))
+    expect(marks().get(attackers[0] as ObjectId)).toBe('legal')
+    expect(marks().get(attackers[1] as ObjectId)).toBe('selected')
+    await user.click(confirm())
+    expect(sent()).toEqual({ ChooseCards: [attackers[1]] })
   })
 })

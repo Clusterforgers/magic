@@ -227,6 +227,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         }
         Event::ZoneChanged { from, .. } if hidden_from(*from, player) => Some(R::CardRevealed),
         Event::Revealed(_)
+        | Event::FirstDrawRevealed { .. }
         | Event::FaceDownLooked { .. }
         | Event::LibraryLooked(_)
         | Event::HandLooked(_)
@@ -266,6 +267,8 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::TurnBegan { .. }
         | Event::GameEnded { .. }
         | Event::PlayerLost { .. }
+        | Event::BecameSpirit { .. }
+        | Event::PhaseBegan { .. }
         | Event::GameRestarted { .. }
         | Event::MulliganPhaseBegan
         | Event::MulliganDeclared { .. }

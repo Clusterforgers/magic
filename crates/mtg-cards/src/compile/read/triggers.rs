@@ -682,6 +682,8 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
             what: Selector(w2e_spell(r)?),
             by,
         })
+    } else if verb == if third { "puts" } else { "put" } {
+        super::r4706_counters::r4706_put_event(r, by)
     } else if verb == if third { "sacrifices" } else { "sacrifice" } {
         if r.words("one or more") {
             return super::dk27_batches::dk27_sacrificed_batch(r, by);
@@ -698,6 +700,8 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         Some(first_time(r, TriggerPattern::LifeLost { who: by }))
     } else if verb == if third { "draws" } else { "draw" } {
         draw_event(r, by, whose)
+    } else if verb == "reveal" {
+        super::r4708_reveal::r4708_revealed(r, &by)
     } else if verb == if third { "discards" } else { "discard" } {
         if r.words("one or more") {
             let batch = super::dk27_batches::dk27_discarded_batch(r, by)?;
@@ -1120,6 +1124,9 @@ fn damage_dealt(r: &mut Reader<'_>, source: &Selector) -> Option<TriggerPattern>
 
 /// The condition of an intervening "if": "you have 40 or more life", "you're the monarch", "there is no monarch".
 pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
+    if let Some(kind) = super::r4706_counters::r4706_not_subtype(r) {
+        return Some(kind);
+    }
     if let Some(coven) = r.attempt(super::w2c_counts::w2c_coven) {
         return Some(coven);
     }
@@ -1310,6 +1317,9 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
 
 /// The condition as the card words it, after "if".
 pub fn condition_text(condition: &Condition) -> Option<String> {
+    if let Some(kind) = super::r4706_counters::r4706_not_subtype_text(condition) {
+        return Some(kind);
+    }
     if let Some(turns) = super::rmt8_conditions::condition_text(condition) {
         return Some(turns);
     }
@@ -1700,6 +1710,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
     if let Some(head) = super::r307c_events::r307c_pattern_text(pattern) {
         return Some(head);
     }
+    if let Some(head) = super::r4706_counters::r4706_put_text(pattern) {
+        return Some(head);
+    }
     match pattern {
         TriggerPattern::PlayerBecomesTarget { .. } => {
             super::l290_writers::l290_player_targeted_text(pattern)
@@ -1822,6 +1835,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             counter_text(what, counter.as_ref(), "removed from")
         }
         TriggerPattern::Nth { event, nth } => nth_text(event, *nth),
+        TriggerPattern::FirstDrawRevealed { .. } => {
+            super::r4708_reveal::r4708_revealed_text(pattern)
+        }
         TriggerPattern::Batch(inner) => super::r7e_events::r7e_one_object_damage(inner)
             .or_else(|| batch_text(inner))
             .or_else(|| super::r7e_events::r7e_player_batch(inner)),

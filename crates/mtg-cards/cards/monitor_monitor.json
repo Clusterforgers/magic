@@ -1,0 +1,25 @@
+{
+  "oracle_id": "f59fe075-f507-4a2c-a65c-725ff3084bd0",
+  "name": "Monitor Monitor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Monitor Monitor",
+      "oracle_fingerprint": "1f48ff9c57054dabb43652d28ff4f1b7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "OpenAttraction": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 112, "end": 182 }
+          }
+        }
+      ]
+    }
+  ]
+}

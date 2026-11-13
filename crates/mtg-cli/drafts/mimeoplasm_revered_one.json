@@ -1,0 +1,73 @@
+{
+  "oracle_id": "2b8c2882-dbca-466a-a0af-dd1d65edfe7c",
+  "name": "Mimeoplasm, Revered One",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mimeoplasm, Revered One",
+      "oracle_fingerprint": "89fd8bcc4bbb5466defacfc1e63a01ac",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEntersWith": {
+                "effects": [
+                  {
+                    "Choose": {
+                      "from": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "count": { "min": 0, "max": "X" },
+                      "as": "chosen"
+                    }
+                  },
+                  { "Exile": { "what": { "Bound": "chosen" }, "as": "exiled" } }
+                ],
+                "counter": "+1/+1",
+                "count": {
+                  "Times": {
+                    "by": 3,
+                    "of": {
+                      "Count": [
+                        { "Is": { "Bound": "exiled" } },
+                        { "Type": "Creature" },
+                        { "In": "Exile" }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Exile" }, { "ExiledWith": "This" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": "This",
+                  "of": { "Target": 0 },
+                  "except": [{ "SetPT": { "power": 0, "toughness": 0 } }, "ThisAbility"],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

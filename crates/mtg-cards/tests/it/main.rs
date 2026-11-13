@@ -85,7 +85,21 @@ mod r406_cards;
 mod r407_cards;
 mod r408_cards;
 mod r409_cards;
+<<<<<<< HEAD
 mod r4704_cards;
+=======
+mod r4700_cards;
+mod r4701_cards;
+mod r4702_cards;
+mod r4703_cards;
+mod r4705_cards;
+mod r4706_cards;
+mod r4707_cards;
+mod r4708_cards;
+mod r4709_cards;
+mod r4710_cards;
+mod r4711_cards;
+>>>>>>> origin/main
 mod r6e;
 mod read_sheet;
 mod read_tier;

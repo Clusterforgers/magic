@@ -1,0 +1,37 @@
+{
+  "oracle_id": "9c6ac895-0644-47ea-8a40-8f35cbbeba42",
+  "name": "Cybership",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cybership",
+      "oracle_fingerprint": "8532260d7fc8b37ed45773f7160b0c97",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "LookAtTop": { "who": "TriggeringPlayer", "count": 2, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "BattlefieldFaceDown": { "under": "You" } },
+                  "as": "cybermen"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "cybermen" },
+                  "mods": [{ "AddType": "Artifact" }, { "AddSubtype": "Cyberman" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 4 } }
+      ]
+    }
+  ]
+}

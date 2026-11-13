@@ -130,11 +130,11 @@ fn damage_player(
     if in_combat && amount > 0 {
         record_hit(state, source);
     }
-    let loses_life = !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss);
+    let loses_life = form.life_lost(amount) > 0;
     // The damage is dealt in full; a life floor only changes the life lost (CR 120.3a, 614.1).
     let lost = if loses_life {
         let before = player_mut(state, id)?.life;
-        let wanted = i32::try_from(amount).unwrap_or(i32::MAX);
+        let wanted = i32::try_from(form.life_lost(amount)).unwrap_or(i32::MAX);
         match crate::rules::damage_life_floor(state, id, before) {
             Some(floor) => wanted.min(before.saturating_sub(floor)),
             _ => wanted,
@@ -409,6 +409,13 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             }
         }
         Event::Regenerated { object } => {
+            if let Some(controller) = crate::characteristics::controller_of(state, *object) {
+                state.log_event(
+                    mtg_cards::value::TallyEvent::Regenerated,
+                    controller,
+                    *object,
+                );
+            }
             remove_damage(state, *object)?.tapped = true;
             state.combat.remove_object(*object);
         }

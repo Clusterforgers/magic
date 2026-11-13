@@ -231,7 +231,24 @@ mod r406_actions;
 mod r407_wordings;
 mod r408_lands;
 mod r408_pact;
+<<<<<<< HEAD
 mod r4704_hooks;
+=======
+mod r4700_writers;
+mod r4701_flash;
+mod r4701_pairs;
+mod r4702_names;
+pub(crate) mod r4703_reads;
+mod r4705_reads;
+mod r4706_counters;
+mod r4707_costs;
+mod r4707_printed;
+mod r4708_actions;
+mod r4708_reveal;
+mod r4709_differ;
+mod r4710_atoms;
+mod r4711_drafted;
+>>>>>>> origin/main
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -380,6 +397,7 @@ pub use levels::{Plan as BlockPlan, given as keyword_grant, plan as block_plan, 
 pub use r5g_lines::{escalate_cost, escalate_reads, forecast_lines, reinforce_line};
 pub use r303_forms::form_text;
 pub use r304b_writers::r304b_triple_texts;
+pub use r4708_reveal::r4708_reveal_group_texts;
 pub use render::{
     ability as render_ability, mode as render_mode, variants as render_variants, written_variants,
 };
@@ -497,10 +515,20 @@ pub fn clause(text: &str, kind: ClauseKind, x_free: bool) -> Option<Ability> {
 pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> {
     let head = text.lines().next().unwrap_or_default();
     let text = text.get(classify::ability_word_len(head).unwrap_or(0)..)?;
+    if let Some(found) = r4708_reveal::r4708_reveal_group_read(text, |sentence| {
+        clause_with(sentence, ClauseKind::Triggered, x_free, own)
+    }) {
+        return r4708_reveal::r4708_reveal_group_texts(&found)
+            .iter()
+            .any(|written| same_text(written, text))
+            .then_some(found);
+    }
     let tokens = tokenize(text);
     let mut reader = Reader::new(&tokens, x_free);
     reader.subtypes.clone_from(&own.subtypes);
-    let found = if let Some(found) = r406_actions::r406_pair_read(text) {
+    let found = if let Some(found) = r4705_reads::r4705_pair_read(text) {
+        found
+    } else if let Some(found) = r406_actions::r406_pair_read(text) {
         found
     } else if let Some(found) = dk27_pairs::dk27_any_number_less(text) {
         found
@@ -527,6 +555,11 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
         .iter()
         .any(|written| same_text(written, &said))
         .then_some(found)
+}
+
+/// Reads a whole ability of the r47-05 table of wordings one card prints (a keyword line among them).
+pub fn r4705_whole(text: &str) -> Option<Ability> {
+    r4705_reads::r4705_read(text)
 }
 
 /// A line of the table of a die roll ("1—9 | Each player sacrifices a permanent of their choice.") as a row: its totals and
@@ -574,6 +607,9 @@ const MEANINGFUL_WORDS: [&str; 5] = [
 /// Reads a clause like `clause`, with what the face itself says (`Own`).
 #[allow(clippy::too_many_lines)]
 pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
+    if let Some(found) = r4705_reads::r4705_read(text) {
+        return Some(found);
+    }
     if kind == ClauseKind::Spell
         && let Some(joined) = rmt0_x_is::rmt0_joined(text)
     {
@@ -595,6 +631,14 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         && written_variants(&found)
             .iter()
             .any(|written| same_text(written, bare))
+    {
+        return Some(found);
+    }
+    if let Some(found) =
+        r4711_drafted::r4711_read(text, |twin| clause_with(twin, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
     {
         return Some(found);
     }
@@ -638,6 +682,14 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     if let Some(found) = r406_actions::r406_read(text) {
         return Some(found);
     }
+    if let Some(found) = r4708_actions::r4708_read(text) {
+        return Some(found);
+    }
+    if kind == ClauseKind::Static
+        && let Some(found) = r4708_reveal::r4708_reveal_read(text)
+    {
+        return Some(found);
+    }
     if kind == ClauseKind::Triggered
         && let Some(found) =
             r402_copy_riders::r402_rider_read(text, |head| clause_with(head, kind, x_free, own))
@@ -673,6 +725,11 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     }
     if kind == ClauseKind::Static
         && let Some(found) = r400_reads::r400_static_read(text)
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Static
+        && let Some(found) = r4703_reads::r4703_static_read(text)
     {
         return Some(found);
     }

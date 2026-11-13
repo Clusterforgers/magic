@@ -1,0 +1,32 @@
+{
+  "oracle_id": "fd50d76c-7654-47b9-a5b6-d075874e4357",
+  "name": "Damping Sphere",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Damping Sphere",
+      "oracle_fingerprint": "9863a858617abb8559e9f3aebc1a5fd4",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "ManaProduced": {
+                "what": [{ "Type": "Land" }],
+                "who": "EachPlayer",
+                "change": { "One": "Colorless" }
+              }
+            }
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell"],
+            "change": "Increase",
+            "mana": "{1}",
+            "per": { "Tallied": { "who": { "ControllerOf": "Affected" }, "what": "SpellsCast" } }
+          }
+        }
+      ]
+    }
+  ]
+}

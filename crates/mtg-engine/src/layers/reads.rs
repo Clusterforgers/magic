@@ -239,10 +239,12 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::AttachedPlayer
         | Ref::Monarch
         | Ref::Chosen
+        | Ref::R4700OtherChosen
         | Ref::Promised
         | Ref::Defending
         | Ref::Attacked
         | Ref::MostLife
+        | Ref::Teammates
         | Ref::ActivePlayer
         | Ref::Chooser
         | Ref::Asker
@@ -277,8 +279,10 @@ pub(crate) fn reads_of_selector(selector: &Selector) -> Traits {
 fn reads_of_pred(pred: &Pred) -> Traits {
     match pred {
         Pred::Supertype(_) => Traits::SUPERTYPES,
-        Pred::This
+        Pred::Drafted(_)
+        | Pred::This
         | Pred::Other
+        | Pred::Apart(_)
         | Pred::Token
         | Pred::Commander
         | Pred::Spell
@@ -325,6 +329,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::SingleTarget
         | Pred::HasAnyCounter
         | Pred::Named(_)
+        | Pred::OriginallyPrintedIn(_)
         | Pred::ChosenName
         | Pred::FaceDown
         | Pred::SpentFrom { .. }
@@ -335,6 +340,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::BottomOfLibrary
         | Pred::TopOfGraveyard
         | Pred::TopCreatureOfGraveyard
+        | Pred::R4700TopOfGraveyard { .. }
         | Pred::Kicked
         | Pred::AdditionalCostPaid
         | Pred::Suspended
@@ -353,6 +359,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::Is(who)
         | Pred::BlockedBy(who)
         | Pred::BlockedThisTurnBy(who)
+        | Pred::CastBefore(who)
         | Pred::BandedWith(who)
         | Pred::Blocks(who)
         | Pred::TargetedBy(who)
@@ -411,7 +418,7 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         // The base after the effects that set it still depends on the layers that set power and toughness.
         StatKind::Power | StatKind::BasePower => Traits::POWER,
         StatKind::Toughness | StatKind::BaseToughness => Traits::TOUGHNESS,
-        StatKind::Colors | StatKind::R374ColorSet => Traits::COLORS,
+        StatKind::Colors | StatKind::R374ColorSet | StatKind::R4700ChosenColors => Traits::COLORS,
         StatKind::BasicLandTypes | StatKind::CreatureType | StatKind::Subtypes => Traits::SUBTYPES,
         StatKind::R374Types => Traits::TYPES.or(Traits::SUBTYPES).or(Traits::SUPERTYPES),
         StatKind::R374CreatureTypes => Traits::TYPES.or(Traits::SUBTYPES),
@@ -428,6 +435,7 @@ fn reads_of_stat(stat: StatKind) -> Traits {
 }
 
 /// What an amount reads when it is worked out.
+#[allow(clippy::too_many_lines)] // one arm for each kind of amount
 pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
     match amount {
         Amount::Fixed(_)
@@ -456,6 +464,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::TallyLastTurn { .. }
         | Amount::CastSameNameThisGame(_)
         | Amount::TallyTotal { .. }
+        | Amount::TallyTypes { .. }
         | Amount::ManaSpent { .. }
         | Amount::ManaColors(_)
         | Amount::ManaInPool(_)
@@ -466,7 +475,8 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::CastTargetsOf(_)
         | Amount::Chosen
         | Amount::ChosenAs(_)
-        | Amount::Triggering => Traits::NONE,
+        | Amount::Triggering
+        | Amount::Drafted(_) => Traits::NONE,
         Amount::Count(selector) => reads_of_selector(selector),
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),
         Amount::Life(who)
@@ -553,7 +563,8 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
             .or(reads_of_amount(right)),
         Condition::YourTurn => Traits::CONTROL,
         Condition::NewlyControlled(what) => reads_of_ref(what).or(Traits::CONTROL),
-        Condition::Kicked
+        Condition::Drafted(_)
+        | Condition::Kicked
         | Condition::KickedWith(_)
         | Condition::AdditionalCostPaid
         | Condition::CastWith(_)

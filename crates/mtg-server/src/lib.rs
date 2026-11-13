@@ -80,6 +80,7 @@
 
 mod accounts;
 mod actor;
+mod admin_games;
 mod api;
 mod auth;
 mod auto_skips;
@@ -94,8 +95,10 @@ mod cookie;
 mod credentials;
 mod deck_cards;
 mod deck_choice;
+mod deck_groups;
 mod deck_import;
 mod decks;
+mod delves;
 pub mod demo;
 mod dwell;
 mod favourites;

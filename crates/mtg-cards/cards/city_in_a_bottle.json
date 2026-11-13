@@ -1,0 +1,82 @@
+{
+  "oracle_id": "a83f25e3-4d84-4c9b-ab12-19b8d326e459",
+  "name": "City in a Bottle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "City in a Bottle",
+      "oracle_fingerprint": "cb079fdb5e0cfd5f9766ea92c115bc67",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        "Other",
+                        { "Not": "Token" },
+                        { "OriginallyPrintedIn": "ArabianNights" }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              }
+            },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "player" },
+                        "filter": [
+                          "Other",
+                          { "Not": "Token" },
+                          { "OriginallyPrintedIn": "ArabianNights" }
+                        ],
+                        "count": {
+                          "Count": [
+                            "Other",
+                            { "Not": "Token" },
+                            { "OriginallyPrintedIn": "ArabianNights" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": { "Cast": { "filter": [{ "OriginallyPrintedIn": "ArabianNights" }] } }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": { "PlayLands": [{ "OriginallyPrintedIn": "ArabianNights" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

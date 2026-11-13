@@ -310,6 +310,7 @@ pub fn exiled_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
                 count: Bounds::default(),
                 bind: PLAYED.to_owned(),
                 rest_as: None,
+                differ: None,
             },
             free_cast(Ref::Bound(PLAYED.to_owned()), play),
         ]
@@ -336,6 +337,7 @@ pub fn exiled_text(effects: &[Effect]) -> Option<(String, usize)> {
             count,
             bind,
             rest_as: None,
+            differ: None,
         },
         Effect::CastFromZone {
             what: Ref::Bound(played),
@@ -480,6 +482,7 @@ pub fn free_cast_from_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             count: Bounds::up_to(Some(Amount::Fixed(1))),
             bind: FROM_HAND.to_owned(),
             rest_as: None,
+            differ: None,
         },
         Effect::CastFromZone {
             rather: None,

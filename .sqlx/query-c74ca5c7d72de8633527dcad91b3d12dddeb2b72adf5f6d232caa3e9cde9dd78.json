@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM deck_group_members WHERE deck_id = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "c74ca5c7d72de8633527dcad91b3d12dddeb2b72adf5f6d232caa3e9cde9dd78"
+}

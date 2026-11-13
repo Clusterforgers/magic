@@ -29,6 +29,8 @@ const SOURCES: &[&str] = &[
     include_str!("../keyword.rs"),
     include_str!("../companion.rs"),
     include_str!("../rmt7_kinds.rs"),
+    include_str!("../r4711_noted.rs"),
+    include_str!("../r4707_first_sets.rs"),
     include_str!("../../../mtg-core/src/card.rs"),
     include_str!("../../../mtg-core/src/color.rs"),
     include_str!("../../../mtg-core/src/mana.rs"),
@@ -337,7 +339,7 @@ mod tests {
 
     /// The reference in bytes may not grow past this without a decision (about 30 thousand tokens in a prompt). It only
     /// feeds the local model; the Forge path does not use it.
-    const BUDGET: usize = 160_000;
+    const BUDGET: usize = 167_000;
 
     #[test]
     fn the_reference_stays_under_its_budget() {

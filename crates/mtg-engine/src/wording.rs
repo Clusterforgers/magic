@@ -48,6 +48,7 @@ fn stat_word(stat: StatKind) -> &'static str {
         StatKind::R374Bushido => "bushido",
         StatKind::R374Toxic => "total toxic value",
         StatKind::R374ManaCost => "mana cost",
+        StatKind::R4700ChosenColors => "chosen colors it is",
         StatKind::R374ColorSet => "color pairs",
         StatKind::Subtypes => "subtypes",
     }
@@ -287,6 +288,7 @@ fn kind_of(what: &Targetable) -> (String, String) {
                 TargetSet::DifferentControllers => "controlled by different players".to_owned(),
                 TargetSet::DifferentNames => "with different names".to_owned(),
                 TargetSet::DifferentManaValues => "with different mana values".to_owned(),
+                TargetSet::DifferentPowers => "with different powers".to_owned(),
                 TargetSet::SameToughness => "with equal toughness".to_owned(),
                 TargetSet::TotalManaValueAtMost(Amount::Fixed(most)) => {
                     format!("with total mana value {most} or less")
@@ -808,6 +810,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 false,
             )
         }
+        TriggerPattern::FirstDrawRevealed { .. } => (
+            "you reveal the first card you drew this turn this way".to_owned(),
+            false,
+        ),
         TriggerPattern::Surveilled { who: by } => {
             let (name, s) = who(by);
             (
@@ -1195,8 +1201,11 @@ pub(crate) fn sacrifice_up_to(filter: &Selector, count: usize) -> String {
 /// `count` of what `filter` describes, with `place` after them: "a creature you control", "2 creatures you control".
 pub(crate) fn counted(filter: &Selector, count: usize, extra: &str) -> String {
     let (head, tail) = phrase(filter);
+    // A filter that names the controller already says what `extra` would add ("you control").
     let tail = if tail.is_empty() {
         extra.to_owned()
+    } else if extra.is_empty() || tail.contains(extra) {
+        tail
     } else {
         format!("{tail} {extra}")
     };
@@ -1371,6 +1380,15 @@ pub(crate) const OPENING_REVEAL: &str =
 
 /// What a surveil asks about the cards looked at.
 pub(crate) const SURVEIL: &str = "Put any number of the cards into your graveyard.";
+
+/// What an optional reveal of the first card drawn this turn asks as the card is drawn.
+pub(crate) const R4708_REVEAL_FIRST_DRAW: &str =
+    "Choose the card to reveal as you draw it, or none.";
+
+/// What a surveil asks before looking when a replacement offers more cards.
+pub(crate) fn r4708_surveil_more(more: usize) -> String {
+    format!("Look at {more} more cards as you surveil?")
+}
 
 /// What a proliferate asks about the permanents with counters.
 pub(crate) const PROLIFERATE: &str =

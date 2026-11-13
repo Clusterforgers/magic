@@ -249,6 +249,13 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// The controller of the ability revealed the first card they drew this turn through the `RevealFirstDraw` rule
+    /// of the same permanent ("Whenever you reveal a creature card this way"); `Triggering` is the card.
+    FirstDrawRevealed {
+        /// The card revealed; any card when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+    },
     /// A player draws a card.
     Drew {
         /// Who draws.
@@ -902,6 +909,12 @@ pub enum ReplaceWhen {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// A player would lose life: by an effect or by damage (CR 120.3a), not by paying it; only `LossTimes`.
+    LifeLoss {
+        /// Who would lose it.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
     /// A player would lose the game; only `Instead`.
     LoseGame {
         /// Who.
@@ -950,6 +963,20 @@ pub enum ReplaceWhen {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// A player would scry one or more cards (CR 701.22); only `Instead`, whose steps read the number as
+    /// `Triggering` ("draw that many cards instead"). A scry of no cards does not happen, so nothing is replaced.
+    Scries {
+        /// Who would scry.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
+    /// A player would surveil one or more cards (CR 701.25); only `MayAddAmount` ("you may look at an additional two
+    /// cards each time you surveil").
+    Surveils {
+        /// Who would surveil.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
 }
 
 /// What a permanent's controller chooses as it enters the battlefield.
@@ -973,12 +1000,25 @@ pub enum EntersChoice {
     CardName,
     /// The name of a card that is not a land ("choose a nonland card name").
     NonlandCardName,
+    /// The name of a card that is neither a creature nor a land ("choose a noncreature, nonland card name").
+    NoncreatureNonlandCardName,
+    /// The name of a land card that is not basic ("choose a nonbasic land card name").
+    NonbasicLandCardName,
+    /// Each opponent reveals their hand and the controller chooses the name of a nonland card revealed this way; no name
+    /// when none was revealed.
+    RevealedNonlandName,
     /// A card type.
     CardType,
     /// One of these card types ("choose artifact, creature, enchantment, instant, or sorcery").
     CardTypeOf(mtg_core::card::CardTypes),
     /// A basic land type (CR 205.3i: Plains, Island, Swamp, Mountain or Forest).
     BasicLandType,
+    /// This many different colours ("choose two colors").
+    Colors(u32),
+    /// A colour and a creature type ("choose a color and a creature type").
+    ColorAndCreatureType,
+    /// This many different players ("choose two players").
+    Players(u32),
     /// A number from `min` to `max`.
     Number {
         /// The smallest number.
@@ -1020,6 +1060,9 @@ pub enum ReplaceBy {
     Multiply(u32),
     /// The number or amount in the event is increased.
     Add(u32),
+    /// The life lost is this many times as much (CR 614.1): "they lose twice that much life instead"; damage stays as it
+    /// was dealt, only the life it takes changes. Only `LifeLoss`.
+    LossTimes(u32),
     /// The number in the event is halved, rounded down ("they put half that many of each of those kinds of counters
     /// on that permanent or player instead, rounded down").
     Half,
@@ -1180,6 +1223,9 @@ pub enum ReplaceBy {
     },
     /// Umbra armor (CR 702.89): all damage is removed from the permanent instead, and the object with the ability is destroyed.
     UmbraArmor,
+    /// The permanent regenerates instead of being destroyed (CR 701.19): "If ~ would be destroyed, regenerate it." Not when
+    /// it can't be regenerated; unlike a shield, it is not used up.
+    Regenerate,
     /// As the permanent enters, its controller may have it enter as a copy of a permanent on the battlefield or a card
     /// in a graveyard that matches the selector (CR 707.9, 614.1c), with these exceptions in its copiable values
     /// ("except it's an Illusion in addition to its other types").
@@ -1206,7 +1252,7 @@ pub enum ReplaceBy {
     },
     /// Devour (CR 702.82): as the permanent enters, its controller may sacrifice any number of other permanents they control that match the selector, and it enters with this many +1/+1 counters for each.
     Devour {
-        /// The +1/+1 counters for each permanent sacrificed.
+        /// The +1/+1 counters for each permanent sacrificed; 0 is the number sacrificed for each ("Devour X").
         counters: u32,
         /// The permanents that may be sacrificed.
         of: Selector,
@@ -1264,6 +1310,9 @@ pub enum ReplaceBy {
     /// All of the damage is prevented when it is this much or less ("If a source would deal 3 or less damage to ~,
     /// prevent that damage"); only a static ability uses it.
     PreventAtMost(u32),
+    /// The controller of the replacement may add this many to the number of the action as it happens ("you may look at
+    /// an additional two cards each time you surveil"); only a `Surveils` uses it.
+    MayAddAmount(Amount),
 }
 
 /// The kinds of shield (`Effect::Shield`) the engine plays; the validator and the engine both read a shield by it.

@@ -1,10 +1,11 @@
 //! A cast of a target card during a resolution: "You may cast target instant card from your graveyard without paying its
-//! mana cost.", and the exile of that spell: "If that spell would be put into your graveyard, exile it instead."
+//! mana cost.", and the exile of that spell: "If that spell would be put into your graveyard, exile it instead."; a cast
+//! that any type of mana pays for ends ", and mana of any type can be spent to cast that spell".
 
 use super::selectors::target;
 use super::tokens::Reader;
 use crate::effect::Effect;
-use crate::modify::Duration;
+use crate::modify::{Duration, SpendAs};
 use crate::refs::{Pred, Ref, Selector, Targetable, ZoneKind};
 use crate::trigger::{ReplaceBy, ReplaceWhen};
 
@@ -17,8 +18,23 @@ pub fn c11b_cast_target(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("you may cast")?;
     let what = target(r)?;
     let free = r.words("without paying its mana cost");
-    Some(vec![c11b_cast(what, free, None)])
+    let mut cast = c11b_cast(what, free, None);
+    // "..., and mana of any type can be spent to cast that spell" (Tinybones).
+    if !free
+        && r.attempt(|r| {
+            r.punct(',').then_some(())?;
+            r.need(R4701_ANY_TYPE)
+        })
+        .is_some()
+        && let Effect::CastFromZone { spend_as, .. } = &mut cast
+    {
+        *spend_as = SpendAs::AnyType;
+    }
+    Some(vec![cast])
 }
+
+/// The words after the cast of a target whose spell any type of mana can pay for.
+const R4701_ANY_TYPE: &str = "and mana of any type can be spent to cast that spell";
 
 /// The cast of the card `what` names, bound as `bind` when it is cast.
 fn c11b_cast(what: Ref, free: bool, bind: Option<String>) -> Effect {
@@ -90,13 +106,31 @@ pub fn c11b_cast_text(effect: &Effect, named: impl FnOnce() -> Option<String>) -
         return None;
     };
     let bound = bind.as_ref().filter(|name| *name == C11B_CAST).cloned();
-    (*effect == c11b_cast(Ref::Target(0), *free, bound)).then_some(())?;
+    let mut plain = c11b_cast(Ref::Target(0), *free, bound.clone());
+    let any_type = !*free
+        && bound.is_none()
+        && matches!(
+            effect,
+            Effect::CastFromZone {
+                spend_as: SpendAs::AnyType,
+                ..
+            }
+        );
+    if any_type && let Effect::CastFromZone { spend_as, .. } = &mut plain {
+        *spend_as = SpendAs::AnyType;
+    }
+    (*effect == plain).then_some(())?;
     let free = if *free {
         " without paying its mana cost"
     } else {
         ""
     };
-    Some(format!("you may cast {}{free}", named()?))
+    let spend = if any_type {
+        format!(", {R4701_ANY_TYPE}")
+    } else {
+        String::new()
+    };
+    Some(format!("you may cast {}{free}{spend}", named()?))
 }
 
 /// The wording of the shield over the spell cast from the target, whose graveyard the target phrase names: "if that

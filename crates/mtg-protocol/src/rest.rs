@@ -3,14 +3,17 @@
 //! (`/api/decks`), of the fix-mark endpoints (`/api/fix-marks`), of the read endpoints
 //! (`/api/reads`), of the precon endpoints
 //! (`/api/precons`), of the game browser (`/api/lobbies`, joining) and of tournaments
-//! (`/api/tournaments`), with TypeScript bindings.
+//! (`/api/tournaments`), of Delves (`/api/delves`) and of the admin's games (`/api/admin/games`), with TypeScript bindings.
 //!
 //! These are the REST types the web takes from the generated bindings. The body of
 //! `POST /api/games` is still written by hand on both sides.
 
+mod admin_games;
 mod bulk_reads;
 mod cards;
+mod deck_groups;
 mod decks;
+mod delves;
 mod favourites;
 mod fix_marks;
 mod lobbies;
@@ -26,6 +29,7 @@ use mtg_engine::state::GameResult;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
+pub use admin_games::{AdminGame, AdminGameList, AdminGameSeat, EndGameBody, MAX_END_REASON_CHARS};
 pub use bulk_reads::{
     BulkApproval, BulkApprovalBody, BulkApprovalResult, BulkCard, BulkClause, BulkReads, BulkRule,
     MAX_BULK_APPROVALS,
@@ -35,12 +39,20 @@ pub use cards::{
     ImageLinks, MAX_PAGE, MAX_PER_PAGE, PreferredPrintingBody, PreferredPrintings, PrintingList,
     PrintingView, RulingView,
 };
+pub use deck_groups::{
+    DeckGroupChange, DeckGroupChoice, DeckGroupOrder, DeckGroupView, DeckGroups,
+    MAX_DECK_GROUP_NAME_CHARS, MAX_DECK_GROUPS_PER_USER, NewDeckGroup,
+};
 pub use decks::{
     CardSuggestion, CheckRequest, DeckBody, DeckErrorCode, DeckLineBody, DeckLineView, DeckList,
     DeckListItem, DeckPicture, DeckView, IgnoredCards, ImportRequest, ImportResult, ImportSource,
     LinePrintingBody, ListProblem, MAX_DECK_CARDS, MAX_DECK_LINES, MAX_DECK_NAME_CHARS,
     MAX_DECK_NOTES_CHARS, MAX_DECK_PICTURES, MAX_DECKS_PER_USER, MAX_IMPORT_CHARS,
     MAX_IMPORT_LINES, TableRules, UnresolvedLine, UnresolvedReason,
+};
+pub use delves::{
+    CreateDelve, CustomCardView, DelveAction, DelveBossView, DelveContent, DelveEventView,
+    DelveList, DelveSummary, DelveView,
 };
 pub use favourites::FavouritePrecons;
 pub use fix_marks::{

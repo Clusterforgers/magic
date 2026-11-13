@@ -1,7 +1,7 @@
 {
   "oracle_id": "65e15354-4258-411f-a8f1-f64f4ccb873b",
   "name": "Eligeth, Crossroads Augur",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Eligeth, Crossroads Augur",
@@ -9,7 +9,10 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 73 } }
+          "Replacement": {
+            "when": { "Scries": {} },
+            "by": { "Instead": [{ "Draw": { "count": "Triggering" } }] }
+          }
         },
         { "Keyword": "Partner" }
       ]

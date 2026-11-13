@@ -280,7 +280,9 @@ fn ramp_and_the_right_land_come_first(#[values(Level::Normal, Level::Hard)] leve
 }
 
 #[rstest]
-fn a_hand_is_kept_with_two_to_five_lands(#[values(1, 2, 3, 4, 5, 6, 7, 8)] seed: u64) {
+fn a_hand_is_kept_with_three_to_five_lands_or_two_and_an_early_play(
+    #[values(1, 2, 3, 4, 5, 6, 7, 8)] seed: u64,
+) {
     let engine =
         Engine::new(duel_setup(&[Duel::Gruul, Duel::Orzhov], seed, HouseRules::default()).unwrap())
             .unwrap();
@@ -302,9 +304,14 @@ fn a_hand_is_kept_with_two_to_five_lands(#[values(1, 2, 3, 4, 5, 6, 7, 8)] seed:
                     .contains(&mtg_core::card::CardType::Land)
             })
             .count();
+        let early = options.hand.iter().any(|id| {
+            seen.chars(*id)
+                .is_some_and(|c| !c.types.contains(mtg_core::card::CardType::Land))
+                && seen.mana_value(*id) <= 2
+        });
         assert_eq!(
             keep(&seen, options),
-            (2..=5).contains(&lands),
+            (3..=5).contains(&lands) || (lands == 2 && early),
             "{lands} lands"
         );
     }
@@ -349,8 +356,11 @@ fn the_least_useful_card_is_discarded() {
     assert_eq!(engine.state().object(out[0]).unwrap().card().name, "Huge");
 }
 
-/// A table where seat 1's hand and library hold `hidden`, the rest fixed.
-fn hidden_table(hidden: fn() -> Arc<CardDefinition>) -> Engine {
+/// A table where seat 1's hand holds four of `in_hand` and its library four of `in_library`, the rest fixed.
+fn hidden_table(
+    in_hand: fn() -> Arc<CardDefinition>,
+    in_library: fn() -> Arc<CardDefinition>,
+) -> Engine {
     Scenario::new(2)
         .at(3, 0, Step::Main1)
         .hand(
@@ -368,8 +378,8 @@ fn hidden_table(hidden: fn() -> Arc<CardDefinition>) -> Engine {
                 ready(free_creature("Mine", 2, 2)),
             ],
         )
-        .hand(1, (0..4).map(|_| hidden()))
-        .library(1, (0..10).map(|_| hidden()))
+        .hand(1, (0..4).map(|_| in_hand()))
+        .library(1, (0..4).map(|_| in_library()))
         .battlefield(1, vec![ready(free_creature("Theirs", 2, 3))])
         .build()
         .unwrap()
@@ -377,8 +387,11 @@ fn hidden_table(hidden: fn() -> Arc<CardDefinition>) -> Engine {
 
 #[rstest]
 fn answers_ignore_the_cards_a_seat_cannot_see(#[values(Level::Normal, Level::Hard)] level: Level) {
+    // Searching worlds redeal seat 1's unseen cards from its hand and library together (its deck as a whole is known),
+    // so the two tables hold the same cards and differ only in which of them are in the hand.
     let giant = || free_creature("Hidden Giant", 9, 9);
-    let mut tables = vec![hidden_table(forest), hidden_table(giant)].into_boxed_slice();
+    let mut tables =
+        vec![hidden_table(forest, giant), hidden_table(giant, forest)].into_boxed_slice();
     let mut brains = [bot(level, 0), bot(level, 0)];
     for _ in 0..30 {
         let decisions: Vec<Decision> = tables

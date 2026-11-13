@@ -1,0 +1,32 @@
+{
+  "oracle_id": "09b895ff-e729-48d1-bfc1-ea5fd7adda6a",
+  "name": "Caged Sun",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caged Sun",
+      "oracle_fingerprint": "74622e9ab533570c6e8a847f8bf5069a",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "ChosenColor"]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "TappedForMana": { "what": [{ "Type": "Land" }], "by": "You", "chosen_color": true }
+            },
+            "effects": [{ "AddMana": { "mana": { "ChosenColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

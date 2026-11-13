@@ -77,7 +77,7 @@ fn view(game: UserGame) -> Option<MyGame> {
             MyGameStatus::Failed,
             Some(game.reason.unwrap_or_else(|| Cause::Unknown.reason())),
         ),
-        RecordStatus::Expired => return None,
+        RecordStatus::Expired | RecordStatus::Aborted => return None,
     };
     let name = game
         .seats
@@ -149,6 +149,7 @@ mod tests {
     #[case(RecordStatus::Running, Some(MyGameStatus::Running))]
     #[case(RecordStatus::Finished, Some(MyGameStatus::Finished))]
     #[case(RecordStatus::Expired, None)]
+    #[case(RecordStatus::Aborted, None)]
     #[case(RecordStatus::Failed, Some(MyGameStatus::Failed))]
     fn only_games_that_were_not_dropped_are_shown(
         #[case] status: RecordStatus,

@@ -1,0 +1,28 @@
+[package]
+name = "mtg-campaign"
+description = "Delves: the co-op dungeon campaign's content, map generator, run state and fight plans (no IO)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+mtg-cards.workspace = true
+mtg-core.workspace = true
+mtg-engine.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+ts-rs = { workspace = true, optional = true }
+
+[features]
+# Derives TypeScript bindings for the run as the web shows it.
+ts = ["dep:ts-rs"]
+
+[lints]
+workspace = true
+
+[dev-dependencies]
+mtg-testkit.workspace = true
+proptest.workspace = true
+rstest.workspace = true

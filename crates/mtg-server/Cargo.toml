@@ -13,6 +13,7 @@ mtg-cards.workspace = true
 mtg-db.workspace = true
 mtg-import.workspace = true
 mtg-protocol.workspace = true
+mtg-campaign.workspace = true
 mtg-testkit.workspace = true
 argon2.workspace = true
 axum.workspace = true

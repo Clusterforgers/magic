@@ -36,8 +36,14 @@ pub struct EmblemCreated {
 /// The definition of an emblem with these abilities: each works from the command zone, and only the ones the engine
 /// runs are kept (as for a token).
 pub(crate) fn w6b_definition(abilities: &[Ability]) -> CardDefinition {
+    emblem_definition(W6B_EMBLEM_NAME, abilities)
+}
+
+/// The definition of an emblem called `name` with these abilities, each working from the command zone: what a game
+/// setup puts in a seat's command zone (a relic, a boss card, a Spirit's haunt).
+pub fn emblem_definition(name: &str, abilities: &[Ability]) -> CardDefinition {
     let spec = TokenSpec {
-        name: W6B_EMBLEM_NAME.to_owned(),
+        name: name.to_owned(),
         colors: Vec::new(),
         supertypes: Vec::new(),
         types: Vec::new(),

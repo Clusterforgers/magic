@@ -70,6 +70,11 @@ function chosenWords(chosen: Chosen, n: EventNames): string {
   if ('Name' in chosen) return `, choosing ${chosen.Name}`
   if ('Number' in chosen) return `, choosing ${chosen.Number}`
   if ('Word' in chosen) return `, choosing ${chosen.Word}`
+  if ('ColorAndType' in chosen) {
+    const [color, type] = chosen.ColorAndType
+    return `, choosing ${color.toLowerCase()} and ${type}`
+  }
+  if ('Players' in chosen) return `, choosing ${joinWords(chosen.Players.map((seat) => n.seat(seat)))}`
   return `, choosing ${chosen.CreatureType}`
 }
 
@@ -323,6 +328,7 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
   else if (rule === 'DamageAsWither') what = 'Damage is dealt as though its source had wither'
   else if (rule === 'ManaBurn') what = 'Unspent mana makes its player lose that much life'
   else if (rule === 'ReverseTurnOrder') what = 'Turn order is reversed'
+  else if (rule === 'Planar') what = 'A rule about the planar die or planeswalking is in force'
   else if ('AttackAsThoughHasteAt' in rule)
     what = `Creatures can attack ${seats(rule.AttackAsThoughHasteAt)} as though they had haste`
   else if ('MustAttack' in rule) what = `${named(rule.MustAttack)} must attack if able`
@@ -1127,6 +1133,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(
       `${n.seat(event.TurnedFaceDown.player)} turns ${n.card(event.TurnedFaceDown.object)} face down`,
     )
+  if ('FirstDrawRevealed' in event) {
+    const { player, card } = event.FirstDrawRevealed
+    return line(`${n.seat(player)} reveals ${n.card(card)} as the first card they drew this turn`)
+  }
   if ('FaceDownLooked' in event)
     return line(`${n.seat(event.FaceDownLooked.player)} looks at ${n.card(event.FaceDownLooked.object)}`)
   if ('DoorLocked' in event) {
@@ -1313,6 +1323,13 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
       ZeroToughness: 'with zero toughness',
     }
     return line(`${n.card(event.CreatureDied.object)} dies ${HOW[event.CreatureDied.cause]}`)
+  }
+  if ('BecameSpirit' in event) {
+    return line(`${n.seat(event.BecameSpirit.player)} fell and rises as a Spirit`)
+  }
+  if ('PhaseBegan' in event) {
+    const { player, emblem } = event.PhaseBegan
+    return line(`${n.seat(player)} enters ${n.card(emblem)}`)
   }
   if ('PlayerLost' in event) {
     return line(`${n.seat(event.PlayerLost.player)} ${describeLoss(event.PlayerLost.reason)}`)

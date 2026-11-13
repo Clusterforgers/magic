@@ -1,0 +1,41 @@
+{
+  "oracle_id": "efaa1262-b7ac-49ab-831a-d10b59680691",
+  "name": "Canal Courier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Canal Courier",
+      "oracle_fingerprint": "0e2517030f747e9d7f35d499902c38c7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "CountOf": {
+                "subject": { "Each": ["Other", { "Type": "Creature" }, "Attacking"] },
+                "selector": [{ "Not": { "AttackingPlayer": "Against" } }],
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "4f0c3154-1917-4bb5-9ba2-446943a88808",
+  "name": "Myra the Magnificent",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Myra the Magnificent",
+      "oracle_fingerprint": "5a41d66c6ab110548b0e47a231f4deaa",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "CastFrom": "Hand" }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "OpenAttraction": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 82, "end": 424 }
+          }
+        }
+      ]
+    }
+  ]
+}

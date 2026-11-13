@@ -25,6 +25,10 @@ fn refills(state: &GameState, player: &Player) -> bool {
 }
 
 fn loss_reason(state: &GameState, player: &Player) -> Option<LossReason> {
+    // A Spirit loses only with its team ([`crate::spirits`]).
+    if player.is_spirit() {
+        return None;
+    }
     // A rule may spare the loss for life alone (CR 704.5a); the other checks still apply.
     if player.life() <= 0 && !crate::w17b_statics::w17b_life_spared(state, player.id()) {
         Some(LossReason::ZeroLife)
@@ -91,7 +95,8 @@ fn losses(state: &GameState) -> Vec<Event> {
                 .iter()
                 .any(|winner| state.is_opponent(*winner, p.id()))
     };
-    own.into_iter()
+    let lost = own
+        .into_iter()
         // A player who can't lose stays in the game whatever they would lose for (CR 104.3).
         .filter(|(p, _)| !crate::w17b_statics::w17b_cant_lose(state, p.id()))
         .filter_map(|(p, reason)| {
@@ -101,7 +106,8 @@ fn losses(state: &GameState) -> Vec<Event> {
                 reason,
             })
         })
-        .collect()
+        .collect();
+    crate::spirits::settle(state, lost)
 }
 
 /// The refills of this pass: the graveyard of each player who failed to draw and loses for nothing else is shuffled
@@ -138,6 +144,11 @@ fn refills_of(state: &GameState, lost: &[Event]) -> Vec<Event> {
 /// One simultaneous pass over players and creatures; empty once the state is stable.
 pub(crate) fn check(state: &GameState) -> Vec<Event> {
     let mut events = losses(state);
+    let spirits = events
+        .iter()
+        .filter(|e| matches!(e, Event::BecameSpirit { .. }))
+        .count();
+    events.extend(crate::phases::begin(state, spirits as u64));
     let refilled = refills_of(state, &events);
     events.extend(refilled);
     events.extend(crate::day_night::sync(state));
@@ -301,18 +312,21 @@ pub(crate) fn death_cause_at(
 
 /// The objects of players who left the game leave with them (CR 800.4a).
 fn departures(state: &GameState) -> Vec<Event> {
-    state
+    let mut left: Vec<Event> = state
         .objects()
         .filter(|o| !state.is_alive(o.owner()))
         .map(|o| Event::ObjectLeftGame { object: o.id() })
-        .collect()
+        .collect();
+    left.extend(crate::spirits::fading(state));
+    left
 }
 
 /// The departures the control loop runs before everything else, a resolution in progress and every state-based action
 /// included, so nothing is asked while an object of a seat that left remains. A game that is decided keeps its final
 /// board: its objects stay once nothing resolves, because the game-end check is next.
 pub(crate) fn departures_first(state: &GameState) -> Vec<Event> {
-    if state.players().iter().all(Player::is_in_game)
+    if (state.players().iter().all(Player::is_in_game)
+        && state.players().iter().all(|p| !p.is_spirit()))
         || (state.resolving().is_none() && state.ruleset().game_result(state).is_some())
     {
         return Vec::new();

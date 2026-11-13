@@ -516,7 +516,23 @@ player: PlayerId,
 /**
  * Why.
  */
-reason: LossReason, } } | { "ObjectLeftGame": { 
+reason: LossReason, } } | { "BecameSpirit": { 
+/**
+ * Who.
+ */
+player: PlayerId, 
+/**
+ * The Spirit emblem's new object.
+ */
+emblem: ObjectId, } } | { "PhaseBegan": { 
+/**
+ * Whose phase.
+ */
+player: PlayerId, 
+/**
+ * The phase emblem's new object.
+ */
+emblem: ObjectId, } } | { "ObjectLeftGame": { 
 /**
  * The object.
  */
@@ -1139,7 +1155,19 @@ object: ObjectId,
 /**
  * The color.
  */
-color: Color, } } | { "FaceDownLooked": { 
+color: Color, } } | { "FirstDrawRevealed": { 
+/**
+ * Who revealed it.
+ */
+player: PlayerId, 
+/**
+ * The card.
+ */
+card: ObjectId, 
+/**
+ * The permanents whose rules revealed it.
+ */
+sources: Array<ObjectId>, } } | { "FaceDownLooked": { 
 /**
  * The permanent looked at.
  */

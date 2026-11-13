@@ -192,6 +192,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   TurnedFaceUp: [{ TurnedFaceUp: { object: 3, player: 1 } }, 'Bo turns Forest face up'],
   TurnedFaceDown: [{ TurnedFaceDown: { object: 3, player: 1 } }, 'Bo turns Forest face down'],
   FaceDownLooked: [{ FaceDownLooked: { object: 3, player: 1 } }, 'Bo looks at Forest'],
+  FirstDrawRevealed: [
+    { FirstDrawRevealed: { player: 1, card: 3, sources: [1] } },
+    'Bo reveals Forest as the first card they drew this turn',
+  ],
   DoorUnlocked: [{ DoorUnlocked: { object: 3, door: 1, player: 1 } }, 'Bo unlocks a door of Forest'],
   DoorLocked: [{ DoorLocked: { object: 3, door: 1, player: 1 } }, 'Bo locks a door of Forest'],
   Mutated: [{ Mutated: { object: 3, spell: 9, over: true, player: 1 } }, 'Bo mutates a creature over Forest'],
@@ -317,6 +321,8 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     'Grizzly Bears dies from lethal damage',
   ],
   PlayerLost: [{ PlayerLost: { player: 1, reason: 'ZeroLife' } }, 'Bo ran out of life'],
+  BecameSpirit: [{ BecameSpirit: { player: 1, emblem: 9 } }, 'Bo fell and rises as a Spirit'],
+  PhaseBegan: [{ PhaseBegan: { player: 1, emblem: 9 } }, 'Bo enters a card'],
   ObjectLeftGame: [{ ObjectLeftGame: { object: 2 } }, 'Hill Giant leaves the game'],
   GameEnded: [{ GameEnded: { result: { Winner: 0 } } }, 'Ana wins the game'],
   AbilityPutOnStack: [
@@ -1193,6 +1199,7 @@ describe('events with more than one shape', () => {
     [ruleEffect('DamageAsWither', 'Forever'), 'Damage is dealt as though its source had wither'],
     [ruleEffect('ManaBurn', 'Forever'), 'Unspent mana makes its player lose that much life'],
     [ruleEffect('ReverseTurnOrder', 'Forever'), 'Turn order is reversed'],
+    [ruleEffect('Planar', 'Forever'), 'A rule about the planar die or planeswalking is in force'],
     [
       ruleEffect({ AttackAsThoughHasteAt: [1] }, 'Forever'),
       'Creatures can attack Bo as though they had haste',
@@ -1355,6 +1362,16 @@ describe('the choice a permanent enters with', () => {
         Entered: { object: 3, tapped: false, controller: 0, chosen: { Colors: ['Red', 'Green'] } },
       },
       "Forest enters under Ana's control, choosing red and green",
+    ],
+    [
+      {
+        Entered: { object: 3, tapped: false, controller: 0, chosen: { ColorAndType: ['Blue', 'Merfolk'] } },
+      },
+      "Forest enters under Ana's control, choosing blue and Merfolk",
+    ],
+    [
+      { Entered: { object: 3, tapped: false, controller: 0, chosen: { Players: [0, 1] } } },
+      "Forest enters under Ana's control, choosing Ana and Bo",
     ],
     [
       { Entered: { object: 3, tapped: false, controller: 0, chosen: { Player: 1 } } },

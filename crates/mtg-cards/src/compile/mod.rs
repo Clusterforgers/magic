@@ -34,9 +34,10 @@ pub use read::subtypes::creature_types;
 pub use read::{
     BlockPlan, all_groups, block_plan, by_hand_event, champion_line, die_row, die_row_texts,
     either_way_pair_texts, ep23_three_texts, equip_line, escalate_cost, escalate_reads,
-    forecast_lines, form_text, keyword_grant, r304b_triple_texts, reinforce_line, render_ability,
-    render_cost, render_mode, render_variants, same_text, same_written_text, static_pair_texts,
-    subject_group, target_phrases, without_header, written_variants,
+    forecast_lines, form_text, keyword_grant, r304b_triple_texts, r4708_reveal_group_texts,
+    reinforce_line, render_ability, render_cost, render_mode, render_variants, same_text,
+    same_written_text, static_pair_texts, subject_group, target_phrases, without_header,
+    written_variants,
 };
 
 /// Reads a dungeon room's text as a clause of this kind, with no face of its own.
@@ -313,6 +314,10 @@ fn read_clause(
     x_free: bool,
     (own, partners): (&read::Own, Partners<'_>),
 ) -> (Option<Ability>, Vec<Ability>) {
+    // A wording of the r47-05 table reads whole whatever its kind and reminder text.
+    if let Some(found) = read::r4705_whole(text) {
+        return (Some(found), Vec::new());
+    }
     match kind {
         ClauseKind::Keyword => {
             // `check_printed` accepts Enchant on an Aura only.
@@ -518,7 +523,8 @@ fn is_unread_keyword_line(text: &str, kind: ClauseKind, x_free: bool, own: &read
         && !clauses::is_station_block(text)
         && !text.contains('\n')
         && !text.trim_end().ends_with(['.', '"', '\u{201d}'])
-        && read::clause_with(text, kind, x_free, own).is_none()
+        && (read::clause_with(text, kind, x_free, own).is_none()
+            || matches!(read::r4705_whole(text), Some(Ability::Keyword(_))))
 }
 
 /// The face name, and for a legendary face the part of the name before the comma.

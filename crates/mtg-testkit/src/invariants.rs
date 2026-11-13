@@ -1024,6 +1024,8 @@ impl InvariantChecker {
             Event::TokenCreated(_)
                 | Event::CardConjured(_)
                 | Event::EmblemCreated(_)
+                | Event::BecameSpirit { .. }
+                | Event::PhaseBegan { .. }
                 | Event::CompanionBrought { .. }
         ) {
             self.expected_objects += 1;
@@ -1266,7 +1268,7 @@ impl InvariantChecker {
             _ => {
                 // A life floor cuts the life lost, not the damage (CR 614.1).
                 let before = self.expected_life.get(player.index()).copied().unwrap_or(0);
-                let wanted = i32::try_from(amount).unwrap_or(i32::MAX);
+                let wanted = i32::try_from(form.life_lost(amount)).unwrap_or(i32::MAX);
                 let lost = match mtg_engine::rules::damage_life_floor(&self.shadow, player, before)
                 {
                     Some(floor) => wanted.min(before.saturating_sub(floor)),
@@ -1374,7 +1376,9 @@ impl InvariantChecker {
                         .iter()
                         .any(|(_, rules)| matches!(**rules, Ability::InstantActivation { .. }))
             });
-        if instant_too {
+        // An emblem may let its owner activate loyalty abilities any time they could cast an instant (Teferi's Talent).
+        let loyalty_open = loyalty && mtg_engine::rules::loyalty_any_time(&self.shadow, player);
+        if instant_too || loyalty_open {
             return Ok(());
         }
         let turn = self.shadow.turn();

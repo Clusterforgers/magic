@@ -406,6 +406,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::RuleExpired { .. }
         | Event::CreatureDied { .. }
         | Event::PlayerLost { .. }
+        | Event::BecameSpirit { .. }
+        | Event::PhaseBegan { .. }
         | Event::GameEnded { .. }
         // The ability on the stack is public, and so is what was announced for it.
         | Event::AbilityActivated { .. }
@@ -507,6 +509,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::ChosenAtRandom { .. }
         // Players are public.
         | Event::PlayersChosenAtRandom { .. }
+        // The card is revealed to every seat as it is drawn.
+        | Event::FirstDrawRevealed { .. }
         | Event::Revealed(_) => None,
     }
 }
@@ -1480,6 +1484,7 @@ mod tests {
             controller: OWNER,
             cause: Cause {
                 dealers: Vec::new(),
+                counters: Vec::new(),
                 subjects: vec![Target::Object(reference)],
                 snapshots: vec![snapshot(&t.state, subject).unwrap()],
                 amount: 0,
