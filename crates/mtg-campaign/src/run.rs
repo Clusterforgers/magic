@@ -30,11 +30,14 @@ pub const SKIP_GOLD: u32 = 10;
 pub const CARD_PRICE: u32 = 35;
 /// The price of the shop's healing draught.
 pub const DRAUGHT_PRICE: u32 = 30;
+/// The boss card a boss gets once for each hero after the first.
+pub const REINFORCEMENTS: &str = "reinforcements";
 /// Life the draught gives.
 pub const DRAUGHT: i32 = 15;
 
 /// The deck a hero brings.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct HeroDeck {
     /// The deck choice the server resolves (a precon or a stored deck).
     pub id: String,
@@ -46,6 +49,7 @@ pub struct HeroDeck {
 
 /// A choice waiting for one hero.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Offer {
     /// Take one card into the deck (it replaces a basic land) or skip for gold.
     Cards {
@@ -73,6 +77,7 @@ pub enum Offer {
 
 /// One ware of a shop.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum ShopItem {
     /// A card for the deck.
     Card {
@@ -96,6 +101,7 @@ pub enum ShopItem {
 
 /// A hero's answer to their first offer.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Pick {
     /// The item, relic, card or option with this index.
     Take(u8),
@@ -109,6 +115,7 @@ pub enum Pick {
 
 /// A member of the party.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct Hero {
     /// Their name at the table.
     pub name: String,
@@ -148,6 +155,7 @@ impl Hero {
 
 /// Where the run is.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Status {
     /// The party gathers and chooses decks.
     Lobby,
@@ -228,8 +236,10 @@ pub enum RunEvent {
 
 /// A run: its seed and theme, the ladder, the party and where they are.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct Run {
-    /// The seed every draw comes from.
+    /// The seed every draw comes from; the web reads it as the run's code instead.
+    #[cfg_attr(feature = "ts", ts(skip))]
     pub seed: u64,
     /// The difficulty level.
     pub heat: u8,
@@ -818,7 +828,8 @@ impl Run {
                 relics: h.relics.clone(),
             })
             .collect();
-        let extra = i32::try_from(heroes.len().saturating_sub(1)).unwrap_or(0);
+        let extras = heroes.len().saturating_sub(1);
+        let extra = i32::try_from(extras).unwrap_or(0);
         let mut life = boss.life + boss.life_per_hero * extra;
         if self.heat >= 1 {
             life += life / 5;
@@ -846,7 +857,12 @@ impl Run {
                 hand: boss.hand,
                 brain,
                 deck: boss.deck.clone(),
-                rules: boss.rules.clone(),
+                rules: boss
+                    .rules
+                    .iter()
+                    .cloned()
+                    .chain(std::iter::repeat_n(REINFORCEMENTS.to_owned(), extras))
+                    .collect(),
                 phases,
             },
         }))

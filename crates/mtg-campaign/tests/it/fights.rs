@@ -12,9 +12,25 @@ use mtg_testkit::corpus;
 use mtg_testkit::fixture_decks::fixture_deck;
 use rstest::rstest;
 
+/// A deck card by name: a basic land from the testkit, anything else from the corpus.
+fn card(name: &str) -> Arc<CardDefinition> {
+    use mtg_core::color::Color;
+    let basic = [
+        ("Plains", Color::White),
+        ("Island", Color::Blue),
+        ("Swamp", Color::Black),
+        ("Mountain", Color::Red),
+        ("Forest", Color::Green),
+    ];
+    match basic.iter().find(|(basic, _)| *basic == name) {
+        Some((_, color)) => mtg_testkit::cards::land(*color),
+        None => corpus::card(name).unwrap(),
+    }
+}
+
 fn boss_deck(deck: &[(String, u32)]) -> Vec<Arc<CardDefinition>> {
     deck.iter()
-        .flat_map(|(name, n)| (0..*n).map(move |_| corpus::card(name).unwrap()))
+        .flat_map(|(name, n)| (0..*n).map(move |_| card(name)))
         .collect()
 }
 

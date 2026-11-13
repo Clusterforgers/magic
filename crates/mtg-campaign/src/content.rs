@@ -12,6 +12,7 @@ use crate::CampaignError;
 
 /// What a custom card is for.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum CardKind {
     /// A boon a hero keeps for the run, in their command zone at every fight.
     Relic,
@@ -68,6 +69,7 @@ impl CustomCard {
 
 /// How a boss seat is played.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Brain {
     /// Random legal answers.
     Easy,

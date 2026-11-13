@@ -13,6 +13,11 @@ mtg-engine.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
+ts-rs = { workspace = true, optional = true }
+
+[features]
+# Derives TypeScript bindings for the run as the web shows it.
+ts = ["dep:ts-rs"]
 
 [lints]
 workspace = true

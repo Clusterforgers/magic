@@ -8,6 +8,7 @@ use crate::rng::Stream;
 
 /// What a room of the ladder holds.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 #[serde(rename_all = "snake_case")]
 pub enum RoomKind {
     /// A boss fight.
@@ -32,6 +33,7 @@ const CAMPS: [RoomKind; 4] = [
 
 /// One room of the ladder.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct Node {
     /// Its index in the map.
     pub id: u8,
@@ -50,6 +52,7 @@ pub struct Node {
 
 /// A generated ladder.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct FloorMap {
     /// The rooms, row by row; the final boss last.
     pub nodes: Vec<Node>,

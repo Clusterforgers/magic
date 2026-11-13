@@ -1118,5 +1118,30 @@
     }
    }
   ]
+ },
+ {
+  "id": "reinforcements",
+  "name": "Reinforcements",
+  "kind": "Boss",
+  "type_line": "Boss — Advantage",
+  "art": "reinforcements",
+  "text": "At the beginning of your upkeep, draw a card. (A boss gets one Reinforcements for each hero after the first.)",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "Draw": {}
+      }
+     ]
+    }
+   }
+  ]
  }
 ]

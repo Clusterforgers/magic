@@ -142,6 +142,41 @@ impl ChosenDeck {
         })
     }
 
+    /// The deck with each of `added` (an oracle id and its card) in place of a basic land of its library, the last
+    /// ones first, for the cards a Delves hero won; a built-in deck, or one out of basic lands, stays as it is.
+    pub fn with_run_cards(
+        mut self,
+        added: &[(String, Arc<CardDefinition>)],
+    ) -> Result<ChosenDeck, FingerprintError> {
+        let DeckRef::Oracle {
+            cards: ids,
+            printings,
+            ..
+        } = &mut self.deck
+        else {
+            return Ok(self);
+        };
+        let mut cards: Vec<Arc<CardDefinition>> = self.cards.to_vec();
+        for (id, card) in added {
+            let Some(at) = cards.iter().rposition(|c| {
+                c.types.contains(&mtg_core::card::CardType::Land)
+                    && c.supertypes.contains(&mtg_core::card::Supertype::Basic)
+            }) else {
+                break;
+            };
+            cards[at] = Arc::clone(card);
+            if let Some(slot) = ids.get_mut(at) {
+                slot.clone_from(id);
+            }
+            if let Some(printing) = printings.get_mut(at) {
+                *printing = None;
+            }
+        }
+        self.fingerprint = DeckFingerprint::of_seat(&cards, &self.commanders)?;
+        self.cards = cards.into();
+        Ok(self)
+    }
+
     /// The deck with the printing each deck line chose: one entry for every card of the library, then of the
     /// commanders, then the companion, `None` for a card whose line named none. The cards carry it in their identity
     /// and the recipe keeps it for a resumed game; the fingerprint is the same. A built-in deck has no printings and
@@ -497,6 +532,8 @@ pub(crate) struct SeatDecks {
     bots: Vec<crate::bots::BotSeat>,
     /// Whether the host set the teams again since the game was made.
     teams_set: bool,
+    /// The Delves fight the game is, which every recipe it writes keeps.
+    campaign: Option<mtg_campaign::FightPlan>,
 }
 
 impl SeatDecks {
@@ -511,6 +548,7 @@ impl SeatDecks {
             defaults,
             bots: Vec::new(),
             teams_set: false,
+            campaign: None,
         }
     }
 
@@ -518,6 +556,13 @@ impl SeatDecks {
     #[must_use]
     pub(crate) fn with_bots(mut self, bots: Vec<crate::bots::BotSeat>) -> Self {
         self.bots = bots;
+        self
+    }
+
+    /// The lobby of a Delves fight, which every recipe it writes keeps.
+    #[must_use]
+    pub(crate) fn with_campaign(mut self, campaign: Option<mtg_campaign::FightPlan>) -> Self {
+        self.campaign = campaign;
         self
     }
 
@@ -542,6 +587,7 @@ impl SeatDecks {
         SeatDecks::new(recipe.format, recipe.seed, defaults)
             .with_house_rules(recipe.house_rules.clone())
             .with_bots(recipe.bots.clone())
+            .with_campaign(recipe.campaign.clone())
     }
 
     /// What the table is told of `seat`'s deck.
@@ -635,6 +681,7 @@ impl SeatDecks {
             reads: merged_reads(chosen.iter().map(|deck| &deck.reads)),
             conjured: crate::recipe::fingerprints_of(&self.conjured()).ok()?,
             bots: self.bots.clone(),
+            campaign: self.campaign.clone(),
         })
     }
 }
