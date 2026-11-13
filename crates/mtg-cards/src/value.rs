@@ -503,7 +503,7 @@ pub enum DieResult {
     Odd,
     /// How many of them came up even ("for each even result").
     Even,
-    /// The total of their results ("the total of those results").
+    /// The total of their results, else every result rolled while the spell or ability resolves ("the total of those results").
     Total,
     /// How many of them rolled this number ("if you rolled 6 exactly seven times").
     Times(u32),

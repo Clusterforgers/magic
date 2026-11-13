@@ -128,6 +128,7 @@ impl Pass<'_> {
                     max,
                     text: pick.text(),
                     can_cancel: false,
+                    total: None,
                     groups: Vec::new(),
                 }),
             })),

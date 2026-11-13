@@ -510,6 +510,7 @@ pub(super) fn settle<'a>(
                         max,
                         text: pick.text(),
                         can_cancel: false,
+                        total: None,
                         groups,
                     }),
                 }));

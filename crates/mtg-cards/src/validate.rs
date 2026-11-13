@@ -298,7 +298,7 @@ fn w5d_skipped(effects: &[Effect]) -> BTreeSet<&'static str> {
                     let until = inner.get("until") == Some(&serde_json::Value::Bool(true));
                     let shape = match key.as_str() {
                         "Modal" => Some("Instead.Modal"),
-                        "Amass" | "Incubate" => Some("Instead.Waits"),
+                        "Amass" | "Incubate" | "Empower" => Some("Instead.Waits"),
                         "FlipCoin" | "Clash" if until => Some("Instead.Waits"),
                         "CastFromZone" => Some("Instead.Casts"),
                         "Pay" => Some("Instead.Pays"),
@@ -3250,6 +3250,13 @@ impl Walker<'_> {
             | TriggerPattern::BecomesSaddled { .. }
             // The counters put on an object, of any kind.
             | TriggerPattern::CountersPut { counter: None, .. } => true,
+            // Every die the player rolls, whatever its result.
+            TriggerPattern::DiceRolled {
+                highest: false,
+                results,
+                each: true,
+                ..
+            } => results.is_empty(),
             // The investigations of the player.
             TriggerPattern::Did {
                 action: crate::did::Action::Investigated,
@@ -3656,8 +3663,8 @@ impl Walker<'_> {
         }
     }
 
-    /// `RollDice`: a die of at least two faces and rows that each hold a range of totals; several dice only for a choice
-    /// of one result, which has no table and adds nothing.
+    /// `RollDice`: a die of at least two faces and rows that each hold a range of totals; several dice add up unless the
+    /// roller chooses one result, which has no table and adds nothing.
     fn roll_dice(
         &mut self,
         who: &Ref,
@@ -4256,6 +4263,7 @@ impl Walker<'_> {
             | Effect::Renown { count }
             | Effect::Adapt { count }
             | Effect::Fabricate { count }
+            | Effect::Empower { count }
             | Effect::Bolster { count } => w.at("count", |w| w.amount(count)),
             Effect::Search {
                 who,
@@ -4402,6 +4410,26 @@ impl Walker<'_> {
                 w.at("as", |w| w.bind_kept(bind, kind));
                 if let Some(rest) = rest_as {
                     w.at("rest_as", |w| w.bind(rest, kind));
+                }
+            }
+            Effect::ChooseWithin {
+                who,
+                from,
+                within,
+                bind,
+                rest_as,
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("from", |w| w.reference(from, Kind::Object));
+                match within {
+                    TargetSet::TotalPowerAtMost(most) | TargetSet::TotalManaValueAtMost(most) => {
+                        w.at("within", |w| w.amount(most));
+                    }
+                    _ => w.at("within", |w| w.problem("only a total of powers or mana values")),
+                }
+                w.at("as", |w| w.bind_kept(bind, Kind::Object));
+                if let Some(rest) = rest_as {
+                    w.at("rest_as", |w| w.bind(rest, Kind::Object));
                 }
             }
             Effect::ChooseValue { who, kind, bind } => {
@@ -4988,7 +5016,9 @@ impl Walker<'_> {
                 if *duration == Duration::UntilCastFromExile {
                     w.problem(E17A_CAST_ONLY);
                 }
-                if *duration == Duration::NextUntapStep {
+                // An untap limit lasts through the next untap step of the players it limits ("creatures don't untap
+                // during target player's next untap step").
+                if *duration == Duration::NextUntapStep && !matches!(rule, GameRule::UntapLimit { .. }) {
                     w.problem(C7_UNTAP_ONLY);
                 }
                 let attack_at = matches!(rule, GameRule::MustAttackAt { .. });
@@ -5936,6 +5966,7 @@ impl Walker<'_> {
             | GameRule::RadiationGainsLife(who)
             | GameRule::LifeTotalCantChange(who)
             | GameRule::CantDraw(who)
+            | GameRule::DrawFromBottom(who)
             | GameRule::CantSearch(who)
             | GameRule::OwnSpellsCantSearch(who)
             | GameRule::VoteAgain(who)
@@ -6702,6 +6733,7 @@ impl Walker<'_> {
             | ReplaceBy::PayLifeOrTapped(_)
             | ReplaceBy::TappedForCounters { .. }
             | ReplaceBy::RevealOrTapped(_)
+            | ReplaceBy::BeholdOrTapped(_)
             | ReplaceBy::Tribute(_)
             | ReplaceBy::Amplify(_)
             | ReplaceBy::MayWithCounters { .. }
@@ -6766,7 +6798,9 @@ impl Walker<'_> {
             ReplaceBy::TappedForCounters { count: 0, .. } => {
                 self.problem("entering tapped for no counters is a plain choice");
             }
-            ReplaceBy::RevealOrTapped(of) => self.at("of", |w| w.selector(of)),
+            ReplaceBy::RevealOrTapped(of) | ReplaceBy::BeholdOrTapped(of) => {
+                self.at("of", |w| w.selector(of));
+            }
             ReplaceBy::PayOrGraveyard { cost, optional } => {
                 self.pay_or_graveyard(enters, cost, *optional);
             }

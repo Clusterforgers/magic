@@ -43,6 +43,7 @@ pub(super) fn results(r: &mut Reader<'_>, who: Ref) -> Option<TriggerPattern> {
         highest: false,
         results,
         natural,
+        each: false,
     })
 }
 

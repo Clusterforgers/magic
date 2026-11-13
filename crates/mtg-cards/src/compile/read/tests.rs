@@ -1263,6 +1263,7 @@ mod g12a_writers;
 mod g13d_writers;
 mod r376_seats;
 mod r376_secret;
+mod r5508_readers;
 mod r5519_oddities;
 mod r5520_foretold_named;
 mod tc34_control;

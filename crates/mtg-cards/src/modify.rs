@@ -327,7 +327,8 @@ pub enum Duration {
     /// Until a player who is an opponent of the controller becomes the monarch (an exile that lasts that long).
     UntilOpponentBecomesMonarch,
     /// Through the next untap step of the player who controls a permanent it applies to ("doesn't untap during its
-    /// controller's next untap step", CR 502.3): only the rule that a permanent doesn't untap lasts this long.
+    /// controller's next untap step", CR 502.3), or of a player an untap limit names ("creatures don't untap during
+    /// target player's next untap step"): only those rules last this long.
     NextUntapStep,
     /// For as long as every object the effect names is still on the battlefield with a counter of the kind ('Each of those
     /// creatures can't attack you for as long as it has a vow counter on it'): it ends when one of them loses its last counter
@@ -928,6 +929,9 @@ pub enum GameRule {
     },
     /// The players can't draw cards.
     CantDraw(Ref),
+    /// The players draw cards from the bottom of their libraries rather than the top ("You draw cards from the bottom of
+    /// your library rather than the top").
+    DrawFromBottom(Ref),
     /// The players can't search libraries.
     CantSearch(Ref),
     /// Spells and abilities the players control can't cause their controller to search their own library: "Spells and
