@@ -67,7 +67,7 @@ async fn a_game_resumes_from_its_rows_after_a_restart(
 
     let reborn = PgPoolOptions::new().connect_with(options).await.unwrap();
     let store = PgEventStore::new(reborn);
-    let second = resume_game_with(store.clone(), id, setup.clone(), roomy())
+    let second = Box::pin(resume_game_with(store.clone(), id, setup.clone(), roomy()))
         .await
         .unwrap();
     let resumed = second.status().await.unwrap();
