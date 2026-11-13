@@ -1903,6 +1903,7 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
         (GameRule::CantGainLife(who), ZoneKind::Battlefield) => life_gain::rule_sentences(who),
         (
             GameRule::CantSearch(_)
+            | GameRule::OwnSpellsCantSearch(_)
             | GameRule::SkipExtraTurns(_)
             | GameRule::FlipTwoCoins(_)
             | GameRule::ExtraDie(_),

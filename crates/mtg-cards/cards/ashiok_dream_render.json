@@ -1,15 +1,13 @@
 {
   "oracle_id": "93723b12-db34-4047-885e-8606415b1553",
   "name": "Ashiok, Dream Render",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ashiok, Dream Render",
       "oracle_fingerprint": "f4ef52299566fb626edf89fb9ba47543",
       "abilities": [
-        {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 97 } }
-        },
+        { "Rule": { "rule": { "OwnSpellsCantSearch": "Opponents" } } },
         {
           "Loyalty": {
             "cost": { "Minus": 1 },

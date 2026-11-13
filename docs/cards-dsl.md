@@ -114,6 +114,8 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - A vote on players or objects binds `tally` to every vote cast ("for each vote they received" counts it); `VoteFor::AnotherPlayer` leaves the voter out, and a vote on players may be secret (`ChoiceOption::SecretPlayer`). `ChooseWords` is a choice of words that is no vote ("each opponent secretly chooses silence or snitch").
 - What a booster draft notes for cards of a name is `Amount`/`Pred`/`Condition::Drafted(DraftNote)`: a game has no draft, so a noted number is 0 and no name, type, color, player, guess or card exiled before the game is noted (the Conspiracy rulings); the rules of the draft itself are `GameRule::Draft`, a spell line on an instant or sorcery.
 - "If ~ would be destroyed, regenerate it." is a replacement `Destroyed` by `ReplaceBy::Regenerate`: never used up, and not while the permanent can't be regenerated. Each regeneration is logged as `TallyEvent::Regenerated` ("for each time it regenerated this turn").
+- "Spells and abilities your opponents control can't cause their controller to search their library." is `GameRule::OwnSpellsCantSearch`: a search of one's own library by one's own spell or ability finds nothing; another player's spell still makes them search. "Returns each commander they control from the battlefield to the command zone" is a `Move` to `Destination::Command`.
+- Sentences no template shares are read and written whole from a table of `[sentence, ability]` pairs (`compile/read/r5519_wholes.json`): a sentence reads only as printed, and the ability is worded only as that sentence.
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 
 ## Support records

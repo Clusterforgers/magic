@@ -1,0 +1,27 @@
+{
+  "oracle_id": "5f9dd005-1648-451e-b888-69ef81331c95",
+  "name": "Leadership Vacuum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leadership Vacuum",
+      "oracle_fingerprint": "54b504264a1e091798e2b746657e5623",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": ["Commander", { "ControlledBy": { "Target": 0 } }] },
+                  "to": "Command"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
