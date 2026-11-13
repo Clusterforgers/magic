@@ -1319,15 +1319,7 @@ impl<'a> Scope<'a> {
             Ref::PlayersWhere { who, test } => self.players_where(who, test)?,
             Ref::Seated { of, side, opponent } => self.r376_seated(of, *side, *opponent)?,
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
-            Ref::OpponentsOf(inner) => {
-                let of = self.players(inner)?;
-                state
-                    .turn_order_from(state.turn().active())
-                    .into_iter()
-                    .filter(|player| of.iter().any(|named| state.is_opponent(*named, *player)))
-                    .map(Target::Player)
-                    .collect()
-            }
+            Ref::OpponentsOf(inner) => self.r5523_opponents_of(inner)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,
             Ref::OrController(inner) => self.players_or_controllers(inner)?,
             Ref::Each(selector) => self

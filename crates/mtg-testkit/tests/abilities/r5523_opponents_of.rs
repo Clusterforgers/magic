@@ -62,8 +62,8 @@ fn r5523_storyteller_lets_the_casters_opponents_draw(
             driver.answer_passively()?;
         }
     }
-    for seat in 0..seats {
-        let drew = r5523_hand(&driver, seat) + usize::from(seat == 1) - before[seat];
+    for (seat, held) in before.iter().enumerate() {
+        let drew = r5523_hand(&driver, seat) + usize::from(seat == 1) - held;
         let expected = usize::from(draws && seat != 1);
         assert_eq!(drew, expected, "seat {seat}");
     }

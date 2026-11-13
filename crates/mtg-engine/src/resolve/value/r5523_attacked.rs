@@ -1,4 +1,5 @@
-//! The opponents the controller attacked this turn, read from the turn's log of attacks (`Ref::AttackedThisTurn`).
+//! The opponents the controller attacked this turn, read from the turn's log of attacks (`Ref::AttackedThisTurn`), and
+//! the opponents of named players (`Ref::OpponentsOf`).
 
 use mtg_cards::value::TallyEvent;
 use mtg_core::ids::PlayerId;
@@ -31,5 +32,20 @@ impl Scope<'_> {
                 self.state.is_opponent(self.controller, *player) && attacked.contains(player)
             })
             .collect()
+    }
+
+    /// The opponents of the players `inner` names, in turn order (`Ref::OpponentsOf`).
+    pub(super) fn r5523_opponents_of(
+        &self,
+        inner: &mtg_cards::refs::Ref,
+    ) -> Result<Vec<Target>, super::ResolveError> {
+        let of = self.players(inner)?;
+        let state = self.state;
+        Ok(state
+            .turn_order_from(state.turn().active())
+            .into_iter()
+            .filter(|player| of.iter().any(|named| state.is_opponent(*named, *player)))
+            .map(Target::Player)
+            .collect())
     }
 }
