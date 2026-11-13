@@ -59,7 +59,11 @@ fn r5508_tapped(driver: &Driver, seat: usize, name: &str) -> bool {
         .find(|object| {
             object.card().name == name && object.controller() == PlayerId::from_index(seat)
         })
-        .and_then(|object| object.permanent().map(|p| p.tapped()))
+        .and_then(|object| {
+            object
+                .permanent()
+                .map(mtg_engine::object::PermanentState::tapped)
+        })
         .unwrap()
 }
 

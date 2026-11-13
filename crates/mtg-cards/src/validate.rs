@@ -6366,7 +6366,7 @@ impl Walker<'_> {
                 self.problem("entering tapped for no counters is a plain choice");
             }
             ReplaceBy::RevealOrTapped(of) | ReplaceBy::BeholdOrTapped(of) => {
-                self.at("of", |w| w.selector(of))
+                self.at("of", |w| w.selector(of));
             }
             ReplaceBy::PayOrGraveyard { cost, optional } => {
                 self.pay_or_graveyard(enters, cost, *optional);

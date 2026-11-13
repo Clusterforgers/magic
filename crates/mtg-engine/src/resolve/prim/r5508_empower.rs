@@ -256,7 +256,7 @@ mod tests {
             .abilities
             .iter()
             .map(|ability| match ability {
-                Ability::Loyalty { cost, effects, .. } => (cost.clone(), effects.len()),
+                Ability::Loyalty { cost, effects, .. } => (*cost, effects.len()),
                 other => panic!("{other:?}"),
             })
             .collect();

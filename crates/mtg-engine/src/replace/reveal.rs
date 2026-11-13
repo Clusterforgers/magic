@@ -36,11 +36,11 @@ impl Pass<'_> {
                     continue;
                 };
                 let held = card.zone() == Zone::Hand(controller);
-                let controlled = behold
+                let on_battlefield = behold
                     && card.zone() == Zone::Battlefield
                     && card.controller() == controller
                     && named.id != candidate.object.id;
-                if (held || controlled) && !found.contains(&named.id) {
+                if (held || on_battlefield) && !found.contains(&named.id) {
                     found.push(named.id);
                 }
             }
