@@ -662,13 +662,20 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
     Ok(())
 }
 
-/// Moves the top card of the library to the hand and counts the draw, also the draw of the draw step.
+/// Moves the top card of the library (the bottom one for a player who draws from the bottom) to the hand and counts
+/// the draw, also the draw of the draw step.
 fn card_drawn(
     state: &mut GameState,
     player: PlayerId,
     object: ObjectId,
 ) -> Result<(), EngineError> {
-    if state.zones.get(Zone::Library(player)).last() != Some(&object) {
+    let library = state.zones.get(Zone::Library(player));
+    let drawn = if crate::rules::draws_from_bottom(state, player) {
+        library.first()
+    } else {
+        library.last()
+    };
+    if drawn != Some(&object) {
         return Err(invalid("drawn card is not on top of the library"));
     }
     move_object(state, object, Zone::Hand(player), Placement::Top)?;

@@ -8,7 +8,7 @@ use mtg_engine::choose::{CostsChoice, ModeChoice};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_testkit::cards::{free_creature, island};
+use mtg_testkit::cards::{free_creature, island, plains};
 use mtg_testkit::corpus::card;
 use mtg_testkit::scenario::tapped;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
@@ -18,7 +18,7 @@ use rstest::rstest;
 fn r5508_beamed(seats: usize, victim: usize) -> Result<Driver, ScriptError> {
     let mut scenario = Scenario::new(seats)
         .at(2, 0, Step::Main1)
-        .battlefield(0, (0..3).map(|_| ready(island())).collect::<Vec<_>>())
+        .battlefield(0, (0..3).map(|_| ready(plains())).collect::<Vec<_>>())
         .hand(0, [card("Blinding Beam").unwrap()]);
     for seat in 1..seats {
         scenario = scenario.battlefield(
