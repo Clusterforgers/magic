@@ -610,6 +610,19 @@ fn this_turn_suffix(r: &mut Reader<'_>) -> Option<Pred> {
 }
 
 /// What may follow the noun: who controls it, a keyword or a number it has.
+/// "you don't control", "an opponent controls" and "defending player controls".
+fn others_control(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
+    if r.words("you don't control") {
+        Some(not(Pred::ControlledBy(Ref::You)))
+    } else if r.words(form.opponents()) {
+        Some(Pred::ControlledBy(Ref::Opponents))
+    } else if r.words("defending player controls") {
+        Some(Pred::ControlledBy(Ref::Defending))
+    } else {
+        None
+    }
+}
+
 pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if let Some(pred) = r.attempt(|r| super::t17b_attached::suffix(r, form)) {
         return Some(pred);
@@ -631,14 +644,8 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if form == Form::Target && r.words("that wasn't cast from its owner's hand") {
         return Some(not(Pred::CastFrom(ZoneKind::Hand)));
     }
-    if r.words("you don't control") {
-        return Some(not(Pred::ControlledBy(Ref::You)));
-    }
-    if r.words(form.opponents()) {
-        return Some(Pred::ControlledBy(Ref::Opponents));
-    }
-    if r.words("defending player controls") {
-        return Some(Pred::ControlledBy(Ref::Defending));
+    if let Some(pred) = others_control(r, form) {
+        return Some(pred);
     }
     if let Some(pred) = this_turn_suffix(r) {
         return Some(pred);

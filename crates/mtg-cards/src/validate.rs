@@ -1446,6 +1446,33 @@ impl<'a> Walker<'a> {
         self.at("inner", |w| w.condition(inner));
     }
 
+    /// A condition on a kicker or an additional cost the card itself has to offer.
+    fn paid_condition(&mut self, condition: &Condition) {
+        match condition {
+            Condition::Kicked => {
+                self.uses("Condition", "Kicked");
+                if !self.has_kicker {
+                    self.problem("`Kicked` needs a Kicker or Multikicker keyword on the card");
+                }
+            }
+            Condition::KickedWith(cost) => {
+                self.uses("Condition", "KickedWith");
+                if !self.kickers.contains(cost) {
+                    self.problem("`KickedWith` needs a Kicker keyword with that cost on the card");
+                }
+            }
+            Condition::AdditionalCostPaid => {
+                self.uses("Condition", "AdditionalCostPaid");
+                if !self.has_additional_cost {
+                    self.problem(
+                        "`AdditionalCostPaid` needs an `AdditionalCost` ability on the card",
+                    );
+                }
+            }
+            _ => {}
+        }
+    }
+
     fn condition(&mut self, condition: &Condition) {
         match condition {
             Condition::Not(inner) => self.at("Not", |w| w.condition(inner)),
@@ -1469,25 +1496,8 @@ impl<'a> Walker<'a> {
                 self.at("subject", |w| w.reference(subject, Kind::Object));
                 self.at("selector", |w| w.selector(selector));
             }
-            Condition::Kicked => {
-                self.uses("Condition", "Kicked");
-                if !self.has_kicker {
-                    self.problem("`Kicked` needs a Kicker or Multikicker keyword on the card");
-                }
-            }
-            Condition::KickedWith(cost) => {
-                self.uses("Condition", "KickedWith");
-                if !self.kickers.contains(cost) {
-                    self.problem("`KickedWith` needs a Kicker keyword with that cost on the card");
-                }
-            }
-            Condition::AdditionalCostPaid => {
-                self.uses("Condition", "AdditionalCostPaid");
-                if !self.has_additional_cost {
-                    self.problem(
-                        "`AdditionalCostPaid` needs an `AdditionalCost` ability on the card",
-                    );
-                }
+            Condition::Kicked | Condition::KickedWith(_) | Condition::AdditionalCostPaid => {
+                self.paid_condition(condition);
             }
             Condition::CastWith(_) => self.uses("Condition", "CastWith"),
             Condition::CastOffSorceryTiming => self.uses("Condition", "CastOffSorceryTiming"),
