@@ -358,3 +358,9 @@ An encounter buys monsters from the theme's table until the budget is spent: `th
 - Fights must be hard (too easy is not fun): about 10–15 min per fight is fine, longer is fine too. Tune monsters/bosses with bot simulations so a competent party wins roughly half to two thirds of fights at base Heat.
 - Spirits: yes — a hero at 0 life keeps playing as a Spirit with haunt cards.
 - Bosses may have open advantages (extra life, extra cards, extra turns phases, scheme decks).
+
+## Owner decisions 2 (2026-11-13): Boss Rush instead of a room crawl
+- MTG decks need turns to set up; many short fights reward only aggro. So the run is a BOSS RUSH: a series of big boss fights (each a full fresh game: board, hand, library reset), with loot/rewards between bosses. Optional small side events between bosses are fine, but no short skirmish fights.
+- Life carries over between boss fights (with some healing between bosses); tokens and the board do NOT carry over.
+- Team roles emerge from decks and loot: Healer (restores life, keeps the team going between fights), Removal (answers boss threats), Damage dealer (kills the boss), others possible. Loot can favour roles.
+- Loot = run-long "artifacts" (relics, as emblems, not necessarily MTG artifact cards) with passive buffs. Normal: e.g. "The first blue card you cast each fight is copied", "Your red spells cost {1} less". Powerful but dangerous (risk/reward, the party decides together): e.g. "ALL red spells cost {2} less — including the boss's".
