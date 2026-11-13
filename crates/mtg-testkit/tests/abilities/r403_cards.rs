@@ -474,3 +474,38 @@ fn r403_rith_counts_excess_damage_this_turn(
     r403_replays(&driver);
     Ok(())
 }
+
+/// Heart of Bogardan with one age counter gets a second at the upkeep; declined, it deals twice two less two damage to
+/// the target player and each creature they control, and nothing when paid.
+#[rstest]
+fn r403_heart_of_bogardan_burns_when_not_paid(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] paid: bool,
+) -> Result<(), ScriptError> {
+    let foe = seats - 1;
+    let heart = with_counters(
+        ready(card("Heart of Bogardan").unwrap()),
+        r403_other("age"),
+        1,
+    );
+    let mut scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, (0..4).map(|_| ready(mountain())).chain([heart]))
+        .battlefield(foe, [ready(free_creature("Bear", 2, 2))]);
+    for seat in 0..seats {
+        scenario = scenario.library(seat, (0..5).map(|_| forest()));
+    }
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.idle_until(1 + u32::try_from(seats).unwrap(), Step::Upkeep)?;
+    let how = R403Answers {
+        yes: paid,
+        target_seat: Some(foe),
+        ..R403Answers::default()
+    };
+    r403_settle(&mut driver, &how)?;
+    let life = driver.state().player(pid(foe)).unwrap().life();
+    assert_eq!(life, if paid { 20 } else { 18 });
+    assert_eq!(r403_on_battlefield(&driver, "Bear"), paid);
+    r403_replays(&driver);
+    Ok(())
+}

@@ -193,6 +193,22 @@ fn r403_upkeep_read(text: &str, read: &impl Fn(&str) -> Option<Ability>) -> Opti
         who: who.clone(),
         what: crate::refs::Selector::this(),
     };
+    if let Some((deals, rest)) = body.split_once(R403_DEALS_X)
+        && let Some(rest) = rest.strip_suffix(R403_AGE_X)
+    {
+        let mut ability = read(&format!("{R403_TWIN_HEAD}, {deals}{R403_DEALS_ONE}{rest}."))?;
+        let Ability::Triggered {
+            when: read_when,
+            effects,
+            ..
+        } = &mut ability
+        else {
+            return None;
+        };
+        *read_when = when;
+        r403_each_amount(effects, &Amount::Fixed(1), &r403_age_x()).then_some(())?;
+        return Some(ability);
+    }
     if body == R403_EXILES_LIBRARY {
         return Some(Ability::Triggered {
             when,
@@ -251,6 +267,10 @@ fn r403_upkeep_wordings(
         return;
     }
     let mut twin = ability.clone();
+    let mut by_age = false;
+    if let Ability::Triggered { effects, .. } = &mut twin {
+        by_age = r403_each_amount(effects, &r403_age_x(), &Amount::Fixed(1));
+    }
     if let Ability::Triggered { when, .. } = &mut twin {
         *when = TriggerPattern::Did {
             action: Action::Investigated,
@@ -259,8 +279,64 @@ fn r403_upkeep_wordings(
         };
     }
     for text in written(&twin) {
-        if let Some(body) = text.strip_prefix(&format!("{R403_TWIN_HEAD}, ")) {
+        let Some(body) = text.strip_prefix(&format!("{R403_TWIN_HEAD}, ")) else {
+            continue;
+        };
+        if !by_age {
             more.push(format!("{head}, {body}"));
+        } else if let Some((deals, rest)) = body.split_once(R403_DEALS_ONE)
+            && let Some(rest) = rest.strip_suffix('.')
+            && !rest.contains("1 damage")
+        {
+            more.push(format!("{head}, {deals}{R403_DEALS_X}{rest}{R403_AGE_X}"));
+        }
+    }
+}
+
+/// The words of damage counted by age counters, and of the twin's 1 damage.
+const R403_DEALS_X: &str = " deals X damage ";
+/// The twin's words for the damage.
+const R403_DEALS_ONE: &str = " deals 1 damage ";
+/// The end of the sentence that says what X is.
+const R403_AGE_X: &str = ", where X is twice the number of age counters on ~ minus 2.";
+
+/// Twice the age counters on the card, less 2.
+fn r403_age_x() -> Amount {
+    Amount::Sum(vec![
+        Amount::Times {
+            by: 2,
+            of: Box::new(Amount::Counters {
+                on: Ref::This,
+                counter: crate::value::CounterKind::Other("age".to_owned()),
+            }),
+        },
+        Amount::Fixed(-2),
+    ])
+}
+
+/// Makes every damage amount of the steps (inside `Together` too) `to` when each is `from`; whether there was one and
+/// every one was.
+fn r403_each_amount(effects: &mut [Effect], from: &Amount, to: &Amount) -> bool {
+    let mut found = 0;
+    let mut all = true;
+    r403_visit(effects, &mut |amount| {
+        found += 1;
+        all &= amount == from;
+    });
+    if found == 0 || !all {
+        return false;
+    }
+    r403_visit(effects, &mut |amount| *amount = to.clone());
+    true
+}
+
+/// Calls `f` on every damage amount of the steps, inside `Together` too.
+fn r403_visit(effects: &mut [Effect], f: &mut impl FnMut(&mut Amount)) {
+    for effect in effects {
+        match effect {
+            Effect::DealDamage { amount, .. } => f(amount),
+            Effect::Together { effects } => r403_visit(effects, f),
+            _ => {}
         }
     }
 }
