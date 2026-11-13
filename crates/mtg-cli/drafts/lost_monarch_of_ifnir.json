@@ -1,0 +1,50 @@
+{
+  "oracle_id": "626a979f-bed7-4cb1-9ab7-c3f2bbe37781",
+  "name": "Lost Monarch of Ifnir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lost Monarch of Ifnir",
+      "oracle_fingerprint": "3f6338493414209d1e6b9bfe3dc24aff",
+      "abilities": [
+        { "Keyword": { "Afflict": 3 } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }, "Other"] },
+            "mods": [{ "AddKeyword": { "Afflict": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Subtype": "Zombie" },
+                    { "DidThisTurn": { "event": "Damaged", "to": "EachPlayer", "combat": true } }
+                  ]
+                },
+                "op": "Gt",
+                "right": 0
+              }
+            },
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

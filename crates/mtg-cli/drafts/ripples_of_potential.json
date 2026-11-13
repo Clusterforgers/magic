@@ -1,0 +1,41 @@
+{
+  "oracle_id": "45bcebd0-5e93-4433-b92f-b4c161d04bd6",
+  "name": "Ripples of Potential",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ripples of Potential",
+      "oracle_fingerprint": "5f395604bb65ead00ad4f6efbeb3d386",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Proliferate": {} },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "ControlledBy": "You" },
+                      { "DidThisTurn": { "event": "CountersPut" } }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "ControlledBy": "You" },
+                        { "DidThisTurn": { "event": "CountersPut" } }
+                      ]
+                    }
+                  },
+                  "as": "chosen"
+                }
+              },
+              { "PhaseOut": { "what": { "Bound": "chosen" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

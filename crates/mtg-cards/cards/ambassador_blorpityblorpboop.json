@@ -1,0 +1,36 @@
+{
+  "oracle_id": "183a9488-e21f-448b-8b69-e53b56fa0a56",
+  "name": "Ambassador Blorpityblorpboop",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ambassador Blorpityblorpboop",
+      "oracle_fingerprint": "871e00e5a004353e37d7b89c00c8478e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "ticket" }, "count": 3 } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "PutSticker": { "on": [{ "Not": { "Type": "Land" } }, { "OwnedBy": "You" }] }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 123, "end": 356 }
+          }
+        }
+      ]
+    }
+  ]
+}

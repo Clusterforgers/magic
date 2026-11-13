@@ -1,0 +1,40 @@
+{
+  "oracle_id": "d758fd82-7ccb-441d-a948-0abaf0311892",
+  "name": "Night Shift of the Living Dead",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Night Shift of the Living Dead",
+      "oracle_fingerprint": "666e3cc19ef5231118ca8aee8be82500",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 119 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DiceRolled": { "who": "You", "results": [6] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie Employee",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie", "Employee"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

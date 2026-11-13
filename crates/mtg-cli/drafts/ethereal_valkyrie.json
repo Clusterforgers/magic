@@ -1,0 +1,34 @@
+{
+  "oracle_id": "f0f7c3df-52f8-4835-a18f-69e56ffa3432",
+  "name": "Ethereal Valkyrie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ethereal Valkyrie",
+      "oracle_fingerprint": "3a6b7d8d028f0b7853ba1a4f9cbc6721",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              { "Draw": {} },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "card"
+                }
+              },
+              { "ExileHidden": { "what": { "Bound": "card" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

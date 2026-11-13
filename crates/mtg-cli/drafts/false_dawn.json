@@ -1,0 +1,74 @@
+{
+  "oracle_id": "efd9cc25-f445-4de0-9a69-adab9f8878f4",
+  "name": "False Dawn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "False Dawn",
+      "oracle_fingerprint": "d216578e0d2d231ce32f81e1d282a6e8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "ManaProduced": {
+                      "what": [],
+                      "who": "You",
+                      "change": { "Convert": { "from": "Blue", "to": "White" } }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "ManaProduced": {
+                      "what": [],
+                      "who": "You",
+                      "change": { "Convert": { "from": "Black", "to": "White" } }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "ManaProduced": {
+                      "what": [],
+                      "who": "You",
+                      "change": { "Convert": { "from": "Red", "to": "White" } }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "ManaProduced": {
+                      "what": [],
+                      "who": "You",
+                      "change": { "Convert": { "from": "Green", "to": "White" } }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "SpendManaAs": { "who": "You", "spend_as": "AnyColor" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
