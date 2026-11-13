@@ -64,6 +64,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     format!("Choose {fewest} cards in your hand to keep; you discard the rest.")
                 }
             },
+            groups: Vec::new(),
         })
         .collect();
     let kept = match pick_selections(cx, &selections)? {

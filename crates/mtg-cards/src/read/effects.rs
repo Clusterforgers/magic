@@ -517,6 +517,10 @@ fn token_text(ctx: &Ctx, token: &TokenRef) -> String {
                 .map_or_else(|| power.clone(), |t| phrase::amount(ctx, t));
             format!("{power}/{toughness} {}", spec_text(ctx, token))
         }
+        TokenRef::R4700OfChosen { size } => {
+            let size = phrase::amount(ctx, size);
+            format!("{size}/{size} creature of the chosen color and type")
+        }
         TokenRef::CopyOf {
             of, no_mana_cost, ..
         } => format!(

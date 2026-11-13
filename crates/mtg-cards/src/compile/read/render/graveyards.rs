@@ -19,6 +19,7 @@ impl Writer<'_> {
                 count,
                 bind,
                 rest_as: None,
+                differ: None,
             },
             Effect::Exile {
                 what: Ref::Bound(exiled),

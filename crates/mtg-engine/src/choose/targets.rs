@@ -567,6 +567,14 @@ fn rmt1_power(state: &GameState, id: ObjectId) -> u32 {
         .map_or(0, |power| u32::try_from(power).unwrap_or(0))
 }
 
+/// The power of a creature as a key, negative values kept apart from positive ones.
+fn r4709_power_key(state: &GameState, id: ObjectId) -> u64 {
+    let power = crate::characteristics::characteristics(state, id)
+        .and_then(|chars| chars.power)
+        .unwrap_or(0);
+    u64::from_ne_bytes(i64::from(power).to_ne_bytes())
+}
+
 /// The toughness of a creature as a key, negative values kept apart from positive ones.
 fn r377_toughness_key(state: &GameState, id: ObjectId) -> u64 {
     let toughness = crate::characteristics::characteristics(state, id)
@@ -757,12 +765,16 @@ fn c10_dice_per_player_bounds(apart: &[PlayerId], min: u32, max: u32) -> (u32, u
 }
 
 /// The key `rule` reads from a legal target.
-fn together_key(state: &GameState, rule: &TargetSet, target: &Target) -> u64 {
-    let object = match target {
-        Target::Player(player) => return player.get(),
-        Target::Object(object) => state.object(object.id),
-    };
-    let Some(object) = object else {
+pub(crate) fn together_key(state: &GameState, rule: &TargetSet, target: &Target) -> u64 {
+    match target {
+        Target::Player(player) => player.get(),
+        Target::Object(object) => object_key(state, rule, object.id),
+    }
+}
+
+/// The key `rule` reads from an object; `u64::MAX` for one that is gone.
+pub(crate) fn object_key(state: &GameState, rule: &TargetSet, id: ObjectId) -> u64 {
+    let Some(object) = state.object(id) else {
         return u64::MAX;
     };
     match rule {
@@ -783,6 +795,7 @@ fn together_key(state: &GameState, rule: &TargetSet, target: &Target) -> u64 {
             u64::from(object.mana_value())
         }
         TargetSet::TotalPowerAtMost(_) => u64::from(rmt1_power(state, object.id())),
+        TargetSet::DifferentPowers => r4709_power_key(state, object.id()),
         TargetSet::SameToughness => r377_toughness_key(state, object.id()),
     }
 }

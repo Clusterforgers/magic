@@ -243,7 +243,8 @@ fn judged_per_event(kind: &Selector) -> bool {
             | Pred::HasKeyword(_)
             | Pred::HasCounter(_)
             | Pred::HasAnyCounter
-            | Pred::Named(_) => true,
+            | Pred::Named(_)
+            | Pred::OriginallyPrintedIn(_) => true,
             Pred::ControlledBy(named) | Pred::OwnedBy(named) => player(named),
             Pred::Not(inner) => plain(inner),
             Pred::AnyOf(parts) => parts.iter().all(plain),

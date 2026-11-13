@@ -74,6 +74,7 @@ fn takes_of(
         source,
         barred,
         granter: None,
+        pays: crate::r4707_pay_costs::PaysFor::ManaAbility,
     };
     picks
         .iter()
@@ -219,8 +220,20 @@ fn rule_mana(
             source: id,
             barred: &[],
             granter: None,
+            pays: crate::r4707_pay_costs::PaysFor::ManaAbility,
         };
         if pays.iter().any(|part| part.payable(&owner, &[]).is_none()) {
+            continue;
+        }
+        // A ban on sacrificing for costs reads the source a mana ability sacrifices (Treasure under Yasharn).
+        if shape.sacrifice
+            && crate::r4707_pay_costs::r4707_sacrifice_barred(
+                state,
+                player,
+                id,
+                crate::r4707_pay_costs::PaysFor::ManaAbility,
+            )
+        {
             continue;
         }
         // What the cost takes: the source is not offered to itself when the cost taps or loses it.
