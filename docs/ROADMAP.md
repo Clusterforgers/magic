@@ -52,7 +52,6 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 
 Items that touch the running game come first; the play-session findings (pf) lead, the web items before the engine and card items.
 
-- [ ] (lg1) Abundance replacing several draws of one event (Windfall, Wheel of Fortune) fails the batch ("drawn card is not on top of the library") once a kept draw follows a replaced one: the kept draws and the replacing effects read a library that ignores the batch's earlier draws and reveals; `replace.rs` `finish`, `replace/w5d_instead.rs` `r37_taken_from_libraries`
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
 - [ ] (pl2m) `join.spec.ts` "a guest follows an invite link" times out on the Join button only in a full run: the trace a failed run keeps (`web/test-results`) names the cause, and the fix makes the spec pass in full runs

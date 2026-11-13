@@ -78,7 +78,12 @@ impl Pass<'_> {
         unit: &Unit,
     ) -> Ran {
         let cause = self.w5d_cause(at, unit);
-        let taken = self.r37_taken_from_libraries(at);
+        // A draw sees the draws and replacements before it (CR 121.6); simultaneous events take apart.
+        let taken = if matches!(unit, Unit::Draw { .. }) {
+            self.lg1_libraries_before(at)
+        } else {
+            self.r37_taken_from_libraries(at)
+        };
         let state = taken.as_ref().unwrap_or(self.state);
         let answers = &mut self.answers;
         match w5d_run_instead(
