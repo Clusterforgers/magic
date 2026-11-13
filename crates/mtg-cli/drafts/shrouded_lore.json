@@ -1,0 +1,81 @@
+{
+  "oracle_id": "f21bd7b6-a03f-402e-a2b1-899ccbd9f0cf",
+  "name": "Shrouded Lore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shrouded Lore",
+      "oracle_fingerprint": "46ebb37f20263db2d857d753e9fac6c8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                  "as": "first"
+                }
+              },
+              { "Remember": { "what": { "Bound": "first" }, "slot": "chosen" } },
+              { "Remember": { "what": { "Bound": "first" }, "slot": "last" } },
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" },
+                          { "Not": { "Is": { "Remembered": { "on": "This", "slot": "chosen" } } } }
+                        ]
+                      },
+                      "selector": [],
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "effects": [
+                    {
+                      "Pay": {
+                        "cost": "{B}",
+                        "paid": [
+                          {
+                            "Choose": {
+                              "who": { "Target": 0 },
+                              "from": {
+                                "Each": [
+                                  { "In": "Graveyard" },
+                                  { "OwnedBy": "You" },
+                                  {
+                                    "Not": {
+                                      "Is": { "Remembered": { "on": "This", "slot": "chosen" } }
+                                    }
+                                  }
+                                ]
+                              },
+                              "as": "pick"
+                            }
+                          },
+                          { "Remember": { "what": { "Bound": "pick" }, "slot": "chosen" } },
+                          { "Forget": { "slot": "last" } },
+                          { "Remember": { "what": { "Bound": "pick" }, "slot": "last" } }
+                        ]
+                      }
+                    }
+                  ],
+                  "most": 100,
+                  "ask": "You"
+                }
+              },
+              {
+                "Move": { "what": { "Remembered": { "on": "This", "slot": "last" } }, "to": "Hand" }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

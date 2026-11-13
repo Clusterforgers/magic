@@ -40,7 +40,10 @@ pub(super) fn left_to_table(
     let on_a_read = state
         .source_object(source.id)
         .is_some_and(|holder| holder.card().read);
-    if !on_a_read && !matches!(error, ResolveError::Unsupported(_)) {
+    // A refused answer is the player's to correct, never the table's.
+    if matches!(error, ResolveError::Illegal(_))
+        || (!on_a_read && !matches!(error, ResolveError::Unsupported(_)))
+    {
         return None;
     }
     let mut events = vec![Event::AbilityLeftToTable(Box::new(LeftToTable {

@@ -1,0 +1,154 @@
+{
+  "oracle_id": "82909ff4-f6f7-44f1-bbd0-6e54afa5ee6d",
+  "name": "Mana Web",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mana Web",
+      "oracle_fingerprint": "f5a7045a911382975f697ff4469e464b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "TappedForMana": { "what": [{ "Type": "Land" }, { "ControlledBy": "Opponents" }] }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": "Triggering",
+                      "selector": [{ "CouldProduce": "White" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Tap": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Land" },
+                            { "ControlledBy": { "ControllerOf": "Triggering" } },
+                            { "CouldProduce": "White" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "Triggering", "selector": [{ "CouldProduce": "Blue" }] }
+                  },
+                  "then": [
+                    {
+                      "Tap": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Land" },
+                            { "ControlledBy": { "ControllerOf": "Triggering" } },
+                            { "CouldProduce": "Blue" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": "Triggering",
+                      "selector": [{ "CouldProduce": "Black" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Tap": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Land" },
+                            { "ControlledBy": { "ControllerOf": "Triggering" } },
+                            { "CouldProduce": "Black" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "Triggering", "selector": [{ "CouldProduce": "Red" }] }
+                  },
+                  "then": [
+                    {
+                      "Tap": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Land" },
+                            { "ControlledBy": { "ControllerOf": "Triggering" } },
+                            { "CouldProduce": "Red" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": "Triggering",
+                      "selector": [{ "CouldProduce": "Green" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Tap": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Land" },
+                            { "ControlledBy": { "ControllerOf": "Triggering" } },
+                            { "CouldProduce": "Green" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": "Triggering",
+                      "selector": [{ "CouldProduce": "Colorless" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Tap": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Land" },
+                            { "ControlledBy": { "ControllerOf": "Triggering" } },
+                            { "CouldProduce": "Colorless" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

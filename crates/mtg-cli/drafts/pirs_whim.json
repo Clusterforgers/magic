@@ -1,0 +1,57 @@
+{
+  "oracle_id": "01c2b66a-66d1-4282-a078-b1fa737c57f4",
+  "name": "Pir's Whim",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pir's Whim",
+      "oracle_fingerprint": "f6680c072405abc673769ec298d16a10",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "Search": {
+                              "who": { "Bound": "player" },
+                              "filter": [{ "Type": "Land" }],
+                              "as": "land"
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": { "Bound": "land" },
+                              "to": { "Battlefield": { "tapped": true } }
+                            }
+                          },
+                          { "Shuffle": { "who": { "Bound": "player" } } }
+                        ],
+                        "second": [
+                          {
+                            "Sacrifice": {
+                              "who": { "Bound": "player" },
+                              "filter": [
+                                { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

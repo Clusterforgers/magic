@@ -1,0 +1,42 @@
+{
+  "oracle_id": "07d0b06b-80cb-4518-92c9-84ea87a7e08a",
+  "name": "Teferi, Temporal Archmage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teferi, Temporal Archmage",
+      "oracle_fingerprint": "672afac145a1d4822d816a40073e24f5",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": { "what": { "Bound": "rest" }, "to": { "Library": { "place": "Bottom" } } }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "targets": [{ "what": { "Object": [] }, "bounds": { "min": 0, "max": 4 } }],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 10 },
+            "effects": [
+              { "CreateEmblem": { "abilities": [{ "InstantActivation": { "kind": "Loyalty" } }] } }
+            ]
+          }
+        },
+        { "Rule": { "rule": "CanBeCommander" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "oracle_id": "5f0ad09f-a9ee-42df-b32d-9d842ce5dd00",
+  "name": "Scars of the Veteran",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scars of the Veteran",
+      "oracle_fingerprint": "6b7f188e89552b125e2f5f028d9313ad",
+      "abilities": [
+        { "FreeCast": { "cost": [{ "ExileFromHand": { "filter": [{ "Color": "White" }] } }] } },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": {
+                    "PreventCountedAnd": {
+                      "most": 7,
+                      "effects": [
+                        {
+                          "If": {
+                            "condition": {
+                              "Matches": {
+                                "subject": { "Target": 0 },
+                                "selector": [{ "Type": "Creature" }]
+                              }
+                            },
+                            "then": [
+                              { "Let": { "as": "prevented", "amount": "Triggering" } },
+                              {
+                                "DelayedTrigger": {
+                                  "when": { "StepBegins": { "step": "End" } },
+                                  "effects": [
+                                    {
+                                      "PutCounters": {
+                                        "on": { "Target": 0 },
+                                        "counter": { "Other": "+0/+1" },
+                                        "count": { "Bound": "prevented" }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

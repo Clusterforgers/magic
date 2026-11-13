@@ -1,4 +1,4 @@
-//! Goal: ninjutsu is an activated ability from the hand that returns an unblocked attacker the player controls to its owner's hand and puts the card onto the battlefield tapped and attacking the same player, without declaring it as an attacker: it is offered only after blockers are declared and only with an unblocked attacker and the mana to pay, never for a blocked attacker or one that left combat; the attacker returns as a cost, the ninja deals damage as an attacker, a copy of it is no attacker, and the ability does nothing for a card that left the hand; at 2 to 4 seats.
+//! Goal: ninjutsu is an activated ability from the hand that returns an unblocked attacker the player controls to its owner's hand and puts the card onto the battlefield tapped and attacking the same player, without declaring it as an attacker: it is offered only after blockers are declared and only with an unblocked attacker and the mana to pay, never for a blocked attacker or one that left combat; the attacker returns as a cost, the ninja deals damage as an attacker, a copy of it is no attacker, and the ability does nothing for a card that left the hand; the player chooses which of several unblocked attackers returns (asked only with more than one, in words that say so) and the ninja attacks what that one attacked; at 2 to 4 seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common::{name_of, on_battlefield, pid};
@@ -321,5 +321,130 @@ fn a_ninja_that_left_the_hand_in_response_does_nothing_and_the_attacker_stays_re
     assert_eq!(driver.state().combat().attackers().len(), 0);
     assert_eq!(driver.state().stack(), []);
     assert_replays(&driver);
+    Ok(())
+}
+
+/// Seat 0 holds Ninja of the Deep Hours and attacks with Grizzly Bears and, when `elves`, Llanowar Elves, each at the
+/// seat paired with it; every defender declares no blockers and the game stops in the declare blockers step.
+fn two_attackers(seats: usize, elves: bool) -> Result<(Driver, Vec<usize>), ScriptError> {
+    let mut permanents = vec![
+        ready(island()),
+        ready(island()),
+        ready(mtg_testkit::corpus::card("Grizzly Bears").unwrap()),
+    ];
+    if elves {
+        permanents.push(ready(mtg_testkit::corpus::card("Llanowar Elves").unwrap()));
+    }
+    let scenario = (0..seats).fold(
+        Scenario::new(seats)
+            .hand_named(0, ["Ninja of the Deep Hours"])
+            .battlefield(0, permanents),
+        |scenario, seat| scenario.library(seat, (0..8).map(|_| forest())),
+    );
+    let mut driver = Driver::from_scenario(scenario)?;
+    let defenders = vec![1, seats - 1];
+    driver.idle_until(1, Step::DeclareAttackers)?;
+    let mut attacks = vec![("Grizzly Bears", defenders[0])];
+    if elves {
+        attacks.push(("Llanowar Elves", defenders[1]));
+    }
+    driver.attack(&attacks)?;
+    while driver.state().turn().step() != Step::DeclareBlockers
+        || !matches!(driver.decision()?.kind, DecisionKind::Priority(_))
+    {
+        if matches!(driver.decision()?.kind, DecisionKind::DeclareBlockers(_)) {
+            driver.answer(Answer::DeclareBlockers(Vec::new()))?;
+        } else {
+            driver.answer_passively()?;
+        }
+    }
+    Ok((driver, defenders))
+}
+
+#[rstest]
+fn the_player_chooses_which_unblocked_attacker_returns_and_the_ninja_attacks_its_defender(
+    #[values(2, 3, 4)] seats: usize,
+    #[values("Grizzly Bears", "Llanowar Elves")] returned: &str,
+) -> Result<(), ScriptError> {
+    let ninja = "Ninja of the Deep Hours";
+    let (mut driver, defenders) = two_attackers(seats, true)?;
+    let defender = if returned == "Grizzly Bears" {
+        defenders[0]
+    } else {
+        defenders[1]
+    };
+    driver.begin_activation(ninja)?;
+    let DecisionKind::ChooseCards(options) = &driver.decision()?.kind else {
+        panic!(
+            "the attacker to return is asked, got {:?}",
+            driver.decision()?.kind
+        );
+    };
+    let attackers: Vec<_> = ["Grizzly Bears", "Llanowar Elves"]
+        .iter()
+        .map(|name| on_battlefield(driver.state(), name).unwrap())
+        .collect();
+    let mut offered = options.from.clone();
+    offered.sort();
+    let mut expected = attackers.clone();
+    expected.sort();
+    assert_eq!(offered, expected, "both unblocked attackers are offered");
+    assert_eq!((options.min, options.max), (1, 1));
+    assert_eq!(
+        options.text,
+        "Return an unblocked attacking creature you control to its owner's hand."
+    );
+    let pick = on_battlefield(driver.state(), returned).unwrap();
+    driver.answer(Answer::ChooseCards(mtg_engine::choose::CardsChoice(vec![
+        pick,
+    ])))?;
+    driver.answer(Answer::PayMana(PayChoice::Auto))?;
+    settle(&mut driver)?;
+    assert_eq!(count(driver.state(), Zone::Hand(pid(0)), returned), 1);
+    assert!(
+        !driver.engine().events().iter().any(
+            |event| matches!(event, Event::ZoneChanged { object, to: Zone::Graveyard(_), .. } if *object == pick)
+        ),
+        "the returned creature does not die"
+    );
+    let kept = attackers.into_iter().find(|id| *id != pick).unwrap();
+    let ninja_id = on_battlefield(driver.state(), ninja).expect("the ninja entered");
+    let mut attacking: Vec<_> = driver
+        .state()
+        .combat()
+        .attackers()
+        .iter()
+        .map(|a| (a.object(), a.target()))
+        .collect();
+    attacking.sort();
+    let kept_target = if returned == "Grizzly Bears" {
+        defenders[1]
+    } else {
+        defenders[0]
+    };
+    let mut expected = vec![
+        (kept, AttackTarget::Player(pid(kept_target))),
+        (ninja_id, AttackTarget::Player(pid(defender))),
+    ];
+    expected.sort();
+    assert_eq!(
+        attacking, expected,
+        "the ninja attacks the returned attacker's defender"
+    );
+    assert_replays(&driver);
+    Ok(())
+}
+
+#[rstest]
+fn a_single_unblocked_attacker_is_returned_without_a_question(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let (mut driver, _) = two_attackers(seats, false)?;
+    driver.begin_activation("Ninja of the Deep Hours")?;
+    assert!(
+        matches!(driver.decision()?.kind, DecisionKind::PayMana(_)),
+        "only the mana is asked, got {:?}",
+        driver.decision()?.kind
+    );
     Ok(())
 }

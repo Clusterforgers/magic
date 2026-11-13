@@ -1,0 +1,49 @@
+{
+  "oracle_id": "d1ce7fcf-42f8-4b35-9ba1-55033c65c43e",
+  "name": "Barroom Brawl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barroom Brawl",
+      "oracle_fingerprint": "e587ddbd92699e937d391839191d97e5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "ControlledBy": {
+                        "Seated": { "of": "You", "side": "Left", "opponent": true }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } },
+              {
+                "May": {
+                  "who": { "Seated": { "of": "You", "side": "Left", "opponent": true } },
+                  "effects": [
+                    {
+                      "CopySpell": {
+                        "what": "This",
+                        "who": { "Seated": { "of": "You", "side": "Left", "opponent": true } },
+                        "new_targets": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

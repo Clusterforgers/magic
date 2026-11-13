@@ -1,0 +1,45 @@
+{
+  "oracle_id": "c995bc01-f278-4088-9ae2-1b50f87b2a61",
+  "name": "Obsidian Charmaw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Obsidian Charmaw",
+      "oracle_fingerprint": "ce48f48802e6beccf09996b77876a5db",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Count": [
+                { "Type": "Land" },
+                { "ControlledBy": "Opponents" },
+                { "CouldProduce": "Colorless" }
+              ]
+            }
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Land" },
+                    { "Not": { "Supertype": "Basic" } },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
