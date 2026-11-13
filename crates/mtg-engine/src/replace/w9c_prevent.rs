@@ -218,7 +218,15 @@ mod tests {
         game.zone(Zone::Battlefield)[index]
     }
 
+    /// The events of the batch, with the record of each prevention left out.
     fn events(game: &GameState, batch: Vec<Event>) -> Vec<Event> {
+        all_events(game, batch)
+            .into_iter()
+            .filter(|event| !matches!(event, Event::DamagePrevented { .. }))
+            .collect()
+    }
+
+    fn all_events(game: &GameState, batch: Vec<Event>) -> Vec<Event> {
         match process(game, batch, &[]).unwrap() {
             Processed::Events(events) => events,
             Processed::Ask { .. } => panic!("nothing is asked"),
@@ -277,6 +285,18 @@ mod tests {
     fn half_of_the_damage_rounded_up_is_prevented(#[case] amount: u32, #[case] dealt: u32) {
         let game = game(2, &[HALF]);
         let (wall, bear) = (at(&game, 1), at(&game, 2));
+        let prevented: u32 = all_events(&game, vec![hit(bear, wall, amount)])
+            .iter()
+            .map(|event| match event {
+                Event::DamagePrevented { amount, .. } => *amount,
+                _ => 0,
+            })
+            .sum();
+        assert_eq!(
+            prevented,
+            amount - dealt,
+            "the prevention is recorded with its amount"
+        );
         let out = events(&game, vec![hit(bear, wall, amount)]);
         if dealt == 0 {
             assert!(out.is_empty(), "{out:?}");

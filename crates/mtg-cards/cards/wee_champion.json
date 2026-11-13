@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ad8b90c0-4c66-4fc6-a749-cd10e6deabdb",
+  "name": "Wee Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wee Champion",
+      "oracle_fingerprint": "39318a9d0f091041de4f13f32b118f0b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "PutSticker", "who": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": { "TriggeringSticker": "Art" },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }],
+                  "otherwise": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

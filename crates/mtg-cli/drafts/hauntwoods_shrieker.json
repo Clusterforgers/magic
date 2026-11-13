@@ -1,0 +1,44 @@
+{
+  "oracle_id": "09c275bd-8323-485e-81f6-aff1f99d0d03",
+  "name": "Hauntwoods Shrieker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hauntwoods Shrieker",
+      "oracle_fingerprint": "812ca17698ebcc60a88bbc12063ee187",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": {} },
+              { "Performed": { "action": "ManifestedDread", "card": { "Bound": "rest3" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{G}",
+            "targets": [{ "what": { "Object": ["FaceDown"] } }],
+            "effects": [
+              { "Reveal": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Target": 0 }, "selector": [{ "Type": "Creature" }] }
+                  },
+                  "then": [
+                    { "May": { "effects": [{ "TurnFaceUp": { "what": { "Target": 0 } } }] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

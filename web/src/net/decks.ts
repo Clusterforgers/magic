@@ -206,7 +206,12 @@ export function readPictures(value: unknown): DeckPicture[] | null {
   const out: DeckPicture[] = []
   for (const item of value) {
     if (!isRecord(item) || !isText(item.oracle_id) || !isText(item.name)) return null
-    out.push({ oracle_id: item.oracle_id, name: item.name })
+    if (item.printing_id !== undefined && !isText(item.printing_id)) return null
+    out.push({
+      oracle_id: item.oracle_id,
+      name: item.name,
+      ...(item.printing_id === undefined ? {} : { printing_id: item.printing_id }),
+    })
   }
   return out
 }

@@ -1,0 +1,101 @@
+{
+  "oracle_id": "521a63cf-5e83-4649-9800-c62b2fc474d6",
+  "name": "The Legend of Yangchen // Avatar Yangchen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Legend of Yangchen",
+      "oracle_fingerprint": "3ca1a0b09e610d466280046d8f2fd904",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 3 } },
+                            { "ControlledBy": "Opponents" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "pick"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "pick" }, "as": "chosen", "adds": true } }
+                  ]
+                }
+              },
+              { "Exile": { "what": { "Bound": "chosen" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "May": { "effects": [{ "Draw": { "who": { "Target": 0 }, "count": 3 } }] } },
+              { "If": { "condition": "Performed", "then": [{ "Draw": { "count": 3 } }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Avatar Yangchen",
+      "oracle_fingerprint": "5c1ce56c0c321e76e74e7526c09418fd",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 2 } },
+            "targets": [
+              {
+                "what": { "Object": ["Other", { "Not": { "Type": "Land" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "airbent" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "who": { "OwnerOf": { "Bound": "airbent" } },
+                      "from": "Exile",
+                      "only": { "Bound": "airbent" },
+                      "rather": "{2}"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

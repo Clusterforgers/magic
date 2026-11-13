@@ -128,6 +128,17 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     'Bo rolls a d20: 14',
   ],
   Clashed: [{ Clashed: { player: 1, opponent: 2, won: false } }, 'Bo loses a clash with Cy'],
+  VotesFinished: [
+    {
+      VotesFinished: {
+        ballots: [
+          [1, 0],
+          [2, 1],
+        ],
+      },
+    },
+    'The players finish voting',
+  ],
   CitysBlessingGained: [{ CitysBlessingGained: { player: 1 } }, "Bo gets the city's blessing"],
   EnduringStoryGained: [{ EnduringStoryGained: { player: 1 } }, 'Bo gets an enduring story'],
   SpeedChanged: [{ SpeedChanged: { player: 1, speed: 2 } }, "Bo's speed becomes 2"],
@@ -287,6 +298,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Regenerated: [{ Regenerated: { object: 1 } }, 'Grizzly Bears regenerates'],
   DamageRemoved: [{ DamageRemoved: { object: 1 } }, 'Grizzly Bears has all its damage removed'],
   ShieldUsed: [{ ShieldUsed: { id: 2, left: 3 } }, 'A prevention shield has 3 left'],
+  DamagePrevented: [
+    { DamagePrevented: { source: 4, target: { Player: 1 }, amount: 3 } },
+    '3 damage Lightning Bolt would deal to Bo is prevented',
+  ],
   CreatureDied: [
     { CreatureDied: { object: 1, cause: 'LethalDamage' } },
     'Grizzly Bears dies from lethal damage',
@@ -951,6 +966,14 @@ describe('events with more than one shape', () => {
     ],
     [effect(objects(2), 'CantBeBlocked', 'UntilEndOfTurn'), "Hill Giant can't be blocked until end of turn"],
     [
+      effect(objects(2), 'BlockedByAll', 'UntilEndOfTurn'),
+      "Hill Giant can't be blocked unless all creatures defending player controls block it until end of turn",
+    ],
+    [
+      effect(objects(2), 'CantAttack', 'TheirNextTurn'),
+      "Hill Giant can't attack during that player's next turn",
+    ],
+    [
       effect(objects(2), 'CantBeTurnedFaceUp', 'UntilEndOfTurn'),
       "Hill Giant can't be turned face up until end of turn",
     ],
@@ -1001,6 +1024,14 @@ describe('events with more than one shape', () => {
     [
       effect(objects(2), { CantAttackYou: { you: 0, attacked: 'Player' } }, 'UntilEndOfTurn'),
       "Hill Giant can't attack Ana until end of turn",
+    ],
+    [
+      effect(objects(2), { CantAttackOwner: { attacked: 'Both' } }, 'UntilEndOfTurn'),
+      "Hill Giant can't attack its owner or planeswalkers its owner controls until end of turn",
+    ],
+    [
+      effect(objects(2), 'CantBeBlockedUnlessAttackingOwner', 'UntilEndOfTurn'),
+      "Hill Giant can't be blocked unless it's attacking its owner or a permanent its owner controls until end of turn",
     ],
     [
       effect(objects(2), { AddSupertype: 'Legendary' }, 'UntilEndOfTurn'),
@@ -1151,6 +1182,7 @@ describe('events with more than one shape', () => {
     [ruleEffect('GraveyardCardsUntargetable', 'Forever'), "Cards in graveyards can't be targeted"],
     [ruleEffect('DamageAsWither', 'Forever'), 'Damage is dealt as though its source had wither'],
     [ruleEffect('ManaBurn', 'Forever'), 'Unspent mana makes its player lose that much life'],
+    [ruleEffect('ReverseTurnOrder', 'Forever'), 'Turn order is reversed'],
     [
       ruleEffect({ AttackAsThoughHasteAt: [1] }, 'Forever'),
       'Creatures can attack Bo as though they had haste',

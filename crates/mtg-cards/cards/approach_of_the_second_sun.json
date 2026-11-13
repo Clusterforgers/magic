@@ -1,0 +1,40 @@
+{
+  "oracle_id": "e4125377-34c0-4b54-bdf8-4e88f5d24565",
+  "name": "Approach of the Second Sun",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Approach of the Second Sun",
+      "oracle_fingerprint": "59ee137ca76f6858e7aec63d5f82210f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      { "Matches": { "subject": "This", "selector": [{ "CastFrom": "Hand" }] } },
+                      {
+                        "Compare": {
+                          "left": { "CastSameNameThisGame": "You" },
+                          "op": "Ge",
+                          "right": 2
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "WinGame": {} }],
+                  "otherwise": [
+                    { "Move": { "what": "This", "to": { "Library": { "place": { "Below": 6 } } } } },
+                    { "GainLife": { "amount": 7 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

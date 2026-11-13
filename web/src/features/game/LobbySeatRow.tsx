@@ -102,7 +102,7 @@ export function LobbySeatRow({ row, account, host = false, team, remove }: Lobby
             {row.named ? null : <span className="text-xs text-muted-foreground">not joined yet</span>}
           </span>
           {team === undefined ? null : team.change === undefined ? (
-            <TeamBadge team={team.team} />
+            <TeamBadge team={team.team} className="self-start" />
           ) : (
             <TeamChoice seat={row.seat} name={row.name} team={team.team} change={team.change} />
           )}

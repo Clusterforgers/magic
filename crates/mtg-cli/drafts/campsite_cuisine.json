@@ -1,0 +1,79 @@
+{
+  "oracle_id": "45f58002-c831-4b35-8b8c-9a502118e2ec",
+  "name": "Campsite Cuisine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Campsite Cuisine",
+      "oracle_fingerprint": "f7d4febb8f985b5c0af86f59782de312",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Supertype": "Legendary" } },
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "by": "You", "at": "Opponents" } },
+            "effects": [
+              {
+                "SacrificeUpTo": {
+                  "filter": [{ "Subtype": "Food" }],
+                  "count": { "Count": [{ "Subtype": "Food" }, { "ControlledBy": "You" }] },
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": { "Object": [{ "Type": "Creature" }, "Attacking"] },
+                      "bounds": {
+                        "min": 0,
+                        "max": { "CountOf": { "of": { "Bound": "sacrificed" }, "filter": [] } }
+                      }
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "ModifyPT": { "power": 3, "toughness": 3 } },
+                          { "AddKeyword": "Trample" },
+                          { "AddKeyword": "Indestructible" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

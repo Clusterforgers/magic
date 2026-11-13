@@ -2,6 +2,7 @@
  * The words on the controls of the Priority prompt, from what the table shows: the step, whose turn it is and the top
  * of the stack. Display only: what a button does is decided by the server and the engine, never by these.
  */
+import { sharesTurn } from '@/lib/teams'
 import type { PlayState } from '@/play/store'
 import type { Step, YieldUntil } from '@/protocol/generated'
 import type { DockForm } from '../dockLayout'
@@ -128,7 +129,7 @@ export function passSituation(state: PlayState): PassSituation {
   const { view, seat } = state
   return {
     step: view?.turn.step ?? 'Main1',
-    yourTurn: view !== null && seat !== null && view.turn.active === seat,
+    yourTurn: view !== null && seat !== null && sharesTurn(view.house_rules?.teams, seat, view.turn.active),
     top: topOfStack(state)?.name ?? null,
   }
 }

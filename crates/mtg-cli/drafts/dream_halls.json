@@ -1,0 +1,24 @@
+{
+  "oracle_id": "d901e17f-a5f4-49d9-8a6d-ab771949af24",
+  "name": "Dream Halls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dream Halls",
+      "oracle_fingerprint": "d04b7f8158a68aa3339e6ad66d1f5071",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "who": "EachPlayer",
+                "rather": [{ "Discard": { "filter": [{ "SharesColor": "This" }] } }],
+                "any_cast": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

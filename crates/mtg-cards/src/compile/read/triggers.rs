@@ -242,6 +242,9 @@ fn single_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     if !(r.word("when") || r.word("whenever")) {
         return None;
     }
+    if let Some(found) = r.attempt(super::r379_atoms::r379_voting) {
+        return Some(found);
+    }
     if let Some(found) = r.attempt(super::w9d_exert::w9d_event) {
         return Some(found);
     }
@@ -250,6 +253,7 @@ fn single_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         .or_else(|| r.attempt(super::l31a_events::l31a_action))
         .or_else(|| r.attempt(super::r375_events::r375_event))
         .or_else(|| r.attempt(super::r405_events::r405_event))
+        .or_else(|| r.attempt(super::un34_stickers::un34_sticker_event))
     {
         return Some(found);
     }
@@ -1077,7 +1081,9 @@ fn damage_dealt(r: &mut Reader<'_>, source: &Selector) -> Option<TriggerPattern>
         r.need("damage")?;
         None
     };
-    let to = if r.words("to a player") {
+    let to = if r.words("to its owner") {
+        Some(Ref::OwnerOf(Box::new(Ref::Dealer)))
+    } else if r.words("to a player") {
         Some(Ref::EachPlayer)
     } else if r.words("to an opponent") {
         Some(Ref::Opponents)
@@ -1548,6 +1554,7 @@ fn damage_text(combat: Option<bool>, to: Option<&Ref>) -> Option<String> {
         Some(Ref::EachPlayer) => " to a player",
         Some(Ref::Opponents) => " to an opponent",
         Some(Ref::You) => " to you",
+        Some(Ref::OwnerOf(dealer)) if **dealer == Ref::Dealer => " to its owner",
         Some(_) => return None,
     };
     Some(format!("{kind}{to}"))
@@ -1680,7 +1687,8 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             Some(format!("At the beginning of {}", step_text(*step, whose)?))
         }
         TriggerPattern::SpellCast { what, by } => spell_cast_text(pattern, what, by),
-        TriggerPattern::Did { .. } => super::r7e_events::r7e_did_text(pattern),
+        TriggerPattern::Did { .. } => super::r379_atoms::r379_voting_text(pattern)
+            .or_else(|| super::r7e_events::r7e_did_text(pattern)),
         TriggerPattern::SpellCopied { what, by } => super::w2e_copied::w2e_copy_text(what, by),
         TriggerPattern::Sacrificed { what, by } => Some(format!(
             "Whenever {} {}",
@@ -1740,6 +1748,18 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         | TriggerPattern::Surveilled { .. } => w9a_player_action_text(pattern),
         TriggerPattern::LifeGained { who } => {
             Some(format!("Whenever {} life", player_verb(who, "gain")?))
+        }
+        // "Whenever damage that would be dealt to you is prevented": the damage prevented is the amount of the event.
+        TriggerPattern::DamagePrevented { who } => {
+            let whom = match who {
+                Ref::You => "you",
+                Ref::Opponents => "an opponent",
+                Ref::EachPlayer => "a player",
+                _ => return None,
+            };
+            Some(format!(
+                "Whenever damage that would be dealt to {whom} is prevented"
+            ))
         }
         TriggerPattern::LifeLost { who } => {
             Some(format!("Whenever {} life", player_verb(who, "lose")?))

@@ -570,6 +570,7 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             | Ability::Static { .. }
             | Ability::AdditionalCost { .. }
             | Ability::FreeCast { .. }
+            | Ability::AltCast { .. }
             | Ability::CastOnly { .. }
             | Ability::CantTargetAsCast { .. }
             | Ability::OpeningHand

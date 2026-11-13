@@ -1,7 +1,8 @@
 /** What the stop ladder shows and says: the steps it draws, how a stop is held, what a press asks for, the spoken words. */
+import { sharesTurn } from '@/lib/teams'
 import { STOP_STEPS } from '@/play/stops'
 import type { StopStep } from '@/play/stops'
-import type { FullControlMode, PlayerId, Step, Stop, StopSide } from '@/protocol/generated'
+import type { FullControlMode, PlayerId, Step, Stop, StopSide, Teams } from '@/protocol/generated'
 import { STEP_LABEL } from '../turnText'
 import { FULL_CONTROL_STATE } from './fullControlWords'
 
@@ -32,9 +33,12 @@ export type StopsLayout = 'row' | 'panel'
 /** The two sides of the ladder, in the words of the switch that picks the row on show. */
 export const SIDE_WORD: Record<StopSide, string> = { Own: 'Mine', Opponent: 'Theirs' }
 
-/** The side whose turn it is, seen from `seat`: the viewer's own turns are `Own`, any other seat's `Opponent`. */
-export function turnSide(active: PlayerId, seat: PlayerId): StopSide {
-  return active === seat ? 'Own' : 'Opponent'
+/**
+ * The side whose turn it is, seen from `seat`: the viewer's own turns are `Own` (their team's shared turns in
+ * Two-Headed Giant too), any other seat's `Opponent`.
+ */
+export function turnSide(active: PlayerId, seat: PlayerId, teams?: Teams | null): StopSide {
+  return sharesTurn(teams, seat, active) ? 'Own' : 'Opponent'
 }
 
 /** The arguments of a `SetStop` after the side and step. */

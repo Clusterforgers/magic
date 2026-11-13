@@ -638,8 +638,10 @@ pub(crate) fn activation(
         .map_or(0, |o| u32::try_from(o.made().len()).unwrap_or(0))
         .saturating_sub(shape.as_ref().map_or(0, |shape| shape.extra));
     let mut events = Vec::new();
-    if let Some(rule) = rule.as_ref().filter(|rule| rule.once) {
-        // A use is logged for the limit; no ability goes on the stack.
+    let untapped = shape.as_ref().is_some_and(|shape| !shape.tap);
+    if let Some(rule) = rule.as_ref().filter(|rule| rule.once || untapped) {
+        // A use is logged for the limit, and an activation without {T} for the abilities that wait for one; no ability
+        // goes on the stack.
         events.push(Event::AbilityActivated {
             player,
             source: object.reference(),
@@ -927,6 +929,12 @@ mod tests {
         let game = game(artifact("Petal", PETAL));
         let id = game.zone(Zone::Battlefield)[0];
         let events = activate(&game, 0);
+        // An activation without {T} is logged first, for the abilities that wait for one.
+        assert!(
+            matches!(events[0], Event::AbilityActivated { .. }),
+            "{events:?}"
+        );
+        let events = events[1..].to_vec();
         assert_eq!(events.len(), 2);
         assert!(matches!(
             events[0],
@@ -1034,6 +1042,12 @@ mod tests {
         let game = game(artifact("Egg", EGG));
         let id = game.zone(Zone::Battlefield)[0];
         let events = activate(&game, 2);
+        // An activation without {T} is logged first, for the abilities that wait for one.
+        assert!(
+            matches!(events[0], Event::AbilityActivated { .. }),
+            "{events:?}"
+        );
+        let events = events[1..].to_vec();
         assert!(matches!(
             events[0],
             Event::ZoneChanged { object, cause: ZoneCause::Sacrificed, .. } if object == id

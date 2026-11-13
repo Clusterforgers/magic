@@ -8,6 +8,9 @@ use crate::modify::{Attacked, Modification};
 
 /// What follows "can't attack": "you or planeswalkers you control", "planeswalkers you control" or "you".
 pub fn w6a_whom(r: &mut Reader<'_>) -> Option<Modification> {
+    if let Some(owner) = super::r371_owner::r371_whom(r) {
+        return Some(owner);
+    }
     let attacked = if r.words("you or planeswalkers you control") {
         Attacked::Both
     } else if r.words("planeswalkers you control") {
@@ -38,6 +41,9 @@ pub fn w6a_text(modification: &Modification) -> Option<&'static str> {
             Some("can't attack planeswalkers you control")
         }
         Modification::CantAttackYou(Attacked::Player) => Some("can't attack you"),
+        Modification::CantAttackOwner(attacked) => {
+            Some(super::r371_owner::r371_whom_text(*attacked))
+        }
         _ => None,
     }
 }

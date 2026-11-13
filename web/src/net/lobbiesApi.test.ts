@@ -64,6 +64,11 @@ const calls: [string, (api: Api) => Promise<unknown>, () => Response][] = [
     (api) => api.setTeams(GAME, { mode: 'teams', seats: [0, 1, 0, 1] }, { token: TOKEN }),
     () => jsonResponse(200, { teams: { mode: 'teams', seats: [0, 1, 0, 1] } }),
   ],
+  [
+    'setSeatTeam',
+    (api) => api.setSeatTeam(GAME, 2, 1, { token: TOKEN }),
+    () => jsonResponse(200, { teams: { mode: 'teams', seats: [0, 1, 1, 1] } }),
+  ],
   ['closeGame', (api) => api.closeGame(GAME, { token: TOKEN }), () => empty(204)],
 ]
 
@@ -364,6 +369,29 @@ describe('setTeams', () => {
     const fake = fakeFetch(() => jsonResponse(200, body))
     const error = await failureOf(createApi({ fetch: fake.fetch }).setTeams(GAME, giant))
     expect(error.code).toBe('bad_response')
+  })
+})
+
+describe('setSeatTeam', () => {
+  it('puts the team of one seat with the token and returns the teams in force', async () => {
+    const teams: Teams = { mode: 'two_headed_giant', seats: [0, 0, 0, 1] }
+    const fake = fakeFetch(() => jsonResponse(200, { teams }))
+    const result = await createApi({ fetch: fake.fetch }).setSeatTeam(GAME, 2, 0, { token: TOKEN })
+    expect(result).toEqual(teams)
+    expect(fake.calls[0]?.url).toBe(`/api/games/${GAME}/seats/2/team`)
+    expect(fake.calls[0]?.init).toEqual({
+      method: 'PUT',
+      credentials: 'include',
+      headers: { 'content-type': 'application/json', authorization: `Bearer ${TOKEN}` },
+      body: JSON.stringify({ team: 0 }),
+    })
+  })
+
+  it('refuses a seat that is not a seat number without a request', async () => {
+    const fake = fakeFetch(() => jsonResponse(200, { teams: null }))
+    const error = await failureOf(createApi({ fetch: fake.fetch }).setSeatTeam(GAME, -1, 0))
+    expect(error.code).toBe('invalid_request')
+    expect(fake.calls).toHaveLength(0)
   })
 })
 

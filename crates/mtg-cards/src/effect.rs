@@ -27,6 +27,11 @@ pub(crate) const fn is_false(value: &bool) -> bool {
     !*value
 }
 
+#[allow(clippy::trivially_copy_pass_by_ref)]
+pub(crate) const fn is_zero_u32(value: &u32) -> bool {
+    *value == 0
+}
+
 /// One die, what a roll that names no number rolls.
 const fn c11e_one_die() -> u32 {
     1
@@ -324,6 +329,18 @@ pub enum VoteFor {
     Named(Vec<String>),
     /// The players or objects a reference names ("votes for a nonland permanent you don't control").
     Of(Ref),
+    /// A player other than the voter ("each player secretly votes for another player").
+    AnotherPlayer,
+}
+
+/// What each player keeps the fewest of in an `Effect::Balance`.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub enum Balanced {
+    /// The permanents they control that match; the rest are sacrificed.
+    Permanents(Selector),
+    /// The cards in their hand; the rest are discarded.
+    Hand,
 }
 
 /// What an `Effect::ChooseValue` asks a player for.
@@ -341,6 +358,8 @@ pub enum ValueKind {
     LandType,
     /// A basic land type: Plains, Island, Swamp, Mountain or Forest (CR 205.3i).
     BasicLandType,
+    /// A land type other than the basic ones (CR 205.3i): "choose a nonbasic land type".
+    NonbasicLandType,
     /// The name of a card of the game that the selector matches (CR 201.3); an empty selector is any card.
     CardName(Selector),
     /// A whole number from the first amount to the second, read when the choice is made.
@@ -709,6 +728,13 @@ pub enum Effect {
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
     },
+    /// Each player in the game chooses as many of what `what` names as the player with the fewest has, in turn order,
+    /// then sacrifices or discards the rest, all together: "each player chooses a number of lands they control equal to
+    /// the number of lands controlled by the player who controls the fewest, then sacrifices the rest".
+    Balance {
+        /// The permanents, or the hand, kept.
+        what: Balanced,
+    },
     /// Counters spells or abilities (CR 701.6).
     Counter {
         /// What is countered.
@@ -1038,8 +1064,23 @@ pub enum Effect {
         /// Who puts it.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
-        /// The objects it may go on.
+        /// The objects it may go on: permanents, or cards in the zone an `In` names.
         on: Selector,
+        /// Only a sticker of this kind ("put a name sticker on it"); any sticker when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        kind: Option<crate::ability::StickerKind>,
+        /// Up to this many stickers, one at a time, each on an object of `on` and each optional ("put up to two name
+        /// stickers on it", "distribute up to two art stickers among one or two nonland permanents you own"); one
+        /// sticker that must be put when 0.
+        #[serde(default, skip_serializing_if = "crate::effect::is_zero_u32")]
+        up_to: u32,
+    },
+    /// "Choose creatures you control one at a time until each creature you control has been chosen. Each of those
+    /// creatures gets +1/+1 until end of turn for each creature chosen before it." (Parade!): the controller orders the
+    /// objects of `what`, and the nth chosen gets +(n-1)/+(n-1) until end of turn.
+    Parade {
+        /// The objects chosen one at a time.
+        what: Selector,
     },
     /// "Claim the prize" of the Attraction that is the source: its prize abilities trigger (`TriggerPattern::Prize`), as
     /// do the abilities that wait for a player to claim a prize (`TriggerPattern::ClaimedPrize`).
@@ -1539,6 +1580,10 @@ pub enum Effect {
         /// you won".
         #[serde(default, skip_serializing_if = "Option::is_none")]
         won_as: Option<String>,
+        /// Nobody calls the coin: `win` is done when it comes up heads, `lose` when tails ("the number of coins that came
+        /// up heads").
+        #[serde(default, skip_serializing_if = "is_false")]
+        heads: bool,
     },
     /// The player clashes with an opponent they choose (CR 701.23): each reveals the top card of their library and puts it
     /// on the top or the bottom; `win` is done when the player's card had the greater mana value, `lose` otherwise. Both
@@ -1562,7 +1607,8 @@ pub enum Effect {
     },
     /// Each player votes (CR 701.38), the controller first and the others in turn order. A vote on named choices binds
     /// each name to the players who voted for it; a vote on players or objects binds `bind` to those with the most votes,
-    /// all of them when tied. A secret vote is shown to the other seats only when every vote is cast.
+    /// all of them when tied, and `tally` to every vote cast. A secret vote is shown to the other seats only when every
+    /// vote is cast; a vote on objects is never secret.
     Vote {
         /// What is voted for.
         options: VoteFor,
@@ -1572,6 +1618,26 @@ pub enum Effect {
         /// Names the players or objects with the most votes when `options` is `Of`.
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
+        /// Names every vote cast on players or objects, each voted for once for each vote it got ("for each vote they
+        /// received").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        tally: Option<String>,
+    },
+    /// Each player `who` names chooses one of the words, the controller first and the others in turn order; secret
+    /// choices are made face down and revealed together ("each opponent secretly chooses silence or snitch"). Each word
+    /// is bound to the players who chose it. No vote: nothing that counts votes sees it.
+    ChooseWords {
+        /// Who chooses.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+        /// The words, each a name of its own.
+        words: Vec<String>,
+        /// The choices are made face down and revealed together.
+        #[serde(default, skip_serializing_if = "is_false")]
+        secret: bool,
     },
     /// Each player `who` names chooses a whole number from `min` up, the controller first and the others in turn order;
     /// secret numbers are chosen face down and revealed together ("each player secretly chooses a number 0 or greater").
@@ -2275,11 +2341,11 @@ mod tests {
         r#"{"RollDice":{"sides":20,"plus":2,"results":[{"from":1,"to":9,"effects":[{"Shuffle":{}}]},{"from":10,"effects":[{"Shuffle":{}}]}]}}"#
     )]
     #[case::flip_a_coin(
-        Effect::FlipCoin { who: Ref::You, win: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], lose: Vec::new(), lose_first: false, until: false, won_as: None },
+        Effect::FlipCoin { who: Ref::You, win: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], lose: Vec::new(), lose_first: false, until: false, won_as: None, heads: false },
         r#"{"FlipCoin":{"win":[{"Draw":{}}]}}"#
     )]
     #[case::flip_until_a_loss(
-        Effect::FlipCoin { who: Ref::You, win: Vec::new(), lose: Vec::new(), lose_first: false, until: true, won_as: None },
+        Effect::FlipCoin { who: Ref::You, win: Vec::new(), lose: Vec::new(), lose_first: false, until: true, won_as: None, heads: false },
         r#"{"FlipCoin":{"until":true}}"#
     )]
     #[case::clash_and_repeat(
@@ -2301,7 +2367,7 @@ mod tests {
         r#"{"SeparatePiles":{"what":"This","chooser":"Opponents","as":"a","rest_as":"b"}}"#
     )]
     #[case::vote_on_two_names(
-        Effect::Vote { options: VoteFor::Named(vec!["time".to_owned(), "knowledge".to_owned()]), secret: true, bind: None },
+        Effect::Vote { options: VoteFor::Named(vec!["time".to_owned(), "knowledge".to_owned()]), secret: true, bind: None, tally: None },
         r#"{"Vote":{"options":{"Named":["time","knowledge"]},"secret":true}}"#
     )]
     #[case::c10_vp_chaos_ensues(
@@ -2325,7 +2391,7 @@ mod tests {
         r#"{"ChooseValue":{"kind":"Color","as":"c"}}"#
     )]
     #[case::vote_on_objects(
-        Effect::Vote { options: VoteFor::Of(Ref::Each(Selector(vec![Pred::In(ZoneKind::Battlefield)]))), secret: false, bind: Some("top".to_owned()) },
+        Effect::Vote { options: VoteFor::Of(Ref::Each(Selector(vec![Pred::In(ZoneKind::Battlefield)]))), secret: false, bind: Some("top".to_owned()), tally: None },
         r#"{"Vote":{"options":{"Of":{"Each":[{"In":"Battlefield"}]}},"as":"top"}}"#
     )]
     #[case::w2d_villainous_choice(

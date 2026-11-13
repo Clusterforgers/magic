@@ -141,6 +141,7 @@ pub(super) fn move_object(
     crate::effects::follow_spell(&mut state.effects, entered, resolved);
     if to == Zone::Battlefield {
         state.tally_object(entered, None, Tally::Entered);
+        state.r379_entered(entered);
     }
     w21a_tally_graveyards(state, (from, to), (owner, controlled_by), entered);
     if from == Zone::Battlefield && matches!(to, Zone::Graveyard(_)) {
@@ -423,6 +424,7 @@ fn spell_cast(
     choices: &Choices,
 ) -> Result<(), EngineError> {
     state.tally(player, Tally::Cast);
+    *state.r379_cast_game.entry(player).or_insert(0) += 1;
     if state
         .objects
         .get(&object)
@@ -498,6 +500,13 @@ fn spell_cast(
     note_rebound(state, object, from);
     note_aftermath(state, object, from);
     state.log_event(TallyEvent::SpellCast, player, object);
+    if let Some(name) = state
+        .objects
+        .get(&object)
+        .map(|spell| spell.card().name.clone())
+    {
+        *state.cast_names.entry((player, name)).or_default() += 1;
+    }
     // A spell cast for its flashback cost, or with its buyback cost paid, is moved by a replacement effect.
     let bought_back = state.objects.get(&object).is_some_and(|spell| {
         payments(spell.card(), &choices.optional_costs, OptionalKind::Buyback) > 0

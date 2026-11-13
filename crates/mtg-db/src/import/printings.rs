@@ -36,19 +36,23 @@ pub(super) async fn upsert_printings(
     let counts = sqlx::query!(
         r#"WITH incoming AS (
                SELECT printing_id, oracle_id, set_code, collector_number, rarity, released_at,
-                      lang, digital, images, flavor_name, printed_name, attraction_lights
+                      lang, digital, images, flavor_name, printed_name, attraction_lights,
+                      set_name, frame, finishes, full_art
                FROM jsonb_to_recordset($1) AS r(
                    printing_id uuid, oracle_id uuid, set_code text, collector_number text,
                    rarity text, released_at date, lang text, digital boolean, images jsonb,
-                   flavor_name text, printed_name text, attraction_lights smallint)
+                   flavor_name text, printed_name text, attraction_lights smallint,
+                   set_name text, frame text, finishes text[], full_art boolean)
            ), known AS (
                SELECT i.* FROM incoming i JOIN cards c ON c.oracle_id = i.oracle_id
            ), written AS (
                INSERT INTO printings AS p (
                    printing_id, oracle_id, set_code, collector_number, rarity, released_at, lang,
-                   digital, images, flavor_name, printed_name, attraction_lights)
+                   digital, images, flavor_name, printed_name, attraction_lights,
+                   set_name, frame, finishes, full_art)
                SELECT printing_id, oracle_id, set_code, collector_number, rarity, released_at,
-                      lang, digital, images, flavor_name, printed_name, attraction_lights
+                      lang, digital, images, flavor_name, printed_name, attraction_lights,
+                      set_name, frame, finishes, full_art
                FROM known ORDER BY printing_id
                ON CONFLICT (printing_id) DO UPDATE SET
                    oracle_id = EXCLUDED.oracle_id,
@@ -62,13 +66,19 @@ pub(super) async fn upsert_printings(
                    flavor_name = EXCLUDED.flavor_name,
                    printed_name = EXCLUDED.printed_name,
                    attraction_lights = EXCLUDED.attraction_lights,
+                   set_name = EXCLUDED.set_name,
+                   frame = EXCLUDED.frame,
+                   finishes = EXCLUDED.finishes,
+                   full_art = EXCLUDED.full_art,
                    updated_at = now()
                WHERE (p.oracle_id, p.set_code, p.collector_number, p.rarity, p.released_at,
-                      p.lang, p.digital, p.images, p.flavor_name, p.printed_name, p.attraction_lights)
+                      p.lang, p.digital, p.images, p.flavor_name, p.printed_name, p.attraction_lights,
+                      p.set_name, p.frame, p.finishes, p.full_art)
                    IS DISTINCT FROM
                      (EXCLUDED.oracle_id, EXCLUDED.set_code, EXCLUDED.collector_number,
                       EXCLUDED.rarity, EXCLUDED.released_at, EXCLUDED.lang, EXCLUDED.digital,
-                      EXCLUDED.images, EXCLUDED.flavor_name, EXCLUDED.printed_name, EXCLUDED.attraction_lights)
+                      EXCLUDED.images, EXCLUDED.flavor_name, EXCLUDED.printed_name, EXCLUDED.attraction_lights,
+                      EXCLUDED.set_name, EXCLUDED.frame, EXCLUDED.finishes, EXCLUDED.full_art)
                RETURNING (xmax = 0) AS inserted
            )
            SELECT (SELECT count(*) FROM incoming) AS "received!",

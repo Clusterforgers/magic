@@ -80,6 +80,8 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::GainAbilities(_)
         | Modification::CantAttack
         | Modification::CantAttackYou { .. }
+        | Modification::CantAttackOwner { .. }
+        | Modification::CantBeBlockedUnlessAttackingOwner
         | Modification::CantBlock
         | Modification::DoesntUntap
         | Modification::CantBeTurnedFaceUp
@@ -88,6 +90,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::CanBlockOnly { .. }
         | Modification::MinBlockers(_)
         | Modification::MaxBlockers(_)
+        | Modification::BlockedByAll
         | Modification::BlocksAdditional(_) => Traits::NONE,
         Modification::Goaded { .. } => Traits::GOADED,
     }
@@ -133,8 +136,11 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::GainAbilitiesOf(_)
         | Wanted::SetName(_)
         | Wanted::ThisAbility
+        | Wanted::SetLoyalty(_)
         | Wanted::CantAttack
         | Wanted::CantAttackYou(_)
+        | Wanted::CantAttackOwner(_)
+        | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
         | Wanted::DoesntUntap
         | Wanted::CantBeTurnedFaceUp
@@ -143,6 +149,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::CanBlockOnly(_)
         | Wanted::MinBlockers(_)
         | Wanted::MaxBlockers(_)
+        | Wanted::BlockedByAll
         | Wanted::BlocksAdditional(_)
         | Wanted::BlocksAdditionalPer(_) => Traits::NONE,
         Wanted::Goaded => Traits::GOADED,
@@ -171,6 +178,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::AddSupertype(_)
         | Wanted::SetName(_)
         | Wanted::ThisAbility
+        | Wanted::SetLoyalty(_)
         | Wanted::AddSubtype(_)
         | Wanted::SetCreatureTypes(_)
         | Wanted::SetLandTypes(_)
@@ -197,12 +205,15 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::LoseAbilitiesExceptMana
         | Wanted::CantAttack
         | Wanted::CantAttackYou(_)
+        | Wanted::CantAttackOwner(_)
+        | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
         | Wanted::DoesntUntap
         | Wanted::CantBeTurnedFaceUp
         | Wanted::CantBeBlocked
         | Wanted::MinBlockers(_)
         | Wanted::MaxBlockers(_)
+        | Wanted::BlockedByAll
         | Wanted::BlocksAdditional(_)
         | Wanted::Goaded => Traits::NONE,
     }
@@ -241,7 +252,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         Ref::ControllerOf(inner) | Ref::OrController(inner) => {
             Traits::CONTROL.or(reads_of_ref(inner))
         }
-        Ref::OwnerOf(inner) => reads_of_ref(inner),
+        Ref::OwnerOf(inner) | Ref::Seated { of: inner, .. } => reads_of_ref(inner),
         Ref::Arrived { of, .. } | Ref::Departed(of) | Ref::SourceOf(of) => reads_of_ref(of),
         Ref::Each(selector) => reads_of_selector(selector),
         Ref::Union(parts) => parts
@@ -268,6 +279,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Token
         | Pred::Commander
         | Pred::Spell
+        | Pred::Dungeon
         | Pred::Ability(_)
         | Pred::Tapped
         | Pred::Untapped
@@ -277,6 +289,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Suspected
         | Pred::Solved
         | Pred::Stickered
+        | Pred::WithSticker(_)
         | Pred::Harnessed
         | Pred::FoughtSinceYourLastUpkeep { .. }
         | Pred::DoubleFaced
@@ -320,7 +333,9 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::TopCreatureOfGraveyard
         | Pred::Kicked
         | Pred::AdditionalCostPaid
-        | Pred::Suspended => Traits::NONE,
+        | Pred::Suspended
+        | Pred::BlockedThisTurn(_)
+        | Pred::EnteredSinceLastTurn(_) => Traits::NONE,
         Pred::WasCast { by, .. } => by.as_ref().map_or(Traits::NONE, reads_of_ref),
         Pred::DidThisTurn { by, to, .. } => by
             .iter()
@@ -333,11 +348,13 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::Goaded => Traits::GOADED,
         Pred::Is(who)
         | Pred::BlockedBy(who)
+        | Pred::BlockedThisTurnBy(who)
         | Pred::BandedWith(who)
         | Pred::Blocks(who)
         | Pred::TargetedBy(who)
         | Pred::TargetsPlayer(who)
         | Pred::OwnedBy(who)
+        | Pred::ProtectedBy(who)
         | Pred::AttackingPlayer(who)
         | Pred::AttackingPlaneswalkerOf(who)
         | Pred::AttackingPlayerOrPlaneswalker(who)
@@ -352,14 +369,17 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::AttachedTo(who)
         | Pred::PairedWith(who)
         | Pred::SameCard(who)
-        | Pred::SourceOf(who) => reads_of_ref(who),
+        | Pred::SourceOf(who)
+        | Pred::SharesManaValue(who) => reads_of_ref(who),
         Pred::SharesType(who) => Traits::TYPES.or(reads_of_ref(who)),
         Pred::SharesColor(who) => Traits::COLORS.or(reads_of_ref(who)),
         Pred::Type(_) => Traits::TYPES,
         Pred::Subtype(_) => Traits::SUBTYPES,
         Pred::ChosenSubtype => Traits::SUBTYPES.or(Traits::TYPES),
         Pred::ChosenAs(_) => Traits::COLORS.or(Traits::TYPES).or(Traits::SUBTYPES),
-        Pred::SharesSubtype(who) => Traits::SUBTYPES.or(reads_of_ref(who)),
+        Pred::SharesSubtype(who) | Pred::SharesCreatureTypeWithEach(who) => {
+            Traits::SUBTYPES.or(reads_of_ref(who))
+        }
         Pred::Color(_) | Pred::Colorless | Pred::ChosenColor | Pred::OutsideCommanderIdentity => {
             Traits::COLORS
         }
@@ -385,13 +405,17 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         // The base after the effects that set it still depends on the layers that set power and toughness.
         StatKind::Power | StatKind::BasePower => Traits::POWER,
         StatKind::Toughness | StatKind::BaseToughness => Traits::TOUGHNESS,
-        StatKind::Colors => Traits::COLORS,
+        StatKind::Colors | StatKind::R374ColorSet => Traits::COLORS,
         StatKind::BasicLandTypes | StatKind::CreatureType | StatKind::Subtypes => Traits::SUBTYPES,
+        StatKind::R374Types => Traits::TYPES.or(Traits::SUBTYPES).or(Traits::SUPERTYPES),
+        StatKind::R374CreatureTypes => Traits::TYPES.or(Traits::SUBTYPES),
+        StatKind::R374Bushido | StatKind::R374Toxic => Traits::KEYWORDS,
         StatKind::ManaValue
         | StatKind::Loyalty
         | StatKind::ManaSpent
         | StatKind::Name
-        | StatKind::CounterKinds => Traits::NONE,
+        | StatKind::CounterKinds
+        | StatKind::R374ManaCost => Traits::NONE,
     }
 }
 
@@ -419,6 +443,11 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::PhasedOut(_)
         | Amount::DieResult(_)
         | Amount::TurnNumber
+        | Amount::Stickers { .. }
+        | Amount::StickerVowels
+        | Amount::TallyLastTurn { .. }
+        | Amount::CastSameNameThisGame(_)
+        | Amount::TallyTotal { .. }
         | Amount::ManaSpent { .. }
         | Amount::ManaColors(_)
         | Amount::ManaInPool(_)
@@ -432,6 +461,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::Count(selector) => reads_of_selector(selector),
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),
         Amount::Life(who)
+        | Amount::GreatestCast { who, .. }
         | Amount::CommanderCasts(who)
         | Amount::CastsFromCommand(who)
         | Amount::Speed(who)
@@ -457,12 +487,14 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::CountOf { of, filter } => reads_of_ref(of).or(reads_of_selector(filter)),
         // A copy that was not cast reads the inner amount now.
         Amount::EvenShare(total) | Amount::CountedAsCast(total) => reads_of_amount(total),
-        Amount::Times { of, .. } | Amount::Half { of, .. } | Amount::AtMost { of, .. } => {
-            reads_of_amount(of)
-        }
+        Amount::Times { of, .. }
+        | Amount::Half { of, .. }
+        | Amount::TwoToThe(of)
+        | Amount::AtMost { of, .. } => reads_of_amount(of),
         Amount::Quotient { of, by, .. } | Amount::Difference(of, by) => {
             reads_of_amount(of).or(reads_of_amount(by))
         }
+        Amount::R374AtMost(inner, _) => reads_of_amount(inner),
         Amount::Devotion(_) => Traits::CONTROL,
         Amount::ManaSymbols { of, .. } => reads_of_ref(of),
         Amount::Greatest { of, stat }
@@ -527,6 +559,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::FirstStep
         | Condition::SorceryTiming
         | Condition::AfterCombat
+        | Condition::TriggeringSticker(_)
         | Condition::NeitherDayNorNight
         | Condition::ChosenWord { .. }
         | Condition::EnteredAs(_)
@@ -543,6 +576,8 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::Among(who)
         | Condition::StartingPlayer(who)
         | Condition::Searched { who, .. }
+        | Condition::VotedAs { with: who, .. }
+        | Condition::CombatDamagedSinceLastTurn(who)
         | Condition::AttackedThisCombat(who) => reads_of_ref(who),
         Condition::Level { of, .. } => reads_of_ref(of),
     }

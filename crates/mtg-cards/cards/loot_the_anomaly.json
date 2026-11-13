@@ -1,15 +1,13 @@
 {
   "oracle_id": "e0142e7d-7b0b-4290-a56c-5fa950fdccf8",
   "name": "Loot, the Anomaly",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Loot, the Anomaly",
       "oracle_fingerprint": "068aa70182212140d32ea6cc20c2e733",
       "abilities": [
-        {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 88 } }
-        },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "AssignsAsThoughPositive" } } } },
         {
           "Activated": {
             "cost": [

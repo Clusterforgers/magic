@@ -24,4 +24,9 @@ until_end_of_turn?: boolean,
 /**
  * The copy ends as this player's next turn begins, and the permanent is what it was before ("until your next turn").
  */
-until_next_turn_of?: PlayerId, };
+until_next_turn_of?: PlayerId, 
+/**
+ * The copy ends once this object is no longer attached to the permanent ("for as long as this Equipment remains
+ * attached to it").
+ */
+attached_by?: ObjectRef, };

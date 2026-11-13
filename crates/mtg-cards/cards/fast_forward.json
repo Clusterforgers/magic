@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c92f78c4-c8ec-4bdb-85f4-3a206b709f0f",
+  "name": "Fast Forward",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Fast Forward",
+      "oracle_fingerprint": "72887cd0b45d5ef730ed269e1e4d8b66",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 75 } }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Goad": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

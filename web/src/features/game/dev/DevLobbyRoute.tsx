@@ -33,6 +33,7 @@ export function DevLobbyRoute() {
     decks: many,
     list,
     detail,
+    mode,
   } = useSearch({
     from: '/dev/lobby',
   })
@@ -46,8 +47,8 @@ export function DevLobbyRoute() {
       })
   })
   const game = useMemo(
-    () => lobbyGame({ seats, ready, away, me, names, visibility, nodeck, format, rules }),
-    [seats, ready, away, me, names, visibility, nodeck, format, rules],
+    () => lobbyGame({ seats, ready, away, me, names, visibility, nodeck, format, rules, mode }),
+    [seats, ready, away, me, names, visibility, nodeck, format, rules, mode],
   )
   const switches = useMemo(() => ({ decks: many, list, detail, format }), [many, list, detail, format])
   const api = useMemo(
