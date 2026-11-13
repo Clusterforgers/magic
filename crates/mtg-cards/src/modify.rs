@@ -890,6 +890,17 @@ pub enum GameRule {
     /// The players may activate the loyalty abilities of planeswalkers they control twice each turn rather than only
     /// once (CR 606.3).
     LoyaltyTwice(Ref),
+    /// The controller reveals the first card they draw each turn as they draw it ("Reveal the first card you draw each
+    /// turn."): only on their own turns with `your_turns`, and only when they choose to with `may` ("You may reveal
+    /// the first card you draw each turn as you draw it."). `TriggerPattern::FirstDrawRevealed` triggers on the reveal.
+    RevealFirstDraw {
+        /// Whether the reveal is optional.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        may: bool,
+        /// Whether it works only on the controller's turns.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        your_turns: bool,
+    },
     /// The players' maximum hand size is `size` (CR 402.2): the least of the sizes in force.
     MaxHandSize {
         /// The players.
@@ -1179,6 +1190,16 @@ pub enum DraftRule {
     NoteName,
     /// Reveal a drafted creature card and note its creature types, then turn this card face down.
     NoteCreatureTypes,
+    /// Reveal a drafted creature card and note its name, then turn this card face down.
+    NoteCreatureName,
+    /// Reveal it as drafted; the drafter's right neighbour, the drafter and the left neighbour each choose a color.
+    ChooseColorsAround,
+    /// Before the game, reveal it from the deck and exile an instant or sorcery card drafted that isn't in the deck.
+    ExileDraftedSpell,
+    /// Before the game, reveal it from the deck and exile a creature card drafted that isn't in the deck.
+    ExileDraftedCreature,
+    /// Before the game, reveal it from the deck and exile three or more creature cards drafted that aren't in the deck.
+    ExileDraftedCreatures,
 }
 
 /// How a `GameRule::ManaProduced` changes the mana of a tap.

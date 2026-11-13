@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "0e7466e5-9443-4b38-a7e9-e0d615a35667",
+  "oracle_id": "6b8c69ac-1856-4070-9489-798a6b224268",
+  "multiverse_ids": [
+    416784
+  ],
+  "tcgplayer_id": 121441,
+  "cardmarket_id": 291757,
+  "name": "Arcane Savant",
+  "lang": "en",
+  "released_at": "2016-08-26",
+  "uri": "https://api.scryfall.com/cards/0e7466e5-9443-4b38-a7e9-e0d615a35667",
+  "scryfall_uri": "https://scryfall.com/card/cn2/27/arcane-savant?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:09:20Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/e/0e7466e5-9443-4b38-a7e9-e0d615a35667.jpg?1783937360",
+    "normal": "https://cards.scryfall.io/normal/front/0/e/0e7466e5-9443-4b38-a7e9-e0d615a35667.jpg?1783937360",
+    "large": "https://cards.scryfall.io/large/front/0/e/0e7466e5-9443-4b38-a7e9-e0d615a35667.jpg?1783937360",
+    "png": "https://cards.scryfall.io/png/front/0/e/0e7466e5-9443-4b38-a7e9-e0d615a35667.png?1783937360",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/e/0e7466e5-9443-4b38-a7e9-e0d615a35667.jpg?1783937360",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/e/0e7466e5-9443-4b38-a7e9-e0d615a35667.jpg?1783937360",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/e/0e7466e5-9443-4b38-a7e9-e0d615a35667.webp?1783937360",
+    "grid": "https://cards.scryfall.io/grid/front/0/e/0e7466e5-9443-4b38-a7e9-e0d615a35667.webp?1783937360",
+    "display": "https://cards.scryfall.io/display/front/0/e/0e7466e5-9443-4b38-a7e9-e0d615a35667.webp?1783937360",
+    "art": "https://cards.scryfall.io/art/front/0/e/0e7466e5-9443-4b38-a7e9-e0d615a35667.webp?1783937360",
+    "crop": "https://cards.scryfall.io/crop/front/0/e/0e7466e5-9443-4b38-a7e9-e0d615a35667.webp?1783937360",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/e/0e7466e5-9443-4b38-a7e9-e0d615a35667.jpg?1783937360"
+  },
+  "mana_cost": "{3}{U}{U}",
+  "cmc": 5.0,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "Before you shuffle your deck to start the game, you may reveal this card from your deck and exile an instant or sorcery card you drafted that isn't in your deck.\nWhen this creature enters, copy a card you exiled with cards named Arcane Savant. You may cast the copy without paying its mana cost.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "ad1b8847-1905-4080-9e26-80691ea7c1ef",
+  "set": "cn2",
+  "set_name": "Conspiracy: Take the Crown",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/ad1b8847-1905-4080-9e26-80691ea7c1ef",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acn2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cn2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0e7466e5-9443-4b38-a7e9-e0d615a35667/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6b8c69ac-1856-4070-9489-798a6b224268&unique=prints",
+  "collector_number": "27",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "conspiracy",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chris Rallis",
+  "artist_ids": [
+    "a8e7b854-b15a-421a-b66d-6e68187ae285"
+  ],
+  "illustration_id": "39faa8e2-ffe0-47f0-97a3-921c87df3a9d",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "draft"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30941,
+  "prices": {
+    "usd": "0.15",
+    "usd_foil": "1.33",
+    "usd_etched": null,
+    "eur": "0.17",
+    "eur_foil": "0.73",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=416784&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DArcane%2BSavant",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DArcane%2BSavant",
+    "edhrec": "https://edhrec.com/route/?cc=Arcane+Savant"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F121441%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=291757&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Arcane+Savant&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

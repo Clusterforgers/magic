@@ -94,7 +94,16 @@ impl Pass<'_> {
             effects,
             &mut || answers.next().cloned(),
         ) {
-            Ok(Inline::Events(events)) => Ran::Events(events),
+            Ok(Inline::Events(mut events)) => {
+                // A shuffle is drawn once the batch is known (`g12a_order_shuffles`): two effects of one batch that
+                // each shuffle a card into the same library shuffle both cards.
+                for event in &mut events {
+                    if let Event::LibraryShuffled { order, .. } = event {
+                        order.clear();
+                    }
+                }
+                Ran::Events(events)
+            }
             Ok(Inline::Ask(decision)) => Ran::Ask(decision),
             Ok(Inline::Declined) | Err(_) => Ran::Kept,
         }

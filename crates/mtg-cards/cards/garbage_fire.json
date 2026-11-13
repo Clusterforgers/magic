@@ -1,0 +1,22 @@
+{
+  "oracle_id": "8ddbb63c-7f52-431b-bb82-e020b1c3749a",
+  "name": "Garbage Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Garbage Fire",
+      "oracle_fingerprint": "d06ed21a2d00ff7f1c59c13645f66a86",
+      "abilities": [
+        { "Rule": { "rule": { "Draft": "NoteDraftedCount" } } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": { "Drafted": "HighestNumber" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

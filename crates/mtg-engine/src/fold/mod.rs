@@ -167,7 +167,9 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::AbilityLeftToTable(_)
         | Event::ManaAbilityActivated { .. }
         | Event::ByHandDue(_)
-        | Event::DamagePrevented { .. } => Ok(()),
+        | Event::DamagePrevented { .. }
+        // The `Revealed` before it showed the card; triggers read it from the log.
+        | Event::FirstDrawRevealed { .. } => Ok(()),
         Event::AbilityTriggered(triggered) => crate::triggers::fold_triggered(state, triggered),
         Event::TriggersOrdered { player, order } => {
             crate::triggers::fold_ordered(state, *player, order)
@@ -613,6 +615,8 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             }
         }
         Event::PlayerLost { player, reason } => player_lost(state, *player, reason)?,
+        Event::BecameSpirit { player, emblem } => crate::spirits::fold(state, *player, *emblem)?,
+        Event::PhaseBegan { player, emblem } => crate::phases::fold(state, *player, *emblem)?,
         Event::GameEnded { result } => end_game(state, *result),
         other => return c6_kw_fold_rest(state, other),
     }

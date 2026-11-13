@@ -43,6 +43,9 @@ pub(crate) fn setup(
             companion: None,
             attractions: Vec::new(),
             stickers: Vec::new(),
+            emblems: Vec::new(),
+            spirit: None,
+            phases: Vec::new(),
         })
         .collect();
     GameSetup {

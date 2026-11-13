@@ -592,6 +592,7 @@ Electrodominance
 Elegant Edgecrafters
 Elenda and Azor
 Elfhame Druid
+Eligeth, Crossroads Augur
 Eliminate the Competition
 Elspeth's Nightmare
 Elven Ambush
@@ -1043,6 +1044,7 @@ Kellogg, Dangerous Mind
 Kemba's Banner
 Kenrith's Transformation
 Kentaro, the Smiling Cat
+Keranos, God of Storms
 Kess, Dissident Mage
 Kessig Wolf Run
 Kill! Maim! Burn!
@@ -1467,6 +1469,7 @@ Primal Growth
 Primal Might
 Primaris Eliminator
 Primeval Protector
+Primitive Etchings
 Primordial Hydra
 Prismatic Geoscope
 Prismatic Lens
@@ -1606,6 +1609,7 @@ Rosheen Meanderer
 Rousing Refrain
 Rout
 Rowdy Research
+Rowen
 Rugged Prairie
 Ruinous Path
 Rumbleweed

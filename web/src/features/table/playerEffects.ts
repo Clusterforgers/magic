@@ -10,7 +10,8 @@ import { abilityText } from './cardModel'
 export type EffectTone = 'help' | 'hinder' | 'neutral'
 
 /** The icon of an effect's chip, by kind. */
-export type EffectIcon = 'shield' | 'ban' | 'heart' | 'eye' | 'hand' | 'land' | 'emblem' | 'keyword'
+export type EffectIcon =
+  'shield' | 'ban' | 'heart' | 'eye' | 'hand' | 'land' | 'emblem' | 'keyword' | 'spirit' | 'boss'
 
 /** One effect on a seat as its chip shows it. */
 export interface EffectFacts {
@@ -178,13 +179,43 @@ export function emblemFacts(
   })
 }
 
-/** Every effect on the seat: the emblems first, then the rules in force. */
+/** A campaign fight's seat states: a hero who became a Spirit, and a boss's phase with the one still to come. */
+export function campaignFacts(player: PlayerView, owner: string): EffectFacts[] {
+  const facts: EffectFacts[] = []
+  if (player.boss) {
+    const { phases, begun } = player.boss
+    const next = phases[begun]
+    facts.push({
+      key: 'Boss',
+      icon: 'boss',
+      label: `Phase ${begun + 1} of ${phases.length + 1}`,
+      tone: 'neutral',
+      detail:
+        next === undefined
+          ? `${owner} is in their last phase.`
+          : `${owner} is in phase ${begun + 1}; next comes ${next} as their life drops.`,
+    })
+  }
+  if (player.spirit) {
+    facts.push({
+      key: 'Spirit',
+      icon: 'spirit',
+      label: 'Spirit',
+      tone: 'neutral',
+      detail: `${owner} fell and haunts the fight as a Spirit; the party loses only if every hero falls.`,
+    })
+  }
+  return facts
+}
+
+/** Every effect on the seat: the campaign states, the emblems, then the rules in force. */
 export function seatEffects(
   player: PlayerView,
   objects: Readonly<Record<ObjectId, ObjectView>>,
   owner: string,
 ): EffectFacts[] {
   return [
+    ...campaignFacts(player, owner),
     ...emblemFacts(player, objects, owner),
     ...(player.effects ?? []).map((effect) => effectFacts(effect, owner)),
   ]

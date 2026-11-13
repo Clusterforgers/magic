@@ -189,6 +189,13 @@ The holder of a seat chooses its deck while the game is in its lobby: the host w
 - A 2v2 match is one Team Commander game (`HouseRules::teams`, mode `teams`, seats A1 B1 A2 B2); a server without team games (`TEAM_GAMES` off) answers `start` with 409 `format_unavailable` and `playable: false`.
 - The organiser's account takes its tournaments with it; a player's account leaves its entrant (foreign keys with `ON DELETE CASCADE`). A match's game has no foreign key and outlives a deleted tournament as a normal game.
 
+## Delves
+
+- `delves.rs` serves the co-op boss rush (`docs/delves.md`): `GET/POST /api/delves` (the caller's runs; a new run whose host is its first hero), `GET /api/delves/content` (custom cards, bosses, events), `POST /api/delves/join/{code}`, `GET /api/delves/{id}` and `POST /api/delves/{id}/act` (`DelveAction`: add a bot ally, remove a hero, choose a deck, start, vote, pick, abandon).
+- A run is stored as its header (`delves`: code, host, theme, seed, Heat) and its event log (`delve_events`); `delve_members` lists the party's accounts. Each request folds the log, applies the action, lets the bot allies answer and appends the new events; one request at a time changes runs.
+- A boss fight is a normal recorded game made with `create_decked`: the heroes' decks (precon, built-in or the owner's stored deck, with the run's cards in place of basic lands), the boss's deck named in the content, the players' seats bound to their accounts, bots for the allies and the boss, and the `FightPlan` in `GameOptions.campaign` and the recipe, which lays the emblems, Spirits and phases over every build of the game.
+- A read of the run reads a finished fight back: the result from the record, each hero's end life and Spirit state from replaying its log.
+
 ## Cards and decks
 
 `Server::open_with(config, pool, cards)` takes the `CardSource` (database, rules, `Caps`) shared by games, card endpoints and deck checks. Rules are the embedded files plus the `card_rules` rows of `mtg-cli compile` ([data-sources.md](data-sources.md)): a file wins over a row, an unreadable row is logged and skipped, a changed row rebuilds the library. A request judges under one snapshot. Without a database: 503 `cards_unavailable`, `decks_unavailable`.

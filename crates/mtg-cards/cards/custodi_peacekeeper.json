@@ -1,7 +1,7 @@
 {
   "oracle_id": "abd78909-72dc-4d36-8990-39995fd071da",
   "name": "Custodi Peacekeeper",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Custodi Peacekeeper",
@@ -9,9 +9,25 @@
       "abilities": [
         { "Rule": { "rule": { "Draft": "NoteDraftedCount" } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 111, "end": 239 }
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "Compare": {
+                        "stat": "Power",
+                        "op": "Le",
+                        "to": { "Drafted": "HighestNumber" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
           }
         }
       ]

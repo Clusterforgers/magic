@@ -1,7 +1,7 @@
 {
   "oracle_id": "dc90b4aa-ba5e-4188-939d-b3920bd9ab0d",
   "name": "Smuggler Captain",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Smuggler Captain",
@@ -10,9 +10,25 @@
         { "Rule": { "rule": { "Draft": "FaceUp" } } },
         { "Rule": { "rule": { "Draft": "NoteName" } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 111, "end": 280 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Drafted": "NotedName" }],
+                        "reveal": true,
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

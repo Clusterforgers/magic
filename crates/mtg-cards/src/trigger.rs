@@ -249,6 +249,13 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// The controller of the ability revealed the first card they drew this turn through the `RevealFirstDraw` rule
+    /// of the same permanent ("Whenever you reveal a creature card this way"); `Triggering` is the card.
+    FirstDrawRevealed {
+        /// The card revealed; any card when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+    },
     /// A player draws a card.
     Drew {
         /// Who draws.
@@ -950,6 +957,20 @@ pub enum ReplaceWhen {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// A player would scry one or more cards (CR 701.22); only `Instead`, whose steps read the number as
+    /// `Triggering` ("draw that many cards instead"). A scry of no cards does not happen, so nothing is replaced.
+    Scries {
+        /// Who would scry.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
+    /// A player would surveil one or more cards (CR 701.25); only `MayAddAmount` ("you may look at an additional two
+    /// cards each time you surveil").
+    Surveils {
+        /// Who would surveil.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
 }
 
 /// What a permanent's controller chooses as it enters the battlefield.
@@ -1180,6 +1201,9 @@ pub enum ReplaceBy {
     },
     /// Umbra armor (CR 702.89): all damage is removed from the permanent instead, and the object with the ability is destroyed.
     UmbraArmor,
+    /// The permanent regenerates instead of being destroyed (CR 701.19): "If ~ would be destroyed, regenerate it." Not when
+    /// it can't be regenerated; unlike a shield, it is not used up.
+    Regenerate,
     /// As the permanent enters, its controller may have it enter as a copy of a permanent on the battlefield or a card
     /// in a graveyard that matches the selector (CR 707.9, 614.1c), with these exceptions in its copiable values
     /// ("except it's an Illusion in addition to its other types").
@@ -1264,6 +1288,9 @@ pub enum ReplaceBy {
     /// All of the damage is prevented when it is this much or less ("If a source would deal 3 or less damage to ~,
     /// prevent that damage"); only a static ability uses it.
     PreventAtMost(u32),
+    /// The controller of the replacement may add this many to the number of the action as it happens ("you may look at
+    /// an additional two cards each time you surveil"); only a `Surveils` uses it.
+    MayAddAmount(Amount),
 }
 
 /// The kinds of shield (`Effect::Shield`) the engine plays; the validator and the engine both read a shield by it.

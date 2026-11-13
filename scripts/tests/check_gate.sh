@@ -30,19 +30,19 @@ gate_case() {
 
 gate_case "docs" - - - none -- docs/ROADMAP.md
 gate_case "check scripts" - - - none -- scripts/check.sh scripts/lib/check-run.sh scripts/slow-tests.txt
-gate_case "engine" mtg-engine - "mtg-cli mtg-protocol mtg-server mtg-testkit" none -- crates/mtg-engine/src/lib.rs
-gate_case "cards" mtg-cards - "mtg-cli mtg-engine mtg-protocol mtg-server mtg-testkit" none -- crates/mtg-cards/cards/a.json
-gate_case "core" mtg-core - "mtg-cards mtg-cli mtg-db mtg-engine mtg-import mtg-protocol mtg-server mtg-testkit" none \
+gate_case "engine" mtg-engine - "mtg-campaign mtg-cli mtg-protocol mtg-server mtg-testkit" none -- crates/mtg-engine/src/lib.rs
+gate_case "cards" mtg-cards - "mtg-campaign mtg-cli mtg-engine mtg-protocol mtg-server mtg-testkit" none -- crates/mtg-cards/cards/a.json
+gate_case "core" mtg-core - "mtg-campaign mtg-cards mtg-cli mtg-db mtg-engine mtg-import mtg-protocol mtg-server mtg-testkit" none \
   -- crates/mtg-core/src/lib.rs
 gate_case "protocol" mtg-protocol - mtg-server full -- crates/mtg-protocol/src/lib.rs
 gate_case "database" - mtg-db "mtg-cli mtg-server" none -- crates/mtg-db/src/lib.rs
 gate_case "leaf with Postgres" - mtg-cli - none -- crates/mtg-cli/src/main.rs
 gate_case "sqlx metadata" - mtg-db "mtg-cli mtg-server" none -- .sqlx/query-probe.json
-gate_case "two crates" mtg-engine mtg-db "mtg-cli mtg-protocol mtg-server mtg-testkit" none \
+gate_case "two crates" mtg-engine mtg-db "mtg-campaign mtg-cli mtg-protocol mtg-server mtg-testkit" none \
   -- crates/mtg-engine/src/lib.rs crates/mtg-db/src/lib.rs
 gate_case "web" - - - changed -- web/src/lib/flash.ts
 gate_case "protocol fixture" mtg-protocol - - changed -- web/src/protocol/fixtures/probe.json
-gate_case "root lock" "mtg-cards mtg-core mtg-engine mtg-import mtg-protocol mtg-testkit" "mtg-cli mtg-db mtg-server" - full -- Cargo.lock
+gate_case "root lock" "mtg-campaign mtg-cards mtg-core mtg-engine mtg-import mtg-protocol mtg-testkit" "mtg-cli mtg-db mtg-server" - full -- Cargo.lock
 
 # --- Slow list -----------------------------------------------------------------------------------------------------
 

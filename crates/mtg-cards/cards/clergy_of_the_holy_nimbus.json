@@ -1,0 +1,23 @@
+{
+  "oracle_id": "66566999-f70a-4f14-9bf0-23325295a977",
+  "name": "Clergy of the Holy Nimbus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clergy of the Holy Nimbus",
+      "oracle_fingerprint": "4df72a1f15d79db6c1d9655662530704",
+      "abilities": [
+        { "Replacement": { "when": { "Destroyed": { "what": ["This"] } }, "by": "Regenerate" } },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "by": "Opponents",
+            "effects": [
+              { "Rule": { "rule": { "CantBeRegenerated": "This" }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

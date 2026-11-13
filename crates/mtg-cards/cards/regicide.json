@@ -1,0 +1,22 @@
+{
+  "oracle_id": "db8e3c05-12d6-41f6-8cc7-e64c863fca58",
+  "name": "Regicide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Regicide",
+      "oracle_fingerprint": "1f9963a906648ad285d07a1715687f6c",
+      "abilities": [
+        { "Rule": { "rule": { "Draft": "ChooseColorsAround" } } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Drafted": "ChosenColors" }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT event FROM delve_events WHERE delve_id = $1 ORDER BY seq",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "event",
+        "type_info": "Jsonb",
+        "origin": {
+          "Table": {
+            "table": "delve_events",
+            "name": "event"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "f6b805c0fc773da8c57cd93ecefe2568239ff84f3477c438d62c1b5bb450a6f6"
+}

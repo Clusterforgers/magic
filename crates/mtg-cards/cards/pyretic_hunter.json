@@ -1,7 +1,7 @@
 {
   "oracle_id": "6ea507d3-2b8d-4f08-824c-0de0ae214da5",
   "name": "Pyretic Hunter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Pyretic Hunter",
@@ -10,9 +10,11 @@
         { "Rule": { "rule": { "Draft": "NoteDraftedCount" } } },
         { "Keyword": "Menace" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 184, "end": 305 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": { "counter": "+1/+1", "count": { "Drafted": "HighestNumber" } }
+            }
           }
         }
       ]
