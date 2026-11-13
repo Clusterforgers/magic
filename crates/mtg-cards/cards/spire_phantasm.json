@@ -1,7 +1,7 @@
 {
   "oracle_id": "d5fc017a-7517-4737-ad5b-cc45f1e139ea",
   "name": "Spire Phantasm",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Spire Phantasm",
@@ -10,9 +10,10 @@
         { "Rule": { "rule": { "Draft": "GuessNextPick" } } },
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 169, "end": 266 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Drafted": "GuessedRight" },
+            "effects": [{ "Draw": {} }]
           }
         }
       ]

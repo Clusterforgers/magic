@@ -3,7 +3,7 @@
 //! (`/api/decks`), of the fix-mark endpoints (`/api/fix-marks`), of the read endpoints
 //! (`/api/reads`), of the precon endpoints
 //! (`/api/precons`), of the game browser (`/api/lobbies`, joining) and of tournaments
-//! (`/api/tournaments`), with TypeScript bindings.
+//! (`/api/tournaments`) and of Delves (`/api/delves`), with TypeScript bindings.
 //!
 //! These are the REST types the web takes from the generated bindings. The body of
 //! `POST /api/games` is still written by hand on both sides.
@@ -11,6 +11,7 @@
 mod bulk_reads;
 mod cards;
 mod decks;
+mod delves;
 mod favourites;
 mod fix_marks;
 mod lobbies;
@@ -41,6 +42,10 @@ pub use decks::{
     LinePrintingBody, ListProblem, MAX_DECK_CARDS, MAX_DECK_LINES, MAX_DECK_NAME_CHARS,
     MAX_DECK_NOTES_CHARS, MAX_DECK_PICTURES, MAX_DECKS_PER_USER, MAX_IMPORT_CHARS,
     MAX_IMPORT_LINES, TableRules, UnresolvedLine, UnresolvedReason,
+};
+pub use delves::{
+    CreateDelve, CustomCardView, DelveAction, DelveBossView, DelveContent, DelveEventView,
+    DelveList, DelveSummary, DelveView,
 };
 pub use favourites::FavouritePrecons;
 pub use fix_marks::{

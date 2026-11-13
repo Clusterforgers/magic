@@ -82,7 +82,7 @@ pub fn process(
 ) -> Result<Processed, EngineError> {
     let proposed = crate::prohibit::filter(state, proposed);
     if !(state.possible.replacements || state.possible.protection) || proposed.is_empty() {
-        return Ok(Processed::Events(proposed));
+        return r4708_reveal::r4708_reveals(state, proposed.clone(), proposed, journal);
     }
     // A card that enters as one of its faces (a land played as one, a card put onto the battlefield transformed)
     // enters as that face, so the effects that apply to its entering are the face's (CR 614.12, 712.14a): the
@@ -108,7 +108,7 @@ pub fn process(
                 || r401_riders::r401_exiled_instead(state, event)
         })
     {
-        return Ok(Processed::Events(proposed));
+        return r4708_reveal::r4708_reveals(state, proposed.clone(), proposed, journal);
     }
     let original = proposed.clone();
     let left = shields
@@ -157,7 +157,10 @@ pub fn process(
             decision,
             proposed: original,
         }),
-        Run::Done => Ok(Processed::Events(step.finish())),
+        Run::Done => {
+            let left: Vec<(PlayerId, Choice)> = step.answers.clone().cloned().collect();
+            r4708_reveal::r4708_reveals(state, original, step.finish(), &left)
+        }
     }
 }
 
@@ -675,6 +678,8 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::Explores { .. }
         | ReplaceWhen::Connives { .. }
         | ReplaceWhen::Proliferates { .. }
+        | ReplaceWhen::Scries { .. }
+        | ReplaceWhen::Surveils { .. }
         | ReplaceWhen::Draw { .. } => false,
     }
 }
@@ -714,11 +719,14 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         }
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
         // Only a shield counts its amount, and it begins as `PreventUpTo`; one with effects names the damage left to it.
-        ReplaceBy::PreventCounted(_) | ReplaceBy::PreventNextAnd(_) => false,
+        // More cards to surveil are offered by the surveil itself (`r4708_actions`).
+        ReplaceBy::PreventCounted(_)
+        | ReplaceBy::PreventNextAnd(_)
+        | ReplaceBy::MayAddAmount(_) => false,
         ReplaceBy::PreventCountedAnd { most, .. } => {
             matches!(most, Amount::Fixed(_)) && matches!(unit, Unit::Damage { .. })
         }
-        ReplaceBy::UmbraArmor => matches!(
+        ReplaceBy::UmbraArmor | ReplaceBy::Regenerate => matches!(
             unit,
             Unit::Move {
                 destroyed: true,
@@ -1222,7 +1230,12 @@ impl Pass<'_> {
             if slot.applied.contains(&origin)
                 || found.iter().any(|c| c.origin == origin)
                 || !applies_to(by, &unit)
-                || (regeneration.is_some() && !matches!(by, ReplaceBy::UmbraArmor))
+                || (regeneration.is_some()
+                    && !matches!(by, ReplaceBy::UmbraArmor | ReplaceBy::Regenerate))
+                || (matches!(by, ReplaceBy::Regenerate)
+                    && destroyed(&slot.item).is_some_and(|object| {
+                        crate::rules::cant_be_regenerated(step.state, object)
+                    }))
                 || (unpreventable && Action::Replace(by.clone()).prevents())
                 || matches!(by, ReplaceBy::Dredge(cards) if !step.can_dredge(at, source.object.id, *cards))
                 || !step.c6_blk_matches(at, source, when, &unit)?
@@ -2000,11 +2013,8 @@ impl Pass<'_> {
                 Applied::Done => {}
             }
         }
-        if self.answers.next().is_some() {
-            return Err(Self::invalid(
-                "an answer was given to a question that was not asked".into(),
-            ));
-        }
+        // Answers left over belong to the reveals of first draws after the replacements (`r4708_reveal`), which refuse
+        // any they do not ask for.
         Ok(Run::Done)
     }
 
@@ -2143,6 +2153,17 @@ impl Pass<'_> {
         let by = match &candidate.action {
             Action::Regenerate => {
                 self.regenerate(at, candidate);
+                return Ok(Applied::Done);
+            }
+            // A printed regeneration is not used up as a shield is.
+            Action::Replace(ReplaceBy::Regenerate) => {
+                if let Some(object) = destroyed(&self.slots[at].item) {
+                    self.slots[at] = Slot {
+                        item: Item::One(Event::Regenerated { object }),
+                        applied: vec![candidate.origin],
+                        frozen: true,
+                    };
+                }
                 return Ok(Applied::Done);
             }
             Action::Replace(by) => by,
@@ -3647,6 +3668,8 @@ mod r304_as_enters;
 #[cfg(test)]
 mod r304_skip;
 pub(crate) mod r406_actions;
+pub(crate) mod r4708_actions;
+mod r4708_reveal;
 mod rmt5_next;
 use rmt5_next::rmt5_next_as_instead;
 mod e19_mill;

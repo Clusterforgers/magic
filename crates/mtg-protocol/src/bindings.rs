@@ -20,6 +20,7 @@ use crate::rest::{
     PreferredPrintingBody, PreferredPrintings, PrintingList, ReadBody, ReadCard, ReadQueue, Replay,
     SeatTeamBody, TeamsBody, UserPrefs, UserView, VisibilityBody,
 };
+use crate::rest::{CreateDelve, DelveAction, DelveContent, DelveList, DelveView};
 use crate::rest::{
     CreateTournament, JoinTournament, SetMatchOutcome, TournamentCreated, TournamentErrorCode,
     TournamentInvite, TournamentList, TournamentView,
@@ -73,6 +74,11 @@ pub fn export_to(dir: &Path) -> Result<(), BindingsError> {
     TournamentView::export_all(&config)?;
     TournamentInvite::export_all(&config)?;
     TournamentErrorCode::export_all(&config)?;
+    CreateDelve::export_all(&config)?;
+    DelveAction::export_all(&config)?;
+    DelveView::export_all(&config)?;
+    DelveList::export_all(&config)?;
+    DelveContent::export_all(&config)?;
     CardSearchPage::export_all(&config)?;
     CardDetail::export_all(&config)?;
     PrintingList::export_all(&config)?;

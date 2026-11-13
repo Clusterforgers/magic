@@ -127,6 +127,12 @@ enum Happened {
         nth: u32,
         in_draw_step: u32,
     },
+    /// A player revealed the first card they drew this turn through the reveal rules of these sources.
+    FirstDrawRevealed {
+        player: PlayerId,
+        card: ObjectId,
+        sources: Vec<ObjectId>,
+    },
     /// A permanent became tapped: the `nth` time this turn, and whether as it was declared as an attacker.
     Tapped {
         object: ObjectId,
@@ -1166,6 +1172,15 @@ fn about_players_and_permanents(
                 nth: loss_ordinal(look, *player, *amount),
             });
         }
+        Event::FirstDrawRevealed {
+            player,
+            card,
+            sources,
+        } => found.push(Happened::FirstDrawRevealed {
+            player: *player,
+            card: *card,
+            sources: sources.clone(),
+        }),
         Event::CardDrawn { player, object } => found.push(Happened::Drew {
             player: *player,
             card: *object,
@@ -1912,6 +1927,21 @@ fn matching_event(
             let step = first_in_draw_step.is_none_or(|first| first == (*in_draw_step == 1));
             (step && by(who, player) && picks(what, drawn)?)
                 .then(|| counted(state, vec![Target::Player(*player)], happened.amount()))
+        }
+        (
+            TriggerPattern::FirstDrawRevealed { what },
+            Happened::FirstDrawRevealed {
+                player,
+                card,
+                sources,
+            },
+        ) => {
+            // Only the reveal of this permanent's own rule triggers it ("this way"), for its controller.
+            let revealed = object(*card)?;
+            (sources.contains(&scope.source.id)
+                && crate::characteristics::controller_of(state, scope.source.id) == Some(*player)
+                && picks(what, revealed)?)
+            .then(|| counted(state, vec![Target::Object(revealed)], 1))
         }
         (
             TriggerPattern::Discarded { what, by: who },

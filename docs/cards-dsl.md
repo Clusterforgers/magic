@@ -112,6 +112,8 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - "You can't play lands from your hand" is `Prohibited::PlayLands(filter)`, judged on the card where it would be played; "the next time ... prevent that damage. You gain life equal to the damage prevented this way" is a shield `ReplaceBy::PreventNextAnd`; "each player who controls the fewest creatures" compares a count with `Amount::Smallest`.
 - "The player to your right" is `Ref::Seated`: the left is the next seat still in the game, as turns pass; `GameRule::ReverseTurnOrder` (in force an odd number of times) runs the turn order the other way and leaves the seats. `GameRule::AttackOnlyNearest` keeps only the nearest opponent on a side, and their planeswalkers, among each player's defenders; several such rules all apply.
 - A vote on players or objects binds `tally` to every vote cast ("for each vote they received" counts it); `VoteFor::AnotherPlayer` leaves the voter out, and a vote on players may be secret (`ChoiceOption::SecretPlayer`). `ChooseWords` is a choice of words that is no vote ("each opponent secretly chooses silence or snitch").
+- What a booster draft notes for cards of a name is `Amount`/`Pred`/`Condition::Drafted(DraftNote)`: a game has no draft, so a noted number is 0 and no name, type, color, player, guess or card exiled before the game is noted (the Conspiracy rulings); the rules of the draft itself are `GameRule::Draft`, a spell line on an instant or sorcery.
+- "If ~ would be destroyed, regenerate it." is a replacement `Destroyed` by `ReplaceBy::Regenerate`: never used up, and not while the permanent can't be regenerated. Each regeneration is logged as `TallyEvent::Regenerated` ("for each time it regenerated this turn").
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 
 ## Support records
@@ -303,6 +305,8 @@ A copy effect gives an object the copiable values of another (`CreateToken` with
 | Turn-up X | A morph, megamorph or disguise cost with `{X}` asks X as the permanent is turned face up; `TurnedFaceUp.x` carries it to "when this creature is turned face up" (`Keyword.TurnUp.X`, `r409_turn_up_x.rs`). |
 | Tokens with a mana cost | `TokenSpec.mana_cost` gives a token a mana cost of its own, its colours read from it (the predefined Spellgorger Weird). |
 | Loyalty twice | `GameRule::LoyaltyTwice(who)` lets the players activate each planeswalker's loyalty abilities twice each turn (Oath of Teferi; for the turn as an `Effect::Rule`, Urza Assembles the Titans; `r409_loyalty_twice.rs`). |
+| Scry and surveil replaced | `ReplaceWhen::Scries` with `Instead` of drawing `Triggering` cards ("If you would scry a number of cards, draw that many cards instead.") draws in place of a scry of one or more cards, unasked; `ReplaceWhen::Surveils` with `ReplaceBy::MayAddAmount(n)` asks its controller before each surveil of one or more cards whether to look at n more (`r4708_actions.rs`). |
+| First draw revealed | `GameRule::RevealFirstDraw { may, your_turns }` reveals its controller's first card drawn each turn as it is drawn (only on their turns with `your_turns`; an optional one asks a choice of that card or none, per source), after the replacements of the batch: a `Revealed` and a `FirstDrawRevealed` naming the sources follow the draw. `TriggerPattern::FirstDrawRevealed { what }` ("Whenever you reveal a creature card this way") triggers for those sources, with the card as `Triggering`; the rule and its triggers are one line of the card (`r4708_reveal.rs`). |
 
 ## Validation
 

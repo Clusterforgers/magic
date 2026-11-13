@@ -1,23 +1,37 @@
 {
   "oracle_id": "96d88811-d0d8-4c64-b7f2-8304d81c8cfa",
   "name": "Noble Banneret",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Noble Banneret",
       "oracle_fingerprint": "b1868bd366111d13fd046e176f1f7e85",
       "abilities": [
         { "Rule": { "rule": { "Draft": "FaceUp" } } },
+        { "Rule": { "rule": { "Draft": "NoteCreatureName" } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 25, "end": 119 }
-          }
-        },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 120, "end": 281 }
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "AnyOf": ["This", { "Drafted": "NotedName" }] }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Lifelink" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Drafted": "NotedName" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
           }
         }
       ]

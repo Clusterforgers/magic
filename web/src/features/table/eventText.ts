@@ -1127,6 +1127,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(
       `${n.seat(event.TurnedFaceDown.player)} turns ${n.card(event.TurnedFaceDown.object)} face down`,
     )
+  if ('FirstDrawRevealed' in event) {
+    const { player, card } = event.FirstDrawRevealed
+    return line(`${n.seat(player)} reveals ${n.card(card)} as the first card they drew this turn`)
+  }
   if ('FaceDownLooked' in event)
     return line(`${n.seat(event.FaceDownLooked.player)} looks at ${n.card(event.FaceDownLooked.object)}`)
   if ('DoorLocked' in event) {
@@ -1313,6 +1317,13 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
       ZeroToughness: 'with zero toughness',
     }
     return line(`${n.card(event.CreatureDied.object)} dies ${HOW[event.CreatureDied.cause]}`)
+  }
+  if ('BecameSpirit' in event) {
+    return line(`${n.seat(event.BecameSpirit.player)} fell and rises as a Spirit`)
+  }
+  if ('PhaseBegan' in event) {
+    const { player, emblem } = event.PhaseBegan
+    return line(`${n.seat(player)} enters ${n.card(emblem)}`)
   }
   if ('PlayerLost' in event) {
     return line(`${n.seat(event.PlayerLost.player)} ${describeLoss(event.PlayerLost.reason)}`)

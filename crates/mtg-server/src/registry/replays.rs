@@ -66,3 +66,50 @@ impl Registry {
         })
     }
 }
+
+impl Registry {
+    /// Each seat's life at the end of recorded game `id` and whether it ended as a Spirit; `None` until the game has
+    /// ended, or on a server that keeps no records.
+    pub(crate) async fn final_seats(
+        &self,
+        id: GameId,
+    ) -> Result<Option<Vec<(i32, bool)>>, ReplayRefusal> {
+        let Some(records) = self.shared.records.clone() else {
+            return Ok(None);
+        };
+        let failed = |detail: String| {
+            tracing::error!(game = %id, %detail, "the end of a game could not be read");
+            ReplayRefusal::Failed
+        };
+        let Some(record) = records
+            .get(id)
+            .await
+            .map_err(|error| failed(error.to_string()))?
+            .filter(|record| record.status == RecordStatus::Finished)
+        else {
+            return Ok(None);
+        };
+        let recipe = decode(&record).map_err(|unloadable| failed(unloadable.detail))?;
+        let catalog = self
+            .catalog_of(&recipe)
+            .await
+            .map_err(|unloadable| failed(unloadable.detail))?;
+        let setup = recipe
+            .build_with(&catalog)
+            .map_err(|error| failed(error.to_string()))?;
+        let events = records
+            .store()
+            .load(id)
+            .await
+            .map_err(|error| failed(error.to_string()))?;
+        let state =
+            mtg_engine::replay(&setup, &events).map_err(|error| failed(error.to_string()))?;
+        Ok(Some(
+            state
+                .players()
+                .iter()
+                .map(|player| (player.life(), player.is_spirit()))
+                .collect(),
+        ))
+    }
+}

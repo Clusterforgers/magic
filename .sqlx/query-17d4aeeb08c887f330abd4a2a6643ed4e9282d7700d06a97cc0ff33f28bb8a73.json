@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM delve_members WHERE delve_id = $1 AND NOT (user_id = ANY($2))",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "UuidArray"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "17d4aeeb08c887f330abd4a2a6643ed4e9282d7700d06a97cc0ff33f28bb8a73"
+}

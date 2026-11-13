@@ -3,7 +3,7 @@
  * no maximum hand size), each an icon and a few words, with what it does on hover or focus. A tile, which has no room
  * for words, shows one figure with the count and every effect in its detail.
  */
-import { Award, Ban, Eye, Hand, Heart, Mountain, Shield, Sparkles } from 'lucide-react'
+import { Award, Ban, Crown, Eye, Ghost, Hand, Heart, Mountain, Shield, Sparkles } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { usePlay } from '@/features/game/gameContext'
@@ -24,6 +24,8 @@ const ICON: Record<EffectIcon, LucideIcon> = {
   land: Mountain,
   emblem: Award,
   keyword: Sparkles,
+  spirit: Ghost,
+  boss: Crown,
 }
 
 // The tone tints the icon only; the words on the chip say the effect, so the colour is never the only cue.

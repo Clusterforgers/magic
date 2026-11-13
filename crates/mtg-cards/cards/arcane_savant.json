@@ -1,0 +1,29 @@
+{
+  "oracle_id": "6b8c69ac-1856-4070-9489-798a6b224268",
+  "name": "Arcane Savant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcane Savant",
+      "oracle_fingerprint": "7050bd5b4eaf63d056db10dd8e2b7a1c",
+      "abilities": [
+        { "Rule": { "rule": { "Draft": "ExileDraftedSpell" } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Exile" }, { "Drafted": "ExiledWith" }] },
+                  "as": "card"
+                }
+              },
+              { "CopyCard": { "what": { "Bound": "card" }, "as": "copy" } },
+              { "CastFromZone": { "what": { "Bound": "copy" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

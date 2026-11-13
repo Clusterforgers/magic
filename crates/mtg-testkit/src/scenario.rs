@@ -356,6 +356,41 @@ impl Scenario {
         self
     }
 
+    /// Gives a player emblems in their command zone from the start.
+    #[must_use]
+    pub fn emblems(
+        mut self,
+        player: usize,
+        cards: impl IntoIterator<Item = Arc<CardDefinition>>,
+    ) -> Self {
+        if let Some(seat) = self.seat(player) {
+            seat.emblems.extend(cards);
+        }
+        self
+    }
+
+    /// Gives a player the Spirit emblem they get on becoming a Spirit (`mtg_engine::spirits`).
+    #[must_use]
+    pub fn spirit(mut self, player: usize, card: Arc<CardDefinition>) -> Self {
+        if let Some(seat) = self.seat(player) {
+            seat.spirit = Some(card);
+        }
+        self
+    }
+
+    /// Gives a player boss phases (`mtg_engine::phases`).
+    #[must_use]
+    pub fn phases(
+        mut self,
+        player: usize,
+        phases: impl IntoIterator<Item = mtg_engine::phases::BossPhase>,
+    ) -> Self {
+        if let Some(seat) = self.seat(player) {
+            seat.phases.extend(phases);
+        }
+        self
+    }
+
     /// The setup this scenario describes (decks are not validated).
     pub fn setup(self) -> Result<GameSetup, ScenarioError> {
         if let Some(error) = self.error {
