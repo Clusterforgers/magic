@@ -1192,7 +1192,8 @@ mod tests {
         if waiting {
             let added = Event::ExtraTurnAdded {
                 player: PlayerId::from_index(0),
-                skip_untap: false, no_power_up: false,
+                skip_untap: false,
+                no_power_up: false,
             };
             apply_event(&mut game, &added).unwrap();
         }

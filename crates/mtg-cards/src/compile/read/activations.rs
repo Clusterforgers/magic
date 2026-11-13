@@ -25,7 +25,9 @@ pub(super) fn tails(timing: Timing, condition: &Condition, limit: Option<Limit>)
         Some(Limit::OncePerTurn) => parts.push(vec!["once each turn".to_owned()]),
         Some(Limit::OncePerGame) => parts.push(vec!["once".to_owned()]),
         // "No more than twice each turn" is no part after "only"; a limit counted as done is a trigger's.
-        Some(Limit::TimesPerTurn(_) | Limit::OncePerTurnDone | Limit::PowerUp) => return Vec::new(),
+        Some(Limit::TimesPerTurn(_) | Limit::OncePerTurnDone | Limit::PowerUp) => {
+            return Vec::new();
+        }
     }
     let Some(held) = held(condition) else {
         return Vec::new();

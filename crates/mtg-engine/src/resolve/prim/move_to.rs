@@ -299,7 +299,10 @@ fn attached_entry(
     controller: PlayerId,
     named: Option<Host>,
 ) -> Entering {
-    match (attach::hosts_when_entering(state, object, controller), named) {
+    match (
+        attach::hosts_when_entering(state, object, controller),
+        named,
+    ) {
         (Some(_), Some(Host::Player(player))) => {
             if attach::player_hosts_when_entering(state, object, controller).contains(&player) {
                 Entering::Enters(Some(Host::Player(player)))
@@ -394,8 +397,13 @@ fn onto_battlefield(
                         ([one], _) => Some(Host::Object(*one)),
                         ([], [one]) => Some(Host::Player(*one)),
                         ([], _) => {
-                            let options = players.iter().copied().map(ChoiceOption::Player).collect();
-                            let at = questions.w9b_option(controller, options, wording::ENCHANT.into())?;
+                            let options =
+                                players.iter().copied().map(ChoiceOption::Player).collect();
+                            let at = questions.w9b_option(
+                                controller,
+                                options,
+                                wording::ENCHANT.into(),
+                            )?;
                             players.get(at).copied().map(Host::Player)
                         }
                         _ => questions

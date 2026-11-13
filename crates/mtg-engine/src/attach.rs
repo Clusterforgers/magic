@@ -463,8 +463,9 @@ pub(crate) fn player_hosts_when_entering(
         .alive_players()
         .filter(|player| !opponent || state.is_opponent(*player, controller))
         .filter(|player| {
-            !keywords::Source::live(state, id)
-                .is_some_and(|source| keywords::protected_from(state, Holder::Player(*player), source))
+            !keywords::Source::live(state, id).is_some_and(|source| {
+                keywords::protected_from(state, Holder::Player(*player), source)
+            })
         })
         .collect()
 }
@@ -484,7 +485,10 @@ pub(crate) fn hosts_matching(
         .into_iter()
         .map(|named| named.id)
         .collect();
-    hosts.into_iter().filter(|host| allowed.contains(host)).collect()
+    hosts
+        .into_iter()
+        .filter(|host| allowed.contains(host))
+        .collect()
 }
 
 /// Attaches `object` to `to` (CR 701.3): it takes the time it became attached as its timestamp (CR 613.7a).

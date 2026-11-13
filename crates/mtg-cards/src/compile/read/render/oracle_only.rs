@@ -293,10 +293,10 @@ mod w16a_entry_if;
 mod w16a_named_yours;
 // dk1b
 mod dk1b_attached;
-mod r5515_attached;
 mod r281_wordings;
 mod r408_turn_cost;
 mod r408_wordings;
+mod r5515_attached;
 mod r9w_countered_value;
 mod w16a_owner;
 mod w16a_return_cost;

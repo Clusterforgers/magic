@@ -121,7 +121,8 @@ pub(crate) fn turn_began(state: &mut GameState, number: u32, active: PlayerId) {
     for _ in 0..extra {
         state.extra_turns.push(ExtraTurn {
             player: active,
-            skip_untap: false, no_power_up: false,
+            skip_untap: false,
+            no_power_up: false,
         });
     }
 }
