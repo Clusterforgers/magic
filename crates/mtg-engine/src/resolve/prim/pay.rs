@@ -320,12 +320,14 @@ pub(super) fn price_of(cost: &Cost) -> Result<Price, ResolveError> {
         Leaves::Discarded => return Err(ResolveError::Unsupported("Effect.Pay.DiscardSelf")),
         Leaves::Sacrificed | Leaves::Exiled | Leaves::Stays => {}
     }
-    // Energy and life are the parts whose X is announced with a payment an effect asks for ("pay any amount of life").
-    if price
-        .parts
-        .iter()
-        .any(|part| part.is_counted() && !part.is_counted_energy() && !part.is_counted_life())
-    {
+    // Energy, life and counters from among permanents are the parts whose X is announced with a payment an effect asks
+    // for ("pay any amount of life", "remove any number of +1/+1 counters from among creatures you control").
+    if price.parts.iter().any(|part| {
+        part.is_counted()
+            && !part.is_counted_energy()
+            && !part.is_counted_life()
+            && !part.r4710_is_counted_among()
+    }) {
         return Err(ResolveError::Unsupported("Effect.Pay.X.Parts"));
     }
     if price.tap || (price.mana.is_none() && price.parts.is_empty() && !price.moves_source()) {

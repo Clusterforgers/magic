@@ -93,6 +93,8 @@ mod r4700_players;
 mod r4706_same_counters;
 mod r4701_cast_from_among;
 mod r4702_rules;
+mod r4710_joined_and_paid;
+mod r4710_monarch_teammates;
 mod r4a_enters_with;
 mod r4i_granter;
 mod r5e_done_once;

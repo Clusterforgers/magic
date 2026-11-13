@@ -69,7 +69,14 @@ fn target_phrase(ability: &Ability) -> Option<String> {
 fn put_from_zone(ability: &Ability, steps: &[Effect]) -> Option<String> {
     let (choose, moved, attacking) = match steps {
         [choose, moved] => (choose, moved, false),
-        [choose, moved, Effect::JoinAttack { what }] => (choose, moved, *what == bound(choose)?),
+        [
+            choose,
+            moved,
+            Effect::JoinAttack {
+                what,
+                against: None,
+            },
+        ] => (choose, moved, *what == bound(choose)?),
         _ => return None,
     };
     let Effect::Choose {

@@ -242,6 +242,7 @@ mod r4706_counters;
 mod r4701_flash;
 mod r4701_pairs;
 mod r4702_names;
+mod r4710_atoms;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;

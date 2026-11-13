@@ -1233,11 +1233,7 @@ impl<'a> Scope<'a> {
         let state = self.state;
         Ok(match reference {
             Ref::You => vec![Target::Player(self.controller)],
-            Ref::Opponents => state
-                .opponents_of(self.controller)
-                .into_iter()
-                .map(Target::Player)
-                .collect(),
+            Ref::Opponents | Ref::Teammates => self.r4710_side(reference),
             Ref::EachPlayer => state
                 .turn_order_from(state.turn().active())
                 .into_iter()
@@ -1358,6 +1354,16 @@ impl<'a> Scope<'a> {
             .and_then(|cause| cause.against)
             .into_iter()
             .collect()
+    }
+
+    /// The controller's opponents, or their teammates, still in the game in turn order.
+    fn r4710_side(&self, reference: &Ref) -> Vec<Target> {
+        let players = if *reference == Ref::Teammates {
+            self.state.r4710_teammates_of(self.controller)
+        } else {
+            self.state.opponents_of(self.controller)
+        };
+        players.into_iter().map(Target::Player).collect()
     }
 
     /// The objects the cost picked, in the order of its parts: one the cost took out of its zone is theobject it was

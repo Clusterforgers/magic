@@ -113,6 +113,8 @@ pub enum Ref {
     Attacked,
     /// The player with the most life, or each of the players tied for it.
     MostLife,
+    /// The controller's teammates still in the game, in turn order (CR 810.2): nobody at a table without teams.
+    Teammates,
     /// The player whose turn it is; nobody once they have left the game.
     ActivePlayer,
     /// The player making the choice of an `Effect::Choose` whose candidates are worked out for each chooser ("each player

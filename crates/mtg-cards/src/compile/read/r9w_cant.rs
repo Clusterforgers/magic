@@ -81,6 +81,7 @@ fn plain(who: &Ref, action: &Prohibited) -> Option<String> {
             unless: None,
         } => cast(who, filter, *more_than),
         Prohibited::PlayLand => Some(format!("{} can't play lands", players(who)?)),
+        Prohibited::BecomeMonarch => Some(format!("{} can't become the monarch", players(who)?)),
         Prohibited::BeTargeted(sources) if *who == Ref::This => {
             Some(format!("~ can't be the target of {}", targeted(sources)?))
         }

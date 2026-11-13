@@ -461,6 +461,9 @@ pub enum TallyEvent {
     /// A permanent regenerated (CR 701.19), as it was then, for its controller: "if this creature regenerated this turn",
     /// "for each time it regenerated this turn".
     Regenerated,
+    /// A permanent was turned face up (the permanent, for its controller): "a creature you control that was turned face
+    /// up this turn".
+    TurnedFaceUp,
 }
 
 /// Which result of the latest die roll an amount reads.

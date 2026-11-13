@@ -618,6 +618,8 @@ pub enum Prohibited {
     Crew,
     /// Become suspected (CR 701.60): an effect that would suspect it does nothing to it.
     BecomeSuspected,
+    /// Become the monarch (CR 724): "You can't become the monarch this turn."; the monarch stays who it was.
+    BecomeMonarch,
     /// Phase in (CR 702.26): a phased-out permanent covered stays phased out through its controller's untap step and any
     /// other moment it would phase in.
     PhaseIn,

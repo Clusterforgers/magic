@@ -30,7 +30,7 @@ use super::where_x;
 use crate::cost::Cost;
 use crate::effect::{Destination, Effect, Order, Place, PlanarAct, Produce};
 use crate::mana::ManaCostX;
-use crate::modify::{Duration, Modification};
+use crate::modify::{Duration, GameRule, Modification, Prohibited};
 use crate::refs::{Bounds, Pred, Ref, Selector, Targetable, ZoneKind};
 use crate::spend::ManaLasts;
 use crate::trigger::{Step, TriggerPattern};
@@ -879,10 +879,7 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
             r.need("the game")?;
             Effect::WinGame { who }
         }
-        "become" | "becomes" => {
-            r.need("the monarch")?;
-            Effect::BecomeMonarch { who }
-        }
+        word @ ("become" | "becomes" | "can't") => r4710_monarch(r, word, who)?,
         "venture" | "ventures" => w11d_venture(r, who)?,
         "open" | "opens" => super::un33_attractions::un33_open(r, who)?,
         "claim" | "claims" if r.words("the prize") => Effect::ClaimPrize { who },
@@ -925,6 +922,22 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
 }
 
 /// "a creature or planeswalker" and "of their choice": the player chooses, as they always do.
+/// "become the monarch", or "can't become the monarch this turn", after the player and the verb `word`.
+fn r4710_monarch(r: &mut Reader<'_>, word: &str, who: Ref) -> Option<Effect> {
+    if word != "can't" {
+        r.need("the monarch")?;
+        return Some(Effect::BecomeMonarch { who });
+    }
+    r.need("become the monarch this turn")?;
+    Some(Effect::Rule {
+        rule: GameRule::Cant {
+            who,
+            action: Prohibited::BecomeMonarch,
+        },
+        duration: Duration::UntilEndOfTurn,
+    })
+}
+
 fn sacrifice(r: &mut Reader<'_>, who: Ref) -> Option<Effect> {
     let (count, form) = if r.word("a") || r.word("an") {
         (Amount::one(), Form::Subject)
