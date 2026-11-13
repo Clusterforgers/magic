@@ -27,13 +27,13 @@ The 5 s server deadline rules out deep full-game search per decision; the levels
 
 ## Measured
 
-Decision-quality suite (66 cases, untimed, seed 7):
+Decision-quality suite (66 cases, untimed, seed 7; timed, the longest answer is 1.2 s):
 
 | Level | Before | Now |
 | --- | --- | --- |
 | Easy | 38% | 39% |
-| Normal | 76% | 95% |
+| Normal | 76% | 97% |
 | Hard | 71% | 97% |
-| Very Hard | 73% | 91% |
+| Very Hard | 73% | 92% |
 
-Seeded games against the brains of main before this work (`bot_tournament <level> old-<level>`, the three duel decks, `DECKS=3`): Normal 48% in 1v1 (240 games) and 24% of 4-player pods (160 games, 25% even); Hard 52% in 1v1 (240) and 25% of pods (160); Very Hard VH_RESULT. The duel decks are creature mirrors where the suite's skills (counters, engines, combo pieces, wipes) rarely decide a game, so the judgement gains do not show as wins there; the evaluation weights moved by half either way also stay at 50%.
+Seeded games against the brains of main before this work (`bot_tournament <level> old-<level>`, the three duel decks, `DECKS=3`): Normal 48% in 1v1 (240 games) and 24% of 4-player pods (160 games, 25% even); Hard 52% in 1v1 (240) and 25% of pods (160); Very Hard 46% in 1v1 (24 games; 42% before the tree search kept its heuristic answer), pods not measured (a pod of four tree searches plays for hours on four cores). The duel decks are creature mirrors where the suite's skills (counters, engines, combo pieces, wipes) rarely decide a game, so the judgement gains do not show as wins there; the evaluation weights moved by half either way also stay at 50%.

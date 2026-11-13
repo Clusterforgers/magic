@@ -107,7 +107,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
 - [ ] (ai36a) Hard beats Normal by 70% or more in 1v1 (62%; 71% in 2v2) and Very Hard beats Hard by 65% or more (56%): every level shares one evaluation and the quick policies it models the other seats with, so the next gains are an evaluation and opponent policy tuned from recorded games, and the tree search's rollouts using that policy (`crates/mtg-testkit/src/brain`, `examples/bot_tournament.rs`)
-- [ ] (ai48a) Very Hard beats the Very Hard of main before ai48 by 70% or more in 1v1 and clearly in 4-player pods (VH_SHORT): the duel decks rarely test interaction, so the tournament needs Commander-style decks with counters, engines and wipes, and an evaluation fitted to self-play games (`crates/mtg-testkit/src/brain`, `examples/bot_tournament.rs`)
+- [ ] (ai48a) Very Hard beats the Very Hard of main before ai48 by 70% or more in 1v1 and clearly in 4-player pods (46% in 1v1): the duel decks rarely test interaction, so the tournament needs Commander-style decks with counters, engines and wipes, and an evaluation fitted to self-play games (`crates/mtg-testkit/src/brain`, `examples/bot_tournament.rs`)
 - [ ] (v1h) A "waiting on <player>" mark on the pods of a table of three or more, beside the strip's line, so a spectator and a player see at a glance whom the game waits for
 
 ## M8 Polish and deploy
