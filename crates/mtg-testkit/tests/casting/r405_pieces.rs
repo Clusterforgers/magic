@@ -82,7 +82,7 @@ fn r405_castable(driver: &Driver) -> Result<bool, ScriptError> {
 /// A Forest that is snow, named apart from the plain one.
 fn r405_snowy_forest() -> Arc<CardDefinition> {
     let mut land = CardDefinition::clone(&forest()).with_supertype(mtg_core::card::Supertype::Snow);
-    land.name = "Snowy Forest".to_owned();
+    "Snowy Forest".clone_into(&mut land.name);
     Arc::new(land)
 }
 
@@ -182,7 +182,7 @@ fn freya_pays_for_an_equip_ability(#[case] seats: usize) -> Result<(), ScriptErr
             .state()
             .object(splitter)
             .and_then(|o| o.permanent())
-            .and_then(|p| p.attached_to())
+            .and_then(mtg_engine::object::PermanentState::attached_to)
             .map(|host| host.id),
         Some(freya)
     );
