@@ -1375,6 +1375,12 @@ describe('the choice a permanent enters with', () => {
       "Forest enters under Ana's control, choosing Swamp",
     ],
     [
+      {
+        Entered: { object: 3, tapped: false, controller: 0, chosen: { LandTypes: ['Plains', 'Island'] } },
+      },
+      "Forest enters under Ana's control, choosing Plains, then Island",
+    ],
+    [
       { Entered: { object: 3, tapped: false, controller: 0, chosen: { CardType: 'Creature' } } },
       "Forest enters under Ana's control, choosing creature",
     ],

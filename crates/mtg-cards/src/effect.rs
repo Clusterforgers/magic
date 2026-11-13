@@ -186,6 +186,9 @@ pub enum Produce {
     },
     /// One mana of a type the permanent tapped for mana produced; only in a triggered mana ability (CR 605.1b).
     OfTapped,
+    /// Mana equal to the mana cost of the object the reference names: colorless for generic mana, nothing for {X}, and
+    /// one of its colors chosen for a symbol of several ("add mana equal to enchanted permanent's mana cost").
+    CostOf(Ref),
     /// One mana of each color among the objects the selector picks ("For each color among permanents you control, add
     /// one mana of that color"); none while they have no color.
     EachColorAmong(Selector),

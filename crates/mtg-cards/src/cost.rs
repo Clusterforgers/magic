@@ -176,6 +176,12 @@ pub enum CostItem {
     ExileTop(Amount),
     /// Collect evidence (CR 701.59): exile cards from the payer's graveyard with total mana value at least that much.
     CollectEvidence(u32),
+    /// Generic mana equal to the amount, counted as the cost is paid during a resolution ("echo {X}, where X is your life
+    /// total").
+    GenericOf(Amount),
+    /// Exile any number of other cards from the payer's graveyard with at least this many card types among them
+    /// (Nethergoyf's escape cost).
+    ExileCardTypes(u32),
     /// Blight (Lorwyn Eclipsed): put that many -1/-1 counters on a creature the payer controls and picks.
     Blight(Amount),
     /// Behold (Lorwyn Eclipsed): choose a permanent the payer controls or reveal a card from their hand that matches.

@@ -1000,6 +1000,8 @@ pub enum EntersChoice {
     CardTypeOf(mtg_core::card::CardTypes),
     /// A basic land type (CR 205.3i: Plains, Island, Swamp, Mountain or Forest).
     BasicLandType,
+    /// Two different basic land types, in order ("choose two basic land types"): the first and the second chosen.
+    TwoBasicLandTypes,
     /// A number from `min` to `max`.
     Number {
         /// The smallest number.

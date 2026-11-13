@@ -1,0 +1,34 @@
+{
+  "oracle_id": "dd1ef824-4e61-4dee-a8f0-9cf459008f2c",
+  "name": "Pulse of Llanowar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pulse of Llanowar",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "ManaProduced": {
+                "what": [
+                  {
+                    "Supertype": "Basic"
+                  },
+                  {
+                    "Type": "Land"
+                  },
+                  {
+                    "ControlledBy": "You"
+                  }
+                ],
+                "who": "You",
+                "change": "OnlyChosenColor"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

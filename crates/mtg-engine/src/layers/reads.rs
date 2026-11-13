@@ -102,12 +102,14 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         Wanted::AddType(_) | Wanted::RemoveType(_) | Wanted::SetTypes(_) => {
             Traits::TYPES.or(Traits::SUBTYPES)
         }
-        Wanted::AddSubtype(_) | Wanted::SetCreatureTypes(_) | Wanted::AddAllCreatureTypes => {
-            Traits::SUBTYPES
-        }
-        Wanted::SetLandTypes(_) | Wanted::SetLandTypesChosen(_) | Wanted::AddLandTypeChosen(_) => {
-            Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES)
-        }
+        Wanted::AddSubtype(_)
+        | Wanted::SetCreatureTypes(_)
+        | Wanted::SetCreatureTypesOf(_)
+        | Wanted::AddAllCreatureTypes => Traits::SUBTYPES,
+        Wanted::SetLandTypes(_)
+        | Wanted::SetLandTypesChosen(_)
+        | Wanted::SetLandTypesNthChosen(_)
+        | Wanted::AddLandTypeChosen(_) => Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES),
         Wanted::SetCreatureTypesChosen(_)
         | Wanted::AddCreatureTypeChosen(_)
         | Wanted::AddChosenSubtype => Traits::SUBTYPES,
@@ -168,6 +170,8 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::SetToughness(value)
         | Wanted::BlocksAdditionalPer(value) => reads_of_amount(value),
         Wanted::SetController(who) | Wanted::GainAbilitiesOf(who) => reads_of_ref(who),
+        // The creature types of the other object are read.
+        Wanted::SetCreatureTypesOf(from) => Traits::SUBTYPES.or(reads_of_ref(from)),
         Wanted::CantBeBlockedBy(blockers) | Wanted::CanBlockOnly(blockers) => {
             reads_of_selector(blockers)
         }
@@ -184,6 +188,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::SetCreatureTypes(_)
         | Wanted::SetLandTypes(_)
         | Wanted::SetLandTypesChosen(_)
+        | Wanted::SetLandTypesNthChosen(_)
         | Wanted::SetCreatureTypesChosen(_)
         | Wanted::AddCreatureTypeChosen(_)
         | Wanted::AddLandTypeChosen(_)
@@ -252,6 +257,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Paid
         | Ref::Convoked => Traits::NONE,
         Ref::Remembered { on, .. } => reads_of_ref(on),
+        Ref::LastExiledWith { on, filter } => reads_of_ref(on).or(reads_of_selector(filter)),
         Ref::ControllerOf(inner) | Ref::OrController(inner) => {
             Traits::CONTROL.or(reads_of_ref(inner))
         }
@@ -382,7 +388,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::SharesColor(who) => Traits::COLORS.or(reads_of_ref(who)),
         Pred::Type(_) => Traits::TYPES,
         Pred::Subtype(_) => Traits::SUBTYPES,
-        Pred::ChosenSubtype => Traits::SUBTYPES.or(Traits::TYPES),
+        Pred::ChosenSubtype | Pred::NthChosenLandType(_) => Traits::SUBTYPES.or(Traits::TYPES),
         Pred::ChosenAs(_) => Traits::COLORS.or(Traits::TYPES).or(Traits::SUBTYPES),
         Pred::SharesSubtype(who) | Pred::SharesCreatureTypeWithEach(who) => {
             Traits::SUBTYPES.or(reads_of_ref(who))
@@ -421,6 +427,9 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         | StatKind::Loyalty
         | StatKind::ManaSpent
         | StatKind::ColorsSpent
+        | StatKind::TreasureManaSpent
+        | StatKind::ArtifactManaSpent
+        | StatKind::ColoredManaSymbols
         | StatKind::Kicks
         | StatKind::Name
         | StatKind::CounterKinds

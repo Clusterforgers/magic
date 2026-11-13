@@ -163,7 +163,7 @@ fn leaves(game: &mut GameState, name: &str) {
 }
 
 /// The modifications the engine runs.
-const MODIFICATIONS: [&str; 33] = [
+const MODIFICATIONS: [&str; 34] = [
     r#"{"ModifyPT":{"power":2,"toughness":-1}}"#,
     r#"{"SetPT":{"power":5,"toughness":1}}"#,
     r#""SwitchPT""#,
@@ -197,6 +197,7 @@ const MODIFICATIONS: [&str; 33] = [
     r#"{"SetToughness":1}"#,
     r#"{"RemoveKeywordKind":"Landwalk"}"#,
     r#"{"BlocksAdditionalPer":2}"#,
+    r#"{"SetCreatureTypesOf":{"Each":[{"Type":"Creature"},{"In":"Graveyard"}]}}"#,
 ];
 
 /// CR 613.1e, 105.3: adding a colour keeps the colours the object has; a later setting replaces them all.
@@ -285,12 +286,14 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             // Only a static ability has these, and they read what its source chose as it entered (`g9b_chosen`).
             | mtg_cards::modify::Modification::AddChosenSubtype
             | mtg_cards::modify::Modification::SetChosenColor
+            | mtg_cards::modify::Modification::SetLandTypesNthChosen(_)
             | mtg_cards::modify::Modification::SetCommanderColor
             | mtg_cards::modify::Modification::RemoveKeyword(_)
             | mtg_cards::modify::Modification::RemoveKeywordKind(_)
             | mtg_cards::modify::Modification::LockKeyword(_)
             | mtg_cards::modify::Modification::GrantAbility(_)
             | mtg_cards::modify::Modification::GainAbilitiesOf(_)
+            | mtg_cards::modify::Modification::SetCreatureTypesOf(_)
             // Only the resolution of an activated ability knows which ability it is, so it is not a row of the table.
             | mtg_cards::modify::Modification::LoseThisAbility
             // Like `LoseThisAbility`, it finds its ability only as a resolution begins.

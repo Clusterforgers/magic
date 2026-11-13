@@ -138,6 +138,14 @@ pub enum Ref {
         /// The name of the memory.
         slot: String,
     },
+    /// The card the object `on` names exiled last among those that match `filter`, while it is still in exile ("the last
+    /// creature card exiled with it", Duplicant).
+    LastExiledWith {
+        /// The object whose exiled cards are read.
+        on: Box<Ref>,
+        /// Which of them count.
+        filter: Selector,
+    },
     /// The controller of the referenced object.
     ControllerOf(Box<Ref>),
     /// The owner of the referenced object.
@@ -444,6 +452,9 @@ pub enum Pred {
     ChosenColor,
     /// Has the creature type the controller of the source chose as the source entered the battlefield; in a landwalk the land type.
     ChosenSubtype,
+    /// Has the land type at this place among the basic land types the controller of the source chose as it entered
+    /// ("lands of the first chosen type", Illusionary Terrain).
+    NthChosenLandType(u8),
     /// Has the card name the controller of the source chose as the source entered the battlefield.
     ChosenName,
     /// Matches the value the resolution remembered under the name (`Effect::ChooseValue`): has the colour, the creature,

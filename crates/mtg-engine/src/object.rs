@@ -71,6 +71,8 @@ pub enum Chosen {
     CreatureType(mtg_core::card::Subtype),
     /// A land type, which a landwalk the source grants names (CR 702.14).
     LandType(mtg_core::card::Subtype),
+    /// Several land types, in the order they were chosen ("the first chosen type").
+    LandTypes(Vec<mtg_core::card::Subtype>),
     /// A player (public, like every choice made as a permanent enters).
     Player(PlayerId),
     /// A card type.

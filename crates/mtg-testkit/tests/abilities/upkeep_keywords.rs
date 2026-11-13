@@ -1,4 +1,4 @@
-//! Goal: echo, cumulative upkeep (an exile of the top card takes a card for each age counter), undying and persist play whole at tables of two, three and four seats as their rules say: echo asks its controller for the cost in the upkeep after the permanent came under their control (and again for whoever controls it after a change of control, never for a permanent held since the turn began), sacrifices it when the cost is declined or cannot be paid (asked the same way, with No the only answer) and asks once for each instance of the keyword; cumulative upkeep puts an age counter on the permanent each upkeep and asks for its cost once for each counter (mana, life, sacrificed creatures), counts the counters of other instances, and asks nothing of a permanent that left in response; undying and persist return the card that died with a counter of their kind unless it had one, both together return it once, whichever the controller orders first, and neither finds a card that left the graveyard in response or a token; and the log replays to the live state.
+//! Goal: echo, cumulative upkeep (an exile of the top card takes a card for each age counter), undying and persist play whole at tables of two, three and four seats as their rules say: echo asks its controller for the cost in the upkeep after the permanent came under their control (and again for whoever controls it after a change of control, never for a permanent held since the turn began), sacrifices it when the cost is declined or cannot be paid (asked the same way, with No the only answer) and asks once for each instance of the keyword; cumulative upkeep puts an age counter on the permanent each upkeep and asks for its cost once for each counter (mana, life, sacrificed creatures), counts the counters of other instances, and asks nothing of a permanent that left in response; undying and persist return the card that died with a counter of their kind unless it had one, both together return it once, whichever the controller orders first, and neither finds a card that left the graveyard in response or a token; echo of the life total asks as much mana as the life its controller has then; and the log replays to the live state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -900,5 +900,41 @@ fn the_cards_offered_to_discard_for_echo_are_the_hand_of_the_player_who_pays_and
         .collect();
     offered.sort();
     assert_eq!(offered, ["Card 0", "Card 1"]);
+    assert_replays(&driver, &setup)
+}
+
+/// Echo {X}, where X is the controller's life total (Volcano Hellion): the cost is counted as it is asked.
+fn r5511_life_echo() -> Cost {
+    Cost(vec![mtg_cards::cost::CostItem::GenericOf(
+        mtg_cards::value::Amount::Life(mtg_cards::refs::Ref::You),
+    )])
+}
+
+#[rstest]
+#[case::paid_with_two_life(2, 2, "Pay {2}?", Reply::Pays)]
+#[case::three_life_two_lands(3, 2, "Pay {3}?", Reply::Cannot)]
+#[case::declined(1, 2, "Pay {1}?", Reply::Declines)]
+fn r5511_echo_of_the_life_total_asks_that_much_mana(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] life: i32,
+    #[case] lands_held: usize,
+    #[case] words: &str,
+    #[case] reply: Reply,
+) -> Result<(), ScriptError> {
+    let scenario = || echo_table(seats, r5511_life_echo(), lands_held, 0).life(0, life);
+    let setup = scenario().setup()?;
+    let mut driver = Driver::from_scenario(scenario())?;
+    driver.idle_until(next_upkeep(seats), Step::Upkeep)?;
+    assert!(until_question(&mut driver)?);
+    assert_eq!(
+        asked(&driver),
+        (0, words.to_owned(), reply == Reply::Cannot)
+    );
+    match reply {
+        Reply::Pays => pay(&mut driver, "")?,
+        _ => driver.answer(yes_no(false)).map(|_| ())?,
+    }
+    settle(&mut driver)?;
+    assert_eq!(on_battlefield(&driver, "Echoer"), reply == Reply::Pays);
     assert_replays(&driver, &setup)
 }

@@ -436,6 +436,8 @@ struct Walker<'a> {
     /// Whether a choice between costs is the whole cost of a payment an effect asks once ("unless they sacrifice a creature or
     /// pay 3 life"), which the engine asks of the payer.
     r281_paying: bool,
+    /// A cost paid as an effect resolves (`Effect::Pay`, echo): a `GenericOf` part is counted then.
+    r5511_resolving_cost: bool,
     /// Whether the cost walked is the cost of a payment an effect asks (`Effect::Pay`), the one place an `XAtMost` is read.
     r306_paying: bool,
     /// What the amount being walked is the amount of, which says whether a divided amount has recipients to read it.
@@ -483,6 +485,7 @@ impl<'a> Walker<'a> {
             choosing: false,
             r400_alternative: false,
             r281_paying: false,
+            r5511_resolving_cost: false,
             r306_paying: false,
             amounting: Amounting::Other,
             nested: 0,
@@ -630,6 +633,11 @@ impl<'a> Walker<'a> {
             Ref::Remembered { on, .. } => {
                 self.reference(on, Kind::Object);
                 self.expect(Kind::Either, want);
+            }
+            Ref::LastExiledWith { on, filter } => {
+                self.reference(on, Kind::Object);
+                self.at("filter", |w| w.selector(filter));
+                self.expect(Kind::Object, want);
             }
             Ref::Paid => {
                 if !self.pays_objects {
@@ -997,6 +1005,7 @@ impl<'a> Walker<'a> {
             | Pred::GenericCost(_)
             | Pred::Goaded
             | Pred::ChosenSubtype
+            | Pred::NthChosenLandType(_)
             | Pred::ChosenName
             | Pred::In(_) => {}
         }
@@ -1688,6 +1697,10 @@ impl<'a> Walker<'a> {
                 if matches!(item, CostItem::Untap) && !w.activated_cost {
                     w.uses("Cost", "Untap.Elsewhere");
                 }
+                // Only a payment during a resolution counts the amount; an announced cost does not.
+                if matches!(item, CostItem::GenericOf(_)) && !w.r5511_resolving_cost {
+                    w.uses("Cost", "GenericOf.Announced");
+                }
                 w.r400_counted(item);
                 match item {
                     CostItem::PayLife(amount)
@@ -1697,6 +1710,7 @@ impl<'a> Walker<'a> {
                     | CostItem::DiscardRandom(amount)
                     | CostItem::DamageToYou(amount)
                     | CostItem::ExileTop(amount)
+                    | CostItem::GenericOf(amount)
                     | CostItem::Blight(amount) => {
                         w.amount(amount);
                     }
@@ -1750,6 +1764,7 @@ impl<'a> Walker<'a> {
                     | CostItem::DiscardSelf
                     | CostItem::Unattach
                     | CostItem::CollectEvidence(_)
+                    | CostItem::ExileCardTypes(_)
                     | CostItem::Waterbend(_)
                     | CostItem::OthersGainLife(_)
                     | CostItem::XColor(_)
@@ -2099,6 +2114,7 @@ impl<'a> Walker<'a> {
                     | CostItem::Unattach
                     | CostItem::ExileTop(_)
                     | CostItem::CollectEvidence(_)
+                    | CostItem::ExileCardTypes(_)
                     | CostItem::Blight(_)
                     | CostItem::Behold { .. }
                     | CostItem::ExiledToGraveyard { .. }
@@ -2308,7 +2324,9 @@ impl<'a> Walker<'a> {
                 self.payment_of_the_source(cost);
             }
             Keyword::Echo(cost) | Keyword::CumulativeUpkeep(cost) => {
+                self.r5511_resolving_cost = true;
                 self.at("cost", |w| w.cost(cost));
+                self.r5511_resolving_cost = false;
                 // Ward, echo, cumulative upkeep and recover ask the player for their cost through a payment.
                 self.payment_of_the_source(cost);
             }
@@ -2322,6 +2340,7 @@ impl<'a> Walker<'a> {
             | Keyword::Scavenge(cost)
             | Keyword::Transmute(cost)
             | Keyword::Ninjutsu(cost)
+            | Keyword::CommanderNinjutsu(cost)
             | Keyword::LevelUp(cost)
             | Keyword::Outlast(cost) => {
                 self.at("cost", |w| w.cost(cost));
@@ -2478,7 +2497,9 @@ impl<'a> Walker<'a> {
                 self.keyword(keyword);
             }
             Modification::SetController(who) => self.reference(who, Kind::Player),
-            Modification::GainAbilitiesOf(from) => self.reference(from, Kind::Object),
+            Modification::GainAbilitiesOf(from) | Modification::SetCreatureTypesOf(from) => {
+                self.reference(from, Kind::Object);
+            }
             Modification::GrantAbility(granted) => self.granted(granted),
             Modification::CantBeBlockedBy(selector) | Modification::CanBlockOnly(selector) => {
                 self.selector(selector);
@@ -2498,7 +2519,9 @@ impl<'a> Walker<'a> {
                     );
                 }
             }
-            Modification::AddChosenSubtype | Modification::SetChosenColor => {
+            Modification::AddChosenSubtype
+            | Modification::SetChosenColor
+            | Modification::SetLandTypesNthChosen(_) => {
                 if !self.scope.in_static {
                     self.problem(
                         "the choice the source made as it entered is read by its static ability only",
@@ -3330,6 +3353,7 @@ impl Walker<'_> {
             | Ref::Against
             | Ref::Remembered { .. }
             | Ref::Union(_) => Kind::Either,
+            Ref::LastExiledWith { .. } => Kind::Object,
         }
     }
 
@@ -3583,6 +3607,9 @@ impl Walker<'_> {
             }
             Produce::EachColorAmong(among) => {
                 self.at("EachColorAmong", |w| w.selector(among));
+            }
+            Produce::CostOf(of) => {
+                self.at("CostOf", |w| w.reference(of, Kind::Object));
             }
             Produce::Instead {
                 base,
@@ -4777,7 +4804,9 @@ impl Walker<'_> {
                 w.r281_paying = *times == Amount::one()
                     && matches!(cost.0.as_slice(), [CostItem::OneOf(_)]);
                 w.r306_paying = true;
+                w.r5511_resolving_cost = true;
                 w.at("cost", |w| w.c6_eg_paid_cost(cost, who));
+                w.r5511_resolving_cost = false;
                 w.r306_paying = false;
                 w.r281_paying = false;
                 (w.x_free, w.x_now) = (saved, saved_now);
@@ -6370,6 +6399,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::TapPermanents { .. }
                 | CostItem::TapPower { .. }
                 | CostItem::CollectEvidence(_)
+                | CostItem::ExileCardTypes(_)
                 | CostItem::Blight(_)
                 | CostItem::Behold { .. }
                 | CostItem::ExiledToGraveyard { .. }

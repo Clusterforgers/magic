@@ -1,0 +1,80 @@
+{
+  "oracle_id": "12a88c08-11e3-4f51-a17c-ca06452bac6f",
+  "name": "Volcano Hellion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Volcano Hellion",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "AddKeyword": {
+                  "Echo": [
+                    {
+                      "GenericOf": {
+                        "Life": "You"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  "This"
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "Type": "Creature"
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "ChooseNumbers": {
+                  "who": "You",
+                  "as": "amount",
+                  "highest": "chose",
+                  "lowest": "chose_least"
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": {
+                    "Union": [
+                      "You",
+                      {
+                        "Target": 0
+                      }
+                    ]
+                  },
+                  "amount": {
+                    "ChosenAs": "amount"
+                  },
+                  "unpreventable": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -763,6 +763,8 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::SetLoyalty(_)
         | Wanted::AddSubtype(_)
         | Wanted::SetCreatureTypes(_)
+        | Wanted::SetCreatureTypesOf(_)
+        | Wanted::SetLandTypesNthChosen(_)
         | Wanted::SetLandTypes(_)
         | Wanted::SetLandTypesChosen(_)
         | Wanted::SetCreatureTypesChosen(_)

@@ -6,7 +6,7 @@ use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::ids::PlayerId;
 use mtg_core::mana::ManaType::{
-    self, Black as B, Colorless as C, Green as G, Red as R, White as W,
+    self, Black as B, Blue as U, Colorless as C, Green as G, Red as R, White as W,
 };
 use rstest::rstest;
 
@@ -253,4 +253,51 @@ fn contamination_and_a_doubler_give_black_or_two() {
     let got = made(&game, ME);
     assert_eq!(got.len(), 2, "{got:?}");
     assert!(got.contains(&vec![B]) && got.contains(&vec![B, B]));
+}
+
+/// Each color one tap may make, as options.
+fn r5511_each_color() -> Vec<Vec<ManaType>> {
+    vec![vec![W], vec![U], vec![B], vec![R], vec![G]]
+}
+
+#[rstest]
+#[case::r5511_a_color_of_your_choice_for_lands(LAND, r#""OnlyChosenColor""#, [r5511_each_color(), r5511_each_color(), vec![vec![W, C]]].concat())]
+#[case::r5511_one_of_a_color_for_any_permanent(r"[]", r#""OneChosenColor""#, [r5511_each_color(), r5511_each_color(), r5511_each_color()].concat())]
+#[case::r5511_same_amount_of_one_color(r"[]", r#""OnlyChosenColor""#, [r5511_each_color(), r5511_each_color(), vec![vec![W, W], vec![U, U], vec![B, B], vec![R, R], vec![G, G]]].concat())]
+fn r5511_a_chosen_color_makes_one_option_per_color(
+    #[case] what: &str,
+    #[case] change: &str,
+    #[case] mine: Vec<Vec<ManaType>>,
+) {
+    let game = board(replacement(what, "You", change));
+    assert_eq!(made(&game, ME), mine);
+    assert_eq!(
+        made(&game, FOE),
+        [vec![G]],
+        "only the taps of the players named"
+    );
+}
+
+#[rstest]
+#[case::r5511_red(R)]
+#[case::r5511_blue(U)]
+fn r5511_the_activation_adds_the_chosen_color(#[case] color: ManaType) {
+    let mut game = board(replacement(LAND, "You", r#""OneChosenColor""#));
+    let forest = game.zone(crate::zones::Zone::Battlefield)[0];
+    let option = options(&game, ME)
+        .into_iter()
+        .find(|option| option.source.object == forest && option.made() == [color])
+        .unwrap();
+    let events = activation(&game, ME, &option, &[]).unwrap();
+    for event in &events {
+        apply_event(&mut game, event).unwrap();
+    }
+    let added: Vec<ManaType> = events
+        .iter()
+        .filter_map(|event| match event {
+            Event::ManaAdded { mana, .. } => Some(*mana),
+            _ => None,
+        })
+        .collect();
+    assert_eq!(added, [color]);
 }

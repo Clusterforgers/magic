@@ -1,0 +1,97 @@
+{
+  "oracle_id": "90fe98df-4f87-49ff-b562-0ed51d1d3a1c",
+  "name": "Thermal Flux",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thermal Flux",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              {
+                                "Not": {
+                                  "Supertype": "Snow"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Target": 0
+                            },
+                            "mods": [
+                              {
+                                "AddSupertype": "Snow"
+                              }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              {
+                                "Supertype": "Snow"
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Target": 0
+                            },
+                            "mods": [
+                              {
+                                "RemoveSupertype": "Snow"
+                              }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "StepBegins": {
+                      "step": "Upkeep"
+                    }
+                  },
+                  "effects": [
+                    {
+                      "Draw": {}
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

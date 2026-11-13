@@ -114,6 +114,14 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - A vote on players or objects binds `tally` to every vote cast ("for each vote they received" counts it); `VoteFor::AnotherPlayer` leaves the voter out, and a vote on players may be secret (`ChoiceOption::SecretPlayer`). `ChooseWords` is a choice of words that is no vote ("each opponent secretly chooses silence or snitch").
 - What a booster draft notes for cards of a name is `Amount`/`Pred`/`Condition::Drafted(DraftNote)`: a game has no draft, so a noted number is 0 and no name, type, color, player, guess or card exiled before the game is noted (the Conspiracy rulings); the rules of the draft itself are `GameRule::Draft`, a spell line on an instant or sorcery.
 - "If ~ would be destroyed, regenerate it." is a replacement `Destroyed` by `ReplaceBy::Regenerate`: never used up, and not while the permanent can't be regenerated. Each regeneration is logged as `TallyEvent::Regenerated` ("for each time it regenerated this turn").
+- "Exile any number of other cards from your graveyard with four or more card types among them" is `CostItem::ExileCardTypes(4)`: the payer picks cards until they show that many card types (Nethergoyf's escape).
+- "Commander ninjutsu" is `Keyword::CommanderNinjutsu`: the ninjutsu ability twice, from the hand and from the command zone (CR 702.49d).
+- "Echo {X}, where X is your life total" is a cost of `CostItem::GenericOf(amount)`: generic mana of the amount counted as the cost is paid during a resolution; an announced cost refuses it.
+- "It produces mana of a color of your choice instead of any other type" is `ManaChange::OnlyChosenColor` ("one mana of a color of your choice instead of any other type and amount": `OneChosenColor`): each color is an option of its own for the payment.
+- "For each mana from a Treasure (an artifact source) spent to cast them" on an entering creature is `Stat { of: Affected, stat: TreasureManaSpent | ArtifactManaSpent }`: an enters replacement reads the entering card as `Affected`.
+- "Add mana equal to enchanted permanent's mana cost" is `Produce::CostOf`: generic mana adds {C}, {X} nothing, and a symbol of two colors (or a colorless hybrid one) is a choice; a snow symbol is refused. "Three or more colored mana symbols in its mana cost" counts `StatKind::ColoredManaSymbols`.
+- "The power, toughness, and creature types of the last creature card exiled with it" read `Ref::LastExiledWith` (the card the source exiled last among those its filter selects, while still in exile) and `Modification::SetCreatureTypesOf`.
+- "Choose two basic land types" is `EntersChoice::TwoBasicLandTypes` (`Chosen::LandTypes`, in order); "lands of the first chosen type are the second chosen type" is `Pred::NthChosenLandType(0)` with `Modification::SetLandTypesNthChosen(1)`.
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 
 ## Support records

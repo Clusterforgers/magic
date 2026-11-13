@@ -200,6 +200,9 @@ fn exile(r: &mut Reader<'_>) -> Option<CostItem> {
         r.from_graveyard = r.words("from your graveyard");
         return Some(CostItem::ExileSelf);
     }
+    if let Some(types) = r.attempt(r5511_card_types) {
+        return Some(CostItem::ExileCardTypes(types));
+    }
     let (form, count) = how_many(r)?;
     let mut filter = phrase(r, form)?;
     // "Exile a creature you control": a permanent of the battlefield.
@@ -224,6 +227,15 @@ fn exile(r: &mut Reader<'_>) -> Option<CostItem> {
             count,
         }
     })
+}
+
+/// "any number of other cards from your graveyard with four or more card types among them" (Nethergoyf's escape).
+fn r5511_card_types(r: &mut Reader<'_>) -> Option<u32> {
+    r.words("any number of other cards from your graveyard with")
+        .then_some(())?;
+    let types = number_word(r.peek_word()?)?;
+    r.word(r.peek_word()?).then_some(())?;
+    r.words("or more card types among them").then_some(types)
 }
 
 /// "Reveal a creature card from your hand", "Reveal a Giant card from your hand", the morph cost "Reveal a white card in
@@ -511,6 +523,10 @@ fn item_text(item: &CostItem) -> Option<String> {
         CostItem::Exert => "Exert ~".to_owned(),
         CostItem::Forage => "Forage".to_owned(),
         CostItem::CollectEvidence(total) => format!("Collect evidence {total}"),
+        CostItem::ExileCardTypes(types) => format!(
+            "Exile any number of other cards from your graveyard with {} or more card types among them",
+            count_word(*types)?
+        ),
         CostItem::PutCounters { counter, count } => {
             format!("Put {} on ~", w2f_text(Some(counter), count)?)
         }

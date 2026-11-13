@@ -512,7 +512,7 @@ impl<'a> ManaProduced<'a> {
             Produce::EachColorAmong(among) => ManaProduced::EachColorAmong(among),
             Produce::AnyColorAmong(among) => ManaProduced::AnyColorAmong(among),
             Produce::Devotion => ManaProduced::Devotion,
-            Produce::OfTapped => return None,
+            Produce::OfTapped | Produce::CostOf(_) => return None,
         })
     }
 }

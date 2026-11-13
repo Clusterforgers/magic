@@ -75,6 +75,8 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::Unattach => "Cost.Unattach",
         CostItem::ExileTop(_) => "Cost.ExileTop",
         CostItem::CollectEvidence(_) => "Cost.CollectEvidence",
+        CostItem::ExileCardTypes(_) => "Cost.ExileCardTypes",
+        CostItem::GenericOf(_) => "Cost.GenericOf",
         CostItem::Blight(_) => "Cost.Blight",
         CostItem::Behold { .. } => "Cost.Behold",
         CostItem::ToLibrary { .. } => "Cost.ToLibrary",

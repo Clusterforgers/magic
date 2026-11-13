@@ -164,7 +164,8 @@ pub fn apply_answer(
                     IllegalAnswer::AttackUnaffordable(_)
                     | IllegalAnswer::BlockUnaffordable(_)
                     | IllegalAnswer::TooLittlePower { .. }
-                    | IllegalAnswer::TooLittleValue { .. },
+                    | IllegalAnswer::TooLittleValue { .. }
+                    | IllegalAnswer::TooFewCardTypes { .. },
                 ),
             ) => error,
             result => return result,
