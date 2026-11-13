@@ -131,6 +131,7 @@ fn the_rule_of_an_opponent_taxes_your_spells(
             applies_to,
             change: CostChange::Increase,
             mana: "{2}".parse().unwrap(),
+            per: mtg_cards::value::Amount::one(),
         },
         Duration::UntilYourNextTurn,
     )?;

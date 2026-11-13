@@ -259,6 +259,12 @@ pub enum TokenRef {
         /// The rest of the token.
         token: Box<TokenSpec>,
     },
+    /// An X/X creature token of the colour and creature type its source chose as the source entered ("an X/X creature
+    /// token of the chosen color and type"); none when the source chose no colour and type.
+    R4700OfChosen {
+        /// Its power and toughness.
+        size: Amount,
+    },
     /// A token that is a copy of the referenced object, with exceptions.
     CopyOf {
         /// The object copied.
@@ -318,6 +324,9 @@ pub enum PlanarAct {
     Planeswalk,
     /// "chaos ensues": the chaos abilities of the face-up plane trigger.
     ChaosEnsues,
+    /// "roll the planar die" (CR 901.9): only a Planechase game has the die's results act (the ruling of Fractured
+    /// Powerstone: "In non-Planechase games, Fractured Powerstone's second ability will have no effect.").
+    RollPlanarDie,
 }
 
 /// What the players of a `Vote` vote for.
@@ -517,6 +526,9 @@ pub enum Effect {
         /// The name the objects not chosen are bound to.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         rest_as: Option<String>,
+        /// What no two chosen objects may share ("with different powers", "with different names"); anything when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        differ: Option<crate::refs::TargetSet>,
     },
     /// A player chooses a value that is not an object or a player and the resolution remembers it under the name:
     /// `Pred::ChosenAs` and `Amount::ChosenAs` read it. A player with one option (or none) is not asked.
@@ -626,6 +638,10 @@ pub enum Effect {
         /// Whose library the cards come from: their own unless the effect names another player's ("that player's library").
         #[serde(rename = "library", default, skip_serializing_if = "Option::is_none")]
         from: Option<Ref>,
+        /// The cards put down in place of the top of a library ("cloak a card from your hand"): the named cards, from the
+        /// zone they are in; `count` and `from` are not read.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        cards: Option<Ref>,
         /// The name the permanents are bound to, as the objects they become on the battlefield.
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
@@ -641,6 +657,10 @@ pub enum Effect {
         /// Whose library the cards come from: their own unless the effect names another player's.
         #[serde(rename = "library", default, skip_serializing_if = "Option::is_none")]
         from: Option<Ref>,
+        /// The cards put down in place of the top of a library ("cloak a card from your hand"): the named cards, from the
+        /// zone they are in; `count` and `from` are not read.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        cards: Option<Ref>,
         /// The name the permanents are bound to, as the objects they become on the battlefield.
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
@@ -892,6 +912,10 @@ pub enum Effect {
         /// What the controller chooses for each kind in turn instead of putting it as read.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         per_kind: Option<PerKind>,
+        /// The kinds and numbers read are those the triggering event put, not those `of` holds ("put the same number and
+        /// kind of counters on ~"); `of` is then `Triggering`.
+        #[serde(default, skip_serializing_if = "is_false")]
+        put: bool,
     },
     /// Taps permanents.
     Tap {
@@ -943,6 +967,10 @@ pub enum Effect {
     JoinAttack {
         /// The creature that joins the attack.
         what: Ref,
+        /// The player it attacks, in place of what the cost's creature attacked or its controller's choice ("It enters
+        /// tapped and attacking that player"): nothing joins when that player can't be attacked.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        against: Option<Ref>,
     },
     /// For each attacking creature `of` names (CR 702.116a), creates for every opponent of its controller other than the player it attacks a token copy of it, tapped and attacking that opponent; the tokens are never declared as attackers (CR 508.4).
     MyriadCopies {
@@ -2252,6 +2280,7 @@ pub fn hideaway(count: Amount) -> Vec<Effect> {
             count: Bounds::default(),
             bind: HIDDEN.to_owned(),
             rest_as: Some(UNHIDDEN.to_owned()),
+            differ: None,
         },
         Effect::ExileHidden {
             what: Ref::Bound(HIDDEN.to_owned()),

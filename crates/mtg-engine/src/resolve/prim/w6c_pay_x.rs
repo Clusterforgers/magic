@@ -55,7 +55,7 @@ pub(super) fn announced<'a>(
     cx: &Cx<'_>,
     player: PlayerId,
     template: &Price,
-    cap: Option<u32>,
+    (floor, cap): (u32, Option<u32>),
     journal: &mut Peekable<impl Iterator<Item = &'a (PlayerId, Choice)>>,
 ) -> Result<Announced, ResolveError> {
     // The question offers X up to the most the player can pay, held to the cap of the cost.
@@ -75,13 +75,16 @@ pub(super) fn announced<'a>(
         Some((_, Choice::Number(x))) if cap.is_some_and(|cap| *x > cap) => Err(
             ResolveError::Invalid(format!("{x} is more than the X the cost allows")),
         ),
+        Some((_, Choice::Number(x))) if *x < floor => Err(ResolveError::Invalid(format!(
+            "{x} is less than the X the cost allows"
+        ))),
         Some((_, Choice::Number(x))) => Ok(Announced::Price(at(template, *x), Some(*x))),
         None => Ok(Announced::Ask(Decision {
             player,
             kind: DecisionKind::ChooseNumber(NumberOptions {
                 source: cx.scope.source.id,
-                min: 0,
-                max: Some(allowed(cx)),
+                min: floor,
+                max: Some(allowed(cx).max(floor)),
                 except: Vec::new(),
                 text: "Choose a value for X.".to_owned(),
                 can_cancel: false,
@@ -94,6 +97,19 @@ pub(super) fn announced<'a>(
             "{other:?} is no value of X {player:?} can pay"
         ))),
     }
+}
+
+/// The least X the cost allows (`CostItem::XAtLeast`, "pay one or more {E}"): the greatest floor it names, 0 without
+/// one.
+pub(super) fn r4707_floor(cost: &mtg_cards::cost::Cost) -> u32 {
+    cost.0
+        .iter()
+        .filter_map(|item| match item {
+            mtg_cards::cost::CostItem::XAtLeast(least) => Some(*least),
+            _ => None,
+        })
+        .max()
+        .unwrap_or(0)
 }
 
 /// The most X the cost allows (`CostItem::XAtMost`, "X can't be greater than ..."), read as the payment is asked: the

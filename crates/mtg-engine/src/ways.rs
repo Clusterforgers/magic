@@ -1276,7 +1276,11 @@ pub(crate) fn grantable_as_is(
                                 seat.mana(),
                                 &sources,
                                 help.help(),
-                                seat.life(),
+                                crate::r4707_pay_costs::r4707_phyrexian_life(
+                                    state,
+                                    player,
+                                    seat.life(),
+                                ),
                                 &spend,
                             )
                         },
@@ -1372,6 +1376,7 @@ pub(crate) fn hindrance_as_is(
     sources: &[ManaOption],
     life: i32,
 ) -> Option<Unplayable> {
+    let life = crate::r4707_pay_costs::r4707_phyrexian_life(state, player, life);
     let Some(card) = state.object(id) else {
         return Some(Unplayable::Cost);
     };

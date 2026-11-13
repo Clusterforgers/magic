@@ -56,6 +56,7 @@ impl KeywordRules for Demonstrate {
                         count: Bounds::default(),
                         bind: OPPONENT.to_owned(),
                         rest_as: None,
+                        differ: None,
                     },
                     copy_by(Ref::Bound(OPPONENT.to_owned())),
                 ],

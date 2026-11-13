@@ -2,6 +2,7 @@
 
 use std::sync::Arc;
 
+use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;
 use mtg_core::ids::ObjectId;
 
@@ -10,13 +11,30 @@ use crate::events::Event;
 use crate::resolve::{Cx, ResolveError, Run};
 use crate::w6b_emblems::{EmblemCreated, w6b_definition};
 
+/// The abilities with each value the resolution chose (`Pred::ChosenAs`) written in as what was chosen, so the emblem
+/// keeps it after the resolution ("Choose a creature type. You get an emblem with "Creatures you control of the chosen
+/// type get +3/+3 ...""); the abilities as they are when nothing was written.
+fn r4702_fixed(cx: &Cx<'_>, abilities: &[Ability]) -> Vec<Ability> {
+    abilities
+        .iter()
+        .map(|ability| {
+            serde_json::to_value(ability)
+                .ok()
+                .and_then(|mut value| super::rule::fix(&cx.scope, &mut value).then_some(value))
+                .and_then(|value| serde_json::from_value(value).ok())
+                .unwrap_or_else(|| ability.clone())
+        })
+        .collect()
+}
+
 /// One `EmblemCreated` for each player the effect names who is still in the game, in turn order of the names.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::CreateEmblem { who, abilities } = effect else {
         return Err(wrong_effect("CreateEmblem"));
     };
     let state = cx.state();
-    let definition = Arc::new(w6b_definition(abilities));
+    let abilities = r4702_fixed(cx, abilities);
+    let definition = Arc::new(w6b_definition(&abilities));
     let first = state.next_object().get();
     let events = cx
         .scope

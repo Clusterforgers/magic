@@ -612,6 +612,7 @@ fn lich(ability: &Ability) -> Vec<String> {
                     count,
                     bind,
                     rest_as: None,
+                    differ: None,
                 },
                 Effect::Exile {
                     what: Ref::Bound(exiled),

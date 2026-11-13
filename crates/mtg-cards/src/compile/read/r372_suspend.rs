@@ -94,6 +94,7 @@ fn from_hand_suspended() -> Vec<Effect> {
                 count: Bounds::default(),
                 bind: CHOSEN.to_owned(),
                 rest_as: None,
+                differ: None,
             },
             Effect::Exile {
                 what: Ref::Bound(CHOSEN.to_owned()),
@@ -153,6 +154,7 @@ fn sped_up() -> Vec<Effect> {
             count: Bounds::default(),
             bind: EACH.to_owned(),
             rest_as: None,
+            differ: None,
         },
         Effect::RemoveCounters {
             from: Ref::Bound(EACH.to_owned()),

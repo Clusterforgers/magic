@@ -27,6 +27,7 @@ fn dread(effects: &[Effect]) -> Option<(&Ref, Option<&str>)> {
             count,
             bind: _,
             rest_as: Some(rest),
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(moved),
@@ -37,6 +38,7 @@ fn dread(effects: &[Effect]) -> Option<(&Ref, Option<&str>)> {
             who: manifests,
             count: manifested,
             from: None,
+            cards: None,
             bind,
         },
         Effect::Performed {

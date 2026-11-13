@@ -873,7 +873,8 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 from,
                 count,
                 bind,
-                rest_as
+                rest_as,
+                differ: None,
             }),
         who().prop_map(|who| Effect::Shuffle { who }),
         (reference(), destination()).prop_map(|(what, to)| Effect::Move {
@@ -1123,6 +1124,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                     who,
                     count,
                     from,
+                    cards: None,
                     bind,
                 }
             } else {
@@ -1130,6 +1132,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                     who,
                     count,
                     from,
+                    cards: None,
                     bind,
                 }
             }),
