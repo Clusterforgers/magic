@@ -287,6 +287,7 @@ mod r6008_wholes;
 mod r6018_wholes;
 mod r6100_atoms;
 mod r6100_wholes;
+mod r6101_stickers;
 mod r6a_effects;
 mod r6a_more;
 mod r6a_wordings;

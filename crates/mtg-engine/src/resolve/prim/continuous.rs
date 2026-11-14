@@ -468,6 +468,10 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             from: chosen_word(scope, from)?,
             to: chosen_word(scope, to)?,
         },
+        Wanted::ChangeTextChosenTo { from, to } => Modification::ChangeText {
+            from: chosen_word(scope, from)?,
+            to: crate::text_change::TextWord::Subtype(mtg_core::card::Subtype(to.clone())),
+        },
         Wanted::AddChosenSubtype
         | Wanted::SetChosenColor
         | Wanted::AddChosenColor

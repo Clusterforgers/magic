@@ -440,6 +440,8 @@ pub enum ValueKind {
     ColorOrBasicLandType,
     /// A word of the kind of the one chosen under this name, other than it: the word a text change writes ("with another").
     LikeChosen(String),
+    /// A letter of the English alphabet ("choose a letter"), remembered as a word of one lowercase letter.
+    Letter,
 }
 
 /// One instruction of a spell or ability. Optional fields have defaults: `who` is the
