@@ -112,8 +112,8 @@ fn mulligan_options(driver: &Driver) -> MulliganOptions {
 #[rstest]
 fn the_first_mulligan_is_free_and_the_second_costs_a_card(#[values(2, 4)] seats: usize) {
     let mut driver =
-        Driver::new(Engine::new(commander_fuzz_setup(seats, 117).unwrap()).unwrap()).unwrap();
-    // One commander at seed 117 chooses a color before the game begins, ahead of the hands.
+        Driver::new(Engine::new(commander_fuzz_setup(seats, 153).unwrap()).unwrap()).unwrap();
+    // One commander at seed 153 chooses a color before the game begins, ahead of the hands.
     let asked = choose_commander_colors(&mut driver);
     assert_eq!(asked, 1, "only the commander whose text says so asks");
     let first = mulligan_options(&driver);
@@ -310,23 +310,4 @@ fn a_commander_game_replays_to_the_live_state() -> Result<(), ScriptError> {
     assert_eq!(rebuilt.state_hash(), driver.state().state_hash());
     assert_eq!(rebuilt.commander_casts(commander(&driver)), 2);
     Ok(())
-}
-
-#[test]
-#[ignore]
-fn r5515_seed_scan() {
-    for seed in 0..600u64 {
-        let ok = [2usize, 4].iter().all(|&seats| {
-            let Ok(setup) = commander_fuzz_setup(seats, seed) else { return false };
-            let Ok(engine) = Engine::new(setup) else { return false };
-            let Ok(mut driver) = Driver::new(engine) else { return false };
-            let mut asked = 0;
-            while let Ok(DecisionKind::ChooseOption(_)) = driver.decision().map(|d| d.kind.clone()) {
-                if driver.answer(Answer::ChooseOption(OptionChoice(0))).is_err() { return false }
-                asked += 1;
-            }
-            asked == 1 && matches!(driver.decision().map(|d| &d.kind), Ok(DecisionKind::Mulligan(_)))
-        });
-        if ok { println!("SEED {seed}"); }
-    }
 }
