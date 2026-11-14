@@ -162,6 +162,8 @@ pub fn apply_answer(
     answer: Answer,
 ) -> Result<Vec<Event>, EngineError> {
     let mut answer = answer;
+    // The sets of alike cards are tried from the random first pick to the last, then once more from the first set.
+    let mut wrapped = false;
     loop {
         let refused = match engine.apply(answer.clone()) {
             Err(
@@ -181,6 +183,10 @@ pub fn apply_answer(
                 if matches!(refused, EngineError::Illegal(IllegalAnswer::WrongPick(_))) =>
             {
                 r5518_next_set(&options.from, cards)
+                    .or_else(|| {
+                        (!std::mem::replace(&mut wrapped, true))
+                            .then(|| options.from.iter().take(cards.len()).copied().collect())
+                    })
                     .map(|next| Answer::ChooseCards(CardsChoice(next)))
             }
             (DecisionKind::ChooseCards(options), Answer::ChooseCards(CardsChoice(cards)))
