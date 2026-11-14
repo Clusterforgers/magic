@@ -23,6 +23,7 @@ import {
 } from '../targetText'
 import type { PromptComponent } from '../types'
 import { UndoButton } from '../UndoButton'
+import { PlayerFace } from '../PlayerFace'
 import { useObjects } from '../useCombatNames'
 
 /**
@@ -176,6 +177,7 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
               className={picked ? CHOSEN_BUTTON : undefined}
             >
               {picked ? <Check aria-hidden="true" strokeWidth={3} /> : null}
+              {'Player' in target ? <PlayerFace seat={target.Player} /> : null}
               {labelOf(target)}
             </Button>
           )

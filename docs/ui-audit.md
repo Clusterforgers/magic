@@ -16,7 +16,7 @@ Impact: how much a problem costs a player in a 4-player Commander game at 1400 �
 | 2 | Chrome still takes room | table | The side column takes 272 px until folded to its rail; an opponent's pod head is two to three lines; a long prompt grows the strip to 140 px. |
 | 3 | The hand is still small | hand dock | The hand lies in an arc and rises on hover, but its cards stay about 90 px wide at 1400 × 900; a full-size hover is the preview beside it. |
 | 4 | Combat lines cross the table | combat overlay | Lines run from the strip and pods across unrelated boards; "4 attackers → you" labels float over cards. |
-| 5 | Choices are small | prompts | Choose cards and look at the top draw 6 rem cards in the strip; targets and modes have no pictures. |
+| 5 | Choices share the strip | prompts | Card prompts take the strip's width and grow over the opponents' boards with 7 rem cards; a long list still scrolls inside the sheet, and modes have no pictures. |
 | 6 | The phone table does not fit | table at 390 | Two and a half hand cards, the controls overlap ("…triggers" cut), the own pod takes a third of the height, boards draw 30 px cards. |
 | 7 | Turn display repeats itself | top bar | "Main" in the badge, "Your turn · 5 · Precombat main" beside it and "Main" again in a ladder of twelve small empty boxes. |
 | 8 | The table is quiet between moments | table | The table plays its casts, attacks, blocks, damage, draws and shuffles and taps turn in 150 ms; there is no your-turn moment beyond the banner and no stack resolution beat. |
@@ -82,7 +82,7 @@ Each pass is one commit with before and after shots at 1400 × 900, 1280 × 720 
 
 | Pass | Outcome |
 |---|---|
-| 4 | Prompts: choose cards and look at the top as a centre overlay with large cards; targets and modes with card pictures |
+| 4 | Prompts: modes with the card's picture; a list of many cards as a centre overlay of its own |
 | 5 | Board room: combat lines kept to the boards they join, attacker groups as a badge on the defender's pod; the turn badge and ladder said once; the priority sentence in one line |
 | 6 | Phone table: hand and controls fit at 390, pod strip slimmer, boards larger |
 | 7 | Pages: Play with open games as cards with commander art; the descent with boss art; the result page's seats with their commanders |

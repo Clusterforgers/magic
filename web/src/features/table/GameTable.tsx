@@ -170,6 +170,7 @@ const Table = memo(function Table() {
                           shared={
                             <SharedStrip
                               sheetMax={regions.sheet}
+                              sheetWide={regions.sheetWide}
                               onOverhang={onOverhang}
                               inset={table.pod === 'aside' ? POD_COLUMN_PX + ZONE_GAP_PX : 0}
                             />

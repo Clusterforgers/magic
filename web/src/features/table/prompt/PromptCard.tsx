@@ -11,9 +11,9 @@ import { useChoiceAnchor } from './choiceAnchor'
 /** How a card of a prompt is drawn: whole (cost and type line, from 76 px wide) or compact (name and power only). */
 export type PromptCardSize = 'normal' | 'compact'
 
-/** The box of each size, 5:7 like a card; whole class names, so Tailwind can see them. */
+/** The box of each size, 5:7 like a card, a whole card up to 7 rem wide on a tall window; whole class names, so Tailwind can see them. */
 export const PROMPT_CARD_BOX: Record<PromptCardSize, string> = {
-  normal: '[--card-w:6rem] [--card-h:8.4rem]',
+  normal: '[--card-h:calc(var(--card-w)*7/5)] [--card-w:min(7rem,11dvh)]',
   compact: '[--card-w:3.75rem] [--card-h:5.25rem]',
 }
 

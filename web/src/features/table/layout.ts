@@ -280,6 +280,11 @@ export interface Regions {
    * `SHEET_KEEP_PX` of it, elsewhere their pods and `BOARD_KEEP_PX` of their boards once split) and no further than the top bar. Never down over your board (the cards a prompt asks you to click are yours), the hand dock or the controls.
    */
   sheet: number
+  /**
+   * The most a sheet that lays out cards grows to (`CARD_PROMPTS`): as `sheet`, but over the opponents' boards too,
+   * whose cards it does not ask for or draws again itself; never over your board, the hand dock or the controls.
+   */
+  sheetWide: number
 }
 
 const finite = (value: number): number => (Number.isFinite(value) ? Math.max(0, value) : 0)
@@ -336,6 +341,7 @@ export function regionSizes(viewport: Viewport, folded = false): Regions {
     opponents,
     own,
     sheet: sheetMost(height, shared, opponents, phone),
+    sheetWide: sheetMost(height, shared, opponents, phone),
   }
 }
 

@@ -290,5 +290,6 @@ export function withSplit(regions: Regions, split: BoardSplit, keep = 0): Region
     opponents: split.opponents,
     own: split.own,
     sheet: sheetMost(regions.main.height, regions.shared, split.opponents, regions.phone, keep),
+    sheetWide: sheetMost(regions.main.height, regions.shared, split.opponents, regions.phone),
   }
 }

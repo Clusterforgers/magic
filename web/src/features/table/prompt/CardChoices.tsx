@@ -156,7 +156,7 @@ export function CardChoices({
         className={cn(
           // The sheet the prompt sits in is at most `--sheet-max` high: what the stack, the sentence, the buttons and the
           // clock leave is the grid's, and it scrolls inside.
-          'flex basis-full flex-wrap content-start items-start gap-1.5 overflow-y-auto p-1.5',
+          'flex basis-full flex-wrap content-start items-start justify-center gap-2 overflow-y-auto p-1.5',
           className ??
             (filtering
               ? 'max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_14.5rem))]'
