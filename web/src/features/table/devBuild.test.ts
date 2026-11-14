@@ -1,4 +1,4 @@
-// Goal: the production build contains nothing of the dev table, dev lobby, dev precons, dev unvalidated and dev read fixtures (their marker text, card names and seat names are in no output file), while a build with DEV on does contain them, so the check could fail.
+// Goal: the production build contains nothing of the dev table, dev lobby, dev precons, dev unvalidated and dev read fixtures and the dev looks (their marker text, card names and seat names are in no output file), while a build with DEV on does contain them, so the check could fail.
 import { execFile } from 'node:child_process'
 import { mkdtemp, readdir, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -10,6 +10,7 @@ import { UNVALIDATED_FIXTURE_MARKER } from '@/features/decks/unvalidated/fixture
 import { PRECONS_FIXTURE_MARKER } from '@/features/precons/dev/fixture'
 import { BULK_READS_FIXTURE_MARKER } from '@/features/bulk-reads/dev/fixture'
 import { READS_FIXTURE_MARKER } from '@/features/reads/dev/fixture'
+import { LOOKS_MARKER } from '@/dev/looks/look'
 import { COMMANDERS } from './dev/cards'
 import { FIXTURE_MARKER } from './dev/fixture'
 
@@ -46,6 +47,9 @@ const FIXTURE_TRACES = [
   'Tidecaller of the Long Shoal',
   UNVALIDATED_FIXTURE_MARKER,
   'Wolfeschlegelsteinhausenbergerdo',
+  LOOKS_MARKER,
+  // The dev looks' stylesheet (src/dev/looks/looks.css).
+  '--look-felt-1',
 ]
 const filesWith = (files: Map<string, string>, text: string): string[] =>
   [...files].filter(([, content]) => content.includes(text)).map(([name]) => name)

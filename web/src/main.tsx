@@ -14,6 +14,9 @@ declare module '@tanstack/react-router' {
   }
 }
 
+// Dev-only visual directions (`?look=a|b|c`, docs/ui-audit.md); the production build drops this branch.
+if (import.meta.env.DEV) void import('./dev/looks/look').then((looks) => looks.installLook())
+
 const container = document.getElementById('root')
 if (!container) throw new Error('missing #root element')
 
