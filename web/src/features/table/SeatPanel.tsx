@@ -20,7 +20,17 @@ import { UntappedSources } from './UntappedSources'
 import { usePodRoom } from './podRoom'
 import { useSeatNamer } from './names'
 import { BankMark } from './BankMark'
-import { ACTIVE_EDGE, AwayMark, CountChip, PriorityDot, SeatDot, YOUR_TURN_EDGE } from './PodParts'
+import {
+  ACTIVE_EDGE,
+  AwayMark,
+  CountChip,
+  PriorityDot,
+  SEAT_EDGE,
+  SEAT_LIFE,
+  SeatDot,
+  seatHueStyle,
+  YOUR_TURN_EDGE,
+} from './PodParts'
 import { podCounts, podState, podStateWords, priorityName, showsPriorityDot } from './podFigures'
 import {
   commandCardsOf,
@@ -95,7 +105,7 @@ function Life({ seat, life, as, className, team, spirit = false }: LifeProps) {
       as={as}
       seat={seat}
       className={cn(
-        'shrink-0 leading-none',
+        'shrink-0 font-display leading-none',
         small
           ? 'flex items-baseline gap-1 text-lg font-semibold text-muted-foreground tabular-nums'
           : className,
@@ -112,7 +122,12 @@ function Life({ seat, life, as, className, team, spirit = false }: LifeProps) {
       {spirit ? (
         <GhostIcon aria-hidden="true" data-slot="spirit-life" className="mr-1 inline size-5 text-spirit" />
       ) : null}
-      <span className={cn(spirit ? 'text-spirit' : life <= 5 && 'text-destructive')}>{life}</span>
+      <span
+        style={seatHueStyle(seat)}
+        className={cn(spirit ? 'text-spirit' : life <= 5 ? 'text-destructive' : SEAT_LIFE)}
+      >
+        {life}
+      </span>
     </LifeFx>
   )
 }
@@ -218,7 +233,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
   const name = (
     <div className="flex min-w-0 items-center gap-1.5">
       <SeatDot seat={seat} />
-      <h3 className="truncate text-sm leading-5 font-semibold">{owner}</h3>
+      <h3 className="truncate font-display text-sm leading-5 font-semibold">{owner}</h3>
       {team === null || !team.badge ? null : <TeamBadge team={team.team} size="chip" />}
       {player.boss ? <BossChip compact={!line} /> : null}
       {player.spirit ? <SpiritMark compact={line} /> : null}
@@ -240,11 +255,12 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
       <section
         {...marks}
         data-variant="line"
+        style={seatHueStyle(seat)}
         className={cn(
-          '@container flex min-w-0 flex-col gap-1 rounded-xl bg-card px-2 py-1 text-card-foreground',
+          '@container plaque flex min-w-0 flex-col gap-1 rounded-xl px-2 py-1 text-card-foreground',
           ring,
           eliminated && 'border-l-4 border-destructive',
-          player.boss && 'border-2 border-boss',
+          player.boss ? 'border-2 border-boss' : SEAT_EDGE,
           defenderClass(defender.state),
         )}
       >
@@ -343,13 +359,14 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
       {...marks}
       data-variant="panel"
       data-tight={tight || undefined}
+      style={seatHueStyle(seat)}
       className={cn(
         // One track that may shrink (`minmax(0, 1fr)`): a chip that is longer than the pod is cut inside it instead of
         // widening the pod and pushing the life figure out of the column.
-        '@container relative grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-2 rounded-xl bg-card p-2 text-card-foreground',
+        '@container relative grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-2 plaque rounded-xl p-2 text-card-foreground',
         ring,
         eliminated && 'border-l-4 border-destructive',
-        player.boss && 'border-2 border-boss',
+        player.boss ? 'border-2 border-boss' : SEAT_EDGE,
         defenderClass(defender.state),
       )}
     >

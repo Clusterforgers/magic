@@ -32,13 +32,15 @@ Tokens are CSS variables in `index.css`, mapped by `@theme inline`; shadcn's nam
 | `success`, `warning`, `destructive` | ready; urgent clock; lethal and Concede |
 | `selected`, `on-selected` | a chosen card or target: crimson, at least 12° of hue from `destructive` (damage, loss) and apart from the gold of attackers, with a check badge so colour is never the only sign |
 | `mana-<colour>`, `on-mana-<colour>` | pip fill and ink, the same in both themes, 5.6:1 or more |
+| `felt`, `felt-rim`, `brass` | the table's felt from its lit middle to its rim (`felt` utility), text on both at 4.5:1; the hairline of seat frames and docks |
+| seat hue | `seatHue(seat)` as `--seat-hue`: the seat dot, a 2 px top edge on its pod and tile (`SEAT_EDGE`) and its life figure (`SEAT_LIFE`, 4.5:1 on the plaque at every hue); a boss keeps its own edge |
 
 | Token | Scale |
 |---|---|
 | Spacing | 4 px base: 4, 8, 12, 16, 24, 32, 48, 64 |
-| Type | Geist Variable. `text-label` 11/16 card labels only, `text-xs` 12/16, `text-sm` 14/20 UI, `text-base` 16/24, `text-lg` 18/28, `text-2xl` 24/32, `text-life` 36/40 with tabular digits, `text-display` 32 to 48 by width; weights 400, 500, 600. Card text on the table is 12 px or more |
+| Type | Geist Variable; Cinzel Variable (`font-display`, OFL) for life, seat names and page titles. `text-label` 11/16 card labels only, `text-xs` 12/16, `text-sm` 14/20 UI, `text-base` 16/24, `text-lg` 18/28, `text-2xl` 24/32, `text-life` 36/40 with tabular digits, `text-display` 32 to 48 by width; weights 400, 500, 600. Card text on the table is 12 px or more |
 | Radius | `rounded-md` card 6, `rounded-lg` control 8, `rounded-xl` panel 12, `rounded-full` pill |
-| Elevation | e1 `0 1px 2px` 8%; e2 `0 4px 12px` 12% menus; e3 `0 12px 32px` 20% dialogs; dark lifts the `raised` surface instead |
+| Elevation | e1 `0 1px 2px` 8%; e2 `0 4px 12px` 12% menus; e3 `0 12px 32px` 20% dialogs; dark lifts the `raised` surface instead. On the table: `plaque` (pods, tiles, the centre strip) `0 6px 18px` 30% and a lit top edge, cards `0 2px 6px` 45%, `dock` (hand and controls) the darkest ground under a brass hairline, `action-glow` on the main action |
 | Motion | `duration-fast` 100 ms (hover, toggle), `base` 200 (menu, row), `slow` 300 (sheet, banner); table effects stay at most 600 ms (`fx.css`); `ease-out` in, `ease-in` out; linear for clocks only; under `reduce` opacity only |
 | Icons | lucide-react: 16 px in dense rows, 20 in controls, 24 in menus; always a label or `aria-label`; mana symbols stay in `ManaPips` |
 | Breakpoints | XS under 640, S 640 to 1023, M 1024 to 1279, L 1280 to 1599, XL 1600 up; container queries and `clamp()` inside the table |

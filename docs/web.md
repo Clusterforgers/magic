@@ -425,8 +425,6 @@ Every `/dev/*` route exists only with `import.meta.env.DEV`; `devBuild.test.ts` 
 | `/dev/read`        | the real review screen over `reads/dev/fixture.ts` and `reads/dev/checkFixture.ts` with one wording-only offer, signed in; `view` (`deck`, `precon`, `all`, `mine`, `done`, `loading`, `error`, `stale`, `dialog`)                                                                                                                          |
 | `/dev/read-bulk`   | the wording-only page over `bulk-reads/dev/fixture.ts`                                                                                                                                                                                                                                                                                      |
 
-On the dev server any page takes `?look=a|b|c` (`src/dev/looks/`): the visual directions of [ui-audit.md](ui-audit.md) as `data-look` on `<html>` and a stylesheet scoped to it, kept for the tab until `?look=off`.
-
 ## Testing
 
 - vitest on jsdom: `scripts/check.sh web`, or `pnpm test` in `web/`.
