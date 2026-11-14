@@ -69,6 +69,9 @@ pub enum StatKind {
     /// Its subtypes: no number, so only `Amount::Distinct` reads it (each subtype once among the objects: "the number of
     /// planeswalker types among planeswalkers you control").
     Subtypes,
+    /// Its permanent types (artifact, battle, creature, enchantment, land, planeswalker): no number, so only
+    /// `Amount::Distinct` reads it ("the number of permanent types among cards in your graveyard").
+    R6018PermanentTypes,
 }
 
 /// A comparison between two numbers.

@@ -447,6 +447,7 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         StatKind::Toughness | StatKind::BaseToughness => Traits::TOUGHNESS,
         StatKind::Colors | StatKind::R374ColorSet | StatKind::R4700ChosenColors => Traits::COLORS,
         StatKind::BasicLandTypes | StatKind::CreatureType | StatKind::Subtypes => Traits::SUBTYPES,
+        StatKind::R6018PermanentTypes => Traits::TYPES,
         StatKind::R374Types => Traits::TYPES.or(Traits::SUBTYPES).or(Traits::SUPERTYPES),
         StatKind::R374CreatureTypes => Traits::TYPES.or(Traits::SUBTYPES),
         StatKind::R374Bushido | StatKind::R374Toxic => Traits::KEYWORDS,

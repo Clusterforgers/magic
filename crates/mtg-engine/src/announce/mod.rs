@@ -20,6 +20,14 @@ pub(crate) mod foretell;
 mod legality;
 mod modes;
 mod modifiers;
+
+/// `cost` less `less`, generic mana coming off the generic part down to nothing.
+pub(crate) fn r6018_reduced(
+    cost: &mtg_core::mana::ManaCost,
+    less: &mtg_core::mana::ManaCost,
+) -> mtg_core::mana::ManaCost {
+    modifiers::reduced(cost, less)
+}
 mod optional;
 mod parts;
 mod payment;

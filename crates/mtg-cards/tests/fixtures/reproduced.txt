@@ -905,6 +905,7 @@ Hallowed Ground
 Hallowed Spiritkeeper
 Hama Pashar, Ruin Seeker
 Hammer Dropper
+Hand of Vecna
 Hangar Scrounger
 Hangarback Walker
 Hapatra, Vizier of Poisons
@@ -1114,6 +1115,7 @@ Konstrari Charm
 Kor Firewalker
 Korozda Guildmage
 Korozda Monitor
+Korvold, Gleeful Glutton
 Koth, Fire of Resistance
 Kozilek's Translator
 Krark's Thumb
@@ -1579,6 +1581,7 @@ Rampant Growth
 Ramses Overdark
 Rancor
 Ransom Note
+Raphael, Tag Team Tough
 Ratadrabik of Urborg
 Ravenous Leucrocota
 Ravenous Slime
@@ -1932,6 +1935,7 @@ Stratus Dancer
 Stratus Walk
 Strength Bobblehead
 Strionic Resonator
+Strixhaven Stadium
 Stroke of Genius
 Strong, the Brutish Thespian
 Stubborn Burrowfiend

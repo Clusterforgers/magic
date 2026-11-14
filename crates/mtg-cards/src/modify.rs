@@ -1103,6 +1103,9 @@ pub enum GameRule {
     /// many times.": the commander tax of the card is paid as this much life for each previous cast from the command zone
     /// in place of its generic mana (CR 903.8); no `from`.
     TaxAsLife(u32),
+    /// "Plotting cards from your hand costs {2} less.": the plot costs of the cards in its controller's hand cost this
+    /// much generic mana less (CR 702.170a).
+    R6018PlotLess(u32),
     /// "Spend only mana produced by basic lands to cast this spell.": the cast of the card spends only mana whose source
     /// the filter holds for, from the pool or from mana abilities of such sources; no `from`.
     SpendOnlyFrom(crate::spend::SpendFilter),

@@ -1344,6 +1344,7 @@ impl<'a> Walker<'a> {
             StatKind::R374ManaCost => "R374ManaCost",
             StatKind::R374ColorSet => "R374ColorSet",
             StatKind::R4700ChosenColors => "R4700ChosenColors",
+            StatKind::R6018PermanentTypes => "R6018PermanentTypes",
             _ => return,
         };
         self.uses("Stat", name);
@@ -3271,11 +3272,20 @@ impl Walker<'_> {
                     // A player's first discards of the turn, of any card or of a kind.
                     || matches!(&**inner, TriggerPattern::Discarded { .. })
             }
+            // The times the card dealt combat damage to a player in a turn.
+            TriggerPattern::DealsDamage {
+                source,
+                to: Some(Ref::EachPlayer),
+                combat: Some(true),
+            } => {
+                self.uses("Nth", "R6018HitPlayer");
+                source.0 == [Pred::This]
+            }
             _ => false,
         };
         if !counted {
             self.problem(
-                "only cards drawn, spells cast, life gained or lost, cards cycled, surveils, investigations, tokens you create, attacks, counters put on an object, becoming crewed or saddled, becoming a target of what anyone or you control and damage dealt to an object from any source or a player's first discards are counted in a turn",
+                "only cards drawn, spells cast, life gained or lost, cards cycled, surveils, investigations, tokens you create, attacks, counters put on an object, becoming crewed or saddled, becoming a target of what anyone or you control, damage dealt to an object from any source, the card's combat damage to a player or a player's first discards are counted in a turn",
             );
         }
         self.at("event", |w| w.trigger_pattern(event));
@@ -3422,7 +3432,13 @@ impl Walker<'_> {
     /// The exceptions of a copy effect are changes to its copiable values; a modification that is not one waits.
     /// The exceptions of a copy that is not a permanent becoming a copy: keeping its own ability is not played there.
     /// A permanent that enters with counters and with a keyword or an ability (`ReplaceBy::WithCountersAnd`).
-    fn enters_with_changes(&mut self, enters: bool, count: &Amount, given: &[Modification]) {
+    fn enters_with_changes(
+        &mut self,
+        enters: bool,
+        count: &Amount,
+        given: &[Modification],
+        more_kinds: bool,
+    ) {
         if !enters {
             self.problem("`WithCountersAnd` replaces an `Enters`");
         }
@@ -3435,7 +3451,10 @@ impl Walker<'_> {
         }) {
             self.problem("a permanent enters with a keyword or an ability only");
         }
-        self.at("mods", |w| w.mods(given));
+        // Counters of several kinds alone ("a +1/+1 counter, a flying counter, ... and a shield counter") need no change.
+        if !(given.is_empty() && more_kinds) {
+            self.at("mods", |w| w.mods(given));
+        }
     }
 
     fn copy_exceptions_new_object(&mut self, except: &[Modification]) {
@@ -5987,6 +6006,13 @@ impl Walker<'_> {
             | GameRule::Flagbearers
             | GameRule::RevealFirstDraw { .. }
             | GameRule::SpendOnlyFrom(_) => {}
+            GameRule::R6018PlotLess(less) => {
+                if *less == 0 {
+                    self.at(tag, |w| {
+                        w.problem("a plot cost reduction takes at least {1} off")
+                    });
+                }
+            }
             GameRule::TaxAsLife(life) => {
                 if *life == 0 {
                     self.at(tag, |w| {
@@ -6682,7 +6708,7 @@ impl Walker<'_> {
                 for (i, more) in also.iter().enumerate() {
                     self.at("also", |w| w.at(i.to_string(), |w| w.amount(&more.count)));
                 }
-                self.enters_with_changes(enters, count, given);
+                self.enters_with_changes(enters, count, given, !also.is_empty());
             }
             ReplaceBy::Tapped
             | ReplaceBy::Untapped
@@ -7231,6 +7257,10 @@ pub fn named_cards(card: &Card) -> BTreeSet<String> {
         .collect()
 }
 
+/// Names printed only on tokens another card makes, lowercase, which a card may name ("a creature you control named
+/// Vecna", the token of Book of Vile Darkness).
+const R6018_TOKEN_NAMES: [&str; 1] = ["vecna"];
+
 /// The problems of a card file against the imported card: names, fingerprints, keywords and the
 /// printed characteristics its abilities rely on.
 pub(crate) fn check_printed(
@@ -7297,7 +7327,10 @@ pub(crate) fn check_printed(
     }
     for (_, path, name) in names {
         let lower = name.to_lowercase();
-        if !known_names.contains(&lower) && !own_tokens.contains(&lower) {
+        if !known_names.contains(&lower)
+            && !own_tokens.contains(&lower)
+            && !R6018_TOKEN_NAMES.contains(&lower.as_str())
+        {
             walker.path = vec![path];
             walker.problem(format!("no imported card is named `{name}`"));
         }
@@ -9011,6 +9044,19 @@ mod printed_keywords {
             .into_iter()
             .map(|problem| problem.message)
             .collect()
+    }
+
+    #[rstest]
+    #[case::a_token_only_name("Vecna", true)]
+    #[case::an_imported_name("Pir, Imaginative Rascal", true)]
+    #[case::an_unknown_name("Vecnar", false)]
+    fn r6018_a_card_may_name_a_token_only_name(#[case] name: &str, #[case] fine: bool) {
+        let abilities = format!(
+            r#"{{"Static":{{"affected":{{"Each":[{{"Type":"Creature"}},{{"Named":"{name}"}}]}},"mods":[{{"AddKeyword":"Flying"}}]}}}}"#
+        );
+        let found = problems("Full", &[(BIRD, "Creatures named X have flying.", &abilities)], &[]);
+        let named = found.iter().any(|problem| problem.contains("no imported card is named"));
+        assert_eq!(named, !fine, "{found:?}");
     }
 
     #[rstest]

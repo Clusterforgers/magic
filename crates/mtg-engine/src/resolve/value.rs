@@ -2341,6 +2341,7 @@ impl<'a> Scope<'a> {
             | StatKind::R4700ChosenColors
             | StatKind::R374ManaCost
             | StatKind::R374ColorSet
+            | StatKind::R6018PermanentTypes
             | StatKind::Subtypes => None,
         }
     }
@@ -3020,6 +3021,26 @@ impl<'a> Scope<'a> {
                 }
             }
             return Ok(i64::try_from(kinds.len()).unwrap_or(i64::MAX));
+        }
+        if stat == StatKind::R6018PermanentTypes {
+            // Each permanent type once among the objects, a card of several adding each of them.
+            let seen: Vec<Seen<'a>> = self
+                .matching(of)?
+                .into_iter()
+                .filter_map(|object| self.seen(object))
+                .collect();
+            let among = [
+                CardType::Artifact,
+                CardType::Battle,
+                CardType::Creature,
+                CardType::Enchantment,
+                CardType::Land,
+                CardType::Planeswalker,
+            ]
+            .into_iter()
+            .filter(|card_type| seen.iter().any(|one| one.chars.types.contains(*card_type)))
+            .count();
+            return Ok(i64::try_from(among).unwrap_or(i64::MAX));
         }
         if stat == StatKind::Subtypes {
             // Each subtype once among the objects, an object of several subtypes adding each of them.

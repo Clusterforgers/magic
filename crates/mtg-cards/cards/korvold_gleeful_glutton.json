@@ -1,7 +1,7 @@
 {
   "oracle_id": "99e89098-bc55-4297-9407-ab9256b609da",
   "name": "Korvold, Gleeful Glutton",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Korvold, Gleeful Glutton",
@@ -19,9 +19,32 @@
         { "Keyword": "Trample" },
         { "Keyword": "Haste" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 122, "end": 293 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "In": "Graveyard" }, { "OwnedBy": "You" }],
+                      "stat": "R6018PermanentTypes"
+                    }
+                  }
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "In": "Graveyard" }, { "OwnedBy": "You" }],
+                      "stat": "R6018PermanentTypes"
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]
