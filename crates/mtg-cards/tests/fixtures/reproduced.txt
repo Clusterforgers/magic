@@ -11,6 +11,7 @@ Abzan Falconer
 Abzan Skycaptain
 Academy Elite
 Accomplished Automaton
+Ace's Baseball Bat
 Acererak the Archlich
 Act of Aggression
 Act of Treason
@@ -180,6 +181,7 @@ Biomechan Engineer
 Biotech Specialist
 Bird Admirer // Wing Shredder
 Birgi, God of Storytelling // Harnfel, Horn of Bounty
+Bitter Feud
 Bitter Triumph
 Black Dragon Gate
 Black Knight
@@ -863,6 +865,7 @@ Gollum, Obsessed Stalker
 Gonti's Machinations
 Goreclaw, Terror of Qal Sisma
 Gorger Wurm
+Gorm the Great
 Gorma, the Gullet
 Grabby Tabby
 Grafted Wargear
@@ -880,6 +883,7 @@ Greater Mossdog
 Green Goblin, Back for More
 Gremlin Mine
 Grenzo's Cutthroat
+Greymond, Avacyn's Stalwart
 Grief
 Griffin Aerie
 Grim Flayer
@@ -1066,6 +1070,7 @@ Jumbo Cactuar
 Jungle Lion
 Junk Winder
 Jyoti, Moag Ancient
+Kaervek's Torch
 Kalemne's Captain
 Kalemne, Disciple of Iroas
 Kalitas, Traitor of Ghet
@@ -2244,6 +2249,7 @@ Village Pillagers
 Village Rites
 Viper's Kiss
 Viridian Corrupter
+Virtus the Veiled
 Visage of Dread // Dread Osseosaur
 Viscerid Drone
 Vish Kal, Blood Arbiter

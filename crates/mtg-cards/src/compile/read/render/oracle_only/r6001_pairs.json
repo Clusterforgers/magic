@@ -1,0 +1,6 @@
+[
+  [[{"Static":{"affected":"Attached","mods":[{"AddKeyword":"FirstStrike"}],"condition":{"Matches":{"subject":"Attached","selector":["Attacking"]}}}},{"Rule":{"rule":{"Combat":{"who":"Attached","quirk":{"MustBeBlockedByOne":[{"Subtype":"Dalek"}]}}},"condition":{"Matches":{"subject":"Attached","selector":["Attacking"]}}}}],
+    "As long as equipped creature is attacking, it has first strike and must be blocked by a Dalek if able."],
+  [[{"Rule":{"rule":{"Combat":{"who":"This","quirk":{"MustBeBlocked":"AtLeastOne"}}}}},{"Rule":{"rule":{"Combat":{"who":"This","quirk":{"R6001MustBeBlockedByAtLeast":2}}}}}],
+    "~ must be blocked if able, and ~ must be blocked by two or more creatures if able."]
+]

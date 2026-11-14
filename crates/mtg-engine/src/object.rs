@@ -87,6 +87,9 @@ pub enum Chosen {
     Number(u32),
     /// One of the words a choice offered.
     Word(String),
+    /// Several of the words a choice offered, in the order they were chosen ("choose two abilities from among first
+    /// strike, vigilance, and lifelink").
+    Words(Vec<String>),
     /// The chapter a Saga with read ahead entered at (CR 702.155): lower chapters don't trigger.
     Chapter(u32),
 }

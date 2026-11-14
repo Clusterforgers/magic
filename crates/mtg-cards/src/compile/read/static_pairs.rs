@@ -14,6 +14,9 @@ use crate::refs::{Ref, ZoneKind};
 
 /// The two statics of the sentence, when the card gets a bonus and a group gets a bonus or a keyword.
 pub(super) fn read(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
+    if let Some(found) = r.attempt(super::render::r6001_pair_read) {
+        return Some(found);
+    }
     if let Some(found) = r.attempt(super::r4701_pairs::r4701_graveyard_only) {
         return Some(found);
     }
@@ -48,6 +51,10 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
 /// abilities.
 #[allow(clippy::too_many_lines)]
 pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
+    let whole_pair = super::render::r6001_pair_texts(first, second);
+    if !whole_pair.is_empty() {
+        return whole_pair;
+    }
     let graveyard_only = super::r4701_pairs::r4701_pair_texts(first, second);
     if !graveyard_only.is_empty() {
         return graveyard_only;

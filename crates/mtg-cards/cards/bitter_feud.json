@@ -1,0 +1,20 @@
+{
+  "oracle_id": "e4add901-3f2b-4f92-bb26-7f599e288802",
+  "name": "Bitter Feud",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bitter Feud",
+      "oracle_fingerprint": "8484923a8eb9fe521de57ce5248786e9",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": { "Players": 2 } }
+          }
+        },
+        { "Replacement": { "when": "R6001DamageBetweenChosen", "by": { "Multiply": 2 } } }
+      ]
+    }
+  ]
+}

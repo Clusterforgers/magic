@@ -637,6 +637,7 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
     let cant_alone = cant_block_alone_of(state, &blockers);
     let offered: Vec<ObjectId> = blockers.iter().map(|option| option.object).collect();
     let joins = crate::r286_joins::r286_joins(state, &offered, &[], false);
+    crate::r6001_blocked_by_many::r6001_list_several(state, &blockers, &mut must_be_blocked);
     crate::block_tax::unbind_attackers(state, &blockers, &mut must_be_blocked);
     let required = blockers
         .iter()
@@ -833,7 +834,10 @@ pub(crate) fn check_blockers(
     {
         return Err(IllegalAnswer::Required("blocker"));
     }
-    if options.unmet_must_be_blocked(answer) || options.r5502_unmet(answer) {
+    if options.unmet_must_be_blocked(answer)
+        || options.r5502_unmet(answer)
+        || options.r6001_unmet(answer)
+    {
         return Err(IllegalAnswer::Required("blocked attacker"));
     }
     Ok(())

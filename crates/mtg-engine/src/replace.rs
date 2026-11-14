@@ -679,6 +679,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
             matches!(to, Some(Ref::This))
         }
         ReplaceWhen::TokenCreation { .. }
+        | ReplaceWhen::R6001DamageBetweenChosen
         | ReplaceWhen::Mill { .. }
         | ReplaceWhen::LifeGain { .. }
         | ReplaceWhen::LifeLoss { .. }
@@ -1121,6 +1122,28 @@ impl Pass<'_> {
                         self.includes(&scope, to, hit)?
                     }
                 }
+            }
+            (
+                ReplaceWhen::R6001DamageBetweenChosen,
+                Unit::Damage {
+                    source: dealer,
+                    target,
+                    ..
+                },
+            ) => {
+                let chosen = scope.players(&Ref::Chosen)?;
+                let Some(dealer) = self.state.object(*dealer) else {
+                    return Ok(false);
+                };
+                let by = controller_of_object(self.state, dealer);
+                let hit = match target {
+                    DamageTarget::Player(player) => *player,
+                    DamageTarget::Object(object) => match self.state.object(*object) {
+                        Some(object) => controller_of_object(self.state, object),
+                        None => return Ok(false),
+                    },
+                };
+                by != hit && chosen.contains(&by) && chosen.contains(&hit)
             }
             (
                 ReplaceWhen::ZoneChange { what, from, to },
@@ -3603,7 +3626,10 @@ impl Pass<'_> {
         }
         if matches!(
             kind,
-            EntersChoice::Colors(_) | EntersChoice::ColorAndCreatureType | EntersChoice::Players(_)
+            EntersChoice::Colors(_)
+                | EntersChoice::ColorAndCreatureType
+                | EntersChoice::Players(_)
+                | EntersChoice::R6001Abilities(_)
         ) {
             return self.r4700_chooses(source, controller, kind);
         }
@@ -3738,6 +3764,7 @@ impl Pass<'_> {
             | EntersChoice::Number { .. }
             | EntersChoice::Colors(_)
             | EntersChoice::Players(_)
+            | EntersChoice::R6001Abilities(_)
             | EntersChoice::ColorAndCreatureType => Vec::new(),
             EntersChoice::Player => self
                 .state
@@ -3788,6 +3815,7 @@ fn entering_question(kind: EntersChoice) -> String {
         EntersChoice::Number { .. }
         | EntersChoice::Colors(_)
         | EntersChoice::Players(_)
+        | EntersChoice::R6001Abilities(_)
         | EntersChoice::ColorAndCreatureType => String::new(),
     }
 }

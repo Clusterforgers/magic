@@ -286,6 +286,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::AddChosenSubtype
             | mtg_cards::modify::Modification::SetChosenColor
             | mtg_cards::modify::Modification::AddChosenColor
+            | mtg_cards::modify::Modification::R6001AddChosenAbilities
             | mtg_cards::modify::Modification::SetLandTypesNthChosen(_)
             | mtg_cards::modify::Modification::SetCommanderColor
             | mtg_cards::modify::Modification::RemoveKeyword(_)

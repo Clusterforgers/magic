@@ -175,6 +175,11 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - "The power, toughness, and creature types of the last creature card exiled with it" read `Ref::LastExiledWith` (the card the source exiled last among those its filter selects, while still in exile) and `Modification::SetCreatureTypesOf`.
 - "If a creature card with flying was exiled with this creature's delve ability, this creature has flying. The same is true for ..." is `Modification::KeywordsOf` over `Ref::Delved` (the cards the spell's delve exiled, while still in exile): each listed keyword one of them has, with its variant ("hexproof from white").
 - "Choose two basic land types" is `EntersChoice::TwoBasicLandTypes` (`Chosen::LandTypes`, in order); "lands of the first chosen type are the second chosen type" is `Pred::NthChosenLandType(0)` with `Modification::SetLandTypesNthChosen(1)`.
+- "If a source controlled by one of the chosen players would deal damage to the other chosen player or a permanent that player controls" is `ReplaceWhen::R6001DamageBetweenChosen`, over the players the source chose as it entered (`EntersChoice::Players(2)`); damage to the source's own controller or their permanents is not matched.
+- "Choose two abilities from among first strike, vigilance, and lifelink" is `EntersChoice::R6001Abilities(2)`, held as `Chosen::Words`; "have each of the chosen abilities" is `Modification::R6001AddChosenAbilities`.
+- "~ must be blocked by two or more creatures if able" is `CombatQuirk::R6001MustBeBlockedByAtLeast(2)`, listed that many times in `BlockOptions.must_be_blocked`: a declaration with fewer blockers is refused while another creature could join the block.
+- "As long as ~ is on the stack, spells that target it cost {2} more to cast" is a `SpellCost` rule over `Targeting(This)` with `from: Stack`; the rules in force are gathered from the stack, so it holds while the spell is there.
+- Sentences and two-ability sentences of the r60-01 pack are read and written whole from `r6001_wholes.json` and `r6001_pairs.json` (Kytheon's end-of-combat transform, Ace's Baseball Bat's attacking clause).
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 
 ## Support records

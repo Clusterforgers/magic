@@ -1,7 +1,7 @@
 {
   "oracle_id": "3f47ec32-4ee9-4bc0-96f2-310a939cb973",
   "name": "Ace's Baseball Bat",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ace's Baseball Bat",
@@ -14,9 +14,21 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 30, "end": 132 }
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "FirstStrike" }],
+            "condition": { "Matches": { "subject": "Attached", "selector": ["Attacking"] } }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": "Attached",
+                "quirk": { "MustBeBlockedByOne": [{ "Subtype": "Dalek" }] }
+              }
+            },
+            "condition": { "Matches": { "subject": "Attached", "selector": ["Attacking"] } }
           }
         },
         { "Keyword": { "EquipTo": { "to": [{ "Supertype": "Legendary" }], "cost": "{1}" } } },
