@@ -10,6 +10,7 @@ import type { CardBox } from './CardRow'
 import { useGhosts } from './fx/hooks'
 import { GridCardContext } from './gridCard'
 import { LandFoldContext } from './landFold'
+import { promptKey } from './boardZoom'
 import { SHAPES } from './laneFit'
 import type { LanePlace } from './laneFit'
 import { useSeatNamer } from './names'
@@ -172,7 +173,9 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
   // chip lays them out, and a prompt that marks one of them lays them out while it waits.
   const fold = useContext(LandFoldContext)
   const landIds = useMemo(() => stacks.plain.lands.flatMap((stack) => stack.ids), [stacks])
-  const landMarked = landIds.some((id) => marked.has(id))
+  // Priority marks every land that taps for mana; only a prompt beyond it (a target, a sacrifice) lays the lands out.
+  const asking = usePlay(promptKey) !== null
+  const landMarked = asking && landIds.some((id) => marked.has(id))
   const folded = fold !== null && !fold.open && landIds.length > 0 && !landMarked
   const shown = useMemo(() => (folded ? foldLands(stacks) : stacks), [folded, stacks])
   const creatureGhosts = useGhosts(seat, 'creatures').length

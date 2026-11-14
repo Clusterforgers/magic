@@ -77,10 +77,8 @@ export const SeatArea = memo(function SeatArea({
   const [landsOpen, setLandsOpen] = useState(false)
   const fold = useMemo(
     () =>
-      foldLands && facing === 'far' && pod !== 'none'
-        ? { open: landsOpen, toggle: () => setLandsOpen((was) => !was) }
-        : null,
-    [foldLands, facing, pod, landsOpen],
+      foldLands && pod !== 'none' ? { open: landsOpen, toggle: () => setLandsOpen((was) => !was) } : null,
+    [foldLands, pod, landsOpen],
   )
   return (
     <LandFoldContext value={fold}>

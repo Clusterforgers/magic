@@ -50,10 +50,10 @@ export function boardCounts(state: PlayState, seats: SeatPlan, grouped = true): 
 }
 
 /**
- * Whether the opponents of a plan have their lands folded into their pods' lands chips (`LandFoldContext`): the
- * opponents of a grid, where the table folds lands. Their boards then hold no lands lane.
+ * Whether the boards of a plan have their lands folded into their pods' lands chips (`LandFoldContext`): every board
+ * of a grid of opponents, yours too, where the table folds lands. The boards then hold no lands lane.
  */
-export const foldsTheirLands = (seats: SeatPlan, fold: boolean): boolean => fold && seats.shape === 'columns'
+export const foldsLands = (seats: SeatPlan, fold: boolean): boolean => fold && seats.shape === 'columns'
 
 /** The most of a prompt sheet's overhang the split keeps free above the strip: two lines of a prompt. */
 export const SHEET_RESERVE_MAX_PX = 64
@@ -124,7 +124,7 @@ export const FLOOR_OWN_CARD_PX = 100
 /** An opponent's cards are this share of yours: their board shrinks first. */
 export const THEIR_SCALE = 0.8
 /** In a grid of opponents their cards are as large as yours: three boards side by side would otherwise fall unreadable. */
-export const GRID_THEIR_SCALE = 1
+export const GRID_THEIR_SCALE = 0.85
 /** Neither row gets less than this share of the room both share, so an empty board keeps a place for a prompt sheet. */
 export const MIN_ROW_SHARE = 0.25
 /** The padding of a battlefield's zone around its lanes (`p-1`). */
