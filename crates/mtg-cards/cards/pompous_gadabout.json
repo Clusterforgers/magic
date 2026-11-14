@@ -1,7 +1,7 @@
 {
   "oracle_id": "0361b9b7-9097-4aae-aa06-c63a5fb47a76",
   "name": "Pompous Gadabout",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Pompous Gadabout",
@@ -15,9 +15,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 46, "end": 113 }
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CantBeBlockedBy": [{ "Type": "Creature" }, { "Not": "HasName" }] }]
           }
         }
       ]

@@ -1222,6 +1222,7 @@ describe('events with more than one shape', () => {
       ruleEffect({ CantDraw: [1] }, 'UntilYourNextTurn'),
       "Bo can't draw cards until their controller's next turn",
     ],
+    [ruleEffect({ DrawFromBottom: [1] }, 'Forever'), 'Draws by Bo come from the bottom of the library'],
     [
       ruleEffect({ CantSearch: [0, 1, 2] }, 'WhileSourceOnBattlefield', { id: 6, counter: 0 }),
       "Ana, Bo and Cy can't search libraries while Jace Beleren stays",

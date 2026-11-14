@@ -61,6 +61,7 @@ const FACTS: Record<SpendFact, string> = {
   NotFromHand: 'cast from anywhere other than your hand',
   Devoid: 'with devoid',
   Flashback: 'with flashback',
+  Foretell: 'with foretell',
   YourCommander: 'that is your commander',
   FaceDown: 'cast face down',
   Kicked: 'that is kicked',
