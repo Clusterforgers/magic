@@ -28,9 +28,10 @@
                         {
                           "Rule": {
                             "rule": {
-                              "R6007NoUntapDuring": {
+                              "UntapLimit": {
+                                "who": { "Target": 0 },
                                 "what": [{ "Type": "Creature" }],
-                                "whose": { "Target": 0 }
+                                "count": 0
                               }
                             },
                             "duration": "NextUntapStep"

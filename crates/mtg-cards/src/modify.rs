@@ -327,7 +327,8 @@ pub enum Duration {
     /// Until a player who is an opponent of the controller becomes the monarch (an exile that lasts that long).
     UntilOpponentBecomesMonarch,
     /// Through the next untap step of the player who controls a permanent it applies to ("doesn't untap during its
-    /// controller's next untap step", CR 502.3): only the rule that a permanent doesn't untap lasts this long.
+    /// controller's next untap step", CR 502.3), or of a player an untap limit names ("creatures don't untap during
+    /// target player's next untap step"): only those rules last this long.
     NextUntapStep,
     /// For as long as every object the effect names is still on the battlefield with a counter of the kind ('Each of those
     /// creatures can't attack you for as long as it has a vow counter on it'): it ends when one of them loses its last counter
@@ -928,6 +929,9 @@ pub enum GameRule {
     },
     /// The players can't draw cards.
     CantDraw(Ref),
+    /// The players draw cards from the bottom of their libraries rather than the top ("You draw cards from the bottom of
+    /// your library rather than the top").
+    DrawFromBottom(Ref),
     /// The players can't search libraries.
     CantSearch(Ref),
     /// Spells and abilities the players control can't cause their controller to search their own library: "Spells and
@@ -1057,15 +1061,6 @@ pub enum GameRule {
         /// The players whose untap steps untap them.
         whose: Ref,
     },
-    /// The permanents the selector picks, whoever controls them, don't untap during the untap steps of the players
-    /// (CR 502.3): "Creatures don't untap during target player's next untap step." With `Duration::NextUntapStep` it
-    /// ends as the next untap step of one of those players ends.
-    R6007NoUntapDuring {
-        /// The permanents held down, judged when the step untaps.
-        what: Selector,
-        /// The players whose untap steps hold them down.
-        whose: Ref,
-    },
     /// The players can't untap more than `count` of their permanents the selector picks during their untap steps (CR
     /// 502.3): "players can't untap more than one land during their untap steps".
     UntapLimit {
@@ -1078,9 +1073,6 @@ pub enum GameRule {
     },
     /// The players skip their draw steps (CR 614.10): the step does not begin on their turns.
     SkipDrawStep(Ref),
-    /// The players draw cards from the bottom of their libraries rather than the top ("You draw cards from the bottom of
-    /// your library rather than the top."); what an effect puts into a hand from the top is no draw and stays the top.
-    R6007DrawFromBottom(Ref),
     /// During their own turns, as long as they haven't activated an exhaust ability this turn, the players may activate
     /// exhaust abilities as though they haven't been activated ("During your turn, as long as you haven't activated an
     /// exhaust ability this turn, you may activate exhaust abilities as though they haven't been activated.").

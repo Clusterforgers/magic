@@ -143,6 +143,7 @@ pub(crate) fn scry_decision(state: &GameState, player: PlayerId) -> Option<Decis
             max: 1,
             text: wording::SCRY.to_owned(),
             can_cancel: false,
+            total: None,
             groups: Vec::new(),
         }),
     })
@@ -295,6 +296,7 @@ fn dk26_exile_decision(state: &GameState, player: PlayerId) -> Option<Decision> 
             max: count,
             text: wording::DK26_OPENING_EXILE.to_owned(),
             can_cancel: false,
+            total: None,
             groups: Vec::new(),
         }),
     })
@@ -421,6 +423,7 @@ pub(crate) fn seat_decision(state: &GameState, player: PlayerId) -> Option<Decis
                 min: 0,
                 text: text.to_owned(),
                 can_cancel: false,
+                total: None,
                 groups: Vec::new(),
             })
         }

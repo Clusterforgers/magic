@@ -53,21 +53,14 @@ impl Pass<'_> {
                 )
             })
             .count();
-        let mut library: Vec<ObjectId> = self
-            .state
+        self.state
             .zone(Zone::Library(player))
             .iter()
             .rev()
             .filter(|card| !self.pulled.contains(card))
+            .skip(before)
             .copied()
-            .collect();
-        // The draws before took cards from the end a player draws from: the bottom under River Song.
-        if crate::rules::r6007_draws_from_bottom(self.state, player) {
-            library.truncate(library.len().saturating_sub(before));
-        } else {
-            library.drain(..before.min(library.len()));
-        }
-        library
+            .collect()
     }
 
     /// Whether the card `card` can replace the draw at `at`: it lies in the graveyard of the player who draws, which holds

@@ -75,6 +75,10 @@ devoid?: boolean,
  */
 flashback?: boolean, 
 /**
+ * It has foretell.
+ */
+foretell?: boolean, 
+/**
  * It is a commander its caster owns.
  */
 your_commander?: boolean, 

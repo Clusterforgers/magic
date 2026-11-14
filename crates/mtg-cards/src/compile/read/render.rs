@@ -577,7 +577,6 @@ fn plain_variants(ability: &Ability) -> Vec<String> {
     super::w15b_time::w15b_wordings(ability, &mut texts);
     super::fix32_animate::wordings(ability, &mut texts);
     super::w20b_reflexive::w20b_wordings(ability, &mut texts);
-    super::r6007_words::r6007_wordings(&mut texts);
     texts
 }
 
@@ -2397,14 +2396,6 @@ impl Writer<'_> {
             })
     }
 
-    /// A sentence that names the target itself ("target player"), so no later sentence names it again.
-    fn r6007_named(&mut self, text: Option<(String, usize)>) -> Option<(String, usize)> {
-        if text.is_some() {
-            self.named = true;
-        }
-        text
-    }
-
     /// Whether the reference is the one target or "up to one" target.
     fn at_most_one(&self, what: &Ref) -> bool {
         let up_to_one = Bounds::up_to(Some(Amount::Fixed(1)));
@@ -3475,6 +3466,7 @@ impl Writer<'_> {
             Effect::Monstrosity { count } => format!("monstrosity {}", points_text(count)?),
             Effect::Adapt { count } => format!("adapt {}", points_text(count)?),
             Effect::Bolster { count } => format!("bolster {}", points_text(count)?),
+            Effect::Empower { count } => format!("empower Jace {}", points_text(count)?),
             Effect::Amass {
                 subtype,
                 count,
@@ -3718,7 +3710,6 @@ impl Writer<'_> {
             .or_else(|| self.stolen(effects))
             .or_else(|| self.w6e_stolen(effects))
             .or_else(|| self.c10_uc_held(effects))
-            .or_else(|| self.r6007_named(super::r6007_untap::r6007_held_text(effects)))
             .or_else(|| self.c7_untap_held(effects))
             .or_else(|| self.r7d_countered_exiled(effects))
             .or_else(|| self.rmt2_countered_into_library(effects))

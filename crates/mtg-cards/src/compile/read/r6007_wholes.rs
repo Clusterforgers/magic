@@ -1,5 +1,5 @@
 //! Whole abilities of the r60-07 pack whose wordings no renderer joins (a draw replaced by a draw and a reveal, a draw
-//! revealed for any other player to mill, a loyalty activation that removed counters, ...): each is read and written
+//! revealed for any other player to mill, a creature that grows for a Dragon revealed or controlled): each is read and written
 //! whole from one table of `[ability, wording]` pairs (`r6007_wholes.json`), so the reader reads exactly what the
 //! writer writes.
 

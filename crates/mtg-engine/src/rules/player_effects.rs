@@ -31,8 +31,6 @@ pub enum PlayerEffect {
     CantDraw,
     /// The player skips their draw step.
     SkipsDrawStep,
-    /// The player draws from the bottom of their library rather than the top.
-    DrawsFromBottom,
     /// The player can't search libraries.
     CantSearch,
     /// The player skips each extra turn they would begin.
@@ -92,10 +90,6 @@ pub fn player_effects(state: &GameState, player: PlayerId) -> Vec<PlayerEffect> 
         (
             rules.skip_draw.contains(&player),
             PlayerEffect::SkipsDrawStep,
-        ),
-        (
-            rules.draw_bottom.contains(&player),
-            PlayerEffect::DrawsFromBottom,
         ),
         (rules.no_search.contains(&player), PlayerEffect::CantSearch),
         (

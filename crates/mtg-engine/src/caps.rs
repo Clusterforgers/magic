@@ -187,6 +187,7 @@ const RUNS: &[&str] = &[
     "Cost.ExileFromHand",
     "Cost.Pick.FilterX",
     "Cost.RevealFromHand",
+    "Cost.AlikeFromHand",
     "Cost.OneOf",
     "Cost.TapPower",
     "Cost.Changed",
@@ -229,6 +230,7 @@ const RUNS: &[&str] = &[
     "Effect.Draw",
     "Effect.Discard",
     "Effect.Discard.Random",
+    "Effect.RollDice.Highest",
     "Effect.Choose.Differ",
     "Effect.Discard.Filter",
     "Effect.Discard.Chooser",
@@ -340,7 +342,6 @@ const RUNS: &[&str] = &[
     "Effect.RepeatWhile",
     "Effect.SeparatePiles",
     "Effect.Balance",
-    "Effect.R6007KeepTotalPower",
     "Effect.ExtraTurn",
     "Effect.EndTurn",
     "Effect.AddPhase",
@@ -354,6 +355,8 @@ const RUNS: &[&str] = &[
     "Effect.Explore",
     "Effect.Connive",
     "Effect.Amass",
+    "Effect.Empower",
+    "Effect.ChooseWithin",
     "Effect.Incubate",
     "Effect.Conjure",
     "Effect.Seek",
@@ -484,6 +487,7 @@ const RUNS: &[&str] = &[
     "Rule.LifeTotalCantChange",
     "Rule.PlayersHave",
     "Rule.CantDraw",
+    "Rule.DrawFromBottom",
     "Rule.CantSearch",
     "Rule.OwnSpellsCantSearch",
     "Rule.VoteAgain",
@@ -522,7 +526,6 @@ const RUNS: &[&str] = &[
     "Rule.UntapDuring",
     "Rule.UntapLimit",
     "Rule.SkipDrawStep",
-    "Rule.R6007DrawFromBottom",
     "Rule.R6007ExhaustAgain",
     "Rule.LookAtTopAnyTime",
     "Rule.LookAtExiled",
@@ -647,6 +650,7 @@ const RUNS: &[&str] = &[
     "Effect.Rephase",
     "Effect.Reattack",
     "Effect.Pay.Counted",
+    "Effect.Pay.Took",
     "Effect.Pay.X",
     "Effect.Pay.X.Energy",
     "Effect.Pay.X.Among",
@@ -923,9 +927,9 @@ const RUNS: &[&str] = &[
     "ReplaceBy.PayLifeOrTapped",
     "ReplaceBy.TappedForCounters",
     "ReplaceBy.RevealOrTapped",
-    "ReplaceBy.R6007BeholdOrTapped",
-    "ReplaceBy.Instead.PaysLife",
     "ReplaceBy.R6007RevealOrControl",
+    "ReplaceBy.Instead.PaysLife",
+    "ReplaceBy.BeholdOrTapped",
     "ReplaceBy.PayOrGraveyard",
     "ReplaceBy.AsCopy",
     "Keyword.Partner",
@@ -1130,6 +1134,8 @@ const RUNS: &[&str] = &[
     "Pred.HasKeywordNamed",
     "Pred.CounterCount",
     "Pred.Suspended",
+    "Pred.Foretold",
+    "Pred.HasName",
     "Pred.Kicked",
     "Pred.AdditionalCostPaid",
 ];
@@ -1188,6 +1194,8 @@ mod tests {
     #[case::discarding("Effect.Discard", true)]
     #[case::discarding_at_random("Effect.Discard.Random", true)]
     #[case::r5505_a_player_controlled_by_another("Effect.ControlPlayer.By", true)]
+    #[case::r5518_dice_keeping_the_highest("Effect.RollDice.Highest", true)]
+    #[case::r5518_alike_cards_from_hand("Cost.AlikeFromHand", true)]
     #[case::choosing_apart("Effect.Choose.Differ", true)]
     #[case::discarding_matching_cards("Effect.Discard.Filter", true)]
     #[case::discarding_cards_another_player_chooses("Effect.Discard.Chooser", true)]
@@ -1545,6 +1553,8 @@ mod tests {
     #[case::r379_hurt_since_your_last_turn("Condition.CombatDamagedSinceLastTurn", true)]
     #[case::adventure_cards("Pred.HasAdventure", true)]
     #[case::amassing("Effect.Amass", true)]
+    #[case::r5508_empowering("Effect.Empower", true)]
+    #[case::r5508_choosing_within("Effect.ChooseWithin", true)]
     #[case::monstrosity("Effect.Monstrosity", true)]
     #[case::becoming_a_level("Effect.BecomeLevel", true)]
     #[case::adapting("Effect.Adapt", true)]

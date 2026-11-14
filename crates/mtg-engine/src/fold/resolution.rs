@@ -126,6 +126,8 @@ pub(crate) fn step_done(
             continue;
         }
         if let Some(old) = resolving.bindings.insert(name.clone(), targets.clone())
+            // Each payment of the resolution binds what it took anew; "if they do" reads the latest one.
+            && name != crate::resolve::R5520_PAID
             && !renews(&old, targets)
             && !grows(&old, targets)
         {

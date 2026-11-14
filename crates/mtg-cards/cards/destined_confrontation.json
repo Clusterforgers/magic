@@ -9,7 +9,25 @@
       "abilities": [
         {
           "Spell": {
-            "effects": [{ "R6007KeepTotalPower": { "what": [{ "Type": "Creature" }], "most": 4 } }]
+            "effects": [
+              {
+                "ChooseWithin": {
+                  "who": "EachPlayer",
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Chooser" }] },
+                  "within": { "TotalPowerAtMost": 4 },
+                  "as": "kept"
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [{ "Type": "Creature" }, { "Not": { "Is": { "Bound": "kept" } } }],
+                  "count": {
+                    "Count": [{ "Type": "Creature" }, { "Not": { "Is": { "Bound": "kept" } } }]
+                  }
+                }
+              }
+            ]
           }
         }
       ]

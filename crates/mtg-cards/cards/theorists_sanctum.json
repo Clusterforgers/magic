@@ -10,57 +10,13 @@
         {
           "Replacement": {
             "when": { "Enters": { "what": ["This"] } },
-            "by": { "R6007BeholdOrTapped": [{ "Subtype": "Jace" }] }
+            "by": { "BeholdOrTapped": [{ "Subtype": "Jace" }] }
           }
         },
         {
           "Activated": {
             "cost": [{ "Mana": "{2}{U}" }, "Tap"],
-            "effects": [
-              {
-                "If": {
-                  "condition": {
-                    "Compare": {
-                      "left": {
-                        "Count": [{ "Subtype": "Jace" }, "Token", { "ControlledBy": "You" }]
-                      },
-                      "op": "Lt",
-                      "right": 1
-                    }
-                  },
-                  "then": [
-                    {
-                      "CreateToken": {
-                        "token": {
-                          "Custom": {
-                            "name": "Jace",
-                            "colors": ["Blue"],
-                            "types": ["Planeswalker"],
-                            "subtypes": ["Jace"],
-                            "abilities": [
-                              {
-                                "Loyalty": {
-                                  "cost": { "Minus": 1 },
-                                  "effects": [{ "Surveil": {} }]
-                                }
-                              },
-                              { "Loyalty": { "cost": { "Minus": 3 }, "effects": [{ "Draw": {} }] } }
-                            ]
-                          }
-                        }
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "Choose": {
-                  "from": { "Each": [{ "Subtype": "Jace" }, "Token", { "ControlledBy": "You" }] },
-                  "as": "jace"
-                }
-              },
-              { "PutCounters": { "on": { "Bound": "jace" }, "counter": "loyalty", "count": 2 } }
-            ]
+            "effects": [{ "Empower": { "count": 2 } }]
           }
         }
       ]

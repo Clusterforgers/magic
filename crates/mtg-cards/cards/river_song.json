@@ -7,7 +7,7 @@
       "name": "River Song",
       "oracle_fingerprint": "2921561bd511a3d955a6d44b184a7eb5",
       "abilities": [
-        { "Rule": { "rule": { "R6007DrawFromBottom": "You" } } },
+        { "Rule": { "rule": { "DrawFromBottom": "You" } } },
         {
           "Triggered": {
             "when": {

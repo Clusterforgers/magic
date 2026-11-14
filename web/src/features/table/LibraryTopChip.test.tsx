@@ -1,4 +1,4 @@
-/** Goal: the top card of your library that a rule lets you see (Sigarda, Future Sight, Bolas's Citadel) is a chip beside your library chip with its picture, in your pod alone; while a permission lets you cast or play it the chip wears the legal ring and says so, and its card, opened in a dialog, casts on a click, and the dialog closes once the card leaves the top; nothing is drawn while no top card is seen. */
+/** Goal: the top card of your library that a rule lets you see (Sigarda, Future Sight, Bolas's Citadel) is a chip beside your library chip with its picture, in your pod alone; while a permission lets you cast or play it the chip wears the legal ring and says so, and its card, opened in a dialog, casts on a click, and the dialog closes once the card leaves the top; nothing is drawn while no top card is seen. The same card stands at the head of the hand dock with a "Top" mark and casts on a click like a card of the hand. */
 import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
@@ -10,7 +10,7 @@ import type { PlayerView } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
 import { fixtureGame } from './dev/devGame'
 import { TOP_CARD_NAME } from './dev/topCardScene'
-import { seenTop, topChipName, topDialogLine } from './libraryTop'
+import { headLabel, seenTop, TOP_WORDS, topChipName, topDialogLine } from './libraryTop'
 
 const sceneOf = (seats: number, prompt = 'priority-top') => {
   const game = fixtureGame({ seats, prompt })
@@ -116,5 +116,50 @@ describe('?prompt=priority-top', () => {
     const { game } = sceneOf(2, 'priority-main')
     table(game)
     expect(chips()).toHaveLength(0)
+  })
+})
+
+describe('the top card at the head of the hand dock', () => {
+  const dockTop = () => [...document.querySelectorAll<HTMLElement>('[data-region="hand"] [data-library-top]')]
+
+  it.each([2, 4])('stands marked "Top" beside the hand at %i seats and casts on a click', async (seats) => {
+    const { game, view } = sceneOf(seats)
+    const user = table(game)
+    const top = must(seenTop(must(view.players.find((player) => player.seat === view.viewer))))
+    const [slot, ...more] = dockTop()
+    expect(more).toHaveLength(0)
+    expect(must(slot).querySelector('[data-slot="hand-library-top"]')).toHaveTextContent('Top')
+    const card = must(must(slot).querySelector<HTMLElement>(`button[data-object-id="${top}"]`))
+    expect(card).toHaveAttribute('data-highlight', 'legal')
+    expect(card).toHaveAccessibleName(expect.stringContaining(TOP_WORDS))
+    expect(card.closest('[role="list"]')).toHaveAccessibleName(
+      expect.stringContaining('top card of the library'),
+    )
+    await user.click(card)
+    expect(game.session.store.getState().pending).toBeNull()
+  })
+
+  it('is not there while no top card is seen', () => {
+    const { game } = sceneOf(2, 'priority-main')
+    table(game)
+    expect(dockTop()).toHaveLength(0)
+  })
+})
+
+describe('the words of the head of the dock', () => {
+  const entry = (top: boolean) => ({ tax: 0, words: top ? TOP_WORDS : 'in the command zone', top })
+  it.each<[string, [number, boolean][], string]>([
+    ['commanders', [[1, false]], "Alice's commanders in the command zone"],
+    ['the top card', [[2, true]], "Alice's top card of the library"],
+    [
+      'both',
+      [
+        [1, false],
+        [2, true],
+      ],
+      "Alice's commanders in the command zone and the top card of the library",
+    ],
+  ])('names %s', (_name, entries, label) => {
+    expect(headLabel('Alice', new Map(entries.map(([id, top]) => [id, entry(top)])))).toBe(label)
   })
 })

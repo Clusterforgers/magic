@@ -1,7 +1,7 @@
 //! The events behind `TriggerPattern::Did`: each action of `mtg_cards::did::Action` is one arm of [`did_happened`], read off
 //! the event itself or off what the batch already found about it.
 
-use mtg_cards::ability::Ability;
+use mtg_cards::ability::{Ability, LoyaltyCost};
 use mtg_cards::assemble::mana_shape;
 use mtg_cards::did::Action;
 use mtg_cards::refs::{Ref, Selector};
@@ -57,6 +57,29 @@ fn activated_on_stack(
                     && ability.origin() == origin
             })
     })
+}
+
+/// The loyalty counters a loyalty ability's cost removed: its fixed minus, or the X it was activated with; 0 for a plus
+/// or zero cost and any other ability.
+fn r5508_loyalty_removed(
+    post: &GameState,
+    rules: Option<&Ability>,
+    on_stack: Option<ObjectId>,
+) -> u32 {
+    match rules {
+        Some(Ability::Loyalty {
+            cost: LoyaltyCost::Minus(n),
+            ..
+        }) => *n,
+        Some(Ability::Loyalty {
+            cost: LoyaltyCost::MinusX,
+            ..
+        }) => on_stack
+            .and_then(|id| post.object(id))
+            .and_then(|ability| ability.choices().x)
+            .unwrap_or(0),
+        _ => 0,
+    }
 }
 
 /// Whether the activated ability has no {T} in its activation cost; a loyalty ability never has one.
@@ -522,20 +545,14 @@ fn activated(
         .as_deref()
         .map(Action::activation_kinds)
         .unwrap_or_default();
-    let loyalty = matches!(rules.as_deref(), Some(Ability::Loyalty { .. }));
+    let loyalty = rules
+        .as_deref()
+        .is_some_and(|rules| matches!(rules, Ability::Loyalty { .. }));
+    let removed = r5508_loyalty_removed(post, rules.as_deref(), on_stack);
     let eternalize = matches!(
         ability_reader::keyword_adding(pre, address),
         Some(mtg_cards::keyword::Keyword::Eternalize(_) | mtg_cards::keyword::Keyword::Embalm(_))
     );
-    let removed = match rules.as_deref() {
-        Some(Ability::Loyalty { cost, .. }) => {
-            let x = on_stack
-                .and_then(|id| post.object(id))
-                .and_then(|object| object.choices().x);
-            r6007_loyalty_removed(*cost, x, crate::rules::loyalty_costs_more(pre, player))
-        }
-        _ => 0,
-    };
     [Action::Activated, Action::ActivatedAny]
         .into_iter()
         .chain(kinds)
@@ -546,8 +563,7 @@ fn activated(
             player: Some(player),
             object: Some(source),
             ability: on_stack,
-            // A loyalty activation counts the loyalty counters its cost removed ("if you removed two or more loyalty
-            // counters to activate it").
+            // The loyalty counters removed to activate it ("if you removed two or more loyalty counters to activate it").
             amount: if action == Action::ActivatedLoyalty {
                 removed
             } else {
@@ -556,13 +572,6 @@ fn activated(
         })
         .chain(untapped)
         .collect()
-}
-
-/// The loyalty counters a loyalty cost removed as it was paid: none for a cost that adds counters.
-fn r6007_loyalty_removed(cost: mtg_cards::ability::LoyaltyCost, x: Option<u32>, more: u32) -> u32 {
-    crate::loyalty::paid_change_with(cost, x, more)
-        .filter(|change| *change < 0)
-        .map_or(0, i32::unsigned_abs)
 }
 
 /// "Whenever a creature you control exploits a non-Human creature": the action when the creature sacrificed was not a

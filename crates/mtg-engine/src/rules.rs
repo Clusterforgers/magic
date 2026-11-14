@@ -172,6 +172,8 @@ pub enum Rule {
     },
     /// The players can't draw cards.
     CantDraw(Vec<PlayerId>),
+    /// The players draw from the bottom of their libraries.
+    DrawFromBottom(Vec<PlayerId>),
     /// The players can't search libraries.
     CantSearch(Vec<PlayerId>),
     /// Spells and abilities the players control can't cause their controller to search their own library.
@@ -281,15 +283,6 @@ pub enum Rule {
     NoLegendRuleFor(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Selector),
     /// The controller may activate abilities of the creatures the selector picks as though they had haste (CR 302.6).
     AbilitiesAsThoughHaste(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Selector),
-    /// The permanents the selector picks, whoever controls them, don't untap during the untap steps of the players (CR
-    /// 502.3).
-    R6007NoUntapDuring {
-        /// The permanents, judged when the step untaps.
-        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
-        what: Selector,
-        /// The players whose untap steps hold them down.
-        whose: Vec<PlayerId>,
-    },
     /// The permanents the selector picks that the rule's controller controls untap during the untap steps of the players
     /// (CR 502.3).
     UntapDuring {
@@ -312,8 +305,6 @@ pub enum Rule {
     },
     /// The players skip their draw steps (CR 614.10).
     SkipDrawStep(Vec<PlayerId>),
-    /// The players draw from the bottom of their libraries rather than the top.
-    R6007DrawFromBottom(Vec<PlayerId>),
     /// The players may activate exhaust abilities again during their turns until they activate one.
     R6007ExhaustAgain(Vec<PlayerId>),
     /// The players may look at the top card of their library any time.
@@ -793,6 +784,7 @@ pub(crate) struct RulesInForce {
     no_life_change: BTreeSet<PlayerId>,
     player_keywords: Vec<(PlayerId, Keyword)>,
     no_draw: BTreeSet<PlayerId>,
+    draw_bottom: BTreeSet<PlayerId>,
     no_search: BTreeSet<PlayerId>,
     no_own_search: BTreeSet<PlayerId>,
     /// The changes to the mana of a tap.
@@ -850,8 +842,6 @@ pub(crate) struct RulesInForce {
     /// The loyalty counters each player's loyalty abilities cost in addition.
     loyalty_more: BTreeMap<PlayerId, u32>,
     skip_draw: BTreeSet<PlayerId>,
-    /// The players who draw from the bottom of their libraries.
-    draw_bottom: BTreeSet<PlayerId>,
     /// The players who may activate exhaust abilities again (`R6007ExhaustAgain`).
     exhaust_again: BTreeSet<PlayerId>,
     look_top: BTreeSet<PlayerId>,
@@ -864,8 +854,6 @@ pub(crate) struct RulesInForce {
     /// The creatures whose abilities may be activated as though they had haste, by rule.
     haste_for_abilities: Vec<NoLegendFor>,
     untap_during: Vec<UntapDuring>,
-    /// The permanents held down during other players' untap steps (`R6007NoUntapDuring`), as `UntapDuring` names them.
-    no_untap: Vec<UntapDuring>,
     untap_limits: Vec<crate::rmt4_untap_limit::UntapLimit>,
     unpreventable: Vec<Unpreventable>,
     casts: Vec<Cast>,
@@ -1222,16 +1210,6 @@ impl RulesInForce {
     fn put(&mut self, rule: &Rule, controller: PlayerId, source: Option<ObjectRef>) {
         let ids = |named: &[ObjectRef]| named.iter().map(|r| r.id).collect::<Vec<_>>();
         match rule {
-            Rule::R6007NoUntapDuring { what, whose } => {
-                if let Some(source) = source {
-                    self.no_untap.push(UntapDuring {
-                        controller,
-                        source,
-                        what: what.clone(),
-                        whose: whose.clone(),
-                    });
-                }
-            }
             Rule::MustAttack(named) => self.must_attack.extend(ids(named)),
             Rule::MustAttackWithOne { players, at } => {
                 self.attack_with_one.push((players.clone(), at.clone()));
@@ -1293,6 +1271,7 @@ impl RulesInForce {
                 .player_keywords
                 .extend(who.iter().map(|player| (*player, keyword.clone()))),
             Rule::CantDraw(players) => self.no_draw.extend(players),
+            Rule::DrawFromBottom(players) => self.draw_bottom.extend(players),
             Rule::CantSearch(players) => self.no_search.extend(players),
             Rule::OwnSpellsCantSearch(players) => self.no_own_search.extend(players),
             Rule::ManaProduced { what, who, change } => {
@@ -1386,7 +1365,6 @@ impl RulesInForce {
                 self.put_option(rule, controller, source);
             }
             Rule::SkipDrawStep(players) => self.skip_draw.extend(players),
-            Rule::R6007DrawFromBottom(players) => self.draw_bottom.extend(players),
             Rule::R6007ExhaustAgain(players) => self.exhaust_again.extend(players),
             Rule::UntapLimit { who, what, count } => {
                 if let Some(source) = source {
@@ -1740,6 +1718,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             keyword: keyword.clone(),
         },
         GameRule::CantDraw(who) => Rule::CantDraw(scope.players(who)?),
+        GameRule::DrawFromBottom(who) => Rule::DrawFromBottom(scope.players(who)?),
         GameRule::CantSearch(who) => Rule::CantSearch(scope.players(who)?),
         GameRule::OwnSpellsCantSearch(who) => Rule::OwnSpellsCantSearch(scope.players(who)?),
         GameRule::ManaProduced { what, who, change } => Rule::ManaProduced {
@@ -1847,10 +1826,6 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         | GameRule::AbilitiesAsThoughHaste(_)
         | GameRule::UntapDuring { .. } => lower_option(scope, wanted)?,
         GameRule::LookAtTopAnyTime(who) => Rule::LookAtTop(scope.players(who)?),
-        GameRule::R6007NoUntapDuring { what, whose } => Rule::R6007NoUntapDuring {
-            what: what.clone(),
-            whose: scope.players(whose)?,
-        },
         GameRule::UntapLimit { who, what, count } => Rule::UntapLimit {
             who: scope.players(who)?,
             what: what.clone(),
@@ -1888,7 +1863,6 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 .collect(),
         ),
         GameRule::SkipDrawStep(who) => Rule::SkipDrawStep(scope.players(who)?),
-        GameRule::R6007DrawFromBottom(who) => Rule::R6007DrawFromBottom(scope.players(who)?),
         GameRule::R6007ExhaustAgain(who) => Rule::R6007ExhaustAgain(scope.players(who)?),
         GameRule::AdditionalLandPlays { who, count } => {
             let count = u32::try_from(scope.amount(count)?.max(0)).unwrap_or(u32::MAX);
@@ -2018,6 +1992,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::RadiationGainsLife(players)
         | Rule::LifeTotalCantChange(players)
         | Rule::CantDraw(players)
+        | Rule::DrawFromBottom(players)
         | Rule::CantSearch(players)
         | Rule::OwnSpellsCantSearch(players)
         | Rule::VoteAgain(players)
@@ -2039,7 +2014,6 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::ExileFound(players)
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
-        | Rule::R6007DrawFromBottom(players)
         | Rule::R6007ExhaustAgain(players)
         | Rule::NoLegendRule(players)
         | Rule::NoMaxHandSize(players)
@@ -2052,9 +2026,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::MaxHandSize(sizes) => sizes.is_empty(),
         Rule::LoyaltyCostsMore(more) => more.iter().all(|(_, plus)| *plus == 0),
         Rule::HandSizeChange(changes) => changes.is_empty(),
-        Rule::UntapDuring { whose, .. } | Rule::R6007NoUntapDuring { whose, .. } => {
-            whose.is_empty()
-        }
+        Rule::UntapDuring { whose, .. } => whose.is_empty(),
         Rule::AttackLimitAt { at, .. } => at.is_empty(),
         Rule::AdditionalLandPlays(plays) => plays.iter().all(|(_, count)| *count == 0),
         Rule::LookAtExiled { who, only, .. } | Rule::MayCast { who, only, .. } => {
@@ -2212,6 +2184,7 @@ static NONE: RulesInForce = RulesInForce {
     no_life_change: BTreeSet::new(),
     player_keywords: Vec::new(),
     no_draw: BTreeSet::new(),
+    draw_bottom: BTreeSet::new(),
     no_search: BTreeSet::new(),
     no_own_search: BTreeSet::new(),
     mana: Vec::new(),
@@ -2242,7 +2215,6 @@ static NONE: RulesInForce = RulesInForce {
     loyalty_any_time: BTreeSet::new(),
     loyalty_more: BTreeMap::new(),
     skip_draw: BTreeSet::new(),
-    draw_bottom: BTreeSet::new(),
     exhaust_again: BTreeSet::new(),
     look_top: BTreeSet::new(),
     extra_lands: BTreeMap::new(),
@@ -2253,7 +2225,6 @@ static NONE: RulesInForce = RulesInForce {
     no_legend_for: Vec::new(),
     haste_for_abilities: Vec::new(),
     untap_during: Vec::new(),
-    no_untap: Vec::new(),
     untap_limits: Vec::new(),
     unpreventable: Vec::new(),
     casts: Vec::new(),
@@ -2682,6 +2653,11 @@ pub fn cant_draw(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_draw.contains(&player)
 }
 
+/// Whether `player` draws from the bottom of their library: the one place a draw reads this rule.
+pub(crate) fn draws_from_bottom(state: &GameState, player: PlayerId) -> bool {
+    state.rules().draw_bottom.contains(&player)
+}
+
 /// Whether `player` may activate an exhaust ability of theirs that was activated before: a rule in force says so, it is
 /// their turn and they haven't activated an exhaust ability this turn (Elvish Refueler).
 pub(crate) fn r6007_exhaust_again(state: &GameState, player: PlayerId) -> bool {
@@ -2696,32 +2672,14 @@ pub(crate) fn r6007_exhaust_again(state: &GameState, player: PlayerId) -> bool {
         })
 }
 
-/// Whether the limit `limit` of an ability `player` activates is spent, but for an exhaust ability (once each game)
-/// `player` may activate again.
+/// Whether the limit `limit` of an ability `player` activates holds: an exhaust ability (once each game) does not hold
+/// `player` back while they may activate exhaust abilities again.
 pub(crate) fn r6007_limit_holds(
     state: &GameState,
     player: PlayerId,
     limit: mtg_cards::ability::Limit,
 ) -> bool {
     !(limit == mtg_cards::ability::Limit::OncePerGame && r6007_exhaust_again(state, player))
-}
-
-/// Whether `player` draws from the bottom of their library: the one place a draw reads which end it takes.
-pub(crate) fn r6007_draws_from_bottom(state: &GameState, player: PlayerId) -> bool {
-    state.rules().draw_bottom.contains(&player)
-}
-
-/// The card `player` would draw next from `library` (bottom first, top last): the top, or the bottom under River Song.
-pub(crate) fn r6007_next_draw(
-    state: &GameState,
-    player: PlayerId,
-    library: &[mtg_core::ids::ObjectId],
-) -> Option<mtg_core::ids::ObjectId> {
-    if r6007_draws_from_bottom(state, player) {
-        library.first().copied()
-    } else {
-        library.last().copied()
-    }
 }
 
 /// Whether `player` skips their draw step: the one place the turn's steps read this rule.
@@ -3222,34 +3180,6 @@ pub(crate) fn untap_during(state: &GameState, active: PlayerId) -> Vec<ObjectId>
         }
     }
     found
-}
-
-/// Whether a rule in force holds `id` down during the untap step of one of `actives`, whoever controls it.
-pub(crate) fn r6007_held_down(state: &GameState, actives: &[PlayerId], id: ObjectId) -> bool {
-    let Some(object) = state.object(id) else {
-        return false;
-    };
-    state
-        .rules()
-        .no_untap
-        .iter()
-        .filter(|rule| rule.whose.iter().any(|whose| actives.contains(whose)))
-        .any(|rule| {
-            Scope::announcing(state, rule.controller, rule.source)
-                .selects(&rule.what, object.reference())
-                .unwrap_or(false)
-        })
-}
-
-/// The expiries of the rules that hold permanents down through the next untap step of `active`: this step uses them up.
-pub(crate) fn r6007_untap_spent(state: &GameState, active: PlayerId) -> Vec<crate::events::Event> {
-    state
-        .rule_effects()
-        .iter()
-        .filter(|effect| effect.duration == mtg_cards::modify::Duration::NextUntapStep)
-        .filter(|effect| matches!(&effect.rule, Rule::R6007NoUntapDuring { whose, .. } if whose.contains(&active)))
-        .map(|effect| crate::events::Event::RuleExpired { id: effect.id })
-        .collect()
 }
 
 /// The triggers that trigger an additional time: the one place trigger detection reads this rule.

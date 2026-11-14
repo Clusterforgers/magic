@@ -40,7 +40,7 @@ The 5 s server deadline rules out deep full-game search per decision; the levels
 - **Opening book** (`brain/choices.rs`): seven-card hands keep three to five lands, or two with a spell of mana value two or less; smaller hands keep two to their size less two.
 - **Search** (Normal, Hard): plays, attacks, blocks and targets are simulated on engine copies with quick policies for every seat and scored by the shared evaluation. Responses settle the whole stack (counter wars), combat plays run to the end of the turn (pumps wear off before scoring). In rollouts a seat holding a counterspell counters an opposing spell that threatens more than the counter's hold value, so opponents keeping mana up are modelled as holding interaction when their redealt hands have it.
 - **Endgame** (Hard, Very Hard; `brain/endgame.rs`): with an opponent within reach of the seat's creatures and burn, each answer worth trying is played to the end of the turn in three redealt worlds, and one that wins in all of them is played at once.
-- **ISMCTS** (Hard with `Deep::LIGHT`, Very Hard with `Deep::FULL`): one tree over redealt worlds per decision with the heuristic answer first, the same evaluation at the cut-off, and the policy's tap-out costs charged to the root answers. Iterations cycle through 32 fixed worlds (common random numbers, so answers are compared in the same deals); an opponent's blocks are a minimizing node of the tree (the paranoid reply of max^n, sound because blocks read only the public board); at a table of more than two a rollout plays once round the table, so every crack back is seen. Root answers that do the same thing are merged, answers clearly below the best are pruned, untried answers come in the history's order, and the search budget follows the decision's importance (`brain/clock.rs`). The tree's favourite replaces the heuristic answer only when its mean reward is 0.05 plus one standard error of the difference higher.
+- **ISMCTS** (Hard with `Deep::LIGHT`, Very Hard with `Deep::FULL`): one tree over redealt worlds per decision with the heuristic answer first, the same evaluation at the cut-off, and the policy's tap-out costs charged to the root answers. Iterations cycle through 32 fixed worlds (common random numbers, so answers are compared in the same deals); an opponent's blocks, and an opponent's counterspell reply to the seat's spell when its redealt hand holds one, are minimizing nodes of the tree (the paranoid reply of max^n: opponents are assumed to block well and counter with open mana); a node belongs to the seat that first chose there, and another seat's choice passes it by; at a table of more than two a rollout plays once round the table, so every crack back is seen. Rollouts judge each seat's main-phase casts (`Search::judged`): each of the four costliest castable spells is cast on a copy, the stack settled with the opponents' counters, and the best that beats keeping the cards is played, for the seat and its opponents alike. Root answers that do the same thing are merged, answers clearly below the best are pruned, untried answers come in the history's order, and the search budget follows the decision's importance (`brain/clock.rs`: up to three times the level's budget with lethal in reach, 2.5 times over an opposing spell worth answering, 1.5 times for combat and big spells, 0.5 to 0.6 times for small plays and end steps). The search has authority: its favourite replaces the heuristic answer when its mean reward is one standard error of the difference higher (`Deep::trust` 0, `Deep::doubt` 1), which it does in about a fifth of its searches. Where rollouts see least the margin grows by `Deep::guard` (0.05): spending interaction the heuristics keep (a counter, a fog, removal in a response, combat or end step) and attacks at a table of more than two. An attack that dies to the crack back is vetoed when the heuristic's does not, and the ramp bonus (`priority::ramp_bonus`) is charged to the root answers with the tap-out costs.
 - **Tuning** (`brain/knobs.rs`, `eval::Terms`): the policy constants and evaluation weights are parameters; Texel tuning (`examples/eval_tune.rs`) and SPSA (`examples/spsa_tune.rs`) fit them, and a fit is kept only when it wins matches without losing suite cases.
 
 ## Decision-quality suite
@@ -51,7 +51,9 @@ The 5 s server deadline rules out deep full-game search per decision; the levels
 
 - **Match testing** (`examples/bot_tournament.rs`): each deal is played twice with the sides swapped, so identical brains score exactly 50%; `DECKS=interaction` plays every pairing of an interaction deck (`Duel::INTERACTION`: Izzet, Dimir, Azorius) with every duel deck; `SPRT=elo0,elo1` stops at 5% error rates; the summary gives the Elo difference with its 95% interval and the longest answer. `old-<level>` plays main's brains, frozen in `examples/legacy_brain`.
 - **Benchmark**: the decision-quality suite (`bot_suite`), as a fixed position set.
-- **Clock**: `tests/game/brain_clock.rs` plays timed Hard and Very Hard games on the interaction decks and asserts every answer ends within the 5 s deadline.
+- **Pods**: mode `pod` seats four players, two of each side alternating, so equal brains score 50%; `cpod` deals random Commander decks (`commander_cards::commander_fuzz_setup`).
+- **Overrides**: the tournament reports the tree searches, how many replaced the heuristic answer (`deep::tally`) and the score of the games with an override.
+- **Clock**: `tests/game/brain_clock.rs` plays timed Hard and Very Hard games on the interaction decks and asserts every answer ends within the 4.5 s cap (`clock::DECISION_CAP`); a search keeps 0.3 s of it in hand.
 
 ## Measured
 
@@ -64,16 +66,21 @@ Decision-quality suite (66 cases, untimed, seed 7):
 | Hard | 97% | 97% |
 | Very Hard | 92% | 97% |
 
-Seeded 1v1 games against main's brains of the same level on the interaction pairings, untimed (Elo with its 95% interval):
+Seeded games against main's brains of the same level on the interaction pairings, untimed, each deal played with the sides swapped (Elo with its 95% interval; SPRT with elo0 0, elo1 40 at 5% errors):
 
-| Level | Games | Score | Elo |
-| --- | --- | --- | --- |
-| Normal | 960 | 50.1% | +1 [-21, +23] |
-| Hard | 204 | 51.5% | +10 [-38, +59] |
-| Very Hard | 64 | 50.0% | +0 [-87, +87] |
+| Level | Mode | Games | Score | Elo | SPRT |
+| --- | --- | --- | --- | --- | --- |
+| Normal | 1v1 | 960 | 50.1% | +1 [-21, +23] | |
+| Hard | 1v1 | 232 | 59.1% | +64 [+19, +110] | H1 accepted |
+| Very Hard | 1v1 | 121 | 49.6% | -3 [-66, +60] | undecided |
+| Hard | pod | 82 | 56.1% | +43 [-32, +122] | undecided |
+
+A pod seats four players, two of each side. The build without the guard and the crack-back veto scored 58.4% over 219 games for Hard and 54.0% over 150 (+28 [-28, +85]) for Very Hard in 1v1, and 54.5% over 99 games for Hard in pods.
+
+Search authority on Hard, 256 games each against main's Hard on the same deals: the former margin (0.05 plus a standard error) overrides 4.7% of the searches and scores 51.6%; a standard error alone overrides 19% and scores 53.9%; with the importance budget and counter replies in the tree 55.9%; most of the deals (75 to 80%) are split, each side winning from the same seat. Judged rollouts score the same as cast-the-costliest (53.9% both) at the same cost and are kept as the opponent model. 400 iterations for Hard instead of 150 scored 51% over 82 games at three times the cost.
 
 Normal with Hard's former searches scores 59.6% against main's Normal (480 games, +67 Elo) but aims a Pacifism at its own team in Two-Headed Giant, so Normal keeps main's settings.
 
-The longest timed answer is 3.5 s (Very Hard, interaction decks, a loaded machine), under the 4.5 s cap; the clock test asserts 5 s.
+The longest timed answer stays under the 4.5 s cap, which the clock test asserts (`brain_clock`); the suite's longest Very Hard answer is 3.8 s.
 
-Tuning: Texel fitting of the evaluation's terms on 47,000 positions from 1,000 Hard games lowers the held-out loss from 0.231 to 0.184 but plays even (50.4% in 240 games); SPSA over the 32 policy constants and weights (430 rounds of 16 games) gains +4 Elo on the interaction pairings and +17 on all pairings, within noise, and loses five suite cases, so the hand-set values stay. The suite's judgement (counters held for threats, blocks against the crack back) shows little in bot-against-bot win rates: both sides share the same rollout policy, so most games turn on the same plays.
+Tuning: `eval_tune` with `DECKS=interaction` fits the evaluation's terms on 21,218 positions from 600 Normal self-play games and lowers the held-out loss from 0.229 to 0.188 at K = 60, with weights far from the hand-set ones (lethal_for 39, early_source 37, lethal_against 36, card 27); they wait for a match test, so the hand-set weights stay. `PODS=<n>` adds Commander pods; a pod of seed 51405 loops a choice question at turn 44. Earlier, Texel fitting of the evaluation's terms on 47,000 positions from 1,000 Hard games lowers the held-out loss from 0.231 to 0.184 but plays even (50.4% in 240 games); SPSA over the 32 policy constants and weights (430 rounds of 16 games) gains +4 Elo on the interaction pairings and +17 on all pairings, within noise, and loses five suite cases, so the hand-set values stay. The suite's judgement (counters held for threats, blocks against the crack back) shows little in bot-against-bot win rates: both sides share the same rollout policy, so most games turn on the same plays.

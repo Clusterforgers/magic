@@ -69,7 +69,7 @@ pub(super) fn run(cx: &Cx<'_>, who: &Ref, alternatives: &[Cost]) -> Result<Run, 
         };
         match settle(cx, player, price, &mut journal)? {
             Settled::Ask(decision) => return Ok(Run::Ask(decision)),
-            Settled::Paid(events) => {
+            Settled::Paid(events, _) => {
                 paid = Some(events);
                 break;
             }

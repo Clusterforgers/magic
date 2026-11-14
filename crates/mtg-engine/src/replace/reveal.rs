@@ -1,6 +1,5 @@
 //! A permanent that enters tapped unless its controller reveals a card from their hand ("As this land enters, you may
-//! reveal an Elemental card from your hand. If you don't, this land enters tapped."), or beholds one: a permanent they
-//! control or a card of their hand ("you may behold a Jace").
+//! reveal an Elemental card from your hand. If you don't, this land enters tapped.").
 
 use mtg_cards::refs::{Pred, Selector, ZoneKind};
 use mtg_cards::value::CounterKind;
@@ -17,7 +16,7 @@ use crate::zones::Zone;
 
 impl Pass<'_> {
     /// The cards of `controller`'s hand that `of` names; to behold, also the permanents they control that it names
-    /// (the selector names the battlefield, and the hand is added to it).
+    /// (a beheld permanent is chosen, a beheld card is revealed).
     fn revealable(
         &self,
         candidate: &Candidate,
@@ -26,38 +25,27 @@ impl Pass<'_> {
     ) -> Result<Vec<ObjectId>, EngineError> {
         let scope = Scope::announcing(self.state, candidate.controller, candidate.object);
         let mut found: Vec<ObjectId> = Vec::new();
+        let mut selectors = vec![of.clone()];
         if behold {
             let mut in_hand = of.clone();
             in_hand.0.push(Pred::In(ZoneKind::Hand));
-            for named in scope
-                .matching(of)?
-                .into_iter()
-                .chain(scope.matching(&in_hand)?)
-            {
-                let id = named.id;
-                let mine = self.state.object(id).is_some_and(|card| {
-                    card.zone() == Zone::Hand(controller)
-                        || (card.zone() == Zone::Battlefield
-                            && crate::characteristics::controller_of(self.state, id)
-                                == Some(controller))
-                });
-                if mine && !found.contains(&id) && id != candidate.object.id {
-                    found.push(id);
+            selectors = vec![of.clone(), in_hand];
+        }
+        for selector in &selectors {
+            for named in scope.matching(selector)? {
+                let Some(card) = self.state.object(named.id) else {
+                    continue;
+                };
+                let held = card.zone() == Zone::Hand(controller);
+                let on_battlefield = behold
+                    && card.zone() == Zone::Battlefield
+                    && card.controller() == controller
+                    && named.id != candidate.object.id;
+                if (held || on_battlefield) && !found.contains(&named.id) {
+                    found.push(named.id);
                 }
             }
-            return Ok(found);
         }
-        found.extend(
-            scope
-                .matching(of)?
-                .into_iter()
-                .map(|named| named.id)
-                .filter(|id| {
-                    self.state
-                        .object(*id)
-                        .is_some_and(|card| card.zone() == Zone::Hand(controller))
-                }),
-        );
         Ok(found)
     }
 
@@ -113,6 +101,7 @@ impl Pass<'_> {
                     max: 1,
                     text: "Choose the card to reveal.".into(),
                     can_cancel: false,
+                    total: None,
                     groups: Vec::new(),
                 }),
             })),
@@ -129,8 +118,9 @@ impl Pass<'_> {
         }
     }
 
-    /// The permanent `object` enters tapped unless `controller` reveals a card of their hand that `of` names; the reveal
-    /// is an event that every seat sees, placed before the entering.
+    /// The permanent `object` enters tapped unless `controller` reveals a card of their hand that `of` names (or, to
+    /// behold, chooses a permanent they control that it names); the reveal is an event that every seat sees, placed
+    /// before the entering, and a beheld permanent is chosen without one.
     pub(super) fn reveal_or_tapped(
         &mut self,
         at: usize,
@@ -150,12 +140,12 @@ impl Pass<'_> {
                 Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
                 Asked::Got(card) => card,
             };
-            // A permanent beheld is only chosen: nothing is revealed and the entering stays as it is.
             let in_hand = self
                 .state
                 .object(card)
-                .is_some_and(|card| card.zone() == Zone::Hand(controller));
+                .is_some_and(|it| it.zone() == Zone::Hand(controller));
             if !in_hand {
+                // A beheld permanent is only chosen: the land enters untapped and nothing is revealed.
                 self.slots[at].applied = applied;
                 return Ok(Applied::Done);
             }

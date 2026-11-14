@@ -197,6 +197,33 @@ pub fn plan_priority(
     best.map_or(PriorityAction::Pass, |(_, play)| play)
 }
 
+/// The knob `ramp` per mana source `play` adds in the main phase while the seat has fewer than the knob `ramp_until`
+/// (simulated until the stack settles): what the policy knows about developing mana first, for the tree search's root
+/// answers. 0 outside the main phase or when nothing can be simulated.
+pub fn ramp_bonus(
+    search: &mut Search,
+    engine: &Engine,
+    window: Window,
+    play: &PriorityAction,
+) -> f64 {
+    let knobs = super::knobs::knobs();
+    if window != Window::Main || !matches!(play, PriorityAction::CastSpell(_)) {
+        return 0.0;
+    }
+    let pass = Answer::Priority(PriorityAction::Pass);
+    let Some(before) = search.outcome(engine, pass, Horizon::Settle) else {
+        return 0.0;
+    };
+    if count(before.sources) >= knobs.ramp_until {
+        return 0.0;
+    }
+    search
+        .outcome(engine, Answer::Priority(play.clone()), Horizon::Settle)
+        .map_or(0.0, |after| {
+            knobs.ramp * count(after.sources.saturating_sub(before.sources))
+        })
+}
+
 /// The share of held interaction's worth that tapping below it loses: a counterspell only works in reply, so all of
 /// it; removal and tricks can still be cast on the seat's own turn, so a quarter.
 fn reactive(share: f64) -> f64 {

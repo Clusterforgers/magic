@@ -368,7 +368,7 @@ fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
         return reveal_or_tapped(r);
     }
     if r.words("you may behold") {
-        return r6007_behold_or_tapped(r);
+        return r5508_behold_or_tapped(r);
     }
     r.need("you may pay")?;
     let life = r.number().filter(|life| *life > 0)?;
@@ -381,8 +381,8 @@ fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
 }
 
 /// "a Jace. If you don't, ~ enters tapped.": a land that enters tapped unless its controller beholds a permanent or card
-/// of the kind (Theorist's Sanctum).
-fn r6007_behold_or_tapped(r: &mut Reader<'_>) -> Option<Ability> {
+/// of the kind (chooses one they control or reveals one from their hand).
+fn r5508_behold_or_tapped(r: &mut Reader<'_>) -> Option<Ability> {
     (r.word("a") || r.word("an")).then_some(())?;
     let of = phrase(r, Form::Subject)?;
     (!of.0.iter().any(|pred| matches!(pred, Pred::In(_)))).then_some(())?;
@@ -391,7 +391,7 @@ fn r6007_behold_or_tapped(r: &mut Reader<'_>) -> Option<Ability> {
     r.punct(',').then_some(())?;
     (r.source() || r.word("it")).then_some(())?;
     r.need("enters tapped")?;
-    Some(replacement(ReplaceBy::R6007BeholdOrTapped(of), None))
+    Some(replacement(ReplaceBy::BeholdOrTapped(of), None))
 }
 
 /// "a Faerie card from your hand. If you don't, ~ enters tapped.": a land that enters tapped unless its controller reveals
@@ -725,9 +725,6 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     }
     if r.words("skip your draw step") {
         return Some(GameRule::SkipDrawStep(Ref::You));
-    }
-    if r.words(R6007_FROM_BOTTOM) {
-        return Some(GameRule::R6007DrawFromBottom(Ref::You));
     }
     if r.words(R6007_EXHAUST_AGAIN) {
         return Some(GameRule::R6007ExhaustAgain(Ref::You));
@@ -1702,7 +1699,7 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
             "As ~ enters, you may pay {life} life. If you don't, it enters tapped"
         )],
         (ReplaceBy::RevealOrTapped(of), None) => reveal_texts(of),
-        (ReplaceBy::R6007BeholdOrTapped(of), None) => r6007_behold_texts(of),
+        (ReplaceBy::BeholdOrTapped(of), None) => r5508_behold_texts(of),
         (ReplaceBy::PayOrGraveyard { cost, optional }, None) => {
             super::e14b_entering::pay_or_graveyard_texts(cost, *optional)
         }
@@ -1955,10 +1952,6 @@ fn ep27_rule_texts(
     }
 }
 
-/// "You draw cards from the bottom of your library rather than the top." (River Song), lowercase.
-const R6007_FROM_BOTTOM: &str =
-    "you draw cards from the bottom of your library rather than the top";
-
 /// The rule of Elvish Refueler, lowercase.
 const R6007_EXHAUST_AGAIN: &str = "during your turn, as long as you haven't activated an exhaust ability this turn, you may activate exhaust abilities as though they haven't been activated";
 
@@ -1978,11 +1971,6 @@ fn player_rule_texts(rule: &GameRule) -> Option<Vec<String>> {
             text
         }
         GameRule::SkipDrawStep(Ref::You) => "Skip your draw step".to_owned(),
-        GameRule::R6007DrawFromBottom(Ref::You) => {
-            let mut text = R6007_FROM_BOTTOM.to_owned();
-            text[..1].make_ascii_uppercase();
-            text
-        }
         GameRule::R6007ExhaustAgain(Ref::You) => {
             let mut text = R6007_EXHAUST_AGAIN.to_owned();
             text[..1].make_ascii_uppercase();
@@ -2046,6 +2034,7 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
         (
             GameRule::CantSearch(_)
             | GameRule::OwnSpellsCantSearch(_)
+            | GameRule::DrawFromBottom(_)
             | GameRule::SkipExtraTurns(_)
             | GameRule::FlipTwoCoins(_)
             | GameRule::ExtraDie(_)
@@ -2614,22 +2603,6 @@ pub(super) fn predicate(
     (!parts.is_empty()).then(|| parts.join(" and "))
 }
 
-/// "As ~ enters, you may behold a Jace. If you don't, ~ enters tapped", with "it" as well.
-fn r6007_behold_texts(of: &Selector) -> Vec<String> {
-    let Some(what) = phrase_text(of, Form::Subject) else {
-        return Vec::new();
-    };
-    let article = article(&what);
-    ["~", "it"]
-        .into_iter()
-        .map(|tail| {
-            format!(
-                "As ~ enters, you may behold {article} {what}. If you don't, {tail} enters tapped"
-            )
-        })
-        .collect()
-}
-
 /// "As ~ enters, you may reveal a Faerie card from your hand. If you don't, ~ enters tapped".
 fn reveal_texts(of: &Selector) -> Vec<String> {
     let Some(card) = phrase_text(of, Form::Subject) else {
@@ -2641,6 +2614,22 @@ fn reveal_texts(of: &Selector) -> Vec<String> {
         .map(|tail| {
             format!(
                 "As ~ enters, you may reveal {article} {card}. If you don't, {tail} enters tapped"
+            )
+        })
+        .collect()
+}
+
+/// "As ~ enters, you may behold a Jace. If you don't, ~ enters tapped".
+fn r5508_behold_texts(of: &Selector) -> Vec<String> {
+    let Some(what) = phrase_text(of, Form::Subject) else {
+        return Vec::new();
+    };
+    let article = article(&what);
+    ["~", "it"]
+        .into_iter()
+        .map(|tail| {
+            format!(
+                "As ~ enters, you may behold {article} {what}. If you don't, {tail} enters tapped"
             )
         })
         .collect()

@@ -102,14 +102,8 @@ fn r6007_probe() {
 }
 
 #[rstest]
-#[case("Blinding Beam")]
 #[case("Breathstealer's Crypt")]
 #[case("Zur's Weirding")]
-#[case("River Song")]
-#[case("Theorist's Sanctum")]
-#[case("Way of the Mind Sculptor")]
-#[case("Destined Confrontation")]
-#[case("Slaughter the Strong")]
 #[case("Elvish Refueler")]
 #[case("Dragon's Disciple")]
 fn r6007_reads_back_whole(#[case] name: &str) {
@@ -124,7 +118,6 @@ fn r6007_reads_back_whole(#[case] name: &str) {
 
 /// Cards that stay `Partial` read back clause by clause but for their `Manual` clauses.
 #[rstest]
-#[case("Jace, Reality Sculptor", 1)]
 #[case("Illithid Harvester // Plant Tadpoles", 1)]
 fn r6007_reads_back_but_the_manual_clauses(#[case] name: &str, #[case] manual: usize) {
     let report = r6007_report(name, &r6007_file(name));
@@ -145,14 +138,6 @@ fn r6007_reads_back_but_the_manual_clauses(#[case] name: &str, #[case] manual: u
 }
 
 #[rstest]
-#[case::beam_your_creatures("Blinding Beam", r#""whose": { "Target": 0 }"#, r#""whose": "You""#)]
-#[case::beam_lands(
-    "Blinding Beam",
-    r#""what": [{ "Type": "Creature" }],
-                                "whose""#,
-    r#""what": [{ "Type": "Land" }],
-                                "whose""#
-)]
 #[case::crypt_two_life("Breathstealer's Crypt", r#""PayLife": 3"#, r#""PayLife": 2"#)]
 #[case::crypt_lands(
     "Breathstealer's Crypt",
@@ -160,24 +145,6 @@ fn r6007_reads_back_but_the_manual_clauses(#[case] name: &str, #[case] manual: u
     r#"[{ "Type": "Land" }]"#
 )]
 #[case::weirding_three_life("Zur's Weirding", r#""PayLife": 2"#, r#""PayLife": 3"#)]
-#[case::river_song_top(
-    "River Song",
-    r#""R6007DrawFromBottom": "You""#,
-    r#""R6007DrawFromBottom": "Opponents""#
-)]
-#[case::river_song_you_scry(
-    "River Song",
-    r#""action": "Scried", "who": "Opponents""#,
-    r#""action": "Scried", "who": "You""#
-)]
-#[case::sanctum_dragon(
-    "Theorist's Sanctum",
-    r#""R6007BeholdOrTapped": [{ "Subtype": "Jace" }]"#,
-    r#""R6007BeholdOrTapped": [{ "Subtype": "Dragon" }]"#
-)]
-#[case::sanctum_three("Theorist's Sanctum", r#""count": 2"#, r#""count": 3"#)]
-#[case::way_one_counter("Way of the Mind Sculptor", r#""right": 2"#, r#""right": 1"#)]
-#[case::destined_five("Destined Confrontation", r#""most": 4"#, r#""most": 5"#)]
 #[case::refueler_opponents(
     "Elvish Refueler",
     r#""R6007ExhaustAgain": "You""#,

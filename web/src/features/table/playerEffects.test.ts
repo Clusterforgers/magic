@@ -15,7 +15,6 @@ const EVERY: PlayerEffect[] = [
   { LifeFloor: 1 },
   'CantDraw',
   'SkipsDrawStep',
-  'DrawsFromBottom',
   'CantSearch',
   'SkipsExtraTurns',
   'NoMaxHandSize',

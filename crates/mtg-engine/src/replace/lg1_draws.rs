@@ -57,9 +57,8 @@ pub(super) fn lg1_sequential_draws(state: &GameState, events: &mut [Event]) {
 fn lg1_step(state: &mut GameState, event: &Event) -> Event {
     let event = match event {
         Event::CardDrawn { player, .. } | Event::DrewFromEmptyLibrary { player } => {
-            match crate::rules::r6007_next_draw(state, *player, state.zone(Zone::Library(*player)))
-            {
-                Some(object) => Event::CardDrawn {
+            match state.zone(Zone::Library(*player)).last() {
+                Some(&object) => Event::CardDrawn {
                     player: *player,
                     object,
                 },
