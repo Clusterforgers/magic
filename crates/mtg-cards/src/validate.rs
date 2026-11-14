@@ -286,6 +286,15 @@ fn w9c_token_pred(pred: &Pred) -> bool {
     }
 }
 
+/// Whether a `Pay` step's cost is life alone ("unless they pay 3 life", "any other player may pay 2 life").
+fn r6007_life_only(pay: &serde_json::Value) -> bool {
+    pay.get("cost")
+        .and_then(serde_json::Value::as_array)
+        .is_some_and(|items| {
+            !items.is_empty() && items.iter().all(|item| item.get("PayLife").is_some())
+        })
+}
+
 /// The shapes of steps the engine cannot run in the middle of an event, at any depth, named as the primitive each one
 /// is (`ReplaceBy.Instead.<shape>`): modes chosen as a spell is put on the stack (`Modal`), a step that waits for its
 /// own events to be applied (`Amass`, `Incubate`, a flip or clash until a loss: `Waits`), a spell cast (`Casts`) and a
@@ -301,6 +310,8 @@ fn w5d_skipped(effects: &[Effect]) -> BTreeSet<&'static str> {
                         "Amass" | "Incubate" => Some("Instead.Waits"),
                         "FlipCoin" | "Clash" if until => Some("Instead.Waits"),
                         "CastFromZone" => Some("Instead.Casts"),
+                        // A payment of life alone asks a yes or no, which the replacement asks as it applies.
+                        "Pay" if r6007_life_only(inner) => Some("Instead.PaysLife"),
                         "Pay" => Some("Instead.Pays"),
                         _ => None,
                     };

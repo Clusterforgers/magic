@@ -44,11 +44,12 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             if let Ability::Activated {
                 limit: Some(limit), ..
             } = &*rules
-                && crate::rules::r6007_limit_holds(state, *player, *limit)
                 && !match crate::r4701_boast::r4701_boast_most(state, source.id, &rules) {
                     Some(most) => state.r4701_spend_boast(most, *source, *origin, *ability),
                     None => state.spend_limit(*limit, *source, *origin, *ability),
                 }
+                // An exhaust ability activated again under Elvish Refueler finds its use spent already.
+                && crate::rules::r6007_limit_holds(state, *player, *limit)
             {
                 return Err(invalid(format!(
                     "ability {ability} of {source:?} was already used"

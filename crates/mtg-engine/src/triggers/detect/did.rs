@@ -522,15 +522,19 @@ fn activated(
         .as_deref()
         .map(Action::activation_kinds)
         .unwrap_or_default();
-    let loyalty = rules.is_some_and(|rules| matches!(*rules, Ability::Loyalty { .. }));
+    let loyalty = matches!(rules.as_deref(), Some(Ability::Loyalty { .. }));
     let eternalize = matches!(
         ability_reader::keyword_adding(pre, address),
         Some(mtg_cards::keyword::Keyword::Eternalize(_) | mtg_cards::keyword::Keyword::Embalm(_))
     );
-    let removed = if loyalty {
-        r6007_loyalty_removed(pre, post, source)
-    } else {
-        0
+    let removed = match rules.as_deref() {
+        Some(Ability::Loyalty { cost, .. }) => {
+            let x = on_stack
+                .and_then(|id| post.object(id))
+                .and_then(|object| object.choices().x);
+            r6007_loyalty_removed(*cost, x, crate::rules::loyalty_costs_more(pre, player))
+        }
+        _ => 0,
     };
     [Action::Activated, Action::ActivatedAny]
         .into_iter()
@@ -554,17 +558,11 @@ fn activated(
         .collect()
 }
 
-/// The loyalty counters the cost of an activation removed from `source`: they are paid in the batch that logs it.
-fn r6007_loyalty_removed(pre: &GameState, post: &GameState, source: ObjectId) -> u32 {
-    let loyalty = |state: &GameState| {
-        state
-            .object(source)
-            .and_then(crate::object::GameObject::permanent)
-            .map_or(0, |permanent| {
-                permanent.counters_of(&mtg_cards::value::CounterKind::Loyalty)
-            })
-    };
-    loyalty(pre).saturating_sub(loyalty(post))
+/// The loyalty counters a loyalty cost removed as it was paid: none for a cost that adds counters.
+fn r6007_loyalty_removed(cost: mtg_cards::ability::LoyaltyCost, x: Option<u32>, more: u32) -> u32 {
+    crate::loyalty::paid_change_with(cost, x, more)
+        .filter(|change| *change < 0)
+        .map_or(0, i32::unsigned_abs)
 }
 
 /// "Whenever a creature you control exploits a non-Human creature": the action when the creature sacrificed was not a

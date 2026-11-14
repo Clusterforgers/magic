@@ -37,7 +37,8 @@ fn r6007_settle(driver: &mut Driver, yes: bool) -> Result<(), ScriptError> {
         let state = driver.state();
         let busy = !state.stack().is_empty() || !state.pending_triggers().is_empty();
         match &driver.decision()?.kind {
-            DecisionKind::YesNo(_) => {
+            DecisionKind::YesNo(options) => {
+                let yes = yes && !options.only_no;
                 driver.answer(Answer::YesNo(YesNoChoice(yes)))?;
             }
             DecisionKind::Priority(_) if busy => {
@@ -258,11 +259,19 @@ fn r6007_theorists_sanctum_enters_tapped_unless_a_jace_is_beheld(
         scenario = scenario.hand(0, [card("Theorist's Sanctum").unwrap(), jace_card()]);
     }
     if jace == 2 {
-        scenario = scenario.battlefield(0, [ready(jace_card())]);
+        scenario = scenario.battlefield(
+            0,
+            [with_counters(ready(jace_card()), CounterKind::Loyalty, 3)],
+        );
     }
     let mut driver = Driver::from_scenario(scenario)?;
     driver.play_land("Theorist's Sanctum")?;
     r6007_settle(&mut driver, behold)?;
+    if std::env::var("R6007_DEBUG").is_ok() {
+        for event in driver.engine().events() {
+            println!("{event:?}");
+        }
+    }
     let id = driver.id_of("Theorist's Sanctum")?;
     let entered_tapped = driver
         .state()
@@ -299,6 +308,11 @@ fn r6007_way_of_the_mind_sculptor_draws_for_two_or_more_removed(
     let mut driver = Driver::from_scenario(scenario)?;
     driver.begin_ability("Jace, Reality Sculptor", ability)?;
     r6007_settle(&mut driver, true)?;
+    if std::env::var("R6007_DEBUG").is_ok() {
+        for event in driver.engine().events() {
+            println!("{event:?}");
+        }
+    }
     // The +1 empowers a new Jace token with the Islands (none); the -3 waits for an attack.
     assert_eq!(r6007_hand(&driver, 0).len(), draws);
     r6007_replays(&driver);
@@ -341,18 +355,18 @@ fn r6007_each_player_keeps_creatures_with_total_power_four_or_less(
 ) -> Result<(), ScriptError> {
     let mut scenario = Scenario::new(seats)
         .at(3, 0, Step::Main1)
-        .hand(0, [card(name).unwrap()])
-        .battlefield(0, [(); 4].map(|()| ready(plains())));
+        .hand(0, [card(name).unwrap()]);
     for seat in 0..seats {
-        scenario = scenario.battlefield(
-            seat,
-            [
-                ready(free_creature(&format!("Big {seat}"), 3, 3)),
-                ready(free_creature(&format!("Mid {seat}"), 2, 2)),
-                ready(free_creature(&format!("Small {seat}"), 1, 1)),
-                ready(free_creature(&format!("Weak {seat}"), -1, 1)),
-            ],
-        );
+        let mut permanents = vec![
+            ready(free_creature(&format!("Big {seat}"), 3, 3)),
+            ready(free_creature(&format!("Mid {seat}"), 2, 2)),
+            ready(free_creature(&format!("Small {seat}"), 1, 1)),
+            ready(free_creature(&format!("Weak {seat}"), -1, 1)),
+        ];
+        if seat == 0 {
+            permanents.extend([(); 4].map(|()| ready(plains())));
+        }
+        scenario = scenario.battlefield(seat, permanents);
     }
     let mut driver = Driver::from_scenario(scenario)?;
     driver.cast(name)?;
@@ -398,10 +412,11 @@ fn r6007_each_player_keeps_creatures_with_total_power_four_or_less(
 fn r6007_elvish_refueler_exhausts_again_until_one_is_activated_this_turn(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let scenario = Scenario::new(seats)
-        .at(3, 0, Step::Main1)
-        .battlefield(0, [ready(card("Elvish Refueler").unwrap())])
-        .battlefield(0, [(); 6].map(|()| ready(mtg_testkit::cards::forest())));
+    let scenario = Scenario::new(seats).at(3, 0, Step::Main1).battlefield(
+        0,
+        std::iter::once(ready(card("Elvish Refueler").unwrap()))
+            .chain([(); 6].map(|()| ready(mtg_testkit::cards::forest()))),
+    );
     let mut driver = Driver::from_scenario(scenario)?;
     let grown = |driver: &Driver| {
         let id = driver.id_of("Elvish Refueler").unwrap();
@@ -414,7 +429,13 @@ fn r6007_elvish_refueler_exhausts_again_until_one_is_activated_this_turn(
             })
     };
     driver.begin_ability("Elvish Refueler", 1)?;
+    driver.answer(Answer::PayMana(mtg_engine::decision::PayChoice::Auto))?;
     r6007_settle(&mut driver, true)?;
+    if std::env::var("R6007_DEBUG").is_ok() {
+        for event in driver.engine().events() {
+            println!("{event:?}");
+        }
+    }
     assert_eq!(grown(&driver), 1);
     // Activated an exhaust ability this turn: not again.
     assert!(driver.begin_ability("Elvish Refueler", 1).is_err());
@@ -422,6 +443,7 @@ fn r6007_elvish_refueler_exhausts_again_until_one_is_activated_this_turn(
     let next = 3 + u32::try_from(seats).unwrap();
     driver.idle_until(next, Step::Main1)?;
     driver.begin_ability("Elvish Refueler", 1)?;
+    driver.answer(Answer::PayMana(mtg_engine::decision::PayChoice::Auto))?;
     r6007_settle(&mut driver, true)?;
     assert_eq!(grown(&driver), 2);
     r6007_replays(&driver);
@@ -438,20 +460,22 @@ fn r6007_dragons_disciple_grows_for_a_dragon_revealed_or_controlled(
         Arc::new(
             CardDefinition::new("Wyrm")
                 .with_type(CardType::Creature)
-                .with_subtype("Dragon"),
+                .with_subtype("Dragon")
+                .with_power_toughness(4, 4),
         )
     };
-    let mut scenario = Scenario::new(seats)
-        .at(3, 0, Step::Main1)
-        .battlefield(0, [(); 3].map(|()| ready(mtg_testkit::cards::mountain())));
+    let mut lands: Vec<_> = [(); 3].map(|()| ready(plains())).into();
+    let mut hand = vec![card("Dragon's Disciple").unwrap()];
     // 0: no Dragon; 1: a Dragon card in hand; 2: a Dragon permanent.
-    scenario = match dragon {
-        1 => scenario.hand(0, [card("Dragon's Disciple").unwrap(), dragon_card()]),
-        2 => scenario
-            .hand(0, [card("Dragon's Disciple").unwrap()])
-            .battlefield(0, [ready(dragon_card())]),
-        _ => scenario.hand(0, [card("Dragon's Disciple").unwrap()]),
-    };
+    match dragon {
+        1 => hand.push(dragon_card()),
+        2 => lands.push(ready(dragon_card())),
+        _ => {}
+    }
+    let scenario = Scenario::new(seats)
+        .at(3, 0, Step::Main1)
+        .battlefield(0, lands)
+        .hand(0, hand);
     let mut driver = Driver::from_scenario(scenario)?;
     driver.cast("Dragon's Disciple")?;
     r6007_settle(&mut driver, reveal)?;
@@ -467,4 +491,26 @@ fn r6007_dragons_disciple_grows_for_a_dragon_revealed_or_controlled(
     assert_eq!(counters, u32::from(grows));
     r6007_replays(&driver);
     Ok(())
+}
+
+#[test]
+fn r6007_support_probe() {
+    if std::env::var("R6007_SUPPORT").is_err() {
+        return;
+    }
+    for name in [
+        "Breathstealer's Crypt",
+        "Zur's Weirding",
+        "Dragon's Disciple",
+        "Way of the Mind Sculptor",
+        "Theorist's Sanctum",
+    ] {
+        println!(
+            "{name}: {:?}",
+            mtg_testkit::corpus::corpus()
+                .unwrap()
+                .support(name)
+                .unwrap()
+        );
+    }
 }

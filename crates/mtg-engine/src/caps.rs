@@ -924,6 +924,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.TappedForCounters",
     "ReplaceBy.RevealOrTapped",
     "ReplaceBy.R6007BeholdOrTapped",
+    "ReplaceBy.Instead.PaysLife",
     "ReplaceBy.R6007RevealOrControl",
     "ReplaceBy.PayOrGraveyard",
     "ReplaceBy.AsCopy",
@@ -1293,6 +1294,7 @@ mod tests {
     #[case::waiting_in_place_of_an_event("ReplaceBy.Instead.Waits", false)]
     #[case::casting_in_place_of_an_event("ReplaceBy.Instead.Casts", false)]
     #[case::paying_in_place_of_an_event("ReplaceBy.Instead.Pays", false)]
+    #[case::paying_life_in_place_of_an_event("ReplaceBy.Instead.PaysLife", true)]
     #[case::tapping_or_untapping("Effect.TapOrUntap", true)]
     #[case::mana_abilities_from_other_zones("Ability.ManaAbility.From", true)]
     #[case::states("Trigger.State", true)]
