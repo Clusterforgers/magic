@@ -65,7 +65,7 @@ fn r6103_is_equipment(state: &GameState, id: ObjectId) -> bool {
     let equipment = |subtypes: &[mtg_core::card::Subtype]| {
         subtypes.iter().any(|subtype| subtype.0 == "Equipment")
     };
-    crate::characteristics::characteristics(state, id).map_or(false, |now| equipment(&now.subtypes))
+    crate::characteristics::characteristics(state, id).is_some_and(|now| equipment(&now.subtypes))
         || state
             .object(id)
             .is_some_and(|spell| equipment(&spell.card().subtypes))

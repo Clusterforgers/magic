@@ -535,7 +535,7 @@ fn r6103_galea_equipment_cast_this_way_attaches_as_it_enters(
         .state()
         .object(splitter)
         .and_then(|object| object.permanent())
-        .and_then(|held| held.attached_to());
+        .and_then(mtg_engine::object::PermanentState::attached_to);
     assert_eq!(host.map(|host| host.id), Some(bear));
     Ok(())
 }

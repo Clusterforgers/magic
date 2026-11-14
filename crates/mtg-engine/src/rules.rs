@@ -35,6 +35,16 @@ use crate::effects::{Duration, lasts};
 use crate::error::EngineError;
 use crate::fold::invalid;
 use crate::object::{GameObject, ObjectKind, ObjectRef};
+
+/// A spend permission in force: the player, how the mana may be spent, the spells and the abilities' sources it is for,
+/// and the rule's source, which `This` in those selectors names.
+type SpendManaAsHeld = (
+    PlayerId,
+    mtg_cards::modify::SpendAs,
+    Option<Selector>,
+    Option<Selector>,
+    Option<ObjectRef>,
+);
 use crate::resolve::{ResolveError, Scope};
 use crate::state::{GameState, Stage, Tally};
 use crate::zones::Zone;
@@ -834,13 +844,7 @@ pub(crate) struct RulesInForce {
     /// The players whose opponents' spells and abilities can't make them discard.
     spared_discard: BTreeSet<PlayerId>,
     /// The players who may spend mana as though it were of any color or type, with the spells it is for.
-    spend_mana_as: Vec<(
-        PlayerId,
-        mtg_cards::modify::SpendAs,
-        Option<Selector>,
-        Option<Selector>,
-        Option<ObjectRef>,
-    )>,
+    spend_mana_as: Vec<SpendManaAsHeld>,
     reveal_top: BTreeSet<PlayerId>,
     reveal_hand: BTreeSet<PlayerId>,
     /// Who controls each player while they search their library, the latest rule last.
