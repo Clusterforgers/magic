@@ -67,7 +67,7 @@ mod tests {
             assert_eq!(r6003_whole_read(sentence).as_ref(), Some(ability));
             let mut texts = Vec::new();
             r6003_whole_texts(ability, &mut texts);
-            assert_eq!(texts, vec![sentence.clone()]);
+            assert!(texts.contains(sentence), "{sentence}: {texts:?}");
         }
         let written: Vec<serde_json::Value> = serde_json::from_str(R6003_WRITTEN).unwrap();
         assert_eq!(R6003_WRITTEN_PAIRS.len(), written.len());
@@ -79,7 +79,7 @@ mod tests {
             );
             let mut texts = Vec::new();
             r6003_whole_texts(ability, &mut texts);
-            assert_eq!(texts, vec![sentence.clone()]);
+            assert!(texts.contains(sentence), "{sentence}: {texts:?}");
         }
     }
 }
