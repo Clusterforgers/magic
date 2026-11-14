@@ -234,6 +234,7 @@ mod r5509_wholes;
 mod r5511_wholes;
 mod r5512_wholes;
 mod r5513_wholes;
+mod r5515_wholes;
 mod r5516_wholes;
 mod r5518_wholes;
 mod r5522_wholes;
@@ -313,6 +314,7 @@ mod dk1b_attached;
 mod r281_wordings;
 mod r408_turn_cost;
 mod r408_wordings;
+mod r5515_attached;
 mod r9w_countered_value;
 mod w16a_owner;
 mod w16a_return_cost;
@@ -528,6 +530,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_t17b(ability, texts);
     // dk1b
     dk1b_attached::add(ability, texts);
+    r5515_attached::r5515_adds(ability, texts);
     // deck-auras
     // t19c
     t19c_put_many::add(ability, texts);
@@ -832,6 +835,7 @@ fn add_c11g(ability: &Ability, texts: &mut Vec<String>) {
     r370_wholes::r370_add_wholes(ability, texts);
     r378_wholes::r378_add_wholes(ability, texts);
     r4711_wholes::r4711_add_wholes(ability, texts);
+    r5515_wholes::r5515_add_wholes(ability, texts);
     r5505_wholes::r5505_add_wholes(ability, texts);
     r5516_wholes::r5516_add_wholes(ability, texts);
     r5513_wholes::r5513_add_wholes(ability, texts);

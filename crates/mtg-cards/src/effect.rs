@@ -159,8 +159,22 @@ pub enum Destination {
     /// attached to that creature"): an Aura that may not enchant it stays where it was, an Equipment or Fortification
     /// that may not be attached to it comes in unattached.
     BattlefieldAttached {
-        /// The permanent it is attached to.
+        /// The permanent or player it is attached to; an Aura that enchants players enters attached to a player it may
+        /// enchant.
         to: Ref,
+        /// Enters with its back face up (CR 712.14a); its back face is what it enchants.
+        #[serde(default, skip_serializing_if = "is_false")]
+        transformed: bool,
+        /// Enters under this player's control; its owner's when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        under: Option<Ref>,
+    },
+    /// The battlefield under its owner's control, where an Aura enters attached only to a permanent the selector matches
+    /// among those it may enchant, chosen by its controller, and stays where it was when there is none ("Only creatures
+    /// can be enchanted this way."); any other card enters as usual.
+    BattlefieldEnchanting {
+        /// What the Aura may enchant this way.
+        only: Selector,
     },
 }
 
@@ -1037,11 +1051,11 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         held: Option<Duration>,
     },
-    /// Attaches Auras, Equipment or Fortifications to an object (CR 701.3).
+    /// Attaches Auras, Equipment or Fortifications to an object, or Auras that enchant players to a player (CR 701.3).
     Attach {
         /// The permanents attached; each moves to `to` when it can be attached there.
         what: Ref,
-        /// The object they are attached to.
+        /// The object or player they are attached to.
         to: Ref,
         /// The name the permanents that became attached are bound to, for the steps after it.
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
@@ -1584,6 +1598,10 @@ pub enum Effect {
         /// The untap step of each is skipped ("Skip the untap step of that turn").
         #[serde(default, skip_serializing_if = "is_false")]
         skip_untap: bool,
+        /// Power-up abilities can't be activated during each of them ("During that turn, power-up abilities can't be
+        /// activated.").
+        #[serde(default, skip_serializing_if = "is_false")]
+        no_power_up: bool,
     },
     /// The turn ends (CR 723): the other spells and abilities on the stack are exiled, combat ends and the game goes on
     /// at the cleanup step.

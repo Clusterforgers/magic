@@ -771,6 +771,9 @@ pub enum SpellBenefit {
 /// `Ability::Rule` for as long as its source has the ability; the references name the players or objects it is about.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum GameRule {
+    /// Each power-up ability of the permanents the selector matches can be activated an additional time
+    /// (`Limit::PowerUp`).
+    PowerUpAgain(Selector),
     /// Damage from the sources can't be prevented, and prevention effects do nothing to it (CR 614.17).
     DamageCantBePrevented {
         /// The sources; any source when empty.

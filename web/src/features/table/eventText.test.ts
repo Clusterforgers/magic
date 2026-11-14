@@ -456,6 +456,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
 /** The ways the pipeline's events that need more than one sentence differ, each next to its text. */
 const MORE: [Event, string][] = [
   [
+    { ExtraTurnAdded: { player: 1, no_power_up: true } },
+    "Bo takes an extra turn after this one, during which power-up abilities can't be activated",
+  ],
+  [
     { PermanentPhasedOut: { object: 3, controller: 0, until: { id: 4, counter: 0 }, tapped: true } },
     'Forest phases out until Lightning Bolt leaves the battlefield',
   ],

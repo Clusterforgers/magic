@@ -1,7 +1,7 @@
 {
   "oracle_id": "b03c7c8d-8206-45cd-8ead-8f7b35c03a7a",
   "name": "Curse of Misfortunes",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Curse of Misfortunes",
@@ -9,9 +9,38 @@
       "abilities": [
         { "Keyword": { "EnchantPlayer": {} } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 15, "end": 232 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Subtype": "Curse" },
+                          {
+                            "Not": {
+                              "SharesName": {
+                                "Each": [{ "Subtype": "Curse" }, { "AttachedTo": "AttachedPlayer" }]
+                              }
+                            }
+                          }
+                        ],
+                        "as": "found"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found" },
+                        "to": { "BattlefieldAttached": { "to": "AttachedPlayer" } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,7 +1,7 @@
 //! Goal: a cost of cards alike as a set is paid only when the hand holds such a set and refuses a pick that is not
 //! one, at two to four seats: Sphinx of the Chimes discards two nonland cards with the same name (two lands of one name
 //! or two different names do not do), Illuminated Folio reveals two cards that share a color (colorless cards share
-//! none).
+//! none), and a bot pick refused as not alike tries every set, those before it too.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -173,6 +173,46 @@ fn r5518_folio_reveals_two_cards_that_share_a_color(
         driver.state().zone(Zone::Hand(me)).len(),
         3 + 1,
         "the revealed cards stay"
+    );
+    Ok(())
+}
+
+#[rstest]
+fn r5515_a_refused_pick_wraps_to_the_alike_set_before_it(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let hand = vec![
+        card("Llanowar Elves").unwrap(),
+        card("Grizzly Bears").unwrap(),
+        card("Lightning Bolt").unwrap(),
+        forest(),
+    ];
+    let mut driver = r5518_table(
+        seats,
+        vec![card("Illuminated Folio").unwrap(), mountain()],
+        hand,
+    )?;
+    driver.begin_activation("Illuminated Folio")?;
+    let decision = driver.decision()?.clone();
+    let DecisionKind::ChooseCards(options) = &decision.kind else {
+        panic!("no pick: {decision:?}");
+    };
+    let alike = [
+        r5518_in_hand(&driver, "Llanowar Elves")[0],
+        r5518_in_hand(&driver, "Grizzly Bears")[0],
+    ];
+    // The last pair in offered order is not the green pair, so the only set that pays comes before the first pick.
+    let last = options.from[options.from.len() - 2..].to_vec();
+    assert!(!alike.iter().all(|id| last.contains(id)), "{options:?}");
+    let mut engine = driver.engine().clone();
+    let answer = Answer::ChooseCards(CardsChoice(last));
+    mtg_testkit::bot::apply_answer(&mut engine, &decision, answer)?;
+    assert!(
+        !matches!(
+            engine.decision().map(|d| &d.kind),
+            Some(DecisionKind::ChooseCards(_))
+        ),
+        "the pick was taken"
     );
     Ok(())
 }

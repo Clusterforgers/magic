@@ -135,7 +135,11 @@ player: PlayerId,
 /**
  * Whether its untap step is skipped.
  */
-skip_untap?: boolean, } } | { "ExtraTurnSkipped": { 
+skip_untap?: boolean, 
+/**
+ * Whether power-up abilities can't be activated during it.
+ */
+no_power_up?: boolean, } } | { "ExtraTurnSkipped": { 
 /**
  * Whose turn.
  */

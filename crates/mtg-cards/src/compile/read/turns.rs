@@ -22,10 +22,12 @@ pub(super) fn extra_turns(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
         who: who.clone(),
         count: Amount::Fixed(i32::try_from(count).ok()?),
         skip_untap: false,
+        no_power_up: false,
     })
 }
 
-/// "Take an extra turn after this one." with "Skip the untap step of that turn." after it.
+/// "Take an extra turn after this one." with "Skip the untap step of that turn." or "During that turn, power-up
+/// abilities can't be activated." after it.
 pub fn extra_turn(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("take")?;
     let mut effect = extra_turns(r, &Ref::You)?;
@@ -37,6 +39,15 @@ pub fn extra_turn(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         && let Effect::ExtraTurn { skip_untap, .. } = &mut effect
     {
         *skip_untap = true;
+    }
+    let banned = r.attempt(|r| {
+        r.punct('.').then_some(())?;
+        r.need("during that turn, power-up abilities can't be activated")
+    });
+    if banned.is_some()
+        && let Effect::ExtraTurn { no_power_up, .. } = &mut effect
+    {
+        *no_power_up = true;
     }
     Some(vec![effect])
 }
@@ -118,13 +129,17 @@ pub fn effect_text(effect: &Effect, subject: Option<&str>) -> Option<String> {
             who,
             count: Amount::Fixed(count),
             skip_untap,
+            no_power_up,
         } => {
             let turns = turns_text(*count)?;
-            let skip = if *skip_untap {
-                (*who == Ref::You).then_some(". Skip the untap step of that turn")?
-            } else {
-                ""
-            };
+            let mut skip = String::new();
+            if *skip_untap {
+                skip += (*who == Ref::You).then_some(". Skip the untap step of that turn")?;
+            }
+            if *no_power_up {
+                skip += (*who == Ref::You && *count == 1)
+                    .then_some(". During that turn, power-up abilities can't be activated")?;
+            }
             match subject {
                 Some("you") | None if *who == Ref::You => {
                     Some(format!("take {turns} after this one{skip}"))

@@ -156,6 +156,7 @@ const RUNS: &[&str] = &[
     "Cost.PutCounters",
     "Cost.Exert",
     "Cost.OwnManaCost",
+    "Cost.ManaCostOf",
     "Cost.OwnManaValue",
     "Cost.OwnManaCostLess",
     "Cost.RemoveCountersAmong",
@@ -254,6 +255,7 @@ const RUNS: &[&str] = &[
     "Effect.Move.Transformed",
     "Effect.Move.Attached",
     "Effect.Move.FaceDown",
+    "Effect.Move.Enchanting",
     "Effect.Move.Command",
     "Effect.Move.Random.Top",
     "Effect.ExileUntil",
@@ -502,6 +504,8 @@ const RUNS: &[&str] = &[
     "Rule.ReverseTurnOrder",
     "Rule.AttackOnlyNearest",
     "Rule.SkipExtraTurns",
+    "Rule.PowerUpAgain",
+    "Limit.PowerUp",
     "Rule.FlipTwoCoins",
     "Rule.ExtraDie",
     "Rule.ExtraPlanarDie",
@@ -1230,6 +1234,9 @@ mod tests {
     #[case::moving_to_the_battlefield("Effect.Move.Battlefield", true)]
     #[case::moving_to_the_battlefield_transformed("Effect.Move.Transformed", true)]
     #[case::moving_to_the_battlefield_attached("Effect.Move.Attached", true)]
+    #[case::moving_to_the_battlefield_enchanting_only_some("Effect.Move.Enchanting", true)]
+    #[case::r5515_power_up_again("Rule.PowerUpAgain", true)]
+    #[case::r5515_power_up_limit("Limit.PowerUp", true)]
     #[case::moving_to_the_battlefield_face_down("Effect.Move.FaceDown", true)]
     #[case::moving_in_a_random_order_to_the_top("Effect.Move.Random.Top", true)]
     #[case::searching("Effect.Search", true)]

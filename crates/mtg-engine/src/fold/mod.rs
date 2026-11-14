@@ -380,10 +380,12 @@ fn begin_turn(
         state.summarize_turn(ending);
         state.r379_turn_ended(ending, before);
     }
+    state.turn.no_power_up = false;
     if extra {
-        if state.extra_turns.pop().map(|turn| turn.player) != Some(active) {
+        let Some(taken) = state.extra_turns.pop().filter(|turn| turn.player == active) else {
             return Err(invalid(format!("{active:?} has no extra turn to take")));
-        }
+        };
+        state.turn.no_power_up = taken.no_power_up;
     } else {
         state.turn.regular = active;
     }
@@ -438,9 +440,14 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             active,
             extra,
         } => begin_turn(state, *number, *active, *extra)?,
-        Event::ExtraTurnAdded { player, skip_untap } => state.extra_turns.push(ExtraTurn {
+        Event::ExtraTurnAdded {
+            player,
+            skip_untap,
+            no_power_up,
+        } => state.extra_turns.push(ExtraTurn {
             player: *player,
             skip_untap: *skip_untap,
+            no_power_up: *no_power_up,
         }),
         Event::PlayerControlGained {
             player,

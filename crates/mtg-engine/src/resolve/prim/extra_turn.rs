@@ -14,6 +14,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         who,
         count,
         skip_untap,
+        no_power_up,
     } = effect
     else {
         return Err(wrong_effect("ExtraTurn"));
@@ -27,6 +28,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 events.push(Event::ExtraTurnAdded {
                     player,
                     skip_untap: *skip_untap,
+                    no_power_up: *no_power_up,
                 });
             }
         }

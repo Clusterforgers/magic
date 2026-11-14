@@ -178,6 +178,18 @@ fn r5512_spend(cx: &Cx<'_>) -> Spend {
 pub(super) fn c6_eg_counted(cx: &Cx<'_>, cost: &Cost) -> Result<Cost, ResolveError> {
     let mut counted = cost.clone();
     for item in &mut counted.0 {
+        if let CostItem::ManaCostOf(of) = item {
+            let state = cx.state();
+            let mana = cx
+                .scope
+                .objects(of)?
+                .into_iter()
+                .find_map(|named| state.object(named.id))
+                .and_then(|object| object.mana_cost().cloned())
+                .unwrap_or(ManaCost::ZERO);
+            *item = CostItem::Mana(mtg_cards::mana::ManaCostX::new(0, mana));
+            continue;
+        }
         // "{X}, where X is your life total": generic mana of the number counted now.
         if let CostItem::GenericOf(amount) = item {
             let count = cx.scope.amount(amount)?.clamp(0, i64::from(u32::MAX));

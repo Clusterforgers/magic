@@ -104,6 +104,8 @@ pub enum Action {
     ActivatedExhaust,
     /// A boast ability was activated (CR 702.142); `what` is its source.
     ActivatedBoast,
+    /// A power-up ability was activated (`Limit::PowerUp`); `what` is its source.
+    ActivatedPowerUp,
     /// A player clashed (CR 701.23), won or lost; `Amount::Triggering` is 1 when they won and 0 when they lost.
     Clashed,
     /// A player investigated (CR 701.16a), once for each Clue token the investigation made.
@@ -189,6 +191,7 @@ impl Action {
         };
         match (limit, condition) {
             (Some(Limit::OncePerGame), _) => vec![Action::ActivatedExhaust],
+            (Some(Limit::PowerUp), _) => vec![Action::ActivatedPowerUp],
             (Some(Limit::OncePerTurn), Some(held)) if *held == attacked => {
                 vec![Action::ActivatedBoast]
             }
@@ -261,6 +264,10 @@ impl Action {
                 "activates an exhaust ability",
             ),
             Action::ActivatedBoast => ("activate a boast ability", "activates a boast ability"),
+            Action::ActivatedPowerUp => (
+                "activate a power-up ability",
+                "activates a power-up ability",
+            ),
             Action::Clashed => ("clash", "clashes"),
             Action::Investigated => ("investigate", "investigates"),
             Action::Discovered => ("discover", "discovers"),
@@ -325,6 +332,7 @@ impl Action {
                 | Action::ActivatedLoyalty
                 | Action::ActivatedExhaust
                 | Action::ActivatedBoast
+                | Action::ActivatedPowerUp
                 | Action::ActivatedEternalizeOrEmbalm
                 | Action::ActivatedAny
                 | Action::Destroyed

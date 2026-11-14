@@ -469,6 +469,7 @@ impl Part {
             CostItem::OwnManaCost | CostItem::OwnManaValue | CostItem::OwnManaCostLess(_) => {
                 return Err(own_part(item));
             }
+            CostItem::ManaCostOf(_) => return Err("ManaCostOf"), // read only by an `Effect::Pay` payment
             CostItem::RemoveCountersAmong {
                 counter,
                 count,

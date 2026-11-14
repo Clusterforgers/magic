@@ -69,6 +69,8 @@ fn sentences(r: &mut Reader<'_>, restricted: bool) -> Option<Vec<Effect>> {
         } else if effects.len() > before {
             // ". If it was a creature card, S." after the exile of a target.
             exiled_kind::tail(r, &mut effects);
+            // ". Only creatures can be enchanted this way." after a move onto the battlefield.
+            super::r5515_enchanting::r5515_tail(r, &mut effects);
         }
     }
     let alone = effects.len() == 1 || !effects.iter().any(|e| matches!(e, Effect::Modal { .. }));

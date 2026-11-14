@@ -1,0 +1,434 @@
+[
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "Upkeep"
+     }
+    },
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "Search": {
+          "filter": [
+           {
+            "Subtype": "Curse"
+           },
+           {
+            "Not": {
+             "SharesName": {
+              "Each": [
+               {
+                "Subtype": "Curse"
+               },
+               {
+                "AttachedTo": "AttachedPlayer"
+               }
+              ]
+             }
+            }
+           }
+          ],
+          "as": "found"
+         }
+        },
+        {
+         "Move": {
+          "what": {
+           "Bound": "found"
+          },
+          "to": {
+           "BattlefieldAttached": {
+            "to": "AttachedPlayer"
+           }
+          }
+         }
+        },
+        {
+         "Shuffle": {}
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your upkeep, you may search your library for a Curse card that doesn't have the same name as a Curse attached to enchanted player, put it onto the battlefield attached to that player, then shuffle."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Attacks": {
+      "what": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "Opponents"
+       }
+      ]
+     }
+    },
+    "if": {
+     "Among": "Defending"
+    },
+    "effects": [
+     {
+      "Pay": {
+       "who": {
+        "ControllerOf": "Triggering"
+       },
+       "cost": "{3}",
+       "unpaid": [
+        {
+         "CreateToken": {
+          "token": {
+           "Custom": {
+            "name": "Ogre",
+            "colors": [
+             "Red"
+            ],
+            "types": [
+             "Creature"
+            ],
+            "subtypes": [
+             "Ogre"
+            ],
+            "power": 3,
+            "toughness": 3
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever a creature an opponent controls attacks, if you're the defending player, create a 3/3 red Ogre creature token unless that creature's controller pays {3}."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "Upkeep"
+     }
+    },
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "Choose": {
+          "from": {
+           "Each": [
+            {
+             "Subtype": "Curse"
+            },
+            {
+             "AttachedTo": "You"
+            }
+           ]
+          },
+          "as": "curse"
+         }
+        },
+        {
+         "Choose": {
+          "from": "Opponents",
+          "as": "opponent"
+         }
+        },
+        {
+         "Attach": {
+          "what": {
+           "Bound": "curse"
+          },
+          "to": {
+           "Bound": "opponent"
+          },
+          "as": "attached"
+         }
+        },
+        {
+         "If": {
+          "condition": {
+           "Compare": {
+            "left": {
+             "Count": [
+              {
+               "Is": {
+                "Bound": "attached"
+               }
+              }
+             ]
+            },
+            "op": "Ge",
+            "right": 1
+           }
+          },
+          "then": [
+           {
+            "Draw": {
+             "count": 2
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your upkeep, you may attach a Curse attached to you to one of your opponents. If you do, draw two cards."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "SpellCast": {
+      "what": [
+       {
+        "Not": {
+         "Type": "Creature"
+        }
+       }
+      ],
+      "by": "AttachedPlayer"
+     }
+    },
+    "effects": [
+     {
+      "RollDice": {
+       "sides": 6,
+       "results": [
+        {
+         "from": 1,
+         "effects": [
+          {
+           "DealDamage": {
+            "to": {
+             "ControllerOf": "Triggering"
+            },
+            "amount": {
+             "DieResult": "Only"
+            }
+           }
+          }
+         ]
+        }
+       ]
+      }
+     },
+     {
+      "ChooseAtRandom": {
+       "from": {
+        "PlayersWhere": {
+         "who": "Opponents",
+         "test": {
+          "Not": {
+           "Among": "AttachedPlayer"
+          }
+         }
+        }
+       },
+       "as": "opponent"
+      }
+     },
+     {
+      "Attach": {
+       "what": "This",
+       "to": {
+        "Bound": "opponent"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Whenever enchanted player casts a noncreature spell, roll a d6. This Aura deals damage to that player equal to the result. Then attach this Aura to another one of your opponents chosen at random."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "SpellCast": {}
+    },
+    "effects": [
+     {
+      "Pay": {
+       "who": {
+        "PlayersWhere": {
+         "who": "EachPlayer",
+         "test": {
+          "Not": {
+           "Among": {
+            "ControllerOf": "Triggering"
+           }
+          }
+         }
+        }
+       },
+       "cost": [
+        {
+         "ManaCostOf": "Triggering"
+        }
+       ],
+       "paid": [
+        {
+         "Counter": {
+          "what": "Triggering"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever a player casts a spell, any other player may pay that spell's mana cost. If a player does, counter the spell."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       {
+        "Is": "Attached"
+       }
+      ],
+      "from": "Battlefield",
+      "to": "Graveyard"
+     }
+    },
+    "targets": [
+     {
+      "what": "Opponent"
+     }
+    ],
+    "effects": [
+     {
+      "Move": {
+       "what": "This",
+       "to": {
+        "BattlefieldAttached": {
+         "to": {
+          "Target": 0
+         },
+         "transformed": true,
+         "under": "You"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "When enchanted creature dies, return this card to the battlefield transformed under your control attached to target opponent."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       {
+        "Subtype": "Curse"
+       },
+       {
+        "OwnedBy": "You"
+       }
+      ],
+      "from": "Battlefield",
+      "to": "Graveyard"
+     }
+    },
+    "effects": [
+     {
+      "Choose": {
+       "from": {
+        "Arrived": {
+         "of": "Triggering",
+         "zone": "Graveyard"
+        }
+       },
+       "as": "curse"
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "when": {
+        "StepBegins": {
+         "step": "End"
+        }
+       },
+       "effects": [
+        {
+         "Move": {
+          "what": {
+           "Bound": "curse"
+          },
+          "to": {
+           "BattlefieldAttached": {
+            "to": "You"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever a Curse is put into your graveyard from the battlefield, return it to the battlefield attached to you at the beginning of the next end step."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "AnyOf": [
+      {
+       "ZoneChange": {
+        "what": [
+         {
+          "Type": "Creature"
+         },
+         "Other",
+         {
+          "ControlledBy": "You"
+         }
+        ],
+        "to": "Battlefield"
+       }
+      },
+      {
+       "Did": {
+        "action": "ActivatedPowerUp",
+        "who": "You"
+       }
+      }
+     ]
+    },
+    "effects": [
+     {
+      "PutCounters": {
+       "on": "This",
+       "counter": "+1/+1"
+      }
+     }
+    ]
+   }
+  },
+  "Whenever another creature you control enters and whenever you activate a power-up ability, put a +1/+1 counter on ~."
+ ]
+]

@@ -311,12 +311,21 @@ fn moved(ctx: &Ctx, what: &Ref, to: &Destination) -> String {
             "put {what} onto the battlefield face down{}",
             entering(ctx, false, under.as_ref(), false)
         ),
-        Destination::BattlefieldAttached { to } => {
+        Destination::BattlefieldAttached {
+            to,
+            transformed,
+            under,
+        } => {
             format!(
-                "put {what} onto the battlefield attached to {}",
+                "put {what} onto the battlefield{} attached to {}",
+                entering(ctx, false, under.as_ref(), *transformed),
                 phrase::who(ctx, to)
             )
         }
+        Destination::BattlefieldEnchanting { only } => format!(
+            "put {what} onto the battlefield; an Aura may enchant only {} this way",
+            phrase::selectors(ctx, only)
+        ),
     }
 }
 

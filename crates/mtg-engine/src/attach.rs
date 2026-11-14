@@ -444,6 +444,55 @@ pub(crate) fn hosts_when_entering(
     )
 }
 
+/// The players an Aura card that enters the battlefield without being cast under `controller` may enchant, in seat order
+/// (CR 303.4f): none for a card that enchants no player or is a creature, only opponents of `controller` for one that
+/// enchants opponents, and none with protection from it.
+pub(crate) fn player_hosts_when_entering(
+    state: &GameState,
+    aura: &GameObject,
+    controller: PlayerId,
+) -> Vec<PlayerId> {
+    let id = aura.id();
+    let Some(opponent) = player_restriction(state, id) else {
+        return Vec::new();
+    };
+    if kind_of(state, id) != Some(Kind::Aura)
+        || characteristics(state, id).is_none_or(|chars| chars.is_creature())
+    {
+        return Vec::new();
+    }
+    state
+        .alive_players()
+        .filter(|player| !opponent || state.is_opponent(*player, controller))
+        .filter(|player| {
+            !keywords::Source::live(state, id).is_some_and(|source| {
+                keywords::protected_from(state, Holder::Player(*player), source)
+            })
+        })
+        .collect()
+}
+
+/// The permanents among `hosts` that `only` matches, judged for an Aura entering under `controller`.
+pub(crate) fn hosts_matching(
+    state: &GameState,
+    aura: &GameObject,
+    controller: PlayerId,
+    hosts: Vec<ObjectId>,
+    only: &Selector,
+) -> Vec<ObjectId> {
+    let scope = Scope::announcing(state, controller, aura.reference());
+    let allowed: Vec<ObjectId> = scope
+        .matching(only)
+        .unwrap_or_default()
+        .into_iter()
+        .map(|named| named.id)
+        .collect();
+    hosts
+        .into_iter()
+        .filter(|host| allowed.contains(host))
+        .collect()
+}
+
 /// Attaches `object` to `to` (CR 701.3): it takes the time it became attached as its timestamp (CR 613.7a).
 pub(crate) fn fold_attached(
     state: &mut GameState,

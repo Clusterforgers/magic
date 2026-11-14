@@ -1,0 +1,29 @@
+{
+  "oracle_id": "7a315db3-e66c-4648-b7a0-5aef2ce9b580",
+  "name": "Marvel Boy, Noh-Varr",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marvel Boy, Noh-Varr",
+      "oracle_fingerprint": "25e4d3ce762b521656e4f92a6a10d62c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                },
+                { "Did": { "action": "ActivatedPowerUp", "who": "You" } }
+              ]
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}
