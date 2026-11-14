@@ -145,6 +145,7 @@ const RUNS: &[&str] = &[
     "Cost.DiscardSelf",
     "Cost.PayLife",
     "Cost.PayEnergy",
+    "Cost.SpendCounters",
     "Cost.Mill",
     "Cost.Sacrifice",
     "Cost.Discard",
