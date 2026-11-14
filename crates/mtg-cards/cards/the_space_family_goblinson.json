@@ -1,0 +1,32 @@
+{
+  "oracle_id": "63132b61-a684-4900-baf2-818904805208",
+  "name": "The Space Family Goblinson",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Space Family Goblinson",
+      "oracle_fingerprint": "a78976b72915f131d9f0ea4c055541df",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Trample" }],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "DiceRolled" } },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DiceRolled": { "who": "You", "each": true } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -6,7 +6,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::wrong_effect;
 use crate::choose::{
-    ChoiceOption, OptionChooser, Optioned, Picked, Selection, Target, pick_options, pick_selections,
+    ChoiceOption, OptionChooser, Optioned, Picked, Selection, Target, pick_options, pick_selections_within,
 };
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::wording;
@@ -78,12 +78,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 selection.groups = groups(cx, rule, &selection.from, &objects);
             }
         }
+        let mut totals = Vec::with_capacity(selections.len());
         if let mtg_cards::refs::Ref::Each(filter) = from {
-            for selection in &mut selections {
-                selection.budget = cx.scope.r6003_budget(filter, &selection.from)?;
+            for selection in &selections {
+                totals.push(cx.scope.r6003_total(filter, &selection.from)?);
             }
         }
-        match pick_selections(cx, &selections)? {
+        match pick_selections_within(cx, &selections, &totals)? {
             Picked::Ask(decision) => return Ok(Run::Ask(decision)),
             Picked::Done(taken) => taken
                 .into_iter()
@@ -173,7 +174,6 @@ fn selections(
                 from: ids,
                 text: text.to_owned(),
                 groups: Vec::new(),
-                budget: None,
             }
         })
         .collect()
@@ -181,7 +181,7 @@ fn selections(
 
 /// What `from` names for each chooser, read with `Ref::Chooser` naming them, and all of it together in the order first
 /// named; with no chooser, what it names with nobody choosing. Without `Ref::Chooser` every chooser has the same set.
-fn candidates_of(
+pub(super) fn candidates_of(
     cx: &Cx<'_>,
     from: &mtg_cards::refs::Ref,
     choosers: &[PlayerId],

@@ -267,6 +267,7 @@ mod r5516_actions;
 mod r5516_reflexive;
 mod r5517_wholes;
 mod r5519_wholes;
+mod r5520_atoms;
 mod r5521_conditions;
 mod r5521_wholes;
 mod r5522_facts;

@@ -270,14 +270,6 @@ pub enum IllegalAnswer {
         /// The total power of the creatures chosen.
         got: u32,
     },
-    /// The cards chosen add up to more than the total they may have ("with total mana value 6 or less").
-    #[error("the cards chosen add up to {got} but may add up to {most} at most")]
-    OverBudget {
-        /// The most the cards may add up to.
-        most: u32,
-        /// What the cards chosen add up to.
-        got: u32,
-    },
     /// The cards exiled for a cost have less total mana value than it asks (collect evidence).
     #[error("the cards exiled have total mana value {got} but the cost asks {needed}")]
     TooLittleValue {

@@ -5,6 +5,7 @@ import { castCostLine } from './commander'
 import { HandBacks } from './Hand'
 import { dockLayouts, handDockNeed, OPENING_CARD_MAX_PX, openingDockNeed } from './handFit'
 import { HAND_GROW_VAR } from './layout'
+import { headLabel, seenTop, TOP_WORDS } from './libraryTop'
 import { HandFan } from './HandFan'
 import type { HandCommander } from './HandFan'
 import { useSeatNamer } from './names'
@@ -47,13 +48,27 @@ export function commandersInHand(
 }
 
 /**
+ * The cards at the head of the dock: the commanders waiting in the command zone, then the top card of your library while
+ * you may see it (Sigarda, Future Sight, Courser of Kruphix), so it is cast or played from here like a card of the hand.
+ */
+function headOfHand(
+  player: PlayerView | undefined,
+  objects: Readonly<Record<ObjectId, ObjectView>>,
+): ReadonlyMap<ObjectId, HandCommander> {
+  const commanders = commandersInHand(player, objects)
+  const top = player === undefined ? undefined : seenTop(player)
+  if (top === undefined || objects[top] === undefined) return commanders
+  return new Map([...commanders, [top, { tax: 0, words: TOP_WORDS, top: true }]])
+}
+
+/**
  * The hand dock, the bottom edge of the table: the viewer's cards as a fan as tall as the dock allows, side by side
  * while they fit and overlapping just enough when they do not (at least 62 % of a card shows), a hovered or focused card
  * rising by 40 % of its height and opening the preview. The cards are the same buttons as everywhere on the table, so a
  * click plays or casts them as the active prompt says. The fan stays inside the dock's width, so it never reaches the
  * pass controls beside it. The commanders waiting in the command zone stand in a list of their own before the hand, each
  * with a crown and the tax on its cast,
- * so a commander is cast from here like any card of the hand. A hand that one row of the narrowest card does not hold
+ * so a commander is cast from here like any card of the hand; the top card of your library you may see stands there too. A hand that one row of the narrowest card does not hold
  * grows the dock to the height of its rows, up to `growMost` px (`HAND_GROW_VAR` on the table's main area).
  */
 export const HandDock = memo(function HandDock({
@@ -83,7 +98,7 @@ export const HandDock = memo(function HandDock({
     },
     [ordered, move, objects],
   )
-  const waiting = useMemo(() => commandersInHand(player, objects), [player, objects])
+  const waiting = useMemo(() => headOfHand(player, objects), [player, objects])
   const count = player?.hand.count ?? 0
   const zone = useRef<HTMLDivElement>(null)
   const room = useContentBox(zone)
@@ -143,7 +158,7 @@ export const HandDock = memo(function HandDock({
           >
             <HandFan
               ids={[...waiting.keys()]}
-              label={`${owner}'s commanders in the command zone`}
+              label={headLabel(owner, waiting)}
               size={size}
               cost
               layout={layouts?.command}

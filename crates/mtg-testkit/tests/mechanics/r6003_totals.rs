@@ -1,5 +1,5 @@
 //! Goal: a search or choice "with total mana value N or less" or "with total power X or less" offers the cards with a
-//! budget at tables of two to four seats: an answer above the total is refused, one within it is kept, and X read from a
+//! total at tables of two to four seats: an answer above the total is refused, one within it is kept, and X read from a
 //! creature that died is its power as it last existed (Protean Hulk, Moorland Rescuer).
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -15,12 +15,12 @@ use rstest::rstest;
 use crate::common::casting::lands;
 use crate::common::{name_of, pid};
 
-/// Answers passively until a choice of cards with a budget is asked, and returns it.
-fn r6003_until_budget(driver: &mut Driver) -> Result<Decision, ScriptError> {
+/// Answers passively until a choice of cards with a total is asked, and returns it.
+fn r6003_until_total(driver: &mut Driver) -> Result<Decision, ScriptError> {
     for _ in 0..64 {
         let decision = driver.decision()?.clone();
         if let DecisionKind::ChooseCards(options) = &decision.kind
-            && options.budget.is_some()
+            && options.total.is_some()
         {
             return Ok(decision);
         }
@@ -61,7 +61,7 @@ fn r6003_creature(
     creature_costing(name, &[ManaSymbol::Generic(generic)], power, 1)
 }
 
-/// Seat 0's `dier` on the battlefield is dealt 7 by a bolt; the dies trigger asks its choice with a budget.
+/// Seat 0's `dier` on the battlefield is dealt 7 by a bolt; the dies trigger asks its choice with a total.
 fn r6003_kill(seats: usize, dier: &str, library: bool) -> Result<(Driver, Decision), ScriptError> {
     let cards = vec![
         r6003_creature("Two", 2, 1),
@@ -82,7 +82,7 @@ fn r6003_kill(seats: usize, dier: &str, library: bool) -> Result<(Driver, Decisi
     let mut driver = Driver::from_scenario(scenario)?;
     let target = driver.target_named(dier)?;
     driver.cast_at("Bolt", &[target])?;
-    let decision = r6003_until_budget(&mut driver)?;
+    let decision = r6003_until_total(&mut driver)?;
     Ok((driver, decision))
 }
 
@@ -95,10 +95,10 @@ fn r6003_hulk_finds_creatures_within_six(#[case] seats: usize) -> Result<(), Scr
     let DecisionKind::ChooseCards(options) = &decision.kind else {
         panic!("a choice of cards");
     };
-    let budget = options.budget.clone().unwrap();
-    assert_eq!(budget.most, 6);
+    let total = options.total.clone().unwrap();
+    assert_eq!(total.most, 6);
     let over = r6003_ids(&driver, &decision, &["Four", "Three"]);
-    assert_eq!(budget.total(&options.from, &over), 7);
+    assert_eq!(options.within_total(over.clone()).len(), 1, "4 + 3 is above 6");
     assert!(
         driver
             .answer(Answer::ChooseCards(CardsChoice(over)))
@@ -129,8 +129,8 @@ fn r6003_rescuer_returns_power_up_to_its_own(#[case] seats: usize) -> Result<(),
         panic!("a choice of cards");
     };
     // X is the Rescuer's power as it last existed: 4.
-    let budget = options.budget.clone().unwrap();
-    assert_eq!(budget.most, 4);
+    let total = options.total.clone().unwrap();
+    assert_eq!(total.most, 4);
     // The Rescuer itself is not offered ("other").
     assert!(
         options

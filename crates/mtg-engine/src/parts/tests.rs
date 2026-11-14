@@ -87,11 +87,11 @@ fn part(json: &str) -> Part {
 )]
 #[case::one_sacrifice(
     r#"{"Sacrifice":{"filter":[{"Type":"Creature"}]}}"#,
-    Part::Pick(Pick { kind: Kind::Sacrifice, filter: Selector(vec![mtg_cards::refs::Pred::Type(CardType::Creature)]), count: 1, reads_x: false })
+    Part::Pick(Pick { kind: Kind::Sacrifice, filter: Selector(vec![mtg_cards::refs::Pred::Type(CardType::Creature)]), count: 1, reads_x: false, alike: None })
 )]
 #[case::two_discards(
     r#"{"Discard":{"count":2}}"#,
-    Part::Pick(Pick { kind: Kind::Discard, filter: Selector::default(), count: 2, reads_x: false })
+    Part::Pick(Pick { kind: Kind::Discard, filter: Selector::default(), count: 2, reads_x: false, alike: None })
 )]
 fn a_part_is_read_with_its_fixed_amount(#[case] json: &str, #[case] expected: Part) {
     assert_eq!(Part::read(&item(json)), Ok(Some(expected)));

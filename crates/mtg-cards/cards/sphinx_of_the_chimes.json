@@ -1,7 +1,7 @@
 {
   "oracle_id": "690df8d2-9538-4c51-b730-cee09ad0ef1c",
   "name": "Sphinx of the Chimes",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sphinx of the Chimes",
@@ -9,7 +9,19 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 69 } }
+          "Activated": {
+            "cost": [
+              {
+                "AlikeFromHand": {
+                  "discard": true,
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "count": 2,
+                  "alike": "SameName"
+                }
+              }
+            ],
+            "effects": [{ "Draw": { "count": 4 } }]
+          }
         }
       ]
     }

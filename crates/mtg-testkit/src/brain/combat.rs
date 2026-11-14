@@ -259,7 +259,7 @@ pub fn safe_attack(seen: &Seen<'_>, options: &AttackOptions) -> Attack {
 
 /// Whether `attack` kills a defending player outright if each of that player's team's untapped creatures blocks one of
 /// its biggest attackers.
-fn lethal(seen: &Seen<'_>, attack: &Attack) -> bool {
+pub fn lethal(seen: &Seen<'_>, attack: &Attack) -> bool {
     let bodies = bodies_by_id(seen);
     let mut players: Vec<PlayerId> = Vec::new();
     for (_, target) in attack {

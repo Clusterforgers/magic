@@ -65,7 +65,6 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 }
             },
             groups: Vec::new(),
-            budget: None,
         })
         .collect();
     let kept = match pick_selections(cx, &selections)? {

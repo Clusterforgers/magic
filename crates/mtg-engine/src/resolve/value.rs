@@ -32,7 +32,9 @@ mod r302b_sources;
 mod r305b_amounts;
 mod r374_counts;
 mod r402_cast;
+pub(crate) mod r5520_atoms;
 mod r5523_attacked;
+pub(crate) use r5520_atoms::{R5520_PAID, r5520_took};
 mod r6003_total;
 mod soulbond;
 mod w21a_atoms;
@@ -565,6 +567,7 @@ impl<'a> Scope<'a> {
             | TurnTally::NonlandPermanentsLeft
             | TurnTally::CreaturesLeftUnder
             | TurnTally::SpellsWarped
+            | TurnTally::DiceRolled
             | TurnTally::CardsExiled
             | TurnTally::PermanentsToHand
             | TurnTally::CardsGravedNotFromBattlefield
@@ -592,6 +595,7 @@ impl<'a> Scope<'a> {
                     TurnTally::NonlandPermanentsLeft => Tally::NonlandLeft,
                     TurnTally::CreaturesLeftUnder => Tally::CreaturesLeftUnder,
                     TurnTally::SpellsWarped => Tally::Warped,
+                    TurnTally::DiceRolled => Tally::R5508DiceRolled,
                     TurnTally::PermanentsLeftUnder => Tally::PermanentsLeftUnder,
                     TurnTally::CardsLeftGraveyard => Tally::W21aLeftGraveyard,
                     TurnTally::LifeGainedTotal => Tally::GainedTotal,
@@ -1479,6 +1483,13 @@ impl<'a> Scope<'a> {
             .flatten()
             .copied()
             .collect();
+        // The ability's own cost took nothing: what a payment among its steps took ("If you do").
+        if picked.is_empty()
+            && shots.is_empty()
+            && let Some(took) = self.bindings.get(r5520_atoms::R5520_PAID)
+        {
+            return took.clone();
+        }
         let refs: Vec<ObjectRef> = if picked.is_empty() {
             shots
                 .iter()
@@ -2235,6 +2246,7 @@ impl<'a> Scope<'a> {
             | Pred::Kicked
             | Pred::AdditionalCostPaid
             | Pred::Suspended => self.fe1a_pred(pred, reference, seen)?,
+            Pred::Foretold | Pred::HasName => self.r5520_pred(pred, reference, seen),
             Pred::Not(inner) => !self.pred(inner, reference, seen)?,
             Pred::AnyOf(any) => self.w6d_any_of(any, reference, seen)?,
         })
@@ -2970,11 +2982,12 @@ impl<'a> Scope<'a> {
     }
 
     /// A result of the latest roll of the resolution: the last die logged (a single die, or the one chosen, which a choice
-    /// logs last) or the one before it (the other result); zero outside a resolution or before a roll.
+    /// logs last) or the one before it (the other result), or the total (that of a roll of several dice, else every die of the resolution added up); zero
+    /// outside a resolution or before a roll.
     fn c11e_die_result(&self, which: DieResult) -> i64 {
         if matches!(
             which,
-            DieResult::Odd | DieResult::Even | DieResult::Total | DieResult::Times(_)
+            DieResult::Odd | DieResult::Even | DieResult::Times(_)
         ) {
             return self.kept_number(&super::prim::roll_dice::r5507_kept(which));
         }
@@ -2983,6 +2996,19 @@ impl<'a> Scope<'a> {
             .resolving
             .as_ref()
             .map_or(&[][..], |resolving| &resolving.rolled[..]);
+        if which == DieResult::Total {
+            let kept = super::prim::roll_dice::r5507_kept(which);
+            if let Some(total) = self.own_run().and_then(|resolving| {
+                resolving
+                    .lets
+                    .iter()
+                    .find(|(name, _)| *name == kept)
+                    .map(|(_, value)| *value)
+            }) {
+                return total;
+            }
+            return rolled.iter().map(|result| i64::from(*result)).sum();
+        }
         if which == DieResult::Distinct {
             let mut distinct: Vec<u32> = rolled.to_vec();
             distinct.sort_unstable();

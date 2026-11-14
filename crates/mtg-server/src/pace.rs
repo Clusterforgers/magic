@@ -931,8 +931,8 @@ mod tests {
             max,
             text: String::new(),
             can_cancel: false,
+            total: None,
             groups: Vec::new(),
-            budget: None,
         })
     }
 

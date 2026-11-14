@@ -61,7 +61,6 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     from,
                     text,
                     groups: Vec::new(),
-                    budget: None,
                 })
             })
             .collect::<Result<_, ResolveError>>()?;
@@ -281,8 +280,8 @@ mod tests {
                     max: 1,
                     text: "Discard a card.".into(),
                     can_cancel: false,
+                    total: None,
                     groups: Vec::new(),
-                    budget: None,
                 }),
             }
         );
