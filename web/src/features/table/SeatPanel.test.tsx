@@ -355,13 +355,40 @@ describe('the panel', () => {
     expect(slot.parentElement).toBe(header.lastElementChild)
   })
 
-  it('keeps the life on the name row, beside the name that truncates', () => {
-    show(0)
+  it('gives the name the whole first row and sets the clocks, hand and library beside the life under it', () => {
+    show(0, (view) => {
+      const alice = must(view.players[0])
+      alice.bank = 1
+      alice.turn_time_ms = 125_000
+    })
     const header = must(panel('Alice (you)').querySelector('header'))
     expect(header).toHaveClass('grid-cols-[minmax(0,1fr)_auto]')
-    const [name, life] = [...header.children]
+    const [name, meta, life] = [...header.children]
+    expect(name).toHaveAttribute('data-slot', 'pod-name-row')
+    expect(name).toHaveClass('col-span-full')
     expect(name?.querySelector('h3')).toHaveClass('truncate')
+    expect(name?.querySelector('[data-slot="turn-time"], [data-slot="bank-mark"]')).toBeNull()
+    expect(meta).toHaveAttribute('data-slot', 'pod-meta')
+    for (const slot of ['turn-time', 'bank-mark']) {
+      expect(meta?.querySelector(`[data-slot="${slot}"]`)).not.toBeNull()
+    }
+    expect(within(must(meta as HTMLElement)).getByRole('img', { name: /^Hand / })).toBeInTheDocument()
+    expect(within(must(meta as HTMLElement)).getByRole('img', { name: /^Library / })).toBeInTheDocument()
     expect(life?.querySelector('[data-slot="life"]')).not.toBeNull()
+  })
+
+  it('leaves the clocks out of the name of a one-line pod, so the name keeps its room', () => {
+    show(
+      0,
+      (view) => {
+        must(view.players[0]).turn_time_ms = 125_000
+      },
+      'line',
+    )
+    const pod = panel('Alice (you)')
+    const heading = must(within(pod).getByRole('heading', { name: 'Alice' }).parentElement)
+    expect(heading.querySelector('[data-slot="turn-time"]')).toBeNull()
+    expect(within(pod).getByRole('group', { name: "Alice's zones" }).querySelector('[data-slot="turn-time"]')).not.toBeNull()
   })
 
   it('is one column that may shrink, so a long commander chip is cut inside the pod and life stays in its column', () => {

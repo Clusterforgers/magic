@@ -278,6 +278,8 @@ struct Parts {
     /// Whether the game is in the database, so changes to its seats are written there too.
     recorded: bool,
     seats: Vec<SeatSlot>,
+    /// The seats bots play.
+    bots: Vec<PlayerId>,
     /// The Delves run the game is a boss fight of.
     delve: Option<String>,
 }
@@ -299,8 +301,14 @@ struct Entry {
     created: Instant,
     /// When a sweep first saw the game finished.
     finished: Option<Instant>,
-    /// Last time a sweep saw a seat connected.
+    /// Last time a sweep saw a person at a seat; a bot holding its seat does not count.
     last_connected: Instant,
+    /// Events in the log when a sweep last looked; none before the first sweep.
+    events_seen: Option<u64>,
+    /// Last time a sweep found the log longer than before: an answer was taken.
+    last_action: Instant,
+    /// The seats bots play.
+    bots: Vec<PlayerId>,
     /// Dropped with the entry, which tells every socket of the game to close; a game closed by its
     /// host says so first.
     alive: watch::Sender<Removal>,
@@ -327,9 +335,17 @@ impl Entry {
             created,
             finished: None,
             last_connected: Instant::now(),
+            events_seen: None,
+            last_action: Instant::now(),
+            bots: parts.bots,
             alive,
             unlisted: false,
         }
+    }
+
+    /// Whether a seat of `connected` is held by a person: bots join their seats too and never leave.
+    fn person_at(&self, connected: &[PlayerId]) -> bool {
+        connected.iter().any(|seat| !self.bots.contains(seat))
     }
 
     /// Updates the entry from a fresh status; false once the game is due for removal.
@@ -342,10 +358,17 @@ impl Entry {
         if !status.started {
             return age(self.created) < rules.lobby_after;
         }
-        if !status.connected.is_empty() {
+        if self.person_at(&status.connected) {
             self.last_connected = now;
         }
-        age(self.last_connected) < rules.abandoned_after
+        if self
+            .events_seen
+            .replace(status.events)
+            .is_some_and(|before| before != status.events)
+        {
+            self.last_action = now;
+        }
+        age(self.last_connected.max(self.last_action)) < rules.abandoned_after
     }
 }
 
@@ -721,6 +744,7 @@ impl Registry {
             code: Some(code.digest()),
             recorded: persistent,
             seats: slots,
+            bots: options.bots.iter().map(|bot| bot.seat).collect(),
             delve: recipe
                 .as_ref()
                 .and_then(|recipe| recipe.campaign.as_ref())
@@ -1080,7 +1104,7 @@ impl Registry {
         for (id, handle) in handles {
             statuses.push((id, handle.status().await.ok()));
         }
-        let mut dropped = Vec::new();
+        let mut due = Vec::new();
         {
             let mut games = self.games();
             for (id, status) in statuses {
@@ -1092,9 +1116,14 @@ impl Registry {
                     .as_ref()
                     .is_some_and(|s| entry.keep(s, now, &self.shared.retention));
                 if !keep {
-                    games.remove(&id);
-                    dropped.push((id, status.and_then(|s| s.result)));
+                    due.push((id, status));
                 }
+            }
+        }
+        let mut dropped = Vec::new();
+        for (id, status) in due {
+            if let Some(result) = self.drop_if_due(id, status, now).await {
+                dropped.push((id, result));
             }
         }
         if let Some(records) = &self.shared.records {
@@ -1111,6 +1140,35 @@ impl Registry {
             }
         }
         dropped.len()
+    }
+
+    /// Removes a game a sweep found due unless it is not due after all, and returns the result it ended with, if any.
+    /// Asking every game took a while, so a started game without a result is asked once more: a person who sat
+    /// down meanwhile keeps it.
+    async fn drop_if_due(
+        &self,
+        id: GameId,
+        status: Option<GameStatus>,
+        now: Instant,
+    ) -> Option<Option<GameResult>> {
+        let running = |s: &GameStatus| s.started && s.result.is_none();
+        let status = match (status.as_ref().is_some_and(running), self.handle(id)) {
+            (true, Some(handle)) => handle.status().await.ok(),
+            _ => status,
+        };
+        let mut games = self.games();
+        let entry = games.get_mut(&id)?;
+        if status
+            .as_ref()
+            .is_some_and(|s| entry.keep(s, now, &self.shared.retention))
+        {
+            return None;
+        }
+        games.remove(&id);
+        if status.as_ref().is_some_and(running) {
+            tracing::info!(game = %id, "closed an abandoned game: nobody at a seat and no answer taken");
+        }
+        Some(status.and_then(|s| s.result))
     }
 
     /// Runs [`Registry::sweep`] every `sweep_every` until `stop` fires or its sender is dropped.
