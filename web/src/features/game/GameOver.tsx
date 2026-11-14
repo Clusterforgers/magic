@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils'
 import { useGame, usePlay } from './gameContext'
 import { describeResult, endKind, seatOutcomes } from './outcome'
 import type { EndKind } from './outcome'
+import { SeatFace } from './SeatFace'
 import { seatName } from './useGameInfo'
 import { WinBurst, WinnerBanner } from './WinBurst'
 
@@ -102,6 +103,7 @@ export function GameOver({ onReview }: { onReview?: () => void }) {
                 className="grid gap-1 px-4 py-3 text-sm sm:grid-cols-[1fr_auto] sm:items-center sm:gap-x-4"
               >
                 <span className="flex min-w-0 items-center gap-2">
+                  <SeatFace seat={entry.seat} />
                   <span className="shrink-0 text-muted-foreground">Seat {entry.seat + 1}</span>
                   <span className="truncate font-medium">{entry.name}</span>
                   {entry.you ? <Pill>you</Pill> : null}

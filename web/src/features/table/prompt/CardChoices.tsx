@@ -1,6 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
-import type { FocusEvent, KeyboardEvent, ReactNode, Ref } from 'react'
-import { cn } from '@/lib/utils'
+import type { CSSProperties, FocusEvent, KeyboardEvent, ReactNode, Ref } from 'react'
 import type { ObjectId, ObjectView } from '@/protocol/generated'
 import { rovingTarget } from '../useRoving'
 import { CardSearchField } from './CardSearchField'
@@ -38,8 +37,11 @@ export interface CardChoicesProps {
   focusFirst?: Ref<HTMLButtonElement>
   /** Controls drawn before the cards in the same group (a player among the targets). */
   lead?: ReactNode
-  /** The sheet's room for the grid, as a Tailwind class; the default leaves what the sentence and the buttons take. */
-  className?: string
+  /**
+   * What the rest of the prompt takes of the sheet, in rem (the sentence, the buttons, a line of players); the grid has
+   * the remainder (`--choice-room`), and its cards are sized so a whole row fits it. 10.5 when left out, 14.5 with a search.
+   */
+  rest?: number
   /** A search of a library: the search box shows from two cards and takes focus when the prompt appears. */
   search?: boolean
 }
@@ -73,7 +75,7 @@ export function CardChoices({
   keys = false,
   focusFirst,
   lead,
-  className,
+  rest,
   search = false,
 }: CardChoicesProps) {
   const total = cards.length
@@ -153,39 +155,46 @@ export function CardChoices({
         // A pointer that leaves a card for the gap or the edge gives the preview back to the chosen card.
         onPointerOut={restore}
         onKeyDown={onKeyDown}
-        className={cn(
-          // The sheet the prompt sits in is at most `--sheet-max` high: what the stack, the sentence, the buttons and the
-          // clock leave is the grid's, and it scrolls inside.
-          'flex basis-full flex-wrap content-start items-start gap-1.5 overflow-y-auto p-1.5',
-          className ??
-            (filtering
-              ? 'max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_14.5rem))]'
-              : 'max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_10.5rem))]'),
-        )}
+        style={
+          {
+            '--choice-room': `max(6rem, calc(var(--sheet-max, 20rem) - ${rest ?? (filtering ? 14.5 : 10.5)}rem))`,
+          } as CSSProperties
+        }
+        className="flex max-w-full min-w-0 basis-full flex-col gap-2"
       >
         {lead}
-        {visible.map((id, place) => {
-          const key = keys ? numberKey(place) : undefined
-          return (
-            <PromptCard
-              key={id}
-              ref={place === 0 ? focusFirst : undefined}
-              id={id}
-              label={labels.get(id) ?? 'A card'}
-              size={size}
-              chosen={chosen.includes(id)}
-              closed={(closed || shut?.has(id) === true) && !chosen.includes(id)}
-              tabbable={id === current}
-              hotkey={key}
-              onPress={onPress}
-            />
-          )
-        })}
-        {visible.length === 0 && total > 0 ? (
-          <p data-slot="no-match" className="p-2 text-sm text-muted-foreground">
-            {`No card has “${filter.trim()}” in its name, type or text.`}
-          </p>
-        ) : null}
+        {/*
+          The sheet the prompt sits in is at most `--sheet-max` high: what the stack, the sentence, the buttons and the
+          clock leave is the row's (`--choice-room`). Its cards stand whole in one row as high as that room; more cards
+          than the width holds scroll sideways over a thin bar, never a row cut in half.
+        */}
+        <div
+          data-slot="card-row"
+          className="flex max-w-full items-start justify-center-safe gap-2 overflow-x-auto overflow-y-hidden p-1.5 [scrollbar-width:thin]"
+        >
+          {visible.map((id, place) => {
+            const key = keys ? numberKey(place) : undefined
+            return (
+              <PromptCard
+                key={id}
+                ref={place === 0 ? focusFirst : undefined}
+                id={id}
+                label={labels.get(id) ?? 'A card'}
+                size={size}
+                chosen={chosen.includes(id)}
+                closed={(closed || shut?.has(id) === true) && !chosen.includes(id)}
+                tabbable={id === current}
+                hotkey={key}
+                onPress={onPress}
+              />
+            )
+          })}
+          {visible.length === 0 && total > 0 ? (
+            <p data-slot="no-match" className="p-2 text-sm text-muted-foreground">
+              {`No card has “${filter.trim()}” in its name, type or text.`}
+            </p>
+          ) : null}
+        </div>
       </div>
     </ChoiceAnchorContext>
   )

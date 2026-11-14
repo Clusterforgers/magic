@@ -1,9 +1,12 @@
-// Goal: in a grid of opponents each opponent's lands fold into its pod's lands chip (count, tapped, names), the board then draws no land, a press on the chip lays them out and folds them again, the split counts them folded only then, and your own board, a duel and a table that does not fold keep their lands laid out.
+// Goal: at a grid of opponents every board's lands, yours too, fold into its pod's lands chip (count, tapped, names), the board then draws no land, a press on the chip lays them out until pressed again, priority's mana marks leave them folded while a prompt beyond priority that marks a land lays them out, the split counts them folded only then, and a duel and a table that does not fold keep their lands laid out.
 import { fireEvent } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
-import { foldsTheirLands } from './boardSplit'
+import { foldsLands } from './boardSplit'
+import { promptKey } from './boardZoom'
+import { initialPlayState } from '@/play/store'
+import { decisionFor } from '@/test-utils/decisions'
 import { landNames, landTally, landWords } from './landFold'
 import { arrangeSeats } from './layout'
 
@@ -52,8 +55,9 @@ describe('the fold at the table', () => {
       expect(chip).toHaveAttribute('aria-expanded', 'false')
       expect(chip.getAttribute('aria-label')).toMatch(/^Show .+'s lands: \d+ lands/)
     }
-    // Your own lands are never folded.
-    expect(lands(container, 0)).not.toBeNull()
+    // Your own lands fold into your pod's chip too.
+    expect(lands(container, 0)).toBeNull()
+    expect(container.querySelector('[data-seat="0"] [data-slot="land-summary"]')).not.toBeNull()
     const chip = must(container.querySelector<HTMLElement>('[data-seat="1"] [data-slot="land-summary"]'))
     fireEvent.click(chip)
     expect(chip).toHaveAttribute('aria-expanded', 'true')
@@ -80,7 +84,19 @@ describe('the fold at the table', () => {
   ] as const)(
     'with %i seats in %s mode, folding %s, counts the lands folded in the split: %s',
     (seats, mode, fold, folds) => {
-      expect(foldsTheirLands(arrangeSeats({ seatCount: seats, viewer: 0, mode }), fold)).toBe(folds)
+      expect(foldsLands(arrangeSeats({ seatCount: seats, viewer: 0, mode }), fold)).toBe(folds)
     },
   )
+})
+
+describe('what lays folded lands out', () => {
+  it.each([
+    ['no decision', null, null],
+    ['priority', 'Priority', null],
+    ['a choice of targets', 'ChooseTargets', '7'],
+    ['a sacrifice', 'ChooseCards', '7'],
+  ] as const)('reads %s as %s', (_, kind, key) => {
+    const pending = kind === null ? null : { id: 7, decision: decisionFor(kind) }
+    expect(promptKey({ ...initialPlayState(), pending })).toBe(key)
+  })
 })

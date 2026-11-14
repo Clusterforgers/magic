@@ -75,7 +75,7 @@ describe('regionSizes', () => {
     ['1366x768', 'l', 'column', 272, 44, 56, 122.88],
     ['1280x720', 'l', 'column', 272, 44, 56, 115.2],
     ['1024x768', 'm', 'rail', 44, 44, 56, 122.88],
-    ['390x844', 'xs', 'sheet', 0, 44, 59.08, 118.16],
+    ['390x844', 'xs', 'sheet', 0, 44, 59.08, 135.04],
     ['768x1024', 's', 'sheet', 0, 44, 71.68, 163.84],
     ['844x390', 's', 'sheet', 0, 32, 56, 104],
   ])(
@@ -130,7 +130,7 @@ describe('regionSizes', () => {
     ['1920x1080', 432],
     ['1280x720', 288],
     // A phone's sheet leaves the tile strip and a row of the opponents' board (`SHEET_KEEP_PX`).
-    ['390x844', 59.08 + (844 - 44 - 59.08 - 118.16) / 2.15 - 120],
+    ['390x844', 59.08 + (844 - 44 - 59.08 - 135.04) / 2.15 - 120],
     // A window so low that the strip and the opponents are less than 40 %: the sheet takes them and no more.
     ['844x390', 56 + (390 - 32 - 56 - 104) / 2.15],
   ])('lets the sheet of a %s window grow %f px up over the opponents', (name, most) => {
@@ -199,9 +199,9 @@ describe('the CSS templates', () => {
     )
   })
 
-  it('writes a 32 px bar for a phone on its side and a 96 to 120 px hand dock for a phone upright', () => {
+  it('writes a 32 px bar for a phone on its side and a 104 to 140 px hand dock for a phone upright', () => {
     expect(gridRows({ phone: false, landscape: true })).toMatch(/^32px /)
-    expect(gridRows({ phone: true, landscape: false })).toMatch(/clamp\(96px, 14dvh, 120px\)$/)
+    expect(gridRows({ phone: true, landscape: false })).toMatch(/clamp\(104px, 16dvh, 140px\)$/)
   })
 
   it.each(SIZES)('gives the sizes regionSizes does at %s', (_name, viewport) => {

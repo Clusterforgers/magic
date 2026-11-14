@@ -69,7 +69,7 @@ describe('the Priority prompt at the by-hand window', () => {
   it('names the card to apply by hand from its resolution until the seat passes', async () => {
     const { h, spell, send, events, prompt, container } = mount(0, 0, true)
     send(decision(1, 0))
-    await waitFor(() => expect(prompt()).toMatch(/^You are responding to/))
+    await waitFor(() => expect(prompt()).toMatch(/^Responding to/))
     events(resolved(spell.id))
     expect(h.state().byHand).toBe(spell.name)
     send(decision(2, 0))
@@ -83,7 +83,11 @@ describe('the Priority prompt at the by-hand window', () => {
     events(passed(0))
     expect(h.state().byHand).toBeNull()
     send(decision(4, 0))
-    await waitFor(() => expect(prompt()).toMatch(/^You (have priority|are responding)/))
+    await waitFor(() =>
+      expect(prompt()).toMatch(
+        /^(Responding to|Nothing to play|No legal move|Play|Cast|Tap|Use|Unlock|Pay|Bring)/,
+      ),
+    )
     expect(prompt()).not.toBe(byHandText(spell.name))
   })
 
@@ -96,7 +100,11 @@ describe('the Priority prompt at the by-hand window', () => {
     events(resolved(spell.id))
     expect(h.state().byHand).toBeNull()
     send(decision(1, viewer))
-    await waitFor(() => expect(prompt()).toMatch(/^You (have priority|are responding)/))
+    await waitFor(() =>
+      expect(prompt()).toMatch(
+        /^(Responding to|Nothing to play|No legal move|Play|Cast|Tap|Use|Unlock|Pay|Bring)/,
+      ),
+    )
     expect(prompt()).not.toContain('by hand')
   })
 

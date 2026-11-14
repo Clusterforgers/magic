@@ -23,6 +23,7 @@ import {
 } from '../targetText'
 import type { PromptComponent } from '../types'
 import { UndoButton } from '../UndoButton'
+import { PlayerFace } from '../PlayerFace'
 import { useObjects } from '../useCombatNames'
 
 /**
@@ -162,24 +163,40 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
         objects={byId}
         onPress={onCard}
         label="Legal targets"
-        className="max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_12rem))]"
-        lead={players.map((target) => {
-          const picked = has(target)
-          return (
-            <Button
-              key={targetKey(target)}
-              size="sm"
-              variant="outline"
-              aria-pressed={picked}
-              disabled={(closed || !fits(target, chosen)) && !picked}
-              onClick={() => pick(target)}
-              className={picked ? CHOSEN_BUTTON : undefined}
+        rest={players.length === 0 ? 11 : 13.5}
+        lead={
+          players.length === 0 ? undefined : (
+            // The players stand on a line of their own over the cards, so a player never reads as a card.
+            <div
+              role="group"
+              aria-label="Players"
+              data-slot="player-targets"
+              className="flex basis-full flex-wrap items-center gap-2 border-b pb-2"
             >
-              {picked ? <Check aria-hidden="true" strokeWidth={3} /> : null}
-              {labelOf(target)}
-            </Button>
+              <span aria-hidden="true" className="text-xs text-muted-foreground">
+                Players
+              </span>
+              {players.map((target) => {
+                const picked = has(target)
+                return (
+                  <Button
+                    key={targetKey(target)}
+                    size="sm"
+                    variant="outline"
+                    aria-pressed={picked}
+                    disabled={(closed || !fits(target, chosen)) && !picked}
+                    onClick={() => pick(target)}
+                    className={picked ? CHOSEN_BUTTON : undefined}
+                  >
+                    {picked ? <Check aria-hidden="true" strokeWidth={3} /> : null}
+                    {'Player' in target ? <PlayerFace seat={target.Player} /> : null}
+                    {labelOf(target)}
+                  </Button>
+                )
+              })}
+            </div>
           )
-        })}
+        }
       />
       {chosen.length === 0 ? null : (
         <ul

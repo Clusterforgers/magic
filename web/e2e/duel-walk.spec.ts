@@ -69,7 +69,7 @@ async function cast(player: Player, name: string, target?: string): Promise<void
     await player.page.getByRole('button', { name: 'Confirm targets' }).click()
   }
   await player.page.getByRole('button', { name: 'Pay automatically' }).click()
-  await expect(sentence(player)).toContainText(`You are responding to your ${name}`)
+  await expect(sentence(player)).toContainText(`Responding to your ${name}`)
 }
 
 test('a counterspell, a combat trick and a sacrifice by hand, both seats reading each step', async ({
@@ -100,7 +100,7 @@ test('a counterspell, a combat trick and a sacrifice by hand, both seats reading
     const lion = 'Silvercoat Lion, cost 1 generic, white, Creature, power 2, toughness 2, cast by Ada'
     await expect.poll(() => stack(ada)).toEqual([`Top of the stack: ${lion}`])
     await pass(ada)
-    await expect(sentence(bo)).toContainText("You are responding to Ada's Silvercoat Lion")
+    await expect(sentence(bo)).toContainText("Responding to Ada's Silvercoat Lion")
     await expect(banner(bo)).toContainText("Ada's turn · 1 · Precombat main")
     await tutor(bo, 'Counterspell')
     await addMana(bo, 'Blue', 2)
@@ -109,7 +109,7 @@ test('a counterspell, a combat trick and a sacrifice by hand, both seats reading
       'Top of the stack: Counterspell, cost blue, blue, Instant, cast by Bo, targeting Silvercoat Lion'
     for (const player of players) await expect.poll(() => stack(player)).toEqual([counter, lion])
     await pass(bo)
-    await expect(sentence(ada)).toContainText("You are responding to Bo's Counterspell")
+    await expect(sentence(ada)).toContainText("Responding to Bo's Counterspell")
     await pass(ada)
     await expect(sentence(ada)).toContainText('You have priority')
     for (const player of players) await expect.poll(() => stack(player)).toEqual([])
@@ -132,7 +132,7 @@ test('a counterspell, a combat trick and a sacrifice by hand, both seats reading
     await addMana(ada, 'White', 3)
     await cast(ada, 'Pearled Unicorn')
     await pass(ada)
-    await expect(sentence(bo)).toContainText("You are responding to Ada's Pearled Unicorn")
+    await expect(sentence(bo)).toContainText("Responding to Ada's Pearled Unicorn")
     await pass(bo)
     await expect(sentence(ada)).toContainText('You have priority')
     await ownCard(ada, 'Pearled Unicorn').click({ button: 'right' })
@@ -167,7 +167,7 @@ test('a counterspell, a combat trick and a sacrifice by hand, both seats reading
       'Top of the stack: Swords to Plowshares, cost white, Instant, cast by Ada, targeting Soldier'
     for (const player of players) await expect.poll(() => stack(player)).toEqual([swords])
     await pass(ada)
-    await expect(sentence(bo)).toContainText("You are responding to Ada's Swords to Plowshares")
+    await expect(sentence(bo)).toContainText("Responding to Ada's Swords to Plowshares")
     await pass(bo)
     await expect(sentence(ada)).toContainText('You have priority')
     for (const player of players) await expect.poll(() => stack(player)).toEqual([])

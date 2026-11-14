@@ -40,7 +40,7 @@ export interface LineSpec {
   to: Anchor
   /** What the forecast says happens to the two creatures of a declared block; absent for the rest. */
   outcome?: Outcome
-  /** For a target line: the stack item belongs to the viewer. */
+  /** For a target line: the stack item belongs to the viewer. For an attack: the viewer attacks or is attacked. */
   mine?: boolean
 }
 
@@ -52,6 +52,8 @@ export interface PlanInput {
   pending: PendingCombat
   /** Who controls a card; unknown cards give undefined. */
   controllerOf: (id: ObjectId) => PlayerId | undefined
+  /** The viewer's seat, whose own attacks and the attacks at them are drawn strong; none for a spectator. */
+  viewer?: PlayerId | null
 }
 
 /** A key that is the same for the same anchor, to look its box up by. */
@@ -59,7 +61,7 @@ export const anchorKey = (anchor: Anchor): string =>
   anchor.kind === 'seat' ? `seat:${anchor.seat}` : `${anchor.kind}:${anchor.id}`
 
 /** The lines to draw: attacks first, then blocks, then the unsent choices on top. */
-export function planLines({ combat, forecast, pending, controllerOf }: PlanInput): LineSpec[] {
+export function planLines({ combat, forecast, pending, controllerOf, viewer = null }: PlanInput): LineSpec[] {
   const card = (id: ObjectId): Anchor => {
     const seat = controllerOf(id)
     return seat === undefined ? { kind: 'card', id } : { kind: 'card', id, seat }
@@ -67,6 +69,11 @@ export function planLines({ combat, forecast, pending, controllerOf }: PlanInput
   const target = (to: AttackTarget): Anchor =>
     'Player' in to ? { kind: 'seat', seat: to.Player } : card(to.Planeswalker)
 
+  // An attack concerns the viewer when the viewer attacks with it or is what it attacks (a planeswalker of theirs too).
+  const concerns = (attacker: ObjectId, to: AttackTarget): boolean =>
+    viewer !== null &&
+    (controllerOf(attacker) === viewer ||
+      ('Player' in to ? to.Player === viewer : controllerOf(to.Planeswalker) === viewer))
   const attacks: LineSpec[] = []
   const blocks: LineSpec[] = []
   if (combat?.attackers_declared === true) {
@@ -77,6 +84,7 @@ export function planLines({ combat, forecast, pending, controllerOf }: PlanInput
         pending: false,
         from: card(attacker.object),
         to: target(attacker.target),
+        ...(concerns(attacker.object, attacker.target) ? { mine: true } : {}),
       })
       for (const blocker of attacker.blockers) {
         blocks.push({

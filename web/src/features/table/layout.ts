@@ -221,7 +221,7 @@ export const TOP_BAR_LANDSCAPE_PX = 32
 export const SHARED_CLAMP: HeightClamp = { min: 56, vh: 7, max: 72 }
 /** The hand dock; a phone held upright gets the lower one. */
 export const HAND_CLAMP: HeightClamp = { min: 104, vh: 16, max: 200 }
-export const HAND_PHONE_CLAMP: HeightClamp = { min: 96, vh: 14, max: 120 }
+export const HAND_PHONE_CLAMP: HeightClamp = { min: 104, vh: 16, max: 140 }
 /**
  * A hand that one row does not hold grows the dock (not a phone's) to the height of its rows, up to this percent of the
  * window height (`HAND_GROW_VAR`, `handDockNeed`); the boards give up that room.
@@ -280,6 +280,11 @@ export interface Regions {
    * `SHEET_KEEP_PX` of it, elsewhere their pods and `BOARD_KEEP_PX` of their boards once split) and no further than the top bar. Never down over your board (the cards a prompt asks you to click are yours), the hand dock or the controls.
    */
   sheet: number
+  /**
+   * The most a sheet that lays out cards grows to (`CARD_PROMPTS`): as `sheet`, but over the opponents' boards too,
+   * whose cards it does not ask for or draws again itself; never over your board, the hand dock or the controls.
+   */
+  sheetWide: number
 }
 
 const finite = (value: number): number => (Number.isFinite(value) ? Math.max(0, value) : 0)
@@ -336,6 +341,7 @@ export function regionSizes(viewport: Viewport, folded = false): Regions {
     opponents,
     own,
     sheet: sheetMost(height, shared, opponents, phone),
+    sheetWide: sheetMost(height, shared, opponents, phone),
   }
 }
 

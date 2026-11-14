@@ -44,8 +44,8 @@ import { SidePanelMount, SideSheet, SideTabs } from './SideTabs'
 import { TableGrid } from './TableGrid'
 import { useBoardSplit } from './useBoardSplit'
 import { useTheirHead } from './useTheirHead'
-import { sheetReserve } from './boardSplit'
-import { TableOptionsContext } from './tableOptions'
+import { foldsLands, sheetReserve } from './boardSplit'
+import { FOLD_LANDS_BY_DEFAULT, TableOptionsContext } from './tableOptions'
 import { TopBar } from './TopBar'
 import { TableTour } from './tour/TableTour'
 import { useViewport } from './useViewport'
@@ -170,6 +170,7 @@ const Table = memo(function Table() {
                           shared={
                             <SharedStrip
                               sheetMax={regions.sheet}
+                              sheetWide={regions.sheetWide}
                               onOverhang={onOverhang}
                               inset={table.pod === 'aside' ? POD_COLUMN_PX + ZONE_GAP_PX : 0}
                             />
@@ -184,7 +185,13 @@ const Table = memo(function Table() {
                                 phone={regions.phone}
                               />
                             ) : (
-                              <SeatArea seat={plan.viewer} size={size} facing="near" pod={table.pod} />
+                              <SeatArea
+                                seat={plan.viewer}
+                                size={size}
+                                facing="near"
+                                pod={table.pod}
+                                foldLands={foldsLands(plan, options.foldLands ?? FOLD_LANDS_BY_DEFAULT)}
+                              />
                             )
                           }
                           hand={
