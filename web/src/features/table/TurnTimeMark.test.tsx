@@ -59,6 +59,13 @@ describe.each([
     expect(mark).toHaveTextContent('12:05')
   })
 
+  it('stands apart from the name, whose row keeps its room for the name and the life', () => {
+    const table = show(1)
+    table.update(setTimes({ 1: [725_000, false] }, Date.now()))
+    const heading = must(screen.getByText('Bo', { selector: 'h3, span.truncate' }).parentElement)
+    expect(heading.contains(must(marks()[0]))).toBe(false)
+  })
+
   it('ticks from the moment the table arrived while the seat plays its turn', () => {
     vi.useFakeTimers({ now: 100_000 })
     const table = show(2)

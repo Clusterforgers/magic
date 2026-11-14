@@ -138,6 +138,8 @@ impl SeatBrain for Timed {
 #[derive(Debug, Clone, Copy)]
 enum Who {
     Level(Level),
+    /// A level aiming as main does: the low-life lean, no retaliation or spread (`Knobs::archenemy` 0).
+    Main(Level),
     Baseline,
     Exp,
     /// A level of the frozen brains of the main branch before the threat model.
@@ -151,6 +153,9 @@ fn level(name: &str) -> Who {
         "hard" => Who::Level(Level::Hard),
         "veryhard" => Who::Level(Level::VeryHard),
         "baseline" => Who::Baseline,
+        "main-normal" => Who::Main(Level::Normal),
+        "main-hard" => Who::Main(Level::Hard),
+        "main-veryhard" => Who::Main(Level::VeryHard),
         "old-normal" => Who::Old(legacy::Level::Normal),
         "old-hard" => Who::Old(legacy::Level::Hard),
         "old-veryhard" => Who::Old(legacy::Level::VeryHard),
@@ -174,6 +179,16 @@ fn number<T: std::str::FromStr>(name: &str, default: T) -> T {
 fn make(who: Who, seed: u64, seat: PlayerId, timed: bool) -> Box<dyn SeatBrain> {
     match who {
         Who::Level(level) => brain(level, seed, seat, timed),
+        Who::Main(level) => {
+            let mut knobs = mtg_testkit::brain::knobs::Knobs::TUNED;
+            knobs.archenemy = 0.0;
+            knobs.rival = 0.0;
+            knobs.spread = 0.0;
+            Box::new(Knobbed {
+                inner: brain(level, seed, seat, timed),
+                knobs,
+            })
+        }
         Who::Old(level) => legacy::brain(level, seed, seat, timed),
         Who::Baseline => Box::new(HeuristicBot::new(seed, seat, Settings::BASELINE.untimed())),
         Who::Exp => {
@@ -275,16 +290,68 @@ fn make(who: Who, seed: u64, seat: PlayerId, timed: bool) -> Box<dyn SeatBrain> 
                 }
             }
             Box::new(Knobbed {
-                inner: HeuristicBot::new(seed, seat, settings),
+                inner: Box::new(HeuristicBot::new(seed, seat, settings)),
                 knobs,
             })
         }
     }
 }
 
+/// Attacking power the weak side aimed at opponents by life rank (0 the highest life), non-lethal and lethal, when `AIM`
+/// is set.
+static AIM: Mutex<[[f64; 4]; 2]> = Mutex::new([[0.0; 4]; 2]);
+
+/// A brain whose attack declarations add to [`AIM`].
+struct Aimed {
+    inner: Box<dyn SeatBrain>,
+    seat: PlayerId,
+}
+
+impl SeatBrain for Aimed {
+    fn choose(&mut self, decision: &Decision, table: Option<&Engine>) -> Answer {
+        let answer = self.inner.choose(decision, table);
+        if let (Answer::DeclareAttackers(attack), Some(engine)) = (&answer, table) {
+            let seen = mtg_testkit::brain::Seen::new(engine.state(), self.seat);
+            let mut opponents: Vec<(PlayerId, i32)> = seen
+                .alive()
+                .into_iter()
+                .filter(|p| !seen.is_teammate(*p))
+                .map(|p| (p, seen.life(p)))
+                .collect();
+            opponents.sort_by_key(|(_, life)| std::cmp::Reverse(*life));
+            let mut aimed: Vec<(PlayerId, i32)> = Vec::new();
+            for (object, target) in attack {
+                if let mtg_engine::combat::AttackTarget::Player(player) = target {
+                    let power = seen.body(*object).map_or(0, |b| b.power().max(0));
+                    match aimed.iter_mut().find(|(p, _)| p == player) {
+                        Some(entry) => entry.1 += power,
+                        None => aimed.push((*player, power)),
+                    }
+                }
+            }
+            let mut stats = AIM.lock().unwrap();
+            for (player, power) in aimed {
+                let life = seen.life(player);
+                // Ties share their ranks.
+                let ranks: Vec<usize> = opponents
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, (_, l))| *l == life)
+                    .map(|(at, _)| at.min(3))
+                    .collect();
+                let lethal = usize::from(power >= life);
+                for rank in &ranks {
+                    stats[lethal][*rank] += f64::from(power) / ranks.len() as f64;
+                }
+            }
+        }
+        answer
+    }
+}
+
 /// A brain that plays with its own policy constants.
 struct Knobbed {
-    inner: HeuristicBot,
+    inner: Box<dyn SeatBrain>,
     knobs: mtg_testkit::brain::knobs::Knobs,
 }
 
@@ -406,7 +473,15 @@ fn main() {
                                     stats: Arc::clone(&stats),
                                 }) as Box<dyn SeatBrain>
                             } else {
-                                make(weak, seed, player, timed)
+                                let inner = make(weak, seed, player, timed);
+                                if std::env::var("AIM").is_ok() {
+                                    Box::new(Aimed {
+                                        inner,
+                                        seat: player,
+                                    })
+                                } else {
+                                    inner
+                                }
                             }
                         })
                         .collect();
@@ -503,6 +578,21 @@ fn main() {
         max.as_millis(),
         started.elapsed().as_secs_f64()
     );
+    if std::env::var("AIM").is_ok() {
+        let stats = *AIM.lock().unwrap();
+        let names = [
+            "aimed power by life rank (highest first)",
+            "lethal attacks by life rank",
+        ];
+        for (name, row) in names.iter().zip(stats) {
+            let total: f64 = row.iter().sum();
+            let shares: Vec<String> = row
+                .iter()
+                .map(|v| format!("{:.0}%", 100.0 * v / total.max(1.0)))
+                .collect();
+            println!("{name}: {} of {total:.0} power", shares.join(" / "));
+        }
+    }
     let (searches, overrides, with, points) = *searched.lock().unwrap();
     println!(
         "tree searches {searches}, overrides {overrides} ({:.1}%); games with an override {with}, scoring {:.1}%",

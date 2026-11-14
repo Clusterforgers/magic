@@ -429,6 +429,8 @@ pub struct GameState {
     pub(crate) restart: Option<crate::restart::Restart>,
     /// The pressure the boss's side put on each hero of a campaign fight (`spotlight`).
     pub(crate) spotlight: crate::spotlight::Spotlight,
+    /// The damage each player dealt to each other player lately (`rivalry`).
+    pub(crate) rivalry: crate::rivalry::Rivalry,
 }
 
 impl GameState {
@@ -987,6 +989,9 @@ impl Hash for GameState {
         // A game outside a campaign fight hashes as it did before the spotlight.
         if !self.spotlight.is_empty() {
             self.spotlight.hash(state);
+        }
+        if !self.rivalry.is_empty() {
+            self.rivalry.hash(state);
         }
         self.pending_triggers.hash(state);
         self.trigger_round.hash(state);

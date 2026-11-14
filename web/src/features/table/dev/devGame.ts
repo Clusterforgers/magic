@@ -7,7 +7,16 @@ import { canHoldStop } from '@/play/stops'
 import { appendChat, createPlayStore, initialPlayState } from '@/play/store'
 import type { PendingDecision, PlayState, PlayStore } from '@/play/store'
 import { indexById, withPresence } from '@/play/view'
-import type { FullControlMode, HouseRules, PlayerId, StateView, Step, Stop } from '@/protocol/generated'
+import type {
+  FullControlMode,
+  HouseRules,
+  ObjectView,
+  PlayerId,
+  StateView,
+  Step,
+  Stop,
+} from '@/protocol/generated'
+import { DEV_BOSS_EMBLEMS, DEV_BOSS_OMEN, DEV_BOSS_PHASES, DEV_BOSS_SCHEME } from './bossContent'
 import { ruleKey } from '../autoSkips'
 import { devPreview } from './devForecast'
 import { withStop } from './devStops'
@@ -278,23 +287,47 @@ const DEV_TABLE_RULES: HouseRules = {
 export function withBoss(moment: Fixture, minions: number): Fixture {
   const count = moment.view.players.length
   const boss = Math.max(1, count - 1 - Math.max(0, minions))
+  // The boss's rules lie in its command zone as emblems, as the server deals them.
+  const first = Math.max(0, ...moment.view.objects.map((object) => object.id)) + 1
+  const emblems: ObjectView[] = DEV_BOSS_EMBLEMS.map((name, at) => ({
+    id: first + at,
+    owner: boss,
+    controller: boss,
+    zone: { Command: boss },
+    kind: 'Emblem',
+    name,
+    mana_cost: null,
+    supertypes: [],
+    types: [],
+    subtypes: [],
+    colors: [],
+    power: null,
+    toughness: null,
+    abilities: [],
+    permanent: null,
+  }))
   const players = moment.view.players.map((player) =>
     player.seat === boss
       ? {
           ...player,
           life: 120,
+          command: {
+            count: player.command.count + emblems.length,
+            cards: [...(player.command.cards ?? []), ...emblems.map((emblem) => emblem.id)],
+          },
           boss: {
-            phases: ['The Nest Stirs', 'The Queen Wakes'],
+            phases: [...DEV_BOSS_PHASES],
             begun: 1,
-            scheme: 'Gnawing Tide',
-            omen: 'All Shall Kneel',
+            scheme: DEV_BOSS_SCHEME,
+            omen: DEV_BOSS_OMEN,
           },
         }
       : player,
   )
   const seats = players.map((player) => (player.seat >= boss ? 1 : 0))
   const house_rules = { ...moment.view.house_rules, teams: { mode: 'teams' as const, seats } }
-  return { ...moment, view: { ...moment.view, players, house_rules } }
+  const objects = [...moment.view.objects, ...emblems]
+  return { ...moment, view: { ...moment.view, players, objects, house_rules } }
 }
 
 /** The table with its active player gone (CR 800.4): the seat is out of the game and the turn goes on without it. */

@@ -16,6 +16,8 @@ use crate::passwords::HashCost;
 pub const DEFAULT_BIND: SocketAddr = SocketAddr::new(IpAddr::V4(Ipv4Addr::LOCALHOST), 8080);
 /// Cap on concurrent games when `MTG_MAX_GAMES` is unset.
 pub const DEFAULT_MAX_GAMES: usize = 100;
+/// Shortest and longest idle time `MTG_IDLE_CLOSE_SECS` accepts, in seconds.
+const IDLE_CLOSE_SECS: std::ops::RangeInclusive<u64> = 60..=7 * 24 * 3600;
 
 /// Why the environment does not describe a usable server.
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
@@ -29,6 +31,9 @@ pub enum ConfigError {
     /// `MTG_BOT_THINKERS` is not a whole number of at least 1.
     #[error("MTG_BOT_THINKERS must be a whole number of at least 1, got {0:?}")]
     BadBotThinkers(String),
+    /// `MTG_IDLE_CLOSE_SECS` is not a whole number of seconds from 60 to 604800.
+    #[error("MTG_IDLE_CLOSE_SECS must be a whole number of seconds from 60 to 604800, got {0:?}")]
+    BadIdleCloseSecs(String),
     /// An `MTG_ALLOWED_ORIGINS` entry is not `http(s)://host[:port]`.
     #[error("MTG_ALLOWED_ORIGINS entry {0:?} is not an origin such as https://host[:port]")]
     BadOrigin(String),
@@ -246,8 +251,24 @@ pub struct Retention {
     pub finished_after: Duration,
     /// A lobby that never started is dropped this long after creation.
     pub lobby_after: Duration,
-    /// A started game without any connected seat is dropped after this long.
+    /// A started game is closed after this long with no person at a seat and no answer taken (`MTG_IDLE_CLOSE_SECS`).
     pub abandoned_after: Duration,
+}
+
+impl Retention {
+    /// Reads `MTG_IDLE_CLOSE_SECS` through `get`; a blank or missing value leaves the default.
+    fn apply_env(&mut self, get: &impl Fn(&str) -> Option<String>) -> Result<(), ConfigError> {
+        if let Some(text) = get("MTG_IDLE_CLOSE_SECS") {
+            let seconds = text
+                .trim()
+                .parse::<u64>()
+                .ok()
+                .filter(|s| IDLE_CLOSE_SECS.contains(s))
+                .ok_or(ConfigError::BadIdleCloseSecs(text))?;
+            self.abandoned_after = Duration::from_secs(seconds);
+        }
+        Ok(())
+    }
 }
 
 impl Default for Retention {
@@ -256,7 +277,7 @@ impl Default for Retention {
             sweep_every: Duration::from_secs(30),
             finished_after: Duration::from_mins(10),
             lobby_after: Duration::from_hours(1),
-            abandoned_after: Duration::from_hours(24),
+            abandoned_after: Duration::from_hours(1),
         }
     }
 }
@@ -315,7 +336,7 @@ fn at_least_one(text: &str) -> Option<usize> {
 }
 
 impl ServerConfig {
-    /// Reads `MTG_BIND`, `MTG_ALLOWED_ORIGINS`, `MTG_MAX_GAMES`, `MTG_BOT_THINKERS`, `MTG_AUTO_PASS`, `MTG_RESPONSE_SECS`,
+    /// Reads `MTG_BIND`, `MTG_ALLOWED_ORIGINS`, `MTG_MAX_GAMES`, `MTG_BOT_THINKERS`, `MTG_IDLE_CLOSE_SECS`, `MTG_AUTO_PASS`, `MTG_RESPONSE_SECS`,
     /// `MTG_BLOCK_SECS`, `MTG_THINK_SECS`, `MTG_ACTIVE_SECS`, `MTG_EXTENSION_SECS`, `MTG_CLOCK_GRACE_SECS`,
     /// `MTG_DWELL_MS`, `MTG_REGISTRATION`, `MTG_ADMIN_USERNAME`, `MTG_COOKIE_SECURE`, `MTG_TRUSTED_PROXIES`, `MTG_SEED`,
     /// `MTG_IMAGE_CACHE` and `MTG_IMAGE_CACHE_MIB` from the process environment.
@@ -343,6 +364,7 @@ impl ServerConfig {
         if let Some(text) = get("MTG_BOT_THINKERS") {
             config.bot_thinkers = at_least_one(&text).ok_or(ConfigError::BadBotThinkers(text))?;
         }
+        config.retention.apply_env(&get)?;
         if let Some(text) = get("MTG_ALLOWED_ORIGINS") {
             for entry in text.split(',').map(str::trim).filter(|e| !e.is_empty()) {
                 let origin = normalize_origin(entry)
@@ -561,6 +583,33 @@ mod tests {
         assert_eq!(
             load(&[("MTG_BOT_THINKERS", text)]).map(|c| c.bot_thinkers),
             Ok(expected)
+        );
+    }
+
+    #[rstest]
+    #[case("", 3_600)]
+    #[case("60", 60)]
+    #[case(" 7200 ", 7_200)]
+    #[case("604800", 604_800)]
+    fn idle_close_times(#[case] text: &str, #[case] seconds: u64) {
+        let config = load(&[("MTG_IDLE_CLOSE_SECS", text)]).unwrap();
+        assert_eq!(
+            config.retention.abandoned_after,
+            Duration::from_secs(seconds)
+        );
+    }
+
+    #[rstest]
+    #[case("0")]
+    #[case("59")]
+    #[case("604801")]
+    #[case("-5")]
+    #[case("1h")]
+    #[case("1.5")]
+    fn bad_idle_close_times(#[case] text: &str) {
+        assert_eq!(
+            load(&[("MTG_IDLE_CLOSE_SECS", text)]),
+            Err(ConfigError::BadIdleCloseSecs(text.to_owned()))
         );
     }
 

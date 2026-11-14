@@ -1,5 +1,6 @@
 import { Crosshair, GhostIcon } from 'lucide-react'
-import { memo, useRef } from 'react'
+import { memo, useContext, useRef } from 'react'
+import { BossBarContext } from './campaign/useBossAbilities'
 import type { MouseEvent } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { describeLoss } from '@/features/game/outcome'
@@ -21,7 +22,15 @@ import { useSeatNamer } from './names'
 import { BankMark } from './BankMark'
 import { ACTIVE_EDGE, AwayMark, CountChip, PriorityDot, SeatDot, YOUR_TURN_EDGE } from './PodParts'
 import { podCounts, podState, podStateWords, priorityName, showsPriorityDot } from './podFigures'
-import { exileOf, holdsPriority, isActiveSeat, isYourTurn, NO_IDS, playerOf } from './selectors'
+import {
+  commandCardsOf,
+  exileOf,
+  holdsPriority,
+  isActiveSeat,
+  isYourTurn,
+  NO_IDS,
+  playerOf,
+} from './selectors'
 import { describeMulligan } from './turnText'
 import { useBoxHeight } from './useBoxHeight'
 import { SeatCorner } from './SeatCorner'
@@ -121,6 +130,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
   const owner = useSeatNamer()(seat)
   const player = usePlay((state) => playerOf(state, seat))
   const exile = usePlay(useShallow((state) => exileOf(state, seat)))
+  const commanders = usePlay(useShallow((state) => commandCardsOf(state, seat)))
   const flags = usePlay(
     useShallow((state) => ({
       you: state.seat === seat,
@@ -143,9 +153,10 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
   const below = useRef<HTMLDivElement>(null)
   const belowHeight = useBoxHeight(below)
   const room = usePodRoom()
+  // Over a boss's side the abilities bar carries the phase track, so the boss's pod leaves it out.
+  const barred = useContext(BossBarContext)
   if (player === undefined) return null
   const graveyard = player.graveyard.cards ?? NO_IDS
-  const commanders = player.command.cards ?? NO_IDS
   // Your own commanders wait at the end of the hand dock, where they are cast; the pod keeps their chips.
   const drawn = flags.you ? NO_IDS : commanders
   const taxOnCards = chips.tax.filter((chip) => drawn.includes(chip.key))
@@ -185,7 +196,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
   const mana = <LiveManaPool pool={player.mana} />
   const notes = (
     <>
-      {player.boss ? <BossTrack boss={player.boss} /> : null}
+      {player.boss && !barred ? <BossTrack boss={player.boss} /> : null}
       {player.lost === null ? null : (
         <p className="rounded-md bg-destructive/10 px-2 py-1 text-xs font-medium text-destructive">
           Eliminated: {describeLoss(player.lost)}
@@ -196,6 +207,12 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
           Mulligan: {describeMulligan(player.mulligan, player.mulligans)}
         </p>
       ) : null}
+    </>
+  )
+  const timers = (
+    <>
+      <BankMark seat={seat} />
+      <TurnTimeMark seat={seat} />
     </>
   )
   const name = (
@@ -215,8 +232,6 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
         <PriorityDot label={priorityName(owner, flags.you)} />
       ) : null}
       {away ? <AwayMark /> : null}
-      <BankMark seat={seat} />
-      <TurnTimeMark seat={seat} />
     </div>
   )
 
@@ -253,6 +268,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
             aria-label={`${owner}'s zones`}
             className="flex max-w-full min-w-0 flex-wrap items-center gap-1"
           >
+            {timers}
             <CountChip zone="hand" count={counts.hand} density="line" />
             <CountChip zone="library" count={counts.library} density="line" />
             {flags.you ? <LibraryTopChip player={player} /> : null}
@@ -268,7 +284,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
             ) : null}
             <ZoneButton zone="graveyard" owner={owner} ids={graveyard} density="line" thumbs />
             <ZoneButton zone="exile" owner={owner} ids={exile} density="line" thumbs />
-            {counts.command > 0 ? (
+            {commanders.length > 0 ? (
               <ZoneButton zone="command" owner={owner} ids={commanders} density="line" thumbs />
             ) : null}
           </div>
@@ -286,18 +302,16 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
     )
   }
 
-  // A short column folds the hand and library chips into the name row and the other chips into the pool's row, so the
-  // corner keeps the room for its pictures.
+  // A short column folds the other chips into the pool's row, so the corner keeps the room for its pictures.
   const tight = podIsTight(room.height)
   // A column too short for the least picture under even the tight blocks keeps only the name row and life above the
   // corner; the pool, the untapped sources and the other chips lie under it, where the column scrolls to them.
   const cramped = podIsCramped(room.height)
-  // In the name row the chips drop their background, which is the room the name needs beside them.
-  const handDensity = tight ? 'tile' : 'line'
+  // Beside the life the hand and library are quiet figures without a chip's background.
   const handChips = (
     <>
-      <CountChip zone="hand" count={counts.hand} density={handDensity} />
-      <CountChip zone="library" count={counts.library} density={handDensity} />
+      <CountChip zone="hand" count={counts.hand} density="tile" />
+      <CountChip zone="library" count={counts.library} density="tile" />
     </>
   )
   const extraChips = (
@@ -341,23 +355,20 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
     >
       {/* Everything above the corner: its height does not depend on how the corner is drawn, so the corner can be sized by it. */}
       <div ref={above} data-slot="pod-top" className="grid grid-cols-[minmax(0,1fr)] content-start gap-2">
-        {/* The life stays on the name row, whose name truncates, so it is never pushed under the rows below. */}
-        {/* A boss's name row carries its crown, so its life goes under it rather than squeezing the name away. */}
-        <header
-          className={cn(
-            'grid items-center gap-x-2 gap-y-0.5',
-            player.boss ? 'grid-cols-[minmax(0,1fr)]' : 'grid-cols-[minmax(0,1fr)_auto]',
-          )}
-        >
-          {tight ? (
-            <div data-slot="pod-name-row" className="flex min-w-0 flex-wrap items-center gap-1">
-              {name}
-              {handChips}
-            </div>
-          ) : (
-            name
-          )}
-          <div className="flex items-center gap-1.5">
+        {/* The name has the whole width; under it the clocks and the hand and library stand beside the life figure,
+            at its right, so the largest figure never shares a row with words that could run into it. */}
+        <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1">
+          <div data-slot="pod-name-row" className="col-span-full min-w-0">
+            {name}
+          </div>
+          <div
+            data-slot="pod-meta"
+            className="flex min-w-0 flex-wrap content-center items-center gap-x-2 gap-y-0.5 self-stretch"
+          >
+            {handChips}
+            {timers}
+          </div>
+          <div className="flex items-center gap-1.5 justify-self-end">
             <LifeForecast seat={seat} />
             <Life
               seat={seat}
@@ -387,8 +398,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
           {notes}
         </div>
         {tight ? null : (
-          <div data-slot="pod-counts" className="flex flex-wrap gap-1">
-            {handChips}
+          <div data-slot="pod-counts" className="flex flex-wrap gap-1 empty:hidden">
             {extraChips}
           </div>
         )}

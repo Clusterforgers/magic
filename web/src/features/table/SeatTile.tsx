@@ -138,8 +138,6 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
             <PriorityDot label={priorityName(name, false)} />
           ) : null}
           {away ? <AwayMark /> : null}
-          <BankMark seat={seat} />
-          <TurnTimeMark seat={seat} />
         </span>
         <span className="flex shrink-0 items-center gap-1">
           <LifeForecast seat={seat} />
@@ -170,6 +168,9 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
             {zone === 'library' ? <RevealedFigure player={player} /> : null}
           </Fragment>
         ))}
+        {/* The clocks sit with the figures, so the name row keeps its room for the name and the life. */}
+        <BankMark seat={seat} />
+        <TurnTimeMark seat={seat} />
         <TaxChips chips={chips.tax} density="tile" />
         <EnchantChips chips={enchants} density="tile" />
         <PlayerEffectChips owner={name} player={player} density="tile" />

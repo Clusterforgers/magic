@@ -259,6 +259,16 @@ export function seatEffects(
   ]
 }
 
+/**
+ * A boss's effects less those the abilities bar over its side already shows: its phase, scheme and Omen and its
+ * emblems, which are its rules.
+ */
+export function withoutBossBar(effects: readonly EffectFacts[]): EffectFacts[] {
+  return effects.filter(
+    (effect) => !['Boss', 'Scheme', 'Omen'].includes(effect.key) && !effect.key.startsWith('Emblem:'),
+  )
+}
+
 /** The name of the chip group: "Effects on Bo: Can't lose, Hexproof". */
 export function effectsName(owner: string, effects: readonly EffectFacts[]): string {
   return `Effects on ${owner}: ${effects.map((effect) => effect.label).join(', ')}`
