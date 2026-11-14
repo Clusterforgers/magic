@@ -646,6 +646,7 @@ impl GameState {
             rmt8_lives: lives,
             rmt8_upkeeps: std::collections::BTreeMap::new(),
             spotlight: crate::spotlight::Spotlight::default(),
+            rivalry: crate::rivalry::Rivalry::default(),
             last_turn_of: None,
             monarch: None,
             player_controls: Vec::new(),

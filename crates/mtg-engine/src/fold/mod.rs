@@ -99,6 +99,7 @@ pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineErr
     crate::memory::forget_object(state, event);
     crate::triggers::g10c_note_crime(state, event);
     crate::spotlight::note(state, event);
+    crate::rivalry::note(state, event);
     let folded = fold_event(state, event);
     // A read in the middle of the fold saw the state before the rest of the event: forget it.
     if changes_layers {
