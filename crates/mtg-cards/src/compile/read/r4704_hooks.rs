@@ -5,8 +5,7 @@
 //! "Exile target nontoken creature you own and the top two cards of your library ..., then cloak those cards. They
 //! enter tapped.") or put back on top of the library ("exile it and the top six cards of your library in a face-down
 //! pile. If you do, shuffle that pile and put it back on top of your library."); "Each player chooses any number of
-//! creatures they control with total power 4 or less, then sacrifices all other creatures they control."; "fortified
-//! land" (the land a Fortification is attached to), read and written as its twin "enchanted land".
+//! creatures they control with total power 4 or less, then sacrifices all other creatures they control."
 
 use mtg_core::card::CardType;
 
@@ -536,29 +535,12 @@ fn r4704_keep_power_texts(ability: &Ability) -> Option<String> {
     r4704_keep_power_text(what, *most)
 }
 
-/// The words for the land a Fortification is attached to, and those of its twin, capitalized and not.
-const R4704_FORTIFIED: [(&str, &str); 2] = [
-    ("Fortified land", "Enchanted land"),
-    ("fortified land", "enchanted land"),
-];
-
 /// The ability of a wording of this pack; `read` reads a clause of the same kind.
 pub(super) fn r4704_read(
     text: &str,
     kind: ClauseKind,
     read: impl Fn(&str) -> Option<Ability>,
 ) -> Option<Ability> {
-    if R4704_FORTIFIED
-        .iter()
-        .any(|(fortified, _)| text.contains(fortified))
-    {
-        let twin = R4704_FORTIFIED
-            .iter()
-            .fold(text.to_owned(), |text, (fortified, enchanted)| {
-                text.replace(fortified, enchanted)
-            });
-        return read(&twin);
-    }
     if kind == ClauseKind::Triggered {
         for (combat, head) in r4704_excess_heads() {
             if text.strip_prefix(head) == Some(R4704_EXCESS_HEAD) {
@@ -588,22 +570,6 @@ pub(super) fn r4704_wordings(
             texts.push(format!("{head}{R4704_EXCESS_HEAD}"));
         }
     }
-    let fortified: Vec<String> = texts
-        .iter()
-        .filter(|text| {
-            R4704_FORTIFIED
-                .iter()
-                .any(|(_, enchanted)| text.contains(enchanted))
-        })
-        .map(|text| {
-            R4704_FORTIFIED
-                .iter()
-                .fold(text.clone(), |text, (fortified, enchanted)| {
-                    text.replace(enchanted, fortified)
-                })
-        })
-        .collect();
-    texts.extend(fortified);
     texts.extend(r4704_pile_spell_text(ability));
     texts.extend(r4704_keep_power_texts(ability));
     texts.extend(r4704_pile_trigger_texts(ability, written));
