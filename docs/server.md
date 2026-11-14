@@ -14,7 +14,7 @@ The `mtg-server` crate: one actor per game behind an axum REST and WebSocket tra
 - Deciding (`Running::deciding_news`): after a step's decisions are sent, the actor broadcasts `Deciding` when the pending decisions (a held-back dwell as `Priority`) differ from what the table was last told; a joining client hears it after its snapshot.
 - A game made from a recipe keeps one deck per seat in the lobby (`SeatDecks`, [Choosing a deck](#choosing-a-deck)): a `Ready` from a seat without one is answered `Error{BadMessage}` to that seat alone and changes nothing. A game from a bare setup (`Registry::register`, `spawn_game`) needs no decks.
 - `Registry` holds the live games by random v4 `GameId`. A seat token is 256 random bits kept only as its SHA-256; `authenticate` compares every seat so timing does not tell which matched. `MTG_MAX_GAMES` caps creation.
-- The janitor sweeps every 30 s and drops finished games after 10 min, unstarted lobbies after 1 h and started games with nobody connected for 24 h (`Retention`), closing their sockets with 1001 and marking the record `expired` or `finished`.
+- The janitor sweeps every 30 s and drops finished games after 10 min, unstarted lobbies after 1 h and started games after `Retention::abandoned_after` (1 h, `MTG_IDLE_CLOSE_SECS`) with no person at a seat (a bot is none) and no answer taken, closing their sockets with 1001 and marking the record `expired` or `finished`; a game that gains a person or an answer while the sweep runs is asked again and kept.
 
 ## Transport
 
@@ -57,7 +57,7 @@ Limits per socket: `Join` within 10 s of the upgrade; frames and messages of 64 
 - `Server::open` loads every `lobby` and `running` game oldest first, rebuilds the setup from the recipe, checks the seat rows against it and calls `resume_game` with the stored digests, so old tokens open the same seats. A game whose log shows it ended is only corrected to `finished`.
 - A recipe, seat rows or log that do not load (a replay panic included), a changed or lost deck or card and a started game with an unheld seat mark the game `failed`; only an unreachable database stops boot. A `failed` game is not retried (fix the row and set `running` by hand) or loaded, so its tokens, lookup and sockets answer 404.
 - A failure has two texts: `failure`, the operator's detail (error, seat, fingerprints), also logged; and `failure_reason`, one sentence for the players from `Cause` (`registry/cause.rs`) with no internals. My games shows "This game could not be restored, so it cannot continue." for a `failed` game without a reason.
-- A lobby returns with its visibility, join code and claims, nobody ready, and its age: past `Retention::lobby_after` (database clock) it becomes `expired`. A started game with an open seat does not load; a running one gets a fresh 24 h without a connection. `MTG_MAX_GAMES` limits creation only.
+- A lobby returns with its visibility, join code and claims, nobody ready, and its age: past `Retention::lobby_after` (database clock) it becomes `expired`. A started game with an open seat does not load; a running one gets a fresh `abandoned_after` without a connection. `MTG_MAX_GAMES` limits creation only.
 - Lobby choices are not stored until the start: a restarted lobby reads its recipe, so a seat returns on its built-in deck, and a seat whose recipe names a stored deck has none until it chooses again.
 
 ### Deck check
@@ -376,6 +376,7 @@ Blank values count as unset; any other malformed value refuses to start (`Config
 | `MTG_ALLOWED_ORIGINS` | none | Comma list of `http(s)://host[:port]` origins besides the server's own host (sockets, state-changing requests, CORS). |
 | `MTG_MAX_GAMES` | 100 | Most games alive at once, at least 1. |
 | `MTG_BOT_THINKERS` | cores − 1 | Bots searching at once across the server, at least 1 ([Bot seats](#bot-seats)). |
+| `MTG_IDLE_CLOSE_SECS` | 3600 | Seconds a started game may have no person at a seat and no answer before the janitor closes it as `expired`; 60 to 604 800. |
 | `MTG_AUTO_PASS` | on | `1`, `on`, `true` or `0`, `off`, `false`. Off starts every seat in `Held`. |
 | `MTG_RESPONSE_SECS` | 10 | Response clock; `0` for none, at most 86 400. |
 | `MTG_BLOCK_SECS` | 45 | Clock for declaring blockers; same range. |

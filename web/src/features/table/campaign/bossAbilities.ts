@@ -112,6 +112,23 @@ export function bossAbilities(
   return out
 }
 
+/** The order of the table's row, which keeps what changes the fight now in view: the phase in force, the scheme, the Omen, the phases to come, then what is always on. */
+const BAR_RANK: Record<BossAbilityKind, number> = {
+  phase: 0,
+  scheme: 1,
+  omen: 2,
+  'next-phase': 3,
+  passive: 4,
+}
+
+/** `abilities` in the order of the table's row (`BAR_RANK`), each kind keeping its own order. */
+export function barOrder(abilities: readonly BossAbility[]): BossAbility[] {
+  return abilities
+    .map((ability, at) => ({ ability, at }))
+    .sort((a, b) => BAR_RANK[a.ability.kind] - BAR_RANK[b.ability.kind] || a.at - b.at)
+    .map(({ ability }) => ability)
+}
+
 /** The name of the boss whose command zone holds `object`, one of its boss abilities; undefined otherwise. */
 export function bossOwner(
   object: ObjectView | undefined,

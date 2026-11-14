@@ -6,6 +6,8 @@ use mtg_protocol::rest::{AdminGame, AdminGameSeat};
 
 use super::listing::utc_stamp;
 use super::{Registry, Removal};
+use mtg_core::ids::PlayerId;
+
 use crate::game_id::GameId;
 use crate::handle::GameHandle;
 use crate::records::{RecordError, RecordStatus};
@@ -30,7 +32,7 @@ impl Registry {
             let ago = now.saturating_duration_since(at);
             utc_stamp(wall.checked_sub(ago).unwrap_or(UNIX_EPOCH))
         };
-        let mut candidates: Vec<(Instant, GameHandle, AdminGame)> = self
+        let mut candidates: Vec<(Instant, GameHandle, Vec<PlayerId>, AdminGame)> = self
             .games()
             .iter()
             .map(|(id, entry)| {
@@ -49,14 +51,19 @@ impl Registry {
                         })
                         .collect(),
                     created_at: stamp(entry.created),
-                    last_activity: stamp(entry.last_connected.max(entry.created)),
+                    last_activity: stamp(
+                        entry
+                            .last_connected
+                            .max(entry.last_action)
+                            .max(entry.created),
+                    ),
                 };
-                (entry.created, entry.handle.clone(), row)
+                (entry.created, entry.handle.clone(), entry.bots.clone(), row)
             })
             .collect();
         candidates.sort_by_key(|candidate| std::cmp::Reverse(candidate.0));
         let mut rows = Vec::with_capacity(candidates.len());
-        for (_, handle, mut row) in candidates {
+        for (_, handle, bots, mut row) in candidates {
             let Ok(status) = handle.status().await else {
                 continue;
             };
@@ -69,7 +76,7 @@ impl Registry {
                     listed.connected = true;
                 }
             }
-            if !status.connected.is_empty() {
+            if status.connected.iter().any(|seat| !bots.contains(seat)) {
                 row.last_activity = utc_stamp(wall);
             }
             rows.push(row);
