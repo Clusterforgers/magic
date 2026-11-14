@@ -19,10 +19,8 @@ fn probe() {
             println!("[{i}] {}", face.oracle_text.replace('\n', "\n    "));
         }
         println!("status: {:?}", out.card.as_ref().map(|c| c.impl_status));
-        for c in &out.clauses {
-            let text = &card.faces[c.face].oracle_text;
-            let q = c.span.slice(text).unwrap_or("?");
-            println!("  UNREAD[{}] {} :: {}", c.face, q, c.reason);
+        for c in out.clauses.iter().filter(|c| !c.read) {
+            println!("  UNREAD[{}] {}", c.face, c.text);
         }
     }
 }
