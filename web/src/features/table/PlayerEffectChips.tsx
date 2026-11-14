@@ -11,7 +11,9 @@ import { cn } from '@/lib/utils'
 import type { PlayerView } from '@/protocol/generated'
 import { DENSITY } from './PodParts'
 import type { ChipDensity } from './PodParts'
-import { effectsName, seatEffects } from './playerEffects'
+import { useContext } from 'react'
+import { BossBarContext } from './campaign/useBossAbilities'
+import { effectsName, seatEffects, withoutBossBar } from './playerEffects'
 import type { EffectFacts, EffectIcon, EffectTone } from './playerEffects'
 import { useStable } from './useStable'
 import { useSeatNamer } from './names'
@@ -75,7 +77,13 @@ export function PlayerEffectChips({
   density?: ChipDensity
 }) {
   const namer = useSeatNamer()
-  const effects = usePlay(useStable((state) => seatEffects(player, state.objectsById, owner, namer)))
+  const barred = useContext(BossBarContext) && player.boss != null
+  const effects = usePlay(
+    useStable((state) => {
+      const all = seatEffects(player, state.objectsById, owner, namer)
+      return barred ? withoutBossBar(all) : all
+    }),
+  )
   if (effects.length === 0) return null
   if (density !== 'tile') {
     return effects.map((effect) => <EffectChip key={effect.key} effect={effect} density={density} />)
