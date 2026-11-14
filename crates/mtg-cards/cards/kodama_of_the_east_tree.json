@@ -1,7 +1,7 @@
 {
   "oracle_id": "cb1afab6-b9c8-4b9c-840b-24106523a783",
   "name": "Kodama of the East Tree",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kodama of the East Tree",
@@ -9,9 +9,62 @@
       "abilities": [
         { "Keyword": "Reach" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 6, "end": 207 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": ["Other", { "ControlledBy": "You" }], "to": "Battlefield" }
+            },
+            "if": {
+              "Not": {
+                "Matches": {
+                  "subject": "Triggering",
+                  "selector": [{ "Is": { "Remembered": { "on": "This", "slot": "kodama" } } }]
+                }
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" },
+                            {
+                              "AnyOf": [
+                                { "Type": "Artifact" },
+                                { "Type": "Battle" },
+                                { "Type": "Creature" },
+                                { "Type": "Enchantment" },
+                                { "Type": "Land" },
+                                { "Type": "Planeswalker" }
+                              ]
+                            },
+                            {
+                              "Compare": {
+                                "stat": "ManaValue",
+                                "op": "Le",
+                                "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                              }
+                            }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "card" },
+                        "to": { "Battlefield": {} },
+                        "as": "put"
+                      }
+                    },
+                    { "Remember": { "what": { "Bound": "put" }, "slot": "kodama" } }
+                  ]
+                }
+              }
+            ]
           }
         },
         { "Keyword": "Partner" }

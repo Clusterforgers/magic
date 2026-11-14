@@ -100,7 +100,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     for player in asked_order(cx.scope.players(who)?, cx.journal()) {
         let Some((_, asked)) = journal.next_if(|entry| entry.0 == player) else {
             if state.is_alive(player) {
-                return Ok(Run::Ask(question(cx, player, &template, floor)));
+                let mut asked = question(cx, player, &template, floor);
+                if r6105_unpayable(cx, cost)?
+                    && let DecisionKind::YesNo(options) = &mut asked.kind
+                {
+                    options.only_no = true;
+                }
+                return Ok(Run::Ask(asked));
             }
             continue;
         };
@@ -167,6 +173,26 @@ fn r5512_spend(cx: &Cx<'_>) -> Spend {
     } else {
         Spend::other()
     }
+}
+
+/// Whether the cost pays the mana cost of an object that has none, or of no object: having no mana cost is an unpayable
+/// cost (CR 202.1b, 118.6), so a token creature can't be kept by paying "that creature's mana cost" (Tariff).
+fn r6105_unpayable(cx: &Cx<'_>, cost: &Cost) -> Result<bool, ResolveError> {
+    for item in &cost.0 {
+        if let CostItem::ManaCostOf(of) = item {
+            let state = cx.state();
+            let costed = cx
+                .scope
+                .objects(of)?
+                .into_iter()
+                .find_map(|named| state.object(named.id))
+                .is_some_and(|object| object.mana_cost().is_some());
+            if !costed {
+                return Ok(true);
+            }
+        }
+    }
+    Ok(false)
 }
 
 /// The cost with the life or energy of a counted amount ("pay that much life", "pay X life, where X is ...", "pay an

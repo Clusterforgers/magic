@@ -431,6 +431,10 @@ pub(in crate::compile::read) use r6001_wholes::{
     r6001_pair_read, r6001_pair_texts, r6001_read_whole,
 };
 pub(in crate::compile::read) use r6104_wholes::r6104_read_whole;
+mod r6105_wholes;
+pub(in crate::compile::read) use r6105_wholes::{
+    r6105_pair_read, r6105_pair_texts, r6105_read_whole,
+};
 mod rmt5_wholes;
 // r30-0
 mod r300_wholes;
@@ -597,6 +601,7 @@ fn add_latest(ability: &Ability, texts: &mut Vec<String>) {
     r5523_wholes::add(ability, texts);
     r6001_wholes::add(ability, texts);
     r6104_wholes::r6104_add(ability, texts);
+    r6105_wholes::add(ability, texts);
     r306_wholes::add(ability, texts);
     // r28-9
     r289_wholes::r289_add_wholes(ability, texts);
