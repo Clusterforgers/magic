@@ -379,3 +379,21 @@ proptest! {
         prop_assert_eq!(sequential, concurrent);
     }
 }
+
+#[test]
+#[ignore]
+fn r5515_seed_scan() {
+    for seed in 0..600u64 {
+        let ok = [3usize, 4, 6].iter().all(|&seats| {
+            let Ok(setup) = setup(Table::Commander, seats, seed) else { return false };
+            let Ok(engine) = Engine::new(setup.clone()) else { return false };
+            let first = matches!(engine.decisions().first().map(|d| &d.kind), Some(DecisionKind::ChooseOption(_)));
+            let scripts: Vec<Script> = (0..seats).map(|seat| Script { mulligans: vec![seat % 2 == 0], rotate: seat }).collect();
+            first && match (play(&setup, &scripts, None), play(&setup, &scripts, Some(&[3, 1, 4, 1, 5, 2]))) {
+                (Ok(a), Ok(b)) => a == b,
+                _ => false,
+            }
+        });
+        if ok { println!("SEED {seed}"); }
+    }
+}

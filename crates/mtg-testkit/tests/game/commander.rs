@@ -311,3 +311,22 @@ fn a_commander_game_replays_to_the_live_state() -> Result<(), ScriptError> {
     assert_eq!(rebuilt.commander_casts(commander(&driver)), 2);
     Ok(())
 }
+
+#[test]
+#[ignore]
+fn r5515_seed_scan() {
+    for seed in 0..600u64 {
+        let ok = [2usize, 4].iter().all(|&seats| {
+            let Ok(setup) = commander_fuzz_setup(seats, seed) else { return false };
+            let Ok(engine) = Engine::new(setup) else { return false };
+            let Ok(mut driver) = Driver::new(engine) else { return false };
+            let mut asked = 0;
+            while let Ok(DecisionKind::ChooseOption(_)) = driver.decision().map(|d| d.kind.clone()) {
+                if driver.answer(Answer::ChooseOption(OptionChoice(0))).is_err() { return false }
+                asked += 1;
+            }
+            asked == 1 && matches!(driver.decision().map(|d| &d.kind), Ok(DecisionKind::Mulligan(_)))
+        });
+        if ok { println!("SEED {seed}"); }
+    }
+}

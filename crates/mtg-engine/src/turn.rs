@@ -143,6 +143,7 @@ const fn step_bit(step: Step) -> u16 {
 }
 
 /// Where the game is within the turn sequence.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TurnState {
     pub(crate) number: u32,
