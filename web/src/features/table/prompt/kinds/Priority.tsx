@@ -14,6 +14,8 @@ import { markCards, NO_NOTES, useCardMarks, useCardNotes } from '../marks'
 import type { CardNotes } from '../marks'
 import { useOwnCardIds } from '../ownCards'
 import { PassControls } from '../PassControls'
+import { SpiritPanel } from '../../campaign/SpiritPanel'
+import { spiritEmblem } from '../../campaign/haunt'
 import { PromptLayout } from '../PromptLayout'
 import { usePrompt } from '../PromptContext'
 import { manaByPermanent, priorityText, topOfStack } from '../priorityText'
@@ -43,6 +45,7 @@ export const PriorityPrompt: PromptComponent<'Priority'> = ({ options }) => {
   const objectsById = usePlay((state) => state.objectsById)
   const mana = useMemo(() => manaByPermanent(options.mana_abilities), [options.mana_abilities])
   const abilities = useMemo(() => abilityPlays(options, objectsById, seat), [options, objectsById, seat])
+  const ownSeat = view?.players.find((player) => player.seat === decision.player)
   const [choosing] = selection.ids
   const choices = choosing === undefined ? undefined : mana.get(choosing)
   const [asking, setAsking] = useState<MenuTarget | null>(null)
@@ -123,6 +126,14 @@ export const PriorityPrompt: PromptComponent<'Priority'> = ({ options }) => {
           onClose={() => setAsking(null)}
         />
       )}
+      {ownSeat?.spirit === true ? (
+        <SpiritPanel
+          player={ownSeat}
+          emblem={spiritEmblem(ownSeat, objectsById)}
+          options={options}
+          onActivate={(ability) => answer({ Priority: { Activate: ability } })}
+        />
+      ) : null}
       <BringCompanion offered={options.companion === true} />
       <PassControls canPass={options.can_pass} />
     </PromptLayout>

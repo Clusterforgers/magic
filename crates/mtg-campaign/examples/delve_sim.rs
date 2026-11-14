@@ -82,6 +82,10 @@ struct Fought {
     /// The turns of the boss's side.
     boss_turns: u32,
     failed: bool,
+    /// Heroes who became Spirits, Spirits who rose again and haunt actions taken.
+    falls: u64,
+    rises: u64,
+    haunts: u64,
 }
 
 fn hero_deck(at: usize) -> (FixtureDeck, &'static str) {
@@ -238,6 +242,31 @@ fn fight(plan: &FightPlan, cards: &[Vec<String>], seed: u64, heroes: Level) -> F
                     }
                 }
             }
+            let falls = outcome
+                .events
+                .iter()
+                .filter(|e| matches!(e, mtg_engine::events::Event::BecameSpirit { .. }))
+                .count() as u64;
+            let rises = outcome
+                .events
+                .iter()
+                .filter(|e| matches!(e, mtg_engine::events::Event::SpiritRevived { .. }))
+                .count() as u64;
+            let emblems: Vec<_> = outcome
+                .events
+                .iter()
+                .filter_map(|e| match e {
+                    mtg_engine::events::Event::BecameSpirit { emblem, .. } => Some(*emblem),
+                    _ => None,
+                })
+                .collect();
+            let haunts = outcome
+                .events
+                .iter()
+                .filter(|e| {
+                    matches!(e, mtg_engine::events::Event::AbilityActivated { source, .. } if emblems.contains(&source.id))
+                })
+                .count() as u64;
             Fought {
                 won,
                 lives,
@@ -245,6 +274,9 @@ fn fight(plan: &FightPlan, cards: &[Vec<String>], seed: u64, heroes: Level) -> F
                 turns: outcome.turns,
                 boss_turns,
                 failed: false,
+                falls,
+                rises,
+                haunts,
             }
         }
         Err(failure) => {
@@ -256,6 +288,9 @@ fn fight(plan: &FightPlan, cards: &[Vec<String>], seed: u64, heroes: Level) -> F
                 turns: 0,
                 boss_turns: 0,
                 failed: true,
+                falls: 0,
+                rises: 0,
+                haunts: 0,
             }
         }
     }
@@ -269,6 +304,9 @@ struct Tally {
     failed: u64,
     turns: u64,
     boss_turns: u64,
+    falls: u64,
+    rises: u64,
+    haunts: u64,
 }
 
 impl Tally {
@@ -278,6 +316,9 @@ impl Tally {
         self.failed += u64::from(fought.failed);
         self.turns += u64::from(fought.turns);
         self.boss_turns += u64::from(fought.boss_turns);
+        self.falls += fought.falls;
+        self.rises += fought.rises;
+        self.haunts += fought.haunts;
     }
 
     fn merge(&mut self, other: &Tally) {
@@ -286,6 +327,9 @@ impl Tally {
         self.failed += other.failed;
         self.turns += other.turns;
         self.boss_turns += other.boss_turns;
+        self.falls += other.falls;
+        self.rises += other.rises;
+        self.haunts += other.haunts;
     }
 
     fn line(&self) -> String {
@@ -293,13 +337,16 @@ impl Tally {
         let hero_turns = (self.turns - self.boss_turns) as f64 / n;
         let boss_turns = self.boss_turns as f64 / n;
         format!(
-            "{}/{} won ({:.0}%), {:.1} turns ({:.1} boss side), ~{:.0} min{}",
+            "{}/{} won ({:.0}%), {:.1} turns ({:.1} boss side), ~{:.0} min, {} falls, {} rises, {} haunts{}",
             self.won,
             self.n,
             100.0 * self.won as f64 / n,
             self.turns as f64 / n,
             boss_turns,
             hero_turns * HERO_TURN_MINUTES + boss_turns * BOSS_TURN_MINUTES,
+            self.falls,
+            self.rises,
+            self.haunts,
             if self.failed > 0 {
                 format!(", {} FAILED", self.failed)
             } else {

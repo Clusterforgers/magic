@@ -35,6 +35,7 @@ import { rollSentence } from './manual/panel/roll'
 import { teamLabel } from '@/lib/teams'
 import { keywordWords as grantKeywordWords } from './manual/offers'
 import { takeBackAction } from './takeBackText'
+import { hauntWords } from './campaign/haunt'
 
 /** How the log names things; both fall back to a plain word when the thing is unknown. */
 export interface EventNames {
@@ -796,7 +797,11 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
     return targeting === '' ? quiet(text) : line(text)
   }
   if ('AbilityActivated' in event) {
-    const { player, source } = event.AbilityActivated
+    const { player, source, ability } = event.AbilityActivated
+    const haunt = hauntWords(n.card(source.id), ability)
+    if (haunt !== undefined) {
+      return line(`${n.seat(player)} haunts the fight: ${haunt}${targetingWords(context?.targets, n)}`)
+    }
     return line(
       `${n.seat(player)} activates an ability of ${n.card(source.id)}${targetingWords(context?.targets, n)}`,
     )
@@ -1365,6 +1370,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('BecameSpirit' in event) {
     return line(`${n.seat(event.BecameSpirit.player)} fell and rises as a Spirit`)
+  }
+  if ('SpiritRevived' in event) {
+    const { player, life } = event.SpiritRevived
+    return line(`${n.seat(player)} returns to life with ${life} life`)
   }
   if ('PhaseBegan' in event) {
     const { player, emblem } = event.PhaseBegan

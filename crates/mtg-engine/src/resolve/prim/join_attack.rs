@@ -16,7 +16,9 @@ use crate::zones::Zone;
 /// Whether the player or planeswalker is still there to be attacked.
 fn attackable(state: &GameState, target: AttackTarget) -> bool {
     match target {
-        AttackTarget::Player(player) => state.player(player).is_some(),
+        AttackTarget::Player(player) => {
+            state.player(player).is_some() && crate::spirits::attackable(state, player)
+        }
         AttackTarget::Planeswalker(id) => state
             .object(id)
             .is_some_and(|object| object.zone() == Zone::Battlefield),

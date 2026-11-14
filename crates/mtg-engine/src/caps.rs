@@ -372,6 +372,7 @@ const RUNS: &[&str] = &[
     "Effect.Performed",
     "Effect.Crewed",
     "Effect.BecomeMonarch",
+    "Effect.Revive",
     "Effect.ReduceSpeed",
     "Effect.ControlPlayer",
     "Effect.ControlPlayer.By",

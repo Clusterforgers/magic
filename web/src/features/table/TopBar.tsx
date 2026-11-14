@@ -16,6 +16,7 @@ import { TurnBadge } from './TurnBadge'
 import { StepLadder } from './turn/StepLadder'
 import { TurnBanner } from './turn/TurnBanner'
 import { PhaseBanner } from './campaign/PhaseBanner'
+import { SpiritMoment } from './campaign/SpiritMoment'
 
 const HOME = cn(
   buttonVariants({ variant: 'ghost', size: 'sm' }),
@@ -86,6 +87,7 @@ export function TopBar({
       <StepLadder />
       <TurnBanner />
       <PhaseBanner />
+      <SpiritMoment />
       <HelpMenu compact={compact} />
       <TableRules />
       <SpectatorCount />

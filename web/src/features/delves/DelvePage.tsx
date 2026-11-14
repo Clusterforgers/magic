@@ -37,6 +37,7 @@ import type { FindCard } from './findCard'
 import { PartyLobby } from './PartyLobby'
 import { RunHeader } from './RunHeader'
 import { POLL_MS, errorText } from './words'
+import { RevivalNote } from './DelvesRules'
 
 function FightPanel({
   view,
@@ -88,6 +89,7 @@ function FightPanel({
           </p>
         )}
       </div>
+      <RevivalNote />
     </BossIntro>
   )
 }

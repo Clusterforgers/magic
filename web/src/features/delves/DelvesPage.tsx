@@ -19,6 +19,7 @@ import { delvesApi } from '@/net/delves'
 import type { DelvesApi } from '@/net/delves'
 import type { DelveSummary } from '@/protocol/generated'
 import { cn } from '@/lib/utils'
+import { DelvesRules } from './DelvesRules'
 import { errorText, statusText } from './words'
 
 function NewDelveForm({ client }: { client: DelvesApi }) {
@@ -223,6 +224,7 @@ export function DelvesPage({ client = delvesApi }: { client?: DelvesApi }) {
         <DelveList client={client} />
         <NewDelveForm client={client} />
       </SignedInOnly>
+      <DelvesRules />
     </PageShell>
   )
 }

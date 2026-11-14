@@ -1286,6 +1286,18 @@ pub enum Effect {
         /// Its abilities.
         abilities: Vec<crate::ability::Ability>,
     },
+    /// A Spirit returns to life (`docs/delves.md`, Spirits): each player named who is a Spirit loses its haunt emblem, is a
+    /// living player again with this life total and draws this many cards; anyone else is unchanged.
+    Revive {
+        /// Who returns.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The life total they return with.
+        life: Amount,
+        /// The cards they draw.
+        #[serde(default = "Amount::zero", skip_serializing_if = "Amount::is_zero")]
+        draw: Amount,
+    },
     /// It becomes day or night (CR 726.3): the designation changes, and nothing happens when it already is that.
     BecomeDayNight {
         /// What it becomes.

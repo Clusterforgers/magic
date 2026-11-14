@@ -4631,6 +4631,11 @@ impl Walker<'_> {
                 bind,
                 effects,
             } => w.repeat_each(over, bind, effects),
+            Effect::Revive { who, life, draw } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("life", |w| w.amount(life));
+                w.at("draw", |w| w.amount(draw));
+            }
             Effect::SetLife { who, amount } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("amount", |w| w.amount(amount));

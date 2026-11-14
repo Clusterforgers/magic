@@ -529,7 +529,15 @@ player: PlayerId,
 /**
  * The Spirit emblem's new object.
  */
-emblem: ObjectId, } } | { "PhaseBegan": { 
+emblem: ObjectId, } } | { "SpiritRevived": { 
+/**
+ * Who.
+ */
+player: PlayerId, 
+/**
+ * The life total it returns with.
+ */
+life: number, } } | { "PhaseBegan": { 
 /**
  * Whose phase.
  */

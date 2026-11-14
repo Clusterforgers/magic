@@ -8,7 +8,27 @@ Design of Delves, the co-op campaign: a party of 1 to 6 heroes fights a ladder o
 - Every boss fight is a fresh, normally recorded Commander game: board, hand and library reset. The party is one team of seats from seat 0, the boss one seat after them and its minions after it (`FightPlan`).
 - Life carries over between fights. After a won fight each hero keeps their end life and heals 10; a hero who ended it as a Spirit comes back at 10 first. A Campfire rest heals 20, the shop's draught 15; nothing heals above 40 plus relic bonuses.
 - The party has 3 hearts. A lost fight costs one, every hero regroups at half life and the fight is retried; with no hearts left the run ends in defeat.
-- Within a fight a hero at 0 life is a Spirit while a teammate lives (`docs/engine.md`, Campaign seats): their cards leave and the Restless Spirit emblem taps a boss creature each boss upkeep and drains the boss each of their end steps. The party loses when every hero has fallen.
+- Within a fight a hero at 0 life is a Restless Spirit while a teammate lives (`docs/engine.md`, Campaign seats); the party loses when every hero has fallen. See Spirits.
+
+## Spirits
+
+A fallen hero keeps playing: it haunts the fight with small, clear choices and can come back.
+
+- A Spirit's cards leave the game; it keeps its turns and its library. Opponents cannot attack it or target it.
+- Ectoplasm is its resource: 1 on falling and 1 more at each of its upkeeps. The Restless Spirit emblem (`content/cards.json`) spends it on haunt actions at instant speed:
+
+| Action | Ectoplasm | Effect |
+|---|---|---|
+| Wail | 1 | Target opponent loses 2 life; its creatures get -1/-0 until end of turn |
+| Ward | 1 | Prevent the next 3 damage to each teammate this turn |
+| Whisper | 1 | Each teammate scries 2 |
+| Hinder | 1 | Tap a creature an opponent controls; it does not untap during its next untap step |
+| Howl | 3 | Tap up to two creatures opponents control; each opponent loses 2 life |
+| Rise Again | 5 | As a sorcery: return to life with 10 life and draw five cards |
+
+- Ways back: Rise Again; the Phoenix Feather relic (pay 6 life once each fight: every fallen teammate returns with 8 life and four cards); a won fight brings every Spirit back at 10.
+- Bot Spirits (`brain/haunt.rs`) rise as soon as they can, Ward when 4 or more power attacks the party, and before an opponent's combat Hinder its biggest creature (power 4 or more, 2 ectoplasm held) or Howl (4 held). A bot holding the Phoenix Feather uses it while it has 14 life or more.
+- Measured with two Hard heroes at Heat 0, seeds 1 to 4 (`fights`): 0/4 won with Spirits acting and 0/4 idle, 4 falls each; the fallen hero spends its Spirit turns on 3 haunt actions a fight and never reaches Rise Again, so haunting helps at the margin and does not decide a fight.
 
 ## Bosses
 
@@ -62,7 +82,7 @@ One table (`scale.rs`) sets the boss for the party's size, so every size meets t
 
 ## Tuning
 
-- `cargo run --release -p mtg-campaign --example delve_sim -- fights <games> <heroes> <level> [first seed] [threads] [heat]` plays each boss in turn against a fresh party of bot heroes on the four fixture Commander decks; `runs` plays whole runs with life carried and loot taken. Games are untimed and seeded, so each result replays. `DELVE_SIM_DROP` (boss cards, phases or schemes by id), `DELVE_SIM_LIFE` (percent), `DELVE_SIM_HAND` and `DELVE_SIM_MINIONS` change the plan to measure what each part is worth.
+- `cargo run --release -p mtg-campaign --example delve_sim -- fights <games> <heroes> <level> [first seed] [threads] [heat]` plays each boss in turn against a fresh party of bot heroes on the four fixture Commander decks; `runs` plays whole runs with life carried and loot taken. Games are untimed and seeded, so each result replays. `DELVE_SIM_DROP` (boss cards, phases or schemes by id), `DELVE_SIM_LIFE` (percent), `DELVE_SIM_HAND` and `DELVE_SIM_MINIONS` change the plan to measure what each part is worth; `DELVE_SIM_IDLE_SPIRITS` makes every Spirit pass, to measure what haunt actions are worth. Each line also counts falls, rises and haunt actions.
 - Minutes are estimated at 0.6 per hero turn and 0.5 per turn of the boss's side.
 - The target at Heat 0 for a party of Hard bots, at every size: each fight won in 50 to 60 % of fights, a whole run in 20 to 35 %, a fight in 15 to 40 minutes for three or more heroes.
 
