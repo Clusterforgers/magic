@@ -7,8 +7,9 @@ use mtg_cards::value::CounterKind;
 use super::l292_put_or_remove::Pick;
 use super::put_counters::{holders, whole};
 use super::wrong_effect;
-use crate::choose::Target;
+use crate::choose::{Choice, ChoiceOption, OptionOptions, Target};
 use crate::counters::CountersChanged;
+use crate::decision::{Decision, DecisionKind};
 use crate::events::Event;
 use crate::resolve::{Cx, ResolveError, Run};
 
@@ -23,6 +24,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         one_kind,
         per_kind,
         put,
+        absent_only,
     } = effect
     else {
         return Err(wrong_effect("PutCountersOf"));
@@ -57,17 +59,16 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
     }
     kinds.retain(|(_, n)| *n > 0);
-    if *one_kind {
-        match super::ep22_one_kind::ep22_pick(cx, &kinds)? {
-            Ok(picked) => kinds = picked,
-            Err(asked) => return Ok(asked),
-        }
+    let may_one = *one_kind && *per_kind == Some(mtg_cards::effect::PerKind::May);
+    match r6102_one_kind(cx, kinds, *one_kind, may_one)? {
+        Ok(picked) => kinds = picked,
+        Err(asked) => return Ok(asked),
     }
     let each = match each {
         Some(amount) => Some(whole(cx.scope.amount(amount)?)),
         None => None,
     };
-    let picks = match per_kind {
+    let picks = match per_kind.as_ref().filter(|_| !may_one) {
         Some(choice) => match super::l292_put_or_remove::l292_picks(cx, &kinds, *choice)? {
             Ok(picks) => picks,
             Err(asked) => return Ok(asked),
@@ -77,6 +78,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let mut events = Vec::new();
     for holder in holders(cx, on)? {
         for ((kind, n), pick) in kinds.iter().zip(&picks) {
+            if *absent_only && r6102_holds(cx, holder, kind) {
+                continue;
+            }
             let kind = match pick {
                 Pick::Same => kind,
                 Pick::Nothing => continue,
@@ -101,6 +105,94 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
     }
     Ok(Run::events(events))
+}
+
+/// The kinds left once `one_kind` picked one, and for `PerKind::May` once the controller said whether to put it.
+fn r6102_one_kind(
+    cx: &Cx<'_>,
+    mut kinds: Vec<(CounterKind, u32)>,
+    one_kind: bool,
+    may_one: bool,
+) -> Result<Result<Vec<(CounterKind, u32)>, Run>, ResolveError> {
+    if may_one {
+        // "Choose a counter on it. You may put an additional counter of that kind": the kind first, then whether.
+        let used = match super::ep22_one_kind::r6102_pick(cx, &kinds, true)? {
+            Ok((picked, used)) => {
+                kinds = picked;
+                used
+            }
+            Err(asked) => return Ok(Err(asked)),
+        };
+        match r6102_whether(cx, &kinds, used)? {
+            Ok(true) => {}
+            Ok(false) => kinds.clear(),
+            Err(asked) => return Ok(Err(asked)),
+        }
+    } else if one_kind {
+        match super::ep22_one_kind::ep22_pick(cx, &kinds)? {
+            Ok(picked) => kinds = picked,
+            Err(asked) => return Ok(Err(asked)),
+        }
+    }
+    Ok(Ok(kinds))
+}
+
+/// Whether the controller puts another counter of the one kind picked, the answer after the `used` ones of the pick, or
+/// the question; nothing is asked when no kind was picked.
+fn r6102_whether(
+    cx: &Cx<'_>,
+    kinds: &[(CounterKind, u32)],
+    used: usize,
+) -> Result<Result<bool, Run>, ResolveError> {
+    let Some((kind, _)) = kinds.first() else {
+        return Ok(Ok(false));
+    };
+    let player = cx.scope.controller;
+    let mut answers = cx.journal().iter().skip(used);
+    let put = match answers.next() {
+        None => {
+            let name = kind.name();
+            return Ok(Err(Run::Ask(Decision {
+                player,
+                kind: DecisionKind::ChooseOption(OptionOptions {
+                    can_cancel: false,
+                    source: cx.scope.source.id,
+                    options: vec![
+                        ChoiceOption::Label(format!("Put another {name} counter")),
+                        ChoiceOption::Label("Put nothing".to_owned()),
+                    ],
+                    text: format!("You may put another {name} counter on it."),
+                }),
+            })));
+        }
+        Some((who, Choice::Option(index))) if *who == player && *index < 2 => *index == 0,
+        Some(other) => {
+            return Err(ResolveError::Invalid(format!(
+                "{other:?} is no answer to whether another counter is put"
+            )));
+        }
+    };
+    if answers.next().is_some() {
+        return Err(ResolveError::Invalid(
+            "an answer was given to a question about counters that was not asked".into(),
+        ));
+    }
+    Ok(Ok(put))
+}
+
+/// Whether the holder has a counter of the kind now ("if it doesn't have a counter of that kind on it").
+fn r6102_holds(cx: &Cx<'_>, holder: Target, kind: &CounterKind) -> bool {
+    match holder {
+        Target::Player(player) => cx
+            .state()
+            .player(player)
+            .is_some_and(|p| p.counters().any(|(held, n)| held == kind && n > 0)),
+        Target::Object(object) => cx
+            .state()
+            .object(object.id)
+            .and_then(|o| o.permanent())
+            .is_some_and(|p| p.counters_of(kind) > 0),
+    }
 }
 
 #[cfg(test)]

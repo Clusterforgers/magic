@@ -517,6 +517,7 @@ fn r403_same_counters() -> Effect {
         one_kind: false,
         per_kind: None,
         put: false,
+        absent_only: false,
     }
 }
 

@@ -1365,6 +1365,10 @@ pub enum ReplaceBy {
         /// How many different kinds are chosen.
         count: u32,
     },
+    /// The permanent enters with one counter of each kind the objects named hold as it enters ("For each kind of counter
+    /// on ~, each other Dinosaur you control enters with a counter of that kind on it"); the reference reads from the
+    /// source of the replacement.
+    WithKindsOn(Ref),
     /// The permanent enters prepared (a prepare card; its controller may then cast a copy of its spell face).
     EntersPrepared,
     /// As the permanent enters, its controller chooses one of these words ("choose Khans or Dragons"), which

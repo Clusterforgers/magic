@@ -993,6 +993,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('ChosenAtRandom' in event) {
     return line(`${event.ChosenAtRandom.cards.map((id) => n.card(id)).join(', ')} is picked at random`)
   }
+  if ('KindChosenAtRandom' in event) {
+    const { object, kind } = event.KindChosenAtRandom
+    return line(`A ${counterName(kind)} counter is picked at random for ${n.card(object)}`)
+  }
   if ('PlayersChosenAtRandom' in event) {
     const players = event.PlayersChosenAtRandom.players.map((seat) => n.seat(seat)).join(', ')
     return line(

@@ -175,6 +175,7 @@ mod r6003_totals;
 mod r6008_pack;
 mod r6018_cards;
 mod r6100_cards;
+mod r6102_pack;
 mod r6f;
 mod repeat_each;
 mod rmt0_chroma;

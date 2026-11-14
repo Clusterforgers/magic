@@ -67,6 +67,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ],
   ChosenAtRandom: [{ ChosenAtRandom: { cards: [3] } }, 'Forest is picked at random'],
   PlayersChosenAtRandom: [{ PlayersChosenAtRandom: { players: [1] } }, 'Bo is picked at random'],
+  KindChosenAtRandom: [
+    { KindChosenAtRandom: { object: 1, kind: { Other: 'flying' } } },
+    'A flying counter is picked at random for Grizzly Bears',
+  ],
   Entered: [
     { Entered: { object: 3, tapped: true, controller: 1 } },
     "Forest enters tapped under Bo's control",
