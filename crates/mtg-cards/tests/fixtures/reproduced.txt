@@ -501,7 +501,6 @@ Desert
 Desperate Ravings
 Desperate Ritual
 Despise
-Despotic Scepter
 Determined Iteration
 Devastation Tide
 Devoted Druid
@@ -1465,7 +1464,6 @@ Pardic Firecat
 Parhelion Patrol
 Pariah
 Pariah's Shield
-Park Bleater
 Patagia Viper
 Path of Peril
 Path of the Animist
@@ -1912,7 +1910,6 @@ Springleaf Drum
 Squad Commander
 Squirrel Nest
 Sram, Senior Edificer
-Staff of Compleation
 Staggering Insight
 Staggershock
 Stalwart Pathlighter

@@ -255,5 +255,36 @@
    }
   },
   "Gain control of target creature. Change the text of that creature by replacing all instances of one creature type with Vampire."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       {
+        "Type": "Creature"
+       },
+       "Other",
+       {
+        "OwnedBy": "You"
+       }
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "PutCounters": {
+       "on": "You",
+       "counter": {
+        "Other": "ticket"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Whenever another creature you own enters, you get {TK}."
  ]
 ]

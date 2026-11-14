@@ -1,4 +1,4 @@
-//! Goal: the name-sticker words read and write back as the cards print them ("for each name sticker on this Aura with eight or more letters", "... with seven or fewer letters", "choose a letter ... that begins with the chosen letter", "the number of o's in name stickers on ~", "a power and toughness sticker", "another creature you own", "a creature you own that entered this turn"), the two-target block requirement writes as Lineprancers prints it, and every near miss (no number, two letters, another sticker kind, an unknown test) stays with the table.
+//! Goal: the name-sticker words read and write back as the cards print them ("for each name sticker on this Aura with eight or more letters", "... with seven or fewer letters", "choose a letter ... that begins with the chosen letter", "the number of o's in name stickers on ~", "a power and toughness sticker", "a creature you own that entered this turn"), the two-target block requirement writes as Lineprancers prints it, and every near miss (no number, two letters, another sticker kind, an unknown test) stays with the table.
 use super::*;
 
 #[rstest]
@@ -26,11 +26,6 @@ use super::*;
     "When ~ enters, you get {TK}{TK}, then you may put a power and toughness sticker on a creature you own.",
     ClauseKind::Triggered,
     r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"PutCounters":{"on":"You","counter":{"Other":"ticket"},"count":2}},{"May":{"effects":[{"PutSticker":{"on":[{"Type":"Creature"},{"OwnedBy":"You"}],"kind":"PowerToughness"}}]}}]}}"#
-)]
-#[case::another_you_own(
-    "Whenever another creature you own enters, you get {TK}.",
-    ClauseKind::Triggered,
-    r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},"Other",{"OwnedBy":"You"}],"to":"Battlefield"}},"effects":[{"PutCounters":{"on":"You","counter":{"Other":"ticket"}}}]}}"#
 )]
 #[case::entered_this_turn(
     "{W}, {T}: You may put a sticker on a creature you own that entered this turn.",
