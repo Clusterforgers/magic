@@ -11,8 +11,8 @@ use std::time::Duration;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::choose::{
     CardsChoice, CardsOptions, CostsChoice, DivideChoice, DivideOptions, ModeChoice, ModeOptions,
-    NumberChoice, OptionChoice, OrderChoice, ReplacementChoice, ScryChoice, Target, TargetChoice,
-    YesNoChoice, damage_in_order, triggers_in_order,
+    NumberChoice, NumberOptions, OptionChoice, OrderChoice, ReplacementChoice, ScryChoice, Target,
+    TargetChoice, TargetOptions, YesNoChoice, damage_in_order, triggers_in_order,
 };
 use mtg_engine::decision::{MulliganChoice, PayChoice, PayOptions, PriorityAction};
 use mtg_engine::{Answer, Decision, DecisionKind};
@@ -194,7 +194,8 @@ pub(crate) fn is_priority(decision: &Decision) -> bool {
 }
 
 /// What the table answers for a seat whose clock ran out: a pass, only the blockers or attackers a rule requires, no
-/// target (a spell is taken back and a triggered ability removed, as the rules do when a target cannot be chosen), the
+/// target (a spell is taken back and a triggered ability removed, as the rules do when a target cannot be chosen; the
+/// first legal targets for any other), the
 /// triggers in the order they triggered, No to a question, for an option and for modes the cast taken back when the
 /// options allow it and the first option or mode otherwise, the same for a number, the optional costs, a division and
 /// a payment (the lowest number, no cost, an even division and the engine's own payment otherwise), the first cards of
@@ -213,8 +214,10 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
         DecisionKind::ChooseTargets(options) => {
             Some(Answer::ChooseTargets(if options.can_cancel {
                 TargetChoice::Cancel
-            } else {
+            } else if options.triggered {
                 TargetChoice::Remove
+            } else {
+                first_targets(options)
             }))
         }
         DecisionKind::OrderTriggers(options) => {
@@ -235,7 +238,7 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
         DecisionKind::ChooseNumber(options) => Some(Answer::ChooseNumber(if options.can_cancel {
             NumberChoice::Cancel
         } else {
-            NumberChoice::Number(options.min)
+            NumberChoice::Number(lowest_number(options))
         })),
         // No card named: the answer that decides the least, and the same for every seat.
         DecisionKind::ChooseName(_) => Some(Answer::ChooseName(mtg_engine::choose::NameChoice(
@@ -274,6 +277,22 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
             Some(Answer::Discard(first_of_hand(&options.hand, options.count)))
         }
     }
+}
+
+/// The first legal targets, as many as the least count asks for, within a total the options cap: what a seat that may
+/// neither back out nor remove the ability chooses.
+pub(crate) fn first_targets(options: &TargetOptions) -> TargetChoice {
+    match mtg_testkit::brain::targets::target_answer(options, Vec::new()) {
+        Answer::ChooseTargets(choice) => choice,
+        _ => TargetChoice::Targets(Vec::new()),
+    }
+}
+
+/// The lowest number the options allow: the least one not among the numbers left out.
+fn lowest_number(options: &NumberOptions) -> u32 {
+    (options.min..=options.max.unwrap_or(u32::MAX))
+        .find(|n| !options.except.contains(n))
+        .unwrap_or(options.min)
 }
 
 /// The first `count` cards of the hand in the order it was offered.
@@ -787,6 +806,23 @@ mod tests {
         })
     }
 
+    /// New targets for a copy, which may neither be backed out of nor removed.
+    fn retargets() -> DecisionKind {
+        DecisionKind::ChooseTargets(TargetOptions {
+            source: ObjectId(1),
+            spec: 0,
+            legal: vec![Target::Player(OTHER), Target::Player(PlayerId(0))],
+            min: 1,
+            max: 1,
+            can_cancel: false,
+            wording: String::new(),
+            triggered: false,
+            apart: Vec::new(),
+            together: None,
+            total: None,
+        })
+    }
+
     fn order(count: usize) -> DecisionKind {
         DecisionKind::OrderTriggers(TriggersOptions {
             triggers: (0..count)
@@ -1149,6 +1185,7 @@ mod tests {
     #[case::no_blocks(blockers(), Some(Answer::DeclareBlockers(Vec::new())))]
     #[case::a_spell_is_taken_back(targets(true), Some(Answer::ChooseTargets(TargetChoice::Cancel)))]
     #[case::a_trigger_is_removed(targets(false), Some(Answer::ChooseTargets(TargetChoice::Remove)))]
+    #[case::a_copy_takes_the_first_legal_targets(retargets(), Some(Answer::ChooseTargets(TargetChoice::Targets(vec![Target::Player(OTHER)]))))]
     #[case::triggers_go_on_in_the_order_they_triggered(order(3), Some(Answer::OrderTriggers(TriggersChoice(vec![0, 1, 2]))))]
     #[case::no_to_a_question(question(), Some(Answer::YesNo(YesNoChoice(false))))]
     #[case::no_to_a_payment_that_cannot_be_made(

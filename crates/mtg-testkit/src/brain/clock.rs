@@ -65,6 +65,9 @@ pub fn importance(seen: &Seen<'_>, decision: &Decision) -> f64 {
             }
             Window::EndStep => 0.5,
         },
+        // A triggered ability's targets on a crowded board are many and each is simulated: an ordinary share keeps the
+        // answer well within the server's think deadline.
+        DecisionKind::ChooseTargets(options) if options.triggered => 0.5,
         DecisionKind::ChooseTargets(_) => 1.0,
         _ => 0.5,
     }
@@ -85,6 +88,12 @@ pub fn lethal_in_reach(seen: &Seen<'_>) -> bool {
                 ) >= seen.life(*defender)
         })
     })
+}
+
+/// When a search of a decision that started at `started` stops at the latest: [`DECISION_CAP`] less the slack the
+/// answer needs to come back.
+pub fn cap(started: Instant) -> Instant {
+    started + DECISION_CAP.saturating_sub(SLACK)
 }
 
 /// The search budget of one decision.
@@ -112,7 +121,7 @@ impl Budget {
         // In range: at most MOST times the level's iterations.
         #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
         let iterations = (f64::from(iterations) * scale).round() as u32;
-        let cap = started + DECISION_CAP.saturating_sub(SLACK);
+        let cap = cap(started);
         let soft = time.map(|time| (Instant::now() + time.mul_f64(scale)).min(cap));
         let hard = time.map(|time| (Instant::now() + time.mul_f64(scale * 1.5)).min(cap));
         Budget {
