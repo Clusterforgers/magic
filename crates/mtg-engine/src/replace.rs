@@ -718,6 +718,7 @@ const fn scales(by: &ReplaceBy) -> bool {
 }
 
 /// Whether the engine can apply `by` to this kind of event.
+#[allow(clippy::too_many_lines)] // one arm for every replacement
 fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
     match by {
         ReplaceBy::PreventUpTo(_)

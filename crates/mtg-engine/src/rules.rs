@@ -1991,7 +1991,6 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
             tax.players.is_empty() || (tax.mana.symbols().is_empty() && tax.life == 0)
         }
         Rule::BlockTax(tax) => tax.mana.symbols().is_empty() && tax.life == 0,
-        Rule::UntapRemovesCounters(_) => false,
         Rule::MustAttack(named)
         | Rule::MustBlock(named)
         | Rule::CantBeCountered(named)
@@ -2074,7 +2073,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::ReverseTurnOrder
         | Rule::DamageAsWither
         | Rule::ManaBurn
-        | Rule::RevealFirstDraw { .. } => false,
+        | Rule::RevealFirstDraw { .. }
+        | Rule::UntapRemovesCounters(_) => false,
         Rule::Planar => true,
         Rule::AttackOnlyNearest(left) => left.is_none(),
         Rule::PreventDamage(shield) => {

@@ -2,6 +2,7 @@
 import type { AttackTarget } from "./AttackTarget";
 import type { AttackTax } from "./AttackTax";
 import type { BlockTax } from "./BlockTax";
+import type { CounterKind } from "./CounterKind";
 import type { DamageShield } from "./DamageShield";
 import type { ManaCost } from "./ManaCost";
 import type { ManaType } from "./ManaType";
@@ -130,7 +131,15 @@ who: Array<PlayerId>,
 /**
  * The change.
  */
-change: unknown, } } | { "CantDraw": Array<PlayerId> } | { "DrawFromBottom": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "OwnSpellsCantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "ExtraVote": Array<PlayerId> } | "ReverseTurnOrder" | { "AttackOnlyNearest": boolean | null } | { "SkipExtraTurns": Array<PlayerId> } | { "FlipTwoCoins": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | "Planar" | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "PayLifeForOneSymbol": { 
+change: unknown, } } | { "CantDraw": Array<PlayerId> } | { "DrawFromBottom": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "OwnSpellsCantSearch": Array<PlayerId> } | { "UntapRemovesCounters": CounterKind } | { "SearchTop": { 
+/**
+ * Who searches that way.
+ */
+players: Array<PlayerId>, 
+/**
+ * How many cards from the top.
+ */
+count: number, } } | { "VoteAgain": Array<PlayerId> } | { "ExtraVote": Array<PlayerId> } | "ReverseTurnOrder" | { "AttackOnlyNearest": boolean | null } | { "SkipExtraTurns": Array<PlayerId> } | { "FlipTwoCoins": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | "Planar" | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "PayLifeForOneSymbol": { 
 /**
  * The players.
  */

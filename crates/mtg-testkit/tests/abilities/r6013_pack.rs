@@ -52,12 +52,12 @@ fn r6013_settle(
     target: Option<&str>,
 ) -> Result<(), ScriptError> {
     for _ in 0..300 {
-        if driver.state().stack().is_empty() && driver.state().resolving().is_none() {
-            if let Ok(decision) = driver.decision()
-                && matches!(decision.kind, DecisionKind::Priority(_))
-            {
-                return Ok(());
-            }
+        if driver.state().stack().is_empty()
+            && driver.state().resolving().is_none()
+            && let Ok(decision) = driver.decision()
+            && matches!(decision.kind, DecisionKind::Priority(_))
+        {
+            return Ok(());
         }
         match &driver.decision()?.kind {
             DecisionKind::ChooseCards(options) if discard.is_some() => {
