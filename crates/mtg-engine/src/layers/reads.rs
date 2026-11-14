@@ -114,7 +114,8 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::SetLandTypesChosen(_)
         | Wanted::SetLandTypesNthChosen(_)
         | Wanted::AddLandTypeChosen(_)
-        | Wanted::ChangeTextChosen { .. } => {
+        | Wanted::ChangeTextChosen { .. }
+        | Wanted::ChangeTextChosenTo { .. } => {
             Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES)
         }
         Wanted::SetColors(_)
@@ -201,6 +202,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::AddCreatureTypeChosen(_)
         | Wanted::AddLandTypeChosen(_)
         | Wanted::ChangeTextChosen { .. }
+        | Wanted::ChangeTextChosenTo { .. }
         | Wanted::SetColorsChosen(_)
         | Wanted::AddChosenSubtype
         | Wanted::SetChosenColor
@@ -498,6 +500,9 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::TurnNumber
         | Amount::Stickers { .. }
         | Amount::StickerVowels
+        | Amount::NameStickers { .. }
+        | Amount::StickerLetters { .. }
+        | Amount::StickerStats { .. }
         | Amount::TallyLastTurn { .. }
         | Amount::CastSameNameThisGame(_)
         | Amount::CycledSameNameThisGame(_)

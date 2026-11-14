@@ -1,0 +1,259 @@
+[
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "PutSticker": {
+          "on": [
+           "This"
+          ],
+          "kind": "Name"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "Reflexive": {
+       "targets": [
+        {
+         "what": {
+          "Object": [
+           {
+            "Type": "Creature"
+           },
+           {
+            "Not": {
+             "ControlledBy": "You"
+            }
+           }
+          ]
+         },
+         "bounds": {
+          "min": 0,
+          "max": 1
+         }
+        }
+       ],
+       "effects": [
+        {
+         "Fight": {
+          "what": "Attached",
+          "with": {
+           "Target": 0
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "When this Aura enters, you may put a name sticker on it. When you do, enchanted creature fights up to one target creature you don't control."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Did": {
+      "action": "PutSticker",
+      "who": "You",
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      },
+      "bounds": {
+       "min": 0,
+       "max": {
+        "StickerLetters": {
+         "on": "This",
+         "letter": "u"
+        }
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Tap": {
+       "what": {
+        "Target": 0
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Whenever you put a sticker on this enchantment, tap up to X target creatures, where X is the number of u's in name stickers on this enchantment."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Did": {
+      "action": "PutSticker",
+      "who": "You",
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "targets": [
+     {
+      "what": "AnyTarget"
+     }
+    ],
+    "effects": [
+     {
+      "DealDamage": {
+       "to": {
+        "Target": 0
+       },
+       "amount": {
+        "StickerLetters": {
+         "on": "This",
+         "letter": "o"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Whenever you put a sticker on this enchantment, it deals damage equal to the number of o's in name stickers on this enchantment to any target."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "BeginCombat"
+     }
+    },
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "Continuous": {
+          "affected": "This",
+          "mods": [
+           {
+            "SetPT": {
+             "power": {
+              "StickerStats": {
+               "on": {
+                "Each": [
+                 {
+                  "ControlledBy": "You"
+                 }
+                ]
+               },
+               "stat": "Power"
+              }
+             },
+             "toughness": {
+              "StickerStats": {
+               "on": {
+                "Each": [
+                 {
+                  "ControlledBy": "You"
+                 }
+                ]
+               },
+               "stat": "Toughness"
+              }
+             }
+            }
+           }
+          ],
+          "duration": "Forever"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of each combat, you may have ~'s base power become equal to the total power of all stickers on permanents you control and its base toughness become equal to those stickers' total toughness."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        {
+         "SetController": "You"
+        }
+       ],
+       "duration": "Forever"
+      }
+     },
+     {
+      "ChooseValue": {
+       "kind": "CreatureType",
+       "as": "from"
+      }
+     },
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        {
+         "ChangeTextChosenTo": {
+          "from": "from",
+          "to": "Vampire"
+         }
+        }
+       ],
+       "duration": "Forever"
+      }
+     }
+    ]
+   }
+  },
+  "Gain control of target creature. Change the text of that creature by replacing all instances of one creature type with Vampire."
+ ]
+]

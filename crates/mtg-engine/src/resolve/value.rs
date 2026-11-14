@@ -2560,6 +2560,50 @@ impl<'a> Scope<'a> {
                 }
                 total
             }
+            Amount::NameStickers { on, words } => {
+                let chosen = match words {
+                    mtg_cards::ability::NameWords::BeginsWithChosen(name) => {
+                        match self.chosen_value(name) {
+                            Some(Chosen::Word(word)) => word.chars().next(),
+                            _ => None,
+                        }
+                    }
+                    _ => None,
+                };
+                let mut total = 0i64;
+                for named in self.refs(on)? {
+                    if let Target::Object(object) = named {
+                        let held = crate::un34_stickers::name_words(self.state, object);
+                        let passing = held.iter().filter(|held| words.holds(held, chosen)).count();
+                        total += i64::try_from(passing).unwrap_or(i64::MAX);
+                    }
+                }
+                total
+            }
+            Amount::StickerStats { on, stat } => {
+                let mut total = 0i64;
+                for named in self.refs(on)? {
+                    if let Target::Object(object) = named {
+                        total += crate::un34_stickers::sticker_stats(self.state, object, *stat);
+                    }
+                }
+                total
+            }
+            Amount::StickerLetters { on, letter } => {
+                let mut total = 0i64;
+                for named in self.refs(on)? {
+                    if let Target::Object(object) = named {
+                        for held in crate::un34_stickers::name_words(self.state, object) {
+                            for letter in letter.chars() {
+                                total += i64::from(mtg_cards::ability::NameWords::letter_count(
+                                    held, letter,
+                                ));
+                            }
+                        }
+                    }
+                }
+                total
+            }
             // Kept by the resolution that put the sticker on, else carried by the reflexive trigger it set off.
             Amount::StickerVowels => self
                 .own_run()

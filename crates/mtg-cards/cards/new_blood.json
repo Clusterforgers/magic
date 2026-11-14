@@ -1,0 +1,41 @@
+{
+  "oracle_id": "021d654e-b731-40d0-a18e-eaff43f9fdb9",
+  "name": "New Blood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "New Blood",
+      "oracle_fingerprint": "16aa34fae599a0624fcc99bbe73413a4",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Vampire" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              },
+              { "ChooseValue": { "kind": "CreatureType", "as": "from" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ChangeTextChosenTo": { "from": "from", "to": "Vampire" } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

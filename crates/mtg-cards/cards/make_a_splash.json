@@ -1,7 +1,7 @@
 {
   "oracle_id": "fe2601a4-cbd5-4866-92a2-5586f737c9af",
   "name": "Make a _____ Splash",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Make a _____ Splash",
@@ -17,9 +17,15 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 70, "end": 214 }
+          "Triggered": {
+            "when": { "Did": { "action": "PutSticker", "who": "You", "what": ["This"] } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": { "StickerLetters": { "on": "This", "letter": "u" } } }
+              }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
           }
         }
       ]

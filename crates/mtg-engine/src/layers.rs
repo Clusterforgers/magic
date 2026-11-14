@@ -782,7 +782,7 @@ fn is_player_ref(affected: &Ref) -> bool {
 fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
     Some(match wanted {
         Wanted::SetController(_) => Layer::Control,
-        Wanted::ChangeTextChosen { .. } => Layer::Text,
+        Wanted::ChangeTextChosen { .. } | Wanted::ChangeTextChosenTo { .. } => Layer::Text,
         Wanted::AddType(_)
         | Wanted::RemoveType(_)
         | Wanted::SetTypes(_)

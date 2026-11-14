@@ -217,13 +217,53 @@ pub enum StickerKind {
     Art,
 }
 
+/// A test of the words of a name sticker (CR 123): its letters, not its spaces or punctuation, are counted.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum NameWords {
+    /// "with eight or more letters".
+    LettersAtLeast(u32),
+    /// "with seven or fewer letters".
+    LettersAtMost(u32),
+    /// "that begins with the chosen letter": the letter the resolution chose under this name (`ValueKind::Letter`).
+    BeginsWithChosen(String),
+}
+
+impl NameWords {
+    /// How many letters the words have.
+    pub fn letters(words: &str) -> u32 {
+        let count = words.chars().filter(|c| c.is_alphabetic()).count();
+        u32::try_from(count).unwrap_or(u32::MAX)
+    }
+
+    /// Whether the words pass the test; `chosen` is the letter chosen under the name a `BeginsWithChosen` gives.
+    pub fn holds(&self, words: &str, chosen: Option<char>) -> bool {
+        match self {
+            NameWords::LettersAtLeast(at_least) => NameWords::letters(words) >= *at_least,
+            NameWords::LettersAtMost(at_most) => NameWords::letters(words) <= *at_most,
+            NameWords::BeginsWithChosen(_) => {
+                let first = words.chars().find(|c| c.is_alphabetic());
+                matches!((first, chosen), (Some(first), Some(chosen)) if first.eq_ignore_ascii_case(&chosen))
+            }
+        }
+    }
+
+    /// How many times the letter stands in the words, in either case.
+    pub fn letter_count(words: &str, letter: char) -> u32 {
+        let count = words
+            .chars()
+            .filter(|c| c.eq_ignore_ascii_case(&letter))
+            .count();
+        u32::try_from(count).unwrap_or(u32::MAX)
+    }
+}
+
 impl StickerKind {
-    /// The words of the kind before "sticker": "name", "ability", "power/toughness", "art".
+    /// The words of the kind before "sticker": "name", "ability", "power and toughness", "art".
     pub const fn word(self) -> &'static str {
         match self {
             StickerKind::Name => "name",
             StickerKind::Ability => "ability",
-            StickerKind::PowerToughness => "power/toughness",
+            StickerKind::PowerToughness => "power and toughness",
             StickerKind::Art => "art",
         }
     }

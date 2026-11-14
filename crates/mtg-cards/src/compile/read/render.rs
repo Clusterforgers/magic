@@ -3571,6 +3571,11 @@ impl Writer<'_> {
                 kind,
                 up_to,
             } => super::un34_stickers::un34_put_text(who, on, *kind, *up_to)?,
+            Effect::ChooseValue {
+                who: Ref::You,
+                kind: crate::effect::ValueKind::Letter,
+                bind,
+            } if bind == super::r6101_stickers::LETTER => "choose a letter".to_owned(),
             Effect::Either { first, second } => self.dk1c5_either_text(first, second)?,
             Effect::Venture { who, undercity } => {
                 let into = if *undercity {

@@ -92,6 +92,7 @@ mod r5512_aura_moves;
 mod r5519_done_for_the_day;
 mod r5519_heroic_return;
 mod r5519_leadership;
+mod r6101_stickers;
 mod random_pick;
 mod reconfigure;
 mod recursion;

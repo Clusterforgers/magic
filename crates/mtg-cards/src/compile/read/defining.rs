@@ -164,6 +164,9 @@ pub(super) fn counting(r: &mut Reader<'_>) -> Option<Amount> {
 
 /// What "the number of" counts besides objects: "opponents you have", "charge counters on ~".
 fn held(r: &mut Reader<'_>) -> Option<Amount> {
+    if let Some(letters) = r.attempt(super::r6101_stickers::r6101_letters_in) {
+        return Some(letters);
+    }
     if r.words("creatures in your party") {
         return Some(Amount::Party(Ref::You));
     }
@@ -340,6 +343,9 @@ pub(super) fn value_text(amount: &Amount) -> Option<String> {
 }
 
 pub(super) fn counting_text(amount: &Amount) -> Option<String> {
+    if let Some(text) = super::r6101_stickers::r6101_letters_text(amount) {
+        return Some(text);
+    }
     if let Some(text) = super::r374_counts::r374_toxic_text(amount) {
         return Some(text);
     }

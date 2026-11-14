@@ -1,7 +1,7 @@
 {
   "oracle_id": "82c2a58b-0ee2-454b-9ddd-670c1e788166",
   "name": "_____ Balls of Fire",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "_____ Balls of Fire",
@@ -16,9 +16,17 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 64, "end": 206 }
+          "Triggered": {
+            "when": { "Did": { "action": "PutSticker", "who": "You", "what": ["This"] } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "StickerLetters": { "on": "This", "letter": "o" } }
+                }
+              }
+            ]
           }
         }
       ]

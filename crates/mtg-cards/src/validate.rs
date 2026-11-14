@@ -1463,6 +1463,27 @@ impl<'a> Walker<'a> {
                 self.at("on", |w| w.reference(on, Kind::Object));
             }
             Amount::StickerVowels => self.uses("Amount", "StickerVowels"),
+            Amount::NameStickers { on, .. } => {
+                self.uses("Amount", "NameStickers");
+                self.at("on", |w| w.reference(on, Kind::Object));
+            }
+            Amount::StickerStats { on, stat } => {
+                self.uses("Amount", "StickerStats");
+                if !matches!(
+                    stat,
+                    crate::value::StatKind::Power | crate::value::StatKind::Toughness
+                ) {
+                    self.problem("a sticker has only a power and a toughness");
+                }
+                self.at("on", |w| w.reference(on, Kind::Object));
+            }
+            Amount::StickerLetters { on, letter } => {
+                self.uses("Amount", "StickerLetters");
+                if letter.len() != 1 || !letter.chars().all(|c| c.is_ascii_lowercase()) {
+                    self.problem("a letter is one of a to z, lowercase");
+                }
+                self.at("on", |w| w.reference(on, Kind::Object));
+            }
             Amount::CastSameNameThisGame(who) => self.player_amount("CastSameNameThisGame", who),
             Amount::CycledSameNameThisGame(who) => {
                 self.player_amount("CycledSameNameThisGame", who);
@@ -2809,6 +2830,7 @@ impl<'a> Walker<'a> {
             | Modification::AddCreatureTypeChosen(_)
             | Modification::AddLandTypeChosen(_)
             | Modification::ChangeTextChosen { .. }
+            | Modification::ChangeTextChosenTo { .. }
             | Modification::SetColorsChosen(_)
             | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
@@ -5632,6 +5654,7 @@ impl Walker<'_> {
                     | Modification::AddCreatureTypeChosen(_)
                     | Modification::AddLandTypeChosen(_)
                     | Modification::ChangeTextChosen { .. }
+                    | Modification::ChangeTextChosenTo { .. }
             )
         }) {
             self.at("mods", |w| {

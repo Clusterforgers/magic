@@ -9,6 +9,27 @@ fn objects(spec: &TargetSpec) -> bool {
     matches!(spec.what, Targetable::Object(_))
 }
 
+/// The target, with "other than ~" after its words when it may not be the source ("target creature you control with a
+/// power and toughness sticker on it other than ~").
+fn other_than_this(spec: &TargetSpec) -> Option<String> {
+    let Targetable::Object(selector) = &spec.what else {
+        return None;
+    };
+    if !selector.0.contains(&crate::refs::Pred::Other) {
+        return spec_text(spec);
+    }
+    let mut rest = spec.clone();
+    rest.what = Targetable::Object(crate::refs::Selector(
+        selector
+            .0
+            .iter()
+            .filter(|pred| **pred != crate::refs::Pred::Other)
+            .cloned()
+            .collect(),
+    ));
+    Some(format!("{} other than ~", spec_text(&rest)?))
+}
+
 /// The sentence for the one effect over the two targets, in the order the card names them.
 pub(super) fn text(targets: &[TargetSpec], effects: &[Effect]) -> Option<String> {
     let [first, second] = targets else {
@@ -44,6 +65,21 @@ pub(super) fn text(targets: &[TargetSpec], effects: &[Effect]) -> Option<String>
             "{} deals damage equal to its power to {}",
             spec_text(first)?,
             spec_text(second)?
+        )),
+        // "Target creature you don't control blocks target creature you control ... other than ~ this turn if able."
+        [
+            Effect::Rule {
+                rule:
+                    crate::modify::GameRule::MustBlockAttacker {
+                        who: Ref::Target(0),
+                        attacker: Ref::Target(1),
+                    },
+                duration: crate::modify::Duration::UntilEndOfTurn,
+            },
+        ] => Some(format!(
+            "{} blocks {} this turn if able",
+            spec_text(first)?,
+            other_than_this(second)?
         )),
         [
             Effect::BecomeCopy {

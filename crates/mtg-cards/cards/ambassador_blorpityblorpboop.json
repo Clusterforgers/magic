@@ -1,7 +1,7 @@
 {
   "oracle_id": "183a9488-e21f-448b-8b69-e53b56fa0a56",
   "name": "Ambassador Blorpityblorpboop",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ambassador Blorpityblorpboop",
@@ -25,9 +25,40 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 123, "end": 356 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          {
+                            "SetPT": {
+                              "power": {
+                                "StickerStats": {
+                                  "on": { "Each": [{ "ControlledBy": "You" }] },
+                                  "stat": "Power"
+                                }
+                              },
+                              "toughness": {
+                                "StickerStats": {
+                                  "on": { "Each": [{ "ControlledBy": "You" }] },
+                                  "stat": "Toughness"
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

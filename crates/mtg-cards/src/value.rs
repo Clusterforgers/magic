@@ -854,6 +854,30 @@ pub enum Amount {
     /// The number of unique vowels on the name sticker the resolving spell or ability put on last ("where X is the
     /// number of unique vowels on that sticker"); 0 when it put none.
     StickerVowels,
+    /// The name stickers on the objects the reference names whose words pass the test ("for each name sticker on this
+    /// Aura with eight or more letters", "that begins with the chosen letter"); a card keeps its stickers in every zone.
+    NameStickers {
+        /// The objects.
+        on: Ref,
+        /// The test of a sticker's words.
+        words: crate::ability::NameWords,
+    },
+    /// How many times the letter stands in the words of the name stickers on the objects the reference names, in either
+    /// case ("the number of u's in name stickers on this enchantment").
+    StickerLetters {
+        /// The objects.
+        on: Ref,
+        /// The letter, one of a to z.
+        letter: String,
+    },
+    /// The total power or toughness of the power and toughness stickers on the objects the reference names ("the total
+    /// power of all stickers on permanents you control"); no other sticker has a power or toughness.
+    StickerStats {
+        /// The objects.
+        on: Ref,
+        /// `Power` or `Toughness`.
+        stat: StatKind,
+    },
     /// How many targets the spell or ability that triggered this one has.
     TriggeringTargets,
     /// How many players have lost the game ("for each player who has lost the game").
@@ -1116,6 +1140,18 @@ enum Tagged {
         kind: Option<crate::ability::StickerKind>,
     },
     StickerVowels,
+    NameStickers {
+        on: Ref,
+        words: crate::ability::NameWords,
+    },
+    StickerLetters {
+        on: Ref,
+        letter: String,
+    },
+    StickerStats {
+        on: Ref,
+        stat: StatKind,
+    },
     CastSameNameThisGame(Ref),
     CycledSameNameThisGame(Ref),
     TallyLastTurn {
@@ -1320,6 +1356,18 @@ enum TaggedRef<'a> {
         kind: Option<crate::ability::StickerKind>,
     },
     StickerVowels,
+    NameStickers {
+        on: &'a Ref,
+        words: &'a crate::ability::NameWords,
+    },
+    StickerLetters {
+        on: &'a Ref,
+        letter: &'a str,
+    },
+    StickerStats {
+        on: &'a Ref,
+        stat: StatKind,
+    },
     CastSameNameThisGame(&'a Ref),
     CycledSameNameThisGame(&'a Ref),
     TallyLastTurn {
@@ -1459,6 +1507,9 @@ impl From<Tagged> for Amount {
             Tagged::TurnNumber => Amount::TurnNumber,
             Tagged::Stickers { on, kind } => Amount::Stickers { on, kind },
             Tagged::StickerVowels => Amount::StickerVowels,
+            Tagged::NameStickers { on, words } => Amount::NameStickers { on, words },
+            Tagged::StickerLetters { on, letter } => Amount::StickerLetters { on, letter },
+            Tagged::StickerStats { on, stat } => Amount::StickerStats { on, stat },
             Tagged::CastSameNameThisGame(who) => Amount::CastSameNameThisGame(who),
             Tagged::CycledSameNameThisGame(who) => Amount::CycledSameNameThisGame(who),
             Tagged::TallyLastTurn { event, who, filter } => {
@@ -1633,6 +1684,15 @@ impl Serialize for Amount {
                 TaggedRef::Stickers { on, kind: *kind }.serialize(serializer)
             }
             Amount::StickerVowels => TaggedRef::StickerVowels.serialize(serializer),
+            Amount::NameStickers { on, words } => {
+                TaggedRef::NameStickers { on, words }.serialize(serializer)
+            }
+            Amount::StickerStats { on, stat } => {
+                TaggedRef::StickerStats { on, stat: *stat }.serialize(serializer)
+            }
+            Amount::StickerLetters { on, letter } => {
+                TaggedRef::StickerLetters { on, letter }.serialize(serializer)
+            }
             Amount::CastSameNameThisGame(who) => {
                 TaggedRef::CastSameNameThisGame(who).serialize(serializer)
             }

@@ -638,6 +638,10 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.words("you control") {
         return Some(Pred::ControlledBy(Ref::You));
     }
+    // "another creature you own": not "you own in exile", which names the zone.
+    if r.word_at(2) != Some("in") && r.words("you own") {
+        return Some(Pred::OwnedBy(Ref::You));
+    }
     // "enchantment card that isn't a God": a subtype it doesn't have.
     if !form.plural()
         && let Some(name) = r.attempt(|r| {
@@ -1575,6 +1579,11 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
             commander = true;
         } else if own_commander && *pred == Pred::OwnedBy(Ref::You) {
             // Said as "your" before the noun.
+        } else if *pred == Pred::OwnedBy(Ref::You)
+            && !preds.iter().any(|pred| matches!(pred, Pred::In(_)))
+        {
+            // A permanent's owner: "another creature you own"; a card in a zone says it with the zone.
+            suffixes.push("you own".to_owned());
         } else if let Some(found) = type_preds(pred) {
             // A second card type before the noun qualifies it: "artifact creatures".
             if !types.is_empty() {

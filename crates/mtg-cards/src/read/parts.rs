@@ -570,6 +570,9 @@ fn modification(ctx: &Ctx, change: &Modification) -> String {
                 "has every instance of the word chosen as {from} replaced by the word chosen as {to}"
             )
         }
+        Modification::ChangeTextChosenTo { from, to } => {
+            format!("has every instance of the word chosen as {from} replaced by {to}")
+        }
         Modification::SetController(player) => {
             format!("is controlled by {}", phrase::who(ctx, player))
         }

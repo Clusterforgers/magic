@@ -24,7 +24,7 @@ fn kind(r: &mut Reader<'_>) -> Option<StickerKind> {
         StickerKind::PowerToughness,
     ]
     .into_iter()
-    .find(|kind| r.word(kind.word()))
+    .find(|kind| r.words(kind.word()))
 }
 
 /// "it" (the object with the ability), or the objects after "a"/"an" that the player owns.
@@ -108,17 +108,8 @@ pub(super) fn un34_put_text(
         return None;
     }
     let in_zone = on.0.iter().any(|pred| matches!(pred, Pred::In(_)));
-    let rest = if in_zone {
-        on.clone()
-    } else {
-        Selector(
-            on.0.iter()
-                .filter(|pred| **pred != Pred::OwnedBy(Ref::You))
-                .cloned()
-                .collect(),
-        )
-    };
-    let own = if in_zone { "" } else { " you own" };
+    // The phrase writes "you own" where the owner stands among its words.
+    let (rest, own) = (on.clone(), "");
     if up_to == 0 {
         let form = if in_zone { Form::Count } else { Form::Subject };
         let objects = phrase_text(&rest, form)?;

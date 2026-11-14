@@ -113,6 +113,15 @@ pub enum Modification {
         /// The name of the word written.
         to: String,
     },
+    /// Changes the text (layer 3, CR 612): every instance of the creature type the resolution chose under `from` becomes
+    /// the creature type `to` ("replacing all instances of one creature type with Vampire"). Only an effect of a spell or
+    /// ability has it.
+    ChangeTextChosenTo {
+        /// The name of the word replaced.
+        from: String,
+        /// The creature type written.
+        to: String,
+    },
     /// Adds the creature type the source chose as it entered (layer 4): "is the chosen type in addition to its
     /// other types". Only a static ability has it; with no type chosen it changes nothing.
     AddChosenSubtype,
@@ -223,7 +232,9 @@ impl Modification {
             | Modification::ThisAbility
             | Modification::SetLoyalty(_) => Some("1"),
             Modification::SetController(_) => Some("2"),
-            Modification::ChangeTextChosen { .. } => Some("3"),
+            Modification::ChangeTextChosen { .. } | Modification::ChangeTextChosenTo { .. } => {
+                Some("3")
+            }
             Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
