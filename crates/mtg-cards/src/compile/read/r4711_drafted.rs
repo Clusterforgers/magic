@@ -42,7 +42,9 @@ fn r4711_role(note: DraftNote) -> (R4711Role, String) {
             (R4711Role::Object, format!("with {}", note.words()))
         }
         DraftNote::NotedType => (R4711Role::Object, format!("of {}", note.words())),
-        DraftNote::ExiledWith => (R4711Role::Object, note.words().to_owned()),
+        DraftNote::ExiledWith | DraftNote::R6018RemovedWith => {
+            (R4711Role::Object, note.words().to_owned())
+        }
         DraftNote::ChosenColors => (R4711Role::Object, format!("that's {}", note.words())),
     }
 }

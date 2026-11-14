@@ -171,6 +171,7 @@ mod r5502_blocked_by_one;
 mod r5516_damage;
 mod r5522_history;
 mod r6001_blocked_by_many;
+mod r6018_plot_less;
 mod redeal;
 pub mod replace;
 pub mod resolve;

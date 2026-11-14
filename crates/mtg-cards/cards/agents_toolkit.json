@@ -1,16 +1,27 @@
 {
   "oracle_id": "a87abe7a-fee9-45fd-b3d8-896e43ed6b3c",
   "name": "Agent's Toolkit",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Agent's Toolkit",
       "oracle_fingerprint": "e74859e315bfd116529772f1814509f0",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 195 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCountersAnd": {
+                "counter": "+1/+1",
+                "count": 1,
+                "mods": [],
+                "also": [
+                  { "counter": { "Other": "flying" }, "count": 1 },
+                  { "counter": { "Other": "deathtouch" }, "count": 1 },
+                  { "counter": { "Other": "shield" }, "count": 1 }
+                ]
+              }
+            }
           }
         },
         {

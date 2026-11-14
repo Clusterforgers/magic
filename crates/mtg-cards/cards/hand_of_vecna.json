@@ -1,16 +1,54 @@
 {
   "oracle_id": "3b7f0dd3-5b4c-4ac0-a43a-ddc62a44663e",
   "name": "Hand of Vecna",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Hand of Vecna",
       "oracle_fingerprint": "64e9aa6ea3097e29e8d3a9f02206000d",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 0, "end": 171 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      {
+                        "AnyOf": [
+                          { "Is": "Attached" },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "ControlledBy": "You" } },
+                                { "Not": { "Named": "Vecna" } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "as": "vecna"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "vecna" },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                        "toughness": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         },
         {

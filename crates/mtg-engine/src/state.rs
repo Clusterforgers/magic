@@ -143,6 +143,8 @@ pub(crate) enum Tally {
     Targeted,
     /// An object dealt damage, once for each event (counted for the object).
     Damaged,
+    /// A source that dealt combat damage to a player, once for each event (counted for the source).
+    R6018HitPlayer,
     /// A card put into a graveyard by a discard (counted for the card as it lies there, and for the player who discarded
     /// it, once for each discard).
     Discarded,

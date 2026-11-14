@@ -129,6 +129,7 @@ fn damage_player(
     let combat = state.commanders.any() && in_combat;
     if in_combat && amount > 0 {
         record_hit(state, source);
+        tally(state, source, Tally::R6018HitPlayer);
     }
     let loses_life = form.life_lost(amount) > 0;
     // The damage is dealt in full; a life floor only changes the life lost (CR 120.3a, 614.1).

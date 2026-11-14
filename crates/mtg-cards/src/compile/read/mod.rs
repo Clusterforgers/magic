@@ -282,6 +282,7 @@ mod r6003_total;
 mod r6003_wholes;
 mod r6007_wholes;
 mod r6008_wholes;
+mod r6018_wholes;
 mod r6a_effects;
 mod r6a_more;
 mod r6a_wordings;
@@ -636,6 +637,9 @@ const MEANINGFUL_WORDS: [&str; 5] = [
 #[allow(clippy::too_many_lines)]
 pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
     if let Some(found) = r6008_wholes::r6008_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r6018_wholes::r6018_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r5517_wholes::r5517_read(text) {

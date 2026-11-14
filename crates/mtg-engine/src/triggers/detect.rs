@@ -1024,6 +1024,15 @@ fn object_ordinal(look: Look<'_>, object: ObjectRef, by: Option<PlayerId>, kind:
             },
         ) => *hit == object.id && *amount > 0,
         (
+            Tally::R6018HitPlayer,
+            Event::DamageDealt {
+                source,
+                target: DamageTarget::Player(_),
+                amount,
+                ..
+            },
+        ) => *source == object.id && *amount > 0 && in_combat_damage(look.post),
+        (
             Tally::Targeted,
             Event::SpellCast {
                 player, choices, ..
@@ -1152,6 +1161,12 @@ fn about_players_and_permanents(
                         .map_or(0, |object| {
                             object_ordinal(look, object, None, Tally::Damaged)
                         }),
+                    // The times the source dealt combat damage to a player this turn ("for the first time each turn").
+                    DamageTarget::Player(_) if *amount > 0 && in_combat_damage(look.post) => {
+                        before(look, *source).map_or(0, |object| {
+                            object_ordinal(look, object, None, Tally::R6018HitPlayer)
+                        })
+                    }
                     _ => 0,
                 },
                 amount: *amount,

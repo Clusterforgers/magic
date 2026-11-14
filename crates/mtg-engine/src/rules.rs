@@ -1931,6 +1931,8 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::CantSpendMana => return Err(ResolveError::Unsupported("Rule.CantSpendMana")),
         // The cost of the cast reads it from the card (`r5500_tax_life`); it is no rule of the game.
         GameRule::TaxAsLife(_) => return Err(ResolveError::Unsupported("Rule.TaxAsLife")),
+        // A plot reads it from the permanents (`r6018_plot_less`); it is no rule of the game.
+        GameRule::R6018PlotLess(_) => return Err(ResolveError::Unsupported("Rule.R6018PlotLess")),
         GameRule::SpendOnlyFrom(_) => return Err(ResolveError::Unsupported("Rule.SpendOnlyFrom")),
         GameRule::GraveyardCardsUntargetable
         | GameRule::CantLoseGame { .. }

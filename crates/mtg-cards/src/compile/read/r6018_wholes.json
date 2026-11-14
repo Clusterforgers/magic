@@ -1,0 +1,401 @@
+[
+ [
+  {
+   "Triggered": {
+    "when": {
+     "DealsDamage": {
+      "source": [
+       "This"
+      ],
+      "to": "EachPlayer",
+      "combat": true
+     }
+    },
+    "effects": [
+     {
+      "PutCounters": {
+       "on": "This",
+       "counter": "+1/+1",
+       "count": {
+        "Distinct": {
+         "of": [
+          {
+           "In": "Graveyard"
+          },
+          {
+           "OwnedBy": "You"
+          }
+         ],
+         "stat": "R6018PermanentTypes"
+        }
+       }
+      }
+     },
+     {
+      "Draw": {
+       "count": {
+        "Distinct": {
+         "of": [
+          {
+           "In": "Graveyard"
+          },
+          {
+           "OwnedBy": "You"
+          }
+         ],
+         "stat": "R6018PermanentTypes"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Whenever ~ deals combat damage to a player, put X +1/+1 counters on ~ and draw X cards, where X is the number of permanent types among cards in your graveyard."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "BeginCombat",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "AnyOf": [
+           {
+            "Is": "Attached"
+           },
+           {
+            "Not": {
+             "AnyOf": [
+              {
+               "Not": {
+                "ControlledBy": "You"
+               }
+              },
+              {
+               "Not": {
+                "Named": "Vecna"
+               }
+              }
+             ]
+            }
+           }
+          ]
+         }
+        ]
+       },
+       "as": "vecna"
+      }
+     },
+     {
+      "Continuous": {
+       "affected": {
+        "Bound": "vecna"
+       },
+       "mods": [
+        {
+         "ModifyPT": {
+          "power": {
+           "Count": [
+            {
+             "In": "Hand"
+            },
+            {
+             "OwnedBy": "You"
+            }
+           ]
+          },
+          "toughness": {
+           "Count": [
+            {
+             "In": "Hand"
+            },
+            {
+             "OwnedBy": "You"
+            }
+           ]
+          }
+         }
+        }
+       ],
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of combat on your turn, equipped creature or a creature you control named Vecna gets +X/+X until end of turn, where X is the number of cards in your hand."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "R6018PlotLess": 2
+    }
+   }
+  },
+  "Plotting cards from your hand costs {2} less."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "DealsDamage": {
+      "source": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ],
+      "to": "Opponents",
+      "combat": true
+     }
+    },
+    "effects": [
+     {
+      "PutCounters": {
+       "on": "This",
+       "counter": {
+        "Other": "point"
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Counters": {
+           "on": "This",
+           "counter": {
+            "Other": "point"
+           }
+          }
+         },
+         "op": "Ge",
+         "right": 10
+        }
+       },
+       "then": [
+        {
+         "RemoveAllCounters": {
+          "from": "This",
+          "counter": {
+           "Other": "point"
+          }
+         }
+        },
+        {
+         "LoseGame": {
+          "who": "Triggering"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever a creature you control deals combat damage to an opponent, put a point counter on ~. Then if it has ten or more point counters on it, remove them all and that player loses the game."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "This",
+    "mods": [
+     {
+      "KeywordsOf": {
+       "from": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "Drafted": "R6018RemovedWith"
+         }
+        ]
+       },
+       "keywords": [
+        "Flying",
+        "FirstStrike",
+        "DoubleStrike",
+        "Deathtouch",
+        "Haste",
+        "Hexproof",
+        "Indestructible",
+        "Lifelink",
+        "Menace",
+        "Reach",
+        "Vigilance"
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "If you removed a creature card with flying from the draft with cards named ~, this creature has flying. The same is true for first strike, double strike, deathtouch, haste, hexproof, indestructible, lifelink, menace, reach, and vigilance."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "Enters": {
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "by": {
+     "WithCountersAnd": {
+      "counter": "+1/+1",
+      "count": 1,
+      "mods": [],
+      "also": [
+       {
+        "counter": {
+         "Other": "flying"
+        },
+        "count": 1
+       },
+       {
+        "counter": {
+         "Other": "deathtouch"
+        },
+        "count": 1
+       },
+       {
+        "counter": {
+         "Other": "shield"
+        },
+        "count": 1
+       }
+      ]
+     }
+    }
+   }
+  },
+  "This artifact enters with a +1/+1 counter, a flying counter, a deathtouch counter, and a shield counter on it."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Nth": {
+      "event": {
+       "DealsDamage": {
+        "source": [
+         "This"
+        ],
+        "to": "EachPlayer",
+        "combat": true
+       }
+      },
+      "nth": 1
+     }
+    },
+    "effects": [
+     {
+      "Untap": {
+       "what": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         "Attacking"
+        ]
+       }
+      }
+     },
+     {
+      "AddPhase": {
+       "phases": [
+        "Combat"
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever ~ deals combat damage to a player for the first time each turn, untap all attacking creatures. After this combat phase, there is an additional combat phase."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Attacks": {
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "effects": [
+     {
+      "Choose": {
+       "who": "Defending",
+       "from": {
+        "Each": [
+         {
+          "Not": {
+           "Type": "Land"
+          }
+         },
+         {
+          "In": "Graveyard"
+         },
+         {
+          "OwnedBy": "You"
+         }
+        ]
+       },
+       "as": "card"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "card"
+       },
+       "to": "Hand",
+       "as": "returned"
+      }
+     },
+     {
+      "Continuous": {
+       "affected": "This",
+       "mods": [
+        {
+         "ModifyPT": {
+          "power": {
+           "Stat": {
+            "of": {
+             "Bound": "returned"
+            },
+            "stat": "ManaValue"
+           }
+          },
+          "toughness": 0
+         }
+        }
+       ],
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "Whenever this creature attacks, defending player chooses a nonland card in your graveyard. Return that card to your hand. This creature gets +X/+0 until end of turn, where X is the mana value of that card."
+ ]
+]
