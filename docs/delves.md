@@ -82,18 +82,16 @@ One table (`scale.rs`) sets the boss for the party's size, so every size meets t
 
 - `cargo run --release -p mtg-campaign --example delve_sim -- fights <games> <heroes> <level> [first seed] [threads] [heat]` plays each boss in turn against a fresh party of bot heroes on the four fixture Commander decks; `runs` plays whole runs with life carried and loot taken. Games are untimed and seeded, so each result replays. `DELVE_SIM_DROP` (boss cards, phases or schemes by id), `DELVE_SIM_LIFE` (percent), `DELVE_SIM_HAND` and `DELVE_SIM_MINIONS` change the plan to measure what each part is worth.
 - Minutes are estimated at 0.6 per hero turn and 0.5 per turn of the boss's side.
-- The target at Heat 0 for a party of Hard bots, at every size: each fight won in 50 to 60 % of fights, a whole run in 20 to 35 %, a fight in 15 to 40 minutes for three or more heroes.
+- Each fight prints the pressure each hero took, the round a hero first fell to half life and the round a hero first fell.
+- The target at Heat 0 for a party of Hard bots, at every size: each fight won in 50 to 60 % of fights, a whole run in 20 to 35 %, a fight in 25 to 60 minutes for four heroes; no hero takes more than 40 % of the boss's pressure with three or more heroes (60 % with two).
 
-Measured with Hard heroes at Heat 0, seeds from 1 (`fights`, each boss in turn):
+Measured with Hard heroes at Heat 0 on the four fixture Commander decks (three precons and a tuned player deck), seeds 1 to 4 (`fights 1 <heroes> hard <seed>`, one boss per seed), with the spotlight and the ramp-up:
 
-| Heroes | Fights won | Turns (boss side) | Minutes |
-|---|---|---|---|
-| 1 | 28/48 (58 %) | 14.7 (7.3) | 8 |
-| 2 | 24/48 (50 %) | 22.5 (7.6) | 13 |
-| 3 | 10/24 (42 %) | 34.8 (8.8) | 20 |
-| 4 | 13/24 (54 %) | 50.8 (15.2) | 29 |
-| 5 | 8/16 (50 %) | 54.2 (13.8) | 31 |
-| 6 | 7/16 (44 %) | 59.9 (18.7) | 34 |
+| Heroes | Fights won | Turns (boss side) | Minutes | Largest hero share (worst) | First at half life | First fall |
+|---|---|---|---|---|---|---|
+| 1 | 2/4 | 14.8 (7.2) | 8 | 100 % | round 7.0 | round 7.5 |
+| 2 | 1/4 | 23.8 (8.2) | 13 | 60 % (85 %) | round 6.2 | round 7.5 |
+| 3 | 3/4 | 34.8 (8.5) | 20 | 44 % (49 %) | round 5.8 | round 7.0 |
 
-- Heat 1: one hero wins 20/48 fights (42 %), two heroes 14/32 (44 %).
-- Whole runs at Heat 0 (`runs`): one hero wins 2/16 (12 %), two heroes 1/16 (6 %); life carried between fights makes each later fight harder than the table.
+- The grace keeps every hero above 0 life through their first three turns.
+- Four to six heroes take more than an hour of machine time per fight and are not in this table.

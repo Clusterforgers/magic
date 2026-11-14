@@ -116,6 +116,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 ## Delves
 
 - [ ] (dl2) The party shares one team turn against the boss (CR 805 beyond Two-Headed Giant), so four heroes do not wait three turns
+- [ ] (dl3b) Delves balance at every size: measure four to six heroes with the spotlight and ramp-up, and lift two heroes' fight win rate to 50 %
 - [ ] (dl3a) Boss personalities: each boss weighs threats its own way (the healer, the biggest board, the combo) within the spotlight's cap
 - [ ] (dl4) A won card names the card it replaces (a basic land today), chosen from the hero's deck list on the loot screen
 - [ ] (dl5) Campfire upgrades put a sticker on a card of the hero's deck for the rest of the run
