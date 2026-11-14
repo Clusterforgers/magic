@@ -136,6 +136,7 @@ mod rmt5_wholes;
 mod rmt6_readback;
 mod rmt7_writers;
 mod rmt8_wordings;
+mod r6405_probe;
 mod roundtrip;
 mod transform_cards;
 mod us38_mana_cost;
