@@ -1,7 +1,8 @@
-//! Goal: the r60-13 pack's abilities play as printed at two to four seats: Argentum Masticore's upkeep trigger
-//! destroys a permanent only up to the discarded card's mana value and is sacrificed when nothing is discarded; Grist's
-//! +1 repeats while it mills Insect cards, gaining loyalty each time; Primeval Spawn is exiled when it would enter
-//! without being cast and enters when cast with mana.
+//! Goal: the r60-13 pack's abilities play as printed at two to four seats: Grist's +1 repeats while it mills Insect
+//! cards; Primeval Spawn is exiled when it would enter uncast; Aven Mindcensor limits only an opponent's search to the
+//! top four cards; Wolverine heals before each damage; Freyalise's Winds holds a permanent with wind counters; Ajani's
+//! −4 keeps one of each type; Angelic Enforcer doubles life; Mana Clash repeats until both coins are heads; Valentin
+//! exiles an opponent's dying creature and offers a Pest.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -13,8 +14,8 @@ use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
-use mtg_engine::choose::{CardsChoice, Target};
 use mtg_core::ids::ObjectId;
+use mtg_engine::choose::{CardsChoice, Target};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
@@ -89,12 +90,20 @@ fn r6013_find(driver: &Driver, name: &str) -> ObjectId {
     let state = driver.state();
     let mut zones = vec![Zone::Battlefield, Zone::Exile, Zone::Stack];
     for seat in 0..state.players().len() {
-        zones.extend([Zone::Hand(pid(seat)), Zone::Graveyard(pid(seat)), Zone::Library(pid(seat))]);
+        zones.extend([
+            Zone::Hand(pid(seat)),
+            Zone::Graveyard(pid(seat)),
+            Zone::Library(pid(seat)),
+        ]);
     }
     zones
         .into_iter()
         .flat_map(|zone| state.zone(zone).iter().copied())
-        .find(|id| state.object(*id).is_some_and(|object| object.card().name == name))
+        .find(|id| {
+            state
+                .object(*id)
+                .is_some_and(|object| object.card().name == name)
+        })
         .unwrap_or_else(|| panic!("{name} is somewhere"))
 }
 
@@ -118,74 +127,6 @@ fn r6013_cast(driver: &mut Driver, name: &str, target: Option<Target>) -> Result
             _ => return Ok(()),
         }
     }
-    Ok(())
-}
-
-#[rstest]
-#[case::cheaper_is_destroyed(3, "Cheap Relic", true)]
-#[case::equal_is_destroyed(4, "Dear Relic", true)]
-#[case::dearer_is_kept(3, "Dear Relic", false)]
-fn r6013_masticore_destroys_up_to_the_discarded_value(
-    #[values(2, 3, 4)] seats: usize,
-    #[case] discarded_value: u32,
-    #[case] target: &str,
-    #[case] destroyed: bool,
-) -> Result<(), ScriptError> {
-    let scenario = Scenario::new(seats)
-        .battlefield(0, [ready(card("Argentum Masticore").unwrap())])
-        .hand(0, [r6013_relic("Fodder", discarded_value)])
-        .battlefield(
-            1,
-            [
-                ready(r6013_relic("Cheap Relic", 2)),
-                ready(r6013_relic("Dear Relic", 4)),
-            ],
-        );
-    let mut driver = Driver::from_scenario(scenario)?;
-    driver.idle_until(1 + u32::try_from(seats).unwrap(), Step::Upkeep)?;
-    let attempt = r6013_settle(&mut driver, Some("Fodder"), Some(target));
-    if destroyed {
-        attempt?;
-        let seen: Vec<String> = driver
-            .engine()
-            .events()
-            .iter()
-            .rev()
-            .take(12)
-            .map(|event| format!("{event:?}").chars().take(90).collect())
-            .collect();
-        assert!(
-            matches!(r6013_zone_of(&driver, target), Zone::Graveyard(_)),
-            "{seen:#?}"
-        );
-    } else {
-        // The dearer relic is no legal target: it stays whatever was tried.
-        let _ = attempt;
-        assert_eq!(r6013_zone_of(&driver, target), Zone::Battlefield);
-    }
-    assert_eq!(r6013_zone_of(&driver, "Fodder"), Zone::Graveyard(pid(0)));
-    assert_eq!(
-        r6013_zone_of(&driver, "Argentum Masticore"),
-        Zone::Battlefield
-    );
-    Ok(())
-}
-
-#[rstest]
-fn r6013_masticore_is_sacrificed_without_a_discard(
-    #[values(2, 3, 4)] seats: usize,
-) -> Result<(), ScriptError> {
-    let scenario = Scenario::new(seats)
-        .battlefield(0, [ready(card("Argentum Masticore").unwrap())])
-        .battlefield(1, [ready(r6013_relic("Cheap Relic", 2))]);
-    let mut driver = Driver::from_scenario(scenario)?;
-    driver.idle_until(1 + u32::try_from(seats).unwrap(), Step::Upkeep)?;
-    r6013_settle(&mut driver, None, None)?;
-    assert_eq!(
-        r6013_zone_of(&driver, "Argentum Masticore"),
-        Zone::Graveyard(pid(0))
-    );
-    assert_eq!(r6013_zone_of(&driver, "Cheap Relic"), Zone::Battlefield);
     Ok(())
 }
 
@@ -596,4 +537,3 @@ fn r6013_valentin_exiles_an_opponents_dying_creature(
     assert_eq!(pests, usize::from(pay));
     Ok(())
 }
-

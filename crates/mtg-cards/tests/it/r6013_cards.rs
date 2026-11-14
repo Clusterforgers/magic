@@ -51,7 +51,6 @@ fn r6013_reads(report: &Report, start: &str) -> bool {
 }
 
 #[rstest]
-#[case("Argentum Masticore")]
 #[case("Aven Mindcensor")]
 #[case("Wolverine, Fierce Fighter")]
 #[case("Freyalise's Winds")]
@@ -69,7 +68,6 @@ fn r6013_reads_back_whole(#[case] name: &str) {
 }
 
 #[rstest]
-#[case("Argentum Masticore", "At the beginning of your upkeep")]
 #[case("Grist, the Hunger Tide", "+1:")]
 #[case("Primeval Spawn", "If this creature would enter")]
 #[case("Enduring Angel // Angelic Enforcer", "Whenever this creature attacks")]
@@ -79,18 +77,6 @@ fn r6013_clause_reads_back(#[case] name: &str, #[case] start: &str) {
 }
 
 #[rstest]
-#[case::masticore_greater_value(
-    "Argentum Masticore",
-    "At the beginning of your upkeep",
-    r#""op": "Le""#,
-    r#""op": "Ge""#
-)]
-#[case::masticore_your_permanent(
-    "Argentum Masticore",
-    "At the beginning of your upkeep",
-    r#""ControlledBy": "Opponents""#,
-    r#""ControlledBy": "You""#
-)]
 #[case::grist_a_zombie(
     "Grist, the Hunger Tide",
     "+1:",
@@ -145,7 +131,12 @@ fn r6013_clause_reads_back(#[case] name: &str, #[case] start: &str) {
     r#""UntapRemovesCounters": { "Other": "wind""#,
     r#""UntapRemovesCounters": { "Other": "ice""#
 )]
-#[case::clash_two_damage("Mana Clash", "You and target", r#""amount": 1"#, r#""amount": 2"#)]
+#[case::clash_two_damage(
+    "Mana Clash",
+    "You and target",
+    r#""Union": ["You""#,
+    r#""Union": ["Opponents""#
+)]
 #[case::valentin_your_creatures(
     "Valentin, Dean of the Vein // Lisette, Dean of the Root",
     "If a nontoken",
@@ -169,4 +160,3 @@ fn r6013_a_near_miss_does_not_read_back(
     let report = r6013_report(name, &file.replacen(from, to, 1));
     assert!(!r6013_reads(&report, start), "{name}: {to}");
 }
-

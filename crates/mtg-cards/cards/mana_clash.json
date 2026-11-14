@@ -14,36 +14,39 @@
               {
                 "RepeatWhile": {
                   "condition": {
-                    "Not": {
-                      "All": [
-                        { "Compare": { "left": { "Bound": "mine" }, "op": "Eq", "right": 1 } },
-                        { "Compare": { "left": { "Bound": "theirs" }, "op": "Eq", "right": 1 } }
-                      ]
-                    }
+                    "Compare": { "left": { "Bound": "both" }, "op": "Eq", "right": 0 }
                   },
                   "effects": [
-                    { "FlipCoin": { "won_as": "mine", "heads": true } },
-                    { "FlipCoin": { "who": { "Target": 0 }, "won_as": "theirs", "heads": true } },
                     {
-                      "Together": {
-                        "effects": [
+                      "FlipCoin": {
+                        "win": [
                           {
-                            "If": {
-                              "condition": {
-                                "Compare": { "left": { "Bound": "mine" }, "op": "Eq", "right": 0 }
-                              },
-                              "then": [{ "DealDamage": { "to": "You", "amount": 1 } }]
-                            }
-                          },
-                          {
-                            "If": {
-                              "condition": {
-                                "Compare": { "left": { "Bound": "theirs" }, "op": "Eq", "right": 0 }
-                              },
-                              "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                            "FlipCoin": {
+                              "who": { "Target": 0 },
+                              "lose": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }],
+                              "won_as": "both",
+                              "heads": true
                             }
                           }
-                        ]
+                        ],
+                        "lose": [
+                          {
+                            "FlipCoin": {
+                              "who": { "Target": 0 },
+                              "win": [{ "DealDamage": { "to": "You", "amount": 1 } }],
+                              "lose": [
+                                {
+                                  "DealDamage": {
+                                    "to": { "Union": ["You", { "Target": 0 }] },
+                                    "amount": 1
+                                  }
+                                }
+                              ],
+                              "heads": true
+                            }
+                          }
+                        ],
+                        "heads": true
                       }
                     }
                   ],

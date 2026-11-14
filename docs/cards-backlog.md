@@ -93,7 +93,7 @@ Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `
 - [ ] (r5512a) Spend permissions still missing: one color spent as another (Sunglasses of Urza), "for one spell this turn" of the player's choice (North Star), mana of any type for the source's own abilities (Sharkey, Tyrant of the Shire), and power-up abilities as an activation kind for restricted mana (Quinjet Technician)
 - [ ] (r5512b) Cost parts still missing: exile cards with a total mana value of X or at least N (Fabrication Foundry, The Capitoline Triad), pay the mana cost of the card exiled by the same cost (Back from the Brink), exile permanents named as a group with a token that has their triggered abilities (The Book of Vile Darkness)
 - [ ] (r5512c) Counters moved by kind: "a counter of each kind not on ~" and "one or more counters" with a least of one (Goldberry, River-Daughter)
-- [ ] (r6013a) Mana noted by type and amount as an activation is paid and added back later (Jeweled Amulet, Ice Cauldron); collect evidence X as a payment of any amount read by a reflexive trigger (Incinerator of the Guilty)
+- [ ] (r6013a) Mana noted by type and amount as an activation is paid and added back later (Jeweled Amulet, Ice Cauldron); collect evidence X as a payment of any amount read by a reflexive trigger (Incinerator of the Guilty); a reflexive trigger whose target filter reads a card bound by the step before it (Argentum Masticore)
 - [ ] (c14a) The rest of the top coverage blockers: Multiclass Baldric, Yavimaya Bloomsage, a secretly chosen opponent, six spell lines and rules for the 61 other prepare cards; frees about 70 cards (Stalking Leonin, Ponder)
 
 ## Keywords and cast ways
