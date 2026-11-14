@@ -274,12 +274,13 @@ Teams: `table/teamLife.ts` (`useSeatTeam`) reads the view's `house_rules.teams`;
 
 ## Sounds
 
-`features/sound/` plays a few short, quiet cues at the table, synthesized with WebAudio, so no sound file ships.
+`features/sound/` plays short, quiet sounds at the table, synthesized with WebAudio, so no sound file ships.
 
-- `soundCueBetween(prev, next)` (`cues.ts`, pure) gives at most one cue per change of the play store, the strongest first: `won` when the result names the viewer, `turn` when the viewer's own turn begins, `decision` when a decision for the viewer arrives while none was pending. A first view, a spectator's table and any other seat's turn, decision or win give none.
-- `playCue` (`synth.ts`) plays one to three sine notes of 160 ms at a peak gain of 0.05 through one lazily made `AudioContext`; a browser without WebAudio, or before the page was clicked, plays nothing and throws nothing.
-- The cues are on until muted: `mtg.sounds` in `localStorage` (`soundPrefs.ts`, every access in try/catch) is `off` while muted, followed by every tab. The switches are "Play sounds" in the Full Control menu and Sounds on the settings page.
-- `useSoundCues` runs in `GameTable` while `TableOptions.sounds` is on (everywhere but under vitest and the replay viewer).
+- Cues (`cues.ts`, pure): `soundCueBetween(prev, next)` gives at most one cue per change of the play store, the strongest first: `won` when the result names the viewer, `turn` when the viewer's own turn begins, `decision` when a decision for the viewer arrives while none was pending. A first view, a spectator's table and any other seat's turn, decision or win give none. `playCue` (`synth.ts`) plays one to three sine notes of 160 ms.
+- The table (`tableSounds.ts`, pure): `tableSoundsBetween` reads the batch of `batchBetween` (a snapshot, a decision or chat is none) and gives the sounds of its events, each kind once, the strongest first, at most three: attack, block, hit, die, cast, counter (also a fizzle), resolve, gain, land, shuffle, draw. A draw or a shuffle of another seat is its hidden event, so every seat hears the same and no sound tells a hidden card. `playTableSound` (`tableSynth.ts`) plays the voices of `TABLE_VOICES` (tones gliding and band-passed noise, each under 400 ms) `SOUND_GAP_SECONDS` apart on the audio clock: no timer waits and no answer is delayed.
+- Settings (`soundPrefs.ts`, every access in try/catch, followed by every tab): `mtg.sounds` (`off` mutes everything), `mtg.sounds.table` (`off` keeps the cues only) and `mtg.sounds.volume` (0 to 1, default 0.7, where the cues sound at their old peak of 0.05). The switches are "Play sounds" and "Play the table's sounds" in the Full Control menu; the settings page has both and a volume slider that plays a cue as it moves.
+- `useSoundCues` runs in `GameTable` while `TableOptions.sounds` is on (everywhere but under vitest and the replay viewer); a browser without WebAudio, or before the page was clicked, plays nothing and throws nothing.
+- Motion that goes with them: a tap lays a card down and an untap stands it up in 150 ms (`TAP_MOTION`, `motion-safe` only); the damage shake, travel, strikes and spotlight are the table effects above.
 
 ## Pace controls
 

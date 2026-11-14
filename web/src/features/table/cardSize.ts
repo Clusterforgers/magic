@@ -94,6 +94,9 @@ export const PIP_TO: Record<PipTone, string> = {
 /** The mark of the card the Commands panel acts on: a dashed outline in the chosen colour beside the solid rings of a prompt's marks. */
 export const PICKED = 'outline-3 outline-dashed outline-offset-4 outline-selected'
 
+/** A tap lays the face down and an untap stands it up in 150 ms where motion is welcome; at once otherwise. */
+export const TAP_MOTION = 'motion-safe:transition-[height] motion-safe:duration-150 motion-safe:ease-out'
+
 /**
  * How the decision layer's marks look on a card: what can be used glows in the primary colour, a chosen card turns to
  * the wider crimson ring, and the rest only loses a little colour, so a board never reads as switched off.

@@ -1,5 +1,6 @@
 // Goal: the sound cues are on until muted, the mute is kept in this browser and followed by every switch at once, blocked storage keeps them on without a throw, and a muted table plays no cue while an unmuted one plays each cue of its store.
 import { act, render, screen } from '@testing-library/react'
+import { useMemo } from 'react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createPlayStore } from '@/play/store'
@@ -38,7 +39,7 @@ describe('the sound preference', () => {
 
   it('is switched from the settings toggle', async () => {
     render(<SoundToggle />)
-    const toggle = screen.getByRole('switch')
+    const toggle = screen.getByRole('switch', { name: /^Play a short, quiet sound/ })
     expect(toggle).toBeChecked()
     await userEvent.click(toggle)
     expect(soundsOn()).toBe(false)
@@ -53,7 +54,8 @@ function Listener({
   store: ReturnType<typeof createPlayStore>
   play: (cue: SoundCue) => void
 }) {
-  useSoundCues(store, true, play)
+  const output = useMemo(() => ({ cue: play, table: () => undefined }), [play])
+  useSoundCues(store, true, output)
   return null
 }
 

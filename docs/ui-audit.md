@@ -19,7 +19,7 @@ Impact: how much a problem costs a player in a 4-player Commander game at 1400 �
 | 5 | Choices are small | prompts | Choose cards and look at the top draw 6 rem cards in the strip; targets and modes have no pictures. |
 | 6 | The phone table does not fit | table at 390 | Two and a half hand cards, the controls overlap ("…triggers" cut), the own pod takes a third of the height, boards draw 30 px cards. |
 | 7 | Turn display repeats itself | top bar | "Main" in the badge, "Your turn · 5 · Precombat main" beside it and "Main" again in a ladder of twelve small empty boxes. |
-| 8 | Motion and sound are thin for a game | table | Tapping is instant (no turn of the card); three quiet sine cues (turn, decision, win); no sound for a cast, attack, damage, draw or shuffle. |
+| 8 | The table is quiet between moments | table | The table plays its casts, attacks, blocks, damage, draws and shuffles and taps turn in 150 ms; there is no your-turn moment beyond the banner and no stack resolution beat. |
 
 ## Per screen
 
@@ -82,7 +82,6 @@ Each pass is one commit with before and after shots at 1400 × 900, 1280 × 720 
 
 | Pass | Outcome |
 |---|---|
-| 3 | Feel: the sound set and its settings, the moments of the table, the your-turn moment, shuffle and draw, damage shake, tap and untap turning in 150 ms; reduced motion and leak tests |
 | 4 | Hand and prompts: a hand fanned from the bottom edge with a full-size hover; choose cards and look at the top as a centre overlay with large cards; targets and modes with card pictures |
 | 5 | Board room: combat lines kept to the boards they join, attacker groups as a badge on the defender's pod; the turn badge and ladder said once; the priority sentence in one line |
 | 6 | Phone table: hand and controls fit at 390, pod strip slimmer, boards larger |

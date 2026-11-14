@@ -7,6 +7,7 @@ import type { ImageSize, ImageSource } from '@/features/cards/images'
 import { cn } from '@/lib/utils'
 import { Overlay } from './CardOverlay'
 import type { OverlayProps } from './CardOverlay'
+import { TAP_MOTION } from './cardSize'
 import type { CardSize } from './cardSize'
 
 /** The width in px of the cards of a fitted row or hand, from the fit engine; null outside one. */
@@ -49,6 +50,7 @@ export function ImageFace({ source, box, turned, stacked, imageSize, children, .
         'relative block w-(--card-w) rounded-md',
         // A turned picture stands at the top of its box.
         turned ? 'h-[calc(var(--card-w)*5/7)] self-start' : 'h-(--card-h)',
+        TAP_MOTION,
         box,
         stacked ? PILE : null,
       )}
@@ -88,6 +90,7 @@ export function BackFace({ box, turned, label, ...overlay }: BackFaceProps) {
       className={cn(
         'relative grid w-(--card-w) place-items-center',
         turned ? 'h-[calc(var(--card-w)*5/7)]' : 'h-(--card-h)',
+        TAP_MOTION,
         box,
       )}
     >
