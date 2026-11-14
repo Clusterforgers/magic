@@ -112,7 +112,7 @@ Four themes mark the phase at a glance; a step maps to one by the step alone, wh
 | Combat | beginning of combat to end of combat, first-strike damage included | swords | vermillion |
 | Ending | end step, cleanup | moon | reddish purple |
 
-The table root carries `data-phase`; `phase.css` points `phase`, `phase-soft` and `on-phase` at that set, neutral outside the turns. The theme reaches the top bar's 3 px rule, the turn badge (accent fill on your turn, tint with an accent edge otherwise), the ladder (current step in the accent, an icon per phase run, the current phase named), the shared strip's 2 px edge and the table's main area as a wash of at most 6 %.
+The table root carries `data-phase`; `phase.css` points `phase`, `phase-soft` and `on-phase` at that set, neutral outside the turns. The theme reaches the top bar's 3 px rule, the turn badge (accent fill on your turn, tint with an accent edge otherwise; its tag keeps the icon and names the phase only below 1024 px, where no ladder does), the ladder (current step in the accent, an icon per phase run, the current phase named), the shared strip's 2 px edge and the table's main area as a wash of at most 6 %.
 
 - Never colour alone: the badge and the ladder carry the icon and the name; whose turn it is stays in words and in fill against tint.
 - The hues follow Okabe and Ito; none is yellow or orange, which is the gold of your turn.

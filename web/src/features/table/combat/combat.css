@@ -74,6 +74,11 @@
   stroke-width: 3;
 }
 
+/* An attack between two other seats draws faint, so the attacks that concern you read across the table. */
+.combat-group[data-kind='attack']:not([data-mine]):not([data-pending]) {
+  opacity: 0.35;
+}
+
 .combat-group[data-pending] .combat-line {
   stroke-dasharray: 7 6;
 }

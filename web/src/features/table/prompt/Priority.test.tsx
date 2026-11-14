@@ -263,13 +263,13 @@ describe('the words', () => {
   it('says it is a response when there is a spell on the stack', () => {
     const { container } = renderPriority(options({ castable: [spell1] }))
     expect(text(container)).toBe(
-      'You are responding to your Lightning Bolt. You can cast a spell, or pass to let it resolve.',
+      'Responding to your Lightning Bolt: cast a spell, or pass to let it resolve.',
     )
   })
 
   it('says what may be done when the stack is empty', () => {
     const { container } = renderPriority(options({ playable_lands: [play1] }), { emptyStack: true })
-    expect(text(container)).toBe('You have priority. You can play a land, or pass.')
+    expect(text(container)).toBe('Play a land, or pass.')
   })
 
   it('is one polite live region under the name of the decision', () => {

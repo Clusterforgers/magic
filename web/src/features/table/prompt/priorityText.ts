@@ -28,7 +28,8 @@ function orList(items: readonly string[]): string {
 export const byHandText = (card: string): string => `Apply ${card}'s text by hand, then continue.`
 
 /**
- * What the player may do and, over a non-empty stack, that they are responding to its top spell; `byHand` (the card the seat is
+ * What the player may do in one line ("Play a land, cast a spell or tap for mana, or pass."), led over a non-empty stack by
+ * the spell they respond to ("Responding to Bo's Giant Growth: …"); `byHand` (the card the seat is
  * held at its by-hand window for, `PlayState.byHand`) says what is left to do by hand instead.
  */
 export function priorityText(
@@ -39,10 +40,13 @@ export function priorityText(
   byHand: string | null = null,
 ): string {
   if (byHand !== null) return byHandText(byHand)
+  // One short line, as Arena words it: the strip's corner already says who holds priority.
   const lead =
     top === null
-      ? 'You have priority.'
-      : `You are responding to ${top.controller === viewer ? 'your' : `${name(top.controller)}'s`} ${top.name}.`
+      ? ''
+      : `Responding to ${top.controller === viewer ? 'your' : `${name(top.controller)}'s`} ${top.name}: `
+  const say = (rest: string): string =>
+    lead === '' ? rest.charAt(0).toUpperCase() + rest.slice(1) : lead + rest
   const can = [
     options.playable_lands.length > 0 ? 'play a land' : null,
     options.castable.length > 0 ? 'cast a spell' : null,
@@ -55,12 +59,10 @@ export function priorityText(
   const after = top === null ? '' : ' to let it resolve'
   if (can.length === 0) {
     return options.can_pass
-      ? `${lead} You have nothing to play right now; pass${top === null ? ' to go on' : after}.`
-      : `${lead} You have no legal move.`
+      ? say(`nothing to play; pass${top === null ? ' to go on' : after}.`)
+      : say('no legal move.')
   }
-  return options.can_pass
-    ? `${lead} You can ${orList(can)}, or pass${after}.`
-    : `${lead} You can ${orList(can)}.`
+  return options.can_pass ? say(`${orList(can)}, or pass${after}.`) : say(`${orList(can)}.`)
 }
 
 /** The legal mana abilities grouped by permanent, in the order the options list them. */

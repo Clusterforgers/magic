@@ -135,7 +135,7 @@ describe('turn badge and decision line', () => {
 
   it.each([
     ['the waiting line', false, /^Waiting for/],
-    ['the prompt text', true, /^You are responding to/],
+    ['the prompt text', true, /^Responding to/],
   ] as const)('announces %s politely', (_what, decides, words) => {
     renderTable({
       seats: 2,
