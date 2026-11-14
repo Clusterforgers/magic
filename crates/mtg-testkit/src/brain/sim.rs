@@ -233,6 +233,13 @@ impl Search {
         self
     }
 
+    /// This search ending by `cap` at the latest, when it is timed (the decision cap, [`super::clock::cap`]).
+    #[must_use]
+    pub fn capped(mut self, cap: Instant) -> Search {
+        self.deadline = self.deadline.map(|deadline| deadline.min(cap));
+        self
+    }
+
     /// The seat searched for.
     pub const fn seat(&self) -> PlayerId {
         self.seat

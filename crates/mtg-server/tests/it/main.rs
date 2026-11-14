@@ -3,6 +3,7 @@
 mod auto_pass;
 mod auto_skips;
 mod auto_yields;
+mod bot_fallbacks;
 mod bot_seats;
 mod by_hand_window;
 mod clocked_manual;
