@@ -7,7 +7,7 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import { useGame, usePlay } from '@/features/game/gameContext'
-import { setSoundsOn, useSoundsOn } from '@/features/sound/soundPrefs'
+import { setSoundsOn, setTableSoundsOn, useSoundsOn, useTableSoundsOn } from '@/features/sound/soundPrefs'
 import { resetDefaultStops, saveDefaultStops, useFlowPrefs } from '@/play/flowPrefs'
 import { defaultStopsWords } from './stopModel'
 
@@ -29,6 +29,7 @@ export function FlowMenuItems() {
   const online = usePlay((state) => state.status === 'open')
   const pinned = stops.filter((stop) => stop.keep)
   const sounds = useSoundsOn()
+  const tableSounds = useTableSoundsOn()
   return (
     <>
       <DropdownMenuSeparator />
@@ -66,6 +67,14 @@ export function FlowMenuItems() {
       </DropdownMenuCheckboxItem>
       <DropdownMenuCheckboxItem data-slot="sounds" checked={sounds} onCheckedChange={setSoundsOn}>
         Play sounds
+      </DropdownMenuCheckboxItem>
+      <DropdownMenuCheckboxItem
+        data-slot="table-sounds"
+        checked={sounds && tableSounds}
+        disabled={!sounds}
+        onCheckedChange={setTableSoundsOn}
+      >
+        Play the table's sounds
       </DropdownMenuCheckboxItem>
       {yields.length === 0 ? null : (
         <>

@@ -18,7 +18,7 @@ import {
   typeLine,
 } from './cardModel'
 import type { CombatRole, Frame, Links, StatusChip } from './cardModel'
-import { FRAME, NARROW_PX, SIZE } from './cardSize'
+import { FRAME, NARROW_PX, SIZE, TAP_MOTION } from './cardSize'
 import type { CardSize } from './cardSize'
 import { isUnattached } from '@/play/hosts'
 import { BackFace, ImageFace, useDrawnWidth } from './ImageFace'
@@ -289,6 +289,7 @@ export function TextFace({
         parts.body,
         stacked ? PILE : 'shadow-[0_2px_6px_oklch(0_0_0/0.45)]',
         turned ? 'h-[calc(var(--card-w)*5/7)]' : 'h-(--card-h)',
+        TAP_MOTION,
         fit ? null : classes.vars,
         dark ? cn(TOKEN_BORDER[frame], 'bg-card-back text-white') : FRAME[frame],
       )}

@@ -21,6 +21,7 @@ import { usePodRoom } from './podRoom'
 import { useSeatNamer } from './names'
 import { BankMark } from './BankMark'
 import { CommanderPortrait } from './CommanderPortrait'
+import { LandSummary } from './LandSummary'
 import {
   ACTIVE_EDGE,
   AwayMark,
@@ -269,7 +270,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
         <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
           <div className="flex min-w-24 flex-1 items-center justify-between gap-2">
             <div className="flex min-w-0 items-center gap-2">
-              <CommanderPortrait ids={commanders} />
+              <CommanderPortrait ids={commanders} className="size-8" />
               {name}
             </div>
             <div className="flex shrink-0 items-center gap-1.5">
@@ -303,23 +304,24 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
             {counts.attractions > 0 ? (
               <CountChip zone="attractions" count={counts.attractions} density="line" />
             ) : null}
+            <LandSummary seat={seat} owner={owner} density="line" />
             <ZoneButton zone="graveyard" owner={owner} ids={graveyard} density="line" thumbs />
             <ZoneButton zone="exile" owner={owner} ids={exile} density="line" thumbs />
             {commanders.length > 0 ? (
               <ZoneButton zone="command" owner={owner} ids={commanders} density="line" thumbs />
             ) : null}
           </div>
+          {/* The status flows on after the zones in the same lines, so a pod head takes as few lines as its width allows. */}
+          <div data-slot="pod-status" className="contents empty:hidden">
+            <UntappedSources seat={seat} />
+            {mana}
+            <TaxChips chips={chips.tax} density="line" />
+            <DamageChips chips={chips.damage} density="line" />
+            <EnchantChips chips={enchants} density="line" />
+            {notes}
+          </div>
         </div>
         {words === '' ? null : <p className="sr-only">{words}</p>}
-        {/* The untapped sources share the row of the pool and the chips, so a pod head takes two lines, not four. */}
-        <div data-slot="pod-status" className="flex flex-wrap items-center gap-x-2 gap-y-1 empty:hidden">
-          <UntappedSources seat={seat} />
-          {mana}
-          <TaxChips chips={chips.tax} density="line" />
-          <DamageChips chips={chips.damage} density="line" />
-          <EnchantChips chips={enchants} density="line" />
-          {notes}
-        </div>
       </section>
     )
   }
@@ -334,6 +336,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
     <>
       <CountChip zone="hand" count={counts.hand} density="tile" />
       <CountChip zone="library" count={counts.library} density="tile" />
+      <LandSummary seat={seat} owner={owner} density="tile" />
     </>
   )
   const extraChips = (

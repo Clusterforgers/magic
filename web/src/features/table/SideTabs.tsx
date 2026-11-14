@@ -1,4 +1,12 @@
-import { HandIcon, LayersIcon, MessageSquareIcon, PanelRightIcon, ScrollTextIcon } from 'lucide-react'
+import {
+  ChevronsRightIcon,
+  HandIcon,
+  LayersIcon,
+  MessageSquareIcon,
+  PanelRightIcon,
+  PanelRightOpenIcon,
+  ScrollTextIcon,
+} from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { CSSProperties, KeyboardEvent } from 'react'
 import { createPortal } from 'react-dom'
@@ -12,6 +20,7 @@ import { ChatPanel } from './ChatPanel'
 import { LogPanel } from './LogPanel'
 import { CommandsPanel } from './manual/panel/CommandsPanel'
 import { useSide } from './sideContext'
+import { setSideFolded } from './sideFold'
 import { countLabel } from './sideCounts'
 import type { SideTab } from './sideCounts'
 import { StackPanel } from './StackPanel'
@@ -160,6 +169,23 @@ function Rail() {
             )
           })}
         </TabsList>
+        {side.foldable ? (
+          // The viewer folded the column here: this opens it again, and the choice is kept for the next game.
+          <Button
+            variant="ghost"
+            size="icon"
+            data-slot="side-unfold"
+            aria-label="Open the side panel"
+            title="Open the side panel"
+            className="mt-auto size-11"
+            onClick={() => {
+              side.setOpen(false)
+              setSideFolded(false)
+            }}
+          >
+            <PanelRightOpenIcon aria-hidden="true" className="size-5" />
+          </Button>
+        ) : null}
         {side.open && side.mount !== null
           ? createPortal(
               <div
@@ -180,7 +206,23 @@ function Rail() {
 function Column() {
   const name = useSideName()
   return (
-    <aside aria-label={name} data-side="column" className="flex min-h-0 flex-col border-l bg-surface">
+    <aside
+      aria-label={name}
+      data-side="column"
+      className="relative flex min-h-0 flex-col border-l bg-surface"
+    >
+      {/* On the column's edge, so the tabs keep their row: folds the column to its rail and gives the boards its width. */}
+      <Button
+        variant="outline"
+        size="icon"
+        data-slot="side-fold"
+        aria-label="Fold the side panel"
+        title="Fold the side panel"
+        className="absolute top-14 -left-3 z-10 size-6 rounded-full bg-surface pointer-coarse:size-11"
+        onClick={() => setSideFolded(true)}
+      >
+        <ChevronsRightIcon aria-hidden="true" className="size-4" />
+      </Button>
       <TabbedPanels />
     </aside>
   )

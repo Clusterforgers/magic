@@ -107,6 +107,7 @@ export function DevTableRoute() {
     lexicon,
     teams,
     result,
+    permanents,
   } = useSearch({
     from: '/dev/table',
   })
@@ -137,6 +138,7 @@ export function DevTableRoute() {
       away,
       teams,
       result,
+      permanents,
       real,
     })
   }, [
@@ -163,6 +165,7 @@ export function DevTableRoute() {
     real,
     teams,
     result,
+    permanents,
   ])
   const view = game.session.store.getState().view
   const candidates = useMemo(
