@@ -237,6 +237,10 @@ pub(super) fn repeated(cost: &Cost, times: usize) -> Cost {
                 CostItem::Mana(_) => vec![item.clone(); times],
                 CostItem::PayLife(amount) => vec![CostItem::PayLife(times_over(amount))],
                 CostItem::PayEnergy(amount) => vec![CostItem::PayEnergy(times_over(amount))],
+                CostItem::SpendCounters { counter, count } => vec![CostItem::SpendCounters {
+                    counter: counter.clone(),
+                    count: times_over(count),
+                }],
                 // The library and the hand must hold the cards of every payment at once.
                 CostItem::Draw(amount) => vec![CostItem::Draw(times_over(amount))],
                 // Each payment takes the cards under the ones before it: one part of the cards of every payment, else
@@ -1374,6 +1378,10 @@ mod tests {
     #[case::discard_at_random(r#"[{"DiscardRandom":1}]"#, r#"[{"DiscardRandom":3}]"#)]
     #[case::fb27_exile_top(r#"[{"ExileTop":1}]"#, r#"[{"ExileTop":3}]"#)]
     #[case::fb27_mill(r#"[{"Mill":1}]"#, r#"[{"Mill":3}]"#)]
+    #[case::spent_counters(
+        r#"[{"SpendCounters":{"counter":{"Other":"ectoplasm"},"count":2}}]"#,
+        r#"[{"SpendCounters":{"counter":{"Other":"ectoplasm"},"count":6}}]"#
+    )]
     fn a_cost_paid_several_times_asks_for_all_the_cards_at_once(
         #[case] once: &str,
         #[case] thrice: &str,

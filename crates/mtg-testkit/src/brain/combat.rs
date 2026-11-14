@@ -68,7 +68,9 @@ fn bodies_by_id(seen: &Seen<'_>) -> BTreeMap<ObjectId, Body> {
 }
 
 /// The opponent the seat's attacks go at among `offered`: one its creatures can kill this turn, else the one who
-/// threatens its team most ([`threat::player_threat`], the archenemy), less for each untapped creature of theirs that punishes the seat's attackers. Teammates choose the same way, so they focus on one opponent.
+/// threatens its team most ([`threat::player_threat`], the archenemy), less for each untapped creature of theirs that
+/// punishes the seat's attackers. With several opponents the kill must get past every blocker, and recent damage leans
+/// the choice ([`threat::rivalry_lean`]: retaliation, spread); low life alone adds nothing. Teammates never.
 pub fn focus(
     seen: &Seen<'_>,
     bodies: &BTreeMap<ObjectId, Body>,
@@ -97,6 +99,19 @@ pub fn focus(
     } else {
         fair
     };
+    let archenemy = super::knobs::knobs().archenemy > 0.0 && threat::many_opponents(seen);
+    // What the seat's untapped creatures surely deal a player this turn, every blocker of theirs blocking.
+    let strikers: Vec<Body> = all
+        .iter()
+        .filter(|body| {
+            !body.is_creature()
+                || (body.controller == seen.seat() && !body.tapped)
+                || !seen.is_teammate(body.controller)
+        })
+        .cloned()
+        .collect();
+    let own_team = seen.team_of(seen.seat());
+    let reach = |player: PlayerId| pressure(seen, &strikers, own_team, seen.team_of(player));
     for player in pool {
         let life = seen.life(player);
         let board = threat::player_threat(seen, player, &all);
@@ -114,16 +129,23 @@ pub fn focus(
                 })
             })
             .count();
+        let wall = super::knobs::knobs().wall * f64::from(u32::try_from(walls).unwrap_or(u32::MAX));
         let score = if boss {
             // A boss's side weighs threat against the attention a hero already got, never weakness alone.
             board + super::spotlight::lean(seen, player)
                 - super::knobs::knobs().wall * f64::from(u32::try_from(walls).unwrap_or(u32::MAX))
                 + if life <= power { 10.0 } else { 0.0 }
+        } else if archenemy {
+            // Several opponents: the one the seat surely kills now, else by threat, never low life alone.
+            if life <= reach(player) {
+                1_000.0 - f64::from(life)
+            } else {
+                board + threat::rivalry_lean(seen, player) - wall
+            }
         } else if life <= power {
             1_000.0 - f64::from(life)
         } else {
-            board + 0.5 * f64::from(40 - life.min(40))
-                - super::knobs::knobs().wall * f64::from(u32::try_from(walls).unwrap_or(u32::MAX))
+            board + 0.5 * f64::from(40 - life.min(40)) - wall
         };
         if best.is_none_or(|(held, _)| score > held) {
             best = Some((score, player));

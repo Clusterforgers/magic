@@ -71,9 +71,6 @@ export function CustomCardFrame({
     >
       <figcaption className="flex items-center justify-between gap-2 border-b px-3 py-1 text-sm font-semibold leading-tight">
         <span className="min-w-0">{card.name}</span>
-        {card.kind === 'Relic' && card.price > 0 ? (
-          <span className="shrink-0 text-xs font-medium text-relic">{card.price} g</span>
-        ) : null}
       </figcaption>
       <div
         role="img"

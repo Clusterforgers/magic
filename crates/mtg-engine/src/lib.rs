@@ -178,6 +178,7 @@ pub mod resolve;
 mod restart;
 pub mod retargeted;
 mod ring;
+pub mod rivalry;
 mod rmt4_untap_limit;
 #[cfg(test)]
 mod rmt6_pieces_tests;
