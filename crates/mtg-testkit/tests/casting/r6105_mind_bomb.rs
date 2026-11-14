@@ -64,14 +64,10 @@ fn r6105_mind_bomb_deals_three_minus_the_discards(
         }
     }
     assert!(driver.state().stack().is_empty());
-    for seat in 0..seats {
+    for (seat, was) in before.iter().enumerate() {
         let take = r6105_discards(seat, offset);
         let life = driver.state().player(pid(seat)).unwrap().life();
-        assert_eq!(
-            before[seat] - life,
-            3 - i32::try_from(take).unwrap(),
-            "seat {seat}"
-        );
+        assert_eq!(was - life, 3 - i32::try_from(take).unwrap(), "seat {seat}");
         let left = driver.state().zone(Zone::Hand(pid(seat))).len();
         assert_eq!(left, 3 - take, "seat {seat} keeps the rest");
     }

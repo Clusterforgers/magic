@@ -99,8 +99,8 @@ fn r6105_braids_punishes_each_opponent_who_doesnt(
     } else {
         Vec::new()
     };
-    for seat in 1..seats {
-        let lost = life[seat] - driver.state().player(pid(seat)).unwrap().life();
+    for (seat, was) in life.iter().enumerate().skip(1) {
+        let lost = was - driver.state().player(pid(seat)).unwrap().life();
         assert_eq!(
             lost,
             if punished.contains(&seat) { 2 } else { 0 },
