@@ -1,4 +1,4 @@
-//! Goal: at a team table the server makes through the lobby, the view each human seat folds from its snapshot and batches says a permanent is summoning sick exactly until its controller's own turn begins (CR 302.6), however the teams sit and whoever plays the turns.
+//! Goal: at a team table the server makes through the lobby, the view each human seat folds from its snapshot and batches says a creature is summoning sick exactly until its controller's own turn begins (CR 302.6), however the teams sit and whoever plays the turns. A land or other noncreature permanent is never shown sick.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::{BTreeMap, BTreeSet};
@@ -121,9 +121,12 @@ impl Ledger {
             {
                 continue;
             }
-            let held = !self.turns[since..]
-                .iter()
-                .any(|active| self.is_turn_of(*active, object.controller));
+            // Only a creature is ever held back (CR 302.6).
+            let creature = object.types.contains(&CardType::Creature);
+            let held = creature
+                && !self.turns[since..]
+                    .iter()
+                    .any(|active| self.is_turn_of(*active, object.controller));
             assert_eq!(
                 permanent.summoning_sick,
                 held,
