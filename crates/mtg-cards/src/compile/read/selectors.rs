@@ -1093,6 +1093,9 @@ fn zone_suffix(r: &mut Reader<'_>, form: Form) -> Option<Vec<Pred>> {
     {
         return Some(vec![Pred::In(ZoneKind::Hand), Pred::OwnedBy(owner)]);
     }
+    if form == Form::Count && r.words("you own in exile") {
+        return Some(vec![Pred::In(ZoneKind::Exile), Pred::OwnedBy(Ref::You)]);
+    }
     // A group of cards says where they are as the count does: "nonland cards in your hand".
     let in_zone = form == Form::All;
     if r.words(hand) || (in_zone && r.words("in your hand")) {
@@ -1674,6 +1677,15 @@ fn join_or(items: &[&str]) -> String {
 /// The predicates after `pred` that name the zone of a card, said as the card words it: "from your graveyard", "in your
 /// hand" (counting), "from an opponent's graveyard", "from a graveyard".
 fn zone_words(pred: &Pred, rest: &mut Peekable<Iter<'_, Pred>>, form: Form) -> Option<String> {
+    // "foretold card you own in exile".
+    if form == Form::Count
+        && *pred == Pred::In(ZoneKind::Exile)
+        && rest
+            .next_if(|next| **next == Pred::OwnedBy(Ref::You))
+            .is_some()
+    {
+        return Some("you own in exile".to_owned());
+    }
     let Pred::In(zone @ (ZoneKind::Graveyard | ZoneKind::Hand)) = pred else {
         return None;
     };

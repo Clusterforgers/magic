@@ -24,6 +24,15 @@ pub(super) fn ep33_spend_text(only: &[SpendOn]) -> Option<String> {
         [SpendOn::Special(SpecialAction::TurnFaceUp)] => {
             return Some("Spend this mana only to turn permanents face up".to_owned());
         }
+        [
+            SpendOn::Special(SpecialAction::Foretell),
+            SpendOn::Spell(filter),
+        ] if *filter == foretold_spells() => {
+            return Some(
+                "Spend this mana only to foretell cards or cast spells that have foretell"
+                    .to_owned(),
+            );
+        }
         _ => {}
     }
     if !only.iter().any(|on| matches!(on, SpendOn::Special(_))) {
@@ -49,6 +58,14 @@ pub(super) fn ep33_spend_text(only: &[SpendOn]) -> Option<String> {
         _ => return None,
     };
     Some(format!("Spend this mana only to {list}"))
+}
+
+/// Spells that have foretell, and nothing else.
+fn foretold_spells() -> SpendFilter {
+    SpendFilter {
+        facts: vec![SpendFact::Foretell],
+        ..SpendFilter::default()
+    }
 }
 
 /// The card type of a filter of spells of exactly one card type and nothing else.

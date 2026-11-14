@@ -764,17 +764,20 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         if let Some(found) = r.attempt(|r| super::l291_dice::results(r, by.clone())) {
             return Some(found);
         }
-        let highest = if r.words("one or more dice") {
-            false
+        let (highest, each) = if r.words("one or more dice") {
+            (false, false)
+        } else if r.words("a die's highest natural result") {
+            (true, false)
         } else {
-            r.need("a die's highest natural result")?;
-            true
+            r.need("a die")?;
+            (false, true)
         };
         Some(TriggerPattern::DiceRolled {
             who: by,
             highest,
             results: Vec::new(),
             natural: false,
+            each,
         })
     } else if verb == if third { "bolsters" } else { "bolster" } {
         Some(TriggerPattern::Bolstered { who: by })
@@ -1447,9 +1450,11 @@ fn own_commander(what: &Selector) -> bool {
 
 /// "you cast", "an opponent casts", "a player casts" for the verb ("cast" or "sacrifice").
 /// "Whenever you roll one or more dice" or "Whenever you roll a die's highest natural result".
-fn c11e_rolled_text(who: &Ref, highest: bool) -> Option<String> {
+fn c11e_rolled_text(who: &Ref, highest: bool, each: bool) -> Option<String> {
     let what = if highest {
         "a die's highest natural result"
+    } else if each {
+        "a die"
     } else {
         "one or more dice"
     };
@@ -1790,6 +1795,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             highest: false,
             results,
             natural,
+            each: false,
         } if !results.is_empty() => Some(format!(
             "Whenever {} {}",
             player_verb(who, "roll")?,
@@ -1800,7 +1806,8 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             highest,
             results,
             natural: false,
-        } if results.is_empty() => c11e_rolled_text(who, *highest),
+            each,
+        } if results.is_empty() && !(*highest && *each) => c11e_rolled_text(who, *highest, *each),
         TriggerPattern::Amassed { .. }
         | TriggerPattern::Expend { .. }
         | TriggerPattern::W11cCrime { .. }

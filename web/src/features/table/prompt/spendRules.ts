@@ -66,6 +66,8 @@ export function filterHolds(filter: SpendFilter, traits: SpendTraits): boolean {
           return traits.devoid === true
         case 'Flashback':
           return traits.flashback === true
+        case 'Foretell':
+          return traits.foretell === true
         case 'YourCommander':
           return traits.your_commander === true
         case 'FaceDown':

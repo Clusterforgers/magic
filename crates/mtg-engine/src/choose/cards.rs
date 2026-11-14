@@ -39,6 +39,10 @@ pub struct CardsOptions {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub one_per_name: bool,
+    /// The values of the cards chosen add up to at most a most ("with total power 4 or less").
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub total: Option<CardsTotal>,
     /// The group of each card of `from`, in its order: no two cards chosen may be of one group ("with different
     /// powers"); no such rule when empty.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -46,7 +50,40 @@ pub struct CardsOptions {
     pub groups: Vec<u32>,
 }
 
+/// The most the values of the cards chosen may add up to, and the value of each card offered.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct CardsTotal {
+    /// The most the values may add up to.
+    pub most: i32,
+    /// The value (power or mana value) of each card, in the order of `from`; a negative power subtracts.
+    pub values: Vec<i32>,
+    /// What the values are, in words ("power", "mana value").
+    pub stat: String,
+}
+
 impl CardsOptions {
+    /// `cards` with the ones of the greatest value left out until the rest fit the total, if the options have one.
+    pub fn within_total(&self, mut cards: Vec<ObjectId>) -> Vec<ObjectId> {
+        let Some(total) = &self.total else {
+            return cards;
+        };
+        let value = |card: &ObjectId| {
+            self.from
+                .iter()
+                .position(|offered| offered == card)
+                .and_then(|at| total.values.get(at))
+                .map_or(0, |value| i64::from(*value))
+        };
+        while cards.iter().map(value).sum::<i64>() > i64::from(total.most) {
+            let Some(at) = (0..cards.len()).max_by_key(|at| value(&cards[*at])) else {
+                break;
+            };
+            cards.remove(at);
+        }
+        cards
+    }
+
     /// The options cut to the first card of each group, so any pick of them is legal; unchanged without groups.
     #[must_use]
     pub fn one_per_group(&self) -> CardsOptions {
@@ -85,6 +122,17 @@ pub(crate) fn check(options: &CardsOptions, cards: &[ObjectId]) -> Result<(), Il
         }
         if !options.from.contains(card) {
             return Err(IllegalAnswer::NotOffered("card"));
+        }
+    }
+    if let Some(total) = &options.total {
+        let sum: i64 = cards
+            .iter()
+            .filter_map(|card| options.from.iter().position(|offered| offered == card))
+            .filter_map(|at| total.values.get(at))
+            .map(|value| i64::from(*value))
+            .sum();
+        if sum > i64::from(total.most) {
+            return Err(IllegalAnswer::NotOffered("cards over the total"));
         }
     }
     if !options.groups.is_empty() {
@@ -236,9 +284,20 @@ pub(crate) fn pick_selections(
     cx: &Cx<'_>,
     selections: &[Selection],
 ) -> Result<Picked, ResolveError> {
+    pick_selections_within(cx, selections, &[])
+}
+
+/// [`pick_selections`] where the selection at each index of `totals` that holds one keeps the values of its cards
+/// within that total.
+pub(crate) fn pick_selections_within(
+    cx: &Cx<'_>,
+    selections: &[Selection],
+    totals: &[Option<CardsTotal>],
+) -> Result<Picked, ResolveError> {
     let mut answers = cx.journal().iter();
     let mut taken = Vec::with_capacity(selections.len());
-    for selection in selections {
+    for (at, selection) in selections.iter().enumerate() {
+        let total = totals.get(at).cloned().flatten();
         let offered = if selection.one_per_name {
             names_among(cx.state(), &selection.from)
         } else if !selection.groups.is_empty() {
@@ -263,6 +322,7 @@ pub(crate) fn pick_selections(
                 text: selection.text.clone(),
                 can_cancel: false,
                 one_per_name: selection.one_per_name,
+                total,
                 groups: selection.groups.clone(),
             };
             match answers.next() {
@@ -321,6 +381,7 @@ mod tests {
             max,
             text: "Discard a card.".into(),
             can_cancel: false,
+            total: None,
             groups: Vec::new(),
         }
     }
@@ -446,6 +507,7 @@ mod tests {
                     max: 2,
                     text: "Discard a card.".into(),
                     can_cancel: false,
+                    total: None,
                     groups: Vec::new(),
                 }),
             })

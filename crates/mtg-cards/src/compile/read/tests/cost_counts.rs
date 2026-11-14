@@ -162,9 +162,14 @@ fn a_subtype_of_cards_in_a_graveyard_is_counted() {
     "Spells cast from anywhere other than your hand cost {1} less to cast."
 )]
 #[case::from_the_graveyard("Spells you cast from your graveyard cost {1} less to cast.")]
-#[case::a_sum_of_two_counts(
-    "This spell costs {1} less to cast for each Cave you control and each Cave card in your graveyard."
-)]
 fn near_misses_stay_with_the_table(#[case] text: &str) {
     assert_eq!(stat(text), None, "{text}");
+}
+
+#[test]
+fn a_sum_of_two_counts_reduces_by_both() {
+    let text = "This spell costs {1} less to cast for each Cave you control and each Cave card in your graveyard.";
+    let shown = format!("{:?}", stat(text).expect(text));
+    assert!(shown.contains("per: Sum([Count("), "{shown}");
+    assert!(shown.contains("In(Graveyard)"), "{shown}");
 }

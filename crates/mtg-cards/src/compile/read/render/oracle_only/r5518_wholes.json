@@ -1,0 +1,458 @@
+[
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "Search": {
+       "filter": [
+        {
+         "Supertype": "Basic"
+        },
+        {
+         "Type": "Land"
+        }
+       ],
+       "count": {
+        "min": 0,
+        "max": 2
+       },
+       "reveal": true,
+       "as": "lands"
+      }
+     },
+     {
+      "RollDice": {
+       "sides": 20,
+       "results": [
+        {
+         "from": 1,
+         "to": 9,
+         "effects": [
+          {
+           "Move": {
+            "what": {
+             "Bound": "lands"
+            },
+            "to": "Hand"
+           }
+          },
+          {
+           "Shuffle": {}
+          }
+         ]
+        },
+        {
+         "from": 10,
+         "to": 19,
+         "effects": [
+          {
+           "Choose": {
+            "from": {
+             "Bound": "lands"
+            },
+            "as": "kept",
+            "rest_as": "rest"
+           }
+          },
+          {
+           "Move": {
+            "what": {
+             "Bound": "kept"
+            },
+            "to": {
+             "Battlefield": {
+              "tapped": true
+             }
+            }
+           }
+          },
+          {
+           "Move": {
+            "what": {
+             "Bound": "rest"
+            },
+            "to": "Hand"
+           }
+          },
+          {
+           "Shuffle": {}
+          }
+         ]
+        },
+        {
+         "from": 20,
+         "effects": [
+          {
+           "Move": {
+            "what": {
+             "Bound": "lands"
+            },
+            "to": {
+             "Battlefield": {
+              "tapped": true
+             }
+            }
+           }
+          },
+          {
+           "Shuffle": {}
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "When this creature enters, search your library for up to two basic land cards and reveal them, then roll a d20."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Move": {
+       "what": {
+        "Bound": "lands"
+       },
+       "to": "Hand"
+      }
+     },
+     {
+      "Shuffle": {}
+     }
+    ]
+   }
+  },
+  "Put those cards into your hand, then shuffle."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Choose": {
+       "from": {
+        "Bound": "lands"
+       },
+       "as": "kept",
+       "rest_as": "rest"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "kept"
+       },
+       "to": {
+        "Battlefield": {
+         "tapped": true
+        }
+       }
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "rest"
+       },
+       "to": "Hand"
+      }
+     },
+     {
+      "Shuffle": {}
+     }
+    ]
+   }
+  },
+  "Put one of those cards onto the battlefield tapped and the other into your hand, then shuffle."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Move": {
+       "what": {
+        "Bound": "lands"
+       },
+       "to": {
+        "Battlefield": {
+         "tapped": true
+        }
+       }
+      }
+     },
+     {
+      "Shuffle": {}
+     }
+    ]
+   }
+  },
+  "Put those cards onto the battlefield tapped, then shuffle."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "BecomesLevel": {
+      "what": [
+       "This"
+      ],
+      "level": 3
+     }
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Land"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        {
+         "AddType": "Creature"
+        },
+        {
+         "AddKeyword": "Haste"
+        },
+        {
+         "GrantAbility": {
+          "Static": {
+           "affected": "This",
+           "mods": [
+            {
+             "SetPT": {
+              "power": {
+               "Count": [
+                {
+                 "Type": "Land"
+                },
+                {
+                 "ControlledBy": "You"
+                }
+               ]
+              },
+              "toughness": {
+               "Count": [
+                {
+                 "Type": "Land"
+                },
+                {
+                 "ControlledBy": "You"
+                }
+               ]
+              }
+             }
+            }
+           ]
+          }
+         }
+        }
+       ],
+       "duration": "Forever"
+      }
+     }
+    ]
+   }
+  },
+  "When this Class becomes level 3, target land you control becomes a creature with haste and \"This creature's power and toughness are each equal to the number of lands you control.\" It's still a land."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{3}{W}"
+     },
+     "Tap"
+    ],
+    "timing": "Sorcery",
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "AnyOf": [
+          {
+           "Type": "Artifact"
+          },
+          {
+           "Type": "Enchantment"
+          }
+         ]
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "CreateToken": {
+       "token": {
+        "CopyOf": {
+         "of": {
+          "Target": 0
+         },
+         "except": [
+          {
+           "AddSupertype": "Legendary"
+          }
+         ]
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "{3}{W}, {T}: Create a token that's a copy of target artifact or enchantment you control, except it's legendary. Activate only as a sorcery."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "End",
+      "whose": "You"
+     }
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "AnyOf": [
+          {
+           "Type": "Artifact"
+          },
+          {
+           "Type": "Battle"
+          },
+          {
+           "Type": "Creature"
+          },
+          {
+           "Type": "Enchantment"
+          },
+          {
+           "Type": "Land"
+          },
+          {
+           "Type": "Planeswalker"
+          }
+         ]
+        },
+        {
+         "OwnedBy": "You"
+        },
+        {
+         "In": "Graveyard"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "Sacrifice": {
+          "filter": [
+           {
+            "SharesType": {
+             "Target": 0
+            }
+           }
+          ],
+          "as": "s"
+         }
+        },
+        {
+         "If": {
+          "condition": {
+           "Compare": {
+            "left": {
+             "Bound": "s~moved"
+            },
+            "op": "Ge",
+            "right": 1
+           }
+          },
+          "then": [
+           {
+            "Move": {
+             "what": {
+              "Target": 0
+             },
+             "to": {
+              "Battlefield": {}
+             }
+            }
+           },
+           {
+            "Continuous": {
+             "affected": {
+              "Target": 0
+             },
+             "mods": [
+              {
+               "GrantAbility": {
+                "Replacement": {
+                 "when": {
+                  "ZoneChange": {
+                   "what": [
+                    "This"
+                   ],
+                   "from": "Battlefield"
+                  }
+                 },
+                 "by": {
+                  "MoveTo": "Exile"
+                 }
+                }
+               }
+              }
+             ],
+             "duration": "Forever"
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your end step, choose target permanent card in your graveyard. You may sacrifice a permanent that shares a card type with the chosen card. If you do, return the chosen card from your graveyard to the battlefield and it gains \"If this permanent would leave the battlefield, exile it instead of putting it anywhere else.\""
+ ]
+]

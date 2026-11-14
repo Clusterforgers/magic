@@ -192,6 +192,10 @@ pub struct Search {
     plays_left: Vec<u32>,
     /// The turn `plays_left` was filled for: a new turn fills it again.
     plays_turn: u32,
+    /// Whether main-phase plays in simulations are judged by casting each on a copy ([`Search::judged_play`]).
+    judged: bool,
+    /// Whether a judged play is being tried: its copy plays on with the plain rollout plays.
+    judging: bool,
 }
 
 /// Lands and permanent spells the seat plays by itself in one look-ahead simulation, its most expensive castable first.
@@ -217,7 +221,16 @@ impl Search {
             others: RandomBot::new(seed, 0x005E_A4C4),
             plays_left: Vec::new(),
             plays_turn: 0,
+            judged: false,
+            judging: false,
         }
+    }
+
+    /// This search with main-phase plays in its simulations judged by casting them ([`Search::judged_play`]).
+    #[must_use]
+    pub const fn judged(mut self, judged: bool) -> Search {
+        self.judged = judged;
+        self
     }
 
     /// The seat searched for.
@@ -439,7 +452,11 @@ impl Search {
             DecisionKind::Priority(options)
                 if self.plays_left.get(player.index()).is_some_and(|n| *n > 0) =>
             {
-                let play = rollout_play(engine, options);
+                let play = if self.judged && !self.judging {
+                    self.judged_play(engine, options)
+                } else {
+                    rollout_play(engine, options)
+                };
                 if play != PriorityAction::Pass
                     && let Some(left) = self.plays_left.get_mut(player.index())
                 {
@@ -475,6 +492,94 @@ impl Search {
             }
             _ => self.others.choose_in(decision, engine.state()),
         }
+    }
+}
+
+/// The most spells a judged play casts on copies.
+const JUDGED_CASTS: usize = 4;
+
+/// What a judged cast must gain over keeping the card.
+const JUDGED_MARGIN: f64 = 0.25;
+
+impl Search {
+    /// A seat's play in a simulation, judged as a good player plays: in its main phase on an empty stack a land, else
+    /// each of its costliest castable spells (by name, at most [`JUDGED_CASTS`]) cast on a copy, the stack settled (the
+    /// opponents' counters included) and the position scored for the caster; the best that beats keeping the cards by
+    /// [`JUDGED_MARGIN`], else a pass. Other windows play as [`rollout_play`] does.
+    fn judged_play(
+        &mut self,
+        engine: &Engine,
+        options: &mtg_engine::decision::PriorityOptions,
+    ) -> PriorityAction {
+        let quick = rollout_play(engine, options);
+        let Some(decision) = engine.decision().cloned() else {
+            return quick;
+        };
+        let seat = decision.player;
+        let state = engine.state();
+        let main = matches!(state.turn().step(), Step::Main1 | Step::Main2)
+            && state.is_active(seat)
+            && state.stack().is_empty()
+            && !engine.announcing();
+        if !main || matches!(quick, PriorityAction::PlayLand(_)) {
+            return quick;
+        }
+        let seen = Seen::new(state, seat);
+        let mut casts: Vec<mtg_core::ids::ObjectId> = options.castable.clone();
+        casts.sort_by_key(|id| (std::cmp::Reverse(seen.mana_value(*id)), *id));
+        let mut names: Vec<String> = Vec::new();
+        casts.retain(|id| {
+            let name = seen
+                .card(*id)
+                .map(|card| card.name.clone())
+                .unwrap_or_default();
+            if names.contains(&name) {
+                false
+            } else {
+                names.push(name);
+                true
+            }
+        });
+        let bar = evaluate_with(&seen, self.settings.weights) + JUDGED_MARGIN;
+        let saved = self.plays_left.clone();
+        let turn = self.plays_turn;
+        self.judging = true;
+        let mut best: Option<(f64, PriorityAction)> = None;
+        for id in casts.into_iter().take(JUDGED_CASTS) {
+            let play = PriorityAction::CastSpell(id);
+            let mut copy = engine.clone();
+            if apply_answer(&mut copy, &decision, Answer::Priority(play.clone())).is_err() {
+                continue;
+            }
+            let start = Start {
+                turn: state.turn().number(),
+            };
+            for step in 1..SIM_STEPS {
+                let Some(next) = copy.decision().cloned() else {
+                    break;
+                };
+                if copy.result().is_some() || reached(&copy, &next, start, Horizon::Settle, step) {
+                    break;
+                }
+                let answer = self.quick(&copy, &next);
+                if apply_answer(&mut copy, &next, answer).is_err() {
+                    let Some(fallback) = minimal(&next) else {
+                        break;
+                    };
+                    if apply_answer(&mut copy, &next, fallback).is_err() {
+                        break;
+                    }
+                }
+            }
+            let score = evaluate_with(&Seen::new(copy.state(), seat), self.settings.weights);
+            if score > bar && best.as_ref().is_none_or(|(held, _)| score > *held) {
+                best = Some((score, play));
+            }
+        }
+        self.judging = false;
+        self.plays_left = saved;
+        self.plays_turn = turn;
+        best.map_or(PriorityAction::Pass, |(_, play)| play)
     }
 }
 

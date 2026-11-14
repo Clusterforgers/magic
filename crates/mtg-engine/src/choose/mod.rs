@@ -31,7 +31,7 @@ use crate::object::ObjectRef;
 use crate::snapshot::Snapshot;
 
 pub use auto::{damage_in_order, triggers_in_order};
-pub use cards::{CardsChoice, CardsOptions};
+pub use cards::{CardsChoice, CardsOptions, CardsTotal};
 pub use costs::{CostsChoice, CostsOptions, OptionalCost};
 pub use divide::{DivideChoice, DivideOptions};
 pub use mode::{ModeChoice, ModeOption, ModeOptions};
@@ -50,7 +50,9 @@ pub(crate) use ask::{Questions, Stop};
 pub(crate) use cards::check as check_cards;
 pub(crate) use cards::check_names as check_card_names;
 pub(crate) use cards::names_among;
-pub(crate) use cards::{Chooser, Picked, Selection, pick_cards, pick_selections};
+pub(crate) use cards::{
+    Chooser, Picked, Selection, pick_cards, pick_selections, pick_selections_within,
+};
 pub(crate) use mode::{
     C11dOnce, Modal, announceable, announced_specs, enough_modes, every_mode_is_legal, modal_of,
     mode_options, spec_bases, targets_before, unmet_target,

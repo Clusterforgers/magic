@@ -147,6 +147,28 @@ pub const fn stat_name(stat: StatKind) -> Option<&'static str> {
 pub fn for_each(r: &mut Reader<'_>) -> Option<Amount> {
     r.attempt(|r| {
         r.need("for each")?;
+        let first = for_each_one(r)?;
+        // "for each card in your hand and each foretold card you own in exile": the counts add up, and the last ends
+        // the phrase.
+        let mut parts = vec![first];
+        while let Some(next) = r.attempt(|r| {
+            r.need("and each")?;
+            let next = for_each_one(r)?;
+            r.peek_word().is_none().then_some(next)
+        }) {
+            parts.push(next);
+        }
+        Some(if parts.len() == 1 {
+            parts.remove(0)
+        } else {
+            Amount::Sum(parts)
+        })
+    })
+}
+
+/// One thing "for each" counts, after "for each " or "and each ".
+fn for_each_one(r: &mut Reader<'_>) -> Option<Amount> {
+    r.attempt(|r| {
         if let Some(counted) = r.attempt(counters::counted) {
             return Some(counted);
         }
@@ -333,6 +355,14 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
         return Some(text);
     }
     Some(match counted {
+        Amount::Sum(parts) if parts.len() > 1 => parts
+            .iter()
+            .map(|part| match part {
+                Amount::Sum(_) => None,
+                part => for_each_text(part),
+            })
+            .collect::<Option<Vec<_>>>()?
+            .join(" and each "),
         Amount::Count(selector) if exiled_this_way(selector).is_some() => {
             exiled_this_way(selector)?
         }

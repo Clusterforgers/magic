@@ -1,0 +1,29 @@
+{
+  "oracle_id": "6562ab6b-6f18-42fd-9365-f058a71465cc",
+  "name": "Pair o' Dice Lost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pair o' Dice Lost",
+      "oracle_fingerprint": "12d7713d7556f357c26a492b8d8ae0ee",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "RollDice": { "sides": 6, "dice": 2, "results": [] } },
+              {
+                "ChooseWithin": {
+                  "from": { "Each": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                  "within": { "TotalManaValueAtMost": { "DieResult": "Total" } },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
