@@ -1,7 +1,7 @@
 {
   "oracle_id": "9d22960b-babc-4cf3-b228-d32e13bc6014",
   "name": "Esix, Fractal Bloom",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Esix, Fractal Bloom",
@@ -9,9 +9,42 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 196 }
+          "Replacement": {
+            "when": { "TokenCreation": {} },
+            "by": {
+              "Instead": [
+                {
+                  "May": {
+                    "effects": [
+                      {
+                        "Choose": {
+                          "from": { "Each": [{ "Type": "Creature" }, "Other"] },
+                          "as": "creature"
+                        }
+                      },
+                      {
+                        "CreateToken": {
+                          "token": { "CopyOf": { "of": { "Bound": "creature" } } },
+                          "count": "Triggering"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "condition": {
+              "All": [
+                "YourTurn",
+                {
+                  "Compare": {
+                    "left": { "Tally": { "event": "TokenCreated", "who": "You", "filter": [] } },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              ]
+            }
           }
         }
       ]

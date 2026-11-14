@@ -1733,9 +1733,12 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
                 until_end_of_turn,
                 must: false,
                 counters,
+                except_if,
             },
             None,
-        ) if counters.is_empty() => copies::enters_texts(of, except, *tapped, *until_end_of_turn),
+        ) if counters.is_empty() && except_if.is_empty() => {
+            copies::enters_texts(of, except, *tapped, *until_end_of_turn)
+        }
         (
             ReplaceBy::AsCopy {
                 of,
@@ -1744,9 +1747,10 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
                 until_end_of_turn,
                 must: false,
                 counters,
+                except_if,
             },
             None,
-        ) => super::r305c_copies::r305c_counter_copy_texts(
+        ) if except_if.is_empty() => super::r305c_copies::r305c_counter_copy_texts(
             of,
             except,
             *tapped,

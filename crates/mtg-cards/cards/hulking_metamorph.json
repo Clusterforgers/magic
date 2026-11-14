@@ -1,7 +1,7 @@
 {
   "oracle_id": "b2b09dc3-8239-4f3b-91d2-e7cbbdc062f7",
   "name": "Hulking Metamorph",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Hulking Metamorph",
@@ -9,9 +9,26 @@
       "abilities": [
         { "Keyword": { "Prototype": { "cost": "{2}{U}{U}", "power": 3, "toughness": 3 } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 129, "end": 354 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [
+                  { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                  { "ControlledBy": "You" }
+                ],
+                "except": [
+                  { "AddType": "Artifact" },
+                  { "AddType": "Creature" },
+                  {
+                    "SetPT": {
+                      "power": { "Stat": { "of": "This", "stat": "Power" } },
+                      "toughness": { "Stat": { "of": "This", "stat": "Toughness" } }
+                    }
+                  }
+                ]
+              }
+            }
           }
         }
       ]

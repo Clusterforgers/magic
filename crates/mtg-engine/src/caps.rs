@@ -219,6 +219,7 @@ const RUNS: &[&str] = &[
     "Stat.R374ColorSet",
     "Stat.R4700ChosenColors",
     "Stat.R6018PermanentTypes",
+    "Stat.R6104LifePaid",
     "Amount.R374AtMost",
     "Cost.Alternative.X",
     "Cost.XAtMost",
@@ -439,8 +440,12 @@ const RUNS: &[&str] = &[
     "Effect.BecomeCopy",
     "Copy.Duration.UntilYourNextTurn",
     "Copy.Duration.WhileSourceAttached",
+    "Copy.Duration.WhileTapped",
     "Copy.Except.ThisAbility",
     "Copy.Except.SetPT.Amount",
+    "CopyAbility.EachTarget",
+    "CopySpell.EachPlayer",
+    "Copy.ExceptIf",
     "Effect.Continuous",
     "Effect.ExchangeControl",
     "Duration.WhileYouControlSource",
@@ -1164,6 +1169,7 @@ const RUNS: &[&str] = &[
     "Pred.Blocks",
     "Pred.TargetedBy",
     "Pred.FromSource",
+    "Pred.R6104TargetsOnly",
     "Pred.SingleTarget",
     "Pred.GreatestAmong",
     "Pred.LeastAmong",
@@ -1413,6 +1419,7 @@ mod tests {
     #[case::added_supertypes("Mod.AddSupertype", true)]
     #[case::copy_names("Mod.SetName", true)]
     #[case::copy_keeps_this_ability("Copy.Except.ThisAbility", true)]
+    #[case::r6104_exceptions_only_for_some_copied_objects("Copy.ExceptIf", true)]
     #[case::the_ability_kept_as_a_modification("Mod.ThisAbility", true)]
     #[case::r371_a_copy_with_a_starting_loyalty("Mod.SetLoyalty", true)]
     #[case::subtypes("Mod.AddSubtype", true)]

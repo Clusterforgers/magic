@@ -1007,6 +1007,10 @@ impl<'a> Walker<'a> {
             Pred::Targeting(inner) | Pred::HasAttached(inner) | Pred::AbilityFrom(inner) => {
                 self.selector(inner);
             }
+            Pred::R6104TargetsOnly(inner) => {
+                self.uses("Pred", "R6104TargetsOnly");
+                self.selector(inner);
+            }
             Pred::Modified
             | Pred::RingBearer
             | Pred::FaceDown
@@ -1384,6 +1388,7 @@ impl<'a> Walker<'a> {
             StatKind::R374ColorSet => "R374ColorSet",
             StatKind::R4700ChosenColors => "R4700ChosenColors",
             StatKind::R6018PermanentTypes => "R6018PermanentTypes",
+            StatKind::R6104LifePaid => "R6104LifePaid",
             _ => return,
         };
         self.uses("Stat", name);
@@ -3581,6 +3586,23 @@ impl Walker<'_> {
         }
     }
 
+    /// The exceptions of a permanent entering as a copy: base power and toughness set by amounts ("equal to this
+    /// creature's power and toughness") are worked out as it enters, a capability of their own.
+    fn r6104_entering_copy_exceptions(&mut self, except: &[Modification]) {
+        for (i, modification) in except.iter().enumerate() {
+            self.at(format!("except[{i}]"), |w| {
+                w.modification(modification);
+                if matches!(modification, Modification::SetPT { power, toughness }
+                    if !matches!((power, toughness), (Amount::Fixed(_), Amount::Fixed(_))))
+                {
+                    w.uses("Copy", "Except.SetPT.Amount");
+                } else if !crate::CardDefinition::new("").except(modification) {
+                    w.uses("Copy", &format!("Except.{}", tag_of(modification)));
+                }
+            });
+        }
+    }
+
     fn copy_exceptions(&mut self, except: &[Modification]) {
         for (i, modification) in except.iter().enumerate() {
             self.at(format!("except[{i}]"), |w| {
@@ -4984,6 +5006,7 @@ impl Walker<'_> {
                 count,
                 except,
                 each_target,
+                each_player,
                 ..
             } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
@@ -4994,6 +5017,12 @@ impl Walker<'_> {
                         w.problem("a copy for each other target is one copy for each, with no count of its own");
                     }
                     w.at("each_target", |w| w.selector(selector));
+                }
+                if *each_player {
+                    if each_target.is_none() {
+                        w.problem("a copy for each other player is a copy for each other target");
+                    }
+                    w.uses("CopySpell", "EachPlayer");
                 }
             }
             Effect::ChangeTargets { what, to, onto } => {
@@ -5014,9 +5043,21 @@ impl Walker<'_> {
                     (_, None) => {}
                 }
             }
-            Effect::CopyAbility { what, count, .. } => {
+            Effect::CopyAbility {
+                what,
+                count,
+                each_target,
+                ..
+            } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("count", |w| w.amount(count));
+                if let Some(selector) = each_target {
+                    if !count.is_one() {
+                        w.problem("a copy for each other target is one copy for each, with no count of its own");
+                    }
+                    w.uses("CopyAbility", "EachTarget");
+                    w.at("each_target", |w| w.selector(selector));
+                }
             }
             Effect::BecomeCopy {
                 what,
@@ -7044,17 +7085,25 @@ impl Walker<'_> {
                 of,
                 except,
                 counters,
+                except_if,
                 ..
             } => {
                 if !enters {
                     self.problem("only an `Enters` event is entered as a copy");
                 }
                 self.at("of", |w| w.selector(of));
-                self.copy_exceptions(except);
+                self.r6104_entering_copy_exceptions(except);
                 for (index, entry) in counters.iter().enumerate() {
                     self.at(format!("counters[{index}]"), |w| {
                         w.amount(&entry.count);
                         w.selector(&entry.of);
+                    });
+                }
+                for (index, entry) in except_if.iter().enumerate() {
+                    self.at(format!("except_if[{index}]"), |w| {
+                        w.uses("Copy", "ExceptIf");
+                        w.selector(&entry.of);
+                        w.r6104_entering_copy_exceptions(&entry.except);
                     });
                 }
             }

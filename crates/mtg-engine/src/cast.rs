@@ -318,6 +318,14 @@ fn payment_events(
     // The spell keeps the mana its cast spends, for "if {R} was spent to cast it" (CR 601.2h).
     let mut announced = announced;
     for event in &mut announced {
+        if let Event::AbilityPutOnStack(put) = event
+            && payment.life > 0
+        {
+            put.choices
+                .cost_taken
+                .get_or_insert_with(Box::default)
+                .phyrexian_life = payment.life;
+        }
         if let Event::SpellCast { choices, .. } = event {
             // The mana a helper paid with assist was spent to cast it too (CR 702.132a, 601.2h).
             let mut all = choices.spent.take().map(|held| *held).unwrap_or_default();

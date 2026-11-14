@@ -1,7 +1,7 @@
 {
   "oracle_id": "dcd5ab1b-adc5-486e-a1e0-636af6ee9470",
   "name": "Ashnod the Uncaring",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ashnod the Uncaring",
@@ -9,9 +9,19 @@
       "abilities": [
         { "Keyword": "Deathtouch" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 11, "end": 296 }
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "R6104ActivatedSacrificing",
+                "who": "You",
+                "what": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+              }
+            },
+            "effects": [
+              {
+                "May": { "effects": [{ "CopyAbility": { "what": "Dealer", "new_targets": true } }] }
+              }
+            ]
           }
         }
       ]

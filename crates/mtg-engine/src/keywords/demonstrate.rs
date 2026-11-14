@@ -24,6 +24,7 @@ pub(super) struct Demonstrate;
 fn copy_by(who: Ref) -> Effect {
     Effect::CopySpell {
         each_target: None,
+        each_player: false,
         who,
         what: Ref::This,
         count: Amount::one(),

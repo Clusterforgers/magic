@@ -77,6 +77,7 @@ mod r4707_pay_costs;
 mod r5512_until_cast;
 mod r5523_sentinels;
 mod r6013_winds;
+mod r6104_activation_facts;
 mod replace_dry;
 mod rmt3_skips;
 mod saga;
