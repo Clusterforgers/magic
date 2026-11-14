@@ -72,6 +72,7 @@ mod monarch_view;
 mod morph_view;
 mod mutate_view;
 mod ninjutsu_hidden;
+mod noncreature_sickness;
 mod paid_cost_hidden;
 mod phasing_view;
 mod player_aura_view;
