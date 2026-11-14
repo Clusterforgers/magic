@@ -95,7 +95,7 @@ fn quest() -> Value {
         "modern",
         &[
             line("main", "Forest", 56),
-            line("main", "Aven Mindcensor", 4),
+            line("main", "Fang-Druid Summoner", 4),
         ],
     )
 }
