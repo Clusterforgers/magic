@@ -527,6 +527,11 @@ fn activated(
         ability_reader::keyword_adding(pre, address),
         Some(mtg_cards::keyword::Keyword::Eternalize(_) | mtg_cards::keyword::Keyword::Embalm(_))
     );
+    let removed = if loyalty {
+        r6007_loyalty_removed(pre, post, source)
+    } else {
+        0
+    };
     [Action::Activated, Action::ActivatedAny]
         .into_iter()
         .chain(kinds)
@@ -537,10 +542,29 @@ fn activated(
             player: Some(player),
             object: Some(source),
             ability: on_stack,
-            amount: 0,
+            // A loyalty activation counts the loyalty counters its cost removed ("if you removed two or more loyalty
+            // counters to activate it").
+            amount: if action == Action::ActivatedLoyalty {
+                removed
+            } else {
+                0
+            },
         })
         .chain(untapped)
         .collect()
+}
+
+/// The loyalty counters the cost of an activation removed from `source`: they are paid in the batch that logs it.
+fn r6007_loyalty_removed(pre: &GameState, post: &GameState, source: ObjectId) -> u32 {
+    let loyalty = |state: &GameState| {
+        state
+            .object(source)
+            .and_then(crate::object::GameObject::permanent)
+            .map_or(0, |permanent| {
+                permanent.counters_of(&mtg_cards::value::CounterKind::Loyalty)
+            })
+    };
+    loyalty(pre).saturating_sub(loyalty(post))
 }
 
 /// "Whenever a creature you control exploits a non-Human creature": the action when the creature sacrificed was not a

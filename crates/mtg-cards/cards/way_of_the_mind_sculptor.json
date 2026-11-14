@@ -1,7 +1,7 @@
 {
   "oracle_id": "94be2e86-ba0e-4b8d-9b9c-114adacb26db",
   "name": "Way of the Mind Sculptor",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Way of the Mind Sculptor",
@@ -58,9 +58,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 229, "end": 342 }
+          "Triggered": {
+            "when": { "Did": { "action": "ActivatedLoyalty", "who": "You" } },
+            "if": { "Compare": { "left": "Triggering", "op": "Ge", "right": 2 } },
+            "effects": [{ "Draw": {} }]
           }
         }
       ]

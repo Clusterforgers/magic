@@ -4497,6 +4497,10 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind_moved(name));
                 }
             }
+            Effect::R6007KeepTotalPower { what, most } => {
+                w.at("what", |w| w.selector(what));
+                w.at("most", |w| w.amount(most));
+            }
             Effect::Balance { what } => {
                 if let crate::effect::Balanced::Permanents(filter) = what {
                     w.at("what", |w| w.selector(filter));
@@ -4976,7 +4980,9 @@ impl Walker<'_> {
                 if *duration == Duration::UntilCastFromExile {
                     w.problem(E17A_CAST_ONLY);
                 }
-                if *duration == Duration::NextUntapStep {
+                if *duration == Duration::NextUntapStep
+                    && !matches!(rule, GameRule::R6007NoUntapDuring { .. })
+                {
                     w.problem(C7_UNTAP_ONLY);
                 }
                 let attack_at = matches!(rule, GameRule::MustAttackAt { .. });
@@ -5946,6 +5952,8 @@ impl Walker<'_> {
             | GameRule::RevealHand(who)
             | GameRule::LookAtTopAnyTime(who)
             | GameRule::SkipDrawStep(who)
+            | GameRule::R6007DrawFromBottom(who)
+            | GameRule::R6007ExhaustAgain(who)
             | GameRule::NoMaxHandSize(who)
             | GameRule::LoyaltyTwice(who)
             | GameRule::BoastTwice(who)
@@ -6037,6 +6045,7 @@ impl Walker<'_> {
             | GameRule::MayCastRather { .. }
             | GameRule::ManaProduced { .. }
             | GameRule::UntapDuring { .. }
+            | GameRule::R6007NoUntapDuring { .. }
             | GameRule::UntapLimit { .. } => self.rule_option(&tag, rule),
         }
     }
@@ -6113,7 +6122,8 @@ impl Walker<'_> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("by", |w| w.amount(by));
             }),
-            GameRule::UntapDuring { what, whose } => self.at(tag, |w| {
+            GameRule::UntapDuring { what, whose }
+            | GameRule::R6007NoUntapDuring { what, whose } => self.at(tag, |w| {
                 w.at("what", |w| w.selector(what));
                 w.at("whose", |w| w.reference(whose, Kind::Player));
             }),
@@ -6690,6 +6700,8 @@ impl Walker<'_> {
             | ReplaceBy::PayLifeOrTapped(_)
             | ReplaceBy::TappedForCounters { .. }
             | ReplaceBy::RevealOrTapped(_)
+            | ReplaceBy::R6007BeholdOrTapped(_)
+            | ReplaceBy::R6007RevealOrControl { .. }
             | ReplaceBy::Tribute(_)
             | ReplaceBy::Amplify(_)
             | ReplaceBy::MayWithCounters { .. }
@@ -6754,7 +6766,11 @@ impl Walker<'_> {
             ReplaceBy::TappedForCounters { count: 0, .. } => {
                 self.problem("entering tapped for no counters is a plain choice");
             }
-            ReplaceBy::RevealOrTapped(of) => self.at("of", |w| w.selector(of)),
+            ReplaceBy::RevealOrTapped(of)
+            | ReplaceBy::R6007BeholdOrTapped(of)
+            | ReplaceBy::R6007RevealOrControl { of, .. } => {
+                self.at("of", |w| w.selector(of));
+            }
             ReplaceBy::PayOrGraveyard { cost, optional } => {
                 self.pay_or_graveyard(enters, cost, *optional);
             }

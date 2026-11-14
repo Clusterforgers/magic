@@ -13,6 +13,7 @@ use crate::refs::Ref;
 use super::amounts::count_word;
 use crate::ability::Ability;
 use crate::refs::Selector;
+use crate::value::Amount;
 use crate::value::StatKind;
 
 /// The JSON of an ability.
@@ -415,10 +416,14 @@ fn owner_loses_half(body: &Value, written: fn(&Ability) -> Vec<String>) -> Vec<S
 /// The most Jace loyalty an empower is matched back to words for.
 const EMPOWER_MOST: u32 = 20;
 
-/// "empower Jace 3": the steps of the macro table's `empower` with the number.
+/// "empower Jace 3": the steps of the macro table's `empower` with the number; "empower Jace X" leaves X to the
+/// sentence's where clause, and a Jace card names itself "~" in the words it reads.
 pub(super) fn r300b_read_empower(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.attempt(|r| {
-        (r.word("empower") && r.word("jace")).then_some(())?;
+        (r.word("empower") && (r.word("jace") || r.source())).then_some(())?;
+        if r.x() {
+            return macros::action_effects_of("empower", &Amount::X, &Ref::You);
+        }
         let amount = r.number().filter(|n| *n > 0)?;
         macros::action_effects("empower", amount, &Ref::You)
     })
@@ -428,11 +433,23 @@ pub(super) fn r300b_read_empower(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 pub(super) fn r300b_empower_text(effects: &[Effect]) -> Option<(String, usize)> {
     static CACHE: OnceLock<Vec<(u32, Vec<Effect>)>> = OnceLock::new();
     let rows = CACHE.get_or_init(|| {
-        (1..=EMPOWER_MOST)
-            .filter_map(|n| Some((n, macros::action_effects("empower", n, &Ref::You)?)))
+        (0..=EMPOWER_MOST)
+            .filter_map(|n| {
+                let amount = if n == 0 {
+                    Amount::X
+                } else {
+                    Amount::Fixed(i32::try_from(n).ok()?)
+                };
+                Some((n, macros::action_effects_of("empower", &amount, &Ref::You)?))
+            })
             .collect()
     });
     rows.iter().find_map(|(n, steps)| {
+        let n = if *n == 0 {
+            "X".to_owned()
+        } else {
+            n.to_string()
+        };
         effects
             .starts_with(steps)
             .then(|| (format!("empower Jace {n}"), steps.len()))

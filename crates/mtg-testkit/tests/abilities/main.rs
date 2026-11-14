@@ -122,6 +122,7 @@ mod r5523_opponents_of;
 mod r5523_pool_size;
 mod r5523_x_cap;
 mod r5e_done_once;
+mod r6007_cards;
 mod r8p2_enters;
 mod reflexive;
 mod replacement;

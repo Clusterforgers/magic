@@ -177,6 +177,7 @@ pub(crate) fn untap_events(state: &GameState, kept: &[ObjectId]) -> (Vec<Event>,
                 && (controller_of(state, **id).is_some_and(|c| actives.contains(&c))
                     || during.contains(*id))
                 && !crate::characteristics::doesnt_untap(state, **id)
+                && !crate::rules::r6007_held_down(state, &actives, **id)
                 && state
                     .object(**id)
                     .and_then(GameObject::permanent)
@@ -199,6 +200,7 @@ pub(crate) fn untap_events(state: &GameState, kept: &[ObjectId]) -> (Vec<Event>,
     );
     for player in &actives {
         events.extend(crate::c7_untap::c7_untap_spent(state, *player));
+        events.extend(crate::rules::r6007_untap_spent(state, *player));
     }
     events.extend(leave_step(state));
     let held = active.map_or_else(Vec::new, |active| {
@@ -257,13 +259,20 @@ pub(crate) fn draw(state: &GameState, player: PlayerId, count: usize) -> Vec<Eve
     // "Can't draw more than one card each turn": the draws past the limit don't happen.
     let count = crate::rules::ep24_draws_left(state, player).map_or(count, |left| count.min(left));
     let library = state.zone(Zone::Library(player));
+    let bottom = crate::rules::r6007_draws_from_bottom(state, player);
     (0..count)
-        .map(|i| match library.iter().rev().nth(i) {
-            Some(object) => Event::CardDrawn {
-                player,
-                object: *object,
-            },
-            None => Event::DrewFromEmptyLibrary { player },
+        .map(|i| {
+            match if bottom {
+                library.get(i)
+            } else {
+                library.iter().rev().nth(i)
+            } {
+                Some(object) => Event::CardDrawn {
+                    player,
+                    object: *object,
+                },
+                None => Event::DrewFromEmptyLibrary { player },
+            }
         })
         .collect()
 }

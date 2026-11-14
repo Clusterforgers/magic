@@ -72,6 +72,12 @@ const FIXED: Record<Fixed, Omit<EffectFacts, 'key' | 'detail'> & { detail: (owne
     tone: 'hinder',
     detail: (o) => `${o} skips their draw step.`,
   },
+  DrawsFromBottom: {
+    icon: 'hand',
+    label: 'Draws from bottom',
+    tone: 'neutral',
+    detail: (o) => `${o} draws cards from the bottom of their library rather than the top.`,
+  },
   CantSearch: {
     icon: 'ban',
     label: 'No searches',

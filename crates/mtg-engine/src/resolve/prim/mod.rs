@@ -38,6 +38,7 @@ mod r306_add_step;
 mod r370_balance;
 mod r370_bound;
 mod r5521_reduce_speed;
+mod r6007_keep;
 mod retarget;
 mod ring_tempts;
 mod rmt2_shares;
@@ -209,6 +210,7 @@ fn fe1n(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::RepeatWhile { .. } => fe1n_repeat_while::run(cx, effect),
         Effect::SeparatePiles { .. } => fe1n_piles::run(cx, effect),
         Effect::Balance { .. } => r370_balance::run(cx, effect),
+        Effect::R6007KeepTotalPower { .. } => r6007_keep::run(cx, effect),
         Effect::LookAtHand { .. } => look_at_hand::run(cx, effect),
         Effect::LookAtFaceDown { .. } => r404_look_face_down::run(cx, effect),
         Effect::Let { .. } => let_amount::run(cx, effect),
@@ -403,7 +405,7 @@ mod tests {
         {"Draw":{}}, {"Discard":{}}, {"Mill":{}}, {"Scry":{}}, {"LookAtTop":{"as":"top"}}, {"LookAtHand":{"of":"You"}}, {"LookAtFaceDown":{"what":"This"}},
         {"Reveal":{"what":"This"}}, {"Search":{"filter":[],"as":"found"}},
         {"Choose":{"from":"This","as":"chosen"}}, {"ChooseAtRandom":{"from":"This","as":"picked"}}, {"ChooseValue":{"kind":"Color","as":"hue"}}, {"Shuffle":{}}, {"Move":{"what":"This","to":"Hand"}},
-        {"Destroy":{"what":"This"}}, {"Exile":{"what":"This"}}, {"Sacrifice":{"filter":[]}}, {"SacrificeUpTo":{"filter":[],"count":2}}, {"Balance":{"what":"Hand"}},
+        {"Destroy":{"what":"This"}}, {"Exile":{"what":"This"}}, {"Sacrifice":{"filter":[]}}, {"SacrificeUpTo":{"filter":[],"count":2}}, {"Balance":{"what":"Hand"}}, {"R6007KeepTotalPower":{"what":[],"most":4}},
         {"Counter":{"what":"This"}}, {"DealDamage":{"to":"You","amount":1}}, {"GainLife":{"amount":1}},
         {"LoseLife":{"amount":1}}, {"AddMana":{"mana":{"Fixed":["Green"]}}},
         {"PutCounters":{"on":"This","counter":"+1/+1"}}, {"RemoveCounters":{"from":"This","counter":"+1/+1"}},
@@ -509,6 +511,7 @@ mod tests {
         "Effect.Sacrifice",
         "Effect.SacrificeUpTo",
         "Effect.Balance",
+        "Effect.R6007KeepTotalPower",
         "Effect.Counter",
         "Effect.DealDamage",
         "Effect.GainLife",

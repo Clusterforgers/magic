@@ -144,6 +144,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::ExchangeLifeWithToughness { .. }
         | Effect::RemoveDamage { .. }
         | Effect::Balance { .. }
+        | Effect::R6007KeepTotalPower { .. }
         | Effect::Planechase { .. }
         | Effect::Reattack { .. } => Reports::Events,
         Effect::Pay { .. } => Reports::Paid,

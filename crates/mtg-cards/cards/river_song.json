@@ -1,0 +1,34 @@
+{
+  "oracle_id": "418ecbb7-b809-4639-a531-070b58b5b85e",
+  "name": "River Song",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "River Song",
+      "oracle_fingerprint": "2921561bd511a3d955a6d44b184a7eb5",
+      "abilities": [
+        { "Rule": { "rule": { "R6007DrawFromBottom": "You" } } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Did": { "action": "Scried", "who": "Opponents" } },
+                { "Did": { "action": "Surveilled", "who": "Opponents" } },
+                { "Did": { "action": "SearchedOwnLibrary", "who": "Opponents" } }
+              ]
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

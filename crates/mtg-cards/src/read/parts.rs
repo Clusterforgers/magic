@@ -372,6 +372,14 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
             format!("{} has no maximum hand size", phrase::who(ctx, who))
         }
         GameRule::SkipDrawStep(who) => format!("{} skips the draw step", phrase::who(ctx, who)),
+        GameRule::R6007ExhaustAgain(who) => format!(
+            "during their turn, as long as {} hasn't activated an exhaust ability this turn, they may activate exhaust abilities as though they haven't been activated",
+            phrase::who(ctx, who)
+        ),
+        GameRule::R6007DrawFromBottom(who) => format!(
+            "{} draws cards from the bottom of their library rather than the top",
+            phrase::who(ctx, who)
+        ),
         GameRule::MaxHandSize { who, size } => format!(
             "{} has a maximum hand size of {}",
             phrase::who(ctx, who),

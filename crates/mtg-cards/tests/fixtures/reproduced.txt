@@ -201,6 +201,7 @@ Blight Mamba
 Blight Pile
 Blightwidow
 Blind Hunter
+Blinding Beam
 Blood Feud
 Blood Moon
 Blood Reckoning
@@ -240,6 +241,7 @@ Branchblight Stalker
 Brave the Sands
 Break the Ice
 Breath of Life
+Breathstealer's Crypt
 Breena, the Demagogue
 Breezekeeper
 Briarblade Adept
@@ -495,6 +497,7 @@ Desert
 Desperate Ravings
 Desperate Ritual
 Despise
+Destined Confrontation
 Determined Iteration
 Devastation Tide
 Devoted Druid
@@ -542,6 +545,7 @@ Dowsing Dagger // Lost Vale
 Draconic Lore
 Drag to the Bottom
 Dragon Grip
+Dragon's Disciple
 Dragonlord Dromoka
 Dragonlord Ojutai
 Dragonspeaker Shaman
@@ -1821,6 +1825,7 @@ Skyreach Manta
 Skyshroud Behemoth
 Skyshroud Ridgeback
 Skysovereign, Consul Flagship
+Slaughter the Strong
 Sleep
 Sleight of Mind
 Slip Through Space
@@ -2354,4 +2359,5 @@ Zndrsplt, Eye of Wisdom
 Zodiac Goat
 Zoetic Cavern
 Zombie Master
+Zur's Weirding
 Óin the Brave

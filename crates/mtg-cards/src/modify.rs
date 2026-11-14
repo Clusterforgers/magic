@@ -1057,6 +1057,15 @@ pub enum GameRule {
         /// The players whose untap steps untap them.
         whose: Ref,
     },
+    /// The permanents the selector picks, whoever controls them, don't untap during the untap steps of the players
+    /// (CR 502.3): "Creatures don't untap during target player's next untap step." With `Duration::NextUntapStep` it
+    /// ends as the next untap step of one of those players ends.
+    R6007NoUntapDuring {
+        /// The permanents held down, judged when the step untaps.
+        what: Selector,
+        /// The players whose untap steps hold them down.
+        whose: Ref,
+    },
     /// The players can't untap more than `count` of their permanents the selector picks during their untap steps (CR
     /// 502.3): "players can't untap more than one land during their untap steps".
     UntapLimit {
@@ -1069,6 +1078,13 @@ pub enum GameRule {
     },
     /// The players skip their draw steps (CR 614.10): the step does not begin on their turns.
     SkipDrawStep(Ref),
+    /// The players draw cards from the bottom of their libraries rather than the top ("You draw cards from the bottom of
+    /// your library rather than the top."); what an effect puts into a hand from the top is no draw and stays the top.
+    R6007DrawFromBottom(Ref),
+    /// During their own turns, as long as they haven't activated an exhaust ability this turn, the players may activate
+    /// exhaust abilities as though they haven't been activated ("During your turn, as long as you haven't activated an
+    /// exhaust ability this turn, you may activate exhaust abilities as though they haven't been activated.").
+    R6007ExhaustAgain(Ref),
     /// The players may play additional lands each of their turns (CR 305.2).
     AdditionalLandPlays {
         /// Who may play them.

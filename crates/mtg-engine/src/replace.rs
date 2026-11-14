@@ -792,6 +792,8 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::PayLifeOrTapped(_)
         | ReplaceBy::TappedForCounters { .. }
         | ReplaceBy::RevealOrTapped(_)
+        | ReplaceBy::R6007BeholdOrTapped(_)
+        | ReplaceBy::R6007RevealOrControl { .. }
         | ReplaceBy::PayOrGraveyard { .. }
         | ReplaceBy::Devour { .. }
         | ReplaceBy::DayIfNeither
@@ -1381,7 +1383,12 @@ impl Pass<'_> {
         if !self.draws_changed {
             return Some(*object);
         }
-        self.library_at(at, *player).first().copied()
+        let library = self.library_at(at, *player);
+        if crate::rules::r6007_draws_from_bottom(self.state, *player) {
+            library.last().copied()
+        } else {
+            library.first().copied()
+        }
     }
 
     /// The exile of a spell cast for its flashback cost or by aftermath that leaves the stack, when it has not been applied.
@@ -2360,8 +2367,18 @@ impl Pass<'_> {
                 self.amplify(at, candidate, (object, controller), *per, applied)
             }
             ReplaceBy::RevealOrTapped(of) => {
-                self.reveal_or_tapped(at, candidate, of, (object, controller), applied)
+                self.reveal_or_tapped(at, candidate, (of, false), (object, controller), applied)
             }
+            ReplaceBy::R6007BeholdOrTapped(of) => {
+                self.reveal_or_tapped(at, candidate, (of, true), (object, controller), applied)
+            }
+            ReplaceBy::R6007RevealOrControl { of, counter, count } => self.r6007_reveal_or_control(
+                at,
+                candidate,
+                (of, counter, *count),
+                (object, controller),
+                applied,
+            ),
             ReplaceBy::PayOrGraveyard { cost, optional } => {
                 let paid = (cost, *optional);
                 self.e14b_pay_or_graveyard(at, candidate, paid, (object, controller), applied)

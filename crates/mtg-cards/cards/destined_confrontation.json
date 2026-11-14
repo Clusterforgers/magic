@@ -1,0 +1,18 @@
+{
+  "oracle_id": "9703140f-36ee-4427-a390-c1dbdb9e4ee9",
+  "name": "Destined Confrontation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Destined Confrontation",
+      "oracle_fingerprint": "40a1274287ab9dad3f9669fbad6a9846",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [{ "R6007KeepTotalPower": { "what": [{ "Type": "Creature" }], "most": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

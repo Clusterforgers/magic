@@ -1,0 +1,50 @@
+{
+  "oracle_id": "c9a9550c-e6bb-4fe3-930f-6266024dbead",
+  "name": "Breathstealer's Crypt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Breathstealer's Crypt",
+      "oracle_fingerprint": "a8103d3e493549fd817dc116153eeb2c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Draw": { "who": "EachPlayer" } },
+            "by": {
+              "Instead": [
+                { "Draw": { "who": "Triggering", "as": "drawn" } },
+                { "Reveal": { "what": { "Bound": "drawn" } } },
+                {
+                  "If": {
+                    "condition": {
+                      "Matches": {
+                        "subject": { "Bound": "drawn" },
+                        "selector": [{ "Type": "Creature" }]
+                      }
+                    },
+                    "then": [
+                      {
+                        "Pay": {
+                          "who": "Triggering",
+                          "cost": [{ "PayLife": 3 }],
+                          "unpaid": [
+                            {
+                              "Discard": {
+                                "who": "Triggering",
+                                "filter": [{ "Is": { "Bound": "drawn" } }]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

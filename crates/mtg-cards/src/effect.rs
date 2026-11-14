@@ -826,6 +826,16 @@ pub enum Effect {
         /// The permanents, or the hand, kept.
         what: Balanced,
     },
+    /// Each player in the game chooses any number of the permanents they control that `what` names whose powers add up to
+    /// at most `most`, in turn order from the active player and knowing the choices before, then each sacrifices the rest
+    /// of them, all together ("Each player chooses any number of creatures they control with total power 4 or less, then
+    /// sacrifices all other creatures they control."); a power below 0 lowers the total.
+    R6007KeepTotalPower {
+        /// The permanents chosen among; the rest of them are sacrificed.
+        what: Selector,
+        /// The most total power kept.
+        most: Amount,
+    },
     /// Counters spells or abilities (CR 701.6).
     Counter {
         /// What is countered.
