@@ -242,6 +242,7 @@ Brain Freeze
 Brainstorm
 Bramble Elemental
 Branchblight Stalker
+Brass's Tunnel-Grinder // Tecutlan, the Searing Rift
 Brave the Sands
 Break the Ice
 Breath of Life
@@ -1415,6 +1416,7 @@ Obstinate Baloth
 Octomancer
 Octopus Umbra
 Ohran Yeti
+Ojer Axonil, Deepest Might // Temple of Power
 Okiba Reckoner Raid // Nezumi Road Captain
 Old Stickfingers
 Olivia's Wrath
@@ -2065,6 +2067,7 @@ The Cruelty of Gix
 The Dalek Emperor
 The Elder Dragon War
 The Eleventh Doctor
+The Fallen
 The Gaffer
 The Great Henge
 The Locust God

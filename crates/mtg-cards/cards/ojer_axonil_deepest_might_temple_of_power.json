@@ -7,56 +7,27 @@
       "name": "Ojer Axonil, Deepest Might",
       "oracle_fingerprint": "0e6286ecc130a81e665feb0f94aff1be",
       "abilities": [
-        {
-          "Keyword": "Trample"
-        },
+        { "Keyword": "Trample" },
         {
           "Replacement": {
             "when": {
               "Damage": {
                 "to": "Opponents",
-                "source": [
-                  {
-                    "Color": "Red"
-                  },
-                  {
-                    "ControlledBy": "You"
-                  }
-                ],
+                "source": [{ "Color": "Red" }, { "ControlledBy": "You" }],
                 "combat": false
               }
             },
-            "by": {
-              "R6100AtLeast": {
-                "Stat": {
-                  "of": "This",
-                  "stat": "Power"
-                }
-              }
-            }
+            "by": { "R6100AtLeast": { "Stat": { "of": "This", "stat": "Power" } } }
           }
         },
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "from": "Battlefield",
-                "to": "Graveyard"
-              }
-            },
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
             "effects": [
               {
                 "Move": {
                   "what": "This",
-                  "to": {
-                    "Battlefield": {
-                      "tapped": true,
-                      "transformed": true
-                    }
-                  }
+                  "to": { "Battlefield": { "tapped": true, "transformed": true } }
                 }
               }
             ]
@@ -70,30 +41,13 @@
       "abilities": [
         {
           "Activated": {
-            "cost": [
-              "Tap"
-            ],
-            "effects": [
-              {
-                "AddMana": {
-                  "mana": {
-                    "Fixed": [
-                      "Red"
-                    ]
-                  }
-                }
-              }
-            ]
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
           }
         },
         {
           "Activated": {
-            "cost": [
-              {
-                "Mana": "{2}{R}"
-              },
-              "Tap"
-            ],
+            "cost": [{ "Mana": "{2}{R}" }, "Tap"],
             "timing": "Sorcery",
             "condition": {
               "Compare": {
@@ -101,24 +55,14 @@
                   "Tally": {
                     "event": "R6100NoncombatDamaged",
                     "who": "You",
-                    "filter": [
-                      {
-                        "Color": "Red"
-                      }
-                    ]
+                    "filter": [{ "Color": "Red" }]
                   }
                 },
                 "op": "Ge",
                 "right": 4
               }
             },
-            "effects": [
-              {
-                "Transform": {
-                  "what": "This"
-                }
-              }
-            ]
+            "effects": [{ "Transform": { "what": "This" } }]
           }
         }
       ]

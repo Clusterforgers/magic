@@ -9,12 +9,7 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "StepBegins": {
-                "step": "Upkeep",
-                "whose": "You"
-              }
-            },
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
             "effects": [
               {
                 "DealDamage": {
@@ -23,29 +18,13 @@
                       {
                         "PlayersWhere": {
                           "who": "Opponents",
-                          "test": {
-                            "DamagedThisGameBy": {
-                              "by": [
-                                {
-                                  "Is": "This"
-                                }
-                              ]
-                            }
-                          }
+                          "test": { "DamagedThisGameBy": { "by": [{ "Is": "This" }] } }
                         }
                       },
                       {
                         "Each": [
-                          {
-                            "Type": "Planeswalker"
-                          },
-                          {
-                            "R6100DamagedThisGameBy": [
-                              {
-                                "Is": "This"
-                              }
-                            ]
-                          }
+                          { "Type": "Planeswalker" },
+                          { "R6100DamagedThisGameBy": [{ "Is": "This" }] }
                         ]
                       }
                     ]

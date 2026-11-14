@@ -9,105 +9,43 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "effects": [
               {
                 "Discard": {
-                  "count": {
-                    "Count": [
-                      {
-                        "In": "Hand"
-                      },
-                      {
-                        "OwnedBy": "You"
-                      }
-                    ]
-                  },
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
                   "optional": true,
                   "as": "discarded"
                 }
               },
-              {
-                "Draw": {
-                  "count": {
-                    "Sum": [
-                      {
-                        "Bound": "discarded~moved"
-                      },
-                      1
-                    ]
-                  }
-                }
-              }
+              { "Draw": { "count": { "Sum": [{ "Bound": "discarded~moved" }, 1] } } }
             ]
           }
         },
         {
           "Triggered": {
-            "when": {
-              "StepBegins": {
-                "step": "End",
-                "whose": "You"
-              }
-            },
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
             "if": {
               "Compare": {
-                "left": {
-                  "Tallied": {
-                    "who": "You",
-                    "what": "Descended"
-                  }
-                },
+                "left": { "Tallied": { "who": "You", "what": "Descended" } },
                 "op": "Ge",
                 "right": 1
               }
             },
             "effects": [
-              {
-                "PutCounters": {
-                  "on": "This",
-                  "counter": {
-                    "Other": "bore"
-                  }
-                }
-              },
+              { "PutCounters": { "on": "This", "counter": { "Other": "bore" } } },
               {
                 "If": {
                   "condition": {
                     "Compare": {
-                      "left": {
-                        "Counters": {
-                          "on": "This",
-                          "counter": {
-                            "Other": "bore"
-                          }
-                        }
-                      },
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "bore" } } },
                       "op": "Ge",
                       "right": 3
                     }
                   },
                   "then": [
-                    {
-                      "RemoveAllCounters": {
-                        "from": "This",
-                        "counter": {
-                          "Other": "bore"
-                        }
-                      }
-                    },
-                    {
-                      "Transform": {
-                        "what": "This"
-                      }
-                    }
+                    { "RemoveAllCounters": { "from": "This", "counter": { "Other": "bore" } } },
+                    { "Transform": { "what": "This" } }
                   ]
                 }
               }
@@ -122,20 +60,8 @@
       "abilities": [
         {
           "Activated": {
-            "cost": [
-              "Tap"
-            ],
-            "effects": [
-              {
-                "AddMana": {
-                  "mana": {
-                    "Fixed": [
-                      "Red"
-                    ]
-                  }
-                }
-              }
-            ]
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
           }
         },
         {
@@ -145,29 +71,15 @@
                 "what": [
                   {
                     "AnyOf": [
-                      {
-                        "Type": "Artifact"
-                      },
-                      {
-                        "Type": "Battle"
-                      },
-                      {
-                        "Type": "Creature"
-                      },
-                      {
-                        "Type": "Enchantment"
-                      },
-                      {
-                        "Type": "Land"
-                      },
-                      {
-                        "Type": "Planeswalker"
-                      }
+                      { "Type": "Artifact" },
+                      { "Type": "Battle" },
+                      { "Type": "Creature" },
+                      { "Type": "Enchantment" },
+                      { "Type": "Land" },
+                      { "Type": "Planeswalker" }
                     ]
                   },
-                  {
-                    "ManaFrom": "This"
-                  }
+                  { "ManaFrom": "This" }
                 ],
                 "by": "You"
               }
@@ -176,21 +88,12 @@
               {
                 "ExileUntil": {
                   "filter": [
-                    {
-                      "Not": {
-                        "Type": "Land"
-                      }
-                    },
+                    { "Not": { "Type": "Land" } },
                     {
                       "Compare": {
                         "stat": "ManaValue",
                         "op": "Le",
-                        "to": {
-                          "Stat": {
-                            "of": "Triggering",
-                            "stat": "ManaValue"
-                          }
-                        }
+                        "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
                       }
                     }
                   ],
@@ -200,47 +103,22 @@
               },
               {
                 "CastFromZone": {
-                  "what": {
-                    "Bound": "found"
-                  },
+                  "what": { "Bound": "found" },
                   "free": true,
-                  "otherwise": [
-                    {
-                      "Move": {
-                        "what": {
-                          "Bound": "found"
-                        },
-                        "to": "Hand"
-                      }
-                    }
-                  ]
+                  "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
                 }
               },
               {
                 "Move": {
-                  "what": {
-                    "Bound": "exiled"
-                  },
-                  "to": {
-                    "Library": {
-                      "place": "Bottom",
-                      "order": "Random"
-                    }
-                  }
+                  "what": { "Bound": "exiled" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
                 }
               },
               {
                 "Performed": {
                   "action": "Discovered",
-                  "card": {
-                    "Bound": "found"
-                  },
-                  "value": {
-                    "Stat": {
-                      "of": "Triggering",
-                      "stat": "ManaValue"
-                    }
-                  }
+                  "card": { "Bound": "found" },
+                  "value": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
                 }
               }
             ]
