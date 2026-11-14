@@ -87,6 +87,7 @@ Seat rules for Delves fights (`docs/delves.md`), each set up in `PlayerSetup`:
 - `schemes` (`schemes.rs`): a boss seat's scheme deck. As each of its turns begins (after `TurnBegan`, before the untap step), the scheme in motion leaves the game (`ObjectLeftGame`) and the next one of the deck becomes an emblem (`SchemeSetInMotion`); the deck repeats in its order. Its static abilities last until the next scheme, its upkeep triggers fire that turn. The view shows the scheme in motion and the Omen, the scheme after it (`BossView.scheme`, `BossView.omen`).
 - `leader` (`schemes.rs`): a minion's leader; when the leader loses or has left, the minion loses in the same state-based pass (`LossReason::LeaderFell`).
 - Spotlight (`spotlight.rs`), on in a game with Spirit seats and a boss's side (seats with phases, schemes or a leader): pressure from the boss's side on each hero, read before each event folds (damage by its sources, life lost and permanents removed while its spell or ability resolves); the cap and the focus (`Ref::Spotlit`, `PlayerView.eyes`); the grace, applied as damage and life loss fold; the lull in `can_attack` and before a scheme is set in motion; boss-side seats never lose to commander damage.
+- Rivalry (`rivalry.rs`): the damage each player's sources dealt to each other player over the last two rounds, read before each event folds; no rule reads it, the bots aim by it (`docs/bots.md`).
 
 ## Determinism and recovery
 

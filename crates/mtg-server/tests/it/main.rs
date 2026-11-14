@@ -21,6 +21,7 @@ mod full_games;
 mod game_close;
 mod house_rules;
 mod idle_dwell;
+mod idle_sweep;
 mod join_codes;
 mod join_http;
 mod lobby;
