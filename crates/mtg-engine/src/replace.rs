@@ -604,6 +604,15 @@ enum Unit {
     Other,
 }
 
+/// Whether `source` is a permanent whose own card enters the battlefield again in the same batch (exiled and cloaked
+/// in one pile): the card that enters is a new object (CR 400.7), which the permanent's abilities do not modify.
+fn r5515_returns_as_new(state: &GameState, source: &Source, unit: &Unit) -> bool {
+    matches!(unit, Unit::Enter { object, .. } if *object == source.object.id)
+        && state
+            .object(source.object.id)
+            .is_some_and(|object| object.zone() == Zone::Battlefield)
+}
+
 /// The card that enters the battlefield with this event, and under whose control.
 fn entering(state: &GameState, event: &Event) -> Option<(ObjectId, PlayerId)> {
     match event {
@@ -1287,6 +1296,7 @@ impl Pass<'_> {
                 || matches!(by, ReplaceBy::Dredge(cards) if !step.can_dredge(at, source.object.id, *cards))
                 || !step.c6_blk_matches(at, source, when, &unit)?
                 || !step.r5517_caused_own(at, when, &unit)
+                || r5515_returns_as_new(step.state, source, &unit)
                 || (matches!(by, ReplaceBy::UnderYourControl)
                     && !step.r5517_from_opponent(source.controller, &unit))
             {
