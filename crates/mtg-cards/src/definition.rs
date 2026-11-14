@@ -426,7 +426,7 @@ impl CardDefinition {
         self.types.contains(&ty)
     }
 
-    /// The names of the cards its abilities (and those of its faces) can conjure or make a token copy of, each once.
+    /// The names of the cards its abilities (and its faces') can conjure, copy as a token or meld into, each once.
     pub fn conjured_names(&self) -> BTreeSet<String> {
         fn walk(value: &serde_json::Value, names: &mut BTreeSet<String>) {
             match value {
@@ -434,6 +434,14 @@ impl CardDefinition {
                     if let Some(name) = map
                         .get("Conjure")
                         .and_then(|conjure| conjure.get("name"))
+                        .and_then(serde_json::Value::as_str)
+                    {
+                        names.insert(name.to_owned());
+                    }
+                    // The melded card of a meld pair comes from the same cards (CR 712.4).
+                    if let Some(name) = map
+                        .get("Meld")
+                        .and_then(|meld| meld.get("into"))
                         .and_then(serde_json::Value::as_str)
                     {
                         names.insert(name.to_owned());

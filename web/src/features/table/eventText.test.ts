@@ -208,6 +208,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   DoorUnlocked: [{ DoorUnlocked: { object: 3, door: 1, player: 1 } }, 'Bo unlocks a door of Forest'],
   DoorLocked: [{ DoorLocked: { object: 3, door: 1, player: 1 } }, 'Bo locks a door of Forest'],
   Mutated: [{ Mutated: { object: 3, spell: 9, over: true, player: 1 } }, 'Bo mutates a creature over Forest'],
+  Melded: [
+    { Melded: { object: 3, with: 1, name: 'Brisela, Voice of Nightmares' } },
+    'Forest and Grizzly Bears meld into Brisela, Voice of Nightmares',
+  ],
   CardParted: [
     { CardParted: { permanent: 3, card: 1, to: { Command: 1 } } },
     "Grizzly Bears goes to Bo's command zone apart from Forest",

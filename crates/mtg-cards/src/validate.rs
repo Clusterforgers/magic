@@ -2624,7 +2624,8 @@ impl<'a> Walker<'a> {
             | Keyword::Ninjutsu(cost)
             | Keyword::CommanderNinjutsu(cost)
             | Keyword::LevelUp(cost)
-            | Keyword::Outlast(cost) => {
+            | Keyword::Outlast(cost)
+            | Keyword::AuraSwap(cost) => {
                 let held = std::mem::replace(&mut self.activated_cost, true);
                 self.at("cost", |w| w.cost(cost));
                 self.activated_cost = held;
@@ -4192,6 +4193,15 @@ impl Walker<'_> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
             }
+            Effect::Meld { with, into } => {
+                if into.is_empty() {
+                    w.problem("a meld names the card it melds into");
+                }
+                if !with.0.iter().any(|pred| matches!(pred, Pred::Named(_))) {
+                    w.problem("a meld names its partner");
+                }
+                w.at("with", |w| w.selector(with));
+            }
             Effect::Seek { who, filter, count } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("filter", |w| w.selector(filter));
@@ -5283,6 +5293,7 @@ impl Walker<'_> {
                 }
             }),
             Effect::EndTurn
+            | Effect::AuraSwap
             | Effect::StillResolves
             | Effect::Rephase
             | Effect::AddStep { .. }

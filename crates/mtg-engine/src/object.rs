@@ -809,6 +809,11 @@ impl GameObject {
         if let Some((cost, _, _)) = self.prototype() {
             return cost.mana_value();
         }
+        if self.copy_effect().is_none()
+            && let Some(total) = self.merged().and_then(Merged::melded_mana_value)
+        {
+            return total;
+        }
         let whole = self.whole_card();
         if whole.layout == Layout::Transform && self.face().is_some() {
             whole.mana_value()

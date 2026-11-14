@@ -83,7 +83,7 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 |---|---|---|
 | `*`, `1+*` or `X` as power, toughness, loyalty or defense | `None` | `Card.VariableStats` |
 | `{X}` in the cost | `x_in_cost`; the engine asks X at the cast, and the spell, its permanent, its enters trigger and its delayed triggers remember it | `Card.XCost` |
-| A second face | Split, Adventure, modal and transforming double-faced cards play with their faces, each assembled like a card (`CardDefinition.layout`, `faces`); a `prepare` card's spell face is a copy cast by the prepared permanent; any other second face (meld) is only its front | `Card.Faces`, `Card.Prepare` |
+| A second face | Split, Adventure, modal and transforming double-faced cards play with their faces, each assembled like a card (`CardDefinition.layout`, `faces`); a `prepare` card's spell face is a copy cast by the prepared permanent; a meld card is its front, and its melded card is a card of its own the meld effect names (`Effect::Meld`, resolved with the conjurable cards) | `Card.Faces`, `Card.Prepare` |
 | A mana symbol the engine does not know, an unreadable cost, a type word that is no card type | No cost, or the word dropped | Nothing |
 
 ## Vocabulary

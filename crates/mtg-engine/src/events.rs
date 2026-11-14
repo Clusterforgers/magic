@@ -1256,6 +1256,9 @@ pub enum Event {
         /// The controller of the spell.
         player: PlayerId,
     },
+    /// Two cards of a meld pair in exile became one melded permanent (CR 701.42a, 712.4): the card `object` entered the
+    /// battlefield earlier in the batch, and the other card joins it.
+    Melded(Box<crate::merged::Melded>),
     /// A card of the merged permanent `permanent` goes to `to` in place of the zone the permanent goes to when it leaves
     /// the battlefield in this batch (CR 729.3): a commander card its owner puts into the command zone (CR 903.9b), or
     /// the other cards when the card the permanent was goes there.
@@ -1621,6 +1624,7 @@ impl Event {
             | Event::SchemeSetInMotion { emblem, .. } => vec![*emblem],
             Event::Ventured(ventured) => vec![ventured.object],
             Event::BecameCopy(copy) => vec![copy.object],
+            Event::Melded(melded) => vec![melded.object, melded.with],
             Event::SpellCopied(copy) => vec![copy.object],
             Event::CardCopied(copy) => vec![copy.object],
             Event::AbilityCopied(copy) => vec![copy.object],

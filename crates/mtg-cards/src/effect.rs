@@ -2021,6 +2021,19 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         onto: Option<Ref>,
     },
+    /// "You may exchange this permanent with an Aura card in your hand" (aura swap, CR 702.65): the controller may pick
+    /// an Aura card in their hand that could enchant what the source is attached to; the source goes to its owner's hand
+    /// and the card enters attached to that object or player. When either can't move, neither does (CR 701.12a).
+    AuraSwap,
+    /// "If you both own and control ~ and a creature named N, exile them, then meld them into M" (CR 701.42): when the
+    /// controller owns and controls the source and a permanent `with` names, both are exiled, and if both are then cards
+    /// of a meld pair in exile they return as one melded permanent with the characteristics of the card `into`.
+    Meld {
+        /// The partner: the permanent of the pair other than the source (a type and a name).
+        with: Selector,
+        /// The name of the melded card.
+        into: String,
+    },
     /// The permanents become copies of an object for a while ("becomes a copy of target creature until end of turn",
     /// CR 707.2): the copy effect is the first layer, and the permanent is what it was again when it ends.
     BecomeCopy {

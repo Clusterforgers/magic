@@ -90,6 +90,7 @@ Archon of Coronation
 Archon of Cruelty
 Archway Commons
 Arcum's Weathervane
+Argoth, Sanctum of Nature
 Armguard Familiar
 Arrest
 Arrogant Wurm
@@ -265,6 +266,7 @@ Brimaz, Blight of Oreskos
 Brimstone Vandal
 Brinelin, the Moon Kraken
 Brion Stoutarm
+Brisela, Voice of Nightmares
 Brokers Hideout
 Bronzeplate Boar
 Broodbirth Viper
@@ -272,6 +274,7 @@ Broodcaller Scourge
 Broodhatch Nantuko
 Brooding Saurian
 Broodstar
+Bruna, the Fading Light
 Bubble Matrix
 Bucknard's Everfull Purse
 Buried Alive
@@ -333,6 +336,7 @@ Chief Engineer
 Chill to the Bone
 Chimil, the Inner Sun
 Chittering Harvester
+Chittering Host
 Chittering Witch
 Chomping Kavu
 Chromanticore
@@ -713,6 +717,7 @@ False Floor
 Familiar Ground
 Famine
 Fanatic of Rhonas
+Fang, Fearless l'Cie
 Far Wanderings
 Faramir, Steward of Gondor
 Farewell
@@ -840,6 +845,7 @@ Giltspire Avenger
 Ginger, Queen of Sweets
 Girder Goons
 Gisa and Geralf
+Gisela, the Broken Blade
 Gix's Caress
 Gixian Infiltrator
 Glacial Crevasses
@@ -884,6 +890,7 @@ Gorger Wurm
 Gorm the Great
 Gorma, the Gullet
 Grabby Tabby
+Graf Rats
 Grafted Wargear
 Grand Entryway // Elegant Rotunda
 Grapeshot
@@ -933,6 +940,9 @@ Hammer Dropper
 Hand of Vecna
 Hangar Scrounger
 Hangarback Walker
+Hanweir Battlements
+Hanweir Garrison
+Hanweir, the Writhing Township
 Hapatra, Vizier of Poisons
 Harabaz Druid
 Harmonic Sliver
@@ -1307,6 +1317,7 @@ Methods of the Mighty
 Metropolis Reformer
 Midnight Banshee
 Midnight Pathlighter
+Midnight Scavengers
 Migratory Greathorn
 Migratory Route
 Millikin
@@ -2257,6 +2268,7 @@ Urza's Incubator
 Urza's Mine
 Urza's Power Plant
 Urza's Tower
+Urza, Lord Protector
 Urza, Powerstone Prodigy
 Urza, Prince of Kroog
 Uthros Research Craft
