@@ -98,6 +98,7 @@ mod r4705_vecna;
 mod r5500_tax_life;
 mod r5515_auras;
 mod r6008_delver;
+mod r6105_dont_blink;
 mod ring;
 mod rmt7_lose_printed;
 mod rmt7_turn_rules;

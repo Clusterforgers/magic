@@ -1,7 +1,7 @@
 {
   "oracle_id": "a11c6601-7e91-4def-bfea-bb34023ef3c6",
   "name": "Primeval Spawn",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Primeval Spawn",
@@ -20,9 +20,25 @@
         { "Keyword": "Trample" },
         { "Keyword": "Lifelink" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 128, "end": 327 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              { "ExileTop": { "count": 10, "as": "exiled" } },
+              {
+                "ChooseWithin": {
+                  "from": { "Bound": "exiled" },
+                  "within": { "TotalManaValueAtMost": 10 },
+                  "as": "chosen"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "chosen" },
+                  "as": "card",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "card" }, "free": true } }]
+                }
+              }
+            ]
           }
         }
       ]

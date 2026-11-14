@@ -683,6 +683,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::Countered { what }
         | ReplaceWhen::TurnedFaceUp { what }
         | ReplaceWhen::Discarded { what, .. }
+        | ReplaceWhen::R6105Uncycled { what }
         | ReplaceWhen::BecomesAttached { what } => only_this(what),
         ReplaceWhen::Damage { to, .. } | ReplaceWhen::CountersPut { on: to, .. } => {
             matches!(to, Some(Ref::This))
@@ -1164,6 +1165,25 @@ impl Pass<'_> {
                 by != hit && chosen.contains(&by) && chosen.contains(&hit)
             }
             (
+                ReplaceWhen::R6105Uncycled { what },
+                Unit::Move {
+                    object,
+                    to: Zone::Graveyard(_),
+                    discard,
+                    ..
+                },
+            ) => {
+                let Some(reference) = self.reference(*object) else {
+                    return Ok(false);
+                };
+                // A cycled card's discard is logged with its `Cycled` in the same batch (`cast`).
+                let cycled = *discard
+                    && self.slots.iter().any(|slot| {
+                        matches!(&slot.item, Item::One(Event::Cycled { object: card, .. }) if card == object)
+                    });
+                !cycled && scope.selects(what, reference)?
+            }
+            (
                 ReplaceWhen::ZoneChange { what, from, to },
                 Unit::Move {
                     object,
@@ -1220,7 +1240,7 @@ impl Pass<'_> {
                 scope.players(who)?.contains(player)
             }
             (
-                ReplaceWhen::Discarded { what, by },
+                ReplaceWhen::Discarded { what, by, effect },
                 Unit::Move {
                     object,
                     to: Zone::Graveyard(_),
@@ -1236,7 +1256,9 @@ impl Pass<'_> {
                     (Some(by), Some((player, _))) => scope.players(by)?.contains(&player),
                     (Some(_), None) => false,
                 };
-                cause_fits && scope.selects(what, reference)?
+                // A discard to pay a cost or for the hand size is no effect's (Library of Leng ruling).
+                let effect_fits = !*effect || self.putter.is_some_and(|(_, resolving)| resolving);
+                cause_fits && effect_fits && scope.selects(what, reference)?
             }
             (
                 ReplaceWhen::Destroyed { what },

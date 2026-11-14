@@ -1,16 +1,39 @@
 {
   "oracle_id": "5733c3fb-c533-456c-b30e-5d2b9e206b6b",
   "name": "Don't Blink",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Don't Blink",
       "oracle_fingerprint": "fdc578aa59691645829e6f66dc03c778",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you resolve this spell effect by hand",
-            "span": { "start": 0, "end": 154 }
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Enters": {
+                      "what": [
+                        { "Type": "Creature" },
+                        { "AnyOf": [{ "In": "Exile" }, { "CastFrom": "Exile" }] }
+                      ]
+                    }
+                  },
+                  "by": {
+                    "Instead": [
+                      {
+                        "Move": {
+                          "what": "Triggering",
+                          "to": { "Library": { "place": "Shuffled" } }
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         },
         { "Keyword": { "Cycling": "{2}" } }

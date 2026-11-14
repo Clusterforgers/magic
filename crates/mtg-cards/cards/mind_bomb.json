@@ -1,0 +1,57 @@
+{
+  "oracle_id": "fad1562d-0ab9-4a3f-b80a-476d8132f66d",
+  "name": "Mind Bomb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind Bomb",
+      "oracle_fingerprint": "07d6df42636e96f9ecac52f936e455dc",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Discard": { "who": "EachPlayer", "count": 3, "optional": true, "as": "discarded" }
+              },
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": "EachPlayer",
+                        "as": "each",
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": { "Bound": "each" },
+                              "amount": {
+                                "Sum": [
+                                  3,
+                                  {
+                                    "Times": {
+                                      "by": -1,
+                                      "of": {
+                                        "CountOf": {
+                                          "of": { "Bound": "discarded" },
+                                          "filter": [{ "OwnedBy": { "Bound": "each" } }]
+                                        }
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

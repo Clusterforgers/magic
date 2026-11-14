@@ -878,6 +878,13 @@ pub enum ReplaceWhen {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         to: Option<ZoneKind>,
     },
+    /// A card matching the selector would be put into a graveyard from anywhere, except as the discard that pays for its
+    /// own cycling (CR 702.29): "If a card that has a cycling ability would be put into your graveyard from anywhere and it
+    /// wasn't cycled".
+    R6105Uncycled {
+        /// The card that would move.
+        what: Selector,
+    },
     /// A permanent matching the selector would be destroyed (CR 701.8): by an effect that destroys, or by lethal damage or
     /// deathtouch; not sacrificed, put into a graveyard for zero toughness, or exiled.
     Destroyed {
@@ -892,6 +899,10 @@ pub enum ReplaceWhen {
         /// controls causes you to discard this card"); any discard when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         by: Option<Ref>,
+        /// Only a discard a resolving spell or ability causes, not a cost or a turn action ("If an effect causes you to
+        /// discard a card").
+        #[serde(default, skip_serializing_if = "is_false")]
+        effect: bool,
     },
     /// A spell matching the selector would be countered (CR 701.6): the move from the stack to the graveyard of a spell an
     /// effect counted, not of one that resolved, fizzled or could not be countered.

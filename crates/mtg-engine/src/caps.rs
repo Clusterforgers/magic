@@ -880,6 +880,7 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.TokenCreation",
     "ReplaceWhen.Damage",
     "ReplaceWhen.R6001DamageBetweenChosen",
+    "ReplaceWhen.R6105Uncycled",
     "ReplaceWhen.ZoneChange",
     "ReplaceWhen.Countered",
     "ReplaceWhen.BecomesAttached",

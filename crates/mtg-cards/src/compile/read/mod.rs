@@ -639,6 +639,9 @@ const MEANINGFUL_WORDS: [&str; 6] = [
 /// Reads a clause like `clause`, with what the face itself says (`Own`).
 #[allow(clippy::too_many_lines)]
 pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
+    if let Some(found) = render::r6105_read_whole(text) {
+        return Some(found);
+    }
     if let Some(found) = r6008_wholes::r6008_read(text) {
         return Some(found);
     }

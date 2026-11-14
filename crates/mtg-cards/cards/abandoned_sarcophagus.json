@@ -1,0 +1,49 @@
+{
+  "oracle_id": "a051dee0-60c8-4f58-84cb-55460c097115",
+  "name": "Abandoned Sarcophagus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abandoned Sarcophagus",
+      "oracle_fingerprint": "737f107639bf4bc182e78f4aa2c667dd",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "HasKeywordNamed": "Cycling" },
+                      { "HasKeywordNamed": "Typecycling" }
+                    ]
+                  }
+                ],
+                "from": "Graveyard"
+              }
+            }
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "R6105Uncycled": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "HasKeywordNamed": "Cycling" },
+                      { "HasKeywordNamed": "Typecycling" }
+                    ]
+                  },
+                  { "OwnedBy": "You" },
+                  { "Not": "Token" }
+                ]
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

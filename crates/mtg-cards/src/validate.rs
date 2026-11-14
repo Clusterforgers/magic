@@ -6485,10 +6485,11 @@ impl Walker<'_> {
             | ReplaceWhen::Explores { what }
             | ReplaceWhen::Connives { what }
             | ReplaceWhen::Enters { what }
+            | ReplaceWhen::R6105Uncycled { what }
             | ReplaceWhen::BecomesAttached { what } => {
                 self.at("what", |w| w.selector(what));
             }
-            ReplaceWhen::Discarded { what, by } => {
+            ReplaceWhen::Discarded { what, by, .. } => {
                 self.at("what", |w| w.selector(what));
                 if let Some(by) = by {
                     self.at("by", |w| w.reference(by, Kind::Player));
@@ -6709,11 +6710,13 @@ impl Walker<'_> {
             ReplaceBy::IntoLibrary { place, .. }
                 if !matches!(
                     when,
-                    ReplaceWhen::ZoneChange { .. } | ReplaceWhen::Countered { .. }
+                    ReplaceWhen::ZoneChange { .. }
+                        | ReplaceWhen::Countered { .. }
+                        | ReplaceWhen::Discarded { .. }
                 ) || matches!(place, crate::effect::Place::Below(_)) =>
             {
                 self.problem(
-                    "`IntoLibrary` replaces a `ZoneChange` or a `Countered`, on top, bottom or shuffled",
+                    "`IntoLibrary` replaces a `ZoneChange`, a `Countered` or a `Discarded`, on top, bottom or shuffled",
                 );
             }
             ReplaceBy::MoveTo(_)
@@ -6721,6 +6724,7 @@ impl Walker<'_> {
                     when,
                     ReplaceWhen::ZoneChange { .. }
                         | ReplaceWhen::Discarded { .. }
+                        | ReplaceWhen::R6105Uncycled { .. }
                         | ReplaceWhen::Countered { .. }
                 ) =>
             {
@@ -6831,6 +6835,7 @@ impl Walker<'_> {
                 | ReplaceWhen::Destroyed { .. }
                 | ReplaceWhen::Countered { .. }
                 | ReplaceWhen::Discarded { .. }
+                | ReplaceWhen::R6105Uncycled { .. }
                 | ReplaceWhen::Enters { .. }
         );
         match by {

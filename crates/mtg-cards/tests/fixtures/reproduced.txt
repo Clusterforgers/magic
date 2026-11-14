@@ -1,3 +1,4 @@
+Abandoned Sarcophagus
 Abbot of Keral Keep
 Aberrant
 Abominable Treefolk
@@ -237,6 +238,7 @@ Borderland Behemoth
 Boromir, Gondor's Hope
 Bosh, Iron Golem
 Bounty of Skemfar
+Braids, Arisen Nightmare
 Brain Freeze
 Brainstorm
 Bramble Elemental
@@ -536,6 +538,7 @@ Dog Umbra
 Dokuchi Shadow-Walker
 Domesticated Hydra
 Dominate
+Don't Blink
 Donal, Herald of Wings
 Done for the Day
 Doom Blade
@@ -1117,6 +1120,7 @@ Knight of Dusk's Shadow
 Knight of the Last Breath
 Knights of the Black Rose
 Knowledge Is Power
+Kodama of the East Tree
 Kodama of the West Tree
 Kodama's Might
 Kodama's Reach
@@ -1167,6 +1171,7 @@ Letter of Acceptance
 Levitation
 Leyline Binding
 Lhurgoyf
+Library of Leng
 Lich Lord of Unx
 Licia, Sanguine Tribune
 Liesa, Shroud of Dusk
@@ -1292,6 +1297,7 @@ Migratory Greathorn
 Migratory Route
 Millikin
 Mind Bend
+Mind Bomb
 Mind Flayer
 Mindless Conscription
 Mindlock Orb
@@ -1544,6 +1550,7 @@ Primal Growth
 Primal Might
 Primaris Eliminator
 Primeval Protector
+Primeval Spawn
 Primitive Etchings
 Primordial Hydra
 Prismatic Geoscope
@@ -2019,6 +2026,7 @@ Tandem Lookout
 Tangle Tumbler
 Tangleweave Armor
 Tanuki Transplanter
+Tariff
 Tato Farmer
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher

@@ -33,6 +33,7 @@ pub(super) fn ep32_discarded_by_opponent(r: &mut Reader<'_>) -> Option<Ability> 
         when: ReplaceWhen::Discarded {
             what: Selector::this(),
             by: Some(Ref::Opponents),
+            effect: false,
         },
         by: ReplaceBy::Instead(vec![Effect::Move {
             what: Ref::This,
@@ -56,6 +57,7 @@ pub(super) fn ep32_discarded_texts(ability: &Ability) -> Vec<String> {
             ReplaceWhen::Discarded {
                 what,
                 by: Some(Ref::Opponents),
+                effect: false,
             },
         by: ReplaceBy::Instead(effects),
         condition: None,

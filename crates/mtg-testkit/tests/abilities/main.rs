@@ -128,6 +128,8 @@ mod r6001_feud;
 mod r6001_greymond;
 mod r6007_cards;
 mod r6013_pack;
+mod r6105_braids;
+mod r6105_kodama;
 mod r8p2_enters;
 mod reflexive;
 mod replacement;
