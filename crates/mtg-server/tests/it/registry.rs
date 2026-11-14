@@ -220,7 +220,7 @@ async fn lobbies_that_never_start_go_after_an_hour() {
 }
 
 #[tokio::test]
-async fn started_games_stay_while_somebody_is_connected_and_go_a_day_after_everybody_left() {
+async fn started_games_stay_while_somebody_is_connected_and_go_an_hour_after_everybody_left() {
     let config = ServerConfig {
         retention: Retention::default(),
         ..ServerConfig::default()
@@ -233,7 +233,8 @@ async fn started_games_stay_while_somebody_is_connected_and_go_a_day_after_every
 
     let t0 = Instant::now();
     let day = Duration::from_hours(24);
-    let almost_a_day = Duration::from_mins(24 * 60 - 1);
+    let hour = Duration::from_hours(1);
+    let almost_an_hour = Duration::from_mins(59);
     // While seat 1 is connected the game is never abandoned, however old.
     assert_eq!(registry.sweep(t0).await, 0);
     assert_eq!(registry.sweep(t0 + 3 * day).await, 0);
@@ -241,8 +242,8 @@ async fn started_games_stay_while_somebody_is_connected_and_go_a_day_after_every
     drop(inbox);
     let t1 = t0 + 3 * day;
     assert_eq!(registry.sweep(t1 + Duration::from_mins(1)).await, 0);
-    assert_eq!(registry.sweep(t1 + almost_a_day).await, 0);
-    assert_eq!(registry.sweep(t1 + day + Duration::from_mins(2)).await, 1);
+    assert_eq!(registry.sweep(t1 + almost_an_hour).await, 0);
+    assert_eq!(registry.sweep(t1 + hour + Duration::from_mins(2)).await, 1);
     assert!(registry.is_empty());
 }
 

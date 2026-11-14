@@ -46,6 +46,13 @@ pub struct Knobs {
     pub lethal_hit: f64,
     /// Lands the seat wants before more stop counting.
     pub lands_wanted: f64,
+    /// 1 to aim at a multiplayer table by threat (opposing life counted flat, never low life alone), 0 for the former
+    /// low-life lean.
+    pub archenemy: f64,
+    /// What each point of damage an opponent dealt the seat's team lately adds to focusing them (retaliation).
+    pub rival: f64,
+    /// What each point of damage an opponent took lately, past the least-hit opponent, takes from focusing them.
+    pub spread: f64,
 }
 
 impl Knobs {
@@ -71,6 +78,9 @@ impl Knobs {
         wall: 8.0,
         lethal_hit: 500.0,
         lands_wanted: 6.0,
+        archenemy: 1.0,
+        rival: 0.4,
+        spread: 0.2,
     };
 
     /// The constants every brain plays with.
