@@ -73,6 +73,7 @@ fn top_suspended(count: Amount) -> Vec<Effect> {
             count,
             bind: EXILED.to_owned(),
             sealed: false,
+            bottom: false,
         },
         Effect::RepeatEach {
             over: exiled_nonland(),
@@ -242,6 +243,7 @@ fn copy_then_exile(counter: CounterKind, count: Amount) -> Vec<Effect> {
             new_targets: false,
             except: Vec::new(),
             each_target: None,
+            each_player: false,
         },
         Effect::Exile {
             what: Ref::Triggering,

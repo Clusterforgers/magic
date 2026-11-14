@@ -1,0 +1,26 @@
+{
+  "oracle_id": "3846b499-59c8-4e77-b46a-1d697bcbded7",
+  "name": "Ink-Treader Nephilim",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ink-Treader Nephilim",
+      "oracle_fingerprint": "e295fdea512145f433c668473574b6e0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }] }
+            },
+            "if": {
+              "Matches": { "subject": "Triggering", "selector": [{ "R6104TargetsOnly": ["This"] }] }
+            },
+            "effects": [
+              { "CopySpell": { "what": "Triggering", "each_target": [{ "Type": "Creature" }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

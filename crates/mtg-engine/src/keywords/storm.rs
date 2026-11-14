@@ -32,6 +32,7 @@ impl KeywordRules for Storm {
             targets: Vec::new(),
             effects: vec![Effect::CopySpell {
                 each_target: None,
+                each_player: false,
                 who: Ref::You,
                 what: Ref::This,
                 count: Amount::Triggering,

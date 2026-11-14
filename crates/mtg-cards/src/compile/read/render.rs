@@ -48,7 +48,10 @@ mod optional_return;
 mod oracle_only;
 pub(super) use oracle_only::r5522_read_whole;
 pub(super) use oracle_only::r5523_read_whole;
-pub(super) use oracle_only::{r6001_pair_read, r6001_pair_texts, r6001_read_whole};
+pub(super) use oracle_only::{
+    r6001_pair_read, r6001_pair_texts, r6001_read_whole, r6104_read_whole,
+};
+pub(super) use oracle_only::{r6105_pair_read, r6105_pair_texts, r6105_read_whole};
 mod otherwise;
 mod player_events;
 mod populated;
@@ -613,6 +616,7 @@ fn produced_wordings(texts: &mut Vec<String>) {
 /// Every wording the proposal checker accepts for an ability: the wordings of [`variants`], which the templates read,
 /// and the wordings of the oracle text that no template reads ("you" after another player's event, "Then" opening a
 /// sentence, "deals damage equal to its power").
+#[allow(clippy::too_many_lines)]
 pub fn written_variants(ability: &Ability) -> Vec<String> {
     // A choice whose chosen objects differ in a quality is worded only with that rule.
     if let Some(texts) = super::r4709_differ::r4709_differ_texts(ability, written_variants) {
@@ -621,6 +625,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     // A permission with riders is worded only as the permission without them and its riders.
     if let Some(mut texts) = super::r401_riders::r401_rider_texts(ability, written_variants) {
         oracle_only::r5523_add_whole(ability, &mut texts);
+        super::r6103_wholes::r6103_add_wholes(ability, &mut texts);
         return texts;
     }
     // An investigation is worded as the Clue tokens it makes.
@@ -644,6 +649,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r5504_look::r5504_wordings(ability, &mut texts);
     super::r5517_wholes::r5517_wordings(ability, &mut texts);
     super::r6008_wholes::r6008_wordings(ability, &mut texts);
+    super::r6102_wholes::r6102_wordings(ability, &mut texts);
     super::r5519_wholes::r5519_whole_texts(ability, &mut texts);
     super::r6003_wholes::r6003_whole_texts(ability, &mut texts);
     super::r5516_actions::r5516_wordings(ability, &mut texts);
@@ -673,6 +679,8 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r5510_own_cost::r5510_wordings(ability, written_variants, &mut texts);
     super::r5510_wholes::r5510_add_wholes(ability, &mut texts);
     super::r6018_wholes::r6018_add_wholes(ability, &mut texts);
+    super::r6100_wholes::r6100_add_wholes(ability, &mut texts);
+    super::r6103_wholes::r6103_add_wholes(ability, &mut texts);
     super::r5510_fortified::r5510_wordings(&mut texts);
     super::r5505_convert::r5505_convert_wordings(ability, &mut texts);
     super::r5506_costs::r5506_wordings(ability, &mut texts);
@@ -3571,6 +3579,11 @@ impl Writer<'_> {
                 kind,
                 up_to,
             } => super::un34_stickers::un34_put_text(who, on, *kind, *up_to)?,
+            Effect::ChooseValue {
+                who: Ref::You,
+                kind: crate::effect::ValueKind::Letter,
+                bind,
+            } if bind == super::r6101_stickers::LETTER => "choose a letter".to_owned(),
             Effect::Either { first, second } => self.dk1c5_either_text(first, second)?,
             Effect::Venture { who, undercity } => {
                 let into = if *undercity {

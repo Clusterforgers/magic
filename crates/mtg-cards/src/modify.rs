@@ -113,6 +113,15 @@ pub enum Modification {
         /// The name of the word written.
         to: String,
     },
+    /// Changes the text (layer 3, CR 612): every instance of the creature type the resolution chose under `from` becomes
+    /// the creature type `to` ("replacing all instances of one creature type with Vampire"). Only an effect of a spell or
+    /// ability has it.
+    ChangeTextChosenTo {
+        /// The name of the word replaced.
+        from: String,
+        /// The creature type written.
+        to: String,
+    },
     /// Adds the creature type the source chose as it entered (layer 4): "is the chosen type in addition to its
     /// other types". Only a static ability has it; with no type chosen it changes nothing.
     AddChosenSubtype,
@@ -223,7 +232,9 @@ impl Modification {
             | Modification::ThisAbility
             | Modification::SetLoyalty(_) => Some("1"),
             Modification::SetController(_) => Some("2"),
-            Modification::ChangeTextChosen { .. } => Some("3"),
+            Modification::ChangeTextChosen { .. } | Modification::ChangeTextChosenTo { .. } => {
+                Some("3")
+            }
             Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
@@ -487,6 +498,9 @@ pub enum CastRider {
     /// The spell is exiled rather than put into its owner's graveyard from the stack: "If a spell cast this way would be
     /// put into your graveyard, exile it instead."
     ExiledInstead,
+    /// A spell that is an Equipment gains the ability, which its permanent keeps: "When you cast an Equipment spell this
+    /// way, it gains "When this Equipment enters, attach it to target creature you control."".
+    R6103EquipmentGains(std::sync::Arc<crate::ability::Ability>),
 }
 
 /// Which mana may pay for a cast through a permission.

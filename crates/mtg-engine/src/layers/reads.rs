@@ -114,7 +114,8 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::SetLandTypesChosen(_)
         | Wanted::SetLandTypesNthChosen(_)
         | Wanted::AddLandTypeChosen(_)
-        | Wanted::ChangeTextChosen { .. } => {
+        | Wanted::ChangeTextChosen { .. }
+        | Wanted::ChangeTextChosenTo { .. } => {
             Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES)
         }
         Wanted::SetColors(_)
@@ -201,6 +202,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::AddCreatureTypeChosen(_)
         | Wanted::AddLandTypeChosen(_)
         | Wanted::ChangeTextChosen { .. }
+        | Wanted::ChangeTextChosenTo { .. }
         | Wanted::SetColorsChosen(_)
         | Wanted::AddChosenSubtype
         | Wanted::SetChosenColor
@@ -375,6 +377,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::HasName
         | Pred::BlockedThisTurn(_)
         | Pred::DealtDamageThisTurn(_)
+        | Pred::R6100DamagedThisGameBy(_)
         | Pred::EnteredSinceLastTurn(_) => Traits::NONE,
         Pred::WasCast { by, .. } => by.as_ref().map_or(Traits::NONE, reads_of_ref),
         Pred::DidThisTurn { by, to, .. } => by
@@ -437,6 +440,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::Test { left, right, .. } => reads_of_amount(left).or(reads_of_amount(right)),
         Pred::Not(inner) => reads_of_pred(inner),
         Pred::Targeting(inner)
+        | Pred::R6104TargetsOnly(inner)
         | Pred::HasAttached(inner)
         | Pred::FromSource(inner)
         | Pred::AbilityFrom(inner) => reads_of_selector(inner),
@@ -459,6 +463,7 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         StatKind::R374Bushido | StatKind::R374Toxic => Traits::KEYWORDS,
         StatKind::ManaValue
         | StatKind::Loyalty
+        | StatKind::R6104LifePaid
         | StatKind::ManaSpent
         | StatKind::ColorsSpent
         | StatKind::TreasureManaSpent
@@ -498,6 +503,9 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::TurnNumber
         | Amount::Stickers { .. }
         | Amount::StickerVowels
+        | Amount::NameStickers { .. }
+        | Amount::StickerLetters { .. }
+        | Amount::StickerStats { .. }
         | Amount::TallyLastTurn { .. }
         | Amount::CastSameNameThisGame(_)
         | Amount::CycledSameNameThisGame(_)

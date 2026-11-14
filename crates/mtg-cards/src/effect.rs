@@ -111,6 +111,9 @@ pub enum PerKind {
     /// Put a counter of that kind, a +1/+1 counter instead, or nothing ("you may put your choice of a +1/+1 counter or a
     /// counter of that kind on ~").
     MayPlusOneInstead,
+    /// Put a counter of that kind or nothing ("choose a counter on it. You may put an additional counter of that kind on
+    /// that permanent").
+    May,
 }
 
 /// Where a moved object goes.
@@ -440,6 +443,8 @@ pub enum ValueKind {
     ColorOrBasicLandType,
     /// A word of the kind of the one chosen under this name, other than it: the word a text change writes ("with another").
     LikeChosen(String),
+    /// A letter of the English alphabet ("choose a letter"), remembered as a word of one lowercase letter.
+    Letter,
 }
 
 /// One instruction of a spell or ability. Optional fields have defaults: `who` is the
@@ -1014,6 +1019,18 @@ pub enum Effect {
         /// kind of counters on ~"); `of` is then `Triggering`.
         #[serde(default, skip_serializing_if = "is_false")]
         put: bool,
+        /// A holder gets a kind only when it holds no counter of that kind ("if it doesn't have a counter of that kind
+        /// on it").
+        #[serde(default, skip_serializing_if = "is_false")]
+        absent_only: bool,
+    },
+    /// Puts one counter on `on` of a kind chosen at random among `among` that it holds none of ("choose a kind of counter
+    /// at random that this creature doesn't have on it from among ..."); nothing when it holds every one.
+    PutRandomCounter {
+        /// Where the counter goes.
+        on: Ref,
+        /// The kinds offered.
+        among: Vec<CounterKind>,
     },
     /// Taps permanents.
     Tap {
@@ -1496,6 +1513,10 @@ pub enum Effect {
         /// The cards lie face down and no player may look at them (CR 406.3).
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         sealed: bool,
+        /// The cards come from the bottom of the library, the bottom card first ("exile that many cards from the bottom
+        /// of your library").
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        bottom: bool,
     },
     /// The player may cast a card during the resolution, without waiting for priority (CR 608.2g); `otherwise` is
     /// done when they do not.
@@ -1967,6 +1988,10 @@ pub enum Effect {
         /// target").
         #[serde(default, skip_serializing_if = "Option::is_none")]
         each_target: Option<Selector>,
+        /// With `each_target`, each other player the spell could target gets a copy too ("for each other permanent or
+        /// player the spell could target").
+        #[serde(default, skip_serializing_if = "is_false")]
+        each_player: bool,
     },
     /// Copies activated and triggered abilities on the stack (CR 707.10): each copy is put on the stack above the ability,
     /// not activated and not triggered, with the choices of the original.
@@ -1979,6 +2004,11 @@ pub enum Effect {
         /// The controller of the copy may choose new targets for it.
         #[serde(default, skip_serializing_if = "is_false")]
         new_targets: bool,
+        /// In place of `count`, one copy of an ability whose targets are all one object for each other object this
+        /// selects that the ability could target, each copy targeting a different one ("copy that ability for each other
+        /// creature you control that ability could target").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        each_target: Option<Selector>,
     },
     /// Changes the targets of spells and abilities on the stack (CR 115.7); the controller of the effect chooses the new
     /// ones, each judged as a target of the spell or ability for its own controller.
@@ -2392,6 +2422,7 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
             count,
             bind: IMPULSE.to_owned(),
             sealed: false,
+            bottom: false,
         },
         Effect::Rule {
             rule: GameRule::MayCast(CastPermission {

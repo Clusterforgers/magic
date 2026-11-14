@@ -335,6 +335,45 @@ fn equip() -> SpendFilter {
     }
 }
 
+/// The power-up abilities of any source.
+fn r6103_power_up() -> SpendFilter {
+    SpendFilter {
+        facts: vec![SpendFact::R6103PowerUp],
+        ..SpendFilter::default()
+    }
+}
+
+/// The spells with exactly three colors.
+fn r6103_three_colors() -> SpendFilter {
+    SpendFilter {
+        facts: vec![SpendFact::R6103ThreeColors],
+        ..SpendFilter::default()
+    }
+}
+
+/// The r61-03 uses after "Spend this mana only to": "activate power-up abilities", "cast spells with exactly three
+/// colors".
+fn r6103_uses(r: &mut Reader<'_>) -> Option<Vec<SpendOn>> {
+    if r.words("activate power-up abilities") {
+        return Some(vec![SpendOn::Ability(r6103_power_up())]);
+    }
+    r.words("cast spells with exactly three colors")
+        .then(|| vec![SpendOn::Spell(r6103_three_colors())])
+}
+
+/// The sentence of an r61-03 use; `None` for any other uses.
+fn r6103_text(only: &[SpendOn]) -> Option<String> {
+    match only {
+        [SpendOn::Ability(filter)] if *filter == r6103_power_up() => {
+            Some("Spend this mana only to activate power-up abilities".to_owned())
+        }
+        [SpendOn::Spell(filter)] if *filter == r6103_three_colors() => {
+            Some("Spend this mana only to cast spells with exactly three colors".to_owned())
+        }
+        _ => None,
+    }
+}
+
 /// "activate an equip ability" or "activate equip abilities" after the spells.
 fn equip_abilities(r: &mut Reader<'_>) -> Option<SpendOn> {
     r.attempt(|r| {
@@ -363,6 +402,9 @@ pub(super) fn only(r: &mut Reader<'_>) -> Option<Vec<SpendOn>> {
             return (r.symbol()? == "X").then(|| vec![SpendOn::CostWithX]);
         }
         r.need("to")?;
+        if let Some(uses) = r6103_uses(r) {
+            return Some(uses);
+        }
         if r.words("activate abilities") {
             return Some(vec![SpendOn::abilities()]);
         }
@@ -550,7 +592,9 @@ fn qualifier_text(filter: &SpendFilter) -> String {
             | SpendFact::FaceDown
             | SpendFact::Monocolored
             | SpendFact::Equip
-            | SpendFact::Disturb => {}
+            | SpendFact::Disturb
+            | SpendFact::R6103PowerUp
+            | SpendFact::R6103ThreeColors => {}
             SpendFact::FromExile => text.push_str(" from exile"),
             SpendFact::NotFromHand => text.push_str(" from anywhere other than your hand"),
             SpendFact::Devoid => text.push_str(" with devoid"),
@@ -598,6 +642,9 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
         return Some(text);
     }
     if let Some(text) = r405_text(only) {
+        return Some(text);
+    }
+    if let Some(text) = r6103_text(only) {
         return Some(text);
     }
     if left_unsaid(only) {
@@ -744,10 +791,15 @@ fn r405_text(only: &[SpendOn]) -> Option<String> {
 
 /// Whether a filter of spells holds a fact only `text` words as a use of its own (an equip ability, a disturb cost).
 fn unworded(filter: &SpendFilter) -> bool {
-    filter
-        .facts
-        .iter()
-        .any(|fact| matches!(fact, SpendFact::Equip | SpendFact::Disturb))
+    filter.facts.iter().any(|fact| {
+        matches!(
+            fact,
+            SpendFact::Equip
+                | SpendFact::Disturb
+                | SpendFact::R6103PowerUp
+                | SpendFact::R6103ThreeColors
+        )
+    })
 }
 
 /// Whether two kinds of spell are named one spell at a time: "a creature spell of the chosen type or ...", "an instant

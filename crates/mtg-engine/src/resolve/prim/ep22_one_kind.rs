@@ -12,14 +12,28 @@ pub(super) fn ep22_pick(
     cx: &Cx<'_>,
     kinds: &[(CounterKind, u32)],
 ) -> Result<Result<Vec<(CounterKind, u32)>, Run>, ResolveError> {
+    let picked = r6102_pick(cx, kinds, false)?;
+    Ok(picked.map(|(kinds, _)| kinds))
+}
+
+/// The kinds left after a pick and the number of answers the pick took.
+pub(super) type Picked = (Vec<(CounterKind, u32)>, usize);
+
+/// The one kind picked and how many answers the pick took, or the question; with `more`, answers after the pick belong
+/// to a question that follows it (`PerKind::May`).
+pub(super) fn r6102_pick(
+    cx: &Cx<'_>,
+    kinds: &[(CounterKind, u32)],
+    more: bool,
+) -> Result<Result<Picked, Run>, ResolveError> {
     let mut answers = cx.journal().iter();
     if kinds.len() <= 1 {
-        if answers.next().is_some() {
+        if !more && answers.next().is_some() {
             return Err(ResolveError::Invalid(
                 "an answer was given to a choice of a kind of counter that was not asked".into(),
             ));
         }
-        return Ok(Ok(kinds.to_vec()));
+        return Ok(Ok((kinds.to_vec(), 0)));
     }
     let player = cx.scope.controller;
     let index = match answers.next() {
@@ -31,12 +45,12 @@ pub(super) fn ep22_pick(
             )));
         }
     };
-    if answers.next().is_some() {
+    if !more && answers.next().is_some() {
         return Err(ResolveError::Invalid(
             "an answer was given to a choice of a kind of counter that was not asked".into(),
         ));
     }
-    Ok(Ok(kinds.get(index).cloned().into_iter().collect()))
+    Ok(Ok((kinds.get(index).cloned().into_iter().collect(), 1)))
 }
 
 /// "Choose a counter.": the kinds held.
@@ -157,6 +171,45 @@ mod tests {
         #[case] expected: Option<Changes>,
     ) {
         assert_eq!(run_with(&effect(holder), answers).unwrap(), expected);
+    }
+
+    /// A kind of `of` put on `on`, with the r61-02 flags.
+    fn r6102_effect(on: &str, of: &str, flags: &str) -> String {
+        format!(
+            r#"{{"PutCountersOf":{{"on":{{"Each":[{{"Named":"{on}"}}]}},"of":{{"Each":[{{"Named":"{of}"}}]}},"each":1,"one_kind":true{flags}}}}}"#
+        )
+    }
+
+    #[rstest]
+    #[case::a_new_kind("Cat", "Wolf", &[0], Some(put("Cat", "+1/+1")))]
+    #[case::a_new_kind_of_two("Bear", "Wolf", &[1], Some(put("Bear", "charge")))]
+    #[case::a_kind_it_has("Wolf", "Wolf", &[0], Some(vec![]))]
+    #[case::its_only_kind("Cat", "Cat", &[], Some(vec![]))]
+    fn r6102_only_a_holder_without_the_kind_gets_one(
+        #[case] on: &str,
+        #[case] of: &str,
+        #[case] answers: &[usize],
+        #[case] expected: Option<Changes>,
+    ) {
+        let json = r6102_effect(on, of, r#","absent_only":true"#);
+        assert_eq!(run_with(&json, answers).unwrap(), expected);
+    }
+
+    #[rstest]
+    #[case::asks_the_kind("Wolf", &[], None)]
+    #[case::then_asks_whether("Wolf", &[1], None)]
+    #[case::puts_it("Wolf", &[1, 0], Some(put("Wolf", "charge")))]
+    #[case::declines("Wolf", &[0, 1], Some(vec![]))]
+    #[case::one_kind_asks_whether("Cat", &[], None)]
+    #[case::one_kind_put("Cat", &[0], Some(put("Cat", "shield")))]
+    #[case::none_held_asks_nothing("Bear", &[], Some(vec![]))]
+    fn r6102_the_controller_may_put_another_of_the_kind(
+        #[case] holder: &str,
+        #[case] answers: &[usize],
+        #[case] expected: Option<Changes>,
+    ) {
+        let json = r6102_effect(holder, holder, r#","per_kind":"May""#);
+        assert_eq!(run_with(&json, answers).unwrap(), expected);
     }
 
     #[rstest]

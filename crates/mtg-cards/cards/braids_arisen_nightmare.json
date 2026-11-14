@@ -1,0 +1,96 @@
+{
+  "oracle_id": "e0445c80-fa53-4c3e-881e-940e9fce7f57",
+  "name": "Braids, Arisen Nightmare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Braids, Arisen Nightmare",
+      "oracle_fingerprint": "98016e0fe28756770e5b5737e911c13c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "SacrificeUpTo": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    }
+                  ],
+                  "count": 1,
+                  "as": "it"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "it~moved" }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [
+                    {
+                      "RepeatEach": {
+                        "over": "Opponents",
+                        "as": "foe",
+                        "effects": [
+                          {
+                            "Choose": {
+                              "who": { "Bound": "foe" },
+                              "from": {
+                                "Each": [
+                                  { "ControlledBy": { "Bound": "foe" } },
+                                  { "SharesType": { "Bound": "it" } }
+                                ]
+                              },
+                              "count": { "min": 0, "max": 1 },
+                              "as": "pick"
+                            }
+                          },
+                          { "Bind": { "what": { "Bound": "pick" }, "as": "picks", "adds": true } },
+                          {
+                            "If": {
+                              "condition": {
+                                "Compare": {
+                                  "left": { "CountOf": { "of": { "Bound": "pick" }, "filter": [] } },
+                                  "op": "Eq",
+                                  "right": 0
+                                }
+                              },
+                              "then": [
+                                {
+                                  "Bind": {
+                                    "what": { "Bound": "foe" },
+                                    "as": "decliners",
+                                    "adds": true
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "Sacrifice": {
+                        "who": "Opponents",
+                        "filter": [{ "Is": { "Bound": "picks" } }]
+                      }
+                    },
+                    { "LoseLife": { "who": { "Bound": "decliners" }, "amount": 2 } },
+                    { "Draw": { "count": { "Players": { "Bound": "decliners" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

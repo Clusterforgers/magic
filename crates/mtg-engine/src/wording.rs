@@ -55,6 +55,7 @@ fn stat_word(stat: StatKind) -> &'static str {
         StatKind::R374ColorSet => "color pairs",
         StatKind::Subtypes => "subtypes",
         StatKind::R6018PermanentTypes => "permanent types",
+        StatKind::R6104LifePaid => "life paid to activate it",
     }
 }
 

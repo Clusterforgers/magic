@@ -35,6 +35,16 @@ use crate::effects::{Duration, lasts};
 use crate::error::EngineError;
 use crate::fold::invalid;
 use crate::object::{GameObject, ObjectKind, ObjectRef};
+
+/// A spend permission in force: the player, how the mana may be spent, the spells and the abilities' sources it is for,
+/// and the rule's source, which `This` in those selectors names.
+type SpendManaAsHeld = (
+    PlayerId,
+    mtg_cards::modify::SpendAs,
+    Option<Selector>,
+    Option<Selector>,
+    Option<ObjectRef>,
+);
 use crate::resolve::{ResolveError, Scope};
 use crate::state::{GameState, Stage, Tally};
 use crate::zones::Zone;
@@ -834,12 +844,7 @@ pub(crate) struct RulesInForce {
     /// The players whose opponents' spells and abilities can't make them discard.
     spared_discard: BTreeSet<PlayerId>,
     /// The players who may spend mana as though it were of any color or type, with the spells it is for.
-    spend_mana_as: Vec<(
-        PlayerId,
-        mtg_cards::modify::SpendAs,
-        Option<Selector>,
-        Option<Selector>,
-    )>,
+    spend_mana_as: Vec<SpendManaAsHeld>,
     reveal_top: BTreeSet<PlayerId>,
     reveal_hand: BTreeSet<PlayerId>,
     /// Who controls each player while they search their library, the latest rule last.
@@ -1332,7 +1337,7 @@ impl RulesInForce {
                 self.spend_mana_as.extend(
                     players
                         .iter()
-                        .map(|p| (*p, *spend_as, spells.clone(), abilities.clone())),
+                        .map(|p| (*p, *spend_as, spells.clone(), abilities.clone(), source)),
                 );
             }
             Rule::DrawLimit(players, most) => {
@@ -2847,19 +2852,20 @@ pub(crate) fn ep24_spend_as(
     spell: Option<ObjectId>,
     source: Option<ObjectId>,
 ) -> SpendAs {
-    let selects = |selector: &Selector, id: ObjectId| {
-        state.object(id).is_some_and(|object| {
-            let reference = object.reference();
-            Scope::announcing(state, player, reference)
-                .selects(selector, reference)
-                .unwrap_or(false)
-        })
-    };
     let mut found = SpendAs::Normal;
-    for (who, spend_as, spells, abilities) in &state.rules().spend_mana_as {
+    for (who, spend_as, spells, abilities, rule_source) in &state.rules().spend_mana_as {
         if *who != player {
             continue;
         }
+        // "This" in the selector is the rule's source ("to activate ~'s abilities"), else the object judged.
+        let selects = |selector: &Selector, id: ObjectId| {
+            state.object(id).is_some_and(|object| {
+                let reference = object.reference();
+                Scope::announcing(state, player, rule_source.unwrap_or(reference))
+                    .selects(selector, reference)
+                    .unwrap_or(false)
+            })
+        };
         let applies = match (spells, spell) {
             // Only to activate the abilities of the permanents `abilities` selects ("to activate abilities of
             // creatures you control"): no spell.

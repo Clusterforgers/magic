@@ -996,11 +996,19 @@ impl<'a> Walker<'a> {
                 self.uses("Pred", "BlockedThisTurn");
                 self.at("BlockedThisTurn", |w| w.selector(with));
             }
+            Pred::R6100DamagedThisGameBy(by) => {
+                self.uses("Pred", "R6100DamagedThisGameBy");
+                self.at("R6100DamagedThisGameBy", |w| w.selector(by));
+            }
             Pred::DealtDamageThisTurn(to) => {
                 self.uses("Pred", "DealtDamageThisTurn");
                 self.at("DealtDamageThisTurn", |w| w.selector(to));
             }
             Pred::Targeting(inner) | Pred::HasAttached(inner) | Pred::AbilityFrom(inner) => {
+                self.selector(inner);
+            }
+            Pred::R6104TargetsOnly(inner) => {
+                self.uses("Pred", "R6104TargetsOnly");
                 self.selector(inner);
             }
             Pred::Modified
@@ -1380,6 +1388,7 @@ impl<'a> Walker<'a> {
             StatKind::R374ColorSet => "R374ColorSet",
             StatKind::R4700ChosenColors => "R4700ChosenColors",
             StatKind::R6018PermanentTypes => "R6018PermanentTypes",
+            StatKind::R6104LifePaid => "R6104LifePaid",
             _ => return,
         };
         self.uses("Stat", name);
@@ -1465,6 +1474,27 @@ impl<'a> Walker<'a> {
                 self.at("on", |w| w.reference(on, Kind::Object));
             }
             Amount::StickerVowels => self.uses("Amount", "StickerVowels"),
+            Amount::NameStickers { on, .. } => {
+                self.uses("Amount", "NameStickers");
+                self.at("on", |w| w.reference(on, Kind::Object));
+            }
+            Amount::StickerStats { on, stat } => {
+                self.uses("Amount", "StickerStats");
+                if !matches!(
+                    stat,
+                    crate::value::StatKind::Power | crate::value::StatKind::Toughness
+                ) {
+                    self.problem("a sticker has only a power and a toughness");
+                }
+                self.at("on", |w| w.reference(on, Kind::Object));
+            }
+            Amount::StickerLetters { on, letter } => {
+                self.uses("Amount", "StickerLetters");
+                if letter.len() != 1 || !letter.chars().all(|c| c.is_ascii_lowercase()) {
+                    self.problem("a letter is one of a to z, lowercase");
+                }
+                self.at("on", |w| w.reference(on, Kind::Object));
+            }
             Amount::CastSameNameThisGame(who) => self.player_amount("CastSameNameThisGame", who),
             Amount::CycledSameNameThisGame(who) => {
                 self.player_amount("CycledSameNameThisGame", who);
@@ -2189,6 +2219,7 @@ impl<'a> Walker<'a> {
                 crate::modify::CastRider::GainsThisTurn(_) => "GainsThisTurn",
                 crate::modify::CastRider::AlsoSubtype(_) => "AlsoSubtype",
                 crate::modify::CastRider::ExiledInstead => "ExiledInstead",
+                crate::modify::CastRider::R6103EquipmentGains(_) => "R6103EquipmentGains",
             };
             self.uses("CastRider", tag);
         }
@@ -2813,6 +2844,7 @@ impl<'a> Walker<'a> {
             | Modification::AddCreatureTypeChosen(_)
             | Modification::AddLandTypeChosen(_)
             | Modification::ChangeTextChosen { .. }
+            | Modification::ChangeTextChosenTo { .. }
             | Modification::SetColorsChosen(_)
             | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
@@ -3540,6 +3572,23 @@ impl Walker<'_> {
         if except.contains(&Modification::ThisAbility) {
             self.problem(THIS_ABILITY_BECOMES_ONLY);
         }
+        for (i, modification) in except.iter().enumerate() {
+            self.at(format!("except[{i}]"), |w| {
+                w.modification(modification);
+                if matches!(modification, Modification::SetPT { power, toughness }
+                    if !matches!((power, toughness), (Amount::Fixed(_), Amount::Fixed(_))))
+                {
+                    w.uses("Copy", "Except.SetPT.Amount");
+                } else if !crate::CardDefinition::new("").except(modification) {
+                    w.uses("Copy", &format!("Except.{}", tag_of(modification)));
+                }
+            });
+        }
+    }
+
+    /// The exceptions of a permanent entering as a copy: base power and toughness set by amounts ("equal to this
+    /// creature's power and toughness") are worked out as it enters, a capability of their own.
+    fn r6104_entering_copy_exceptions(&mut self, except: &[Modification]) {
         for (i, modification) in except.iter().enumerate() {
             self.at(format!("except[{i}]"), |w| {
                 w.modification(modification);
@@ -4886,15 +4935,33 @@ impl Walker<'_> {
                 }
             }
             Effect::PutCountersOf {
-                on, of, each, put, ..
+                on,
+                of,
+                each,
+                put,
+                per_kind,
+                absent_only,
+                ..
             } => {
                 if *put && *of != Ref::Triggering {
                     w.problem("the counters a triggering event put are read from `Triggering`");
+                }
+                if *absent_only {
+                    w.uses("Effect", "PutCountersOf.AbsentOnly");
+                }
+                if *per_kind == Some(crate::effect::PerKind::May) {
+                    w.uses("Effect", "PutCountersOf.May");
                 }
                 w.at("on", |w| w.reference(on, Kind::Either));
                 w.at("of", |w| w.reference(of, Kind::Either));
                 if let Some(each) = each {
                     w.at("each", |w| w.amount(each));
+                }
+            }
+            Effect::PutRandomCounter { on, among } => {
+                w.at("on", |w| w.reference(on, Kind::Object));
+                if among.len() < 2 {
+                    w.problem("a counter chosen at random is chosen among two or more kinds");
                 }
             }
             Effect::SpellEntersWith { spell, count } => {
@@ -4939,6 +5006,7 @@ impl Walker<'_> {
                 count,
                 except,
                 each_target,
+                each_player,
                 ..
             } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
@@ -4949,6 +5017,12 @@ impl Walker<'_> {
                         w.problem("a copy for each other target is one copy for each, with no count of its own");
                     }
                     w.at("each_target", |w| w.selector(selector));
+                }
+                if *each_player {
+                    if each_target.is_none() {
+                        w.problem("a copy for each other player is a copy for each other target");
+                    }
+                    w.uses("CopySpell", "EachPlayer");
                 }
             }
             Effect::ChangeTargets { what, to, onto } => {
@@ -4969,9 +5043,21 @@ impl Walker<'_> {
                     (_, None) => {}
                 }
             }
-            Effect::CopyAbility { what, count, .. } => {
+            Effect::CopyAbility {
+                what,
+                count,
+                each_target,
+                ..
+            } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("count", |w| w.amount(count));
+                if let Some(selector) = each_target {
+                    if !count.is_one() {
+                        w.problem("a copy for each other target is one copy for each, with no count of its own");
+                    }
+                    w.uses("CopyAbility", "EachTarget");
+                    w.at("each_target", |w| w.selector(selector));
+                }
             }
             Effect::BecomeCopy {
                 what,
@@ -5636,6 +5722,7 @@ impl Walker<'_> {
                     | Modification::AddCreatureTypeChosen(_)
                     | Modification::AddLandTypeChosen(_)
                     | Modification::ChangeTextChosen { .. }
+                    | Modification::ChangeTextChosenTo { .. }
             )
         }) {
             self.at("mods", |w| {
@@ -6489,10 +6576,11 @@ impl Walker<'_> {
             | ReplaceWhen::Explores { what }
             | ReplaceWhen::Connives { what }
             | ReplaceWhen::Enters { what }
+            | ReplaceWhen::R6105Uncycled { what }
             | ReplaceWhen::BecomesAttached { what } => {
                 self.at("what", |w| w.selector(what));
             }
-            ReplaceWhen::Discarded { what, by } => {
+            ReplaceWhen::Discarded { what, by, .. } => {
                 self.at("what", |w| w.selector(what));
                 if let Some(by) = by {
                     self.at("by", |w| w.reference(by, Kind::Player));
@@ -6713,11 +6801,13 @@ impl Walker<'_> {
             ReplaceBy::IntoLibrary { place, .. }
                 if !matches!(
                     when,
-                    ReplaceWhen::ZoneChange { .. } | ReplaceWhen::Countered { .. }
+                    ReplaceWhen::ZoneChange { .. }
+                        | ReplaceWhen::Countered { .. }
+                        | ReplaceWhen::Discarded { .. }
                 ) || matches!(place, crate::effect::Place::Below(_)) =>
             {
                 self.problem(
-                    "`IntoLibrary` replaces a `ZoneChange` or a `Countered`, on top, bottom or shuffled",
+                    "`IntoLibrary` replaces a `ZoneChange`, a `Countered` or a `Discarded`, on top, bottom or shuffled",
                 );
             }
             ReplaceBy::MoveTo(_)
@@ -6725,6 +6815,7 @@ impl Walker<'_> {
                     when,
                     ReplaceWhen::ZoneChange { .. }
                         | ReplaceWhen::Discarded { .. }
+                        | ReplaceWhen::R6105Uncycled { .. }
                         | ReplaceWhen::Countered { .. }
                 ) =>
             {
@@ -6835,6 +6926,7 @@ impl Walker<'_> {
                 | ReplaceWhen::Destroyed { .. }
                 | ReplaceWhen::Countered { .. }
                 | ReplaceWhen::Discarded { .. }
+                | ReplaceWhen::R6105Uncycled { .. }
                 | ReplaceWhen::Enters { .. }
         );
         match by {
@@ -6843,7 +6935,11 @@ impl Walker<'_> {
             ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::AddAmount(_) if zone_move => {
                 self.problem("a zone change has no number to change");
             }
+            ReplaceBy::R6100AtLeast(_) if !matches!(when, ReplaceWhen::Damage { .. }) => {
+                self.problem("only damage is raised to an amount");
+            }
             ReplaceBy::AddAmount(amount)
+            | ReplaceBy::R6100AtLeast(amount)
             | ReplaceBy::PreventAmount(amount)
             | ReplaceBy::MayAddAmount(amount) => {
                 self.at("amount", |w| w.amount(amount));
@@ -6994,17 +7090,25 @@ impl Walker<'_> {
                 of,
                 except,
                 counters,
+                except_if,
                 ..
             } => {
                 if !enters {
                     self.problem("only an `Enters` event is entered as a copy");
                 }
                 self.at("of", |w| w.selector(of));
-                self.copy_exceptions(except);
+                self.r6104_entering_copy_exceptions(except);
                 for (index, entry) in counters.iter().enumerate() {
                     self.at(format!("counters[{index}]"), |w| {
                         w.amount(&entry.count);
                         w.selector(&entry.of);
+                    });
+                }
+                for (index, entry) in except_if.iter().enumerate() {
+                    self.at(format!("except_if[{index}]"), |w| {
+                        w.uses("Copy", "ExceptIf");
+                        w.selector(&entry.of);
+                        w.r6104_entering_copy_exceptions(&entry.except);
                     });
                 }
             }

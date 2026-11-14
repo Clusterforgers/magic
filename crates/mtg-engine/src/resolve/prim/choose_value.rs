@@ -253,6 +253,9 @@ fn options(kind: &ValueKind) -> Vec<ChoiceOption> {
                 .collect()
         }
         ValueKind::Options(words) => words.iter().cloned().map(ChoiceOption::Label).collect(),
+        ValueKind::Letter => ('a'..='z')
+            .map(|letter| ChoiceOption::Label(letter.to_string()))
+            .collect(),
         ValueKind::CardTypeOf(kinds) => values::CARD_TYPES
             .iter()
             .filter(|kind| kinds.contains(kind))
@@ -334,6 +337,7 @@ fn question(kind: &ValueKind) -> String {
         ValueKind::LikeChosen(_) => "Choose the word to write in its place.".to_owned(),
         ValueKind::CardName(_) => "Choose a card name.".to_owned(),
         ValueKind::Options(words) => format!("Choose {}.", words.join(" or ")),
+        ValueKind::Letter => "Choose a letter.".to_owned(),
         ValueKind::Number(..) => "Choose a number.".to_owned(),
     }
 }
@@ -372,6 +376,11 @@ fn value(kind: &ValueKind, option: &ChoiceOption, like: Option<&Chosen>) -> Opti
                 .map(Chosen::CardType)
         }
         (ValueKind::Options(_), ChoiceOption::Label(word)) => Some(Chosen::Word(word.clone())),
+        (ValueKind::Letter, ChoiceOption::Label(word))
+            if word.len() == 1 && word.chars().all(|c| c.is_ascii_lowercase()) =>
+        {
+            Some(Chosen::Word(word.clone()))
+        }
         _ => None,
     }
 }

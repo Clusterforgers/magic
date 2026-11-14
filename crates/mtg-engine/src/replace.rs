@@ -683,6 +683,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::Countered { what }
         | ReplaceWhen::TurnedFaceUp { what }
         | ReplaceWhen::Discarded { what, .. }
+        | ReplaceWhen::R6105Uncycled { what }
         | ReplaceWhen::BecomesAttached { what } => only_this(what),
         ReplaceWhen::Damage { to, .. } | ReplaceWhen::CountersPut { on: to, .. } => {
             matches!(to, Some(Ref::This))
@@ -780,6 +781,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         ReplaceBy::Half | ReplaceBy::Subtract(_) => {
             matches!(unit, Unit::Counters { .. } | Unit::Damage { .. })
         }
+        ReplaceBy::R6100AtLeast(_) => matches!(unit, Unit::Damage { .. }),
         ReplaceBy::Multiply(_)
         | ReplaceBy::Add(_)
         | ReplaceBy::AddAmount(_)
@@ -822,6 +824,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::Riot
         | ReplaceBy::WithCounterOf(_)
         | ReplaceBy::WithCountersOf { .. }
+        | ReplaceBy::WithKindsOn(_)
         | ReplaceBy::BecomesChoice(_)
         | ReplaceBy::Mill(_)
         | ReplaceBy::AsEnters(_)
@@ -860,6 +863,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::DayIfNeither
                 | ReplaceBy::WithCounterOf(_)
                 | ReplaceBy::WithCountersOf { .. }
+                | ReplaceBy::WithKindsOn(_)
                 | ReplaceBy::EntersPrepared
                 | ReplaceBy::ChooseWord(_)
                 | ReplaceBy::OpponentChooses(_)
@@ -1164,6 +1168,25 @@ impl Pass<'_> {
                 by != hit && chosen.contains(&by) && chosen.contains(&hit)
             }
             (
+                ReplaceWhen::R6105Uncycled { what },
+                Unit::Move {
+                    object,
+                    to: Zone::Graveyard(_),
+                    discard,
+                    ..
+                },
+            ) => {
+                let Some(reference) = self.reference(*object) else {
+                    return Ok(false);
+                };
+                // A cycled card's discard is logged with its `Cycled` in the same batch (`cast`).
+                let cycled = *discard
+                    && self.slots.iter().any(|slot| {
+                        matches!(&slot.item, Item::One(Event::Cycled { object: card, .. }) if card == object)
+                    });
+                !cycled && scope.selects(what, reference)?
+            }
+            (
                 ReplaceWhen::ZoneChange { what, from, to },
                 Unit::Move {
                     object,
@@ -1220,7 +1243,7 @@ impl Pass<'_> {
                 scope.players(who)?.contains(player)
             }
             (
-                ReplaceWhen::Discarded { what, by },
+                ReplaceWhen::Discarded { what, by, effect },
                 Unit::Move {
                     object,
                     to: Zone::Graveyard(_),
@@ -1236,7 +1259,9 @@ impl Pass<'_> {
                     (Some(by), Some((player, _))) => scope.players(by)?.contains(&player),
                     (Some(_), None) => false,
                 };
-                cause_fits && scope.selects(what, reference)?
+                // A discard to pay a cost or for the hand size is no effect's (Library of Leng ruling).
+                let effect_fits = !*effect || self.putter.is_some_and(|(_, resolving)| resolving);
+                cause_fits && effect_fits && scope.selects(what, reference)?
             }
             (
                 ReplaceWhen::Destroyed { what },
@@ -3117,6 +3142,12 @@ impl Pass<'_> {
                 }
                 self.enter_with_changes(at, object, controller, mods, &applied)?;
             }
+            ReplaceBy::WithKindsOn(of) => {
+                for kind in self.r6102_kinds_on(candidate, of)? {
+                    let one = mtg_cards::value::Amount::Fixed(1);
+                    self.enter_with_counters(at, candidate, object, &kind, &one, &applied)?;
+                }
+            }
             ReplaceBy::Tribute(count) => {
                 if let Asked::Ask(decision) =
                     self.tribute(at, candidate, object, controller, *count, &applied)?
@@ -3186,12 +3217,18 @@ impl Pass<'_> {
                 until_end_of_turn,
                 must,
                 counters,
+                except_if,
             } => {
-                let copy =
-                    match self.copies(candidate.object, controller, object, (of, *must), except)? {
-                        Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
-                        Asked::Got(copy) => copy,
-                    };
+                let copy = match self.copies(
+                    candidate.object,
+                    controller,
+                    object,
+                    (of, *must),
+                    (except, except_if),
+                )? {
+                    Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
+                    Asked::Got(copy) => copy,
+                };
                 if let Some(mut copy) = copy {
                     copy.until_end_of_turn = *until_end_of_turn;
                     // "Enter tapped as a copy": only the copy is tapped.
@@ -3376,7 +3413,7 @@ impl Pass<'_> {
         controller: PlayerId,
         entering: ObjectId,
         (of, must): (&Selector, bool),
-        except: &[Modification],
+        (except, except_if): (&[Modification], &[mtg_cards::trigger::CopyExceptIf]),
     ) -> Result<Asked<Option<BecameCopy>>, EngineError> {
         let scope = Scope::announcing(self.state, controller, source);
         let options: Vec<ObjectId> = scope
@@ -3433,8 +3470,15 @@ impl Pass<'_> {
         let of = original.reference();
         let mut values = copiable_values(self.state, of, None)
             .ok_or_else(|| Self::invalid(format!("{of:?} cannot be copied")))?;
-        for modification in except {
-            if !values.except(modification) {
+        let mut applying: Vec<&Modification> = except.iter().collect();
+        for entry in except_if {
+            if scope.selects(&entry.of, of)? {
+                applying.extend(&entry.except);
+            }
+        }
+        for modification in applying {
+            let modification = r6104_worked_out(&scope, modification)?;
+            if !values.except(&modification) {
                 return Err(Self::invalid(format!(
                     "{modification:?} is no exception of a copy effect"
                 )));
@@ -3447,6 +3491,7 @@ impl Pass<'_> {
             until_end_of_turn: false,
             until_next_turn_of: None,
             attached_by: None,
+            r6104_while_tapped: None,
         })))
     }
 
@@ -3515,6 +3560,31 @@ impl Pass<'_> {
     }
 
     /// Adds the event that puts `count` counters of the kind on the permanent `object` becomes, after its enter event at `at`.
+    /// The kinds of counter the objects `of` names hold now, read from the source of the replacement, each once.
+    fn r6102_kinds_on(
+        &self,
+        candidate: &Candidate,
+        of: &mtg_cards::refs::Ref,
+    ) -> Result<Vec<CounterKind>, EngineError> {
+        let scope = Scope::announcing(self.state, candidate.controller, candidate.object);
+        let mut kinds: Vec<CounterKind> = Vec::new();
+        for named in scope.refs(of)? {
+            let Some(holder) = named
+                .object()
+                .and_then(|o| self.state.object(o.id))
+                .and_then(|o| o.permanent())
+            else {
+                continue;
+            };
+            for (kind, n) in holder.counters() {
+                if n > 0 && !kinds.contains(kind) {
+                    kinds.push(kind.clone());
+                }
+            }
+        }
+        Ok(kinds)
+    }
+
     fn enter_with_counters(
         &mut self,
         at: usize,
@@ -3910,6 +3980,28 @@ fn zone_word(zone: Zone) -> &'static str {
 
 mod day;
 mod r304_as_enters;
+
+/// An exception of a copy as it enters with its base power and toughness worked out now ("its power and toughness are
+/// equal to this creature's power and toughness", CR 707.9b): the amounts are read before the copy begins.
+fn r6104_worked_out(
+    scope: &Scope<'_>,
+    modification: &Modification,
+) -> Result<Modification, EngineError> {
+    let Modification::SetPT { power, toughness } = modification else {
+        return Ok(modification.clone());
+    };
+    let worked = |amount: &Amount| -> Result<Amount, EngineError> {
+        let value = scope
+            .amount(amount)
+            .map_err(|error| Pass::invalid(format!("{amount:?} of a copy: {error:?}")))?;
+        Ok(Amount::Fixed(i32::try_from(value).unwrap_or(i32::MAX)))
+    };
+    Ok(Modification::SetPT {
+        power: worked(power)?,
+        toughness: worked(toughness)?,
+    })
+}
+
 #[cfg(test)]
 mod r304_skip;
 pub(crate) mod r406_actions;

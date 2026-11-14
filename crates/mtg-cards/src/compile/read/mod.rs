@@ -285,6 +285,11 @@ mod r6003_wholes;
 mod r6007_wholes;
 mod r6008_wholes;
 mod r6018_wholes;
+mod r6100_atoms;
+mod r6100_wholes;
+mod r6101_stickers;
+mod r6102_wholes;
+mod r6103_wholes;
 mod r6a_effects;
 mod r6a_more;
 mod r6a_wordings;
@@ -639,10 +644,22 @@ const MEANINGFUL_WORDS: [&str; 6] = [
 /// Reads a clause like `clause`, with what the face itself says (`Own`).
 #[allow(clippy::too_many_lines)]
 pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
+    if let Some(found) = render::r6105_read_whole(text) {
+        return Some(found);
+    }
     if let Some(found) = r6008_wholes::r6008_read(text) {
         return Some(found);
     }
+    if let Some(found) = r6102_wholes::r6102_read(text) {
+        return Some(found);
+    }
     if let Some(found) = r6018_wholes::r6018_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r6100_wholes::r6100_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r6103_wholes::r6103_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r5517_wholes::r5517_read(text) {
@@ -730,6 +747,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = render::r6001_read_whole(text) {
+        return Some(found);
+    }
+    if let Some(found) = render::r6104_read_whole(text) {
         return Some(found);
     }
     if let Some(found) =

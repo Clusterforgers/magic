@@ -183,13 +183,24 @@ pub(super) fn did_happened(
         Event::Unattached { object } => found.push(of(Action::Unattached, *object)),
         Event::Paired { object, .. } => found.push(of(Action::Paired, *object)),
         Event::Regenerated { object } => found.push(of(Action::Regenerated, *object)),
-        Event::Scried(scried) => found.push(Happened::Did {
-            action: Action::Scried,
-            player: Some(scried.player),
-            object: None,
-            ability: None,
-            amount: u32::try_from(scried.top.len() + scried.bottom.len()).unwrap_or(u32::MAX),
-        }),
+        Event::Scried(scried) => {
+            found.push(Happened::Did {
+                action: Action::Scried,
+                player: Some(scried.player),
+                object: None,
+                ability: None,
+                amount: u32::try_from(scried.top.len() + scried.bottom.len()).unwrap_or(u32::MAX),
+            });
+            if !scried.bottom.is_empty() {
+                found.push(Happened::Did {
+                    action: Action::R6103ScriedToBottom,
+                    player: Some(scried.player),
+                    object: None,
+                    ability: None,
+                    amount: u32::try_from(scried.bottom.len()).unwrap_or(u32::MAX),
+                });
+            }
+        }
         Event::Surveilled(surveilled) => {
             found.push(did(Action::Surveilled, Some(surveilled.player), None));
         }
@@ -430,7 +441,7 @@ pub(super) fn matching_did(
     subjects.extend(reference.map(Target::Object));
     let mut cause = counted(state, subjects, *amount);
     // "Copy that ability": the ability activated did it (`Ref::Dealer`), as the spell or ability that targets does.
-    cause.source = ability.and_then(|id| state.object(id).map(GameObject::reference));
+    cause.source = *ability;
     Some(cause)
 }
 
@@ -523,7 +534,9 @@ fn activated(
             action: Action::ActivatedWithoutTap,
             player: Some(player),
             object: Some(source),
-            ability: activated_on_stack(post, source, index, origin),
+            ability: activated_on_stack(post, source, index, origin)
+                .and_then(|id| post.object(id))
+                .map(GameObject::reference),
             amount: 0,
         });
     // A mana ability of a shape the payment runs logs its activation as `ManaAbilityActivated`, and this event stands
@@ -549,6 +562,10 @@ fn activated(
         .as_deref()
         .is_some_and(|rules| matches!(rules, Ability::Loyalty { .. }));
     let removed = r5508_loyalty_removed(post, rules.as_deref(), on_stack);
+    // What the cost sacrificed is read from the ability on the stack after the activation.
+    let sacrificing = on_stack
+        .and_then(|id| post.object(id))
+        .is_some_and(crate::r6104_activation_facts::r6104_paid_by_sacrifice);
     let eternalize = matches!(
         ability_reader::keyword_adding(pre, address),
         Some(mtg_cards::keyword::Keyword::Eternalize(_) | mtg_cards::keyword::Keyword::Embalm(_))
@@ -557,12 +574,15 @@ fn activated(
         .into_iter()
         .chain(kinds)
         .chain(eternalize.then_some(Action::ActivatedEternalizeOrEmbalm))
+        .chain(sacrificing.then_some(Action::R6104ActivatedSacrificing))
         .chain(loyalty.then_some(Action::ActivatedLoyalty))
         .map(|action| Happened::Did {
             action,
             player: Some(player),
             object: Some(source),
-            ability: on_stack,
+            ability: on_stack
+                .and_then(|id| post.object(id))
+                .map(GameObject::reference),
             // The loyalty counters removed to activate it ("if you removed two or more loyalty counters to activate it").
             amount: if action == Action::ActivatedLoyalty {
                 removed

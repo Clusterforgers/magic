@@ -130,6 +130,7 @@ pub const fn stat_name(stat: StatKind) -> Option<&'static str> {
         | StatKind::R4700ChosenColors
         | StatKind::Subtypes
         | StatKind::R6018PermanentTypes
+        | StatKind::R6104LifePaid
         | StatKind::CreatureType
         | StatKind::BasePower
         | StatKind::BaseToughness
@@ -171,6 +172,9 @@ fn for_each_one(r: &mut Reader<'_>) -> Option<Amount> {
     r.attempt(|r| {
         if let Some(counted) = r.attempt(counters::counted) {
             return Some(counted);
+        }
+        if let Some(stickers) = r.attempt(super::r6101_stickers::r6101_name_stickers) {
+            return Some(stickers);
         }
         if let Some(stickers) = r.attempt(super::un34_stickers::un34_stickers_on) {
             return Some(stickers);
@@ -408,6 +412,7 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
             counter,
         } => format!("{} counter on ~", counters::kind_text(counter)?),
         Amount::AnyCounters(Ref::This) => "counter on ~".to_owned(),
+        Amount::NameStickers { .. } => super::r6101_stickers::r6101_name_stickers_text(counted)?,
         Amount::Stickers {
             on: Ref::This,
             kind,

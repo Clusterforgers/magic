@@ -126,17 +126,17 @@
   "textless": false,
   "booster": true,
   "story_spotlight": false,
-  "edhrec_rank": 24931,
+  "edhrec_rank": 25052,
   "preview": {
     "source": "Charly GAG",
     "source_uri": "https://twitter.com/CharlyGAG/status/1573423159289970688",
     "previewed_at": "2022-09-23"
   },
   "prices": {
-    "usd": "0.08",
-    "usd_foil": "0.18",
+    "usd": "0.07",
+    "usd_foil": "0.20",
     "usd_etched": null,
-    "eur": "0.11",
+    "eur": "0.06",
     "eur_foil": "0.11",
     "tix": null
   },

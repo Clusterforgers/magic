@@ -1,7 +1,7 @@
 {
   "oracle_id": "867def48-4be8-4056-bcf1-d6b00450b9a3",
   "name": "Library of Leng",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Library of Leng",
@@ -9,9 +9,11 @@
       "abilities": [
         { "Rule": { "rule": { "NoMaxHandSize": "You" } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 31, "end": 159 }
+          "Replacement": {
+            "when": {
+              "Discarded": { "what": [{ "In": "Hand" }, { "OwnedBy": "You" }], "effect": true }
+            },
+            "by": { "IntoLibrary": { "place": "Top", "optional": true } }
           }
         }
       ]

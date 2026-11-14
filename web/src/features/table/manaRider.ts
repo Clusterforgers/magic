@@ -72,6 +72,8 @@ const FACTS: Record<SpendFact, string> = {
   Monocolored: 'that is monocolored',
   Equip: 'that is an equip ability',
   Disturb: 'cast for its disturb cost',
+  R6103PowerUp: 'that is a power-up ability',
+  R6103ThreeColors: 'with exactly three colors',
 }
 
 const lower = (text: string): string => text.toLowerCase()

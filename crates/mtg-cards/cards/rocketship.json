@@ -1,7 +1,7 @@
 {
   "oracle_id": "1009f979-b1fa-4427-bf9e-2a533a4ca19b",
   "name": "_____ _____ Rocketship",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "_____ _____ Rocketship",
@@ -21,9 +21,35 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 76, "end": 229 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "ChooseValue": { "kind": "Letter", "as": "letter" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "NameStickers": {
+                            "on": "This",
+                            "words": { "BeginsWithChosen": "letter" }
+                          }
+                        },
+                        "toughness": {
+                          "NameStickers": {
+                            "on": "This",
+                            "words": { "BeginsWithChosen": "letter" }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         },
         { "Keyword": { "Crew": 2 } }

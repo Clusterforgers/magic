@@ -1,0 +1,64 @@
+{
+  "oracle_id": "e96b0560-1d91-48df-b42f-3b7d9c6d94bd",
+  "name": "Tariff",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tariff",
+      "oracle_fingerprint": "eab15eaea7bf3080b8ce46d756503ef7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "each" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "each" } },
+                            {
+                              "GreatestAmong": {
+                                "stat": "ManaValue",
+                                "group": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": { "Bound": "each" } }
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        "as": "greatest"
+                      }
+                    },
+                    {
+                      "Pay": {
+                        "who": { "Bound": "each" },
+                        "cost": [{ "ManaCostOf": { "Bound": "greatest" } }],
+                        "unpaid": [
+                          {
+                            "Bind": {
+                              "what": { "Bound": "greatest" },
+                              "as": "unpaid",
+                              "adds": true
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Is": { "Bound": "unpaid" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

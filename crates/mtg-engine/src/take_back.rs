@@ -254,6 +254,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::CoinFlipped { .. }
         | Event::ChosenAtRandom { .. }
         | Event::PlayersChosenAtRandom { .. }
+        | Event::KindChosenAtRandom { .. }
         | Event::RolledToVisit { .. }
         | Event::StickerSheetsChosen { .. }
         | Event::ManualRolled { .. }

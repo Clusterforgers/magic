@@ -878,6 +878,13 @@ pub enum ReplaceWhen {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         to: Option<ZoneKind>,
     },
+    /// A card matching the selector would be put into a graveyard from anywhere, except as the discard that pays for its
+    /// own cycling (CR 702.29): "If a card that has a cycling ability would be put into your graveyard from anywhere and it
+    /// wasn't cycled".
+    R6105Uncycled {
+        /// The card that would move.
+        what: Selector,
+    },
     /// A permanent matching the selector would be destroyed (CR 701.8): by an effect that destroys, or by lethal damage or
     /// deathtouch; not sacrificed, put into a graveyard for zero toughness, or exiled.
     Destroyed {
@@ -892,6 +899,10 @@ pub enum ReplaceWhen {
         /// controls causes you to discard this card"); any discard when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         by: Option<Ref>,
+        /// Only a discard a resolving spell or ability causes, not a cost or a turn action ("If an effect causes you to
+        /// discard a card").
+        #[serde(default, skip_serializing_if = "is_false")]
+        effect: bool,
     },
     /// A spell matching the selector would be countered (CR 701.6): the move from the stack to the graveyard of a spell an
     /// effect counted, not of one that resolved, fizzled or could not be countered.
@@ -1086,6 +1097,17 @@ pub struct MoreCounters {
     pub counter: CounterKind,
     /// How many.
     pub count: Amount,
+}
+
+/// Exceptions of a permanent entering as a copy (`ReplaceBy::AsCopy`) that apply only when the object it copies matches
+/// `of`.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct CopyExceptIf {
+    /// What the copied object must be, judged as it is copied.
+    pub of: Selector,
+    /// The exceptions, part of the copy effect when they apply (CR 707.9b).
+    pub except: Vec<Modification>,
 }
 
 /// Counters a permanent entering as a copy enters with (`ReplaceBy::AsCopy`), when the object it copies matches `of`.
@@ -1342,6 +1364,10 @@ pub enum ReplaceBy {
         /// enters with an additional +1/+1 counter on it if it's a creature").
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         counters: Vec<CopyCounters>,
+        /// Exceptions the copy has only when the copied object matches their selector, judged as it is copied ("and, if
+        /// it's a creature, ... has changeling").
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        except_if: Vec<CopyExceptIf>,
     },
     /// Devour (CR 702.82): as the permanent enters, its controller may sacrifice any number of other permanents they control that match the selector, and it enters with this many +1/+1 counters for each.
     Devour {
@@ -1365,6 +1391,10 @@ pub enum ReplaceBy {
         /// How many different kinds are chosen.
         count: u32,
     },
+    /// The permanent enters with one counter of each kind the objects named hold as it enters ("For each kind of counter
+    /// on ~, each other Dinosaur you control enters with a counter of that kind on it"); the reference reads from the
+    /// source of the replacement.
+    WithKindsOn(Ref),
     /// The permanent enters prepared (a prepare card; its controller may then cast a copy of its spell face).
     EntersPrepared,
     /// As the permanent enters, its controller chooses one of these words ("choose Khans or Dragons"), which
@@ -1401,6 +1431,10 @@ pub enum ReplaceBy {
     /// The number in the event is increased by an amount worked out as the event happens ("it deals that much damage
     /// plus X instead, where X is ~'s power"; `r304c_amounts`).
     AddAmount(Amount),
+    /// Damage of less than an amount worked out as the event happens is dealt as that amount instead ("would deal an
+    /// amount of noncombat damage less than ~'s power ..., that source deals damage equal to ~'s power instead"); damage
+    /// of that amount or more stays as it is (`r304c_amounts`).
+    R6100AtLeast(Amount),
     /// Up to an amount worked out as the event happens of the damage is prevented ("prevent X of that damage, where X
     /// is the number of creatures you control"); only a static ability uses it.
     PreventAmount(Amount),
@@ -1497,7 +1531,11 @@ impl ShieldShape {
             )
             | (ReplaceWhen::TokenCreation { .. }, ReplaceBy::UnderYourControl)
             | (ReplaceWhen::Draw { .. }, ReplaceBy::Instead(_)) => Some(Self::Class),
-            (ReplaceWhen::Enters { what }, ReplaceBy::UnderYourControl) if !names_objects(what) => {
+            // "Until end of turn, if one or more creatures would enter from exile ..., their owners shuffle them into
+            // their libraries instead."
+            (ReplaceWhen::Enters { what }, ReplaceBy::UnderYourControl | ReplaceBy::Instead(_))
+                if !names_objects(what) =>
+            {
                 Some(Self::Class)
             }
             (

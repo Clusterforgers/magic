@@ -29,4 +29,9 @@ until_next_turn_of?: PlayerId,
  * The copy ends once this object is no longer attached to the permanent ("for as long as this Equipment remains
  * attached to it").
  */
-attached_by?: ObjectRef, };
+attached_by?: ObjectRef, 
+/**
+ * The copy ends once this object is no longer tapped on the battlefield ("for as long as that creature remains
+ * tapped").
+ */
+r6104_while_tapped?: ObjectRef, };

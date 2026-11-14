@@ -371,6 +371,7 @@ pub(crate) fn housekeeping(state: &GameState) -> Vec<Event> {
             .map(|d| Event::DelayedTriggerExpired { id: d.id() }),
     );
     expired.extend(crate::copies::r370_unattached_copies(state));
+    expired.extend(crate::copies::r6104_untapped_copies(state));
     if !expired.is_empty() {
         return expired;
     }

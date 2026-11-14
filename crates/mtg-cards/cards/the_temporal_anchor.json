@@ -1,7 +1,7 @@
 {
   "oracle_id": "168f2fbb-8cf7-43e0-8bb6-5e4cc3c1e363",
   "name": "The Temporal Anchor",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Temporal Anchor",
@@ -14,9 +14,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 41, "end": 185 }
+          "Triggered": {
+            "when": { "Did": { "action": "R6103ScriedToBottom", "who": "You" } },
+            "effects": [{ "ExileTop": { "count": "Triggering", "as": "exiled", "bottom": true } }]
           }
         },
         {

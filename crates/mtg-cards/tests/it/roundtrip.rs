@@ -1039,6 +1039,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
             .prop_map(|(who, what, count, new_targets, except)| {
                 Effect::CopySpell {
                     each_target: None,
+                    each_player: false,
                     who,
                     what,
                     count,
@@ -1051,6 +1052,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 what,
                 count,
                 new_targets,
+                each_target: None,
             }
         }),
         (
@@ -1112,6 +1114,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 count,
                 bind,
                 sealed,
+                bottom: false,
             }
         }),
         (
@@ -1393,7 +1396,13 @@ fn ability() -> impl Strategy<Value = Ability> {
                     except_draw_step
                 }),
                 selector().prop_map(|what| ReplaceWhen::Enters { what }),
-                selector().prop_map(|what| ReplaceWhen::Discarded { what, by: None }),
+                (selector(), proptest::bool::ANY).prop_map(|(what, effect)| {
+                    ReplaceWhen::Discarded {
+                        what,
+                        by: None,
+                        effect,
+                    }
+                }),
                 selector().prop_map(|what| ReplaceWhen::Destroyed { what }),
                 (
                     selector(),
@@ -1447,6 +1456,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                             until_end_of_turn,
                             must: false,
                             counters: Vec::new(),
+                            except_if: Vec::new(),
                         }
                     }),
             ],

@@ -563,6 +563,9 @@ pub enum Pred {
     /// Dealt damage this turn to an object the selector matches as it was when the damage was dealt ("that dealt damage
     /// to another creature this turn"); a creature the damage destroyed still counts.
     DealtDamageThisTurn(Selector),
+    /// Was dealt damage this game by a source the selector matches as it was when it dealt the damage ("planeswalker it
+    /// has dealt damage to this game"): the permanent as it is now, so one that left and came back is another.
+    R6100DamagedThisGameBy(Selector),
     /// Is the card one of the objects the reference names is, in whatever zone it is now: a card that went to a graveyard is a
     /// new object there (CR 400.7), and this finds it again by its card.
     SameCard(Ref),
@@ -651,6 +654,9 @@ pub enum Pred {
     FromSource(Selector),
     /// Is a spell or ability on the stack with exactly one target (CR 115.7: "a spell with a single target").
     SingleTarget,
+    /// Is a spell or ability on the stack whose every target is an object the selector names, with at least one target
+    /// ("that targets only this creature": the same creature in several places counts).
+    R6104TargetsOnly(Selector),
     /// Has the greatest value of the characteristic among the objects the group selector matches (a tie counts for each).
     GreatestAmong {
         /// The characteristic compared.

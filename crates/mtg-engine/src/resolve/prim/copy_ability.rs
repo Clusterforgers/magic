@@ -24,6 +24,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         what,
         count,
         new_targets,
+        each_target,
     } = effect
     else {
         return Err(wrong_effect("CopyAbility"));
@@ -45,6 +46,18 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         let Some(ability) = object.ability() else {
             continue;
         };
+        // "For each other creature that ability could target": one copy at each, with no question of new targets.
+        if let Some(selector) = each_target {
+            let choices = super::copy_spell::each_target_choices(
+                cx,
+                (cx.controller(), false),
+                object,
+                ability.rules(),
+                selector,
+            )?;
+            planned.extend(choices.into_iter().map(|choices| (*object, choices)));
+            continue;
+        }
         for _ in 0..copies {
             let original = Original {
                 id: object.id(),

@@ -41,6 +41,7 @@ mod w21a_atoms;
 mod w6d_shares;
 
 // deck-auras
+
 #[cfg(test)]
 mod da_attached_auras;
 use super::still_there;
@@ -578,6 +579,8 @@ impl<'a> Scope<'a> {
             | TurnTally::EnteredFaceDownUnder
             | TurnTally::TurnedFaceUp
             | TurnTally::CardsLeftGraveyard
+            | TurnTally::R6100CreatureCardsLeftGraveyard
+            | TurnTally::R6100CreaturesExiledUnder
             | TurnTally::CardsDrawnTotal
             | TurnTally::NoncombatDamageTakenTotal => {
                 let kind = match what {
@@ -598,6 +601,10 @@ impl<'a> Scope<'a> {
                     TurnTally::DiceRolled => Tally::R5508DiceRolled,
                     TurnTally::PermanentsLeftUnder => Tally::PermanentsLeftUnder,
                     TurnTally::CardsLeftGraveyard => Tally::W21aLeftGraveyard,
+                    TurnTally::R6100CreatureCardsLeftGraveyard => {
+                        Tally::R6100CreatureCardLeftGraveyard
+                    }
+                    TurnTally::R6100CreaturesExiledUnder => Tally::R6100CreatureExiledUnder,
                     TurnTally::LifeGainedTotal => Tally::GainedTotal,
                     TurnTally::CreaturesAttacked => Tally::Attackers,
                     TurnTally::CreaturesDied => Tally::Died,
@@ -752,6 +759,26 @@ impl<'a> Scope<'a> {
     /// Whether the spell `seen` being cast, or on the stack, has a target an object `inner` selects: a spell being
     /// cast reads what it announced, and before anything is announced a target is found where some object in play
     /// matches; a spell or ability on the stack reads its own targets.
+    /// Whether the spell or ability on the stack has a target and every one of its targets is an object `inner` names.
+    fn r6104_targets_only(&self, inner: &Selector, seen: &Seen<'_>) -> Result<bool, ResolveError> {
+        let Some(card) = seen.card.filter(|_| seen.zone == Zone::Stack) else {
+            return Ok(false);
+        };
+        let targets: Vec<Target> = card.choices().targets.iter().flatten().copied().collect();
+        if targets.is_empty() {
+            return Ok(false);
+        }
+        for target in targets {
+            let Target::Object(object) = target else {
+                return Ok(false);
+            };
+            if !self.selects(inner, object)? {
+                return Ok(false);
+            }
+        }
+        Ok(true)
+    }
+
     fn targets_match(
         &self,
         inner: &Selector,
@@ -2145,6 +2172,7 @@ impl<'a> Scope<'a> {
             } => self.did_this_turn(*event, (by.as_ref(), to.as_ref()), *combat, reference),
             Pred::BlockedThisTurn(with) => self.r379_blocked_this_turn(with, reference),
             Pred::DealtDamageThisTurn(to) => self.r5523_dealt_damage_this_turn(to, reference),
+            Pred::R6100DamagedThisGameBy(by) => self.r6100_damaged_this_game(by, reference)?,
             Pred::EnteredSinceLastTurn(who) => self
                 .players(who)?
                 .iter()
@@ -2158,6 +2186,7 @@ impl<'a> Scope<'a> {
                 .iter()
                 .any(|card| card.id == reference.id),
             Pred::Targeting(inner) => self.targets_match(inner, reference, seen)?,
+            Pred::R6104TargetsOnly(inner) => self.r6104_targets_only(inner, seen)?,
             Pred::ControlledBy(who) => self.players(who)?.contains(&seen.controller),
             Pred::OwnedBy(who) => self.players(who)?.contains(&seen.owner),
             Pred::ProtectedBy(who) => {
@@ -2364,6 +2393,10 @@ impl<'a> Scope<'a> {
             | StatKind::R374ColorSet
             | StatKind::R6018PermanentTypes
             | StatKind::Subtypes => None,
+            StatKind::R6104LifePaid => seen
+                .card
+                .filter(|_| seen.zone == Zone::Stack)
+                .and_then(crate::r6104_activation_facts::r6104_life_paid),
         }
     }
 
@@ -2556,6 +2589,50 @@ impl<'a> Scope<'a> {
                         total += i64::from(crate::un34_stickers::stickers_of_kind(
                             self.state, object, *kind,
                         ));
+                    }
+                }
+                total
+            }
+            Amount::NameStickers { on, words } => {
+                let chosen = match words {
+                    mtg_cards::ability::NameWords::BeginsWithChosen(name) => {
+                        match self.chosen_value(name) {
+                            Some(Chosen::Word(word)) => word.chars().next(),
+                            _ => None,
+                        }
+                    }
+                    _ => None,
+                };
+                let mut total = 0i64;
+                for named in self.refs(on)? {
+                    if let Target::Object(object) = named {
+                        let held = crate::un34_stickers::name_words(self.state, object);
+                        let passing = held.iter().filter(|held| words.holds(held, chosen)).count();
+                        total += i64::try_from(passing).unwrap_or(i64::MAX);
+                    }
+                }
+                total
+            }
+            Amount::StickerStats { on, stat } => {
+                let mut total = 0i64;
+                for named in self.refs(on)? {
+                    if let Target::Object(object) = named {
+                        total += crate::un34_stickers::sticker_stats(self.state, object, *stat);
+                    }
+                }
+                total
+            }
+            Amount::StickerLetters { on, letter } => {
+                let mut total = 0i64;
+                for named in self.refs(on)? {
+                    if let Target::Object(object) = named {
+                        for held in crate::un34_stickers::name_words(self.state, object) {
+                            for letter in letter.chars() {
+                                total += i64::from(mtg_cards::ability::NameWords::letter_count(
+                                    held, letter,
+                                ));
+                            }
+                        }
                     }
                 }
                 total

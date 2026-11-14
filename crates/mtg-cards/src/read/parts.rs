@@ -575,6 +575,9 @@ fn modification(ctx: &Ctx, change: &Modification) -> String {
                 "has every instance of the word chosen as {from} replaced by the word chosen as {to}"
             )
         }
+        Modification::ChangeTextChosenTo { from, to } => {
+            format!("has every instance of the word chosen as {from} replaced by {to}")
+        }
         Modification::SetController(player) => {
             format!("is controlled by {}", phrase::who(ctx, player))
         }
@@ -605,10 +608,24 @@ pub(super) fn replace_when(ctx: &Ctx, when: &ReplaceWhen) -> String {
         ReplaceWhen::Destroyed { what } => {
             format!("{} would be destroyed", phrase::selector(ctx, what))
         }
-        ReplaceWhen::Discarded { what, by: None } => {
+        ReplaceWhen::Discarded {
+            what,
+            by: None,
+            effect: false,
+        } => {
             format!("{} would be discarded", phrase::selector(ctx, what))
         }
-        ReplaceWhen::Discarded { what, by: Some(by) } => format!(
+        ReplaceWhen::Discarded {
+            what,
+            by: None,
+            effect: true,
+        } => format!(
+            "an effect causes {} to be discarded",
+            phrase::selector(ctx, what)
+        ),
+        ReplaceWhen::Discarded {
+            what, by: Some(by), ..
+        } => format!(
             "a spell or ability {} control causes {} to be discarded",
             phrase::who(ctx, by),
             phrase::selector(ctx, what)
@@ -646,6 +663,10 @@ pub(super) fn replace_when(ctx: &Ctx, when: &ReplaceWhen) -> String {
         ReplaceWhen::CopiesSpell { who } => {
             format!("{} would copy a spell", phrase::who(ctx, who))
         }
+        ReplaceWhen::R6105Uncycled { what } => format!(
+            "{} would be put into a graveyard from anywhere and it wasn't cycled",
+            phrase::selector(ctx, what)
+        ),
         other => generic::node(ctx, other),
     }
 }

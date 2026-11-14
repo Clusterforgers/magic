@@ -137,6 +137,7 @@ mod r378_parade;
 mod r5501_echo_rather;
 mod r5509_face_down_pile;
 mod r5509_foretold;
+mod r6102_random_counter;
 mod regenerate;
 mod remove_counters;
 mod remove_from_combat;
@@ -243,6 +244,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Search { .. } => search::run(cx, effect),
         Effect::Choose { .. } => choose::run(cx, effect),
         Effect::ChooseAtRandom { .. } => choose_at_random::run(cx, effect),
+        Effect::PutRandomCounter { .. } => r6102_random_counter::run(cx, effect),
         Effect::ChooseValue { .. } => choose_value::run(cx, effect),
         Effect::Shuffle { .. } => shuffle::run(cx, effect),
         Effect::Move { .. } => move_to::run(cx, effect),

@@ -130,6 +130,52 @@ pub(crate) fn stickers_of_kind(
     u32::try_from(count).unwrap_or(u32::MAX)
 }
 
+/// The words of the name stickers on the object, as the reference names it; none on an object it no longer names.
+pub(crate) fn name_words(state: &GameState, reference: ObjectRef) -> Vec<&str> {
+    if state
+        .object(reference.id)
+        .is_none_or(|object| object.counter() != reference.counter)
+    {
+        return Vec::new();
+    }
+    state
+        .stickers_on(reference.id)
+        .iter()
+        .filter_map(|at| match state.sticker(*at) {
+            Some(Sticker::Name { words, .. }) => Some(words.as_str()),
+            _ => None,
+        })
+        .collect()
+}
+
+/// The total power or toughness of the power and toughness stickers on the object, as the reference names it.
+pub(crate) fn sticker_stats(
+    state: &GameState,
+    reference: ObjectRef,
+    stat: mtg_cards::value::StatKind,
+) -> i64 {
+    if state
+        .object(reference.id)
+        .is_none_or(|object| object.counter() != reference.counter)
+    {
+        return 0;
+    }
+    state
+        .stickers_on(reference.id)
+        .iter()
+        .filter_map(|at| match state.sticker(*at) {
+            Some(Sticker::PowerToughness {
+                power, toughness, ..
+            }) => match stat {
+                mtg_cards::value::StatKind::Power => Some(i64::from(*power)),
+                mtg_cards::value::StatKind::Toughness => Some(i64::from(*toughness)),
+                _ => None,
+            },
+            _ => None,
+        })
+        .sum()
+}
+
 /// The stickers a sheet lists, in order.
 pub fn stickers_of(sheet: &CardDefinition) -> impl Iterator<Item = &Sticker> {
     sheet.rules.iter().filter_map(|rule| match &**rule {

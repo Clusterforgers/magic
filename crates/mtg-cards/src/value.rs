@@ -72,6 +72,9 @@ pub enum StatKind {
     /// Its permanent types (artifact, battle, creature, enchantment, land, planeswalker): no number, so only
     /// `Amount::Distinct` reads it ("the number of permanent types among cards in your graveyard").
     R6018PermanentTypes,
+    /// The life paid to activate it, for an activated ability on the stack: its cost's life and the life paid for its
+    /// Phyrexian mana symbols ("that much life").
+    R6104LifePaid,
 }
 
 /// A comparison between two numbers.
@@ -442,6 +445,12 @@ pub enum TurnTally {
     /// The noncombat damage the players took this turn ("the total amount of noncombat damage dealt to your opponents
     /// this turn"). Added up over the players.
     NoncombatDamageTakenTotal,
+    /// The creature cards that left the graveyards of the players read this turn, to any zone ("if a creature card left
+    /// your graveyard this turn"). Added up over the players.
+    R6100CreatureCardsLeftGraveyard,
+    /// The creatures put into exile from the battlefield while the players read controlled them, tokens included ("the
+    /// number of creatures that were exiled under your opponents' control this turn"). Added up over the players.
+    R6100CreaturesExiledUnder,
 }
 
 /// A kind of event the game logs for the turn with the object it was about, which `Amount::Tally` filters and counts.
@@ -494,6 +503,12 @@ pub enum TallyEvent {
     /// A permanent was turned face up (the permanent, for its controller): "a creature you control that was turned face
     /// up this turn".
     TurnedFaceUp,
+    /// A creature fought (CR 701.14), whatever damage it came to (the creature, for its controller; `Pred::DidThisTurn`
+    /// reads the creature it fought): "if you control a creature that fought this turn".
+    Fought,
+    /// Noncombat damage was dealt (the dealer, as for `Damaged`; an amount counts the damage dealt): "if red sources you
+    /// controlled dealt 4 or more noncombat damage this turn".
+    R6100NoncombatDamaged,
 }
 
 /// Which result of the latest die roll an amount reads.
@@ -854,6 +869,30 @@ pub enum Amount {
     /// The number of unique vowels on the name sticker the resolving spell or ability put on last ("where X is the
     /// number of unique vowels on that sticker"); 0 when it put none.
     StickerVowels,
+    /// The name stickers on the objects the reference names whose words pass the test ("for each name sticker on this
+    /// Aura with eight or more letters", "that begins with the chosen letter"); a card keeps its stickers in every zone.
+    NameStickers {
+        /// The objects.
+        on: Ref,
+        /// The test of a sticker's words.
+        words: crate::ability::NameWords,
+    },
+    /// How many times the letter stands in the words of the name stickers on the objects the reference names, in either
+    /// case ("the number of u's in name stickers on this enchantment").
+    StickerLetters {
+        /// The objects.
+        on: Ref,
+        /// The letter, one of a to z.
+        letter: String,
+    },
+    /// The total power or toughness of the power and toughness stickers on the objects the reference names ("the total
+    /// power of all stickers on permanents you control"); no other sticker has a power or toughness.
+    StickerStats {
+        /// The objects.
+        on: Ref,
+        /// `Power` or `Toughness`.
+        stat: StatKind,
+    },
     /// How many targets the spell or ability that triggered this one has.
     TriggeringTargets,
     /// How many players have lost the game ("for each player who has lost the game").
@@ -1116,6 +1155,18 @@ enum Tagged {
         kind: Option<crate::ability::StickerKind>,
     },
     StickerVowels,
+    NameStickers {
+        on: Ref,
+        words: crate::ability::NameWords,
+    },
+    StickerLetters {
+        on: Ref,
+        letter: String,
+    },
+    StickerStats {
+        on: Ref,
+        stat: StatKind,
+    },
     CastSameNameThisGame(Ref),
     CycledSameNameThisGame(Ref),
     TallyLastTurn {
@@ -1320,6 +1371,18 @@ enum TaggedRef<'a> {
         kind: Option<crate::ability::StickerKind>,
     },
     StickerVowels,
+    NameStickers {
+        on: &'a Ref,
+        words: &'a crate::ability::NameWords,
+    },
+    StickerLetters {
+        on: &'a Ref,
+        letter: &'a str,
+    },
+    StickerStats {
+        on: &'a Ref,
+        stat: StatKind,
+    },
     CastSameNameThisGame(&'a Ref),
     CycledSameNameThisGame(&'a Ref),
     TallyLastTurn {
@@ -1459,6 +1522,9 @@ impl From<Tagged> for Amount {
             Tagged::TurnNumber => Amount::TurnNumber,
             Tagged::Stickers { on, kind } => Amount::Stickers { on, kind },
             Tagged::StickerVowels => Amount::StickerVowels,
+            Tagged::NameStickers { on, words } => Amount::NameStickers { on, words },
+            Tagged::StickerLetters { on, letter } => Amount::StickerLetters { on, letter },
+            Tagged::StickerStats { on, stat } => Amount::StickerStats { on, stat },
             Tagged::CastSameNameThisGame(who) => Amount::CastSameNameThisGame(who),
             Tagged::CycledSameNameThisGame(who) => Amount::CycledSameNameThisGame(who),
             Tagged::TallyLastTurn { event, who, filter } => {
@@ -1633,6 +1699,15 @@ impl Serialize for Amount {
                 TaggedRef::Stickers { on, kind: *kind }.serialize(serializer)
             }
             Amount::StickerVowels => TaggedRef::StickerVowels.serialize(serializer),
+            Amount::NameStickers { on, words } => {
+                TaggedRef::NameStickers { on, words }.serialize(serializer)
+            }
+            Amount::StickerStats { on, stat } => {
+                TaggedRef::StickerStats { on, stat: *stat }.serialize(serializer)
+            }
+            Amount::StickerLetters { on, letter } => {
+                TaggedRef::StickerLetters { on, letter }.serialize(serializer)
+            }
             Amount::CastSameNameThisGame(who) => {
                 TaggedRef::CastSameNameThisGame(who).serialize(serializer)
             }

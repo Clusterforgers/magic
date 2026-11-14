@@ -1,0 +1,68 @@
+{
+  "oracle_id": "61fbaaf2-4286-4e9a-b9cb-aa31262b596a",
+  "name": "Jinnie Fay, Jetmir's Second",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jinnie Fay, Jetmir's Second",
+      "oracle_fingerprint": "00bc1916cdf4503d837bd617e43261cc",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "TokenCreation": {} },
+            "by": {
+              "Instead": [
+                {
+                  "May": {
+                    "effects": [
+                      {
+                        "Either": {
+                          "first": [
+                            {
+                              "CreateToken": {
+                                "token": {
+                                  "Custom": {
+                                    "name": "Cat",
+                                    "colors": ["Green"],
+                                    "types": ["Creature"],
+                                    "subtypes": ["Cat"],
+                                    "power": 2,
+                                    "toughness": 2,
+                                    "abilities": [{ "Keyword": "Haste" }]
+                                  }
+                                },
+                                "count": "Triggering"
+                              }
+                            }
+                          ],
+                          "second": [
+                            {
+                              "CreateToken": {
+                                "token": {
+                                  "Custom": {
+                                    "name": "Dog",
+                                    "colors": ["Green"],
+                                    "types": ["Creature"],
+                                    "subtypes": ["Dog"],
+                                    "power": 3,
+                                    "toughness": 1,
+                                    "abilities": [{ "Keyword": "Vigilance" }]
+                                  }
+                                },
+                                "count": "Triggering"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

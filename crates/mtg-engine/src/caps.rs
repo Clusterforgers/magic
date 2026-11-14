@@ -219,6 +219,7 @@ const RUNS: &[&str] = &[
     "Stat.R374ColorSet",
     "Stat.R4700ChosenColors",
     "Stat.R6018PermanentTypes",
+    "Stat.R6104LifePaid",
     "Amount.R374AtMost",
     "Cost.Alternative.X",
     "Cost.XAtMost",
@@ -317,6 +318,9 @@ const RUNS: &[&str] = &[
     "Effect.SpellEntersWith",
     "Effect.MultiplyCounters",
     "Effect.PutCountersOf",
+    "Effect.PutCountersOf.AbsentOnly",
+    "Effect.PutCountersOf.May",
+    "Effect.PutRandomCounter",
     "Effect.Tap",
     "Effect.Untap",
     "Effect.TapOrUntap",
@@ -422,6 +426,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Mill",
     "ReplaceBy.UnderChosenOpponent",
     "ReplaceBy.AddAmount",
+    "ReplaceBy.R6100AtLeast",
     "ReplaceBy.MayAddAmount",
     "ReplaceBy.PreventAmount",
     "ReplaceBy.PreventAtMost",
@@ -435,8 +440,12 @@ const RUNS: &[&str] = &[
     "Effect.BecomeCopy",
     "Copy.Duration.UntilYourNextTurn",
     "Copy.Duration.WhileSourceAttached",
+    "Copy.Duration.WhileTapped",
     "Copy.Except.ThisAbility",
     "Copy.Except.SetPT.Amount",
+    "CopyAbility.EachTarget",
+    "CopySpell.EachPlayer",
+    "Copy.ExceptIf",
     "Effect.Continuous",
     "Effect.ExchangeControl",
     "Duration.WhileYouControlSource",
@@ -618,6 +627,7 @@ const RUNS: &[&str] = &[
     "Mod.KeywordsOf",
     "Mod.SetLandTypesNthChosen",
     "Mod.ChangeTextChosen",
+    "Mod.ChangeTextChosenTo",
     "Mod.SetCreatureTypesChosen",
     "Mod.AddCreatureTypeChosen",
     "Mod.AddLandTypeChosen",
@@ -815,6 +825,7 @@ const RUNS: &[&str] = &[
     "CastRider.GainsThisTurn",
     "CastRider.AlsoSubtype",
     "CastRider.ExiledInstead",
+    "CastRider.R6103EquipmentGains",
     "Condition.R401OnCast",
     "Condition.R401Targets",
     "Condition.Kicked",
@@ -855,6 +866,9 @@ const RUNS: &[&str] = &[
     "Amount.TurnNumber",
     "Amount.Stickers",
     "Amount.StickerVowels",
+    "Amount.NameStickers",
+    "Amount.StickerLetters",
+    "Amount.StickerStats",
     "Amount.TallyLastTurn",
     "Amount.CastSameNameThisGame",
     "Amount.CycledSameNameThisGame",
@@ -881,6 +895,7 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.TokenCreation",
     "ReplaceWhen.Damage",
     "ReplaceWhen.R6001DamageBetweenChosen",
+    "ReplaceWhen.R6105Uncycled",
     "ReplaceWhen.ZoneChange",
     "ReplaceWhen.Countered",
     "ReplaceWhen.BecomesAttached",
@@ -1020,6 +1035,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Riot",
     "ReplaceBy.WithCounterOf",
     "ReplaceBy.WithCountersOf",
+    "ReplaceBy.WithKindsOn",
     "Keyword.Fabricate",
     "Keyword.Ascend",
     "Keyword.Storied",
@@ -1134,6 +1150,7 @@ const RUNS: &[&str] = &[
     "Pred.DidThisTurn",
     "Pred.BlockedThisTurn",
     "Pred.DealtDamageThisTurn",
+    "Pred.R6100DamagedThisGameBy",
     "Pred.EnteredSinceLastTurn",
     "Condition.CombatDamagedSinceLastTurn",
     "Pred.WasCast",
@@ -1153,6 +1170,7 @@ const RUNS: &[&str] = &[
     "Pred.Blocks",
     "Pred.TargetedBy",
     "Pred.FromSource",
+    "Pred.R6104TargetsOnly",
     "Pred.SingleTarget",
     "Pred.GreatestAmong",
     "Pred.LeastAmong",
@@ -1309,6 +1327,10 @@ mod tests {
     #[case::r5516_replacing_a_copy_of_a_spell("ReplaceWhen.CopiesSpell", true)]
     #[case::r5516_replacing_a_learn("ReplaceWhen.Learns", true)]
     #[case::r5516_steps_its_controller_may_choose("ReplaceBy.MayInstead", true)]
+    #[case::r6102_only_a_new_kind("Effect.PutCountersOf.AbsentOnly", true)]
+    #[case::r6102_may_put_another_of_a_kind("Effect.PutCountersOf.May", true)]
+    #[case::r6102_a_counter_of_a_random_kind("Effect.PutRandomCounter", true)]
+    #[case::r6102_enters_with_the_kinds_of_another("ReplaceBy.WithKindsOn", true)]
     #[case::r6008_optional_library("ReplaceBy.IntoLibrary.Optional", true)]
     #[case::r6008_words_for_each_player("Effect.ChooseWords.About", true)]
     #[case::r6008_one_card_for_each_color_set("Choose.DifferentColorSets", true)]
@@ -1398,6 +1420,7 @@ mod tests {
     #[case::added_supertypes("Mod.AddSupertype", true)]
     #[case::copy_names("Mod.SetName", true)]
     #[case::copy_keeps_this_ability("Copy.Except.ThisAbility", true)]
+    #[case::r6104_exceptions_only_for_some_copied_objects("Copy.ExceptIf", true)]
     #[case::the_ability_kept_as_a_modification("Mod.ThisAbility", true)]
     #[case::r371_a_copy_with_a_starting_loyalty("Mod.SetLoyalty", true)]
     #[case::subtypes("Mod.AddSubtype", true)]

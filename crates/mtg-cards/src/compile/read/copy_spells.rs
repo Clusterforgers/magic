@@ -61,10 +61,12 @@ pub fn copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             what,
             count,
             new_targets,
+            each_target: None,
         }
     } else {
         Effect::CopySpell {
             each_target: None,
+            each_player: false,
             who: Ref::You,
             what,
             count,
@@ -235,6 +237,7 @@ pub(super) fn copy_text(effect: &Effect, spec: &TargetSpec) -> Option<String> {
     let (what, count, new_targets, except, is_spell) = match effect {
         Effect::CopySpell {
             each_target: None,
+            each_player: false,
             who: Ref::You,
             what,
             count,
@@ -245,6 +248,7 @@ pub(super) fn copy_text(effect: &Effect, spec: &TargetSpec) -> Option<String> {
             what,
             count,
             new_targets,
+            each_target: None,
         } if count.is_one() => (what, count, *new_targets, [].as_slice(), false),
         _ => return None,
     };
@@ -266,6 +270,7 @@ pub(super) fn copy_text(effect: &Effect, spec: &TargetSpec) -> Option<String> {
 pub(super) fn cast_text(effect: &Effect) -> Option<String> {
     let Effect::CopySpell {
         each_target: None,
+        each_player: false,
         what: Ref::Triggering | Ref::This,
         who: Ref::You,
         count,

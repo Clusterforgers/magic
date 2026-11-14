@@ -25,6 +25,9 @@ pub enum Action {
     TurnedFaceUp,
     /// A player scried (CR 701.22).
     Scried,
+    /// A player chose to put one or more cards on the bottom of their library while scrying (CR 701.22); the amount is
+    /// how many.
+    R6103ScriedToBottom,
     /// A player surveilled (CR 701.25).
     Surveilled,
     /// A player searched their library and found cards (CR 701.23).
@@ -133,6 +136,9 @@ pub enum Action {
     ExploredNonland,
     /// An eternalize or embalm ability was activated (CR 702.129, 702.128); `what` is its source.
     ActivatedEternalizeOrEmbalm,
+    /// An ability that isn't a mana ability was activated with a cost that sacrificed one or more permanents (the
+    /// source or others; a mana ability activated to pay it does not count); `what` is its source.
+    R6104ActivatedSacrificing,
     /// A player solved a Case (CR 719.3); the player is its controller, `what` the Case.
     SolvedCase,
     /// A player put a sticker on an object (CR 123); `what` is the object.
@@ -219,6 +225,10 @@ impl Action {
             Action::Flipped => ("flip a permanent", "flips a permanent"),
             Action::TurnedFaceUp => ("turn a permanent face up", "turns a permanent face up"),
             Action::Scried => ("scry", "scries"),
+            Action::R6103ScriedToBottom => (
+                "choose to put one or more cards on the bottom of your library while scrying",
+                "chooses to put one or more cards on the bottom of their library while scrying",
+            ),
             Action::Surveilled => ("surveil", "surveils"),
             Action::SearchedLibrary => ("search a library", "searches a library"),
             Action::SearchedOwnLibrary => ("search your library", "searches their library"),
@@ -289,6 +299,10 @@ impl Action {
                 "activate an eternalize or embalm ability",
                 "activates an eternalize or embalm ability",
             ),
+            Action::R6104ActivatedSacrificing => (
+                "activate an ability by sacrificing a permanent",
+                "activates an ability by sacrificing a permanent",
+            ),
             Action::PaidCumulativeUpkeep => ("pay a cumulative upkeep", "pays a cumulative upkeep"),
             Action::DeclinedCumulativeUpkeep => (
                 "don't pay a cumulative upkeep",
@@ -334,6 +348,7 @@ impl Action {
                 | Action::ActivatedBoast
                 | Action::ActivatedPowerUp
                 | Action::ActivatedEternalizeOrEmbalm
+                | Action::R6104ActivatedSacrificing
                 | Action::ActivatedAny
                 | Action::Destroyed
                 | Action::Exiled

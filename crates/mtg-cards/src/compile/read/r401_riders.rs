@@ -358,7 +358,9 @@ fn entering_text(rider: &CastRider) -> Option<String> {
             "gains {} until end of turn",
             keyword_text(gained)?.to_lowercase()
         )),
-        CastRider::AlsoSubtype(_) | CastRider::ExiledInstead => None,
+        CastRider::AlsoSubtype(_)
+        | CastRider::ExiledInstead
+        | CastRider::R6103EquipmentGains(_) => None,
     }
 }
 

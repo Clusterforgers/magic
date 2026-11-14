@@ -329,12 +329,13 @@ enum Happened {
     Adapted { object: ObjectId, player: PlayerId },
     /// A player bolstered.
     Bolstered { player: PlayerId },
-    /// A player or object took an action (`TriggerPattern::Did`); `ability` is the ability an activation put on the stack.
+    /// A player or object took an action (`TriggerPattern::Did`); `ability` is the ability an activation put on the stack,
+    /// as it is after the batch (the state the activation is judged in may be from before it was put there).
     Did {
         action: Action,
         player: Option<PlayerId>,
         object: Option<ObjectId>,
-        ability: Option<ObjectId>,
+        ability: Option<ObjectRef>,
         /// How much it was: the cards a scry looked at; zero for the rest.
         amount: u32,
     },
@@ -1458,11 +1459,13 @@ fn about_players_and_permanents(
 
 /// What the batch has used up so far, so that two events of one batch cannot use an ability up twice.
 #[derive(Debug, Default)]
-struct Used {
+struct Used<'a> {
     limits: BTreeSet<(ObjectRef, AbilitySource, usize)>,
     delayed: BTreeSet<DelayedId>,
     /// The spell or ability that caused the batch, for `TriggerPattern::Caused`.
     caused: Option<super::CausedBy>,
+    /// The state after the batch, in which the "if" of a trigger on an activation is judged.
+    after: Option<&'a GameState>,
 }
 
 /// The cause of a trigger about `subjects`, with the objects among them as they are in `state`.
@@ -2702,6 +2705,29 @@ fn trigger_controller(state: &GameState, object: &GameObject) -> PlayerId {
         .unwrap_or_else(|| controller_of_object(state, object))
 }
 
+/// The state an intervening "if" is judged in: an ability is activated once its costs are paid and it is on the stack
+/// (CR 602.2i), so the "if" of a trigger on an activation reads the state after it ("if life was paid to activate it")
+/// while the watcher `source` is still there; any other event reads `state`.
+fn r6104_judged<'s>(
+    state: &'s GameState,
+    after: Option<&'s GameState>,
+    happened: &Happened,
+    source: ObjectRef,
+) -> &'s GameState {
+    match happened {
+        Happened::Did {
+            ability: Some(_), ..
+        } => after
+            .filter(|after| {
+                after
+                    .object(source.id)
+                    .is_some_and(|now| now.reference() == source)
+            })
+            .unwrap_or(state),
+        _ => state,
+    }
+}
+
 /// The triggered abilities of `object`, which is in the zone `zone`, that trigger on `happened`: `abilities` are those
 /// that work there. A permanent's abilities may trigger again (`repeats`); a card elsewhere's do not.
 fn object_triggers(
@@ -2759,7 +2785,8 @@ fn object_triggers(
                     x: x_read(when, false, held, &cause),
                     ..Choices::default()
                 };
-                let mut scope = Scope::triggered(state, controller, source, &cause);
+                let judged = r6104_judged(state, used.after, happened, source);
+                let mut scope = Scope::triggered(judged, controller, source, &cause);
                 scope.choices = &announced;
                 if !scope.holds(condition).unwrap_or(false) {
                     continue;
@@ -3045,6 +3072,7 @@ pub fn detect(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Trigge
     let mut found = Vec::new();
     let mut used = Used {
         caused: super::cause_of(pre, events, post),
+        after: Some(post),
         ..Used::default()
     };
     let all = happenings(pre, events, post);

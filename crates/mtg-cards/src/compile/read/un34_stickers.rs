@@ -24,7 +24,7 @@ fn kind(r: &mut Reader<'_>) -> Option<StickerKind> {
         StickerKind::PowerToughness,
     ]
     .into_iter()
-    .find(|kind| r.word(kind.word()))
+    .find(|kind| r.words(kind.word()))
 }
 
 /// "it" (the object with the ability), or the objects after "a"/"an" that the player owns.
@@ -42,6 +42,9 @@ fn owned_phrase(r: &mut Reader<'_>, form: Form) -> Option<Selector> {
     if r.words("you own") {
         (!owned(&on)).then_some(())?;
         on.0.push(Pred::OwnedBy(Ref::You));
+        if r.words("that entered this turn") {
+            on.0.push(Pred::EnteredThisTurn);
+        }
     }
     owned(&on).then_some(on)
 }
@@ -108,17 +111,23 @@ pub(super) fn un34_put_text(
         return None;
     }
     let in_zone = on.0.iter().any(|pred| matches!(pred, Pred::In(_)));
+    // "that entered this turn" follows the owner: "a creature you own that entered this turn".
+    let entered = !in_zone && on.0.contains(&Pred::EnteredThisTurn);
     let rest = if in_zone {
         on.clone()
     } else {
         Selector(
             on.0.iter()
-                .filter(|pred| **pred != Pred::OwnedBy(Ref::You))
+                .filter(|pred| !matches!(pred, Pred::OwnedBy(Ref::You) | Pred::EnteredThisTurn))
                 .cloned()
                 .collect(),
         )
     };
-    let own = if in_zone { "" } else { " you own" };
+    let own = match (in_zone, entered) {
+        (true, _) => "",
+        (false, false) => " you own",
+        (false, true) => " you own that entered this turn",
+    };
     if up_to == 0 {
         let form = if in_zone { Form::Count } else { Form::Subject };
         let objects = phrase_text(&rest, form)?;

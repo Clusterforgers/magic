@@ -1,7 +1,7 @@
 {
   "oracle_id": "5ce47fb9-4e4f-4419-af75-309d2743f5f9",
   "name": "The Caves of Androzani",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Caves of Androzani",
@@ -24,9 +24,51 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 160, "end": 288 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Not": { "Subtype": "Saga" } }] },
+                  "as": "permanent",
+                  "effects": [
+                    {
+                      "PutCountersOf": {
+                        "on": { "Bound": "permanent" },
+                        "of": { "Bound": "permanent" },
+                        "each": 1,
+                        "one_kind": true,
+                        "per_kind": "May"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Not": { "Subtype": "Saga" } }] },
+                  "as": "permanent",
+                  "effects": [
+                    {
+                      "PutCountersOf": {
+                        "on": { "Bound": "permanent" },
+                        "of": { "Bound": "permanent" },
+                        "each": 1,
+                        "one_kind": true,
+                        "per_kind": "May"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

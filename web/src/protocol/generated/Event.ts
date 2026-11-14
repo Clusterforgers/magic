@@ -14,6 +14,7 @@ import type { Chosen } from "./Chosen";
 import type { CoinSide } from "./CoinSide";
 import type { Color } from "./Color";
 import type { ContinuousEffect } from "./ContinuousEffect";
+import type { CounterKind } from "./CounterKind";
 import type { CountersChanged } from "./CountersChanged";
 import type { DamageForm } from "./DamageForm";
 import type { DamageTarget } from "./DamageTarget";
@@ -695,7 +696,15 @@ cards: Array<ObjectId>, } } | { "PlayersChosenAtRandom": {
 /**
  * The players picked.
  */
-players: Array<PlayerId>, } } | { "CardConjured": CardConjured } | { "Sought": { 
+players: Array<PlayerId>, } } | { "KindChosenAtRandom": { 
+/**
+ * The object the counter goes on.
+ */
+object: ObjectId, 
+/**
+ * The kind picked.
+ */
+kind: CounterKind, } } | { "CardConjured": CardConjured } | { "Sought": { 
 /**
  * Who seeks.
  */
@@ -855,7 +864,11 @@ next_turn_of?: PlayerId,
 /**
  * The object whose staying attached kept the copy going ("for as long as this Equipment remains attached to it").
  */
-attached_by?: ObjectRef, } } | { "MonarchChanged": { 
+attached_by?: ObjectRef, 
+/**
+ * The object whose staying tapped kept the copy going ("for as long as that creature remains tapped").
+ */
+r6104_tapped?: ObjectRef, } } | { "MonarchChanged": { 
 /**
  * The new monarch.
  */

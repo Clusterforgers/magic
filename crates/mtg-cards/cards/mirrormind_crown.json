@@ -1,16 +1,49 @@
 {
   "oracle_id": "353db389-b829-4e66-85d5-6018bc87c3e0",
   "name": "Mirrormind Crown",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Mirrormind Crown",
       "oracle_fingerprint": "c4ed5bd94ef080a0ffcf75ec78fec441",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 192 }
+          "Replacement": {
+            "when": { "TokenCreation": {} },
+            "by": {
+              "Instead": [
+                {
+                  "May": {
+                    "effects": [
+                      {
+                        "CreateToken": {
+                          "token": { "CopyOf": { "of": "Attached" } },
+                          "count": "Triggering"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Type": "Creature" }, { "HasAttached": ["This"] }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Tally": { "event": "TokenCreated", "who": "You", "filter": [] } },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              ]
+            }
           }
         },
         { "Keyword": { "Equip": "{2}" } }

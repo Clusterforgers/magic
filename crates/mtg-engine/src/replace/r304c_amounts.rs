@@ -30,6 +30,15 @@ impl Pass<'_> {
                 0 => None,
                 most => Some(ReplaceBy::PreventUpTo(most)),
             },
+            ReplaceBy::R6100AtLeast(least) => match &self.slots[at].item {
+                Item::One(Event::DamageDealt { amount, .. }) if *amount > 0 => {
+                    match worked(least)?.checked_sub(*amount) {
+                        Some(more) if more > 0 => Some(ReplaceBy::Add(more)),
+                        _ => None,
+                    }
+                }
+                _ => None,
+            },
             ReplaceBy::PreventAtMost(most) => match &self.slots[at].item {
                 Item::One(Event::DamageDealt { amount, .. }) if amount <= most => {
                     Some(ReplaceBy::Prevent)

@@ -479,8 +479,8 @@ fn clause_spans_cut_out_the_sentences_they_name() {
     }
     let expected = [
         (
-            "Library of Leng",
-            "If an effect causes you to discard a card, discard it, but you may put it on top of your library instead of into your graveyard.",
+            "Firestorm Phoenix",
+            "If this creature would die, return it to its owner's hand instead. Until that player's next turn, that player plays with that card revealed in their hand and can't play it.",
         ),
         (
             "Yotia Declares War",

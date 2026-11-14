@@ -66,7 +66,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let state = cx.state();
     let (until_end_of_turn, until_next_turn_of) = match duration {
         Duration::UntilEndOfTurn => (true, None),
-        Duration::Forever | Duration::WhileSourceAttached => (false, None),
+        Duration::Forever | Duration::WhileSourceAttached | Duration::WhileTapped => (false, None),
         Duration::UntilYourNextTurn => (false, Some(cx.controller())),
         _ => return Err(ResolveError::Unsupported("Copy.Duration")),
     };
@@ -94,12 +94,22 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         let definition = Arc::new(definition);
         for permanent in cx.scope.live_objects(what)? {
-            let held = attached_by.is_none_or(|by| {
-                state
-                    .object(by.id)
-                    .is_some_and(|source| source.counter() == by.counter)
-                    && state.host_of(by.id) == Some(permanent.id())
-            });
+            // "For as long as that creature remains tapped": nothing changes when it is no longer tapped.
+            let tapped = *duration != Duration::WhileTapped
+                || state.object(original.id).is_some_and(|copied| {
+                    copied.counter() == original.counter
+                        && copied.zone() == Zone::Battlefield
+                        && copied
+                            .permanent()
+                            .is_some_and(crate::object::PermanentState::tapped)
+                });
+            let held = tapped
+                && attached_by.is_none_or(|by| {
+                    state
+                        .object(by.id)
+                        .is_some_and(|source| source.counter() == by.counter)
+                        && state.host_of(by.id) == Some(permanent.id())
+                });
             if permanent.zone() == Zone::Battlefield && held {
                 events.push(Event::BecameCopy(BecameCopy {
                     object: permanent.id(),
@@ -108,6 +118,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     until_end_of_turn,
                     until_next_turn_of,
                     attached_by,
+                    r6104_while_tapped: (*duration == Duration::WhileTapped).then_some(original),
                 }));
             }
         }

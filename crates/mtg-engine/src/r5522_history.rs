@@ -19,12 +19,17 @@ pub(crate) struct R5522Game {
     pub(crate) hits: Vec<(PlayerId, bool, Snapshot)>,
     /// The untapped lands each player controlled as the current turn began, before its untap step.
     pub(crate) untapped_lands: BTreeMap<PlayerId, u32>,
+    /// Every damage dealt to a permanent this game: the permanent, and the source as it was (`r6100_history`).
+    pub(crate) r6100_struck: Vec<(ObjectRef, Snapshot)>,
 }
 
 impl R5522Game {
     /// Whether nothing is kept yet.
     pub(crate) fn is_empty(&self) -> bool {
-        self.cycled_names.is_empty() && self.hits.is_empty() && self.untapped_lands.is_empty()
+        self.cycled_names.is_empty()
+            && self.hits.is_empty()
+            && self.untapped_lands.is_empty()
+            && self.r6100_struck.is_empty()
     }
 }
 

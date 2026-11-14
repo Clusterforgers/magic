@@ -712,6 +712,14 @@ pub enum Event {
         /// The players picked.
         players: Vec<PlayerId>,
     },
+    /// A kind of counter was picked at random with the next substream of the generator ("choose a kind of counter at
+    /// random"): the kind picked for the object it goes on.
+    KindChosenAtRandom {
+        /// The object the counter goes on.
+        object: ObjectId,
+        /// The kind picked.
+        kind: mtg_cards::value::CounterKind,
+    },
     /// A card was conjured into a zone (Alchemy).
     CardConjured(crate::conjure::CardConjured),
     /// A player seeks (Alchemy): `count` random cards of their library that match go to their hand, chosen with the
@@ -886,6 +894,10 @@ pub enum Event {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[cfg_attr(feature = "ts", ts(optional))]
         attached_by: Option<ObjectRef>,
+        /// The object whose staying tapped kept the copy going ("for as long as that creature remains tapped").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        r6104_tapped: Option<ObjectRef>,
     },
     /// A player became the monarch (CR 724).
     MonarchChanged {
@@ -1575,6 +1587,7 @@ impl Event {
             | Event::CardsFound(_)
             | Event::ChosenAtRandom { .. }
             | Event::PlayersChosenAtRandom { .. }
+            | Event::KindChosenAtRandom { .. }
             | Event::Sought { .. }
             | Event::Revealed(_)
             | Event::FirstDrawRevealed { .. } => Vec::new(),
