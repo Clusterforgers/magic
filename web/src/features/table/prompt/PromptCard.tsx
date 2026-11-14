@@ -13,7 +13,7 @@ export type PromptCardSize = 'normal' | 'compact'
 
 /** The box of each size, 5:7 like a card; whole class names, so Tailwind can see them. */
 export const PROMPT_CARD_BOX: Record<PromptCardSize, string> = {
-  normal: '[--card-w:4.75rem] [--card-h:6.65rem]',
+  normal: '[--card-w:6rem] [--card-h:8.4rem]',
   compact: '[--card-w:3.75rem] [--card-h:5.25rem]',
 }
 

@@ -6,7 +6,7 @@
  */
 import { Link } from '@tanstack/react-router'
 import { CircleAlertIcon, ShieldIcon, TrophyIcon } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { CopyButton } from '@/components/CopyButton'
 import { Loading } from '@/components/Loading'
 import { PageShell } from '@/components/PageShell'
@@ -32,12 +32,13 @@ import { loadPickerDecks, notePlayed, readPlayed } from './deckPicker'
 import type { LastPlayed, PickerDecks } from './deckPicker'
 import { BossIntro } from './BossIntro'
 import { DeckPicker } from './DeckPicker'
-import { lastFight, nextStep } from './model'
+import { lastFight, listOf, nextStep } from './model'
 import type { FindCard } from './findCard'
 import { PartyLobby } from './PartyLobby'
 import { RunHeader } from './RunHeader'
 import { POLL_MS, errorText } from './words'
 import { RevivalNote } from './DelvesRules'
+import { VotePanel } from './VotePanel'
 
 function FightPanel({
   view,
@@ -170,6 +171,7 @@ function RoomPanel({
   const offer = me?.offers[0]
   const waiting = view.run.heroes.filter((h) => h.offers.length > 0).map((h) => h.name)
   const boss = content.bosses.find((entry) => entry.id === view.boss)
+  const ways = view.run.map.nodes.find((n) => n.id === view.run.at)?.next.length ?? 0
   return (
     <div className="grid gap-3">
       {lastFight(view.run) === 'won' ? (
@@ -194,8 +196,8 @@ function RoomPanel({
       ) : null}
       {waiting.length > 0 && !offer ? (
         <p role="status" className="rounded-xl border bg-surface p-4 text-sm text-muted-foreground">
-          Waiting for {waiting.join(', ')} to pick. Then the party votes for the next room on the descent
-          below.
+          Waiting for {listOf(waiting)} to pick.{' '}
+          {ways > 1 ? 'Then the party votes for the next camp.' : 'Then the party moves on.'}
         </p>
       ) : null}
     </div>
@@ -208,13 +210,17 @@ function useDelve(client: DelvesApi, id: string) {
   const [content, setContent] = useState<DelveContent | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  // Counts the actions sent: a read that left before an action's answer would show the run without that vote.
+  const sent = useRef(0)
   useEffect(() => {
     let live = true
-    const read = () =>
-      client
+    const read = () => {
+      const at = sent.current
+      return client
         .get(id)
-        .then((answer) => live && setView(answer))
+        .then((answer) => live && at === sent.current && setView(answer))
         .catch((caught: unknown) => live && setError(errorText(caught)))
+    }
     client
       .content()
       .then((answer) => live && setContent(answer))
@@ -230,6 +236,7 @@ function useDelve(client: DelvesApi, id: string) {
     (action: DelveAction) => {
       setBusy(true)
       setError(null)
+      sent.current += 1
       client
         .act(id, action)
         .then(setView)
@@ -293,7 +300,7 @@ export function DelvePage({
   const status = view.run.status
   const fighting = typeof status === 'object' && 'Fight' in status
   const over = status === 'Victory' || status === 'Defeat' || status === 'Abandoned'
-  const ladder = <BossLadder view={view} content={content} act={act} busy={busy} />
+  const ladder = <BossLadder view={view} content={content} />
   const step = nextStep(view)
   const me = view.me === undefined ? undefined : view.run.heroes[view.me]
   return (
@@ -357,6 +364,7 @@ export function DelvePage({
               )}
             </DialogContent>
           </Dialog>
+          {status === 'Map' ? <VotePanel view={view} act={act} busy={busy} /> : null}
           {status === 'Room' ? (
             <RoomPanel view={view} content={content} act={act} busy={busy} find={find} />
           ) : null}

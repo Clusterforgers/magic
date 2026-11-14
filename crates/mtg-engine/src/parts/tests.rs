@@ -522,3 +522,83 @@ fn a_random_discard_logs_its_pick_before_the_discard_and_takes_a_card_of_the_han
     let again = part(r#"{"DiscardRandom":1}"#).events(&game, ME, source, &[]);
     assert_eq!(events, again, "the same state picks the same card");
 }
+
+/// The game with three ectoplasm on seat 0.
+fn holding_ectoplasm() -> GameState {
+    let mut game = game();
+    game.players[0]
+        .counters
+        .insert(CounterKind::Other("ectoplasm".to_owned()), 3);
+    game
+}
+
+#[rstest]
+#[case::the_counters_it_holds(
+    r#"{"SpendCounters":{"counter":{"Other":"ectoplasm"},"count":3}}"#,
+    true
+)]
+#[case::one_by_default(r#"{"SpendCounters":{"counter":{"Other":"ectoplasm"}}}"#, true)]
+#[case::more_than_it_holds(
+    r#"{"SpendCounters":{"counter":{"Other":"ectoplasm"},"count":4}}"#,
+    false
+)]
+#[case::counters_of_another_kind(r#"{"SpendCounters":{"counter":"poison"}}"#, false)]
+#[case::none_at_all(
+    r#"{"SpendCounters":{"counter":{"Other":"ectoplasm"},"count":0}}"#,
+    true
+)]
+fn spending_counters_is_payable_only_with_the_counters_the_player_holds(
+    #[case] json: &str,
+    #[case] payable: bool,
+) {
+    let game = holding_ectoplasm();
+    assert_eq!(
+        part(json).payable(&payer(&game, &[]), &[]).is_some(),
+        payable
+    );
+}
+
+#[test]
+fn spending_counters_is_read_as_a_part_and_paid_by_taking_them_off_the_player() {
+    let game = holding_ectoplasm();
+    let spend = part(r#"{"SpendCounters":{"counter":{"Other":"ectoplasm"},"count":2}}"#);
+    assert_eq!(
+        spend,
+        Part::Spend {
+            counter: CounterKind::Other("ectoplasm".to_owned()),
+            count: 2
+        }
+    );
+    assert_eq!(spend.name(), "Cost.SpendCounters");
+    assert_eq!(spend.text(), "Spend 2 ectoplasm");
+    assert_eq!(
+        spend.events(&game, ME, named(&game, "Source"), &[]),
+        [Event::CountersChanged(CountersChanged {
+            on: crate::choose::Target::Player(ME),
+            counter: CounterKind::Other("ectoplasm".to_owned()),
+            delta: -2,
+        })]
+    );
+    let none = part(r#"{"SpendCounters":{"counter":{"Other":"ectoplasm"},"count":0}}"#);
+    assert_eq!(none.events(&game, ME, named(&game, "Source"), &[]), []);
+}
+
+#[test]
+fn spending_a_counted_amount_of_counters_is_named_and_x_takes_what_is_held() {
+    let counted = r#"{"SpendCounters":{"counter":{"Other":"ectoplasm"},"count":{"Life":"You"}}}"#;
+    assert_eq!(
+        Part::read(&item(counted)),
+        Err("Cost.SpendCounters.Counted")
+    );
+    let game = holding_ectoplasm();
+    let x = part(r#"{"SpendCounters":{"counter":{"Other":"ectoplasm"},"count":"X"}}"#);
+    assert!(x.is_counted());
+    assert_eq!(x.most(&payer(&game, &[])), Some(3));
+    assert_eq!(
+        x.at(2),
+        Part::Spend {
+            counter: CounterKind::Other("ectoplasm".to_owned()),
+            count: 2
+        }
+    );
+}

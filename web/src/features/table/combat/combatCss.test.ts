@@ -74,13 +74,19 @@ describe('the combat stylesheet and colour', () => {
     expect(colours.every((colour) => colour !== undefined)).toBe(true)
   })
 
-  it('keeps attacks muted and thin and blocks strong and thick', () => {
+  it('draws attacks in the gold of attackers, a little thinner than the strong blocks', () => {
     const width = (head: string): number =>
       Number(
         new RegExp(`${head.replace(/[[\]()]/g, '\\$&')} \\{[^}]*stroke-width:\\s*([\\d.]+)`).exec(css)?.[1],
       )
     expect(width('.combat-line')).toBeLessThan(width(".combat-group[data-kind='block'] .combat-line"))
     expect(light).toMatch(/--combat-attack:\s*oklch\([^)]*\/\s*0\.\d+\)/)
+    // A gold hue, 70° to 95°, in both themes.
+    for (const theme of [light, dark]) {
+      const hue = Number(/--combat-attack:\s*oklch\([\d.]+ [\d.]+ ([\d.]+)/.exec(theme)?.[1])
+      expect(hue).toBeGreaterThanOrEqual(70)
+      expect(hue).toBeLessThanOrEqual(95)
+    }
   })
 })
 

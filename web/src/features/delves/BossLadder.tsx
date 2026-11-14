@@ -2,31 +2,13 @@
  * The ladder as a path down into the dungeon: each boss with its portrait and each camp with its sign, marked cleared,
  * current, next (open to a vote) or locked, and on the next camps who voted for which.
  */
-import {
-  CheckIcon,
-  FlameIcon,
-  GemIcon,
-  LockIcon,
-  MapPinIcon,
-  ScrollTextIcon,
-  StoreIcon,
-  SwordsIcon,
-} from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { CheckIcon, LockIcon, MapPinIcon, SwordsIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { DelveAction, DelveContent, DelveView, Node, RoomKind, Run } from '@/protocol/generated'
+import type { DelveContent, DelveView, Node, Run } from '@/protocol/generated'
 import { BossPortrait } from './CommanderArt'
-import { bossLife, nodeState, openChoices, votersOf } from './model'
+import { bossLife, nodeState, openChoices, torchOf, votersOf } from './model'
 import type { NodeState } from './model'
-
-const ROOM: Record<RoomKind, { label: string; icon: LucideIcon; blurb: string }> = {
-  boss: { label: 'Boss', icon: SwordsIcon, blurb: '' },
-  treasure: { label: 'Treasure', icon: GemIcon, blurb: 'A relic for each hero' },
-  shop: { label: 'Shop', icon: StoreIcon, blurb: 'Cards, relics and a draught' },
-  event: { label: 'Event', icon: ScrollTextIcon, blurb: 'A choice with a price' },
-  campfire: { label: 'Campfire', icon: FlameIcon, blurb: 'Rest or reforge' },
-}
+import { ROOM } from './rooms'
 
 const STATE_WORDS: Record<NodeState, string> = {
   cleared: 'Cleared',
@@ -149,23 +131,7 @@ function BossStop({
   )
 }
 
-function CampStop({
-  node,
-  state,
-  run,
-  mine,
-  canVote,
-  busy,
-  act,
-}: {
-  node: Node
-  state: NodeState
-  run: Run
-  mine: boolean
-  canVote: boolean
-  busy: boolean
-  act: (action: DelveAction) => void
-}) {
+function CampStop({ node, state, run, mine }: { node: Node; state: NodeState; run: Run; mine: boolean }) {
   const room = ROOM[node.kind]
   const Icon = room.icon
   const voters = votersOf(run, node.id)
@@ -201,18 +167,7 @@ function CampStop({
       {state === 'next' ? (
         <span className="grid gap-2">
           <Voters names={voters} />
-          {canVote ? (
-            <Button
-              size="sm"
-              variant={mine ? 'default' : 'outline'}
-              aria-pressed={mine}
-              disabled={busy}
-              onClick={() => act({ kind: 'vote', node: node.id })}
-              aria-label={mine ? `Your vote: ${room.label}` : `Vote for ${room.label}`}
-            >
-              {mine ? 'Your vote' : 'Vote'}
-            </Button>
-          ) : null}
+          {mine ? <span className="text-xs font-semibold text-delve">Your vote</span> : null}
         </span>
       ) : (
         <StateMark state={state} />
@@ -222,22 +177,12 @@ function CampStop({
 }
 
 /** The ladder: rows from the first boss down to the final one, joined by the path. */
-export function BossLadder({
-  view,
-  content,
-  act,
-  busy,
-}: {
-  view: DelveView
-  content: DelveContent
-  act: (action: DelveAction) => void
-  busy: boolean
-}) {
+export function BossLadder({ view, content }: { view: DelveView; content: DelveContent }) {
   const run = view.run
   const rows: Node[][] = []
   for (const node of run.map.nodes) (rows[node.row] ??= []).push(node)
   const myVote = view.me === undefined ? undefined : run.votes[view.me]
-  const torch = run.heroes.length > 0 ? run.cleared.length % run.heroes.length : 0
+  const torch = torchOf(run)
   const choosing = openChoices(run).length > 0
   const voted = Object.keys(run.votes).length
   return (
@@ -251,7 +196,7 @@ export function BossLadder({
             <strong>
               {voted} of {run.heroes.length}
             </strong>{' '}
-            voted · a tie goes to the torch bearer, {run.heroes[torch]?.name}
+            voted · torch bearer {run.heroes[torch]?.name}
           </p>
         ) : null}
       </div>
@@ -268,16 +213,7 @@ export function BossLadder({
                 return node.kind === 'boss' ? (
                   <BossStop key={node.id} node={node} state={state} view={view} content={content} />
                 ) : (
-                  <CampStop
-                    key={node.id}
-                    node={node}
-                    state={state}
-                    run={run}
-                    mine={myVote === node.id}
-                    canVote={view.me !== undefined}
-                    busy={busy}
-                    act={act}
-                  />
+                  <CampStop key={node.id} node={node} state={state} run={run} mine={myVote === node.id} />
                 )
               })}
             </ol>

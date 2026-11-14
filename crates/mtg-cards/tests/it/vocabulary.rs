@@ -115,6 +115,14 @@ fn names(list: &[&str]) -> BTreeSet<String> {
     r#"{"Activated":{"cost":["Tap",{"PayEnergy":2}],"effects":[{"Draw":{}}]}}"#,
     &["Ability.Activated", "Cost.PayEnergy", "Cost.Tap", "Effect.Draw"]
 )]
+#[case::spending_counters_the_player_holds(
+    r#"{"Activated":{"cost":[{"SpendCounters":{"counter":{"Other":"ectoplasm"},"count":3}}],"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Activated", "Cost.SpendCounters", "Effect.Draw"]
+)]
+#[case::spending_one_counter_by_default(
+    r#"{"Activated":{"cost":[{"SpendCounters":{"counter":{"Other":"ectoplasm"}}}],"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Activated", "Cost.SpendCounters", "Effect.Draw"]
+)]
 #[case::removing_a_counter(
     r#"{"Activated":{"cost":[{"RemoveCounters":{"counter":"charge"}}],"effects":[{"Draw":{}}]}}"#,
     &["Ability.Activated", "Cost.RemoveCounters", "Effect.Draw"]

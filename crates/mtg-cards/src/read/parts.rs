@@ -90,6 +90,11 @@ fn cost_item(ctx: &Ctx, item: &CostItem) -> String {
             format!("discard {} at random", phrase::counted(ctx, count, "card"))
         }
         CostItem::PayEnergy(count) => format!("pay {} energy", phrase::amount(ctx, count)),
+        CostItem::SpendCounters { counter, count } => format!(
+            "spend {} {}",
+            phrase::amount(ctx, count),
+            phrase::counter_text(counter)
+        ),
         CostItem::TapPermanents { filter, count } => {
             format!("tap {} you control", taken(ctx, count, filter))
         }
@@ -937,6 +942,14 @@ mod tests {
     #[case::tap_and_sacrifice(r#"["Tap","SacrificeSelf"]"#, "{T}, sacrifice this permanent")]
     #[case::life(r#"[{"PayLife":2}]"#, "pay 2 life")]
     #[case::discard(r#"[{"Discard":{"count":1}}]"#, "discard a card")]
+    #[case::spend_one(
+        r#"[{"SpendCounters":{"counter":{"Other":"ectoplasm"}}}]"#,
+        "spend 1 ectoplasm"
+    )]
+    #[case::spend_three(
+        r#"[{"SpendCounters":{"counter":{"Other":"ectoplasm"},"count":3}}]"#,
+        "spend 3 ectoplasm"
+    )]
     fn costs_read_part_by_part(#[case] json: &str, #[case] shown: &str) {
         let parsed: Cost = serde_json::from_str(json).unwrap();
         assert_eq!(cost(&Ctx::none(), &parsed), shown);

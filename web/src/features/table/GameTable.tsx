@@ -37,6 +37,7 @@ import { Opponents, SeatArea } from './Seats'
 import { BossSide, PartySide } from './BossLayout'
 import { bossSidesKey, defaultFocusOf, handSeat, parseBossSides, seatCountOf, turnLeft } from './selectors'
 import { SharedStrip } from './SharedStrip'
+import { useSideFolded } from './sideFold'
 import { SideProvider } from './sideState'
 import { StopControlsProvider } from './stops/stopControls'
 import { SidePanelMount, SideSheet, SideTabs } from './SideTabs'
@@ -89,6 +90,7 @@ const Table = memo(function Table() {
   // The hand of the player the viewer controls this turn, else the viewer's own (CR 722).
   const handFrom = usePlay((state) => handSeat(state, viewer))
   const [mode, setMode] = useState<TableMode | undefined>(options.mode)
+  const sideFolded = useSideFolded()
   const [chosen, setChosen] = useState<PlayerId | null>(options.focus ?? null)
   const [previews] = useState(createPreviewStore)
   const [marks] = useState(createMarksStore)
@@ -96,8 +98,9 @@ const Table = memo(function Table() {
   const sidesKey = usePlay(bossSidesKey)
   const sides = useMemo(() => parseBossSides(sidesKey), [sidesKey])
   const table = useMemo(
-    () => planTable({ viewport, seatCount, viewer, mode, focus: chosen ?? followed, active, sides }),
-    [viewport, seatCount, viewer, mode, chosen, followed, active, sides],
+    () =>
+      planTable({ viewport, seatCount, viewer, mode, focus: chosen ?? followed, active, sides, sideFolded }),
+    [viewport, seatCount, viewer, mode, chosen, followed, active, sides, sideFolded],
   )
   const { seats: plan } = table
   // The overhang the sheet wants in steps of 8 px: the split reserves part of it, and a pod column keeps all of it free.
@@ -132,7 +135,7 @@ const Table = memo(function Table() {
                     {!ready || seat === null ? (
                       <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
                     ) : (
-                      <SideProvider kind={regions.side}>
+                      <SideProvider kind={regions.side} foldable={regions.foldable}>
                         <TableGrid
                           regions={regions}
                           stopsRow={table.stopsRow}

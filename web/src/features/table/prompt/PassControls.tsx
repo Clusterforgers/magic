@@ -171,7 +171,7 @@ export function PassControls({ canPass }: { canPass: boolean }) {
         <Button
           data-slot="primary-action"
           data-label={label}
-          className={cn('h-11 min-w-0 max-sm:basis-full', padding)}
+          className={cn('action-glow h-11 min-w-0 font-semibold max-sm:basis-full', padding)}
           disabled={!free}
           title={yieldKey ? 'Space' : 'Space or Enter'}
           aria-keyshortcuts={yieldKey ? 'Space' : 'Space Enter'}

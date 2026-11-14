@@ -142,7 +142,7 @@ export const HandDock = memo(function HandDock({
       aria-label="Your hand"
       data-region="hand"
       data-fx-anchor={`${seat}:hand`}
-      className="flex min-h-0 min-w-0 items-center justify-center border-t bg-table px-2 py-1"
+      className="dock flex min-h-0 min-w-0 items-center justify-center px-2 py-1"
     >
       <p aria-live="polite" className="sr-only">
         {moved}

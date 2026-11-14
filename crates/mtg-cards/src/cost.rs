@@ -54,6 +54,14 @@ pub enum CostItem {
     DiscardRandom(Amount),
     /// Pay energy (`{E}`, CR 107.14): remove that many energy counters from the payer.
     PayEnergy(Amount),
+    /// Spend counters of a kind the payer holds ("Spend 3 ectoplasm"): remove that many from the payer, who must hold them.
+    SpendCounters {
+        /// The kind of counter.
+        counter: CounterKind,
+        /// How many.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
     /// Remove counters of a kind from the source ("Remove a charge counter from this land"), or one from each of `count`
     /// permanents the payer controls that match `from` ("Remove a +1/+1 counter from a creature you control").
     RemoveCounters {
@@ -320,6 +328,7 @@ impl CostItem {
             CostItem::RemoveCounters { count, .. }
             | CostItem::RemoveCountersAmong { count, .. }
             | CostItem::PutCounters { count, .. }
+            | CostItem::SpendCounters { count, .. }
             | CostItem::UntapPermanents { count, .. }
             | CostItem::Sacrifice { count, .. }
             | CostItem::Discard { count, .. }
@@ -358,6 +367,7 @@ impl Cost {
             | CostItem::Blight(amount) => *amount == Amount::X,
             CostItem::RemoveCountersAmong { count, .. }
             | CostItem::PutCounters { count, .. }
+            | CostItem::SpendCounters { count, .. }
             | CostItem::UntapPermanents { count, .. }
             | CostItem::RemoveCounters { count, .. }
             | CostItem::Sacrifice { count, .. }

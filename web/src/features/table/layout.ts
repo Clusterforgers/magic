@@ -220,7 +220,7 @@ export const TOP_BAR_LANDSCAPE_PX = 32
 /** The shared strip between the opponents and the own board. */
 export const SHARED_CLAMP: HeightClamp = { min: 56, vh: 7, max: 72 }
 /** The hand dock; a phone held upright gets the lower one. */
-export const HAND_CLAMP: HeightClamp = { min: 96, vh: 13, max: 168 }
+export const HAND_CLAMP: HeightClamp = { min: 104, vh: 16, max: 200 }
 export const HAND_PHONE_CLAMP: HeightClamp = { min: 96, vh: 14, max: 120 }
 /**
  * A hand that one row does not hold grows the dock (not a phone's) to the height of its rows, up to this percent of the
@@ -241,9 +241,9 @@ export const SHEET_MAX_VH = 40
 /** What a phone's prompt sheet leaves of the opponents' area: the tile strip and a row of their board, in px. */
 export const SHEET_KEEP_PX = 120
 /** The side column takes this share of the window width between its bounds; M gets a rail of `RAIL_PX`. */
-export const SIDE_SHARE = 0.22
-export const SIDE_MIN_PX = 280
-export const SIDE_MAX_PX = 320
+export const SIDE_SHARE = 0.18
+export const SIDE_MIN_PX = 272
+export const SIDE_MAX_PX = 304
 export const RAIL_PX = 44
 /** A window lower than this and wider than it is high is a phone on its side. */
 export const LANDSCAPE_MAX_HEIGHT = 500
@@ -264,6 +264,8 @@ export interface Regions {
   /** A phone on its side: the S layout with a lower top bar. */
   landscape: boolean
   side: SideKind
+  /** The window has room for the side column (L and up), which the viewer may fold to its rail. */
+  foldable: boolean
   /** What the side column or rail takes of the width; 0 for a sheet. */
   sideWidth: number
   /** The area left of the side column. */
@@ -303,14 +305,15 @@ export function clampedHeight(range: HeightClamp, height: number): number {
   return clampTo((height * range.vh) / 100, range.min, range.max)
 }
 
-/** Sizes the regions of the table for a window; total for any input. */
-export function regionSizes(viewport: Viewport): Regions {
+/** Sizes the regions of the table for a window, with the side column folded to its rail where `folded`; total for any input. */
+export function regionSizes(viewport: Viewport, folded = false): Regions {
   const width = finite(viewport.width)
   const height = finite(viewport.height)
   const breakpoint = breakpointOf(width)
   const phone = breakpoint === 'xs'
   const landscape = height < LANDSCAPE_MAX_HEIGHT && width > height
-  const side = SIDE_OF[breakpoint]
+  const foldable = SIDE_OF[breakpoint] === 'column'
+  const side = foldable && folded ? 'rail' : SIDE_OF[breakpoint]
   const sideWidth =
     side === 'column' ? clampTo(width * SIDE_SHARE, SIDE_MIN_PX, SIDE_MAX_PX) : side === 'rail' ? RAIL_PX : 0
   const topBar = landscape ? TOP_BAR_LANDSCAPE_PX : TOP_BAR_PX
@@ -324,6 +327,7 @@ export function regionSizes(viewport: Viewport): Regions {
     phone,
     landscape,
     side,
+    foldable,
     sideWidth,
     main: { width: width - sideWidth, height },
     topBar,
@@ -479,6 +483,8 @@ export interface TableInput extends Omit<SeatInput, 'mode'> {
   mode?: TableMode | undefined
   /** The seat whose turn it is; in focus mode its tile leads the strip. */
   active?: PlayerId | null | undefined
+  /** The viewer folded the side column to its rail (`sideFold.ts`). */
+  sideFolded?: boolean | undefined
 }
 
 /** `tiles` with `active` moved to the front, the rest as they were; unchanged when `active` is not among them. */
@@ -546,7 +552,7 @@ export interface TablePlan {
 
 /** Sizes the regions, chooses the mode and arranges the seats. */
 export function planTable(input: TableInput): TablePlan {
-  const regions = regionSizes(input.viewport)
+  const regions = regionSizes(input.viewport, input.sideFolded === true)
   const seatCount = wholeSeats(input.seatCount)
   const mode = chooseMode({
     seatCount,

@@ -9,6 +9,7 @@ use mtg_cards::refs::{Bounds, Ref, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::value::{Amount, CounterKind};
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::teams::{TeamMode, Teams};
 use rstest::rstest;
 
 use super::apply_event;
@@ -1307,6 +1308,61 @@ fn a_turn_begins_by_recording_whether_each_permanent_of_its_player_came_under_th
     assert_eq!(permanent.is_new_to(PlayerId::from_index(active)), fresh);
     assert!(!permanent.is_new_to(PlayerId::from_index(1 - active)));
     assert_eq!(permanent.summoning_sick(), still_sick);
+}
+
+#[rstest]
+#[case::teams_own_turn(TeamMode::Teams, &[0, 1, 0, 1], 0, 0, true)]
+#[case::teams_an_opponents_turn(TeamMode::Teams, &[0, 1, 0, 1], 0, 1, false)]
+#[case::teams_a_teammates_turn(TeamMode::Teams, &[0, 1, 0, 1], 0, 2, false)]
+#[case::teams_a_teammates_turn_next_door(TeamMode::Teams, &[0, 0, 1, 1], 0, 1, false)]
+#[case::teams_the_teammates_own_turn(TeamMode::Teams, &[0, 1, 0, 1], 2, 2, true)]
+#[case::giant_the_active_head(TeamMode::TwoHeadedGiant, &[0, 0, 1, 1], 0, 0, true)]
+#[case::giant_the_other_head(TeamMode::TwoHeadedGiant, &[0, 0, 1, 1], 1, 0, true)]
+#[case::giant_the_other_head_of_the_next_team(TeamMode::TwoHeadedGiant, &[0, 0, 1, 1], 3, 2, true)]
+#[case::giant_the_other_team(TeamMode::TwoHeadedGiant, &[0, 0, 1, 1], 2, 0, false)]
+fn a_turn_ends_the_sickness_of_the_permanents_of_the_players_whose_turn_it_is(
+    #[case] mode: TeamMode,
+    #[case] assignment: &[u32],
+    #[case] holder: usize,
+    #[case] active: usize,
+    #[case] settled: bool,
+) {
+    let mut game = state(
+        vec![vec![]; 4],
+        (0..4)
+            .map(|seat| {
+                if seat == holder {
+                    vec![creature("Holder", 1, 1)]
+                } else {
+                    vec![]
+                }
+            })
+            .collect(),
+    );
+    game.house_rules.teams = Some(Teams {
+        mode,
+        seats: assignment.to_vec(),
+    });
+    let id = game.zone(Zone::Battlefield)[0];
+    let permanent = game
+        .objects
+        .get_mut(&id)
+        .and_then(|object| object.permanent.as_mut())
+        .unwrap();
+    permanent.summoning_sick = true;
+    permanent.observed = None;
+    fold(
+        &mut game,
+        &[Event::TurnBegan {
+            number: 2,
+            active: PlayerId::from_index(active),
+            extra: false,
+        }],
+    );
+    let permanent = game.object(id).unwrap().permanent().unwrap();
+    assert_eq!(permanent.summoning_sick(), !settled);
+    // What a turn settles is recorded as new to the player it settled it for.
+    assert_eq!(permanent.is_new_to(PlayerId::from_index(holder)), settled);
 }
 
 #[test]

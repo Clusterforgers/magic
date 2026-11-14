@@ -54,7 +54,7 @@ export function ControlsDock({ stopsRow }: { stopsRow: boolean }) {
       aria-label="Pass controls"
       data-region="controls"
       // On a phone the dock is one wrapping line: the Stops button and the menu of passing, then the primary button alone.
-      className="fade-scroll flex min-h-0 min-w-0 flex-col items-end justify-end-safe gap-1.5 border-t border-l bg-surface px-2 py-1.5 max-sm:flex-row max-sm:flex-wrap max-sm:content-end max-sm:justify-end"
+      className="fade-scroll flex min-h-0 min-w-0 flex-col items-end justify-end-safe gap-1.5 dock border-l px-2 py-1.5 max-sm:flex-row max-sm:flex-wrap max-sm:content-end max-sm:justify-end"
     >
       <div data-slot="take-back-slot" className="max-w-full empty:hidden max-sm:basis-full">
         <TakeBackControls />

@@ -78,7 +78,7 @@ export function SharedStrip({
         // The edge takes the colour of the phase; on your turn the gold glow of `your-turn-cue` lies outside it.
         data-themed=""
         className={cn(
-          'fade-scroll absolute inset-x-0 bottom-0 max-h-(--sheet-max) min-h-full rounded-xl border-2 border-phase bg-card px-3 py-1',
+          'fade-scroll absolute inset-x-0 bottom-0 max-h-(--sheet-max) min-h-full plaque rounded-xl border-2 border-phase px-3 py-1',
           yourTurn && 'your-turn-cue',
         )}
       >
