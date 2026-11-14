@@ -22,6 +22,7 @@ pub(crate) fn r6001_blocked_by_at_least(
             .rules()
             .quirks
             .of(*attacker)
+            .iter()
             .filter_map(|quirk| match quirk {
                 CombatQuirk::R6001MustBeBlockedByAtLeast(count) => usize::try_from(*count).ok(),
                 _ => None,

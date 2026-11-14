@@ -18,8 +18,6 @@ use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
-use crate::common::pid;
-
 const GREYMOND: &str = "Greymond, Avacyn's Stalwart";
 
 /// A free 1/1 Human named `name`.
@@ -82,7 +80,9 @@ fn r6001_greymonds_humans_have_the_two_chosen_abilities(
             {
                 break;
             }
-            _ => driver.answer_passively()?,
+            _ => {
+                driver.answer_passively()?;
+            }
         }
     }
     assert_eq!(offered, [3, 2], "two different abilities are asked for");

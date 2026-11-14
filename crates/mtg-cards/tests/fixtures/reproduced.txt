@@ -1064,6 +1064,7 @@ Jumbo Cactuar
 Jungle Lion
 Junk Winder
 Jyoti, Moag Ancient
+Kaervek's Torch
 Kalemne's Captain
 Kalemne, Disciple of Iroas
 Kalitas, Traitor of Ghet
@@ -2236,6 +2237,7 @@ Village Pillagers
 Village Rites
 Viper's Kiss
 Viridian Corrupter
+Virtus the Veiled
 Visage of Dread // Dread Osseosaur
 Viscerid Drone
 Vish Kal, Blood Arbiter

@@ -2778,7 +2778,8 @@ impl<'a> Scope<'a> {
             | Chosen::Players(_)
             | Chosen::Chapter(_)
             | Chosen::Number(_)
-            | Chosen::Word(_) => false,
+            | Chosen::Word(_)
+            | Chosen::Words(_) => false,
         }
     }
 

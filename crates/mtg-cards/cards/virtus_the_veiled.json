@@ -7,37 +7,16 @@
       "name": "Virtus the Veiled",
       "oracle_fingerprint": "87474bd92db02ab1852af5c02f1db0f4",
       "abilities": [
-        {
-          "Keyword": {
-            "PartnerWith": "Gorm the Great"
-          }
-        },
-        {
-          "Keyword": "Deathtouch"
-        },
+        { "Keyword": { "PartnerWith": "Gorm the Great" } },
+        { "Keyword": "Deathtouch" },
         {
           "Triggered": {
-            "when": {
-              "DealsDamage": {
-                "source": [
-                  "This"
-                ],
-                "to": "EachPlayer",
-                "combat": true
-              }
-            },
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
             "effects": [
               {
                 "LoseLife": {
                   "who": "Triggering",
-                  "amount": {
-                    "Half": {
-                      "of": {
-                        "Life": "Triggering"
-                      },
-                      "up": true
-                    }
-                  }
+                  "amount": { "Half": { "of": { "Life": "Triggering" }, "up": true } }
                 }
               }
             ]

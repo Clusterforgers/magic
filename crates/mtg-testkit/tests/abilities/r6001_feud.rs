@@ -38,7 +38,9 @@ fn r6001_settle(driver: &mut Driver, players: &[usize]) -> Result<(), ScriptErro
             {
                 return Ok(());
             }
-            _ => driver.answer_passively()?,
+            _ => {
+                driver.answer_passively()?;
+            }
         }
     }
     Err(ScriptError::Stuck("the stack does not empty".to_owned()))
@@ -86,6 +88,10 @@ fn r6001_bitter_feud_doubles_damage_between_the_chosen_players(
     r6001_settle(&mut driver, &chosen)?;
     let life = |driver: &Driver, seat: usize| driver.state().player(pid(seat)).unwrap().life();
     let before: Vec<i32> = (0..seats).map(|seat| life(&driver, seat)).collect();
+    let wall = match aim {
+        Aim::Wall(seat) => Some(driver.id_of(&format!("Wall {seat}"))?),
+        Aim::Player(_) => None,
+    };
     driver.begin_cast("Lightning Bolt")?;
     let at = match aim {
         Aim::Player(seat) => driver.target_player(seat),
@@ -102,10 +108,9 @@ fn r6001_bitter_feud_doubles_damage_between_the_chosen_players(
             let after: Vec<i32> = (0..seats).map(|seat| life(&driver, seat)).collect();
             assert_eq!(after, expected);
         }
-        Aim::Wall(seat) => {
+        Aim::Wall(_) => {
             // 3 damage leaves the 0/4 wall alive; 6 destroys it.
-            let wall = driver.id_of(&format!("Wall {seat}"))?;
-            let zone = driver.state().object(wall).map(|o| o.zone());
+            let zone = wall.and_then(|wall| driver.state().object(wall)).map(|o| o.zone());
             assert_eq!(zone != Some(Zone::Battlefield), doubled, "{zone:?}");
         }
     }
