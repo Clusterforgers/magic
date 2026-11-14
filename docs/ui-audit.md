@@ -1,6 +1,6 @@
 # UI audit and the look
 
-The state of the web client's look and feel, the problems ranked by their cost to play, the chosen look, the game-feel plan and the ordered build plan for the overhaul. Rules stay in [ui-design.md](ui-design.md); implementation in [web.md](web.md).
+The state of the web client's look and feel, the problems ranked by their cost to play, the chosen look, the game-feel plan and the items left open. Rules stay in [ui-design.md](ui-design.md); implementation in [web.md](web.md).
 
 ## Method
 
@@ -76,12 +76,14 @@ Effects and sounds decorate the batch that arrived, as the table effects do toda
 - Production: Web Audio synthesis for interface cues (ping, horn, chimes, ticks: oscillators and envelopes, as `synth.ts` does) and filtered noise for physical sounds (slide, riffle, thump). If synthesis sounds thin for card handling, Kenney's Casino Audio pack (CC0) has card slide, place and shuffle; any asset ships under `web/public/sounds/` with its source and licence in `web/public/sounds/CREDITS.md`. No unlicensed asset.
 - Settings: Effects (full, reduced, off; today's `mode`), Sounds (master, table, cues, results sliders, mute) in the table menu and on Settings; `prefers-reduced-motion` sets reduced by default; every effect ends at once on a new batch or a key press.
 
-## Phase 2 build plan
+## Open items
 
-Each pass is one commit with before and after shots at 1400 × 900, 1280 × 720 and 390 × 900 of the screens it touches, and its tests (contrast in `tokens.test.ts`, layout in `scripts/ui-audit.mjs` and the e2e layout gate).
+Each item is one commit with before and after shots at 1400 × 900, 1280 × 720 and 390 × 900 of the screens it touches, and its tests.
 
-| Pass | Outcome |
-|---|---|
-| 4 | Prompts: modes with the card's picture; a list of many cards as a centre overlay of its own |
-| 5 | Board room: combat lines kept to the boards they join, attacker groups as a badge on the defender's pod |
-| 7 | Pages: open games as cards with commander art (the lobby list carries no commanders yet, a server field first); the descent keeps the crown and the boss's colours (a boss card has no printed art) |
+- Phone boards: opponents' and your permanents read at 390 (about 30 px now), a card prompt without an inner scroll.
+- Own board in crowds: your creatures past 55 px at a grid table with 40 permanents a seat (an enlarge of your board, or a taller own row).
+- Commander art on open games: a commanders field on the lobby list (server), then each open game as a card with its commanders' art.
+- Boss art: a picture for each boss of the Delves content, shown on the descent and the fight panel in place of the crown.
+- Long-list overlay: a choice of many cards as a centre overlay of its own, the strip keeping the sentence and the buttons.
+- Mode pictures: each mode of a modal spell beside the card's picture.
+- Combat lines kept to the boards they join; attacker groups as a badge on the defender's pod.
