@@ -4,7 +4,15 @@ import { describe, expect, it } from 'vitest'
 import { renderTable } from '@/test-utils/tableHarness'
 import { buildFixture } from './dev/fixture'
 import { withBoss } from './dev/devGame'
-import { ALLY_STRIP_PX, ALLIES_MAX_PX, ALLIES_MIN_PX, ALLIES_OWN_MOST, alliesBandPx, arrangeSeats, planTable } from './layout'
+import {
+  ALLY_STRIP_PX,
+  ALLIES_MAX_PX,
+  ALLIES_MIN_PX,
+  ALLIES_OWN_MOST,
+  alliesBandPx,
+  arrangeSeats,
+  planTable,
+} from './layout'
 import type { BossSides } from './layout'
 import { bossSidesOf, parseBossSides } from './selectors'
 

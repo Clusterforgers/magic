@@ -86,9 +86,13 @@ describe('the abilities bar at the table', () => {
   it('lists every ability in full behind "All"', async () => {
     const { user } = fight()
     await user.click(screen.getByRole('button', { name: /^All \d+ abilities of / }))
-    const full = await screen.findAllByText((_, element) => element?.getAttribute('data-slot') === 'boss-ability-full')
+    const full = await screen.findAllByText(
+      (_, element) => element?.getAttribute('data-slot') === 'boss-ability-full',
+    )
     expect(full.length).toBeGreaterThanOrEqual(DEV_BOSS_EMBLEMS.length)
-    expect(screen.getByText(DEV_BOSS_CONTENT.cards.find((one) => one.name === 'Warpath')?.text ?? '-')).toBeInTheDocument()
+    expect(
+      screen.getByText(DEV_BOSS_CONTENT.cards.find((one) => one.name === 'Warpath')?.text ?? '-'),
+    ).toBeInTheDocument()
   })
 
   it('carries the phase track, and the boss pod leaves out what the bar shows', () => {
@@ -96,7 +100,8 @@ describe('the abilities bar at the table', () => {
     expect(container.querySelector('[data-slot="boss-abilities"] [data-slot="boss-track"]')).not.toBeNull()
     const pod = bossPod()
     expect(pod.querySelector('[data-slot="boss-track"]')).toBeNull()
-    for (const key of ['Boss', 'Scheme', 'Omen']) expect(pod.querySelector(`[data-effect="${key}"]`)).toBeNull()
+    for (const key of ['Boss', 'Scheme', 'Omen'])
+      expect(pod.querySelector(`[data-effect="${key}"]`)).toBeNull()
     expect(pod.querySelector('[data-effect^="Emblem:"]')).toBeNull()
   })
 

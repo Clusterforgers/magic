@@ -22,7 +22,15 @@ import { useSeatNamer } from './names'
 import { BankMark } from './BankMark'
 import { ACTIVE_EDGE, AwayMark, CountChip, PriorityDot, SeatDot, YOUR_TURN_EDGE } from './PodParts'
 import { podCounts, podState, podStateWords, priorityName, showsPriorityDot } from './podFigures'
-import { commandCardsOf, exileOf, holdsPriority, isActiveSeat, isYourTurn, NO_IDS, playerOf } from './selectors'
+import {
+  commandCardsOf,
+  exileOf,
+  holdsPriority,
+  isActiveSeat,
+  isYourTurn,
+  NO_IDS,
+  playerOf,
+} from './selectors'
 import { describeMulligan } from './turnText'
 import { useBoxHeight } from './useBoxHeight'
 import { SeatCorner } from './SeatCorner'

@@ -111,7 +111,15 @@ function useWrapped(ref: RefObject<HTMLElement | null>, count: number): number {
 }
 
 /** The button at the end of the row: every ability in full, with the count of those the row has no room for. */
-function AllAbilities({ name, abilities, hidden }: { name: string; abilities: BossAbility[]; hidden: number }) {
+function AllAbilities({
+  name,
+  abilities,
+  hidden,
+}: {
+  name: string
+  abilities: BossAbility[]
+  hidden: number
+}) {
   return (
     <Popover>
       <PopoverTrigger
@@ -193,7 +201,11 @@ export function BossAbilityList({ abilities }: { abilities: readonly BossAbility
   return (
     <ul aria-label="Boss abilities" className="grid gap-2 sm:grid-cols-2">
       {abilities.map((ability) => (
-        <li key={ability.key} data-slot="boss-ability" className="grid gap-1 rounded-lg border bg-surface p-3">
+        <li
+          key={ability.key}
+          data-slot="boss-ability"
+          className="grid gap-1 rounded-lg border bg-surface p-3"
+        >
           <AbilityText ability={ability} title={false} />
         </li>
       ))}

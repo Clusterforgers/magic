@@ -388,7 +388,9 @@ describe('the panel', () => {
     const pod = panel('Alice (you)')
     const heading = must(within(pod).getByRole('heading', { name: 'Alice' }).parentElement)
     expect(heading.querySelector('[data-slot="turn-time"]')).toBeNull()
-    expect(within(pod).getByRole('group', { name: "Alice's zones" }).querySelector('[data-slot="turn-time"]')).not.toBeNull()
+    expect(
+      within(pod).getByRole('group', { name: "Alice's zones" }).querySelector('[data-slot="turn-time"]'),
+    ).not.toBeNull()
   })
 
   it('is one column that may shrink, so a long commander chip is cut inside the pod and life stays in its column', () => {
