@@ -26,7 +26,7 @@ export function DelvesRules() {
       {ENTRIES.map((entry) => (
         <details key={entry.title} data-slot="delves-rule" className="group rounded-lg border p-2">
           <summary className="cursor-pointer font-medium">{entry.title}</summary>
-          <ul className="mt-2 grid list-disc gap-1 ps-5 text-sm">
+          <ul className="mt-2 grid list-disc gap-1 ps-4 text-sm">
             {entry.lines.map((text) => (
               <li key={text}>{text}</li>
             ))}
@@ -49,7 +49,7 @@ export function RevivalNote() {
         <GhostIcon aria-hidden="true" className="size-4" />
         Fall in a fight, and you haunt it as a Restless Spirit.
       </p>
-      <ul className="grid list-disc gap-1 ps-5">
+      <ul className="grid list-disc gap-1 ps-4">
         {REVIVAL_WAYS.map((text) => (
           <li key={text}>{text}</li>
         ))}
