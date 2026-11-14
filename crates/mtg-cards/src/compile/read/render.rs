@@ -613,6 +613,7 @@ fn produced_wordings(texts: &mut Vec<String>) {
 /// Every wording the proposal checker accepts for an ability: the wordings of [`variants`], which the templates read,
 /// and the wordings of the oracle text that no template reads ("you" after another player's event, "Then" opening a
 /// sentence, "deals damage equal to its power").
+#[allow(clippy::too_many_lines)]
 pub fn written_variants(ability: &Ability) -> Vec<String> {
     // A choice whose chosen objects differ in a quality is worded only with that rule.
     if let Some(texts) = super::r4709_differ::r4709_differ_texts(ability, written_variants) {
