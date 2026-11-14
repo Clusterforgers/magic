@@ -452,7 +452,10 @@ async fn a_deck_with_manual_cards_or_one_that_breaks_its_format_is_not_verified(
         (summoner["zone"].as_str(), summoner["support"].as_str()),
         (Some("main"), Some("partial"))
     );
-    assert!(!summoner["reasons"].as_array().unwrap().is_empty(), "{summoner}");
+    assert!(
+        !summoner["reasons"].as_array().unwrap().is_empty(),
+        "{summoner}"
+    );
     assert!(summoner["reasons"][0]["span"]["end"].as_u64().unwrap() > 0);
     assert_eq!(manual["check"]["summary"]["state"], "manual_play");
 
