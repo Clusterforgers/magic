@@ -2583,6 +2583,9 @@ impl<'a> Scope<'a> {
             | Amount::Doors(_) => self.fill_amount(amount, share)?,
             Amount::Tally { event, who, filter } => self.logged(*event, who, filter)?,
             Amount::SourcesDealtDamage(who) => self.r5502_sources_dealt_damage(&self.players(who)?),
+            Amount::MostDamageBySource(who) => {
+                self.r6008_most_damage_by_source(&self.players(who)?)
+            }
             Amount::CycledSameNameThisGame(who) => self.r5522_cycled_same_name(who)?,
             Amount::CastSameNameThisGame(who) => {
                 let name = self
@@ -2636,6 +2639,10 @@ impl<'a> Scope<'a> {
                     }
                 }
                 total
+            }
+            Amount::DamageToFromPlayers { to, players } => {
+                let named = self.refs(to)?;
+                self.r6008_damage_to_from(&named, &self.players(players)?)
             }
             Amount::DamageDealtByTo { by, to } => {
                 let dealers = self.objects(by)?;

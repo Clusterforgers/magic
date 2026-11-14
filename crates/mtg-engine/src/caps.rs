@@ -686,6 +686,8 @@ const RUNS: &[&str] = &[
     "Effect.Vote",
     "Effect.ChooseNumbers",
     "Effect.ChooseWords",
+    "Effect.ChooseWords.About",
+    "Choose.DifferentColorSets",
     "Effect.BidLife",
     "Effect.Let",
     "Effect.Bind",
@@ -836,6 +838,9 @@ const RUNS: &[&str] = &[
     "Amount.Party",
     "Amount.Tally",
     "Amount.SourcesDealtDamage",
+    "Amount.MostDamageBySource",
+    "Amount.DamageToFromPlayers",
+    "Rule.SpendManaAs.AbilitiesOnly",
     "Amount.Drafted",
     "Amount.CommanderColors",
     "Amount.Remembered",
@@ -891,6 +896,7 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.CopiesSpell",
     "ReplaceWhen.Learns",
     "ReplaceBy.MayInstead",
+    "ReplaceBy.IntoLibrary.Optional",
     "ReplaceBy.Multiply",
     "ReplaceBy.LossTimes",
     "ReplaceBy.Add",
@@ -1291,6 +1297,12 @@ mod tests {
     #[case::r5516_replacing_a_copy_of_a_spell("ReplaceWhen.CopiesSpell", true)]
     #[case::r5516_replacing_a_learn("ReplaceWhen.Learns", true)]
     #[case::r5516_steps_its_controller_may_choose("ReplaceBy.MayInstead", true)]
+    #[case::r6008_optional_library("ReplaceBy.IntoLibrary.Optional", true)]
+    #[case::r6008_words_for_each_player("Effect.ChooseWords.About", true)]
+    #[case::r6008_one_card_for_each_color_set("Choose.DifferentColorSets", true)]
+    #[case::r6008_most_damage_by_one_source("Amount.MostDamageBySource", true)]
+    #[case::r6008_damage_to_from_players("Amount.DamageToFromPlayers", true)]
+    #[case::r6008_spend_on_abilities_only("Rule.SpendManaAs.AbilitiesOnly", true)]
     #[case::r4708_more_cards_to_surveil("ReplaceBy.MayAddAmount", true)]
     #[case::replacing_mills("ReplaceWhen.Mill", true)]
     #[case::replacing_draws("ReplaceWhen.Draw", true)]

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "d1d7c5fa-a92a-4815-a558-6d3daf37f4c4",
+  "name": "Dragon Cultist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragon Cultist",
+      "oracle_fingerprint": "e75fa38fb2bae31720ae5533e075fa20",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                    "if": {
+                      "Compare": { "left": { "MostDamageBySource": "You" }, "op": "Ge", "right": 5 }
+                    },
+                    "effects": [
+                      {
+                        "CreateToken": {
+                          "token": {
+                            "Custom": {
+                              "name": "Dragon",
+                              "colors": ["Red"],
+                              "types": ["Creature"],
+                              "subtypes": ["Dragon"],
+                              "power": 4,
+                              "toughness": 4,
+                              "abilities": [{ "Keyword": "Flying" }]
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

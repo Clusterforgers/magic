@@ -1216,6 +1216,10 @@ pub enum ReplaceBy {
         /// It is revealed as it moves.
         #[serde(default, skip_serializing_if = "is_false")]
         reveal: bool,
+        /// The replacement's controller may decline it, asked as it applies ("you may put it on top of its owner's
+        /// library instead").
+        #[serde(default, skip_serializing_if = "is_false")]
+        optional: bool,
     },
     /// The permanent enters tapped (CR 614.1c).
     Tapped,
@@ -1470,6 +1474,7 @@ impl ShieldShape {
                 ReplaceBy::IntoLibrary {
                     place: Place::Top | Place::Bottom,
                     reveal: false,
+                    optional: false,
                 },
             ) => Some(Self::Countered),
             (ReplaceWhen::ZoneChange { what, .. }, ReplaceBy::MoveTo(_))

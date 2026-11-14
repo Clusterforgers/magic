@@ -2804,6 +2804,13 @@ pub(crate) fn ep24_spend_as(
             continue;
         }
         let applies = match (spells, spell) {
+            // Only to activate the abilities of the permanents `abilities` selects ("to activate abilities of
+            // creatures you control"): no spell.
+            (None, None) if abilities.is_some() => abilities
+                .as_ref()
+                .zip(source)
+                .is_some_and(|(abilities, source)| selects(abilities, source)),
+            (None, Some(_)) if abilities.is_some() => false,
             (None, _) => true,
             (Some(spells), Some(spell)) => selects(spells, spell),
             (Some(_), None) => abilities

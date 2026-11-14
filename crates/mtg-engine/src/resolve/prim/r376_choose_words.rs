@@ -24,9 +24,48 @@ fn choosers(cx: &Cx<'_>, who: &mtg_cards::refs::Ref) -> Result<Vec<PlayerId>, Re
         .collect())
 }
 
+/// One question to the single player `who` names for each player `about` names, in turn order from the controller
+/// ("For each player, choose friend or foe"); the questions name the player by seat.
+fn r6008_for_each(
+    cx: &Cx<'_>,
+    who: &mtg_cards::refs::Ref,
+    about: &mtg_cards::refs::Ref,
+    options: &[ChoiceOption],
+    words: &[String],
+) -> Result<Vec<OptionChooser>, ResolveError> {
+    let [chooser] = cx.scope.players(who)?[..] else {
+        return Err(ResolveError::Invalid(
+            "one player chooses the words for each player".into(),
+        ));
+    };
+    let listed = words
+        .iter()
+        .map(|word| shown(word))
+        .collect::<Vec<_>>()
+        .join(" or ");
+    Ok(choosers(cx, about)?
+        .into_iter()
+        .map(|player| OptionChooser {
+            player: chooser,
+            options: options.to_vec(),
+            text: if player == chooser {
+                format!("For yourself, choose {listed}.")
+            } else {
+                format!("For seat {}, choose {listed}.", player.0 + 1)
+            },
+        })
+        .collect())
+}
+
 /// Each chooser picks one of the words (face down when `secret`); each word is bound to the players who chose it.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::ChooseWords { who, words, secret } = effect else {
+    let Effect::ChooseWords {
+        who,
+        words,
+        secret,
+        about,
+    } = effect
+    else {
         return Err(wrong_effect("ChooseWords"));
     };
     let options: Vec<ChoiceOption> = words
@@ -48,18 +87,30 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             .collect::<Vec<_>>()
             .join(" or ")
     );
-    let asked: Vec<OptionChooser> = choosers(cx, who)?
-        .into_iter()
-        .map(|player| OptionChooser {
-            player,
-            options: options.clone(),
-            text: text.clone(),
-        })
-        .collect();
-    let taken = match pick_options(cx, &asked)? {
+    let asked: Vec<OptionChooser> = match about {
+        Some(about) => r6008_for_each(cx, who, about, &options, words)?,
+        None => choosers(cx, who)?
+            .into_iter()
+            .map(|player| OptionChooser {
+                player,
+                options: options.clone(),
+                text: text.clone(),
+            })
+            .collect(),
+    };
+    let mut taken = match pick_options(cx, &asked)? {
         Optioned::Ask(decision) => return Ok(Run::Ask(decision)),
         Optioned::Done(taken) => taken,
     };
+    if let Some(about) = about {
+        // Each answer is about the player its question named, in the order asked.
+        let named = choosers(cx, about)?;
+        taken = named
+            .into_iter()
+            .zip(taken)
+            .map(|(player, (_, picked))| (player, picked))
+            .collect();
+    }
     let bound = words
         .iter()
         .enumerate()
@@ -167,5 +218,61 @@ mod tests {
             play(&game(2), 0, r#"{"Draw":{}}"#),
             Err(ResolveError::Invalid(message)) if message.contains("ChooseWords")
         ));
+    }
+
+    const FRIEND_OR_FOE: &str =
+        r#"{"ChooseWords":{"who":"You","words":["friend","foe"],"about":"EachPlayer"}}"#;
+
+    #[rstest]
+    #[case::two_seats(2, 0, &[1, 0])]
+    #[case::three_seats(3, 1, &[0, 1, 1])]
+    #[case::four_seats(4, 2, &[1, 1, 0, 0])]
+    fn r6008_the_controller_chooses_a_word_for_each_player(
+        #[case] seats: usize,
+        #[case] controller: u64,
+        #[case] picks: &[usize],
+    ) {
+        let game = game(seats);
+        let source = game
+            .object(game.zone(crate::zones::Zone::Battlefield)[0])
+            .unwrap();
+        let mut resolving = Resolving::begin(source.id());
+        let mut asked = 0;
+        let bound = loop {
+            let cx = Cx {
+                scope: Scope::announcing(&game, PlayerId(controller), source.reference()),
+                resolving: &resolving,
+            };
+            match run(&cx, &serde_json::from_str(FRIEND_OR_FOE).unwrap()).unwrap() {
+                Run::Ask(decision) => {
+                    assert_eq!(
+                        decision.player,
+                        PlayerId(controller),
+                        "only the controller is asked"
+                    );
+                    resolving.journal.push((
+                        PlayerId(controller),
+                        crate::choose::Choice::Option(picks[asked]),
+                    ));
+                    asked += 1;
+                }
+                Run::Done { bound, .. } => break bound,
+                Run::Cast(_) => panic!("a choice of words asks or is done"),
+            }
+        };
+        assert_eq!(asked, seats, "one question for each player");
+        let order = game.turn_order_from(PlayerId(controller));
+        let want = |word: usize| -> Vec<Target> {
+            order
+                .iter()
+                .zip(picks)
+                .filter(|(_, pick)| **pick == word)
+                .map(|(player, _)| Target::Player(*player))
+                .collect()
+        };
+        assert_eq!(
+            bound,
+            vec![("friend".to_owned(), want(0)), ("foe".to_owned(), want(1))]
+        );
     }
 }

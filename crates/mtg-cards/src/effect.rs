@@ -1841,6 +1841,11 @@ pub enum Effect {
         /// The choices are made face down and revealed together.
         #[serde(default, skip_serializing_if = "is_false")]
         secret: bool,
+        /// With players here, the one player `who` names chooses one word for each of them in turn order from the
+        /// controller, and each word is bound to the players it was chosen for ("For each player, choose friend or
+        /// foe").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        about: Option<Ref>,
     },
     /// Each player `who` names chooses a whole number from `min` up, the controller first and the others in turn order;
     /// secret numbers are chosen face down and revealed together ("each player secretly chooses a number 0 or greater").

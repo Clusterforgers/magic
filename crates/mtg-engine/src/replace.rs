@@ -2336,7 +2336,7 @@ impl Pass<'_> {
                     self.redirect(at, *object, *from, destination, &applied);
                 }
             }
-            (ReplaceBy::IntoLibrary { place, reveal }, Unit::Move { object, from, .. }) => {
+            (ReplaceBy::IntoLibrary { place, reveal, .. }, Unit::Move { object, from, .. }) => {
                 self.g12a_into_library(at, (*object, *from), (*place, *reveal), &applied);
             }
             (ReplaceBy::Dredge(cards), Unit::Draw { .. }) => self.dredge(at, candidate, *cards),
@@ -3390,6 +3390,9 @@ impl Pass<'_> {
     fn confirmed(&mut self, at: usize, candidate: &Candidate) -> Result<Asked<bool>, EngineError> {
         match &candidate.action {
             Action::Replace(ReplaceBy::Dredge(cards)) => self.dredge_wanted(at, candidate, *cards),
+            Action::Replace(ReplaceBy::IntoLibrary { optional: true, .. }) => {
+                self.r6008_library_wanted(at, candidate)
+            }
             _ if matches!(candidate.origin, Origin::Commander(_)) => {
                 self.may_go_to_command_zone(at, candidate)
             }
@@ -3920,6 +3923,7 @@ mod r283_prevent;
 mod r304c_amounts;
 mod r4703_loss;
 mod r5501_attached;
+mod r6008_library;
 mod w9c_prevent;
 
 /// The counters for each permanent devoured: "Devour X, where X is the number of creatures devoured this way" is

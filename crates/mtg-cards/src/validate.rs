@@ -1386,6 +1386,7 @@ impl<'a> Walker<'a> {
             Amount::CardsAbove { filter, .. } => self.w2c_selector_amount("CardsAbove", filter),
             Amount::ManaSymbols { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
             Amount::SourcesDealtDamage(who) => self.player_amount("SourcesDealtDamage", who),
+            Amount::MostDamageBySource(who) => self.player_amount("MostDamageBySource", who),
             Amount::Tally { who, filter, .. } => {
                 self.player_amount("Tally", who);
                 self.at("filter", |w| w.selector(filter));
@@ -1441,6 +1442,11 @@ impl<'a> Walker<'a> {
                 self.uses("Amount", "DamageDealtByTo");
                 self.at("by", |w| w.reference(by, Kind::Object));
                 self.at("to", |w| w.reference(to, Kind::Either));
+            }
+            Amount::DamageToFromPlayers { to, players } => {
+                self.uses("Amount", "DamageToFromPlayers");
+                self.at("to", |w| w.reference(to, Kind::Either));
+                self.at("players", |w| w.reference(players, Kind::Player));
             }
             Amount::CommanderColors(who) => self.player_amount("CommanderColors", who),
             Amount::Speed(who) => self.player_amount("Speed", who),
@@ -4447,6 +4453,7 @@ impl Walker<'_> {
                         | TargetSet::DifferentPowers
                         | TargetSet::DifferentManaValues,
                     ) => {}
+                    Some(TargetSet::DifferentColorSets) => w.uses("Choose", "DifferentColorSets"),
                     Some(_) => w.at("differ", |w| {
                         w.problem("a choice keeps apart names, powers or mana values");
                     }),
@@ -4806,8 +4813,14 @@ impl Walker<'_> {
                 w.at("as", |w| w.bind(bind, Kind::Value));
                 w.at("winner", |w| w.bind(winner, Kind::Player));
             }
-            Effect::ChooseWords { who, words, .. } => {
+            Effect::ChooseWords {
+                who, words, about, ..
+            } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
+                if let Some(about) = about {
+                    w.uses("Effect", "ChooseWords.About");
+                    w.at("about", |w| w.reference(about, Kind::Player));
+                }
                 if words.len() < 2 {
                     w.problem("a choice of words has at least two words");
                 }
@@ -6058,7 +6071,10 @@ impl Walker<'_> {
             | GameRule::OpponentsCantMakeSacrifice(who)
             | GameRule::OpponentsCantMakeDiscardOrSacrifice(who)
             | GameRule::SpendManaAs {
-                who, spells: None, ..
+                who,
+                spells: None,
+                abilities: None,
+                ..
             }
             | GameRule::RevealTop(who)
             | GameRule::RevealHand(who)
@@ -6152,6 +6168,9 @@ impl Walker<'_> {
             | GameRule::SpendManaAs {
                 spells: Some(_), ..
             }
+            | GameRule::SpendManaAs {
+                abilities: Some(_), ..
+            }
             | GameRule::PayLifeForOneSymbol { .. }
             | GameRule::MayCastRather { .. }
             | GameRule::ManaProduced { .. }
@@ -6206,6 +6225,16 @@ impl Walker<'_> {
             } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("spells", |w| w.selector(spells));
+                w.at("abilities", |w| w.selector(abilities));
+            }),
+            GameRule::SpendManaAs {
+                who,
+                spells: None,
+                abilities: Some(abilities),
+                ..
+            } => self.at(tag, |w| {
+                w.uses("Rule", "SpendManaAs.AbilitiesOnly");
+                w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("abilities", |w| w.selector(abilities));
             }),
             GameRule::SpendManaAs {
@@ -6714,6 +6743,9 @@ impl Walker<'_> {
     #[allow(clippy::too_many_lines)]
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
+        if matches!(by, ReplaceBy::IntoLibrary { optional: true, .. }) {
+            self.uses("ReplaceBy", "IntoLibrary.Optional");
+        }
         if matches!(by, ReplaceBy::UnderYourControl)
             && !matches!(
                 when,

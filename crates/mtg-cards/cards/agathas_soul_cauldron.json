@@ -1,0 +1,63 @@
+{
+  "oracle_id": "c259e16f-2a44-4552-8678-815f757a02e8",
+  "name": "Agatha's Soul Cauldron",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Agatha's Soul Cauldron",
+      "oracle_fingerprint": "522e44868f832b51ce992aa57d227e03",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "SpendManaAs": {
+                "who": "You",
+                "spend_as": "AnyColor",
+                "abilities": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "HasCounter": "+1/+1" }]
+            },
+            "mods": [
+              {
+                "GainAbilitiesOf": {
+                  "Each": [{ "Type": "Creature" }, { "In": "Exile" }, { "ExiledWith": "This" }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Reflexive": {
+                  "targets": [
+                    { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+                  ],
+                  "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }],
+                  "if": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Creature" }, { "In": "Exile" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

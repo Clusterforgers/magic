@@ -1,0 +1,35 @@
+{
+  "oracle_id": "1c2d6b55-653a-41fd-8a5e-6463a992640b",
+  "name": "Virtus's Maneuver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Virtus's Maneuver",
+      "oracle_fingerprint": "1f0f76e48647e6af6ab5ea065fac816b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseWords": { "who": "You", "words": ["friend", "foe"], "about": "EachPlayer" } },
+              {
+                "Choose": {
+                  "who": { "Bound": "friend" },
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Chooser" },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "as": "returned"
+                }
+              },
+              { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } },
+              { "Sacrifice": { "who": { "Bound": "foe" }, "filter": [{ "Type": "Creature" }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

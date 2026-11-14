@@ -73,6 +73,7 @@ impl Pass<'_> {
                         ReplaceBy::IntoLibrary {
                             place,
                             reveal: false,
+                            optional: false,
                         }
                     })),
                     is_self: false,

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "34fd52c1-3d81-4005-b826-eeefbd7fd874",
+  "name": "Grothama, All-Devouring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grothama, All-Devouring",
+      "oracle_fingerprint": "1dbf627ea9518c7ce3a28141b37dded9",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other"] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "effects": [
+                      { "May": { "effects": [{ "Fight": { "what": "This", "with": "Granter" } }] } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Draw": {
+                        "who": { "Bound": "player" },
+                        "count": {
+                          "DamageToFromPlayers": { "to": "This", "players": { "Bound": "player" } }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

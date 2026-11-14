@@ -184,6 +184,11 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - Sentences and two-ability sentences of the r60-01 pack are read and written whole from `r6001_wholes.json` and `r6001_pairs.json` (Kytheon's end-of-combat transform, Ace's Baseball Bat's attacking clause).
 - "Any number of creature cards with total mana value 6 or less" is `Pred::TotalAtMost` in the filter of a `Search` or the `Each` of a `Choose`: alone it holds of a card that fits, and the choice is asked as a `ChooseCards` with a `total`, as `Effect::ChooseWithin` asks; a target with a total is `Targetable::Together` instead.
 - "As ~ enters, look at an opponent's hand, then choose any card name" (`ReplaceBy::ChooseAfter`) asks the name with the names of the hand looked at (`NameOptions.looked`), so the player names having seen it.
+- "You may put it on top of its owner's library instead" is `ReplaceBy::IntoLibrary { optional: true }`: the replacement's controller is asked yes or no as it applies, and a no lets the event go where it was going.
+- "For each player, choose friend or foe" is `ChooseWords { about }`: the one chooser picks a word for each player `about` names, in turn order from the controller, and each word is bound to the players it was chosen for.
+- "For each color pair, choose a card that's exactly those colors" is a `Choose` of two-colored cards with `differ: DifferentColorSets` and as many as `Amount::Distinct` of `R374ColorSet` counts.
+- "If a source you controlled dealt 5 or more damage this turn" reads `Amount::MostDamageBySource` (one source's damage added up); "damage dealt to ~ this turn by sources they controlled" is `Amount::DamageToFromPlayers`.
+- `SpendManaAs` with `abilities` and no `spells` lets the mana be spent only to activate the abilities of the selected permanents ("to activate abilities of creatures you control").
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 
 ## Support records
