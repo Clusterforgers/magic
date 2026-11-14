@@ -379,4 +379,3 @@ proptest! {
         prop_assert_eq!(sequential, concurrent);
     }
 }
-
