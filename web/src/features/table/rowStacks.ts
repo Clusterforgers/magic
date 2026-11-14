@@ -148,6 +148,11 @@ export function battlefieldStacks(state: PlayState, seat: PlayerId, grouped = tr
   return stacks
 }
 
+/** The stacks with the lands lane left out, both ways of merging: what a board draws while its lands are folded. */
+export function foldLands(stacks: SeatStacks): SeatStacks {
+  return { plain: { ...stacks.plain, lands: [] }, merged: { ...stacks.merged, lands: [] } }
+}
+
 /** Every permanent of the rows, row after row, each host followed by the attachments tucked behind it. */
 export function idsOfRows(rows: RowStacks): ObjectId[] {
   return [...rows.creatures, ...rows.other, ...rows.lands].flatMap((stack) => [

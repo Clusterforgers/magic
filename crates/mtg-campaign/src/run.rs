@@ -393,6 +393,10 @@ impl Run {
                 }
             }
             RunEvent::Voted { hero, node } => {
+                // Stored runs hold votes for the boss after a camp, which the party now enters on its own.
+                if self.status == (Status::Fight { game: None }) && self.at == Some(*node) {
+                    return Ok(());
+                }
                 if self.status != Status::Map {
                     return Err(refused("no vote now"));
                 }
@@ -439,11 +443,12 @@ impl Run {
                 }
                 self.pick(content, *hero, *pick)?;
                 if self.heroes.iter().all(|h| h.offers.is_empty()) {
-                    self.status = if self.map.choices(self.at).is_empty() {
-                        Status::Victory
-                    } else {
-                        Status::Map
-                    };
+                    // A single way on (a camp's next boss) needs no vote: the party walks into it.
+                    match self.map.choices(self.at).as_slice() {
+                        [] => self.status = Status::Victory,
+                        [only] => self.enter(content, *only)?,
+                        _ => self.status = Status::Map,
+                    }
                 }
             }
             RunEvent::Abandoned => {

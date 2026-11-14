@@ -1,7 +1,9 @@
 //! Goal: a run folds its events as the design says: the lobby takes up to four heroes and starts only with a player
 //! and every deck chosen; the first boss needs no vote; a lost fight costs a heart and is retried until the hearts
 //! run out; a fight whose game ended unplayed waits for a new game at no cost; a won fight carries each hero's life, brings Spirits back and offers loot; votes go to the most votes or
-//! the torch bearer; bots answer every offer; and replaying the events gives the same run.
+//! the torch bearer; bots vote only after every player; a vote is always between two camps, a camp's next boss is
+//! entered with no vote and stored votes for that boss still replay; bots answer every offer; and replaying the
+//! events gives the same run.
 use mtg_campaign::run::{HEAL_AFTER_BOSS, HEARTS, LIFE, SPIRIT_RETURN};
 use mtg_campaign::{Brain, Content, HeroDeck, Offer, Pick, Run, RunEvent, Status, content};
 use proptest::prelude::*;
@@ -270,7 +272,9 @@ fn play(seed: u64, bots: usize) -> (Run, Vec<RunEvent>) {
                 );
             }
             Status::Map if !run.votes.contains_key(&0) => {
-                let node = run.map.choices(run.at)[0];
+                let choices = run.map.choices(run.at);
+                assert_eq!(choices.len(), 2, "a vote is always between two camps");
+                let node = choices[0];
                 apply(&mut run, &mut events, RunEvent::Voted { hero: 0, node });
             }
             Status::Room if !run.heroes[0].offers.is_empty() => {
@@ -330,4 +334,85 @@ fn a_voided_fight_waits_for_a_new_game_at_no_cost(#[case] voids: usize) {
     assert_eq!(run.status, Status::Fight { game: None });
     let replayed = Run::replay(content, "warrens", 5, 0, &events).unwrap();
     assert_eq!(replayed, run);
+}
+
+#[rstest]
+#[case::alone(0)]
+#[case::with_a_bot(1)]
+#[case::with_three_bots(3)]
+fn stored_votes_for_a_camps_next_boss_still_replay(#[case] bots: usize) {
+    let content = content().unwrap();
+    let (run, events) = play(21, bots);
+    // Before a camp's next boss was entered on its own, every hero voted for it: such a log folds to the same run.
+    let mut old = Vec::new();
+    let mut step = Run::new(content, "warrens", 21, 0).unwrap();
+    for event in &events {
+        let before = step.status.clone();
+        step.apply(content, event).unwrap();
+        old.push(event.clone());
+        if before == Status::Room && step.status == (Status::Fight { game: None }) {
+            let node = step.at.unwrap();
+            for hero in 0..step.heroes.len() {
+                let hero = u8::try_from(hero).unwrap();
+                let vote = RunEvent::Voted { hero, node };
+                step.apply(content, &vote).unwrap();
+                old.push(vote);
+            }
+        }
+    }
+    assert!(old.len() > events.len(), "the run passed a camp");
+    assert_eq!(Run::replay(content, "warrens", 21, 0, &old).unwrap(), run);
+}
+
+#[rstest]
+#[case::one_player_one_bot(1, 1)]
+#[case::two_players_one_bot(2, 1)]
+#[case::three_players_two_bots(3, 2)]
+fn bots_vote_only_after_every_player(#[case] players: usize, #[case] bots: usize) {
+    let content = content().unwrap();
+    let (mut run, mut events) = lobby(content, 13, players + bots - 1);
+    for (at, hero) in run.heroes.iter_mut().enumerate().take(players) {
+        hero.user = Some(format!("u{at}"));
+        hero.bot = None;
+    }
+    apply(&mut run, &mut events, RunEvent::Started);
+    let game = RunEvent::FightCreated { game: "g".into() };
+    apply(&mut run, &mut events, game);
+    let won = RunEvent::FightEnded {
+        won: true,
+        lives: vec![30; players + bots],
+        spirits: vec![],
+    };
+    apply(&mut run, &mut events, won);
+    while run.status == Status::Room {
+        let mut moves = run.bot_moves(content);
+        for (hero, h) in run.heroes.iter().enumerate().take(players) {
+            if !h.offers.is_empty() {
+                let hero = u8::try_from(hero).unwrap();
+                let pick = Pick::Skip;
+                moves.push(RunEvent::Picked { hero, pick });
+            }
+        }
+        for event in moves {
+            apply(&mut run, &mut events, event);
+        }
+    }
+    assert_eq!(run.status, Status::Map);
+    let choices = run.map.choices(run.at);
+    for hero in 0..players {
+        assert!(
+            run.bot_moves(content).is_empty(),
+            "bots wait for the players"
+        );
+        let node = choices[hero % 2];
+        let hero = u8::try_from(hero).unwrap();
+        apply(&mut run, &mut events, RunEvent::Voted { hero, node });
+    }
+    let moves = run.bot_moves(content);
+    assert_eq!(moves.len(), bots, "each bot votes once");
+    for event in moves {
+        apply(&mut run, &mut events, event);
+    }
+    assert_eq!(run.status, Status::Room, "the party entered a camp");
+    assert!(choices.contains(&run.at.unwrap()));
 }

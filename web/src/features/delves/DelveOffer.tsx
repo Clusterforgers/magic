@@ -208,7 +208,7 @@ export function DelveOffer({
         label="Relic pick"
         icon={GemIcon}
         title="Pick a relic"
-        blurb="Relics last the whole run. Dangerous ones help the boss too."
+        blurb="Take one for free. Relics last the whole run. Dangerous ones help the boss too."
       >
         <ul className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:gap-4">
           {relics.map((relic, i) => (

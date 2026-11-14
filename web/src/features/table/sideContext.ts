@@ -5,6 +5,8 @@ import type { SideTab } from './sideCounts'
 /** What the side area shows and what the top bar and the rail say about it. */
 export interface SideState {
   kind: SideKind
+  /** The window has room for the column, so a rail here is the viewer's fold and can open back into it. */
+  foldable: boolean
   /** The tab on show. */
   tab: SideTab
   /** Whether the panel is up: always in a column, on request in a rail or a sheet. */

@@ -57,8 +57,10 @@ function Actions({
       >
         Details
       </Button>
+      {/* A quiet button in each row, so the page keeps one main action and the list reads as rows. */}
       <Button
         type="button"
+        variant="secondary"
         data-play={precon.code}
         aria-label={`Play ${precon.name}`}
         aria-describedby={precon.summary.legal ? undefined : legalityId(precon)}

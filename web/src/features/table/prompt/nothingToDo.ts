@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import type { PlayState } from '@/play/store'
-import type { NothingToDo } from '@/protocol/generated'
+import type { NothingToDo, Step } from '@/protocol/generated'
 
 /** The newest `NothingToDo` event for this seat and where it sits in the log. */
 export interface NothingToDoNote {
@@ -17,8 +17,32 @@ export const NOTE_TEXT: Record<NothingToDo, string> = {
   Block: 'You have no creatures that can block',
 }
 
-/** The newest `NothingToDo` for the viewer since the current turn began, or null; wrap in `useShallow`. */
+/** The steps a note speaks for: attacks are declared and blocks follow; outside them the note is stale. */
+const NOTE_STEPS: Record<NothingToDo, readonly Step[]> = {
+  Attack: ['DeclareAttackers', 'DeclareBlockers'],
+  Block: ['DeclareBlockers'],
+}
+
+/** The decision a note would contradict: asked to block, "no creatures that can block" is no longer true. */
+const ASKED: Record<NothingToDo, 'DeclareAttackers' | 'DeclareBlockers'> = {
+  Attack: 'DeclareAttackers',
+  Block: 'DeclareBlockers',
+}
+
+/**
+ * The newest `NothingToDo` for the viewer since the current turn began, or null; wrap in `useShallow`. A note shows
+ * only in the steps it speaks for and never beside the decision it denies.
+ */
 export function latestNothingToDo(state: PlayState): NothingToDoNote | null {
+  const note = newestNote(state)
+  if (note === null) return null
+  const step = state.view?.turn.step
+  if (step !== undefined && !NOTE_STEPS[note.kind].includes(step)) return null
+  const kind = state.pending?.decision.kind
+  return kind !== undefined && typeof kind === 'object' && ASKED[note.kind] in kind ? null : note
+}
+
+function newestNote(state: PlayState): NothingToDoNote | null {
   if (state.seat === null) return null
   for (let index = state.log.length - 1; index >= 0; index -= 1) {
     const entry = state.log[index]

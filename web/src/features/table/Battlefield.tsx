@@ -9,10 +9,19 @@ import { CardRow } from './CardRow'
 import type { CardBox } from './CardRow'
 import { useGhosts } from './fx/hooks'
 import { GridCardContext } from './gridCard'
+import { LandFoldContext } from './landFold'
 import { SHAPES } from './laneFit'
 import type { LanePlace } from './laneFit'
 import { useSeatNamer } from './names'
-import { battlefieldStacks, idsOfRows, keyOf, layoutSeat, sameEntries, visibleIds } from './rowStacks'
+import {
+  battlefieldStacks,
+  foldLands,
+  idsOfRows,
+  keyOf,
+  layoutSeat,
+  sameEntries,
+  visibleIds,
+} from './rowStacks'
 import type { RowEntry } from './rowStacks'
 import { STACKS_BY_DEFAULT, TableOptionsContext } from './tableOptions'
 import { useEdgeFade } from './useEdgeFade'
@@ -159,9 +168,17 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
   const permanents = useMemo(() => idsOfRows(stacks.plain), [stacks])
   const marked = useMarkedIds(permanents)
   const [opened, setOpened] = useState<ReadonlySet<string>>(NONE)
+  // An opponent's lands fold into its pod's lands chip, so its creatures and other permanents get the board's room; the
+  // chip lays them out, and a prompt that marks one of them lays them out while it waits.
+  const fold = useContext(LandFoldContext)
+  const landIds = useMemo(() => stacks.plain.lands.flatMap((stack) => stack.ids), [stacks])
+  const landMarked = landIds.some((id) => marked.has(id))
+  const folded = fold !== null && !fold.open && landIds.length > 0 && !landMarked
+  const shown = useMemo(() => (folded ? foldLands(stacks) : stacks), [folded, stacks])
   const creatureGhosts = useGhosts(seat, 'creatures').length
   const otherGhosts = useGhosts(seat, 'other').length
-  const landGhosts = useGhosts(seat, 'lands').length
+  const landGhostCount = useGhosts(seat, 'lands').length
+  const landGhosts = folded ? 0 : landGhostCount
   const grid = useContext(GridCardContext)
   const most = grid?.most ?? null
   // The fit of the box alone, which a grid of boards shares out as one size; it never depends on that size.
@@ -169,13 +186,13 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
     () =>
       layoutSeat({
         box,
-        stacks,
+        stacks: shown,
         facing,
         opened,
         marked,
         held: { creatures: creatureGhosts, other: otherGhosts, lands: landGhosts },
       }),
-    [box, stacks, facing, opened, marked, creatureGhosts, otherGhosts, landGhosts],
+    [box, shown, facing, opened, marked, creatureGhosts, otherGhosts, landGhosts],
   )
   const aloneWidth = alone.fit?.cardWidth ?? null
   const layout = useMemo(
@@ -184,14 +201,14 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
         ? alone
         : layoutSeat({
             box,
-            stacks,
+            stacks: shown,
             facing,
             opened,
             marked,
             held: { creatures: creatureGhosts, other: otherGhosts, lands: landGhosts },
             most,
           }),
-    [alone, aloneWidth, most, box, stacks, facing, opened, marked, creatureGhosts, otherGhosts, landGhosts],
+    [alone, aloneWidth, most, box, shown, facing, opened, marked, creatureGhosts, otherGhosts, landGhosts],
   )
   const report = grid?.report
   useLayoutEffect(() => {

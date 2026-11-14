@@ -43,7 +43,9 @@ beforeEach(() => {
     const is = (selector: string): boolean => this.matches(selector)
     if (is('[data-region="hand"] button[data-object-id], [data-region="hand"] [data-slot="card-face"]'))
       return place(HAND_CARD)
-    if (is('[data-fx-anchor="stack"] [data-object-id]')) return place(STACK_CHIP)
+    // A spell's chip is measured by the picture on it, as a card is by its face.
+    if (is('[data-fx-anchor="stack"] [data-object-id], [data-fx-anchor="stack"] [data-slot="card-face"]'))
+      return place(STACK_CHIP)
     if (is(`[data-seat="${FOE}"] [data-zone="hand"]`)) return place(FOE_HAND_CHIP)
     if (is('[data-fx-anchor="stack"]')) return place(STACK_AREA)
     if (
