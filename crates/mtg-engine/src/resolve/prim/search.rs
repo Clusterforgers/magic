@@ -6,7 +6,7 @@ use mtg_cards::refs::{Selector, ZoneKind};
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
 use super::wrong_effect;
-use crate::choose::{Picked, Selection, Target, pick_selections};
+use crate::choose::{Picked, Selection, Target, pick_selections_within};
 use crate::events::{Event, ZoneCause};
 use crate::library::{CardsFound, Revealed};
 use crate::object::ObjectRef;
@@ -113,6 +113,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     };
     let mut searches: Vec<(PlayerId, Zone)> = Vec::new();
     let mut selections = Vec::new();
+    let mut totals = Vec::new();
     for player in cx
         .scope
         .players(who)?
@@ -144,6 +145,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         matches.sort_unstable();
         searches.push((player, place));
         let found = fewest.min(matches.len());
+        totals.push(cx.scope.r6003_total(filter, &matches)?);
         selections.push(Selection {
             one_per_name: *distinct,
             player,
@@ -154,7 +156,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             groups: Vec::new(),
         });
     }
-    let taken = match pick_selections(cx, &selections)? {
+    let taken = match pick_selections_within(cx, &selections, &totals)? {
         Picked::Ask(decision) => return Ok(Run::Ask(decision)),
         Picked::Done(taken) => taken,
     };

@@ -171,6 +171,7 @@ mod r5520_paid_discard;
 mod r5522_game;
 mod r5522_history;
 mod r5g;
+mod r6003_totals;
 mod r6f;
 mod repeat_each;
 mod rmt0_chroma;

@@ -630,6 +630,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r5504_look::r5504_wordings(ability, &mut texts);
     super::r5517_wholes::r5517_wordings(ability, &mut texts);
     super::r5519_wholes::r5519_whole_texts(ability, &mut texts);
+    super::r6003_wholes::r6003_whole_texts(ability, &mut texts);
     super::r5516_actions::r5516_wordings(ability, &mut texts);
     super::r5516_reflexive::r5516_reflexive_wordings(ability, written_variants, &mut texts);
     super::r5514_pieces::r5514_wordings(ability, &mut texts);

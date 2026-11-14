@@ -28,7 +28,28 @@ impl Pass<'_> {
             Ran::Ask(decision) => return Ok(Applied::Ask(decision)),
             Ran::Kept => Vec::new(),
         };
-        let chosen = match self.chooses(candidate.object.id, controller, choice)? {
+        // The name is asked with the cards just looked at, so the player names having seen them.
+        let looked: Vec<String> = events
+            .iter()
+            .filter_map(|event| match event {
+                crate::events::Event::HandLooked(looked) if looked.player == controller => {
+                    Some(looked)
+                }
+                _ => None,
+            })
+            .flat_map(|looked| looked.cards.iter())
+            .filter_map(|id| self.state.object(*id))
+            .map(|card| card.card().name.clone())
+            .collect();
+        let asked = if matches!(
+            choice,
+            EntersChoice::CardName | EntersChoice::NonlandCardName
+        ) {
+            self.r4702_chooses_name(candidate.object.id, controller, choice, looked)?
+        } else {
+            self.chooses(candidate.object.id, controller, choice)?
+        };
+        let chosen = match asked {
             Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
             Asked::Got(chosen) => chosen,
         };

@@ -3606,7 +3606,7 @@ impl Pass<'_> {
     }
 
     /// What `controller` chooses as the card enters: asked unless there is one thing to choose or none.
-    fn chooses(
+    pub(super) fn chooses(
         &mut self,
         source: ObjectId,
         controller: PlayerId,
@@ -3622,7 +3622,7 @@ impl Pass<'_> {
                 | EntersChoice::NoncreatureNonlandCardName
                 | EntersChoice::NonbasicLandCardName
         ) {
-            return self.r4702_chooses_name(source, controller, kind);
+            return self.r4702_chooses_name(source, controller, kind, Vec::new());
         }
         if matches!(
             kind,

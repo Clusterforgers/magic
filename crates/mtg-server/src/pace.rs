@@ -1198,6 +1198,7 @@ mod tests {
             nonland: true,
             noncreature: false,
             nonbasic_land: false,
+            looked: Vec::new(),
         }),
         Some(Answer::ChooseName(mtg_engine::choose::NameChoice(String::new())))
     )]

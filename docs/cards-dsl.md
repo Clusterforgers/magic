@@ -180,6 +180,8 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - "~ must be blocked by two or more creatures if able" is `CombatQuirk::R6001MustBeBlockedByAtLeast(2)`, listed that many times in `BlockOptions.must_be_blocked`: a declaration with fewer blockers is refused while another creature could join the block.
 - "As long as ~ is on the stack, spells that target it cost {2} more to cast" is a `SpellCost` rule over `Targeting(This)` with `from: Stack`; the rules in force are gathered from the stack, so it holds while the spell is there.
 - Sentences and two-ability sentences of the r60-01 pack are read and written whole from `r6001_wholes.json` and `r6001_pairs.json` (Kytheon's end-of-combat transform, Ace's Baseball Bat's attacking clause).
+- "Any number of creature cards with total mana value 6 or less" is `Pred::TotalAtMost` in the filter of a `Search` or the `Each` of a `Choose`: alone it holds of a card that fits, and the choice is asked as a `ChooseCards` with a `total`, as `Effect::ChooseWithin` asks; a target with a total is `Targetable::Together` instead.
+- "As ~ enters, look at an opponent's hand, then choose any card name" (`ReplaceBy::ChooseAfter`) asks the name with the names of the hand looked at (`NameOptions.looked`), so the player names having seen it.
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 
 ## Support records

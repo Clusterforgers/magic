@@ -35,6 +35,7 @@ mod r402_cast;
 pub(crate) mod r5520_atoms;
 mod r5523_attacked;
 pub(crate) use r5520_atoms::{R5520_PAID, r5520_took};
+mod r6003_total;
 mod soulbond;
 mod w21a_atoms;
 mod w6d_shares;
@@ -2190,6 +2191,10 @@ impl<'a> Scope<'a> {
             | Pred::NthChosenLandType(_)
             | Pred::ChosenName
             | Pred::ChosenAs(_) => self.chosen_pred(pred, seen),
+            // Alone it holds when the object fits in the total; the choice keeps the sum (`r6003_total`).
+            Pred::TotalAtMost { stat, most } => {
+                Self::stat(seen, *stat).unwrap_or(0) <= self.amount(most)?
+            }
             Pred::Compare { stat, op, to } => match Self::stat(seen, *stat) {
                 Some(value) => op.holds(value, self.amount(to)?),
                 None => false,

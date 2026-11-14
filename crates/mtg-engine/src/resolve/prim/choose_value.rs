@@ -158,6 +158,7 @@ fn name(
                 ),
                 noncreature: false,
                 nonbasic_land: false,
+                looked: Vec::new(),
             }),
         })),
         other => Err(ResolveError::Invalid(format!(

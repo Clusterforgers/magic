@@ -938,6 +938,10 @@ impl<'a> Walker<'a> {
             Pred::Compare { to, .. } => {
                 self.at("to", |w| w.amount(to));
             }
+            Pred::TotalAtMost { most, .. } => {
+                self.uses("Pred", "TotalAtMost");
+                self.at("most", |w| w.amount(most));
+            }
             Pred::Test { left, right, .. } => {
                 self.uses("Pred", "Test");
                 self.scope.tests += 1;
@@ -7256,9 +7260,10 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
     walker.counts_x = card.abilities().any(
         |(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true, .. } if cost.has_x()),
     );
-    walker.pays_objects = card.abilities().any(
-        |(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true, .. } if picks(cost)),
-    );
+    // An optional cost names what it took once paid ("If you revealed a Dragon card or chose a Dragon ...").
+    walker.pays_objects = card
+        .abilities()
+        .any(|(_, a)| matches!(a, Ability::AdditionalCost { cost, .. } if picks(cost)));
     if !is_uuid(&card.oracle_id) {
         walker.at("oracle_id", |w| w.problem("not a lowercase UUID"));
     }
