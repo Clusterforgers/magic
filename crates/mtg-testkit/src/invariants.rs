@@ -478,7 +478,9 @@ fn check_counters_settled(state: &GameState) -> Result<(), Violation> {
                 player.counters_of(&CounterKind::Poison)
             )));
         }
+        // A boss's side never loses to commander damage (`mtg_engine::spotlight`).
         if let Some(lethal) = state.ruleset().commander_damage()
+            && !mtg_engine::spotlight::is_boss_side(state, player.id())
             && let Some(commander) = state
                 .commanders()
                 .find(|id| state.commander_damage(*id, player.id()) >= lethal)
