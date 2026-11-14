@@ -339,7 +339,7 @@ fn no_attack_option_names_a_spirit() -> Result<(), ScriptError> {
     let DecisionKind::DeclareAttackers(options) = &driver.decision()?.kind else {
         panic!("seat 2 attacks");
     };
-    assert!(!options.attackers.is_empty());
+    assert_ne!(options.attackers, Vec::new());
     for attacker in &options.attackers {
         assert_eq!(attacker.defenders, [AttackTarget::Player(pid(1))]);
     }
