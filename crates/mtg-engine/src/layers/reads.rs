@@ -460,6 +460,7 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         StatKind::R374Bushido | StatKind::R374Toxic => Traits::KEYWORDS,
         StatKind::ManaValue
         | StatKind::Loyalty
+        | StatKind::R6104LifePaid
         | StatKind::ManaSpent
         | StatKind::ColorsSpent
         | StatKind::TreasureManaSpent

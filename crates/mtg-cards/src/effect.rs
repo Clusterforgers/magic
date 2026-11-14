@@ -1983,6 +1983,11 @@ pub enum Effect {
         /// The controller of the copy may choose new targets for it.
         #[serde(default, skip_serializing_if = "is_false")]
         new_targets: bool,
+        /// In place of `count`, one copy of an ability whose targets are all one object for each other object this
+        /// selects that the ability could target, each copy targeting a different one ("copy that ability for each other
+        /// creature you control that ability could target").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        each_target: Option<Selector>,
     },
     /// Changes the targets of spells and abilities on the stack (CR 115.7); the controller of the effect chooses the new
     /// ones, each judged as a target of the spell or ability for its own controller.

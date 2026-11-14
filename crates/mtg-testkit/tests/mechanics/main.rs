@@ -177,6 +177,7 @@ mod r6018_cards;
 mod r6104_become_copies;
 mod r6104_enter_copies;
 mod r6104_token_copies;
+mod r6104_zygon;
 mod r6f;
 mod repeat_each;
 mod rmt0_chroma;

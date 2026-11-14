@@ -1,7 +1,7 @@
 {
   "oracle_id": "04853f06-3fd2-445d-9b0d-d68d0f116635",
   "name": "Verrak, Warped Sengir",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Verrak, Warped Sengir",
@@ -11,9 +11,26 @@
         { "Keyword": "Deathtouch" },
         { "Keyword": "Lifelink" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 29, "end": 226 }
+          "Triggered": {
+            "when": { "Did": { "action": "Activated", "who": "You" } },
+            "if": {
+              "AtTrigger": {
+                "CountOf": {
+                  "subject": "Dealer",
+                  "selector": [{ "Compare": { "stat": "R6104LifePaid", "op": "Ge", "to": 1 } }],
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayLife": { "Stat": { "of": "Dealer", "stat": "R6104LifePaid" } } }],
+                  "paid": [{ "CopyAbility": { "what": "Dealer", "new_targets": true } }]
+                }
+              }
+            ]
           }
         }
       ]

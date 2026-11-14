@@ -13,27 +13,11 @@
               "AnyOf": [
                 {
                   "SpellCast": {
-                    "what": [
-                      {
-                        "AnyOf": [
-                          {
-                            "Type": "Instant"
-                          },
-                          {
-                            "Type": "Sorcery"
-                          }
-                        ]
-                      }
-                    ],
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
                     "by": "You"
                   }
                 },
-                {
-                  "Did": {
-                    "action": "Activated",
-                    "who": "You"
-                  }
-                }
+                { "Did": { "action": "Activated", "who": "You" } }
               ]
             },
             "if": {
@@ -42,13 +26,7 @@
                   {
                     "CountOf": {
                       "subject": "Triggering",
-                      "selector": [
-                        {
-                          "R6104TargetsOnly": [
-                            "This"
-                          ]
-                        }
-                      ],
+                      "selector": [{ "R6104TargetsOnly": ["This"] }],
                       "op": "Ge",
                       "right": 1
                     }
@@ -56,13 +34,7 @@
                   {
                     "CountOf": {
                       "subject": "Dealer",
-                      "selector": [
-                        {
-                          "R6104TargetsOnly": [
-                            "This"
-                          ]
-                        }
-                      ],
+                      "selector": [{ "R6104TargetsOnly": ["This"] }],
                       "op": "Ge",
                       "right": 1
                     }
@@ -72,24 +44,12 @@
             },
             "limit": "OncePerTurn",
             "effects": [
-              {
-                "CopySpell": {
-                  "what": "Triggering",
-                  "new_targets": true
-                }
-              },
-              {
-                "CopyAbility": {
-                  "what": "Dealer",
-                  "new_targets": true
-                }
-              }
+              { "CopySpell": { "what": "Triggering", "new_targets": true } },
+              { "CopyAbility": { "what": "Dealer", "new_targets": true } }
             ]
           }
         },
-        {
-          "Keyword": "DoctorsCompanion"
-        }
+        { "Keyword": "DoctorsCompanion" }
       ]
     }
   ]

@@ -1052,6 +1052,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 what,
                 count,
                 new_targets,
+                each_target: None,
             }
         }),
         (

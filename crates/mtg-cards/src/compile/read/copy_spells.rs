@@ -61,6 +61,7 @@ pub fn copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             what,
             count,
             new_targets,
+            each_target: None,
         }
     } else {
         Effect::CopySpell {
@@ -247,6 +248,7 @@ pub(super) fn copy_text(effect: &Effect, spec: &TargetSpec) -> Option<String> {
             what,
             count,
             new_targets,
+            each_target: None,
         } if count.is_one() => (what, count, *new_targets, [].as_slice(), false),
         _ => return None,
     };

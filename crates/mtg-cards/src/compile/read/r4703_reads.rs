@@ -56,6 +56,7 @@ fn r4703_copy_all_effects() -> Vec<crate::effect::Effect> {
             ])),
             count: crate::value::Amount::one(),
             new_targets: true,
+            each_target: None,
         },
     ]
 }

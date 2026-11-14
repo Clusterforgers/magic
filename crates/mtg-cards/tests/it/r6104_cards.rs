@@ -113,6 +113,10 @@ fn r6104_probe() {
 #[case("Bill Potts")]
 #[case("Shifting Woodland")]
 #[case("Mindlink Mech")]
+#[case("Zygon Infiltrator")]
+#[case("Ashnod the Uncaring")]
+#[case("Verrak, Warped Sengir")]
+#[case("Agrus Kos, Eternal Soldier")]
 fn r6104_reads_back_whole(#[case] name: &str) {
     let report = r6104_report(name, &r6104_file(name));
     assert_eq!(
@@ -159,6 +163,21 @@ fn r6104_reads_back_whole(#[case] name: &str) {
 #[case::woodland_three_types("Shifting Woodland", r#""right": 4"#, r#""right": 3"#)]
 #[case::woodland_forever("Shifting Woodland", r#""UntilEndOfTurn""#, r#""Forever""#)]
 #[case::mech_every_crew("Mindlink Mech", r#""nth": 1"#, r#""nth": 2"#)]
+#[case::zygon_forever("Zygon Infiltrator", r#""WhileTapped""#, r#""Forever""#)]
+#[case::zygon_itself_too("Zygon Infiltrator", r#""Other""#, r#""Token""#)]
+#[case::ashnod_any_ability(
+    "Ashnod the Uncaring",
+    r#""R6104ActivatedSacrificing""#,
+    r#""Activated""#
+)]
+#[case::ashnod_any_permanent("Ashnod the Uncaring", r#"{ "Type": "Artifact" }, "#, "")]
+#[case::verrak_free_copy("Verrak, Warped Sengir", r#""PayLife""#, r#""PayEnergy""#)]
+#[case::agrus_any_controller(
+    "Agrus Kos, Eternal Soldier",
+    r#"{ "ControlledBy": "You" }"#,
+    r#"{ "ControlledBy": "EachPlayer" }"#
+)]
+#[case::agrus_free("Agrus Kos, Eternal Soldier", r#""{1}{R/W}""#, r#""{0}""#)]
 #[case::mech_legendary_too("Mindlink Mech", r#"{ "Not": { "Supertype": "Legendary" } },"#, "")]
 fn r6104_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let file = r6104_file(name);

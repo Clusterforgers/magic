@@ -1,0 +1,25 @@
+{
+  "oracle_id": "693c071a-d6b5-4a96-8fe3-8c61fa9406bc",
+  "name": "Zygon Infiltrator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zygon Infiltrator",
+      "oracle_fingerprint": "69bb092b76e4191ff8ecf3e58f151fb1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{U}",
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } },
+              { "BecomeCopy": { "what": "This", "of": { "Target": 0 }, "duration": "WhileTapped" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

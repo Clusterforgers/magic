@@ -855,7 +855,11 @@ next_turn_of?: PlayerId,
 /**
  * The object whose staying attached kept the copy going ("for as long as this Equipment remains attached to it").
  */
-attached_by?: ObjectRef, } } | { "MonarchChanged": { 
+attached_by?: ObjectRef, 
+/**
+ * The object whose staying tapped kept the copy going ("for as long as that creature remains tapped").
+ */
+r6104_tapped?: ObjectRef, } } | { "MonarchChanged": { 
 /**
  * The new monarch.
  */

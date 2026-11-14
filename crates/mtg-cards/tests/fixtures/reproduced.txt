@@ -29,6 +29,7 @@ Aethersnatch
 Agate Instigator
 Agatha's Soul Cauldron
 Aggravated Assault
+Agrus Kos, Eternal Soldier
 Ainok Bond-Kin
 Ainok Survivalist
 Air Bladder
@@ -98,6 +99,7 @@ Arvad the Cursed
 As Foretold
 Ash Barrens
 Ashes of the Abhorrent
+Ashnod the Uncaring
 Assassin's Trophy
 Assemble the Entmoot
 Atlantean Skirmisher
@@ -2258,6 +2260,7 @@ Vengeful Vampire
 Venomous Vines
 Verdant Confluence
 Veronica, Dissident Scribe
+Verrak, Warped Sengir
 Vestige of Emrakul
 Vesuva
 Veteran Motorist

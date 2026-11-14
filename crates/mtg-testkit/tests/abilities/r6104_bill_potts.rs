@@ -36,13 +36,13 @@ fn r6104_ping(name: &str, places: usize) -> Arc<CardDefinition> {
     )
 }
 
-/// An artifact with "{0}: This artifact deals 1 damage to target creature."
-fn r6104_rod() -> Arc<CardDefinition> {
+/// An artifact named `name` with "<cost>: This artifact deals 1 damage to target creature."
+fn r6104_rod(name: &str, cost: &str) -> Arc<CardDefinition> {
     Arc::new(
-        CardDefinition::new("Rod").with_type(CardType::Artifact).with_rules(
-            serde_json::from_str(
-                r#"{"Activated":{"cost":"{0}","targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":1}}]}}"#,
-            )
+        CardDefinition::new(name).with_type(CardType::Artifact).with_rules(
+            serde_json::from_str(&format!(
+                r#"{{"Activated":{{"cost":{cost},"targets":[{{"what":{{"Object":[{{"Type":"Creature"}}]}}}}],"effects":[{{"DealDamage":{{"to":{{"Target":0}},"amount":1}}}}]}}}}"#
+            ))
             .unwrap(),
         ),
     )
@@ -81,6 +81,7 @@ enum Act {
     PingBillAndBear,
     RodAtBill,
     RodAtBear,
+    AltarAtBill,
 }
 
 fn r6104_act(driver: &mut Driver, act: Act, name: &str) {
@@ -94,6 +95,29 @@ fn r6104_act(driver: &mut Driver, act: Act, name: &str) {
             driver.choose_targets(&[bill]).unwrap();
             driver.choose_targets(&[bear]).unwrap();
             driver.answer(Answer::PayMana(PayChoice::Auto)).unwrap()
+        }
+        Act::AltarAtBill => {
+            driver.begin_activation("Altar").unwrap();
+            for _ in 0..10 {
+                match driver.decision().unwrap().kind.clone() {
+                    DecisionKind::ChooseCards(_) => {
+                        let fodder = driver.id_of("Fodder").unwrap();
+                        driver
+                            .answer(Answer::ChooseCards(mtg_engine::choose::CardsChoice(vec![
+                                fodder,
+                            ])))
+                            .unwrap();
+                    }
+                    DecisionKind::ChooseTargets(_) => {
+                        driver.choose_targets(&[bill]).unwrap();
+                    }
+                    DecisionKind::PayMana(_) => {
+                        driver.answer(Answer::PayMana(PayChoice::Auto)).unwrap();
+                    }
+                    _ => break,
+                }
+            }
+            Vec::new()
         }
         Act::RodAtBill | Act::RodAtBear => {
             driver.begin_activation("Rod").unwrap();
@@ -128,7 +152,12 @@ fn r6104_table(seats: usize, active: usize) -> Scenario {
             [
                 ready(card(BILL).unwrap()),
                 ready(creature("Bear", 1, &[], 2, 5)),
-                ready(r6104_rod()),
+                ready(r6104_rod("Rod", r#""{0}""#)),
+                ready(r6104_rod(
+                    "Altar",
+                    r#"[{"Sacrifice":{"filter":[{"Type":"Creature"},{"Not":{"Supertype":"Legendary"}}]}}]"#,
+                )),
+                ready(creature("Fodder", 0, &[], 1, 1)),
             ],
         )
 }
@@ -136,6 +165,7 @@ fn r6104_table(seats: usize, active: usize) -> Scenario {
 #[rstest]
 #[case::a_spell_at_bill(Act::PingBill, (2, 0))]
 #[case::an_ability_at_bill(Act::RodAtBill, (2, 0))]
+#[case::an_ability_paid_by_a_sacrifice_at_bill(Act::AltarAtBill, (2, 0))]
 #[case::a_spell_at_bill_and_the_bear(Act::PingBillAndBear, (1, 0))]
 #[case::a_spell_at_the_bear(Act::PingBear, (0, 1))]
 #[case::an_ability_at_the_bear(Act::RodAtBear, (0, 1))]

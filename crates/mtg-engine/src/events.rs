@@ -886,6 +886,10 @@ pub enum Event {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[cfg_attr(feature = "ts", ts(optional))]
         attached_by: Option<ObjectRef>,
+        /// The object whose staying tapped kept the copy going ("for as long as that creature remains tapped").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        r6104_tapped: Option<ObjectRef>,
     },
     /// A player became the monarch (CR 724).
     MonarchChanged {

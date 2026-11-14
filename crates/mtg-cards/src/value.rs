@@ -72,6 +72,9 @@ pub enum StatKind {
     /// Its permanent types (artifact, battle, creature, enchantment, land, planeswalker): no number, so only
     /// `Amount::Distinct` reads it ("the number of permanent types among cards in your graveyard").
     R6018PermanentTypes,
+    /// The life paid to activate it, for an activated ability on the stack: its cost's life and the life paid for its
+    /// Phyrexian mana symbols ("that much life").
+    R6104LifePaid,
 }
 
 /// A comparison between two numbers.

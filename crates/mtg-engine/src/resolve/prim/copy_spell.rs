@@ -280,7 +280,7 @@ fn copy_kept(
 /// different one there; each other player it could target gets one too when `players` is set. What the spell could target
 /// is judged for the spell's controller, whoever controls the copies.
 /// A spell with no target or with two different ones gets none.
-fn each_target_choices(
+pub(super) fn each_target_choices(
     cx: &Cx<'_>,
     (player, players): (mtg_core::ids::PlayerId, bool),
     spell: &crate::object::GameObject,

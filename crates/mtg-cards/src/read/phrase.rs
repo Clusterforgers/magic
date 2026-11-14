@@ -483,6 +483,7 @@ fn stat_text(stat: StatKind) -> &'static str {
         StatKind::R4700ChosenColors => "number of the chosen colors it is",
         StatKind::Subtypes => "subtypes",
         StatKind::R6018PermanentTypes => "permanent types",
+        StatKind::R6104LifePaid => "life paid to activate it",
     }
 }
 

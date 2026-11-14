@@ -128,6 +128,8 @@ mod r6001_feud;
 mod r6001_greymond;
 mod r6007_cards;
 mod r6013_pack;
+mod r6104_activation_copies;
+mod r6104_agrus_kos;
 mod r6104_bill_potts;
 mod r8p2_enters;
 mod reflexive;

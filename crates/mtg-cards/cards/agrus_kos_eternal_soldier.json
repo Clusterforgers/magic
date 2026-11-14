@@ -1,7 +1,7 @@
 {
   "oracle_id": "3d19823a-dbb8-4384-81f4-5c6818b7f46d",
   "name": "Agrus Kos, Eternal Soldier",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Agrus Kos, Eternal Soldier",
@@ -9,9 +9,31 @@
       "abilities": [
         { "Keyword": "Vigilance" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 10, "end": 295 }
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": ["This"],
+                "by": [
+                  { "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                  { "R6104TargetsOnly": ["This"] }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{R/W}",
+                  "paid": [
+                    {
+                      "CopyAbility": {
+                        "what": "Dealer",
+                        "each_target": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

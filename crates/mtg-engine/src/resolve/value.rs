@@ -41,6 +41,7 @@ mod w21a_atoms;
 mod w6d_shares;
 
 // deck-auras
+
 #[cfg(test)]
 mod da_attached_auras;
 use super::still_there;
@@ -2385,6 +2386,10 @@ impl<'a> Scope<'a> {
             | StatKind::R374ColorSet
             | StatKind::R6018PermanentTypes
             | StatKind::Subtypes => None,
+            StatKind::R6104LifePaid => seen
+                .card
+                .filter(|_| seen.zone == Zone::Stack)
+                .and_then(crate::r6104_activation_facts::r6104_life_paid),
         }
     }
 

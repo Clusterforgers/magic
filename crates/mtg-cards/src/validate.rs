@@ -1382,6 +1382,7 @@ impl<'a> Walker<'a> {
             StatKind::R374ColorSet => "R374ColorSet",
             StatKind::R4700ChosenColors => "R4700ChosenColors",
             StatKind::R6018PermanentTypes => "R6018PermanentTypes",
+            StatKind::R6104LifePaid => "R6104LifePaid",
             _ => return,
         };
         self.uses("Stat", name);
@@ -4993,9 +4994,21 @@ impl Walker<'_> {
                     (_, None) => {}
                 }
             }
-            Effect::CopyAbility { what, count, .. } => {
+            Effect::CopyAbility {
+                what,
+                count,
+                each_target,
+                ..
+            } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("count", |w| w.amount(count));
+                if let Some(selector) = each_target {
+                    if !count.is_one() {
+                        w.problem("a copy for each other target is one copy for each, with no count of its own");
+                    }
+                    w.uses("CopyAbility", "EachTarget");
+                    w.at("each_target", |w| w.selector(selector));
+                }
             }
             Effect::BecomeCopy {
                 what,
