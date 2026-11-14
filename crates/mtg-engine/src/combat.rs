@@ -521,11 +521,15 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
         })
         .map(|option| option.object)
         .collect();
-    options
-        .joins
-        .extend(crate::r400_attack_follow::r400_follow_joins(
-            state, &offered, &free,
-        ));
+    // A follower joins only where two creatures may attack: under a limit of one, obeying it would break the limit,
+    // and a requirement never breaks a restriction (CR 508.1d).
+    if options.most.is_none_or(|most| most > 1) {
+        options
+            .joins
+            .extend(crate::r400_attack_follow::r400_follow_joins(
+                state, &offered, &free,
+            ));
+    }
     options
 }
 

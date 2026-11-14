@@ -58,18 +58,23 @@ enum Taxed {
 /// An attack as the declaration lists it: each attacker and what it attacks.
 type Attack = Vec<(ObjectId, AttackTarget)>;
 
-/// `attackers` without its last creature that is not required to attack; `None` once only required ones are left,
-/// which cost nothing (a requirement never makes a player pay, CR 508.1d).
+/// `attackers` without its last creatures that are not required to attack, as few as leave a declaration the rules
+/// accept (a creature that attacks only beside others goes with them); `None` once only required ones are left, which
+/// cost nothing (a requirement never makes a player pay, CR 508.1d).
 fn smaller_attack(
     options: &AttackOptions,
     attackers: &[(ObjectId, AttackTarget)],
 ) -> Option<Attack> {
-    let at = attackers
-        .iter()
-        .rposition(|(object, _)| !options.required.contains(object))?;
     let mut smaller = attackers.to_vec();
-    smaller.remove(at);
-    Some(smaller)
+    loop {
+        let at = smaller
+            .iter()
+            .rposition(|(object, _)| !options.required.contains(object))?;
+        smaller.remove(at);
+        if options.accepts(&smaller) {
+            return Some(smaller);
+        }
+    }
 }
 
 /// One creature the bot would attack with, the defender it picked and what that costs it (CR 508.1h).

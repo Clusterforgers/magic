@@ -1,5 +1,5 @@
 //! Goal: attack requirements that follow another attacker play as printed at tables of two, three and four seats: Ekundu
-//! Cyclops must join an attack of another creature its controller controls while it can attack (never when it is tapped),
+//! Cyclops must join an attack of another creature its controller controls while it can attack (never when it is tapped, nor where only one creature may attack),
 //! a creature with a magnet counter under Magnetic Web brings every other creature with one into the attack (a creature
 //! without one stays free), and each creature with a magnet counter on the defending side must block a magnetised
 //! attacker; the log replays to the state it was played to.
@@ -53,6 +53,31 @@ fn r400_ekundu_joins_an_attack(
     if legal {
         r400_replays(&driver);
     }
+    Ok(())
+}
+
+/// Under Dueling Grounds (no more than one creature attacks each turn) Ekundu Cyclops can't join the Wolf, so the Wolf
+/// attacks alone: a requirement is obeyed only as far as the restrictions allow (CR 508.1d).
+#[rstest]
+#[case::the_wolf_alone(&["Wolf"], true)]
+#[case::both(&["Wolf", "Ekundu Cyclops"], false)]
+fn r400_ekundu_under_a_limit_of_one(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] attackers: &[&str],
+    #[case] legal: bool,
+) -> Result<(), ScriptError> {
+    let scenario = Scenario::new(seats).at(1, 0, Step::Main1).battlefield(
+        0,
+        [
+            ready(card("Dueling Grounds").unwrap()),
+            ready(card("Ekundu Cyclops").unwrap()),
+            ready(free_creature("Wolf", 2, 2)),
+        ],
+    );
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.pass_until(Step::DeclareAttackers)?;
+    let declared: Vec<(&str, usize)> = attackers.iter().map(|name| (*name, 1)).collect();
+    assert_eq!(driver.attack(&declared).is_ok(), legal, "{attackers:?}");
     Ok(())
 }
 
