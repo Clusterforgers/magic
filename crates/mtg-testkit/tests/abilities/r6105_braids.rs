@@ -4,7 +4,7 @@
 //! four seats; the log replays to the live state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use mtg_engine::choose::{CardsChoice, YesNoChoice};
+use mtg_engine::choose::CardsChoice;
 use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::replay;
 use mtg_engine::turn::Step;
@@ -35,10 +35,23 @@ fn r6105_braids_punishes_each_opponent_who_doesnt(
     // Seat 1 has a land and sacrifices it; seat 2 has only a creature; seat 3 has a land and keeps it.
     let mut scenario = Scenario::new(seats)
         .at(1, 0, Step::Main2)
-        .battlefield(0, [ready(card("Braids, Arisen Nightmare").unwrap()), ready(plains())])
+        .battlefield(
+            0,
+            [
+                ready(card("Braids, Arisen Nightmare").unwrap()),
+                ready(plains()),
+            ],
+        )
         .library(0, vec![bear(); 5]);
     for seat in 1..seats {
-        scenario = scenario.battlefield(seat, [if seat == 2 { ready(bear()) } else { ready(plains()) }]);
+        scenario = scenario.battlefield(
+            seat,
+            [if seat == 2 {
+                ready(bear())
+            } else {
+                ready(plains())
+            }],
+        );
     }
     let setup = scenario.clone().setup().unwrap();
     let mut driver = Driver::from_scenario(scenario)?;
@@ -52,40 +65,54 @@ fn r6105_braids_punishes_each_opponent_who_doesnt(
             break;
         }
         let decision = driver.decision()?.clone();
-        let seat = (0..seats).find(|seat| pid(*seat) == decision.player).unwrap();
+        let seat = (0..seats)
+            .find(|seat| pid(*seat) == decision.player)
+            .unwrap();
         match &decision.kind {
-            DecisionKind::YesNo(options) => {
-                asked.push((seat, options.only_no));
-                let yes = if seat == 0 { sacrifice } else { seat == 1 };
-                driver.answer(Answer::YesNo(YesNoChoice(yes)))?;
-            }
             DecisionKind::ChooseCards(options) => {
-                // Braids's controller sacrifices the Plains, never Braids.
-                let plains = options
+                asked.push(seat);
+                assert_eq!(options.min, 0, "the sacrifice is optional");
+                // Braids's controller sacrifices the Plains, never Braids; seat 1 sacrifices its Plains; the rest keep.
+                let plains: Vec<_> = options
                     .from
                     .iter()
                     .copied()
                     .filter(|id| driver.state().object(*id).unwrap().card().name == "Plains")
-                    .collect::<Vec<_>>();
-                driver.answer(Answer::ChooseCards(CardsChoice(plains[..1].to_vec())))?;
+                    .collect();
+                let take = (seat == 0 && sacrifice) || seat == 1;
+                let pick = if take {
+                    plains[..1].to_vec()
+                } else {
+                    Vec::new()
+                };
+                driver.answer(Answer::ChooseCards(CardsChoice(pick)))?;
             }
             _ => {
                 driver.answer_passively()?;
             }
         }
     }
-    let punished: Vec<usize> = if sacrifice { (2..seats).collect() } else { Vec::new() };
+    // Seat 2 controls no permanent sharing a type with the Plains: it is not asked.
+    assert!(!asked.contains(&2), "{asked:?}");
+    let punished: Vec<usize> = if sacrifice {
+        (2..seats).collect()
+    } else {
+        Vec::new()
+    };
     for seat in 1..seats {
         let lost = life[seat] - driver.state().player(pid(seat)).unwrap().life();
-        assert_eq!(lost, if punished.contains(&seat) { 2 } else { 0 }, "seat {seat}");
+        assert_eq!(
+            lost,
+            if punished.contains(&seat) { 2 } else { 0 },
+            "seat {seat}"
+        );
     }
     assert_eq!(r6105_permanents(&driver, 0), if sacrifice { 1 } else { 2 });
     assert_eq!(r6105_permanents(&driver, 1), usize::from(!sacrifice));
-    assert_eq!(driver.state().zone(Zone::Hand(pid(0))).len(), hand + punished.len());
-    if sacrifice && seats > 2 {
-        // Seat 2 controls no land: it can only decline.
-        assert!(asked.iter().any(|(seat, only_no)| *seat == 2 && *only_no) || !asked.iter().any(|(seat, _)| *seat == 2));
-    }
+    assert_eq!(
+        driver.state().zone(Zone::Hand(pid(0))).len(),
+        hand + punished.len()
+    );
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.state().state_hash());
     Ok(())

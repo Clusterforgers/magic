@@ -1508,7 +1508,11 @@ impl ShieldShape {
             )
             | (ReplaceWhen::TokenCreation { .. }, ReplaceBy::UnderYourControl)
             | (ReplaceWhen::Draw { .. }, ReplaceBy::Instead(_)) => Some(Self::Class),
-            (ReplaceWhen::Enters { what }, ReplaceBy::UnderYourControl) if !names_objects(what) => {
+            // "Until end of turn, if one or more creatures would enter from exile ..., their owners shuffle them into
+            // their libraries instead."
+            (ReplaceWhen::Enters { what }, ReplaceBy::UnderYourControl | ReplaceBy::Instead(_))
+                if !names_objects(what) =>
+            {
                 Some(Self::Class)
             }
             (

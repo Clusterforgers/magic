@@ -176,6 +176,7 @@ mod r6008_pack;
 mod r6018_cards;
 mod r6105_library_of_leng;
 mod r6105_sarcophagus;
+mod r6105_support;
 mod r6f;
 mod repeat_each;
 mod rmt0_chroma;

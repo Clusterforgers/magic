@@ -24,7 +24,11 @@ fn r6105_mind_bomb_deals_three_minus_the_discards(
     #[values(2, 3, 4)] seats: usize,
     #[values(0, 1, 2, 3)] offset: usize,
 ) -> Result<(), ScriptError> {
-    let filler = || (0..3).map(|_| card("Grizzly Bears").unwrap()).collect::<Vec<_>>();
+    let filler = || {
+        (0..3)
+            .map(|_| card("Grizzly Bears").unwrap())
+            .collect::<Vec<_>>()
+    };
     let mut scenario = Scenario::new(seats)
         .at(1, 0, Step::Main1)
         .battlefield(0, [ready(island())]);
@@ -47,10 +51,14 @@ fn r6105_mind_bomb_deals_three_minus_the_discards(
         }
         let decision = driver.decision()?.clone();
         if let DecisionKind::ChooseCards(options) = &decision.kind {
-            let seat = (0..seats).find(|seat| pid(*seat) == decision.player).unwrap();
+            let seat = (0..seats)
+                .find(|seat| pid(*seat) == decision.player)
+                .unwrap();
             assert_eq!((options.min, options.max), (0, 3), "up to three cards");
             let take = r6105_discards(seat, offset);
-            driver.answer(Answer::ChooseCards(CardsChoice(options.from[..take].to_vec())))?;
+            driver.answer(Answer::ChooseCards(CardsChoice(
+                options.from[..take].to_vec(),
+            )))?;
         } else {
             driver.answer_passively()?;
         }
@@ -59,7 +67,11 @@ fn r6105_mind_bomb_deals_three_minus_the_discards(
     for seat in 0..seats {
         let take = r6105_discards(seat, offset);
         let life = driver.state().player(pid(seat)).unwrap().life();
-        assert_eq!(before[seat] - life, 3 - i32::try_from(take).unwrap(), "seat {seat}");
+        assert_eq!(
+            before[seat] - life,
+            3 - i32::try_from(take).unwrap(),
+            "seat {seat}"
+        );
         let left = driver.state().zone(Zone::Hand(pid(seat))).len();
         assert_eq!(left, 3 - take, "seat {seat} keeps the rest");
     }

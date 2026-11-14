@@ -5,8 +5,9 @@
 
 use std::sync::Arc;
 
-use mtg_core::card::CardType;
 use mtg_cards::CardDefinition;
+use mtg_core::card::CardType;
+use mtg_engine::PresetPermanent;
 use mtg_engine::choose::{CardsChoice, YesNoChoice};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::replay;
@@ -14,7 +15,6 @@ use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_testkit::cards::{bear, plains};
 use mtg_testkit::corpus::card;
-use mtg_engine::PresetPermanent;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
@@ -35,7 +35,11 @@ fn r6105_board(seat: usize) -> Vec<PresetPermanent> {
     let lands = |count: usize| (0..count).map(|_| ready(plains())).collect::<Vec<_>>();
     match seat {
         0 => [vec![ready(bear())], lands(2)].concat(),
-        1 | 2 => [vec![ready(card("Serra Angel").unwrap()), ready(bear())], lands(5)].concat(),
+        1 | 2 => [
+            vec![ready(card("Serra Angel").unwrap()), ready(bear())],
+            lands(5),
+        ]
+        .concat(),
         _ => vec![ready(bear()), ready(bear()), ready(r6105_costless())],
     }
 }
@@ -71,7 +75,9 @@ fn r6105_tariff_keeps_what_is_paid_for(#[values(2, 3, 4)] seats: usize) -> Resul
             break;
         }
         let decision = driver.decision()?.clone();
-        let seat = (0..seats).find(|seat| pid(*seat) == decision.player).unwrap();
+        let seat = (0..seats)
+            .find(|seat| pid(*seat) == decision.player)
+            .unwrap();
         match &decision.kind {
             DecisionKind::YesNo(options) => {
                 asked.push((seat, options.only_no));
@@ -92,14 +98,24 @@ fn r6105_tariff_keeps_what_is_paid_for(#[values(2, 3, 4)] seats: usize) -> Resul
     }
     assert!(driver.state().stack().is_empty());
     // The caster tapped out: they can only decline.
-    assert!(asked.iter().all(|(seat, only_no)| *only_no == (*seat == 0 || *seat == 3)));
+    assert!(
+        asked
+            .iter()
+            .all(|(seat, only_no)| *only_no == (*seat == 0 || *seat == 3))
+    );
     assert_eq!(r6105_creatures(&driver, 0), Vec::<String>::new());
-    assert_eq!(r6105_creatures(&driver, 1), ["Grizzly Bears", "Serra Angel"]);
+    assert_eq!(
+        r6105_creatures(&driver, 1),
+        ["Grizzly Bears", "Serra Angel"]
+    );
     if seats > 2 {
         assert_eq!(r6105_creatures(&driver, 2), ["Grizzly Bears"]);
     }
     if seats > 3 {
-        assert_eq!(r6105_creatures(&driver, 3), ["Costless Golem", "Grizzly Bears"]);
+        assert_eq!(
+            r6105_creatures(&driver, 3),
+            ["Costless Golem", "Grizzly Bears"]
+        );
     }
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.state().state_hash());
@@ -107,7 +123,9 @@ fn r6105_tariff_keeps_what_is_paid_for(#[values(2, 3, 4)] seats: usize) -> Resul
 }
 
 #[rstest]
-fn r6105_a_creature_without_mana_cost_is_sacrificed(#[values(2, 3, 4)] seats: usize) -> Result<(), ScriptError> {
+fn r6105_a_creature_without_mana_cost_is_sacrificed(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
     let scenario = Scenario::new(seats)
         .at(1, 0, Step::Main1)
         .hand(0, [card("Tariff").unwrap()])

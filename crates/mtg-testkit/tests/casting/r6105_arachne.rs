@@ -29,7 +29,10 @@ fn r6105_arachne_looks_then_chooses_a_noncreature_type(
     for seat in 1..seats {
         scenario = scenario.hand(
             seat,
-            vec![creature("Elf", 0, &[Color::Green], 1, 1), instant("Shock", 0, &[Color::Red])],
+            vec![
+                creature("Elf", 0, &[Color::Green], 1, 1),
+                instant("Shock", 0, &[Color::Red]),
+            ],
         );
     }
     let mut driver = Driver::from_scenario(scenario)?;
@@ -39,7 +42,9 @@ fn r6105_arachne_looks_then_chooses_a_noncreature_type(
         let decision = driver.decision()?.clone();
         let answer = match &decision.kind {
             DecisionKind::ChooseOption(options)
-                if options.options.iter().any(|option| matches!(option, ChoiceOption::Label(label) if label == "Land")) =>
+                if options.options.iter().any(
+                    |option| matches!(option, ChoiceOption::Label(label) if label == "Land"),
+                ) =>
             {
                 let labels: Vec<String> = options
                     .options
@@ -64,12 +69,27 @@ fn r6105_arachne_looks_then_chooses_a_noncreature_type(
     assert_eq!(offered.len(), 8, "{offered:?}");
     assert!(!offered.iter().any(|label| label == "Creature"));
     assert!(
-        driver.engine().events().iter().any(|event| matches!(event, Event::HandLooked(_))),
+        driver
+            .engine()
+            .events()
+            .iter()
+            .any(|event| matches!(event, Event::HandLooked(_))),
         "the hand is looked at first"
     );
     let id = driver.id_of("Arachne, Psionic Weaver")?;
-    let chosen = driver.state().object(id).unwrap().permanent().unwrap().chosen().cloned();
-    let wanted = if pick == "Instant" { CardType::Instant } else { CardType::Land };
+    let chosen = driver
+        .state()
+        .object(id)
+        .unwrap()
+        .permanent()
+        .unwrap()
+        .chosen()
+        .cloned();
+    let wanted = if pick == "Instant" {
+        CardType::Instant
+    } else {
+        CardType::Land
+    };
     assert_eq!(chosen, Some(Chosen::CardType(wanted)));
     let replayed = replay(driver.engine().setup(), driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.state().state_hash());

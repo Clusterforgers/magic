@@ -19,7 +19,14 @@ use crate::common::pid;
 fn r6105_table(seats: usize) -> Scenario {
     Scenario::new(seats)
         .at(1, 0, Step::Main1)
-        .battlefield(0, [ready(card("Library of Leng").unwrap()), ready(island()), ready(island())])
+        .battlefield(
+            0,
+            [
+                ready(card("Library of Leng").unwrap()),
+                ready(island()),
+                ready(island()),
+            ],
+        )
         .hand(
             0,
             [
@@ -71,7 +78,11 @@ fn r6105_an_effect_discard_may_go_on_top(
             }
             DecisionKind::YesNo(_) => {
                 assert_eq!(decision.player, pid(0), "the Library's controller is asked");
-                let yes = if asked == 0 { first_on_top } else { !first_on_top };
+                let yes = if asked == 0 {
+                    first_on_top
+                } else {
+                    !first_on_top
+                };
                 asked += 1;
                 driver.answer(Answer::YesNo(YesNoChoice(yes)))?;
             }
@@ -83,16 +94,27 @@ fn r6105_an_effect_discard_may_go_on_top(
     assert_eq!(asked, 2, "one question per card discarded");
     let library = driver.state().zone(Zone::Library(pid(0)));
     assert_eq!(library.len(), library_before + 1);
-    assert_eq!(r6105_names(&driver, Zone::Graveyard(pid(0))).iter().filter(|name| *name == "Grizzly Bears").count(), 1);
+    assert_eq!(
+        r6105_names(&driver, Zone::Graveyard(pid(0)))
+            .iter()
+            .filter(|name| *name == "Grizzly Bears")
+            .count(),
+        1
+    );
     // Two cards discarded, wherever they went: Mind Bomb deals 1 to its caster.
-    assert_eq!(driver.state().player(pid(0)).unwrap().life(), life_before - 1);
+    assert_eq!(
+        driver.state().player(pid(0)).unwrap().life(),
+        life_before - 1
+    );
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.state().state_hash());
     Ok(())
 }
 
 #[rstest]
-fn r6105_a_cost_discard_goes_to_the_graveyard(#[values(2, 3, 4)] seats: usize) -> Result<(), ScriptError> {
+fn r6105_a_cost_discard_goes_to_the_graveyard(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(r6105_table(seats))?;
     driver.begin_activation("Backslide")?;
     for _ in 0..10 {

@@ -35,7 +35,11 @@ fn r6105_kodama_puts_a_card_but_not_from_its_own_put(
         .at(1, 0, Step::Main1)
         .battlefield(
             0,
-            [ready(card("Kodama of the East Tree").unwrap()), ready(forest()), ready(forest())],
+            [
+                ready(card("Kodama of the East Tree").unwrap()),
+                ready(forest()),
+                ready(forest()),
+            ],
         )
         .hand(0, [bear(), bear(), bear(), giant()]);
     let setup = scenario.clone().setup().unwrap();
@@ -43,7 +47,10 @@ fn r6105_kodama_puts_a_card_but_not_from_its_own_put(
     driver.cast("Grizzly Bears")?;
     let mut asked = 0;
     for _ in 0..80 {
-        if driver.state().stack().is_empty() && driver.state().pending_triggers().is_empty() && asked > 0 {
+        if driver.state().stack().is_empty()
+            && driver.state().pending_triggers().is_empty()
+            && asked > 0
+        {
             break;
         }
         let decision = driver.decision()?.clone();
@@ -58,7 +65,10 @@ fn r6105_kodama_puts_a_card_but_not_from_its_own_put(
                     .iter()
                     .map(|id| driver.state().object(*id).unwrap().card().name.as_str())
                     .collect();
-                assert!(names.iter().all(|name| *name == "Grizzly Bears"), "no greater mana value: {names:?}");
+                assert!(
+                    names.iter().all(|name| *name == "Grizzly Bears"),
+                    "no greater mana value: {names:?}"
+                );
                 driver.answer(Answer::ChooseCards(CardsChoice(options.from[..1].to_vec())))?;
             }
             _ => {
@@ -68,8 +78,14 @@ fn r6105_kodama_puts_a_card_but_not_from_its_own_put(
     }
     assert_eq!(asked, 1, "the card the ability put does not trigger it");
     assert!(driver.state().stack().is_empty());
-    assert_eq!(r6105_mine(&driver, "Grizzly Bears"), if accept { 2 } else { 1 });
-    assert_eq!(driver.state().zone(Zone::Hand(pid(0))).len(), if accept { 2 } else { 3 });
+    assert_eq!(
+        r6105_mine(&driver, "Grizzly Bears"),
+        if accept { 2 } else { 1 }
+    );
+    assert_eq!(
+        driver.state().zone(Zone::Hand(pid(0))).len(),
+        if accept { 2 } else { 3 }
+    );
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.state().state_hash());
     Ok(())

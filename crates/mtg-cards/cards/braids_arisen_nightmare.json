@@ -12,46 +12,78 @@
             "when": { "StepBegins": { "step": "End", "whose": "You" } },
             "effects": [
               {
-                "Pay": {
-                  "cost": [
+                "SacrificeUpTo": {
+                  "filter": [
                     {
-                      "Sacrifice": {
-                        "filter": [
-                          {
-                            "AnyOf": [
-                              { "Type": "Artifact" },
-                              { "Type": "Creature" },
-                              { "Type": "Enchantment" },
-                              { "Type": "Land" },
-                              { "Type": "Planeswalker" }
-                            ]
-                          }
-                        ]
-                      }
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
                     }
                   ],
-                  "paid": [
-                    { "Bind": { "what": "Paid", "as": "it" } },
+                  "count": 1,
+                  "as": "it"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "it~moved" }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [
                     {
                       "RepeatEach": {
                         "over": "Opponents",
                         "as": "foe",
                         "effects": [
                           {
-                            "Pay": {
+                            "Choose": {
                               "who": { "Bound": "foe" },
-                              "cost": [
-                                { "Sacrifice": { "filter": [{ "SharesType": { "Bound": "it" } }] } }
-                              ],
-                              "unpaid": [
-                                { "LoseLife": { "who": { "Bound": "foe" }, "amount": 2 } },
-                                { "Draw": {} }
+                              "from": {
+                                "Each": [
+                                  { "ControlledBy": { "Bound": "foe" } },
+                                  { "SharesType": { "Bound": "it" } }
+                                ]
+                              },
+                              "count": { "min": 0, "max": 1 },
+                              "as": "pick"
+                            }
+                          },
+                          { "Bind": { "what": { "Bound": "pick" }, "as": "picks", "adds": true } },
+                          {
+                            "If": {
+                              "condition": {
+                                "Compare": {
+                                  "left": { "CountOf": { "of": { "Bound": "pick" }, "filter": [] } },
+                                  "op": "Eq",
+                                  "right": 0
+                                }
+                              },
+                              "then": [
+                                {
+                                  "Bind": {
+                                    "what": { "Bound": "foe" },
+                                    "as": "decliners",
+                                    "adds": true
+                                  }
+                                }
                               ]
                             }
                           }
                         ]
                       }
-                    }
+                    },
+                    {
+                      "Sacrifice": {
+                        "who": "Opponents",
+                        "filter": [{ "Is": { "Bound": "picks" } }]
+                      }
+                    },
+                    { "LoseLife": { "who": { "Bound": "decliners" }, "amount": 2 } },
+                    { "Draw": { "count": { "Players": { "Bound": "decliners" } } } }
                   ]
                 }
               }

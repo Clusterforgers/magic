@@ -1393,10 +1393,12 @@ fn ability() -> impl Strategy<Value = Ability> {
                     except_draw_step
                 }),
                 selector().prop_map(|what| ReplaceWhen::Enters { what }),
-                (selector(), proptest::bool::ANY).prop_map(|(what, effect)| ReplaceWhen::Discarded {
-                    what,
-                    by: None,
-                    effect
+                (selector(), proptest::bool::ANY).prop_map(|(what, effect)| {
+                    ReplaceWhen::Discarded {
+                        what,
+                        by: None,
+                        effect,
+                    }
                 }),
                 selector().prop_map(|what| ReplaceWhen::Destroyed { what }),
                 (

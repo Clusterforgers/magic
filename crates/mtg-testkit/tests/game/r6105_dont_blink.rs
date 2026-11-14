@@ -18,7 +18,9 @@ use crate::common::pid;
 /// Passes until the stack is empty.
 fn r6105_settle(driver: &mut Driver) -> Result<(), ScriptError> {
     for _ in 0..40 {
-        if matches!(driver.decision()?.kind, DecisionKind::Priority(_)) && driver.state().stack().is_empty() {
+        if matches!(driver.decision()?.kind, DecisionKind::Priority(_))
+            && driver.state().stack().is_empty()
+        {
             return Ok(());
         }
         driver.answer_passively()?;
@@ -49,14 +51,35 @@ fn r6105_creatures_from_exile_are_shuffled_away(
     #[values(Way::Flicker, Way::Adventure, Way::Hand)] way: Way,
     #[values(true, false)] blink: bool,
 ) -> Result<(), ScriptError> {
-    let lands = [island(), island(), plains(), mountain(), mountain(), mountain(), mountain(), mountain(), forest(), forest()];
-    let mut hand = vec![card("Don't Blink").unwrap(), card("Cloudshift").unwrap(), bear()];
+    let lands = [
+        island(),
+        island(),
+        plains(),
+        mountain(),
+        mountain(),
+        mountain(),
+        mountain(),
+        mountain(),
+        forest(),
+        forest(),
+    ];
+    let mut hand = vec![
+        card("Don't Blink").unwrap(),
+        card("Cloudshift").unwrap(),
+        bear(),
+    ];
     hand.push(card("Bonecrusher Giant // Stomp").unwrap());
     let scenario = Scenario::new(seats)
         .at(1, 0, Step::Main1)
         .library(0, vec![forest(); 12])
         .hand(0, hand)
-        .battlefield(0, lands.into_iter().map(ready).chain([ready(card("Serra Angel").unwrap())]));
+        .battlefield(
+            0,
+            lands
+                .into_iter()
+                .map(ready)
+                .chain([ready(card("Serra Angel").unwrap())]),
+        );
     let setup = scenario.clone().setup().unwrap();
     let mut driver = Driver::from_scenario(scenario)?;
     if blink {
@@ -77,7 +100,10 @@ fn r6105_creatures_from_exile_are_shuffled_away(
             driver.choose_targets(&[target])?;
             pay(&mut driver)?;
             r6105_settle(&mut driver)?;
-            assert!(r6105_in(&driver, Zone::Exile, "Bonecrusher Giant"), "on an adventure");
+            assert!(
+                r6105_in(&driver, Zone::Exile, "Bonecrusher Giant"),
+                "on an adventure"
+            );
             driver.begin_cast("Bonecrusher Giant")?;
             pay(&mut driver)?;
             ("Bonecrusher Giant", blink)
@@ -88,9 +114,20 @@ fn r6105_creatures_from_exile_are_shuffled_away(
         }
     };
     r6105_settle(&mut driver)?;
-    assert_eq!(r6105_in(&driver, Zone::Battlefield, name), !shuffled, "{way:?}");
-    assert_eq!(r6105_in(&driver, Zone::Library(pid(0)), name), shuffled, "{way:?}");
-    assert_eq!(driver.state().zone(Zone::Library(pid(0))).len(), library + usize::from(shuffled));
+    assert_eq!(
+        r6105_in(&driver, Zone::Battlefield, name),
+        !shuffled,
+        "{way:?}"
+    );
+    assert_eq!(
+        r6105_in(&driver, Zone::Library(pid(0)), name),
+        shuffled,
+        "{way:?}"
+    );
+    assert_eq!(
+        driver.state().zone(Zone::Library(pid(0))).len(),
+        library + usize::from(shuffled)
+    );
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.state().state_hash());
     Ok(())

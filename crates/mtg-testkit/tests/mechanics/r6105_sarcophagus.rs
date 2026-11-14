@@ -17,7 +17,9 @@ use crate::common::pid;
 /// Passes, answering every question passively, until the stack is empty.
 fn r6105_settle(driver: &mut Driver) -> Result<(), ScriptError> {
     for _ in 0..60 {
-        if matches!(driver.decision()?.kind, DecisionKind::Priority(_)) && driver.state().stack().is_empty() {
+        if matches!(driver.decision()?.kind, DecisionKind::Priority(_))
+            && driver.state().stack().is_empty()
+        {
             return Ok(());
         }
         driver.answer_passively()?;
@@ -52,11 +54,21 @@ fn r6105_cycled_then_cast_then_exiled(#[values(2, 3, 4)] seats: usize) -> Result
     driver.begin_activation("Hampering Snare")?;
     driver.answer(Answer::PayMana(PayChoice::Auto))?;
     r6105_settle(&mut driver)?;
-    assert!(r6105_in(&driver, Zone::Graveyard(pid(0)), "Hampering Snare"), "a cycled card is not exiled");
+    assert!(
+        r6105_in(&driver, Zone::Graveyard(pid(0)), "Hampering Snare"),
+        "a cycled card is not exiled"
+    );
     driver.cast("Hampering Snare")?;
     r6105_settle(&mut driver)?;
-    assert!(!r6105_in(&driver, Zone::Graveyard(pid(0)), "Hampering Snare"));
-    assert!(r6105_in(&driver, Zone::Exile, "Hampering Snare"), "cast from the graveyard, then exiled");
+    assert!(!r6105_in(
+        &driver,
+        Zone::Graveyard(pid(0)),
+        "Hampering Snare"
+    ));
+    assert!(
+        r6105_in(&driver, Zone::Exile, "Hampering Snare"),
+        "cast from the graveyard, then exiled"
+    );
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.state().state_hash());
     Ok(())

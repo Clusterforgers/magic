@@ -36,7 +36,14 @@ fn r6105_spawn_casts_spells_with_total_mana_value_ten(
     library.extend((0..7).map(|_| island()));
     let scenario = Scenario::new(seats)
         .at(1, 0, Step::Main1)
-        .battlefield(0, [ready(card("Primeval Spawn").unwrap()), ready(island()), ready(island())])
+        .battlefield(
+            0,
+            [
+                ready(card("Primeval Spawn").unwrap()),
+                ready(island()),
+                ready(island()),
+            ],
+        )
         .hand(0, [card("Into the Roil").unwrap()])
         .library(0, library);
     let setup = scenario.clone().setup().unwrap();
@@ -62,10 +69,18 @@ fn r6105_spawn_casts_spells_with_total_mana_value_ten(
                 };
                 let giant = named("Serra Angel");
                 let all_bears = named("Grizzly Bears");
-                assert_eq!((giant.len(), all_bears.len()), (1, 4), "the top ten are exiled");
+                assert_eq!(
+                    (giant.len(), all_bears.len()),
+                    (1, 4),
+                    "the top ten are exiled"
+                );
                 // The angel and three bears are 11: refused.
                 let over: Vec<_> = giant.iter().chain(&all_bears[..3]).copied().collect();
-                assert!(driver.answer(Answer::ChooseCards(CardsChoice(over))).is_err());
+                assert!(
+                    driver
+                        .answer(Answer::ChooseCards(CardsChoice(over)))
+                        .is_err()
+                );
                 let pick: Vec<_> = giant.iter().chain(&all_bears[..bears]).copied().collect();
                 driver.answer(Answer::ChooseCards(CardsChoice(pick)))?;
                 picked = true;
@@ -89,7 +104,10 @@ fn r6105_spawn_casts_spells_with_total_mana_value_ten(
     assert_eq!(r6105_mine(&driver, "Grizzly Bears"), bears);
     let exiled = driver.state().zone(Zone::Exile).len();
     assert_eq!(exiled, 10 - 1 - bears, "the rest stay in exile");
-    assert!(driver.state().zone(Zone::Hand(pid(0))).len() == 1, "the Spawn went back to its owner's hand");
+    assert!(
+        driver.state().zone(Zone::Hand(pid(0))).len() == 1,
+        "the Spawn went back to its owner's hand"
+    );
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.state().state_hash());
     Ok(())
@@ -98,7 +116,9 @@ fn r6105_spawn_casts_spells_with_total_mana_value_ten(
 /// Passes, answering every question passively, until the stack is empty.
 fn r6105_settle(driver: &mut Driver) -> Result<(), ScriptError> {
     for _ in 0..60 {
-        if matches!(driver.decision()?.kind, DecisionKind::Priority(_)) && driver.state().stack().is_empty() {
+        if matches!(driver.decision()?.kind, DecisionKind::Priority(_))
+            && driver.state().stack().is_empty()
+        {
             return Ok(());
         }
         driver.answer_passively()?;
@@ -114,18 +134,28 @@ fn r6105_spawn_stays_only_when_cast_with_mana(
     #[case] cast: bool,
 ) -> Result<(), ScriptError> {
     use mtg_testkit::cards::{forest, mountain, plains, swamp};
-    let lands = [plains(), island(), swamp(), mountain(), forest(), plains(), plains(), plains(), plains(), plains()];
-    let mut scenario = Scenario::new(seats)
+    let lands = [
+        plains(),
+        island(),
+        swamp(),
+        mountain(),
+        forest(),
+        plains(),
+        plains(),
+        plains(),
+        plains(),
+        plains(),
+    ];
+    let mut board: Vec<_> = lands.into_iter().map(ready).collect();
+    if !cast {
+        board.push(ready(card("Primeval Spawn").unwrap()));
+    }
+    let hand = if cast { "Primeval Spawn" } else { "Cloudshift" };
+    let scenario = Scenario::new(seats)
         .at(1, 0, Step::Main1)
         .library(0, vec![island(); 12])
-        .battlefield(0, lands.into_iter().map(ready));
-    scenario = if cast {
-        scenario.hand(0, [card("Primeval Spawn").unwrap()])
-    } else {
-        scenario
-            .hand(0, [card("Cloudshift").unwrap()])
-            .battlefield(0, [ready(card("Primeval Spawn").unwrap())])
-    };
+        .battlefield(0, board)
+        .hand(0, [card(hand).unwrap()]);
     let mut driver = Driver::from_scenario(scenario)?;
     if cast {
         driver.cast("Primeval Spawn")?;
