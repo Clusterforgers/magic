@@ -184,8 +184,9 @@ impl Spend {
         address: crate::abilities::AbilityRef,
         rules: &mtg_cards::ability::Ability,
     ) -> Self {
-        self.traits.equip = crate::activation_kind::specific(state, address, rules)
-            == Some(mtg_cards::ability::ActivationKind::Equip);
+        let kind = crate::activation_kind::specific(state, address, rules);
+        self.traits.equip = kind == Some(mtg_cards::ability::ActivationKind::Equip);
+        self.traits.power_up = kind == Some(mtg_cards::ability::ActivationKind::PowerUp);
         self
     }
 

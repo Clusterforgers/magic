@@ -107,6 +107,7 @@ fn step_texts(step: &Effect) -> Vec<String> {
         who,
         count: Amount::Triggering,
         sealed: false,
+        bottom: false,
         ..
     } = step
     {

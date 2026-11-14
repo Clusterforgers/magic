@@ -622,6 +622,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     // A permission with riders is worded only as the permission without them and its riders.
     if let Some(mut texts) = super::r401_riders::r401_rider_texts(ability, written_variants) {
         oracle_only::r5523_add_whole(ability, &mut texts);
+        super::r6103_wholes::r6103_add_wholes(ability, &mut texts);
         return texts;
     }
     // An investigation is worded as the Clue tokens it makes.
@@ -676,6 +677,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r5510_wholes::r5510_add_wholes(ability, &mut texts);
     super::r6018_wholes::r6018_add_wholes(ability, &mut texts);
     super::r6100_wholes::r6100_add_wholes(ability, &mut texts);
+    super::r6103_wholes::r6103_add_wholes(ability, &mut texts);
     super::r5510_fortified::r5510_wordings(&mut texts);
     super::r5505_convert::r5505_convert_wordings(ability, &mut texts);
     super::r5506_costs::r5506_wordings(ability, &mut texts);

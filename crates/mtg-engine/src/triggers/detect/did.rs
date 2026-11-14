@@ -183,13 +183,24 @@ pub(super) fn did_happened(
         Event::Unattached { object } => found.push(of(Action::Unattached, *object)),
         Event::Paired { object, .. } => found.push(of(Action::Paired, *object)),
         Event::Regenerated { object } => found.push(of(Action::Regenerated, *object)),
-        Event::Scried(scried) => found.push(Happened::Did {
-            action: Action::Scried,
-            player: Some(scried.player),
-            object: None,
-            ability: None,
-            amount: u32::try_from(scried.top.len() + scried.bottom.len()).unwrap_or(u32::MAX),
-        }),
+        Event::Scried(scried) => {
+            found.push(Happened::Did {
+                action: Action::Scried,
+                player: Some(scried.player),
+                object: None,
+                ability: None,
+                amount: u32::try_from(scried.top.len() + scried.bottom.len()).unwrap_or(u32::MAX),
+            });
+            if !scried.bottom.is_empty() {
+                found.push(Happened::Did {
+                    action: Action::R6103ScriedToBottom,
+                    player: Some(scried.player),
+                    object: None,
+                    ability: None,
+                    amount: u32::try_from(scried.bottom.len()).unwrap_or(u32::MAX),
+                });
+            }
+        }
         Event::Surveilled(surveilled) => {
             found.push(did(Action::Surveilled, Some(surveilled.player), None));
         }

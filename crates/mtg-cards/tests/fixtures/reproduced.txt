@@ -786,6 +786,7 @@ Gaea's Might
 Galactic Wayfarer
 Galadhrim Brigade
 Galadriel, Gift-Giver
+Galea, Kindler of Hope
 Gallifrey Falls // No More
 Galvanic Iteration
 Galvanizing Sawship
@@ -1274,6 +1275,7 @@ Mausoleum Harpy
 Maverick Thopterist
 Mawloc
 Mayhem Patrol
+Meeting of the Five
 Megaton's Fate
 Megrim
 Memory Crystal
@@ -1517,6 +1519,7 @@ Plague Myr
 Plague Stinger
 Planar Disruption
 Planar Outburst
+Plargg and Nassari
 Plaxcaster Frogling
 Plaxmanta
 Poet's Quill
@@ -1585,6 +1588,7 @@ Quest for the Goblin Lord
 Questing Beast
 Quick Fixer
 Quietus Spike
+Quinjet Technician
 Rabble Rousing
 Rabid Wolverines
 Radical Idea

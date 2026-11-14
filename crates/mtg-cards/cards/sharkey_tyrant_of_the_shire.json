@@ -24,9 +24,14 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 193, "end": 255 }
+          "Rule": {
+            "rule": {
+              "SpendManaAs": {
+                "who": "You",
+                "spend_as": "AnyType",
+                "abilities": [{ "Is": "This" }]
+              }
+            }
           }
         }
       ]

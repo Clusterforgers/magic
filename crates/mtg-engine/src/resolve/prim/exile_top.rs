@@ -20,6 +20,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         count,
         bind,
         sealed,
+        bottom,
     } = effect
     else {
         return Err(wrong_effect("ExileTop"));
@@ -32,7 +33,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         if !state.is_alive(owner) {
             continue;
         }
-        for id in top_cards(state, owner, wanted) {
+        let cards = if *bottom {
+            r6103_bottom_cards(state, owner, wanted)
+        } else {
+            top_cards(state, owner, wanted)
+        };
+        for id in cards {
             let Some(card) = state.object(id) else {
                 continue;
             };
@@ -60,6 +66,20 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         snapshots: Vec::new(),
         next: Next::Sibling,
     })
+}
+
+/// The bottom `count` cards of the player's library, the bottom card first.
+fn r6103_bottom_cards(
+    state: &crate::state::GameState,
+    player: mtg_core::ids::PlayerId,
+    count: usize,
+) -> Vec<mtg_core::ids::ObjectId> {
+    state
+        .zone(Zone::Library(player))
+        .iter()
+        .take(count)
+        .copied()
+        .collect()
 }
 
 #[cfg(test)]
