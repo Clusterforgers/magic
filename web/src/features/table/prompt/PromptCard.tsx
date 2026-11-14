@@ -11,10 +11,15 @@ import { useChoiceAnchor } from './choiceAnchor'
 /** How a card of a prompt is drawn: whole (cost and type line, from 76 px wide) or compact (name and power only). */
 export type PromptCardSize = 'normal' | 'compact'
 
-/** The box of each size, 5:7 like a card, a whole card up to 7 rem wide on a tall window; whole class names, so Tailwind can see them. */
+/**
+ * The box of each size, 5:7 like a card: a whole card up to 7 rem wide on a tall window, and no taller than the room of
+ * its grid (`--choice-room`), so a row is always whole; whole class names, so Tailwind can see them.
+ */
 export const PROMPT_CARD_BOX: Record<PromptCardSize, string> = {
-  normal: '[--card-h:calc(var(--card-w)*7/5)] [--card-w:min(7rem,11dvh)]',
-  compact: '[--card-w:3.75rem] [--card-h:5.25rem]',
+  normal:
+    '[--card-h:calc(var(--card-w)*7/5)] [--card-w:max(3rem,min(7rem,11dvh,calc((var(--choice-room,20rem)_-_2rem)*5/7)))]',
+  compact:
+    '[--card-h:calc(var(--card-w)*7/5)] [--card-w:max(3rem,min(3.75rem,calc((var(--choice-room,20rem)_-_2rem)*5/7)))]',
 }
 
 /** Up to this many cards on offer are drawn whole; a longer list is compact, so a row holds more cards. */
@@ -100,7 +105,8 @@ export function PromptCard({
           Card
         </span>
       ) : (
-        <CardFace object={object} role={null} size={size} fit />
+        // Every card of a choice stands upright and whole, tapped or not, so the row reads as one size.
+        <CardFace object={object} role={null} size={size} fit upright />
       )}
       {chosen ? <ChosenMark /> : null}
       {hotkey === undefined ? null : (

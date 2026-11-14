@@ -48,7 +48,7 @@ describe('the wide sheet', () => {
   })
 
   it('draws a whole card up to 7 rem wide, following the window height', () => {
-    expect(PROMPT_CARD_BOX.normal).toContain('[--card-w:min(7rem,11dvh)]')
+    expect(PROMPT_CARD_BOX.normal).toContain('min(7rem,11dvh,calc((var(--choice-room,20rem)_-_2rem)*5/7))')
   })
 })
 

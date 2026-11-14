@@ -2,6 +2,7 @@ import { useContext, useLayoutEffect, useMemo, useRef } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import { useSeatNamer } from '../names'
+import { laysOutCards } from '../prompt/cardPrompts'
 import { useAttachLines } from './attachLines'
 import { clearOf, labelPoint, shiftInto } from './geometry'
 import type { Rect } from './geometry'
@@ -142,6 +143,7 @@ function Lines({ lines }: { lines: readonly LineSpec[] }) {
   const drawn = useMemo(() => shapesOf(lines, rects), [lines, rects])
   const combat = useMemo(() => drawn.filter(({ line }) => !above(line.kind)), [drawn])
   const targets = useMemo(() => drawn.filter(({ line }) => above(line.kind)), [drawn])
+  const cards = usePlay(laysOutCards)
   return (
     <div
       ref={origin}
@@ -152,10 +154,13 @@ function Lines({ lines }: { lines: readonly LineSpec[] }) {
       <Layer drawn={combat} layer="lines" className="combat-overlay z-10" />
       {/* The same lines again, faint, above the centre strip that hides the first set: a line dives under the prompt
           and is still there to follow on the other side, without a stroke across the words. */}
-      <Layer drawn={combat} layer="ghost" className="combat-ghost z-30 opacity-30" />
+      {/* A prompt that lays out cards keeps every line under its sheet: nothing crosses the cards to pick. */}
+      {cards ? null : <Layer drawn={combat} layer="ghost" className="combat-ghost z-30 opacity-30" />}
       <BundleLabels drawn={combat} />
       {/* The arrows of the stack start at a chip in the strip, so they run above it (and under the hand and the controls). */}
-      {targets.length === 0 ? null : <Layer drawn={targets} layer="stack" className="combat-stack z-[25]" />}
+      {targets.length === 0 || cards ? null : (
+        <Layer drawn={targets} layer="stack" className="combat-stack z-[25]" />
+      )}
     </div>
   )
 }
