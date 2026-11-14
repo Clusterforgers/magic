@@ -254,6 +254,7 @@ const RUNS: &[&str] = &[
     "Effect.Move.Attached",
     "Effect.Move.FaceDown",
     "Effect.Move.Command",
+    "Effect.Move.Random.Top",
     "Effect.ExileUntil",
     "ExileUntil.Total",
     "Effect.RevealUntil",
@@ -268,6 +269,8 @@ const RUNS: &[&str] = &[
     "Effect.Cloak",
     "Effect.FaceDownPile",
     "Effect.BecomeForetold",
+    "Effect.ManifestCards",
+    "Effect.KeepTotalPower",
     "Effect.CastFromZone",
     "Effect.CastFromZone.Transformed",
     "Effect.Destroy",
@@ -1209,7 +1212,7 @@ mod tests {
     #[case::moving_to_the_battlefield_transformed("Effect.Move.Transformed", true)]
     #[case::moving_to_the_battlefield_attached("Effect.Move.Attached", true)]
     #[case::moving_to_the_battlefield_face_down("Effect.Move.FaceDown", true)]
-    #[case::moving_in_a_random_order_to_the_top("Effect.Move.Random.Top", false)]
+    #[case::moving_in_a_random_order_to_the_top("Effect.Move.Random.Top", true)]
     #[case::searching("Effect.Search", true)]
     #[case::searching_several_zones("Search.Zones", true)]
     #[case::r5517_revealing_until_a_most("RevealUntil.Most", true)]
@@ -1236,6 +1239,7 @@ mod tests {
     #[case::sorcery_timing("Ability.Sorcery", true)]
     #[case::activation_conditions("Ability.Condition", true)]
     #[case::equip("Keyword.Equip", true)]
+    #[case::fortify("Keyword.Fortify", true)]
     #[case::reconfigure("Keyword.Reconfigure", true)]
     #[case::living_weapon("Keyword.LivingWeapon", true)]
     #[case::unattaching("Effect.Unattach", true)]

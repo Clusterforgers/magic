@@ -163,6 +163,7 @@ Bear Umbra
 Beast Walkers
 Beast Within
 Beastmaster Ascension
+Become Anonymous
 Befriending the Moths // Imperial Moth
 Behemoth of Vault 0
 Behold the Multiverse
@@ -496,6 +497,7 @@ Desert
 Desperate Ravings
 Desperate Ritual
 Despise
+Destined Confrontation
 Determined Iteration
 Devastation Tide
 Devoted Druid
@@ -799,6 +801,7 @@ Germination Practicum
 Gerrard's Wisdom
 Getaway Car
 Ghalta, Primal Hunger
+Ghastly Conscription
 Ghave, Guru of Spores
 Ghired, Conclave Exile
 Ghitu Fire
@@ -1051,6 +1054,7 @@ Jaspera Sentinel
 Jazal Goldmane
 Jedit Ojanen of Efrava
 Jeska's Will
+Jeskai Infiltrator
 Jirina Kudro
 Jo Grant
 Jodah's Codex
@@ -1824,6 +1828,7 @@ Skyreach Manta
 Skyshroud Behemoth
 Skyshroud Ridgeback
 Skysovereign, Consul Flagship
+Slaughter the Strong
 Sleep
 Sleight of Mind
 Slip Through Space
@@ -2154,6 +2159,7 @@ Treasure Hunt
 Trench Behemoth
 Triarch Praetorian
 Tribal Flames
+Triumph of Saint Katherine
 Trostani Discordant
 Trove Tracker
 Trove of Temptation

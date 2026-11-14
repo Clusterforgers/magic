@@ -145,10 +145,6 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         Destination::Library {
             order: Some(Order::Random),
-            place: Place::Top,
-        } => return unsupported("Effect.Move.Random.Top"),
-        Destination::Library {
-            order: Some(Order::Random),
             place: Place::Below(_),
         } => return unsupported("Effect.Move.Random.Below"),
         Destination::Library { place, order } => {
@@ -479,10 +475,14 @@ fn into_libraries(
                     .flat_map(|object| crate::merged::cards_apart(object)),
             );
         }
-        let drawn = random && place == Place::Bottom && ids.len() > 1;
+        let drawn = random && matches!(place, Place::Bottom | Place::Top) && ids.len() > 1;
         if drawn {
             ids = shuffled(state, shuffles, ids);
             shuffles += 1;
+            // On top the order is logged as a random pick, which spends the substream as a bottoming does.
+            if place == Place::Top {
+                events.push(Event::ChosenAtRandom { cards: ids.clone() });
+            }
         } else if place != Place::Shuffled && ids.len() > 1 {
             // Their owner puts them in any order (CR 401.4) unless the effect names the player who puts them.
             let who = if by_controller {
@@ -1229,19 +1229,31 @@ mod tests {
         );
     }
 
-    #[rstest]
-    #[case::a_random_order_on_top(
-        r#"{"Library":{"place":"Top","order":"Random"}}"#,
-        "Effect.Move.Random.Top"
-    )]
-    fn what_the_engine_does_not_play_is_refused_by_name(
-        #[case] to: &str,
-        #[case] name: &'static str,
-    ) {
+    #[test]
+    fn cards_put_on_top_in_a_random_order_are_logged_as_a_random_pick_before_they_move() {
         let game = game();
-        let card = hand(&game, ME)[0];
-        let refused = run_with(&game, &[card], Vec::new(), &moving(to));
-        assert_eq!(refused.unwrap_err(), ResolveError::Unsupported(name));
+        let cards: Vec<ObjectId> = hand(&game, ME).into_iter().take(3).collect();
+        let to = r#"{"Library":{"place":"Top","order":"Random"}}"#;
+        let Ok(Run::Done { events, .. }) = run_with(&game, &cards, Vec::new(), &moving(to)) else {
+            panic!("a random order on top asks nothing");
+        };
+        let Some(Event::ChosenAtRandom { cards: order }) = events.first() else {
+            panic!("the order is drawn first: {events:?}");
+        };
+        let mut sorted = order.clone();
+        sorted.sort_unstable();
+        let mut wanted = cards.clone();
+        wanted.sort_unstable();
+        assert_eq!(sorted, wanted, "every card is in the order once");
+        let moved: Vec<ObjectId> = events
+            .iter()
+            .filter_map(|event| match event {
+                Event::ZoneChanged { object, .. } => Some(*object),
+                _ => None,
+            })
+            .collect();
+        let reversed: Vec<ObjectId> = order.iter().rev().copied().collect();
+        assert_eq!(moved, reversed, "the first card drawn ends on top");
     }
 
     const RANDOM_BOTTOM: &str = r#"{"Library":{"place":"Bottom","order":"Random"}}"#;

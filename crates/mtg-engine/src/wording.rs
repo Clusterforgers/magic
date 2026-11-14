@@ -1209,6 +1209,15 @@ pub(crate) fn r370_keep(filter: &Selector, count: usize) -> String {
     )
 }
 
+/// "Choose a creature you control to keep (total power 4 or less, 1 so far); you sacrifice the rest.": the question of
+/// one permanent kept within a total of power.
+pub(crate) fn r4704_keep_power(filter: &Selector, most: i64, total: i64) -> String {
+    format!(
+        "Choose {} to keep (total power {most} or less, {total} so far); you sacrifice the rest.",
+        counted(filter, 1, "you control")
+    )
+}
+
 /// "Sacrifice up to 3 lands.": the question of a sacrifice that may stop short.
 pub(crate) fn sacrifice_up_to(filter: &Selector, count: usize) -> String {
     let (head, tail) = phrase(filter);

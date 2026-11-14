@@ -84,6 +84,7 @@ mod r4700_lands;
 mod r4700_players;
 mod r4701_cast_from_among;
 mod r4702_rules;
+mod r4704_cards;
 mod r4706_same_counters;
 mod r4707_first_sets;
 mod r4707_one_or_more;

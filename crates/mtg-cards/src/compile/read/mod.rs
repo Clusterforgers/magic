@@ -236,6 +236,7 @@ mod r4701_flash;
 mod r4701_pairs;
 mod r4702_names;
 pub(crate) mod r4703_reads;
+mod r4704_hooks;
 mod r4705_reads;
 mod r4706_counters;
 mod r4707_costs;
@@ -681,6 +682,21 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = render::r5522_read_whole(text, same_text) {
+        return Some(found);
+    }
+    // An ability word is flavor to the pack's readers as to the templates below.
+    let bare = match kind {
+        ClauseKind::Triggered | ClauseKind::Static => text
+            .get(classify::ability_word_len(text.lines().next().unwrap_or_default()).unwrap_or(0)..)
+            .unwrap_or(text),
+        _ => text,
+    };
+    if let Some(found) =
+        r4704_hooks::r4704_read(bare, kind, |twin| clause_with(twin, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, bare))
+    {
         return Some(found);
     }
     if let Some(found) =

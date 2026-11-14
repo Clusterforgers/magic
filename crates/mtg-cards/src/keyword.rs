@@ -88,6 +88,9 @@ pub enum Keyword {
     Fortify(Cost),
     /// Reconfigure with its cost.
     Reconfigure(Cost),
+    /// Fortify with its cost (CR 702.67): "[Cost]: Attach this Fortification to target land you control. Activate only as
+    /// a sorcery."
+    Fortify(Cost),
     /// Living weapon: when the Equipment enters, a 0/0 black Phyrexian Germ is created and the Equipment attached to it.
     LivingWeapon,
     /// Enchant: what an Aura may enchant.
@@ -719,6 +722,7 @@ impl Keyword {
             Keyword::Equip(_) => "Equip",
             Keyword::Fortify(_) => "Fortify",
             Keyword::Reconfigure(_) => "Reconfigure",
+            Keyword::Fortify(_) => "Fortify",
             Keyword::LivingWeapon => "Living weapon",
             Keyword::Enchant(_) => "Enchant",
             Keyword::EnchantPlayer { .. } => "Enchant player",
@@ -1023,6 +1027,7 @@ mod tests {
             Keyword::Equip(cost.clone()),
             Keyword::Fortify(cost.clone()),
             Keyword::Reconfigure(cost.clone()),
+            Keyword::Fortify(cost.clone()),
             Keyword::LivingWeapon,
             Keyword::Enchant(Selector::default()),
             Keyword::EnchantPlayer { opponent: false },

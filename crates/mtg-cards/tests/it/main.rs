@@ -89,6 +89,7 @@ mod r4700_cards;
 mod r4701_cards;
 mod r4702_cards;
 mod r4703_cards;
+mod r4704_cards;
 mod r4705_cards;
 mod r4706_cards;
 mod r4707_cards;

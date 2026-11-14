@@ -438,6 +438,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "equip" => equip(rest),
         "fortify" => cost(rest).map(Keyword::Fortify),
         "reconfigure" => cost(rest).map(Keyword::Reconfigure),
+        "fortify" => cost(rest).map(Keyword::Fortify),
         "cycling" => cost(rest).map(Keyword::Cycling),
         "kicker" => kicker(rest),
         "multikicker" => cost(rest).map(Keyword::Multikicker),
