@@ -404,9 +404,9 @@
     inset 0 1px 0 oklch(1 0 0 / 0.35);
 }
 
-/* A panel on the page: the surface colour, a hairline edge, the panel radius. */
+/* A panel on the page: the surface colour, a hairline edge, the panel radius, lifted a little off the page. */
 @utility surface {
-  @apply rounded-xl border bg-surface text-foreground;
+  @apply rounded-xl border bg-surface text-foreground shadow-e1;
 }
 
 /* The life total: the largest figure of the table, digits of one width so it does not jitter. */
@@ -484,6 +484,13 @@
   }
   body {
     @apply bg-background text-base text-foreground antialiased;
+    /* A warm light from the top of the page, as over the table; the colour stays the page's own. */
+    background-image: radial-gradient(
+      120% 60% at 50% 0%,
+      color-mix(in oklch, var(--brass) 10%, transparent),
+      transparent 70%
+    );
+    background-attachment: fixed;
   }
   /* A page's title is set in the display face, as the table sets life and seat names. */
   h1 {

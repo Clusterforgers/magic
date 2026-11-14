@@ -176,6 +176,7 @@ export function HandFan({ ids, label, size, cost = false, layout, commanders, on
             // A row another row lies over keeps only its top as its slot, so the slots of the row below start right under it.
             back={rows > 1 && Math.floor(index / perRow) < rows - 1}
             lifts={rows === 1 || Math.floor(index / perRow) < rows - 1}
+            fan={rows === 1 ? fanOf(index, ids.length) : undefined}
             commander={commander !== undefined && commander.top !== true}
             top={commander?.top === true}
             drop={
@@ -239,6 +240,28 @@ export function HandFan({ ids, label, size, cost = false, layout, commanders, on
   )
 }
 
+/** A slot's place in the arc of the hand: its turn in degrees and how far it sits below the middle, in px. */
+export interface Fan {
+  turn: number
+  drop: number
+}
+
+/** The most a card at the end of the arc turns, in degrees, and sits lower, in px. */
+export const FAN_TURN_MOST = 6
+export const FAN_DROP_MOST = 8
+
+/**
+ * The place of card `index` of `count` in the arc: the middle card upright and highest, the ends turned outwards and a
+ * little lower, a wider hand turning each card less; one card stands straight.
+ */
+export function fanOf(index: number, count: number): Fan {
+  if (count <= 1) return { turn: 0, drop: 0 }
+  const middle = (count - 1) / 2
+  const share = (index - middle) / middle
+  const turn = Math.round(share * Math.min(FAN_TURN_MOST, 1.2 * middle) * 10) / 10
+  return { turn, drop: Math.round(share * share * FAN_DROP_MOST * 10) / 10 }
+}
+
 /**
  * One place of the hand: the card on its backing, which rises on hover and focus. A sortable slot is a drag source
  * and a drop target; while a card is dragged over it a bar marks the side the card goes to.
@@ -251,12 +274,15 @@ function HandSlot({
   commander,
   top,
   drop,
+  fan,
   children,
 }: {
   id: ObjectId
   sortable: boolean
   back: boolean
   lifts: boolean
+  /** The slot's place in the arc of a one-row hand (`fanOf`); none in a hand of several rows. */
+  fan?: Fan | undefined
   commander: boolean
   top: boolean
   drop: 'before' | 'after' | undefined
@@ -298,8 +324,16 @@ function HandSlot({
       )}
       {/* Faces are tinted and see-through; the backing keeps an overlapped neighbour from showing through. */}
       <div
+        style={
+          fan === undefined
+            ? undefined
+            : ({ '--fan-turn': `${fan.turn}deg`, '--fan-drop': `${fan.drop}px` } as CSSProperties)
+        }
         className={cn(
           'relative rounded-md bg-table motion-safe:transition-transform motion-safe:duration-fast motion-safe:ease-out',
+          // The arc of the hand; a card that rises stands straight.
+          fan !== undefined &&
+            'translate-y-(--fan-drop) rotate-(--fan-turn) group-hover/slot:rotate-0 group-has-focus-visible/slot:rotate-0',
           // The row nothing lies over is whole already; a lift there would only cover the row above.
           lifts &&
             'group-hover/slot:-translate-y-(--hand-lift) group-has-focus-visible/slot:-translate-y-(--hand-lift) pointer-coarse:group-focus-within/slot:-translate-y-(--hand-lift)',
