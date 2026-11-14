@@ -28,6 +28,7 @@ A fallen hero keeps playing: it haunts the fight with small, clear choices and c
 
 - Ways back: Rise Again; the Phoenix Feather relic (pay 6 life once each fight: every fallen teammate returns with 8 life and four cards); a won fight brings every Spirit back at 10.
 - Bot Spirits (`brain/haunt.rs`) rise as soon as they can, Ward when 4 or more power attacks the party, and before an opponent's combat Hinder its biggest creature (power 4 or more, 2 ectoplasm held) or Howl (4 held). A bot holding the Phoenix Feather uses it while it has 14 life or more.
+- Measured with two Hard heroes at Heat 0, seeds 1 to 4 (`fights`): 0/4 won with Spirits acting and 0/4 idle, 4 falls each; the fallen hero spends its Spirit turns on 3 haunt actions a fight and never reaches Rise Again, so haunting helps at the margin and does not decide a fight.
 
 ## Bosses
 
