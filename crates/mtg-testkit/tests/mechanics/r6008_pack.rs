@@ -118,11 +118,14 @@ fn r6008_friends_return_a_creature_card_and_foes_sacrifice(
 ) {
     let mut scenario = Scenario::new(seats)
         .at(3, 0, Step::Main1)
-        .battlefield(0, [ready(swamp()), ready(swamp()), ready(swamp())])
         .hand(0, [card("Virtus's Maneuver").unwrap()]);
     for seat in 0..seats {
+        let mut field = vec![ready(card("Grizzly Bears").unwrap())];
+        if seat == 0 {
+            field.extend([ready(swamp()), ready(swamp()), ready(swamp())]);
+        }
         scenario = scenario
-            .battlefield(seat, [ready(card("Grizzly Bears").unwrap())])
+            .battlefield(seat, field)
             .graveyard(seat, [card("Llanowar Elves").unwrap()]);
     }
     let mut driver = Driver::from_scenario(scenario).unwrap();
