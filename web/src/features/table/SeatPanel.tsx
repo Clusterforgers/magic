@@ -22,6 +22,7 @@ import { useSeatNamer } from './names'
 import { BankMark } from './BankMark'
 import { CommanderPortrait } from './CommanderPortrait'
 import { LandSummary } from './LandSummary'
+import { ZoomButton } from './boardZoom'
 import {
   ACTIVE_EDGE,
   AwayMark,
@@ -250,6 +251,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
         <PriorityDot label={priorityName(owner, flags.you)} />
       ) : null}
       {away ? <AwayMark /> : null}
+      {line ? <ZoomButton seat={seat} owner={owner} /> : null}
     </div>
   )
 

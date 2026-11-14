@@ -8,6 +8,7 @@ import type { PlayerId } from '@/protocol/generated'
 import { Battlefield } from './Battlefield'
 import { useDefenderClick } from './combat/defender'
 import { LandFoldContext } from './landFold'
+import { BoardZoomContext, useZoomClose } from './boardZoom'
 import type { CardSize } from './cardSize'
 import { POD_COLUMN_PX } from './layout'
 import type { PodPlace, SeatPlan } from './layout'
@@ -246,29 +247,53 @@ function OpponentGrid({ plan, size }: { plan: SeatPlan; size: CardSize }) {
   const playing = plan.boards.filter((seat) => !gone.includes(seat))
   const columns = Math.max(1, Math.min(plan.columns, playing.length)) as SeatPlan['columns']
   const card = useGridCard(playing)
+  const owner = useSeatNamer()
   const foldLands = useContext(TableOptionsContext).foldLands ?? FOLD_LANDS_BY_DEFAULT
+  const [chosen, setZoomed] = useState<PlayerId | null>(null)
+  // A seat that left the game, or a grid of one, has nothing to enlarge.
+  const zoomed = chosen !== null && playing.includes(chosen) && playing.length > 1 ? chosen : null
+  const zoom = useMemo(() => ({ zoomed, setZoomed }), [zoomed])
+  const row = useRef<HTMLDivElement>(null)
+  useZoomClose(zoom, row)
   return (
-    <GridCardContext value={card}>
-      <div className="flex min-h-0 min-w-0 flex-col gap-2">
-        {gone.map((seat) => (
-          <LeftStrip key={seat} seat={seat} />
-        ))}
-        <div
-          data-layout="grid"
-          data-columns={columns}
-          className={cn('grid min-h-0 min-w-0 flex-1 auto-rows-fr gap-2', COLUMNS[columns])}
-        >
-          {playing.map((seat) => (
-            <div
-              key={seat}
-              data-slot="seat-frame"
-              className="flex min-h-0 min-w-0 rounded-xl border border-brass/50 bg-felt-rim/30 p-1 shadow-[inset_0_2px_12px_oklch(0_0_0/0.35)]"
-            >
-              <SeatArea seat={seat} size={size} facing="far" pod="line" foldLands={foldLands} />
-            </div>
+    <BoardZoomContext value={zoom}>
+      <GridCardContext value={card}>
+        <div ref={row} className="flex min-h-0 min-w-0 flex-col gap-2">
+          {gone.map((seat) => (
+            <LeftStrip key={seat} seat={seat} />
           ))}
+          {zoomed === null ? null : (
+            // The enlarged board takes the whole row at its own card size; the other boards wait behind the close button.
+            <div
+              data-slot="seat-frame"
+              data-zoomed=""
+              role="region"
+              aria-label={`${owner(zoomed)}'s board, enlarged`}
+              className="flex min-h-0 min-w-0 flex-1 rounded-xl border-2 border-brass bg-felt-rim/40 p-1 shadow-e3"
+            >
+              <GridCardContext value={null}>
+                <SeatArea seat={zoomed} size={size} facing="far" pod="line" foldLands={foldLands} />
+              </GridCardContext>
+            </div>
+          )}
+          <div
+            data-layout="grid"
+            data-columns={columns}
+            hidden={zoomed !== null}
+            className={cn('grid min-h-0 min-w-0 flex-1 auto-rows-fr gap-2', COLUMNS[columns])}
+          >
+            {(zoomed === null ? playing : []).map((seat) => (
+              <div
+                key={seat}
+                data-slot="seat-frame"
+                className="flex min-h-0 min-w-0 rounded-xl border border-brass/50 bg-felt-rim/30 p-1 shadow-[inset_0_2px_12px_oklch(0_0_0/0.35)]"
+              >
+                <SeatArea seat={seat} size={size} facing="far" pod="line" foldLands={foldLands} />
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    </GridCardContext>
+      </GridCardContext>
+    </BoardZoomContext>
   )
 }

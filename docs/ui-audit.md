@@ -12,9 +12,9 @@ Impact: how much a problem costs a player in a 4-player Commander game at 1400 �
 
 | # | Problem | Where | What a player meets |
 |---|---|---|---|
-| 1 | Crowded boards draw small cards | table, every board | Opponents' lands fold into their pods' chips and a grid's cards weigh as yours: with 20 permanents a seat and the side panel folded, an opponent's creatures draw about 66 px wide at 1400 × 900; with 40 a seat (14 creatures each) about 48 px, which no layout of three boards side by side lifts much further. |
+| 1 | Crowded boards draw small cards | table, every board | Opponents' lands fold into their pods' chips and a grid's cards weigh as yours: with 20 permanents a seat and the side panel folded, an opponent's creatures draw about 66 px wide at 1400 × 900; with 40 a seat (14 creatures each) about 48 px, which no layout of three boards side by side lifts much further. Each opponent's board enlarges over the row from its pod (about 95 px cards in the crowd fixture). |
 | 2 | Chrome still takes room | table | The side column takes 272 px until folded to its rail; an opponent's pod head is two to three lines; a long prompt grows the strip to 140 px. |
-| 3 | The hand lies flat | hand dock | Hand cards are larger (16 dvh) but stand in one flat row; Arena fans them from the bottom edge and lifts a hovered card to full size. |
+| 3 | The hand is still small | hand dock | The hand lies in an arc and rises on hover, but its cards stay about 90 px wide at 1400 × 900; a full-size hover is the preview beside it. |
 | 4 | Combat lines cross the table | combat overlay | Lines run from the strip and pods across unrelated boards; "4 attackers → you" labels float over cards. |
 | 5 | Choices are small | prompts | Choose cards and look at the top draw 6 rem cards in the strip; targets and modes have no pictures. |
 | 6 | The phone table does not fit | table at 390 | Two and a half hand cards, the controls overlap ("…triggers" cut), the own pod takes a third of the height, boards draw 30 px cards. |
@@ -82,7 +82,7 @@ Each pass is one commit with before and after shots at 1400 × 900, 1280 × 720 
 
 | Pass | Outcome |
 |---|---|
-| 4 | Hand and prompts: a hand fanned from the bottom edge with a full-size hover; choose cards and look at the top as a centre overlay with large cards; targets and modes with card pictures |
+| 4 | Prompts: choose cards and look at the top as a centre overlay with large cards; targets and modes with card pictures |
 | 5 | Board room: combat lines kept to the boards they join, attacker groups as a badge on the defender's pod; the turn badge and ladder said once; the priority sentence in one line |
 | 6 | Phone table: hand and controls fit at 390, pod strip slimmer, boards larger |
 | 7 | Pages: Play with open games as cards with commander art, lobby deck rows with art, the descent with boss art; sign in, Learn and Settings on the new tokens |
