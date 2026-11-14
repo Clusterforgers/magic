@@ -822,6 +822,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::Riot
         | ReplaceBy::WithCounterOf(_)
         | ReplaceBy::WithCountersOf { .. }
+        | ReplaceBy::WithKindsOn(_)
         | ReplaceBy::BecomesChoice(_)
         | ReplaceBy::Mill(_)
         | ReplaceBy::AsEnters(_)
@@ -860,6 +861,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::DayIfNeither
                 | ReplaceBy::WithCounterOf(_)
                 | ReplaceBy::WithCountersOf { .. }
+                | ReplaceBy::WithKindsOn(_)
                 | ReplaceBy::EntersPrepared
                 | ReplaceBy::ChooseWord(_)
                 | ReplaceBy::OpponentChooses(_)
@@ -3117,6 +3119,12 @@ impl Pass<'_> {
                 }
                 self.enter_with_changes(at, object, controller, mods, &applied)?;
             }
+            ReplaceBy::WithKindsOn(of) => {
+                for kind in self.r6102_kinds_on(candidate, of)? {
+                    let one = mtg_cards::value::Amount::Fixed(1);
+                    self.enter_with_counters(at, candidate, object, &kind, &one, &applied)?;
+                }
+            }
             ReplaceBy::Tribute(count) => {
                 if let Asked::Ask(decision) =
                     self.tribute(at, candidate, object, controller, *count, &applied)?
@@ -3515,6 +3523,31 @@ impl Pass<'_> {
     }
 
     /// Adds the event that puts `count` counters of the kind on the permanent `object` becomes, after its enter event at `at`.
+    /// The kinds of counter the objects `of` names hold now, read from the source of the replacement, each once.
+    fn r6102_kinds_on(
+        &self,
+        candidate: &Candidate,
+        of: &mtg_cards::refs::Ref,
+    ) -> Result<Vec<CounterKind>, EngineError> {
+        let scope = Scope::announcing(self.state, candidate.controller, candidate.object);
+        let mut kinds: Vec<CounterKind> = Vec::new();
+        for named in scope.refs(of)? {
+            let Some(holder) = named
+                .object()
+                .and_then(|o| self.state.object(o.id))
+                .and_then(|o| o.permanent())
+            else {
+                continue;
+            };
+            for (kind, n) in holder.counters() {
+                if n > 0 && !kinds.contains(kind) {
+                    kinds.push(kind.clone());
+                }
+            }
+        }
+        Ok(kinds)
+    }
+
     fn enter_with_counters(
         &mut self,
         at: usize,

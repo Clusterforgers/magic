@@ -1,0 +1,264 @@
+[
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "BeginCombat",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "PutRandomCounter": {
+       "on": "This",
+       "among": [
+        {
+         "Other": "flying"
+        },
+        {
+         "Other": "first strike"
+        },
+        {
+         "Other": "deathtouch"
+        },
+        {
+         "Other": "hexproof"
+        },
+        {
+         "Other": "lifelink"
+        },
+        {
+         "Other": "menace"
+        },
+        {
+         "Other": "reach"
+        },
+        {
+         "Other": "trample"
+        },
+        {
+         "Other": "vigilance"
+        },
+        "+1/+1"
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of combat on your turn, choose a kind of counter at random that ~ doesn't have on it from among flying, first strike, deathtouch, hexproof, lifelink, menace, reach, trample, vigilance, and +1/+1. Put a counter of that kind on ~."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Attacks": {
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "PutCountersOf": {
+       "on": {
+        "Target": 0
+       },
+       "of": {
+        "Each": [
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       },
+       "each": 1,
+       "one_kind": true,
+       "absent_only": true
+      }
+     }
+    ]
+   }
+  },
+  "Whenever ~ attacks, choose a counter on a permanent you control. Put a counter of that kind on target permanent you control if it doesn't have a counter of that kind on it."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "RepeatEach": {
+       "over": {
+        "Each": [
+         {
+          "Not": {
+           "Subtype": "Saga"
+          }
+         }
+        ]
+       },
+       "as": "permanent",
+       "effects": [
+        {
+         "PutCountersOf": {
+          "on": {
+           "Bound": "permanent"
+          },
+          "of": {
+           "Bound": "permanent"
+          },
+          "each": 1,
+          "one_kind": true,
+          "per_kind": "May"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "For each non-Saga permanent, choose a counter on it. You may put an additional counter of that kind on that permanent."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "Enters": {
+      "what": [
+       {
+        "Subtype": "Dinosaur"
+       },
+       "Other",
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     }
+    },
+    "by": {
+     "WithKindsOn": "This"
+    }
+   }
+  },
+  "For each kind of counter on ~, each other Dinosaur you control enters with a counter of that kind on it."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        "Other"
+       ]
+      },
+      "bounds": {
+       "min": 0,
+       "max": "X"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "PutCounters": {
+       "on": {
+        "Target": 0
+       },
+       "counter": "+1/+1"
+      }
+     }
+    ]
+   }
+  },
+  "When ~ enters, support X."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{3}"
+     },
+     "Tap"
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        {
+         "GrantAbility": {
+          "Triggered": {
+           "when": {
+            "DealsDamage": {
+             "source": [
+              "This"
+             ],
+             "to": "EachPlayer",
+             "combat": true
+            }
+           },
+           "effects": [
+            {
+             "Draw": {
+              "count": {
+               "Distinct": {
+                "of": [
+                 "This"
+                ],
+                "stat": "CounterKinds"
+               }
+              }
+             }
+            }
+           ]
+          }
+         }
+        },
+        "CantBeBlocked"
+       ],
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "Go for the Goal! — {3}, {T}: Until end of turn, target creature gains \"Whenever this creature deals combat damage to a player, draw a card for each kind of counter on it\" and it can't be blocked this turn."
+ ]
+]

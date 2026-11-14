@@ -41,6 +41,13 @@ fn options(kind: &CounterKind, choice: PerKind) -> (Vec<(String, Pick)>, String)
             ],
             format!("You may put a +1/+1 counter or a {name} counter on it."),
         ),
+        PerKind::May => (
+            vec![
+                (format!("Put another {name} counter"), Pick::Same),
+                ("Put nothing".to_owned(), Pick::Nothing),
+            ],
+            format!("You may put another {name} counter on it."),
+        ),
     }
 }
 

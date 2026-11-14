@@ -95,6 +95,7 @@ fn per_kind(on: Ref, of: Ref, choice: PerKind) -> Vec<Effect> {
         one_kind: false,
         per_kind: Some(choice),
         put: false,
+        absent_only: false,
     }]
 }
 
@@ -138,6 +139,8 @@ pub(super) fn l292_per_kind_text(
              of that kind on ~"
                 .to_owned()
         }),
+        // Worded whole by the r61-02 table.
+        PerKind::May => None,
     }
 }
 

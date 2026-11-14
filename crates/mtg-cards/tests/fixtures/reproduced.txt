@@ -114,6 +114,7 @@ Auton Soldier
 Avalanche
 Avalanche Caller
 Avatar of Woe
+Aven Courier
 Aven Eternal
 Aven Initiate
 Aven Mindcensor
@@ -217,6 +218,7 @@ Bloodletter Quill
 Bloodletter of Aclazotz
 Bloodline Pretender
 Bloom Hulk
+Blue, Loyal Raptor
 Body Count
 Body Double
 Bog Witch
@@ -421,6 +423,7 @@ Cryptic Gateway
 Crystal Barricade
 Crystal Quarry
 Crystal Spray
+Crystalline Giant
 Cuboid Colony
 Culling Ritual
 Cultivate

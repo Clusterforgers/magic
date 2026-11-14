@@ -1,7 +1,7 @@
 {
   "oracle_id": "a01746f3-8e6f-47ce-a95b-e44556d1f73e",
   "name": "Aven Courier",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Aven Courier",
@@ -9,9 +9,20 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 191 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "PutCountersOf": {
+                  "on": { "Target": 0 },
+                  "of": { "Each": [{ "ControlledBy": "You" }] },
+                  "each": 1,
+                  "one_kind": true,
+                  "absent_only": true
+                }
+              }
+            ]
           }
         }
       ]

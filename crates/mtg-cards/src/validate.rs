@@ -4882,15 +4882,33 @@ impl Walker<'_> {
                 }
             }
             Effect::PutCountersOf {
-                on, of, each, put, ..
+                on,
+                of,
+                each,
+                put,
+                per_kind,
+                absent_only,
+                ..
             } => {
                 if *put && *of != Ref::Triggering {
                     w.problem("the counters a triggering event put are read from `Triggering`");
+                }
+                if *absent_only {
+                    w.uses("Effect", "PutCountersOf.AbsentOnly");
+                }
+                if *per_kind == Some(crate::effect::PerKind::May) {
+                    w.uses("Effect", "PutCountersOf.May");
                 }
                 w.at("on", |w| w.reference(on, Kind::Either));
                 w.at("of", |w| w.reference(of, Kind::Either));
                 if let Some(each) = each {
                     w.at("each", |w| w.amount(each));
+                }
+            }
+            Effect::PutRandomCounter { on, among } => {
+                w.at("on", |w| w.reference(on, Kind::Object));
+                if among.len() < 2 {
+                    w.problem("a counter chosen at random is chosen among two or more kinds");
                 }
             }
             Effect::SpellEntersWith { spell, count } => {

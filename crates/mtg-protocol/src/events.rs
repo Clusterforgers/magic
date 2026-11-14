@@ -513,6 +513,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::ChosenAtRandom { .. }
         // Players are public.
         | Event::PlayersChosenAtRandom { .. }
+        | Event::KindChosenAtRandom { .. }
         // The card is revealed to every seat as it is drawn.
         | Event::FirstDrawRevealed { .. }
         | Event::Revealed(_) => None,

@@ -316,6 +316,9 @@ const RUNS: &[&str] = &[
     "Effect.SpellEntersWith",
     "Effect.MultiplyCounters",
     "Effect.PutCountersOf",
+    "Effect.PutCountersOf.AbsentOnly",
+    "Effect.PutCountersOf.May",
+    "Effect.PutRandomCounter",
     "Effect.Tap",
     "Effect.Untap",
     "Effect.TapOrUntap",
@@ -1019,6 +1022,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Riot",
     "ReplaceBy.WithCounterOf",
     "ReplaceBy.WithCountersOf",
+    "ReplaceBy.WithKindsOn",
     "Keyword.Fabricate",
     "Keyword.Ascend",
     "Keyword.Storied",
@@ -1308,6 +1312,10 @@ mod tests {
     #[case::r5516_replacing_a_copy_of_a_spell("ReplaceWhen.CopiesSpell", true)]
     #[case::r5516_replacing_a_learn("ReplaceWhen.Learns", true)]
     #[case::r5516_steps_its_controller_may_choose("ReplaceBy.MayInstead", true)]
+    #[case::r6102_only_a_new_kind("Effect.PutCountersOf.AbsentOnly", true)]
+    #[case::r6102_may_put_another_of_a_kind("Effect.PutCountersOf.May", true)]
+    #[case::r6102_a_counter_of_a_random_kind("Effect.PutRandomCounter", true)]
+    #[case::r6102_enters_with_the_kinds_of_another("ReplaceBy.WithKindsOn", true)]
     #[case::r6008_optional_library("ReplaceBy.IntoLibrary.Optional", true)]
     #[case::r6008_words_for_each_player("Effect.ChooseWords.About", true)]
     #[case::r6008_one_card_for_each_color_set("Choose.DifferentColorSets", true)]

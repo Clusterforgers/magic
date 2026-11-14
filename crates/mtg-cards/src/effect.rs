@@ -111,6 +111,9 @@ pub enum PerKind {
     /// Put a counter of that kind, a +1/+1 counter instead, or nothing ("you may put your choice of a +1/+1 counter or a
     /// counter of that kind on ~").
     MayPlusOneInstead,
+    /// Put a counter of that kind or nothing ("choose a counter on it. You may put an additional counter of that kind on
+    /// that permanent").
+    May,
 }
 
 /// Where a moved object goes.
@@ -1014,6 +1017,18 @@ pub enum Effect {
         /// kind of counters on ~"); `of` is then `Triggering`.
         #[serde(default, skip_serializing_if = "is_false")]
         put: bool,
+        /// A holder gets a kind only when it holds no counter of that kind ("if it doesn't have a counter of that kind
+        /// on it").
+        #[serde(default, skip_serializing_if = "is_false")]
+        absent_only: bool,
+    },
+    /// Puts one counter on `on` of a kind chosen at random among `among` that it holds none of ("choose a kind of counter
+    /// at random that this creature doesn't have on it from among ..."); nothing when it holds every one.
+    PutRandomCounter {
+        /// Where the counter goes.
+        on: Ref,
+        /// The kinds offered.
+        among: Vec<CounterKind>,
     },
     /// Taps permanents.
     Tap {

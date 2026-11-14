@@ -1,0 +1,37 @@
+{
+  "oracle_id": "49a46cfa-f2e9-4718-a6cb-47dbb0792b56",
+  "name": "Crystalline Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crystalline Giant",
+      "oracle_fingerprint": "1475f8f2b970e531c10306552cbc0488",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "PutRandomCounter": {
+                  "on": "This",
+                  "among": [
+                    { "Other": "flying" },
+                    { "Other": "first strike" },
+                    { "Other": "deathtouch" },
+                    { "Other": "hexproof" },
+                    { "Other": "lifelink" },
+                    { "Other": "menace" },
+                    { "Other": "reach" },
+                    { "Other": "trample" },
+                    { "Other": "vigilance" },
+                    "+1/+1"
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -349,6 +349,8 @@ Rules that change how the game is played rather than the objects in it (`Effect:
 - A cost removing counters from its source records the number (`CostTaken::removed`) for `Amount::RemovedThisWay`; "Remove all" is settled at announcement.
 - A spell's own cost modifier reads its announced X; another object's reads none.
 - A repeatable additional cost (`AdditionalCost.repeatable`) is asked like a multikicker; `Amount::AdditionalPaid` counts the payments.
+- `PutCountersOf.absent_only` puts a kind only on a holder with none of it; with `one_kind`, `PerKind::May` asks the kind, then whether to put it.
+- `Effect::PutRandomCounter` picks a kind the object lacks with the next substream (`KindChosenAtRandom`, then the counter); `ReplaceBy::WithKindsOn` gives an entering permanent one counter of each kind the named objects hold.
 - `MoveCounters.up_to` asks per counter with a "Stop" option (`w2f_any_counters`); a `from` naming a kind of permanent has each give up to the count in turn.
 - `Ref::Union` names two damage recipients as one ("you and/or permanents you control"): a shield over it covers either and spends one budget.
 - `GameRule::ManaProduced` (`mana_replace.rs`, CR 106.6): `ManaChange` sets, multiplies or converts the mana of a tap, rewriting the options of `mana_ability::options` so planner and activation agree; never on the stack.

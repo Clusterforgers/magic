@@ -55,6 +55,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::SpellEntersWith { .. }
         | Effect::MultiplyCounters { .. }
         | Effect::PutCountersOf { .. }
+        | Effect::PutRandomCounter { .. }
         | Effect::Tap { .. }
         | Effect::Untap { .. }
         | Effect::TapOrUntap { .. }
