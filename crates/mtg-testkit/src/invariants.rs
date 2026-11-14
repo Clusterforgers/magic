@@ -94,6 +94,26 @@ fn zone_error(message: impl Into<String>) -> Violation {
     Violation::Zones(message.into())
 }
 
+/// Right after a turn begins no permanent of a player whose turn it is is held back by summoning sickness: each has been
+/// under its controller's control since a turn of theirs began (CR 302.6), a teammate's turn apart.
+fn check_turn_settled(state: &GameState) -> Result<(), Violation> {
+    for &id in state.zone(Zone::Battlefield) {
+        let held = controller_of(state, id).filter(|controller| {
+            state.is_active(*controller)
+                && state
+                    .object(id)
+                    .and_then(GameObject::permanent)
+                    .is_some_and(|permanent| permanent.sick_for(*controller))
+        });
+        if let Some(controller) = held {
+            return Err(Violation::Bookkeeping(format!(
+                "{id:?} is still summoning sick as the turn of {controller:?} begins"
+            )));
+        }
+    }
+    Ok(())
+}
+
 /// Stateless checks on a single state; callable at any decision point.
 pub fn check_state(state: &GameState) -> Result<(), Violation> {
     check_zone_index(state)?;
@@ -1012,6 +1032,9 @@ impl InvariantChecker {
         };
         apply_event(&mut self.shadow, event)
             .map_err(|e| Violation::Fold(format!("{event:?}: {e}")))?;
+        if matches!(event, Event::TurnBegan { .. }) {
+            check_turn_settled(&self.shadow)?;
+        }
         self.account(event)?;
         let touched = event.touched_objects();
         if matches!(
