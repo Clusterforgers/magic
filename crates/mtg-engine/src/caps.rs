@@ -1133,6 +1133,7 @@ const RUNS: &[&str] = &[
     "Pred.DidThisTurn",
     "Pred.BlockedThisTurn",
     "Pred.DealtDamageThisTurn",
+    "Pred.R6100DamagedThisGameBy",
     "Pred.EnteredSinceLastTurn",
     "Condition.CombatDamagedSinceLastTurn",
     "Pred.WasCast",

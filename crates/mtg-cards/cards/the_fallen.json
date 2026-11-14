@@ -1,0 +1,62 @@
+{
+  "oracle_id": "19348c1e-b683-4d2c-b4eb-82e538b314b0",
+  "name": "The Fallen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Fallen",
+      "oracle_fingerprint": "b446967b2a54f1b1580754aafc1328a9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "StepBegins": {
+                "step": "Upkeep",
+                "whose": "You"
+              }
+            },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Union": [
+                      {
+                        "PlayersWhere": {
+                          "who": "Opponents",
+                          "test": {
+                            "DamagedThisGameBy": {
+                              "by": [
+                                {
+                                  "Is": "This"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "Each": [
+                          {
+                            "Type": "Planeswalker"
+                          },
+                          {
+                            "R6100DamagedThisGameBy": [
+                              {
+                                "Is": "This"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

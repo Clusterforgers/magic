@@ -994,6 +994,10 @@ impl<'a> Walker<'a> {
                 self.uses("Pred", "BlockedThisTurn");
                 self.at("BlockedThisTurn", |w| w.selector(with));
             }
+            Pred::R6100DamagedThisGameBy(by) => {
+                self.uses("Pred", "R6100DamagedThisGameBy");
+                self.at("R6100DamagedThisGameBy", |w| w.selector(by));
+            }
             Pred::DealtDamageThisTurn(to) => {
                 self.uses("Pred", "DealtDamageThisTurn");
                 self.at("DealtDamageThisTurn", |w| w.selector(to));

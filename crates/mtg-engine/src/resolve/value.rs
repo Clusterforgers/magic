@@ -2151,6 +2151,7 @@ impl<'a> Scope<'a> {
             } => self.did_this_turn(*event, (by.as_ref(), to.as_ref()), *combat, reference),
             Pred::BlockedThisTurn(with) => self.r379_blocked_this_turn(with, reference),
             Pred::DealtDamageThisTurn(to) => self.r5523_dealt_damage_this_turn(to, reference),
+            Pred::R6100DamagedThisGameBy(by) => self.r6100_damaged_this_game(by, reference)?,
             Pred::EnteredSinceLastTurn(who) => self
                 .players(who)?
                 .iter()

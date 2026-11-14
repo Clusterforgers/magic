@@ -113,6 +113,7 @@ fn damage_object(
         if let Some(reference) = state.object(id).map(GameObject::reference) {
             state.tally_object(reference, by, Tally::Damaged);
         }
+        crate::r6100_history::r6100_note_struck(state, source, id);
     }
     Ok(())
 }

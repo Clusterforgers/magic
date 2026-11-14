@@ -1,18 +1,21 @@
 //! Goal: the r61-00 facts of the turn play whole at two to four seats: a creature card that left its owner's graveyard
 //! (Syrix, Carrier of the Flame), the creatures exiled under the opponents' control (Vren, the Relentless) and a creature
-//! that fought (Boxing Ring), each counted for the right player only.
+//! that fought (Boxing Ring), each counted for the right player only; the players and planeswalkers a source damaged
+//! this game (The Fallen) and a descent that bores and transforms (Brass's Tunnel-Grinder).
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
+use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_engine::choose::Target;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_testkit::cards::{forest, free_creature, mountain, plains, swamp};
+use mtg_testkit::cards::{forest, free_creature, mountain, plains, swamp, walker};
 use mtg_testkit::corpus::card;
+use mtg_testkit::scenario::with_counters;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
@@ -291,5 +294,122 @@ fn r6100_boxing_ring_fights_a_creature_of_the_same_mana_value_and_pays_a_treasur
     }
     assert_eq!(driver.id_of("Rival").is_err(), fights);
     assert_eq!(!driver.offered_abilities("Boxing Ring")?.is_empty(), fights);
+    Ok(())
+}
+
+/// The counters of the kind on the named permanent.
+fn r6100_counters(driver: &Driver, name: &str, kind: &CounterKind) -> u32 {
+    let id = driver.id_of(name).unwrap();
+    driver
+        .state()
+        .object(id)
+        .and_then(|object| object.permanent())
+        .map_or(0, |held| held.counters_of(kind))
+}
+
+#[rstest]
+#[case::the_player_it_hit(false)]
+#[case::the_planeswalker_it_hit(true)]
+fn r6100_the_fallen_hurts_each_opponent_and_planeswalker_it_has_dealt_damage_to(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] at_walker: bool,
+) -> Result<(), ScriptError> {
+    let mut scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, [ready(card("The Fallen").unwrap())])
+        .battlefield(seats - 1, [ready(walker("Untouched Walker", 3))]);
+    // The walker it attacks belongs to seat 1, beside the untouched one at two seats.
+    let mut first = vec![ready(walker("Target Walker", 3))];
+    if seats == 2 {
+        first.push(ready(walker("Untouched Walker", 3)));
+    }
+    scenario = scenario.battlefield(1, first);
+    for seat in 0..seats {
+        scenario = scenario.library(seat, vec![forest(); 10]);
+    }
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.pass_until(Step::DeclareAttackers)?;
+    if at_walker {
+        driver.attack_planeswalkers(&[("The Fallen", "Target Walker")])?;
+    } else {
+        driver.attack(&[("The Fallen", 1)])?;
+    }
+    driver.idle_until(1, Step::Main2)?;
+    let walker_loyalty = r6100_counters(&driver, "Target Walker", &CounterKind::Loyalty);
+    assert_eq!(walker_loyalty, if at_walker { 1 } else { 3 });
+    let lives: Vec<i32> = (0..seats).map(|seat| r6100_life(&driver, seat)).collect();
+    let next = u32::try_from(seats).unwrap() + 1;
+    driver.idle_until(next, Step::Draw)?;
+    for seat in 1..seats {
+        let hurt = seat == 1 && !at_walker;
+        assert_eq!(
+            r6100_life(&driver, seat),
+            lives[seat] - i32::from(hurt),
+            "seat {seat}"
+        );
+    }
+    assert_eq!(r6100_life(&driver, 0), lives[0]);
+    // The planeswalker it hit lost its last loyalty; one it never hit is untouched.
+    assert_eq!(driver.id_of("Target Walker").is_err(), at_walker);
+    assert_eq!(
+        r6100_counters(&driver, "Untouched Walker", &CounterKind::Loyalty),
+        3
+    );
+    Ok(())
+}
+
+#[rstest]
+#[case::the_third_bore_counter_transforms(2, true, true)]
+#[case::the_second_does_not(1, true, false)]
+#[case::no_descent_no_counter(2, false, false)]
+fn r6100_brass_bores_after_a_descent_and_transforms_at_three(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] bore: u32,
+    #[case] descend: bool,
+    #[case] transforms: bool,
+) -> Result<(), ScriptError> {
+    const BRASS: &str = "Brass's Tunnel-Grinder // Tecutlan, the Searing Rift";
+    let bore_kind = CounterKind::Other("bore".to_owned());
+    let scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(
+            0,
+            [
+                with_counters(ready(card(BRASS).unwrap()), bore_kind.clone(), bore),
+                ready(card("Grizzly Bears").unwrap()),
+                ready(mountain()),
+            ],
+        )
+        .hand(0, [card("Lightning Bolt").unwrap()]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    let target = if descend {
+        driver.target_named("Grizzly Bears")?
+    } else {
+        driver.target_player(1)
+    };
+    driver.cast_at("Lightning Bolt", &[target])?;
+    r6100_resolve(&mut driver)?;
+    r6100_to_cleanup(&mut driver, &[])?;
+    let id = driver
+        .state()
+        .zone(Zone::Battlefield)
+        .iter()
+        .copied()
+        .find(|id| {
+            name_of(driver.state(), *id).starts_with("Brass")
+                || name_of(driver.state(), *id).starts_with("Tecutlan")
+        })
+        .unwrap();
+    let object = driver.state().object(id).unwrap();
+    let held = object.permanent().unwrap().counters_of(&bore_kind);
+    if transforms {
+        assert_eq!(held, 0);
+        let chars = mtg_engine::characteristics::characteristics(driver.state(), id).unwrap();
+        assert!(chars.types.contains(CardType::Land));
+    } else {
+        assert_eq!(held, bore + u32::from(descend));
+        let chars = mtg_engine::characteristics::characteristics(driver.state(), id).unwrap();
+        assert!(!chars.types.contains(CardType::Land));
+    }
     Ok(())
 }
