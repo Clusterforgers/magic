@@ -2984,6 +2984,22 @@ impl Pass<'_> {
         self.out_of_library_batches(&gone);
     }
 
+    /// Drops the `Entered` event of `object` when nothing in the batch still puts it onto the battlefield (a replacement
+    /// sent it elsewhere).
+    pub(super) fn drop_stray_entered(&mut self, object: ObjectId) {
+        let arrives = self.slots.iter().any(|slot| {
+            matches!(
+                &slot.item,
+                Item::One(Event::ZoneChanged { object: o, to: Zone::Battlefield, .. }) if *o == object
+            )
+        });
+        if !arrives {
+            self.slots.retain(|slot| {
+                !matches!(&slot.item, Item::One(Event::Entered { object: o, .. }) if *o == object)
+            });
+        }
+    }
+
     /// The `Entered` event that follows the enter event of `object`, made when the batch has none yet.
     fn entered_at(&mut self, at: usize, object: ObjectId, controller: PlayerId) -> usize {
         let existing = self.slots.iter().position(|slot| {
