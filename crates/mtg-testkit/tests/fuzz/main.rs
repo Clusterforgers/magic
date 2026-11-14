@@ -128,6 +128,7 @@ mod symbol_fuzz;
 mod t15a_popular;
 mod t15a_validate;
 mod tail_fuzz;
+mod team_sickness_fuzz;
 mod third_fuzz;
 mod token_fuzz;
 mod token_shapes_fuzz;

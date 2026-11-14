@@ -20,8 +20,11 @@ export function PhaseTag({ phase, yours }: { phase: Phase; yours: boolean }) {
       )}
     >
       <Icon data-themed="" className={cn('size-4 shrink-0', yours ? 'text-on-phase' : 'text-phase')} />
-      {/* A phone keeps the icon alone, so the badge's "Bo's turn · 5" is not cut. */}
-      <span data-slot="phase-name" className="max-sm:hidden">
+      {/*
+        A phone keeps the icon alone, so the badge's "Bo's turn · 5" is not cut; from 1024 px the step ladder beside the
+        badge names the phase, so the badge says it once, in its words.
+      */}
+      <span data-slot="phase-name" className="max-sm:hidden lg:hidden">
         {phase.name}
       </span>
     </span>

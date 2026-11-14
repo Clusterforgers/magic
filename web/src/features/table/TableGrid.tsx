@@ -85,7 +85,7 @@ export function TableGrid({
             gridTemplateAreas: AREAS,
           } as CSSProperties
         }
-        className="grid min-h-0 min-w-0 bg-table"
+        className="felt grid min-h-0 min-w-0"
       >
         <Area area="bar">{bar}</Area>
         {/* The prompt sheet of the shared strip grows up into this area; its room is kept free (`useSheetOverhang`). */}

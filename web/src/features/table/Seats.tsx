@@ -1,4 +1,4 @@
-import { memo, useMemo, useRef, useState } from 'react'
+import { memo, useContext, useMemo, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { describeLoss } from '@/features/game/outcome'
@@ -7,6 +7,8 @@ import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
 import { Battlefield } from './Battlefield'
 import { useDefenderClick } from './combat/defender'
+import { LandFoldContext } from './landFold'
+import { BoardZoomContext, useZoomClose } from './boardZoom'
 import type { CardSize } from './cardSize'
 import { POD_COLUMN_PX } from './layout'
 import type { PodPlace, SeatPlan } from './layout'
@@ -16,6 +18,7 @@ import { playerOf } from './selectors'
 import { PodRoomContext } from './podRoom'
 import { SeatPanel } from './SeatPanel'
 import { SeatTile } from './SeatTile'
+import { FOLD_LANDS_BY_DEFAULT, TableOptionsContext } from './tableOptions'
 import { useBoardFade } from './useBoardFade'
 import { useEdgeFade } from './useEdgeFade'
 import { useLeadInView } from './useLeadInView'
@@ -29,6 +32,8 @@ interface SeatAreaProps {
   facing: 'near' | 'far'
   /** The pod beside the board as a column, above it as one line, or not drawn. */
   pod: PodPlace
+  /** An opponent of a grid: its lands fold into its pod's lands chip (`LandFoldContext`). */
+  foldLands?: boolean
 }
 
 /**
@@ -56,30 +61,45 @@ function PodColumn({ seat, card }: { seat: PlayerId; card: number | null }) {
 }
 
 /** One seat: its pod and its battlefield, side by side or one over the other. */
-export const SeatArea = memo(function SeatArea({ seat, size, facing, pod }: SeatAreaProps) {
+export const SeatArea = memo(function SeatArea({
+  seat,
+  size,
+  facing,
+  pod,
+  foldLands = false,
+}: SeatAreaProps) {
   const aside = pod === 'aside'
   // The creatures' card width of the board, which the pod's corner follows.
   const [card, setCard] = useState<number | null>(null)
-  // While an attack is aimed, a click on the board around the cards attacks the seat, as a click on its pod does.
+  // An opponent of a grid starts with its lands folded into its pod's chip; any other board lays them out.
   const defender = useDefenderClick(seat)
+  // An opponent's lands start folded into its pod's chip; a seat without a drawn pod has no chip and lays them out.
+  const [landsOpen, setLandsOpen] = useState(false)
+  const fold = useMemo(
+    () =>
+      foldLands && pod !== 'none' ? { open: landsOpen, toggle: () => setLandsOpen((was) => !was) } : null,
+    [foldLands, pod, landsOpen],
+  )
   return (
-    <div
-      data-slot="seat-area"
-      data-seat-area={seat}
-      data-defender-area={defender.state}
-      onClick={defender.onClick}
-      className={cn(
-        'flex min-h-0 min-w-0 flex-1 gap-2',
-        aside ? 'flex-row' : 'flex-col',
-        defender.state !== undefined && 'cursor-pointer',
-      )}
-    >
-      {pod === 'aside' ? <PodColumn seat={seat} card={card} /> : null}
-      {/* A line pod is on the table's middle side of its board: over an opponent's, under yours, by your hand. */}
-      {pod === 'line' && facing === 'far' ? <SeatPanel seat={seat} variant="line" /> : null}
-      <Battlefield seat={seat} size={size} facing={facing} onCardWidth={setCard} />
-      {pod === 'line' && facing === 'near' ? <SeatPanel seat={seat} variant="line" /> : null}
-    </div>
+    <LandFoldContext value={fold}>
+      <div
+        data-slot="seat-area"
+        data-seat-area={seat}
+        data-defender-area={defender.state}
+        onClick={defender.onClick}
+        className={cn(
+          'flex min-h-0 min-w-0 flex-1 gap-2',
+          aside ? 'flex-row' : 'flex-col',
+          defender.state !== undefined && 'cursor-pointer',
+        )}
+      >
+        {pod === 'aside' ? <PodColumn seat={seat} card={card} /> : null}
+        {/* A line pod is on the table's middle side of its board: over an opponent's, under yours, by your hand. */}
+        {pod === 'line' && facing === 'far' ? <SeatPanel seat={seat} variant="line" /> : null}
+        <Battlefield seat={seat} size={size} facing={facing} onCardWidth={setCard} />
+        {pod === 'line' && facing === 'near' ? <SeatPanel seat={seat} variant="line" /> : null}
+      </div>
+    </LandFoldContext>
   )
 })
 
@@ -225,28 +245,53 @@ function OpponentGrid({ plan, size }: { plan: SeatPlan; size: CardSize }) {
   const playing = plan.boards.filter((seat) => !gone.includes(seat))
   const columns = Math.max(1, Math.min(plan.columns, playing.length)) as SeatPlan['columns']
   const card = useGridCard(playing)
+  const owner = useSeatNamer()
+  const foldLands = useContext(TableOptionsContext).foldLands ?? FOLD_LANDS_BY_DEFAULT
+  const [chosen, setZoomed] = useState<PlayerId | null>(null)
+  // A seat that left the game, or a grid of one, has nothing to enlarge.
+  const zoomed = chosen !== null && playing.includes(chosen) && playing.length > 1 ? chosen : null
+  const zoom = useMemo(() => ({ zoomed, setZoomed }), [zoomed])
+  const row = useRef<HTMLDivElement>(null)
+  useZoomClose(zoom, row)
   return (
-    <GridCardContext value={card}>
-      <div className="flex min-h-0 min-w-0 flex-col gap-2">
-        {gone.map((seat) => (
-          <LeftStrip key={seat} seat={seat} />
-        ))}
-        <div
-          data-layout="grid"
-          data-columns={columns}
-          className={cn('grid min-h-0 min-w-0 flex-1 auto-rows-fr gap-2', COLUMNS[columns])}
-        >
-          {playing.map((seat) => (
-            <div
-              key={seat}
-              data-slot="seat-frame"
-              className="flex min-h-0 min-w-0 rounded-xl border-2 border-foreground/25 p-1"
-            >
-              <SeatArea seat={seat} size={size} facing="far" pod="line" />
-            </div>
+    <BoardZoomContext value={zoom}>
+      <GridCardContext value={card}>
+        <div ref={row} className="flex min-h-0 min-w-0 flex-col gap-2">
+          {gone.map((seat) => (
+            <LeftStrip key={seat} seat={seat} />
           ))}
+          {zoomed === null ? null : (
+            // The enlarged board takes the whole row at its own card size; the other boards wait behind the close button.
+            <div
+              data-slot="seat-frame"
+              data-zoomed=""
+              role="region"
+              aria-label={`${owner(zoomed)}'s board, enlarged`}
+              className="flex min-h-0 min-w-0 flex-1 rounded-xl border-2 border-brass bg-felt-rim/40 p-1 shadow-e3"
+            >
+              <GridCardContext value={null}>
+                <SeatArea seat={zoomed} size={size} facing="far" pod="line" foldLands={foldLands} />
+              </GridCardContext>
+            </div>
+          )}
+          <div
+            data-layout="grid"
+            data-columns={columns}
+            hidden={zoomed !== null}
+            className={cn('grid min-h-0 min-w-0 flex-1 auto-rows-fr gap-2', COLUMNS[columns])}
+          >
+            {(zoomed === null ? playing : []).map((seat) => (
+              <div
+                key={seat}
+                data-slot="seat-frame"
+                className="flex min-h-0 min-w-0 rounded-xl border border-brass/50 bg-felt-rim/30 p-1 shadow-[inset_0_2px_12px_oklch(0_0_0/0.35)]"
+              >
+                <SeatArea seat={seat} size={size} facing="far" pod="line" foldLands={foldLands} />
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    </GridCardContext>
+      </GridCardContext>
+    </BoardZoomContext>
   )
 }

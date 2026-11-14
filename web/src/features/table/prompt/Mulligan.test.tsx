@@ -1,4 +1,4 @@
-/** Goal: for every number of mulligans taken and every opening-hand progress of the other seats, the Mulligan prompt says in plain words what the hand is, how many mulligans were taken and how many cards the next one puts on the bottom, names the seats still deciding, and answers Keep or Mulligan by click or key (Mulligan only while allowed) without hiding or marking the hand strip. */
+/** Goal: for every number of mulligans taken and every opening-hand progress of the other seats, the Mulligan prompt says in plain words what the hand is, how many mulligans were taken and how many cards the next one puts on the bottom, names the seats still deciding, and answers Keep or Mulligan by click or key (Mulligan only while allowed) without hiding or marking the hand strip, while the hand is drawn large under the buttons. */
 import { act, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { Answer, MulliganOptions, MulliganStatus, ObjectId } from '@/protocol/generated'
@@ -345,5 +345,17 @@ describe('a new decision', () => {
     const { container, update } = renderMulligan(options())
     update(() => ({ pending: null }))
     expect(container.querySelector('[data-decision]')).toBeNull()
+  })
+})
+
+describe('the opening hand drawn large', () => {
+  it('shows every card of the hand in order under the buttons, in the strip, hidden from a screen reader', () => {
+    const { container, mulligan } = renderMulligan(options())
+    const row = must(container.querySelector('[data-slot="opening-hand"]'))
+    expect(row).toHaveAttribute('aria-hidden', 'true')
+    expect(row.querySelectorAll('[data-slot="opening-card"]')).toHaveLength(hand.length)
+    expect(row.closest('[data-region="shared"]')).not.toBeNull()
+    // The buttons come first, so a sheet that scrolls shows them before the cards.
+    expect(mulligan().compareDocumentPosition(row) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 })

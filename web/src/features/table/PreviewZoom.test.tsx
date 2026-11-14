@@ -60,7 +60,7 @@ describe('the preview picture', () => {
     const { preview, box } = await hovered(new DOMRect(20, 100, 60, 84))
     expect(preview).toHaveAttribute('data-dock', 'bottom')
     expect(preview).not.toHaveClass('flex')
-    expect(preview.style.bottom).toBe('126px')
+    expect(preview.style.bottom).toBe('143px')
     expect(Number(preview.dataset.picture)).toBeGreaterThan(PICTURE_FLOOR.narrow)
     expect(must(box.parentElement)).toHaveClass('mx-auto')
   })

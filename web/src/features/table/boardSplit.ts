@@ -49,6 +49,12 @@ export function boardCounts(state: PlayState, seats: SeatPlan, grouped = true): 
   }
 }
 
+/**
+ * Whether the boards of a plan have their lands folded into their pods' lands chips (`LandFoldContext`): every board
+ * of a grid of opponents, yours too, where the table folds lands. The boards then hold no lands lane.
+ */
+export const foldsLands = (seats: SeatPlan, fold: boolean): boolean => fold && seats.shape === 'columns'
+
 /** The most of a prompt sheet's overhang the split keeps free above the strip: two lines of a prompt. */
 export const SHEET_RESERVE_MAX_PX = 64
 
@@ -103,6 +109,7 @@ export function splitRegions(
     theirFloor: podColumnFloor(regions, seats, overhang),
     theirRows: frames.theirs.rows,
     theirRowChrome: theirChrome,
+    theirScale: seats.shape === 'columns' ? GRID_THEIR_SCALE : THEIR_SCALE,
     ownWidth: frames.own.width,
     theirWidth: frames.theirs.width,
     own: counts.own,
@@ -116,6 +123,8 @@ export const FLOOR_OWN_CARD_PX = 100
 
 /** An opponent's cards are this share of yours: their board shrinks first. */
 export const THEIR_SCALE = 0.8
+/** In a grid of opponents their cards are as large as yours: three boards side by side would otherwise fall unreadable. */
+export const GRID_THEIR_SCALE = 0.85
 /** Neither row gets less than this share of the room both share, so an empty board keeps a place for a prompt sheet. */
 export const MIN_ROW_SHARE = 0.25
 /** The padding of a battlefield's zone around its lanes (`p-1`). */
@@ -135,6 +144,8 @@ export interface SplitInput {
   theirFloor?: number
   /** The rows of boards the opponents' area stacks (a grid of more opponents than columns); 1 when left out. */
   theirRows?: number
+  /** An opponent's cards as a share of yours; `THEIR_SCALE` when left out. */
+  theirScale?: number
   /** What each row of opponents' boards after the first spends besides its lanes (its pod line and frame). */
   theirRowChrome?: number
   /** The width of the lanes of your board and of each opponent's board in px. */
@@ -184,7 +195,7 @@ export function splitBoards(input: SplitInput, limits: LaneLimits = LANE_LIMITS)
       least,
       rows * theirNeed(card) + finite(input.theirChrome) + (rows - 1) * finite(input.theirRowChrome ?? 0),
     )
-  const theirCard = (card: number): number => Math.floor(card * THEIR_SCALE)
+  const theirCard = (card: number): number => Math.floor(card * finite(input.theirScale ?? THEIR_SCALE))
   const fits = (rung: number): boolean => ownRow(at(rung)) + theirRow(theirCard(at(rung))) <= room
   const empty = laneHeight(input.ownWidth, input.own, at(0), limits) + theirNeed(theirCard(at(0)))
   if (!fits(0) || empty === 0) {
@@ -279,5 +290,6 @@ export function withSplit(regions: Regions, split: BoardSplit, keep = 0): Region
     opponents: split.opponents,
     own: split.own,
     sheet: sheetMost(regions.main.height, regions.shared, split.opponents, regions.phone, keep),
+    sheetWide: sheetMost(regions.main.height, regions.shared, split.opponents, regions.phone),
   }
 }

@@ -11,7 +11,16 @@ import { DamageChips, TaxChips, useCommanderChips } from './CommanderChips'
 import { useEnchantChips } from './enchantChips'
 import { EnchantChips } from './EnchantChips'
 import { BankMark } from './BankMark'
-import { ACTIVE_EDGE, ACTIVE_TINT, AwayMark, CountChip, PriorityDot, SeatDot } from './PodParts'
+import {
+  ACTIVE_EDGE,
+  ACTIVE_TINT,
+  AwayMark,
+  CountChip,
+  PriorityDot,
+  SEAT_EDGE,
+  SeatDot,
+  seatHueStyle,
+} from './PodParts'
 import { chipZones, podCounts, podState, priorityName, showsPriorityDot, tileName } from './podFigures'
 import { PlayerCounterChips } from './PlayerCounterChips'
 import { playerCounterChips } from './playerCounters'
@@ -75,6 +84,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
       ref={button}
       type="button"
       data-variant="tile"
+      style={seatHueStyle(seat)}
       data-tile-seat={seat}
       data-team={team?.team}
       data-away={away || undefined}
@@ -119,10 +129,10 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
         onFocusSeat(seat)
       }}
       className={cn(
-        'relative grid h-full min-w-44 flex-1 grid-cols-[minmax(0,1fr)] content-center gap-0.5 overflow-hidden rounded-lg bg-card px-2 py-0.5 text-left text-xs ring-1 ring-foreground/10 outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-primary',
+        'relative grid h-full min-w-44 flex-1 grid-cols-[minmax(0,1fr)] content-center gap-0.5 overflow-hidden plaque rounded-lg px-2 py-0.5 text-left text-xs ring-1 ring-foreground/10 outline-none hover:brightness-125 focus-visible:ring-3 focus-visible:ring-primary',
         focused && 'ring-2 ring-primary',
         eliminated && 'border-l-4 border-destructive',
-        player.boss && 'border-t-2 border-boss',
+        player.boss ? 'border-t-2 border-boss' : SEAT_EDGE,
         flags.active && cn(ACTIVE_TINT, ACTIVE_EDGE),
         defenderOutline(defender.state),
       )}

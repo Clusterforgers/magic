@@ -27,11 +27,11 @@ const overlaps = (panel: ReturnType<typeof panelOf>, card: Anchor): boolean =>
 describe('previewFit on a wide window', () => {
   it.each([
     // [width, height, picture, panel width, tallest panel]
-    [1920, 1080, 480, 528, 867],
-    [1440, 900, 384, 432, 711],
-    [1366, 768, 340, 388, 596],
-    [1280, 720, 308, 356, 552],
-    [1024, 768, 336, 384, 596],
+    [1920, 1080, 480, 528, 835],
+    [1440, 900, 384, 432, 684],
+    [1366, 768, 323, 371, 573],
+    [1280, 720, 294, 342, 532],
+    [1024, 768, 323, 371, 573],
   ])(
     'at %ix%i draws the picture %i px wide in a panel %i px wide and at most %i px tall',
     (w, h, picture, width, tall) => {
@@ -75,7 +75,7 @@ describe('previewFit on a narrow window', () => {
 
   it.each([
     // [card box, dock, picture, tallest panel]
-    [box(20, 100), 'bottom', 249, 469],
+    [box(20, 100), 'bottom', 237, 452],
     [box(20, 700), 'top', 320, 636],
     // Mid-window the half the card is in is tight: the panel flips to the side with more room.
     [box(280, 352), 'top', 160, 344],
@@ -91,7 +91,7 @@ describe('previewFit on a narrow window', () => {
 
   it('keeps a bottom panel above the hand dock and a top one below the top bar', () => {
     const below = previewFit(box(20, 100), phone)
-    expect(below.bottom).toBe(126)
+    expect(below.bottom).toBe(143)
     expect(below.top).toBeNull()
     expect(previewFit(box(20, 700), phone)).toMatchObject({ top: 56, bottom: null })
   })

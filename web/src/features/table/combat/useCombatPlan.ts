@@ -39,9 +39,10 @@ export function useCombatPlan(): readonly LineSpec[] {
   const pending = usePendingCombat()
   const cards = useMemo(() => cardsInPlay(combat, pending), [combat, pending])
   const controllers = usePlay(useShallow((state) => cards.map((id) => state.objectsById[id]?.controller)))
+  const viewer = usePlay((state) => (state.view?.spectator === true ? null : state.seat))
   return useMemo(() => {
     const controllerOf = (id: ObjectId) => controllers[cards.indexOf(id)]
-    const lines = planLines({ combat, forecast, pending, controllerOf })
+    const lines = planLines({ combat, forecast, pending, controllerOf, viewer })
     return lines.length === 0 ? NO_LINES : lines
-  }, [combat, forecast, pending, cards, controllers])
+  }, [combat, forecast, pending, cards, controllers, viewer])
 }

@@ -107,6 +107,9 @@ text('dungeon scene state', 'destructive', ['delve-stone'])
 text('boss chip', 'on-boss', ['boss'])
 text('boss phase name', 'boss', FILLS)
 text('spirit mark', 'spirit', FILLS)
+// The table's felt runs from its lit middle to its rim; counts and names sit on both.
+text('on the felt', 'foreground', ['felt', 'felt-rim'])
+text('secondary on the felt', 'muted-foreground', ['felt', 'felt-rim'])
 
 edge('field and control', 'border-strong', SURFACES)
 edge('field', 'input', SURFACES)
@@ -125,6 +128,7 @@ edge('delve accent', 'delve', [...SURFACES, 'delve-stone'])
 edge('relic', 'relic', [...SURFACES, 'delve-stone'])
 edge('boss seat', 'boss', FILLS)
 edge('spirit mark', 'spirit', FILLS)
+edge('plaque hairline', 'brass', [...SURFACES, 'felt-rim'])
 
 describe.each(['light', 'dark'] as const)('contrast in the %s theme', (themeName) => {
   it.each(pairs)('$use: $fg on $bg is at least $min:1', ({ fg, bg, min }) => {

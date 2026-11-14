@@ -32,13 +32,15 @@ Tokens are CSS variables in `index.css`, mapped by `@theme inline`; shadcn's nam
 | `success`, `warning`, `destructive` | ready; urgent clock; lethal and Concede |
 | `selected`, `on-selected` | a chosen card or target: crimson, at least 12° of hue from `destructive` (damage, loss) and apart from the gold of attackers, with a check badge so colour is never the only sign |
 | `mana-<colour>`, `on-mana-<colour>` | pip fill and ink, the same in both themes, 5.6:1 or more |
+| `felt`, `felt-rim`, `brass` | the table's felt from its lit middle to its rim (`felt` utility), text on both at 4.5:1; the hairline of seat frames and docks |
+| seat hue | `seatHue(seat)` as `--seat-hue`: the seat dot, a 2 px top edge on its pod and tile (`SEAT_EDGE`) and its life figure (`SEAT_LIFE`, 4.5:1 on the plaque at every hue); a boss keeps its own edge |
 
 | Token | Scale |
 |---|---|
 | Spacing | 4 px base: 4, 8, 12, 16, 24, 32, 48, 64 |
-| Type | Geist Variable. `text-label` 11/16 card labels only, `text-xs` 12/16, `text-sm` 14/20 UI, `text-base` 16/24, `text-lg` 18/28, `text-2xl` 24/32, `text-life` 36/40 with tabular digits, `text-display` 32 to 48 by width; weights 400, 500, 600. Card text on the table is 12 px or more |
+| Type | Geist Variable; Cinzel Variable (`font-display`, OFL) for life, seat names and page titles. `text-label` 11/16 card labels only, `text-xs` 12/16, `text-sm` 14/20 UI, `text-base` 16/24, `text-lg` 18/28, `text-2xl` 24/32, `text-life` 36/40 with tabular digits, `text-display` 32 to 48 by width; weights 400, 500, 600. Card text on the table is 12 px or more |
 | Radius | `rounded-md` card 6, `rounded-lg` control 8, `rounded-xl` panel 12, `rounded-full` pill |
-| Elevation | e1 `0 1px 2px` 8%; e2 `0 4px 12px` 12% menus; e3 `0 12px 32px` 20% dialogs; dark lifts the `raised` surface instead |
+| Elevation | e1 `0 1px 2px` 8%; e2 `0 4px 12px` 12% menus; e3 `0 12px 32px` 20% dialogs; dark lifts the `raised` surface instead. On the table: `plaque` (pods, tiles, the centre strip) `0 6px 18px` 30% and a lit top edge, cards `0 2px 6px` 45%, `dock` (hand and controls) the darkest ground under a brass hairline, `action-glow` on the main action |
 | Motion | `duration-fast` 100 ms (hover, toggle), `base` 200 (menu, row), `slow` 300 (sheet, banner); table effects stay at most 600 ms (`fx.css`); `ease-out` in, `ease-in` out; linear for clocks only; under `reduce` opacity only |
 | Icons | lucide-react: 16 px in dense rows, 20 in controls, 24 in menus; always a label or `aria-label`; mana symbols stay in `ManaPips` |
 | Breakpoints | XS under 640, S 640 to 1023, M 1024 to 1279, L 1280 to 1599, XL 1600 up; container queries and `clamp()` inside the table |
@@ -70,10 +72,11 @@ The table is a `100dvh` grid that never scrolls the page. The opponent is on top
 | top bar | home, turn badge, step ladder (from 1024 px), menu (layout, theme, card images, hand order, Concede); 44 px |
 | opponents, own | a pod and board per seat; the rows share the room by what their boards hold, not by a fixed ratio |
 | shared | stack chips, ticker, prompt line. A long prompt grows up into a sheet of at most 40 dvh into room the opponents' area keeps free, so it covers no card of a battlefield and never your board (its cards are what a prompt asks you to click), the hand or the controls |
-| hand dock | whole cards in one row, overlapping in rows only when they do not fit; hover or focus lifts a card and opens the preview |
+| hand dock | whole cards in one row lying in a gentle arc (`fanOf`: the ends turned up to 6° and 8 px lower), overlapping in rows only when they do not fit; hover or focus lifts a card upright and opens the preview |
 | controls dock | the server's passing line, the stops (one row with a Mine or Theirs switch and Full Control from 1600 px, else a Stops popover), pass buttons; the primary button is bottom right, 44 px or more |
-| side | Commands, Log, Chat, Stack tabs with unread counts. L, XL a 280 to 320 px column; M a 44 px rail opening a panel over the table; S, XS a sheet from the top bar |
+| side | Commands, Log, Chat, Stack tabs with unread counts. L, XL a 272 to 304 px column that the viewer folds to the 44 px rail from its edge and opens again from the rail (kept per browser); M a 44 px rail opening a panel over the table; S, XS a sheet from the top bar |
 
+- Lands of a grid: every board's lands, yours too, fold into a lands chip of its pod (count, how many tapped, the names on hover); a press lays them out on the board until pressed again, and a prompt beyond priority that marks a land lays them out while it waits (priority's mana marks do not). The boards' room goes to creatures and other permanents, and a grid's cards are 0.85 of yours (`GRID_THEIR_SCALE`).
 - Lanes: a board draws its permanents in three lanes: lands, creatures (any creature) and other permanents. Creatures face the middle of the table, lands sit left and other permanents right, an opponent's board mirrored top to bottom. Lanes never overlap, an empty lane takes no room, and each lane has a faint ground (`--lane`). The command zone, graveyard and exile are the pod's corner.
 - Fit: `fitLanes` (pure) takes the largest card width at which some shape of bands fits every lane (one band, creatures over lands and others, or a band each; ties go to fewer bands). Cards shrink as counts grow, and at the 44 px floor the zone scrolls inside, creatures first, with an edge fade and a "+N" count. Creatures are the largest cards on a board.
 - Stacks: permanents equal in everything a card shows merge into one stack with a ×N badge. Lands and tokens group at once, other cards when a zone would fall under 64 px. A stack opens in place on click or Enter, and stays open while a prompt needs each member.
@@ -109,7 +112,7 @@ Four themes mark the phase at a glance; a step maps to one by the step alone, wh
 | Combat | beginning of combat to end of combat, first-strike damage included | swords | vermillion |
 | Ending | end step, cleanup | moon | reddish purple |
 
-The table root carries `data-phase`; `phase.css` points `phase`, `phase-soft` and `on-phase` at that set, neutral outside the turns. The theme reaches the top bar's 3 px rule, the turn badge (accent fill on your turn, tint with an accent edge otherwise), the ladder (current step in the accent, an icon per phase run, the current phase named), the shared strip's 2 px edge and the table's main area as a wash of at most 6 %.
+The table root carries `data-phase`; `phase.css` points `phase`, `phase-soft` and `on-phase` at that set, neutral outside the turns. The theme reaches the top bar's 3 px rule, the turn badge (accent fill on your turn, tint with an accent edge otherwise; its tag keeps the icon and names the phase only below 1024 px, where no ladder does), the ladder (current step in the accent, an icon per phase run, the current phase named), the shared strip's 2 px edge and the table's main area as a wash of at most 6 %.
 
 - Never colour alone: the badge and the ladder carry the icon and the name; whose turn it is stays in words and in fill against tint.
 - The hues follow Okabe and Ito; none is yellow or orange, which is the gold of your turn.
@@ -157,7 +160,7 @@ A whole sequence stays under 1,700 ms. `--fx-slow` stretches all of them. Under 
 
 ### The stack
 
-- The shared strip's stack chips stay; the top chip gains a targets line ("→ Hill Giant, Bo", at most 3 names, then "+N more") and a dot in its controller's colour. Every chip's label for a screen reader ends with ", targeting Hill Giant and Bo".
+- The shared strip's stack chips carry the spell's picture (an ability its icon); the top chip gains a targets line ("→ Hill Giant, Bo", at most 3 names, then "+N more") and a dot in its controller's colour. Every chip's label for a screen reader ends with ", targeting Hill Giant and Bo".
 - A crowded stack stays one row: a run of the same ability of one source folds into one chip with "×N", and chips past the strip's width give way to one "+N more" button that opens the Stack tab. A seat attacking with more than five creatures draws one heavier line per target with a pill "N attackers → Cy" ([web.md](web.md), Combat overlay).
 - Arrows run from the top chip to each target (a card, a player's pod, or the chip of another stack item) while it is on the stack, at most 6; hover or focus on any chip draws that item's arrows instead. They share the combat arrow layer, in `--primary` for the viewer's items and `--destructive` for another seat's.
 - A target that is gone gets no arrow and drops out of the line; an item with none left says "no legal target" on a dashed chip.

@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils'
 import { useGame, usePlay } from './gameContext'
 import { describeResult, endKind, seatOutcomes } from './outcome'
 import type { EndKind } from './outcome'
+import { SeatFace } from './SeatFace'
 import { seatName } from './useGameInfo'
 import { WinBurst, WinnerBanner } from './WinBurst'
 
@@ -68,7 +69,8 @@ export function GameOver({ onReview }: { onReview?: () => void }) {
     <PageShell className="flex min-h-0 flex-1 flex-col gap-6 sm:py-6">
       <section aria-labelledby="over-title" data-end={kind} className="flex min-h-0 flex-1 flex-col gap-6">
         {winner === null || won ? null : <WinnerBanner name={winner} />}
-        <header className="flex shrink-0 items-start gap-4">
+        {/* The words sit above the burst, so a piece flies behind the headline, never over it. */}
+        <header className="isolate flex shrink-0 items-start gap-4">
           {won ? (
             <WinBurst />
           ) : (
@@ -76,7 +78,7 @@ export function GameOver({ onReview }: { onReview?: () => void }) {
               <Icon aria-hidden="true" className="size-6" />
             </span>
           )}
-          <div className="min-w-0">
+          <div data-slot="over-words" className="relative z-10 min-w-0 bg-background">
             <p className="text-sm font-medium text-muted-foreground">{EYEBROW[kind]}</p>
             <h1
               id="over-title"
@@ -101,6 +103,7 @@ export function GameOver({ onReview }: { onReview?: () => void }) {
                 className="grid gap-1 px-4 py-3 text-sm sm:grid-cols-[1fr_auto] sm:items-center sm:gap-x-4"
               >
                 <span className="flex min-w-0 items-center gap-2">
+                  <SeatFace seat={entry.seat} />
                   <span className="shrink-0 text-muted-foreground">Seat {entry.seat + 1}</span>
                   <span className="truncate font-medium">{entry.name}</span>
                   {entry.you ? <Pill>you</Pill> : null}

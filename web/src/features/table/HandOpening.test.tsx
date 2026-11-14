@@ -129,7 +129,7 @@ describe('the opening hand on a phone', () => {
 
   it('draws the cards of a 390x844 phone 68 px wide', () => {
     Object.assign(room, phoneRoom(390, 844))
-    expect(room).toEqual({ width: 366, height: 109 })
+    expect(room).toEqual({ width: 366, height: 126 })
     renderTable({
       seats: 2,
       state: waitingOn('Mulligan'),

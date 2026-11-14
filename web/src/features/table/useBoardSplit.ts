@@ -1,10 +1,10 @@
 /** The table's regions with the board rows split by what each must hold (`boardSplit.ts`). */
 import { useContext, useMemo } from 'react'
 import { usePlay } from '@/features/game/gameContext'
-import { seatCounts, splitRegions } from './boardSplit'
+import { foldsLands, seatCounts, splitRegions } from './boardSplit'
 import type { LaneCounts } from './laneFit'
 import type { Regions, SeatPlan } from './layout'
-import { STACKS_BY_DEFAULT, TableOptionsContext } from './tableOptions'
+import { FOLD_LANDS_BY_DEFAULT, STACKS_BY_DEFAULT, TableOptionsContext } from './tableOptions'
 
 const parse = (key: string): LaneCounts => {
   const [lands = 0, creatures = 0, other = 0, tuckedLands = 0, tuckedCreatures = 0, tuckedOther = 0] = key
@@ -26,12 +26,16 @@ export function useBoardSplit(
   head = 0,
   overhang = reserve,
 ): Regions {
-  const grouped = useContext(TableOptionsContext).stacks ?? STACKS_BY_DEFAULT
+  const options = useContext(TableOptionsContext)
+  const grouped = options.stacks ?? STACKS_BY_DEFAULT
+  const folded = foldsLands(plan, options.foldLands ?? FOLD_LANDS_BY_DEFAULT)
   const key = usePlay((state) =>
     [plan.viewer, ...plan.boards]
       .map((seat) => {
         const { lands, creatures, other, tucked } = seatCounts(state, seat, grouped)
-        return `${lands},${creatures},${other},${tucked?.lands ?? 0},${tucked?.creatures ?? 0},${tucked?.other ?? 0}`
+        // Folded lands take no lane of a board.
+        const laid = folded ? 0 : lands
+        return `${laid},${creatures},${other},${tucked?.lands ?? 0},${tucked?.creatures ?? 0},${tucked?.other ?? 0}`
       })
       .join('|'),
   )

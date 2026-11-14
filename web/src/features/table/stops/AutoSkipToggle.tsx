@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils'
 import { ListChecks, X } from 'lucide-react'
 import { useShallow } from 'zustand/react/shallow'
 import { Button } from '@/components/ui/button'
@@ -46,7 +47,8 @@ export function AutoSkipToggle() {
           }
           onCheckedChange={(checked) => session.setAutoChoices({ ...auto, skip_triggers: checked })}
         />
-        <span aria-hidden="true" className={paused ? 'opacity-60' : undefined}>
+        {/* A phone keeps the switch alone: its name is on the switch, and the dock has room for the pass button. */}
+        <span aria-hidden="true" className={cn('max-sm:sr-only', paused && 'opacity-60')}>
           Auto-skip triggers
         </span>
       </label>

@@ -1,3 +1,4 @@
+import { laysOutCards } from './prompt/cardPrompts'
 import { useRef } from 'react'
 import type { CSSProperties } from 'react'
 import { usePlay } from '@/features/game/gameContext'
@@ -37,10 +38,13 @@ function NothingToDoNote() {
  */
 export function SharedStrip({
   sheetMax,
+  sheetWide,
   inset = 0,
   onOverhang,
 }: {
   sheetMax: number
+  /** The most the sheet grows while a prompt lays out cards (`Regions.sheetWide`); `sheetMax` when left out. */
+  sheetWide?: number
   inset?: number
   /** Hears how far the sheet stands above the strip, in px. */
   onOverhang?: ((px: number) => void) | undefined
@@ -53,6 +57,8 @@ export function SharedStrip({
   const mine = usePlay((state) => ownDecision(state) !== null)
   const yourTurn = usePlay(isYourTurn)
   const holder = priorityText(priority, stage, name)
+  // A prompt that lays out cards may take the opponents' boards' room too: its cards are what there is to look at.
+  const cards = usePlay(laysOutCards)
   const strip = useRef<HTMLElement>(null)
   const sheet = useRef<HTMLDivElement>(null)
   useEdgeFade(sheet)
@@ -63,7 +69,9 @@ export function SharedStrip({
       aria-label="Turn and priority"
       data-region="shared"
       data-your-turn={yourTurn || undefined}
-      style={{ '--sheet-max': `${Math.floor(sheetMax)}px` } as CSSProperties}
+      style={
+        { '--sheet-max': `${Math.floor(cards ? (sheetWide ?? sheetMax) : sheetMax)}px` } as CSSProperties
+      }
       // The prompt's title ("Your decision: ...") is for a screen reader; its sentence says the same to the eye in a
       // line less. On a phone the key to the combat lines goes too.
       className="relative z-20 min-h-0 max-sm:[&_[data-slot=combat-key]]:hidden [&_[data-slot=prompt-title]]:sr-only"
@@ -78,7 +86,7 @@ export function SharedStrip({
         // The edge takes the colour of the phase; on your turn the gold glow of `your-turn-cue` lies outside it.
         data-themed=""
         className={cn(
-          'fade-scroll absolute inset-x-0 bottom-0 max-h-(--sheet-max) min-h-full rounded-xl border-2 border-phase bg-card px-3 py-1',
+          'fade-scroll absolute inset-x-0 bottom-0 max-h-(--sheet-max) min-h-full plaque rounded-xl border-2 border-phase px-3 py-1',
           yourTurn && 'your-turn-cue',
         )}
       >
@@ -101,7 +109,8 @@ export function SharedStrip({
             <div
               className={cn(
                 mine
-                  ? 'min-w-0 flex-1 basis-80'
+                  ? // A prompt that lays out cards takes a line of its own under the stack, the whole width of the sheet.
+                    'min-w-0 flex-1 basis-80 has-[[data-slot=card-choices]]:basis-full has-[[data-slot=opening-hand]]:basis-full'
                   : 'flex max-w-full shrink-0 items-center [&_p]:max-w-full [&_p]:truncate',
               )}
             >

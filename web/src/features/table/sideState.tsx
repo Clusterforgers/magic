@@ -19,7 +19,16 @@ interface Seen {
  * what has been written since it was last on show. It sits above both, so the table around them does not redraw
  * when a count changes.
  */
-export function SideProvider({ kind, children }: { kind: SideKind; children: ReactNode }) {
+export function SideProvider({
+  kind,
+  foldable = false,
+  children,
+}: {
+  kind: SideKind
+  /** The window has room for a column (`Regions.foldable`). */
+  foldable?: boolean
+  children: ReactNode
+}) {
   const { session } = useGame()
   // Until a tab is chosen a seat shows its Commands, and a viewer that is no seat, which has none, the log.
   const [chosen, setTab] = useState<SideTab | null>(null)
@@ -83,6 +92,7 @@ export function SideProvider({ kind, children }: { kind: SideKind; children: Rea
   const value = useMemo<SideState>(
     () => ({
       kind,
+      foldable,
       tab,
       open,
       counts,
@@ -92,7 +102,7 @@ export function SideProvider({ kind, children }: { kind: SideKind; children: Rea
       mount,
       setMount,
     }),
-    [kind, tab, open, counts, activate, mount],
+    [kind, foldable, tab, open, counts, activate, mount],
   )
   return <SideContext value={value}>{children}</SideContext>
 }
