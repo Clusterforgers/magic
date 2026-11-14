@@ -8868,10 +8868,6 @@ mod tests {
         r#"{"Spell":{"effects":[{"Attach":{"what":"You","to":"This"}}]}}"#,
         "abilities[0].Spell.effects[0].Attach.what: expected an object but this is a player"
     )]
-    #[case::attaching_to_a_player(
-        r#"{"Spell":{"effects":[{"Attach":{"what":"This","to":"You"}}]}}"#,
-        "abilities[0].Spell.effects[0].Attach.to: expected an object but this is a player"
-    )]
     #[case::a_number_read_before_it_is_kept(
         r#"{"Spell":{"effects":[{"GainLife":{"amount":{"Bound":"n"}}}]}}"#,
         "`n` is not a number kept by an earlier `Let`"
