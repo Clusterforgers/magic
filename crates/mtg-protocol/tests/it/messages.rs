@@ -1205,7 +1205,7 @@ fn client_wire_shape_is_flat_and_tagged(
         id: DecisionId(3),
         decision: Decision {
             player: PlayerId(1),
-            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], must_be_blocked: Vec::new(), min_blockers: vec![], max_blockers: vec![], required: vec![], most: None, cant_alone: vec![], joins: vec![], must_be_blocked_by: None }),
+            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], must_be_blocked: Vec::new(), min_blockers: vec![], max_blockers: vec![], required: vec![], most: None, cant_alone: vec![], joins: vec![], must_be_blocked_by: None, r6001_at_least: Vec::new() }),
         },
         deadline_ms: Some(45_000),
         show_after_ms: None,
@@ -1220,7 +1220,7 @@ fn client_wire_shape_is_flat_and_tagged(
         id: DecisionId(4),
         decision: Decision {
             player: PlayerId(0),
-            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], must_be_blocked: Vec::new(), min_blockers: vec![], max_blockers: vec![], required: vec![], most: None, cant_alone: vec![], joins: vec![], must_be_blocked_by: None }),
+            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], must_be_blocked: Vec::new(), min_blockers: vec![], max_blockers: vec![], required: vec![], most: None, cant_alone: vec![], joins: vec![], must_be_blocked_by: None, r6001_at_least: Vec::new() }),
         },
         deadline_ms: None,
         show_after_ms: None,

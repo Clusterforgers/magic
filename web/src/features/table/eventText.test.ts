@@ -1440,7 +1440,9 @@ describe('the choice a permanent enters with', () => {
       "Forest enters under Ana's control, choosing odd",
     ],
     [
-      { Entered: { object: 3, tapped: false, controller: 0, chosen: { Words: ['first strike', 'lifelink'] } } },
+      {
+        Entered: { object: 3, tapped: false, controller: 0, chosen: { Words: ['first strike', 'lifelink'] } },
+      },
       "Forest enters under Ana's control, choosing first strike and lifelink",
     ],
   ])('%j reads "%s"', (event, text) => {

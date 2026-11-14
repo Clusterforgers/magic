@@ -38,6 +38,12 @@ must_be_blocked?: Array<ObjectId>,
  */
 must_be_blocked_by?: Array<[ObjectId, Array<ObjectId>]>, 
 /**
+ * The attackers a rule requires several creatures to block (CR 509.1c: "must be blocked by two or more creatures if
+ * able"), each with how many; the declaration gives each that many blockers unless no other creature could join.
+ * Left out while there are none.
+ */
+r6001_at_least?: Array<[ObjectId, number]>, 
+/**
  * The most creatures that may block together (CR 509.1b: "no more than one creature can block each combat"). Left
  * out while no rule limits the declaration.
  */
