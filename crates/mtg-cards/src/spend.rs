@@ -86,6 +86,8 @@ pub enum SpendFact {
     Devoid,
     /// It has flashback ("spells with flashback").
     Flashback,
+    /// It has foretell ("spells that have foretell").
+    Foretell,
     /// It is a commander its caster owns ("your commander").
     YourCommander,
     /// It is cast face down ("face-down spells", CR 708.4).
@@ -213,6 +215,10 @@ pub struct SpendTraits {
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub flashback: bool,
+    /// It has foretell.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub foretell: bool,
     /// It is a commander its caster owns.
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
@@ -310,6 +316,7 @@ impl SpendFilter {
                 SpendFact::NotFromHand => traits.not_from_hand,
                 SpendFact::Devoid => traits.devoid,
                 SpendFact::Flashback => traits.flashback,
+                SpendFact::Foretell => traits.foretell,
                 SpendFact::YourCommander => traits.your_commander,
                 SpendFact::FaceDown => traits.face_down,
                 SpendFact::Kicked => traits.kicked,

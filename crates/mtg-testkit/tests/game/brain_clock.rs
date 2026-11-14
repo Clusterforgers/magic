@@ -67,5 +67,8 @@ fn every_decision_ends_within_the_cap(
 ) {
     let longest = longest_answer(level, decks, 11, answers);
     assert!(DECISION_CAP < DEADLINE);
-    assert!(longest <= DEADLINE, "the longest answer took {longest:?}");
+    assert!(
+        longest <= DECISION_CAP,
+        "the longest answer took {longest:?}"
+    );
 }

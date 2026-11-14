@@ -226,6 +226,7 @@ fn image_config(cdn: &Cdn, dir: &Path, setup: &Setup) -> ImageConfig {
         max_bytes: setup.max_bytes,
         upstream_base: Some(cdn.base()),
         min_gap: Duration::ZERO,
+        in_flight: 8,
         attempts: 3,
         backoff: setup.backoff,
         timeout: Duration::from_secs(5),

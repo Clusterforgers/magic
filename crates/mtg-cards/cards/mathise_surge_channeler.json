@@ -1,7 +1,7 @@
 {
   "oracle_id": "61be7df8-cc78-4822-9e70-f226a8a96c9d",
   "name": "Mathise, Surge Channeler",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Mathise, Surge Channeler",
@@ -18,25 +18,22 @@
                 "by": "You"
               }
             },
-            "effects": [{ "RollDice": { "sides": 20, "results": [] } }]
-          }
-        },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 88, "end": 119 }
-          }
-        },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 120, "end": 144 }
-          }
-        },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 145, "end": 207 }
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    { "from": 1, "to": 9, "effects": [{ "Draw": { "who": "EachPlayer" } }] },
+                    { "from": 10, "to": 19, "effects": [{ "Draw": {} }] },
+                    {
+                      "from": 20,
+                      "to": 20,
+                      "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

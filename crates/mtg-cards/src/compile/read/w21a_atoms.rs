@@ -183,6 +183,7 @@ pub(super) fn w21a_adjective(word: &str) -> Option<Pred> {
         "suspected" => Pred::Suspected,
         "solved" => Pred::Solved,
         "stickered" => Pred::Stickered,
+        "foretold" => Pred::Foretold,
         "noncommander" => Pred::Not(Box::new(Pred::Commander)),
         _ => return None,
     })
@@ -200,6 +201,7 @@ pub(super) fn w21a_adjective_text(pred: &Pred) -> Option<String> {
             Pred::Suspected => "suspected",
             Pred::Solved => "solved",
             Pred::Stickered => "stickered",
+            Pred::Foretold => "foretold",
             _ => return None,
         }
         .to_owned(),
@@ -219,6 +221,12 @@ pub(super) fn w21a_suffix(r: &mut Reader<'_>) -> Option<Pred> {
     }
     if r.words("of the chosen type") {
         return Some(Pred::ChosenSubtype);
+    }
+    if let Some(named) = super::r5520_atoms::r5520_name_suffix(r) {
+        return Some(named);
+    }
+    if let Some(named) = super::r5520_atoms::r5520_keyword_named(r) {
+        return Some(named);
     }
     if r.words("of the chosen color") {
         return Some(Pred::ChosenColor);
@@ -350,6 +358,10 @@ fn snow_or_colorless() -> Pred {
 pub(super) fn w21a_suffix_text(pred: &Pred, form: Form) -> Option<String> {
     Some(match pred {
         Pred::ChosenSubtype => "of the chosen type".to_owned(),
+        Pred::HasName => super::r5520_atoms::r5520_name_suffix_text(true, form),
+        Pred::Not(inner) if **inner == Pred::HasName => {
+            super::r5520_atoms::r5520_name_suffix_text(false, form)
+        }
         Pred::ChosenColor => "of the chosen color".to_owned(),
         Pred::ChosenName => "with the chosen name".to_owned(),
         Pred::GravedThisTurn => W21A_GRAVED.to_owned(),

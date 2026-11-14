@@ -70,7 +70,16 @@ pub fn may_pay(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let x_free = r.x_free;
     r.x_free |= x_paid;
     let from = r.targets.len();
+    // "the discarded card's mana value" after "if you do" names what the payment took, unless the ability's own cost
+    // took something (then it names that).
+    // Only a payment that pays mana and takes objects ("pay {1}{R} and discard a card"); a sacrifice alone binds its own
+    // name ("the sacrificed creature").
+    let took = !r.paid
+        && costs::takes_objects(&cost)
+        && cost.0.iter().any(|item| matches!(item, CostItem::Mana(_)));
+    r.paid |= took;
     let paid = one_sentence(r);
+    r.paid &= !took;
     r.x_free = x_free;
     let mut paid = paid?;
     // Only a "When you do" whose steps choose a target reads here; the other reflexive wordings stay unread.
@@ -143,6 +152,14 @@ pub fn unless(r: &mut Reader<'_>, unpaid: &[Effect]) -> Option<(Ref, Cost)> {
 /// The cost after "pay": `{2}`, `3 life`, `{E}{E}`.
 fn after_pay(r: &mut Reader<'_>) -> Option<Cost> {
     if let Some(mana) = r.attempt(mana_cost) {
+        // "{1}{R} and discard a card": the two are paid together.
+        let mut mana = mana;
+        if let [CostItem::Mana(paid)] = mana.0.as_slice()
+            && !paid.has_x()
+            && let Some(discard) = r.attempt(costs::r5520_and_discard)
+        {
+            mana.0.push(discard);
+        }
         return Some(mana);
     }
     if let Some(energy) = r.attempt(|r| {
