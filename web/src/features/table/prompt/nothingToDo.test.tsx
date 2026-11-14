@@ -1,4 +1,4 @@
-/** Goal: when the engine says the viewer has no attackers or no blockers, the centre strip says so in plain words; the note is about the viewer only, lasts until the viewer has been asked something and answered it or the turn changes, and a later note replaces an earlier one. */
+/** Goal: when the engine says the viewer has no attackers or no blockers, the centre strip says so in plain words; the note is about the viewer only, lasts until the viewer has been asked something and answered it or the turn changes, and a later note replaces an earlier one; it shows only in the steps it speaks for and never beside the decision it denies. */
 import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { PlayState } from '@/play/store'
@@ -48,6 +48,27 @@ describe('latestNothingToDo', () => {
     ['no hint of a note', [step, passed], null],
   ] as const)('finds the note in %s', (_name, events, expected) => {
     expect(latestNothingToDo(state(logOf(...events)))).toEqual(expected)
+  })
+
+  it.each([
+    ['Attack', 'DeclareAttackers', true],
+    ['Attack', 'DeclareBlockers', true],
+    ['Attack', 'Main2', false],
+    ['Block', 'DeclareBlockers', true],
+    ['Block', 'CombatDamage', false],
+    ['Block', 'Main1', false],
+  ] as const)('shows a %s note in %s: %s', (kind, step, shown) => {
+    const view = { turn: { step } } as unknown as PlayState['view']
+    const found = latestNothingToDo({ ...state(logOf(nothing(0, kind))), view })
+    expect(found !== null).toBe(shown)
+  })
+
+  it.each([
+    ['Block', 'DeclareBlockers'],
+    ['Attack', 'DeclareAttackers'],
+  ] as const)('drops a %s note while the viewer is asked to %s', (kind, asked) => {
+    const pending = { id: 1, decision: decisionFor(asked) }
+    expect(latestNothingToDo({ ...state(logOf(nothing(0, kind))), pending })).toBeNull()
   })
 
   it('finds nothing when the seat is not known', () => {

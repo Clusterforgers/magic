@@ -240,7 +240,7 @@ function OpponentGrid({ plan, size }: { plan: SeatPlan; size: CardSize }) {
             <div
               key={seat}
               data-slot="seat-frame"
-              className="flex min-h-0 min-w-0 rounded-xl border-2 border-foreground/25 p-1"
+              className="flex min-h-0 min-w-0 rounded-xl border border-brass/50 bg-felt-rim/30 p-1 shadow-[inset_0_2px_12px_oklch(0_0_0/0.35)]"
             >
               <SeatArea seat={seat} size={size} facing="far" pod="line" />
             </div>

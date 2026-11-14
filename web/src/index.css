@@ -2,6 +2,7 @@
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 @import '@fontsource-variable/geist';
+@import '@fontsource-variable/cinzel';
 @import './features/table/fx/fx.css';
 @import './features/table/moment/moment.css';
 @import './features/table/prompt/responseClock.css';
@@ -15,6 +16,7 @@
 @theme inline {
   --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
   --font-heading: var(--font-sans);
+  --font-display: 'Cinzel Variable', ui-serif, Georgia, serif;
 
   --spacing: 0.25rem;
 
@@ -122,6 +124,9 @@
   --color-boss: var(--boss);
   --color-on-boss: var(--on-boss);
   --color-spirit: var(--spirit);
+  --color-felt: var(--felt);
+  --color-felt-rim: var(--felt-rim);
+  --color-brass: var(--brass);
 
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
@@ -152,18 +157,18 @@
 }
 
 :root {
-  --background: oklch(0.985 0.004 265);
-  --surface: oklch(1 0 0);
-  --table: oklch(0.955 0.006 265);
+  --background: oklch(0.984 0.006 85);
+  --surface: oklch(0.995 0.004 85);
+  --table: oklch(0.94 0.012 85);
   /* The ground of a lane of permanents on the table. */
-  --lane: oklch(0.915 0.008 265);
-  --raised: oklch(1 0 0);
-  --foreground: oklch(0.2 0.02 265);
-  --muted-foreground: oklch(0.48 0.02 265);
-  --border: oklch(0.9 0.008 265);
-  --border-strong: oklch(0.6 0.02 265);
-  --ring: oklch(0.5 0.19 275);
-  --primary: oklch(0.48 0.19 275);
+  --lane: oklch(0.9 0.03 150);
+  --raised: oklch(0.995 0.004 85);
+  --foreground: oklch(0.2 0.02 60);
+  --muted-foreground: oklch(0.47 0.025 60);
+  --border: oklch(0.89 0.014 85);
+  --border-strong: oklch(0.58 0.04 70);
+  --ring: oklch(0.5 0.12 60);
+  --primary: oklch(0.48 0.11 60);
   --on-primary: oklch(0.985 0 0);
   --turn-you: oklch(0.82 0.16 85);
   --on-turn-you: oklch(0.2 0.02 265);
@@ -204,6 +209,10 @@
   --boss: oklch(0.45 0.16 350);
   --on-boss: oklch(0.985 0 0);
   --spirit: oklch(0.47 0.07 230);
+  /* The table: a lit felt and its darker rim under the boards, and the brass hairline of its plaques. */
+  --felt: oklch(0.93 0.035 155);
+  --felt-rim: oklch(0.89 0.04 160);
+  --brass: oklch(0.55 0.1 70);
 
   /* The four phase themes, each an accent, a soft tint and the text on the accent (turn/phase.css picks one). */
   --phase-beginning: oklch(0.54 0.16 250);
@@ -228,10 +237,10 @@
   --popover: var(--raised);
   --popover-foreground: var(--foreground);
   --primary-foreground: var(--on-primary);
-  --secondary: oklch(0.955 0.006 265);
+  --secondary: oklch(0.95 0.012 85);
   --secondary-foreground: var(--foreground);
-  --muted: oklch(0.955 0.006 265);
-  --accent: oklch(0.925 0.008 265);
+  --muted: oklch(0.95 0.012 85);
+  --accent: oklch(0.92 0.016 85);
   --accent-foreground: var(--foreground);
   --input: var(--border-strong);
 
@@ -259,25 +268,25 @@
 }
 
 .dark {
-  --background: oklch(0.17 0.012 265);
-  --surface: oklch(0.215 0.014 265);
-  --table: oklch(0.145 0.012 265);
-  --lane: oklch(0.185 0.014 265);
-  --raised: oklch(0.26 0.016 265);
-  --foreground: oklch(0.96 0.005 265);
-  --muted-foreground: oklch(0.72 0.015 265);
-  --border: oklch(0.3 0.014 265);
-  --border-strong: oklch(0.56 0.02 265);
-  --ring: oklch(0.74 0.14 275);
-  --primary: oklch(0.74 0.14 275);
-  --on-primary: oklch(0.17 0.012 265);
+  --background: oklch(0.17 0.012 60);
+  --surface: oklch(0.215 0.016 60);
+  --table: oklch(0.145 0.014 60);
+  --lane: oklch(0.17 0.035 165);
+  --raised: oklch(0.26 0.018 60);
+  --foreground: oklch(0.95 0.018 85);
+  --muted-foreground: oklch(0.75 0.03 80);
+  --border: oklch(0.31 0.025 70);
+  --border-strong: oklch(0.58 0.06 80);
+  --ring: oklch(0.84 0.13 82);
+  --primary: oklch(0.8 0.13 78);
+  --on-primary: oklch(0.18 0.03 60);
   --turn-you: oklch(0.82 0.15 85);
-  --on-turn-you: oklch(0.2 0.02 265);
+  --on-turn-you: oklch(0.2 0.02 60);
   --turn-you-edge: oklch(0.82 0.15 85);
   --turn-them: oklch(0.74 0.09 250);
   --on-turn-them: oklch(0.17 0.012 265);
-  --step-passed: oklch(0.6 0.02 265);
-  --step-skipped: oklch(0.8 0.015 265);
+  --step-passed: oklch(0.6 0.03 70);
+  --step-skipped: oklch(0.8 0.02 70);
   --success: oklch(0.74 0.15 150);
   --warning: oklch(0.8 0.15 70);
   --destructive: oklch(0.72 0.17 25);
@@ -306,6 +315,9 @@
   --boss: oklch(0.74 0.13 350);
   --on-boss: oklch(0.17 0.012 265);
   --spirit: oklch(0.8 0.06 230);
+  --felt: oklch(0.33 0.06 160);
+  --felt-rim: oklch(0.15 0.03 170);
+  --brass: oklch(0.72 0.1 78);
 
   --phase-beginning: oklch(0.84 0.09 250);
   --phase-beginning-soft: oklch(0.3 0.05 250);
@@ -320,9 +332,9 @@
   --phase-ending-soft: oklch(0.3 0.05 342);
   --on-phase-ending: oklch(0.17 0.012 265);
 
-  --secondary: oklch(0.26 0.016 265);
-  --muted: oklch(0.26 0.016 265);
-  --accent: oklch(0.31 0.016 265);
+  --secondary: oklch(0.26 0.018 60);
+  --muted: oklch(0.26 0.018 60);
+  --accent: oklch(0.31 0.022 60);
 
   color-scheme: dark;
 }
@@ -357,6 +369,39 @@
   @media (prefers-reduced-motion: no-preference) {
     animation: your-turn-glow 2.8s ease-in-out 2;
   }
+}
+
+/* The table's felt under the boards: lit in the middle, darker at the rim, with a fine weave. */
+@utility felt {
+  background:
+    repeating-linear-gradient(45deg, oklch(1 0 0 / 0.012) 0 2px, transparent 2px 4px),
+    radial-gradient(90% 70% at 50% 55%, var(--felt), var(--felt-rim));
+}
+
+/* A plaque on the table (a pod, the centre strip): the surface lifted off the felt with a soft shadow and a lit top edge. */
+@utility plaque {
+  background: linear-gradient(180deg, color-mix(in oklch, var(--surface), white 4%), var(--surface));
+  box-shadow:
+    0 6px 18px oklch(0 0 0 / 0.3),
+    inset 0 1px 0 oklch(1 0 0 / 0.07);
+}
+
+/* The hand and the controls: the table's darkest ground under a brass hairline. */
+@utility dock {
+  background: linear-gradient(180deg, var(--table), color-mix(in oklch, var(--table), black 12%));
+  border-top: 1px solid color-mix(in oklch, var(--brass) 55%, transparent);
+}
+
+/* The main action of the table: the primary colour with depth and a soft glow. */
+@utility action-glow {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--primary), white 6%),
+    color-mix(in oklch, var(--primary), black 6%)
+  );
+  box-shadow:
+    0 0 18px color-mix(in oklch, var(--primary) 40%, transparent),
+    inset 0 1px 0 oklch(1 0 0 / 0.35);
 }
 
 /* A panel on the page: the surface colour, a hairline edge, the panel radius. */
@@ -439,5 +484,9 @@
   }
   body {
     @apply bg-background text-base text-foreground antialiased;
+  }
+  /* A page's title is set in the display face, as the table sets life and seat names. */
+  h1 {
+    font-family: var(--font-display);
   }
 }

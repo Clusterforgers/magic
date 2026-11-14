@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import { renderToStaticMarkup } from 'react-dom/server'
 import { useIsFitWindow } from '@/components/appChrome'
 import { AuthProvider } from '@/features/auth/AuthProvider'
 import { createAuthStore } from '@/features/auth/store'
@@ -17,7 +18,7 @@ import { lateJoin } from '@/test-utils/transcripts'
 import { GameContext } from './gameContext'
 import type { GameContextValue } from './gameContext'
 import { GameOver } from './GameOver'
-import { pieceFlight, WIN_PIECES } from './WinBurst'
+import { pieceFlight, WinBurst, WIN_PIECES } from './WinBurst'
 
 interface Ending {
   result: GameResult
@@ -179,6 +180,16 @@ describe('the result', () => {
     expect(moving).toEqual(expect.arrayContaining(['win-badge', 'win-banner', 'win-piece']))
     for (const slot of moving) expect(still).toContain(`[data-slot='${slot}']`)
     expect(still).toMatch(/animation:\s*none/)
+  })
+
+  it('keeps the headline above the burst, on its own ground, so no piece crosses the words', () => {
+    const header = document.createElement('div')
+    header.innerHTML = renderToStaticMarkup(<WinBurst />)
+    const source = readFileSync(join(import.meta.dirname, 'GameOver.tsx'), 'utf8')
+    expect(source).toMatch(/<header className="isolate /)
+    expect(source).toMatch(/data-slot="over-words" className="relative z-10 [^"]*bg-background/)
+    // The burst has no stacking order of its own, so the words' layer is above it.
+    expect(header.querySelector('[class*="z-"]')).toBeNull()
   })
 
   it('flies every piece of the burst its own way', () => {

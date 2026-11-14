@@ -2,6 +2,7 @@ import { useSearch } from '@tanstack/react-router'
 import { useEffect, useMemo, useState } from 'react'
 import { cardsApi } from '@/net/cards'
 import { GameContext } from '@/features/game/gameContext'
+import { GameOver } from '@/features/game/GameOver'
 import { GameTable } from '@/features/table/GameTable'
 import { CardsApiContext } from '@/features/table/cardsContext'
 import { setDetailFetcher } from '@/features/table/printed'
@@ -104,6 +105,8 @@ export function DevTableRoute() {
     panel,
     tour,
     lexicon,
+    teams,
+    result,
   } = useSearch({
     from: '/dev/table',
   })
@@ -132,6 +135,8 @@ export function DevTableRoute() {
       stops: stops === undefined ? undefined : parseStopSpec(stops),
       fullControl: fc === 'next' ? 'NextWindow' : fc === 'held' ? 'Held' : undefined,
       away,
+      teams,
+      result,
       real,
     })
   }, [
@@ -156,6 +161,8 @@ export function DevTableRoute() {
     fc,
     away,
     real,
+    teams,
+    result,
   ])
   const view = game.session.store.getState().view
   const candidates = useMemo(
@@ -181,6 +188,8 @@ export function DevTableRoute() {
     [mode, focus, fx, newturn, moments, slow],
   )
   useDevHelp(tour, lexicon)
+  // The result closes for a look at the final table, as on the game page.
+  const [review, setReview] = useState(false)
   return (
     <GameContext value={game}>
       <TableOptionsContext value={options}>
@@ -190,7 +199,7 @@ export function DevTableRoute() {
             <p className="sr-only" data-fixture={FIXTURE_MARKER}>
               Development fixture with {seats} seats
             </p>
-            <GameTable />
+            {result === undefined || review ? <GameTable /> : <GameOver onReview={() => setReview(true)} />}
             <DevFxControls initial={fx} open={bar} />
             <DevTurnChange on={newturn === true} />
             <DevMoments on={moments === true} />

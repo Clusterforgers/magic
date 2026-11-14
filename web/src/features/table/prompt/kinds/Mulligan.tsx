@@ -4,11 +4,12 @@ import { usePlay } from '@/features/game/gameContext'
 import { useSeatNamer } from '../../names'
 import { decidingText, mulliganText, othersDeciding } from '../mulliganText'
 import { usePrompt } from '../PromptContext'
+import { OpeningHand } from '../OpeningHand'
 import { PromptLayout } from '../PromptLayout'
 import type { PromptComponent } from '../types'
 
 /**
- * Mulligan: keep the opening hand or take a mulligan. The hand stays in its strip, unmarked; the sentence says what a
+ * Mulligan: keep the opening hand or take a mulligan. The hand is drawn large under the buttons (`OpeningHand`); the sentence says what a
  * mulligan costs and how many were taken, and a line beneath names the other seats still deciding.
  */
 export const MulliganPrompt: PromptComponent<'Mulligan'> = ({ options }) => {
@@ -33,6 +34,8 @@ export const MulliganPrompt: PromptComponent<'Mulligan'> = ({ options }) => {
           {decidingText(others.map(name))}
         </p>
       )}
+      {/* After the buttons, so a short window that scrolls the sheet keeps Keep and Mulligan in view first. */}
+      <OpeningHand />
     </PromptLayout>
   )
 }

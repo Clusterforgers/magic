@@ -99,6 +99,24 @@ export interface DevSearch {
   tour?: string
   /** Opens the rules lexicon, at this search; `1` with none. */
   lexicon?: string
+  /** Seats in two teams, even against odd seats: `2v2` (`teams`) or `2hg` (Two-Headed Giant, shared life). */
+  teams?: DevTeams
+  /** Ends the game and shows the result page: the viewer `won`, `lost`, a `draw`, or the viewer's team won (`team`, with `teams`). */
+  result?: DevResult
+}
+
+/** The team modes `?teams=` names. */
+export type DevTeams = 'teams' | 'two_headed_giant'
+
+/** The endings `?result=` names. */
+export const DEV_RESULTS = ['won', 'lost', 'draw', 'team'] as const
+
+/** One of `DEV_RESULTS`. */
+export type DevResult = (typeof DEV_RESULTS)[number]
+
+function teamsOf(value: unknown): DevTeams | undefined {
+  if (value === '2v2' || value === 'teams') return 'teams'
+  return value === '2hg' || value === 'two_headed_giant' ? 'two_headed_giant' : undefined
 }
 
 /** The cards `?menu=` opens the manual menu on. */
@@ -116,7 +134,7 @@ const whole = (value: unknown): number | undefined =>
 
 const isDevFx = (value: unknown): value is DevFx => DEV_FX.some((name) => name === value)
 
-/** Reads `?seats=&boss=&board=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&newturn=&bar=&slow=&preview=&stops=&fc=&rules=&states=&cards=&menu=`, ignoring whatever does not make sense. The router has already parsed numbers. */
+/** Reads `?seats=&boss=&board=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&newturn=&bar=&slow=&preview=&stops=&fc=&rules=&states=&cards=&menu=&teams=&result=`, ignoring whatever does not make sense. The router has already parsed numbers. */
 export function parseDevSearch(search: Record<string, unknown>): DevSearch {
   const seats = whole(search.seats)
   const focus = whole(search.focus)
@@ -158,6 +176,8 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     panel: panelOf(search.panel),
     tour: search.tour === 1 ? '1' : typeof search.tour === 'string' ? search.tour : undefined,
     lexicon: search.lexicon === 1 ? '1' : typeof search.lexicon === 'string' ? search.lexicon : undefined,
+    teams: teamsOf(search.teams),
+    result: DEV_RESULTS.find((result) => result === search.result),
     boss: boss === undefined || boss > 2 ? undefined : boss,
     rules: search.rules === true || search.rules === 1 || search.rules === '1' ? true : undefined,
     states: search.states === true || search.states === 1 || search.states === '1' ? true : undefined,

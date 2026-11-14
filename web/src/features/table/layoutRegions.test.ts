@@ -70,14 +70,14 @@ describe('regionSizes', () => {
   })
 
   it.each([
-    ['1920x1080', 'xl', 'column', 320, 44, 72, 140.4],
-    ['1440x900', 'l', 'column', 316.8, 44, 63, 117],
-    ['1366x768', 'l', 'column', 300.52, 44, 56, 99.84],
-    ['1280x720', 'l', 'column', 281.6, 44, 56, 96],
-    ['1024x768', 'm', 'rail', 44, 44, 56, 99.84],
+    ['1920x1080', 'xl', 'column', 304, 44, 72, 172.8],
+    ['1440x900', 'l', 'column', 272, 44, 63, 144],
+    ['1366x768', 'l', 'column', 272, 44, 56, 122.88],
+    ['1280x720', 'l', 'column', 272, 44, 56, 115.2],
+    ['1024x768', 'm', 'rail', 44, 44, 56, 122.88],
     ['390x844', 'xs', 'sheet', 0, 44, 59.08, 118.16],
-    ['768x1024', 's', 'sheet', 0, 44, 71.68, 133.12],
-    ['844x390', 's', 'sheet', 0, 32, 56, 96],
+    ['768x1024', 's', 'sheet', 0, 44, 71.68, 163.84],
+    ['844x390', 's', 'sheet', 0, 32, 56, 104],
   ])(
     'sizes a %s window: %s, side %s %i px, bar %i, shared %f, hand %f',
     (name, breakpoint, side, sideWidth, bar, shared, hand) => {
@@ -132,19 +132,19 @@ describe('regionSizes', () => {
     // A phone's sheet leaves the tile strip and a row of the opponents' board (`SHEET_KEEP_PX`).
     ['390x844', 59.08 + (844 - 44 - 59.08 - 118.16) / 2.15 - 120],
     // A window so low that the strip and the opponents are less than 40 %: the sheet takes them and no more.
-    ['844x390', 56 + (390 - 32 - 56 - 96) / 2.15],
+    ['844x390', 56 + (390 - 32 - 56 - 104) / 2.15],
   ])('lets the sheet of a %s window grow %f px up over the opponents', (name, most) => {
     const viewport = must(SIZES.find(([label]) => label === name)?.[1])
     expect(regionSizes(viewport).sheet).toBeCloseTo(most, 6)
   })
 
-  it('draws a column of 280 to 320 px from L, a rail of 44 px at M and a sheet below', () => {
+  it('draws a column of 272 to 304 px from L, a rail of 44 px at M and a sheet below', () => {
     for (let width = 320; width <= 2560; width += 16) {
       const regions = regionSizes({ width, height: 900 })
       if (regions.side === 'column') {
         expect(width, `${width}`).toBeGreaterThanOrEqual(1280)
-        expect(regions.sideWidth, `${width}`).toBeGreaterThanOrEqual(280)
-        expect(regions.sideWidth, `${width}`).toBeLessThanOrEqual(320)
+        expect(regions.sideWidth, `${width}`).toBeGreaterThanOrEqual(272)
+        expect(regions.sideWidth, `${width}`).toBeLessThanOrEqual(304)
       } else if (regions.side === 'rail') {
         expect(width).toBeGreaterThanOrEqual(1024)
         expect(width).toBeLessThan(1280)
@@ -195,7 +195,7 @@ function readClamp(css: string): { min: number; vh: number; max: number } {
 describe('the CSS templates', () => {
   it('writes the rows the design names for a wide window', () => {
     expect(gridRows({ phone: false, landscape: false })).toBe(
-      '44px minmax(0, 1fr) clamp(56px, 7dvh, 72px) minmax(0, 1.15fr) max(clamp(96px, 13dvh, 168px), var(--hand-grow, 0px))',
+      '44px minmax(0, 1fr) clamp(56px, 7dvh, 72px) minmax(0, 1.15fr) max(clamp(104px, 16dvh, 200px), var(--hand-grow, 0px))',
     )
   })
 
@@ -213,7 +213,7 @@ describe('the CSS templates', () => {
   })
 
   it('writes the columns of the main area and the side column, rail or sheet', () => {
-    expect(gridColumns('column')).toBe('minmax(0, 1fr) clamp(280px, 22vw, 320px)')
+    expect(gridColumns('column')).toBe('minmax(0, 1fr) clamp(272px, 18vw, 304px)')
     expect(gridColumns('rail')).toBe('minmax(0, 1fr) 44px')
     expect(gridColumns('sheet')).toBe('minmax(0, 1fr)')
   })
@@ -439,13 +439,13 @@ describe('the form of the controls dock', () => {
     // width, height, form
     [1920, 1080, 'full'],
     [1600, 1000, 'full'],
-    // The least window whose main area (the window less a 320 px column) is 1161 px.
-    [1481, 900, 'full'],
-    [1480, 900, 'short'],
-    [1440, 900, 'short'],
+    // The least window whose main area (the window less a 272 px column) is 1161 px.
+    [1440, 900, 'full'],
+    [1433, 900, 'full'],
+    [1432, 900, 'short'],
     [1366, 768, 'short'],
     [1280, 720, 'short'],
-    // A rail takes 44 px where a column takes 282 to 320: the main area of a 1279 px window is wider than of a 1280 px one.
+    // A rail takes 44 px where a column takes 272 to 304: the main area of a 1279 px window is wider than of a 1280 px one.
     [1279, 720, 'full'],
     [1205, 768, 'full'],
     [1204, 768, 'short'],

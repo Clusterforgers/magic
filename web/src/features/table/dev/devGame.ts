@@ -30,6 +30,8 @@ import { withCrowd } from './crowdScene'
 import { withEquip } from './equip'
 import { withRevealed } from './revealScene'
 import { withPlayerCounters } from './countersScene'
+import { endedWith, withTeams } from './endScene'
+import type { DevResult, DevTeams } from '../devSearch'
 
 /**
  * The play state of a seat that has just seen `fixture`. It faces `pending`, by default a priority decision with
@@ -270,6 +272,10 @@ export interface FixtureGameOptions extends FixtureOptions {
   fullControl?: FullControlMode
   /** A seat whose client is gone, with 12 s before the game acts for it, for the away mark and note. */
   away?: PlayerId
+  /** Two teams, even seats against odd ones (`dev/endScene.ts`). */
+  teams?: DevTeams
+  /** The game is over with this result. */
+  result?: DevResult
 }
 
 /** The house rules `rules` gives the fixture table: two differ from Commander's own and one is its own. */
@@ -362,10 +368,20 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
       : { ...moment, view: { ...moment.view, turn: { ...moment.view.turn, step: options.step } } }
   const ruled =
     options.rules === true ? { ...stepped, view: { ...stepped.view, house_rules: DEV_TABLE_RULES } } : stepped
-  const bossed = options.boss === undefined ? ruled : withBoss(ruled, options.boss)
+  const teamed = options.teams === undefined ? ruled : withTeams(ruled, options.teams)
+  const bossed = options.boss === undefined ? teamed : withBoss(teamed, options.boss)
   const fixture = options.turn === 'left' ? withActiveLeft(bossed) : bossed
   const shown = prompt !== undefined ? prompt(fixture) : options.holding === true ? undefined : null
   store.setState(fixtureState(fixture, shown))
+  if (options.result !== undefined) {
+    const { players, result } = endedWith(fixture, options.result)
+    store.setState((state) => ({
+      phase: 'over',
+      result,
+      pending: null,
+      view: state.view === null ? null : { ...state.view, players },
+    }))
+  }
   if (options.stops !== undefined) store.setState({ stops: options.stops })
   if (options.fullControl !== undefined) store.setState({ fullControl: options.fullControl })
   const away = options.away
