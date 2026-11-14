@@ -20,6 +20,7 @@ pub mod knobs;
 pub mod priority;
 pub mod seen;
 pub mod sim;
+pub mod spotlight;
 pub mod suite;
 pub mod targets;
 pub mod threat;

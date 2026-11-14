@@ -1351,6 +1351,10 @@ impl<'a> Scope<'a> {
                 .collect(),
             Ref::Granter => self.granter_on_battlefield(),
             Ref::Monarch => state.monarch().map(Target::Player).into_iter().collect(),
+            Ref::Spotlit => crate::spotlight::focus(state, self.controller)
+                .map(Target::Player)
+                .into_iter()
+                .collect(),
             Ref::Promised => self.promised().map(Target::Player).into_iter().collect(),
             Ref::Chosen => self.r4700_chosen_targets(false)?,
             Ref::R4700OtherChosen => self.r4700_chosen_targets(true)?,

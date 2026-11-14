@@ -97,6 +97,8 @@ pub enum Ref {
     AttachedPlayer,
     /// The monarch ("the monarch"); nobody while no player is the monarch.
     Monarch,
+    /// The hero the boss's side eyes in a campaign fight (the spotlight's focus for the controller); nobody outside one.
+    Spotlit,
     /// The player the source chose as it entered ("the chosen player"); nobody before the choice, for a source that chose no player or once that player has left the game.
     Chosen,
     /// The players the source chose as it entered other than the player the trigger event is about ("the other chosen

@@ -74,6 +74,10 @@ effects?: Array<PlayerEffect>,
  */
 spirit?: boolean, 
 /**
+ * The hero a seat of a boss's side eyes next under the spotlight (campaign fights); left out for other seats.
+ */
+eyes?: PlayerId, 
+/**
  * A boss seat's phases: their names in order and how many have begun; left out for a seat with none.
  */
 boss?: BossView, 

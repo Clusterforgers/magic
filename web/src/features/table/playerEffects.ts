@@ -3,7 +3,7 @@
  * command zone, as a short label for the pod's chip and a sentence for its hover detail. Whether an effect helps or
  * hinders the seat is a word and an icon on the chip as well as a colour, never the colour alone.
  */
-import type { ObjectId, ObjectView, PlayerEffect, PlayerView } from '@/protocol/generated'
+import type { ObjectId, ObjectView, PlayerEffect, PlayerId, PlayerView } from '@/protocol/generated'
 import { abilityText } from './cardModel'
 
 /** Whether an effect helps the seat, hinders it, or neither. */
@@ -180,10 +180,14 @@ export function emblemFacts(
 }
 
 /**
- * A campaign fight's seat states: a hero who became a Spirit, a boss's phase with the one still to come, and the Omen
- * (the scheme it sets in motion next).
+ * A campaign fight's seat states: a hero who became a Spirit, a boss's phase with the one still to come, the Omen (the
+ * scheme it sets in motion next) and the hero a seat of the boss's side eyes under the spotlight.
  */
-export function campaignFacts(player: PlayerView, owner: string): EffectFacts[] {
+export function campaignFacts(
+  player: PlayerView,
+  owner: string,
+  nameOf: (seat: PlayerId) => string = (seat) => `Seat ${seat}`,
+): EffectFacts[] {
   const facts: EffectFacts[] = []
   if (player.boss && player.boss.phases.length > 0) {
     const { phases, begun } = player.boss
@@ -219,6 +223,16 @@ export function campaignFacts(player: PlayerView, owner: string): EffectFacts[] 
       detail: `${owner} sets ${omen} in motion as their next turn begins.`,
     })
   }
+  if (player.eyes !== undefined) {
+    const hero = nameOf(player.eyes)
+    facts.push({
+      key: 'Eyes',
+      icon: 'boss',
+      label: `Eyes ${hero}`,
+      tone: 'neutral',
+      detail: `${owner} eyes ${hero}: the hero it presses next. Its attention moves on to the others once a hero has taken their share.`,
+    })
+  }
   if (player.spirit) {
     facts.push({
       key: 'Spirit',
@@ -236,9 +250,10 @@ export function seatEffects(
   player: PlayerView,
   objects: Readonly<Record<ObjectId, ObjectView>>,
   owner: string,
+  nameOf?: (seat: PlayerId) => string,
 ): EffectFacts[] {
   return [
-    ...campaignFacts(player, owner),
+    ...campaignFacts(player, owner, nameOf),
     ...emblemFacts(player, objects, owner),
     ...(player.effects ?? []).map((effect) => effectFacts(effect, owner)),
   ]

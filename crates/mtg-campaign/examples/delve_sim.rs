@@ -86,6 +86,52 @@ struct Fought {
     falls: u64,
     rises: u64,
     haunts: u64,
+    /// The pressure each hero received from the boss's side (`mtg_engine::spotlight::received`).
+    pressure: Vec<u32>,
+    /// The round in which a hero first fell to half their starting life or below, if one did.
+    first_half: Option<u32>,
+    /// The round in which a hero first fell, if one did.
+    first_fall: Option<u32>,
+}
+
+/// What the log shows about the heroes' life: the round each hero first fell to half life or below, and first fell.
+fn life_marks(
+    setup: &GameSetup,
+    events: &[mtg_engine::events::Event],
+    party: usize,
+) -> (Option<u32>, Option<u32>) {
+    use mtg_engine::events::Event;
+    let Ok(mut state) = mtg_engine::GameState::from_setup(setup) else {
+        return (None, None);
+    };
+    let seats = u32::try_from(state.players().len()).unwrap().max(1);
+    let starts: Vec<i32> = (0..party)
+        .map(|at| state.player(PlayerId::from_index(at)).unwrap().life())
+        .collect();
+    let (mut half, mut fall) = (None, None);
+    let mut turn = 0u32;
+    for event in events {
+        if mtg_engine::apply_event(&mut state, event).is_err() {
+            break;
+        }
+        if let Event::TurnBegan { number, .. } = event {
+            turn = *number;
+        }
+        let round = turn.saturating_sub(1) / seats + 1;
+        for (at, start) in starts.iter().enumerate() {
+            let player = state.player(PlayerId::from_index(at)).unwrap();
+            if half.is_none() && player.life() * 2 <= *start {
+                half = Some(round);
+            }
+            if fall.is_none() && (player.is_spirit() || !player.is_in_game()) {
+                fall = Some(round);
+            }
+        }
+        if half.is_some() && fall.is_some() {
+            break;
+        }
+    }
+    (half, fall)
 }
 
 fn hero_deck(at: usize) -> (FixtureDeck, &'static str) {
@@ -233,6 +279,7 @@ fn fight(plan: &FightPlan, cards: &[Vec<String>], seed: u64, heroes: Level) -> F
                     plan.boss.life
                 );
             }
+            let mut pressure = Vec::new();
             if let Ok(engine) = state {
                 for at in 0..plan.heroes.len() {
                     let player = engine.player(PlayerId::from_index(at)).unwrap();
@@ -240,6 +287,10 @@ fn fight(plan: &FightPlan, cards: &[Vec<String>], seed: u64, heroes: Level) -> F
                     if player.is_spirit() {
                         spirits.push(u8::try_from(at).unwrap());
                     }
+                    pressure.push(mtg_engine::spotlight::received(
+                        &engine,
+                        PlayerId::from_index(at),
+                    ));
                 }
             }
             let falls = outcome
@@ -267,6 +318,8 @@ fn fight(plan: &FightPlan, cards: &[Vec<String>], seed: u64, heroes: Level) -> F
                     matches!(e, mtg_engine::events::Event::AbilityActivated { source, .. } if emblems.contains(&source.id))
                 })
                 .count() as u64;
+            let (first_half, first_fall) =
+                life_marks(&setup_of(plan, cards, seed), &outcome.events, party);
             Fought {
                 won,
                 lives,
@@ -277,6 +330,9 @@ fn fight(plan: &FightPlan, cards: &[Vec<String>], seed: u64, heroes: Level) -> F
                 falls,
                 rises,
                 haunts,
+                pressure,
+                first_half,
+                first_fall,
             }
         }
         Err(failure) => {
@@ -291,6 +347,9 @@ fn fight(plan: &FightPlan, cards: &[Vec<String>], seed: u64, heroes: Level) -> F
                 falls: 0,
                 rises: 0,
                 haunts: 0,
+                pressure: Vec::new(),
+                first_half: None,
+                first_fall: None,
             }
         }
     }
@@ -307,6 +366,12 @@ struct Tally {
     falls: u64,
     rises: u64,
     haunts: u64,
+    /// The largest share of the boss's pressure one hero received, per fight with any pressure.
+    max_shares: Vec<f64>,
+    /// The round a hero first fell to half life, per fight in which one did.
+    halves: Vec<u32>,
+    /// The round a hero first fell, per fight in which one did.
+    first_falls: Vec<u32>,
 }
 
 impl Tally {
@@ -319,6 +384,13 @@ impl Tally {
         self.falls += fought.falls;
         self.rises += fought.rises;
         self.haunts += fought.haunts;
+        let total: u32 = fought.pressure.iter().sum();
+        if total > 0 {
+            let most = *fought.pressure.iter().max().unwrap();
+            self.max_shares.push(f64::from(most) / f64::from(total));
+        }
+        self.halves.extend(fought.first_half);
+        self.first_falls.extend(fought.first_fall);
     }
 
     fn merge(&mut self, other: &Tally) {
@@ -330,6 +402,28 @@ impl Tally {
         self.falls += other.falls;
         self.rises += other.rises;
         self.haunts += other.haunts;
+        self.max_shares.extend(&other.max_shares);
+        self.halves.extend(&other.halves);
+        self.first_falls.extend(&other.first_falls);
+    }
+
+    /// The spotlight's measures: the mean largest share of pressure on one hero, the round a hero first fell to half
+    /// life and first fell (means over the fights in which it happened, with their count).
+    fn spotlight_line(&self) -> String {
+        let mean = |v: &[f64]| v.iter().sum::<f64>() / v.len().max(1) as f64;
+        let rounds =
+            |v: &[u32]| v.iter().map(|r| f64::from(*r)).sum::<f64>() / v.len().max(1) as f64;
+        format!(
+            "max hero share {:.0}% (worst {:.0}%), half life in round {:.1} ({}/{}), first fall in round {:.1} ({}/{})",
+            100.0 * mean(&self.max_shares),
+            100.0 * self.max_shares.iter().copied().fold(0.0, f64::max),
+            rounds(&self.halves),
+            self.halves.len(),
+            self.n,
+            rounds(&self.first_falls),
+            self.first_falls.len(),
+            self.n
+        )
     }
 
     fn line(&self) -> String {
@@ -411,7 +505,8 @@ fn main() {
                     let seed = first + game;
                     if mode == "fights" {
                         // Each boss in turn against a fresh party.
-                        let boss = &bosses[usize::try_from(game).unwrap() % bosses.len()];
+                        // The boss follows the seed, so one game from any seed meets the same boss as in a longer series.
+                        let boss = &bosses[usize::try_from(seed - 1).unwrap() % bosses.len()];
                         let (mut run, _) = lobby(seed, heroes, heat);
                         let node = run
                             .map
@@ -425,10 +520,14 @@ fn main() {
                         let t = Instant::now();
                         let fought = fight(&plan, &vec![Vec::new(); heroes], seed, hero_level);
                         println!(
-                            "seed {seed} {boss}: {} in {} turns ({:.0}s){}",
+                            "seed {seed} {boss}: {} in {} turns ({} boss side, {:.0}s), pressure {:?}, half {:?}, fall {:?}{}",
                             if fought.won { "win" } else { "loss" },
                             fought.turns,
+                            fought.boss_turns,
                             t.elapsed().as_secs_f64(),
+                            fought.pressure,
+                            fought.first_half,
+                            fought.first_fall,
                             if fought.failed { " FAILED" } else { "" }
                         );
                         fights
@@ -523,6 +622,7 @@ fn main() {
         all.merge(tally);
     }
     println!("{:>16}: {}", "all", all.line());
+    println!("{:>16}: {}", "spotlight", all.spotlight_line());
     let runs = runs.lock().unwrap();
     if !runs.is_empty() {
         let victories = runs.iter().filter(|(_, v)| *v).count();

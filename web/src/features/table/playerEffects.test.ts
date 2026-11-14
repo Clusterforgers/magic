@@ -1,4 +1,4 @@
-// Goal: a campaign seat says whether it is a Spirit, which boss phase it is in, its scheme in motion and its Omen; every effect the server can name on a player has a short label, a sentence that names the player and a tone, each once per seat; the emblems of a seat's command zone come first and say their rules; and the effects' group name lists the labels.
+// Goal: a campaign seat says whether it is a Spirit, which boss phase it is in, its scheme in motion, its Omen and the hero it eyes; every effect the server can name on a player has a short label, a sentence that names the player and a tone, each once per seat; the emblems of a seat's command zone come first and say their rules; and the effects' group name lists the labels.
 import { describe, expect, it } from 'vitest'
 import type { ObjectView, PlayerEffect, PlayerView } from '@/protocol/generated'
 import { card } from '@/test-utils/cards'
@@ -103,6 +103,12 @@ describe('campaignFacts', () => {
     expect(facts.map((f) => f.label)).toEqual(['Scheme: Ambush', 'Omen: Feast'])
     expect(facts[0]?.detail).toContain('set Ambush in motion')
     expect(facts[1]?.detail).toContain('sets Feast in motion')
+  })
+
+  it('a seat of the boss side names the hero it eyes', () => {
+    const facts = campaignFacts(player({ eyes: 2 }), 'The Warden', (seat) => (seat === 2 ? 'Ann' : 'Bo'))
+    expect(facts.map((f) => f.label)).toEqual(['Eyes Ann'])
+    expect(facts[0]?.detail).toContain('The Warden eyes Ann')
   })
 
   it('a Spirit says so, and an ordinary seat has no campaign facts', () => {

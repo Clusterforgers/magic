@@ -649,6 +649,7 @@ impl<'a> Walker<'a> {
             | Ref::EachPlayer
             | Ref::AttachedPlayer
             | Ref::Monarch
+            | Ref::Spotlit
             | Ref::Chosen
             | Ref::Promised
             | Ref::Attacked
@@ -3635,6 +3636,7 @@ impl Walker<'_> {
             | Ref::EachPlayer
             | Ref::AttachedPlayer
             | Ref::Monarch
+            | Ref::Spotlit
             | Ref::Chosen
             | Ref::Promised
             | Ref::Attacked

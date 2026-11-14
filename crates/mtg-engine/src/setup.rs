@@ -645,6 +645,7 @@ impl GameState {
             rmt8_turns: crate::rmt8_turns::turns_before(turn.0, first_player, seats),
             rmt8_lives: lives,
             rmt8_upkeeps: std::collections::BTreeMap::new(),
+            spotlight: crate::spotlight::Spotlight::default(),
             last_turn_of: None,
             monarch: None,
             player_controls: Vec::new(),

@@ -81,7 +81,23 @@ pub fn focus(
         .sum();
     let all: Vec<Body> = bodies.values().cloned().collect();
     let mut best: Option<(f64, PlayerId)> = None;
-    for player in offered.iter().copied().filter(|p| !seen.is_teammate(*p)) {
+    let boss = super::spotlight::boss_seat(seen);
+    // A boss's side aims at the heroes the spotlight allows, at any of them when it allows none.
+    let fair: Vec<PlayerId> = offered
+        .iter()
+        .copied()
+        .filter(|p| !seen.is_teammate(*p) && super::spotlight::may_aim(seen, *p))
+        .collect();
+    let pool: Vec<PlayerId> = if fair.is_empty() {
+        offered
+            .iter()
+            .copied()
+            .filter(|p| !seen.is_teammate(*p))
+            .collect()
+    } else {
+        fair
+    };
+    for player in pool {
         let life = seen.life(player);
         let board = threat::player_threat(seen, player, &all);
         // Untapped creatures that punish the seat's attackers make a player a worse target.
@@ -98,7 +114,12 @@ pub fn focus(
                 })
             })
             .count();
-        let score = if life <= power {
+        let score = if boss {
+            // A boss's side weighs threat against the attention a hero already got, never weakness alone.
+            board + super::spotlight::lean(seen, player)
+                - super::knobs::knobs().wall * f64::from(u32::try_from(walls).unwrap_or(u32::MAX))
+                + if life <= power { 10.0 } else { 0.0 }
+        } else if life <= power {
             1_000.0 - f64::from(life)
         } else {
             board + 0.5 * f64::from(40 - life.min(40))
@@ -130,7 +151,17 @@ fn aimed(seen: &Seen<'_>, options: &AttackOptions, at: Option<PlayerId>) -> Atta
                     .defenders
                     .iter()
                     .copied()
-                    .find(|t| matches!(t, AttackTarget::Player(_)) && opposing(t))
+                    .find(|t| {
+                        matches!(t, AttackTarget::Player(p) if super::spotlight::may_aim(seen, *p))
+                            && opposing(t)
+                    })
+                    .or_else(|| {
+                        option
+                            .defenders
+                            .iter()
+                            .copied()
+                            .find(|t| matches!(t, AttackTarget::Player(_)) && opposing(t))
+                    })
             })
             .or_else(|| option.defenders.iter().copied().find(opposing))
             .or_else(|| {
@@ -145,6 +176,16 @@ fn aimed(seen: &Seen<'_>, options: &AttackOptions, at: Option<PlayerId>) -> Atta
         }
     }
     attack
+}
+
+/// `attacks` without those at a hero the spotlight spares ([`super::spotlight::fair_attack`]), unless none is left.
+fn keep_fair(seen: &Seen<'_>, attacks: &mut Vec<Attack>) {
+    if attacks
+        .iter()
+        .any(|attack| super::spotlight::fair_attack(seen, attack))
+    {
+        attacks.retain(|attack| super::spotlight::fair_attack(seen, attack));
+    }
 }
 
 /// The players `options` lets the seat attack.
@@ -510,6 +551,7 @@ pub fn attack_candidates(seen: &Seen<'_>, options: &AttackOptions) -> Vec<Attack
             unique.push(attack);
         }
     }
+    keep_fair(seen, &mut unique);
     if unique.is_empty() {
         unique.push(options.legal_attack());
     }
@@ -556,6 +598,7 @@ pub fn plan_attack(search: &mut Search, engine: &Engine, options: &AttackOptions
             candidates.push(aimed(&seen, options, Some(other)));
         }
     }
+    keep_fair(&seen, &mut candidates);
     let mut tried: Vec<Attack> = Vec::new();
     let mut best: Option<(f64, Attack)> = None;
     let mut consider = |search: &mut Search, attack: Attack, best: &mut Option<(f64, Attack)>| {
