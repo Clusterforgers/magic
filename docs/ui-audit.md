@@ -4,7 +4,7 @@ The state of the web client's look and feel, the problems ranked by their cost t
 
 ## Method
 
-Every screen is shot with `scripts/ui-shot.mjs` at 1400 × 900 and 390 × 900, the table also at 1280 × 720. The table runs on `/dev/table` with real card pictures (`cards=real`) in 1v1 (`board=duel`), the 4-seat Commander fixture (priority, attack, block, mulligan, crowded stack, attachments, counters), six seats and the boss fight (`boss=2`); the pages on `/dev/lobby`, `/dev/builder`, `/dev/precons`, `/dev/delve?state=…`, `/dev/read` and the plain routes. The end of a game and a team table have no dev scene yet (Phase 2, pass 0).
+Every screen is shot with `scripts/ui-shot.mjs` at 1400 × 900 and 390 × 900, the table also at 1280 × 720. The table runs on `/dev/table` with real card pictures (`cards=real`) in 1v1 (`board=duel`), the 4-seat Commander fixture (priority, attack, block, mulligan, crowded stack, attachments, counters), six seats and the boss fight (`boss=2`); the pages on `/dev/lobby`, `/dev/builder`, `/dev/precons`, `/dev/delve?state=…`, `/dev/read` and the plain routes. The result page and team tables run on `result=` and `teams=`.
 
 ## Problems ranked by impact on play
 
@@ -115,7 +115,6 @@ Each pass is one commit with before and after shots at 1400 × 900, 1280 × 720 
 
 | Pass | Outcome |
 |---|---|
-| 0 | Dev scenes for the end of a game and a team table (`/dev/table?result=won|lost`, `?teams=2v2`), so every screen can be shot |
 | 1 | The chosen direction's tokens in `index.css` (both themes, contrast held), the display font through fontsource, card shadows, the table felt and plaques; the dev looks retired |
 | 2 | Pod heads: name, life and commander picture first; counts in one quiet line; rare counters behind the pod; seat hue on the pod |
 | 3 | Space for boards: the side column folds to a rail by default below 1600 px and remembers; the centre strip shrinks to one line with the stack as card pictures at its right; cards grow (measured by `fitLanes`) |
