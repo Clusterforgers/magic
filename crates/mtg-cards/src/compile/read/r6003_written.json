@@ -33,5 +33,120 @@
     ]
    }
   }
+ ],
+ [
+  "~ deals 5 damage to target attacking or blocking creature. If a Dragon was beheld, you gain 2 life.",
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "AnyOf": [
+          "Attacking",
+          "Blocking"
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "DealDamage": {
+       "to": {
+        "Target": 0
+       },
+       "amount": 5
+      }
+     },
+     {
+      "If": {
+       "condition": "AdditionalCostPaid",
+       "then": [
+        {
+         "GainLife": {
+          "amount": 2
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  }
+ ],
+ [
+  "Target creature you control deals damage equal to its power to target creature or planeswalker. If a Dragon was beheld, surveil 2.",
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     },
+     {
+      "what": {
+       "Object": [
+        {
+         "AnyOf": [
+          {
+           "Type": "Creature"
+          },
+          {
+           "Type": "Planeswalker"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "DealDamage": {
+       "source": {
+        "Target": 0
+       },
+       "to": {
+        "Target": 1
+       },
+       "amount": {
+        "Stat": {
+         "of": {
+          "Target": 0
+         },
+         "stat": "Power"
+        }
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": "AdditionalCostPaid",
+       "then": [
+        {
+         "Surveil": {
+          "count": 2
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  }
  ]
 ]
