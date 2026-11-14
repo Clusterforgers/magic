@@ -169,3 +169,4 @@ fn r6013_a_near_miss_does_not_read_back(
     let report = r6013_report(name, &file.replacen(from, to, 1));
     assert!(!r6013_reads(&report, start), "{name}: {to}");
 }
+

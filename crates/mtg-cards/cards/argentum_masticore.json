@@ -39,49 +39,6 @@
                 }
               },
               {
-                "Reflexive": {
-                  "targets": [
-                    {
-                      "what": {
-                        "Object": [
-                          {
-                            "Not": {
-                              "Type": "Land"
-                            }
-                          },
-                          {
-                            "ControlledBy": "Opponents"
-                          },
-                          {
-                            "Compare": {
-                              "stat": "ManaValue",
-                              "op": "Le",
-                              "to": {
-                                "Stat": {
-                                  "of": {
-                                    "Bound": "discarded"
-                                  },
-                                  "stat": "ManaValue"
-                                }
-                              }
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  ],
-                  "effects": [
-                    {
-                      "Destroy": {
-                        "what": {
-                          "Target": 0
-                        }
-                      }
-                    }
-                  ]
-                }
-              },
-              {
                 "If": {
                   "condition": {
                     "Compare": {
@@ -102,6 +59,51 @@
                       "Sacrifice": {
                         "filter": [
                           "This"
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                {
+                                  "Not": {
+                                    "Type": "Land"
+                                  }
+                                },
+                                {
+                                  "ControlledBy": "Opponents"
+                                },
+                                {
+                                  "Compare": {
+                                    "stat": "ManaValue",
+                                    "op": "Le",
+                                    "to": {
+                                      "Stat": {
+                                        "of": {
+                                          "Bound": "discarded"
+                                        },
+                                        "stat": "ManaValue"
+                                      }
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Destroy": {
+                              "what": {
+                                "Target": 0
+                              }
+                            }
+                          }
                         ]
                       }
                     }

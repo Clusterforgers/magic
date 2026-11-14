@@ -146,7 +146,18 @@ fn r6013_masticore_destroys_up_to_the_discarded_value(
     let attempt = r6013_settle(&mut driver, Some("Fodder"), Some(target));
     if destroyed {
         attempt?;
-        assert!(matches!(r6013_zone_of(&driver, target), Zone::Graveyard(_)));
+        let seen: Vec<String> = driver
+            .engine()
+            .events()
+            .iter()
+            .rev()
+            .take(12)
+            .map(|event| format!("{event:?}").chars().take(90).collect())
+            .collect();
+        assert!(
+            matches!(r6013_zone_of(&driver, target), Zone::Graveyard(_)),
+            "{seen:#?}"
+        );
     } else {
         // The dearer relic is no legal target: it stays whatever was tried.
         let _ = attempt;
@@ -513,7 +524,11 @@ fn r6013_mana_clash_repeats_until_both_coins_come_up_heads(
         .filter(|(who, _)| *who == 1)
         .map(|(_, heads)| *heads)
         .collect();
-    assert_eq!(mine.len(), theirs.len());
+    let lives = (
+        driver.state().player(pid(0)).unwrap().life(),
+        driver.state().player(pid(1)).unwrap().life(),
+    );
+    assert_eq!(mine.len(), theirs.len(), "{flips:?} {lives:?}");
     let pairs: Vec<(bool, bool)> = mine.iter().copied().zip(theirs.iter().copied()).collect();
     let (last, before) = pairs.split_last().unwrap();
     assert_eq!(*last, (true, true));
