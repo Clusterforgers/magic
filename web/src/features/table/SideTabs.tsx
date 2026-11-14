@@ -48,7 +48,7 @@ function Count({ tab, className, hidden = false }: { tab: SideTab; className?: s
       data-tab={tab}
       aria-hidden={hidden || undefined}
       className={cn(
-        'inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs font-medium tabular-nums',
+        'inline-flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-xs font-medium tabular-nums',
         tab === 'stack' ? 'bg-foreground text-background' : 'bg-primary text-on-primary',
         className,
       )}
@@ -106,7 +106,7 @@ function TabbedPanels({ listClassName }: { listClassName?: string }) {
           <TabsTrigger
             key={tab}
             value={tab}
-            className="min-w-0 flex-1 gap-1 px-1.5"
+            className="min-w-0 flex-auto gap-1 px-1"
             onClick={() => side.activate(tab)}
           >
             {label}

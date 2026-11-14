@@ -94,11 +94,14 @@ export const PIP_TO: Record<PipTone, string> = {
 /** The mark of the card the Commands panel acts on: a dashed outline in the chosen colour beside the solid rings of a prompt's marks. */
 export const PICKED = 'outline-3 outline-dashed outline-offset-4 outline-selected'
 
-/** How the decision layer's marks look on a card: a chosen card turns from the primary ring to the wider crimson one. */
+/**
+ * How the decision layer's marks look on a card: what can be used glows in the primary colour, a chosen card turns to
+ * the wider crimson ring, and the rest only loses a little colour, so a board never reads as switched off.
+ */
 export const HIGHLIGHT: Record<Highlight, string> = {
-  legal: 'ring-2 ring-primary',
+  legal: 'ring-2 ring-primary shadow-[0_0_12px_color-mix(in_oklch,var(--primary)_55%,transparent)]',
   selected: 'ring-4 ring-selected',
-  dimmed: 'opacity-40 saturate-50',
+  dimmed: 'saturate-[0.8]',
 }
 
 /** A compact face narrower than this (px) has no room for a second line of name nor a wrapped row of marks. */

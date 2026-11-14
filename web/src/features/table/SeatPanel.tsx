@@ -20,6 +20,7 @@ import { UntappedSources } from './UntappedSources'
 import { usePodRoom } from './podRoom'
 import { useSeatNamer } from './names'
 import { BankMark } from './BankMark'
+import { CommanderPortrait } from './CommanderPortrait'
 import {
   ACTIVE_EDGE,
   AwayMark,
@@ -230,8 +231,9 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
       <TurnTimeMark seat={seat} />
     </>
   )
+  // The name keeps its width and the chips after it wrap to a second line, so a narrow pod never cuts the name.
   const name = (
-    <div className="flex min-w-0 items-center gap-1.5">
+    <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5">
       <SeatDot seat={seat} />
       <h3 className="truncate font-display text-sm leading-5 font-semibold">{owner}</h3>
       {team === null || !team.badge ? null : <TeamBadge team={team.team} size="chip" />}
@@ -266,7 +268,10 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
       >
         <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
           <div className="flex min-w-24 flex-1 items-center justify-between gap-2">
-            {name}
+            <div className="flex min-w-0 items-center gap-2">
+              <CommanderPortrait ids={commanders} />
+              {name}
+            </div>
             <div className="flex shrink-0 items-center gap-1.5">
               <LifeForecast seat={seat} />
               <Life
@@ -305,9 +310,10 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
             ) : null}
           </div>
         </div>
-        <UntappedSources seat={seat} />
         {words === '' ? null : <p className="sr-only">{words}</p>}
+        {/* The untapped sources share the row of the pool and the chips, so a pod head takes two lines, not four. */}
         <div data-slot="pod-status" className="flex flex-wrap items-center gap-x-2 gap-y-1 empty:hidden">
+          <UntappedSources seat={seat} />
           {mana}
           <TaxChips chips={chips.tax} density="line" />
           <DamageChips chips={chips.damage} density="line" />

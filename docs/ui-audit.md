@@ -8,34 +8,32 @@ Every screen is shot with `scripts/ui-shot.mjs` at 1400 × 900 and 390 × 900, t
 
 ## Problems ranked by impact on play
 
-Impact: how much a problem costs a player in a 4-player Commander game at 1400 × 900, the main use.
+Impact: how much a problem costs a player in a 4-player Commander game at 1400 × 900, the main use. The look, the seat colours, the commander portraits, the stack pictures, the bright own board, the opening hand drawn large, the gold attack lines and the step-bound "nothing to do" note are in; what remains:
 
 | # | Problem | Where | What a player meets |
 |---|---|---|---|
-| 1 | Cards are too small to read | table, every board | Opponents' permanents draw at about 40 px wide, yours at about 45; names cut to two letters ("S…", "Gri…"); art crops are unreadable, so a board is a mosaic that needs a hover per card. The three opponent boards share about 1080 × 270 px. |
-| 2 | Chrome eats the boards' room | table | The side column takes 300 px (22 % of the width) for Commands; each opponent pod head is 130 px of chips; the shared strip is 140 px; the hand 115 px. Boards get under half the height. |
-| 3 | The hand is small and cut | hand dock | Hand cards are about 70 × 98 px, cut by the bottom edge, in one flat row; a hand of 7 fills a third of the dock and the rest is empty. Arena shows large cards rising from the bottom edge and lifts a hovered card to full size. |
-| 4 | Your own board reads as disabled | own board | While a decision is open every permanent you cannot use now fades to about 40 %, so your board looks greyed out and its state (damage, counters) is hard to read. Arena keeps the board bright and marks what is playable. |
-| 5 | Pod heads are chip walls | opponent pods | Hand, library, clock, poison, energy, commander tax, monarch, mana pool and commander damage sit in four rows of equal 12 px chips. Life is the only strong figure; the commander has no picture; who is who rests on an 8 px dot. |
-| 6 | The centre strip carries little | shared strip | A 140 px band holds three text chips for the stack and a paragraph prompt; a stale hint ("You have no creatures that can block") shows in the main phase and in the block prompt; the stack has no card pictures. |
-| 7 | Big decisions are small | prompts | The mulligan, choose cards and look at the top are a paragraph and two buttons in the strip; the seven cards being judged stay in the small hand dock. |
-| 8 | Combat lines cross the table | combat overlay | Thin white lines run from the strip and pods across unrelated boards; "4 attackers → you" labels float over cards; attacker and blocker sides differ only in line style. |
-| 9 | The phone table does not fit | table at 390 | Two and a half hand cards, the controls overlap ("…triggers" cut), the own pod takes a third of the height, boards draw 30 px cards. |
-| 10 | Turn display repeats itself | top bar | "Main" in the badge, "Your turn · 5 · Precombat main" beside it and "Main" again in a ladder of twelve small empty boxes. |
-| 11 | Motion and sound are thin for a game | table | Tapping is instant (no turn of the card); three quiet sine cues (turn, decision, win); no sound for a cast, attack, damage, draw or shuffle. The travel, strike and spotlight effects exist but read weakly on 40 px cards. |
+| 1 | Crowded boards draw small cards | table, every board | With about 40 permanents a seat, opponents' permanents draw at about 40 px wide and names are cut; a board needs a hover per card. Lands take a third of each board. |
+| 2 | Chrome still takes room | table | The side column takes 272 px for Commands; an opponent's pod head is three lines; a long prompt grows the strip to 140 px. |
+| 3 | The hand lies flat | hand dock | Hand cards are larger (16 dvh) but stand in one flat row; Arena fans them from the bottom edge and lifts a hovered card to full size. |
+| 4 | Combat lines cross the table | combat overlay | Lines run from the strip and pods across unrelated boards; "4 attackers → you" labels float over cards. |
+| 5 | Choices are small | prompts | Choose cards and look at the top draw 6 rem cards in the strip; targets and modes have no pictures. |
+| 6 | The phone table does not fit | table at 390 | Two and a half hand cards, the controls overlap ("…triggers" cut), the own pod takes a third of the height, boards draw 30 px cards. |
+| 7 | Turn display repeats itself | top bar | "Main" in the badge, "Your turn · 5 · Precombat main" beside it and "Main" again in a ladder of twelve small empty boxes. |
+| 8 | Motion and sound are thin for a game | table | Tapping is instant (no turn of the card); three quiet sine cues (turn, decision, win); no sound for a cast, attack, damage, draw or shuffle. |
 
 ## Per screen
 
-- **Commander table (4 seats).** Problems 1 to 8, 10, 11. Also: the right column opens on Commands (life ± buttons and a long command list) during play, where the Log or Stack is what a player reads; the "+N" overflow counts in board corners are easy to miss; the commander-damage and tax chips use the same style as counts.
-- **1v1.** Cards are large enough (about 90 px); the dimmed own board (4) and the empty strip (6) dominate. The pass button is bottom right as in Arena.
-- **Crowded stack.** Grouping (×N) and "+3 more" work; the chips carry no art and the targets arrows add more lines to problem 8.
+- **Commander table (4 seats).** Problems 1 to 4, 7, 8. Also: the right column opens on Commands (life ± buttons and a long command list) during play, where the Log or Stack is what a player reads; the "+N" overflow counts in board corners are easy to miss.
+- **1v1.** Cards are large enough (about 90 px); the prompt paragraph is the largest thing in the strip. The pass button is bottom right as in Arena.
+- **Crowded stack.** Grouping (×N), pictures and "+3 more" work; the targets arrows add lines to problem 4.
 - **Boss fight.** The ability bar is clear; the boss pod's 120 life reads well. The party's boards inherit problem 1.
-- **Six seats.** Tiles and the focused board work; tiles carry the same chip walls (5).
-- **Phone.** Problem 9; the stack sheet covers most of the opponent board.
-- **Play (landing).** A generic list page: no art, no sense of a game; open games, join code and tutorials have one weight.
-- **Lobby.** Clear and complete; decks show a placeholder icon instead of the commander's art; seat rows are text-heavy; Ready sits low.
+- **Six seats.** Tiles and the focused board work; tiles carry seat colours but no commander picture.
+- **Phone.** Problem 6; the stack sheet covers most of the opponent board.
+- **Play (landing).** A list page without art; open games, join code and tutorials have one weight.
+- **Lobby.** Clear and complete on the new tokens; decks show a placeholder icon instead of the commander's art; seat rows are text-heavy; Ready sits low.
 - **Deck builder, precons.** Dense and functional; consistent with the tokens.
-- **Delves.** The strongest identity in the app (ember and stone); the descent uses icons where boss art would carry the mood.
+- **Delves.** Its own ember and stone; the descent uses icons where boss art would carry the mood.
+- **Result page.** The headline in the display face above the win burst; the seats as a plain list.
 - **Sign in, Learn, Settings.** Plain and consistent.
 
 ## The look
@@ -84,11 +82,8 @@ Each pass is one commit with before and after shots at 1400 × 900, 1280 × 720 
 
 | Pass | Outcome |
 |---|---|
-| 2 | Pod heads: name, life and commander picture first; counts in one quiet line; rare counters behind the pod; seat hue on the pod |
-| 3 | Space for boards: the side column folds to a rail by default below 1600 px and remembers; the centre strip shrinks to one line with the stack as card pictures at its right; cards grow (measured by `fitLanes`) |
-| 4 | Own board and hand: no dimming of unusable permanents, a glow on what is playable; a larger hand rising from the bottom edge with a fan and a full-size hover; tap and untap turn in 150 ms |
-| 5 | Combat lines: per-defender colour, thicker lines with end marks, attacker groups as a badge on the defender's pod instead of floating labels |
-| 6 | Feel: the sound set and its settings, the moments of the table above, the your-turn moment, shuffle and draw, damage shake; reduced motion and leak tests |
-| 7 | Prompts and hand decisions: mulligan, choose cards and look at the top as a centre overlay with large cards; stale hints removed; targets and modes with card pictures |
-| 8 | Phone table: hand and controls fit at 390, pod strip slimmer, boards larger |
-| 9 | Pages: Play with open games as cards with commander art, lobby deck rows with art, the descent with boss art; sign in, Learn and Settings on the new tokens |
+| 3 | Feel: the sound set and its settings, the moments of the table, the your-turn moment, shuffle and draw, damage shake, tap and untap turning in 150 ms; reduced motion and leak tests |
+| 4 | Hand and prompts: a hand fanned from the bottom edge with a full-size hover; choose cards and look at the top as a centre overlay with large cards; targets and modes with card pictures |
+| 5 | Board room: opponents' lands folded into a summary row; combat lines kept to the boards they join, attacker groups as a badge on the defender's pod; the turn badge and ladder said once |
+| 6 | Phone table: hand and controls fit at 390, pod strip slimmer, boards larger |
+| 7 | Pages: Play with open games as cards with commander art, lobby deck rows with art, the descent with boss art; sign in, Learn and Settings on the new tokens |

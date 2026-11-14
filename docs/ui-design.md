@@ -74,7 +74,7 @@ The table is a `100dvh` grid that never scrolls the page. The opponent is on top
 | shared | stack chips, ticker, prompt line. A long prompt grows up into a sheet of at most 40 dvh into room the opponents' area keeps free, so it covers no card of a battlefield and never your board (its cards are what a prompt asks you to click), the hand or the controls |
 | hand dock | whole cards in one row, overlapping in rows only when they do not fit; hover or focus lifts a card and opens the preview |
 | controls dock | the server's passing line, the stops (one row with a Mine or Theirs switch and Full Control from 1600 px, else a Stops popover), pass buttons; the primary button is bottom right, 44 px or more |
-| side | Commands, Log, Chat, Stack tabs with unread counts. L, XL a 280 to 320 px column; M a 44 px rail opening a panel over the table; S, XS a sheet from the top bar |
+| side | Commands, Log, Chat, Stack tabs with unread counts. L, XL a 272 to 304 px column; M a 44 px rail opening a panel over the table; S, XS a sheet from the top bar |
 
 - Lanes: a board draws its permanents in three lanes: lands, creatures (any creature) and other permanents. Creatures face the middle of the table, lands sit left and other permanents right, an opponent's board mirrored top to bottom. Lanes never overlap, an empty lane takes no room, and each lane has a faint ground (`--lane`). The command zone, graveyard and exile are the pod's corner.
 - Fit: `fitLanes` (pure) takes the largest card width at which some shape of bands fits every lane (one band, creatures over lands and others, or a band each; ties go to fewer bands). Cards shrink as counts grow, and at the 44 px floor the zone scrolls inside, creatures first, with an edge fade and a "+N" count. Creatures are the largest cards on a board.
@@ -159,7 +159,7 @@ A whole sequence stays under 1,700 ms. `--fx-slow` stretches all of them. Under 
 
 ### The stack
 
-- The shared strip's stack chips stay; the top chip gains a targets line ("→ Hill Giant, Bo", at most 3 names, then "+N more") and a dot in its controller's colour. Every chip's label for a screen reader ends with ", targeting Hill Giant and Bo".
+- The shared strip's stack chips carry the spell's picture (an ability its icon); the top chip gains a targets line ("→ Hill Giant, Bo", at most 3 names, then "+N more") and a dot in its controller's colour. Every chip's label for a screen reader ends with ", targeting Hill Giant and Bo".
 - A crowded stack stays one row: a run of the same ability of one source folds into one chip with "×N", and chips past the strip's width give way to one "+N more" button that opens the Stack tab. A seat attacking with more than five creatures draws one heavier line per target with a pill "N attackers → Cy" ([web.md](web.md), Combat overlay).
 - Arrows run from the top chip to each target (a card, a player's pod, or the chip of another stack item) while it is on the stack, at most 6; hover or focus on any chip draws that item's arrows instead. They share the combat arrow layer, in `--primary` for the viewer's items and `--destructive` for another seat's.
 - A target that is gone gets no arrow and drops out of the line; an item with none left says "no legal target" on a dashed chip.
