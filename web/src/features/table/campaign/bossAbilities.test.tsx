@@ -141,7 +141,7 @@ describe('bossAbilities over the shipped roster', () => {
 
   it('summarises a rule by its first sentence, without reminder text', () => {
     expect(summaryOf(card('reserves').text)).toBe(
-      'At the beginning of your upkeep, create a 2/2 black Zombie creature token.',
+      'At the beginning of your upkeep, if you have taken two or more turns, create a 2/2 black Zombie creature token.',
     )
     expect(summaryOf('One.\nTwo.')).toBe('One.')
     expect(summaryOf('')).toBe('')
