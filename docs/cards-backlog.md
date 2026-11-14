@@ -246,3 +246,11 @@ Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `
 - [ ] (c11) The initiative, dungeons and the remaining long-tail mechanics found by the report, one task each
 - [ ] (c11c) The other 24 transforming Sagas, the two precon flip cards and the `prepare` layout's back face; frees about 37 cards (Budoka Gardener, Nezumi Graverobber)
 - [ ] (r5510b) A flashback cost that removes X counters from among permanents with "X can't be 0" (`Keyword.Flashback.Cost.RemoveCountersAmong.X`, `Cost.XAtLeast.Elsewhere`); frees Light Up the Night
+- [ ] (r6008a) Cast or put a card face down as an N/N with set characteristics and a turn-face-up replacement; frees Illusionary Mask, Magar of the Magic Strings
+- [ ] (r6008b) Control durations tied to another object: while an Aura stays attached, while power stays at most another's (read outside the control layer); frees Eriette, the Beguiler, Old Man of the Sea
+- [ ] (r6008c) A choice of cards assigned one to each card type (a matching, not a pairwise rule); frees Atraxa, Grand Unifier, Grime Gorger
+- [ ] (r6008d) Gained abilities read from the donor's current abilities (granted and basic land types), and blue mana spent as any color on one object's abilities; frees Manascape Refractor, Quicksilver Elemental
+- [ ] (r6008e) A granted foretell cost kept with the foretold card in exile; frees Bohn, Beguiling Balladeer, Dream Devourer
+- [ ] (r6008f) A turn-long keyword given to spells as they are cast (a rule the layers apply to the stack); frees Yidris, Maelstrom Wielder
+- [ ] (r6008g) A granted static that grants abilities in turn (layers and validation); frees Huatli, Poet of Unity
+- [ ] (r6008h) An untap replacement, a "spell would destroy a land you control" predicate, the caster of a spell inside a granted ability, a mana-ability-resolves trigger, colored mana spent on X with a capped life gain, and fortified land tapped for mana; frees Bewitching Leechcraft, Equinox, Hellish Rebuke, Tyvar the Bellicose, Soul Burn, C.A.M.P.
