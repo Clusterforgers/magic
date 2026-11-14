@@ -65,10 +65,15 @@ fn basics(identity: ColorSet) -> Vec<Arc<CardDefinition>> {
 /// The corpus cards the engine plays whole.
 fn playable() -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
     let corpus = corpus::corpus()?;
-    let mut playable = Vec::new();
+    let mut playable: Vec<Arc<CardDefinition>> = Vec::new();
+    let mut seen = std::collections::HashSet::new();
     for name in corpus.names() {
         if corpus.support(name)?.support == Support::Verified {
-            playable.push(corpus.card(name)?);
+            let card = corpus.card(name)?;
+            // An adventure or a split card is listed under each of its names but is one card.
+            if seen.insert(card.name.clone()) {
+                playable.push(card);
+            }
         }
     }
     Ok(playable)
