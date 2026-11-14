@@ -29,16 +29,16 @@
    },
    {
     "Activated": {
-     "cost": [],
-     "effects": [
+     "cost": [
       {
-       "RemoveCounters": {
-        "from": "You",
+       "SpendCounters": {
         "counter": {
          "Other": "ectoplasm"
         }
        }
-      },
+      }
+     ],
+     "effects": [
       {
        "LoseLife": {
         "who": {
@@ -77,35 +77,21 @@
       {
        "what": "Opponent"
       }
-     ],
-     "condition": {
-      "Compare": {
-       "left": {
-        "Counters": {
-         "on": "You",
-         "counter": {
-          "Other": "ectoplasm"
-         }
-        }
-       },
-       "op": "Ge",
-       "right": 1
-      }
-     }
+     ]
     }
    },
    {
     "Activated": {
-     "cost": [],
-     "effects": [
+     "cost": [
       {
-       "RemoveCounters": {
-        "from": "You",
+       "SpendCounters": {
         "counter": {
          "Other": "ectoplasm"
         }
        }
-      },
+      }
+     ],
+     "effects": [
       {
        "Shield": {
         "when": {
@@ -119,70 +105,42 @@
         "duration": "UntilEndOfTurn"
        }
       }
-     ],
-     "condition": {
-      "Compare": {
-       "left": {
-        "Counters": {
-         "on": "You",
-         "counter": {
-          "Other": "ectoplasm"
-         }
-        }
-       },
-       "op": "Ge",
-       "right": 1
-      }
-     }
+     ]
     }
    },
    {
     "Activated": {
-     "cost": [],
-     "effects": [
+     "cost": [
       {
-       "RemoveCounters": {
-        "from": "You",
+       "SpendCounters": {
         "counter": {
          "Other": "ectoplasm"
         }
        }
-      },
+      }
+     ],
+     "effects": [
       {
        "Scry": {
         "who": "Teammates",
         "count": 2
        }
       }
-     ],
-     "condition": {
-      "Compare": {
-       "left": {
-        "Counters": {
-         "on": "You",
-         "counter": {
-          "Other": "ectoplasm"
-         }
-        }
-       },
-       "op": "Ge",
-       "right": 1
-      }
-     }
+     ]
     }
    },
    {
     "Activated": {
-     "cost": [],
-     "effects": [
+     "cost": [
       {
-       "RemoveCounters": {
-        "from": "You",
+       "SpendCounters": {
         "counter": {
          "Other": "ectoplasm"
         }
        }
-      },
+      }
+     ],
+     "effects": [
       {
        "Tap": {
         "what": {
@@ -215,36 +173,22 @@
         ]
        }
       }
-     ],
-     "condition": {
-      "Compare": {
-       "left": {
-        "Counters": {
-         "on": "You",
-         "counter": {
-          "Other": "ectoplasm"
-         }
-        }
-       },
-       "op": "Ge",
-       "right": 1
-      }
-     }
+     ]
     }
    },
    {
     "Activated": {
-     "cost": [],
-     "effects": [
+     "cost": [
       {
-       "RemoveCounters": {
-        "from": "You",
+       "SpendCounters": {
         "counter": {
          "Other": "ectoplasm"
         },
         "count": 3
        }
-      },
+      }
+     ],
+     "effects": [
       {
        "Tap": {
         "what": {
@@ -276,36 +220,22 @@
         "max": 2
        }
       }
-     ],
-     "condition": {
-      "Compare": {
-       "left": {
-        "Counters": {
-         "on": "You",
-         "counter": {
-          "Other": "ectoplasm"
-         }
-        }
-       },
-       "op": "Ge",
-       "right": 3
-      }
-     }
+     ]
     }
    },
    {
     "Activated": {
-     "cost": [],
-     "effects": [
+     "cost": [
       {
-       "RemoveCounters": {
-        "from": "You",
+       "SpendCounters": {
         "counter": {
          "Other": "ectoplasm"
         },
         "count": 5
        }
-      },
+      }
+     ],
+     "effects": [
       {
        "Revive": {
         "life": 10,
@@ -313,21 +243,7 @@
        }
       }
      ],
-     "timing": "Sorcery",
-     "condition": {
-      "Compare": {
-       "left": {
-        "Counters": {
-         "on": "You",
-         "counter": {
-          "Other": "ectoplasm"
-         }
-        }
-       },
-       "op": "Ge",
-       "right": 5
-      }
-     }
+     "timing": "Sorcery"
     }
    }
   ]

@@ -39,6 +39,44 @@ export function votersOf(run: Run, node: number): string[] {
     .map(([hero]) => run.heroes[Number(hero)]?.name ?? hero)
 }
 
+/** The hero who breaks a tied vote: one seat on with every room cleared. */
+export const torchOf = (run: Run): number =>
+  run.heroes.length > 0 ? run.cleared.length % run.heroes.length : 0
+
+/** One hero's part in the vote: the room they voted for, still to vote, or a bot ally that follows the players. */
+export type Ballot =
+  | { hero: number; name: string; state: 'voted'; node: number }
+  | { hero: number; name: string; state: 'pending' | 'follows' }
+
+/** Each hero's ballot, in party order; a bot that has not voted follows the players. */
+export function ballots(run: Run): Ballot[] {
+  return run.heroes.map((h, hero) => {
+    const node = run.votes[hero]
+    if (node !== undefined) return { hero, name: h.name, state: 'voted', node }
+    return { hero, name: h.name, state: h.bot === null ? 'pending' : 'follows' }
+  })
+}
+
+/** What the vote waits for, in one line for the player `me`. */
+export function voteWaiting(run: Run, me: number | undefined): string {
+  const pending = ballots(run).filter((b) => b.state === 'pending')
+  const mine = me === undefined ? undefined : run.votes[me]
+  const others = pending.filter((b) => b.hero !== me).map((b) => b.name)
+  if (me !== undefined && mine === undefined) {
+    return others.length === 0
+      ? 'Everyone else voted: your vote decides.'
+      : `Your vote is needed. Also waiting for ${listOf(others)}.`
+  }
+  if (others.length === 0) return 'Every player voted: the party moves on.'
+  return `Waiting for ${listOf(others)} to vote. You can still change your vote.`
+}
+
+/** Names joined as prose: "Ana", "Ana and Bo", "Ana, Bo and Cy". */
+export function listOf(names: readonly string[]): string {
+  if (names.length <= 1) return names.join('')
+  return `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`
+}
+
 /** A boss's life for this party and Heat (`docs/delves.md`, Bosses): a fifth more from Heat 1. */
 export function bossLife(life: readonly [number, number], heroes: number, heat: number): number {
   const base = life[0] + life[1] * Math.max(0, heroes - 1)
@@ -133,9 +171,9 @@ export function nextStep(view: DelveView): string {
   if (status === 'Lobby')
     return 'Each hero chooses a Commander deck once, for the whole run; rewards later swap cards into it. The host descends when everyone is ready.'
   if (status === 'Map')
-    return 'Vote for the next camp on the descent below. When every hero has voted the party moves on; a tie goes to the torch bearer.'
+    return 'The boss is behind you. Choose the camp the party rests at before the next boss.'
   if (status === 'Room')
-    return 'At camp: take your pick below. When every hero has answered, the party votes for the next room.'
+    return 'Take your pick below. When every hero has answered, the party moves on: after a boss it votes for a camp, after a camp it faces the next boss.'
   if (status === 'Victory' || status === 'Defeat' || status === 'Abandoned') return ''
   return 'Enter the fight: it starts once every hero is at the table. Afterwards you come straight back here for the loot.'
 }

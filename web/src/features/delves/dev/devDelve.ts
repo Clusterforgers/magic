@@ -181,7 +181,7 @@ export function devView(state: DevState): DelveView {
       heroes,
       at: state === 'fight' ? 3 : 0,
       cleared: state === 'fight' ? [0, 1] : state === 'victory' ? [0, 1, 3, 5, 6] : [0],
-      votes: state === 'map' ? { 1: 1, 2: 2 } : {},
+      votes: state === 'map' ? { 1: 1 } : {},
       status,
       log: [...log, 'The party descended.', 'Skrix, the Rat Queen fell.'],
     },
