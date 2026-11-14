@@ -318,8 +318,10 @@ describe('the one-line pod', () => {
     const row = must(cy.firstElementChild)
     expect(row).toContainElement(cy.querySelector('h3'))
     expect(row).toContainElement(within(cy).getByRole('group', { name: "Cy's zones" }))
-    expect(cy.querySelector('[data-slot="pod-status"]')).toHaveClass('empty:hidden')
-    expect(cy.querySelector('[data-slot="pod-status"]')).toBeEmptyDOMElement()
+    const status = must(cy.querySelector('[data-slot="pod-status"]'))
+    expect(status).toHaveClass('empty:hidden')
+    // The untapped sources share the status row; nothing else is in it.
+    expect([...status.children].map((child) => child.getAttribute('data-slot'))).toEqual(['mana-sources'])
   })
 
   it('wraps the chips under the name only when its row is too narrow, never the name away', () => {

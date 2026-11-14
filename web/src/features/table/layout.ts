@@ -220,7 +220,7 @@ export const TOP_BAR_LANDSCAPE_PX = 32
 /** The shared strip between the opponents and the own board. */
 export const SHARED_CLAMP: HeightClamp = { min: 56, vh: 7, max: 72 }
 /** The hand dock; a phone held upright gets the lower one. */
-export const HAND_CLAMP: HeightClamp = { min: 96, vh: 13, max: 168 }
+export const HAND_CLAMP: HeightClamp = { min: 104, vh: 16, max: 200 }
 export const HAND_PHONE_CLAMP: HeightClamp = { min: 96, vh: 14, max: 120 }
 /**
  * A hand that one row does not hold grows the dock (not a phone's) to the height of its rows, up to this percent of the
@@ -241,9 +241,9 @@ export const SHEET_MAX_VH = 40
 /** What a phone's prompt sheet leaves of the opponents' area: the tile strip and a row of their board, in px. */
 export const SHEET_KEEP_PX = 120
 /** The side column takes this share of the window width between its bounds; M gets a rail of `RAIL_PX`. */
-export const SIDE_SHARE = 0.22
-export const SIDE_MIN_PX = 280
-export const SIDE_MAX_PX = 320
+export const SIDE_SHARE = 0.18
+export const SIDE_MIN_PX = 272
+export const SIDE_MAX_PX = 304
 export const RAIL_PX = 44
 /** A window lower than this and wider than it is high is a phone on its side. */
 export const LANDSCAPE_MAX_HEIGHT = 500

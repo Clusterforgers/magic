@@ -287,7 +287,7 @@ export function TextFace({
       className={cn(
         'relative flex w-(--card-w) flex-col overflow-hidden text-left text-card-foreground ring-1 ring-foreground/15',
         parts.body,
-        stacked ? PILE : 'shadow-sm',
+        stacked ? PILE : 'shadow-[0_2px_6px_oklch(0_0_0/0.45)]',
         turned ? 'h-[calc(var(--card-w)*5/7)]' : 'h-(--card-h)',
         fit ? null : classes.vars,
         dark ? cn(TOKEN_BORDER[frame], 'bg-card-back text-white') : FRAME[frame],

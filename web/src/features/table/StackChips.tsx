@@ -1,6 +1,6 @@
 import { Zap } from 'lucide-react'
 import { memo, useContext, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import type { RefObject } from 'react'
+import type { CSSProperties, RefObject } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
@@ -17,6 +17,7 @@ import { useSeatNamer } from './names'
 import { SeatDot } from './PodParts'
 import { stackTopFirst } from './selectors'
 import { SideContext } from './sideContext'
+import { TopFace } from './TopFace'
 import { chipsThatFit, groupStack } from './stackGroups'
 import type { StackGroup } from './stackGroups'
 import { AutoPassButton } from './AutoPassButton'
@@ -39,6 +40,13 @@ interface ChipProps {
   /** Everything the item aims at is gone. */
   empty: boolean
 }
+
+/** The width of a spell's picture on its chip, in px; the height follows the card's shape. */
+export const CHIP_ART_PX = 24
+const CHIP_ART = {
+  '--card-w': `${CHIP_ART_PX}px`,
+  '--card-h': `${Math.round((CHIP_ART_PX * 7) / 5)}px`,
+} as CSSProperties
 
 const Chip = memo(function Chip({ group, top, tabbable, hidden, aims, aria, empty }: ChipProps) {
   const id = group.ids[0] ?? 0
@@ -69,13 +77,25 @@ const Chip = memo(function Chip({ group, top, tabbable, hidden, aims, aria, empt
         tabIndex={tabbable && !hidden ? 0 : -1}
         {...(hidden ? {} : handlers)}
         className={cn(
-          'relative flex h-8 items-center gap-1.5 rounded-lg border bg-background px-2 text-sm font-medium outline-offset-2 outline-primary focus-visible:outline-2',
+          'relative flex h-10 items-center gap-1.5 rounded-lg border bg-background pr-2 pl-1 text-sm font-medium outline-offset-2 outline-primary focus-visible:outline-2',
           top ? 'max-w-[min(18rem,100%)] border-primary' : 'max-w-[min(12rem,100%)]',
           empty && 'border-dashed',
         )}
       >
         {top ? <SeatDot seat={object.controller} /> : null}
-        {ability ? <Zap aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground" /> : null}
+        {ability ? (
+          <Zap aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground" />
+        ) : (
+          // The spell's picture, so the stack reads as cards at a glance; the name beside it says the same in words.
+          <span
+            data-slot="chip-art"
+            aria-hidden="true"
+            style={CHIP_ART}
+            className="pointer-events-none relative grid h-(--card-h) w-(--card-w) shrink-0 overflow-hidden rounded-sm"
+          >
+            <TopFace id={id} width={CHIP_ART_PX} />
+          </span>
+        )}
         <span className="truncate">{object.name}</span>
         {count > 1 ? (
           <span

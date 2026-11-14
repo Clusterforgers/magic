@@ -17,6 +17,18 @@ export const ZONE_ICON: Record<ZoneKey, LucideIcon> = {
   attractions: FerrisWheel,
 }
 
+/** The style that names a seat's hue (`--seat-hue`), which `SEAT_EDGE`, `SEAT_LIFE` and the seat dot paint with. */
+export const seatHueStyle = (seat: PlayerId): CSSProperties =>
+  ({ '--seat-hue': seatHue(seat) }) as CSSProperties
+
+/** The 2 px top edge of a pod or tile in its seat's colour, so four players tell apart at a glance. */
+export const SEAT_EDGE =
+  'border-t-2 border-t-[oklch(0.6_0.14_var(--seat-hue))] dark:border-t-[oklch(0.74_0.13_var(--seat-hue))]'
+
+/** A seat's life figure in its seat's colour, light enough on the dark plaque and dark enough on the light one. */
+export const SEAT_LIFE =
+  'text-[oklch(0.42_0.12_var(--seat-hue))] dark:text-[oklch(0.88_0.09_var(--seat-hue))]'
+
 /** A small dot in the colour of a seat, beside its name. Decoration: the name is always written next to it. */
 export function SeatDot({ seat, className }: { seat: PlayerId; className?: string }) {
   return (
