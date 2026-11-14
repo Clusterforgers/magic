@@ -708,8 +708,7 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
             .unwrap_or(text),
         _ => text,
     };
-    if let Some(found) =
-        r4704_hooks::r4704_read(bare, kind, |twin| clause_with(twin, kind, x_free, own))
+    if let Some(found) = r4704_hooks::r4704_read(bare, kind)
         && written_variants(&found)
             .iter()
             .any(|written| same_text(written, bare))

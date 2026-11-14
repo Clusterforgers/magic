@@ -333,9 +333,9 @@ fn r4704_triumph_goes_back_on_top_with_six_cards(
     Ok(())
 }
 
-/// Every seat holds a 3/3, a 2/2, a 1/1 and a 5/5 and is asked for one creature at a time, never the 5/5; seat 0 keeps
-/// the 3/3 and the 1/1 (total 4, after which nothing more fits and it is not asked again), every other seat keeps the
-/// 2/2 and then stops; the rest are sacrificed together.
+/// Every seat holds a 3/3, a 2/2, a 1/1 and a 5/5 and is asked once for the creatures it keeps within a total power of
+/// 4, the 5/5 never fitting; seat 0 keeps the 3/3 and the 1/1 (total 4), every other seat keeps the 2/2; the rest are
+/// sacrificed together.
 #[rstest]
 fn r4704_keep_total_power(
     #[values(2, 3, 4)] seats: usize,
@@ -366,18 +366,21 @@ fn r4704_keep_total_power(
         match &decision.kind {
             DecisionKind::ChooseCards(options) => {
                 asked += 1;
-                assert_eq!(options.max, 1, "one at a time");
-                assert_eq!(options.min, 0, "every kept total is within 4");
-                for id in &options.from {
+                let total = options.total.as_ref().expect("a total to keep within");
+                assert_eq!(total.most, 4, "total power 4 or less");
+                assert_eq!(options.min, 0, "any number may be kept");
+                for (id, value) in options.from.iter().zip(&total.values) {
                     let name = name_of(driver.state(), *id);
-                    assert!(!name.starts_with("Five"), "a 5/5 never fits within 4");
+                    assert!(
+                        !name.starts_with("Five") || *value > total.most,
+                        "a 5/5 never fits within 4"
+                    );
                 }
                 let chosen: Vec<_> = options
                     .from
                     .iter()
                     .copied()
                     .filter(|id| picks.contains(&name_of(driver.state(), *id)))
-                    .take(1)
                     .collect();
                 driver.answer(Answer::ChooseCards(CardsChoice(chosen)))?;
             }
@@ -396,6 +399,7 @@ fn r4704_keep_total_power(
             }
         }
     }
+    assert_eq!(asked, seats, "each player is asked once");
     let mut left = r4704_names_in(&driver, Zone::Battlefield);
     left.retain(|name| name != "Plains");
     left.sort();

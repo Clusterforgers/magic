@@ -12,7 +12,7 @@
             "targets": [{ "what": "Player" }],
             "effects": [
               {
-                "ExileHidden": {
+                "FaceDownPile": {
                   "what": {
                     "Each": [
                       { "Type": "Creature" },
@@ -20,11 +20,9 @@
                       { "OwnedBy": { "Target": 0 } }
                     ]
                   },
-                  "sealed": true,
-                  "as": "pile"
+                  "then": "Manifest"
                 }
-              },
-              { "ManifestCards": { "what": { "Bound": "pile" } } }
+              }
             ]
           }
         }

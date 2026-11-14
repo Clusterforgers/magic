@@ -81,7 +81,7 @@ fn assert_clean(problems: &[String]) {
 #[case::a_land_with_types_the_compiler_reproduces("Steam Vents", true)]
 #[case::a_creature_without_rules_text("Grizzly Bears", false)]
 #[case::a_basic_land("Forest", false)]
-#[case::a_card_part_of_which_stays_to_the_table("Aven Mindcensor", false)]
+#[case::a_card_part_of_which_stays_to_the_table("Fang-Druid Summoner", false)]
 fn a_new_card_needs_its_file_its_record_and_at_most_one_name_in_the_ratchet(
     #[case] name: &str,
     #[case] reproduced_by_the_compiler: bool,

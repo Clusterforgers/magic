@@ -4191,15 +4191,6 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind(name, Kind::Object));
                 }
             }
-            Effect::ManifestCards {
-                who, what, bind, ..
-            } => {
-                w.at("who", |w| w.reference(who, Kind::Player));
-                w.at("what", |w| w.reference(what, Kind::Object));
-                if let Some(name) = bind {
-                    w.at("as", |w| w.bind(name, Kind::Object));
-                }
-            }
             Effect::PhaseOut {
                 what, duration, held, ..
             } => {
@@ -4617,10 +4608,6 @@ impl Walker<'_> {
                 if let crate::effect::Balanced::Permanents(filter) = what {
                     w.at("what", |w| w.selector(filter));
                 }
-            }
-            Effect::KeepTotalPower { what, most } => {
-                w.at("what", |w| w.selector(what));
-                w.at("most", |w| w.amount(most));
             }
             Effect::DealDamage { source, to, amount, excess, unpreventable } => {
                 if *unpreventable {

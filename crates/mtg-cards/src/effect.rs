@@ -749,26 +749,6 @@ pub enum Effect {
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
     },
-    /// The player puts the cards `what` names onto the battlefield face down as 2/2 creatures they control, in a random
-    /// order (a face-down pile shuffled first: "exile ... in a face-down pile, shuffle that pile, then manifest those
-    /// cards"); with `cloak` each has ward {2} (CR 701.58a), with `tapped` they enter tapped. A permanent, a token or a
-    /// spell among them is passed over.
-    ManifestCards {
-        /// Who manifests and controls the permanents.
-        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
-        who: Ref,
-        /// The cards manifested.
-        what: Ref,
-        /// They are cloaked (ward {2}) rather than manifested.
-        #[serde(default, skip_serializing_if = "is_false")]
-        cloak: bool,
-        /// They enter tapped.
-        #[serde(default, skip_serializing_if = "is_false")]
-        tapped: bool,
-        /// The name the permanents are bound to, as the objects they become on the battlefield.
-        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
-        bind: Option<String>,
-    },
     /// Exiles objects face down, linked to the source of the effect: the permanent hides them (hideaway, CR 702.75a), or,
     /// with `held`, the player whose effect it is alone looks at them for as long as they lie in exile, or, with `sealed`,
     /// no player does.
@@ -864,16 +844,6 @@ pub enum Effect {
     Balance {
         /// The permanents, or the hand, kept.
         what: Balanced,
-    },
-    /// Each player in turn order, from the active player, chooses any number of the permanents `what` selects that they
-    /// control whose powers add up to `most` or less (a negative power subtracts), then every other such permanent is
-    /// sacrificed, all together: "Each player chooses any number of creatures they control with total power 4 or less,
-    /// then sacrifices all other creatures they control."
-    KeepTotalPower {
-        /// The permanents chosen among and sacrificed.
-        what: Selector,
-        /// The most their powers may add up to.
-        most: Amount,
     },
     /// Counters spells or abilities (CR 701.6).
     Counter {

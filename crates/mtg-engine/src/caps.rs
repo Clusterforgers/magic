@@ -270,8 +270,6 @@ const RUNS: &[&str] = &[
     "Effect.Cloak",
     "Effect.FaceDownPile",
     "Effect.BecomeForetold",
-    "Effect.ManifestCards",
-    "Effect.KeepTotalPower",
     "Effect.CastFromZone",
     "Effect.CastFromZone.Transformed",
     "Effect.Destroy",
