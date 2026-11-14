@@ -69,6 +69,16 @@ mod tests {
             ("your opponents'", "your"),
             ("this turn", "last turn"),
             ("any target", "target creature"),
+            ("noncombat", "combat"),
+            ("less than", "greater than"),
+            ("red source", "green source"),
+            ("tapped and transformed", "transformed"),
+            ("4 or more", "5 or more"),
+            ("three or more", "two or more"),
+            ("bore counter", "oil counter"),
+            ("plus one", "plus two"),
+            ("planeswalker", "creature"),
+            ("your upkeep", "each upkeep"),
         ];
         for (_, text) in R6100_SHAPES.iter() {
             for (from, to) in swaps {

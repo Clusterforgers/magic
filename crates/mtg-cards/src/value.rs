@@ -503,6 +503,9 @@ pub enum TallyEvent {
     /// A creature fought (CR 701.14), whatever damage it came to (the creature, for its controller; `Pred::DidThisTurn`
     /// reads the creature it fought): "if you control a creature that fought this turn".
     Fought,
+    /// Noncombat damage was dealt (the dealer, as for `Damaged`; an amount counts the damage dealt): "if red sources you
+    /// controlled dealt 4 or more noncombat damage this turn".
+    R6100NoncombatDamaged,
 }
 
 /// Which result of the latest die roll an amount reads.

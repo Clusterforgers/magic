@@ -780,6 +780,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         ReplaceBy::Half | ReplaceBy::Subtract(_) => {
             matches!(unit, Unit::Counters { .. } | Unit::Damage { .. })
         }
+        ReplaceBy::R6100AtLeast(_) => matches!(unit, Unit::Damage { .. }),
         ReplaceBy::Multiply(_)
         | ReplaceBy::Add(_)
         | ReplaceBy::AddAmount(_)

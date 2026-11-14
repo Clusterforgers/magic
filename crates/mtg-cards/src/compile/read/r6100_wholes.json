@@ -502,5 +502,101 @@
    }
   },
   "At the beginning of your upkeep, ~ deals 1 damage to each opponent and planeswalker it has dealt damage to this game."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "Damage": {
+      "to": "Opponents",
+      "source": [
+       {
+        "Color": "Red"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ],
+      "combat": false
+     }
+    },
+    "by": {
+     "R6100AtLeast": {
+      "Stat": {
+       "of": "This",
+       "stat": "Power"
+      }
+     }
+    }
+   }
+  },
+  "If a red source you control would deal an amount of noncombat damage less than ~'s power to an opponent, that source deals damage equal to ~'s power instead."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "from": "Battlefield",
+      "to": "Graveyard"
+     }
+    },
+    "effects": [
+     {
+      "Move": {
+       "what": "This",
+       "to": {
+        "Battlefield": {
+         "tapped": true,
+         "transformed": true
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "When ~ dies, return it to the battlefield tapped and transformed under its owner's control."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{2}{R}"
+     },
+     "Tap"
+    ],
+    "timing": "Sorcery",
+    "condition": {
+     "Compare": {
+      "left": {
+       "Tally": {
+        "event": "R6100NoncombatDamaged",
+        "who": "You",
+        "filter": [
+         {
+          "Color": "Red"
+         }
+        ]
+       }
+      },
+      "op": "Ge",
+      "right": 4
+     }
+    },
+    "effects": [
+     {
+      "Transform": {
+       "what": "This"
+      }
+     }
+    ]
+   }
+  },
+  "{2}{R}, {T}: Transform this land. Activate only if red sources you controlled dealt 4 or more noncombat damage this turn and only as a sorcery."
  ]
 ]

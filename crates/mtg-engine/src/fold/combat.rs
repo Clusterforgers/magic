@@ -388,6 +388,10 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             }
             let dealer = crate::characteristics::controller_of(state, *source);
             state.record(TallyEvent::Damaged, dealer, (*source, Some(hit)), *amount);
+            if !crate::replace::in_combat_damage(state) {
+                let event = TallyEvent::R6100NoncombatDamaged;
+                state.record(event, dealer, (*source, Some(hit)), *amount);
+            }
         }
         Event::CombatEnded => state.combat = CombatState::default(),
         Event::JoinedAttack { object, target } => join_attack(state, *object, *target)?,

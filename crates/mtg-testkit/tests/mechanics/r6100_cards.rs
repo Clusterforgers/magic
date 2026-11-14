@@ -413,3 +413,127 @@ fn r6100_brass_bores_after_a_descent_and_transforms_at_three(
     }
     Ok(())
 }
+
+const OJER: &str = "Ojer Axonil, Deepest Might // Temple of Power";
+
+/// An instant for {0} with no color that deals `amount` damage to any target.
+fn r6100_colorless_burn(amount: i32) -> Arc<CardDefinition> {
+    let shaped = mtg_testkit::cards::burn("Gray Shot", amount);
+    Arc::new(
+        CardDefinition::new("Gray Shot")
+            .with_type(CardType::Instant)
+            .with_mana_cost(mtg_testkit::cards::cost(0, &[]))
+            .with_abilities_of([shaped.as_ref()]),
+    )
+}
+
+#[rstest]
+#[case::red_noncombat_damage_to_an_opponent_rises(true, true, 4)]
+#[case::to_a_creature_it_stays(true, false, 3)]
+#[case::a_colorless_source_stays(false, true, 3)]
+fn r6100_ojer_axonil_raises_small_red_noncombat_damage_to_an_opponent(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] red: bool,
+    #[case] at_player: bool,
+    #[case] dealt: i32,
+) -> Result<(), ScriptError> {
+    let spell = if red {
+        mtg_testkit::cards::burn("Red Shot", 3)
+    } else {
+        r6100_colorless_burn(3)
+    };
+    let name = spell.name.clone();
+    let scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, [ready(card(OJER).unwrap()), ready(mountain())])
+        .battlefield(1, [ready(free_creature("Big Rival", 5, 5))])
+        .hand(0, [spell]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    let target = if at_player {
+        driver.target_player(1)
+    } else {
+        driver.target_named("Big Rival")?
+    };
+    let before = r6100_life(&driver, 1);
+    driver.cast_at(&name, &[target])?;
+    r6100_resolve(&mut driver)?;
+    if at_player {
+        assert_eq!(r6100_life(&driver, 1), before - dealt);
+    } else {
+        let rival = driver.id_of("Big Rival")?;
+        let marked = driver
+            .state()
+            .object(rival)
+            .unwrap()
+            .permanent()
+            .unwrap()
+            .damage();
+        assert_eq!(i32::try_from(marked).unwrap(), dealt);
+        assert_eq!(r6100_life(&driver, 1), before);
+    }
+    Ok(())
+}
+
+#[rstest]
+fn r6100_ojer_axonil_returns_tapped_and_transformed(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, [ready(card(OJER).unwrap())])
+        .hand(0, [r6100_colorless_burn(4)]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    let ojer = driver.target_named("Ojer Axonil, Deepest Might")?;
+    driver.cast_at("Gray Shot", &[ojer])?;
+    r6100_resolve(&mut driver)?;
+    let id = driver.id_of("Temple of Power")?;
+    let object = driver.state().object(id).unwrap();
+    assert!(object.permanent().unwrap().tapped());
+    assert_eq!(object.owner(), pid(0));
+    let chars = mtg_engine::characteristics::characteristics(driver.state(), id).unwrap();
+    assert!(chars.types.contains(CardType::Land));
+    assert!(!chars.types.contains(CardType::Creature));
+    Ok(())
+}
+
+#[rstest]
+#[case::six_noncombat_damage(2, true)]
+#[case::three_is_too_little(1, false)]
+fn r6100_temple_of_power_transforms_after_four_red_noncombat_damage(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] shots: usize,
+    #[case] offered: bool,
+) -> Result<(), ScriptError> {
+    let temple = Arc::new(card(OJER).unwrap().faces[1].clone());
+    let scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(
+            0,
+            [
+                ready(temple),
+                ready(mountain()),
+                ready(mountain()),
+                ready(mountain()),
+                ready(mountain()),
+                ready(mountain()),
+            ],
+        )
+        .hand(
+            0,
+            (0..shots).map(|_| mtg_testkit::cards::burn("Red Shot", 3)),
+        );
+    let mut driver = Driver::from_scenario(scenario)?;
+    assert!(driver.offered_abilities("Temple of Power")?.is_empty());
+    for _ in 0..shots {
+        let target = driver.target_player(1);
+        driver.begin_cast("Red Shot")?;
+        driver.choose_targets(&[target])?;
+        driver.pay_tapping(&["Mountain"], 0)?;
+        r6100_resolve(&mut driver)?;
+    }
+    assert_eq!(
+        !driver.offered_abilities("Temple of Power")?.is_empty(),
+        offered
+    );
+    Ok(())
+}

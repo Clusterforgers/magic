@@ -1,23 +1,65 @@
 {
   "oracle_id": "d3b7b541-6f05-46c1-8031-c848c4bd4635",
   "name": "Ojer Axonil, Deepest Might // Temple of Power",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ojer Axonil, Deepest Might",
       "oracle_fingerprint": "0e6286ecc130a81e665feb0f94aff1be",
       "abilities": [
-        { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 8, "end": 185 }
+          "Keyword": "Trample"
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": "Opponents",
+                "source": [
+                  {
+                    "Color": "Red"
+                  },
+                  {
+                    "ControlledBy": "You"
+                  }
+                ],
+                "combat": false
+              }
+            },
+            "by": {
+              "R6100AtLeast": {
+                "Stat": {
+                  "of": "This",
+                  "stat": "Power"
+                }
+              }
+            }
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 186, "end": 287 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  "This"
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": {
+                    "Battlefield": {
+                      "tapped": true,
+                      "transformed": true
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]
@@ -28,14 +70,55 @@
       "abilities": [
         {
           "Activated": {
-            "cost": ["Tap"],
-            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+            "cost": [
+              "Tap"
+            ],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "Fixed": [
+                      "Red"
+                    ]
+                  }
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 60, "end": 203 }
+          "Activated": {
+            "cost": [
+              {
+                "Mana": "{2}{R}"
+              },
+              "Tap"
+            ],
+            "timing": "Sorcery",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "R6100NoncombatDamaged",
+                    "who": "You",
+                    "filter": [
+                      {
+                        "Color": "Red"
+                      }
+                    ]
+                  }
+                },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [
+              {
+                "Transform": {
+                  "what": "This"
+                }
+              }
+            ]
           }
         }
       ]

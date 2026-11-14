@@ -6843,7 +6843,11 @@ impl Walker<'_> {
             ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::AddAmount(_) if zone_move => {
                 self.problem("a zone change has no number to change");
             }
+            ReplaceBy::R6100AtLeast(_) if !matches!(when, ReplaceWhen::Damage { .. }) => {
+                self.problem("only damage is raised to an amount");
+            }
             ReplaceBy::AddAmount(amount)
+            | ReplaceBy::R6100AtLeast(amount)
             | ReplaceBy::PreventAmount(amount)
             | ReplaceBy::MayAddAmount(amount) => {
                 self.at("amount", |w| w.amount(amount));

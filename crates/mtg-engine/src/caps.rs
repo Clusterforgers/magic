@@ -421,6 +421,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Mill",
     "ReplaceBy.UnderChosenOpponent",
     "ReplaceBy.AddAmount",
+    "ReplaceBy.R6100AtLeast",
     "ReplaceBy.MayAddAmount",
     "ReplaceBy.PreventAmount",
     "ReplaceBy.PreventAtMost",
