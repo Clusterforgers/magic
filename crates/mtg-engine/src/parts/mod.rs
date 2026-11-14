@@ -30,6 +30,7 @@ mod random;
 mod rmt5_top_shots;
 pub(crate) use r300_random_shots::r300_random_shots;
 pub(crate) use rmt5_top_shots::rmt5_top_shots;
+mod r5518_alike;
 mod reveal;
 mod sacrifice;
 mod source;
@@ -40,7 +41,7 @@ mod untap;
 
 pub(crate) use counters::after_removal;
 
-use mtg_cards::cost::CostItem;
+use mtg_cards::cost::{Alike, CostItem};
 use mtg_cards::refs::{Pred, Selector, ZoneKind};
 use mtg_cards::value::{Amount, CounterKind};
 use mtg_core::card::CardType;
@@ -110,6 +111,8 @@ pub(crate) struct Pick {
     pub(crate) count: usize,
     /// The filter reads the X announced ("a red card with mana value X"): the part waits for X, then picks by it.
     pub(crate) reads_x: bool,
+    /// What the picked cards have in common as a set ("with the same name", "that share a color").
+    pub(crate) alike: Option<Alike>,
 }
 
 /// One part of a cost the engine pays besides `{T}`, mana and the loss of the source.
@@ -243,9 +246,37 @@ fn pick(
             filter: filter.clone(),
             count,
             reads_x,
+            alike: None,
         }),
         x || reads_x,
     ))
+}
+
+/// The pick of cards alike as a set (`CostItem::AlikeFromHand`): a discard or a reveal from the hand that keeps `alike`.
+fn r5518_alike_part(item: &CostItem) -> Result<(Part, bool), &'static str> {
+    let CostItem::AlikeFromHand {
+        discard,
+        filter,
+        count,
+        alike,
+    } = item
+    else {
+        return Err("not a pick of cards alike");
+    };
+    let kind = if *discard {
+        Kind::Discard
+    } else {
+        Kind::Reveal
+    };
+    let (part, x) = pick(kind, filter, count, item)?;
+    let part = match part {
+        Part::Pick(pick) => Part::Pick(Pick {
+            alike: Some(*alike),
+            ..pick
+        }),
+        other => other,
+    };
+    Ok((part, x))
 }
 
 /// The parts of the cost items beyond the common picks: damage, unattaching, exiling the top, evidence, blight, behold,
@@ -254,6 +285,7 @@ fn pick(
 fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
     Ok(Some(match item {
         CostItem::ExileSpell { filter } => pick(Kind::ExileSpell, filter, &Amount::one(), item)?,
+        CostItem::AlikeFromHand { .. } => r5518_alike_part(item)?,
         CostItem::DamageToYou(count) => {
             let (number, x) = amount(count, item)?;
             (Part::Damage(number), x)
@@ -283,6 +315,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     filter,
                     count,
                     reads_x: false,
+                    alike: None,
                 }),
                 false,
             )
@@ -297,6 +330,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     filter,
                     count,
                     reads_x: false,
+                    alike: None,
                 }),
                 false,
             )
@@ -307,6 +341,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                 filter: Selector::default(),
                 count: usize::try_from(*types).unwrap_or(usize::MAX),
                 reads_x: false,
+                alike: None,
             }),
             false,
         ),
@@ -323,6 +358,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     filter,
                     count: 1,
                     reads_x: false,
+                    alike: None,
                 }),
                 false,
             )
@@ -364,6 +400,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     filter,
                     count: 1,
                     reads_x: false,
+                    alike: None,
                 }),
                 false,
             )
@@ -926,6 +963,7 @@ impl Pick {
                 .filter
                 .r301_with_x(i32::try_from(x).unwrap_or(i32::MAX)),
             reads_x: false,
+            alike: None,
             ..self.clone()
         }
     }
@@ -998,6 +1036,9 @@ impl Pick {
 
     /// Whether `candidates` cannot pay the part: too few of them, or too little power among them.
     pub(crate) fn short(&self, state: &GameState, candidates: &[ObjectId]) -> bool {
+        if let Some(alike) = self.alike {
+            return !r5518_alike::r5518_has_set(state, candidates, self.count, alike);
+        }
         if self.r4709_rule().is_some() {
             let mut groups = self.r4709_groups(state, candidates);
             groups.sort_unstable();
@@ -1038,7 +1079,12 @@ impl Pick {
                 groups.dedup();
                 candidates.len() == self.count && groups.len() == self.count
             }
-            _ => candidates.len() == self.count,
+            _ => {
+                candidates.len() == self.count
+                    && self
+                        .alike
+                        .is_none_or(|alike| r5518_alike::r5518_alike(state, candidates, alike))
+            }
         };
         if alone {
             Some(candidates.to_vec())
@@ -1099,6 +1145,14 @@ impl Pick {
     /// Why `picked` cannot pay the part, when they cannot: too little power or mana value for a pick by total, or not one
     /// Food or three cards for a forage.
     pub(crate) fn weak(&self, state: &GameState, picked: &[ObjectId]) -> Option<IllegalAnswer> {
+        if let Some(alike) = self.alike
+            && !r5518_alike::r5518_alike(state, picked, alike)
+        {
+            return Some(IllegalAnswer::WrongPick(match alike {
+                Alike::SameName => "cards with the same name",
+                Alike::ShareColor => "cards that share a color",
+            }));
+        }
         if self.r4709_rule().is_some() {
             let groups = self.r4709_groups(state, picked);
             let mut apart = groups.clone();
@@ -1131,6 +1185,19 @@ impl Pick {
 
     /// What the question asks of the player, in the words of a card.
     pub(crate) fn text(&self) -> String {
+        let text = self.r5518_kind_text();
+        match self.alike {
+            Some(alike) => format!(
+                "{}{}",
+                text.trim_end_matches('.'),
+                r5518_alike::r5518_words(alike)
+            ),
+            None => text,
+        }
+    }
+
+    /// What the question asks of the player for the kind of pick, before the set's words.
+    fn r5518_kind_text(&self) -> String {
         match self.kind {
             Kind::Sacrifice => crate::wording::sacrifice(&self.filter, self.count),
             Kind::Discard => crate::wording::discard(self.count),

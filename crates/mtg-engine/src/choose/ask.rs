@@ -88,6 +88,7 @@ impl<'a> Questions<'a> {
             max: count(max),
             text,
             can_cancel: false,
+            total: None,
             groups: Vec::new(),
         };
         match self.answers.next() {
@@ -274,6 +275,7 @@ mod tests {
                     max: 3,
                     text: "Bottom.".into(),
                     can_cancel: false,
+                    total: None,
                     groups: Vec::new(),
                 })
             }

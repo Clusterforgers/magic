@@ -380,6 +380,8 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
   else if ('ManaProduced' in rule)
     what = `Taps for mana by ${seats(rule.ManaProduced.who)} produce changed mana`
   else if ('CantDraw' in rule) what = `${seats(rule.CantDraw)} can't draw cards`
+  else if ('DrawFromBottom' in rule)
+    what = `Draws by ${seats(rule.DrawFromBottom)} come from the bottom of the library`
   else if ('CantSearch' in rule) what = `${seats(rule.CantSearch)} can't search libraries`
   else if ('VoteAgain' in rule) what = `${seats(rule.VoteAgain)} may vote an additional time`
   else if ('CantLoseGame' in rule)

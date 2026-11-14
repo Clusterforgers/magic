@@ -341,6 +341,11 @@ Rules that change how the game is played rather than the objects in it (`Effect:
 - `ReplaceBy::Subtract` and `Cap` lessen damage as a replacement, not a prevention (CR 614.1a); `Half` halves rounded down; damage brought to 0 is not dealt.
 - `GameRule::FlipTwoCoins` (CR 705.3): one call, each rule doubles the coins, on differing coins the flipper keeps a won or lost one (`ChooseOption`); one `CoinFlipped` logs the kept side and every coin (`coins`); only the kept coin wins or loses.
 - `GameRule::ExtraDie`: each rule adds a die and drops the lowest; one substream, only the kept dice logged as `DieRolled`.
+- Each `DieRolled` counts for its roller's turn (`TurnTally::DiceRolled`, `Nth` of `DiceRolled`): two dice of one roll are two.
+- `Effect::Empower` creates the blue 0-loyalty Jace planeswalker token first when its controller has no Jace token, reruns (`Next::Again`) and puts the loyalty counters on a Jace token, never a nontoken Jace.
+- `ReplaceBy::BeholdOrTapped`: the beheld object is a permanent the controller controls (chosen, nothing revealed) or a card of their hand (revealed).
+- `GameRule::DrawFromBottom`: `steps::draw` takes the bottom card of the library for the named players.
+- `Did(ActivatedLoyalty)` carries the loyalty counters its cost removed as its amount (`Amount::Triggering`): the fixed minus or the announced X.
 - A cost removing counters from its source records the number (`CostTaken::removed`) for `Amount::RemovedThisWay`; "Remove all" is settled at announcement.
 - A spell's own cost modifier reads its announced X; another object's reads none.
 - A repeatable additional cost (`AdditionalCost.repeatable`) is asked like a multikicker; `Amount::AdditionalPaid` counts the payments.

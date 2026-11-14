@@ -93,7 +93,6 @@ fn a_payment_by_the_player_of_an_event_reads_and_writes_back(#[case] text: &str)
 #[case::sacrifice_in_unless("Draw a card unless you sacrifice a creature.")]
 #[case::unless_x_life("Draw a card unless you pay X life.")]
 #[case::unless_a_target("Draw a card unless target player pays {1}.")]
-#[case::unless_two_parts("Draw a card unless you pay {1} and discard a card.")]
 #[case::unless_you_counter("Counter target spell unless you discard a card.")]
 #[case::unless_you_may("You may draw a card unless you discard a card.")]
 fn payments_the_template_does_not_model_stay_unread(#[case] text: &str) {
@@ -111,4 +110,16 @@ fn lower_first(text: &str) -> String {
         .next()
         .map(|first| format!("{}{}", first.to_lowercase(), chars.as_str()))
         .unwrap_or_default()
+}
+
+#[test]
+fn an_unless_payment_of_mana_and_a_discard_reads_both_parts() {
+    let text = "Draw a card unless you pay {1} and discard a card.";
+    let read = spell(text).expect(text);
+    let shown = format!("{read:?}");
+    assert!(
+        shown.contains("Generic(1)") && shown.contains("Discard {"),
+        "{shown}"
+    );
+    assert!(shown.contains("unpaid: [Draw"), "{shown}");
 }

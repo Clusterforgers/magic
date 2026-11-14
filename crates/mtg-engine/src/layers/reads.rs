@@ -369,6 +369,8 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Kicked
         | Pred::AdditionalCostPaid
         | Pred::Suspended
+        | Pred::Foretold
+        | Pred::HasName
         | Pred::BlockedThisTurn(_)
         | Pred::DealtDamageThisTurn(_)
         | Pred::EnteredSinceLastTurn(_) => Traits::NONE,

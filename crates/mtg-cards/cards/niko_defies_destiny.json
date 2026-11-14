@@ -1,22 +1,40 @@
 {
   "oracle_id": "e79bf038-071e-448e-ad95-234c207a9575",
   "name": "Niko Defies Destiny",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Niko Defies Destiny",
       "oracle_fingerprint": "6fec01fac3ca925db48276bfe25088d2",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 89, "end": 149 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": ["Foretold", { "In": "Exile" }, { "OwnedBy": "You" }] }
+                    }
+                  }
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 150, "end": 240 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["White", "Blue"] },
+                  "only": [{ "Special": "Foretell" }, { "Spell": { "facts": ["Foretell"] } }]
+                }
+              }
+            ]
           }
         },
         {

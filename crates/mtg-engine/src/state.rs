@@ -105,6 +105,8 @@ pub(crate) struct Possible {
 pub(crate) enum Tally {
     /// An investigation (CR 701.16a).
     L31aInvestigated,
+    /// A die rolled (CR 706).
+    R5508DiceRolled,
     /// A card drawn.
     Drawn,
     /// A venture into the dungeon (counted for the player).
