@@ -106,7 +106,7 @@ Teams: `table/teamLife.ts` (`useSeatTeam`) reads the view's `house_rules.teams`;
 | opponents | the opponents' pods and boards                                               | `minmax(0, Ofr)`: the board split                                                                                                               |
 | shared    | the stack as chips, the prompt or the waiting line, priority, the combat key | `SHARED_CLAMP` `clamp(56px, 7dvh, 72px)`                                                                                                        |
 | own       | your pod and battlefield                                                     | `minmax(0, Yfr)`: the board split                                                                                                               |
-| hand      | your hand as a fan                                                           | `HAND_CLAMP` `clamp(104px, 16dvh, 200px)`, grown to the rows of a hand one row does not hold (at most 23 dvh); phone `clamp(96px, 14dvh, 120px)` |
+| hand      | your hand as a fan                                                           | `HAND_CLAMP` `clamp(104px, 16dvh, 200px)`, grown to the rows of a hand one row does not hold (at most 23 dvh); phone `clamp(104px, 16dvh, 140px)` |
 | controls  | the passing line, the stops, the pass buttons                                | bottom right, as wide as its content up to 480 px (760 with the stops row, 160 on a phone)                                                      |
 | side      | Commands, Log, Chat, Stack                                                   | by breakpoint                                                                                                                                   |
 

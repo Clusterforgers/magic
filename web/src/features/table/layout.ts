@@ -221,7 +221,7 @@ export const TOP_BAR_LANDSCAPE_PX = 32
 export const SHARED_CLAMP: HeightClamp = { min: 56, vh: 7, max: 72 }
 /** The hand dock; a phone held upright gets the lower one. */
 export const HAND_CLAMP: HeightClamp = { min: 104, vh: 16, max: 200 }
-export const HAND_PHONE_CLAMP: HeightClamp = { min: 96, vh: 14, max: 120 }
+export const HAND_PHONE_CLAMP: HeightClamp = { min: 104, vh: 16, max: 140 }
 /**
  * A hand that one row does not hold grows the dock (not a phone's) to the height of its rows, up to this percent of the
  * window height (`HAND_GROW_VAR`, `handDockNeed`); the boards give up that room.

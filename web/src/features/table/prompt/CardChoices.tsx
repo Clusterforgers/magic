@@ -160,7 +160,7 @@ export function CardChoices({
             '--choice-room': `max(6rem, calc(var(--sheet-max, 20rem) - ${rest ?? (filtering ? 14.5 : 10.5)}rem))`,
           } as CSSProperties
         }
-        className="flex basis-full flex-col gap-2"
+        className="flex max-w-full min-w-0 basis-full flex-col gap-2"
       >
         {lead}
         {/*

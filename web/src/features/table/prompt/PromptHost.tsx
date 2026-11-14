@@ -85,8 +85,11 @@ function PromptScope({ pending }: { pending: PendingDecision }) {
         data-decision={name}
         data-decision-id={id}
         className={cn(
-          'max-w-full min-w-0 rounded-md bg-muted px-3 sm:max-w-3xl',
-          compact ? 'relative flex flex-wrap items-center gap-x-3 overflow-hidden py-1' : 'grid gap-1 py-1.5',
+          // A prompt that lays out cards may take the sheet's width; its one track never grows past it (a row of cards scrolls).
+          'max-w-full min-w-0 rounded-md bg-muted px-3 sm:max-w-3xl has-[[data-slot=card-choices]]:sm:max-w-full',
+          compact
+            ? 'relative flex flex-wrap items-center gap-x-3 overflow-hidden py-1'
+            : 'grid grid-cols-[minmax(0,1fr)] gap-1 py-1.5',
         )}
       >
         <PromptFor kind={decision.kind} />

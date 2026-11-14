@@ -75,7 +75,7 @@ describe('previewFit on a narrow window', () => {
 
   it.each([
     // [card box, dock, picture, tallest panel]
-    [box(20, 100), 'bottom', 249, 469],
+    [box(20, 100), 'bottom', 237, 452],
     [box(20, 700), 'top', 320, 636],
     // Mid-window the half the card is in is tight: the panel flips to the side with more room.
     [box(280, 352), 'top', 160, 344],
@@ -91,7 +91,7 @@ describe('previewFit on a narrow window', () => {
 
   it('keeps a bottom panel above the hand dock and a top one below the top bar', () => {
     const below = previewFit(box(20, 100), phone)
-    expect(below.bottom).toBe(126)
+    expect(below.bottom).toBe(143)
     expect(below.top).toBeNull()
     expect(previewFit(box(20, 700), phone)).toMatchObject({ top: 56, bottom: null })
   })

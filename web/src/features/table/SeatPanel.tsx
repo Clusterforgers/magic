@@ -315,7 +315,8 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
           </div>
           {/* The status flows on after the zones in the same lines, so a pod head takes as few lines as its width allows. */}
           <div data-slot="pod-status" className="contents empty:hidden">
-            <UntappedSources seat={seat} />
+            {/* A phone keeps the pod to its figures: the lands under it show what is untapped. */}
+            <UntappedSources seat={seat} className="max-sm:hidden" />
             {mana}
             <TaxChips chips={chips.tax} density="line" />
             <DamageChips chips={chips.damage} density="line" />

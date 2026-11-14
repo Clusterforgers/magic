@@ -17,7 +17,7 @@ Impact: how much a problem costs a player in a 4-player Commander game at 1400 �
 | 3 | The hand is still small | hand dock | The hand lies in an arc and rises on hover, but its cards stay about 90 px wide at 1400 × 900; a full-size hover is the preview beside it. |
 | 4 | Combat lines cross the table | combat overlay | Attacks between two other seats draw faint and the lines stay under a card prompt; a line still runs from its board to its defender's pod across the row. |
 | 5 | Choices share the strip | prompts | Card prompts take the strip's width and grow over the opponents' boards with 7 rem cards; a long list still scrolls inside the sheet, and modes have no pictures. |
-| 6 | The phone table does not fit | table at 390 | Two and a half hand cards, the controls overlap ("…triggers" cut), the own pod takes a third of the height, boards draw 30 px cards. |
+| 6 | The phone table is tight | table at 390 | The controls fit (the auto-skip switch without its label), the pod drops the untapped sources and the hand dock is 104 to 140 px; boards still draw about 30 px cards and a card prompt scrolls inside its sheet. |
 | 7 | The turn is said in two places | top bar | The badge says whose turn and the step, the ladder names the phase; below 1024 px the badge names it instead. |
 | 8 | The table is quiet between moments | table | The table plays its casts, attacks, blocks, damage, draws and shuffles and taps turn in 150 ms; there is no your-turn moment beyond the banner and no stack resolution beat. |
 
@@ -84,5 +84,4 @@ Each pass is one commit with before and after shots at 1400 × 900, 1280 × 720 
 |---|---|
 | 4 | Prompts: modes with the card's picture; a list of many cards as a centre overlay of its own |
 | 5 | Board room: combat lines kept to the boards they join, attacker groups as a badge on the defender's pod |
-| 6 | Phone table: hand and controls fit at 390, pod strip slimmer, boards larger |
 | 7 | Pages: Play with open games as cards with commander art; the descent with boss art; the result page's seats with their commanders |
