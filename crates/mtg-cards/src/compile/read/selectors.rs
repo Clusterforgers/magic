@@ -735,9 +735,8 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     .or_else(|| super::r283_atoms::r283_suffix(r, form))
     .or_else(|| super::r379_atoms::r379_suffix(r, form))
     .or_else(|| super::r301b_atoms::r301b_suffix(r, form))
-    .or_else(|| super::r4710_atoms::r4710_suffix(r, form))
-    .or_else(|| super::r6003_total::r6003_suffix(r))
     .or_else(|| super::r6100_atoms::r6100_suffix(r, form))
+    .or_else(|| super::r6003_total::r6003_suffix(r))
 }
 
 /// "greater power", "power less than this creature's power": a stat compared with the same stat of the source.
@@ -899,9 +898,8 @@ fn suffix_text_main(pred: &Pred, form: Form) -> Option<String> {
                 .or_else(|| super::r283_atoms::r283_suffix_text(pred, form))
                 .or_else(|| super::r379_atoms::r379_suffix_text(pred, form))
                 .or_else(|| super::r301b_atoms::r301b_suffix_text(pred, form))
-                .or_else(|| super::r4710_atoms::r4710_suffix_text(pred, form))
-                .or_else(|| super::r6003_total::r6003_suffix_text(pred))
-                .or_else(|| super::r6100_atoms::r6100_suffix_text(pred, form));
+                .or_else(|| super::r6100_atoms::r6100_suffix_text(pred, form))
+                .or_else(|| super::r6003_total::r6003_suffix_text(pred));
         }
     })
 }

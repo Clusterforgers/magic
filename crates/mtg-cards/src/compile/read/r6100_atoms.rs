@@ -19,12 +19,13 @@ fn r6100_fought() -> Pred {
     }
 }
 
-/// A suffix of this module after the noun.
-pub(super) fn r6100_suffix(r: &mut Reader<'_>, _form: Form) -> Option<Pred> {
-    r.words(R6100_FOUGHT).then(r6100_fought)
+/// A suffix of this module after the noun, after those of pack r47-10.
+pub(super) fn r6100_suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
+    super::r4710_atoms::r4710_suffix(r, form).or_else(|| r.words(R6100_FOUGHT).then(r6100_fought))
 }
 
-/// The suffix of this module for a predicate.
-pub(super) fn r6100_suffix_text(pred: &Pred, _form: Form) -> Option<String> {
-    (*pred == r6100_fought()).then(|| R6100_FOUGHT.to_owned())
+/// The suffix of this module for a predicate, after those of pack r47-10.
+pub(super) fn r6100_suffix_text(pred: &Pred, form: Form) -> Option<String> {
+    super::r4710_atoms::r4710_suffix_text(pred, form)
+        .or_else(|| (*pred == r6100_fought()).then(|| R6100_FOUGHT.to_owned()))
 }

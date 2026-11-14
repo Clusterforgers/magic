@@ -340,11 +340,11 @@ fn r6100_the_fallen_hurts_each_opponent_and_planeswalker_it_has_dealt_damage_to(
     let lives: Vec<i32> = (0..seats).map(|seat| r6100_life(&driver, seat)).collect();
     let next = u32::try_from(seats).unwrap() + 1;
     driver.idle_until(next, Step::Draw)?;
-    for seat in 1..seats {
+    for (seat, before) in lives.iter().enumerate().skip(1) {
         let hurt = seat == 1 && !at_walker;
         assert_eq!(
             r6100_life(&driver, seat),
-            lives[seat] - i32::from(hurt),
+            before - i32::from(hurt),
             "seat {seat}"
         );
     }
