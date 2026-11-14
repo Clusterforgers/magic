@@ -88,6 +88,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Revive { .. }
         | Effect::BecomeDayNight { .. }
         | Effect::Amass { .. }
+        | Effect::Empower { .. }
         | Effect::Incubate { .. }
         | Effect::Conjure { .. }
         | Effect::Seek { .. }
@@ -152,7 +153,7 @@ fn reports(effect: &Effect) -> Reports {
             Reports::Itself
         }
         #[rustfmt::skip]
-        Effect::LookAtTop { .. } | Effect::Choose { .. } | Effect::ChooseAtRandom { .. } | Effect::Encode { .. } | Effect::Haunt { .. }
+        Effect::LookAtTop { .. } | Effect::Choose { .. } | Effect::ChooseWithin { .. } | Effect::ChooseAtRandom { .. } | Effect::Encode { .. } | Effect::Haunt { .. }
         | Effect::Remember { .. } | Effect::Forget { .. } | Effect::RememberValue { .. } | Effect::DelayedTrigger { .. } | Effect::Reflexive { .. }
         | Effect::If { .. } | Effect::Modal { .. } | Effect::RepeatEach { .. } | Effect::Together { .. } | Effect::RollDice { .. }
         | Effect::FlipCoin { .. } | Effect::Clash { .. } | Effect::Vote { .. } | Effect::ChooseNumbers { .. } | Effect::ChooseWords { .. } | Effect::BidLife { .. } | Effect::VillainousChoice { .. }

@@ -9,8 +9,11 @@ use crate::config::ConfigError;
 pub const DEFAULT_CACHE_MIB: u64 = 2048;
 /// Largest `MTG_IMAGE_CACHE_MIB` accepted: 1 TiB.
 pub const MAX_CACHE_MIB: u64 = 1024 * 1024;
-/// The smallest gap between two upstream requests; Scryfall asks for 50 to 100 ms.
-pub const MIN_GAP: Duration = Duration::from_millis(100);
+/// The smallest gap between the starts of two upstream requests. The CDN (`*.scryfall.io`) has no rate limit,
+/// unlike Scryfall's API; this keeps the server under 40 requests a second all the same.
+pub const MIN_GAP: Duration = Duration::from_millis(25);
+/// Upstream requests in flight at once, server-wide.
+pub const IN_FLIGHT: usize = 8;
 
 /// Where pictures are kept, how many, and how the upstream is asked for them.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -22,8 +25,10 @@ pub struct ImageConfig {
     /// `scheme://host[:port]` that upstream requests go to instead of the host a stored link names;
     /// the stored link is validated all the same. For tests only: never read from the environment.
     pub upstream_base: Option<String>,
-    /// Time left between the end of one upstream request and the start of the next.
+    /// Time left between the starts of two upstream requests.
     pub min_gap: Duration,
+    /// Upstream requests in flight at once.
+    pub in_flight: usize,
     /// Tries per picture, the first included.
     pub attempts: u32,
     /// Wait before the second try; it doubles for each further one.
@@ -39,6 +44,7 @@ impl Default for ImageConfig {
             max_bytes: DEFAULT_CACHE_MIB * 1024 * 1024,
             upstream_base: None,
             min_gap: MIN_GAP,
+            in_flight: IN_FLIGHT,
             attempts: 3,
             backoff: Duration::from_secs(2),
             timeout: Duration::from_secs(30),

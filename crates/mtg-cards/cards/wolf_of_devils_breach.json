@@ -1,0 +1,40 @@
+{
+  "oracle_id": "453e72bf-a682-4ec8-9cdd-799f2acb3862",
+  "name": "Wolf of Devil's Breach",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wolf of Devil's Breach",
+      "oracle_fingerprint": "3b14a492d42ea54c408f2e1a3fe2e40d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Mana": "{1}{R}" }, { "Discard": {} }],
+                  "paid": [
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

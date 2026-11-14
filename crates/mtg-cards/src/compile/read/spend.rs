@@ -8,7 +8,7 @@ use super::selectors::{card_type, plural_subtype, subtype, type_name};
 use super::subtypes::plural_subtype as plural_name;
 use super::tokens::Reader;
 use crate::keyword::Keyword;
-use crate::spend::{EntersBonus, ManaLasts, SpendFact, SpendFilter, SpendOn};
+use crate::spend::{EntersBonus, ManaLasts, SpecialAction, SpendFact, SpendFilter, SpendOn};
 
 const LEAD: &str = "spend this mana only";
 
@@ -184,6 +184,8 @@ fn qualifiers(r: &mut Reader<'_>, filter: &mut SpendFilter) {
             filter.facts.push(SpendFact::Devoid);
         } else if r.words("with flashback") {
             filter.facts.push(SpendFact::Flashback);
+        } else if r.words("that have foretell") || r.words("that has foretell") {
+            filter.facts.push(SpendFact::Foretell);
         } else if r.words("that has freerunning") || r.words("with freerunning") {
             filter.facts.push(SpendFact::Freerunning);
         } else if r.words("with no abilities") {
@@ -367,6 +369,13 @@ pub(super) fn only(r: &mut Reader<'_>) -> Option<Vec<SpendOn>> {
         if r.words("pay cumulative upkeep costs") {
             return Some(vec![SpendOn::CumulativeUpkeep]);
         }
+        // "to foretell cards or cast spells that have foretell".
+        if r.words("foretell cards or cast") {
+            return Some(vec![
+                SpendOn::Special(SpecialAction::Foretell),
+                SpendOn::Spell(spells(r)?),
+            ]);
+        }
         // "to pay a disturb cost or cast an instant or sorcery spell".
         if r.words("pay a disturb cost or cast") {
             return Some(vec![SpendOn::Spell(disturb()), SpendOn::Spell(spells(r)?)]);
@@ -546,6 +555,7 @@ fn qualifier_text(filter: &SpendFilter) -> String {
             SpendFact::NotFromHand => text.push_str(" from anywhere other than your hand"),
             SpendFact::Devoid => text.push_str(" with devoid"),
             SpendFact::Flashback => text.push_str(" with flashback"),
+            SpendFact::Foretell => text.push_str(" that have foretell"),
             SpendFact::Freerunning => text.push_str(" with freerunning"),
             SpendFact::NoAbilities => text.push_str(" with no abilities"),
             // One spell's words: `text` writes a filter with them one spell at a time.

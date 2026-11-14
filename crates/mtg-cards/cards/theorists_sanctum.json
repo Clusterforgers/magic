@@ -1,0 +1,25 @@
+{
+  "oracle_id": "37513bd8-7303-4ac6-a7a7-224184faf758",
+  "name": "Theorist's Sanctum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Theorist's Sanctum",
+      "oracle_fingerprint": "35b977502c5f3344fd03dfbfc50dc998",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "BeholdOrTapped": [{ "Subtype": "Jace" }] }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, "Tap"],
+            "effects": [{ "Empower": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

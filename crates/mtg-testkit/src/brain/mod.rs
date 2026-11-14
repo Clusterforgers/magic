@@ -392,24 +392,42 @@ impl HeuristicBot {
             self.budget,
         );
         if budget.iterations == 0 {
-            self.played = before;
-            if let Answer::Priority(play) = &prior
-                && *play != PriorityAction::Pass
-            {
-                self.played.push(play.clone());
-            }
-            return prior;
+            return self.settled(before, prior);
         }
         let window = priority::window(&seen);
+        let mut ramp = Search::new(self.seat, self.settings, key);
+        // The ramp bonus is simulated in a world whose hidden cards are redealt, so it reads nothing the seat cannot see.
+        let mut world = engine.clone();
+        if window == priority::Window::Main {
+            world.redeal(self.seat, key);
+        }
         let costs: Vec<f64> = answers
             .iter()
             .map(|answer| match answer {
                 Answer::Priority(play) => {
                     priority::hold_cost(self.settings.careful, &seen, window, play)
+                        - priority::ramp_bonus(&mut ramp, &world, window, play)
                 }
                 _ => 0.0,
             })
             .collect();
+        // Spending interaction the heuristics keep, and attacks at a table of more than two (whom to pressure) turn on
+        // what rollouts see least: the search must win those by the guard too.
+        let reactive = matches!(&prior, Answer::Priority(PriorityAction::Pass))
+            && matches!(
+                window,
+                priority::Window::Response | priority::Window::Combat | priority::Window::EndStep
+            );
+        let crowded =
+            matches!(decision.kind, DecisionKind::DeclareAttackers(_)) && seen.alive().len() > 2;
+        let deep = if reactive || crowded {
+            Deep {
+                trust: deep.trust + deep.guard,
+                ..deep
+            }
+        } else {
+            deep
+        };
         let chosen = deep::ismcts(
             engine,
             self.seat,
@@ -421,7 +439,18 @@ impl HeuristicBot {
             budget,
             &mut self.history,
         )
-        .unwrap_or(prior);
+        .unwrap_or_else(|| prior.clone());
+        // An attack that dies to the crack back, when the heuristic's does not, is vetoed: the rollouts' opponents
+        // attack too timidly to show it.
+        let chosen = match (&chosen, &prior) {
+            (Answer::DeclareAttackers(attack), Answer::DeclareAttackers(kept))
+                if exposed(&seen, attack) && !exposed(&seen, kept) =>
+            {
+                prior.clone()
+            }
+            _ => chosen,
+        };
+        deep::count_search(chosen != prior);
         self.played = before;
         if let Answer::Priority(play) = &chosen
             && *play != PriorityAction::Pass
@@ -429,6 +458,24 @@ impl HeuristicBot {
             self.played.push(play.clone());
         }
         chosen
+    }
+}
+
+/// Whether `attack` loses the seat the game to the opponents' next attack without winning it first.
+fn exposed(seen: &Seen<'_>, attack: &combat::Attack) -> bool {
+    !combat::lethal(seen, attack) && combat::crack_back(seen, attack) >= seen.life(seen.seat())
+}
+
+impl HeuristicBot {
+    /// Plays `answer` with the plays of this turn back at `before`.
+    fn settled(&mut self, before: Vec<PriorityAction>, answer: Answer) -> Answer {
+        self.played = before;
+        if let Answer::Priority(play) = &answer
+            && *play != PriorityAction::Pass
+        {
+            self.played.push(play.clone());
+        }
+        answer
     }
 }
 

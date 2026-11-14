@@ -1,0 +1,67 @@
+{
+  "oracle_id": "6d00e24f-c89f-49fa-869e-d788021aa084",
+  "name": "Iron Mastiff",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iron Mastiff",
+      "oracle_fingerprint": "0d4440e3fbab0038fcf8d9d541a1ecb9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "highest": { "Players": "Attacked" },
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 9,
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "source": "This",
+                            "to": "You",
+                            "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 10,
+                      "to": 19,
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "source": "This",
+                            "to": "Defending",
+                            "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 20,
+                      "to": 20,
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "source": "This",
+                            "to": "Opponents",
+                            "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
