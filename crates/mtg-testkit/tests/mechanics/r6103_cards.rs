@@ -401,3 +401,141 @@ fn r6103_sharkey_spends_any_type_on_its_own_abilities(
     assert_eq!(gained, i32::from(on_sharkey));
     Ok(())
 }
+
+#[rstest]
+fn r6103_temporal_anchor_exiles_as_many_as_scried_to_the_bottom(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(0, 1, 2)] down: usize,
+) -> Result<(), ScriptError> {
+    let names = ["Top One", "Top Two", "Mid", "Low", "Bottom"];
+    let library: Vec<Arc<CardDefinition>> = names
+        .iter()
+        .map(|name| creature(name, 0, &[Color::Blue], 1, 1))
+        .chain((0..5).map(|_| island()))
+        .collect();
+    let mut scenario = Scenario::new(seats)
+        .battlefield(
+            0,
+            [card("The Temporal Anchor").unwrap(), island(), island()]
+                .into_iter()
+                .map(ready)
+                .collect::<Vec<_>>(),
+        )
+        .library(0, library);
+    for seat in 1..seats {
+        scenario = scenario.library(seat, (0..10).map(|_| plains()).collect::<Vec<_>>());
+    }
+    let mut driver = Driver::from_scenario(scenario.at(1, 0, Step::Untap))?;
+    let mut sent = Vec::new();
+    for _ in 0..100 {
+        if driver.state().turn().step() == Step::Draw {
+            break;
+        }
+        let decision = driver.decision()?.clone();
+        if let DecisionKind::Scry(options) = &decision.kind {
+            let (bottom, top) = options.cards.split_at(down);
+            sent = bottom.to_vec();
+            driver.answer(Answer::Scry(mtg_engine::choose::ScryChoice {
+                top: top.to_vec(),
+                bottom: bottom.to_vec(),
+            }))?;
+        } else {
+            driver.answer_passively()?;
+        }
+    }
+    let exile: Vec<String> = driver
+        .state()
+        .zone(Zone::Exile)
+        .iter()
+        .map(|id| crate::common::name_of(driver.state(), *id))
+        .collect();
+    assert_eq!(exile.len(), down, "{exile:?}");
+    // The cards sent to the bottom are the bottom cards, so those are exiled.
+    let sent: Vec<String> = sent
+        .iter()
+        .map(|id| crate::common::name_of(driver.state(), *id))
+        .collect();
+    for name in &sent {
+        assert!(exile.contains(name), "{name}");
+    }
+    // During its controller's turn they may be played.
+    driver.pass_until(Step::Main1)?;
+    for name in &exile {
+        assert!(r6103_castable(&driver, name), "{name}");
+    }
+    Ok(())
+}
+
+/// Seat 0 with Galea, a Grizzly Bears and lands ready, the named card on top of the library, at its main phase.
+fn r6103_galea(seats: usize, top: &str) -> Result<Driver, ScriptError> {
+    let mut permanents = vec![
+        card("Galea, Kindler of Hope").unwrap(),
+        mtg_testkit::cards::bear(),
+    ];
+    permanents.extend((0..4).map(|_| plains()));
+    permanents.extend((0..2).map(|_| forest()));
+    let mut library = vec![card(top).unwrap()];
+    library.extend((0..10).map(|_| plains()));
+    r6103_table(seats, permanents, Vec::new(), library)
+}
+
+#[rstest]
+#[case::an_equipment("Bonesplitter", true)]
+#[case::an_aura("Rancor", true)]
+#[case::a_creature("Grizzly Bears", false)]
+fn r6103_galea_casts_auras_and_equipment_from_the_top(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] top: &str,
+    #[case] castable: bool,
+) -> Result<(), ScriptError> {
+    let driver = r6103_galea(seats, top)?;
+    let id = *driver
+        .state()
+        .zone(Zone::Library(PlayerId(0)))
+        .last()
+        .unwrap();
+    let DecisionKind::Priority(options) = &driver.decision()?.kind else {
+        panic!("priority");
+    };
+    assert_eq!(options.castable.contains(&id), castable);
+    Ok(())
+}
+
+#[rstest]
+fn r6103_galea_equipment_cast_this_way_attaches_as_it_enters(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = r6103_galea(seats, "Bonesplitter")?;
+    let id = *driver
+        .state()
+        .zone(Zone::Library(PlayerId(0)))
+        .last()
+        .unwrap();
+    driver.answer(Answer::Priority(PriorityAction::CastSpell(id)))?;
+    if matches!(driver.decision()?.kind, DecisionKind::PayMana(_)) {
+        driver.answer(Answer::PayMana(PayChoice::Auto))?;
+    }
+    let mut targeted = false;
+    for _ in 0..50 {
+        if targeted && driver.state().stack().is_empty() && driver.state().resolving().is_none() {
+            break;
+        }
+        let decision = driver.decision()?.clone();
+        if let DecisionKind::ChooseTargets(_) = &decision.kind {
+            let bear = driver.target_named("Grizzly Bears")?;
+            driver.choose_targets(&[bear])?;
+            targeted = true;
+        } else {
+            driver.answer_passively()?;
+        }
+    }
+    let splitter = driver.id_of("Bonesplitter")?;
+    let bear = driver.id_of("Grizzly Bears")?;
+    let host = driver
+        .state()
+        .object(splitter)
+        .and_then(|object| object.permanent())
+        .and_then(|held| held.attached_to());
+    assert_eq!(host.map(|host| host.id), Some(bear));
+    Ok(())
+}

@@ -1496,6 +1496,10 @@ pub enum Effect {
         /// The cards lie face down and no player may look at them (CR 406.3).
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         sealed: bool,
+        /// The cards come from the bottom of the library, the bottom card first ("exile that many cards from the bottom
+        /// of your library").
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        bottom: bool,
     },
     /// The player may cast a card during the resolution, without waiting for priority (CR 608.2g); `otherwise` is
     /// done when they do not.
@@ -2392,6 +2396,7 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
             count,
             bind: IMPULSE.to_owned(),
             sealed: false,
+            bottom: false,
         },
         Effect::Rule {
             rule: GameRule::MayCast(CastPermission {

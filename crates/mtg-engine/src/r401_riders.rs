@@ -39,6 +39,10 @@ pub(crate) fn r401_entering(state: &GameState, id: ObjectId, before: &[Event]) -
             CastRider::AlsoSubtype(subtype) => {
                 Some((Modification::AddSubtype(subtype.clone()), Duration::Forever))
             }
+            CastRider::R6103EquipmentGains(ability) if r6103_is_equipment(state, id) => Some((
+                Modification::GrantAbility(ability.clone()),
+                Duration::Forever,
+            )),
             _ => None,
         })
         .zip(made..)
@@ -54,4 +58,15 @@ pub(crate) fn r401_entering(state: &GameState, id: ObjectId, before: &[Event]) -
             .into(),
         })
         .collect()
+}
+
+/// Whether the spell `id` is an Equipment spell: its characteristics as derived, else its card.
+fn r6103_is_equipment(state: &GameState, id: ObjectId) -> bool {
+    let equipment = |subtypes: &[mtg_core::card::Subtype]| {
+        subtypes.iter().any(|subtype| subtype.0 == "Equipment")
+    };
+    crate::characteristics::characteristics(state, id).map_or(false, |now| equipment(&now.subtypes))
+        || state
+            .object(id)
+            .is_some_and(|spell| equipment(&spell.card().subtypes))
 }

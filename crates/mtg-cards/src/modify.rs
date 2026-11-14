@@ -487,6 +487,9 @@ pub enum CastRider {
     /// The spell is exiled rather than put into its owner's graveyard from the stack: "If a spell cast this way would be
     /// put into your graveyard, exile it instead."
     ExiledInstead,
+    /// A spell that is an Equipment gains the ability, which its permanent keeps: "When you cast an Equipment spell this
+    /// way, it gains "When this Equipment enters, attach it to target creature you control."".
+    R6103EquipmentGains(std::sync::Arc<crate::ability::Ability>),
 }
 
 /// Which mana may pay for a cast through a permission.

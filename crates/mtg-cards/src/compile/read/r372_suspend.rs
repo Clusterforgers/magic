@@ -73,6 +73,7 @@ fn top_suspended(count: Amount) -> Vec<Effect> {
             count,
             bind: EXILED.to_owned(),
             sealed: false,
+            bottom: false,
         },
         Effect::RepeatEach {
             over: exiled_nonland(),

@@ -814,6 +814,7 @@ const RUNS: &[&str] = &[
     "CastRider.GainsThisTurn",
     "CastRider.AlsoSubtype",
     "CastRider.ExiledInstead",
+    "CastRider.R6103EquipmentGains",
     "Condition.R401OnCast",
     "Condition.R401Targets",
     "Condition.Kicked",

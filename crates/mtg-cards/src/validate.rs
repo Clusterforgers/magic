@@ -2186,6 +2186,7 @@ impl<'a> Walker<'a> {
                 crate::modify::CastRider::GainsThisTurn(_) => "GainsThisTurn",
                 crate::modify::CastRider::AlsoSubtype(_) => "AlsoSubtype",
                 crate::modify::CastRider::ExiledInstead => "ExiledInstead",
+                crate::modify::CastRider::R6103EquipmentGains(_) => "R6103EquipmentGains",
             };
             self.uses("CastRider", tag);
         }

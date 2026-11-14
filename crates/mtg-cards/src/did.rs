@@ -25,6 +25,9 @@ pub enum Action {
     TurnedFaceUp,
     /// A player scried (CR 701.22).
     Scried,
+    /// A player chose to put one or more cards on the bottom of their library while scrying (CR 701.22); the amount is
+    /// how many.
+    R6103ScriedToBottom,
     /// A player surveilled (CR 701.25).
     Surveilled,
     /// A player searched their library and found cards (CR 701.23).
@@ -219,6 +222,10 @@ impl Action {
             Action::Flipped => ("flip a permanent", "flips a permanent"),
             Action::TurnedFaceUp => ("turn a permanent face up", "turns a permanent face up"),
             Action::Scried => ("scry", "scries"),
+            Action::R6103ScriedToBottom => (
+                "choose to put one or more cards on the bottom of your library while scrying",
+                "chooses to put one or more cards on the bottom of their library while scrying",
+            ),
             Action::Surveilled => ("surveil", "surveils"),
             Action::SearchedLibrary => ("search a library", "searches a library"),
             Action::SearchedOwnLibrary => ("search your library", "searches their library"),

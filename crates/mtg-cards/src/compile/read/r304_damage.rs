@@ -79,12 +79,14 @@ fn step_text(step: &Effect) -> Option<&'static str> {
             who: Ref::You,
             count: Amount::Triggering,
             sealed: false,
+            bottom: false,
             ..
         } => Some("exile that many cards from the top of your library"),
         Effect::ExileTop {
             who: Ref::Triggering,
             count: Amount::Triggering,
             sealed: false,
+            bottom: false,
             ..
         } => Some("that player exiles that many cards from the top of their library"),
         _ => None,
