@@ -6,7 +6,8 @@ use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::wrong_effect;
 use crate::choose::{
-    ChoiceOption, OptionChooser, Optioned, Picked, Selection, Target, pick_options, pick_selections_within,
+    ChoiceOption, OptionChooser, Optioned, Picked, Selection, Target, pick_options,
+    pick_selections_within,
 };
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::wording;

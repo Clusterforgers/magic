@@ -98,7 +98,11 @@ fn r6003_hulk_finds_creatures_within_six(#[case] seats: usize) -> Result<(), Scr
     let total = options.total.clone().unwrap();
     assert_eq!(total.most, 6);
     let over = r6003_ids(&driver, &decision, &["Four", "Three"]);
-    assert_eq!(options.within_total(over.clone()).len(), 1, "4 + 3 is above 6");
+    assert_eq!(
+        options.within_total(over.clone()).len(),
+        1,
+        "4 + 3 is above 6"
+    );
     assert!(
         driver
             .answer(Answer::ChooseCards(CardsChoice(over)))
