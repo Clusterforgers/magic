@@ -33,7 +33,7 @@ Impact: how much a problem costs a player in a 4-player Commander game at 1400 �
 - **Lobby.** Clear and complete on the new tokens; decks show a placeholder icon instead of the commander's art; seat rows are text-heavy; Ready sits low.
 - **Deck builder, precons.** Dense and functional; a precon row's Play is a quiet button, so the list reads as rows.
 - **Delves.** Its own ember and stone; the descent uses icons where boss art would carry the mood.
-- **Result page.** The headline in the display face above the win burst; the seats as a plain list.
+- **Result page.** The headline in the display face above the win burst; each seat led by its commander's art in its seat's colour.
 - **Sign in, Learn, Settings.** Plain and consistent.
 
 ## The look
@@ -84,4 +84,4 @@ Each pass is one commit with before and after shots at 1400 × 900, 1280 × 720 
 |---|---|
 | 4 | Prompts: modes with the card's picture; a list of many cards as a centre overlay of its own |
 | 5 | Board room: combat lines kept to the boards they join, attacker groups as a badge on the defender's pod |
-| 7 | Pages: Play with open games as cards with commander art; the descent with boss art; the result page's seats with their commanders |
+| 7 | Pages: open games as cards with commander art (the lobby list carries no commanders yet, a server field first); the descent keeps the crown and the boss's colours (a boss card has no printed art) |

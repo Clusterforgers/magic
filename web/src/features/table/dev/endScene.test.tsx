@@ -1,4 +1,4 @@
-// Goal: `/dev/table?teams=` and `?result=` put the fixture in two teams and end it with every kind of result, and the route shows the result page with a way back to the final table.
+// Goal: `/dev/table?teams=` and `?result=` put the fixture in two teams and end it with every kind of result, and the route shows the result page, each seat by its face, with a way back to the final table.
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -77,6 +77,14 @@ describe('the route', () => {
     ).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Look at the table and log' }))
     expect(await screen.findByRole('region', { name: 'Game table' })).toBeInTheDocument()
+  }, 10_000)
+
+  it('shows each seat of the result by its face, hidden from a screen reader', async () => {
+    await visit('/dev/table?result=lost')
+    await screen.findByRole('heading', { name: 'You lost' }, { timeout: scaled(8000) })
+    const faces = document.querySelectorAll('[data-slot="seat-face"]')
+    expect(faces).toHaveLength(4)
+    for (const face of faces) expect(face).toHaveAttribute('aria-hidden', 'true')
   }, 10_000)
 
   it('names the winning team', async () => {
