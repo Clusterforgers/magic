@@ -203,7 +203,7 @@ what: unknown,
 /**
  * The most of them that untap.
  */
-count: number, } } | { "SkipDrawStep": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "LookAtExiled": { 
+count: number, } } | { "SkipDrawStep": Array<PlayerId> } | { "R6007ExhaustAgain": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "LookAtExiled": { 
 /**
  * The players who may look.
  */

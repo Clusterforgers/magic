@@ -125,7 +125,6 @@ pub(crate) mod r282_compleated;
 mod r282_cumulative_acts;
 pub(crate) mod r282_more_than_meets;
 mod r301_offering;
-mod r4704_fortify;
 mod r6f_flash_sacrifice;
 mod ravenous;
 mod reach;
@@ -448,7 +447,6 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Equip(_) => &equip::Equip,
         Keyword::Fortify(_) => &r5510_fortify::Fortify,
         Keyword::Reconfigure(_) => &reconfigure::Reconfigure,
-        Keyword::Fortify(_) => &r4704_fortify::Fortify,
         Keyword::LivingWeapon => &living_weapon::LivingWeapon,
         Keyword::Enchant(_) => &enchant::Enchant,
         Keyword::EnchantPlayer { .. } => &enchant::EnchantPlayer,

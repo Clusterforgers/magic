@@ -2576,7 +2576,6 @@ impl<'a> Walker<'a> {
             Keyword::Equip(cost)
             | Keyword::Fortify(cost)
             | Keyword::Reconfigure(cost)
-            | Keyword::Fortify(cost)
             | Keyword::Cycling(cost)
             | Keyword::Unearth(cost)
             | Keyword::Embalm(cost)

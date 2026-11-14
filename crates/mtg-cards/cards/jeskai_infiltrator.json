@@ -23,7 +23,15 @@
         {
           "Triggered": {
             "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
-            "effects": [{ "FaceDownPile": { "what": "This", "top": 1, "then": "Manifest" } }]
+            "effects": [
+              { "ExileHidden": { "what": "This", "sealed": true, "as": "pile" } },
+              { "ExileTop": { "as": "pile_top", "sealed": true } },
+              {
+                "ManifestCards": {
+                  "what": { "Union": [{ "Bound": "pile" }, { "Bound": "pile_top" }] }
+                }
+              }
+            ]
           }
         }
       ]

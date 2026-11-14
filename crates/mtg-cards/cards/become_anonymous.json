@@ -17,11 +17,13 @@
               }
             ],
             "effects": [
+              { "ExileHidden": { "what": { "Target": 0 }, "sealed": true, "as": "pile" } },
+              { "ExileTop": { "count": 2, "as": "pile_top", "sealed": true } },
               {
-                "FaceDownPile": {
-                  "what": { "Target": 0 },
-                  "top": 2,
-                  "then": { "Cloak": { "tapped": true } }
+                "ManifestCards": {
+                  "what": { "Union": [{ "Bound": "pile" }, { "Bound": "pile_top" }] },
+                  "cloak": true,
+                  "tapped": true
                 }
               }
             ]

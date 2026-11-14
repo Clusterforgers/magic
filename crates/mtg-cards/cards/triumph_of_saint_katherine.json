@@ -18,7 +18,45 @@
               }
             },
             "effects": [
-              { "FaceDownPile": { "what": "Triggering", "top": 6, "then": "OnTop", "whole": true } }
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "CountOf": {
+                          "subject": { "Arrived": { "of": "This", "zone": "Graveyard" } },
+                          "selector": [{ "In": "Graveyard" }],
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Count": [{ "In": "Library" }, { "OwnedBy": "You" }] },
+                          "op": "Ge",
+                          "right": 6
+                        }
+                      }
+                    ]
+                  },
+                  "then": [
+                    {
+                      "ExileHidden": {
+                        "what": { "Arrived": { "of": "This", "zone": "Graveyard" } },
+                        "sealed": true,
+                        "as": "pile"
+                      }
+                    },
+                    { "ExileTop": { "count": 6, "as": "pile_top", "sealed": true } },
+                    {
+                      "Move": {
+                        "what": { "Union": [{ "Bound": "pile" }, { "Bound": "pile_top" }] },
+                        "to": { "Library": { "place": "Top", "order": "Random" } }
+                      }
+                    }
+                  ]
+                }
+              }
             ]
           }
         },

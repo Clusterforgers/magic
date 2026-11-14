@@ -81,6 +81,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 can_cancel: false,
                 one_per_name: false,
                 groups: Vec::new(),
+                total: None,
             };
             match answers.next() {
                 None => {
