@@ -43,7 +43,10 @@ interface ChipProps {
 
 /** The width of a spell's picture on its chip, in px; the height follows the card's shape. */
 export const CHIP_ART_PX = 24
-const CHIP_ART = { '--card-w': `${CHIP_ART_PX}px`, '--card-h': `${Math.round((CHIP_ART_PX * 7) / 5)}px` } as CSSProperties
+const CHIP_ART = {
+  '--card-w': `${CHIP_ART_PX}px`,
+  '--card-h': `${Math.round((CHIP_ART_PX * 7) / 5)}px`,
+} as CSSProperties
 
 const Chip = memo(function Chip({ group, top, tabbable, hidden, aims, aria, empty }: ChipProps) {
   const id = group.ids[0] ?? 0

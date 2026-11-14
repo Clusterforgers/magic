@@ -12,8 +12,8 @@ Impact: how much a problem costs a player in a 4-player Commander game at 1400 �
 
 | # | Problem | Where | What a player meets |
 |---|---|---|---|
-| 1 | Crowded boards draw small cards | table, every board | With about 40 permanents a seat, opponents' permanents draw at about 40 px wide and names are cut; a board needs a hover per card. Lands take a third of each board. |
-| 2 | Chrome still takes room | table | The side column takes 272 px for Commands; an opponent's pod head is three lines; a long prompt grows the strip to 140 px. |
+| 1 | Crowded boards draw small cards | table, every board | Opponents' lands fold into their pods' chips and a grid's cards weigh as yours: with 20 permanents a seat and the side panel folded, an opponent's creatures draw about 66 px wide at 1400 × 900; with 40 a seat (14 creatures each) about 48 px, which no layout of three boards side by side lifts much further. |
+| 2 | Chrome still takes room | table | The side column takes 272 px until folded to its rail; an opponent's pod head is two to three lines; a long prompt grows the strip to 140 px. |
 | 3 | The hand lies flat | hand dock | Hand cards are larger (16 dvh) but stand in one flat row; Arena fans them from the bottom edge and lifts a hovered card to full size. |
 | 4 | Combat lines cross the table | combat overlay | Lines run from the strip and pods across unrelated boards; "4 attackers → you" labels float over cards. |
 | 5 | Choices are small | prompts | Choose cards and look at the top draw 6 rem cards in the strip; targets and modes have no pictures. |
@@ -84,6 +84,6 @@ Each pass is one commit with before and after shots at 1400 × 900, 1280 × 720 
 |---|---|
 | 3 | Feel: the sound set and its settings, the moments of the table, the your-turn moment, shuffle and draw, damage shake, tap and untap turning in 150 ms; reduced motion and leak tests |
 | 4 | Hand and prompts: a hand fanned from the bottom edge with a full-size hover; choose cards and look at the top as a centre overlay with large cards; targets and modes with card pictures |
-| 5 | Board room: opponents' lands folded into a summary row; combat lines kept to the boards they join, attacker groups as a badge on the defender's pod; the turn badge and ladder said once |
+| 5 | Board room: combat lines kept to the boards they join, attacker groups as a badge on the defender's pod; the turn badge and ladder said once; the priority sentence in one line |
 | 6 | Phone table: hand and controls fit at 390, pod strip slimmer, boards larger |
 | 7 | Pages: Play with open games as cards with commander art, lobby deck rows with art, the descent with boss art; sign in, Learn and Settings on the new tokens |
