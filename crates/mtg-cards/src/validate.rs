@@ -996,6 +996,10 @@ impl<'a> Walker<'a> {
                 self.uses("Pred", "BlockedThisTurn");
                 self.at("BlockedThisTurn", |w| w.selector(with));
             }
+            Pred::R6100DamagedThisGameBy(by) => {
+                self.uses("Pred", "R6100DamagedThisGameBy");
+                self.at("R6100DamagedThisGameBy", |w| w.selector(by));
+            }
             Pred::DealtDamageThisTurn(to) => {
                 self.uses("Pred", "DealtDamageThisTurn");
                 self.at("DealtDamageThisTurn", |w| w.selector(to));
@@ -6843,7 +6847,11 @@ impl Walker<'_> {
             ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::AddAmount(_) if zone_move => {
                 self.problem("a zone change has no number to change");
             }
+            ReplaceBy::R6100AtLeast(_) if !matches!(when, ReplaceWhen::Damage { .. }) => {
+                self.problem("only damage is raised to an amount");
+            }
             ReplaceBy::AddAmount(amount)
+            | ReplaceBy::R6100AtLeast(amount)
             | ReplaceBy::PreventAmount(amount)
             | ReplaceBy::MayAddAmount(amount) => {
                 self.at("amount", |w| w.amount(amount));

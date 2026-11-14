@@ -1401,6 +1401,10 @@ pub enum ReplaceBy {
     /// The number in the event is increased by an amount worked out as the event happens ("it deals that much damage
     /// plus X instead, where X is ~'s power"; `r304c_amounts`).
     AddAmount(Amount),
+    /// Damage of less than an amount worked out as the event happens is dealt as that amount instead ("would deal an
+    /// amount of noncombat damage less than ~'s power ..., that source deals damage equal to ~'s power instead"); damage
+    /// of that amount or more stays as it is (`r304c_amounts`).
+    R6100AtLeast(Amount),
     /// Up to an amount worked out as the event happens of the damage is prevented ("prevent X of that damage, where X
     /// is the number of creatures you control"); only a static ability uses it.
     PreventAmount(Amount),

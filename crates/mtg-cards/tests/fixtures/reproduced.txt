@@ -237,10 +237,12 @@ Borderland Behemoth
 Boromir, Gondor's Hope
 Bosh, Iron Golem
 Bounty of Skemfar
+Boxing Ring
 Brain Freeze
 Brainstorm
 Bramble Elemental
 Branchblight Stalker
+Brass's Tunnel-Grinder // Tecutlan, the Searing Rift
 Brave the Sands
 Break the Ice
 Breath of Life
@@ -1414,6 +1416,7 @@ Obstinate Baloth
 Octomancer
 Octopus Umbra
 Ohran Yeti
+Ojer Axonil, Deepest Might // Temple of Power
 Okiba Reckoner Raid // Nezumi Road Captain
 Old Stickfingers
 Olivia's Wrath
@@ -2007,6 +2010,7 @@ Syndic of Tithes
 Syndicate Messenger
 Synth Infiltrator
 Syphon Life
+Syrix, Carrier of the Flame
 Szadek, Lord of Secrets
 Tabaxi Toucaneers
 Tah-Crop Skirmisher
@@ -2063,6 +2067,7 @@ The Cruelty of Gix
 The Dalek Emperor
 The Elder Dragon War
 The Eleventh Doctor
+The Fallen
 The Gaffer
 The Great Henge
 The Locust God

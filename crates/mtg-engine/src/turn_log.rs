@@ -127,6 +127,7 @@ const fn weighs(event: TallyEvent) -> bool {
     matches!(
         event,
         TallyEvent::Damaged
+            | TallyEvent::R6100NoncombatDamaged
             | TallyEvent::DealtExcess
             | TallyEvent::CountersPut
             | TallyEvent::PlusOneCountersPut
@@ -143,6 +144,8 @@ pub(crate) const fn is_record(event: TallyEvent) -> bool {
     matches!(
         event,
         TallyEvent::Damaged
+            | TallyEvent::R6100NoncombatDamaged
+            | TallyEvent::Fought
             | TallyEvent::DealtExcess
             | TallyEvent::Attacked
             | TallyEvent::Blocked
