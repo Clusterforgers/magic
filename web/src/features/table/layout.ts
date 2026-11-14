@@ -3,11 +3,23 @@ import type { PlayerId } from '@/protocol/generated'
 import type { DockForm } from './dockLayout'
 import { handRowPx } from './handFit'
 
-/** Grid mode draws every opponent's battlefield; focus mode draws one large and the others as tiles. */
-export type TableMode = 'grid' | 'focus'
+/**
+ * Grid mode draws every opponent's battlefield; focus mode draws one large and the others as tiles; boss mode (a
+ * co-op fight against a boss) draws the boss's side on top and the party together at the bottom.
+ */
+export type TableMode = 'grid' | 'focus' | 'boss'
 
-/** How the opponents are arranged: one wide board beside a pod column, columns of one-line pods, or a tile strip and one board. */
-export type SeatShape = 'duel' | 'columns' | 'focus'
+/**
+ * How the opponents are arranged: one wide board beside a pod column, columns of one-line pods, a tile strip and one
+ * board, or the boss's side (the boss wide, its minions beside it).
+ */
+export type SeatShape = 'duel' | 'columns' | 'focus' | 'boss'
+
+/** The two sides of a co-op fight against a boss: the boss's seat and every seat of its side, the boss first. */
+export interface BossSides {
+  boss: PlayerId
+  enemies: readonly PlayerId[]
+}
 
 /** Up to this many seats a table starts in grid mode. */
 export const GRID_MAX_SEATS = 4
@@ -41,6 +53,8 @@ export interface SeatPlan {
   boards: PlayerId[]
   /** Opponents drawn as compact tiles: all of them in focus mode, none in grid mode. */
   tiles: PlayerId[]
+  /** The viewer's teammates in boss mode, drawn beside the viewer at the bottom; none in the other modes. */
+  allies: PlayerId[]
   /** Columns for the opponents' boards. */
   columns: 1 | 2 | 3
   /** Whether cards are drawn in the compact variant. */
@@ -56,6 +70,8 @@ export interface SeatInput {
   /** The opponent the player chose to focus; ignored when it is the viewer or not at the table. */
   focus?: PlayerId | null
   context?: FocusContext
+  /** The sides of a fight against a boss; boss mode needs them and is the default with them. */
+  sides?: BossSides | null
 }
 
 const NO_CONTEXT: FocusContext = { active: null, holder: null, eliminated: [] }
@@ -63,6 +79,12 @@ const NO_CONTEXT: FocusContext = { active: null, holder: null, eliminated: [] }
 /** Grid mode for up to `GRID_MAX_SEATS` seats, focus mode for more. */
 export function defaultMode(seatCount: number): TableMode {
   return seatCount <= GRID_MAX_SEATS ? 'grid' : 'focus'
+}
+
+/** `sides` when the viewer plays against the boss (or is not known); null otherwise, or without a boss. */
+export function bossSidesFor(sides: BossSides | null | undefined, viewer?: PlayerId): BossSides | null {
+  if (sides === null || sides === undefined || sides.enemies.length === 0) return null
+  return viewer !== undefined && sides.enemies.includes(viewer) ? null : sides
 }
 
 /** Every seat but `viewer`, in turn order from the seat after it. */
@@ -91,9 +113,30 @@ const wholeSeats = (seatCount: number): number =>
 export function arrangeSeats(input: SeatInput): SeatPlan {
   const seatCount = wholeSeats(input.seatCount)
   const viewer = seatCount === 0 ? 0 : ((Math.trunc(input.viewer) % seatCount) + seatCount) % seatCount
-  const mode = input.mode ?? defaultMode(seatCount)
+  const sides = bossSidesFor(input.sides, viewer)
+  const asked = input.mode ?? (sides === null ? defaultMode(seatCount) : 'boss')
+  // Boss mode needs a boss; without one the table falls back to the rule of the seat count.
+  const mode = asked === 'boss' && sides === null ? defaultMode(seatCount) : asked
   const opponents = opponentsOf(seatCount, viewer)
   const compact = seatCount >= COMPACT_FROM_SEATS
+  if (mode === 'boss' && sides !== null) {
+    const enemies = [sides.boss, ...sides.enemies.filter((seat) => seat !== sides.boss)].filter((seat) =>
+      opponents.includes(seat),
+    )
+    const chosen = input.focus ?? null
+    return {
+      mode,
+      shape: 'boss',
+      viewer,
+      opponents,
+      focused: chosen !== null && enemies.includes(chosen) ? chosen : (enemies[0] ?? null),
+      boards: enemies,
+      tiles: [],
+      allies: opponents.filter((seat) => !enemies.includes(seat)),
+      columns: toColumns(enemies.length),
+      compact,
+    }
+  }
   if (mode === 'grid') {
     const columns = Math.min(GRID_MAX_COLUMNS, Math.max(1, opponents.length))
     return {
@@ -104,6 +147,7 @@ export function arrangeSeats(input: SeatInput): SeatPlan {
       focused: null,
       boards: opponents,
       tiles: [],
+      allies: [],
       columns: toColumns(columns),
       compact,
     }
@@ -119,6 +163,7 @@ export function arrangeSeats(input: SeatInput): SeatPlan {
     focused,
     boards: focused === null ? [] : [focused],
     tiles: opponents,
+    allies: [],
     columns: 1,
     compact,
   }
@@ -408,11 +453,18 @@ export interface ModeInput {
   mainWidth: number
   /** The mode the player chose from the menu, which wins over the rule. */
   override?: TableMode | undefined
+  /** The sides of a fight against a boss, which opens in boss mode. */
+  sides?: BossSides | null | undefined
+  viewer?: PlayerId | undefined
 }
 
-/** Grid for 2 to 4 seats, focus for 5 or more or when a grid column would be under `MIN_COLUMN_PX`; the player may override. */
-export function chooseMode({ seatCount, mainWidth, override }: ModeInput): TableMode {
+/**
+ * Boss mode in a fight against a boss; else grid for 2 to 4 seats, focus for 5 or more or when a grid column would
+ * be under `MIN_COLUMN_PX`; the player may override.
+ */
+export function chooseMode({ seatCount, mainWidth, override, sides, viewer }: ModeInput): TableMode {
   if (override !== undefined) return override
+  if (bossSidesFor(sides, viewer) !== null) return 'boss'
   if (defaultMode(wholeSeats(seatCount)) === 'focus') return 'focus'
   return gridColumnWidth(seatCount, mainWidth) < MIN_COLUMN_PX ? 'focus' : 'grid'
 }
@@ -435,6 +487,40 @@ export function activeFirst(tiles: readonly PlayerId[], active: PlayerId | null 
   return [active, ...tiles.filter((seat) => seat !== active)]
 }
 
+/**
+ * Boss mode on a phone: with minions, every seat of the boss's side is a tile and only the focused one (the boss
+ * unless a tile was picked) has its board drawn; the boss alone is drawn whole.
+ */
+export function bossOnPhone(plan: SeatPlan, phone: boolean): SeatPlan {
+  if (!phone || plan.shape !== 'boss' || plan.boards.length <= 1) return plan
+  const focused = plan.focused ?? plan.boards[0] ?? null
+  return { ...plan, tiles: plan.boards, boards: focused === null ? [] : [focused], columns: 1 }
+}
+
+/** The height in px of the party's band over your board in boss mode: a tile strip on a phone, else a row of boards. */
+export function alliesBandPx(regions: Pick<Regions, 'phone' | 'opponents' | 'own'>, allies: number): number {
+  if (allies <= 0) return 0
+  if (regions.phone) return ALLY_STRIP_PX
+  const room = finite(regions.opponents) + finite(regions.own)
+  return Math.round(Math.min(ALLIES_MAX_PX, Math.max(ALLIES_MIN_PX, room * ALLIES_SHARE)))
+}
+
+/** The row of the boss's abilities over its side (`h-9`). */
+export const BOSS_ABILITIES_PX = 36
+
+/** The boss's board is this many shares of its side's width, beside one share per minion. */
+export const BOSS_SPAN = 2
+
+/** A hero's board widened in the party's row takes this many shares of it, beside one share per other hero. */
+export const ALLY_WIDE_SPAN = 3
+
+/** The party's tile strip on a phone (`h-14`). */
+export const ALLY_STRIP_PX = 56
+/** The share of the boards' room the party's row of boards takes, and its bounds in px. */
+export const ALLIES_SHARE = 0.34
+export const ALLIES_MIN_PX = 120
+export const ALLIES_MAX_PX = 280
+
 /** The whole layout of the table for a window and a seat count. */
 export interface TablePlan {
   regions: Regions
@@ -455,16 +541,23 @@ export interface TablePlan {
 export function planTable(input: TableInput): TablePlan {
   const regions = regionSizes(input.viewport)
   const seatCount = wholeSeats(input.seatCount)
-  const mode = chooseMode({ seatCount, mainWidth: regions.main.width, override: input.mode })
-  const arranged = arrangeSeats({ ...input, seatCount, mode })
+  const mode = chooseMode({
+    seatCount,
+    mainWidth: regions.main.width,
+    override: input.mode,
+    sides: input.sides,
+    viewer: input.viewer,
+  })
+  const arranged = bossOnPhone(arrangeSeats({ ...input, seatCount, mode }), regions.phone)
   // The strip leads with the seat whose turn it is, so that it is in view where the strip scrolls and one place to look at everywhere.
   const seats = { ...arranged, tiles: activeFirst(arranged.tiles, input.active) }
   const pod: PodPlace = regions.phone ? 'line' : 'aside'
+  const tiled = seats.shape === 'focus' || (seats.shape === 'boss' && seats.tiles.length > 0)
   return {
     regions,
     seats,
     pod,
-    opponentPod: regions.phone && seats.shape === 'focus' ? 'none' : pod,
+    opponentPod: regions.phone && tiled ? 'none' : pod,
     stopsRow: BREAKPOINT_FROM[regions.breakpoint] >= STOPS_ROW_MIN_WIDTH_PX,
     ladderInBar: BREAKPOINT_FROM[regions.breakpoint] >= LADDER_IN_BAR_MIN_WIDTH_PX,
     dock: dockForm(regions),

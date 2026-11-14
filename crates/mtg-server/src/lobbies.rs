@@ -126,6 +126,11 @@ impl From<TableError> for ApiError {
                 "the seat is ready; take Ready back to change its deck",
             ),
             TableError::Teams(teams) => ApiError::from(teams),
+            TableError::Fixed => ApiError::new(
+                StatusCode::CONFLICT,
+                "deck_fixed",
+                "a Delves fight plays the decks the party chose for the run",
+            ),
             TableError::Record(_) => {
                 tracing::error!(%error, "a change to a table could not be saved");
                 failure(

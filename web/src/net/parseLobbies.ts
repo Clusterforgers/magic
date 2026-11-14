@@ -117,6 +117,7 @@ export function readGameInfo(body: unknown): GameInfo | null {
   if (rules === null) return null
   const result = body.result === null || isGameResult(body.result) ? body.result : undefined
   if (result === undefined) return null
+  if (body.delve !== undefined && !isText(body.delve)) return null
   const seats: GameSeat[] = []
   for (const item of body.seats) {
     const seat = readGameSeat(item)
@@ -133,5 +134,6 @@ export function readGameInfo(body: unknown): GameInfo | null {
     visibility,
     manual_play: manual,
     ...(rules === undefined ? {} : { house_rules: rules }),
+    ...(isText(body.delve) ? { delve: body.delve } : {}),
   }
 }

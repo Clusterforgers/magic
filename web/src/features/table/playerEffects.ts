@@ -199,6 +199,16 @@ export function campaignFacts(player: PlayerView, owner: string): EffectFacts[] 
           : `${owner} is in phase ${begun + 1}; next comes ${next} as their life drops.`,
     })
   }
+  const scheme = player.boss?.scheme
+  if (scheme !== undefined) {
+    facts.push({
+      key: 'Scheme',
+      icon: 'boss',
+      label: `Scheme: ${scheme}`,
+      tone: 'neutral',
+      detail: `${owner} set ${scheme} in motion this turn.`,
+    })
+  }
   const omen = player.boss?.omen
   if (omen !== undefined) {
     facts.push({

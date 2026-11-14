@@ -175,6 +175,8 @@ pub struct PublicGame {
     pub manual_play: bool,
     /// What the creator set in place of the format's values.
     pub house_rules: HouseRules,
+    /// The Delves run the game is a boss fight of.
+    pub delve: Option<String>,
 }
 
 /// Why a game left the registry, as the sockets of its seats learn it.
@@ -276,6 +278,8 @@ struct Parts {
     /// Whether the game is in the database, so changes to its seats are written there too.
     recorded: bool,
     seats: Vec<SeatSlot>,
+    /// The Delves run the game is a boss fight of.
+    delve: Option<String>,
 }
 
 struct Entry {
@@ -302,6 +306,8 @@ struct Entry {
     alive: watch::Sender<Removal>,
     /// Never in the game browser, even running: a tutorial, one player against a bot.
     unlisted: bool,
+    /// The Delves run the game is a boss fight of.
+    delve: Option<String>,
 }
 
 impl Entry {
@@ -313,6 +319,7 @@ impl Entry {
             visibility: parts.visibility,
             format: parts.format,
             house_rules: parts.house_rules,
+            delve: parts.delve,
             code: parts.code,
             recorded: parts.recorded,
             seats: parts.seats,
@@ -714,6 +721,10 @@ impl Registry {
             code: Some(code.digest()),
             recorded: persistent,
             seats: slots,
+            delve: recipe
+                .as_ref()
+                .and_then(|recipe| recipe.campaign.as_ref())
+                .and_then(|plan| plan.run.clone()),
         };
         self.games()
             .insert(id, Entry::new(handle.clone(), parts, Instant::now()));
@@ -1014,9 +1025,14 @@ impl Registry {
         Some((entry.format, entry.house_rules.clone()))
     }
 
+    /// The Delves run `id` is a boss fight of; none for any other game or an unknown one.
+    pub fn delve_of(&self, id: GameId) -> Option<String> {
+        self.games().get(&id).and_then(|entry| entry.delve.clone())
+    }
+
     /// The public facts of a game; `None` if there is no such game or its actor is gone.
     pub async fn describe(&self, id: GameId) -> Option<PublicGame> {
-        let (handle, format, visibility, house_rules, seats) = {
+        let (handle, format, visibility, house_rules, seats, delve) = {
             let games = self.games();
             let entry = games.get(&id)?;
             let seats: Vec<SeatSummary> = entry
@@ -1035,6 +1051,7 @@ impl Registry {
                 entry.visibility,
                 entry.house_rules.clone(),
                 seats,
+                entry.delve.clone(),
             )
         };
         let status = handle.status().await.ok()?;
@@ -1048,6 +1065,7 @@ impl Registry {
             result: status.result,
             manual_play: status.manual_play,
             house_rules,
+            delve,
         })
     }
 

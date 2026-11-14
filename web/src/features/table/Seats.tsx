@@ -129,21 +129,23 @@ function FocusBoard({ seat, size, pod }: FocusBoardProps) {
 
 interface TileStripProps {
   /** The opponents' seats, the one whose turn it is first. */
-  tiles: PlayerId[]
+  tiles: readonly PlayerId[]
   /** The opponent whose board is large. */
   focused: PlayerId | null
   onFocusSeat: (seat: PlayerId) => void
+  /** The strip's name for a screen reader; "Opponents" when left out. */
+  label?: string
 }
 
 /** The strip of tiles of focus mode; it scrolls back to its start when the seat that leads it changes. */
-function TileStrip({ tiles, focused, onFocusSeat }: TileStripProps) {
+export function TileStrip({ tiles, focused, onFocusSeat, label = 'Opponents' }: TileStripProps) {
   const strip = useRef<HTMLUListElement>(null)
   useLeadInView(strip, tiles[0])
   return (
     <ul
       ref={strip}
       role="list"
-      aria-label="Opponents"
+      aria-label={label}
       data-slot="tile-strip"
       className="relative flex h-14 shrink-0 gap-2 overflow-x-auto p-1 [scrollbar-width:none]"
     >
@@ -196,7 +198,7 @@ export function Opponents({ plan, size, pod, onFocusSeat }: OpponentsProps) {
 }
 
 /** The seat's result as a thin strip: its name and how it left the game. */
-function LeftStrip({ seat }: { seat: PlayerId }) {
+export function LeftStrip({ seat }: { seat: PlayerId }) {
   const owner = useSeatNamer()(seat)
   const lost = usePlay((state) => playerOf(state, seat)?.lost ?? null)
   return (

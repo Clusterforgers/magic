@@ -48,6 +48,8 @@ export interface EventNames {
   ability?(id: ObjectId): ObjectId | undefined
   /** The name of a door (0 or 1) of a Room, when the viewer knows it. */
   door?(id: ObjectId, door: number): string | undefined
+  /** The name of the boss whose command zone holds `id` (one of its boss abilities), else undefined. */
+  boss?(id: ObjectId): string | undefined
 }
 
 /** One log line. Minor lines (priority passes, mana, untaps) are drawn quietly. */
@@ -800,7 +802,12 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
     )
   }
   if ('AbilityTriggered' in event) {
-    return line(`An ability of ${n.card(event.AbilityTriggered.source.id)} triggers`)
+    const { id } = event.AbilityTriggered.source
+    const boss = n.boss?.(id)
+    // A boss's ability is named as its own: "Skrix, the Rat Queen: Escalation triggers".
+    return line(
+      boss === undefined ? `An ability of ${n.card(id)} triggers` : `${boss}: ${n.card(id)} triggers`,
+    )
   }
   if ('TriggersOrdered' in event) {
     return quiet(`${n.seat(event.TriggersOrdered.player)} puts their triggered abilities in order`)

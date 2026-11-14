@@ -102,6 +102,7 @@ fn lookup(started: bool, result: Option<GameResult>, visibility: Visibility) -> 
         visibility,
         manual_play: false,
         house_rules: None,
+        delve: None,
     }
 }
 
@@ -497,6 +498,19 @@ fn the_game_lookup_names_house_rules_only_when_some_are_set() {
     let value = serde_json::to_value(&info).unwrap();
     assert_eq!(value["house_rules"], json!({ "starting_life": 30 }));
     assert_eq!(serde_json::from_value::<GameInfo>(value).unwrap(), info);
+}
+
+#[test]
+fn the_game_lookup_names_its_delve_only_for_a_boss_fight() {
+    let none = lookup(true, None, Visibility::Invite);
+    assert!(serde_json::to_value(&none).unwrap().get("delve").is_none());
+    let fight = GameInfo {
+        delve: Some("run-1".into()),
+        ..none
+    };
+    let value = serde_json::to_value(&fight).unwrap();
+    assert_eq!(value["delve"], json!("run-1"));
+    assert_eq!(serde_json::from_value::<GameInfo>(value).unwrap(), fight);
 }
 
 #[test]

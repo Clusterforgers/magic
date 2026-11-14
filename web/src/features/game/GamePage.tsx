@@ -1,3 +1,4 @@
+import { Navigate } from '@tanstack/react-router'
 import { useEffect, useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
 import { useStore } from 'zustand'
@@ -18,7 +19,10 @@ import type { Session, SessionDeps } from '@/play/session'
 import type { PlayState } from '@/play/store'
 import { TutorialCoach } from '@/features/learn/LessonCoach'
 import { tutorialOf } from '@/features/learn/tutorials'
+import { FightLobby } from '@/features/delves/FightLobby'
 import { GameTable } from '@/features/table/GameTable'
+import { delvesApi as sharedDelves } from '@/net/delves'
+import type { DelvesApi } from '@/net/delves'
 import { TableOptionsContext } from '@/features/table/tableOptions'
 import { connectionOf } from './connection'
 import { ConnectionNotice } from './ConnectionNotice'
@@ -55,6 +59,8 @@ export interface GamePageProps {
   decks?: DecksApi
   /** The precons for the deck chooser: the shared client unless a test brings its own. */
   precons?: Pick<PreconsApi, 'list' | 'get'>
+  /** The Delves client a boss fight's waiting room reads its run with: the shared client unless a test brings its own. */
+  delves?: DelvesApi
   /** Fakes for the socket, timers and origin; leave out in the app. */
   deps?: SessionOverrides
 }
@@ -68,6 +74,7 @@ export function GamePage({
   api = sharedApi,
   decks = sharedDecks,
   precons = sharedPrecons,
+  delves = sharedDelves,
   deps,
 }: GamePageProps) {
   // A new game, seat, token or account is a new session, so the key makes it a new component rather than a stale one.
@@ -82,6 +89,7 @@ export function GamePage({
         api={api}
         decks={decks}
         precons={precons}
+        delves={delves}
         deps={deps}
       />
     )
@@ -96,6 +104,7 @@ export function GamePage({
         api={api}
         decks={decks}
         precons={precons}
+        delves={delves}
         deps={deps}
       />
     )
@@ -110,6 +119,7 @@ export function GamePage({
       api={api}
       decks={decks}
       precons={precons}
+      delves={delves}
       deps={deps}
     />
   )
@@ -126,6 +136,7 @@ interface SeatedGameProps {
   api: Api
   decks: DecksApi
   precons: Pick<PreconsApi, 'list' | 'get'>
+  delves: DelvesApi
   deps: SessionOverrides | undefined
 }
 
@@ -159,7 +170,17 @@ function useConnected(session: Session): void {
   }, [session])
 }
 
-function SeatedGame({ gameId, token, watch = false, name, api, decks, precons, deps }: SeatedGameProps) {
+function SeatedGame({
+  gameId,
+  token,
+  watch = false,
+  name,
+  api,
+  decks,
+  precons,
+  delves,
+  deps,
+}: SeatedGameProps) {
   const [session] = useState(() => createSession({ ...deps, game: gameId, token, name, watch }))
   const [tutorial] = useState(() => tutorialOf(gameId))
   useConnected(session)
@@ -180,7 +201,12 @@ function SeatedGame({ gameId, token, watch = false, name, api, decks, precons, d
   // or the seat was lost), the connection notice is the whole page.
   let screen: ReactElement | null = null
   let title = connection.kind === 'closed' ? 'Game closed' : ended ? 'Disconnected' : 'Connecting'
-  if (over) {
+  // A Delves boss fight has its own waiting room, and its end goes straight back to the run for the loot.
+  const delve = lookup.game?.delve ?? null
+  if (over && delve !== null && !watch) {
+    screen = <Navigate to="/delves/$delveId" params={{ delveId: delve }} />
+    title = 'Game over'
+  } else if (over) {
     // The result closes for a look at the final table and its log, and comes back from the strip above them.
     screen = review ? <GameTable /> : <GameOver onReview={() => setReview(true)} />
     title = 'Game over'
@@ -188,6 +214,8 @@ function SeatedGame({ gameId, token, watch = false, name, api, decks, precons, d
     screen =
       state.phase === 'playing' ? (
         <GameTable />
+      ) : delve !== null ? (
+        <FightLobby delve={delve} client={delves} />
       ) : (
         <Lobby api={api} decks={decks} precons={precons} token={token} />
       )

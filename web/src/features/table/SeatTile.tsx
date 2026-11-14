@@ -130,7 +130,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
         <span className="flex min-w-0 items-center gap-1.5">
           <SeatDot seat={seat} />
           <span className="min-w-10 truncate text-sm font-semibold">{name}</span>
-          {team === null ? null : <TeamBadge team={team.team} size="chip" />}
+          {team === null || !team.badge ? null : <TeamBadge team={team.team} size="chip" />}
           {player.boss ? <BossChip compact /> : null}
           {player.spirit ? <SpiritMark compact /> : null}
           {showsPriorityDot(flags.active, flags.priority) ? (

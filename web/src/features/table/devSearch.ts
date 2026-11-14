@@ -75,6 +75,8 @@ export interface DevSearch {
   step?: Step
   /** `1` gives the table house rules that differ from its format's own, to look at the list in the top bar. */
   rules?: true
+  /** A fight against a boss: the last seats are the boss and this many minions (0 to 2), a team against the rest. */
+  boss?: number
   /** `1` gives the viewer and the rivals a permanent for every state a card shows (`dev/states.ts`), to look at them all at once. */
   states?: true
   /** `1` adds the attachments scene (`dev/equip.ts`): five attachments on one creature, an opponent's Aura on yours, yours on theirs, a Curse and an unattached Equipment. */
@@ -114,11 +116,13 @@ const whole = (value: unknown): number | undefined =>
 
 const isDevFx = (value: unknown): value is DevFx => DEV_FX.some((name) => name === value)
 
-/** Reads `?seats=&board=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&newturn=&bar=&slow=&preview=&stops=&fc=&rules=&states=&cards=&menu=`, ignoring whatever does not make sense. The router has already parsed numbers. */
+/** Reads `?seats=&boss=&board=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&newturn=&bar=&slow=&preview=&stops=&fc=&rules=&states=&cards=&menu=`, ignoring whatever does not make sense. The router has already parsed numbers. */
 export function parseDevSearch(search: Record<string, unknown>): DevSearch {
   const seats = whole(search.seats)
   const focus = whole(search.focus)
-  const mode = search.mode === 'grid' || search.mode === 'focus' ? search.mode : undefined
+  const mode =
+    search.mode === 'grid' || search.mode === 'focus' || search.mode === 'boss' ? search.mode : undefined
+  const boss = whole(search.boss)
   const slow =
     typeof search.slow === 'number' && search.slow > 1 && search.slow <= MAX_DEV_SLOW
       ? search.slow
@@ -154,6 +158,7 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     panel: panelOf(search.panel),
     tour: search.tour === 1 ? '1' : typeof search.tour === 'string' ? search.tour : undefined,
     lexicon: search.lexicon === 1 ? '1' : typeof search.lexicon === 'string' ? search.lexicon : undefined,
+    boss: boss === undefined || boss > 2 ? undefined : boss,
     rules: search.rules === true || search.rules === 1 || search.rules === '1' ? true : undefined,
     states: search.states === true || search.states === 1 || search.states === '1' ? true : undefined,
     moments: search.moments === true || search.moments === 1 || search.moments === '1' ? true : undefined,

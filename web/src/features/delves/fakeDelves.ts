@@ -108,7 +108,16 @@ export function run(over: Partial<Run> = {}): Run {
 }
 
 export function delveView(over: Partial<DelveView> = {}, runOver: Partial<Run> = {}): DelveView {
-  return { id: 'd1', code: 'CODE1', seed: 'SEED', host: true, me: 0, run: run(runOver), ...over }
+  return {
+    id: 'd1',
+    code: 'CODE1',
+    seed: 'SEED',
+    host: true,
+    me: 0,
+    run: run(runOver),
+    deck_problems: [],
+    ...over,
+  }
 }
 
 /** A client that answers every read with `view` and records the actions. */

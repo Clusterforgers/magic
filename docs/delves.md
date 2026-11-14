@@ -43,6 +43,8 @@ One table (`scale.rs`) sets the boss for the party's size, so every size meets t
 ## Run state
 
 - A run is the fold of its events (`run.rs`): `Joined`, `Left`, `DeckChosen`, `Started`, `Voted`, `FightCreated`, `FightEnded`, `Picked`, `Abandoned`. The ladder is regenerated from the seed, never stored.
+- Decks are chosen once, in the lobby; afterwards only rewards change them. A fight is made from those decks (`FightPlan.run` names the run, so the game links back); its game lobby refuses a deck change (409 `deck_fixed`). A hero whose deck no longer plays (deleted, nothing playable) holds the fight: the run view lists it in `deck_problems`, and only that hero may then choose another deck (`DeckChosen` while the fight waits for its game).
+- The party's list leaves abandoned runs out; the rows stay stored. A run unchanged for 7 days (`STALE_DAYS`) with no live fight is abandoned when the list is read.
 - Every random draw comes from the seed keyed by room, hero and purpose (`rng.rs`), so a reload never rerolls loot.
 - Votes: when every hero voted, the room with the most votes wins and a tie goes to the torch bearer, a role that moves one hero on with every cleared room. Bot allies vote once the players did, with the majority, and answer offers with the first choice (rest when hurt, the first affordable relic at the shop).
 
@@ -50,6 +52,8 @@ One table (`scale.rs`) sets the boss for the party's size, so every size meets t
 
 - The run page reads as a descent: a header with the party's life, hearts, Heat and seed; the ladder as a path from the first boss to the final one, every room cleared, current, next or locked; votes show who chose which camp.
 - Each camp is a scene of its own (loot, shop, campfire, event); a risky relic is always marked Dangerous. Implementation in [web.md](web.md), Delves.
+- A fight opens with the boss intro (the run view's `fight`: the plan's boss, life, custom cards, phase thresholds and minions), in place of the game's lobby: the boss's abilities in full, the party's decks and carried life, and Ready to fight. When the game ends the table returns straight to the run, which greets the loot or the lost heart.
+- At the table the boss's side sits on top and the party together at the bottom (boss mode); the boss's abilities, phases to come, scheme and Omen are a row of chips with their rules. Their words come from the content records the engine plays, matched to the emblems in the boss's command zone and its `BossView`.
 
 ## Content
 

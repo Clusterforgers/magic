@@ -109,6 +109,10 @@ pub struct GameInfo {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub house_rules: Option<HouseRules>,
+    /// The Delves run the game is a boss fight of (`/delves/{id}`); left out for any other game.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub delve: Option<String>,
 }
 
 /// The body of `POST /api/games/{id}/join`.
