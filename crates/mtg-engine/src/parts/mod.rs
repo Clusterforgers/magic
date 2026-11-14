@@ -34,6 +34,7 @@ mod r5518_alike;
 mod reveal;
 mod sacrifice;
 mod source;
+mod spend;
 mod tap;
 mod to_library;
 mod unattach;
@@ -164,6 +165,13 @@ pub(crate) enum Part {
     },
     /// Energy counters paid (CR 107.14).
     Energy(u32),
+    /// Counters of a kind the payer spends from themselves ("Spend 3 ectoplasm").
+    Spend {
+        /// The kind of counter.
+        counter: CounterKind,
+        /// How many.
+        count: u32,
+    },
     /// Cards milled from the top of the payer's library (CR 701.17).
     Mill(u32),
     /// Cards drawn (CR 121).
@@ -181,6 +189,7 @@ const fn counted(item: &CostItem) -> &'static str {
     match item {
         CostItem::PayLife(_) => "Cost.PayLife.Counted",
         CostItem::PayEnergy(_) => "Cost.PayEnergy.Counted",
+        CostItem::SpendCounters { .. } => "Cost.SpendCounters.Counted",
         CostItem::Mill(_) => "Cost.Mill.Counted",
         CostItem::Draw(_) => "Cost.Draw.Counted",
         CostItem::DiscardRandom(_) => "Cost.DiscardRandom.Counted",
@@ -426,6 +435,16 @@ impl Part {
                 let (number, x) = amount(count, item)?;
                 (Part::Energy(number), x)
             }
+            CostItem::SpendCounters { counter, count } => {
+                let (number, x) = amount(count, item)?;
+                (
+                    Part::Spend {
+                        counter: counter.clone(),
+                        count: number,
+                    },
+                    x,
+                )
+            }
             CostItem::Mill(count) => {
                 let (number, x) = amount(count, item)?;
                 (Part::Mill(number), x)
@@ -526,6 +545,10 @@ impl Part {
             Part::X(inner) => match &**inner {
                 Part::Life(_) => Part::Life(x),
                 Part::Energy(_) => Part::Energy(x),
+                Part::Spend { counter, .. } => Part::Spend {
+                    counter: counter.clone(),
+                    count: x,
+                },
                 Part::Mill(_) => Part::Mill(x),
                 Part::Draw(_) => Part::Draw(x),
                 Part::DiscardRandom(_) => Part::DiscardRandom(x),
@@ -597,6 +620,7 @@ impl Part {
         let number = match &**inner {
             Part::Life(_) => life::most(payer),
             Part::Energy(_) => energy::most(payer),
+            Part::Spend { counter, .. } => spend::most(payer, counter),
             Part::Mill(_) => mill::most(payer),
             Part::Draw(_) => draw::most(payer),
             Part::DiscardRandom(_) => random::most(payer),
@@ -625,6 +649,7 @@ impl Part {
         match self {
             Part::Life(_) => "Cost.PayLife",
             Part::Energy(_) => "Cost.PayEnergy",
+            Part::Spend { .. } => "Cost.SpendCounters",
             Part::Mill(_) => "Cost.Mill",
             Part::Draw(_) => "Cost.Draw",
             Part::DiscardRandom(_) => "Cost.DiscardRandom",
@@ -676,6 +701,7 @@ impl Part {
                     "{E}".repeat(usize::try_from(*amount).unwrap_or(0))
                 )
             }
+            Part::Spend { counter, count } => spend::text(counter, *count),
             Part::Damage(amount) => format!("Take {amount} damage"),
             Part::OthersGainLife(amount) => format!("Each other player gains {amount} life"),
             Part::Poison(amount) => format!("Get {amount} poison counters"),
@@ -731,6 +757,7 @@ impl Part {
         match self {
             Part::Life(amount) => life::payable(payer, *amount).then(Vec::new),
             Part::Energy(amount) => energy::payable(payer, *amount).then(Vec::new),
+            Part::Spend { counter, count } => spend::payable(payer, counter, *count).then(Vec::new),
             Part::Mill(amount) => mill::payable(payer, *amount).then(Vec::new),
             Part::Draw(amount) => draw::payable(payer, *amount).then(Vec::new),
             Part::DiscardRandom(amount) => random::payable(payer, *amount).then(Vec::new),
@@ -807,6 +834,7 @@ impl Part {
         match self {
             Part::Life(amount) => life::events(player, *amount),
             Part::Energy(amount) => energy::events(player, *amount),
+            Part::Spend { counter, count } => spend::events(player, counter, *count),
             Part::Mill(amount) => mill::events(state, player, *amount),
             Part::Draw(amount) => draw::events(state, player, *amount),
             Part::DiscardRandom(amount) => random::events(state, player, *amount),

@@ -3,8 +3,8 @@
 //! can spare the life. A plain policy, so a Spirit never costs a search.
 
 use mtg_cards::ability::Ability;
+use mtg_cards::cost::CostItem;
 use mtg_cards::effect::Effect;
-use mtg_cards::refs::Ref;
 use mtg_core::ids::PlayerId;
 use mtg_engine::abilities::AbilityRef;
 use mtg_engine::decision::{PriorityAction, PriorityOptions};
@@ -64,19 +64,20 @@ pub fn kind(rules: &Ability) -> Option<Haunt> {
     }
 }
 
-/// The ectoplasm an ability spends: the counters its first step removes from its controller.
+/// The ectoplasm an ability spends: the counters its cost takes from its controller.
 fn price(rules: &Ability) -> u32 {
-    let Ability::Activated { effects, .. } = rules else {
+    let Ability::Activated { cost, .. } = rules else {
         return 0;
     };
-    match effects.first() {
-        Some(Effect::RemoveCounters {
-            from: Ref::You,
-            count,
-            ..
-        }) => count.fixed().unwrap_or(0),
-        _ => 0,
-    }
+    cost.0
+        .iter()
+        .map(|item| match item {
+            CostItem::SpendCounters { counter, count } if *counter == ectoplasm() => {
+                count.fixed().unwrap_or(0)
+            }
+            _ => 0,
+        })
+        .sum()
 }
 
 /// The abilities offered now on the emblems in `seat`'s command zone, with their kind and price.

@@ -15,7 +15,7 @@ Design of Delves, the co-op campaign: a party of 1 to 6 heroes fights a ladder o
 A fallen hero keeps playing: it haunts the fight with small, clear choices and can come back.
 
 - A Spirit's cards leave the game; it keeps its turns and its library. Opponents cannot attack it or target it.
-- Ectoplasm is its resource: 1 on falling and 1 more at each of its upkeeps. The Restless Spirit emblem (`content/cards.json`) spends it on haunt actions at instant speed:
+- Ectoplasm is its resource: 1 on falling and 1 more at each of its upkeeps. The Restless Spirit emblem (`content/cards.json`) offers haunt actions at instant speed, each paying its ectoplasm as a cost (`SpendCounters`) as it goes on the stack, so an action is a legal play only while the Spirit holds its price:
 
 | Action | Ectoplasm | Effect |
 |---|---|---|
