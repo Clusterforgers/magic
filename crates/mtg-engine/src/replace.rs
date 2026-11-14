@@ -604,6 +604,15 @@ enum Unit {
     Other,
 }
 
+/// Whether `source` is a permanent whose own card enters the battlefield again in the same batch (exiled and cloaked
+/// in one pile): the card that enters is a new object (CR 400.7), which the permanent's abilities do not modify.
+fn r5515_returns_as_new(state: &GameState, source: &Source, unit: &Unit) -> bool {
+    matches!(unit, Unit::Enter { object, .. } if *object == source.object.id)
+        && state
+            .object(source.object.id)
+            .is_some_and(|object| object.zone() == Zone::Battlefield)
+}
+
 /// The card that enters the battlefield with this event, and under whose control.
 fn entering(state: &GameState, event: &Event) -> Option<(ObjectId, PlayerId)> {
     match event {
@@ -679,6 +688,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
             matches!(to, Some(Ref::This))
         }
         ReplaceWhen::TokenCreation { .. }
+        | ReplaceWhen::R6001DamageBetweenChosen
         | ReplaceWhen::Mill { .. }
         | ReplaceWhen::LifeGain { .. }
         | ReplaceWhen::LifeLoss { .. }
@@ -718,6 +728,7 @@ const fn scales(by: &ReplaceBy) -> bool {
 }
 
 /// Whether the engine can apply `by` to this kind of event.
+#[allow(clippy::too_many_lines)] // one arm for every replacement
 fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
     match by {
         ReplaceBy::PreventUpTo(_)
@@ -734,6 +745,13 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::RedirectUpTo { .. }
         | ReplaceBy::RedirectCounted { .. }
         | ReplaceBy::Redirect { .. } => matches!(unit, Unit::Damage { .. }),
+        ReplaceBy::HealFirst => matches!(
+            unit,
+            Unit::Damage {
+                target: DamageTarget::Object(_),
+                ..
+            }
+        ),
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
         ReplaceBy::LossTimes(_) => matches!(
             unit,
@@ -792,6 +810,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::PayLifeOrTapped(_)
         | ReplaceBy::TappedForCounters { .. }
         | ReplaceBy::RevealOrTapped(_)
+        | ReplaceBy::R6007RevealOrControl { .. }
         | ReplaceBy::BeholdOrTapped(_)
         | ReplaceBy::PayOrGraveyard { .. }
         | ReplaceBy::Devour { .. }
@@ -1123,6 +1142,28 @@ impl Pass<'_> {
                 }
             }
             (
+                ReplaceWhen::R6001DamageBetweenChosen,
+                Unit::Damage {
+                    source: dealer,
+                    target,
+                    ..
+                },
+            ) => {
+                let chosen = scope.players(&Ref::Chosen)?;
+                let Some(dealer) = self.state.object(*dealer) else {
+                    return Ok(false);
+                };
+                let by = controller_of_object(self.state, dealer);
+                let hit = match target {
+                    DamageTarget::Player(player) => *player,
+                    DamageTarget::Object(object) => match self.state.object(*object) {
+                        Some(object) => controller_of_object(self.state, object),
+                        None => return Ok(false),
+                    },
+                };
+                by != hit && chosen.contains(&by) && chosen.contains(&hit)
+            }
+            (
                 ReplaceWhen::ZoneChange { what, from, to },
                 Unit::Move {
                     object,
@@ -1287,6 +1328,7 @@ impl Pass<'_> {
                 || matches!(by, ReplaceBy::Dredge(cards) if !step.can_dredge(at, source.object.id, *cards))
                 || !step.c6_blk_matches(at, source, when, &unit)?
                 || !step.r5517_caused_own(at, when, &unit)
+                || r5515_returns_as_new(step.state, source, &unit)
                 || (matches!(by, ReplaceBy::UnderYourControl)
                     && !step.r5517_from_opponent(source.controller, &unit))
             {
@@ -2312,10 +2354,19 @@ impl Pass<'_> {
                     self.redirect(at, *object, *from, destination, &applied);
                 }
             }
-            (ReplaceBy::IntoLibrary { place, reveal }, Unit::Move { object, from, .. }) => {
+            (ReplaceBy::IntoLibrary { place, reveal, .. }, Unit::Move { object, from, .. }) => {
                 self.g12a_into_library(at, (*object, *from), (*place, *reveal), &applied);
             }
             (ReplaceBy::Dredge(cards), Unit::Draw { .. }) => self.dredge(at, candidate, *cards),
+            (
+                ReplaceBy::HealFirst,
+                Unit::Damage {
+                    target: DamageTarget::Object(object),
+                    ..
+                },
+            ) => {
+                self.r6013_heal_first(at, *object, applied);
+            }
             (ReplaceBy::UmbraArmor, Unit::Move { object, .. }) => {
                 self.umbra(at, candidate, *object);
             }
@@ -2363,6 +2414,13 @@ impl Pass<'_> {
             ReplaceBy::RevealOrTapped(of) => {
                 self.reveal_or_tapped(at, candidate, (of, false), (object, controller), applied)
             }
+            ReplaceBy::R6007RevealOrControl { of, counter, count } => self.r6007_reveal_or_control(
+                at,
+                candidate,
+                (of, counter, *count),
+                (object, controller),
+                applied,
+            ),
             ReplaceBy::BeholdOrTapped(of) => {
                 self.reveal_or_tapped(at, candidate, (of, true), (object, controller), applied)
             }
@@ -2402,6 +2460,27 @@ impl Pass<'_> {
     /// The Aura's umbra armor saves the creature: its damage is removed in place of its destruction, and the Aura is
     /// destroyed (CR 702.89a). That destruction is an event of its own that other effects replace, unless the batch
     /// already moves the Aura or it is indestructible.
+    /// The damage at `at` is dealt as it was, and the damage already marked on `object` is removed just before it
+    /// (Wolverine, Fierce Fighter); a permanent with none marked loses nothing.
+    fn r6013_heal_first(&mut self, at: usize, object: ObjectId, applied: Vec<Origin>) {
+        self.slots[at].applied = applied;
+        let marked = self
+            .state
+            .object(object)
+            .and_then(|object| object.permanent.as_ref())
+            .is_some_and(|permanent| permanent.damage() > 0 || permanent.deathtouched());
+        if marked {
+            self.slots.insert(
+                at,
+                Slot {
+                    item: Item::One(Event::DamageRemoved { object }),
+                    applied: Vec::new(),
+                    frozen: true,
+                },
+            );
+        }
+    }
+
     fn umbra(&mut self, at: usize, candidate: &Candidate, creature: ObjectId) {
         let aura = candidate.object;
         let mut slots = vec![Slot {
@@ -2915,6 +2994,22 @@ impl Pass<'_> {
         self.out_of_library_batches(&gone);
     }
 
+    /// Drops the `Entered` event of `object` when nothing in the batch still puts it onto the battlefield (a replacement
+    /// sent it elsewhere).
+    pub(super) fn drop_stray_entered(&mut self, object: ObjectId) {
+        let arrives = self.slots.iter().any(|slot| {
+            matches!(
+                &slot.item,
+                Item::One(Event::ZoneChanged { object: o, to: Zone::Battlefield, .. }) if *o == object
+            )
+        });
+        if !arrives {
+            self.slots.retain(|slot| {
+                !matches!(&slot.item, Item::One(Event::Entered { object: o, .. }) if *o == object)
+            });
+        }
+    }
+
     /// The `Entered` event that follows the enter event of `object`, made when the batch has none yet.
     fn entered_at(&mut self, at: usize, object: ObjectId, controller: PlayerId) -> usize {
         let existing = self.slots.iter().position(|slot| {
@@ -3359,6 +3454,9 @@ impl Pass<'_> {
     fn confirmed(&mut self, at: usize, candidate: &Candidate) -> Result<Asked<bool>, EngineError> {
         match &candidate.action {
             Action::Replace(ReplaceBy::Dredge(cards)) => self.dredge_wanted(at, candidate, *cards),
+            Action::Replace(ReplaceBy::IntoLibrary { optional: true, .. }) => {
+                self.r6008_library_wanted(at, candidate)
+            }
             _ if matches!(candidate.origin, Origin::Commander(_)) => {
                 self.may_go_to_command_zone(at, candidate)
             }
@@ -3583,7 +3681,7 @@ impl Pass<'_> {
     }
 
     /// What `controller` chooses as the card enters: asked unless there is one thing to choose or none.
-    fn chooses(
+    pub(super) fn chooses(
         &mut self,
         source: ObjectId,
         controller: PlayerId,
@@ -3599,11 +3697,14 @@ impl Pass<'_> {
                 | EntersChoice::NoncreatureNonlandCardName
                 | EntersChoice::NonbasicLandCardName
         ) {
-            return self.r4702_chooses_name(source, controller, kind);
+            return self.r4702_chooses_name(source, controller, kind, Vec::new());
         }
         if matches!(
             kind,
-            EntersChoice::Colors(_) | EntersChoice::ColorAndCreatureType | EntersChoice::Players(_)
+            EntersChoice::Colors(_)
+                | EntersChoice::ColorAndCreatureType
+                | EntersChoice::Players(_)
+                | EntersChoice::R6001Abilities(_)
         ) {
             return self.r4700_chooses(source, controller, kind);
         }
@@ -3738,6 +3839,7 @@ impl Pass<'_> {
             | EntersChoice::Number { .. }
             | EntersChoice::Colors(_)
             | EntersChoice::Players(_)
+            | EntersChoice::R6001Abilities(_)
             | EntersChoice::ColorAndCreatureType => Vec::new(),
             EntersChoice::Player => self
                 .state
@@ -3788,6 +3890,7 @@ fn entering_question(kind: EntersChoice) -> String {
         EntersChoice::Number { .. }
         | EntersChoice::Colors(_)
         | EntersChoice::Players(_)
+        | EntersChoice::R6001Abilities(_)
         | EntersChoice::ColorAndCreatureType => String::new(),
     }
 }
@@ -3884,6 +3987,7 @@ mod r283_prevent;
 mod r304c_amounts;
 mod r4703_loss;
 mod r5501_attached;
+mod r6008_library;
 mod w9c_prevent;
 
 /// The counters for each permanent devoured: "Devour X, where X is the number of creatures devoured this way" is

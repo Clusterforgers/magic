@@ -35,6 +35,7 @@ import { rollSentence } from './manual/panel/roll'
 import { teamLabel } from '@/lib/teams'
 import { keywordWords as grantKeywordWords } from './manual/offers'
 import { takeBackAction } from './takeBackText'
+import { hauntWords } from './campaign/haunt'
 
 /** How the log names things; both fall back to a plain word when the thing is unknown. */
 export interface EventNames {
@@ -48,6 +49,8 @@ export interface EventNames {
   ability?(id: ObjectId): ObjectId | undefined
   /** The name of a door (0 or 1) of a Room, when the viewer knows it. */
   door?(id: ObjectId, door: number): string | undefined
+  /** The name of the boss whose command zone holds `id` (one of its boss abilities), else undefined. */
+  boss?(id: ObjectId): string | undefined
 }
 
 /** One log line. Minor lines (priority passes, mana, untaps) are drawn quietly. */
@@ -71,6 +74,7 @@ function chosenWords(chosen: Chosen, n: EventNames): string {
   if ('Name' in chosen) return `, choosing ${chosen.Name}`
   if ('Number' in chosen) return `, choosing ${chosen.Number}`
   if ('Word' in chosen) return `, choosing ${chosen.Word}`
+  if ('Words' in chosen) return `, choosing ${joinWords(chosen.Words)}`
   if ('ColorAndType' in chosen) {
     const [color, type] = chosen.ColorAndType
     return `, choosing ${color.toLowerCase()} and ${type}`
@@ -794,13 +798,22 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
     return targeting === '' ? quiet(text) : line(text)
   }
   if ('AbilityActivated' in event) {
-    const { player, source } = event.AbilityActivated
+    const { player, source, ability } = event.AbilityActivated
+    const haunt = hauntWords(n.card(source.id), ability)
+    if (haunt !== undefined) {
+      return line(`${n.seat(player)} haunts the fight: ${haunt}${targetingWords(context?.targets, n)}`)
+    }
     return line(
       `${n.seat(player)} activates an ability of ${n.card(source.id)}${targetingWords(context?.targets, n)}`,
     )
   }
   if ('AbilityTriggered' in event) {
-    return line(`An ability of ${n.card(event.AbilityTriggered.source.id)} triggers`)
+    const { id } = event.AbilityTriggered.source
+    const boss = n.boss?.(id)
+    // A boss's ability is named as its own: "Skrix, the Rat Queen: Escalation triggers".
+    return line(
+      boss === undefined ? `An ability of ${n.card(id)} triggers` : `${boss}: ${n.card(id)} triggers`,
+    )
   }
   if ('TriggersOrdered' in event) {
     return quiet(`${n.seat(event.TriggersOrdered.player)} puts their triggered abilities in order`)
@@ -1218,7 +1231,9 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(`Turn ${number} begins: ${n.seat(active)}'s ${extra ? 'extra turn' : 'turn'}`)
   }
   if ('ExtraTurnAdded' in event) {
-    return line(`${n.seat(event.ExtraTurnAdded.player)} takes an extra turn after this one`)
+    const { player, no_power_up } = event.ExtraTurnAdded
+    const banned = no_power_up ? ", during which power-up abilities can't be activated" : ''
+    return line(`${n.seat(player)} takes an extra turn after this one${banned}`)
   }
   if ('ExtraTurnSkipped' in event) {
     return quiet(`${n.seat(event.ExtraTurnSkipped.player)} skips an extra turn`)
@@ -1358,6 +1373,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('BecameSpirit' in event) {
     return line(`${n.seat(event.BecameSpirit.player)} fell and rises as a Spirit`)
+  }
+  if ('SpiritRevived' in event) {
+    const { player, life } = event.SpiritRevived
+    return line(`${n.seat(player)} returns to life with ${life} life`)
   }
   if ('PhaseBegan' in event) {
     const { player, emblem } = event.PhaseBegan

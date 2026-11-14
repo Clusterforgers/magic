@@ -143,6 +143,8 @@ pub(crate) enum Tally {
     Targeted,
     /// An object dealt damage, once for each event (counted for the object).
     Damaged,
+    /// A source that dealt combat damage to a player, once for each event (counted for the source).
+    R6018HitPlayer,
     /// A card put into a graveyard by a discard (counted for the card as it lies there, and for the player who discarded
     /// it, once for each discard).
     Discarded,
@@ -334,6 +336,8 @@ pub struct GameState {
     pub(crate) limits_spent: BTreeSet<(ObjectRef, AbilitySource, usize)>,
     /// The once-each-game abilities used, as `limits_spent`; a new turn keeps them.
     pub(crate) game_limits_spent: BTreeSet<(ObjectRef, AbilitySource, usize)>,
+    /// How many times each power-up ability was activated, for the object that has it; a new turn keeps them.
+    pub(crate) r5515_power_ups: BTreeMap<(ObjectRef, AbilitySource, usize), u32>,
     /// The planeswalkers that had a loyalty ability activated this turn: no more than one for each (CR 606.3).
     pub(crate) loyalty_used: BTreeMap<ObjectRef, u32>,
     /// The modes the abilities that choose a mode not yet chosen chose, in any turn, as (source, where the ability comes
@@ -419,6 +423,8 @@ pub struct GameState {
     pub(crate) memory: crate::memory::Memory,
     /// The restart under way (CR 727): who restarted the game and the cards that enter after the opening.
     pub(crate) restart: Option<crate::restart::Restart>,
+    /// The pressure the boss's side put on each hero of a campaign fight (`spotlight`).
+    pub(crate) spotlight: crate::spotlight::Spotlight,
 }
 
 impl GameState {
@@ -622,6 +628,11 @@ impl GameState {
         if let Limit::TimesPerTurn(most) = limit {
             return self.tallies.limit_uses.get(&key).copied().unwrap_or(0) >= most;
         }
+        if limit == Limit::PowerUp {
+            return self.turn.no_power_up
+                || self.r5515_power_ups.get(&key).copied().unwrap_or(0)
+                    >= crate::rules::power_up_allowance(self, source);
+        }
         self.limits_spent.contains(&key) || self.game_limits_spent.contains(&key)
     }
 
@@ -666,6 +677,14 @@ impl GameState {
         match limit {
             Limit::OncePerTurn | Limit::OncePerTurnDone => self.limits_spent.insert(key),
             Limit::OncePerGame => self.game_limits_spent.insert(key),
+            Limit::PowerUp => {
+                let most = crate::rules::power_up_allowance(self, source);
+                let used = self.r5515_power_ups.entry(key).or_insert(0);
+                *used < most && {
+                    *used += 1;
+                    true
+                }
+            }
             Limit::TimesPerTurn(most) => {
                 let used = self.tallies.limit_uses.entry(key).or_insert(0);
                 *used < most && {
@@ -961,6 +980,10 @@ impl Hash for GameState {
         self.next_timestamp.hash(state);
         self.next_object.hash(state);
         self.resolving.hash(state);
+        // A game outside a campaign fight hashes as it did before the spotlight.
+        if !self.spotlight.is_empty() {
+            self.spotlight.hash(state);
+        }
         self.pending_triggers.hash(state);
         self.trigger_round.hash(state);
         self.delayed.hash(state);
@@ -969,6 +992,10 @@ impl Hash for GameState {
         // A game with no once-a-game ability hashes as it did before they existed.
         if !self.game_limits_spent.is_empty() {
             self.game_limits_spent.hash(state);
+        }
+        // A game with no power-up ability activated hashes as it did before they existed.
+        if !self.r5515_power_ups.is_empty() {
+            self.r5515_power_ups.hash(state);
         }
         // A game with no planeswalker hashes as it did before they existed.
         if !self.loyalty_used.is_empty() {
@@ -1217,6 +1244,7 @@ mod tests {
             let added = Event::ExtraTurnAdded {
                 player: PlayerId::from_index(0),
                 skip_untap: false,
+                no_power_up: false,
             };
             apply_event(&mut game, &added).unwrap();
         }

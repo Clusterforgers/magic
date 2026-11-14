@@ -1,7 +1,7 @@
 {
   "oracle_id": "3ca32660-bf5f-4398-bef6-a0ec8bc767cf",
   "name": "Doc Aurlock, Grizzled Genius",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Doc Aurlock, Grizzled Genius",
@@ -18,12 +18,7 @@
             "mana": "{2}"
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 73, "end": 118 }
-          }
-        }
+        { "Rule": { "rule": { "R6018PlotLess": 2 } } }
       ]
     }
   ]

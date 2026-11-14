@@ -239,6 +239,8 @@ export interface FixtureGameOptions extends FixtureOptions {
   step?: Step
   /** House rules that differ from the format's own, from the start; none when left out. */
   rules?: true
+  /** A fight against a boss: the last seats are the boss and this many minions, a team against the others. */
+  boss?: number
   /** A permanent for every state a card shows joins the table (`dev/states.ts`), on a table with fewer permanents. */
   states?: true
   /** The attachments scene joins the table (`dev/equip.ts`). */
@@ -267,6 +269,32 @@ const DEV_TABLE_RULES: HouseRules = {
   commander_tax: 0,
   open_hands: true,
   free_mulligans: 1,
+}
+
+/**
+ * The table as a fight against a boss: the last seat but `minions` is the boss, with two phases, a scheme and an
+ * Omen; it and its minions are one team, every other seat the other.
+ */
+export function withBoss(moment: Fixture, minions: number): Fixture {
+  const count = moment.view.players.length
+  const boss = Math.max(1, count - 1 - Math.max(0, minions))
+  const players = moment.view.players.map((player) =>
+    player.seat === boss
+      ? {
+          ...player,
+          life: 120,
+          boss: {
+            phases: ['The Nest Stirs', 'The Queen Wakes'],
+            begun: 1,
+            scheme: 'Gnawing Tide',
+            omen: 'All Shall Kneel',
+          },
+        }
+      : player,
+  )
+  const seats = players.map((player) => (player.seat >= boss ? 1 : 0))
+  const house_rules = { ...moment.view.house_rules, teams: { mode: 'teams' as const, seats } }
+  return { ...moment, view: { ...moment.view, players, house_rules } }
 }
 
 /** The table with its active player gone (CR 800.4): the seat is out of the game and the turn goes on without it. */
@@ -301,7 +329,8 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
       : { ...moment, view: { ...moment.view, turn: { ...moment.view.turn, step: options.step } } }
   const ruled =
     options.rules === true ? { ...stepped, view: { ...stepped.view, house_rules: DEV_TABLE_RULES } } : stepped
-  const fixture = options.turn === 'left' ? withActiveLeft(ruled) : ruled
+  const bossed = options.boss === undefined ? ruled : withBoss(ruled, options.boss)
+  const fixture = options.turn === 'left' ? withActiveLeft(bossed) : bossed
   const shown = prompt !== undefined ? prompt(fixture) : options.holding === true ? undefined : null
   store.setState(fixtureState(fixture, shown))
   if (options.stops !== undefined) store.setState({ stops: options.stops })

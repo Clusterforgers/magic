@@ -1,0 +1,63 @@
+{
+  "oracle_id": "a2f5a5fd-14dc-48e8-bdb0-984a83288023",
+  "name": "Mana Clash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mana Clash",
+      "oracle_fingerprint": "5098a83364b41430fe80a9860e19933f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "both" }, "op": "Eq", "right": 0 }
+                  },
+                  "effects": [
+                    {
+                      "FlipCoin": {
+                        "win": [
+                          {
+                            "FlipCoin": {
+                              "who": { "Target": 0 },
+                              "lose": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }],
+                              "won_as": "both",
+                              "heads": true
+                            }
+                          }
+                        ],
+                        "lose": [
+                          {
+                            "FlipCoin": {
+                              "who": { "Target": 0 },
+                              "win": [{ "DealDamage": { "to": "You", "amount": 1 } }],
+                              "lose": [
+                                {
+                                  "DealDamage": {
+                                    "to": { "Union": ["You", { "Target": 0 }] },
+                                    "amount": 1
+                                  }
+                                }
+                              ],
+                              "heads": true
+                            }
+                          }
+                        ],
+                        "heads": true
+                      }
+                    }
+                  ],
+                  "most": 1000,
+                  "at_least_once": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

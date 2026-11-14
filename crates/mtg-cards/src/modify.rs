@@ -122,6 +122,9 @@ pub enum Modification {
     /// Adds the colour the source chose as it entered to the colours it has (layer 5): "are the chosen color in addition
     /// to their other colors". Only a static ability has it; with no colour chosen it changes nothing.
     AddChosenColor,
+    /// Adds each ability the source chose as it entered from among first strike, vigilance, and lifelink (layer 6):
+    /// "have each of the chosen abilities". Only a static ability has it; with nothing chosen it changes nothing.
+    R6001AddChosenAbilities,
     /// Sets the color to the one the card's owner chose for it before the game began as their commander (layer 5): "If ~
     /// is your commander, choose a color before the game begins. ~ is the chosen color." Only the card's own
     /// characteristic-defining static ability has it; a card nobody chose a color for keeps its colors.
@@ -244,6 +247,7 @@ impl Modification {
             | Modification::SetCommanderColor => Some("5"),
             Modification::AddKeyword(_)
             | Modification::KeywordsOf { .. }
+            | Modification::R6001AddChosenAbilities
             | Modification::AddProtectionFromChosenColor
             | Modification::AddProtectionFromChosenCardType
             | Modification::LockKeyword(_)
@@ -601,6 +605,9 @@ pub enum CombatQuirk {
     /// They must be blocked by at least one creature the selector picks if able (CR 509.1c), judged for their controller:
     /// "must be blocked by an Eldrazi if able"; a block by another creature does not meet it.
     MustBeBlockedByOne(Selector),
+    /// They must be blocked by this many creatures or more if able (CR 509.1c): "must be blocked by two or more creatures
+    /// if able"; a block by fewer meets it only while no other creature could join it.
+    R6001MustBeBlockedByAtLeast(u32),
     /// They can be blocked as though they did not have the landwalk ability the selector names (CR 702.14).
     IgnoreLandwalk(Selector),
     /// They can be blocked as though they did not have any landwalk ability.
@@ -764,6 +771,9 @@ pub enum SpellBenefit {
 /// `Ability::Rule` for as long as its source has the ability; the references name the players or objects it is about.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum GameRule {
+    /// Each power-up ability of the permanents the selector matches can be activated an additional time
+    /// (`Limit::PowerUp`).
+    PowerUpAgain(Selector),
     /// Damage from the sources can't be prevented, and prevention effects do nothing to it (CR 614.17).
     DamageCantBePrevented {
         /// The sources; any source when empty.
@@ -937,6 +947,18 @@ pub enum GameRule {
     /// Spells and abilities the players control can't cause their controller to search their own library: "Spells and
     /// abilities your opponents control can't cause their controller to search their library."
     OwnSpellsCantSearch(Ref),
+    /// The players search only the top `count` cards of any library they would search (CR 614.1a): "If an opponent
+    /// would search a library, that player searches the top four cards of that library instead."
+    SearchTop {
+        /// Who searches that way.
+        who: Ref,
+        /// How many cards from the top they search.
+        count: u32,
+    },
+    /// A permanent with a counter of this kind that would untap during its controller's untap step loses all counters
+    /// of the kind instead and stays tapped (CR 614.1a): "If a permanent with a wind counter on it would untap during
+    /// its controller's untap step, remove all wind counters from it instead."
+    UntapRemovesCounters(CounterKind),
     /// The players may vote an additional time each time they vote: "While voting, you may vote an additional time."
     /// (CR 701.38d).
     VoteAgain(Ref),
@@ -1073,6 +1095,10 @@ pub enum GameRule {
     },
     /// The players skip their draw steps (CR 614.10): the step does not begin on their turns.
     SkipDrawStep(Ref),
+    /// During their own turns, as long as they haven't activated an exhaust ability this turn, the players may activate
+    /// exhaust abilities as though they haven't been activated ("During your turn, as long as you haven't activated an
+    /// exhaust ability this turn, you may activate exhaust abilities as though they haven't been activated.").
+    R6007ExhaustAgain(Ref),
     /// The players may play additional lands each of their turns (CR 305.2).
     AdditionalLandPlays {
         /// Who may play them.
@@ -1107,6 +1133,9 @@ pub enum GameRule {
     /// many times.": the commander tax of the card is paid as this much life for each previous cast from the command zone
     /// in place of its generic mana (CR 903.8); no `from`.
     TaxAsLife(u32),
+    /// "Plotting cards from your hand costs {2} less.": the plot costs of the cards in its controller's hand cost this
+    /// much generic mana less (CR 702.170a).
+    R6018PlotLess(u32),
     /// "Spend only mana produced by basic lands to cast this spell.": the cast of the card spends only mana whose source
     /// the filter holds for, from the pool or from mana abilities of such sources; no `from`.
     SpendOnlyFrom(crate::spend::SpendFilter),
@@ -1284,7 +1313,8 @@ pub enum GameRule {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         spells: Option<Selector>,
         /// With `spells`, also to activate the abilities of the permanents this selects ("or to activate abilities of
-        /// permanents you control but don't own").
+        /// permanents you control but don't own"); without, only to activate them ("to activate abilities of creatures
+        /// you control").
         #[serde(default, skip_serializing_if = "Option::is_none")]
         abilities: Option<Selector>,
     },

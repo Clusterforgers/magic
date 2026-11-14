@@ -58,18 +58,23 @@ enum Taxed {
 /// An attack as the declaration lists it: each attacker and what it attacks.
 type Attack = Vec<(ObjectId, AttackTarget)>;
 
-/// `attackers` without its last creature that is not required to attack; `None` once only required ones are left,
-/// which cost nothing (a requirement never makes a player pay, CR 508.1d).
+/// `attackers` without its last creatures that are not required to attack, as few as leave a declaration the rules
+/// accept (a creature that attacks only beside others goes with them); `None` once only required ones are left, which
+/// cost nothing (a requirement never makes a player pay, CR 508.1d).
 fn smaller_attack(
     options: &AttackOptions,
     attackers: &[(ObjectId, AttackTarget)],
 ) -> Option<Attack> {
-    let at = attackers
-        .iter()
-        .rposition(|(object, _)| !options.required.contains(object))?;
     let mut smaller = attackers.to_vec();
-    smaller.remove(at);
-    Some(smaller)
+    loop {
+        let at = smaller
+            .iter()
+            .rposition(|(object, _)| !options.required.contains(object))?;
+        smaller.remove(at);
+        if options.accepts(&smaller) {
+            return Some(smaller);
+        }
+    }
 }
 
 /// One creature the bot would attack with, the defender it picked and what that costs it (CR 508.1h).
@@ -157,6 +162,8 @@ pub fn apply_answer(
     answer: Answer,
 ) -> Result<Vec<Event>, EngineError> {
     let mut answer = answer;
+    // The sets of alike cards are tried from the random first pick to the last, then once more from the first set.
+    let mut wrapped = false;
     loop {
         let refused = match engine.apply(answer.clone()) {
             Err(
@@ -176,6 +183,10 @@ pub fn apply_answer(
                 if matches!(refused, EngineError::Illegal(IllegalAnswer::WrongPick(_))) =>
             {
                 r5518_next_set(&options.from, cards)
+                    .or_else(|| {
+                        (!std::mem::replace(&mut wrapped, true))
+                            .then(|| options.from.iter().take(cards.len()).copied().collect())
+                    })
                     .map(|next| Answer::ChooseCards(CardsChoice(next)))
             }
             (DecisionKind::ChooseCards(options), Answer::ChooseCards(CardsChoice(cards)))
@@ -580,6 +591,9 @@ impl RandomBot {
             }
             DecisionKind::ChooseCards(options) if !options.groups.is_empty() => {
                 self.cards(&options.one_per_group())
+            }
+            DecisionKind::ChooseCards(options) if options.text.starts_with("Forage:") => {
+                self.r5515_forage(options, state)
             }
             _ => self.choose(decision),
         }
@@ -1136,6 +1150,22 @@ impl RandomBot {
     fn yes_no(&mut self, options: &YesNoOptions) -> Answer {
         let yes = self.rng.below(2) == 0;
         Answer::YesNo(YesNoChoice(yes && !options.only_no))
+    }
+
+    /// A forage pick: one Food, or three cards of the graveyard (CR 701.61a), never a mix.
+    fn r5515_forage(&mut self, options: &CardsOptions, state: &GameState) -> Answer {
+        let (cards, foods): (Vec<ObjectId>, Vec<ObjectId>) = options.from.iter().partition(|id| {
+            state
+                .object(**id)
+                .is_some_and(|object| matches!(object.zone(), Zone::Graveyard(_)))
+        });
+        let exile = cards.len() >= 3 && (foods.is_empty() || self.rng.index(2) == 0);
+        let picked = if exile {
+            self.subset(&cards, 3)
+        } else {
+            self.subset(&foods, 1)
+        };
+        Answer::ChooseCards(CardsChoice(picked))
     }
 
     /// Any cards among those offered, as many as the bounds allow. A cost that takes any number of creatures for their

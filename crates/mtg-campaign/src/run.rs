@@ -364,7 +364,12 @@ impl Run {
                 self.log.push(format!("{} left the party.", gone.name));
             }
             RunEvent::DeckChosen { hero, deck } => {
-                self.lobby()?;
+                // In the lobby; or, while a fight waits for its game, in place of a deck that no longer plays.
+                if self.status != Status::Lobby && self.status != (Status::Fight { game: None }) {
+                    return Err(refused(
+                        "decks change only through rewards once the run has started",
+                    ));
+                }
                 if deck.colors.chars().any(|c| !"WUBRG".contains(c)) {
                     return Err(refused("colours are WUBRG letters"));
                 }
@@ -872,6 +877,7 @@ impl Run {
                 schemes,
             },
             minions,
+            run: None,
         }))
     }
 

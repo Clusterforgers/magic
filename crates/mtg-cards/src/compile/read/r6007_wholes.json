@@ -1,0 +1,163 @@
+[
+ [
+  {
+   "Replacement": {
+    "when": {
+     "Draw": {
+      "who": "EachPlayer"
+     }
+    },
+    "by": {
+     "Instead": [
+      {
+       "Draw": {
+        "who": "Triggering",
+        "as": "drawn"
+       }
+      },
+      {
+       "Reveal": {
+        "what": {
+         "Bound": "drawn"
+        }
+       }
+      },
+      {
+       "If": {
+        "condition": {
+         "Matches": {
+          "subject": {
+           "Bound": "drawn"
+          },
+          "selector": [
+           {
+            "Type": "Creature"
+           }
+          ]
+         }
+        },
+        "then": [
+         {
+          "Pay": {
+           "who": "Triggering",
+           "cost": [
+            {
+             "PayLife": 3
+            }
+           ],
+           "unpaid": [
+            {
+             "Discard": {
+              "who": "Triggering",
+              "filter": [
+               {
+                "Is": {
+                 "Bound": "drawn"
+                }
+               }
+              ]
+             }
+            }
+           ]
+          }
+         }
+        ]
+       }
+      }
+     ]
+    }
+   }
+  },
+  "If a player would draw a card, instead they draw a card and reveal it. If it's a creature card, that player discards it unless they pay 3 life."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "Draw": {
+      "who": "EachPlayer"
+     }
+    },
+    "by": {
+     "Instead": [
+      {
+       "LookAtTop": {
+        "who": "Triggering",
+        "as": "top"
+       }
+      },
+      {
+       "Reveal": {
+        "what": {
+         "Bound": "top"
+        }
+       }
+      },
+      {
+       "Pay": {
+        "who": {
+         "PlayersWhere": {
+          "who": "EachPlayer",
+          "test": {
+           "Not": {
+            "Among": "Triggering"
+           }
+          }
+         }
+        },
+        "cost": [
+         {
+          "PayLife": 2
+         }
+        ],
+        "paid": [
+         {
+          "Move": {
+           "what": {
+            "Bound": "top"
+           },
+           "to": "Graveyard"
+          }
+         }
+        ],
+        "unpaid": [
+         {
+          "Draw": {
+           "who": "Triggering"
+          }
+         }
+        ]
+       }
+      }
+     ]
+    }
+   }
+  },
+  "If a player would draw a card, they reveal it instead. Then any other player may pay 2 life. If a player does, put that card into its owner's graveyard. Otherwise, that player draws a card."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "Enters": {
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "by": {
+     "R6007RevealOrControl": {
+      "of": [
+       {
+        "Subtype": "Dragon"
+       }
+      ],
+      "counter": "+1/+1",
+      "count": 1
+     }
+    }
+   }
+  },
+  "As ~ enters, you may reveal a Dragon card from your hand. If you do or if you control a Dragon, ~ enters with a +1/+1 counter on it."
+ ]
+]

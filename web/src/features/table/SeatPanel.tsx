@@ -202,8 +202,8 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
     <div className="flex min-w-0 items-center gap-1.5">
       <SeatDot seat={seat} />
       <h3 className="truncate text-sm leading-5 font-semibold">{owner}</h3>
-      {team === null ? null : <TeamBadge team={team.team} size="chip" />}
-      {player.boss ? <BossChip /> : null}
+      {team === null || !team.badge ? null : <TeamBadge team={team.team} size="chip" />}
+      {player.boss ? <BossChip compact={!line} /> : null}
       {player.spirit ? <SpiritMark compact={line} /> : null}
       {defender.state === 'chosen' ? (
         <Crosshair aria-hidden="true" className="size-3.5 shrink-0 text-primary" />
@@ -342,7 +342,13 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
       {/* Everything above the corner: its height does not depend on how the corner is drawn, so the corner can be sized by it. */}
       <div ref={above} data-slot="pod-top" className="grid grid-cols-[minmax(0,1fr)] content-start gap-2">
         {/* The life stays on the name row, whose name truncates, so it is never pushed under the rows below. */}
-        <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-0.5">
+        {/* A boss's name row carries its crown, so its life goes under it rather than squeezing the name away. */}
+        <header
+          className={cn(
+            'grid items-center gap-x-2 gap-y-0.5',
+            player.boss ? 'grid-cols-[minmax(0,1fr)]' : 'grid-cols-[minmax(0,1fr)_auto]',
+          )}
+        >
           {tight ? (
             <div data-slot="pod-name-row" className="flex min-w-0 flex-wrap items-center gap-1">
               {name}
@@ -363,7 +369,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
             />
           </div>
           {cramped ? null : (
-            <div className="col-span-2 grid grid-cols-[minmax(0,1fr)] gap-0.5">
+            <div className="col-span-full grid grid-cols-[minmax(0,1fr)] gap-0.5">
               {/* Room for the pool is kept under the name, so nothing moves when mana floats. */}
               <div
                 data-slot="mana-slot"

@@ -54,6 +54,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::Granter => "the permanent that gave it this ability".to_owned(),
         Ref::AttachedPlayer => "the player it is attached to".to_owned(),
         Ref::Monarch => "the monarch".to_owned(),
+        Ref::Spotlit => "the hero in the spotlight".to_owned(),
         Ref::Chosen => "the chosen object".to_owned(),
         Ref::Promised => "the promised object".to_owned(),
         Ref::R4700OtherChosen => "the other chosen player".to_owned(),
@@ -213,6 +214,7 @@ fn targetable(ctx: &Ctx, what: &Targetable, plural: bool) -> String {
                 TargetSet::DifferentNames => "with different names".to_owned(),
                 TargetSet::DifferentManaValues => "with different mana values".to_owned(),
                 TargetSet::DifferentPowers => "with different powers".to_owned(),
+                TargetSet::DifferentColorSets => "with different colors".to_owned(),
                 TargetSet::SameToughness => "with equal toughness".to_owned(),
                 TargetSet::TotalManaValueAtMost(most) => {
                     format!("with total mana value {} or less", amount(ctx, most))
@@ -480,6 +482,7 @@ fn stat_text(stat: StatKind) -> &'static str {
         StatKind::R374ColorSet => "color combination",
         StatKind::R4700ChosenColors => "number of the chosen colors it is",
         StatKind::Subtypes => "subtypes",
+        StatKind::R6018PermanentTypes => "permanent types",
     }
 }
 

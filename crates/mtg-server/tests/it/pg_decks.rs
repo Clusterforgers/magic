@@ -414,14 +414,14 @@ async fn a_deck_with_manual_cards_or_one_that_breaks_its_format_is_not_verified(
     let server = start(&pool).await;
     let ann = register_ann(&server).await;
 
-    // Sixty cards legal in Modern, one of which (Aven Mindcensor) the corpus models in part.
+    // Sixty cards legal in Modern, one of which (Fang-Druid Summoner) the corpus models in part.
     let mut partial = modern();
     partial["name"] = json!("Beast Mode");
     partial["cards"][0]["count"] = json!(35);
     partial["cards"]
         .as_array_mut()
         .unwrap()
-        .push(line("main", "Aven Mindcensor", 1));
+        .push(line("main", "Fang-Druid Summoner", 1));
     let manual = create(&server, &ann, &partial).await;
     assert_eq!(manual["state"], "manual_play");
     assert_eq!(
@@ -442,18 +442,21 @@ async fn a_deck_with_manual_cards_or_one_that_breaks_its_format_is_not_verified(
         ),
         (Some(60), Some(59), Some(1))
     );
-    let bird = manual["report"]["cards"]
+    let summoner = manual["report"]["cards"]
         .as_array()
         .unwrap()
         .iter()
-        .find(|c| c["name"] == "Aven Mindcensor")
+        .find(|c| c["name"] == "Fang-Druid Summoner")
         .unwrap();
     assert_eq!(
-        (bird["zone"].as_str(), bird["support"].as_str()),
+        (summoner["zone"].as_str(), summoner["support"].as_str()),
         (Some("main"), Some("partial"))
     );
-    assert!(!bird["reasons"].as_array().unwrap().is_empty(), "{bird}");
-    assert!(bird["reasons"][0]["span"]["end"].as_u64().unwrap() > 0);
+    assert!(
+        !summoner["reasons"].as_array().unwrap().is_empty(),
+        "{summoner}"
+    );
+    assert!(summoner["reasons"][0]["span"]["end"].as_u64().unwrap() > 0);
     assert_eq!(manual["check"]["summary"]["state"], "manual_play");
 
     let mut short = modern();

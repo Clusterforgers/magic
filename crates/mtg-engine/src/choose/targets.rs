@@ -360,6 +360,7 @@ pub(crate) fn legal_from(
         }
         Target::Player(player) => {
             !keywords::protects_player(state, *player, controller)
+                && !crate::spirits::shielded(state, *player, controller)
                 && !keywords::hexproof::ep23_player_hexproof_from(
                     state, *player, source.id, controller,
                 )
@@ -573,6 +574,16 @@ fn r4709_power_key(state: &GameState, id: ObjectId) -> u64 {
         .and_then(|chars| chars.power)
         .unwrap_or(0);
     u64::from_ne_bytes(i64::from(power).to_ne_bytes())
+}
+
+/// The colors of an object as a key: each color one bit.
+fn r6008_colors_key(state: &GameState, id: ObjectId) -> u64 {
+    crate::characteristics::characteristics(state, id).map_or(0, |chars| {
+        chars
+            .colors
+            .iter()
+            .fold(0, |key, color| key | (1 << (color as u64)))
+    })
 }
 
 /// The toughness of a creature as a key, negative values kept apart from positive ones.
@@ -799,6 +810,7 @@ pub(crate) fn object_key(state: &GameState, rule: &TargetSet, id: ObjectId) -> u
         }
         TargetSet::TotalPowerAtMost(_) => u64::from(rmt1_power(state, object.id())),
         TargetSet::DifferentPowers => r4709_power_key(state, object.id()),
+        TargetSet::DifferentColorSets => r6008_colors_key(state, object.id()),
         TargetSet::SameToughness => r377_toughness_key(state, object.id()),
     }
 }

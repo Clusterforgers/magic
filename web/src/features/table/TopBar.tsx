@@ -16,6 +16,7 @@ import { TurnBadge } from './TurnBadge'
 import { StepLadder } from './turn/StepLadder'
 import { TurnBanner } from './turn/TurnBanner'
 import { PhaseBanner } from './campaign/PhaseBanner'
+import { SpiritMoment } from './campaign/SpiritMoment'
 
 const HOME = cn(
   buttonVariants({ variant: 'ghost', size: 'sm' }),
@@ -52,6 +53,8 @@ interface TopBarProps {
   stopsInMenu: boolean
   /** The bar is 32 px high, on a phone on its side: the buttons are smaller. */
   compact?: boolean
+  /** A fight against a boss: the menu offers boss mode. */
+  bossFight?: boolean
 }
 
 /**
@@ -59,7 +62,15 @@ interface TopBarProps {
  * (layout, stops and Full Control where the dock has no room, theme, Concede). 44 px high, 32 px on a phone on its
  * side. The turn banner stands in the free room after the step ladder while a new turn is announced.
  */
-export function TopBar({ mode, onMode, pinnedFocus, onFollow, stopsInMenu, compact = false }: TopBarProps) {
+export function TopBar({
+  mode,
+  onMode,
+  pinnedFocus,
+  onFollow,
+  stopsInMenu,
+  compact = false,
+  bossFight = false,
+}: TopBarProps) {
   const [menu, setMenu] = useState(false)
   const [conceding, setConceding] = useState(false)
   // The question goes with the right to concede, such as when the game ends while it is open.
@@ -76,6 +87,7 @@ export function TopBar({ mode, onMode, pinnedFocus, onFollow, stopsInMenu, compa
       <StepLadder />
       <TurnBanner />
       <PhaseBanner />
+      <SpiritMoment />
       <HelpMenu compact={compact} />
       <TableRules />
       <SpectatorCount />
@@ -84,6 +96,7 @@ export function TopBar({ mode, onMode, pinnedFocus, onFollow, stopsInMenu, compa
         compact={compact}
         mode={mode}
         onMode={onMode}
+        bossFight={bossFight}
         pinnedFocus={pinnedFocus}
         onFollow={onFollow}
         stops={stopsInMenu}

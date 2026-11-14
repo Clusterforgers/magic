@@ -1,22 +1,22 @@
 {
   "oracle_id": "739a5220-50cd-4148-be58-1bbdeef2954e",
   "name": "Greymond, Avacyn's Stalwart",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Greymond, Avacyn's Stalwart",
       "oracle_fingerprint": "b97646c2346e649130d1b1849a7c5de2",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 109 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": { "R6001Abilities": 2 } }
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 110, "end": 163 }
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Human" }, { "ControlledBy": "You" }] },
+            "mods": ["R6001AddChosenAbilities"]
           }
         },
         {

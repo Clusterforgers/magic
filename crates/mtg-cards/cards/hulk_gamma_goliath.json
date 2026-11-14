@@ -18,6 +18,7 @@
         {
           "Activated": {
             "cost": "{6}{R}{G}",
+            "limit": "PowerUp",
             "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 5 } }]
           }
         }

@@ -97,6 +97,8 @@ pub enum Ref {
     AttachedPlayer,
     /// The monarch ("the monarch"); nobody while no player is the monarch.
     Monarch,
+    /// The hero the boss's side eyes in a campaign fight (the spotlight's focus for the controller); nobody outside one.
+    Spotlit,
     /// The player the source chose as it entered ("the chosen player"); nobody before the choice, for a source that chose no player or once that player has left the game.
     Chosen,
     /// The players the source chose as it entered other than the player the trigger event is about ("the other chosen
@@ -495,6 +497,14 @@ pub enum Pred {
         /// The amount compared with.
         to: Amount,
     },
+    /// The objects chosen together have a total of the stat at most the amount ("with total mana value 6 or less"): alone
+    /// it holds of an object whose stat is at most the amount, and a search or choice takes no set above it.
+    TotalAtMost {
+        /// The characteristic summed.
+        stat: StatKind,
+        /// The most the total may be.
+        most: Amount,
+    },
     /// Two amounts of the object compare: `Ref::Candidate` in them is the object itself ("power less than toughness").
     Test {
         /// The amount on the left.
@@ -701,6 +711,8 @@ pub enum TargetSet {
     DifferentManaValues,
     /// No two have one power ("with different powers").
     DifferentPowers,
+    /// No two have the same colors ("for each color pair, choose a card that's exactly those colors").
+    DifferentColorSets,
     /// They all have one toughness ("with equal toughness").
     SameToughness,
     /// Their mana values add up to at most this ("with total mana value 3 or less").

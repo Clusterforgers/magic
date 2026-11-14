@@ -206,6 +206,9 @@ impl Pass<'_> {
             })
             .collect();
         self.slots.splice(at..=at, slots);
+        if let Unit::Enter { object, .. } = unit {
+            self.drop_stray_entered(*object);
+        }
         None
     }
 
@@ -281,6 +284,7 @@ mod tests {
     const REDIRECT: &str = r#"{"Replacement":{"when":{"Damage":{"to":"You"}},"by":{"Instead":[{"DealDamage":{"source":"Dealer","to":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"},"Other"]},"amount":"Triggering"}}]}}}"#;
     const EXILE: &str = r#"{"Replacement":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"ControlledBy":"Opponents"}],"from":"Battlefield","to":"Graveyard"}},"by":{"Instead":[{"Exile":{"what":"Triggering"}}]}}}"#;
     const ASKS: &str = r#"{"Replacement":{"when":{"LifeGain":{"who":"Opponents"}},"by":{"Instead":[{"May":{"effects":[{"Draw":{}}]}}]}}}"#;
+    const ENTERS_EXILED: &str = r#"{"Replacement":{"when":{"Enters":{"what":[{"Type":"Creature"}]}},"by":{"Instead":[{"Exile":{"what":"Triggering"}}]}}}"#;
 
     /// Seat 0 controls a Source with `rules` and a Wall; seat 1 controls a Bear.
     fn game(rules: &str) -> GameState {
@@ -369,6 +373,31 @@ mod tests {
             cause: ZoneCause::Destroyed,
         };
         let moved = events(&game, vec![died]);
+        assert!(
+            matches!(&moved[..], [Event::ZoneChanged { object, to: Zone::Exile, .. }] if *object == bear),
+            "{moved:?}"
+        );
+    }
+
+    #[test]
+    fn a_creature_exiled_as_it_would_enter_leaves_no_enter_event_behind() {
+        let game = game(ENTERS_EXILED);
+        let bear = at(&game, 2);
+        let entering = vec![
+            Event::ZoneChanged {
+                object: bear,
+                from: Zone::Exile,
+                to: Zone::Battlefield,
+                cause: ZoneCause::Moved,
+            },
+            Event::Entered {
+                object: bear,
+                tapped: false,
+                controller: PlayerId(1),
+                chosen: None,
+            },
+        ];
+        let moved = events(&game, entering);
         assert!(
             matches!(&moved[..], [Event::ZoneChanged { object, to: Zone::Exile, .. }] if *object == bear),
             "{moved:?}"

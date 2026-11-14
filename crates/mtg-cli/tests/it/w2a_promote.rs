@@ -27,15 +27,14 @@ use common::{fixture, gzip, progress, put_scryfall};
 
 const CARDS: [&str; 5] = [
     "aetherflux_reservoir",
-    "aven_mindcensor",
     "eureka_moment",
+    "fang_druid_summoner",
     "lightning_bolt",
     "trynn_champion_of_freedom",
 ];
 
 const BOLT: &str = r#"{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":3}}]}}]}]}"#;
-const MINDCENSOR_KEYWORDS: &str =
-    r#"{"faces":[{"abilities":[{"Keyword":"Flash"},{"Keyword":"Flying"}]}]}"#;
+const FANG_DRUID_KEYWORDS: &str = r#"{"faces":[{"abilities":[{"Keyword":"Reach"}]}]}"#;
 const INVALID: &str = r#"{"faces":[{"abilities":[{"Nonsense":{}}]}]}"#;
 const RESERVOIR_TRIGGER: &str = r#"{"faces":[{"abilities":[{"Triggered":{"when":{"SpellCast":{"by":"You"}},"effects":[{"GainLife":{"amount":{"Tallied":{"who":"You","what":"SpellsCast"}}}}]}}]}]}"#;
 
@@ -248,10 +247,10 @@ async fn a_partial_card_is_written_declared_partial_with_its_open_clause_as_a_wh
     let files = vec![proposal(
         dir.path(),
         "a",
-        "aven_mindcensor",
-        MINDCENSOR_KEYWORDS,
+        "fang_druid_summoner",
+        FANG_DRUID_KEYWORDS,
     )];
-    let name = || String::from("Aven Mindcensor");
+    let name = || String::from("Fang-Druid Summoner");
 
     let held = promote(&db, &cache, &out, files.clone(), (false, false)).await;
     assert_eq!(
@@ -263,13 +262,13 @@ async fn a_partial_card_is_written_declared_partial_with_its_open_clause_as_a_wh
     let promoted = promote(&db, &cache, &out, files, (false, true)).await;
     assert_eq!(outcomes(&promoted), [(name(), None)]);
     let rules: Card = parse_json(
-        "aven_mindcensor.json",
-        &fs::read_to_string(out.join("cards/aven_mindcensor.json")).unwrap(),
+        "fang_druid_summoner.json",
+        &fs::read_to_string(out.join("cards/fang_druid_summoner.json")).unwrap(),
     )
     .unwrap();
     assert_eq!(rules.impl_status, ImplStatus::Partial);
     let record: serde_json::Value =
-        serde_json::from_str(&corpus_fixture("aven_mindcensor")).unwrap();
+        serde_json::from_str(&corpus_fixture("fang_druid_summoner")).unwrap();
     let text = record["oracle_text"].as_str().unwrap();
     let open: Vec<&str> = rules
         .abilities()
@@ -284,7 +283,7 @@ async fn a_partial_card_is_written_declared_partial_with_its_open_clause_as_a_wh
     assert_eq!(
         open,
         [
-            "If an opponent would search a library, that player searches the top four cards of that library instead."
+            "When this creature enters, you may search your library and/or graveyard for a creature card with no abilities, reveal it, and put it into your hand. If you search your library this way, shuffle."
         ]
     );
 }

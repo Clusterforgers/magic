@@ -6,12 +6,12 @@ use mtg_cards::refs::{Selector, ZoneKind};
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
 use super::wrong_effect;
-use crate::choose::{Picked, Selection, Target, pick_selections};
+use crate::choose::{Picked, Selection, Target, pick_selections_within};
 use crate::events::{Event, ZoneCause};
 use crate::library::{CardsFound, Revealed};
 use crate::object::ObjectRef;
 use crate::resolve::{Cx, Next, ResolveError, Run};
-use crate::rules::{Rule, RuleEffect, cant_search, own_spells_cant_search};
+use crate::rules::{Rule, RuleEffect, cant_search, own_spells_cant_search, search_top};
 use crate::wording;
 use crate::zones::Zone;
 
@@ -113,6 +113,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     };
     let mut searches: Vec<(PlayerId, Zone)> = Vec::new();
     let mut selections = Vec::new();
+    let mut totals = Vec::new();
     for player in cx
         .scope
         .players(who)?
@@ -133,7 +134,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         let place = zone_of(*zone, owner.unwrap_or(player))?;
         let mut matches: Vec<ObjectId> = Vec::new();
-        for id in state.zone(place) {
+        for id in r6013_searched(state, player, place) {
             if let Some(card) = state.object(*id)
                 && cx.scope.selects(filter, card.reference())?
             {
@@ -144,6 +145,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         matches.sort_unstable();
         searches.push((player, place));
         let found = fewest.min(matches.len());
+        totals.push(cx.scope.r6003_total(filter, &matches)?);
         selections.push(Selection {
             one_per_name: *distinct,
             player,
@@ -154,7 +156,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             groups: Vec::new(),
         });
     }
-    let taken = match pick_selections(cx, &selections)? {
+    let taken = match pick_selections_within(cx, &selections, &totals)? {
         Picked::Ask(decision) => return Ok(Run::Ask(decision)),
         Picked::Done(taken) => taken,
     };
@@ -197,6 +199,23 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         snapshots: Vec::new(),
         next: Next::Sibling,
     })
+}
+
+/// The cards of `place` that `player` searches: a library only from its top when a rule limits the search (Aven
+/// Mindcensor, CR 614.1a), every card of any other zone.
+pub(super) fn r6013_searched(
+    state: &crate::state::GameState,
+    player: PlayerId,
+    place: Zone,
+) -> &[ObjectId] {
+    let cards = state.zone(place);
+    match (place, search_top(state, player)) {
+        (Zone::Library(_), Some(top)) => {
+            let top = usize::try_from(top).unwrap_or(usize::MAX);
+            &cards[cards.len().saturating_sub(top)..]
+        }
+        _ => cards,
+    }
 }
 
 /// What a rule that exiles the cards a player finds in their library (Opposition Agent) makes of a search that found

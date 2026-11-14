@@ -129,6 +129,7 @@ pub const fn stat_name(stat: StatKind) -> Option<&'static str> {
         | StatKind::R374ColorSet
         | StatKind::R4700ChosenColors
         | StatKind::Subtypes
+        | StatKind::R6018PermanentTypes
         | StatKind::CreatureType
         | StatKind::BasePower
         | StatKind::BaseToughness

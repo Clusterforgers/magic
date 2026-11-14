@@ -478,7 +478,9 @@ fn check_counters_settled(state: &GameState) -> Result<(), Violation> {
                 player.counters_of(&CounterKind::Poison)
             )));
         }
+        // A boss's side never loses to commander damage (`mtg_engine::spotlight`).
         if let Some(lethal) = state.ruleset().commander_damage()
+            && !mtg_engine::spotlight::is_boss_side(state, player.id())
             && let Some(commander) = state
                 .commanders()
                 .find(|id| state.commander_damage(*id, player.id()) >= lethal)
@@ -1147,13 +1149,14 @@ impl InvariantChecker {
                 self.check_pool(*player)
             }
             Event::DamageDealt {
+                source,
                 target,
                 amount,
                 form,
                 toxic,
                 ..
             } => match target {
-                DamageTarget::Player(p) => self.damage_player(*p, *amount, *form, *toxic),
+                DamageTarget::Player(p) => self.damage_player(*source, *p, *amount, *form, *toxic),
                 DamageTarget::Object(o) => self.damage_object(*o, *amount, *form),
             },
             Event::AbilityActivated {
@@ -1163,7 +1166,7 @@ impl InvariantChecker {
                 origin,
             } => self.check_loyalty_activation(*player, *source, *ability, *origin),
             Event::LifePaid { player, amount } => self.lose_life(*player, *amount, "life paid"),
-            Event::LifeLost { player, amount } => self.lose_life(*player, *amount, "life lost"),
+            Event::LifeLost { player, amount } => self.life_lost(*player, *amount),
             Event::LifeGained { player, amount } => {
                 self.change_life(*player, i64::from(*amount), "life gained")
             }
@@ -1259,6 +1262,7 @@ impl InvariantChecker {
     /// Damage to a player is life lost, or with infect poison counters instead; toxic gives poison counters on top.
     fn damage_player(
         &mut self,
+        source: ObjectId,
         player: PlayerId,
         amount: u32,
         form: DamageForm,
@@ -1276,6 +1280,13 @@ impl InvariantChecker {
                     Some(floor) => wanted.min(before.saturating_sub(floor)),
                     _ => wanted,
                 };
+                let lost = mtg_engine::spotlight::graced_damage(
+                    &self.shadow,
+                    source,
+                    player,
+                    lost,
+                    before,
+                );
                 self.lose_life(player, u32::try_from(lost).unwrap_or(0), "damage")?;
                 toxic
             }
@@ -1508,6 +1519,14 @@ impl InvariantChecker {
             }
         }
         Ok(())
+    }
+
+    /// A `LifeLost`, less what the spotlight's grace holds back from a hero.
+    fn life_lost(&mut self, player: PlayerId, amount: u32) -> Result<(), Violation> {
+        let before = self.expected_life.get(player.index()).copied().unwrap_or(0);
+        let wanted = i32::try_from(amount).unwrap_or(i32::MAX);
+        let lost = mtg_engine::spotlight::graced_life_loss(&self.shadow, player, wanted, before);
+        self.lose_life(player, u32::try_from(lost).unwrap_or(0), "life lost")
     }
 
     /// Takes `amount` off the independent life history of `player` and compares it with the shadow state.

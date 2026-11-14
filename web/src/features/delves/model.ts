@@ -1,6 +1,17 @@
 /** The Delves run page's pure rules of display: room states and votes, boss life, life bars, stages and ready heroes. */
 import type { DeckEntry } from '@/features/game/deckEntries'
-import type { Brain, CustomCardView, DelveView, Hero, Node, Run } from '@/protocol/generated'
+import { summaryOf } from '@/features/table/campaign/bossAbilities'
+import type { BossAbility } from '@/features/table/campaign/bossAbilities'
+import type {
+  Brain,
+  CustomCardView,
+  DelveContent,
+  DelveFightView,
+  DelveView,
+  Hero,
+  Node,
+  Run,
+} from '@/protocol/generated'
 
 /** Where a room stands for the party. */
 export type NodeState = 'cleared' | 'current' | 'next' | 'locked'
@@ -71,3 +82,60 @@ export const lettersOf = (entry: DeckEntry): string => (entry.identity ?? []).jo
 
 /** Whether a card is a risky relic: its effect is symmetrical and helps the boss too. */
 export const isRisky = (card: Pick<CustomCardView, 'role'>): boolean => card.role === 'Risky'
+
+/**
+ * The boss's abilities for the intro of a fight, from the plan its game is made with: each custom card in its command
+ * zone (one given twice once, with its count), then its phases with the life at which each begins. The words are the
+ * content's, the records the engine plays.
+ */
+export function introAbilities(content: DelveContent, fight: DelveFightView): BossAbility[] {
+  const counts = new Map<string, number>()
+  for (const id of fight.rules) counts.set(id, (counts.get(id) ?? 0) + 1)
+  const out: BossAbility[] = []
+  for (const [id, count] of counts) {
+    const card = content.cards.find((entry) => entry.id === id)
+    if (card === undefined) continue
+    const name = count > 1 ? `${card.name} ×${count}` : card.name
+    out.push({ key: `rule-${id}`, kind: 'passive', name, text: card.text, summary: summaryOf(card.text) })
+  }
+  for (const [id, life] of fight.phases) {
+    const card = content.cards.find((entry) => entry.id === id)
+    if (card === undefined) continue
+    const share = fight.life > 0 ? Math.round((life / fight.life) * 100) : 0
+    out.push({
+      key: `phase-${id}`,
+      kind: 'next-phase',
+      name: card.name,
+      text: card.text,
+      summary: summaryOf(card.text),
+      when: life >= fight.life ? 'From the start' : `At ${life} life (${share}%)`,
+    })
+  }
+  return out
+}
+
+/** How the last fight went, while its outcome is still the news: won (the party is at camp after a boss) or lost. */
+export function lastFight(run: Run): 'won' | 'lost' | null {
+  const room = run.map.nodes.find((node) => node.id === run.at)
+  if (run.status === 'Room' && room?.kind === 'boss' && run.cleared.includes(room.id)) return 'won'
+  if (
+    typeof run.status === 'object' &&
+    'Fight' in run.status &&
+    run.log.at(-1)?.startsWith('The party was beaten back')
+  )
+    return 'lost'
+  return null
+}
+
+/** What the party does next, in one line of help for the stage the run is in. */
+export function nextStep(view: DelveView): string {
+  const status = view.run.status
+  if (status === 'Lobby')
+    return 'Each hero chooses a Commander deck once, for the whole run; rewards later swap cards into it. The host descends when everyone is ready.'
+  if (status === 'Map')
+    return 'Vote for the next camp on the descent below. When every hero has voted the party moves on; a tie goes to the torch bearer.'
+  if (status === 'Room')
+    return 'At camp: take your pick below. When every hero has answered, the party votes for the next room.'
+  if (status === 'Victory' || status === 'Defeat' || status === 'Abandoned') return ''
+  return 'Enter the fight: it starts once every hero is at the table. Afterwards you come straight back here for the loot.'
+}

@@ -84,6 +84,9 @@ pub struct FightPlan {
     /// The boss's minions, seated after it.
     #[serde(default)]
     pub minions: Vec<MinionSeat>,
+    /// The id of the run the fight belongs to, which the table links back to; none in a simulation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub run: Option<String>,
 }
 
 impl FightPlan {

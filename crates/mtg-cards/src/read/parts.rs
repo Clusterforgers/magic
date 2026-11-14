@@ -331,6 +331,10 @@ fn searches(ctx: &Ctx, rule: &GameRule) -> String {
             phrase::who(ctx, who)
         ),
         GameRule::CantSearch(who) => format!("{} can't search libraries", phrase::who(ctx, who)),
+        GameRule::SearchTop { who, count } => format!(
+            "{} search only the top {count} cards of a library they would search",
+            phrase::who(ctx, who)
+        ),
         _ => String::new(),
     }
 }
@@ -363,7 +367,9 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
         }
         GameRule::CantGainLife(who) => format!("{} can't gain life", phrase::who(ctx, who)),
         GameRule::CantDraw(who) => format!("{} can't draw cards", phrase::who(ctx, who)),
-        GameRule::CantSearch(_) | GameRule::OwnSpellsCantSearch(_) => searches(ctx, rule),
+        GameRule::CantSearch(_) | GameRule::OwnSpellsCantSearch(_) | GameRule::SearchTop { .. } => {
+            searches(ctx, rule)
+        }
         GameRule::EchoRather(rather) => format!(
             "you may pay {} rather than the echo cost of permanents you control",
             cost(ctx, rather)
@@ -372,6 +378,10 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
             format!("{} has no maximum hand size", phrase::who(ctx, who))
         }
         GameRule::SkipDrawStep(who) => format!("{} skips the draw step", phrase::who(ctx, who)),
+        GameRule::R6007ExhaustAgain(who) => format!(
+            "during their turn, as long as {} hasn't activated an exhaust ability this turn, they may activate exhaust abilities as though they haven't been activated",
+            phrase::who(ctx, who)
+        ),
         GameRule::MaxHandSize { who, size } => format!(
             "{} has a maximum hand size of {}",
             phrase::who(ctx, who),
@@ -666,19 +676,7 @@ pub(super) fn replace_by(ctx: &Ctx, by: &ReplaceBy, depth: u8, out: &mut Vec<Ste
             depth,
             format!("it goes to {} instead", phrase::zone_text(*zone)),
         )),
-        ReplaceBy::IntoLibrary { place, reveal } => out.push(Step::new(
-            depth,
-            format!(
-                "{}it goes into its owner's library instead, {}",
-                if *reveal { "it is revealed and " } else { "" },
-                match place {
-                    crate::effect::Place::Top => "on top".to_owned(),
-                    crate::effect::Place::Bottom => "on the bottom".to_owned(),
-                    crate::effect::Place::Below(n) => format!("below the top {n}"),
-                    crate::effect::Place::Shuffled => "shuffled in".to_owned(),
-                }
-            ),
-        )),
+        ReplaceBy::IntoLibrary { .. } => out.push(Step::new(depth, r6008_into_library(by))),
         ReplaceBy::Instead(list) => {
             out.push(Step::new(depth, "instead:"));
             effects::list(ctx, list, depth + 1, out);
@@ -804,6 +802,9 @@ fn combat_quirk(who: &str, quirk: &CombatQuirk) -> String {
         CombatQuirk::MustBeBlockedByOne(_) => {
             format!("{who} must be blocked by a chosen kind of creature if able")
         }
+        CombatQuirk::R6001MustBeBlockedByAtLeast(count) => {
+            format!("{who} must be blocked by {count} or more creatures if able")
+        }
         CombatQuirk::IgnoreLandwalk(_) | CombatQuirk::IgnoreAllLandwalk => {
             format!("{who} can be blocked as though they didn't have landwalk")
         }
@@ -859,6 +860,34 @@ fn r5501_attack_at(ctx: &Ctx, who: Option<&Ref>, of: Option<&Ref>, at: &Ref) -> 
     format!(
         "{attackers} must attack {} each combat if able",
         phrase::who(ctx, at)
+    )
+}
+
+/// The words of a move into its owner's library instead ("if its controller wants, it goes into its owner's library
+/// instead, on top").
+fn r6008_into_library(by: &ReplaceBy) -> String {
+    let ReplaceBy::IntoLibrary {
+        place,
+        reveal,
+        optional,
+    } = by
+    else {
+        return String::new();
+    };
+    format!(
+        "{}{}it goes into its owner's library instead, {}",
+        if *optional {
+            "if its controller wants, "
+        } else {
+            ""
+        },
+        if *reveal { "it is revealed and " } else { "" },
+        match place {
+            crate::effect::Place::Top => "on top".to_owned(),
+            crate::effect::Place::Bottom => "on the bottom".to_owned(),
+            crate::effect::Place::Below(n) => format!("below the top {n}"),
+            crate::effect::Place::Shuffled => "shuffled in".to_owned(),
+        }
     )
 }
 

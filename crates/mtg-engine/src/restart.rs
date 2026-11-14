@@ -25,6 +25,7 @@ pub(crate) struct Restart {
 
 /// Folds `GameRestarted`. The spell or ability that restarted the game stays on the stack until its resolution ends;
 /// every other object that is no card ceases to exist (CR 727.2).
+#[allow(clippy::too_many_lines)]
 pub(crate) fn fold(state: &mut GameState, by: PlayerId, kept: &[ObjectId]) {
     let resolving = state.resolving.as_ref().map(|resolving| resolving.object);
     let mut zones = Zones::new(state.players.len());
@@ -90,6 +91,7 @@ pub(crate) fn fold(state: &mut GameState, by: PlayerId, kept: &[ObjectId]) {
     state.delayed.clear();
     state.limits_spent.clear();
     state.game_limits_spent.clear();
+    state.r5515_power_ups.clear();
     state.loyalty_used.clear();
     state.modes_ever.clear();
     state.tallies = Tallies::default();

@@ -4,15 +4,15 @@ use std::borrow::Cow;
 
 use mtg_cards::definition::Layout;
 use mtg_cards::effect::{Destination, Effect, Order, Place};
-use mtg_cards::refs::Ref;
+use mtg_cards::refs::{Ref, Selector};
 use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{unsupported, wrong_effect};
-use crate::attach;
+use crate::attach::{self, Host};
 use crate::battle;
-use crate::choose::{Questions, Stop, Target};
+use crate::choose::{ChoiceOption, Questions, Stop, Target};
 use crate::counters::CountersChanged;
 use crate::events::{Event, ZoneCause};
 use crate::loyalty;
@@ -112,6 +112,7 @@ fn entering_under(cx: &Cx<'_>, under: Option<&Ref>) -> Result<Option<PlayerId>, 
 /// A card put onto the battlefield is one `ZoneChanged`, so what triggers on entering sees it, and an `Entered` after
 /// it when the card comes in tapped or under a player other than its owner; an instant or a sorcery card stays where it
 /// is (CR 304.4, 307.4). A random order is not played yet; `Caps` keeps those cards out.
+#[allow(clippy::too_many_lines)]
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Move { what, to, .. } = effect else {
         return Err(wrong_effect("Move"));
@@ -145,10 +146,6 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         Destination::Library {
             order: Some(Order::Random),
-            place: Place::Top,
-        } => return unsupported("Effect.Move.Random.Top"),
-        Destination::Library {
-            order: Some(Order::Random),
             place: Place::Below(_),
         } => return unsupported("Effect.Move.Random.Below"),
         Destination::Library { place, order } => {
@@ -178,6 +175,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 transformed: *transformed,
                 counters,
                 attached_to: None,
+                only: None,
                 face_down: false,
             };
             return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
@@ -186,20 +184,40 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             let entry = Entry::face_down(entering_under(cx, under.as_ref())?);
             return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
         }
-        Destination::BattlefieldAttached { to } => {
-            let host = cx
+        Destination::BattlefieldAttached {
+            to,
+            transformed,
+            under,
+        } => {
+            let host = match cx
                 .scope
                 .live_objects(to)?
                 .into_iter()
                 .find(|object| object.zone() == Zone::Battlefield)
-                .map(GameObject::id);
+            {
+                Some(object) => Some(Host::Object(object.id())),
+                None => cx
+                    .scope
+                    .players(to)?
+                    .into_iter()
+                    .find(|player| cx.state().is_alive(*player))
+                    .map(Host::Player),
+            };
             let entry = Entry {
                 tapped: false,
-                under: None,
-                transformed: false,
+                under: entering_under(cx, under.as_ref())?,
+                transformed: *transformed,
                 counters: &[],
                 attached_to: Some(NamedHost { host }),
+                only: None,
                 face_down: false,
+            };
+            return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
+        }
+        Destination::BattlefieldEnchanting { only } => {
+            let entry = Entry {
+                only: Some(only),
+                ..Entry::plain()
             };
             return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
         }
@@ -222,39 +240,51 @@ struct Entry<'a> {
     transformed: bool,
     /// With these counters.
     counters: &'a [(CounterKind, u32)],
-    /// Attached to the permanent the move names, when it names one.
+    /// Attached to the permanent or player the move names, when it names one.
     attached_to: Option<NamedHost>,
+    /// What an Aura may enchant this way, besides what its enchant ability allows; it enchants no player then.
+    only: Option<&'a Selector>,
     /// Face down (CR 708.3): a 2/2 creature with nothing else that enters with nothing its card would bring.
     face_down: bool,
 }
 
 impl Entry<'_> {
-    /// A card put onto the battlefield face down under `under`, its owner when none.
-    const fn face_down(under: Option<PlayerId>) -> Self {
+    /// A card put onto the battlefield untapped under its owner's control, with nothing else.
+    const fn plain() -> Self {
         Entry {
             tapped: false,
-            under,
+            under: None,
             transformed: false,
             counters: &[],
             attached_to: None,
+            only: None,
+            face_down: false,
+        }
+    }
+
+    /// A card put onto the battlefield face down under `under`, its owner when none.
+    const fn face_down(under: Option<PlayerId>) -> Self {
+        Entry {
+            under,
             face_down: true,
+            ..Entry::plain()
         }
     }
 }
 
-/// The permanent a move onto the battlefield attaches its cards to.
+/// The permanent or player a move onto the battlefield attaches its cards to.
 #[derive(Clone, Copy)]
 struct NamedHost {
-    /// The permanent on the battlefield, none when the reference names nothing there.
-    host: Option<ObjectId>,
+    /// The permanent on the battlefield or the player in the game, none when the reference names neither.
+    host: Option<Host>,
 }
 
 /// How a card put onto the battlefield attached to a named permanent comes in.
 enum Entering {
     /// It stays where it is.
     Stays,
-    /// It enters, attached to this permanent or unattached.
-    Enters(Option<ObjectId>),
+    /// It enters, attached to this permanent or player, or unattached.
+    Enters(Option<Host>),
 }
 
 /// What a card put onto the battlefield "attached to" a named permanent comes in as: an Aura only attached to a permanent
@@ -264,16 +294,27 @@ fn attached_entry(
     state: &GameState,
     object: &GameObject,
     controller: PlayerId,
-    named: Option<ObjectId>,
+    named: Option<Host>,
 ) -> Entering {
-    match attach::hosts_when_entering(state, object, controller) {
-        Some(hosts) => match named.filter(|host| hosts.contains(host)) {
-            Some(host) => Entering::Enters(Some(host)),
-            None => Entering::Stays,
-        },
-        None => Entering::Enters(
-            named.filter(|host| attach::legal_host_entering(state, object.id(), *host)),
+    match (
+        attach::hosts_when_entering(state, object, controller),
+        named,
+    ) {
+        (Some(_), Some(Host::Player(player))) => {
+            if attach::player_hosts_when_entering(state, object, controller).contains(&player) {
+                Entering::Enters(Some(Host::Player(player)))
+            } else {
+                Entering::Stays
+            }
+        }
+        (Some(hosts), Some(Host::Object(host))) if hosts.contains(&host) => {
+            Entering::Enters(Some(Host::Object(host)))
+        }
+        (Some(_), _) => Entering::Stays,
+        (None, Some(Host::Object(host))) => Entering::Enters(
+            attach::legal_host_entering(state, object.id(), host).then_some(Host::Object(host)),
         ),
+        (None, _) => Entering::Enters(None),
     }
 }
 
@@ -293,6 +334,7 @@ fn as_entering(state: &GameState, id: ObjectId, transformed: bool) -> Cow<'_, Ga
 /// attached to a permanent its controller chooses among those it may enchant (asked unless there is one), and one with
 /// nothing to enchant stays where it is (CR 303.4g). A card put there transformed comes in with its back face up, as
 /// one `Transformed` after the move (CR 712.14a); a card that is not a transforming double-faced card stays where it is.
+#[allow(clippy::too_many_lines)]
 fn onto_battlefield(
     cx: &Cx<'_>,
     what: &Ref,
@@ -305,6 +347,7 @@ fn onto_battlefield(
         transformed,
         counters,
         attached_to,
+        only,
         face_down,
     } = *entry;
     let mut questions = Questions::new(cx);
@@ -336,14 +379,38 @@ fn onto_battlefield(
         } else {
             match attach::hosts_when_entering(state, object, controller) {
                 None => None,
-                Some(hosts) => match hosts.as_slice() {
-                    [] => continue,
-                    [only] => Some(*only),
-                    _ => questions
-                        .cards(controller, hosts, (1, 1), wording::ENCHANT.into())?
-                        .first()
-                        .copied(),
-                },
+                Some(hosts) => {
+                    let (hosts, players) = match only {
+                        Some(only) => (
+                            attach::hosts_matching(state, object, controller, hosts, only),
+                            Vec::new(),
+                        ),
+                        None => (
+                            hosts,
+                            attach::player_hosts_when_entering(state, object, controller),
+                        ),
+                    };
+                    match (hosts.as_slice(), players.as_slice()) {
+                        ([], []) => continue,
+                        ([one], _) => Some(Host::Object(*one)),
+                        ([], [one]) => Some(Host::Player(*one)),
+                        ([], _) => {
+                            let options =
+                                players.iter().copied().map(ChoiceOption::Player).collect();
+                            let at = questions.w9b_option(
+                                controller,
+                                options,
+                                wording::ENCHANT.into(),
+                            )?;
+                            players.get(at).copied().map(Host::Player)
+                        }
+                        _ => questions
+                            .cards(controller, hosts, (1, 1), wording::ENCHANT.into())?
+                            .first()
+                            .copied()
+                            .map(Host::Object),
+                    }
+                }
             }
         };
         let (mut event, shot) = moved(state, object.id(), object.zone(), Zone::Battlefield);
@@ -389,10 +456,7 @@ fn onto_battlefield(
             events.extend(battle::entering(state, object.id()));
             events.extend(saga::entering(state, object.id()));
         }
-        events.extend(host.map(|to| Event::Attached {
-            object: object.id(),
-            to,
-        }));
+        events.extend(host.map(|to| to.attach(object.id())));
     }
     questions.end()?;
     Ok(Run::Done {
@@ -479,10 +543,14 @@ fn into_libraries(
                     .flat_map(|object| crate::merged::cards_apart(object)),
             );
         }
-        let drawn = random && place == Place::Bottom && ids.len() > 1;
+        let drawn = random && matches!(place, Place::Bottom | Place::Top) && ids.len() > 1;
         if drawn {
             ids = shuffled(state, shuffles, ids);
             shuffles += 1;
+            // On top the order is logged as a random pick, which spends the substream as a bottoming does.
+            if place == Place::Top {
+                events.push(Event::ChosenAtRandom { cards: ids.clone() });
+            }
         } else if place != Place::Shuffled && ids.len() > 1 {
             // Their owner puts them in any order (CR 401.4) unless the effect names the player who puts them.
             let who = if by_controller {
@@ -1229,19 +1297,31 @@ mod tests {
         );
     }
 
-    #[rstest]
-    #[case::a_random_order_on_top(
-        r#"{"Library":{"place":"Top","order":"Random"}}"#,
-        "Effect.Move.Random.Top"
-    )]
-    fn what_the_engine_does_not_play_is_refused_by_name(
-        #[case] to: &str,
-        #[case] name: &'static str,
-    ) {
+    #[test]
+    fn cards_put_on_top_in_a_random_order_are_logged_as_a_random_pick_before_they_move() {
         let game = game();
-        let card = hand(&game, ME)[0];
-        let refused = run_with(&game, &[card], Vec::new(), &moving(to));
-        assert_eq!(refused.unwrap_err(), ResolveError::Unsupported(name));
+        let cards: Vec<ObjectId> = hand(&game, ME).into_iter().take(3).collect();
+        let to = r#"{"Library":{"place":"Top","order":"Random"}}"#;
+        let Ok(Run::Done { events, .. }) = run_with(&game, &cards, Vec::new(), &moving(to)) else {
+            panic!("a random order on top asks nothing");
+        };
+        let Some(Event::ChosenAtRandom { cards: order }) = events.first() else {
+            panic!("the order is drawn first: {events:?}");
+        };
+        let mut sorted = order.clone();
+        sorted.sort_unstable();
+        let mut wanted = cards.clone();
+        wanted.sort_unstable();
+        assert_eq!(sorted, wanted, "every card is in the order once");
+        let moved: Vec<ObjectId> = events
+            .iter()
+            .filter_map(|event| match event {
+                Event::ZoneChanged { object, .. } => Some(*object),
+                _ => None,
+            })
+            .collect();
+        let reversed: Vec<ObjectId> = order.iter().rev().copied().collect();
+        assert_eq!(moved, reversed, "the first card drawn ends on top");
     }
 
     const RANDOM_BOTTOM: &str = r#"{"Library":{"place":"Bottom","order":"Random"}}"#;

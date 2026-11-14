@@ -15,10 +15,12 @@ pub mod combat;
 pub mod deep;
 pub mod endgame;
 pub mod eval;
+pub mod haunt;
 pub mod knobs;
 pub mod priority;
 pub mod seen;
 pub mod sim;
+pub mod spotlight;
 pub mod suite;
 pub mod targets;
 pub mod threat;
@@ -60,6 +62,10 @@ pub trait SeatBrain: Send {
     /// Sets the share of its clock and budget the brain may spend on its next answers, from 0 to 1 (a busy server
     /// lowers it); a brain that does not search ignores it.
     fn set_budget(&mut self, _share: f64) {}
+
+    /// Sets when the next decision was asked, so the decision cap ([`clock::DECISION_CAP`]) also counts the wait before
+    /// the brain thinks (a server queueing for a thinking slot); a brain that does not search ignores it.
+    fn set_asked(&mut self, _at: Instant) {}
 }
 
 /// The brain of `seat` at `level` in a game seeded with `seed`; `timed` caps each decision by the level's clock (the
@@ -123,6 +129,8 @@ pub struct HeuristicBot {
     history: deep::History,
     /// When the decision being answered was asked.
     started: Instant,
+    /// When the next decision was asked, if the caller said ([`SeatBrain::set_asked`]).
+    next_asked: Option<Instant>,
 }
 
 /// The longest a timed bot looks for a forced win ([`endgame::forced_win`]).
@@ -148,6 +156,7 @@ impl HeuristicBot {
             budget: 1.0,
             history: deep::History::default(),
             started: Instant::now(),
+            next_asked: None,
         }
     }
 
@@ -173,6 +182,15 @@ impl HeuristicBot {
         self.asked += 1;
         let key = self.seed ^ self.asked.wrapping_mul(0x9E37_79B9_7F4A_7C15);
         let pending = engine.decision() == Some(decision);
+        if pending
+            && let DecisionKind::Priority(options) = &decision.kind
+            && let Some(play) = haunt::plan(engine, self.seat, options)
+        {
+            if play != PriorityAction::Pass {
+                self.played.push(play.clone());
+            }
+            return Answer::Priority(play);
+        }
         let matters = matches!(
             decision.kind,
             DecisionKind::Priority(_)
@@ -218,7 +236,8 @@ impl HeuristicBot {
         key: u64,
         pending: bool,
     ) -> Answer {
-        let mut search = Search::new(self.seat, self.settings, key);
+        let mut search =
+            Search::new(self.seat, self.settings, key).capped(clock::cap(self.started));
         let world;
         let engine = if self.settings.fair && pending {
             let mut redealt = engine.clone();
@@ -474,8 +493,12 @@ impl SeatBrain for HeuristicBot {
         self.budget = share.clamp(0.0, 1.0);
     }
 
+    fn set_asked(&mut self, at: Instant) {
+        self.next_asked = Some(at);
+    }
+
     fn choose(&mut self, decision: &Decision, table: Option<&Engine>) -> Answer {
-        self.started = Instant::now();
+        self.started = self.next_asked.take().unwrap_or_else(Instant::now);
         match table {
             Some(engine) => self.answer(decision, engine),
             None => self.random.choose(decision),

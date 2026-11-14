@@ -19,6 +19,7 @@ import { delvesApi } from '@/net/delves'
 import type { DelvesApi } from '@/net/delves'
 import type { DelveSummary } from '@/protocol/generated'
 import { cn } from '@/lib/utils'
+import { DelvesRules } from './DelvesRules'
 import { errorText, statusText } from './words'
 
 function NewDelveForm({ client }: { client: DelvesApi }) {
@@ -136,7 +137,14 @@ export function DelveRow({ delve }: { delve: DelveSummary }) {
   )
 }
 
-function DelveList({ client }: { client: DelvesApi }) {
+/** The runs still under way, and the finished ones (victory or defeat); an abandoned run is in neither. */
+export function splitRuns(list: readonly DelveSummary[]): { active: DelveSummary[]; past: DelveSummary[] } {
+  const shown = list.filter((delve) => delve.status !== 'abandoned')
+  const finished = (delve: DelveSummary) => delve.status === 'victory' || delve.status === 'defeat'
+  return { active: shown.filter((delve) => !finished(delve)), past: shown.filter(finished) }
+}
+
+export function DelveList({ client }: { client: DelvesApi }) {
   const [list, setList] = useState<DelveSummary[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   useEffect(() => {
@@ -173,12 +181,31 @@ function DelveList({ client }: { client: DelvesApi }) {
       </EmptyState>
     )
   }
+  const { active, past } = splitRuns(list)
   return (
-    <ul aria-label="Your delves" className="surface">
-      {list.map((delve) => (
-        <DelveRow key={delve.id} delve={delve} />
-      ))}
-    </ul>
+    <div className="grid gap-3">
+      {active.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No run under way. Start one below or join a friend's.</p>
+      ) : (
+        <ul aria-label="Your delves" className="surface">
+          {active.map((delve) => (
+            <DelveRow key={delve.id} delve={delve} />
+          ))}
+        </ul>
+      )}
+      {past.length === 0 ? null : (
+        <details data-slot="past-runs" className="surface p-2">
+          <summary className="cursor-pointer rounded-md p-1 text-sm font-medium">
+            Past runs ({past.length})
+          </summary>
+          <ul aria-label="Past runs">
+            {past.map((delve) => (
+              <DelveRow key={delve.id} delve={delve} />
+            ))}
+          </ul>
+        </details>
+      )}
+    </div>
   )
 }
 
@@ -197,6 +224,7 @@ export function DelvesPage({ client = delvesApi }: { client?: DelvesApi }) {
         <DelveList client={client} />
         <NewDelveForm client={client} />
       </SignedInOnly>
+      <DelvesRules />
     </PageShell>
   )
 }

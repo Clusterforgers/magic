@@ -22,7 +22,11 @@ pub(crate) fn at_turn_start(state: &GameState, active: PlayerId) -> Vec<Event> {
     let Some(player) = state.player(active) else {
         return Vec::new();
     };
-    if player.schemes.is_empty() || !player.is_in_game() || player.is_spirit() {
+    if player.schemes.is_empty()
+        || !player.is_in_game()
+        || player.is_spirit()
+        || crate::spotlight::lull_ahead(state, active)
+    {
         return Vec::new();
     }
     let mut events: Vec<Event> = player

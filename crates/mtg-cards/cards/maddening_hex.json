@@ -1,7 +1,7 @@
 {
   "oracle_id": "5d96170f-14dd-496e-a485-bd3b9eedfe02",
   "name": "Maddening Hex",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Maddening Hex",
@@ -9,9 +9,42 @@
       "abilities": [
         { "Keyword": { "EnchantPlayer": {} } },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 15, "end": 210 }
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "AttachedPlayer" }
+            },
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 1,
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "to": { "ControllerOf": "Triggering" },
+                            "amount": { "DieResult": "Only" }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "ChooseAtRandom": {
+                  "from": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": { "Not": { "Among": "AttachedPlayer" } }
+                    }
+                  },
+                  "as": "opponent"
+                }
+              },
+              { "Attach": { "what": "This", "to": { "Bound": "opponent" } } }
+            ]
           }
         }
       ]

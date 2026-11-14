@@ -135,7 +135,11 @@ player: PlayerId,
 /**
  * Whether its untap step is skipped.
  */
-skip_untap?: boolean, } } | { "ExtraTurnSkipped": { 
+skip_untap?: boolean, 
+/**
+ * Whether power-up abilities can't be activated during it.
+ */
+no_power_up?: boolean, } } | { "ExtraTurnSkipped": { 
 /**
  * Whose turn.
  */
@@ -529,7 +533,15 @@ player: PlayerId,
 /**
  * The Spirit emblem's new object.
  */
-emblem: ObjectId, } } | { "PhaseBegan": { 
+emblem: ObjectId, } } | { "SpiritRevived": { 
+/**
+ * Who.
+ */
+player: PlayerId, 
+/**
+ * The life total it returns with.
+ */
+life: number, } } | { "PhaseBegan": { 
 /**
  * Whose phase.
  */

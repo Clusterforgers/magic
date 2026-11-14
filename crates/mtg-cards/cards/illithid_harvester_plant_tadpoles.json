@@ -1,0 +1,45 @@
+{
+  "oracle_id": "299ffd3a-29cf-4667-b191-dd30d09f799c",
+  "name": "Illithid Harvester // Plant Tadpoles",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Illithid Harvester",
+      "oracle_fingerprint": "38d659d3056fc238cc01d880d6980009",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 135 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Plant Tadpoles",
+      "oracle_fingerprint": "d6e3baef6cfa76d84ac7b4678f0fdf96",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

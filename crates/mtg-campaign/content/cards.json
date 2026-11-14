@@ -4,7 +4,7 @@
   "name": "Restless Spirit",
   "kind": "Haunt",
   "type_line": "Emblem — Spirit",
-  "text": "At the beginning of each opponent's upkeep, tap up to one target creature that player controls.\nAt the beginning of your end step, each opponent loses 1 life.",
+  "text": "Ectoplasm — You start with 1 ectoplasm and get 1 more at the beginning of your upkeep.\nWail — Spend 1 ectoplasm: Target opponent loses 2 life. Creatures they control get -1/-0 until end of turn.\nWard — Spend 1 ectoplasm: Prevent the next 3 damage that would be dealt to each of your teammates this turn.\nWhisper — Spend 1 ectoplasm: Each of your teammates scries 2.\nHinder — Spend 1 ectoplasm: Tap target creature an opponent controls. It doesn't untap during its controller's next untap step.\nHowl — Spend 3 ectoplasm: Tap up to two target creatures your opponents control. Each opponent loses 2 life.\nRise Again — Spend 5 ectoplasm: You return to life with 10 life and draw five cards. Activate only as a sorcery.\nYour opponents can't attack you or target you.",
   "art": "spirit",
   "abilities": [
    {
@@ -12,9 +12,196 @@
      "when": {
       "StepBegins": {
        "step": "Upkeep",
-       "whose": "Opponents"
+       "whose": "You"
       }
      },
+     "effects": [
+      {
+       "PutCounters": {
+        "on": "You",
+        "counter": {
+         "Other": "ectoplasm"
+        }
+       }
+      }
+     ]
+    }
+   },
+   {
+    "Activated": {
+     "cost": [],
+     "effects": [
+      {
+       "RemoveCounters": {
+        "from": "You",
+        "counter": {
+         "Other": "ectoplasm"
+        }
+       }
+      },
+      {
+       "LoseLife": {
+        "who": {
+         "Target": 0
+        },
+        "amount": 2
+       }
+      },
+      {
+       "Continuous": {
+        "affected": {
+         "Each": [
+          {
+           "Type": "Creature"
+          },
+          {
+           "ControlledBy": {
+            "Target": 0
+           }
+          }
+         ]
+        },
+        "mods": [
+         {
+          "ModifyPT": {
+           "power": -1,
+           "toughness": 0
+          }
+         }
+        ],
+        "duration": "UntilEndOfTurn"
+       }
+      }
+     ],
+     "targets": [
+      {
+       "what": "Opponent"
+      }
+     ],
+     "condition": {
+      "Compare": {
+       "left": {
+        "Counters": {
+         "on": "You",
+         "counter": {
+          "Other": "ectoplasm"
+         }
+        }
+       },
+       "op": "Ge",
+       "right": 1
+      }
+     }
+    }
+   },
+   {
+    "Activated": {
+     "cost": [],
+     "effects": [
+      {
+       "RemoveCounters": {
+        "from": "You",
+        "counter": {
+         "Other": "ectoplasm"
+        }
+       }
+      },
+      {
+       "Shield": {
+        "when": {
+         "Damage": {
+          "to": "Teammates"
+         }
+        },
+        "by": {
+         "PreventUpTo": 3
+        },
+        "duration": "UntilEndOfTurn"
+       }
+      }
+     ],
+     "condition": {
+      "Compare": {
+       "left": {
+        "Counters": {
+         "on": "You",
+         "counter": {
+          "Other": "ectoplasm"
+         }
+        }
+       },
+       "op": "Ge",
+       "right": 1
+      }
+     }
+    }
+   },
+   {
+    "Activated": {
+     "cost": [],
+     "effects": [
+      {
+       "RemoveCounters": {
+        "from": "You",
+        "counter": {
+         "Other": "ectoplasm"
+        }
+       }
+      },
+      {
+       "Scry": {
+        "who": "Teammates",
+        "count": 2
+       }
+      }
+     ],
+     "condition": {
+      "Compare": {
+       "left": {
+        "Counters": {
+         "on": "You",
+         "counter": {
+          "Other": "ectoplasm"
+         }
+        }
+       },
+       "op": "Ge",
+       "right": 1
+      }
+     }
+    }
+   },
+   {
+    "Activated": {
+     "cost": [],
+     "effects": [
+      {
+       "RemoveCounters": {
+        "from": "You",
+        "counter": {
+         "Other": "ectoplasm"
+        }
+       }
+      },
+      {
+       "Tap": {
+        "what": {
+         "Target": 0
+        }
+       }
+      },
+      {
+       "Continuous": {
+        "affected": {
+         "Target": 0
+        },
+        "mods": [
+         "DoesntUntap"
+        ],
+        "duration": "NextUntapStep"
+       }
+      }
+     ],
      "targets": [
       {
        "what": {
@@ -23,43 +210,124 @@
           "Type": "Creature"
          },
          {
-          "ControlledBy": "ActivePlayer"
+          "ControlledBy": "Opponents"
          }
         ]
-       },
-       "bounds": {
-        "min": 0,
-        "max": 1
        }
       }
      ],
+     "condition": {
+      "Compare": {
+       "left": {
+        "Counters": {
+         "on": "You",
+         "counter": {
+          "Other": "ectoplasm"
+         }
+        }
+       },
+       "op": "Ge",
+       "right": 1
+      }
+     }
+    }
+   },
+   {
+    "Activated": {
+     "cost": [],
      "effects": [
+      {
+       "RemoveCounters": {
+        "from": "You",
+        "counter": {
+         "Other": "ectoplasm"
+        },
+        "count": 3
+       }
+      },
       {
        "Tap": {
         "what": {
          "Target": 0
         }
        }
-      }
-     ]
-    }
-   },
-   {
-    "Triggered": {
-     "when": {
-      "StepBegins": {
-       "step": "End",
-       "whose": "You"
-      }
-     },
-     "effects": [
+      },
       {
        "LoseLife": {
         "who": "Opponents",
-        "amount": 1
+        "amount": 2
        }
       }
-     ]
+     ],
+     "targets": [
+      {
+       "what": {
+        "Object": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "Opponents"
+         }
+        ]
+       },
+       "bounds": {
+        "min": 0,
+        "max": 2
+       }
+      }
+     ],
+     "condition": {
+      "Compare": {
+       "left": {
+        "Counters": {
+         "on": "You",
+         "counter": {
+          "Other": "ectoplasm"
+         }
+        }
+       },
+       "op": "Ge",
+       "right": 3
+      }
+     }
+    }
+   },
+   {
+    "Activated": {
+     "cost": [],
+     "effects": [
+      {
+       "RemoveCounters": {
+        "from": "You",
+        "counter": {
+         "Other": "ectoplasm"
+        },
+        "count": 5
+       }
+      },
+      {
+       "Revive": {
+        "life": 10,
+        "draw": 5
+       }
+      }
+     ],
+     "timing": "Sorcery",
+     "condition": {
+      "Compare": {
+       "left": {
+        "Counters": {
+         "on": "You",
+         "counter": {
+          "Other": "ectoplasm"
+         }
+        }
+       },
+       "op": "Ge",
+       "right": 5
+      }
+     }
     }
    }
   ]
@@ -617,6 +885,38 @@
   ]
  },
  {
+  "id": "phoenix_feather",
+  "name": "Phoenix Feather",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 80,
+  "art": "feather",
+  "role": "Support",
+  "text": "Pay 6 life: Each Spirit on your team returns to life with 8 life and draws four cards. Activate only as a sorcery and only once each fight.",
+  "abilities": [
+   {
+    "Activated": {
+     "cost": [
+      {
+       "PayLife": 6
+      }
+     ],
+     "timing": "Sorcery",
+     "limit": "OncePerGame",
+     "effects": [
+      {
+       "Revive": {
+        "who": "Teammates",
+        "life": 8,
+        "draw": 4
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
   "id": "skrix",
   "name": "Skrix, the Rat Queen",
   "kind": "Boss",
@@ -1164,7 +1464,7 @@
   "kind": "Boss",
   "type_line": "Boss — Advantage",
   "art": "reinforcements",
-  "text": "At the beginning of your upkeep, draw a card and create a 2/2 black Zombie creature token. (A boss gets Reinforcements against a party of three or more.)",
+  "text": "At the beginning of your upkeep, if you have taken two or more turns, draw a card and create a 2/2 black Zombie creature token. (A boss gets Reinforcements against a party of three or more.)",
   "abilities": [
    {
     "Triggered": {
@@ -1198,7 +1498,16 @@
         }
        }
       }
-     ]
+     ],
+     "if": {
+      "Compare": {
+       "left": {
+        "TurnsTaken": "You"
+       },
+       "op": "Ge",
+       "right": 2
+      }
+     }
     }
    }
   ]
@@ -1209,7 +1518,7 @@
   "kind": "Boss",
   "type_line": "Boss — Advantage",
   "art": "warpath",
-  "text": "At end of combat on your turn, if it's the first combat phase of the turn, untap all creatures you control. After this phase, there is an additional combat phase followed by an additional main phase. (A boss gets Warpath against a big party.)",
+  "text": "At end of combat on your turn, if it's the first combat phase of the turn and you have taken four or more turns, untap all creatures you control. After this phase, there is an additional combat phase followed by an additional main phase. (A boss gets Warpath against a big party.)",
   "abilities": [
    {
     "Triggered": {
@@ -1219,7 +1528,20 @@
        "whose": "You"
       }
      },
-     "if": "FirstCombat",
+     "if": {
+      "All": [
+       "FirstCombat",
+       {
+        "Compare": {
+         "left": {
+          "TurnsTaken": "You"
+         },
+         "op": "Ge",
+         "right": 4
+        }
+       }
+      ]
+     },
      "effects": [
       {
        "Untap": {
@@ -1650,12 +1972,45 @@
   ]
  },
  {
+  "id": "marked_prey",
+  "name": "Marked Prey",
+  "kind": "Scheme",
+  "type_line": "Scheme",
+  "art": "marked_prey",
+  "text": "At the beginning of your upkeep, the hero in the spotlight loses 3 life and you gain 3 life.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "LoseLife": {
+        "who": "Spotlit",
+        "amount": 3
+       }
+      },
+      {
+       "GainLife": {
+        "amount": 3
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
   "id": "reserves",
   "name": "Reserves",
   "kind": "Boss",
   "type_line": "Boss — Advantage",
   "art": "reserves",
-  "text": "At the beginning of your upkeep, create a 2/2 black Zombie creature token. (A boss gets Reserves against a party of two.)",
+  "text": "At the beginning of your upkeep, if you have taken two or more turns, create a 2/2 black Zombie creature token. (A boss gets Reserves against a party of two.)",
   "abilities": [
    {
     "Triggered": {
@@ -1686,7 +2041,16 @@
         }
        }
       }
-     ]
+     ],
+     "if": {
+      "Compare": {
+       "left": {
+        "TurnsTaken": "You"
+       },
+       "op": "Ge",
+       "right": 2
+      }
+     }
     }
    }
   ]

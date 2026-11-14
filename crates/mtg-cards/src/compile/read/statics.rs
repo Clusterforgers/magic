@@ -726,6 +726,9 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     if r.words("skip your draw step") {
         return Some(GameRule::SkipDrawStep(Ref::You));
     }
+    if r.words(R6007_EXHAUST_AGAIN) {
+        return Some(GameRule::R6007ExhaustAgain(Ref::You));
+    }
     if r.words("you may look at the top card of your library any time") {
         return Some(GameRule::LookAtTopAnyTime(Ref::You));
     }
@@ -1949,6 +1952,9 @@ fn ep27_rule_texts(
     }
 }
 
+/// The rule of Elvish Refueler, lowercase.
+const R6007_EXHAUST_AGAIN: &str = "during your turn, as long as you haven't activated an exhaust ability this turn, you may activate exhaust abilities as though they haven't been activated";
+
 /// The wordings of the rules about a player's hand size, draw step and searches of a permanent.
 fn player_rule_texts(rule: &GameRule) -> Option<Vec<String>> {
     Some(vec![match rule {
@@ -1965,6 +1971,11 @@ fn player_rule_texts(rule: &GameRule) -> Option<Vec<String>> {
             text
         }
         GameRule::SkipDrawStep(Ref::You) => "Skip your draw step".to_owned(),
+        GameRule::R6007ExhaustAgain(Ref::You) => {
+            let mut text = R6007_EXHAUST_AGAIN.to_owned();
+            text[..1].make_ascii_uppercase();
+            text
+        }
         GameRule::ControlSearches(Ref::Opponents) => {
             "You control your opponents while they're searching their libraries".to_owned()
         }
@@ -2023,6 +2034,7 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
         (
             GameRule::CantSearch(_)
             | GameRule::OwnSpellsCantSearch(_)
+            | GameRule::SearchTop { .. }
             | GameRule::DrawFromBottom(_)
             | GameRule::SkipExtraTurns(_)
             | GameRule::FlipTwoCoins(_)

@@ -63,6 +63,7 @@ fn timely(
         return false;
     }
     if let Some(limit) = limit
+        && crate::rules::r6007_limit_holds(state, player, *limit)
         && match crate::r4701_boast::r4701_boast_most(state, object.id(), rules) {
             Some(most) => {
                 state.r4701_boast_spent(most, object.reference(), address.source, address.ability)

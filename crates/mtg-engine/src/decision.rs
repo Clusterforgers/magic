@@ -647,7 +647,9 @@ pub struct BlockOptions {
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
     pub required: Vec<ObjectId>,
     /// The attackers a rule requires some creature to block (CR 509.1c: "must be blocked if able"); the declaration blocks
-    /// each of them unless every creature that could is busy with a requirement of its own. Left out while there are none.
+    /// each of them unless every creature that could is busy with a requirement of its own. An attacker listed several
+    /// times must be blocked by that many creatures if able ("must be blocked by two or more creatures if able"). Left out
+    /// while there are none.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
     pub must_be_blocked: Vec<ObjectId>,
@@ -724,6 +726,7 @@ impl BlockOptions {
         }
         self.serve_must_be_blocked(&mut blocks);
         self.r5502_serve(&mut blocks);
+        self.r6001_serve(&mut blocks);
         let mut attackers: Vec<ObjectId> = Vec::new();
         for (_, attacker) in &blocks {
             if !attackers.contains(attacker) {

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "f687a746-4807-41d5-848d-4053ddef6a76",
+  "name": "Moorland Rescuer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moorland Rescuer",
+      "oracle_fingerprint": "4aee7f80e0847a1ca691ab88de63d2dc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" },
+                      "Other",
+                      { "Type": "Creature" },
+                      {
+                        "TotalAtMost": {
+                          "stat": "Power",
+                          "most": { "Stat": { "of": "This", "stat": "Power" } }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept" }, "to": { "Battlefield": {} } } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

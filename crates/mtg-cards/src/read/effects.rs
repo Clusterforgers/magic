@@ -311,12 +311,21 @@ fn moved(ctx: &Ctx, what: &Ref, to: &Destination) -> String {
             "put {what} onto the battlefield face down{}",
             entering(ctx, false, under.as_ref(), false)
         ),
-        Destination::BattlefieldAttached { to } => {
+        Destination::BattlefieldAttached {
+            to,
+            transformed,
+            under,
+        } => {
             format!(
-                "put {what} onto the battlefield attached to {}",
+                "put {what} onto the battlefield{} attached to {}",
+                entering(ctx, false, under.as_ref(), *transformed),
                 phrase::who(ctx, to)
             )
         }
+        Destination::BattlefieldEnchanting { only } => format!(
+            "put {what} onto the battlefield; an Aura may enchant only {} this way",
+            phrase::selectors(ctx, only)
+        ),
     }
 }
 
@@ -478,6 +487,15 @@ fn game(ctx: &Ctx, effect: &Effect) -> Option<String> {
             &format!("{} extra", phrase::counted(ctx, count, "turn")),
         ),
         Effect::BecomeMonarch { who } => act(ctx, who, "become", "the monarch"),
+        Effect::Revive { who, life, draw } => {
+            let cards = if draw.is_zero() {
+                String::new()
+            } else {
+                format!(" and draw {}", phrase::counted(ctx, draw, "card"))
+            };
+            let back = format!("to life with {} life", phrase::amount(ctx, life));
+            format!("{}{cards}", act(ctx, who, "return", &back))
+        }
         Effect::ReduceSpeed { who } => {
             act(ctx, who, "lose", "1 speed, keeping a speed of at least 1")
         }

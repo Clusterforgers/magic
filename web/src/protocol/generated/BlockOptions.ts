@@ -28,7 +28,9 @@ max_blockers?: Array<[ObjectId, number]>,
 required?: Array<ObjectId>, 
 /**
  * The attackers a rule requires some creature to block (CR 509.1c: "must be blocked if able"); the declaration blocks
- * each of them unless every creature that could is busy with a requirement of its own. Left out while there are none.
+ * each of them unless every creature that could is busy with a requirement of its own. An attacker listed several
+ * times must be blocked by that many creatures if able ("must be blocked by two or more creatures if able"). Left out
+ * while there are none.
  */
 must_be_blocked?: Array<ObjectId>, 
 /**

@@ -46,7 +46,7 @@ const COST_WORDS: [&str; 17] = [
 ];
 
 /// Lines of a spell that are rules about the spell itself rather than what it does.
-const SPELL_RULES: [&str; 8] = [
+const SPELL_RULES: [&str; 9] = [
     "This spell ",
     "~ costs ",
     "~ can't be countered",
@@ -55,6 +55,7 @@ const SPELL_RULES: [&str; 8] = [
     "Spend only ",
     "X can't be greater than ",
     "If ~ would be put into a graveyard from anywhere, ",
+    "As long as ~ is on the stack, ",
 ];
 
 /// Whether a line of a spell is a rule about the spell itself: one of `SPELL_RULES`, or the cast "If you control a commander, you
@@ -538,6 +539,16 @@ mod tests {
     )]
     #[case::cost_with_name("~ costs {1} less to cast.", true, Static)]
     #[case::uncounterable("~ can't be countered.", true, Static)]
+    #[case::r6001_while_on_the_stack(
+        "As long as ~ is on the stack, spells that target it cost {2} more to cast.",
+        true,
+        Static
+    )]
+    #[case::r6001_not_on_the_battlefield(
+        "As long as ~ is on the battlefield, creatures get +1/+1.",
+        true,
+        Spell
+    )]
     #[case::r302c_uncounterable_if(
         "If you revealed a Dragon card or controlled a Dragon as you cast this spell, this spell can't be countered.",
         true,

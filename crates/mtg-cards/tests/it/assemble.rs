@@ -293,17 +293,17 @@ fn rules_are_attached_only_when_the_support_record_says_the_engine_runs_them() {
 #[test]
 fn an_engine_that_runs_some_of_a_card_makes_it_partial() {
     let library = library();
-    let keywords = caps_of(&["Keyword.Flash", "Keyword.Flying"]);
+    let keywords = caps_of(&["Keyword.Reach"]);
     assert_eq!(
-        state_of(&library, "Aven Mindcensor", &keywords),
+        state_of(&library, "Fang-Druid Summoner", &keywords),
         Support::Partial
     );
     assert_eq!(
-        state_of(&library, "Aven Mindcensor", &Caps::none()),
+        state_of(&library, "Fang-Druid Summoner", &Caps::none()),
         Support::Manual
     );
     assert_eq!(
-        state_of(&library, "Aven Mindcensor", &Caps::everything()),
+        state_of(&library, "Fang-Druid Summoner", &Caps::everything()),
         Support::Partial,
         "its clause stays left to the table"
     );

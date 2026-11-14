@@ -1,3 +1,4 @@
+import type { DelvesApi } from '@/net/delves'
 import { act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { AuthProvider } from '@/features/auth/AuthProvider'
@@ -27,6 +28,8 @@ export interface GameOptions {
   watch?: boolean
   /** Mount the page at its own address with a stand-in for Play at `/`, so `router` shows where it sends the visitor. */
   routed?: boolean
+  /** The Delves client a boss fight's waiting room reads its run with. */
+  delves?: DelvesApi
 }
 
 /** A game page on fake sockets, a manual clock and an in-memory REST server, with the server's part in helpers. */
@@ -75,6 +78,7 @@ export async function renderGame(options: GameOptions = {}): Promise<GameHarness
       api={server.api}
       decks={server.decks}
       precons={server.precons}
+      {...(options.delves === undefined ? {} : { delves: options.delves })}
       deps={deps}
     />
   )

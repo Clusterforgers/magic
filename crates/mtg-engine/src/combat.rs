@@ -330,6 +330,7 @@ pub(crate) fn can_attack(state: &GameState, id: ObjectId, player: PlayerId) -> b
     // A Two-Headed Giant team attacks as one: the active player declares the attacks of the team.
     controller_of(state, id)
         .is_some_and(|c| c == player || (state.shares_turns() && state.are_teammates(c, player)))
+        && !crate::spotlight::lull(state, player)
         && !cant_attack(state, id)
         && (!keywords::summoning_sick(state, id)
             || crate::combat_quirks::attacks_as_though_haste(state, id)
@@ -361,6 +362,7 @@ pub(crate) fn w7d_leave_on_control_change(state: &mut GameState) {
 /// they protect (CR 508.1b).
 pub(crate) fn defenders_for(state: &GameState, player: PlayerId) -> Vec<AttackTarget> {
     let mut seats = state.ruleset().defending_seats(state, player);
+    seats.retain(|seat| crate::spirits::attackable(state, *seat));
     // "Each player may attack only the nearest opponent in the chosen direction and planeswalkers controlled by that
     // opponent": every such rule keeps one seat, and battles are no such planeswalker.
     let sides = crate::rules::r376_nearest_sides(state);
@@ -530,11 +532,15 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
         })
         .map(|option| option.object)
         .collect();
-    options
-        .joins
-        .extend(crate::r400_attack_follow::r400_follow_joins(
-            state, &offered, &free,
-        ));
+    // A follower joins only where two creatures may attack: under a limit of one, obeying it would break the limit,
+    // and a requirement never breaks a restriction (CR 508.1d).
+    if options.most.is_none_or(|most| most > 1) {
+        options
+            .joins
+            .extend(crate::r400_attack_follow::r400_follow_joins(
+                state, &offered, &free,
+            ));
+    }
     let groups = crate::r5502_attack_with_one::r5502_groups(state, player, &options);
     options.at_least_one = (!groups.is_empty()).then(|| Box::new(groups));
     options
@@ -636,6 +642,7 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
     let cant_alone = cant_block_alone_of(state, &blockers);
     let offered: Vec<ObjectId> = blockers.iter().map(|option| option.object).collect();
     let joins = crate::r286_joins::r286_joins(state, &offered, &[], false);
+    crate::r6001_blocked_by_many::r6001_list_several(state, &blockers, &mut must_be_blocked);
     crate::block_tax::unbind_attackers(state, &blockers, &mut must_be_blocked);
     let required = blockers
         .iter()
@@ -832,7 +839,10 @@ pub(crate) fn check_blockers(
     {
         return Err(IllegalAnswer::Required("blocker"));
     }
-    if options.unmet_must_be_blocked(answer) || options.r5502_unmet(answer) {
+    if options.unmet_must_be_blocked(answer)
+        || options.r5502_unmet(answer)
+        || options.r6001_unmet(answer)
+    {
         return Err(IllegalAnswer::Required("blocked attacker"));
     }
     Ok(())

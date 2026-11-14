@@ -1,7 +1,7 @@
 {
   "oracle_id": "98950aaf-d0b8-420b-9e6a-c7d07d0f8588",
   "name": "Soul Seizer // Ghastly Haunting",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Soul Seizer",
@@ -9,9 +9,20 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 142 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }] } }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "Transform": { "what": "This" } }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+                }
+              }
+            ]
           }
         }
       ]

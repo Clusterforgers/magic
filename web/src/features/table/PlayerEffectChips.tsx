@@ -14,6 +14,7 @@ import type { ChipDensity } from './PodParts'
 import { effectsName, seatEffects } from './playerEffects'
 import type { EffectFacts, EffectIcon, EffectTone } from './playerEffects'
 import { useStable } from './useStable'
+import { useSeatNamer } from './names'
 
 const ICON: Record<EffectIcon, LucideIcon> = {
   shield: Shield,
@@ -73,7 +74,8 @@ export function PlayerEffectChips({
   player: PlayerView
   density?: ChipDensity
 }) {
-  const effects = usePlay(useStable((state) => seatEffects(player, state.objectsById, owner)))
+  const namer = useSeatNamer()
+  const effects = usePlay(useStable((state) => seatEffects(player, state.objectsById, owner, namer)))
   if (effects.length === 0) return null
   if (density !== 'tile') {
     return effects.map((effect) => <EffectChip key={effect.key} effect={effect} density={density} />)

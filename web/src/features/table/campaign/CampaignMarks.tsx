@@ -6,6 +6,7 @@ import { CrownIcon, GhostIcon } from 'lucide-react'
 import type { BossView } from '@/protocol/generated'
 import { cn } from '@/lib/utils'
 import { phaseSteps } from './bossPhase'
+import { SPIRIT_TIP } from './haunt'
 
 /** The crown chip beside a boss's name. */
 export function BossChip({ compact = false }: { compact?: boolean }) {
@@ -59,11 +60,12 @@ export function BossTrack({ boss, named = true }: { boss: BossView; named?: bool
   )
 }
 
-/** The mark beside a fallen hero's name: a ghost and "Spirit". */
+/** The mark beside a fallen hero's name: a ghost and "Spirit", with what a Spirit is as its tooltip. */
 export function SpiritMark({ compact = false }: { compact?: boolean }) {
   return (
     <span
       data-slot="spirit-mark"
+      title={SPIRIT_TIP}
       className="inline-flex shrink-0 items-center gap-1 rounded-full border border-spirit px-1.5 text-xs leading-4 font-semibold text-spirit"
     >
       <GhostIcon aria-hidden="true" className="size-3" />

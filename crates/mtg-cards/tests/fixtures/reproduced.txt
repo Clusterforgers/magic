@@ -11,6 +11,7 @@ Abzan Falconer
 Abzan Skycaptain
 Academy Elite
 Accomplished Automaton
+Ace's Baseball Bat
 Acererak the Archlich
 Act of Aggression
 Act of Treason
@@ -26,6 +27,7 @@ Aether Gale
 Aether Hub
 Aethersnatch
 Agate Instigator
+Agatha's Soul Cauldron
 Aggravated Assault
 Ainok Bond-Kin
 Ainok Survivalist
@@ -114,6 +116,7 @@ Avalanche Caller
 Avatar of Woe
 Aven Eternal
 Aven Initiate
+Aven Mindcensor
 Aven Riftwatcher
 Aven Soulgazer
 Aven Squire
@@ -179,6 +182,7 @@ Biomechan Engineer
 Biotech Specialist
 Bird Admirer // Wing Shredder
 Birgi, God of Storytelling // Harnfel, Horn of Bounty
+Bitter Feud
 Bitter Triumph
 Black Dragon Gate
 Black Knight
@@ -240,6 +244,7 @@ Branchblight Stalker
 Brave the Sands
 Break the Ice
 Breath of Life
+Breathstealer's Crypt
 Breena, the Demagogue
 Breezekeeper
 Briarblade Adept
@@ -543,6 +548,8 @@ Dowsing Dagger // Lost Vale
 Draconic Lore
 Drag to the Bottom
 Dragon Grip
+Dragon's Disciple
+Dragon's Fire
 Dragonlord Dromoka
 Dragonlord Ojutai
 Dragonspeaker Shaman
@@ -578,6 +585,7 @@ Dualcaster Mage
 Duchess, Wayward Tavernkeep
 Dueling Coach
 Dueling Grounds
+Dungeon Delver
 Dungeon Geists
 Dungeon Map
 Dunland Crebain
@@ -860,6 +868,7 @@ Gollum, Obsessed Stalker
 Gonti's Machinations
 Goreclaw, Terror of Qal Sisma
 Gorger Wurm
+Gorm the Great
 Gorma, the Gullet
 Grabby Tabby
 Grafted Wargear
@@ -877,12 +886,14 @@ Greater Mossdog
 Green Goblin, Back for More
 Gremlin Mine
 Grenzo's Cutthroat
+Greymond, Avacyn's Stalwart
 Grief
 Griffin Aerie
 Grim Flayer
 Grim Haruspex
 Grim Initiate
 Grisly Salvage
+Grothama, All-Devouring
 Ground Seal
 Growing Ranks
 Grumgully, the Generous
@@ -906,6 +917,7 @@ Hallowed Ground
 Hallowed Spiritkeeper
 Hama Pashar, Ruin Seeker
 Hammer Dropper
+Hand of Vecna
 Hangar Scrounger
 Hangarback Walker
 Hapatra, Vizier of Poisons
@@ -1062,6 +1074,7 @@ Jumbo Cactuar
 Jungle Lion
 Junk Winder
 Jyoti, Moag Ancient
+Kaervek's Torch
 Kalemne's Captain
 Kalemne, Disciple of Iroas
 Kalitas, Traitor of Ghet
@@ -1115,6 +1128,7 @@ Konstrari Charm
 Kor Firewalker
 Korozda Guildmage
 Korozda Monitor
+Korvold, Gleeful Glutton
 Koth, Fire of Resistance
 Kozilek's Translator
 Krark's Thumb
@@ -1312,6 +1326,7 @@ Monastery Swiftspear
 Monk of the Open Hand
 Monk's Fist
 Moonrager's Slash
+Moorland Rescuer
 Morinfen
 Morsel Theft
 Mortality Spear
@@ -1544,6 +1559,7 @@ Proficient Pyrodancer
 Propaganda
 Propeller Pioneer
 Prosperous Bandit
+Protean Hulk
 Proven Combatant
 Psychic Impetus
 Psychic Puppetry
@@ -1551,6 +1567,7 @@ Psychic Symbiont
 Psychic Whorl
 Psychosis Crawler
 Pteramander
+Pulmonic Sliver
 Purple Dragon Punks
 Putrid Goblin
 Pygmy Kavu
@@ -1582,6 +1599,7 @@ Rampant Growth
 Ramses Overdark
 Rancor
 Ransom Note
+Raphael, Tag Team Tough
 Ratadrabik of Urborg
 Ravenous Leucrocota
 Ravenous Slime
@@ -1936,6 +1954,7 @@ Stratus Dancer
 Stratus Walk
 Strength Bobblehead
 Strionic Resonator
+Strixhaven Stadium
 Stroke of Genius
 Strong, the Brutish Thespian
 Stubborn Burrowfiend
@@ -2134,6 +2153,7 @@ Tomb Tyrant
 Tomik, Distinguished Advokist
 Topiary Lecturer
 Topography Tracker
+Toralf, God of Fury // Toralf's Hammer
 Torrent of Stone
 Torrential Gearhulk
 Totentanz, Swarm Piper
@@ -2238,6 +2258,8 @@ Village Pillagers
 Village Rites
 Viper's Kiss
 Viridian Corrupter
+Virtus the Veiled
+Virtus's Maneuver
 Visage of Dread // Dread Osseosaur
 Viscerid Drone
 Vish Kal, Blood Arbiter
@@ -2329,6 +2351,7 @@ Wizard Class
 Wizard's Rockets
 Wolf of Devil's Breach
 Wolfwillow Haven
+Wonder Man, Hollywood Hero
 Wooded Bastion
 Woodland Bellower
 Woodripper
@@ -2360,4 +2383,5 @@ Zndrsplt, Eye of Wisdom
 Zodiac Goat
 Zoetic Cavern
 Zombie Master
+Zur's Weirding
 Óin the Brave

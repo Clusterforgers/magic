@@ -22,7 +22,7 @@ use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::{Attacked, CastRider, GameRule, ManaChange, Prohibited, SpendAs};
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
-use mtg_cards::value::Condition;
+use mtg_cards::value::{Condition, CounterKind};
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaType};
 use serde::{Deserialize, Serialize};
@@ -178,6 +178,16 @@ pub enum Rule {
     CantSearch(Vec<PlayerId>),
     /// Spells and abilities the players control can't cause their controller to search their own library.
     OwnSpellsCantSearch(Vec<PlayerId>),
+    /// A permanent with a counter of this kind that would untap during its controller's untap step loses all of them
+    /// instead (CR 614.1a).
+    UntapRemovesCounters(CounterKind),
+    /// The players search only the top `count` cards of a library they would search (CR 614.1a).
+    SearchTop {
+        /// Who searches that way.
+        players: Vec<PlayerId>,
+        /// How many cards from the top.
+        count: u32,
+    },
     /// The players may vote an additional time (CR 701.38d).
     VoteAgain(Vec<PlayerId>),
     /// The players get an additional vote (CR 701.38d).
@@ -189,6 +199,8 @@ pub enum Rule {
     AttackOnlyNearest(Option<bool>),
     /// The players skip each extra turn they would begin (CR 500.7).
     SkipExtraTurns(Vec<PlayerId>),
+    /// Each power-up ability of the permanents can be activated an additional time.
+    PowerUpAgain(Vec<ObjectRef>),
     /// The players flip two coins for each coin they would flip and ignore one (CR 705.3).
     FlipTwoCoins(Vec<PlayerId>),
     /// The players roll one die more for each roll of one or more dice and ignore the lowest roll.
@@ -305,6 +317,8 @@ pub enum Rule {
     },
     /// The players skip their draw steps (CR 614.10).
     SkipDrawStep(Vec<PlayerId>),
+    /// The players may activate exhaust abilities again during their turns until they activate one.
+    R6007ExhaustAgain(Vec<PlayerId>),
     /// The players may look at the top card of their library any time.
     LookAtTop(Vec<PlayerId>),
     /// The players may look at the face-down cards in exile the selector picks (CR 406.3).
@@ -785,6 +799,10 @@ pub(crate) struct RulesInForce {
     draw_bottom: BTreeSet<PlayerId>,
     no_search: BTreeSet<PlayerId>,
     no_own_search: BTreeSet<PlayerId>,
+    /// The fewest top cards each player may search of a library (Aven Mindcensor); every card when absent.
+    search_top: BTreeMap<PlayerId, u32>,
+    /// The kinds of counter that hold a permanent down in its controller's untap step (Freyalise's Winds).
+    pub(crate) untap_removes: BTreeSet<CounterKind>,
     /// The changes to the mana of a tap.
     pub(crate) mana: Vec<ManaRule>,
     vote_again: BTreeSet<PlayerId>,
@@ -795,6 +813,8 @@ pub(crate) struct RulesInForce {
     /// The sides each player may attack only the nearest opponent on, left `true`, one entry for each rule.
     r376_nearest: Vec<bool>,
     skip_extra_turns: BTreeSet<PlayerId>,
+    /// One entry for each rule that lets a permanent's power-up abilities be activated an additional time.
+    power_up_again: Vec<ObjectRef>,
     /// One entry for each rule that doubles a player's coins: a player listed twice flips four.
     flip_two: Vec<PlayerId>,
     /// One entry for each rule that adds a die to a player's rolls: a player listed twice rolls two more.
@@ -840,6 +860,8 @@ pub(crate) struct RulesInForce {
     /// The loyalty counters each player's loyalty abilities cost in addition.
     loyalty_more: BTreeMap<PlayerId, u32>,
     skip_draw: BTreeSet<PlayerId>,
+    /// The players who may activate exhaust abilities again (`R6007ExhaustAgain`).
+    exhaust_again: BTreeSet<PlayerId>,
     look_top: BTreeSet<PlayerId>,
     extra_lands: BTreeMap<PlayerId, u32>,
     again: Vec<Again>,
@@ -1270,6 +1292,15 @@ impl RulesInForce {
             Rule::DrawFromBottom(players) => self.draw_bottom.extend(players),
             Rule::CantSearch(players) => self.no_search.extend(players),
             Rule::OwnSpellsCantSearch(players) => self.no_own_search.extend(players),
+            Rule::UntapRemovesCounters(kind) => {
+                self.untap_removes.insert(kind.clone());
+            }
+            Rule::SearchTop { players, count } => {
+                for player in players {
+                    let top = self.search_top.entry(*player).or_insert(*count);
+                    *top = (*top).min(*count);
+                }
+            }
             Rule::ManaProduced { what, who, change } => {
                 if let Some(source) = source {
                     self.mana.push(ManaRule {
@@ -1286,6 +1317,7 @@ impl RulesInForce {
             Rule::ReverseTurnOrder => self.r376_reversals += 1,
             Rule::AttackOnlyNearest(left) => self.r376_nearest.extend(left),
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
+            Rule::PowerUpAgain(objects) => self.power_up_again.extend(objects),
             Rule::FlipTwoCoins(players) => self.flip_two.extend(players),
             Rule::ExtraDie(players) => self.extra_die.extend(players),
             Rule::KeepUnspentMana(players, mana) => {
@@ -1361,6 +1393,7 @@ impl RulesInForce {
                 self.put_option(rule, controller, source);
             }
             Rule::SkipDrawStep(players) => self.skip_draw.extend(players),
+            Rule::R6007ExhaustAgain(players) => self.exhaust_again.extend(players),
             Rule::UntapLimit { who, what, count } => {
                 if let Some(source) = source {
                     self.untap_limits.push(crate::rmt4_untap_limit::UntapLimit {
@@ -1716,6 +1749,11 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::DrawFromBottom(who) => Rule::DrawFromBottom(scope.players(who)?),
         GameRule::CantSearch(who) => Rule::CantSearch(scope.players(who)?),
         GameRule::OwnSpellsCantSearch(who) => Rule::OwnSpellsCantSearch(scope.players(who)?),
+        GameRule::UntapRemovesCounters(kind) => Rule::UntapRemovesCounters(kind.clone()),
+        GameRule::SearchTop { who, count } => Rule::SearchTop {
+            players: scope.players(who)?,
+            count: *count,
+        },
         GameRule::ManaProduced { what, who, change } => Rule::ManaProduced {
             what: what.clone(),
             who: scope.players(who)?,
@@ -1736,6 +1774,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             })
         }
         GameRule::SkipExtraTurns(who) => Rule::SkipExtraTurns(scope.players(who)?),
+        GameRule::PowerUpAgain(which) => Rule::PowerUpAgain(objects(
+            &mtg_cards::refs::Ref::Each(which.clone()),
+            Zone::Battlefield,
+        )?),
         GameRule::FlipTwoCoins(who) => Rule::FlipTwoCoins(scope.players(who)?),
         GameRule::ExtraDie(who) => Rule::ExtraDie(scope.players(who)?),
         GameRule::ExtraPlanarDie(_) | GameRule::PlaneswalkLookTwo(_) => Rule::Planar,
@@ -1858,6 +1900,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 .collect(),
         ),
         GameRule::SkipDrawStep(who) => Rule::SkipDrawStep(scope.players(who)?),
+        GameRule::R6007ExhaustAgain(who) => Rule::R6007ExhaustAgain(scope.players(who)?),
         GameRule::AdditionalLandPlays { who, count } => {
             let count = u32::try_from(scope.amount(count)?.max(0)).unwrap_or(u32::MAX);
             Rule::AdditionalLandPlays(
@@ -1897,6 +1940,8 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::CantSpendMana => return Err(ResolveError::Unsupported("Rule.CantSpendMana")),
         // The cost of the cast reads it from the card (`r5500_tax_life`); it is no rule of the game.
         GameRule::TaxAsLife(_) => return Err(ResolveError::Unsupported("Rule.TaxAsLife")),
+        // A plot reads it from the permanents (`r6018_plot_less`); it is no rule of the game.
+        GameRule::R6018PlotLess(_) => return Err(ResolveError::Unsupported("Rule.R6018PlotLess")),
         GameRule::SpendOnlyFrom(_) => return Err(ResolveError::Unsupported("Rule.SpendOnlyFrom")),
         GameRule::GraveyardCardsUntargetable
         | GameRule::CantLoseGame { .. }
@@ -1966,7 +2011,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::MustAttack(named)
         | Rule::MustBlock(named)
         | Rule::CantBeCountered(named)
-        | Rule::CantBeRegenerated(named) => named.is_empty(),
+        | Rule::CantBeRegenerated(named)
+        | Rule::PowerUpAgain(named) => named.is_empty(),
         Rule::EntersWith {
             counters, keyword, ..
         } => *counters == 0 && keyword.is_none(),
@@ -1989,6 +2035,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::DrawFromBottom(players)
         | Rule::CantSearch(players)
         | Rule::OwnSpellsCantSearch(players)
+        | Rule::SearchTop { players, .. }
         | Rule::VoteAgain(players)
         | Rule::ExtraVote(players)
         | Rule::SkipExtraTurns(players)
@@ -2008,6 +2055,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::ExileFound(players)
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
+        | Rule::R6007ExhaustAgain(players)
         | Rule::NoLegendRule(players)
         | Rule::NoMaxHandSize(players)
         | Rule::LoyaltyTwice(players)
@@ -2044,7 +2092,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::ReverseTurnOrder
         | Rule::DamageAsWither
         | Rule::ManaBurn
-        | Rule::RevealFirstDraw { .. } => false,
+        | Rule::RevealFirstDraw { .. }
+        | Rule::UntapRemovesCounters(_) => false,
         Rule::Planar => true,
         Rule::AttackOnlyNearest(left) => left.is_none(),
         Rule::PreventDamage(shield) => {
@@ -2180,12 +2229,15 @@ static NONE: RulesInForce = RulesInForce {
     draw_bottom: BTreeSet::new(),
     no_search: BTreeSet::new(),
     no_own_search: BTreeSet::new(),
+    search_top: BTreeMap::new(),
+    untap_removes: BTreeSet::new(),
     mana: Vec::new(),
     vote_again: BTreeSet::new(),
     extra_vote: Vec::new(),
     r376_reversals: 0,
     r376_nearest: Vec::new(),
     skip_extra_turns: BTreeSet::new(),
+    power_up_again: Vec::new(),
     flip_two: Vec::new(),
     extra_die: Vec::new(),
     keep_mana: Vec::new(),
@@ -2208,6 +2260,7 @@ static NONE: RulesInForce = RulesInForce {
     loyalty_any_time: BTreeSet::new(),
     loyalty_more: BTreeMap::new(),
     skip_draw: BTreeSet::new(),
+    exhaust_again: BTreeSet::new(),
     look_top: BTreeSet::new(),
     extra_lands: BTreeMap::new(),
     again: Vec::new(),
@@ -2598,6 +2651,18 @@ pub(crate) fn granted_player_keywords(state: &GameState, player: PlayerId) -> Ve
         .collect()
 }
 
+/// How many times each power-up ability of `source` can be activated: once, and once more for each rule that lets it be
+/// activated an additional time.
+pub(crate) fn power_up_allowance(state: &GameState, source: ObjectRef) -> u32 {
+    let again = state
+        .rules()
+        .power_up_again
+        .iter()
+        .filter(|object| object.id == source.id)
+        .count();
+    u32::try_from(again).unwrap_or(u32::MAX).saturating_add(1)
+}
+
 /// Whether `player` skips each extra turn they would begin: the one place the turn order reads this rule.
 pub fn skips_extra_turns(state: &GameState, player: PlayerId) -> bool {
     state.rules().skip_extra_turns.contains(&player)
@@ -2648,6 +2713,30 @@ pub fn cant_draw(state: &GameState, player: PlayerId) -> bool {
 /// Whether `player` draws from the bottom of their library: the one place a draw reads this rule.
 pub(crate) fn draws_from_bottom(state: &GameState, player: PlayerId) -> bool {
     state.rules().draw_bottom.contains(&player)
+}
+
+/// Whether `player` may activate an exhaust ability of theirs that was activated before: a rule in force says so, it is
+/// their turn and they haven't activated an exhaust ability this turn (Elvish Refueler).
+pub(crate) fn r6007_exhaust_again(state: &GameState, player: PlayerId) -> bool {
+    state.rules().exhaust_again.contains(&player)
+        && state.active_player() == Some(player)
+        && !state.tallies.records.iter().any(|record| {
+            record.player == Some(player)
+                && record.event
+                    == mtg_cards::value::TallyEvent::KindActivated(
+                        mtg_cards::ability::ActivationKind::Exhaust,
+                    )
+        })
+}
+
+/// Whether the limit `limit` of an ability `player` activates holds: an exhaust ability (once each game) does not hold
+/// `player` back while they may activate exhaust abilities again.
+pub(crate) fn r6007_limit_holds(
+    state: &GameState,
+    player: PlayerId,
+    limit: mtg_cards::ability::Limit,
+) -> bool {
+    !(limit == mtg_cards::ability::Limit::OncePerGame && r6007_exhaust_again(state, player))
 }
 
 /// Whether `player` skips their draw step: the one place the turn's steps read this rule.
@@ -2772,6 +2861,13 @@ pub(crate) fn ep24_spend_as(
             continue;
         }
         let applies = match (spells, spell) {
+            // Only to activate the abilities of the permanents `abilities` selects ("to activate abilities of
+            // creatures you control"): no spell.
+            (None, None) if abilities.is_some() => abilities
+                .as_ref()
+                .zip(source)
+                .is_some_and(|(abilities, source)| selects(abilities, source)),
+            (None, Some(_)) if abilities.is_some() => false,
             (None, _) => true,
             (Some(spells), Some(spell)) => selects(spells, spell),
             (Some(_), None) => abilities
@@ -2876,6 +2972,11 @@ pub fn w17c_votes_again(state: &GameState, player: PlayerId) -> bool {
 /// Whether `player` can't search libraries: the one place a search reads this rule.
 pub fn cant_search(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_search.contains(&player)
+}
+
+/// How many cards from the top of a library `player` searches, when a rule limits it (Aven Mindcensor).
+pub fn search_top(state: &GameState, player: PlayerId) -> Option<u32> {
+    state.rules().search_top.get(&player).copied()
 }
 
 /// Whether `player`'s own spells and abilities can't cause them to search their own library: the one place a search

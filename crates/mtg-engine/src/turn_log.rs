@@ -204,6 +204,37 @@ impl Scope<'_> {
         i64::try_from(seen.len()).unwrap_or(i64::MAX) + hidden
     }
 
+    /// The most damage one source dealt this turn while one of `players` controlled it, its damage added up; a source
+    /// that is not public is a source of its own for each record.
+    pub(crate) fn r6008_most_damage_by_source(&self, players: &[PlayerId]) -> i64 {
+        let mut totals: Vec<(ObjectRef, i64)> = Vec::new();
+        let mut most = 0i64;
+        for record in &self.state.tallies.records {
+            if record.event != TallyEvent::Damaged
+                || !record
+                    .player
+                    .is_some_and(|player| players.contains(&player))
+            {
+                continue;
+            }
+            let amount = i64::from(record.amount);
+            let total = match record.subject {
+                Some(subject) => {
+                    if let Some((_, total)) = totals.iter_mut().find(|(seen, _)| *seen == subject) {
+                        *total += amount;
+                        *total
+                    } else {
+                        totals.push((subject, amount));
+                        amount
+                    }
+                }
+                None => amount,
+            };
+            most = most.max(total);
+        }
+        most
+    }
+
     /// The damage dealt this turn to the players and objects named, as the objects were when it was dealt.
     pub(crate) fn g10c_damage_to(&self, to: &[Target]) -> i64 {
         self.state

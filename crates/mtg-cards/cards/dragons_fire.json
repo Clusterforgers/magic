@@ -1,0 +1,41 @@
+{
+  "oracle_id": "7237d607-2613-4786-96d6-55792c2e02b9",
+  "name": "Dragon's Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragon's Fire",
+      "oracle_fingerprint": "710f9f18e58d84d3bda50c88236f9e95",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Behold": { "filter": [{ "Subtype": "Dragon" }] } }] } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": "Paid", "stat": "Power" } }
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

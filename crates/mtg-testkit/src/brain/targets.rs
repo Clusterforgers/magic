@@ -13,8 +13,12 @@ use crate::bot::rmt1_within_total;
 fn worth(seen: &Seen<'_>, target: Target) -> (f64, bool) {
     match target {
         Target::Player(player) => {
-            // The lower an opponent's life, the more a hit at them is worth.
-            let worth = 30.0 - f64::from(seen.life(player)).min(30.0);
+            // The lower an opponent's life, the more a hit at them is worth; a boss's side reads the spotlight instead.
+            let worth = if super::spotlight::boss_seat(seen) {
+                20.0 + super::spotlight::lean(seen, player)
+            } else {
+                30.0 - f64::from(seen.life(player)).min(30.0)
+            };
             (worth, !seen.is_teammate(player))
         }
         Target::Object(object) => {
@@ -32,6 +36,7 @@ fn worth(seen: &Seen<'_>, target: Target) -> (f64, bool) {
                 }),
                 _ => 1.0 + f64::from(seen.mana_value(id)),
             };
+            let worth = worth * super::spotlight::object_factor(seen, controller);
             (worth, !seen.is_teammate(controller))
         }
     }
@@ -80,6 +85,24 @@ pub fn rank_targets(seen: &Seen<'_>, options: &TargetOptions) -> Vec<Target> {
     });
     if harmful && ranked.iter().any(|target| worth(seen, *target).1) {
         ranked.retain(|target| worth(seen, *target).1);
+    }
+    // A boss's side spares the heroes the spotlight spares while it has another opposing target.
+    if super::spotlight::boss_seat(seen) {
+        let fair = |target: &Target| {
+            let holder = match target {
+                Target::Player(player) => Some(*player),
+                Target::Object(object) => seen.controller(object.id),
+            };
+            holder.is_none_or(|p| seen.is_teammate(p) || super::spotlight::may_aim(seen, p))
+        };
+        let spared = |target: &Target| !fair(target);
+        if ranked.iter().any(spared)
+            && ranked
+                .iter()
+                .any(|target| fair(target) && worth(seen, *target).1)
+        {
+            ranked.retain(fair);
+        }
     }
     ranked
 }

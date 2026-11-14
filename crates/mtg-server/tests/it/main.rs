@@ -3,6 +3,7 @@
 mod auto_pass;
 mod auto_skips;
 mod auto_yields;
+mod bot_fallbacks;
 mod bot_seats;
 mod by_hand_window;
 mod clocked_manual;
@@ -55,6 +56,8 @@ mod pg_conjure;
 mod pg_deck_groups;
 mod pg_deck_import_printings;
 mod pg_decks;
+mod pg_delve_fights;
+mod pg_delve_list;
 mod pg_delves;
 mod pg_failed_games;
 mod pg_favourites;

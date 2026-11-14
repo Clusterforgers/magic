@@ -1118,7 +1118,7 @@ pub(crate) fn plot_action_cost(state: &GameState, id: ObjectId) -> Option<ManaCo
         let Keyword::Plot(cost) = keyword else {
             return None;
         };
-        mana_only(cost)
+        mana_only(cost).map(|cost| crate::r6018_plot_less::r6018_plot_cost(state, id, cost))
     })
 }
 

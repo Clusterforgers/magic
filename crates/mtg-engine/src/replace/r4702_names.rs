@@ -37,6 +37,7 @@ impl Pass<'_> {
         source: ObjectId,
         controller: PlayerId,
         kind: EntersChoice,
+        looked: Vec<String>,
     ) -> Result<Asked<Option<Chosen>>, EngineError> {
         let (nonland, noncreature, nonbasic_land, text) = match kind {
             EntersChoice::NonlandCardName => (true, false, false, "Choose a nonland card name."),
@@ -61,6 +62,7 @@ impl Pass<'_> {
                         nonland,
                         noncreature,
                         nonbasic_land,
+                        looked,
                     }),
                 }));
             }

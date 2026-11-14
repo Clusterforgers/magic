@@ -69,6 +69,9 @@ pub enum StatKind {
     /// Its subtypes: no number, so only `Amount::Distinct` reads it (each subtype once among the objects: "the number of
     /// planeswalker types among planeswalkers you control").
     Subtypes,
+    /// Its permanent types (artifact, battle, creature, enchantment, land, planeswalker): no number, so only
+    /// `Amount::Distinct` reads it ("the number of permanent types among cards in your graveyard").
+    R6018PermanentTypes,
 }
 
 /// A comparison between two numbers.
@@ -758,6 +761,9 @@ pub enum Amount {
     /// each object once ("three or more sources you controlled dealt damage this turn"); a source that left and came back
     /// is another.
     SourcesDealtDamage(Ref),
+    /// The most damage one source dealt this turn while one of the players the reference names controlled it, all its
+    /// damage added up ("if a source you controlled dealt 5 or more damage this turn"); 0 when none dealt any.
+    MostDamageBySource(Ref),
     /// The events of the kind this turn whose object the filter selects, counted for the players the reference names
     /// ("the second creature token you created this turn").
     Tally {
@@ -787,6 +793,15 @@ pub enum Amount {
         by: Ref,
         /// The players and objects it was dealt to.
         to: Ref,
+    },
+    /// The damage dealt this turn, after prevention, to the players and objects `to` names (as they were then) by
+    /// sources while one of the players `players` names controlled them: "the amount of damage dealt to ~ this turn by
+    /// sources they controlled".
+    DamageToFromPlayers {
+        /// The players and objects it was dealt to.
+        to: Ref,
+        /// The players who controlled the sources.
+        players: Ref,
     },
     /// The number of the turn, counting from 1 (CR 500).
     TurnNumber,
@@ -1073,6 +1088,7 @@ enum Tagged {
     Party(Ref),
     Triggering,
     SourcesDealtDamage(Ref),
+    MostDamageBySource(Ref),
     Tally {
         event: TallyEvent,
         who: Ref,
@@ -1087,6 +1103,10 @@ enum Tagged {
     DamageDealtByTo {
         by: Ref,
         to: Ref,
+    },
+    DamageToFromPlayers {
+        to: Ref,
+        players: Ref,
     },
     CommanderColors(Ref),
     TurnNumber,
@@ -1272,6 +1292,7 @@ enum TaggedRef<'a> {
     },
     Triggering,
     SourcesDealtDamage(&'a Ref),
+    MostDamageBySource(&'a Ref),
     Tally {
         event: TallyEvent,
         who: &'a Ref,
@@ -1286,6 +1307,10 @@ enum TaggedRef<'a> {
     DamageDealtByTo {
         by: &'a Ref,
         to: &'a Ref,
+    },
+    DamageToFromPlayers {
+        to: &'a Ref,
+        players: &'a Ref,
     },
     CommanderColors(&'a Ref),
     TurnNumber,
@@ -1425,8 +1450,12 @@ impl From<Tagged> for Amount {
             Tagged::Tally { event, who, filter } => Amount::Tally { event, who, filter },
             Tagged::Remembered { on, slot, per } => Amount::Remembered { on, slot, per },
             Tagged::DamageDealtByTo { by, to } => Amount::DamageDealtByTo { by, to },
+            Tagged::DamageToFromPlayers { to, players } => {
+                Amount::DamageToFromPlayers { to, players }
+            }
             Tagged::CommanderColors(who) => Amount::CommanderColors(who),
             Tagged::SourcesDealtDamage(who) => Amount::SourcesDealtDamage(who),
+            Tagged::MostDamageBySource(who) => Amount::MostDamageBySource(who),
             Tagged::TurnNumber => Amount::TurnNumber,
             Tagged::Stickers { on, kind } => Amount::Stickers { on, kind },
             Tagged::StickerVowels => Amount::StickerVowels,
@@ -1586,10 +1615,16 @@ impl Serialize for Amount {
                 per: per.as_ref(),
             }
             .serialize(serializer),
+            Amount::DamageToFromPlayers { to, players } => {
+                TaggedRef::DamageToFromPlayers { to, players }.serialize(serializer)
+            }
             Amount::DamageDealtByTo { by, to } => {
                 TaggedRef::DamageDealtByTo { by, to }.serialize(serializer)
             }
             Amount::CommanderColors(who) => TaggedRef::CommanderColors(who).serialize(serializer),
+            Amount::MostDamageBySource(who) => {
+                TaggedRef::MostDamageBySource(who).serialize(serializer)
+            }
             Amount::SourcesDealtDamage(who) => {
                 TaggedRef::SourcesDealtDamage(who).serialize(serializer)
             }
@@ -2044,6 +2079,14 @@ mod tests {
     #[case::r5502_sources_dealt_damage(
         Amount::SourcesDealtDamage(Ref::You),
         r#"{"SourcesDealtDamage":"You"}"#
+    )]
+    #[case::r6008_damage_to_from_players(
+        Amount::DamageToFromPlayers { to: Ref::This, players: Ref::You },
+        r#"{"DamageToFromPlayers":{"to":"This","players":"You"}}"#
+    )]
+    #[case::r6008_most_damage_by_one_source(
+        Amount::MostDamageBySource(Ref::You),
+        r#"{"MostDamageBySource":"You"}"#
     )]
     #[case::turn_number(Amount::TurnNumber, r#""TurnNumber""#)]
     #[case::triggering_targets(Amount::TriggeringTargets, r#""TriggeringTargets""#)]

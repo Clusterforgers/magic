@@ -35,6 +35,7 @@ mod r402_cast;
 pub(crate) mod r5520_atoms;
 mod r5523_attacked;
 pub(crate) use r5520_atoms::{R5520_PAID, r5520_took};
+mod r6003_total;
 mod soulbond;
 mod w21a_atoms;
 mod w6d_shares;
@@ -1350,6 +1351,10 @@ impl<'a> Scope<'a> {
                 .collect(),
             Ref::Granter => self.granter_on_battlefield(),
             Ref::Monarch => state.monarch().map(Target::Player).into_iter().collect(),
+            Ref::Spotlit => crate::spotlight::focus(state, self.controller)
+                .map(Target::Player)
+                .into_iter()
+                .collect(),
             Ref::Promised => self.promised().map(Target::Player).into_iter().collect(),
             Ref::Chosen => self.r4700_chosen_targets(false)?,
             Ref::R4700OtherChosen => self.r4700_chosen_targets(true)?,
@@ -2190,6 +2195,10 @@ impl<'a> Scope<'a> {
             | Pred::NthChosenLandType(_)
             | Pred::ChosenName
             | Pred::ChosenAs(_) => self.chosen_pred(pred, seen),
+            // Alone it holds when the object fits in the total; the choice keeps the sum (`r6003_total`).
+            Pred::TotalAtMost { stat, most } => {
+                Self::stat(seen, *stat).unwrap_or(0) <= self.amount(most)?
+            }
             Pred::Compare { stat, op, to } => match Self::stat(seen, *stat) {
                 Some(value) => op.holds(value, self.amount(to)?),
                 None => false,
@@ -2353,6 +2362,7 @@ impl<'a> Scope<'a> {
             | StatKind::R4700ChosenColors
             | StatKind::R374ManaCost
             | StatKind::R374ColorSet
+            | StatKind::R6018PermanentTypes
             | StatKind::Subtypes => None,
         }
     }
@@ -2578,6 +2588,9 @@ impl<'a> Scope<'a> {
             | Amount::Doors(_) => self.fill_amount(amount, share)?,
             Amount::Tally { event, who, filter } => self.logged(*event, who, filter)?,
             Amount::SourcesDealtDamage(who) => self.r5502_sources_dealt_damage(&self.players(who)?),
+            Amount::MostDamageBySource(who) => {
+                self.r6008_most_damage_by_source(&self.players(who)?)
+            }
             Amount::CycledSameNameThisGame(who) => self.r5522_cycled_same_name(who)?,
             Amount::CastSameNameThisGame(who) => {
                 let name = self
@@ -2631,6 +2644,10 @@ impl<'a> Scope<'a> {
                     }
                 }
                 total
+            }
+            Amount::DamageToFromPlayers { to, players } => {
+                let named = self.refs(to)?;
+                self.r6008_damage_to_from(&named, &self.players(players)?)
             }
             Amount::DamageDealtByTo { by, to } => {
                 let dealers = self.objects(by)?;
@@ -2790,7 +2807,8 @@ impl<'a> Scope<'a> {
             | Chosen::Players(_)
             | Chosen::Chapter(_)
             | Chosen::Number(_)
-            | Chosen::Word(_) => false,
+            | Chosen::Word(_)
+            | Chosen::Words(_) => false,
         }
     }
 
@@ -3046,6 +3064,26 @@ impl<'a> Scope<'a> {
                 }
             }
             return Ok(i64::try_from(kinds.len()).unwrap_or(i64::MAX));
+        }
+        if stat == StatKind::R6018PermanentTypes {
+            // Each permanent type once among the objects, a card of several adding each of them.
+            let seen: Vec<Seen<'a>> = self
+                .matching(of)?
+                .into_iter()
+                .filter_map(|object| self.seen(object))
+                .collect();
+            let among = [
+                CardType::Artifact,
+                CardType::Battle,
+                CardType::Creature,
+                CardType::Enchantment,
+                CardType::Land,
+                CardType::Planeswalker,
+            ]
+            .into_iter()
+            .filter(|card_type| seen.iter().any(|one| one.chars.types.contains(*card_type)))
+            .count();
+            return Ok(i64::try_from(among).unwrap_or(i64::MAX));
         }
         if stat == StatKind::Subtypes {
             // Each subtype once among the objects, an object of several subtypes adding each of them.

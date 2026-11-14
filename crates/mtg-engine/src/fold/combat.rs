@@ -129,16 +129,18 @@ fn damage_player(
     let combat = state.commanders.any() && in_combat;
     if in_combat && amount > 0 {
         record_hit(state, source);
+        tally(state, source, Tally::R6018HitPlayer);
     }
     let loses_life = form.life_lost(amount) > 0;
     // The damage is dealt in full; a life floor only changes the life lost (CR 120.3a, 614.1).
     let lost = if loses_life {
         let before = player_mut(state, id)?.life;
         let wanted = i32::try_from(form.life_lost(amount)).unwrap_or(i32::MAX);
-        match crate::rules::damage_life_floor(state, id, before) {
+        let wanted = match crate::rules::damage_life_floor(state, id, before) {
             Some(floor) => wanted.min(before.saturating_sub(floor)),
             _ => wanted,
-        }
+        };
+        crate::spotlight::graced_damage(state, source, id, wanted, before)
     } else {
         0
     };

@@ -404,7 +404,12 @@ fn instead(by: &ReplaceBy) -> Vec<&'static str> {
 
 /// "Reveal ~ and shuffle it into its owner's library instead", "put it on top of its owner's library instead".
 fn into_library(what: &Selector, by: &ReplaceBy) -> Vec<String> {
-    let ReplaceBy::IntoLibrary { place, reveal } = by else {
+    let ReplaceBy::IntoLibrary {
+        place,
+        reveal,
+        optional: false,
+    } = by
+    else {
         return Vec::new();
     };
     let (verb, place) = match place {

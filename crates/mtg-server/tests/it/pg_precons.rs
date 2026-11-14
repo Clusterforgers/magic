@@ -117,7 +117,7 @@ fn quest() -> PreconDeck {
         "Starter Deck",
         "2023-03-01",
         &[],
-        &[("Forest", 56), ("Aven Mindcensor", 4)],
+        &[("Forest", 56), ("Fang-Druid Summoner", 4)],
     );
     quest.main_board[0].scryfall_id = Some(PrintingId(printing("Forest")));
     quest
@@ -826,7 +826,7 @@ async fn one_request_makes_a_lobby_with_the_precon_as_the_hosts_deck_and_the_gam
         .collect();
     let mut expected = [
         vec![oracle("Forest"); 56],
-        vec![oracle("Aven Mindcensor"); 4],
+        vec![oracle("Fang-Druid Summoner"); 4],
     ]
     .concat();
     let mut sorted = ids.clone();

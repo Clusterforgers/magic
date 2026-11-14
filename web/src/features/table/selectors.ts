@@ -3,12 +3,13 @@
  * ids of its cards. Those that return a new array are meant for `useShallow`, which keeps the old one while the
  * items are the same, so a batch that changes one card redraws that card and nothing around it.
  */
-import { sharesTurn, teammates } from '@/lib/teams'
+import { sharesTurn, teamOf, teammates } from '@/lib/teams'
 import type { PlayState } from '@/play/store'
 import type { ObjectId, ObjectView, PlayerId, PlayerView, StateView } from '@/protocol/generated'
 import { combatRoleOf, rowOf } from './cardModel'
 import type { CombatRole, RowKind } from './cardModel'
 import { defaultFocus } from './layout'
+import type { BossSides } from './layout'
 
 /** One shared empty list, so "nothing" is the same value every time. */
 export const NO_IDS: readonly ObjectId[] = []
@@ -161,4 +162,31 @@ export function turnTeammate(state: PlayState): PlayerId | undefined {
   const view = state.view
   if (view === null || view.house_rules?.teams?.mode !== 'two_headed_giant') return undefined
   return teammates(view.house_rules.teams, view.turn.active)[0]
+}
+
+/**
+ * The sides of a fight against a boss: the seat with a boss view and every seat of its team (its minions), the boss
+ * first; null at a table without a boss.
+ */
+export function bossSidesOf(view: StateView | null): BossSides | null {
+  const boss = view?.players.find((player) => player.boss !== undefined && player.boss !== null)
+  if (view === null || boss === undefined) return null
+  const teams = view.house_rules?.teams ?? null
+  const team = teamOf(teams, boss.seat)
+  const side = view.players
+    .map((player) => player.seat)
+    .filter((seat) => seat !== boss.seat && team !== null && teamOf(teams, seat) === team)
+  return { boss: boss.seat, enemies: [boss.seat, ...side] }
+}
+
+/** `bossSidesOf` as a string ("2,3,4", the boss first; "" without a boss), so a selector needs no `useShallow`. */
+export function bossSidesKey(state: PlayState): string {
+  return bossSidesOf(state.view)?.enemies.join(',') ?? ''
+}
+
+/** The sides a `bossSidesKey` names; null for "". */
+export function parseBossSides(key: string): BossSides | null {
+  const enemies = key === '' ? [] : key.split(',').map(Number)
+  const [boss] = enemies
+  return boss === undefined ? null : { boss, enemies }
 }

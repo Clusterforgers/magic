@@ -104,6 +104,7 @@ mod prowl_fuzz;
 mod pump_animate_fuzz;
 mod pump_fuzz;
 mod r402_smoke;
+mod r6008_smoke;
 mod recursion_fuzz;
 mod removal_fuzz;
 mod replacement_fuzz;

@@ -2,7 +2,7 @@
 //! of a kind (CR 601.2f, 602.2b): "Equip abilities you activate cost {1} less", "Activated abilities of creatures you
 //! control cost {2} less to activate. This effect can't reduce the mana in that cost to less than one mana."
 
-use mtg_cards::ability::{Ability, ActivationKind, CostChange};
+use mtg_cards::ability::{Ability, ActivationKind, CostChange, Limit};
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::Selector;
 use mtg_core::ids::ObjectId;
@@ -15,7 +15,7 @@ use crate::ability_reader::{
 use crate::characteristics::controller_of_object;
 use crate::object::ObjectRef;
 use crate::resolve::Scope;
-use crate::state::GameState;
+use crate::state::{GameState, Tally};
 use crate::zones::Zone;
 
 /// The most times one modifier changes a cost: a count this large is more mana than any game has.
@@ -69,6 +69,7 @@ fn r5506_labelled(rules: &Ability) -> Option<ActivationKind> {
         .find_map(|action| match action {
             Action::ActivatedExhaust => Some(ActivationKind::Exhaust),
             Action::ActivatedBoast => Some(ActivationKind::Boast),
+            Action::ActivatedPowerUp => Some(ActivationKind::PowerUp),
             _ => None,
         })
 }
@@ -110,6 +111,7 @@ pub(crate) fn modified(
     mana: ManaCost,
     targeted: Option<&[ObjectRef]>,
 ) -> ManaCost {
+    let mana = r5515_power_up_reduced(state, source, rules, mana);
     modified_as(
         state,
         source,
@@ -117,6 +119,33 @@ pub(crate) fn modified(
         mana,
         targeted,
     )
+}
+
+/// The mana of a power-up ability of `source`, reduced by the source's mana cost while it entered the battlefield this
+/// turn (CR 118.7: a colored symbol the cost lacks takes one generic mana); any other ability's mana as it is.
+fn r5515_power_up_reduced(
+    state: &GameState,
+    source: ObjectId,
+    rules: &Ability,
+    mana: ManaCost,
+) -> ManaCost {
+    let Ability::Activated {
+        limit: Some(Limit::PowerUp),
+        ..
+    } = rules
+    else {
+        return mana;
+    };
+    let Some(object) = state.object(source) else {
+        return mana;
+    };
+    let entered = state.object_tallied(object.reference(), None, Tally::Entered) > 0;
+    match object.mana_cost() {
+        Some(own) if entered && object.zone() == Zone::Battlefield => {
+            crate::r301_offering::r301_reduced_by(&mana, own)
+        }
+        _ => mana,
+    }
 }
 
 /// Whether an activation that targets `targeted` (`None` before its targets are announced) has a target `selector` selects.

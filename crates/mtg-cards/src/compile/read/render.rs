@@ -48,6 +48,7 @@ mod optional_return;
 mod oracle_only;
 pub(super) use oracle_only::r5522_read_whole;
 pub(super) use oracle_only::r5523_read_whole;
+pub(super) use oracle_only::{r6001_pair_read, r6001_pair_texts, r6001_read_whole};
 mod otherwise;
 mod player_events;
 mod populated;
@@ -222,6 +223,20 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     }
     if let Some(texts) = super::r408_pact::r408_pact_variants(ability, variants) {
         return texts;
+    }
+    if let Ability::Activated {
+        limit: Some(Limit::PowerUp),
+        ..
+    } = ability
+    {
+        return super::r5515_power_up::r5515_power_up_texts(ability, variants);
+    }
+    if let Ability::Rule {
+        rule: crate::modify::GameRule::PowerUpAgain(_),
+        ..
+    } = ability
+    {
+        return super::r5515_power_up::r5515_power_up_again_texts(ability);
     }
     let mut texts = plain_variants(ability);
     super::r371_copy_except::r371_not_legendary_too(&mut texts);
@@ -628,7 +643,9 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r5507_dice::r5507_wordings(ability, written_variants, &mut texts);
     super::r5504_look::r5504_wordings(ability, &mut texts);
     super::r5517_wholes::r5517_wordings(ability, &mut texts);
+    super::r6008_wholes::r6008_wordings(ability, &mut texts);
     super::r5519_wholes::r5519_whole_texts(ability, &mut texts);
+    super::r6003_wholes::r6003_whole_texts(ability, &mut texts);
     super::r5516_actions::r5516_wordings(ability, &mut texts);
     super::r5516_reflexive::r5516_reflexive_wordings(ability, written_variants, &mut texts);
     super::r5514_pieces::r5514_wordings(ability, &mut texts);
@@ -655,16 +672,19 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r4711_drafted::r4711_wordings(ability, written_variants, &mut texts);
     super::r5510_own_cost::r5510_wordings(ability, written_variants, &mut texts);
     super::r5510_wholes::r5510_add_wholes(ability, &mut texts);
+    super::r6018_wholes::r6018_add_wholes(ability, &mut texts);
     super::r5510_fortified::r5510_wordings(&mut texts);
     super::r5505_convert::r5505_convert_wordings(ability, &mut texts);
     super::r5506_costs::r5506_wordings(ability, &mut texts);
     super::r5521_wholes::r5521_wordings(ability, &mut texts);
+    super::r6007_wholes::r6007_wordings(ability, &mut texts);
     super::r5523_drafted::r5523_wordings(ability, written_variants, &mut texts);
     // Only a triggered animation is printed on an enchantment; an activated one, on a land, keeps its room.
     if matches!(ability, Ability::Triggered { .. }) {
         let more = becomes::still_an_enchantment(&texts);
         texts.extend(more);
     }
+    super::r4704_hooks::r4704_wordings(ability, &mut texts);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.
@@ -2221,8 +2241,11 @@ fn restriction_texts(timing: Timing, limit: Option<Limit>) -> Vec<String> {
             "Activate only as a sorcery and only once each turn.".to_owned(),
             "Activate only once each turn and only as a sorcery.".to_owned(),
         ],
-        // A limit counted as a triggered ability's choice is done, which no activation has.
-        (_, Some(Limit::OncePerTurnDone)) | (Timing::AsInstant, Some(_)) => Vec::new(),
+        // A limit counted as a triggered ability's choice is done, which no activation has; a power-up ability is
+        // worded by its keyword (`r5515_power_up`).
+        (_, Some(Limit::OncePerTurnDone | Limit::PowerUp)) | (Timing::AsInstant, Some(_)) => {
+            Vec::new()
+        }
         (timing, Some(Limit::TimesPerTurn(most))) => {
             let times = match most {
                 2 => "twice".to_owned(),

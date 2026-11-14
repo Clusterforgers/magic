@@ -54,6 +54,7 @@ fn stat_word(stat: StatKind) -> &'static str {
         StatKind::R4700ChosenColors => "chosen colors it is",
         StatKind::R374ColorSet => "color pairs",
         StatKind::Subtypes => "subtypes",
+        StatKind::R6018PermanentTypes => "permanent types",
     }
 }
 
@@ -293,6 +294,7 @@ fn kind_of(what: &Targetable) -> (String, String) {
                 TargetSet::DifferentNames => "with different names".to_owned(),
                 TargetSet::DifferentManaValues => "with different mana values".to_owned(),
                 TargetSet::DifferentPowers => "with different powers".to_owned(),
+                TargetSet::DifferentColorSets => "with different colors".to_owned(),
                 TargetSet::SameToughness => "with equal toughness".to_owned(),
                 TargetSet::TotalManaValueAtMost(Amount::Fixed(most)) => {
                     format!("with total mana value {most} or less")
@@ -531,6 +533,7 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 Ref::AttachedPlayer => "enchanted player",
                 Ref::You => "you",
                 Ref::Monarch => "the monarch",
+                Ref::Spotlit => "the hero in the spotlight",
                 Ref::Chosen => "the chosen player",
                 _ => "a player",
             };
@@ -632,6 +635,7 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 Ref::You => "your",
                 Ref::Opponents => "an opponent's",
                 Ref::Monarch => "the monarch's",
+                Ref::Spotlit => "the spotlit hero's",
                 Ref::Chosen => "the chosen player's",
                 _ => "each",
             };

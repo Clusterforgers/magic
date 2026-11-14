@@ -18,6 +18,10 @@ use tokio::time::{Instant, sleep, sleep_until};
 use crate::handle::GameHandle;
 use crate::registry::Removal;
 
+mod tries;
+
+pub use tries::{MOST_TRIES, tries};
+
 /// How long a bot waits before it answers, so the people at the table can follow its plays.
 pub const BOT_DELAY: Duration = Duration::from_millis(800);
 
@@ -268,10 +272,12 @@ impl BotBrain {
             turn: self.turn,
             answers: self.answers,
         };
+        let asked_at = std::time::Instant::now();
         let asked = decision.clone();
         let thinking = thinkers.think(move |share| {
             if let Some(brain) = alone.brain.as_mut() {
                 brain.set_budget(share);
+                brain.set_asked(asked_at);
             }
             let answer = alone.answer(&asked, table.as_deref());
             (alone, answer)
@@ -310,9 +316,10 @@ impl BotBrain {
     }
 }
 
-/// The answer that decides least, for a decision whose own answer was refused; none when nothing can be given.
+/// The answer that decides least and that a seat may give, for a decision whose own answer was refused; none when
+/// nothing can be given.
 pub fn fallback(decision: &Decision) -> Option<Answer> {
-    crate::pace::fallback(decision)
+    tries::seat_fallback(decision)
 }
 
 /// What a bot plays when its brain fails: the table's fallback, else a pass.
@@ -325,29 +332,19 @@ struct Waiting {
     id: DecisionId,
     decision: Decision,
     due: Instant,
-    /// What the bot sent for it so far.
-    tried: Tried,
-}
-
-/// How far a bot got answering a decision the table keeps refusing.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum Tried {
-    /// Nothing sent yet.
-    Nothing,
-    /// The brain's answer.
-    Brain,
-    /// The table's fallback after the brain's answer was refused.
-    Fallback,
-    /// A concession after the fallback was refused too: the table's clock moves the seat on from here.
-    Conceded,
+    /// The answers the bot sent for it so far, the brain's first.
+    sent: Vec<Answer>,
+    /// Whether the bot conceded after the table refused every answer it tried; the table's clock moves the seat on.
+    conceded: bool,
 }
 
 /// Plays the seat of `bot` in `handle` at its level until the game ends or leaves the registry (`removed` changes or
 /// closes): joins the seat (again whenever its connection is dropped), says it is ready (again whenever the lobby shows it is
 /// not), and answers each decision after the pace's delay with [`BotBrain`], thinking in the pace's slots. A refused
-/// answer (illegal, or one the engine fails on) is followed by the table's fallback answer, and when that is refused
-/// too, or there is none, the bot concedes, so a bot never stalls a game, and never keeps alive a game the registry let
-/// go. A bot whose task dies starts again with a fresh brain and joins its seat anew.
+/// answer (illegal, or one the engine fails on) is followed by the table's fallback answer and then the other legal
+/// answers the decision offers ([`tries`]), and only when every one is refused does the bot
+/// concede, so a bot never stalls a game, and never keeps alive a game the registry let go. A bot whose task dies
+/// starts again with a fresh brain and joins its seat anew.
 pub fn spawn_bot_seat(
     handle: GameHandle,
     bot: BotSeat,
@@ -467,10 +464,10 @@ async fn play(
                             None
                         };
                         let answer = brain.think(held.decision.clone(), table, &pace.thinkers).await;
-                        if send_answer(handle, seat, held.id, answer).await.is_err() {
+                        if send_answer(handle, seat, held.id, answer.clone()).await.is_err() {
                             return Ended::Over;
                         }
-                        waiting = Some(Waiting { due: far_future(), tried: Tried::Brain, ..held });
+                        waiting = Some(Waiting { due: far_future(), sent: vec![answer], ..held });
                         continue;
                     }
                 }
@@ -486,7 +483,8 @@ async fn play(
                     id,
                     decision,
                     due: Instant::now() + pace.delay,
-                    tried: Tried::Nothing,
+                    sent: Vec::new(),
+                    conceded: false,
                 });
             }
             ServerMessage::Events(batch) => brain.turn_is(batch.table.turn.number),
@@ -508,14 +506,25 @@ async fn play(
             }
             // An answer refused as illegal, or one the engine failed on: the next safer answer.
             ServerMessage::Error {
-                code: ErrorCode::IllegalAnswer | ErrorCode::Internal,
+                code: code @ (ErrorCode::IllegalAnswer | ErrorCode::Internal),
+                message,
                 ..
             } => {
-                let Some(held) = waiting.take() else { continue };
-                match next_try(handle, seat, &held).await {
-                    Some(tried) => waiting = Some(Waiting { tried, ..held }),
-                    None => return Ended::Over,
+                let Some(mut held) = waiting.take() else {
+                    continue;
+                };
+                tracing::warn!(
+                    seat = seat.index(),
+                    kind = held.decision.kind.name(),
+                    ?code,
+                    error = %message,
+                    refused = ?held.sent.last(),
+                    "bot answer was refused; it tries the next one"
+                );
+                if next_try(handle, seat, &mut held).await.is_none() {
+                    return Ended::Over;
                 }
+                waiting = Some(held);
             }
             ServerMessage::GameOver { .. } | ServerMessage::EndedByAdmin { .. } => {
                 return Ended::Over;
@@ -525,20 +534,31 @@ async fn play(
     }
 }
 
-/// Sends what follows a refused answer to `held`: the table's fallback after the brain's answer, else a concession.
-/// `None` when the game is gone.
-async fn next_try(handle: &GameHandle, seat: PlayerId, held: &Waiting) -> Option<Tried> {
-    let fallback = fallback(&held.decision).filter(|_| held.tried == Tried::Brain);
-    if let Some(answer) = fallback {
-        send_answer(handle, seat, held.id, answer).await.ok()?;
-        return Some(Tried::Fallback);
+/// Sends what follows a refused answer to `held`: the next of its [`tries`] not sent yet, and a concession once every
+/// one was refused. `None` when the game is gone.
+async fn next_try(handle: &GameHandle, seat: PlayerId, held: &mut Waiting) -> Option<()> {
+    if held.conceded {
+        return Some(());
     }
-    if held.tried == Tried::Conceded {
-        return Some(Tried::Conceded);
+    let next = tries(&held.decision)
+        .into_iter()
+        .find(|answer| !held.sent.contains(answer));
+    if let Some(answer) = next {
+        send_answer(handle, seat, held.id, answer.clone())
+            .await
+            .ok()?;
+        held.sent.push(answer);
+        return Some(());
     }
-    tracing::warn!(seat = seat.index(), "bot answers were refused; it concedes");
+    tracing::warn!(
+        seat = seat.index(),
+        kind = held.decision.kind.name(),
+        tried = held.sent.len(),
+        "bot answers were refused; it concedes"
+    );
+    held.conceded = true;
     handle.send(seat, ClientMessage::Concede).await.ok()?;
-    Some(Tried::Conceded)
+    Some(())
 }
 
 /// Sends `answer` to decision `id` for `seat`.

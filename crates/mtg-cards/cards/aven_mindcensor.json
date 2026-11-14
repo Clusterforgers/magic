@@ -1,7 +1,7 @@
 {
   "oracle_id": "d9517c5d-66d0-4178-96fb-a8c04f311ad8",
   "name": "Aven Mindcensor",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Aven Mindcensor",
@@ -9,12 +9,7 @@
       "abilities": [
         { "Keyword": "Flash" },
         { "Keyword": "Flying" },
-        {
-          "Manual": {
-            "reason": "No way yet to limit a search of a library to its top cards.",
-            "span": { "start": 13, "end": 116 }
-          }
-        }
+        { "Rule": { "rule": { "SearchTop": { "who": "Opponents", "count": 4 } } } }
       ]
     }
   ]

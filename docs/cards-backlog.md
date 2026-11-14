@@ -64,6 +64,10 @@ Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `
 - [ ] (g2e) The mode prompt offers a mode with X in its target filter only when some payable X has its targets, so choosing a mode never backs the cast out
 - [ ] (g5c) Convoke and delve picks are public to every seat in the protocol projection, with a hidden-information test
 - [ ] (g6d) Cost parts other than mana for multikicker, suspend, overload, foretell, ward and `Pay`; frees about 5 cards (Arrogant Poet, Owlin Shieldmage, Skullmane Baku)
+- [ ] (r6003a) A choice made as an additional cost and read on resolution: a creature type (Caller of the Hunt, Celestial Reunion), a number from 0 to 5 (Liquid Fire), a creature you control or a warped card in exile (Close Encounter)
+- [ ] (r6003b) Choices by other players: each player starting with you (Druid of Purification), a target opponent among the top two of your graveyard (Phyrexian Grimoire), a target of an opponent's choice (Volcanic Offering), each player's own color (Selective Obliteration)
+- [ ] (r6003c) Names beyond one chosen as the permanent enters: two players each naming (Null Chamber), a chosen opponent with a name and a draw trigger (Booby Trap), a chapter that names (Medomai's Prophecy, The Rise of Sozin), a land name chosen by a trigger (Petrified Hamlet)
+- [ ] (r6003d) Retargets and damage sources: control and copy of a spell with random new targets (Chef's Kiss), a reveal contest on any target choice (Psychic Battle), an activation cost from the target's mana value (Reflecting Mirror), colorless sources of damage (Ghostly Flame), white mana spent as any color (Celestial Dawn)
 
 ## Faces and copies
 
@@ -93,6 +97,7 @@ Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `
 - [ ] (r5512a) Spend permissions still missing: one color spent as another (Sunglasses of Urza), "for one spell this turn" of the player's choice (North Star), mana of any type for the source's own abilities (Sharkey, Tyrant of the Shire), and power-up abilities as an activation kind for restricted mana (Quinjet Technician)
 - [ ] (r5512b) Cost parts still missing: exile cards with a total mana value of X or at least N (Fabrication Foundry, The Capitoline Triad), pay the mana cost of the card exiled by the same cost (Back from the Brink), exile permanents named as a group with a token that has their triggered abilities (The Book of Vile Darkness)
 - [ ] (r5512c) Counters moved by kind: "a counter of each kind not on ~" and "one or more counters" with a least of one (Goldberry, River-Daughter)
+- [ ] (r6013a) Mana noted by type and amount as an activation is paid and added back later (Jeweled Amulet, Ice Cauldron); collect evidence X as a payment of any amount read by a reflexive trigger (Incinerator of the Guilty); a reflexive trigger whose target filter reads a card bound by the step before it (Argentum Masticore)
 - [ ] (c14a) The rest of the top coverage blockers: Multiclass Baldric, Yavimaya Bloomsage, a secretly chosen opponent, six spell lines and rules for the 61 other prepare cards; frees about 70 cards (Stalking Leonin, Ponder)
 
 ## Keywords and cast ways
@@ -119,7 +124,9 @@ Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `
 
 ## Statics, attachments and mutate
 
-- [ ] (r5504a) `ReplaceBy::ChooseAfter` folds the look before the choice is asked, then joins `Caps` (Sorcerous Spyglass, Anointed Peacekeeper, Arachne)
+- [ ] (r6013b) Replacements still by hand: a life total reduced to 0 or less (Enduring Angel), a discard that may go on top of the library (Library of Leng), cards with cycling that were not cycled (Abandoned Sarcophagus), a land that enters then a sacrifice (Land Equilibrium), creatures entering from exile until end of turn (Don't Blink), a card revealed and unplayable until its owner's next turn (Firestorm Phoenix), a cycling draw replaced by a cascade of the cycled card's type (Unpredictable Cyclone)
+- [ ] (r6013c) Keyword actions done again: a villainous choice faced twice (The Valeyard), assembling more Contraptions (Steamflogger Boss), modular counters plus one (Zabaz, the Glimmerwasp)
+- [ ] (r6013d) Repeated processes still by hand: stakes doubled each flip with the decider changing (Game of Chaos), milled cards that share a card type (The Tale of Tamiyo), "unless any opponent has you draw a card" (Development), life totals redistributed (Reverse the Sands), Grist outside the battlefield as a 1/1 Insect creature, and casting spells of a total mana value from exile (Primeval Spawn)
 - [ ] (c7l) The attacking player who chooses the target and the mode of a trigger the Curse controls (Curse of Inertia)
 - [ ] (c7m) Quoted abilities that are rules or make tokens, and the outlaw spend restriction (Nerd Rage, Tarmogoyf Nest, Discreet Retreat)
 - [ ] (c7n) "they gain decayed" after a choice of a card in each player's graveyard (Ghouls' Night Out)
@@ -246,3 +253,11 @@ Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `
 - [ ] (c11) The initiative, dungeons and the remaining long-tail mechanics found by the report, one task each
 - [ ] (c11c) The other 24 transforming Sagas, the two precon flip cards and the `prepare` layout's back face; frees about 37 cards (Budoka Gardener, Nezumi Graverobber)
 - [ ] (r5510b) A flashback cost that removes X counters from among permanents with "X can't be 0" (`Keyword.Flashback.Cost.RemoveCountersAmong.X`, `Cost.XAtLeast.Elsewhere`); frees Light Up the Night
+- [ ] (r6008a) Cast or put a card face down as an N/N with set characteristics and a turn-face-up replacement; frees Illusionary Mask, Magar of the Magic Strings
+- [ ] (r6008b) Control durations tied to another object: while an Aura stays attached, while power stays at most another's (read outside the control layer); frees Eriette, the Beguiler, Old Man of the Sea
+- [ ] (r6008c) A choice of cards assigned one to each card type (a matching, not a pairwise rule); frees Atraxa, Grand Unifier, Grime Gorger
+- [ ] (r6008d) Gained abilities read from the donor's current abilities (granted and basic land types), and blue mana spent as any color on one object's abilities; frees Manascape Refractor, Quicksilver Elemental
+- [ ] (r6008e) A granted foretell cost kept with the foretold card in exile; frees Bohn, Beguiling Balladeer, Dream Devourer
+- [ ] (r6008f) A turn-long keyword given to spells as they are cast (a rule the layers apply to the stack); frees Yidris, Maelstrom Wielder
+- [ ] (r6008g) A granted static that grants abilities in turn (layers and validation); frees Huatli, Poet of Unity
+- [ ] (r6008h) An untap replacement, a "spell would destroy a land you control" predicate, the caster of a spell inside a granted ability, a mana-ability-resolves trigger, colored mana spent on X with a capped life gain, and fortified land tapped for mana; frees Bewitching Leechcraft, Equinox, Hellish Rebuke, Tyvar the Bellicose, Soul Burn, C.A.M.P.

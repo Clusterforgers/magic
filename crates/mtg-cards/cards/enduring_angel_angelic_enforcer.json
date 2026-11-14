@@ -32,9 +32,11 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 100, "end": 155 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "SetLife": { "amount": { "Times": { "by": 2, "of": { "Life": "You" } } } } }
+            ]
           }
         }
       ]

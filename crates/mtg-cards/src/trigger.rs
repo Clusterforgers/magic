@@ -862,6 +862,10 @@ pub enum ReplaceWhen {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         combat: Option<bool>,
     },
+    /// A source controlled by one of the players the source chose as it entered would deal damage to another of those
+    /// players or a permanent that player controls ("a source controlled by one of the chosen players would deal damage
+    /// to the other chosen player or a permanent that player controls").
+    R6001DamageBetweenChosen,
     /// An object matching the selector would move between zones, except a card drawn, a land played, a spell cast and
     /// a permanent entering (`Enters`).
     ZoneChange {
@@ -1062,6 +1066,9 @@ pub enum EntersChoice {
     ColorAndCreatureType,
     /// This many different players ("choose two players").
     Players(u32),
+    /// This many different abilities from among first strike, vigilance, and lifelink ("choose two abilities from among
+    /// first strike, vigilance, and lifelink"), read by `Modification::R6001AddChosenAbilities`.
+    R6001Abilities(u32),
     /// A number from `min` to `max`.
     Number {
         /// The smallest number.
@@ -1209,6 +1216,10 @@ pub enum ReplaceBy {
         /// It is revealed as it moves.
         #[serde(default, skip_serializing_if = "is_false")]
         reveal: bool,
+        /// The replacement's controller may decline it, asked as it applies ("you may put it on top of its owner's
+        /// library instead").
+        #[serde(default, skip_serializing_if = "is_false")]
+        optional: bool,
     },
     /// The permanent enters tapped (CR 614.1c).
     Tapped,
@@ -1274,6 +1285,18 @@ pub enum ReplaceBy {
     },
     /// As the permanent enters, its controller may reveal a card from their hand that the selector names; if they don't (or can't) it enters tapped.
     RevealOrTapped(Selector),
+    /// As the permanent enters, its controller may reveal a card from their hand that the selector names; if they do, or
+    /// if they control another permanent it names, the permanent enters with counters ("As this creature enters, you may
+    /// reveal a Dragon card from your hand. If you do or if you control a Dragon, this creature enters with a +1/+1
+    /// counter on it.").
+    R6007RevealOrControl {
+        /// The kind of card or permanent, as it is on the battlefield.
+        of: Selector,
+        /// The kind of counter.
+        counter: CounterKind,
+        /// How many.
+        count: u32,
+    },
     /// As the permanent enters, its controller may behold what the selector names: choose such a permanent they control
     /// or reveal such a card from their hand; if they don't (or can't) it enters tapped ("you may behold a Jace").
     BeholdOrTapped(Selector),
@@ -1289,6 +1312,10 @@ pub enum ReplaceBy {
     },
     /// Umbra armor (CR 702.89): all damage is removed from the permanent instead, and the object with the ability is destroyed.
     UmbraArmor,
+    /// The damage is dealt, and all other damage already marked on the permanent it is dealt to is removed first ("If
+    /// damage would be dealt to ~, instead that damage is dealt, but all other damage already dealt to him is
+    /// healed"); only a `Damage` to a permanent uses it.
+    HealFirst,
     /// The permanent regenerates instead of being destroyed (CR 701.19): "If ~ would be destroyed, regenerate it." Not when
     /// it can't be regenerated; unlike a shield, it is not used up.
     Regenerate,
@@ -1451,6 +1478,7 @@ impl ShieldShape {
                 ReplaceBy::IntoLibrary {
                     place: Place::Top | Place::Bottom,
                     reveal: false,
+                    optional: false,
                 },
             ) => Some(Self::Countered),
             (ReplaceWhen::ZoneChange { what, .. }, ReplaceBy::MoveTo(_))

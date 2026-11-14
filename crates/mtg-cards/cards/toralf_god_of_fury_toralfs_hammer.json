@@ -1,7 +1,7 @@
 {
   "oracle_id": "fffcb71f-e802-436e-917d-eaa6607ab74f",
   "name": "Toralf, God of Fury // Toralf's Hammer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Toralf, God of Fury",
@@ -9,9 +9,38 @@
       "abilities": [
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 8, "end": 179 }
+          "Triggered": {
+            "when": {
+              "DealtExcess": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                  { "ControlledBy": "Opponents" }
+                ],
+                "combat": false
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    "Player",
+                    {
+                      "Object": [
+                        { "Not": { "Is": "Triggering" } },
+                        {
+                          "AnyOf": [
+                            { "Type": "Creature" },
+                            { "Type": "Planeswalker" },
+                            { "Type": "Battle" }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Triggering" } }]
           }
         }
       ]

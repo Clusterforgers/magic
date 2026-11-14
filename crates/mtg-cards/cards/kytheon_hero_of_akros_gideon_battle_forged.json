@@ -1,16 +1,54 @@
 {
   "oracle_id": "e49d745c-5130-4b54-bcbb-643b08528456",
   "name": "Kytheon, Hero of Akros // Gideon, Battle-Forged",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kytheon, Hero of Akros",
       "oracle_fingerprint": "fcff233a227e8c5956aa1e9a953de665",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 0, "end": 172 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "EndCombat" } },
+            "if": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": ["This", { "DidThisTurn": { "event": "Attacked", "combat": true } }]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": {
+                      "Tally": {
+                        "event": "Attacked",
+                        "who": "EachPlayer",
+                        "filter": [
+                          { "Type": "Creature" },
+                          "Other",
+                          { "DidThisTurn": { "event": "Attacked", "combat": true } }
+                        ]
+                      }
+                    },
+                    "op": "Ge",
+                    "right": 2
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "transformed": true } }
+                }
+              }
+            ]
           }
         },
         {

@@ -101,9 +101,12 @@ impl Registry {
         Ok(report)
     }
 
+    // One straight path from the stored record to the live entry, each step a few lines.
+    #[allow(clippy::too_many_lines)]
     async fn revive(&self, records: &GameRecords, record: GameRecord) -> Outcome {
         let id = record.id;
         let decoded = decode(&record);
+        let delve = decoded.as_ref().ok().and_then(delve_of);
         let reads = decoded
             .as_ref()
             .map(|recipe| recipe.reads.clone())
@@ -188,6 +191,7 @@ impl Registry {
             code: record.code_digest.map(TokenDigest::from_bytes),
             recorded: true,
             seats,
+            delve,
         };
         self.games()
             .insert(id, Entry::new(handle.clone(), parts, created));
@@ -322,4 +326,9 @@ fn note(result: Result<(), RecordError>, id: GameId) {
     if let Err(error) = result {
         tracing::warn!(game = %id, %error, "could not update a game record while resuming");
     }
+}
+
+/// The Delves run a recipe's game is a boss fight of.
+fn delve_of(recipe: &GameRecipe) -> Option<String> {
+    recipe.campaign.as_ref().and_then(|plan| plan.run.clone())
 }

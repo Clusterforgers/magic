@@ -23,6 +23,7 @@ impl Writer<'_> {
                     ReplaceBy::IntoLibrary {
                         place,
                         reveal: false,
+                        optional: false,
                     },
                 duration: Duration::UntilEndOfTurn,
             },

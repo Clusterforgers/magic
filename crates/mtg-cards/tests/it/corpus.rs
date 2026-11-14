@@ -479,8 +479,8 @@ fn clause_spans_cut_out_the_sentences_they_name() {
     }
     let expected = [
         (
-            "Aven Mindcensor",
-            "If an opponent would search a library, that player searches the top four cards of that library instead.",
+            "Library of Leng",
+            "If an effect causes you to discard a card, discard it, but you may put it on top of your library instead of into your graveyard.",
         ),
         (
             "Yotia Declares War",

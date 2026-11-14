@@ -1,7 +1,7 @@
 {
   "oracle_id": "dc386f6c-bd4a-462a-8d42-0e7a552a4f17",
   "name": "Lynde, Cheerful Tormentor",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Lynde, Cheerful Tormentor",
@@ -9,15 +9,74 @@
       "abilities": [
         { "Keyword": "Deathtouch" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 11, "end": 160 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Curse" }, { "OwnedBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Arrived": { "of": "Triggering", "zone": "Graveyard" } },
+                  "as": "curse"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "curse" },
+                        "to": { "BattlefieldAttached": { "to": "You" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 161, "end": 285 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Subtype": "Curse" }, { "AttachedTo": "You" }] },
+                        "as": "curse"
+                      }
+                    },
+                    { "Choose": { "from": "Opponents", "as": "opponent" } },
+                    {
+                      "Attach": {
+                        "what": { "Bound": "curse" },
+                        "to": { "Bound": "opponent" },
+                        "as": "attached"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Count": [{ "Is": { "Bound": "attached" } }] },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "Draw": { "count": 2 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

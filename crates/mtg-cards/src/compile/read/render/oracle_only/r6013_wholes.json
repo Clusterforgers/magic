@@ -1,0 +1,583 @@
+[
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Plus": 1
+    },
+    "effects": [
+     {
+      "RepeatWhile": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Count": [
+           {
+            "Is": {
+             "Bound": "milled"
+            }
+           },
+           {
+            "Subtype": "Insect"
+           },
+           {
+            "In": "Graveyard"
+           }
+          ]
+         },
+         "op": "Ge",
+         "right": 1
+        }
+       },
+       "effects": [
+        {
+         "CreateToken": {
+          "token": {
+           "Custom": {
+            "name": "Insect",
+            "colors": [
+             "Black",
+             "Green"
+            ],
+            "types": [
+             "Creature"
+            ],
+            "subtypes": [
+             "Insect"
+            ],
+            "power": 1,
+            "toughness": 1
+           }
+          }
+         }
+        },
+        {
+         "Mill": {
+          "as": "milled"
+         }
+        },
+        {
+         "If": {
+          "condition": {
+           "Compare": {
+            "left": {
+             "Count": [
+              {
+               "Is": {
+                "Bound": "milled"
+               }
+              },
+              {
+               "Subtype": "Insect"
+              },
+              {
+               "In": "Graveyard"
+              }
+             ]
+            },
+            "op": "Ge",
+            "right": 1
+           }
+          },
+          "then": [
+           {
+            "PutCounters": {
+             "on": "This",
+             "counter": "loyalty"
+            }
+           }
+          ]
+         }
+        }
+       ],
+       "most": 1000,
+       "at_least_once": true
+      }
+     }
+    ]
+   }
+  },
+  "+1: Create a 1/1 black and green Insect creature token, then mill a card. If an Insect card was milled this way, put a loyalty counter on ~ and repeat this process."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "Enters": {
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "by": {
+     "Instead": [
+      {
+       "Exile": {
+        "what": "Triggering"
+       }
+      }
+     ]
+    },
+    "condition": {
+     "Compare": {
+      "left": {
+       "ManaSpent": {
+        "of": null
+       }
+      },
+      "op": "Eq",
+      "right": 0
+     }
+    }
+   }
+  },
+  "If this creature would enter and it wasn't cast or no mana was spent to cast it, exile it instead."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "Damage": {
+      "to": "This"
+     }
+    },
+    "by": "HealFirst"
+   }
+  },
+  "If damage would be dealt to ~, instead that damage is dealt, but all other damage already dealt to him is healed."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "UntapRemovesCounters": {
+      "Other": "wind"
+     }
+    }
+   }
+  },
+  "If a permanent with a wind counter on it would untap during its controller's untap step, remove all wind counters from it instead."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Attacks": {
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "effects": [
+     {
+      "SetLife": {
+       "amount": {
+        "Times": {
+         "by": 2,
+         "of": {
+          "Life": "You"
+         }
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Whenever this creature attacks, double your life total."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 4
+    },
+    "effects": [
+     {
+      "Choose": {
+       "who": "Opponents",
+       "from": {
+        "Each": [
+         {
+          "Not": {
+           "Type": "Land"
+          }
+         },
+         {
+          "ControlledBy": "Chooser"
+         },
+         {
+          "Type": "Artifact"
+         }
+        ]
+       },
+       "as": "artifact"
+      }
+     },
+     {
+      "Choose": {
+       "who": "Opponents",
+       "from": {
+        "Each": [
+         {
+          "Not": {
+           "Type": "Land"
+          }
+         },
+         {
+          "ControlledBy": "Chooser"
+         },
+         {
+          "Type": "Creature"
+         },
+         {
+          "Not": {
+           "Is": {
+            "Bound": "artifact"
+           }
+          }
+         }
+        ]
+       },
+       "as": "creature"
+      }
+     },
+     {
+      "Choose": {
+       "who": "Opponents",
+       "from": {
+        "Each": [
+         {
+          "Not": {
+           "Type": "Land"
+          }
+         },
+         {
+          "ControlledBy": "Chooser"
+         },
+         {
+          "Type": "Enchantment"
+         },
+         {
+          "Not": {
+           "Is": {
+            "Bound": "artifact"
+           }
+          }
+         },
+         {
+          "Not": {
+           "Is": {
+            "Bound": "creature"
+           }
+          }
+         }
+        ]
+       },
+       "as": "enchantment"
+      }
+     },
+     {
+      "Choose": {
+       "who": "Opponents",
+       "from": {
+        "Each": [
+         {
+          "Not": {
+           "Type": "Land"
+          }
+         },
+         {
+          "ControlledBy": "Chooser"
+         },
+         {
+          "Type": "Planeswalker"
+         },
+         {
+          "Not": {
+           "Is": {
+            "Bound": "artifact"
+           }
+          }
+         },
+         {
+          "Not": {
+           "Is": {
+            "Bound": "creature"
+           }
+          }
+         },
+         {
+          "Not": {
+           "Is": {
+            "Bound": "enchantment"
+           }
+          }
+         }
+        ]
+       },
+       "as": "planeswalker"
+      }
+     },
+     {
+      "Sacrifice": {
+       "who": "Opponents",
+       "filter": [
+        {
+         "Not": {
+          "Type": "Land"
+         }
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "artifact"
+          }
+         }
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "creature"
+          }
+         }
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "enchantment"
+          }
+         }
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "planeswalker"
+          }
+         }
+        }
+       ],
+       "count": {
+        "Count": [
+         {
+          "Not": {
+           "Type": "Land"
+          }
+         },
+         {
+          "Not": {
+           "Is": {
+            "Bound": "artifact"
+           }
+          }
+         },
+         {
+          "Not": {
+           "Is": {
+            "Bound": "creature"
+           }
+          }
+         },
+         {
+          "Not": {
+           "Is": {
+            "Bound": "enchantment"
+           }
+          }
+         },
+         {
+          "Not": {
+           "Is": {
+            "Bound": "planeswalker"
+           }
+          }
+         }
+        ]
+       }
+      }
+     }
+    ]
+   }
+  },
+  "−4: Each opponent chooses an artifact, a creature, an enchantment, and a planeswalker from among the nonland permanents they control, then sacrifices the rest."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": "Opponent"
+     }
+    ],
+    "effects": [
+     {
+      "RepeatWhile": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Bound": "both"
+         },
+         "op": "Eq",
+         "right": 0
+        }
+       },
+       "effects": [
+        {
+         "FlipCoin": {
+          "win": [
+           {
+            "FlipCoin": {
+             "who": {
+              "Target": 0
+             },
+             "lose": [
+              {
+               "DealDamage": {
+                "to": {
+                 "Target": 0
+                },
+                "amount": 1
+               }
+              }
+             ],
+             "won_as": "both",
+             "heads": true
+            }
+           }
+          ],
+          "lose": [
+           {
+            "FlipCoin": {
+             "who": {
+              "Target": 0
+             },
+             "win": [
+              {
+               "DealDamage": {
+                "to": "You",
+                "amount": 1
+               }
+              }
+             ],
+             "lose": [
+              {
+               "DealDamage": {
+                "to": {
+                 "Union": [
+                  "You",
+                  {
+                   "Target": 0
+                  }
+                 ]
+                },
+                "amount": 1
+               }
+              }
+             ],
+             "heads": true
+            }
+           }
+          ],
+          "heads": true
+         }
+        }
+       ],
+       "most": 1000,
+       "at_least_once": true
+      }
+     }
+    ]
+   }
+  },
+  "You and target opponent each flip a coin. ~ deals 1 damage to each player whose coin comes up tails. Repeat this process until both players' coins come up heads on the same flip."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "Not": "Token"
+       },
+       {
+        "ControlledBy": "Opponents"
+       }
+      ],
+      "from": "Battlefield",
+      "to": "Graveyard"
+     }
+    },
+    "by": {
+     "Instead": [
+      {
+       "Exile": {
+        "what": "Triggering"
+       }
+      },
+      {
+       "Reflexive": {
+        "effects": [
+         {
+          "Pay": {
+           "cost": "{2}",
+           "paid": [
+            {
+             "CreateToken": {
+              "token": {
+               "Custom": {
+                "name": "Pest",
+                "colors": [
+                 "Black",
+                 "Green"
+                ],
+                "types": [
+                 "Creature"
+                ],
+                "subtypes": [
+                 "Pest"
+                ],
+                "power": 1,
+                "toughness": 1,
+                "abilities": [
+                 {
+                  "Triggered": {
+                   "when": {
+                    "ZoneChange": {
+                     "what": [
+                      "This"
+                     ],
+                     "from": "Battlefield",
+                     "to": "Graveyard"
+                    }
+                   },
+                   "effects": [
+                    {
+                     "GainLife": {
+                      "amount": 1
+                     }
+                    }
+                   ]
+                  }
+                 }
+                ]
+               }
+              }
+             }
+            }
+           ]
+          }
+         }
+        ]
+       }
+      }
+     ]
+    }
+   }
+  },
+  "If a nontoken creature an opponent controls would die, exile it instead. When you do, you may pay {2}. If you do, create a 1/1 black and green Pest creature token with \"When this token dies, you gain 1 life.\""
+ ]
+]

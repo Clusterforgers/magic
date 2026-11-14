@@ -234,9 +234,11 @@ mod r5509_wholes;
 mod r5511_wholes;
 mod r5512_wholes;
 mod r5513_wholes;
+mod r5515_wholes;
 mod r5516_wholes;
 mod r5518_wholes;
 mod r5522_wholes;
+mod r6013_wholes;
 mod regen_this_way;
 mod repeat_modes;
 mod return_damager;
@@ -312,6 +314,7 @@ mod dk1b_attached;
 mod r281_wordings;
 mod r408_turn_cost;
 mod r408_wordings;
+mod r5515_attached;
 mod r9w_countered_value;
 mod w16a_owner;
 mod w16a_return_cost;
@@ -421,6 +424,10 @@ mod r5502_wholes;
 mod r5523_wholes;
 pub(super) use r5523_wholes::add as r5523_add_whole;
 pub(in crate::compile::read) use r5523_wholes::r5523_read_whole;
+mod r6001_wholes;
+pub(in crate::compile::read) use r6001_wholes::{
+    r6001_pair_read, r6001_pair_texts, r6001_read_whole,
+};
 mod rmt5_wholes;
 // r30-0
 mod r300_wholes;
@@ -523,6 +530,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_t17b(ability, texts);
     // dk1b
     dk1b_attached::add(ability, texts);
+    r5515_attached::r5515_adds(ability, texts);
     // deck-auras
     // t19c
     t19c_put_many::add(ability, texts);
@@ -584,6 +592,7 @@ fn add_latest(ability: &Ability, texts: &mut Vec<String>) {
     l291_wholes::add(ability, texts);
     r379_wholes::add(ability, texts);
     r5523_wholes::add(ability, texts);
+    r6001_wholes::add(ability, texts);
     r306_wholes::add(ability, texts);
     // r28-9
     r289_wholes::r289_add_wholes(ability, texts);
@@ -826,6 +835,7 @@ fn add_c11g(ability: &Ability, texts: &mut Vec<String>) {
     r370_wholes::r370_add_wholes(ability, texts);
     r378_wholes::r378_add_wholes(ability, texts);
     r4711_wholes::r4711_add_wholes(ability, texts);
+    r5515_wholes::r5515_add_wholes(ability, texts);
     r5505_wholes::r5505_add_wholes(ability, texts);
     r5516_wholes::r5516_add_wholes(ability, texts);
     r5513_wholes::r5513_add_wholes(ability, texts);
@@ -834,6 +844,7 @@ fn add_c11g(ability: &Ability, texts: &mut Vec<String>) {
     r5511_wholes::r5511_add_wholes(ability, texts);
     r5503_wholes::r5503_add_wholes(ability, texts);
     r5512_wholes::r5512_add_wholes(ability, texts);
+    r6013_wholes::r6013_add_wholes(ability, texts);
     r5508_wholes::r5508_add_wholes(ability, texts);
     r5518_wholes::r5518_add_wholes(ability, texts);
     r307_wholes::r307_add_wholes(ability, texts);

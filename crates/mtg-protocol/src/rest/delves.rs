@@ -74,6 +74,37 @@ pub struct DelveView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub boss: Option<String>,
+    /// The heroes whose decks the waiting fight cannot be made with; empty when nothing stops it.
+    #[serde(default)]
+    pub deck_problems: Vec<DelveDeckProblem>,
+    /// The boss fight as its game is made, while the party is in one.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub fight: Option<DelveFightView>,
+}
+
+/// The boss's side of a fight as the engine gets it: what the intro screen lists.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct DelveFightView {
+    /// The boss's name.
+    pub boss: String,
+    /// The boss's starting life, scaled for the party.
+    pub life: i32,
+    /// The custom cards in its command zone from the start, by id; one given twice is listed twice.
+    pub rules: Vec<String>,
+    /// Its phases by card id, each with the life at or below which it begins.
+    pub phases: Vec<(String, i32)>,
+    /// Its minions: name and starting life.
+    pub minions: Vec<(String, i32)>,
+}
+
+/// A hero's deck that no longer plays, so the next fight waits until they choose another.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct DelveDeckProblem {
+    /// The hero, by place in the party.
+    pub hero: u8,
+    /// Why the deck does not play.
+    pub reason: String,
 }
 
 /// One run in the caller's list.

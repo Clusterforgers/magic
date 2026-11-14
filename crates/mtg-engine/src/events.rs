@@ -138,6 +138,9 @@ pub enum Event {
         /// Whether its untap step is skipped.
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         skip_untap: bool,
+        /// Whether power-up abilities can't be activated during it.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        no_power_up: bool,
     },
     /// The latest extra turn added is not taken, because its player has left the game or a rule skips it.
     ExtraTurnSkipped {
@@ -526,6 +529,14 @@ pub enum Event {
         player: PlayerId,
         /// The Spirit emblem's new object.
         emblem: ObjectId,
+    },
+    /// A Spirit returned to life ([`crate::spirits`]): it is a living player again with this life total; its haunt
+    /// emblem left the game just before.
+    SpiritRevived {
+        /// Who.
+        player: PlayerId,
+        /// The life total it returns with.
+        life: i32,
     },
     /// A boss seat's next phase began ([`crate::phases`]): its emblem is a new object in their command zone.
     PhaseBegan {
@@ -1476,6 +1487,7 @@ impl Event {
     pub fn touched_objects(&self) -> Vec<ObjectId> {
         match self {
             Event::LibraryShuffled { .. }
+            | Event::SpiritRevived { .. }
             | Event::AttractionDeckShuffled { .. }
             | Event::RolledToVisit { .. }
             | Event::PrizeClaimed { .. }

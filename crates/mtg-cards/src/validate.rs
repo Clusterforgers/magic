@@ -286,6 +286,15 @@ fn w9c_token_pred(pred: &Pred) -> bool {
     }
 }
 
+/// Whether a `Pay` step's cost is life alone ("unless they pay 3 life", "any other player may pay 2 life").
+fn r6007_life_only(pay: &serde_json::Value) -> bool {
+    pay.get("cost")
+        .and_then(serde_json::Value::as_array)
+        .is_some_and(|items| {
+            !items.is_empty() && items.iter().all(|item| item.get("PayLife").is_some())
+        })
+}
+
 /// The shapes of steps the engine cannot run in the middle of an event, at any depth, named as the primitive each one
 /// is (`ReplaceBy.Instead.<shape>`): modes chosen as a spell is put on the stack (`Modal`), a step that waits for its
 /// own events to be applied (`Amass`, `Incubate`, a flip or clash until a loss: `Waits`), a spell cast (`Casts`) and a
@@ -295,12 +304,18 @@ fn w5d_skipped(effects: &[Effect]) -> BTreeSet<&'static str> {
         match value {
             serde_json::Value::Object(fields) => {
                 for (key, inner) in fields {
+                    // A reflexive trigger's steps run later, on the stack, not in the middle of the event.
+                    if key == "Reflexive" {
+                        continue;
+                    }
                     let until = inner.get("until") == Some(&serde_json::Value::Bool(true));
                     let shape = match key.as_str() {
                         "Modal" => Some("Instead.Modal"),
                         "Amass" | "Incubate" | "Empower" => Some("Instead.Waits"),
                         "FlipCoin" | "Clash" if until => Some("Instead.Waits"),
                         "CastFromZone" => Some("Instead.Casts"),
+                        // A payment of life alone asks a yes or no, which the replacement asks as it applies.
+                        "Pay" if r6007_life_only(inner) => Some("Instead.PaysLife"),
                         "Pay" => Some("Instead.Pays"),
                         _ => None,
                     };
@@ -634,6 +649,7 @@ impl<'a> Walker<'a> {
             | Ref::EachPlayer
             | Ref::AttachedPlayer
             | Ref::Monarch
+            | Ref::Spotlit
             | Ref::Chosen
             | Ref::Promised
             | Ref::Attacked
@@ -753,15 +769,24 @@ impl<'a> Walker<'a> {
                 self.expect(Kind::Object, want);
                 self.selector(selector);
             }
-            // Only a damage recipient reads it: a player and objects together.
+            // A damage recipient reads it (a player and objects together), and an effect on objects reads one of the
+            // objects several earlier steps bound ("exile it and the top card of your library ..., then manifest those
+            // cards").
             Ref::Union(parts) => {
-                if want != Kind::Either || parts.len() < 2 {
+                let bound_objects =
+                    want == Kind::Object && parts.iter().all(|part| matches!(part, Ref::Bound(_)));
+                if (want != Kind::Either && !bound_objects) || parts.len() < 2 {
                     self.problem(
                         "a union of references is read only as a damage recipient".to_owned(),
                     );
                 }
+                let kind = if bound_objects {
+                    Kind::Object
+                } else {
+                    Kind::Either
+                };
                 for (i, part) in parts.iter().enumerate() {
-                    self.at(format!("[{i}]"), |w| w.reference(part, Kind::Either));
+                    self.at(format!("[{i}]"), |w| w.reference(part, kind));
                 }
             }
         }
@@ -928,6 +953,10 @@ impl<'a> Walker<'a> {
                 .push((self.face, self.current_path(), name.clone())),
             Pred::Compare { to, .. } => {
                 self.at("to", |w| w.amount(to));
+            }
+            Pred::TotalAtMost { most, .. } => {
+                self.uses("Pred", "TotalAtMost");
+                self.at("most", |w| w.amount(most));
             }
             Pred::Test { left, right, .. } => {
                 self.uses("Pred", "Test");
@@ -1348,6 +1377,7 @@ impl<'a> Walker<'a> {
             StatKind::R374ManaCost => "R374ManaCost",
             StatKind::R374ColorSet => "R374ColorSet",
             StatKind::R4700ChosenColors => "R4700ChosenColors",
+            StatKind::R6018PermanentTypes => "R6018PermanentTypes",
             _ => return,
         };
         self.uses("Stat", name);
@@ -1362,6 +1392,7 @@ impl<'a> Walker<'a> {
             Amount::CardsAbove { filter, .. } => self.w2c_selector_amount("CardsAbove", filter),
             Amount::ManaSymbols { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
             Amount::SourcesDealtDamage(who) => self.player_amount("SourcesDealtDamage", who),
+            Amount::MostDamageBySource(who) => self.player_amount("MostDamageBySource", who),
             Amount::Tally { who, filter, .. } => {
                 self.player_amount("Tally", who);
                 self.at("filter", |w| w.selector(filter));
@@ -1417,6 +1448,11 @@ impl<'a> Walker<'a> {
                 self.uses("Amount", "DamageDealtByTo");
                 self.at("by", |w| w.reference(by, Kind::Object));
                 self.at("to", |w| w.reference(to, Kind::Either));
+            }
+            Amount::DamageToFromPlayers { to, players } => {
+                self.uses("Amount", "DamageToFromPlayers");
+                self.at("to", |w| w.reference(to, Kind::Either));
+                self.at("players", |w| w.reference(players, Kind::Player));
             }
             Amount::CommanderColors(who) => self.player_amount("CommanderColors", who),
             Amount::Speed(who) => self.player_amount("Speed", who),
@@ -1898,6 +1934,9 @@ impl<'a> Walker<'a> {
                     }
                     CostItem::TapPower { filter, .. } => {
                         w.at("filter", |w| w.selector(filter));
+                    }
+                    CostItem::ManaCostOf(of) => {
+                        w.at("ManaCostOf", |w| w.reference(of, Kind::Object));
                     }
                     CostItem::Changed { per, condition, .. } => {
                         w.at("per", |w| w.amount(per));
@@ -2745,6 +2784,7 @@ impl<'a> Walker<'a> {
             Modification::AddChosenSubtype
             | Modification::SetChosenColor
             | Modification::AddChosenColor
+            | Modification::R6001AddChosenAbilities
             | Modification::SetLandTypesNthChosen(_) => {
                 if !self.scope.in_static {
                     self.problem(
@@ -3292,11 +3332,20 @@ impl Walker<'_> {
                     // A player's first discards of the turn, of any card or of a kind.
                     || matches!(&**inner, TriggerPattern::Discarded { .. })
             }
+            // The times the card dealt combat damage to a player in a turn.
+            TriggerPattern::DealsDamage {
+                source,
+                to: Some(Ref::EachPlayer),
+                combat: Some(true),
+            } => {
+                self.uses("Nth", "R6018HitPlayer");
+                source.0 == [Pred::This]
+            }
             _ => false,
         };
         if !counted {
             self.problem(
-                "only cards drawn, spells cast, life gained or lost, cards cycled, surveils, investigations, tokens you create, attacks, counters put on an object, becoming crewed or saddled, becoming a target of what anyone or you control and damage dealt to an object from any source or a player's first discards are counted in a turn",
+                "only cards drawn, spells cast, life gained or lost, cards cycled, surveils, investigations, tokens you create, attacks, counters put on an object, becoming crewed or saddled, becoming a target of what anyone or you control, damage dealt to an object from any source, the card's combat damage to a player or a player's first discards are counted in a turn",
             );
         }
         self.at("event", |w| w.trigger_pattern(event));
@@ -3388,8 +3437,14 @@ impl Walker<'_> {
             | Destination::BattlefieldFaceDown { under: Some(who) } => {
                 self.at("under", |w| w.reference(who, Kind::Player));
             }
-            Destination::BattlefieldAttached { to } => {
-                self.at("to", |w| w.reference(to, Kind::Object));
+            Destination::BattlefieldAttached { to, under, .. } => {
+                self.at("to", |w| w.reference(to, Kind::Either));
+                if let Some(who) = under {
+                    self.at("under", |w| w.reference(who, Kind::Player));
+                }
+            }
+            Destination::BattlefieldEnchanting { only } => {
+                self.at("only", |w| w.selector(only));
             }
             _ => {}
         }
@@ -3443,7 +3498,13 @@ impl Walker<'_> {
     /// The exceptions of a copy effect are changes to its copiable values; a modification that is not one waits.
     /// The exceptions of a copy that is not a permanent becoming a copy: keeping its own ability is not played there.
     /// A permanent that enters with counters and with a keyword or an ability (`ReplaceBy::WithCountersAnd`).
-    fn enters_with_changes(&mut self, enters: bool, count: &Amount, given: &[Modification]) {
+    fn enters_with_changes(
+        &mut self,
+        enters: bool,
+        count: &Amount,
+        given: &[Modification],
+        more_kinds: bool,
+    ) {
         if !enters {
             self.problem("`WithCountersAnd` replaces an `Enters`");
         }
@@ -3456,7 +3517,10 @@ impl Walker<'_> {
         }) {
             self.problem("a permanent enters with a keyword or an ability only");
         }
-        self.at("mods", |w| w.mods(given));
+        // Counters of several kinds alone ("a +1/+1 counter, a flying counter, ... and a shield counter") need no change.
+        if !(given.is_empty() && more_kinds) {
+            self.at("mods", |w| w.mods(given));
+        }
     }
 
     fn copy_exceptions_new_object(&mut self, except: &[Modification]) {
@@ -3572,6 +3636,7 @@ impl Walker<'_> {
             | Ref::EachPlayer
             | Ref::AttachedPlayer
             | Ref::Monarch
+            | Ref::Spotlit
             | Ref::Chosen
             | Ref::Promised
             | Ref::Attacked
@@ -3963,6 +4028,9 @@ impl Walker<'_> {
                 to: Destination::Battlefield {
                     transformed: true,
                     ..
+                } | Destination::BattlefieldAttached {
+                    transformed: true,
+                    ..
                 },
                 ..
             }
@@ -3993,6 +4061,13 @@ impl Walker<'_> {
             } => {
                 self.uses("Effect", "Move.Battlefield");
                 self.uses("Effect", "Move.Attached");
+            }
+            Effect::Move {
+                to: Destination::BattlefieldEnchanting { .. },
+                ..
+            } => {
+                self.uses("Effect", "Move.Battlefield");
+                self.uses("Effect", "Move.Enchanting");
             }
             Effect::Move {
                 to: Destination::BattlefieldFaceDown { .. },
@@ -4412,6 +4487,7 @@ impl Walker<'_> {
                         | TargetSet::DifferentPowers
                         | TargetSet::DifferentManaValues,
                     ) => {}
+                    Some(TargetSet::DifferentColorSets) => w.uses("Choose", "DifferentColorSets"),
                     Some(_) => w.at("differ", |w| {
                         w.problem("a choice keeps apart names, powers or mana values");
                     }),
@@ -4461,7 +4537,7 @@ impl Walker<'_> {
             }
             Effect::Attach { what, to, bind } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
-                w.at("to", |w| w.reference(to, Kind::Object));
+                w.at("to", |w| w.reference(to, Kind::Either));
                 if let Some(name) = bind {
                     w.at("as", |w| w.bind(name, Kind::Object));
                 }
@@ -4631,6 +4707,11 @@ impl Walker<'_> {
                 bind,
                 effects,
             } => w.repeat_each(over, bind, effects),
+            Effect::Revive { who, life, draw } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("life", |w| w.amount(life));
+                w.at("draw", |w| w.amount(draw));
+            }
             Effect::SetLife { who, amount } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("amount", |w| w.amount(amount));
@@ -4762,8 +4843,14 @@ impl Walker<'_> {
                 w.at("as", |w| w.bind(bind, Kind::Value));
                 w.at("winner", |w| w.bind(winner, Kind::Player));
             }
-            Effect::ChooseWords { who, words, .. } => {
+            Effect::ChooseWords {
+                who, words, about, ..
+            } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
+                if let Some(about) = about {
+                    w.uses("Effect", "ChooseWords.About");
+                    w.at("about", |w| w.reference(about, Kind::Player));
+                }
                 if words.len() < 2 {
                     w.problem("a choice of words has at least two words");
                 }
@@ -5473,6 +5560,13 @@ impl Walker<'_> {
         if limit {
             self.uses("Ability", "Limit");
         }
+        if let Ability::Activated {
+            limit: Some(crate::ability::Limit::PowerUp),
+            ..
+        } = ability
+        {
+            self.uses("Limit", "PowerUp");
+        }
         // The limit counted as a choice is done needs a triggered ability whose first step is that choice.
         let counted_done = match ability {
             Ability::Triggered {
@@ -5860,6 +5954,9 @@ impl Walker<'_> {
             GameRule::DamageCantBePrevented { source, .. } => {
                 self.at(tag, |w| w.at("source", |w| w.selector(source)));
             }
+            GameRule::PowerUpAgain(which) => {
+                self.at(tag, |w| w.selector(which));
+            }
             GameRule::MustAttack(who)
             | GameRule::MustBlock(who)
             | GameRule::CantBeCountered(who)
@@ -5880,6 +5977,18 @@ impl Walker<'_> {
                 {
                     self.uses("Rule", "Combat.MustBeBlockedByOne");
                     self.at(tag.clone(), |w| w.at("blockers", |w| w.selector(blockers)));
+                }
+                if let GameRule::Combat {
+                    quirk: crate::modify::CombatQuirk::R6001MustBeBlockedByAtLeast(count),
+                    ..
+                } = rule
+                {
+                    self.uses("Rule", "Combat.R6001MustBeBlockedByAtLeast");
+                    if *count < 2 {
+                        self.problem(
+                            "\"must be blocked by N or more creatures\" needs N of 2 or more",
+                        );
+                    }
                 }
                 self.at(tag, |w| w.reference(who, Kind::Object));
             }
@@ -5988,6 +6097,7 @@ impl Walker<'_> {
             | GameRule::DrawFromBottom(who)
             | GameRule::CantSearch(who)
             | GameRule::OwnSpellsCantSearch(who)
+            | GameRule::SearchTop { who, .. }
             | GameRule::VoteAgain(who)
             | GameRule::ExtraVote(who)
             | GameRule::SkipExtraTurns(who)
@@ -6002,12 +6112,16 @@ impl Walker<'_> {
             | GameRule::OpponentsCantMakeSacrifice(who)
             | GameRule::OpponentsCantMakeDiscardOrSacrifice(who)
             | GameRule::SpendManaAs {
-                who, spells: None, ..
+                who,
+                spells: None,
+                abilities: None,
+                ..
             }
             | GameRule::RevealTop(who)
             | GameRule::RevealHand(who)
             | GameRule::LookAtTopAnyTime(who)
             | GameRule::SkipDrawStep(who)
+            | GameRule::R6007ExhaustAgain(who)
             | GameRule::NoMaxHandSize(who)
             | GameRule::LoyaltyTwice(who)
             | GameRule::BoastTwice(who)
@@ -6016,6 +6130,7 @@ impl Walker<'_> {
                 self.at(tag, |w| w.reference(who, Kind::Player));
             }
             GameRule::EchoRather(cost) => self.at(tag, |w| w.cost(cost)),
+            GameRule::UntapRemovesCounters(_) => self.at(tag, |_| {}),
             GameRule::MayCast(permission) => self.at(tag, |w| w.cast_permission(permission)),
             GameRule::LookAtExiled { who, what, only } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
@@ -6049,6 +6164,13 @@ impl Walker<'_> {
             | GameRule::Flagbearers
             | GameRule::RevealFirstDraw { .. }
             | GameRule::SpendOnlyFrom(_) => {}
+            GameRule::R6018PlotLess(less) => {
+                if *less == 0 {
+                    self.at(tag, |w| {
+                        w.problem("a plot cost reduction takes at least {1} off");
+                    });
+                }
+            }
             GameRule::TaxAsLife(life) => {
                 if *life == 0 {
                     self.at(tag, |w| {
@@ -6094,6 +6216,9 @@ impl Walker<'_> {
             | GameRule::SpellCost { .. }
             | GameRule::SpendManaAs {
                 spells: Some(_), ..
+            }
+            | GameRule::SpendManaAs {
+                abilities: Some(_), ..
             }
             | GameRule::PayLifeForOneSymbol { .. }
             | GameRule::MayCastRather { .. }
@@ -6149,6 +6274,16 @@ impl Walker<'_> {
             } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("spells", |w| w.selector(spells));
+                w.at("abilities", |w| w.selector(abilities));
+            }),
+            GameRule::SpendManaAs {
+                who,
+                spells: None,
+                abilities: Some(abilities),
+                ..
+            } => self.at(tag, |w| {
+                w.uses("Rule", "SpendManaAs.AbilitiesOnly");
+                w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("abilities", |w| w.selector(abilities));
             }),
             GameRule::SpendManaAs {
@@ -6297,6 +6432,10 @@ impl Walker<'_> {
             }),
             // Eminence: "As long as ~ is in the command zone or on the battlefield, ...".
             ZoneKind::Command if matches!(rule, GameRule::SpellCost { .. }) => {}
+            // "As long as ~ is on the stack, spells that target it cost {2} more to cast."
+            ZoneKind::Stack
+                if matches!(rule, GameRule::SpellCost { applies_to, .. }
+                    if applies_to.0.contains(&Pred::Targeting(Selector::this()))) => {}
             _ if matches!(rule, GameRule::CanBeCommander) => self.at("from", |w| {
                 w.problem("a card can be a commander in every zone: write the rule without `from`");
             }),
@@ -6326,6 +6465,7 @@ impl Walker<'_> {
             self.uses("ReplaceWhen", "Draw.ExceptDrawStep");
         }
         match when {
+            ReplaceWhen::R6001DamageBetweenChosen => {}
             ReplaceWhen::TokenCreation { controller, what } => {
                 self.at("controller", |w| w.reference(controller, Kind::Player));
                 if !what.is_empty() {
@@ -6652,6 +6792,9 @@ impl Walker<'_> {
     #[allow(clippy::too_many_lines)]
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
+        if matches!(by, ReplaceBy::IntoLibrary { optional: true, .. }) {
+            self.uses("ReplaceBy", "IntoLibrary.Optional");
+        }
         if matches!(by, ReplaceBy::UnderYourControl)
             && !matches!(
                 when,
@@ -6744,7 +6887,7 @@ impl Walker<'_> {
                 for (i, more) in also.iter().enumerate() {
                     self.at("also", |w| w.at(i.to_string(), |w| w.amount(&more.count)));
                 }
-                self.enters_with_changes(enters, count, given);
+                self.enters_with_changes(enters, count, given, !also.is_empty());
             }
             ReplaceBy::Tapped
             | ReplaceBy::Untapped
@@ -6752,6 +6895,7 @@ impl Walker<'_> {
             | ReplaceBy::PayLifeOrTapped(_)
             | ReplaceBy::TappedForCounters { .. }
             | ReplaceBy::RevealOrTapped(_)
+            | ReplaceBy::R6007RevealOrControl { .. }
             | ReplaceBy::BeholdOrTapped(_)
             | ReplaceBy::Tribute(_)
             | ReplaceBy::Amplify(_)
@@ -6817,7 +6961,9 @@ impl Walker<'_> {
             ReplaceBy::TappedForCounters { count: 0, .. } => {
                 self.problem("entering tapped for no counters is a plain choice");
             }
-            ReplaceBy::RevealOrTapped(of) | ReplaceBy::BeholdOrTapped(of) => {
+            ReplaceBy::RevealOrTapped(of)
+            | ReplaceBy::BeholdOrTapped(of)
+            | ReplaceBy::R6007RevealOrControl { of, .. } => {
                 self.at("of", |w| w.selector(of));
             }
             ReplaceBy::PayOrGraveyard { cost, optional } => {
@@ -6830,6 +6976,9 @@ impl Walker<'_> {
                 if *count < 2 || kinds.len() <= *count as usize =>
             {
                 self.problem("a choice of different counters offers more kinds than it takes, and takes two or more");
+            }
+            ReplaceBy::HealFirst if !matches!(when, ReplaceWhen::Damage { .. }) => {
+                self.problem("`HealFirst` replaces a `Damage`");
             }
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");
@@ -7210,9 +7359,10 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
     walker.counts_x = card.abilities().any(
         |(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true, .. } if cost.has_x()),
     );
-    walker.pays_objects = card.abilities().any(
-        |(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true, .. } if picks(cost)),
-    );
+    // An optional cost names what it took once paid ("If you revealed a Dragon card or chose a Dragon ...").
+    walker.pays_objects = card
+        .abilities()
+        .any(|(_, a)| matches!(a, Ability::AdditionalCost { cost, .. } if picks(cost)));
     if !is_uuid(&card.oracle_id) {
         walker.at("oracle_id", |w| w.problem("not a lowercase UUID"));
     }
@@ -7297,6 +7447,10 @@ pub fn named_cards(card: &Card) -> BTreeSet<String> {
         .collect()
 }
 
+/// Names printed only on tokens another card makes, lowercase, which a card may name ("a creature you control named
+/// Vecna", the token of Book of Vile Darkness).
+const R6018_TOKEN_NAMES: [&str; 1] = ["vecna"];
+
 /// The problems of a card file against the imported card: names, fingerprints, keywords and the
 /// printed characteristics its abilities rely on.
 pub(crate) fn check_printed(
@@ -7363,7 +7517,10 @@ pub(crate) fn check_printed(
     }
     for (_, path, name) in names {
         let lower = name.to_lowercase();
-        if !known_names.contains(&lower) && !own_tokens.contains(&lower) {
+        if !known_names.contains(&lower)
+            && !own_tokens.contains(&lower)
+            && !R6018_TOKEN_NAMES.contains(&lower.as_str())
+        {
             walker.path = vec![path];
             walker.problem(format!("no imported card is named `{name}`"));
         }
@@ -7809,6 +7966,8 @@ mod tests {
     #[case::a_move_to_the_command_zone(r#"{"Spell":{"effects":[{"Move":{"what":{"Each":["Commander"]},"to":"Command"}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Command"])]
     #[case::a_move_to_the_battlefield_attached(r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Move":{"what":"This","to":{"BattlefieldAttached":{"to":{"Target":0}}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield", "Effect.Move.Attached"])]
     #[case::a_move_to_the_battlefield(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Battlefield":{}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield"])]
+    #[case::r5515_a_move_attached_to_a_player_transformed(r#"{"Spell":{"targets":[{"what":"Opponent"}],"effects":[{"Move":{"what":"This","to":{"BattlefieldAttached":{"to":{"Target":0},"transformed":true,"under":"You"}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield", "Effect.Move.Attached", "Effect.Move.Transformed"])]
+    #[case::r5515_a_move_enchanting_only_creatures(r#"{"Spell":{"effects":[{"Move":{"what":{"Each":[{"Subtype":"Aura"},{"In":"Graveyard"},{"OwnedBy":"You"}]},"to":{"BattlefieldEnchanting":{"only":[{"Type":"Creature"}]}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield", "Effect.Move.Enchanting"])]
     #[case::a_cast_transformed(r#"{"Spell":{"effects":[{"Exile":{"what":"This","as":"card"}},{"CastFromZone":{"what":{"Bound":"card"},"free":true,"transformed":true}}]}}"#, &["Ability.Spell", "Effect.Exile", "Effect.CastFromZone", "Effect.CastFromZone.Transformed"])]
     #[case::a_move_to_the_battlefield_transformed(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Battlefield":{"transformed":true}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield", "Effect.Move.Transformed"])]
     #[case::a_move_to_the_top_in_a_random_order(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Top","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Random.Top"])]
@@ -8709,10 +8868,6 @@ mod tests {
         r#"{"Spell":{"effects":[{"Attach":{"what":"You","to":"This"}}]}}"#,
         "abilities[0].Spell.effects[0].Attach.what: expected an object but this is a player"
     )]
-    #[case::attaching_to_a_player(
-        r#"{"Spell":{"effects":[{"Attach":{"what":"This","to":"You"}}]}}"#,
-        "abilities[0].Spell.effects[0].Attach.to: expected an object but this is a player"
-    )]
     #[case::a_number_read_before_it_is_kept(
         r#"{"Spell":{"effects":[{"GainLife":{"amount":{"Bound":"n"}}}]}}"#,
         "`n` is not a number kept by an earlier `Let`"
@@ -8751,6 +8906,10 @@ mod tests {
     )]
     #[case::ep30_a_union_of_players_to_draw(
         r#"{"Spell":{"effects":[{"Draw":{"who":{"Union":["You","Opponents"]}}}]}}"#,
+        "a union of references is read only as a damage recipient"
+    )]
+    #[case::r4704_a_union_of_objects_not_bound(
+        r#"{"Spell":{"effects":[{"Exile":{"what":{"Union":["This",{"Each":[{"Type":"Land"}]}]}}}]}}"#,
         "a union of references is read only as a damage recipient"
     )]
     #[case::modal_not_alone(
@@ -8981,6 +9140,7 @@ mod tests {
     #[case::tap_or_untap(r#"[{"TapOrUntap":{"what":"Triggering"}}]"#, &[])]
     #[case::modes(r#"[{"Modal":{"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":1}}]}]}}]"#, &["ReplaceBy.Instead.Modal"])]
     #[case::a_payment_inside_a_may(r#"[{"May":{"effects":[{"Pay":{"cost":"{1}","paid":[{"Draw":{}}]}}]}}]"#, &["ReplaceBy.Instead.Pays"])]
+    #[case::a_payment_in_a_reflexive_trigger(r#"[{"Exile":{"what":"Triggering"}},{"Reflexive":{"effects":[{"Pay":{"cost":"{2}","paid":[{"Draw":{}}]}}]}}]"#, &[])]
     #[case::amass_inside_an_if(r#"[{"If":{"condition":"YourTurn","then":[{"Amass":{"subtype":"Orc","count":1}}]}}]"#, &["ReplaceBy.Instead.Waits"])]
     #[case::flips_until_a_loss(r#"[{"FlipCoin":{"until":true,"win":[{"Draw":{}}]}}]"#, &["ReplaceBy.Instead.Waits"])]
     #[case::a_single_flip(r#"[{"FlipCoin":{"win":[{"Draw":{}}]}}]"#, &[])]
@@ -9078,6 +9238,25 @@ mod printed_keywords {
             .into_iter()
             .map(|problem| problem.message)
             .collect()
+    }
+
+    #[rstest]
+    #[case::a_token_only_name("Vecna", true)]
+    #[case::an_imported_name("Pir, Imaginative Rascal", true)]
+    #[case::an_unknown_name("Vecnar", false)]
+    fn r6018_a_card_may_name_a_token_only_name(#[case] name: &str, #[case] fine: bool) {
+        let abilities = format!(
+            r#"{{"Static":{{"affected":{{"Each":[{{"Type":"Creature"}},{{"Named":"{name}"}}]}},"mods":[{{"AddKeyword":"Flying"}}]}}}}"#
+        );
+        let found = problems(
+            "Full",
+            &[(BIRD, "Creatures named X have flying.", &abilities)],
+            &[],
+        );
+        let named = found
+            .iter()
+            .any(|problem| problem.contains("no imported card is named"));
+        assert_eq!(named, !fine, "{found:?}");
     }
 
     #[rstest]

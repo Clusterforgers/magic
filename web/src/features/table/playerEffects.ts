@@ -3,7 +3,7 @@
  * command zone, as a short label for the pod's chip and a sentence for its hover detail. Whether an effect helps or
  * hinders the seat is a word and an icon on the chip as well as a colour, never the colour alone.
  */
-import type { ObjectId, ObjectView, PlayerEffect, PlayerView } from '@/protocol/generated'
+import type { ObjectId, ObjectView, PlayerEffect, PlayerId, PlayerView } from '@/protocol/generated'
 import { abilityText } from './cardModel'
 
 /** Whether an effect helps the seat, hinders it, or neither. */
@@ -180,10 +180,14 @@ export function emblemFacts(
 }
 
 /**
- * A campaign fight's seat states: a hero who became a Spirit, a boss's phase with the one still to come, and the Omen
- * (the scheme it sets in motion next).
+ * A campaign fight's seat states: a hero who became a Spirit, a boss's phase with the one still to come, the Omen (the
+ * scheme it sets in motion next) and the hero a seat of the boss's side eyes under the spotlight.
  */
-export function campaignFacts(player: PlayerView, owner: string): EffectFacts[] {
+export function campaignFacts(
+  player: PlayerView,
+  owner: string,
+  nameOf: (seat: PlayerId) => string = (seat) => `Seat ${seat}`,
+): EffectFacts[] {
   const facts: EffectFacts[] = []
   if (player.boss && player.boss.phases.length > 0) {
     const { phases, begun } = player.boss
@@ -199,6 +203,16 @@ export function campaignFacts(player: PlayerView, owner: string): EffectFacts[] 
           : `${owner} is in phase ${begun + 1}; next comes ${next} as their life drops.`,
     })
   }
+  const scheme = player.boss?.scheme
+  if (scheme !== undefined) {
+    facts.push({
+      key: 'Scheme',
+      icon: 'boss',
+      label: `Scheme: ${scheme}`,
+      tone: 'neutral',
+      detail: `${owner} set ${scheme} in motion this turn.`,
+    })
+  }
   const omen = player.boss?.omen
   if (omen !== undefined) {
     facts.push({
@@ -209,13 +223,23 @@ export function campaignFacts(player: PlayerView, owner: string): EffectFacts[] 
       detail: `${owner} sets ${omen} in motion as their next turn begins.`,
     })
   }
+  if (player.eyes !== undefined) {
+    const hero = nameOf(player.eyes)
+    facts.push({
+      key: 'Eyes',
+      icon: 'boss',
+      label: `Eyes ${hero}`,
+      tone: 'neutral',
+      detail: `${owner} eyes ${hero}: the hero it presses next. Its attention moves on to the others once a hero has taken their share.`,
+    })
+  }
   if (player.spirit) {
     facts.push({
       key: 'Spirit',
       icon: 'spirit',
       label: 'Spirit',
       tone: 'neutral',
-      detail: `${owner} fell and haunts the fight as a Spirit; the party loses only if every hero falls.`,
+      detail: `${owner} fell and haunts the fight as a Spirit: enemies can't attack or target them, and they spend ectoplasm on haunt actions or save 5 to rise again. The party loses only if every hero falls.`,
     })
   }
   return facts
@@ -226,9 +250,10 @@ export function seatEffects(
   player: PlayerView,
   objects: Readonly<Record<ObjectId, ObjectView>>,
   owner: string,
+  nameOf?: (seat: PlayerId) => string,
 ): EffectFacts[] {
   return [
-    ...campaignFacts(player, owner),
+    ...campaignFacts(player, owner, nameOf),
     ...emblemFacts(player, objects, owner),
     ...(player.effects ?? []).map((effect) => effectFacts(effect, owner)),
   ]

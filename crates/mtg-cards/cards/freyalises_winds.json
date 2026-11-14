@@ -1,7 +1,7 @@
 {
   "oracle_id": "ffeb792a-6df0-46c1-badc-4deb857f7d48",
   "name": "Freyalise's Winds",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Freyalise's Winds",
@@ -13,12 +13,7 @@
             "effects": [{ "PutCounters": { "on": "Triggering", "counter": { "Other": "wind" } } }]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 63, "end": 193 }
-          }
-        }
+        { "Rule": { "rule": { "UntapRemovesCounters": { "Other": "wind" } } } }
       ]
     }
   ]

@@ -236,6 +236,7 @@ mod r4701_flash;
 mod r4701_pairs;
 mod r4702_names;
 pub(crate) mod r4703_reads;
+mod r4704_hooks;
 mod r4705_reads;
 mod r4706_counters;
 mod r4707_costs;
@@ -263,6 +264,8 @@ mod r5510_own_cost;
 mod r5510_wholes;
 mod r5513_events;
 mod r5514_pieces;
+mod r5515_enchanting;
+mod r5515_power_up;
 mod r5516_actions;
 mod r5516_reflexive;
 mod r5517_wholes;
@@ -277,6 +280,11 @@ mod r5a_wordings;
 mod r5b_performed;
 mod r5c_order;
 mod r5g_lines;
+mod r6003_total;
+mod r6003_wholes;
+mod r6007_wholes;
+mod r6008_wholes;
+mod r6018_wholes;
 mod r6a_effects;
 mod r6a_more;
 mod r6a_wordings;
@@ -619,7 +627,8 @@ pub struct Own {
 
 /// The words before an activated ability that are rules, not flavor: the ability works from another zone (a hand, an
 /// exile) or only after something happened ("Boast \u{2014} {1}: ...").
-const MEANINGFUL_WORDS: [&str; 5] = [
+const MEANINGFUL_WORDS: [&str; 6] = [
+    "Power-up \u{2014} ",
     "Channel \u{2014} ",
     "Bloodrush \u{2014} ",
     "Boast \u{2014} ",
@@ -630,6 +639,12 @@ const MEANINGFUL_WORDS: [&str; 5] = [
 /// Reads a clause like `clause`, with what the face itself says (`Own`).
 #[allow(clippy::too_many_lines)]
 pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
+    if let Some(found) = r6008_wholes::r6008_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r6018_wholes::r6018_whole_read(text) {
+        return Some(found);
+    }
     if let Some(found) = r5517_wholes::r5517_read(text) {
         return Some(found);
     }
@@ -646,6 +661,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
             .then_some(ability);
     }
     if let Some(found) = r5519_wholes::r5519_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r6003_wholes::r6003_whole_read(text) {
         return Some(found);
     }
     if let Some(found) =
@@ -680,7 +698,24 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     if let Some(found) = r5521_wholes::r5521_read(text, kind) {
         return Some(found);
     }
+    if let Some(found) = r6007_wholes::r6007_read(text, kind) {
+        return Some(found);
+    }
     if let Some(found) = render::r5522_read_whole(text, same_text) {
+        return Some(found);
+    }
+    // An ability word is flavor to the pack's readers as to the templates below.
+    let bare = match kind {
+        ClauseKind::Triggered | ClauseKind::Static => text
+            .get(classify::ability_word_len(text.lines().next().unwrap_or_default()).unwrap_or(0)..)
+            .unwrap_or(text),
+        _ => text,
+    };
+    if let Some(found) = r4704_hooks::r4704_read(bare, kind)
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, bare))
+    {
         return Some(found);
     }
     if let Some(found) =
@@ -692,6 +727,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = render::r5523_read_whole(text) {
+        return Some(found);
+    }
+    if let Some(found) = render::r6001_read_whole(text) {
         return Some(found);
     }
     if let Some(found) =
@@ -714,6 +752,16 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         && let Some(found) = dk27_animate::dk27_animate_read(text)
     {
         return Some(found);
+    }
+    if kind == ClauseKind::Static
+        && let Some(found) = r5515_power_up::r5515_power_up_again(text)
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Activated
+        && let Some(body) = r5515_power_up::r5515_power_up_body(text)
+    {
+        return r5515_power_up::r5515_power_up(clause_with(body, kind, x_free, own)?);
     }
     if let Some(found) = l31d_any_number::l31d_any_number_read(text, kind, |twin, kind, x_free| {
         clause_with(twin, kind, x_free, own)

@@ -327,6 +327,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ],
   PlayerLost: [{ PlayerLost: { player: 1, reason: 'ZeroLife' } }, 'Bo ran out of life'],
   BecameSpirit: [{ BecameSpirit: { player: 1, emblem: 9 } }, 'Bo fell and rises as a Spirit'],
+  SpiritRevived: [{ SpiritRevived: { player: 1, life: 10 } }, 'Bo returns to life with 10 life'],
   PhaseBegan: [{ PhaseBegan: { player: 1, emblem: 9 } }, 'Bo enters a card'],
   SchemeSetInMotion: [{ SchemeSetInMotion: { player: 1, emblem: 9 } }, 'Bo sets a card in motion'],
   ObjectLeftGame: [{ ObjectLeftGame: { object: 2 } }, 'Hill Giant leaves the game'],
@@ -454,6 +455,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
 
 /** The ways the pipeline's events that need more than one sentence differ, each next to its text. */
 const MORE: [Event, string][] = [
+  [
+    { ExtraTurnAdded: { player: 1, no_power_up: true } },
+    "Bo takes an extra turn after this one, during which power-up abilities can't be activated",
+  ],
   [
     { PermanentPhasedOut: { object: 3, controller: 0, until: { id: 4, counter: 0 }, tapped: true } },
     'Forest phases out until Lightning Bolt leaves the battlefield',
@@ -1438,6 +1443,12 @@ describe('the choice a permanent enters with', () => {
     [
       { Entered: { object: 3, tapped: false, controller: 0, chosen: { Word: 'odd' } } },
       "Forest enters under Ana's control, choosing odd",
+    ],
+    [
+      {
+        Entered: { object: 3, tapped: false, controller: 0, chosen: { Words: ['first strike', 'lifelink'] } },
+      },
+      "Forest enters under Ana's control, choosing first strike and lifelink",
     ],
   ])('%j reads "%s"', (event, text) => {
     expect(say(event)).toBe(text)

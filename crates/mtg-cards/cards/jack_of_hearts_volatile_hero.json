@@ -25,6 +25,7 @@
         {
           "Activated": {
             "cost": "{4}{R}{R}",
+            "limit": "PowerUp",
             "effects": [
               { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
               { "Draw": { "count": 3 } },

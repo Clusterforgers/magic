@@ -1,7 +1,7 @@
 {
   "oracle_id": "70ff487d-96b3-4322-9975-59bf3c6b517f",
   "name": "Animus of Predation",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Animus of Predation",
@@ -10,9 +10,28 @@
         { "Rule": { "rule": { "Draft": "FaceUp" } } },
         { "Rule": { "rule": { "Draft": { "RemoveDrafted": { "face_up": true } } } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 118, "end": 374 }
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "KeywordsOf": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "Drafted": "R6018RemovedWith" }] },
+                  "keywords": [
+                    "Flying",
+                    "FirstStrike",
+                    "DoubleStrike",
+                    "Deathtouch",
+                    "Haste",
+                    "Hexproof",
+                    "Indestructible",
+                    "Lifelink",
+                    "Menace",
+                    "Reach",
+                    "Vigilance"
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

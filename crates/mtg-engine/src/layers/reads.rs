@@ -124,6 +124,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::AddChosenColor
         | Wanted::SetCommanderColor => Traits::COLORS,
         Wanted::AddKeyword(_)
+        | Wanted::R6001AddChosenAbilities
         | Wanted::KeywordsOf { .. }
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType
@@ -204,6 +205,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::AddChosenSubtype
         | Wanted::SetChosenColor
         | Wanted::AddChosenColor
+        | Wanted::R6001AddChosenAbilities
         | Wanted::SetCommanderColor
         | Wanted::AddAllCreatureTypes
         | Wanted::SetColors(_)
@@ -251,6 +253,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Granter
         | Ref::AttachedPlayer
         | Ref::Monarch
+        | Ref::Spotlit
         | Ref::Chosen
         | Ref::R4700OtherChosen
         | Ref::Promised
@@ -430,6 +433,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         // What a permanent could produce is read from its mana abilities.
         Pred::HasAbility(_) | Pred::CouldProduce(_) => Traits::KEYWORDS.or(Traits::RULES),
         Pred::Compare { stat, to, .. } => reads_of_stat(*stat).or(reads_of_amount(to)),
+        Pred::TotalAtMost { stat, most } => reads_of_stat(*stat).or(reads_of_amount(most)),
         Pred::Test { left, right, .. } => reads_of_amount(left).or(reads_of_amount(right)),
         Pred::Not(inner) => reads_of_pred(inner),
         Pred::Targeting(inner)
@@ -449,6 +453,7 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         StatKind::Toughness | StatKind::BaseToughness => Traits::TOUGHNESS,
         StatKind::Colors | StatKind::R374ColorSet | StatKind::R4700ChosenColors => Traits::COLORS,
         StatKind::BasicLandTypes | StatKind::CreatureType | StatKind::Subtypes => Traits::SUBTYPES,
+        StatKind::R6018PermanentTypes => Traits::TYPES,
         StatKind::R374Types => Traits::TYPES.or(Traits::SUBTYPES).or(Traits::SUPERTYPES),
         StatKind::R374CreatureTypes => Traits::TYPES.or(Traits::SUBTYPES),
         StatKind::R374Bushido | StatKind::R374Toxic => Traits::KEYWORDS,
@@ -515,6 +520,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),
         Amount::Life(who)
         | Amount::SourcesDealtDamage(who)
+        | Amount::MostDamageBySource(who)
         | Amount::GreatestCast { who, .. }
         | Amount::CommanderCasts(who)
         | Amount::CastsFromCommand(who)
@@ -538,6 +544,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
             .iter()
             .fold(Traits::NONE, |all, part| all.or(reads_of_amount(part))),
         Amount::DamageDealtByTo { by, to } => reads_of_ref(by).or(reads_of_ref(to)),
+        Amount::DamageToFromPlayers { to, players } => reads_of_ref(to).or(reads_of_ref(players)),
         Amount::CountOf { of, filter } => reads_of_ref(of).or(reads_of_selector(filter)),
         // A copy that was not cast reads the inner amount now.
         Amount::EvenShare(total) | Amount::CountedAsCast(total) => reads_of_amount(total),

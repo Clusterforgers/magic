@@ -2,10 +2,14 @@
 //! becomes a Spirit instead: its cards outside the library and the command zone leave the game, it gets the emblem
 //! (its haunt abilities) and it loses no more on its own. A team whose players are all Spirits, or are losing, loses
 //! together, so a Spirit never wins alone.
+//!
+//! A Spirit is out of the fight's reach: no opponent can attack it or target it. It starts with one ectoplasm
+//! counter on the player, the resource its haunt abilities spend, and `Effect::Revive` returns it to life.
 
 use std::collections::BTreeSet;
 use std::sync::Arc;
 
+use mtg_cards::value::CounterKind;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::error::EngineError;
@@ -55,6 +59,7 @@ pub(crate) fn settle(state: &GameState, losses: Vec<Event>) -> Vec<Event> {
                 player: *player,
                 emblem: ObjectId(next),
             });
+            events.push(ectoplasm_change(*player, 1));
             next += 1;
             continue;
         }
@@ -84,7 +89,8 @@ pub(crate) fn settle(state: &GameState, losses: Vec<Event>) -> Vec<Event> {
     events
 }
 
-/// The objects a Spirit loses: its cards outside its library and the command zone leave the game.
+/// The objects a Spirit loses: its cards outside its library and the command zone leave the game; its haunt abilities
+/// on the stack stay.
 pub(crate) fn fading(state: &GameState) -> Vec<Event> {
     if state.players().iter().all(|p| !p.spirit) {
         return Vec::new();
@@ -95,7 +101,7 @@ pub(crate) fn fading(state: &GameState) -> Vec<Event> {
             state
                 .player(o.owner())
                 .is_some_and(|p| p.spirit && p.is_in_game())
-                && !matches!(o.zone(), Zone::Command(_) | Zone::Library(_))
+                && !matches!(o.zone(), Zone::Command(_) | Zone::Library(_) | Zone::Stack)
         })
         .map(|o| Event::ObjectLeftGame { object: o.id() })
         .collect()
@@ -130,6 +136,87 @@ pub(crate) fn fold(
     state.objects.insert(emblem, object);
     state.zones.insert(zone, emblem, Placement::Top);
     state.next_object = state.next_object.max(emblem.get() + 1);
+    reset_passes(state);
+    Ok(())
+}
+
+/// The name of the player counter a Spirit's haunt abilities spend.
+pub const ECTOPLASM: &str = "ectoplasm";
+
+/// The ectoplasm counter kind.
+pub fn ectoplasm() -> CounterKind {
+    CounterKind::Other(ECTOPLASM.to_owned())
+}
+
+/// The event that gives `player` `delta` ectoplasm (or takes it, when negative).
+fn ectoplasm_change(player: PlayerId, delta: i32) -> Event {
+    Event::CountersChanged(crate::counters::CountersChanged {
+        on: crate::choose::Target::Player(player),
+        counter: ectoplasm(),
+        delta,
+    })
+}
+
+/// Whether `player` may be attacked: a Spirit never is.
+pub(crate) fn attackable(state: &GameState, player: PlayerId) -> bool {
+    !state.player(player).is_some_and(|p| p.spirit)
+}
+
+/// Whether `player` is a Spirit that a spell or ability `controller` controls cannot target: an opponent's never can,
+/// the Spirit's own and its teammates' can.
+pub(crate) fn shielded(state: &GameState, player: PlayerId, controller: PlayerId) -> bool {
+    state
+        .player(player)
+        .is_some_and(|p| p.spirit && p.is_in_game())
+        && controller != player
+        && !state.are_teammates(controller, player)
+}
+
+/// The events that return the Spirit `player` to life: its haunt emblems leave the game, it is a living player with
+/// `life`, its ectoplasm gone, and draws `cards`. Nothing for a player who is not a Spirit in the game.
+pub(crate) fn revive(state: &GameState, player: PlayerId, life: i32, cards: usize) -> Vec<Event> {
+    let Some(seat) = state.player(player) else {
+        return Vec::new();
+    };
+    if !seat.spirit || !seat.is_in_game() {
+        return Vec::new();
+    }
+    let name = seat.spirit_form.as_ref().map(|form| form.name.clone());
+    let mut events: Vec<Event> = state
+        .zone(Zone::Command(player))
+        .iter()
+        .filter_map(|id| state.object(*id))
+        .filter(|o| o.kind == ObjectKind::Emblem && Some(&o.card().name) == name.as_ref())
+        .map(|o| Event::ObjectLeftGame { object: o.id() })
+        .collect();
+    let held = seat.counters_of(&ectoplasm());
+    if held > 0 {
+        events.push(ectoplasm_change(
+            player,
+            -i32::try_from(held).unwrap_or(i32::MAX),
+        ));
+    }
+    events.push(Event::SpiritRevived { player, life });
+    events.extend(crate::steps::draw(state, player, cards));
+    events
+}
+
+/// Folds `SpiritRevived`: the player is no longer a Spirit and its life total is `life`.
+pub(crate) fn fold_revived(
+    state: &mut GameState,
+    id: PlayerId,
+    life: i32,
+) -> Result<(), EngineError> {
+    let player = state
+        .players
+        .iter_mut()
+        .find(|p| p.id() == id)
+        .ok_or_else(|| invalid(format!("no player {id:?}")))?;
+    if !player.is_in_game() || !player.spirit {
+        return Err(invalid(format!("{id:?} is not a Spirit")));
+    }
+    player.spirit = false;
+    player.life = life;
     reset_passes(state);
     Ok(())
 }

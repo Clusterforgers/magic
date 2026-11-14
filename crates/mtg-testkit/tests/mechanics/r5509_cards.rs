@@ -2,7 +2,8 @@
 //! manifested, cloaked tapped or put back on top of the library (Ghastly Conscription, Become Anonymous, Triumph of Saint
 //! Katherine, whose pile does nothing when the library is short: "If you have fewer than six cards in your library ... no
 //! cards will be exiled"), Braided Net's prohibition lasts while the permanent stays tapped, and The Foretold
-//! Soldier, Overclocked Electromancer and Wildgrowth Archaic do what they print.
+//! Soldier, Overclocked Electromancer and Wildgrowth Archaic do what they print, and a kicked creature cloaked by its
+//! own pile enters with no counters.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -410,5 +411,62 @@ fn r5509_wildgrowth_archaic_adds_a_counter_per_color_spent(
         .unwrap()
         .counters_of(&mtg_cards::value::CounterKind::PlusOnePlusOne);
     assert_eq!(on, counters);
+    Ok(())
+}
+
+#[rstest]
+fn r5515_a_kicked_creature_cloaked_by_its_own_pile_enters_with_no_counters(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(false, true)] kicked: bool,
+) -> Result<(), ScriptError> {
+    use mtg_engine::choose::CostsChoice;
+    use mtg_engine::decision::{Answer, PayChoice};
+    let scenario = Scenario::new(seats)
+        .battlefield(0, r5509_lands(island, 10))
+        .hand(
+            0,
+            [
+                card("Vodalian Serpent").unwrap(),
+                card("Become Anonymous").unwrap(),
+            ],
+        )
+        .library(0, (0..5).map(|_| forest()).collect::<Vec<_>>());
+    let mut driver = Driver::from_scenario(scenario.at(1, 0, Step::Main1))?;
+    driver.begin_cast("Vodalian Serpent")?;
+    driver.answer(Answer::ChooseCosts(CostsChoice::Costs(if kicked {
+        vec![0]
+    } else {
+        vec![]
+    })))?;
+    while driver.state().stack().is_empty() {
+        driver.answer(Answer::PayMana(PayChoice::Auto))?;
+    }
+    r5509_settle(&mut driver)?;
+    let serpent = driver.id_of("Vodalian Serpent")?;
+    let counters = |driver: &Driver, id| {
+        driver
+            .state()
+            .object(id)
+            .and_then(|o| o.permanent())
+            .map_or(0, |p| p.counters().count())
+    };
+    assert_eq!(
+        counters(&driver, serpent) > 0,
+        kicked,
+        "the kicker gives counters"
+    );
+    let target =
+        mtg_engine::choose::Target::Object(driver.state().object(serpent).unwrap().reference());
+    driver.cast_at("Become Anonymous", &[target])?;
+    r5509_settle(&mut driver)?;
+    let cloaked = r5509_face_down(&driver, 0);
+    assert_eq!(cloaked.len(), 3, "the creature and two cards");
+    for id in cloaked {
+        assert_eq!(
+            counters(&driver, id),
+            0,
+            "a new object, face down, with no counters"
+        );
+    }
     Ok(())
 }

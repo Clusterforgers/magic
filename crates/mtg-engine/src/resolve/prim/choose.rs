@@ -6,7 +6,8 @@ use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::wrong_effect;
 use crate::choose::{
-    ChoiceOption, OptionChooser, Optioned, Picked, Selection, Target, pick_options, pick_selections,
+    ChoiceOption, OptionChooser, Optioned, Picked, Selection, Target, pick_options,
+    pick_selections_within,
 };
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::wording;
@@ -78,7 +79,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 selection.groups = groups(cx, rule, &selection.from, &objects);
             }
         }
-        match pick_selections(cx, &selections)? {
+        let mut totals = Vec::with_capacity(selections.len());
+        if let mtg_cards::refs::Ref::Each(filter) = from {
+            for selection in &selections {
+                totals.push(cx.scope.r6003_total(filter, &selection.from)?);
+            }
+        }
+        match pick_selections_within(cx, &selections, &totals)? {
             Picked::Ask(decision) => return Ok(Run::Ask(decision)),
             Picked::Done(taken) => taken
                 .into_iter()
