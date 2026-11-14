@@ -578,6 +578,7 @@ Dualcaster Mage
 Duchess, Wayward Tavernkeep
 Dueling Coach
 Dueling Grounds
+Dungeon Delver
 Dungeon Geists
 Dungeon Map
 Dunland Crebain
