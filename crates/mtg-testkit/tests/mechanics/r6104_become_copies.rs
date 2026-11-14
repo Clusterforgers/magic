@@ -93,12 +93,12 @@ fn r6104_shifting_woodland_copies_a_graveyard_card_until_end_of_turn(
         r6104_seen(&driver, woodland),
         ("Grizzly Bears".to_owned(), Some(2), Some(2))
     );
-    assert!(
+    assert_eq!(
         driver
             .state()
             .zone(Zone::Graveyard(crate::common::pid(0)))
-            .len()
-            == 4
+            .len(),
+        4
     );
     driver.idle_until(2, Step::Upkeep).unwrap();
     assert_eq!(r6104_seen(&driver, woodland).0, "Shifting Woodland");
