@@ -48,9 +48,7 @@ fn r6403_replays(scenario: &Scenario, driver: &Driver) {
 fn r6403_names(driver: &Driver, zone: Zone) -> Vec<String> {
     let mut names: Vec<String> = driver
         .state()
-        .zones
-        .get(zone)
-        .iter()
+        .zone(zone).iter()
         .filter_map(|id| driver.state().object(*id))
         .map(|object| object.card().name.clone())
         .collect();
@@ -61,9 +59,7 @@ fn r6403_names(driver: &Driver, zone: Zone) -> Vec<String> {
 fn r6403_on_battlefield(driver: &Driver, name: &str) -> Option<mtg_core::ids::ObjectId> {
     let state = driver.state();
     state
-        .zones
-        .get(Zone::Battlefield)
-        .iter()
+        .zone(Zone::Battlefield).iter()
         .copied()
         .find(|id| state.object(*id).is_some_and(|object| object.card().name == name))
 }

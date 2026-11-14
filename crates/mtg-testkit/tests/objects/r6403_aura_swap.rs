@@ -73,9 +73,7 @@ fn r6403_swap(scenario: &Scenario, pick: Option<&str>) -> Driver {
 fn r6403_in(driver: &Driver, zone: Zone, name: &str) -> bool {
     driver
         .state()
-        .zones
-        .get(zone)
-        .iter()
+        .zone(zone).iter()
         .any(|id| driver.state().object(*id).unwrap().card().name == name)
 }
 
