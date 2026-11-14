@@ -112,6 +112,7 @@ mod stops;
 mod store_contract;
 mod store_failures;
 mod take_backs;
+mod team_sickness;
 mod timer_bank;
 mod tm1_teams;
 mod tm38_team_turns;
