@@ -108,6 +108,9 @@ fn r6003_probe() {
 #[case("Anointed Peacekeeper")]
 #[case("Dragon's Fire")]
 #[case("Disruptor Flute")]
+#[case("Osseous Exhale")]
+#[case("Piercing Exhale")]
+#[case("Pithing Needle")]
 #[case("Michelangelo's Technique")]
 fn r6003_reads_back_whole(#[case] name: &str) {
     let report = r6003_report(name, &r6003_file(name));
