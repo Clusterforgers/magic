@@ -290,7 +290,7 @@ fn tapped(driver: &Driver, name: &str) -> bool {
         .state()
         .object(id)
         .and_then(|object| object.permanent())
-        .is_some_and(|held| held.tapped())
+        .is_some_and(mtg_engine::object::PermanentState::tapped)
 }
 
 #[rstest]

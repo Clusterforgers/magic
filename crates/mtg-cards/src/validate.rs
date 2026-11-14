@@ -6071,7 +6071,7 @@ impl Walker<'_> {
             GameRule::R6018PlotLess(less) => {
                 if *less == 0 {
                     self.at(tag, |w| {
-                        w.problem("a plot cost reduction takes at least {1} off")
+                        w.problem("a plot cost reduction takes at least {1} off");
                     });
                 }
             }
@@ -9121,8 +9121,14 @@ mod printed_keywords {
         let abilities = format!(
             r#"{{"Static":{{"affected":{{"Each":[{{"Type":"Creature"}},{{"Named":"{name}"}}]}},"mods":[{{"AddKeyword":"Flying"}}]}}}}"#
         );
-        let found = problems("Full", &[(BIRD, "Creatures named X have flying.", &abilities)], &[]);
-        let named = found.iter().any(|problem| problem.contains("no imported card is named"));
+        let found = problems(
+            "Full",
+            &[(BIRD, "Creatures named X have flying.", &abilities)],
+            &[],
+        );
+        let named = found
+            .iter()
+            .any(|problem| problem.contains("no imported card is named"));
         assert_eq!(named, !fine, "{found:?}");
     }
 
