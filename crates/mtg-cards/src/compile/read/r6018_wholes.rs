@@ -67,7 +67,7 @@ mod tests {
             ("opponent", "player"),
             ("permanent types", "card types"),
             ("end of turn", "end of combat"),
-            ("creature", "artifact"),
+            ("graveyard", "library"),
         ];
         for (_, text) in R6018_SHAPES.iter() {
             for (from, to) in swaps {
