@@ -1,0 +1,76 @@
+{
+  "oracle_id": "acf54a85-0e9e-43fb-99d9-c223c02f13c4",
+  "name": "Druid of the Emerald Grove",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Druid of the Emerald Grove",
+      "oracle_fingerprint": "795bbe7faa826a575564f54067a88818",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "count": { "min": 0, "max": 2 },
+                  "reveal": true,
+                  "as": "lands"
+                }
+              },
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 9,
+                      "effects": [
+                        { "Move": { "what": { "Bound": "lands" }, "to": "Hand" } },
+                        { "Shuffle": {} }
+                      ]
+                    },
+                    {
+                      "from": 10,
+                      "to": 19,
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": { "Bound": "lands" },
+                            "as": "kept",
+                            "rest_as": "rest"
+                          }
+                        },
+                        {
+                          "Move": {
+                            "what": { "Bound": "kept" },
+                            "to": { "Battlefield": { "tapped": true } }
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "rest" }, "to": "Hand" } },
+                        { "Shuffle": {} }
+                      ]
+                    },
+                    {
+                      "from": 20,
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Bound": "lands" },
+                            "to": { "Battlefield": { "tapped": true } }
+                          }
+                        },
+                        { "Shuffle": {} }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

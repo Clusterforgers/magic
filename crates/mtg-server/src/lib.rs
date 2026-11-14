@@ -158,8 +158,8 @@ pub use dwell::{Dwell, MAX_DWELL_MS};
 pub use game_id::GameId;
 pub use handle::{GameClosed, GameHandle, GameStatus, JoinError};
 pub use images::{
-    DEFAULT_CACHE_MIB, FetchError, ImageConfig, ImageError, ImageLink, Images, LinkError,
-    MAX_CACHE_MIB, MIN_GAP,
+    DEFAULT_CACHE_MIB, FetchError, IN_FLIGHT, ImageConfig, ImageError, ImageLink, Images,
+    LinkError, MAX_CACHE_MIB, MIN_GAP,
 };
 pub use migrations::{MIGRATIONS_TABLE, migrate, migrator};
 pub use pace::{MAX_CLOCK_SECS, Pace};

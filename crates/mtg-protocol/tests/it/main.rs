@@ -116,6 +116,7 @@ mod target_legality_view;
 mod tc34_control_view;
 mod token_offers_view;
 mod token_printed_view;
+mod top_cast_view;
 mod transcript;
 mod transform_view;
 mod unverified_wire;

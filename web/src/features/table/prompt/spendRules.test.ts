@@ -68,6 +68,8 @@ describe('spendAllows', () => {
     ['a spell with devoid', spell({ devoid: true }), [onSpell({ facts: ['Devoid'] })], true],
     ['a spell with flashback', spell({ flashback: true }), [onSpell({ facts: ['Flashback'] })], true],
     ['a spell without flashback', spell(), [onSpell({ facts: ['Flashback'] })], false],
+    ['a spell with foretell', spell({ foretell: true }), [onSpell({ facts: ['Foretell'] })], true],
+    ['a spell without foretell', spell(), [onSpell({ facts: ['Foretell'] })], false],
     [
       'a spell from your own graveyard',
       spell({ from_graveyard: true }),

@@ -48,8 +48,18 @@ impl Engine {
             if pool.len() < 2 {
                 continue;
             }
-            // The deal starts from the cards in id order, so the world never follows where they really lie.
-            pool.sort_unstable();
+            // The deal starts from the cards in name order (ids break ties), so the world never follows where they
+            // really lie: two tables that differ only in which hidden cards are where deal the same names to each slot.
+            pool.sort_by_cached_key(|id| {
+                (
+                    state
+                        .objects
+                        .get(id)
+                        .map(|object| object.card().name.clone())
+                        .unwrap_or_default(),
+                    *id,
+                )
+            });
             rng.shuffle(&mut pool);
             let mut hand_ids = state.zone(hand).to_vec();
             let mut library_ids = state.zone(library).to_vec();

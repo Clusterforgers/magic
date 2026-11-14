@@ -36,6 +36,7 @@ fn roll_of(effect: &Effect) -> Option<(u32, &Amount)> {
             dice: 1,
             choose: false,
             plus,
+            highest: None,
             results,
             count: Some(count),
         } if plus.is_zero() && results.is_empty() => Some((*sides, count)),
@@ -402,6 +403,7 @@ fn roll(sides: u32, count: Amount) -> Effect {
         dice: 1,
         choose: false,
         plus: Amount::zero(),
+        highest: None,
         results: Vec::new(),
         count: Some(count),
     }

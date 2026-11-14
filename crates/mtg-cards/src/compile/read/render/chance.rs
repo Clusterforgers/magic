@@ -127,6 +127,7 @@ impl Writer<'_> {
                 dice: 1,
                 choose: false,
                 plus,
+                highest: None,
                 results,
                 count: None,
             } if plus.is_zero()
@@ -151,6 +152,22 @@ impl Writer<'_> {
                 dice: 1,
                 choose: false,
                 plus,
+                highest: Some(highest),
+                count: None,
+                ..
+            } if plus.is_zero() && **highest == Amount::Players(Ref::Attacked) => Some((
+                vec![format!(
+                    "roll a d{sides} for each player being attacked and ignore all but the highest roll"
+                )],
+                1,
+            )),
+            Effect::RollDice {
+                who: Ref::You,
+                sides,
+                dice: 1,
+                choose: false,
+                plus,
+                highest: None,
                 count: None,
                 ..
             } if plus.is_zero() => Some((vec![format!("roll a d{sides}")], 1)),
@@ -168,6 +185,7 @@ impl Writer<'_> {
                 dice,
                 choose: false,
                 plus,
+                highest: None,
                 results,
                 count: None,
             } if *dice > 1 && plus.is_zero() && results.is_empty() => {

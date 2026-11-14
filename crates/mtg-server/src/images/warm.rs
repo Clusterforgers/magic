@@ -13,8 +13,8 @@ use super::resolve::{Size, link_of};
 use super::{ImageLink, Images};
 use crate::recipe::CardArt;
 
-/// Pictures fetched at once; the upstream spacing applies on top.
-const CONCURRENCY: usize = 2;
+/// Pictures a warm-up fetches at once: half the upstream slots, so a picture a player waits for is never queued behind it.
+const CONCURRENCY: usize = crate::images::IN_FLIGHT / 2;
 
 /// Starts fetching the pictures of a game's cards. Cheap to clone.
 #[derive(Debug, Clone)]
