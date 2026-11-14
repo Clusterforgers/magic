@@ -174,7 +174,7 @@ pub fn quick_choice(engine: &Engine, decision: &Decision, random: &mut RandomBot
         }
         DecisionKind::Scry(options) => Answer::Scry(scry(&seen, options)),
         DecisionKind::ChooseCards(options)
-            if !options.one_per_name && options.groups.is_empty() =>
+            if !options.one_per_name && options.groups.is_empty() && options.budget.is_none() =>
         {
             Answer::ChooseCards(CardsChoice(pick_cards(&seen, options)))
         }

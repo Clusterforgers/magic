@@ -172,6 +172,8 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - "The power, toughness, and creature types of the last creature card exiled with it" read `Ref::LastExiledWith` (the card the source exiled last among those its filter selects, while still in exile) and `Modification::SetCreatureTypesOf`.
 - "If a creature card with flying was exiled with this creature's delve ability, this creature has flying. The same is true for ..." is `Modification::KeywordsOf` over `Ref::Delved` (the cards the spell's delve exiled, while still in exile): each listed keyword one of them has, with its variant ("hexproof from white").
 - "Choose two basic land types" is `EntersChoice::TwoBasicLandTypes` (`Chosen::LandTypes`, in order); "lands of the first chosen type are the second chosen type" is `Pred::NthChosenLandType(0)` with `Modification::SetLandTypesNthChosen(1)`.
+- "Any number of creature cards with total mana value 6 or less" is `Pred::TotalAtMost` in the filter of a `Search` or the `Each` of a `Choose`: alone it holds of a card that fits, and the choice is asked as a `ChooseCards` with a `budget` (each card's weight and the most); a target with a total is `Targetable::Together` instead.
+- "As ~ enters, look at an opponent's hand, then choose any card name" (`ReplaceBy::ChooseAfter`) asks the name with the names of the hand looked at (`NameOptions.looked`), so the player names having seen it.
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 
 ## Support records

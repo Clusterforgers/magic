@@ -266,6 +266,7 @@ fn of(
                 max: 1,
                 text: "Vote for a permanent or card.".to_owned(),
                 groups: Vec::new(),
+                budget: None,
             })
             .collect();
         match pick_selections(cx, &selections)? {

@@ -31,7 +31,7 @@ use crate::object::ObjectRef;
 use crate::snapshot::Snapshot;
 
 pub use auto::{damage_in_order, triggers_in_order};
-pub use cards::{CardsChoice, CardsOptions};
+pub use cards::{Budget, CardsChoice, CardsOptions};
 pub use costs::{CostsChoice, CostsOptions, OptionalCost};
 pub use divide::{DivideChoice, DivideOptions};
 pub use mode::{ModeChoice, ModeOption, ModeOptions};

@@ -495,6 +495,14 @@ pub enum Pred {
         /// The amount compared with.
         to: Amount,
     },
+    /// The objects chosen together have a total of the stat at most the amount ("with total mana value 6 or less"): alone
+    /// it holds of an object whose stat is at most the amount, and a search or choice takes no set above it.
+    TotalAtMost {
+        /// The characteristic summed.
+        stat: StatKind,
+        /// The most the total may be.
+        most: Amount,
+    },
     /// Two amounts of the object compare: `Ref::Candidate` in them is the object itself ("power less than toughness").
     Test {
         /// The amount on the left.

@@ -736,6 +736,7 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     .or_else(|| super::r379_atoms::r379_suffix(r, form))
     .or_else(|| super::r301b_atoms::r301b_suffix(r, form))
     .or_else(|| super::r4710_atoms::r4710_suffix(r, form))
+    .or_else(|| super::r6003_total::r6003_suffix(r))
 }
 
 /// "greater power", "power less than this creature's power": a stat compared with the same stat of the source.
@@ -897,7 +898,8 @@ fn suffix_text_main(pred: &Pred, form: Form) -> Option<String> {
                 .or_else(|| super::r283_atoms::r283_suffix_text(pred, form))
                 .or_else(|| super::r379_atoms::r379_suffix_text(pred, form))
                 .or_else(|| super::r301b_atoms::r301b_suffix_text(pred, form))
-                .or_else(|| super::r4710_atoms::r4710_suffix_text(pred, form));
+                .or_else(|| super::r4710_atoms::r4710_suffix_text(pred, form))
+                .or_else(|| super::r6003_total::r6003_suffix_text(pred));
         }
     })
 }
@@ -1814,7 +1816,12 @@ fn another(mut selector: Selector) -> Selector {
     selector
 }
 
+/// A target specification; a total over the targets ("with total mana value 3 or less") is a rule of the set chosen.
 pub(super) fn spec(r: &mut Reader<'_>) -> Option<TargetSpec> {
+    spec_main(r).map(super::r6003_total::r6003_targets_together)
+}
+
+fn spec_main(r: &mut Reader<'_>) -> Option<TargetSpec> {
     if r.words("any target") {
         return Some(plain(Targetable::AnyTarget));
     }

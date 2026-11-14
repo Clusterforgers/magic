@@ -68,6 +68,16 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
   // that card is put back.
   const sameName = useMemo(() => {
     const shut = new Set<ObjectId>()
+    // "With total mana value 6 or less": a card that would take the chosen ones over the total is closed.
+    const budget = options.budget
+    if (budget !== undefined) {
+      const weightOf = (id: ObjectId): number => budget.weights[from.indexOf(id)] ?? 0
+      const left = budget.most - chosen.reduce((sum, id) => sum + weightOf(id), 0)
+      for (const id of from) {
+        if (!chosen.includes(id) && weightOf(id) > left) shut.add(id)
+      }
+      return shut
+    }
     const groups = options.groups ?? []
     if (groups.length > 0) {
       const groupOf = (id: ObjectId): number | undefined => groups[from.indexOf(id)]
@@ -85,7 +95,7 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
       if (!chosen.includes(id) && name !== undefined && taken.has(name)) shut.add(id)
     }
     return shut
-  }, [options.one_per_name, options.groups, chosen, from, byId])
+  }, [options.one_per_name, options.groups, options.budget, chosen, from, byId])
   const press = (id: ObjectId): void => {
     if (!fromSet.has(id) || sameName.has(id)) return
     const next = pressedCard(latest.current, id, hi)
@@ -120,7 +130,12 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
     ) : (
       cardsProgress(asker, chosen.length, bounds)
     )
-  const progress = total > 0 && hi > 0 ? ` · ${chosen.length} chosen` : ''
+  const budget = options.budget
+  const weight =
+    budget === undefined ? 0 : chosen.reduce((sum, id) => sum + (budget.weights[from.indexOf(id)] ?? 0), 0)
+  const progress =
+    (total > 0 && hi > 0 ? ` · ${chosen.length} chosen` : '') +
+    (budget === undefined ? '' : ` · total ${weight} of ${budget.most}`)
 
   return (
     <PromptLayout text={text}>

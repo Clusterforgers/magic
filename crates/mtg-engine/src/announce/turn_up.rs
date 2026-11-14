@@ -92,6 +92,7 @@ pub(super) fn next(
                 text: pick.text(),
                 can_cancel: true,
                 groups: Vec::new(),
+                budget: None,
             }),
         });
     }

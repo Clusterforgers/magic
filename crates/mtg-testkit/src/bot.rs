@@ -549,7 +549,9 @@ impl RandomBot {
             DecisionKind::ChooseCards(options) if options.one_per_name => {
                 self.cards(&rmt1_one_per_name(options, state))
             }
-            DecisionKind::ChooseCards(options) if !options.groups.is_empty() => {
+            DecisionKind::ChooseCards(options)
+                if !options.groups.is_empty() || options.budget.is_some() =>
+            {
                 self.cards(&options.one_per_group())
             }
             _ => self.choose(decision),

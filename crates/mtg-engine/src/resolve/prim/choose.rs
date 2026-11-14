@@ -78,6 +78,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 selection.groups = groups(cx, rule, &selection.from, &objects);
             }
         }
+        if let mtg_cards::refs::Ref::Each(filter) = from {
+            for selection in &mut selections {
+                selection.budget = cx.scope.r6003_budget(filter, &selection.from)?;
+            }
+        }
         match pick_selections(cx, &selections)? {
             Picked::Ask(decision) => return Ok(Run::Ask(decision)),
             Picked::Done(taken) => taken
@@ -168,6 +173,7 @@ fn selections(
                 from: ids,
                 text: text.to_owned(),
                 groups: Vec::new(),
+                budget: None,
             }
         })
         .collect()

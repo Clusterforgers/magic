@@ -1,5 +1,5 @@
-/** Goal: the ChooseName prompt searches the whole catalog by what is typed (no list comes with the decision), offers at most eight hits and drops lands when the card says nonland (creatures for noncreature, all but nonbasic lands for a nonbasic land name), answers with the name of the hit clicked, Enter takes the exact or only hit, and "Name no card" answers with an empty name. */
-import { screen, waitFor } from '@testing-library/react'
+/** Goal: the ChooseName prompt searches the whole catalog by what is typed (no list comes with the decision), offers at most eight hits and drops lands when the card says nonland (creatures for noncreature, all but nonbasic lands for a nonbasic land name), answers with the name of the hit clicked, Enter takes the exact or only hit, "Name no card" answers with an empty name, and a hand looked at before naming is offered by its names. */
+import { screen, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cardsApi } from '@/net/cards'
 import type { CardHit, NameOptions } from '@/protocol/generated'
@@ -46,6 +46,14 @@ describe('the prompt', () => {
     await screen.findByRole('button', { name: 'Sol Ring' })
     await user.keyboard('{Enter}')
     expect(answer.mock.calls).toEqual([[{ ChooseName: 'Sol Ring' }]])
+  })
+
+  it('shows the hand looked at before naming and names a card of it on a click', async () => {
+    const { user, answer } = mount([], { looked: ['Sol Ring', 'Duress', 'Sol Ring'] })
+    const seen = screen.getByRole('group', { name: 'Cards you looked at' })
+    expect(seen.querySelectorAll('button')).toHaveLength(2)
+    await user.click(within(seen).getByRole('button', { name: 'Duress' }))
+    expect(answer.mock.calls).toEqual([[{ ChooseName: 'Duress' }]])
   })
 
   it('names no card on request', async () => {

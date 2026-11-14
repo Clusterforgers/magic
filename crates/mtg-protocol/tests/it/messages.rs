@@ -464,6 +464,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             text: String::new(),
             can_cancel: true,
             groups: Vec::new(),
+            budget: None,
         }),
         DecisionKind::OrderCards(OrderOptions {
             source: b,

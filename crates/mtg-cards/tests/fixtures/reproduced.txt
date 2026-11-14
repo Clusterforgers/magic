@@ -542,6 +542,7 @@ Dowsing Dagger // Lost Vale
 Draconic Lore
 Drag to the Bottom
 Dragon Grip
+Dragon's Fire
 Dragonlord Dromoka
 Dragonlord Ojutai
 Dragonspeaker Shaman
@@ -1311,6 +1312,7 @@ Monastery Swiftspear
 Monk of the Open Hand
 Monk's Fist
 Moonrager's Slash
+Moorland Rescuer
 Morinfen
 Morsel Theft
 Mortality Spear
@@ -1541,6 +1543,7 @@ Proficient Pyrodancer
 Propaganda
 Propeller Pioneer
 Prosperous Bandit
+Protean Hulk
 Proven Combatant
 Psychic Impetus
 Psychic Puppetry

@@ -62,6 +62,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 wording::sacrifice(filter, take)
             },
             groups: Vec::new(),
+            budget: None,
         })
         .collect();
     let chosen = match pick_selections(cx, &choosers)? {
@@ -225,6 +226,7 @@ mod tests {
                 text: "Sacrifice a creature or planeswalker.".into(),
                 can_cancel: false,
                 groups: Vec::new(),
+                budget: None,
             })
         );
     }

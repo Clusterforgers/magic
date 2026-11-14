@@ -231,6 +231,7 @@ mod tests {
                     text: wording::PROLIFERATE.into(),
                     can_cancel: false,
                     groups: Vec::new(),
+                    budget: None,
                 })
             }
         );

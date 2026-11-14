@@ -144,6 +144,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         matches.sort_unstable();
         searches.push((player, place));
         let found = fewest.min(matches.len());
+        let budget = cx.scope.r6003_budget(filter, &matches)?;
         selections.push(Selection {
             one_per_name: *distinct,
             player,
@@ -152,6 +153,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             max: most.max(fewest),
             text: text.clone(),
             groups: Vec::new(),
+            budget,
         });
     }
     let taken = match pick_selections(cx, &selections)? {

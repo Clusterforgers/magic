@@ -50,6 +50,8 @@ export const ChooseNamePrompt: PromptComponent<'ChooseName'> = ({ options }) => 
   const nonland = options.nonland === true
   const noncreature = options.noncreature === true
   const nonbasicLand = options.nonbasic_land === true
+  // The hand looked at just before naming ("look at an opponent's hand, then choose any card name"), each name once.
+  const looked = useMemo(() => [...new Set(options.looked ?? [])], [options.looked])
 
   useEffect(() => {
     const text = typed.trim()
@@ -105,6 +107,27 @@ export const ChooseNamePrompt: PromptComponent<'ChooseName'> = ({ options }) => 
           Name no card
         </Button>
         {failed ? <span role="alert">The card search is not available.</span> : null}
+        {looked.length > 0 ? (
+          <div
+            role="group"
+            aria-label="Cards you looked at"
+            data-slot="name-looked"
+            className="flex basis-full flex-wrap items-center gap-2"
+          >
+            <span className="text-xs text-muted-foreground">You looked at:</span>
+            {looked.map((seen) => (
+              <Button
+                key={seen}
+                type="button"
+                variant="secondary"
+                className="h-10 px-4"
+                onClick={() => name(seen)}
+              >
+                {seen}
+              </Button>
+            ))}
+          </div>
+        ) : null}
         <div
           role="group"
           aria-label="Cards"

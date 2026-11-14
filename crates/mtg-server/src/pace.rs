@@ -932,6 +932,7 @@ mod tests {
             text: String::new(),
             can_cancel: false,
             groups: Vec::new(),
+            budget: None,
         })
     }
 
@@ -1197,6 +1198,7 @@ mod tests {
             nonland: true,
             noncreature: false,
             nonbasic_land: false,
+            looked: Vec::new(),
         }),
         Some(Answer::ChooseName(mtg_engine::choose::NameChoice(String::new())))
     )]

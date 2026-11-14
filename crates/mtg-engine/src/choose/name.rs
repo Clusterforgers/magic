@@ -36,6 +36,11 @@ pub struct NameOptions {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub nonbasic_land: bool,
+    /// The names of the cards the chooser looked at just before naming ("look at an opponent's hand, then choose any
+    /// card name"), in the order they were looked at; the look is logged as the permanent enters.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<String>>", optional))]
+    pub looked: Vec<String>,
 }
 
 /// The answer to a name decision: the card name, or nothing.

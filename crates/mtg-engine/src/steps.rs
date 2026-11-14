@@ -115,6 +115,7 @@ fn untap_step(state: &GameState) -> Progress {
                 },
                 can_cancel: false,
                 groups: Vec::new(),
+                budget: None,
             }),
         }),
         _ => Progress::Events(events),

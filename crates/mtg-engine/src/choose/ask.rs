@@ -89,6 +89,7 @@ impl<'a> Questions<'a> {
             text,
             can_cancel: false,
             groups: Vec::new(),
+            budget: None,
         };
         match self.answers.next() {
             None => Err(Stop::Ask(Box::new(Decision {
@@ -275,6 +276,7 @@ mod tests {
                     text: "Bottom.".into(),
                     can_cancel: false,
                     groups: Vec::new(),
+                    budget: None,
                 })
             }
         );

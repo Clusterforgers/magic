@@ -32,6 +32,7 @@ export type { Borrowed } from "./Borrowed";
 export type { BossView } from "./BossView";
 export type { BottomOptions } from "./BottomOptions";
 export type { Brain } from "./Brain";
+export type { Budget } from "./Budget";
 export type { BulkApproval } from "./BulkApproval";
 export type { BulkApprovalBody } from "./BulkApprovalBody";
 export type { BulkApprovalResult } from "./BulkApprovalResult";

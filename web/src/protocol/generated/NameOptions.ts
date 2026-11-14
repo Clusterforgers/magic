@@ -25,4 +25,9 @@ noncreature?: boolean,
  * The card must be a land that is not basic ("choose a nonbasic land card name"); the client offers only such
  * cards.
  */
-nonbasic_land?: boolean, };
+nonbasic_land?: boolean, 
+/**
+ * The names of the cards the chooser looked at just before naming ("look at an opponent's hand, then choose any
+ * card name"), in the order they were looked at; the look is logged as the permanent enters.
+ */
+looked?: Array<string>, };

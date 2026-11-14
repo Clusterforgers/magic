@@ -44,12 +44,42 @@ pub struct CardsOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<u32>>", optional))]
     pub groups: Vec<u32>,
+    /// The weight of each card of `from` and the most the cards chosen may weigh together ("with total mana value 6 or
+    /// less"); no such rule when absent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub budget: Option<Budget>,
+}
+
+/// The weight of each card offered and the most the cards chosen may weigh together.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct Budget {
+    /// The weight of each card of `from`, in its order.
+    pub weights: Vec<u32>,
+    /// The most the weights of the cards chosen add up to.
+    pub most: u32,
+}
+
+impl Budget {
+    /// The total weight of the cards among those offered.
+    #[must_use]
+    pub fn total(&self, from: &[ObjectId], cards: &[ObjectId]) -> u32 {
+        cards
+            .iter()
+            .filter_map(|card| from.iter().position(|offered| offered == card))
+            .filter_map(|at| self.weights.get(at))
+            .fold(0u32, |sum, weight| sum.saturating_add(*weight))
+    }
 }
 
 impl CardsOptions {
     /// The options cut to the first card of each group, so any pick of them is legal; unchanged without groups.
     #[must_use]
     pub fn one_per_group(&self) -> CardsOptions {
+        if let Some(budget) = &self.budget {
+            return self.within_budget(budget);
+        }
         if self.groups.is_empty() {
             return self.clone();
         }
@@ -67,6 +97,30 @@ impl CardsOptions {
             max,
             min: self.min.min(max),
             groups: Vec::new(),
+            budget: None,
+            ..self.clone()
+        }
+    }
+}
+
+impl CardsOptions {
+    /// The options cut to the first cards whose weights fit in the budget together, so any pick of them is legal.
+    fn within_budget(&self, budget: &Budget) -> CardsOptions {
+        let mut left = budget.most;
+        let mut from = Vec::new();
+        for (card, weight) in self.from.iter().zip(&budget.weights) {
+            if *weight <= left {
+                left -= weight;
+                from.push(*card);
+            }
+        }
+        let max = self.max.min(u32::try_from(from.len()).unwrap_or(u32::MAX));
+        CardsOptions {
+            from,
+            max,
+            min: self.min.min(max),
+            groups: Vec::new(),
+            budget: None,
             ..self.clone()
         }
     }
@@ -102,6 +156,15 @@ pub(crate) fn check(options: &CardsOptions, cards: &[ObjectId]) -> Result<(), Il
             {
                 return Err(IllegalAnswer::Duplicate("card of one kind"));
             }
+        }
+    }
+    if let Some(budget) = &options.budget {
+        let got = budget.total(&options.from, cards);
+        if got > budget.most {
+            return Err(IllegalAnswer::OverBudget {
+                most: budget.most,
+                got,
+            });
         }
     }
     let count = u32::try_from(cards.len()).unwrap_or(u32::MAX);
@@ -204,6 +267,7 @@ pub(crate) fn pick_cards(cx: &Cx<'_>, choosers: &[Chooser]) -> Result<Picked, Re
             max: chooser.take,
             text: chooser.text.clone(),
             groups: Vec::new(),
+            budget: None,
         })
         .collect();
     pick_selections(cx, &selections)
@@ -226,6 +290,8 @@ pub(crate) struct Selection {
     pub(crate) max: usize,
     /// The question in the words of a card.
     pub(crate) text: String,
+    /// The weights of the cards and the most they may weigh together; no such rule when absent.
+    pub(crate) budget: Option<Budget>,
 }
 
 /// [`pick_cards`] for players who take a number of cards within bounds.
@@ -264,6 +330,7 @@ pub(crate) fn pick_selections(
                 can_cancel: false,
                 one_per_name: selection.one_per_name,
                 groups: selection.groups.clone(),
+                budget: selection.budget.clone(),
             };
             match answers.next() {
                 None => {
@@ -322,6 +389,7 @@ mod tests {
             text: "Discard a card.".into(),
             can_cancel: false,
             groups: Vec::new(),
+            budget: None,
         }
     }
 
@@ -447,6 +515,7 @@ mod tests {
                     text: "Discard a card.".into(),
                     can_cancel: false,
                     groups: Vec::new(),
+                    budget: None,
                 }),
             })
         );

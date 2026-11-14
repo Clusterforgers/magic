@@ -129,6 +129,7 @@ impl Pass<'_> {
                     text: pick.text(),
                     can_cancel: false,
                     groups: Vec::new(),
+                    budget: None,
                 }),
             })),
             Some((who, Choice::Cards(cards)))

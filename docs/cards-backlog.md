@@ -64,6 +64,10 @@ Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `
 - [ ] (g2e) The mode prompt offers a mode with X in its target filter only when some payable X has its targets, so choosing a mode never backs the cast out
 - [ ] (g5c) Convoke and delve picks are public to every seat in the protocol projection, with a hidden-information test
 - [ ] (g6d) Cost parts other than mana for multikicker, suspend, overload, foretell, ward and `Pay`; frees about 5 cards (Arrogant Poet, Owlin Shieldmage, Skullmane Baku)
+- [ ] (r6003a) A choice made as an additional cost and read on resolution: a creature type (Caller of the Hunt, Celestial Reunion), a number from 0 to 5 (Liquid Fire), a creature you control or a warped card in exile (Close Encounter)
+- [ ] (r6003b) Choices by other players: each player starting with you (Druid of Purification), a target opponent among the top two of your graveyard (Phyrexian Grimoire), a target of an opponent's choice (Volcanic Offering), each player's own color (Selective Obliteration)
+- [ ] (r6003c) Names beyond one chosen as the permanent enters: two players each naming (Null Chamber), a chosen opponent with a name and a draw trigger (Booby Trap), a chapter that names (Medomai's Prophecy, The Rise of Sozin), a land name chosen by a trigger (Petrified Hamlet)
+- [ ] (r6003d) Retargets and damage sources: control and copy of a spell with random new targets (Chef's Kiss), a reveal contest on any target choice (Psychic Battle), an activation cost from the target's mana value (Reflecting Mirror), colorless sources of damage (Ghostly Flame), white mana spent as any color (Celestial Dawn)
 
 ## Faces and copies
 
@@ -119,7 +123,6 @@ Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `
 
 ## Statics, attachments and mutate
 
-- [ ] (r5504a) `ReplaceBy::ChooseAfter` folds the look before the choice is asked, then joins `Caps` (Sorcerous Spyglass, Anointed Peacekeeper, Arachne)
 - [ ] (c7l) The attacking player who chooses the target and the mode of a trigger the Curse controls (Curse of Inertia)
 - [ ] (c7m) Quoted abilities that are rules or make tokens, and the outlaw spend restriction (Nerd Rage, Tarmogoyf Nest, Discreet Retreat)
 - [ ] (c7n) "they gain decayed" after a choice of a card in each player's graveyard (Ghouls' Night Out)

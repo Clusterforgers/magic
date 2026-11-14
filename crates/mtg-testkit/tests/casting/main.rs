@@ -217,6 +217,8 @@ mod r5511_delved;
 mod r5511_entering_spent;
 mod r5512_mana_from;
 mod r5512_nathan_spend;
+mod r6003_dragons_fire;
+mod r6003_look_then_name;
 mod r6q1_face_down_cost;
 mod r7p3_next_spell;
 mod rebound;

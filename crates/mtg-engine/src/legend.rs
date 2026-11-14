@@ -91,6 +91,7 @@ pub(crate) fn decision(state: &GameState) -> Option<Decision> {
             text: format!("Legend rule: choose the {} to keep.", group.name),
             can_cancel: false,
             groups: Vec::new(),
+            budget: None,
         }),
     })
 }

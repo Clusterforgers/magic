@@ -508,6 +508,7 @@ pub(super) fn settle<'a>(
                         text: pick.text(),
                         can_cancel: false,
                         groups,
+                        budget: None,
                     }),
                 }));
             }
