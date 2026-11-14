@@ -1,5 +1,6 @@
 //! Rules about searches and extra turns: "Your opponents can't search libraries." (`GameRule::CantSearch`) and "If an
-//! opponent would begin an extra turn, that player skips that turn instead." (`GameRule::SkipExtraTurns`).
+//! opponent would begin an extra turn, that player skips that turn instead." (`GameRule::SkipExtraTurns`), and "You draw
+//! cards from the bottom of your library rather than the top." (`GameRule::DrawFromBottom`).
 
 use super::tokens::Reader;
 use crate::modify::GameRule;
@@ -38,6 +39,9 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<GameRule> {
     }
     if r.words("spells and abilities your opponents control can't cause their controller to search their library") {
         return Some(GameRule::OwnSpellsCantSearch(Ref::Opponents));
+        }
+    if r.words("you draw cards from the bottom of your library rather than the top") {
+        return Some(GameRule::DrawFromBottom(Ref::You));
     }
     r.need("if")?;
     if let Some(rule) = r.attempt(r6013_search_top) {
@@ -123,6 +127,11 @@ pub(super) fn texts(rule: &GameRule) -> Vec<String> {
             return vec![
                 "Spells and abilities your opponents control can't cause their controller to search their library"
                     .to_owned(),
+            ];
+        }
+        GameRule::DrawFromBottom(Ref::You) => {
+            return vec![
+                "You draw cards from the bottom of your library rather than the top".to_owned(),
             ];
         }
         GameRule::CantSearch(who) => (who, true),

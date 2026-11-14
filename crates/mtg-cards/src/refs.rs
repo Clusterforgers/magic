@@ -657,6 +657,10 @@ pub enum Pred {
     },
     /// Is a card in exile with a time counter on it and suspend (CR 702.62).
     Suspended,
+    /// Is a card its owner foretold, face down in exile (CR 702.143): "foretold card you own in exile".
+    Foretold,
+    /// Has a name: a face-down permanent or spell has none (CR 708.2a), nor an object whose name is empty.
+    HasName,
     /// Is a spell, or a permanent that entered as a spell, cast with at least one kicker cost paid (CR 702.33).
     Kicked,
     /// Is a spell, or a permanent that entered as a spell, cast with an additional cost paid (bargain, casualty, gift; CR 601.2b).
@@ -907,6 +911,8 @@ mod tests {
         r#"{"GreatestAmong":{"stat":"Power","group":["Other"]}}"#
     )]
     #[case::suspended(Pred::Suspended, r#""Suspended""#)]
+    #[case::foretold(Pred::Foretold, r#""Foretold""#)]
+    #[case::has_name(Pred::HasName, r#""HasName""#)]
     #[case::kicked(Pred::Kicked, r#""Kicked""#)]
     #[case::additional_cost_paid(Pred::AdditionalCostPaid, r#""AdditionalCostPaid""#)]
     fn the_cast_library_combat_and_greatest_atoms_have_stable_json(

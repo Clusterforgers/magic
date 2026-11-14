@@ -172,6 +172,8 @@ pub enum Rule {
     },
     /// The players can't draw cards.
     CantDraw(Vec<PlayerId>),
+    /// The players draw from the bottom of their libraries.
+    DrawFromBottom(Vec<PlayerId>),
     /// The players can't search libraries.
     CantSearch(Vec<PlayerId>),
     /// Spells and abilities the players control can't cause their controller to search their own library.
@@ -790,6 +792,7 @@ pub(crate) struct RulesInForce {
     no_life_change: BTreeSet<PlayerId>,
     player_keywords: Vec<(PlayerId, Keyword)>,
     no_draw: BTreeSet<PlayerId>,
+    draw_bottom: BTreeSet<PlayerId>,
     no_search: BTreeSet<PlayerId>,
     no_own_search: BTreeSet<PlayerId>,
     /// The fewest top cards each player may search of a library (Aven Mindcensor); every card when absent.
@@ -1278,6 +1281,7 @@ impl RulesInForce {
                 .player_keywords
                 .extend(who.iter().map(|player| (*player, keyword.clone()))),
             Rule::CantDraw(players) => self.no_draw.extend(players),
+            Rule::DrawFromBottom(players) => self.draw_bottom.extend(players),
             Rule::CantSearch(players) => self.no_search.extend(players),
             Rule::OwnSpellsCantSearch(players) => self.no_own_search.extend(players),
             Rule::UntapRemovesCounters(kind) => {
@@ -1732,6 +1736,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             keyword: keyword.clone(),
         },
         GameRule::CantDraw(who) => Rule::CantDraw(scope.players(who)?),
+        GameRule::DrawFromBottom(who) => Rule::DrawFromBottom(scope.players(who)?),
         GameRule::CantSearch(who) => Rule::CantSearch(scope.players(who)?),
         GameRule::OwnSpellsCantSearch(who) => Rule::OwnSpellsCantSearch(scope.players(who)?),
         GameRule::UntapRemovesCounters(kind) => Rule::UntapRemovesCounters(kind.clone()),
@@ -2010,6 +2015,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::RadiationGainsLife(players)
         | Rule::LifeTotalCantChange(players)
         | Rule::CantDraw(players)
+        | Rule::DrawFromBottom(players)
         | Rule::CantSearch(players)
         | Rule::OwnSpellsCantSearch(players)
         | Rule::SearchTop { players, .. }
@@ -2201,6 +2207,7 @@ static NONE: RulesInForce = RulesInForce {
     no_life_change: BTreeSet::new(),
     player_keywords: Vec::new(),
     no_draw: BTreeSet::new(),
+    draw_bottom: BTreeSet::new(),
     no_search: BTreeSet::new(),
     no_own_search: BTreeSet::new(),
     search_top: BTreeMap::new(),
@@ -2668,6 +2675,11 @@ pub fn loyalty_costs_more(state: &GameState, player: PlayerId) -> u32 {
 /// Whether `player` can't draw cards: the one place a draw reads this rule.
 pub fn cant_draw(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_draw.contains(&player)
+}
+
+/// Whether `player` draws from the bottom of their library: the one place a draw reads this rule.
+pub(crate) fn draws_from_bottom(state: &GameState, player: PlayerId) -> bool {
+    state.rules().draw_bottom.contains(&player)
 }
 
 /// Whether `player` skips their draw step: the one place the turn's steps read this rule.

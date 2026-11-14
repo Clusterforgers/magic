@@ -367,6 +367,9 @@ fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
     if r.words("you may reveal") {
         return reveal_or_tapped(r);
     }
+    if r.words("you may behold") {
+        return r5508_behold_or_tapped(r);
+    }
     r.need("you may pay")?;
     let life = r.number().filter(|life| *life > 0)?;
     r.need("life")?;
@@ -375,6 +378,20 @@ fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
     r.punct(',').then_some(())?;
     r.need("it enters tapped")?;
     Some(replacement(ReplaceBy::PayLifeOrTapped(life), None))
+}
+
+/// "a Jace. If you don't, ~ enters tapped.": a land that enters tapped unless its controller beholds a permanent or card
+/// of the kind (chooses one they control or reveals one from their hand).
+fn r5508_behold_or_tapped(r: &mut Reader<'_>) -> Option<Ability> {
+    (r.word("a") || r.word("an")).then_some(())?;
+    let of = phrase(r, Form::Subject)?;
+    (!of.0.iter().any(|pred| matches!(pred, Pred::In(_)))).then_some(())?;
+    r.punct('.').then_some(())?;
+    r.need("if you don't")?;
+    r.punct(',').then_some(())?;
+    (r.source() || r.word("it")).then_some(())?;
+    r.need("enters tapped")?;
+    Some(replacement(ReplaceBy::BeholdOrTapped(of), None))
 }
 
 /// "a Faerie card from your hand. If you don't, ~ enters tapped.": a land that enters tapped unless its controller reveals
@@ -1679,6 +1696,7 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
             "As ~ enters, you may pay {life} life. If you don't, it enters tapped"
         )],
         (ReplaceBy::RevealOrTapped(of), None) => reveal_texts(of),
+        (ReplaceBy::BeholdOrTapped(of), None) => r5508_behold_texts(of),
         (ReplaceBy::PayOrGraveyard { cost, optional }, None) => {
             super::e14b_entering::pay_or_graveyard_texts(cost, *optional)
         }
@@ -2006,6 +2024,7 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             GameRule::CantSearch(_)
             | GameRule::OwnSpellsCantSearch(_)
             | GameRule::SearchTop { .. }
+            | GameRule::DrawFromBottom(_)
             | GameRule::SkipExtraTurns(_)
             | GameRule::FlipTwoCoins(_)
             | GameRule::ExtraDie(_)
@@ -2585,6 +2604,22 @@ fn reveal_texts(of: &Selector) -> Vec<String> {
         .map(|tail| {
             format!(
                 "As ~ enters, you may reveal {article} {card}. If you don't, {tail} enters tapped"
+            )
+        })
+        .collect()
+}
+
+/// "As ~ enters, you may behold a Jace. If you don't, ~ enters tapped".
+fn r5508_behold_texts(of: &Selector) -> Vec<String> {
+    let Some(what) = phrase_text(of, Form::Subject) else {
+        return Vec::new();
+    };
+    let article = article(&what);
+    ["~", "it"]
+        .into_iter()
+        .map(|tail| {
+            format!(
+                "As ~ enters, you may behold {article} {what}. If you don't, {tail} enters tapped"
             )
         })
         .collect()

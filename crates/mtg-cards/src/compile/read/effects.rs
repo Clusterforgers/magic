@@ -576,6 +576,7 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
         },
         "adapt" => Effect::Adapt { count: points(r)? },
         "bolster" => Effect::Bolster { count: points(r)? },
+        "empower" if r.words("jace") => Effect::Empower { count: points(r)? },
         "amass" => Effect::Amass {
             subtype: Subtype(super::selectors::plural_subtype(r)?),
             count: points(r)?,

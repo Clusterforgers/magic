@@ -103,6 +103,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::ExileSpell { .. } => "Cost.ExileSpell",
         CostItem::ExileFromHand { .. } => "Cost.ExileFromHand",
         CostItem::RevealFromHand { .. } => "Cost.RevealFromHand",
+        CostItem::AlikeFromHand { .. } => "Cost.AlikeFromHand",
         CostItem::OneOf(_) => "Cost.OneOf",
         CostItem::Changed { .. } => "Cost.Changed",
         CostItem::XAtLeast(_) => "Cost.XAtLeast",

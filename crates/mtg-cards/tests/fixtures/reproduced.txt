@@ -375,6 +375,7 @@ Conifer Wurm
 Consider
 Consign // Oblivion
 Consign to Dust
+Conspiracy Theorist
 Constable of the Realm
 Consume Spirit
 Consuming Aetherborn
@@ -1368,6 +1369,7 @@ Nightmare
 Nightscape Familiar
 Nightveil Sprite
 Nihil Spellbomb
+Niko Defies Destiny
 Ninja Pizza
 Ninja of the Deep Hours
 Ninja of the New Moon
@@ -1501,6 +1503,7 @@ Poet's Quill
 Poison the Waters
 Pollen Lullaby
 Polymorphist's Jest
+Pompous Gadabout
 Pongify
 Pontiff of Blight
 Pop Quiz
@@ -1864,6 +1867,7 @@ Spellbreaker Behemoth
 Sphere of Safety
 Sphinx of Jwar Isle
 Sphinx of Magosi
+Sphinx of the Chimes
 Sphinx of the Final Word
 Sphinx of the Steel Wind
 Spider-Islanders
@@ -2011,6 +2015,7 @@ Teferi's Ageless Insight
 Teferi's Imp
 Teferi's Protection
 Teferi's Reproach
+Teferi, Timebender
 Tegwyll's Scouring
 Tekuthal, Inquiry Dominus
 Telepathy
@@ -2323,6 +2328,7 @@ Withering Boon
 Withering Curse
 Wizard Class
 Wizard's Rockets
+Wolf of Devil's Breach
 Wolfwillow Haven
 Wooded Bastion
 Woodland Bellower
