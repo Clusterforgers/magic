@@ -2705,6 +2705,29 @@ fn trigger_controller(state: &GameState, object: &GameObject) -> PlayerId {
         .unwrap_or_else(|| controller_of_object(state, object))
 }
 
+/// The state an intervening "if" is judged in: an ability is activated once its costs are paid and it is on the stack
+/// (CR 602.2i), so the "if" of a trigger on an activation reads the state after it ("if life was paid to activate it")
+/// while the watcher `source` is still there; any other event reads `state`.
+fn r6104_judged<'s>(
+    state: &'s GameState,
+    after: Option<&'s GameState>,
+    happened: &Happened,
+    source: ObjectRef,
+) -> &'s GameState {
+    match happened {
+        Happened::Did {
+            ability: Some(_), ..
+        } => after
+            .filter(|after| {
+                after
+                    .object(source.id)
+                    .is_some_and(|now| now.reference() == source)
+            })
+            .unwrap_or(state),
+        _ => state,
+    }
+}
+
 /// The triggered abilities of `object`, which is in the zone `zone`, that trigger on `happened`: `abilities` are those
 /// that work there. A permanent's abilities may trigger again (`repeats`); a card elsewhere's do not.
 fn object_triggers(
@@ -2762,21 +2785,7 @@ fn object_triggers(
                     x: x_read(when, false, held, &cause),
                     ..Choices::default()
                 };
-                // An ability is activated once its costs are paid and it is on the stack (CR 602.2i): the "if" of a
-                // trigger on the activation reads that state ("if life was paid to activate it"), while the watcher is still there.
-                let judged = match happened {
-                    Happened::Did {
-                        ability: Some(_), ..
-                    } => used
-                        .after
-                        .filter(|after| {
-                            after
-                                .object(object.id())
-                                .is_some_and(|now| now.reference() == source)
-                        })
-                        .unwrap_or(state),
-                    _ => state,
-                };
+                let judged = r6104_judged(state, used.after, happened, source);
                 let mut scope = Scope::triggered(judged, controller, source, &cause);
                 scope.choices = &announced;
                 if !scope.holds(condition).unwrap_or(false) {
