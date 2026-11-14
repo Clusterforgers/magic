@@ -243,6 +243,7 @@ Branchblight Stalker
 Brave the Sands
 Break the Ice
 Breath of Life
+Breathstealer's Crypt
 Breena, the Demagogue
 Breezekeeper
 Briarblade Adept
@@ -547,6 +548,7 @@ Dowsing Dagger // Lost Vale
 Draconic Lore
 Drag to the Bottom
 Dragon Grip
+Dragon's Disciple
 Dragon's Fire
 Dragonlord Dromoka
 Dragonlord Ojutai
@@ -2375,4 +2377,5 @@ Zndrsplt, Eye of Wisdom
 Zodiac Goat
 Zoetic Cavern
 Zombie Master
+Zur's Weirding
 Óin the Brave

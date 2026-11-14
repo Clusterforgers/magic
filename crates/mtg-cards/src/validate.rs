@@ -286,6 +286,15 @@ fn w9c_token_pred(pred: &Pred) -> bool {
     }
 }
 
+/// Whether a `Pay` step's cost is life alone ("unless they pay 3 life", "any other player may pay 2 life").
+fn r6007_life_only(pay: &serde_json::Value) -> bool {
+    pay.get("cost")
+        .and_then(serde_json::Value::as_array)
+        .is_some_and(|items| {
+            !items.is_empty() && items.iter().all(|item| item.get("PayLife").is_some())
+        })
+}
+
 /// The shapes of steps the engine cannot run in the middle of an event, at any depth, named as the primitive each one
 /// is (`ReplaceBy.Instead.<shape>`): modes chosen as a spell is put on the stack (`Modal`), a step that waits for its
 /// own events to be applied (`Amass`, `Incubate`, a flip or clash until a loss: `Waits`), a spell cast (`Casts`) and a
@@ -301,6 +310,8 @@ fn w5d_skipped(effects: &[Effect]) -> BTreeSet<&'static str> {
                         "Amass" | "Incubate" | "Empower" => Some("Instead.Waits"),
                         "FlipCoin" | "Clash" if until => Some("Instead.Waits"),
                         "CastFromZone" => Some("Instead.Casts"),
+                        // A payment of life alone asks a yes or no, which the replacement asks as it applies.
+                        "Pay" if r6007_life_only(inner) => Some("Instead.PaysLife"),
                         "Pay" => Some("Instead.Pays"),
                         _ => None,
                     };
@@ -6053,6 +6064,7 @@ impl Walker<'_> {
             | GameRule::RevealHand(who)
             | GameRule::LookAtTopAnyTime(who)
             | GameRule::SkipDrawStep(who)
+            | GameRule::R6007ExhaustAgain(who)
             | GameRule::NoMaxHandSize(who)
             | GameRule::LoyaltyTwice(who)
             | GameRule::BoastTwice(who)
@@ -6802,6 +6814,7 @@ impl Walker<'_> {
             | ReplaceBy::PayLifeOrTapped(_)
             | ReplaceBy::TappedForCounters { .. }
             | ReplaceBy::RevealOrTapped(_)
+            | ReplaceBy::R6007RevealOrControl { .. }
             | ReplaceBy::BeholdOrTapped(_)
             | ReplaceBy::Tribute(_)
             | ReplaceBy::Amplify(_)
@@ -6867,7 +6880,9 @@ impl Walker<'_> {
             ReplaceBy::TappedForCounters { count: 0, .. } => {
                 self.problem("entering tapped for no counters is a plain choice");
             }
-            ReplaceBy::RevealOrTapped(of) | ReplaceBy::BeholdOrTapped(of) => {
+            ReplaceBy::RevealOrTapped(of)
+            | ReplaceBy::BeholdOrTapped(of)
+            | ReplaceBy::R6007RevealOrControl { of, .. } => {
                 self.at("of", |w| w.selector(of));
             }
             ReplaceBy::PayOrGraveyard { cost, optional } => {

@@ -1,7 +1,7 @@
 {
   "oracle_id": "c6eaa147-3566-43a9-999a-d58b877496f5",
   "name": "Zur's Weirding",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Zur's Weirding",
@@ -9,9 +9,27 @@
       "abilities": [
         { "Rule": { "rule": { "RevealHand": "EachPlayer" } } },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 40, "end": 229 }
+          "Replacement": {
+            "when": { "Draw": { "who": "EachPlayer" } },
+            "by": {
+              "Instead": [
+                { "LookAtTop": { "who": "Triggering", "as": "top" } },
+                { "Reveal": { "what": { "Bound": "top" } } },
+                {
+                  "Pay": {
+                    "who": {
+                      "PlayersWhere": {
+                        "who": "EachPlayer",
+                        "test": { "Not": { "Among": "Triggering" } }
+                      }
+                    },
+                    "cost": [{ "PayLife": 2 }],
+                    "paid": [{ "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }],
+                    "unpaid": [{ "Draw": { "who": "Triggering" } }]
+                  }
+                }
+              ]
+            }
           }
         }
       ]

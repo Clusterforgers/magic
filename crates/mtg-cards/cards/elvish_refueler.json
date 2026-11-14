@@ -1,18 +1,13 @@
 {
   "oracle_id": "4b62f9fe-e3f4-4a21-aa6b-4dbd411d0c44",
   "name": "Elvish Refueler",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Elvish Refueler",
       "oracle_fingerprint": "eb5178cf6bc13ef8a47b491d8daf8959",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 154 }
-          }
-        },
+        { "Rule": { "rule": { "R6007ExhaustAgain": "You" } } },
         {
           "Activated": {
             "cost": "{1}{G}",

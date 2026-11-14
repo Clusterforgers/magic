@@ -1,16 +1,22 @@
 {
   "oracle_id": "3e5d3574-cc92-434a-a210-fcda906391c8",
   "name": "Dragon's Disciple",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Dragon's Disciple",
       "oracle_fingerprint": "dfe8d6dcb2cc61be5773c0ed8dec655f",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 156 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "R6007RevealOrControl": {
+                "of": [{ "Subtype": "Dragon" }],
+                "counter": "+1/+1",
+                "count": 1
+              }
+            }
           }
         },
         {

@@ -280,6 +280,7 @@ mod r5c_order;
 mod r5g_lines;
 mod r6003_total;
 mod r6003_wholes;
+mod r6007_wholes;
 mod r6a_effects;
 mod r6a_more;
 mod r6a_wordings;
@@ -684,6 +685,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r5521_wholes::r5521_read(text, kind) {
+        return Some(found);
+    }
+    if let Some(found) = r6007_wholes::r6007_read(text, kind) {
         return Some(found);
     }
     if let Some(found) = render::r5522_read_whole(text, same_text) {

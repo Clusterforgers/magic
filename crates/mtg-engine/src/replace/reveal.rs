@@ -2,6 +2,7 @@
 //! reveal an Elemental card from your hand. If you don't, this land enters tapped.").
 
 use mtg_cards::refs::{Pred, Selector, ZoneKind};
+use mtg_cards::value::CounterKind;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{Applied, Asked, Candidate, Item, Origin, Pass, Slot, entering};
@@ -172,6 +173,64 @@ impl Pass<'_> {
         {
             self.slots[at].applied = applied;
         }
+        Ok(Applied::Done)
+    }
+
+    /// The permanent `object` enters with `count` counters when `controller` controls another permanent `of` names, or
+    /// else reveals a card of their hand it names (asked only then); the reveal is placed before the entering.
+    pub(super) fn r6007_reveal_or_control(
+        &mut self,
+        at: usize,
+        candidate: &Candidate,
+        (of, counter, count): (&Selector, &CounterKind, u32),
+        (object, controller): (ObjectId, PlayerId),
+        applied: Vec<Origin>,
+    ) -> Result<Applied, EngineError> {
+        let scope = Scope::announcing(self.state, candidate.controller, candidate.object);
+        let controls = scope.matching(of)?.into_iter().any(|named| {
+            named.id != object
+                && self.state.object(named.id).is_some_and(|permanent| {
+                    permanent.zone() == Zone::Battlefield
+                        && crate::characteristics::controller_of(self.state, named.id)
+                            == Some(controller)
+                })
+        });
+        let mut entering = at;
+        if !controls {
+            let mut in_hand = of.clone();
+            in_hand.0.push(Pred::In(ZoneKind::Hand));
+            let source = candidate.object.id;
+            let options = self.revealable(candidate, (&in_hand, false), controller)?;
+            let reveal = match self.reveals(source, controller, (!options.is_empty(), false))? {
+                Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
+                Asked::Got(reveal) => reveal,
+            };
+            if !reveal {
+                if let Some(slot) = self.slots.get_mut(at) {
+                    slot.applied = applied;
+                }
+                return Ok(Applied::Done);
+            }
+            let card = match self.revealed_card(source, controller, &options)? {
+                Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
+                Asked::Got(card) => card,
+            };
+            self.slots.insert(
+                at,
+                Slot {
+                    item: Item::One(Event::Revealed(Revealed {
+                        player: controller,
+                        cards: vec![card],
+                    })),
+                    applied: Vec::new(),
+                    frozen: true,
+                },
+            );
+            entering = at + 1;
+        }
+        let count = mtg_cards::value::Amount::Fixed(i32::try_from(count).unwrap_or(i32::MAX));
+        self.enter_with_counters(entering, candidate, object, counter, &count, &applied)?;
+        self.slots[entering].applied = applied;
         Ok(Applied::Done)
     }
 }

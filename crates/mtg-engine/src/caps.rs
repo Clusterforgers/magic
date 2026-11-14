@@ -531,6 +531,7 @@ const RUNS: &[&str] = &[
     "Rule.UntapDuring",
     "Rule.UntapLimit",
     "Rule.SkipDrawStep",
+    "Rule.R6007ExhaustAgain",
     "Rule.LookAtTopAnyTime",
     "Rule.LookAtExiled",
     "Rule.LookAtFaceDown",
@@ -935,6 +936,8 @@ const RUNS: &[&str] = &[
     "ReplaceBy.PayLifeOrTapped",
     "ReplaceBy.TappedForCounters",
     "ReplaceBy.RevealOrTapped",
+    "ReplaceBy.R6007RevealOrControl",
+    "ReplaceBy.Instead.PaysLife",
     "ReplaceBy.BeholdOrTapped",
     "ReplaceBy.PayOrGraveyard",
     "ReplaceBy.AsCopy",
@@ -1310,6 +1313,7 @@ mod tests {
     #[case::waiting_in_place_of_an_event("ReplaceBy.Instead.Waits", false)]
     #[case::casting_in_place_of_an_event("ReplaceBy.Instead.Casts", false)]
     #[case::paying_in_place_of_an_event("ReplaceBy.Instead.Pays", false)]
+    #[case::paying_life_in_place_of_an_event("ReplaceBy.Instead.PaysLife", true)]
     #[case::tapping_or_untapping("Effect.TapOrUntap", true)]
     #[case::mana_abilities_from_other_zones("Ability.ManaAbility.From", true)]
     #[case::states("Trigger.State", true)]

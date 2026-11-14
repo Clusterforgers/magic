@@ -1080,6 +1080,10 @@ pub enum GameRule {
     },
     /// The players skip their draw steps (CR 614.10): the step does not begin on their turns.
     SkipDrawStep(Ref),
+    /// During their own turns, as long as they haven't activated an exhaust ability this turn, the players may activate
+    /// exhaust abilities as though they haven't been activated ("During your turn, as long as you haven't activated an
+    /// exhaust ability this turn, you may activate exhaust abilities as though they haven't been activated.").
+    R6007ExhaustAgain(Ref),
     /// The players may play additional lands each of their turns (CR 305.2).
     AdditionalLandPlays {
         /// Who may play them.

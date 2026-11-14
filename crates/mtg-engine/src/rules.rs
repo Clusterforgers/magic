@@ -305,6 +305,8 @@ pub enum Rule {
     },
     /// The players skip their draw steps (CR 614.10).
     SkipDrawStep(Vec<PlayerId>),
+    /// The players may activate exhaust abilities again during their turns until they activate one.
+    R6007ExhaustAgain(Vec<PlayerId>),
     /// The players may look at the top card of their library any time.
     LookAtTop(Vec<PlayerId>),
     /// The players may look at the face-down cards in exile the selector picks (CR 406.3).
@@ -840,6 +842,8 @@ pub(crate) struct RulesInForce {
     /// The loyalty counters each player's loyalty abilities cost in addition.
     loyalty_more: BTreeMap<PlayerId, u32>,
     skip_draw: BTreeSet<PlayerId>,
+    /// The players who may activate exhaust abilities again (`R6007ExhaustAgain`).
+    exhaust_again: BTreeSet<PlayerId>,
     look_top: BTreeSet<PlayerId>,
     extra_lands: BTreeMap<PlayerId, u32>,
     again: Vec<Again>,
@@ -1361,6 +1365,7 @@ impl RulesInForce {
                 self.put_option(rule, controller, source);
             }
             Rule::SkipDrawStep(players) => self.skip_draw.extend(players),
+            Rule::R6007ExhaustAgain(players) => self.exhaust_again.extend(players),
             Rule::UntapLimit { who, what, count } => {
                 if let Some(source) = source {
                     self.untap_limits.push(crate::rmt4_untap_limit::UntapLimit {
@@ -1858,6 +1863,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 .collect(),
         ),
         GameRule::SkipDrawStep(who) => Rule::SkipDrawStep(scope.players(who)?),
+        GameRule::R6007ExhaustAgain(who) => Rule::R6007ExhaustAgain(scope.players(who)?),
         GameRule::AdditionalLandPlays { who, count } => {
             let count = u32::try_from(scope.amount(count)?.max(0)).unwrap_or(u32::MAX);
             Rule::AdditionalLandPlays(
@@ -2008,6 +2014,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::ExileFound(players)
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
+        | Rule::R6007ExhaustAgain(players)
         | Rule::NoLegendRule(players)
         | Rule::NoMaxHandSize(players)
         | Rule::LoyaltyTwice(players)
@@ -2208,6 +2215,7 @@ static NONE: RulesInForce = RulesInForce {
     loyalty_any_time: BTreeSet::new(),
     loyalty_more: BTreeMap::new(),
     skip_draw: BTreeSet::new(),
+    exhaust_again: BTreeSet::new(),
     look_top: BTreeSet::new(),
     extra_lands: BTreeMap::new(),
     again: Vec::new(),
@@ -2648,6 +2656,30 @@ pub fn cant_draw(state: &GameState, player: PlayerId) -> bool {
 /// Whether `player` draws from the bottom of their library: the one place a draw reads this rule.
 pub(crate) fn draws_from_bottom(state: &GameState, player: PlayerId) -> bool {
     state.rules().draw_bottom.contains(&player)
+}
+
+/// Whether `player` may activate an exhaust ability of theirs that was activated before: a rule in force says so, it is
+/// their turn and they haven't activated an exhaust ability this turn (Elvish Refueler).
+pub(crate) fn r6007_exhaust_again(state: &GameState, player: PlayerId) -> bool {
+    state.rules().exhaust_again.contains(&player)
+        && state.active_player() == Some(player)
+        && !state.tallies.records.iter().any(|record| {
+            record.player == Some(player)
+                && record.event
+                    == mtg_cards::value::TallyEvent::KindActivated(
+                        mtg_cards::ability::ActivationKind::Exhaust,
+                    )
+        })
+}
+
+/// Whether the limit `limit` of an ability `player` activates holds: an exhaust ability (once each game) does not hold
+/// `player` back while they may activate exhaust abilities again.
+pub(crate) fn r6007_limit_holds(
+    state: &GameState,
+    player: PlayerId,
+    limit: mtg_cards::ability::Limit,
+) -> bool {
+    !(limit == mtg_cards::ability::Limit::OncePerGame && r6007_exhaust_again(state, player))
 }
 
 /// Whether `player` skips their draw step: the one place the turn's steps read this rule.

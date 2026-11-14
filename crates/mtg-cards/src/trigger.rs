@@ -1281,6 +1281,18 @@ pub enum ReplaceBy {
     },
     /// As the permanent enters, its controller may reveal a card from their hand that the selector names; if they don't (or can't) it enters tapped.
     RevealOrTapped(Selector),
+    /// As the permanent enters, its controller may reveal a card from their hand that the selector names; if they do, or
+    /// if they control another permanent it names, the permanent enters with counters ("As this creature enters, you may
+    /// reveal a Dragon card from your hand. If you do or if you control a Dragon, this creature enters with a +1/+1
+    /// counter on it.").
+    R6007RevealOrControl {
+        /// The kind of card or permanent, as it is on the battlefield.
+        of: Selector,
+        /// The kind of counter.
+        counter: CounterKind,
+        /// How many.
+        count: u32,
+    },
     /// As the permanent enters, its controller may behold what the selector names: choose such a permanent they control
     /// or reveal such a card from their hand; if they don't (or can't) it enters tapped ("you may behold a Jace").
     BeholdOrTapped(Selector),

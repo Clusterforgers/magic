@@ -19,10 +19,10 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
     match event {
         Event::AbilityPutOnStack(put) => put_on_stack(state, put),
         Event::AbilityActivated {
+            player,
             source,
             ability,
             origin,
-            ..
         } => {
             let Some(object) = state.source_object(source.id) else {
                 return Err(invalid(format!(
@@ -48,6 +48,8 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     Some(most) => state.r4701_spend_boast(most, *source, *origin, *ability),
                     None => state.spend_limit(*limit, *source, *origin, *ability),
                 }
+                // An exhaust ability activated again under Elvish Refueler finds its use spent already.
+                && crate::rules::r6007_limit_holds(state, *player, *limit)
             {
                 return Err(invalid(format!(
                     "ability {ability} of {source:?} was already used"

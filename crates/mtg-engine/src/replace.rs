@@ -793,6 +793,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::PayLifeOrTapped(_)
         | ReplaceBy::TappedForCounters { .. }
         | ReplaceBy::RevealOrTapped(_)
+        | ReplaceBy::R6007RevealOrControl { .. }
         | ReplaceBy::BeholdOrTapped(_)
         | ReplaceBy::PayOrGraveyard { .. }
         | ReplaceBy::Devour { .. }
@@ -2386,6 +2387,13 @@ impl Pass<'_> {
             ReplaceBy::RevealOrTapped(of) => {
                 self.reveal_or_tapped(at, candidate, (of, false), (object, controller), applied)
             }
+            ReplaceBy::R6007RevealOrControl { of, counter, count } => self.r6007_reveal_or_control(
+                at,
+                candidate,
+                (of, counter, *count),
+                (object, controller),
+                applied,
+            ),
             ReplaceBy::BeholdOrTapped(of) => {
                 self.reveal_or_tapped(at, candidate, (of, true), (object, controller), applied)
             }
