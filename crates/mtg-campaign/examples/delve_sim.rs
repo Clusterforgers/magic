@@ -458,7 +458,8 @@ fn main() {
                     let seed = first + game;
                     if mode == "fights" {
                         // Each boss in turn against a fresh party.
-                        let boss = &bosses[usize::try_from(game).unwrap() % bosses.len()];
+                        // The boss follows the seed, so one game from any seed meets the same boss as in a longer series.
+                        let boss = &bosses[usize::try_from(seed - 1).unwrap() % bosses.len()];
                         let (mut run, _) = lobby(seed, heroes, heat);
                         let node = run
                             .map
@@ -472,10 +473,14 @@ fn main() {
                         let t = Instant::now();
                         let fought = fight(&plan, &vec![Vec::new(); heroes], seed, hero_level);
                         println!(
-                            "seed {seed} {boss}: {} in {} turns ({:.0}s){}",
+                            "seed {seed} {boss}: {} in {} turns ({} boss side, {:.0}s), pressure {:?}, half {:?}, fall {:?}{}",
                             if fought.won { "win" } else { "loss" },
                             fought.turns,
+                            fought.boss_turns,
                             t.elapsed().as_secs_f64(),
+                            fought.pressure,
+                            fought.first_half,
+                            fought.first_fall,
                             if fought.failed { " FAILED" } else { "" }
                         );
                         fights
