@@ -1,7 +1,7 @@
 {
   "oracle_id": "e8025c63-80b4-4cce-bf2d-df294450070d",
   "name": "Quinjet Technician",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Quinjet Technician",
@@ -14,9 +14,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 14, "end": 83 }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red", "Red"] },
+                  "only": [{ "Ability": { "facts": ["R6103PowerUp"] } }]
+                }
+              }
+            ]
           }
         }
       ]

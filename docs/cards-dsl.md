@@ -192,6 +192,7 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - "For each color pair, choose a card that's exactly those colors" is a `Choose` of two-colored cards with `differ: DifferentColorSets` and as many as `Amount::Distinct` of `R374ColorSet` counts.
 - "If a source you controlled dealt 5 or more damage this turn" reads `Amount::MostDamageBySource` (one source's damage added up); "damage dealt to ~ this turn by sources they controlled" is `Amount::DamageToFromPlayers`.
 - `SpendManaAs` with `abilities` and no `spells` lets the mana be spent only to activate the abilities of the selected permanents ("to activate abilities of creatures you control").
+- "Spend this mana only to activate power-up abilities" and "... to cast spells with exactly three colors" are the spend facts `R6103PowerUp` and `R6103ThreeColors`; in "Mana of any type can be spent to activate ~'s abilities" (`SpendManaAs` with `abilities: [Is This]`) `This` is the rule's source. Sentences of the r61-03 pack no template shares are read and written whole from `compile/read/r6103_wholes.json`.
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 
 ## Support records

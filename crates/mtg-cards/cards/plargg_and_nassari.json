@@ -1,0 +1,57 @@
+{
+  "oracle_id": "9e769a65-7aa5-484d-9493-badb485b5964",
+  "name": "Plargg and Nassari",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plargg and Nassari",
+      "oracle_fingerprint": "7cd40162222844a8a69df1ececc90e5a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "ExileUntil": {
+                  "who": "EachPlayer",
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              { "Choose": { "who": "Opponents", "from": { "Bound": "found" }, "as": "chosen" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Exile" },
+                      { "Is": { "Bound": "exiled" } },
+                      { "Not": { "Is": { "Bound": "chosen" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "first"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "first" }, "free": true } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Exile" },
+                      { "Is": { "Bound": "exiled" } },
+                      { "Not": { "Is": { "Bound": "chosen" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "second"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "second" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

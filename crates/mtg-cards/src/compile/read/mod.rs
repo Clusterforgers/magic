@@ -285,6 +285,7 @@ mod r6003_wholes;
 mod r6007_wholes;
 mod r6008_wholes;
 mod r6018_wholes;
+mod r6103_wholes;
 mod r6a_effects;
 mod r6a_more;
 mod r6a_wordings;
@@ -643,6 +644,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r6018_wholes::r6018_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r6103_wholes::r6103_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r5517_wholes::r5517_read(text) {

@@ -105,4 +105,8 @@ equip?: boolean,
 /**
  * It is cast for its disturb cost.
  */
-disturb?: boolean, };
+disturb?: boolean, 
+/**
+ * The ability activated is a power-up ability.
+ */
+power_up?: boolean, };

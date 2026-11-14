@@ -839,6 +839,7 @@ pub(crate) struct RulesInForce {
         mtg_cards::modify::SpendAs,
         Option<Selector>,
         Option<Selector>,
+        Option<ObjectRef>,
     )>,
     reveal_top: BTreeSet<PlayerId>,
     reveal_hand: BTreeSet<PlayerId>,
@@ -1332,7 +1333,7 @@ impl RulesInForce {
                 self.spend_mana_as.extend(
                     players
                         .iter()
-                        .map(|p| (*p, *spend_as, spells.clone(), abilities.clone())),
+                        .map(|p| (*p, *spend_as, spells.clone(), abilities.clone(), source)),
                 );
             }
             Rule::DrawLimit(players, most) => {
@@ -2847,19 +2848,20 @@ pub(crate) fn ep24_spend_as(
     spell: Option<ObjectId>,
     source: Option<ObjectId>,
 ) -> SpendAs {
-    let selects = |selector: &Selector, id: ObjectId| {
-        state.object(id).is_some_and(|object| {
-            let reference = object.reference();
-            Scope::announcing(state, player, reference)
-                .selects(selector, reference)
-                .unwrap_or(false)
-        })
-    };
     let mut found = SpendAs::Normal;
-    for (who, spend_as, spells, abilities) in &state.rules().spend_mana_as {
+    for (who, spend_as, spells, abilities, rule_source) in &state.rules().spend_mana_as {
         if *who != player {
             continue;
         }
+        // "This" in the selector is the rule's source ("to activate ~'s abilities"), else the object judged.
+        let selects = |selector: &Selector, id: ObjectId| {
+            state.object(id).is_some_and(|object| {
+                let reference = object.reference();
+                Scope::announcing(state, player, rule_source.unwrap_or(reference))
+                    .selects(selector, reference)
+                    .unwrap_or(false)
+            })
+        };
         let applies = match (spells, spell) {
             // Only to activate the abilities of the permanents `abilities` selects ("to activate abilities of
             // creatures you control"): no spell.

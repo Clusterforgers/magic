@@ -1,0 +1,51 @@
+{
+  "oracle_id": "60fc4c2d-1bf9-4c9a-a240-ab9b1c9c6817",
+  "name": "Meeting of the Five",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meeting of the Five",
+      "oracle_fingerprint": "420a14b6312693fc0ba9329768a21fbf",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "count": 10, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Compare": { "stat": "Colors", "op": "Eq", "to": 3 } }],
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "AddMana": {
+                  "mana": {
+                    "Fixed": [
+                      "White",
+                      "White",
+                      "Blue",
+                      "Blue",
+                      "Black",
+                      "Black",
+                      "Red",
+                      "Red",
+                      "Green",
+                      "Green"
+                    ]
+                  },
+                  "only": [{ "Spell": { "facts": ["R6103ThreeColors"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

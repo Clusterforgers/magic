@@ -108,6 +108,10 @@ pub enum SpendFact {
     Equip,
     /// It is cast for its disturb cost ("pay a disturb cost", CR 702.146).
     Disturb,
+    /// The ability activated is a power-up ability ("activate power-up abilities", `Limit::PowerUp`).
+    R6103PowerUp,
+    /// It has exactly three colors ("spells with exactly three colors", CR 105.2).
+    R6103ThreeColors,
 }
 
 /// A special action (CR 116.2) whose cost restricted mana may pay.
@@ -247,6 +251,10 @@ pub struct SpendTraits {
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub disturb: bool,
+    /// The ability activated is a power-up ability.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub power_up: bool,
 }
 
 impl SpendFilter {
@@ -327,6 +335,8 @@ impl SpendFilter {
                 SpendFact::Monocolored => traits.colors == 1,
                 SpendFact::Equip => traits.equip,
                 SpendFact::Disturb => traits.disturb,
+                SpendFact::R6103PowerUp => traits.power_up,
+                SpendFact::R6103ThreeColors => traits.colors == 3,
             })
     }
 }
