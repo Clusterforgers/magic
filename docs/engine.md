@@ -313,7 +313,8 @@ A copy effect (CR 707) gives a permanent the copiable values of another object (
 
 - Copiable values are a one-face `CardDefinition`. `PermanentState::copy` holds a `CopyEffect` (object, values, timestamp), begun by `Event::BecameCopy`; exceptions (CR 707.9b) apply when it is made (`CardDefinition::except`). A copy that left the battlefield takes its abilities from last known information (`Snapshot::copy`).
 - Token copies are `TokenRef::CopyOf`; copies for a duration end with `CopyEnded` (`until_end_of_turn`, `until_next_turn_of`, `attached_by`). A copy for as long as an Equipment stays attached (`Duration::WhileSourceAttached`) begins only on the permanent its source is attached to and ends in housekeeping once it no longer is (`copies::r370_unattached_copies`).
-- `ReplaceBy::AsCopy` with `must` copies without a question when one object qualifies ("creatures you control enter as a copy of this creature").
+- `ReplaceBy::AsCopy` with `must` copies without a question when one object qualifies ("creatures you control enter as a copy of this creature"). Its base power and toughness set by amounts are worked out as it enters ("equal to this creature's power and toughness"), and `except_if` adds exceptions only when the copied object matches their selector.
+- `CopySpell` with `each_target` makes one copy for each other object (and with `each_player` each other player) the spell could target, judged for the spell's controller: the spell's targets must all be one object, and each copy has the new one in every place that named it.
 - Spell copies (CR 707.10) are `SpellCopied` tokens above the resolving object; the controller is asked once per copy about new targets. Ability copies clone the `AbilityObject` (`AbilityCopied`).
 
 ## Rules of the game

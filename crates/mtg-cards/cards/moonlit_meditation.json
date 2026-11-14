@@ -1,7 +1,7 @@
 {
   "oracle_id": "df702b0c-e011-497f-ae29-9876efac4a4c",
   "name": "Moonlit Meditation",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Moonlit Meditation",
@@ -16,9 +16,31 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 41, "end": 182 }
+          "Replacement": {
+            "when": { "TokenCreation": {} },
+            "by": {
+              "Instead": [
+                {
+                  "May": {
+                    "effects": [
+                      {
+                        "CreateToken": {
+                          "token": { "CopyOf": { "of": "Attached" } },
+                          "count": "Triggering"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "condition": {
+              "Compare": {
+                "left": { "Tally": { "event": "TokenCreated", "who": "You", "filter": [] } },
+                "op": "Eq",
+                "right": 0
+              }
+            }
           }
         }
       ]

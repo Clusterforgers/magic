@@ -752,6 +752,26 @@ impl<'a> Scope<'a> {
     /// Whether the spell `seen` being cast, or on the stack, has a target an object `inner` selects: a spell being
     /// cast reads what it announced, and before anything is announced a target is found where some object in play
     /// matches; a spell or ability on the stack reads its own targets.
+    /// Whether the spell or ability on the stack has a target and every one of its targets is an object `inner` names.
+    fn r6104_targets_only(&self, inner: &Selector, seen: &Seen<'_>) -> Result<bool, ResolveError> {
+        let Some(card) = seen.card.filter(|_| seen.zone == Zone::Stack) else {
+            return Ok(false);
+        };
+        let targets: Vec<Target> = card.choices().targets.iter().flatten().copied().collect();
+        if targets.is_empty() {
+            return Ok(false);
+        }
+        for target in targets {
+            let Target::Object(object) = target else {
+                return Ok(false);
+            };
+            if !self.selects(inner, object)? {
+                return Ok(false);
+            }
+        }
+        Ok(true)
+    }
+
     fn targets_match(
         &self,
         inner: &Selector,
@@ -2158,6 +2178,7 @@ impl<'a> Scope<'a> {
                 .iter()
                 .any(|card| card.id == reference.id),
             Pred::Targeting(inner) => self.targets_match(inner, reference, seen)?,
+            Pred::R6104TargetsOnly(inner) => self.r6104_targets_only(inner, seen)?,
             Pred::ControlledBy(who) => self.players(who)?.contains(&seen.controller),
             Pred::OwnedBy(who) => self.players(who)?.contains(&seen.owner),
             Pred::ProtectedBy(who) => {

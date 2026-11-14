@@ -1,0 +1,43 @@
+{
+  "oracle_id": "2e5163bd-9b8a-4d1e-9ba9-8666c7348dfd",
+  "name": "Radiate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Radiate",
+      "oracle_fingerprint": "0ea2ffcae60d18116e4a8d7913e52c13",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    "SingleTarget",
+                    {
+                      "AnyOf": [
+                        { "Targeting": [{ "In": "Battlefield" }] },
+                        { "TargetsPlayer": "EachPlayer" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "CopySpell": {
+                  "what": { "Target": 0 },
+                  "each_target": [{ "In": "Battlefield" }],
+                  "each_player": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -47,6 +47,7 @@ fn r4703_copy_all_effects() -> Vec<crate::effect::Effect> {
             new_targets: true,
             except: Vec::new(),
             each_target: None,
+            each_player: false,
         },
         crate::effect::Effect::CopyAbility {
             what: mine(crate::refs::Pred::AnyOf(vec![

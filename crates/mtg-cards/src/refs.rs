@@ -651,6 +651,9 @@ pub enum Pred {
     FromSource(Selector),
     /// Is a spell or ability on the stack with exactly one target (CR 115.7: "a spell with a single target").
     SingleTarget,
+    /// Is a spell or ability on the stack whose every target is an object the selector names, with at least one target
+    /// ("that targets only this creature": the same creature in several places counts).
+    R6104TargetsOnly(Selector),
     /// Has the greatest value of the characteristic among the objects the group selector matches (a tie counts for each).
     GreatestAmong {
         /// The characteristic compared.

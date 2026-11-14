@@ -1,19 +1,95 @@
 {
   "oracle_id": "0ebe67ed-8a71-4bbc-8e58-cebbd7b2d83f",
   "name": "Bill Potts",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Bill Potts",
       "oracle_fingerprint": "4d08ef2d97d1bc7aa92ed3ce3f137f08",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 239 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "SpellCast": {
+                    "what": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Type": "Instant"
+                          },
+                          {
+                            "Type": "Sorcery"
+                          }
+                        ]
+                      }
+                    ],
+                    "by": "You"
+                  }
+                },
+                {
+                  "Did": {
+                    "action": "Activated",
+                    "who": "You"
+                  }
+                }
+              ]
+            },
+            "if": {
+              "AtTrigger": {
+                "Any": [
+                  {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [
+                        {
+                          "R6104TargetsOnly": [
+                            "This"
+                          ]
+                        }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  {
+                    "CountOf": {
+                      "subject": "Dealer",
+                      "selector": [
+                        {
+                          "R6104TargetsOnly": [
+                            "This"
+                          ]
+                        }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                ]
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "CopySpell": {
+                  "what": "Triggering",
+                  "new_targets": true
+                }
+              },
+              {
+                "CopyAbility": {
+                  "what": "Dealer",
+                  "new_targets": true
+                }
+              }
+            ]
           }
         },
-        { "Keyword": "DoctorsCompanion" }
+        {
+          "Keyword": "DoctorsCompanion"
+        }
       ]
     }
   ]

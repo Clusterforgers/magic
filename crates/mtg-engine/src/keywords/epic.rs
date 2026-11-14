@@ -53,6 +53,7 @@ fn steps() -> [Effect; 2] {
                 new_targets: true,
                 except: vec![Modification::RemoveKeyword(Keyword::Epic)],
                 each_target: None,
+                each_player: false,
             }],
         },
     ]

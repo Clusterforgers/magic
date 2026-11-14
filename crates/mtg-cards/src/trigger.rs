@@ -1088,6 +1088,17 @@ pub struct MoreCounters {
     pub count: Amount,
 }
 
+/// Exceptions of a permanent entering as a copy (`ReplaceBy::AsCopy`) that apply only when the object it copies matches
+/// `of`.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct CopyExceptIf {
+    /// What the copied object must be, judged as it is copied.
+    pub of: Selector,
+    /// The exceptions, part of the copy effect when they apply (CR 707.9b).
+    pub except: Vec<Modification>,
+}
+
 /// Counters a permanent entering as a copy enters with (`ReplaceBy::AsCopy`), when the object it copies matches `of`.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -1342,6 +1353,10 @@ pub enum ReplaceBy {
         /// enters with an additional +1/+1 counter on it if it's a creature").
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         counters: Vec<CopyCounters>,
+        /// Exceptions the copy has only when the copied object matches their selector, judged as it is copied ("and, if
+        /// it's a creature, ... has changeling").
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        except_if: Vec<CopyExceptIf>,
     },
     /// Devour (CR 702.82): as the permanent enters, its controller may sacrifice any number of other permanents they control that match the selector, and it enters with this many +1/+1 counters for each.
     Devour {

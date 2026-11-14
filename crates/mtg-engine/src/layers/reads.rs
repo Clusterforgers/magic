@@ -437,6 +437,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::Test { left, right, .. } => reads_of_amount(left).or(reads_of_amount(right)),
         Pred::Not(inner) => reads_of_pred(inner),
         Pred::Targeting(inner)
+        | Pred::R6104TargetsOnly(inner)
         | Pred::HasAttached(inner)
         | Pred::FromSource(inner)
         | Pred::AbilityFrom(inner) => reads_of_selector(inner),

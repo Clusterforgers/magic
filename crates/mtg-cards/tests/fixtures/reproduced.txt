@@ -176,6 +176,7 @@ Big Mother Mouser
 Big Winner
 Bighorner Rancher
 Bilious Skulldweller
+Bill Potts
 Binding the Old Gods
 Biomass Mutation
 Biomechan Engineer
@@ -655,6 +656,7 @@ Erebos, Bleak-Hearted
 Erhnam Djinn
 Eris, Roar of the Storm
 Errand of Duty
+Esix, Fractal Bloom
 Essence Bottle
 Etched Oracle
 Eternal Dragon
@@ -980,6 +982,7 @@ Hour of Revelation
 Howlpack Resurgence
 Howltooth Hollow
 Hua Tuo, Honored Physician
+Hulking Metamorph
 Hulking Raptor
 Hum of the Radix
 Hundred-Talon Strike
@@ -1017,6 +1020,7 @@ Infectious Inquiry
 Inferno Project
 Infesting Radroach
 Infiltration Lens
+Ink-Treader Nephilim
 Inkwell Leviathan
 Inquisition of Kozilek
 Inquisitive Glimmer
@@ -1063,6 +1067,7 @@ Jaspera Sentinel
 Jazal Goldmane
 Jedit Ojanen of Efrava
 Jeska's Will
+Jinnie Fay, Jetmir's Second
 Jirina Kudro
 Jo Grant
 Jodah's Codex
@@ -1294,6 +1299,7 @@ Millikin
 Mind Bend
 Mind Flayer
 Mindless Conscription
+Mindlink Mech
 Mindlock Orb
 Mindslaver
 Ministrant of Obligation
@@ -1306,6 +1312,7 @@ Mirran Bardiche
 Mirri, Weatherlight Duelist
 Mirror Image
 Mirror Sheen
+Mirrormind Crown
 Mirrorweave
 Misery Charm
 Mishra's Workshop
@@ -1325,9 +1332,11 @@ Mona Lisa, Science Geek
 Monastery Swiftspear
 Monk of the Open Hand
 Monk's Fist
+Moonlit Meditation
 Moonrager's Slash
 Moorland Rescuer
 Morinfen
+Moritte of the Frost
 Morsel Theft
 Mortality Spear
 Mortivore
@@ -1581,6 +1590,7 @@ Quick Fixer
 Quietus Spike
 Rabble Rousing
 Rabid Wolverines
+Radiate
 Radical Idea
 Raffine's Informant
 Rafter Demon
@@ -1792,6 +1802,7 @@ Shieldmage Elder
 Shields of Velis Vel
 Shifting Borders
 Shifting Sliver
+Shifting Woodland
 Shiny Impetus
 Shipbreaker Kraken
 Shrouded Shepherd // Cleave Shadows

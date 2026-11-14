@@ -3186,12 +3186,18 @@ impl Pass<'_> {
                 until_end_of_turn,
                 must,
                 counters,
+                except_if,
             } => {
-                let copy =
-                    match self.copies(candidate.object, controller, object, (of, *must), except)? {
-                        Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
-                        Asked::Got(copy) => copy,
-                    };
+                let copy = match self.copies(
+                    candidate.object,
+                    controller,
+                    object,
+                    (of, *must),
+                    (except, except_if),
+                )? {
+                    Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
+                    Asked::Got(copy) => copy,
+                };
                 if let Some(mut copy) = copy {
                     copy.until_end_of_turn = *until_end_of_turn;
                     // "Enter tapped as a copy": only the copy is tapped.
@@ -3376,7 +3382,7 @@ impl Pass<'_> {
         controller: PlayerId,
         entering: ObjectId,
         (of, must): (&Selector, bool),
-        except: &[Modification],
+        (except, except_if): (&[Modification], &[mtg_cards::trigger::CopyExceptIf]),
     ) -> Result<Asked<Option<BecameCopy>>, EngineError> {
         let scope = Scope::announcing(self.state, controller, source);
         let options: Vec<ObjectId> = scope
@@ -3433,8 +3439,15 @@ impl Pass<'_> {
         let of = original.reference();
         let mut values = copiable_values(self.state, of, None)
             .ok_or_else(|| Self::invalid(format!("{of:?} cannot be copied")))?;
-        for modification in except {
-            if !values.except(modification) {
+        let mut applying: Vec<&Modification> = except.iter().collect();
+        for entry in except_if {
+            if scope.selects(&entry.of, of)? {
+                applying.extend(&entry.except);
+            }
+        }
+        for modification in applying {
+            let modification = r6104_worked_out(&scope, modification)?;
+            if !values.except(&modification) {
                 return Err(Self::invalid(format!(
                     "{modification:?} is no exception of a copy effect"
                 )));
@@ -3910,6 +3923,28 @@ fn zone_word(zone: Zone) -> &'static str {
 
 mod day;
 mod r304_as_enters;
+
+/// An exception of a copy as it enters with its base power and toughness worked out now ("its power and toughness are
+/// equal to this creature's power and toughness", CR 707.9b): the amounts are read before the copy begins.
+fn r6104_worked_out(
+    scope: &Scope<'_>,
+    modification: &Modification,
+) -> Result<Modification, EngineError> {
+    let Modification::SetPT { power, toughness } = modification else {
+        return Ok(modification.clone());
+    };
+    let worked = |amount: &Amount| -> Result<Amount, EngineError> {
+        let value = scope
+            .amount(amount)
+            .map_err(|error| Pass::invalid(format!("{amount:?} of a copy: {error:?}")))?;
+        Ok(Amount::Fixed(i32::try_from(value).unwrap_or(i32::MAX)))
+    };
+    Ok(Modification::SetPT {
+        power: worked(power)?,
+        toughness: worked(toughness)?,
+    })
+}
+
 #[cfg(test)]
 mod r304_skip;
 pub(crate) mod r406_actions;

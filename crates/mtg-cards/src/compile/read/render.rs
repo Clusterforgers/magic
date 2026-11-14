@@ -48,7 +48,9 @@ mod optional_return;
 mod oracle_only;
 pub(super) use oracle_only::r5522_read_whole;
 pub(super) use oracle_only::r5523_read_whole;
-pub(super) use oracle_only::{r6001_pair_read, r6001_pair_texts, r6001_read_whole};
+pub(super) use oracle_only::{
+    r6001_pair_read, r6001_pair_texts, r6001_read_whole, r6104_read_whole,
+};
 mod otherwise;
 mod player_events;
 mod populated;

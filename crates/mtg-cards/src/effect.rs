@@ -1967,6 +1967,10 @@ pub enum Effect {
         /// target").
         #[serde(default, skip_serializing_if = "Option::is_none")]
         each_target: Option<Selector>,
+        /// With `each_target`, each other player the spell could target gets a copy too ("for each other permanent or
+        /// player the spell could target").
+        #[serde(default, skip_serializing_if = "is_false")]
+        each_player: bool,
     },
     /// Copies activated and triggered abilities on the stack (CR 707.10): each copy is put on the stack above the ability,
     /// not activated and not triggered, with the choices of the original.

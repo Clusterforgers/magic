@@ -220,6 +220,8 @@ mod r5512_nathan_spend;
 mod r6001_torch;
 mod r6003_dragons_fire;
 mod r6003_look_then_name;
+mod r6104_nephilim;
+mod r6104_radiate;
 mod r6q1_face_down_cost;
 mod r7p3_next_spell;
 mod rebound;

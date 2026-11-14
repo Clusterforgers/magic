@@ -242,6 +242,7 @@ fn copy_then_exile(counter: CounterKind, count: Amount) -> Vec<Effect> {
             new_targets: false,
             except: Vec::new(),
             each_target: None,
+            each_player: false,
         },
         Effect::Exile {
             what: Ref::Triggering,
