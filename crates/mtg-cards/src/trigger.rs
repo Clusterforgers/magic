@@ -1312,6 +1312,10 @@ pub enum ReplaceBy {
     },
     /// Umbra armor (CR 702.89): all damage is removed from the permanent instead, and the object with the ability is destroyed.
     UmbraArmor,
+    /// The damage is dealt, and all other damage already marked on the permanent it is dealt to is removed first ("If
+    /// damage would be dealt to ~, instead that damage is dealt, but all other damage already dealt to him is
+    /// healed"); only a `Damage` to a permanent uses it.
+    HealFirst,
     /// The permanent regenerates instead of being destroyed (CR 701.19): "If ~ would be destroyed, regenerate it." Not when
     /// it can't be regenerated; unlike a shield, it is not used up.
     Regenerate,

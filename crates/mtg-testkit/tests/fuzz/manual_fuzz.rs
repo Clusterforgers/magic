@@ -165,6 +165,8 @@ fn a_rebuilt_engine_is_in_the_state_of_the_original_and_asks_what_it_asks(
                 || matches!(&decision.kind, DecisionKind::ChooseCards(options) if options.can_cancel)
                 // The value of X announced for a cast or activation (CR 601.2b) may still be backed out of.
                 || matches!(&decision.kind, DecisionKind::ChooseNumber(options) if options.can_cancel)
+                // The optional costs chosen for a cast (CR 601.2b) may still be backed out of.
+                || matches!(&decision.kind, DecisionKind::ChooseCosts(options) if options.can_cancel)
                 // The way a card is cast in (mutate beside its mana cost) is asked before anything is paid.
                 || matches!(&decision.kind, DecisionKind::ChooseOption(options) if options.text.starts_with("Choose how to cast"));
             if !outside {

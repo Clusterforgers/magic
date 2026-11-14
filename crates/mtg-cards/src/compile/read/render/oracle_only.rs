@@ -237,6 +237,7 @@ mod r5513_wholes;
 mod r5516_wholes;
 mod r5518_wholes;
 mod r5522_wholes;
+mod r6013_wholes;
 mod regen_this_way;
 mod repeat_modes;
 mod return_damager;
@@ -839,6 +840,7 @@ fn add_c11g(ability: &Ability, texts: &mut Vec<String>) {
     r5511_wholes::r5511_add_wholes(ability, texts);
     r5503_wholes::r5503_add_wholes(ability, texts);
     r5512_wholes::r5512_add_wholes(ability, texts);
+    r6013_wholes::r6013_add_wholes(ability, texts);
     r5508_wholes::r5508_add_wholes(ability, texts);
     r5518_wholes::r5518_add_wholes(ability, texts);
     r307_wholes::r307_add_wholes(ability, texts);

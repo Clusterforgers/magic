@@ -44,6 +44,9 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<GameRule> {
         return Some(GameRule::DrawFromBottom(Ref::You));
     }
     r.need("if")?;
+    if let Some(rule) = r.attempt(r6013_search_top) {
+        return Some(rule);
+    }
     if r.words("you would flip a coin") {
         r.punct(',').then_some(())?;
         r.need("instead flip two coins and ignore one")?;
@@ -76,9 +79,33 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<GameRule> {
     Some(GameRule::SkipExtraTurns(who))
 }
 
+/// "an opponent would search a library, that player searches the top four cards of that library instead", after "If".
+fn r6013_search_top(r: &mut Reader<'_>) -> Option<GameRule> {
+    let who = group(r, "an opponent", "a player")?;
+    r.need("would search a library")?;
+    r.punct(',').then_some(())?;
+    r.need("that player searches the top")?;
+    let count = super::amounts::number_word(r.take_word()?)?;
+    r.need("cards of that library instead")?;
+    Some(GameRule::SearchTop { who, count })
+}
+
 /// What `read` reads, written back.
 pub(super) fn texts(rule: &GameRule) -> Vec<String> {
     let (who, search) = match rule {
+        GameRule::SearchTop { who, count } => {
+            let who = match who {
+                Ref::Opponents => "an opponent",
+                Ref::EachPlayer => "a player",
+                _ => return Vec::new(),
+            };
+            let Some(count) = super::amounts::count_word(*count) else {
+                return Vec::new();
+            };
+            return vec![format!(
+                "If {who} would search a library, that player searches the top {count} cards of that library instead"
+            )];
+        }
         GameRule::FlipTwoCoins(Ref::You) => {
             return vec![
                 "If you would flip a coin, instead flip two coins and ignore one".to_owned(),

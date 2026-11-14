@@ -304,6 +304,10 @@ fn w5d_skipped(effects: &[Effect]) -> BTreeSet<&'static str> {
         match value {
             serde_json::Value::Object(fields) => {
                 for (key, inner) in fields {
+                    // A reflexive trigger's steps run later, on the stack, not in the middle of the event.
+                    if key == "Reflexive" {
+                        continue;
+                    }
                     let until = inner.get("until") == Some(&serde_json::Value::Bool(true));
                     let shape = match key.as_str() {
                         "Modal" => Some("Instead.Modal"),
@@ -6057,6 +6061,7 @@ impl Walker<'_> {
             | GameRule::DrawFromBottom(who)
             | GameRule::CantSearch(who)
             | GameRule::OwnSpellsCantSearch(who)
+            | GameRule::SearchTop { who, .. }
             | GameRule::VoteAgain(who)
             | GameRule::ExtraVote(who)
             | GameRule::SkipExtraTurns(who)
@@ -6089,6 +6094,7 @@ impl Walker<'_> {
                 self.at(tag, |w| w.reference(who, Kind::Player));
             }
             GameRule::EchoRather(cost) => self.at(tag, |w| w.cost(cost)),
+            GameRule::UntapRemovesCounters(_) => self.at(tag, |_| {}),
             GameRule::MayCast(permission) => self.at(tag, |w| w.cast_permission(permission)),
             GameRule::LookAtExiled { who, what, only } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
@@ -6927,6 +6933,9 @@ impl Walker<'_> {
                 if *count < 2 || kinds.len() <= *count as usize =>
             {
                 self.problem("a choice of different counters offers more kinds than it takes, and takes two or more");
+            }
+            ReplaceBy::HealFirst if !matches!(when, ReplaceWhen::Damage { .. }) => {
+                self.problem("`HealFirst` replaces a `Damage`");
             }
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");
@@ -9083,6 +9092,7 @@ mod tests {
     #[case::tap_or_untap(r#"[{"TapOrUntap":{"what":"Triggering"}}]"#, &[])]
     #[case::modes(r#"[{"Modal":{"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":1}}]}]}}]"#, &["ReplaceBy.Instead.Modal"])]
     #[case::a_payment_inside_a_may(r#"[{"May":{"effects":[{"Pay":{"cost":"{1}","paid":[{"Draw":{}}]}}]}}]"#, &["ReplaceBy.Instead.Pays"])]
+    #[case::a_payment_in_a_reflexive_trigger(r#"[{"Exile":{"what":"Triggering"}},{"Reflexive":{"effects":[{"Pay":{"cost":"{2}","paid":[{"Draw":{}}]}}]}}]"#, &[])]
     #[case::amass_inside_an_if(r#"[{"If":{"condition":"YourTurn","then":[{"Amass":{"subtype":"Orc","count":1}}]}}]"#, &["ReplaceBy.Instead.Waits"])]
     #[case::flips_until_a_loss(r#"[{"FlipCoin":{"until":true,"win":[{"Draw":{}}]}}]"#, &["ReplaceBy.Instead.Waits"])]
     #[case::a_single_flip(r#"[{"FlipCoin":{"win":[{"Draw":{}}]}}]"#, &[])]

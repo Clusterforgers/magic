@@ -196,7 +196,8 @@ pub(crate) fn untap_events(state: &GameState, kept: &[ObjectId]) -> (Vec<Event>,
         untapping
             .iter()
             .filter(|id| !kept.contains(id))
-            .filter_map(|id| state.object(*id).map(crate::stun::untap_event)),
+            .filter_map(|id| state.object(*id))
+            .flat_map(|object| crate::r6013_winds::r6013_untap_events(state, object, active)),
     );
     for player in &actives {
         events.extend(crate::c7_untap::c7_untap_spent(state, *player));

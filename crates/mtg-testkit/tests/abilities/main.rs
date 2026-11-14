@@ -126,6 +126,7 @@ mod r5e_done_once;
 mod r6001_feud;
 mod r6001_greymond;
 mod r6007_cards;
+mod r6013_pack;
 mod r8p2_enters;
 mod reflexive;
 mod replacement;

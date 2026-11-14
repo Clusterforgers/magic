@@ -331,6 +331,10 @@ fn searches(ctx: &Ctx, rule: &GameRule) -> String {
             phrase::who(ctx, who)
         ),
         GameRule::CantSearch(who) => format!("{} can't search libraries", phrase::who(ctx, who)),
+        GameRule::SearchTop { who, count } => format!(
+            "{} search only the top {count} cards of a library they would search",
+            phrase::who(ctx, who)
+        ),
         _ => String::new(),
     }
 }
@@ -363,7 +367,9 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
         }
         GameRule::CantGainLife(who) => format!("{} can't gain life", phrase::who(ctx, who)),
         GameRule::CantDraw(who) => format!("{} can't draw cards", phrase::who(ctx, who)),
-        GameRule::CantSearch(_) | GameRule::OwnSpellsCantSearch(_) => searches(ctx, rule),
+        GameRule::CantSearch(_) | GameRule::OwnSpellsCantSearch(_) | GameRule::SearchTop { .. } => {
+            searches(ctx, rule)
+        }
         GameRule::EchoRather(rather) => format!(
             "you may pay {} rather than the echo cost of permanents you control",
             cost(ctx, rather)

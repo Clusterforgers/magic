@@ -22,7 +22,7 @@ use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::{Attacked, CastRider, GameRule, ManaChange, Prohibited, SpendAs};
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
-use mtg_cards::value::Condition;
+use mtg_cards::value::{Condition, CounterKind};
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaType};
 use serde::{Deserialize, Serialize};
@@ -178,6 +178,16 @@ pub enum Rule {
     CantSearch(Vec<PlayerId>),
     /// Spells and abilities the players control can't cause their controller to search their own library.
     OwnSpellsCantSearch(Vec<PlayerId>),
+    /// A permanent with a counter of this kind that would untap during its controller's untap step loses all of them
+    /// instead (CR 614.1a).
+    UntapRemovesCounters(CounterKind),
+    /// The players search only the top `count` cards of a library they would search (CR 614.1a).
+    SearchTop {
+        /// Who searches that way.
+        players: Vec<PlayerId>,
+        /// How many cards from the top.
+        count: u32,
+    },
     /// The players may vote an additional time (CR 701.38d).
     VoteAgain(Vec<PlayerId>),
     /// The players get an additional vote (CR 701.38d).
@@ -787,6 +797,10 @@ pub(crate) struct RulesInForce {
     draw_bottom: BTreeSet<PlayerId>,
     no_search: BTreeSet<PlayerId>,
     no_own_search: BTreeSet<PlayerId>,
+    /// The fewest top cards each player may search of a library (Aven Mindcensor); every card when absent.
+    search_top: BTreeMap<PlayerId, u32>,
+    /// The kinds of counter that hold a permanent down in its controller's untap step (Freyalise's Winds).
+    pub(crate) untap_removes: BTreeSet<CounterKind>,
     /// The changes to the mana of a tap.
     pub(crate) mana: Vec<ManaRule>,
     vote_again: BTreeSet<PlayerId>,
@@ -1274,6 +1288,15 @@ impl RulesInForce {
             Rule::DrawFromBottom(players) => self.draw_bottom.extend(players),
             Rule::CantSearch(players) => self.no_search.extend(players),
             Rule::OwnSpellsCantSearch(players) => self.no_own_search.extend(players),
+            Rule::UntapRemovesCounters(kind) => {
+                self.untap_removes.insert(kind.clone());
+            }
+            Rule::SearchTop { players, count } => {
+                for player in players {
+                    let top = self.search_top.entry(*player).or_insert(*count);
+                    *top = (*top).min(*count);
+                }
+            }
             Rule::ManaProduced { what, who, change } => {
                 if let Some(source) = source {
                     self.mana.push(ManaRule {
@@ -1721,6 +1744,11 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::DrawFromBottom(who) => Rule::DrawFromBottom(scope.players(who)?),
         GameRule::CantSearch(who) => Rule::CantSearch(scope.players(who)?),
         GameRule::OwnSpellsCantSearch(who) => Rule::OwnSpellsCantSearch(scope.players(who)?),
+        GameRule::UntapRemovesCounters(kind) => Rule::UntapRemovesCounters(kind.clone()),
+        GameRule::SearchTop { who, count } => Rule::SearchTop {
+            players: scope.players(who)?,
+            count: *count,
+        },
         GameRule::ManaProduced { what, who, change } => Rule::ManaProduced {
             what: what.clone(),
             who: scope.players(who)?,
@@ -1995,6 +2023,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::DrawFromBottom(players)
         | Rule::CantSearch(players)
         | Rule::OwnSpellsCantSearch(players)
+        | Rule::SearchTop { players, .. }
         | Rule::VoteAgain(players)
         | Rule::ExtraVote(players)
         | Rule::SkipExtraTurns(players)
@@ -2051,7 +2080,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::ReverseTurnOrder
         | Rule::DamageAsWither
         | Rule::ManaBurn
-        | Rule::RevealFirstDraw { .. } => false,
+        | Rule::RevealFirstDraw { .. }
+        | Rule::UntapRemovesCounters(_) => false,
         Rule::Planar => true,
         Rule::AttackOnlyNearest(left) => left.is_none(),
         Rule::PreventDamage(shield) => {
@@ -2187,6 +2217,8 @@ static NONE: RulesInForce = RulesInForce {
     draw_bottom: BTreeSet::new(),
     no_search: BTreeSet::new(),
     no_own_search: BTreeSet::new(),
+    search_top: BTreeMap::new(),
+    untap_removes: BTreeSet::new(),
     mana: Vec::new(),
     vote_again: BTreeSet::new(),
     extra_vote: Vec::new(),
@@ -2915,6 +2947,11 @@ pub fn w17c_votes_again(state: &GameState, player: PlayerId) -> bool {
 /// Whether `player` can't search libraries: the one place a search reads this rule.
 pub fn cant_search(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_search.contains(&player)
+}
+
+/// How many cards from the top of a library `player` searches, when a rule limits it (Aven Mindcensor).
+pub fn search_top(state: &GameState, player: PlayerId) -> Option<u32> {
+    state.rules().search_top.get(&player).copied()
 }
 
 /// Whether `player`'s own spells and abilities can't cause them to search their own library: the one place a search
