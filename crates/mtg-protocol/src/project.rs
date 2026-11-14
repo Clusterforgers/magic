@@ -410,12 +410,14 @@ impl ObjectView {
         id: ObjectId,
         object: &GameObject,
         subtypes: &[Subtype],
+        creature: bool,
     ) -> Option<PermanentView> {
         object.permanent().map(|p| PermanentView {
             tapped: p.tapped(),
             damage: p.damage(),
-            // Haste excuses it, so the view says whether sickness holds it back, not only when it arrived.
-            summoning_sick: summoning_sick(state, id),
+            // Haste excuses it, so the view says whether sickness holds it back, not only when it arrived; only a creature
+            // is ever held back (CR 302.6).
+            summoning_sick: creature && summoning_sick(state, id),
             prepared: p.prepared(),
             suspected: p.suspected(),
             solved: p.solved(),
@@ -449,6 +451,7 @@ impl ObjectView {
             Look::FaceDown | Look::Whole => {}
         }
         let chars = characteristics(state, id)?;
+        let creature = chars.is_creature();
         let behind = shows && look == Look::Whole;
         let card = if behind {
             object.whole_card()
@@ -507,7 +510,7 @@ impl ObjectView {
             } else {
                 keyword_names(state, id)
             },
-            permanent: Self::permanent_view(state, id, object, &chars.subtypes),
+            permanent: Self::permanent_view(state, id, object, &chars.subtypes, creature),
             kind: object.kind(),
             source: object.ability().map(|ability| ability.source().id),
             rules_text,
