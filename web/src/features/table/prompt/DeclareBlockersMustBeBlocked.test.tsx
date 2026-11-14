@@ -94,8 +94,7 @@ describe('an attacker a rule says must be blocked by two or more creatures', () 
     const mine = creaturesOf(fixtureOf(2), 0).slice(0, free) as ObjectId[]
     const options: BlockOptions = {
       blockers: mine.map((object) => ({ object, can_block: [...attackers] })),
-      must_be_blocked: [attackers[0]],
-      r6001_at_least: [[attackers[0], 2]],
+      must_be_blocked: [attackers[0], attackers[0]],
     }
     return { ...renderCombat({ DeclareBlockers: options }, { seats: 2 }), mine, attackers }
   }

@@ -132,22 +132,25 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
           able.some((blocker) => offered.has(blocker) && !pairs.has(blocker)),
       )
       .map(([attacker]) => attacker)
-    // An attacker that must be blocked by several creatures waits while it has fewer and a free creature could join.
-    const byMany = (options.r6001_at_least ?? [])
+    // An attacker listed several times must be blocked by that many creatures: it waits while it has fewer and a
+    // free creature could join.
+    const owed = new Map<ObjectId, number>()
+    for (const attacker of options.must_be_blocked ?? []) owed.set(attacker, (owed.get(attacker) ?? 0) + 1)
+    const byMany = [...owed]
       .filter(
-        ([attacker, needed]) =>
+        ([attacker, count]) =>
+          count > 1 &&
           attackers.includes(attacker) &&
           !plain.includes(attacker) &&
           !byKind.includes(attacker) &&
-          (blockerLists.get(attacker)?.length ?? 0) < needed &&
+          (blockerLists.get(attacker)?.length ?? 0) < count &&
           [...offered].some(([blocker, can]) => can.includes(attacker) && !pairs.has(blocker)),
       )
       .map(([attacker]) => attacker)
-    return [...plain, ...byKind, ...byMany]
+    return [...new Set([...plain, ...byKind, ...byMany])]
   }, [
     options.must_be_blocked,
     options.must_be_blocked_by,
-    options.r6001_at_least,
     options.cant_alone,
     attackers,
     blockerLists,

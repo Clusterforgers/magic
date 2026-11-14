@@ -647,7 +647,9 @@ pub struct BlockOptions {
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
     pub required: Vec<ObjectId>,
     /// The attackers a rule requires some creature to block (CR 509.1c: "must be blocked if able"); the declaration blocks
-    /// each of them unless every creature that could is busy with a requirement of its own. Left out while there are none.
+    /// each of them unless every creature that could is busy with a requirement of its own. An attacker listed several
+    /// times must be blocked by that many creatures if able ("must be blocked by two or more creatures if able"). Left out
+    /// while there are none.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
     pub must_be_blocked: Vec<ObjectId>,
@@ -660,12 +662,6 @@ pub struct BlockOptions {
         ts(as = "Option<Vec<(ObjectId, Vec<ObjectId>)>>", optional)
     )]
     pub must_be_blocked_by: Option<Box<BlockersOfKind>>,
-    /// The attackers a rule requires several creatures to block (CR 509.1c: "must be blocked by two or more creatures if
-    /// able"), each with how many; the declaration gives each that many blockers unless no other creature could join.
-    /// Left out while there are none.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<(ObjectId, usize)>>", optional))]
-    pub r6001_at_least: Vec<(ObjectId, usize)>,
     /// The most creatures that may block together (CR 509.1b: "no more than one creature can block each combat"). Left
     /// out while no rule limits the declaration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1015,7 +1011,6 @@ mod tests {
                 .collect(),
             must_be_blocked: Vec::new(),
             must_be_blocked_by: None,
-            r6001_at_least: Vec::new(),
             cant_alone: Vec::new(),
             joins: Vec::new(),
             min_blockers: menace.iter().map(|(a, n)| (id(*a), *n)).collect(),

@@ -51,9 +51,9 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
 /// abilities.
 #[allow(clippy::too_many_lines)]
 pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
-    let r6001 = super::render::r6001_pair_texts(first, second);
-    if !r6001.is_empty() {
-        return r6001;
+    let whole_pair = super::render::r6001_pair_texts(first, second);
+    if !whole_pair.is_empty() {
+        return whole_pair;
     }
     let graveyard_only = super::r4701_pairs::r4701_pair_texts(first, second);
     if !graveyard_only.is_empty() {

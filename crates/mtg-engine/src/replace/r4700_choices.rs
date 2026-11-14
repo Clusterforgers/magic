@@ -103,35 +103,43 @@ impl Pass<'_> {
                 }
                 Ok(Asked::Got(Some(Chosen::Players(chosen))))
             }
-            EntersChoice::R6001Abilities(count) => {
-                let mut chosen: Vec<String> = Vec::new();
-                for _ in 0..count {
-                    let left: Vec<&str> = R6001_ABILITIES
-                        .iter()
-                        .copied()
-                        .filter(|word| !chosen.iter().any(|taken| taken == word))
-                        .collect();
-                    let options = left
-                        .iter()
-                        .map(|word| ChoiceOption::Label((*word).to_owned()))
-                        .collect();
-                    let text = if chosen.is_empty() {
-                        "Choose an ability.".to_owned()
-                    } else {
-                        "Choose another ability.".to_owned()
-                    };
-                    match self.r4700_pick(source, controller, options, text)? {
-                        Asked::Ask(decision) => return Ok(Asked::Ask(decision)),
-                        Asked::Got(Some(at)) => {
-                            chosen.extend(left.get(at).map(|word| (*word).to_owned()));
-                        }
-                        Asked::Got(None) => break,
-                    }
-                }
-                Ok(Asked::Got(Some(Chosen::Words(chosen))))
-            }
+            EntersChoice::R6001Abilities(count) => self.r6001_abilities(source, controller, count),
             _ => Ok(Asked::Got(None)),
         }
+    }
+
+    /// The different abilities from among first strike, vigilance, and lifelink `controller` chooses, `count` of them.
+    fn r6001_abilities(
+        &mut self,
+        source: ObjectId,
+        controller: PlayerId,
+        count: u32,
+    ) -> Result<Asked<Option<Chosen>>, EngineError> {
+        let mut chosen: Vec<String> = Vec::new();
+        for _ in 0..count {
+            let left: Vec<&str> = R6001_ABILITIES
+                .iter()
+                .copied()
+                .filter(|word| !chosen.iter().any(|taken| taken == word))
+                .collect();
+            let options = left
+                .iter()
+                .map(|word| ChoiceOption::Label((*word).to_owned()))
+                .collect();
+            let text = if chosen.is_empty() {
+                "Choose an ability.".to_owned()
+            } else {
+                "Choose another ability.".to_owned()
+            };
+            match self.r4700_pick(source, controller, options, text)? {
+                Asked::Ask(decision) => return Ok(Asked::Ask(decision)),
+                Asked::Got(Some(at)) => {
+                    chosen.extend(left.get(at).map(|word| (*word).to_owned()));
+                }
+                Asked::Got(None) => break,
+            }
+        }
+        Ok(Asked::Got(Some(Chosen::Words(chosen))))
     }
 
     /// The index of the option `controller` picks: asked unless there is one option or none.

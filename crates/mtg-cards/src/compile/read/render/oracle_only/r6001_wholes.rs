@@ -97,7 +97,7 @@ mod tests {
         let entries: Vec<serde_json::Value> = serde_json::from_str(R6001_PAIRS).unwrap();
         assert_eq!(R6001_PAIR_SHAPES.len(), entries.len());
         for ([first, second], text) in R6001_PAIR_SHAPES.iter() {
-            assert_eq!(r6001_pair_texts(first, second), [text.clone()]);
+            assert_eq!(r6001_pair_texts(first, second), std::slice::from_ref(text));
             assert!(
                 r6001_pair_texts(second, first).is_empty(),
                 "the order matters"

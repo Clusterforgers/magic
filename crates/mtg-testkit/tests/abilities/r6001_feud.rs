@@ -110,7 +110,9 @@ fn r6001_bitter_feud_doubles_damage_between_the_chosen_players(
         }
         Aim::Wall(_) => {
             // 3 damage leaves the 0/4 wall alive; 6 destroys it.
-            let zone = wall.and_then(|wall| driver.state().object(wall)).map(|o| o.zone());
+            let zone = wall
+                .and_then(|wall| driver.state().object(wall))
+                .map(mtg_engine::object::GameObject::zone);
             assert_eq!(zone != Some(Zone::Battlefield), doubled, "{zone:?}");
         }
     }

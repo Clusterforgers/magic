@@ -72,7 +72,11 @@ fn r6001_spells_targeting_the_torch_cost_two_more(
         .iter()
         .filter_map(|id| driver.state().object(*id))
         .filter(|object| object.controller() == pid(1))
-        .filter(|object| object.permanent().is_some_and(|p| p.tapped()))
+        .filter(|object| {
+            object
+                .permanent()
+                .is_some_and(mtg_engine::object::PermanentState::tapped)
+        })
         .count();
     assert_eq!(tapped, if at_torch { 4 } else { 2 });
     for _ in 0..60 {

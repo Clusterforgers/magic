@@ -1,6 +1,7 @@
 //! "~ must be blocked by two or more creatures if able." (`CombatQuirk::R6001MustBeBlockedByAtLeast`, CR 509.1c): a
-//! requirement on the block declaration. Each attacker with it is listed with the number; the declaration has that many
-//! creatures block it unless fewer could, without breaking a rule or giving up a requirement of their own.
+//! requirement on the block declaration. Each attacker with it is listed in `BlockOptions::must_be_blocked` as many
+//! times as it needs blockers; the declaration has that many creatures block it unless fewer could, without breaking a
+//! rule or giving up a requirement of their own.
 
 use mtg_cards::modify::CombatQuirk;
 use mtg_core::ids::ObjectId;
@@ -8,16 +9,19 @@ use mtg_core::ids::ObjectId;
 use crate::decision::{BlockOptions, BlockerOption};
 use crate::state::GameState;
 
-/// Each attacker some offered blocker could block that must be blocked by several creatures if able, with how many.
-pub(crate) fn r6001_blocked_by_at_least(
+/// Lists each attacker some offered blocker could block that must be blocked by several creatures as many times in
+/// `listed` as it needs blockers.
+pub(crate) fn r6001_list_several(
     state: &GameState,
     blockers: &[BlockerOption],
-) -> Vec<(ObjectId, usize)> {
-    let mut found: Vec<(ObjectId, usize)> = Vec::new();
+    listed: &mut Vec<ObjectId>,
+) {
+    let mut seen: Vec<ObjectId> = Vec::new();
     for attacker in blockers.iter().flat_map(|option| option.can_block.iter()) {
-        if found.iter().any(|(held, _)| held == attacker) {
+        if seen.contains(attacker) {
             continue;
         }
+        seen.push(*attacker);
         let most = state
             .rules()
             .quirks
@@ -29,17 +33,31 @@ pub(crate) fn r6001_blocked_by_at_least(
             })
             .max();
         if let Some(count) = most {
-            found.push((*attacker, count));
+            while listed.iter().filter(|held| *held == attacker).count() < count {
+                listed.push(*attacker);
+            }
         }
     }
-    found
 }
 
 impl BlockOptions {
-    /// Whether the declaration leaves an attacker listed in `r6001_at_least` with fewer blockers than it needs while
-    /// another creature could still join its block.
+    /// Each attacker listed in `must_be_blocked` more than once, with how many times.
+    fn r6001_several(&self) -> Vec<(ObjectId, usize)> {
+        let mut found: Vec<(ObjectId, usize)> = Vec::new();
+        for attacker in &self.must_be_blocked {
+            match found.iter_mut().find(|(held, _)| held == attacker) {
+                Some((_, count)) => *count += 1,
+                None => found.push((*attacker, 1)),
+            }
+        }
+        found.retain(|(_, count)| *count > 1);
+        found
+    }
+
+    /// Whether the declaration leaves an attacker that must be blocked by several creatures with fewer blockers than it
+    /// needs while another creature could still join its block.
     pub(crate) fn r6001_unmet(&self, blocks: &[(ObjectId, ObjectId)]) -> bool {
-        self.r6001_at_least.iter().any(|(attacker, count)| {
+        self.r6001_several().iter().any(|(attacker, count)| {
             let have = blocks.iter().filter(|(_, held)| held == attacker).count();
             have < *count
                 && self.blockers.iter().any(|option| {
@@ -51,18 +69,19 @@ impl BlockOptions {
         })
     }
 
-    /// Adds free creatures to the block of each listed attacker until it has as many as it needs or none is left.
+    /// Adds free creatures to the block of each attacker that must be blocked by several until it has as many as it
+    /// needs or none is left.
     pub(crate) fn r6001_serve(&self, blocks: &mut Vec<(ObjectId, ObjectId)>) {
-        for (attacker, count) in &self.r6001_at_least {
+        for (attacker, count) in self.r6001_several() {
             for option in &self.blockers {
-                let have = blocks.iter().filter(|(_, held)| held == attacker).count();
-                if have >= *count {
+                let have = blocks.iter().filter(|(_, held)| *held == attacker).count();
+                if have >= count {
                     break;
                 }
-                if option.can_block.contains(attacker)
+                if option.can_block.contains(&attacker)
                     && !blocks.iter().any(|(blocker, _)| *blocker == option.object)
                 {
-                    blocks.push((option.object, *attacker));
+                    blocks.push((option.object, attacker));
                 }
             }
         }
