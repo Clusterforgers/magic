@@ -31,6 +31,10 @@ mod r285_ruin;
 mod r374_counts;
 #[cfg(test)]
 mod r3d_atoms;
+#[cfg(test)]
+mod r5520_atoms;
+#[cfg(test)]
+mod r5521_conditions;
 mod resolution;
 #[cfg(test)]
 mod rmt8_atoms;
@@ -84,7 +88,8 @@ fn pool_mut(state: &mut GameState, id: PlayerId) -> Result<&mut ManaPool, Engine
 pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     // What the layers make of the permanents is read from the state, which this event changes.
     // The rules in force read the same things, so they go with the layers.
-    let changes_layers = !crate::layers::leaves_alone(event);
+    let changes_layers = !crate::layers::leaves_alone(event)
+        || (state.possible.pools && crate::layers::r5523_moves_mana(event));
     if changes_layers {
         state.layers.reset();
         state.rules_cache.reset();
@@ -192,6 +197,16 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             crate::attach::fold_attached_to_player(state, *object, *player)
         }
         Event::Unattached { object } => crate::attach::fold_unattached(state, *object),
+        Event::ChosenAsAttached { object, chosen } => {
+            if let Some(permanent) = state
+                .objects
+                .get_mut(object)
+                .and_then(|attachment| attachment.permanent.as_mut())
+            {
+                permanent.chosen = Some(chosen.clone());
+            }
+            Ok(())
+        }
         Event::Paired { object, with } => crate::soulbond::fold_paired(state, *object, *with),
         Event::Unpaired { object, with } => crate::soulbond::fold_unpaired(state, *object, *with),
         Event::TokenCreated(token) => crate::tokens::fold(state, token),
@@ -375,6 +390,7 @@ fn begin_turn(
         state.turn.regular = active;
     }
     state.rmt8_count_turn(active);
+    crate::r5522_history::r5522_note_turn_began(state);
     state.turn.number = number;
     state.turn.active = active;
     state.turn.extra = extra;
@@ -382,6 +398,8 @@ fn begin_turn(
     state.turn.lands_played = 0;
     state.turn.combats = 0;
     state.turn.ahead.clear();
+    state.turn.r5500_lone.clear();
+    state.turn.r5500_in_lone = false;
     state.turn.r306_steps.clear();
     state.turn.r306_seen = 0;
     state.turn.r306_again = 0;
@@ -399,14 +417,18 @@ fn begin_turn(
 
 /// Phases are added after the current one (CR 500.8): they begin before any added earlier, and the phase of the
 /// regular sequence that follows the current one comes after all of them.
-fn add_phases(state: &mut GameState, steps: &[Step]) -> Result<(), EngineError> {
+fn add_phases(state: &mut GameState, steps: &[Step], lone: bool) -> Result<(), EngineError> {
     let turn = &mut state.turn;
     if turn.ahead.is_empty() {
+        // After a step on its own, the phase that follows the one it came after is still held.
         let held = turn.step.phase().next_start();
         turn.ahead
             .push(held.ok_or_else(|| invalid("no phase follows the ending phase"))?);
+        if !turn.r5500_lone.is_empty() {
+            turn.r5500_lone.push(false);
+        }
     }
-    turn.ahead.splice(0..0, steps.iter().copied());
+    turn.r5500_add_ahead(steps, lone);
     Ok(())
 }
 
@@ -437,17 +459,20 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
                 return Err(invalid(format!("{player:?} has no extra turn to skip")));
             }
         }
-        Event::PhasesAdded { steps } => add_phases(state, steps)?,
+        Event::PhasesAdded { steps, lone } => add_phases(state, steps, *lone)?,
         Event::StepAdded { step } => state.turn.r306_steps.insert(0, *step),
         Event::StepBegan { step } => {
             // A step added after the one that ends begins next, and its entry is spent.
-            if state.turn.r306_steps.first() == Some(step) {
+            let from_added = state.turn.r306_steps.first() == Some(step);
+            if from_added {
                 state.turn.r306_steps.remove(0);
             }
             state.turn.r306_note_step(*step);
             // A phase added after the current one begins as its entry says, and the entry is spent (CR 500.8).
             if state.turn.ahead.first() == Some(step) {
-                state.turn.ahead.remove(0);
+                state.turn.r5500_begin_ahead();
+            } else if !from_added {
+                state.turn.r5500_in_lone = false;
             }
             if *step == Step::Upkeep {
                 state.rmt8_mark_upkeep();
@@ -516,11 +541,17 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::ChosenAtRandom { .. }
         | Event::PlayersChosenAtRandom { .. }
         | Event::Sought { .. }
-        | Event::DieRolled { .. }
         | Event::CoinFlipped { .. } => {
             c11e_draw_random(state, event);
         }
-        Event::Cycled { player, .. } => state.tally(*player, Tally::Cycled),
+        Event::Cycled { player, object, .. } => {
+            state.tally(*player, Tally::Cycled);
+            crate::r5522_history::r5522_note_cycled(state, *player, *object);
+        }
+        Event::DieRolled { player, .. } => {
+            c11e_draw_random(state, event);
+            state.tally(*player, Tally::R5508DiceRolled);
+        }
         Event::PriorityGranted { player } => {
             state.priority = Some(PriorityState {
                 holder: *player,
@@ -552,6 +583,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::ClassLevelGained { object, level, .. } => set_level(state, *object, *level)?,
         Event::TurnedFaceUp { object, player, .. } => {
             turn_face_up(state, *object)?;
+            state.tally(*player, Tally::R5522TurnedFaceUp);
             state.record(
                 mtg_cards::value::TallyEvent::TurnedFaceUp,
                 Some(*player),
@@ -885,7 +917,15 @@ fn set_monstrous(state: &mut GameState, id: ObjectId) -> Result<(), EngineError>
 fn c6_kw_fold_rest(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::Renowned { object, .. } => c6_kw_set_renowned(state, *object),
-        Event::Exploited { .. } | Event::Enlisted { .. } | Event::PrizeClaimed { .. } => Ok(()),
+        Event::Exploited {
+            object, sacrificed, ..
+        } => {
+            if let Some(exploiter) = state.object(*object).map(GameObject::reference) {
+                state.tallies.exploits.insert((exploiter, *sacrificed));
+            }
+            Ok(())
+        }
+        Event::Enlisted { .. } | Event::Fought { .. } | Event::PrizeClaimed { .. } => Ok(()),
         Event::EmblemCreated(emblem) => crate::w6b_emblems::fold(state, emblem),
         Event::Exerted { object, player } => {
             crate::w11a_exert::w11a_fold_exerted(state, *object, *player)

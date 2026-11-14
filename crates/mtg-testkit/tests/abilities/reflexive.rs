@@ -29,6 +29,7 @@ fn rig(first: &str, specs: &str, then: &str) -> Arc<CardDefinition> {
     steps.push(Effect::Reflexive {
         targets: serde_json::from_str::<Vec<TargetSpec>>(specs).unwrap(),
         effects: effects(then),
+        condition: None,
     });
     artifact_with(
         "Rig",

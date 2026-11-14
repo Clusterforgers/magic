@@ -86,6 +86,8 @@ pub enum SpendFact {
     Devoid,
     /// It has flashback ("spells with flashback").
     Flashback,
+    /// It has foretell ("spells that have foretell").
+    Foretell,
     /// It is a commander its caster owns ("your commander").
     YourCommander,
     /// It is cast face down ("face-down spells", CR 708.4).
@@ -154,6 +156,11 @@ pub struct SpentFrom {
 pub struct SpendTraits {
     /// Its card types.
     pub types: CardTypes,
+    /// The permanent that made the mana and how many times it had changed zones, for a mana source ("mana produced by
+    /// ~"); none for a spell or the source of an ability.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub made_by: Option<(ObjectId, u32)>,
     /// Its supertypes.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Supertype>>", optional))]
@@ -208,6 +215,10 @@ pub struct SpendTraits {
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub flashback: bool,
+    /// It has foretell.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub foretell: bool,
     /// It is a commander its caster owns.
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
@@ -305,6 +316,7 @@ impl SpendFilter {
                 SpendFact::NotFromHand => traits.not_from_hand,
                 SpendFact::Devoid => traits.devoid,
                 SpendFact::Flashback => traits.flashback,
+                SpendFact::Foretell => traits.foretell,
                 SpendFact::YourCommander => traits.your_commander,
                 SpendFact::FaceDown => traits.face_down,
                 SpendFact::Kicked => traits.kicked,
@@ -354,6 +366,8 @@ pub enum SpendOn {
     OtherCosts,
     /// Paying a cost that has {X} in it, of a spell or of an ability.
     CostWithX,
+    /// Paying a cumulative upkeep cost (CR 702.24a): "Spend this mana only to pay cumulative upkeep costs".
+    CumulativeUpkeep,
     /// Not a restriction: the mana may be spent on anything, and spending it on a spell of the kind sets off the effects
     /// ("When that mana is spent to cast a creature spell, scry 1").
     When(Box<WhenSpent>),
@@ -475,6 +489,7 @@ impl SpendOn {
             SpendOn::Ability(filter) => SpendOn::Ability(filter.resolved(chosen)?),
             SpendOn::CostWithX => SpendOn::CostWithX,
             SpendOn::OtherCosts => SpendOn::OtherCosts,
+            SpendOn::CumulativeUpkeep => SpendOn::CumulativeUpkeep,
             SpendOn::When(rider) => rider.entry(chosen, rider.source)?,
             SpendOn::Uncounterable(filter) => SpendOn::Uncounterable(filter.resolved(chosen)?),
             SpendOn::Snow => SpendOn::Snow,

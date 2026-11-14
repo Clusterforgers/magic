@@ -1,7 +1,7 @@
 {
   "oracle_id": "1d15a06f-5471-48f2-8c4a-9b0886bef5af",
   "name": "Obeka, Splitter of Seconds",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Obeka, Splitter of Seconds",
@@ -9,9 +9,11 @@
       "abilities": [
         { "Keyword": "Menace" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 114 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "AddStep": { "step": "Upkeep", "count": "Triggering", "after_phase": true } }
+            ]
           }
         }
       ]

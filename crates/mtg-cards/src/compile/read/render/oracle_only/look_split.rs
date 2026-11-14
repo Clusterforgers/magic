@@ -81,11 +81,13 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             only: Some(Ref::Bound(card.clone())),
             play: true,
             once: false,
+            any_turn: false,
             additional: None,
             spend_as: crate::modify::SpendAs::Normal,
             when: None,
             any_cast: false,
             riders: Vec::new(),
+            limit: None,
         };
     let Some(words) = u32::try_from(*count).ok().and_then(count_word) else {
         return;

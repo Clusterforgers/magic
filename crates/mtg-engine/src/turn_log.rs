@@ -118,6 +118,7 @@ impl GameState {
     /// The combat phase begins: "this combat" reads the records from here on.
     pub(crate) fn begin_combat_log(&mut self) {
         self.tallies.combat_from = self.tallies.records.len();
+        self.tallies.r5522.combat_graved.clear();
     }
 }
 
@@ -179,6 +180,28 @@ impl Scope<'_> {
                         .as_ref()
                         .is_none_or(|to| record.other.is_some_and(|other| to.contains(&other)))
             })
+    }
+
+    /// The different sources that dealt damage this turn while one of the players controlled them, each object once; a
+    /// record of a source no one could see counts on its own.
+    pub(crate) fn r5502_sources_dealt_damage(&self, players: &[PlayerId]) -> i64 {
+        let mut seen: Vec<ObjectRef> = Vec::new();
+        let mut hidden = 0i64;
+        for record in &self.state.tallies.records {
+            if record.event != TallyEvent::Damaged
+                || !record
+                    .player
+                    .is_some_and(|player| players.contains(&player))
+            {
+                continue;
+            }
+            match record.subject {
+                Some(subject) if !seen.contains(&subject) => seen.push(subject),
+                Some(_) => {}
+                None => hidden += 1,
+            }
+        }
+        i64::try_from(seen.len()).unwrap_or(i64::MAX) + hidden
     }
 
     /// The damage dealt this turn to the players and objects named, as the objects were when it was dealt.
@@ -245,6 +268,27 @@ impl Scope<'_> {
         total
     }
 
+    /// Whether one of the players was attacked this turn by a creature `by` selects as it was when declared as an
+    /// attacker; an attack on their planeswalker or battle names that permanent, not them.
+    pub(crate) fn r5513_attacked_by(&self, players: &[PlayerId], by: &Selector) -> bool {
+        let mut scope = self.clone();
+        scope.as_was = true;
+        scope.snapshots.extend(
+            self.state
+                .tallies
+                .records
+                .iter()
+                .filter_map(|record| record.shot.as_ref()),
+        );
+        self.state.tallies.records.iter().any(|record| {
+            record.event == TallyEvent::Attacked
+                && matches!(record.other, Some(Target::Player(player)) if players.contains(&player))
+                && record.shot.as_ref().is_some_and(|shot| {
+                    by.is_empty() || scope.selects(by, shot.reference()).unwrap_or(false)
+                })
+        })
+    }
+
     /// Whether the object blocked or was blocked this turn by a creature `with` selects as it was when the block was
     /// declared; by any creature when `with` is empty.
     pub(crate) fn r379_blocked_this_turn(&self, with: &Selector, object: ObjectRef) -> bool {
@@ -275,6 +319,25 @@ impl Scope<'_> {
                     || (attacker == Some(object)
                         && record.subject.is_some()
                         && selects(record.shot.as_ref()))
+            })
+    }
+
+    /// Whether the object dealt damage this turn to an object `to` selects as it was when the damage was dealt
+    /// (`Pred::DealtDamageThisTurn`); damage to a player never counts.
+    pub(crate) fn r5523_dealt_damage_this_turn(&self, to: &Selector, object: ObjectRef) -> bool {
+        self.state
+            .tallies
+            .records
+            .iter()
+            .filter(|record| record.event == TallyEvent::Damaged && record.subject == Some(object))
+            .filter(|record| matches!(record.other, Some(Target::Object(_))))
+            .any(|record| {
+                record.other_shot.as_ref().is_some_and(|shot| {
+                    let mut one = self.clone();
+                    one.as_was = true;
+                    one.snapshots.insert(0, shot);
+                    one.selects(to, shot.reference()).unwrap_or(false)
+                })
             })
     }
 }

@@ -105,7 +105,11 @@ pub(super) fn l32a_times_read(
                 who: Ref::You,
                 cost: Cost::mana(mana),
             },
-            Effect::Reflexive { targets, effects },
+            Effect::Reflexive {
+                targets,
+                effects,
+                condition: None,
+            },
         ],
     )
 }
@@ -127,6 +131,7 @@ pub(super) fn l32a_times_wordings(
             Effect::Reflexive {
                 targets: own,
                 effects: steps,
+                condition: None,
             },
         ],
     ) = (ability, ability.effects())

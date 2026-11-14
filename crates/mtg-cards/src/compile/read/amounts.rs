@@ -134,6 +134,9 @@ pub const fn stat_name(stat: StatKind) -> Option<&'static str> {
         | StatKind::BaseToughness
         | StatKind::ManaSpent
         | StatKind::ColorsSpent
+        | StatKind::TreasureManaSpent
+        | StatKind::ArtifactManaSpent
+        | StatKind::ColoredManaSymbols
         | StatKind::Kicks => None,
     }
 }
@@ -143,6 +146,28 @@ pub const fn stat_name(stat: StatKind) -> Option<&'static str> {
 pub fn for_each(r: &mut Reader<'_>) -> Option<Amount> {
     r.attempt(|r| {
         r.need("for each")?;
+        let first = for_each_one(r)?;
+        // "for each card in your hand and each foretold card you own in exile": the counts add up, and the last ends
+        // the phrase.
+        let mut parts = vec![first];
+        while let Some(next) = r.attempt(|r| {
+            r.need("and each")?;
+            let next = for_each_one(r)?;
+            r.peek_word().is_none().then_some(next)
+        }) {
+            parts.push(next);
+        }
+        Some(if parts.len() == 1 {
+            parts.remove(0)
+        } else {
+            Amount::Sum(parts)
+        })
+    })
+}
+
+/// One thing "for each" counts, after "for each " or "and each ".
+fn for_each_one(r: &mut Reader<'_>) -> Option<Amount> {
+    r.attempt(|r| {
         if let Some(counted) = r.attempt(counters::counted) {
             return Some(counted);
         }
@@ -162,6 +187,20 @@ pub fn for_each(r: &mut Reader<'_>) -> Option<Amount> {
         }
         if let Some(tally) = super::vote::w2d_tally(r, false) {
             return Some(tally);
+        }
+        if let Some(found) = r.attempt(|r| {
+            r.need("unspent")?;
+            let color = super::selectors::color(r.take_word()?)?;
+            r.need("mana you have")?;
+            Some(Amount::ManaInPoolOf {
+                who: Ref::You,
+                mana: mtg_core::mana::ManaType::from(color),
+            })
+        }) {
+            return Some(found);
+        }
+        if r.words("opponent you attacked this turn") {
+            return Some(Amount::Players(Ref::AttackedThisTurn));
         }
         if r.words("opponent you attacked") {
             return Some(Amount::Players(Ref::Attacked));
@@ -315,6 +354,14 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
         return Some(text);
     }
     Some(match counted {
+        Amount::Sum(parts) if parts.len() > 1 => parts
+            .iter()
+            .map(|part| match part {
+                Amount::Sum(_) => None,
+                part => for_each_text(part),
+            })
+            .collect::<Option<Vec<_>>>()?
+            .join(" and each "),
         Amount::Count(selector) if exiled_this_way(selector).is_some() => {
             exiled_this_way(selector)?
         }
@@ -331,6 +378,14 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
         }
         Amount::Players(Ref::Opponents) => "opponent".to_owned(),
         Amount::Players(Ref::Attacked) => "opponent you attacked".to_owned(),
+        Amount::Players(Ref::AttackedThisTurn) => "opponent you attacked this turn".to_owned(),
+        Amount::ManaInPoolOf {
+            who: Ref::You,
+            mana,
+        } => format!(
+            "unspent {} mana you have",
+            super::selectors::color_name(mana.color()?)
+        ),
         Amount::Players(Ref::PlayersWhere { .. }) => super::r9w_players::r9w_each_text(counted)?,
         Amount::Players(Ref::Bound(_)) => super::vote::w2d_tally_text(counted, false)?,
         Amount::Party(Ref::You) => "creature in your party".to_owned(),

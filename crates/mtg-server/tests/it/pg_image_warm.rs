@@ -1,4 +1,4 @@
-//! Goal: when a game starts, the pictures of the cards its seats play are fetched in the background, once per card, printing and face and two at a time, in the printing each deck line chose and else in the newest one; the game never waits for them, a CDN that fails changes nothing for the table, and a game that is still in its lobby fetches nothing.
+//! Goal: when a game starts, the pictures of the cards its seats play are fetched in the background, once per card, printing and face and half the upstream slots at a time, in the printing each deck line chose and else in the newest one; the game never waits for them, a CDN that fails changes nothing for the table, and a game that is still in its lobby fetches nothing.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common::cdn::{Behavior, Cdn};
@@ -269,7 +269,9 @@ async fn seats_that_choose_differently_have_both_printings_fetched(pool: PgPool)
 }
 
 #[sqlx::test(migrations = false)]
-async fn the_game_never_waits_for_the_pictures_and_they_come_two_at_a_time(pool: PgPool) {
+async fn the_game_never_waits_for_the_pictures_and_they_come_half_the_slots_at_a_time(
+    pool: PgPool,
+) {
     let table = table(&pool, Behavior::Delay(Duration::from_secs(2))).await;
     let handle = seat_and_ready(&table).await;
     let started = tokio::time::timeout(Duration::from_secs(1), async {
@@ -288,8 +290,8 @@ async fn the_game_never_waits_for_the_pictures_and_they_come_two_at_a_time(pool:
     tokio::time::sleep(Duration::from_millis(300)).await;
     let asked = table.cdn.count();
     assert!(
-        (1..=2).contains(&asked),
-        "{asked} requests in flight, two at most"
+        (1..=mtg_server::IN_FLIGHT / 2).contains(&asked),
+        "{asked} requests in flight, half the upstream slots at most"
     );
 }
 

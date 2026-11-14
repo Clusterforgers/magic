@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ebb88893-427f-496c-82a8-94d2bafb5e4c",
+  "name": "Reenact the Crime",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reenact the Crime",
+      "oracle_fingerprint": "abf15d5fb6b913e75f78b3eda2e7fdfa",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "In": "Graveyard" },
+                    { "Not": { "Type": "Land" } },
+                    "ArrivedThisTurn"
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "card" } },
+              { "CopyCard": { "what": { "Bound": "card" }, "as": "copy" } },
+              { "CastFromZone": { "what": { "Bound": "copy" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

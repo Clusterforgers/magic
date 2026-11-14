@@ -1,0 +1,12 @@
+{
+  "oracle_id": "1d6e9716-8c3c-443d-afd8-68d0d6c469a5",
+  "name": "Standard Bearer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Standard Bearer",
+      "oracle_fingerprint": "85b73ed45358c3ffefe3253b6ba15861",
+      "abilities": [{ "Rule": { "rule": "Flagbearers" } }]
+    }
+  ]
+}

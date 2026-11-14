@@ -42,7 +42,7 @@ pub(crate) use inline::{
 pub use left::LeftToTable;
 pub(crate) use prim::{first_step_done, lower};
 pub use value::{Bindings, ResolveError, Scope};
-pub(crate) use value::{CastTargets, zone_kind};
+pub(crate) use value::{CastTargets, R5520_PAID, zone_kind};
 
 use crate::abilities::{AbilityObject, AbilityRef};
 use crate::ability_reader::abilities_of;

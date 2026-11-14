@@ -1,7 +1,7 @@
 //! The events behind `TriggerPattern::Did`: each action of `mtg_cards::did::Action` is one arm of [`did_happened`], read off
 //! the event itself or off what the batch already found about it.
 
-use mtg_cards::ability::Ability;
+use mtg_cards::ability::{Ability, LoyaltyCost};
 use mtg_cards::assemble::mana_shape;
 use mtg_cards::did::Action;
 use mtg_cards::refs::{Ref, Selector};
@@ -57,6 +57,29 @@ fn activated_on_stack(
                     && ability.origin() == origin
             })
     })
+}
+
+/// The loyalty counters a loyalty ability's cost removed: its fixed minus, or the X it was activated with; 0 for a plus
+/// or zero cost and any other ability.
+fn r5508_loyalty_removed(
+    post: &GameState,
+    rules: Option<&Ability>,
+    on_stack: Option<ObjectId>,
+) -> u32 {
+    match rules {
+        Some(Ability::Loyalty {
+            cost: LoyaltyCost::Minus(n),
+            ..
+        }) => *n,
+        Some(Ability::Loyalty {
+            cost: LoyaltyCost::MinusX,
+            ..
+        }) => on_stack
+            .and_then(|id| post.object(id))
+            .and_then(|ability| ability.choices().x)
+            .unwrap_or(0),
+        _ => 0,
+    }
 }
 
 /// Whether the activated ability has no {T} in its activation cost; a loyalty ability never has one.
@@ -116,6 +139,7 @@ pub(super) fn did_happened(
             ability,
             origin,
         } => found.extend(activated(pre, post, *player, source.id, *ability, *origin)),
+        Event::Fought { object, .. } => found.push(of(Action::Fought, *object)),
         Event::Enlisted { object, player, .. } => {
             found.push(did(Action::Enlisted, Some(*player), Some(*object)));
         }
@@ -225,6 +249,10 @@ pub(super) fn did_happened(
             found.extend(action.map(|action| did(action, Some(*player), Some(*object))));
         }
         Event::Foraged { player } => found.push(did(Action::Foraged, Some(*player), None)),
+        // The flipper loses a flip whose call missed (CR 705.2); a won flip is `CoinFlipWon`.
+        Event::CoinFlipped {
+            player, won: false, ..
+        } => found.push(did(Action::LostCoinFlip, Some(*player), None)),
         Event::Solved { object } => found.push(did(
             Action::SolvedCase,
             controller_of(post, *object),
@@ -284,10 +312,15 @@ fn from_found(fresh: &[Happened], of: &dyn Fn(Action, ObjectId) -> Happened) -> 
         match happened {
             Happened::Moved {
                 object,
+                from,
                 cause: Some(cause),
                 ..
             } => {
-                if let Some(action) = moved_action(*cause) {
+                // Only the special action exiles a card from a hand as it is foretold (CR 702.143b); a card an effect
+                // makes foretold was not foretold by anyone.
+                let foretelling =
+                    !matches!(cause, ZoneCause::Foretold) || matches!(from, Zone::Hand(_));
+                if let Some(action) = moved_action(*cause).filter(|_| foretelling) {
                     found.push(of(action, *object));
                 }
             }
@@ -512,7 +545,10 @@ fn activated(
         .as_deref()
         .map(Action::activation_kinds)
         .unwrap_or_default();
-    let loyalty = rules.is_some_and(|rules| matches!(*rules, Ability::Loyalty { .. }));
+    let loyalty = rules
+        .as_deref()
+        .is_some_and(|rules| matches!(rules, Ability::Loyalty { .. }));
+    let removed = r5508_loyalty_removed(post, rules.as_deref(), on_stack);
     let eternalize = matches!(
         ability_reader::keyword_adding(pre, address),
         Some(mtg_cards::keyword::Keyword::Eternalize(_) | mtg_cards::keyword::Keyword::Embalm(_))
@@ -527,7 +563,12 @@ fn activated(
             player: Some(player),
             object: Some(source),
             ability: on_stack,
-            amount: 0,
+            // The loyalty counters removed to activate it ("if you removed two or more loyalty counters to activate it").
+            amount: if action == Action::ActivatedLoyalty {
+                removed
+            } else {
+                0
+            },
         })
         .chain(untapped)
         .collect()

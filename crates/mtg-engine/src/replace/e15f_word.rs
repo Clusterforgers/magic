@@ -1,7 +1,7 @@
 //! A word chosen as a permanent enters ("As this enchantment enters, choose Khans or Dragons."): the controller picks one
 //! of the words, the permanent keeps it while it stays, and `Condition::EnteredAs` reads it.
 
-use mtg_cards::trigger::ReplaceBy;
+use mtg_cards::trigger::{EntersChoice, ReplaceBy};
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{Asked, Pass};
@@ -22,6 +22,16 @@ impl Pass<'_> {
         match by {
             ReplaceBy::Choose(kind) => self.chooses(source, controller, *kind),
             ReplaceBy::ChooseWord(words) => self.e15f_chooses_word(source, controller, words),
+            ReplaceBy::OpponentChooses(kind) => {
+                // The controller names the opponent who chooses (as a player does for "an opponent" in a multiplayer
+                // game); that opponent then makes the choice.
+                let opponent = match self.chooses(source, controller, EntersChoice::Opponent)? {
+                    Asked::Ask(decision) => return Ok(Asked::Ask(decision)),
+                    Asked::Got(Some(Chosen::Player(opponent))) => opponent,
+                    Asked::Got(_) => return Ok(Asked::Got(None)),
+                };
+                self.chooses(source, opponent, *kind)
+            }
             _ => Ok(Asked::Got(None)),
         }
     }

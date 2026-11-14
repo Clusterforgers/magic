@@ -163,6 +163,11 @@ pub struct TurnState {
     /// begins with, the added ones first and the phase of the regular sequence they hold up last; empty while the
     /// turn runs its regular sequence.
     pub(crate) ahead: Vec<Step>,
+    /// For each entry of `ahead`, whether it is a step on its own rather than the first step of a phase; empty while
+    /// none is.
+    pub(crate) r5500_lone: Vec<bool>,
+    /// Whether the current step began on its own from `ahead`, so the phase ends with it.
+    pub(crate) r5500_in_lone: bool,
     /// The steps added right after the current step (an additional upkeep step), the next first; empty while none is.
     pub(crate) r306_steps: Vec<Step>,
     /// The kinds of step begun this turn, one bit each in turn order.
@@ -195,6 +200,10 @@ impl Hash for TurnState {
         if !self.r306_steps.is_empty() {
             self.r306_steps.hash(state);
         }
+        if !self.r5500_lone.is_empty() || self.r5500_in_lone {
+            self.r5500_lone.hash(state);
+            self.r5500_in_lone.hash(state);
+        }
         if self.r306_again != 0 {
             self.r306_again.hash(state);
         }
@@ -208,6 +217,28 @@ impl Hash for TurnState {
 }
 
 impl TurnState {
+    /// The turn state before the first turn, with `first` as the active player.
+    pub(crate) const fn pregame(first: PlayerId) -> TurnState {
+        TurnState {
+            number: 0,
+            active: first,
+            step: Step::Untap,
+            lands_played: 0,
+            round: 0,
+            regular: first,
+            extra: false,
+            no_power_up: false,
+            combats: 0,
+            ahead: Vec::new(),
+            r306_steps: Vec::new(),
+            r5500_lone: Vec::new(),
+            r5500_in_lone: false,
+            r306_seen: 0,
+            r306_again: 0,
+            ending: false,
+        }
+    }
+
     /// Turn number, starting at 1 (0 before the first turn).
     pub const fn number(&self) -> u32 {
         self.number
@@ -265,6 +296,32 @@ impl TurnState {
     /// The steps added right after the current one, the next first (`Effect::AddStep`).
     pub fn steps_ahead(&self) -> &[Step] {
         &self.r306_steps
+    }
+
+    /// Whether the current step began on its own after a phase (an additional upkeep step after this phase): the
+    /// steps of its phase do not follow it.
+    pub const fn step_is_lone(&self) -> bool {
+        self.r5500_in_lone
+    }
+
+    /// Adds `steps` in front of the phases ahead, each a step on its own when `lone`.
+    pub(crate) fn r5500_add_ahead(&mut self, steps: &[Step], lone: bool) {
+        if lone && self.r5500_lone.is_empty() {
+            self.r5500_lone = vec![false; self.ahead.len()];
+        }
+        self.ahead.splice(0..0, steps.iter().copied());
+        if !self.r5500_lone.is_empty() {
+            self.r5500_lone.splice(0..0, steps.iter().map(|_| lone));
+        }
+    }
+
+    /// Spends the first entry of the phases ahead as `step` begins from it, noting whether the step is on its own.
+    pub(crate) fn r5500_begin_ahead(&mut self) {
+        self.ahead.remove(0);
+        self.r5500_in_lone = !self.r5500_lone.is_empty() && self.r5500_lone.remove(0);
+        if !self.r5500_lone.contains(&true) {
+            self.r5500_lone.clear();
+        }
     }
 
     /// The round of the turn, from 1: a round is one turn of each seat in play, from the first player's seat round to

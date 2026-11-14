@@ -1,0 +1,148 @@
+[
+ [
+  {
+   "Triggered": {
+    "when": {
+     "AnyOf": [
+      {
+       "ZoneChange": {
+        "what": [
+         "This"
+        ],
+        "to": "Battlefield"
+       }
+      },
+      {
+       "ZoneChange": {
+        "what": [
+         "This"
+        ],
+        "from": "Battlefield",
+        "to": "Graveyard"
+       }
+      }
+     ]
+    },
+    "effects": [
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "In": "Graveyard"
+         },
+         "Other"
+        ]
+       },
+       "as": "exiled"
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Bound": "exiled"
+       }
+      }
+     },
+     {
+      "Reflexive": {
+       "effects": [
+        {
+         "Modal": {
+          "modes": [
+           {
+            "targets": [
+             {
+              "what": {
+               "Object": []
+              }
+             }
+            ],
+            "effects": [
+             {
+              "RemoveCounters": {
+               "from": {
+                "Target": 0
+               },
+               "count": {
+                "Stat": {
+                 "of": {
+                  "Bound": "exiled"
+                 },
+                 "stat": "ManaValue"
+                }
+               }
+              }
+             }
+            ]
+           },
+           {
+            "targets": [
+             {
+              "what": {
+               "Object": [
+                {
+                 "Type": "Creature"
+                },
+                {
+                 "ControlledBy": "Opponents"
+                }
+               ]
+              }
+             }
+            ],
+            "effects": [
+             {
+              "Continuous": {
+               "affected": {
+                "Target": 0
+               },
+               "mods": [
+                {
+                 "ModifyPT": {
+                  "power": {
+                   "Times": {
+                    "by": -1,
+                    "of": {
+                     "Stat": {
+                      "of": {
+                       "Bound": "exiled"
+                      },
+                      "stat": "ManaValue"
+                     }
+                    }
+                   }
+                  },
+                  "toughness": {
+                   "Times": {
+                    "by": -1,
+                    "of": {
+                     "Stat": {
+                      "of": {
+                       "Bound": "exiled"
+                      },
+                      "stat": "ManaValue"
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               ],
+               "duration": "UntilEndOfTurn"
+              }
+             }
+            ]
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "When this creature enters or dies, exile another card from a graveyard. When you do, choose one —\n• Remove X counters from target permanent, where X is the mana value of the exiled card.\n• Target creature an opponent controls gets -X/-X until end of turn, where X is the mana value of the exiled card."
+ ]
+]

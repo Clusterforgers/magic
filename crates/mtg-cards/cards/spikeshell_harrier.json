@@ -1,0 +1,38 @@
+{
+  "oracle_id": "23102d8a-3a93-4e83-af5b-401c85ba9dbc",
+  "name": "Spikeshell Harrier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spikeshell Harrier",
+      "oracle_fingerprint": "26c169c8beaaa83fb0b495ec1916c508",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Bind": { "what": { "ControllerOf": { "Target": 0 } }, "as": "foe" } },
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": { "FastestPlayer": { "Bound": "foe" } },
+                  "then": [{ "ReduceSpeed": { "who": { "Bound": "foe" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

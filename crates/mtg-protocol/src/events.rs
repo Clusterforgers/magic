@@ -437,6 +437,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::CopyEnded { .. }
         | Event::Entered { .. }
         | Event::Attached { .. }
+        | Event::ChosenAsAttached { .. }
         | Event::AttachedToPlayer { .. }
         | Event::Unattached { .. }
         | Event::Paired { .. }
@@ -488,6 +489,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Devoured { .. }
         | Event::Renowned { .. }
         | Event::Exploited { .. }
+        | Event::Fought { .. }
         | Event::Crewed { .. }
         | Event::ClassLevelGained { .. }
         | Event::TurnedFaceUp { .. }

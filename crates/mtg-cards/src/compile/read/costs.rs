@@ -8,11 +8,11 @@ use super::tokens::Reader;
 use super::triggers::article;
 use super::w2f_any_counters::w2f_text;
 use crate::ability::Ability;
-use crate::cost::{Cost, CostItem};
+use crate::cost::{Alike, Cost, CostItem};
 use crate::mana::ManaCostX;
 use crate::refs::{Pred, Ref, Selector, TargetSet, ZoneKind};
 use crate::value::{Amount, CounterKind};
-use mtg_core::card::Subtype;
+use mtg_core::card::{CardType, Subtype};
 
 /// The parts of a cost, separated by commas: `{T}`, `{Q}`, a run of mana symbols, "Pay 2 life",
 /// "Sacrifice ~", "Sacrifice another creature", "Discard a card".
@@ -103,7 +103,9 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
         return Some(CostItem::PayLife(amount));
     }
     if r.word("discard") {
-        return discard(r).map(|item| r4709_apart(r, item));
+        return r
+            .attempt(|r| r5518_alike(r, true))
+            .or_else(|| discard(r).map(|item| r4709_apart(r, item)));
     }
     if r.word("tap") {
         return tap(r);
@@ -112,7 +114,7 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
         return exile(r);
     }
     if r.word("reveal") {
-        return reveal(r);
+        return r.attempt(|r| r5518_alike(r, false)).or_else(|| reveal(r));
     }
     if r.word("return") {
         return bounce(r);
@@ -220,6 +222,18 @@ fn r4709_apart_text(item: &CostItem) -> Option<String> {
 }
 
 /// "Discard a card", "Discard two cards", "Discard a land card", "Discard X creature cards".
+/// "and discard a card" after the mana of a payment ("you may pay {1}{R} and discard a card"): any cards, as
+/// `l290_pay_phrase` writes it back.
+pub(super) fn r5520_and_discard(r: &mut Reader<'_>) -> Option<CostItem> {
+    r.need("and discard")?;
+    let count = cards(r)?;
+    matches!(count, Amount::Fixed(1..)).then_some(())?;
+    Some(CostItem::Discard {
+        count,
+        filter: None,
+    })
+}
+
 fn discard(r: &mut Reader<'_>) -> Option<CostItem> {
     if let Some(count) = r.attempt(cards) {
         return Some(CostItem::Discard {
@@ -234,6 +248,32 @@ fn discard(r: &mut Reader<'_>) -> Option<CostItem> {
     Some(CostItem::Discard {
         count,
         filter: Some(kinds_only(filter).filter(|kinds| !kinds.0.is_empty())?),
+    })
+}
+
+/// "Discard two nonland cards with the same name", "Reveal two cards from your hand that share a color": cards of the
+/// hand alike as a set.
+fn r5518_alike(r: &mut Reader<'_>, discard: bool) -> Option<CostItem> {
+    let (_, count) = how_many(r)?;
+    matches!(count, Amount::Fixed(_)).then_some(())?;
+    let filter = if r.word("nonland") {
+        Selector(vec![Pred::Not(Box::new(Pred::Type(CardType::Land)))])
+    } else {
+        Selector::default()
+    };
+    r.word("cards").then_some(())?;
+    let alike = if discard && r.words("with the same name") {
+        Alike::SameName
+    } else if !discard && r.words("from your hand that share a color") {
+        Alike::ShareColor
+    } else {
+        return None;
+    };
+    Some(CostItem::AlikeFromHand {
+        discard,
+        filter,
+        count,
+        alike,
     })
 }
 
@@ -282,6 +322,9 @@ fn exile(r: &mut Reader<'_>) -> Option<CostItem> {
         r.from_graveyard = r.words("from your graveyard");
         return Some(CostItem::ExileSelf);
     }
+    if let Some(types) = r.attempt(r5511_card_types) {
+        return Some(CostItem::ExileCardTypes(types));
+    }
     let (form, count) = how_many(r)?;
     let mut filter = phrase(r, form)?;
     // "Exile a creature you control": a permanent of the battlefield.
@@ -306,6 +349,15 @@ fn exile(r: &mut Reader<'_>) -> Option<CostItem> {
             count,
         }
     })
+}
+
+/// "any number of other cards from your graveyard with four or more card types among them" (Nethergoyf's escape).
+fn r5511_card_types(r: &mut Reader<'_>) -> Option<u32> {
+    r.words("any number of other cards from your graveyard with")
+        .then_some(())?;
+    let types = number_word(r.peek_word()?)?;
+    r.word(r.peek_word()?).then_some(())?;
+    r.words("or more card types among them").then_some(types)
 }
 
 /// "Reveal a creature card from your hand", "Reveal a Giant card from your hand", the morph cost "Reveal a white card in
@@ -497,6 +549,9 @@ fn sacrifice(r: &mut Reader<'_>) -> Option<CostItem> {
             count: Amount::one(),
         });
     }
+    if let Some(half) = r.attempt(r5506_half_sacrifice) {
+        return Some(half);
+    }
     let (filter, count) = if r.word("a") || r.word("an") || r.peek_word() == Some("another") {
         (phrase(r, Form::Subject)?, Amount::one())
     } else {
@@ -506,6 +561,53 @@ fn sacrifice(r: &mut Reader<'_>) -> Option<CostItem> {
     // The payer sacrifices what they control: a cost says nothing of who controls it or where it is.
     filter.0.iter().all(is_cost_filter).then_some(())?;
     Some(CostItem::Sacrifice { filter, count })
+}
+
+/// "half the lands you control, rounded up": that share of the payer's permanents of the kind, counted as the cost is
+/// announced.
+fn r5506_half_sacrifice(r: &mut Reader<'_>) -> Option<CostItem> {
+    r.words("half the").then_some(())?;
+    let counted = phrase(r, Form::Targets)?;
+    r.punct(',').then_some(())?;
+    r.word("rounded").then_some(())?;
+    let up = if r.word("up") {
+        true
+    } else if r.word("down") {
+        false
+    } else {
+        return None;
+    };
+    let you = Pred::ControlledBy(Ref::You);
+    let (yours, filter): (Vec<&Pred>, Vec<&Pred>) =
+        counted.0.iter().partition(|pred| **pred == you);
+    (yours.len() == 1).then_some(())?;
+    let filter = Selector(filter.into_iter().cloned().collect());
+    (!filter.0.is_empty() && filter.0.iter().all(is_cost_filter)).then_some(())?;
+    Some(CostItem::Sacrifice {
+        filter,
+        count: Amount::Half {
+            of: Box::new(Amount::Count(counted)),
+            up,
+        },
+    })
+}
+
+/// The words of [`r5506_half_sacrifice`]: "Sacrifice half the lands you control, rounded up".
+fn r5506_half_sacrifice_text(filter: &Selector, count: &Amount) -> Option<String> {
+    let Amount::Half { of, up } = count else {
+        return None;
+    };
+    let Amount::Count(counted) = &**of else {
+        return None;
+    };
+    let mut yours = filter.0.clone();
+    yours.push(Pred::ControlledBy(Ref::You));
+    (counted.0 == yours).then_some(())?;
+    let way = if *up { "up" } else { "down" };
+    Some(format!(
+        "Sacrifice half the {}, rounded {way}",
+        phrase_text(counted, Form::Targets)?
+    ))
 }
 
 /// "another Vampire or Zombie", "a Vampire or Zombie": one permanent of either of two subtypes.
@@ -596,6 +698,10 @@ fn item_text(item: &CostItem) -> Option<String> {
         CostItem::Exert => "Exert ~".to_owned(),
         CostItem::Forage => "Forage".to_owned(),
         CostItem::CollectEvidence(total) => format!("Collect evidence {total}"),
+        CostItem::ExileCardTypes(types) => format!(
+            "Exile any number of other cards from your graveyard with {} or more card types among them",
+            count_word(*types)?
+        ),
         CostItem::PutCounters { counter, count } => {
             format!("Put {} on ~", w2f_text(Some(counter), count)?)
         }
@@ -624,6 +730,28 @@ fn item_text(item: &CostItem) -> Option<String> {
             format!("Discard {}", text.strip_suffix(" from your hand")?)
         }
         CostItem::TapPermanents { filter, count } => tap_text(filter, count)?,
+        CostItem::AlikeFromHand {
+            discard,
+            filter,
+            count: Amount::Fixed(count),
+            alike,
+        } if *count > 1 => {
+            let nonland = match filter.0.as_slice() {
+                [] => "",
+                [Pred::Not(not)] if **not == Pred::Type(CardType::Land) => "nonland ",
+                _ => return None,
+            };
+            let number = count_word(u32::try_from(*count).ok()?)?;
+            match (discard, alike) {
+                (true, Alike::SameName) => {
+                    format!("Discard {number} {nonland}cards with the same name")
+                }
+                (false, Alike::ShareColor) => {
+                    format!("Reveal {number} {nonland}cards from your hand that share a color")
+                }
+                _ => return None,
+            }
+        }
         CostItem::Waterbend(generic) => format!("Waterbend {{{generic}}}"),
         CostItem::ExileFromGraveyard {
             filter,
@@ -752,6 +880,9 @@ fn taken_text(said: &Selector, count: &Amount) -> Option<String> {
 fn sacrifice_text(filter: &Selector, count: &Amount) -> Option<String> {
     if filter.0.is_empty() || !filter.0.iter().all(is_cost_filter) {
         return None;
+    }
+    if let Some(text) = r5506_half_sacrifice_text(filter, count) {
+        return Some(text);
     }
     if *count == Amount::X {
         return Some(format!(

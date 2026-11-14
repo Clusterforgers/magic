@@ -60,6 +60,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         }
         Modification::SetColors(_) | Modification::AddColors(_) => Traits::COLORS,
         Modification::AddKeyword(_)
+        | Modification::AddKeywords(_)
         | Modification::RemoveKeyword(_)
         | Modification::RemoveKeywordKind(_)
         | Modification::LockKeyword(_) => Traits::KEYWORDS,
@@ -102,15 +103,20 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         Wanted::AddType(_) | Wanted::RemoveType(_) | Wanted::SetTypes(_) => {
             Traits::TYPES.or(Traits::SUBTYPES)
         }
-        Wanted::AddSubtype(_) | Wanted::SetCreatureTypes(_) | Wanted::AddAllCreatureTypes => {
-            Traits::SUBTYPES
-        }
-        Wanted::SetLandTypes(_) | Wanted::SetLandTypesChosen(_) | Wanted::AddLandTypeChosen(_) => {
-            Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES)
-        }
-        Wanted::SetCreatureTypesChosen(_)
+        Wanted::AddSubtype(_)
+        | Wanted::SetCreatureTypes(_)
+        | Wanted::SetCreatureTypesOf(_)
+        | Wanted::AddAllCreatureTypes
+        | Wanted::SetCreatureTypesChosen(_)
         | Wanted::AddCreatureTypeChosen(_)
         | Wanted::AddChosenSubtype => Traits::SUBTYPES,
+        Wanted::SetLandTypes(_)
+        | Wanted::SetLandTypesChosen(_)
+        | Wanted::SetLandTypesNthChosen(_)
+        | Wanted::AddLandTypeChosen(_)
+        | Wanted::ChangeTextChosen { .. } => {
+            Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES)
+        }
         Wanted::SetColors(_)
         | Wanted::AddColors(_)
         | Wanted::SetColorsChosen(_)
@@ -118,6 +124,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::AddChosenColor
         | Wanted::SetCommanderColor => Traits::COLORS,
         Wanted::AddKeyword(_)
+        | Wanted::KeywordsOf { .. }
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType
         | Wanted::RemoveKeyword(_)
@@ -127,7 +134,6 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::LoseAbilitiesExceptMana
         | Wanted::LoseThisAbility
         | Wanted::LosePrinted(_) => Traits::KEYWORDS.or(Traits::RULES),
-        Wanted::ChangeTextChosen { .. } => Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES),
         Wanted::SetController(_) => Traits::CONTROL,
         Wanted::SetPT { .. }
         | Wanted::SetPower(_)
@@ -169,6 +175,10 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::SetToughness(value)
         | Wanted::BlocksAdditionalPer(value) => reads_of_amount(value),
         Wanted::SetController(who) | Wanted::GainAbilitiesOf(who) => reads_of_ref(who),
+        // The keywords of the other objects are read.
+        Wanted::KeywordsOf { from, .. } => Traits::KEYWORDS.or(reads_of_ref(from)),
+        // The creature types of the other object are read.
+        Wanted::SetCreatureTypesOf(from) => Traits::SUBTYPES.or(reads_of_ref(from)),
         Wanted::CantBeBlockedBy(blockers) | Wanted::CanBlockOnly(blockers) => {
             reads_of_selector(blockers)
         }
@@ -185,6 +195,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::SetCreatureTypes(_)
         | Wanted::SetLandTypes(_)
         | Wanted::SetLandTypesChosen(_)
+        | Wanted::SetLandTypesNthChosen(_)
         | Wanted::SetCreatureTypesChosen(_)
         | Wanted::AddCreatureTypeChosen(_)
         | Wanted::AddLandTypeChosen(_)
@@ -245,21 +256,27 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Promised
         | Ref::Defending
         | Ref::Attacked
+        | Ref::AttackedThisTurn
         | Ref::MostLife
         | Ref::Teammates
         | Ref::ActivePlayer
         | Ref::Chooser
         | Ref::Asker
+        | Ref::ModesChooser
         | Ref::Bound(_)
         | Ref::Affected
         | Ref::Candidate
         | Ref::Paid
-        | Ref::Convoked => Traits::NONE,
+        | Ref::Convoked
+        | Ref::Delved => Traits::NONE,
         Ref::Remembered { on, .. } => reads_of_ref(on),
+        Ref::LastExiledWith { on, filter } => reads_of_ref(on).or(reads_of_selector(filter)),
         Ref::ControllerOf(inner) | Ref::OrController(inner) => {
             Traits::CONTROL.or(reads_of_ref(inner))
         }
-        Ref::OwnerOf(inner) | Ref::Seated { of: inner, .. } => reads_of_ref(inner),
+        Ref::OwnerOf(inner) | Ref::Seated { of: inner, .. } | Ref::OpponentsOf(inner) => {
+            reads_of_ref(inner)
+        }
         Ref::Arrived { of, .. } | Ref::Departed(of) | Ref::SourceOf(of) => reads_of_ref(of),
         Ref::Each(selector) => reads_of_selector(selector),
         Ref::Union(parts) => parts
@@ -308,6 +325,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::SummoningSick
         | Pred::MilledThisTurn
         | Pred::DrawnThisTurn
+        | Pred::LastDrawnThisTurn
         | Pred::HasAdventure
         | Pred::DamagedThisTurn
         | Pred::AttackedThisTurn
@@ -336,6 +354,10 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::FaceDown
         | Pred::SpentFrom { .. }
         | Pred::GravedThisTurn
+        | Pred::GravedThisCombat
+        | Pred::SharesColorWithLastCast
+        | Pred::CouldAttackThisTurn
+        | Pred::ArrivedThisTurn
         | Pred::ArrivedFrom(_)
         | Pred::CastWith(_)
         | Pred::TopOfLibrary
@@ -346,7 +368,10 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Kicked
         | Pred::AdditionalCostPaid
         | Pred::Suspended
+        | Pred::Foretold
+        | Pred::HasName
         | Pred::BlockedThisTurn(_)
+        | Pred::DealtDamageThisTurn(_)
         | Pred::EnteredSinceLastTurn(_) => Traits::NONE,
         Pred::WasCast { by, .. } => by.as_ref().map_or(Traits::NONE, reads_of_ref),
         Pred::DidThisTurn { by, to, .. } => by
@@ -380,6 +405,8 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::DamagedBy(who)
         | Pred::DamagedThisTurnBy(who)
         | Pred::AttachedTo(who)
+        | Pred::EnchantableBy(who)
+        | Pred::ManaFrom(who)
         | Pred::PairedWith(who)
         | Pred::SameCard(who)
         | Pred::SourceOf(who)
@@ -390,7 +417,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::SharesColor(who) => Traits::COLORS.or(reads_of_ref(who)),
         Pred::Type(_) => Traits::TYPES,
         Pred::Subtype(_) => Traits::SUBTYPES,
-        Pred::ChosenSubtype => Traits::SUBTYPES.or(Traits::TYPES),
+        Pred::ChosenSubtype | Pred::NthChosenLandType(_) => Traits::SUBTYPES.or(Traits::TYPES),
         Pred::ChosenAs(_) => Traits::COLORS.or(Traits::TYPES).or(Traits::SUBTYPES),
         Pred::SharesSubtype(who) | Pred::SharesCreatureTypeWithEach(who) => {
             Traits::SUBTYPES.or(reads_of_ref(who))
@@ -429,6 +456,9 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         | StatKind::Loyalty
         | StatKind::ManaSpent
         | StatKind::ColorsSpent
+        | StatKind::TreasureManaSpent
+        | StatKind::ArtifactManaSpent
+        | StatKind::ColoredManaSymbols
         | StatKind::Kicks
         | StatKind::Name
         | StatKind::CounterKinds
@@ -465,11 +495,13 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::StickerVowels
         | Amount::TallyLastTurn { .. }
         | Amount::CastSameNameThisGame(_)
+        | Amount::CycledSameNameThisGame(_)
         | Amount::TallyTotal { .. }
         | Amount::TallyTypes { .. }
         | Amount::ManaSpent { .. }
         | Amount::ManaColors(_)
         | Amount::ManaInPool(_)
+        | Amount::ManaInPoolOf { .. }
         | Amount::Random { .. }
         | Amount::TriggeringTargets
         | Amount::PlayersLost
@@ -482,6 +514,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::Count(selector) => reads_of_selector(selector),
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),
         Amount::Life(who)
+        | Amount::SourcesDealtDamage(who)
         | Amount::GreatestCast { who, .. }
         | Amount::CommanderCasts(who)
         | Amount::CastsFromCommand(who)
@@ -565,7 +598,10 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
             .or(reads_of_amount(right)),
         Condition::YourTurn => Traits::CONTROL,
         Condition::NewlyControlled(what) => reads_of_ref(what).or(Traits::CONTROL),
-        Condition::Drafted(_)
+        Condition::AttackedThisTurnBy { player, .. } => reads_of_ref(player),
+        Condition::Exploited { by, what } => reads_of_ref(by).or(reads_of_ref(what)),
+        Condition::DamagedThisGameBy { .. }
+        | Condition::Drafted(_)
         | Condition::Kicked
         | Condition::KickedWith(_)
         | Condition::AdditionalCostPaid
@@ -599,6 +635,9 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::CitysBlessing(who)
         | Condition::EnduringStory(who)
         | Condition::MaxSpeed(who)
+        | Condition::RingTempted { who, .. }
+        | Condition::FastestPlayer(who)
+        | Condition::CompletedNamedDungeon { who, .. }
         | Condition::Among(who)
         | Condition::StartingPlayer(who)
         | Condition::Searched { who, .. }

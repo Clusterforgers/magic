@@ -5,7 +5,8 @@
 //! (`parts/bounce.rs`); only an attacker whose defending player has declared blockers and that nothing blocks is offered, so
 //! the ability can be activated from the declare blockers step on and only while such an attacker exists. The card is bound
 //! as it leaves the hand, so a card that left in response does nothing (CR 400.7), and it joins the attack of the creature
-//! the cost returned without being declared as an attacker (`Effect::JoinAttack`).
+//! the cost returned without being declared as an attacker (`Effect::JoinAttack`). Commander ninjutsu (CR 702.49d) adds
+//! the same ability once more, activated from the command zone.
 
 use mtg_cards::ability::{Ability, Timing};
 use mtg_cards::cost::{Cost, CostItem};
@@ -30,15 +31,19 @@ fn ninja() -> Ref {
 
 impl KeywordRules for Ninjutsu {
     fn adds_abilities(&self, keyword: &Keyword) -> Vec<Ability> {
-        let Keyword::Ninjutsu(cost) = keyword else {
-            return Vec::new();
-        };
-        vec![activation(cost)]
+        match keyword {
+            Keyword::Ninjutsu(cost) => vec![activation(cost, ZoneKind::Hand)],
+            Keyword::CommanderNinjutsu(cost) => vec![
+                activation(cost, ZoneKind::Hand),
+                activation(cost, ZoneKind::Command),
+            ],
+            _ => Vec::new(),
+        }
     }
 }
 
-/// The ability the keyword adds for `cost`.
-fn activation(cost: &Cost) -> Ability {
+/// The ability the keyword adds for `cost`, activated from the zone `from`.
+fn activation(cost: &Cost, from: ZoneKind) -> Ability {
     let mut items = cost.0.clone();
     items.push(CostItem::ReturnToHand {
         filter: Selector(vec![
@@ -55,7 +60,7 @@ fn activation(cost: &Cost) -> Ability {
         condition: None,
         limit: None,
         by: mtg_cards::ability::Activators::Controller,
-        from: ZoneKind::Hand,
+        from,
         targets: Vec::new(),
         effects: vec![
             Effect::Choose {
@@ -140,6 +145,23 @@ mod tests {
                 Effect::If { .. }
             ]
         ));
+    }
+
+    #[rstest]
+    #[case::two_colors("{U}{B}")]
+    #[case::generic("{3}")]
+    fn r5511_commander_ninjutsu_activates_from_a_hand_and_the_command_zone(#[case] mana: &str) {
+        let added = Ninjutsu.adds_abilities(&Keyword::CommanderNinjutsu(cost_of(mana)));
+        let zones: Vec<ZoneKind> = added
+            .iter()
+            .filter_map(|ability| match ability {
+                Ability::Activated { from, .. } => Some(*from),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(zones, [ZoneKind::Hand, ZoneKind::Command]);
+        let plain = activation(&cost_of(mana), ZoneKind::Hand);
+        assert_eq!(added[0], plain, "the hand ability is plain ninjutsu");
     }
 
     #[rstest]

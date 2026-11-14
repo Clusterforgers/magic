@@ -26,6 +26,8 @@ mod payment;
 pub(crate) mod plot;
 mod price;
 mod r401_flash;
+pub(crate) mod r5509_flagbearer;
+mod r5523_x_cap;
 pub(crate) mod required;
 mod splice;
 pub(crate) mod suspend;
@@ -308,6 +310,8 @@ pub(crate) struct Done {
     pub(crate) w2f_kind_picked: Option<u8>,
     /// The life the cost modifiers add to the spell's cost, worked out with its total cost and paid with its other parts.
     pub(crate) modifier_life: u32,
+    /// The Flagbearer pick of a target specification of several targets (`r5509_flagbearer`).
+    pub(crate) r5509_split: r5509_flagbearer::R5509Split,
     /// The step whose decision the player has been asked.
     asked: Option<Phase>,
     /// Why the announcement was taken back: the step that could not be met.
@@ -532,7 +536,11 @@ impl Pending {
             }
             Answered::Way(pick) => self.done.way_picked = Some(pick),
             Answered::Cards(cards) => self.choices.pick_for_cost(cards),
-            Answered::Targets(targets) => self.choices.targets.push(targets),
+            Answered::Targets(targets) => {
+                if let Some(targets) = r5509_flagbearer::r5509_take(&mut self.done, targets) {
+                    self.choices.targets.push(targets);
+                }
+            }
             Answered::Number(times) if wanted == Phase::Optional => {
                 let paid = self
                     .needs

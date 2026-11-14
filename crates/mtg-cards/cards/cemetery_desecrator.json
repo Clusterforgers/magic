@@ -1,7 +1,7 @@
 {
   "oracle_id": "85e9a43e-5676-4d12-ac27-e8cf57307d5e",
   "name": "Cemetery Desecrator",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Cemetery Desecrator",
@@ -9,9 +9,90 @@
       "abilities": [
         { "Keyword": "Menace" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 308 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } }
+              ]
+            },
+            "effects": [
+              { "Choose": { "from": { "Each": [{ "In": "Graveyard" }, "Other"] }, "as": "exiled" } },
+              { "Exile": { "what": { "Bound": "exiled" } } },
+              {
+                "Reflexive": {
+                  "effects": [
+                    {
+                      "Modal": {
+                        "modes": [
+                          {
+                            "targets": [{ "what": { "Object": [] } }],
+                            "effects": [
+                              {
+                                "RemoveCounters": {
+                                  "from": { "Target": 0 },
+                                  "count": {
+                                    "Stat": { "of": { "Bound": "exiled" }, "stat": "ManaValue" }
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "targets": [
+                              {
+                                "what": {
+                                  "Object": [
+                                    { "Type": "Creature" },
+                                    { "ControlledBy": "Opponents" }
+                                  ]
+                                }
+                              }
+                            ],
+                            "effects": [
+                              {
+                                "Continuous": {
+                                  "affected": { "Target": 0 },
+                                  "mods": [
+                                    {
+                                      "ModifyPT": {
+                                        "power": {
+                                          "Times": {
+                                            "by": -1,
+                                            "of": {
+                                              "Stat": {
+                                                "of": { "Bound": "exiled" },
+                                                "stat": "ManaValue"
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "toughness": {
+                                          "Times": {
+                                            "by": -1,
+                                            "of": {
+                                              "Stat": {
+                                                "of": { "Bound": "exiled" },
+                                                "stat": "ManaValue"
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  ],
+                                  "duration": "UntilEndOfTurn"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

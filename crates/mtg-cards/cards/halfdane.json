@@ -1,0 +1,35 @@
+{
+  "oracle_id": "2ee13155-a3b8-4cad-8e68-5d2c5aba3bb4",
+  "name": "Halfdane",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Halfdane",
+      "oracle_fingerprint": "9c126480dfdd3f3bbc509404cba84748",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                        "toughness": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfYourNextUpkeep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

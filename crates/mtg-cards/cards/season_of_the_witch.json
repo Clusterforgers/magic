@@ -1,7 +1,7 @@
 {
   "oracle_id": "307813c5-c3a8-46c5-8ed4-3b244dd169dc",
   "name": "Season of the Witch",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Season of the Witch",
@@ -21,9 +21,22 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 83, "end": 220 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      "Untapped",
+                      { "Not": "AttackedThisTurn" },
+                      "CouldAttackThisTurn"
+                    ]
+                  }
+                }
+              }
+            ]
           }
         }
       ]

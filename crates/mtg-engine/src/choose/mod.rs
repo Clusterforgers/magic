@@ -31,7 +31,7 @@ use crate::object::ObjectRef;
 use crate::snapshot::Snapshot;
 
 pub use auto::{damage_in_order, triggers_in_order};
-pub use cards::{CardsChoice, CardsOptions};
+pub use cards::{CardsChoice, CardsOptions, CardsTotal};
 pub use costs::{CostsChoice, CostsOptions, OptionalCost};
 pub use divide::{DivideChoice, DivideOptions};
 pub use mode::{ModeChoice, ModeOption, ModeOptions};
@@ -50,7 +50,9 @@ pub(crate) use ask::{Questions, Stop};
 pub(crate) use cards::check as check_cards;
 pub(crate) use cards::check_names as check_card_names;
 pub(crate) use cards::names_among;
-pub(crate) use cards::{Chooser, Picked, Selection, pick_cards, pick_selections};
+pub(crate) use cards::{
+    Chooser, Picked, Selection, pick_cards, pick_selections, pick_selections_within,
+};
 pub(crate) use mode::{
     C11dOnce, Modal, announceable, announced_specs, enough_modes, every_mode_is_legal, modal_of,
     mode_options, spec_bases, targets_before, unmet_target,
@@ -117,6 +119,11 @@ pub struct Choices {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub random_modes: bool,
+    /// The seat of the player who chose the modes when it is not the controller ("an opponent chooses one"), for
+    /// `Ref::ModesChooser`; a seat index keeps the choices, which events carry, small.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub modes_by: Option<u8>,
     /// How many target specifications the game filled with its random source ("any target chosen at random"), each with
     /// the next substream after the modes: the event that carries these choices spends them.
     #[serde(default, skip_serializing_if = "is_zero")]
@@ -199,6 +206,11 @@ pub struct CostTaken {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectRef>>", optional))]
     pub convoked: Vec<ObjectRef>,
+    /// The cards exiled to pay for the spell with delve, as the objects they became in exile (CR 702.66): "exiled with
+    /// this creature's delve ability" reads them.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectRef>>", optional))]
+    pub delved: Vec<ObjectRef>,
     /// How many counters the cost removed from the source of the ability: "for each counter removed this way" reads it.
     #[serde(default, skip_serializing_if = "is_zero_u32")]
     #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
@@ -228,6 +240,12 @@ const fn is_zero(count: &u8) -> bool {
 }
 
 impl Choices {
+    /// The player who chose the modes when it is not the controller.
+    pub fn modes_chooser(&self) -> Option<PlayerId> {
+        self.modes_by
+            .map(|seat| PlayerId::from_index(usize::from(seat)))
+    }
+
     /// The mana spent to cast the spell, as it was paid (CR 601.2h).
     pub fn spent(&self) -> &[mtg_core::mana::ManaType] {
         self.spent.as_deref().map_or(&[], Vec::as_slice)
@@ -245,6 +263,13 @@ impl Choices {
         self.cost_taken
             .as_deref()
             .map_or(&[], |taken| &taken.convoked)
+    }
+
+    /// The cards exiled with the spell's delve (`CostTaken::delved`).
+    pub fn delved(&self) -> &[ObjectRef] {
+        self.cost_taken
+            .as_deref()
+            .map_or(&[], |taken| &taken.delved)
     }
 
     /// The cards spliced onto the spell (`CostTaken::spliced`).

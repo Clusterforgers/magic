@@ -121,6 +121,10 @@ fn a_roll_with_another_shape_stays_unread(#[case] text: &str) {
 #[case::zero("0 | Draw a card.", None)]
 #[case::a_word("Draw | a card.", None)]
 #[case::no_bar("1\u{2014}9 Draw a card.", None)]
+#[case::r5518_hyphen("1-9 | Draw a card.", Some((1, Some(9), "Draw a card.")))]
+#[case::r5518_or_less("9 or less | Draw a card.", Some((1, Some(9), "Draw a card.")))]
+#[case::r5518_or_more("9 or more | Draw a card.", None)]
+#[case::r5518_hyphen_backwards("9-1 | Draw a card.", None)]
 fn the_range_of_a_row_is_read_before_the_bar(
     #[case] text: &str,
     #[case] row: Option<(u32, Option<u32>, &str)>,

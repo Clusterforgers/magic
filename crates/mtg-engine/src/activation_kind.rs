@@ -28,7 +28,7 @@ pub(crate) fn specific(
     address: AbilityRef,
     rules: &Ability,
 ) -> Option<ActivationKind> {
-    of_keyword(rules, keyword_adding(state, address))
+    of_keyword(rules, keyword_adding(state, address).as_ref())
 }
 
 /// [`specific`] for an ability whose source has left since `shot` was taken.
@@ -40,38 +40,49 @@ pub(crate) fn specific_as_it_was(
 ) -> Option<ActivationKind> {
     of_keyword(
         rules,
-        crate::ability_reader::keyword_adding_as_it_was(state, address, shot),
+        crate::ability_reader::keyword_adding_as_it_was(state, address, shot).as_ref(),
     )
 }
 
 /// The kind of `rules`, which `keyword` adds when a keyword adds it.
-fn of_keyword(rules: &Ability, keyword: Option<Keyword>) -> Option<ActivationKind> {
+fn of_keyword(rules: &Ability, keyword: Option<&Keyword>) -> Option<ActivationKind> {
     if matches!(rules, Ability::Loyalty { .. }) {
         return Some(ActivationKind::Loyalty);
     }
-    if matches!(
-        rules,
-        Ability::Activated {
-            limit: Some(Limit::PowerUp),
-            ..
+    match keyword {
+        Some(Keyword::Equip(_) | Keyword::EquipTo { .. }) => Some(ActivationKind::Equip),
+        Some(Keyword::Cycling(_) | Keyword::Typecycling { .. }) => Some(ActivationKind::Cycling),
+        Some(Keyword::Unearth(_)) => Some(ActivationKind::Unearth),
+        Some(Keyword::Ninjutsu(_) | Keyword::CommanderNinjutsu(_)) => {
+            Some(ActivationKind::Ninjutsu)
         }
-    ) {
-        return Some(ActivationKind::PowerUp);
+        _ => r5506_labelled(rules),
     }
-    match keyword? {
-        Keyword::Equip(_) | Keyword::EquipTo { .. } => Some(ActivationKind::Equip),
-        Keyword::Cycling(_) | Keyword::Typecycling { .. } => Some(ActivationKind::Cycling),
-        Keyword::Unearth(_) => Some(ActivationKind::Unearth),
-        Keyword::Ninjutsu(_) => Some(ActivationKind::Ninjutsu),
-        _ => None,
-    }
+}
+
+/// The kind of an ability the shape of its limits names: exhaust (once each game) or boast (only after its source
+/// attacked, once each turn), the same reading as `Did { ActivatedExhaust }` and `Did { ActivatedBoast }`.
+fn r5506_labelled(rules: &Ability) -> Option<ActivationKind> {
+    use mtg_cards::did::Action;
+    Action::activation_kinds(rules)
+        .into_iter()
+        .find_map(|action| match action {
+            Action::ActivatedExhaust => Some(ActivationKind::Exhaust),
+            Action::ActivatedBoast => Some(ActivationKind::Boast),
+            Action::ActivatedPowerUp => Some(ActivationKind::PowerUp),
+            _ => None,
+        })
 }
 
 /// Whether an ability whose specific kind is `own` is of the kind `wanted`.
 pub(crate) fn is_kind(wanted: ActivationKind, own: Option<ActivationKind>) -> bool {
-    // Unlocking and turning face up are no abilities: only a change of their own costs applies to them.
-    let special =
-        |kind: ActivationKind| matches!(kind, ActivationKind::Unlock | ActivationKind::Morph);
+    // Unlocking, turning face up and buyback are no abilities: only a change of their own costs applies to them.
+    let special = |kind: ActivationKind| {
+        matches!(
+            kind,
+            ActivationKind::Unlock | ActivationKind::Morph | ActivationKind::Buyback
+        )
+    };
     if own.is_some_and(special) || special(wanted) {
         return own == Some(wanted);
     }
@@ -166,6 +177,56 @@ pub(crate) fn mana_modified(state: &GameState, source: ObjectId, mana: ManaCost)
     modified_as(state, source, Some(ActivationKind::Mana), mana, Some(&[]))
 }
 
+/// The life the cost modifiers in play add to each activation of a mana ability of `source` ("Mana abilities of this land
+/// cost an additional 1 life to activate.", CR 601.2f, 605.3a).
+pub(crate) fn r5514_mana_life(state: &GameState, source: ObjectId) -> u32 {
+    if !state.possible.costs {
+        return 0;
+    }
+    let Some(target) = state
+        .object(source)
+        .map(crate::object::GameObject::reference)
+    else {
+        return 0;
+    };
+    let mut life = 0u32;
+    for id in state.zone(Zone::Battlefield).iter().copied() {
+        let Some(holder) = state.object(id) else {
+            continue;
+        };
+        let controller = controller_of_object(state, holder);
+        if !state.is_alive(controller) {
+            continue;
+        }
+        for (_, ability) in abilities_of(state, id) {
+            let Ability::CostModifier {
+                applies_to,
+                change: CostChange::Increase,
+                per,
+                condition,
+                activating: Some(ActivationKind::Mana),
+                life: added @ 1..,
+                ..
+            } = &*ability
+            else {
+                continue;
+            };
+            let scope = Scope::announcing(state, controller, holder.reference());
+            if !scope.selects(applies_to, target).unwrap_or(false)
+                || condition
+                    .as_ref()
+                    .is_some_and(|held| !scope.holds(held).unwrap_or(false))
+            {
+                continue;
+            }
+            let times =
+                u32::try_from(scope.amount(per).unwrap_or(0).clamp(0, MOST_TIMES)).unwrap_or(0);
+            life = life.saturating_add(added.saturating_mul(times));
+        }
+    }
+    life
+}
+
 /// The mana of unlocking a door of the Room `room` with the changes of unlock costs in play applied ("Unlock costs you
 /// pay cost {1} less").
 pub(crate) fn r402_unlock_modified(state: &GameState, room: ObjectId, mana: ManaCost) -> ManaCost {
@@ -176,6 +237,16 @@ pub(crate) fn r402_unlock_modified(state: &GameState, room: ObjectId, mana: Mana
 /// costs in play applied ("All morph costs cost {2} more").
 pub(crate) fn r402_morph_modified(state: &GameState, id: ObjectId, mana: ManaCost) -> ManaCost {
     modified_as(state, id, Some(ActivationKind::Morph), mana, Some(&[]))
+}
+
+/// The mana of the buyback cost of the spell `spell` with the changes of buyback costs in play applied ("Buyback costs
+/// cost {2} less").
+pub(crate) fn r5506_buyback_modified(
+    state: &GameState,
+    spell: ObjectId,
+    mana: ManaCost,
+) -> ManaCost {
+    modified_as(state, spell, Some(ActivationKind::Buyback), mana, Some(&[]))
 }
 
 /// The mana of an activation of an ability of the specific kind `own` with the cost modifiers in play applied.
@@ -288,12 +359,59 @@ mod r301_tests {
     #[case::cycling(Keyword::Cycling(Cost::default()), Some(ActivationKind::Cycling))]
     #[case::unearth(Keyword::Unearth(Cost::default()), Some(ActivationKind::Unearth))]
     #[case::r301_ninjutsu(Keyword::Ninjutsu(Cost::default()), Some(ActivationKind::Ninjutsu))]
+    #[case::r5511_commander_ninjutsu(
+        Keyword::CommanderNinjutsu(Cost::default()),
+        Some(ActivationKind::Ninjutsu)
+    )]
     #[case::scavenge_has_none(Keyword::Scavenge(Cost::default()), None)]
     fn the_kind_of_a_keyword_ability(
         #[case] keyword: Keyword,
         #[case] kind: Option<ActivationKind>,
     ) {
-        assert_eq!(of_keyword(&activated(), Some(keyword)), kind);
+        assert_eq!(of_keyword(&activated(), Some(&keyword)), kind);
         assert_eq!(of_keyword(&activated(), None), None);
+    }
+}
+
+#[cfg(test)]
+mod r5506_tests {
+    //! Goal: an ability's limits name its kind when no keyword adds it: once each game is exhaust, only after its source
+    //! attacked and once each turn is boast, and a near miss of either has no kind; a buyback change reaches buyback only.
+    use mtg_cards::ability::{Ability, ActivationKind};
+    use rstest::rstest;
+
+    use super::{is_kind, of_keyword};
+
+    const ATTACKED: &str =
+        r#""condition":{"Matches":{"subject":"This","selector":["AttackedThisTurn"]}}"#;
+
+    #[rstest]
+    #[case::exhaust(r#""limit":"OncePerGame""#, Some(ActivationKind::Exhaust))]
+    #[case::boast(&format!(r#"{ATTACKED},"limit":"OncePerTurn""#), Some(ActivationKind::Boast))]
+    #[case::attacked_without_the_limit(ATTACKED, None)]
+    #[case::once_each_turn_alone(r#""limit":"OncePerTurn""#, None)]
+    #[case::no_limit(r#""timing":"Sorcery""#, None)]
+    fn r5506_the_kind_of_a_labelled_ability(
+        #[case] rest: &str,
+        #[case] kind: Option<ActivationKind>,
+    ) {
+        let json =
+            format!(r#"{{"Activated":{{"cost":"{{1}}",{rest},"effects":[{{"Draw":{{}}}}]}}}}"#);
+        let ability: Ability = serde_json::from_str(&json).unwrap();
+        assert_eq!(of_keyword(&ability, None), kind);
+    }
+
+    #[rstest]
+    #[case::buyback_itself(ActivationKind::Buyback, Some(ActivationKind::Buyback), true)]
+    #[case::any_skips_buyback(ActivationKind::Any, Some(ActivationKind::Buyback), false)]
+    #[case::buyback_skips_abilities(ActivationKind::Buyback, None, false)]
+    #[case::any_covers_exhaust(ActivationKind::Any, Some(ActivationKind::Exhaust), true)]
+    #[case::boast_skips_exhaust(ActivationKind::Boast, Some(ActivationKind::Exhaust), false)]
+    fn r5506_which_changes_reach_a_kind(
+        #[case] wanted: ActivationKind,
+        #[case] own: Option<ActivationKind>,
+        #[case] reached: bool,
+    ) {
+        assert_eq!(is_kind(wanted, own), reached);
     }
 }

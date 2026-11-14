@@ -105,6 +105,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             max,
             text: pick.text(),
             can_cancel: ctx.can_cancel(),
+            total: None,
             groups,
         })));
     }

@@ -593,6 +593,8 @@ enum Unit {
         /// The move is the end of a countered spell (CR 701.6).
         countered: bool,
     },
+    /// An attachment would become attached to a permanent.
+    Attach { object: ObjectId },
     /// A card would enter the battlefield.
     Enter {
         object: ObjectId,
@@ -671,7 +673,8 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::Destroyed { what }
         | ReplaceWhen::Countered { what }
         | ReplaceWhen::TurnedFaceUp { what }
-        | ReplaceWhen::Discarded { what, .. } => only_this(what),
+        | ReplaceWhen::Discarded { what, .. }
+        | ReplaceWhen::BecomesAttached { what } => only_this(what),
         ReplaceWhen::Damage { to, .. } | ReplaceWhen::CountersPut { on: to, .. } => {
             matches!(to, Some(Ref::This))
         }
@@ -685,6 +688,8 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::Proliferates { .. }
         | ReplaceWhen::Scries { .. }
         | ReplaceWhen::Surveils { .. }
+        | ReplaceWhen::CopiesSpell { .. }
+        | ReplaceWhen::Learns { .. }
         | ReplaceWhen::Draw { .. } => false,
     }
 }
@@ -722,9 +727,13 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::PreventAllBut(_)
         | ReplaceBy::PreventByCounters(_)
         | ReplaceBy::PreventHalfNext
-        | ReplaceBy::PreventAllButNext(_) => {
-            matches!(unit, Unit::Damage { .. })
-        }
+        | ReplaceBy::PreventAllButNext(_)
+        | ReplaceBy::Cap(_)
+        | ReplaceBy::PreventAmount(_)
+        | ReplaceBy::PreventAtMost(_)
+        | ReplaceBy::RedirectUpTo { .. }
+        | ReplaceBy::RedirectCounted { .. }
+        | ReplaceBy::Redirect { .. } => matches!(unit, Unit::Damage { .. }),
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
         ReplaceBy::LossTimes(_) => matches!(
             unit,
@@ -738,7 +747,8 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         // More cards to surveil are offered by the surveil itself (`r4708_actions`).
         ReplaceBy::PreventCounted(_)
         | ReplaceBy::PreventNextAnd(_)
-        | ReplaceBy::MayAddAmount(_) => false,
+        | ReplaceBy::MayAddAmount(_)
+        | ReplaceBy::MayInstead(_) => false,
         ReplaceBy::PreventCountedAnd { most, .. } => {
             matches!(most, Amount::Fixed(_)) && matches!(unit, Unit::Damage { .. })
         }
@@ -751,9 +761,6 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         ),
         ReplaceBy::Half | ReplaceBy::Subtract(_) => {
             matches!(unit, Unit::Counters { .. } | Unit::Damage { .. })
-        }
-        ReplaceBy::Cap(_) | ReplaceBy::PreventAmount(_) | ReplaceBy::PreventAtMost(_) => {
-            matches!(unit, Unit::Damage { .. })
         }
         ReplaceBy::Multiply(_)
         | ReplaceBy::Add(_)
@@ -782,15 +789,16 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::Tribute(_)
         | ReplaceBy::Amplify(_)
         | ReplaceBy::MayWithCounters { .. }
-        | ReplaceBy::Choose(_)
         | ReplaceBy::PayLifeOrTapped(_)
         | ReplaceBy::TappedForCounters { .. }
         | ReplaceBy::RevealOrTapped(_)
+        | ReplaceBy::BeholdOrTapped(_)
         | ReplaceBy::PayOrGraveyard { .. }
         | ReplaceBy::Devour { .. }
         | ReplaceBy::DayIfNeither
         | ReplaceBy::EntersPrepared
         | ReplaceBy::ChooseWord(_)
+        | ReplaceBy::OpponentChooses(_)
         | ReplaceBy::UnderChosenOpponent
         | ReplaceBy::Riot
         | ReplaceBy::WithCounterOf(_)
@@ -801,7 +809,8 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::AsEntersWith { .. }
         | ReplaceBy::ChooseAfter { .. }
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
-        ReplaceBy::Instead(_) => !matches!(unit, Unit::Other),
+        ReplaceBy::Choose(_) => matches!(unit, Unit::Enter { .. } | Unit::Attach { .. }),
+        ReplaceBy::Instead(_) => !matches!(unit, Unit::Other | Unit::Attach { .. }),
         ReplaceBy::Plus(_) => matches!(unit, Unit::Tokens { .. }),
         ReplaceBy::UnderYourControl => matches!(unit, Unit::Tokens { .. } | Unit::Enter { .. }),
         ReplaceBy::InsteadNext(_) => {
@@ -809,11 +818,6 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
                 unit,
                 Unit::Damage { .. } | Unit::Draw { .. } | Unit::Loss { .. }
             )
-        }
-        ReplaceBy::RedirectUpTo { .. }
-        | ReplaceBy::RedirectCounted { .. }
-        | ReplaceBy::Redirect { .. } => {
-            matches!(unit, Unit::Damage { .. })
         }
     }
 }
@@ -839,6 +843,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::WithCountersOf { .. }
                 | ReplaceBy::EntersPrepared
                 | ReplaceBy::ChooseWord(_)
+                | ReplaceBy::OpponentChooses(_)
                 | ReplaceBy::UnderChosenOpponent
                 | ReplaceBy::BecomesChoice(_)
                 | ReplaceBy::Mill(_)
@@ -995,6 +1000,7 @@ impl Pass<'_> {
                 }
             }
             Event::LifeGained { player, .. } => Unit::Life { player: *player },
+            Event::Attached { object, .. } => Unit::Attach { object: *object },
             Event::PlayerLost { player, .. } => Unit::Loss { player: *player },
             Event::CardDrawn { player, .. } | Event::DrewFromEmptyLibrary { player } => {
                 Unit::Draw { player: *player }
@@ -1207,6 +1213,7 @@ impl Pass<'_> {
                     ..
                 },
             )
+            | (ReplaceWhen::BecomesAttached { what }, Unit::Attach { object })
             | (ReplaceWhen::Enters { what }, Unit::Enter { object, .. }) => {
                 let Some(reference) = self.reference(*object) else {
                     return Ok(false);
@@ -1873,7 +1880,7 @@ impl Pass<'_> {
                 Target::Player(player) => *player,
                 Target::Object(object) => controller_of(object.id),
             },
-            Unit::Move { object, .. } => controller_of(*object),
+            Unit::Move { object, .. } | Unit::Attach { object } => controller_of(*object),
             Unit::Other => self.state.active_or_next(),
         }
     }
@@ -2320,6 +2327,9 @@ impl Pass<'_> {
                 self.r5517_under_you(at, candidate.controller, &unit);
                 self.slots[at].applied = applied;
             }
+            (ReplaceBy::Choose(kind), Unit::Attach { object }) => {
+                return self.r5501_choose_as_attached(at, candidate, *kind, *object, applied);
+            }
             (_, Unit::Enter { object, controller }) => {
                 let entering = (*object, *controller);
                 return self.w13b_apply_enter(at, candidate, by, entering, applied);
@@ -2351,7 +2361,10 @@ impl Pass<'_> {
                 self.amplify(at, candidate, (object, controller), *per, applied)
             }
             ReplaceBy::RevealOrTapped(of) => {
-                self.reveal_or_tapped(at, candidate, of, (object, controller), applied)
+                self.reveal_or_tapped(at, candidate, (of, false), (object, controller), applied)
+            }
+            ReplaceBy::BeholdOrTapped(of) => {
+                self.reveal_or_tapped(at, candidate, (of, true), (object, controller), applied)
             }
             ReplaceBy::PayOrGraveyard { cost, optional } => {
                 let paid = (cost, *optional);
@@ -3051,7 +3064,7 @@ impl Pass<'_> {
             ReplaceBy::Choose(EntersChoice::RevealedNonlandName) => {
                 return self.r4702_revealed_name(at, source, object, controller, applied);
             }
-            ReplaceBy::Choose(_) | ReplaceBy::ChooseWord(_) => {
+            ReplaceBy::Choose(_) | ReplaceBy::ChooseWord(_) | ReplaceBy::OpponentChooses(_) => {
                 let chosen = match self.e15f_chosen(source, controller, by)? {
                     Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
                     Asked::Got(chosen) => chosen,
@@ -3150,6 +3163,7 @@ impl Pass<'_> {
                             min: 0,
                             text: "Choose permanents to sacrifice.".into(),
                             can_cancel: false,
+                            total: None,
                             groups: Vec::new(),
                         }),
                     }));
@@ -3299,6 +3313,7 @@ impl Pass<'_> {
                         max: 1,
                         text: "Choose a permanent to copy.".into(),
                         can_cancel: false,
+                        total: None,
                         groups: Vec::new(),
                     }),
                 }));
@@ -3424,8 +3439,17 @@ impl Pass<'_> {
                 })
             })
             .flatten();
-        let scope = Scope::announcing(self.state, candidate.controller, candidate.object)
+        // "For each mana from a Treasure spent to cast them" reads the entering card as the affected object.
+        let read = std::cell::Cell::new(false);
+        let entering = self.state.object(object).map(|card| ObjectRef {
+            id: object,
+            counter: card.counter(),
+        });
+        let mut scope = Scope::announcing(self.state, candidate.controller, candidate.object)
             .with_entering(chosen.as_ref());
+        if let Some(entering) = entering {
+            scope = scope.with_affected(entering, &read);
+        }
         let number = scope.amount(count)?.max(0);
         if let (Some(card), Ok(delta)) = (self.state.object(object), i32::try_from(number))
             && delta > 0
@@ -3619,6 +3643,14 @@ impl Pass<'_> {
         Ok(Asked::Got(picked.and_then(|index| {
             match options[index].clone() {
                 ChoiceOption::Color(color) => Some(Chosen::Color(color)),
+                ChoiceOption::Label(name) if kind == EntersChoice::TwoBasicLandTypes => {
+                    name.split_once(R5511_THEN).map(|(first, second)| {
+                        Chosen::LandTypes(vec![
+                            Subtype(first.to_owned()),
+                            Subtype(second.to_owned()),
+                        ])
+                    })
+                }
                 ChoiceOption::Label(name)
                     if matches!(kind, EntersChoice::LandType | EntersChoice::BasicLandType) =>
                 {
@@ -3681,6 +3713,23 @@ impl Pass<'_> {
             EntersChoice::CardType => values::card_types(),
             EntersChoice::CardTypeOf(set) => values::card_types_of(set),
             EntersChoice::BasicLandType => values::basic_land_types(),
+            // Two different types in order: "Plains, then Island" is Plains first.
+            EntersChoice::TwoBasicLandTypes => {
+                let names: Vec<String> = values::basic_land_types()
+                    .into_iter()
+                    .filter_map(|option| match option {
+                        ChoiceOption::Label(name) => Some(name),
+                        _ => None,
+                    })
+                    .collect();
+                let mut pairs = Vec::new();
+                for first in &names {
+                    for second in names.iter().filter(|second| *second != first) {
+                        pairs.push(ChoiceOption::Label(format!("{first}{R5511_THEN}{second}")));
+                    }
+                }
+                pairs
+            }
             EntersChoice::CardName
             | EntersChoice::NonlandCardName
             | EntersChoice::NoncreatureNonlandCardName
@@ -3707,6 +3756,9 @@ impl Pass<'_> {
     }
 }
 
+/// The words between the first and the second of two land types chosen in order.
+const R5511_THEN: &str = ", then ";
+
 /// The question of a choice made as a permanent enters, in words.
 fn entering_question(kind: EntersChoice) -> String {
     match kind {
@@ -3720,6 +3772,9 @@ fn entering_question(kind: EntersChoice) -> String {
         EntersChoice::CreatureType => "Choose a creature type.".to_owned(),
         EntersChoice::LandType => "Choose a land type.".to_owned(),
         EntersChoice::BasicLandType => "Choose a basic land type.".to_owned(),
+        EntersChoice::TwoBasicLandTypes => {
+            "Choose two basic land types: the first, then the second.".to_owned()
+        }
         EntersChoice::Player => "Choose a player.".to_owned(),
         EntersChoice::Opponent => "Choose an opponent.".to_owned(),
         EntersChoice::Chapter => "Choose a chapter to start with.".to_owned(),
@@ -3760,6 +3815,8 @@ pub(crate) mod r4708_actions;
 mod r4708_reveal;
 mod r5504_look;
 mod r5507_counters;
+pub(crate) mod r5516_copies;
+pub(crate) mod r5516_learns;
 mod r5517_life;
 mod r5517_under;
 mod rmt5_next;
@@ -3826,6 +3883,7 @@ mod w5d_instead;
 mod r283_prevent;
 mod r304c_amounts;
 mod r4703_loss;
+mod r5501_attached;
 mod w9c_prevent;
 
 /// The counters for each permanent devoured: "Devour X, where X is the number of creatures devoured this way" is

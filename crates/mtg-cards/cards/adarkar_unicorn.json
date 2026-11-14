@@ -1,0 +1,26 @@
+{
+  "oracle_id": "287cd5e8-51e2-42a4-a139-c112ff89706d",
+  "name": "Adarkar Unicorn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Adarkar Unicorn",
+      "oracle_fingerprint": "bdc47deb4b5edb88f6a79f991ba0e581",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "OneOfLists": [["Blue"], ["Colorless", "Blue"]] },
+                  "only": ["CumulativeUpkeep"]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

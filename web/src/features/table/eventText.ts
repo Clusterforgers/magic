@@ -66,6 +66,7 @@ function chosenWords(chosen: Chosen, n: EventNames): string {
   if ('Colors' in chosen) return `, choosing ${joinWords(chosen.Colors.map((color) => color.toLowerCase()))}`
   if ('Player' in chosen) return `, choosing ${n.seat(chosen.Player)}`
   if ('LandType' in chosen) return `, choosing ${chosen.LandType}`
+  if ('LandTypes' in chosen) return `, choosing ${chosen.LandTypes.join(', then ')}`
   if ('CardType' in chosen) return `, choosing ${chosen.CardType.toLowerCase()}`
   if ('Name' in chosen) return `, choosing ${chosen.Name}`
   if ('Number' in chosen) return `, choosing ${chosen.Number}`
@@ -192,6 +193,10 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
     return `${becomes} ${joinWords(colors)} in addition to its other colors`
   }
   if ('AddKeyword' in modification) return `${gains} ${keywordWords(modification.AddKeyword)}`
+  if ('AddKeywords' in modification) {
+    const keywords = Array.isArray(modification.AddKeywords) ? (modification.AddKeywords as unknown[]) : []
+    return `${gains} ${joinWords(keywords.map(keywordWords))}`
+  }
   if ('RemoveKeyword' in modification) return `${loses} ${keywordWords(modification.RemoveKeyword)}`
   if ('RemoveKeywordKind' in modification) {
     return `${loses} ${KEYWORD_KIND_WORDS[modification.RemoveKeywordKind]}`
@@ -274,9 +279,11 @@ function durationWords(
     UntilEndOfCombat: ' until end of combat',
     UntilYourNextTurn: " until their controller's next turn",
     UntilYourNextUpkeep: " until their controller's next upkeep",
+    UntilEndOfYourNextUpkeep: " until the end of their controller's next upkeep",
     UntilYourNextEndStep: " until their controller's next end step",
     UntilEndOfYourNextTurn: " until the end of their controller's next turn",
     DuringItsControllersNextTurn: " during its controller's next turn",
+    UntilItsControllersNextCombatEnds: " during its controller's next combat phase",
     UntilEndOfCombatOnYourNextTurn: " until end of combat on their controller's next turn",
     WhileSourceOnBattlefield:
       source === null ? ' while its source stays' : ` while ${n.card(source.id)} stays`,
@@ -298,11 +305,14 @@ function durationWords(
     UntilSkipped: ' until the step or combat it skips',
     UntilSkippedThisTurn: ' until the step or combat it skips this turn',
     TheirNextTurn: " during that player's next turn",
+    UntilTheirNextTurn: " until that player's next turn",
     UntilCastFromExile:
       source === null
         ? ' until its source is cast from exile'
         : ` until ${n.card(source.id)} is cast from exile`,
+    UntilCreatureSpellCast: ' until a player casts a creature spell',
     WhileEnchanted: several ? ' while each is enchanted' : ' while it is enchanted',
+    WhileTapped: several ? ' while each stays tapped' : ' while it stays tapped',
     UntilItsControllersNextUntapStep: " until its controller's next untap step",
     Forever: '',
   }
@@ -336,7 +346,16 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
     what = rule.MustAttackPlayers.map(
       ([object, player]) => `${n.card(object.id)} must attack ${n.seat(player)} if able`,
     ).join(', ')
-  else if ('MustBlock' in rule) what = `${named(rule.MustBlock)} must block if able`
+  else if ('MustAttackAt' in rule) {
+    const { creatures, players, at } = rule.MustAttackAt
+    const who = [
+      creatures.length > 0 ? named(creatures) : '',
+      players.length > 0
+        ? `${creatures.length > 0 ? 'creatures' : 'Creatures'} ${seats(players)} controls`
+        : '',
+    ].filter((part) => part !== '')
+    what = `${joinWords(who)} must attack ${n.card(at.id)} if able`
+  } else if ('MustBlock' in rule) what = `${named(rule.MustBlock)} must block if able`
   else if ('CantBeCountered' in rule) what = `${named(rule.CantBeCountered)} can't be countered`
   else if ('EntersWith' in rule) {
     const { spell, counters, keyword, this_turn } = rule.EntersWith
@@ -361,6 +380,8 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
   else if ('ManaProduced' in rule)
     what = `Taps for mana by ${seats(rule.ManaProduced.who)} produce changed mana`
   else if ('CantDraw' in rule) what = `${seats(rule.CantDraw)} can't draw cards`
+  else if ('DrawFromBottom' in rule)
+    what = `Draws by ${seats(rule.DrawFromBottom)} come from the bottom of the library`
   else if ('CantSearch' in rule) what = `${seats(rule.CantSearch)} can't search libraries`
   else if ('VoteAgain' in rule) what = `${seats(rule.VoteAgain)} may vote an additional time`
   else if ('CantLoseGame' in rule)
@@ -972,6 +993,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
       `${n.card(object)} enters${tapped ? ' tapped' : ''} under ${n.seat(controller)}'s control${chose}`,
     )
   }
+  if ('ChosenAsAttached' in event) {
+    const { object, chosen } = event.ChosenAsAttached
+    return line(`${n.card(object)} becomes attached${chosenWords(chosen, n)}`)
+  }
   if ('Attached' in event) {
     return line(`${n.card(event.Attached.object)} becomes attached to ${n.card(event.Attached.to)}`)
   }
@@ -1120,6 +1145,7 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('Renowned' in event) return line(`${n.card(event.Renowned.object)} becomes renowned`)
   if ('Enlisted' in event)
     return line(`${n.card(event.Enlisted.object)} enlists ${n.card(event.Enlisted.enlisted)}`)
+  if ('Fought' in event) return line(`${n.card(event.Fought.object)} fights ${n.card(event.Fought.other)}`)
   if ('Exploited' in event)
     return line(`${n.card(event.Exploited.object)} exploits ${n.card(event.Exploited.sacrificed)}`)
   if ('Crewed' in event) {
@@ -1215,7 +1241,13 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     )
   }
   if ('PhasesAdded' in event) {
-    return line(`${event.PhasesAdded.steps.length} additional phase(s) follow this phase`)
+    const { steps, lone } = event.PhasesAdded
+    const first = steps[0]
+    if (lone && first !== undefined) {
+      const step = STEP_LABEL[first].toLowerCase()
+      return line(`${steps.length} additional ${step} step(s) follow this phase`)
+    }
+    return line(`${steps.length} additional phase(s) follow this phase`)
   }
   if ('StepAdded' in event)
     return line(`An additional ${STEP_LABEL[event.StepAdded.step].toLowerCase()} follows this step`)

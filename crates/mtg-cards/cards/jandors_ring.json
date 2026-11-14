@@ -1,0 +1,19 @@
+{
+  "oracle_id": "737db899-dcdb-48f9-8d30-cbbce3ae3434",
+  "name": "Jandor's Ring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jandor's Ring",
+      "oracle_fingerprint": "162af308cd58541832ba51e6d9d4fa5c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", { "Discard": { "filter": ["LastDrawnThisTurn"] } }],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

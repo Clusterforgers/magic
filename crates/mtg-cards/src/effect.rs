@@ -63,6 +63,9 @@ pub enum NewTargets {
     One,
     /// "Change the target ... The new target must be a player.": as `Another`, among the players only.
     AnotherPlayer,
+    /// "Reselect its target at random": the only target becomes a target chosen at random from among all its legal
+    /// targets, the current one included (CR 115.7d).
+    Random,
 }
 
 /// A phase an effect adds to the turn (CR 500.8).
@@ -205,12 +208,18 @@ pub enum Produce {
     },
     /// One mana of a type the permanent tapped for mana produced; only in a triggered mana ability (CR 605.1b).
     OfTapped,
+    /// Mana equal to the mana cost of the object the reference names: colorless for generic mana, nothing for {X}, and
+    /// one of its colors chosen for a symbol of several ("add mana equal to enchanted permanent's mana cost").
+    CostOf(Ref),
     /// One mana of each color among the objects the selector picks ("For each color among permanents you control, add
     /// one mana of that color"); none while they have no color.
     EachColorAmong(Selector),
     /// One mana of any one color among the objects the selector picks, chosen when added ("Add one mana of any color
     /// among legendary permanents you control"); none while they have no color.
     AnyColorAmong(Selector),
+    /// One mana of any color chosen as the controller drafted cards named like the source ("Add one mana of any color
+    /// chosen as you drafted cards named ~"); none in a game without a draft, where no color was chosen (Paliano ruling).
+    DraftedColors,
     /// Mana of one color chosen when added, as many as the controller's devotion to that color (CR 700.5): "Choose a
     /// color. Add an amount of mana of that color equal to your devotion to that color."
     Devotion,
@@ -237,6 +246,20 @@ pub enum Produce {
 }
 
 impl Produce {
+    /// "Two mana of any one color and two mana of any other color": one list for each pair of distinct colors, each
+    /// color twice, in WUBRG order.
+    pub fn two_pairs_of_colors() -> Self {
+        let Produce::OneOfLists(lists) = Produce::two_different_colors() else {
+            return Produce::two_different_colors();
+        };
+        Produce::OneOfLists(
+            lists
+                .into_iter()
+                .map(|pair| pair.iter().flat_map(|color| [*color, *color]).collect())
+                .collect(),
+        )
+    }
+
     /// "Two mana of different colors": one list for each pair of distinct colors, in WUBRG order.
     pub fn two_different_colors() -> Self {
         let colors = [
@@ -369,6 +392,21 @@ pub enum Balanced {
     Permanents(Selector),
     /// The cards in their hand; the rest are discarded.
     Hand,
+}
+
+/// What becomes of the face-down pile of an `Effect::FaceDownPile` once it is shuffled.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum PileFate {
+    /// "then manifest those cards".
+    Manifest,
+    /// "then cloak those cards", with "They enter tapped." when `tapped`.
+    Cloak {
+        /// The permanents enter tapped.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        tapped: bool,
+    },
+    /// "put it back on top of your library".
+    OnTop,
 }
 
 /// What an `Effect::ChooseValue` asks a player for.
@@ -549,6 +587,25 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         differ: Option<crate::refs::TargetSet>,
     },
+    /// The player chooses any number of the objects `from` names whose powers or mana values add up to at most the total
+    /// `within` names ("chooses any number of creatures they control with total power 4 or less"; a negative power
+    /// subtracts) and binds the choice, and the rest to `rest_as`. Several players choose in turn order, each from their
+    /// own when `from` names `Ref::Chooser`, and what they chose is bound together.
+    ChooseWithin {
+        /// Who chooses.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The objects chosen from.
+        from: Ref,
+        /// The total: `TotalPowerAtMost` or `TotalManaValueAtMost`.
+        within: crate::refs::TargetSet,
+        /// The name the chosen objects are bound to.
+        #[serde(rename = "as")]
+        bind: String,
+        /// The name the objects not chosen are bound to.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        rest_as: Option<String>,
+    },
     /// A player chooses a value that is not an object or a player and the resolution remembers it under the name:
     /// `Pred::ChosenAs` and `Amount::ChosenAs` read it. A player with one option (or none) is not asked.
     ChooseValue {
@@ -664,6 +721,28 @@ pub enum Effect {
         /// The name the permanents are bound to, as the objects they become on the battlefield.
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
+    },
+    /// Exiles the objects face down and they become foretold ("exile it face down. It becomes foretold."): each owner may
+    /// cast theirs on a later turn for its foretell cost. This is not foretelling (CR 702.143b).
+    BecomeForetold {
+        /// What is exiled.
+        what: Ref,
+    },
+    /// Exiles the objects `what` names and the top `top` cards of the controller's library in a face-down pile, shuffles
+    /// that pile, then manifests or cloaks its cards in the shuffled order or puts it on top of the controller's library.
+    /// With `whole` nothing happens unless every object named is still there and the library holds `top` cards ("If you
+    /// do"). An object named that is gone is left out.
+    FaceDownPile {
+        /// The objects exiled with the cards of the library.
+        what: Ref,
+        /// How many cards from the top of the controller's library join them.
+        #[serde(default = "Amount::zero", skip_serializing_if = "Amount::is_zero")]
+        top: Amount,
+        /// What becomes of the pile.
+        then: PileFate,
+        /// Nothing happens unless the whole pile can be exiled.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        whole: bool,
     },
     /// As `Manifest`, and each permanent has ward {2} (cloak, CR 701.58a).
     Cloak {
@@ -1169,11 +1248,15 @@ pub enum Effect {
         /// The Room.
         what: Ref,
     },
-    /// The controller of the effect controls the player during that player's next turn (CR 722): "You control target
-    /// player during that player's next turn."
+    /// The controller of the effect, or the player `by` names, controls the player during that player's next turn
+    /// (CR 722): "You control target player during that player's next turn."
     ControlPlayer {
         /// The player controlled.
         who: Ref,
+        /// The player who controls them: the controller of the effect when left out ("The first player controls the
+        /// second player during the second player's next turn").
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        by: Ref,
         /// Whether that player takes an extra turn after that turn (Emrakul, the Promised End).
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         extra_turn: bool,
@@ -1182,6 +1265,12 @@ pub enum Effect {
     RestartGame {
         /// The exiled cards kept.
         keep: Selector,
+    },
+    /// Each player the reference names who has a speed above 1 has it reduced by 1 (CR 702.179): "reduce that opponent's
+    /// speed by 1. This effect can't reduce their speed below 1."
+    ReduceSpeed {
+        /// The players slowed.
+        who: Ref,
     },
     /// The player becomes the monarch (CR 724).
     BecomeMonarch {
@@ -1225,6 +1314,13 @@ pub enum Effect {
         /// The name the Army that got the counters is bound to, for the steps after it ("the amassed Army").
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
+    },
+    /// The controller empowers Jace (Reality Fracture): with no Jace planeswalker token they control, a blue 0-loyalty
+    /// Jace planeswalker token with "[-1]: Surveil 1" and "[-3]: Draw a card" is created first; then that many loyalty
+    /// counters go on a Jace planeswalker token they control ("Empower Jace 2").
+    Empower {
+        /// How many loyalty counters.
+        count: Amount,
     },
     /// Each player named incubates (CR 701.53): they create an Incubator token with that many +1/+1 counters on it.
     Incubate {
@@ -1509,6 +1605,13 @@ pub enum Effect {
     AddStep {
         /// The step added.
         step: crate::trigger::Step,
+        /// How many such steps are added ("you get that many additional upkeep steps").
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+        /// The steps come after the current phase, each on its own and not as part of a phase (CR 500.10: "you get that
+        /// many additional upkeep steps after this phase"), before any phase added earlier.
+        #[serde(default, skip_serializing_if = "is_false")]
+        after_phase: bool,
     },
     /// The player wins the game.
     WinGame {
@@ -1613,7 +1716,7 @@ pub enum Effect {
         who: Ref,
         /// How many faces the die has.
         sides: u32,
-        /// How many dice are rolled ("roll two d4"); more than one only with `choose`.
+        /// How many dice are rolled ("roll two d4"); several without `choose` add up to one total ("the total of those results").
         #[serde(default = "c11e_one_die", skip_serializing_if = "c11e_is_one_die")]
         dice: u32,
         /// The roller chooses one result ("and choose one result"): `DieResult::Chosen` reads it and `DieResult::Other`
@@ -1623,6 +1726,10 @@ pub enum Effect {
         /// Added to the number rolled before the rows are read ("roll a d20 and add the number of cards in your hand").
         #[serde(default = "Amount::zero", skip_serializing_if = "Amount::is_zero")]
         plus: Amount,
+        /// One die for each of this many ("roll a d20 for each player being attacked and ignore all but the highest
+        /// roll"): every die is rolled and only the highest counts; none is rolled when the amount is 0.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        highest: Option<Box<Amount>>,
         /// What the total does.
         results: Vec<DieRow>,
         /// The number of dice, worked out as the roll happens ("roll X six-sided dice"): each die is kept and the effects
@@ -1945,6 +2052,10 @@ pub enum Effect {
         targets: Vec<TargetSpec>,
         /// What it does.
         effects: Vec<Effect>,
+        /// An intervening "if" ("When you do, if you control a red permanent other than ~, ..."; CR 603.4): the trigger
+        /// triggers only when it holds after the step, and does nothing when it no longer holds as it resolves.
+        #[serde(default, rename = "if", skip_serializing_if = "Option::is_none")]
+        condition: Option<Condition>,
     },
     /// Does `then` if the condition holds, `otherwise` if not.
     If {
@@ -2001,6 +2112,10 @@ pub enum Effect {
     /// The ability resolves even when every target it chose became illegal, so CR 608.2b does not stop it ("This ability
     /// still resolves if its target becomes illegal."); as a step it does nothing.
     StillResolves,
+    /// Simultaneously, every phased-out creature phases in and every creature with phasing phases out ("Simultaneously,
+    /// all phased-out creatures phase in and all creatures with phasing phase out.", CR 702.26): both sets are judged
+    /// before either moves, and what is attached goes with each.
+    Rephase,
     /// For each attacking creature `what` names, the controller may choose again what it attacks, among the players,
     /// planeswalkers and battles its controller could attack ("you may reselect which player or permanent target
     /// attacking creature is attacking"); it stays an attacking creature that was declared (CR 506.4 does not apply).
@@ -2272,11 +2387,13 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
                 only: Some(Ref::Bound(IMPULSE.to_owned())),
                 play: true,
                 once: false,
+                any_turn: false,
                 additional: None,
                 spend_as: crate::modify::SpendAs::Normal,
                 when: None,
                 any_cast: false,
                 riders: Vec::new(),
+                limit: None,
             }),
             duration,
         },
@@ -2411,7 +2528,7 @@ mod tests {
         r#"{"Bind":{"what":{"Bound":"pick"},"as":"picks","adds":true}}"#
     )]
     #[case::roll_a_die_with_a_table(
-        Effect::RollDice { who: Ref::You, sides: 20, dice: 1, choose: false, plus: Amount::Fixed(2), results: vec![DieRow { from: 1, to: Some(9), effects: vec![Effect::Shuffle { who: Ref::You }] }, DieRow { from: 10, to: None, effects: vec![Effect::Shuffle { who: Ref::You }] }], count: None },
+        Effect::RollDice { who: Ref::You, sides: 20, dice: 1, choose: false, plus: Amount::Fixed(2), highest: None, count: None, results: vec![DieRow { from: 1, to: Some(9), effects: vec![Effect::Shuffle { who: Ref::You }] }, DieRow { from: 10, to: None, effects: vec![Effect::Shuffle { who: Ref::You }] }] },
         r#"{"RollDice":{"sides":20,"plus":2,"results":[{"from":1,"to":9,"effects":[{"Shuffle":{}}]},{"from":10,"effects":[{"Shuffle":{}}]}]}}"#
     )]
     #[case::flip_a_coin(

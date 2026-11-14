@@ -1,7 +1,7 @@
 {
   "oracle_id": "95d59a06-5144-4da3-8a9c-846b087975b9",
   "name": "Gollum, Obsessed Stalker",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Gollum, Obsessed Stalker",
@@ -9,9 +9,26 @@
       "abilities": [
         { "Keyword": "Skulk" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 72, "end": 256 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "DamagedThisGameBy": {
+                          "by": [{ "Type": "Creature" }, { "Named": "Gollum, Obsessed Stalker" }],
+                          "combat": true
+                        }
+                      }
+                    }
+                  },
+                  "amount": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }
+                }
+              }
+            ]
           }
         }
       ]

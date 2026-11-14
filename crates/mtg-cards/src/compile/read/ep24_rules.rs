@@ -157,6 +157,7 @@ pub(super) fn ep24_rule_texts(rule: &GameRule) -> Vec<String> {
             who: Ref::You,
             spend_as,
             spells,
+            abilities,
         } => {
             let kind = match spend_as {
                 SpendAs::AnyColor => "color",
@@ -170,6 +171,21 @@ pub(super) fn ep24_rule_texts(rule: &GameRule) -> Vec<String> {
                 }
                 // "to cast Case spells".
                 Some([Pred::Subtype(subtype)]) => format!(" to cast {} spells", subtype.0),
+                Some([Pred::Not(owned)]) if **owned == Pred::OwnedBy(Ref::You) => {
+                    " to cast spells you don't own".to_owned()
+                }
+                Some(_) => return Vec::new(),
+            };
+            let tail = match abilities.as_ref().map(|abilities| abilities.0.as_slice()) {
+                None => tail,
+                // "or to activate abilities of permanents you control but don't own" (Nathan Drake).
+                Some([Pred::ControlledBy(Ref::You), Pred::Not(owned)])
+                    if spells.is_some() && **owned == Pred::OwnedBy(Ref::You) =>
+                {
+                    format!(
+                        "{tail} or to activate abilities of permanents you control but don't own"
+                    )
+                }
                 Some(_) => return Vec::new(),
             };
             let mut texts = vec![format!(

@@ -1,7 +1,7 @@
 {
   "oracle_id": "86ef06b3-2049-494d-9ecb-ca14766d3b68",
   "name": "Braided Net // Braided Quipu",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Braided Net",
@@ -14,9 +14,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 52, "end": 212 }
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": { "Other": "net" } } }],
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }, "Other"] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": { "Target": 0 }, "action": { "Activate": [] } } },
+                  "duration": "WhileTapped"
+                }
+              }
+            ]
           }
         },
         {

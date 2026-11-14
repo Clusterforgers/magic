@@ -304,6 +304,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             most_at: Vec::new(),
             cant_alone: Vec::new(),
             joins: Vec::new(),
+            at_least_one: None,
             attackers: vec![AttackerOption::free(
                 a,
                 vec![AttackTarget::Player(PlayerId(1))],
@@ -319,6 +320,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
                 extra: 0,
             }],
             must_be_blocked: Vec::new(),
+            must_be_blocked_by: None,
             cant_alone: Vec::new(),
             joins: Vec::new(),
             min_blockers: Vec::new(),
@@ -333,6 +335,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
                 extra: 0,
             }],
             must_be_blocked: Vec::new(),
+            must_be_blocked_by: None,
             cant_alone: Vec::new(),
             joins: Vec::new(),
             min_blockers: vec![(b, 2)],
@@ -460,6 +463,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             max: 1,
             text: String::new(),
             can_cancel: true,
+            total: None,
             groups: Vec::new(),
         }),
         DecisionKind::OrderCards(OrderOptions {
@@ -1199,7 +1203,7 @@ fn client_wire_shape_is_flat_and_tagged(
         id: DecisionId(3),
         decision: Decision {
             player: PlayerId(1),
-            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], must_be_blocked: Vec::new(), min_blockers: vec![], max_blockers: vec![], required: vec![], most: None, cant_alone: vec![], joins: vec![] }),
+            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], must_be_blocked: Vec::new(), min_blockers: vec![], max_blockers: vec![], required: vec![], most: None, cant_alone: vec![], joins: vec![], must_be_blocked_by: None }),
         },
         deadline_ms: Some(45_000),
         show_after_ms: None,
@@ -1214,7 +1218,7 @@ fn client_wire_shape_is_flat_and_tagged(
         id: DecisionId(4),
         decision: Decision {
             player: PlayerId(0),
-            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], must_be_blocked: Vec::new(), min_blockers: vec![], max_blockers: vec![], required: vec![], most: None, cant_alone: vec![], joins: vec![] }),
+            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], must_be_blocked: Vec::new(), min_blockers: vec![], max_blockers: vec![], required: vec![], most: None, cant_alone: vec![], joins: vec![], must_be_blocked_by: None }),
         },
         deadline_ms: None,
         show_after_ms: None,
@@ -1651,6 +1655,7 @@ fn w2f_cost_taken(
             count: 2,
         }],
         convoked: vec![mtg_engine::object::ObjectRef { id: a, counter: 1 }],
+        delved: vec![mtg_engine::object::ObjectRef { id: b, counter: 2 }],
         removed: 3,
         spliced: vec![b],
         phyrexian_life: 2,
@@ -1670,7 +1675,6 @@ fn pipeline_events() -> Vec<Event> {
     let choices = Choices {
         modes: vec![1],
         random_modes: true,
-        random_targets: 0,
         x: Some(3),
         targets: vec![vec![target, Target::Player(player)]],
         division: vec![(target, 2)],
@@ -1679,6 +1683,7 @@ fn pipeline_events() -> Vec<Event> {
         face: Some(1),
         spent: Some(Box::new(vec![ManaType::Red, ManaType::Green])),
         cost_taken: Some(Box::new(w2f_cost_taken(a, b, shot.clone()))),
+        ..Choices::default()
     };
     vec![
         Event::SpellCast {

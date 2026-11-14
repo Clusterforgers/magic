@@ -1,7 +1,7 @@
 {
   "oracle_id": "3ceb23f5-abb1-4569-a1e4-1eed9a9babcf",
   "name": "Call the Spirit Dragons",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Call the Spirit Dragons",
@@ -14,9 +14,95 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 41, "end": 218 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Subtype": "Dragon" },
+                      { "ControlledBy": "You" },
+                      { "Color": "White" }
+                    ]
+                  },
+                  "as": "w"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "w" }, "counter": "+1/+1" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Subtype": "Dragon" },
+                      { "ControlledBy": "You" },
+                      { "Color": "Blue" }
+                    ]
+                  },
+                  "as": "u"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "u" }, "counter": "+1/+1" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Subtype": "Dragon" },
+                      { "ControlledBy": "You" },
+                      { "Color": "Black" }
+                    ]
+                  },
+                  "as": "b"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "b" }, "counter": "+1/+1" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }, { "Color": "Red" }]
+                  },
+                  "as": "r"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "r" }, "counter": "+1/+1" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Subtype": "Dragon" },
+                      { "ControlledBy": "You" },
+                      { "Color": "Green" }
+                    ]
+                  },
+                  "as": "g"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "g" }, "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          {
+                            "AnyOf": [
+                              { "Is": { "Bound": "w" } },
+                              { "Is": { "Bound": "u" } },
+                              { "Is": { "Bound": "b" } },
+                              { "Is": { "Bound": "r" } },
+                              { "Is": { "Bound": "g" } }
+                            ]
+                          }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 5
+                    }
+                  },
+                  "then": [{ "WinGame": {} }]
+                }
+              }
+            ]
           }
         }
       ]

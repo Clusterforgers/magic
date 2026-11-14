@@ -76,6 +76,9 @@ pub(crate) struct Possible {
     pub(crate) replacements: bool,
     /// Some card is legendary.
     pub(crate) legends: bool,
+    /// Some card has a static ability that reads a mana pool ("for each unspent green mana you have"), so the layers
+    /// are worked out again as mana is added, spent or emptied.
+    pub(crate) pools: bool,
     /// Some card has a static ability that gives a supertype ("enchanted permanent is legendary").
     pub(crate) supertypes: bool,
     /// Some card or token made has a cost modifier, so the cost of a spell is worked out against the permanents.
@@ -102,12 +105,17 @@ pub(crate) struct Possible {
 pub(crate) enum Tally {
     /// An investigation (CR 701.16a).
     L31aInvestigated,
+    /// A die rolled (CR 706).
+    R5508DiceRolled,
     /// A card drawn.
     Drawn,
     /// A venture into the dungeon (counted for the player).
     R377Ventured,
     /// A card drawn (counted for the card as it lies in the hand it was drawn into).
     Dk26Drawn,
+    /// The number of the draw of the turn a card was drawn by, for its owner (counted for the card as it lies in the hand
+    /// it was drawn into): the card is the last one drawn while it equals the owner's `Drawn`.
+    R5500DrawnNth,
     /// A card drawn by the active player in the draw step under way (cleared as each draw step begins).
     C6BlkDrawStepDrawn,
     /// A spell cast.
@@ -122,6 +130,9 @@ pub(crate) enum Tally {
     C11aArtifactCast,
     /// A spell cast through a permission that works once each turn (counted for the permission's source).
     C11bOnceUsed,
+    /// A card cast or played through a permission with a limit, keyed by the first object the permission names (counted
+    /// for the permission's source).
+    R5503LimitUsed(crate::object::ObjectRef),
     /// A creature exerted (counted for the object, and for the player who exerted it).
     W11aExerted,
     /// Life gained, once for each event.
@@ -204,6 +215,16 @@ pub(crate) enum Tally {
     R287GravedElsewhere,
     /// A card the player played from exile, cast or as a land (`TurnTally::PlayedFromExile`).
     R287PlayedFromExile,
+    /// A land the player played or a spell they cast from anywhere other than their hand (`TurnTally::PlayedNotFromHand`).
+    R5522PlayedNotFromHand,
+    /// Energy counters removed from the player, by the number (`TurnTally::EnergyPaidOrLost`).
+    R5522EnergyLost,
+    /// Oil counters removed from a permanent, by the number, counted for its controller (`TurnTally::OilCountersRemovedUnder`).
+    R5522OilRemoved,
+    /// A permanent that entered the battlefield face down, counted for its controller (`TurnTally::EnteredFaceDownUnder`).
+    R5522EnteredFaceDown,
+    /// A permanent turned face up, counted for the player who turned it (`TurnTally::TurnedFaceUp`).
+    R5522TurnedFaceUp,
     G10cCardsGraved,
     /// A creature card put into a graveyard from anywhere, a token excepted (counted for its owner).
     G10cCreatureCardsGraved,
@@ -237,6 +258,8 @@ pub(crate) struct Tallies {
     pub(crate) crews: BTreeSet<(ObjectRef, bool, ObjectRef)>,
     /// The objects that dealt damage to an object this turn, as (the object damaged, the source of the damage).
     pub(crate) damaged_by: BTreeSet<(ObjectRef, ObjectRef)>,
+    /// The creatures exploited this turn, as (the creature that exploited, the creature sacrificed) (CR 702.110b).
+    pub(crate) exploits: BTreeSet<(ObjectRef, ObjectId)>,
     /// The modes the abilities chose, as (source, where the ability comes from, its index, the mode).
     pub(crate) modes: BTreeSet<(ObjectRef, AbilitySource, usize, usize)>,
     /// How many times each ability resolved, as (source, where the ability comes from, its index).
@@ -252,6 +275,8 @@ pub(crate) struct Tallies {
     pub(crate) records: Vec<crate::turn_log::Record>,
     /// Where in `records` the combat phase now going on, or the latest, began.
     pub(crate) combat_from: usize,
+    /// The cards put into a graveyard this combat and the creatures that could attack this turn (`r5522_history`).
+    pub(crate) r5522: Box<crate::r5522_history::R5522Turn>,
 }
 
 /// A creature that dealt combat damage to a player this turn, as it was then (prowl, CR 702.76).
@@ -322,6 +347,8 @@ pub struct GameState {
     pub(crate) r379_votes: Vec<Vec<(PlayerId, u32)>>,
     /// The spells each player has cast this game.
     pub(crate) r379_cast_game: BTreeMap<PlayerId, u32>,
+    /// The timestamp clock as the latest creature spell of the game was cast (`r5512_until_cast.rs`).
+    pub(crate) r5512_creature_cast_at: Option<u64>,
     /// The "since your last turn" history (`r379_since.rs`); derived from the turn events and left out of the hash, so a
     /// game hashes as it did before it was kept.
     pub(crate) r379_since: crate::r379_since::Since,
@@ -346,6 +373,8 @@ pub struct GameState {
     pub(crate) last_turn_of: Option<PlayerId>,
     /// How many spells of each name each player has cast this game ("you've cast another spell named ~ this game").
     pub(crate) cast_names: BTreeMap<(PlayerId, String), u32>,
+    /// The cards each player cycled by name, the damage dealt to players and the lands untapped as the turn began (`r5522_history`).
+    pub(crate) r5522: Box<crate::r5522_history::R5522Game>,
     /// How many turns each player has begun this game (`rmt8_turns`).
     pub(crate) rmt8_turns: BTreeMap<PlayerId, u32>,
     /// Each player's life total as the current turn began (`rmt8_turns`).
@@ -975,6 +1004,10 @@ impl Hash for GameState {
         if !self.r379_cast_game.is_empty() {
             self.r379_cast_game.hash(state);
         }
+        // A game hashes as it did before until a creature spell is cast.
+        if let Some(at) = self.r5512_creature_cast_at {
+            at.hash(state);
+        }
         // Likewise a game in which no seat looked at its library by hand.
         if !self.looked_by_hand.is_empty() {
             self.looked_by_hand.hash(state);
@@ -1021,6 +1054,9 @@ impl Hash for GameState {
         if !self.tallies.damaged_by.is_empty() {
             self.tallies.damaged_by.hash(state);
         }
+        if !self.tallies.exploits.is_empty() {
+            self.tallies.exploits.hash(state);
+        }
         if !self.tallies.modes.is_empty() {
             self.tallies.modes.hash(state);
         }
@@ -1030,6 +1066,9 @@ impl Hash for GameState {
         if !self.tallies.records.is_empty() {
             self.tallies.records.hash(state);
             self.tallies.combat_from.hash(state);
+        }
+        if !self.tallies.r5522.is_empty() {
+            self.tallies.r5522.hash(state);
         }
         if !self.tallies.logged.is_empty() {
             self.tallies.logged.hash(state);
@@ -1046,6 +1085,10 @@ impl Hash for GameState {
         // A game where no spell was cast hashes as it did before the names were counted.
         if !self.cast_names.is_empty() {
             self.cast_names.hash(state);
+        }
+        // Likewise a game where no card was cycled and no player was dealt damage.
+        if !self.r5522.is_empty() {
+            self.r5522.hash(state);
         }
         self.rmt8_turns.hash(state);
         self.rmt8_lives.hash(state);

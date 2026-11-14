@@ -1,0 +1,305 @@
+[
+ [
+  {
+   "Static": {
+    "affected": "Attached",
+    "mods": [
+     {
+      "AddSubtype": "Flagbearer"
+     }
+    ]
+   }
+  },
+  "Enchanted creature is a Flagbearer."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "SpellCast": {
+      "what": [
+       {
+        "Type": "Creature"
+       }
+      ],
+      "by": "You"
+     }
+    },
+    "effects": [
+     {
+      "SpellEntersWith": {
+       "spell": "Triggering",
+       "count": {
+        "Stat": {
+         "of": "Triggering",
+         "stat": "ColorsSpent"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Whenever you cast a creature spell, that creature enters with X additional +1/+1 counters on it, where X is the number of colors of mana spent to cast it."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": "Player"
+     }
+    ],
+    "effects": [
+     {
+      "FaceDownPile": {
+       "what": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "In": "Graveyard"
+         },
+         {
+          "OwnedBy": {
+           "Target": 0
+          }
+         }
+        ]
+       },
+       "then": "Manifest"
+      }
+     }
+    ]
+   }
+  },
+  "Exile all creature cards from target player's graveyard in a face-down pile, shuffle that pile, then manifest those cards."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "Not": "Token"
+        },
+        {
+         "OwnedBy": "You"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "FaceDownPile": {
+       "what": {
+        "Target": 0
+       },
+       "top": 2,
+       "then": {
+        "Cloak": {
+         "tapped": true
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Exile target nontoken creature you own and the top two cards of your library in a face-down pile, shuffle that pile, then cloak those cards. They enter tapped."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "DealsDamage": {
+      "source": [
+       "This"
+      ],
+      "to": "EachPlayer",
+      "combat": true
+     }
+    },
+    "effects": [
+     {
+      "FaceDownPile": {
+       "what": "This",
+       "top": 1,
+       "then": "Manifest"
+      }
+     }
+    ]
+   }
+  },
+  "When ~ deals combat damage to a player, exile it and the top card of your library in a face-down pile, shuffle that pile, then manifest those cards."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This",
+       {
+        "OwnedBy": "You"
+       }
+      ],
+      "from": "Battlefield",
+      "to": "Graveyard"
+     }
+    },
+    "effects": [
+     {
+      "FaceDownPile": {
+       "what": "Triggering",
+       "top": 6,
+       "then": "OnTop",
+       "whole": true
+      }
+     }
+    ]
+   }
+  },
+  "When ~ is put into your graveyard from the battlefield, exile it and the top six cards of your library in a face-down pile. If you do, shuffle that pile and put it back on top of your library."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "DealsDamage": {
+      "source": [
+       "This"
+      ],
+      "to": {
+       "Each": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      },
+      "combat": true
+     }
+    },
+    "if": {
+     "Matches": {
+      "subject": "Triggering",
+      "selector": [
+       {
+        "DidThisTurn": {
+         "event": "DealtExcess"
+        }
+       }
+      ]
+     }
+    },
+    "effects": [
+     {
+      "PutCounters": {
+       "on": "You",
+       "counter": {
+        "Other": "energy"
+       },
+       "count": {
+        "Tally": {
+         "event": "DealtExcess",
+         "who": "EachPlayer",
+         "filter": [
+          {
+           "Is": "Triggering"
+          }
+         ]
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Whenever ~ deals combat damage to a creature, if that creature was dealt excess damage this turn, you get X {E}, where X is that excess damage."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     "Tap",
+     {
+      "RemoveCounters": {
+       "counter": {
+        "Other": "net"
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Not": {
+          "Type": "Land"
+         }
+        },
+        "Other"
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Tap": {
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "Rule": {
+       "rule": {
+        "Cant": {
+         "who": {
+          "Target": 0
+         },
+         "action": {
+          "Activate": []
+         }
+        }
+       },
+       "duration": "WhileTapped"
+      }
+     }
+    ]
+   }
+  },
+  "{T}, Remove a net counter from ~: Tap another target nonland permanent. Its activated abilities can't be activated for as long as it remains tapped."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Batch": {
+      "DealsDamage": {
+       "source": [
+        "This"
+       ]
+      }
+     }
+    },
+    "effects": [
+     {
+      "BecomeForetold": {
+       "what": "This"
+      }
+     }
+    ]
+   }
+  },
+  "Whenever ~ deals damage, exile it face down. It becomes foretold."
+ ]
+]

@@ -37,6 +37,7 @@ mod r282_plot;
 mod r306_add_step;
 mod r370_balance;
 mod r370_bound;
+mod r5521_reduce_speed;
 mod retarget;
 mod ring_tempts;
 mod rmt2_shares;
@@ -106,6 +107,8 @@ mod r301b_exchange_toughness;
 mod r372_gain_suspend;
 mod r404_look_face_down;
 mod r406_actions;
+mod r5508_choose_within;
+mod r5508_empower;
 mod reflexive;
 mod remember;
 mod restart_game;
@@ -131,10 +134,14 @@ mod r281_lock_door;
 mod r281_pay_one_of;
 mod r376_choose_words;
 mod r378_parade;
+mod r5501_echo_rather;
+mod r5509_face_down_pile;
+mod r5509_foretold;
 mod regenerate;
 mod remove_counters;
 mod remove_from_combat;
 mod repeat_each;
+mod rephase;
 mod reveal;
 mod reveal_until;
 mod rmt1_become_blocked;
@@ -246,6 +253,8 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             remember::run(cx, effect)
         }
         Effect::Manifest { .. } | Effect::Cloak { .. } => manifest::run(cx, effect),
+        Effect::FaceDownPile { .. } => r5509_face_down_pile::run(cx, effect),
+        Effect::BecomeForetold { .. } => r5509_foretold::run(cx, effect),
         Effect::Sacrifice { .. } | Effect::SacrificeUpTo { .. } => sacrifice::run(cx, effect),
         Effect::Counter { .. } => counter::run(cx, effect),
         Effect::DealDamage { .. } => deal_damage::run(cx, effect),
@@ -263,6 +272,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Untap { .. } => untap::run(cx, effect),
         Effect::TapOrUntap { .. } => w5d_tap_or_untap::run(cx, effect),
         Effect::PhaseOut { .. } => phase_out::run(cx, effect),
+        Effect::Rephase => rephase::run(cx, effect),
         Effect::Attach { .. } => attach::run(cx, effect),
         Effect::Unattach { .. } => unattach::run(cx, effect),
         Effect::JoinAttack { .. } => join_attack::run(cx, effect),
@@ -283,12 +293,15 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Goad { .. } => goad::run(cx, effect),
         Effect::Fight { .. } => fight::run(cx, effect),
         Effect::BecomeMonarch { .. } => become_monarch::run(cx, effect),
+        Effect::ReduceSpeed { .. } => r5521_reduce_speed::run(cx, effect),
         Effect::ControlPlayer { .. } => control_player::run(cx, effect),
         Effect::RestartGame { .. } => restart_game::run(cx, effect),
         Effect::RingTempts { .. } => ring_tempts::run(cx, effect),
         Effect::CreateEmblem { .. } => w6b_create_emblem::run(cx, effect),
         Effect::BecomeDayNight { .. } => become_day_night::run(cx, effect),
         Effect::Amass { .. } => amass::run(cx, effect),
+        Effect::Empower { .. } => r5508_empower::run(cx, effect),
+        Effect::ChooseWithin { .. } => r5508_choose_within::run(cx, effect),
         Effect::Incubate { .. } => w7c_incubate::run(cx, effect),
         Effect::Conjure { .. } => conjure::run(cx, effect),
         Effect::Seek { .. } => seek::run(cx, effect),
@@ -403,9 +416,9 @@ mod tests {
         {"TurnFaceDown":{"what":"This"}}, {"Harness":{"what":"This"}}, {"Plot":{"what":"This"}},
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"ControlPlayer":{"who":"Opponents"}}, {"RestartGame":{"keep":[]}},
-        {"BecomeMonarch":{}}, {"RingTempts":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Incubate":{"count":1}}, {"Conjure":{"name":"Island","zone":"Hand"}}, {"Seek":{"filter":[]}}, {"Venture":{}}, {"OpenAttraction":{}}, {"RollToVisit":{}}, {"PutSticker":{"on":[]}}, {"Parade":{"what":[]}}, {"ClaimPrize":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"Enlist":{"what":"This"}}, {"BecomeLevel":{"level":2}},
+        {"BecomeMonarch":{}}, {"ReduceSpeed":{"who":"You"}}, {"RingTempts":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Empower":{"count":1}}, {"ChooseWithin":{"from":"This","within":{"TotalPowerAtMost":1},"as":"kept"}}, {"Incubate":{"count":1}}, {"Conjure":{"name":"Island","zone":"Hand"}}, {"Seek":{"filter":[]}}, {"Venture":{}}, {"OpenAttraction":{}}, {"RollToVisit":{}}, {"PutSticker":{"on":[]}}, {"Parade":{"what":[]}}, {"ClaimPrize":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"Enlist":{"what":"This"}}, {"BecomeLevel":{"level":2}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Crewed":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
-        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Remember":{"what":"This","slot":"s"}}, {"Forget":{"slot":"s"}}, {"Manifest":{}}, {"Cloak":{}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"GainSuspend":{"what":"This"}}, {"ExtraTurn":{}}, "EndTurn",
+        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Remember":{"what":"This","slot":"s"}}, {"Forget":{"slot":"s"}}, {"Manifest":{}}, {"Cloak":{}}, {"FaceDownPile":{"what":"This","then":"Manifest"}}, {"BecomeForetold":{"what":"This"}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"GainSuspend":{"what":"This"}}, {"ExtraTurn":{}}, "EndTurn",
         {"ChangeTargets":{"what":"This","to":"Another"}},
         {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}}, {"CopyCard":{"what":"This","as":"copy"}},
         {"BecomeCopy":{"what":"This","of":"This","duration":"UntilEndOfTurn"}},
@@ -420,7 +433,7 @@ mod tests {
         {"Shield":{"when":{"Damage":{}},"by":"Prevent","duration":"UntilEndOfTurn"}},
         {"DelayedTrigger":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[]}},
         {"Reflexive":{"effects":[]}},
-        {"If":{"condition":"YourTurn","then":[]}}, {"May":{"effects":[]}}, {"Together":{"effects":[]}}, {"Pay":{"cost":"{1}"}}, {"PayAnyTimes":{"cost":"{1}"}}, "StillResolves", {"Reattack":{"what":"This"}},
+        {"If":{"condition":"YourTurn","then":[]}}, {"May":{"effects":[]}}, {"Together":{"effects":[]}}, {"Pay":{"cost":"{1}"}}, {"PayAnyTimes":{"cost":"{1}"}}, "StillResolves", "Rephase", {"Reattack":{"what":"This"}},
         {"Modal":{"modes":[]}}, {"RepeatEach":{"over":"EachPlayer","as":"each","effects":[{"Draw":{}}]}},
         {"RollDice":{"sides":6,"results":[{"from":1,"effects":[]}]}}, {"FlipCoin":{"win":[]}}, {"Clash":{}},
         {"Vote":{"options":{"Named":["time","knowledge"]}}}, {"Planechase":{"act":"Planeswalk"}},
@@ -446,7 +459,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 138, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 144, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -544,10 +557,13 @@ mod tests {
         "Effect.ControlPlayer",
         "Effect.RestartGame",
         "Effect.BecomeMonarch",
+        "Effect.ReduceSpeed",
         "Effect.RingTempts",
         "Effect.CreateEmblem",
         "Effect.BecomeDayNight",
         "Effect.Amass",
+        "Effect.Empower",
+        "Effect.ChooseWithin",
         "Effect.Incubate",
         "Effect.Conjure",
         "Effect.Seek",
@@ -579,6 +595,8 @@ mod tests {
         "Effect.Forget",
         "Effect.Manifest",
         "Effect.Cloak",
+        "Effect.FaceDownPile",
+        "Effect.BecomeForetold",
         "Effect.CastFromZone",
         "Effect.TimeTravel",
         "Effect.GainSuspend",
@@ -607,6 +625,7 @@ mod tests {
         "Effect.Pay",
         "Effect.PayAnyTimes",
         "Effect.StillResolves",
+        "Effect.Rephase",
         "Effect.Reattack",
         "Effect.Modal",
         "Effect.RepeatEach",

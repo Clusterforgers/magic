@@ -420,6 +420,7 @@ fn preset_state(
         spent: Vec::new(),
         spent_from: Vec::new(),
         convoked: Vec::new(),
+        delved: Vec::new(),
         copy: None,
         merged: None,
         phased: crate::object::PhasedState::default(),
@@ -600,6 +601,8 @@ impl GameState {
                 combats: 0,
                 ahead: Vec::new(),
                 r306_steps: Vec::new(),
+                r5500_lone: Vec::new(),
+                r5500_in_lone: false,
                 r306_seen: 0,
                 r306_again: 0,
                 ending: false,
@@ -626,6 +629,7 @@ impl GameState {
             tallies: Tallies::default(),
             r379_votes: Vec::new(),
             r379_cast_game: BTreeMap::new(),
+            r5512_creature_cast_at: None,
             r379_since: crate::r379_since::Since::default(),
             triggers_possible: false,
             statics_possible: false,
@@ -637,6 +641,7 @@ impl GameState {
             day_night: None,
             seat_turns: std::collections::BTreeMap::new(),
             cast_names: std::collections::BTreeMap::new(),
+            r5522: Box::default(),
             rmt8_turns: crate::rmt8_turns::turns_before(turn.0, first_player, seats),
             rmt8_lives: lives,
             rmt8_upkeeps: std::collections::BTreeMap::new(),
@@ -765,6 +770,7 @@ impl GameState {
         });
         let supertypes = self.any_face(crate::ability_reader::definition_gives_supertype);
         self.possible.supertypes = supertypes;
+        self.possible.pools = self.any_face(crate::ability_reader::r5523_static_reads_pool);
         self.possible.legends = legends || supertypes;
         let costs = self.objects().any(|object| {
             object

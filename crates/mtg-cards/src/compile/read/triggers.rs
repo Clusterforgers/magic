@@ -764,17 +764,20 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         if let Some(found) = r.attempt(|r| super::l291_dice::results(r, by.clone())) {
             return Some(found);
         }
-        let highest = if r.words("one or more dice") {
-            false
+        let (highest, each) = if r.words("one or more dice") {
+            (false, false)
+        } else if r.words("a die's highest natural result") {
+            (true, false)
         } else {
-            r.need("a die's highest natural result")?;
-            true
+            r.need("a die")?;
+            (false, true)
         };
         Some(TriggerPattern::DiceRolled {
             who: by,
             highest,
             results: Vec::new(),
             natural: false,
+            each,
         })
     } else if verb == if third { "bolsters" } else { "bolster" } {
         Some(TriggerPattern::Bolstered { who: by })
@@ -993,6 +996,8 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         });
     } else if r.words("is turned face up") {
         return Some(TriggerPattern::TurnedFaceUp { what: what.clone() });
+    } else if let Some(fought) = super::r5513_events::r5513_fights(r, what) {
+        return Some(fought);
     } else if r.word("mutates") {
         return Some(TriggerPattern::Mutates { what: what.clone() });
     } else if r.word("adapts") {
@@ -1124,6 +1129,9 @@ fn damage_dealt(r: &mut Reader<'_>, source: &Selector) -> Option<TriggerPattern>
 
 /// The condition of an intervening "if": "you have 40 or more life", "you're the monarch", "there is no monarch".
 pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
+    if let Some(attacked) = r.attempt(super::r5513_events::r5513_condition) {
+        return Some(attacked);
+    }
     if let Some(kind) = super::r4706_counters::r4706_not_subtype(r) {
         return Some(kind);
     }
@@ -1284,6 +1292,8 @@ pub fn monarch_condition(r: &mut Reader<'_>) -> Option<Condition> {
         Some(Condition::CompletedDungeon(Ref::You))
     } else if r.words("you have the initiative") {
         Some(Condition::Initiative(Ref::You))
+    } else if let Some(found) = super::r5521_conditions::r5521_condition(r) {
+        Some(found)
     } else {
         super::day_night::condition(r)
     }
@@ -1311,12 +1321,18 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
         Condition::CompletedDungeon(Ref::You) => "you've completed a dungeon".to_owned(),
         Condition::Initiative(Ref::You) => "you have the initiative".to_owned(),
         condition if *condition == no_monarch() => "there is no monarch".to_owned(),
-        _ => return super::day_night::condition_text(condition),
+        _ => {
+            return super::r5521_conditions::r5521_condition_text(condition)
+                .or_else(|| super::day_night::condition_text(condition));
+        }
     })
 }
 
 /// The condition as the card words it, after "if".
 pub fn condition_text(condition: &Condition) -> Option<String> {
+    if let Some(attacked) = super::r5513_events::r5513_condition_text(condition) {
+        return Some(attacked);
+    }
     if let Some(kind) = super::r4706_counters::r4706_not_subtype_text(condition) {
         return Some(kind);
     }
@@ -1434,9 +1450,11 @@ fn own_commander(what: &Selector) -> bool {
 
 /// "you cast", "an opponent casts", "a player casts" for the verb ("cast" or "sacrifice").
 /// "Whenever you roll one or more dice" or "Whenever you roll a die's highest natural result".
-fn c11e_rolled_text(who: &Ref, highest: bool) -> Option<String> {
+fn c11e_rolled_text(who: &Ref, highest: bool, each: bool) -> Option<String> {
     let what = if highest {
         "a die's highest natural result"
+    } else if each {
+        "a die"
     } else {
         "one or more dice"
     };
@@ -1777,6 +1795,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             highest: false,
             results,
             natural,
+            each: false,
         } if !results.is_empty() => Some(format!(
             "Whenever {} {}",
             player_verb(who, "roll")?,
@@ -1787,7 +1806,8 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             highest,
             results,
             natural: false,
-        } if results.is_empty() => c11e_rolled_text(who, *highest),
+            each,
+        } if results.is_empty() && !(*highest && *each) => c11e_rolled_text(who, *highest, *each),
         TriggerPattern::Amassed { .. }
         | TriggerPattern::Expend { .. }
         | TriggerPattern::W11cCrime { .. }

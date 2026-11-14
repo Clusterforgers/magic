@@ -1,7 +1,7 @@
 {
   "oracle_id": "791cbb7c-7935-4902-b050-9ea9d030e9fa",
   "name": "Osteomancer Adept",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Osteomancer Adept",
@@ -9,9 +9,23 @@
       "abilities": [
         { "Keyword": "Deathtouch" },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 11, "end": 363 }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Type": "Creature" }],
+                      "from": "Graveyard",
+                      "additional": ["Forage"],
+                      "riders": [{ "EntersWithCounter": { "Other": "finality" } }]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

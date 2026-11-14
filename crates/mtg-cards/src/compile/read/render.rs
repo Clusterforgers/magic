@@ -46,6 +46,8 @@ mod multi;
 mod opponent_picks;
 mod optional_return;
 mod oracle_only;
+pub(super) use oracle_only::r5522_read_whole;
+pub(super) use oracle_only::r5523_read_whole;
 mod otherwise;
 mod player_events;
 mod populated;
@@ -92,6 +94,9 @@ mod r280_steps;
 mod r287_words;
 mod r301_phasing;
 mod r307c_words;
+mod r5501_attack_at;
+mod r5501_base_equal;
+mod r5502_next_combat;
 mod rmt3_enters;
 mod rmt3_skips;
 
@@ -235,6 +240,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     let mut texts = plain_variants(ability);
     super::r371_copy_except::r371_not_legendary_too(&mut texts);
     super::r371_copy_except::r371_that_creature_dies(ability, &mut texts);
+    super::r5505_convert::r5505_convert_wordings(ability, &mut texts);
     texts
 }
 
@@ -274,7 +280,9 @@ fn plain_variants(ability: &Ability) -> Vec<String> {
     if let Some(texts) = super::r303b_writers::r303b_whole(ability) {
         return texts;
     }
-    if let Some(texts) = super::w20b_reflexive::w20b_variants(ability, variants) {
+    if !super::r5514_pieces::r5514_is_energy_sized(ability)
+        && let Some(texts) = super::w20b_reflexive::w20b_variants(ability, variants)
+    {
         return texts;
     }
     if let Some(texts) = super::fix16_kicked::fix16_kicked_variants(ability, variants) {
@@ -610,7 +618,8 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
         return texts;
     }
     // A permission with riders is worded only as the permission without them and its riders.
-    if let Some(texts) = super::r401_riders::r401_rider_texts(ability, written_variants) {
+    if let Some(mut texts) = super::r401_riders::r401_rider_texts(ability, written_variants) {
+        oracle_only::r5523_add_whole(ability, &mut texts);
         return texts;
     }
     // An investigation is worded as the Clue tokens it makes.
@@ -634,6 +643,9 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r5504_look::r5504_wordings(ability, &mut texts);
     super::r5517_wholes::r5517_wordings(ability, &mut texts);
     super::r5519_wholes::r5519_whole_texts(ability, &mut texts);
+    super::r5516_actions::r5516_wordings(ability, &mut texts);
+    super::r5516_reflexive::r5516_reflexive_wordings(ability, written_variants, &mut texts);
+    super::r5514_pieces::r5514_wordings(ability, &mut texts);
     super::r4708_reveal::r4708_reveal_wordings(ability, &mut texts);
     super::r303c_writers::r303c_wordings(ability, written_variants, &mut texts);
     super::r303_forms::r303_wordings(ability, &mut texts);
@@ -658,6 +670,15 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r5510_own_cost::r5510_wordings(ability, written_variants, &mut texts);
     super::r5510_wholes::r5510_add_wholes(ability, &mut texts);
     super::r5510_fortified::r5510_wordings(&mut texts);
+    super::r5505_convert::r5505_convert_wordings(ability, &mut texts);
+    super::r5506_costs::r5506_wordings(ability, &mut texts);
+    super::r5521_wholes::r5521_wordings(ability, &mut texts);
+    super::r5523_drafted::r5523_wordings(ability, written_variants, &mut texts);
+    // Only a triggered animation is printed on an enchantment; an activated one, on a land, keeps its room.
+    if matches!(ability, Ability::Triggered { .. }) {
+        let more = becomes::still_an_enchantment(&texts);
+        texts.extend(more);
+    }
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.
@@ -850,7 +871,10 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     if let Some(texts) = super::e15a_max_speed::e15a_variants(ability, written_variants) {
         return texts;
     }
-    if let Some(texts) = super::w20b_reflexive::w20b_variants(ability, written_variants) {
+    // The reflexive destruction of an energy payment's target is worded with the payment (`r5514_pieces`).
+    if !super::r5514_pieces::r5514_is_energy_sized(ability)
+        && let Some(texts) = super::w20b_reflexive::w20b_variants(ability, written_variants)
+    {
         return texts;
     }
     if let Some(texts) = super::e15g_licid::e15g_licid_texts(ability, written_variants) {
@@ -1284,6 +1308,17 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
         return multi::alternatives(targets, effects);
     }
     if let Some(found) = ce29_charm::ce29_joined(targets, effects) {
+        return found;
+    }
+    if let Some(found) = super::r5514_pieces::r5514_modal_texts(effects) {
+        return found;
+    }
+    if let Some(found) = super::r5514_pieces::r5514_energy_sized_sentences(targets, effects) {
+        return found;
+    }
+    if let Some(found) = super::r5514_pieces::r5514_their_turn_sentences(targets, effects, |rest| {
+        alternatives(&[], rest)
+    }) {
         return found;
     }
     if let [
@@ -2167,6 +2202,9 @@ fn mana_text(mana: &Produce) -> Option<String> {
             }
         }
         _ if *mana == Produce::two_different_colors() => "two mana of different colors".to_owned(),
+        _ if *mana == Produce::two_pairs_of_colors() => {
+            "two mana of any one color and two mana of any other color".to_owned()
+        }
         Produce::OneOfLists(lists) if lists.len() > 1 => {
             let texts: Vec<String> = lists.iter().map(|list| symbols_text(list)).collect();
             match texts.as_slice() {
@@ -3245,6 +3283,8 @@ impl Writer<'_> {
             .or_else(|| rmt3_enters::rmt3_shield_text(effect))
             .or_else(|| rmt3_enters::rmt3_spell_enters_text(effect))
             .or_else(|| self.rmt3_skip(effect))
+            .or_else(|| self.r5501_attack_at(effect))
+            .or_else(|| self.r5501_base_equal(effect))
             .or_else(|| Self::r280_skip_turn(effect))
             .or_else(|| rmt3_enters::rmt3_flash_text(effect))
             .or_else(|| r287_words::r287_text(effect))
@@ -3442,6 +3482,7 @@ impl Writer<'_> {
             Effect::Monstrosity { count } => format!("monstrosity {}", points_text(count)?),
             Effect::Adapt { count } => format!("adapt {}", points_text(count)?),
             Effect::Bolster { count } => format!("bolster {}", points_text(count)?),
+            Effect::Empower { count } => format!("empower Jace {}", points_text(count)?),
             Effect::Amass {
                 subtype,
                 count,
@@ -3791,6 +3832,7 @@ impl Writer<'_> {
             .or_else(|| self.rmt2_no_lands(effect))
             .or_else(|| self.r4710_no_monarch(effect))
             .or_else(|| self.r301_cant_phase_out(effect))
+            .or_else(|| self.r5502_attacks_next_combat(effect))
             .or_else(|| self.rmt2_reverberation(effect))
             .or_else(|| self.rmt2_target_spell_uncounterable(effect))
         {
@@ -3819,6 +3861,7 @@ impl Writer<'_> {
             .or_else(|| super::turns::effect_text(effect, None))
             .or_else(|| super::r376_seats::r376_reverse_text(effect))
             .or_else(|| c10_vp_planar_text(effect))
+            .or_else(|| super::r5514_pieces::r5514_effect_text(effect))
     }
 
     /// Who does something: "you", "target player", "each opponent", "its controller".

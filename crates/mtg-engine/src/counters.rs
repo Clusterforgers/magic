@@ -69,6 +69,16 @@ pub(crate) fn fold(state: &mut GameState, event: &CountersChanged) -> Result<(),
             if event.delta > 0 && changes_characteristics(&event.counter) {
                 state.possible.counters = true;
             }
+            if event.delta < 0 && event.counter == CounterKind::Other("oil".to_owned()) {
+                let controller = crate::characteristics::controller_of(state, named.id);
+                if let Some(controller) = controller {
+                    state.tally_by(
+                        controller,
+                        Tally::R5522OilRemoved,
+                        event.delta.unsigned_abs(),
+                    );
+                }
+            }
             if event.delta > 0 {
                 state.tally_object(named, None, Tally::Countered);
                 let by = state.resolving_controller();
@@ -94,6 +104,9 @@ pub(crate) fn fold(state: &mut GameState, event: &CountersChanged) -> Result<(),
                 return Err(invalid(format!("{id:?} is out of the game")));
             }
             change(&mut player.counters, &event.counter, event.delta)?;
+            if event.delta < 0 && event.counter == CounterKind::Other("energy".to_owned()) {
+                state.tally_by(id, Tally::R5522EnergyLost, event.delta.unsigned_abs());
+            }
         }
     }
     Ok(())

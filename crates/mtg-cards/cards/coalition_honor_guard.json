@@ -1,0 +1,12 @@
+{
+  "oracle_id": "c95cebf7-c28c-4453-b5e4-e895d621f290",
+  "name": "Coalition Honor Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coalition Honor Guard",
+      "oracle_fingerprint": "85b73ed45358c3ffefe3253b6ba15861",
+      "abilities": [{ "Rule": { "rule": "Flagbearers" } }]
+    }
+  ]
+}

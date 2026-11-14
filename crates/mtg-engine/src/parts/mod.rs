@@ -24,10 +24,13 @@ mod life;
 pub(crate) mod mill;
 mod r300_random_shots;
 mod r303c_sacrifice_all;
+mod r5511_card_types;
+mod r5512_exile_spell;
 mod random;
 mod rmt5_top_shots;
 pub(crate) use r300_random_shots::r300_random_shots;
 pub(crate) use rmt5_top_shots::rmt5_top_shots;
+mod r5518_alike;
 mod reveal;
 mod sacrifice;
 mod source;
@@ -38,7 +41,7 @@ mod untap;
 
 pub(crate) use counters::after_removal;
 
-use mtg_cards::cost::CostItem;
+use mtg_cards::cost::{Alike, CostItem};
 use mtg_cards::refs::{Pred, Selector, ZoneKind};
 use mtg_cards::value::{Amount, CounterKind};
 use mtg_core::card::CardType;
@@ -73,12 +76,16 @@ pub(crate) enum Kind {
     Return,
     /// A permanent the payer controls is exiled.
     ExilePermanent,
+    /// A spell on the stack the payer controls is exiled.
+    ExileSpell,
     /// A permanent the payer controls loses a counter of the kind its filter names.
     Counter,
     /// A card in any player's graveyard is exiled.
     ExileAny,
     /// Cards in the payer's graveyard are exiled, with total mana value at least `Pick.count` (CR 701.59).
     Evidence,
+    /// Cards in the payer's graveyard are exiled, with at least `Pick.count` card types among them.
+    R5511CardTypes,
     /// A creature the payer controls gets that many -1/-1 counters.
     Blight(u32),
     /// A permanent the payer controls is chosen, or a card in their hand is revealed; then exiled when the flag is set.
@@ -104,6 +111,8 @@ pub(crate) struct Pick {
     pub(crate) count: usize,
     /// The filter reads the X announced ("a red card with mana value X"): the part waits for X, then picks by it.
     pub(crate) reads_x: bool,
+    /// What the picked cards have in common as a set ("with the same name", "that share a color").
+    pub(crate) alike: Option<Alike>,
 }
 
 /// One part of a cost the engine pays besides `{T}`, mana and the loss of the source.
@@ -237,9 +246,37 @@ fn pick(
             filter: filter.clone(),
             count,
             reads_x,
+            alike: None,
         }),
         x || reads_x,
     ))
+}
+
+/// The pick of cards alike as a set (`CostItem::AlikeFromHand`): a discard or a reveal from the hand that keeps `alike`.
+fn r5518_alike_part(item: &CostItem) -> Result<(Part, bool), &'static str> {
+    let CostItem::AlikeFromHand {
+        discard,
+        filter,
+        count,
+        alike,
+    } = item
+    else {
+        return Err("not a pick of cards alike");
+    };
+    let kind = if *discard {
+        Kind::Discard
+    } else {
+        Kind::Reveal
+    };
+    let (part, x) = pick(kind, filter, count, item)?;
+    let part = match part {
+        Part::Pick(pick) => Part::Pick(Pick {
+            alike: Some(*alike),
+            ..pick
+        }),
+        other => other,
+    };
+    Ok((part, x))
 }
 
 /// The parts of the cost items beyond the common picks: damage, unattaching, exiling the top, evidence, blight, behold,
@@ -247,6 +284,8 @@ fn pick(
 #[allow(clippy::too_many_lines)]
 fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
     Ok(Some(match item {
+        CostItem::ExileSpell { filter } => pick(Kind::ExileSpell, filter, &Amount::one(), item)?,
+        CostItem::AlikeFromHand { .. } => r5518_alike_part(item)?,
         CostItem::DamageToYou(count) => {
             let (number, x) = amount(count, item)?;
             (Part::Damage(number), x)
@@ -276,6 +315,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     filter,
                     count,
                     reads_x: false,
+                    alike: None,
                 }),
                 false,
             )
@@ -290,10 +330,21 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     filter,
                     count,
                     reads_x: false,
+                    alike: None,
                 }),
                 false,
             )
         }
+        CostItem::ExileCardTypes(types) => (
+            Part::Pick(Pick {
+                kind: Kind::R5511CardTypes,
+                filter: Selector::default(),
+                count: usize::try_from(*types).unwrap_or(usize::MAX),
+                reads_x: false,
+                alike: None,
+            }),
+            false,
+        ),
         CostItem::Blight(count) => {
             let (number, x) = amount(count, item)?;
             if x {
@@ -307,6 +358,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     filter,
                     count: 1,
                     reads_x: false,
+                    alike: None,
                 }),
                 false,
             )
@@ -348,6 +400,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     filter,
                     count: 1,
                     reads_x: false,
+                    alike: None,
                 }),
                 false,
             )
@@ -593,6 +646,7 @@ impl Part {
                 Kind::Discard => "Cost.Discard",
                 Kind::Exile | Kind::ExileAny => "Cost.ExileFromGraveyard",
                 Kind::Evidence => "Cost.CollectEvidence",
+                Kind::R5511CardTypes => "Cost.ExileCardTypes",
                 Kind::Blight(_) => "Cost.Blight",
                 Kind::Behold(_) => "Cost.Behold",
                 Kind::ToLibrary(..) => "Cost.ToLibrary",
@@ -605,6 +659,7 @@ impl Part {
                 Kind::TapPower => "Cost.TapPower",
                 Kind::Return => "Cost.ReturnToHand",
                 Kind::ExilePermanent => "Cost.ExilePermanents",
+                Kind::ExileSpell => "Cost.ExileSpell",
                 Kind::Untap => "Cost.UntapPermanents",
                 Kind::Counter => "Cost.RemoveCounters",
             },
@@ -686,7 +741,7 @@ impl Part {
             }
             Part::SacrificeAll(filter) => r303c_sacrifice_all::r303c_all(payer, filter),
             Part::ExileTop(amount) => exile_top::payable(payer, *amount).then(Vec::new),
-            Part::Pick(pick) if pick.kind == Kind::Evidence => {
+            Part::Pick(pick) if matches!(pick.kind, Kind::Evidence | Kind::R5511CardTypes) => {
                 let found = pick.candidates(payer);
                 (!pick.short(payer.state, &found)).then_some(found)
             }
@@ -818,6 +873,7 @@ pub(crate) fn photographed(
                 | Kind::Exile
                 | Kind::ExileAny
                 | Kind::Evidence
+                | Kind::R5511CardTypes
                 | Kind::Forage
                 | Kind::Craft
                 | Kind::ExiledToGraveyard
@@ -908,6 +964,7 @@ impl Pick {
                 .filter
                 .r301_with_x(i32::try_from(x).unwrap_or(i32::MAX)),
             reads_x: false,
+            alike: None,
             ..self.clone()
         }
     }
@@ -933,7 +990,9 @@ impl Pick {
         let mut found = match self.kind {
             Kind::Sacrifice => sacrifice::candidates(payer, &self.filter),
             Kind::Discard => discard::candidates(payer, &self.filter),
-            Kind::Exile | Kind::Evidence => exile::candidates(payer, &self.filter),
+            Kind::Exile | Kind::Evidence | Kind::R5511CardTypes => {
+                exile::candidates(payer, &self.filter)
+            }
             Kind::ExileHand => exile_hand::candidates(payer, &self.filter),
             Kind::Reveal => reveal::candidates(payer, &self.filter),
             Kind::Tap => tap::candidates(payer, &self.filter),
@@ -941,6 +1000,7 @@ impl Pick {
             Kind::Return | Kind::Blight(_) | Kind::ExilePermanent => {
                 bounce::candidates(payer, &self.filter)
             }
+            Kind::ExileSpell => r5512_exile_spell::candidates(payer, &self.filter),
             Kind::Untap => untap::candidates(payer, &self.filter),
             Kind::Counter => c11c_counter_picks::c11c_candidates(payer, &self.filter),
             Kind::ExileAny => exile::candidates_any(payer, &self.filter),
@@ -963,9 +1023,11 @@ impl Pick {
             }
             Kind::Discard => crate::prohibit::may_discard(payer.state, payer.player, *id),
             Kind::Exile
+            | Kind::R5511CardTypes
             | Kind::ExileHand
             | Kind::ExileAny
             | Kind::ExilePermanent
+            | Kind::ExileSpell
             | Kind::Craft
             | Kind::Behold(true) => crate::prohibit::may_exile(payer.state, *id),
             _ => true,
@@ -975,6 +1037,9 @@ impl Pick {
 
     /// Whether `candidates` cannot pay the part: too few of them, or too little power among them.
     pub(crate) fn short(&self, state: &GameState, candidates: &[ObjectId]) -> bool {
+        if let Some(alike) = self.alike {
+            return !r5518_alike::r5518_has_set(state, candidates, self.count, alike);
+        }
         if self.r4709_rule().is_some() {
             let mut groups = self.r4709_groups(state, candidates);
             groups.sort_unstable();
@@ -986,6 +1051,10 @@ impl Pick {
                 .is_ok_and(|total| total < self.count),
             Kind::Evidence => usize::try_from(evidence::total_value(state, candidates))
                 .is_ok_and(|total| total < self.count),
+            Kind::R5511CardTypes => {
+                usize::try_from(r5511_card_types::r5511_types_among(state, candidates))
+                    .is_ok_and(|among| among < self.count)
+            }
             _ => candidates.len() < self.count,
         }
     }
@@ -998,7 +1067,7 @@ impl Pick {
         candidates: &[ObjectId],
     ) -> Option<Vec<ObjectId>> {
         let alone = match self.kind {
-            Kind::TapPower => candidates.len() == 1,
+            Kind::TapPower | Kind::R5511CardTypes => candidates.len() == 1,
             Kind::Evidence => {
                 candidates.len() == 1
                     || usize::try_from(evidence::total_value(state, candidates))
@@ -1011,7 +1080,12 @@ impl Pick {
                 groups.dedup();
                 candidates.len() == self.count && groups.len() == self.count
             }
-            _ => candidates.len() == self.count,
+            _ => {
+                candidates.len() == self.count
+                    && self
+                        .alike
+                        .is_none_or(|alike| r5518_alike::r5518_alike(state, candidates, alike))
+            }
         };
         if alone {
             Some(candidates.to_vec())
@@ -1055,7 +1129,10 @@ impl Pick {
 
     /// The fewest and the most objects the question takes from `offered` candidates.
     pub(crate) fn bounds(&self, offered: usize) -> (u32, u32) {
-        if matches!(self.kind, Kind::TapPower | Kind::Evidence) {
+        if matches!(
+            self.kind,
+            Kind::TapPower | Kind::Evidence | Kind::R5511CardTypes
+        ) {
             return (1, u32::try_from(offered).unwrap_or(u32::MAX));
         }
         if self.kind == Kind::Forage {
@@ -1069,6 +1146,14 @@ impl Pick {
     /// Why `picked` cannot pay the part, when they cannot: too little power or mana value for a pick by total, or not one
     /// Food or three cards for a forage.
     pub(crate) fn weak(&self, state: &GameState, picked: &[ObjectId]) -> Option<IllegalAnswer> {
+        if let Some(alike) = self.alike
+            && !r5518_alike::r5518_alike(state, picked, alike)
+        {
+            return Some(IllegalAnswer::WrongPick(match alike {
+                Alike::SameName => "cards with the same name",
+                Alike::ShareColor => "cards that share a color",
+            }));
+        }
         if self.r4709_rule().is_some() {
             let groups = self.r4709_groups(state, picked);
             let mut apart = groups.clone();
@@ -1088,6 +1173,10 @@ impl Pick {
                 let got = evidence::total_value(state, picked);
                 (got < needed).then_some(IllegalAnswer::TooLittleValue { needed, got })
             }
+            Kind::R5511CardTypes => {
+                let got = r5511_card_types::r5511_types_among(state, picked);
+                (got < needed).then_some(IllegalAnswer::TooFewCardTypes { needed, got })
+            }
             Kind::Forage => (!forage::valid(state, picked)).then_some(IllegalAnswer::WrongPick(
                 "one Food to sacrifice or three cards of the graveyard to exile",
             )),
@@ -1097,6 +1186,19 @@ impl Pick {
 
     /// What the question asks of the player, in the words of a card.
     pub(crate) fn text(&self) -> String {
+        let text = self.r5518_kind_text();
+        match self.alike {
+            Some(alike) => format!(
+                "{}{}",
+                text.trim_end_matches('.'),
+                r5518_alike::r5518_words(alike)
+            ),
+            None => text,
+        }
+    }
+
+    /// What the question asks of the player for the kind of pick, before the set's words.
+    fn r5518_kind_text(&self) -> String {
         match self.kind {
             Kind::Sacrifice => crate::wording::sacrifice(&self.filter, self.count),
             Kind::Discard => crate::wording::discard(self.count),
@@ -1107,10 +1209,12 @@ impl Pick {
             Kind::TapPower => tap::power_text(&self.filter, self.count),
             Kind::Return => bounce::text(&self.filter, self.count),
             Kind::ExilePermanent => bounce::exile_text(&self.filter, self.count),
+            Kind::ExileSpell => r5512_exile_spell::text(&self.filter),
             Kind::Untap => untap::text(&self.filter, self.count),
             Kind::Counter => c11c_counter_picks::c11c_text(&self.filter, self.count),
             Kind::ExileAny => exile::text_any(&self.filter, self.count),
             Kind::Evidence => evidence::text(self.count),
+            Kind::R5511CardTypes => r5511_card_types::r5511_text(self.count),
             Kind::Blight(count) => blight::text(count),
             Kind::Behold(exile) => behold::text(&self.filter, self.count, exile),
             Kind::ToLibrary(from, bottom) => {
@@ -1152,15 +1256,17 @@ impl Pick {
         match self.kind {
             Kind::Sacrifice => sacrifice::event(state, object),
             Kind::Discard => Some(discard::event(player, object)),
-            Kind::Exile | Kind::ExileHand | Kind::Craft | Kind::ExilePermanent => {
-                exile_hand::event(state, object)
-            }
+            Kind::Exile
+            | Kind::ExileHand
+            | Kind::Craft
+            | Kind::ExilePermanent
+            | Kind::ExileSpell => exile_hand::event(state, object),
             Kind::Reveal => Some(reveal::event(player, object)),
             Kind::Tap | Kind::TapPower => Some(tap::event(object)),
             Kind::Return => bounce::event(state, object),
             Kind::Untap => Some(untap::event(object)),
             Kind::Counter => c11c_counter_picks::c11c_event(state, &self.filter, object, kinds),
-            Kind::ExileAny | Kind::Evidence => exile::event(state, object),
+            Kind::ExileAny | Kind::Evidence | Kind::R5511CardTypes => exile::event(state, object),
             Kind::Behold(_) => behold::event(state, player, object),
             Kind::Forage => forage::event(state, object),
             Kind::ExiledToGraveyard => exiled::event(state, object),
@@ -1174,7 +1280,7 @@ mod tests;
 
 /// A part that takes all of a kind the payer has, with nothing to choose: "discard your hand", "sacrifice all
 /// permanents you control".
-fn whole_part(item: &CostItem) -> Option<Part> {
+pub(crate) fn whole_part(item: &CostItem) -> Option<Part> {
     if discards_the_hand(item) {
         return Some(Part::DiscardHand);
     }

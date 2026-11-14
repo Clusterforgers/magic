@@ -17,8 +17,10 @@ pub(crate) struct R4708Candidate {
     pub(crate) object: ObjectRef,
     /// Its controller.
     pub(crate) controller: PlayerId,
-    /// How many more cards it offers (a surveil); zero for a scry replaced by draws.
+    /// How many more cards it offers (a surveil) or adds (a scry); zero for a scry replaced by draws.
     pub(crate) more: usize,
+    /// It replaces a scry by drawing that many cards instead.
+    pub(crate) draws: bool,
 }
 
 /// The replacements of a scry (`surveil` false) or a surveil (`surveil` true) by `player` that apply now, in the order
@@ -40,18 +42,27 @@ pub(crate) fn r4708_candidates(
             continue;
         };
         let scope = Scope::announcing(state, source.controller, source.object);
-        let more = match (when, by, surveil) {
+        let (more, draws) = match (when, by, surveil) {
             (ReplaceWhen::Scries { who }, ReplaceBy::Instead(_), false) => {
                 if !scope.players(who)?.contains(&player) {
                     continue;
                 }
-                0
+                (0, true)
+            }
+            (ReplaceWhen::Scries { who }, ReplaceBy::Add(more), false) => {
+                if !scope.players(who)?.contains(&player) {
+                    continue;
+                }
+                (usize::try_from(*more).unwrap_or(0), false)
             }
             (ReplaceWhen::Surveils { who }, ReplaceBy::MayAddAmount(amount), true) => {
                 if !scope.players(who)?.contains(&player) {
                     continue;
                 }
-                usize::try_from(scope.amount(amount)?.max(0)).unwrap_or(0)
+                (
+                    usize::try_from(scope.amount(amount)?.max(0)).unwrap_or(0),
+                    false,
+                )
             }
             _ => continue,
         };
@@ -64,6 +75,7 @@ pub(crate) fn r4708_candidates(
             object: source.object,
             controller: source.controller,
             more,
+            draws,
         });
     }
     Ok(found)

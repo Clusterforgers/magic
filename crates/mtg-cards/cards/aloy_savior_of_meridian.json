@@ -1,7 +1,7 @@
 {
   "oracle_id": "f0554a8f-32de-4069-9f47-5e06ceb3f09d",
   "name": "Aloy, Savior of Meridian",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Aloy, Savior of Meridian",
@@ -10,9 +10,50 @@
         { "Keyword": "Vigilance" },
         { "Keyword": "Reach" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 17, "end": 377 }
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
+              }
+            },
+            "effects": [
+              {
+                "ExileUntil": {
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Le",
+                        "to": { "Greatest": { "of": [{ "Is": "Triggering" }], "stat": "Power" } }
+                      }
+                    }
+                  ],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "CastFromZone": {
+                  "what": { "Bound": "found" },
+                  "free": true,
+                  "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "Performed": {
+                  "action": "Discovered",
+                  "card": { "Bound": "found" },
+                  "value": { "Greatest": { "of": [{ "Is": "Triggering" }], "stat": "Power" } }
+                }
+              }
+            ]
           }
         }
       ]

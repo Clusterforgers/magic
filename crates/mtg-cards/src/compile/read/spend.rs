@@ -8,7 +8,7 @@ use super::selectors::{card_type, plural_subtype, subtype, type_name};
 use super::subtypes::plural_subtype as plural_name;
 use super::tokens::Reader;
 use crate::keyword::Keyword;
-use crate::spend::{EntersBonus, ManaLasts, SpendFact, SpendFilter, SpendOn};
+use crate::spend::{EntersBonus, ManaLasts, SpecialAction, SpendFact, SpendFilter, SpendOn};
 
 const LEAD: &str = "spend this mana only";
 
@@ -184,6 +184,8 @@ fn qualifiers(r: &mut Reader<'_>, filter: &mut SpendFilter) {
             filter.facts.push(SpendFact::Devoid);
         } else if r.words("with flashback") {
             filter.facts.push(SpendFact::Flashback);
+        } else if r.words("that have foretell") || r.words("that has foretell") {
+            filter.facts.push(SpendFact::Foretell);
         } else if r.words("that has freerunning") || r.words("with freerunning") {
             filter.facts.push(SpendFact::Freerunning);
         } else if r.words("with no abilities") {
@@ -286,6 +288,27 @@ fn not_from_hand() -> SpendFilter {
     }
 }
 
+/// "This mana can't be spent to cast nonartifact spells.": the spells of the type, the abilities and the other costs.
+fn not_of_type(r: &mut Reader<'_>) -> Option<Vec<SpendOn>> {
+    r.need("this mana can't be spent to cast")?;
+    let card_type = card_type(r.peek_word()?.strip_prefix("non")?)?;
+    r.skip();
+    r.need("spells")?;
+    Some(vec![
+        SpendOn::Spell(of_type(card_type)),
+        SpendOn::abilities(),
+        SpendOn::OtherCosts,
+    ])
+}
+
+/// The spells of one card type.
+fn of_type(card_type: CardType) -> SpendFilter {
+    SpendFilter {
+        types: vec![card_type],
+        ..SpendFilter::default()
+    }
+}
+
 /// "or to activate an ability" after the spells: the abilities of any source.
 fn any_ability(r: &mut Reader<'_>) -> Option<SpendOn> {
     r.attempt(|r| {
@@ -332,6 +355,9 @@ pub(super) fn only(r: &mut Reader<'_>) -> Option<Vec<SpendOn>> {
                 SpendOn::OtherCosts,
             ]);
         }
+        if let Some(only) = r.attempt(not_of_type) {
+            return Some(only);
+        }
         r.need(LEAD)?;
         if r.words("on costs that contain") {
             return (r.symbol()? == "X").then(|| vec![SpendOn::CostWithX]);
@@ -339,6 +365,16 @@ pub(super) fn only(r: &mut Reader<'_>) -> Option<Vec<SpendOn>> {
         r.need("to")?;
         if r.words("activate abilities") {
             return Some(vec![SpendOn::abilities()]);
+        }
+        if r.words("pay cumulative upkeep costs") {
+            return Some(vec![SpendOn::CumulativeUpkeep]);
+        }
+        // "to foretell cards or cast spells that have foretell".
+        if r.words("foretell cards or cast") {
+            return Some(vec![
+                SpendOn::Special(SpecialAction::Foretell),
+                SpendOn::Spell(spells(r)?),
+            ]);
         }
         // "to pay a disturb cost or cast an instant or sorcery spell".
         if r.words("pay a disturb cost or cast") {
@@ -519,6 +555,7 @@ fn qualifier_text(filter: &SpendFilter) -> String {
             SpendFact::NotFromHand => text.push_str(" from anywhere other than your hand"),
             SpendFact::Devoid => text.push_str(" with devoid"),
             SpendFact::Flashback => text.push_str(" with flashback"),
+            SpendFact::Foretell => text.push_str(" that have foretell"),
             SpendFact::Freerunning => text.push_str(" with freerunning"),
             SpendFact::NoAbilities => text.push_str(" with no abilities"),
             // One spell's words: `text` writes a filter with them one spell at a time.
@@ -563,23 +600,15 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
     if let Some(text) = r405_text(only) {
         return Some(text);
     }
-    // The facts no other wording says are left to `ep33_spend_text`.
-    let unsaid = |filter: &SpendFilter| {
-        filter
-            .facts
-            .iter()
-            .any(|fact| matches!(fact, SpendFact::YourCommander | SpendFact::FaceDown))
-    };
-    if only.iter().any(|on| match on {
-        SpendOn::Spell(filter) | SpendOn::Ability(filter) => unsaid(filter),
-        SpendOn::Special(_) => true,
-        _ => false,
-    }) {
+    if left_unsaid(only) {
         return None;
     }
     Some(match only {
         [SpendOn::Enters(bonus)] => enters_text(bonus)?,
         [SpendOn::CostWithX] => "Spend this mana only on costs that contain {X}".to_owned(),
+        [SpendOn::CumulativeUpkeep] => {
+            "Spend this mana only to pay cumulative upkeep costs".to_owned()
+        }
         [SpendOn::Ability(filter)] if *filter == SpendFilter::default() => {
             "Spend this mana only to activate abilities".to_owned()
         }
@@ -592,6 +621,19 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
             SpendOn::OtherCosts,
         ] if *source == SpendFilter::default() && *spell == not_from_hand() => {
             NOT_FROM_HAND.to_owned()
+        }
+        [
+            SpendOn::Spell(spell),
+            SpendOn::Ability(source),
+            SpendOn::OtherCosts,
+        ] if *source == SpendFilter::default()
+            && let [card_type] = spell.types[..]
+            && *spell == of_type(card_type) =>
+        {
+            format!(
+                "This mana can't be spent to cast non{} spells",
+                type_name(card_type)
+            )
         }
         // "Spend this mana only to cast a colorless spell or to activate an ability."
         [SpendOn::Spell(spell), SpendOn::Ability(source)]
@@ -647,6 +689,21 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
             }
         ),
         _ => return None,
+    })
+}
+
+/// Whether the uses hold a fact no other wording says; those are left to `ep33_spend_text`.
+fn left_unsaid(only: &[SpendOn]) -> bool {
+    let unsaid = |filter: &SpendFilter| {
+        filter
+            .facts
+            .iter()
+            .any(|fact| matches!(fact, SpendFact::YourCommander | SpendFact::FaceDown))
+    };
+    only.iter().any(|on| match on {
+        SpendOn::Spell(filter) | SpendOn::Ability(filter) => unsaid(filter),
+        SpendOn::Special(_) => true,
+        _ => false,
     })
 }
 

@@ -1,6 +1,7 @@
 //! Seeded tournaments between bot levels on the duel decks: `cargo run --release -p mtg-testkit --example
 //! bot_tournament -- <strong> <weak> [games] [mode] [first seed] [threads]`, a level being `easy`, `normal`, `hard` or
-//! `veryhard` (`old-<level>` for main's frozen brains), a mode `1v1`, `2v2`, `3ffa` or `4ffa`. Games are untimed, so
+//! `veryhard` (`old-<level>` for main's frozen brains), a mode `1v1`, `2v2`, `3ffa`, `4ffa`, `pod` (four seats, two of each side, alternating) or `cpod` (a pod of
+//! random Commander decks). Games are untimed, so
 //! each result replays with its seed (`TIMED=1` times them). `DECKS` picks the decks: `2` (default, the creature
 //! mirrors), `3` (with Izzet), `interaction` (every pairing with an interaction deck) or `all`. Each deal is played once
 //! with the strong side in each seat. `SPRT=elo0,elo1` stops once a sequential probability ratio test (5% errors either
@@ -202,6 +203,14 @@ fn make(who: Who, seed: u64, seat: PlayerId, timed: bool) -> Box<dyn SeatBrain> 
                     deep.trust = number("EXP_TRUST", deep.trust);
                 }
             }
+            if let Some(deep) = &mut settings.deep {
+                deep.trust = number("EXP_TRUST", deep.trust);
+                deep.iterations = number("EXP_ITER", deep.iterations);
+                deep.doubt = number("EXP_DOUBT", deep.doubt);
+                deep.judged = flag("EXP_JUDGED", deep.judged);
+                deep.scale = number("EXP_SCALE", deep.scale);
+                deep.turns = number("EXP_TURNS", deep.turns);
+            }
             settings.fair = flag("EXP_FAIR", base.fair);
             settings.careful = flag("EXP_CAREFUL", base.careful);
             settings.lookahead = flag("EXP_LOOKAHEAD", base.lookahead);
@@ -299,13 +308,15 @@ fn main() {
         "1v1" => (2, None),
         "2v2" => (4, Some(Teams::even(TeamMode::Teams, 2, 2))),
         "3ffa" => (3, None),
-        "4ffa" => (4, None),
+        "4ffa" | "pod" | "cpod" => (4, None),
         other => panic!("unknown mode {other}"),
     };
     let next = AtomicU64::new(0);
     let wins = AtomicU64::new(0);
     let draws = AtomicU64::new(0);
     let played = AtomicU64::new(0);
+    // Tree searches, overrides of the heuristic answer, and per game with overrides: games and points.
+    let searched = Mutex::new((0u64, 0u64, 0u64, 0.0f64));
     let stop = std::sync::atomic::AtomicBool::new(false);
     let sprt: Option<Sprt> = std::env::var("SPRT").ok().map(|bounds| {
         let (low, high) = bounds.split_once(',').unwrap();
@@ -357,7 +368,9 @@ fn main() {
                         break;
                     }
                     // Each deal is played once with the strong side in each place, so both sides get the same luck.
-                    let seed = first + game / seats as u64;
+                    let pod = mode == "pod" || mode == "cpod";
+                    let rotations = if pod { 2 } else { seats };
+                    let seed = first + game / rotations as u64;
                     let pairing = pairings[usize::try_from(seed).unwrap() % pairings.len()];
                     let decks: Vec<Duel> = (0..seats)
                         .map(|seat| if seat % 2 == 0 { pairing.0 } else { pairing.1 })
@@ -367,14 +380,21 @@ fn main() {
                         teams: teams.clone(),
                         ..HouseRules::default()
                     };
-                    let setup = duel_setup(&decks, seed, house).unwrap();
+                    // A Commander pod deals each seat a random corpus Commander deck.
+                    let setup = if mode == "cpod" {
+                        mtg_testkit::commander_cards::commander_fuzz_setup(seats, seed).unwrap()
+                    } else {
+                        duel_setup(&decks, seed, house).unwrap()
+                    };
                     // The strong side moves round the table: a seat in free-for-all, a team in 2v2.
-                    let at = usize::try_from(game).unwrap() % seats;
+                    let at = usize::try_from(game).unwrap() % rotations;
                     let strong_seat = |seat: usize| match &teams {
                         Some(teams) => {
                             teams.team_of(PlayerId::from_index(seat))
                                 == teams.team_of(PlayerId::from_index(at % 2))
                         }
+                        // A pod seats two of each side, alternating, so equal brains score 50%.
+                        None if pod => seat % 2 == at % 2,
                         None => seat == at,
                     };
                     let mut brains: Vec<Box<dyn SeatBrain>> = (0..seats)
@@ -404,7 +424,9 @@ fn main() {
                         max_answers: 30_000,
                         ..PlayOptions::default()
                     };
+                    mtg_testkit::brain::deep::reset_tally();
                     let outcome = play_brains(setup, seed, options, &mut brains);
+                    let (searches, overrides) = mtg_testkit::brain::deep::tally();
                     let verdict = match outcome.map(|o| o.result) {
                         Ok(GameResult::Winner(player)) => {
                             if strong_seat(player.index()) {
@@ -433,6 +455,19 @@ fn main() {
                             draws.fetch_add(1, Ordering::SeqCst);
                         }
                         _ => {}
+                    }
+                    {
+                        let mut tally = searched.lock().unwrap();
+                        tally.0 += searches;
+                        tally.1 += overrides;
+                        if overrides > 0 {
+                            tally.2 += 1;
+                            tally.3 += match verdict {
+                                "win" => 1.0,
+                                "loss" => 0.0,
+                                _ => 0.5,
+                            };
+                        }
                     }
                     let done = played.fetch_add(1, Ordering::SeqCst) + 1;
                     println!("seed {seed} {duel:?} seat {at}: {verdict}");
@@ -467,5 +502,11 @@ fn main() {
         elo(score),
         max.as_millis(),
         started.elapsed().as_secs_f64()
+    );
+    let (searches, overrides, with, points) = *searched.lock().unwrap();
+    println!(
+        "tree searches {searches}, overrides {overrides} ({:.1}%); games with an override {with}, scoring {:.1}%",
+        100.0 * overrides as f64 / searches.max(1) as f64,
+        100.0 * points / with.max(1) as f64
     );
 }

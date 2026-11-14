@@ -1,7 +1,7 @@
 {
   "oracle_id": "dc2b1863-b45c-4213-ad89-5e39432daca7",
   "name": "Trench Behemoth",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Trench Behemoth",
@@ -23,9 +23,24 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 105, "end": 247 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MustAttack": { "Target": 0 } },
+                  "duration": "UntilItsControllersNextCombatEnds"
+                }
+              }
+            ]
           }
         }
       ]

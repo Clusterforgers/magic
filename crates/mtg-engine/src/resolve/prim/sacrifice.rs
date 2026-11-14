@@ -224,6 +224,7 @@ mod tests {
                 max: 1,
                 text: "Sacrifice a creature or planeswalker.".into(),
                 can_cancel: false,
+                total: None,
                 groups: Vec::new(),
             })
         );

@@ -46,6 +46,8 @@ use crate::zones::Zone;
 /// One thing that happened, as the patterns of triggered abilities see it.
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum Happened {
+    /// A spell or ability was put onto the stack under the player's control.
+    R5503Stacked { object: ObjectId, player: PlayerId },
     /// An object moved between zones.
     Moved {
         object: ObjectId,
@@ -197,6 +199,11 @@ enum Happened {
         attackers: Vec<ObjectId>,
         at: PlayerId,
     },
+    /// Attackers were declared together at one player or a planeswalker that player controls, once for each player.
+    R5502AttackedAtOrWalkers {
+        attackers: Vec<ObjectId>,
+        at: PlayerId,
+    },
     /// An Aura, Equipment or Fortification became attached to a permanent.
     Attached { attachment: ObjectId, to: ObjectId },
     /// An Aura, Equipment or Fortification stopped being attached to the permanent `from`; `left` when it left the
@@ -270,6 +277,7 @@ enum Happened {
         first: bool,
         highest: bool,
         result: u32,
+        nth: u32,
     },
     /// A creature explored.
     Explored { object: ObjectId, player: PlayerId },
@@ -391,6 +399,7 @@ impl Happened {
             | Happened::LifeLost { nth, .. }
             | Happened::Cycled { nth, .. }
             | Happened::Surveilled { nth, .. }
+            | Happened::DiceRolled { nth, .. }
             | Happened::Tapped { nth, .. }
             | Happened::Created { nth, .. }
             | Happened::Counters { nth, .. } => Some(*nth),
@@ -663,6 +672,7 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                         at,
                     });
                 }
+                found.extend(r5502_at_or_walkers(post, attackers));
             }
             Event::SpellCast {
                 player,
@@ -676,15 +686,27 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                     nth,
                     before: cast_before(post, look.later),
                 });
+                found.push(Happened::R5503Stacked {
+                    object: *object,
+                    player: *player,
+                });
                 found.extend(w9a_expended(post, look.later, *player, choices));
                 found.extend(w11c_crime(post, *player, choices));
                 found.extend(targeted(look, choices, (*object, *player)));
             }
             Event::AbilityPutOnStack(put) => {
+                found.push(Happened::R5503Stacked {
+                    object: put.object,
+                    player: put.controller,
+                });
                 found.extend(w11c_crime(post, put.controller, &put.choices));
                 found.extend(targeted(look, &put.choices, (put.object, put.controller)));
             }
             Event::SpellCopied(copy) => {
+                found.push(Happened::R5503Stacked {
+                    object: copy.object,
+                    player: copy.controller,
+                });
                 found.push(Happened::Copied {
                     player: copy.controller,
                     spell: copy.object,
@@ -696,6 +718,10 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                 ));
             }
             Event::AbilityCopied(copy) => {
+                found.push(Happened::R5503Stacked {
+                    object: copy.object,
+                    player: copy.controller,
+                });
                 found.extend(targeted(
                     look,
                     &copy.choices,
@@ -795,6 +821,7 @@ fn ordinal(post: &GameState, later: &[Event], player: PlayerId, kind: Tally) -> 
         | (Tally::Cast, Event::SpellCast { player: who, .. })
         | (Tally::Gained, Event::LifeGained { player: who, .. })
         | (Tally::Cycled, Event::Cycled { player: who, .. })
+        | (Tally::R5508DiceRolled, Event::DieRolled { player: who, .. })
         | (Tally::Surveilled, Event::Surveilled(Surveilled { player: who, .. }))
         | (Tally::L31aInvestigated, Event::Investigated { player: who })
         | (
@@ -1325,6 +1352,7 @@ fn about_players_and_permanents(
             first: c11e_first_die(look.earlier, *player),
             highest: result == sides,
             result: *result,
+            nth: ordinal(look.post, look.later, *player, Tally::R5508DiceRolled),
         }),
         Event::Clashed {
             player, won: true, ..
@@ -1572,7 +1600,24 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
             },
         ) => (scope.players(by).ok()?.contains(attacking)
             && scope.players(at).ok()?.contains(defending))
-        .then(|| cause(state, vec![Target::Player(*attacking)])),
+        .then(|| Cause {
+            against: Some(Target::Player(*defending)),
+            ..cause(state, vec![Target::Player(*attacking)])
+        }),
+        (
+            TriggerPattern::PutOnStack { what },
+            Happened::R5503Stacked {
+                object: put,
+                player,
+            },
+        ) => {
+            let reference = object(*put)?;
+            let subjects = vec![Target::Object(reference), Target::Player(*player)];
+            scope
+                .selects(what, reference)
+                .ok()?
+                .then(|| cause(state, subjects))
+        }
         (TriggerPattern::SpellCopied { what, by }, Happened::Copied { player, spell }) => {
             let reference = object(*spell)?;
             let subjects = vec![Target::Player(*player), Target::Object(reference)];
@@ -1748,15 +1793,22 @@ fn matching_player_action(
         ) if !results.is_empty() => (by(who, player) && results.contains(result))
             .then(|| counted(state, vec![Target::Player(*player)], *result)),
         (
-            TriggerPattern::DiceRolled { who, highest, .. },
+            TriggerPattern::DiceRolled {
+                who, highest, each, ..
+            },
             Happened::DiceRolled {
                 player,
                 first,
                 highest: rolled_highest,
                 ..
             },
-        ) => (by(who, player) && if *highest { *rolled_highest } else { *first })
-            .then(|| counted(state, vec![Target::Player(*player)], 0)),
+        ) => (by(who, player)
+            && if *highest {
+                *rolled_highest
+            } else {
+                *first || *each
+            })
+        .then(|| counted(state, vec![Target::Player(*player)], 0)),
         // A visit ability triggers for the Attraction its controller's roll lit up (CR 702.159a).
         (TriggerPattern::Visit {}, Happened::RolledToVisit { player, result }) => {
             (crate::characteristics::controller_of(state, scope.source.id) == Some(*player)
@@ -2306,8 +2358,25 @@ fn matching_permanents(
             })
         }
         (
-            TriggerPattern::GroupAttacksAt { what, at, at_least },
+            TriggerPattern::GroupAttacksAt {
+                what,
+                at,
+                at_least,
+                walkers: false,
+            },
             Happened::AttackedTogetherAt {
+                attackers,
+                at: attacked,
+            },
+        )
+        | (
+            TriggerPattern::GroupAttacksAt {
+                what,
+                at,
+                at_least,
+                walkers: true,
+            },
+            Happened::R5502AttackedAtOrWalkers {
                 attackers,
                 at: attacked,
             },
@@ -3000,6 +3069,30 @@ pub fn detect(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Trigge
     // A player who lost with the same events triggers nothing, though the state looked back at has them alive (CR 800.4a).
     found.retain(|triggered| post.is_alive(triggered.controller));
     found
+}
+
+/// The attackers of each player and of the planeswalkers that player controls, grouped by that player in the order they
+/// are first attacked (CR 508.1b): what "attack one of your opponents or a planeswalker they control" reads.
+fn r5502_at_or_walkers(post: &GameState, attackers: &[(ObjectId, AttackTarget)]) -> Vec<Happened> {
+    let mut groups: Vec<(PlayerId, Vec<ObjectId>)> = Vec::new();
+    for (attacker, to) in attackers {
+        if let AttackTarget::Planeswalker(id) = to
+            && crate::battle::is_battle(post, *id)
+        {
+            continue;
+        }
+        let Some(player) = crate::combat::defending_player(post, *to) else {
+            continue;
+        };
+        match groups.iter_mut().find(|(held, _)| *held == player) {
+            Some((_, group)) => group.push(*attacker),
+            None => groups.push((player, vec![*attacker])),
+        }
+    }
+    groups
+        .into_iter()
+        .map(|(at, attackers)| Happened::R5502AttackedAtOrWalkers { attackers, at })
+        .collect()
 }
 
 #[cfg(test)]

@@ -1,0 +1,65 @@
+{
+  "oracle_id": "cf812f1e-f48a-4375-8d2c-f6e3cb82e067",
+  "name": "Flamewar, Brash Veteran // Flamewar, Streetwise Operative",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flamewar, Brash Veteran",
+      "oracle_fingerprint": "1c9ce3d76e00b8004bbb1643e3a45bb8",
+      "abilities": [
+        { "Keyword": { "MoreThanMeetsTheEye": "{B}{R}" } },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Artifact" }, "Other"] } }],
+            "timing": "Sorcery",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "Transform": { "what": "This" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Exile" },
+                      { "OwnedBy": "You" },
+                      { "HasCounter": { "Other": "intel" } }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Flamewar, Streetwise Operative",
+      "oracle_fingerprint": "8b6e81b09d9d8dd46c16f3ae480eecb5",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "living metal", "amount": 0 } } },
+        { "Keyword": "Menace" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "ExileTop": { "count": "Triggering", "as": "intel", "sealed": true } },
+              { "PutCounters": { "on": { "Bound": "intel" }, "counter": { "Other": "intel" } } },
+              { "Transform": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

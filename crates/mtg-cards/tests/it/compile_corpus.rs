@@ -216,6 +216,16 @@ fn without_ability_word(text: &str) -> &str {
         Some((word, rest)) if !word.contains(['~', ',', '.']) && word.split(' ').count() <= 6 => {
             rest
         }
+        // A flavour name with a comma has every word capitalised ("In You, All Things Are Possible").
+        Some((word, rest))
+            if !word.contains(['~', '.'])
+                && word.split(' ').count() <= 6
+                && word
+                    .split(' ')
+                    .all(|part| part.starts_with(char::is_uppercase)) =>
+        {
+            rest
+        }
         _ => text,
     }
 }

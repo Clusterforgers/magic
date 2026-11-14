@@ -800,6 +800,7 @@ fn suffix_text_main(pred: &Pred, form: Form) -> Option<String> {
         Pred::SummoningSick => "that has summoning sickness".to_owned(),
         Pred::MilledThisTurn => "that was milled this turn".to_owned(),
         Pred::DrawnThisTurn => "drawn this turn".to_owned(),
+        Pred::LastDrawnThisTurn => "drawn last this turn".to_owned(),
         Pred::HasAdventure => "that has an Adventure".to_owned(),
         Pred::AttackedThisTurn => "that attacked this turn".to_owned(),
         Pred::AttackedLastTurn => "that attacked during their controller's last turn".to_owned(),
@@ -1091,6 +1092,9 @@ fn zone_suffix(r: &mut Reader<'_>, form: Form) -> Option<Vec<Pred>> {
         && let Some(owner) = r.attempt(target_hand)
     {
         return Some(vec![Pred::In(ZoneKind::Hand), Pred::OwnedBy(owner)]);
+    }
+    if form == Form::Count && r.words("you own in exile") {
+        return Some(vec![Pred::In(ZoneKind::Exile), Pred::OwnedBy(Ref::You)]);
     }
     // A group of cards says where they are as the count does: "nonland cards in your hand".
     let in_zone = form == Form::All;
@@ -1673,6 +1677,15 @@ fn join_or(items: &[&str]) -> String {
 /// The predicates after `pred` that name the zone of a card, said as the card words it: "from your graveyard", "in your
 /// hand" (counting), "from an opponent's graveyard", "from a graveyard".
 fn zone_words(pred: &Pred, rest: &mut Peekable<Iter<'_, Pred>>, form: Form) -> Option<String> {
+    // "foretold card you own in exile".
+    if form == Form::Count
+        && *pred == Pred::In(ZoneKind::Exile)
+        && rest
+            .next_if(|next| **next == Pred::OwnedBy(Ref::You))
+            .is_some()
+    {
+        return Some("you own in exile".to_owned());
+    }
     let Pred::In(zone @ (ZoneKind::Graveyard | ZoneKind::Hand)) = pred else {
         return None;
     };
@@ -2035,6 +2048,18 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
                     divide: None,
                 };
                 format!("{} chosen at random", spec_text(&one)?)
+            }
+            // "Any target of an opponent's choice": the first opponent in turn order chooses (CR 601.2c).
+            Targetable::ChosenBy {
+                who: Ref::Opponents,
+                what,
+            } => {
+                let one = TargetSpec {
+                    what: (**what).clone(),
+                    bounds: spec.bounds.clone(),
+                    divide: None,
+                };
+                format!("{} of an opponent's choice", spec_text(&one)?)
             }
             Targetable::Together { .. }
             | Targetable::PerPlayer { .. }

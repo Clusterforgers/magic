@@ -19,7 +19,7 @@ use thiserror::Error;
 use tokio::sync::OnceCell;
 
 pub(crate) use api::{by_oracle, by_printing, by_token};
-pub use config::{DEFAULT_CACHE_MIB, ImageConfig, MAX_CACHE_MIB, MIN_GAP};
+pub use config::{DEFAULT_CACHE_MIB, IN_FLIGHT, ImageConfig, MAX_CACHE_MIB, MIN_GAP};
 pub use link::{ImageLink, LinkError};
 pub use upstream::FetchError;
 pub(crate) use warm::Warmer;

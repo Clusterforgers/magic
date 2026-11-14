@@ -1,0 +1,40 @@
+{
+  "oracle_id": "55e42539-3fe2-4c84-9978-c071d6fc6aa0",
+  "name": "Synthesis Pod",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Synthesis Pod",
+      "oracle_fingerprint": "cd3bf22f94237fac9ddc12035e28e8b9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U/P}" }, "Tap", { "ExileSpell": { "filter": [] } }],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "RevealUntil": {
+                  "who": { "Target": 0 },
+                  "filter": [
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Eq",
+                        "to": { "Sum": [1, { "Stat": { "of": "Paid", "stat": "ManaValue" } }] }
+                      }
+                    }
+                  ],
+                  "as": "found",
+                  "revealed_as": "revealed"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Shuffle": { "who": { "Target": 0 } } },
+              { "CastFromZone": { "what": { "Bound": "found" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

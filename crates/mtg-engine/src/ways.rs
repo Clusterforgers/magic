@@ -224,13 +224,13 @@ fn both_halves(card: &GameObject) -> bool {
 /// Every way `player` may cast the card `id` from where it is, whatever the timing and the mana in hand. Each way takes
 /// the required additional costs of the card (`announce/required.rs`).
 pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
-    with_required(state, id, listed(state, player, id))
+    with_required(state, player, id, listed(state, player, id))
 }
 
-/// `ways` with the required additional costs of the card `id` added to each.
-fn with_required(state: &GameState, id: ObjectId, ways: Vec<Way>) -> Vec<Way> {
+/// `ways` with the required additional costs of the card `id` added to each, their counts counted for `player` now.
+fn with_required(state: &GameState, player: PlayerId, id: ObjectId, ways: Vec<Way>) -> Vec<Way> {
     state.object(id).map_or_else(Vec::new, |card| {
-        announce::required::add_to(ways, card.card())
+        announce::required::add_to(ways, card.card(), Some((state, player, id)))
     })
 }
 
@@ -427,7 +427,7 @@ fn ep24_rule_costs(
     ways: &mut [Way],
     printed: Option<&ManaCost>,
 ) {
-    let spend_as = crate::rules::ep24_spend_as(state, player, Some(id));
+    let spend_as = crate::rules::ep24_spend_as(state, player, Some(id), None);
     for way in ways {
         let cost = way.cost(printed).map(|cost| match spend_as {
             SpendAs::AnyType => cost.paid_by_any_mana(),
@@ -910,6 +910,7 @@ pub(crate) fn granted_ways(
 ) -> Vec<Way> {
     with_required(
         state,
+        player,
         id,
         granted_before_required(state, player, id, granted),
     )

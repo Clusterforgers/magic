@@ -41,6 +41,9 @@ fn stat_word(stat: StatKind) -> &'static str {
         StatKind::BaseToughness => "base toughness",
         StatKind::ManaSpent => "mana spent",
         StatKind::ColorsSpent => "colors of mana spent",
+        StatKind::TreasureManaSpent => "mana from Treasures spent",
+        StatKind::ArtifactManaSpent => "mana from artifact sources spent",
+        StatKind::ColoredManaSymbols => "colored mana symbols",
         StatKind::Kicks => "times kicked",
         StatKind::CounterKinds => "kinds of counters",
         StatKind::R374Types => "types",
@@ -142,6 +145,7 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
             Pred::SummoningSick => tail.push("with summoning sickness".to_owned()),
             Pred::MilledThisTurn => tail.push("that was milled this turn".to_owned()),
             Pred::DrawnThisTurn => tail.push("drawn this turn".to_owned()),
+            Pred::LastDrawnThisTurn => tail.push("drawn last this turn".to_owned()),
             Pred::HasAdventure => tail.push("that has an Adventure".to_owned()),
             Pred::ArrivedFrom(origin) => tail.push(format!(
                 "that was put there from {} this turn",
@@ -589,6 +593,15 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 false,
             )
         }
+        TriggerPattern::PutOnStack { what } => {
+            let thing = if what.is_empty() {
+                "a spell or ability".to_owned()
+            } else {
+                let noun = noun(what);
+                format!("{} {noun} spell or ability", article(&noun))
+            };
+            (format!("{thing} is put onto the stack"), false)
+        }
         TriggerPattern::SpellCast { what, by } | TriggerPattern::SpellCopied { what, by } => {
             let (who, s) = who(by);
             let spell = if what.is_empty() {
@@ -775,6 +788,7 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             highest,
             results,
             natural,
+            each,
         } => {
             let (name, s) = who(by);
             let what = if !results.is_empty() {
@@ -783,6 +797,8 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 format!("a {natural}{}", numbers.join(" or "))
             } else if *highest {
                 "a die's highest natural result".to_owned()
+            } else if *each {
+                "a die".to_owned()
             } else {
                 "one or more dice".to_owned()
             };
@@ -1073,12 +1089,22 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 false,
             )
         }
-        TriggerPattern::GroupAttacksAt { what, at, at_least } => {
+        TriggerPattern::GroupAttacksAt {
+            what,
+            at,
+            at_least,
+            walkers,
+        } => {
             let (head, tail) = phrase(what);
             let (whom, _) = who(at);
+            let walkers = if *walkers {
+                " or a planeswalker that player controls"
+            } else {
+                ""
+            };
             (
                 format!(
-                    "{} attack {whom}",
+                    "{} attack {whom}{walkers}",
                     join(&format!("{at_least} or more {}", plural(&head)), &tail)
                 ),
                 false,
@@ -1379,6 +1405,16 @@ pub(crate) const R4708_REVEAL_FIRST_DRAW: &str =
 /// What a surveil asks before looking when a replacement offers more cards.
 pub(crate) fn r4708_surveil_more(more: usize) -> String {
     format!("Look at {more} more cards as you surveil?")
+}
+
+/// What a player is asked whose scry of `wanted` cards one replacement adds `added` cards to and another replaces by
+/// drawing that many cards: whether the cards are added first.
+pub(crate) fn r5500_scry_more_first(wanted: usize, added: usize) -> String {
+    format!(
+        "Scry {} cards instead of {wanted} before the scry is replaced by drawing? Yes draws {}, no draws {wanted}.",
+        wanted.saturating_add(added),
+        wanted.saturating_add(added)
+    )
 }
 
 /// What a proliferate asks about the permanents with counters.

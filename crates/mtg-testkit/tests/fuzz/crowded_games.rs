@@ -41,6 +41,7 @@ fn crowd(seats: usize, size: u64, mana: u32) -> Decision {
         most_at: Vec::new(),
         cant_alone: Vec::new(),
         joins: Vec::new(),
+        at_least_one: None,
         attackers,
         required: Vec::new(),
         mana,

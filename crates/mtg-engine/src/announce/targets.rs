@@ -7,7 +7,7 @@ use mtg_cards::refs::{TargetSpec, Targetable};
 use mtg_cards::value::CastWay;
 use mtg_core::ids::PlayerId;
 
-use super::{Ctx, Next, What, Work, total};
+use super::{Ctx, Next, What, Work, r5509_flagbearer, total};
 use crate::attach;
 use crate::choose::{
     Choices, Target, announced_specs, asks, options_for, spec_bases, without_earlier,
@@ -121,6 +121,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             ctx.can_cancel(),
             ctx.cause(),
             work.choices.x,
+            work.choices.modes_chooser(),
             &work.choices.optional_costs,
             work.choices.way,
             Some(&work.choices.targets[base..index]),
@@ -131,6 +132,18 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         without_earlier(&specs[index], &work.choices.targets, &mut options.legal);
         e14c_other_players(ctx, &work.choices.targets[..index], &mut options.legal);
         payable_targets(ctx, work.choices, specs.len(), &mut options.legal);
+        if !matches!(specs[index].what, Targetable::AtRandom(_))
+            && chooser(ctx, &specs[index]) == ctx.player
+        {
+            r5509_flagbearer::r5509_narrow(
+                ctx,
+                work.choices,
+                work.done,
+                &specs,
+                index,
+                &mut options,
+            );
+        }
         let left = u32::try_from(options.legal.len()).unwrap_or(u32::MAX);
         if left < options.min {
             return Some(Next::Drop);
@@ -141,7 +154,8 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             continue;
         }
         if !asks(&options) {
-            work.choices.targets.push(Vec::new());
+            let pick = r5509_flagbearer::r5509_finish(work.done);
+            work.choices.targets.push(pick.unwrap_or_default());
             continue;
         }
         options.triggered = ctx.triggered.is_some();

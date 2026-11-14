@@ -1,5 +1,6 @@
 //! r303b rules of the game read and written whole: "All damage is dealt as though its source had wither.", "All
-//! creatures can attack your opponents and planeswalkers your opponents control as though those creatures had haste."
+//! creatures can attack your opponents and planeswalkers your opponents control as though those creatures had haste.",
+//! "Damage isn't removed from this creature during cleanup steps."
 
 use super::tokens::Reader;
 use crate::modify::GameRule;
@@ -24,6 +25,10 @@ pub(super) fn r303b_rule_read(r: &mut Reader<'_>) -> Option<GameRule> {
                 .then_some(GameRule::ManaBurn)
         })
         .or_else(|| {
+            (r.words("damage isn't removed from") && r.source() && r.words("during cleanup steps"))
+                .then_some(GameRule::KeepsDamage)
+        })
+        .or_else(|| {
             r.words(
                 "all creatures can attack your opponents and planeswalkers your opponents control as though those \
                  creatures had haste",
@@ -37,6 +42,9 @@ pub(super) fn r303b_rule_texts(rule: &GameRule) -> Vec<String> {
     match rule {
         GameRule::DamageAsWither => vec![R303B_WITHER.to_owned()],
         GameRule::ManaBurn => vec![R303B_BURN.to_owned()],
+        GameRule::KeepsDamage => ["~", "this creature"]
+            .map(|it| format!("Damage isn't removed from {it} during cleanup steps"))
+            .to_vec(),
         GameRule::AttackAsThoughHasteAt(Ref::Opponents) => vec![R303B_HASTE.to_owned()],
         _ => Vec::new(),
     }

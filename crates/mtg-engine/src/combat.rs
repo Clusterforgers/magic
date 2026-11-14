@@ -334,7 +334,9 @@ pub(crate) fn can_attack(state: &GameState, id: ObjectId, player: PlayerId) -> b
         && (!keywords::summoning_sick(state, id)
             || crate::combat_quirks::attacks_as_though_haste(state, id)
             || crate::r303b_haste_at::r303b_attacks_sick(state, id))
-        && (!keywords::forbids_attacking(state, id) || attacks_despite_defender(state, id))
+        && (!keywords::forbids_attacking(state, id)
+            || attacks_despite_defender(state, id)
+            || crate::r5523_sentinels::r5523_attacks_some_despite_defender(state, id))
         && is_untapped_creature(state, id)
 }
 
@@ -398,6 +400,11 @@ fn paired_defender(
     must_attack_players(state, object)
         .into_iter()
         .map(AttackTarget::Player)
+        .chain(
+            crate::rules::must_attack_at(state, object)
+                .into_iter()
+                .map(AttackTarget::Planeswalker),
+        )
         .find(|target| defenders.contains(target))
 }
 
@@ -461,6 +468,7 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
             // a creature it leaves nothing to attack is not offered.
             let mut allowed = allowed_defenders(state, object, &defenders);
             crate::r303b_haste_at::r303b_sick_defenders(state, object, &mut allowed);
+            crate::r5523_sentinels::r5523_defender_targets(state, object, &mut allowed);
             if allowed.is_empty() && !defenders.is_empty() {
                 return None;
             }
@@ -486,6 +494,7 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
             .collect(),
         cant_alone: Vec::new(),
         joins: Vec::new(),
+        at_least_one: None,
     };
     attack_tax::describe(state, player, &mut options);
     options.cant_alone = options
@@ -530,6 +539,8 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
                 state, &offered, &free,
             ));
     }
+    let groups = crate::r5502_attack_with_one::r5502_groups(state, player, &options);
+    options.at_least_one = (!groups.is_empty()).then(|| Box::new(groups));
     options
 }
 
@@ -640,12 +651,15 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
                 || (must_block(state, *object) && !cant_block_alone(state, *object))
         })
         .collect();
+    let by_kind = crate::r5502_blocked_by_one::r5502_blocked_by_one(state, &blockers);
+    let must_be_blocked_by = (!by_kind.is_empty()).then(|| Box::new(by_kind));
     BlockOptions {
         blockers,
         min_blockers,
         max_blockers,
         required,
         must_be_blocked,
+        must_be_blocked_by,
         most,
         cant_alone,
         joins,
@@ -785,6 +799,9 @@ pub(crate) fn check_attackers(
     {
         return Err(IllegalAnswer::Required("attacker"));
     }
+    if !excused && options.r5502_unmet(answer) {
+        return Err(IllegalAnswer::Required("attacker"));
+    }
     Ok(())
 }
 
@@ -819,7 +836,7 @@ pub(crate) fn check_blockers(
     {
         return Err(IllegalAnswer::Required("blocker"));
     }
-    if options.unmet_must_be_blocked(answer) {
+    if options.unmet_must_be_blocked(answer) || options.r5502_unmet(answer) {
         return Err(IllegalAnswer::Required("blocked attacker"));
     }
     Ok(())

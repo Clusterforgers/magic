@@ -119,7 +119,8 @@ pub enum TriggerPattern {
         who: Ref,
     },
     /// A player attacks a player with one or more creatures ("whenever a player attacks enchanted player with one or
-    /// more creatures"). It triggers once for each attacking player; `Triggering` is the attacking player.
+    /// more creatures"). It triggers once for each attacking player and player attacked; `Triggering` is the attacking
+    /// player and `Against` the player attacked.
     PlayerAttacks {
         /// The attacking player.
         #[serde(
@@ -159,6 +160,13 @@ pub enum TriggerPattern {
             skip_serializing_if = "Ref::is_each_player"
         )]
         by: Ref,
+    },
+    /// A spell or ability matching the selector is put onto the stack: cast, activated, triggered or copied ("Whenever a
+    /// spell or ability is put onto the stack"); `Triggering` is the spell or ability.
+    PutOnStack {
+        /// The spell or ability; any when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
     },
     /// A player copies a spell matching the selector (CR 707.10): the copy is put on the stack under their control.
     SpellCopied {
@@ -367,7 +375,7 @@ pub enum TriggerPattern {
     },
     /// At least this many creatures matching the selector are declared as attackers of one player together ("whenever one
     /// or more Dragons you control attack an opponent"): it triggers once for each player attacked, with the attackers of
-    /// that player; an attack on a planeswalker is no attack on its controller.
+    /// that player; an attack on a planeswalker is no attack on its controller unless `walkers`.
     GroupAttacksAt {
         /// The attackers.
         what: Selector,
@@ -376,6 +384,10 @@ pub enum TriggerPattern {
         /// The fewest that make it trigger.
         #[serde(default = "one_attacker", skip_serializing_if = "is_one_attacker")]
         at_least: u32,
+        /// The attackers of the planeswalkers the player controls count with theirs ("attack one of your opponents or a
+        /// planeswalker they control").
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        walkers: bool,
     },
     /// Counters are put on a permanent.
     CountersPut {
@@ -608,6 +620,9 @@ pub enum TriggerPattern {
         /// The results are worded as natural results ("a natural 20"); no effect modifies a roll, so it only words them.
         #[serde(default, skip_serializing_if = "crate::effect::is_false")]
         natural: bool,
+        /// Once for each die rolled ("whenever you roll a die"), not once for each roll.
+        #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+        each: bool,
     },
     /// A player wins a coin flip ("whenever you win a coin flip", CR 705.2); `Triggering` is that player.
     CoinFlipWon {
@@ -794,8 +809,8 @@ pub enum TriggerPattern {
     Batch(Box<TriggerPattern>),
     /// The nth time in a turn that an event happens to a player ("whenever you draw your second card each turn",
     /// "when you cast your first spell each turn"): the turn's count of that kind of event by that player, which
-    /// starts again at zero when each turn begins. The event is `Drew`, `SpellCast`, `LifeGained`, `LifeLost`, `Cycled`
-    /// or `Surveilled` of a player, a token created under your control (`ZoneChange` of `[Token, ControlledBy You]`
+    /// starts again at zero when each turn begins. The event is `Drew`, `SpellCast`, `LifeGained`, `LifeLost`, `Cycled`,
+    /// `Surveilled` or `DiceRolled` (any result) of a player, a token created under your control (`ZoneChange` of `[Token, ControlledBy You]`
     /// from no zone) and, of an object, `Attacks`, `BecomesCrewed`, `BecomesSaddled`, `BecomesTarget`, `DealsDamage`
     /// into it and `CountersPut` on it.
     Nth {
@@ -948,6 +963,13 @@ pub enum ReplaceWhen {
         /// The permanent that would enter.
         what: Selector,
     },
+    /// An Aura, Equipment or Fortification matching the selector would become attached to a permanent (CR 701.3): "As
+    /// this Equipment becomes attached to a creature, choose a color." Only `Choose`; one attached again to the same
+    /// permanent does not become attached, so nothing is chosen anew.
+    BecomesAttached {
+        /// The attachment.
+        what: Selector,
+    },
     /// A creature matching the selector would explore (CR 701.44); only `Instead`, whose `Explore` of `Triggering` is
     /// the replaced exploration ("instead it explores, then it explores again").
     Explores {
@@ -978,6 +1000,21 @@ pub enum ReplaceWhen {
     /// cards each time you surveil").
     Surveils {
         /// Who would surveil.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
+    /// A player would learn (CR 701.48); only `MayInstead` of returning the source from its owner's graveyard to the
+    /// battlefield ("As long as this card is in your graveyard, if you would learn, you may instead return this card to
+    /// the battlefield").
+    Learns {
+        /// Who would learn.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
+    /// A player would copy a spell one or more times (CR 707.10); only `AddAmount` of a fixed number ("instead copy it
+    /// that many times plus an additional time"), and its controller may choose new targets for each added copy.
+    CopiesSpell {
+        /// Who would copy the spell.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
@@ -1017,6 +1054,8 @@ pub enum EntersChoice {
     CardTypeOf(mtg_core::card::CardTypes),
     /// A basic land type (CR 205.3i: Plains, Island, Swamp, Mountain or Forest).
     BasicLandType,
+    /// Two different basic land types, in order ("choose two basic land types"): the first and the second chosen.
+    TwoBasicLandTypes,
     /// This many different colours ("choose two colors").
     Colors(u32),
     /// A colour and a creature type ("choose a color and a creature type").
@@ -1235,6 +1274,9 @@ pub enum ReplaceBy {
     },
     /// As the permanent enters, its controller may reveal a card from their hand that the selector names; if they don't (or can't) it enters tapped.
     RevealOrTapped(Selector),
+    /// As the permanent enters, its controller may behold what the selector names: choose such a permanent they control
+    /// or reveal such a card from their hand; if they don't (or can't) it enters tapped ("you may behold a Jace").
+    BeholdOrTapped(Selector),
     /// As the permanent would enter, its controller pays the cost (a sacrifice or a discard); if they don't (or can't),
     /// it is put into its owner's graveyard instead ("If ~ would enter, sacrifice two untapped lands instead. If you do,
     /// put ~ onto the battlefield. If you don't, put it into its owner's graveyard").
@@ -1301,6 +1343,10 @@ pub enum ReplaceBy {
     /// As the permanent enters, its controller chooses one of these words ("choose Khans or Dragons"), which
     /// `Condition::EnteredAs` reads for as long as it stays.
     ChooseWord(Vec<String>),
+    /// As the permanent enters, an opponent of its controller chooses what the kind names ("As ~ enters, an opponent
+    /// chooses a creature type."): the controller chooses which opponent when there are several, and the choice is the
+    /// permanent's as if its controller had made it. Nothing is chosen when there is no opponent.
+    OpponentChooses(EntersChoice),
     /// The permanent enters under the control of an opponent its controller chooses as it enters ("~ enters under the
     /// control of an opponent of your choice"); under its controller's own control when there is no opponent.
     UnderChosenOpponent,
@@ -1341,6 +1387,9 @@ pub enum ReplaceBy {
     /// opponent's ("it enters under your control instead", "is created under your control instead"); only an `Enters`
     /// or a `TokenCreation` uses it, and only for what an opponent would get.
     UnderYourControl,
+    /// The controller of the replacement may have these steps happen instead of the event, which then does not happen
+    /// ("you may instead return this card to the battlefield"); only a `Learns` uses it.
+    MayInstead(Vec<crate::effect::Effect>),
 }
 
 /// The kinds of shield (`Effect::Shield`) the engine plays; the validator and the engine both read a shield by it.
@@ -1410,13 +1459,15 @@ impl ShieldShape {
             {
                 Some(Self::Class)
             }
-            // "Until end of turn, if one or more tokens would be created under your control, twice that many ..."
+            // "Until end of turn, if one or more tokens would be created under your control, twice that many ...", and "if
+            // you would put one or more +1/+1 counters on a creature you control, put that many plus one ... instead".
             // "If a creature would enter under an opponent's control this turn, it enters under your control instead."
-            (
-                ReplaceWhen::TokenCreation { .. },
-                ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::UnderYourControl,
-            )
             // "Until end of turn, if target player would draw a card, instead ...": every draw of the players.
+            (
+                ReplaceWhen::TokenCreation { .. } | ReplaceWhen::CountersPut { .. },
+                ReplaceBy::Multiply(_) | ReplaceBy::Add(_),
+            )
+            | (ReplaceWhen::TokenCreation { .. }, ReplaceBy::UnderYourControl)
             | (ReplaceWhen::Draw { .. }, ReplaceBy::Instead(_)) => Some(Self::Class),
             (ReplaceWhen::Enters { what }, ReplaceBy::UnderYourControl) if !names_objects(what) => {
                 Some(Self::Class)

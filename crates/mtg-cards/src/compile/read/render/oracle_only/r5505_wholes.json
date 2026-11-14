@@ -1,0 +1,328 @@
+[
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{1}"
+     },
+     {
+      "Discard": {
+       "count": {
+        "Count": [
+         {
+          "In": "Hand"
+         },
+         {
+          "OwnedBy": "You"
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Move": {
+       "what": {
+        "Each": [
+         {
+          "In": "Exile"
+         },
+         {
+          "OwnedBy": "You"
+         },
+         {
+          "HasCounter": {
+           "Other": "intel"
+          }
+         }
+        ]
+       },
+       "to": "Hand"
+      }
+     }
+    ]
+   }
+  },
+  "{1}, Discard your hand: Put all exiled cards you own with intel counters on them into your hand."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "DealsDamage": {
+      "source": [
+       "This"
+      ],
+      "to": "EachPlayer",
+      "combat": true
+     }
+    },
+    "effects": [
+     {
+      "ExileTop": {
+       "count": "Triggering",
+       "as": "intel",
+       "sealed": true
+      }
+     },
+     {
+      "PutCounters": {
+       "on": {
+        "Bound": "intel"
+       },
+       "counter": {
+        "Other": "intel"
+       }
+      }
+     },
+     {
+      "Transform": {
+       "what": "This"
+      }
+     }
+    ]
+   }
+  },
+  "Whenever ~ deals combat damage to a player, exile that many cards from the top of your library face down. Put an intel counter on each of them. Convert ~."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "RemoveCountersAmong": {
+       "counter": "+1/+1",
+       "count": "X",
+       "from": [
+        {
+         "Type": "Artifact"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     },
+     {
+      "XAtLeast": 1
+     }
+    ],
+    "targets": [
+     {
+      "what": "Player"
+     }
+    ],
+    "effects": [
+     {
+      "AddMana": {
+       "who": {
+        "Target": 0
+       },
+       "mana": {
+        "Fixed": [
+         "Colorless"
+        ]
+       },
+       "times": "X",
+       "only": [
+        {
+         "Spell": {
+          "types": [
+           "Artifact"
+          ]
+         }
+        },
+        {
+         "Ability": {}
+        },
+        "OtherCosts"
+       ]
+      }
+     },
+     {
+      "Transform": {
+       "what": "This"
+      }
+     }
+    ]
+   }
+  },
+  "Remove one or more +1/+1 counters from among artifacts you control: Target player adds that much {C}. This mana can't be spent to cast nonartifact spells. Convert ~."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": "Player"
+     },
+     {
+      "what": {
+       "Another": {
+        "what": "Player",
+        "earlier": [
+         0
+        ]
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "ControlPlayer": {
+       "who": {
+        "Target": 1
+       },
+       "by": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "ControlPlayer": {
+       "who": {
+        "Target": 0
+       },
+       "by": {
+        "Target": 1
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Choose target player and another target player. The first player controls the second player during the second player's next turn, and the second player controls the first player during the first player's next turn."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Chapter": {
+      "number": 1
+     }
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "Not": "Token"
+        },
+        {
+         "ControlledBy": "You"
+        },
+        {
+         "Not": {
+          "SharesName": {
+           "Each": [
+            "Token",
+            {
+             "ControlledBy": "You"
+            }
+           ]
+          }
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "CreateToken": {
+       "token": {
+        "CopyOf": {
+         "of": {
+          "Target": 0
+         },
+         "except": [
+          {
+           "RemoveSupertype": "Legendary"
+          },
+          {
+           "AddSubtype": "Reflection"
+          },
+          {
+           "AddKeyword": "Haste"
+          }
+         ]
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "I \u2014 Choose target nontoken creature you control that doesn't have the same name as a token you control. Create a token that's a copy of it, except it isn't legendary, is a Reflection in addition to its other types, and has haste."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Chapter": {
+      "number": 2
+     }
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "Not": "Token"
+        },
+        {
+         "ControlledBy": "You"
+        },
+        {
+         "Not": {
+          "SharesName": {
+           "Each": [
+            "Token",
+            {
+             "ControlledBy": "You"
+            }
+           ]
+          }
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "CreateToken": {
+       "token": {
+        "CopyOf": {
+         "of": {
+          "Target": 0
+         },
+         "except": [
+          {
+           "RemoveSupertype": "Legendary"
+          },
+          {
+           "AddSubtype": "Reflection"
+          },
+          {
+           "AddKeyword": "Haste"
+          }
+         ]
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "II \u2014 Choose target nontoken creature you control that doesn't have the same name as a token you control. Create a token that's a copy of it, except it isn't legendary, is a Reflection in addition to its other types, and has haste."
+ ]
+]

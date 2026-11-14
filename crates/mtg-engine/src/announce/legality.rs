@@ -23,6 +23,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
                     ctx.player,
                     ctx.cause(),
                     work.choices.x,
+                    work.choices.modes_chooser(),
                     &chosen[bases.get(at).copied().unwrap_or(0).min(at)..at],
                 );
                 without_earlier(spec, &chosen[..at], &mut legal);

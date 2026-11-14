@@ -245,17 +245,35 @@ mod r4708_reveal;
 mod r4709_differ;
 mod r4710_atoms;
 mod r4711_drafted;
+mod r5500_reads;
+mod r5501_attached;
+mod r5501_echo;
+mod r5502_attack_with_one;
+mod r5502_blocked_by_one;
+mod r5502_next_combat;
 mod r5504_everywhere;
 mod r5504_look;
+mod r5505_convert;
+mod r5506_costs;
 mod r5507_dice;
 mod r5507_prevent;
+mod r5509_rules;
 mod r5510_fortified;
 mod r5510_own_cost;
 mod r5510_wholes;
+mod r5513_events;
+mod r5514_pieces;
 mod r5515_enchanting;
 mod r5515_power_up;
+mod r5516_actions;
+mod r5516_reflexive;
 mod r5517_wholes;
 mod r5519_wholes;
+mod r5520_atoms;
+mod r5521_conditions;
+mod r5521_wholes;
+mod r5522_facts;
+mod r5523_drafted;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -662,8 +680,25 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     {
         return Some(found);
     }
+    if let Some(found) = r5521_wholes::r5521_read(text, kind) {
+        return Some(found);
+    }
+    if let Some(found) = render::r5522_read_whole(text, same_text) {
+        return Some(found);
+    }
     if let Some(found) =
         r4711_drafted::r4711_read(text, |twin| clause_with(twin, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
+    {
+        return Some(found);
+    }
+    if let Some(found) = render::r5523_read_whole(text) {
+        return Some(found);
+    }
+    if let Some(found) =
+        r5523_drafted::r5523_read(text, |twin| clause_with(twin, kind, x_free, own))
         && written_variants(&found)
             .iter()
             .any(|written| same_text(written, text))
@@ -717,6 +752,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     {
         return Some(found);
     }
+    if let Some(found) = r5500_reads::r5500_read(text, kind) {
+        return Some(found);
+    }
     if let Some(found) = r406_actions::r406_read(text) {
         return Some(found);
     }
@@ -734,6 +772,12 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     }) {
         return Some(found);
     }
+    if let Some(found) = r5516_actions::r5516_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r5514_pieces::r5514_read(text) {
+        return Some(found);
+    }
     if kind == ClauseKind::Static
         && let Some(found) = r4708_reveal::r4708_reveal_read(text)
     {
@@ -745,6 +789,11 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         && written_variants(&found)
             .iter()
             .any(|written| same_text(written, text))
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Static
+        && let Some(found) = r5506_costs::r5506_cost_read(text)
     {
         return Some(found);
     }

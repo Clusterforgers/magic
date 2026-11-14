@@ -1,7 +1,7 @@
 {
   "oracle_id": "d6026309-aae9-43e7-938b-69db7af7139c",
   "name": "Intrepid Paleontologist",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Intrepid Paleontologist",
@@ -21,9 +21,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 73, "end": 319 }
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  { "Subtype": "Dinosaur" },
+                  { "Type": "Creature" },
+                  { "OwnedBy": "You" },
+                  { "ExiledWith": "This" }
+                ],
+                "from": "Exile",
+                "riders": [{ "EntersWithCounter": { "Other": "finality" } }]
+              }
+            }
           }
         }
       ]

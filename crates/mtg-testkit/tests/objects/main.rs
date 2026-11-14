@@ -87,6 +87,8 @@ mod r4710_turned_up;
 mod r4b_dig;
 mod r4i_can_enchant;
 mod r4i_or_controller;
+mod r5501_attach_choice;
+mod r5512_aura_moves;
 mod r5519_done_for_the_day;
 mod r5519_heroic_return;
 mod r5519_leadership;

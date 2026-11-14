@@ -360,6 +360,13 @@ impl Held {
             self.change(&Modification::AddKeyword(keyword.clone()), origin, stamp);
             return;
         }
+        // Several keywords given at once are given one at a time, in the order listed.
+        if let Modification::AddKeywords(keywords) = modification {
+            for keyword in keywords {
+                self.change(&Modification::AddKeyword(keyword.clone()), origin, stamp);
+            }
+            return;
+        }
         modification.apply(&mut self.chars);
         match modification {
             Modification::SetController(player) => self.controller = *player,
@@ -452,7 +459,9 @@ impl Held {
                     *keyword = crate::text_change::keyword(keyword, from, to);
                 }
             }
-            Modification::AddType(_)
+            // Given one at a time above.
+            Modification::AddKeywords(_)
+            | Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
             | Modification::AddSupertype(_)
@@ -601,6 +610,14 @@ pub(crate) fn leaves_alone(event: &Event) -> bool {
             | Event::StepDone { .. }
             | Event::ChoiceMade { .. }
             | Event::ResolutionBegan { .. }
+    )
+}
+
+/// Whether the event changes what a mana pool holds, which a static ability may read (Omnath, Locus of Mana).
+pub(crate) fn r5523_moves_mana(event: &Event) -> bool {
+    matches!(
+        event,
+        Event::ManaAdded { .. } | Event::ManaSpent { .. } | Event::ManaPoolEmptied { .. }
     )
 }
 
@@ -776,6 +793,8 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::SetLoyalty(_)
         | Wanted::AddSubtype(_)
         | Wanted::SetCreatureTypes(_)
+        | Wanted::SetCreatureTypesOf(_)
+        | Wanted::SetLandTypesNthChosen(_)
         | Wanted::SetLandTypes(_)
         | Wanted::SetLandTypesChosen(_)
         | Wanted::SetCreatureTypesChosen(_)
@@ -790,6 +809,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::AddChosenColor
         | Wanted::SetCommanderColor => Layer::Color,
         Wanted::AddKeyword(_)
+        | Wanted::KeywordsOf { .. }
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType
         | Wanted::RemoveKeyword(_)

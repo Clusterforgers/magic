@@ -13,7 +13,32 @@ import type { Target } from "./Target";
  * A rule of the game as the engine plays it: the players or objects the data's references named, found when the rule
  * began (an effect) or whenever the state changes (a static ability).
  */
-export type Rule = { "MustAttack": Array<ObjectRef> } | { "MustAttackPlayers": Array<[ObjectRef, PlayerId]> } | { "MustBlock": Array<ObjectRef> } | { "MustBlockAttacker": { 
+export type Rule = { "MustAttack": Array<ObjectRef> } | { "MustAttackPlayers": Array<[ObjectRef, PlayerId]> } | { "MustAttackAt": { 
+/**
+ * The creatures named.
+ */
+creatures: Array<ObjectRef>, 
+/**
+ * The players whose creatures attack it.
+ */
+players: Array<PlayerId>, 
+/**
+ * The planeswalker they attack.
+ */
+at: ObjectRef, 
+/**
+ * The players whose next turn the rule lasts through: the named players, or the controllers of the named
+ * creatures as it began.
+ */
+turn_of: Array<PlayerId>, } } | { "MustAttackWithOne": { 
+/**
+ * The players who must attack.
+ */
+players: Array<PlayerId>, 
+/**
+ * The players and planeswalkers the creature attacks; any defender when empty.
+ */
+at: Array<AttackTarget>, } } | { "MustBlock": Array<ObjectRef> } | { "MustBlockAttacker": { 
 /**
  * The creatures that must block it.
  */
@@ -105,7 +130,7 @@ who: Array<PlayerId>,
 /**
  * The change.
  */
-change: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "OwnSpellsCantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "ExtraVote": Array<PlayerId> } | "ReverseTurnOrder" | { "AttackOnlyNearest": boolean | null } | { "SkipExtraTurns": Array<PlayerId> } | { "PowerUpAgain": Array<ObjectRef> } | { "FlipTwoCoins": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | "Planar" | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "PayLifeForOneSymbol": { 
+change: unknown, } } | { "CantDraw": Array<PlayerId> } | { "DrawFromBottom": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "OwnSpellsCantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "ExtraVote": Array<PlayerId> } | "ReverseTurnOrder" | { "AttackOnlyNearest": boolean | null } | { "SkipExtraTurns": Array<PlayerId> } | { "PowerUpAgain": Array<ObjectRef> } | { "FlipTwoCoins": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | "Planar" | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "PayLifeForOneSymbol": { 
 /**
  * The players.
  */
@@ -129,7 +154,19 @@ spend_as: unknown,
 /**
  * The spells it is for; everything when absent.
  */
-spells: unknown, } } | { "RevealTop": Array<PlayerId> } | { "RevealHand": Array<PlayerId> } | { "ControlSearches": Array<PlayerId> } | { "ExileFound": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "LoyaltyTwice": Array<PlayerId> } | { "RevealFirstDraw": { 
+spells: unknown, 
+/**
+ * With `spells`, the permanents whose abilities it is also for.
+ */
+abilities: unknown, } } | { "RevealTop": Array<PlayerId> } | { "RevealHand": Array<PlayerId> } | { "ControlSearches": Array<PlayerId> } | { "ExileFound": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "LoyaltyTwice": Array<PlayerId> } | { "EchoRather": { 
+/**
+ * The players it covers.
+ */
+players: Array<PlayerId>, 
+/**
+ * The cost they may pay instead.
+ */
+cost: unknown, } } | { "RevealFirstDraw": { 
 /**
  * Whether the reveal is optional.
  */
@@ -211,6 +248,10 @@ play: boolean,
  */
 once?: boolean, 
 /**
+ * With `once`, once each turn on every player's turn.
+ */
+any_turn?: boolean, 
+/**
  * What the caster pays in addition to the other costs of a cast through it.
  */
 additional?: unknown, 
@@ -233,7 +274,11 @@ any_cast?: boolean,
 /**
  * What a spell cast through it gets ("If you cast a spell this way, that artifact enters tapped").
  */
-riders?: unknown, } } | { "MayCastRather": { 
+riders?: unknown, 
+/**
+ * At most this many of the `only` objects may be cast or played through it within the turn.
+ */
+limit?: number, } } | { "MayCastRather": { 
 /**
  * The owner of each card and the card, as it was named when the rule began.
  */

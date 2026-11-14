@@ -326,6 +326,12 @@ fn scan(value: &Value, set: &mut ColorSet) {
         Value::String(text) => symbols(text, set),
         Value::Array(items) => items.iter().for_each(|item| scan(item, set)),
         Value::Object(fields) => {
+            // "Two mana of any one color and two mana of any other color" prints no mana symbol.
+            if serde_json::to_value(crate::effect::Produce::two_pairs_of_colors())
+                .is_ok_and(|any| any == *value)
+            {
+                return;
+            }
             for (key, inner) in fields {
                 if matches!(
                     key.as_str(),
@@ -446,6 +452,7 @@ mod tests {
     #[case::added_lists_of_mana(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOfLists":[["Red","Red"],["Red","Black"],["Black","Colorless"]]}}}]}}"#)), "BR")]
     #[case::a_combination_of_listed_types(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyCombination":{"count":2,"among":["Blue","Black","Red"]}}}}]}}"#)), "BRU")]
     #[case::a_combination_of_any_color_adds_none(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyCombination":{"count":2}}}}]}}"#)), "")]
+    #[case::two_pairs_of_any_colors_add_none(costing("{2}{R}").with_rules(rules(&format!(r#"{{"Spell":{{"effects":[{{"AddMana":{{"mana":{}}}}}]}}}}"#, serde_json::to_string(&crate::effect::Produce::two_pairs_of_colors()).unwrap()))), "R")]
     #[case::any_color_adds_none(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#)), "")]
     #[case::mana_spent_to_cast(costing("{1}").with_rules(rules(r#"{"Triggered":{"when":{"ZoneChange":{"to":"Battlefield","what":["This"]}},"effects":[{"If":{"condition":{"Not":{"ManaSpent":"Green"}},"then":[{"Sacrifice":{"filter":["This"]}}]}}]}}"#)), "G")]
     #[case::rules_text_clause(costing("{1}").with_manual("{W}, {T}: Draw a card.", "not run"), "W")]

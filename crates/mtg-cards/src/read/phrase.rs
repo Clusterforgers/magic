@@ -59,18 +59,23 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::R4700OtherChosen => "the other chosen player".to_owned(),
         Ref::Defending => "the defending player".to_owned(),
         Ref::Attacked => "the attacked player".to_owned(),
+        Ref::AttackedThisTurn => "each opponent you attacked this turn".to_owned(),
         Ref::MostLife => "the player with the most life".to_owned(),
         Ref::Teammates => "your teammates".to_owned(),
         Ref::ActivePlayer => "the active player".to_owned(),
         Ref::Chooser => "the player choosing".to_owned(),
         Ref::Asker => "the player asking".to_owned(),
+        Ref::ModesChooser => "the player who chose the modes".to_owned(),
         Ref::Bound(name) => format!("\u{201c}{name}\u{201d}"),
         Ref::Paid => "what was paid".to_owned(),
         Ref::Convoked => "the creatures that convoked it".to_owned(),
         Ref::Affected => "the object it applies to".to_owned(),
         Ref::Candidate => "the object being judged".to_owned(),
         Ref::Remembered { on, slot } => format!("what {} remembers as {slot}", who(ctx, on)),
+        Ref::LastExiledWith { on, .. } => format!("the last such card {} exiled", who(ctx, on)),
+        Ref::Delved => "the cards exiled with its delve".to_owned(),
         Ref::ControllerOf(inner) => format!("the controller of {}", who(ctx, inner)),
+        Ref::OpponentsOf(inner) => format!("the opponents of {}", who(ctx, inner)),
         Ref::OwnerOf(inner) => format!("the owner of {}", who(ctx, inner)),
         Ref::PlayersWhere { who: players, test } => format!(
             "{} for whom \u{201c}{}\u{201d} holds",
@@ -462,6 +467,9 @@ fn stat_text(stat: StatKind) -> &'static str {
         StatKind::BaseToughness => "base toughness",
         StatKind::ManaSpent => "mana spent",
         StatKind::ColorsSpent => "number of colors of mana spent",
+        StatKind::TreasureManaSpent => "mana from Treasures spent",
+        StatKind::ArtifactManaSpent => "mana from artifact sources spent",
+        StatKind::ColoredManaSymbols => "number of colored mana symbols in its mana cost",
         StatKind::Kicks => "number of times kicked",
         StatKind::CounterKinds => "kinds of counters",
         StatKind::R374Types => "number of types",
@@ -626,6 +634,23 @@ pub(super) fn condition(ctx: &Ctx, cond: &Condition) -> String {
         Condition::InCombat => "it is combat".to_owned(),
         Condition::Monarch(Ref::You) => "you are the monarch".to_owned(),
         Condition::Monarch(player) => format!("{} is the monarch", who(ctx, player)),
+        Condition::RingTempted {
+            who: players,
+            times,
+        } => format!(
+            "the Ring has tempted {} {times} or more times this game",
+            who(ctx, players)
+        ),
+        Condition::CompletedNamedDungeon {
+            who: players,
+            dungeon,
+        } => {
+            format!("{} completed {dungeon}", who(ctx, players))
+        }
+        Condition::FastestPlayer(players) => format!(
+            "the speed of {} is greater than each other player's speed",
+            who(ctx, players)
+        ),
         other => generic::node(ctx, other),
     }
 }
@@ -638,8 +663,12 @@ pub(super) fn duration(value: &Duration) -> String {
         Duration::UntilYourNextTurn => "until your next turn".to_owned(),
         Duration::UntilYourNextEndStep => "until your next end step".to_owned(),
         Duration::UntilYourNextUpkeep => "until your next upkeep".to_owned(),
+        Duration::UntilEndOfYourNextUpkeep => "until the end of your next upkeep".to_owned(),
         Duration::UntilEndOfYourNextTurn => "until the end of your next turn".to_owned(),
         Duration::DuringItsControllersNextTurn => "during its controller's next turn".to_owned(),
+        Duration::UntilItsControllersNextCombatEnds => {
+            "during its controller's next combat phase".to_owned()
+        }
         Duration::UntilEndOfCombatOnYourNextTurn => {
             "until end of combat on your next turn".to_owned()
         }
@@ -656,11 +685,14 @@ pub(super) fn duration(value: &Duration) -> String {
         Duration::UntilSkipped => "until it is skipped".to_owned(),
         Duration::UntilSkippedThisTurn => "until it is skipped this turn".to_owned(),
         Duration::TheirNextTurn => "during their next turn".to_owned(),
+        Duration::UntilTheirNextTurn => "until that player's next turn".to_owned(),
         Duration::UntilCastFromExile => "until this card is cast from exile".to_owned(),
+        Duration::UntilCreatureSpellCast => "until a player casts a creature spell".to_owned(),
         Duration::WhileHasCounter(counter) => {
             format!("while it has a {} counter", counter_text(counter))
         }
         Duration::WhileEnchanted => "while it is enchanted".to_owned(),
+        Duration::WhileTapped => "while it stays tapped".to_owned(),
         Duration::WhileMonarch(_) => "while that player is the monarch".to_owned(),
         Duration::UntilItsControllersNextUntapStep => {
             "until its controller's next untap step".to_owned()

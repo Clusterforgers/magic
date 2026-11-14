@@ -39,6 +39,8 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::ExileHidden { .. }
         | Effect::Manifest { .. }
         | Effect::Cloak { .. }
+        | Effect::FaceDownPile { .. }
+        | Effect::BecomeForetold { .. }
         | Effect::Sacrifice { .. }
         | Effect::SacrificeUpTo { .. }
         | Effect::Counter { .. }
@@ -57,6 +59,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Untap { .. }
         | Effect::TapOrUntap { .. }
         | Effect::PhaseOut { .. }
+        | Effect::Rephase
         | Effect::Attach { .. }
         | Effect::Unattach { .. }
         | Effect::JoinAttack { .. }
@@ -77,12 +80,14 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Goad { .. }
         | Effect::Fight { .. }
         | Effect::BecomeMonarch { .. }
+        | Effect::ReduceSpeed { .. }
         | Effect::ControlPlayer { .. }
         | Effect::RestartGame { .. }
         | Effect::RingTempts { .. }
         | Effect::CreateEmblem { .. }
         | Effect::BecomeDayNight { .. }
         | Effect::Amass { .. }
+        | Effect::Empower { .. }
         | Effect::Incubate { .. }
         | Effect::Conjure { .. }
         | Effect::Seek { .. }
@@ -147,7 +152,7 @@ fn reports(effect: &Effect) -> Reports {
             Reports::Itself
         }
         #[rustfmt::skip]
-        Effect::LookAtTop { .. } | Effect::Choose { .. } | Effect::ChooseAtRandom { .. } | Effect::Encode { .. } | Effect::Haunt { .. }
+        Effect::LookAtTop { .. } | Effect::Choose { .. } | Effect::ChooseWithin { .. } | Effect::ChooseAtRandom { .. } | Effect::Encode { .. } | Effect::Haunt { .. }
         | Effect::Remember { .. } | Effect::Forget { .. } | Effect::RememberValue { .. } | Effect::DelayedTrigger { .. } | Effect::Reflexive { .. }
         | Effect::If { .. } | Effect::Modal { .. } | Effect::RepeatEach { .. } | Effect::Together { .. } | Effect::RollDice { .. }
         | Effect::FlipCoin { .. } | Effect::Clash { .. } | Effect::Vote { .. } | Effect::ChooseNumbers { .. } | Effect::ChooseWords { .. } | Effect::BidLife { .. } | Effect::VillainousChoice { .. }

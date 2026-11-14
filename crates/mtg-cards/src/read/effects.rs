@@ -380,6 +380,9 @@ fn permanents(ctx: &Ctx, effect: &Effect) -> Option<String> {
             phrase::who(ctx, what)
         ),
         Effect::StillResolves => "it still resolves if its targets become illegal".to_owned(),
+        Effect::Rephase => {
+            "simultaneously, all phased-out creatures phase in and all creatures with phasing phase out".to_owned()
+        }
         Effect::Explore { what } => format!("{} explores", phrase::who(ctx, what)),
         _ => return None,
     })
@@ -484,18 +487,30 @@ fn game(ctx: &Ctx, effect: &Effect) -> Option<String> {
             &format!("{} extra", phrase::counted(ctx, count, "turn")),
         ),
         Effect::BecomeMonarch { who } => act(ctx, who, "become", "the monarch"),
+        Effect::ReduceSpeed { who } => {
+            act(ctx, who, "lose", "1 speed, keeping a speed of at least 1")
+        }
         Effect::RestartGame { keep } => format!(
             "restart the game, leaving in exile each {}, then put those cards onto the battlefield under your control",
             phrase::selector(ctx, keep)
         ),
-        Effect::ControlPlayer { who, extra_turn } => {
+        Effect::ControlPlayer {
+            who,
+            by,
+            extra_turn,
+        } => {
             let then = if *extra_turn {
                 ", then that player takes an extra turn"
             } else {
                 ""
             };
+            let controls = if *by == Ref::You {
+                "you control".to_owned()
+            } else {
+                format!("{} controls", phrase::who(ctx, by))
+            };
             format!(
-                "you control {} during that player's next turn{then}",
+                "{controls} {} during that player's next turn{then}",
                 phrase::who(ctx, who)
             )
         }

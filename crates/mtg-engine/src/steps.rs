@@ -114,6 +114,7 @@ fn untap_step(state: &GameState) -> Progress {
                     "Choose the permanents to keep tapped.".to_owned()
                 },
                 can_cancel: false,
+                total: None,
                 groups: Vec::new(),
             }),
         }),
@@ -257,13 +258,20 @@ pub(crate) fn draw(state: &GameState, player: PlayerId, count: usize) -> Vec<Eve
     // "Can't draw more than one card each turn": the draws past the limit don't happen.
     let count = crate::rules::ep24_draws_left(state, player).map_or(count, |left| count.min(left));
     let library = state.zone(Zone::Library(player));
+    let bottom = crate::rules::draws_from_bottom(state, player);
     (0..count)
-        .map(|i| match library.iter().rev().nth(i) {
-            Some(object) => Event::CardDrawn {
-                player,
-                object: *object,
-            },
-            None => Event::DrewFromEmptyLibrary { player },
+        .map(|i| {
+            match if bottom {
+                library.get(i)
+            } else {
+                library.iter().rev().nth(i)
+            } {
+                Some(object) => Event::CardDrawn {
+                    player,
+                    object: *object,
+                },
+                None => Event::DrewFromEmptyLibrary { player },
+            }
         })
         .collect()
 }
@@ -405,7 +413,7 @@ pub(crate) fn leave_step(state: &GameState) -> Vec<Event> {
     let step = state.turn().step();
     let natural = next_step(state, step);
     // Mana kept through the steps of a phase goes as the phase ends; a phase added after it (CR 500.8) comes next.
-    let ends_phase = natural.phase() != step.phase();
+    let ends_phase = natural.phase() != step.phase() || state.turn().step_is_lone();
     let (next, through) = match (
         state.turn().steps_ahead().first(),
         state.turn().phases_ahead().first(),
@@ -508,17 +516,12 @@ fn cleanup(state: &GameState) -> Progress {
     Progress::Events(end_turn(state))
 }
 
-/// Ends the turn: damage wears off, "until end of turn" effects end, and the next player's turn begins.
+/// Ends the turn: damage wears off (but on a permanent that keeps it, `r5516_damage`), "until end of turn" effects end,
+/// and the next player's turn begins.
 ///
 /// The next turn goes to the next player in turn order after the active player, who may have left the game.
 pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
-    let mut events = Vec::new();
-    let damaged = state
-        .objects()
-        .any(|o| o.permanent().is_some_and(|p| p.damage() > 0));
-    if damaged {
-        events.push(Event::DamageCleared);
-    }
+    let mut events = crate::r5516_damage::r5516_cleared(state);
     events.extend(
         state
             .effects()

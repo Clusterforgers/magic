@@ -154,6 +154,12 @@ pub enum CostItem {
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
     },
+    /// Exile a spell on the stack the payer controls that matches ("Exile an instant or sorcery spell you control"); the
+    /// spell leaves the stack and does not resolve.
+    ExileSpell {
+        /// Which spells may be chosen; the stack is implied.
+        filter: Selector,
+    },
     /// Exile cards from the payer's hand that match ("Exile a red card from your hand").
     ExileFromHand {
         /// Which cards may be chosen.
@@ -171,6 +177,20 @@ pub enum CostItem {
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
     },
+    /// Discard or reveal cards from the payer's hand that match and are alike as a set ("Discard two nonland cards with
+    /// the same name", "Reveal two cards from your hand that share a color").
+    AlikeFromHand {
+        /// Discarded rather than revealed.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        discard: bool,
+        /// Which cards may be chosen.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        filter: Selector,
+        /// How many.
+        count: Amount,
+        /// What the chosen cards have in common.
+        alike: Alike,
+    },
     /// The source deals damage to the payer ("{CARDNAME} deals 2 damage to you").
     DamageToYou(Amount),
     /// Each other player gains this much life ("you may have each other player gain 6 life").
@@ -184,6 +204,12 @@ pub enum CostItem {
     ExileTop(Amount),
     /// Collect evidence (CR 701.59): exile cards from the payer's graveyard with total mana value at least that much.
     CollectEvidence(u32),
+    /// Generic mana equal to the amount, counted as the cost is paid during a resolution ("echo {X}, where X is your life
+    /// total").
+    GenericOf(Amount),
+    /// Exile any number of other cards from the payer's graveyard with at least this many card types among them
+    /// (Nethergoyf's escape cost).
+    ExileCardTypes(u32),
     /// Blight (Lorwyn Eclipsed): put that many -1/-1 counters on a creature the payer controls and picks.
     Blight(Amount),
     /// Behold (Lorwyn Eclipsed): choose a permanent the payer controls or reveal a card from their hand that matches.
@@ -231,7 +257,8 @@ pub enum CostItem {
     /// color the source chose, after the cost modifiers apply; pays nothing itself.
     ChosenColorOnly,
     /// The X announced for the cost is at most this amount, read as the payment is asked ("X can't be greater than the
-    /// amount of life you gained this turn"); pays nothing itself. Only a payment an effect asks for (`Effect::Pay`) reads it.
+    /// amount of life you gained this turn"); pays nothing itself. A payment an effect asks for (`Effect::Pay`) reads it,
+    /// and so does the announcement of a spell that holds it as a required `AdditionalCost` (Open the Way).
     XAtMost(crate::value::Amount),
     /// Forage (Bloomburrow): exile three cards from the payer's graveyard or sacrifice a Food they control.
     Forage,
@@ -265,6 +292,15 @@ pub enum CostItem {
     },
 }
 
+/// What the cards of a set have in common (`CostItem::AlikeFromHand`).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum Alike {
+    /// They all have the same name.
+    SameName,
+    /// They all have one color in common.
+    ShareColor,
+}
+
 /// The parts of a cost, paid together; a cost of one mana part is written as its mana text.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Default)]
 pub struct Cost(pub Vec<CostItem>);
@@ -291,6 +327,7 @@ impl CostItem {
             | CostItem::ExileFromGraveyard { count, .. }
             | CostItem::ExileFromHand { count, .. }
             | CostItem::RevealFromHand { count, .. }
+            | CostItem::AlikeFromHand { count, .. }
             | CostItem::ReturnToHand { count, .. }
             | CostItem::ExilePermanents { count, .. }
             | CostItem::Behold { count, .. }
@@ -329,6 +366,7 @@ impl Cost {
             | CostItem::ExileFromGraveyard { count, .. }
             | CostItem::ExileFromHand { count, .. }
             | CostItem::RevealFromHand { count, .. }
+            | CostItem::AlikeFromHand { count, .. }
             | CostItem::ReturnToHand { count, .. }
             | CostItem::ExilePermanents { count, .. }
             | CostItem::Behold { count, .. }

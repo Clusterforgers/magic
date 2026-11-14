@@ -11,10 +11,12 @@
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::cost::{Cost, CostItem};
+use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
 use crate::ability_reader;
 use crate::parts::Part;
+use crate::state::GameState;
 use crate::ways::{self, Way};
 
 /// One way to pay the required additional costs of a card: the mana and the parts the costs take, and the costs chosen in words.
@@ -41,6 +43,15 @@ fn alternatives(cost: &Cost) -> Vec<&Cost> {
 /// has a part the announcement does not pay: `{T}`, losing the source, an `{X}` of mana or counters. A part that counts X
 /// takes the X the caster announces.
 pub(crate) fn variants(card: &CardDefinition) -> Option<Vec<Variant>> {
+    variants_at(card, None)
+}
+
+/// [`variants`] with each part that counts something other than X counted for the caster now when `at` names the
+/// state, the caster and the card ("sacrifice half the lands you control, rounded up"); unpaid without it.
+fn variants_at(
+    card: &CardDefinition,
+    at: Option<(&GameState, PlayerId, ObjectId)>,
+) -> Option<Vec<Variant>> {
     let mut found = vec![Variant {
         mana: ManaCost::ZERO,
         parts: Vec::new(),
@@ -55,15 +66,17 @@ pub(crate) fn variants(card: &CardDefinition) -> Option<Vec<Variant>> {
         else {
             continue;
         };
-        // "Spend only black mana on X" pays nothing: it colors the mana of the X (`price::spell_x_color`).
+        // "Spend only black mana on X" pays nothing: it colors the mana of the X (`price::spell_x_color`); "X can't be
+        // greater than ..." pays nothing either: it caps the X announced (`announce::r5523_x_cap`).
         if cost
             .0
             .iter()
-            .all(|item| matches!(item, CostItem::XColor(_)))
+            .all(|item| matches!(item, CostItem::XColor(_) | CostItem::XAtMost(_)))
         {
             continue;
         }
-        let options = alternatives(cost);
+        let settled = at.map(|(state, player, id)| crate::price::settled(cost, state, player, id));
+        let options = alternatives(settled.as_ref().unwrap_or(cost));
         let mut next = Vec::new();
         for before in &found {
             for option in &options {
@@ -114,8 +127,12 @@ pub(crate) fn counts_x(card: &CardDefinition) -> bool {
 
 /// `ways` with the required additional costs of the card added to each, one way for each cost the caster may choose; none
 /// when the caster cannot be asked to pay them.
-pub(crate) fn add_to(ways: Vec<Way>, card: &CardDefinition) -> Vec<Way> {
-    let Some(all) = variants(card) else {
+pub(crate) fn add_to(
+    ways: Vec<Way>,
+    card: &CardDefinition,
+    at: Option<(&GameState, PlayerId, ObjectId)>,
+) -> Vec<Way> {
+    let Some(all) = variants_at(card, at) else {
         return Vec::new();
     };
     if all.len() == 1 && all[0].parts.is_empty() && all[0].mana == ManaCost::ZERO {
@@ -260,7 +277,7 @@ mod tests {
         let card = card(vec![rule]);
         assert_eq!(variants(&card), None);
         assert!(
-            add_to(vec![way(Vec::new())], &card).is_empty(),
+            add_to(vec![way(Vec::new())], &card, None).is_empty(),
             "no way is left"
         );
     }
@@ -291,6 +308,7 @@ mod tests {
         let ways = add_to(
             vec![way(Vec::new()), way(vec![own.clone()])],
             &card(vec![required(vec![CostItem::PayLife(Amount::Fixed(3))])]),
+            None,
         );
         assert_eq!(ways[0].parts, vec![Part::Life(3)]);
         assert_eq!(ways[1].parts, vec![own, Part::Life(3)]);
@@ -302,7 +320,11 @@ mod tests {
             vec![discard()],
             vec![CostItem::PayLife(Amount::Fixed(3))],
         ])])]);
-        let ways = add_to(vec![way(Vec::new()), way(vec![Part::Life(1)])], &rules);
+        let ways = add_to(
+            vec![way(Vec::new()), way(vec![Part::Life(1)])],
+            &rules,
+            None,
+        );
         let seen: Vec<(u8, usize)> = ways
             .iter()
             .map(|made| (made.variant, made.parts.len()))
@@ -324,7 +346,7 @@ mod tests {
         base.mana = own.map(|text| ManaCost::parse(text).unwrap());
         let mut with_printed = rules;
         with_printed.mana_cost = Some(ManaCost::parse("{1}{G}").unwrap());
-        let made = add_to(vec![base], &with_printed);
+        let made = add_to(vec![base], &with_printed, None);
         let total = ManaCost::parse(total).unwrap();
         // The printed cost {1}{G} plus {2} is {3}{G}; an alternative cost {R} plus {2} is {2}{R}.
         assert_eq!(
@@ -336,6 +358,6 @@ mod tests {
     #[test]
     fn a_card_with_no_required_cost_keeps_its_ways() {
         let ways = vec![way(Vec::new()), way(vec![Part::Life(1)])];
-        assert_eq!(add_to(ways.clone(), &card(Vec::new())), ways);
+        assert_eq!(add_to(ways.clone(), &card(Vec::new()), None), ways);
     }
 }

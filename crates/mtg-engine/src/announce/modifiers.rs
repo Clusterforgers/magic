@@ -390,7 +390,11 @@ pub(crate) fn modified(
         return mana;
     };
     // The commander tax is an increase of the cost like any other (CR 903.8).
-    let tax = crate::commanders::tax_for(state, spell);
+    let tax = if crate::r5500_tax_life::r5500_tax_life(state, spell).is_some() {
+        0
+    } else {
+        crate::commanders::tax_for(state, spell)
+    };
     if tax > 0 {
         more = joined(
             more,
@@ -416,12 +420,15 @@ pub(super) fn life(ctx: &Ctx<'_>, choices: &Choices) -> u32 {
     let What::Spell(spell) = ctx.what else {
         return 0;
     };
+    let taxed = crate::r5500_tax_life::r5500_tax_life(ctx.state, *spell).unwrap_or(0);
     if !ctx.state.possible.costs {
-        return 0;
+        return taxed;
     }
     let specs = targets::specs(ctx, choices);
     let judging = (choices.targets.len() < specs.len()).then_some(specs.as_slice());
-    changes(ctx.state, ctx.player, *spell, &specs, choices, judging).map_or(0, |all| all.life)
+    changes(ctx.state, ctx.player, *spell, &specs, choices, judging)
+        .map_or(0, |all| all.life)
+        .saturating_add(taxed)
 }
 
 /// What the cost modifiers that apply to a spell change, the commander tax aside.

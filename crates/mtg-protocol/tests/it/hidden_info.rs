@@ -210,6 +210,10 @@ pub(crate) fn leaks(value: &Value, hidden: &BTreeMap<ObjectId, String>) -> Vec<S
                     }
                 }
             }
+            // The maker of mana is a permanent as it was on the battlefield when it made the mana, seen by every seat then
+            // (`SpendTraits.made_by`, a pair of the object and its zone-change count); a later move to a hidden zone does
+            // not hide that history.
+            Value::Array(_) if key == "made_by" => {}
             // The hidden form of a scry or surveil counts its piles; the lists of an action name cards.
             Value::Array(items) if COUNT_KEYS.contains(&key) => {
                 let listed = format!("{key}[]");

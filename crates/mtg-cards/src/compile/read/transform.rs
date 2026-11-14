@@ -11,7 +11,8 @@ use crate::refs::{Pred, Ref, Targetable};
 /// one permanent turns over; "flip ~" and "flip it" flip a flip card.
 pub fn transform(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let flips = r.word("flip");
-    if !flips {
+    // "Convert" turns a More Than Meets the Eye card over as "transform" does (CR 701.28).
+    if !flips && !r.word("convert") {
         r.need("transform")?;
     }
     let what = if r.source() || (r.it == Some(Ref::This) && r.word("it")) {

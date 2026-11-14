@@ -169,14 +169,22 @@ pub fn apply_answer(
                     IllegalAnswer::AttackUnaffordable(_)
                     | IllegalAnswer::BlockUnaffordable(_)
                     | IllegalAnswer::TooLittlePower { .. }
-                    | IllegalAnswer::TooLittleValue { .. },
+                    | IllegalAnswer::TooLittleValue { .. }
+                    | IllegalAnswer::TooFewCardTypes { .. }
+                    | IllegalAnswer::WrongPick(R5518_ALIKE_SAME_NAME | R5518_ALIKE_SHARE_COLOR),
                 ),
             ) => error,
             result => return result,
         };
         let smaller = match (&decision.kind, &answer) {
             (DecisionKind::ChooseCards(options), Answer::ChooseCards(CardsChoice(cards)))
-                if cards.len() < options.from.len() =>
+                if matches!(refused, EngineError::Illegal(IllegalAnswer::WrongPick(_))) =>
+            {
+                r5518_next_set(&options.from, cards)
+                    .map(|next| Answer::ChooseCards(CardsChoice(next)))
+            }
+            (DecisionKind::ChooseCards(options), Answer::ChooseCards(CardsChoice(cards)))
+                if cards.len() < options.from.len() && options.total.is_none() =>
             {
                 Some(Answer::ChooseCards(CardsChoice(options.from.clone())))
             }
@@ -206,6 +214,28 @@ pub fn apply_answer(
             None => return Err(refused),
         }
     }
+}
+
+/// The refusal of a pick of cards that are not alike as the cost asks (`IllegalAnswer::WrongPick`).
+const R5518_ALIKE_SAME_NAME: &str = "cards with the same name";
+/// The refusal of a pick of cards that share no color.
+const R5518_ALIKE_SHARE_COLOR: &str = "cards that share a color";
+
+/// The next set of as many of `from` as `picked`, in the order of `from` (the next combination), `None` after the last:
+/// a pick refused because its cards are not alike tries the sets one after another.
+fn r5518_next_set(from: &[ObjectId], picked: &[ObjectId]) -> Option<Vec<ObjectId>> {
+    let mut at: Vec<usize> = picked
+        .iter()
+        .map(|id| from.iter().position(|offered| offered == id))
+        .collect::<Option<_>>()?;
+    at.sort_unstable();
+    let size = at.len();
+    let last = (0..size).rev().find(|&i| at[i] < from.len() - size + i)?;
+    at[last] += 1;
+    for i in last + 1..size {
+        at[i] = at[i - 1] + 1;
+    }
+    Some(at.into_iter().map(|i| from[i]).collect())
 }
 
 /// The answer that declares `attackers` and exerts `exert`: a plain declaration while nothing is exerted.
@@ -1141,7 +1171,8 @@ impl RandomBot {
         }
         let spread = usize::try_from(options.max.saturating_sub(options.min)).unwrap_or(0) + 1;
         let wanted = options.min as usize + self.rng.index(spread);
-        Answer::ChooseCards(CardsChoice(self.subset(&options.from, wanted)))
+        let picked = self.subset(&options.from, wanted);
+        Answer::ChooseCards(CardsChoice(options.within_total(picked)))
     }
 
     /// Any number of the modes offered between the bounds, in no particular order, a mode more than once only where it

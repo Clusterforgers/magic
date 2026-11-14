@@ -108,7 +108,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let price = price(cx, cost, times)?;
     match settle(cx, player, &price, &mut journal)? {
         Settled::Ask(decision) => Ok(Run::Ask(decision)),
-        Settled::Paid(events) => {
+        Settled::Paid(events, _) => {
             if journal.next().is_some() {
                 return Err(ResolveError::Invalid(
                     "an answer was given to a question that was not asked".into(),

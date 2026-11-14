@@ -226,7 +226,18 @@ mod r4705_wholes;
 mod r4707_wordings;
 mod r4710_wordings;
 mod r4711_wholes;
+mod r5500_wordings;
+mod r5503_wholes;
+mod r5505_wholes;
+mod r5508_wholes;
+mod r5509_wholes;
+mod r5511_wholes;
+mod r5512_wholes;
+mod r5513_wholes;
 mod r5515_wholes;
+mod r5516_wholes;
+mod r5518_wholes;
+mod r5522_wholes;
 mod regen_this_way;
 mod repeat_modes;
 mod return_damager;
@@ -408,10 +419,15 @@ mod r301b_wholes;
 mod r306_wholes;
 mod r306b_wholes;
 mod r379_wholes;
+mod r5502_wholes;
+mod r5523_wholes;
+pub(super) use r5523_wholes::add as r5523_add_whole;
+pub(in crate::compile::read) use r5523_wholes::r5523_read_whole;
 mod rmt5_wholes;
 // r30-0
 mod r300_wholes;
 pub(super) use r300_wholes::r300_whole;
+pub(crate) use r5522_wholes::r5522_read_whole;
 // r28-9
 mod r289_wholes;
 
@@ -567,8 +583,10 @@ fn add_latest(ability: &Ability, texts: &mut Vec<String>) {
     r283_wholes::r283_add_wholes(ability, texts);
     r287_wholes::r287_add_wholes(ability, texts);
     r306b_wholes::r306b_add_wholes(ability, texts);
+    r5502_wholes::r5502_add_wholes(ability, texts);
     l291_wholes::add(ability, texts);
     r379_wholes::add(ability, texts);
+    r5523_wholes::add(ability, texts);
     r306_wholes::add(ability, texts);
     // r28-9
     r289_wholes::r289_add_wholes(ability, texts);
@@ -812,6 +830,16 @@ fn add_c11g(ability: &Ability, texts: &mut Vec<String>) {
     r378_wholes::r378_add_wholes(ability, texts);
     r4711_wholes::r4711_add_wholes(ability, texts);
     r5515_wholes::r5515_add_wholes(ability, texts);
+    r5505_wholes::r5505_add_wholes(ability, texts);
+    r5516_wholes::r5516_add_wholes(ability, texts);
+    r5513_wholes::r5513_add_wholes(ability, texts);
+    r5509_wholes::r5509_add_wholes(ability, texts);
+    r5522_wholes::r5522_add_wholes(ability, texts);
+    r5511_wholes::r5511_add_wholes(ability, texts);
+    r5503_wholes::r5503_add_wholes(ability, texts);
+    r5512_wholes::r5512_add_wholes(ability, texts);
+    r5508_wholes::r5508_add_wholes(ability, texts);
+    r5518_wholes::r5518_add_wholes(ability, texts);
     r307_wholes::r307_add_wholes(ability, texts);
     r301_wholes::r301_add_wholes(ability, texts);
     r302_wholes::r302_add_wholes(ability, texts);
@@ -821,6 +849,7 @@ fn add_c11g(ability: &Ability, texts: &mut Vec<String>) {
     r305c_random_keyword::r305c_add_random_keyword(ability, texts);
     r306c_wholes::r306c_add_wholes(ability, texts);
     r400_wholes::r400_add_wholes(ability, texts);
+    r5500_wordings::r5500_add_wholes(ability, texts);
     r4703_wholes::r4703_add_wholes(ability, texts);
     r4705_wholes::r4705_add_wholes(ability, texts);
 }

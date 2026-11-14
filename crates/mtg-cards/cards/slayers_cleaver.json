@@ -1,14 +1,27 @@
 {
   "oracle_id": "e51cbdce-017e-4b14-b3a7-2db50ddd8037",
   "name": "Slayer's Cleaver",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Slayer's Cleaver",
       "oracle_fingerprint": "6786fe4f1debf35557ebfcef46b8b87a",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 71 } }
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 1 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": "Attached",
+                "quirk": { "MustBeBlockedByOne": [{ "Subtype": "Eldrazi" }] }
+              }
+            }
+          }
         },
         { "Keyword": { "Equip": "{4}" } }
       ]

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "f5fd3141-6fd9-4491-9f29-7fd81209bd57",
+  "name": "Memory Crystal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Memory Crystal",
+      "oracle_fingerprint": "a7352bc37a6595db55de8af16cb1a71b",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [],
+            "change": "Reduce",
+            "mana": "{2}",
+            "activating": "Buyback"
+          }
+        }
+      ]
+    }
+  ]
+}
