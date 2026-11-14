@@ -287,6 +287,7 @@ mod r6008_wholes;
 mod r6018_wholes;
 mod r6100_atoms;
 mod r6100_wholes;
+mod r6401_wholes;
 mod r6101_stickers;
 mod r6102_wholes;
 mod r6103_wholes;
@@ -657,6 +658,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r6100_wholes::r6100_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r6401_wholes::r6401_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r6103_wholes::r6103_whole_read(text) {

@@ -1,0 +1,116 @@
+[
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Visit": {}
+    },
+    "effects": [
+     {
+      "Choose": {
+       "from": "Opponents",
+       "as": "opponent"
+      }
+     },
+     {
+      "Choose": {
+       "who": {
+        "Bound": "opponent"
+       },
+       "from": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": {
+           "Bound": "opponent"
+          }
+         }
+        ]
+       },
+       "as": "theirs"
+      }
+     },
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       },
+       "as": "mine"
+      }
+     },
+     {
+      "May": {
+       "effects": [
+        {
+         "Exile": {
+          "what": {
+           "Union": [
+            {
+             "Bound": "theirs"
+            },
+            {
+             "Bound": "mine"
+            }
+           ]
+          },
+          "as": "exiled"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "If": {
+       "condition": "Performed",
+       "then": [
+        {
+         "DelayedTrigger": {
+          "when": {
+           "StepBegins": {
+            "step": "End"
+           }
+          },
+          "effects": [
+           {
+            "Move": {
+             "what": {
+              "Bound": "exiled"
+             },
+             "to": {
+              "Battlefield": {}
+             }
+            }
+           }
+          ]
+         }
+        }
+       ],
+       "otherwise": [
+        {
+         "Fight": {
+          "what": {
+           "Bound": "theirs"
+          },
+          "with": {
+           "Bound": "mine"
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Visit — Choose an opponent. They choose a creature they control, then you choose a creature you control. You may exile the chosen creatures. If you do, return them to the battlefield under their owners' control at the beginning of the next end step. Otherwise, the chosen creatures fight each other."
+ ]
+]
