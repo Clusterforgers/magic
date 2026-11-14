@@ -497,16 +497,21 @@ export function bossOnPhone(plan: SeatPlan, phone: boolean): SeatPlan {
   return { ...plan, tiles: plan.boards, boards: focused === null ? [] : [focused], columns: 1 }
 }
 
-/** The height in px of the party's band over your board in boss mode: a tile strip on a phone, else a row of boards. */
+/**
+ * The height in px of the party's band over your board in boss mode: a row of boards, at most `ALLIES_OWN_MOST` of
+ * your row so your board stays the larger; a tile strip on a phone or where that share is under `ALLIES_MIN_PX`.
+ */
 export function alliesBandPx(regions: Pick<Regions, 'phone' | 'opponents' | 'own'>, allies: number): number {
   if (allies <= 0) return 0
   if (regions.phone) return ALLY_STRIP_PX
   const room = finite(regions.opponents) + finite(regions.own)
-  return Math.round(Math.min(ALLIES_MAX_PX, Math.max(ALLIES_MIN_PX, room * ALLIES_SHARE)))
+  const most = Math.floor(finite(regions.own) * ALLIES_OWN_MOST)
+  if (most < ALLIES_MIN_PX) return ALLY_STRIP_PX
+  return Math.round(Math.min(ALLIES_MAX_PX, most, Math.max(ALLIES_MIN_PX, room * ALLIES_SHARE)))
 }
 
-/** The row of the boss's abilities over its side (`h-9`). */
-export const BOSS_ABILITIES_PX = 36
+/** The row of the boss's abilities over its side (`h-8`). */
+export const BOSS_ABILITIES_PX = 32
 
 /** The boss's board is this many shares of its side's width, beside one share per minion. */
 export const BOSS_SPAN = 2
@@ -520,6 +525,8 @@ export const ALLY_STRIP_PX = 56
 export const ALLIES_SHARE = 0.34
 export const ALLIES_MIN_PX = 120
 export const ALLIES_MAX_PX = 280
+/** The most of your row the party's row of boards takes. */
+export const ALLIES_OWN_MOST = 0.45
 
 /** The whole layout of the table for a window and a seat count. */
 export interface TablePlan {

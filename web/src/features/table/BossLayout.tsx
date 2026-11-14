@@ -10,11 +10,12 @@ import { usePlay } from '@/features/game/gameContext'
 import type { PlayerId } from '@/protocol/generated'
 import type { CardSize } from './cardSize'
 import { GridCardContext, useGridCard } from './gridCard'
-import { ALLY_WIDE_SPAN, BOSS_SPAN } from './layout'
+import { ALLY_STRIP_PX, ALLY_WIDE_SPAN, BOSS_SPAN } from './layout'
 import type { PodPlace, SeatPlan } from './layout'
 import { LeftStrip, SeatArea, TileStrip } from './Seats'
 import { SeatTile } from './SeatTile'
 import { BossAbilitiesBar } from './campaign/BossAbilities'
+import { BossBarContext } from './campaign/useBossAbilities'
 import { playerOf } from './selectors'
 
 interface BossSideProps {
@@ -49,8 +50,19 @@ function Minions({ seats, size }: { seats: readonly PlayerId[]; size: CardSize }
   )
 }
 
-/** The boss's side: the boss's board wide with its pod, each minion's board beside it; tiles and one board on a phone. */
-export function BossSide({ plan, size, pod, onFocusSeat }: BossSideProps) {
+/**
+ * The boss's side: its abilities in a row on top, then the boss's board wide with its pod and each minion's board beside
+ * it; tiles and one board on a phone. The bar shows the boss's phase, scheme, Omen and rules, so its pod leaves them out.
+ */
+export function BossSide(props: BossSideProps) {
+  return (
+    <BossBarContext value={true}>
+      <BossSideBody {...props} />
+    </BossBarContext>
+  )
+}
+
+function BossSideBody({ plan, size, pod, onFocusSeat }: BossSideProps) {
   const [boss, ...minions] = plan.boards
   const { gone, playing } = useGone(minions)
   const abilities = boss === undefined ? null : <BossAbilitiesBar seat={boss} />
@@ -176,7 +188,8 @@ export function PartySide({ plan, size, pod, band, phone }: PartySideProps) {
   if (plan.allies.length === 0) return own
   return (
     <div data-slot="party" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-      {phone ? (
+      {/* A row too short for the other heroes' boards (`alliesBandPx`) keeps their tiles, as a phone does. */}
+      {phone || band === ALLY_STRIP_PX ? (
         <AllyStrip allies={plan.allies} size={size} />
       ) : (
         <AllyRow allies={plan.allies} size={size} band={band} />

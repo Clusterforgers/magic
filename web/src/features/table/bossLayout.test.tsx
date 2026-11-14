@@ -4,7 +4,15 @@ import { describe, expect, it } from 'vitest'
 import { renderTable } from '@/test-utils/tableHarness'
 import { buildFixture } from './dev/fixture'
 import { withBoss } from './dev/devGame'
-import { ALLY_STRIP_PX, ALLIES_MAX_PX, ALLIES_MIN_PX, alliesBandPx, arrangeSeats, planTable } from './layout'
+import {
+  ALLY_STRIP_PX,
+  ALLIES_MAX_PX,
+  ALLIES_MIN_PX,
+  ALLIES_OWN_MOST,
+  alliesBandPx,
+  arrangeSeats,
+  planTable,
+} from './layout'
 import type { BossSides } from './layout'
 import { bossSidesOf, parseBossSides } from './selectors'
 
@@ -52,11 +60,26 @@ describe('arrangeSeats with a boss', () => {
     expect(alone.opponentPod).toBe('line')
   })
 
-  it("sizes the party's band: none alone, a strip on a phone, a bounded share of the boards' room elsewhere", () => {
-    expect(alliesBandPx({ phone: false, opponents: 300, own: 300 }, 0)).toBe(0)
-    expect(alliesBandPx({ phone: true, opponents: 300, own: 300 }, 4)).toBe(ALLY_STRIP_PX)
-    expect(alliesBandPx({ phone: false, opponents: 100, own: 100 }, 2)).toBe(ALLIES_MIN_PX)
-    expect(alliesBandPx({ phone: false, opponents: 2000, own: 2000 }, 2)).toBe(ALLIES_MAX_PX)
+  it.each([
+    // [phone, opponents, own, allies, band]
+    [false, 300, 300, 0, 0],
+    [true, 300, 300, 4, ALLY_STRIP_PX],
+    [false, 100, 100, 2, ALLY_STRIP_PX],
+    [false, 400, 200, 2, ALLY_STRIP_PX],
+    [false, 50, 300, 2, ALLIES_MIN_PX],
+    [false, 400, 330, 2, Math.floor(330 * ALLIES_OWN_MOST)],
+    [false, 2000, 2000, 2, ALLIES_MAX_PX],
+  ] as const)(
+    "sizes the party's band (phone %s, rows %i and %i, %i allies) as %i: a strip where boards would not fit",
+    (phone, opponents, own, allies, band) => {
+      expect(alliesBandPx({ phone, opponents, own }, allies)).toBe(band)
+    },
+  )
+
+  it.each([200, 300, 500, 900])('keeps your board the larger part of a %i px row', (own) => {
+    const band = alliesBandPx({ phone: false, opponents: own * 2, own }, 3)
+    expect(band === ALLY_STRIP_PX || band <= own * ALLIES_OWN_MOST).toBe(true)
+    expect(own - band).toBeGreaterThan(band)
   })
 })
 

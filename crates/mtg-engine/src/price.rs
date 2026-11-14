@@ -69,6 +69,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::Sacrifice { .. } => "Cost.Sacrifice",
         CostItem::Discard { .. } => "Cost.Discard",
         CostItem::PayEnergy(_) => "Cost.PayEnergy",
+        CostItem::SpendCounters { .. } => "Cost.SpendCounters",
         CostItem::Mill(_) => "Cost.Mill",
         CostItem::Draw(_) => "Cost.Draw",
         CostItem::DiscardRandom(_) => "Cost.DiscardRandom",

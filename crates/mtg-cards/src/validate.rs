@@ -153,6 +153,7 @@ fn is_fixed(item: &CostItem) -> bool {
         | CostItem::Blight(amount) => fixed(amount),
         CostItem::RemoveCountersAmong { count, .. }
         | CostItem::PutCounters { count, .. }
+        | CostItem::SpendCounters { count, .. }
         | CostItem::UntapPermanents { count, .. }
         | CostItem::RemoveCounters { count, .. }
         | CostItem::Sacrifice { count, .. }
@@ -196,6 +197,7 @@ fn amount_is_x(item: &CostItem) -> bool {
         | CostItem::Blight(amount) => *amount == Amount::X,
         CostItem::RemoveCountersAmong { count, .. }
         | CostItem::PutCounters { count, .. }
+        | CostItem::SpendCounters { count, .. }
         | CostItem::UntapPermanents { count, .. }
         | CostItem::RemoveCounters { count, .. }
         | CostItem::Sacrifice { count, .. }
@@ -1901,7 +1903,8 @@ impl<'a> Walker<'a> {
                         w.amount(amount);
                     }
                     CostItem::RemoveCounters { count, .. }
-                    | CostItem::PutCounters { count, .. } => {
+                    | CostItem::PutCounters { count, .. }
+                    | CostItem::SpendCounters { count, .. } => {
                         w.at("count", |w| w.amount(count));
                     }
                     CostItem::RemoveCountersAmong { count, from, .. } => {
@@ -2338,6 +2341,7 @@ impl<'a> Walker<'a> {
                     | CostItem::Mill(_)
                     | CostItem::Draw(_)
                     | CostItem::DiscardRandom(_)
+                    | CostItem::SpendCounters { .. }
                     | CostItem::RemoveCounters { .. }
                     | CostItem::Sacrifice { .. }
                     | CostItem::Discard { .. }

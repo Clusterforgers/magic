@@ -85,6 +85,15 @@ export function exileOf(state: PlayState, seat: PlayerId): ObjectId[] {
   return cards.filter((id) => state.objectsById[id]?.owner === seat)
 }
 
+/**
+ * The cards of the seat's command zone without its emblems, which the pod shows as effect chips; wrap in
+ * `useShallow`.
+ */
+export function commandCardsOf(state: PlayState, seat: PlayerId): readonly ObjectId[] {
+  const cards = playerOf(state, seat)?.command.cards ?? NO_IDS
+  return cards.filter((id) => state.objectsById[id]?.kind !== 'Emblem')
+}
+
 /** The stack, top first; wrap in `useShallow`. */
 export function stackTopFirst(state: PlayState): ObjectId[] {
   return [...(state.view?.stack.cards ?? NO_IDS)].reverse()

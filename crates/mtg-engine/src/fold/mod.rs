@@ -99,6 +99,7 @@ pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineErr
     crate::memory::forget_object(state, event);
     crate::triggers::g10c_note_crime(state, event);
     crate::spotlight::note(state, event);
+    crate::rivalry::note(state, event);
     let folded = fold_event(state, event);
     // A read in the middle of the fold saw the state before the rest of the event: forget it.
     if changes_layers {
@@ -343,25 +344,27 @@ fn designate(state: &mut GameState, event: &Event) {
     }
 }
 
-/// The permanents `active` controls as their turn begins. One it has held since its previous turn began is no longer
-/// held back (CR 302.6); one that was held back is recorded as new to them, which echo reads in the upkeep
-/// (`PermanentState::is_new_to`). Who controls a permanent is read under the effects as they are now.
-fn settle_permanents(state: &mut GameState, active: PlayerId) {
-    let controlled: Vec<ObjectId> = state
+/// The permanents of the players whose turn begins (the active player, and in Two-Headed Giant their teammate, CR 805.3).
+/// One a player has held since their previous turn began is no longer held back (CR 302.6); one that was held back is
+/// recorded as new to them, which echo reads in the upkeep (`PermanentState::is_new_to`). A turn of another player, a
+/// teammate's apart from a shared turn, changes nothing for a permanent. Who controls a permanent is read under the
+/// effects as they are now.
+fn settle_permanents(state: &mut GameState) {
+    let turn_of: Vec<(ObjectId, PlayerId)> = state
         .zone(Zone::Battlefield)
         .iter()
-        .copied()
-        .filter(|id| controller_of(state, *id) == Some(active))
+        .filter_map(|id| Some((*id, controller_of(state, *id)?)))
+        .filter(|(_, controller)| state.is_active(*controller))
         .collect();
-    for id in controlled {
+    for (id, controller) in turn_of {
         if let Some(perm) = state
             .objects
             .get_mut(&id)
             .and_then(|o| o.permanent.as_mut())
         {
-            perm.new_to = perm.sick_for(active).then_some(active);
+            perm.new_to = perm.sick_for(controller).then_some(controller);
             perm.summoning_sick = false;
-            perm.observed = Some(active);
+            perm.observed = Some(controller);
         }
     }
 }
@@ -412,7 +415,7 @@ fn begin_turn(
     state.clear_turn_uses();
     state.priority = None;
     state.combat = crate::combat::CombatState::default();
-    settle_permanents(state, active);
+    settle_permanents(state);
     Ok(())
 }
 

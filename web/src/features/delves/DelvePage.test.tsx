@@ -71,7 +71,8 @@ describe('the ladder and the fight', () => {
     expect(within(event).getByText('Bo')).toBeInTheDocument()
     expect(within(shop).getByText('No votes yet')).toBeInTheDocument()
     expect(screen.getByText(/voted ·/)).toHaveTextContent('1 of 2 voted')
-    fireEvent.click(within(shop).getByRole('button', { name: 'Vote for Shop' }))
+    const vote = screen.getByRole('region', { name: 'Vote for the next room' })
+    fireEvent.click(within(vote).getByRole('button', { name: 'Vote for Shop' }))
     expect(client.actions).toEqual([{ kind: 'vote', node: 1 }])
   })
 
@@ -81,6 +82,8 @@ describe('the ladder and the fight', () => {
       'aria-pressed',
       'true',
     )
+    const shop = screen.getByRole('listitem', { name: 'Shop, Open to a vote' })
+    expect(within(shop).getByText('Your vote')).toBeInTheDocument()
     expect(screen.getByRole('listitem', { name: /^Boss: Skrix, the Rat Queen, Cleared/ })).toBeInTheDocument()
     expect(screen.getByRole('listitem', { name: /^Final boss: Grimgut, Locked/ })).toBeInTheDocument()
   })

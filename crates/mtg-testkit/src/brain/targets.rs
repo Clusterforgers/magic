@@ -13,9 +13,12 @@ use crate::bot::rmt1_within_total;
 fn worth(seen: &Seen<'_>, target: Target) -> (f64, bool) {
     match target {
         Target::Player(player) => {
-            // The lower an opponent's life, the more a hit at them is worth; a boss's side reads the spotlight instead.
+            // A boss's side reads the spotlight; at a table of several opponents the threat counts, never low life alone;
+            // in a duel the lower an opponent's life, the more a hit at them is worth.
             let worth = if super::spotlight::boss_seat(seen) {
                 20.0 + super::spotlight::lean(seen, player)
+            } else if archenemy(seen) {
+                super::threat::aim_worth(seen, player, &seen.bodies())
             } else {
                 30.0 - f64::from(seen.life(player)).min(30.0)
             };
@@ -37,9 +40,40 @@ fn worth(seen: &Seen<'_>, target: Target) -> (f64, bool) {
                 _ => 1.0 + f64::from(seen.mana_value(id)),
             };
             let worth = worth * super::spotlight::object_factor(seen, controller);
+            let worth = worth * threat_factor(seen, controller);
             (worth, !seen.is_teammate(controller))
         }
     }
+}
+
+/// Whether the seat aims by threat: several opponents and the archenemy knob on.
+fn archenemy(seen: &Seen<'_>) -> bool {
+    super::knobs::knobs().archenemy > 0.0 && super::threat::many_opponents(seen)
+}
+
+/// At a table of several opponents, what `controller`'s threat makes their permanents worth as targets: from 0.85 for
+/// the least threatening opponent to 1.15 for the archenemy.
+fn threat_factor(seen: &Seen<'_>, controller: mtg_core::ids::PlayerId) -> f64 {
+    if seen.is_teammate(controller) || super::spotlight::boss_seat(seen) || !archenemy(seen) {
+        return 1.0;
+    }
+    let bodies = seen.bodies();
+    let threats: Vec<(mtg_core::ids::PlayerId, f64)> = seen
+        .alive()
+        .into_iter()
+        .filter(|p| !seen.is_teammate(*p))
+        .map(|p| (p, super::threat::aim_worth(seen, p, &bodies)))
+        .collect();
+    let most = threats.iter().map(|(_, t)| *t).fold(f64::MIN, f64::max);
+    let least = threats.iter().map(|(_, t)| *t).fold(f64::MAX, f64::min);
+    let own = threats
+        .iter()
+        .find(|(p, _)| *p == controller)
+        .map_or(least, |(_, t)| *t);
+    if most - least < 1e-9 {
+        return 1.0;
+    }
+    0.85 + 0.3 * (own - least) / (most - least)
 }
 
 /// The targets `options` offers, likeliest first: the most valuable opposing permanent or spell, then the seat's own

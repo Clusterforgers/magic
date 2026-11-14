@@ -131,6 +131,132 @@ fn the_actions_offered_are_the_ones_the_ectoplasm_pays_for(
     Ok(())
 }
 
+/// The ectoplasm a haunt action costs.
+fn price_of(action: usize) -> u32 {
+    match action {
+        HOWL => 3,
+        RISE => 5,
+        _ => 1,
+    }
+}
+
+/// The game at the fallen seat's first main phase it reaches holding exactly `held` ectoplasm: it gains one each of its
+/// turns, and spends the one it starts with when it is to hold none.
+fn holding(held: u32) -> Result<Driver, ScriptError> {
+    let mut driver = fallen()?;
+    if held == 0 {
+        driver.begin_ability(SPIRIT, WARD)?;
+        for _ in 0..3 {
+            driver.pass()?;
+        }
+    } else {
+        main_of(&mut driver, 1 + 3 * (held - 1))?;
+    }
+    assert_eq!(ectoplasm_of(&driver, 0), held);
+    Ok(driver)
+}
+
+/// Chooses the targets the action just begun asks for: the boss for Wail, its Brute for Hinder and Howl.
+fn aim(driver: &mut Driver, action: usize) -> Result<(), ScriptError> {
+    if !matches!(driver.decision()?.kind, DecisionKind::ChooseTargets(_)) {
+        return Ok(());
+    }
+    let target = match action {
+        WAIL => driver.target_player(2),
+        _ => driver.target_named("Brute")?,
+    };
+    driver.choose_targets(&[target])?;
+    Ok(())
+}
+
+#[rstest]
+#[case::wail(WAIL)]
+#[case::ward(WARD)]
+#[case::whisper(WHISPER)]
+#[case::hinder(HINDER)]
+#[case::howl(HOWL)]
+#[case::rise_again(RISE)]
+fn an_action_spends_its_ectoplasm_as_it_goes_on_the_stack(
+    #[case] action: usize,
+    #[values(0, 1)] spare: u32,
+) -> Result<(), ScriptError> {
+    let mut driver = holding(price_of(action) + spare)?;
+    assert!(driver.offered_abilities(SPIRIT)?.contains(&action));
+    driver.begin_ability(SPIRIT, action)?;
+    aim(&mut driver, action)?;
+    assert!(
+        !driver.state().stack().is_empty(),
+        "the action waits on the stack"
+    );
+    assert_eq!(ectoplasm_of(&driver, 0), spare, "paid before it resolves");
+    Ok(())
+}
+
+#[rstest]
+#[case::wail(WAIL)]
+#[case::ward(WARD)]
+#[case::whisper(WHISPER)]
+#[case::hinder(HINDER)]
+#[case::howl(HOWL)]
+#[case::rise_again(RISE)]
+fn an_action_with_too_little_ectoplasm_is_not_a_legal_action(
+    #[case] action: usize,
+) -> Result<(), ScriptError> {
+    let short = price_of(action) - 1;
+    let mut driver = holding(short)?;
+    assert!(!driver.offered_abilities(SPIRIT)?.contains(&action));
+    assert!(driver.begin_ability(SPIRIT, action).is_err());
+    assert_eq!(ectoplasm_of(&driver, 0), short, "nothing was spent");
+    assert_eq!(driver.state().stack().len(), 0, "nothing went on the stack");
+    Ok(())
+}
+
+#[rstest]
+#[case::three_wards(3, &[WARD, WARD, WARD])]
+#[case::wail_then_hinder(2, &[WAIL, HINDER])]
+#[case::howl_then_whisper(4, &[HOWL, WHISPER])]
+#[case::whisper_then_howl(4, &[WHISPER, HOWL])]
+fn activating_again_with_the_stack_full_stops_when_the_ectoplasm_runs_out(
+    #[case] held: u32,
+    #[case] actions: &[usize],
+) -> Result<(), ScriptError> {
+    let mut driver = holding(held)?;
+    let mut left = held;
+    for action in actions {
+        driver.begin_ability(SPIRIT, *action)?;
+        aim(&mut driver, *action)?;
+        left -= price_of(*action);
+        assert_eq!(ectoplasm_of(&driver, 0), left);
+    }
+    assert_eq!(left, 0);
+    assert_eq!(driver.state().stack().len(), actions.len());
+    assert_eq!(
+        driver.offered_abilities(SPIRIT)?.len(),
+        0,
+        "no action is offered"
+    );
+    for action in [WAIL, WARD, WHISPER, HINDER, HOWL, RISE] {
+        assert!(driver.begin_ability(SPIRIT, action).is_err());
+    }
+    Ok(())
+}
+
+#[test]
+fn two_wails_drain_the_boss_twice_and_a_third_is_not_possible() -> Result<(), ScriptError> {
+    let mut driver = holding(2)?;
+    for _ in 0..2 {
+        driver.begin_ability(SPIRIT, WAIL)?;
+        aim(&mut driver, WAIL)?;
+    }
+    for _ in 0..6 {
+        driver.pass()?;
+    }
+    assert_eq!(driver.state().player(pid(2)).unwrap().life(), 36);
+    assert_eq!(ectoplasm_of(&driver, 0), 0);
+    assert!(driver.begin_ability(SPIRIT, WAIL).is_err());
+    Ok(())
+}
+
 #[test]
 fn wail_drains_the_boss_and_weakens_its_creatures() -> Result<(), ScriptError> {
     let mut driver = fallen()?;
