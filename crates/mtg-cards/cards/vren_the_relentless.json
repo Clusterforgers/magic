@@ -1,7 +1,7 @@
 {
   "oracle_id": "1216900e-93e3-41a4-b354-9c81938639c2",
   "name": "Vren, the Relentless",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Vren, the Relentless",
@@ -21,9 +21,54 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 73, "end": 300 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rat",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rat"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              {
+                                "ModifyPT": {
+                                  "power": {
+                                    "Count": [
+                                      { "Subtype": "Rat" },
+                                      "Other",
+                                      { "ControlledBy": "You" }
+                                    ]
+                                  },
+                                  "toughness": {
+                                    "Count": [
+                                      { "Subtype": "Rat" },
+                                      "Other",
+                                      { "ControlledBy": "You" }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": {
+                    "Tallied": { "who": "Opponents", "what": "R6100CreaturesExiledUnder" }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

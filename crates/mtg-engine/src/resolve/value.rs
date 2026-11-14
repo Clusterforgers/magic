@@ -578,6 +578,8 @@ impl<'a> Scope<'a> {
             | TurnTally::EnteredFaceDownUnder
             | TurnTally::TurnedFaceUp
             | TurnTally::CardsLeftGraveyard
+            | TurnTally::R6100CreatureCardsLeftGraveyard
+            | TurnTally::R6100CreaturesExiledUnder
             | TurnTally::CardsDrawnTotal
             | TurnTally::NoncombatDamageTakenTotal => {
                 let kind = match what {
@@ -598,6 +600,10 @@ impl<'a> Scope<'a> {
                     TurnTally::DiceRolled => Tally::R5508DiceRolled,
                     TurnTally::PermanentsLeftUnder => Tally::PermanentsLeftUnder,
                     TurnTally::CardsLeftGraveyard => Tally::W21aLeftGraveyard,
+                    TurnTally::R6100CreatureCardsLeftGraveyard => {
+                        Tally::R6100CreatureCardLeftGraveyard
+                    }
+                    TurnTally::R6100CreaturesExiledUnder => Tally::R6100CreatureExiledUnder,
                     TurnTally::LifeGainedTotal => Tally::GainedTotal,
                     TurnTally::CreaturesAttacked => Tally::Attackers,
                     TurnTally::CreaturesDied => Tally::Died,

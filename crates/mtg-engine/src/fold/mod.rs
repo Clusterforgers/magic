@@ -936,7 +936,11 @@ fn c6_kw_fold_rest(state: &mut GameState, event: &Event) -> Result<(), EngineErr
             }
             Ok(())
         }
-        Event::Enlisted { .. } | Event::Fought { .. } | Event::PrizeClaimed { .. } => Ok(()),
+        Event::Fought { object, other } => {
+            crate::r6100_history::r6100_fold_fought(state, *object, *other);
+            Ok(())
+        }
+        Event::Enlisted { .. } | Event::PrizeClaimed { .. } => Ok(()),
         Event::EmblemCreated(emblem) => crate::w6b_emblems::fold(state, emblem),
         Event::Exerted { object, player } => {
             crate::w11a_exert::w11a_fold_exerted(state, *object, *player)

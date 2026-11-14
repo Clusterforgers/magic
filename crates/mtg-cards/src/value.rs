@@ -442,6 +442,12 @@ pub enum TurnTally {
     /// The noncombat damage the players took this turn ("the total amount of noncombat damage dealt to your opponents
     /// this turn"). Added up over the players.
     NoncombatDamageTakenTotal,
+    /// The creature cards that left the graveyards of the players read this turn, to any zone ("if a creature card left
+    /// your graveyard this turn"). Added up over the players.
+    R6100CreatureCardsLeftGraveyard,
+    /// The creatures put into exile from the battlefield while the players read controlled them, tokens included ("the
+    /// number of creatures that were exiled under your opponents' control this turn"). Added up over the players.
+    R6100CreaturesExiledUnder,
 }
 
 /// A kind of event the game logs for the turn with the object it was about, which `Amount::Tally` filters and counts.
@@ -494,6 +500,9 @@ pub enum TallyEvent {
     /// A permanent was turned face up (the permanent, for its controller): "a creature you control that was turned face
     /// up this turn".
     TurnedFaceUp,
+    /// A creature fought (CR 701.14), whatever damage it came to (the creature, for its controller; `Pred::DidThisTurn`
+    /// reads the creature it fought): "if you control a creature that fought this turn".
+    Fought,
 }
 
 /// Which result of the latest die roll an amount reads.

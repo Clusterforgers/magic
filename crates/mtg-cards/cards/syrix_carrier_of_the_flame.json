@@ -1,7 +1,7 @@
 {
   "oracle_id": "ec97bb0e-0dc8-4b9b-8762-2f1649cc9044",
   "name": "Syrix, Carrier of the Flame",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Syrix, Carrier of the Flame",
@@ -10,15 +10,41 @@
         { "Keyword": "Flying" },
         { "Keyword": "Haste" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 14, "end": 172 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "R6100CreatureCardsLeftGraveyard" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Phoenix" }, { "ControlledBy": "You" }] } },
+              { "what": "AnyTarget" }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 173, "end": 259 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Phoenix" }, "Other", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "CastFromZone": { "what": "This" } }]
           }
         }
       ]

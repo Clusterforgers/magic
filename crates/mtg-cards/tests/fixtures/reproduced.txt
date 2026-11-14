@@ -237,6 +237,7 @@ Borderland Behemoth
 Boromir, Gondor's Hope
 Bosh, Iron Golem
 Bounty of Skemfar
+Boxing Ring
 Brain Freeze
 Brainstorm
 Bramble Elemental
@@ -2007,6 +2008,7 @@ Syndic of Tithes
 Syndicate Messenger
 Synth Infiltrator
 Syphon Life
+Syrix, Carrier of the Flame
 Szadek, Lord of Secrets
 Tabaxi Toucaneers
 Tah-Crop Skirmisher

@@ -32,6 +32,7 @@ pub(super) fn move_object(
     keep_left_spell(state, id);
     tally_nonland_leaving(state, id, to);
     log_death(state, id, to);
+    crate::r6100_history::r6100_before_move(state, id, to);
     if let Some(from) = state.object(id).map(GameObject::zone) {
         crate::un33_attractions::fold_left(state, id, from);
         if from == Zone::Battlefield {
