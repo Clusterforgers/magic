@@ -191,6 +191,7 @@ impl Registry {
             code: record.code_digest.map(TokenDigest::from_bytes),
             recorded: true,
             seats,
+            bots: bots.0.iter().map(|bot| bot.seat).collect(),
             delve,
         };
         self.games()

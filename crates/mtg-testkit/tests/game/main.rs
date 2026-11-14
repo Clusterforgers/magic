@@ -1,6 +1,7 @@
 //! Goal: game flow through the testkit: turns, priority, players, Commander, house rules and manual play; one binary of the `mtg-testkit` families (`docs/testing.md`).
 
 mod bot_block_tax;
+mod brain_aim;
 mod brain_clock;
 mod brain_heuristics;
 mod brain_matches;

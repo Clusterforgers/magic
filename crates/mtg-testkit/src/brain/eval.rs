@@ -33,6 +33,16 @@ pub fn life_value(life: i32) -> f64 {
     9.0 * f64::from(life).sqrt()
 }
 
+/// What an opponent's `life` is worth at a table of several opponents: [`life_value`]'s slope at 20 life all the way,
+/// so a point of damage is worth the same at any opponent and the strongest team's extra weight decides whom to hurt.
+pub fn flat_life_value(life: i32) -> f64 {
+    if life <= 0 {
+        return -40.0;
+    }
+    let at = 20.0_f64;
+    9.0 * at.sqrt() + (f64::from(life) - at) * 4.5 / at.sqrt()
+}
+
 /// What losing `damage` of `life` costs.
 pub fn life_loss(life: i32, damage: i32) -> f64 {
     life_value(life) - life_value(life - damage)
@@ -323,6 +333,8 @@ pub fn terms(seen: &Seen<'_>) -> Terms {
 
 /// Each team still in the game and its standing's terms.
 fn team_terms(seen: &Seen<'_>, bodies: &[Body]) -> BTreeMap<u32, TeamTerms> {
+    let own_team = seen.team_of(seen.seat());
+    let flat = super::knobs::knobs().archenemy > 0.0 && super::threat::many_opponents(seen);
     let mut teams: BTreeMap<u32, TeamTerms> = BTreeMap::new();
     let mut life_counted: Vec<u32> = Vec::new();
     for player in seen.alive() {
@@ -331,7 +343,11 @@ fn team_terms(seen: &Seen<'_>, bodies: &[Body]) -> BTreeMap<u32, TeamTerms> {
         add_standing(seen, player, bodies, standing);
         // Two-Headed Giant: one life total for the team, counted once.
         if !seen.shares_life() || !life_counted.contains(&team) {
-            standing.life += life_value(seen.life(player));
+            standing.life += if flat && team != own_team {
+                flat_life_value(seen.life(player))
+            } else {
+                life_value(seen.life(player))
+            };
             standing.fixed -= 4.0 * f64::from(seen.poison(player));
             life_counted.push(team);
         }
@@ -423,6 +439,7 @@ pub fn pressure(seen: &Seen<'_>, bodies: &[Body], attackers: u32, defender: u32)
 /// losses at their life totals, or whether the attack is lethal.
 fn threats(seen: &Seen<'_>, bodies: &[Body]) -> Vec<Threats> {
     let own_team = seen.team_of(seen.seat());
+    let flat = super::knobs::knobs().archenemy > 0.0 && super::threat::many_opponents(seen);
     let mut teams: Vec<(u32, i32)> = Vec::new();
     for player in seen.alive() {
         let team = seen.team_of(player);
@@ -443,7 +460,11 @@ fn threats(seen: &Seen<'_>, bodies: &[Body]) -> Vec<Threats> {
             Threats {
                 against: life_loss(own_life, against_us),
                 against_lethal: against_us >= own_life,
-                ours: life_loss(*life, ours),
+                ours: if flat {
+                    flat_life_value(*life) - flat_life_value(*life - ours)
+                } else {
+                    life_loss(*life, ours)
+                },
                 ours_lethal: ours >= *life,
             }
         })

@@ -322,6 +322,46 @@ pub fn player_threat(seen: &Seen<'_>, player: PlayerId, bodies: &[Body]) -> f64 
         + 0.25 * f64::from(seen.life(player).max(0))
 }
 
+/// Whether the seat faces more than one opponent, where whom to pressure is a choice.
+pub fn many_opponents(seen: &Seen<'_>) -> bool {
+    seen.alive()
+        .into_iter()
+        .filter(|player| !seen.is_teammate(*player))
+        .count()
+        > 1
+}
+
+/// What the table's recent damage adds to `player`'s worth as a target ([`mtg_engine::rivalry`]): retaliation for the
+/// damage they dealt the seat's team, less a mild share for each point they took past the least-hit opponent.
+pub fn rivalry_lean(seen: &Seen<'_>, player: PlayerId) -> f64 {
+    let state = seen.state();
+    let knobs = super::knobs::knobs();
+    let opponents: Vec<PlayerId> = seen
+        .alive()
+        .into_iter()
+        .filter(|p| !seen.is_teammate(*p))
+        .collect();
+    let least = opponents
+        .iter()
+        .map(|p| mtg_engine::rivalry::received(state, *p))
+        .min()
+        .unwrap_or(0);
+    let hit_us: u32 = seen
+        .alive()
+        .into_iter()
+        .filter(|p| seen.is_teammate(*p))
+        .map(|p| mtg_engine::rivalry::dealt(state, player, p))
+        .fold(0, u32::saturating_add);
+    let taken = mtg_engine::rivalry::received(state, player).saturating_sub(least);
+    knobs.rival * f64::from(hit_us.min(12)) - knobs.spread * f64::from(taken.min(12))
+}
+
+/// `player`'s worth as the target of the seat's attacks and harmful spells at a table of several opponents: their
+/// threat ([`player_threat`], where life counts for them) and the [`rivalry_lean`]; low life alone adds nothing.
+pub fn aim_worth(seen: &Seen<'_>, player: PlayerId, bodies: &[Body]) -> f64 {
+    player_threat(seen, player, bodies) + rivalry_lean(seen, player)
+}
+
 /// A small count as a float.
 fn count(n: usize) -> f64 {
     f64::from(u32::try_from(n).unwrap_or(u32::MAX))

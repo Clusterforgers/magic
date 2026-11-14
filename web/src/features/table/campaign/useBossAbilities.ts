@@ -12,6 +12,9 @@ import type { BossAbility, BossAbilityKind } from './bossAbilities'
 /** The campaign content the table reads boss rules from; undefined to fetch it, null while it is not known. */
 export const DelveContentContext = createContext<DelveContent | null | undefined>(undefined)
 
+/** True inside a boss's side whose abilities bar is shown: the boss's pod then leaves out the chips the bar repeats. */
+export const BossBarContext = createContext(false)
+
 let fetched: Promise<DelveContent> | null = null
 
 /** The campaign content: the context's, else fetched once per page load; null until it arrives or if it fails. */

@@ -6,6 +6,8 @@ import { GameTable } from '@/features/table/GameTable'
 import { CardsApiContext } from '@/features/table/cardsContext'
 import { setDetailFetcher } from '@/features/table/printed'
 import { TableOptionsContext } from '@/features/table/tableOptions'
+import { DelveContentContext } from '../campaign/useBossAbilities'
+import { DEV_BOSS_CONTENT } from './bossContent'
 import { DevFxControls } from './DevFxControls'
 import { DevMoments } from './DevMoments'
 import { DevTurnChange } from './DevTurnChange'
@@ -183,13 +185,16 @@ export function DevTableRoute() {
     <GameContext value={game}>
       <TableOptionsContext value={options}>
         <CardsApiContext value={prompt === 'priority-rooms' ? roomsApi : cardsApi}>
-          <p className="sr-only" data-fixture={FIXTURE_MARKER}>
-            Development fixture with {seats} seats
-          </p>
-          <GameTable />
-          <DevFxControls initial={fx} open={bar} />
-          <DevTurnChange on={newturn === true} />
-          <DevMoments on={moments === true} />
+          {/* A boss fight reads its rules from the dev content, not a server. */}
+          <DelveContentContext value={boss === undefined ? undefined : DEV_BOSS_CONTENT}>
+            <p className="sr-only" data-fixture={FIXTURE_MARKER}>
+              Development fixture with {seats} seats
+            </p>
+            <GameTable />
+            <DevFxControls initial={fx} open={bar} />
+            <DevTurnChange on={newturn === true} />
+            <DevMoments on={moments === true} />
+          </DelveContentContext>
         </CardsApiContext>
       </TableOptionsContext>
     </GameContext>
