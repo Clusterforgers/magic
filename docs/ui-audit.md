@@ -29,9 +29,9 @@ Impact: how much a problem costs a player in a 4-player Commander game at 1400 �
 - **Boss fight.** The ability bar is clear; the boss pod's 120 life reads well. The party's boards inherit problem 1.
 - **Six seats.** Tiles and the focused board work; tiles carry seat colours but no commander picture.
 - **Phone.** Problem 6; the stack sheet covers most of the opponent board.
-- **Play (landing).** A list page without art; open games, join code and tutorials have one weight.
+- **Play (landing).** On the page plaque and warm light; a list page without art, where open games and tutorials have one weight.
 - **Lobby.** Clear and complete on the new tokens; decks show a placeholder icon instead of the commander's art; seat rows are text-heavy; Ready sits low.
-- **Deck builder, precons.** Dense and functional; consistent with the tokens.
+- **Deck builder, precons.** Dense and functional; a precon row's Play is a quiet button, so the list reads as rows.
 - **Delves.** Its own ember and stone; the descent uses icons where boss art would carry the mood.
 - **Result page.** The headline in the display face above the win burst; the seats as a plain list.
 - **Sign in, Learn, Settings.** Plain and consistent.
@@ -85,4 +85,4 @@ Each pass is one commit with before and after shots at 1400 × 900, 1280 × 720 
 | 4 | Prompts: choose cards and look at the top as a centre overlay with large cards; targets and modes with card pictures |
 | 5 | Board room: combat lines kept to the boards they join, attacker groups as a badge on the defender's pod; the turn badge and ladder said once; the priority sentence in one line |
 | 6 | Phone table: hand and controls fit at 390, pod strip slimmer, boards larger |
-| 7 | Pages: Play with open games as cards with commander art, lobby deck rows with art, the descent with boss art; sign in, Learn and Settings on the new tokens |
+| 7 | Pages: Play with open games as cards with commander art; the descent with boss art; the result page's seats with their commanders |

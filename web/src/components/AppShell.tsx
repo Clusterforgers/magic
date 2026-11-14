@@ -57,11 +57,11 @@ function ShellHeader() {
   const checking = useLocation({ select: (location) => location.pathname === '/decks/unvalidated' })
   usePrefsSync(signedIn)
   return (
-    <header className="border-b bg-surface">
+    <header className="plaque border-b border-brass/40">
       <div className="flex flex-wrap items-center gap-x-1 px-4 sm:px-6">
         <Link
           to="/"
-          className="flex h-12 items-center gap-2 pr-3 text-base font-semibold tracking-tight sm:h-14"
+          className="flex h-12 items-center gap-2 pr-3 font-display text-lg font-bold tracking-wide sm:h-14"
         >
           <SparklesIcon aria-hidden="true" className="size-5 text-primary" />
           Magic
