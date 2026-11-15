@@ -29,4 +29,4 @@ node: number, } | { "kind": "pick",
 /**
  * The answer.
  */
-pick: Pick, } | { "kind": "abandon" };
+pick: Pick, } | { "kind": "abandon" } | { "kind": "retreat" };

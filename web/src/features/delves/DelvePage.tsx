@@ -40,17 +40,79 @@ import { POLL_MS, errorText } from './words'
 import { RevivalNote } from './DelvesRules'
 import { VotePanel } from './VotePanel'
 
+/** What the party reads at the next fight after it lost the last one; the server words the chronicle's last line. */
+const LOSS_NOTE = {
+  lost: 'The party was beaten back and lost a heart',
+  retreated: 'The party retreated and lost a heart',
+  closed: 'The fight’s table closed without a result, which counts as a lost fight: the party lost a heart',
+} as const
+
+/** The host's way out of a fight: it counts as lost, with the heart and the half life that costs. */
+function RetreatButton({
+  hearts,
+  busy,
+  onRetreat,
+}: {
+  hearts: number
+  busy: boolean
+  onRetreat: () => void
+}) {
+  const [asking, setAsking] = useState(false)
+  return (
+    <>
+      <Button
+        variant="outline"
+        className="justify-self-start"
+        disabled={busy}
+        onClick={() => setAsking(true)}
+      >
+        Retreat
+      </Button>
+      <AlertDialog open={asking} onOpenChange={setAsking}>
+        <AlertDialogContent>
+          <AlertDialogTitle>Retreat from the fight?</AlertDialogTitle>
+          <AlertDialogDescription>
+            {hearts > 1
+              ? `The fight counts as lost: the party loses a heart (${hearts - 1} left), every hero regroups at half life and the boss is faced again from the start.`
+              : 'This is the last heart: retreating ends the run in defeat.'}
+          </AlertDialogDescription>
+          <AlertDialogFooter>
+            <Button variant="outline" onClick={() => setAsking(false)}>
+              Keep fighting
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                setAsking(false)
+                onRetreat()
+              }}
+            >
+              Retreat
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  )
+}
+
 function FightPanel({
   view,
   content,
+  busy,
   onChooseDeck,
+  onRetreat,
 }: {
   view: DelveView
   content: DelveContent
+  busy: boolean
   /** Opens the deck picker for the caller's hero, whose deck no longer plays. */
   onChooseDeck: () => void
+  /** Sends the host's retreat. */
+  onRetreat: () => void
 }) {
   const status = view.run.status
+  const lost = lastFight(view.run)
   const game = typeof status === 'object' && 'Fight' in status ? status.Fight.game : null
   const mine = view.deck_problems.find((problem) => problem.hero === view.me)
   const waiting = view.deck_problems
@@ -59,10 +121,9 @@ function FightPanel({
   return (
     <BossIntro view={view} content={content}>
       <div className="grid gap-2">
-        {lastFight(view.run) === 'lost' ? (
+        {lost === 'lost' || lost === 'retreated' || lost === 'closed' ? (
           <p role="status" className="rounded-lg border border-destructive/50 bg-surface p-3 text-sm">
-            The party was beaten back and lost a heart ({view.run.hearts} left). Every hero regroups at half
-            life for another try.
+            {LOSS_NOTE[lost]} ({view.run.hearts} left). Every hero regroups at half life for another try.
           </p>
         ) : null}
         {game !== null ? (
@@ -89,6 +150,7 @@ function FightPanel({
             The fight is being prepared…
           </p>
         )}
+        {view.host ? <RetreatButton hearts={view.run.hearts} busy={busy} onRetreat={onRetreat} /> : null}
       </div>
       <RevivalNote />
     </BossIntro>
@@ -335,7 +397,13 @@ export function DelvePage({
             </p>
           )}
           {fighting ? (
-            <FightPanel view={view} content={content} onChooseDeck={() => setReplacing(true)} />
+            <FightPanel
+              view={view}
+              content={content}
+              busy={busy}
+              onChooseDeck={() => setReplacing(true)}
+              onRetreat={() => act({ kind: 'retreat' })}
+            />
           ) : null}
           <Dialog
             open={fighting && replacing && me !== undefined}

@@ -1,8 +1,18 @@
-// Goal: the run page marks each room of the ladder cleared, current, next or locked through every stage of a run, names who voted for which camp, gives a boss its life for the party and Heat, tones life bars, words the stage and knows a hero ready once they bring a deck.
+// Goal: the run page marks each room of the ladder cleared, current, next or locked through every stage of a run, names who voted for which camp, gives a boss its life for the party and Heat, tones life bars, words the stage, knows a hero ready once they bring a deck and reads how the last fight was lost.
 import { describe, expect, it } from 'vitest'
 import type { Run } from '@/protocol/generated'
 import { hero, run } from './fakeDelves'
-import { bossLife, isReady, lifeShare, lifeTone, nodeState, openChoices, runStage, votersOf } from './model'
+import {
+  bossLife,
+  isReady,
+  lastFight,
+  lifeShare,
+  lifeTone,
+  nodeState,
+  openChoices,
+  runStage,
+  votersOf,
+} from './model'
 import { delveView } from './fakeDelves'
 
 // The test ladder: boss 0, then the shop 1 or the event 2, then boss 3.
@@ -103,4 +113,19 @@ it.each([
 it('knows a hero ready once they bring a deck', () => {
   expect(isReady(hero())).toBe(false)
   expect(isReady(hero({ deck: { id: 'd', name: 'D', colors: 'G' } }))).toBe(true)
+})
+
+it.each([
+  ['The party was beaten back and regroups (2 hearts left).', 'lost'],
+  ['The party retreated and regroups (2 hearts left).', 'retreated'],
+  ['The party lost its table and regroups (2 hearts left).', 'closed'],
+  ['Skrix awaits.', null],
+] as const)('reads the last line of a fight that was lost: %s', (line, how) => {
+  expect(lastFight(run({ status: { Fight: { game: null } }, at: 0, log: ['Ana joined', line] }))).toBe(how)
+  // The same line at a camp is no longer news.
+  expect(lastFight(run({ status: 'Map', at: 0, log: [line] }))).toBeNull()
+})
+
+it('reads a boss that fell as the last fight won', () => {
+  expect(lastFight(run({ status: 'Room', at: 0, cleared: [0] }))).toBe('won')
 })

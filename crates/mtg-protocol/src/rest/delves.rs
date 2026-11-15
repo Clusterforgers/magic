@@ -51,6 +51,8 @@ pub enum DelveAction {
     },
     /// The host ends the run.
     Abandon,
+    /// The host retreats from the boss fight: it counts as lost and is made again.
+    Retreat,
 }
 
 /// A run as a member sees it.

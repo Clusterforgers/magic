@@ -11,7 +11,7 @@ pub mod scale;
 pub use content::{Boss, Brain, CardKind, Content, CustomCard, Minion, content};
 pub use fight::{BossSeat, FightPlan, HeroSeat, MinionSeat};
 pub use map::{FloorMap, Node, RoomKind};
-pub use run::{Hero, HeroDeck, Offer, Pick, Run, RunEvent, ShopItem, Status};
+pub use run::{Forfeit, Hero, HeroDeck, Offer, Pick, Run, RunEvent, ShopItem, Status};
 pub use scale::Scale;
 
 /// Why the campaign refused something.

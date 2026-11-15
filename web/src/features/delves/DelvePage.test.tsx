@@ -1,4 +1,4 @@
-// Goal: the run page shows each state of a run and sends the matching action: the lobby's hero cards with their Ready state, the deck picker, bot ally and start (only for the host, once every hero is ready), the ladder's votes with who voted for what, the boss fight's link and phases, every kind of offer, and the end.
+// Goal: the run page shows each state of a run and sends the matching action: the lobby's hero cards with their Ready state, the deck picker, bot ally and start (only for the host, once every hero is ready), the ladder's votes with who voted for what, the boss fight's link and phases, how a lost fight cost a heart, the host's retreat (confirmed first, never for a guest), every kind of offer, and the end.
 import { fireEvent, screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { renderInRouter } from '@/test-utils/router'
@@ -126,19 +126,72 @@ describe('the ladder and the fight', () => {
     await waitFor(() => expect(client.actions[0]).toMatchObject({ kind: 'choose_deck', hero: 0 }))
   })
 
-  it('says a lost fight cost a heart, and a won one leads to the loot', async () => {
+  it.each([
+    ['The party was beaten back and regroups (2 hearts left).', /beaten back and lost a heart \(2 left\)/],
+    ['The party retreated and regroups (2 hearts left).', /retreated and lost a heart \(2 left\)/],
+    [
+      'The party lost its table and regroups (2 hearts left).',
+      /table closed without a result, which counts as a lost fight: the party lost a heart \(2 left\)/,
+    ],
+  ])('says how a lost fight cost a heart: %s', async (line, note) => {
     await show(
       delveView(
         { boss: 'skrix_nest', fight },
-        {
-          status: { Fight: { game: 'g43' } },
-          at: 0,
-          hearts: 2,
-          log: ['The party was beaten back and regroups (2 hearts left).'],
-        },
+        { status: { Fight: { game: 'g43' } }, at: 0, hearts: 2, log: [line] },
       ),
     )
-    expect(await screen.findByText(/lost a heart \(2 left\)/)).toBeInTheDocument()
+    expect(await screen.findByText(note)).toBeInTheDocument()
+  })
+
+  it('leaves the loss note out while the last line of the chronicle is something else', async () => {
+    await show(
+      delveView(
+        { boss: 'skrix_nest', fight },
+        { status: { Fight: { game: 'g43' } }, at: 0, hearts: 2, log: ['Skrix awaits.'] },
+      ),
+    )
+    await screen.findByRole('link', { name: 'Enter the fight' })
+    expect(screen.queryByText(/lost a heart/)).toBeNull()
+  })
+
+  it('lets the host retreat from the fight after a confirmation, and only then sends it', async () => {
+    const client = await show(
+      delveView({ boss: 'skrix_nest', fight }, { status: { Fight: { game: 'g44' } }, at: 0, hearts: 3 }),
+    )
+    fireEvent.click(await screen.findByRole('button', { name: 'Retreat' }))
+    const dialog = await screen.findByRole('alertdialog', { name: 'Retreat from the fight?' })
+    expect(dialog).toHaveTextContent('the party loses a heart (2 left)')
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Keep fighting' }))
+    expect(client.actions).toEqual([])
+    fireEvent.click(screen.getByRole('button', { name: 'Retreat' }))
+    const again = await screen.findByRole('alertdialog', { name: 'Retreat from the fight?' })
+    fireEvent.click(within(again).getByRole('button', { name: 'Retreat' }))
+    await waitFor(() => expect(client.actions).toEqual([{ kind: 'retreat' }]))
+  })
+
+  it('warns the host that retreating with the last heart ends the run', async () => {
+    await show(
+      delveView({ boss: 'skrix_nest', fight }, { status: { Fight: { game: 'g45' } }, at: 0, hearts: 1 }),
+    )
+    fireEvent.click(await screen.findByRole('button', { name: 'Retreat' }))
+    expect(await screen.findByRole('alertdialog')).toHaveTextContent('last heart')
+  })
+
+  it('offers no retreat to a guest, and none outside a fight', async () => {
+    await show(
+      delveView(
+        { host: false, me: 0, boss: 'skrix_nest', fight },
+        { status: { Fight: { game: 'g46' } }, at: 0 },
+      ),
+    )
+    await screen.findByRole('link', { name: 'Enter the fight' })
+    expect(screen.queryByRole('button', { name: 'Retreat' })).toBeNull()
+  })
+
+  it('offers the host no retreat at a camp', async () => {
+    await show(delveView({ boss: 'skrix_nest' }, { status: 'Map', at: 0, cleared: [0] }))
+    await screen.findByRole('button', { name: 'End the run' })
+    expect(screen.queryByRole('button', { name: 'Retreat' })).toBeNull()
   })
 
   it('greets the camp after a boss with its fall', async () => {

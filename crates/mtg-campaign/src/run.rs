@@ -175,6 +175,15 @@ pub enum Status {
     Abandoned,
 }
 
+/// Why a fight counts as lost with no result from its game.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum Forfeit {
+    /// Its table was closed or expired before the game had a result.
+    Closed,
+    /// The host retreated from it.
+    Retreat,
+}
+
 /// Something that happened in a run.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum RunEvent {
@@ -222,8 +231,13 @@ pub enum RunEvent {
         /// The heroes who ended it as Spirits.
         spirits: Vec<u8>,
     },
-    /// The fight's game ended unplayed (an admin ended it, or it expired): the fight waits for a new game.
+    /// The fight's game ended unplayed (an admin ended it, or it failed to load): the fight waits for a new game.
     FightVoided,
+    /// The fight counts as lost with no result from its game: the table closed or expired, or the host retreated.
+    FightForfeited {
+        /// Why.
+        cause: Forfeit,
+    },
     /// A hero answered their first offer.
     Picked {
         /// Their index.
@@ -437,6 +451,22 @@ impl Run {
                 }
                 self.status = Status::Fight { game: None };
             }
+            RunEvent::FightForfeited { cause } => {
+                // A closed table had a game; a retreat also ends a fight still waiting for one.
+                let live = matches!(
+                    (&self.status, cause),
+                    (Status::Fight { game: Some(_) }, _)
+                        | (Status::Fight { game: None }, Forfeit::Retreat)
+                );
+                if !live {
+                    return Err(refused("there is no fight to leave"));
+                }
+                let how = match cause {
+                    Forfeit::Closed => "lost its table",
+                    Forfeit::Retreat => "retreated",
+                };
+                self.fight_lost(content, how);
+            }
             RunEvent::Picked { hero, pick } => {
                 if self.status != Status::Room {
                     return Err(refused("nothing to pick now"));
@@ -628,6 +658,27 @@ impl Run {
         rng.pick(&fits, count)
     }
 
+    /// A lost fight costs a heart: with none left the run is lost, else every hero regroups at half life and the
+    /// fight is made again. `how` is the party's part of the chronicle line.
+    fn fight_lost(&mut self, content: &Content, how: &str) {
+        self.hearts = self.hearts.saturating_sub(1);
+        if self.hearts == 0 {
+            self.status = Status::Defeat;
+            self.log
+                .push("The party fell. The Warrens keep their dead.".to_owned());
+            return;
+        }
+        // The party lost only once every hero fell: all regroup at half their life.
+        for h in &mut self.heroes {
+            h.life = h.max_life(content) / 2;
+        }
+        self.log.push(format!(
+            "The party {how} and regroups ({} hearts left).",
+            self.hearts
+        ));
+        self.status = Status::Fight { game: None };
+    }
+
     fn fight_ended(
         &mut self,
         content: &Content,
@@ -637,22 +688,7 @@ impl Run {
     ) -> Result<(), CampaignError> {
         let node = self.at.ok_or_else(|| refused("no room"))?;
         if !won {
-            self.hearts = self.hearts.saturating_sub(1);
-            if self.hearts == 0 {
-                self.status = Status::Defeat;
-                self.log
-                    .push("The party fell. The Warrens keep their dead.".to_owned());
-                return Ok(());
-            }
-            // The party lost only once every hero fell: all regroup at half their life.
-            for h in &mut self.heroes {
-                h.life = h.max_life(content) / 2;
-            }
-            self.log.push(format!(
-                "The party was beaten back and regroups ({} hearts left).",
-                self.hearts
-            ));
-            self.status = Status::Fight { game: None };
+            self.fight_lost(content, "was beaten back");
             return Ok(());
         }
         self.cleared.push(node);
