@@ -1,4 +1,4 @@
-//! Goal: at a team table the server makes through the lobby, the view each human seat folds from its snapshot and batches says a creature is summoning sick exactly until its controller's own turn begins (CR 302.6), however the teams sit and whoever plays the turns. A land or other noncreature permanent is never shown sick.
+//! Goal: at a team table the server makes through the lobby, the view each human seat folds from its snapshot and batches says a creature is summoning sick exactly until its controller's own turn begins (CR 302.6), however the teams sit and whoever plays the turns. A land or other noncreature permanent is never shown sick. A creature that leaves the battlefield and comes back is held back anew, also when it returns as a turn begins, and none is held back again after it was shown free. Each case plays a fixed seed, so a run never depends on the cards the table happens to draw.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::{BTreeMap, BTreeSet};
@@ -54,8 +54,15 @@ struct Ledger {
     teams: Teams,
     /// The active player of each turn that began.
     turns: Vec<PlayerId>,
-    /// For each permanent seen arriving, how many turns had begun then.
-    arrived: BTreeMap<ObjectId, usize>,
+    /// For each permanent on the battlefield, how many turns had begun when it arrived: the fewest and the most. They
+    /// differ when the batch that showed it also began a turn, since a batch does not say in which order.
+    arrived: BTreeMap<ObjectId, (usize, usize)>,
+    /// The permanents the seat has seen on the battlefield, so a return is told from a first arrival.
+    visited: BTreeSet<ObjectId>,
+    /// The creatures the view showed free since they arrived, which may not be held back again.
+    freed: BTreeSet<ObjectId>,
+    /// How many times a permanent came back to the battlefield after it left.
+    returned: usize,
     /// How many attackers the seat was offered.
     attackers: usize,
     /// How many held-back and how many free permanents the view was checked on.
@@ -68,6 +75,9 @@ impl Ledger {
             teams,
             turns: Vec::new(),
             arrived: BTreeMap::new(),
+            visited: BTreeSet::new(),
+            freed: BTreeSet::new(),
+            returned: 0,
             attackers: 0,
             checked: (0, 0),
         }
@@ -81,7 +91,8 @@ impl Ledger {
     }
 
     /// Folds `batch` into `view` and checks what the view says against the turns the batch's events tell. A permanent
-    /// that arrives in a batch with a turn boundary is left out, since no turn count says when it arrived.
+    /// is as new as its latest arrival: one that left the battlefield and came back, in this batch or a later one, is
+    /// held back again (CR 400.7).
     fn fold(&mut self, view: &mut StateView, batch: &EventBatch, seat: usize) {
         let on_field = |view: &StateView| -> BTreeSet<ObjectId> {
             view.objects
@@ -92,17 +103,34 @@ impl Ledger {
         };
         let before = on_field(view);
         let counted = self.turns.len();
-        let mut turned = false;
+        let mut left = BTreeSet::new();
         for event in &batch.events {
-            if let EventView::Public(Event::TurnBegan { active, .. }) = event {
-                self.turns.push(*active);
-                turned = true;
+            match event {
+                EventView::Public(Event::TurnBegan { active, .. }) => self.turns.push(*active),
+                EventView::Public(Event::ZoneChanged {
+                    object,
+                    from: Zone::Battlefield,
+                    ..
+                }) => {
+                    left.insert(*object);
+                }
+                _ => {}
             }
         }
         view.apply(batch);
-        if !turned {
-            for id in on_field(view).difference(&before) {
-                self.arrived.insert(*id, counted);
+        let now = on_field(view);
+        for id in before.difference(&now) {
+            self.arrived.remove(id);
+            self.freed.remove(id);
+        }
+        for id in &now {
+            if before.contains(id) && !left.contains(id) {
+                continue;
+            }
+            self.arrived.insert(*id, (counted, self.turns.len()));
+            self.freed.remove(id);
+            if !self.visited.insert(*id) {
+                self.returned += 1;
             }
         }
         self.check(view, seat);
@@ -114,51 +142,73 @@ impl Ledger {
             let Some(permanent) = &object.permanent else {
                 continue;
             };
-            let Some(&since) = self.arrived.get(&object.id) else {
+            let Some(&(earliest, latest)) = self.arrived.get(&object.id) else {
                 continue;
             };
             if object.controller != object.owner
                 || object.keywords.iter().any(|word| word == "Haste")
             {
+                self.freed.remove(&object.id);
                 continue;
             }
-            // Only a creature is ever held back (CR 302.6).
+            // The controller's latest turn that began; a turn after the arrival lifts the hold (CR 302.6).
+            let last = self
+                .turns
+                .iter()
+                .rposition(|active| self.is_turn_of(*active, object.controller));
+            // Only a creature is ever held back.
             let creature = object.types.contains(&CardType::Creature);
-            let held = creature
-                && !self.turns[since..]
-                    .iter()
-                    .any(|active| self.is_turn_of(*active, object.controller));
-            assert_eq!(
-                permanent.summoning_sick,
-                held,
-                "seat {seat}'s view of {} of {:?}, arrived after turn {since}, shown at turn {}",
+            let may_be_held = creature && last.is_none_or(|last| last < latest);
+            let may_be_free = !creature || last.is_some_and(|last| last >= earliest);
+            let shown = permanent.summoning_sick;
+            assert!(
+                if shown { may_be_held } else { may_be_free },
+                "seat {seat}'s view of {} of {:?}, arrived after turn {earliest} to {latest}, shown at turn {} with the \
+                 controller's latest turn {last:?}: summoning sick {shown}",
                 object.name,
                 object.controller,
                 self.turns.len()
             );
-            if held {
-                self.checked.0 += 1;
-            } else {
-                self.checked.1 += 1;
+            if creature {
+                assert!(
+                    !(shown && self.freed.contains(&object.id)),
+                    "seat {seat}'s view of {} of {:?} was held back again at turn {} after it had been shown free",
+                    object.name,
+                    object.controller,
+                    self.turns.len()
+                );
+                if !shown {
+                    self.freed.insert(object.id);
+                }
+            }
+            if may_be_held != may_be_free {
+                if shown {
+                    self.checked.0 += 1;
+                } else {
+                    self.checked.1 += 1;
+                }
             }
         }
     }
 }
 
 #[rstest]
-#[case::teams_apart_second_player(TeamMode::Teams, vec![0, 1, 0, 1], &[2])]
-#[case::teams_apart_first_player(TeamMode::Teams, vec![0, 1, 0, 1], &[0])]
-#[case::teams_side_by_side(TeamMode::Teams, vec![0, 0, 1, 1], &[1])]
-#[case::teams_three_v_three(TeamMode::Teams, vec![0, 1, 0, 1, 0, 1], &[2, 4])]
-#[case::giant_first_head(TeamMode::TwoHeadedGiant, vec![0, 0, 1, 1], &[0])]
-#[case::giant_second_head(TeamMode::TwoHeadedGiant, vec![0, 0, 1, 1], &[1])]
-#[case::shared_second_hero(TeamMode::SharedTurns, vec![0, 0, 0, 1], &[1])]
-#[case::shared_heroes_of_four(TeamMode::SharedTurns, vec![0, 0, 0, 0, 1, 1], &[0, 2])]
+#[case::teams_apart_second_player(TeamMode::Teams, vec![0, 1, 0, 1], &[2], 1, false)]
+#[case::teams_apart_first_player(TeamMode::Teams, vec![0, 1, 0, 1], &[0], 1, false)]
+#[case::teams_side_by_side(TeamMode::Teams, vec![0, 0, 1, 1], &[1], 1, false)]
+#[case::teams_side_by_side_a_creature_back_at_a_turn_boundary(TeamMode::Teams, vec![0, 0, 1, 1], &[1], 183, true)]
+#[case::teams_three_v_three(TeamMode::Teams, vec![0, 1, 0, 1, 0, 1], &[2, 4], 1, false)]
+#[case::giant_first_head(TeamMode::TwoHeadedGiant, vec![0, 0, 1, 1], &[0], 1, false)]
+#[case::giant_second_head(TeamMode::TwoHeadedGiant, vec![0, 0, 1, 1], &[1], 1, false)]
+#[case::shared_second_hero(TeamMode::SharedTurns, vec![0, 0, 0, 1], &[1], 1, false)]
+#[case::shared_heroes_of_four(TeamMode::SharedTurns, vec![0, 0, 0, 0, 1, 1], &[0, 2], 1, false)]
 #[tokio::test(start_paused = true)]
 async fn a_humans_view_holds_a_permanent_back_until_its_controllers_turn_begins(
     #[case] mode: TeamMode,
     #[case] seats_teams: Vec<u32>,
     #[case] humans: &[usize],
+    #[case] seed: u64,
+    #[case] returns: bool,
 ) {
     let seats = seats_teams.len();
     let teams = Teams {
@@ -168,6 +218,7 @@ async fn a_humans_view_holds_a_permanent_back_until_its_controllers_turn_begins(
     let registry = Registry::new(&ServerConfig {
         game: windowed(),
         bot_delay: Duration::from_millis(50),
+        fixed_seed: Some(seed),
         ..ServerConfig::default()
     });
     let options = GameOptions {
@@ -269,6 +320,10 @@ async fn a_humans_view_holds_a_permanent_back_until_its_controllers_turn_begins(
     .await;
     assert!(ended.is_ok(), "the team game stalled");
     for (client, ledger) in clients.iter().zip(&ledgers) {
+        assert!(
+            !returns || ledger.returned > 0,
+            "no permanent came back to the battlefield, which this seed is pinned to play"
+        );
         assert!(
             ledger.checked.0 > 10 && ledger.checked.1 > 10,
             "too few permanents were checked: {:?}",
