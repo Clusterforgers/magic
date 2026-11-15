@@ -165,9 +165,10 @@ describe('the dock of the table', () => {
     expect(document.querySelector('[data-region="controls"] [data-slot="stops-button"]')).not.toBeNull()
   })
 
-  it('scrolls inside itself when it holds more than it has room for, with the edge fade, never the page', () => {
+  it('scrolls only the controls above the pass buttons when it holds more than it has room for, with the edge fade, never the page', () => {
     renderTable({ seats: 2 })
     const dock = screen.getByRole('region', { name: 'Pass controls' })
-    expect(dock).toHaveClass('fade-scroll', 'min-h-0', 'min-w-0')
+    expect(dock).toHaveClass('min-h-0', 'min-w-0', 'overflow-hidden')
+    expect(dock.querySelector('[data-slot="dock-upper"]')).toHaveClass('fade-scroll', 'min-h-0')
   })
 })
