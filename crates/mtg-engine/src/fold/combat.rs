@@ -253,6 +253,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             state.combat.attack_picks.clear();
             state.combat.attack_refusals.push(reason.clone());
         }
+        Event::FocusShifted { .. } => {}
         Event::AttackersDeclared { attackers, .. } => {
             state.combat.attack_picks.clear();
             if state.combat.attackers_declared {

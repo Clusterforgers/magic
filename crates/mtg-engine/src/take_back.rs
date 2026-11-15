@@ -306,6 +306,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::AttackersDeclared { .. }
         | Event::AttackersChosen { .. }
         | Event::AttackChoicesRefused { .. }
+        | Event::FocusShifted { .. }
         | Event::BandFormed { .. }
         | Event::BlockersDeclared { .. }
         | Event::DamageAssigned { .. }

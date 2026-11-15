@@ -122,13 +122,15 @@ pub(crate) fn answer(
     check_attackers(options, &attackers)?;
     crate::w11a_exert::w11a_check_exert(options, &attackers, &extras.exert)?;
     crate::keywords::banding::check_bands(state, &attackers, &extras.bands)?;
+    let note = crate::spotlight_aim::shifted(state, player, options, &attackers);
     if !is_last(state, player) {
-        return Ok(Outcome::Events(vec![Event::AttackersChosen {
+        let chosen = Event::AttackersChosen {
             player,
             attackers,
             exert: extras.exert,
             bands: extras.bands,
-        }]));
+        };
+        return Ok(Outcome::Events(note.into_iter().chain([chosen]).collect()));
     }
     let mut all = chosen(state);
     all.extend(attackers.iter().copied());
@@ -139,7 +141,7 @@ pub(crate) fn answer(
     }
     extras_all.exert.extend(extras.exert);
     extras_all.bands.extend(extras.bands);
-    declare(state, all, extras_all)
+    declare(state, all, extras_all).map(|outcome| crate::spotlight_aim::noted(outcome, note))
 }
 
 /// The team's one declaration, made by the active player: checked whole against the team's options; when it breaks a
