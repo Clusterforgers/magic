@@ -26,7 +26,7 @@ Impact: how much a problem costs a player in a 4-player Commander game at 1400 �
 - **Commander table (4 seats).** Problems 1 to 4, 7, 8. Also: the right column opens on Commands (life ± buttons and a long command list) during play, where the Log or Stack is what a player reads; the "+N" overflow counts in board corners are easy to miss.
 - **1v1.** Cards are large enough (about 90 px); the prompt paragraph is the largest thing in the strip. The pass button is bottom right as in Arena.
 - **Crowded stack.** Grouping (×N), pictures and "+3 more" work; the targets arrows add lines to problem 4.
-- **Boss fight.** The ability bar is clear; the boss pod's 120 life reads well. The party's boards inherit problem 1.
+- **Boss fight.** The ability bar is clear; the boss pod's 120 life reads well. The rows share the height by content: the party's boards draw 100 px cards or more with ten permanents each at 1400 × 900, the boss side is capped, boards without permanents are one line and the opening hands float in the centre.
 - **Six seats.** Tiles and the focused board work; tiles carry seat colours but no commander picture.
 - **Phone.** Problem 6; the stack sheet covers most of the opponent board.
 - **Play (landing).** On the page plaque and warm light; a list page without art, where open games and tutorials have one weight.

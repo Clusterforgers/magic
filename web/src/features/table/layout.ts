@@ -222,6 +222,8 @@ export const SHARED_CLAMP: HeightClamp = { min: 56, vh: 7, max: 72 }
 /** The hand dock; a phone held upright gets the lower one. */
 export const HAND_CLAMP: HeightClamp = { min: 104, vh: 16, max: 200 }
 export const HAND_PHONE_CLAMP: HeightClamp = { min: 104, vh: 16, max: 140 }
+/** The hand dock of a seat with nothing to play from it in boss mode: the pass controls beside it need this much, the hand nothing. */
+export const HAND_SLIM_PX = 104
 /**
  * A hand that one row does not hold grows the dock (not a phone's) to the height of its rows, up to this percent of the
  * window height (`HAND_GROW_VAR`, `handDockNeed`); the boards give up that room.
@@ -285,6 +287,18 @@ export interface Regions {
    * whose cards it does not ask for or draws again itself; never over your board, the hand dock or the controls.
    */
   sheetWide: number
+  /** In boss mode, how the party's room is split (`splitBoss`); left out elsewhere. */
+  party?: PartyRows
+  /** The hand dock is the slim bar (`HAND_SLIM_PX`): the seat has nothing to play from it. */
+  handSlim?: boolean
+}
+
+/** The boss-mode split's sizes: the allies' row in px, the widest card of the boss's side and of the heroes, the allies' column shares. */
+export interface PartyRows {
+  band: number
+  bossCard: number
+  heroCard: number
+  shares: number[]
 }
 
 const finite = (value: number): number => (Number.isFinite(value) ? Math.max(0, value) : 0)
@@ -311,7 +325,7 @@ export function clampedHeight(range: HeightClamp, height: number): number {
 }
 
 /** Sizes the regions of the table for a window, with the side column folded to its rail where `folded`; total for any input. */
-export function regionSizes(viewport: Viewport, folded = false): Regions {
+export function regionSizes(viewport: Viewport, folded = false, handSlim = false): Regions {
   const width = finite(viewport.width)
   const height = finite(viewport.height)
   const breakpoint = breakpointOf(width)
@@ -323,7 +337,8 @@ export function regionSizes(viewport: Viewport, folded = false): Regions {
     side === 'column' ? clampTo(width * SIDE_SHARE, SIDE_MIN_PX, SIDE_MAX_PX) : side === 'rail' ? RAIL_PX : 0
   const topBar = landscape ? TOP_BAR_LANDSCAPE_PX : TOP_BAR_PX
   const shared = clampedHeight(SHARED_CLAMP, height)
-  const hand = clampedHeight(phone ? HAND_PHONE_CLAMP : HAND_CLAMP, height)
+  const slim = handSlim && !phone
+  const hand = slim ? HAND_SLIM_PX : clampedHeight(phone ? HAND_PHONE_CLAMP : HAND_CLAMP, height)
   const rest = Math.max(0, height - topBar - shared - hand)
   const opponents = rest / (1 + OWN_SHARE)
   const own = rest - opponents
@@ -342,6 +357,7 @@ export function regionSizes(viewport: Viewport, folded = false): Regions {
     own,
     sheet: sheetMost(height, shared, opponents, phone),
     sheetWide: sheetMost(height, shared, opponents, phone),
+    ...(slim ? { handSlim: true } : {}),
   }
 }
 
@@ -354,13 +370,15 @@ const clampCss = (range: HeightClamp): string => `clamp(${range.min}px, ${range.
  * covers both boards and the strip keeps the sentence and the buttons above the hand.
  */
 export function gridRows(
-  regions: Pick<Regions, 'phone' | 'landscape'> & Partial<Pick<Regions, 'opponents' | 'own'>>,
+  regions: Pick<Regions, 'phone' | 'landscape'> & Partial<Pick<Regions, 'opponents' | 'own' | 'handSlim'>>,
   choice = false,
 ): string {
   const bar = regions.landscape ? TOP_BAR_LANDSCAPE_PX : TOP_BAR_PX
   const hand = regions.phone
     ? clampCss(HAND_PHONE_CLAMP)
-    : `max(${clampCss(HAND_CLAMP)}, var(${HAND_GROW_VAR}, 0px))`
+    : regions.handSlim === true
+      ? `${HAND_SLIM_PX}px`
+      : `max(${clampCss(HAND_CLAMP)}, var(${HAND_GROW_VAR}, 0px))`
   const weighted = (regions.opponents ?? 0) > 0 && (regions.own ?? 0) > 0
   const [theirs, own] = weighted ? [weight(regions.opponents), weight(regions.own)] : [1, OWN_SHARE]
   const strip = clampCss(SHARED_CLAMP)
@@ -502,6 +520,8 @@ export interface TableInput extends Omit<SeatInput, 'mode'> {
   active?: PlayerId | null | undefined
   /** The viewer folded the side column to its rail (`sideFold.ts`). */
   sideFolded?: boolean | undefined
+  /** The seat has nothing to play from its hand dock: in boss mode the dock is a slim bar (`HAND_SLIM_PX`). */
+  handSlim?: boolean | undefined
 }
 
 /** `tiles` with `active` moved to the front, the rest as they were; unchanged when `active` is not among them. */
@@ -569,16 +589,21 @@ export interface TablePlan {
 
 /** Sizes the regions, chooses the mode and arranges the seats. */
 export function planTable(input: TableInput): TablePlan {
-  const regions = regionSizes(input.viewport, input.sideFolded === true)
+  const sized = regionSizes(input.viewport, input.sideFolded === true)
   const seatCount = wholeSeats(input.seatCount)
   const mode = chooseMode({
     seatCount,
-    mainWidth: regions.main.width,
+    mainWidth: sized.main.width,
     override: input.mode,
     sides: input.sides,
     viewer: input.viewer,
   })
-  const arranged = bossOnPhone(arrangeSeats({ ...input, seatCount, mode }), regions.phone)
+  const arranged = bossOnPhone(arrangeSeats({ ...input, seatCount, mode }), sized.phone)
+  // A seat with nothing in its hand dock gives the boards that room, in boss mode only.
+  const regions =
+    input.handSlim === true && arranged.shape === 'boss'
+      ? regionSizes(input.viewport, input.sideFolded === true, true)
+      : sized
   // The strip leads with the seat whose turn it is, so that it is in view where the strip scrolls and one place to look at everywhere.
   const seats = { ...arranged, tiles: activeFirst(arranged.tiles, input.active) }
   const pod: PodPlace = regions.phone ? 'line' : 'aside'

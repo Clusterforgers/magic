@@ -1,0 +1,178 @@
+/** Pure split of the table's height in boss mode: the boss's side, the other heroes' row and your board, each by what it draws. */
+import { ALLY_STRIP_PX } from './layout'
+import { LANE_LIMITS, highestRung, ladderOf, laneHeight } from './laneFit'
+import type { LaneCounts, LaneLimits } from './laneFit'
+
+/** The most of the boards' room the boss's side takes. */
+export const BOSS_SIDE_MOST = 0.45
+/** The boss's cards are this share of the heroes': the party plays from its boards, so its cards are the larger. */
+export const BOSS_SCALE = 0.85
+/** An ally's column takes at least this many shares of the party's row, as for a board of that many permanents. */
+export const ALLY_MIN_SHARE = 4
+/** The boss's cards are held at this width in px, at the least, while the heroes' cards grow. */
+export const BOSS_CARD_FLOOR_PX = 60
+/** The party's row of boards is shown from this height in px; under it the heroes are a strip of tiles. */
+export const ALLY_ROW_MIN_PX = 120
+
+/** The height of the boss's side when no board of it has a permanent: the abilities, the boss's pod as a line and the frame. */
+export const BOSS_LINE_PX = 120
+/** The height of the party's row when no ally has a permanent: the tiles in their frames. */
+export const ALLY_LINE_PX = 68
+/** The height of your row when you have no permanent and no card to play: your pod as a line. */
+export const OWN_LINE_PX = 72
+/** What an empty board of yours that still has a hand keeps room for: a few lands, as on any early turn. */
+export const OWN_READY_COUNTS: LaneCounts = { lands: 3, creatures: 1, other: 0 }
+/** The least height of a pod column beside a board that has permanents, in px. */
+export const POD_MIN_PX = 120
+
+/** A board of the split: the width of its lanes, its boxes, and what its frame draws above the lanes in px. */
+export interface BossBoard {
+  width: number
+  counts: LaneCounts
+  /** What the board's frame spends above its lanes (a minion's pod line); 0 when left out. */
+  head?: number
+}
+
+/** What `splitBoss` needs: the room of all three and the boards inside them. */
+export interface BossSplitInput {
+  /** The height the boss's side and the party's rows share in px. */
+  room: number
+  /** The boss's board first, then each minion's. */
+  boss: readonly BossBoard[]
+  /** What the boss's row spends besides its lanes: the abilities, frames and padding. */
+  bossChrome: number
+  /** The least height of the boss's row where it has permanents: the pod column beside the board. */
+  bossFloor: number
+  /** The other heroes' boards; none for a party of one. */
+  allies: readonly BossBoard[]
+  /** What the party's row spends besides its lanes: tile, frames and padding. */
+  allyChrome: number
+  /** Your board. */
+  own: BossBoard
+  /** What your row spends besides your lanes: padding. */
+  ownChrome: number
+  /** Your hand holds cards that will land on your board, so an empty board keeps room (`OWN_READY_COUNTS`). */
+  ownReady: boolean
+  /** The least height of your row where it has permanents: the pod column beside the board. */
+  ownFloor: number
+  /** The space between the allies' row and your board. */
+  gap: number
+}
+
+/** The heights of the three and the card widths they were chosen for. */
+export interface BossSplit {
+  /** The boss's side. */
+  opponents: number
+  /** The party: the allies' row, the gap and your board. */
+  own: number
+  /** The allies' row (`ALLY_STRIP_PX` where the heroes are a strip of tiles); 0 without allies. */
+  band: number
+  /** The widest card of the boss's side and of the heroes, in px; 0 where nothing fits or no board has a permanent. */
+  bossCard: number
+  heroCard: number
+}
+
+const finite = (value: number): number => (Number.isFinite(value) ? Math.max(0, value) : 0)
+
+/** The boxes of a board's lanes, the measure of what it shows. */
+export const permanentsIn = (counts: LaneCounts): number => counts.lands + counts.creatures + counts.other
+
+/** The shares of the party's row for allies with these boards: by what each shows, at least `ALLY_MIN_SHARE`. */
+export function allyShares(allies: readonly LaneCounts[]): number[] {
+  return allies.map((counts) => Math.max(ALLY_MIN_SHARE, permanentsIn(counts)))
+}
+
+/**
+ * Splits `room` between the boss's side, the allies' row and your board so that every board draws as large a card as
+ * the room holds: the heroes' cards are the largest rung of the ladder at which the heroes' rows fit with the boss's row
+ * at `BOSS_CARD_FLOOR_PX` cards; the boss then takes what is left, up to `BOSS_SCALE` of the heroes' card and
+ * `BOSS_SIDE_MOST` of the room. A board without permanents takes one
+ * line (`BOSS_LINE_PX`, `ALLY_LINE_PX`, `OWN_LINE_PX`); a hand that will fill an empty board keeps your row. What is
+ * left goes to the allies' row and yours in proportion to what they need. Without a fit at the floor the room splits
+ * by what each row needs there, the boss's capped, and the allies are a strip of tiles where their row would be low.
+ */
+export function splitBoss(input: BossSplitInput, limits: LaneLimits = LANE_LIMITS): BossSplit {
+  const room = finite(input.room)
+  const { at, rungs } = ladderOf(limits)
+  const cap = room * BOSS_SIDE_MOST
+  const need = (boards: readonly BossBoard[], card: number): number =>
+    Math.max(
+      0,
+      ...boards.map((board) => finite(board.head ?? 0) + laneHeight(board.width, board.counts, card, limits)),
+    )
+  const bossShows = input.boss.some((board) => permanentsIn(board.counts) > 0)
+  const allyShows = input.allies.some((board) => permanentsIn(board.counts) > 0)
+  const ownShows = permanentsIn(input.own.counts) > 0
+  const ownKeeps = ownShows || input.ownReady
+  const ownBoard: BossBoard = ownShows ? input.own : { ...input.own, counts: OWN_READY_COUNTS }
+  const gap = input.allies.length === 0 ? 0 : finite(input.gap)
+  const bossCard = (card: number): number => Math.floor(card * BOSS_SCALE)
+  const bossRow = (card: number): number =>
+    bossShows
+      ? Math.min(cap, Math.max(finite(input.bossFloor), finite(input.bossChrome) + need(input.boss, card)))
+      : Math.min(cap, BOSS_LINE_PX)
+  const allyRow = (card: number): number =>
+    input.allies.length === 0
+      ? 0
+      : allyShows
+        ? finite(input.allyChrome) + need(input.allies, card)
+        : ALLY_LINE_PX
+  const ownRow = (card: number): number =>
+    ownKeeps
+      ? Math.max(finite(input.ownFloor), finite(input.ownChrome) + need([ownBoard], card))
+      : OWN_LINE_PX
+  const heroes = (rung: number): number => allyRow(at(rung)) + gap + ownRow(at(rung))
+  // The heroes grow first; the boss's row is held at the least that draws `BOSS_CARD_FLOOR_PX` cards meanwhile.
+  const total = (rung: number): number =>
+    bossRow(Math.min(bossCard(at(rung)), BOSS_CARD_FLOOR_PX)) + heroes(rung)
+  const floor = at(0)
+  // Nothing fits at the floor: each row takes its share of what it needs there.
+  if (!(total(0) <= room)) {
+    return squeezed(room, [bossRow(floor), allyRow(floor), ownRow(floor)], cap, input, allyShows, gap)
+  }
+  const rung = highestRung(rungs, (each) => total(each) <= room)
+  const card = at(rung)
+  // What the heroes leave goes to the boss, up to its cap and its share of the heroes' card.
+  const budget = Math.min(cap, room - heroes(rung))
+  const step = Math.max(1, at(1) - at(0))
+  const most = Math.max(0, Math.min(rungs, Math.floor((bossCard(card) - floor) / step)))
+  const bossRung = highestRung(most, (each) => bossRow(at(each)) <= budget)
+  const boss = bossRow(at(bossRung))
+  const allies = allyRow(card)
+  const own = ownRow(card)
+  const spare = room - (boss + allies + gap + own)
+  // Only a row that draws permanents grows; a line stays a line and your row takes the rest.
+  const wantA = allyShows ? allies : 0
+  const wantO = ownKeeps ? own : 0
+  const band =
+    input.allies.length === 0 ? 0 : wantA + wantO === 0 ? allies : allies + (spare * wantA) / (wantA + wantO)
+  return {
+    opponents: boss,
+    own: room - boss,
+    band,
+    bossCard: bossShows ? at(bossRung) : 0,
+    heroCard: anyShown(bossShows, allyShows, ownShows) ? card : 0,
+  }
+}
+
+const anyShown = (...shown: boolean[]): boolean => shown.some(Boolean)
+
+/** The room split by what each row needs at the floor, the boss's at most `cap`; the allies a strip of tiles where their row is low. */
+function squeezed(
+  room: number,
+  needs: readonly [number, number, number],
+  cap: number,
+  input: BossSplitInput,
+  allyShows: boolean,
+  gap: number,
+): BossSplit {
+  const [boss, allies, own] = needs
+  const opponents = Math.min(cap, boss)
+  const party = Math.max(0, room - opponents)
+  const rest = Math.max(0, party - gap)
+  const sum = allies + own
+  const scaled = sum === 0 ? 0 : (rest * allies) / sum
+  const low = scaled < (allyShows ? ALLY_ROW_MIN_PX : ALLY_LINE_PX)
+  const band = input.allies.length === 0 ? 0 : low ? Math.min(ALLY_STRIP_PX, rest) : scaled
+  return { opponents, own: party, band, bossCard: 0, heroCard: 0 }
+}

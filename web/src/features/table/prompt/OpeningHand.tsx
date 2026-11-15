@@ -1,4 +1,5 @@
 /** The opening hand drawn large in the prompt while its keep or mulligan is decided, as Arena shows it. */
+import type { CSSProperties } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import type { PlayState } from '@/play/store'
@@ -34,9 +35,25 @@ function OpeningCard({ id }: { id: ObjectId }) {
  * cards, not on their names in the dock: seven fill the row, never below 3 rem, wrapping only then. Decoration for the eye: the hand dock holds the same cards for a screen
  * reader and the keyboard, so the row is `aria-hidden` apart from its preview on hover.
  */
-export function OpeningHand() {
+export function OpeningHand({ card }: { card?: number } = {}) {
   const ids = usePlay(useShallow(openingHandIds))
   if (ids.length === 0) return null
+  if (card !== undefined) {
+    // The floating panel: one row of cards at the width the room gives (`openingCardPx`).
+    return (
+      <ul
+        aria-hidden="true"
+        data-slot="opening-hand"
+        data-large=""
+        style={{ '--card-w': `${card}px`, '--card-h': `${Math.round((card * 7) / 5)}px` } as CSSProperties}
+        className="flex basis-full justify-center gap-2"
+      >
+        {ids.map((id) => (
+          <OpeningCard key={id} id={id} />
+        ))}
+      </ul>
+    )
+  }
   return (
     <ul
       aria-hidden="true"

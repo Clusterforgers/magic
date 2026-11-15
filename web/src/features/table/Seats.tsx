@@ -35,6 +35,8 @@ interface SeatAreaProps {
   pod: PodPlace
   /** An opponent of a grid: its lands fold into its pod's lands chip (`LandFoldContext`). */
   foldLands?: boolean
+  /** The board has no permanent and draws no zone of its own: the seat is its pod's line or its tile (boss mode). */
+  collapsed?: boolean
 }
 
 /**
@@ -68,6 +70,7 @@ export const SeatArea = memo(function SeatArea({
   facing,
   pod,
   foldLands = false,
+  collapsed = false,
 }: SeatAreaProps) {
   const aside = pod === 'aside'
   // The creatures' card width of the board, which the pod's corner follows.
@@ -103,7 +106,7 @@ export const SeatArea = memo(function SeatArea({
         {pod === 'aside' ? <PodColumn seat={seat} card={card} /> : null}
         {/* A line pod is on the table's middle side of its board: over an opponent's, under yours, by your hand. */}
         {pod === 'line' && facing === 'far' ? <SeatPanel seat={seat} variant="line" /> : null}
-        <Battlefield seat={seat} size={size} facing={facing} onCardWidth={setCard} />
+        {collapsed ? null : <Battlefield seat={seat} size={size} facing={facing} onCardWidth={setCard} />}
         {pod === 'line' && facing === 'near' ? <SeatPanel seat={seat} variant="line" /> : null}
       </div>
     </LandFoldContext>

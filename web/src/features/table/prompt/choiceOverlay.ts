@@ -19,6 +19,10 @@ export interface ChoiceOverlay {
   room: OverlayRoom
   /** Opens the overlay while the caller holds it; the function returned lets it go. */
   claim: () => () => void
+  /** The overlay is open. */
+  open: boolean
+  /** The opening-hand decision floats in the overlay (boss mode off a phone), with the seats' keep status in it. */
+  opening: boolean
 }
 
 /** The table's overlay; none outside a table, where a prompt keeps its cards in place. */
@@ -56,6 +60,22 @@ export function useChoiceOverlay(count: number): HTMLElement | null {
   return host
 }
 
+/** The overlay's element for the opening-hand decision where the table floats it (`ChoiceOverlay.opening`), held open while the caller is mounted; null to draw in the strip. */
+export function useOpeningOverlay(): HTMLElement | null {
+  const overlay = useContext(ChoiceOverlayContext)
+  const host = overlay !== null && overlay.opening ? overlay.host : null
+  const claim = overlay?.claim
+  const used = host !== null
+  useLayoutEffect(() => (used && claim !== undefined ? claim() : undefined), [used, claim])
+  return host
+}
+
+/** Whether the opening-hand decision is open in the overlay, so the strip leaves out what the overlay carries. */
+export function useOpeningInOverlay(): boolean {
+  const overlay = useContext(ChoiceOverlayContext)
+  return overlay !== null && overlay.opening && overlay.open
+}
+
 /** The room the open overlay has; a table's guess outside one. */
 export function useOverlayRoom(): OverlayRoom {
   return useContext(ChoiceOverlayContext)?.room ?? { width: 960, height: 480, phone: false }
@@ -65,6 +85,7 @@ export function useOverlayRoom(): OverlayRoom {
 export function useChoiceOverlayHost(
   phone: boolean,
   viewport: Viewport,
+  opening = false,
 ): {
   value: ChoiceOverlay
   open: boolean
@@ -96,6 +117,9 @@ export function useChoiceOverlayHost(
     () => (measured === null ? guessRoom(viewport, phone) : { ...measured, phone }),
     [measured, viewport, phone],
   )
-  const value = useMemo(() => ({ host, phone, room, claim }), [host, phone, room, claim])
+  const value = useMemo(
+    () => ({ host, phone, room, claim, open, opening: opening && !phone }),
+    [host, phone, room, claim, open, opening],
+  )
   return { value, open, ref: setHost }
 }
