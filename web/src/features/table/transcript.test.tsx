@@ -100,9 +100,7 @@ function expectScreenToMatch(container: HTMLElement, state: PlayState, step: str
   const decision = [...container.querySelectorAll('[data-slot="decision-line"], [data-opening]')]
     .map((element) => element.textContent ?? '')
     .join('')
-  expect(decision.includes('Your decision: '), `${step}: decision "${decision}"`).toBe(
-    state.pending !== null,
-  )
+  expect(decision.includes('Your decision: '), `${step}: decision "${decision}"`).toBe(state.pending !== null)
 }
 
 interface Replay {
