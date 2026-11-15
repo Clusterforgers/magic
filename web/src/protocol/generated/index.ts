@@ -160,6 +160,7 @@ export type { FixMarkList } from "./FixMarkList";
 export type { FixMarkView } from "./FixMarkView";
 export type { FloorMap } from "./FloorMap";
 export type { ForecastDamage } from "./ForecastDamage";
+export type { FoughtFight } from "./FoughtFight";
 export type { FullControlMode } from "./FullControlMode";
 export type { GameInfo } from "./GameInfo";
 export type { GameResult } from "./GameResult";
