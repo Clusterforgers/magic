@@ -141,6 +141,7 @@ export const HandDock = memo(function HandDock({
     <section
       aria-label="Your hand"
       data-region="hand"
+      data-keep-clear=""
       data-fx-anchor={`${seat}:hand`}
       className="dock flex min-h-0 min-w-0 items-center justify-center px-2 py-1"
     >
