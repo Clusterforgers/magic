@@ -18,14 +18,7 @@ import type {
  * a phase to come, the scheme now or next.
  */
 export type BossAbilityKind =
-  | 'passive'
-  | 'enrage'
-  | 'modifier'
-  | 'relic'
-  | 'phase'
-  | 'next-phase'
-  | 'scheme'
-  | 'omen'
+  'passive' | 'enrage' | 'modifier' | 'relic' | 'phase' | 'next-phase' | 'scheme' | 'omen'
 
 /** The kind of an always-on custom card by its content kind, and when an Enrage begins. */
 export function standingKind(card: CustomCardView | undefined): { kind: BossAbilityKind; when?: string } {
