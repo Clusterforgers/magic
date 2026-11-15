@@ -1,4 +1,4 @@
-//! Goal: a bot game with free repeatable activations (an `{X}` look at X = 0, a free shuffle, a mana ability with a free untap that pays its cost back, a free loot that empties the library) ends without the watchdog at two to four seats and replays to its final state, a step of such abilities ends within a bound that the bare bot passes by far, and the guard still lets the bot repeat activations that change the game (a pump on each creature, mana for a spell).
+//! Goal: a bot game with free repeatable activations (an `{X}` look at X = 0, a free shuffle, a free "becomes" for ever, a mana ability with a free untap that pays its cost back, a free loot that empties the library) ends without the watchdog at two to four seats and replays to its final state, a step of such abilities ends within a bound that the bare bot passes by far, and the guard still lets the bot repeat activations that change the game (a pump on each creature, mana for a spell).
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -29,6 +29,8 @@ const SHUFFLE: &str = r#"[{"Activated":{"cost":"{0}","effects":[{"Shuffle":{}}]}
 const UNTAP_MANA: &str = r#"[{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]}}}]}},{"Activated":{"cost":"{0}","effects":[{"Untap":{"what":"This"}}]}}]"#;
 /// A free loot: the bot draws its library empty with it.
 const LOOT: &str = r#"[{"Activated":{"cost":"{0}","effects":[{"Draw":{}},{"Discard":{}}]}}]"#;
+/// A free "becomes a creature" for ever: the first use sets it, the next ones set the same again.
+const BECOMES: &str = r#"[{"Activated":{"cost":"{0}","effects":[{"Continuous":{"affected":"This","mods":[{"SetTypes":["Creature"]}],"duration":"Forever"}}]}}]"#;
 /// A free pump of the creature itself, which changes the game every time.
 const PUMP: &str = r#"[{"Activated":{"cost":"{0}","effects":[{"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":0}}],"duration":"UntilEndOfTurn"}}]}}]"#;
 
@@ -168,7 +170,7 @@ fn activations(taken: &[PriorityAction]) -> Vec<(PriorityAction, u32)> {
 
 #[rstest]
 fn a_step_of_free_activations_ends_within_the_bound(
-    #[values(LOOK_AT_X, SHUFFLE, UNTAP_MANA, LOOT)] rules: &str,
+    #[values(LOOK_AT_X, SHUFFLE, UNTAP_MANA, LOOT, BECOMES)] rules: &str,
     #[values(2, 3, 4)] players: usize,
 ) {
     let mut bare = 0;
