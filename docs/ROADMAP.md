@@ -117,7 +117,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 ## Delves
 
 - [ ] (dl2) The party shares one team turn against the boss (CR 805 beyond Two-Headed Giant), so four heroes do not wait three turns
-- [ ] (dl3b) Delves balance at every size: measure four to six heroes with the spotlight and ramp-up, and lift two heroes' fight win rate to 50 %
+- [ ] (dl3c) Delves balance at three to six heroes: measure them on seeds 1 to 8 (a fight takes 30 to 90 minutes of machine time or more) and lift any size that wins below 50 %
 - [ ] (dl3a) Boss personalities: each boss weighs threats its own way (the healer, the biggest board, the combo) within the spotlight's cap
 - [ ] (dl4) A won card names the card it replaces (a basic land today), chosen from the hero's deck list on the loot screen
 - [ ] (dl5) Campfire upgrades put a sticker on a card of the hero's deck for the rest of the run
@@ -126,11 +126,12 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl8a) Boss brain priorities: the boss and its minions focus the biggest threat, punish the healer and break combos, at Very Hard once its clock suits the server
 - [ ] (dl8b) Whole runs won in 20 to 35 % at every party size, measured for 1 to 6 heroes and with Very Hard heroes
 - [ ] (dl9) A boss fight whose game is closed or expires without a result counts as lost and is made again, and the host can retreat from a fight
-- [ ] (dl10) The fight table re-measured on the current bosses (two Hard heroes win 0/4 of seeds 1 to 4) and the Spirits' worth, acting against idle, at three or more heroes
+- [ ] (dl10a) The Spirits' worth, acting against idle, at three or more heroes
 - [ ] (dl10) The run page follows the run over a socket instead of reading it every 4 s
 - [ ] (dl11) Custom cards open in the card inspector at the table with their frame and text, and the boss's phases sit in the top bar
 - [ ] (dl12) e2e: a one-player run with bot allies from the lobby through the first boss fight to the loot screen
 - [ ] (dl13) A second theme with its bosses, events and reward pool; Heat 3 and above
+- [ ] (dl14) The boss bot of a solo fight against Skrix (seed 5) repeats one paid ability until the runaway watchdog stops the game in turn 13
 
 ## M8 Polish and deploy
 
