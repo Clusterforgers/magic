@@ -30,7 +30,7 @@ import { useSeatNamer } from './names'
 import { usePreviewStore, usePreviewTarget } from './preview'
 import { usePreviewDismiss } from './usePreviewDismiss'
 import type { Dock, PreviewTarget } from './preview'
-import { fitClear } from './previewClear'
+import { usePreviewFit } from './previewReserve'
 import { useKeepClear } from './keepClear'
 import {
   activatedLines,
@@ -131,6 +131,7 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
   const gone = held === undefined
   const signedIn = useAuth((state) => state.status === 'signed-in')
   const clear = useKeepClear()
+  const fit = usePreviewFit(target, clear)
 
   const { pinned } = target
   const panel = useRef<HTMLDivElement>(null)
@@ -150,7 +151,6 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
 
   if (object === undefined || held === undefined) return null
   const summary = isStacked(held) ? stackSummary(held, sourceObject, entry, name, targetNames) : null
-  const fit = fitClear(target.anchor, { width: window.innerWidth, height: window.innerHeight }, clear)
   const { dock, beside } = fit
   const pt = powerToughness(object)
   const keywords = keywordLine(object)

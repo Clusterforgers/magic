@@ -82,6 +82,31 @@ describe('splitBoards', () => {
     const crowdedTheirs = splitBoards({ ...base, own: counts(3, 1, 0), theirs: [counts(8, 12, 6)] })
     expect(crowdedOwn.own).toBeGreaterThan(crowdedTheirs.own)
   })
+
+  it('keeps an empty board its least share below the strips of seats that left', () => {
+    const own = counts(10, 14, 8)
+    const plain = splitBoards({ ...base, room: 700, own, theirs: [NONE] })
+    const led = splitBoards({ ...base, room: 700, theirChrome: 24 + 64, theirLead: 64, own, theirs: [NONE] })
+    expect(plain.opponents).toBeLessThan(700 * MIN_ROW_SHARE + 8)
+    expect(led.opponents).toBeGreaterThanOrEqual(700 * MIN_ROW_SHARE + 64)
+  })
+
+  it.each([
+    ['an empty opponent', counts(3, 4, 2), [NONE], 900],
+    ['two sparse opponents', counts(2, 2, 1), [counts(1, 1, 0), NONE], 1000],
+    ['an empty board facing an empty board of yours but lands', counts(5, 0, 0), [NONE], 800],
+  ])('shares the room neither board can use evenly: %s', (_, own, theirs, room) => {
+    const split = splitBoards({ ...base, room, own, theirs })
+    expect(split.ownCard).toBeGreaterThan(0)
+    const ownSpare =
+      split.own -
+      Math.max(room * MIN_ROW_SHARE, base.ownChrome + laneHeight(base.ownWidth, own, split.ownCard))
+    const theirNeed = Math.max(...theirs.map((each) => laneHeight(base.theirWidth, each, split.theirCard)))
+    const theirSpare = split.opponents - Math.max(room * MIN_ROW_SHARE, base.theirChrome + theirNeed)
+    expect(ownSpare).toBeGreaterThan(8)
+    expect(ownSpare).toBeCloseTo(theirSpare, 6)
+    expect(split.opponents).toBeGreaterThan(room * MIN_ROW_SHARE)
+  })
 })
 
 const VIEWPORTS = [
