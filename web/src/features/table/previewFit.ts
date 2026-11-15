@@ -33,7 +33,7 @@ export const TOP_NARROW_PX = 56
 export const BOTTOM_OLD_PX = 64
 
 /** A picture is 5 wide for every 7 high. */
-const ASPECT = 7 / 5
+export const ASPECT = 7 / 5
 
 /** Where the preview stands and how large it draws. */
 export interface PreviewFit {
@@ -53,11 +53,15 @@ export interface PreviewFit {
 }
 
 /** The widest the picture goes for a height the panel may take: what the text lines leave of it. */
-const pictureForHeight = (maxHeight: number): number => (maxHeight - PANEL_PADDING_PX - TEXT_ROOM_PX) / ASPECT
+export const pictureForHeight = (maxHeight: number): number =>
+  (maxHeight - PANEL_PADDING_PX - TEXT_ROOM_PX) / ASPECT
 
 /** A wide window: the panel docks at the side away from its card, above the hand dock and the controls. */
-function sideFit(anchor: Anchor, viewport: Viewport): PreviewFit {
-  const dock = dockOf(anchor, viewport)
+export function sideFit(
+  anchor: Anchor,
+  viewport: Viewport,
+  dock: Dock = dockOf(anchor, viewport),
+): PreviewFit {
   const above = viewport.height - TOP_SIDE_PX - clampedHeight(HAND_CLAMP, viewport.height) - GAP_PX
   // A window too short to keep the hand dock clear and still show the old picture lets the panel reach it.
   const reach = viewport.height - TOP_SIDE_PX - EDGE_PX
