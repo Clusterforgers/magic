@@ -17,8 +17,16 @@
                     {
                       "GrantAbility": {
                         "Triggered": {
-                          "when": { "DealsDamage": { "source": ["This"], "to": { "OrController": "Granter" } } },
-                          "effects": [{ "Sacrifice": { "filter": ["This"] } }, { "LoseLife": { "amount": 2 } }]
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": { "OrController": "Granter" }
+                            }
+                          },
+                          "effects": [
+                            { "Sacrifice": { "filter": ["This"] } },
+                            { "LoseLife": { "amount": 2 } }
+                          ]
                         }
                       }
                     }
