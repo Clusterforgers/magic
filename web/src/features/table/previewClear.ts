@@ -30,6 +30,11 @@ export interface Box {
   bottom: number
 }
 
+/** A box the preview keeps clear of; a `soft` one (the rest of the strip: its stack chips and spare room) it may cover to stay readable, never a firm one. */
+export interface ClearBox extends Anchor {
+  soft?: boolean
+}
+
 /** A stretch of the window's height, in px from the top. */
 interface Stretch {
   top: number
@@ -40,6 +45,12 @@ interface Stretch {
 const SQUEEZED_PICTURE = PICTURE_FLOOR.narrow
 /** The least height a squeezed panel keeps, in px: the squeezed picture and the panel's padding; the text scrolls. */
 export const SQUEEZED_HEIGHT_PX = SQUEEZED_PICTURE * ASPECT + PANEL_PADDING_PX
+/** The least picture a side panel keeps while it moves to stay clear, in px: it is narrowed further only where nothing else fits. */
+export const READABLE_PICTURE = 260
+/** The width of the text beside the picture in a low side panel, in px. */
+export const TEXT_BESIDE_PX = 240
+/** The least picture of a low panel in a free stretch above or below the strip, in px: it never lies over the strip. */
+export const BAND_PICTURE = 96
 
 const boxOf = (anchor: Anchor): Box => ({
   left: anchor.left,
@@ -63,12 +74,17 @@ export function panelBox(fit: PreviewFit, viewport: Viewport): Box {
   return { left: INSET_NARROW_PX, right: viewport.width - INSET_NARROW_PX, top, bottom: top + fit.maxHeight }
 }
 
-/** A side panel at `dock` kept clear of `blockers`, beside them or above them, whichever draws the larger picture; null when neither fits. */
+/**
+ * A side panel at `dock` kept clear of `blockers`: beside them, above them with the text under the picture, or above
+ * them with the text beside it (a wider, lower panel), whichever draws the largest picture of at least `floor` px (or
+ * the natural picture where that is less); null when none fits.
+ */
 function sideClear(
   anchor: Anchor,
   viewport: Viewport,
   dock: 'left' | 'right',
   blockers: Box[],
+  floor: number,
 ): PreviewFit | null {
   const natural = sideFit(anchor, viewport, dock)
   const hit = blockers.filter((box) => meets(panelBox(natural, viewport), box))
@@ -78,19 +94,42 @@ function sideClear(
       ? Math.max(...hit.map((box) => box.right)) + GAP_PX
       : Math.min(...hit.map((box) => box.left)) - GAP_PX
   const room = dock === 'right' ? viewport.width - EDGE_PX - edge : edge - EDGE_PX
-  const beside = Math.floor(Math.min(natural.picture, room - PANEL_EXTRA_PX))
   const height = Math.floor(Math.min(...hit.map((box) => box.top)) - GAP_PX - TOP_SIDE_PX)
+  const least = Math.min(floor, natural.picture)
+  const beside = Math.floor(Math.min(natural.picture, room - PANEL_EXTRA_PX))
   const above = Math.floor(Math.min(natural.picture, Math.max(SQUEEZED_PICTURE, pictureForHeight(height))))
-  const sideways = beside >= SQUEEZED_PICTURE
-  const over = height >= SQUEEZED_HEIGHT_PX
-  if (sideways && (!over || beside >= above)) {
-    return { ...natural, picture: beside, width: beside + PANEL_EXTRA_PX }
-  }
-  if (over) {
-    const width = Math.max(PANEL_MIN_PX, above + PANEL_EXTRA_PX)
-    return { ...natural, picture: above, width, maxHeight: height }
-  }
-  return null
+  const low = Math.floor(Math.min(natural.picture, (height - PANEL_PADDING_PX) / ASPECT))
+  const candidates: PreviewFit[] = [
+    ...(beside >= least ? [{ ...natural, picture: beside, width: beside + PANEL_EXTRA_PX }] : []),
+    ...(height >= SQUEEZED_HEIGHT_PX && above >= least
+      ? [
+          {
+            ...natural,
+            picture: above,
+            width: Math.max(PANEL_MIN_PX, above + PANEL_EXTRA_PX),
+            maxHeight: height,
+          },
+        ]
+      : []),
+    ...(low >= least
+      ? [
+          {
+            ...natural,
+            picture: low,
+            width: low + PANEL_EXTRA_PX + TEXT_BESIDE_PX,
+            maxHeight: height,
+            beside: true,
+          },
+        ]
+      : []),
+  ]
+  // The first of the largest wins: beside the boxes, then above them, then the low panel with the text beside.
+  return candidates
+    .filter((fit) => !blockers.some((box) => meets(panelBox(fit, viewport), box)))
+    .reduce<PreviewFit | null>(
+      (best, fit) => (best === null || fit.picture > best.picture ? fit : best),
+      null,
+    )
 }
 
 /** The side panel kept clear of `blockers` on the card's far side, else on the card's own side where that is clear of the card too. */
@@ -99,11 +138,52 @@ function sideAround(
   viewport: Viewport,
   base: PreviewFit,
   blockers: Box[],
+  floor: number,
 ): PreviewFit | null {
   const own = base.dock === 'left' ? 'left' : 'right'
   const far = own === 'left' ? 'right' : 'left'
-  const first = sideClear(anchor, viewport, own, blockers)
-  const second = sideClear(anchor, viewport, far, [...blockers, boxOf(anchor)])
+  const first = sideClear(anchor, viewport, own, blockers, floor)
+  const second = sideClear(anchor, viewport, far, [...blockers, boxOf(anchor)], floor)
+  if (first === null) return second
+  return second !== null && second.picture > first.picture ? second : first
+}
+
+/**
+ * A low side panel with the text beside the picture, in the tallest free stretch of the window at `dock` (above the
+ * strip, or below it beside the hand), as large as that stretch draws it down to `BAND_PICTURE`; null when none fits.
+ */
+function sideBand(
+  natural: PreviewFit,
+  viewport: Viewport,
+  dock: 'left' | 'right',
+  blockers: Box[],
+): PreviewFit | null {
+  for (let picture = natural.picture; picture >= BAND_PICTURE; picture -= 8) {
+    const width = picture + PANEL_EXTRA_PX + TEXT_BESIDE_PX
+    const left = dock === 'left' ? EDGE_PX : viewport.width - EDGE_PX - width
+    const column = blockers.filter((box) => box.left < left + width && box.right > left)
+    const need = Math.ceil(picture * ASPECT + PANEL_PADDING_PX)
+    const free = freeStretches({ top: TOP_SIDE_PX, bottom: viewport.height - EDGE_PX }, column)
+    const found = free.find((stretch) => stretch.bottom - stretch.top >= need)
+    if (found !== undefined) {
+      const maxHeight = Math.floor(found.bottom - found.top)
+      return { ...natural, dock, picture, width, top: found.top, bottom: null, maxHeight, beside: true }
+    }
+  }
+  return null
+}
+
+/** `sideBand` on the card's own side, else on its far side kept clear of the card too. */
+function sideBandAround(
+  anchor: Anchor,
+  viewport: Viewport,
+  base: PreviewFit,
+  blockers: Box[],
+): PreviewFit | null {
+  const own = base.dock === 'left' ? 'left' : 'right'
+  const far = own === 'left' ? 'right' : 'left'
+  const first = sideBand(sideFit(anchor, viewport, own), viewport, own, blockers)
+  const second = sideBand(sideFit(anchor, viewport, far), viewport, far, [...blockers, boxOf(anchor)])
   if (first === null) return second
   return second !== null && second.picture > first.picture ? second : first
 }
@@ -204,17 +284,31 @@ function shortAround(
 }
 
 /**
- * `previewFit` kept off every box of `clear` (the open prompt's strip, the hand dock and the controls, measured in
- * window px): a side panel moves to the other side, narrows beside the strip down to a 160 px picture or ends above it;
- * a top or bottom panel takes the free stretch of the window between them. A box without size is ignored; where
- * nothing is clear the panel stands where `previewFit` puts it.
+ * `previewFit` kept off every box of `clear` (the open prompt's strip, its buttons, the hand dock and the controls,
+ * measured in window px). A side panel moves before it shrinks: to the other side, beside the strip or above it at a
+ * readable picture (`READABLE_PICTURE`), then down to a 160 px picture, then into the free band above or below a strip
+ * that spans the table, with its text beside the picture (`sideBand`). Only where none of that is clear does it cover
+ * the rest of the strip (a `soft` box), never its sentence or buttons. A top or bottom panel (a phone's) takes the free
+ * stretch of the window between them. A box without size is ignored; where nothing is clear the panel stands where
+ * `previewFit` puts it.
  */
-export function fitClear(anchor: Anchor, viewport: Viewport, clear: readonly Anchor[]): PreviewFit {
+export function fitClear(anchor: Anchor, viewport: Viewport, clear: readonly ClearBox[]): PreviewFit {
   const base = previewFit(anchor, viewport)
-  const blockers = clear.filter((box) => box.width > 0 && box.height > 0).map(boxOf)
+  const drawn = clear.filter((box) => box.width > 0 && box.height > 0)
+  const blockers = drawn.map(boxOf)
   const panel = panelBox(base, viewport)
   if (!blockers.some((box) => meets(panel, box))) return base
-  if (viewport.width >= SIDE_DOCK_FROM) return sideAround(anchor, viewport, base, blockers) ?? base
+  if (viewport.width >= SIDE_DOCK_FROM) {
+    const firm = drawn.filter((box) => box.soft !== true).map(boxOf)
+    return (
+      sideAround(anchor, viewport, base, blockers, READABLE_PICTURE) ??
+      sideAround(anchor, viewport, base, blockers, SQUEEZED_PICTURE) ??
+      sideBandAround(anchor, viewport, base, blockers) ??
+      sideAround(anchor, viewport, base, firm, READABLE_PICTURE) ??
+      sideBandAround(anchor, viewport, base, firm) ??
+      base
+    )
+  }
   const moved =
     viewport.height >= viewport.width
       ? portraitAround(base, anchor, viewport, blockers)
