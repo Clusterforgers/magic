@@ -5,7 +5,7 @@
   "faces": [
     {
       "name": "Hellish Rebuke",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "d7d47ecd2a00798869e46a6714e95a96",
       "abilities": [
         {
           "Spell": {
@@ -17,7 +17,7 @@
                     {
                       "GrantAbility": {
                         "Triggered": {
-                          "when": { "DealsDamage": { "source": ["This"], "to": { "ControllerOf": "Granter" } } },
+                          "when": { "DealsDamage": { "source": ["This"], "to": { "OrController": "Granter" } } },
                           "effects": [{ "Sacrifice": { "filter": ["This"] } }, { "LoseLife": { "amount": 2 } }]
                         }
                       }

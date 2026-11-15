@@ -40,6 +40,23 @@ fn r6404_probe() {
             }
         }
     }
+    // Fills in the empty `oracle_fingerprint` of the rules files named in `R6404_FINGER`.
+    if let Ok(list) = std::env::var("R6404_FINGER") {
+        for name in list.split('|') {
+            let printed = r6404_card(name);
+            let path = common::cards_dir().join(format!("{}.json", slug(name)));
+            let mut text = std::fs::read_to_string(&path).unwrap();
+            for face in &printed.faces {
+                let finger = mtg_cards::support::oracle_fingerprint(&face.oracle_text);
+                text = text.replacen(
+                    "\"oracle_fingerprint\": \"\"",
+                    &format!("\"oracle_fingerprint\": \"{finger}\""),
+                    1,
+                );
+            }
+            std::fs::write(path, text).unwrap();
+        }
+    }
     let Ok(list) = std::env::var("R6404_PROBE") else {
         return;
     };

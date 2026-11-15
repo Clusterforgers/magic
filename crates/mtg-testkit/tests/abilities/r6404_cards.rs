@@ -441,3 +441,73 @@ fn advancing_the_spirit_makes_the_first_power_up_each_turn_free(
     }
     Ok(())
 }
+
+use mtg_engine::choose::Target;
+use mtg_testkit::cards::pinger;
+
+/// Seat 1's turn: it passes, seat 0 casts Hellish Rebuke, and seat 1 pings `at` with its Pinger; the life of seats 0 and
+/// 1 and whether the Pinger is still in play afterwards.
+fn rebuke_then_ping(seats: usize, at_me: bool) -> Result<(i32, i32, bool), ScriptError> {
+    let scenario = Scenario::new(seats)
+        .at(4, 1, Step::Main1)
+        .hand(0, [card("Hellish Rebuke").unwrap()])
+        .battlefield(
+            0,
+            [
+                ready(land(Color::Black)),
+                ready(land(Color::Black)),
+                ready(land(Color::Black)),
+                ready(free_creature("Bear", 2, 2)),
+            ],
+        )
+        .battlefield(1, [ready(pinger("Pinger", 0))]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    // Everyone before seat 0 passes, then seat 0 casts it.
+    for _ in 0..10 {
+        if driver.decision()?.player == pid(0) {
+            break;
+        }
+        driver.answer_passively()?;
+    }
+    driver.cast("Hellish Rebuke")?;
+    for _ in 0..20 {
+        if driver.state().stack().is_empty() && driver.decision()?.player == pid(1) {
+            break;
+        }
+        driver.answer_passively()?;
+    }
+    driver.begin_activation("Pinger")?;
+    let target = if at_me {
+        Target::Player(pid(0))
+    } else {
+        driver.target_named("Bear")?
+    };
+    driver.choose_targets(&[target])?;
+    for _ in 0..50 {
+        if driver.state().stack().is_empty()
+            && driver.state().resolving().is_none()
+            && driver.state().pending_triggers().is_empty()
+        {
+            break;
+        }
+        driver.answer_passively()?;
+    }
+    let life = |seat: usize| driver.state().player(pid(seat)).unwrap().life();
+    let alive = driver.id_of("Pinger").is_ok();
+    Ok((life(0), life(1), alive))
+}
+
+#[rstest]
+fn hellish_rebuke_makes_a_permanent_that_damages_its_caster_sacrificed_and_costs_its_controller_two_life(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let start = rebuke_then_ping(seats, false)?;
+    // Pinging a creature of seat 0 damages no player: the Pinger stays and nobody loses life.
+    assert!(start.2);
+    assert_eq!(start.0, start.1);
+    let (mine, theirs, alive) = rebuke_then_ping(seats, true)?;
+    assert!(!alive, "the Pinger is sacrificed");
+    assert_eq!(mine, start.0 - 1, "its damage was dealt to seat 0");
+    assert_eq!(theirs, start.1 - 2, "its controller lost 2 life");
+    Ok(())
+}
