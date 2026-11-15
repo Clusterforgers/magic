@@ -1,8 +1,10 @@
 /**
  * The centre overlay a card prompt lays its cards out in: over both boards, with the shared strip under it keeping the
- * sentence and the buttons. A phone uses it for every choice of cards, so a prompt never scrolls inside its sheet.
+ * sentence and the buttons. A phone uses it for every choice of cards, so a prompt never scrolls inside its sheet, and
+ * any window for a long list (more than `FILTER_FROM` cards), whose cards would otherwise scroll sideways in a thin row.
  */
 import { createContext, useCallback, useContext, useLayoutEffect, useMemo, useState } from 'react'
+import { FILTER_FROM } from './cardsText'
 
 /** What a card prompt reads to lay its cards out in the overlay. */
 export interface ChoiceOverlay {
@@ -17,9 +19,9 @@ export interface ChoiceOverlay {
 /** The table's overlay; none outside a table, where a prompt keeps its cards in place. */
 export const ChoiceOverlayContext = createContext<ChoiceOverlay | null>(null)
 
-/** Whether a choice among `count` cards takes the overlay: every choice on a phone. */
+/** Whether a choice among `count` cards takes the overlay: every choice on a phone, a long list anywhere. */
 export function wantsOverlay(count: number, phone: boolean): boolean {
-  return phone && count > 0
+  return phone ? count > 0 : count > FILTER_FROM
 }
 
 /** The overlay's element for a choice among `count` cards, held open while the caller is mounted; null to draw in place. */

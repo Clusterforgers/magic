@@ -17,6 +17,9 @@ import type { PromptCardSize } from './PromptCard'
 import { useRestingPreview } from './restingPreview'
 import { usePromptKeys } from './usePromptKeys'
 
+/** The room a card of the overlay is sized by (`PROMPT_CARD_BOX`): whole cards about 88 px wide, lower on a low window. */
+const OVERLAY_ROOM = '9.75rem'
+
 /** Props of `CardChoices`. */
 export interface CardChoicesProps {
   /** The cards on offer, each once, in the order they are drawn. */
@@ -135,7 +138,8 @@ export function CardChoices({
     keys,
   )
 
-  const size: PromptCardSize = tileSizeFor(total)
+  // The overlay has the room for whole cards, about 88 px wide (`OVERLAY_ROOM`); the strip draws a long list compact.
+  const size: PromptCardSize = host === null ? tileSizeFor(total) : 'normal'
   const body = (
     <ChoiceAnchorContext value={root}>
       {filtering ? (
@@ -167,7 +171,7 @@ export function CardChoices({
             ? ({
                 '--choice-room': `max(6rem, calc(var(--sheet-max, 20rem) - ${rest ?? (filtering ? 14.5 : 10.5)}rem))`,
               } as CSSProperties)
-            : undefined
+            : ({ '--choice-room': OVERLAY_ROOM } as CSSProperties)
         }
         className="flex max-w-full min-w-0 basis-full flex-col gap-2"
       >

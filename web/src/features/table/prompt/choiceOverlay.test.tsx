@@ -1,4 +1,4 @@
-// Goal: a choice of cards takes the centre overlay where `wantsOverlay` says so (every choice on a phone): its cards leave the shared strip for an overlay over both boards, the strip moves under it and keeps the sentence and the buttons, and an answer closes it; a wide window keeps the cards in the strip.
+// Goal: a choice of cards takes the centre overlay where `wantsOverlay` says so (every choice on a phone, a long list anywhere): its cards leave the shared strip for an overlay over both boards drawn whole, the strip moves under it and keeps the sentence and the buttons, and an answer closes it; a wide window keeps a short list in the strip.
 import { act, render, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
@@ -10,6 +10,7 @@ import { TableOptionsContext } from '../tableOptions'
 import { fixtureGame } from '../dev/devGame'
 import { must } from '@/test-utils/batches'
 import { wantsOverlay } from './choiceOverlay'
+import { FILTER_FROM } from './cardsText'
 
 const PHONE: Viewport = { width: 390, height: 844 }
 const WIDE: Viewport = { width: 1400, height: 900 }
@@ -36,6 +37,9 @@ describe('wantsOverlay', () => {
     [7, true, true],
     [1, false, false],
     [7, false, false],
+    [FILTER_FROM, false, false],
+    [FILTER_FROM + 1, false, true],
+    [40, false, true],
   ])('a choice of %i cards on a phone (%s) takes the overlay: %s', (count, phone, wants) => {
     expect(wantsOverlay(count, phone)).toBe(wants)
   })
@@ -69,6 +73,21 @@ describe('the overlay closes', () => {
     expect(host.hidden).toBe(true)
     expect(host.childElementCount).toBe(0)
     expect(main.style.gridTemplateAreas).toBe(TABLE_AREAS)
+  })
+})
+
+describe('a long list in a wide window', () => {
+  it('opens the overlay with the search and whole cards, the strip keeping the sentence and Confirm', () => {
+    const { host, strip, main } = table('cards-many', WIDE)
+    expect(host.hidden).toBe(false)
+    const overlay = must(host.querySelector<HTMLElement>('[data-slot="choice-overlay"]'))
+    expect(overlay.querySelector('input[type="search"], [role="searchbox"], input')).not.toBeNull()
+    const cards = [...overlay.querySelectorAll<HTMLElement>('button[data-candidate]')]
+    expect(cards.length).toBeGreaterThan(FILTER_FROM)
+    for (const card of cards) expect(card.dataset['size']).toBe('normal')
+    expect(strip.querySelector('[data-slot="card-choices"]')).toBeNull()
+    expect(within(strip).getByRole('button', { name: /Confirm/ })).toBeInTheDocument()
+    expect(main.style.gridTemplateAreas).toBe(CHOICE_AREAS)
   })
 })
 

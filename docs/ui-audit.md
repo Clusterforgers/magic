@@ -16,7 +16,7 @@ Impact: how much a problem costs a player in a 4-player Commander game at 1400 �
 | 2 | Chrome still takes room | table | The side column takes 272 px until folded to its rail; an opponent's pod head is two to three lines; a long prompt grows the strip to 140 px. |
 | 3 | The hand is still small | hand dock | The hand lies in an arc and rises on hover, but its cards stay about 90 px wide at 1400 × 900; a full-size hover is the preview beside it. |
 | 4 | Combat lines cross the table | combat overlay | Attacks between two other seats draw faint and the lines stay under a card prompt; a line still runs from its board to its defender's pod across the row. |
-| 5 | Choices share the strip | prompts | Card prompts take the strip's width and grow over the opponents' boards with 7 rem cards; a long list still scrolls inside the sheet, and modes have no pictures. |
+| 5 | Choices share the strip | prompts | Card prompts take the strip's width and grow over the opponents' boards with 7 rem cards; a long list opens the centre overlay, and modes have no pictures. |
 | 6 | The phone table is tight | table at 390 | Boards fold their lands and draw 64 px cards that scroll, a card prompt lays its cards in the overlay; your pod still takes four lines over your board. |
 | 7 | The turn is said in two places | top bar | The badge says whose turn and the step, the ladder names the phase; below 1024 px the badge names it instead. |
 | 8 | The table is quiet between moments | table | The table plays its casts, attacks, blocks, damage, draws and shuffles and taps turn in 150 ms; there is no your-turn moment beyond the banner and no stack resolution beat. |
@@ -82,6 +82,5 @@ Each item is one commit with before and after shots at 1400 × 900, 1280 × 720 
 
 - Commander art on open games: a commanders field on the lobby list (server), then each open game as a card with its commanders' art.
 - Boss art: a picture for each boss of the Delves content, shown on the descent and the fight panel in place of the crown.
-- Long-list overlay: a choice of many cards as a centre overlay of its own, the strip keeping the sentence and the buttons.
 - Mode pictures: each mode of a modal spell beside the card's picture.
 - Combat lines kept to the boards they join; attacker groups as a badge on the defender's pod.
