@@ -1,6 +1,7 @@
 /** The game log as sentences: one line for every `EventView`, in the words a player would use. */
 import { describeLoss } from '@/features/game/outcome'
 import type {
+  AbilitySource,
   AttackTarget,
   Choice,
   ContinuousEffect,
@@ -10,6 +11,7 @@ import type {
   DeathCause,
   Event,
   EventView,
+  Granter,
   HiddenEvent,
   ManaCost,
   ManualAction,
@@ -36,6 +38,7 @@ import { teamLabel } from '@/lib/teams'
 import { keywordWords as grantKeywordWords } from './manual/offers'
 import { takeBackAction } from './takeBackText'
 import { hauntWords } from './campaign/haunt'
+import { granterAbility, granterClause, granterHolder, granterName, granterOfOrigin } from './granter'
 
 /** How the log names things; both fall back to a plain word when the thing is unknown. */
 export interface EventNames {
@@ -49,6 +52,8 @@ export interface EventNames {
   permanent?(id: ObjectId): boolean
   /** The card an ability on the stack comes from, when the log knows the object is an ability. */
   ability?(id: ObjectId): ObjectId | undefined
+  /** What an ability on the stack belongs to when no object does (the Ring), when the log knows it. */
+  granter?(id: ObjectId): Granter | undefined
   /** The name of a door (0 or 1) of a Room, when the viewer knows it. */
   door?(id: ObjectId, door: number): string | undefined
   /** The name of the boss whose command zone holds `id` (one of its boss abilities), else undefined. */
@@ -87,12 +92,21 @@ function chosenWords(chosen: Chosen, n: EventNames): string {
 
 /**
  * A spell or ability on the stack by name: a spell as its card is named, an ability as "an ability of" its source
- * (capitalised at the start of a sentence), so a trigger is never mistaken for the card it comes from.
+ * (capitalised at the start of a sentence), so a trigger is never mistaken for the card it comes from; an ability that
+ * no object gives its source (the Ring's) is named after what gives it.
  */
 function stackName(n: EventNames, id: ObjectId, start: boolean): string {
+  const granter = n.granter?.(id)
+  if (granter !== undefined) return granterAbility(granter, start)
   const source = n.ability?.(id)
   if (source === undefined) return n.card(id)
   return `${start ? 'An' : 'an'} ability of ${n.card(source)}`
+}
+
+/** The ability's owner in the words of a line about a trigger: the card, or what gives its source the ability. */
+function abilityOwner(n: EventNames, source: ObjectId, origin: AbilitySource | undefined): string {
+  const granter = granterOfOrigin(origin)
+  return granter === undefined ? n.card(source) : granterName(granter)
 }
 
 const cards = (count: number): string => `${count} ${count === 1 ? 'card' : 'cards'}`
@@ -819,9 +833,10 @@ function byResolving(
 
 function describePipeline(event: PipelineEvent, n: EventNames, context?: EventContext): LogLine {
   if ('AbilityPutOnStack' in event) {
-    const { source, cause, choices } = event.AbilityPutOnStack
+    const { source, cause, choices, origin } = event.AbilityPutOnStack
     const targeting = cause === undefined ? '' : targetingWords(choices?.targets?.flat(), n)
-    const text = `An ability of ${n.card(source.id)} goes on the stack${targeting}`
+    const granter = granterOfOrigin(origin)
+    const text = `${granter === undefined ? `An ability of ${n.card(source.id)}` : granterAbility(granter, true)} goes on the stack${targeting}`
     // A triggered ability names its targets here; an activated one named them in its own line.
     return targeting === '' ? quiet(text) : line(text)
   }
@@ -836,7 +851,18 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
     )
   }
   if ('AbilityTriggered' in event) {
-    const { id } = event.AbilityTriggered.source
+    const { source, origin, controller, delayed } = event.AbilityTriggered
+    const { id } = source
+    const granter = granterOfOrigin(origin)
+    if (granter !== undefined) {
+      // The Ring-bearer only has the ability; the line names the Ring, whose it is and what it does (the delayed
+      // trigger a level sets up has its own words, which the level's clause does not describe).
+      const clause = delayed === undefined ? granterClause(granter) : undefined
+      const holder = granterHolder(granter, n.card(id), n.seat(controller))
+      return line(
+        `${granterAbility(granter, true, delayed !== undefined)} triggers (${holder})${clause === undefined ? '' : `: ${clause}`}`,
+      )
+    }
     const boss = n.boss?.(id)
     // A boss's ability is named as its own: "Skrix, the Rat Queen: Escalation triggers".
     return line(
@@ -847,10 +873,12 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
     return quiet(`${n.seat(event.TriggersOrdered.player)} puts their triggered abilities in order`)
   }
   if ('TriggerRemoved' in event) {
-    return line(`A triggered ability of ${n.card(event.TriggerRemoved.source.id)} is removed`)
+    const { source, origin } = event.TriggerRemoved
+    return line(`A triggered ability of ${abilityOwner(n, source.id, origin)} is removed`)
   }
   if ('DelayedTriggerCreated' in event) {
-    return line(`A delayed ability of ${n.card(event.DelayedTriggerCreated.source.id)} is set up`)
+    const { source, origin } = event.DelayedTriggerCreated
+    return line(`A delayed ability of ${abilityOwner(n, source.id, origin)} is set up`)
   }
   if ('DelayedTriggerExpired' in event) return quiet('A delayed ability ends without triggering')
   if ('ResolutionBegan' in event)

@@ -833,6 +833,7 @@ mod tests {
                     },
                     ability: 0,
                     when: String::new(),
+                    origin: mtg_engine::abilities::AbilitySource::default(),
                 })
                 .collect(),
         })

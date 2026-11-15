@@ -24,7 +24,7 @@ use mtg_engine::zones::Zone;
 use crate::message::AutoYield;
 use crate::view::{
     AttackerView, CombatView, CommanderDamageView, CommanderView, CompanionView, CopyView,
-    GivesView, LoyaltyAbilityView, MergedCardView, ObjectView, PermanentView, PlayerView,
+    GivesView, Granter, LoyaltyAbilityView, MergedCardView, ObjectView, PermanentView, PlayerView,
     PriorityView, StateView, StickerSheetView, StickerView, TableView, TokenOfferView, TurnView,
     ZoneView,
 };
@@ -350,12 +350,30 @@ fn identity_of(
 }
 
 /// The words of the ability an object is on the stack, or nothing for a card, a hidden source or an unworded ability.
-fn stack_text(object: &GameObject, shown: &str) -> Option<String> {
+fn stack_text(object: &GameObject, shown: &str, granter: Option<Granter>) -> Option<String> {
     if shown.is_empty() {
         return None;
     }
-    let text = render_ability(object.ability()?.rules())?;
-    Some(text.replace('~', shown))
+    let ability = object.ability()?;
+    // The words of the rules text that gives the ability; the delayed trigger it sets up has rules of its own.
+    if let Some(rules) = granter
+        .filter(|_| ability.delayed().is_none())
+        .and_then(Granter::rules)
+    {
+        return Some(rules.to_owned());
+    }
+    let text = render_ability(ability.rules())?;
+    let stands_for_source = match granter {
+        Some(granter) => granter.source_words(),
+        None => shown,
+    };
+    Some(text.replace('~', stands_for_source))
+}
+
+/// What the ability an object is on the stack belongs to when no object does: the Ring that gave its source the ability.
+fn granter_of(object: &GameObject) -> Option<Granter> {
+    let (_, level) = object.ability()?.origin().ring()?;
+    Some(Granter::Ring { level })
 }
 
 /// The name the viewer reads on the object: the card's, except for an ability on the stack of a permanent that still lies
@@ -464,10 +482,16 @@ impl ObjectView {
         // A name sticker adds its words to the name the table reads (layer 3).
         let words: &[String] = if behind { &[] } else { &chars.name_words };
         let stickered = mtg_engine::un34_stickers::name_with(words, &card.name);
-        let name = shown_name(state, sight.viewer, object, &stickered);
+        // The Ring's ability on the stack is the Ring's, named so whoever its Ring-bearer is and whether or not the viewer
+        // may look at it: the Ring and its bearer are public.
+        let granter = granter_of(object);
+        let name = granter.map_or_else(
+            || shown_name(state, sight.viewer, object, &stickered),
+            |granter| granter.name().to_owned(),
+        );
         // An ability on the stack tells whether its source's card is owed when it resolves wherever it names the source,
         // so a client holds the seat across batches without the source in its view.
-        let rules_text = stack_text(object, &name);
+        let rules_text = stack_text(object, &name, granter);
         let manual_owed = (printed || !name.is_empty()) && card.manual_owed();
         // A face-down permanent's abilities are the 2/2's; the card behind it is read off `abilities`.
         let activated = if printed && !behind && sight.reads_rules_of(object) {
@@ -513,6 +537,7 @@ impl ObjectView {
             permanent: Self::permanent_view(state, id, object, &chars.subtypes, creature),
             kind: object.kind(),
             source: object.ability().map(|ability| ability.source().id),
+            granter,
             rules_text,
             targets: object.choices().targets.clone(),
             targets_legal: targets_legal(state, id),
@@ -578,6 +603,7 @@ impl ObjectView {
             permanent: None,
             kind: ObjectKind::Card,
             source: None,
+            granter: None,
             rules_text: None,
             targets: Vec::new(),
             targets_legal: Vec::new(),

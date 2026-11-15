@@ -11,6 +11,7 @@ use mtg_cards::trigger::TriggerPattern;
 use mtg_core::ids::PlayerId;
 use serde::{Deserialize, Serialize};
 
+use crate::abilities::AbilitySource;
 use crate::choose::Target;
 use crate::copies::KeptSpell;
 use crate::error::EngineError;
@@ -65,6 +66,11 @@ pub struct DelayedCreated {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(skip))]
     pub kept: Option<Box<KeptSpell>>,
+    /// Where the ability that set it up comes from, which its trigger names as its own (the Ring's, say, not its
+    /// bearer's); the card's own while it is printed.
+    #[serde(default, skip_serializing_if = "AbilitySource::is_printed")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<AbilitySource>", optional))]
+    pub origin: AbilitySource,
 }
 
 /// A delayed triggered ability waiting for its event.
@@ -81,6 +87,7 @@ pub struct Delayed {
     pub(crate) duration: Duration,
     pub(crate) turn: u32,
     pub(crate) kept: Option<Arc<KeptSpell>>,
+    pub(crate) origin: AbilitySource,
 }
 
 // The rules follow from the log (the creating event), so they are hashed with the other fields once, here.
@@ -100,6 +107,9 @@ impl Hash for Delayed {
         if let Some(kept) = &self.kept {
             kept.hash(state);
         }
+        if !self.origin.is_printed() {
+            self.origin.hash(state);
+        }
     }
 }
 
@@ -117,6 +127,11 @@ impl Delayed {
     /// Who controls it.
     pub const fn controller(&self) -> PlayerId {
         self.controller
+    }
+
+    /// Where the ability that set it up comes from.
+    pub const fn origin(&self) -> AbilitySource {
+        self.origin
     }
 
     /// The event it waits for.
@@ -244,6 +259,7 @@ pub(crate) fn fold_created(
         },
         turn: state.turn.number,
         kept: created.kept.as_deref().cloned().map(Arc::new),
+        origin: created.origin,
     });
     Ok(())
 }
@@ -304,6 +320,7 @@ mod tests {
             targets: Vec::new(),
             bindings,
             kept: None,
+            origin: crate::abilities::AbilitySource::default(),
         }
     }
 

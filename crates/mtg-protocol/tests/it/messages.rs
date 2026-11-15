@@ -496,11 +496,18 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
                     source: ObjectRef { id: a, counter: 1 },
                     ability: 0,
                     when: "When it enters the battlefield".into(),
+                    origin: mtg_engine::abilities::AbilitySource::default(),
                 },
                 TriggerEntry {
                     source: ObjectRef { id: b, counter: 0 },
                     ability: 2,
                     when: String::new(),
+                    origin: mtg_engine::abilities::AbilitySource::Granted(
+                        mtg_engine::abilities::Grant::Ring {
+                            player: PlayerId(0),
+                            level: 2,
+                        },
+                    ),
                 },
             ],
         }),

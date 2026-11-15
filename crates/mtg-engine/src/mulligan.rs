@@ -256,6 +256,7 @@ fn revealed_trigger(
         targets: Vec::new(),
         bindings: Vec::new(),
         kept: None,
+        origin: crate::abilities::AbilitySource::default(),
     })
 }
 

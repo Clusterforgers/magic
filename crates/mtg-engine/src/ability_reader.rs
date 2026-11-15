@@ -695,6 +695,7 @@ fn granted_ability(state: &GameState, grant: Grant) -> Option<Arc<Ability>> {
         Grant::Borrowed { donor, ability } => lendable(card_of(state, donor, None)?)
             .into_iter()
             .find_map(|(index, body)| (index == ability).then_some(body)),
+        Grant::Ring { player, level } => crate::ring::ability_given(state, player, level),
     }
 }
 
@@ -717,7 +718,7 @@ fn granted_keyword(state: &GameState, grant: Grant) -> Option<Keyword> {
             WantedModification::AddKeyword(keyword) => Some(keyword),
             _ => None,
         },
-        Grant::Borrowed { .. } => None,
+        Grant::Borrowed { .. } | Grant::Ring { .. } => None,
     }
 }
 

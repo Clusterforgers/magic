@@ -1,5 +1,6 @@
 /** What a log line needs from the events around it: the object resolving at that point and the targets an activation names. */
-import type { Event, EventView, ObjectId, Target } from '@/protocol/generated'
+import type { Event, EventView, Granter, ObjectId, Target } from '@/protocol/generated'
+import { granterOfOrigin } from './granter'
 
 /** The surroundings of one event; a line that needs none of them reads the same without. */
 export interface EventContext {
@@ -118,4 +119,26 @@ export function abilitySources(events: readonly EventView[]): ReadonlyMap<Object
     }
   }
   return sources
+}
+
+/**
+ * What each ability object of `events` belongs to when no object gives its source the ability (the Ring's levels), so a
+ * line about the ability resolving names the Ring even after the object left the view.
+ */
+export function abilityGranters(events: readonly EventView[]): ReadonlyMap<ObjectId, Granter> {
+  const granters = new Map<ObjectId, Granter>()
+  for (const view of events) {
+    const event = publicEvent(view)
+    if (event === null || typeof event === 'string') continue
+    if ('AbilityPutOnStack' in event) {
+      const { object, origin } = event.AbilityPutOnStack
+      const granter = granterOfOrigin(origin)
+      if (granter !== undefined) granters.set(object, granter)
+    } else if ('AbilityCopied' in event) {
+      const { object, of } = event.AbilityCopied
+      const granter = granters.get(of.id)
+      if (granter !== undefined) granters.set(object, granter)
+    }
+  }
+  return granters
 }

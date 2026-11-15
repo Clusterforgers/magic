@@ -1624,6 +1624,7 @@ mod tests {
                 effects: Vec::new(),
                 bindings: vec![("card".to_owned(), vec![Target::Object(reference)])],
                 kept: None,
+                origin: mtg_engine::abilities::AbilitySource::default(),
             }))
         };
         assert_eq!(told(&t.state, &created(t.hand), OWNER), Ok(()));

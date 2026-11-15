@@ -2886,6 +2886,7 @@ impl Pass<'_> {
                 targets: Vec::new(),
                 bindings: Vec::new(),
                 kept: None,
+                origin: crate::abilities::AbilitySource::default(),
             },
         )))
     }
@@ -2931,6 +2932,7 @@ impl Pass<'_> {
                 targets: Vec::new(),
                 bindings: Vec::new(),
                 kept: None,
+                origin: crate::abilities::AbilitySource::default(),
             },
         )))
     }

@@ -100,6 +100,7 @@ mod rest_prefs;
 mod rest_reads;
 mod rest_tournaments;
 mod rewound_view;
+mod ring_view;
 mod room_view;
 mod saga_transform_view;
 mod seat_deck;

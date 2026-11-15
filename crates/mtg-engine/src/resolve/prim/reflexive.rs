@@ -6,7 +6,7 @@ use mtg_cards::trigger::TriggerPattern;
 use super::delayed_trigger::{Origin, origin};
 use super::may::performed_name;
 use super::wrong_effect;
-use crate::abilities::{AbilitySource, Cause};
+use crate::abilities::Cause;
 use crate::events::Event;
 use crate::resolve::{Cx, ResolveError, Run};
 use crate::triggers::{DelayedCreated, DelayedId, Triggered};
@@ -45,6 +45,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         source,
         snapshot,
         ability,
+        from,
         bindings,
     } = origin(cx)?;
     let id = DelayedId(cx.state().next_delayed);
@@ -63,13 +64,14 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         targets: targets.clone(),
         bindings,
         kept: None,
+        origin: from,
     };
     Ok(Run::events(vec![
         Event::DelayedTriggerCreated(Box::new(created)),
         Event::AbilityTriggered(Box::new(Triggered {
             source,
             ability,
-            origin: AbilitySource::Printed,
+            origin: from,
             controller: cx.controller(),
             // What the earlier steps took away (a sacrificed creature) stays readable as it was (CR 608.2h).
             cause: Cause {
