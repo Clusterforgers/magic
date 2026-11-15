@@ -50,9 +50,9 @@ export function boardCounts(state: PlayState, seats: SeatPlan, grouped = true): 
 }
 
 /**
- * Whether the boards of a plan have their lands folded into their pods' lands chips (`LandFoldContext`): every board
- * of a grid of opponents and every board of a phone, yours too, where the table folds lands. The boards then hold no
- * lands lane.
+ * Whether the boards of a plan carry a lands chip (`LandFoldContext`): every board of a grid of opponents and every
+ * board of a phone, yours too, where the table folds lands. The boards fold their lands into it, and hold no lands
+ * lane, unless the viewer shows lands (`landPrefs.ts`).
  */
 export const foldsLands = (seats: SeatPlan, fold: boolean, phone = false): boolean =>
   fold && (seats.shape === 'columns' || (phone && seats.shape !== 'boss'))

@@ -208,7 +208,7 @@ describe('the stop ladder and Full Control', () => {
       [...menu().querySelectorAll('[role="group"][aria-label]')].map((group) =>
         group.getAttribute('aria-label'),
       ),
-    ).toEqual(['Layout', 'Theme', 'Card images', 'Hand order'])
+    ).toEqual(['Layout', 'Theme', 'Card images', 'Lands', 'Hand order'])
     expect(within(menu()).getByRole('button', { name: 'Concede' })).toBeInTheDocument()
     // They are in the dock instead, once.
     expect(document.querySelectorAll('[data-slot="stop-ladder"]')).toHaveLength(1)
