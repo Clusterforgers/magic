@@ -93,6 +93,9 @@ pub enum ConfigError {
     /// `MTG_SEED` is not a whole number from 0 to 18446744073709551615.
     #[error("MTG_SEED must be a whole number from 0 to 18446744073709551615, got {0:?}")]
     BadSeed(String),
+    /// `MTG_TEST_HOOKS` is not `1`, `0`, `true` or `false`.
+    #[error("MTG_TEST_HOOKS must be 1 or 0, got {0:?}")]
+    BadTestHooks(String),
 }
 
 /// Most reverse proxies `MTG_TRUSTED_PROXIES` may name.
@@ -309,6 +312,8 @@ pub struct ServerConfig {
     pub bot_delay: Duration,
     /// How many bots may think at once across the server (`MTG_BOT_THINKERS`; one fewer than the cores by default).
     pub bot_thinkers: usize,
+    /// Whether the hooks that browser tests use to end a fight early are served (`MTG_TEST_HOOKS=1`); never for production.
+    pub test_hooks: bool,
 }
 
 impl Default for ServerConfig {
@@ -326,6 +331,7 @@ impl Default for ServerConfig {
             images: ImageConfig::default(),
             bot_delay: crate::bots::BOT_DELAY,
             bot_thinkers: crate::bots::Thinkers::for_machine(),
+            test_hooks: false,
         }
     }
 }
@@ -335,11 +341,20 @@ fn at_least_one(text: &str) -> Option<usize> {
     text.trim().parse::<usize>().ok().filter(|n| *n >= 1)
 }
 
+/// `text` as an on/off switch: `1` or `true`, `0` or `false`, in any case.
+fn switch(text: &str) -> Option<bool> {
+    match text.trim().to_ascii_lowercase().as_str() {
+        "1" | "true" => Some(true),
+        "0" | "false" => Some(false),
+        _ => None,
+    }
+}
+
 impl ServerConfig {
     /// Reads `MTG_BIND`, `MTG_ALLOWED_ORIGINS`, `MTG_MAX_GAMES`, `MTG_BOT_THINKERS`, `MTG_IDLE_CLOSE_SECS`, `MTG_AUTO_PASS`, `MTG_RESPONSE_SECS`,
     /// `MTG_BLOCK_SECS`, `MTG_THINK_SECS`, `MTG_ACTIVE_SECS`, `MTG_EXTENSION_SECS`, `MTG_CLOCK_GRACE_SECS`,
     /// `MTG_DWELL_MS`, `MTG_REGISTRATION`, `MTG_ADMIN_USERNAME`, `MTG_COOKIE_SECURE`, `MTG_TRUSTED_PROXIES`, `MTG_SEED`,
-    /// `MTG_IMAGE_CACHE` and `MTG_IMAGE_CACHE_MIB` from the process environment.
+    /// `MTG_TEST_HOOKS`, `MTG_IMAGE_CACHE` and `MTG_IMAGE_CACHE_MIB` from the process environment.
     pub fn from_env() -> Result<ServerConfig, ConfigError> {
         ServerConfig::from_lookup(|key| {
             std::env::var_os(key).map(|value| value.to_string_lossy().into_owned())
@@ -429,11 +444,10 @@ impl ServerConfig {
             }
         }
         if let Some(text) = get("MTG_COOKIE_SECURE") {
-            config.auth.cookie_secure = match text.trim().to_ascii_lowercase().as_str() {
-                "1" | "true" => true,
-                "0" | "false" => false,
-                _ => return Err(ConfigError::BadCookieSecure(text)),
-            };
+            config.auth.cookie_secure = switch(&text).ok_or(ConfigError::BadCookieSecure(text))?;
+        }
+        if let Some(text) = get("MTG_TEST_HOOKS") {
+            config.test_hooks = switch(&text).ok_or(ConfigError::BadTestHooks(text))?;
         }
         if let Some(text) = get("MTG_TRUSTED_PROXIES") {
             config.auth.trusted_proxies = match text.trim().parse::<usize>() {
@@ -777,6 +791,27 @@ mod tests {
         assert_eq!(
             load(&[("MTG_COOKIE_SECURE", text)]),
             Err(ConfigError::BadCookieSecure(text.to_owned()))
+        );
+    }
+
+    #[rstest]
+    #[case("1", true)]
+    #[case("true", true)]
+    #[case("0", false)]
+    #[case("false", false)]
+    fn test_hooks_switch(#[case] text: &str, #[case] expected: bool) {
+        assert_eq!(
+            load(&[("MTG_TEST_HOOKS", text)]).unwrap().test_hooks,
+            expected
+        );
+    }
+
+    #[test]
+    fn test_hooks_are_off_by_default_and_a_bad_switch_is_refused() {
+        assert!(!load(&[]).unwrap().test_hooks);
+        assert_eq!(
+            load(&[("MTG_TEST_HOOKS", "yes")]),
+            Err(ConfigError::BadTestHooks("yes".to_owned()))
         );
     }
 

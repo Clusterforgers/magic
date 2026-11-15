@@ -3,7 +3,10 @@
 //! boss fight's game when the party reaches one (a normal recorded game with the run's plan in its recipe) and reads
 //! a finished fight back into the run.
 
+mod hooks;
 mod store;
+
+pub(crate) use hooks::boss_concedes;
 
 use std::sync::Arc;
 

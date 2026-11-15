@@ -331,6 +331,10 @@ fn delve_routes() -> Router<AppState> {
         .route("/api/delves/join/{code}", post(delves::join))
         .route("/api/delves/{id}", get(delves::get_one))
         .route("/api/delves/{id}/act", post(delves::act))
+        .route(
+            "/api/test/delves/{id}/boss-concedes",
+            post(delves::boss_concedes),
+        )
 }
 
 /// The tournament routes: the player's list, creating, signing up by invite and the organiser's controls.

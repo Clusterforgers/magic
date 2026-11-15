@@ -128,7 +128,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl10) The fight table re-measured on the current bosses (two Hard heroes win 0/4 of seeds 1 to 4) and the Spirits' worth, acting against idle, at three or more heroes
 - [ ] (dl10) The run page follows the run over a socket instead of reading it every 4 s
 - [ ] (dl11) Custom cards open in the card inspector at the table with their frame and text, and the boss's phases sit in the top bar
-- [ ] (dl12) e2e: a one-player run with bot allies from the lobby through the first boss fight to the loot screen
 - [ ] (dl13) A second theme with its bosses, events and reward pool; Heat 3 and above
 
 ## M8 Polish and deploy

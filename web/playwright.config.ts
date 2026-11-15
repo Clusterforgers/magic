@@ -41,6 +41,8 @@ const accountServers: Extract<PlaywrightTestConfig['webServer'], unknown[]> =
             DATABASE_URL: ACCOUNTS_DATABASE_URL,
             MTG_DWELL_MS: NO_DWELL,
             MTG_SEED: ACCOUNTS_SEED,
+            // Serves the boss's concession `delves.spec.ts` uses to end a fight; a production server never sets it.
+            MTG_TEST_HOOKS: '1',
           },
           url: `${ACCOUNTS_SERVER_URL}/healthz`,
           reuseExistingServer,
