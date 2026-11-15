@@ -105,7 +105,7 @@ describe('turn badge and decision line', () => {
   it('prints the turn in the top bar, and the priority holder and the decision this seat faces in the strip', () => {
     renderTable({ seats: 4 })
     expect(document.querySelector('[data-slot="banner"]')).toHaveTextContent(
-      "Bo's turn · 5 · Declare blockers",
+      "Bo's turn · Round 2 · Declare blockers",
     )
     const strip = screen.getByRole('region', { name: 'Turn and priority' })
     expect(strip).toHaveTextContent('Alice has priority · 1 passed')

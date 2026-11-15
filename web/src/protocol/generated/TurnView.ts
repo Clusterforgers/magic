@@ -12,6 +12,11 @@ export type TurnView = {
  */
 number: number, 
 /**
+ * The round of the turn, from 1 (0 before the first turn): every seat in play has had a turn, from the first player's
+ * seat on (every team once when teams share their turns); an extra turn does not advance it.
+ */
+round: number, 
+/**
  * The active player; once they have left the game, the seat the turn belongs to (see `active_left`).
  */
 active: PlayerId, 

@@ -41,8 +41,10 @@ export interface Seen {
   kind: string
   /** The decision id: `data-decision-id`, new for every decision even when the kind repeats. */
   id: string
-  /** The turn badge, such as "Ada's turn · 5 · End step": where in the game the decision is asked. */
+  /** The turn badge, such as "Ada's turn · Round 3 · End step": where in the game the decision is asked. */
   banner: string
+  /** The turn number of the badge (`data-turn`), which counts every turn of every seat; 0 before the first. */
+  turn: number
   text: string
   buttons: Control[]
   /** Cards of this seat's hand the prompt marks legal. */
@@ -82,6 +84,7 @@ export function look(arg: { me: string; answered: string | null }): Observed | n
     kind: root.dataset['decision'] ?? '',
     id,
     banner: document.querySelector('[data-slot="banner"]')?.textContent ?? '',
+    turn: Number(document.querySelector<HTMLElement>('[data-slot="banner"]')?.dataset['turn'] ?? 0),
     text,
     buttons: Array.from(root.querySelectorAll('button')).map((button) => ({
       // The accessible name, as `getByRole` reads it: the combat bar's buttons show "All" and are named "Attack with all".
@@ -247,9 +250,6 @@ interface Turn {
   run: Run
 }
 
-/** The turn number of a banner such as "Ada's turn · 5 · End step". */
-export const turnOf = (banner: string): number => Number(/ · (\d+) · /.exec(banner)?.[1] ?? 0)
-
 /** Waits up to `ms` for the decision shown now to satisfy `ready`; returns it, or null when it did not in time. */
 async function watch(player: Player, ready: (seen: Seen) => boolean, ms = 3_000): Promise<Seen | null> {
   const end = Date.now() + ms
@@ -387,7 +387,7 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
 
   async Priority({ player, style, seen: first, run }) {
     let seen = first
-    const turn = turnOf(seen.banner)
+    const turn = seen.turn
     let recalled = ''
     const castOn = run.castOn.get(player.name)
     if (

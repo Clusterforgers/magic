@@ -42,7 +42,8 @@ function direction(pairs: readonly (readonly [number, number])[]): Modified {
  * The badge a picture needs: the current power/toughness (or a planeswalker's loyalty) when it differs from the
  * printed one, marked up or down; a plain one when the printed value is a star or cannot be known; a token always, tinted
  * against the numbers it was created with (plain when it carries none); none while it is asked for or when a creature's picture shows the
- * right number. A planeswalker's loyalty and a battle's defense always show, as the picture only has the starting number.
+ * right number. A planeswalker's loyalty and a battle's defense always show, as the picture only has the starting number,
+ * a token's and a card without a record included.
  */
 export function statBadge(object: ObjectView, printed: Printed, stat: StatCounter | null): StatBadge | null {
   if (printed === 'loading') return null
@@ -54,14 +55,17 @@ export function statBadge(object: ObjectView, printed: Printed, stat: StatCounte
       : null
   if (object.face_down === true) return plain
   if (printed === 'none') {
-    if (object.kind !== 'Token') return null
-    const { printed_power: was_power, printed_toughness: was_toughness } = object
-    if (power === null || toughness === null || was_power == null || was_toughness == null) return plain
-    const modified = direction([
-      [power, was_power],
-      [toughness, was_toughness],
-    ])
-    return { kind: 'pt', text: `${power}/${toughness}`, modified }
+    if (object.kind === 'Token' && power !== null && toughness !== null) {
+      const { printed_power: was_power, printed_toughness: was_toughness } = object
+      if (was_power == null || was_toughness == null) return plain
+      const modified = direction([
+        [power, was_power],
+        [toughness, was_toughness],
+      ])
+      return { kind: 'pt', text: `${power}/${toughness}`, modified }
+    }
+    // A planeswalker or battle with no printed card to compare with, a token among them, shows its counter plainly.
+    return stat === null ? null : { kind: stat.kind, text: String(stat.count), modified: null }
   }
   if (power !== null && toughness !== null) {
     const text = `${power}/${toughness}`

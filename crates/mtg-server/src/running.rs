@@ -437,7 +437,8 @@ impl Running {
             } else {
                 state.turn().active()
             };
-            self.pace.clock_for(&decision, active)
+            self.pace
+                .clock_for(&decision, active, state.ruleset().blocker_timer())
         };
         let now = Instant::now();
         let due = clock.and_then(|span| now.checked_add(span));

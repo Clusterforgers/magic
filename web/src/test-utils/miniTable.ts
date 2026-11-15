@@ -115,7 +115,7 @@ export function miniView(): StateView {
     format: 'Normal',
     stage: 'Turns',
     first_player: ME,
-    turn: { number: 3, active: FOE, step: 'Main1', lands_played: 0 },
+    turn: { number: 3, round: 2, active: FOE, step: 'Main1', lands_played: 0 },
     priority: { holder: ME, passed: [] },
     players: [seat(ME, [MY_HAND_CARD]), seat(FOE, null)],
     battlefield: zone([

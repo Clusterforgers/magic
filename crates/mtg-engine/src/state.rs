@@ -902,11 +902,25 @@ impl GameState {
     }
 
     /// Whether a turn of `next` that follows one of `previous` opens a round: turns go through the seats in turn order
-    /// from the first player, so a round opens when the order wraps round to or past the seat that just played.
+    /// from the first player, so a round opens when the order wraps round to or past the seat that just played. Teams
+    /// that share their turns (Two-Headed Giant) take one turn each per round, so the order there is the teams' from the
+    /// first player's team.
     pub(crate) fn opens_round(&self, previous: PlayerId, next: PlayerId) -> bool {
         let (seats, first) = (self.players.len().max(1), self.first_player.index());
         let reversed = crate::rules::r376_turn_order_reversed(self);
+        let shared = self.teams().filter(|teams| teams.shared());
         let place = |seat: PlayerId| {
+            if let Some(teams) = shared {
+                let count = usize::try_from(teams.count().max(1)).unwrap_or(1);
+                let team =
+                    |seat: PlayerId| usize::try_from(teams.team_of(seat)).unwrap_or(0) % count;
+                let (own, firsts) = (team(seat), team(self.first_player));
+                return if reversed {
+                    (firsts + count - own) % count
+                } else {
+                    (own + count - firsts) % count
+                };
+            }
             if reversed {
                 (first % seats + seats - seat.index() % seats) % seats
             } else {
@@ -1239,6 +1253,46 @@ mod tests {
             apply_event(&mut game, &lost).unwrap();
         }
         assert_eq!(game.ends_round(), ends);
+    }
+
+    #[rstest]
+    #[case::side_by_side_the_other_team_goes_second(&[0, 0, 1, 1], 0, 0, 2, false)]
+    #[case::and_the_first_team_opens_the_next_round(&[0, 0, 1, 1], 0, 2, 0, true)]
+    #[case::alternating_seats_the_other_team_goes_second(&[0, 1, 0, 1], 0, 0, 1, false)]
+    #[case::and_the_first_team_again_opens_the_next_round(&[0, 1, 0, 1], 0, 1, 2, true)]
+    #[case::the_second_team_again_is_no_new_round(&[0, 1, 0, 1], 0, 2, 3, false)]
+    #[case::the_other_team_going_first_has_the_first_turn_of_a_round(&[0, 0, 1, 1], 2, 0, 2, true)]
+    #[case::and_the_first_team_goes_second_in_it(&[0, 0, 1, 1], 2, 2, 0, false)]
+    fn a_round_of_shared_turns_is_each_team_once(
+        #[case] teams: &[u32],
+        #[case] first: usize,
+        #[case] previous: usize,
+        #[case] next: usize,
+        #[case] opens: bool,
+    ) {
+        let mut game =
+            GameState::from_setup(&setup(vec![Vec::new(); 4], vec![Vec::new(); 4])).unwrap();
+        game.house_rules.teams = Some(mtg_core::teams::Teams {
+            mode: mtg_core::teams::TeamMode::TwoHeadedGiant,
+            seats: teams.to_vec(),
+        });
+        game.first_player = PlayerId::from_index(first);
+        let (previous, next) = (PlayerId::from_index(previous), PlayerId::from_index(next));
+        assert_eq!(game.opens_round(previous, next), opens);
+    }
+
+    #[test]
+    fn single_turns_are_a_round_of_every_seat_even_in_teams_that_do_not_share() {
+        let mut game =
+            GameState::from_setup(&setup(vec![Vec::new(); 4], vec![Vec::new(); 4])).unwrap();
+        game.house_rules.teams = Some(mtg_core::teams::Teams {
+            mode: mtg_core::teams::TeamMode::Teams,
+            seats: vec![0, 1, 0, 1],
+        });
+        let seat = PlayerId::from_index;
+        assert!(!game.opens_round(seat(0), seat(1)));
+        assert!(!game.opens_round(seat(2), seat(3)));
+        assert!(game.opens_round(seat(3), seat(0)));
     }
 
     #[rstest]

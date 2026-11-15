@@ -55,6 +55,10 @@ mana_burn?: boolean,
  */
 take_backs?: boolean, 
 /**
+ * Whether declaring blockers runs on the server's block clock; off when left out.
+ */
+blocker_timer?: boolean, 
+/**
  * What drawing from an empty library does.
  */
 empty_library?: EmptyLibrary, 

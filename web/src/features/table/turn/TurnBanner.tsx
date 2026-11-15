@@ -18,7 +18,7 @@ const NEXT: Record<Exclude<Phase, 'idle'>, Phase> = { in: 'hold', hold: 'out', o
 
 /**
 /**
- * The band that says whose turn has begun: "Your turn" or "Bo's turn" and the turn number. It stands in the room the
+ * The band that says whose turn has begun: "Your turn" or "Bo's turn" and the round. It stands in the room the
  * top bar leaves free after the step ladder, so it covers neither the ladder nor the turn badge; where that room is too
  * narrow (a phone) it hangs from the bar's lower edge instead (`bannerPlace`). It is the bar's spacer, so the bar does
  * not move when it shows. It fades in, is held and fades out (250, 600 and 150 ms; a fade only and held 1.5 s under
@@ -66,7 +66,7 @@ export function TurnBanner() {
       <span className="truncate text-lg leading-6 font-semibold">{cue?.who}</span>
       {turn ? (
         <span className="shrink-0 text-sm font-medium tabular-nums">
-          {cue === null ? '' : `Turn ${cue.turn}`}
+          {cue === null ? '' : `Round ${cue.round}`}
         </span>
       ) : null}
     </div>

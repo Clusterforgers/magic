@@ -326,7 +326,8 @@ impl TurnState {
     }
 
     /// The round of the turn, from 1: a round is one turn of each seat in play, from the first player's seat round to
-    /// the seat before it (0 before the first turn).
+    /// the seat before it, or one of each team when teams share their turns; an extra turn does not advance it (0 before
+    /// the first turn).
     pub const fn round(&self) -> u32 {
         self.round
     }

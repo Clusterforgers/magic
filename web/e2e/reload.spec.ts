@@ -1,7 +1,7 @@
 // Goal: a seat that reloads its page mid-game gets the game log back, as the seat that stayed saw it, and the table at rest (nothing animates from a snapshot: no effect, no cross-fade, no picture fading in), at tables of two and four seats.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
-import { playToTheEnd, Run, turnOf } from './driver'
+import { playToTheEnd, Run } from './driver'
 import type { Hooks } from './driver'
 import { createAndJoin, everyoneReady } from './lobby'
 import { SHOTS_DIR } from './table'
@@ -69,7 +69,7 @@ for (const seats of [2, 4]) {
       await everyoneReady(players)
       const hooks: Hooks = {
         async before(_player, seen, run) {
-          if (turnOf(seen.banner) >= RELOAD_AT_TURN) run.done = true
+          if (seen.turn >= RELOAD_AT_TURN) run.done = true
         },
       }
       await playToTheEnd(

@@ -572,6 +572,34 @@ fn a_planeswalker_put_onto_the_battlefield_by_hand_enters_with_its_loyalty() {
     assert!(counters(&driver, walker, &CounterKind::Loyalty) > 0);
 }
 
+#[rstest]
+#[case::one_copy(1)]
+#[case::three_copies(3)]
+fn a_token_copy_of_a_planeswalker_made_by_hand_enters_with_its_loyalty(#[case] count: u32) {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(2)
+            .battlefield(1, [ready(mtg_testkit::cards::walker("Jace", 2))])
+            .library(0, vec![forest(); 5])
+            .library(1, vec![forest(); 5]),
+    )
+    .unwrap();
+    let jace = find(&driver, Zone::Battlefield, "Jace");
+    assert_eq!(counters(&driver, jace, &CounterKind::Loyalty), 3);
+    take(
+        &mut driver,
+        ManualAction::CopyToken {
+            object: jace,
+            count,
+        },
+    );
+    let copies = tokens_named(&driver, "Jace");
+    assert_eq!(copies.len(), count as usize);
+    for copy in copies {
+        assert_eq!(counters(&driver, copy, &CounterKind::Loyalty), 3);
+    }
+    assert_eq!(counters(&driver, jace, &CounterKind::Loyalty), 3);
+}
+
 /// An Aura attached to nothing goes to the graveyard, unless its enchant ability is a clause the table follows: its
 /// controller attaches it by hand, and the invariant checker, which judges a state at every decision, accepts it waiting.
 #[rstest]

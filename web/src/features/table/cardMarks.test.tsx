@@ -145,6 +145,30 @@ describe('real power and toughness', () => {
     expect(badge).not.toHaveAttribute('data-modified')
   })
 
+  it.each([
+    ['with no card behind it', {}],
+    ['with a card behind it that has no loyalty on record', { identity: IDENTITY }],
+  ])('shows the loyalty of a token planeswalker %s', async (_name, over) => {
+    offline()
+    const { container } = await loaded(
+      permanent(
+        {},
+        {
+          kind: 'Token',
+          name: 'Jace',
+          types: ['Planeswalker'],
+          power: null,
+          toughness: null,
+          counters: [['loyalty', 4]],
+          ...over,
+        },
+      ),
+    )
+    const badge = must(container.querySelector('[data-slot="card-loyalty"]'))
+    expect(badge).toHaveTextContent('4')
+    expect(badge).not.toHaveAttribute('data-modified')
+  })
+
   it('shows the 2/2 of a face-down creature plainly, even where the card behind it is a 5/5', async () => {
     setDetailFetcher(() => Promise.resolve(printedFaces('5', '5')))
     const { container } = await loaded(
@@ -186,6 +210,23 @@ describe('real power and toughness', () => {
       'Token Creature — Thopter',
     )
     expect(face).toHaveTextContent('2/2')
+  })
+
+  it('draws the loyalty of a token planeswalker whose picture is missing in the stat box', () => {
+    const { container } = renderCard(
+      permanent(
+        {},
+        {
+          kind: 'Token',
+          name: 'Jace',
+          types: ['Planeswalker'],
+          power: null,
+          toughness: null,
+          counters: [['loyalty', 4]],
+        },
+      ),
+    )
+    expect(must(container.querySelector('[data-slot="card-face"]'))).toHaveTextContent('4')
   })
 
   it('draws a card whose picture is missing in its own colour, not the back’s', () => {

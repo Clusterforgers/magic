@@ -8,6 +8,7 @@ import { fixtureState } from './dev/devGame'
 import { buildFixture } from './dev/fixture'
 import {
   badgeText,
+  badgeTitle,
   bannerText,
   DECISION_LABEL,
   decisionName,
@@ -51,21 +52,21 @@ function quiet(edit: (view: NonNullable<PlayState['view']>) => void): PlayState 
 }
 
 describe('bannerText', () => {
-  const turn = (step: Step): BannerInput => ({ stage: 'Turns', turn: 5, active: 0, step })
+  const turn = (step: Step): BannerInput => ({ stage: 'Turns', turn: 5, round: 3, active: 0, step })
 
   it.each(STEPS)('names the %s step in the banner with its own label', (step) => {
     expect(STEP_LABEL[step]).not.toBe('')
-    expect(bannerText(turn(step), name)).toBe(`Turn 5 · Alice · ${STEP_LABEL[step]}`)
+    expect(bannerText(turn(step), name)).toBe(`Round 3 · Alice · ${STEP_LABEL[step]}`)
   })
 
   it('has a distinct label for every step', () => {
     expect(new Set(STEPS.map((step) => STEP_LABEL[step])).size).toBe(STEPS.length)
   })
 
-  it('reads like the example: turn, player, step', () => {
-    expect(bannerText({ stage: 'Turns', turn: 12, active: 2, step: 'DeclareAttackers' }, name)).toBe(
-      'Turn 12 · Cy · Declare attackers',
-    )
+  it('reads like the example: round, player, step', () => {
+    expect(
+      bannerText({ stage: 'Turns', turn: 12, round: 6, active: 2, step: 'DeclareAttackers' }, name),
+    ).toBe('Round 6 · Cy · Declare attackers')
   })
 
   it.each<[Stage, string]>([
@@ -73,7 +74,7 @@ describe('bannerText', () => {
     ['Mulligan', 'Opening hands'],
     ['Finished', 'The game is over'],
   ])('says what the game is doing in stage %s', (stage, text) => {
-    expect(bannerText({ stage, turn: 0, active: 0, step: 'Untap' }, name)).toBe(text)
+    expect(bannerText({ stage, turn: 0, round: 0, active: 0, step: 'Untap' }, name)).toBe(text)
   })
 })
 
@@ -81,14 +82,15 @@ describe('a turn whose active player left', () => {
   const left = (active: number, step: Step): BannerInput => ({
     stage: 'Turns',
     turn: 5,
+    round: 3,
     active,
     step,
     left: true,
   })
 
   it.each(STEPS)('names the seat that left in the badge and the banner, with the %s step', (step) => {
-    expect(badgeText(left(1, step), 0, name)).toBe(`Bo left · 5 · ${STEP_LABEL[step]}`)
-    expect(bannerText(left(1, step), name)).toBe(`Turn 5 · Bo left · ${STEP_LABEL[step]}`)
+    expect(badgeText(left(1, step), 0, name)).toBe(`Bo left · Round 3 · ${STEP_LABEL[step]}`)
+    expect(bannerText(left(1, step), name)).toBe(`Round 3 · Bo left · ${STEP_LABEL[step]}`)
   })
 
   it.each([0, 1, 2])('never says "Your turn" to seat %i, not even the one that left', (viewer) => {
@@ -106,40 +108,46 @@ describe('a turn whose active player left', () => {
 })
 
 describe('badgeText', () => {
-  const turn = (active: number, step: Step): BannerInput => ({ stage: 'Turns', turn: 5, active, step })
+  const turn = (active: number, step: Step): BannerInput => ({
+    stage: 'Turns',
+    turn: 5,
+    round: 3,
+    active,
+    step,
+  })
 
   it.each(STEPS)('says "Your turn" with the %s step on the viewer\'s own turn', (step) => {
-    expect(badgeText(turn(0, step), 0, name)).toBe(`Your turn · 5 · ${STEP_LABEL[step]}`)
+    expect(badgeText(turn(0, step), 0, name)).toBe(`Your turn · Round 3 · ${STEP_LABEL[step]}`)
   })
 
   it.each(STEPS)("names the other player and the %s step on an opponent's turn", (step) => {
-    expect(badgeText(turn(1, step), 0, name)).toBe(`Bo's turn · 5 · ${STEP_LABEL[step]}`)
+    expect(badgeText(turn(1, step), 0, name)).toBe(`Bo's turn · Round 3 · ${STEP_LABEL[step]}`)
   })
 
   it.each([0, 1, 2, 3, 4])('says "Your turn" only for the viewer, seat %i', (viewer) => {
     const words = [0, 1, 2, 3, 4].map((active) => badgeText(turn(active, 'Main1'), viewer, name))
     expect(words.filter((text) => text.startsWith('Your turn'))).toHaveLength(1)
-    expect(words[viewer]).toBe('Your turn · 5 · Precombat main')
+    expect(words[viewer]).toBe('Your turn · Round 3 · Precombat main')
   })
 
   it.each<[number, string]>([
-    [0, 'Your turn · 5 · Precombat main'],
-    [1, 'Your turn · 5 · Precombat main'],
-    [2, "Alice and Bo's turn · 5 · Precombat main"],
+    [0, 'Your turn · Round 3 · Precombat main'],
+    [1, 'Your turn · Round 3 · Precombat main'],
+    [2, "Alice and Bo's turn · Round 3 · Precombat main"],
   ])('gives a Two-Headed Giant turn to both players of the team, seen from seat %i', (viewer, text) => {
     expect(badgeText({ ...turn(0, 'Main1'), teammate: 1 }, viewer, name)).toBe(text)
   })
 
   it.each<[number, number, string]>([
-    [0, 1, "Bo's turn · you control them · 5 · Precombat main"],
-    [1, 1, 'Your turn · Alice controls you · 5 · Precombat main'],
-    [2, 1, "Bo's turn · Alice controls them · 5 · Precombat main"],
+    [0, 1, "Bo's turn · you control them · Round 3 · Precombat main"],
+    [1, 1, 'Your turn · Alice controls you · Round 3 · Precombat main'],
+    [2, 1, "Bo's turn · Alice controls them · Round 3 · Precombat main"],
   ])("says who controls the active player to seat %i on seat %i's turn", (viewer, active, text) => {
     expect(badgeText({ ...turn(active, 'Main1'), controlledBy: 0 }, viewer, name)).toBe(text)
   })
 
   it('names the active player when the viewer is not known yet', () => {
-    expect(badgeText(turn(0, 'Main1'), null, name)).toBe("Alice's turn · 5 · Precombat main")
+    expect(badgeText(turn(0, 'Main1'), null, name)).toBe("Alice's turn · Round 3 · Precombat main")
   })
 
   it.each<[Stage, string]>([
@@ -147,8 +155,20 @@ describe('badgeText', () => {
     ['Mulligan', 'Opening hands'],
     ['Finished', 'The game is over'],
   ])('says what the game is doing in stage %s, whoever is looking', (stage, text) => {
-    expect(badgeText({ stage, turn: 0, active: 0, step: 'Untap' }, 0, name)).toBe(text)
-    expect(badgeText({ stage, turn: 0, active: 0, step: 'Untap' }, 1, name)).toBe(text)
+    expect(badgeText({ stage, turn: 0, round: 0, active: 0, step: 'Untap' }, 0, name)).toBe(text)
+    expect(badgeText({ stage, turn: 0, round: 0, active: 0, step: 'Untap' }, 1, name)).toBe(text)
+  })
+})
+
+describe('badgeTitle', () => {
+  const at = (stage: Stage): BannerInput => ({ stage, turn: 5, round: 3, active: 0, step: 'Main1' })
+
+  it('keeps the turn number, which the badge leaves out, in the tooltip', () => {
+    expect(badgeTitle(at('Turns'))).toBe('Turn 5')
+  })
+
+  it.each<Stage>(['PreGame', 'Mulligan', 'Finished'])('has none in stage %s', (stage) => {
+    expect(badgeTitle(at(stage))).toBeUndefined()
   })
 })
 

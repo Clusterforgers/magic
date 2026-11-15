@@ -49,7 +49,8 @@ pub struct Pace {
     /// choose the targets of a spell or ability, order its triggers, answer a yes-or-no question, choose an option,
     /// choose modes, choose cards or put cards in order (`MTG_RESPONSE_SECS`); `None` is no clock.
     pub response: Option<Duration>,
-    /// Time a defending seat has to declare blockers (`MTG_BLOCK_SECS`); `None` is no clock.
+    /// Time a defending seat has to declare blockers (`MTG_BLOCK_SECS`) at a table whose house rules turn the blocker
+    /// timer on; `None` is no clock. A table that leaves the rule off never runs it.
     pub blocks: Option<Duration>,
     /// Time to decide what takes thought and is no quick response (`MTG_THINK_SECS`): to keep or mulligan and to bottom
     /// cards (every seat: the opening has no active player), and to pay for a spell, divide combat damage, declare
@@ -143,13 +144,20 @@ impl Pace {
     /// is hurried by the class of the kind ([`Class::of`]): a priority decision, the targets of a spell or ability, the
     /// order of its triggers or of the replacement effects that apply to an event and the questions of effects (yes or
     /// no, an option, modes, a number, optional costs, a division, cards, an order of cards) run on `response`,
-    /// blockers on `blocks`, and paying for a spell, dividing combat damage, declaring attackers and discarding on
+    /// blockers on `blocks` (only at a table whose `blocker_timer` house rule is on; otherwise declaring blockers has no
+    /// clock for any seat), and paying for a spell, dividing combat damage, declaring attackers and discarding on
     /// `think`. A priority window the seat has nothing to do in is hurried too (it is only delivered at a stop or in
     /// Full Control): it would hold the table for no reason. The rule reads the kind and the seat alone, never the
     /// options or the hand, so it shows nothing about them.
-    pub(crate) fn clock_for(&self, decision: &Decision, active: PlayerId) -> Option<Duration> {
+    pub(crate) fn clock_for(
+        &self,
+        decision: &Decision,
+        active: PlayerId,
+        blocker_timer: bool,
+    ) -> Option<Duration> {
         match Class::of(&decision.kind) {
             Class::Opening => Self::OPENING_CLOCK,
+            Class::Blocks if !blocker_timer => None,
             _ if decision.player == active => self.active,
             Class::Response => self.response,
             Class::Blocks => self.blocks,
@@ -1067,8 +1075,39 @@ mod tests {
         #[case] kind: DecisionKind,
         #[case] seconds: Option<u64>,
     ) {
-        let got = pace().clock_for(&decision(player, kind), ACTIVE);
+        let got = pace().clock_for(&decision(player, kind), ACTIVE, true);
         assert_eq!(got, seconds.map(Duration::from_secs));
+    }
+
+    #[rstest]
+    #[case::a_defender_blocking_by_default(OTHER, false, None)]
+    #[case::the_active_player_declaring_blockers_by_default(ACTIVE, false, None)]
+    #[case::a_defender_blocking_with_the_timer_on(OTHER, true, Some(45))]
+    fn the_block_clock_runs_only_where_the_blocker_timer_is_on(
+        #[case] player: PlayerId,
+        #[case] timer: bool,
+        #[case] seconds: Option<u64>,
+    ) {
+        let got = pace().clock_for(&decision(player, blockers()), ACTIVE, timer);
+        assert_eq!(got, seconds.map(Duration::from_secs));
+    }
+
+    #[test]
+    fn the_blocker_timer_leaves_every_other_clock_alone() {
+        for kind in think_kinds().into_iter().chain(asked_kinds()) {
+            let d = decision(OTHER, kind);
+            if matches!(d.kind, DecisionKind::DeclareBlockers(_)) {
+                continue;
+            }
+            for player in [ACTIVE, OTHER] {
+                let d = decision(player, d.kind.clone());
+                assert_eq!(
+                    pace().clock_for(&d, ACTIVE, false),
+                    pace().clock_for(&d, ACTIVE, true),
+                    "{d:?}"
+                );
+            }
+        }
     }
 
     /// Every setting set to a clock, so a clock in the opening would show.
@@ -1088,7 +1127,7 @@ mod tests {
         for kind in opening_kinds() {
             for player in [ACTIVE, OTHER, PlayerId(2), PlayerId(3)] {
                 let d = decision(player, kind.clone());
-                assert_eq!(settings.clock_for(&d, ACTIVE), None, "{d:?}");
+                assert_eq!(settings.clock_for(&d, ACTIVE, true), None, "{d:?}");
             }
         }
     }
@@ -1101,11 +1140,11 @@ mod tests {
                 decision(ACTIVE, kind.clone()),
             );
             assert_eq!(
-                pace().clock_for(&other, ACTIVE),
+                pace().clock_for(&other, ACTIVE, true),
                 Some(Duration::from_mins(1)),
                 "{other:?}"
             );
-            assert_eq!(pace().clock_for(&active, ACTIVE), None, "{active:?}");
+            assert_eq!(pace().clock_for(&active, ACTIVE, true), None, "{active:?}");
         }
     }
 
@@ -1118,7 +1157,7 @@ mod tests {
             };
             for player in [ACTIVE, OTHER] {
                 let d = decision(player, kind.clone());
-                assert_eq!(none.clock_for(&d, ACTIVE), None, "{d:?}");
+                assert_eq!(none.clock_for(&d, ACTIVE, true), None, "{d:?}");
             }
         }
     }
@@ -1128,14 +1167,17 @@ mod tests {
     #[case::response_off(Pace { response: None, think: None, ..pace() })]
     fn a_missing_setting_means_no_clock(#[case] pace: Pace) {
         assert_eq!(
-            pace.clock_for(&decision(OTHER, priority(true)), ACTIVE),
+            pace.clock_for(&decision(OTHER, priority(true)), ACTIVE, true),
             None
         );
         assert_eq!(
-            pace.clock_for(&decision(OTHER, targets(true)), ACTIVE),
+            pace.clock_for(&decision(OTHER, targets(true)), ACTIVE, true),
             None
         );
-        assert_eq!(pace.clock_for(&decision(OTHER, order(2)), ACTIVE), None);
+        assert_eq!(
+            pace.clock_for(&decision(OTHER, order(2)), ACTIVE, true),
+            None
+        );
         for kind in [
             question(),
             unaffordable(),
@@ -1148,14 +1190,17 @@ mod tests {
             cards(2, 1, 1),
             ordering(2),
         ] {
-            assert_eq!(pace.clock_for(&decision(OTHER, kind), ACTIVE), None);
+            assert_eq!(pace.clock_for(&decision(OTHER, kind), ACTIVE, true), None);
         }
         if pace.blocks.is_none() {
-            assert_eq!(pace.clock_for(&decision(OTHER, blockers()), ACTIVE), None);
+            assert_eq!(
+                pace.clock_for(&decision(OTHER, blockers()), ACTIVE, true),
+                None
+            );
         }
         if pace.think.is_none() {
             for kind in think_kinds() {
-                assert_eq!(pace.clock_for(&decision(OTHER, kind), ACTIVE), None);
+                assert_eq!(pace.clock_for(&decision(OTHER, kind), ACTIVE, true), None);
             }
         }
     }
@@ -1356,13 +1401,17 @@ mod tests {
         ];
         for kind in kinds {
             let want = (
-                pace().clock_for(&decision(OTHER, kind.clone()), ACTIVE),
+                pace().clock_for(&decision(OTHER, kind.clone()), ACTIVE, true),
                 fallback(&decision(OTHER, kind.clone())),
             );
             assert_eq!(want.0, Some(Duration::from_secs(10)), "{kind:?}");
             for seat in 1..12 {
                 let d = decision(PlayerId::from_index(seat), kind.clone());
-                assert_eq!((pace().clock_for(&d, ACTIVE), fallback(&d)), want, "{d:?}");
+                assert_eq!(
+                    (pace().clock_for(&d, ACTIVE, true), fallback(&d)),
+                    want,
+                    "{d:?}"
+                );
             }
         }
     }
@@ -1520,12 +1569,16 @@ mod tests {
     fn the_clock_and_the_fallback_of_what_takes_thought_are_the_same_for_every_seat() {
         for kind in think_kinds() {
             let want = (
-                pace().clock_for(&decision(OTHER, kind.clone()), ACTIVE),
+                pace().clock_for(&decision(OTHER, kind.clone()), ACTIVE, true),
                 fallback(&decision(OTHER, kind.clone())),
             );
             for seat in 1..12 {
                 let d = decision(PlayerId::from_index(seat), kind.clone());
-                assert_eq!((pace().clock_for(&d, ACTIVE), fallback(&d)), want, "{d:?}");
+                assert_eq!(
+                    (pace().clock_for(&d, ACTIVE, true), fallback(&d)),
+                    want,
+                    "{d:?}"
+                );
             }
         }
     }
@@ -1594,7 +1647,7 @@ mod tests {
             ..pace()
         };
         for (kind, class) in every_kind() {
-            let got = settings.clock_for(&decision(ACTIVE, kind.clone()), ACTIVE);
+            let got = settings.clock_for(&decision(ACTIVE, kind.clone()), ACTIVE, true);
             let expected = match class {
                 Class::Opening => None,
                 _ => settings.active,
@@ -1617,7 +1670,7 @@ mod tests {
                 Class::Blocks => settings.blocks,
             };
             for player in [OTHER, PlayerId(2), PlayerId(3)] {
-                let got = settings.clock_for(&decision(player, kind.clone()), ACTIVE);
+                let got = settings.clock_for(&decision(player, kind.clone()), ACTIVE, true);
                 assert_eq!(got, expected, "{}", kind.name());
             }
         }
@@ -1666,7 +1719,7 @@ mod tests {
         for (kind, class) in every_kind() {
             for player in [ACTIVE, OTHER, PlayerId(2), PlayerId(3)] {
                 let d = decision(player, kind.clone());
-                let clock = settings.clock_for(&d, ACTIVE);
+                let clock = settings.clock_for(&d, ACTIVE, true);
                 if class == Class::Opening {
                     assert_eq!(clock, None, "the opening has no clock to show");
                     continue;
@@ -1688,7 +1741,7 @@ mod tests {
         let shown = |can_act| {
             let d = decision(OTHER, priority(can_act));
             settings
-                .clock_for(&d, ACTIVE)
+                .clock_for(&d, ACTIVE, true)
                 .map(|length| (length, settings.shown_after(length)))
         };
         assert_eq!(shown(true), shown(false));

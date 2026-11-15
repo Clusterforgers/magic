@@ -8,6 +8,7 @@
 
 use std::sync::Arc;
 
+use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::assemble::token_definition;
 use mtg_cards::card::TokenSpec;
@@ -30,7 +31,7 @@ use crate::events::{Event, ZoneCause};
 use crate::format::ExtraZone;
 use crate::loyalty;
 use crate::manual_grant::ManualKeyword;
-use crate::object::{GameObject, ObjectKind, PermanentState};
+use crate::object::{GameObject, ObjectKind, ObjectRef, PermanentState};
 use crate::rules::{cant_draw, cant_gain_life, life_total_cant_change};
 use crate::saga;
 use crate::state::GameState;
@@ -1059,21 +1060,35 @@ fn create_tokens(
         }
     };
     let definition = Arc::new(token_definition(&spec, &caps()));
+    Ok(made_tokens(state, player, &definition, None, count))
+}
+
+/// `count` tokens of `definition` for `player`, each followed by the loyalty counters a token planeswalker enters with
+/// (CR 306.5b), as an effect that creates one proposes them.
+fn made_tokens(
+    state: &GameState,
+    player: PlayerId,
+    definition: &Arc<CardDefinition>,
+    copy_of: Option<ObjectRef>,
+    count: u32,
+) -> Vec<Event> {
     let first = state.next_object().get();
-    Ok((0..u64::from(count))
-        .map(|made| {
-            Event::TokenCreated(TokenCreated {
-                object: ObjectId(first + made),
-                copy_of: None,
+    (0..u64::from(count))
+        .flat_map(|made| {
+            let object = ObjectId(first + made);
+            let created = Event::TokenCreated(TokenCreated {
+                object,
+                copy_of,
                 controller: player,
                 name: definition.name.clone(),
                 tapped: false,
                 attacking: None,
                 blocking: None,
-                definition: Arc::clone(&definition),
-            })
+                definition: Arc::clone(definition),
+            });
+            std::iter::once(created).chain(crate::r371_token_loyalty::entering(object, definition))
         })
-        .collect())
+        .collect()
 }
 
 fn copy_tokens(
@@ -1089,21 +1104,13 @@ fn copy_tokens(
     let values = crate::copies::copiable_values(state, original.reference(), None)
         .ok_or(ManualRefusal::BadToken("a permanent that can be copied"))?;
     let definition = Arc::new(values);
-    let first = state.next_object().get();
-    Ok((0..u64::from(count))
-        .map(|made| {
-            Event::TokenCreated(TokenCreated {
-                object: ObjectId(first + made),
-                copy_of: Some(original.reference()),
-                controller: player,
-                name: definition.name.clone(),
-                tapped: false,
-                attacking: None,
-                blocking: None,
-                definition: Arc::clone(&definition),
-            })
-        })
-        .collect())
+    Ok(made_tokens(
+        state,
+        player,
+        &definition,
+        Some(original.reference()),
+        count,
+    ))
 }
 
 /// The attachment `id` on the battlefield, whoever controls it.
