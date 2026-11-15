@@ -29,7 +29,7 @@ A fallen hero keeps playing: it haunts the fight with small, clear choices and c
 
 - Ways back: Rise Again; the Phoenix Feather relic (pay 6 life once each fight: every fallen teammate returns with 8 life and four cards); a won fight brings every Spirit back at 10.
 - Bot Spirits (`brain/haunt.rs`) rise as soon as they can, Ward when 4 or more power attacks the party, and before an opponent's combat Hinder its biggest creature (power 4 or more, 2 ectoplasm held) or Howl (4 held). A bot holding the Phoenix Feather uses it while it has 14 life or more.
-- Measured with two Hard heroes at Heat 0, seeds 1 to 4 (`fights`): 0/4 won with Spirits acting and 0/4 idle, 4 falls each; the fallen hero spends its Spirit turns on 3 haunt actions a fight and never reaches Rise Again, so haunting helps at the margin and does not decide a fight.
+- Measured with two Hard heroes at Heat 0 (`fights`): the fallen hero spends its Spirit turns on 3 haunt actions a fight and never reaches Rise Again, so haunting helps at the margin and does not decide a fight.
 
 ## Bosses
 
@@ -110,13 +110,15 @@ One table (`scale.rs`) sets the boss for the party's size, so every size meets t
 - Each fight prints the pressure each hero took, the round a hero first fell to half life and the round a hero first fell.
 - The target at Heat 0 for a party of Hard bots, at every size: each fight won in 50 to 60 % of fights, a whole run in 20 to 35 %, a fight in 25 to 60 minutes for four heroes; no hero takes more than 40 % of the boss's pressure with three or more heroes (60 % with two).
 
-Measured with Hard heroes at Heat 0 on the four fixture Commander decks (three precons and a tuned player deck), seeds 1 to 4 (`fights 1 <heroes> hard <seed>`, one boss per seed), with the spotlight and the ramp-up:
+Measured with Hard heroes at Heat 0 on the four fixture Commander decks (three precons and a tuned player deck), `fights 1 <heroes> hard <seed>`, one boss per seed (seeds 1 to 4 meet Skrix, Mossjaw, Vex and Grimgut, seeds 5 to 8 again), with the spotlight and the ramp-up:
 
-| Heroes | Fights won | Turns (boss side) | Minutes | Largest hero share (worst) | First at half life | First fall |
-|---|---|---|---|---|---|---|
-| 1 | 2/4 | 14.8 (7.2) | 8 | 100 % | round 7.0 | round 7.5 |
-| 2 | 1/4 | 23.8 (8.2) | 13 | 60 % (85 %) | round 6.2 | round 7.5 |
-| 3 | 3/4 | 34.8 (8.5) | 20 | 44 % (49 %) | round 5.8 | round 7.0 |
+| Heroes | Seeds | Fights won | Turns (boss side) | Minutes | Largest hero share (worst) | First at half life | First fall |
+|---|---|---|---|---|---|---|---|
+| 1 | 1 to 8 | 6/7 | 15.0 (7.1) | 8 | 100 % | round 6.6 | round 6.0 |
+| 2 | 1 to 8 | 5/8 | 22.4 (7.5) | 13 | 61 % (74 %) | round 6.0 | round 7.2 |
+| 3 | 1, 4 | 2/2 | 23.5 (5.5) | 14 | 49 % (54 %) | round 5.0 | none |
 
+- Won per boss (Skrix, Mossjaw, Vex, Grimgut): one hero 1/1, 2/2, 2/2, 1/2; two heroes 2/2, 1/2, 1/2, 1/2; three heroes 1/1, unfinished, unfinished, 1/1.
 - The grace keeps every hero above 0 life through their first three turns.
-- Four to six heroes take more than an hour of machine time per fight and are not in this table.
+- Solo seed 5 (Skrix) is not counted: the boss bot repeats one paid ability until the runaway watchdog stops the game in turn 13.
+- Three heroes on seeds 2 and 3 and four heroes on seeds 1 to 4 had not ended after 110 minutes of machine time per fight; five and six heroes are slower still and are not in this table.
