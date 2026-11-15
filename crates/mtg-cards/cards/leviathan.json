@@ -1,7 +1,7 @@
 {
   "oracle_id": "d8c49932-9b4f-4cb0-a7e9-4b7eb12203ee",
   "name": "Leviathan",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Leviathan",
@@ -24,9 +24,15 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 174, "end": 281 }
+          "Rule": {
+            "rule": {
+              "AttackTax": {
+                "who": "EachPlayer",
+                "attacked": "Both",
+                "attackers": ["This"],
+                "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Island" }], "count": 2 } }]
+              }
+            }
           }
         }
       ]

@@ -1240,6 +1240,13 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('RemovedFromCombat' in event) {
     return line(`${n.card(event.RemovedFromCombat.object)} is removed from combat`)
   }
+  if ('R6400Unblocked' in event) {
+    return line(`${n.card(event.R6400Unblocked.attacker)} becomes unblocked`)
+  }
+  if ('R6400Blocks' in event) {
+    const { blocker, attacker } = event.R6400Blocks
+    return line(`${n.card(blocker)} blocks ${n.card(attacker)}`)
+  }
   if ('AttackersBlocked' in event) {
     const { attackers } = event.AttackersBlocked
     const verb = attackers.length === 1 ? 'becomes' : 'become'

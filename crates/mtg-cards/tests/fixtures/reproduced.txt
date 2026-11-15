@@ -141,6 +141,7 @@ Baaallerina
 Back in Town
 Baird, Steward of Argive
 Balduvian Conjurer
+Balduvian Warlord
 Bandit's Haul
 Bane of Progress
 Banish to Another Universe
@@ -693,6 +694,7 @@ Everdream
 Evermind
 Evolutionary Leap
 Exalted Angel
+Exalted Dragon
 Excavation Technique
 Excise the Imperfect
 Exemplar of Light
@@ -720,6 +722,7 @@ Fall of Cair Andros
 Fall of the Hammer
 Fallen Ideal
 False Floor
+False Orders
 Familiar Ground
 Famine
 Fanatic of Rhonas
@@ -768,6 +771,8 @@ Fleecemane Lion
 Fleetfeather Cockatrice
 Flooded Grove
 Flooded Strand
+Flooded Woodlands
+Floodtide Serpent
 Flowerfoot Swordmaster
 Fog
 Follow the Bodies
@@ -1002,6 +1007,7 @@ History of Benalia
 Hoarder's Greed
 Hogaak, Arisen Necropolis
 Holdout Settlement
+Hollow Warrior
 Honor Troll
 Honor's Reward
 Hoofprints of the Stag
@@ -1031,6 +1037,7 @@ Ill-Tempered Cyclops
 Illicit Shipment
 Illuminate History
 Illusion Spinners
+Illusion of Choice
 Illustrious Wanderglyph
 Ilysian Caryatid
 Imi Statue
@@ -1067,6 +1074,7 @@ Intrepid Adversary
 Intrepid Rabbit
 Intrepid Stablemaster
 Invading Manticore
+Invasion Plans
 Invasion of Arcavios // Invocation of the Founders
 Invasion of Muraganda // Primordial Plasm
 Invasion of Segovia // Caetus, Sea Tyrant of Segovia
@@ -1200,6 +1208,7 @@ Legion Loyalty
 Legolas Greenleaf
 Leonardo, the Balance
 Letter of Acceptance
+Leviathan
 Levitation
 Leyline Binding
 Lhurgoyf
@@ -1309,6 +1318,7 @@ Mayhem Patrol
 Meeting of the Five
 Megaton's Fate
 Megrim
+Melee
 Memory Crystal
 Memory Guardian
 Memory Plunder
@@ -1458,6 +1468,7 @@ Observed Stasis
 Obstinate Baloth
 Octomancer
 Octopus Umbra
+Odric, Master Tactician
 Ohran Yeti
 Ojer Axonil, Deepest Might // Temple of Power
 Okiba Reckoner Raid // Nezumi Road Captain
@@ -1663,6 +1674,7 @@ Reaver Titan
 Reciprocate
 Reckless Endeavor
 Reckless Impulse
+Reclamation
 Reconstructed Thopter
 Red Room Recruit
 Redcap Heelslasher
@@ -2428,6 +2440,7 @@ Wyll, Blade of Frontiers
 Wyrm's Crossing Patrol
 Xenosquirrels
 Yasharn, Implacable Earth
+Ydwen Efreet
 Yidaro, Wandering Monster
 Yisan, the Wanderer Bard
 You Cannot Pass!

@@ -141,6 +141,7 @@ mod r5501_echo_rather;
 mod r5509_face_down_pile;
 mod r5509_foretold;
 mod r6102_random_counter;
+mod r6400_block;
 pub(crate) mod r6402_change_roll;
 mod regenerate;
 mod remove_counters;
@@ -356,6 +357,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Rule { .. } => rule::run(cx, effect),
         Effect::Regenerate { .. } => regenerate::run(cx, effect),
         Effect::RemoveFromCombat { .. } => remove_from_combat::run(cx, effect),
+        Effect::R6400Block { .. } => r6400_block::run(cx, effect),
         Effect::BecomeBlocked { .. } => rmt1_become_blocked::run(cx, effect),
         Effect::PutBeneathTop { .. } => rmt1_beneath::run(cx, effect),
         Effect::LoseUnspentMana { .. } => rmt1_unspent::run(cx, effect),
@@ -438,7 +440,7 @@ mod tests {
         {"ExchangeControl":{"what":["This"],"duration":"Forever"}},
         {"R6401PassControl":{"side":"Left","what":[],"pick":"All"}},
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
-        {"Regenerate":{"what":"This"}}, {"RemoveFromCombat":{"what":"This"}},
+        {"Regenerate":{"what":"This"}}, {"RemoveFromCombat":{"what":"This"}}, {"R6400Block":{"what":"This"}},
         {"BecomeBlocked":{"what":"This"}},
         {"PutBeneathTop":{"what":"This","below":2}},
         {"LoseUnspentMana":{}},
@@ -471,7 +473,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 148, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 149, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -629,6 +631,7 @@ mod tests {
         "Effect.Rule",
         "Effect.Regenerate",
         "Effect.RemoveFromCombat",
+        "Effect.R6400Block",
         "Effect.BecomeBlocked",
         "Effect.PutBeneathTop",
         "Effect.LoseUnspentMana",

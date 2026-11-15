@@ -5323,7 +5323,9 @@ impl Walker<'_> {
                 }
             }
             Effect::Regenerate { what } => w.at("what", |w| w.reference(what, Kind::Object)),
-            Effect::RemoveFromCombat { what } => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::RemoveFromCombat { what, .. } | Effect::R6400Block { what, .. } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+            }
             Effect::BecomeBlocked { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::LoseUnspentMana { who } => w.at("who", |w| w.reference(who, Kind::Player)),
             Effect::PutBeneathTop { what, below } => {
@@ -6081,6 +6083,13 @@ impl Walker<'_> {
             GameRule::PowerUpAgain(which) => {
                 self.at(tag, |w| w.selector(which));
             }
+            GameRule::R6400ChoosesBlocks { chooser, whose } => self.at(tag, |w| {
+                w.at("chooser", |w| w.reference(chooser, Kind::Player));
+                w.at("whose", |w| w.reference(whose, Kind::Player));
+            }),
+            GameRule::R6400ChoosesVotes { chooser } => self.at(tag, |w| {
+                w.at("chooser", |w| w.reference(chooser, Kind::Player));
+            }),
             GameRule::MustAttack(who)
             | GameRule::MustBlock(who)
             | GameRule::CantBeCountered(who)
@@ -6156,13 +6165,19 @@ impl Walker<'_> {
                 mana,
                 life,
                 per,
+                cost,
                 ..
             } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("cost", |w| r6400_combat_cost(w, cost));
                 w.at("attackers", |w| w.selector(attackers));
                 w.at("per", |w| w.amount(per));
-                if mana.rest().symbols().is_empty() && !mana.has_x() && *life == 0 {
-                    w.problem("an attack tax costs mana, life or both");
+                if mana.rest().symbols().is_empty()
+                    && !mana.has_x()
+                    && *life == 0
+                    && cost.is_empty()
+                {
+                    w.problem("an attack tax costs mana, life, other costs or a mix");
                 }
                 if mana.has_x() {
                     w.at("mana", |w| {
@@ -6176,12 +6191,18 @@ impl Walker<'_> {
                 mana,
                 life,
                 per,
+                cost,
             } => self.at(tag, |w| {
                 w.at("blockers", |w| w.selector(blockers));
+                w.at("cost", |w| r6400_combat_cost(w, cost));
                 w.at("attackers", |w| w.selector(attackers));
                 w.at("per", |w| w.amount(per));
-                if mana.rest().symbols().is_empty() && !mana.has_x() && *life == 0 {
-                    w.problem("a block tax costs mana, life or both");
+                if mana.rest().symbols().is_empty()
+                    && !mana.has_x()
+                    && *life == 0
+                    && cost.is_empty()
+                {
+                    w.problem("a block tax costs mana, life, other costs or a mix");
                 }
                 if mana.has_x() {
                     w.at("mana", |w| {
@@ -7842,6 +7863,26 @@ fn check_face_printed(
             }
             _ => {}
         });
+    }
+}
+
+/// The other costs of an attack or block tax: permanents the payer sacrifices, returns or taps, a fixed number of each.
+fn r6400_combat_cost(w: &mut Walker<'_>, cost: &[CostItem]) {
+    if !cost.is_empty() {
+        w.uses.insert("Rule.R6400CombatCost".to_owned());
+    }
+    for item in cost {
+        match item {
+            CostItem::Sacrifice { filter, count }
+            | CostItem::ReturnToHand { filter, count }
+            | CostItem::TapPermanents { filter, count } => {
+                w.selector(filter);
+                if !matches!(count, Amount::Fixed(n) if *n > 0) {
+                    w.problem("a combat tax takes a fixed number of permanents, at least one");
+                }
+            }
+            _ => w.problem("a combat tax sacrifices, returns or taps permanents"),
+        }
     }
 }
 

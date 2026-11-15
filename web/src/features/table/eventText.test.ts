@@ -88,6 +88,8 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   AttackRedirected: [{ AttackRedirected: { object: 3, target: { Player: 0 } } }, 'Forest now attacks Ana'],
   RemovedFromCombat: [{ RemovedFromCombat: { object: 3 } }, 'Forest is removed from combat'],
   AttackersBlocked: [{ AttackersBlocked: { attackers: [3] } }, 'Forest becomes blocked'],
+  R6400Unblocked: [{ R6400Unblocked: { attacker: 3 } }, 'Forest becomes unblocked'],
+  R6400Blocks: [{ R6400Blocks: { blocker: 3, attacker: 1 } }, 'Forest blocks Grizzly Bears'],
   ManualAction: [
     { ManualAction: { player: 0, action: { Move: { object: 3, to: 'Graveyard' } } } },
     'Ana moves Forest to the graveyard (by hand)',

@@ -395,6 +395,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::CombatEnded
         | Event::DamageCleared
         | Event::RemovedFromCombat { .. }
+        | Event::R6400Unblocked { .. }
+        | Event::R6400Blocks { .. }
         | Event::AttackersBlocked { .. }
         | Event::Regenerated { .. }
         | Event::DamageRemoved { .. }

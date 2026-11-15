@@ -171,7 +171,7 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
 }
 
 /// Whether a trigger line of a spell is a delayed trigger the spell sets up: "When you next cast ...", a trigger event
-/// limited to this turn ("Whenever a creature blocks this turn, ...") or the next upkeep ("At the beginning of your next
+/// limited to this turn or this combat ("Whenever a creature blocks this turn, ...") or the next upkeep ("At the beginning of your next
 /// upkeep, pay {2}{B}. If you don't, you lose the game.").
 fn r6e_delayed(body: &str) -> bool {
     let event = body.split_once(", ").map_or(body, |(event, _)| event);
@@ -179,6 +179,7 @@ fn r6e_delayed(body: &str) -> bool {
         || body.starts_with("At the beginning of your next ")
         || body.starts_with("At the beginning of the next ")
         || event.ends_with(" this turn")
+        || event.ends_with(" this combat")
 }
 
 /// Whether the characters can be those of an ability word: letters, a space, an apostrophe, a hyphen, "!", the card's

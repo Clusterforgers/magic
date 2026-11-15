@@ -1,7 +1,7 @@
 {
   "oracle_id": "38c5c952-8153-4d98-89b5-a75260383345",
   "name": "False Orders",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "False Orders",
@@ -9,9 +9,14 @@
       "abilities": [
         { "CastOnly": { "condition": { "Step": "DeclareBlockers" } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 55, "end": 278 }
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [
+              { "RemoveFromCombat": { "what": { "Target": 0 }, "unblock": true } },
+              { "R6400Block": { "what": { "Target": 0 }, "optional": true } }
+            ]
           }
         }
       ]

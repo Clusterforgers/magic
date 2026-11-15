@@ -1,7 +1,7 @@
 {
   "oracle_id": "c901805e-c196-4b9d-8d5a-e17367fb37bc",
   "name": "Exalted Dragon",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Exalted Dragon",
@@ -9,9 +9,15 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 109 }
+          "Rule": {
+            "rule": {
+              "AttackTax": {
+                "who": "EachPlayer",
+                "attacked": "Both",
+                "attackers": ["This"],
+                "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }]
+              }
+            }
           }
         }
       ]

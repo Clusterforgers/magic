@@ -311,6 +311,8 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::CombatEnded
         | Event::DamageCleared
         | Event::RemovedFromCombat { .. }
+        | Event::R6400Unblocked { .. }
+        | Event::R6400Blocks { .. }
         | Event::AttackersBlocked { .. }
         | Event::Regenerated { .. }
         | Event::DamageRemoved { .. }

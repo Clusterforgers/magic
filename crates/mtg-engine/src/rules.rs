@@ -200,6 +200,17 @@ pub enum Rule {
     },
     /// The players may vote an additional time (CR 701.38d).
     VoteAgain(Vec<PlayerId>),
+    /// The player chooses which creatures the players listed block with and how they block (CR 509.1a); the last rule
+    /// in force for a player is the one that applies.
+    R6400ChoosesBlocks {
+        /// Who declares the blocks.
+        chooser: PlayerId,
+        /// Whose blocks.
+        whose: Vec<PlayerId>,
+    },
+    /// The player casts every ballot of each vote, each still counting as its voter's (CR 701.38); the last rule in
+    /// force applies.
+    R6400ChoosesVotes(PlayerId),
     /// The players get an additional vote (CR 701.38d).
     ExtraVote(Vec<PlayerId>),
     /// The turn order runs the other way round the table.
@@ -593,6 +604,11 @@ pub struct AttackTax {
     /// The life each taxed creature costs, counted the same way.
     #[serde(default)]
     pub life: u32,
+    /// The permanents each taxed creature costs besides, sacrificed, returned or tapped (CR 508.1g), each a fixed
+    /// number counted the same way.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+    pub costs: Vec<mtg_cards::cost::CostItem>,
 }
 
 /// What a prevention shield protects and how much it prevents.
@@ -830,6 +846,10 @@ pub(crate) struct RulesInForce {
     /// The changes to the mana of a tap.
     pub(crate) mana: Vec<ManaRule>,
     vote_again: BTreeSet<PlayerId>,
+    /// The players who choose how others block, by whose blocks, the last in force winning.
+    r6400_block_choosers: BTreeMap<PlayerId, PlayerId>,
+    /// The player who casts every ballot, the last in force winning.
+    r6400_vote_chooser: Option<PlayerId>,
     /// The players who get an additional vote (CR 701.38d), once for each rule that gives one.
     extra_vote: Vec<PlayerId>,
     /// How many rules reverse the turn order; an odd count runs it the other way.
@@ -1334,6 +1354,12 @@ impl RulesInForce {
                 }
             }
             Rule::VoteAgain(players) => self.vote_again.extend(players),
+            Rule::R6400ChoosesBlocks { chooser, whose } => {
+                for player in whose {
+                    self.r6400_block_choosers.insert(*player, *chooser);
+                }
+            }
+            Rule::R6400ChoosesVotes(chooser) => self.r6400_vote_chooser = Some(*chooser),
             Rule::ExtraVote(players) => self.extra_vote.extend(players),
             Rule::ReverseTurnOrder => self.r376_reversals += 1,
             Rule::AttackOnlyNearest(left) => self.r376_nearest.extend(left),
@@ -1750,6 +1776,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             mana,
             life,
             per,
+            cost,
         } => {
             let times = usize::try_from(scope.amount(per)?.max(0)).unwrap_or(usize::MAX);
             Rule::AttackTax(AttackTax {
@@ -1758,6 +1785,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 creatures: attackers.clone(),
                 mana: repeated(mana.rest(), times),
                 life: life.saturating_mul(u32::try_from(times).unwrap_or(u32::MAX)),
+                costs: crate::announce::r6400_combat_costs::r6400_repeated(cost, times),
             })
         }
         GameRule::BlockTax { .. } => crate::block_tax::lower(scope, wanted)?,
@@ -1796,6 +1824,13 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             change: *change,
         },
         GameRule::VoteAgain(who) => Rule::VoteAgain(scope.players(who)?),
+        GameRule::R6400ChoosesBlocks { chooser, whose } => Rule::R6400ChoosesBlocks {
+            chooser: one_player(scope, chooser)?,
+            whose: scope.players(whose)?,
+        },
+        GameRule::R6400ChoosesVotes { chooser } => {
+            Rule::R6400ChoosesVotes(one_player(scope, chooser)?)
+        }
         GameRule::ExtraVote(who) => Rule::ExtraVote(scope.players(who)?),
         GameRule::ReverseTurnOrder => Rule::ReverseTurnOrder,
         GameRule::AttackOnlyNearest(side) => {
@@ -2048,9 +2083,12 @@ pub(crate) fn repeated(cost: &ManaCost, times: usize) -> ManaCost {
 pub(crate) fn names_nothing(rule: &Rule) -> bool {
     match rule {
         Rule::AttackTax(tax) => {
-            tax.players.is_empty() || (tax.mana.symbols().is_empty() && tax.life == 0)
+            tax.players.is_empty()
+                || (tax.mana.symbols().is_empty() && tax.life == 0 && tax.costs.is_empty())
         }
-        Rule::BlockTax(tax) => tax.mana.symbols().is_empty() && tax.life == 0,
+        Rule::BlockTax(tax) => {
+            tax.mana.symbols().is_empty() && tax.life == 0 && tax.costs.is_empty()
+        }
         Rule::MustAttack(named)
         | Rule::MustBlock(named)
         | Rule::CantBeCountered(named)
@@ -2080,6 +2118,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::OwnSpellsCantSearch(players)
         | Rule::SearchTop { players, .. }
         | Rule::VoteAgain(players)
+        | Rule::R6400ChoosesBlocks { whose: players, .. }
         | Rule::ExtraVote(players)
         | Rule::SkipExtraTurns(players)
         | Rule::FlipTwoCoins(players)
@@ -2137,7 +2176,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::DamageAsWither
         | Rule::ManaBurn
         | Rule::RevealFirstDraw { .. }
-        | Rule::UntapRemovesCounters(_) => false,
+        | Rule::UntapRemovesCounters(_)
+        | Rule::R6400ChoosesVotes(_) => false,
         Rule::Planar => true,
         Rule::AttackOnlyNearest(left) => left.is_none(),
         Rule::PreventDamage(shield) => {
@@ -2277,6 +2317,8 @@ static NONE: RulesInForce = RulesInForce {
     untap_removes: BTreeSet::new(),
     mana: Vec::new(),
     vote_again: BTreeSet::new(),
+    r6400_block_choosers: BTreeMap::new(),
+    r6400_vote_chooser: None,
     extra_vote: Vec::new(),
     r376_reversals: 0,
     r376_nearest: Vec::new(),
@@ -3034,6 +3076,30 @@ pub(crate) fn r376_nearest_sides(state: &GameState) -> Vec<mtg_cards::refs::Side
 /// Whether the game's turn order runs the other way round the table: an odd number of rules reverse it.
 pub fn r376_turn_order_reversed(state: &GameState) -> bool {
     state.rules().r376_reversals % 2 == 1
+}
+
+/// The player who chooses how `player`'s creatures block instead of `player` (CR 509.1a), if a rule says so.
+pub fn r6400_block_chooser(state: &GameState, player: PlayerId) -> Option<PlayerId> {
+    state
+        .rules()
+        .r6400_block_choosers
+        .get(&player)
+        .copied()
+        .filter(|chooser| *chooser != player)
+}
+
+/// The player who casts every ballot of a vote (CR 701.38), if a rule says so.
+pub fn r6400_vote_chooser(state: &GameState) -> Option<PlayerId> {
+    state.rules().r6400_vote_chooser
+}
+
+/// The one player `who` names: the first, or an error for none.
+fn one_player(scope: &Scope<'_>, who: &Ref) -> Result<PlayerId, ResolveError> {
+    scope
+        .players(who)?
+        .first()
+        .copied()
+        .ok_or_else(|| ResolveError::Invalid("the rule names no player to choose".into()))
 }
 
 /// Whether `player` may vote an additional time while voting (CR 701.38d).

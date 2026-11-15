@@ -139,7 +139,15 @@ players: Array<PlayerId>,
 /**
  * How many cards from the top.
  */
-count: number, } } | { "VoteAgain": Array<PlayerId> } | { "ExtraVote": Array<PlayerId> } | "ReverseTurnOrder" | { "AttackOnlyNearest": boolean | null } | { "SkipExtraTurns": Array<PlayerId> } | { "PowerUpAgain": Array<ObjectRef> } | { "FlipTwoCoins": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | { "R6402ChangeRoll": { 
+count: number, } } | { "VoteAgain": Array<PlayerId> } | { "R6400ChoosesBlocks": { 
+/**
+ * Who declares the blocks.
+ */
+chooser: PlayerId, 
+/**
+ * Whose blocks.
+ */
+whose: Array<PlayerId>, } } | { "R6400ChoosesVotes": PlayerId } | { "ExtraVote": Array<PlayerId> } | "ReverseTurnOrder" | { "AttackOnlyNearest": boolean | null } | { "SkipExtraTurns": Array<PlayerId> } | { "PowerUpAgain": Array<ObjectRef> } | { "FlipTwoCoins": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | { "R6402ChangeRoll": { 
 /**
  * Whose rolls.
  */

@@ -27,7 +27,8 @@ pub fn g12f_x_tax_text(effect: &Effect) -> Option<String> {
             mana,
             life,
             per,
-        } if blockers.is_empty() && attackers.is_empty() && one(mana, *life, per) => Some(
+            cost,
+        } if cost.is_empty() && blockers.is_empty() && attackers.is_empty() && one(mana, *life, per) => Some(
             "this turn, creatures can't block unless their controller pays {X} for each blocking creature they control"
                 .to_owned(),
         ),
@@ -38,7 +39,8 @@ pub fn g12f_x_tax_text(effect: &Effect) -> Option<String> {
             mana,
             life,
             per,
-        } if attackers.is_empty() && one(mana, *life, per) => Some(
+            cost,
+        } if cost.is_empty() && attackers.is_empty() && one(mana, *life, per) => Some(
             "this turn, creatures can't attack unless their controller pays {X} for each attacking creature they control"
                 .to_owned(),
         ),
