@@ -1,6 +1,7 @@
 /** The game log as sentences: one line for every `EventView`, in the words a player would use. */
 import { describeLoss } from '@/features/game/outcome'
 import type {
+  AimWhy,
   AttackTarget,
   Choice,
   ContinuousEffect,
@@ -958,6 +959,15 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
   return line(`${n.seat(player)} reveals ${joinWords(shown.map(n.card))}`)
 }
 
+/** Why a seat of the boss's side attacks another hero than the one it eyes, in words. */
+function focusShiftReason(why: AimWhy, eyed: PlayerId, instead: PlayerId, n: EventNames): string {
+  if (why === 'Unreachable') return `${n.seat(eyed)} can't be attacked`
+  if (why === 'Overwhelming') return `${n.seat(instead)} is the greatest threat`
+  if (why === 'Futile') return `every attack at ${n.seat(eyed)} would be blocked and lost`
+  if (why === 'Lethal') return `the attack kills ${n.seat(instead)}`
+  return `${n.seat(instead)}'s creatures could kill ${n.seat(why.Deadly.boss)}`
+}
+
 // One clause per target, in the order the targets first appear: "Bo with A and B; Cy with C".
 function attackClauses(attackers: readonly [ObjectId, AttackTarget][], n: EventNames): string {
   const byTarget = new Map<string, string[]>()
@@ -1371,6 +1381,12 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('AttackChoicesRefused' in event) {
     return line(
       `The party's attack is refused (${event.AttackChoicesRefused.reason}); each hero chooses again`,
+    )
+  }
+  if ('FocusShifted' in event) {
+    const { player, eyed, instead, why } = event.FocusShifted
+    return line(
+      `${n.seat(player)} attacks ${n.seat(instead)} instead of ${n.seat(eyed)}: ${focusShiftReason(why, eyed, instead, n)}`,
     )
   }
   if ('BandFormed' in event) {

@@ -12,6 +12,7 @@ export type { ActivatedView } from "./ActivatedView";
 export type { AdminGame } from "./AdminGame";
 export type { AdminGameList } from "./AdminGameList";
 export type { AdminGameSeat } from "./AdminGameSeat";
+export type { AimWhy } from "./AimWhy";
 export type { Answer } from "./Answer";
 export type { AttackOptions } from "./AttackOptions";
 export type { AttackRange } from "./AttackRange";

@@ -89,7 +89,9 @@ fn w11a_declare(
     check_attackers(options, &attackers)?;
     crate::w11a_exert::w11a_check_exert(options, &attackers, &extras.exert)?;
     crate::keywords::banding::check_bands(state, &attackers, &extras.bands)?;
-    attack_tax::declare(state, player, attackers, extras)
+    let note = crate::spotlight_aim::shifted(state, player, options, &attackers);
+    let outcome = attack_tax::declare(state, player, attackers, extras)?;
+    Ok(crate::spotlight_aim::noted(outcome, note))
 }
 
 /// Whether a yes-or-no question outside any resolution is one the game itself asks: about a commander or a mutating spell.

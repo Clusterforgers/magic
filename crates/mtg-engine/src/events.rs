@@ -421,6 +421,17 @@ pub enum Event {
         /// Why the team's declaration is illegal.
         reason: String,
     },
+    /// A seat of the boss's side aims its attack at another hero than the one it eyes, for the reason given.
+    FocusShifted {
+        /// The seat of the boss's side.
+        player: PlayerId,
+        /// The hero it eyes.
+        eyed: PlayerId,
+        /// The hero its attack goes at instead.
+        instead: PlayerId,
+        /// Why.
+        why: crate::spotlight_aim::AimWhy,
+    },
     /// Attackers declared together form a band (CR 702.22c).
     BandFormed {
         /// The attacking player.
@@ -1520,6 +1531,7 @@ impl Event {
             Event::LibraryShuffled { .. }
             | Event::AttackersChosen { .. }
             | Event::AttackChoicesRefused { .. }
+            | Event::FocusShifted { .. }
             | Event::SpiritRevived { .. }
             | Event::AttractionDeckShuffled { .. }
             | Event::RolledToVisit { .. }

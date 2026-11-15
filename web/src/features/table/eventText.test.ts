@@ -1,6 +1,7 @@
 // Goal: every kind of log event, public and hidden, reads as one plain sentence with the right names, and the quiet ones (priority, mana, untaps) are marked minor; an attach event names the host it comes from when the caller knows it.
 import { describe, expect, it } from 'vitest'
 import type {
+  AimWhy,
   ContinuousEffect,
   Event,
   EventView,
@@ -285,6 +286,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   AttackChoicesRefused: [
     { AttackChoicesRefused: { reason: 'a creature can’t attack alone' } },
     "The party's attack is refused (a creature can’t attack alone); each hero chooses again",
+  ],
+  FocusShifted: [
+    { FocusShifted: { player: 2, eyed: 0, instead: 1, why: 'Unreachable' } },
+    "Cy attacks Bo instead of Ana: Ana can't be attacked",
   ],
   BandFormed: [
     { BandFormed: { player: 1, attackers: [1, 2] } },
@@ -845,6 +850,16 @@ describe('minor lines', () => {
 })
 
 describe('events with more than one shape', () => {
+  it.each<[AimWhy, string]>([
+    ['Unreachable', "Cy attacks Bo instead of Ana: Ana can't be attacked"],
+    ['Overwhelming', 'Cy attacks Bo instead of Ana: Bo is the greatest threat'],
+    [{ Deadly: { boss: 2 } }, "Cy attacks Bo instead of Ana: Bo's creatures could kill Cy"],
+    ['Futile', 'Cy attacks Bo instead of Ana: every attack at Ana would be blocked and lost'],
+    ['Lethal', 'Cy attacks Bo instead of Ana: the attack kills Bo'],
+  ])('names why the boss side leaves the hero it eyes (%j)', (why, text) => {
+    expect(say({ FocusShifted: { player: 2, eyed: 0, instead: 1, why } })).toBe(text)
+  })
+
   it('tells attackers and blockers apart in NothingToDo', () => {
     expect(say({ NothingToDo: { player: 1, kind: 'Block' } })).toBe('Bo has no possible blockers')
   })
