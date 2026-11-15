@@ -34,12 +34,20 @@ fn r6403_melded() -> Vec<(String, Arc<CardDefinition>)> {
 }
 
 fn r6403_driver(scenario: &Scenario) -> Driver {
-    let setup = scenario.clone().setup().unwrap().with_conjurable(r6403_melded());
+    let setup = scenario
+        .clone()
+        .setup()
+        .unwrap()
+        .with_conjurable(r6403_melded());
     Driver::new(Engine::new(setup).unwrap()).unwrap()
 }
 
 fn r6403_replays(scenario: &Scenario, driver: &Driver) {
-    let setup = scenario.clone().setup().unwrap().with_conjurable(r6403_melded());
+    let setup = scenario
+        .clone()
+        .setup()
+        .unwrap()
+        .with_conjurable(r6403_melded());
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.engine().state_hash());
 }
@@ -48,7 +56,8 @@ fn r6403_replays(scenario: &Scenario, driver: &Driver) {
 fn r6403_names(driver: &Driver, zone: Zone) -> Vec<String> {
     let mut names: Vec<String> = driver
         .state()
-        .zone(zone).iter()
+        .zone(zone)
+        .iter()
         .filter_map(|id| driver.state().object(*id))
         .map(|object| object.card().name.clone())
         .collect();
@@ -58,10 +67,11 @@ fn r6403_names(driver: &Driver, zone: Zone) -> Vec<String> {
 
 fn r6403_on_battlefield(driver: &Driver, name: &str) -> Option<mtg_core::ids::ObjectId> {
     let state = driver.state();
-    state
-        .zone(Zone::Battlefield).iter()
-        .copied()
-        .find(|id| state.object(*id).is_some_and(|object| object.card().name == name))
+    state.zone(Zone::Battlefield).iter().copied().find(|id| {
+        state
+            .object(*id)
+            .is_some_and(|object| object.card().name == name)
+    })
 }
 
 fn r6403_settle(driver: &mut Driver) {
@@ -77,7 +87,8 @@ fn r6403_settle(driver: &mut Driver) {
     panic!("the stack does not empty");
 }
 
-/// Seat 0 controls Gisela and the Bruna of `bruna_seat`; seat 1 holds a free instant that destroys a creature.
+/// Seat 0 controls Gisela and the Bruna of `bruna_seat`, and holds a free instant that destroys a creature (Brisela keeps
+/// its opponents from casting one).
 fn r6403_angels(seats: usize, bruna_seat: usize) -> Scenario {
     let kill = spell(
         "Kill",
@@ -85,11 +96,14 @@ fn r6403_angels(seats: usize, bruna_seat: usize) -> Scenario {
         r#"[{"what":{"Object":[{"Type":"Creature"}]}}]"#,
         r#"[{"Destroy":{"what":{"Target":0}}}]"#,
     );
-    let scenario = Scenario::new(seats)
+    let mut boards = vec![vec![ready(card(GISELA).unwrap())], Vec::new()];
+    boards[bruna_seat].push(ready(card(BRUNA).unwrap()));
+    let [mine, theirs] = <[_; 2]>::try_from(boards).unwrap();
+    Scenario::new(seats)
         .at(1, 0, Step::Main1)
-        .battlefield(0, vec![ready(card(GISELA).unwrap())])
-        .hand(1, vec![kill]);
-    scenario.battlefield(bruna_seat, vec![ready(card(BRUNA).unwrap())])
+        .battlefield(0, mine)
+        .battlefield(1, theirs)
+        .hand(0, vec![kill])
 }
 
 #[rstest]
@@ -105,14 +119,18 @@ fn r6403_the_pair_melds_and_leaves_as_two_cards(#[values(2, 3, 4)] seats: usize)
     // The mana value is the total of the front faces' (CR 712.8): {2}{W}{W} and {5}{W}{W}.
     assert_eq!(object.mana_value(), 11);
     assert_eq!(object.card().power, Some(9));
-    // Seat 1 destroys it: both cards go to their owner's graveyard.
-    let at = mtg_engine::choose::Target::Object(object.reference());
+    // Its controller destroys it: both cards go to their owner's graveyard.
+    while driver.decision().unwrap().player.index() != 0 {
+        driver.pass().unwrap();
+    }
+    let at =
+        mtg_engine::choose::Target::Object(driver.state().object(brisela).unwrap().reference());
     driver.cast_at("Kill", &[at]).unwrap();
     r6403_settle(&mut driver);
     assert!(r6403_on_battlefield(&driver, BRISELA).is_none());
     let owner = mtg_core::ids::PlayerId::from_index(0);
     let graveyard = r6403_names(&driver, Zone::Graveyard(owner));
-    assert_eq!(graveyard, [BRUNA, GISELA]);
+    assert_eq!(graveyard, [BRUNA, GISELA, "Kill"]);
     r6403_replays(&scenario, &driver);
 }
 
@@ -169,6 +187,7 @@ fn r6403_the_melded_permanent_has_its_enters_trigger(#[values(2, 3, 4)] seats: u
     let mut driver = r6403_driver(&scenario);
     let next = u32::try_from(seats + 1).unwrap();
     driver.idle_until(next, Step::Draw).unwrap();
+
     assert!(r6403_on_battlefield(&driver, "Titania, Gaea Incarnate").is_some());
     // Its enters trigger returned the four Forests.
     let forests = r6403_names(&driver, Zone::Battlefield)

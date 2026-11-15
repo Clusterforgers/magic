@@ -27,13 +27,21 @@ fn r6403_table(seats: usize, hand: &[&str]) -> Scenario {
     Scenario::new(seats)
         .at(1, 0, Step::Main1)
         .battlefield(0, board)
-        .hand(0, hand.iter().map(|name| card(name).unwrap()).collect::<Vec<_>>())
+        .hand(
+            0,
+            hand.iter()
+                .map(|name| card(name).unwrap())
+                .collect::<Vec<_>>(),
+        )
 }
 
 fn r6403_settle(driver: &mut Driver, pick: Option<&str>) {
     for _ in 0..200 {
         let state = driver.state();
-        if state.stack().is_empty() && state.resolving().is_none() && state.pending_triggers().is_empty() {
+        if state.stack().is_empty()
+            && state.resolving().is_none()
+            && state.pending_triggers().is_empty()
+        {
             return;
         }
         if let Ok(decision) = driver.decision()
@@ -49,7 +57,9 @@ fn r6403_settle(driver: &mut Driver, pick: Option<&str>) {
                 })
                 .into_iter()
                 .collect();
-            driver.answer(Answer::ChooseCards(CardsChoice(chosen))).unwrap();
+            driver
+                .answer(Answer::ChooseCards(CardsChoice(chosen)))
+                .unwrap();
             continue;
         }
         driver.answer_passively().unwrap();
@@ -73,7 +83,8 @@ fn r6403_swap(scenario: &Scenario, pick: Option<&str>) -> Driver {
 fn r6403_in(driver: &Driver, zone: Zone, name: &str) -> bool {
     driver
         .state()
-        .zone(zone).iter()
+        .zone(zone)
+        .iter()
         .any(|id| driver.state().object(*id).unwrap().card().name == name)
 }
 
@@ -88,7 +99,11 @@ fn r6403_the_aura_card_takes_its_place(#[values(2, 3, 4)] seats: usize) {
     let object = driver.state().object(rancor).unwrap();
     assert_eq!(object.zone(), Zone::Battlefield);
     assert_eq!(
-        object.permanent().unwrap().attached_to().map(|host| host.id),
+        object
+            .permanent()
+            .unwrap()
+            .attached_to()
+            .map(|host| host.id),
         Some(bears)
     );
 }

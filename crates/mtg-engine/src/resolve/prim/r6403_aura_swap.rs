@@ -52,9 +52,8 @@ fn swap(cx: &Cx<'_>) -> Result<Run, Stop> {
         (None, None) => return Ok(Run::events(Vec::new())),
     };
     let fits = |card: &GameObject| match host {
-        Host::Object(id) => {
-            attach::hosts_when_entering(state, card, player).is_some_and(|hosts| hosts.contains(&id))
-        }
+        Host::Object(id) => attach::hosts_when_entering(state, card, player)
+            .is_some_and(|hosts| hosts.contains(&id)),
         Host::Player(enchanted) => {
             attach::player_hosts_when_entering(state, card, player).contains(&enchanted)
         }
@@ -64,7 +63,12 @@ fn swap(cx: &Cx<'_>) -> Result<Run, Stop> {
         .get(Zone::Hand(player))
         .iter()
         .filter_map(|id| state.object(*id))
-        .filter(|card| card.card().subtypes.iter().any(|subtype| subtype.0 == "Aura"))
+        .filter(|card| {
+            card.card()
+                .subtypes
+                .iter()
+                .any(|subtype| subtype.0 == "Aura")
+        })
         .filter(|card| fits(card))
         .map(GameObject::id)
         .collect();
@@ -72,7 +76,10 @@ fn swap(cx: &Cx<'_>) -> Result<Run, Stop> {
         return Ok(Run::events(Vec::new()));
     }
     let mut questions = Questions::new(cx);
-    let text = format!("You may exchange {} with an Aura card in your hand.", aura.card().name);
+    let text = format!(
+        "You may exchange {} with an Aura card in your hand.",
+        aura.card().name
+    );
     let taken = questions.cards(player, cards, (0, 1), text)?;
     questions.end()?;
     let Some(card) = taken.first().copied() else {

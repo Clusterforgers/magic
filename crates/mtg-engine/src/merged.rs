@@ -406,6 +406,8 @@ pub(crate) fn meld(state: &mut GameState, melded: &Melded) -> Result<(), EngineE
             "a melded card is called what its definition is called",
         ));
     }
+    // The melded card brings its abilities into the game: the state watches for what they need.
+    crate::copies::note_definition(state, &melded.definition);
     let partner = state
         .objects
         .remove(&melded.with)

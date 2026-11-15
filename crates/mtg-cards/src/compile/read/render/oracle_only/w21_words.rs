@@ -33,9 +33,7 @@ pub(super) fn words(keyword: &Keyword, unit: bool) -> Option<Words> {
         Keyword::Outlast(cost)
         | Keyword::Prowl(cost)
         | Keyword::Replicate(cost)
-        | Keyword::AuraSwap(cost) => {
-            plain(format!("{name} {}", mana_only(cost)?))
-        }
+        | Keyword::AuraSwap(cost) => plain(format!("{name} {}", mana_only(cost)?)),
         Keyword::Macro { name, amount: 0 } => plain(name.clone()),
         Keyword::Macro { name, amount } => plain(format!("{name} {amount}")),
         Keyword::Affinity(kind) => plain(format!("affinity for {}", phrase_text(kind, Form::All)?)),

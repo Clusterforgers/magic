@@ -5,32 +5,11 @@
   "faces": [
     {
       "name": "Arcanum Wings",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "b65007aa0bdeea46cd22cb663999ba9a",
       "abilities": [
-        {
-          "Keyword": {
-            "Enchant": [
-              {
-                "Type": "Creature"
-              }
-            ]
-          }
-        },
-        {
-          "Static": {
-            "affected": "Attached",
-            "mods": [
-              {
-                "AddKeyword": "Flying"
-              }
-            ]
-          }
-        },
-        {
-          "Keyword": {
-            "AuraSwap": "{2}{U}"
-          }
-        }
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Flying" }] } },
+        { "Keyword": { "AuraSwap": "{2}{U}" } }
       ]
     }
   ]

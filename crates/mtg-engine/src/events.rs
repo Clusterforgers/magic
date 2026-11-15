@@ -1624,7 +1624,8 @@ impl Event {
             | Event::SchemeSetInMotion { emblem, .. } => vec![*emblem],
             Event::Ventured(ventured) => vec![ventured.object],
             Event::BecameCopy(copy) => vec![copy.object],
-            Event::Melded(melded) => vec![melded.object, melded.with],
+            // The partner is part of the permanent and no object of its own after the event.
+            Event::Melded(melded) => vec![melded.object],
             Event::SpellCopied(copy) => vec![copy.object],
             Event::CardCopied(copy) => vec![copy.object],
             Event::AbilityCopied(copy) => vec![copy.object],
