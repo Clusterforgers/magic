@@ -38,7 +38,7 @@ async fn shelf(repo: &DeckGroupRepo, who: u128) -> Vec<Vec<DeckId>> {
     let mut shelf: Vec<Vec<DeckId>> = repo
         .list(owner(who))
         .await
-        .unwrap()
+        .unwrap_or_else(|e| panic!("the groups are listed: {e}"))
         .into_iter()
         .map(|group| group.decks)
         .collect();
@@ -204,7 +204,7 @@ async fn a_membership_is_unique_per_deck_and_group(pool: PgPool) {
     assert!(
         again
             .as_database_error()
-            .is_some_and(|e| e.is_unique_violation())
+            .is_some_and(sqlx::error::DatabaseError::is_unique_violation)
     );
 }
 
@@ -307,6 +307,6 @@ async fn the_many_groups_migration_keeps_every_membership(pool: PgPool) {
     assert!(
         duplicate
             .as_database_error()
-            .is_some_and(|e| e.is_unique_violation())
+            .is_some_and(sqlx::error::DatabaseError::is_unique_violation)
     );
 }
