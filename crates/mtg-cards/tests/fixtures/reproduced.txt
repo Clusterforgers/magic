@@ -1017,6 +1017,7 @@ Ill-Tempered Cyclops
 Illicit Shipment
 Illuminate History
 Illusion Spinners
+Illusion of Choice
 Illustrious Wanderglyph
 Ilysian Caryatid
 Imi Statue
@@ -1052,6 +1053,7 @@ Intrepid Adversary
 Intrepid Rabbit
 Intrepid Stablemaster
 Invading Manticore
+Invasion Plans
 Invasion of Arcavios // Invocation of the Founders
 Invasion of Muraganda // Primordial Plasm
 Invasion of Segovia // Caetus, Sea Tyrant of Segovia
@@ -1295,6 +1297,7 @@ Mayhem Patrol
 Meeting of the Five
 Megaton's Fate
 Megrim
+Melee
 Memory Crystal
 Memory Guardian
 Memory Plunder
@@ -1442,6 +1445,7 @@ Observed Stasis
 Obstinate Baloth
 Octomancer
 Octopus Umbra
+Odric, Master Tactician
 Ohran Yeti
 Ojer Axonil, Deepest Might // Temple of Power
 Okiba Reckoner Raid // Nezumi Road Captain

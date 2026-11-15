@@ -673,6 +673,21 @@ pub enum Effect {
     RemoveFromCombat {
         /// The creatures that leave combat.
         what: Ref,
+        /// The attackers they were blocking that no other creature blocked this combat become unblocked ("Creatures
+        /// it was blocking that had become blocked by only that creature this combat become unblocked.").
+        #[serde(default, skip_serializing_if = "is_false")]
+        unblock: bool,
+    },
+    /// Each creature `what` names blocks an attacking creature the effect's controller chooses among those it could
+    /// block (CR 509.1h, 506.4): "then it blocks an attacking creature of your choice"; none when `optional` and the
+    /// controller chooses none ("You may have it block an attacking creature of your choice."). It is no declaration:
+    /// the blocker's "blocks" abilities trigger, and the attacker's "becomes blocked" ones only if it was unblocked.
+    R6400Block {
+        /// The creatures that block.
+        what: Ref,
+        /// The controller may choose no attacker.
+        #[serde(default, skip_serializing_if = "is_false")]
+        optional: bool,
     },
     /// The players lose all unspent mana (CR 106.4), whatever it lasts for: "that player loses all unspent mana".
     LoseUnspentMana {

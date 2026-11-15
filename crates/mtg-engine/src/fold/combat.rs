@@ -287,6 +287,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     .ok_or_else(|| invalid(format!("{attacker:?} is not attacking")))?;
                 target.blockers.push(*blocker);
                 target.blocked = true;
+                state.combat.r6400_blocked_by.push((*attacker, *blocker));
                 let blocked = state.object(*attacker).map(GameObject::reference);
                 state.record(
                     TallyEvent::Blocked,
@@ -406,6 +407,46 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             attacker.target_left = false;
         }
         Event::RemovedFromCombat { object } => state.combat.remove_object(*object),
+        Event::R6400Unblocked { attacker } => {
+            let target = state
+                .combat
+                .attackers
+                .iter_mut()
+                .find(|a| a.object == *attacker)
+                .ok_or_else(|| invalid(format!("{attacker:?} is not attacking")))?;
+            if !target.blockers.is_empty() {
+                return Err(invalid(format!(
+                    "{attacker:?} is still blocked by a creature"
+                )));
+            }
+            target.blocked = false;
+        }
+        Event::R6400Blocks { blocker, attacker } => {
+            if !on_battlefield(state, *blocker) {
+                return Err(invalid(format!(
+                    "blocker {blocker:?} is not on the battlefield"
+                )));
+            }
+            let player = crate::characteristics::controller_of(state, *blocker);
+            let target = state
+                .combat
+                .attackers
+                .iter_mut()
+                .find(|a| a.object == *attacker)
+                .ok_or_else(|| invalid(format!("{attacker:?} is not attacking")))?;
+            if !target.blockers.contains(blocker) {
+                target.blockers.push(*blocker);
+            }
+            target.blocked = true;
+            state.combat.r6400_blocked_by.push((*attacker, *blocker));
+            let blocked = state.object(*attacker).map(GameObject::reference);
+            state.record(
+                TallyEvent::Blocked,
+                player,
+                (*blocker, blocked.map(Target::Object)),
+                1,
+            );
+        }
         Event::AttackersBlocked { attackers } => {
             for attacker in attackers {
                 let target = state

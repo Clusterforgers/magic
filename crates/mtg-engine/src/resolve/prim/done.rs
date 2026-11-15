@@ -135,6 +135,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Rule { .. }
         | Effect::Regenerate { .. }
         | Effect::RemoveFromCombat { .. }
+        | Effect::R6400Block { .. }
         | Effect::BecomeBlocked { .. }
         | Effect::PutBeneathTop { .. }
         | Effect::LoseUnspentMana { .. }

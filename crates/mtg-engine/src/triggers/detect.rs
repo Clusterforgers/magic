@@ -1113,6 +1113,30 @@ fn about_players_and_permanents(
                 blockers: Vec::new(),
             }));
         }
+        // A creature that begins to block without a declaration blocks; its attacker becomes blocked only if it was not
+        // blocked before.
+        Event::R6400Blocks { blocker, attacker } => {
+            found.push(Happened::Blocked {
+                blocker: *blocker,
+                attacker: *attacker,
+            });
+            found.push(Happened::Blocking {
+                blocker: *blocker,
+                attackers: vec![*attacker],
+            });
+            let was_blocked = look
+                .pre
+                .combat()
+                .attackers()
+                .iter()
+                .any(|attack| attack.object() == *attacker && attack.blocked());
+            if !was_blocked {
+                found.push(Happened::BecameBlocked {
+                    attacker: *attacker,
+                    blockers: vec![*blocker],
+                });
+            }
+        }
         Event::BlockersDeclared { blocks, player } => {
             found.extend(blocks.iter().map(|(blocker, attacker)| Happened::Blocked {
                 blocker: *blocker,

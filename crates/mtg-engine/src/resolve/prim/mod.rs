@@ -138,6 +138,7 @@ mod r5501_echo_rather;
 mod r5509_face_down_pile;
 mod r5509_foretold;
 mod r6102_random_counter;
+mod r6400_block;
 mod regenerate;
 mod remove_counters;
 mod remove_from_combat;
@@ -349,6 +350,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Rule { .. } => rule::run(cx, effect),
         Effect::Regenerate { .. } => regenerate::run(cx, effect),
         Effect::RemoveFromCombat { .. } => remove_from_combat::run(cx, effect),
+        Effect::R6400Block { .. } => r6400_block::run(cx, effect),
         Effect::BecomeBlocked { .. } => rmt1_become_blocked::run(cx, effect),
         Effect::PutBeneathTop { .. } => rmt1_beneath::run(cx, effect),
         Effect::LoseUnspentMana { .. } => rmt1_unspent::run(cx, effect),
@@ -618,6 +620,7 @@ mod tests {
         "Effect.Rule",
         "Effect.Regenerate",
         "Effect.RemoveFromCombat",
+        "Effect.R6400Block",
         "Effect.BecomeBlocked",
         "Effect.PutBeneathTop",
         "Effect.LoseUnspentMana",

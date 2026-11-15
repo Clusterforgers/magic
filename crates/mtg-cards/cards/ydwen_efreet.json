@@ -1,0 +1,34 @@
+{
+  "oracle_id": "15b9b0cc-47ef-4147-aba7-a7adae41921b",
+  "name": "Ydwen Efreet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ydwen Efreet",
+      "oracle_fingerprint": "2d28e53e31566a508c6804a023bb4f5d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": ["This"] } },
+            "effects": [
+              {
+                "FlipCoin": {
+                  "lose": [
+                    { "RemoveFromCombat": { "what": "This", "unblock": true } },
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": ["CantBlock"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

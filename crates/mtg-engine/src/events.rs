@@ -458,6 +458,20 @@ pub enum Event {
         /// The creature.
         object: ObjectId,
     },
+    /// An attacking creature that no creature still blocks and only creatures that left combat had blocked this combat
+    /// became unblocked (False Orders, Balduvian Warlord).
+    R6400Unblocked {
+        /// The attacker.
+        attacker: ObjectId,
+    },
+    /// A creature began to block an attacking creature without being declared (CR 509.1h): "then it blocks an
+    /// attacking creature of your choice".
+    R6400Blocks {
+        /// The blocker.
+        blocker: ObjectId,
+        /// The attacker it blocks.
+        attacker: ObjectId,
+    },
     /// Attacking creatures became blocked by an effect, with no creature blocking them (CR 509.1h).
     AttackersBlocked {
         /// The attackers, each not blocked before.
@@ -1603,6 +1617,7 @@ impl Event {
             | Event::OpeningCardsPlayed { cards, .. }
             | Event::LibraryInserted { cards, .. }
             | Event::LibraryBottomed { cards, .. } => cards.clone(),
+            Event::R6400Blocks { blocker, attacker } => vec![*blocker, *attacker],
             Event::AttackersBlocked { attackers } | Event::BandFormed { attackers, .. } => {
                 attackers.clone()
             }
@@ -1652,6 +1667,7 @@ impl Event {
             | Event::PermanentPhasedOut { object, .. }
             | Event::PermanentPhasedIn { object }
             | Event::RemovedFromCombat { object }
+            | Event::R6400Unblocked { attacker: object }
             | Event::Regenerated { object }
             | Event::DamageRemoved { object }
             | Event::CardDrawn { object, .. }

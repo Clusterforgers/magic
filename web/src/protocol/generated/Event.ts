@@ -462,7 +462,19 @@ unpreventable?: boolean, } } | "CombatEnded" | "DamageCleared" | { "RemovedFromC
 /**
  * The creature.
  */
-object: ObjectId, } } | { "AttackersBlocked": { 
+object: ObjectId, } } | { "R6400Unblocked": { 
+/**
+ * The attacker.
+ */
+attacker: ObjectId, } } | { "R6400Blocks": { 
+/**
+ * The blocker.
+ */
+blocker: ObjectId, 
+/**
+ * The attacker it blocks.
+ */
+attacker: ObjectId, } } | { "AttackersBlocked": { 
 /**
  * The attackers, each not blocked before.
  */

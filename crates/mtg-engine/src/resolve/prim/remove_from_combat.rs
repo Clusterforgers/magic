@@ -9,27 +9,48 @@ use crate::zones::Zone;
 
 /// Each creature the effect names that is still the object named, on the battlefield and in combat as an attacker or a
 /// blocker leaves combat. A creature that is not in combat, an object that changed zones since it was named (CR 400.7)
-/// and a name that repeats are passed over, and naming nothing removes nothing.
+/// and a name that repeats are passed over, and naming nothing removes nothing. With `unblock`, each attacker a removed
+/// creature was blocking that no other creature blocked this combat becomes unblocked after it.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::RemoveFromCombat { what } = effect else {
+    let Effect::RemoveFromCombat { what, unblock } = effect else {
         return Err(wrong_effect("RemoveFromCombat"));
     };
     let combat = &cx.state().combat;
-    let events = cx
-        .scope
-        .live_objects(what)?
-        .into_iter()
-        .filter(|object| object.zone() == Zone::Battlefield && combat.contains(object.id()))
-        .map(|object| Event::RemovedFromCombat {
-            object: object.id(),
-        })
+    let mut removed: Vec<mtg_core::ids::ObjectId> = Vec::new();
+    for object in cx.scope.live_objects(what)? {
+        if object.zone() == Zone::Battlefield
+            && combat.contains(object.id())
+            && !removed.contains(&object.id())
+        {
+            removed.push(object.id());
+        }
+    }
+    let mut events: Vec<Event> = removed
+        .iter()
+        .map(|object| Event::RemovedFromCombat { object: *object })
         .collect();
+    if *unblock {
+        events.extend(
+            combat
+                .attackers()
+                .iter()
+                .filter(|attack| {
+                    removed.iter().any(|blocker| {
+                        attack.blockers.contains(blocker)
+                            && combat.r6400_blocked_only_by(attack.object, *blocker)
+                    })
+                })
+                .map(|attack| Event::R6400Unblocked {
+                    attacker: attack.object,
+                }),
+        );
+    }
     Ok(Run::events(events))
 }
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a removal from combat takes each creature it names that attacks or blocks out of the combat and no other: an attacker leaves and a blocker leaves its attacker's blockers while the attacker stays blocked, creatures outside combat, cards elsewhere and names that match nothing are passed over, and the effect refuses another effect by name.
+    //! Goal: a removal from combat takes each creature it names that attacks or blocks out of the combat and no other: an attacker leaves and a blocker leaves its attacker's blockers while the attacker stays blocked, creatures outside combat, cards elsewhere and names that match nothing are passed over, and the effect refuses another effect by name; with `unblock` the attacker becomes unblocked only when every creature that blocked it this combat was the one removed.
     use mtg_core::ids::{ObjectId, PlayerId};
     use rstest::rstest;
 
@@ -133,6 +154,47 @@ mod tests {
     #[case::a_player(r#"{"RemoveFromCombat":{"what":"You"}}"#, &[])]
     fn a_removal_names_the_creatures_that_are_in_combat(#[case] json: &str, #[case] want: &[&str]) {
         assert_eq!(removed(&game(), json), want);
+    }
+
+    // Who blocked the Source this combat besides the Bear (by name), and whether removing the Bear unblocks it.
+    #[rstest]
+    #[case::the_bear_alone(&[], true)]
+    #[case::an_ogre_too(&["Ogre"], false)]
+    #[case::the_bear_twice(&["Bear"], true)]
+    fn r6400_an_attacker_is_unblocked_only_if_the_removed_creature_alone_blocked_it(
+        #[case] others: &[&str],
+        #[case] unblocked: bool,
+    ) {
+        let mut game = game();
+        let (source, bear) = (id(&game, "Source"), id(&game, "Bear"));
+        game.combat.r6400_blocked_by.push((source, bear));
+        for other in others {
+            let other = id(&game, other);
+            game.combat.r6400_blocked_by.push((source, other));
+        }
+        let Run::Done { events, .. } = run_json(
+            &game,
+            r#"{"RemoveFromCombat":{"what":{"Each":[{"Named":"Bear"}]},"unblock":true}}"#,
+        )
+        .unwrap() else {
+            panic!("a removal needs no answer");
+        };
+        let mut after = game.clone();
+        for event in &events {
+            apply_event(&mut after, event).unwrap();
+        }
+        let attack = after
+            .combat
+            .attackers()
+            .iter()
+            .find(|a| a.object() == source)
+            .unwrap();
+        assert_eq!(attack.blocked(), !unblocked);
+        assert!(attack.blockers().is_empty());
+        assert_eq!(
+            events.contains(&Event::R6400Unblocked { attacker: source }),
+            unblocked
+        );
     }
 
     #[rstest]

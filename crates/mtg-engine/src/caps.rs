@@ -467,6 +467,7 @@ const RUNS: &[&str] = &[
     "Effect.Rule",
     "Effect.Regenerate",
     "Effect.RemoveFromCombat",
+    "Effect.R6400Block",
     "Effect.BecomeBlocked",
     "Effect.PutBeneathTop",
     "Effect.LoseUnspentMana",
@@ -1481,6 +1482,7 @@ mod tests {
     #[case::damage_that_cant_be_prevented("Rule.DamageCantBePrevented", true)]
     #[case::regenerating("Effect.Regenerate", true)]
     #[case::leaving_combat("Effect.RemoveFromCombat", true)]
+    #[case::r6400_blocking_by_choice("Effect.R6400Block", true)]
     #[case::shields("Effect.Shield", true)]
     #[case::preventing("ReplaceBy.Prevent", true)]
     #[case::preventing_in_part("ReplaceBy.PreventUpTo", true)]

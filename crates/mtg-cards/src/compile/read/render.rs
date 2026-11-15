@@ -3179,7 +3179,11 @@ impl Writer<'_> {
     /// The effects with a wording of their own: a card returned to the battlefield, the casting and the keyword actions.
     /// "remove enchanted creature from combat".
     fn left_combat(&mut self, effect: &Effect) -> Option<String> {
-        let Effect::RemoveFromCombat { what } = effect else {
+        let Effect::RemoveFromCombat {
+            what,
+            unblock: false,
+        } = effect
+        else {
             return None;
         };
         Some(format!("remove {} from combat", self.object(what)?))
