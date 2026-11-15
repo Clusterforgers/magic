@@ -41,6 +41,8 @@ import { hauntWords } from './campaign/haunt'
 export interface EventNames {
   seat(seat: PlayerId): string
   card(id: ObjectId): string
+  /** The seat that owns the card, when the viewer knows it; a manual action names a card of another seat by it. */
+  owner?(id: ObjectId): PlayerId | undefined
   /** The clauses of a card's rules that are left to the table, when the viewer knows them. */
   clauses?(id: ObjectId): readonly string[]
   /** Whether the card is a permanent card, whose clauses are its abilities and not the effects of a spell. */
@@ -514,26 +516,40 @@ export function describeArrange(
   return `${n.seat(player)} puts back the top ${all} of their library: ${said.join(', ')} (by hand)`
 }
 
+/** `n` with every card named as its owner's when another seat than `player` owns it: "Bo's Sol Ring". */
+function ownedBy(n: EventNames, player: PlayerId): EventNames {
+  return {
+    ...n,
+    card: (id) => {
+      const owner = n.owner?.(id)
+      return owner === undefined || owner === player ? n.card(id) : `${n.seat(owner)}'s ${n.card(id)}`
+    },
+  }
+}
+
 /**
- * What a seat did by hand, as one sentence; the events of the change follow it in the log. `from` is the zone a moved
- * card left, which the action does not name and the change does (`foldLog` passes it).
+ * What a seat did by hand, as one sentence; the events of the change follow it in the log. A card or a seat of another
+ * seat is named by its owner ("Ana moves Bo's Sol Ring from the battlefield to the graveyard (by hand)"). `from` is the
+ * zone a moved card left, which the action does not name and the change does (`foldLog` passes it).
  */
 export function describeManual(
   player: PlayerId,
   action: ManualAction,
-  n: EventNames,
+  names: EventNames,
   from?: Zone,
   shown?: readonly ObjectId[],
   rolled?: number,
 ): string {
-  const who = n.seat(player)
+  const who = names.seat(player)
+  const n = ownedBy(names, player)
   if ('Move' in action) {
     const left = from === undefined ? '' : ` from ${leftWord(from)}`
     return `${who} moves ${n.card(action.Move.object)}${left} to ${MANUAL_ZONE[action.Move.to]} (by hand)`
   }
   if ('MoveTop' in action) {
-    const { count, to } = action.MoveTop
-    return `${who} moves the top ${cards(count)} of their library to ${MANUAL_ZONE[to]} (by hand)`
+    const { count, to, library } = action.MoveTop
+    const whose = library === undefined || library === player ? 'their' : `${n.seat(library)}'s`
+    return `${who} moves the top ${cards(count)} of ${whose} library to ${MANUAL_ZONE[to]} (by hand)`
   }
   if ('Counters' in action) {
     const { object, counter, delta } = action.Counters
@@ -541,12 +557,20 @@ export function describeManual(
     return `${who} ${delta > 0 ? 'puts' : 'removes'} ${phrase} ${delta > 0 ? 'on' : 'from'} ${n.card(object)} (by hand)`
   }
   if ('PlayerCounters' in action) {
-    const { counter, delta } = action.PlayerCounters
-    return `${who} ${delta > 0 ? 'gets' : 'loses'} ${counterPhrase(Math.abs(delta), counter)} (by hand)`
+    const { player: target, counter, delta } = action.PlayerCounters
+    const phrase = counterPhrase(Math.abs(delta), counter)
+    if (target !== player) {
+      return `${who} ${delta > 0 ? 'puts' : 'removes'} ${phrase} ${delta > 0 ? 'on' : 'from'} ${n.seat(target)} (by hand)`
+    }
+    return `${who} ${delta > 0 ? 'gets' : 'loses'} ${phrase} (by hand)`
   }
   if ('Life' in action) {
-    const { delta } = action.Life
-    return `${who} ${delta > 0 ? 'gains' : 'loses'} ${Math.abs(delta)} life (by hand)`
+    const { player: target, delta } = action.Life
+    const life = `${Math.abs(delta)} life`
+    if (target !== player) {
+      return `${who} makes ${n.seat(target)} ${delta > 0 ? 'gain' : 'lose'} ${life} (by hand)`
+    }
+    return `${who} ${delta > 0 ? 'gains' : 'loses'} ${life} (by hand)`
   }
   if ('CreateToken' in action) {
     const { token, count } = action.CreateToken
@@ -627,11 +651,12 @@ export function describeManual(
   if ('MoveBack' in action) {
     return `${who} puts ${n.card(action.MoveBack.object)} onto the battlefield back face up (by hand)`
   }
-  return describeControl(who, action, n, from)
+  return describeControl(player, action, n, from)
 }
 
 /** The search of a library, a tutor, a sacrifice, a summoning sickness removed and a control given, by hand. */
-function describeControl(who: string, action: ManualAction, n: EventNames, from?: Zone): string {
+function describeControl(player: PlayerId, action: ManualAction, n: EventNames, from?: Zone): string {
+  const who = n.seat(player)
   if ('Search' in action) return `${who} searches their library (by hand)`
   if ('Tutor' in action) {
     return `${who} puts ${n.card(action.Tutor.object)} from their library into their hand and shuffles (by hand)`
@@ -643,9 +668,12 @@ function describeControl(who: string, action: ManualAction, n: EventNames, from?
   if ('GiveControl' in action) {
     const { object, to } = action.GiveControl
     if (from === undefined || from === 'Battlefield') {
-      return `${who} gives control of ${n.card(object)} to ${n.seat(to)} (by hand)`
+      return to === player
+        ? `${who} takes control of ${n.card(object)} (by hand)`
+        : `${who} gives control of ${n.card(object)} to ${n.seat(to)} (by hand)`
     }
-    return `${who} puts ${n.card(object)} from ${leftWord(from)} onto the battlefield under ${n.seat(to)}’s control (by hand)`
+    const under = to === player ? 'their' : `${n.seat(to)}’s`
+    return `${who} puts ${n.card(object)} from ${leftWord(from)} onto the battlefield under ${under} control (by hand)`
   }
   return `${who} acts by hand`
 }

@@ -333,6 +333,75 @@ describe('the Mana row', () => {
   })
 })
 
+describe('the seat whose numbers a command changes', () => {
+  const picker = (panel: HTMLElement): HTMLElement =>
+    within(panel).getByRole('combobox', { name: /Life, counters, Mill and Exile from the top change/ })
+
+  it('lists the seat itself first and then every other seat still in the game', () => {
+    const { panel } = panelTable()
+    const options = within(picker(panel)).getAllByRole('option')
+    expect(options).toHaveLength(2)
+    expect(options[0]).toHaveTextContent(/^You \(/)
+    expect(picker(panel)).toHaveValue('0')
+  })
+
+  it('has no picker while no other seat is in the game', () => {
+    renderTable({
+      seats: 2,
+      options: { viewport: WIDE },
+      ui: <CommandsPanel />,
+      state: (state) => ({
+        ...state,
+        view: state.view === null ? null : { ...state.view, players: state.view.players.slice(0, 1) },
+      }),
+    })
+    expect(screen.queryByRole('combobox', { name: /Life, counters/ })).toBeNull()
+  })
+
+  it('sends a life change for the other seat picked, named on the row and the button', async () => {
+    const { user, manual, panel, row } = panelTable()
+    await user.selectOptions(picker(panel), '1')
+    expect(within(panel).getByRole('group', { name: 'Change life' })).toBeInTheDocument()
+    await user.click(row('More life'))
+    const form = within(panel).getByRole('group', { name: 'Life' })
+    await user.click(within(form).getByRole('button', { name: 'Take 5' }))
+    expect(form.querySelector('[data-slot="command-preview"]')).toHaveTextContent(/→ 33 life$/)
+    await user.click(within(form).getByRole('button', { name: /loses 5 life$/ }))
+    expect(manual).toHaveBeenCalledWith({ Life: { player: 1, delta: -5 } })
+  })
+
+  it('sends counters and a mill for the other seat picked, and its own draw for the seat itself', async () => {
+    const { user, manual, panel, row } = panelTable()
+    await user.selectOptions(picker(panel), '1')
+    await user.click(row('Poison'))
+    let form = within(panel).getByRole('group', { name: 'Poison' })
+    await user.click(within(form).getByRole('button', { name: 'Add 1' }))
+    await user.click(within(form).getByRole('button', { name: /^Add 1 poison counter to / }))
+    expect(manual).toHaveBeenLastCalledWith({ PlayerCounters: { player: 1, counter: 'poison', delta: 1 } })
+    await user.click(row('Mill'))
+    form = within(panel).getByRole('group', { name: 'Mill' })
+    await user.click(within(form).getByRole('button', { name: '3' }))
+    await user.click(within(form).getByRole('button', { name: /^Mill 3 cards from / }))
+    expect(manual).toHaveBeenLastCalledWith({ MoveTop: { count: 3, to: 'Graveyard', library: 1 } })
+    await user.click(row('Draw'))
+    await user.click(
+      within(within(panel).getByRole('group', { name: 'Draw' })).getByRole('button', { name: 'Draw 1 card' }),
+    )
+    expect(manual).toHaveBeenLastCalledWith({ Draw: { count: 1 } })
+  })
+
+  it('goes back to the seat itself when it is picked again', async () => {
+    const { user, manual, panel, row } = panelTable()
+    await user.selectOptions(picker(panel), '1')
+    await user.selectOptions(picker(panel), '0')
+    await user.click(row('More life'))
+    const form = within(panel).getByRole('group', { name: 'Life' })
+    await user.click(within(form).getByRole('button', { name: 'Take 5' }))
+    await user.click(within(form).getByRole('button', { name: 'Lose 5 life' }))
+    expect(manual).toHaveBeenCalledWith({ Life: { player: 0, delta: -5 } })
+  })
+})
+
 describe('a command no other command takes back', () => {
   it.each([
     ['Mill', true],

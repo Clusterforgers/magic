@@ -1,4 +1,4 @@
-// Goal: the card menu's Control group offers summoning sickness removed for a sick permanent, a sacrifice and control for every other seat on a permanent the seat controls, onto the battlefield for every other seat on a card it owns in its graveyard or exile, nothing on other cards, each the exact action and inert for a seat out of the game.
+// Goal: the card menu's Control group offers summoning sickness removed for a sick permanent and a sacrifice on a permanent the seat controls, control for every seat but the controller of any permanent (the seat itself as "Take control"), onto the battlefield for every seat but the owner of any card in a graveyard or exile that is not an instant, a sorcery or face down out of sight, nothing on other cards, each the exact action and inert for a seat out of the game.
 import { describe, expect, it } from 'vitest'
 import type { ObjectView } from '@/protocol/generated'
 import { card, permanent } from '@/test-utils/cards'
@@ -47,7 +47,18 @@ describe('the Control group of the card menu', () => {
       [],
     ],
     ['a card in hand', card({ zone: { Hand: 0 }, permanent: null }), []],
-    ['a creature of an opponent', card({ owner: 1, controller: 1 }), []],
+    ['a creature of an opponent', card({ owner: 1, controller: 1 }), ['Take control', 'Give control to Cy']],
+    [
+      'a card in the graveyard of an opponent',
+      card({ zone: { Graveyard: 1 }, permanent: null, owner: 1, controller: 1 }),
+      ['Onto the battlefield for you', 'Onto the battlefield for Cy'],
+    ],
+    [
+      'a card in exile that is face down out of sight',
+      card({ zone: 'Exile', permanent: null, owner: 1, controller: 1, name: '', face_down: true }),
+      [],
+    ],
+    ['a card in the hand of an opponent', card({ zone: { Hand: 1 }, permanent: null, owner: 1 }), []],
   ])('%s', (_name, object, expected) => {
     expect(labels(object)).toEqual(expected)
   })
@@ -59,6 +70,14 @@ describe('the Control group of the card menu', () => {
       { Sacrifice: { object: 7 } },
       { GiveControl: { object: 7, to: 1 } },
       { GiveControl: { object: 7, to: 2 } },
+    ])
+  })
+
+  it('sends control of a permanent of an opponent to the seat itself first, then to the others', () => {
+    const items = controlGroup(input(card({ id: 9, owner: 1, controller: 1 })))?.items ?? []
+    expect(items.map((item) => item.action)).toEqual([
+      { GiveControl: { object: 9, to: 0 } },
+      { GiveControl: { object: 9, to: 2 } },
     ])
   })
 

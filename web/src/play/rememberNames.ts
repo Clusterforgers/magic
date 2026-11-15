@@ -1,5 +1,5 @@
 /** Pure: the names of cards that have left the view, kept so the log still says which card a line is about: those a manual look, put-back or reveal tells stay with their entry, the rest of the objects that departed are kept for the whole log. */
-import type { EventView, LogName, ObjectId, ObjectView } from '@/protocol/generated'
+import type { EventView, LogName, ObjectId, ObjectView, PlayerId } from '@/protocol/generated'
 
 type Objects = Readonly<Record<ObjectId, ObjectView>>
 type Names = Readonly<Record<ObjectId, string>>
@@ -66,6 +66,22 @@ export function namesToRemember(
     if (name !== undefined && name !== '') named[id] = name
   }
   return Object.keys(named).length === 0 ? undefined : named
+}
+
+/**
+ * The owner of the card a manual move names, from the objects before its batch: a token that is moved off the
+ * battlefield no longer exists afterwards, and the log still says whose it was. Undefined for any other event.
+ */
+export function ownersToRemember(
+  event: EventView,
+  before: Objects | undefined,
+): Readonly<Record<ObjectId, PlayerId>> | undefined {
+  if (!('Public' in event) || typeof event.Public === 'string' || !('ManualAction' in event.Public))
+    return undefined
+  const { action } = event.Public.ManualAction
+  if (!('Move' in action)) return undefined
+  const owner = before?.[action.Move.object]?.owner
+  return owner === undefined ? undefined : { [action.Move.object]: owner }
 }
 
 /**

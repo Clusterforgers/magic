@@ -33,6 +33,8 @@ const SCALAR_KEYS: &[&str] = &[
     "PayLife",
     // The number of a keyword a card shows ("Toxic 1").
     "Toxic",
+    // The number of a keyword a card shows ("Afflict 3").
+    "Afflict",
     // The time counters of a Suspend keyword a card shows ("Suspend 6").
     "time",
     // The chapter a read-ahead Saga entered at (`Chosen::Chapter`).
@@ -43,6 +45,8 @@ const SCALAR_KEYS: &[&str] = &[
     "life",
     "life_after",
     "count",
+    // The seat whose library a move of its top cards names (`ManualAction::MoveTop`).
+    "library",
     // A player's speed (CR 702.179).
     "speed",
     "number",
@@ -2397,7 +2401,7 @@ fn the_seat_hurt_picks_the_damage_a_shield_takes_first_and_the_question_shows_no
             .all(|option| matches!(option, ChoiceOption::Label(_)))
     );
     let hidden = hidden_in(driver.state(), decision.player);
-    assert!(!hidden.is_empty());
+    assert_eq!(!hidden.len(), 0);
     let found = leaks(&serde_json::to_value(&decision).unwrap(), &hidden);
     assert!(found.is_empty(), "the question leaks {found:?}");
     driver

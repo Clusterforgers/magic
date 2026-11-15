@@ -118,7 +118,7 @@ describe('one defender', () => {
 
   it('has no "Attack at" choice and no list, and aims every attacker at the one defender', async () => {
     const { card, user, button, answer } = attack(optionsOf(spec))
-    expect(screen.queryByRole('combobox')).toBeNull()
+    expect(screen.queryByRole('combobox', { name: 'Attack at' })).toBeNull()
     await user.click(card(b))
     await user.click(card(a))
     expect(screen.queryByRole('list', { name: 'Who each creature attacks' })).toBeNull()

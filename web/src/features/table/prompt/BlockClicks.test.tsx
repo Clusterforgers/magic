@@ -124,7 +124,7 @@ describe('the clicks of a block', () => {
     await t.user.click(t.card(b1))
     await t.user.keyboard('{Escape}')
     expect(t.marks().get(b1)).toBe('legal')
-    expect(screen.queryByRole('combobox')).toBeNull()
+    expect(screen.queryByRole('combobox', { name: /^Attacker .* blocks$/ })).toBeNull()
   })
 
   it('writes no label on any card, and says the block in the spoken name', async () => {
@@ -141,7 +141,7 @@ describe('the clicks of a block', () => {
     const bar = must(t.container.querySelector('[data-slot="combat-bar"]'))
     expect(screen.getAllByRole('button', { name: /^(Confirm blocks|No blocks)$/ })).toHaveLength(2)
     expect(screen.queryByRole('list', { name: 'Your blocks' })).toBeNull()
-    expect(screen.queryByRole('combobox')).toBeNull()
+    expect(screen.queryByRole('combobox', { name: /^Attacker .* blocks$/ })).toBeNull()
     await t.user.click(t.card(b1))
     expect(screen.getByRole('combobox', { name: /^Attacker .* blocks$/ })).toBeInTheDocument()
     expect(bar.querySelectorAll('button')).toHaveLength(2)

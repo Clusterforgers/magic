@@ -4,6 +4,7 @@ import { HeartIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { FeedbackLine } from './FeedbackLine'
 import { LIFE_STEPS, lifeWords, signed, useLifeRun } from './lifeRun'
+import { subjectOf } from './commands'
 import type { PanelInput } from './commands'
 
 /** The keys of the counter's buttons and the change each one makes; Page Up and Page Down move by five. */
@@ -19,7 +20,8 @@ const KEYS_HINT =
  */
 export function LifeCounter({ input }: { input: PanelInput }) {
   const hint = useId()
-  const run = useLifeRun({ seat: input.seat, life: input.life, off: input.off })
+  const who = subjectOf(input)
+  const run = useLifeRun({ seat: who.seat, life: who.life, off: input.off })
   const inert = input.off !== undefined
   const buttons = useRef<HTMLDivElement>(null)
   // The Undo link goes away when pressed, so the focus goes back to the buttons.
@@ -44,7 +46,7 @@ export function LifeCounter({ input }: { input: PanelInput }) {
       <p className="flex items-center justify-between gap-2">
         <span className="flex min-w-0 items-center gap-1.5 text-sm font-medium">
           <HeartIcon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
-          <span className="truncate">{input.name}</span>
+          <span className="truncate">{who.name}</span>
         </span>
         <span data-pending={run.pending !== 0 || undefined}>
           <span data-slot="life-total" className="text-4xl leading-tight font-semibold tabular-nums">
@@ -80,7 +82,7 @@ export function LifeCounter({ input }: { input: PanelInput }) {
       <div data-slot="life-status" className="flex min-h-6 flex-wrap items-center justify-between gap-x-2">
         {run.pending !== 0 ? (
           <p data-slot="life-pending" className="text-xs text-muted-foreground tabular-nums">
-            Not sent yet: {signed(run.pending)} ({input.life} → {run.total} life)
+            Not sent yet: {signed(run.pending)} ({who.life} → {run.total} life)
           </p>
         ) : (
           <FeedbackLine feedback={run.feedback} />
@@ -98,7 +100,7 @@ export function LifeCounter({ input }: { input: PanelInput }) {
         )}
       </div>
       <p aria-live="polite" className="sr-only">
-        {input.name}: {run.total} life{run.pending !== 0 ? ', not sent yet' : ''}
+        {who.name}: {run.total} life{run.pending !== 0 ? ', not sent yet' : ''}
       </p>
     </div>
   )

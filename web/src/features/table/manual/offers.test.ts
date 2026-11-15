@@ -61,7 +61,49 @@ describe('which groups and entries a card offers', () => {
       'a creature of an opponent',
       card({ owner: 1, controller: 1 }),
       {},
-      { tap: ['tap'], effect: ['pump', 'grant'], panel: PANEL },
+      {
+        move: MOVES,
+        counters: ['add-+1/+1', 'add-counters', 'remove-counters'],
+        tap: ['tap'],
+        effect: ['damage', 'pump', 'grant'],
+        control: ['give-0'],
+        panel: PANEL,
+      },
+    ],
+    [
+      'a creature of an opponent with three seats at the table',
+      card({ owner: 1, controller: 1 }),
+      { players: [0, 1, 2] },
+      { control: ['give-0', 'give-2'] },
+    ],
+    [
+      'a card in the graveyard of an opponent',
+      card({ zone: { Graveyard: 1 }, permanent: null, owner: 1, controller: 1 }),
+      { players: [0, 1, 2] },
+      {
+        move: [
+          'move-Battlefield',
+          'move-Hand',
+          'move-Exile',
+          'move-LibraryTop',
+          'move-LibraryBottom',
+          'move-Command',
+        ],
+        effect: ['damage'],
+        control: ['give-0', 'give-2'],
+      },
+    ],
+    [
+      'a card in the hand of an opponent',
+      card({ zone: { Hand: 1 }, permanent: null, owner: 1, controller: 1 }),
+      {},
+      { move: [], effect: [], control: [] },
+    ],
+    [
+      'a card face down in exile that the seat may not look at',
+      card({ zone: 'Exile', permanent: null, owner: 1, controller: 1, name: '', face_down: true }),
+      {},
+      { move: [], effect: [], control: [] },
     ],
     [
       'a creature with two kinds of counter',
@@ -221,13 +263,13 @@ describe('what stops an entry', () => {
   })
 
   it.each([
-    ['a card of an opponent', card({ owner: 1, controller: 1 }), 'move', /Only Bo/],
     ['a spell on the stack', card({ zone: 'Stack', permanent: null }), 'move', /stack/],
+    ['a card in a library', card({ zone: { Library: 1 }, permanent: null }), 'move', /library is not named/],
     [
-      'an Equipment of an opponent',
-      card({ owner: 1, controller: 1, subtypes: ['Equipment'] }),
-      'attach',
-      /Only Bo/,
+      'a card in the hand of an opponent',
+      card({ zone: { Hand: 1 }, permanent: null, owner: 1, controller: 1 }),
+      'move',
+      /another seat’s hand/,
     ],
   ] as const)('%s has a note and no entry', (_name, object, group, note) => {
     const found = manualMenu(input(object)).groups.find((entry) => entry.id === group)
@@ -235,11 +277,25 @@ describe('what stops an entry', () => {
     expect(found?.note).toMatch(note)
   })
 
-  it('an opponent card still offers counters, tapping and the entries about the seat itself', () => {
-    const menu = manualMenu(input(card({ owner: 1, controller: 1 })))
-    expect(keys(menu, 'tap')).toEqual(['tap'])
+  it('moves, attaches and counters a card of an opponent as it does the seat’s own, naming its owner’s zones', () => {
+    const sword = card({ owner: 1, controller: 1, subtypes: ['Equipment'], types: ['Artifact'] })
+    const menu = manualMenu(input(sword))
+    expect(item(menu, 'move', 'move-Hand')?.label).toBe("Bo's hand")
+    expect(item(menu, 'move', 'move-Graveyard')?.action).toEqual({
+      Move: { object: sword.id, to: 'Graveyard' },
+    })
+    expect(item(menu, 'move', 'move-Exile')?.unavailable).toBeUndefined()
+    expect(keys(menu, 'attach')).toEqual(['attach'])
+    expect(item(menu, 'attach', 'attach')?.unavailable).toBeUndefined()
     expect(keys(menu, 'counters')).toContain('add-counters')
     expect(keys(menu, 'panel')).toEqual(PANEL)
+  })
+
+  it('removes the token of an opponent as it does its own', () => {
+    const token = card({ kind: 'Token', owner: 1, controller: 1 })
+    expect(item(manualMenu(input(token)), 'move', 'remove-token')?.action).toEqual({
+      Move: { object: token.id, to: 'Graveyard' },
+    })
   })
 
   it.each([OUT_OF_GAME, GAME_OVER])('once %s every entry is listed and none can be used', (reason) => {

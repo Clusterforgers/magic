@@ -69,6 +69,16 @@ export interface PanelGroup {
   commands: Command[]
 }
 
+/** A seat of the table and the numbers the panel changes on it. */
+export interface PanelSeat {
+  seat: PlayerId
+  /** The seat's name, as the table shows it. */
+  name: string
+  life: number
+  library: number
+  counters: readonly (readonly [CounterKind, number])[]
+}
+
 /** What the panel is made from: the seat and the numbers its commands change. */
 export interface PanelInput {
   seat: PlayerId
@@ -78,6 +88,10 @@ export interface PanelInput {
   library: number
   hand: number
   counters: readonly (readonly [CounterKind, number])[]
+  /** The seats still in the game, the seat itself first, to pick whose numbers the You group and Mill change. */
+  seats?: readonly PanelSeat[]
+  /** The other seat picked for those; left out while they change the seat itself. */
+  subject?: PanelSeat
   /** The top cards the seat looked at and has not put back yet, top first; none otherwise. */
   looked: readonly ObjectId[]
   /** The whole library, top first, while the seat searches it by hand; none otherwise. */
@@ -121,22 +135,55 @@ const count = (max: number, presets: readonly number[] = CARD_PRESETS): AmountSp
   start: 1,
 })
 
-/** The player counters the panel lists by name, in order. */
+/** The seat of the panel and its numbers. */
+function selfOf(input: PanelInput): PanelSeat {
+  return {
+    seat: input.seat,
+    name: input.name,
+    life: input.life,
+    library: input.library,
+    counters: input.counters,
+  }
+}
+
+/** The seat whose life, counters and library top the commands change: the picked seat, else the seat itself. */
+export function subjectOf(input: PanelInput): PanelSeat {
+  return input.subject ?? selfOf(input)
+}
+
+const capital = (text: string): string => text.charAt(0).toUpperCase() + text.slice(1)
+
+/** The player counters the panel lists by name, in order, with what each does to `on` ("you" or a seat's name). */
 const PLAYER_COUNTERS = [
-  ['poison', 'Poison', 'Poison counters on you; ten of them and you lose.'],
-  ['energy', 'Energy', 'Energy counters on you, to pay energy costs.'],
-  ['experience', 'Experience', 'Experience counters on you.'],
+  [
+    'poison',
+    'Poison',
+    (on: string) => `Poison counters on ${on}; ten of them and ${on === 'you' ? 'you lose' : `${on} loses`}.`,
+  ],
+  ['energy', 'Energy', (on: string) => `Energy counters on ${on}, to pay energy costs.`],
+  ['experience', 'Experience', (on: string) => `Experience counters on ${on}.`],
   [
     'rad',
     'Rad',
-    'Rad counters on you; each upkeep you mill that many and lose 1 life and a rad per nonland card milled.',
+    (on: string) =>
+      on === 'you'
+        ? 'Rad counters on you; each upkeep you mill that many and lose 1 life and a rad per nonland card milled.'
+        : `Rad counters on ${on}; each upkeep they mill that many and lose 1 life and a rad per nonland card milled.`,
   ],
 ] as const
+
+/** "your" for the seat itself, "Bo's" for another seat. */
+const possessive = (input: PanelInput, who: PanelSeat): string =>
+  who.seat === input.seat ? 'your' : `${who.name}’s`
 
 /** The groups and commands of the panel for `input`. */
 export function panelGroups(input: PanelInput): PanelGroup[] {
   const off = input.off
+  const who = subjectOf(input)
+  const on = who.seat === input.seat ? 'you' : who.name
   const noCards = off ?? (input.library === 0 ? 'Your library is empty.' : undefined)
+  const noCardsFor =
+    off ?? (who.library === 0 ? `${capital(possessive(input, who))} library is empty.` : undefined)
   const you: Command[] = [
     {
       id: 'life',
@@ -150,7 +197,7 @@ export function panelGroups(input: PanelInput): PanelGroup[] {
       id,
       group: 'you' as const,
       label,
-      effect,
+      effect: effect(on),
       amount: signed(LIMITS.counters, COUNTER_PRESETS),
       unavailable: off,
     })),
@@ -179,17 +226,17 @@ export function panelGroups(input: PanelInput): PanelGroup[] {
       id: 'mill',
       group: 'library',
       label: 'Mill',
-      effect: 'Put the top cards of your library into your graveyard.',
+      effect: `Put the top cards of ${possessive(input, who)} library into ${possessive(input, who)} graveyard.`,
       amount: count(LIMITS.cards),
-      unavailable: noCards,
+      unavailable: noCardsFor,
     },
     {
       id: 'exileTop',
       group: 'library',
       label: 'Exile from the top',
-      effect: 'Exile the top cards of your library face up.',
+      effect: `Exile the top cards of ${possessive(input, who)} library face up.`,
       amount: count(LIMITS.cards),
-      unavailable: noCards,
+      unavailable: noCardsFor,
     },
     {
       id: 'bottomTop',
@@ -230,7 +277,7 @@ export function panelGroups(input: PanelInput): PanelGroup[] {
     rollCommand(off),
   ]
   return [
-    { id: 'you', label: 'You', commands: you },
+    { id: 'you', label: on === 'you' ? 'You' : who.name, commands: you },
     { id: 'library', label: 'Library', commands: library },
     { id: 'make', label: 'Make', commands: make },
   ]
@@ -313,12 +360,19 @@ export function previewOf(command: Command, draft: PanelDraft, input: PanelInput
   if (spec?.signed === true && amount === 0)
     return { problem: 'Choose an amount with the buttons or the field.' }
   switch (command.id) {
-    case 'life':
+    case 'life': {
+      const who = subjectOf(input)
+      const gain = amount > 0
+      const life = `${Math.abs(amount)} life`
       return {
-        preview: `${input.name}: ${input.life} → ${input.life + amount} life`,
-        apply: amount > 0 ? `Gain ${amount} life` : `Lose ${-amount} life`,
-        action: { Life: { player: input.seat, delta: amount } },
+        preview: `${who.name}: ${who.life} → ${who.life + amount} life`,
+        apply:
+          who.seat === input.seat
+            ? `${gain ? 'Gain' : 'Lose'} ${life}`
+            : `${who.name} ${gain ? 'gains' : 'loses'} ${life}`,
+        action: { Life: { player: who.seat, delta: amount } },
       }
+    }
     case 'poison':
     case 'energy':
     case 'experience':
@@ -371,25 +425,36 @@ export function previewOf(command: Command, draft: PanelDraft, input: PanelInput
 }
 
 function playerCounter(command: Command, amount: number, input: PanelInput): Preview {
+  const who = subjectOf(input)
+  const mine = who.seat === input.seat
   const kind = counterKind(command.id)
-  const now = heldOf(input.counters, kind)
+  const now = heldOf(who.counters, kind)
   const word = command.label.toLowerCase()
-  if (now + amount < 0) return { problem: `You have ${plural(now, `${word} counter`)}.` }
+  if (now + amount < 0)
+    return { problem: `${mine ? 'You have' : `${who.name} has`} ${plural(now, `${word} counter`)}.` }
+  const counters = plural(Math.abs(amount), `${word} counter`)
+  const to = mine ? '' : ` to ${who.name}`
+  const from = mine ? '' : ` from ${who.name}`
   return {
-    preview: `${input.name}: ${now} → ${now + amount} ${word}`,
-    apply:
-      amount > 0
-        ? `Add ${plural(amount, `${word} counter`)}`
-        : `Remove ${plural(-amount, `${word} counter`)}`,
-    action: { PlayerCounters: { player: input.seat, counter: kind, delta: amount } },
+    preview: `${who.name}: ${now} → ${now + amount} ${word}`,
+    apply: amount > 0 ? `Add ${counters}${to}` : `Remove ${counters}${from}`,
+    action: { PlayerCounters: { player: who.seat, counter: kind, delta: amount } },
   }
 }
 
 function fromTop(id: 'draw' | 'mill' | 'exileTop' | 'bottomTop', amount: number, input: PanelInput): Preview {
-  if (amount > input.library) return { problem: `Your library has ${plural(input.library, 'card')}.` }
+  // Mill and exile act on the picked seat's library; the others on the seat's own.
+  const who = id === 'mill' || id === 'exileTop' ? subjectOf(input) : selfOf(input)
+  const mine = who.seat === input.seat
+  if (amount > who.library) {
+    return { problem: `${mine ? 'Your' : `${who.name}’s`} library has ${plural(who.library, 'card')}.` }
+  }
   const cards = plural(amount, 'card')
   const theTop = amount === 1 ? 'the top card goes' : `the top ${cards} go`
-  const library = `library ${input.library} → ${input.library - amount}`
+  const library = `library ${who.library} → ${who.library - amount}`
+  const their = mine ? 'your' : `${who.name}’s`
+  const of = mine ? {} : { library: who.seat }
+  const from = mine ? '' : ` from ${who.name}`
   switch (id) {
     case 'draw':
       return {
@@ -399,15 +464,15 @@ function fromTop(id: 'draw' | 'mill' | 'exileTop' | 'bottomTop', amount: number,
       }
     case 'mill':
       return {
-        preview: `${input.name}: ${theTop} to your graveyard (${library})`,
-        apply: `Mill ${cards}`,
-        action: { MoveTop: { count: amount, to: 'Graveyard' } },
+        preview: `${who.name}: ${theTop} to ${their} graveyard (${library})`,
+        apply: `Mill ${cards}${from}`,
+        action: { MoveTop: { count: amount, to: 'Graveyard', ...of } },
       }
     case 'exileTop':
       return {
-        preview: `${input.name}: ${theTop} to exile (${library})`,
-        apply: `Exile ${cards}`,
-        action: { MoveTop: { count: amount, to: 'Exile' } },
+        preview: `${who.name}: ${theTop} to exile (${library})`,
+        apply: `Exile ${cards}${from}`,
+        action: { MoveTop: { count: amount, to: 'Exile', ...of } },
       }
     case 'bottomTop':
       return {

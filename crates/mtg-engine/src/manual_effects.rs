@@ -1,5 +1,5 @@
-//! The manual actions that play an ability by hand: damage from a card of the seat, mana into the seat's pool and a
-//! power/toughness change until end of turn, each as the events an effect that does the same produces.
+//! The manual actions that play an ability by hand: damage from a card in a zone every seat sees, mana into the seat's
+//! pool and a power/toughness change until end of turn, each as the events an effect that does the same produces.
 
 use mtg_cards::spend::ManaLasts;
 use mtg_core::card::CardType;
@@ -11,13 +11,12 @@ use crate::combat::DamageTarget;
 use crate::damage::{Dealer, dealt_by};
 use crate::effects::{ContinuousEffect, Duration, Modification, Selector};
 use crate::events::Event;
-use crate::manual::{MAX_DAMAGE, MAX_MANA, MAX_STAT, ManualRefusal};
-use crate::object::ObjectKind;
+use crate::manual::{MAX_DAMAGE, MAX_MANA, MAX_STAT, ManualRefusal, named};
 use crate::state::GameState;
 use crate::zones::Zone;
 
-/// The events of `amount` damage that the seat's card `source` deals to `target`, a player in the game or a creature,
-/// planeswalker or battle on the battlefield; lifelink, deathtouch, wither and infect of the source apply.
+/// The events of `amount` damage that the card `source`, of any seat, deals to `target`, a player in the game or a
+/// creature, planeswalker or battle on the battlefield; lifelink, deathtouch, wither and infect of the source apply.
 pub(crate) fn damage(
     state: &GameState,
     player: PlayerId,
@@ -28,13 +27,7 @@ pub(crate) fn damage(
     if !(1..=MAX_DAMAGE).contains(&amount) {
         return Err(ManualRefusal::OutOfRange("the damage"));
     }
-    let dealer = state
-        .object(source)
-        .filter(|object| object.kind() != ObjectKind::Ability)
-        .ok_or(ManualRefusal::Unknown(source))?;
-    if dealer.owner() != player && dealer.controller() != player {
-        return Err(ManualRefusal::NotYours);
-    }
+    let dealer = named(state, player, source)?;
     // A card in a hidden zone would be named to every seat as the source of the damage.
     if matches!(dealer.zone(), Zone::Hand(_) | Zone::Library(_)) {
         return Err(ManualRefusal::WrongZone {

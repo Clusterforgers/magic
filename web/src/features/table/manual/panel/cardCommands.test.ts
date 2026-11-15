@@ -1,7 +1,8 @@
-// Goal: the picked card's commands mirror its card menu for each kind of card (permanent, attachment, hand card, graveyard card, an opponent's card, a token, a seat out of the game), each preview says the change in words and sends the exact action, and no manual action the card menu offered before the panel took over its entries is lost: each is in the menu or the panel.
+// Goal: the picked card's commands mirror its card menu for each kind of card (permanent, attachment, hand card, graveyard card, any seat's card, a card in another seat's hand, a token, a seat out of the game), each preview says the change in words and sends the exact action, and no manual action the card menu offered before the panel took over its entries is lost: each is in the menu or the panel.
 import { describe, expect, it } from 'vitest'
 import type { ManualAction, ObjectView } from '@/protocol/generated'
 import { card, permanent } from '@/test-utils/cards'
+import { HIDDEN_CARD } from '../hidden'
 import { manualMenu, OUT_OF_GAME } from '../offers'
 import type { Ask, MenuInput } from '../offers'
 import { cardCommands, commandsFor, previewOfCard, startCardDraft } from './cardCommands'
@@ -131,13 +132,25 @@ describe('which commands a picked card offers', () => {
       'a card of an opponent in exile',
       card({ zone: 'Exile', permanent: null, owner: 1, controller: 1 }),
       {},
+      ['move', 'damage', 'give', 'back'],
+    ],
+    [
+      'a card face down in exile that the seat may not look at',
+      card({ zone: 'Exile', permanent: null, owner: 1, controller: 1, name: '', face_down: true }),
+      {},
+      ['move'],
+    ],
+    [
+      'a card in the hand of an opponent',
+      card({ zone: { Hand: 1 }, permanent: null, owner: 1, controller: 1 }),
+      {},
       ['move'],
     ],
     [
       'a creature of an opponent',
       card({ owner: 1, controller: 1 }),
       {},
-      ['move', 'counters', 'tap', 'pump', 'grant', 'copy'],
+      ['move', 'counters', 'tap', 'damage', 'pump', 'grant', 'transform', 'give', 'copy'],
     ],
     [
       'a creature the seat controls and an opponent owns',
@@ -173,12 +186,29 @@ describe('which commands a picked card offers', () => {
     expect(commands.every((command) => command.unavailable === OUT_OF_GAME)).toBe(true)
   })
 
-  it("explains an opponent's card in the move row, and leaves tapping and counters usable", () => {
+  it("leaves every command of an opponent's permanent usable, as the seat's own", () => {
     const commands = commandsFor(input(card({ owner: 1, controller: 1 })))
-    expect(commands[0]?.unavailable).toMatch(/Only Bo/)
-    expect(
-      commands.filter((command) => command.unavailable === undefined).map((command) => command.id),
-    ).toEqual(['counters', 'tap', 'pump', 'grant', 'copy'])
+    expect(commands.every((command) => command.unavailable === undefined)).toBe(true)
+  })
+
+  it("explains a card in another seat's hand in the move row and offers nothing else", () => {
+    const commands = commandsFor(input(card({ zone: { Hand: 1 }, permanent: null, owner: 1, controller: 1 })))
+    expect(commands.map((command) => command.id)).toEqual(['move'])
+    expect(commands[0]?.unavailable).toBe(HIDDEN_CARD)
+  })
+
+  it('lets the seat take control of a permanent of an opponent, or give it to a third seat', () => {
+    const object = card({ owner: 1, controller: 1 })
+    const give = commandsFor(input(object, { players: [0, 1, 2] })).find((command) => command.id === 'give')
+    expect(give?.label).toBe('Take or give control…')
+    expect(give?.seats).toEqual([0, 2])
+  })
+
+  it("puts a card of an opponent's graveyard onto the battlefield under any seat but its owner", () => {
+    const object = card({ zone: { Graveyard: 1 }, permanent: null, owner: 1, controller: 1 })
+    const give = commandsFor(input(object, { players: [0, 1, 2] })).find((command) => command.id === 'give')
+    expect(give?.label).toBe('Onto the battlefield for…')
+    expect(give?.seats).toEqual([0, 2])
   })
 
   it('names the tap row after what it does', () => {

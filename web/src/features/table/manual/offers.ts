@@ -14,6 +14,7 @@ import type {
   Zone,
 } from '@/protocol/generated'
 import { controlGroup } from './control'
+import { HIDDEN_CARD, hiddenCard } from './hidden'
 
 /** The zone of an object, without its owner. */
 export type ZoneKind =
@@ -180,7 +181,7 @@ const DESTINATIONS: readonly Destination[] = [
   { to: 'Command', label: 'command zone', zone: 'command' },
 ]
 
-/** "Hand" for a seat's own card, "Bo's hand" for one it only controls. */
+/** "Hand" for a seat's own card, "Bo's hand" for one of another seat. */
 function placeLabel(destination: Destination, input: MenuInput): string {
   const { to, label } = destination
   const theirs = input.object.owner !== input.seat
@@ -191,16 +192,14 @@ function placeLabel(destination: Destination, input: MenuInput): string {
 const capital = (text: string): string => text.charAt(0).toUpperCase() + text.slice(1)
 
 function moveGroup(input: MenuInput, off: string | undefined): ManualGroup {
-  const { object, seat } = input
+  const { object } = input
   const group: ManualGroup = { id: 'move', label: 'Move to', items: [] }
   const from = zoneKind(object.zone)
   if (from === 'stack')
     return { ...group, note: 'A spell on the stack resolves or is countered; it is not moved by hand.' }
   if (from === 'library')
     return { ...group, note: 'A card in a library is not named; use the top-of-library entries.' }
-  if (object.owner !== seat && object.controller !== seat) {
-    return { ...group, note: `Only ${input.ownerName}, who owns or controls it, moves this card.` }
-  }
+  if (hiddenCard(input)) return { ...group, note: HIDDEN_CARD }
   if (object.kind === 'Token') {
     const note = 'A token that leaves the battlefield ceases to exist.'
     const items: ManualItem[] =
@@ -286,12 +285,9 @@ function tapGroup(input: MenuInput, off: string | undefined): ManualGroup | null
 }
 
 function attachGroup(input: MenuInput, off: string | undefined): ManualGroup | null {
-  const { object, seat } = input
+  const { object } = input
   if (zoneKind(object.zone) !== 'battlefield' || !isAttachment(object)) return null
   const group: ManualGroup = { id: 'attach', label: 'Attach', items: [] }
-  if (object.owner !== seat && object.controller !== seat) {
-    return { ...group, note: `Only ${input.ownerName}, who owns or controls it, attaches this.` }
-  }
   group.items.push({ key: 'attach', label: 'Attach to…', ask: 'attach', unavailable: off })
   if (object.attached_to !== undefined) {
     group.items.push({
@@ -316,16 +312,14 @@ function panelGroup(off: string | undefined): ManualGroup {
   return { id: 'panel', label: 'Commands panel', items: [item] }
 }
 
-/** What a card does when the seat plays one of its abilities by hand: damage from its own, a pump on any creature. */
+/** What a card does when the seat plays one of its abilities by hand: damage from any card in sight, a pump on any creature. */
 function effectGroup(input: MenuInput, off: string | undefined): ManualGroup | null {
-  const { object, seat } = input
+  const { object } = input
   const items: ManualItem[] = []
-  if (object.owner === seat || object.controller === seat) {
-    // A card in a hand or library would name itself to every seat as the source.
-    const kind = zoneKind(object.zone)
-    if (kind !== 'hand' && kind !== 'library') {
-      items.push({ key: 'damage', label: 'Deal damage…', ask: 'damage', unavailable: off })
-    }
+  // A card in a hand or library would name itself to every seat as the source.
+  const kind = zoneKind(object.zone)
+  if (kind !== 'hand' && kind !== 'library' && !hiddenCard(input)) {
+    items.push({ key: 'damage', label: 'Deal damage…', ask: 'damage', unavailable: off })
   }
   if (zoneKind(object.zone) === 'battlefield' && object.types.includes('Creature')) {
     items.push({ key: 'pump', label: 'Pump…', hint: 'until end of turn', ask: 'pump', unavailable: off })
@@ -365,10 +359,10 @@ function showGroup(input: MenuInput, off: string | undefined): ManualGroup | nul
 }
 
 /**
- * The menu of one card, as the protocol allows it (`ManualAction`) at any time: moves, discards and attachments of
- * what the seat owns or controls, damage from its cards, counters, tapping and pumps of any permanent, a note or a
- * reveal, and the way into the Commands panel for the seat's own numbers, library, tokens and mana. With `off` set the
- * entries are listed and inert.
+ * The menu of one card, as the protocol allows it (`ManualAction`) at any time: moves, attachments, damage, counters,
+ * tapping, pumps and control of any seat's card in sight (never one in another seat's hand), discards, a note and a
+ * reveal of the seat's own, and the way into the Commands panel for the numbers of any seat, the seat's library, tokens
+ * and mana. With `off` set the entries are listed and inert.
  */
 export function manualMenu(input: MenuInput): ManualMenu {
   const { off } = input
