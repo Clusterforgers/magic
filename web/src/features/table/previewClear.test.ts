@@ -1,9 +1,9 @@
-// Goal: the card preview keeps clear of the open prompt's strip and the docks: at the windows of the table it docks beside the strip or above it, a phone's takes the free stretch above the strip, and where nothing is clear it stands where `previewFit` puts it.
+// Goal: the card preview never lies over the open prompt's strip or the docks: at the windows of the table it docks beside the strip or above it at a readable size, narrows to the squeezed picture, else takes a free band above or below a strip that spans the table with its text beside the picture; a phone's takes the free stretch above the strip, and only where nothing is clear does it stand where `previewFit` puts it.
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
 import type { Anchor, Viewport } from './preview'
-import { fitClear, panelBox, SQUEEZED_HEIGHT_PX } from './previewClear'
-import type { Box } from './previewClear'
+import { fitClear, panelBox, READABLE_PICTURE, SQUEEZED_HEIGHT_PX } from './previewClear'
+import type { Box, ClearBox } from './previewClear'
 import { PICTURE_FLOOR, previewFit } from './previewFit'
 
 const rect = (left: number, top: number, right: number, bottom: number): Anchor => ({
@@ -83,11 +83,13 @@ describe('fitClear beside a prompt strip', () => {
     expect(fit.maxHeight).toBeGreaterThanOrEqual(SQUEEZED_HEIGHT_PX)
   })
 
-  it('stands where previewFit puts it when no room is clear', () => {
+  it('takes a free band of the window when no side beside or above the strip is clear', () => {
     const view = { width: 1024, height: 768 }
     const grid = rect(210, 297, 940, 416)
     const clear = [rect(184, 161, 972, 468)]
-    expect(fitClear(grid, view, clear)).toEqual(previewFit(grid, view))
+    const fit = fitClear(grid, view, clear)
+    expect(touches(fit, view, clear)).toBe(false)
+    expect(fit.beside).toBe(true)
   })
 
   it('is previewFit when nothing is kept clear, and ignores a box without size', () => {
@@ -158,5 +160,151 @@ describe('fitClear on a short narrow window', () => {
     const fit = fitClear(grid, view, clear)
     expect(touches(fit, view, clear)).toBe(false)
     expect(fit).toMatchObject({ picture: PICTURE_FLOOR.narrow, beside: true })
+  })
+})
+
+describe('fitClear keeps a desktop preview readable', () => {
+  /** The strip of a table soft, with its buttons at its right end firm, and the docks. */
+  const softTable = (clear: Anchor[]): ClearBox[] => {
+    const [strip, ...docks] = clear
+    const s = must(strip)
+    const actions = rect(
+      s.left + s.width - 200,
+      s.top + s.height - 44,
+      s.left + s.width - 12,
+      s.top + s.height - 8,
+    )
+    const sentence = rect(s.left + 12, s.top + 12, s.left + s.width * 0.5, s.top + 44)
+    return [{ ...s, soft: true }, sentence, actions, ...docks]
+  }
+  const firmOf = (clear: ClearBox[]): Anchor[] => clear.filter((box) => box.soft !== true)
+
+  it.each(TABLES.slice(0, 2))(
+    'on %s keeps off the whole strip, its buttons and the docks, at no less than the squeezed picture',
+    (_, view, grid, clear) => {
+      const kept = softTable(clear)
+      const fit = fitClear(grid, view, kept)
+      expect(touches(fit, view, kept)).toBe(false)
+      expect(fit.picture).toBeGreaterThanOrEqual(PICTURE_FLOOR.narrow)
+      expect(touches(fit, view, firmOf(kept))).toBe(false)
+    },
+  )
+
+  it('docks beside the strip at a readable size where the room is there, covering none of it', () => {
+    const view = { width: 1920, height: 900 }
+    const grid = rect(210, 344, 1400, 488)
+    const clear = softTable([rect(184, 208, 1500, 550), rect(0, 760, 1500, 900)])
+    const fit = fitClear(grid, view, clear)
+    expect(touches(fit, view, clear)).toBe(false)
+    expect(fit.picture).toBeGreaterThanOrEqual(READABLE_PICTURE)
+  })
+
+  it('narrows only where nothing readable fits, and then still keeps off the buttons', () => {
+    const [, view, grid, clear] = must(TABLES[2])
+    const kept = softTable(clear)
+    const fit = fitClear(grid, view, kept)
+    expect(touches(fit, view, firmOf(kept))).toBe(false)
+    expect(fit.picture).toBeGreaterThanOrEqual(fitClear(grid, view, clear).picture)
+  })
+
+  it('keeps off the strip and every firm box over a sweep of windows', () => {
+    for (let width = 1024; width <= 2300; width += 128) {
+      for (let height = 720; height <= 1080; height += 60) {
+        const strip = rect(184, height * 0.3, width - 300, height * 0.6)
+        const grid = rect(210, height * 0.4, width - 330, height * 0.55)
+        const kept = softTable([strip, rect(0, height - 137, width - 300, height)])
+        const view = { width, height }
+        const fit = fitClear(grid, view, kept)
+        expect(touches(fit, view, firmOf(kept))).toBe(false)
+        expect(touches(fit, view, kept)).toBe(false)
+      }
+    }
+  })
+})
+
+describe('fitClear beside a card choice with its buttons at the strip start', () => {
+  /** A Delves boss table choosing 1 of 3: the sentence and Confirm/Undo at the strip's left, the three cards at its right. */
+  const choice = (view: Viewport): { grid: Anchor; clear: ClearBox[]; firm: Anchor[] } => {
+    const right = view.width - 312
+    const strip = rect(184, 380, right, 600)
+    const firm = [
+      rect(196, 392, right - 540, 432),
+      rect(196, 540, 420, 580),
+      rect(0, 718, right - 520, view.height),
+      rect(right - 520, 718, right + 8, view.height),
+    ]
+    return { grid: rect(right - 520, 392, right - 12, 590), clear: [{ ...strip, soft: true }, ...firm], firm }
+  }
+
+  it.each([
+    [1830, 855],
+    [2300, 840],
+    [1400, 900],
+    [1280, 720],
+  ])('at %i x %i never covers the sentence, the buttons or the docks', (width, height) => {
+    const view = { width, height }
+    const { grid, clear, firm } = choice(view)
+    expect(previewFit(grid, view).dock).toBe('left')
+    expect(touches(previewFit(grid, view), view, firm)).toBe(true)
+    const fit = fitClear(grid, view, clear)
+    expect(touches(fit, view, firm)).toBe(false)
+    expect(fit.picture).toBeGreaterThanOrEqual(PICTURE_FLOOR.narrow)
+  })
+
+  it('keeps at least the floor of a side panel where the window leaves the room, on the side away from the buttons', () => {
+    const view = { width: 2300, height: 840 }
+    const { grid, clear } = choice(view)
+    const fit = fitClear(grid, view, clear)
+    expect(fit.dock).toBe('right')
+    expect(fit.picture).toBeGreaterThanOrEqual(PICTURE_FLOOR.side)
+  })
+})
+
+describe('fitClear beside a strip that spans the whole table', () => {
+  /** A Delves boss table with a card choice: the strip edge to edge, the chosen card in it, the hand and the controls. */
+  const CASES: [string, Viewport, Anchor, Anchor, Anchor[]][] = [
+    [
+      '1830 x 855, the card at the right',
+      { width: 1830, height: 855 },
+      rect(8, 380, 1822, 600),
+      rect(1500, 400, 1700, 580),
+      [rect(0, 718, 1006, 855), rect(1006, 718, 1526, 855)],
+    ],
+    [
+      '2300 x 840, the card at the right',
+      { width: 2300, height: 840 },
+      rect(8, 330, 2292, 560),
+      rect(1900, 350, 2100, 540),
+      [rect(0, 705, 1480, 840), rect(1480, 705, 2000, 840)],
+    ],
+    [
+      '1270 x 1380, the card at the centre',
+      { width: 1270, height: 1380 },
+      rect(8, 245, 1262, 645),
+      rect(560, 300, 710, 520),
+      [rect(0, 1200, 900, 1380), rect(900, 1200, 1270, 1380)],
+    ],
+  ]
+
+  it.each(CASES)('on %s lies over neither the strip nor a dock', (_, view, strip, card, docks) => {
+    const clear = [strip, ...docks]
+    expect(touches(previewFit(card, view), view, clear)).toBe(true)
+    const fit = fitClear(card, view, clear)
+    expect(touches(fit, view, clear)).toBe(false)
+    expect(fit.picture).toBeGreaterThanOrEqual(96)
+  })
+
+  it('takes the free band below the strip, over the boards, at a readable size when the band is tall', () => {
+    const [, view, strip, card, docks] = must(CASES[2])
+    const fit = fitClear(card, view, [strip, ...docks])
+    expect(fit).toMatchObject({ beside: true })
+    expect(must(fit.top)).toBeGreaterThanOrEqual(645)
+    expect(fit.picture).toBeGreaterThanOrEqual(READABLE_PICTURE)
+  })
+
+  it('keeps off a soft strip as well while any free band holds the panel', () => {
+    const [, view, strip, card, docks] = must(CASES[0])
+    const fit = fitClear(card, view, [{ ...strip, soft: true }, ...docks])
+    expect(touches(fit, view, [strip, ...docks])).toBe(false)
   })
 })

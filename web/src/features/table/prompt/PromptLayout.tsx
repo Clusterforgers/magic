@@ -14,6 +14,8 @@ function LiveText({ children, className }: { children: ReactNode; className?: st
   return (
     <p
       data-slot="prompt-text"
+      // The preview never covers the sentence, as it never covers the buttons.
+      data-keep-clear=""
       aria-live="polite"
       aria-atomic="true"
       className={cn('text-sm font-medium', className)}
@@ -48,7 +50,11 @@ export function PromptLayout({ text, children, compact = false }: PromptLayoutPr
         <div data-slot="combat-bar" className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1">
           <LiveText className="min-w-0 flex-1 basis-44">{text}</LiveText>
           {children === undefined ? null : (
-            <div data-slot="prompt-actions" className="flex flex-wrap items-center gap-1.5 empty:hidden">
+            <div
+              data-slot="prompt-actions"
+              data-keep-clear=""
+              className="flex flex-wrap items-center gap-1.5 empty:hidden"
+            >
               {children}
             </div>
           )}
@@ -63,6 +69,7 @@ export function PromptLayout({ text, children, compact = false }: PromptLayoutPr
       {children === undefined ? null : (
         <div
           data-slot="prompt-actions"
+          data-keep-clear=""
           // Sticky to the sheet's bottom edge: the answers stay in view while the sheet's body scrolls.
           className="sticky bottom-0 z-10 flex flex-wrap items-center gap-2 bg-muted py-1 empty:hidden"
         >

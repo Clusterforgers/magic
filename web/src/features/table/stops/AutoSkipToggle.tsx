@@ -1,10 +1,12 @@
 import { cn } from '@/lib/utils'
 import { ListChecks, X } from 'lucide-react'
+import { useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from '@/components/ui/popover'
 import { Switch } from '@/components/ui/switch'
 import { useGame, usePlay } from '@/features/game/gameContext'
+import type { AutoChoices } from '@/protocol/generated'
 import { AUTO_SKIP_DESCRIPTION, autoSkipListName, ruleKey, ruleWords } from '../autoSkips'
 import { canSetStops } from '../selectors'
 
@@ -12,7 +14,8 @@ import { canSetStops } from '../selectors'
  * "Auto-skip triggers" beside Full Control: a switch that asks the server to pass for the seat at every triggered
  * ability on top of the stack (`AutoChoices.skip_triggers`, kept with the account like the other auto choices), and one
  * button that opens the per-card list: the triggers it auto-passes and its rules for its own triggers, each with a
- * remove button. Both show what the server holds; Full Control sets them all aside while on.
+ * remove button. The switch moves the moment it is pressed and keeps that value until the server's next auto choices
+ * arrive, which then decide it; the list shows what the server holds. Full Control sets them all aside while on.
  */
 export function AutoSkipToggle() {
   const { session } = useGame()
@@ -26,8 +29,10 @@ export function AutoSkipToggle() {
       skips: state.autoSkips,
     })),
   )
+  // The value asked for, against the server's choices it was asked over: any newer choices from the server replace it.
+  const [asked, setAsked] = useState<{ value: boolean; over: AutoChoices } | null>(null)
   if (!shown) return null
-  const on = auto.skip_triggers === true
+  const on = asked !== null && asked.over === auto ? asked.value : auto.skip_triggers === true
   const count = yields.length + skips.length
   return (
     <div
@@ -45,7 +50,10 @@ export function AutoSkipToggle() {
           aria-description={
             paused ? `${AUTO_SKIP_DESCRIPTION} Off while Full Control is on.` : AUTO_SKIP_DESCRIPTION
           }
-          onCheckedChange={(checked) => session.setAutoChoices({ ...auto, skip_triggers: checked })}
+          onCheckedChange={(checked) => {
+            if (session.setAutoChoices({ ...auto, skip_triggers: checked }))
+              setAsked({ value: checked, over: auto })
+          }}
         />
         {/* A phone keeps the switch alone: its name is on the switch, and the dock has room for the pass button. */}
         <span aria-hidden="true" className={cn('max-sm:sr-only', paused && 'opacity-60')}>
