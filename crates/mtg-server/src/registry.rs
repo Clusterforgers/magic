@@ -659,6 +659,7 @@ impl Registry {
             think: None,
             active: None,
             extension: None,
+            relaxed: None,
             ..self.shared.game.pace
         };
         let options = GameOptions {

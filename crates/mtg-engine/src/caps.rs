@@ -368,6 +368,8 @@ const RUNS: &[&str] = &[
     "Effect.ChooseWithin",
     "Effect.Incubate",
     "Effect.Conjure",
+    "Effect.Meld",
+    "Effect.AuraSwap",
     "Effect.Seek",
     "Effect.Monstrosity",
     "Effect.Renown",
@@ -401,6 +403,7 @@ const RUNS: &[&str] = &[
     "Trigger.Visit",
     "Trigger.RolledToVisit",
     "Trigger.OpenedAttraction",
+    "Trigger.R6401Mentors",
     "Trigger.DoorUnlocked",
     "Effect.UnlockDoor",
     "Effect.LockOrUnlockDoor",
@@ -448,6 +451,7 @@ const RUNS: &[&str] = &[
     "Copy.ExceptIf",
     "Effect.Continuous",
     "Effect.ExchangeControl",
+    "Effect.R6401PassControl",
     "Duration.WhileYouControlSource",
     "Rule.Duration.WhileYouControlSource",
     "Rule.Duration.UntilTheirNextTurn",
@@ -464,9 +468,11 @@ const RUNS: &[&str] = &[
     "Duration.UntilPaid",
     "Duration.UntilCastFromExile",
     "Duration.UntilCreatureSpellCast",
+    "Duration.UntilEndOfTurnOrRolled",
     "Effect.Rule",
     "Effect.Regenerate",
     "Effect.RemoveFromCombat",
+    "Effect.R6400Block",
     "Effect.BecomeBlocked",
     "Effect.PutBeneathTop",
     "Effect.LoseUnspentMana",
@@ -481,6 +487,9 @@ const RUNS: &[&str] = &[
     "Rule.MustAttackWithOne",
     "Rule.AttackTax",
     "Rule.BlockTax",
+    "Rule.R6400CombatCost",
+    "Rule.R6400ChoosesBlocks",
+    "Rule.R6400ChoosesVotes",
     "Rule.AttackLimit",
     "Rule.AttackLimitAt",
     "Rule.BlockLimit",
@@ -517,6 +526,7 @@ const RUNS: &[&str] = &[
     "Rule.PowerUpAgain",
     "Limit.PowerUp",
     "Rule.FlipTwoCoins",
+    "Rule.R6402ChangeRoll",
     "Rule.ExtraDie",
     "Rule.ExtraPlanarDie",
     "Rule.PlaneswalkLookTwo",
@@ -1020,6 +1030,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.AsEntersWith",
     "Keyword.LevelUp",
     "Keyword.Outlast",
+    "Keyword.AuraSwap",
     "Keyword.Saddle",
     "Keyword.Saddled",
     "Keyword.Exert",
@@ -1478,6 +1489,7 @@ mod tests {
     #[case::damage_that_cant_be_prevented("Rule.DamageCantBePrevented", true)]
     #[case::regenerating("Effect.Regenerate", true)]
     #[case::leaving_combat("Effect.RemoveFromCombat", true)]
+    #[case::r6400_blocking_by_choice("Effect.R6400Block", true)]
     #[case::shields("Effect.Shield", true)]
     #[case::preventing("ReplaceBy.Prevent", true)]
     #[case::preventing_in_part("ReplaceBy.PreventUpTo", true)]
@@ -1930,6 +1942,9 @@ mod tests {
     #[case::r5502_attacking_with_at_least_one("Rule.MustAttackWithOne", true)]
     #[case::taxing_attackers("Rule.AttackTax", true)]
     #[case::taxing_blockers("Rule.BlockTax", true)]
+    #[case::r6400_permanents_to_attack("Rule.R6400CombatCost", true)]
+    #[case::r6400_another_player_blocks("Rule.R6400ChoosesBlocks", true)]
+    #[case::r6400_one_player_votes("Rule.R6400ChoosesVotes", true)]
     #[case::w8a_attack_limit("Rule.AttackLimit", true)]
     #[case::w10a_attack_limit_at("Rule.AttackLimitAt", true)]
     #[case::w8a_block_limit("Rule.BlockLimit", true)]

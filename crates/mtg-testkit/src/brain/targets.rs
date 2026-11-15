@@ -123,11 +123,8 @@ pub fn rank_targets(seen: &Seen<'_>, options: &TargetOptions) -> Vec<Target> {
     // A boss's side spares the heroes the spotlight spares while it has another opposing target.
     if super::spotlight::boss_seat(seen) {
         let fair = |target: &Target| {
-            let holder = match target {
-                Target::Player(player) => Some(*player),
-                Target::Object(object) => seen.controller(object.id),
-            };
-            holder.is_none_or(|p| seen.is_teammate(p) || super::spotlight::may_aim(seen, p))
+            super::spotlight::holder(seen, *target)
+                .is_none_or(|p| seen.is_teammate(p) || super::spotlight::may_aim(seen, p))
         };
         let spared = |target: &Target| !fair(target);
         if ranked.iter().any(spared)
@@ -136,6 +133,16 @@ pub fn rank_targets(seen: &Seen<'_>, options: &TargetOptions) -> Vec<Target> {
                 .any(|target| fair(target) && worth(seen, *target).1)
         {
             ranked.retain(fair);
+        }
+    }
+    // Binding: its targeted effects go at the hero the seat eyes, unless the engine finds a reason not to.
+    if let Some(aim) = super::spotlight::target_aim(seen, options) {
+        let aimed = |target: &Target| super::spotlight::holder(seen, *target) == Some(aim.hero);
+        if ranked.iter().any(aimed) {
+            ranked.retain(|target| {
+                aimed(target)
+                    || super::spotlight::holder(seen, *target).is_none_or(|p| seen.is_teammate(p))
+            });
         }
     }
     ranked

@@ -752,7 +752,8 @@ fn item_text(item: &CostItem) -> Option<String> {
                 _ => return None,
             }
         }
-        CostItem::Waterbend(generic) => format!("Waterbend {{{generic}}}"),
+        CostItem::Waterbend(Amount::Fixed(generic)) => format!("Waterbend {{{generic}}}"),
+        CostItem::Waterbend(Amount::X) => "Waterbend {X}".to_owned(),
         CostItem::ExileFromGraveyard {
             filter,
             count,

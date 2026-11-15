@@ -126,7 +126,9 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
         | Ability::Sticker(_)
         | Ability::CostModifier { .. } => &[ClauseKind::Static],
         Ability::Loyalty { .. } => &[ClauseKind::Loyalty],
-        Ability::Activated { .. } => &[ClauseKind::Activated],
+        // An alternative cost of another ability's activation ("You may remove a loyalty counter from a planeswalker you
+        // control rather than pay ~'s crew cost.") is an activated ability worded as a static one.
+        Ability::Activated { .. } => &[ClauseKind::Activated, ClauseKind::Static],
         // Exert is a sentence of the card ("You may exert this creature as it attacks."), read by the static templates.
         // So is the flash permission whose permanent is sacrificed at the next cleanup step.
         Ability::Keyword(

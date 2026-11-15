@@ -40,11 +40,22 @@ impl KeywordRules for Mentor {
                 bounds: Bounds::default(),
                 divide: None,
             }],
-            effects: vec![Effect::PutCounters {
-                on: Ref::Target(0),
-                counter: CounterKind::PlusOnePlusOne,
-                count: Amount::one(),
-            }],
+            // The creature mentors the target as the counter is put (CR 702.134a), which "whenever ... mentors" reads.
+            effects: vec![
+                Effect::PutCounters {
+                    on: Ref::Target(0),
+                    counter: CounterKind::PlusOnePlusOne,
+                    count: Amount::one(),
+                },
+                Effect::Performed {
+                    action: mtg_cards::did::Action::R6401Mentored,
+                    who: Ref::You,
+                    times: Amount::one(),
+                    card: Some(Ref::Target(0)),
+                    value: None,
+                    to: None,
+                },
+            ],
         }]
     }
 }

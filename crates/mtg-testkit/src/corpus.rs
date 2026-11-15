@@ -12,6 +12,7 @@ use std::sync::{Arc, OnceLock};
 use mtg_cards::assemble::Assembled;
 use mtg_cards::support::SupportRecord;
 use mtg_cards::{Caps, CardDefinition, PrintedCard, PrintedFace, builtin};
+use mtg_core::color::ColorSet;
 use mtg_core::mana::ManaType;
 use mtg_import::scryfall::{CardRecord, cards};
 use thiserror::Error;
@@ -110,9 +111,19 @@ impl Corpus {
             cards: Vec::new(),
             by_name: BTreeMap::new(),
         };
+        // The color identity of the pieces of each meld pair, by the name of the card they meld into.
+        let mut melded: BTreeMap<String, ColorSet> = BTreeMap::new();
         for record in cards(scryfall_array()?.as_bytes()) {
             let record = record.map_err(|error| CorpusError::Data(error.to_string()))?;
             let assembled = rules.assemble(&printed_card(&record), caps);
+            if let Some(result) = &record.melds_into {
+                let pieces = melded.entry(result.clone()).or_insert(ColorSet::EMPTY);
+                *pieces = assembled
+                    .definition
+                    .color_identity()
+                    .iter()
+                    .fold(*pieces, ColorSet::with);
+            }
             let at = corpus.cards.len();
             for name in std::iter::once(&record.name).chain(record.faces().map(|f| &f.name)) {
                 corpus.by_name.entry(name.to_lowercase()).or_insert(at);
@@ -122,6 +133,18 @@ impl Corpus {
                 assembled,
                 name: record.name,
             });
+        }
+        // A meld result is in the identity of the cards it melds from (CR 903.4), as Scryfall gives it.
+        for entry in &mut corpus.cards {
+            if let Some(pieces) = melded.get(&entry.name) {
+                let definition = entry
+                    .assembled
+                    .definition
+                    .clone()
+                    .with_meld_identity(*pieces);
+                entry.definition = Arc::new(definition.clone());
+                entry.assembled.definition = definition;
+            }
         }
         Ok(corpus)
     }
@@ -167,6 +190,7 @@ pub fn card(name: &str) -> Result<Arc<CardDefinition>, CorpusError> {
 mod tests {
     //! Goal: the fixture directory loads as one array in file-name order, the corpus holds every card of the rules directory and of the fixture once, finds them by full name or face name in any case, and refuses a name it does not have.
     use super::*;
+    use mtg_core::color::Color;
     use rstest::rstest;
 
     #[test]
@@ -222,6 +246,24 @@ mod tests {
     #[case::punctuation("Gaea's Cradle", "Gaea's Cradle")]
     fn a_card_is_found_by_any_of_its_names(#[case] asked: &str, #[case] front: &str) {
         assert_eq!(card(asked).unwrap().name, front);
+    }
+
+    #[rstest]
+    #[case::brisela("Brisela, Voice of Nightmares", Color::White)]
+    #[case::chittering_host("Chittering Host", Color::Black)]
+    #[case::hanweir("Hanweir, the Writhing Township", Color::Red)]
+    #[case::a_piece_keeps_its_own("Bruna, the Fading Light", Color::White)]
+    #[case::a_piece_of_the_hanweir_pair("Hanweir Battlements", Color::Red)]
+    fn a_meld_result_has_the_color_identity_of_the_cards_it_melds_from(
+        #[case] name: &str,
+        #[case] identity: Color,
+    ) {
+        let found = card(name).unwrap();
+        assert_eq!(
+            found.color_identity(),
+            ColorSet::EMPTY.with(identity),
+            "{name}"
+        );
     }
 
     #[test]

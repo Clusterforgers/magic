@@ -59,10 +59,12 @@ fn self_attack(rule: &GameRule) -> Option<(&Selector, Vec<String>)> {
         mana,
         life,
         per,
+        cost,
     } = rule
     else {
         return None;
     };
+    cost.is_empty().then_some(())?;
     Some((attackers, prices(mana, *life, per)))
 }
 
@@ -101,10 +103,14 @@ pub fn g11c_block_texts(rule: &GameRule) -> Vec<String> {
         mana,
         life,
         per,
+        cost,
     } = rule
     else {
         return Vec::new();
     };
+    if !cost.is_empty() {
+        return Vec::new();
+    }
     let prices = prices(mana, *life, per);
     let mut written = Vec::new();
     // "~ can't block unless you pay {2}", "~ can't block creatures with power 3 or greater unless you pay {1}".
@@ -177,6 +183,7 @@ fn pair_as_given(first: &Ability, second: &Ability) -> Vec<String> {
                     mana,
                     life,
                     per,
+                    cost,
                 },
             condition: None,
             from: ZoneKind::Battlefield,
@@ -185,6 +192,9 @@ fn pair_as_given(first: &Ability, second: &Ability) -> Vec<String> {
     else {
         return Vec::new();
     };
+    if !cost.is_empty() {
+        return Vec::new();
+    }
     let Some((attacking, prices)) = self_attack(attack) else {
         return Vec::new();
     };

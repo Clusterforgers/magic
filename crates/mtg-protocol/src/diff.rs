@@ -87,6 +87,7 @@ mod tests {
             merged: Vec::new(),
             kind: ObjectKind::Card,
             source: None,
+            granter: None,
             rules_text: None,
             targets: Vec::new(),
             targets_legal: Vec::new(),

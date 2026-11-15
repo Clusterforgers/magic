@@ -637,7 +637,7 @@ pub(crate) fn copiable_values(
         // (CR 729.2a).
         let printed = match (object.merged(), object.copy_effect()) {
             (_, Some(copy)) => copy.definition(),
-            (Some(merged), None) => merged.top().card(),
+            (Some(merged), None) => merged.copiable_card(),
             (None, None) => object.card(),
         };
         // A prototyped permanent or spell has its prototype values as copiable values (CR 718.3c).

@@ -1,7 +1,7 @@
 {
   "oracle_id": "ade898df-14a5-460b-94f6-1f3f74d3ff95",
   "name": "Odric, Master Tactician",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Odric, Master Tactician",
@@ -9,9 +9,25 @@
       "abilities": [
         { "Keyword": "FirstStrike" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 88, "end": 221 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Count": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                  "op": "Ge",
+                  "right": 3
+                }
+              }
+            },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "R6400ChoosesBlocks": { "chooser": "You" } },
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
           }
         }
       ]

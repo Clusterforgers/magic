@@ -285,8 +285,13 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
   usePrimaryKey({ space: () => undefined, enter: confirm }, ready)
 
   const [firstShort] = short
+  // A rule may have this player choose how another player's creatures block (CR 509.1a): the creatures offered are theirs.
+  const firstBlocker = legal.find((object) => !own.includes(object))
+  const chosenFor = firstBlocker === undefined ? undefined : byId.get(firstBlocker)?.controller
+  const lead = chosenFor === undefined ? '' : `You choose how ${seatName(chosenFor)}'s creatures block. `
   const text =
-    legal.length === 0
+    lead +
+    (legal.length === 0
       ? 'None of your creatures can block. Choose No blocks to go on.'
       : choosing !== undefined
         ? `Click the attacker ${blockerName(choosing)} blocks.`
@@ -298,7 +303,7 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
               ? `${attackerName(firstShort[0])} needs ${blockersNeeded(firstShort[1])}. Choose another creature to block it, or take its block back.`
               : pairs.size === 0
                 ? 'Click a blocker, then the attacker it blocks.'
-                : `${blockSummary(pairs.size, new Set(pairs.values()).size)}.`
+                : `${blockSummary(pairs.size, new Set(pairs.values()).size)}.`)
 
   return (
     <PromptLayout compact text={text}>

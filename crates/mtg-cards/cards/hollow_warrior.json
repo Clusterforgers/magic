@@ -1,0 +1,35 @@
+{
+  "oracle_id": "18ca77d9-4740-4be4-913a-e21c9ed9e43f",
+  "name": "Hollow Warrior",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hollow Warrior",
+      "oracle_fingerprint": "4b0124eed7341002934646d9d54caf17",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "AttackTax": {
+                "who": "EachPlayer",
+                "attacked": "Both",
+                "attackers": ["This"],
+                "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }] } }]
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "BlockTax": {
+                "blockers": ["This"],
+                "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }] } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

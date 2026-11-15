@@ -1,5 +1,6 @@
 /** The Delves pages' words and helpers (pure): errors, statuses and relic roles. */
 import { DelveError } from '@/net/delves'
+import type { Timers } from '@/protocol/generated'
 
 /** How often the run page reads the run again, in milliseconds. */
 export const POLL_MS = 4000
@@ -20,6 +21,12 @@ export function statusText(status: string): string {
     abandoned: 'Abandoned',
   }
   return words[status] ?? status
+}
+
+/** The run's Timers setting, in a word. */
+export function timersText(timers: Timers): string {
+  const words: Record<Timers, string> = { relaxed: 'Relaxed', quick: 'Quick', off: 'Off' }
+  return words[timers]
 }
 
 /** The words a relic's role is shown with; a risky relic says that it helps the boss too. */

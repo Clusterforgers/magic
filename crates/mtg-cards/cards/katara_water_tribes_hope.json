@@ -1,7 +1,7 @@
 {
   "oracle_id": "234fb291-0b62-4092-9071-81311c71bd53",
   "name": "Katara, Water Tribe's Hope",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Katara, Water Tribe's Hope",
@@ -30,9 +30,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 70, "end": 311 }
+          "Activated": {
+            "cost": [{ "Waterbend": "X" }, { "XAtLeast": 1 }],
+            "condition": "YourTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "SetPT": { "power": "X", "toughness": "X" } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

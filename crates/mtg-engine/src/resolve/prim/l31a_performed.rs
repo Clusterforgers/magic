@@ -71,6 +71,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     paid: *action != Action::DeclinedCumulativeUpkeep,
                 }));
             }
+            Action::R6401Mentored => events.extend(card.map(|mentored| Event::R6401Mentored {
+                player,
+                mentor: cx.scope.source.id,
+                mentored,
+            })),
             _ => return Err(ResolveError::Unsupported("Effect.Performed")),
         }
     }

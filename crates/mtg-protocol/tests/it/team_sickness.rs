@@ -125,9 +125,9 @@ fn watch(table: &mut Table, teams: &Teams, last: u32, held: impl Fn(&str, usize,
                         "{at}: seat {viewer}'s view of {name}"
                     );
                 }
-                // The creatures of the turn's players attack unless held back; nobody else's are offered. Under shared team
-                // turns each player is asked for their own creatures.
-                let asked = teams.mode != TeamMode::SharedTurns || seat == deciding;
+                // The creatures of the turn's players attack unless held back; nobody else's are offered. Where teams
+                // share their turns each player is asked for their own creatures.
+                let asked = !teams.shares_turns() || seat == deciding;
                 if step == Step::DeclareAttackers && own_turn(teams, turn, seat) && asked {
                     assert_eq!(offered.contains(&id), !want, "{at}: attacking with {name}");
                 }

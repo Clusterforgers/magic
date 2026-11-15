@@ -71,7 +71,6 @@ Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `
 
 ## Faces and copies
 
-- [ ] (n1d3) Meld (CR 712.4): two cards exile and return as one permanent with the combined back face and leave as two objects; frees the meld pairs (Gisela and Bruna, Graf Rats, Hanweir Battlements, Titania, Voice of Gaea, Urza, Lord Protector, Vanille, Cheerful l'Cie)
 - [ ] (n1d6) The day and night wordings left; frees about 10 corpus cards (Celestus Sanctifier, Angel of Eternal Dawn, Tovolar, Dire Overlord)
 - [ ] (n2b) Face-down remaining: manifest dread and of chosen cards, face-up and face-down predicates, turn-up conditions, morph costs beyond mana; frees about 14 cards (Write into Being, Whisperwood Elemental, Fathom Seer)
 - [ ] (ep33a) Open families: a secretly chosen player, "you choose how each player votes", face-down permanents with set characteristics (a Forest land), manifest and cloak of named cards in a shuffled pile, "whenever you give a gift", spend on face-down creature spells, morphing up, equip, kicked spells and cumulative upkeep, and writers for the exile-memory drafts (Cemetery Protector, Wormfang Crab)

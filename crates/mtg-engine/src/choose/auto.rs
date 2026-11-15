@@ -94,6 +94,7 @@ mod tests {
             },
             ability: 0,
             when: String::new(),
+            origin: crate::abilities::AbilitySource::default(),
         };
         let options = TriggersOptions {
             triggers: (0..n as u64).map(entry).collect(),

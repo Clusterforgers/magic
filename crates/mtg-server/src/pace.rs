@@ -8,6 +8,7 @@
 
 use std::time::Duration;
 
+use mtg_core::house::Timers;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::choose::{
     CardsChoice, CardsOptions, CostsChoice, DivideChoice, DivideOptions, ModeChoice, ModeOptions,
@@ -38,8 +39,58 @@ pub const BANK_MAX: u8 = 3;
 /// How long after a failed save the server tries again to answer for a seat whose clock ran out.
 const RETRY_AFTER: Duration = Duration::from_secs(1);
 
+/// The lengths of the clocks a table runs on, one set for each Timers setting; `None` is no clock.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Clocks {
+    /// Time a seat that is not the active player has to answer a priority decision and the questions asked of it.
+    pub response: Option<Duration>,
+    /// Time a defending seat has to declare blockers, at a table whose `blocker_timer` house rule is on.
+    pub blocks: Option<Duration>,
+    /// Time to decide what takes thought and is no quick response.
+    pub think: Option<Duration>,
+    /// Time the active player has for every decision of its own turn after the opening.
+    pub active: Option<Duration>,
+    /// Time an extension adds to a clock that runs out.
+    pub extension: Option<Duration>,
+}
+
+impl Clocks {
+    /// No clock at all: the table waits for every seat.
+    pub const NONE: Clocks = Clocks {
+        response: None,
+        blocks: None,
+        think: None,
+        active: None,
+        extension: None,
+    };
+
+    /// The clocks of a table that plays Quick timers: 10 s to respond, 45 s to block, a minute to think and an
+    /// extension of 20 s.
+    pub const QUICK: Clocks = Clocks {
+        response: Some(Duration::from_secs(10)),
+        blocks: Some(Duration::from_secs(45)),
+        think: Some(Duration::from_mins(1)),
+        active: None,
+        extension: Some(Duration::from_secs(20)),
+    };
+
+    /// The clocks of a table that plays Relaxed timers, the default: 30 s to respond, 90 s to block, 3 minutes to
+    /// think and an extension of 60 s.
+    pub const RELAXED: Clocks = Clocks {
+        response: Some(Duration::from_secs(30)),
+        blocks: Some(Duration::from_secs(90)),
+        think: Some(Duration::from_mins(3)),
+        active: None,
+        extension: Some(Duration::from_mins(1)),
+    };
+}
+
 /// How a game moves: how seats start out (auto-pass on, or in Full Control), how long a seat may take to respond and how
 /// long the table waits before it passes for a seat that cannot act.
+///
+/// The five clock lengths are those of a table that plays Quick timers (the `timers` house rule, [`Timers`]);
+/// `relaxed` holds the lengths of one that plays Relaxed timers, the default, and a table that plays Off has no clock.
+/// [`clocks`](Pace::clocks) gives the lengths of a table.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Pace {
     /// Whether each seat starts with auto-pass on (`MTG_AUTO_PASS`): in Full Control mode `Off`, or `Held` when off.
@@ -61,6 +112,9 @@ pub struct Pace {
     pub active: Option<Duration>,
     /// Time an extension adds to a clock that runs out (`MTG_EXTENSION_SECS`); `None` turns the bank off.
     pub extension: Option<Duration>,
+    /// The lengths of a table that plays Relaxed timers; `None` gives it the lengths above, as for a game played straight
+    /// on an engine. `MTG_*_SECS` set both ([`set_clocks`](Pace::set_clocks)).
+    pub relaxed: Option<Clocks>,
     /// How long a clock runs before its countdown shows (`MTG_CLOCK_GRACE_SECS`); a clock no longer than this shows at
     /// once, as does zero.
     pub grace: Duration,
@@ -124,9 +178,46 @@ impl Pace {
         think: None,
         active: None,
         extension: None,
+        relaxed: None,
         grace: Duration::ZERO,
         dwell: Dwell::OFF,
     };
+
+    /// The clock lengths of a table that plays Quick timers.
+    pub(crate) const fn quick(&self) -> Clocks {
+        Clocks {
+            response: self.response,
+            blocks: self.blocks,
+            think: self.think,
+            active: self.active,
+            extension: self.extension,
+        }
+    }
+
+    /// The clock lengths of a table that plays `timers`: Off has none, Quick the lengths of this pace and Relaxed its
+    /// own, or those of Quick where it has none.
+    pub(crate) fn clocks(&self, timers: Timers) -> Clocks {
+        match timers {
+            Timers::Off => Clocks::NONE,
+            Timers::Quick => self.quick(),
+            Timers::Relaxed => self.relaxed.unwrap_or_else(|| self.quick()),
+        }
+    }
+
+    /// Changes the lengths of the clocks of every setting but Off, so an override reaches a table whatever its
+    /// `timers` rule says.
+    pub fn set_clocks(&mut self, change: impl Fn(&mut Clocks)) {
+        let mut quick = self.quick();
+        change(&mut quick);
+        self.response = quick.response;
+        self.blocks = quick.blocks;
+        self.think = quick.think;
+        self.active = quick.active;
+        self.extension = quick.extension;
+        if let Some(relaxed) = &mut self.relaxed {
+            change(relaxed);
+        }
+    }
 
     /// The Full Control mode every seat starts in: `Off` with auto-pass on, `Held` with it off.
     pub(crate) const fn mode(&self) -> FullControlMode {
@@ -137,7 +228,8 @@ impl Pace {
         }
     }
 
-    /// The clock `decision` runs on, if any.
+    /// The clock `decision` runs on at a table that plays `timers`, if any: none under `Off`, the lengths of
+    /// [`clocks`](Pace::clocks) otherwise.
     ///
     /// The opening decisions (keep or mulligan, bottoming) are asked before any turn exists and have no clock for any
     /// seat ([`OPENING_CLOCK`](Pace::OPENING_CLOCK)). After that the active player's decisions run on `active`, whatever their kind, and every other seat
@@ -154,14 +246,16 @@ impl Pace {
         decision: &Decision,
         active: PlayerId,
         blocker_timer: bool,
+        timers: Timers,
     ) -> Option<Duration> {
+        let clocks = self.clocks(timers);
         match Class::of(&decision.kind) {
             Class::Opening => Self::OPENING_CLOCK,
             Class::Blocks if !blocker_timer => None,
-            _ if decision.player == active => self.active,
-            Class::Response => self.response,
-            Class::Blocks => self.blocks,
-            Class::Think => self.think,
+            _ if decision.player == active => clocks.active,
+            Class::Response => clocks.response,
+            Class::Blocks => clocks.blocks,
+            Class::Think => clocks.think,
         }
     }
 
@@ -178,13 +272,15 @@ impl Pace {
 
 impl Default for Pace {
     fn default() -> Self {
+        let quick = Clocks::QUICK;
         Pace {
             auto_pass: true,
-            response: Some(Duration::from_secs(10)),
-            blocks: Some(Duration::from_secs(45)),
-            think: Some(Duration::from_mins(1)),
-            active: None,
-            extension: Some(Duration::from_secs(20)),
+            response: quick.response,
+            blocks: quick.blocks,
+            think: quick.think,
+            active: quick.active,
+            extension: quick.extension,
+            relaxed: Some(Clocks::RELAXED),
             grace: Duration::from_secs(3),
             dwell: Dwell::DEFAULT,
         }
@@ -842,6 +938,7 @@ mod tests {
                     },
                     ability: 0,
                     when: String::new(),
+                    origin: mtg_engine::abilities::AbilitySource::default(),
                 })
                 .collect(),
         })
@@ -1016,6 +1113,7 @@ mod tests {
             think: Some(Duration::from_mins(1)),
             active: None,
             extension: Some(Duration::from_secs(20)),
+            relaxed: None,
             grace: Duration::from_secs(3),
             dwell: Dwell::OFF,
         }
@@ -1076,7 +1174,7 @@ mod tests {
         #[case] kind: DecisionKind,
         #[case] seconds: Option<u64>,
     ) {
-        let got = pace().clock_for(&decision(player, kind), ACTIVE, true);
+        let got = pace().clock_for(&decision(player, kind), ACTIVE, true, Timers::Quick);
         assert_eq!(got, seconds.map(Duration::from_secs));
     }
 
@@ -1089,7 +1187,7 @@ mod tests {
         #[case] timer: bool,
         #[case] seconds: Option<u64>,
     ) {
-        let got = pace().clock_for(&decision(player, blockers()), ACTIVE, timer);
+        let got = pace().clock_for(&decision(player, blockers()), ACTIVE, timer, Timers::Quick);
         assert_eq!(got, seconds.map(Duration::from_secs));
     }
 
@@ -1103,12 +1201,133 @@ mod tests {
             for player in [ACTIVE, OTHER] {
                 let d = decision(player, d.kind.clone());
                 assert_eq!(
-                    pace().clock_for(&d, ACTIVE, false),
-                    pace().clock_for(&d, ACTIVE, true),
+                    pace().clock_for(&d, ACTIVE, false, Timers::Quick),
+                    pace().clock_for(&d, ACTIVE, true, Timers::Quick),
                     "{d:?}"
                 );
             }
         }
+    }
+
+    /// The server's own pace: the Quick lengths and the Relaxed ones.
+    fn both() -> Pace {
+        Pace::default()
+    }
+
+    #[rstest]
+    #[case::relaxed_priority(Timers::Relaxed, priority(true), Some(30))]
+    #[case::relaxed_priority_with_nothing_to_do(Timers::Relaxed, priority(false), Some(30))]
+    #[case::relaxed_targets(Timers::Relaxed, targets(true), Some(30))]
+    #[case::relaxed_question(Timers::Relaxed, question(), Some(30))]
+    #[case::relaxed_blocks(Timers::Relaxed, blockers(), Some(90))]
+    #[case::relaxed_payment(Timers::Relaxed, payment(true, true), Some(180))]
+    #[case::relaxed_attackers(Timers::Relaxed, attackers(&[]), Some(180))]
+    #[case::relaxed_damage(Timers::Relaxed, damage(3, &[2, 2], false), Some(180))]
+    #[case::relaxed_discard(Timers::Relaxed, discard(8, 1), Some(180))]
+    #[case::relaxed_mulligan(Timers::Relaxed, mulligan(), None)]
+    #[case::quick_priority(Timers::Quick, priority(true), Some(10))]
+    #[case::quick_targets(Timers::Quick, targets(true), Some(10))]
+    #[case::quick_question(Timers::Quick, question(), Some(10))]
+    #[case::quick_blocks(Timers::Quick, blockers(), Some(45))]
+    #[case::quick_payment(Timers::Quick, payment(true, true), Some(60))]
+    #[case::quick_attackers(Timers::Quick, attackers(&[]), Some(60))]
+    #[case::quick_damage(Timers::Quick, damage(3, &[2, 2], false), Some(60))]
+    #[case::quick_discard(Timers::Quick, discard(8, 1), Some(60))]
+    #[case::quick_mulligan(Timers::Quick, mulligan(), None)]
+    #[case::off_priority(Timers::Off, priority(true), None)]
+    #[case::off_targets(Timers::Off, targets(true), None)]
+    #[case::off_question(Timers::Off, question(), None)]
+    #[case::off_blocks(Timers::Off, blockers(), None)]
+    #[case::off_payment(Timers::Off, payment(true, true), None)]
+    #[case::off_attackers(Timers::Off, attackers(&[]), None)]
+    #[case::off_damage(Timers::Off, damage(3, &[2, 2], false), None)]
+    #[case::off_discard(Timers::Off, discard(8, 1), None)]
+    #[case::off_mulligan(Timers::Off, mulligan(), None)]
+    fn each_timers_setting_runs_each_class_of_decision_on_its_own_length(
+        #[case] timers: Timers,
+        #[case] kind: DecisionKind,
+        #[case] seconds: Option<u64>,
+    ) {
+        let got = both().clock_for(&decision(OTHER, kind), ACTIVE, true, timers);
+        assert_eq!(got, seconds.map(Duration::from_secs));
+    }
+
+    #[rstest]
+    #[case::relaxed(Timers::Relaxed)]
+    #[case::quick(Timers::Quick)]
+    fn the_block_clock_of_every_setting_still_needs_the_blocker_timer(#[case] timers: Timers) {
+        assert_eq!(
+            both().clock_for(&decision(OTHER, blockers()), ACTIVE, false, timers),
+            None
+        );
+    }
+
+    #[rstest]
+    #[case::relaxed(Timers::Relaxed, Some(30))]
+    #[case::quick(Timers::Quick, Some(30))]
+    #[case::off(Timers::Off, None)]
+    fn the_active_seat_runs_on_the_active_length_of_the_setting_and_off_has_none(
+        #[case] timers: Timers,
+        #[case] seconds: Option<u64>,
+    ) {
+        let mut pace = both();
+        pace.set_clocks(|clocks| clocks.active = Some(Duration::from_secs(30)));
+        for (kind, class) in every_kind() {
+            let got = pace.clock_for(&decision(ACTIVE, kind.clone()), ACTIVE, true, timers);
+            let expected = match class {
+                Class::Opening => None,
+                _ => seconds.map(Duration::from_secs),
+            };
+            assert_eq!(got, expected, "{kind:?}");
+        }
+    }
+
+    #[test]
+    fn the_lengths_of_each_setting_are_relaxed_quick_and_none() {
+        let pace = both();
+        assert_eq!(pace.clocks(Timers::Relaxed), Clocks::RELAXED);
+        assert_eq!(pace.clocks(Timers::Quick), Clocks::QUICK);
+        assert_eq!(pace.clocks(Timers::Off), Clocks::NONE);
+        let relaxed = Clocks::RELAXED;
+        assert_eq!(relaxed.response, Some(Duration::from_secs(30)));
+        assert_eq!(relaxed.blocks, Some(Duration::from_secs(90)));
+        assert_eq!(relaxed.think, Some(Duration::from_mins(3)));
+        assert_eq!(relaxed.active, None);
+        assert_eq!(relaxed.extension, Some(Duration::from_secs(60)));
+        let quick = Clocks::QUICK;
+        assert_eq!(quick.response, Some(Duration::from_secs(10)));
+        assert_eq!(quick.blocks, Some(Duration::from_secs(45)));
+        assert_eq!(quick.think, Some(Duration::from_mins(1)));
+        assert_eq!(quick.extension, Some(Duration::from_secs(20)));
+    }
+
+    #[test]
+    fn a_pace_with_no_relaxed_lengths_runs_a_relaxed_table_on_its_own_and_off_never_runs_a_clock() {
+        for pace in [pace(), Pace::MANUAL, every_clock()] {
+            assert_eq!(pace.clocks(Timers::Relaxed), pace.quick());
+            assert_eq!(pace.clocks(Timers::Quick), pace.quick());
+            assert_eq!(pace.clocks(Timers::Off), Clocks::NONE);
+        }
+        assert_eq!(Pace::MANUAL.clocks(Timers::Relaxed), Clocks::NONE);
+    }
+
+    #[test]
+    fn an_override_changes_the_lengths_of_relaxed_and_quick_alone() {
+        let mut pace = both();
+        pace.set_clocks(|clocks| clocks.response = Some(Duration::from_secs(5)));
+        pace.set_clocks(|clocks| clocks.extension = None);
+        let five = Some(Duration::from_secs(5));
+        assert_eq!(pace.clocks(Timers::Relaxed).response, five);
+        assert_eq!(pace.clocks(Timers::Quick).response, five);
+        assert_eq!(pace.clocks(Timers::Off), Clocks::NONE);
+        assert_eq!(pace.clocks(Timers::Relaxed).extension, None);
+        assert_eq!(pace.clocks(Timers::Quick).extension, None);
+        assert_eq!(
+            pace.clocks(Timers::Relaxed).think,
+            Clocks::RELAXED.think,
+            "the other lengths keep their own"
+        );
+        assert_eq!(pace.clocks(Timers::Quick).think, Clocks::QUICK.think);
     }
 
     /// Every setting set to a clock, so a clock in the opening would show.
@@ -1128,7 +1347,11 @@ mod tests {
         for kind in opening_kinds() {
             for player in [ACTIVE, OTHER, PlayerId(2), PlayerId(3)] {
                 let d = decision(player, kind.clone());
-                assert_eq!(settings.clock_for(&d, ACTIVE, true), None, "{d:?}");
+                assert_eq!(
+                    settings.clock_for(&d, ACTIVE, true, Timers::Quick),
+                    None,
+                    "{d:?}"
+                );
             }
         }
     }
@@ -1141,11 +1364,15 @@ mod tests {
                 decision(ACTIVE, kind.clone()),
             );
             assert_eq!(
-                pace().clock_for(&other, ACTIVE, true),
+                pace().clock_for(&other, ACTIVE, true, Timers::Quick),
                 Some(Duration::from_mins(1)),
                 "{other:?}"
             );
-            assert_eq!(pace().clock_for(&active, ACTIVE, true), None, "{active:?}");
+            assert_eq!(
+                pace().clock_for(&active, ACTIVE, true, Timers::Quick),
+                None,
+                "{active:?}"
+            );
         }
     }
 
@@ -1158,7 +1385,11 @@ mod tests {
             };
             for player in [ACTIVE, OTHER] {
                 let d = decision(player, kind.clone());
-                assert_eq!(none.clock_for(&d, ACTIVE, true), None, "{d:?}");
+                assert_eq!(
+                    none.clock_for(&d, ACTIVE, true, Timers::Quick),
+                    None,
+                    "{d:?}"
+                );
             }
         }
     }
@@ -1168,15 +1399,20 @@ mod tests {
     #[case::response_off(Pace { response: None, think: None, ..pace() })]
     fn a_missing_setting_means_no_clock(#[case] pace: Pace) {
         assert_eq!(
-            pace.clock_for(&decision(OTHER, priority(true)), ACTIVE, true),
+            pace.clock_for(
+                &decision(OTHER, priority(true)),
+                ACTIVE,
+                true,
+                Timers::Quick
+            ),
             None
         );
         assert_eq!(
-            pace.clock_for(&decision(OTHER, targets(true)), ACTIVE, true),
+            pace.clock_for(&decision(OTHER, targets(true)), ACTIVE, true, Timers::Quick),
             None
         );
         assert_eq!(
-            pace.clock_for(&decision(OTHER, order(2)), ACTIVE, true),
+            pace.clock_for(&decision(OTHER, order(2)), ACTIVE, true, Timers::Quick),
             None
         );
         for kind in [
@@ -1191,17 +1427,23 @@ mod tests {
             cards(2, 1, 1),
             ordering(2),
         ] {
-            assert_eq!(pace.clock_for(&decision(OTHER, kind), ACTIVE, true), None);
+            assert_eq!(
+                pace.clock_for(&decision(OTHER, kind), ACTIVE, true, Timers::Quick),
+                None
+            );
         }
         if pace.blocks.is_none() {
             assert_eq!(
-                pace.clock_for(&decision(OTHER, blockers()), ACTIVE, true),
+                pace.clock_for(&decision(OTHER, blockers()), ACTIVE, true, Timers::Quick),
                 None
             );
         }
         if pace.think.is_none() {
             for kind in think_kinds() {
-                assert_eq!(pace.clock_for(&decision(OTHER, kind), ACTIVE, true), None);
+                assert_eq!(
+                    pace.clock_for(&decision(OTHER, kind), ACTIVE, true, Timers::Quick),
+                    None
+                );
             }
         }
     }
@@ -1402,14 +1644,17 @@ mod tests {
         ];
         for kind in kinds {
             let want = (
-                pace().clock_for(&decision(OTHER, kind.clone()), ACTIVE, true),
+                pace().clock_for(&decision(OTHER, kind.clone()), ACTIVE, true, Timers::Quick),
                 fallback(&decision(OTHER, kind.clone())),
             );
             assert_eq!(want.0, Some(Duration::from_secs(10)), "{kind:?}");
             for seat in 1..12 {
                 let d = decision(PlayerId::from_index(seat), kind.clone());
                 assert_eq!(
-                    (pace().clock_for(&d, ACTIVE, true), fallback(&d)),
+                    (
+                        pace().clock_for(&d, ACTIVE, true, Timers::Quick),
+                        fallback(&d)
+                    ),
                     want,
                     "{d:?}"
                 );
@@ -1570,13 +1815,16 @@ mod tests {
     fn the_clock_and_the_fallback_of_what_takes_thought_are_the_same_for_every_seat() {
         for kind in think_kinds() {
             let want = (
-                pace().clock_for(&decision(OTHER, kind.clone()), ACTIVE, true),
+                pace().clock_for(&decision(OTHER, kind.clone()), ACTIVE, true, Timers::Quick),
                 fallback(&decision(OTHER, kind.clone())),
             );
             for seat in 1..12 {
                 let d = decision(PlayerId::from_index(seat), kind.clone());
                 assert_eq!(
-                    (pace().clock_for(&d, ACTIVE, true), fallback(&d)),
+                    (
+                        pace().clock_for(&d, ACTIVE, true, Timers::Quick),
+                        fallback(&d)
+                    ),
                     want,
                     "{d:?}"
                 );
@@ -1648,7 +1896,8 @@ mod tests {
             ..pace()
         };
         for (kind, class) in every_kind() {
-            let got = settings.clock_for(&decision(ACTIVE, kind.clone()), ACTIVE, true);
+            let got =
+                settings.clock_for(&decision(ACTIVE, kind.clone()), ACTIVE, true, Timers::Quick);
             let expected = match class {
                 Class::Opening => None,
                 _ => settings.active,
@@ -1671,7 +1920,12 @@ mod tests {
                 Class::Blocks => settings.blocks,
             };
             for player in [OTHER, PlayerId(2), PlayerId(3)] {
-                let got = settings.clock_for(&decision(player, kind.clone()), ACTIVE, true);
+                let got = settings.clock_for(
+                    &decision(player, kind.clone()),
+                    ACTIVE,
+                    true,
+                    Timers::Quick,
+                );
                 assert_eq!(got, expected, "{}", kind.name());
             }
         }
@@ -1720,7 +1974,7 @@ mod tests {
         for (kind, class) in every_kind() {
             for player in [ACTIVE, OTHER, PlayerId(2), PlayerId(3)] {
                 let d = decision(player, kind.clone());
-                let clock = settings.clock_for(&d, ACTIVE, true);
+                let clock = settings.clock_for(&d, ACTIVE, true, Timers::Quick);
                 if class == Class::Opening {
                     assert_eq!(clock, None, "the opening has no clock to show");
                     continue;
@@ -1742,7 +1996,7 @@ mod tests {
         let shown = |can_act| {
             let d = decision(OTHER, priority(can_act));
             settings
-                .clock_for(&d, ACTIVE, true)
+                .clock_for(&d, ACTIVE, true, Timers::Quick)
                 .map(|length| (length, settings.shown_after(length)))
         };
         assert_eq!(shown(true), shown(false));

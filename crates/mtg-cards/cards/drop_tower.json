@@ -1,0 +1,28 @@
+{
+  "oracle_id": "54c4fd18-adf5-408b-a529-019ebc24ca8d",
+  "name": "Drop Tower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drop Tower",
+      "oracle_fingerprint": "cb87c8a68ae496e9b2f346d2059be87b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Visit": {} },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": { "UntilEndOfTurnOrRolled": 1 }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

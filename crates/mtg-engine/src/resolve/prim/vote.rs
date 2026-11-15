@@ -27,6 +27,35 @@ fn voters(cx: &Cx<'_>) -> Vec<(PlayerId, bool)> {
         .collect()
 }
 
+/// The ballots answered, each kept as its voter's: by the voters themselves, or all by the player a rule has choose how
+/// each player votes (CR 701.38), asked in the same order.
+fn r6400_pick(cx: &Cx<'_>, mut choosers: Vec<OptionChooser>) -> Result<Optioned, ResolveError> {
+    let Some(chooser) = crate::rules::r6400_vote_chooser(cx.state()) else {
+        return pick_options(cx, &choosers);
+    };
+    let voters: Vec<PlayerId> = choosers
+        .iter()
+        .filter(|one| !one.options.is_empty())
+        .map(|one| one.player)
+        .collect();
+    for one in &mut choosers {
+        if one.player != chooser {
+            one.text = format!("{} (You choose this vote for another player.)", one.text);
+        }
+        one.player = chooser;
+    }
+    Ok(match pick_options(cx, &choosers)? {
+        Optioned::Done(taken) => Optioned::Done(
+            taken
+                .into_iter()
+                .zip(voters)
+                .map(|((_, index), voter)| (voter, index))
+                .collect(),
+        ),
+        asked @ Optioned::Ask(_) => asked,
+    })
+}
+
 /// The option of an additional ballot that casts no vote.
 const W17C_NO_VOTE: &str = "No additional vote";
 
@@ -94,7 +123,7 @@ fn named(cx: &Cx<'_>, names: &[String], secret: bool) -> Result<Run, ResolveErro
         ChoiceOption::Label(W17C_NO_VOTE.to_owned())
     };
     let choosers = w17c_choosers(cx, &options, &blank, &text);
-    let taken = match pick_options(cx, &choosers)? {
+    let taken = match r6400_pick(cx, choosers)? {
         Optioned::Ask(decision) => return Ok(Run::Ask(decision)),
         Optioned::Done(taken) => taken,
     };
@@ -195,7 +224,7 @@ fn r376_player_votes(
             },
         });
     }
-    Ok(match pick_options(cx, &choosers)? {
+    Ok(match r6400_pick(cx, choosers)? {
         Optioned::Ask(decision) => Err(Run::Ask(decision)),
         Optioned::Done(taken) => Ok(taken
             .into_iter()
@@ -256,11 +285,12 @@ fn of(
             Err(ask) => return Ok(ask),
         }
     } else {
+        let chooser = crate::rules::r6400_vote_chooser(cx.state());
         let selections: Vec<Selection> = seats
             .iter()
             .map(|(player, again)| Selection {
                 one_per_name: false,
-                player: *player,
+                player: chooser.unwrap_or(*player),
                 from: objects.clone(),
                 min: usize::from(!again),
                 max: 1,
@@ -272,6 +302,8 @@ fn of(
             Picked::Ask(decision) => return Ok(Run::Ask(decision)),
             Picked::Done(taken) => taken
                 .into_iter()
+                .zip(seats.iter())
+                .map(|((_, cards), (voter, _))| (*voter, cards))
                 .flat_map(|(voter, cards)| cards.into_iter().map(move |id| (voter, id)))
                 .filter_map(|(voter, id)| {
                     candidates

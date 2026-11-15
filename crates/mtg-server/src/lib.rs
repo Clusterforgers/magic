@@ -41,8 +41,8 @@
 //!   rules are held in memory per seat and reported back.
 //!   A seat that is not the active player has a clock on every priority decision, on the targets of a spell
 //!   or ability, on ordering triggers and on the questions of effects (yes or no, an option, modes, cards, an
-//!   order of cards) (10 s)
-//!   and, at a table whose `blocker_timer` house rule is on, on declaring blockers (45 s); at the deadline the server answers for the seat (a pass, no blocks,
+//!   order of cards) (30 s, or 10 s with Quick timers)
+//!   and, at a table whose `blocker_timer` house rule is on, on declaring blockers (90 s, or 45 s); a table with the `timers` house rule off has no clock at all; at the deadline the server answers for the seat (a pass, no blocks,
 //!   the safe answer to the question) the same way, so a late answer is stale. Every other decision waits
 //!   as long as it takes, unless `MTG_ACTIVE_SECS` gives the active player a clock. A seat that finishes
 //!   three turns of its own without a clock running out earns an extension (at most three, `Pace::extension`
@@ -162,7 +162,7 @@ pub use images::{
     LinkError, MAX_CACHE_MIB, MIN_GAP,
 };
 pub use migrations::{MIGRATIONS_TABLE, migrate, migrator};
-pub use pace::{MAX_CLOCK_SECS, Pace};
+pub use pace::{Clocks, MAX_CLOCK_SECS, Pace};
 pub use passwords::{HashCost, HashCostError};
 pub use pg_store::PgEventStore;
 pub use preview::{PREVIEW_BURST, PREVIEWS_PER_SECOND};

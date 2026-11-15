@@ -1,7 +1,7 @@
 {
   "oracle_id": "c9949a5a-13d4-41ca-80fe-902b0ae71204",
   "name": "Advancing the Spirit",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Advancing the Spirit",
@@ -14,9 +14,26 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 43, "end": 162 }
+          "FreeActivation": {
+            "kind": "PowerUp",
+            "condition": {
+              "All": [
+                "YourTurn",
+                {
+                  "Compare": {
+                    "left": {
+                      "Tally": {
+                        "event": { "KindActivated": "PowerUp" },
+                        "who": "You",
+                        "filter": []
+                      }
+                    },
+                    "op": "Lt",
+                    "right": 1
+                  }
+                }
+              ]
+            }
           }
         }
       ]

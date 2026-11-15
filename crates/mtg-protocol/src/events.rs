@@ -390,6 +390,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::AttackersDeclared { .. }
         | Event::AttackersChosen { .. }
         | Event::AttackChoicesRefused { .. }
+        | Event::FocusShifted { .. }
         | Event::BandFormed { .. }
         | Event::BlockersDeclared { .. }
         | Event::DamageAssigned { .. }
@@ -397,6 +398,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::CombatEnded
         | Event::DamageCleared
         | Event::RemovedFromCombat { .. }
+        | Event::R6400Unblocked { .. }
+        | Event::R6400Blocks { .. }
         | Event::AttackersBlocked { .. }
         | Event::Regenerated { .. }
         | Event::DamageRemoved { .. }
@@ -468,9 +471,11 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Discovered { .. }
         | Event::DreadManifested { .. }
         | Event::GiftGiven { .. }
+        | Event::R6401Mentored { .. }
         | Event::UpkeepSettled { .. }
         | Event::Foraged { .. }
         | Event::DieRolled { .. }
+        | Event::R6402DieChanged { .. }
         | Event::RolledToVisit { .. }
         | Event::PrizeClaimed { .. }
         | Event::StickerSheetsChosen { .. }
@@ -504,6 +509,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::DoorUnlocked { .. }
         | Event::DoorLocked { .. }
         | Event::Mutated { .. }
+        // The melded card and both of its cards are public on the battlefield.
+        | Event::Melded(_)
         // The cards of a merged permanent are public on the battlefield, and so is where one goes.
         | Event::CardParted { .. }
         | Event::Adapted { .. }
@@ -1436,6 +1443,7 @@ mod tests {
                 player: OWNER,
                 sides: 20,
                 result: 7,
+                natural: Some(6),
             },
             Event::Clashed {
                 player: OWNER,
@@ -1626,6 +1634,7 @@ mod tests {
                 effects: Vec::new(),
                 bindings: vec![("card".to_owned(), vec![Target::Object(reference)])],
                 kept: None,
+                origin: mtg_engine::abilities::AbilitySource::default(),
             }))
         };
         assert_eq!(told(&t.state, &created(t.hand), OWNER), Ok(()));

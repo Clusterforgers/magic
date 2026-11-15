@@ -1,7 +1,7 @@
 {
   "oracle_id": "99eb05eb-11ef-456f-9132-166a0691dd04",
   "name": "Aegis of the Legion",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Aegis of the Legion",
@@ -14,9 +14,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 136, "end": 317 }
+          "Triggered": {
+            "when": { "R6401Mentors": { "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": { "Other": "shield" } } }]
           }
         },
         { "Keyword": { "Equip": "{3}" } }

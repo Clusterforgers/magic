@@ -45,6 +45,8 @@ mod mana_bonus;
 mod mana_cost;
 mod mana_kinds;
 #[cfg(test)]
+mod mana_lands_first_tests;
+#[cfg(test)]
 mod mana_lasts_tests;
 mod mana_plan;
 mod mana_repeat;
@@ -78,6 +80,7 @@ mod r5512_until_cast;
 mod r5523_sentinels;
 mod r6013_winds;
 mod r6104_activation_facts;
+mod r6401_history;
 mod replace_dry;
 mod rmt3_skips;
 mod saga;
@@ -200,6 +203,7 @@ pub mod speed;
 pub mod spend;
 pub mod spirits;
 pub mod spotlight;
+pub mod spotlight_aim;
 pub mod stack;
 pub mod state;
 pub mod take_back;

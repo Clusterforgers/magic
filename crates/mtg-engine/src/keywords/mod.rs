@@ -125,6 +125,7 @@ pub(crate) mod r282_compleated;
 mod r282_cumulative_acts;
 pub(crate) mod r282_more_than_meets;
 mod r301_offering;
+mod r6403_aura_swap;
 mod r6f_flash_sacrifice;
 mod ravenous;
 mod reach;
@@ -544,6 +545,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Fabricate(_) => &fabricate::Fabricate,
         Keyword::LevelUp(_) => &level_up::LevelUp,
         Keyword::Outlast(_) => &outlast::Outlast,
+        Keyword::AuraSwap(_) => &r6403_aura_swap::AuraSwap,
         Keyword::Saddle(_) => &saddle::Saddle,
         Keyword::Saddled => &saddle::Saddled,
         Keyword::Station => &station::Station,
@@ -980,6 +982,7 @@ mod tests {
             Keyword::Evolve,
             Keyword::LevelUp(cost()),
             Keyword::Outlast(cost()),
+            Keyword::AuraSwap(cost()),
             Keyword::Saddle(2),
             Keyword::Saddled,
             Keyword::Station,
@@ -1199,6 +1202,7 @@ mod tests {
         "Keyword.Gift",
         "Keyword.LevelUp",
         "Keyword.Outlast",
+        "Keyword.AuraSwap",
         "Keyword.Saddle",
         "Keyword.Saddled",
         "Keyword.Exert",
@@ -1375,6 +1379,7 @@ mod tests {
     #[case::station(Keyword::Station, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::level_up(Keyword::LevelUp(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::outlast(Keyword::Outlast(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::aura_swap(Keyword::AuraSwap(Cost::mana("{2}{U}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::evoke(Keyword::Evoke(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::flashback(Keyword::Flashback(Cost::mana("{2}".parse().unwrap())), Hooks::none())]
     #[case::overload(Keyword::Overload(Cost::mana("{2}".parse().unwrap())), Hooks::none())]

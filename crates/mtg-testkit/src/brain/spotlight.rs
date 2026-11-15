@@ -1,10 +1,14 @@
-//! How a boss's side aims under the spotlight (`mtg_engine::spotlight`, `docs/delves.md`): it weighs a hero by threat
-//! minus the attention they already got, leans to the hero it eyes, and leaves a hero past their share of the recent
+//! How a boss's side aims under the spotlight (`mtg_engine::spotlight`, `docs/delves.md`): its attacks and targeted effects
+//! go at the hero each seat eyes ([`attack_aim`], [`target_aim`]) and leave it only for the engine's reasons; otherwise it
+//! weighs a hero by threat minus the attention they already got, and leaves a hero past their share of the recent
 //! pressure alone unless they are an overwhelming threat or the only hero standing.
 
-use mtg_core::ids::PlayerId;
-use mtg_engine::combat::AttackTarget;
+use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_engine::choose::{Target, TargetOptions};
+use mtg_engine::combat::{AttackTarget, defending_player};
+use mtg_engine::decision::AttackOptions;
 use mtg_engine::spotlight;
+use mtg_engine::spotlight_aim::{self, Aim};
 
 use super::seen::Seen;
 
@@ -19,25 +23,63 @@ pub fn boss_seat(seen: &Seen<'_>) -> bool {
 }
 
 /// Whether `hero` threatens to end the fight: the engine's overwhelming presence, or creatures whose power together
-/// reaches the life of the boss's side's leader.
+/// reaches the life of the boss.
 pub fn overwhelming(seen: &Seen<'_>, hero: PlayerId) -> bool {
-    let state = seen.state();
-    if spotlight::overwhelming(state, hero) {
-        return true;
+    spotlight::overwhelming(seen.state(), hero)
+        || spotlight_aim::deadly(seen.state(), hero).is_some()
+}
+
+/// The hero the seat's attacks with `options` go at, with its reason when it is not the eyed hero; `None` outside a
+/// boss's side and while no hero can be attacked.
+pub fn attack_aim(seen: &Seen<'_>, options: &AttackOptions) -> Option<Aim> {
+    spotlight_aim::attack_aim(seen.state(), seen.seat(), options)
+}
+
+/// Who holds `target`: the player, or the controller of the object.
+pub fn holder(seen: &Seen<'_>, target: Target) -> Option<PlayerId> {
+    match target {
+        Target::Player(player) => Some(player),
+        Target::Object(object) => seen.controller(object.id),
     }
-    let boss_life = state
-        .players()
-        .iter()
-        .filter(|p| p.phases().0 > 0 && p.is_in_game())
-        .map(mtg_engine::player::Player::life)
-        .min();
-    let power: i32 = seen
-        .bodies()
-        .iter()
-        .filter(|body| body.controller == hero && body.is_creature())
-        .map(super::seen::Body::power)
-        .sum();
-    boss_life.is_some_and(|life| power >= life)
+}
+
+/// The hero the seat's targeted spell or ability goes at among the heroes holding the targets `options` offers.
+pub fn target_aim(seen: &Seen<'_>, options: &TargetOptions) -> Option<Aim> {
+    let mut offered: Vec<PlayerId> = Vec::new();
+    for target in options.c10_dice_choosable() {
+        if let Some(hero) = holder(seen, *target)
+            && spotlight::is_hero(seen.state(), hero)
+            && !offered.contains(&hero)
+        {
+            offered.push(hero);
+        }
+    }
+    spotlight_aim::target_aim(seen.state(), seen.seat(), &offered)
+}
+
+/// Whether `attack` goes at the hero of `aim` as far as each attacker can: an attacker names no other hero while its
+/// options offer the aimed one.
+pub fn bound_attack(
+    seen: &Seen<'_>,
+    options: &AttackOptions,
+    aim: &Aim,
+    attack: &[(ObjectId, AttackTarget)],
+) -> bool {
+    let state = seen.state();
+    let hero_of = |target: AttackTarget| defending_player(state, target);
+    attack.iter().all(|(object, target)| {
+        hero_of(*target).is_none_or(|hero| {
+            hero == aim.hero
+                || !spotlight::is_hero(state, hero)
+                || options.attackers.iter().any(|option| {
+                    option.object == *object
+                        && !option
+                            .defenders
+                            .iter()
+                            .any(|t| hero_of(*t) == Some(aim.hero))
+                })
+        })
+    })
 }
 
 /// Whether the seat may aim at `player`: always outside a boss's side or at a non-hero; a boss's side spares a capped

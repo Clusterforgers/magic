@@ -519,6 +519,7 @@ fn c11e_rolls(rolls: &[(PlayerId, u32)]) -> Vec<Event> {
             player: *player,
             sides: 6,
             result: *result,
+            natural: None,
         })
         .collect()
 }

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "f4905c40-003e-4992-b8d7-3f07ba09c686",
+  "name": "Hanweir, the Writhing Township",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hanweir, the Writhing Township",
+      "oracle_fingerprint": "6fb09c98c1e38d7a69ce9230731c8f4c",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Eldrazi Horror",
+                      "types": ["Creature"],
+                      "subtypes": ["Eldrazi", "Horror"],
+                      "power": 3,
+                      "toughness": 2
+                    }
+                  },
+                  "count": 2,
+                  "tapped": true,
+                  "attacking": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

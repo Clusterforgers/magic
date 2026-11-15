@@ -15,16 +15,21 @@ use mtg_cards::modify::Attacked;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
-use crate::announce::Next;
+use mtg_cards::cost::CostItem;
+
+use crate::announce::r6400_combat_costs::{r6400_events, r6400_next, r6400_parts, r6400_payable};
+use crate::announce::{Done, Next};
 use crate::answers::Outcome;
 use crate::cast::payment_decision;
 use crate::characteristics::controller_of_object;
+use crate::choose::Choices;
 use crate::combat::{AttackExtras, AttackTarget, attack_events, defending_player};
 use crate::decision::{AttackOptions, Decision, DecisionKind, PayOptions};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::fold::apply_event;
 use crate::help::Offered;
+use crate::parts::Part;
 use crate::priority::mana_options;
 use crate::resolve::Scope;
 use crate::rules::{Taxing, attack_taxes};
@@ -87,13 +92,14 @@ fn can_pay_life(state: &GameState, player: PlayerId, life: u32) -> bool {
 }
 
 /// The events of an attack declared and paid for: the declaration, the bands (CR 702.22c), the exerts (CR 701.43), then
-/// the life it costs.
+/// the life it costs and its other costs with the permanents picked for them (`picked`); `None` when a pick is missing.
 pub(crate) fn made(
     state: &GameState,
     player: PlayerId,
     attackers: &[(ObjectId, AttackTarget)],
     extras: &AttackExtras,
-) -> Vec<Event> {
+    picked: &Choices,
+) -> Option<Vec<Event>> {
     let mut events = attack_events(state, player, attackers);
     events.extend(crate::keywords::banding::band_events(player, &extras.bands));
     events.extend(crate::w11a_exert::w11a_exert_events(player, &extras.exert));
@@ -104,7 +110,35 @@ pub(crate) fn made(
             amount: life,
         });
     }
-    events
+    events.extend(r6400_events(
+        state,
+        player,
+        &declared(attackers),
+        &other_parts(state, attackers),
+        picked,
+    )?);
+    Some(events)
+}
+
+/// The creatures of a declaration.
+fn declared(attackers: &[(ObjectId, AttackTarget)]) -> Vec<ObjectId> {
+    attackers.iter().map(|(object, _)| *object).collect()
+}
+
+/// The parts an attack costs beyond mana and life (CR 508.1g): the other costs of every tax on each of its attackers,
+/// added up.
+pub(crate) fn other_parts(state: &GameState, attackers: &[(ObjectId, AttackTarget)]) -> Vec<Part> {
+    let items: Vec<CostItem> = attackers
+        .iter()
+        .flat_map(|(object, target)| {
+            in_force(state, *object, *target).flat_map(|taxing| taxing.tax.costs.iter().cloned())
+        })
+        .collect();
+    if items.is_empty() {
+        Vec::new()
+    } else {
+        r6400_parts(&items)
+    }
 }
 
 /// Whether the tax reaches the creature `object`: any creature for a tax that names none, else those its selector picks.
@@ -229,22 +263,37 @@ pub(crate) fn declare(
     if !can_pay_life(state, player, life) {
         return Err(IllegalAnswer::AttackUnaffordable(format!("{life} life")).into());
     }
-    if owed.symbols().is_empty() {
-        return Ok(Outcome::Events(made(state, player, &attackers, &extras)));
+    let parts = other_parts(state, &attackers);
+    if !r6400_payable(state, player, &declared(&attackers), &parts) {
+        return Err(IllegalAnswer::AttackUnaffordable("the permanents it takes".to_owned()).into());
     }
-    if payment(state, player, &attackers).is_none() {
+    if owed.symbols().is_empty() && parts.is_empty() {
+        let events = made(state, player, &attackers, &extras, &Choices::default())
+            .ok_or_else(|| EngineError::InvalidEvent("an attack without its picks".into()))?;
+        return Ok(Outcome::Events(events));
+    }
+    if !owed.symbols().is_empty() && payment(state, player, &attackers).is_none() {
         return Err(IllegalAnswer::AttackUnaffordable(owed.to_string()).into());
     }
     Ok(Outcome::BeginAttack(attackers, extras))
 }
 
-/// The decision of an attack that waits for its payment: `PayMana` for the total cost, which can be backed out of. An
-/// attack that can no longer be paid is dropped.
+/// The decision of an attack that waits for its payment: the permanents its other costs take, then `PayMana` for the
+/// total cost, which can be backed out of. An attack that can no longer be paid is dropped.
 pub(crate) fn next(
     state: &GameState,
     player: PlayerId,
-    attackers: &[(ObjectId, AttackTarget)],
+    (attackers, extras): (&[(ObjectId, AttackTarget)], &AttackExtras),
+    picks: (&mut Choices, &mut Done),
 ) -> Next {
+    let parts = other_parts(state, attackers);
+    let (choices, done) = picks;
+    if let Some(next) = r6400_next(state, player, &declared(attackers), &parts, (choices, done)) {
+        return next;
+    }
+    if total(state, attackers).symbols().is_empty() {
+        return made(state, player, attackers, extras, choices).map_or(Next::Drop, Next::Commit);
+    }
     match payment(state, player, attackers) {
         Some(options) => Next::Ask(Decision {
             player,

@@ -1,6 +1,8 @@
 /** The game log as sentences: one line for every `EventView`, in the words a player would use. */
 import { describeLoss } from '@/features/game/outcome'
 import type {
+  AbilitySource,
+  AimWhy,
   AttackTarget,
   Choice,
   ContinuousEffect,
@@ -10,6 +12,7 @@ import type {
   DeathCause,
   Event,
   EventView,
+  Granter,
   HiddenEvent,
   ManaCost,
   ManualAction,
@@ -36,6 +39,7 @@ import { teamLabel } from '@/lib/teams'
 import { keywordWords as grantKeywordWords } from './manual/offers'
 import { takeBackAction } from './takeBackText'
 import { hauntWords } from './campaign/haunt'
+import { granterAbility, granterClause, granterHolder, granterName, granterOfOrigin } from './granter'
 
 /** How the log names things; both fall back to a plain word when the thing is unknown. */
 export interface EventNames {
@@ -49,6 +53,8 @@ export interface EventNames {
   permanent?(id: ObjectId): boolean
   /** The card an ability on the stack comes from, when the log knows the object is an ability. */
   ability?(id: ObjectId): ObjectId | undefined
+  /** What an ability on the stack belongs to when no object does (the Ring), when the log knows it. */
+  granter?(id: ObjectId): Granter | undefined
   /** The name of a door (0 or 1) of a Room, when the viewer knows it. */
   door?(id: ObjectId, door: number): string | undefined
   /** The name of the boss whose command zone holds `id` (one of its boss abilities), else undefined. */
@@ -87,12 +93,21 @@ function chosenWords(chosen: Chosen, n: EventNames): string {
 
 /**
  * A spell or ability on the stack by name: a spell as its card is named, an ability as "an ability of" its source
- * (capitalised at the start of a sentence), so a trigger is never mistaken for the card it comes from.
+ * (capitalised at the start of a sentence), so a trigger is never mistaken for the card it comes from; an ability that
+ * no object gives its source (the Ring's) is named after what gives it.
  */
 function stackName(n: EventNames, id: ObjectId, start: boolean): string {
+  const granter = n.granter?.(id)
+  if (granter !== undefined) return granterAbility(granter, start)
   const source = n.ability?.(id)
   if (source === undefined) return n.card(id)
   return `${start ? 'An' : 'an'} ability of ${n.card(source)}`
+}
+
+/** The ability's owner in the words of a line about a trigger: the card, or what gives its source the ability. */
+function abilityOwner(n: EventNames, source: ObjectId, origin: AbilitySource | undefined): string {
+  const granter = granterOfOrigin(origin)
+  return granter === undefined ? n.card(source) : granterName(granter)
 }
 
 const cards = (count: number): string => `${count} ${count === 1 ? 'card' : 'cards'}`
@@ -277,6 +292,8 @@ function durationWords(
   if (typeof duration === 'object') {
     if ('UntilPaid' in duration) return ` until its controller pays ${duration.UntilPaid} to end it`
     if ('WhileMonarch' in duration) return ' while that player is the monarch'
+    if ('UntilEndOfTurnOrRolled' in duration)
+      return ` until end of turn, or until any player rolls a ${duration.UntilEndOfTurnOrRolled}`
     const counter = `${counterName(duration.WhileHasCounter)} counter`
     return several ? ` while each has a ${counter}` : ` while it has a ${counter}`
   }
@@ -819,9 +836,10 @@ function byResolving(
 
 function describePipeline(event: PipelineEvent, n: EventNames, context?: EventContext): LogLine {
   if ('AbilityPutOnStack' in event) {
-    const { source, cause, choices } = event.AbilityPutOnStack
+    const { source, cause, choices, origin } = event.AbilityPutOnStack
     const targeting = cause === undefined ? '' : targetingWords(choices?.targets?.flat(), n)
-    const text = `An ability of ${n.card(source.id)} goes on the stack${targeting}`
+    const granter = granterOfOrigin(origin)
+    const text = `${granter === undefined ? `An ability of ${n.card(source.id)}` : granterAbility(granter, true)} goes on the stack${targeting}`
     // A triggered ability names its targets here; an activated one named them in its own line.
     return targeting === '' ? quiet(text) : line(text)
   }
@@ -836,7 +854,18 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
     )
   }
   if ('AbilityTriggered' in event) {
-    const { id } = event.AbilityTriggered.source
+    const { source, origin, controller, delayed } = event.AbilityTriggered
+    const { id } = source
+    const granter = granterOfOrigin(origin)
+    if (granter !== undefined) {
+      // The Ring-bearer only has the ability; the line names the Ring, whose it is and what it does (the delayed
+      // trigger a level sets up has its own words, which the level's clause does not describe).
+      const clause = delayed === undefined ? granterClause(granter) : undefined
+      const holder = granterHolder(granter, n.card(id), n.seat(controller))
+      return line(
+        `${granterAbility(granter, true, delayed !== undefined)} triggers (${holder})${clause === undefined ? '' : `: ${clause}`}`,
+      )
+    }
     const boss = n.boss?.(id)
     // A boss's ability is named as its own: "Skrix, the Rat Queen: Escalation triggers".
     return line(
@@ -847,10 +876,12 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
     return quiet(`${n.seat(event.TriggersOrdered.player)} puts their triggered abilities in order`)
   }
   if ('TriggerRemoved' in event) {
-    return line(`A triggered ability of ${n.card(event.TriggerRemoved.source.id)} is removed`)
+    const { source, origin } = event.TriggerRemoved
+    return line(`A triggered ability of ${abilityOwner(n, source.id, origin)} is removed`)
   }
   if ('DelayedTriggerCreated' in event) {
-    return line(`A delayed ability of ${n.card(event.DelayedTriggerCreated.source.id)} is set up`)
+    const { source, origin } = event.DelayedTriggerCreated
+    return line(`A delayed ability of ${abilityOwner(n, source.id, origin)} is set up`)
   }
   if ('DelayedTriggerExpired' in event) return quiet('A delayed ability ends without triggering')
   if ('ResolutionBegan' in event)
@@ -956,6 +987,15 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
   }
   const { player, cards: shown } = event.Revealed
   return line(`${n.seat(player)} reveals ${joinWords(shown.map(n.card))}`)
+}
+
+/** Why a seat of the boss's side attacks another hero than the one it eyes, in words. */
+function focusShiftReason(why: AimWhy, eyed: PlayerId, instead: PlayerId, n: EventNames): string {
+  if (why === 'Unreachable') return `${n.seat(eyed)} can't be attacked`
+  if (why === 'Overwhelming') return `${n.seat(instead)} is the greatest threat`
+  if (why === 'Futile') return `every attack at ${n.seat(eyed)} would be blocked and lost`
+  if (why === 'Lethal') return `the attack kills ${n.seat(instead)}`
+  return `${n.seat(instead)}'s creatures could kill ${n.seat(why.Deadly.boss)}`
 }
 
 // One clause per target, in the order the targets first appear: "Bo with A and B; Cy with C".
@@ -1100,6 +1140,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const buried = card === null ? '' : ` and puts ${n.card(card)} into their graveyard`
     return line(`${n.seat(player)} manifests dread${buried}`)
   }
+  if ('R6401Mentored' in event) {
+    const { mentor, mentored } = event.R6401Mentored
+    return line(`${n.card(mentor)} mentors ${n.card(mentored)}`)
+  }
   if ('GiftGiven' in event) {
     return line(`${n.seat(event.GiftGiven.player)} gives ${n.seat(event.GiftGiven.to)} a gift`)
   }
@@ -1110,8 +1154,13 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('Foraged' in event) return line(`${n.seat(event.Foraged.player)} forages`)
   if ('DieRolled' in event) {
-    const { player, sides, result } = event.DieRolled
-    return line(`${n.seat(player)} rolls a d${sides}: ${result}`)
+    const { player, sides, result, natural } = event.DieRolled
+    const shown = natural === undefined ? '' : ` (rolled ${natural})`
+    return line(`${n.seat(player)} rolls a d${sides}: ${result}${shown}`)
+  }
+  if ('R6402DieChanged' in event) {
+    const { player, source, from, to } = event.R6402DieChanged
+    return line(`${n.seat(player)} changes a die result from ${from} to ${to} with ${n.card(source.id)}`)
   }
   if ('RolledToVisit' in event) {
     const { player, result, visited } = event.RolledToVisit
@@ -1222,6 +1271,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { permanent, card, to } = event.CardParted
     return line(`${n.card(card)} goes to ${zoneWord(to, n)} apart from ${n.card(permanent)}`)
   }
+  if ('Melded' in event) {
+    const { object, with: partner, name } = event.Melded
+    return line(`${n.card(object)} and ${n.card(partner)} meld into ${name}`)
+  }
   if ('Mutated' in event)
     return line(
       `${n.seat(event.Mutated.player)} mutates a creature ${event.Mutated.over ? 'over' : 'under'} ${n.card(event.Mutated.object)}`,
@@ -1252,6 +1305,13 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('RemovedFromCombat' in event) {
     return line(`${n.card(event.RemovedFromCombat.object)} is removed from combat`)
+  }
+  if ('R6400Unblocked' in event) {
+    return line(`${n.card(event.R6400Unblocked.attacker)} becomes unblocked`)
+  }
+  if ('R6400Blocks' in event) {
+    const { blocker, attacker } = event.R6400Blocks
+    return line(`${n.card(blocker)} blocks ${n.card(attacker)}`)
   }
   if ('AttackersBlocked' in event) {
     const { attackers } = event.AttackersBlocked
@@ -1370,7 +1430,13 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('AttackChoicesRefused' in event) {
     return line(
-      `The party's attack is refused (${event.AttackChoicesRefused.reason}); each hero chooses again`,
+      `The team's attack is refused (${event.AttackChoicesRefused.reason}); each player chooses again`,
+    )
+  }
+  if ('FocusShifted' in event) {
+    const { player, eyed, instead, why } = event.FocusShifted
+    return line(
+      `${n.seat(player)} attacks ${n.seat(instead)} instead of ${n.seat(eyed)}: ${focusShiftReason(why, eyed, instead, n)}`,
     )
   }
   if ('BandFormed' in event) {

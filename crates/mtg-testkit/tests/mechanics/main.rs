@@ -2,6 +2,7 @@
 
 mod activation_moments;
 mod affected_amounts;
+mod binding_eyes;
 mod bz39_blast_zone;
 mod c10_any_cards;
 mod c10_dice_per_player;
@@ -186,6 +187,11 @@ mod r6104_zygon;
 mod r6105_library_of_leng;
 mod r6105_sarcophagus;
 mod r6105_support;
+mod r6401_control;
+mod r6401_history;
+mod r6402_change_roll;
+mod r6402_dice_history;
+mod r6405_waterbend_x;
 mod r6f;
 mod repeat_each;
 mod rmt0_chroma;
@@ -212,6 +218,7 @@ mod tap_effects;
 mod tc34_cleave;
 mod tc34_opposition_agent;
 mod tc34_restart;
+mod team_attacks;
 mod together_batch;
 mod typecycling;
 mod unplayable;

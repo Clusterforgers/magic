@@ -256,6 +256,8 @@ pub enum Keyword {
     LevelUp(Cost),
     /// Outlast with its cost (CR 702.107): "{cost}, {T}: Put a +1/+1 counter on this permanent. Outlast only as a sorcery."
     Outlast(Cost),
+    /// Aura swap with its cost (CR 702.65): "{cost}: You may exchange this permanent with an Aura card in your hand."
+    AuraSwap(Cost),
     /// Saddle with its power (CR 702.171): tapping other creatures with that total power makes the Mount saddled until end of turn, at sorcery speed.
     Saddle(u32),
     /// Saddled (CR 702.171b): the designation of a Mount whose saddle ability resolved this turn, granted until end of turn.
@@ -596,6 +598,7 @@ impl Keyword {
         "Evolve",
         "Level up",
         "Outlast",
+        "Aura swap",
         "Saddle",
         "Saddled",
         "Station",
@@ -792,6 +795,7 @@ impl Keyword {
             Keyword::Evolve => "Evolve",
             Keyword::LevelUp(_) => "Level up",
             Keyword::Outlast(_) => "Outlast",
+            Keyword::AuraSwap(_) => "Aura swap",
             Keyword::Saddle(_) => "Saddle",
             Keyword::Saddled => "Saddled",
             Keyword::Station => "Station",
@@ -1101,6 +1105,7 @@ mod tests {
             Keyword::Evolve,
             Keyword::LevelUp(Cost::default()),
             Keyword::Outlast(Cost::default()),
+            Keyword::AuraSwap(Cost::default()),
             Keyword::Saddle(2),
             Keyword::Saddled,
             Keyword::Station,

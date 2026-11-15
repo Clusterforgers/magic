@@ -6,7 +6,7 @@ use crate::common;
 use common::{Bot, drive, roomy};
 use mtg_core::house::{
     AttackRange, CommanderDamageLimit, DeckRules, EmptyLibrary, HandLimit, Handicap, HouseRules,
-    MulliganStyle, SkipFirstDraw,
+    MulliganStyle, SkipFirstDraw, Timers,
 };
 use mtg_core::ids::PlayerId;
 use mtg_engine::replay;
@@ -60,6 +60,7 @@ fn some_rules() -> HouseRules {
         land_plays_per_turn: Some(2),
         take_backs: Some(false),
         blocker_timer: Some(true),
+        timers: Some(Timers::Quick),
         mana_burn: Some(true),
         empty_library: Some(EmptyLibrary::ReshuffleGraveyard),
         turn_limit: Some(30),
@@ -138,6 +139,7 @@ async fn a_game_made_under_house_rules_comes_back_under_them_and_ends_as_the_sam
                 "mana_burn": true,
                 "take_backs": false,
                 "blocker_timer": true,
+                "timers": "quick",
                 "empty_library": "reshuffle_graveyard",
                 "turn_limit": 30,
                 "winning_life": 60,

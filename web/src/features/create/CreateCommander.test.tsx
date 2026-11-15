@@ -1,5 +1,5 @@
 // Goal: the form starts on Commander, follows the format in its seats, deck and rules, and sends the format and only the house rules that were filled in.
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { openCreateForm, typeSeats } from '@/test-utils/createForm'
 import { MADE_GAME } from '@/test-utils/fakeServer'
@@ -138,6 +138,35 @@ describe('creating the game', () => {
     await waitFor(() => expect(server.creates).toHaveLength(1))
     expect(server.creates[0]).toMatchObject({ house_rules: { blocker_timer: true } })
   })
+
+  it('shows the timers with a one-line explanation, relaxed by default and not sent until it is changed', async () => {
+    const { server, user } = await openCreateForm({}, 'default')
+    await user.click(screen.getByText('House rules'))
+    const timers = rule('Timers')
+    expect(timers).toHaveValue('')
+    expect(within(timers).getByRole('option', { name: 'Relaxed (default)' })).toBeInTheDocument()
+    expect(screen.getByText(/Relaxed gives 30 seconds to respond and 3 minutes to think/)).toBeInTheDocument()
+    expect(screen.queryByText(/rule differs/)).toBeNull()
+    await user.click(create())
+    await waitFor(() => expect(server.creates).toHaveLength(1))
+    expect(server.creates[0]).not.toHaveProperty('house_rules')
+  })
+
+  it.each([
+    ['quick', 'Quick timers'],
+    ['off', 'No timers'],
+  ])(
+    'sends the %s timers once they are chosen, and counts them as a rule that differs',
+    async (value, _words) => {
+      const { server, user } = await openCreateForm({}, 'default')
+      await user.click(screen.getByText('House rules'))
+      await user.selectOptions(rule('Timers'), value)
+      expect(screen.getByText('1 rule differs')).toBeInTheDocument()
+      await user.click(create())
+      await waitFor(() => expect(server.creates).toHaveLength(1))
+      expect(server.creates[0]).toMatchObject({ house_rules: { timers: value } })
+    },
+  )
 
   it('sends a handicap for each seat that has one, by the seat’s number', async () => {
     const { server, user } = await openCreateForm({}, 'default')

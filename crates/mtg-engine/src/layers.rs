@@ -1201,7 +1201,8 @@ impl<'a> Pass<'a> {
                     layer,
                     defining: false,
                     timestamp: effect.timestamp,
-                    origin: Grant::Effect(effect.id),
+                    origin: crate::ring::grant_of(self.state, effect.id)
+                        .unwrap_or(Grant::Effect(effect.id)),
                     what: Source::Registered(effect),
                     ability: None,
                     reads: Traits::NONE,

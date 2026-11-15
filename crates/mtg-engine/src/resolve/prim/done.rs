@@ -92,6 +92,8 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Empower { .. }
         | Effect::Incubate { .. }
         | Effect::Conjure { .. }
+        | Effect::Meld { .. }
+        | Effect::AuraSwap
         | Effect::Seek { .. }
         | Effect::Venture { .. }
         | Effect::OpenAttraction { .. }
@@ -132,9 +134,11 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::CreateToken { .. }
         | Effect::Continuous { .. }
         | Effect::ExchangeControl { .. }
+        | Effect::R6401PassControl { .. }
         | Effect::Rule { .. }
         | Effect::Regenerate { .. }
         | Effect::RemoveFromCombat { .. }
+        | Effect::R6400Block { .. }
         | Effect::BecomeBlocked { .. }
         | Effect::PutBeneathTop { .. }
         | Effect::LoseUnspentMana { .. }

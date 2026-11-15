@@ -151,11 +151,12 @@ fn holder(state: &GameState, object: ObjectId) -> Option<PlayerId> {
     controller_of(state, object).or_else(|| state.object(object).map(GameObject::owner))
 }
 
-/// Whether the subjects cover the player or object that receives counters.
-fn counters_on(state: &GameState, who: &[Target], on: Target) -> bool {
+/// Whether the subjects cover the player or object that receives counters: a player is no subject of the counters on the
+/// permanents they control ("Players can't get counters" leaves a planeswalker its loyalty).
+fn counters_on(who: &[Target], on: Target) -> bool {
     match on {
         Target::Player(p) => covers(who, Some(p), None),
-        Target::Object(o) => covers(who, holder(state, o.id), Some(o.id)),
+        Target::Object(o) => covers(who, None, Some(o.id)),
     }
 }
 
@@ -219,10 +220,10 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
         | (Prohibited::Discard, Doing::Discard { player, object }) => {
             covers(who, Some(player), Some(object))
         }
-        (Prohibited::PutCounter, Doing::PutCounter { on, .. }) => counters_on(state, who, on),
+        (Prohibited::PutCounter, Doing::PutCounter { on, .. }) => counters_on(who, on),
         (Prohibited::RemoveCounterOf(kind), Doing::RemoveCounter { on, counter })
         | (Prohibited::PutCounterOf(kind), Doing::PutCounter { on, counter }) => {
-            *kind == counter && counters_on(state, who, on)
+            *kind == counter && counters_on(who, on)
         }
         (Prohibited::Attach, Doing::Attach { object, to }) => {
             let hosted = match to {
@@ -704,6 +705,11 @@ mod tests {
                 object: bear,
             },
             "counter" => counters(1),
+            "player_counter" => Event::CountersChanged(CountersChanged {
+                on: Target::Player(FOE),
+                counter: CounterKind::Other("energy".to_owned()),
+                delta: 1,
+            }),
             "counter_removed" => counters(-1),
             "attach" => Event::Attached {
                 object: id(game, "Wolf"),
@@ -745,8 +751,23 @@ mod tests {
     )]
     #[case::counters_on_a_player(
         r#"{"Cant":{"who":"Opponents","action":"PutCounter"}}"#,
-        "counter",
+        "player_counter",
         true
+    )]
+    #[case::counters_on_a_player_of_another_seat(
+        r#"{"Cant":{"who":"You","action":"PutCounter"}}"#,
+        "player_counter",
+        false
+    )]
+    #[case::players_are_no_subjects_of_the_counters_on_their_permanents(
+        r#"{"Cant":{"who":"Opponents","action":"PutCounter"}}"#,
+        "counter",
+        false
+    )]
+    #[case::each_player_leaves_the_counters_on_permanents(
+        r#"{"Cant":{"who":"EachPlayer","action":"PutCounter"}}"#,
+        "counter",
+        false
     )]
     #[case::counters_of_that_kind(
         r#"{"Cant":{"who":{"Each":[{"Type":"Creature"}]},"action":{"PutCounterOf":"+1/+1"}}}"#,

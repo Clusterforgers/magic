@@ -75,6 +75,17 @@ const RMT3_SKIP_ONLY: &str =
 /// Only a continuous effect lasts until a card is cast from exile.
 const E17A_CAST_ONLY: &str = "only a continuous effect lasts until this card is cast from exile";
 
+/// "As long as this isn't on the battlefield": the one condition a defining static may hold, since the engine applies a
+/// defining ability off the battlefield without reading it and on the battlefield only while it holds (Grist, the Hunger
+/// Tide).
+fn not_on_battlefield(condition: &Condition) -> bool {
+    matches!(
+        condition,
+        Condition::Compare { left: Amount::Count(selector), op: crate::value::Cmp::Eq, right: Amount::Fixed(0) }
+            if selector.0 == [Pred::Is(Ref::This), Pred::In(ZoneKind::Battlefield)]
+    )
+}
+
 /// The name of an enum value as serde writes it (`DealDamage`), for naming primitives.
 /// Whether the replacement prevents only part of the damage, or only the next of it.
 fn prevents_in_part(by: &ReplaceBy) -> bool {
@@ -2624,7 +2635,8 @@ impl<'a> Walker<'a> {
             | Keyword::Ninjutsu(cost)
             | Keyword::CommanderNinjutsu(cost)
             | Keyword::LevelUp(cost)
-            | Keyword::Outlast(cost) => {
+            | Keyword::Outlast(cost)
+            | Keyword::AuraSwap(cost) => {
                 let held = std::mem::replace(&mut self.activated_cost, true);
                 self.at("cost", |w| w.cost(cost));
                 self.activated_cost = held;
@@ -3016,7 +3028,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::ResolvedToGraveyard { what }
             | TriggerPattern::FirstDrawRevealed { what }
             | TriggerPattern::Attacks { what }
-            | TriggerPattern::AttacksAlone { what } => {
+            | TriggerPattern::AttacksAlone { what }
+            | TriggerPattern::R6401Mentors { what } => {
                 self.at("what", |w| w.selector(what));
             }
             TriggerPattern::AttacksPlayer { what, at }
@@ -4192,6 +4205,15 @@ impl Walker<'_> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
             }
+            Effect::Meld { with, into } => {
+                if into.is_empty() {
+                    w.problem("a meld names the card it melds into");
+                }
+                if !with.0.iter().any(|pred| matches!(pred, Pred::Named(_))) {
+                    w.problem("a meld names its partner");
+                }
+                w.at("with", |w| w.selector(with));
+            }
             Effect::Seek { who, filter, count } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("filter", |w| w.selector(filter));
@@ -5127,6 +5149,9 @@ impl Walker<'_> {
                     w.problem(R5502_COMBAT_ONLY);
                 }
             }
+            Effect::R6401PassControl { what, .. } => {
+                w.at("what", |w| w.selector(what));
+            }
             Effect::ExchangeControl { what, duration } => {
                 if matches!(
                     duration,
@@ -5283,6 +5308,7 @@ impl Walker<'_> {
                 }
             }),
             Effect::EndTurn
+            | Effect::AuraSwap
             | Effect::StillResolves
             | Effect::Rephase
             | Effect::AddStep { .. }
@@ -5297,7 +5323,9 @@ impl Walker<'_> {
                 }
             }
             Effect::Regenerate { what } => w.at("what", |w| w.reference(what, Kind::Object)),
-            Effect::RemoveFromCombat { what } => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::RemoveFromCombat { what, .. } | Effect::R6400Block { what, .. } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+            }
             Effect::BecomeBlocked { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::LoseUnspentMana { who } => w.at("who", |w| w.reference(who, Kind::Player)),
             Effect::PutBeneathTop { what, below } => {
@@ -5734,7 +5762,14 @@ impl Walker<'_> {
         }
         self.scope.in_static = false;
         if defining {
-            self.defining(affected, mods, condition.is_some(), from);
+            self.defining(
+                affected,
+                mods,
+                condition
+                    .as_ref()
+                    .is_some_and(|held| !not_on_battlefield(held)),
+                from,
+            );
         }
     }
 
@@ -6048,6 +6083,13 @@ impl Walker<'_> {
             GameRule::PowerUpAgain(which) => {
                 self.at(tag, |w| w.selector(which));
             }
+            GameRule::R6400ChoosesBlocks { chooser, whose } => self.at(tag, |w| {
+                w.at("chooser", |w| w.reference(chooser, Kind::Player));
+                w.at("whose", |w| w.reference(whose, Kind::Player));
+            }),
+            GameRule::R6400ChoosesVotes { chooser } => self.at(tag, |w| {
+                w.at("chooser", |w| w.reference(chooser, Kind::Player));
+            }),
             GameRule::MustAttack(who)
             | GameRule::MustBlock(who)
             | GameRule::CantBeCountered(who)
@@ -6123,13 +6165,19 @@ impl Walker<'_> {
                 mana,
                 life,
                 per,
+                cost,
                 ..
             } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("cost", |w| r6400_combat_cost(w, cost));
                 w.at("attackers", |w| w.selector(attackers));
                 w.at("per", |w| w.amount(per));
-                if mana.rest().symbols().is_empty() && !mana.has_x() && *life == 0 {
-                    w.problem("an attack tax costs mana, life or both");
+                if mana.rest().symbols().is_empty()
+                    && !mana.has_x()
+                    && *life == 0
+                    && cost.is_empty()
+                {
+                    w.problem("an attack tax costs mana, life, other costs or a mix");
                 }
                 if mana.has_x() {
                     w.at("mana", |w| {
@@ -6143,12 +6191,18 @@ impl Walker<'_> {
                 mana,
                 life,
                 per,
+                cost,
             } => self.at(tag, |w| {
                 w.at("blockers", |w| w.selector(blockers));
+                w.at("cost", |w| r6400_combat_cost(w, cost));
                 w.at("attackers", |w| w.selector(attackers));
                 w.at("per", |w| w.amount(per));
-                if mana.rest().symbols().is_empty() && !mana.has_x() && *life == 0 {
-                    w.problem("a block tax costs mana, life or both");
+                if mana.rest().symbols().is_empty()
+                    && !mana.has_x()
+                    && *life == 0
+                    && cost.is_empty()
+                {
+                    w.problem("a block tax costs mana, life, other costs or a mix");
                 }
                 if mana.has_x() {
                     w.at("mana", |w| {
@@ -6221,6 +6275,15 @@ impl Walker<'_> {
                 self.at(tag, |w| w.reference(who, Kind::Player));
             }
             GameRule::EchoRather(cost) => self.at(tag, |w| w.cost(cost)),
+            GameRule::R6402ChangeRoll { who, pay, by, .. } => self.at(tag, |w| {
+                w.reference(who, Kind::Player);
+                if *by == 0 {
+                    w.problem("a change of a die's result changes it by at least 1");
+                }
+                if matches!(pay, crate::modify::R6402RollPay::Life(0)) {
+                    w.problem("a change of a die's result paid with life pays at least 1");
+                }
+            }),
             GameRule::UntapRemovesCounters(_) => self.at(tag, |_| {}),
             GameRule::MayCast(permission) => self.at(tag, |w| w.cast_permission(permission)),
             GameRule::LookAtExiled { who, what, only } => self.at(tag, |w| {
@@ -7800,6 +7863,26 @@ fn check_face_printed(
             }
             _ => {}
         });
+    }
+}
+
+/// The other costs of an attack or block tax: permanents the payer sacrifices, returns or taps, a fixed number of each.
+fn r6400_combat_cost(w: &mut Walker<'_>, cost: &[CostItem]) {
+    if !cost.is_empty() {
+        w.uses.insert("Rule.R6400CombatCost".to_owned());
+    }
+    for item in cost {
+        match item {
+            CostItem::Sacrifice { filter, count }
+            | CostItem::ReturnToHand { filter, count }
+            | CostItem::TapPermanents { filter, count } => {
+                w.selector(filter);
+                if !matches!(count, Amount::Fixed(n) if *n > 0) {
+                    w.problem("a combat tax takes a fixed number of permanents, at least one");
+                }
+            }
+            _ => w.problem("a combat tax sacrifices, returns or taps permanents"),
+        }
     }
 }
 

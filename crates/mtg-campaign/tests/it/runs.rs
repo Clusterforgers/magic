@@ -2,12 +2,13 @@
 //! and every deck chosen; the first boss needs no vote; a lost fight costs a heart and is retried until the hearts
 //! run out; a fight whose game ended unplayed waits for a new game at no cost; a fight whose table closed or that the host retreated from counts as lost; a won fight carries each hero's life, brings Spirits back and offers loot; votes go to the most votes or
 //! the torch bearer; bots vote only after every player; a vote is always between two camps, a camp's next boss is
-//! entered with no vote and stored votes for that boss still replay; bots answer every offer; and replaying the
+//! entered with no vote and stored votes for that boss still replay; bots answer every offer; the host chooses the timers in the lobby, every fight's game keeps them and a stored run without them is relaxed; and replaying the
 //! events gives the same run.
 use mtg_campaign::run::{HEAL_AFTER_BOSS, HEARTS, LIFE, SPIRIT_RETURN};
 use mtg_campaign::{
     Brain, Content, Forfeit, HeroDeck, Offer, Pick, Run, RunEvent, Status, content,
 };
+use mtg_core::house::{HouseRules, Timers};
 use proptest::prelude::*;
 use rstest::rstest;
 
@@ -90,6 +91,70 @@ fn the_lobby_refuses_what_cannot_start() {
             .is_err(),
         "no vote in the lobby"
     );
+}
+
+#[rstest]
+#[case::relaxed(Timers::Relaxed)]
+#[case::quick(Timers::Quick)]
+#[case::off(Timers::Off)]
+fn the_timers_are_chosen_in_the_lobby_and_every_fights_house_rules_keep_them(
+    #[case] timers: Timers,
+) {
+    let content = content().unwrap();
+    let (mut run, mut events) = lobby(content, 7, 1);
+    assert_eq!(
+        run.timers,
+        Timers::Relaxed,
+        "relaxed until the host chooses"
+    );
+    apply(&mut run, &mut events, RunEvent::Timers { timers });
+    assert_eq!(run.timers, timers);
+    apply(&mut run, &mut events, RunEvent::Started);
+    assert_eq!(run.timers, timers, "starting keeps them");
+    assert_eq!(
+        Run::replay(content, "warrens", 7, 0, &events).unwrap(),
+        run,
+        "the events give the same run"
+    );
+    let plan = run.fight_plan(content).unwrap().unwrap();
+    let house = plan.house_rules(&HouseRules {
+        timers: Some(run.timers),
+        ..HouseRules::default()
+    });
+    assert_eq!(house.timers, Some(timers), "the fight plays under them");
+    assert!(house.teams.is_some(), "and keeps the fight's own rules");
+}
+
+#[test]
+fn the_timers_cannot_change_once_the_run_has_started_and_a_run_without_the_event_is_relaxed() {
+    let content = content().unwrap();
+    let (mut run, mut events) = lobby(content, 7, 1);
+    assert_eq!(
+        Run::replay(content, "warrens", 7, 0, &events)
+            .unwrap()
+            .timers,
+        Timers::Relaxed,
+        "a stored run has no timers event"
+    );
+    apply(&mut run, &mut events, RunEvent::Started);
+    let refused = run.apply(
+        content,
+        &RunEvent::Timers {
+            timers: Timers::Off,
+        },
+    );
+    assert!(refused.is_err(), "the run has started");
+    assert_eq!(run.timers, Timers::Relaxed);
+}
+
+#[test]
+fn a_run_stored_before_the_timers_read_as_relaxed() {
+    let content = content().unwrap();
+    let (run, _) = lobby(content, 7, 0);
+    let mut stored = serde_json::to_value(&run).unwrap();
+    stored.as_object_mut().unwrap().remove("timers");
+    let back: Run = serde_json::from_value(stored).unwrap();
+    assert_eq!(back.timers, Timers::Relaxed);
 }
 
 #[test]

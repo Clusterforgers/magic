@@ -826,15 +826,16 @@ enum Candidate<'a> {
     Permanent(&'a [ManaOption]),
 }
 
-/// The best payment found so far: its weight (sacrifices, side effects, taps, unrestricted sources) and the payment.
-type Found = ((usize, usize, usize, usize), Payment);
+/// The best payment found so far: its weight (sacrifices, side effects, sources that are no land, taps, unrestricted
+/// sources) and the payment.
+type Found = ((usize, usize, usize, usize, usize), Payment);
 
 /// The most nodes [`exhaustive`] looks at before it gives up.
 const SEARCH_BUDGET: usize = 20_000;
 
 /// Every combination of floating mana and permanents added to the parts in `forced` that is a payment of the plain
 /// `cost` with nothing to spare; the one with the fewest sacrifices, then the fewest sources that do more than add
-/// mana, then the fewest sources, within [`SEARCH_BUDGET`] nodes.
+/// mana, then the fewest that are no land, then the fewest sources, within [`SEARCH_BUDGET`] nodes.
 fn exhaustive(
     cost: &ManaCost,
     pool: &Floating,
@@ -863,6 +864,7 @@ fn exhaustive(
                     let weight = (
                         used.iter().filter(|o| o.gives_up()).count(),
                         used.iter().filter(|o| o.extra).count(),
+                        used.iter().filter(|o| o.nonland).count(),
                         used.len(),
                         used.iter().filter(|o| o.only.is_empty()).count(),
                     );

@@ -210,6 +210,32 @@ fn keep_fair(seen: &Seen<'_>, attacks: &mut Vec<Attack>) {
     }
 }
 
+/// The opponent the seat's attacks go at: a boss's side aims at the hero it eyes unless the engine finds a reason not to
+/// ([`super::spotlight::attack_aim`]); any other seat, and a boss's side with no hero to attack, by [`focus`].
+fn aim_of(
+    seen: &Seen<'_>,
+    bodies: &BTreeMap<ObjectId, Body>,
+    options: &AttackOptions,
+) -> Option<PlayerId> {
+    super::spotlight::attack_aim(seen, options)
+        .map(|aim| aim.hero)
+        .or_else(|| focus(seen, bodies, &offered_players(options)))
+}
+
+/// `attacks` without those that go at another hero than the one a boss's side's attacks are bound to
+/// ([`super::spotlight::bound_attack`]), unless none is left.
+fn keep_bound(seen: &Seen<'_>, options: &AttackOptions, attacks: &mut Vec<Attack>) {
+    let Some(aim) = super::spotlight::attack_aim(seen, options) else {
+        return;
+    };
+    if attacks
+        .iter()
+        .any(|attack| super::spotlight::bound_attack(seen, options, &aim, attack))
+    {
+        attacks.retain(|attack| super::spotlight::bound_attack(seen, options, &aim, attack));
+    }
+}
+
 /// The players `options` lets the seat attack.
 fn offered_players(options: &AttackOptions) -> Vec<PlayerId> {
     let mut players: Vec<PlayerId> = Vec::new();
@@ -229,11 +255,14 @@ fn offered_players(options: &AttackOptions) -> Vec<PlayerId> {
 /// and every creature when together they deal lethal damage past the defenders' blockers.
 pub fn quick_attack(seen: &Seen<'_>, options: &AttackOptions) -> Attack {
     let bodies = bodies_by_id(seen);
-    let at = focus(seen, &bodies, &offered_players(options));
+    let at = aim_of(seen, &bodies, options);
     let all = aimed(seen, options, at);
+    // Only the aimed hero's creatures block a boss's side's attack at them; any other seat reads every opposing one.
+    let boss = super::spotlight::boss_seat(seen);
     let defenders: Vec<&Body> = bodies
         .values()
         .filter(|body| body.is_creature() && !body.tapped && !seen.is_teammate(body.controller))
+        .filter(|body| !boss || at.is_none_or(|target| body.controller == target))
         .collect();
     let attacking: Vec<&Body> = all.iter().filter_map(|(id, _)| bodies.get(id)).collect();
     if let Some(target) = at {
@@ -531,7 +560,7 @@ pub fn plan_blocks(search: &mut Search, engine: &Engine, options: &BlockOptions)
 pub fn attack_candidates(seen: &Seen<'_>, options: &AttackOptions) -> Vec<Attack> {
     let bodies = bodies_by_id(seen);
     let offered = offered_players(options);
-    let at = focus(seen, &bodies, &offered);
+    let at = aim_of(seen, &bodies, options);
     let all = aimed(seen, options, at);
     let quick = quick_attack(seen, options);
     let mut candidates: Vec<Attack> = vec![
@@ -574,6 +603,7 @@ pub fn attack_candidates(seen: &Seen<'_>, options: &AttackOptions) -> Vec<Attack
         }
     }
     keep_fair(seen, &mut unique);
+    keep_bound(seen, options, &mut unique);
     if unique.is_empty() {
         unique.push(options.legal_attack());
     }
@@ -596,7 +626,7 @@ pub fn plan_attack(search: &mut Search, engine: &Engine, options: &AttackOptions
     }
     let bodies = bodies_by_id(&seen);
     let offered = offered_players(options);
-    let at = focus(&seen, &bodies, &offered);
+    let at = aim_of(&seen, &bodies, options);
     let all = aimed(&seen, options, at);
     let horizon = if search.settings().lookahead {
         Horizon::NextTurn
@@ -621,6 +651,7 @@ pub fn plan_attack(search: &mut Search, engine: &Engine, options: &AttackOptions
         }
     }
     keep_fair(&seen, &mut candidates);
+    keep_bound(&seen, options, &mut candidates);
     let mut tried: Vec<Attack> = Vec::new();
     let mut best: Option<(f64, Attack)> = None;
     let mut consider = |search: &mut Search, attack: Attack, best: &mut Option<(f64, Attack)>| {

@@ -28,7 +28,7 @@ use mtg_testkit::commander_cards::legend;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
-fn emblem(name: &str, abilities: &[&str]) -> Arc<CardDefinition> {
+pub(crate) fn emblem(name: &str, abilities: &[&str]) -> Arc<CardDefinition> {
     let abilities: Vec<Ability> = abilities
         .iter()
         .map(|a| serde_json::from_str(a).unwrap())
@@ -37,7 +37,7 @@ fn emblem(name: &str, abilities: &[&str]) -> Arc<CardDefinition> {
 }
 
 /// At the beginning of your upkeep, `effect`.
-fn upkeep(effect: &str) -> String {
+pub(crate) fn upkeep(effect: &str) -> String {
     format!(
         r#"{{"Triggered":{{"when":{{"StepBegins":{{"step":"Upkeep","whose":"You"}}}},"effects":[{effect}]}}}}"#
     )
@@ -79,7 +79,7 @@ fn fight(lives: &[i32], minions: usize, boss_upkeep: &str) -> Scenario {
 }
 
 /// The `n`th turn (from 1) of the seat at `seat` at a table of `seats`.
-fn turn_of(seat: usize, n: u32, seats: usize) -> u32 {
+pub(crate) fn turn_of(seat: usize, n: u32, seats: usize) -> u32 {
     (n - 1) * u32::try_from(seats).unwrap() + u32::try_from(seat).unwrap() + 1
 }
 

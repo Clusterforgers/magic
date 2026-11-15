@@ -492,7 +492,7 @@ fn waterbend_help(
     price: &Price,
     claimed: &[ObjectId],
 ) -> crate::help::Offered {
-    if price.waterbend == 0 {
+    if !price.has_waterbend() {
         return crate::help::Offered::default();
     }
     let mut barred = claimed.to_vec();
@@ -548,7 +548,8 @@ fn can_pay_x(
             .saturating_sub(i32::try_from(price.life()).unwrap_or(i32::MAX)),
     );
     let spend = Spend::for_ability(state, object.id(), price.x > 0);
-    can_afford(&mana, seat.mana(), &sources, life, &spend)
+    let helpers = waterbend_help(state, player, object.id(), price, claimed);
+    can_afford_with(&mana, seat.mana(), &sources, helpers.help(), life, &spend)
 }
 
 /// The cards outside the battlefield whose abilities `player` may use: the owner of a card in a hand, a graveyard or the

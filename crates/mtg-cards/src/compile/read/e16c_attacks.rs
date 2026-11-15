@@ -124,6 +124,19 @@ fn attacked(at: &Ref) -> Option<&'static str> {
 /// The wording of `GroupAttacksAt` that counts the attackers of a player's planeswalkers with theirs: "Whenever one or
 /// more creatures attack one of your opponents or a planeswalker they control".
 fn r5502_walkers_text(what: &Selector, at: &Ref, at_least: u32) -> Option<String> {
+    // "Whenever you attack a player or planeswalker with one or more creatures with power 1 or less": the creatures
+    // you control attack someone else, so the group is named by its quality.
+    if let ([kind, Pred::ControlledBy(Ref::You), quality], Ref::EachPlayer, 1) =
+        (what.0.as_slice(), at, at_least)
+        && *kind == Pred::Type(CardType::Creature)
+        && matches!(quality, Pred::HasAttached(_) | Pred::Compare { .. })
+    {
+        let group = Selector(vec![kind.clone(), quality.clone()]);
+        return Some(format!(
+            "Whenever you attack a player or planeswalker with one or more {}",
+            phrase_text(&group, Form::All)?
+        ));
+    }
     let player = match at {
         Ref::Opponents => "one of your opponents or a planeswalker they control",
         Ref::You => "you or a planeswalker you control",

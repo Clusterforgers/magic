@@ -74,7 +74,27 @@ export const CONTENT: DelveContent = {
       id: 'toll',
       title: 'The Goblin Toll',
       text: 'A goblin blocks a bridge.',
-      options: ['Pay 25 gold', 'Turn back'],
+      options: [
+        {
+          label: 'Pay the toll',
+          outcomes: [{ Gold: -25 }, 'CardPick'],
+          needs: { gold: 25, life: 0 },
+          summary: '−25 gold, a card for your deck',
+        },
+        {
+          label: 'Push past',
+          outcomes: [{ Life: -8 }, { Gold: 40 }],
+          needs: { gold: 0, life: 8 },
+          summary: '−8 life, +40 gold',
+        },
+        {
+          label: 'Reach into the sack',
+          outcomes: [{ Gamble: { odds: 50, win: ['Relic'], lose: [{ Life: -10 }] } }],
+          needs: { gold: 0, life: 0 },
+          summary: '50%: a relic · 50%: −10 life',
+        },
+        { label: 'Turn back', outcomes: [], needs: { gold: 0, life: 0 }, summary: 'nothing' },
+      ],
     },
   ],
 }
@@ -97,6 +117,7 @@ export function hero(over: Partial<Hero> = {}): Hero {
 export function run(over: Partial<Run> = {}): Run {
   return {
     heat: 0,
+    timers: 'relaxed',
     theme: 'warrens',
     map: {
       nodes: [
@@ -113,6 +134,7 @@ export function run(over: Partial<Run> = {}): Run {
     hearts: 3,
     status: 'Lobby',
     log: ['Ana joined the party.'],
+    results: [],
     ...over,
   }
 }

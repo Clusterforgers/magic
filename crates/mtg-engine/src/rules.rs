@@ -200,6 +200,17 @@ pub enum Rule {
     },
     /// The players may vote an additional time (CR 701.38d).
     VoteAgain(Vec<PlayerId>),
+    /// The player chooses which creatures the players listed block with and how they block (CR 509.1a); the last rule
+    /// in force for a player is the one that applies.
+    R6400ChoosesBlocks {
+        /// Who declares the blocks.
+        chooser: PlayerId,
+        /// Whose blocks.
+        whose: Vec<PlayerId>,
+    },
+    /// The player casts every ballot of each vote, each still counting as its voter's (CR 701.38); the last rule in
+    /// force applies.
+    R6400ChoosesVotes(PlayerId),
     /// The players get an additional vote (CR 701.38d).
     ExtraVote(Vec<PlayerId>),
     /// The turn order runs the other way round the table.
@@ -215,6 +226,20 @@ pub enum Rule {
     FlipTwoCoins(Vec<PlayerId>),
     /// The players roll one die more for each roll of one or more dice and ignore the lowest roll.
     ExtraDie(Vec<PlayerId>),
+    /// After the players roll, they may pay to increase or decrease one result by `by` (`GameRule::R6402ChangeRoll`).
+    R6402ChangeRoll {
+        /// Whose rolls.
+        players: Vec<PlayerId>,
+        /// The permanent with the rule: it pays the counters and counts the once-each-turn use.
+        source: ObjectRef,
+        /// What a change costs.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        pay: mtg_cards::modify::R6402RollPay,
+        /// How much the result goes up or down.
+        by: u32,
+        /// Only once each turn for the permanent.
+        once: bool,
+    },
     /// A rule about planar dice or planeswalking (Ichor Elixir, Susan Foreman): no game the engine plays has a planar
     /// deck, so it changes nothing.
     Planar,
@@ -579,6 +604,11 @@ pub struct AttackTax {
     /// The life each taxed creature costs, counted the same way.
     #[serde(default)]
     pub life: u32,
+    /// The permanents each taxed creature costs besides, sacrificed, returned or tapped (CR 508.1g), each a fixed
+    /// number counted the same way.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+    pub costs: Vec<mtg_cards::cost::CostItem>,
 }
 
 /// What a prevention shield protects and how much it prevents.
@@ -816,6 +846,10 @@ pub(crate) struct RulesInForce {
     /// The changes to the mana of a tap.
     pub(crate) mana: Vec<ManaRule>,
     vote_again: BTreeSet<PlayerId>,
+    /// The players who choose how others block, by whose blocks, the last in force winning.
+    r6400_block_choosers: BTreeMap<PlayerId, PlayerId>,
+    /// The player who casts every ballot, the last in force winning.
+    r6400_vote_chooser: Option<PlayerId>,
     /// The players who get an additional vote (CR 701.38d), once for each rule that gives one.
     extra_vote: Vec<PlayerId>,
     /// How many rules reverse the turn order; an odd count runs it the other way.
@@ -829,6 +863,8 @@ pub(crate) struct RulesInForce {
     flip_two: Vec<PlayerId>,
     /// One entry for each rule that adds a die to a player's rolls: a player listed twice rolls two more.
     extra_die: Vec<PlayerId>,
+    /// The rules that let a player change a result after they roll, in timestamp order.
+    r6402_change_roll: Vec<R6402RollChanger>,
     /// The players who keep unspent mana as steps end, with the type kept (every type when `None`).
     keep_mana: Vec<(PlayerId, Option<ManaType>)>,
     /// The players whose lost mana becomes another type, in timestamp order.
@@ -1318,6 +1354,12 @@ impl RulesInForce {
                 }
             }
             Rule::VoteAgain(players) => self.vote_again.extend(players),
+            Rule::R6400ChoosesBlocks { chooser, whose } => {
+                for player in whose {
+                    self.r6400_block_choosers.insert(*player, *chooser);
+                }
+            }
+            Rule::R6400ChoosesVotes(chooser) => self.r6400_vote_chooser = Some(*chooser),
             Rule::ExtraVote(players) => self.extra_vote.extend(players),
             Rule::ReverseTurnOrder => self.r376_reversals += 1,
             Rule::AttackOnlyNearest(left) => self.r376_nearest.extend(left),
@@ -1325,6 +1367,21 @@ impl RulesInForce {
             Rule::PowerUpAgain(objects) => self.power_up_again.extend(objects),
             Rule::FlipTwoCoins(players) => self.flip_two.extend(players),
             Rule::ExtraDie(players) => self.extra_die.extend(players),
+            Rule::R6402ChangeRoll {
+                players,
+                source,
+                pay,
+                by,
+                once,
+            } => self
+                .r6402_change_roll
+                .extend(players.iter().map(|player| R6402RollChanger {
+                    player: *player,
+                    source: *source,
+                    pay: pay.clone(),
+                    by: *by,
+                    once: *once,
+                })),
             Rule::KeepUnspentMana(players, mana) => {
                 self.keep_mana.extend(players.iter().map(|p| (*p, *mana)));
             }
@@ -1719,6 +1776,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             mana,
             life,
             per,
+            cost,
         } => {
             let times = usize::try_from(scope.amount(per)?.max(0)).unwrap_or(usize::MAX);
             Rule::AttackTax(AttackTax {
@@ -1727,6 +1785,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 creatures: attackers.clone(),
                 mana: repeated(mana.rest(), times),
                 life: life.saturating_mul(u32::try_from(times).unwrap_or(u32::MAX)),
+                costs: crate::announce::r6400_combat_costs::r6400_repeated(cost, times),
             })
         }
         GameRule::BlockTax { .. } => crate::block_tax::lower(scope, wanted)?,
@@ -1765,6 +1824,13 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             change: *change,
         },
         GameRule::VoteAgain(who) => Rule::VoteAgain(scope.players(who)?),
+        GameRule::R6400ChoosesBlocks { chooser, whose } => Rule::R6400ChoosesBlocks {
+            chooser: one_player(scope, chooser)?,
+            whose: scope.players(whose)?,
+        },
+        GameRule::R6400ChoosesVotes { chooser } => {
+            Rule::R6400ChoosesVotes(one_player(scope, chooser)?)
+        }
         GameRule::ExtraVote(who) => Rule::ExtraVote(scope.players(who)?),
         GameRule::ReverseTurnOrder => Rule::ReverseTurnOrder,
         GameRule::AttackOnlyNearest(side) => {
@@ -1785,6 +1851,13 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         )?),
         GameRule::FlipTwoCoins(who) => Rule::FlipTwoCoins(scope.players(who)?),
         GameRule::ExtraDie(who) => Rule::ExtraDie(scope.players(who)?),
+        GameRule::R6402ChangeRoll { who, pay, by, once } => Rule::R6402ChangeRoll {
+            players: scope.players(who)?,
+            source: scope.source,
+            pay: pay.clone(),
+            by: *by,
+            once: *once,
+        },
         GameRule::ExtraPlanarDie(_) | GameRule::PlaneswalkLookTwo(_) => Rule::Planar,
         GameRule::KeepUnspentMana { who, mana } => {
             Rule::KeepUnspentMana(scope.players(who)?, *mana)
@@ -2010,9 +2083,12 @@ pub(crate) fn repeated(cost: &ManaCost, times: usize) -> ManaCost {
 pub(crate) fn names_nothing(rule: &Rule) -> bool {
     match rule {
         Rule::AttackTax(tax) => {
-            tax.players.is_empty() || (tax.mana.symbols().is_empty() && tax.life == 0)
+            tax.players.is_empty()
+                || (tax.mana.symbols().is_empty() && tax.life == 0 && tax.costs.is_empty())
         }
-        Rule::BlockTax(tax) => tax.mana.symbols().is_empty() && tax.life == 0,
+        Rule::BlockTax(tax) => {
+            tax.mana.symbols().is_empty() && tax.life == 0 && tax.costs.is_empty()
+        }
         Rule::MustAttack(named)
         | Rule::MustBlock(named)
         | Rule::CantBeCountered(named)
@@ -2042,10 +2118,12 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::OwnSpellsCantSearch(players)
         | Rule::SearchTop { players, .. }
         | Rule::VoteAgain(players)
+        | Rule::R6400ChoosesBlocks { whose: players, .. }
         | Rule::ExtraVote(players)
         | Rule::SkipExtraTurns(players)
         | Rule::FlipTwoCoins(players)
         | Rule::ExtraDie(players)
+        | Rule::R6402ChangeRoll { players, .. }
         | Rule::KeepUnspentMana(players, _)
         | Rule::UnspentManaBecomes(players, _)
         | Rule::DrawLimit(players, _)
@@ -2098,7 +2176,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::DamageAsWither
         | Rule::ManaBurn
         | Rule::RevealFirstDraw { .. }
-        | Rule::UntapRemovesCounters(_) => false,
+        | Rule::UntapRemovesCounters(_)
+        | Rule::R6400ChoosesVotes(_) => false,
         Rule::Planar => true,
         Rule::AttackOnlyNearest(left) => left.is_none(),
         Rule::PreventDamage(shield) => {
@@ -2238,6 +2317,8 @@ static NONE: RulesInForce = RulesInForce {
     untap_removes: BTreeSet::new(),
     mana: Vec::new(),
     vote_again: BTreeSet::new(),
+    r6400_block_choosers: BTreeMap::new(),
+    r6400_vote_chooser: None,
     extra_vote: Vec::new(),
     r376_reversals: 0,
     r376_nearest: Vec::new(),
@@ -2245,6 +2326,7 @@ static NONE: RulesInForce = RulesInForce {
     power_up_again: Vec::new(),
     flip_two: Vec::new(),
     extra_die: Vec::new(),
+    r6402_change_roll: Vec::new(),
     keep_mana: Vec::new(),
     mana_becomes: Vec::new(),
     draw_limit: Vec::new(),
@@ -2927,6 +3009,32 @@ pub fn ep29_extra_dice(state: &GameState, player: PlayerId) -> u32 {
     u32::try_from(extra).unwrap_or(0)
 }
 
+/// A rule that lets one player change a result after they roll (`Rule::R6402ChangeRoll`), for that player.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct R6402RollChanger {
+    /// Whose rolls.
+    pub(crate) player: PlayerId,
+    /// The permanent with the rule.
+    pub(crate) source: ObjectRef,
+    /// What a change costs.
+    pub(crate) pay: mtg_cards::modify::R6402RollPay,
+    /// How much the result goes up or down.
+    pub(crate) by: u32,
+    /// Only once each turn for the permanent.
+    pub(crate) once: bool,
+}
+
+/// The rules that let `player` change a result after they roll, in timestamp order.
+pub(crate) fn r6402_roll_changers(state: &GameState, player: PlayerId) -> Vec<R6402RollChanger> {
+    state
+        .rules()
+        .r6402_change_roll
+        .iter()
+        .filter(|changer| changer.player == player)
+        .cloned()
+        .collect()
+}
+
 /// How many coins `player` flips for one coin they would flip: two for each rule that doubles them, at most 32.
 pub fn ep22_coins_per_flip(state: &GameState, player: PlayerId) -> u32 {
     let doublings = state
@@ -2969,6 +3077,30 @@ pub(crate) fn r376_nearest_sides(state: &GameState) -> Vec<mtg_cards::refs::Side
 /// Whether the game's turn order runs the other way round the table: an odd number of rules reverse it.
 pub fn r376_turn_order_reversed(state: &GameState) -> bool {
     state.rules().r376_reversals % 2 == 1
+}
+
+/// The player who chooses how `player`'s creatures block instead of `player` (CR 509.1a), if a rule says so.
+pub fn r6400_block_chooser(state: &GameState, player: PlayerId) -> Option<PlayerId> {
+    state
+        .rules()
+        .r6400_block_choosers
+        .get(&player)
+        .copied()
+        .filter(|chooser| *chooser != player)
+}
+
+/// The player who casts every ballot of a vote (CR 701.38), if a rule says so.
+pub fn r6400_vote_chooser(state: &GameState) -> Option<PlayerId> {
+    state.rules().r6400_vote_chooser
+}
+
+/// The one player `who` names: the first, or an error for none.
+fn one_player(scope: &Scope<'_>, who: &Ref) -> Result<PlayerId, ResolveError> {
+    scope
+        .players(who)?
+        .first()
+        .copied()
+        .ok_or_else(|| ResolveError::Invalid("the rule names no player to choose".into()))
 }
 
 /// Whether `player` may vote an additional time while voting (CR 701.38d).

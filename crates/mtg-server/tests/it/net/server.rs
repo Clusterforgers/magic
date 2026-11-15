@@ -47,6 +47,7 @@ pub fn windowed_config() -> ServerConfig {
                 think: None,
                 active: None,
                 extension: None,
+                relaxed: None,
                 grace: std::time::Duration::ZERO,
                 dwell: Dwell::OFF,
             },

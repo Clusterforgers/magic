@@ -116,7 +116,7 @@ fn commander() -> Result<Asked, ScriptError> {
     counters,
     &[
         ("Hardened Scales", "If one or more +1/+1 counters would be put on a creature you control, that many plus 1 +1/+1 counters are put on it instead."),
-        ("Doubling Season", "If one or more counters would be put on a permanent you control, twice that many of those counters are put on it instead."),
+        ("Doubling Season", "If an effect would put one or more counters on a permanent you control, it puts twice that many of those counters on it instead."),
     ],
 )]
 fn an_effect_carries_the_words_of_its_own_ability(

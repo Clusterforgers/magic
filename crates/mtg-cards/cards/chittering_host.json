@@ -1,0 +1,34 @@
+{
+  "oracle_id": "6923cf6b-7d3e-4d95-abaf-1df1a04ac7c1",
+  "name": "Chittering Host",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chittering Host",
+      "oracle_fingerprint": "675b226654cb4bdec7e6860994098617",
+      "abilities": [
+        { "Keyword": "Haste" },
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }]
+                  },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Menace" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-//! Goal: Sagas play as the rules say (CR 714) at tables of two, three and four seats: a Saga enters with a lore counter and gets one as each of its controller's precombat main phases begins (never in another player's), a chapter ability triggers when the lore counters reach or pass its number (a line of several numbers is one ability for each, counters put on by an effect trigger every chapter they pass in the order their controller picks, Doubling Season doubles the lore counters and Hardened Scales does not), the Saga stays while a chapter ability of it waits or is on the stack and is sacrificed once the last has resolved, a Saga that leaves and returns starts over, and the log of whole games with Sagas replays to the live state.
+//! Goal: Sagas play as the rules say (CR 714) at tables of two, three and four seats: a Saga enters with a lore counter and gets one as each of its controller's precombat main phases begins (never in another player's), a chapter ability triggers when the lore counters reach or pass its number (a line of several numbers is one ability for each, counters put on by an effect trigger every chapter they pass in the order their controller picks, Doubling Season doubles the lore counter a Saga enters with and Hardened Scales does not, while the lore counter of the turn-based action is changed by Vorinclex and Pir but not by Doubling Season, which names effects only), the Saga stays while a chapter ability of it waits or is on the stack and is sacrificed once the last has resolved, a Saga that leaves and returns starts over, and the log of whole games with Sagas replays to the live state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -345,26 +345,35 @@ fn a_replacement_of_counters_reaches_the_lore_counter_a_saga_enters_with(
     Ok(())
 }
 
+// The lore counter of the turn-based action (CR 714.3b) is put by the Saga's controller and by no effect: the replacements
+// that say "an effect would put" (Doubling Season) leave it, those that say "would be put" or "you would put" change it.
 #[rstest]
-fn doubling_season_doubles_the_lore_counter_of_the_turn_based_action(
+#[case::doubling_season_is_no_effect("Doubling Season", 2, &[2], true)]
+#[case::hardened_scales_is_for_plus_one_counters("Hardened Scales", 2, &[2], true)]
+#[case::vorinclex_doubles_what_you_put("Vorinclex, Monstrous Raider", 3, &[4, 2], false)]
+#[case::pir_adds_one("Pir, Imaginative Rascal", 3, &[4, 2], false)]
+fn the_lore_counter_of_the_turn_based_action_is_changed_by_what_it_names(
     #[values(2, 3, 4)] seats: usize,
+    #[case] name: &str,
+    #[case] counters: u32,
+    #[case] expected: &[u32],
+    #[case] stays: bool,
 ) -> Result<(), ScriptError> {
     let scenario = Scenario::new(seats)
         .battlefield(
             0,
             [
-                ready(card("Doubling Season").unwrap()),
+                ready(card(name).unwrap()),
                 with_counters(ready(saga("Tale", THREE)), CounterKind::lore(), 1),
             ],
         )
         .at(1, 0, Step::Upkeep);
     let mut driver = Driver::from_scenario(scenario)?;
     driver.pass_until(Step::Main1)?;
-    // One counter becomes two: 1 to 3, so chapters II and III trigger, and the Saga leaves after both.
-    assert_eq!(lore(&driver, "Tale"), 3);
+    assert_eq!(lore(&driver, "Tale"), counters);
     let gained = settle(&mut driver, &[], "Tale")?;
-    assert_eq!(gained.iter().sum::<u32>(), 2 + 4);
-    assert!(!on_battlefield(&driver, "Tale"));
+    assert_eq!(gained, expected);
+    assert_eq!(on_battlefield(&driver, "Tale"), stays);
     Ok(())
 }
 

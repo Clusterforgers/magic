@@ -7,6 +7,7 @@
 use mtg_core::ids::PlayerId;
 use serde::{Deserialize, Serialize};
 
+use crate::abilities::AbilitySource;
 use crate::answers::Outcome;
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
@@ -24,6 +25,11 @@ pub struct TriggerEntry {
     #[serde(default, skip_serializing_if = "String::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<String>", optional))]
     pub when: String,
+    /// Where the ability comes from, which names it as its own when no object gives it (the Ring's); the card's own while
+    /// it is printed.
+    #[serde(default, skip_serializing_if = "AbilitySource::is_printed")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<AbilitySource>", optional))]
+    pub origin: AbilitySource,
 }
 
 /// The triggers to order.
@@ -85,6 +91,7 @@ mod tests {
                     },
                     ability: 0,
                     when: String::new(),
+                    origin: AbilitySource::default(),
                 })
                 .collect(),
         }

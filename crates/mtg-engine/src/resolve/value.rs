@@ -142,6 +142,9 @@ pub struct Scope<'a> {
     pub(crate) caused: Option<crate::triggers::CausedBy>,
     /// The permanent whose static ability gave the running ability to its source (`Ref::Granter`).
     pub(crate) granter: Option<ObjectId>,
+    /// The player whose spell or ability gave the running ability to its source for a time (`Ref::Granter` when a resolved
+    /// effect gave it: "the player who cast ~").
+    pub(crate) granter_player: Option<PlayerId>,
     /// Objects are judged as their snapshot in scope shows them, before the live object: a turn record's subject as it
     /// was when the record was made (CR 608.2h).
     pub(crate) as_was: bool,
@@ -404,6 +407,7 @@ impl<'a> Scope<'a> {
             asker: None,
             caused: None,
             granter: None,
+            granter_player: None,
             as_was: false,
             inline: None,
             entering: None,
@@ -569,6 +573,7 @@ impl<'a> Scope<'a> {
             | TurnTally::CreaturesLeftUnder
             | TurnTally::SpellsWarped
             | TurnTally::DiceRolled
+            | TurnTally::R6402Rolled(_)
             | TurnTally::CardsExiled
             | TurnTally::PermanentsToHand
             | TurnTally::CardsGravedNotFromBattlefield
@@ -581,6 +586,7 @@ impl<'a> Scope<'a> {
             | TurnTally::CardsLeftGraveyard
             | TurnTally::R6100CreatureCardsLeftGraveyard
             | TurnTally::R6100CreaturesExiledUnder
+            | TurnTally::R6401LandsTappedForMana
             | TurnTally::CardsDrawnTotal
             | TurnTally::NoncombatDamageTakenTotal => {
                 let kind = match what {
@@ -599,12 +605,14 @@ impl<'a> Scope<'a> {
                     TurnTally::CreaturesLeftUnder => Tally::CreaturesLeftUnder,
                     TurnTally::SpellsWarped => Tally::Warped,
                     TurnTally::DiceRolled => Tally::R5508DiceRolled,
+                    TurnTally::R6402Rolled(result) => Tally::R6402Rolled(result),
                     TurnTally::PermanentsLeftUnder => Tally::PermanentsLeftUnder,
                     TurnTally::CardsLeftGraveyard => Tally::W21aLeftGraveyard,
                     TurnTally::R6100CreatureCardsLeftGraveyard => {
                         Tally::R6100CreatureCardLeftGraveyard
                     }
                     TurnTally::R6100CreaturesExiledUnder => Tally::R6100CreatureExiledUnder,
+                    TurnTally::R6401LandsTappedForMana => Tally::R6401LandTappedForMana,
                     TurnTally::LifeGainedTotal => Tally::GainedTotal,
                     TurnTally::CreaturesAttacked => Tally::Attackers,
                     TurnTally::CreaturesDied => Tally::Died,
@@ -1376,7 +1384,10 @@ impl<'a> Scope<'a> {
                 .map(Target::Player)
                 .into_iter()
                 .collect(),
-            Ref::Granter => self.granter_on_battlefield(),
+            Ref::Granter => self
+                .granter_player
+                .map(Target::Player)
+                .map_or_else(|| self.granter_on_battlefield(), |player| vec![player]),
             Ref::Monarch => state.monarch().map(Target::Player).into_iter().collect(),
             Ref::Spotlit => crate::spotlight::focus(state, self.controller)
                 .map(Target::Player)
@@ -4063,6 +4074,7 @@ mod tests {
                 player: PlayerId(0),
                 sides: 6,
                 result: *result,
+                natural: None,
             };
             apply_event(&mut game, &rolled).unwrap();
         }
@@ -4074,6 +4086,37 @@ mod tests {
             [read("Only"), read("Chosen"), read("Other")],
             expected.map(Ok)
         );
+    }
+
+    #[rstest]
+    #[case::nothing_rolled(&[], &[(6, 0), (1, 0)])]
+    #[case::one_six(&[(0, 6)], &[(6, 1), (5, 0)])]
+    #[case::a_six_by_another_player(&[(1, 6)], &[(6, 0)])]
+    #[case::two_sixes_and_a_twenty(&[(0, 6), (0, 20), (0, 6)], &[(6, 2), (20, 1), (2, 0)])]
+    fn r6402_the_dice_a_player_rolled_this_turn_are_kept_by_result(
+        #[case] rolls: &[(u64, u32)],
+        #[case] expected: &[(u32, i64)],
+    ) {
+        let mut game = game();
+        for (seat, result) in rolls {
+            apply_event(
+                &mut game,
+                &Event::DieRolled {
+                    player: PlayerId(*seat),
+                    sides: 20,
+                    result: *result,
+                    natural: None,
+                },
+            )
+            .unwrap();
+        }
+        for (result, count) in expected {
+            let amount: Amount = serde_json::from_str(&format!(
+                r#"{{"Tallied":{{"who":"You","what":{{"R6402Rolled":{result}}}}}}}"#
+            ))
+            .unwrap();
+            assert_eq!(scope(&game).amount(&amount), Ok(*count), "a {result}");
+        }
     }
 
     #[test]
