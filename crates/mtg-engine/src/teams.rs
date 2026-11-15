@@ -44,9 +44,14 @@ impl GameState {
         order
     }
 
-    /// Whether teams share their turns and life totals (Two-Headed Giant, CR 805, CR 810).
+    /// Whether teams share their turns (Two-Headed Giant and shared team turns, CR 805).
     pub fn shares_turns(&self) -> bool {
-        self.teams().is_some_and(Teams::shared)
+        self.teams().is_some_and(Teams::shares_turns)
+    }
+
+    /// Whether teams share their life totals (Two-Headed Giant, CR 810.9).
+    pub fn shares_life(&self) -> bool {
+        self.teams().is_some_and(Teams::shares_life)
     }
 
     /// Whether it is `player`'s turn: they are the active player, or a teammate of the active player when teams share
@@ -80,7 +85,7 @@ impl GameState {
 
     /// The teammates of `player` who share their life total (Two-Headed Giant, CR 810.9), `player` excluded.
     pub fn life_sharers(&self, player: PlayerId) -> Vec<PlayerId> {
-        if !self.shares_turns() {
+        if !self.shares_life() {
             return Vec::new();
         }
         self.players()

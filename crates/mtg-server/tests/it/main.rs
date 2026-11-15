@@ -59,6 +59,7 @@ mod pg_deck_import_printings;
 mod pg_decks;
 mod pg_delve_fights;
 mod pg_delve_list;
+mod pg_delve_party_turn;
 mod pg_delve_votes;
 mod pg_delves;
 mod pg_failed_games;

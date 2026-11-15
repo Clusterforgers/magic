@@ -6,6 +6,7 @@ Design of Delves, the co-op campaign: a party of 1 to 6 heroes fights a ladder o
 
 - A run is a boss rush. Its ladder (`mtg-campaign`, `map.rs`) holds the theme's lieutenants in an order drawn from the seed, then the final boss; between two bosses the party votes for one of two camps: Treasure, Shop, Event or Campfire.
 - Every boss fight is a fresh, normally recorded Commander game: board, hand and library reset. The party is one team of seats from seat 0, the boss one seat after them and its minions after it (`FightPlan`).
+- Each side takes one shared team turn (`TeamMode::SharedTurns`, CR 805): every hero untaps, draws, plays a land and casts sorceries in the party's turn, priority goes round the table from seat 0, and the hero at seat 0 declares the attacks of the party's creatures in one combat; the boss declares those of its side. Life totals stay per hero. The table names the party's turn ("Your party's turn").
 - Life carries over between fights. After a won fight each hero keeps their end life and heals 10; a hero who ended it as a Spirit comes back at 10 first. A Campfire rest heals 20, the shop's draught 15; nothing heals above 40 plus relic bonuses.
 - The party has 3 hearts. A lost fight costs one, every hero regroups at half life and the fight is retried; with no hearts left the run ends in defeat.
 - Within a fight a hero at 0 life is a Restless Spirit while a teammate lives (`docs/engine.md`, Campaign seats); the party loses when every hero has fallen. See Spirits.
@@ -36,7 +37,7 @@ A fallen hero keeps playing: it haunts the fight with small, clear choices and c
 - Its advantages are open: its boss cards are emblems in its command zone from the start; each phase is an emblem that arrives when its life falls to a share of its starting life (66 % and 33 %). The table shows the boss's phase and the next one on the seat's chips.
 - Every boss has Escalation (each of its end steps, every hero loses 1 life for every four turns it has taken) and Enrage (from its tenth turn, every hero loses its turns minus nine each upkeep), so a stalled fight ends.
 - Schemes: the theme's scheme deck, shuffled from the seed for each fight, sets one scheme in motion as each boss turn begins from its third (CR 314 in the manner of Archenemy); the next one is public as the Omen. Their effects count the heroes (a Rat per hero, a sacrifice and a discard from each hero, a drain of each hero) or name the hero in the spotlight.
-- Minions: a lieutenant seat on the boss's side with another boss's deck, its own life, turn and bot brain; it falls with the boss (`LossReason::LeaderFell`), so the party wins when the boss falls.
+- Minions: a lieutenant seat on the boss's side with another boss's deck, its own life and bot brain, sharing the boss's turn; it falls with the boss (`LossReason::LeaderFell`), so the party wins when the boss falls.
 
 ## Spotlight
 

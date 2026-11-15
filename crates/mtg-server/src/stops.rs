@@ -125,7 +125,7 @@ impl Stops {
 
     /// Follows a change of the table's teams in the lobby.
     pub(crate) fn share_turns(&mut self, teams: Option<&Teams>) {
-        self.shared = teams.filter(|teams| teams.shared()).cloned();
+        self.shared = teams.filter(|teams| teams.shares_turns()).cloned();
     }
 
     /// Whether `seat` holds a stop at `step` of a turn on `side`, one-turn or lasting.

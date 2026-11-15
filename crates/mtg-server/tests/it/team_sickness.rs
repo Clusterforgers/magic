@@ -76,7 +76,7 @@ impl Ledger {
     /// Whether a turn of `active` is a turn of `player`: their own, or in Two-Headed Giant their team's.
     fn is_turn_of(&self, active: PlayerId, player: PlayerId) -> bool {
         active == player
-            || (self.teams.shared() && self.teams.team_of(active) == self.teams.team_of(player))
+            || (self.teams.shares_turns() && self.teams.team_of(active) == self.teams.team_of(player))
     }
 
     /// Folds `batch` into `view` and checks what the view says against the turns the batch's events tell. A permanent
@@ -151,6 +151,8 @@ impl Ledger {
 #[case::teams_three_v_three(TeamMode::Teams, vec![0, 1, 0, 1, 0, 1], &[2, 4])]
 #[case::giant_first_head(TeamMode::TwoHeadedGiant, vec![0, 0, 1, 1], &[0])]
 #[case::giant_second_head(TeamMode::TwoHeadedGiant, vec![0, 0, 1, 1], &[1])]
+#[case::shared_second_hero(TeamMode::SharedTurns, vec![0, 0, 0, 1], &[1])]
+#[case::shared_heroes_of_four(TeamMode::SharedTurns, vec![0, 0, 0, 0, 1, 1], &[0, 2])]
 #[tokio::test(start_paused = true)]
 async fn a_humans_view_holds_a_permanent_back_until_its_controllers_turn_begins(
     #[case] mode: TeamMode,
@@ -270,7 +272,7 @@ async fn a_humans_view_holds_a_permanent_back_until_its_controllers_turn_begins(
         // In Two-Headed Giant only the team's first seat declares attackers.
         let declares = teams.members(teams.team_of(client.seat)).next() == Some(client.seat);
         assert!(
-            ledger.attackers > 0 || (teams.shared() && !declares),
+            ledger.attackers > 0 || (teams.shares_turns() && !declares),
             "seat {:?} was never offered an attacker",
             client.seat
         );

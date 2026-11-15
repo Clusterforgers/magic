@@ -14,6 +14,8 @@ pub enum TeamMode {
     TwoHeadedGiant,
     /// Teams of any size; each player takes their own turn and a team wins when all its opponents lost (CR 808).
     Teams,
+    /// Teams of any size that share their turns (CR 805) while each player keeps their own life total (Delves).
+    SharedTurns,
 }
 
 /// The teams of a table: a mode and the team of every seat.
@@ -58,7 +60,7 @@ impl Teams {
     pub fn even(mode: TeamMode, teams: u32, size: u32) -> Self {
         let seats = (0..teams * size)
             .map(|seat| match mode {
-                TeamMode::TwoHeadedGiant => seat / size,
+                TeamMode::TwoHeadedGiant | TeamMode::SharedTurns => seat / size,
                 TeamMode::Teams => seat % teams,
             })
             .collect();
@@ -87,8 +89,13 @@ impl Teams {
         self.seats.iter().max().map_or(0, |most| most + 1)
     }
 
-    /// Whether the teams share turns and a life total.
-    pub fn shared(&self) -> bool {
+    /// Whether the teams share their turns (CR 805): Two-Headed Giant and shared team turns.
+    pub fn shares_turns(&self) -> bool {
+        matches!(self.mode, TeamMode::TwoHeadedGiant | TeamMode::SharedTurns)
+    }
+
+    /// Whether the teams share a life total (Two-Headed Giant, CR 810.9).
+    pub fn shares_life(&self) -> bool {
         self.mode == TeamMode::TwoHeadedGiant
     }
 
@@ -170,6 +177,7 @@ mod tests {
     #[case::two_by_two(TeamMode::Teams, 2, 2, &[0, 1, 0, 1])]
     #[case::three_by_three(TeamMode::Teams, 2, 3, &[0, 1, 0, 1, 0, 1])]
     #[case::three_teams(TeamMode::Teams, 3, 2, &[0, 1, 2, 0, 1, 2])]
+    #[case::shared_turns(TeamMode::SharedTurns, 2, 3, &[0, 0, 0, 1, 1, 1])]
     fn even_assignments(
         #[case] mode: TeamMode,
         #[case] teams: u32,

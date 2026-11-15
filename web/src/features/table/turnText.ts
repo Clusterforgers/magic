@@ -92,6 +92,8 @@ export interface BannerInput {
   controlledBy?: PlayerId
   /** In Two-Headed Giant, the active player's teammate, who shares the turn (CR 805.3). */
   teammate?: PlayerId
+  /** Under shared team turns, the seats of the party whose turn it is; empty or absent for any other turn. */
+  party?: readonly PlayerId[]
 }
 
 /** "Alice left": the words for the seat a turn belongs to after it left the game. */
@@ -115,16 +117,24 @@ export function bannerText(input: BannerInput, name: Names): string {
 
 /**
  * The words of the turn badge in the top bar: "Your turn · 5 · Precombat main", "Bo's turn · 5 · Declare blockers"
- * ("Bo and Cy's turn" for a Two-Headed Giant team, "Your turn" for both its players), or what the game is doing
- * before and after its turns. `viewer` is this client's seat.
+ * ("Bo and Cy's turn" for a Two-Headed Giant team, "Your turn" for both its players; "Your party's turn" and "The
+ * party's turn" for a party sharing its turn), or what the game is doing before and after its turns. `viewer` is this
+ * client's seat.
  */
 export function badgeText(input: BannerInput, viewer: PlayerId | null, name: Names): string {
   if (input.stage !== 'Turns') return bannerText(input, name)
   if (input.left === true)
     return `${leftWords(input.active, name)} · ${input.turn} · ${STEP_LABEL[input.step]}`
-  const { active, teammate } = input
+  const { active, teammate, party = [] } = input
   const owners = teammate === undefined ? name(active) : `${name(active)} and ${name(teammate)}`
-  const who = active === viewer || teammate === viewer ? 'Your turn' : `${owners}'s turn`
+  const who =
+    party.length > 0
+      ? viewer !== null && party.includes(viewer)
+        ? "Your party's turn"
+        : "The party's turn"
+      : active === viewer || teammate === viewer
+        ? 'Your turn'
+        : `${owners}'s turn`
   return `${who}${controlWords(input, viewer, name)} · ${input.turn} · ${STEP_LABEL[input.step]}`
 }
 

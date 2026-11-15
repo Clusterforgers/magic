@@ -327,7 +327,7 @@ fn is_untapped_creature(state: &GameState, id: ObjectId) -> bool {
 
 /// Whether `id` may be declared as an attacker by `player` now.
 pub(crate) fn can_attack(state: &GameState, id: ObjectId, player: PlayerId) -> bool {
-    // A Two-Headed Giant team attacks as one: the active player declares the attacks of the team.
+    // A team that shares its turn attacks as one: the active player declares the attacks of the team (CR 805).
     controller_of(state, id)
         .is_some_and(|c| c == player || (state.shares_turns() && state.are_teammates(c, player)))
         && !crate::spotlight::lull(state, player)
@@ -555,9 +555,10 @@ pub fn attack_cost(
 }
 
 /// Whether `player` defends against attacks on `attacked`: they are that player, or a teammate when the team is
-/// attacked as one (Two-Headed Giant), so either of its players blocks any creature attacking it.
+/// attacked as one (Two-Headed Giant), so either of its players blocks any creature attacking it. Players who share
+/// their turns but not their life defend only themselves.
 fn defends(state: &GameState, attacked: PlayerId, player: PlayerId) -> bool {
-    attacked == player || (state.shares_turns() && state.are_teammates(attacked, player))
+    attacked == player || (state.shares_life() && state.are_teammates(attacked, player))
 }
 
 /// Players being attacked, in turn order after the active player; both players of an attacked Two-Headed Giant team.

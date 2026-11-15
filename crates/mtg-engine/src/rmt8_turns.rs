@@ -13,10 +13,19 @@ impl GameState {
         self.rmt8_turns.get(&player).copied().unwrap_or(0)
     }
 
-    /// Counts a turn the player begins, and keeps every player's life total as it begins.
+    /// Counts a turn the player begins, for each teammate too when teams share their turns (CR 805.3), and keeps every
+    /// player's life total as it begins.
     pub(crate) fn rmt8_count_turn(&mut self, player: PlayerId) {
-        let turns = self.rmt8_turns.entry(player).or_insert(0);
-        *turns = turns.saturating_add(1);
+        let sharers: Vec<PlayerId> = self
+            .players
+            .iter()
+            .map(crate::player::Player::id)
+            .filter(|seat| *seat == player || (self.shares_turns() && self.are_teammates(*seat, player)))
+            .collect();
+        for seat in sharers {
+            let turns = self.rmt8_turns.entry(seat).or_insert(0);
+            *turns = turns.saturating_add(1);
+        }
         self.rmt8_lives = self
             .players
             .iter()

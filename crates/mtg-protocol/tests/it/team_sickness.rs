@@ -62,7 +62,7 @@ fn cast(table: &mut Table, seat: usize, name: &str) {
 fn own_turn(teams: &Teams, turn: u32, seat: usize) -> bool {
     let seats = u32::try_from(teams.seats.len()).unwrap();
     let at = usize::try_from((turn - 1) % seats).unwrap();
-    if teams.shared() {
+    if teams.shares_turns() {
         // The teams take turns 1, 3, 5 and 2, 4, 6, one team to a pair of seats.
         let team = (turn - 1) % 2;
         teams.seats[seat] == team
@@ -150,6 +150,8 @@ fn expect(teams: &Teams, start: u32) -> impl Fn(&str, usize, u32) -> bool + '_ {
 #[case::teams_side_by_side_three(TeamMode::Teams, &[0, 0, 0, 1, 1, 1])]
 #[case::teams_three_teams(TeamMode::Teams, &[0, 1, 2, 0, 1, 2])]
 #[case::two_headed_giant(TeamMode::TwoHeadedGiant, &[0, 0, 1, 1])]
+#[case::shared_party_of_three(TeamMode::SharedTurns, &[0, 0, 0, 1])]
+#[case::shared_party_of_four_v_two(TeamMode::SharedTurns, &[0, 0, 0, 0, 1, 1])]
 fn a_creature_is_sick_until_its_controllers_own_turn_begins(
     #[case] mode: TeamMode,
     #[case] assignment: &[u32],
@@ -175,7 +177,7 @@ fn a_creature_cast_on_a_teammates_turn_is_sick_until_its_controllers_turn_begins
 ) {
     let teams = teams(mode, assignment);
     let seats = u32::try_from(assignment.len()).unwrap();
-    let active = if teams.shared() {
+    let active = if teams.shares_turns() {
         // The first seat of the team holds the turn.
         teams.members(teams.seats[caster]).next().unwrap().index()
     } else {

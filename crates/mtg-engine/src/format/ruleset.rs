@@ -122,9 +122,9 @@ impl<'a> RuleSet<'a> {
         }
     }
 
-    /// Whether teams share their turns and life totals (Two-Headed Giant).
+    /// Whether teams share their life totals (Two-Headed Giant).
     pub fn shares_life(&self) -> bool {
-        self.house.teams.as_ref().is_some_and(Teams::shared)
+        self.house.teams.as_ref().is_some_and(Teams::shares_life)
     }
 
     /// Whether every seat sees every hand.
