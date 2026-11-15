@@ -108,6 +108,9 @@ describe('marking rules terms', () => {
     ['You may cast it without paying its mana cost.', ['Without paying its mana cost']],
     ['Put it onto the battlefield face down.', ['Face down']],
     ['You become the monarch.', ['Monarch']],
+    ['Choose a creature you control as your Ring-bearer.', ['Ring-bearer']],
+    ["You get the city's blessing.", ["City's blessing"]],
+    ['You get two energy counters and a rad counter.', ['Energy counter', 'Rad counter']],
   ])('marks the rules term of "%s"', (text, titles) => {
     expect(mentions(text).map((term) => term.title)).toEqual(titles)
   })
@@ -117,6 +120,8 @@ describe('marking rules terms', () => {
     ['Create a 1/1 white Soldier creature token.'],
     ['Target player loses 2 life.'],
     ['Each opponent sacrifices a land.'],
+    ['Search your library for a basic land card, then shuffle.'],
+    ['Create a Gold token and a Clue token.'],
   ])('leaves the everyday words of "%s"', (text) => {
     expect(mentions(text)).toEqual([])
   })

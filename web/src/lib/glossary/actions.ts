@@ -53,7 +53,10 @@ export const ACTIONS: readonly Entry[] = [
     'Learn',
     'You may reveal a Lesson card you own from outside the game and put it into your hand, or discard a card to draw a card.',
   ],
-  ['Investigate', 'Create a Clue token. It is an artifact with "{2}, Sacrifice this artifact: Draw a card."'],
+  [
+    'Investigate|Clue',
+    'Create a Clue token. It is an artifact with "{2}, Sacrifice this artifact: Draw a card."',
+  ],
   [
     'Treasure',
     'A Treasure token is an artifact with "{T}, Sacrifice this artifact: Add one mana of any color."',
@@ -100,7 +103,7 @@ export const ACTIONS: readonly Entry[] = [
     'Look at the top two cards of your library. Manifest one and put the other into your graveyard.',
   ],
   [
-    'Incubate',
+    'Incubate|Incubator',
     'Create an Incubator token with N +1/+1 counters on it and "{2}: Transform this artifact." It transforms into a 0/0 Phyrexian artifact creature.',
   ],
   [
@@ -152,4 +155,60 @@ export const ACTIONS: readonly Entry[] = [
   ['Abandon', "Put an ongoing scheme card face up on the bottom of its owner's scheme deck."],
   ['Assemble', 'Put the top card of your Contraption deck onto the battlefield.'],
   ['Double|Triple', 'Double or triple the stated quantity: power, life, counters or mana.'],
+  [
+    'The Ring tempts you|The Ring tempts',
+    'Choose a creature you control as your Ring-bearer. The Ring gains its next ability, one more each time, up to four.',
+  ],
+  [
+    'Search',
+    'Look through a library or another zone for a card with the stated quality. In a hidden zone you may find no card even if one matches.',
+  ],
+  [
+    'Turn face up|Turn face down',
+    'Turn a face-down permanent over to show its real face; doing it with morph, disguise or the like does not use the stack. Turning one face down hides it as a 2/2 creature with no text.',
+  ],
+  ['Flip a coin|Coin flip', 'Heads or tails at random; the card says what each result, or a won flip, does.'],
+  [
+    'Roll a die|Roll dice',
+    "A random number from 1 to the die's number of sides; the card says what each result does, and some effects change or reroll it.",
+  ],
+  [
+    'Villainous choice|Face a villainous choice',
+    'The player who faces it chooses one of the two options the card gives, and that option happens.',
+  ],
+  [
+    'Commit a crime|Commits a crime|Committed a crime',
+    'Cast a spell or put an ability on the stack that targets an opponent, something they control or a card in their graveyard.',
+  ],
+  ['Expend', 'A player expends N as they spend their Nth total mana to cast spells during a turn.'],
+  [
+    'Claim a prize',
+    'Claim the prize of an Attraction: its prize abilities trigger, and so do abilities that wait for a player to claim a prize.',
+  ],
+  [
+    'Sticker|Stickers',
+    'A name, ability, power and toughness or art sticker put on a card from a sticker sheet for its ticket cost; it stays on the card in every zone.',
+  ],
+  ['Unlock', 'Unlock a locked door of a Room, usually by paying its cost; its half of the Room then works.'],
+  ['Gold', 'A Gold token is an artifact with "Sacrifice this artifact: Add one mana of any color."'],
+  [
+    'Junk',
+    'A Junk token is an artifact with "{T}, Sacrifice this artifact: Exile the top card of your library. You may play that card this turn. Activate only as a sorcery."',
+  ],
+  [
+    'Lander',
+    'A Lander token is an artifact with "{2}, {T}, Sacrifice this artifact: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle."',
+  ],
+  [
+    'Mutagen',
+    'A Mutagen token is an artifact with "{1}, {T}, Sacrifice this artifact: Put a +1/+1 counter on target creature. Activate only as a sorcery."',
+  ],
+  [
+    'Powerstone',
+    'A Powerstone token is an artifact with "{T}: Add {C}. This mana can not be spent to cast a nonartifact spell."',
+  ],
+  [
+    'Vibranium',
+    'A Vibranium token is an indestructible artifact with "{T}: Add {C}. This mana can not be spent to cast a nonartifact spell."',
+  ],
 ]

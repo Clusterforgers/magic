@@ -197,7 +197,7 @@ export const COUNTERS: Record<Extract<CounterKind, string>, Entry> = {
   ],
   poison: ['Poison counter|Poison', 'A player with ten or more poison counters loses the game.'],
   charge: [
-    'Charge counter',
+    'Charge counter|Oil counter|Storage counter|Depletion counter|Quest counter',
     'A counter with no rules meaning of its own; the card that uses it says what it does.',
   ],
 }

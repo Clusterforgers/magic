@@ -127,7 +127,7 @@ export const COMBAT: readonly Entry[] = [
     'Whenever this creature attacks, create N tapped and attacking 1/1 red Warrior tokens. Sacrifice them at the beginning of the next end step.',
   ],
   [
-    'Phasing',
+    'Phasing|Phase out|Phase in',
     "This permanent phases in or out on its controller's untap step. While phased out, it is treated as though it does not exist.",
   ],
   [

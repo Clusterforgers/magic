@@ -169,7 +169,7 @@ export const PERMANENTS: readonly Entry[] = [
   ['Choose a Background', 'You can have a Background as a second commander.'],
   ['Eerie', 'Triggers whenever an enchantment you control enters and whenever you fully unlock a Room.'],
   [
-    'Solved',
+    'Solved|Solve',
     'A Case is solved when its "to solve" condition is true at the beginning of your end step; then it gets its solved abilities.',
   ],
   [

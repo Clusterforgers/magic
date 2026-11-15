@@ -11,6 +11,7 @@ export type RuleTopic =
   | 'Cards and permanents'
   | 'Combat'
   | 'Commander'
+  | 'Players'
   | 'Game'
 
 const TURN: readonly Entry[] = [
@@ -34,6 +35,10 @@ const TURN: readonly Entry[] = [
     'A turn taken right after the current one; several extra turns are taken in the reverse order they were made.',
   ],
   ['Skip', 'A skipped step, phase or turn does not happen at all, so nothing in it triggers.'],
+  [
+    'Additional phase|Additional combat phase|Extra combat',
+    'A phase added to the turn right after the current one, such as a second combat phase in which creatures attack again.',
+  ],
 ]
 
 const ZONE_TERMS: readonly Entry[] = [
@@ -262,6 +267,59 @@ const PERMANENTS: readonly Entry[] = [
     'A tapped permanent is turned sideways: it has been used this turn. Tapped creatures can not block.',
   ],
   [
+    'Vehicle',
+    'An artifact that is not a creature until it is crewed: tap creatures with total power N to make it an artifact creature until end of turn.',
+  ],
+  [
+    'Class',
+    "An enchantment with levels: pay a level's cost, at sorcery speed and in order, and it gains that level's abilities for good.",
+  ],
+  [
+    'Case',
+    'An enchantment with a "to solve" condition; it becomes solved when the condition is true at the beginning of your end step and then gets its solved ability.',
+  ],
+  [
+    'Flip card|Flip cards',
+    'A card with a second, upside-down half; it flips over when its condition is met, becomes its bottom half and stays so until it leaves the battlefield.',
+  ],
+  [
+    'Stun counter',
+    'If a permanent with a stun counter would become untapped, remove a stun counter from it instead.',
+  ],
+  [
+    'Shield counter',
+    'If a permanent with a shield counter would be dealt damage or destroyed, remove a shield counter from it instead.',
+  ],
+  ['Finality counter', 'If a permanent with a finality counter would die, exile it instead.'],
+  [
+    'Time counter',
+    'Counts down suspend and vanishing and is added or removed by time travel; the card says what happens at zero.',
+  ],
+  [
+    'Lore counter',
+    'A Saga gets one as it enters and at each of your precombat main phases; each one triggers the chapter ability of that number.',
+  ],
+  [
+    'Defense counter',
+    "A battle's defense: each point of damage dealt to it removes one, and at zero the battle is defeated.",
+  ],
+  [
+    'Level counter',
+    'Level up adds one; a leveler has the abilities and the power and toughness of the range its level counters fall in.',
+  ],
+  [
+    'Age counter',
+    'Cumulative upkeep adds one at each of your upkeeps, and its cost is paid once for each age counter.',
+  ],
+  [
+    'Fade counter',
+    'Fading removes one at each of your upkeeps; you sacrifice the permanent when you can not remove one.',
+  ],
+  [
+    'Keyword counter',
+    'A counter named for a keyword, such as flying or lifelink; the permanent has that ability while it has one.',
+  ],
+  [
     'Legend rule',
     'Two or more legendary permanents with the same name under one player: they keep one and the rest go to the graveyard.',
   ],
@@ -344,6 +402,62 @@ const GAME: readonly Entry[] = [
     'Once day or night starts it stays; it becomes night after a turn with no spells by its player, and day after one with two.',
   ],
   ['Random', 'Chosen by chance: a die, a coin flip or a shuffled pick.'],
+  [
+    'Win the game|Draw the game',
+    'The last player left wins; a card can also say a player wins. If every remaining player loses at once, or a card says so, the game is a draw.',
+  ],
+  [
+    'Restart the game',
+    "The game begins again with the same players: every card goes back to its owner's library and life totals reset, except what the restarting effect keeps.",
+  ],
+  [
+    'Control another player|Control a player',
+    "You make that player's decisions during their turn; their cards and permanents stay theirs.",
+  ],
+]
+
+const PLAYERS: readonly Entry[] = [
+  [
+    'Ring-bearer|Ring-bearers',
+    "The creature you chose when the Ring tempted you. It is legendary and has the Ring's abilities so far; it stops being your Ring-bearer when you choose another, it leaves the battlefield or another player gains control of it.",
+  ],
+  [
+    'Ring ability 1: legendary, evasive',
+    'Your Ring-bearer is legendary and can not be blocked by creatures with greater power.',
+  ],
+  ['Ring ability 2: loot', 'Whenever your Ring-bearer attacks, draw a card, then discard a card.'],
+  [
+    'Ring ability 3: sacrifice the blocker',
+    "Whenever your Ring-bearer becomes blocked by a creature, that creature's controller sacrifices it at end of combat.",
+  ],
+  [
+    'Ring ability 4: drain',
+    'Whenever your Ring-bearer deals combat damage to a player, each opponent loses 3 life.',
+  ],
+  [
+    "City's blessing",
+    'A status you keep for the rest of the game: you get it when an ascend ability checks and you control ten or more permanents.',
+  ],
+  [
+    'Speed',
+    'A number from 1 to 4 that start your engines! gives you. It rises by 1 once each turn when an opponent loses life during your turn, and at 4 you have max speed.',
+  ],
+  [
+    'Energy counter|Energy counters',
+    'A counter on a player that effects give; {E} in a cost pays by removing one.',
+  ],
+  [
+    'Experience counter|Experience counters',
+    'A counter on a player that effects give; cards count them and nothing removes them.',
+  ],
+  [
+    'Rad counter|Rad counters',
+    'A counter on a player. As their precombat main phase begins they mill that many cards, then lose 1 life and remove a rad counter for each nonland card milled.',
+  ],
+  [
+    'Ticket counter|Ticket counters',
+    'A counter on a player that pays for stickers: putting a sticker on a card removes as many as its cost.',
+  ],
 ]
 
 /** Every rules term by topic. */
@@ -356,6 +470,7 @@ export const RULES: Readonly<Record<RuleTopic, readonly Entry[]>> = {
   'Cards and permanents': PERMANENTS,
   Combat: COMBAT,
   Commander: COMMANDER,
+  Players: PLAYERS,
   Game: GAME,
 }
 
@@ -388,6 +503,12 @@ export const MARKED_RULES: ReadonlySet<string> = new Set([
   'Monarch',
   'Initiative',
   'Emblem',
+  'Ring-bearer',
+  "City's blessing",
+  'Energy counter',
+  'Experience counter',
+  'Rad counter',
+  'Ticket counter',
   'Summoning sickness',
   'State-based actions',
 ])
