@@ -111,8 +111,8 @@ mod tests {
     //! Goal: every entry and pair of the tables parses, reads back from its own words and writes them back, and a near
     //! miss of its words (a number, a color, a cost or a creature changed) reads as nothing.
     use super::{
-        R6400_PAIR_SHAPES, R6400_PAIRS, R6400_SHAPES, R6400_WHOLES, r6400_add_wholes,
-        r6400_pair_texts, r6400_whole_read,
+        R6400_EFFECT_SHAPES, R6400_EFFECTS, R6400_PAIR_SHAPES, R6400_PAIRS, R6400_SHAPES,
+        R6400_WHOLES, r6400_add_wholes, r6400_effect_text, r6400_pair_texts, r6400_whole_read,
     };
 
     #[test]

@@ -137,6 +137,7 @@ Baaallerina
 Back in Town
 Baird, Steward of Argive
 Balduvian Conjurer
+Balduvian Warlord
 Bandit's Haul
 Bane of Progress
 Banish to Another Universe
@@ -711,6 +712,7 @@ Fall of Cair Andros
 Fall of the Hammer
 Fallen Ideal
 False Floor
+False Orders
 Familiar Ground
 Famine
 Fanatic of Rhonas
@@ -2410,6 +2412,7 @@ Wurmwall Sweeper
 Wyll, Blade of Frontiers
 Wyrm's Crossing Patrol
 Yasharn, Implacable Earth
+Ydwen Efreet
 Yidaro, Wandering Monster
 Yisan, the Wanderer Bard
 You Cannot Pass!

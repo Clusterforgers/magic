@@ -432,7 +432,7 @@ mod tests {
         {"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}},
         {"ExchangeControl":{"what":["This"],"duration":"Forever"}},
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
-        {"Regenerate":{"what":"This"}}, {"RemoveFromCombat":{"what":"This"}},
+        {"Regenerate":{"what":"This"}}, {"RemoveFromCombat":{"what":"This"}}, {"R6400Block":{"what":"This"}},
         {"BecomeBlocked":{"what":"This"}},
         {"PutBeneathTop":{"what":"This","below":2}},
         {"LoseUnspentMana":{}},
@@ -465,7 +465,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 145, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 146, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
