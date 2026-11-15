@@ -31,6 +31,7 @@ const DEFAULT: Pace = Pace {
     think: Some(Duration::from_mins(1)),
     active: None,
     extension: None,
+    relaxed: None,
     grace: std::time::Duration::ZERO,
     dwell: Dwell::OFF,
 };

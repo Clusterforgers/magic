@@ -1,0 +1,25 @@
+{
+  "oracle_id": "ff942899-a70d-4fca-b125-9712aa635fff",
+  "name": "Reclamation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reclamation",
+      "oracle_fingerprint": "e3ea5f38a23337e93ab6b78148c8744f",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "AttackTax": {
+                "who": "EachPlayer",
+                "attacked": "Both",
+                "attackers": [{ "Color": "Black" }, { "Type": "Creature" }],
+                "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

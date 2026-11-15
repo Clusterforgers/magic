@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { cardLabel, costPips } from './cardModel'
 import { SIZE } from './cardSize'
 import { FxMark } from './fx/FxMark'
+import { granterHolder } from './granter'
 import { useCardFx, useStackGhosts } from './fx/hooks'
 import { withGhosts } from './fx/ghosts'
 import { StackGhostChip } from './StackGhostChip'
@@ -52,14 +53,21 @@ const Chip = memo(function Chip({ group, top, tabbable, hidden, aims, aria, empt
   const id = group.ids[0] ?? 0
   const count = group.ids.length
   const object = usePlay((state) => state.objectsById[id])
+  const holder = usePlay((state) =>
+    object?.source === undefined ? undefined : state.objectsById[object.source]?.name,
+  )
   const name = useSeatNamer()
   const fx = useCardFx(id)
   const handlers = usePreviewHandlers(id)
   if (object === undefined) return null
   const ability = object.kind === 'Ability'
-  // An ability has no cost or types to read out; its text says what it is.
+  // An ability has no cost or types to read out; its text says what it is, and the Ring's names who bears the Ring.
+  const bearer =
+    object.granter === undefined || holder === undefined
+      ? ''
+      : `; ${granterHolder(object.granter, holder, name(object.controller))}`
   const what = ability
-    ? `Ability of ${object.name}${object.rules_text === undefined ? '' : ` (${object.rules_text})`}, controlled`
+    ? `Ability of ${object.name}${object.rules_text === undefined ? '' : ` (${object.rules_text}${bearer})`}, controlled`
     : `${cardLabel(object, null)}, cast`
   return (
     <li

@@ -7,6 +7,7 @@ import type { Color } from "./Color";
 import type { CopyView } from "./CopyView";
 import type { CounterKind } from "./CounterKind";
 import type { GivesView } from "./GivesView";
+import type { Granter } from "./Granter";
 import type { LoyaltyAbilityView } from "./LoyaltyAbilityView";
 import type { ManaCost } from "./ManaCost";
 import type { ManualClause } from "./ManualClause";
@@ -111,8 +112,14 @@ kind?: ObjectKind,
  */
 source?: ObjectId, 
 /**
- * The rules text of an ability on the stack in the card writer's words, with the source's name for `~`; left out for
- * any other object, for an ability the writer cannot word and while the source is hidden from the viewer.
+ * What the ability on the stack belongs to when no object does (the Ring); `name` then names it, `source` is the
+ * permanent that has it. Left out for any other object.
+ */
+granter?: Granter, 
+/**
+ * The rules text of an ability on the stack in the card writer's words, with the source's name for `~` (the
+ * granter's words when it has one); left out for any other object, for an ability the writer cannot word and while
+ * the source is hidden from the viewer.
  */
 rules_text?: string, 
 /**

@@ -2,7 +2,9 @@
 import type { FloorMap } from "./FloorMap";
 import type { FoughtFight } from "./FoughtFight";
 import type { Hero } from "./Hero";
+import type { Resolved } from "./Resolved";
 import type { Status } from "./Status";
+import type { Timers } from "./Timers";
 
 /**
  * A run: its seed and theme, the ladder, the party and where they are.
@@ -12,6 +14,10 @@ export type Run = {
  * The difficulty level.
  */
 heat: number, 
+/**
+ * How long the party may take in each fight's game: relaxed unless the host chose otherwise.
+ */
+timers: Timers, 
 /**
  * The theme's id.
  */
@@ -51,4 +57,8 @@ log: Array<string>,
 /**
  * The fights whose game ended with a result or lost its table, oldest first.
  */
-fights: Array<FoughtFight>, };
+fights: Array<FoughtFight>, 
+/**
+ * What the heroes' answers in the camp last visited did, in order; cleared when the next camp opens or a fight is won.
+ */
+results: Array<Resolved>, };

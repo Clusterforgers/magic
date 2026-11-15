@@ -20,6 +20,7 @@ import { cn } from '@/lib/utils'
 import type { CustomCardView, DelveContent, Offer, Pick } from '@/protocol/generated'
 import { CustomCardFrame } from './CustomCardFrame'
 import { isRisky, MAX_LIFE } from './model'
+import { EventScene } from './EventScene'
 import { NamedCard } from './NamedCard'
 import type { FindCard } from './findCard'
 
@@ -328,30 +329,7 @@ export function DelveOffer({
   const event = content.events.find((e) => e.id === offer.Event.event)
   return (
     <Scene label="Event" icon={ScrollTextIcon} title={event?.title ?? 'An event'} gold={gold}>
-      <article className="mx-auto grid w-full max-w-prose gap-4 rounded-xl border-2 border-relic bg-surface p-4 shadow-e2 sm:p-6">
-        <p className="text-base leading-relaxed whitespace-pre-line">{event?.text}</p>
-        <ol className="grid gap-2">
-          {(event?.options ?? []).map((label, i) => (
-            <li key={label}>
-              <Button
-                variant="outline"
-                className="h-auto min-h-11 w-full justify-start py-2 text-left whitespace-normal"
-                disabled={busy}
-                onClick={() => take(i)}
-                aria-label={label}
-              >
-                <span
-                  aria-hidden="true"
-                  className="grid size-6 shrink-0 place-items-center rounded-full bg-delve text-xs font-semibold text-on-delve"
-                >
-                  {i + 1}
-                </span>
-                {label}
-              </Button>
-            </li>
-          ))}
-        </ol>
-      </article>
+      <EventScene event={event} gold={gold} life={life} busy={busy} onPick={take} />
     </Scene>
   )
 }

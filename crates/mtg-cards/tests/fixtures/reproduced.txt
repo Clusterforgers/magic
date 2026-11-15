@@ -22,6 +22,7 @@ Adorned Pouncer
 Adriana, Captain of the Guard
 Adric, Mathematical Genius
 Adventurous Eater // Have a Bite
+Aegis of the Legion
 Aerialephant
 Aeromunculus
 Aether Gale
@@ -53,6 +54,7 @@ Alter Reality
 Amass the Components
 Ambitious Aetherborn
 Aminatou, Veil Piercer
+Aminatou, the Fateshifter
 Amulet of Safekeeping
 Amy Pond
 Anafenza, Kin-Tree Spirit
@@ -80,6 +82,7 @@ Arboreal Grazer
 Arcade Cabinet
 Arcane Heist
 Arcane Signet
+Arcanum Wings
 Arch of Orazca
 Archipelagore
 Archivist of Gondor
@@ -90,6 +93,7 @@ Archon of Coronation
 Archon of Cruelty
 Archway Commons
 Arcum's Weathervane
+Argoth, Sanctum of Nature
 Armguard Familiar
 Arrest
 Arrogant Wurm
@@ -137,6 +141,7 @@ Baaallerina
 Back in Town
 Baird, Steward of Argive
 Balduvian Conjurer
+Balduvian Warlord
 Bandit's Haul
 Bane of Progress
 Banish to Another Universe
@@ -265,6 +270,7 @@ Brimaz, Blight of Oreskos
 Brimstone Vandal
 Brinelin, the Moon Kraken
 Brion Stoutarm
+Brisela, Voice of Nightmares
 Brokers Hideout
 Bronzeplate Boar
 Broodbirth Viper
@@ -272,6 +278,7 @@ Broodcaller Scourge
 Broodhatch Nantuko
 Brooding Saurian
 Broodstar
+Bruna, the Fading Light
 Bubble Matrix
 Bucknard's Everfull Purse
 Buried Alive
@@ -333,6 +340,7 @@ Chief Engineer
 Chill to the Bone
 Chimil, the Inner Sun
 Chittering Harvester
+Chittering Host
 Chittering Witch
 Chomping Kavu
 Chromanticore
@@ -508,6 +516,7 @@ Demotion
 Dense Canopy
 Deputized Protester
 Desert
+Desolation
 Desperate Ravings
 Desperate Ritual
 Despise
@@ -584,6 +593,7 @@ Dromoka Captain
 Dromoka's Command
 Dromoka's Gift
 Dromoka, the Eternal
+Drop Tower
 Drove of Elves
 Drownyard Temple
 Drudge Beetle
@@ -619,6 +629,7 @@ Echoes of the Kin Tree
 Edgar, Master Machinist
 Edge Rover
 Eel Umbra
+Eelectrocute
 Eiganjo Dynastorian // Replenish
 Eiganjo Free-Riders
 Eivor, Battle-Ready
@@ -683,6 +694,7 @@ Everdream
 Evermind
 Evolutionary Leap
 Exalted Angel
+Exalted Dragon
 Excavation Technique
 Excise the Imperfect
 Exemplar of Light
@@ -710,9 +722,11 @@ Fall of Cair Andros
 Fall of the Hammer
 Fallen Ideal
 False Floor
+False Orders
 Familiar Ground
 Famine
 Fanatic of Rhonas
+Fang, Fearless l'Cie
 Far Wanderings
 Faramir, Steward of Gondor
 Farewell
@@ -757,6 +771,8 @@ Fleecemane Lion
 Fleetfeather Cockatrice
 Flooded Grove
 Flooded Strand
+Flooded Woodlands
+Floodtide Serpent
 Flowerfoot Swordmaster
 Fog
 Follow the Bodies
@@ -840,6 +856,7 @@ Giltspire Avenger
 Ginger, Queen of Sweets
 Girder Goons
 Gisa and Geralf
+Gisela, the Broken Blade
 Gix's Caress
 Gixian Infiltrator
 Glacial Crevasses
@@ -884,6 +901,7 @@ Gorger Wurm
 Gorm the Great
 Gorma, the Gullet
 Grabby Tabby
+Graf Rats
 Grafted Wargear
 Grand Entryway // Elegant Rotunda
 Grapeshot
@@ -933,6 +951,9 @@ Hammer Dropper
 Hand of Vecna
 Hangar Scrounger
 Hangarback Walker
+Hanweir Battlements
+Hanweir Garrison
+Hanweir, the Writhing Township
 Hapatra, Vizier of Poisons
 Harabaz Druid
 Harmonic Sliver
@@ -945,6 +966,7 @@ Hate Mirage
 Hatut Zeraze Strike Force
 Haughty Djinn
 Headless Skaab
+Heart of Kiran
 Hearthhull, the Worldseed
 Heartless Act
 Heartwood Storyteller
@@ -952,6 +974,7 @@ Hei Bai, Spirit of Balance
 Heidar, Rimewind Master
 Heliod, God of the Sun
 Heliod, Sun-Crowned
+Hellish Rebuke
 Hellkite Igniter
 Hellkite Overlord
 Hellkite Tyrant
@@ -984,6 +1007,7 @@ History of Benalia
 Hoarder's Greed
 Hogaak, Arisen Necropolis
 Holdout Settlement
+Hollow Warrior
 Honor Troll
 Honor's Reward
 Hoofprints of the Stag
@@ -1013,6 +1037,7 @@ Ill-Tempered Cyclops
 Illicit Shipment
 Illuminate History
 Illusion Spinners
+Illusion of Choice
 Illustrious Wanderglyph
 Ilysian Caryatid
 Imi Statue
@@ -1033,6 +1058,7 @@ Infesting Radroach
 Infiltration Lens
 Ink-Treader Nephilim
 Inkwell Leviathan
+Inniaz, the Gale Force
 Inquisition of Kozilek
 Inquisitive Glimmer
 Insatiable Hemophage
@@ -1048,6 +1074,7 @@ Intrepid Adversary
 Intrepid Rabbit
 Intrepid Stablemaster
 Invading Manticore
+Invasion Plans
 Invasion of Arcavios // Invocation of the Founders
 Invasion of Muraganda // Primordial Plasm
 Invasion of Segovia // Caetus, Sea Tyrant of Segovia
@@ -1181,6 +1208,7 @@ Legion Loyalty
 Legolas Greenleaf
 Leonardo, the Balance
 Letter of Acceptance
+Leviathan
 Levitation
 Leyline Binding
 Lhurgoyf
@@ -1290,6 +1318,7 @@ Mayhem Patrol
 Meeting of the Five
 Megaton's Fate
 Megrim
+Melee
 Memory Crystal
 Memory Guardian
 Memory Plunder
@@ -1307,6 +1336,7 @@ Methods of the Mighty
 Metropolis Reformer
 Midnight Banshee
 Midnight Pathlighter
+Midnight Scavengers
 Migratory Greathorn
 Migratory Route
 Millikin
@@ -1402,6 +1432,7 @@ Nicanzil, Current Conductor
 Nick Valentine, Private Eye
 Night Clubber
 Night Market Guard
+Night Shift of the Living Dead
 Nighthawk Scavenger
 Nightmare
 Nightscape Familiar
@@ -1437,6 +1468,7 @@ Observed Stasis
 Obstinate Baloth
 Octomancer
 Octopus Umbra
+Odric, Master Tactician
 Ohran Yeti
 Ojer Axonil, Deepest Might // Temple of Power
 Okiba Reckoner Raid // Nezumi Road Captain
@@ -1455,6 +1487,7 @@ Oran-Rief, the Vastwood
 Orazca Relic
 Orchard Strider
 Orcish Farmer
+Order of Succession
 Ordered Migration
 Organic Extinction
 Origin of the Hulk
@@ -1641,6 +1674,7 @@ Reaver Titan
 Reciprocate
 Reckless Endeavor
 Reckless Impulse
+Reclamation
 Reconstructed Thopter
 Red Room Recruit
 Redcap Heelslasher
@@ -1699,6 +1733,7 @@ Riptide Survivor
 Rishkar's Expertise
 Rishkar, Peema Renegade
 Rising Miasma
+Risky Move
 Rite of Replication
 Rith, Liberated Primeval
 River of Tears
@@ -1990,6 +2025,7 @@ Strong, the Brutish Thespian
 Stubborn Burrowfiend
 Student of Warfare
 Study Break
+Stumpsquall Hydra
 Sublime Epiphany
 Sublime Exhalation
 Subterranean Schooner
@@ -2215,6 +2251,7 @@ True Identity
 True-Name Nemesis
 Trumpeting Gnarr
 Tumble Magnet
+Tunnel of Love
 Turn // Burn
 Turn to Frog
 Tuskguard Captain
@@ -2257,6 +2294,7 @@ Urza's Incubator
 Urza's Mine
 Urza's Power Plant
 Urza's Tower
+Urza, Lord Protector
 Urza, Powerstone Prodigy
 Urza, Prince of Kroog
 Uthros Research Craft
@@ -2273,6 +2311,7 @@ Vanishing Verse
 Vanishment
 Vanquish the Horde
 Vanquisher's Banner
+Vastwood Hydra
 Vastwood Surge
 Vault 75: Middle School
 Vedalken Engineer
@@ -2399,7 +2438,9 @@ Writ of Return
 Wurmwall Sweeper
 Wyll, Blade of Frontiers
 Wyrm's Crossing Patrol
+Xenosquirrels
 Yasharn, Implacable Earth
+Ydwen Efreet
 Yidaro, Wandering Monster
 Yisan, the Wanderer Bard
 You Cannot Pass!

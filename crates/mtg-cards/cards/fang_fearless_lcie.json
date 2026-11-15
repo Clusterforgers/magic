@@ -1,0 +1,22 @@
+{
+  "oracle_id": "04ac8b2c-95e9-40e9-8cc0-af9b075a94c0",
+  "name": "Fang, Fearless l'Cie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fang, Fearless l'Cie",
+      "oracle_fingerprint": "a3fc43a0f32c55bb66a1ee13039b9b1e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "ZoneChange": { "what": [{ "OwnedBy": "You" }], "from": "Graveyard" } }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

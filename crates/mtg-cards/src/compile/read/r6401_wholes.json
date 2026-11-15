@@ -1,0 +1,515 @@
+[
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Visit": {}
+    },
+    "effects": [
+     {
+      "Choose": {
+       "from": "Opponents",
+       "as": "opponent"
+      }
+     },
+     {
+      "Choose": {
+       "who": {
+        "Bound": "opponent"
+       },
+       "from": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": {
+           "Bound": "opponent"
+          }
+         }
+        ]
+       },
+       "as": "theirs"
+      }
+     },
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       },
+       "as": "mine"
+      }
+     },
+     {
+      "May": {
+       "effects": [
+        {
+         "Exile": {
+          "what": {
+           "Union": [
+            {
+             "Bound": "theirs"
+            },
+            {
+             "Bound": "mine"
+            }
+           ]
+          },
+          "as": "exiled"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "If": {
+       "condition": "Performed",
+       "then": [
+        {
+         "DelayedTrigger": {
+          "when": {
+           "StepBegins": {
+            "step": "End"
+           }
+          },
+          "effects": [
+           {
+            "Move": {
+             "what": {
+              "Bound": "exiled"
+             },
+             "to": {
+              "Battlefield": {}
+             }
+            }
+           }
+          ]
+         }
+        }
+       ],
+       "otherwise": [
+        {
+         "Fight": {
+          "what": {
+           "Bound": "theirs"
+          },
+          "with": {
+           "Bound": "mine"
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Visit — Choose an opponent. They choose a creature they control, then you choose a creature you control. You may exile the chosen creatures. If you do, return them to the battlefield under their owners' control at the beginning of the next end step. Otherwise, the chosen creatures fight each other."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Visit": {}
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        {
+         "AddKeyword": "Flying"
+        }
+       ],
+       "duration": {
+        "UntilEndOfTurnOrRolled": 1
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Visit — Target creature gains flying until end of turn, or until any player rolls a 1, whichever comes first."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Did": {
+      "action": "ChangedController",
+      "who": "You",
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "effects": [
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       },
+       "as": "creature"
+      }
+     },
+     {
+      "Choose": {
+       "from": "Opponents",
+       "as": "opponent"
+      }
+     },
+     {
+      "FlipCoin": {
+       "lose": [
+        {
+         "Continuous": {
+          "affected": {
+           "Bound": "creature"
+          },
+          "mods": [
+           {
+            "SetController": {
+             "Bound": "opponent"
+            }
+           }
+          ],
+          "duration": "Forever"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "When you gain control of this enchantment from another player, choose a creature you control and an opponent. Flip a coin. If you lose the flip, that opponent gains control of that creature."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "Upkeep"
+     }
+    },
+    "effects": [
+     {
+      "Continuous": {
+       "affected": "This",
+       "mods": [
+        {
+         "SetController": "Triggering"
+        }
+       ],
+       "duration": "Forever"
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of each player's upkeep, that player gains control of this enchantment."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "R6401Mentors": {
+      "what": [
+       {
+        "Is": "Attached"
+       }
+      ]
+     }
+    },
+    "effects": [
+     {
+      "PutCounters": {
+       "on": "Triggering",
+       "counter": {
+        "Other": "shield"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Whenever equipped creature mentors a creature, put a shield counter on that creature."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "Attached",
+    "mods": [
+     {
+      "ModifyPT": {
+       "power": 1,
+       "toughness": 1
+      }
+     },
+     {
+      "AddKeyword": "Mentor"
+     }
+    ]
+   }
+  },
+  "Equipped creature gets +1/+1 and has mentor."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "Attached",
+    "mods": [
+     {
+      "ModifyPT": {
+       "power": 1,
+       "toughness": 1
+      }
+     },
+     {
+      "AddKeyword": "Mentor"
+     }
+    ]
+   }
+  },
+  "Equipped creature gets +1/+1 and has mentor. (Whenever it attacks, put a +1/+1 counter on target attacking creature with lesser power.)"
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 6
+    },
+    "effects": [
+     {
+      "ChooseWords": {
+       "who": "You",
+       "words": [
+        "left",
+        "right"
+       ]
+      }
+     },
+     {
+      "R6401PassControl": {
+       "what": [
+        {
+         "Not": {
+          "Type": "Land"
+         }
+        },
+        "Other"
+       ],
+       "pick": "All"
+      }
+     }
+    ]
+   }
+  },
+  "−6: Choose left or right. Each player gains control of all nonland permanents other than ~ controlled by the next player in the chosen direction."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "GroupAttacks": {
+      "what": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       },
+       {
+        "HasKeyword": "Flying"
+       }
+      ],
+      "at_least": 3
+     }
+    },
+    "effects": [
+     {
+      "R6401PassControl": {
+       "side": "Right",
+       "what": [
+        {
+         "Not": {
+          "Type": "Land"
+         }
+        }
+       ],
+       "pick": "ByYou"
+      }
+     }
+    ]
+   }
+  },
+  "Whenever three or more creatures you control with flying attack, each player gains control of a nonland permanent of your choice controlled by the player to their right."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "ChooseWords": {
+       "who": "You",
+       "words": [
+        "left",
+        "right"
+       ]
+      }
+     },
+     {
+      "R6401PassControl": {
+       "what": [
+        {
+         "Type": "Creature"
+        }
+       ],
+       "pick": "ByEach"
+      }
+     }
+    ]
+   }
+  },
+  "Choose left or right. Starting with you and proceeding in the chosen direction, each player chooses a creature controlled by the next player in that direction. Each player gains control of the creature they chose."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 1
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Other",
+        {
+         "OwnedBy": "You"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Exile": {
+       "what": {
+        "Target": 0
+       },
+       "as": "exiled"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "exiled"
+       },
+       "to": {
+        "Battlefield": {
+         "under": "You"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "−1: Exile another target permanent you own, then return it to the battlefield under your control."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "End"
+     }
+    },
+    "effects": [
+     {
+      "Sacrifice": {
+       "who": {
+        "PlayersWhere": {
+         "who": "EachPlayer",
+         "test": {
+          "Compare": {
+           "left": {
+            "Tallied": {
+             "who": "You",
+             "what": "R6401LandsTappedForMana"
+            }
+           },
+           "op": "Ge",
+           "right": 1
+          }
+         }
+        }
+       },
+       "filter": [
+        {
+         "Type": "Land"
+        }
+       ],
+       "as": "sacrificed"
+      }
+     },
+     {
+      "DealDamage": {
+       "to": {
+        "PlayersWhere": {
+         "who": "EachPlayer",
+         "test": {
+          "CountOf": {
+           "subject": {
+            "Bound": "sacrificed"
+           },
+           "selector": [
+            {
+             "Subtype": "Plains"
+            },
+            {
+             "ControlledBy": "You"
+            }
+           ],
+           "op": "Ge",
+           "right": 1
+          }
+         }
+        }
+       },
+       "amount": 2
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of each end step, each player who tapped a land for mana this turn sacrifices a land of their choice. This enchantment deals 2 damage to each player who sacrificed a Plains this way."
+ ]
+]

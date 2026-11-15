@@ -119,6 +119,9 @@ pub enum Action {
     ManifestedDread,
     /// A player gave a gift (CR 702.174); `what` is nothing, the player given it is the second subject.
     GaveGift,
+    /// A creature mentored a creature (CR 702.134a): its mentor ability resolved and put a +1/+1 counter on its target;
+    /// logged by the mentor ability itself, read by `TriggerPattern::R6401Mentors`.
+    R6401Mentored,
     /// A player paid life (CR 119.4), as a cost or for an effect; the amount is the life paid.
     PaidLife,
     /// A creature exploited a creature that was not a token (CR 702.110b), judged as the battlefield was before the
@@ -283,6 +286,7 @@ impl Action {
             Action::Discovered => ("discover", "discovers"),
             Action::ManifestedDread => ("manifest dread", "manifests dread"),
             Action::GaveGift => ("give a gift", "gives a gift"),
+            Action::R6401Mentored => ("mentor a creature", "mentors a creature"),
             Action::PaidLife => ("pay life", "pays life"),
             Action::ExploitedNontoken => (
                 "exploit a nontoken creature",

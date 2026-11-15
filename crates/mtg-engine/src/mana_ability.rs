@@ -461,6 +461,7 @@ fn rule_mana(
                     takes: counted_to(&takes, &counted_takes, made.len()),
                     repeat,
                     priority_only: shape.priority_only,
+                    nonland: false,
                 })
             })
             .collect();
@@ -526,6 +527,7 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
         };
         let sick = chars.is_creature() && keywords::sick_for_abilities(state, id);
         let can_tap = !perm.tapped() && !sick && !mana_forbidden(state, player, id, true);
+        let first = found.len();
         // Only a permanent with a mana ability reads the tax; a walk of the battlefield for every permanent is quadratic.
         if can_tap && !chars.abilities.is_empty() {
             let tax =
@@ -549,6 +551,12 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
         for mana in rule_mana(state, player, id, chars.abilities.len(), true) {
             if !mana.tap || can_tap {
                 found.extend(mana.options);
+            }
+        }
+        // An automatic payment taps lands before an artifact or a creature that is no land.
+        if !chars.types.contains(CardType::Land) {
+            for option in &mut found[first..] {
+                option.nonland = true;
             }
         }
     }
@@ -618,7 +626,14 @@ pub(crate) fn logged_activation(
         .ok_or_else(|| EngineError::InvalidEvent("a mana ability of nothing".into()))?
         .reference();
     let mut events = activation(state, player, option, taken)?;
-    events.push(Event::ManaAbilityActivated { player, source });
+    let tapped = events
+        .iter()
+        .any(|event| matches!(event, Event::PermanentTapped { object } if *object == source.id));
+    events.push(Event::ManaAbilityActivated {
+        player,
+        source,
+        tapped,
+    });
     Ok(events)
 }
 
@@ -756,6 +771,8 @@ mod c8_time_counted;
 mod combos;
 #[cfg(test)]
 mod counted;
+#[cfg(test)]
+mod life_price;
 #[cfg(test)]
 mod r6e;
 #[cfg(test)]
@@ -901,7 +918,7 @@ mod tests {
         let (first, rest) = events.split_last().unwrap();
         let used = source.object;
         assert!(
-            matches!(first, Event::ManaAbilityActivated { player, source } if *player == ME && source.id == used),
+            matches!(first, Event::ManaAbilityActivated { player, source, .. } if *player == ME && source.id == used),
             "{first:?}"
         );
         rest.to_vec()

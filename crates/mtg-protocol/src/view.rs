@@ -209,6 +209,51 @@ fn no_symbols(cost: &ManaCost) -> bool {
     cost.symbols().is_empty()
 }
 
+/// What an ability on the stack belongs to when no object of the game does: the ability is named after it, not after its
+/// source, which only has the ability.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub enum Granter {
+    /// The Ring of the ability's controller (CR 701.54): its level `level` gave the ability to the Ring-bearer, which is
+    /// the ability's source.
+    Ring {
+        /// The Ring level that gives the ability (2 to 4).
+        level: u8,
+    },
+}
+
+impl Granter {
+    /// The name the stack and the log call the ability after.
+    pub const fn name(self) -> &'static str {
+        match self {
+            Granter::Ring { .. } => "The Ring",
+        }
+    }
+
+    /// What stands for the ability's source in the words of its rules ("Whenever your Ring-bearer attacks").
+    pub const fn source_words(self) -> &'static str {
+        match self {
+            Granter::Ring { .. } => "your Ring-bearer",
+        }
+    }
+
+    /// The ability's rules in the words of the rules text that gives it (CR 701.54c for the Ring), which the card writer
+    /// does not word for every level; none for a level that gives no ability.
+    pub const fn rules(self) -> Option<&'static str> {
+        match self {
+            Granter::Ring { level: 2 } => {
+                Some("Whenever your Ring-bearer attacks, draw a card, then discard a card.")
+            }
+            Granter::Ring { level: 3 } => Some(
+                "Whenever your Ring-bearer becomes blocked by a creature, that creature's controller sacrifices it at end of combat.",
+            ),
+            Granter::Ring { level: 4 } => Some(
+                "Whenever your Ring-bearer deals combat damage to a player, each opponent loses 3 life.",
+            ),
+            Granter::Ring { .. } => None,
+        }
+    }
+}
+
 /// A card the viewer may identify, with its current (layer-derived) characteristics.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 // Each flag is one independent wire field, left out of the JSON while false.
@@ -272,8 +317,14 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub source: Option<ObjectId>,
-    /// The rules text of an ability on the stack in the card writer's words, with the source's name for `~`; left out for
-    /// any other object, for an ability the writer cannot word and while the source is hidden from the viewer.
+    /// What the ability on the stack belongs to when no object does (the Ring); `name` then names it, `source` is the
+    /// permanent that has it. Left out for any other object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub granter: Option<Granter>,
+    /// The rules text of an ability on the stack in the card writer's words, with the source's name for `~` (the
+    /// granter's words when it has one); left out for any other object, for an ability the writer cannot word and while
+    /// the source is hidden from the viewer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub rules_text: Option<String>,

@@ -1,7 +1,7 @@
 {
   "oracle_id": "b06ebf74-4042-4c8f-a70b-98ba9e74e6ed",
   "name": "Inniaz, the Gale Force",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Inniaz, the Gale Force",
@@ -25,9 +25,26 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 122, "end": 291 }
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasKeyword": "Flying" }
+                ],
+                "at_least": 3
+              }
+            },
+            "effects": [
+              {
+                "R6401PassControl": {
+                  "side": "Right",
+                  "what": [{ "Not": { "Type": "Land" } }],
+                  "pick": "ByYou"
+                }
+              }
+            ]
           }
         }
       ]

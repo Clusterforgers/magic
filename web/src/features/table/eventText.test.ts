@@ -1,6 +1,7 @@
 // Goal: every kind of log event, public and hidden, reads as one plain sentence with the right names, and the quiet ones (priority, mana, untaps) are marked minor; an attach event names the host it comes from when the caller knows it.
 import { describe, expect, it } from 'vitest'
 import type {
+  AimWhy,
   ContinuousEffect,
   Event,
   EventView,
@@ -88,6 +89,8 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   AttackRedirected: [{ AttackRedirected: { object: 3, target: { Player: 0 } } }, 'Forest now attacks Ana'],
   RemovedFromCombat: [{ RemovedFromCombat: { object: 3 } }, 'Forest is removed from combat'],
   AttackersBlocked: [{ AttackersBlocked: { attackers: [3] } }, 'Forest becomes blocked'],
+  R6400Unblocked: [{ R6400Unblocked: { attacker: 3 } }, 'Forest becomes unblocked'],
+  R6400Blocks: [{ R6400Blocks: { blocker: 3, attacker: 1 } }, 'Forest blocks Grizzly Bears'],
   ManualAction: [
     { ManualAction: { player: 0, action: { Move: { object: 3, to: 'Graveyard' } } } },
     'Ana moves Forest to the graveyard (by hand)',
@@ -129,12 +132,20 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Discovered: [{ Discovered: { player: 1, value: 3, card: 3 } }, 'Bo discovers 3, finding Forest'],
   DreadManifested: [{ DreadManifested: { player: 0, card: null } }, 'Ana manifests dread'],
   GiftGiven: [{ GiftGiven: { player: 0, to: 1 } }, 'Ana gives Bo a gift'],
+  R6401Mentored: [{ R6401Mentored: { player: 0, mentor: 5, mentored: 3 } }, 'Serra Angel mentors Forest'],
   UpkeepSettled: [
     { UpkeepSettled: { player: 1, object: 3, echo: false, paid: false } },
     "Bo doesn't pay the cumulative upkeep of Forest",
   ],
   Foraged: [{ Foraged: { player: 1 } }, 'Bo forages'],
-  DieRolled: [{ DieRolled: { player: 1, sides: 20, result: 14 } }, 'Bo rolls a d20: 14'],
+  DieRolled: [
+    { DieRolled: { player: 1, sides: 20, result: 14, natural: 13 } },
+    'Bo rolls a d20: 14 (rolled 13)',
+  ],
+  R6402DieChanged: [
+    { R6402DieChanged: { player: 1, source: { id: 5, counter: 0 }, from: 4, to: 5 } },
+    'Bo changes a die result from 4 to 5 with Serra Angel',
+  ],
   CoinFlipped: [
     { CoinFlipped: { player: 1, won: true, call: 'Tails', side: 'Tails' } },
     'Bo calls tails, the coin comes up tails: Bo wins the flip',
@@ -208,6 +219,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   DoorUnlocked: [{ DoorUnlocked: { object: 3, door: 1, player: 1 } }, 'Bo unlocks a door of Forest'],
   DoorLocked: [{ DoorLocked: { object: 3, door: 1, player: 1 } }, 'Bo locks a door of Forest'],
   Mutated: [{ Mutated: { object: 3, spell: 9, over: true, player: 1 } }, 'Bo mutates a creature over Forest'],
+  Melded: [
+    { Melded: { object: 3, with: 1, name: 'Brisela, Voice of Nightmares' } },
+    'Forest and Grizzly Bears meld into Brisela, Voice of Nightmares',
+  ],
   CardParted: [
     { CardParted: { permanent: 3, card: 1, to: { Command: 1 } } },
     "Grizzly Bears goes to Bo's command zone apart from Forest",
@@ -284,7 +299,11 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ],
   AttackChoicesRefused: [
     { AttackChoicesRefused: { reason: 'a creature can’t attack alone' } },
-    "The party's attack is refused (a creature can’t attack alone); each hero chooses again",
+    "The team's attack is refused (a creature can’t attack alone); each player chooses again",
+  ],
+  FocusShifted: [
+    { FocusShifted: { player: 2, eyed: 0, instead: 1, why: 'Unreachable' } },
+    "Cy attacks Bo instead of Ana: Ana can't be attacked",
   ],
   BandFormed: [
     { BandFormed: { player: 1, attackers: [1, 2] } },
@@ -845,6 +864,16 @@ describe('minor lines', () => {
 })
 
 describe('events with more than one shape', () => {
+  it.each<[AimWhy, string]>([
+    ['Unreachable', "Cy attacks Bo instead of Ana: Ana can't be attacked"],
+    ['Overwhelming', 'Cy attacks Bo instead of Ana: Bo is the greatest threat'],
+    [{ Deadly: { boss: 2 } }, "Cy attacks Bo instead of Ana: Bo's creatures could kill Cy"],
+    ['Futile', 'Cy attacks Bo instead of Ana: every attack at Ana would be blocked and lost'],
+    ['Lethal', 'Cy attacks Bo instead of Ana: the attack kills Bo'],
+  ])('names why the boss side leaves the hero it eyes (%j)', (why, text) => {
+    expect(say({ FocusShifted: { player: 2, eyed: 0, instead: 1, why } })).toBe(text)
+  })
+
   it('tells attackers and blockers apart in NothingToDo', () => {
     expect(say({ NothingToDo: { player: 1, kind: 'Block' } })).toBe('Bo has no possible blockers')
   })
@@ -1137,6 +1166,10 @@ describe('events with more than one shape', () => {
     [
       effect(objects(1, 2), { CantAttackYou: { you: 0, attacked: 'Player' } }, { WhileHasCounter: 'charge' }),
       "Grizzly Bears and Hill Giant can't attack Ana while each has a charge counter",
+    ],
+    [
+      effect(objects(2), { AddKeyword: 'Flying' }, { UntilEndOfTurnOrRolled: 1 }),
+      'Hill Giant gains flying until end of turn, or until any player rolls a 1',
     ],
     [
       effect(objects(2), { AddSubtype: 'Aura' }, { UntilPaid: '{W}' }),

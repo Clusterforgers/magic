@@ -32,6 +32,7 @@ const CLOCKS: Pace = Pace {
     think: Some(Duration::from_mins(1)),
     active: None,
     extension: None,
+    relaxed: None,
     grace: std::time::Duration::ZERO,
     dwell: Dwell::OFF,
 };
@@ -1078,6 +1079,7 @@ async fn bots_play_the_reference_game(players: usize, seed: u64, auto_pass: bool
         think: None,
         active: None,
         extension: None,
+        relaxed: None,
         grace: std::time::Duration::ZERO,
         dwell: Dwell::OFF,
     };

@@ -54,7 +54,7 @@ function RuleRow({ spec, format, text, problem, onChange }: RuleRowProps) {
           onChange={(event) => onChange(spec.id, event.target.value)}
         >
           <NativeSelectOption value="">
-            {own === '' ? 'Format’s rule' : `Format’s rule (${own})`}
+            {spec.input.blank ?? (own === '' ? 'Format’s rule' : `Format’s rule (${own})`)}
           </NativeSelectOption>
           {spec.input.options.map((option) => (
             <NativeSelectOption key={option.value} value={option.value}>

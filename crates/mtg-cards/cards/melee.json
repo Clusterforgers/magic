@@ -1,0 +1,46 @@
+{
+  "oracle_id": "93fc1ff8-6ef0-42a2-b090-ba95b6f3c98e",
+  "name": "Melee",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Melee",
+      "oracle_fingerprint": "8b5f3f2c762e5361c9a1af4b65257c9f",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "All": [
+                "YourTurn",
+                { "Any": [{ "Step": "BeginCombat" }, { "Step": "DeclareAttackers" }] }
+              ]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "R6400ChoosesBlocks": { "chooser": "You" } },
+                  "duration": "UntilEndOfCombat"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "Unblocked": { "what": [{ "Type": "Creature" }] } },
+                  "once": false,
+                  "until": "UntilEndOfCombat",
+                  "effects": [
+                    { "Untap": { "what": "Triggering" } },
+                    { "RemoveFromCombat": { "what": "Triggering" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

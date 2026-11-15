@@ -258,6 +258,11 @@ enum Happened {
     RolledToVisit { player: PlayerId, result: u32 },
     /// A player opened an Attraction.
     OpenedAttraction { player: PlayerId },
+    /// A creature mentored a creature (`Event::R6401Mentored`).
+    R6401Mentored {
+        mentor: ObjectId,
+        mentored: ObjectId,
+    },
     /// A player visited an Attraction, once for each visited.
     VisitedAttraction { player: PlayerId },
     /// A player claimed the prize of an Attraction.
@@ -271,12 +276,14 @@ enum Happened {
     CoinFlipWon { player: PlayerId },
     /// A player won a clash.
     W15cClashWon { player: PlayerId },
-    /// A player rolled a die: `first` for the first die of a roll, `highest` when it rolled its number of faces, and the result.
+    /// A player rolled a die: `first` for the first die of a roll, `highest` when its natural result is its number of
+    /// faces (CR 706.2), the result and the natural result.
     DiceRolled {
         player: PlayerId,
         first: bool,
         highest: bool,
         result: u32,
+        natural: u32,
         nth: u32,
     },
     /// A creature explored.
@@ -1113,6 +1120,30 @@ fn about_players_and_permanents(
                 blockers: Vec::new(),
             }));
         }
+        // A creature that begins to block without a declaration blocks; its attacker becomes blocked only if it was not
+        // blocked before.
+        Event::R6400Blocks { blocker, attacker } => {
+            found.push(Happened::Blocked {
+                blocker: *blocker,
+                attacker: *attacker,
+            });
+            found.push(Happened::Blocking {
+                blocker: *blocker,
+                attackers: vec![*attacker],
+            });
+            let was_blocked = look
+                .pre
+                .combat()
+                .attackers()
+                .iter()
+                .any(|attack| attack.object() == *attacker && attack.blocked());
+            if !was_blocked {
+                found.push(Happened::BecameBlocked {
+                    attacker: *attacker,
+                    blockers: vec![*blocker],
+                });
+            }
+        }
         Event::BlockersDeclared { blocks, player } => {
             found.extend(blocks.iter().map(|(blocker, attacker)| Happened::Blocked {
                 blocker: *blocker,
@@ -1359,15 +1390,23 @@ fn about_players_and_permanents(
         } if look.pre.in_attraction_deck(*object) => {
             found.push(Happened::OpenedAttraction { player: *player });
         }
+        Event::R6401Mentored {
+            mentor, mentored, ..
+        } => found.push(Happened::R6401Mentored {
+            mentor: *mentor,
+            mentored: *mentored,
+        }),
         Event::DieRolled {
             player,
             sides,
             result,
+            natural,
         } => found.push(Happened::DiceRolled {
             player: *player,
             first: c11e_first_die(look.earlier, *player),
-            highest: result == sides,
+            highest: natural.unwrap_or(*result) == *sides,
             result: *result,
+            natural: natural.unwrap_or(*result),
             nth: ordinal(look.post, look.later, *player, Tally::R5508DiceRolled),
         }),
         Event::Clashed {
@@ -1806,10 +1845,24 @@ fn matching_player_action(
             && (!*fully || *last))
             .then(|| counted(state, vec![Target::Player(*player)], 0)),
         (
-            TriggerPattern::DiceRolled { who, results, .. },
-            Happened::DiceRolled { player, result, .. },
-        ) if !results.is_empty() => (by(who, player) && results.contains(result))
-            .then(|| counted(state, vec![Target::Player(*player)], *result)),
+            TriggerPattern::DiceRolled {
+                who,
+                results,
+                natural: natural_only,
+                ..
+            },
+            Happened::DiceRolled {
+                player,
+                result,
+                natural,
+                ..
+            },
+        ) if !results.is_empty() => {
+            // "a natural 20" reads the number the die showed, any other result the changed one (CR 706.2).
+            let read = if *natural_only { natural } else { result };
+            (by(who, player) && results.contains(read))
+                .then(|| counted(state, vec![Target::Player(*player)], *read))
+        }
         (
             TriggerPattern::DiceRolled {
                 who, highest, each, ..
@@ -1849,6 +1902,14 @@ fn matching_player_action(
         | (TriggerPattern::VisitedAttraction { who }, Happened::VisitedAttraction { player })
         | (TriggerPattern::ClaimedPrize { who }, Happened::PrizeClaimed { player, .. }) => {
             by(who, player).then(|| counted(state, vec![Target::Player(*player)], 0))
+        }
+        (TriggerPattern::R6401Mentors { what }, Happened::R6401Mentored { mentor, mentored }) => {
+            let mentored = state.object(*mentored).map(GameObject::reference)?;
+            let mentor = state.object(*mentor).map(GameObject::reference)?;
+            scope
+                .selects(what, mentor)
+                .ok()?
+                .then(|| counted(state, vec![Target::Object(mentored)], 1))
         }
         (TriggerPattern::W11cCrime { who }, Happened::W11cCrime { player }) => {
             by(who, player).then(|| counted(state, vec![Target::Player(*player)], 0))
@@ -2770,7 +2831,8 @@ fn object_triggers(
         if *from != zone && !from_anywhere && !crate::l292_haunt::works_here_too(&rules, zone) {
             continue;
         }
-        let scope = Scope::announcing(state, controller, source).with_caused(used.caused);
+        let mut scope = Scope::announcing(state, controller, source).with_caused(used.caused);
+        scope.granter_player = crate::abilities::effect_controller(state, address.source);
         for cause in causes(when, happened, &scope) {
             // CR 603.4: an "if" in the trigger is checked as the event happens.
             if let Some(condition) = intervening_if {
@@ -3019,7 +3081,7 @@ fn delayed(
             found.push(Triggered {
                 source,
                 ability: waiting.ability,
-                origin: AbilitySource::Printed,
+                origin: waiting.origin(),
                 controller,
                 cause,
                 snapshot: live.clone().unwrap_or_else(|| waiting.snapshot.clone()),
@@ -3961,6 +4023,7 @@ mod tests {
             targets: Vec::new(),
             bindings: vec![("kept".to_owned(), vec![Target::Player(FOE)])],
             kept: None,
+            origin: AbilitySource::default(),
         }))
     }
 
@@ -4028,6 +4091,27 @@ mod tests {
             [],
             "so it no longer fires"
         );
+    }
+
+    #[test]
+    fn a_delayed_trigger_triggers_with_the_origin_of_the_ability_that_set_it_up() {
+        let pre = board(with("Quiet", Vec::new()));
+        let Event::DelayedTriggerCreated(mut created) = delayed_end_step(true, &pre) else {
+            unreachable!("a delayed trigger is set up")
+        };
+        let ring = AbilitySource::Granted(crate::abilities::Grant::Ring {
+            player: ME,
+            level: 3,
+        });
+        created.origin = ring;
+        let waiting = fold(&pre, &[Event::DelayedTriggerCreated(created)]);
+        let (_, found) = fire(&waiting, &[Event::StepBegan { step: Step::End }]);
+        assert_eq!(found.len(), 1);
+        assert_eq!(found[0].origin, ring);
+        // One that no ability granted keeps the printed origin it always had.
+        let plain = fold(&pre, &[delayed_end_step(true, &pre)]);
+        let (_, found) = fire(&plain, &[Event::StepBegan { step: Step::End }]);
+        assert_eq!(found[0].origin, AbilitySource::Printed);
     }
 
     #[rstest]

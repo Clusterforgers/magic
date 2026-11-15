@@ -24,7 +24,8 @@ use mtg_import::resolve::Lookup;
 use mtg_protocol::SeatDeck;
 use mtg_protocol::rest::{
     BossArtView, CreateDelve, CustomCardView, DelveAction, DelveBossView, DelveContent,
-    DelveDeckProblem, DelveEventView, DelveFightView, DelveList, DelveSummary, DelveView,
+    DelveDeckProblem, DelveEventView, DelveFightView, DelveList, DelveOptionView, DelveSummary,
+    DelveView,
 };
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -209,9 +210,11 @@ async fn load(delves: &Delves, id: Uuid) -> Result<Loaded, ApiError> {
 
 /// Applies `event` to the loaded run, keeping it in the log.
 fn push(loaded: &mut Loaded, event: RunEvent) -> Result<(), ApiError> {
+    let content = campaign()?;
     loaded
         .run
-        .apply(campaign()?, &event)
+        .accepts(content, &event)
+        .and_then(|()| loaded.run.apply(content, &event))
         .map_err(|error| refused(error.to_string()))?;
     loaded.events.push(event);
     Ok(())
@@ -483,7 +486,11 @@ async fn make_fight(
         visibility: Visibility::Invite,
         accounts,
         bots,
-        house_rules: plan.house_rules(&mtg_core::house::HouseRules::default()),
+        // The run's timers apply to every fight's game.
+        house_rules: plan.house_rules(&mtg_core::house::HouseRules {
+            timers: Some(loaded.run.timers),
+            ..mtg_core::house::HouseRules::default()
+        }),
         campaign: Some(plan),
         ..GameOptions::default()
     };
@@ -617,7 +624,16 @@ pub(crate) async fn content_of() -> Result<Json<DelveContent>, ApiError> {
                 id: event.id.clone(),
                 title: event.title.clone(),
                 text: event.text.clone(),
-                options: event.options.iter().map(|o| o.label.clone()).collect(),
+                options: event
+                    .options
+                    .iter()
+                    .map(|o| DelveOptionView {
+                        label: o.label.clone(),
+                        outcomes: o.outcomes.clone(),
+                        needs: o.needs(),
+                        summary: o.summary(),
+                    })
+                    .collect(),
             })
             .collect(),
     }))
@@ -740,6 +756,9 @@ pub(crate) async fn create(
             bot: None,
         },
     )?;
+    if let Some(timers) = body.timers {
+        push(&mut loaded, RunEvent::Timers { timers })?;
+    }
     save(delves, &loaded, 0).await?;
     Ok((
         StatusCode::CREATED,

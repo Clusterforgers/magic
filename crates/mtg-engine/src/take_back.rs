@@ -251,6 +251,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::LibraryRefilled { .. }
         | Event::AttractionDeckShuffled { .. } => Some(R::LibraryShuffled),
         Event::DieRolled { .. }
+        | Event::R6402DieChanged { .. }
         | Event::CoinFlipped { .. }
         | Event::ChosenAtRandom { .. }
         | Event::PlayersChosenAtRandom { .. }
@@ -305,6 +306,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::AttackersDeclared { .. }
         | Event::AttackersChosen { .. }
         | Event::AttackChoicesRefused { .. }
+        | Event::FocusShifted { .. }
         | Event::BandFormed { .. }
         | Event::BlockersDeclared { .. }
         | Event::DamageAssigned { .. }
@@ -312,6 +314,8 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::CombatEnded
         | Event::DamageCleared
         | Event::RemovedFromCombat { .. }
+        | Event::R6400Unblocked { .. }
+        | Event::R6400Blocks { .. }
         | Event::AttackersBlocked { .. }
         | Event::Regenerated { .. }
         | Event::DamageRemoved { .. }
@@ -376,6 +380,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::EvidenceCollected { .. }
         | Event::Investigated { .. }
         | Event::GiftGiven { .. }
+        | Event::R6401Mentored { .. }
         | Event::UpkeepSettled { .. }
         | Event::CommanderColorChosen { .. }
         | Event::Foraged { .. }
@@ -395,6 +400,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::DoorUnlocked { .. }
         | Event::DoorLocked { .. }
         | Event::Mutated { .. }
+        | Event::Melded(_)
         | Event::CardParted { .. }
         | Event::Adapted { .. }
         | Event::Bolstered { .. }

@@ -19,8 +19,8 @@ fn payers(all: &[ManaOption], option: &ManaOption) -> Vec<ManaOption> {
         .collect()
 }
 
-/// The mana abilities of `all` offered at priority: none that takes other permanents or cards, and one that costs mana
-/// only while it is [`payable`].
+/// The mana abilities of `all` offered at priority: none that takes other permanents or cards or pays more life or
+/// energy than the player holds (CR 119.4), and one that costs mana only while it is [`payable`].
 pub(crate) fn at_priority(
     state: &GameState,
     all: &[ManaOption],
@@ -30,6 +30,7 @@ pub(crate) fn at_priority(
     all.iter()
         .filter(|option| {
             option.takes.is_empty()
+                && option.holds_price(life)
                 && (!option.is_costly() || payable(state, option, all, pool, life))
         })
         .cloned()

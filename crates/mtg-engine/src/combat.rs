@@ -165,6 +165,8 @@ pub struct CombatState {
     pub(crate) attack_picks: Vec<crate::party_attacks::AttackPick>,
     /// Why the team's chosen attacks were refused, each time they were this combat.
     pub(crate) attack_refusals: Vec<String>,
+    /// Every (attacker, blocker) pair that blocked this combat, those that left combat included.
+    pub(crate) r6400_blocked_by: Vec<(ObjectId, ObjectId)>,
 }
 
 impl CombatState {
@@ -181,6 +183,16 @@ impl CombatState {
     /// Defending players who have already declared blockers.
     pub fn blockers_declared(&self) -> &[PlayerId] {
         &self.blockers_declared
+    }
+
+    /// Whether every creature that blocked `attacker` this combat is `blocker`, and it did.
+    pub(crate) fn r6400_blocked_only_by(&self, attacker: ObjectId, blocker: ObjectId) -> bool {
+        let mut by = self
+            .r6400_blocked_by
+            .iter()
+            .filter(|(blocked, _)| *blocked == attacker)
+            .peekable();
+        by.peek().is_some() && by.all(|(_, who)| *who == blocker)
     }
 
     /// What the creature `id` was attacking when it left combat this turn.
@@ -724,6 +736,29 @@ fn block_pairs(
         })
         .collect();
     (candidates, able)
+}
+
+/// The attacking creatures `blocker` could block now, as its controller's blocks are judged one by one (CR 509.1b-c
+/// restrictions on the pair, evasion and protection): those attacking that player, their team or what they protect, and
+/// that it is not blocking already. None for a creature that may not block.
+pub(crate) fn r6400_could_block(state: &GameState, blocker: ObjectId) -> Vec<ObjectId> {
+    let Some(player) = controller_of(state, blocker) else {
+        return Vec::new();
+    };
+    let blockable: Vec<ObjectId> = state
+        .combat()
+        .attackers()
+        .iter()
+        .filter(|a| a.defender(state).is_some_and(|d| defends(state, d, player)))
+        .filter(|a| !a.blockers.contains(&blocker))
+        .map(Attacker::object)
+        .collect();
+    let (candidates, _) = block_pairs(state, player, &blockable);
+    candidates
+        .into_iter()
+        .find(|(object, _)| *object == blocker)
+        .map(|(_, indices)| indices.into_iter().map(|index| blockable[index]).collect())
+        .unwrap_or_default()
 }
 
 /// The blockers among `blockers` that can't block alone.

@@ -10,7 +10,9 @@
         { "Replacement": { "when": { "TokenCreation": {} }, "by": { "Multiply": 2 } } },
         {
           "Replacement": {
-            "when": { "CountersPut": { "on": { "Each": [{ "ControlledBy": "You" }] } } },
+            "when": {
+              "CountersPut": { "on": { "Each": [{ "ControlledBy": "You" }] }, "effect": true }
+            },
             "by": { "Multiply": 2 }
           }
         }

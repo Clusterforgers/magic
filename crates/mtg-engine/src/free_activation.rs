@@ -40,6 +40,10 @@ pub(crate) fn cost<'a>(
     if !applies(state, player, kind) {
         return Cow::Borrowed(cost);
     }
+    // A power-up ability is no keyword: its whole cost is the power-up cost.
+    if kind == ActivationKind::PowerUp && matches!(rules, Ability::Activated { .. }) {
+        return Cow::Owned(Cost::mana(ManaCostX::default()));
+    }
     keyword_adding(state, address)
         .and_then(|keyword| at_zero(&keyword))
         .and_then(|free| {

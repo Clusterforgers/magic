@@ -251,7 +251,7 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
                     announced(choices, &targeted),
                 );
                 let mut printed = Printed::new(mana, sources, life);
-                if price.waterbend > 0 {
+                if price.has_waterbend() {
                     printed.waterbend = true;
                     printed.taken = picked;
                     if price.tap || price.moves_source() {

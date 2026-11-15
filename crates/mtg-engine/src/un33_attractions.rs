@@ -138,6 +138,7 @@ pub(crate) fn roll_events(state: &GameState, player: PlayerId) -> Vec<Event> {
             player,
             sides: 6,
             result: *result,
+            natural: None,
         })
         .collect();
     events.push(Event::RolledToVisit {

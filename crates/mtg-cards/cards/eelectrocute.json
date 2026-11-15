@@ -1,0 +1,34 @@
+{
+  "oracle_id": "8c56530b-098a-4afd-9022-76bfaa1f6a7c",
+  "name": "Eelectrocute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eelectrocute",
+      "oracle_fingerprint": "0f25e95129e0da5790a38d74676e3be0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "what": ["This"], "from": "Graveyard", "riders": ["ExiledInstead"] }
+            },
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": { "R6402Rolled": 6 } } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

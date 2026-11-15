@@ -41,6 +41,14 @@ pub enum Grant {
         /// The modification's index among the static's modifications.
         index: usize,
     },
+    /// The Ring of `player` (CR 701.54), which is no object: its level `level` (1 gives evasion, 2 to 4 each a triggered
+    /// ability) gives the Ring-bearer what the level says, whatever the Ring-bearer is called.
+    Ring {
+        /// Whose Ring it is.
+        player: PlayerId,
+        /// The Ring level that gives it.
+        level: u8,
+    },
 }
 
 /// Where an ability of an object comes from, which with the object and an index names it (`ability_reader`).
@@ -75,6 +83,31 @@ impl AbilitySource {
             _ => None,
         }
     }
+
+    /// The player whose Ring gave the ability and the level that did, when the Ring did: the ability is the Ring's, and
+    /// the Ring-bearer only has it.
+    pub const fn ring(&self) -> Option<(PlayerId, u8)> {
+        match self {
+            AbilitySource::Granted(Grant::Ring { player, level }) => Some((*player, *level)),
+            _ => None,
+        }
+    }
+}
+
+/// The player who controlled the spell or ability whose resolved effect gave an ability for a time (`Ref::Granter`:
+/// "the player who cast ~"); none for any other origin.
+pub(crate) fn effect_controller(
+    state: &crate::state::GameState,
+    origin: AbilitySource,
+) -> Option<mtg_core::ids::PlayerId> {
+    let AbilitySource::Granted(Grant::Effect(id)) = origin else {
+        return None;
+    };
+    state
+        .effects()
+        .iter()
+        .find(|effect| effect.id == id)
+        .map(|effect| effect.controller)
 }
 
 /// An ability of an object, named by the object, where the ability comes from and an index.

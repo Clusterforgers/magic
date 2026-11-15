@@ -270,7 +270,7 @@ async fn a_seat_that_can_pay_is_asked_with_its_clock_and_the_table_does_not_answ
     let can = play(1, declining, PROMPTLY, Dwell::OFF).await;
     let cannot = play(2, declining, PROMPTLY, Dwell::OFF).await;
     assert_eq!(questions(&can), 1);
-    assert_eq!(question(&can), ("Pay {1}?".to_owned(), false, Some(10_000)));
+    assert_eq!(question(&can), ("Pay {1}?".to_owned(), false, Some(30_000)));
     assert_eq!(said(&can), [false]);
     assert_ne!(can.hash, cannot.hash);
 }

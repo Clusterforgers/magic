@@ -143,7 +143,7 @@ pub(super) fn did_happened(
         Event::Enlisted { object, player, .. } => {
             found.push(did(Action::Enlisted, Some(*player), Some(*object)));
         }
-        Event::ManaAbilityActivated { player, source } => {
+        Event::ManaAbilityActivated { player, source, .. } => {
             found.push(did(Action::ActivatedAny, Some(*player), Some(source.id)));
         }
         Event::AbilityTriggered(triggered) => found.push(did(

@@ -1,0 +1,84 @@
+Volatile Stormdrake	Keyword::HexproofFrom over abilities: a Pred for "activated or triggered ability" sources in targeting legality (CR 702.11d), plus CR 701.12 exchange of control with an opponent's creature target	energy payment equal to mana value as an "unless" step
+Firebender Ascension	Keyword::Firebending(n) on tokens: an attack trigger adding {R} that lasts until end of combat (the firebend keyword action), and Trigger "whenever you firebend"	quest counters on a "Whenever you firebend" trigger
+The Chain Veil	loyalty activation counts: a continuous grant of N extra loyalty activations per planeswalker this turn (CR 606.3 exception), tracked per permanent per turn	—
+Biomancer's Familiar	adapt replacement: a one-shot "next time target creature adapts this turn, it adapts as though it had no +1/+1 counters" modifier read by Effect::Adapt (CR 701.46a)	—
+Jeweled Amulet	remembered mana type: Remember the mana type spent on an activation cost on the source, and AddMana of the remembered type (CR 106.1)	—
+Atraxa, Grand Unifier	choose one card of each card type among revealed cards: a Choose with a per-card-type partition (one pick per type, a card counting for each of its types)	—
+Mystic Reflection	enter-as-copy replacement: a one-shot replacement "the next time one or more creatures or planeswalkers enter this turn, they enter as copies of the chosen creature" (CR 614.1c, 707.9) with the chosen object fixed at resolution	foretell already exists
+Vizier of Many Faces	copy exception conditioned on the card's embalm cast (CR 707.9b exception applying only to the embalmed token: no mana cost, white, Zombie)	—
+Tannuk, Steadfast Second	Keyword::Warp (CR 702.185): cast for warp cost from hand, exile at end step, may cast later from exile; plus granting warp to cards in hand	—
+Wall of Stolen Identity	copy exception plus linked "When you do" reflexive trigger that taps the copied creature and a doesn't-untap duration "for as long as you control this creature"	—
+Valki, God of Lies // Tibalt, Cosmic Impostor	become a copy of an exiled card linked to the source (Effect::BecomeCopy of a card in exile, CR 707.2, 707.9) with X = its mana value	—
+Ninja Teen	Keyword::Sneak (cast from hand by returning an unblocked attacker, ninjutsu-like) granted to graveyard cards, and permission to cast via sneak from the graveyard	level up already exists
+Crabomination	Keyword::Emerge with a sacrificed artifact (emerge from artifact: CR 702.119 variant sacrificing an artifact creature/artifact)	—
+Avatar Aang // Aang, Master of Elements	bending actions (airbend, earthbend, firebend, waterbend) as events, a "whenever you bend" trigger and a per-turn record of which bends were done	—
+Peter Parker // Amazing Spider-Man	Keyword::WebSlinging (CR 702.188: alternative cost returning a tapped creature you control) granted to legendary multicolored spells	—
+Averna, the Chaos Bloom	cascade hook: a static that lets the cascading player put a land card from among the exiled cards onto the battlefield tapped during cascade (CR 702.85)	—
+Leonin Arbiter	"any player may pay {2} to ignore this effect until end of turn": a special action (CR 116) per player that suspends a static rule for that player this turn	—
+The Mimeoplasm	enter as a copy of an exiled graveyard card with extra counters equal to another exiled card's power (CR 707.9, 614.1c) choosing two cards as it enters	—
+Altar of the Wretched // Wretched Bonemass	keyword and P/T derivation from the cards exiled to pay a craft cost (linked exiled cards, CR 702.167)	—
+The Capitoline Triad	CostItem: exile any number of graveyard cards with total mana value N or greater	emblem with base P/T setter exists
+Vesuvan Shapeshifter	copy "until this creature is turned face down" with an added triggered ability (CR 707.9a), and choosing as it is turned face up	—
+Scarlet Spider, Ben Reilly	Keyword::WebSlinging and a "cast using web-slinging" fact with the returned creature's mana value	—
+Sanctum Lurker	static that exempts planeswalkers from CR 704.5i (0 loyalty state-based action)	station already exists
+Ob Nixilis, the Adversary	Keyword::Casualty X with copy exceptions: not legendary and starting loyalty X (CR 702.153, 707.9b)	—
+Harold and Bob, First Numens	return-as-Aura: Destination::Battlefield with entering modifications (an Aura with enchant Forest you control and a granted ability, losing other abilities) and the attach choice as it enters (CR 303.4f)	rad counters
+Niko, Light of Hope	become a copy of an exiled card until the next end step for a group (Shards you control), CR 707.2 with a delayed return	—
+Deification	damage-to-planeswalker replacement keeping one loyalty counter (CR 614.1a) for planeswalkers of a chosen type	choose a planeswalker type as it enters
+Koh, the Face Stealer	choose a creature card exiled with the source and gain its abilities (linked exile, CR 607.2)	—
+Thrasta, Tempest's Roar	Keyword::TrampleOverPlaneswalkers (CR 702.19c): excess damage beyond a planeswalker's loyalty to its controller, in DamageOptions with a second excess recipient	—
+Jace, Reality Sculptor	Effect::Empower with X from an amount (exists for a number); the reader for "Empower ~ X, where X is"	—
+Bronzehide Lion	return-as-Aura: Destination::Battlefield with entering modifications (Aura with enchant creature you control and a granted ability, losing others) and the attach choice as it enters (CR 303.4f)	—
+Fabrication Foundry	CostItem: exile one or more other artifacts you control with total mana value X (X read by the effect)	—
+Volo, Itinerant Scholar	noted creature types on a permanent (a Journal token) and an Amount counting them	—
+Heirloom Epic	cost substitution: tap an untapped creature for each mana of the cost (convoke-like for an activated ability, CR 702.51 analogue)	—
+Cryptic Spires	deck-construction choice: circled colors chosen before the game (CR 100.4-style pregame choice)	—
+Leori, Sparktouched Hunter	choose a planeswalker type and a delayed copy of activated loyalty abilities of that type this turn (CR 707.10)	—
+Vault 21: House Gambit	shared-quality count among revealed cards: cards with the same mana value as another revealed card	—
+Magar of the Magic Strings	put a graveyard card onto the battlefield face down as a 1/1 with granted abilities and a noted name (CR 708.2 with set characteristics)	copy a noted card
+Reverse the Sands	Effect redistributing chosen players' life totals (a permutation decision over life totals)	—
+Fleshwrither	Keyword::Transfigure (CR 702.71: sacrifice, search for a creature card with the same mana value, sorcery speed)	—
+Boreal Outrider	mana provenance: "if {S} of any of that spell's colors was spent" (snow mana of a color, CR 106.3)	—
+Gandalf of the Secret Fire	replacement as a spell resolves: exile with time counters instead of the graveyard and gain suspend (CR 702.62)	—
+Zevlor, Elturel Exile	copy a spell for each other opponent targeting that player or their permanent (CR 707.10c) as a delayed trigger	—
+Aradesh, the Founder	Keyword::Enlist fact "it enlisted a creature this combat" as a condition	—
+Storage Matrix	untap-step choice of a permanent type per player that limits untapping (CR 502.3 restriction)	—
+The Pandorica	phase out with "can't phase in for as long as the source remains tapped" and phasing in on untap/leave (CR 702.26)	—
+C.A.M.P.	Keyword::Fortify triggers: "whenever fortified land is tapped for mana" with the produced mana's color	Junk token exists
+Long List of the Ents	noted creature types on a Saga and a delayed "next creature spell of that type enters with a counter"	—
+Exterminator Magmarch	copy a spell for another opponent's permanent it could target (CR 707.10c)	—
+The Book of Vile Darkness	CostItem: exile the source and artifacts named Eye of Vecna and Hand of Vecna; token with all triggered abilities of the exiled cards	—
+Old-Growth Troll	return-as-Aura: Destination::Battlefield with entering modifications (Aura with enchant Forest you control granting mana and token abilities) and the attach choice as it enters (CR 303.4f)	—
+Tapestry Warden	station using toughness rather than power (CR 702.184 hook)	—
+Ertai's Meddling	exile a spell from the stack with delay counters and recast it when the last is removed (CR 702 delay)	—
+Serum Powder	mulligan-time special action: exile the hand and draw that many (CR 103.5 hook)	—
+The Face of Boe	cast a suspend card from hand paying its suspend cost instead of its mana cost (alternative cost from a keyword's cost)	—
+Uvilda, Dean of Perfection // Nassari, Dean of Expression	exile a card from hand with refine counters and granted triggers on the exiled card (abilities granted to a card in exile)	—
+Mirror Match	create token copies that are blocking a chosen attacker (CR 509.1h put onto the battlefield blocking)	—
+Space Beleren	Keyword "sculptor" (planeswalker-type keyword of the set) not in the engine	—
+Celestial Dawn	mana spending rules: white as any color, other mana only as colorless (CR 609.4b), and characteristics of cards in every zone (lands are Plains, nonland cards white)	—
+Defensive Formation	the defending player assigns combat damage of attackers and divides it among blockers (CR 510.1d exception)	—
+Aetherplasm	put a creature card onto the battlefield blocking a creature (CR 509.1h)	—
+Back from the Brink	CostItem: exile a creature card from your graveyard and pay its mana cost (cost reading the exiled card)	—
+Spy Kit	characteristic: the equipped creature has all names of nonlegendary creature cards (CR 201.2 name set)	—
+Lightning Storm	activated abilities of a spell on the stack usable by any player (CR 113.6 abilities functioning on the stack) and retargeting	—
+Grime Gorger	choose up to one card of each card type from a graveyard (per-type partition choice)	—
+Agent Maria Hill	teamwork cost and "becomes tapped to pay a teamwork cost" trigger	—
+Blade of the Swarm	Keyword::Warp and a selector for "exiled card with warp"	—
+Grimoire Thief	cards exiled face down with the source turned face up, and countering spells with the same names (linked exile, CR 607)	—
+Tawnos's Coffin	remember counters and attached Auras of an exiled creature and return them with it (linked exile with noted counters)	—
+Soul Burn	life gain capped by the black mana spent on X and the target's life/loyalty/toughness before damage	—
+Ice Cauldron	remembered mana type and amount spent on an activation cost (Remember mana spent) and AddMana of it	—
+Illusionary Mask	cast a creature card face down for its paid mana with a turn-up replacement on damage or tapping (CR 708)	—
+Volrath's Curse	special action: sacrifice a permanent to ignore a static effect until end of turn (CR 116)	—
+Fossil Find	graveyard order: an Effect that lets a player reorder their graveyard (an order decision and event)	—
+Circling Vultures	special action: discard this card any time you could cast an instant (CR 116.2 without the stack)	—
+Lost in Thought	special action: exile three cards from your graveyard to ignore a static effect until end of turn (CR 116)	—
+Butcher Orgg	combat damage assignment divided among the defending player and any of their creatures (CR 510.1 exception)	—
+Pyramids	one-shot shield: "the next time target land would be destroyed this turn, remove all damage from it instead" (CR 614)	—
+Fasting	optional skip of the draw step with a life gain (CR 614.1b replacement with "may")	—
+Guardian Angel	repeatable "pay {1} any time you could cast an instant" special action with prevention shields (CR 116)	—
+Torrent of Lava	abilities granted to creatures while a spell is on the stack, preventing damage from that spell	—
+Ghostly Flame	color of damage sources: black and red permanents and spells are colorless sources (CR 609.7 hook)	—
+Cunning Giant	unblocked attacker may assign its combat damage to a creature the defending player controls (CR 510.1 exception)	—
+Ogre Enforcer	lethal damage per single source (track marked damage by source, CR 704.5g exception)	—

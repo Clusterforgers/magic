@@ -73,6 +73,7 @@ export function LogPanel() {
           card: (id) => objects[id]?.name || logNames[id] || 'a card',
           owner: (id) => objects[id]?.owner,
           ability: (id) => objects[id]?.source,
+          granter: (id) => objects[id]?.granter,
           permanent: (id) => objects[id]?.types.some((type) => PERMANENT_TYPES.includes(type)) ?? false,
           door: (id, at) => {
             const room = objects[id]

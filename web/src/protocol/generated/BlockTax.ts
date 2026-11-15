@@ -20,4 +20,9 @@ mana: ManaCost,
 /**
  * The life each taxed blocker costs, counted the same way.
  */
-life: number, };
+life: number, 
+/**
+ * The permanents each taxed blocker costs besides, tapped, sacrificed or returned (CR 509.1d), each a fixed number
+ * counted the same way.
+ */
+costs?: unknown, };

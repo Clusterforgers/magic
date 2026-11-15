@@ -30,6 +30,10 @@ describe('reading field text', () => {
     ['take-backs on, which is not sent either', { take_backs: 'on' }, 'normal', {}],
     ['the blocker timer turned on', { blocker_timer: 'on' }, 'commander', { blocker_timer: true }],
     ['the blocker timer left alone, which is off and not sent', { blocker_timer: '' }, 'normal', {}],
+    ['quick timers', { timers: 'quick' }, 'commander', { timers: 'quick' }],
+    ['no timers', { timers: 'off' }, 'normal', { timers: 'off' }],
+    ['relaxed timers, which a table has by default', { timers: 'relaxed' }, 'normal', { timers: 'relaxed' }],
+    ['the timers left alone, which are relaxed and not sent', { timers: '' }, 'normal', {}],
     [
       'deck rules gather in one object',
       { 'deck.singleton': 'off', 'deck.max_copies': '3', 'deck.deck_size': '60' },
@@ -58,6 +62,8 @@ describe('reading field text', () => {
     ['a switch worded freely', 'mana_burn', 'yes', 'normal'],
     ['take-backs worded freely', 'take_backs', 'no', 'normal'],
     ['the blocker timer worded freely', 'blocker_timer', 'yes', 'normal'],
+    ['timers worded freely', 'timers', 'fast', 'normal'],
+    ['timers in capitals', 'timers', 'Quick', 'normal'],
     ['a tax of 11', 'commander_tax', '11', 'commander'],
   ]
   it.each(refused)('names the field of %s', (_name, id, text, format) => {
@@ -106,6 +112,9 @@ describe('naming the rules that differ', () => {
     ['take-backs on, as every game has them', { take_backs: true }, 'normal', []],
     ['the blocker timer on', { blocker_timer: true }, 'normal', ['Blocker timer']],
     ['the blocker timer off, as every game has it', { blocker_timer: false }, 'normal', []],
+    ['quick timers', { timers: 'quick' }, 'normal', ['Quick timers']],
+    ['no timers', { timers: 'off' }, 'commander', ['No timers']],
+    ['relaxed timers, as every game has them', { timers: 'relaxed' }, 'commander', []],
     ['a Vancouver mulligan', { mulligan_style: 'vancouver' }, 'commander', ['Vancouver mulligan']],
     ['the London mulligan', { mulligan_style: 'london' }, 'commander', []],
     [

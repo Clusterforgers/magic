@@ -348,12 +348,23 @@ fn declare_blockers(state: &GameState) -> Progress {
                 },
             ]);
         }
+        // A rule may give the declaration to another player (CR 509.1a), who sees the same options.
         return Progress::Decide(Decision {
-            player,
+            player: crate::rules::r6400_block_chooser(state, player).unwrap_or(player),
             kind: DecisionKind::DeclareBlockers(options),
         });
     }
     Progress::Events(vec![grant(state)])
+}
+
+/// The defending player whose blocks `decider` declares: the first who has not declared, as blockers are asked
+/// (`declare_blockers`), when a rule gives that player's declaration to `decider`; else `decider`.
+pub(crate) fn r6400_declaring(state: &GameState, decider: PlayerId) -> PlayerId {
+    defending_players(state)
+        .into_iter()
+        .find(|player| !state.combat().blockers_declared().contains(player))
+        .filter(|player| crate::rules::r6400_block_chooser(state, *player) == Some(decider))
+        .unwrap_or(decider)
 }
 
 fn combat_damage(state: &GameState, pass: DamagePass) -> Progress {

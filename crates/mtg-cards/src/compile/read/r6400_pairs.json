@@ -1,0 +1,5 @@
+[
+  [[{"Rule":{"rule":{"AttackTax":{"who":"EachPlayer","attacked":"Both","attackers":["This"],"cost":[{"TapPermanents":{"filter":[{"Type":"Creature"}]}}]}}}},
+    {"Rule":{"rule":{"BlockTax":{"blockers":["This"],"cost":[{"TapPermanents":{"filter":[{"Type":"Creature"}]}}]}}}}],
+    "This creature can't attack or block unless you tap an untapped creature you control not declared as an attacking or blocking creature this combat."]
+]

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "f73d1525-ab0b-4772-9dfa-66e1c84c3ea4",
+  "name": "Balduvian Warlord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balduvian Warlord",
+      "oracle_fingerprint": "abfded18bad424e6e92af4be2a152202",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": { "Step": "DeclareBlockers" },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Blocking"] } }],
+            "effects": [
+              { "RemoveFromCombat": { "what": { "Target": 0 }, "unblock": true } },
+              { "R6400Block": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

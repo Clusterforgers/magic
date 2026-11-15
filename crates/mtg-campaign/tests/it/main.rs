@@ -4,6 +4,7 @@
 mod boss_cards;
 mod bosses;
 mod content;
+mod events;
 mod fights;
 mod runs;
 mod spirits;

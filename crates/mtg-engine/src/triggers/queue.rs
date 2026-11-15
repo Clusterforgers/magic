@@ -288,6 +288,7 @@ pub(crate) fn next(state: &GameState) -> Option<Progress> {
                         source: e.trigger.source,
                         ability: e.trigger.ability,
                         when: e.words(state),
+                        origin: e.trigger.origin,
                     }
                 })
                 .collect();

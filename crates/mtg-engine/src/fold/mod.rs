@@ -133,6 +133,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::ZoneChanged { .. }
         | Event::Entered { .. }
         | Event::Mutated { .. }
+        | Event::Melded(_)
         | Event::CardParted { .. }
         | Event::CommanderStayed { .. }
         | Event::ObjectLeftGame { .. } => {
@@ -149,6 +150,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::AttackersDeclared { .. }
         | Event::AttackersChosen { .. }
         | Event::AttackChoicesRefused { .. }
+        | Event::FocusShifted { .. }
         | Event::BandFormed { .. }
         | Event::BlockersDeclared { .. }
         | Event::DamageAssigned { .. }
@@ -157,6 +159,8 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::JoinedAttack { .. }
         | Event::AttackRedirected { .. }
         | Event::RemovedFromCombat { .. }
+        | Event::R6400Unblocked { .. }
+        | Event::R6400Blocks { .. }
         | Event::AttackersBlocked { .. }
         | Event::Regenerated { .. }
         | Event::DamageRemoved { .. }
@@ -174,7 +178,6 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         // A note for the table: the game state does not change.
         // A prevention changes nothing of its own; triggers read it.
         Event::AbilityLeftToTable(_)
-        | Event::ManaAbilityActivated { .. }
         | Event::ByHandDue(_)
         | Event::DamagePrevented { .. }
         // The `Revealed` before it showed the card; triggers read it from the log.
@@ -526,6 +529,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         }
         // `ManaBurned` is information in the log: the life it cost is its own `LifeLost`.
         Event::NothingToDo { .. }
+        | Event::ManaAbilityActivated { tapped: false, .. }
         | Event::AnnouncementRewound { .. }
         | Event::TookBack { .. }
         | Event::ManaBurned { .. }
@@ -539,6 +543,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Discovered { .. }
         | Event::DreadManifested { .. }
         | Event::GiftGiven { .. }
+        | Event::R6401Mentored { .. }
         | Event::UpkeepSettled { .. }
         | Event::Foraged { .. }
         | Event::Clashed { .. }
@@ -555,9 +560,19 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             state.tally(*player, Tally::Cycled);
             crate::r5522_history::r5522_note_cycled(state, *player, *object);
         }
-        Event::DieRolled { player, .. } => {
+        Event::ManaAbilityActivated {
+            player,
+            source,
+            tapped: true,
+        } => crate::r6401_history::r6401_note_tapped_for_mana(state, *player, source.id),
+        Event::R6402DieChanged { source, .. } => {
+            state.tally_object(*source, None, Tally::R6402Changed);
+        }
+        Event::DieRolled { player, result, .. } => {
+            crate::r6401_history::r6401_note_roll(state, *result);
             c11e_draw_random(state, event);
             state.tally(*player, Tally::R5508DiceRolled);
+            state.tally(*player, Tally::R6402Rolled(*result));
         }
         Event::PriorityGranted { player } => {
             state.priority = Some(PriorityState {
@@ -750,6 +765,9 @@ fn create_effect(
             state.possible.states = true;
         }
     }
+    // An identical effect that this one overwrites wholly goes (CR 613.7), so a "becomes" used again and again stays one effect.
+    let gone = crate::effects::overwritten_by(&state.effects, effect);
+    state.effects.retain(|old| !gone.contains(&old.id));
     state.effects.push(effect.clone());
     Ok(())
 }

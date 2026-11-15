@@ -1,7 +1,7 @@
 //! Goal: Delves work end to end on Postgres: a player creates a run and hosts its lobby, a friend joins by its code,
 //! the host adds a bot ally and chooses its deck while each player chooses their own, only the host starts, and the
 //! start leads the party to the first boss, whose fight is a game made at once, and made again at no cost when an admin
-//! ends it unplayed; the content the web draws lists the bosses with their art cards and the custom cards; a party of four meets the boss with a
+//! ends it unplayed; the content the web draws lists the bosses with their art cards, the events with each option's effects, needs and summary, and the custom cards; a party of four meets the boss with a
 //! minion seat; strangers and unknown runs are refused.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -282,6 +282,27 @@ async fn the_content_lists_the_bosses_and_custom_cards(pool: PgPool) {
             "{}",
             boss.id
         );
+    }
+    for (wire, event) in content["events"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .zip(&theme.events)
+    {
+        let options = wire["options"].as_array().unwrap();
+        assert_eq!(options.len(), event.options.len(), "{}", event.id);
+        for (wire, option) in options.iter().zip(&event.options) {
+            assert_eq!(wire["label"], option.label.as_str(), "{}", event.id);
+            assert_eq!(wire["summary"], option.summary().as_str(), "{}", event.id);
+            assert_eq!(wire["needs"]["gold"], option.needs().gold, "{}", event.id);
+            assert_eq!(wire["needs"]["life"], option.needs().life, "{}", event.id);
+            assert_eq!(
+                wire["outcomes"].as_array().unwrap().len(),
+                option.outcomes.len(),
+                "{}",
+                event.id
+            );
+        }
     }
     let cards = content["cards"].as_array().unwrap();
     assert!(cards.iter().any(|c| c["kind"] == "Haunt"));

@@ -1,6 +1,7 @@
 /** What the preview of a stack entry says it resolves: the spell or ability, its source, its text and its targets. */
 import type { ObjectView } from '@/protocol/generated'
 import { targetName } from './eventText'
+import { granterHolder } from './granter'
 import type { SeatNamer } from './names'
 import type { StackEntry } from './stackTargets'
 import type { TargetNamer } from './stackText'
@@ -49,7 +50,12 @@ export function stackSummary(
 ): StackSummary {
   const targets = targetLines(entry, names)
   if (object.kind === 'Ability') {
-    const from = object.name === '' ? 'a face-down permanent' : object.name
+    const named = object.name === '' ? 'a face-down permanent' : object.name
+    // The Ring's ability is the Ring's; the heading adds the Ring-bearer that has it.
+    const from =
+      object.granter === undefined || source === undefined
+        ? named
+        : `${named} (${granterHolder(object.granter, source.name, seat(object.controller))})`
     const text = object.rules_text
     const kind = text !== undefined && TRIGGER_WORDS.test(text) ? 'Triggered' : 'Activated'
     const heading = text === undefined ? `Ability of ${from}` : `${kind} ability of ${from}`

@@ -177,6 +177,7 @@ pub struct Minion {
 
 /// What an event option does to the hero who takes it.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Outcome {
     /// Gold gained (or lost, never below 0).
     Gold(i32),
@@ -205,6 +206,108 @@ pub struct EventOption {
     pub label: String,
     /// What it does.
     pub outcomes: Vec<Outcome>,
+}
+
+/// What a hero must have to take an option: its sure costs, never its gambles.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct Needs {
+    /// The gold a sure cost takes.
+    pub gold: u32,
+    /// The life a sure cost takes; the hero must keep more than 0 of it.
+    pub life: u32,
+}
+
+impl Needs {
+    /// Why a hero with this gold and life cannot take the option, if they cannot.
+    pub fn unmet(&self, gold: u32, life: i32) -> Option<String> {
+        if gold < self.gold {
+            return Some(format!("needs {} gold, you have {gold}", self.gold));
+        }
+        if self.life > 0 && i64::from(life) <= i64::from(self.life) {
+            return Some(format!(
+                "needs more than {} life, you have {life}",
+                self.life
+            ));
+        }
+        None
+    }
+}
+
+impl Outcome {
+    /// The outcome in plain words: "+40 gold", "−8 life", "a relic", "a card for your deck", or a chance with its odds.
+    pub fn words(&self) -> String {
+        match self {
+            Outcome::Gold(n) => format!("{} gold", signed(*n)),
+            Outcome::Life(n) => format!("{} life", signed(*n)),
+            Outcome::Relic => "a relic".to_owned(),
+            Outcome::CardPick => "a card for your deck".to_owned(),
+            Outcome::Gamble { odds, win, lose } => format!(
+                "{odds}%: {} · {}%: {}",
+                list_words(win),
+                100u32.saturating_sub(*odds),
+                list_words(lose)
+            ),
+        }
+    }
+}
+
+/// A number with its sign, a minus as "−": "+40", "−8", "0".
+fn signed(n: i32) -> String {
+    match n {
+        0 => "0".to_owned(),
+        n if n > 0 => format!("+{n}"),
+        n => format!("−{}", n.unsigned_abs()),
+    }
+}
+
+/// Outcomes in plain words, "nothing" for none.
+pub fn list_words(outcomes: &[Outcome]) -> String {
+    if outcomes.is_empty() {
+        return "nothing".to_owned();
+    }
+    outcomes
+        .iter()
+        .map(Outcome::words)
+        .collect::<Vec<_>>()
+        .join(", ")
+}
+
+impl EventOption {
+    /// What the option does, from its outcomes: "−8 life, +40 gold", "nothing" for an option with none.
+    pub fn summary(&self) -> String {
+        list_words(&self.outcomes)
+    }
+
+    /// What a hero must have to take it: gold and life for its sure costs.
+    pub fn needs(&self) -> Needs {
+        let cost = |pick: fn(&Outcome) -> Option<i32>| {
+            let sum: i64 = self
+                .outcomes
+                .iter()
+                .filter_map(pick)
+                .filter(|n| *n < 0)
+                .map(i64::from)
+                .sum();
+            u32::try_from((-sum).max(0)).unwrap_or(u32::MAX)
+        };
+        Needs {
+            gold: cost(|o| {
+                if let Outcome::Gold(n) = o {
+                    Some(*n)
+                } else {
+                    None
+                }
+            }),
+            life: cost(|o| {
+                if let Outcome::Life(n) = o {
+                    Some(*n)
+                } else {
+                    None
+                }
+            }),
+        }
+    }
 }
 
 /// A story room: a short text and the choices each hero makes for themselves.

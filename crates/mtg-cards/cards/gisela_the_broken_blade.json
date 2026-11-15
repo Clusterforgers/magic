@@ -1,7 +1,7 @@
 {
   "oracle_id": "f3e23d5e-bd88-4e7c-a3fb-db2a8cb05b22",
   "name": "Gisela, the Broken Blade",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Gisela, the Broken Blade",
@@ -11,9 +11,41 @@
         { "Keyword": "FirstStrike" },
         { "Keyword": "Lifelink" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 31, "end": 208 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": ["This", { "OwnedBy": "You" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        { "Type": "Creature" },
+                        { "Named": "Bruna, the Fading Light" },
+                        { "OwnedBy": "You" },
+                        { "ControlledBy": "You" }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Meld": {
+                  "with": [{ "Type": "Creature" }, { "Named": "Bruna, the Fading Light" }],
+                  "into": "Brisela, Voice of Nightmares"
+                }
+              }
+            ]
           }
         }
       ]

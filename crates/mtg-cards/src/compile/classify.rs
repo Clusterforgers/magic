@@ -83,6 +83,9 @@ fn is_spell_rule(body: &str) -> bool {
         || (body.starts_with("As long as ")
             && (body.contains(", you may cast this card from your graveyard by paying ")
                 || body.contains(", you may cast ~ from your graveyard by paying ")))
+        // The card's own permission to be cast from its graveyard (Eelectrocute).
+        || body.starts_with("You may cast this card from your graveyard as long as ")
+        || body.starts_with("You may cast ~ from your graveyard as long as ")
 }
 
 /// Whether a line is a rule about the spell under a condition: "If you revealed a Dragon card ..., this spell can't be
@@ -168,7 +171,7 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
 }
 
 /// Whether a trigger line of a spell is a delayed trigger the spell sets up: "When you next cast ...", a trigger event
-/// limited to this turn ("Whenever a creature blocks this turn, ...") or the next upkeep ("At the beginning of your next
+/// limited to this turn or this combat ("Whenever a creature blocks this turn, ...") or the next upkeep ("At the beginning of your next
 /// upkeep, pay {2}{B}. If you don't, you lose the game.").
 fn r6e_delayed(body: &str) -> bool {
     let event = body.split_once(", ").map_or(body, |(event, _)| event);
@@ -176,6 +179,7 @@ fn r6e_delayed(body: &str) -> bool {
         || body.starts_with("At the beginning of your next ")
         || body.starts_with("At the beginning of the next ")
         || event.ends_with(" this turn")
+        || event.ends_with(" this combat")
 }
 
 /// Whether the characters can be those of an ability word: letters, a space, an apostrophe, a hyphen, "!", the card's
@@ -564,6 +568,16 @@ mod tests {
         "As long as you control a Giant, you may cast this card from your graveyard by paying {U} rather than paying its mana cost.",
         true,
         Static
+    )]
+    #[case::r6402_its_own_permission_from_the_graveyard(
+        "You may cast this card from your graveyard as long as you've rolled a 6 this turn. If you cast it this way and it would be put into your graveyard, exile it instead.",
+        true,
+        Static
+    )]
+    #[case::r6402_a_graveyard_step_is_no_permission(
+        "You may return target card from your graveyard to your hand.",
+        true,
+        Spell
     )]
     #[case::r4701_a_step_under_a_condition(
         "As long as you control a Giant, you may draw a card.",
