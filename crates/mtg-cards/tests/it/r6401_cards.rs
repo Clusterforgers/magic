@@ -11,6 +11,7 @@ use crate::common;
 #[rstest]
 #[case::tunnel_of_love("Tunnel of Love")]
 #[case::drop_tower("Drop Tower")]
+#[case::risky_move("Risky Move")]
 fn r6401_the_card_compiles_into_its_file(#[case] name: &str) {
     let printed = common::printed()
         .into_iter()

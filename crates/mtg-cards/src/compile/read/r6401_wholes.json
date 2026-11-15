@@ -150,5 +150,90 @@
    }
   },
   "Visit — Target creature gains flying until end of turn, or until any player rolls a 1, whichever comes first."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Did": {
+      "action": "ChangedController",
+      "who": "You",
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "effects": [
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       },
+       "as": "creature"
+      }
+     },
+     {
+      "Choose": {
+       "from": "Opponents",
+       "as": "opponent"
+      }
+     },
+     {
+      "FlipCoin": {
+       "lose": [
+        {
+         "Continuous": {
+          "affected": {
+           "Bound": "creature"
+          },
+          "mods": [
+           {
+            "SetController": {
+             "Bound": "opponent"
+            }
+           }
+          ],
+          "duration": "Forever"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "When you gain control of this enchantment from another player, choose a creature you control and an opponent. Flip a coin. If you lose the flip, that opponent gains control of that creature."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "Upkeep"
+     }
+    },
+    "effects": [
+     {
+      "Continuous": {
+       "affected": "This",
+       "mods": [
+        {
+         "SetController": "Triggering"
+        }
+       ],
+       "duration": "Forever"
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of each player's upkeep, that player gains control of this enchantment."
  ]
 ]
