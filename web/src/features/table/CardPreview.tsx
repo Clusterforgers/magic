@@ -1,5 +1,5 @@
 import { BookOpen, Crosshair, Play, X } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import { ReadDialog } from '@/features/reads/ReadDialog'
 import { readableOf } from '@/features/reads/readable'
@@ -28,6 +28,7 @@ import { useCreatureOutlook } from './combat/drawn'
 import { outlookText } from './combat/forecastText'
 import { useSeatNamer } from './names'
 import { usePreviewStore, usePreviewTarget } from './preview'
+import { usePreviewDismiss } from './usePreviewDismiss'
 import type { Dock, PreviewTarget } from './preview'
 import { fitClear } from './previewClear'
 import { useKeepClear } from './keepClear'
@@ -62,7 +63,7 @@ const DOCK: Record<Dock, string> = {
  * The large view of the card under the pointer or keyboard focus, with its abilities text. It docks at the edge of
  * the screen away from its card and draws the picture up to twice the size the table gives it (`previewFit`), so it
  * never covers what it shows and the card's own text reads. It keeps off the prompt's strip and the docks
- * (`fitClear`, `keepClear`). A click pins it; Escape or Close dismisses it.
+ * (`fitClear`, `keepClear`). A click pins it; Escape, Close or a press outside it and its card dismisses it.
  * Nothing is subscribed to until a card is shown, so the idle preview costs a game no renders.
  */
 export function CardPreview() {
@@ -132,6 +133,8 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
   const clear = useKeepClear()
 
   const { pinned } = target
+  const panel = useRef<HTMLDivElement>(null)
+  usePreviewDismiss(target, panel, store)
   useEffect(() => {
     // A pinned card that left the game would otherwise stay "shown" with nothing to draw.
     if (gone) store.dismiss()
@@ -166,6 +169,7 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
     <div
       role="group"
       aria-label="Card preview"
+      ref={panel}
       data-testid="card-preview"
       data-dock={dock}
       data-picture={fit.picture}
