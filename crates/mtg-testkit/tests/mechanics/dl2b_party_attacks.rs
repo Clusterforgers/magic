@@ -214,7 +214,10 @@ fn a_choice_illegal_only_together_is_asked_again_with_its_reason() -> Result<(),
                 .any(|e| matches!(e, Event::AttackChoicesRefused { .. })),
             "round {round}: refused"
         );
-        assert!(declared(&events).is_empty());
+        assert_eq!(
+            declared(&events),
+            Vec::<Vec<(ObjectId, AttackTarget)>>::new()
+        );
     }
     // Together with the second hero's Bear it is legal.
     attack(&mut driver, 2, &["Flunky".to_owned()])?;
