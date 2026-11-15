@@ -1,5 +1,5 @@
-/** Goal: the seat's own ability asking yes or no on top of the stack offers "Always Yes" and "Always No", which send the rule keyed by the ability's name and words and then the answer, and no other question offers them; the trigger-order prompt sends "Always use this order" as the confirmed order by source name and ability before the answer, and only when ticked; an "Auto-skip triggers" switch is in sight beside Full Control at every width and asks for the other value, its list is one click away and removes each rule, and the top stack chip offers "Auto-pass this trigger" for an ability, never for a spell or under Full Control. */
-import { screen } from '@testing-library/react'
+/** Goal: the seat's own ability asking yes or no on top of the stack offers "Always Yes" and "Always No", which send the rule keyed by the ability's name and words and then the answer, and no other question offers them; the trigger-order prompt sends "Always use this order" as the confirmed order by source name and ability before the answer, and only when ticked; an "Auto-skip triggers" switch is in sight beside Full Control at every width, asks for the other value and moves at once until the server answers, its list is one click away and removes each rule, and the top stack chip offers "Auto-pass this trigger" for an ability, never for a spell or under Full Control. */
+import { act, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { PlayState } from '@/play/store'
 import type {
@@ -237,6 +237,33 @@ describe('the Auto-skip triggers switch', () => {
       expect(setAutoChoices).toHaveBeenCalledExactlyOnceWith({ ...choices, skip_triggers: !on })
     },
   )
+
+  it.each([false, true])(
+    'held %s: moves at once on a press, before the server answers, and the server then decides it',
+    async (on) => {
+      const setAutoChoices = vi.fn((_c: AutoChoices) => true)
+      const { user, store } = renderTable({
+        session: { setAutoChoices },
+        state: (state) => ({ ...state, autoChoices: { ...choices, skip_triggers: on } }),
+      })
+      const toggle = screen.getByRole('switch', { name: 'Auto-skip triggers' })
+      await user.click(toggle)
+      expect(toggle).toHaveAttribute('aria-checked', String(!on))
+      act(() => store.setState({ autoChoices: { ...choices, skip_triggers: on } }))
+      expect(toggle).toHaveAttribute('aria-checked', String(on))
+    },
+  )
+
+  it('stays put when the request cannot be sent', async () => {
+    const setAutoChoices = vi.fn((_c: AutoChoices) => false)
+    const { user } = renderTable({
+      session: { setAutoChoices },
+      state: (state) => ({ ...state, autoChoices: { ...choices, skip_triggers: false } }),
+    })
+    const toggle = screen.getByRole('switch', { name: 'Auto-skip triggers' })
+    await user.click(toggle)
+    expect(toggle).toHaveAttribute('aria-checked', 'false')
+  })
 
   it.each(['Off', 'Held'] as const)(
     'in mode %s the list is one click away and a remove button takes a rule back',
