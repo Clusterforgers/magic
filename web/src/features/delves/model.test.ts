@@ -137,7 +137,7 @@ describe('introAbilities', () => {
     const fight = {
       boss: 'Skrix, the Rat Queen',
       life: 60,
-      rules: ['skrix', 'swarm_unending', 'escalation', 'bloodthirst', 'rat_kings_crown'],
+      rules: ['skrix', 'swarm_unending', 'escalation', 'ironhide', 'rat_kings_crown'],
       phases: [['nest_stirs', 40] as [string, number]],
       minions: [],
     }
@@ -151,6 +151,6 @@ describe('introAbilities', () => {
       'next-phase',
     ])
     expect(abilities[1]?.when).toBe("From the heroes' turn 7")
-    expect(abilities[3]?.text).toBe('Creatures you control get +1/+0.')
+    expect(abilities[3]?.text).toBe('Creatures you control get +0/+2.')
   })
 })

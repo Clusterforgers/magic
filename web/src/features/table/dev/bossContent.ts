@@ -27,7 +27,7 @@ export const DEV_BOSS_EMBLEMS = [
   'Escalation',
   'Reinforcements',
   'Warpath',
-  'Bloodthirst',
+  'Ironhide',
   "Rat King's Crown",
   'The Nest Stirs',
 ] as const
@@ -61,7 +61,7 @@ export const DEV_BOSS_CONTENT: DelveContent = {
       'Once the heroes have had seven turns, at the beginning of your upkeep, create a 1/1 black Rat creature token for each turn they have had beyond six.',
       7,
     ),
-    card('bloodthirst', 'Bloodthirst', 'Modifier', 'Creatures you control get +1/+0.'),
+    card('ironhide', 'Ironhide', 'Modifier', 'Creatures you control get +0/+2.'),
     card('rat_kings_crown', "Rat King's Crown", 'BossRelic', 'Rat creatures get +1/+1.'),
     card(
       'reinforcements',
