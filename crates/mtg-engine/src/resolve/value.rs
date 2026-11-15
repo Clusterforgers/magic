@@ -142,6 +142,9 @@ pub struct Scope<'a> {
     pub(crate) caused: Option<crate::triggers::CausedBy>,
     /// The permanent whose static ability gave the running ability to its source (`Ref::Granter`).
     pub(crate) granter: Option<ObjectId>,
+    /// The player whose spell or ability gave the running ability to its source for a time (`Ref::Granter` when a resolved
+    /// effect gave it: "the player who cast ~").
+    pub(crate) granter_player: Option<PlayerId>,
     /// Objects are judged as their snapshot in scope shows them, before the live object: a turn record's subject as it
     /// was when the record was made (CR 608.2h).
     pub(crate) as_was: bool,
@@ -404,6 +407,7 @@ impl<'a> Scope<'a> {
             asker: None,
             caused: None,
             granter: None,
+            granter_player: None,
             as_was: false,
             inline: None,
             entering: None,
@@ -1378,7 +1382,10 @@ impl<'a> Scope<'a> {
                 .map(Target::Player)
                 .into_iter()
                 .collect(),
-            Ref::Granter => self.granter_on_battlefield(),
+            Ref::Granter => self
+                .granter_player
+                .map(Target::Player)
+                .map_or_else(|| self.granter_on_battlefield(), |player| vec![player]),
             Ref::Monarch => state.monarch().map(Target::Player).into_iter().collect(),
             Ref::Spotlit => crate::spotlight::focus(state, self.controller)
                 .map(Target::Player)

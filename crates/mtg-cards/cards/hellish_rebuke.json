@@ -1,0 +1,43 @@
+{
+  "oracle_id": "5d307515-6ea1-4b1f-8e4b-49bfebfbdfcc",
+  "name": "Hellish Rebuke",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hellish Rebuke",
+      "oracle_fingerprint": "d7d47ecd2a00798869e46a6714e95a96",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "ControlledBy": "Opponents" }] },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": { "OrController": "Granter" }
+                            }
+                          },
+                          "effects": [
+                            { "Sacrifice": { "filter": ["This"] } },
+                            { "LoseLife": { "amount": 2 } }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

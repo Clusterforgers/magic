@@ -1,7 +1,7 @@
 {
   "oracle_id": "e2ee410f-2467-4f1f-84a0-8a79faedc0b3",
   "name": "Heart of Kiran",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Heart of Kiran",
@@ -11,9 +11,25 @@
         { "Keyword": "Vigilance" },
         { "Keyword": { "Crew": 3 } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 156, "end": 264 }
+          "Activated": {
+            "cost": [
+              {
+                "RemoveCounters": {
+                  "counter": "loyalty",
+                  "from": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddType": "Artifact" }, { "AddType": "Creature" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Crewed": {} }
+            ]
           }
         }
       ]

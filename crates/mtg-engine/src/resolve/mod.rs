@@ -44,7 +44,7 @@ pub(crate) use prim::{first_step_done, lower};
 pub use value::{Bindings, ResolveError, Scope};
 pub(crate) use value::{CastTargets, R5520_PAID, zone_kind};
 
-use crate::abilities::{AbilityObject, AbilityRef};
+use crate::abilities::{AbilityObject, AbilityRef, effect_controller};
 use crate::ability_reader::abilities_of;
 use crate::announce::{Granted, Pending};
 use crate::choose::{Choice, Target, announced_specs, spec_bases, targets_before};
@@ -366,6 +366,7 @@ fn scope_of<'a>(
         asker: None,
         caused: None,
         granter: ability.and_then(|a| a.origin().granter()),
+        granter_player: ability.and_then(|a| effect_controller(state, a.origin())),
         as_was: false,
         inline: None,
         entering: None,

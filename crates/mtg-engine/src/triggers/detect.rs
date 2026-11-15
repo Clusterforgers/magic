@@ -2789,7 +2789,8 @@ fn object_triggers(
         if *from != zone && !from_anywhere && !crate::l292_haunt::works_here_too(&rules, zone) {
             continue;
         }
-        let scope = Scope::announcing(state, controller, source).with_caused(used.caused);
+        let mut scope = Scope::announcing(state, controller, source).with_caused(used.caused);
+        scope.granter_player = crate::abilities::effect_controller(state, address.source);
         for cause in causes(when, happened, &scope) {
             // CR 603.4: an "if" in the trigger is checked as the event happens.
             if let Some(condition) = intervening_if {

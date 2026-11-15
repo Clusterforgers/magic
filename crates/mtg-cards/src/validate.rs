@@ -75,6 +75,17 @@ const RMT3_SKIP_ONLY: &str =
 /// Only a continuous effect lasts until a card is cast from exile.
 const E17A_CAST_ONLY: &str = "only a continuous effect lasts until this card is cast from exile";
 
+/// "As long as this isn't on the battlefield": the one condition a defining static may hold, since the engine applies a
+/// defining ability off the battlefield without reading it and on the battlefield only while it holds (Grist, the Hunger
+/// Tide).
+fn not_on_battlefield(condition: &Condition) -> bool {
+    matches!(
+        condition,
+        Condition::Compare { left: Amount::Count(selector), op: crate::value::Cmp::Eq, right: Amount::Fixed(0) }
+            if selector.0 == [Pred::Is(Ref::This), Pred::In(ZoneKind::Battlefield)]
+    )
+}
+
 /// The name of an enum value as serde writes it (`DealDamage`), for naming primitives.
 /// Whether the replacement prevents only part of the damage, or only the next of it.
 fn prevents_in_part(by: &ReplaceBy) -> bool {
@@ -5749,7 +5760,14 @@ impl Walker<'_> {
         }
         self.scope.in_static = false;
         if defining {
-            self.defining(affected, mods, condition.is_some(), from);
+            self.defining(
+                affected,
+                mods,
+                condition
+                    .as_ref()
+                    .is_some_and(|held| !not_on_battlefield(held)),
+                from,
+            );
         }
     }
 

@@ -1,7 +1,7 @@
 {
   "oracle_id": "1f42a809-bbfc-4225-9c31-f7d0fa8fa17a",
   "name": "Rigo, Streetwise Mentor",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rigo, Streetwise Mentor",
@@ -14,9 +14,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 126, "end": 232 }
+          "Triggered": {
+            "when": {
+              "GroupAttacksAt": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 1 } }
+                ],
+                "at": "EachPlayer",
+                "walkers": true
+              }
+            },
+            "effects": [{ "Draw": {} }]
           }
         }
       ]
