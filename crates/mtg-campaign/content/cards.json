@@ -1893,13 +1893,13 @@
   "kind": "Scheme",
   "type_line": "Scheme",
   "art": "marked_prey",
-  "text": "At the beginning of your upkeep, the hero in the spotlight loses 3 life and you gain 3 life.",
+  "text": "At the beginning of your end step, the hero in the spotlight loses 3 life and you gain 3 life.",
   "abilities": [
    {
     "Triggered": {
      "when": {
       "StepBegins": {
-       "step": "Upkeep",
+       "step": "End",
        "whose": "You"
       }
      },
