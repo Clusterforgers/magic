@@ -1,28 +1,34 @@
 /**
  * Boss mode of the table, for a co-op fight against a boss: the boss's side across the top (the boss's board wide
  * with its pod, its minions beside it), and the party together at the bottom: the other heroes' boards in a band over
- * your own, which stays the largest. On a phone both sides are tile strips over one board.
+ * your own. The rows share the height by what each draws (`bossSplit.ts`): the heroes' cards come first, the boss's
+ * are smaller, a board without permanents is a line, and a hand dock with nothing in it is a slim bar. On a phone both
+ * sides are tile strips over one board.
  */
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import type { PlayerId } from '@/protocol/generated'
 import type { CardSize } from './cardSize'
 import { GridCardContext, useGridCard } from './gridCard'
+import type { GridCard } from './gridCard'
+import { handIdle } from './handIdle'
 import { ALLY_STRIP_PX, ALLY_WIDE_SPAN, BOSS_SPAN } from './layout'
-import type { PodPlace, SeatPlan } from './layout'
+import type { PartyRows, PodPlace, SeatPlan } from './layout'
 import { LeftStrip, SeatArea, TileStrip } from './Seats'
 import { SeatTile } from './SeatTile'
 import { BossAbilitiesBar } from './campaign/BossAbilities'
 import { BossBarContext } from './campaign/useBossAbilities'
-import { playerOf } from './selectors'
+import { handSeat, isBattlefieldEmpty, playerOf } from './selectors'
 
 interface BossSideProps {
   plan: SeatPlan
   size: CardSize
   /** The boss's pod: a column beside its board, a line over it, or none under a strip of tiles. */
   pod: PodPlace
+  /** The widest card the boss's side draws in px (`PartyRows.bossCard`); null leaves each board its own fit. */
+  card?: number | null
   onFocusSeat: (seat: PlayerId) => void
 }
 
@@ -32,18 +38,43 @@ function useGone(seats: readonly PlayerId[]): { gone: PlayerId[]; playing: Playe
   return { gone, playing: seats.filter((seat) => !gone.includes(seat)) }
 }
 
+const noReport = (): void => undefined
+
+/** `grid` with its widest card cut to `cap` px; a board alone gets the cap as its widest. Unchanged without a cap. */
+function useCapped(grid: GridCard | null, cap: number | null | undefined): GridCard | null {
+  return useMemo(() => {
+    if (cap === null || cap === undefined || cap <= 0) return grid
+    return { most: Math.min(grid?.most ?? cap, cap), report: grid?.report ?? noReport }
+  }, [grid, cap])
+}
+
+/** Whether no board of `seats` holds a permanent. */
+function useBoardsEmpty(seats: readonly PlayerId[]): boolean {
+  return usePlay((state) => seats.every((seat) => isBattlefieldEmpty(state, seat)))
+}
+
 /** The minions' boards, framed, at one card size. */
-function Minions({ seats, size }: { seats: readonly PlayerId[]; size: CardSize }) {
-  const card = useGridCard(seats)
+function Minions({
+  seats,
+  size,
+  card,
+  collapsed,
+}: {
+  seats: readonly PlayerId[]
+  size: CardSize
+  card: number | null | undefined
+  collapsed: boolean
+}) {
+  const grid = useCapped(useGridCard(seats), card)
   return (
-    <GridCardContext value={card}>
+    <GridCardContext value={grid}>
       {seats.map((seat) => (
         <div
           key={seat}
           data-slot="minion-frame"
           className="flex min-h-0 min-w-0 rounded-xl border-2 border-boss/40 p-1"
         >
-          <SeatArea seat={seat} size={size} facing="far" pod="line" />
+          <SeatArea seat={seat} size={size} facing="far" pod="line" collapsed={collapsed} />
         </div>
       ))}
     </GridCardContext>
@@ -53,6 +84,7 @@ function Minions({ seats, size }: { seats: readonly PlayerId[]; size: CardSize }
 /**
  * The boss's side: its abilities in a row on top, then the boss's board wide with its pod and each minion's board beside
  * it; tiles and one board on a phone. The bar shows the boss's phase, scheme, Omen and rules, so its pod leaves them out.
+ * Where no board of the side holds a permanent the side is one line: the bar over the pods.
  */
 export function BossSide(props: BossSideProps) {
   return (
@@ -62,9 +94,11 @@ export function BossSide(props: BossSideProps) {
   )
 }
 
-function BossSideBody({ plan, size, pod, onFocusSeat }: BossSideProps) {
+function BossSideBody({ plan, size, pod, card, onFocusSeat }: BossSideProps) {
   const [boss, ...minions] = plan.boards
   const { gone, playing } = useGone(minions)
+  const empty = useBoardsEmpty(plan.boards)
+  const bossGrid = useCapped(null, card)
   const abilities = boss === undefined ? null : <BossAbilitiesBar seat={boss} />
   if (plan.tiles.length > 0) {
     return (
@@ -80,6 +114,8 @@ function BossSideBody({ plan, size, pod, onFocusSeat }: BossSideProps) {
       </div>
     )
   }
+  // A side with nothing on its boards keeps its header: the abilities and the pods as lines.
+  const collapsed = empty && pod === 'aside'
   const columns: CSSProperties = {
     gridTemplateColumns:
       playing.length === 0
@@ -94,11 +130,23 @@ function BossSideBody({ plan, size, pod, onFocusSeat }: BossSideProps) {
       ))}
       <div className="grid min-h-0 min-w-0 flex-1 gap-2" style={columns}>
         {boss === undefined ? null : (
-          <div data-slot="boss-frame" className="flex min-h-0 min-w-0 rounded-xl border-2 border-boss/70 p-1">
-            <SeatArea seat={boss} size={size} facing="far" pod={pod} />
+          <div
+            data-slot="boss-frame"
+            data-collapsed={collapsed || undefined}
+            className="flex min-h-0 min-w-0 rounded-xl border-2 border-boss/70 p-1"
+          >
+            <GridCardContext value={bossGrid}>
+              <SeatArea
+                seat={boss}
+                size={size}
+                facing="far"
+                pod={collapsed ? 'line' : pod}
+                collapsed={collapsed}
+              />
+            </GridCardContext>
           </div>
         )}
-        <Minions seats={playing} size={size} />
+        <Minions seats={playing} size={size} card={card} collapsed={collapsed} />
       </div>
     </div>
   )
@@ -109,23 +157,68 @@ interface PartySideProps {
   size: CardSize
   /** Your pod: a column beside your board, or a line under it on a phone. */
   pod: PodPlace
-  /** The height of the other heroes' band in px (`alliesBandPx`). */
+  /** The height of the other heroes' band in px (`PartyRows.band`). */
   band: number
+  /** The allies' column shares (`PartyRows.shares`); one each when left out. */
+  shares?: PartyRows['shares']
   phone: boolean
 }
 
+/** One ally in its frame: its tile over its board, which is left out while it holds no permanent. */
+function AllyFrame({
+  seat,
+  size,
+  wide,
+  onPress,
+}: {
+  seat: PlayerId
+  size: CardSize
+  wide: boolean
+  onPress: (seat: PlayerId) => void
+}) {
+  const empty = usePlay((state) => isBattlefieldEmpty(state, seat))
+  return (
+    <div
+      data-slot="ally-frame"
+      data-wide={wide || undefined}
+      data-collapsed={empty || undefined}
+      className="flex min-h-0 min-w-0 flex-col gap-1 rounded-xl border-2 border-foreground/15 p-1"
+    >
+      <div className="flex h-14 shrink-0">
+        <SeatTile seat={seat} focused={wide} onFocusSeat={onPress} />
+      </div>
+      <SeatArea seat={seat} size={size} facing="near" pod="none" collapsed={empty} />
+    </div>
+  )
+}
+
 /**
- * The other heroes in a row of frames: each a tile (name, life, zones) over its board, at one card size. A press on a
- * tile widens that hero's board to `ALLY_WIDE_SPAN` shares of the row, a second press evens the row again.
+ * The other heroes in a row of frames: each a tile (name, life, zones) over its board, at one card size, the columns
+ * sharing the row by what the boards hold. A press on a tile widens that hero's board to `ALLY_WIDE_SPAN` shares of
+ * the row, a second press evens the row again.
  */
-function AllyRow({ allies, size, band }: { allies: readonly PlayerId[]; size: CardSize; band: number }) {
+function AllyRow({
+  allies,
+  size,
+  band,
+  shares,
+}: {
+  allies: readonly PlayerId[]
+  size: CardSize
+  band: number
+  shares: readonly number[] | undefined
+}) {
   const [wide, setWide] = useState<PlayerId | null>(null)
   const widened = wide !== null && allies.includes(wide) && allies.length > 1 ? wide : null
   const card = useGridCard(widened === null ? allies : [])
+  const press = (pressed: PlayerId): void => setWide((was) => (was === pressed ? null : pressed))
   const style: CSSProperties = {
     height: band,
     gridTemplateColumns: allies
-      .map((seat) => `minmax(0, ${seat === widened ? ALLY_WIDE_SPAN : 1}fr)`)
+      .map((seat, at) => {
+        const share = widened === null ? (shares?.[at] ?? 1) : seat === widened ? ALLY_WIDE_SPAN : 1
+        return `minmax(0, ${share}fr)`
+      })
       .join(' '),
   }
   return (
@@ -137,21 +230,7 @@ function AllyRow({ allies, size, band }: { allies: readonly PlayerId[]; size: Ca
         style={style}
       >
         {allies.map((seat) => (
-          <div
-            key={seat}
-            data-slot="ally-frame"
-            data-wide={seat === widened || undefined}
-            className="flex min-h-0 min-w-0 flex-col gap-1 rounded-xl border-2 border-foreground/15 p-1"
-          >
-            <div className="flex h-14 shrink-0">
-              <SeatTile
-                seat={seat}
-                focused={seat === widened}
-                onFocusSeat={(pressed) => setWide((was) => (was === pressed ? null : pressed))}
-              />
-            </div>
-            <SeatArea seat={seat} size={size} facing="near" pod="none" />
-          </div>
+          <AllyFrame key={seat} seat={seat} size={size} wide={seat === widened} onPress={press} />
         ))}
       </section>
     </GridCardContext>
@@ -182,17 +261,26 @@ function AllyStrip({ allies, size }: { allies: readonly PlayerId[]; size: CardSi
   )
 }
 
+/** Your board: with no permanent and nothing in your hand to play, your pod as one line. */
+function OwnBoard({ plan, size, pod }: { plan: SeatPlan; size: CardSize; pod: PodPlace }) {
+  const idle = usePlay(
+    (state) => isBattlefieldEmpty(state, plan.viewer) && handIdle(state, handSeat(state, plan.viewer)),
+  )
+  const line = idle && pod === 'aside'
+  return <SeatArea seat={plan.viewer} size={size} facing="near" pod={line ? 'line' : pod} collapsed={line} />
+}
+
 /** The party: the other heroes over your board, which takes the rest of the row. */
-export function PartySide({ plan, size, pod, band, phone }: PartySideProps) {
-  const own = <SeatArea seat={plan.viewer} size={size} facing="near" pod={pod} />
+export function PartySide({ plan, size, pod, band, shares, phone }: PartySideProps) {
+  const own = <OwnBoard plan={plan} size={size} pod={pod} />
   if (plan.allies.length === 0) return own
   return (
     <div data-slot="party" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-      {/* A row too short for the other heroes' boards (`alliesBandPx`) keeps their tiles, as a phone does. */}
+      {/* A row too short for the other heroes' boards (`splitBoss`) keeps their tiles, as a phone does. */}
       {phone || band === ALLY_STRIP_PX ? (
         <AllyStrip allies={plan.allies} size={size} />
       ) : (
-        <AllyRow allies={plan.allies} size={size} band={band} />
+        <AllyRow allies={plan.allies} size={size} band={band} shares={shares} />
       )}
       {own}
     </div>

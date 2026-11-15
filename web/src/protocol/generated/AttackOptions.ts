@@ -3,6 +3,7 @@ import type { AttackTarget } from "./AttackTarget";
 import type { AttackerOption } from "./AttackerOption";
 import type { JoinRule } from "./JoinRule";
 import type { ObjectId } from "./ObjectId";
+import type { PartyAttack } from "./PartyAttack";
 
 /**
  * Legal attackers.
@@ -49,4 +50,9 @@ joins?: Array<JoinRule>,
  * attack with at least one creature"); an empty group is any defender. Only a group some creature can attack for
  * nothing is listed; a declaration with no attacker at one is refused. Left out while there are none (boxed, so the decision stays small).
  */
-at_least_one?: Array<Array<AttackTarget>>, };
+at_least_one?: Array<Array<AttackTarget>>, 
+/**
+ * Under shared team turns, what the player's teammates chose before them and why the team's last choice was
+ * refused; the options are the player's own creatures. Left out for a player who declares alone.
+ */
+party?: PartyAttack, };

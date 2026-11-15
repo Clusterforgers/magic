@@ -37,7 +37,8 @@ pub(crate) fn r4701_boast_most(
     let creature = crate::characteristics::characteristics(state, source)
         .is_some_and(|held| held.is_creature());
     (creature
-        && state.active_player() == Some(controller)
+        && state.active_player().is_some()
+        && state.is_active(controller)
         && state.rules().boast_twice.contains(&controller))
     .then_some(2)
 }

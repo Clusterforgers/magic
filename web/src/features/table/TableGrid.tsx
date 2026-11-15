@@ -111,7 +111,7 @@ export function TableGrid({
             data-slot="choice-host"
             hidden={!choice.open}
             style={{ gridRow: '2 / 4', gridColumn: '1 / -1' }}
-            className="relative z-15 min-h-0 min-w-0 px-2 pt-2 pb-[calc(0.125rem+var(--sheet-overhang,0px))]"
+            className="relative z-15 flex min-h-0 min-w-0 items-center justify-center bg-scrim px-2 pt-2 pb-[calc(0.125rem+var(--sheet-overhang,0px))]"
           />
         )}
         {sidePanel}

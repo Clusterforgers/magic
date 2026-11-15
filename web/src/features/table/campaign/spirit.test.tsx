@@ -13,6 +13,7 @@ import {
   ectoplasmOf,
   hauntOptions,
   hauntWords,
+  SPIRIT_ASKED,
   SPIRIT_EMBLEM,
   spiritEmblem,
 } from './haunt'
@@ -95,6 +96,15 @@ describe('the Spirit panel', () => {
     expect(howl).toHaveTextContent('Needs 3 ectoplasm')
     fireEvent.click(howl)
     expect(onActivate).toHaveBeenCalledTimes(1)
+  })
+
+  it('says when the table asks a Spirit for priority', () => {
+    render(<SpiritPanel player={spirit(1)} emblem={emblem} options={offering([1])} onActivate={vi.fn()} />)
+    const note = screen
+      .getByRole('region', { name: 'Haunt actions' })
+      .querySelector('[data-slot="spirit-asked"]')
+    expect(note).toHaveTextContent(SPIRIT_ASKED)
+    expect(note).toHaveTextContent('only when a haunt matters')
   })
 })
 

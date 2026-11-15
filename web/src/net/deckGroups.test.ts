@@ -42,20 +42,6 @@ describe('createDeckGroupsApi', () => {
       'PUT',
       { ids: ['g2', 'g1'] },
     ],
-    [
-      'file',
-      (api: ReturnType<typeof createDeckGroupsApi>) => api.file('d1', 'g1'),
-      '/api/decks/d1/group',
-      'PUT',
-      { group: 'g1' },
-    ],
-    [
-      'unfile',
-      (api: ReturnType<typeof createDeckGroupsApi>) => api.file('d1', null),
-      '/api/decks/d1/group',
-      'PUT',
-      { group: null },
-    ],
   ] as const)('%s sends its body to its endpoint', async (_, run, url, method, body) => {
     const { api, calls } = serve(
       ({ init }) => (init?.method === 'PUT' ? new Response(null, { status: 204 }) : jsonResponse(200, FUN)),
@@ -65,6 +51,28 @@ describe('createDeckGroupsApi', () => {
     expect(calls[0]?.url).toBe(`https://play.example${url}`)
     expect(calls[0]?.init?.method).toBe(method)
     expect(JSON.parse(String(calls[0]?.init?.body))).toEqual(body)
+  })
+
+  it.each([
+    [
+      'adds a deck with a PUT',
+      'PUT',
+      (api: ReturnType<typeof createDeckGroupsApi>) => api.addDeck('d 1', 'g1'),
+    ],
+    [
+      'takes a deck out with a DELETE',
+      'DELETE',
+      (api: ReturnType<typeof createDeckGroupsApi>) => api.removeDeck('d 1', 'g1'),
+    ],
+  ] as const)('%s on the deck and group in the path, with no body', async (_, method, run) => {
+    const { api, calls } = serve(() => new Response(null, { status: 204 }))
+    await run(api)
+    expect([calls[0]?.url, calls[0]?.init?.method, calls[0]?.init?.body]).toEqual([
+      '/api/decks/d%201/groups/g1',
+      method,
+      undefined,
+    ])
+    expect(calls[0]?.init?.credentials).toBe('include')
   })
 
   it('deletes with a DELETE on the group', async () => {

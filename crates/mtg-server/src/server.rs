@@ -289,6 +289,24 @@ impl Server {
     }
 }
 
+/// The deck-group routes: the groups, their order, and a deck's membership of one group.
+fn deck_group_routes() -> Router<AppState> {
+    Router::new()
+        .route(
+            "/api/decks/{id}/groups/{group}",
+            put(deck_groups::add_deck).delete(deck_groups::remove_deck),
+        )
+        .route(
+            "/api/deck-groups",
+            get(deck_groups::list).post(deck_groups::create),
+        )
+        .route("/api/deck-groups/order", put(deck_groups::reorder))
+        .route(
+            "/api/deck-groups/{id}",
+            patch(deck_groups::change).delete(deck_groups::remove),
+        )
+}
+
 /// The read routes: a deck's queue, one card's draft and verdict, and the bulk approval of wording-only drafts.
 fn read_routes() -> Router<AppState> {
     Router::new()
@@ -331,6 +349,10 @@ fn delve_routes() -> Router<AppState> {
         .route("/api/delves/join/{code}", post(delves::join))
         .route("/api/delves/{id}", get(delves::get_one))
         .route("/api/delves/{id}/act", post(delves::act))
+        .route(
+            "/api/test/delves/{id}/boss-concedes",
+            post(delves::boss_concedes),
+        )
 }
 
 /// The tournament routes: the player's list, creating, signing up by invite and the organiser's controls.
@@ -446,16 +468,7 @@ pub(crate) fn router(state: AppState) -> Router {
         )
         .route("/api/decks/{id}/export", get(decks::export))
         .route("/api/decks/{id}/printing", put(printings::set_line))
-        .route("/api/decks/{id}/group", put(deck_groups::file))
-        .route(
-            "/api/deck-groups",
-            get(deck_groups::list).post(deck_groups::create),
-        )
-        .route("/api/deck-groups/order", put(deck_groups::reorder))
-        .route(
-            "/api/deck-groups/{id}",
-            patch(deck_groups::change).delete(deck_groups::remove),
-        )
+        .merge(deck_group_routes())
         .route("/api/me/printings", get(printings::preferred))
         .route(
             "/api/me/printings/{oracle_id}",

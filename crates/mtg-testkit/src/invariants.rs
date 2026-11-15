@@ -201,11 +201,12 @@ pub fn check_decision(engine: &Engine) -> Result<(), Violation> {
                 decision.player
             )));
         }
+        // Under shared team turns each player of the active team chooses their own attacks (CR 805).
         if matches!(decision.kind, DecisionKind::DeclareAttackers(_))
-            && state.active_player() != Some(decision.player)
+            && (state.active_player().is_none() || !state.is_active(decision.player))
         {
             return Err(Violation::Bookkeeping(format!(
-                "{:?} is asked for attackers but is not the active player",
+                "{:?} is asked for attackers but it is not their turn",
                 decision.player
             )));
         }

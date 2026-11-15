@@ -29,8 +29,22 @@ describe('KeywordText', () => {
     ).toBeInTheDocument()
   })
 
+  it('marks the Ring in a log line and shows what a Ring-bearer is on press', async () => {
+    const user = userEvent.setup()
+    const { container } = render(
+      <KeywordText text="The Ring tempts Bo (level 2) and chooses Forest as their Ring-bearer" />,
+    )
+    expect([...container.querySelectorAll('[data-slot="keyword-word"]')].map((n) => n.textContent)).toEqual([
+      'The Ring tempts',
+      'Ring-bearer',
+    ])
+    await user.click(screen.getByRole('button', { name: 'Ring-bearer' }))
+    expect(await screen.findByText(/The creature you chose when the Ring tempted you/)).toBeInTheDocument()
+  })
+
   it.each([
     ['Ninjutsu {1}{U}.', 'Ninjutsu', 'Ninjutsu'],
+    ['The Ring tempts you.', 'The Ring tempts you', 'The Ring tempts you'],
     ['At the beginning of your upkeep, scry 1.', 'upkeep', 'Upkeep'],
   ])('opens the lexicon at the term from "%s"', async (text, word, title) => {
     const user = userEvent.setup()

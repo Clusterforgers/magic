@@ -129,6 +129,16 @@ describe('creating the game', () => {
     expect(server.creates[0]).toMatchObject({ house_rules: { take_backs: false } })
   })
 
+  it('leaves the blocker timer off by default, and sends it once it is set on', async () => {
+    const { server, user } = await openCreateForm({}, 'default')
+    await user.click(screen.getByText('House rules'))
+    await user.selectOptions(rule('Blocker timer'), 'on')
+    expect(screen.getByText('1 rule differs')).toBeInTheDocument()
+    await user.click(create())
+    await waitFor(() => expect(server.creates).toHaveLength(1))
+    expect(server.creates[0]).toMatchObject({ house_rules: { blocker_timer: true } })
+  })
+
   it('sends a handicap for each seat that has one, by the seat’s number', async () => {
     const { server, user } = await openCreateForm({}, 'default')
     await user.click(screen.getByText('House rules'))

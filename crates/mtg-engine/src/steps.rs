@@ -49,10 +49,11 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
     match step {
         Step::Untap => untap_step(state),
         Step::Draw => {
-            // Teams that share turns count as one player each for the first draw (CR 810.5a).
+            // A Two-Headed Giant team counts as one player for the first draw (CR 103.8b); a game of more than two players
+            // under shared team turns skips no draw (CR 103.8c).
             let sides = state
                 .teams()
-                .filter(|_| state.shares_turns())
+                .filter(|_| state.shares_life())
                 .map_or(state.players().len(), |teams| {
                     usize::try_from(teams.count()).unwrap_or(usize::MAX)
                 });
@@ -287,6 +288,24 @@ fn declare_attackers(state: &GameState) -> Progress {
                 attackers: Vec::new(),
             }]);
         };
+        if crate::party_attacks::splits(state)
+            && let Some(question) = crate::party_attacks::next_question(state)
+        {
+            // A player with no creature to attack with chooses nothing without being asked.
+            if let DecisionKind::DeclareAttackers(options) = &question.kind
+                && options.attackers.is_empty()
+                && let Ok(crate::answers::Outcome::Events(events)) = crate::party_attacks::answer(
+                    state,
+                    question.player,
+                    options,
+                    Vec::new(),
+                    crate::combat::AttackExtras::default(),
+                )
+            {
+                return Progress::Events(events);
+            }
+            return Progress::Decide(question);
+        }
         let options = attack_options(state, active);
         if options.attackers.is_empty() {
             return Progress::Events(vec![

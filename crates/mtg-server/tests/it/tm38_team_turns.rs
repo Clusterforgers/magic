@@ -267,7 +267,7 @@ async fn the_lobby_keeps_the_chosen_teams_and_checks_their_sizes_at_the_start(
         .await
         .unwrap();
     let lopsided = match mode {
-        TeamMode::TwoHeadedGiant => vec![0, 0, 1, 0],
+        TeamMode::TwoHeadedGiant | TeamMode::SharedTurns => vec![0, 0, 1, 0],
         TeamMode::Teams => vec![0, 1, 0, 0],
     };
     assert_eq!(chosen.seats, lopsided);

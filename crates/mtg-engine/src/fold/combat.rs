@@ -224,7 +224,37 @@ fn remove_damage(
 #[allow(clippy::too_many_lines)]
 pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
+        Event::AttackersChosen {
+            player,
+            attackers,
+            exert,
+            bands,
+        } => {
+            if state.combat.attackers_declared
+                || state
+                    .combat
+                    .attack_picks
+                    .iter()
+                    .any(|pick| pick.player == *player)
+            {
+                return Err(invalid(format!("{player:?} already chose their attacks")));
+            }
+            state
+                .combat
+                .attack_picks
+                .push(crate::party_attacks::AttackPick {
+                    player: *player,
+                    attackers: attackers.clone(),
+                    exert: exert.clone(),
+                    bands: bands.clone(),
+                });
+        }
+        Event::AttackChoicesRefused { reason } => {
+            state.combat.attack_picks.clear();
+            state.combat.attack_refusals.push(reason.clone());
+        }
         Event::AttackersDeclared { attackers, .. } => {
+            state.combat.attack_picks.clear();
             if state.combat.attackers_declared {
                 return Err(invalid("attackers were already declared"));
             }

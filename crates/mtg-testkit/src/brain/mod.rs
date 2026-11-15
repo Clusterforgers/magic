@@ -204,12 +204,15 @@ impl HeuristicBot {
         if pending
             && matters
             && self.settings.endgame
+            && (self.played.len() < TURN_PLAYS
+                || !matches!(decision.kind, DecisionKind::Priority(_)))
             && let Some(win) = endgame::forced_win(
                 engine,
                 self.seat,
                 decision,
                 key,
                 self.settings.time.map(|_| self.started + ENDGAME_TIME),
+                &self.held(),
             )
         {
             if let Answer::Priority(play) = &win

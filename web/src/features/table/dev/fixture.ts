@@ -334,7 +334,7 @@ export function buildFixture(options: FixtureOptions): Fixture {
     format: 'Commander',
     stage: 'Turns',
     first_player: 0,
-    turn: { number: 5, active, step: 'DeclareBlockers', lands_played: 1 },
+    turn: { number: 5, round: Math.ceil(5 / seats), active, step: 'DeclareBlockers', lands_played: 1 },
     priority: { holder: viewer, passed: [active] },
     players,
     battlefield: zoneView(battlefield),

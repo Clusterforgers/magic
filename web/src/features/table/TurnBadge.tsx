@@ -3,10 +3,10 @@ import { Pill } from '@/components/Pill'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import { useSeatNamer } from './names'
-import { isYourTurn, turnLeft, turnTeammate } from './selectors'
+import { isYourTurn, turnLeft, turnParty, turnTeammate } from './selectors'
 import { PhaseTag } from './turn/PhaseTag'
 import { usePhase } from './turn/usePhase'
-import { badgeText } from './turnText'
+import { badgeText, badgeTitle } from './turnText'
 
 // Whole class names, so Tailwind can see them. The phase's colour fills the badge on your turn and tints it on another's.
 // A block, not the pill's flex box, so that words which do not fit end in an ellipsis instead of being cut at both ends.
@@ -15,10 +15,13 @@ const ON_PHASE = {
   them: 'block w-auto rounded-l-none border-2 border-phase border-l-phase/40 bg-phase-soft leading-6 text-foreground',
 }
 
+/** The party's seats from their joined form, which a shallow selector compares as one string. */
+const partySeats = (joined: string): number[] => (joined === '' ? [] : joined.split(',').map(Number))
+
 /**
- * Whose turn it is and in which step, always in the top bar: "Your turn · 5 · Precombat main", "Bo's turn · 5 · Declare
- * blockers", and what the game is doing before and after its turns ("Opening hands"). During the turns the phase's
- * icon and name stand at its left in the phase's colour (`PhaseTag`): filled for your own turn, tinted for another's.
+ * Whose turn it is and in which step, always in the top bar: "Your turn · Round 3 · Precombat main", "Bo's turn · Round 3 ·
+ * Declare blockers" (the turn number is in its tooltip and in `data-turn`), and what the game is doing before and after
+ * its turns ("Opening hands"). During the turns the phase's icon and name stand at its left in the phase's colour (`PhaseTag`): filled for your own turn, tinted for another's.
  * The heading of the table's moment, plain text and not a live region; `data-slot="banner"` is where scripts read it.
  */
 export function TurnBadge() {
@@ -27,11 +30,13 @@ export function TurnBadge() {
     useShallow((state) => ({
       stage: state.view?.stage ?? 'PreGame',
       turn: state.view?.turn.number ?? 0,
+      round: state.view?.turn.round ?? 0,
       active: state.view?.turn.active ?? 0,
       step: state.view?.turn.step ?? 'Untap',
       left: turnLeft(state),
       controlledBy: state.view?.turn.controlled_by,
       teammate: turnTeammate(state),
+      party: turnParty(state).join(','),
     })),
   )
   const seat = usePlay((state) => state.seat)
@@ -44,16 +49,19 @@ export function TurnBadge() {
         data-slot="banner"
         data-your-turn={yours || undefined}
         data-left={input.left || undefined}
+        data-turn={input.turn}
+        data-round={input.round}
         className="min-w-0"
       >
         <Pill
           data-themed={phase === null ? undefined : ''}
+          title={badgeTitle({ ...input, party: partySeats(input.party) })}
           className={cn(
             'h-7 max-w-full shrink truncate px-3 text-sm',
             phase !== null && ON_PHASE[yours ? 'you' : 'them'],
           )}
         >
-          {badgeText(input, seat, name)}
+          {badgeText({ ...input, party: partySeats(input.party) }, seat, name)}
         </Pill>
       </h2>
     </div>

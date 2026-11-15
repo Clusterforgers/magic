@@ -1,4 +1,4 @@
-//! Goal: at four and six seats, Two-Headed Giant gives the turn to a team and Teams to one player (CR 805, CR 808): the turn order, the players who draw, the players who may play lands and cast sorceries, the priority order and the players a creature may attack all follow the mode.
+//! Goal: at four and six seats, Two-Headed Giant and shared team turns give the turn to a team and Teams to one player (CR 805, CR 808): the turn order, the players who draw, the players who may play lands and cast sorceries, the priority order and the players a creature may attack all follow the mode.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::{BTreeMap, BTreeSet};
@@ -43,7 +43,8 @@ fn table(mode: TeamMode, seats: usize) -> (Scenario, Teams) {
 
 /// Whether it is `seat`'s turn while `active` is the active player under `teams`.
 fn turn_of(teams: &Teams, seat: usize, active: usize) -> bool {
-    seat == active || (teams.shared() && teams.team_of(pid(seat)) == teams.team_of(pid(active)))
+    seat == active
+        || (teams.shares_turns() && teams.team_of(pid(seat)) == teams.team_of(pid(active)))
 }
 
 /// What a turn showed: the priority holders of its precombat main phase in order, with whether each could play a land
@@ -80,7 +81,8 @@ fn watch(driver: &mut Driver, turns: u32) -> Result<BTreeMap<u32, TurnSeen>, Scr
                     .push((seat, !options.playable_lands.is_empty(), castable));
             }
             DecisionKind::DeclareAttackers(options) => {
-                entry.attackers = options.attackers.len();
+                // Under shared team turns each player of the team is asked for their own creatures.
+                entry.attackers += options.attackers.len();
                 for option in &options.attackers {
                     for target in &option.defenders {
                         if let AttackTarget::Player(player) = target {
@@ -110,25 +112,27 @@ fn watch(driver: &mut Driver, turns: u32) -> Result<BTreeMap<u32, TurnSeen>, Scr
 #[case::giant_four(TeamMode::TwoHeadedGiant, 4)]
 #[case::teams_four(TeamMode::Teams, 4)]
 #[case::teams_six(TeamMode::Teams, 6)]
+#[case::shared_four(TeamMode::SharedTurns, 4)]
+#[case::shared_six(TeamMode::SharedTurns, 6)]
 fn a_turn_belongs_to_the_team_in_two_headed_giant_and_to_one_player_in_teams(
     #[case] mode: TeamMode,
     #[case] seats: usize,
 ) -> Result<(), ScriptError> {
     let (scenario, teams) = table(mode, seats);
     let mut driver = Driver::from_scenario(scenario)?;
-    let rounds = if teams.shared() {
+    let rounds = if teams.shares_turns() {
         4
     } else {
         u32::try_from(seats).unwrap() + 1
     };
     let seen = watch(&mut driver, rounds)?;
 
-    // Turn order: Two-Headed Giant goes from team to team, Teams from seat to seat.
+    // Turn order: shared turns go from team to team, Teams from seat to seat.
     let order: Vec<usize> = seen.values().map(|turn| turn.active).collect();
     let want: Vec<usize> = (0..rounds as usize)
         .map(|n| {
-            if teams.shared() {
-                (n % 2) * 2
+            if teams.shares_turns() {
+                (n % 2) * (seats / 2)
             } else {
                 n % seats
             }
@@ -151,7 +155,7 @@ fn a_turn_belongs_to_the_team_in_two_headed_giant_and_to_one_player_in_teams(
         }
         // The players whose turn it is draw, and nobody else; the first team skips its first draw in Two-Headed Giant
         // (CR 103.8b), while a multiplayer Teams game skips none (CR 103.8a).
-        let drew = if *number == 1 && teams.shared() {
+        let drew = if *number == 1 && teams.shares_life() {
             BTreeSet::new()
         } else {
             mine.clone()

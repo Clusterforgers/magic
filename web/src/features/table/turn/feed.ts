@@ -31,14 +31,16 @@ export interface TickerLine {
   text: string
 }
 
-/** The words of the turn banner: whose turn has begun and which turn it is. */
+/** The words of the turn banner: whose turn has begun and which round it is. */
 export interface BannerCue {
   /** The viewer's own turn. */
   yours: boolean
   /** "Your turn" or "Bo's turn". */
   who: string
-  /** The turn number. */
+  /** The turn number, from 1. */
   turn: number
+  /** The round, from 1. */
+  round: number
 }
 
 /** What one batch means for the turn cues. */
@@ -180,6 +182,7 @@ export function deriveFeed(
           yours,
           who: yours ? 'Your turn' : left ? `${names(now.active)} left` : `${names(now.active)}'s turn`,
           turn: now.number,
+          round: now.round,
         }
       : null
 
@@ -206,7 +209,9 @@ export function deriveFeed(
   ].slice(0, TICKER_MAX_LINES)
 
   const announcement =
-    banner === null ? '' : `${banner.who}, turn ${banner.turn}${note === null ? '' : `. ${note}`}`
+    banner === null
+      ? ''
+      : `${banner.who}, round ${banner.round}, turn ${banner.turn}${note === null ? '' : `. ${note}`}`
   return { banner, lines, skipped, announcement }
 }
 

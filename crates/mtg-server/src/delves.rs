@@ -3,7 +3,10 @@
 //! boss fight's game when the party reaches one (a normal recorded game with the run's plan in its recipe) and reads
 //! a finished fight back into the run.
 
+mod hooks;
 mod store;
+
+pub(crate) use hooks::boss_concedes;
 
 use std::sync::Arc;
 
@@ -11,7 +14,7 @@ use axum::Json;
 use axum::extract::rejection::PathRejection;
 use axum::extract::{Path, Request, State};
 use axum::http::{HeaderMap, StatusCode};
-use mtg_campaign::{Brain, Content, FightPlan, HeroDeck, Run, RunEvent, Status, content};
+use mtg_campaign::{Brain, Content, FightPlan, Forfeit, HeroDeck, Run, RunEvent, Status, content};
 use mtg_cards::CardDefinition;
 use mtg_core::color::Color;
 use mtg_core::ids::PlayerId;
@@ -34,7 +37,7 @@ use crate::join_code::JoinCode;
 use crate::recipe::FormatKind;
 use crate::records::Visibility;
 use crate::records::{RecordError, RecordStatus};
-use crate::registry::GameOptions;
+use crate::registry::{AdminEnd, GameOptions};
 use crate::seat_deck::ChosenDeck;
 use crate::server::AppState;
 use crate::user_id::UserId;
@@ -254,7 +257,8 @@ async fn save(delves: &Delves, loaded: &Loaded, from: usize) -> Result<(), ApiEr
         .map_err(|e| unavailable(&e))
 }
 
-/// Reads a finished fight back into the run; a fight whose game ended unplayed waits for a new one.
+/// Reads a finished fight back into the run. A game closed or expired without a result is a lost fight; one that an
+/// admin ended, that failed to load or that is gone was never lost, and the fight waits for a new game.
 async fn sync_fight(app: &AppState, loaded: &mut Loaded) -> Result<(), ApiError> {
     let Status::Fight { game: Some(game) } = &loaded.run.status else {
         return Ok(());
@@ -267,7 +271,14 @@ async fn sync_fight(app: &AppState, loaded: &mut Loaded) -> Result<(), ApiError>
         Ok(Some((RecordStatus::Lobby | RecordStatus::Running, _))) | Err(_) => return Ok(()),
         // Still in the registry: the record is behind the table, which may yet end.
         _ if app.registry().handle(game).is_some() => return Ok(()),
-        // Ended unplayed (an admin ended it, it expired, failed or is gone): the fight gets a new game.
+        Ok(Some((RecordStatus::Expired, _))) => {
+            return push(
+                loaded,
+                RunEvent::FightForfeited {
+                    cause: Forfeit::Closed,
+                },
+            );
+        }
         _ => return push(loaded, RunEvent::FightVoided),
     };
     let Ok(Some(seats)) = app.registry().final_seats(game).await else {
@@ -891,6 +902,26 @@ async fn event_of(
         DelveAction::Vote { node } => Ok(RunEvent::Voted { hero: member, node }),
         DelveAction::Pick { pick } => Ok(RunEvent::Picked { hero: member, pick }),
         DelveAction::Abandon => host_only(RunEvent::Abandoned),
+        DelveAction::Retreat => host_only(RunEvent::FightForfeited {
+            cause: Forfeit::Retreat,
+        }),
+    }
+}
+
+/// Ends the table of the fight the party retreats from, so nobody plays on in a game the run has given up.
+async fn end_fight_game(app: &AppState, loaded: &Loaded) -> Result<(), ApiError> {
+    let Status::Fight { game: Some(game) } = &loaded.run.status else {
+        return Ok(());
+    };
+    let Ok(game) = game.parse::<GameId>() else {
+        return Ok(());
+    };
+    let reason = Some("The host retreated from the fight.".to_owned());
+    match app.registry().end_by_admin(game, reason).await {
+        Ok(AdminEnd::Ended | AdminEnd::NotFound) => Ok(()),
+        // A result arrived first; the next read folds it in.
+        Ok(AdminEnd::AlreadyOver) => Err(refused("the fight has just ended")),
+        Err(error) => Err(unavailable(&error)),
     }
 }
 
@@ -909,7 +940,11 @@ pub(crate) async fn act(
     let mut loaded = load(delves, id).await?;
     let from = loaded.events.len();
     advance(&app, &mut loaded).await?;
+    let retreat = matches!(action, DelveAction::Retreat);
     let event = event_of(&app, &headers, &loaded, user.id, action).await?;
+    if retreat {
+        end_fight_game(&app, &loaded).await?;
+    }
     push(&mut loaded, event)?;
     let problems = advance(&app, &mut loaded).await?;
     save(delves, &loaded, from).await?;

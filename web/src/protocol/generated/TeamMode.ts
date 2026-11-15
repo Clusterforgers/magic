@@ -3,4 +3,4 @@
 /**
  * How teams play.
  */
-export type TeamMode = "two_headed_giant" | "teams";
+export type TeamMode = "two_headed_giant" | "teams" | "shared_turns";

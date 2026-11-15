@@ -2,7 +2,7 @@
 //! table's teams.
 
 use mtg_core::ids::PlayerId;
-use mtg_core::teams::Teams;
+use mtg_core::teams::{TeamMode, Teams};
 
 use crate::state::GameState;
 
@@ -44,9 +44,14 @@ impl GameState {
         order
     }
 
-    /// Whether teams share their turns and life totals (Two-Headed Giant, CR 805, CR 810).
+    /// Whether teams share their turns (Two-Headed Giant and shared team turns, CR 805).
     pub fn shares_turns(&self) -> bool {
-        self.teams().is_some_and(Teams::shared)
+        self.teams().is_some_and(Teams::shares_turns)
+    }
+
+    /// Whether teams share their life totals (Two-Headed Giant, CR 810.9).
+    pub fn shares_life(&self) -> bool {
+        self.teams().is_some_and(Teams::shares_life)
     }
 
     /// Whether it is `player`'s turn: they are the active player, or a teammate of the active player when teams share
@@ -75,12 +80,26 @@ impl GameState {
                 next = self.next_alive_after(next)?;
             }
         }
-        Some(next)
+        Some(self.turn_lead(next))
+    }
+
+    /// The seat that takes a turn of `player`'s team: under shared team turns its first living seat, so the boss and
+    /// not a minion is the active player of its side's turn; `player` in any other game.
+    pub fn turn_lead(&self, player: PlayerId) -> PlayerId {
+        if self
+            .teams()
+            .is_none_or(|teams| teams.mode != TeamMode::SharedTurns)
+        {
+            return player;
+        }
+        self.alive_players()
+            .find(|seat| self.are_teammates(*seat, player))
+            .unwrap_or(player)
     }
 
     /// The teammates of `player` who share their life total (Two-Headed Giant, CR 810.9), `player` excluded.
     pub fn life_sharers(&self, player: PlayerId) -> Vec<PlayerId> {
-        if !self.shares_turns() {
+        if !self.shares_life() {
             return Vec::new();
         }
         self.players()

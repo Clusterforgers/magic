@@ -1,9 +1,10 @@
 /**
- * An opponent's lands as one chip of its pod (`LandFoldContext`): the count and how many are tapped, the land names on
- * hover, and a press that lays the lands out on the board or folds them again. Folded, the board gives the lands'
- * room to its creatures and other permanents.
+ * A board's lands as one chip of its pod (`LandFoldContext`): "Lands 7" and, beyond a phone, how many are tapped while folded,
+ * "Hide lands" while they are laid out, the land names on hover, and a press that turns that board's lands out or in
+ * (the table menu's "Show lands" turns every board). Folded, the board gives the lands' room to its creatures and other
+ * permanents.
  */
-import { MountainIcon } from 'lucide-react'
+import { ChevronDownIcon, ChevronRightIcon, MountainIcon } from 'lucide-react'
 import { useContext } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
@@ -32,14 +33,15 @@ export function LandSummary({
   )
   if (fold === null || tally.count === 0) return null
   const words = landWords(tally)
+  const Chevron = fold.open ? ChevronDownIcon : ChevronRightIcon
   return (
     <button
       type="button"
       data-slot="land-summary"
       data-open={fold.open || undefined}
       aria-expanded={fold.open}
-      aria-label={`${fold.open ? 'Fold' : 'Show'} ${owner}'s lands: ${words}`}
-      title={tally.names}
+      aria-label={`${fold.open ? 'Hide' : 'Show'} ${owner}'s lands: ${words}`}
+      title={`${fold.open ? 'Hide' : 'Show'} lands: ${tally.names}`}
       onClick={(event) => {
         // The pod and the board around it attack the seat on a click while an attack is aimed; this press is the chip's.
         event.stopPropagation()
@@ -52,10 +54,19 @@ export function LandSummary({
       )}
     >
       <MountainIcon aria-hidden="true" className={cn('shrink-0', DENSITY[density].icon)} />
-      <span aria-hidden="true" className="tabular-nums">
-        {tally.count}
-        {tally.tapped === 0 ? null : <span className="font-normal"> · {tally.tapped} tapped</span>}
+      <span aria-hidden="true" className="min-w-0 truncate tabular-nums">
+        {fold.open ? (
+          'Hide lands'
+        ) : (
+          <>
+            Lands {tally.count}
+            {tally.tapped === 0 ? null : (
+              <span className="font-normal max-sm:hidden"> · {tally.tapped} tapped</span>
+            )}
+          </>
+        )}
       </span>
+      <Chevron aria-hidden="true" className={cn('shrink-0', DENSITY[density].icon)} />
     </button>
   )
 }

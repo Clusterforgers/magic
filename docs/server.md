@@ -195,10 +195,11 @@ The holder of a seat chooses its deck while the game is in its lobby: the host w
 
 ## Delves
 
-- `delves.rs` serves the co-op boss rush (`docs/delves.md`): `GET/POST /api/delves` (the caller's runs; a new run whose host is its first hero), `GET /api/delves/content` (custom cards, bosses, events), `POST /api/delves/join/{code}`, `GET /api/delves/{id}` and `POST /api/delves/{id}/act` (`DelveAction`: add a bot ally, remove a hero, choose a deck, start, vote, pick, abandon).
+- `delves.rs` serves the co-op boss rush (`docs/delves.md`): `GET/POST /api/delves` (the caller's runs; a new run whose host is its first hero), `GET /api/delves/content` (custom cards, bosses, events), `POST /api/delves/join/{code}`, `GET /api/delves/{id}` and `POST /api/delves/{id}/act` (`DelveAction`: add a bot ally, remove a hero, choose a deck, start, vote, pick, abandon, retreat).
 - A run is stored as its header (`delves`: code, host, theme, seed, Heat) and its event log (`delve_events`); `delve_members` lists the party's accounts. Each request folds the log, applies the action, lets the bot allies answer and appends the new events; one request at a time changes runs.
 - A boss fight is a normal recorded game made with `create_decked`: the heroes' decks (precon, built-in or the owner's stored deck, with the run's cards in place of basic lands), the boss's deck named in the content, the players' seats bound to their accounts, bots for the allies and the boss, and the `FightPlan` in `GameOptions.campaign` and the recipe, which lays the emblems, Spirits and phases over every build of the game.
-- A read of the run reads a finished fight back: the result from the record, each hero's end life and Spirit state from replaying its log. A fight whose game ended without a result (an admin ended it, it expired, failed or is gone) is voided (`RunEvent::FightVoided`) at no cost and made again.
+- A read of the run reads a finished fight back: the result from the record, each hero's end life and Spirit state from replaying its log. A fight whose game expired (the host closed its lobby or the janitor dropped it) is lost (`RunEvent::FightForfeited`, a heart); one an admin ended, that failed to load or that is gone is voided (`RunEvent::FightVoided`) at no cost. Either way the fight is made again.
+- Retreat (the host only, in a fight) ends the fight's table as an admin end with the reason, then records the fight as lost (`FightForfeited`) and makes it again; with the last heart the run is lost.
 
 ## Cards and decks
 
@@ -264,7 +265,7 @@ Public and read-only (`card_api.rs`). `GET /api/cards` searches the deck cards (
 
 ### Deck groups
 
-`deck_groups.rs` and `DeckGroupRepo` (`deck_groups`, `deck_group_members`; deleted with the account): an account sorts its decks into named groups (at most `MAX_DECK_GROUPS_PER_USER`, names of 1 to 60 characters once trimmed), each kept collapsed or open. `GET`/`POST /api/deck-groups`, `PATCH`/`DELETE /api/deck-groups/{id}`, `PUT /api/deck-groups/order` (every group id once, else 400 `invalid_request`) and `PUT /api/decks/{id}/group` (`{group: null}` ungroups). A deck sits in one group at most; deleting a group or a deck removes its membership, so the decks stay, ungrouped. Another account's group or deck is 404 `not_found`; 409 `group_limit`; 401 `unauthenticated`; 503 `decks_unavailable`.
+`deck_groups.rs` and `DeckGroupRepo` (`deck_groups`, `deck_group_members`; deleted with the account): an account sorts its decks into named groups (at most `MAX_DECK_GROUPS_PER_USER`, names of 1 to 60 characters once trimmed), each kept collapsed or open. `GET`/`POST /api/deck-groups`, `PATCH`/`DELETE /api/deck-groups/{id}`, `PUT /api/deck-groups/order` (every group id once, else 400 `invalid_request`) and `PUT`/`DELETE /api/decks/{id}/groups/{group}` (add a deck to a group, take it out of that group only; 204, and asking twice changes nothing). A deck sits in any number of groups (`deck_group_members` is keyed by deck and group) and in none is ungrouped; deleting a group or a deck removes its memberships, so a deck stays in its other groups. `GET /api/deck-groups` lists each group with its deck ids, so a deck's groups are the ones that name it. Another account's group or deck, or an id that is no id, is 404 `not_found`; 409 `group_limit`; 401 `unauthenticated`; 503 `decks_unavailable`.
 
 ### Account preferences
 
@@ -313,6 +314,8 @@ At each priority decision the actor asks the seat, passes for it at once or pass
 
 The default windows are both main phases on the seat's own turn, declare attackers and blockers on any turn, and any step with another seat's object on the stack. A seat's own turn includes its team's shared turn in Two-Headed Giant (`GameState::is_active`), for the windows, the stop sides, the `MyTurn` yield and the active clock. `Own` stops apply on the seat's turns, `Opponent` stops on others'. Rule 6 (`windows::smart`, `AutoChoices.smart_stops`, off by default) reads the battlefield, never a cost or the hand, so a spell in hand never gets the seat asked and a discard cost only turns Ask into `Dwell`.
 
+A Spirit (a fallen hero of Delves, [delves.md](delves.md)) has default windows of its own, decided by the same function (`Window::is_default`, with the facts in `Haunt`): where its haunt actions matter, with an empty stack, its team's upkeep and main phases (Rise Again, spending ectoplasm), the boss side's beginning of combat (Hinder, Howl) and its declare attackers step when its creatures attack the Spirit's team (Ward); and any moment an object of the boss side is on the stack, so the Spirit can answer it. Spells and abilities of the party, the Spirit's own ectoplasm trigger included, never ask it, and every other step is passed for at once, a declare blockers step too. Rules 1 to 3 and 5 stand: a stop, Full Control or a yield of the Spirit decides as for any seat, so a stop always asks, and a Spirit that cannot act waits at its windows except in its own main phase with an empty stack. Bot Spirits meet the same windows.
+
 A question with one legal answer whose options every seat sees (`mtg_engine::choose::sole_answer`) is answered for an `Off` seat in the same run of passes, and a payment the seat cannot make (`YesNoOptions::only_no`) is declined; Full Control asks both. A question whose one answer could come from a hidden zone (`YesNoOptions::unseen`: a discard, search, reveal or exile from hand) is always asked.
 
 ### Stops, Full Control and yields
@@ -347,7 +350,7 @@ A question with one legal answer whose options every seat sees (`mtg_engine::cho
 ### Response clocks
 
 - A decision gets its clock when issued (`Running::settle`, `Pace::clock_for`) from its kind and seat alone, never the options, hand, mode or stops, so a `Priority` decision is clocked whether the seat can act or not. The match names every kind, so a new kind must choose its clock and answer.
-- Four lengths, `0` for none: response (`MTG_RESPONSE_SECS`), blocks (`MTG_BLOCK_SECS`), think (`MTG_THINK_SECS`) for what takes thought, active (`MTG_ACTIVE_SECS`) for every decision of the active player's turn; a non-active seat is clocked by class (`Class::of`). The opening (mulligans, bottoming, its scry) has no clock (`Pace::OPENING_CLOCK`) and waits for each seat until it answers or concedes.
+- Four lengths, `0` for none: response (`MTG_RESPONSE_SECS`), blocks (`MTG_BLOCK_SECS`, only at a table whose `blocker_timer` house rule is on; otherwise declaring blockers has no clock and no `deadline_ms`), think (`MTG_THINK_SECS`) for what takes thought, active (`MTG_ACTIVE_SECS`) for every decision of the active player's turn; a non-active seat is clocked by class (`Class::of`). The opening (mulligans, bottoming, its scry) has no clock (`Pace::OPENING_CLOCK`) and waits for each seat until it answers or concedes.
 - The countdown shows after `MTG_CLOCK_GRACE_SECS`; the clock runs from issue and `Decision.show_after_ms` ([protocol.md](protocol.md), Decisions) is absent when the countdown shows at once, also for a clock no longer than the grace. A reconnect is told what is left of the delay.
 - **Timer bank** (`bank.rs`): three own turns in a row without a reached deadline earn an extension, at most three (`BANK_TURNS`, `BANK_MAX`); a reached deadline restarts the count. At a sent clock's deadline the seat spends one (`Running::extend`): the deadline moves by `MTG_EXTENSION_SECS` (`0` disables the bank), the decision is resent with its id and the new `deadline_ms`, and every seat gets `Bank`; only an empty bank lets `fall_back` answer. In memory; public in `PlayerView.bank`.
 - **Turn time** (`turn_time.rs`): each seat's wall time on its own turns, chess-clock style; a turn ends at the next turn, the game's end or its player leaving, the opening is no turn and time with nobody connected does not count. The actor stamps `PlayerView.turn_time_ms` and `turn_time_running` at send time ([protocol.md](protocol.md), Decisions). In memory; a resume starts from zero.
@@ -380,7 +383,7 @@ Blank values count as unset; any other malformed value refuses to start (`Config
 | `MTG_IDLE_CLOSE_SECS` | 3600 | Seconds a started game may have no person at a seat and no answer before the janitor closes it as `expired`; 60 to 604 800. |
 | `MTG_AUTO_PASS` | on | `1`, `on`, `true` or `0`, `off`, `false`. Off starts every seat in `Held`. |
 | `MTG_RESPONSE_SECS` | 10 | Response clock; `0` for none, at most 86 400. |
-| `MTG_BLOCK_SECS` | 45 | Clock for declaring blockers; same range. |
+| `MTG_BLOCK_SECS` | 45 | Clock for declaring blockers at a table that turns the `blocker_timer` house rule on (off by default); same range. |
 | `MTG_THINK_SECS` | 60 | Clock for a seat that is not the active player when paying, dividing combat damage, declaring attackers and discarding; same range. |
 | `MTG_ACTIVE_SECS` | 0 | Clock on every decision of the active player's turn after the opening; `0` for none; same range. |
 | `MTG_EXTENSION_SECS` | 20 | Seconds an extension of the timer bank adds; `0` turns the bank off; same range. |
@@ -392,6 +395,7 @@ Blank values count as unset; any other malformed value refuses to start (`Config
 | `MTG_COOKIE_SECURE` | 0 | `1` marks the session cookie `Secure`; set it behind TLS. |
 | `MTG_TRUSTED_PROXIES` | 0 | Reverse proxies in front of the server, 0 to 16. |
 | `MTG_SEED` | random | A whole number (`u64`) every game shuffles with, so a game replays exactly; each game logs its seed (`game created`). For tests and replays, not production. |
+| `MTG_TEST_HOOKS` | off | `1` serves the hooks browser tests use to end a Delves fight early (`POST /api/test/delves/{id}/boss-concedes`, the host only); without it they answer 404. For tests, never production. |
 | `DATABASE_URL` | unset | Postgres URL, never logged. Set, the binary connects, migrates and calls `Server::open`; unset or blank, it warns and keeps games in memory without accounts. `.cargo/config.toml` defaults it to the local database. |
 | `MTG_IMAGE_CACHE` | `$XDG_CACHE_HOME/mtg-server/images`, else `~/.cache/mtg-server/images` | Directory of the picture cache. |
 | `MTG_IMAGE_CACHE_MIB` | 2048 | Size limit of the picture cache in MiB, 1 to 1048576. |

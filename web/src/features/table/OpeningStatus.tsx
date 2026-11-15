@@ -2,6 +2,7 @@ import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { MulliganStatus } from '@/protocol/generated'
 import { useSeatNamer } from './names'
+import { useOpeningInOverlay } from './prompt/choiceOverlay'
 import { describeOpening } from './turnText'
 
 /** How a status groups for the eye: still choosing, done, or going again. */
@@ -16,15 +17,21 @@ function kindOf(status: MulliganStatus): 'choosing' | 'done' | 'again' {
  * cards it still bottoms), taking a mulligan, and how many mulligans it has taken. It is the public part of what the
  * seat panels say, in one place, so a table of any size shows it at a glance. Nothing before or after that stage.
  */
-export function OpeningStatus() {
+export function OpeningStatus({ floating = false }: { floating?: boolean } = {}) {
   const name = useSeatNamer()
   const stage = usePlay((state) => state.view?.stage)
   const players = usePlay((state) => state.view?.players)
   const me = usePlay((state) => state.seat)
-  if (stage !== 'Mulligan' || players === undefined) return null
+  // The floating decision carries the list itself; the strip leaves it out while that is open.
+  const carried = useOpeningInOverlay()
+  if (stage !== 'Mulligan' || players === undefined || (carried && !floating)) return null
   return (
-    <section aria-label="Opening hand decisions" data-slot="opening-status" className="basis-full">
-      <ul className="flex flex-wrap gap-x-5 gap-y-1 text-sm">
+    <section
+      aria-label="Opening hand decisions"
+      data-slot="opening-status"
+      className={floating ? 'text-center' : 'basis-full'}
+    >
+      <ul className={cn('flex flex-wrap gap-x-5 gap-y-1 text-sm', floating && 'justify-center')}>
         {players.map((player) => {
           const kind = kindOf(player.mulligan)
           return (

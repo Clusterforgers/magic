@@ -328,7 +328,10 @@ async fn at_the_default_pace_the_preview_is_still_the_damage_that_then_happens()
             break (id, deadline_ms, decision);
         }
     };
-    assert_eq!(clock, Some(45_000), "blocking has the longer clock");
+    assert_eq!(
+        clock, None,
+        "blocking has no clock unless the table turned the blocker timer on"
+    );
     let DecisionKind::DeclareBlockers(options) = decision.kind else {
         panic!("declare blockers expected, got {:?}", decision.kind);
     };

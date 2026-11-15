@@ -51,6 +51,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Delves at the table and between fights: boss mode (the boss's side on top with its abilities in plain words from the content the engine plays, the party together at the bottom), the boss intro in place of the game's lobby, decks fixed for the run with a lost deck held on the run page, the return to the run after a fight, the runs list without abandoned runs and with past runs folded (`docs/delves.md`).
 - Delves fairness: the spotlight spreads the boss's side's attacks, removal and spotlight schemes over the heroes with a cap on any one hero's share, the grace and the lull open each fight, a boss takes commander damage but never loses to 21, and the table shows whom each boss-side seat eyes (`docs/delves.md`).
 - Delves difficulty: one scaling table by party size and Heat (life, hand, Reserves, Reinforcements, Warpath, minion seats that fall with the boss, the Last Bulwark), Escalation and Enrage, the scheme deck with its Omen, measured per party size (`docs/delves.md`).
+- Delves shared turns: the party and the boss's side each take one team turn (CR 805) with life totals per hero, each hero chooses their own creatures' attacks for one shared declaration, and the table names the party's turn (`docs/delves.md`).
 
 ## Live game
 
@@ -116,8 +117,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 ## Delves
 
-- [ ] (dl2) The party shares one team turn against the boss (CR 805 beyond Two-Headed Giant), so four heroes do not wait three turns
-- [ ] (dl3b) Delves balance at every size: measure four to six heroes with the spotlight and ramp-up, and lift two heroes' fight win rate to 50 %
+- [ ] (dl3c) Delves balance at three to six heroes: measure them on seeds 1 to 8 (a fight takes 30 to 90 minutes of machine time or more) and lift any size that wins below 50 %
 - [ ] (dl3a) Boss personalities: each boss weighs threats its own way (the healer, the biggest board, the combo) within the spotlight's cap
 - [ ] (dl4) A won card names the card it replaces (a basic land today), chosen from the hero's deck list on the loot screen
 - [ ] (dl5) Campfire upgrades put a sticker on a card of the hero's deck for the rest of the run
@@ -125,11 +125,9 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl7) The scouts' forecast: background bot fights measure each boss of a new ladder and the ladder shows the measured win rate
 - [ ] (dl8a) Boss brain priorities: the boss and its minions focus the biggest threat, punish the healer and break combos, at Very Hard once its clock suits the server
 - [ ] (dl8b) Whole runs won in 20 to 35 % at every party size, measured for 1 to 6 heroes and with Very Hard heroes
-- [ ] (dl9) A boss fight whose game is closed or expires without a result counts as lost and is made again, and the host can retreat from a fight
-- [ ] (dl10) The fight table re-measured on the current bosses (two Hard heroes win 0/4 of seeds 1 to 4) and the Spirits' worth, acting against idle, at three or more heroes
+- [ ] (dl10a) The Spirits' worth, acting against idle, at three or more heroes
 - [ ] (dl10) The run page follows the run over a socket instead of reading it every 4 s
 - [ ] (dl11) Custom cards open in the card inspector at the table with their frame and text, and the boss's phases sit in the top bar
-- [ ] (dl12) e2e: a one-player run with bot allies from the lobby through the first boss fight to the loot screen
 - [ ] (dl13) A second theme with its bosses, events and reward pool; Heat 3 and above
 
 ## M8 Polish and deploy

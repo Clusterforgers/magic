@@ -722,6 +722,7 @@ impl TableView {
             first_player: state.first_player(),
             turn: TurnView {
                 number: turn.number(),
+                round: turn.round(),
                 active: turn.active(),
                 active_left: state.stage() == Stage::Turns && state.active_player().is_none(),
                 extra: turn.is_extra(),

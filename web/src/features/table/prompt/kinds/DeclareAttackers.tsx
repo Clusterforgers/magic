@@ -18,7 +18,9 @@ import {
   sameTarget,
   targetKey,
 } from '../combatText'
+import { useSeatNamer } from '../../names'
 import { BarButton } from '../CombatBar'
+import { partyWords } from '../partyAttack'
 import { markCards, useCardMarks, useCardNotes } from '../marks'
 import type { CardMarks, CardNote, CardNotes } from '../marks'
 import { useOwnCardIds } from '../ownCards'
@@ -49,6 +51,7 @@ function aimedAt(option: AttackerOption, aim: AttackTarget | undefined): AttackT
  */
 export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ options }) => {
   const { id, answer, selection } = usePrompt()
+  const seatName = useSeatNamer()
   const own = useOwnCardIds()
   const defenderStore = useDefenderStore()
   // An attacker with no defender cannot attack; a creature listed twice counts once.
@@ -369,7 +372,7 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
   const cleared = selection.ids.size === required.length && missing.length === 0
 
   return (
-    <PromptLayout compact text={text}>
+    <PromptLayout compact text={`${partyWords(options.party, seatName)}${text}`}>
       {options.most === undefined ? null : (
         <p data-slot="declaration-limit" className="basis-full text-xs text-muted-foreground">
           No more than {options.most} {options.most === 1 ? 'creature' : 'creatures'} can attack this combat.

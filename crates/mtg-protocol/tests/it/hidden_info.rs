@@ -50,6 +50,8 @@ const SCALAR_KEYS: &[&str] = &[
     // A player's speed (CR 702.179).
     "speed",
     "number",
+    // The round of the turn (`TurnView.round`).
+    "round",
     "lands_played",
     "mulligans",
     "bank",

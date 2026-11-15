@@ -99,7 +99,7 @@ test.describe('the duel table', () => {
 
   test('a phone shows the whole of whose turn it is', async ({ page }) => {
     await atSize(page, { width: 390, height: 844 })
-    // The words up to the turn number ("Bo's turn · 5") end inside the pill; the step after them may be cut.
+    // The words up to the turn number ("Bo's turn · Round 5") end inside the pill; the step after them may be cut.
     const room = await page.evaluate(() => {
       const pill = document.querySelector<HTMLElement>('[data-slot="banner"] > *')
       const text = pill === null ? null : document.createTreeWalker(pill, NodeFilter.SHOW_TEXT).nextNode()

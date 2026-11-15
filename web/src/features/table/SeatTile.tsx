@@ -33,6 +33,7 @@ import { useStable } from './useStable'
 import { useKeepInView } from './useKeepInView'
 import { defenderOutline, useDefender } from './combat/defender'
 import { AttackBadges } from './combat/AttackBadges'
+import { ATTACKED_EDGE, useAttacked } from './combat/attacked'
 import { LifeForecast } from './combat/LifeForecast'
 import { TurnTimeMark } from './TurnTimeMark'
 import { TeamBadge } from '@/components/TeamBadge'
@@ -71,6 +72,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
   const chips = useCommanderChips(seat)
   const enchants = useEnchantChips(seat)
   const defender = useDefender(seat)
+  const attacked = useAttacked(seat)
   const team = useSeatTeam(seat)
   const effects = usePlay(
     useStable((state) => (player === undefined ? [] : seatEffects(player, state.objectsById, name, namer))),
@@ -124,6 +126,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
             : '')
       }
       data-defender={defender.state}
+      data-attacked={attacked || undefined}
       onClick={() => {
         // While an attack is aimed the tile is a defender too: the click attacks the seat and shows its board.
         if (defender.state !== undefined) defender.pick()
@@ -132,6 +135,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
       className={cn(
         'relative grid h-full min-w-44 flex-1 grid-cols-[minmax(0,1fr)] content-center gap-0.5 overflow-hidden plaque rounded-lg px-2 py-0.5 text-left text-xs ring-1 ring-foreground/10 outline-none hover:brightness-125 focus-visible:ring-3 focus-visible:ring-primary',
         focused && 'ring-2 ring-primary',
+        attacked && ATTACKED_EDGE,
         eliminated && 'border-l-4 border-destructive',
         player.boss ? 'border-t-2 border-boss' : SEAT_EDGE,
         flags.active && cn(ACTIVE_TINT, ACTIVE_EDGE),

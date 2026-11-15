@@ -1,11 +1,13 @@
 //! Goal: a run folds its events as the design says: the lobby takes up to four heroes and starts only with a player
 //! and every deck chosen; the first boss needs no vote; a lost fight costs a heart and is retried until the hearts
-//! run out; a fight whose game ended unplayed waits for a new game at no cost; a won fight carries each hero's life, brings Spirits back and offers loot; votes go to the most votes or
+//! run out; a fight whose game ended unplayed waits for a new game at no cost; a fight whose table closed or that the host retreated from counts as lost; a won fight carries each hero's life, brings Spirits back and offers loot; votes go to the most votes or
 //! the torch bearer; bots vote only after every player; a vote is always between two camps, a camp's next boss is
 //! entered with no vote and stored votes for that boss still replay; bots answer every offer; and replaying the
 //! events gives the same run.
 use mtg_campaign::run::{HEAL_AFTER_BOSS, HEARTS, LIFE, SPIRIT_RETURN};
-use mtg_campaign::{Brain, Content, HeroDeck, Offer, Pick, Run, RunEvent, Status, content};
+use mtg_campaign::{
+    Brain, Content, Forfeit, HeroDeck, Offer, Pick, Run, RunEvent, Status, content,
+};
 use proptest::prelude::*;
 use rstest::rstest;
 
@@ -334,6 +336,76 @@ fn a_voided_fight_waits_for_a_new_game_at_no_cost(#[case] voids: usize) {
     assert_eq!(run.status, Status::Fight { game: None });
     let replayed = Run::replay(content, "warrens", 5, 0, &events).unwrap();
     assert_eq!(replayed, run);
+}
+
+#[rstest]
+#[case::closed_table(Forfeit::Closed, true, "lost its table")]
+#[case::host_retreat(Forfeit::Retreat, true, "retreated")]
+#[case::retreat_before_a_game(Forfeit::Retreat, false, "retreated")]
+fn a_forfeited_fight_costs_a_heart_like_a_lost_one_and_is_made_again(
+    #[case] cause: Forfeit,
+    #[case] with_game: bool,
+    #[case] words: &str,
+) {
+    let content = content().unwrap();
+    let (mut run, mut events) = lobby(content, 5, 1);
+    apply(&mut run, &mut events, RunEvent::Started);
+    if with_game {
+        apply(
+            &mut run,
+            &mut events,
+            RunEvent::FightCreated { game: "g".into() },
+        );
+    }
+    apply(&mut run, &mut events, RunEvent::FightForfeited { cause });
+    assert_eq!(run.hearts, HEARTS - 1);
+    assert_eq!(run.status, Status::Fight { game: None });
+    assert!(run.heroes.iter().all(|h| h.life == LIFE / 2));
+    let line = run.log.last().unwrap();
+    assert!(
+        line.starts_with("The party") && line.contains(words),
+        "{line}"
+    );
+    let replayed = Run::replay(content, "warrens", 5, 0, &events).unwrap();
+    assert_eq!(replayed, run);
+}
+
+#[test]
+fn forfeiting_every_fight_ends_the_run_in_defeat() {
+    let content = content().unwrap();
+    let (mut run, mut events) = lobby(content, 5, 0);
+    apply(&mut run, &mut events, RunEvent::Started);
+    let retreat = RunEvent::FightForfeited {
+        cause: Forfeit::Retreat,
+    };
+    for _ in 0..HEARTS {
+        apply(&mut run, &mut events, retreat.clone());
+    }
+    assert_eq!(run.hearts, 0);
+    assert_eq!(run.status, Status::Defeat);
+    assert!(
+        run.apply(content, &retreat).is_err(),
+        "a finished run has no fight to retreat from"
+    );
+}
+
+#[test]
+fn a_table_that_never_was_cannot_close_and_the_lobby_is_no_fight_to_retreat_from() {
+    let content = content().unwrap();
+    let (mut run, mut events) = lobby(content, 5, 1);
+    let retreat = RunEvent::FightForfeited {
+        cause: Forfeit::Retreat,
+    };
+    assert!(
+        run.apply(content, &retreat).is_err(),
+        "the lobby is no fight"
+    );
+    apply(&mut run, &mut events, RunEvent::Started);
+    let closed = RunEvent::FightForfeited {
+        cause: Forfeit::Closed,
+    };
+    assert!(run.apply(content, &closed).is_err(), "no game to close yet");
+    assert_eq!(run.hearts, HEARTS);
 }
 
 #[rstest]

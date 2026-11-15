@@ -180,7 +180,7 @@ impl<'a> Seen<'a> {
 
     /// Whether teams share a life total.
     pub fn shares_life(&self) -> bool {
-        self.state.shares_turns()
+        self.state.shares_life()
     }
 
     /// Every player still in the game.

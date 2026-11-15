@@ -88,7 +88,7 @@ test('a counterspell, a combat trick and a sacrifice by hand, both seats reading
     )
     // Ada has the first turn of the pinned seed. Both seats hold Full Control, so each is asked at every window.
     await expect(sentence(ada)).toContainText('You have priority')
-    await expect(banner(ada)).toContainText('Your turn · 1 · Precombat main')
+    await expect(banner(ada)).toContainText('Your turn · Round 1 · Precombat main')
     for (const { page } of players) await releaseFocus(page)
     for (const { page } of players) await page.keyboard.press('Control+Shift')
     await expect(bo.page.getByRole('button', { name: 'Full Control: held' })).toBeVisible()
@@ -101,7 +101,7 @@ test('a counterspell, a combat trick and a sacrifice by hand, both seats reading
     await expect.poll(() => stack(ada)).toEqual([`Top of the stack: ${lion}`])
     await pass(ada)
     await expect(sentence(bo)).toContainText("Responding to Ada's Silvercoat Lion")
-    await expect(banner(bo)).toContainText("Ada's turn · 1 · Precombat main")
+    await expect(banner(bo)).toContainText("Ada's turn · Round 1 · Precombat main")
     await tutor(bo, 'Counterspell')
     await addMana(bo, 'Blue', 2)
     await cast(bo, 'Counterspell', 'Silvercoat Lion')

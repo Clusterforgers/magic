@@ -25,6 +25,12 @@ export const PROMPT_CARD_BOX: Record<PromptCardSize, string> = {
 /** Up to this many cards on offer are drawn whole; a longer list is compact, so a row holds more cards. */
 export const NORMAL_UP_TO = 12
 
+/**
+ * The box of a card in the long-list overlay: 5:7 at the width the panel's layout picked (`--overlay-card-w`, set on the
+ * grid by `CardChoices`), whole at any size the layout allows.
+ */
+const OVERLAY_CARD_BOX = '[--card-h:calc(var(--card-w)*7/5)] [--card-w:var(--overlay-card-w,5.5rem)]'
+
 /** The size for a list of `count` cards. */
 export function tileSizeFor(count: number): PromptCardSize {
   return count <= NORMAL_UP_TO ? 'normal' : 'compact'
@@ -46,6 +52,8 @@ export interface PromptCardProps {
   hotkey?: string | undefined
   /** A click or activation on a card that is not closed. */
   onPress(id: ObjectId): void
+  /** The card stands in the long-list overlay, at the width its grid sets (`OVERLAY_CARD_BOX`). */
+  overlay?: boolean
   ref?: Ref<HTMLButtonElement>
 }
 
@@ -63,6 +71,7 @@ export function PromptCard({
   tabbable,
   hotkey,
   onPress,
+  overlay = false,
   ref,
 }: PromptCardProps) {
   const object = usePlay((state) => state.objectsById[id])
@@ -88,7 +97,7 @@ export function PromptCard({
       {...handlers}
       className={cn(
         'relative grid h-(--card-h) w-(--card-w) shrink-0 place-items-center rounded-md outline-offset-2 outline-primary focus-visible:outline-2',
-        PROMPT_CARD_BOX[size],
+        overlay ? OVERLAY_CARD_BOX : PROMPT_CARD_BOX[size],
         chosen
           ? HIGHLIGHT.selected
           : closed

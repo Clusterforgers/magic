@@ -19,6 +19,12 @@
 //!    pace does not show that it holds nothing, at every default window but one: the seat's own main phase with an
 //!    empty stack, where what a seat holds shows anyway (a land or a spell is played in plain sight) and it is passed
 //!    for at once.
+//!
+//!    A Spirit (a fallen hero of Delves, `docs/delves.md`) has default windows of its own, the ones where its haunt
+//!    actions matter, each with an empty stack: its team's upkeep and main phases, and the opponents' beginning of
+//!    combat and declare attackers step when they attack its team; and any moment an object of an opponent is on the
+//!    stack, so the Spirit can answer it. Its team's own spells and abilities never ask it. A Spirit holds no hand and
+//!    its cards are gone, so what it can do is public; the dwell is the same as for any seat.
 //! 5. Smart stops ([`smart`]), when the seat turned them on and does not yield: a step that is no default window
 //!    where a permanent of the seat has an ability its timing lets it use is a window. The seat is asked when it can
 //!    use such an ability and passed for after a dwell otherwise.
@@ -27,6 +33,7 @@
 //!    yields: a yield is the seat's own choice to hurry.
 
 use mtg_core::ids::PlayerId;
+use mtg_engine::player::Player;
 use mtg_engine::turn::Step;
 use mtg_engine::{Decision, DecisionKind, GameState};
 use mtg_protocol::{FullControlMode, StopSide};
@@ -45,6 +52,41 @@ pub(crate) struct Window {
     pub(crate) stack: bool,
     /// Whether the stack holds an object of another seat.
     pub(crate) others_object: bool,
+    /// What the seat's haunt actions can use here; `None` for a seat that is not a Spirit.
+    pub(crate) haunt: Option<Haunt>,
+}
+
+/// What a Spirit's haunt actions can use at a window, read from the table alone.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) struct Haunt {
+    /// Whether the stack holds an object of an opponent, which an action can answer.
+    pub(crate) foes_object: bool,
+    /// Whether it is an opponent's turn: Hinder and Howl before its combat.
+    pub(crate) foe_turn: bool,
+    /// Whether creatures of an opponent attack the Spirit's team: Ward before blockers.
+    pub(crate) attacked: bool,
+}
+
+impl Haunt {
+    /// The haunt facts of the window `seat` meets in `state`, if the seat is a Spirit.
+    fn at(state: &GameState, seat: PlayerId) -> Option<Haunt> {
+        if !state.player(seat).is_some_and(Player::is_spirit) {
+            return None;
+        }
+        Some(Haunt {
+            foes_object: state.stack().iter().any(|id| {
+                state
+                    .object(*id)
+                    .is_some_and(|object| state.is_opponent(seat, object.controller()))
+            }),
+            foe_turn: state.is_opponent(seat, state.turn().active()),
+            attacked: state.combat().attackers().iter().any(|attacker| {
+                attacker
+                    .defender(state)
+                    .is_some_and(|defender| state.are_teammates(seat, defender))
+            }),
+        })
+    }
 }
 
 impl Window {
@@ -60,6 +102,7 @@ impl Window {
                     .object(*id)
                     .is_some_and(|object| object.controller() != seat)
             }),
+            haunt: Haunt::at(state, seat),
         }
     }
 
@@ -72,8 +115,17 @@ impl Window {
         }
     }
 
-    /// Whether this is one of the default windows (rule 4).
+    /// Whether this is one of the default windows (rule 4): for a Spirit those where its haunt actions matter, for any
+    /// other seat both main phases of its own turn, declare attackers and blockers on any turn and any moment an object
+    /// of another seat is on the stack.
     pub(crate) fn is_default(self) -> bool {
+        if let Some(haunt) = self.haunt {
+            let own_step = self.own_turn && (self.step == Step::Upkeep || self.step.is_main());
+            let combat = haunt.foe_turn
+                && (self.step == Step::BeginCombat
+                    || (self.step == Step::DeclareAttackers && haunt.attacked));
+            return haunt.foes_object || (!self.stack && (own_step || combat));
+        }
         self.others_object
             || matches!(self.step, Step::DeclareAttackers | Step::DeclareBlockers)
             || (self.own_turn && self.step.is_main())
@@ -181,6 +233,9 @@ mod smart;
 mod boards;
 
 #[cfg(test)]
+mod spirits;
+
+#[cfg(test)]
 mod tests {
     //! Goal: the verdict (ask, pass at once, pass after a dwell) is the rule table for every combination of whose turn, step, stack, stop, Full Control mode, yield and ability to act; a seat that cannot act waits at every default window but its own main phase with an empty stack, a stop interrupts a yield and Full Control ignores it; windows are read from the table alone, for the seat's own side and objects.
     use super::*;
@@ -241,6 +296,7 @@ mod tests {
                 own_turn,
                 stack: self != Stack::Empty,
                 others_object: self == Stack::Others,
+                haunt: None,
             }
         }
     }
@@ -436,7 +492,8 @@ mod tests {
                 step: Step::Main1,
                 own_turn: false,
                 stack: false,
-                others_object: false
+                others_object: false,
+                haunt: None,
             }
         );
         assert!(

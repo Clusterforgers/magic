@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { describeDeckError } from '@/features/decks/errors'
 import type { DeckGroupsApi } from '@/net/deckGroups'
 import type { DeckGroupView } from '@/protocol/generated'
-import { filed, moved } from './grouping'
+import { added, moved, removed } from './grouping'
 
 /** The account's deck groups and the changes to them. */
 export interface DeckGroups {
@@ -18,8 +18,12 @@ export interface DeckGroups {
   remove(id: string): void
   /** Moves the group `by` places in the order. */
   move(id: string, by: number): void
-  /** Files the deck in the group, or in none for null. */
-  file(deckId: string, group: string | null): void
+  /** Adds the deck to the group, beside its other groups. */
+  addDeck(deckId: string, group: string): void
+  /** Takes the deck out of that group only. */
+  removeDeck(deckId: string, group: string): void
+  /** Makes a group named `name` and adds the deck to it. */
+  createWithDeck(name: string, deckId: string): void
 }
 
 const NONE: readonly DeckGroupView[] = []
@@ -116,13 +120,39 @@ export function useDeckGroups(api: DeckGroupsApi, enabled = true): DeckGroups {
     },
     [api, run, current],
   )
-  const file = useCallback(
-    (deckId: string, group: string | null) =>
+  const addDeck = useCallback(
+    (deckId: string, group: string) =>
       run(
-        (was) => filed(was, deckId, group),
-        () => api.file(deckId, group),
+        (was) => added(was, deckId, group),
+        () => api.addDeck(deckId, group),
       ),
     [api, run],
+  )
+  const removeDeck = useCallback(
+    (deckId: string, group: string) =>
+      run(
+        (was) => removed(was, deckId, group),
+        () => api.removeDeck(deckId, group),
+      ),
+    [api, run],
+  )
+  const createWithDeck = useCallback(
+    (name: string, deckId: string) => {
+      void api
+        .create(name)
+        .then((group) => {
+          setGroups((was) => [...(was ?? NONE), { ...group, decks: [deckId] }])
+          return api.addDeck(deckId, group.id)
+        })
+        .then(
+          () => setProblem(null),
+          (error: unknown) => {
+            setProblem(describeDeckError(error))
+            setRound((n) => n + 1)
+          },
+        )
+    },
+    [api],
   )
 
   return useMemo(
@@ -135,8 +165,23 @@ export function useDeckGroups(api: DeckGroupsApi, enabled = true): DeckGroups {
       setCollapsed,
       remove,
       move,
-      file,
+      addDeck,
+      removeDeck,
+      createWithDeck,
     }),
-    [enabled, groups, current, problem, create, rename, setCollapsed, remove, move, file],
+    [
+      enabled,
+      groups,
+      current,
+      problem,
+      create,
+      rename,
+      setCollapsed,
+      remove,
+      move,
+      addDeck,
+      removeDeck,
+      createWithDeck,
+    ],
   )
 }

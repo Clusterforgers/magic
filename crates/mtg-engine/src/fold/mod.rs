@@ -147,6 +147,8 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             crate::companions::fold(state, event)
         }
         Event::AttackersDeclared { .. }
+        | Event::AttackersChosen { .. }
+        | Event::AttackChoicesRefused { .. }
         | Event::BandFormed { .. }
         | Event::BlockersDeclared { .. }
         | Event::DamageAssigned { .. }

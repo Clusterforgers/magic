@@ -148,6 +148,7 @@ pub mod merged;
 pub mod monarch;
 pub mod object;
 mod party;
+mod party_attacks;
 pub mod phases;
 pub mod phasing;
 pub mod player;

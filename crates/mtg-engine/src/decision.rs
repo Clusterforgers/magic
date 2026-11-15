@@ -568,6 +568,23 @@ pub struct AttackOptions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Vec<AttackTarget>>>", optional))]
     pub at_least_one: Option<Box<Vec<Vec<AttackTarget>>>>,
+    /// Under shared team turns, what the player's teammates chose before them and why the team's last choice was
+    /// refused; the options are the player's own creatures. Left out for a player who declares alone.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub party: Option<Box<PartyAttack>>,
+}
+
+/// A teammate's part in a shared declaration of attackers (CR 805): what the others chose so far.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct PartyAttack {
+    /// The attacks the teammates who chose before chose, each with its controller.
+    pub declared: Vec<(PlayerId, ObjectId, AttackTarget)>,
+    /// Why the team's previous choice was refused, when it was.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub refused: Option<String>,
 }
 
 impl AttackOptions {
@@ -1128,6 +1145,7 @@ mod tests {
             cant_alone: Vec::new(),
             joins: Vec::new(),
             at_least_one: None,
+            party: None,
             attackers: vec![attack(1, &[2, 3]), attack(2, &[3]), attack(3, &[])],
             required: vec![id(1), id(3)],
             mana: 0,
@@ -1147,6 +1165,7 @@ mod tests {
             cant_alone: Vec::new(),
             joins: Vec::new(),
             at_least_one: None,
+            party: None,
             attackers: Vec::new(),
             required: Vec::new(),
             mana: 0,

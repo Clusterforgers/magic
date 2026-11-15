@@ -30,7 +30,7 @@ const lookup: GameLookup = {
 // Where each recording stops: the late join runs to GameOver, the lobby one ends in the third turn.
 const FINAL_BANNER: Record<string, string> = {
   'late join': 'The game is over',
-  lobby: 'Your turn · 3 · Upkeep',
+  lobby: 'Your turn · Round 2 · Upkeep',
 }
 
 const ids = (elements: Iterable<Element>): number[] =>
@@ -159,7 +159,7 @@ describe.each(transcripts)('replaying the $name transcript of seat 0', (transcri
   })
 
   it('words the turn banner while it plays and where the recording ends', () => {
-    expect([...played.banners].some((text) => /^(Your|Bo's) turn · \d+ · /.test(text))).toBe(true)
+    expect([...played.banners].some((text) => /^(Your|Bo's) turn · Round \d+ · /.test(text))).toBe(true)
     expect(played.lastBanner).toBe(FINAL_BANNER[transcript.name])
   })
 

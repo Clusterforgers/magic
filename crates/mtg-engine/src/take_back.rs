@@ -303,6 +303,8 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::LifePaid { .. }
         | Event::CardDiscarded { .. }
         | Event::AttackersDeclared { .. }
+        | Event::AttackersChosen { .. }
+        | Event::AttackChoicesRefused { .. }
         | Event::BandFormed { .. }
         | Event::BlockersDeclared { .. }
         | Event::DamageAssigned { .. }

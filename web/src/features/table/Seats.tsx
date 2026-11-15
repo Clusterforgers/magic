@@ -8,6 +8,7 @@ import type { PlayerId } from '@/protocol/generated'
 import { Battlefield } from './Battlefield'
 import { useDefenderClick } from './combat/defender'
 import { LandFoldContext } from './landFold'
+import { LandsShownContext } from './landPrefs'
 import { LandSummary } from './LandSummary'
 import { BoardZoomContext, useZoomClose } from './boardZoom'
 import type { CardSize } from './cardSize'
@@ -35,6 +36,8 @@ interface SeatAreaProps {
   pod: PodPlace
   /** An opponent of a grid: its lands fold into its pod's lands chip (`LandFoldContext`). */
   foldLands?: boolean
+  /** The board has no permanent and draws no zone of its own: the seat is its pod's line or its tile (boss mode). */
+  collapsed?: boolean
 }
 
 /**
@@ -68,17 +71,25 @@ export const SeatArea = memo(function SeatArea({
   facing,
   pod,
   foldLands = false,
+  collapsed = false,
 }: SeatAreaProps) {
   const aside = pod === 'aside'
   // The creatures' card width of the board, which the pod's corner follows.
   const [card, setCard] = useState<number | null>(null)
-  // An opponent of a grid starts with its lands folded into its pod's chip; any other board lays them out.
   const defender = useDefenderClick(seat)
-  // A seat's lands start folded into its pod's chip; a phone's board without a drawn pod carries the chip itself.
-  const [landsOpen, setLandsOpen] = useState(false)
+  // A board that carries the chip lays its lands out or folds them as the table does (`landPrefs.ts`), and its chip turns
+  // that for this board alone until the table changes; a phone's board without a drawn pod carries the chip itself.
+  const shown = useContext(LandsShownContext)
+  const [turned, setTurned] = useState(false)
+  const [seen, setSeen] = useState(shown)
+  if (seen !== shown) {
+    setSeen(shown)
+    setTurned(false)
+  }
+  const open = shown !== turned
   const fold = useMemo(
-    () => (foldLands ? { open: landsOpen, toggle: () => setLandsOpen((was) => !was) } : null),
-    [foldLands, landsOpen],
+    () => (foldLands ? { open, toggle: () => setTurned((was) => !was) } : null),
+    [foldLands, open],
   )
   const owner = useSeatNamer()(seat)
   return (
@@ -103,7 +114,7 @@ export const SeatArea = memo(function SeatArea({
         {pod === 'aside' ? <PodColumn seat={seat} card={card} /> : null}
         {/* A line pod is on the table's middle side of its board: over an opponent's, under yours, by your hand. */}
         {pod === 'line' && facing === 'far' ? <SeatPanel seat={seat} variant="line" /> : null}
-        <Battlefield seat={seat} size={size} facing={facing} onCardWidth={setCard} />
+        {collapsed ? null : <Battlefield seat={seat} size={size} facing={facing} onCardWidth={setCard} />}
         {pod === 'line' && facing === 'near' ? <SeatPanel seat={seat} variant="line" /> : null}
       </div>
     </LandFoldContext>

@@ -86,6 +86,8 @@ export function SharedStrip({
         ref={sheet}
         data-slot="shared-sheet"
         data-fx-anchor="stack"
+        // The card preview keeps off the strip while it holds a decision: its sentence and buttons stay in view.
+        data-keep-clear={mine ? '' : undefined}
         data-your-turn={yourTurn || undefined}
         // The sheet starts beside the pod column, which keeps the life of the seat above it in view.
         style={inset === 0 ? undefined : { left: inset }}

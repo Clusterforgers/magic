@@ -3,9 +3,9 @@ import { useId, useState } from 'react'
 import type { DragEvent, ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import type { DeckGroupView, DeckListItem } from '@/protocol/generated'
-import { DECK_DRAG_TYPE } from './drag'
+import { DECK_DRAG_FROM_TYPE, DECK_DRAG_TYPE } from './drag'
 import { GroupActions } from './GroupMenus'
-import { sections } from './grouping'
+import { groupsOf, sections, UNGROUPED } from './grouping'
 import type { Section } from './grouping'
 import type { DeckGroups } from './useDeckGroups'
 
@@ -19,6 +19,9 @@ interface GroupedDecksProps {
 }
 
 const count = (n: number): string => `${n} ${n === 1 ? 'deck' : 'decks'}`
+
+/** Ctrl or Alt held: the drop adds the deck and leaves it where it was. */
+const copies = (event: DragEvent): boolean => event.ctrlKey || event.altKey
 
 function GroupSection({
   section,
@@ -37,7 +40,8 @@ function GroupSection({
   first: boolean
   last: boolean
   onToggle(): void
-  onDropDeck(deckId: string): void
+  /** A deck row dropped here, from the section `from` (null: Ungrouped); `copy` keeps it there too. */
+  onDropDeck(deckId: string, from: string | null, copy: boolean): void
   onRename(): void
   onMove(by: number): void
   onDelete(): void
@@ -54,7 +58,7 @@ function GroupSection({
       onDragOver={(event) => {
         if (!carriesDeck(event)) return
         event.preventDefault()
-        event.dataTransfer.dropEffect = 'move'
+        event.dataTransfer.dropEffect = copies(event) ? 'copy' : 'move'
         setOver(true)
       }}
       onDragLeave={() => setOver(false)}
@@ -63,7 +67,8 @@ function GroupSection({
         const deckId = event.dataTransfer.getData(DECK_DRAG_TYPE)
         if (deckId === '') return
         event.preventDefault()
-        onDropDeck(deckId)
+        const from = event.dataTransfer.getData(DECK_DRAG_FROM_TYPE)
+        onDropDeck(deckId, from === '' || from === UNGROUPED ? null : from, copies(event))
       }}
       className={cn('grid gap-2 rounded-xl', over && 'bg-accent/40 ring-2 ring-primary')}
     >
@@ -101,7 +106,7 @@ function GroupSection({
         <div id={`${id}-decks`}>
           {section.items.length === 0 ? (
             <p className="rounded-lg border border-dashed px-4 py-3 text-sm text-muted-foreground">
-              No decks here. Drag a deck onto this group, or use its Group menu.
+              No decks here. Drag a deck onto this group, or use its Groups menu.
             </p>
           ) : (
             <ul aria-label={`Decks in ${name}`} className="grid gap-3">
@@ -116,7 +121,9 @@ function GroupSection({
 
 /**
  * The decks page in groups: each group a collapsible section (the collapsed state is kept on the server), in the
- * owner's order, then the decks in no group. A deck is dropped onto a group, or moved with its row's Group menu.
+ * owner's order, then the decks in no group. A deck shows under every group it sits in. Dropping a row on another
+ * group moves it there out of the group it was dragged from (Ctrl or Alt keeps it in both), dropping it on Ungrouped
+ * takes it out of that group only; the row's Groups menu adds or removes any group.
  */
 export function GroupedDecks({ decks, groups, renderRow, onRename, onAnnounce }: GroupedDecksProps) {
   const [looseClosed, setLooseClosed] = useState(false)
@@ -125,11 +132,20 @@ export function GroupedDecks({ decks, groups, renderRow, onRename, onAnnounce }:
   )
   const nameOf = (group: string | null): string =>
     groups.groups.find((entry) => entry.id === group)?.name ?? 'Ungrouped'
-  const drop = (deckId: string, target: string | null): void => {
+  const drop = (deckId: string, from: string | null, target: string | null, copy: boolean): void => {
     const deck = decks.find((entry) => entry.id === deckId)
-    if (deck === undefined) return
-    groups.file(deckId, target)
-    onAnnounce(`Moved “${deck.name}” to ${nameOf(target)}.`)
+    if (deck === undefined || from === target) return
+    const held = groupsOf(groups.groups, deckId)
+    const leaves = from !== null && !copy
+    if (target !== null && !held.includes(target)) groups.addDeck(deckId, target)
+    if (leaves) groups.removeDeck(deckId, from)
+    if (target === null) {
+      if (leaves) onAnnounce(`Removed “${deck.name}” from ${nameOf(from)}.`)
+    } else if (leaves) {
+      onAnnounce(`Moved “${deck.name}” from ${nameOf(from)} to ${nameOf(target)}.`)
+    } else {
+      onAnnounce(`Added “${deck.name}” to ${nameOf(target)}.`)
+    }
   }
   const real = groups.groups.length
   return (
@@ -147,7 +163,7 @@ export function GroupedDecks({ decks, groups, renderRow, onRename, onAnnounce }:
             onToggle={() =>
               group === null ? setLooseClosed((was) => !was) : groups.setCollapsed(group.id, !collapsed)
             }
-            onDropDeck={(deckId) => drop(deckId, group?.id ?? null)}
+            onDropDeck={(deckId, from, copy) => drop(deckId, from, group?.id ?? null, copy)}
             onRename={() => {
               const full = groups.groups.find((entry) => entry.id === group?.id)
               if (full !== undefined) onRename(full)
@@ -158,7 +174,7 @@ export function GroupedDecks({ decks, groups, renderRow, onRename, onAnnounce }:
             onDelete={() => {
               if (group === null) return
               groups.remove(group.id)
-              onAnnounce(`Deleted the group “${group.name}”. Its decks are ungrouped.`)
+              onAnnounce(`Deleted the group “${group.name}”. Its decks stay.`)
             }}
           >
             {section.items.map((deck) => renderRow(deck, group?.id ?? null))}

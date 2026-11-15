@@ -83,6 +83,9 @@ fn w11a_declare(
         Answer::DeclareAttackers(attackers) => (attackers, crate::combat::AttackExtras::default()),
         _ => return Err(IllegalAnswer::NotOffered("attack").into()),
     };
+    if options.party.is_some() {
+        return crate::party_attacks::answer(state, player, options, attackers, extras);
+    }
     check_attackers(options, &attackers)?;
     crate::w11a_exert::w11a_check_exert(options, &attackers, &extras.exert)?;
     crate::keywords::banding::check_bands(state, &attackers, &extras.bands)?;

@@ -158,7 +158,7 @@ const counted = (c: Count): RuleSpec =>
 const plural = (n: number, one: string, many = `${one}s`): string => `${n} ${n === 1 ? one : many}`
 
 type Flag = keyof HouseRules &
-  ('mana_burn' | 'open_hands' | 'revealed_library_top' | 'opening_hand_smoothing')
+  ('mana_burn' | 'blocker_timer' | 'open_hands' | 'revealed_library_top' | 'opening_hand_smoothing')
 
 const flag = (id: Flag, label: string, help: string, group: RuleGroup, on: string, off: string): RuleSpec =>
   rule<boolean>({
@@ -466,6 +466,14 @@ export const RULES: readonly RuleSpec[] = [
     'A player may ask the table to undo their last cast, activation or land play.',
     'Table',
     'No take-backs',
+  ),
+  flag(
+    'blocker_timer',
+    'Blocker timer',
+    'The defending player has a time limit to declare blockers.',
+    'Table',
+    'Blocker timer',
+    'No blocker timer',
   ),
   flag('open_hands', 'Open hands', 'Every player sees every hand.', 'Table', 'Open hands', 'Hands hidden'),
   flag(

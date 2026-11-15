@@ -133,6 +133,7 @@ proptest! {
             cant_alone,
             joins: Vec::new(),
             at_least_one: None,
+            party: None,
         };
         let attack = options.legal_attack();
         prop_assert_eq!(check_attackers(&options, &attack), Ok(()), "{:?} {:?}", options, attack);

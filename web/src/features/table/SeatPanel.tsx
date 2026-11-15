@@ -14,6 +14,7 @@ import { EnchantChips } from './EnchantChips'
 import { useDefender } from './combat/defender'
 import type { DefenderState } from './combat/defender'
 import { AttackBadges } from './combat/AttackBadges'
+import { ATTACKED_EDGE, useAttacked } from './combat/attacked'
 import { LifeForecast } from './combat/LifeForecast'
 import { LifeFx } from './fx/LifeFx'
 import { LiveManaPool } from './LiveManaPool'
@@ -163,6 +164,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
   const chips = useCommanderChips(seat)
   const enchants = useEnchantChips(seat)
   const defender = useDefender(seat)
+  const attacked = useAttacked(seat)
   const team = useSeatTeam(seat)
   const commanderGame = usePlay((state) => state.view?.format.toLowerCase() === 'commander')
   // The blocks above the corner: its room is the column less these (the column is measured by `PodColumn`).
@@ -201,6 +203,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
     'data-team': team?.team,
     'data-state': podState(flags.active, flags.priority),
     'data-defender': defender.state,
+    'data-attacked': attacked || undefined,
     onClick: defender.state === undefined ? undefined : pickOnClick(defender.pick),
   }
   const words = [
@@ -210,7 +213,10 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
     .filter((part) => part !== '')
     .join(' ')
   // The glow carries its own ring and edge, so it stands in for the ring classes instead of adding to them.
-  const ring = flags.cue ? YOUR_TURN_EDGE : cn('ring-1 ring-foreground/10', flags.active && ACTIVE_EDGE)
+  const ring = cn(
+    flags.cue ? YOUR_TURN_EDGE : cn('ring-1 ring-foreground/10', flags.active && ACTIVE_EDGE),
+    attacked && ATTACKED_EDGE,
+  )
   const line = variant === 'line'
   const mana = <LiveManaPool pool={player.mana} />
   const notes = (

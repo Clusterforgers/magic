@@ -1,7 +1,7 @@
 // Goal: a choice of cards takes the centre overlay where `wantsOverlay` says so (every choice on a phone, a long list anywhere): its cards leave the shared strip for an overlay over both boards drawn whole, the strip moves under it and keeps the sentence and the buttons, and an answer closes it; a wide window keeps a short list in the strip.
 import { act, render, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { GameContext } from '@/features/game/gameContext'
 import type { Viewport } from '../layout'
 import { CHOICE_AREAS, TABLE_AREAS } from '../layout'
@@ -88,6 +88,132 @@ describe('a long list in a wide window', () => {
     expect(strip.querySelector('[data-slot="card-choices"]')).toBeNull()
     expect(within(strip).getByRole('button', { name: /Confirm/ })).toBeInTheDocument()
     expect(main.style.gridTemplateAreas).toBe(CHOICE_AREAS)
+  })
+})
+
+/** The size of every element's box, for the table's measuring of the overlay; jsdom has no layout. */
+class FakeObserver {
+  static all = new Set<FakeObserver>()
+  readonly callback: ResizeObserverCallback
+  constructor(callback: ResizeObserverCallback) {
+    this.callback = callback
+    FakeObserver.all.add(this)
+  }
+  observe(): void {}
+  unobserve(): void {}
+  disconnect(): void {
+    FakeObserver.all.delete(this)
+  }
+}
+const box = { width: 0, height: 0 }
+
+/** The long-list panel of a target choice among creatures of all four seats and the four players. */
+function targets(viewport: Viewport) {
+  const shown = table('targets-many', viewport)
+  const overlay = must(shown.host.querySelector<HTMLElement>('[data-slot="choice-overlay"]'))
+  const row = must(overlay.querySelector<HTMLElement>('[data-slot="card-row"]'))
+  const controllers = (block: Element): (number | undefined)[] =>
+    [...block.querySelectorAll<HTMLElement>('button[data-candidate]')].map(
+      (card) =>
+        shown.game.session.store
+          .getState()
+          .view?.objects.find((object) => object.id === Number(card.dataset['candidate']))?.controller,
+    )
+  return { ...shown, overlay, row, controllers }
+}
+
+describe('the panel of a long list', () => {
+  it('is a compact plaque at most 80% of the room on a desktop window, and the whole room on a phone', () => {
+    expect(targets(WIDE).overlay.className).toContain('max-w-[80%]')
+    expect(targets(WIDE).overlay.className).toContain('max-h-[80%]')
+    expect(targets(PHONE).overlay.className).toContain('max-w-full')
+  })
+
+  it('leads with the search, then the players row, then the cards', () => {
+    const { overlay, row } = targets(WIDE)
+    const search = must(overlay.querySelector('input[type="search"]'))
+    const players = must(overlay.querySelector<HTMLElement>('[data-slot="player-targets"]'))
+    expect(within(players).getAllByRole('button')).toHaveLength(4)
+    expect(search.compareDocumentPosition(players) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(players.compareDocumentPosition(row) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
+  it('groups the cards by controller under a label in the seat’s colour, seats in order', () => {
+    const { row, controllers } = targets(WIDE)
+    const labels = [...row.querySelectorAll<HTMLElement>('[data-slot="card-group-label"]')]
+    const seats = labels.map((label) => Number(label.dataset['seat']))
+    expect(seats.length).toBeGreaterThan(1)
+    expect(seats).toEqual([...seats].sort((a, b) => a - b))
+    for (const label of labels) expect(label.style.getPropertyValue('--seat-hue')).not.toBe('')
+    const blocks = [...row.querySelectorAll('[data-slot="card-group"]')]
+    expect(blocks).toHaveLength(seats.length)
+    blocks.forEach((block, at) => {
+      expect(new Set(controllers(block))).toEqual(new Set([seats[at]]))
+    })
+  })
+
+  it('draws no label over a list one player controls', () => {
+    const { row } = (() => {
+      const shown = table('cards-many', WIDE)
+      return { row: must(shown.host.querySelector<HTMLElement>('[data-slot="card-row"]')) }
+    })()
+    expect(row.querySelector('[data-slot="card-group-label"]')).toBeNull()
+  })
+
+  it('still narrows by the search, keeping the size of the panel and dropping the blocks it empties', async () => {
+    const { overlay, row } = targets(WIDE)
+    const before = row.getAttribute('style')
+    const all = row.querySelectorAll('button[data-candidate]').length
+    await userEvent.setup().type(must(overlay.querySelector('input[type="search"]')), 'Hill Giant')
+    const left = [...row.querySelectorAll<HTMLElement>('button[data-candidate]')]
+    expect(left.length).toBeGreaterThan(0)
+    expect(left.length).toBeLessThan(all)
+    for (const card of left) expect(card.getAttribute('aria-label')).toContain('Hill Giant')
+    expect(row.getAttribute('style')).toBe(before)
+    expect(row.querySelectorAll('[data-slot="card-group"]').length).toBeLessThan(
+      overlay.querySelectorAll('[data-slot="card-group-label"]').length + 1,
+    )
+  })
+
+  it('keeps the numbered keys and Tab in the order the cards are drawn in the blocks', () => {
+    const { row } = targets(WIDE)
+    const cards = [...row.querySelectorAll<HTMLElement>('button[data-candidate]')]
+    expect(cards.filter((card) => card.tabIndex === 0)).toHaveLength(1)
+    expect(cards[0]?.tabIndex).toBe(0)
+  })
+})
+
+describe('the panel lays out for the room the table measures', () => {
+  beforeEach(() => {
+    box.width = 0
+    box.height = 0
+    vi.stubGlobal('ResizeObserver', FakeObserver)
+    vi.spyOn(Element.prototype, 'clientWidth', 'get').mockImplementation(() => box.width)
+    vi.spyOn(Element.prototype, 'clientHeight', 'get').mockImplementation(() => box.height)
+  })
+  afterEach(() => {
+    vi.unstubAllGlobals()
+    vi.restoreAllMocks()
+    FakeObserver.all.clear()
+  })
+
+  it.each([
+    [2400, 1100, 160],
+    [1000, 700, 120],
+  ])('draws cards %i by %i px wide as %i px', (width, height, card) => {
+    box.width = width
+    box.height = height
+    const { row } = targets(WIDE)
+    expect(row.dataset['cardWidth']).toBe(String(card))
+    expect(row.style.getPropertyValue('--overlay-card-w')).toBe(`${card}px`)
+  })
+
+  it('draws smaller cards and scrolls in a lower room', () => {
+    box.width = 1500
+    box.height = 420
+    const { row } = targets(WIDE)
+    expect(Number(row.dataset['cardWidth'])).toBeLessThan(150)
+    expect(row.dataset['scrolls']).toBe('true')
   })
 })
 

@@ -6,6 +6,9 @@ use std::sync::LazyLock;
 
 use super::tokens::same_written_text;
 use crate::ability::Ability;
+use crate::compile::classify;
+use crate::refs::ZoneKind;
+use crate::trigger::TriggerPattern;
 
 /// The abilities, as JSON, each with its wording (`r6102_wholes.json`: a list of `[ability, wording]` pairs).
 const R6102_WHOLES: &str = include_str!("r6102_wholes.json");
@@ -27,11 +30,33 @@ pub(super) fn r6102_read(text: &str) -> Option<Ability> {
         .map(|(shape, _)| shape.clone())
 }
 
-/// Adds the wording of an ability that one of the entries matches whole.
+/// Adds the wording of an ability that one of the entries matches whole; a Saga chapter (CR 714.2) is worded as the
+/// sentence of the entry its effects make as a spell, behind its numeral.
 pub(super) fn r6102_wordings(ability: &Ability, texts: &mut Vec<String>) {
     for (shape, text) in R6102_SHAPES.iter() {
         if shape == ability && !texts.contains(text) {
             texts.push(text.clone());
+        }
+    }
+    if let Ability::Triggered {
+        when: TriggerPattern::Chapter { number },
+        intervening_if: None,
+        limit: None,
+        from: ZoneKind::Battlefield,
+        targets,
+        effects,
+    } = ability
+        && let Some(numeral) = classify::numeral(*number)
+    {
+        let spell = Ability::Spell {
+            targets: targets.clone(),
+            effects: effects.clone(),
+        };
+        for (shape, text) in R6102_SHAPES.iter() {
+            let worded = format!("{numeral} \u{2014} {text}");
+            if *shape == spell && !texts.contains(&worded) {
+                texts.push(worded);
+            }
         }
     }
 }
@@ -40,7 +65,12 @@ pub(super) fn r6102_wordings(ability: &Ability, texts: &mut Vec<String>) {
 mod tests {
     //! Goal: every entry of the table parses as an ability and reads back from its own sentence and from no near miss of
     //! it, so none is silently dropped or over-read.
-    use super::{R6102_SHAPES, R6102_WHOLES, r6102_read};
+    use super::{R6102_SHAPES, R6102_WHOLES, r6102_read, r6102_wordings};
+    use crate::ability::Ability;
+    use crate::compile::read::render::written_variants;
+    use crate::refs::ZoneKind;
+    use crate::trigger::TriggerPattern;
+    use rstest::rstest;
 
     #[test]
     fn r6102_every_whole_parses_and_reads() {
@@ -58,5 +88,37 @@ mod tests {
                 "{text}"
             );
         }
+    }
+
+    /// A Saga chapter made of the effects of a spell entry is worded as the numeral and the sentence (CR 714.2).
+    #[rstest]
+    #[case(1, "I")]
+    #[case(2, "II")]
+    #[case(3, "III")]
+    #[case(4, "IV")]
+    fn r6102_a_chapter_of_a_whole_spell_is_worded_with_its_numeral(
+        #[case] number: u32,
+        #[case] numeral: &str,
+    ) {
+        let mut chapters = 0;
+        for (shape, text) in R6102_SHAPES.iter() {
+            let Ability::Spell { targets, effects } = shape else {
+                continue;
+            };
+            let chapter = Ability::Triggered {
+                when: TriggerPattern::Chapter { number },
+                intervening_if: None,
+                limit: None,
+                from: ZoneKind::Battlefield,
+                targets: targets.clone(),
+                effects: effects.clone(),
+            };
+            let mut texts = Vec::new();
+            r6102_wordings(&chapter, &mut texts);
+            assert_eq!(texts, vec![format!("{numeral} \u{2014} {text}")], "{text}");
+            assert!(written_variants(&chapter).contains(&texts[0]), "{text}");
+            chapters += 1;
+        }
+        assert!(chapters > 0);
     }
 }

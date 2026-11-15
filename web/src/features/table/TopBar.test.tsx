@@ -1,4 +1,4 @@
-// Goal: the top bar of the table has home, a turn badge that says whose turn it is and which step, with the phase's icon and name in its colour (filled on your own turn, tinted on another's) over an accent rule in the bar, the button of the side sheet where the side area is a sheet, and a table menu with the layout, the theme and Concede only, at every window size, since the stop ladder and Full Control live in the controls dock, and the Control keys work with the menu shut.
+// Goal: the top bar of the table has home, a turn badge that says whose turn it is, in which round and which step (the turn number in its tooltip), with the phase's icon and name in its colour (filled on your own turn, tinted on another's) over an accent rule in the bar, the button of the side sheet where the side area is a sheet, and a table menu with the layout, the theme and Concede only, at every window size, since the stop ladder and Full Control live in the controls dock, and the Control keys work with the menu shut.
 import { act, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { appTheme } from '@/hooks/useTheme'
@@ -40,13 +40,13 @@ describe('the bar', () => {
       fixture: buildFixture({ seats: 2, active: 0, permanents: 2 }),
       options: { viewport: WIDE },
     })
-    expect(badge()).toHaveTextContent('Your turn · 5 · Declare blockers')
+    expect(badge()).toHaveTextContent('Your turn · Round 3 · Declare blockers')
     expect(within(badge()).getByText(/^Your turn/)).toHaveClass('bg-phase', 'text-on-phase', 'border-phase')
   })
 
   it("names the other seat on an opponent's turn", () => {
     renderTable({ seats: 3, options: { viewport: WIDE } })
-    expect(badge()).toHaveTextContent("Bo's turn · 5 · Declare blockers")
+    expect(badge()).toHaveTextContent("Bo's turn · Round 2 · Declare blockers")
     expect(within(badge()).getByText(/^Bo's turn/)).toHaveClass(
       'bg-phase-soft',
       'text-foreground',
@@ -66,16 +66,40 @@ describe('the bar', () => {
   it('follows the game: the next step, the next turn, the next seat', () => {
     const { update } = renderTable({ seats: 3, options: { viewport: WIDE } })
     update((state) => ({
-      view: state.view && { ...state.view, turn: { ...state.view.turn, step: 'End', number: 6, active: 2 } },
+      view: state.view && {
+        ...state.view,
+        turn: { ...state.view.turn, step: 'End', number: 6, round: 2, active: 2 },
+      },
     }))
-    expect(badge()).toHaveTextContent("Cy's turn · 6 · End step")
+    expect(badge()).toHaveTextContent("Cy's turn · Round 2 · End step")
     update((state) => ({
       view: state.view && {
         ...state.view,
-        turn: { ...state.view.turn, step: 'Upkeep', number: 7, active: 0 },
+        turn: { ...state.view.turn, step: 'Upkeep', number: 7, round: 3, active: 0 },
       },
     }))
-    expect(badge()).toHaveTextContent('Your turn · 7 · Upkeep')
+    expect(badge()).toHaveTextContent('Your turn · Round 3 · Upkeep')
+  })
+
+  it('counts the round, not the turn: every seat of a round says the same round, and the tooltip has the turn', () => {
+    const { update } = renderTable({ seats: 3, options: { viewport: WIDE } })
+    const at = (number: number, round: number, active: number): void =>
+      update((state) => ({
+        view: state.view && { ...state.view, turn: { ...state.view.turn, number, round, active } },
+      }))
+    const seen = (): [string | null, string | undefined, string | undefined] => [
+      badge().textContent,
+      badge().dataset['turn'],
+      badge().querySelector('[title]')?.getAttribute('title') ?? undefined,
+    ]
+    at(7, 3, 0)
+    expect(seen()).toEqual(['Your turn · Round 3 · Declare blockers', '7', 'Turn 7'])
+    at(8, 3, 1)
+    expect(seen()).toEqual(["Bo's turn · Round 3 · Declare blockers", '8', 'Turn 8'])
+    at(9, 3, 2)
+    expect(seen()).toEqual(["Cy's turn · Round 3 · Declare blockers", '9', 'Turn 9'])
+    at(10, 4, 0)
+    expect(seen()).toEqual(['Your turn · Round 4 · Declare blockers', '10', 'Turn 10'])
   })
 
   it('is not a live region: the turn is on screen all the time and says nothing aloud', () => {
@@ -184,7 +208,7 @@ describe('the stop ladder and Full Control', () => {
       [...menu().querySelectorAll('[role="group"][aria-label]')].map((group) =>
         group.getAttribute('aria-label'),
       ),
-    ).toEqual(['Layout', 'Theme', 'Card images', 'Hand order'])
+    ).toEqual(['Layout', 'Theme', 'Card images', 'Lands', 'Hand order'])
     expect(within(menu()).getByRole('button', { name: 'Concede' })).toBeInTheDocument()
     // They are in the dock instead, once.
     expect(document.querySelectorAll('[data-slot="stop-ladder"]')).toHaveLength(1)

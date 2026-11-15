@@ -1,7 +1,7 @@
 /** Team play as plain data: the team of a seat, its label, colour and members, the default teams and the result. */
 import type { GameResult, TeamMode, Teams } from '@/protocol/generated'
 
-/** How the table plays: every player alone, or one of the two team modes. */
+/** How the table plays: every player alone, or one of the team modes. */
 export type GameMode = 'free_for_all' | TeamMode
 
 /** The words of each mode, for the create form, the lobby and the table. */
@@ -12,6 +12,10 @@ export const MODE_WORDS: Record<GameMode, { name: string; words: string }> = {
     words: 'Four players in two teams of two; teammates sit side by side and share one life total',
   },
   teams: { name: 'Teams', words: 'Two teams of equal size; teammates sit apart and win together' },
+  shared_turns: {
+    name: 'Shared turns',
+    words: 'Each team takes one turn together; every player keeps their own life total',
+  },
 }
 
 /** The seats a Two-Headed Giant table has. */
@@ -158,11 +162,12 @@ export function teamName(
 
 /**
  * Whether it is `seat`'s turn while `active` is the active player: the active player's own, and in Two-Headed Giant
- * their teammate's as well, since a team shares its turn (CR 805.3). In Teams each player takes their own turn.
+ * and under shared team turns their teammates' as well, since a team shares its turn (CR 805.3). In Teams each player
+ * takes their own turn.
  */
 export function sharesTurn(teams: Teams | null | undefined, seat: number, active: number): boolean {
   if (seat === active) return true
-  if (teams?.mode !== 'two_headed_giant') return false
+  if (teams?.mode !== 'two_headed_giant' && teams?.mode !== 'shared_turns') return false
   const team = teamOf(teams, seat)
   return team !== null && team === teamOf(teams, active)
 }

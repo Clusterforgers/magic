@@ -9,13 +9,15 @@ import { groupNameProblem } from './grouping'
 interface GroupNameDialogProps {
   /** The name of the group being renamed; absent for a new group. */
   initial?: string
+  /** The deck that joins the new group, when the dialog was opened from its Groups menu. */
+  deckName?: string
   onSubmit(name: string): void
   /** The dialog has closed; the caller unmounts it. */
   onClosed(): void
 }
 
 /** "New group" or "Rename group": one labelled name field. */
-export function GroupNameDialog({ initial, onSubmit, onClosed }: GroupNameDialogProps) {
+export function GroupNameDialog({ initial, deckName, onSubmit, onClosed }: GroupNameDialogProps) {
   const [open, setOpen] = useState(true)
   const [name, setName] = useState(initial ?? '')
   const [problem, setProblem] = useState<string | null>(null)
@@ -45,7 +47,9 @@ export function GroupNameDialog({ initial, onSubmit, onClosed }: GroupNameDialog
             <DialogDescription>
               {renaming
                 ? 'The decks in it stay where they are.'
-                : 'Groups sort your decks, for example by how you play them.'}
+                : deckName === undefined
+                  ? 'Groups sort your decks, for example by how you play them. A deck can be in several.'
+                  : `“${deckName}” joins the new group, and stays in its other groups.`}
             </DialogDescription>
           </div>
           <div className="grid gap-2">

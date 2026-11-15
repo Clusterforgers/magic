@@ -83,7 +83,10 @@ export function decisionName(kind: DecisionKind): DecisionName | 'Unknown' {
 /** The inputs of the turn banner. */
 export interface BannerInput {
   stage: Stage
+  /** The turn number, from 1: every turn of every seat counts, extra turns too. */
   turn: number
+  /** The round, from 1: it counts up once every seat (every team in Two-Headed Giant) has had a turn. */
+  round: number
   active: PlayerId
   step: Step
   /** The turn goes on without its active player, who has left the game. */
@@ -92,6 +95,8 @@ export interface BannerInput {
   controlledBy?: PlayerId
   /** In Two-Headed Giant, the active player's teammate, who shares the turn (CR 805.3). */
   teammate?: PlayerId
+  /** Under shared team turns, the seats of the party whose turn it is; empty or absent for any other turn. */
+  party?: readonly PlayerId[]
 }
 
 /** "Alice left": the words for the seat a turn belongs to after it left the game. */
@@ -99,7 +104,7 @@ function leftWords(seat: PlayerId, name: Names): string {
   return `${name(seat)} left`
 }
 
-/** "Turn 5 · Alice · Declare attackers", or what the game is doing before and after its turns. */
+/** "Round 3 · Alice · Declare attackers", or what the game is doing before and after its turns. */
 export function bannerText(input: BannerInput, name: Names): string {
   switch (input.stage) {
     case 'PreGame':
@@ -109,23 +114,36 @@ export function bannerText(input: BannerInput, name: Names): string {
     case 'Finished':
       return 'The game is over'
     case 'Turns':
-      return `Turn ${input.turn} · ${input.left === true ? leftWords(input.active, name) : name(input.active)} · ${STEP_LABEL[input.step]}`
+      return `Round ${input.round} · ${input.left === true ? leftWords(input.active, name) : name(input.active)} · ${STEP_LABEL[input.step]}`
   }
 }
 
 /**
- * The words of the turn badge in the top bar: "Your turn · 5 · Precombat main", "Bo's turn · 5 · Declare blockers"
- * ("Bo and Cy's turn" for a Two-Headed Giant team, "Your turn" for both its players), or what the game is doing
- * before and after its turns. `viewer` is this client's seat.
+ * The words of the turn badge in the top bar: "Your turn · Round 3 · Precombat main", "Bo's turn · Round 3 · Declare blockers"
+ * ("Bo and Cy's turn" for a Two-Headed Giant team, "Your turn" for both its players; "Your party's turn" and "The
+ * party's turn" for a party sharing its turn), or what the game is doing before and after its turns. `viewer` is this
+ * client's seat.
  */
 export function badgeText(input: BannerInput, viewer: PlayerId | null, name: Names): string {
   if (input.stage !== 'Turns') return bannerText(input, name)
   if (input.left === true)
-    return `${leftWords(input.active, name)} · ${input.turn} · ${STEP_LABEL[input.step]}`
-  const { active, teammate } = input
+    return `${leftWords(input.active, name)} · Round ${input.round} · ${STEP_LABEL[input.step]}`
+  const { active, teammate, party = [] } = input
   const owners = teammate === undefined ? name(active) : `${name(active)} and ${name(teammate)}`
-  const who = active === viewer || teammate === viewer ? 'Your turn' : `${owners}'s turn`
-  return `${who}${controlWords(input, viewer, name)} · ${input.turn} · ${STEP_LABEL[input.step]}`
+  const who =
+    party.length > 0
+      ? viewer !== null && party.includes(viewer)
+        ? "Your party's turn"
+        : "The party's turn"
+      : active === viewer || teammate === viewer
+        ? 'Your turn'
+        : `${owners}'s turn`
+  return `${who}${controlWords(input, viewer, name)} · Round ${input.round} · ${STEP_LABEL[input.step]}`
+}
+
+/** The tooltip of the turn badge: "Turn 5", the count of every turn taken, which the round in its words leaves out. */
+export function badgeTitle(input: BannerInput): string | undefined {
+  return input.stage === 'Turns' ? `Turn ${input.turn}` : undefined
 }
 
 /** " · you control them", " · Bo controls you", " · Bo controls them": who controls the active player (CR 722). */

@@ -25,7 +25,7 @@ export interface TableOptions {
   tour?: boolean
   /** Play the sound cues of `features/sound` unless muted; on everywhere but under vitest when left out. */
   sounds?: boolean
-  /** Fold the lands of a grid's opponents into their pods' lands chips (`LandFoldContext`); on everywhere but under vitest when left out. */
+  /** Give the boards of a grid and of a phone a lands chip that folds their lands (`LandFoldContext`, `landPrefs.ts`); on everywhere but under vitest when left out. */
   foldLands?: boolean
   /** Show an attack at a player as a badge on the defender's pod instead of a line (`combat/AttackBadges`); on everywhere but under vitest when left out. */
   attackBadges?: boolean
@@ -37,7 +37,7 @@ export const ATTACK_BADGES_BY_DEFAULT = import.meta.env.MODE !== 'test'
 /** Whether battlefields stack equal permanents when `TableOptions.stacks` is left out. */
 export const STACKS_BY_DEFAULT = import.meta.env.MODE !== 'test'
 
-/** Whether a grid's opponents fold their lands when `TableOptions.foldLands` is left out. */
+/** Whether the boards carry a lands chip when `TableOptions.foldLands` is left out. */
 export const FOLD_LANDS_BY_DEFAULT = import.meta.env.MODE !== 'test'
 
 /** Whether the table tour starts by itself when `TableOptions.tour` is left out. */
@@ -45,3 +45,10 @@ export const TOUR_BY_DEFAULT = import.meta.env.MODE !== 'test'
 
 /** Provide a `TableOptions` around `GameTable`; without one the table picks its own start. */
 export const TableOptionsContext = createContext<TableOptions>({})
+
+/**
+ * The seats of the viewer's party where the layout keeps an attack at a player clear of the other boards, so that it is
+ * drawn as a line to the defender's pod or tile as well as a badge on it, strong where a party seat attacks or is
+ * attacked (boss mode: the boss's side above, the party below); null where badges stand in for the lines.
+ */
+export const AttackLinesContext = createContext<readonly PlayerId[] | null>(null)

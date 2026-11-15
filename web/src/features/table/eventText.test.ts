@@ -278,6 +278,14 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     },
     'Bo attacks Ana with Grizzly Bears and Hill Giant',
   ],
+  AttackersChosen: [
+    { AttackersChosen: { player: 1, attackers: [[1, { Player: 0 }]] } },
+    'Bo chooses to attack Ana with Grizzly Bears',
+  ],
+  AttackChoicesRefused: [
+    { AttackChoicesRefused: { reason: 'a creature can’t attack alone' } },
+    "The party's attack is refused (a creature can’t attack alone); each hero chooses again",
+  ],
   BandFormed: [
     { BandFormed: { player: 1, attackers: [1, 2] } },
     'Bo bands Grizzly Bears and Hill Giant together',

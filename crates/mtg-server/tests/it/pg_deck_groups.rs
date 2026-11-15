@@ -1,4 +1,4 @@
-//! Goal: deck groups work end to end over real HTTP on Postgres: every route needs a signed-in account, groups are created in order, renamed, collapsed, reordered and deleted, a deck sits in one group at most and moves between them, deleting a group leaves its decks ungrouped, another account's groups and decks are plain 404s, the count is capped, and deleting an account removes its groups.
+//! Goal: deck groups work end to end over real HTTP on Postgres: every route needs a signed-in account, groups are created in order, renamed, collapsed, reordered and deleted, a deck sits in several groups at once and leaves one without leaving the others, deleting a group leaves its decks in their other groups, another account's groups and decks are plain 404s, the count is capped, and deleting an account removes its groups.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::net;
@@ -86,13 +86,18 @@ async fn shelf(server: &TestServer, who: &Browser) -> Vec<(String, bool, Vec<Str
         .collect()
 }
 
-async fn file(server: &TestServer, who: &Browser, deck: &str, group: Option<&str>) -> net::Reply {
+async fn add(server: &TestServer, who: &Browser, deck: &str, group: &str) -> net::Reply {
     who.put(
         server.addr,
-        &format!("/api/decks/{deck}/group"),
-        &json!({ "group": group }).to_string(),
+        &format!("/api/decks/{deck}/groups/{group}"),
+        "",
     )
     .await
+}
+
+async fn take_out(server: &TestServer, who: &Browser, deck: &str, group: &str) -> net::Reply {
+    who.delete(server.addr, &format!("/api/decks/{deck}/groups/{group}"))
+        .await
 }
 
 async fn patch(server: &TestServer, who: &Browser, id: &str, body: Value) -> net::Reply {
@@ -113,7 +118,8 @@ fn routes() -> Vec<(&'static str, String)> {
         ("PUT", format!("{ROUTE}/order")),
         ("PATCH", format!("{ROUTE}/{NO_SUCH}")),
         ("DELETE", format!("{ROUTE}/{NO_SUCH}")),
-        ("PUT", format!("/api/decks/{NO_SUCH}/group")),
+        ("PUT", format!("/api/decks/{NO_SUCH}/groups/{NO_SUCH}")),
+        ("DELETE", format!("/api/decks/{NO_SUCH}/groups/{NO_SUCH}")),
     ]
 }
 
@@ -208,7 +214,7 @@ async fn bad_names_and_orders_are_400(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = false)]
-async fn a_deck_sits_in_one_group_and_deleting_the_group_ungroups_it(pool: PgPool) {
+async fn a_deck_sits_in_several_groups_and_leaves_one_at_a_time(pool: PgPool) {
     let server = start(&pool).await;
     let ann = register(server.addr, "ann", PASSWORD).await;
     let (one, two) = (
@@ -219,19 +225,32 @@ async fn a_deck_sits_in_one_group_and_deleting_the_group_ungroups_it(pool: PgPoo
     let hard = group(&server, &ann, "Hardcore").await;
 
     for (d, g) in [(&one, &fun), (&two, &fun), (&one, &hard)] {
-        assert_eq!(file(&server, &ann, d, Some(g)).await.status, 204);
+        assert_eq!(add(&server, &ann, d, g).await.status, 204);
     }
-    assert_eq!(
-        shelf(&server, &ann).await,
-        [
-            ("Fun".to_owned(), false, vec![two.clone()]),
-            ("Hardcore".to_owned(), false, vec![one.clone()]),
-        ]
-    );
-    assert_eq!(file(&server, &ann, &one, None).await.status, 204);
-    assert_eq!(file(&server, &ann, &one, None).await.status, 204);
+    // Adding again changes nothing.
+    assert_eq!(add(&server, &ann, &one, &fun).await.status, 204);
+    let decks_of = |shelf: &[(String, bool, Vec<String>)], group: usize| {
+        let mut decks = shelf[group].2.clone();
+        decks.sort();
+        decks
+    };
+    let mut both = vec![one.clone(), two.clone()];
+    both.sort();
+    let held = shelf(&server, &ann).await;
+    assert_eq!(decks_of(&held, 0), both);
+    assert_eq!(decks_of(&held, 1), std::slice::from_ref(&one));
+
+    // Leaving one group leaves the other, and leaving twice is fine.
+    assert_eq!(take_out(&server, &ann, &one, &fun).await.status, 204);
+    assert_eq!(take_out(&server, &ann, &one, &fun).await.status, 204);
+    let held = shelf(&server, &ann).await;
+    assert_eq!(decks_of(&held, 0), std::slice::from_ref(&two));
+    assert_eq!(decks_of(&held, 1), std::slice::from_ref(&one));
+    assert_eq!(take_out(&server, &ann, &one, &hard).await.status, 204);
     assert_eq!(shelf(&server, &ann).await[1].2.len(), 0);
 
+    assert_eq!(add(&server, &ann, &one, &hard).await.status, 204);
+    assert_eq!(add(&server, &ann, &one, &fun).await.status, 204);
     assert_eq!(
         ann.delete(server.addr, &format!("{ROUTE}/{fun}"))
             .await
@@ -244,19 +263,22 @@ async fn a_deck_sits_in_one_group_and_deleting_the_group_ungroups_it(pool: PgPoo
             .status,
         404
     );
-    assert_eq!(shelf(&server, &ann).await.len(), 1);
-    // The decks stay.
+    // The decks stay, and a deck of the deleted group keeps its other group.
+    assert_eq!(
+        shelf(&server, &ann).await,
+        [("Hardcore".to_owned(), false, vec![one.clone()])]
+    );
     let decks = ann.get(server.addr, "/api/decks").await.json();
     assert_eq!(decks["decks"].as_array().unwrap().len(), 2);
-    // Deleting a deck takes it out of its group.
-    assert_eq!(file(&server, &ann, &two, Some(&hard)).await.status, 204);
+    // Deleting a deck takes it out of its groups.
+    assert_eq!(add(&server, &ann, &two, &hard).await.status, 204);
     assert_eq!(
         ann.delete(server.addr, &format!("/api/decks/{two}"))
             .await
             .status,
         204
     );
-    assert_eq!(shelf(&server, &ann).await[0].2.len(), 0);
+    assert_eq!(shelf(&server, &ann).await[0].2, [one]);
 }
 
 #[sqlx::test(migrations = false)]
@@ -269,12 +291,19 @@ async fn another_accounts_groups_and_decks_are_404(pool: PgPool) {
     let bos_deck = deck(&server, &bo, "Bob's").await;
     let bos_group = group(&server, &bo, "Bob's").await;
 
+    assert_eq!(
+        add(&server, &ann, &anns_deck, &anns_group).await.status,
+        204
+    );
     assert!(shelf(&server, &bo).await.iter().all(|g| g.0 == "Bob's"));
     for reply in [
-        file(&server, &bo, &anns_deck, Some(&bos_group)).await,
-        file(&server, &bo, &bos_deck, Some(&anns_group)).await,
-        file(&server, &bo, &bos_deck, Some("not an id")).await,
-        file(&server, &bo, &anns_deck, None).await,
+        add(&server, &bo, &anns_deck, &bos_group).await,
+        add(&server, &bo, &bos_deck, &anns_group).await,
+        add(&server, &bo, &bos_deck, "not-an-id").await,
+        add(&server, &bo, "not-an-id", &bos_group).await,
+        take_out(&server, &bo, &anns_deck, &anns_group).await,
+        take_out(&server, &bo, &anns_deck, &bos_group).await,
+        take_out(&server, &bo, &bos_deck, &anns_group).await,
         patch(&server, &bo, &anns_group, json!({"name": "Mine"})).await,
         bo.delete(server.addr, &format!("{ROUTE}/{anns_group}"))
             .await,
@@ -291,7 +320,11 @@ async fn another_accounts_groups_and_decks_are_404(pool: PgPool) {
     );
     assert_eq!(
         shelf(&server, &ann).await,
-        [("Fun".to_owned(), false, vec![])]
+        [("Fun".to_owned(), false, vec![anns_deck])]
+    );
+    assert_eq!(
+        shelf(&server, &bo).await,
+        [("Bob's".to_owned(), false, vec![])]
     );
 }
 
@@ -316,7 +349,7 @@ async fn deleting_an_account_removes_its_groups_and_only_its_groups(pool: PgPool
     let bo = register(server.addr, "bob", PASSWORD).await;
     let d = deck(&server, &ann, "One").await;
     let g = group(&server, &ann, "Fun").await;
-    file(&server, &ann, &d, Some(&g)).await;
+    add(&server, &ann, &d, &g).await;
     group(&server, &bo, "Bob's").await;
 
     let body = json!({"password": PASSWORD}).to_string();
