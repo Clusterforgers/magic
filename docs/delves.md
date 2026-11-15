@@ -82,6 +82,13 @@ One table (`scale.rs`) sets the boss for the party's size, so every size meets t
 - Relics (`content/cards.json`) are emblems the hero keeps for the run, each with a role that shapes the party: Healer, Removal, Damage, Support, and Risky relics whose effect is symmetrical and helps the boss too (all red spells cost {2} less, every player draws an extra card, all creatures get +2/+0). Risky relics come only from loot and treasure, never the shop.
 - Camps: Treasure offers a relic pick; the Shop sells three cards (35 gold), two relics and a draught; an Event offers each hero a choice with gold, life, relic or card outcomes and seeded gambles; a Campfire offers rest or a card pick.
 
+## Events
+
+- An event (`content/<theme>.json`) is a story and options; each hero answers for themselves and only their own gold, life, relics and cards change. An option is a list of outcomes: `Gold`, `Life`, `Relic` (a pick of one relic), `CardPick` (a pick of one of three cards) and `Gamble` (odds in percent, then the outcomes of a win and of a loss).
+- The words come from the data, never from the label: `Outcome::words` and `EventOption::summary` ("−8 life, +40 gold", "50%: a relic · 50%: −8 life"). A content test checks that every option has a summary and that no label states an amount.
+- A sure cost, a negative gold or life outcome outside a gamble, is a need (`EventOption::needs`): the hero needs that much gold and more than that life, since an answer never takes a hero below 1. The server refuses an answer whose need is unmet (`Run::accepts`); a stored log replays as before. Bots take the first option they can afford, and every event keeps an option with no need.
+- Each answer is recorded as a `Resolved` in `Run.results` (what the hero did, the outcomes as gold and life really moved, the gambles rolled and how they fell) and as a chronicle line. A camp's results stay through the next boss fight and clear when that fight is won or the next camp opens.
+
 ## Run state
 
 - A run is the fold of its events (`run.rs`): `Joined`, `Left`, `DeckChosen`, `Started`, `Voted`, `FightCreated`, `FightEnded`, `Picked`, `Abandoned`. The ladder is regenerated from the seed, never stored.
@@ -93,7 +100,7 @@ One table (`scale.rs`) sets the boss for the party's size, so every size meets t
 ## Interface
 
 - The run page reads as a descent: a header with the party's life, hearts, Heat and seed; the ladder as a path from the first boss to the final one, every room cleared, current, next or locked; votes show who chose which camp.
-- Each camp is a scene of its own (loot, shop, campfire, event); a risky relic is always marked Dangerous. Implementation in [web.md](web.md), Delves.
+- Each camp is a scene of its own (loot, shop, campfire, event); a risky relic is always marked Dangerous. An event shows each option's effects before the choice (gains and costs, odds, why an option is shut) and a "What happened" panel with the chronicle after it (Events). Implementation in [web.md](web.md), Delves.
 - A fight opens with the boss intro (the run view's `fight`: the plan's boss, life, custom cards, phase thresholds and minions), in place of the game's lobby: the boss's abilities in full, the party's decks and carried life, and Ready to fight. When the game ends the table returns straight to the run, which greets the loot or the lost heart.
 - At the table the boss's side sits on top and the party together at the bottom (boss mode); the boss's abilities, phases to come, scheme and Omen are a row of chips with their rules. Their words come from the content records the engine plays, matched to the emblems in the boss's command zone and its `BossView`.
 

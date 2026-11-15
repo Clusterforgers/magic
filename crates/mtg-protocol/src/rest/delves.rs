@@ -1,7 +1,7 @@
 //! Bodies of the Delves endpoints of `mtg-server` (`/api/delves`): creating and joining a run, the party's actions,
 //! the run as the party sees it and the campaign content the web draws (custom cards, bosses, events).
 
-use mtg_campaign::{Brain, CardKind, Pick, Run};
+use mtg_campaign::{Brain, CardKind, Needs, Outcome, Pick, Run};
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
@@ -193,8 +193,21 @@ pub struct DelveEventView {
     pub title: String,
     /// Its story.
     pub text: String,
-    /// Its options' labels, in order.
-    pub options: Vec<String>,
+    /// Its options, in order.
+    pub options: Vec<DelveOptionView>,
+}
+
+/// One option of an event: its words, what it does as data the web draws chips from, and what it asks of a hero.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct DelveOptionView {
+    /// The choice in a few words.
+    pub label: String,
+    /// What it does, gambles with their odds.
+    pub outcomes: Vec<Outcome>,
+    /// The gold and life a hero needs to take it.
+    pub needs: Needs,
+    /// What it does in plain words, for a screen reader.
+    pub summary: String,
 }
 
 /// The campaign content the web draws.

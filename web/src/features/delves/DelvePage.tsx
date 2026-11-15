@@ -35,6 +35,7 @@ import { DeckPicker } from './DeckPicker'
 import { lastFight, listOf, nextStep } from './model'
 import type { FindCard } from './findCard'
 import { PartyLobby } from './PartyLobby'
+import { ResultPanel } from './ResultPanel'
 import { RunHeader } from './RunHeader'
 import { POLL_MS, errorText } from './words'
 import { RevivalNote } from './DelvesRules'
@@ -334,6 +335,7 @@ export function DelvePage({
               {step}
             </p>
           )}
+          {over || status === 'Lobby' ? null : <ResultPanel view={view} />}
           {fighting ? (
             <FightPanel view={view} content={content} onChooseDeck={() => setReplacing(true)} />
           ) : null}

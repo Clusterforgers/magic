@@ -156,7 +156,7 @@ describe('offers', () => {
     [{ Cards: { cards: ['Lightning Bolt'] } } as Offer, 'Take Lightning Bolt', { Take: 0 }],
     ['Campfire' as Offer, 'Rest', 'Rest'],
     ['Campfire' as Offer, 'Reforge', 'Reforge'],
-    [{ Event: { event: 'toll' } } as Offer, 'Turn back', { Take: 1 }],
+    [{ Event: { event: 'toll' } } as Offer, 'Turn back', { Take: 3 }],
     [{ Shop: { items: ['Draught'] } } as Offer, 'Leave the shop', 'Skip'],
   ])('answers %j with %s', async (offer, button, pick) => {
     const client = await show(room(offer, 100))

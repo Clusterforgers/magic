@@ -52,7 +52,8 @@ pub use decks::{
 };
 pub use delves::{
     BossArtView, CreateDelve, CustomCardView, DelveAction, DelveBossView, DelveContent,
-    DelveDeckProblem, DelveEventView, DelveFightView, DelveList, DelveSummary, DelveView,
+    DelveDeckProblem, DelveEventView, DelveFightView, DelveList, DelveOptionView, DelveSummary,
+    DelveView,
 };
 pub use favourites::FavouritePrecons;
 pub use fix_marks::{
