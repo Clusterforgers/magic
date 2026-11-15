@@ -762,6 +762,9 @@ fn create_effect(
             state.possible.states = true;
         }
     }
+    // An identical effect that this one overwrites wholly goes (CR 613.7), so a "becomes" used again and again stays one effect.
+    let gone = crate::effects::overwritten_by(&state.effects, effect);
+    state.effects.retain(|old| !gone.contains(&old.id));
     state.effects.push(effect.clone());
     Ok(())
 }
