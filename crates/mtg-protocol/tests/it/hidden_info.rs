@@ -2401,7 +2401,7 @@ fn the_seat_hurt_picks_the_damage_a_shield_takes_first_and_the_question_shows_no
             .all(|option| matches!(option, ChoiceOption::Label(_)))
     );
     let hidden = hidden_in(driver.state(), decision.player);
-    assert_eq!(!hidden.len(), 0);
+    assert_ne!(hidden.len(), 0);
     let found = leaks(&serde_json::to_value(&decision).unwrap(), &hidden);
     assert!(found.is_empty(), "the question leaks {found:?}");
     driver
