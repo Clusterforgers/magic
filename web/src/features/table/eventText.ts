@@ -2,6 +2,7 @@
 import { describeLoss } from '@/features/game/outcome'
 import type {
   AttackTarget,
+  Cause,
   Choice,
   ContinuousEffect,
   Chosen,
@@ -49,6 +50,8 @@ export interface EventNames {
   permanent?(id: ObjectId): boolean
   /** The card an ability on the stack comes from, when the log knows the object is an ability. */
   ability?(id: ObjectId): ObjectId | undefined
+  /** Whether the object is a token made as a copy of another object, when the log knows it. */
+  copy?(id: ObjectId): boolean
   /** The name of a door (0 or 1) of a Room, when the viewer knows it. */
   door?(id: ObjectId, door: number): string | undefined
   /** The name of the boss whose command zone holds `id` (one of its boss abilities), else undefined. */
@@ -817,6 +820,13 @@ function byResolving(
   return bounced ? `${stackName(n, resolving, true)} returns ${name} to ${zoneWord(to, n)}` : null
 }
 
+/** The damage a trigger came from, " on 4 damage to Bo": triggers of several sources that dealt damage read apart. */
+function damageWords(cause: Cause, n: EventNames): string {
+  if (cause.source === undefined) return ''
+  const hurt = cause.subjects.flatMap((subject) => ('Player' in subject ? [n.seat(subject.Player)] : []))
+  return hurt.length === 0 ? '' : ` on ${cause.amount ?? 0} damage to ${joinWords(hurt)}`
+}
+
 function describePipeline(event: PipelineEvent, n: EventNames, context?: EventContext): LogLine {
   if ('AbilityPutOnStack' in event) {
     const { source, cause, choices } = event.AbilityPutOnStack
@@ -836,12 +846,14 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
     )
   }
   if ('AbilityTriggered' in event) {
-    const { id } = event.AbilityTriggered.source
+    const { source, cause } = event.AbilityTriggered
+    const { id } = source
     const boss = n.boss?.(id)
     // A boss's ability is named as its own: "Skrix, the Rat Queen: Escalation triggers".
-    return line(
-      boss === undefined ? `An ability of ${n.card(id)} triggers` : `${boss}: ${n.card(id)} triggers`,
-    )
+    if (boss !== undefined) return line(`${boss}: ${n.card(id)} triggers`)
+    // A copy of a creature and the creature itself trigger on their own damage, so the line names which one and whom it hurt.
+    const copy = n.copy?.(id) === true ? ' (token copy)' : ''
+    return line(`An ability of ${n.card(id)}${copy} triggers${damageWords(cause, n)}`)
   }
   if ('TriggersOrdered' in event) {
     return quiet(`${n.seat(event.TriggersOrdered.player)} puts their triggered abilities in order`)

@@ -119,3 +119,14 @@ export function abilitySources(events: readonly EventView[]): ReadonlyMap<Object
   }
   return sources
 }
+
+/** The tokens of `events` made as a copy of another object, which the log names apart from the card they copy. */
+export function tokenCopies(events: readonly EventView[]): ReadonlySet<ObjectId> {
+  const copies = new Set<ObjectId>()
+  for (const view of events) {
+    const event = publicEvent(view)
+    if (event === null || typeof event === 'string' || !('TokenCreated' in event)) continue
+    if (event.TokenCreated.copy_of !== undefined) copies.add(event.TokenCreated.object)
+  }
+  return copies
+}

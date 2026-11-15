@@ -116,6 +116,7 @@ mod sync;
 mod table_hidden;
 mod target_legality_view;
 mod tc34_control_view;
+mod team_copy_damage_view;
 mod team_sickness;
 mod token_loyalty_view;
 mod token_offers_view;
