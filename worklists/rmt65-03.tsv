@@ -1,0 +1,108 @@
+Abuelo's Awakening	Return to the battlefield with X additional counters and it becomes a 1/1 Spirit with flying in addition to its other types (permanent becomes on a returned card)	none
+Adipose Offspring	Enters trigger reading the emerge sacrifice: Condition 'emerge cost was paid' and Amount of the sacrificed creature's toughness	none
+Agent Maria Hill	teamwork cost and "becomes tapped to pay a teamwork cost" trigger	—
+A Killer Among Us	Secret choice: 'secretly choose Human, Merfolk, or Goblin' (a hidden per-permanent choice) and a cost that reveals it with a condition on the target's creature type	three tokens created together
+Altar of the Wretched // Wretched Bonemass	keyword and P/T derivation from the cards exiled to pay a craft cost (linked exiled cards, CR 702.167)	—
+Argentum Masticore	Sacrifice unless discard with a reflexive trigger reading the discarded card's mana value (Bound card from an unless-pay discard)	Protection from multicolored; first strike
+Ashiok, Wicked Manipulator	Pay-life replacement that exiles from the top of the library instead and tokens with a granted triggered ability	Total mana value of exiled cards you own
+Baba Lysaga, Night Witch	Sacrifice up to three permanents as a cost and count the distinct card types among the sacrificed (cost-bound set read in the effect)	none
+Back from the Brink	CostItem: exile a creature card from your graveyard and pay its mana cost (cost reading the exiled card)	—
+Balduvian Fallen	Trigger when cumulative upkeep is paid with a count of {B} or {R} mana spent this way	none
+Battletide Alchemist	optional replacement "you may prevent X of that damage" (CR 615: prevention shield with an amount and a yes/no of the shield's controller each time, X counted at the event)	
+Bell Borca, Spectral Sergeant	Note the mana value of each card put into exile and a power equal to the greatest number noted this turn	none
+Benthic Explorers	Cost item "Untap a tapped land an opponent controls" and mana "of any type that land could produce" (mana types a chosen land's abilities could produce, CR 106.7)	none
+Blade of the Swarm	Keyword::Warp and a selector for "exiled card with warp"	—
+Blaster Hulk	TurnTally / TallyEvent for energy paid or lost this turn used by CostModifier.per on the spell itself	none
+Bohn, Beguiling Balladeer	Grant foretell to cards in hand with derived foretell cost	Foretell trigger
+Boreal Outrider	mana provenance: "if {S} of any of that spell's colors was spent" (snow mana of a color, CR 106.3)	—
+Bounty of the Hunt	Delayed removal per counter put: for each counter put on a creature this way remove one at the beginning of the next cleanup step (needs the per-target shares of the division, `Choices.division`, readable by a delayed trigger)	none (the alternative cost and the divided counters read)
+Brass Infiniscope	Delayed trigger "when you next cast a spell with {X} in its mana cost this turn" that gains half X rounded down	Mana ability that adds {C}{C}
+Brigid, Clachan's Heart // Brigid, Doun's Mind	Trigger on entering or transforming into a face and a mana ability adding X of one color chosen from two where X is a count	Transform trigger pattern
+Brutal Suppression	additional non-mana activation cost on abilities of a group ("Activated abilities of nontoken Rebels cost an additional 'Sacrifice a land' to activate", CR 602.2b with a Rule adding CostItem::Sacrifice to matching activations)	
+Bullseye, Death Dealer	Cost.OneOf in an activation cost (Cost.OneOf.Elsewhere is not supported: sacrifice an artifact or discard a nonland card chosen at announcement)	none
+Caller of the Hunt	Additional cost choose a creature type and a power equal to the number of creatures of that type (stored choice read in a defining power)	none
+C.A.M.P.	Keyword::Fortify triggers: "whenever fortified land is tapped for mana" with the produced mana's color	Junk token exists
+Captain America, First Avenger	Sectioned text (Throw and Catch halves of a split ability line) and divided damage equal to the unattached Equipment's mana value	Equip attach at beginning of combat
+Celestial Dawn	mana spending rules: white as any color, other mana only as colorless (CR 609.4b), and characteristics of cards in every zone (lands are Plains, nonland cards white)	—
+Celestial Reunion	Additional cost choosing a creature type and beholding two creatures of it, used later to decide the destination of the searched card (stored choice read on resolution)	Search with mana value X or less
+Chorus of the Conclave	Additional cost to pay any amount of mana for each creature spell and counters equal to that amount (a variable additional cost with a count of mana paid)	none
+Clay Golem	Cost "Roll a dN" with Monstrosity X where X is the roll result (a die roll inside an activation cost bound as X)	none
+Close Encounter	Additional cost choosing a creature you control or a warped card in exile, then damage equal to the chosen object's power	none
+Comet, Stellar Pup	Planeswalker die-roll table with loyalty cost words in brackets and repeat loyalty activations this turn (sectioned rows with loyalty changes)	none
+Cosima, God of the Voyage // The Omenkeel	Effect that grants a triggered ability to a card in exile that works from exile (CR 113.6 ability of an exiled card, granted until it leaves), with "return with X +1/+1 counters and draw X" read from the exiled card's counters	Vehicle combat-damage exile with play-lands permission (exists) once the face is read
+Crabomination	Keyword::Emerge with a sacrificed artifact (emerge from artifact: CR 702.119 variant sacrificing an artifact creature/artifact)	—
+Crashing Wave	CostItem::Waterbend with an {X} amount (CostItem::Waterbend(u32) is fixed) and 'tap up to X target creatures' with X from that cost	stun counters: the distribution itself is expressible as N repeated single-counter Choose steps over the tapped creatures your opponents control (RepeatWhile times N, as Vastwood Hydra)
+Dralnu's Pet	If kicked enters with flying and X counters where X is the discarded card's mana value (kicker discard cost with bound card)	none
+Dream Devourer	Static grant of foretell to cards in hand with a derived foretell cost (mana cost reduced by {2}) and a foretell trigger	none
+Drought	cost increase of activated abilities by a non-mana cost per black mana symbol in their cost (CR 601.2f for activations: an additional "Sacrifice a Swamp" for each {B})	upkeep "sacrifice unless you pay {W}{W}" exists
+Eluge, the Shoreless Sea	CostModifier: first instant or sorcery spell each turn with a colored reduction {U} per land with a flood counter (`per` Count with HasCounter, condition Tally SpellCast of instants/sorceries = 0; `modified` reducing a colored symbol only)	flood counter: Continuous AddSubtype Island with Duration::WhileHasCounter on a target land from an enters-or-attacks trigger (reader/writer)
+Emblazoned Golem	Spend only colored mana on X with at most one mana of each color, and enters with X counters if kicked	none
+Fabrication Foundry	CostItem: exile one or more other artifacts you control with total mana value X (X read by the effect)	—
+Fblthp, Lost on the Range	Static grant of Keyword::Plot to the top card of your library (zone Library) with the plot cost equal to its mana cost, and the plot special action from the top of the library (ways::plot from Zone::Library)	none
+Fleshwrither	Keyword::Transfigure (CR 702.71: sacrifice, search for a creature card with the same mana value, sorcery speed)	—
+Foul Emissary	TriggerPattern "when you sacrifice this creature while casting a spell with emerge" (CR 702.119: a ZoneChange by the emerge cost, Caused with source a spell cast with CastWay Emerge)	
+Frankenstein's Monster	As it enters exile X creature cards from your graveyard (X chosen) else go to the graveyard, and counters of three kinds by each exiled card's own choice	none
+Gandalf of the Secret Fire	replacement as a spell resolves: exile with time counters instead of the graveyard and gain suspend (CR 702.62)	—
+Goliath Daydreamer	Replacement: an instant or sorcery cast from hand is exiled with a dream counter instead of put into the graveyard as it resolves (counter placed on the exiled card)	attack trigger: CastFromZone of a card you own in exile with a dream counter without paying its mana cost (optional)
+Heirloom Epic	cost substitution: tap an untapped creature for each mana of the cost (convoke-like for an activated ability, CR 702.51 analogue)	—
+Henzie "Toolbox" Torre	CostModifier of blitz costs (ActivationKind::Blitz for the keyword's alternative cost) per Tally CommanderCastFromCommandZone	grant Keyword::Blitz with a cost equal to the mana cost to each creature spell with mana value 4 or greater (a cast keyword grant with a cost reference)
+Ice Cauldron	remembered mana type and amount spent on an activation cost (Remember mana spent) and AddMana of it	—
+Illusionary Mask	cast a creature card face down for its paid mana with a turn-up replacement on damage or tapping (CR 708)	—
+Incinerator of the Guilty	Collect evidence X with X chosen during resolution (CostItem::CollectEvidence takes a fixed number) then reflexive damage of X	Reflexive trigger
+Invasion of Alara // Awaken the Maelstrom	Siege exile-until two nonland cards with mana value four or less, cast one free and put one into hand then the rest on the bottom	Back face is all colors and a long spell
+Jace, Reality Sculptor	Effect::Empower with X from an amount (exists for a number); the reader for "Empower ~ X, where X is"	—
+Jegantha, the Wellspring	Mana restriction that bars spending on the generic part of a cost (negative spend filter in the payment solver, mana.rs can_afford)	none
+Jeweled Amulet	remembered mana type: Remember the mana type spent on an activation cost on the source, and AddMana of the remembered type (CR 106.1)	—
+Kozilek, the Great Distortion	Activation cost "Discard a card with mana value X" where X is the mana value of the discarded card and also the target spell's mana value (a cost that fixes X from the paid card)	Cast trigger draws the difference to seven
+Light Up the Night	Flashback cost with CostItem::XAtLeast and RemoveCountersAmong loyalty counters from among planeswalkers you control (X chosen as the number removed, 'X can't be 0'; caps 'Cost.XAtLeast.Elsewhere')	none
+Lilah, Undefeated Slickshot	Spell fate (exile instead of graveyard as it resolves then it becomes plotted) with the compiler emitting invalid rules for the multicolored-from-hand condition	Shared with Feather
+Liquid Fire	Additional cost choose a number between 0 and 5 stored and used as X in two damage amounts (stored choice during casting)	none
+Manascape Refractor	Has all activated abilities of all lands on the battlefield (a static ability grant from other objects' abilities)	Spend any color for this object's abilities
+March of Reckless Joy	Additional cost to exile any number of red cards from hand that reduces the cost by two each, exile top X and play up to two of them until your next turn ends	none
+Market Gnome	TriggerPattern for "exiled from the battlefield while you're activating a craft ability" (CR 702.167: a ZoneChange caused by paying a craft cost, Caused with source = an ability of ActivationKind::Craft)	
+Minamo's Meddling	Reveal the controller's hand and discard each card with the same name as a card spliced onto that spell (splice tracking)	none
+Minthara, Merciless Soul	Ward whose cost is X counted from experience counters (Keyword::Ward with Amount) and an end-step intervening-if on a permanent leaving this turn	none
+Monitor Monitor	Rule::R6402ChangeRoll with a reroll change (reroll any number of the dice of the roll) paid with mana: a mana payment decision inside the roll step	none
+Nahiri's Sacrifice	X taken from the mana value of the sacrificed permanent: AdditionalCost Sacrifice with filter ManaValue = X where X is announced with the cost (XCost::Parts) and read by the divided damage	DealDamage Divided among any number of target creatures (exists)
+Ninja Teen	Keyword::Sneak (cast from hand by returning an unblocked attacker, ninjutsu-like) granted to graveyard cards, and permission to cast via sneak from the graveyard	level up already exists
+North Star	One-spell-this-turn permission to spend mana as though of any type (a counted next-spell rule with SpendAs::AnyType over one cast)	none
+Peter Parker // Amazing Spider-Man	Keyword::WebSlinging (CR 702.188: alternative cost returning a tapped creature you control) granted to legendary multicolored spells	—
+Pin Collection	ETB placement of an ability sticker with ticket cost X or less without paying its ticket cost; Modification "has all abilities of ability stickers on this Equipment" granted to the equipped creature	none
+Primitive Justice	Additional cost paid any number of times in two kinds, each adding another target (variable target count from payments)	Gain 1 life per green payment
+Professor Hojo	CostModifier.targeting a creature you control combined with the first-this-turn tally of activations that targeted such a creature (Tally KindActivated with a target filter)	TriggerPattern batch: one or more creatures you control become the target of an activated ability, once each turn
+Protective Sphere	prevention shield from "a source of your choice that shares a color with the mana spent on this activation cost" (chosen source at resolution filtered by the colors of mana paid, CR 615 + spent-mana facts)	
+Quantum Riddler	Draw replacement for a batch of one or more cards with a hand-size condition (draws that many plus one)	Warp {1}{U} alternative cost
+Ratchet, Field Medic // Ratchet, Rescue Racer	Convert (CR 701.53) as a keyword action in effects and triggers; More Than Meets the Eye cast cost	Living metal; amount of life gained this turn
+River Song's Diary	Replacement: an instant or sorcery cast from hand is exiled instead of put into the graveyard as it resolves, linked to the source (Exile linked memory) 	upkeep trigger with an intervening 'four or more cards exiled with this' and ChooseAtRandom of one of them then CastFromZone without paying
+Roar of Jukai	CostItem::OpponentGainsLife (as Invigorate) as the Keyword::Splice cost	spell: 'if you control a Forest, each blocked creature gets +2/+2 until end of turn' reader
+Sanar, Innovative First-Year	Reveal until X nonland cards with X from the colors among permanents then a per-color exile choice and cast	Vivid
+Scarlet Spider, Ben Reilly	Keyword::WebSlinging and a "cast using web-slinging" fact with the returned creature's mana value	—
+Security Rhox	Alternative cost whose spend restriction applies only to that cast ('Spend only mana produced by Treasures to cast it this way'): FreeCast/AltCast carrying a SpendFilter	none
+Sharkey, Tyrant of the Shire	Has all activated abilities of lands your opponents control except mana abilities and a prohibition on those lands' non-mana abilities	Mana of any type for its abilities
+Snowfall	Triggered extra mana with a restriction to cumulative upkeep costs and an Island-is-snow branch	Replace with an extra snow amount
+Soul Burn	life gain capped by the black mana spent on X and the target's life/loyalty/toughness before damage	—
+Soul Echo	ReplaceBy "for each 1 damage that would be dealt to you, remove an echo counter instead" chosen by target opponent until your next upkeep (a replacement whose application an opponent decides, CR 614.1)	"This enchantment enters with X echo counters on it" with "You don't lose the game for having 0 or less life" read together
+Soulfire Grand Master	Spell fate: the next instant or sorcery cast from hand this turn goes to hand instead of the graveyard as it resolves (shared spell fate piece)	none
+Soul Immolation	Additional cost blight X with X capped by the greatest toughness among your creatures (XAtMost over Amount with Blight X in a spell additional cost)	Damage to each opponent and their creatures
+Soundwave, Sonic Spy // Soundwave, Superior Captain	Convert as an effect and a batched trigger for N or more creature tokens dealing combat damage with exile of a card with mana value equal to the damage	More Than Meets the Eye
+Spoils of War	An X defined by the card's text: a fixed announced X = an Amount ('X is the number of artifact and/or creature cards in an opponent's graveyard as you cast this spell') so no number is asked and {X} in the cost is paid for that value (announce/x.rs)	the divide amount itself is expressible: divide CountedAsCast(Largest{who Opponents, artifact or creature cards in graveyard})
+Sunglasses of Urza	Spend white mana as though it were red (SpendAs only has AnyColor, AnyType and Normal; a one color to another color permission)	none
+Taii Wakeen, Perfect Shot	Noncombat damage replacement this turn adding X from the activation, and a damage trigger keyed to noncombat damage equal to toughness	none
+Tannuk, Steadfast Second	Keyword::Warp (CR 702.185): cast for warp cost from hand, exile at end step, may cast later from exile; plus granting warp to cards in hand	—
+Tazri, Stalwart Survivor	Granted mana ability limited by color of the creature and "Activate only if this creature has another activated ability" and spend limits to creature abilities	Mill five and take creature cards with activated abilities
+Tenth District Hero	Becomes with a name, legendary and a granted static, conditioned on it being a Detective (conditional permanent becomes)	Collect evidence cost
+The Book of Vile Darkness	CostItem: exile the source and artifacts named Eye of Vecna and Hand of Vecna; token with all triggered abilities of the exiled cards	—
+The Capitoline Triad	CostItem: exile any number of graveyard cards with total mana value N or greater	emblem with base P/T setter exists
+The Face of Boe	cast a suspend card from hand paying its suspend cost instead of its mana cost (alternative cost from a keyword's cost)	—
+Tyvar the Bellicose	TriggerPattern 'a mana ability of this creature resolves' with Amount of the mana it produced, limited once each turn, granted to each creature you control (one-level GrantAbility is fine)	'Whenever one or more Elves you control attack, they gain deathtouch' reader
+Ulamog, the Defiler	Enters-with-counters amount from the greatest mana value among cards in exile (Amount::Greatest over exile) and a static keyword value (annihilator X) counted from +1/+1 counters	Top half of library exile with a cast trigger
+Urgent Necropsy	Additional cost collect evidence X with X the total mana value of the targets (X derived from the chosen targets)	Four up-to-one targets
+Vault 21: House Gambit	shared-quality count among revealed cards: cards with the same mana value as another revealed card	—
+Vazi, Keen Negotiator	Trigger when an opponent's spell or ability was paid with mana from a Treasure and a Treasure-created-this-turn count	Opponent creates X Treasures
+Vodalian War Machine	Per-source record of the permanents tapped to pay the costs of its abilities this turn (CostItem::TapPermanents paid list kept on the source with the turn), read after it dies	
+Volatile Stormdrake	Keyword::HexproofFrom over abilities: a Pred for "activated or triggered ability" sources in targeting legality (CR 702.11d), plus CR 701.12 exchange of control with an opponent's creature target	energy payment equal to mana value as an "unless" step
+Voodoo Doll	Activation cost {X}{X} where X is the number of pin counters on this artifact (X fixed by a count) and a damage count read on resolution	End-step destroy with damage
+Waterbender's Restoration	X target creatures chosen as X is announced (Bounds from X) and exile them with a return at the beginning of the next end step	Waterbend {X} additional cost now exists
+Wicker Picker	sticker kicker {1} granted to creature spells you cast (an additional optional cost that gives {TK} and a sticker placement on the spell as it resolves)	none
+Yavimaya Bloomsage // Channel	Until end of turn any-time-you-could-activate-a-mana-ability life payment that adds {C} (mana ability with a life cost granted as a rule)	Prepared state and a prepare spell face
+Yidris, Maelstrom Wielder	Grant cascade to spells cast from hand this turn as they are cast (cast-time keyword grant, CR 702.85)	Commander cast triggers
