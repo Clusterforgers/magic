@@ -54,6 +54,8 @@ export interface PlanInput {
   controllerOf: (id: ObjectId) => PlayerId | undefined
   /** The viewer's seat, whose own attacks and the attacks at them are drawn strong; none for a spectator. */
   viewer?: PlayerId | null
+  /** The viewer's party, whose attacks and the attacks at them are drawn strong as the viewer's own are. */
+  party?: readonly PlayerId[] | null
   /**
    * Leave out the attacks at a player, which the defender's pod shows as a badge per attacking seat (`attackGroups`):
    * the lines that remain join two boards (a block, an attack at a planeswalker or battle) and never cross to a pod.
@@ -107,6 +109,7 @@ export function planLines({
   pending,
   controllerOf,
   viewer = null,
+  party = null,
   seatBadges = false,
 }: PlanInput): LineSpec[] {
   const drawn = (to: AttackTarget): boolean => !(seatBadges && 'Player' in to)
@@ -117,11 +120,12 @@ export function planLines({
   const target = (to: AttackTarget): Anchor =>
     'Player' in to ? { kind: 'seat', seat: to.Player } : card(to.Planeswalker)
 
-  // An attack concerns the viewer when the viewer attacks with it or is what it attacks (a planeswalker of theirs too).
+  // An attack concerns the viewer when the viewer (or a seat of their party) attacks with it or is what it attacks (a
+  // planeswalker of theirs too).
+  const mine = (seat: PlayerId | undefined): boolean =>
+    viewer !== null && seat !== undefined && (seat === viewer || (party?.includes(seat) ?? false))
   const concerns = (attacker: ObjectId, to: AttackTarget): boolean =>
-    viewer !== null &&
-    (controllerOf(attacker) === viewer ||
-      ('Player' in to ? to.Player === viewer : controllerOf(to.Planeswalker) === viewer))
+    mine(controllerOf(attacker)) || mine('Player' in to ? to.Player : controllerOf(to.Planeswalker))
   const attacks: LineSpec[] = []
   const blocks: LineSpec[] = []
   if (combat?.attackers_declared === true) {

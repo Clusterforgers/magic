@@ -107,6 +107,22 @@ describe('planLines with seat badges', () => {
     expect(lines.map((line) => line.key)).toEqual(['pending-attack:10'])
   })
 
+  it("draws the attacks at a party's seats strong, as the viewer's own, only for a viewer with a party", () => {
+    // Seat 2 (the attacker of 12) attacks seat 0 (the viewer), seat 1's creature 10 attacks seat 3.
+    const view = combat([
+      [12, player(0), []],
+      [10, player(3), []],
+    ])
+    const mine = (party: readonly PlayerId[] | null, viewer: PlayerId | null) =>
+      planLines({ combat: view, forecast: null, pending: NO_PENDING, controllerOf, viewer, party }).map(
+        (line) => line.mine === true,
+      )
+    expect(mine(null, 0)).toEqual([true, false])
+    expect(mine([0, 3], 0)).toEqual([true, true])
+    expect(mine([0, 1], 0)).toEqual([true, true])
+    expect(mine([0, 3], null)).toEqual([false, false])
+  })
+
   it('draws every attack without them', () => {
     const lines = planLines({ combat: view, forecast: null, pending: NO_PENDING, controllerOf })
     expect(lines.map((line) => line.key)).toEqual(['attack:10', 'attack:11', 'block:20'])
@@ -139,7 +155,7 @@ describe('the badge on the pod', () => {
       const pod = must(container.querySelector(`[data-seat="${seat}"]`))
       const badges = pod.querySelectorAll('[data-slot="attack-badge"]')
       expect(badges.length).toBe(count)
-      if (count > 0) expect(badges[0]?.getAttribute('aria-label')).toMatch(/attacks with \d+ creature/)
+      if (count > 0) expect(badges[0]?.getAttribute('aria-label')).toMatch(/attacks (you )?with \d+ creature/)
     }
   })
 })

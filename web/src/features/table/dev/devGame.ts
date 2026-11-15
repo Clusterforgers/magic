@@ -336,6 +336,51 @@ export function withBoss(moment: Fixture, minions: number): Fixture {
   return { ...moment, view: { ...moment.view, players, objects, house_rules } }
 }
 
+/**
+ * A boss fight in which the boss's side has attacked: the boss with one creature per hero and each minion with one,
+ * dealt to the heroes in turn from seat 0 so that every hero is attacked, nobody has blocked yet and it is the boss's
+ * turn. A table without a boss is left as it is.
+ */
+export function withBossAttack(moment: Fixture): Fixture {
+  const boss = moment.view.players.findIndex((player) => player.boss !== undefined)
+  if (boss < 1) return moment
+  const heroes = boss
+  const fighter = (seat: PlayerId) =>
+    moment.view.objects.filter(
+      (object) =>
+        object.zone === 'Battlefield' &&
+        object.controller === seat &&
+        object.types.includes('Creature') &&
+        object.permanent?.summoning_sick === false,
+    )
+  const attackers: ObjectView[] = []
+  for (let seat = boss; seat < moment.view.players.length; seat += 1) {
+    attackers.push(...fighter(seat).slice(0, seat === boss ? heroes : 1))
+  }
+  const ids = new Set(attackers.map((object) => object.id))
+  const was = new Set((moment.view.combat?.attackers ?? []).map((attacker) => attacker.object))
+  const objects = moment.view.objects.map((object) =>
+    object.permanent !== null && (ids.has(object.id) || was.has(object.id))
+      ? { ...object, permanent: { ...object.permanent, tapped: ids.has(object.id) } }
+      : object,
+  )
+  const combat = {
+    attackers: attackers.map((object, at) => ({
+      object: object.id,
+      target: { Player: at % heroes },
+      blocked: false,
+      blockers: [],
+    })),
+    attackers_declared: true,
+    blockers_declared: [],
+  }
+  const turn = { ...moment.view.turn, active: boss, step: 'DeclareBlockers' as const }
+  return {
+    ...moment,
+    view: { ...moment.view, objects, combat, turn, priority: { holder: moment.view.viewer, passed: [boss] } },
+  }
+}
+
 /** The table with its active player gone (CR 800.4): the seat is out of the game and the turn goes on without it. */
 function withActiveLeft(moment: Fixture): Fixture {
   const gone = moment.view.turn.active
@@ -369,7 +414,13 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
   const ruled =
     options.rules === true ? { ...stepped, view: { ...stepped.view, house_rules: DEV_TABLE_RULES } } : stepped
   const teamed = options.teams === undefined ? ruled : withTeams(ruled, options.teams)
-  const bossed = options.boss === undefined ? teamed : withBoss(teamed, options.boss)
+  // A boss fight shows the boss's attack unless a prompt brings a moment of its own.
+  const bossed =
+    options.boss === undefined
+      ? teamed
+      : prompt === undefined && table === undefined
+        ? withBossAttack(withBoss(teamed, options.boss))
+        : withBoss(teamed, options.boss)
   const fixture = options.turn === 'left' ? withActiveLeft(bossed) : bossed
   const shown = prompt !== undefined ? prompt(fixture) : options.holding === true ? undefined : null
   store.setState(fixtureState(fixture, shown))

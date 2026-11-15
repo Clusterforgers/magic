@@ -5,7 +5,7 @@ import type { CombatView, ObjectId } from '@/protocol/generated'
 import { useBlockPreview } from './forecast'
 import { usePendingCombat } from './pending'
 import type { PendingCombat } from './pending'
-import { ATTACK_BADGES_BY_DEFAULT, TableOptionsContext } from '../tableOptions'
+import { ATTACK_BADGES_BY_DEFAULT, AttackLinesContext, TableOptionsContext } from '../tableOptions'
 import { planLines } from './plan'
 import type { LineSpec } from './plan'
 
@@ -41,10 +41,13 @@ export function useCombatPlan(): readonly LineSpec[] {
   const cards = useMemo(() => cardsInPlay(combat, pending), [combat, pending])
   const controllers = usePlay(useShallow((state) => cards.map((id) => state.objectsById[id]?.controller)))
   const viewer = usePlay((state) => (state.view?.spectator === true ? null : state.seat))
-  const seatBadges = useContext(TableOptionsContext).attackBadges ?? ATTACK_BADGES_BY_DEFAULT
+  // A layout that keeps the lines off the other boards (boss mode) draws the attacks at players as lines too.
+  const party = useContext(AttackLinesContext)
+  const badgesOn = useContext(TableOptionsContext).attackBadges ?? ATTACK_BADGES_BY_DEFAULT
+  const seatBadges = badgesOn && party === null
   return useMemo(() => {
     const controllerOf = (id: ObjectId) => controllers[cards.indexOf(id)]
-    const lines = planLines({ combat, forecast, pending, controllerOf, viewer, seatBadges })
+    const lines = planLines({ combat, forecast, pending, controllerOf, viewer, party, seatBadges })
     return lines.length === 0 ? NO_LINES : lines
-  }, [combat, forecast, pending, cards, controllers, viewer, seatBadges])
+  }, [combat, forecast, pending, cards, controllers, viewer, party, seatBadges])
 }
