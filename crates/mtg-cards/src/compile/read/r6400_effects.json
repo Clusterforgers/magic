@@ -1,0 +1,10 @@
+[
+  [{"Rule":{"rule":{"R6400ChoosesVotes":{"chooser":"You"}},"duration":"UntilEndOfTurn"}},
+    "you choose how each player votes this turn"],
+  [{"Rule":{"rule":{"R6400ChoosesBlocks":{"chooser":"You"}},"duration":"UntilEndOfCombat"}},
+    "you choose which creatures block this combat and how those creatures block"],
+  [{"Rule":{"rule":{"R6400ChoosesBlocks":{"chooser":"You"}},"duration":"UntilEndOfTurn"}},
+    "you choose which creatures block this turn and how those creatures block"],
+  [{"DelayedTrigger":{"when":{"Unblocked":{"what":[{"Type":"Creature"}]}},"once":false,"until":"UntilEndOfCombat","effects":[{"Untap":{"what":"Triggering"}},{"RemoveFromCombat":{"what":"Triggering"}}]}},
+    "whenever a creature attacks and isn't blocked this combat, untap it and remove it from combat"]
+]

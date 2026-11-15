@@ -841,6 +841,25 @@ pub enum GameRule {
         /// The attacking creature.
         attacker: Ref,
     },
+    /// The player `chooser` names chooses which creatures the players `whose` names control block and how they block
+    /// (CR 509.1a): "you choose which creatures block this combat and how those creatures block". The declaration still
+    /// obeys every restriction and requirement, and a cost to block is paid or refused by the blocker's controller.
+    R6400ChoosesBlocks {
+        /// Who declares the blocks instead.
+        chooser: Ref,
+        /// The players whose blocks they declare.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        whose: Ref,
+    },
+    /// The player `chooser` names casts every ballot of each vote, for each player (CR 701.38): "You choose how each
+    /// player votes this turn."; each vote still counts as that player's.
+    R6400ChoosesVotes {
+        /// Who votes for everyone.
+        chooser: Ref,
+    },
     /// A permission or a limit on how the creatures take part in combat (`CombatQuirk`).
     Combat {
         /// The creatures.
@@ -883,6 +902,10 @@ pub enum GameRule {
         /// How many times the mana is paid for each creature, counted when the attack is declared.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         per: Amount,
+        /// The other costs each taxed creature takes, once for each of `per` (CR 508.1g): permanents sacrificed,
+        /// returned or tapped ("can't attack unless you sacrifice two Islands").
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        cost: Vec<crate::cost::CostItem>,
     },
     /// Creatures can't block unless their controller pays the mana or life for each of them as blockers are declared
     /// (CR 509.1d): the declaration is made only with the payment.
@@ -902,6 +925,10 @@ pub enum GameRule {
         /// How many times the cost is paid for each creature, counted when the rule began or the state last changed.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         per: Amount,
+        /// The other costs each taxed blocker takes, once for each of `per` (CR 509.1d): permanents tapped, sacrificed
+        /// or returned.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        cost: Vec<crate::cost::CostItem>,
     },
     /// No more than this many creatures can attack each combat: a restriction on the whole declaration (CR 508.1c).
     AttackLimit(u32),
@@ -1493,6 +1520,7 @@ mod tests {
             mana: "{2}".parse().unwrap(),
             life: 0,
             per: Amount::Fixed(1),
+            cost: Vec::new(),
         },
         r#"{"AttackTax":{"attacked":"Player","mana":"{2}"}}"#
     )]
@@ -1504,6 +1532,7 @@ mod tests {
             mana: ManaCostX::default(),
             life: 2,
             per: Amount::Fixed(1),
+            cost: Vec::new(),
         },
         r#"{"AttackTax":{"attacked":"Both","life":2}}"#
     )]
@@ -1515,6 +1544,7 @@ mod tests {
             mana: "{W/P}".parse().unwrap(),
             life: 0,
             per: Amount::Fixed(2),
+            cost: Vec::new(),
         },
         r#"{"AttackTax":{"who":"Opponents","attacked":"Both","attackers":[{"Type":"Creature"}],"mana":"{W/P}","per":2}}"#
     )]
@@ -1525,8 +1555,32 @@ mod tests {
             mana: "{2}".parse().unwrap(),
             life: 0,
             per: Amount::Fixed(1),
+            cost: Vec::new(),
         },
         r#"{"BlockTax":{"blockers":["This"],"mana":"{2}"}}"#
+    )]
+    #[case(
+        GameRule::AttackTax {
+            who: Ref::EachPlayer,
+            attacked: Attacked::Both,
+            attackers: Selector::this(),
+            mana: ManaCostX::default(),
+            life: 0,
+            per: Amount::Fixed(1),
+            cost: vec![crate::cost::CostItem::Sacrifice {
+                filter: Selector(vec![crate::refs::Pred::Type(CardType::Land)]),
+                count: Amount::Fixed(1),
+            }],
+        },
+        r#"{"AttackTax":{"who":"EachPlayer","attacked":"Both","attackers":["This"],"cost":[{"Sacrifice":{"filter":[{"Type":"Land"}]}}]}}"#
+    )]
+    #[case(
+        GameRule::R6400ChoosesBlocks { chooser: Ref::You, whose: Ref::Opponents },
+        r#"{"R6400ChoosesBlocks":{"chooser":"You","whose":"Opponents"}}"#
+    )]
+    #[case(
+        GameRule::R6400ChoosesVotes { chooser: Ref::You },
+        r#"{"R6400ChoosesVotes":{"chooser":"You"}}"#
     )]
     #[case(
         GameRule::DamageCantBePrevented { source: Selector::default(), combat: None },

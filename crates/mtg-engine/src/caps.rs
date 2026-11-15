@@ -481,6 +481,9 @@ const RUNS: &[&str] = &[
     "Rule.MustAttackWithOne",
     "Rule.AttackTax",
     "Rule.BlockTax",
+    "Rule.R6400CombatCost",
+    "Rule.R6400ChoosesBlocks",
+    "Rule.R6400ChoosesVotes",
     "Rule.AttackLimit",
     "Rule.AttackLimitAt",
     "Rule.BlockLimit",
@@ -1930,6 +1933,9 @@ mod tests {
     #[case::r5502_attacking_with_at_least_one("Rule.MustAttackWithOne", true)]
     #[case::taxing_attackers("Rule.AttackTax", true)]
     #[case::taxing_blockers("Rule.BlockTax", true)]
+    #[case::r6400_permanents_to_attack("Rule.R6400CombatCost", true)]
+    #[case::r6400_another_player_blocks("Rule.R6400ChoosesBlocks", true)]
+    #[case::r6400_one_player_votes("Rule.R6400ChoosesVotes", true)]
     #[case::w8a_attack_limit("Rule.AttackLimit", true)]
     #[case::w10a_attack_limit_at("Rule.AttackLimitAt", true)]
     #[case::w8a_block_limit("Rule.BlockLimit", true)]

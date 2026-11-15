@@ -9,20 +9,24 @@
 //! declaration, with nothing paid. A requirement to block is never one to pay (CR 509.1d): a taxed creature is bound
 //! by none.
 
+use mtg_cards::cost::CostItem;
 use mtg_cards::modify::GameRule;
 use mtg_cards::refs::Selector;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 use serde::{Deserialize, Serialize};
 
-use crate::announce::Next;
+use crate::announce::r6400_combat_costs::{r6400_events, r6400_next, r6400_parts, r6400_payable};
+use crate::announce::{Done, Next};
 use crate::answers::Outcome;
 use crate::cast::payment_decision;
+use crate::choose::Choices;
 use crate::decision::{BlockerOption, Decision, DecisionKind, PayOptions};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::help::Offered;
 use crate::object::ObjectRef;
+use crate::parts::Part;
 use crate::priority::mana_options;
 use crate::resolve::{ResolveError, Scope};
 use crate::rules::{Rule, block_taxes, repeated};
@@ -44,6 +48,11 @@ pub struct BlockTax {
     /// The life each taxed blocker costs, counted the same way.
     #[serde(default)]
     pub life: u32,
+    /// The permanents each taxed blocker costs besides, tapped, sacrificed or returned (CR 509.1d), each a fixed number
+    /// counted the same way.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+    pub costs: Vec<mtg_cards::cost::CostItem>,
 }
 
 /// A tax on blocking in force, with whose it is.
@@ -65,6 +74,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, Resolv
         mana,
         life,
         per,
+        cost,
     } = wanted
     else {
         return Err(ResolveError::Invalid("not a block tax".to_owned()));
@@ -75,6 +85,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, Resolv
         attackers: attackers.clone(),
         mana: repeated(mana.rest(), times),
         life: life.saturating_mul(u32::try_from(times).unwrap_or(u32::MAX)),
+        costs: crate::announce::r6400_combat_costs::r6400_repeated(cost, times),
     }))
 }
 
@@ -175,7 +186,8 @@ pub(crate) fn made(
     state: &GameState,
     player: PlayerId,
     blocks: &[(ObjectId, ObjectId)],
-) -> Vec<Event> {
+    picked: &Choices,
+) -> Option<Vec<Event>> {
     let mut events = vec![Event::BlockersDeclared {
         player,
         blocks: crate::keywords::banding::blocks_with_bands(state, blocks),
@@ -187,7 +199,47 @@ pub(crate) fn made(
             amount: life,
         });
     }
-    events
+    events.extend(r6400_events(
+        state,
+        player,
+        &declared(blocks),
+        &other_parts(state, blocks),
+        picked,
+    )?);
+    Some(events)
+}
+
+/// The creatures of a declaration, each once.
+fn declared(blocks: &[(ObjectId, ObjectId)]) -> Vec<ObjectId> {
+    let mut seen: Vec<ObjectId> = Vec::new();
+    for (blocker, _) in blocks {
+        if !seen.contains(blocker) {
+            seen.push(*blocker);
+        }
+    }
+    seen
+}
+
+/// The parts a block costs beyond mana and life (CR 509.1d): the other costs of every tax that taxes each blocker and
+/// an attacker it blocks, once for each blocker, added up.
+fn other_parts(state: &GameState, blocks: &[(ObjectId, ObjectId)]) -> Vec<Part> {
+    let mut items: Vec<CostItem> = Vec::new();
+    for blocker in declared(blocks) {
+        for taxing in block_taxes(state) {
+            let hits = picks(state, taxing, &taxing.tax.blockers, blocker)
+                && blocks.iter().any(|(by, attacker)| {
+                    *by == blocker && picks(state, taxing, &taxing.tax.attackers, *attacker)
+                });
+            if hits {
+                items.extend(taxing.tax.costs.iter().cloned());
+            }
+        }
+    }
+    if items.is_empty() {
+        Vec::new()
+    } else {
+        r6400_parts(&items)
+    }
 }
 
 /// The payment of the mana of a declaration, if its player can make it automatically; the object named is the first
@@ -233,18 +285,36 @@ pub(crate) fn declare(
     if !can_pay_life(state, player, life) {
         return Err(IllegalAnswer::BlockUnaffordable(format!("{life} life")).into());
     }
-    if owed.symbols().is_empty() {
-        return Ok(Outcome::Events(made(state, player, &blocks)));
+    let parts = other_parts(state, &blocks);
+    if !r6400_payable(state, player, &declared(&blocks), &parts) {
+        return Err(IllegalAnswer::BlockUnaffordable("the permanents it takes".to_owned()).into());
     }
-    if payment(state, player, &blocks).is_none() {
+    if owed.symbols().is_empty() && parts.is_empty() {
+        let events = made(state, player, &blocks, &Choices::default())
+            .ok_or_else(|| EngineError::InvalidEvent("a block without its picks".into()))?;
+        return Ok(Outcome::Events(events));
+    }
+    if !owed.symbols().is_empty() && payment(state, player, &blocks).is_none() {
         return Err(IllegalAnswer::BlockUnaffordable(owed.to_string()).into());
     }
-    Ok(Outcome::BeginBlock(blocks))
+    Ok(Outcome::BeginBlock(blocks, player))
 }
 
-/// The decision of a block that waits for its payment: `PayMana` for the total cost, which can be backed out of. A block
-/// that can no longer be paid is dropped.
-pub(crate) fn next(state: &GameState, player: PlayerId, blocks: &[(ObjectId, ObjectId)]) -> Next {
+/// The decision of a block that waits for its payment: the permanents its other costs take, then `PayMana` for the
+/// total cost, which can be backed out of. A block that can no longer be paid is dropped.
+pub(crate) fn next(
+    state: &GameState,
+    player: PlayerId,
+    blocks: &[(ObjectId, ObjectId)],
+    (choices, done): (&mut Choices, &mut Done),
+) -> Next {
+    let parts = other_parts(state, blocks);
+    if let Some(next) = r6400_next(state, player, &declared(blocks), &parts, (choices, done)) {
+        return next;
+    }
+    if costs(state, blocks).0.symbols().is_empty() {
+        return made(state, player, blocks, choices).map_or(Next::Drop, Next::Commit);
+    }
     match payment(state, player, blocks) {
         Some(options) => Next::Ask(Decision {
             player,

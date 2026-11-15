@@ -683,6 +683,7 @@ Everdream
 Evermind
 Evolutionary Leap
 Exalted Angel
+Exalted Dragon
 Excavation Technique
 Excise the Imperfect
 Exemplar of Light
@@ -757,6 +758,8 @@ Fleecemane Lion
 Fleetfeather Cockatrice
 Flooded Grove
 Flooded Strand
+Flooded Woodlands
+Floodtide Serpent
 Flowerfoot Swordmaster
 Fog
 Follow the Bodies
@@ -984,6 +987,7 @@ History of Benalia
 Hoarder's Greed
 Hogaak, Arisen Necropolis
 Holdout Settlement
+Hollow Warrior
 Honor Troll
 Honor's Reward
 Hoofprints of the Stag
@@ -1181,6 +1185,7 @@ Legion Loyalty
 Legolas Greenleaf
 Leonardo, the Balance
 Letter of Acceptance
+Leviathan
 Levitation
 Leyline Binding
 Lhurgoyf
@@ -1641,6 +1646,7 @@ Reaver Titan
 Reciprocate
 Reckless Endeavor
 Reckless Impulse
+Reclamation
 Reconstructed Thopter
 Red Room Recruit
 Redcap Heelslasher

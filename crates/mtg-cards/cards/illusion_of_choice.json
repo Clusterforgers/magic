@@ -1,0 +1,26 @@
+{
+  "oracle_id": "e3ad9287-ef13-4b66-9df8-b17e15bb4b0f",
+  "name": "Illusion of Choice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Illusion of Choice",
+      "oracle_fingerprint": "9d3cff9a17e53c9883f65d11a0011f19",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "R6400ChoosesVotes": { "chooser": "You" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

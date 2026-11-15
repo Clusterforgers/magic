@@ -626,6 +626,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     if let Some(mut texts) = super::r401_riders::r401_rider_texts(ability, written_variants) {
         oracle_only::r5523_add_whole(ability, &mut texts);
         super::r6103_wholes::r6103_add_wholes(ability, &mut texts);
+        super::r6400_wholes::r6400_add_wholes(ability, &mut texts);
         return texts;
     }
     // An investigation is worded as the Clue tokens it makes.
@@ -681,6 +682,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r6018_wholes::r6018_add_wholes(ability, &mut texts);
     super::r6100_wholes::r6100_add_wholes(ability, &mut texts);
     super::r6103_wholes::r6103_add_wholes(ability, &mut texts);
+    super::r6400_wholes::r6400_add_wholes(ability, &mut texts);
     super::r5510_fortified::r5510_wordings(&mut texts);
     super::r5505_convert::r5505_convert_wordings(ability, &mut texts);
     super::r5506_costs::r5506_wordings(ability, &mut texts);
@@ -3852,6 +3854,7 @@ impl Writer<'_> {
             .or_else(|| self.r4710_no_monarch(effect))
             .or_else(|| self.r301_cant_phase_out(effect))
             .or_else(|| self.r5502_attacks_next_combat(effect))
+            .or_else(|| super::r6400_wholes::r6400_effect_text(effect))
             .or_else(|| self.rmt2_reverberation(effect))
             .or_else(|| self.rmt2_target_spell_uncounterable(effect))
         {

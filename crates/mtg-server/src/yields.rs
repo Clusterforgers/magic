@@ -587,6 +587,7 @@ mod tests {
                 must_be_blocked_by: None,
                 cant_alone: Vec::new(),
                 joins: Vec::new(),
+                r6400_for: None,
                 min_blockers: Vec::new(),
                 max_blockers: Vec::new(),
                 required: Vec::new(),

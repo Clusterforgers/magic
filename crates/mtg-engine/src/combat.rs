@@ -666,6 +666,7 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
         most,
         cant_alone,
         joins,
+        r6400_for: None,
     }
 }
 

@@ -53,6 +53,7 @@ fn tax(r: &mut Reader<'_>) -> Option<GameRule> {
             mana: ManaCostX::default(),
             life,
             per: Amount::one(),
+            cost: Vec::new(),
         });
     }
     let mut symbols = String::new();
@@ -82,6 +83,7 @@ fn tax(r: &mut Reader<'_>) -> Option<GameRule> {
         mana,
         life: 0,
         per,
+        cost: Vec::new(),
     })
 }
 
@@ -135,10 +137,14 @@ fn sentences(rule: &GameRule) -> Vec<String> {
         mana,
         life,
         per,
+        cost,
     } = rule
     else {
         return Vec::new();
     };
+    if !cost.is_empty() {
+        return Vec::new();
+    }
     let no_mana = mana.rest().symbols().is_empty() && !mana.has_x();
     if (*life > 0) != no_mana {
         return Vec::new();

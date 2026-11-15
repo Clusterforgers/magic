@@ -81,6 +81,8 @@ mod r5523_dealt_damage;
 mod r6001_baseball_bat;
 mod r6001_gorm;
 mod r6001_kytheon;
+mod r6400_attack_costs;
+mod r6400_chosen_blocks;
 mod riot;
 mod rmt1_become_blocked;
 mod rmt7_blocks_per;

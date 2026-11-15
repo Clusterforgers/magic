@@ -1,0 +1,25 @@
+{
+  "oracle_id": "413172aa-b508-4e67-b68e-6a749d2e8130",
+  "name": "Flooded Woodlands",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flooded Woodlands",
+      "oracle_fingerprint": "989d52ca0bc5ae45bc1695a55702b675",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "AttackTax": {
+                "who": "EachPlayer",
+                "attacked": "Both",
+                "attackers": [{ "Color": "Green" }, { "Type": "Creature" }],
+                "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

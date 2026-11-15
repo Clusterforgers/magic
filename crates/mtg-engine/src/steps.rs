@@ -329,8 +329,12 @@ fn declare_blockers(state: &GameState) -> Progress {
                 },
             ]);
         }
+        // A rule may give the declaration to another player (CR 509.1a), who sees the same options.
+        let chooser = crate::rules::r6400_block_chooser(state, player);
+        let mut options = options;
+        options.r6400_for = chooser.map(|_| player);
         return Progress::Decide(Decision {
-            player,
+            player: chooser.unwrap_or(player),
             kind: DecisionKind::DeclareBlockers(options),
         });
     }

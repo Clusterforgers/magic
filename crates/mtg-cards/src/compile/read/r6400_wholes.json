@@ -1,0 +1,20 @@
+[
+  [{"Rule":{"rule":{"AttackTax":{"who":"EachPlayer","attacked":"Both","attackers":["This"],"cost":[{"Sacrifice":{"filter":[{"Subtype":"Island"}],"count":2}}]}}}},
+    "This creature can't attack unless you sacrifice two Islands."],
+  [{"Rule":{"rule":{"AttackTax":{"who":"EachPlayer","attacked":"Both","attackers":["This"],"cost":[{"Sacrifice":{"filter":[{"Type":"Land"}]}}]}}}},
+    "This creature can't attack unless you sacrifice a land."],
+  [{"Rule":{"rule":{"AttackTax":{"who":"EachPlayer","attacked":"Both","attackers":["This"],"cost":[{"ReturnToHand":{"filter":[{"Type":"Enchantment"}]}}]}}}},
+    "This creature can't attack unless you return an enchantment you control to its owner's hand."],
+  [{"Rule":{"rule":{"AttackTax":{"who":"EachPlayer","attacked":"Both","attackers":[{"Color":"Green"},{"Type":"Creature"}],"cost":[{"Sacrifice":{"filter":[{"Type":"Land"}]}}]}}}},
+    "Green creatures can't attack unless their controller sacrifices a land of their choice for each green creature they control that's attacking."],
+  [{"Rule":{"rule":{"AttackTax":{"who":"EachPlayer","attacked":"Both","attackers":[{"Color":"Black"},{"Type":"Creature"}],"cost":[{"Sacrifice":{"filter":[{"Type":"Land"}]}}]}}}},
+    "Black creatures can't attack unless their controller sacrifices a land of their choice for each black creature they control that's attacking."],
+  [{"Triggered":{"when":{"Attacks":{"what":["This"]}},"if":{"AtTrigger":{"Compare":{"left":{"Count":[{"Type":"Creature"},"Attacking","Other"]},"op":"Ge","right":3}}},"effects":[{"Rule":{"rule":{"R6400ChoosesBlocks":{"chooser":"You"}},"duration":"UntilEndOfCombat"}}]}},
+    "Whenever ~ and at least three other creatures attack, you choose which creatures block this combat and how those creatures block."],
+  [{"Rule":{"rule":{"R6400ChoosesBlocks":{"chooser":"ActivePlayer"}}}},
+    "The attacking player chooses how each creature blocks each combat."],
+  [{"Activated":{"cost":"{3}{R/W}{R/W}","effects":[{"Rule":{"rule":{"MustBlock":{"Each":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}},"duration":"UntilEndOfTurn"}},{"Rule":{"rule":{"R6400ChoosesBlocks":{"chooser":"You","whose":"Opponents"}},"duration":"UntilEndOfTurn"}}]}},
+    "{3}{R/W}{R/W}: Creatures your opponents control block this turn if able, and you choose how those creatures block."],
+  [{"CastOnly":{"condition":{"All":["YourTurn",{"Any":[{"Step":"BeginCombat"},{"Step":"DeclareAttackers"}]}]}}},
+    "Cast this spell only during combat on your turn before blockers are declared."]
+]

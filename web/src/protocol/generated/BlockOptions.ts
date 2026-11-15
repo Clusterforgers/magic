@@ -2,6 +2,7 @@
 import type { BlockerOption } from "./BlockerOption";
 import type { JoinRule } from "./JoinRule";
 import type { ObjectId } from "./ObjectId";
+import type { PlayerId } from "./PlayerId";
 
 /**
  * Legal blockers.
@@ -54,4 +55,9 @@ cant_alone?: Array<ObjectId>,
  * the creatures that count (CR 508.1c, 509.1b); a declaration that breaks one is refused. Left out while there are
  * none.
  */
-joins?: Array<JoinRule>, };
+joins?: Array<JoinRule>, 
+/**
+ * The player whose creatures block, when a rule has the player deciding choose for them (CR 509.1a: "you choose
+ * which creatures block this combat and how those creatures block"). Left out while players declare their own.
+ */
+r6400_for?: PlayerId, };

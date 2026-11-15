@@ -676,12 +676,15 @@ fn announcement(
         }]),
         Some(Pending {
             what: What::Attack(attackers, extras),
+            choices,
             ..
-        }) => Ok(crate::attack_tax::made(state, player, attackers, extras)),
+        }) => crate::attack_tax::made(state, player, attackers, extras, choices)
+            .ok_or_else(unexpected),
         Some(Pending {
             what: What::Block(blocks),
+            choices,
             ..
-        }) => Ok(crate::block_tax::made(state, player, blocks)),
+        }) => crate::block_tax::made(state, player, blocks, choices).ok_or_else(unexpected),
         Some(Pending {
             what: What::Trigger(_),
             ..
