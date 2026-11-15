@@ -197,6 +197,7 @@ export type { LeftToTable } from "./LeftToTable";
 export type { LibraryLooked } from "./LibraryLooked";
 export type { LinePrintingBody } from "./LinePrintingBody";
 export type { ListProblem } from "./ListProblem";
+export type { LobbyCommander } from "./LobbyCommander";
 export type { LobbyErrorCode } from "./LobbyErrorCode";
 export type { LobbyGame } from "./LobbyGame";
 export type { LobbyList } from "./LobbyList";

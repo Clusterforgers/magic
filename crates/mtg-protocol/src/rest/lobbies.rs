@@ -5,6 +5,7 @@
 
 use std::fmt;
 
+use mtg_cards::CardIdentity;
 use mtg_cards::deck::Issue;
 use mtg_core::house::HouseRules;
 use mtg_core::ids::PlayerId;
@@ -66,6 +67,24 @@ pub struct LobbyGame {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[ts(as = "Option<bool>", optional)]
     pub running: bool,
+    /// The commanders the seats lead, in seat order: public in a Commander game, so the list can show their art. Left
+    /// out for any other format and while no seat has chosen a deck.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<LobbyCommander>>", optional)]
+    pub commanders: Vec<LobbyCommander>,
+}
+
+/// One commander of a listed Commander game.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, TS)]
+pub struct LobbyCommander {
+    /// The seat that leads it.
+    pub seat: PlayerId,
+    /// The card's name.
+    pub name: String,
+    /// Which printed card it is, for its art; left out for a card the database does not know.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub identity: Option<CardIdentity>,
 }
 
 /// The answer of `GET /api/lobbies`: the public games still in their lobby and the running games, newest first, at

@@ -243,13 +243,17 @@ The seat does by hand what the engine does not run from one persistent panel at 
 
 `/` is Play: open games, Create game and Join with a code. Create is `/new`, an invite opens `/join/$code`, My games stays; a signed-in user also gets "Continue" for a running game. Visibility follows Steamworks and Unity lobbies: private lobbies are hidden from queries and joined by code.
 
-| Column | Content |
+Each open game is a card, one column on a phone and up to four on a wide window:
+
+| Part | Content |
 |---|---|
-| Host | account or guest name |
+| Art | each seat's commanders as art crops edged in the seat colour; without commanders the felt with the format's mark and a band of seat colours |
+| Host | account or guest name, in the display face |
+| Commanders | each seat's commanders by its seat dot |
 | Format | Normal or Commander |
-| Seats | "2 of 4" with dots; a full row dims and says "Full" |
+| Seats | "2 of 4" with dots; a full game dims and says "Full" |
 | Age | "3 min ago" in a `<time>`, refreshed every 30 s |
-| Action | Join, the one primary button per row |
+| Action | Join, the one primary button per card |
 
 - States: skeleton rows only after 300 ms; empty ("No open games. Create one, or join with a code.") with both actions; error alert with Retry, stale rows kept and dimmed.
 - Updates: poll `GET /api/lobbies` every 5 s while the tab is visible, with `ETag`, and a Refresh button. A row that fills before the click says "Someone took that seat" and the list reloads.
@@ -258,7 +262,7 @@ The seat does by hand what the engine does not run from one persistent panel at 
 - Lobby teams: the mode follows the format line ("Commander game · 4 seats · Two-Headed Giant"); each seat row has a left edge in its team's colour and the team label, a select "Team of Ann" for the host. A change shows at once, takes every Ready back and is said in a polite line; teams the server would refuse are not sent, and a refusal puts the old teams back with the reason.
 - Game over for teams: "Team 1 wins — Ann & Bo"; every seat of the winning team gets the burst and "Your team won", the others the banner naming the team and its players; each seat row carries its team chip.
 - Privacy ([server.md](server.md)): an invite game is never listed; an unknown id, an invite game without its code and a wrong code give one 404; the list never carries a token or code.
-- Accessibility: a real `<table>` with a caption from M up, stacked rows below; the button name is "Join Bo's game, 2 of 4 seats"; a polite "3 open games" line; polling never moves focus; a removed focused row sends it to the next Join.
+- Accessibility: a list named "Open games, newest first" of articles named by their host; the art is decoration, its commanders written beside the seat dots; the button name is "Join Bo's game, 2 of 4 seats"; a polite "3 open games" line; polling never moves focus; a removed focused row sends it to the next Join.
 
 ## Priority, stops and information leaks
 

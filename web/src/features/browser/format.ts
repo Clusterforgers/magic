@@ -1,5 +1,5 @@
 /** Words, counts, filters and codes for the open-games list; pure, so the page and its tests share them. */
-import type { LobbyGame } from '@/protocol/generated'
+import type { LobbyCommander, LobbyGame, PlayerId } from '@/protocol/generated'
 
 const MINUTE = 60
 const HOUR = 60 * MINUTE
@@ -102,3 +102,22 @@ export const normalizeCode = (typed: string): string => typed.toUpperCase().repl
 
 /** Whether text (as `normalizeCode` leaves it) can be a join code: 8 symbols of the server's alphabet. */
 export const isJoinCode = (code: string): boolean => CODE_SYMBOLS.test(code)
+
+/** One seat's commanders on a game's card: the seat and what it leads (one, or a pair of partners). */
+export interface SeatCommanders {
+  seat: PlayerId
+  commanders: LobbyCommander[]
+}
+
+/** A game's commanders grouped by seat, in seat order; none for a game without commanders. */
+export function commandersBySeat(game: LobbyGame): SeatCommanders[] {
+  const seats = new Map<PlayerId, LobbyCommander[]>()
+  for (const commander of game.commanders ?? []) {
+    seats.set(commander.seat, [...(seats.get(commander.seat) ?? []), commander])
+  }
+  return [...seats].sort(([a], [b]) => a - b).map(([seat, commanders]) => ({ seat, commanders }))
+}
+
+/** What a seat leads as one phrase: "Atraxa, Praetors' Voice", "Tymna the Weaver and Thrasios, Triton Hero". */
+export const commanderNames = (seat: SeatCommanders): string =>
+  seat.commanders.map((commander) => commander.name).join(' and ')

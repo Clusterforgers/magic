@@ -274,6 +274,7 @@ async fn a_listing_holds_no_token_no_code_and_no_digest() {
         created_at: _,
         age: _,
         running: _,
+        commanders: _,
     } = &listed[0];
 }
 

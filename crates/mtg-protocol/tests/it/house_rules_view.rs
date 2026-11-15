@@ -115,6 +115,7 @@ fn row(house_rules: Option<HouseRules>) -> LobbyGame {
         created_at: "2026-10-19T12:30:00Z".into(),
         age_secs: 5,
         running: false,
+        commanders: Vec::new(),
     }
 }
 

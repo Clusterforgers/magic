@@ -223,6 +223,7 @@ fn view(game: ListedGame) -> LobbyGame {
         created_at: game.created_at,
         age_secs: game.age.as_secs(),
         running: game.running,
+        commanders: game.commanders,
     }
 }
 
@@ -238,6 +239,7 @@ fn listing_tag(listed: &[ListedGame]) -> String {
         let id = game.game.to_string();
         // A rule set is plain data that always serializes; the empty text only stands for a failure that cannot occur.
         let rules = serde_json::to_string(&game.house_rules).unwrap_or_default();
+        let commanders = serde_json::to_string(&game.commanders).unwrap_or_default();
         let parts = [
             id.as_str(),
             &game.host,
@@ -248,6 +250,7 @@ fn listing_tag(listed: &[ListedGame]) -> String {
             &total,
             &game.created_at,
             running,
+            &commanders,
         ];
         for part in parts {
             hash.update(u64::try_from(part.len()).unwrap_or(u64::MAX).to_be_bytes());
@@ -701,6 +704,7 @@ mod tests {
             created_at: "2026-10-19T12:30:00Z".to_owned(),
             age: Duration::from_secs(5),
             running: false,
+            commanders: Vec::new(),
         }
     }
 
@@ -752,6 +756,14 @@ mod tests {
             },
             ListedGame {
                 created_at: "2026-10-19T12:30:01Z".to_owned(),
+                ..base.clone()
+            },
+            ListedGame {
+                commanders: vec![mtg_protocol::rest::LobbyCommander {
+                    seat: PlayerId(1),
+                    name: "Atraxa, Praetors' Voice".to_owned(),
+                    identity: None,
+                }],
                 ..base.clone()
             },
         ];
