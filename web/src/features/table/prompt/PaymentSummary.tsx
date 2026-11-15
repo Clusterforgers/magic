@@ -195,9 +195,11 @@ export function PaymentSummary({
     refocus.current = null
     const chips = root.current?.querySelectorAll<HTMLElement>('[data-slot="pay-chip"]') ?? []
     // With nothing left to remove, the keyboard goes to the first control that adds, else to the actions.
-    const fallback = root.current?.parentElement?.querySelector<HTMLElement>(
-      '[data-slot="pay-pool"], [data-slot="pay-auto"], [data-slot="pay-rest"], [data-slot="undo"]',
-    )
+    const fallback = root.current
+      ?.closest('[data-slot="decision-line"]')
+      ?.querySelector<HTMLElement>(
+        '[data-slot="pay-pool"], [data-slot="pay-auto"], [data-slot="pay-rest"], [data-slot="undo"]',
+      )
     ;(chips[Math.min(at, chips.length - 1)] ?? fallback)?.focus()
   }, [spends])
 
@@ -209,7 +211,12 @@ export function PaymentSummary({
   const seen = new Map<string, number>()
   const empty = spends.length === 0
   return (
-    <div ref={root} data-slot="payment" className="grid w-full gap-1.5 text-sm">
+    <div
+      ref={root}
+      data-slot="payment"
+      // The rows stand side by side where the band is wide enough, so a payment stays a line or two high.
+      className="grid w-full grid-cols-[repeat(auto-fit,minmax(min(100%,26rem),1fr))] gap-x-6 gap-y-1.5 text-sm"
+    >
       <Row label="Cost">
         <ManaPips pips={costPips(cost)} sizeClass={PIP_SIZE} label="Mana cost" />
       </Row>

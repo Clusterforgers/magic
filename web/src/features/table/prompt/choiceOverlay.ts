@@ -21,7 +21,7 @@ export interface ChoiceOverlay {
   claim: () => () => void
   /** The overlay is open. */
   open: boolean
-  /** The opening-hand decision floats in the overlay (boss mode off a phone), with the seats' keep status in it. */
+  /** The opening-hand decision floats in the overlay (every table off a phone), with the seats' keep status in it. */
   opening: boolean
 }
 

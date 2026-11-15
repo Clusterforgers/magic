@@ -13,10 +13,10 @@ Impact: how much a problem costs a player in a 4-player Commander game at 1400 �
 | # | Problem | Where | What a player meets |
 |---|---|---|---|
 | 1 | Crowded boards draw small cards | table, every board | Opponents' lands fold into their pods' chips and a grid's cards weigh as yours: with 20 permanents a seat and the side panel folded, an opponent's creatures draw about 66 px wide at 1400 × 900; with 40 a seat (14 creatures each) about 48 px, which no layout of three boards side by side lifts much further. Each opponent's board enlarges over the row from its pod (about 95 px cards in the crowd fixture); your row holds your creatures at 60 px first (about 62 px at 1400 × 900, 50 at 1280 × 720 where the pods take the rest). |
-| 2 | Chrome still takes room | table | The side column takes 272 px until folded to its rail; an opponent's pod head is two to three lines; a long prompt grows the strip to 140 px. |
+| 2 | Chrome still takes room | table | The side column takes 272 px until folded to its rail; an opponent's pod head is two to three lines; a card prompt below 1600 px adds a row of cards under the band. |
 | 3 | The hand is still small | hand dock | The hand lies in an arc and rises on hover, but its cards stay about 90 px wide at 1400 × 900; a full-size hover is the preview beside it. |
 | 4 | Combat reads in two places | combat overlay | An attack at a player is a badge on the defender's pod per attacking seat, so the lines that remain join two boards; the block lines still cross the strip between them. |
-| 5 | Choices share the strip | prompts | Card prompts take the strip's width and grow over the opponents' boards with 7 rem cards; a long list opens the centre overlay, and a mode choice stands beside its card's picture. |
+| 5 | Choices share the strip | prompts | Card prompts lay 7 rem cards across the band and grow over the opponents' boards; a long list opens the centre overlay, and a mode choice stands beside its card's picture. |
 | 6 | The phone table is tight | table at 390 | Boards fold their lands and draw 64 px cards that scroll, a card prompt lays its cards in the overlay; your pod still takes four lines over your board. |
 | 7 | The turn is said in two places | top bar | The badge says whose turn and the step, the ladder names the phase; below 1024 px the badge names it instead. |
 | 8 | The table is quiet between moments | table | The table plays its casts, attacks, blocks, damage, draws and shuffles and taps turn in 150 ms; there is no your-turn moment beyond the banner and no stack resolution beat. |
@@ -35,6 +35,21 @@ Impact: how much a problem costs a player in a 4-player Commander game at 1400 �
 - **Delves.** Its own ember and stone; the descent uses icons where boss art would carry the mood.
 - **Result page.** The headline in the display face above the win burst; each seat led by its commander's art in its seat's colour.
 - **Sign in, Learn, Settings.** Plain and consistent.
+
+## The prompt band
+
+Every prompt kind is shot on `/dev/table?prompt=…` at 2550 × 1380, 2300 × 840, 1830 × 855, 1400 × 900, 1280 × 720 and 390 wide, and with empty boards (`seats=2&bare=1`). The rules are in [web.md](web.md) (Prompt band).
+
+| Prompt | Band at 1830 and wider | 1280 to 1400 | Phone |
+|---|---|---|---|
+| Priority, yes or no, replacement order | one row: stack, status, sentence, answers; about 56 px | one row, the sentence cut with an ellipsis and opened by its button | sentence, then the answers |
+| Number (X), a few options, mana choice | one row with the choices between the sentence and the answers | one row | the choices on a line of their own |
+| Targets, cards, modes, costs, trigger order, payment, damage | from 100 rem of band the choices sit beside the sentence; below, a head row and the choices across the whole strip, cards from the left with the players in a column before them | head row and choices row | the long lists in the choice overlay |
+| Attack, block | one row: the sentence and the combat buttons | one row | one row that wraps |
+| Mulligan | at every table (duel, grid, teams, Two-Headed Giant, boss) the decision floats over the dimmed boards: the hand in one row of large cards, Keep and Mulligan, every seat's status; the dock hides its copy | the same | the hand in one scrolling row in the band |
+
+- Empty boards: the sheet keeps at least a sentence line and a row of answers (`BAND_MIN_PX`), so a seat with nothing on the field above never shrinks the prompt to a scrolling sliver.
+- What remains: a stack of three chips folds to one chip and "+2 more" beside a prompt below 1600 px; a mode choice stands as high as its card picture.
 
 ## The look
 

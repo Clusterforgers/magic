@@ -44,6 +44,6 @@ describe('the phone table', () => {
   })
 
   it('keeps a row of choice cards inside the sheet', () => {
-    expect(read('prompt/CardChoices.tsx')).toContain('max-w-full min-w-0 basis-full flex-col')
+    expect(read('prompt/CardChoices.tsx')).toContain('max-w-full min-w-0 basis-full items-center')
   })
 })
