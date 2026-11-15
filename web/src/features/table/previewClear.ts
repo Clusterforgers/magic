@@ -49,6 +49,8 @@ export const SQUEEZED_HEIGHT_PX = SQUEEZED_PICTURE * ASPECT + PANEL_PADDING_PX
 export const READABLE_PICTURE = 260
 /** The width of the text beside the picture in a low side panel, in px. */
 export const TEXT_BESIDE_PX = 240
+/** The least picture of a low panel in a free stretch above or below the strip, in px: it never lies over the strip. */
+export const BAND_PICTURE = 96
 
 const boxOf = (anchor: Anchor): Box => ({
   left: anchor.left,
@@ -142,6 +144,46 @@ function sideAround(
   const far = own === 'left' ? 'right' : 'left'
   const first = sideClear(anchor, viewport, own, blockers, floor)
   const second = sideClear(anchor, viewport, far, [...blockers, boxOf(anchor)], floor)
+  if (first === null) return second
+  return second !== null && second.picture > first.picture ? second : first
+}
+
+/**
+ * A low side panel with the text beside the picture, in the tallest free stretch of the window at `dock` (above the
+ * strip, or below it beside the hand), as large as that stretch draws it down to `BAND_PICTURE`; null when none fits.
+ */
+function sideBand(
+  natural: PreviewFit,
+  viewport: Viewport,
+  dock: 'left' | 'right',
+  blockers: Box[],
+): PreviewFit | null {
+  for (let picture = natural.picture; picture >= BAND_PICTURE; picture -= 8) {
+    const width = picture + PANEL_EXTRA_PX + TEXT_BESIDE_PX
+    const left = dock === 'left' ? EDGE_PX : viewport.width - EDGE_PX - width
+    const column = blockers.filter((box) => box.left < left + width && box.right > left)
+    const need = Math.ceil(picture * ASPECT + PANEL_PADDING_PX)
+    const free = freeStretches({ top: TOP_SIDE_PX, bottom: viewport.height - EDGE_PX }, column)
+    const found = free.find((stretch) => stretch.bottom - stretch.top >= need)
+    if (found !== undefined) {
+      const maxHeight = Math.floor(found.bottom - found.top)
+      return { ...natural, dock, picture, width, top: found.top, bottom: null, maxHeight, beside: true }
+    }
+  }
+  return null
+}
+
+/** `sideBand` on the card's own side, else on its far side kept clear of the card too. */
+function sideBandAround(
+  anchor: Anchor,
+  viewport: Viewport,
+  base: PreviewFit,
+  blockers: Box[],
+): PreviewFit | null {
+  const own = base.dock === 'left' ? 'left' : 'right'
+  const far = own === 'left' ? 'right' : 'left'
+  const first = sideBand(sideFit(anchor, viewport, own), viewport, own, blockers)
+  const second = sideBand(sideFit(anchor, viewport, far), viewport, far, [...blockers, boxOf(anchor)])
   if (first === null) return second
   return second !== null && second.picture > first.picture ? second : first
 }
@@ -243,10 +285,12 @@ function shortAround(
 
 /**
  * `previewFit` kept off every box of `clear` (the open prompt's strip, its buttons, the hand dock and the controls,
- * measured in window px). A side panel keeps a readable picture (`READABLE_PICTURE`) as it moves: to the other side,
- * beside the strip or above it; else it covers the rest of the strip (a `soft` box) and stays off its sentence and buttons; only where
- * neither fits does it narrow, down to a 160 px picture. A top or bottom panel (a phone's) takes the free stretch of the
- * window between them. A box without size is ignored; where nothing is clear the panel stands where `previewFit` puts it.
+ * measured in window px). A side panel moves before it shrinks: to the other side, beside the strip or above it at a
+ * readable picture (`READABLE_PICTURE`), then down to a 160 px picture, then into the free band above or below a strip
+ * that spans the table, with its text beside the picture (`sideBand`). Only where none of that is clear does it cover
+ * the rest of the strip (a `soft` box), never its sentence or buttons. A top or bottom panel (a phone's) takes the free
+ * stretch of the window between them. A box without size is ignored; where nothing is clear the panel stands where
+ * `previewFit` puts it.
  */
 export function fitClear(anchor: Anchor, viewport: Viewport, clear: readonly ClearBox[]): PreviewFit {
   const base = previewFit(anchor, viewport)
@@ -258,8 +302,10 @@ export function fitClear(anchor: Anchor, viewport: Viewport, clear: readonly Cle
     const firm = drawn.filter((box) => box.soft !== true).map(boxOf)
     return (
       sideAround(anchor, viewport, base, blockers, READABLE_PICTURE) ??
+      sideAround(anchor, viewport, base, blockers, SQUEEZED_PICTURE) ??
+      sideBandAround(anchor, viewport, base, blockers) ??
       sideAround(anchor, viewport, base, firm, READABLE_PICTURE) ??
-      sideAround(anchor, viewport, base, firm, SQUEEZED_PICTURE) ??
+      sideBandAround(anchor, viewport, base, firm) ??
       base
     )
   }
