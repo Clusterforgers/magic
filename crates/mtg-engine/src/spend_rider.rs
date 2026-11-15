@@ -151,6 +151,7 @@ fn delayed(
         targets: Vec::new(),
         bindings: vec![(SPELL.to_owned(), vec![Target::Object(spell)])],
         kept: None,
+        origin: crate::abilities::AbilitySource::default(),
     })
 }
 

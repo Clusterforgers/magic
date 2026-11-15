@@ -3,6 +3,7 @@
  * answer lists the triggers in the order they go on the stack, the last on top. These are the two orders and the words.
  */
 import type { TriggerEntry } from '@/protocol/generated'
+import { granterName, granterOfOrigin } from '../granter'
 import { countOf } from './combatText'
 
 /** The order the engine takes without a choice, as the list shows it: the trigger that triggered last resolves first. */
@@ -42,7 +43,9 @@ export function triggerLabels(
   names: readonly (string | undefined)[],
 ): string[] {
   const plain = entries.map((entry, index) => {
-    const name = names[index] ?? 'A card'
+    // The Ring's ability is the Ring's, whoever bears it.
+    const granter = granterOfOrigin(entry.origin)
+    const name = granter === undefined ? (names[index] ?? 'A card') : granterName(granter)
     const when = entry.when ?? ''
     return `${name}: ${when === '' ? `ability ${entry.ability + 1}` : when}`
   })

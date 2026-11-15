@@ -376,6 +376,7 @@ Rules that change how the game is played rather than the objects in it (`Effect:
 - A `MayCast` with `limit` serves at most that many of its `only` objects in a turn: a cast or land play through it, when no permission without a limit covers the card, is counted on its source (`Tally::R5503LimitUsed`, keyed by its first object).
 - `Pred::ArrivedThisTurn` holds for an object that went into its zone this turn from anywhere (any `Tally::ArrivedFrom`).
 - `Ref::Granter` is the permanent whose static ability gave the running ability ("this Equipment"): `AbilitySource::granter`, carried by `Scope` and `Price`, found by a cost pick; nobody for an own ability or a departed granter.
+- The levels of a Ring are not objects: the layers give the bearer what each level says, and the ability a level gives is addressed `Grant::Ring { player, level }` (`AbilitySource::ring`), which resolves while the Ring has a bearer and has reached the level. A delayed trigger or reflexive trigger an ability sets up takes the origin of that ability (`DelayedCreated.origin`), so it is named as the ability is.
 - `Ref::OrController(r)` is the player `r` names or the controller of the permanent it names.
 - `Pred::CanEnchantSource` holds for an Aura or Equipment card `attach::legal_host_entering` lets attach to the source.
 - "Cast as though it had flash if you pay {N} more" is an `AltCast` (`CastWay::Alternative`, `flash`) for the printed cost plus {N}; a printed {X} has no such way.

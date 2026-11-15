@@ -3081,7 +3081,7 @@ fn delayed(
             found.push(Triggered {
                 source,
                 ability: waiting.ability,
-                origin: AbilitySource::Printed,
+                origin: waiting.origin(),
                 controller,
                 cause,
                 snapshot: live.clone().unwrap_or_else(|| waiting.snapshot.clone()),
@@ -4023,6 +4023,7 @@ mod tests {
             targets: Vec::new(),
             bindings: vec![("kept".to_owned(), vec![Target::Player(FOE)])],
             kept: None,
+            origin: AbilitySource::default(),
         }))
     }
 
@@ -4090,6 +4091,27 @@ mod tests {
             [],
             "so it no longer fires"
         );
+    }
+
+    #[test]
+    fn a_delayed_trigger_triggers_with_the_origin_of_the_ability_that_set_it_up() {
+        let pre = board(with("Quiet", Vec::new()));
+        let Event::DelayedTriggerCreated(mut created) = delayed_end_step(true, &pre) else {
+            unreachable!("a delayed trigger is set up")
+        };
+        let ring = AbilitySource::Granted(crate::abilities::Grant::Ring {
+            player: ME,
+            level: 3,
+        });
+        created.origin = ring;
+        let waiting = fold(&pre, &[Event::DelayedTriggerCreated(created)]);
+        let (_, found) = fire(&waiting, &[Event::StepBegan { step: Step::End }]);
+        assert_eq!(found.len(), 1);
+        assert_eq!(found[0].origin, ring);
+        // One that no ability granted keeps the printed origin it always had.
+        let plain = fold(&pre, &[delayed_end_step(true, &pre)]);
+        let (_, found) = fire(&plain, &[Event::StepBegan { step: Step::End }]);
+        assert_eq!(found[0].origin, AbilitySource::Printed);
     }
 
     #[rstest]

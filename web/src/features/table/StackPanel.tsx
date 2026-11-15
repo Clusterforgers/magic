@@ -9,6 +9,7 @@ import { targetName } from './eventText'
 import { cardLabel, costPips, typeLine } from './cardModel'
 import { SIZE } from './cardSize'
 import { ByHandMark } from './manual/ByHand'
+import { granterHolder } from './granter'
 import { ManaPips } from './ManaPips'
 import { useSeatNamer } from './names'
 import { SeatDot } from './PodParts'
@@ -120,7 +121,11 @@ const StackItem = memo(function StackItem({
       <span className="text-xs text-muted-foreground">
         {/* An ability has no type line; its text says what it does. */}
         {object.kind === 'Ability'
-          ? `${object.rules_text ?? 'Ability'} · controlled by ${controller}`
+          ? `${object.rules_text ?? 'Ability'} · ${
+              object.granter === undefined || source === undefined
+                ? `controlled by ${controller}`
+                : granterHolder(object.granter, source.name, controller)
+            }`
           : `${typeLine(object)} · cast by ${controller}`}
         {top ? ' · resolves first' : ''}
       </span>

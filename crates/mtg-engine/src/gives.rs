@@ -266,7 +266,7 @@ fn given_to_host(rule: &GameRule) -> Option<GivenRule> {
 fn from(state: &GameState, applied: &Applied, id: ObjectId) -> bool {
     match applied.origin {
         Grant::Static { source, .. } => source == id,
-        Grant::Borrowed { .. } => false,
+        Grant::Borrowed { .. } | Grant::Ring { .. } => false,
         Grant::Effect(effect) => state
             .effects()
             .iter()

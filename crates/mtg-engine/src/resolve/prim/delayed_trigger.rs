@@ -8,6 +8,7 @@ use mtg_cards::value::Amount;
 use std::sync::Arc;
 
 use super::wrong_effect;
+use crate::abilities::AbilitySource;
 use crate::choose::Target;
 use crate::copies::KeptSpell;
 use crate::events::Event;
@@ -21,6 +22,8 @@ pub(super) struct Origin {
     pub(super) source: ObjectRef,
     pub(super) snapshot: Snapshot,
     pub(super) ability: usize,
+    /// Where that ability comes from: the trigger it sets up is named after it.
+    pub(super) from: AbilitySource,
     pub(super) bindings: Vec<(String, Vec<Target>)>,
 }
 
@@ -48,6 +51,10 @@ pub(super) fn origin(cx: &Cx<'_>) -> Result<Origin, ResolveError> {
         || spell_ability(state, object.id()).map_or(0, |(address, _)| address.ability),
         crate::abilities::AbilityObject::index,
     );
+    let from = object.ability().map_or_else(
+        AbilitySource::default,
+        crate::abilities::AbilityObject::origin,
+    );
     // What a step did belongs to the resolution that ran it: the delayed trigger reads its own steps by position.
     let mut bindings: Vec<(String, Vec<Target>)> = cx
         .resolving
@@ -68,6 +75,7 @@ pub(super) fn origin(cx: &Cx<'_>) -> Result<Origin, ResolveError> {
         source,
         snapshot,
         ability,
+        from,
         bindings,
     })
 }
@@ -90,6 +98,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         source,
         snapshot,
         ability,
+        from,
         mut bindings,
     } = origin(cx)?;
     let when = name_targets(cx, when, &mut bindings)?;
@@ -114,6 +123,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             targets: targets.clone(),
             bindings,
             kept: kept(cx, effects),
+            origin: from,
         },
     ))]))
 }

@@ -167,6 +167,7 @@ export type { GameSeat } from "./GameSeat";
 export type { GivenRule } from "./GivenRule";
 export type { GivesView } from "./GivesView";
 export type { Grant } from "./Grant";
+export type { Granter } from "./Granter";
 export type { HandGroup } from "./HandGroup";
 export type { HandLimit } from "./HandLimit";
 export type { HandLooked } from "./HandLooked";
