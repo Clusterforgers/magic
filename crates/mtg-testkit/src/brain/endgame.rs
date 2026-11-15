@@ -13,7 +13,7 @@ use super::seen::Seen;
 use super::sim::{Horizon, SIM_STEPS, Search, Start, minimal, reached};
 use super::threat;
 use crate::bot::apply_answer;
-use mtg_engine::decision::Answer;
+use mtg_engine::decision::{Answer, PriorityAction};
 
 /// Redealt worlds an answer must win in to count as a forced win.
 const WORLDS: u64 = 3;
@@ -44,19 +44,22 @@ pub fn in_reach(seen: &Seen<'_>) -> bool {
 
 /// An answer to `decision`, the seat's in its own turn, that wins the game by the end of the turn in every one of
 /// [`WORLDS`] redealt worlds (keyed by `key`); `None` when no opponent is within reach ([`in_reach`]) or no answer
-/// wins in all of them, or the clock reaches `until` first.
+/// wins in all of them, or the clock reaches `until` first. `held` lists plays the seat has made as often as it may
+/// this turn: a play that changes nothing "wins" whenever the quick policies win without it, so without the list the
+/// seat would make it again and again and never reach the attack.
 pub fn forced_win(
     engine: &Engine,
     seat: PlayerId,
     decision: &Decision,
     key: u64,
     until: Option<Instant>,
+    held: &[PriorityAction],
 ) -> Option<Answer> {
     let seen = Seen::new(engine.state(), seat);
     if decision.player != seat || !seen.is_active(seat) || !in_reach(&seen) {
         return None;
     }
-    let tries = candidates(engine, seat, decision, &[], 30, 4);
+    let tries = candidates(engine, seat, decision, held, 30, 4);
     tries
         .into_iter()
         .take(TRIED)
