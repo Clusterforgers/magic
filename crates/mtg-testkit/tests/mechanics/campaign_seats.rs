@@ -295,10 +295,7 @@ fn a_scheme_deck_every_other_turn_sets_a_scheme_for_one_turn_and_names_when_the_
         state.player(pid(1)).unwrap().schemes(),
         Some((in_motion.first().copied(), omen))
     );
-    assert_eq!(
-        mtg_engine::schemes::omen_in(state, pid(1)),
-        Some(omen_in)
-    );
+    assert_eq!(mtg_engine::schemes::omen_in(state, pid(1)), Some(omen_in));
     let bear = driver.id_of("Bear 1")?;
     assert_eq!(characteristics(state, bear).unwrap().power, Some(power));
     assert_eq!(state.player(pid(1)).unwrap().life(), life);

@@ -896,7 +896,9 @@ impl Run {
         let schemes = Stream::new(self.seed, "schemes", u64::from(node), 0)
             .pick(&theme.schemes, theme.schemes.len());
         let mut rules = scale.rules(boss);
-        rules.extend(Stream::new(self.seed, "modifier", u64::from(node), 0).pick(&theme.modifiers, 1));
+        rules.extend(
+            Stream::new(self.seed, "modifier", u64::from(node), 0).pick(&theme.modifiers, 1),
+        );
         if self.boss_rank(node) >= 1 && !boss.relic.is_empty() {
             rules.push(boss.relic.clone());
         }

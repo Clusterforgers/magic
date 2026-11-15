@@ -5,16 +5,16 @@ use std::sync::Arc;
 
 use mtg_campaign::content;
 use mtg_cards::CardDefinition;
+use mtg_cards::keyword::Keyword;
+use mtg_core::color::Color;
 use mtg_core::ids::PlayerId;
 use mtg_engine::characteristics::characteristics;
 use mtg_engine::choose::YesNoChoice;
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::format::Commander;
+use mtg_engine::keywords::has_keyword;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_cards::keyword::Keyword;
-use mtg_core::color::Color;
-use mtg_engine::keywords::has_keyword;
 use mtg_testkit::cards::{burn, creature, free_creature, mountain};
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
@@ -36,8 +36,18 @@ fn table(ids: &[&str]) -> Scenario {
     Scenario::new(2)
         .life(HERO, 20)
         .life(BOSS, 40)
-        .battlefield(HERO, [ready(free_creature("Bear", 2, 2)), ready(mountain()), ready(mountain())])
-        .battlefield(BOSS, [ready(free_creature("Brute", 3, 3)), ready(mountain())])
+        .battlefield(
+            HERO,
+            [
+                ready(free_creature("Bear", 2, 2)),
+                ready(mountain()),
+                ready(mountain()),
+            ],
+        )
+        .battlefield(
+            BOSS,
+            [ready(free_creature("Brute", 3, 3)), ready(mountain())],
+        )
         .library(HERO, (0..40).map(|_| mountain()))
         .library(BOSS, (0..40).map(|_| mountain()))
         .emblems(BOSS, ids.iter().map(|id| custom(id)))
@@ -101,7 +111,10 @@ fn an_enrage_waits_for_the_heroes_seventh_turn_then_grows(
 #[rstest]
 #[case::paid_with_mana(true, 20)]
 #[case::declined(false, 17)]
-fn a_toll_is_paid_off_or_taken_as_life(#[case] pay: bool, #[case] life: i32) -> Result<(), ScriptError> {
+fn a_toll_is_paid_off_or_taken_as_life(
+    #[case] pay: bool,
+    #[case] life: i32,
+) -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(table(&["deaths_toll"]))?;
     driver.idle_until(14, Step::Upkeep)?;
     for _ in 0..40 {
@@ -220,7 +233,10 @@ fn the_rat_kings_crown_grows_every_rat_and_nothing_else() -> Result<(), ScriptEr
 #[rstest]
 #[case::hoarder_gains_life("hoarder", 42)]
 #[case::far_sight_only_looks("far_sight", 40)]
-fn an_upkeep_modifier_works_each_boss_upkeep(#[case] id: &str, #[case] life: i32) -> Result<(), ScriptError> {
+fn an_upkeep_modifier_works_each_boss_upkeep(
+    #[case] id: &str,
+    #[case] life: i32,
+) -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(table(&[id]))?;
     driver.idle_until(2, Step::Main1)?;
     assert_eq!(driver.state().player(pid(BOSS)).unwrap().life(), life);

@@ -108,7 +108,10 @@ fn the_boss_scales_with_the_party_and_the_heat(
         (1, 1)
     );
     // One modifier of the pool; the first boss brings no relic.
-    let modifiers = rules.iter().filter(|id| theme.modifiers.contains(id)).count();
+    let modifiers = rules
+        .iter()
+        .filter(|id| theme.modifiers.contains(id))
+        .count();
     assert_eq!(modifiers, 1);
     assert_eq!(copies(rules, &boss.relic), 0);
     // The boss's own phases at their share of its life, the Last Bulwark with the last of them.

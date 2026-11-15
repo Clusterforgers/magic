@@ -32,7 +32,9 @@ fn drains(value: &Value, paid_off: bool, out: &mut Vec<Drain>) {
             for (key, inner) in map {
                 match key.as_str() {
                     "LoseLife" => out.push(kind),
-                    "DealDamage" if inner["to"].as_str().is_some_and(|to| PLAYERS.contains(&to)) => {
+                    "DealDamage"
+                        if inner["to"].as_str().is_some_and(|to| PLAYERS.contains(&to)) =>
+                    {
                         out.push(kind);
                     }
                     "Pay" => {
@@ -58,7 +60,11 @@ fn drains(value: &Value, paid_off: bool, out: &mut Vec<Drain>) {
 fn drains_of(id: &str) -> Vec<Drain> {
     let card = content().unwrap().card(id).unwrap();
     let mut out = Vec::new();
-    drains(&serde_json::to_value(&card.abilities).unwrap(), false, &mut out);
+    drains(
+        &serde_json::to_value(&card.abilities).unwrap(),
+        false,
+        &mut out,
+    );
     out
 }
 
@@ -67,7 +73,12 @@ fn drains_of(id: &str) -> Vec<Drain> {
 fn boss_side_cards(theme: &Theme, boss: &Boss) -> BTreeSet<String> {
     (1..=MOST)
         .flat_map(|heroes| Scale::new(heroes, 0).rules(boss))
-        .chain(Scale::new(MOST, 0).phases(boss, 100).into_iter().map(|(id, _)| id))
+        .chain(
+            Scale::new(MOST, 0)
+                .phases(boss, 100)
+                .into_iter()
+                .map(|(id, _)| id),
+        )
         .chain([boss.relic.clone()])
         .chain(theme.schemes.iter().cloned())
         .chain(theme.modifiers.iter().cloned())
@@ -124,12 +135,20 @@ fn every_boss_has_a_passive_an_enrage_two_phases_and_a_relic_of_its_own() {
             assert_eq!(content.card(&boss.rules[0]).unwrap().kind, CardKind::Boss);
             let enrage = content.card(&boss.enrage).unwrap();
             assert_eq!(enrage.kind, CardKind::Enrage, "{}", boss.id);
-            assert_eq!(enrage.turn, 7, "{}: enrage after the heroes' seventh turn", boss.id);
+            assert_eq!(
+                enrage.turn, 7,
+                "{}: enrage after the heroes' seventh turn",
+                boss.id
+            );
             // Every ability of the Enrage waits for the heroes' turns its record names.
             let abilities = serde_json::to_value(&enrage.abilities).unwrap();
             for ability in abilities.as_array().unwrap() {
                 let condition = &ability["Triggered"]["if"]["Compare"];
-                assert_eq!(condition["left"]["TurnsTaken"], "Opponents", "{}", enrage.id);
+                assert_eq!(
+                    condition["left"]["TurnsTaken"], "Opponents",
+                    "{}",
+                    enrage.id
+                );
                 assert_eq!(condition["op"], "Ge", "{}", enrage.id);
                 assert_eq!(condition["right"], enrage.turn, "{}", enrage.id);
             }
@@ -157,7 +176,10 @@ fn hunting_party_spares_commanders() {
     let abilities = serde_json::to_value(&card.abilities).unwrap();
     let filter = &abilities[0]["Triggered"]["effects"][0]["Sacrifice"]["filter"];
     assert!(
-        filter.as_array().unwrap().contains(&json!({"Not": "Commander"})),
+        filter
+            .as_array()
+            .unwrap()
+            .contains(&json!({"Not": "Commander"})),
         "{filter}"
     );
 }
@@ -168,11 +190,21 @@ fn the_scheme_deck_outlasts_a_fight_at_one_scheme_every_other_boss_turn() {
     for theme in &content.themes {
         assert_eq!(theme.scheme_every, 2, "{}", theme.id);
         let distinct: BTreeSet<_> = theme.schemes.iter().collect();
-        assert_eq!(distinct.len(), theme.schemes.len(), "{}: no scheme twice", theme.id);
+        assert_eq!(
+            distinct.len(),
+            theme.schemes.len(),
+            "{}: no scheme twice",
+            theme.id
+        );
         // From the boss's third turn, every other one: a fight of 30 boss turns sees each scheme at most once.
         let set = (3..=30)
             .step_by(usize::try_from(theme.scheme_every).unwrap())
             .count();
-        assert!(theme.schemes.len() >= set, "{}: {} schemes for {set}", theme.id, theme.schemes.len());
+        assert!(
+            theme.schemes.len() >= set,
+            "{}: {} schemes for {set}",
+            theme.id,
+            theme.schemes.len()
+        );
     }
 }

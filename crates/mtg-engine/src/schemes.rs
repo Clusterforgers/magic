@@ -65,7 +65,11 @@ pub(crate) fn at_turn_start(state: &GameState, active: PlayerId) -> Vec<Event> {
         .into_iter()
         .collect();
     if crate::spotlight::lull_ahead(state, active)
-        || !is_scheme_turn(state, active, state.rmt8_turns_taken(active).saturating_add(1))
+        || !is_scheme_turn(
+            state,
+            active,
+            state.rmt8_turns_taken(active).saturating_add(1),
+        )
     {
         return events;
     }
