@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import type { ComponentType } from 'react'
 import { useGame, usePlay } from '@/features/game/gameContext'
-import { cn } from '@/lib/utils'
 import type { PendingDecision } from '@/play/store'
 import type { Answer, DecisionKind, ObjectId } from '@/protocol/generated'
 import { decisionName } from '../turnText'
@@ -84,16 +83,13 @@ function PromptScope({ pending }: { pending: PendingDecision }) {
         data-slot="decision-line"
         data-decision={name}
         data-decision-id={id}
-        className={cn(
-          // A prompt that lays out cards may take the sheet's width; its one track never grows past it (a row of cards scrolls).
-          'max-w-full min-w-0 rounded-md bg-muted px-3 sm:max-w-3xl has-[[data-slot=card-choices]]:sm:max-w-full',
-          compact
-            ? 'relative flex flex-wrap items-center gap-x-3 overflow-hidden py-1'
-            : 'grid grid-cols-[minmax(0,1fr)] gap-1 py-1.5',
-        )}
+        data-compact={compact || undefined}
+        // No box of its own: the sentence, the choices, the clock and the answers are cells of the strip's band
+        // (`strip-band`, `promptBand.css`), and the clock's bar runs along the sheet's bottom edge.
+        className="contents"
       >
         <PromptFor kind={decision.kind} />
-        <ResponseClock id={id} kind={clockKind(decision.kind)} compact={compact} />
+        <ResponseClock id={id} kind={clockKind(decision.kind)} compact />
       </div>
     </PromptContext>
   )

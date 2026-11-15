@@ -112,11 +112,29 @@ export const PriorityPrompt: PromptComponent<'Priority'> = ({ options }) => {
     answer({ Priority: play.action })
   }
 
+  const manaChoice = choosing !== undefined && choices !== undefined && choices.length > 1
   return (
-    <PromptLayout text={priorityText(options, top, decision.player, name, byHand)}>
-      {choosing !== undefined && choices !== undefined && choices.length > 1 ? (
-        <ManaChoice card={choosing} options={choices} onPick={pick} onCancel={cancel} />
-      ) : null}
+    <PromptLayout
+      text={priorityText(options, top, decision.player, name, byHand)}
+      inline={ownSeat?.spirit !== true}
+      choices={
+        manaChoice || ownSeat?.spirit === true ? (
+          <>
+            {choosing !== undefined && choices !== undefined && choices.length > 1 ? (
+              <ManaChoice card={choosing} options={choices} onPick={pick} onCancel={cancel} />
+            ) : null}
+            {ownSeat?.spirit === true ? (
+              <SpiritPanel
+                player={ownSeat}
+                emblem={spiritEmblem(ownSeat, objectsById)}
+                options={options}
+                onActivate={(ability) => answer({ Priority: { Activate: ability } })}
+              />
+            ) : null}
+          </>
+        ) : undefined
+      }
+    >
       {asking === null ? null : (
         <AbilityChooser
           target={asking}
@@ -126,14 +144,6 @@ export const PriorityPrompt: PromptComponent<'Priority'> = ({ options }) => {
           onClose={() => setAsking(null)}
         />
       )}
-      {ownSeat?.spirit === true ? (
-        <SpiritPanel
-          player={ownSeat}
-          emblem={spiritEmblem(ownSeat, objectsById)}
-          options={options}
-          onActivate={(ability) => answer({ Priority: { Activate: ability } })}
-        />
-      ) : null}
       <BringCompanion offered={options.companion === true} />
       <PassControls canPass={options.can_pass} />
     </PromptLayout>

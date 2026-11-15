@@ -17,6 +17,7 @@ import {
   HAND_CLAMP,
   HAND_GROW_VH,
   HAND_PHONE_CLAMP,
+  BAND_MIN_PHONE_PX,
   handGrowMost,
   mainColumns,
   MIN_COLUMN_PX,
@@ -119,7 +120,7 @@ describe('regionSizes', () => {
         expect(regions.sheet, where).toBeLessThanOrEqual(regions.shared + regions.opponents + 1e-9)
         if (regions.phone) {
           expect(regions.sheet, where).toBeLessThanOrEqual(
-            regions.shared + Math.max(0, regions.opponents - 120) + 1e-9,
+            Math.max(BAND_MIN_PHONE_PX, regions.shared + Math.max(0, regions.opponents - 120)) + 1e-9,
           )
         }
       }

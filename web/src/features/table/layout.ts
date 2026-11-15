@@ -242,6 +242,12 @@ export const OWN_SHARE = 1.15
 export const SHEET_MAX_VH = 40
 /** What a phone's prompt sheet leaves of the opponents' area: the tile strip and a row of their board, in px. */
 export const SHEET_KEEP_PX = 120
+/**
+ * The least a prompt sheet may grow to, whatever the boards leave: a sentence line and a row of 40 px answers (on a
+ * phone also the stack chips' line), so an empty board above never squeezes the prompt.
+ */
+export const BAND_MIN_PX = 96
+export const BAND_MIN_PHONE_PX = 136
 /** The side column takes this share of the window width between its bounds; M gets a rail of `RAIL_PX`. */
 export const SIDE_SHARE = 0.18
 export const SIDE_MIN_PX = 272
@@ -306,7 +312,8 @@ const clampTo = (value: number, min: number, max: number): number => Math.min(ma
 
 /**
  * The most a prompt sheet grows to in a window of this height, over a strip and an opponents' area of these heights:
- * it leaves `SHEET_KEEP_PX` of the area on a phone and `keep` px elsewhere.
+ * it leaves `SHEET_KEEP_PX` of the area on a phone and `keep` px elsewhere, and is never under `BAND_MIN_PX`
+ * (`BAND_MIN_PHONE_PX` on a phone) below 40 % of the height and the top bar.
  */
 export function sheetMost(
   height: number,
@@ -316,7 +323,13 @@ export function sheetMost(
   keep = 0,
 ): number {
   const room = Math.max(0, opponents - (phone ? SHEET_KEEP_PX : keep))
-  return Math.min((height * SHEET_MAX_VH) / 100, shared + room)
+  const floor = phone ? BAND_MIN_PHONE_PX : BAND_MIN_PX
+  // The floor still ends at the top bar.
+  return Math.min(
+    (height * SHEET_MAX_VH) / 100,
+    shared + Math.max(0, opponents),
+    Math.max(floor, shared + room),
+  )
 }
 
 /** The px a `HeightClamp` gives in a window of this height. */

@@ -27,9 +27,31 @@ function NothingToDoNote({ prompt }: { prompt: boolean }) {
         'hidden min-w-0 shrink-[2] has-data-[slot=nothing-to-do]:block has-data-[slot=rewound]:block [&_[data-slot=nothing-to-do-region]]:basis-auto [&_p]:max-w-full [&_p]:truncate',
         // On a phone without a prompt it shares the second line with the waiting line.
         !prompt && 'max-sm:grow max-sm:basis-0',
+        // Beside a prompt it is a line of the status, never wider than 12 rem.
+        prompt && 'sm:max-w-48',
       )}
     >
       <NothingToDoBanner />
+    </div>
+  )
+}
+
+/** Who has priority over the key to the combat lines: two short lines, together the height of a stack chip. */
+function StripMeta({ holder, className }: { holder: string; className?: string }) {
+  return (
+    <div
+      data-slot="strip-meta"
+      className={cn(
+        'flex shrink-0 flex-col justify-center gap-0.5 whitespace-nowrap text-xs leading-4 empty:hidden [&_[data-slot=combat-key]]:flex-nowrap [&_[data-slot=combat-key]]:gap-x-3',
+        className,
+      )}
+    >
+      {holder === '' ? null : (
+        <p data-slot="priority" className="text-muted-foreground max-sm:sr-only">
+          {holder}
+        </p>
+      )}
+      <CombatLegend />
     </div>
   )
 }
@@ -63,6 +85,9 @@ export function SharedStrip({
   const mine = usePlay((state) => ownDecision(state) !== null)
   const yourTurn = usePlay(isYourTurn)
   const holder = priorityText(priority, stage, name)
+  const seat = usePlay((state) => state.seat)
+  // Beside this seat's own prompt, "You have priority" says what the band already shows.
+  const ownPriority = priority !== null && priority.holder === seat
   // A prompt that lays out cards may take the opponents' boards' room too: its cards are what there is to look at.
   const cards = usePlay(laysOutCards)
   const strip = useRef<HTMLElement>(null)
@@ -94,33 +119,50 @@ export function SharedStrip({
         // The edge takes the colour of the phase; on your turn the gold glow of `your-turn-cue` lies outside it.
         data-themed=""
         className={cn(
-          'fade-scroll absolute inset-x-0 bottom-0 max-h-(--sheet-max) min-h-full plaque rounded-xl border-2 border-phase px-3 py-1',
+          'band-room fade-scroll absolute inset-x-0 bottom-0 max-h-(--sheet-max) min-h-full plaque rounded-xl border-2 border-phase px-3 py-1',
           yourTurn && 'your-turn-cue',
         )}
       >
         <div className="flex min-h-full flex-col">
           {/*
-            A prompt or the opening hands may wrap the row: they need the room. Without one the row stays one line, the strip's own height, and
-            gives way from the stack chips first (they fold into "+N more"), then from the notes, which truncate.
+            While this seat decides the row is the band (`strip-band`, `promptBand.css`): one grid across the strip of
+            the stack chips (at most 20 % of it), the status (the note, the opening hands, who has priority, the combat
+            key), the sentence on one line, the choices, the clock and the answers at the right end. The prompt's own
+            wrappers are `display: contents`, so their parts are the grid's cells. While it waits the row is one line
+            from `sm` up, the strip's own height: it gives way from the stack chips first (they fold into "+N more"),
+            then from the notes, which truncate; the opening hands may wrap it. The tree keeps its shape either way,
+            so the note keeps what it knows across a prompt.
           */}
           <div
             data-slot="strip-row"
+            data-band={mine || undefined}
             className={cn(
-              'flex min-h-0 flex-1 items-center gap-x-3 gap-y-1',
-              mine || stage === 'Mulligan' ? 'flex-wrap' : 'flex-wrap sm:flex-nowrap',
+              'min-h-0 flex-1',
+              mine
+                ? 'strip-band'
+                : cn(
+                    'flex items-center gap-x-3 gap-y-1',
+                    stage === 'Mulligan' ? 'flex-wrap' : 'flex-wrap sm:flex-nowrap',
+                  ),
             )}
           >
-            <div className="flex min-w-0 shrink-[4] items-center overflow-hidden max-sm:has-data-[slot=stack-chips]:basis-full sm:has-data-[slot=stack-chips]:min-w-56">
+            <div
+              data-slot="strip-stack"
+              className={cn(
+                'flex min-w-0 items-center overflow-hidden',
+                !mine &&
+                  'shrink-[4] max-sm:has-data-[slot=stack-chips]:basis-full sm:has-data-[slot=stack-chips]:min-w-56',
+              )}
+            >
               <StackChips />
             </div>
-            {/* Room for the prompt beside the chips (it takes what they leave, down to 20 rem), so the two share a line. */}
             <div
-              className={cn(
+              data-slot="strip-prompt"
+              className={
                 mine
-                  ? // A prompt that lays out cards takes a line of its own under the stack, the whole width of the sheet.
-                    'min-w-0 flex-1 basis-80 has-[[data-slot=card-choices]]:basis-full has-[[data-slot=opening-hand]]:basis-full has-[[data-slot=mode-choice]]:basis-full'
-                  : 'flex max-w-full shrink-0 items-center max-sm:min-w-0 max-sm:shrink max-sm:grow max-sm:basis-0 [&_p]:max-w-full [&_p]:truncate',
-              )}
+                  ? 'contents'
+                  : 'flex max-w-full shrink-0 items-center max-sm:min-w-0 max-sm:shrink max-sm:grow max-sm:basis-0 [&_p]:max-w-full [&_p]:truncate'
+              }
             >
               {mine ? (
                 <PromptHost />
@@ -145,22 +187,20 @@ export function SharedStrip({
                 </p>
               )}
             </div>
-            <NothingToDoNote prompt={mine} />
-            <OpeningStatus />
-            {/*
-              Who has priority over the key to the combat lines, two short lines at the end of the row: together they take
-              the height of a stack chip, not a row of their own.
-            */}
             <div
-              data-slot="strip-meta"
-              className="ms-auto flex shrink-0 flex-col items-end whitespace-nowrap justify-center gap-0.5 text-xs leading-4 empty:hidden [&_[data-slot=combat-key]]:flex-nowrap [&_[data-slot=combat-key]]:gap-x-3"
+              data-slot="strip-status"
+              className={
+                mine
+                  ? 'flex min-w-0 flex-col justify-center gap-0.5 text-xs leading-4 empty:hidden'
+                  : 'contents'
+              }
             >
-              {holder === '' ? null : (
-                <p data-slot="priority" className="text-muted-foreground max-sm:sr-only">
-                  {holder}
-                </p>
-              )}
-              <CombatLegend />
+              <NothingToDoNote prompt={mine} />
+              <OpeningStatus />
+              <StripMeta
+                holder={mine && ownPriority ? '' : holder}
+                className={mine ? undefined : 'ms-auto items-end'}
+              />
             </div>
           </div>
           <TurnTicker />

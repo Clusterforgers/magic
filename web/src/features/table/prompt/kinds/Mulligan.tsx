@@ -48,10 +48,8 @@ export const MulliganPrompt: PromptComponent<'Mulligan'> = ({ options }) => {
   )
   if (host === null) {
     return (
-      <PromptLayout text={mulliganText(options)}>
+      <PromptLayout text={mulliganText(options)} choices={<OpeningHand />}>
         {buttons}
-        {/* After the buttons, so a short window that scrolls the sheet keeps Keep and Mulligan in view first. */}
-        <OpeningHand />
       </PromptLayout>
     )
   }

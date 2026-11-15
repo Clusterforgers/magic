@@ -349,13 +349,14 @@ describe('a new decision', () => {
 })
 
 describe('the opening hand drawn large', () => {
-  it('shows every card of the hand in order under the buttons, in the strip, hidden from a screen reader', () => {
+  it('shows every card of the hand in order among the choices of the strip, the buttons among its answers, hidden from a screen reader', () => {
     const { container, mulligan } = renderMulligan(options())
     const row = must(container.querySelector('[data-slot="opening-hand"]'))
     expect(row).toHaveAttribute('aria-hidden', 'true')
     expect(row.querySelectorAll('[data-slot="opening-card"]')).toHaveLength(hand.length)
     expect(row.closest('[data-region="shared"]')).not.toBeNull()
-    // The buttons come first, so a sheet that scrolls shows them before the cards.
-    expect(mulligan().compareDocumentPosition(row) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    // The answers are sticky in the sheet, so a sheet that scrolls keeps Keep and Mulligan in view.
+    expect(row.closest('[data-slot="prompt-choices"]')).not.toBeNull()
+    expect(mulligan().closest('[data-slot="prompt-actions"]')).toHaveClass('sticky')
   })
 })

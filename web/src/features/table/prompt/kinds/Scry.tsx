@@ -265,6 +265,26 @@ export const ScryPrompt: PromptComponent<'Scry'> = ({ options }) => {
           <span className="sr-only"> {scryKeys(total)}</span>
         </>
       }
+      choices={
+        <>
+          <p
+            data-slot="scry-preview"
+            aria-hidden="true"
+            className="hidden min-w-0 basis-full text-xs text-muted-foreground sm:line-clamp-2 sm:block"
+          >
+            {scryPreview(piles.top.map(nameOf), piles.bottom.map(nameOf))}
+          </p>
+          <div
+            ref={root}
+            data-slot="scry-piles"
+            onKeyDown={onKeyDown}
+            className="flex basis-full flex-wrap gap-2 overflow-y-auto max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_12rem))]"
+          >
+            {pile('top')}
+            {pile('bottom')}
+          </div>
+        </>
+      }
     >
       <Button
         className="h-9 px-4"
@@ -283,22 +303,6 @@ export const ScryPrompt: PromptComponent<'Scry'> = ({ options }) => {
       >
         Original order
       </Button>
-      <p
-        data-slot="scry-preview"
-        aria-hidden="true"
-        className="hidden min-w-0 basis-full text-xs text-muted-foreground sm:line-clamp-2 sm:block"
-      >
-        {scryPreview(piles.top.map(nameOf), piles.bottom.map(nameOf))}
-      </p>
-      <div
-        ref={root}
-        data-slot="scry-piles"
-        onKeyDown={onKeyDown}
-        className="flex basis-full flex-wrap gap-2 overflow-y-auto max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_12rem))]"
-      >
-        {pile('top')}
-        {pile('bottom')}
-      </div>
     </PromptLayout>
   )
 }
