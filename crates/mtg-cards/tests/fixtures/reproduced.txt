@@ -945,6 +945,7 @@ Hate Mirage
 Hatut Zeraze Strike Force
 Haughty Djinn
 Headless Skaab
+Heart of Kiran
 Hearthhull, the Worldseed
 Heartless Act
 Heartwood Storyteller
@@ -1990,6 +1991,7 @@ Strong, the Brutish Thespian
 Stubborn Burrowfiend
 Student of Warfare
 Study Break
+Stumpsquall Hydra
 Sublime Epiphany
 Sublime Exhalation
 Subterranean Schooner
@@ -2273,6 +2275,7 @@ Vanishing Verse
 Vanishment
 Vanquish the Horde
 Vanquisher's Banner
+Vastwood Hydra
 Vastwood Surge
 Vault 75: Middle School
 Vedalken Engineer

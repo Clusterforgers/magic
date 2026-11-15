@@ -332,7 +332,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 | Timestamps | A static ability takes its permanent's entry time, or the time of the effect that gave it when that is later (CR 613.7a); a resolved effect takes its creation time (CR 613.7). Both are counters assigned by the fold. |
 | Durations | `UntilEndOfTurn` ends in the cleanup step in the batch that removes damage (CR 514.2), so a creature a pump kept alive survives it; `UntilEndOfCombat` after the end of combat step; the others follow their named source or counter (`Duration` in `modify.rs`). |
 | Dependencies | Within a layer an effect follows those it depends on, otherwise timestamp order after the layer's characteristic-defining abilities (CR 613.3). A depends on B when B changes whether A exists, what A applies to or what A does (CR 613.8a), found by trying B on copies; a loop goes by timestamp (CR 613.8b). |
-| Characteristic-defining | A `Static` with `defining: true` (CR 604.3) has `affected` `This`, no `condition`, no `from`, and works in every zone; on the battlefield it applies first in its layer. |
+| Characteristic-defining | A `Static` with `defining: true` (CR 604.3) has `affected` `This`, no `condition` (but "isn't on the battlefield": `Count [Is This, In Battlefield] = 0`, so it applies in every zone but the battlefield: Grist), no `from`, and works in every zone; on the battlefield it applies first in its layer. |
 
 ### Copies
 

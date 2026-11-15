@@ -92,6 +92,8 @@ pub enum Ref {
     Attached,
     /// The permanent whose static ability gave the source the ability being run ("this Equipment", "this Aura" in the
     /// words the Equipment gives the creature); nobody for an ability the source has of its own, or once that permanent has left the battlefield.
+    /// For an ability a resolved spell or ability gave for a time, the player who controlled that spell or ability, so
+    /// `ControllerOf(Granter)` is "the player who cast ~" for either kind of grant.
     Granter,
     /// The player the source is attached to ("enchanted player").
     AttachedPlayer,

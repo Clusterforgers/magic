@@ -1,0 +1,39 @@
+{
+  "oracle_id": "9b157b9a-92da-4054-8441-04fb4e415d77",
+  "name": "Stumpsquall Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stumpsquall Hydra",
+      "oracle_fingerprint": "e8baf6b23612123667e413f6079c5815",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "RepeatWhile": {
+                  "condition": { "Compare": { "left": 0, "op": "Eq", "right": 0 } },
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "AnyOf": ["This", "Commander"] }, { "Type": "Creature" }]
+                        },
+                        "as": "pick"
+                      }
+                    },
+                    { "PutCounters": { "on": { "Bound": "pick" }, "counter": "+1/+1" } }
+                  ],
+                  "most": 1000,
+                  "times": { "Sum": ["X", -1] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

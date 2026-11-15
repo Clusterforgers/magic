@@ -339,6 +339,7 @@ mod tests {
                 asker: None,
                 caused: None,
                 granter: None,
+                granter_player: None,
                 as_was: false,
                 inline: None,
                 entering: None,
