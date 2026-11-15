@@ -303,7 +303,7 @@ const TURN_FIELDS: Record<string, string> = {
   controlled_by: 'Control another player',
 }
 
-const PLAIN_TURN_FIELDS = names('number active active_left lands_played')
+const PLAIN_TURN_FIELDS = names('number round active active_left lands_played')
 
 const SPLITS: Array<[string, string, string, Record<string, string>, string[]]> = [
   ['Effect', 'crates/mtg-cards/src/effect.rs', 'Effect', EFFECTS, ORDINARY_EFFECTS],
