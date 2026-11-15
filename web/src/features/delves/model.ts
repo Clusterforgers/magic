@@ -152,16 +152,19 @@ export function introAbilities(content: DelveContent, fight: DelveFightView): Bo
   return out
 }
 
-/** How the last fight went, while its outcome is still the news: won (the party is at camp after a boss) or lost. */
-export function lastFight(run: Run): 'won' | 'lost' | null {
+/**
+ * How the last fight went, while its outcome is still the news: won (the party is at camp after a boss), lost in the
+ * game, retreated from by the host, or lost because its table closed or expired without a result. The server words
+ * the last chronicle line of a lost fight.
+ */
+export function lastFight(run: Run): 'won' | 'lost' | 'retreated' | 'closed' | null {
   const room = run.map.nodes.find((node) => node.id === run.at)
   if (run.status === 'Room' && room?.kind === 'boss' && run.cleared.includes(room.id)) return 'won'
-  if (
-    typeof run.status === 'object' &&
-    'Fight' in run.status &&
-    run.log.at(-1)?.startsWith('The party was beaten back')
-  )
-    return 'lost'
+  if (typeof run.status !== 'object' || !('Fight' in run.status)) return null
+  const line = run.log.at(-1) ?? ''
+  if (line.startsWith('The party was beaten back')) return 'lost'
+  if (line.startsWith('The party retreated')) return 'retreated'
+  if (line.startsWith('The party lost its table')) return 'closed'
   return null
 }
 
