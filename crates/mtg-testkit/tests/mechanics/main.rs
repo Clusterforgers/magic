@@ -186,6 +186,7 @@ mod r6105_sarcophagus;
 mod r6105_support;
 mod r6401_control;
 mod r6401_history;
+mod r6405_waterbend_x;
 mod r6f;
 mod repeat_each;
 mod rmt0_chroma;

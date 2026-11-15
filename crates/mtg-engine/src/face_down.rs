@@ -168,7 +168,7 @@ fn keyword_cost(card: &CardDefinition) -> Option<TurnUp> {
         if price.tap
             || price.untap
             || price.moves_source()
-            || price.waterbend > 0
+            || price.has_waterbend()
             || !price.changes.is_empty()
             || !price.parts.iter().all(turns_up)
         {
