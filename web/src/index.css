@@ -378,6 +378,20 @@
     radial-gradient(90% 70% at 50% 55%, var(--felt), var(--felt-rim));
 }
 
+/* A seat's colour (`--seat-hue`) off the table: a deep ground behind its art, a light mark on that ground, and a fill as bright as the seat's edge. */
+@utility seat-ground {
+  background-color: oklch(0.36 0.07 var(--seat-hue));
+}
+@utility seat-mark {
+  color: oklch(0.8 0.08 var(--seat-hue));
+}
+@utility seat-fill {
+  background-color: oklch(0.6 0.14 var(--seat-hue));
+  @variant dark {
+    background-color: oklch(0.74 0.13 var(--seat-hue));
+  }
+}
+
 /* A plaque on the table (a pod, the centre strip): the surface lifted off the felt with a soft shadow and a lit top edge. */
 @utility plaque {
   background: linear-gradient(180deg, color-mix(in oklch, var(--surface), white 4%), var(--surface));

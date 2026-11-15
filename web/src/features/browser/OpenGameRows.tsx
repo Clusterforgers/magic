@@ -136,11 +136,11 @@ function SeatArt({ seat }: { seat: SeatCommanders }) {
       data-seat={seat.seat}
       data-pictured={pictured.length > 0 || undefined}
       style={seatHueStyle(seat.seat)}
-      className={cn('flex min-w-0 flex-1 overflow-hidden bg-[oklch(0.36_0.07_var(--seat-hue))]', SEAT_EDGE)}
+      className={cn('flex min-w-0 flex-1 overflow-hidden seat-ground', SEAT_EDGE)}
     >
       {pictured.length === 0 ? (
         <span className="grid size-full place-items-center">
-          <CrownIcon className="size-6 text-[oklch(0.8_0.08_var(--seat-hue))] opacity-70" />
+          <CrownIcon className="size-6 seat-mark opacity-70" />
         </span>
       ) : (
         pictured.map((identity) => (
@@ -183,10 +183,7 @@ function GameArt({ game, seats, dim }: { game: LobbyGame; seats: SeatCommanders[
               <span
                 key={seat}
                 style={seatHueStyle(seat)}
-                className={cn(
-                  'flex-1 bg-[oklch(0.74_0.13_var(--seat-hue))]',
-                  seat >= game.filled && 'opacity-25',
-                )}
+                className={cn('flex-1 seat-fill', seat >= game.filled && 'opacity-25')}
               />
             ))}
           </span>
@@ -202,9 +199,9 @@ function GameArt({ game, seats, dim }: { game: LobbyGame; seats: SeatCommanders[
 /** Who leads each seat, by the seat's dot: the words for the banner's pictures. */
 function Commanders({ seats }: { seats: SeatCommanders[] }) {
   return (
-    <ul aria-label="Commanders" className="grid gap-0.5 text-sm text-muted-foreground">
+    <ul aria-label="Commanders" className="grid gap-1 text-sm text-muted-foreground">
       {seats.map((seat) => (
-        <li key={seat.seat} className="flex min-w-0 items-center gap-1.5">
+        <li key={seat.seat} className="flex min-w-0 items-center gap-2">
           <SeatDot seat={seat.seat} />
           <span className="truncate">{commanderNames(seat)}</span>
         </li>
@@ -233,7 +230,7 @@ function GameCard({
       >
         <GameArt game={game} seats={seats} dim={dim} />
         <div className="flex flex-1 flex-col gap-2 p-3">
-          <div className="grid min-w-0 gap-0.5">
+          <div className="grid min-w-0 gap-1">
             <h3
               id={hostId(game)}
               className={cn(
