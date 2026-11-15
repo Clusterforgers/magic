@@ -47,6 +47,7 @@ mod layers;
 mod lg1_abundance_draws;
 mod life_floor_triggers;
 mod lords;
+mod loyalty_counter_replacements;
 mod mana_abilities;
 mod mana_cost_abilities;
 mod memory_after_leaving;

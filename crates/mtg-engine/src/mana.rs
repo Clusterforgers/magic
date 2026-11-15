@@ -496,6 +496,11 @@ pub struct ManaOption {
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub priority_only: bool,
+    /// Its source is no land (an artifact, a creature), which an automatic payment taps after the lands; engine only, so a
+    /// source that comes over the wire is read as a land.
+    #[serde(skip)]
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub nonland: bool,
 }
 
 /// Permanents or cards a mana ability's cost takes besides its source: "Tap an untapped creature you control", "Sacrifice
@@ -560,6 +565,7 @@ impl ManaOption {
             takes: Vec::new(),
             repeat: false,
             priority_only: false,
+            nonland: false,
         }
     }
 
@@ -788,7 +794,8 @@ fn taps_cost_mana(payment: &Payment, sources: &[ManaOption]) -> bool {
 
 /// The sources grouped by permanent: a permanent is tapped once, for one of its abilities.
 ///
-/// Permanents with fewer abilities come first, so a flexible permanent is the last one tapped for a fixed need.
+/// Lands come first, so an artifact or a creature is tapped only for what the lands cannot pay; permanents with fewer
+/// abilities come next, so a flexible permanent is the last one tapped for a fixed need.
 fn by_permanent(sources: &[ManaOption]) -> Vec<Vec<ManaOption>> {
     let mut groups: BTreeMap<ObjectId, Vec<ManaOption>> = BTreeMap::new();
     for option in sources {
@@ -801,10 +808,11 @@ fn by_permanent(sources: &[ManaOption]) -> Vec<Vec<ManaOption>> {
     for group in &mut groups {
         group.sort_by_key(|o| o.source);
     }
-    // Permanents that add restricted mana come first: it is of less use than mana without a restriction. A snow source
-    // is worth keeping for an {S} ability, so those come last.
+    // Among lands and among the rest, permanents that add restricted mana come first: it is of less use than mana without
+    // a restriction. A snow source is worth keeping for an {S} ability, so those come last.
     groups.sort_by_key(|g| {
         (
+            g.iter().any(|o| o.nonland),
             g.iter()
                 .all(|o| o.only.is_empty() || mana_snow::is_snow(&o.only)),
             g.iter().any(|o| mana_snow::is_snow(&o.only)),
@@ -855,6 +863,50 @@ fn match_needs(needs: &[ManaType], groups: &[Vec<ManaOption>]) -> Option<Vec<Opt
         }
     }
     Some(held.iter().map(|h| h.map(|n| needs[n])).collect())
+}
+
+/// How many of the needs the groups can serve at once, each with a permanent of its own.
+fn served(needs: &[ManaType], groups: &[Vec<ManaOption>]) -> usize {
+    let mut held: Vec<Option<usize>> = vec![None; groups.len()];
+    (0..needs.len())
+        .filter(|need| {
+            let mut seen = vec![false; groups.len()];
+            augment(*need, needs, groups, &mut held, &mut seen)
+        })
+        .count()
+}
+
+/// [`match_needs`] with as few permanents that are no land as there can be: the groups, lands first, are kept while each
+/// serves one more need than those before it (the groups that can serve a set of needs are a matroid, so this is the
+/// fewest), and the needs are then given to the kept groups.
+fn match_needs_on_lands(
+    needs: &[ManaType],
+    groups: &[Vec<ManaOption>],
+) -> Option<Vec<Option<ManaType>>> {
+    if !groups.iter().flatten().any(|o| o.nonland) {
+        return match_needs(needs, groups);
+    }
+    let mut kept: Vec<usize> = Vec::new();
+    for at in 0..groups.len() {
+        if kept.len() == needs.len() {
+            break;
+        }
+        let trial: Vec<Vec<ManaOption>> = kept
+            .iter()
+            .chain(std::iter::once(&at))
+            .map(|g| groups[*g].clone())
+            .collect();
+        if served(needs, &trial) > kept.len() {
+            kept.push(at);
+        }
+    }
+    let chosen: Vec<Vec<ManaOption>> = kept.iter().map(|g| groups[*g].clone()).collect();
+    let given = match_needs(needs, &chosen)?;
+    let mut all = vec![None; groups.len()];
+    for (slot, at) in kept.into_iter().enumerate() {
+        all[at] = given[slot];
+    }
+    Some(all)
 }
 
 /// Whether the plain `cost` can be paid exactly from the pool plus the given sources, tapping each permanent once.
@@ -944,7 +996,10 @@ fn plain_auto(cost: &ManaCost, pool: &Floating, sources: &[ManaOption]) -> Optio
     }
     let groups = by_permanent(sources);
     let mut free = Vec::new();
-    for (g, mana) in match_needs(&needs, &groups)?.into_iter().enumerate() {
+    for (g, mana) in match_needs_on_lands(&needs, &groups)?
+        .into_iter()
+        .enumerate()
+    {
         match mana {
             Some(mana) => payment.taps.push(group_source(&groups[g], mana)?),
             None => free.push(g),
@@ -956,11 +1011,17 @@ fn plain_auto(cost: &ManaCost, pool: &Floating, sources: &[ManaOption]) -> Optio
         generic -= take_from_pool(mana, generic, &mut payment);
     }
     for _ in 0..generic {
-        let plentiful = ManaType::ALL
-            .into_iter()
-            .rev()
-            .max_by_key(|t| free.iter().filter(|g| can_make(&groups[**g], *t)).count())?;
-        let at = free.iter().position(|g| can_make(&groups[*g], plentiful))?;
+        // The lands that are left pay first, whatever the colors the rest could make; the rest pay when no land is left.
+        let lands_left = free.iter().any(|g| !groups[*g].iter().any(|o| o.nonland));
+        let pickable = |g: &usize| !lands_left || !groups[*g].iter().any(|o| o.nonland);
+        let plentiful = ManaType::ALL.into_iter().rev().max_by_key(|t| {
+            free.iter()
+                .filter(|g| pickable(g) && can_make(&groups[**g], *t))
+                .count()
+        })?;
+        let at = free
+            .iter()
+            .position(|g| pickable(g) && can_make(&groups[*g], plentiful))?;
         let g = free.remove(at);
         payment.taps.push(group_source(&groups[g], plentiful)?);
     }
@@ -1203,7 +1264,7 @@ fn can_afford_plain(
     })
 }
 
-/// How much a payment is wanted, lower first: less life, then fewer creatures tapped and cards exiled to help, then fewer sacrifices, then fewer sources that do more than add mana, then fewer taps, then fewer snow sources, then more restricted mana spent, then taps of the kinds the sources make most of.
+/// How much a payment is wanted, lower first: less life, then fewer creatures tapped and cards exiled to help, then fewer sacrifices, then fewer sources that do more than add mana, then fewer sources that are no land, then fewer taps, then fewer snow sources, then more restricted mana spent, then taps of the kinds the sources make most of.
 ///
 /// Restricted mana is of less use than mana without a restriction, so spending it keeps the rest. The last part keeps a
 /// scarce color untapped when a hybrid symbol can be paid with either of two.
@@ -1213,6 +1274,7 @@ fn preference(
     sources: &[ManaOption],
 ) -> (
     u32,
+    usize,
     usize,
     usize,
     usize,
@@ -1230,6 +1292,8 @@ fn preference(
     let common = used.iter().map(|o| plenty(o.produces)).sum();
     let sacrificed = used.iter().filter(|o| o.gives_up()).count();
     let extras = used.iter().filter(|o| o.extra).count();
+    // Lands are tapped before artifacts and creatures, whatever the number of taps.
+    let nonlands = used.iter().filter(|o| o.nonland).count();
     // A snow source stays untapped for a later {S} unless the payment needs it.
     let snow = used.iter().filter(|o| mana_snow::is_snow(&o.only)).count();
     (
@@ -1237,6 +1301,7 @@ fn preference(
         payment.convoke.len() + payment.improvise.len() + payment.delve.len(),
         sacrificed,
         extras,
+        nonlands,
         payment.taps.len(),
         snow,
         Reverse(restricted_used(payment, sources)),
@@ -1258,8 +1323,10 @@ fn keep_better(best: &mut Option<Payment>, payment: Payment, sources: &[ManaOpti
 /// Picks a valid payment for `spend` if one exists: mana before life, floating mana first, then sources, keeping scarce colors untapped.
 ///
 /// Life is paid only when no way to pay the cost in mana exists, then as little as possible, and never down to
-/// 0 or less. Among payments that take the same life, the one that taps fewest sources wins, then the one that
-/// spends the most restricted mana, then the one that taps the more common kinds of mana.
+/// 0 or less. Among payments that take the same life, the one with the fewest sacrifices wins, then the fewest
+/// sources that do more than add mana, then the fewest that are no land (lands before artifacts and creatures), then
+/// the one that taps fewest sources, then the one that spends the most restricted mana, then the one that taps the
+/// more common kinds of mana.
 pub fn auto_payment(
     cost: &ManaCost,
     pool: &ManaPool,
@@ -2993,14 +3060,20 @@ mod tests {
         (
             costs,
             prop::collection::vec(mana_strategy(), 0..3),
-            prop::collection::vec(prop::collection::vec(mana_strategy(), 1..3), 0..5),
+            prop::collection::vec(
+                (any::<bool>(), prop::collection::vec(mana_strategy(), 1..3)),
+                0..5,
+            ),
             -2i32..9,
         )
             .prop_map(|(cost, floating, permanents, life)| {
                 let mut sources = Vec::new();
-                for (object, abilities) in (0u64..).zip(permanents) {
+                for (object, (nonland, abilities)) in (0u64..).zip(permanents) {
                     for (ability, produces) in abilities.into_iter().enumerate() {
-                        sources.push(ManaOption::new(tap(object, ability), produces));
+                        sources.push(ManaOption {
+                            nonland,
+                            ..ManaOption::new(tap(object, ability), produces)
+                        });
                     }
                 }
                 sources.truncate(7);
@@ -3015,15 +3088,18 @@ mod tests {
             costs,
             prop::collection::vec(mana_strategy(), 0..2),
             prop::collection::vec(
-                prop::collection::vec(
-                    (
-                        mana_strategy(),
-                        1u32..4,
-                        any::<bool>(),
-                        any::<bool>(),
-                        prop::collection::vec(mana_strategy(), 0..2),
+                (
+                    any::<bool>(),
+                    prop::collection::vec(
+                        (
+                            mana_strategy(),
+                            1u32..4,
+                            any::<bool>(),
+                            any::<bool>(),
+                            prop::collection::vec(mana_strategy(), 0..2),
+                        ),
+                        1..3,
                     ),
-                    1..3,
                 ),
                 0..4,
             ),
@@ -3031,7 +3107,7 @@ mod tests {
         )
             .prop_map(|(cost, floating, permanents, life)| {
                 let mut sources = Vec::new();
-                for (object, abilities) in (0u64..).zip(permanents) {
+                for (object, (nonland, abilities)) in (0u64..).zip(permanents) {
                     for (ability, (produces, count, sacrifice, extra, also)) in
                         abilities.into_iter().enumerate()
                     {
@@ -3041,6 +3117,7 @@ mod tests {
                             count,
                             sacrifice,
                             extra,
+                            nonland,
                             only: Vec::new(),
                             also,
                             life: 0,
@@ -3279,6 +3356,27 @@ mod tests {
                 Some(extras(&payment)),
                 fewest_extras,
                 "no more sources that do more than add mana than the sacrifices allow"
+            );
+            let nonlands = |p: &Payment| {
+                p.taps
+                    .iter()
+                    .filter_map(|t| sources.iter().find(|o| o.source == *t))
+                    .filter(|o| o.nonland)
+                    .count()
+            };
+            let fewest_nonlands = allowed
+                .iter()
+                .filter(|p| {
+                    p.life == payment.life
+                        && sacrifices(p, sources) == sacrifices(&payment, sources)
+                        && extras(p) == extras(&payment)
+                })
+                .map(|p| nonlands(p))
+                .min();
+            prop_assert_eq!(
+                Some(nonlands(&payment)),
+                fewest_nonlands,
+                "no more sources that are no land than the lands, sacrifices and side effects allow"
             );
         }
         Ok(())

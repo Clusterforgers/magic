@@ -3,7 +3,8 @@
 //! A source of one mana for a tap is matched to the coloured needs one for one (`mana.rs`). One that adds several
 //! mana covers several needs of its type at once, and a surplus floats, so the choice of sources is a small search:
 //! each permanent is left alone or used for one of its options, and a plan is better with fewer sacrifices, then
-//! fewer taps, then taps of the types the player has the most sources of.
+//! fewer sources that do more than add mana, then fewer that are no land, then fewer taps, then taps of the types the
+//! player has the most sources of.
 
 use std::collections::BTreeMap;
 
@@ -25,6 +26,8 @@ pub(crate) struct Weight {
     sacrifices: u32,
     /// Sources that do more than add mana.
     extras: u32,
+    /// Sources that are no land, which are tapped after the lands.
+    nonlands: u32,
     /// Permanents tapped or sacrificed.
     taps: u32,
     /// Sources used whose mana has no restriction, which is of more use than mana with one.
@@ -39,6 +42,7 @@ impl Weight {
         Weight {
             sacrifices: self.sacrifices + u32::from(option.gives_up()),
             extras: self.extras + u32::from(option.extra),
+            nonlands: self.nonlands + u32::from(option.nonland),
             taps: self.taps + 1,
             unrestricted: self.unrestricted + u32::from(option.only.is_empty()),
             scarcity: self.scarcity + all.saturating_sub(plenty),

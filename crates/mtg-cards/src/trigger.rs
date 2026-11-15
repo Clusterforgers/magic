@@ -925,11 +925,13 @@ pub enum ReplaceWhen {
         /// Only counters of this kind; any kind when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         counter: Option<CounterKind>,
-        /// Only counters these players put: the controller of the spell or ability that puts them, or the player of
-        /// the turn action; anyone when absent ("If you would put one or more counters").
+        /// Only counters these players put: the controller of the spell or ability that puts them or whose cost does, the
+        /// controller of the permanent that enters with them, or the player of the turn action; anyone when absent ("If
+        /// you would put one or more counters").
         #[serde(default, skip_serializing_if = "Option::is_none")]
         by: Option<Ref>,
-        /// Only counters a resolving spell or ability puts, not a turn action ("If an effect would put").
+        /// Only counters an effect puts (a resolving spell or ability, or the permanent that enters with them), not a cost
+        /// or a turn action ("If an effect would put").
         #[serde(default, skip_serializing_if = "is_false")]
         effect: bool,
     },
