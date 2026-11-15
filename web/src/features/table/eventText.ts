@@ -1430,7 +1430,7 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('AttackChoicesRefused' in event) {
     return line(
-      `The party's attack is refused (${event.AttackChoicesRefused.reason}); each hero chooses again`,
+      `The team's attack is refused (${event.AttackChoicesRefused.reason}); each player chooses again`,
     )
   }
   if ('FocusShifted' in event) {

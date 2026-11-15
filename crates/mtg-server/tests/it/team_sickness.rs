@@ -21,7 +21,7 @@ use mtg_server::registry::{GameOptions, Registry, SeatRequest};
 use rstest::rstest;
 
 /// A human who plays a land or a creature whenever it can and passes otherwise, so its seat has creatures to attack with.
-fn plays(decision: &Decision, view: Option<&StateView>) -> Answer {
+pub(crate) fn plays(decision: &Decision, view: Option<&StateView>) -> Answer {
     match (&decision.kind, view) {
         (DecisionKind::Priority(options), Some(view)) => {
             let creature = options.castable.iter().find(|id| {
@@ -233,10 +233,8 @@ async fn a_humans_view_holds_a_permanent_back_until_its_controllers_turn_begins(
                                     teams.team_of(object.controller),
                                     teams.team_of(decision.player)
                                 );
-                                // Under shared team turns each player chooses for their own creatures alone.
-                                if mode == TeamMode::SharedTurns {
-                                    assert_eq!(object.controller, decision.player);
-                                }
+                                // Each player chooses for their own creatures alone, teammates sharing the turn included.
+                                assert_eq!(object.controller, decision.player);
                                 assert!(
                                     object.permanent.as_ref().is_some_and(|p| !p.summoning_sick),
                                     "seat {:?} may attack with {}, which its view shows summoning sick",
@@ -274,12 +272,9 @@ async fn a_humans_view_holds_a_permanent_back_until_its_controllers_turn_begins(
             "too few permanents were checked: {:?}",
             ledger.checked
         );
-        // In Two-Headed Giant only the team's first seat declares attackers; under shared team turns every player
-        // chooses their own, a human after a bot too.
-        let declares = mode == TeamMode::SharedTurns
-            || teams.members(teams.team_of(client.seat)).next() == Some(client.seat);
+        // Where teams share their turns every player chooses their own attacks, a human after a bot too.
         assert!(
-            ledger.attackers > 0 || (teams.shares_turns() && !declares),
+            ledger.attackers > 0,
             "seat {:?} was never offered an attacker",
             client.seat
         );
