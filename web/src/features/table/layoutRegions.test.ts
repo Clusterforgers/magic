@@ -21,8 +21,6 @@ import {
   handGrowMost,
   mainColumns,
   MIN_COLUMN_PX,
-  OPENING_GROW_VH,
-  openingGrowMost,
   planTable,
   regionSizes,
   SHARED_CLAMP,
@@ -484,17 +482,11 @@ describe('the room the hand dock grows to', () => {
     ['768x1024', { width: 768, height: 1024 }, true],
     ['1440x900', { width: 1440, height: 900 }, true],
     ['1920x1080', { width: 1920, height: 1080 }, true],
-  ])(
-    'in a window of %s the dock grows for a large hand and for an opening hand: %s',
-    (_name, viewport, grows) => {
-      const regions = regionSizes(viewport)
-      expect(regions.phone).toBe(!grows)
-      expect(handGrowMost(regions) > 0).toBe(grows)
-      expect(openingGrowMost(regions) > 0).toBe(grows)
-      if (!grows) return
-      expect(handGrowMost(regions)).toBeCloseTo((regions.main.height * HAND_GROW_VH) / 100)
-      expect(openingGrowMost(regions)).toBeCloseTo((regions.main.height * OPENING_GROW_VH) / 100)
-      expect(openingGrowMost(regions)).toBeGreaterThan(handGrowMost(regions))
-    },
-  )
+  ])('in a window of %s the dock grows for a large hand: %s', (_name, viewport, grows) => {
+    const regions = regionSizes(viewport)
+    expect(regions.phone).toBe(!grows)
+    expect(handGrowMost(regions) > 0).toBe(grows)
+    if (!grows) return
+    expect(handGrowMost(regions)).toBeCloseTo((regions.main.height * HAND_GROW_VH) / 100)
+  })
 })

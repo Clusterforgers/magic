@@ -1,4 +1,4 @@
-// Goal: while the Mulligan prompt waits, the hand dock draws the opening hand larger than any other hand (cards up to 136 px, the dock grown by `--hand-grow` to hold them in one row), and a hand at any other decision, or an opening hand on a phone, keeps the usual size and dock.
+// Goal: while the Mulligan prompt waits off a phone the opening hand floats in the centre overlay, and the hand dock keeps its size and place without drawing the hand a second time; on a phone the dock draws the hand as at any other decision, in a row that scrolls.
 import { screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { PlayState } from '@/play/store'
@@ -6,13 +6,7 @@ import { must } from '@/test-utils/batches'
 import { KINDS } from '@/test-utils/decisions'
 import { renderTable } from '@/test-utils/tableHarness'
 import { clampedHeight, HAND_GROW_VAR, HAND_PHONE_CLAMP } from './layout'
-import {
-  HAND_DOCK_SIDES_PX,
-  HAND_FLOOR_PX,
-  handCardWidth,
-  OPENING_CARD_MAX_PX,
-  openingDockNeed,
-} from './handFit'
+import { HAND_DOCK_SIDES_PX, HAND_FLOOR_PX, handCardWidth } from './handFit'
 
 /** The room every element reports; jsdom has no layout. */
 const room = { width: 0, height: 0 }
@@ -27,7 +21,7 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
-const hand = (): HTMLElement => screen.getByRole('list', { name: "Alice's hand" })
+const hand = (): HTMLElement => screen.getByRole('list', { name: "Alice's hand", hidden: true })
 const cardWidth = (): number => Number.parseInt(hand().style.getPropertyValue('--card-w'), 10)
 const grown = (): string =>
   must(document.querySelector<HTMLElement>('[data-slot="table-main"]')).style.getPropertyValue(HAND_GROW_VAR)
@@ -40,45 +34,38 @@ const waitingOn =
     pending: { id: 7, decision: { player: 0, kind: KINDS[name] } },
   })
 
-describe('the hand dock at a decision', () => {
-  it.each<[string, 'Mulligan' | 'Priority', boolean]>([
-    ['the Mulligan prompt', 'Mulligan', true],
-    ['a Priority prompt', 'Priority', false],
-  ])('at %s grows its cards and itself: %s', (_name, kind, opening) => {
-    room.width = 1100
-    room.height = 220
-    renderTable({ seats: 2, state: waitingOn(kind) })
-    // The fixture hand of 7 cards and two partner commanders share one line.
-    const need = openingDockNeed({ width: 1100 - 8, count: 7, commanders: 2, most: 0.32 * 1000 })
-    if (opening) {
-      expect(cardWidth()).toBeGreaterThan(112)
-      expect(cardWidth()).toBeLessThanOrEqual(OPENING_CARD_MAX_PX)
-      expect(grown()).toBe(`${need}px`)
-    } else {
-      expect(cardWidth()).toBeLessThanOrEqual(112)
-      expect(grown()).toBe('')
-    }
-  })
+describe('the hand dock at the opening hand', () => {
+  it.each([2, 4])(
+    'keeps its size and its cards at %i seats while the hand floats in the centre, and draws none of them',
+    (seats) => {
+      room.width = 1100
+      room.height = 220
+      const seen = (kind: 'Mulligan' | 'Priority') => {
+        const table = renderTable({ seats, state: waitingOn(kind) })
+        const drawn = {
+          card: cardWidth(),
+          grown: grown(),
+          hidden: hand().closest('[data-floating]') !== null,
+        }
+        table.unmount()
+        return drawn
+      }
+      const opening = seen('Mulligan')
+      const other = seen('Priority')
+      expect(opening.card).toBe(other.card)
+      expect(opening.grown).toBe('')
+      expect(opening.hidden).toBe(true)
+      expect(other.hidden).toBe(false)
+    },
+  )
 
-  it('lets go of the room once the keep or mulligan is answered', () => {
+  it('draws its cards again once the keep or mulligan is answered', () => {
     room.width = 1100
     room.height = 220
     const table = renderTable({ seats: 2, state: waitingOn('Mulligan') })
-    expect(grown()).not.toBe('')
+    expect(hand().closest('[data-floating]')).not.toBeNull()
     table.update(() => ({ pending: null }))
-    expect(grown()).toBe('')
-    expect(cardWidth()).toBeLessThanOrEqual(112)
-  })
-
-  it('keeps the dock of a phone as it is', () => {
-    room.width = 366
-    room.height = 106
-    renderTable({
-      seats: 2,
-      state: waitingOn('Mulligan'),
-      options: { viewport: { width: 390, height: 844 } },
-    })
-    expect(grown()).toBe('')
+    expect(hand().closest('[data-floating]')).toBeNull()
   })
 })
 
@@ -120,10 +107,9 @@ describe('the opening hand on a phone', () => {
       expect(opening.scrolls).toBe('true')
       expect(opening.rows).toBe('1')
       expect(opening.grown).toBe('')
-      // As wide as the dock's height holds, down to the narrowest card of a hand and never the opening hand's 136 px.
+      // As wide as the dock's height holds, down to the narrowest card of a hand.
       const widest = handCardWidth(phoneRoom(width, height).height - 8)
       expect(opening.card).toBe(Math.min(HAND_FLOOR_PX, widest))
-      expect(opening.card).toBeLessThan(OPENING_CARD_MAX_PX)
     },
   )
 

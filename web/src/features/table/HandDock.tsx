@@ -1,9 +1,10 @@
+import { cn } from '@/lib/utils'
 import { memo, useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useGame, usePlay } from '@/features/game/gameContext'
 import type { ObjectId, ObjectView, PlayerId, PlayerView } from '@/protocol/generated'
 import { castCostLine } from './commander'
 import { HandBacks } from './Hand'
-import { dockLayouts, handDockNeed, OPENING_CARD_MAX_PX, openingDockNeed } from './handFit'
+import { dockLayouts, handDockNeed } from './handFit'
 import { HAND_GROW_VAR } from './layout'
 import { headLabel, seenTop, TOP_WORDS } from './libraryTop'
 import { HandFan } from './HandFan'
@@ -13,6 +14,7 @@ import { playerOf } from './selectors'
 import { useCoarsePointer } from './useCoarsePointer'
 import { useHandOrder } from './useHandOrder'
 import { useContentBox } from './useZoneFit'
+import { useOpeningInOverlay } from './prompt/choiceOverlay'
 
 /** Room kept round the line, so the focus ring of the first and last card is not cut by the line's scrolling. */
 const PAD_PX = 4
@@ -74,11 +76,9 @@ function headOfHand(
 export const HandDock = memo(function HandDock({
   seat,
   growMost = 0,
-  openingMost = 0,
 }: {
   seat: PlayerId
   growMost?: number
-  openingMost?: number
 }) {
   const owner = useSeatNamer()(seat)
   const player = usePlay((state) => playerOf(state, seat))
@@ -103,30 +103,20 @@ export const HandDock = memo(function HandDock({
   const zone = useRef<HTMLDivElement>(null)
   const room = useContentBox(zone)
   const coarse = useCoarsePointer()
-  // While the keep or mulligan waits, the hand is the one thing to read: its cards grow and the dock with them.
-  const opening = usePlay((state) => state.pending !== null && 'Mulligan' in state.pending.decision.kind)
-  const cap = opening ? OPENING_CARD_MAX_PX : undefined
+  // The opening hand floating in the centre overlay is the one copy to read: the dock keeps its place but not its cards.
+  const floating = useOpeningInOverlay()
   const layouts = useMemo(() => {
     if (room === null || cards === null) return undefined
     const width = room.width - 2 * PAD_PX
     const height = room.height - 2 * PAD_PX
     // The commanders take one card's width each, and a divider, at the head of the dock; the hand fits the rest.
-    return dockLayouts({ width, height, count: cards.length, commanders: waiting.size, coarse, cap })
-  }, [room, cards, waiting, coarse, cap])
+    return dockLayouts({ width, height, count: cards.length, commanders: waiting.size, coarse })
+  }, [room, cards, waiting, coarse])
   const lineWidth = room === null ? 0 : room.width - 2 * PAD_PX
   const need =
-    room === null || cards === null || coarse
+    room === null || cards === null || coarse || growMost <= 0
       ? 0
-      : opening
-        ? openingDockNeed({
-            width: lineWidth,
-            count: cards.length,
-            commanders: waiting.size,
-            most: openingMost,
-          })
-        : growMost <= 0
-          ? 0
-          : handDockNeed({ width: lineWidth, count: cards.length, commanders: waiting.size, most: growMost })
+      : handDockNeed({ width: lineWidth, count: cards.length, commanders: waiting.size, most: growMost })
   useLayoutEffect(() => {
     const main = zone.current?.closest<HTMLElement>('[data-slot="table-main"]')
     if (main == null || need <= 0) return undefined
@@ -148,7 +138,15 @@ export const HandDock = memo(function HandDock({
       <p aria-live="polite" className="sr-only">
         {moved}
       </p>
-      <div ref={zone} className="flex size-full min-h-0 min-w-0 items-end justify-center gap-1">
+      <div
+        ref={zone}
+        data-floating={floating || undefined}
+        aria-hidden={floating || undefined}
+        className={cn(
+          'flex size-full min-h-0 min-w-0 items-end justify-center gap-1',
+          floating && 'invisible',
+        )}
+      >
         {cards === null || waiting.size === 0 ? null : (
           // As high as the dock and no higher: the fan inside stands taller (the room for a lifted card) and the
           // divider is this box's edge, so it must not follow the fan up into the battlefield.

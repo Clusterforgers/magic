@@ -33,6 +33,8 @@ function renderMulligan(given: MulliganOptions, { status = [], lost = [], own = 
   const table = renderTable({
     seats: Math.max(2, status.length + 1),
     session: { answer },
+    // A phone keeps the decision in the strip with its waiting line; elsewhere it floats (`bossRoom.test.tsx`).
+    options: { viewport: { width: 390, height: 844 } },
     state: (state) => {
       const view = clone(must(state.view))
       view.stage = 'Mulligan'

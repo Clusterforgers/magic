@@ -13,9 +13,9 @@ import { PromptLayout } from '../PromptLayout'
 import type { PromptComponent } from '../types'
 
 /**
- * Mulligan: keep the opening hand or take a mulligan. The hand is drawn large under the buttons (`OpeningHand`); the sentence says what a
+ * Mulligan: keep the opening hand or take a mulligan. On a phone the hand is a row of cards among the band's choices (`OpeningHand`); the sentence says what a
  * mulligan costs and how many were taken, and a line beneath names the other seats still deciding. Where the table floats
- * the decision (boss mode, `useOpeningOverlay`) it stands in the middle of the table over the dimmed boards: the hand in
+ * the decision (every table off a phone, `useOpeningOverlay`) it stands in the middle of the table over the dimmed boards: the hand in
  * one row of large cards, then the sentence and the buttons, then every seat's progress.
  */
 export const MulliganPrompt: PromptComponent<'Mulligan'> = ({ options }) => {

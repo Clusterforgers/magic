@@ -46,7 +46,7 @@ Every prompt kind is shot on `/dev/table?prompt=…` at 2550 × 1380, 2300 × 84
 | Number (X), a few options, mana choice | one row with the choices between the sentence and the answers | one row | the choices on a line of their own |
 | Targets, cards, modes, costs, trigger order, payment, damage | from 100 rem of band the choices sit beside the sentence; below, a head row and the choices across the whole strip, cards from the left with the players in a column before them | head row and choices row | the long lists in the choice overlay |
 | Attack, block | one row: the sentence and the combat buttons | one row | one row that wraps |
-| Mulligan | the opening hand floats over the boards (boss) or the hand dock draws it; the band holds the sentence and Keep at the right end | the same | the hand in the band |
+| Mulligan | at every table (duel, grid, teams, Two-Headed Giant, boss) the decision floats over the dimmed boards: the hand in one row of large cards, Keep and Mulligan, every seat's status; the dock hides its copy | the same | the hand in one scrolling row in the band |
 
 - Empty boards: the sheet keeps at least a sentence line and a row of answers (`BAND_MIN_PX`), so a seat with nothing on the field above never shrinks the prompt to a scrolling sliver.
 - What remains: a stack of three chips folds to one chip and "+2 more" beside a prompt below 1600 px; a mode choice stands as high as its card picture.
