@@ -2,7 +2,7 @@
 import { DeckError } from '@/net/decks'
 import type { DeckGroupsApi } from '@/net/deckGroups'
 import type { DeckGroupView } from '@/protocol/generated'
-import { filed } from './grouping'
+import { added, removed } from './grouping'
 
 /** The fake's groups and the calls it saw, as "method args". */
 export interface FakeGroups {
@@ -64,9 +64,13 @@ export function startGroups(initial: DeckGroupView[] = [], failing?: 'group_limi
         answer(`reorder ${ids.join(',')}`, () => {
           held = ids.flatMap((id) => held.filter((group) => group.id === id))
         }),
-      file: (deckId, group) =>
-        answer(`file ${deckId} ${group ?? 'none'}`, () => {
-          held = filed(held, deckId, group)
+      addDeck: (deckId, group) =>
+        answer(`add ${deckId} ${group}`, () => {
+          held = added(held, deckId, group)
+        }),
+      removeDeck: (deckId, group) =>
+        answer(`take out ${deckId} ${group}`, () => {
+          held = removed(held, deckId, group)
         }),
     },
   }

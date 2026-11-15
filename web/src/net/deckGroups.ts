@@ -1,16 +1,10 @@
 /**
  * The deck-group endpoints of `mtg-server` (docs/server.md, Deck groups): list the account's groups, create, rename,
- * collapse, reorder and delete one, and file a deck in a group or none. The bodies are the generated types; every
+ * collapse, reorder and delete one, and add a deck to a group or take it out of one. The bodies are the generated types; every
  * answer is checked at runtime and every failure is a `DeckError`, since the endpoints share the deck endpoints'
  * codes. Every request carries the session cookie (`credentials: 'include'`).
  */
-import type {
-  DeckGroupChange,
-  DeckGroupChoice,
-  DeckGroupOrder,
-  DeckGroupView,
-  NewDeckGroup,
-} from '@/protocol/generated'
+import type { DeckGroupChange, DeckGroupOrder, DeckGroupView, NewDeckGroup } from '@/protocol/generated'
 import type { Fetch } from './api'
 import { isFlag, isListOf, isRecord, isText } from './check'
 import { DeckError, isDeckErrorCode } from './decks'
@@ -31,12 +25,14 @@ export interface DeckGroupsApi {
   create(name: string): Promise<DeckGroupView>
   /** `PATCH /api/deck-groups/{id}`: renames, collapses or opens the group. */
   change(id: string, change: DeckGroupChange): Promise<DeckGroupView>
-  /** `DELETE /api/deck-groups/{id}`: deletes the group; its decks are ungrouped. */
+  /** `DELETE /api/deck-groups/{id}`: deletes the group; its decks stay, in their other groups. */
   remove(id: string): Promise<void>
   /** `PUT /api/deck-groups/order`: every group id once, in the new order. */
   reorder(ids: string[]): Promise<void>
-  /** `PUT /api/decks/{id}/group`: files the deck in the group, or in none for `null`. */
-  file(deckId: string, group: string | null): Promise<void>
+  /** `PUT /api/decks/{id}/groups/{group}`: adds the deck to the group, beside its other groups. */
+  addDeck(deckId: string, group: string): Promise<void>
+  /** `DELETE /api/decks/{id}/groups/{group}`: takes the deck out of that group only. */
+  removeDeck(deckId: string, group: string): Promise<void>
 }
 
 /** A group as the server sends it, or null for anything else. */
@@ -107,6 +103,8 @@ export function createDeckGroupsApi(options: DeckGroupsOptions = {}): DeckGroups
     body: JSON.stringify(body),
   })
   const done = () => true
+  const membershipUrl = (deckId: string, group: string): string =>
+    `${base}/api/decks/${encodeURIComponent(deckId)}/groups/${encodeURIComponent(group)}`
 
   return {
     list: () => call(groups, readList, {}),
@@ -119,12 +117,11 @@ export function createDeckGroupsApi(options: DeckGroupsOptions = {}): DeckGroups
     reorder: async (ids) => {
       await call(`${groups}/order`, done, json('PUT', { ids } satisfies DeckGroupOrder))
     },
-    file: async (deckId, group) => {
-      await call(
-        `${base}/api/decks/${encodeURIComponent(deckId)}/group`,
-        done,
-        json('PUT', { group } satisfies DeckGroupChoice),
-      )
+    addDeck: async (deckId, group) => {
+      await call(membershipUrl(deckId, group), done, { method: 'PUT' })
+    },
+    removeDeck: async (deckId, group) => {
+      await call(membershipUrl(deckId, group), done, { method: 'DELETE' })
     },
   }
 }

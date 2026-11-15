@@ -177,7 +177,7 @@ export function DeckPicker({
   }, [sections, groups, current])
   const { isOpen, toggle } = useFolds(initial, searching)
   const pickedEntry = entries?.find((e) => e.id === picked)
-  const shown = sections.reduce((sum, s) => sum + s.decks.length, 0)
+  const shown = new Set(sections.flatMap((s) => s.decks.map((deck) => deck.id))).size
   const toggleColour = (letter: string) =>
     setColours((was) => (was.includes(letter) ? was.filter((c) => c !== letter) : [...was, letter]))
   const take = (id: string) => {

@@ -170,7 +170,11 @@ export function DeckList({
   if (state.entries.length === 0) return <>{empty}</>
 
   const move = (key: string, from: string): void => {
-    const at = visible.findIndex((entry) => entry.id === from)
+    // A deck in several groups is listed in each of them: the focused row says which one the arrow starts from.
+    const active = document.activeElement
+    const options = Array.from(list.current?.querySelectorAll('[role="option"]') ?? [])
+    const focused = active === null ? -1 : options.indexOf(active)
+    const at = focused >= 0 ? focused : visible.findIndex((entry) => entry.id === from)
     const next =
       key === 'Home'
         ? 0

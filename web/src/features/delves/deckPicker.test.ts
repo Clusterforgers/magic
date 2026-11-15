@@ -1,6 +1,7 @@
 // Goal: the Delves deck picker lists the player's Commander decks in their deck groups (the last used group first, Ungrouped after, one "Your decks" section without groups) and the precons last, narrows them by search and color, leads with the decks last played on a delve, words each deck's validity and keeps the last delves in storage that may fail.
 import { describe, expect, it } from 'vitest'
 import { deckValidity, notePlayed, pickerSections, PLAYED_KEY, readPlayed } from './deckPicker'
+import { groupView } from '@/features/decks/groups/fakeGroups'
 import { PICKER_ENTRIES, PICKER_GROUPS } from './fakePickerDecks'
 
 const titles = (...args: Parameters<typeof pickerSections>) =>
@@ -43,6 +44,18 @@ describe('pickerSections', () => {
     ],
   ])('lists %s', (_, groups, last, expected) => {
     expect(titles(PICKER_ENTRIES, groups, ALL, {}, last)).toEqual(expected)
+  })
+
+  it('lists a deck in every group it sits in and in Ungrouped only when it sits in none', () => {
+    const groups = [
+      groupView('fun', 'Fun', ['d-krenko', 'd-atraxa']),
+      groupView('hard', 'Hardcore', ['d-krenko', 'd-meren']),
+    ]
+    expect(titles(PICKER_ENTRIES, groups, ALL)).toEqual([
+      ['Fun', ['Atraxa Counters', 'Goblin Swarm']],
+      ['Hardcore', ['Goblin Swarm', 'Meren Graveyard']],
+      ['Precons', ['Draconic Dissent', 'Elven Council', 'Riders of Rohan']],
+    ])
   })
 
   it.each([

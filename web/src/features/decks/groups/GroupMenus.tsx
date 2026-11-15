@@ -4,62 +4,75 @@ import {
   ChevronDownIcon,
   EllipsisIcon,
   FolderInputIcon,
+  FolderPlusIcon,
   PencilIcon,
   Trash2Icon,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { UNGROUPED } from './grouping'
 
-/** The groups a deck can be moved to. */
+/** A group a deck can join. */
 export interface GroupChoice {
   id: string
   name: string
 }
 
-interface MoveToGroupProps {
+interface DeckGroupsMenuProps {
   deckName: string
   groups: readonly GroupChoice[]
-  /** The group the deck sits in, or null. */
-  current: string | null
-  onMove(group: string | null): void
+  /** The ids of the groups the deck sits in. */
+  memberOf: readonly string[]
+  /** The deck joins the group (`member`) or leaves it; its other groups stay. */
+  onToggle(group: string, member: boolean): void
+  /** Asks for a new group the deck joins. */
+  onNewGroup(): void
 }
 
-/** "Group" on a deck's row: a menu of the groups with the deck's own checked, and Ungrouped. */
-export function MoveToGroup({ deckName, groups, current, onMove }: MoveToGroupProps) {
+/**
+ * "Groups" on a deck's row: a checkbox for each group the deck sits in (a deck in none is ungrouped), then "New
+ * group…". A toggle leaves the menu open; it closes only when the row moves to another section.
+ */
+export function DeckGroupsMenu({ deckName, groups, memberOf, onToggle, onNewGroup }: DeckGroupsMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        render={<Button variant="outline" size="sm" aria-label={`Move ${deckName} to a group`} />}
+        render={<Button variant="outline" size="sm" aria-label={`Groups of ${deckName}`} />}
       >
         <FolderInputIcon aria-hidden="true" />
-        Group
+        Groups
         <ChevronDownIcon aria-hidden="true" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuGroup>
-          <DropdownMenuLabel>Move to group</DropdownMenuLabel>
-          <DropdownMenuRadioGroup
-            value={current ?? UNGROUPED}
-            onValueChange={(next: string) => onMove(next === UNGROUPED ? null : next)}
-          >
-            {groups.map((group) => (
-              <DropdownMenuRadioItem key={group.id} value={group.id}>
-                {group.name}
-              </DropdownMenuRadioItem>
-            ))}
-            <DropdownMenuRadioItem value={UNGROUPED}>Ungrouped</DropdownMenuRadioItem>
-          </DropdownMenuRadioGroup>
-        </DropdownMenuGroup>
+        {groups.length === 0 ? null : (
+          <>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Groups</DropdownMenuLabel>
+              {groups.map((group) => (
+                <DropdownMenuCheckboxItem
+                  key={group.id}
+                  checked={memberOf.includes(group.id)}
+                  onCheckedChange={(checked: boolean) => onToggle(group.id, checked)}
+                >
+                  {group.name}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+          </>
+        )}
+        <DropdownMenuItem onClick={onNewGroup}>
+          <FolderPlusIcon aria-hidden="true" className="size-4" />
+          New group…
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

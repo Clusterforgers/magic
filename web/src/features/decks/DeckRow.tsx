@@ -8,9 +8,10 @@ import type { DecksApi } from '@/net/decks'
 import type { DeckListItem } from '@/protocol/generated'
 import { DeckMarker } from './DeckMarker'
 import { ExportMenu } from './ExportMenu'
-import { DECK_DRAG_TYPE } from './groups/drag'
-import { MoveToGroup } from './groups/GroupMenus'
+import { DECK_DRAG_FROM_TYPE, DECK_DRAG_TYPE } from './groups/drag'
+import { DeckGroupsMenu } from './groups/GroupMenus'
 import type { GroupChoice } from './groups/GroupMenus'
+import { UNGROUPED } from './groups/grouping'
 import { LegalityPill } from './LegalityPill'
 import { notLegalText } from './legality'
 import { cardsText, checkNote, formatLabel, hasUnvalidated, unvalidatedLink } from './format'
@@ -22,13 +23,19 @@ interface DeckRowProps {
   /** The time the ages are counted to, in milliseconds since the epoch. */
   now: number
   onDelete: (deck: DeckListItem) => void
-  /** The account's groups; absent while they are unknown, and then the row offers no move. */
+  /** The account's groups; absent while they are unknown, and then the row offers no Groups menu. */
   groups?: readonly GroupChoice[]
-  /** The group the deck sits in, or null. */
-  groupId?: string | null
-  /** Moves the deck to a group, or to none. */
-  onFile?: (deck: DeckListItem, group: string | null) => void
+  /** The ids of the groups the deck sits in. */
+  memberOf?: readonly string[]
+  /** The group whose section draws the row, or null in Ungrouped: where a drag starts. */
+  section?: string | null
+  /** The deck joins the group (`member`) or leaves it. */
+  onToggleGroup?: (deck: DeckListItem, group: string, member: boolean) => void
+  /** Asks for a new group the deck joins. */
+  onNewGroup?: (deck: DeckListItem) => void
 }
+
+const NO_GROUPS: readonly string[] = []
 
 /**
  * One deck of the list: its name (a link to the builder), the marker beside it (an icon and a word, or "Changed since
@@ -41,10 +48,13 @@ export const DeckRow = memo(function DeckRow({
   now,
   onDelete,
   groups,
-  groupId = null,
-  onFile,
+  memberOf = NO_GROUPS,
+  section = null,
+  onToggleGroup,
+  onNewGroup,
 }: DeckRowProps) {
-  const movable = groups !== undefined && onFile !== undefined
+  // A drag needs a group to land on.
+  const movable = groups !== undefined && groups.length > 0 && onToggleGroup !== undefined
   const note = checkNote(deck)
   const link = unvalidatedLink(deck.summary.counts)
   return (
@@ -56,7 +66,8 @@ export const DeckRow = memo(function DeckRow({
         movable
           ? (event) => {
               event.dataTransfer.setData(DECK_DRAG_TYPE, deck.id)
-              event.dataTransfer.effectAllowed = 'move'
+              event.dataTransfer.setData(DECK_DRAG_FROM_TYPE, section ?? UNGROUPED)
+              event.dataTransfer.effectAllowed = 'copyMove'
             }
           : undefined
       }
@@ -143,12 +154,13 @@ export const DeckRow = memo(function DeckRow({
           Edit
         </Link>
         <ExportMenu deck={deck} api={api} />
-        {groups !== undefined && onFile !== undefined ? (
-          <MoveToGroup
+        {groups !== undefined && onToggleGroup !== undefined && onNewGroup !== undefined ? (
+          <DeckGroupsMenu
             deckName={deck.name}
             groups={groups}
-            current={groupId}
-            onMove={(group) => onFile(deck, group)}
+            memberOf={memberOf}
+            onToggle={(group, member) => onToggleGroup(deck, group, member)}
+            onNewGroup={() => onNewGroup(deck)}
           />
         ) : null}
         <Button
