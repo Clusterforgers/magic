@@ -6,7 +6,7 @@ import { useGame, usePlay } from '@/features/game/gameContext'
 import { SOUNDS_BY_DEFAULT, useSoundCues } from '@/features/sound/useSoundCues'
 import type { PlayerId } from '@/protocol/generated'
 import type { CardSize } from './cardSize'
-import { BoardFloorContext, PHONE_FLOOR_PX } from './boardFloor'
+import { BoardContexts } from './BoardContexts'
 import { CardPreview } from './CardPreview'
 import { CombatOverlay } from './combat/CombatOverlay'
 import { CombatProviders } from './combat/CombatProviders'
@@ -160,7 +160,7 @@ const Table = memo(function Table() {
                         <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
                       ) : (
                         <SideProvider kind={regions.side} foldable={regions.foldable}>
-                          <BoardFloorContext value={regions.phone ? PHONE_FLOOR_PX : null}>
+                          <BoardContexts phone={regions.phone}>
                             <ChoiceOverlayContext value={choice.value}>
                               <TableGrid
                                 regions={regions}
@@ -242,7 +242,7 @@ const Table = memo(function Table() {
                                 choice={choice}
                               />
                             </ChoiceOverlayContext>
-                          </BoardFloorContext>
+                          </BoardContexts>
                           <SideSheet />
                           <TableTour />
                         </SideProvider>

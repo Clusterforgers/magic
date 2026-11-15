@@ -1,13 +1,16 @@
 import { setImageChoice, useImageChoice } from '@/features/cards/imageSetting'
 import type { ImageChoice } from '@/features/cards/imageSetting'
 import { MenuIcon } from 'lucide-react'
+import { useContext } from 'react'
 import type { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from '@/components/ui/popover'
+import { Switch } from '@/components/ui/switch'
 import { parseChoice, useTheme } from '@/hooks/useTheme'
 import type { ThemeChoice } from '@/hooks/useTheme'
 import { usePlay } from '@/features/game/gameContext'
 import { HandOrderMenu } from './HandOrderMenu'
+import { LandsShownContext, setLandsShown } from './landPrefs'
 import type { TableMode } from './layout'
 import { canConcede } from './selectors'
 
@@ -57,7 +60,7 @@ const MODE_WORDS: Record<TableMode, string> = { boss: 'Boss', grid: 'Grid', focu
 
 /**
  * The table menu at the right of the top bar: the layout (grid or focus, and following the turn), the theme, the card
- * images, the order of the hand (on a phone its only place) and
+ * images, the "Show lands" switch (`landPrefs.ts`), the order of the hand (on a phone its only place) and
  * Concede. A panel, not a list of commands, since it holds controls that keep their state.
  */
 export function TableMenu({
@@ -75,6 +78,7 @@ export function TableMenu({
   const { choice, setChoice } = useTheme()
   const concede = usePlay(canConcede)
   const images = useImageChoice()
+  const landsShown = useContext(LandsShownContext)
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger
@@ -135,6 +139,23 @@ export function TableMenu({
               </Button>
             ))}
           </div>
+        </Section>
+        <Section title="Lands">
+          <label className="flex items-start gap-2 text-sm">
+            <Switch
+              data-slot="show-lands"
+              checked={landsShown}
+              onCheckedChange={setLandsShown}
+              aria-label="Show lands"
+              className="mt-0.5"
+            />
+            <span className="grid gap-0.5">
+              <span aria-hidden="true">Show lands</span>
+              <span className="text-xs text-muted-foreground">
+                Off folds each board's lands into a chip on its pod, which opens them.
+              </span>
+            </span>
+          </label>
         </Section>
         <Section title="Hand order">
           <HandOrderMenu />

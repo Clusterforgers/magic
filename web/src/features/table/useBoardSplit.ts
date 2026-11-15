@@ -4,6 +4,7 @@ import { usePlay } from '@/features/game/gameContext'
 import { foldsLands, seatCounts, splitRegions } from './boardSplit'
 import { handIdle } from './handIdle'
 import type { LaneCounts } from './laneFit'
+import { useLandsShown } from './landPrefs'
 import type { Regions, SeatPlan } from './layout'
 import { handSeat } from './selectors'
 import { FOLD_LANDS_BY_DEFAULT, STACKS_BY_DEFAULT, TableOptionsContext } from './tableOptions'
@@ -31,7 +32,9 @@ export function useBoardSplit(
 ): Regions {
   const options = useContext(TableOptionsContext)
   const grouped = options.stacks ?? STACKS_BY_DEFAULT
-  const folded = foldsLands(plan, options.foldLands ?? FOLD_LANDS_BY_DEFAULT, regions.phone)
+  const shown = useLandsShown(regions.phone)
+  // Lands laid out take their lane in every board; only boards that fold them leave it out.
+  const folded = !shown && foldsLands(plan, options.foldLands ?? FOLD_LANDS_BY_DEFAULT, regions.phone)
   const boss = plan.shape === 'boss'
   const key = usePlay((state) => {
     const seats = boss ? [plan.viewer, ...plan.boards, ...plan.allies] : [plan.viewer, ...plan.boards]
