@@ -65,9 +65,9 @@ fn r6401_desolation_takes_a_land_from_who_tapped_one(
     let tapped = spent.is_some();
     assert_eq!(r6401_lands(&driver, 0), usize::from(!tapped));
     assert_eq!(r6401_life(&driver, 0), life[0] - damage);
-    for seat in 1..seats {
+    for (seat, before) in life.iter().enumerate().skip(1) {
         assert_eq!(r6401_lands(&driver, seat), 1, "seat {seat} tapped nothing");
-        assert_eq!(r6401_life(&driver, seat), life[seat]);
+        assert_eq!(r6401_life(&driver, seat), *before);
     }
     Ok(())
 }

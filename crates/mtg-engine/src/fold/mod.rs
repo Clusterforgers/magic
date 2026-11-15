@@ -523,6 +523,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         }
         // `ManaBurned` is information in the log: the life it cost is its own `LifeLost`.
         Event::NothingToDo { .. }
+        | Event::ManaAbilityActivated { tapped: false, .. }
         | Event::AnnouncementRewound { .. }
         | Event::TookBack { .. }
         | Event::ManaBurned { .. }
@@ -558,7 +559,6 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             source,
             tapped: true,
         } => crate::r6401_history::r6401_note_tapped_for_mana(state, *player, source.id),
-        Event::ManaAbilityActivated { .. } => {}
         Event::DieRolled { player, result, .. } => {
             crate::r6401_history::r6401_note_roll(state, *result);
             c11e_draw_random(state, event);

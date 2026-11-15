@@ -111,10 +111,10 @@ fn r6401_settle(driver: &mut Driver, left: bool) -> Result<(), ScriptError> {
 fn r6401_pets(
     mut scenario: Scenario,
     seats: usize,
-    mine: Vec<mtg_engine::PresetPermanent>,
+    mine: &[mtg_engine::PresetPermanent],
 ) -> Scenario {
     for seat in 0..seats {
-        let mut permanents = if seat == 0 { mine.clone() } else { Vec::new() };
+        let mut permanents = if seat == 0 { mine.to_vec() } else { Vec::new() };
         permanents.push(ready(free_creature(&format!("Pet {seat}"), 1, 1)));
         permanents.push(ready(forest()));
         scenario = scenario.battlefield(seat, permanents);
@@ -135,7 +135,7 @@ fn r6401_aminatou_passes_every_nonland_permanent_in_the_chosen_direction(
     let scenario = r6401_pets(
         Scenario::new(seats).at(1, 0, Step::Main1),
         seats,
-        vec![aminatou],
+        &[aminatou],
     );
     let mut driver = Driver::from_scenario(scenario)?;
     driver.begin_ability("Aminatou, the Fateshifter", 2)?;
@@ -169,7 +169,7 @@ fn r6401_order_of_succession_passes_a_chosen_creature(
             .at(1, 0, Step::Main1)
             .hand(0, [card("Order of Succession").unwrap()]),
         seats,
-        (0..4).map(|_| ready(island())).collect(),
+        &(0..4).map(|_| ready(island())).collect::<Vec<_>>(),
     );
     let mut driver = Driver::from_scenario(scenario)?;
     driver.cast("Order of Succession")?;
@@ -189,7 +189,7 @@ fn r6401_inniaz_passes_a_permanent_from_the_right(
     let scenario = r6401_pets(
         Scenario::new(seats).at(1, 0, Step::Main1),
         seats,
-        vec![
+        &[
             ready(card("Inniaz, the Gale Force").unwrap()),
             flier("Kite"),
             flier("Gull"),
