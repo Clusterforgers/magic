@@ -926,6 +926,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             format!("{} explores", subject(what)),
             what.0 == [Pred::This],
         ),
+        TriggerPattern::R6401Mentors { what } => (
+            format!("{} mentors a creature", subject(what)),
+            what.0 == [Pred::This],
+        ),
         TriggerPattern::BecomesMonstrous { what } => (
             format!("{} becomes monstrous", subject(what)),
             what.0 == [Pred::This],

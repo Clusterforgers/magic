@@ -3016,7 +3016,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::ResolvedToGraveyard { what }
             | TriggerPattern::FirstDrawRevealed { what }
             | TriggerPattern::Attacks { what }
-            | TriggerPattern::AttacksAlone { what } => {
+            | TriggerPattern::AttacksAlone { what }
+            | TriggerPattern::R6401Mentors { what } => {
                 self.at("what", |w| w.selector(what));
             }
             TriggerPattern::AttacksPlayer { what, at }
@@ -5126,6 +5127,9 @@ impl Walker<'_> {
                 if *duration == Duration::UntilItsControllersNextCombatEnds {
                     w.problem(R5502_COMBAT_ONLY);
                 }
+            }
+            Effect::R6401PassControl { what, .. } => {
+                w.at("what", |w| w.selector(what));
             }
             Effect::ExchangeControl { what, duration } => {
                 if matches!(

@@ -374,6 +374,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::EvidenceCollected { .. }
         | Event::Investigated { .. }
         | Event::GiftGiven { .. }
+        | Event::R6401Mentored { .. }
         | Event::UpkeepSettled { .. }
         | Event::CommanderColorChosen { .. }
         | Event::Foraged { .. }

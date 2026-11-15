@@ -586,6 +586,10 @@ pub enum Event {
         player: PlayerId,
         /// The object it comes from.
         source: ObjectRef,
+        /// The source was tapped to pay its cost ("tapped a land for mana").
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(optional, as = "Option<bool>"))]
+        tapped: bool,
     },
     /// A triggered ability triggered and waits to be put on the stack.
     AbilityTriggered(Box<Triggered>),
@@ -996,6 +1000,16 @@ pub enum Event {
         echo: bool,
         /// It was paid.
         paid: bool,
+    },
+    /// A creature mentored a creature (CR 702.134a): its mentor ability put a +1/+1 counter on the creature, the event
+    /// before it.
+    R6401Mentored {
+        /// The controller of the mentor ability.
+        player: PlayerId,
+        /// The creature that mentored.
+        mentor: ObjectId,
+        /// The creature it mentored.
+        mentored: ObjectId,
     },
     /// A player gave a gift (CR 702.174): the gift itself is the events before it.
     GiftGiven {
@@ -1543,6 +1557,7 @@ impl Event {
             | Event::Discovered { .. }
             | Event::DreadManifested { .. }
             | Event::GiftGiven { .. }
+            | Event::R6401Mentored { .. }
             | Event::UpkeepSettled { .. }
             | Event::Foraged { .. }
             | Event::DieRolled { .. }

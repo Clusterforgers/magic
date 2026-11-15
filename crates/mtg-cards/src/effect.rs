@@ -12,6 +12,18 @@ use crate::spend::{ManaLasts, SpendOn, WhenSpent};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind, DayNight, StatKind};
 
+/// Which permanents pass in `Effect::R6401PassControl`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum R6401Pick {
+    /// Every permanent that matches.
+    All,
+    /// One the controller chooses for each player, from the controller round in the direction.
+    ByYou,
+    /// One each player chooses for themselves, starting with the controller and going round in the direction.
+    ByEach,
+}
+
 /// The most passes any `RepeatWhile` makes, whatever it writes: a loop that never ends cannot hang a game.
 pub const MOST_PASSES: u32 = 1000;
 
@@ -2050,6 +2062,20 @@ pub enum Effect {
         what: Vec<Ref>,
         /// How long the exchange lasts.
         duration: Duration,
+    },
+    /// Each player gains control of permanents the next player still in the game on a side of them controls (CR 101.4,
+    /// 108.4): "each player gains control of all nonland permanents other than ~ controlled by the next player in the
+    /// chosen direction", "a nonland permanent of your choice controlled by the player to their right", "each player
+    /// chooses a creature controlled by the next player in that direction". Every change is made at once and lasts
+    /// for good; a player with nobody else left takes nothing.
+    R6401PassControl {
+        /// The side; none for the word ("left" or "right") the controller chose in the `ChooseWords` before.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        side: Option<crate::refs::Side>,
+        /// What passes, judged on each permanent of the giving player.
+        what: Selector,
+        /// Which of them pass.
+        pick: R6401Pick,
     },
     /// Changes a rule of the game for a while.
     Rule {

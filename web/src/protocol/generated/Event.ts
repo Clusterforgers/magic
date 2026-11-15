@@ -591,7 +591,11 @@ player: PlayerId,
 /**
  * The object it comes from.
  */
-source: ObjectRef, } } | { "AbilityTriggered": Triggered } | { "TriggersOrdered": { 
+source: ObjectRef, 
+/**
+ * The source was tapped to pay its cost ("tapped a land for mana").
+ */
+tapped?: boolean, } } | { "AbilityTriggered": Triggered } | { "TriggersOrdered": { 
 /**
  * Who ordered them.
  */
@@ -968,7 +972,19 @@ echo: boolean,
 /**
  * It was paid.
  */
-paid: boolean, } } | { "GiftGiven": { 
+paid: boolean, } } | { "R6401Mentored": { 
+/**
+ * The controller of the mentor ability.
+ */
+player: PlayerId, 
+/**
+ * The creature that mentored.
+ */
+mentor: ObjectId, 
+/**
+ * The creature it mentored.
+ */
+mentored: ObjectId, } } | { "GiftGiven": { 
 /**
  * Who gave it.
  */

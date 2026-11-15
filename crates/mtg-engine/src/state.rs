@@ -168,6 +168,9 @@ pub(crate) enum Tally {
     R6100CreatureCardLeftGraveyard,
     /// A creature put into exile from the battlefield (counted for the player who controlled it as it left).
     R6100CreatureExiledUnder,
+    /// A land its controller tapped for mana: a mana ability of the land with the tap in its cost (counted for the player
+    /// who activated it).
+    R6401LandTappedForMana,
     /// A permanent that left the battlefield for any zone (counted for the player who controlled it as it left).
     PermanentsLeftUnder,
     /// A nonland permanent that left the battlefield for any zone (counted for the player who controlled it as it left).
@@ -355,6 +358,8 @@ pub struct GameState {
     pub(crate) r379_cast_game: BTreeMap<PlayerId, u32>,
     /// The timestamp clock as the latest creature spell of the game was cast (`r5512_until_cast.rs`).
     pub(crate) r5512_creature_cast_at: Option<u64>,
+    /// The timestamp clock as each number was last rolled on a die this game (`r6401_history.rs`).
+    pub(crate) r6401_rolled_at: BTreeMap<u32, u64>,
     /// The "since your last turn" history (`r379_since.rs`); derived from the turn events and left out of the hash, so a
     /// game hashes as it did before it was kept.
     pub(crate) r379_since: crate::r379_since::Since,
@@ -1024,6 +1029,10 @@ impl Hash for GameState {
         // A game hashes as it did before until a creature spell is cast.
         if let Some(at) = self.r5512_creature_cast_at {
             at.hash(state);
+        }
+        // Likewise until a die is rolled.
+        if !self.r6401_rolled_at.is_empty() {
+            self.r6401_rolled_at.hash(state);
         }
         // Likewise a game in which no seat looked at its library by hand.
         if !self.looked_by_hand.is_empty() {

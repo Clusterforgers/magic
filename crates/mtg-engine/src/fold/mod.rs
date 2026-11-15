@@ -172,7 +172,6 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         // A note for the table: the game state does not change.
         // A prevention changes nothing of its own; triggers read it.
         Event::AbilityLeftToTable(_)
-        | Event::ManaAbilityActivated { .. }
         | Event::ByHandDue(_)
         | Event::DamagePrevented { .. }
         // The `Revealed` before it showed the card; triggers read it from the log.
@@ -524,6 +523,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         }
         // `ManaBurned` is information in the log: the life it cost is its own `LifeLost`.
         Event::NothingToDo { .. }
+        | Event::ManaAbilityActivated { tapped: false, .. }
         | Event::AnnouncementRewound { .. }
         | Event::TookBack { .. }
         | Event::ManaBurned { .. }
@@ -537,6 +537,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Discovered { .. }
         | Event::DreadManifested { .. }
         | Event::GiftGiven { .. }
+        | Event::R6401Mentored { .. }
         | Event::UpkeepSettled { .. }
         | Event::Foraged { .. }
         | Event::Clashed { .. }
@@ -553,7 +554,13 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             state.tally(*player, Tally::Cycled);
             crate::r5522_history::r5522_note_cycled(state, *player, *object);
         }
-        Event::DieRolled { player, .. } => {
+        Event::ManaAbilityActivated {
+            player,
+            source,
+            tapped: true,
+        } => crate::r6401_history::r6401_note_tapped_for_mana(state, *player, source.id),
+        Event::DieRolled { player, result, .. } => {
+            crate::r6401_history::r6401_note_roll(state, *result);
             c11e_draw_random(state, event);
             state.tally(*player, Tally::R5508DiceRolled);
         }

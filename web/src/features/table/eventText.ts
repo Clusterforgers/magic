@@ -275,6 +275,8 @@ function durationWords(
   if (typeof duration === 'object') {
     if ('UntilPaid' in duration) return ` until its controller pays ${duration.UntilPaid} to end it`
     if ('WhileMonarch' in duration) return ' while that player is the monarch'
+    if ('UntilEndOfTurnOrRolled' in duration)
+      return ` until end of turn, or until any player rolls a ${duration.UntilEndOfTurnOrRolled}`
     const counter = `${counterName(duration.WhileHasCounter)} counter`
     return several ? ` while each has a ${counter}` : ` while it has a ${counter}`
   }
@@ -1071,6 +1073,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { player, card } = event.DreadManifested
     const buried = card === null ? '' : ` and puts ${n.card(card)} into their graveyard`
     return line(`${n.seat(player)} manifests dread${buried}`)
+  }
+  if ('R6401Mentored' in event) {
+    const { mentor, mentored } = event.R6401Mentored
+    return line(`${n.card(mentor)} mentors ${n.card(mentored)}`)
   }
   if ('GiftGiven' in event) {
     return line(`${n.seat(event.GiftGiven.player)} gives ${n.seat(event.GiftGiven.to)} a gift`)

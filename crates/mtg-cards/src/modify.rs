@@ -387,6 +387,9 @@ pub enum Duration {
     /// Until any player casts a creature spell after the effect began ("until a player casts a creature spell"). Only a
     /// continuous effect lasts this way.
     UntilCreatureSpellCast,
+    /// Until end of turn, or until any player rolls this number on a die after the effect began, whichever comes first
+    /// ("until end of turn, or until any player rolls a 1, whichever comes first"). Only a continuous effect lasts this way.
+    UntilEndOfTurnOrRolled(u32),
     /// Without end (until the object or the game is gone).
     Forever,
     /// Until the controller of the effect pays this mana as a special action, any time they have priority ("you may pay

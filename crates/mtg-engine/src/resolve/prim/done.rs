@@ -132,6 +132,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::CreateToken { .. }
         | Effect::Continuous { .. }
         | Effect::ExchangeControl { .. }
+        | Effect::R6401PassControl { .. }
         | Effect::Rule { .. }
         | Effect::Regenerate { .. }
         | Effect::RemoveFromCombat { .. }

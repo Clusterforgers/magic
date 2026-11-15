@@ -1,0 +1,21 @@
+{
+  "oracle_id": "1b95970c-e7eb-41c4-a8d2-9889b64b3c63",
+  "name": "Order of Succession",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Order of Succession",
+      "oracle_fingerprint": "c9e17c25168ee6c3d928bad4050fe6c3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseWords": { "who": "You", "words": ["left", "right"] } },
+              { "R6401PassControl": { "what": [{ "Type": "Creature" }], "pick": "ByEach" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
