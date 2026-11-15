@@ -1,10 +1,11 @@
-// Goal: a run in the list shows its party and how far down the ladder it got, one skull per boss with the beaten ones marked; runs under way lead the list, finished runs (victory, defeat) sit in a collapsed "Past runs" section, and abandoned runs are not shown.
+// Goal: a run in the list shows its party and how far down the ladder it got, one skull per boss with the beaten ones marked; runs under way lead the list, finished runs (victory, defeat) sit in a collapsed "Past runs" section, abandoned runs are not shown, and the new-run form offers the timers with Relaxed as its default and sends the one that is chosen.
 import { screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import type { DelveSummary } from '@/protocol/generated'
 import { renderInRouter } from '@/test-utils/router'
 import { fakeDelves, delveView } from './fakeDelves'
-import { DelveList, DelveRow, splitRuns } from './DelvesPage'
+import { DelveList, DelveRow, NewDelveForm, splitRuns } from './DelvesPage'
 
 const summary = (id: string, status: string): DelveSummary => ({
   id,
@@ -60,5 +61,45 @@ describe('the list of runs', () => {
     expect(past?.hasAttribute('open')).toBe(false)
     expect(within(past as HTMLElement).getByText('Past runs (2)')).toBeInTheDocument()
     expect(within(past as HTMLElement).getByText('Run b')).toBeInTheDocument()
+  })
+})
+
+describe('the new run form', () => {
+  const open = async () => {
+    const bodies: unknown[] = []
+    const client = {
+      ...fakeDelves(delveView()),
+      create: async (body: unknown) => {
+        bodies.push(body)
+        return delveView()
+      },
+    }
+    await renderInRouter(<NewDelveForm client={client as never} />)
+    return { bodies, user: userEvent.setup() }
+  }
+
+  it('offers the timers with Relaxed chosen and says what each one means', async () => {
+    await open()
+    const timers = screen.getByLabelText('Timers')
+    expect(timers).toHaveValue('relaxed')
+    const words = within(timers)
+      .getAllByRole('option')
+      .map((option) => [option.getAttribute('value'), option.textContent])
+    expect(words).toEqual([
+      ['relaxed', 'Relaxed: 30 seconds to respond, 3 minutes to think'],
+      ['quick', 'Quick: 10 seconds to respond, 1 minute to think'],
+      ['off', 'Off: no time limit in any fight'],
+    ])
+  })
+
+  it.each([
+    ['the default', undefined, 'relaxed'],
+    ['quick', 'quick', 'quick'],
+    ['off', 'off', 'off'],
+  ])('sends the timers it was left with or given: %s', async (_name, choice, sent) => {
+    const { bodies, user } = await open()
+    if (choice !== undefined) await user.selectOptions(screen.getByLabelText('Timers'), choice)
+    await user.click(screen.getByRole('button', { name: 'Create delve' }))
+    expect(bodies).toEqual([{ heat: 0, timers: sent }])
   })
 })

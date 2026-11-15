@@ -29,6 +29,7 @@ const CLOCKED: Pace = Pace {
     think: Some(Duration::from_mins(1)),
     active: None,
     extension: None,
+    relaxed: None,
     grace: Duration::ZERO,
     dwell: Dwell::OFF,
 };

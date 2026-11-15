@@ -202,3 +202,42 @@ async fn the_fight_plays_the_decks_the_party_chose_and_waits_for_a_lost_one(pool
         pg_commander::on(pg_commander::BEAST)
     );
 }
+
+#[sqlx::test(migrations = false)]
+async fn the_runs_timers_reach_every_fights_game_and_a_run_without_them_is_relaxed(pool: PgPool) {
+    let server = pg_commander::start(&pool).await;
+    let host = register(server.addr, "hostess", PASSWORD).await;
+    for (seed, timers, expected) in [
+        ("TIMERS1", None, "relaxed"),
+        ("TIMERS2", Some("relaxed"), "relaxed"),
+        ("TIMERS3", Some("quick"), "quick"),
+        ("TIMERS4", Some("off"), "off"),
+    ] {
+        let mut body = json!({"heat": 0, "seed": seed});
+        if let Some(timers) = timers {
+            body["timers"] = json!(timers);
+        }
+        let created = call(&server, "POST", "/api/delves", &host, Some(body)).await;
+        assert_eq!(created.status, 201, "{}", created.text());
+        let created = created.json();
+        assert_eq!(created["run"]["timers"], expected, "the run keeps them");
+        let id = created["id"].as_str().unwrap().to_owned();
+        let chosen = act(
+            &server,
+            &id,
+            &host,
+            json!({"kind": "choose_deck", "hero": 0, "deck": pg_commander::on(pg_commander::BEAR)}),
+        )
+        .await;
+        assert_eq!(chosen.status, 200, "{}", chosen.text());
+        let start = act(&server, &id, &host, json!({"kind": "start"})).await;
+        assert_eq!(start.status, 200, "{}", start.text());
+        let game = game_of(&start.json()).expect("the first fight is made at the start");
+        let recipe = recipe_of(&pool, &game).await;
+        assert_eq!(
+            recipe["house_rules"]["timers"], expected,
+            "the fight's game plays under the run's timers"
+        );
+        assert_eq!(read(&server, &id, &host).await["run"]["timers"], expected);
+    }
+}

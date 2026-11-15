@@ -9,7 +9,7 @@ use crate::actor::GameConfig;
 use crate::credentials::Username;
 use crate::dwell::Dwell;
 use crate::images::ImageConfig;
-use crate::pace::MAX_CLOCK_SECS;
+use crate::pace::{Clocks, MAX_CLOCK_SECS, Pace};
 use crate::passwords::HashCost;
 
 /// Listen address when `MTG_BIND` is unset.
@@ -393,26 +393,7 @@ impl ServerConfig {
             config.game.pace.auto_pass =
                 parse_switch(&text).ok_or(ConfigError::BadAutoPass(text))?;
         }
-        if let Some(text) = get("MTG_RESPONSE_SECS") {
-            let seconds = parse_seconds(&text).ok_or(ConfigError::BadResponseSecs(text))?;
-            config.game.pace.response = clock_of(seconds);
-        }
-        if let Some(text) = get("MTG_BLOCK_SECS") {
-            let seconds = parse_seconds(&text).ok_or(ConfigError::BadBlockSecs(text))?;
-            config.game.pace.blocks = clock_of(seconds);
-        }
-        if let Some(text) = get("MTG_THINK_SECS") {
-            let seconds = parse_seconds(&text).ok_or(ConfigError::BadThinkSecs(text))?;
-            config.game.pace.think = clock_of(seconds);
-        }
-        if let Some(text) = get("MTG_ACTIVE_SECS") {
-            let seconds = parse_seconds(&text).ok_or(ConfigError::BadActiveSecs(text))?;
-            config.game.pace.active = clock_of(seconds);
-        }
-        if let Some(text) = get("MTG_EXTENSION_SECS") {
-            let seconds = parse_seconds(&text).ok_or(ConfigError::BadExtensionSecs(text))?;
-            config.game.pace.extension = clock_of(seconds);
-        }
+        apply_clock_env(&mut config.game.pace, &get)?;
         if let Some(text) = get("MTG_CLOCK_GRACE_SECS") {
             let seconds = parse_seconds(&text).ok_or(ConfigError::BadClockGraceSecs(text))?;
             config.game.pace.grace = Duration::from_secs(seconds);
@@ -482,6 +463,50 @@ fn parse_seconds(raw: &str) -> Option<u64> {
         .parse::<u64>()
         .ok()
         .filter(|s| *s <= MAX_CLOCK_SECS)
+}
+
+/// Applies the `MTG_*_SECS` clock settings to `pace`: each sets its length for `Relaxed` and `Quick` tables alike.
+fn apply_clock_env(
+    pace: &mut Pace,
+    get: &impl Fn(&str) -> Option<String>,
+) -> Result<(), ConfigError> {
+    type Setter = fn(&mut Clocks, Option<Duration>);
+    type Refusal = fn(String) -> ConfigError;
+    let settings: [(&str, Refusal, Setter); 5] = [
+        (
+            "MTG_RESPONSE_SECS",
+            ConfigError::BadResponseSecs,
+            |clocks, clock| clocks.response = clock,
+        ),
+        (
+            "MTG_BLOCK_SECS",
+            ConfigError::BadBlockSecs,
+            |clocks, clock| clocks.blocks = clock,
+        ),
+        (
+            "MTG_THINK_SECS",
+            ConfigError::BadThinkSecs,
+            |clocks, clock| clocks.think = clock,
+        ),
+        (
+            "MTG_ACTIVE_SECS",
+            ConfigError::BadActiveSecs,
+            |clocks, clock| clocks.active = clock,
+        ),
+        (
+            "MTG_EXTENSION_SECS",
+            ConfigError::BadExtensionSecs,
+            |clocks, clock| clocks.extension = clock,
+        ),
+    ];
+    for (key, error, set) in settings {
+        if let Some(text) = get(key) {
+            let seconds = parse_seconds(&text).ok_or_else(|| error(text))?;
+            let clock = clock_of(seconds);
+            pace.set_clocks(|clocks| set(clocks, clock));
+        }
+    }
+    Ok(())
 }
 
 /// The clock for a number of seconds; 0 is no clock at all.
@@ -894,6 +919,46 @@ mod tests {
         assert_eq!(pace.blocks, Some(Duration::from_secs(45)));
         assert_eq!(pace.think, Some(Duration::from_mins(1)));
         assert_eq!(pace.dwell, Dwell::DEFAULT);
+    }
+
+    #[test]
+    fn the_defaults_give_relaxed_timers_roomy_lengths_beside_the_quick_ones() {
+        use mtg_core::house::Timers;
+        let pace = load(&[]).unwrap().game.pace;
+        assert_eq!(pace.clocks(Timers::Quick), Clocks::QUICK);
+        assert_eq!(pace.clocks(Timers::Relaxed), Clocks::RELAXED);
+        assert_eq!(pace.clocks(Timers::Off), Clocks::NONE);
+    }
+
+    #[rstest]
+    #[case::response("MTG_RESPONSE_SECS", "5", |c: Clocks| c.response, Some(5))]
+    #[case::response_none("MTG_RESPONSE_SECS", "0", |c: Clocks| c.response, None)]
+    #[case::blocks("MTG_BLOCK_SECS", "7", |c: Clocks| c.blocks, Some(7))]
+    #[case::think("MTG_THINK_SECS", "9", |c: Clocks| c.think, Some(9))]
+    #[case::active("MTG_ACTIVE_SECS", "11", |c: Clocks| c.active, Some(11))]
+    #[case::extension("MTG_EXTENSION_SECS", "13", |c: Clocks| c.extension, Some(13))]
+    fn an_override_sets_the_length_for_relaxed_and_quick_alike_and_off_stays_without(
+        #[case] key: &str,
+        #[case] text: &str,
+        #[case] length: fn(Clocks) -> Option<Duration>,
+        #[case] seconds: Option<u64>,
+    ) {
+        use mtg_core::house::Timers;
+        let pace = load(&[(key, text)]).unwrap().game.pace;
+        let expected = seconds.map(Duration::from_secs);
+        assert_eq!(length(pace.clocks(Timers::Relaxed)), expected);
+        assert_eq!(length(pace.clocks(Timers::Quick)), expected);
+        assert_eq!(length(pace.clocks(Timers::Off)), None);
+    }
+
+    #[test]
+    fn an_override_leaves_the_other_relaxed_lengths_alone() {
+        use mtg_core::house::Timers;
+        let pace = load(&[("MTG_RESPONSE_SECS", "5")]).unwrap().game.pace;
+        let relaxed = pace.clocks(Timers::Relaxed);
+        assert_eq!(relaxed.think, Clocks::RELAXED.think);
+        assert_eq!(relaxed.extension, Clocks::RELAXED.extension);
+        assert_eq!(relaxed.blocks, Clocks::RELAXED.blocks);
     }
 
     #[rstest]

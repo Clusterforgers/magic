@@ -28,6 +28,7 @@ fn pace() -> Pace {
         think: Some(Duration::from_mins(1)),
         active: None,
         extension: Some(Duration::from_millis(EXTENSION)),
+        relaxed: None,
         grace: Duration::ZERO,
         dwell: Dwell::OFF,
     }

@@ -109,6 +109,21 @@ pub enum MulliganStyle {
     Vancouver,
 }
 
+/// How long the server lets a seat take before it answers for it, in place of the default. The server's clocks read it
+/// alone, in every game mode.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+#[serde(rename_all = "snake_case")]
+pub enum Timers {
+    /// Roomy clocks: 30 seconds to respond, 3 minutes to think and an extension of 60 seconds.
+    #[default]
+    Relaxed,
+    /// Short clocks: 10 seconds to respond, a minute to think and an extension of 20 seconds.
+    Quick,
+    /// No clock: the table waits for a seat as long as it takes.
+    Off,
+}
+
 /// What one seat starts with in place of the table's values; a value that is left out keeps the table's.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -206,6 +221,10 @@ pub struct HouseRules {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub blocker_timer: Option<bool>,
+    /// How long a seat may take to answer before the server answers for it; relaxed when left out.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub timers: Option<Timers>,
     /// What drawing from an empty library does.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
@@ -482,6 +501,9 @@ mod tests {
     #[case::take_backs_off("take_backs", json!(false), None)]
     #[case::blocker_timer_on("blocker_timer", json!(true), None)]
     #[case::blocker_timer_off("blocker_timer", json!(false), None)]
+    #[case::timers_relaxed("timers", json!("relaxed"), None)]
+    #[case::timers_quick("timers", json!("quick"), None)]
+    #[case::timers_off("timers", json!("off"), None)]
     #[case::library_loses("empty_library", json!("lose"), None)]
     #[case::library_reshuffles("empty_library", json!("reshuffle_graveyard"), None)]
     #[case::limit_none_at_all("turn_limit", json!(0), Some("turn_limit"))]
@@ -606,6 +628,9 @@ mod tests {
     #[case::london("mulligan_style", json!("london"))]
     #[case::paris("mulligan_style", json!("paris"))]
     #[case::vancouver("mulligan_style", json!("vancouver"))]
+    #[case::timers_relaxed("timers", json!("relaxed"))]
+    #[case::timers_quick("timers", json!("quick"))]
+    #[case::timers_off("timers", json!("off"))]
     fn a_rule_of_the_table_is_a_switch_or_a_name_that_always_validates(
         #[case] field: &str,
         #[case] value: serde_json::Value,
@@ -624,6 +649,9 @@ mod tests {
     #[case::open_text("open_hands", json!("yes"))]
     #[case::top_number("revealed_library_top", json!(1))]
     #[case::smoothing_text("opening_hand_smoothing", json!("on"))]
+    #[case::timers_word("timers", json!("fast"))]
+    #[case::timers_case("timers", json!("Quick"))]
+    #[case::timers_switch("timers", json!(false))]
     fn a_name_or_switch_of_the_wrong_kind_is_not_a_rule(
         #[case] field: &str,
         #[case] value: serde_json::Value,
@@ -647,6 +675,28 @@ mod tests {
         });
         assert_eq!(serde_json::to_value(&set).unwrap(), wire);
         assert_eq!(serde_json::from_value::<HouseRules>(wire).unwrap(), set);
+    }
+
+    #[rstest]
+    #[case::relaxed(Timers::Relaxed, "relaxed")]
+    #[case::quick(Timers::Quick, "quick")]
+    #[case::off(Timers::Off, "off")]
+    fn the_wire_form_of_the_timers(#[case] timers: Timers, #[case] word: &str) {
+        let set = HouseRules {
+            timers: Some(timers),
+            ..HouseRules::default()
+        };
+        let wire = json!({ "timers": word });
+        assert_eq!(serde_json::to_value(&set).unwrap(), wire);
+        assert_eq!(serde_json::from_value::<HouseRules>(wire).unwrap(), set);
+    }
+
+    #[test]
+    fn a_table_without_the_timers_rule_reads_as_relaxed() {
+        let none: HouseRules = serde_json::from_value(json!({})).unwrap();
+        assert_eq!(none.timers, None);
+        assert_eq!(none.timers.unwrap_or_default(), Timers::Relaxed);
+        assert!(none.is_empty());
     }
 
     #[test]
@@ -901,6 +951,11 @@ mod tests {
             proptest::option::of(any::<bool>()),
             proptest::option::of(any::<bool>()),
             proptest::option::of(prop_oneof![
+                Just(Timers::Relaxed),
+                Just(Timers::Quick),
+                Just(Timers::Off)
+            ]),
+            proptest::option::of(prop_oneof![
                 Just(MulliganStyle::London),
                 Just(MulliganStyle::Paris),
                 Just(MulliganStyle::Vancouver)
@@ -932,7 +987,7 @@ mod tests {
             |(
                 (life, hand, free, cap, first, limit),
                 (draws, lands, burn, library, turns, wins, poison, handicaps),
-                (range, open, top, smoothing, take_backs, timer, style),
+                (range, open, top, smoothing, take_backs, timer, timers, style),
                 (tax, damage, singleton, identity, size, copies, per_seat),
                 teams,
             )| HouseRules {
@@ -956,6 +1011,7 @@ mod tests {
                 mana_burn: burn,
                 take_backs,
                 blocker_timer: timer,
+                timers,
                 empty_library: library,
                 turn_limit: turns,
                 winning_life: wins,

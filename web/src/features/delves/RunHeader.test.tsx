@@ -39,6 +39,19 @@ it('shows the run and the party at a glance', async () => {
   expect(relics[1]).toHaveAttribute('data-risky', 'true')
 })
 
+it.each([
+  ['relaxed', 'Timers: Relaxed'],
+  ['quick', 'Timers: Quick'],
+  ['off', 'Timers: Off'],
+] as const)('names the run’s %s timers', async (timers, words) => {
+  await renderInRouter(
+    <TooltipProvider>
+      <RunHeader view={delveView({}, { timers })} content={CONTENT} />
+    </TooltipProvider>,
+  )
+  expect(screen.getByText(words)).toBeInTheDocument()
+})
+
 it('leaves the party out of the lobby, where the hero cards show it', async () => {
   await renderInRouter(
     <TooltipProvider>

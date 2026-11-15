@@ -17,14 +17,15 @@ import { SignedInOnly } from '@/features/tournaments/SignedInOnly'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { delvesApi } from '@/net/delves'
 import type { DelvesApi } from '@/net/delves'
-import type { DelveSummary } from '@/protocol/generated'
+import type { DelveSummary, Timers } from '@/protocol/generated'
 import { cn } from '@/lib/utils'
 import { DelvesRules } from './DelvesRules'
 import { errorText, statusText } from './words'
 
-function NewDelveForm({ client }: { client: DelvesApi }) {
+export function NewDelveForm({ client }: { client: DelvesApi }) {
   const navigate = useNavigate()
   const [heat, setHeat] = useState('0')
+  const [timers, setTimers] = useState<Timers>('relaxed')
   const [seed, setSeed] = useState('')
   const [code, setCode] = useState('')
   const [busy, setBusy] = useState(false)
@@ -43,7 +44,7 @@ function NewDelveForm({ client }: { client: DelvesApi }) {
   const create = (event: FormEvent) => {
     event.preventDefault()
     const trimmed = seed.trim()
-    run(client.create({ heat: Number(heat), ...(trimmed === '' ? {} : { seed: trimmed }) }))
+    run(client.create({ heat: Number(heat), timers, ...(trimmed === '' ? {} : { seed: trimmed }) }))
   }
   const join = (event: FormEvent) => {
     event.preventDefault()
@@ -63,6 +64,22 @@ function NewDelveForm({ client }: { client: DelvesApi }) {
             <NativeSelectOption value="0">Heat 0: the bosses as written</NativeSelectOption>
             <NativeSelectOption value="1">Heat 1: bosses have a fifth more life</NativeSelectOption>
             <NativeSelectOption value="2">Heat 2: and play one level smarter</NativeSelectOption>
+          </NativeSelect>
+        </div>
+        <div className="grid gap-1">
+          <Label htmlFor="delve-timers">Timers</Label>
+          <NativeSelect
+            id="delve-timers"
+            value={timers}
+            onChange={(e) => setTimers(e.target.value as Timers)}
+          >
+            <NativeSelectOption value="relaxed">
+              Relaxed: 30 seconds to respond, 3 minutes to think
+            </NativeSelectOption>
+            <NativeSelectOption value="quick">
+              Quick: 10 seconds to respond, 1 minute to think
+            </NativeSelectOption>
+            <NativeSelectOption value="off">Off: no time limit in any fight</NativeSelectOption>
           </NativeSelect>
         </div>
         <div className="grid gap-1">

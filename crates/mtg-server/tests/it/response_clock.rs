@@ -1,4 +1,4 @@
-//! Goal: a seat that is not the active player has a response clock on every priority decision (even with nothing to do), a defender has a longer one for blocking, the active player is never hurried and the opening decisions run on the think clock when it is on; at the deadline the server answers for the seat (a pass, or no blocks) through the normal path so a late answer is stale, a reconnect is told the time that is left, the clock runs while the seat is away, and a failing store neither loses the move nor makes the server spin.
+//! Goal: a seat that is not the active player has a response clock on every priority decision (even with nothing to do), a defender has a longer one for blocking, the active player is never hurried and the opening decisions run on the think clock when it is on; at the deadline the server answers for the seat (a pass, or no blocks) through the normal path so a late answer is stale, a reconnect is told the time that is left, the clock runs while the seat is away, a failing store neither loses the move nor makes the server spin, and the table's Timers house rule sets the lengths (relaxed unless set, quick, or off with no deadline at all).
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -6,6 +6,7 @@ use crate::common;
 use std::time::Duration;
 
 use common::{Client, FlakyStore, game_id, roomy, seat, silent, table_setup};
+use mtg_core::house::Timers;
 use mtg_core::ids::PlayerId;
 use mtg_engine::combat::AttackTarget;
 use mtg_engine::decision::{DecisionKind, PriorityAction};
@@ -31,6 +32,7 @@ const DEFAULT: Pace = Pace {
     think: Some(THINK),
     active: None,
     extension: None,
+    relaxed: None,
     grace: std::time::Duration::ZERO,
     dwell: Dwell::OFF,
 };
@@ -503,6 +505,7 @@ async fn clocks_can_be_switched_off() {
         think: None,
         active: None,
         extension: None,
+        relaxed: None,
         grace: std::time::Duration::ZERO,
         ..DEFAULT
     };
@@ -615,4 +618,116 @@ async fn a_resumed_game_starts_the_clock_of_its_pending_decision_afresh() {
         passed + 1,
         "and it runs out like any other"
     );
+}
+
+/// The server's own settings: the Quick lengths of [`DEFAULT`] with the Relaxed ones beside them, as the server
+/// starts, and no countdown delay.
+fn server_pace() -> Pace {
+    Pace {
+        grace: Duration::ZERO,
+        dwell: Dwell::OFF,
+        ..Pace::default()
+    }
+}
+
+fn with_timers(mut setup: GameSetup, timers: Option<Timers>) -> GameSetup {
+    setup.house_rules.timers = timers;
+    setup
+}
+
+#[rstest]
+#[case::left_out_is_relaxed(None, 30_000)]
+#[case::relaxed(Some(Timers::Relaxed), 30_000)]
+#[case::quick(Some(Timers::Quick), 10_000)]
+#[tokio::test(start_paused = true)]
+async fn a_response_has_the_clock_of_the_tables_timers(
+    #[case] timers: Option<Timers>,
+    #[case] millis: u64,
+) {
+    let (handle, _) = spawn(with_timers(instant_table(), timers), server_pace());
+    let mut clients = join_and_ready(&handle).await;
+    let (_, _, left) = clocked(&mut clients[1]).await;
+    assert_eq!(left, Some(millis));
+}
+
+#[tokio::test(start_paused = true)]
+async fn relaxed_timers_pass_for_a_seat_at_thirty_seconds_and_not_before() {
+    let (handle, store) = spawn(instant_table(), server_pace());
+    let mut clients = join_and_ready(&handle).await;
+    let (_, _, left) = clocked(&mut clients[1]).await;
+    assert_eq!(left, Some(30_000));
+    let events = handle.status().await.unwrap().events;
+    let passed = passes_by(&store.inner().load(game_id(1)).await.unwrap(), PlayerId(1));
+    clients[1].drain();
+
+    tokio::time::advance(Duration::from_secs(29)).await;
+    assert_eq!(quiet(&handle).await.events, events, "a second early");
+    tokio::time::advance(Duration::from_secs(1)).await;
+    moved_past(&handle, events).await;
+    let logged = store.inner().load(game_id(1)).await.unwrap();
+    assert_eq!(passes_by(&logged, PlayerId(1)), passed + 1);
+}
+
+#[tokio::test(start_paused = true)]
+async fn with_the_timers_off_nothing_has_a_deadline_and_nothing_is_passed_by_time() {
+    let setup = with_timers(instant_table(), Some(Timers::Off));
+    let (handle, store) = spawn(setup, server_pace());
+    let mut clients = join_and_ready(&handle).await;
+    let (id, _, left) = clocked(&mut clients[1]).await;
+    assert_eq!(left, None, "no deadline_ms on the decision");
+    let events = handle.status().await.unwrap().events;
+    let passed = passes_by(&store.inner().load(game_id(1)).await.unwrap(), PlayerId(1));
+    clients[1].drain();
+
+    tokio::time::advance(Duration::from_hours(48)).await;
+    assert_eq!(quiet(&handle).await.events, events, "the table waits");
+    silent(&clients[1].drain());
+    let logged = store.inner().load(game_id(1)).await.unwrap();
+    assert_eq!(passes_by(&logged, PlayerId(1)), passed);
+
+    // The seat's answer is still the answer, however late.
+    pass(&handle, &clients[1], id).await;
+    moved_past(&handle, events).await;
+    let logged = store.inner().load(game_id(1)).await.unwrap();
+    assert_eq!(passes_by(&logged, PlayerId(1)), passed + 1);
+}
+
+/// Plays seat 0's attack in `setup` and returns the deadline of seat 1's decision to block.
+async fn block_deadline(setup: GameSetup) -> Option<u64> {
+    let (handle, _) = spawn(setup, server_pace());
+    let mut clients = join_and_ready(&handle).await;
+    let (attack_id, decision, _) = clocked(&mut clients[0]).await;
+    let DecisionKind::DeclareAttackers(options) = &decision.kind else {
+        panic!("expected the attack, got {decision:?}");
+    };
+    let raider = options.attackers[0].object;
+    let attack = Answer::DeclareAttackers(vec![(raider, AttackTarget::Player(PlayerId(1)))]);
+    clients[0]
+        .say(
+            &handle,
+            ClientMessage::Answer {
+                decision: attack_id,
+                answer: attack,
+            },
+        )
+        .await;
+    let (_, decision, left) = until_blockers(&handle, &mut clients).await;
+    assert!(matches!(decision.kind, DecisionKind::DeclareBlockers(_)));
+    left
+}
+
+#[rstest]
+#[case::relaxed_with_the_blocker_timer(None, true, Some(90_000))]
+#[case::quick_with_the_blocker_timer(Some(Timers::Quick), true, Some(45_000))]
+#[case::off_with_the_blocker_timer(Some(Timers::Off), true, None)]
+#[case::relaxed_without_the_blocker_timer(None, false, None)]
+#[case::quick_without_the_blocker_timer(Some(Timers::Quick), false, None)]
+#[tokio::test(start_paused = true)]
+async fn a_defender_blocks_on_the_timers_block_clock_where_the_blocker_timer_is_on(
+    #[case] timers: Option<Timers>,
+    #[case] timer: bool,
+    #[case] millis: Option<u64>,
+) {
+    let setup = with_timers(combat_table(timer), timers);
+    assert_eq!(block_deadline(setup).await, millis);
 }
