@@ -30,7 +30,7 @@ export interface Box {
   bottom: number
 }
 
-/** A box the preview keeps clear of; a `soft` one (the strip's sentence) it may cover to stay readable, never a firm one. */
+/** A box the preview keeps clear of; a `soft` one (the rest of the strip: its stack chips and spare room) it may cover to stay readable, never a firm one. */
 export interface ClearBox extends Anchor {
   soft?: boolean
 }
@@ -244,7 +244,7 @@ function shortAround(
 /**
  * `previewFit` kept off every box of `clear` (the open prompt's strip, its buttons, the hand dock and the controls,
  * measured in window px). A side panel keeps a readable picture (`READABLE_PICTURE`) as it moves: to the other side,
- * beside the strip or above it; else it covers the strip's sentence (a `soft` box) and stays off the rest; only where
+ * beside the strip or above it; else it covers the rest of the strip (a `soft` box) and stays off its sentence and buttons; only where
  * neither fits does it narrow, down to a 160 px picture. A top or bottom panel (a phone's) takes the free stretch of the
  * window between them. A box without size is ignored; where nothing is clear the panel stands where `previewFit` puts it.
  */

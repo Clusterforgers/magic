@@ -63,15 +63,29 @@ describe('the strip mark', () => {
     expect(sheet()).toHaveAttribute('data-keep-clear')
   })
 
-  it.each(['priority', 'attack', 'mulligan'])(
-    'marks the strip soft and the buttons of a %s prompt firm, so a readable preview may cover only the sentence',
+  it.each([
+    'priority',
+    'attack',
+    'block',
+    'mulligan',
+    'cards',
+    'targets',
+    'mode',
+    'x',
+    'option',
+    'yesno',
+    'discard',
+    'divide',
+  ])(
+    'marks the strip soft and the sentence and buttons of a %s prompt firm, so a preview never covers them',
     (prompt) => {
       const fixture = buildFixture({ seats: 2 })
       const pending = must(DEV_PROMPTS[prompt])(fixture)
       renderTable({ fixture, state: (state) => ({ ...state, pending }) })
       expect(sheet()).toHaveAttribute('data-keep-clear', 'soft')
-      for (const actions of sheet().querySelectorAll('[data-slot="prompt-actions"]'))
-        expect(actions).toHaveAttribute('data-keep-clear', '')
+      const firm = [...sheet().querySelectorAll('[data-slot="prompt-text"], [data-slot="prompt-actions"]')]
+      expect(firm.length).toBeGreaterThan(0)
+      for (const element of firm) expect(element).toHaveAttribute('data-keep-clear', '')
     },
   )
 

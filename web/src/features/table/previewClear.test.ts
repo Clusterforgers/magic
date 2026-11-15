@@ -172,7 +172,8 @@ describe('fitClear keeps a desktop preview readable', () => {
       s.left + s.width - 12,
       s.top + s.height - 8,
     )
-    return [{ ...s, soft: true }, actions, ...docks]
+    const sentence = rect(s.left + 12, s.top + 12, s.left + s.width * 0.5, s.top + 44)
+    return [{ ...s, soft: true }, sentence, actions, ...docks]
   }
   const firmOf = (clear: ClearBox[]): Anchor[] => clear.filter((box) => box.soft !== true)
 
@@ -216,5 +217,43 @@ describe('fitClear keeps a desktop preview readable', () => {
         if (height >= 840) expect(fit.picture).toBeGreaterThanOrEqual(READABLE_PICTURE)
       }
     }
+  })
+})
+
+describe('fitClear beside a card choice with its buttons at the strip start', () => {
+  /** A Delves boss table choosing 1 of 3: the sentence and Confirm/Undo at the strip's left, the three cards at its right. */
+  const choice = (view: Viewport): { grid: Anchor; clear: ClearBox[]; firm: Anchor[] } => {
+    const right = view.width - 312
+    const strip = rect(184, 380, right, 600)
+    const firm = [
+      rect(196, 392, right - 540, 432),
+      rect(196, 540, 420, 580),
+      rect(0, 718, right - 520, view.height),
+      rect(right - 520, 718, right + 8, view.height),
+    ]
+    return { grid: rect(right - 520, 392, right - 12, 590), clear: [{ ...strip, soft: true }, ...firm], firm }
+  }
+
+  it.each([
+    [1830, 855],
+    [2300, 840],
+    [1400, 900],
+    [1280, 720],
+  ])('at %i x %i never covers the sentence, the buttons or the docks', (width, height) => {
+    const view = { width, height }
+    const { grid, clear, firm } = choice(view)
+    expect(previewFit(grid, view).dock).toBe('left')
+    expect(touches(previewFit(grid, view), view, firm)).toBe(true)
+    const fit = fitClear(grid, view, clear)
+    expect(touches(fit, view, firm)).toBe(false)
+    expect(fit.picture).toBeGreaterThanOrEqual(PICTURE_FLOOR.narrow)
+  })
+
+  it('keeps at least the floor of a side panel where the window leaves the room, on the side away from the buttons', () => {
+    const view = { width: 2300, height: 840 }
+    const { grid, clear } = choice(view)
+    const fit = fitClear(grid, view, clear)
+    expect(fit.dock).toBe('right')
+    expect(fit.picture).toBeGreaterThanOrEqual(PICTURE_FLOOR.side)
   })
 })

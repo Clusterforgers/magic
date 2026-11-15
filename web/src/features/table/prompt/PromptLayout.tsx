@@ -14,6 +14,8 @@ function LiveText({ children, className }: { children: ReactNode; className?: st
   return (
     <p
       data-slot="prompt-text"
+      // The preview never covers the sentence, as it never covers the buttons.
+      data-keep-clear=""
       aria-live="polite"
       aria-atomic="true"
       className={cn('text-sm font-medium', className)}
