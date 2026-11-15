@@ -303,10 +303,10 @@ async fn a_manual_action_of_a_seat_without_priority_or_one_the_state_forbids_is_
     };
     let received = poke(&handle, &mut clients, other, message).await;
     assert_eq!(only_error(&received[other]), ErrorCode::StaleDecision);
-    // The holder may not change another seat's life.
+    // The holder may change any seat's life, but not that of a seat that is not at the table.
     let message = ClientMessage::Answer {
         decision: id,
-        answer: life(other, -1),
+        answer: life(5, -1),
     };
     let received = poke(&handle, &mut clients, holder, message).await;
     assert_eq!(only_error(&received[holder]), ErrorCode::IllegalAnswer);

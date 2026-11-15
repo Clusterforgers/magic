@@ -100,7 +100,7 @@ async fn a_refused_action_reaches_the_sender_alone_and_changes_nothing() {
     let (holder, _, _) = passive_until_priority(&handle, &mut clients).await;
     let other = 1 - holder;
     let before = handle.status().await.unwrap();
-    let received = poke(&handle, &mut clients, other, life(holder, -1)).await;
+    let received = poke(&handle, &mut clients, other, life(5, -1)).await;
     assert_eq!(only_error(&received[other]), ErrorCode::IllegalAnswer);
     silent(&received[holder]);
     assert_eq!(handle.status().await.unwrap(), before);
