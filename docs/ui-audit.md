@@ -82,7 +82,6 @@ Each item is one commit with before and after shots at 1400 × 900, 1280 × 720 
 
 - Phone boards: opponents' and your permanents read at 390 (about 30 px now), a card prompt without an inner scroll.
 - Own board in crowds: your creatures past 55 px at a grid table with 40 permanents a seat (an enlarge of your board, or a taller own row).
-- Boss art: a picture for each boss of the Delves content, shown on the descent and the fight panel in place of the crown.
 - Long-list overlay: a choice of many cards as a centre overlay of its own, the strip keeping the sentence and the buttons.
 - Mode pictures: each mode of a modal spell beside the card's picture.
 - Combat lines kept to the boards they join; attacker groups as a badge on the defender's pod.

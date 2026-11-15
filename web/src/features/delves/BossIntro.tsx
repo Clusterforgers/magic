@@ -36,6 +36,7 @@ export function BossIntro({
       <header className="flex flex-wrap items-center gap-4">
         <BossPortrait
           colours={boss?.colors ?? ''}
+          art={boss?.art}
           className="size-20 shrink-0 rounded-full border-2 border-delve"
         />
         <div className="grid min-w-0 flex-1 gap-1">

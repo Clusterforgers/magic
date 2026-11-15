@@ -35,6 +35,7 @@ interface RawBoss {
   life_per_hero: number
   rules: string[]
   phases: Array<[string, number]>
+  art: { card: string; oracle_id: string }
 }
 
 interface RawTheme {
@@ -69,6 +70,7 @@ const CONTENT: DelveContent = {
     card: boss.rules[0] ?? null,
     phases: boss.phases,
     life: [boss.life, boss.life_per_hero],
+    art: boss.art,
   })),
   events: [],
 }

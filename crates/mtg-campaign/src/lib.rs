@@ -8,7 +8,7 @@ pub mod rng;
 pub mod run;
 pub mod scale;
 
-pub use content::{Boss, Brain, CardKind, Content, CustomCard, Minion, content};
+pub use content::{Boss, BossArt, Brain, CardKind, Content, CustomCard, Minion, content};
 pub use fight::{BossSeat, FightPlan, HeroSeat, MinionSeat};
 pub use map::{FloorMap, Node, RoomKind};
 pub use run::{Hero, HeroDeck, Offer, Pick, Run, RunEvent, ShopItem, Status};
