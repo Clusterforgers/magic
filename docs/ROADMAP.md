@@ -129,7 +129,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl10) The run page follows the run over a socket instead of reading it every 4 s
 - [ ] (dl11) Custom cards open in the card inspector at the table with their frame and text, and the boss's phases sit in the top bar
 - [ ] (dl13) A second theme with its bosses, events and reward pool; Heat 3 and above
-- [ ] (dl14) The boss bot of a solo fight against Skrix (seed 5) repeats one paid ability until the runaway watchdog stops the game in turn 13
 
 ## M8 Polish and deploy
 
