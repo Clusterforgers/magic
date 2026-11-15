@@ -505,7 +505,26 @@ fn observable(state: &GameState) -> u64 {
             state.object(*id).hash(&mut hasher);
         }
     }
-    state.effects().hash(&mut hasher);
+    // Each effect by what it does, not by its id, timestamp or place in the list: an activation that sets again what an
+    // earlier one set leaves one identical effect in the place of the other (at the end of the list), which changes
+    // nothing a player sees.
+    state.effects().len().hash(&mut hasher);
+    let mut effects = 0u64;
+    for effect in state.effects() {
+        let mut one = StableHasher::default();
+        (
+            effect.layer,
+            &effect.selector,
+            &effect.modification,
+            &effect.duration,
+            effect.source,
+            effect.controller,
+            effect.anchor,
+        )
+            .hash(&mut one);
+        effects = effects.wrapping_add(one.finish());
+    }
+    effects.hash(&mut hasher);
     hasher.finish()
 }
 
@@ -1426,5 +1445,53 @@ mod tests {
         ] {
             assert_eq!(played_object(&action), expected, "{action:?}");
         }
+    }
+
+    /// A free "becomes an artifact" for ever: the first use changes how the table looks, and the next ones, which leave
+    /// one identical effect in the place of the older, do not.
+    #[test]
+    fn a_set_that_sets_again_what_it_set_leaves_the_table_looking_as_it_did() {
+        use mtg_cards::CardDefinition;
+        use mtg_core::card::CardType;
+        let rules: mtg_cards::ability::Ability = serde_json::from_str(
+            r#"{"Activated":{"cost":"{0}","effects":[{"Continuous":{"affected":"This","mods":[{"SetTypes":["Artifact"]}],"duration":"Forever"}}]}}"#,
+        )
+        .unwrap();
+        let shape = std::sync::Arc::new(
+            CardDefinition::new("Shape")
+                .with_type(CardType::Creature)
+                .with_power_toughness(1, 1)
+                .with_rules(rules),
+        );
+        let mut engine = Scenario::new(2)
+            .at(2, 0, Step::Main1)
+            .battlefield(0, [ready(shape)])
+            .build()
+            .unwrap();
+        let mut looks = vec![observable(engine.state())];
+        for _ in 0..3 {
+            let decision = engine.decision().cloned().unwrap();
+            let DecisionKind::Priority(options) = &decision.kind else {
+                panic!("priority expected: {decision:?}");
+            };
+            let ability = options.abilities[0];
+            let activate = Answer::Priority(PriorityAction::Activate(ability));
+            apply_answer(&mut engine, &decision, activate).unwrap();
+            // Pay the nothing it costs, then pass until it resolves.
+            loop {
+                let waiting = engine.decision().cloned().unwrap();
+                let answer = match waiting.kind {
+                    DecisionKind::PayMana(_) => Answer::PayMana(PayChoice::Auto),
+                    _ if engine.state().stack().is_empty() => break,
+                    _ => Answer::Priority(PriorityAction::Pass),
+                };
+                apply_answer(&mut engine, &waiting, answer).unwrap();
+            }
+            looks.push(observable(engine.state()));
+        }
+        assert_eq!(engine.state().effects().len(), 1, "one effect, not three");
+        assert_ne!(looks[0], looks[1], "the first use sets it");
+        assert_eq!(looks[1], looks[2], "the second sets the same again");
+        assert_eq!(looks[2], looks[3]);
     }
 }

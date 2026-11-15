@@ -1,7 +1,7 @@
 {
   "oracle_id": "df2af646-3e5b-43a3-8f3e-50565889f456",
   "name": "Urza, Lord Protector",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Urza, Lord Protector",
@@ -19,9 +19,17 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 70, "end": 255 }
+          "Activated": {
+            "cost": "{7}",
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Meld": {
+                  "with": [{ "Type": "Artifact" }, { "Named": "The Mightstone and Weakstone" }],
+                  "into": "Urza, Planeswalker"
+                }
+              }
+            ]
           }
         }
       ]

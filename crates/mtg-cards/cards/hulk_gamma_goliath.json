@@ -1,7 +1,7 @@
 {
   "oracle_id": "3508fd7d-ca02-47f9-8b0a-525f7bde4f57",
   "name": "Hulk, Gamma Goliath",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Hulk, Gamma Goliath",
@@ -10,9 +10,11 @@
         { "Keyword": "Reach" },
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 15, "end": 91 }
+          "CostModifier": {
+            "applies_to": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{3}",
+            "activating": "PowerUp"
           }
         },
         {

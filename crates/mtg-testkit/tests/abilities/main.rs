@@ -134,6 +134,8 @@ mod r6104_agrus_kos;
 mod r6104_bill_potts;
 mod r6105_braids;
 mod r6105_kodama;
+mod r6401_mentor;
+mod r6404_cards;
 mod r8p2_enters;
 mod reflexive;
 mod replacement;

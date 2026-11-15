@@ -477,6 +477,20 @@ pub enum Event {
         /// The creature.
         object: ObjectId,
     },
+    /// An attacking creature that no creature still blocks and only creatures that left combat had blocked this combat
+    /// became unblocked (False Orders, Balduvian Warlord).
+    R6400Unblocked {
+        /// The attacker.
+        attacker: ObjectId,
+    },
+    /// A creature began to block an attacking creature without being declared (CR 509.1h): "then it blocks an
+    /// attacking creature of your choice".
+    R6400Blocks {
+        /// The blocker.
+        blocker: ObjectId,
+        /// The attacker it blocks.
+        attacker: ObjectId,
+    },
     /// Attacking creatures became blocked by an effect, with no creature blocking them (CR 509.1h).
     AttackersBlocked {
         /// The attackers, each not blocked before.
@@ -605,6 +619,10 @@ pub enum Event {
         player: PlayerId,
         /// The object it comes from.
         source: ObjectRef,
+        /// The source was tapped to pay its cost ("tapped a land for mana").
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(optional, as = "Option<bool>"))]
+        tapped: bool,
     },
     /// A triggered ability triggered and waits to be put on the stack.
     AbilityTriggered(Box<Triggered>),
@@ -1016,6 +1034,16 @@ pub enum Event {
         /// It was paid.
         paid: bool,
     },
+    /// A creature mentored a creature (CR 702.134a): its mentor ability put a +1/+1 counter on the creature, the event
+    /// before it.
+    R6401Mentored {
+        /// The controller of the mentor ability.
+        player: PlayerId,
+        /// The creature that mentored.
+        mentor: ObjectId,
+        /// The creature it mentored.
+        mentored: ObjectId,
+    },
     /// A player gave a gift (CR 702.174): the gift itself is the events before it.
     GiftGiven {
         /// Who gave it.
@@ -1034,8 +1062,24 @@ pub enum Event {
         player: PlayerId,
         /// How many faces the die has.
         sides: u32,
-        /// The number rolled, from 1 to `sides`.
+        /// The result: the number rolled, from 1 to `sides`, or that number changed (CR 706.2).
         result: u32,
+        /// The natural result, the number the die showed, when an effect changed it into `result` (CR 706.2).
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        natural: Option<u32>,
+    },
+    /// A player changed the result of a die they rolled through a permanent's rule (`Rule::R6402ChangeRoll`): it paid the
+    /// cost and counts as used this turn. The roll is logged after it with the changed result.
+    R6402DieChanged {
+        /// Who rolled.
+        player: PlayerId,
+        /// The permanent whose rule changed the result.
+        source: ObjectRef,
+        /// The result before the change.
+        from: u32,
+        /// The result after it.
+        to: u32,
     },
     /// A player's Attraction deck was shuffled (CR 103.3a): its cards in the new order, top card last.
     AttractionDeckShuffled {
@@ -1275,6 +1319,9 @@ pub enum Event {
         /// The controller of the spell.
         player: PlayerId,
     },
+    /// Two cards of a meld pair in exile became one melded permanent (CR 701.42a, 712.4): the card `object` entered the
+    /// battlefield earlier in the batch, and the other card joins it.
+    Melded(Box<crate::merged::Melded>),
     /// A card of the merged permanent `permanent` goes to `to` in place of the zone the permanent goes to when it leaves
     /// the battlefield in this batch (CR 729.3): a commander card its owner puts into the command zone (CR 903.9b), or
     /// the other cards when the card the permanent was goes there.
@@ -1564,9 +1611,11 @@ impl Event {
             | Event::Discovered { .. }
             | Event::DreadManifested { .. }
             | Event::GiftGiven { .. }
+            | Event::R6401Mentored { .. }
             | Event::UpkeepSettled { .. }
             | Event::Foraged { .. }
             | Event::DieRolled { .. }
+            | Event::R6402DieChanged { .. }
             | Event::CoinFlipped { .. }
             | Event::Clashed { .. }
             | Event::VotesFinished { .. }
@@ -1624,6 +1673,7 @@ impl Event {
             | Event::OpeningCardsPlayed { cards, .. }
             | Event::LibraryInserted { cards, .. }
             | Event::LibraryBottomed { cards, .. } => cards.clone(),
+            Event::R6400Blocks { blocker, attacker } => vec![*blocker, *attacker],
             Event::AttackersBlocked { attackers } | Event::BandFormed { attackers, .. } => {
                 attackers.clone()
             }
@@ -1642,6 +1692,8 @@ impl Event {
             | Event::SchemeSetInMotion { emblem, .. } => vec![*emblem],
             Event::Ventured(ventured) => vec![ventured.object],
             Event::BecameCopy(copy) => vec![copy.object],
+            // The partner is part of the permanent and no object of its own after the event.
+            Event::Melded(melded) => vec![melded.object],
             Event::SpellCopied(copy) => vec![copy.object],
             Event::CardCopied(copy) => vec![copy.object],
             Event::AbilityCopied(copy) => vec![copy.object],
@@ -1673,6 +1725,7 @@ impl Event {
             | Event::PermanentPhasedOut { object, .. }
             | Event::PermanentPhasedIn { object }
             | Event::RemovedFromCombat { object }
+            | Event::R6400Unblocked { attacker: object }
             | Event::Regenerated { object }
             | Event::DamageRemoved { object }
             | Event::CardDrawn { object, .. }

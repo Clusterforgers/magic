@@ -58,6 +58,17 @@ pub enum Selector {
 }
 
 impl Selector {
+    /// Whether this selector and `other` name different objects only, so that an effect on one cannot meet an effect on
+    /// the other.
+    pub(crate) fn apart_from(&self, other: &Selector) -> bool {
+        match (self, other) {
+            (Selector::Objects(mine), Selector::Objects(theirs)) => mine
+                .iter()
+                .all(|one| theirs.iter().all(|two| one.id != two.id)),
+            _ => false,
+        }
+    }
+
     /// The objects with these ids as they are now; an id no object answers to is left out.
     pub fn objects(state: &GameState, ids: impl IntoIterator<Item = ObjectId>) -> Selector {
         Selector::Objects(
@@ -261,6 +272,21 @@ pub enum Modification {
 }
 
 impl Modification {
+    /// Whether this sets a characteristic to a value whatever it was ("becomes an enchantment", "has base power and
+    /// toughness 2/4"), so that an identical one made later leaves the same result as the two together.
+    pub const fn sets_absolutely(&self) -> bool {
+        matches!(
+            self,
+            Modification::SetTypes(_)
+                | Modification::SetCreatureTypes(_)
+                | Modification::SetLandTypes(_)
+                | Modification::SetColors(_)
+                | Modification::SetPowerToughness { .. }
+                | Modification::SetPower(_)
+                | Modification::SetToughness(_)
+        )
+    }
+
     /// The layer this kind of modification belongs to, or `None` for a restriction, which changes no characteristic.
     pub const fn layer(&self) -> Option<Layer> {
         Some(match self {
@@ -488,7 +514,9 @@ pub(crate) fn lasts(
         // An effect or rule that follows its objects' tapped state reads its own record (`r5509_stays_tapped`).
         | Duration::WhileTapped
         // `UntilCreatureSpellCast` reads the effect's own timestamp (`lasts_by`).
-        | Duration::UntilCreatureSpellCast => true,
+        | Duration::UntilCreatureSpellCast
+        // `UntilEndOfTurnOrRolled` ends with the cleanup step or a roll after its own timestamp (`lasts_by`).
+        | Duration::UntilEndOfTurnOrRolled(_) => true,
         // `DuringItsControllersNextTurn` is begun for the player whose turn it waits for (`continuous.rs`).
         Duration::UntilEndOfYourNextTurn | Duration::DuringItsControllersNextTurn => {
             state.is_alive(controller)
@@ -609,7 +637,9 @@ pub(crate) fn ends_with_turn(
 ) -> bool {
     let turn = state.turn();
     match duration {
-        Duration::UntilEndOfTurn | Duration::UntilSkippedThisTurn => true,
+        Duration::UntilEndOfTurn
+        | Duration::UntilSkippedThisTurn
+        | Duration::UntilEndOfTurnOrRolled(_) => true,
         Duration::UntilEndOfYourNextTurn | Duration::DuringItsControllersNextTurn => {
             turn.number() > began && state.is_active(controller)
         }
@@ -649,6 +679,37 @@ pub struct ContinuousEffect {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub anchor: Option<PlayerId>,
+}
+
+/// The effects that `made` overwrites wholly, which can go as it begins (CR 613.7: of two effects that set the same
+/// thing in the same layer the later timestamp wins): each lasts forever from the same source for the same objects, sets
+/// the same characteristic to the same value, and has no later effect in its layer on those objects, so nothing sees or
+/// changes what it set. A "becomes" ability activated again and again leaves one effect, not one for each use.
+pub(crate) fn overwritten_by(
+    effects: &[ContinuousEffect],
+    made: &ContinuousEffect,
+) -> Vec<EffectId> {
+    if made.duration != Duration::Forever || !made.modification.sets_absolutely() {
+        return Vec::new();
+    }
+    effects
+        .iter()
+        .filter(|old| {
+            old.duration == Duration::Forever
+                && old.source == made.source
+                && old.controller == made.controller
+                && old.anchor == made.anchor
+                && old.layer == made.layer
+                && old.selector == made.selector
+                && old.modification == made.modification
+                && !effects.iter().any(|later| {
+                    later.layer == old.layer
+                        && later.timestamp > old.timestamp
+                        && !later.selector.apart_from(&old.selector)
+                })
+        })
+        .map(|old| old.id)
+        .collect()
 }
 
 impl ContinuousEffect {
@@ -746,6 +807,9 @@ impl ContinuousEffect {
             Duration::UntilCreatureSpellCast => {
                 !crate::r5512_until_cast::r5512_creature_cast_since(state, self.timestamp)
             }
+            Duration::UntilEndOfTurnOrRolled(number) => {
+                !crate::r6401_history::r6401_rolled_since(state, *number, self.timestamp)
+            }
             other => lasts(state, other, self.turn, self.controller, self.source),
         }
     }
@@ -831,6 +895,9 @@ pub(crate) fn r5509_stays_tapped(state: &GameState, named: &[ObjectRef]) -> bool
             })
         })
 }
+
+#[cfg(test)]
+mod overwritten;
 
 #[cfg(test)]
 mod tests {

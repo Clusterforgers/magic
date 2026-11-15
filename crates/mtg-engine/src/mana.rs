@@ -580,6 +580,12 @@ impl ManaOption {
         self.sacrifice || self.exile
     }
 
+    /// Whether a payer with `life` holds the life and the energy one use of it pays: at least that much of each, so a
+    /// player at 0 or below cannot pay any life (CR 119.4, CR 107.14).
+    pub fn holds_price(&self, life: i32) -> bool {
+        can_pay_life(life, self.life) && self.energy <= self.energy_held
+    }
+
     /// Whether using it costs mana, which comes from other sources of the same payment.
     pub fn is_costly(&self) -> bool {
         !self.cost.symbols().is_empty()

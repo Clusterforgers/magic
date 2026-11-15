@@ -201,7 +201,8 @@ impl Delayed {
             | Duration::TheirNextTurn
             | Duration::UntilTheirNextTurn
             | Duration::UntilCastFromExile
-            | Duration::UntilCreatureSpellCast => true,
+            | Duration::UntilCreatureSpellCast
+            | Duration::UntilEndOfTurnOrRolled(_) => true,
         }
     }
 }

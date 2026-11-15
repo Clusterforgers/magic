@@ -692,6 +692,9 @@ pub(super) fn duration(value: &Duration) -> String {
         Duration::UntilTheirNextTurn => "until that player's next turn".to_owned(),
         Duration::UntilCastFromExile => "until this card is cast from exile".to_owned(),
         Duration::UntilCreatureSpellCast => "until a player casts a creature spell".to_owned(),
+        Duration::UntilEndOfTurnOrRolled(n) => {
+            format!("until end of turn, or until any player rolls a {n}, whichever comes first")
+        }
         Duration::WhileHasCounter(counter) => {
             format!("while it has a {} counter", counter_text(counter))
         }

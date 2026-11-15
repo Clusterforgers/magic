@@ -22,7 +22,10 @@ pub(super) fn remove_from_combat(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     if single {
         r.it = Some(what.clone());
     }
-    Some(vec![Effect::RemoveFromCombat { what }])
+    Some(vec![Effect::RemoveFromCombat {
+        what,
+        unblock: false,
+    }])
 }
 
 /// "remove X from combat. Draw ..." is also worded "remove X from combat. Then draw ...": the sentence the creature's

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "1031bc78-7eca-44aa-9ea8-47fa67b4ce62",
+  "name": "Floodtide Serpent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Floodtide Serpent",
+      "oracle_fingerprint": "3961868f1cca945d164d2fb9cb678c47",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "AttackTax": {
+                "who": "EachPlayer",
+                "attacked": "Both",
+                "attackers": ["This"],
+                "cost": [{ "ReturnToHand": { "filter": [{ "Type": "Enchantment" }] } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

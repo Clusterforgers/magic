@@ -1,7 +1,7 @@
 {
   "oracle_id": "42bccda5-1754-4619-b94f-7a72f934a718",
   "name": "Titania, Voice of Gaea",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Titania, Voice of Gaea",
@@ -22,9 +22,50 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 98, "end": 338 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [{ "Type": "Land" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                    },
+                    "op": "Ge",
+                    "right": 4
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Count": ["This", { "OwnedBy": "You" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        { "Type": "Land" },
+                        { "Named": "Argoth, Sanctum of Nature" },
+                        { "OwnedBy": "You" },
+                        { "ControlledBy": "You" }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Meld": {
+                  "with": [{ "Type": "Land" }, { "Named": "Argoth, Sanctum of Nature" }],
+                  "into": "Titania, Gaea Incarnate"
+                }
+              }
+            ]
           }
         }
       ]

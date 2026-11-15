@@ -277,6 +277,8 @@ function durationWords(
   if (typeof duration === 'object') {
     if ('UntilPaid' in duration) return ` until its controller pays ${duration.UntilPaid} to end it`
     if ('WhileMonarch' in duration) return ' while that player is the monarch'
+    if ('UntilEndOfTurnOrRolled' in duration)
+      return ` until end of turn, or until any player rolls a ${duration.UntilEndOfTurnOrRolled}`
     const counter = `${counterName(duration.WhileHasCounter)} counter`
     return several ? ` while each has a ${counter}` : ` while it has a ${counter}`
   }
@@ -1100,6 +1102,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const buried = card === null ? '' : ` and puts ${n.card(card)} into their graveyard`
     return line(`${n.seat(player)} manifests dread${buried}`)
   }
+  if ('R6401Mentored' in event) {
+    const { mentor, mentored } = event.R6401Mentored
+    return line(`${n.card(mentor)} mentors ${n.card(mentored)}`)
+  }
   if ('GiftGiven' in event) {
     return line(`${n.seat(event.GiftGiven.player)} gives ${n.seat(event.GiftGiven.to)} a gift`)
   }
@@ -1110,8 +1116,13 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('Foraged' in event) return line(`${n.seat(event.Foraged.player)} forages`)
   if ('DieRolled' in event) {
-    const { player, sides, result } = event.DieRolled
-    return line(`${n.seat(player)} rolls a d${sides}: ${result}`)
+    const { player, sides, result, natural } = event.DieRolled
+    const shown = natural === undefined ? '' : ` (rolled ${natural})`
+    return line(`${n.seat(player)} rolls a d${sides}: ${result}${shown}`)
+  }
+  if ('R6402DieChanged' in event) {
+    const { player, source, from, to } = event.R6402DieChanged
+    return line(`${n.seat(player)} changes a die result from ${from} to ${to} with ${n.card(source.id)}`)
   }
   if ('RolledToVisit' in event) {
     const { player, result, visited } = event.RolledToVisit
@@ -1222,6 +1233,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { permanent, card, to } = event.CardParted
     return line(`${n.card(card)} goes to ${zoneWord(to, n)} apart from ${n.card(permanent)}`)
   }
+  if ('Melded' in event) {
+    const { object, with: partner, name } = event.Melded
+    return line(`${n.card(object)} and ${n.card(partner)} meld into ${name}`)
+  }
   if ('Mutated' in event)
     return line(
       `${n.seat(event.Mutated.player)} mutates a creature ${event.Mutated.over ? 'over' : 'under'} ${n.card(event.Mutated.object)}`,
@@ -1252,6 +1267,13 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('RemovedFromCombat' in event) {
     return line(`${n.card(event.RemovedFromCombat.object)} is removed from combat`)
+  }
+  if ('R6400Unblocked' in event) {
+    return line(`${n.card(event.R6400Unblocked.attacker)} becomes unblocked`)
+  }
+  if ('R6400Blocks' in event) {
+    const { blocker, attacker } = event.R6400Blocks
+    return line(`${n.card(blocker)} blocks ${n.card(attacker)}`)
   }
   if ('AttackersBlocked' in event) {
     const { attackers } = event.AttackersBlocked

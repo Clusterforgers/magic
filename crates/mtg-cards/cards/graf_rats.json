@@ -1,0 +1,51 @@
+{
+  "oracle_id": "852edc00-9d98-427c-9869-7d0c8c121118",
+  "name": "Graf Rats",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Graf Rats",
+      "oracle_fingerprint": "41e0da0095e72fc905028dedbe507e6d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": ["This", { "OwnedBy": "You" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        { "Type": "Creature" },
+                        { "Named": "Midnight Scavengers" },
+                        { "OwnedBy": "You" },
+                        { "ControlledBy": "You" }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Meld": {
+                  "with": [{ "Type": "Creature" }, { "Named": "Midnight Scavengers" }],
+                  "into": "Chittering Host"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

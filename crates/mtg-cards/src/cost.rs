@@ -253,9 +253,9 @@ pub enum CostItem {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         bottom: bool,
     },
-    /// Waterbend (Avatar): that much generic mana, which the payer may pay in part by tapping untapped artifacts and creatures
-    /// they control, each paying {1}.
-    Waterbend(u32),
+    /// Waterbend (Avatar): that much generic mana (`X` is the number announced for the cost), which the payer may pay in
+    /// part by tapping untapped artifacts and creatures they control, each paying {1}.
+    Waterbend(Amount),
     /// The X announced for the cost is at least this much ("X can't be 0"); pays nothing itself.
     XAtLeast(u32),
     /// "Spend only black mana on X." (CR 107.3): the mana paid for the X announced for the cost is of this color; pays
@@ -324,7 +324,8 @@ impl CostItem {
             | CostItem::DiscardRandom(amount)
             | CostItem::DamageToYou(amount)
             | CostItem::ExileTop(amount)
-            | CostItem::Blight(amount) => Some(amount),
+            | CostItem::Blight(amount)
+            | CostItem::Waterbend(amount) => Some(amount),
             CostItem::RemoveCounters { count, .. }
             | CostItem::RemoveCountersAmong { count, .. }
             | CostItem::PutCounters { count, .. }
@@ -364,7 +365,8 @@ impl Cost {
             | CostItem::DiscardRandom(amount)
             | CostItem::DamageToYou(amount)
             | CostItem::ExileTop(amount)
-            | CostItem::Blight(amount) => *amount == Amount::X,
+            | CostItem::Blight(amount)
+            | CostItem::Waterbend(amount) => *amount == Amount::X,
             CostItem::RemoveCountersAmong { count, .. }
             | CostItem::PutCounters { count, .. }
             | CostItem::SpendCounters { count, .. }
@@ -464,7 +466,8 @@ mod tests {
     #[case::evidence(Cost(vec![CostItem::CollectEvidence(6)]), r#"[{"CollectEvidence":6}]"#)]
     #[case::blight(Cost(vec![CostItem::Blight(Amount::Fixed(1))]), r#"[{"Blight":1}]"#)]
     #[case::forage(Cost(vec![CostItem::Forage]), r#"["Forage"]"#)]
-    #[case::waterbend(Cost(vec![CostItem::Waterbend(3)]), r#"[{"Waterbend":3}]"#)]
+    #[case::waterbend(Cost(vec![CostItem::Waterbend(Amount::Fixed(3))]), r#"[{"Waterbend":3}]"#)]
+    #[case::waterbend_x(Cost(vec![CostItem::Waterbend(Amount::X)]), r#"[{"Waterbend":"X"}]"#)]
     #[case::exiled_to_graveyard(
         Cost(vec![CostItem::ExiledToGraveyard { filter: Selector(vec![Pred::OwnedBy(Ref::Opponents)]), count: Amount::Fixed(2) }]),
         r#"[{"ExiledToGraveyard":{"filter":[{"OwnedBy":"Opponents"}],"count":2}}]"#

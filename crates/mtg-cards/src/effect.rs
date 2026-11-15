@@ -12,6 +12,18 @@ use crate::spend::{ManaLasts, SpendOn, WhenSpent};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind, DayNight, StatKind};
 
+/// Which permanents pass in `Effect::R6401PassControl`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum R6401Pick {
+    /// Every permanent that matches.
+    All,
+    /// One the controller chooses for each player, from the controller round in the direction.
+    ByYou,
+    /// One each player chooses for themselves, starting with the controller and going round in the direction.
+    ByEach,
+}
+
 /// The most passes any `RepeatWhile` makes, whatever it writes: a loop that never ends cannot hang a game.
 pub const MOST_PASSES: u32 = 1000;
 
@@ -673,6 +685,21 @@ pub enum Effect {
     RemoveFromCombat {
         /// The creatures that leave combat.
         what: Ref,
+        /// The attackers they were blocking that no other creature blocked this combat become unblocked ("Creatures
+        /// it was blocking that had become blocked by only that creature this combat become unblocked.").
+        #[serde(default, skip_serializing_if = "is_false")]
+        unblock: bool,
+    },
+    /// Each creature `what` names blocks an attacking creature the effect's controller chooses among those it could
+    /// block (CR 509.1h, 506.4): "then it blocks an attacking creature of your choice"; none when `optional` and the
+    /// controller chooses none ("You may have it block an attacking creature of your choice."). It is no declaration:
+    /// the blocker's "blocks" abilities trigger, and the attacker's "becomes blocked" ones only if it was unblocked.
+    R6400Block {
+        /// The creatures that block.
+        what: Ref,
+        /// The controller may choose no attacker.
+        #[serde(default, skip_serializing_if = "is_false")]
+        optional: bool,
     },
     /// The players lose all unspent mana (CR 106.4), whatever it lasts for: "that player loses all unspent mana".
     LoseUnspentMana {
@@ -2021,6 +2048,19 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         onto: Option<Ref>,
     },
+    /// "You may exchange this permanent with an Aura card in your hand" (aura swap, CR 702.65): the controller may pick
+    /// an Aura card in their hand that could enchant what the source is attached to; the source goes to its owner's hand
+    /// and the card enters attached to that object or player. When either can't move, neither does (CR 701.12a).
+    AuraSwap,
+    /// "If you both own and control ~ and a creature named N, exile them, then meld them into M" (CR 701.42): when the
+    /// controller owns and controls the source and a permanent `with` names, both are exiled, and if both are then cards
+    /// of a meld pair in exile they return as one melded permanent with the characteristics of the card `into`.
+    Meld {
+        /// The partner: the permanent of the pair other than the source (a type and a name).
+        with: Selector,
+        /// The name of the melded card.
+        into: String,
+    },
     /// The permanents become copies of an object for a while ("becomes a copy of target creature until end of turn",
     /// CR 707.2): the copy effect is the first layer, and the permanent is what it was again when it ends.
     BecomeCopy {
@@ -2050,6 +2090,20 @@ pub enum Effect {
         what: Vec<Ref>,
         /// How long the exchange lasts.
         duration: Duration,
+    },
+    /// Each player gains control of permanents the next player still in the game on a side of them controls (CR 101.4,
+    /// 108.4): "each player gains control of all nonland permanents other than ~ controlled by the next player in the
+    /// chosen direction", "a nonland permanent of your choice controlled by the player to their right", "each player
+    /// chooses a creature controlled by the next player in that direction". Every change is made at once and lasts
+    /// for good; a player with nobody else left takes nothing.
+    R6401PassControl {
+        /// The side; none for the word ("left" or "right") the controller chose in the `ChooseWords` before.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        side: Option<crate::refs::Side>,
+        /// What passes, judged on each permanent of the giving player.
+        what: Selector,
+        /// Which of them pass.
+        pick: R6401Pick,
     },
     /// Changes a rule of the game for a while.
     Rule {

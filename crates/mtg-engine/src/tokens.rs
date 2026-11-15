@@ -157,6 +157,7 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
     {
         attack.blocked = true;
         attack.blockers.push(id);
+        state.combat.r6400_blocked_by.push((attacker, id));
     }
     state.tally(event.controller, Tally::Tokens);
     state.log_event(

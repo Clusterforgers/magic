@@ -191,6 +191,7 @@ fn life_tax(life: u32, mana: &str) -> Rule {
         creatures: mtg_cards::refs::Selector::default(),
         mana: mtg_core::mana::ManaCost::parse(mana).unwrap(),
         life,
+        costs: Vec::new(),
     })
 }
 

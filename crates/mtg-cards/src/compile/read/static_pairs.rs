@@ -17,6 +17,9 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
     if let Some(found) = r.attempt(super::render::r6001_pair_read) {
         return Some(found);
     }
+    if let Some(found) = r.attempt(super::r6400_wholes::r6400_pair_read) {
+        return Some(found);
+    }
     if let Some(found) = r.attempt(super::render::r6105_pair_read) {
         return Some(found);
     }
@@ -55,6 +58,10 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
 #[allow(clippy::too_many_lines)]
 pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     let whole_pair = super::render::r6001_pair_texts(first, second);
+    if !whole_pair.is_empty() {
+        return whole_pair;
+    }
+    let whole_pair = super::r6400_wholes::r6400_pair_texts(first, second);
     if !whole_pair.is_empty() {
         return whole_pair;
     }

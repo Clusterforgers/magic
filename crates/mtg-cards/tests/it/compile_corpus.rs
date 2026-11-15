@@ -630,6 +630,8 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             Ability::Keyword(_) => &[ClauseKind::Keyword, ClauseKind::Static],
             // On an instant or sorcery the reveal is a spell line (Providence).
             Ability::OpeningReveal { .. } => &[ClauseKind::Static, ClauseKind::Spell],
+            // An alternative cost of another ability (Heart of Kiran) is worded as a static ability.
+            Ability::Activated { .. } => &[ClauseKind::Activated, ClauseKind::Static],
             _ => &[ClauseKind::Activated],
         };
         let lines: Vec<&str> = compiled

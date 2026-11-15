@@ -1,7 +1,7 @@
 {
   "oracle_id": "7f10540f-eaba-4e06-a79e-101f7409ac6c",
   "name": "Vastwood Hydra",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Vastwood Hydra",
@@ -14,9 +14,34 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 50, "end": 218 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "RepeatWhile": {
+                        "condition": { "Compare": { "left": 0, "op": "Eq", "right": 0 } },
+                        "effects": [
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                              },
+                              "as": "pick"
+                            }
+                          },
+                          { "PutCounters": { "on": { "Bound": "pick" }, "counter": "+1/+1" } }
+                        ],
+                        "most": 1000,
+                        "times": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

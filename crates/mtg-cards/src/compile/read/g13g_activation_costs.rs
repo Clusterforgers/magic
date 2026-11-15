@@ -3,7 +3,7 @@
 //! "Equip abilities you activate of other Equipment cost {1} less to activate.". Read from `Ability::CostModifier` of the
 //! kind `Equip` or `Cycling` on the sources of the player, at one use and without a floor.
 
-use mtg_core::card::Subtype;
+use mtg_core::card::{CardType, Subtype};
 
 use crate::ability::{ActivationKind, CostChange};
 use crate::mana::ManaCostX;
@@ -32,6 +32,7 @@ pub fn g13g_activation_texts(
         ActivationKind::Ninjutsu => "Ninjutsu",
         ActivationKind::Unlock => "Unlock",
         ActivationKind::Morph => "Morph",
+        ActivationKind::PowerUp => "Power-up",
         _ => return Vec::new(),
     };
     let more = match change {
@@ -45,6 +46,15 @@ pub fn g13g_activation_texts(
         you.clone(),
     ];
     let mut out = Vec::new();
+    // "Power-up abilities of other creatures you control cost {3} less to activate." (Hulk, Gamma Goliath)
+    if kind == ActivationKind::PowerUp
+        && applies_to.0 == [Pred::Type(CardType::Creature), Pred::Other, you.clone()]
+    {
+        out.push(format!(
+            "Power-up abilities of other creatures you control cost {mana} {more} to activate"
+        ));
+        return out;
+    }
     if kind == ActivationKind::Morph {
         if applies_to.0.is_empty() {
             out.push(format!("All morph costs cost {mana} {more}"));

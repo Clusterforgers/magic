@@ -1,7 +1,7 @@
 {
   "oracle_id": "577725ae-290f-4081-8352-3317521a096f",
   "name": "Vanille, Cheerful l'Cie",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Vanille, Cheerful l'Cie",
@@ -38,9 +38,48 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 100, "end": 317 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "if": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": ["This", { "OwnedBy": "You" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        { "Type": "Creature" },
+                        { "Named": "Fang, Fearless l'Cie" },
+                        { "OwnedBy": "You" },
+                        { "ControlledBy": "You" }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{3}{B}{G}",
+                  "paid": [
+                    {
+                      "Meld": {
+                        "with": [{ "Type": "Creature" }, { "Named": "Fang, Fearless l'Cie" }],
+                        "into": "Ragnarok, Divine Deliverance"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,7 +1,7 @@
 {
   "oracle_id": "e70cac5e-674e-4df7-94c7-77f8801e3941",
   "name": "Brutal Hordechief",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Brutal Hordechief",
@@ -17,9 +17,26 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 92, "end": 206 }
+          "Activated": {
+            "cost": "{3}{R/W}{R/W}",
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MustBlock": {
+                      "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "R6400ChoosesBlocks": { "chooser": "You", "whose": "Opponents" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

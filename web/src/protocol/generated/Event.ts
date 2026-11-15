@@ -33,6 +33,7 @@ import type { ManaLasts } from "./ManaLasts";
 import type { ManaType } from "./ManaType";
 import type { ManualAction } from "./ManualAction";
 import type { ManualRoll } from "./ManualRoll";
+import type { Melded } from "./Melded";
 import type { NothingToDo } from "./NothingToDo";
 import type { ObjectId } from "./ObjectId";
 import type { ObjectRef } from "./ObjectRef";
@@ -482,7 +483,19 @@ unpreventable?: boolean, } } | "CombatEnded" | "DamageCleared" | { "RemovedFromC
 /**
  * The creature.
  */
-object: ObjectId, } } | { "AttackersBlocked": { 
+object: ObjectId, } } | { "R6400Unblocked": { 
+/**
+ * The attacker.
+ */
+attacker: ObjectId, } } | { "R6400Blocks": { 
+/**
+ * The blocker.
+ */
+blocker: ObjectId, 
+/**
+ * The attacker it blocks.
+ */
+attacker: ObjectId, } } | { "AttackersBlocked": { 
 /**
  * The attackers, each not blocked before.
  */
@@ -611,7 +624,11 @@ player: PlayerId,
 /**
  * The object it comes from.
  */
-source: ObjectRef, } } | { "AbilityTriggered": Triggered } | { "TriggersOrdered": { 
+source: ObjectRef, 
+/**
+ * The source was tapped to pay its cost ("tapped a land for mana").
+ */
+tapped?: boolean, } } | { "AbilityTriggered": Triggered } | { "TriggersOrdered": { 
 /**
  * Who ordered them.
  */
@@ -988,7 +1005,19 @@ echo: boolean,
 /**
  * It was paid.
  */
-paid: boolean, } } | { "GiftGiven": { 
+paid: boolean, } } | { "R6401Mentored": { 
+/**
+ * The controller of the mentor ability.
+ */
+player: PlayerId, 
+/**
+ * The creature that mentored.
+ */
+mentor: ObjectId, 
+/**
+ * The creature it mentored.
+ */
+mentored: ObjectId, } } | { "GiftGiven": { 
 /**
  * Who gave it.
  */
@@ -1010,9 +1039,29 @@ player: PlayerId,
  */
 sides: number, 
 /**
- * The number rolled, from 1 to `sides`.
+ * The result: the number rolled, from 1 to `sides`, or that number changed (CR 706.2).
  */
-result: number, } } | { "AttractionDeckShuffled": { 
+result: number, 
+/**
+ * The natural result, the number the die showed, when an effect changed it into `result` (CR 706.2).
+ */
+natural?: number, } } | { "R6402DieChanged": { 
+/**
+ * Who rolled.
+ */
+player: PlayerId, 
+/**
+ * The permanent whose rule changed the result.
+ */
+source: ObjectRef, 
+/**
+ * The result before the change.
+ */
+from: number, 
+/**
+ * The result after it.
+ */
+to: number, } } | { "AttractionDeckShuffled": { 
 /**
  * Whose deck.
  */
@@ -1289,7 +1338,7 @@ over: boolean,
 /**
  * The controller of the spell.
  */
-player: PlayerId, } } | { "CardParted": { 
+player: PlayerId, } } | { "Melded": Melded } | { "CardParted": { 
 /**
  * The merged permanent.
  */

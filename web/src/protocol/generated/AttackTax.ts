@@ -25,4 +25,9 @@ mana: ManaCost,
 /**
  * The life each taxed creature costs, counted the same way.
  */
-life: number, };
+life: number, 
+/**
+ * The permanents each taxed creature costs besides, sacrificed, returned or tapped (CR 508.1g), each a fixed
+ * number counted the same way.
+ */
+costs?: unknown, };

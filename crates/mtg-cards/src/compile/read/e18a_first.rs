@@ -44,6 +44,7 @@ const fn word(kind: ActivationKind) -> Option<&'static str> {
         ActivationKind::Equip => Some("equip"),
         ActivationKind::Cycling => Some("cycling"),
         ActivationKind::Unearth => Some("unearth"),
+        ActivationKind::PowerUp => Some("power-up"),
         _ => None,
     }
 }

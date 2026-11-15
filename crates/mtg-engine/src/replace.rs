@@ -613,6 +613,18 @@ fn r5515_returns_as_new(state: &GameState, source: &Source, unit: &Unit) -> bool
             .is_some_and(|object| object.zone() == Zone::Battlefield)
 }
 
+/// Whether the item puts a card onto the battlefield face down, manifested, cloaked or turned face down (CR 708.2).
+fn enters_face_down(item: &Item) -> bool {
+    matches!(
+        item,
+        Item::One(Event::ZoneChanged {
+            to: Zone::Battlefield,
+            cause,
+            ..
+        }) if cause.face_down(0).is_some()
+    )
+}
+
 /// The card that enters the battlefield with this event, and under whose control.
 fn entering(state: &GameState, event: &Event) -> Option<(ObjectId, PlayerId)> {
     match event {
@@ -1381,9 +1393,12 @@ impl Pass<'_> {
             consider(self, source)?;
         }
         // The card that enters is not in play yet: the effects it prints about its own entering work from wherever it is.
+        // A card put onto the battlefield face down has no abilities as it enters (CR 708.2), so what it prints about its
+        // own entering does not apply.
         if let Unit::Enter { object, .. } = &unit
             && let Some(card) = self.state.object(*object)
             && card.zone() != Zone::Battlefield
+            && !enters_face_down(&slot.item)
         {
             let controller = controller_of_object(self.state, card);
             for (address, rules, copied) in self.own_abilities(*object) {
@@ -3622,10 +3637,17 @@ impl Pass<'_> {
         if let (Some(card), Ok(delta)) = (self.state.object(object), i32::try_from(number))
             && delta > 0
         {
-            // The counters go on the permanent the card becomes (CR 400.7).
+            // The counters go on the permanent the card becomes (CR 400.7): one incarnation on for each move of the card the
+            // batch makes up to this entering.
+            let moves = self.slots[..=at]
+                .iter()
+                .filter(|slot| {
+                    matches!(&slot.item, Item::One(Event::ZoneChanged { object: moved, .. }) if *moved == object)
+                })
+                .count();
             let on = Target::Object(ObjectRef {
                 id: object,
-                counter: card.counter() + 1,
+                counter: card.counter() + u32::try_from(moves).unwrap_or(1).max(1),
             });
             let mut inherited = applied.to_vec();
             inherited.dedup();
@@ -4066,6 +4088,9 @@ mod shields;
 
 #[cfg(test)]
 mod umbra;
+
+#[cfg(test)]
+mod face_down_enters;
 
 #[cfg(test)]
 mod ep21_plus;

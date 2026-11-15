@@ -6,6 +6,10 @@
 //! card becomes an object of its own again in the new zone (CR 729.3, 400.7). The permanent has the characteristics of the
 //! topmost card and the abilities of every card, in the order they merged, so an ability keeps its place when another
 //! card merges.
+//!
+//! A melded permanent (CR 701.42, 712.4) is the same kind of object: the two cards of a meld pair, the card the permanent
+//! was first and its partner, with the characteristics of the melded card alone (its combined back face) and the mana
+//! value of both front faces together. It leaves the battlefield as two cards, as a merged permanent does.
 
 use std::hash::{Hash, Hasher};
 use std::sync::Arc;
@@ -78,6 +82,24 @@ pub struct Merged {
     fingerprint: u64,
     /// The cards that go to another zone than the permanent when it leaves, with that zone (`Event::CardParted`).
     parted: Vec<(ObjectId, Zone)>,
+    /// The melded card the cards became, for a melded permanent (CR 712.4).
+    melded: Option<Arc<CardDefinition>>,
+}
+
+/// Two cards of a meld pair in exile became one melded permanent (CR 701.42a): `object` entered the battlefield in the
+/// same batch, and its partner `with` joins it.
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct Melded {
+    /// The permanent: the card whose ability melded them.
+    pub object: ObjectId,
+    /// The other card of the pair, part of the permanent from now on.
+    pub with: ObjectId,
+    /// The name of the melded card, for the log.
+    pub name: String,
+    /// The melded card's characteristics and abilities, so a log folds with no card data at hand.
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub definition: Arc<CardDefinition>,
 }
 
 impl Merged {
@@ -93,7 +115,45 @@ impl Merged {
             components,
             definition,
             parted: Vec::new(),
+            melded: None,
         }
+    }
+
+    /// The melded permanent of the card `first` and its partner `with`, with the characteristics of `melded`.
+    fn melded(first: Component, with: Component, melded: Arc<CardDefinition>) -> Self {
+        let definition = Arc::new(melded.copiable());
+        Merged {
+            fingerprint: stable_hash(&*definition),
+            components: vec![first, with],
+            definition,
+            parted: Vec::new(),
+            melded: Some(melded),
+        }
+    }
+
+    /// Whether this is a melded permanent (CR 712.4) rather than a mutated one.
+    pub fn is_melded(&self) -> bool {
+        self.melded.is_some()
+    }
+
+    /// The card whose values are the permanent's copiable values: the melded card, else the topmost card (CR 707.2,
+    /// 729.2a).
+    pub fn copiable_card(&self) -> &CardDefinition {
+        match &self.melded {
+            Some(melded) => melded,
+            None => self.top().card(),
+        }
+    }
+
+    /// The mana value of a melded permanent: the total of its front faces' (CR 712.8); none for a mutated one.
+    pub fn melded_mana_value(&self) -> Option<u32> {
+        self.melded.as_ref()?;
+        Some(
+            self.components
+                .iter()
+                .map(|card| card.card().mana_value())
+                .sum(),
+        )
     }
 
     /// The permanent with `card` merged in, on top of the others or under them.
@@ -128,12 +188,19 @@ impl Merged {
 
     /// How many times the permanent has mutated: the cards merged into it, less the one it was (CR 702.140).
     pub fn mutations(&self) -> u32 {
+        if self.is_melded() {
+            return 0;
+        }
         u32::try_from(self.others().len()).unwrap_or(u32::MAX)
     }
 
     /// What the permanent is under a copy effect that gives the copiable values `copy`: they stand in the place of the
     /// topmost card's, and the abilities of the other cards stay (CR 729.2c).
     pub(crate) fn under_copy(&self, copy: &CardDefinition) -> CardDefinition {
+        // A melded permanent has no abilities of its cards beside the melded card's.
+        if self.is_melded() {
+            return copy.clone();
+        }
         let top = self
             .components
             .iter()
@@ -322,6 +389,43 @@ pub(crate) fn fold(
     held.merged = Some(merged);
     host.face_down = None;
     crate::fold::priority_to_active(state);
+    Ok(())
+}
+
+/// Folds `Event::Melded`: the partner leaves exile and becomes part of the permanent that entered (CR 701.42a).
+pub(crate) fn meld(state: &mut GameState, melded: &Melded) -> Result<(), EngineError> {
+    if !state.zones.get(Zone::Exile).contains(&melded.with) {
+        return Err(invalid(format!("{:?} is not in exile", melded.with)));
+    }
+    // An effect that replaced the card's entering leaves both cards where they are (CR 701.42c).
+    if !state.zones.get(Zone::Battlefield).contains(&melded.object) {
+        return Ok(());
+    }
+    if melded.name != melded.definition.name {
+        return Err(invalid(
+            "a melded card is called what its definition is called",
+        ));
+    }
+    // The melded card brings its abilities into the game: the state watches for what they need.
+    crate::copies::note_definition(state, &melded.definition);
+    let partner = state
+        .objects
+        .remove(&melded.with)
+        .ok_or_else(|| invalid(format!("unknown object {:?}", melded.with)))?;
+    state.zones.remove(Zone::Exile, melded.with);
+    let host = state
+        .objects
+        .get_mut(&melded.object)
+        .ok_or_else(|| invalid(format!("unknown object {:?}", melded.object)))?;
+    let first = Component::of(host, false);
+    let Some(held) = host.permanent.as_mut() else {
+        return Err(invalid(format!("{:?} is no permanent", melded.object)));
+    };
+    held.merged = Some(Merged::melded(
+        first,
+        Component::of(&partner, false),
+        Arc::clone(&melded.definition),
+    ));
     Ok(())
 }
 

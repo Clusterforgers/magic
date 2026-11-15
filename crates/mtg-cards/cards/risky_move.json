@@ -1,7 +1,7 @@
 {
   "oracle_id": "1a4c03ab-519a-4840-893a-769dfc5cf161",
   "name": "Risky Move",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Risky Move",
@@ -22,9 +22,30 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 89, "end": 279 }
+          "Triggered": {
+            "when": { "Did": { "action": "ChangedController", "who": "You", "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "creature"
+                }
+              },
+              { "Choose": { "from": "Opponents", "as": "opponent" } },
+              {
+                "FlipCoin": {
+                  "lose": [
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "creature" },
+                        "mods": [{ "SetController": { "Bound": "opponent" } }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,0 +1,66 @@
+{
+  "oracle_id": "e6dd25bd-8017-4691-86ba-466c68d9fd8a",
+  "name": "Tunnel of Love",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tunnel of Love",
+      "oracle_fingerprint": "d075c532b57380ffeb5cebdb2ebe68fc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Visit": {} },
+            "effects": [
+              { "Choose": { "from": "Opponents", "as": "opponent" } },
+              {
+                "Choose": {
+                  "who": { "Bound": "opponent" },
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Bound": "opponent" } }]
+                  },
+                  "as": "theirs"
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "mine"
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Exile": {
+                        "what": { "Union": [{ "Bound": "theirs" }, { "Bound": "mine" }] },
+                        "as": "exiled"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "Fight": { "what": { "Bound": "theirs" }, "with": { "Bound": "mine" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

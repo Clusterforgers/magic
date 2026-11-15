@@ -36,6 +36,7 @@ mod price;
 mod r401_flash;
 pub(crate) mod r5509_flagbearer;
 mod r5523_x_cap;
+pub(crate) mod r6400_combat_costs;
 pub(crate) mod required;
 mod splice;
 pub(crate) mod suspend;
@@ -728,11 +729,11 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
     if anchor.get_or_insert_with(|| now.clone()) != &now {
         return Next::Drop;
     }
-    if let What::Attack(attackers, _) = what {
-        return crate::attack_tax::next(state, *player, attackers);
+    if let What::Attack(attackers, extras) = what {
+        return crate::attack_tax::next(state, *player, (attackers, extras), (choices, done));
     }
     if let What::Block(blocks) = what {
-        return crate::block_tax::next(state, *player, blocks);
+        return crate::block_tax::next(state, *player, blocks, (choices, done));
     }
     if let Some(special) = special
         && let What::Spell(card) = what

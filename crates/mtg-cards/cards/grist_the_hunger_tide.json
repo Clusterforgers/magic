@@ -1,16 +1,28 @@
 {
   "oracle_id": "0efb0d7e-dea0-4817-a243-15066e9ef333",
   "name": "Grist, the Hunger Tide",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Grist, the Hunger Tide",
       "oracle_fingerprint": "66c9bfe4247ad66a88c6e4ec25fe0d0a",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 101 }
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "AddType": "Creature" },
+              { "AddSubtype": "Insect" },
+              { "SetPT": { "power": 1, "toughness": 1 } }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Is": "This" }, { "In": "Battlefield" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "defining": true
           }
         },
         {

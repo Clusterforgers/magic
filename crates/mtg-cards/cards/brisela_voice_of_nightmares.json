@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b23587e0-9fb7-492e-8bb4-f218e8e4ce6c",
+  "name": "Brisela, Voice of Nightmares",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brisela, Voice of Nightmares",
+      "oracle_fingerprint": "003c2c663cc7d52a01b3c130b68f5788",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Lifelink" },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "Opponents",
+                "action": {
+                  "Cast": {
+                    "filter": [{ "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

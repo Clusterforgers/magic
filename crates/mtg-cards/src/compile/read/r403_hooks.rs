@@ -652,7 +652,8 @@ fn r403_taps_then_removes(ability: &Ability) -> bool {
                     bind: None
                 },
                 Effect::RemoveFromCombat {
-                    what: Ref::Attached
+                    what: Ref::Attached,
+                    unblock: false
                 }
             ]
         )
