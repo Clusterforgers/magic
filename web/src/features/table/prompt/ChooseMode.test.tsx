@@ -1,4 +1,4 @@
-/** Goal: for a choice of one mode, of several, of up to some and of a repeating mode (a spell that can be taken back and a trigger that cannot), the prompt asks in the card's words, answers the indices of the modes (not their places) in the order on the card, closes the rest when the most are chosen, sends Cancel only when allowed, starts with focus on what the clock would do, takes number keys and leaves them to a text field. */
+/** Goal: the modes stand beside the picture of the card they are modes of; for a choice of one mode, of several, of up to some and of a repeating mode (a spell that can be taken back and a trigger that cannot), the prompt asks in the card's words, answers the indices of the modes (not their places) in the order on the card, closes the rest when the most are chosen, sends Cancel only when allowed, starts with focus on what the clock would do, takes number keys and leaves them to a text field. */
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { ModeOption, ModeOptions } from '@/protocol/generated'
@@ -181,5 +181,19 @@ describe('a mode that may repeat', () => {
     await user.click(mode(1))
     await user.click(must(confirm()))
     expect(sent()).toEqual({ ChooseMode: { Modes: [3, 3, 3] } })
+  })
+})
+
+describe('the picture', () => {
+  it.each([
+    [1, 1],
+    [2, 2],
+  ])('stands beside the modes for a choice of %i to %i, the card the modes are of', (min, max) => {
+    const { list } = mount({ min, max })
+    const choice = must(list().closest<HTMLElement>('[data-slot="mode-choice"]'))
+    const picture = must(choice.querySelector<HTMLElement>('[data-slot="prompt-picture"]'))
+    expect(picture.getAttribute('aria-hidden')).toBe('true')
+    expect(picture.compareDocumentPosition(list()) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(within(picture).getByText(spell.name)).toBeInTheDocument()
   })
 })

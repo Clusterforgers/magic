@@ -250,6 +250,8 @@ export interface SeatLayoutInput {
   held?: Held
   /** The widest card the fit may take, in px (one size for a grid of boards); the ladder's top when left out. */
   most?: number | null
+  /** The narrowest card before the zone scrolls, in px (`PHONE_FLOOR_PX` on a phone); the ladder's floor when left out. */
+  least?: number | null
 }
 
 /** The rows of a seat to draw and the fit of its zone. */
@@ -295,15 +297,31 @@ export function laneCounts(rows: Record<RowKind, readonly RowEntry[]>, held: Hel
  * `GROUP_OTHERS_BELOW` merges identical cards too and fits again. Every permanent takes one box, tapped or not, and
  * the boxes of the fit are exactly the ones the lanes draw.
  */
-export function layoutSeat({ box, stacks, facing, opened, marked, held, most }: SeatLayoutInput): SeatLayout {
+export function layoutSeat({
+  box,
+  stacks,
+  facing,
+  opened,
+  marked,
+  held,
+  most,
+  least,
+}: SeatLayoutInput): SeatLayout {
   const plain = entriesOfRows(stacks.plain, opened, marked)
   if (box === null) return { rows: plain, stacks: stacks.plain, merged: false, fit: null }
-  const limits =
-    most == null || !Number.isFinite(most)
-      ? LANE_LIMITS
-      : { ...LANE_LIMITS, maxWidth: Math.max(LANE_LIMITS.minWidth, Math.min(LANE_LIMITS.maxWidth, most)) }
+  const floor =
+    least == null || !Number.isFinite(least) ? LANE_LIMITS.minWidth : Math.max(LANE_LIMITS.minWidth, least)
+  const limits = {
+    ...LANE_LIMITS,
+    minWidth: floor,
+    maxWidth:
+      most == null || !Number.isFinite(most)
+        ? LANE_LIMITS.maxWidth
+        : Math.max(floor, Math.min(LANE_LIMITS.maxWidth, most)),
+  }
   const plainFit = fitLanes(box, laneCounts(plain, held), facing, limits)
-  if (plainFit.cardWidth >= GROUP_OTHERS_BELOW) {
+  // A zone that scrolls at a raised floor merges identical cards too: fewer boxes to scroll past.
+  if (plainFit.cardWidth >= GROUP_OTHERS_BELOW && !plainFit.scrolls) {
     return { rows: plain, stacks: stacks.plain, merged: false, fit: plainFit }
   }
   const merged = entriesOfRows(stacks.merged, opened, marked)

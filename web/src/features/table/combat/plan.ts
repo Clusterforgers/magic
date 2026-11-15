@@ -54,6 +54,46 @@ export interface PlanInput {
   controllerOf: (id: ObjectId) => PlayerId | undefined
   /** The viewer's seat, whose own attacks and the attacks at them are drawn strong; none for a spectator. */
   viewer?: PlayerId | null
+  /**
+   * Leave out the attacks at a player, which the defender's pod shows as a badge per attacking seat (`attackGroups`):
+   * the lines that remain join two boards (a block, an attack at a planeswalker or battle) and never cross to a pod.
+   */
+  seatBadges?: boolean
+}
+
+/** The creatures one seat attacks one player with, declared or still being chosen. */
+export interface AttackGroup {
+  /** The attacking seat; undefined where the view does not know who controls the attackers. */
+  from: PlayerId | undefined
+  attackers: readonly ObjectId[]
+  /** Chosen in a prompt and not yet sent. */
+  pending: boolean
+}
+
+/**
+ * The attacks at each player, grouped by the seat that attacks: declared ones first, then the choices not sent yet,
+ * which a group of its own marks as pending. Pure; the pods draw it as badges.
+ */
+export function attackGroups(
+  combat: CombatView | null,
+  pending: PendingCombat,
+  controllerOf: (id: ObjectId) => PlayerId | undefined,
+): ReadonlyMap<PlayerId, readonly AttackGroup[]> {
+  const groups = new Map<PlayerId, AttackGroup[]>()
+  const add = (attacker: ObjectId, to: AttackTarget, chosen: boolean): void => {
+    if (!('Player' in to)) return
+    const from = controllerOf(attacker)
+    const list = groups.get(to.Player) ?? []
+    const group = list.find((entry) => entry.from === from && entry.pending === chosen)
+    if (group === undefined) list.push({ from, attackers: [attacker], pending: chosen })
+    else (group.attackers as ObjectId[]).push(attacker)
+    groups.set(to.Player, list)
+  }
+  if (combat?.attackers_declared === true) {
+    for (const attacker of combat.attackers) add(attacker.object, attacker.target, false)
+  }
+  for (const [attacker, to] of pending.attacks) add(attacker, to, true)
+  return groups
 }
 
 /** A key that is the same for the same anchor, to look its box up by. */
@@ -61,7 +101,15 @@ export const anchorKey = (anchor: Anchor): string =>
   anchor.kind === 'seat' ? `seat:${anchor.seat}` : `${anchor.kind}:${anchor.id}`
 
 /** The lines to draw: attacks first, then blocks, then the unsent choices on top. */
-export function planLines({ combat, forecast, pending, controllerOf, viewer = null }: PlanInput): LineSpec[] {
+export function planLines({
+  combat,
+  forecast,
+  pending,
+  controllerOf,
+  viewer = null,
+  seatBadges = false,
+}: PlanInput): LineSpec[] {
+  const drawn = (to: AttackTarget): boolean => !(seatBadges && 'Player' in to)
   const card = (id: ObjectId): Anchor => {
     const seat = controllerOf(id)
     return seat === undefined ? { kind: 'card', id } : { kind: 'card', id, seat }
@@ -78,14 +126,15 @@ export function planLines({ combat, forecast, pending, controllerOf, viewer = nu
   const blocks: LineSpec[] = []
   if (combat?.attackers_declared === true) {
     for (const attacker of combat.attackers) {
-      attacks.push({
-        key: `attack:${attacker.object}`,
-        kind: 'attack',
-        pending: false,
-        from: card(attacker.object),
-        to: target(attacker.target),
-        ...(concerns(attacker.object, attacker.target) ? { mine: true } : {}),
-      })
+      if (drawn(attacker.target))
+        attacks.push({
+          key: `attack:${attacker.object}`,
+          kind: 'attack',
+          pending: false,
+          from: card(attacker.object),
+          to: target(attacker.target),
+          ...(concerns(attacker.object, attacker.target) ? { mine: true } : {}),
+        })
       for (const blocker of attacker.blockers) {
         blocks.push({
           key: `block:${blocker}`,
@@ -99,13 +148,15 @@ export function planLines({ combat, forecast, pending, controllerOf, viewer = nu
     }
   }
   const chosen: LineSpec[] = [
-    ...[...pending.attacks].map(([attacker, to]): LineSpec => ({
-      key: `pending-attack:${attacker}`,
-      kind: 'attack',
-      pending: true,
-      from: card(attacker),
-      to: target(to),
-    })),
+    ...[...pending.attacks]
+      .filter(([, to]) => drawn(to))
+      .map(([attacker, to]): LineSpec => ({
+        key: `pending-attack:${attacker}`,
+        kind: 'attack',
+        pending: true,
+        from: card(attacker),
+        to: target(to),
+      })),
     ...[...pending.blocks].map(([blocker, attacker]): LineSpec => ({
       key: `pending-block:${blocker}`,
       kind: 'block',

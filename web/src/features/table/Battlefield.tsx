@@ -8,6 +8,7 @@ import type { CardSize } from './cardSize'
 import { CardRow } from './CardRow'
 import type { CardBox } from './CardRow'
 import { useGhosts } from './fx/hooks'
+import { BoardFloorContext } from './boardFloor'
 import { GridCardContext } from './gridCard'
 import { LandFoldContext } from './landFold'
 import { promptKey } from './boardZoom'
@@ -184,6 +185,7 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
   const landGhosts = folded ? 0 : landGhostCount
   const grid = useContext(GridCardContext)
   const most = grid?.most ?? null
+  const least = useContext(BoardFloorContext)
   // The fit of the box alone, which a grid of boards shares out as one size; it never depends on that size.
   const alone = useMemo(
     () =>
@@ -194,8 +196,9 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
         opened,
         marked,
         held: { creatures: creatureGhosts, other: otherGhosts, lands: landGhosts },
+        least,
       }),
-    [box, shown, facing, opened, marked, creatureGhosts, otherGhosts, landGhosts],
+    [box, shown, facing, opened, marked, creatureGhosts, otherGhosts, landGhosts, least],
   )
   const aloneWidth = alone.fit?.cardWidth ?? null
   const layout = useMemo(
@@ -210,8 +213,22 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
             marked,
             held: { creatures: creatureGhosts, other: otherGhosts, lands: landGhosts },
             most,
+            least,
           }),
-    [alone, aloneWidth, most, box, shown, facing, opened, marked, creatureGhosts, otherGhosts, landGhosts],
+    [
+      alone,
+      aloneWidth,
+      most,
+      box,
+      shown,
+      facing,
+      opened,
+      marked,
+      creatureGhosts,
+      otherGhosts,
+      landGhosts,
+      least,
+    ],
   )
   const report = grid?.report
   useLayoutEffect(() => {

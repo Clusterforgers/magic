@@ -13,6 +13,7 @@ import { useEnchantChips } from './enchantChips'
 import { EnchantChips } from './EnchantChips'
 import { useDefender } from './combat/defender'
 import type { DefenderState } from './combat/defender'
+import { AttackBadges } from './combat/AttackBadges'
 import { LifeForecast } from './combat/LifeForecast'
 import { LifeFx } from './fx/LifeFx'
 import { LiveManaPool } from './LiveManaPool'
@@ -276,6 +277,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
               {name}
             </div>
             <div className="flex shrink-0 items-center gap-1.5">
+              <AttackBadges seat={seat} />
               <LifeForecast seat={seat} />
               <Life
                 seat={seat}
@@ -387,8 +389,15 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
         {/* The name has the whole width; under it the clocks and the hand and library stand beside the life figure,
             at its right, so the largest figure never shares a row with words that could run into it. */}
         <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1">
-          <div data-slot="pod-name-row" className="col-span-full min-w-0">
+          <div
+            data-slot="pod-name-row"
+            className="col-span-full flex min-w-0 items-center justify-between gap-2"
+          >
             {name}
+            {/* The attacks at the seat stand at the end of its name row, clear of the figures beside the life. */}
+            <span className="flex shrink-0 items-center gap-1 empty:hidden">
+              <AttackBadges seat={seat} />
+            </span>
           </div>
           <div
             data-slot="pod-meta"

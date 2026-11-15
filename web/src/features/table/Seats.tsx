@@ -8,6 +8,7 @@ import type { PlayerId } from '@/protocol/generated'
 import { Battlefield } from './Battlefield'
 import { useDefenderClick } from './combat/defender'
 import { LandFoldContext } from './landFold'
+import { LandSummary } from './LandSummary'
 import { BoardZoomContext, useZoomClose } from './boardZoom'
 import type { CardSize } from './cardSize'
 import { POD_COLUMN_PX } from './layout'
@@ -73,13 +74,13 @@ export const SeatArea = memo(function SeatArea({
   const [card, setCard] = useState<number | null>(null)
   // An opponent of a grid starts with its lands folded into its pod's chip; any other board lays them out.
   const defender = useDefenderClick(seat)
-  // An opponent's lands start folded into its pod's chip; a seat without a drawn pod has no chip and lays them out.
+  // A seat's lands start folded into its pod's chip; a phone's board without a drawn pod carries the chip itself.
   const [landsOpen, setLandsOpen] = useState(false)
   const fold = useMemo(
-    () =>
-      foldLands && pod !== 'none' ? { open: landsOpen, toggle: () => setLandsOpen((was) => !was) } : null,
-    [foldLands, pod, landsOpen],
+    () => (foldLands ? { open: landsOpen, toggle: () => setLandsOpen((was) => !was) } : null),
+    [foldLands, landsOpen],
   )
+  const owner = useSeatNamer()(seat)
   return (
     <LandFoldContext value={fold}>
       <div
@@ -93,6 +94,12 @@ export const SeatArea = memo(function SeatArea({
           defender.state !== undefined && 'cursor-pointer',
         )}
       >
+        {pod === 'none' ? (
+          // The tile above the board has the figures; the lands chip is a line of its own at the board's top.
+          <div data-slot="board-lands" className="flex shrink-0 justify-end px-1 empty:hidden">
+            <LandSummary seat={seat} owner={owner} density="tile" />
+          </div>
+        ) : null}
         {pod === 'aside' ? <PodColumn seat={seat} card={card} /> : null}
         {/* A line pod is on the table's middle side of its board: over an opponent's, under yours, by your hand. */}
         {pod === 'line' && facing === 'far' ? <SeatPanel seat={seat} variant="line" /> : null}
@@ -107,6 +114,8 @@ interface FocusBoardProps {
   seat: PlayerId
   size: CardSize
   pod: PodPlace
+  /** The board folds its lands into a chip (a phone). */
+  foldLands?: boolean
 }
 
 /**
@@ -115,7 +124,7 @@ interface FocusBoardProps {
  * a screen reader and from the keyboard, so the board that is there answers at once. Each seat keeps its own board
  * through the change.
  */
-function FocusBoard({ seat, size, pod }: FocusBoardProps) {
+function FocusBoard({ seat, size, pod, foldLands = false }: FocusBoardProps) {
   const { shown, leaving } = useBoardFade(seat)
   const layers = leaving === null ? [shown] : [shown, leaving]
   return (
@@ -128,7 +137,7 @@ function FocusBoard({ seat, size, pod }: FocusBoardProps) {
             data-crossfade={leaving === null ? undefined : 'in'}
             className="flex min-h-0 min-w-0 flex-1"
           >
-            <SeatArea seat={layer} size={size} facing="far" pod={pod} />
+            <SeatArea seat={layer} size={size} facing="far" pod={pod} foldLands={foldLands} />
           </div>
         ) : (
           <div
@@ -139,7 +148,7 @@ function FocusBoard({ seat, size, pod }: FocusBoardProps) {
             inert
             className="pointer-events-none absolute inset-0 flex"
           >
-            <SeatArea seat={layer} size={size} facing="far" pod={pod} />
+            <SeatArea seat={layer} size={size} facing="far" pod={pod} foldLands={foldLands} />
           </div>
         ),
       )}
@@ -191,18 +200,22 @@ interface OpponentsProps {
   /** The pod of the board drawn large (a wide board's, or the focused opponent's). */
   pod: PodPlace
   onFocusSeat: (seat: PlayerId) => void
+  /** The large board folds its lands into a chip (a phone; a grid folds its own). */
+  foldLands?: boolean
 }
 
 /**
  * The opponents' area. Grid mode: one opponent is a wide board beside a pod column, more are two or three columns of
  * a one-line pod over a board. Focus mode: a strip of tiles, two lines high, and the focused opponent's board below.
  */
-export function Opponents({ plan, size, pod, onFocusSeat }: OpponentsProps) {
+export function Opponents({ plan, size, pod, onFocusSeat, foldLands = false }: OpponentsProps) {
   if (plan.shape === 'focus') {
     return (
       <div data-layout="focus" className="flex min-h-0 min-w-0 flex-col gap-2">
         <TileStrip tiles={plan.tiles} focused={plan.focused} onFocusSeat={onFocusSeat} />
-        {plan.focused === null ? null : <FocusBoard seat={plan.focused} size={size} pod={pod} />}
+        {plan.focused === null ? null : (
+          <FocusBoard seat={plan.focused} size={size} pod={pod} foldLands={foldLands} />
+        )}
       </div>
     )
   }
@@ -210,7 +223,9 @@ export function Opponents({ plan, size, pod, onFocusSeat }: OpponentsProps) {
     const [seat] = plan.boards
     return (
       <div data-layout="grid" data-columns={1} className="flex min-h-0 min-w-0">
-        {seat === undefined ? null : <SeatArea seat={seat} size={size} facing="far" pod={pod} />}
+        {seat === undefined ? null : (
+          <SeatArea seat={seat} size={size} facing="far" pod={pod} foldLands={foldLands} />
+        )}
       </div>
     )
   }

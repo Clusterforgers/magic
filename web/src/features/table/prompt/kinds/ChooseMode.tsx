@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
+import type { CSSProperties } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   askerWords,
@@ -13,6 +14,7 @@ import {
 import { KeyHint } from '../KeyHint'
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
+import { PromptPicture } from '../PromptPicture'
 import type { PromptComponent } from '../types'
 import { UndoButton } from '../UndoButton'
 import { useObjects } from '../useCombatNames'
@@ -25,6 +27,9 @@ import { useDefaultFocus, usePromptKeys } from '../usePromptKeys'
  * Escape, and a triggered ability that must choose has none. Focus starts on the answer the response clock gives: Undo
  * where there is one, else the first mode.
  */
+/** The room the card's picture is sized by (`PROMPT_CARD_BOX`): a whole card up to 7 rem wide beside the modes. */
+const MODE_PICTURE_ROOM = '12rem'
+
 export const ChooseModePrompt: PromptComponent<'ChooseMode'> = ({ options }) => {
   const { answer } = usePrompt()
   const { modes, min, max, repeat, can_cancel: canCancel } = options
@@ -103,36 +108,44 @@ export const ChooseModePrompt: PromptComponent<'ChooseMode'> = ({ options }) => 
           onUndo={() => void answer('Undo')}
         />
       ) : null}
+      {/* The modes stand beside the card's picture, so each reads against the card it is a mode of. */}
       <div
-        role="group"
-        aria-label="Modes"
-        data-slot="mode-list"
-        className="flex max-h-56 basis-full flex-col gap-1 overflow-y-auto p-0.5"
+        data-slot="mode-choice"
+        style={{ '--choice-room': MODE_PICTURE_ROOM } as CSSProperties}
+        className="flex basis-full items-start gap-3"
       >
-        {modes.map((mode, place) => {
-          const key = numberKey(place)
-          const label = modeLabel(mode)
-          const count = times(mode.index)
-          const picked = count > 0
-          return (
-            <Button
-              key={mode.index}
-              ref={place === 0 ? first : undefined}
-              variant={picked ? 'default' : 'outline'}
-              className="h-auto min-h-9 justify-start whitespace-normal px-3 py-0.5 text-left text-sm leading-snug"
-              aria-label={label}
-              aria-keyshortcuts={key}
-              aria-pressed={single ? undefined : picked}
-              disabled={!single && spent + weight(mode.index) > max && (repeat || !picked)}
-              focusableWhenDisabled
-              onClick={() => press(mode.index)}
-            >
-              {key === undefined ? null : <KeyHint>{key}</KeyHint>}
-              <span className="ml-2 min-w-0">{label}</span>
-              {count > 1 ? <span className="ml-2 text-xs">x{count}</span> : null}
-            </Button>
-          )
-        })}
+        <PromptPicture object={source} size="normal" />
+        <div
+          role="group"
+          aria-label="Modes"
+          data-slot="mode-list"
+          className="flex max-h-56 min-w-0 flex-1 flex-col gap-1 overflow-y-auto p-0.5"
+        >
+          {modes.map((mode, place) => {
+            const key = numberKey(place)
+            const label = modeLabel(mode)
+            const count = times(mode.index)
+            const picked = count > 0
+            return (
+              <Button
+                key={mode.index}
+                ref={place === 0 ? first : undefined}
+                variant={picked ? 'default' : 'outline'}
+                className="h-auto min-h-9 justify-start whitespace-normal px-3 py-0.5 text-left text-sm leading-snug"
+                aria-label={label}
+                aria-keyshortcuts={key}
+                aria-pressed={single ? undefined : picked}
+                disabled={!single && spent + weight(mode.index) > max && (repeat || !picked)}
+                focusableWhenDisabled
+                onClick={() => press(mode.index)}
+              >
+                {key === undefined ? null : <KeyHint>{key}</KeyHint>}
+                <span className="ml-2 min-w-0">{label}</span>
+                {count > 1 ? <span className="ml-2 text-xs">x{count}</span> : null}
+              </Button>
+            )
+          })}
+        </div>
       </div>
     </PromptLayout>
   )

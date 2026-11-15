@@ -87,6 +87,17 @@ describe('the fold at the table', () => {
       expect(foldsLands(arrangeSeats({ seatCount: seats, viewer: 0, mode }), fold)).toBe(folds)
     },
   )
+
+  it.each([
+    [2, 'grid', true, true],
+    [4, 'focus', true, true],
+    [4, 'focus', false, false],
+  ] as const)(
+    'on a phone with %i seats in %s mode, folding %s, folds every board: %s',
+    (seats, mode, fold, folds) => {
+      expect(foldsLands(arrangeSeats({ seatCount: seats, viewer: 0, mode }), fold, true)).toBe(folds)
+    },
+  )
 })
 
 describe('what lays folded lands out', () => {
