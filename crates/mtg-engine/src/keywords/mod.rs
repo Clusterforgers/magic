@@ -1202,6 +1202,7 @@ mod tests {
         "Keyword.Gift",
         "Keyword.LevelUp",
         "Keyword.Outlast",
+        "Keyword.AuraSwap",
         "Keyword.Saddle",
         "Keyword.Saddled",
         "Keyword.Exert",
