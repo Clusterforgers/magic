@@ -150,6 +150,16 @@ const PLAIN = new Set(
     'Teamwork',
     'Renew',
     'Warp',
+    'Search',
+    'Unlock',
+    'Gold',
+    'Junk',
+    'Lander',
+    'Mutagen',
+    'Powerstone',
+    'Vibranium',
+    'Clue',
+    'Incubator',
   ].map(key),
 )
 

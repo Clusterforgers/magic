@@ -38,12 +38,42 @@ describe('LexiconDialog', () => {
     ['upkeep', 'Upkeep'],
     ['command zone', 'Command zone'],
     ['replacement', 'Replacement effect'],
+    ['ring-bearer', 'Ring-bearer'],
+    ['the ring tempts you', 'The Ring tempts you'],
+    ['city', "City's blessing"],
+    ['rad counter', 'Rad counter'],
   ])('puts %s first for a search', async (query, title) => {
     const user = userEvent.setup()
     render(<LexiconDialog />)
     act(() => showLexicon())
     await user.type(screen.getByRole('searchbox', { name: 'Search the lexicon' }), query)
     expect(entries()[0]).toHaveTextContent(title)
+  })
+
+  it('files the Ring under its kinds: the action, and the Ring-bearer and its abilities as rules', async () => {
+    const user = userEvent.setup()
+    render(<LexiconDialog />)
+    act(() => showLexicon('ring'))
+    const titles = (): string[] =>
+      entries().map((entry) => entry.querySelector('span.font-medium')?.textContent ?? '')
+    expect(titles()).toEqual(
+      expect.arrayContaining([
+        'The Ring tempts you',
+        'Ring-bearer',
+        'Ring ability 1: legendary, evasive',
+        'Ring ability 2: loot',
+        'Ring ability 3: sacrifice the blocker',
+        'Ring ability 4: drain',
+      ]),
+    )
+    await user.click(screen.getByRole('button', { name: /^Actions/ }))
+    expect(titles()).toContain('The Ring tempts you')
+    expect(titles()).not.toContain('Ring-bearer')
+    await user.click(screen.getByRole('button', { name: /^Rules/ }))
+    expect(titles()).toContain('Ring-bearer')
+    expect(entries().find((entry) => entry.textContent?.includes('Ring-bearer'))).toHaveTextContent(
+      'rule, players',
+    )
   })
 
   it('opens the term another entry names', async () => {
