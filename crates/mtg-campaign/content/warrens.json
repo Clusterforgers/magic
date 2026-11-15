@@ -9,7 +9,7 @@
    "text": "A goblin with a crooked crown blocks a bridge and demands payment.",
    "options": [
     {
-     "label": "Pay 25 gold",
+     "label": "Pay the toll",
      "outcomes": [
       {
        "Gold": -25
@@ -18,7 +18,7 @@
      ]
     },
     {
-     "label": "Push past (lose 8 life)",
+     "label": "Push past",
      "outcomes": [
       {
        "Life": -8
@@ -158,7 +158,7 @@
    "text": "A hooded figure offers a single wrapped card.",
    "options": [
     {
-     "label": "Buy it (30 gold)",
+     "label": "Buy it",
      "outcomes": [
       {
        "Gold": -30

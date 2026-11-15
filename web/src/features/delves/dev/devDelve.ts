@@ -1,6 +1,6 @@
 /** The runs `/dev/delve` shows: one per state of a run, with a fuller party and ladder than the tests use. */
 import { CONTENT, delveView, hero } from '../fakeDelves'
-import type { DelveContent, DelveView, Offer } from '@/protocol/generated'
+import type { DelveContent, DelveView, Offer, Resolved } from '@/protocol/generated'
 
 /** The states `/dev/delve?state=` can show. */
 export const DEV_STATES = [
@@ -12,6 +12,7 @@ export const DEV_STATES = [
   'shop',
   'campfire',
   'event',
+  'result',
   'victory',
   'defeat',
 ] as const
@@ -121,6 +122,18 @@ const map = {
   ],
 }
 
+/** The camp's answers: Ana's gamble won a relic she now picks, Bo paid with life, Cyra turned back. */
+const RESULTS: Resolved[] = [
+  {
+    hero: 0,
+    what: 'chose “Reach into the sack”',
+    outcomes: ['Relic'],
+    rolls: [{ odds: 50, won: true }],
+  },
+  { hero: 1, what: 'chose “Push past”', outcomes: [{ Life: -8 }, { Gold: 40 }], rolls: [] },
+  { hero: 2, what: 'chose “Turn back”', outcomes: [], rolls: [] },
+]
+
 const OFFERS: Partial<Record<DevState, Offer>> = {
   relics: { Relics: { relics: ['idol', 'tithe', 'mend'] } },
   cards: { Cards: { cards: ['Lightning Bolt', 'Beast Within', 'Swords to Plowshares'] } },
@@ -137,6 +150,7 @@ const OFFERS: Partial<Record<DevState, Offer>> = {
   },
   campfire: 'Campfire',
   event: { Event: { event: 'toll' } },
+  result: { Relics: { relics: ['idol'] } },
 }
 
 /** The run of one state. */
@@ -153,7 +167,10 @@ export function devView(state: DevState): DelveView {
     )
   }
   const offer = OFFERS[state]
-  const heroes = party.map((h, i) => (i === 0 && offer ? { ...h, offers: [offer] } : h))
+  // The event hero is short of gold, so the toll shows why it is shut.
+  const heroes = party.map((h, i) =>
+    i === 0 && offer ? { ...h, offers: [offer], ...(state === 'event' ? { gold: 18 } : {}) } : h,
+  )
   const status =
     state === 'map'
       ? ('Map' as const)
@@ -181,11 +198,12 @@ export function devView(state: DevState): DelveView {
       heat: 1,
       hearts: state === 'defeat' ? 0 : 2,
       heroes,
-      at: state === 'fight' ? 3 : 0,
+      at: state === 'fight' ? 3 : state === 'result' ? 2 : 0,
       cleared: state === 'fight' ? [0, 1] : state === 'victory' ? [0, 1, 3, 5, 6] : [0],
       votes: state === 'map' ? { 1: 1 } : {},
       status,
       log: [...log, 'The party descended.', 'Skrix, the Rat Queen fell.'],
+      results: state === 'result' ? RESULTS : [],
     },
   )
 }

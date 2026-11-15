@@ -2,7 +2,7 @@
 //! first boss falls and the loot is taken, the run waits on the map; each vote is accepted and seen by the others on
 //! their next read; the run waits for every player (bots follow the majority, a tie goes to the torch bearer) and then
 //! enters the chosen camp; after the camp the party walks into the next boss with no second vote; a vote out of turn
-//! is refused.
+//! is refused; the run lists what each answer did (the loot picks, then the camp's), cleared when the next camp opens.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::{net, pg_commander};
@@ -156,6 +156,8 @@ async fn vote_through(
     }
     let view = read(server, &id, host).await;
     assert_eq!(view["run"]["status"], "Map", "{}", view["run"]["log"]);
+    assert_eq!(view["run"]["results"].as_array().unwrap().len(), heroes * 2);
+    assert_results(&view["run"], heroes * 2, true, name);
     let at = index(&view["run"]["at"]);
     let choices: Vec<u64> = view["run"]["map"]["nodes"][at]["next"]
         .as_array()
@@ -190,6 +192,10 @@ async fn vote_through(
     );
     assert_eq!(after["run"]["at"], choices[winner], "{name}");
     assert_eq!(after["run"]["votes"], json!({}));
+    // The loot picks are gone; only the bot ally, who answers a camp at once, has done anything there.
+    for result in after["run"]["results"].as_array().unwrap() {
+        assert!(index(&result["hero"]) >= players, "{name}: {result}");
+    }
 
     // After the camp the only way on is the next boss: the party walks in and its fight is made, with no vote.
     for who in &party {
@@ -203,4 +209,16 @@ async fn vote_through(
     );
     let room = index(&fight["run"]["at"]);
     assert_eq!(fight["run"]["map"]["nodes"][room]["kind"], "boss");
+    assert_results(&fight["run"], heroes, false, name);
+}
+
+/// The run lists at least `least` answers in words; those of `loot` are all picks of loot.
+fn assert_results(run: &Value, least: usize, loot: bool, name: &str) {
+    let results = run["results"].as_array().unwrap();
+    assert!(results.len() >= least, "{name}: {results:?}");
+    for result in results {
+        let what = result["what"].as_str().unwrap_or_default();
+        assert!(!what.is_empty(), "{name}: {result}");
+        assert!(!loot || what.starts_with("took the"), "{name}: {what}");
+    }
 }

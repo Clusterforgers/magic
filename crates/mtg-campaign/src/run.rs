@@ -112,6 +112,30 @@ pub enum Pick {
     Reforge,
 }
 
+/// One roll of a gamble an answer ran into.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct GambleRoll {
+    /// The chance to win, in percent.
+    pub odds: u32,
+    /// Whether it was won.
+    pub won: bool,
+}
+
+/// What a hero's answer did: the chronicle's line and the run page's result panel.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct Resolved {
+    /// The hero who answered.
+    pub hero: u8,
+    /// What they did, in past tense after their name: `chose “Push past”`, `took the relic Phoenix Feather`.
+    pub what: String,
+    /// What it changed, as it fell out: gambles decided, life and gold as they really moved.
+    pub outcomes: Vec<Outcome>,
+    /// The gambles it ran into.
+    pub rolls: Vec<GambleRoll>,
+}
+
 /// A member of the party.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -276,6 +300,8 @@ pub struct Run {
     pub status: Status,
     /// What happened, in words, newest last.
     pub log: Vec<String>,
+    /// What the heroes' answers in the camp last visited did, in order; cleared when the next camp opens or a fight is won.
+    pub results: Vec<Resolved>,
 }
 
 fn refused(text: impl Into<String>) -> CampaignError {
@@ -298,6 +324,7 @@ impl Run {
             hearts: HEARTS,
             status: Status::Lobby,
             log: Vec::new(),
+            results: Vec::new(),
         })
     }
 
@@ -330,6 +357,31 @@ impl Run {
     pub fn torch(&self) -> u8 {
         let n = self.heroes.len().max(1);
         u8::try_from(self.cleared.len() % n).unwrap_or(0)
+    }
+
+    /// Refuses a new event that is not allowed now, which a stored log may still hold (`replay` folds it as before):
+    /// an event option whose gold or life the hero lacks.
+    pub fn accepts(&self, content: &Content, event: &RunEvent) -> Result<(), CampaignError> {
+        let RunEvent::Picked {
+            hero,
+            pick: Pick::Take(i),
+        } = event
+        else {
+            return Ok(());
+        };
+        let Some(h) = self.heroes.get(usize::from(*hero)) else {
+            return Ok(());
+        };
+        if let Some(Offer::Event { event }) = h.offers.first()
+            && let Some(option) = self
+                .theme(content)?
+                .event(event)
+                .and_then(|spec| spec.options.get(usize::from(*i)))
+            && let Some(why) = option.needs().unmet(h.gold, h.life)
+        {
+            return Err(refused(format!("“{}” {why}", option.label)));
+        }
+        Ok(())
     }
 
     /// Folds one event, or refuses it and changes nothing.
@@ -533,6 +585,9 @@ impl Run {
             .cloned()
             .ok_or_else(|| refused(format!("no room {node}")))?;
         self.at = Some(node);
+        if room.kind != RoomKind::Boss {
+            self.results.clear();
+        }
         let theme = self.theme(content)?.clone();
         match room.kind {
             RoomKind::Boss => {
@@ -692,6 +747,7 @@ impl Run {
             return Ok(());
         }
         self.cleared.push(node);
+        self.results.clear();
         let final_room = self.map.choices(Some(node)).is_empty();
         for (at, h) in self.heroes.iter_mut().enumerate() {
             let life = lives.get(at).copied().unwrap_or(h.life);
@@ -743,20 +799,30 @@ impl Run {
         };
         let mut follow: Vec<Offer> = Vec::new();
         let mut done = true;
+        // What the answer did, for the chronicle and the result panel.
+        let mut said = String::new();
+        let mut outcomes: Vec<Outcome> = Vec::new();
+        let mut rolls: Vec<GambleRoll> = Vec::new();
         match (offer, pick) {
             (Offer::Cards { cards }, Pick::Take(i)) => {
                 let card = cards
                     .get(index(i, cards.len())?)
                     .cloned()
                     .unwrap_or_default();
+                said = format!("took the card {card}");
                 h.cards.push(card);
             }
-            (Offer::Cards { .. }, Pick::Skip) => h.gold += SKIP_GOLD,
+            (Offer::Cards { .. }, Pick::Skip) => {
+                h.gold += SKIP_GOLD;
+                said.push_str("skipped the card pick");
+                outcomes.push(Outcome::Gold(i32::try_from(SKIP_GOLD).unwrap_or(0)));
+            }
             (Offer::Relics { relics }, Pick::Take(i)) => {
                 let relic = relics
                     .get(index(i, relics.len())?)
                     .cloned()
                     .unwrap_or_default();
+                said = format!("took the relic {}", relic_name(content, &relic));
                 h.relics.push(relic);
                 let max = h.max_life(content);
                 let bonus = content
@@ -765,7 +831,8 @@ impl Run {
                     .map_or(0, |c| c.life);
                 h.life = (h.life + bonus).min(max);
             }
-            (Offer::Relics { .. } | Offer::Shop { .. }, Pick::Skip) => {}
+            (Offer::Relics { .. }, Pick::Skip) => said.push_str("took no relic"),
+            (Offer::Shop { .. }, Pick::Skip) => said.push_str("left the shop"),
             (Offer::Shop { mut items }, Pick::Take(i)) => {
                 let i = index(i, items.len())?;
                 let price = match items.get(i) {
@@ -780,16 +847,24 @@ impl Run {
                     return Err(refused("not enough gold"));
                 }
                 h.gold -= price;
+                outcomes.push(Outcome::Gold(-i32::try_from(price).unwrap_or(0)));
                 match items.get_mut(i) {
                     Some(ShopItem::Card { name, sold }) => {
                         *sold = true;
+                        said = format!("bought the card {name}");
                         h.cards.push(name.clone());
                     }
                     Some(ShopItem::Relic { id, sold, .. }) => {
                         *sold = true;
+                        said = format!("bought the relic {}", relic_name(content, id));
                         h.relics.push(id.clone());
                     }
-                    Some(ShopItem::Draught) => h.heal(content, DRAUGHT),
+                    Some(ShopItem::Draught) => {
+                        said.push_str("bought a healing draught");
+                        let before = h.life;
+                        h.heal(content, DRAUGHT);
+                        outcomes.push(Outcome::Life(h.life - before));
+                    }
                     None => {}
                 }
                 if let Some(first) = h.offers.first_mut() {
@@ -797,10 +872,17 @@ impl Run {
                 }
                 done = false;
             }
-            (Offer::Campfire, Pick::Rest) => h.heal(content, REST),
+            (Offer::Campfire, Pick::Rest) => {
+                let before = h.life;
+                h.heal(content, REST);
+                said.push_str("rested at the fire");
+                outcomes.push(Outcome::Life(h.life - before));
+            }
             (Offer::Campfire, Pick::Reforge) => {
                 // The card pick follows at once.
                 done = true;
+                said.push_str("reforged at the fire");
+                outcomes.push(Outcome::CardPick);
                 follow.push(Offer::Cards { cards: Vec::new() });
             }
             (Offer::Event { event }, Pick::Take(i)) => {
@@ -814,25 +896,47 @@ impl Run {
                     .ok_or_else(|| refused("no such choice"))?;
                 let mut rng = Stream::new(seed, "gamble", u64::from(node), at as u64);
                 let mut gains = Vec::new();
-                resolve(&option.outcomes, &mut rng, &mut gains);
+                resolve(&option.outcomes, &mut rng, &mut gains, &mut rolls);
+                said = format!("chose “{}”", option.label);
                 for gain in gains {
                     match gain {
                         Outcome::Gold(n) => {
+                            let before = h.gold;
                             h.gold = u32::try_from((i64::from(h.gold) + i64::from(n)).max(0))
                                 .unwrap_or(0);
+                            let moved = i64::from(h.gold) - i64::from(before);
+                            outcomes.push(Outcome::Gold(i32::try_from(moved).unwrap_or(0)));
                         }
-                        Outcome::Life(n) => h.heal(content, n),
-                        Outcome::Relic => follow.push(Offer::Relics { relics: Vec::new() }),
-                        Outcome::CardPick => follow.push(Offer::Cards { cards: Vec::new() }),
+                        Outcome::Life(n) => {
+                            let before = h.life;
+                            h.heal(content, n);
+                            outcomes.push(Outcome::Life(h.life - before));
+                        }
+                        Outcome::Relic => {
+                            follow.push(Offer::Relics { relics: Vec::new() });
+                            outcomes.push(Outcome::Relic);
+                        }
+                        Outcome::CardPick => {
+                            follow.push(Offer::Cards { cards: Vec::new() });
+                            outcomes.push(Outcome::CardPick);
+                        }
                         Outcome::Gamble { .. } => {}
                     }
                 }
             }
             _ => return Err(refused("that answer does not fit the offer")),
         }
+        let name = h.name.clone();
         if done {
             h.offers.remove(0);
         }
+        self.log.push(format!("{name} {said}."));
+        self.results.push(Resolved {
+            hero,
+            what: said,
+            outcomes,
+            rolls,
+        });
         // Follow-up offers are drawn now that the hero's state is known.
         for (k, offer) in follow.into_iter().enumerate() {
             let label = format!("follow{k}");
@@ -968,7 +1072,17 @@ impl Run {
                                 Pick::Reforge
                             }
                         }
-                        Some(Offer::Event { .. }) => Pick::Take(0),
+                        Some(Offer::Event { event }) => self
+                            .theme(content)
+                            .ok()
+                            .and_then(|theme| theme.event(event))
+                            .and_then(|spec| {
+                                spec.options
+                                    .iter()
+                                    .position(|o| o.needs().unmet(h.gold, h.life).is_none())
+                            })
+                            .and_then(|i| u8::try_from(i).ok())
+                            .map_or(Pick::Take(0), Pick::Take),
                         Some(Offer::Shop { items }) => items
                             .iter()
                             .position(|item| match item {
@@ -992,17 +1106,25 @@ impl Run {
 }
 
 /// The plain outcomes of `outcomes`, gambles decided by `rng`.
-fn resolve(outcomes: &[Outcome], rng: &mut Stream, out: &mut Vec<Outcome>) {
+fn resolve(
+    outcomes: &[Outcome],
+    rng: &mut Stream,
+    out: &mut Vec<Outcome>,
+    rolls: &mut Vec<GambleRoll>,
+) {
     for outcome in outcomes {
         match outcome {
             Outcome::Gamble { odds, win, lose } => {
-                if rng.chance(*odds) {
-                    resolve(win, rng, out);
-                } else {
-                    resolve(lose, rng, out);
-                }
+                let won = rng.chance(*odds);
+                rolls.push(GambleRoll { odds: *odds, won });
+                resolve(if won { win } else { lose }, rng, out, rolls);
             }
             other => out.push(other.clone()),
         }
     }
+}
+
+/// A relic's name in the content, its id when the content lacks it.
+fn relic_name<'a>(content: &'a Content, id: &'a str) -> &'a str {
+    content.cards.get(id).map_or(id, |c| c.name.as_str())
 }
