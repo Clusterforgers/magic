@@ -461,6 +461,7 @@ fn rule_mana(
                     takes: counted_to(&takes, &counted_takes, made.len()),
                     repeat,
                     priority_only: shape.priority_only,
+                    nonland: false,
                 })
             })
             .collect();
@@ -526,6 +527,7 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
         };
         let sick = chars.is_creature() && keywords::sick_for_abilities(state, id);
         let can_tap = !perm.tapped() && !sick && !mana_forbidden(state, player, id, true);
+        let first = found.len();
         // Only a permanent with a mana ability reads the tax; a walk of the battlefield for every permanent is quadratic.
         if can_tap && !chars.abilities.is_empty() {
             let tax =
@@ -549,6 +551,12 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
         for mana in rule_mana(state, player, id, chars.abilities.len(), true) {
             if !mana.tap || can_tap {
                 found.extend(mana.options);
+            }
+        }
+        // An automatic payment taps lands before an artifact or a creature that is no land.
+        if !chars.types.contains(CardType::Land) {
+            for option in &mut found[first..] {
+                option.nonland = true;
             }
         }
     }

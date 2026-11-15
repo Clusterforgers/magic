@@ -28,7 +28,7 @@ use mtg_cards::ability::Ability;
 use mtg_cards::compile::render_ability;
 use mtg_cards::definition::Layout;
 use mtg_cards::modify::Modification;
-use mtg_cards::refs::{Ref, Selector, ZoneKind};
+use mtg_cards::refs::{Pred, Ref, Selector, ZoneKind};
 use mtg_cards::trigger::{EntersChoice, ReplaceBy, ReplaceWhen};
 use mtg_cards::value::{Amount, CastWay, CounterKind};
 use mtg_core::card::{CardType, Subtype};
@@ -159,7 +159,9 @@ pub fn process(
         }),
         Run::Done => {
             let left: Vec<(PlayerId, Choice)> = step.answers.clone().cloned().collect();
-            r4708_reveal::r4708_reveals(state, original, step.finish(), &left)
+            let mut events = step.finish();
+            cost_counters::resettle(&original, &mut events);
+            r4708_reveal::r4708_reveals(state, original, events, &left)
         }
     }
 }
@@ -948,6 +950,14 @@ enum Applied {
     Done,
 }
 
+/// Who puts some counters and whether an effect does (`Pass::putting`).
+struct Putting {
+    /// The player who puts them; none when no spell or ability, and no entering permanent, is behind them.
+    player: Option<PlayerId>,
+    /// A spell or ability (or the permanent that enters with them, or a move by hand) puts them, not a cost or a turn action.
+    effect: bool,
+}
+
 /// The step's working state.
 struct Pass<'a> {
     state: &'a GameState,
@@ -1022,16 +1032,9 @@ impl Pass<'_> {
             },
             Event::LifeLost { player, .. } => Unit::LifeLoss { player: *player },
             Event::CountersChanged(CountersChanged { on, counter, delta }) if *delta > 0 => {
-                // What a planeswalker pays to activate a loyalty ability is a cost, not an effect.
-                let cost =
-                    matches!(on, Target::Object(named) if self.activated.contains(&named.id));
-                if cost {
-                    Unit::Other
-                } else {
-                    Unit::Counters {
-                        on: *on,
-                        counter: counter.clone(),
-                    }
+                Unit::Counters {
+                    on: *on,
+                    counter: counter.clone(),
                 }
             }
             Event::LifeGained { player, .. } => Unit::Life { player: *player },
@@ -1057,6 +1060,48 @@ impl Pass<'_> {
                 _ => None,
             })
             .unwrap_or(default)
+    }
+
+    /// Who puts the counters the batch gives `on`, and whether an effect does: a permanent that enters with them is
+    /// given them by its own controller (CR 614.1c, and the loyalty of CR 306.5b), an effect as far as the replacements
+    /// go; the loyalty a planeswalker pays to activate an ability is the activator's cost, which is no effect (CR 606.4);
+    /// the rest is put by the cause of the batch. A batch no spell or ability caused (a move by hand) counts as an effect.
+    fn putting(&self, on: Target) -> Putting {
+        let Target::Object(named) = on else {
+            return self.caused_putting();
+        };
+        if let Some(controller) = self.entering_controller(named.id) {
+            return Putting {
+                player: Some(controller),
+                effect: true,
+            };
+        }
+        if self.activated.contains(&named.id) {
+            return Putting {
+                effect: false,
+                ..self.caused_putting()
+            };
+        }
+        self.caused_putting()
+    }
+
+    /// The putting of what the cause of the batch does to its targets.
+    fn caused_putting(&self) -> Putting {
+        Putting {
+            player: self.putter.map(|(player, _)| player),
+            effect: self.putter.is_none_or(|(_, resolving)| resolving),
+        }
+    }
+
+    /// The player an object that enters in this batch comes in under.
+    fn entering_controller(&self, object: ObjectId) -> Option<PlayerId> {
+        self.slots.iter().find_map(|slot| {
+            let Item::One(event) = &slot.item else {
+                return None;
+            };
+            let (entered, controller) = entering(self.state, event)?;
+            (entered == object).then(|| self.entering_under(entered, controller))
+        })
     }
 
     fn reference(&self, id: ObjectId) -> Option<ObjectRef> {
@@ -1085,6 +1130,20 @@ impl Pass<'_> {
                 false
             }
             (Ref::Each(selector), Target::Object(object)) => match self.reference(object.id) {
+                // A permanent that enters is judged as the permanent it becomes (CR 614.12): it is still in the zone it
+                // comes from, which "a permanent you control" does not name.
+                Some(reference) if self.entering_controller(object.id).is_some() => {
+                    let on_battlefield = Pred::In(ZoneKind::Battlefield);
+                    let entered = Selector(
+                        selector
+                            .0
+                            .iter()
+                            .filter(|pred| **pred != on_battlefield)
+                            .cloned()
+                            .collect(),
+                    );
+                    scope.selects(&entered, reference)?
+                }
                 Some(reference) => scope.selects(selector, reference)?,
                 None => false,
             },
@@ -1226,12 +1285,13 @@ impl Pass<'_> {
                     counter: kind,
                 },
             ) => {
-                let putter_fits = match (by, self.putter) {
+                let putting = self.putting(*put);
+                let putter_fits = match (by, putting.player) {
                     (None, _) => true,
-                    (Some(by), Some((player, _))) => scope.players(by)?.contains(&player),
+                    (Some(by), Some(player)) => scope.players(by)?.contains(&player),
                     (Some(_), None) => false,
                 };
-                let effect_fits = !*effect || self.putter.is_some_and(|(_, resolving)| resolving);
+                let effect_fits = !*effect || putting.effect;
                 putter_fits
                     && effect_fits
                     && counter.as_ref().is_none_or(|wanted| wanted == kind)
@@ -4000,6 +4060,7 @@ fn zone_word(zone: Zone) -> &'static str {
     }
 }
 
+mod cost_counters;
 mod day;
 mod r304_as_enters;
 

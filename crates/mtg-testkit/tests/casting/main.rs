@@ -7,6 +7,7 @@ mod alt_cast;
 mod alternative_costs;
 mod announce_again;
 mod announce_division;
+mod auto_pay_lands_first;
 mod big_mana_board;
 mod borrowed_mana;
 mod by_hand_due;
