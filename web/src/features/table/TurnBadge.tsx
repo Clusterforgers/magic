@@ -55,7 +55,7 @@ export function TurnBadge() {
       >
         <Pill
           data-themed={phase === null ? undefined : ''}
-          title={badgeTitle(input)}
+          title={badgeTitle({ ...input, party: partySeats(input.party) })}
           className={cn(
             'h-7 max-w-full shrink truncate px-3 text-sm',
             phase !== null && ON_PHASE[yours ? 'you' : 'them'],
