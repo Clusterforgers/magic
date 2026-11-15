@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO deck_group_members (deck_id, group_id) VALUES ($1, $2)\n             ON CONFLICT (deck_id, group_id) DO NOTHING",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "acadcbd8ae8b1096b1bef6e4759d9e1471598f7c30efafdc0e125dee509e7825"
+}

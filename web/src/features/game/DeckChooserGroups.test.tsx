@@ -19,7 +19,7 @@ afterEach(() => {
 
 const GROUPS = [groupView('g1', 'Fun', ['stored-pauper']), groupView('g2', 'Hardcore', ['stored-rakdos'])]
 
-async function open(chosenId: string | null = null) {
+async function open(chosenId: string | null = null, held = GROUPS) {
   vi.stubGlobal('matchMedia', (query: string) => ({
     matches: true,
     media: query,
@@ -32,7 +32,7 @@ async function open(chosenId: string | null = null) {
     api: { ...offlineAccounts, myGames: async () => [] },
     initial: { status: 'signed-in', user: { id: 'u', username: 'Ada_L', is_admin: false } },
   })
-  const groups = startGroups(GROUPS)
+  const groups = startGroups(held)
   await renderInRouter(
     <AuthContext value={auth}>
       <DeckChooser
@@ -106,6 +106,30 @@ describe('the deck picker in groups', () => {
     expect(localStorage.getItem(KEY)).toBeNull()
     await user.dblClick(screen.getByRole('option', { name: /^Pauper Affinity/ }))
     expect(localStorage.getItem(KEY)).toBe('g1')
+  })
+
+  it('lists a deck in every group it sits in and steps through the rows by position', async () => {
+    const both = [
+      groupView('g1', 'Fun', ['stored-pauper']),
+      groupView('g2', 'Hardcore', ['stored-pauper', 'stored-rakdos']),
+    ]
+    const { user } = await open(null, both)
+    await user.click(header(/^Hardcore/))
+    expect(screen.getByRole('listbox', { name: 'Your decks: Fun' })).toBeInTheDocument()
+    expect(screen.getByRole('listbox', { name: 'Your decks: Hardcore' })).toBeInTheDocument()
+    const rows = screen.getAllByRole('option')
+    const twice = rows.filter((row) =>
+      /^Pauper Affinity/.test(row.getAttribute('aria-label') ?? row.textContent ?? ''),
+    )
+    expect(twice).toHaveLength(2)
+    // The arrow goes on from the row that has the focus, not from the deck's first listing.
+    const second = twice[1]
+    if (second === undefined) throw new Error('no second row')
+    const at = rows.indexOf(second)
+    second.focus()
+    const last = at === rows.length - 1
+    await user.keyboard(last ? '{ArrowUp}' : '{ArrowDown}')
+    expect(rows[last ? at - 1 : at + 1]).toHaveFocus()
   })
 
   it('folds a group with its heading button', async () => {

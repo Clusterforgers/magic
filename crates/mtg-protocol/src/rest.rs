@@ -40,8 +40,8 @@ pub use cards::{
     PrintingView, RulingView,
 };
 pub use deck_groups::{
-    DeckGroupChange, DeckGroupChoice, DeckGroupOrder, DeckGroupView, DeckGroups,
-    MAX_DECK_GROUP_NAME_CHARS, MAX_DECK_GROUPS_PER_USER, NewDeckGroup,
+    DeckGroupChange, DeckGroupOrder, DeckGroupView, DeckGroups, MAX_DECK_GROUP_NAME_CHARS,
+    MAX_DECK_GROUPS_PER_USER, NewDeckGroup,
 };
 pub use decks::{
     CardSuggestion, CheckRequest, DeckBody, DeckErrorCode, DeckLineBody, DeckLineView, DeckList,

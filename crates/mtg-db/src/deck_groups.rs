@@ -1,6 +1,7 @@
 //! Deck groups: an account's named shelves for its decks, in the owner's order and each collapsed or
-//! open. A deck sits in at most one group; deleting a group leaves its decks ungrouped. Every query
-//! names the owner, so one account never reads or changes another's groups or files another's deck.
+//! open. A deck sits in any number of groups, or in none; deleting a group leaves its decks in their other
+//! groups. Every query names the owner, so one account never reads or changes another's groups or files
+//! another's deck.
 
 use std::collections::HashMap;
 
@@ -47,10 +48,10 @@ impl From<sqlx::Error> for CreateGroupError {
     }
 }
 
-/// What [`DeckGroupRepo::file`] did.
+/// What [`DeckGroupRepo::add_deck`] or [`DeckGroupRepo::remove_deck`] did.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Filing {
-    /// The deck sits in the group now, or in none.
+    /// The deck sits in the group (added) or no longer does (removed); asking twice changes nothing more.
     Done,
     /// The owner holds no such deck.
     NoDeck,
@@ -116,6 +117,29 @@ async fn load(conn: &mut PgConnection, owner: Uuid) -> Result<Vec<StoredGroup>, 
             collapsed: row.collapsed,
         })
         .collect())
+}
+
+/// `NoDeck` or `NoGroup` when `owner` holds no such deck or group, else `None`.
+async fn held(
+    conn: &mut PgConnection,
+    owner: Uuid,
+    deck: DeckId,
+    group: Uuid,
+) -> Result<Option<Filing>, DbError> {
+    let held = sqlx::query!(
+        r#"SELECT EXISTS (SELECT 1 FROM decks WHERE owner = $1 AND id = $2) AS "deck!",
+                  EXISTS (SELECT 1 FROM deck_groups WHERE owner = $1 AND id = $3) AS "group!""#,
+        owner,
+        deck.0,
+        group
+    )
+    .fetch_one(&mut *conn)
+    .await?;
+    Ok(match (held.deck, held.group) {
+        (false, _) => Some(Filing::NoDeck),
+        (true, false) => Some(Filing::NoGroup),
+        (true, true) => None,
+    })
 }
 
 impl DeckGroupRepo {
@@ -234,44 +258,47 @@ impl DeckGroupRepo {
         Ok(true)
     }
 
-    /// Puts the deck `deck` of `owner` in the group `group` of `owner`, or in none.
-    pub async fn file(
+    /// Adds the deck `deck` of `owner` to the group `group` of `owner`, beside the groups it sits in already.
+    pub async fn add_deck(
         &self,
         owner: Uuid,
         deck: DeckId,
-        group: Option<Uuid>,
+        group: Uuid,
     ) -> Result<Filing, DbError> {
         let mut tx = self.pool.begin().await?;
-        let deck_held = sqlx::query_scalar!(
-            r#"SELECT EXISTS (SELECT 1 FROM decks WHERE owner = $1 AND id = $2) AS "owned!""#,
-            owner,
-            deck.0
-        )
-        .fetch_one(&mut *tx)
-        .await?;
-        if !deck_held {
-            return Ok(Filing::NoDeck);
+        if let Some(refused) = held(&mut tx, owner, deck, group).await? {
+            return Ok(refused);
         }
-        let Some(group) = group else {
-            sqlx::query!("DELETE FROM deck_group_members WHERE deck_id = $1", deck.0)
-                .execute(&mut *tx)
-                .await?;
-            tx.commit().await?;
-            return Ok(Filing::Done);
-        };
-        let filed = sqlx::query!(
-            "INSERT INTO deck_group_members (deck_id, group_id)
-             SELECT $2, id FROM deck_groups WHERE owner = $1 AND id = $3
-             ON CONFLICT (deck_id) DO UPDATE SET group_id = EXCLUDED.group_id",
-            owner,
+        sqlx::query!(
+            "INSERT INTO deck_group_members (deck_id, group_id) VALUES ($1, $2)
+             ON CONFLICT (deck_id, group_id) DO NOTHING",
             deck.0,
             group
         )
         .execute(&mut *tx)
         .await?;
-        if filed.rows_affected() == 0 {
-            return Ok(Filing::NoGroup);
+        tx.commit().await?;
+        Ok(Filing::Done)
+    }
+
+    /// Takes the deck `deck` of `owner` out of the group `group` of `owner`; its other groups stay.
+    pub async fn remove_deck(
+        &self,
+        owner: Uuid,
+        deck: DeckId,
+        group: Uuid,
+    ) -> Result<Filing, DbError> {
+        let mut tx = self.pool.begin().await?;
+        if let Some(refused) = held(&mut tx, owner, deck, group).await? {
+            return Ok(refused);
         }
+        sqlx::query!(
+            "DELETE FROM deck_group_members WHERE deck_id = $1 AND group_id = $2",
+            deck.0,
+            group
+        )
+        .execute(&mut *tx)
+        .await?;
         tx.commit().await?;
         Ok(Filing::Done)
     }

@@ -17,23 +17,25 @@ export interface Section<T> {
 }
 
 /**
- * The items in the groups' order, then those in no group, each section keeping the items' own order. `keepEmpty`
- * keeps sections without items (the decks page shows every group as a place to drop a deck).
+ * The items in the groups' order, then those in no group, each section keeping the items' own order. An item in
+ * several groups is in each of their sections, and in Ungrouped only when it is in none. `keepEmpty` keeps sections
+ * without items (the decks page shows every group as a place to drop a deck).
  */
 export function sections<T extends { id: string }>(
   items: readonly T[],
   groups: readonly GroupLike[],
   keepEmpty = false,
 ): Section<T>[] {
-  const home = new Map<string, string>()
-  for (const group of groups) for (const deck of group.decks) home.set(deck, group.id)
+  const homes = membership(groups)
   const byGroup = new Map<string, T[]>(groups.map((group) => [group.id, []]))
   const loose: T[] = []
   for (const item of items) {
-    const at = home.get(item.id)
-    const bucket = at === undefined ? undefined : byGroup.get(at)
-    if (bucket === undefined) loose.push(item)
-    else bucket.push(item)
+    let placed = false
+    for (const id of homes.get(item.id) ?? []) {
+      byGroup.get(id)?.push(item)
+      placed = true
+    }
+    if (!placed) loose.push(item)
   }
   const all: Section<T>[] = [
     ...groups.map((group) => ({ key: group.id, group, items: byGroup.get(group.id) ?? [] })),
@@ -42,17 +44,43 @@ export function sections<T extends { id: string }>(
   return keepEmpty ? all : all.filter((section) => section.items.length > 0)
 }
 
-/** The id of the group the deck sits in, or null. */
-export function groupOf(groups: readonly GroupLike[], deckId: string): string | null {
-  return groups.find((group) => group.decks.includes(deckId))?.id ?? null
+/** The ids of the groups each deck sits in, in the owner's order of the groups; a deck in none has no entry. */
+export function membership(groups: readonly GroupLike[]): Map<string, string[]> {
+  const homes = new Map<string, string[]>()
+  for (const group of groups) {
+    for (const deck of group.decks) {
+      const held = homes.get(deck)
+      if (held === undefined) homes.set(deck, [group.id])
+      else if (!held.includes(group.id)) held.push(group.id)
+    }
+  }
+  return homes
 }
 
-/** The groups with the deck moved into `target` (null: into none). */
-export function filed<G extends GroupLike>(groups: readonly G[], deckId: string, target: string | null): G[] {
-  return groups.map((group) => {
-    const rest = group.decks.filter((deck) => deck !== deckId)
-    return { ...group, decks: group.id === target ? [deckId, ...rest] : rest }
-  })
+/** The ids of the groups the deck sits in, in the owner's order; empty when it is in none. */
+export function groupsOf(groups: readonly GroupLike[], deckId: string): string[] {
+  return groups.filter((group) => group.decks.includes(deckId)).map((group) => group.id)
+}
+
+/** The id of the first group the deck sits in, or null. */
+export function groupOf(groups: readonly GroupLike[], deckId: string): string | null {
+  return groupsOf(groups, deckId)[0] ?? null
+}
+
+/** The groups with the deck added to `target`, at the front; the deck's other groups stay. */
+export function added<G extends GroupLike>(groups: readonly G[], deckId: string, target: string): G[] {
+  return groups.map((group) =>
+    group.id === target && !group.decks.includes(deckId)
+      ? { ...group, decks: [deckId, ...group.decks] }
+      : group,
+  )
+}
+
+/** The groups with the deck taken out of `from`; the deck's other groups stay. */
+export function removed<G extends GroupLike>(groups: readonly G[], deckId: string, from: string): G[] {
+  return groups.map((group) =>
+    group.id === from ? { ...group, decks: group.decks.filter((deck) => deck !== deckId) } : group,
+  )
 }
 
 /** The groups with the one at `id` moved `by` places, kept inside the list. */

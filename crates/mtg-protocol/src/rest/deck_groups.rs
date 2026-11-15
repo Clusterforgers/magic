@@ -1,6 +1,6 @@
-//! Bodies of the deck-group endpoints of `mtg-server` (`/api/deck-groups`, `PUT /api/decks/{id}/group`):
-//! an account's named groups of its decks, in its order, each collapsed or open. A deck sits in at most
-//! one group; the errors use `DeckErrorCode`.
+//! Bodies of the deck-group endpoints of `mtg-server` (`/api/deck-groups`, `PUT`/`DELETE
+//! /api/decks/{id}/groups/{group}`): an account's named groups of its decks, in its order, each collapsed or
+//! open. A deck sits in any number of groups, or in none; the errors use `DeckErrorCode`.
 
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
@@ -23,7 +23,7 @@ pub struct DeckGroupView {
     pub decks: Vec<String>,
 }
 
-/// The answer of `GET /api/deck-groups`: the account's groups in its order; a deck in none is ungrouped.
+/// The answer of `GET /api/deck-groups`: the account's groups in its order; a deck may be in several, one in none is ungrouped.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct DeckGroups {
     /// The groups, in the owner's order.
@@ -55,11 +55,4 @@ pub struct DeckGroupChange {
 pub struct DeckGroupOrder {
     /// The group ids.
     pub ids: Vec<String>,
-}
-
-/// The body of `PUT /api/decks/{id}/group`: the group the deck goes to, or `null` for none.
-#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, TS)]
-pub struct DeckGroupChoice {
-    /// The group's id; `null` ungroups the deck.
-    pub group: Option<String>,
 }

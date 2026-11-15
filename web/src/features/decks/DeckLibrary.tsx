@@ -8,7 +8,7 @@ import {
   TriangleAlertIcon,
   UploadIcon,
 } from 'lucide-react'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { EmptyState } from '@/components/EmptyState'
 import { Loading } from '@/components/Loading'
 import { PageShell } from '@/components/PageShell'
@@ -23,7 +23,7 @@ import { DeckRow } from './DeckRow'
 import { DeleteDeckDialog } from './DeleteDeckDialog'
 import { GroupedDecks } from './groups/GroupedDecks'
 import { GroupNameDialog } from './groups/GroupNameDialog'
-import { PRESET_GROUPS } from './groups/grouping'
+import { membership, PRESET_GROUPS } from './groups/grouping'
 import { useDeckGroups } from './groups/useDeckGroups'
 import { ImportDialog } from './ImportDialog'
 import { NewDeckDialog } from './NewDeckDialog'
@@ -33,7 +33,7 @@ type Overlay =
   | { key: number; kind: 'new' }
   | { key: number; kind: 'import' }
   | { key: number; kind: 'delete'; deck: DeckListItem }
-  | { key: number; kind: 'group'; group?: DeckGroupView }
+  | { key: number; kind: 'group'; group?: DeckGroupView; deck?: DeckListItem }
 
 const NO_DECKS: DeckListItem[] = []
 
@@ -75,7 +75,7 @@ export function DeckLibrary({ api, clock, groupsApi = sharedGroups }: DeckLibrar
         | { kind: 'new' }
         | { kind: 'import' }
         | { kind: 'delete'; deck: DeckListItem }
-        | { kind: 'group'; group?: DeckGroupView },
+        | { kind: 'group'; group?: DeckGroupView; deck?: DeckListItem },
     ): void => {
       opened.current += 1
       setOverlay({ ...next, key: opened.current })
@@ -84,8 +84,19 @@ export function DeckLibrary({ api, clock, groupsApi = sharedGroups }: DeckLibrar
   )
   // Stable, so the memoised rows draw again only when their deck changes.
   const askDelete = useCallback((target: DeckListItem) => open({ kind: 'delete', deck: target }), [open])
-  const { file } = groups
-  const fileDeck = useCallback((deck: DeckListItem, group: string | null) => file(deck.id, group), [file])
+  const { addDeck, removeDeck } = groups
+  const groupList = groups.groups
+  const memberships = useMemo(() => membership(groupList), [groupList])
+  const toggleGroup = useCallback(
+    (deck: DeckListItem, group: string, member: boolean) => {
+      const name = groupList.find((entry) => entry.id === group)?.name ?? 'the group'
+      if (member) addDeck(deck.id, group)
+      else removeDeck(deck.id, group)
+      setAnnouncement(member ? `Added “${deck.name}” to ${name}.` : `Removed “${deck.name}” from ${name}.`)
+    },
+    [addDeck, removeDeck, groupList],
+  )
+  const askNewGroup = useCallback((deck: DeckListItem) => open({ kind: 'group', deck }), [open])
   // A dialog that finishes closing after another one opened must not take the new one down with it.
   const closed = (key: number): void => {
     setOverlay((current) => (current?.key === key ? null : current))
@@ -164,7 +175,7 @@ export function DeckLibrary({ api, clock, groupsApi = sharedGroups }: DeckLibrar
               {groups.ready ? (
                 <Button
                   type="button"
-                  variant="ghost"
+                  variant="outline"
                   aria-haspopup="dialog"
                   onClick={() => open({ kind: 'group' })}
                 >
@@ -273,16 +284,18 @@ export function DeckLibrary({ api, clock, groupsApi = sharedGroups }: DeckLibrar
                 groups={groups}
                 onRename={(group) => open({ kind: 'group', group })}
                 onAnnounce={setAnnouncement}
-                renderRow={(deck, groupId) => (
+                renderRow={(deck, section) => (
                   <DeckRow
                     key={deck.id}
                     deck={deck}
                     api={api}
                     now={now}
                     onDelete={askDelete}
-                    groups={groups.groups}
-                    groupId={groupId}
-                    onFile={fileDeck}
+                    groups={groupList}
+                    memberOf={memberships.get(deck.id)}
+                    section={section}
+                    onToggleGroup={toggleGroup}
+                    onNewGroup={askNewGroup}
                   />
                 )}
               />
@@ -293,7 +306,16 @@ export function DeckLibrary({ api, clock, groupsApi = sharedGroups }: DeckLibrar
                 className="grid gap-3"
               >
                 {decks.map((deck) => (
-                  <DeckRow key={deck.id} deck={deck} api={api} now={now} onDelete={askDelete} />
+                  <DeckRow
+                    key={deck.id}
+                    deck={deck}
+                    api={api}
+                    now={now}
+                    onDelete={askDelete}
+                    groups={groups.ready ? groupList : undefined}
+                    onToggleGroup={toggleGroup}
+                    onNewGroup={askNewGroup}
+                  />
                 ))}
               </ul>
             )}
@@ -305,8 +327,12 @@ export function DeckLibrary({ api, clock, groupsApi = sharedGroups }: DeckLibrar
         <GroupNameDialog
           key={overlay.key}
           initial={overlay.group?.name}
+          deckName={overlay.deck?.name}
           onSubmit={(name) => {
-            if (overlay.group === undefined) {
+            if (overlay.deck !== undefined) {
+              groups.createWithDeck(name, overlay.deck.id)
+              setAnnouncement(`Added the group “${name}” with “${overlay.deck.name}” in it.`)
+            } else if (overlay.group === undefined) {
               groups.create([name])
               setAnnouncement(`Added the group “${name}”.`)
             } else {
