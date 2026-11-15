@@ -22,6 +22,7 @@ Adorned Pouncer
 Adriana, Captain of the Guard
 Adric, Mathematical Genius
 Adventurous Eater // Have a Bite
+Aegis of the Legion
 Aerialephant
 Aeromunculus
 Aether Gale
@@ -53,6 +54,7 @@ Alter Reality
 Amass the Components
 Ambitious Aetherborn
 Aminatou, Veil Piercer
+Aminatou, the Fateshifter
 Amulet of Safekeeping
 Amy Pond
 Anafenza, Kin-Tree Spirit
@@ -508,6 +510,7 @@ Demotion
 Dense Canopy
 Deputized Protester
 Desert
+Desolation
 Desperate Ravings
 Desperate Ritual
 Despise
@@ -584,6 +587,7 @@ Dromoka Captain
 Dromoka's Command
 Dromoka's Gift
 Dromoka, the Eternal
+Drop Tower
 Drove of Elves
 Drownyard Temple
 Drudge Beetle
@@ -1033,6 +1037,7 @@ Infesting Radroach
 Infiltration Lens
 Ink-Treader Nephilim
 Inkwell Leviathan
+Inniaz, the Gale Force
 Inquisition of Kozilek
 Inquisitive Glimmer
 Insatiable Hemophage
@@ -1455,6 +1460,7 @@ Oran-Rief, the Vastwood
 Orazca Relic
 Orchard Strider
 Orcish Farmer
+Order of Succession
 Ordered Migration
 Organic Extinction
 Origin of the Hulk
@@ -1699,6 +1705,7 @@ Riptide Survivor
 Rishkar's Expertise
 Rishkar, Peema Renegade
 Rising Miasma
+Risky Move
 Rite of Replication
 Rith, Liberated Primeval
 River of Tears
@@ -2215,6 +2222,7 @@ True Identity
 True-Name Nemesis
 Trumpeting Gnarr
 Tumble Magnet
+Tunnel of Love
 Turn // Burn
 Turn to Frog
 Tuskguard Captain
