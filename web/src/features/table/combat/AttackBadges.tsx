@@ -1,29 +1,28 @@
 import { Swords } from 'lucide-react'
 import type { CSSProperties } from 'react'
-import { useContext, useMemo } from 'react'
-import { useShallow } from 'zustand/react/shallow'
+import { useContext } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
-import type { ObjectId, PlayerId } from '@/protocol/generated'
+import type { PlayerId } from '@/protocol/generated'
 import { useSeatNamer } from '../names'
 import { seatHue } from '../podFigures'
 import { ATTACK_BADGES_BY_DEFAULT, TableOptionsContext } from '../tableOptions'
-import { usePendingCombat } from './pending'
-import { attackGroups } from './plan'
+import { useSeatAttacks } from './attacked'
 import type { AttackGroup } from './plan'
 
-/** What a badge says to a screen reader and in its tooltip: "Bo attacks with 3 creatures: Grizzly Bears, …". */
-export function attackWords(group: AttackGroup, from: string, names: readonly string[]): string {
+/** What a badge says to a screen reader and in its tooltip: "Bo attacks you with 3 creatures: Grizzly Bears, …". */
+export function attackWords(group: AttackGroup, from: string, names: readonly string[], at?: string): string {
   const count = group.attackers.length
   const what = `${count} creature${count === 1 ? '' : 's'}`
   const verb = group.pending ? 'would attack' : 'attacks'
-  return `${from} ${verb} with ${what}: ${names.join(', ')}`
+  return `${from} ${verb}${at === undefined ? '' : ` ${at}`} with ${what}: ${names.join(', ')}`
 }
 
 /**
  * The attacks at a seat as badges on its pod or tile, one per attacking seat in that seat's colour ("⚔ 3"), dashed
- * while the attack is still being chosen. They stand in for lines that would cross the table from a board to a pod;
- * nothing is drawn while nobody attacks the seat.
+ * while the attack is still being chosen. They stand in for lines that would cross the table from a board to a pod
+ * (boss mode draws the lines as well); nothing is drawn while nobody attacks the seat. On the viewer's own pod they
+ * name "you" for a screen reader.
  */
 export function AttackBadges({ seat }: { seat: PlayerId }) {
   const on = useContext(TableOptionsContext).attackBadges ?? ATTACK_BADGES_BY_DEFAULT
@@ -31,29 +30,12 @@ export function AttackBadges({ seat }: { seat: PlayerId }) {
 }
 
 function Badges({ seat }: { seat: PlayerId }) {
-  const combat = usePlay((state) => state.view?.combat ?? null)
-  const pending = usePendingCombat()
-  const attackers = useMemo(() => {
-    const ids: ObjectId[] = []
-    for (const attacker of combat?.attackers ?? []) ids.push(attacker.object)
-    for (const [attacker] of pending.attacks) ids.push(attacker)
-    return ids
-  }, [combat, pending])
-  const facts = usePlay(
-    useShallow((state) =>
-      attackers.flatMap((id) => [state.objectsById[id]?.controller ?? -1, state.objectsById[id]?.name ?? '']),
-    ),
-  )
+  const { groups, cardName } = useSeatAttacks(seat)
   const name = useSeatNamer()
-  const groups = useMemo(() => {
-    const controllerOf = (id: ObjectId): PlayerId | undefined => {
-      const seen = facts[attackers.indexOf(id) * 2]
-      return typeof seen === 'number' && seen >= 0 ? seen : undefined
-    }
-    return attackGroups(combat, pending, controllerOf).get(seat) ?? []
-  }, [combat, pending, facts, attackers, seat])
+  const viewer = usePlay((state) => (state.view?.spectator === true ? null : state.seat))
   if (groups.length === 0) return null
-  const cardName = (id: ObjectId): string => String(facts[attackers.indexOf(id) * 2 + 1] ?? '')
+  // On another seat's pod the badge needs no defender; on the viewer's own it says who is attacked.
+  const at = seat === viewer ? 'you' : undefined
   return (
     <>
       {groups.map((group) => {
@@ -61,6 +43,7 @@ function Badges({ seat }: { seat: PlayerId }) {
           group,
           group.from === undefined ? 'A player' : name(group.from),
           group.attackers.map(cardName),
+          at,
         )
         return (
           <span

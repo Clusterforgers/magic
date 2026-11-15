@@ -47,7 +47,7 @@ import { TableGrid } from './TableGrid'
 import { useBoardSplit } from './useBoardSplit'
 import { useTheirHead } from './useTheirHead'
 import { foldsLands, sheetReserve } from './boardSplit'
-import { FOLD_LANDS_BY_DEFAULT, TableOptionsContext } from './tableOptions'
+import { AttackLinesContext, FOLD_LANDS_BY_DEFAULT, TableOptionsContext } from './tableOptions'
 import { TopBar } from './TopBar'
 import { TableTour } from './tour/TableTour'
 import { useViewport } from './useViewport'
@@ -105,6 +105,11 @@ const Table = memo(function Table() {
     [viewport, seatCount, viewer, mode, chosen, followed, active, sides, sideFolded],
   )
   const { seats: plan } = table
+  // In boss mode the boss's side is above and the party below, so attacks at players are lines too, strong for the party.
+  const party = useMemo(
+    () => (plan.mode === 'boss' ? [plan.viewer, ...plan.allies] : null),
+    [plan.mode, plan.viewer, plan.allies],
+  )
   // The overhang the sheet wants in steps of 8 px: the split reserves part of it, and a pod column keeps all of it free.
   const [overhang, setOverhang] = useState(0)
   const onOverhang = useCallback((px: number) => setOverhang(Math.ceil(Math.max(0, px) / 8) * 8), [])
@@ -121,121 +126,125 @@ const Table = memo(function Table() {
   const choice = useChoiceOverlayHost(regions.phone)
 
   return (
-    <FxContext value={fx}>
-      <MomentsContext value={moments}>
-        <PreviewContext value={previews}>
-          <MarksContext value={marks}>
-            <ManualMenuProvider>
-              <StopControlsProvider inBar={table.ladderInBar}>
-                <ControlsSlotProvider form={table.dock}>
-                  <section
-                    ref={section}
-                    aria-label="Game table"
-                    data-mode={plan.mode}
-                    className="relative h-dvh w-full overflow-hidden bg-table"
-                    style={fx.slow === 1 ? undefined : ({ '--fx-slow': fx.slow } as CSSProperties)}
-                  >
-                    <h1 className="sr-only">Game table</h1>
-                    {!ready || seat === null ? (
-                      <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
-                    ) : (
-                      <SideProvider kind={regions.side} foldable={regions.foldable}>
-                        <BoardFloorContext value={regions.phone ? PHONE_FLOOR_PX : null}>
-                          <ChoiceOverlayContext value={choice.value}>
-                            <TableGrid
-                              regions={regions}
-                              stopsRow={table.stopsRow}
-                              bar={
-                                <TopBar
-                                  mode={plan.mode}
-                                  onMode={setMode}
-                                  bossFight={sides !== null}
-                                  pinnedFocus={chosen !== null}
-                                  onFollow={() => setChosen(null)}
-                                  stopsInMenu={false}
-                                  compact={regions.landscape}
-                                />
-                              }
-                              opponents={
-                                plan.shape === 'boss' ? (
-                                  <BossSide
-                                    plan={plan}
-                                    size={size}
-                                    pod={table.opponentPod}
-                                    onFocusSeat={setChosen}
+    <AttackLinesContext value={party}>
+      <FxContext value={fx}>
+        <MomentsContext value={moments}>
+          <PreviewContext value={previews}>
+            <MarksContext value={marks}>
+              <ManualMenuProvider>
+                <StopControlsProvider inBar={table.ladderInBar}>
+                  <ControlsSlotProvider form={table.dock}>
+                    <section
+                      ref={section}
+                      aria-label="Game table"
+                      data-mode={plan.mode}
+                      className="relative h-dvh w-full overflow-hidden bg-table"
+                      style={fx.slow === 1 ? undefined : ({ '--fx-slow': fx.slow } as CSSProperties)}
+                    >
+                      <h1 className="sr-only">Game table</h1>
+                      {!ready || seat === null ? (
+                        <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
+                      ) : (
+                        <SideProvider kind={regions.side} foldable={regions.foldable}>
+                          <BoardFloorContext value={regions.phone ? PHONE_FLOOR_PX : null}>
+                            <ChoiceOverlayContext value={choice.value}>
+                              <TableGrid
+                                regions={regions}
+                                stopsRow={table.stopsRow}
+                                bar={
+                                  <TopBar
+                                    mode={plan.mode}
+                                    onMode={setMode}
+                                    bossFight={sides !== null}
+                                    pinnedFocus={chosen !== null}
+                                    onFollow={() => setChosen(null)}
+                                    stopsInMenu={false}
+                                    compact={regions.landscape}
                                   />
-                                ) : (
-                                  <Opponents
-                                    plan={plan}
-                                    size={size}
-                                    pod={table.opponentPod}
-                                    onFocusSeat={setChosen}
-                                    foldLands={regions.phone && foldsLands(plan, folding, true)}
+                                }
+                                opponents={
+                                  plan.shape === 'boss' ? (
+                                    <BossSide
+                                      plan={plan}
+                                      size={size}
+                                      pod={table.opponentPod}
+                                      onFocusSeat={setChosen}
+                                    />
+                                  ) : (
+                                    <Opponents
+                                      plan={plan}
+                                      size={size}
+                                      pod={table.opponentPod}
+                                      onFocusSeat={setChosen}
+                                      foldLands={regions.phone && foldsLands(plan, folding, true)}
+                                    />
+                                  )
+                                }
+                                shared={
+                                  <SharedStrip
+                                    sheetMax={regions.sheet}
+                                    sheetWide={regions.sheetWide}
+                                    onOverhang={onOverhang}
+                                    inset={table.pod === 'aside' ? POD_COLUMN_PX + ZONE_GAP_PX : 0}
                                   />
-                                )
-                              }
-                              shared={
-                                <SharedStrip
-                                  sheetMax={regions.sheet}
-                                  sheetWide={regions.sheetWide}
-                                  onOverhang={onOverhang}
-                                  inset={table.pod === 'aside' ? POD_COLUMN_PX + ZONE_GAP_PX : 0}
-                                />
-                              }
-                              own={
-                                plan.shape === 'boss' ? (
-                                  <PartySide
-                                    plan={plan}
-                                    size={size}
-                                    pod={table.pod}
-                                    band={alliesBandPx(regions, plan.allies.length)}
-                                    phone={regions.phone}
+                                }
+                                own={
+                                  plan.shape === 'boss' ? (
+                                    <PartySide
+                                      plan={plan}
+                                      size={size}
+                                      pod={table.pod}
+                                      band={alliesBandPx(regions, plan.allies.length)}
+                                      phone={regions.phone}
+                                    />
+                                  ) : (
+                                    <SeatArea
+                                      seat={plan.viewer}
+                                      size={size}
+                                      facing="near"
+                                      pod={table.pod}
+                                      foldLands={foldsLands(plan, folding, regions.phone)}
+                                    />
+                                  )
+                                }
+                                hand={
+                                  <HandDock
+                                    seat={handFrom}
+                                    growMost={handGrowMost(regions)}
+                                    openingMost={openingGrowMost(regions)}
                                   />
-                                ) : (
-                                  <SeatArea
-                                    seat={plan.viewer}
-                                    size={size}
-                                    facing="near"
-                                    pod={table.pod}
-                                    foldLands={foldsLands(plan, folding, regions.phone)}
-                                  />
-                                )
-                              }
-                              hand={
-                                <HandDock
-                                  seat={handFrom}
-                                  growMost={handGrowMost(regions)}
-                                  openingMost={openingGrowMost(regions)}
-                                />
-                              }
-                              controls={spectator ? <Watching /> : <ControlsDock stopsRow={table.stopsRow} />}
-                              side={<SideTabs />}
-                              sidePanel={
-                                <SidePanelMount rows={sidePanelRows(regions, lowered)} lowered={lowered} />
-                              }
-                              // Inside the grid's own stacking context, so the lines run under the shared strip and above the boards.
-                              overlay={<CombatOverlay />}
-                              choice={choice}
-                            />
-                          </ChoiceOverlayContext>
-                        </BoardFloorContext>
-                        <SideSheet />
-                        <TableTour />
-                      </SideProvider>
-                    )}
-                    <FxTravel />
-                    <FxStrikes />
-                  </section>
-                </ControlsSlotProvider>
-              </StopControlsProvider>
-              <CardPreview />
-              <TableMoments />
-              <LexiconDialog />
-            </ManualMenuProvider>
-          </MarksContext>
-        </PreviewContext>
-      </MomentsContext>
-    </FxContext>
+                                }
+                                controls={
+                                  spectator ? <Watching /> : <ControlsDock stopsRow={table.stopsRow} />
+                                }
+                                side={<SideTabs />}
+                                sidePanel={
+                                  <SidePanelMount rows={sidePanelRows(regions, lowered)} lowered={lowered} />
+                                }
+                                // Inside the grid's own stacking context, so the lines run under the shared strip and above the boards.
+                                overlay={<CombatOverlay />}
+                                choice={choice}
+                              />
+                            </ChoiceOverlayContext>
+                          </BoardFloorContext>
+                          <SideSheet />
+                          <TableTour />
+                        </SideProvider>
+                      )}
+                      <FxTravel />
+                      <FxStrikes />
+                    </section>
+                  </ControlsSlotProvider>
+                </StopControlsProvider>
+                <CardPreview />
+                <TableMoments />
+                <LexiconDialog />
+              </ManualMenuProvider>
+            </MarksContext>
+          </PreviewContext>
+        </MomentsContext>
+      </FxContext>
+    </AttackLinesContext>
   )
 })
 

@@ -45,3 +45,10 @@ export const TOUR_BY_DEFAULT = import.meta.env.MODE !== 'test'
 
 /** Provide a `TableOptions` around `GameTable`; without one the table picks its own start. */
 export const TableOptionsContext = createContext<TableOptions>({})
+
+/**
+ * The seats of the viewer's party where the layout keeps an attack at a player clear of the other boards, so that it is
+ * drawn as a line to the defender's pod or tile as well as a badge on it, strong where a party seat attacks or is
+ * attacked (boss mode: the boss's side above, the party below); null where badges stand in for the lines.
+ */
+export const AttackLinesContext = createContext<readonly PlayerId[] | null>(null)
