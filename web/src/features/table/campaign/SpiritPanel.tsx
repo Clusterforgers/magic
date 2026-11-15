@@ -6,7 +6,7 @@
 import { GhostIcon } from 'lucide-react'
 import type { AbilityRef, ObjectView, PlayerView, PriorityOptions } from '@/protocol/generated'
 import { cn } from '@/lib/utils'
-import { ectoplasmOf, hauntOptions } from './haunt'
+import { ectoplasmOf, hauntOptions, SPIRIT_ASKED } from './haunt'
 
 /** The ectoplasm held as pips, a filled one each, and the number. */
 export function EctoplasmPips({ count }: { count: number }) {
@@ -51,6 +51,9 @@ export function SpiritPanel({
       </header>
       <p className="text-xs text-muted-foreground">
         Enemies can&apos;t attack or target you. You gain 1 ectoplasm each of your turns; spend it to help.
+      </p>
+      <p data-slot="spirit-asked" className="text-xs text-muted-foreground">
+        {SPIRIT_ASKED}
       </p>
       <ul className="grid grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-2">
         {actions.map((action) => {

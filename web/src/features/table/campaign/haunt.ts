@@ -76,6 +76,10 @@ export const SPIRIT_LINES: readonly string[] = [
   'Spend it on haunt actions to help your allies, or save 5 to Rise Again with 10 life.',
 ]
 
+/** When the table asks a Spirit for priority, as the Spirit panel says it. */
+export const SPIRIT_ASKED =
+  'You are asked only when a haunt matters: your party’s upkeep and main phases, the boss’s combat and its spells. A stop asks you anywhere.'
+
 /** The haunt action with this ability index of the Restless Spirit. */
 export function hauntAction(index: number): HauntAction | undefined {
   return HAUNT_ACTIONS.find((action) => action.index === index)
