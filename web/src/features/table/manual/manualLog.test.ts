@@ -305,6 +305,97 @@ describe('a move names the zone the card left', () => {
   })
 })
 
+describe('an action on what another seat owns names the seat and the owner', () => {
+  const owned = { ...names, owner: (id: number) => (id === 1 ? 0 : id === 2 ? 1 : undefined) }
+  const told = (what: ManualAction, player: PlayerId = 1): string =>
+    describeEvent(action(what, player), owned).text
+
+  it.each<[string, ManualAction, PlayerId, string]>([
+    [
+      'a move of a card of another seat',
+      { Move: { object: 1, to: 'Graveyard' } },
+      1,
+      "Bo moves Ana's Sol Ring to the graveyard (by hand)",
+    ],
+    [
+      'a counter on a card of another seat',
+      { Counters: { object: 1, counter: '+1/+1', delta: 1 } },
+      1,
+      "Bo puts a +1/+1 counter on Ana's Sol Ring (by hand)",
+    ],
+    ['a tap of a card of another seat', { Tap: { object: 1 } }, 1, "Bo taps Ana's Sol Ring (by hand)"],
+    [
+      'damage from a card of another seat to a card of the seat',
+      { Damage: { source: 1, target: { Object: 2 }, amount: 2 } },
+      1,
+      "Bo: Ana's Sol Ring deals 2 damage to Grizzly Bears (by hand)",
+    ],
+    [
+      'control taken of a card of another seat',
+      { GiveControl: { object: 1, to: 1 } },
+      1,
+      "Bo takes control of Ana's Sol Ring (by hand)",
+    ],
+    [
+      'life lost by another seat',
+      { Life: { player: 0, delta: -3 } },
+      1,
+      'Bo makes Ana lose 3 life (by hand)',
+    ],
+    [
+      'life gained by another seat',
+      { Life: { player: 0, delta: 4 } },
+      1,
+      'Bo makes Ana gain 4 life (by hand)',
+    ],
+    [
+      'counters put on another seat',
+      { PlayerCounters: { player: 0, counter: 'poison', delta: 2 } },
+      1,
+      'Bo puts 2 poison counters on Ana (by hand)',
+    ],
+    [
+      'counters taken off another seat',
+      { PlayerCounters: { player: 0, counter: 'poison', delta: -1 } },
+      1,
+      'Bo removes a poison counter from Ana (by hand)',
+    ],
+    [
+      'the top cards of another library',
+      { MoveTop: { count: 2, to: 'Graveyard', library: 0 } },
+      1,
+      "Bo moves the top 2 cards of Ana's library to the graveyard (by hand)",
+    ],
+    [
+      'the top cards of the seat’s own library, named',
+      { MoveTop: { count: 2, to: 'Graveyard', library: 1 } },
+      1,
+      'Bo moves the top 2 cards of their library to the graveyard (by hand)',
+    ],
+  ])('%s', (_name, what, player, text) => {
+    expect(told(what, player)).toBe(text)
+  })
+
+  it('leaves the owner out for a card of the seat itself and for a card whose owner is not known', () => {
+    expect(told({ Move: { object: 2, to: 'Graveyard' } })).toBe(
+      'Bo moves Grizzly Bears to the graveyard (by hand)',
+    )
+    expect(told({ Move: { object: 3, to: 'Graveyard' } })).toBe('Bo moves Sword to the graveyard (by hand)')
+  })
+
+  it('names the owner of a token that is gone from the owners the entry remembered', () => {
+    const entry = (event: EventView, owners?: Record<number, PlayerId>): LogEntry => ({
+      seq: 0,
+      event,
+      ...(owners === undefined ? {} : { owners }),
+    })
+    const lines = foldLog([entry(action({ Move: { object: 3, to: 'Graveyard' } }), { 3: 0 })], names, {
+      seats: [0, 1],
+    }).map((line) => line.text)
+    expect(lines).toEqual(["Bo moves Ana's Sword to the graveyard (by hand)"])
+  })
+})
+
 describe('the events of the change', () => {
   const zone = (
     object: number,

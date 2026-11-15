@@ -9,6 +9,7 @@ import { faceCosts } from '@/features/builder/manaText'
 import { cardImageUrl, identityOf } from '@/features/cards/images'
 import { ManaPips } from '@/features/table/ManaPips'
 import { cn } from '@/lib/utils'
+import type { BossArtView } from '@/protocol/generated'
 import { colourGround } from './art'
 import { COLOUR_NAME } from './deckPicker'
 
@@ -72,9 +73,18 @@ export function CommanderArt({
   )
 }
 
-/** A boss's portrait: its colours with a crown, as the content has no art for it yet. */
-export function BossPortrait({ colours, className }: { colours: string; className?: string }) {
-  return <CommanderArt cards={[]} colours={colours} icon={CrownIcon} className={className} />
+/** A boss's portrait: the art crop of the real card its content names, else (unknown boss, failed picture) its colours with a crown. */
+export function BossPortrait({
+  colours,
+  art,
+  className,
+}: {
+  colours: string
+  art?: BossArtView
+  className?: string
+}) {
+  const cards = art === undefined ? [] : [{ oracleId: art.oracle_id, name: art.card }]
+  return <CommanderArt cards={cards} colours={colours} icon={CrownIcon} className={className} />
 }
 
 /** The colours of a deck or boss as mana symbols, spoken by the symbols' names; colourless as {C}. */

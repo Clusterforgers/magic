@@ -119,6 +119,7 @@ A game has a visibility and each seat a state, so a visitor can claim an open se
 - Claims, releases, visibility changes, closes and `bind_seat` of one game run one at a time (`Entry::turn`). A claim writes the row (guarded by `state = 'open'` and the lobby status), then the actor (refused once running), then the slot; a release empties the seat in the actor first. A failed write changes nothing.
 - The join code is eight symbols of `ABCDEFGHJKLMNPQRSTUVWXYZ23456789` (40 bits, OS CSPRNG), in clear only in `Created::code`; the registry and `games.code_digest` keep its SHA-256 (unique among `lobby` and `running` games). `Registry::find_by_code` ignores case, spaces and hyphens and compares every digest without stopping early. Misses count per client network, a hit returns its count, and over the limit even a right code is `Err(Blocked)`.
 - `Registry::lobbies()` returns the public games whose actor has not started, newest first, at most `MAX_LISTED_LOBBIES` (50), as `ListedGame`. It holds no token, code, digest or link, and a full lobby stays in it.
+- A Commander row names its commanders (`LobbyGame.commanders`: seat, name and card identity, in seat order): the chosen decks' of the held seats in the lobby, the ones the game began with once it runs (`GameActor::listed_commanders`). A commander is public in Commander; other formats name none, since a Normal table plays a deck's commanders from its library. The `ETag` covers them.
 
 ### Spectators
 

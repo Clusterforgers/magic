@@ -51,8 +51,8 @@ pub use decks::{
     MAX_IMPORT_LINES, TableRules, UnresolvedLine, UnresolvedReason,
 };
 pub use delves::{
-    CreateDelve, CustomCardView, DelveAction, DelveBossView, DelveContent, DelveDeckProblem,
-    DelveEventView, DelveFightView, DelveList, DelveSummary, DelveView,
+    BossArtView, CreateDelve, CustomCardView, DelveAction, DelveBossView, DelveContent,
+    DelveDeckProblem, DelveEventView, DelveFightView, DelveList, DelveSummary, DelveView,
 };
 pub use favourites::FavouritePrecons;
 pub use fix_marks::{
@@ -60,8 +60,8 @@ pub use fix_marks::{
 };
 pub use lobbies::{
     ChooseDeck, DeckBlockedBody, DeckChoiceErrorCode, GameInfo, GameSeat, JoinCodeRequest,
-    JoinRequest, Joined, LobbyErrorCode, LobbyGame, LobbyList, SeatTeamBody, TeamsBody, Visibility,
-    VisibilityBody,
+    JoinRequest, Joined, LobbyCommander, LobbyErrorCode, LobbyGame, LobbyList, SeatTeamBody,
+    TeamsBody, Visibility, VisibilityBody,
 };
 pub use precons::{
     PRECON_DECK_PREFIX, PreconBoard, PreconCardView, PreconErrorCode, PreconList, PreconListItem,

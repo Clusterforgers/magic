@@ -122,6 +122,7 @@ fn actions(driver: &Driver, actor: PlayerId) -> Vec<(&'static str, ManualAction)
             ManualAction::MoveTop {
                 count: 2,
                 to: ManualZone::Graveyard,
+                library: None,
             },
         ),
         ("discard", ManualAction::Discard { object: hand }),
@@ -388,16 +389,17 @@ fn refusals_leave_the_engine_as_it_was() {
     let mine = find(&driver, Zone::Battlefield, "Mine");
     let theirs = find(&driver, Zone::Battlefield, "Theirs");
     let hidden = find(&driver, Zone::Hand(pid(1)), "Foe card");
+    let spare = find(&driver, Zone::Hand(pid(0)), "Spare");
     let land = find(&driver, Zone::Battlefield, "Mountain");
     let hash = driver.engine().state_hash();
     let length = driver.engine().events().len();
     let cases = [
         (
             ManualAction::Life {
-                player: pid(0),
+                player: PlayerId(9),
                 delta: -1,
             },
-            ManualRefusal::NotYours,
+            ManualRefusal::NoSuchSeat,
         ),
         (
             ManualAction::Damage {
@@ -412,11 +414,11 @@ fn refusals_leave_the_engine_as_it_was() {
         ),
         (
             ManualAction::Damage {
-                source: mine,
+                source: spare,
                 target: DamageTarget::Player(pid(0)),
                 amount: 1,
             },
-            ManualRefusal::NotYours,
+            ManualRefusal::Hidden(spare),
         ),
         (
             ManualAction::Damage {

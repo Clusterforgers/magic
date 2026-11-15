@@ -28,7 +28,7 @@ export function useBoardSplit(
 ): Regions {
   const options = useContext(TableOptionsContext)
   const grouped = options.stacks ?? STACKS_BY_DEFAULT
-  const folded = foldsLands(plan, options.foldLands ?? FOLD_LANDS_BY_DEFAULT)
+  const folded = foldsLands(plan, options.foldLands ?? FOLD_LANDS_BY_DEFAULT, regions.phone)
   const key = usePlay((state) =>
     [plan.viewer, ...plan.boards]
       .map((seat) => {

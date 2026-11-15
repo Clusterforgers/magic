@@ -32,6 +32,7 @@ import { seatEffects } from './playerEffects'
 import { useStable } from './useStable'
 import { useKeepInView } from './useKeepInView'
 import { defenderOutline, useDefender } from './combat/defender'
+import { AttackBadges } from './combat/AttackBadges'
 import { LifeForecast } from './combat/LifeForecast'
 import { TurnTimeMark } from './TurnTimeMark'
 import { TeamBadge } from '@/components/TeamBadge'
@@ -150,6 +151,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
           {away ? <AwayMark /> : null}
         </span>
         <span className="flex shrink-0 items-center gap-1">
+          <AttackBadges seat={seat} />
           <LifeForecast seat={seat} />
           <LifeFx
             seat={seat}

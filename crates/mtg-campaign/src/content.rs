@@ -128,6 +128,18 @@ pub struct Boss {
     /// What it says as the fight begins.
     #[serde(default)]
     pub line: String,
+    /// The real card whose art pictures it.
+    pub art: BossArt,
+}
+
+/// The real card whose art crop pictures a boss: its name and its Scryfall oracle id, which the client's pictures go by.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct BossArt {
+    /// The card's name.
+    pub card: String,
+    /// The card's Scryfall oracle id.
+    pub oracle_id: String,
 }
 
 /// A boss's minion: a lieutenant seat on the boss's side for a big party, with another boss's deck; it falls with the

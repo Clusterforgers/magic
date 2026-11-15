@@ -359,9 +359,9 @@ describe('a long list', () => {
   it.each([
     [3, 'normal'],
     [12, 'normal'],
-    [13, 'compact'],
-    [20, 'compact'],
-  ])('draws %i cards on offer as %s tiles', (count, size) => {
+    [13, 'normal'],
+    [20, 'normal'],
+  ])('draws %i cards on offer as %s tiles (a long list whole in the overlay)', (count, size) => {
     expect(mount(permanents.slice(0, count), 0, 3).card(0)).toHaveAttribute('data-size', size)
   })
 })

@@ -95,6 +95,7 @@ function BossStop({
         <span className="relative shrink-0">
           <BossPortrait
             colours={boss?.colors ?? ''}
+            art={boss?.art}
             className={cn(
               'size-14 rounded-full border-2 border-surface',
               (state === 'cleared' || state === 'locked') && 'grayscale',

@@ -51,9 +51,11 @@ export function boardCounts(state: PlayState, seats: SeatPlan, grouped = true): 
 
 /**
  * Whether the boards of a plan have their lands folded into their pods' lands chips (`LandFoldContext`): every board
- * of a grid of opponents, yours too, where the table folds lands. The boards then hold no lands lane.
+ * of a grid of opponents and every board of a phone, yours too, where the table folds lands. The boards then hold no
+ * lands lane.
  */
-export const foldsLands = (seats: SeatPlan, fold: boolean): boolean => fold && seats.shape === 'columns'
+export const foldsLands = (seats: SeatPlan, fold: boolean, phone = false): boolean =>
+  fold && (seats.shape === 'columns' || (phone && seats.shape !== 'boss'))
 
 /** The most of a prompt sheet's overhang the split keeps free above the strip: two lines of a prompt. */
 export const SHEET_RESERVE_MAX_PX = 64
@@ -110,6 +112,7 @@ export function splitRegions(
     theirRows: frames.theirs.rows,
     theirRowChrome: theirChrome,
     theirScale: seats.shape === 'columns' ? GRID_THEIR_SCALE : THEIR_SCALE,
+    ownCrowd: seats.shape === 'columns' && !regions.phone ? OWN_CROWD_PX : 0,
     ownWidth: frames.own.width,
     theirWidth: frames.theirs.width,
     own: counts.own,
@@ -120,6 +123,12 @@ export function splitRegions(
 
 /** The least width in px of your creatures for which the split gives an opponent's pod column its floor. */
 export const FLOOR_OWN_CARD_PX = 100
+
+/**
+ * Your creatures' least width in px at a grid of opponents: a crowded table gives your row the room for it before the
+ * opponents' boards grow past their floor, since you play from your board and each opponent's enlarges from its pod.
+ */
+export const OWN_CROWD_PX = 60
 
 /** An opponent's cards are this share of yours: their board shrinks first. */
 export const THEIR_SCALE = 0.8
@@ -148,6 +157,8 @@ export interface SplitInput {
   theirScale?: number
   /** What each row of opponents' boards after the first spends besides its lanes (its pod line and frame). */
   theirRowChrome?: number
+  /** Your creatures' least width in px before the opponents' boards grow past their floor (`OWN_CROWD_PX`); 0 when left out. */
+  ownCrowd?: number
   /** The width of the lanes of your board and of each opponent's board in px. */
   ownWidth: number
   theirWidth: number
@@ -198,13 +209,21 @@ export function splitBoards(input: SplitInput, limits: LaneLimits = LANE_LIMITS)
   const theirCard = (card: number): number => Math.floor(card * finite(input.theirScale ?? THEIR_SCALE))
   const fits = (rung: number): boolean => ownRow(at(rung)) + theirRow(theirCard(at(rung))) <= room
   const empty = laneHeight(input.ownWidth, input.own, at(0), limits) + theirNeed(theirCard(at(0)))
-  if (!fits(0) || empty === 0) {
+  const crowd = finite(input.ownCrowd ?? 0)
+  // A crowd: your creatures would fall under `ownCrowd` with every board fitting together.
+  const crowdedOut = crowd > 0 && empty > 0 && fits(0) && at(highestRung(rungs, fits)) < crowd
+  if (!fits(0) || empty === 0 || crowdedOut) {
     const share = shareSplit(room)
     if (input.theirs.length === 0) return share
-    // Opponents that cannot fit even at the floor take what they need there before your row grows past its least.
-    const ownLeast = empty === 0 ? least : Math.max(least, ownRow(at(0)))
+    // Opponents that cannot fit even at the floor take what they need there before your row grows past its least,
+    // which in a crowd holds your creatures at `ownCrowd`.
+    const ownLeast = empty === 0 ? least : Math.max(least, ownRow(Math.max(at(0), crowd)))
     const crowded = empty === 0 ? 0 : Math.min(room - ownLeast, theirRow(at(0)))
     const keep = Math.max(crowded, Math.min(room - least, finite(input.theirChrome) + BOARD_KEEP_PX))
+    if (crowd > 0 && empty > 0) {
+      const opponents = Math.max(keep, Math.min(share.opponents, room - ownLeast))
+      return { ...share, opponents, own: room - opponents }
+    }
     return share.opponents >= keep ? share : { ...share, opponents: keep, own: room - keep }
   }
   // The opponents' row is lifted to the floor where your creatures stay `FLOOR_OWN_CARD_PX` wide; otherwise it takes

@@ -1,6 +1,6 @@
 # UI audit and the look
 
-The state of the web client's look and feel, the problems ranked by their cost to play, the chosen look, the game-feel plan and the items left open. Rules stay in [ui-design.md](ui-design.md); implementation in [web.md](web.md).
+The state of the web client's look and feel, the problems ranked by their cost to play, the chosen look and the game-feel plan. Rules stay in [ui-design.md](ui-design.md); implementation in [web.md](web.md).
 
 ## Method
 
@@ -12,12 +12,12 @@ Impact: how much a problem costs a player in a 4-player Commander game at 1400 �
 
 | # | Problem | Where | What a player meets |
 |---|---|---|---|
-| 1 | Crowded boards draw small cards | table, every board | Opponents' lands fold into their pods' chips and a grid's cards weigh as yours: with 20 permanents a seat and the side panel folded, an opponent's creatures draw about 66 px wide at 1400 × 900; with 40 a seat (14 creatures each) about 48 px, which no layout of three boards side by side lifts much further. Each opponent's board enlarges over the row from its pod (about 95 px cards in the crowd fixture). |
+| 1 | Crowded boards draw small cards | table, every board | Opponents' lands fold into their pods' chips and a grid's cards weigh as yours: with 20 permanents a seat and the side panel folded, an opponent's creatures draw about 66 px wide at 1400 × 900; with 40 a seat (14 creatures each) about 48 px, which no layout of three boards side by side lifts much further. Each opponent's board enlarges over the row from its pod (about 95 px cards in the crowd fixture); your row holds your creatures at 60 px first (about 62 px at 1400 × 900, 50 at 1280 × 720 where the pods take the rest). |
 | 2 | Chrome still takes room | table | The side column takes 272 px until folded to its rail; an opponent's pod head is two to three lines; a long prompt grows the strip to 140 px. |
 | 3 | The hand is still small | hand dock | The hand lies in an arc and rises on hover, but its cards stay about 90 px wide at 1400 × 900; a full-size hover is the preview beside it. |
-| 4 | Combat lines cross the table | combat overlay | Attacks between two other seats draw faint and the lines stay under a card prompt; a line still runs from its board to its defender's pod across the row. |
-| 5 | Choices share the strip | prompts | Card prompts take the strip's width and grow over the opponents' boards with 7 rem cards; a long list still scrolls inside the sheet, and modes have no pictures. |
-| 6 | The phone table is tight | table at 390 | The controls fit (the auto-skip switch without its label), the pod drops the untapped sources and the hand dock is 104 to 140 px; boards still draw about 30 px cards and a card prompt scrolls inside its sheet. |
+| 4 | Combat reads in two places | combat overlay | An attack at a player is a badge on the defender's pod per attacking seat, so the lines that remain join two boards; the block lines still cross the strip between them. |
+| 5 | Choices share the strip | prompts | Card prompts take the strip's width and grow over the opponents' boards with 7 rem cards; a long list opens the centre overlay, and a mode choice stands beside its card's picture. |
+| 6 | The phone table is tight | table at 390 | Boards fold their lands and draw 64 px cards that scroll, a card prompt lays its cards in the overlay; your pod still takes four lines over your board. |
 | 7 | The turn is said in two places | top bar | The badge says whose turn and the step, the ladder names the phase; below 1024 px the badge names it instead. |
 | 8 | The table is quiet between moments | table | The table plays its casts, attacks, blocks, damage, draws and shuffles and taps turn in 150 ms; there is no your-turn moment beyond the banner and no stack resolution beat. |
 
@@ -75,15 +75,3 @@ Effects and sounds decorate the batch that arrived, as the table effects do toda
 - Sound engine: extend `features/sound/` from one cue to a set with categories (table, cues, results), each with its own volume and a master volume and mute, kept in `localStorage` as today. At most three sounds per batch, merged by kind, and none for a snapshot.
 - Production: Web Audio synthesis for interface cues (ping, horn, chimes, ticks: oscillators and envelopes, as `synth.ts` does) and filtered noise for physical sounds (slide, riffle, thump). If synthesis sounds thin for card handling, Kenney's Casino Audio pack (CC0) has card slide, place and shuffle; any asset ships under `web/public/sounds/` with its source and licence in `web/public/sounds/CREDITS.md`. No unlicensed asset.
 - Settings: Effects (full, reduced, off; today's `mode`), Sounds (master, table, cues, results sliders, mute) in the table menu and on Settings; `prefers-reduced-motion` sets reduced by default; every effect ends at once on a new batch or a key press.
-
-## Open items
-
-Each item is one commit with before and after shots at 1400 × 900, 1280 × 720 and 390 × 900 of the screens it touches, and its tests.
-
-- Phone boards: opponents' and your permanents read at 390 (about 30 px now), a card prompt without an inner scroll.
-- Own board in crowds: your creatures past 55 px at a grid table with 40 permanents a seat (an enlarge of your board, or a taller own row).
-- Commander art on open games: a commanders field on the lobby list (server), then each open game as a card with its commanders' art.
-- Boss art: a picture for each boss of the Delves content, shown on the descent and the fight panel in place of the crown.
-- Long-list overlay: a choice of many cards as a centre overlay of its own, the strip keeping the sentence and the buttons.
-- Mode pictures: each mode of a modal spell beside the card's picture.
-- Combat lines kept to the boards they join; attacker groups as a badge on the defender's pod.

@@ -1,11 +1,8 @@
-import type { CSSProperties, ReactNode } from 'react'
+import type { CSSProperties, ReactNode, Ref } from 'react'
 import { cn } from '@/lib/utils'
-import { gridColumns, gridRows, mainColumns } from './layout'
+import { CHOICE_AREAS, gridColumns, gridRows, mainColumns, TABLE_AREAS } from './layout'
 import type { Regions } from './layout'
 import { usePhase } from './turn/usePhase'
-
-/** The named regions of the table, top to bottom: the bar, the opponents, the shared strip, your board, the hand and the controls. */
-const AREAS = '"bar bar" "opponents opponents" "shared shared" "own own" "hand controls"'
 
 interface TableGridProps {
   regions: Regions
@@ -29,6 +26,8 @@ interface TableGridProps {
   sidePanel?: ReactNode
   /** Drawn over the regions inside the grid's stacking context, such as the combat lines. */
   overlay?: ReactNode
+  /** The centre overlay of a card prompt (`prompt/choiceOverlay`): its element's ref and whether it is open. */
+  choice?: { open: boolean; ref: Ref<HTMLDivElement> }
 }
 
 // A one-cell grid whose track may shrink below its content (`minmax(0, 1fr)`), so the region's content is cut or scrolls
@@ -63,6 +62,7 @@ export function TableGrid({
   side,
   sidePanel,
   overlay,
+  choice,
 }: TableGridProps) {
   // Read here, so a change of phase redraws the frame alone: the regions are elements made by the table and stay as they were.
   const phase = usePhase()
@@ -80,9 +80,9 @@ export function TableGrid({
         data-slot="table-main"
         style={
           {
-            gridTemplateRows: gridRows(regions),
+            gridTemplateRows: gridRows(regions, choice?.open === true),
             gridTemplateColumns: mainColumns(regions, stopsRow),
-            gridTemplateAreas: AREAS,
+            gridTemplateAreas: choice?.open === true ? CHOICE_AREAS : TABLE_AREAS,
           } as CSSProperties
         }
         className="felt grid min-h-0 min-w-0"
@@ -104,6 +104,16 @@ export function TableGrid({
         <Area area="controls" className="relative z-30">
           {controls}
         </Area>
+        {choice === undefined ? null : (
+          // Over both boards, which `CHOICE_AREAS` puts next to each other, down to the top of the strip's sheet.
+          <div
+            ref={choice.ref}
+            data-slot="choice-host"
+            hidden={!choice.open}
+            style={{ gridRow: '2 / 4', gridColumn: '1 / -1' }}
+            className="relative z-15 min-h-0 min-w-0 px-2 pt-2 pb-[calc(0.125rem+var(--sheet-overhang,0px))]"
+          />
+        )}
         {sidePanel}
       </div>
       {side}

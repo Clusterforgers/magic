@@ -1,4 +1,4 @@
-//! Goal: on Postgres a Commander game is made, listed, joined and started at 2, 3, 4 and 6 seats from stored decks and from precons, each seat starts with its commander in the command zone and every seat sees all of them, the recipe stores the commanders with the decks and a resumed lobby and game come back as they were, a deck that breaks a rule of the format (no commander, size, singleton, colour identity, an ineligible commander, a command zone in a Normal game, a demo deck) is taken at creation, on a join and on a deck change with the reasons of the check as warnings, the Commander precons are all playable and warn by the same report with the manual cards marked, house rules layer over the format, and bots that only pass play through several turns of a precon with manual cards.
+//! Goal: on Postgres a Commander game is made, listed with the commanders of its held seats, joined and started at 2, 3, 4 and 6 seats from stored decks and from precons, each seat starts with its commander in the command zone and every seat sees all of them, the recipe stores the commanders with the decks and a resumed lobby and game come back as they were, a deck that breaks a rule of the format (no commander, size, singleton, colour identity, an ineligible commander, a command zone in a Normal game, a demo deck) is taken at creation, on a join and on a deck change with the reasons of the check as warnings, the Commander precons are all playable and warn by the same report with the manual cards marked, house rules layer over the format, and bots that only pass play through several turns of a precon with manual cards.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::{common, net};
@@ -273,6 +273,36 @@ async fn recipe(pool: &PgPool, game: &str) -> (Value, RecordStatus) {
     (record.recipe, record.status)
 }
 
+/// The commanders a lobby row names, as `(seat, name, oracle id)`.
+fn listed_commanders(row: &Value) -> Vec<(u64, String, String)> {
+    row["commanders"]
+        .as_array()
+        .map(|all| {
+            all.iter()
+                .map(|commander| {
+                    (
+                        commander["seat"].as_u64().unwrap(),
+                        commander["name"].as_str().unwrap().to_owned(),
+                        commander["identity"]["oracle_id"]
+                            .as_str()
+                            .unwrap()
+                            .to_owned(),
+                    )
+                })
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
+/// The commanders a row names while the first `held` of `all` hold their seats.
+fn leaders_of(all: &[(Browser, String, &'static str)], held: usize) -> Vec<(u64, String, String)> {
+    all[..held]
+        .iter()
+        .zip(0u64..)
+        .map(|((_, _, leader), seat)| (seat, (*leader).to_owned(), oracle(leader)))
+        .collect()
+}
+
 fn row<'a>(listing: &'a Value, game: &str) -> Option<&'a Value> {
     listing["games"]
         .as_array()
@@ -346,13 +376,23 @@ async fn stored_decks_make_a_commander_game_at_every_table_size(pool: PgPool) {
         assert_eq!(listed["format"], "commander");
         assert_eq!(listed["total"], seats);
         assert_eq!(listed["filled"], 1);
+        assert_eq!(
+            listed_commanders(listed),
+            leaders_of(&all, 1),
+            "open seats lead none"
+        );
 
-        // The others join with their own decks.
+        // The others join with their own decks, and the row names each commander as its seat fills.
         let mut tokens = tokens;
-        for (who, deck, _) in &all[1..seats] {
+        for (index, (who, deck, _)) in all[1..seats].iter().enumerate() {
             let joined = join(&server, who, &game, deck).await;
             assert_eq!(joined.status, 200, "{}", joined.text());
             tokens.push(joined.json()["token"].as_str().unwrap().to_owned());
+            let listing = lobby::lobbies(server.addr, &[]).await.json();
+            assert_eq!(
+                listed_commanders(row(&listing, &game).unwrap()),
+                leaders_of(&all, index + 2)
+            );
         }
 
         // The roster tells each seat's deck, with the format of the deck.
@@ -377,6 +417,11 @@ async fn stored_decks_make_a_commander_game_at_every_table_size(pool: PgPool) {
             row(&listing, &game).map(|row| row["running"].clone()),
             Some(serde_json::json!(true)),
             "a started game is listed to watch"
+        );
+        assert_eq!(
+            listed_commanders(row(&listing, &game).unwrap()),
+            leaders_of(&all, seats),
+            "a running game names the commanders it began with"
         );
 
         // The recipe stores each seat's commander with its library, and the fingerprints.
@@ -738,7 +783,7 @@ async fn a_commander_deck_in_a_normal_game_plays_its_commander_from_the_library(
     let server = start(&pool).await;
     let ann = register(server.addr, "ann", PASSWORD).await;
     let id = store(&server, &ann, &led_by("Questing Beast")).await;
-    let body = json!({"format": "normal", "seats": [
+    let body = json!({"format": "normal", "visibility": "public", "seats": [
         {"name": "Ann", "deck": id}, {"name": "B", "deck": "mono-red"}]});
     let made = ann.post(server.addr, "/api/games", &body.to_string()).await;
     assert_eq!(made.status, 201, "{}", made.text());
@@ -746,6 +791,12 @@ async fn a_commander_deck_in_a_normal_game_plays_its_commander_from_the_library(
     assert_eq!(
         warnings_at(&server, &ann, &game, &id).await,
         ["no_commander_zone"]
+    );
+    let listing = lobby::lobbies(server.addr, &[]).await.json();
+    let listed = row(&listing, &game).unwrap();
+    assert!(
+        listed.get("commanders").is_none(),
+        "a Normal row names no commander: {listed}"
     );
 }
 

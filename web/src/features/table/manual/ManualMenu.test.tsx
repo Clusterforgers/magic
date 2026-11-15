@@ -467,13 +467,26 @@ describe('rules left to the table', () => {
 })
 
 describe('what is on offer for other cards', () => {
-  it('shows only the notes, tapping and the way into the panel for a card of an opponent', async () => {
-    const { user } = renderMenu({ object: card({ owner: 1, controller: 1 }) })
+  it('offers a card of an opponent the same moves, tapping and the way into the panel, and sends the move', async () => {
+    const { user, sent } = renderMenu({ object: card({ owner: 1, controller: 1 }) })
     cardButton().focus()
     await user.keyboard('m')
-    expect(within(menu()).getByText(/Only .* moves this card/)).toBeInTheDocument()
+    expect(within(menu()).queryByText(/Only .* moves this card/)).toBeNull()
     expect(entry('Tap')).not.toHaveAttribute('aria-disabled')
     expect(entry(/^In the panel/)).not.toHaveAttribute('aria-disabled')
+    expect(entry(/^Bo.s hand/)).not.toHaveAttribute('aria-disabled')
+    await user.click(entry(/^Bo.s graveyard/))
+    expect(sent).toEqual([{ Move: { object: ID, to: 'Graveyard' } }])
+  })
+
+  it('names no move for a card in the hand of an opponent', async () => {
+    const { user } = renderMenu({
+      object: card({ zone: { Hand: 1 }, permanent: null, owner: 1, controller: 1 }),
+    })
+    cardButton().focus()
+    await user.keyboard('m')
+    expect(within(menu()).getByText(/another seat’s hand/)).toBeInTheDocument()
+    expect(within(menu()).queryByRole('menuitem', { name: 'Graveyard' })).toBeNull()
   })
 
   it('gives a card in the hand the moves and no tap', async () => {

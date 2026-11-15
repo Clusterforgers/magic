@@ -27,7 +27,12 @@ export interface TableOptions {
   sounds?: boolean
   /** Fold the lands of a grid's opponents into their pods' lands chips (`LandFoldContext`); on everywhere but under vitest when left out. */
   foldLands?: boolean
+  /** Show an attack at a player as a badge on the defender's pod instead of a line (`combat/AttackBadges`); on everywhere but under vitest when left out. */
+  attackBadges?: boolean
 }
+
+/** Whether attacks at a player are badges when `TableOptions.attackBadges` is left out. */
+export const ATTACK_BADGES_BY_DEFAULT = import.meta.env.MODE !== 'test'
 
 /** Whether battlefields stack equal permanents when `TableOptions.stacks` is left out. */
 export const STACKS_BY_DEFAULT = import.meta.env.MODE !== 'test'

@@ -350,9 +350,12 @@ const clampCss = (range: HeightClamp): string => `clamp(${range.min}px, ${range.
 /**
  * The `grid-template-rows` of the table's main area: top bar, opponents, shared strip, own board, hand dock. The two
  * board rows share what is left by the weights of `opponents` and `own` (a split, `boardSplit.ts`), else 1 to `OWN_SHARE`.
+ * While a choice overlay is open (`choice`) the strip trades places with your board (`CHOICE_AREAS`): the overlay
+ * covers both boards and the strip keeps the sentence and the buttons above the hand.
  */
 export function gridRows(
   regions: Pick<Regions, 'phone' | 'landscape'> & Partial<Pick<Regions, 'opponents' | 'own'>>,
+  choice = false,
 ): string {
   const bar = regions.landscape ? TOP_BAR_LANDSCAPE_PX : TOP_BAR_PX
   const hand = regions.phone
@@ -360,8 +363,16 @@ export function gridRows(
     : `max(${clampCss(HAND_CLAMP)}, var(${HAND_GROW_VAR}, 0px))`
   const weighted = (regions.opponents ?? 0) > 0 && (regions.own ?? 0) > 0
   const [theirs, own] = weighted ? [weight(regions.opponents), weight(regions.own)] : [1, OWN_SHARE]
-  return `${bar}px minmax(0, ${theirs}fr) ${clampCss(SHARED_CLAMP)} minmax(0, ${own}fr) ${hand}`
+  const strip = clampCss(SHARED_CLAMP)
+  const board = `minmax(0, ${own}fr)`
+  return `${bar}px minmax(0, ${theirs}fr) ${choice ? `${board} ${strip}` : `${strip} ${board}`} ${hand}`
 }
+
+/** The table's named areas, top to bottom: bar, opponents, shared strip, your board, the hand beside the controls. */
+export const TABLE_AREAS = '"bar bar" "opponents opponents" "shared shared" "own own" "hand controls"'
+
+/** The areas while a choice overlay is open: your board above the strip, so the overlay covers both boards in one piece. */
+export const CHOICE_AREAS = '"bar bar" "opponents opponents" "own own" "shared shared" "hand controls"'
 
 /** The tallest the hand dock grows for its rows in a window of these regions, in px; 0 on a phone, whose dock keeps its size. */
 export function handGrowMost(regions: Pick<Regions, 'phone' | 'main'>): number {

@@ -186,7 +186,7 @@ export function StackChips() {
   const folded = groups.filter((group) => !shown.has(group.ids[0] ?? 0)).flatMap((group) => group.ids)
   return (
     <div data-slot="stack-chips" className="flex min-w-0 shrink items-center gap-2">
-      <span className="text-xs font-medium text-muted-foreground">Stack</span>
+      <span className="text-xs font-medium text-muted-foreground max-sm:sr-only">Stack</span>
       <ol
         ref={list}
         role="list"

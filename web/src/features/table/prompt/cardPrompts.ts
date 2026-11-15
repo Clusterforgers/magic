@@ -1,13 +1,14 @@
 /** The prompts that lay out cards in the shared sheet, which then grows over the opponents' boards (`Regions.sheetWide`). */
 import type { PlayState } from '@/play/store'
 
-/** The decision kinds whose prompt draws a row of cards to look at or pick from. */
+/** The decision kinds whose prompt draws a row of cards to look at or pick from, or a card's picture beside its modes. */
 export const CARD_PROMPTS: ReadonlySet<string> = new Set([
   'ChooseCards',
   'ChooseTargets',
   'Scry',
   'OrderCards',
   'Mulligan',
+  'ChooseMode',
 ])
 
 /** Whether the viewer's pending decision lays out cards; wrap nothing, it is a boolean. */

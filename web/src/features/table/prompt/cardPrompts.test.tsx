@@ -17,7 +17,8 @@ describe('laysOutCards', () => {
   it.each([
     ['no decision', null, false],
     ['priority', 'Priority', false],
-    ['a mode', 'ChooseMode', false],
+    ['a mode beside its card', 'ChooseMode', true],
+    ['an option', 'ChooseOption', false],
     ['a choice of cards', 'ChooseCards', true],
     ['targets', 'ChooseTargets', true],
     ['a scry', 'Scry', true],

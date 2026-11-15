@@ -28,7 +28,7 @@ import type {
 import type { DueLine } from './byHand'
 import type { AwayTimes } from './awayClocks'
 import { hostFromWire, hostsBefore } from './hosts'
-import { namesToRemember, revealedViews } from './rememberNames'
+import { namesToRemember, ownersToRemember, revealedViews } from './rememberNames'
 import type { HostRef } from './hosts'
 import type { PreviewState } from './preview'
 
@@ -82,6 +82,8 @@ export interface LogEntry {
   hostBefore?: HostRef | null
   /** The names of the cards the entry tells that the view no longer holds once they moved (a look, a put-back, a reveal). */
   names?: Readonly<Record<ObjectId, string>>
+  /** For a manual move: the owner of the card moved, which the view no longer holds when it was a token. */
+  owners?: Readonly<Record<ObjectId, PlayerId>>
   /** For a reveal: the cards as every seat saw them when shown, which the view may hold no longer (`EventBatch.shown`). */
   seen?: readonly ObjectView[]
 }
@@ -288,12 +290,14 @@ export function appendLog(
   const added = events.map((event, index): LogEntry => {
     const hostBefore = hosts[index]
     const names = namesToRemember(event, before, after)
+    const owners = ownersToRemember(event, before)
     const seen = revealedViews(event, before, after, shown)
     return {
       seq: fromSeq + index,
       event,
       ...(hostBefore === undefined ? {} : { hostBefore }),
       ...(names === undefined ? {} : { names }),
+      ...(owners === undefined ? {} : { owners }),
       ...(seen === undefined ? {} : { seen }),
     }
   })

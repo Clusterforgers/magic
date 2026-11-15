@@ -1,4 +1,4 @@
-//! Goal: a manual action is told to every seat as the event that names the seat and the action, and what it moves is told as any move is: a card that goes to a graveyard, to exile or onto the battlefield is named to everyone, a card that goes between a hand and a library is named to its owner alone and the other seats are told that the seat moved a card there, never which; tokens, counters, life and tapping are public; a card the engine does not run shows the clauses it leaves to the table to every seat that sees the card; and the views the seats build by folding the batches equal the true ones.
+//! Goal: a manual action is told to every seat as the event that names the seat and the action, and what it moves is told as any move is: a card that goes to a graveyard, to exile or onto the battlefield is named to everyone, a card that goes between a hand and a library is named to its owner alone and the other seats are told that the seat moved a card there, never which, whether the card is the acting seat's or another seat's and the acting seat learns no more of a card it moved from another seat's library than a seat that watches; tokens, counters, life and tapping are public; a card the engine does not run shows the clauses it leaves to the table to every seat that sees the card; and the views the seats build by folding the batches equal the true ones.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_cards::value::CounterKind;
@@ -52,7 +52,19 @@ fn table(seat_count: usize) -> Table {
     for other in 1..seat_count {
         scenario = scenario
             .hand(other, [free_creature(&format!("Foe card {other}"), 1, 1)])
-            .library(other, vec![forest(); 4]);
+            .library(
+                other,
+                [
+                    free_creature(&format!("Foe top {other}"), 1, 1),
+                    forest(),
+                    forest(),
+                    forest(),
+                ],
+            )
+            .battlefield(
+                other,
+                [ready(free_creature(&format!("Foe bear {other}"), 2, 2))],
+            );
     }
     Table::new(scenario)
 }
@@ -174,7 +186,14 @@ fn the_top_of_the_library_moved_by_hand_is_named_as_the_move_tells_it(
     #[case] told_to_all: bool,
 ) {
     let mut table = table(seat_count);
-    let run = act(&mut table, ManualAction::MoveTop { count: 1, to });
+    let run = act(
+        &mut table,
+        ManualAction::MoveTop {
+            count: 1,
+            to,
+            library: None,
+        },
+    );
     let after = table.driver.state().clone();
     for (viewer, batch) in seats(seat_count).into_iter().zip(&run.batches) {
         let owner = viewer == seat(0);
@@ -183,6 +202,82 @@ fn the_top_of_the_library_moved_by_hand_is_named_as_the_move_tells_it(
         // from no event, and the others are told how many cards went there.
         assert_eq!(
             named,
+            told_to_all || (owner && to == ManualZone::Hand),
+            "who is told the name of {name}: {viewer:?}"
+        );
+        assert!(matches!(
+            marker(batch),
+            EventView::Public(Event::ManualAction { .. })
+        ));
+        if !owner && !told_to_all {
+            assert_clean(batch, &hidden_in(&after, viewer));
+        }
+    }
+}
+
+#[rstest]
+#[case::to_the_graveyard(ManualZone::Graveyard, true)]
+#[case::to_exile(ManualZone::Exile, true)]
+#[case::to_the_hand(ManualZone::Hand, false)]
+#[case::to_the_top_of_the_library(ManualZone::LibraryTop, false)]
+fn another_seats_permanent_moved_by_hand_is_told_under_the_acting_seat_and_named_as_any_move_is(
+    #[values(2, 3, 4)] seat_count: usize,
+    #[case] to: ManualZone,
+    #[case] named_to_all: bool,
+) {
+    let mut table = table(seat_count);
+    let name = "Foe bear 1";
+    let id = card(&table, name);
+    let run = act(&mut table, ManualAction::Move { object: id, to });
+    let after = table.driver.state().clone();
+    for (viewer, batch) in seats(seat_count).into_iter().zip(&run.batches) {
+        let owner = viewer == seat(1);
+        // The card was in sight before the move, so the action is told to every seat as it is; only where it went tells
+        // who reads its name afterwards, and a library names it to nobody.
+        match marker(batch) {
+            EventView::Public(Event::ManualAction { player, action }) => {
+                assert_eq!(*player, seat(0));
+                assert_eq!(**action, ManualAction::Move { object: id, to });
+            }
+            other => panic!("{viewer:?} is told {other:?}, not the action"),
+        }
+        let named = batch_names(batch, name);
+        let expected = named_to_all || (owner && to == ManualZone::Hand);
+        assert_eq!(
+            named, expected,
+            "who is told the name of {name}: {viewer:?}"
+        );
+    }
+    // The card was in sight, so its id is known to every seat; where it went hides only its name.
+    assert_eq!(after.object(id).unwrap().owner(), seat(1));
+}
+
+#[rstest]
+#[case::to_the_graveyard(ManualZone::Graveyard, true)]
+#[case::to_exile(ManualZone::Exile, true)]
+#[case::to_the_hand(ManualZone::Hand, false)]
+#[case::to_the_bottom(ManualZone::LibraryBottom, false)]
+fn the_top_of_another_seats_library_moved_by_hand_is_named_as_the_move_tells_it(
+    #[values(2, 3, 4)] seat_count: usize,
+    #[case] to: ManualZone,
+    #[case] told_to_all: bool,
+) {
+    let mut table = table(seat_count);
+    let name = "Foe top 1";
+    let run = act(
+        &mut table,
+        ManualAction::MoveTop {
+            count: 1,
+            to,
+            library: Some(seat(1)),
+        },
+    );
+    let after = table.driver.state().clone();
+    for (viewer, batch) in seats(seat_count).into_iter().zip(&run.batches) {
+        let owner = viewer == seat(1);
+        // The acting seat is no better off than a seat that watches: it moved a card it did not look at.
+        assert_eq!(
+            batch_names(batch, name),
             told_to_all || (owner && to == ManualZone::Hand),
             "who is told the name of {name}: {viewer:?}"
         );

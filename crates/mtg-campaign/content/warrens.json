@@ -482,6 +482,7 @@
    "life_per_hero": 30,
    "hand": 9,
    "line": "My children are hungry.",
+   "art": { "card": "Ashcoat of the Shadow Swarm", "oracle_id": "9cc69ea5-42a2-4306-ac6d-cff5adb20bcb" },
    "deck": [
     [
      "Swamp",
@@ -560,6 +561,7 @@
    "life_per_hero": 30,
    "hand": 10,
    "line": "Moss grows on the bones of the bold.",
+   "art": { "card": "Thrun, Breaker of Silence", "oracle_id": "789b7af5-ac15-40b6-b5b7-f3fcdcfb52e1" },
    "deck": [
     [
      "Forest",
@@ -641,6 +643,7 @@
     "vex"
    ],
    "line": "Rise, all of you. Rise and feast.",
+   "art": { "card": "Gisa, the Hellraiser", "oracle_id": "696363c9-e8a7-4c65-b65c-4a94891ec43d" },
    "deck": [
     [
      "Swamp",
@@ -727,6 +730,7 @@
     "grimgut"
    ],
    "line": "Kneel, or be eaten. Or both!",
+   "art": { "card": "Krenko, Tin Street Kingpin", "oracle_id": "e8065e1d-e937-4b56-8011-78f0d07328a0" },
    "phases": [
     [
      "warren_wakes",

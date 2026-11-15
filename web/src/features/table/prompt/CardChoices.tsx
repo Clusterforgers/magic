@@ -1,10 +1,14 @@
-import { useMemo, useRef, useState } from 'react'
+import { useContext, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
+import { cn } from '@/lib/utils'
 import type { CSSProperties, FocusEvent, KeyboardEvent, ReactNode, Ref } from 'react'
 import type { ObjectId, ObjectView } from '@/protocol/generated'
 import { rovingTarget } from '../useRoving'
 import { CardSearchField } from './CardSearchField'
 import { FILTER_FROM, matchesFilter } from './cardsText'
 import { ChoiceAnchorContext } from './choiceAnchor'
+import { useChoiceOverlay } from './choiceOverlay'
+import { PromptContext } from './PromptContext'
 import { numberKey } from './choiceText'
 import { useOracleTexts } from './oracleWords'
 import { tileSizeFor } from './PromptCard'
@@ -12,6 +16,9 @@ import { PromptCard } from './PromptCard'
 import type { PromptCardSize } from './PromptCard'
 import { useRestingPreview } from './restingPreview'
 import { usePromptKeys } from './usePromptKeys'
+
+/** The room a card of the overlay is sized by (`PROMPT_CARD_BOX`): whole cards about 88 px wide, lower on a low window. */
+const OVERLAY_ROOM = '9.75rem'
 
 /** Props of `CardChoices`. */
 export interface CardChoicesProps {
@@ -79,6 +86,8 @@ export function CardChoices({
   search = false,
 }: CardChoicesProps) {
   const total = cards.length
+  const host = useChoiceOverlay(total)
+  const name = useContext(PromptContext)?.name
   const [filter, setFilter] = useState('')
   const filtering = total > FILTER_FROM || (search && total > 1)
   const views = useMemo(
@@ -129,8 +138,9 @@ export function CardChoices({
     keys,
   )
 
-  const size: PromptCardSize = tileSizeFor(total)
-  return (
+  // The overlay has the room for whole cards, about 88 px wide (`OVERLAY_ROOM`); the strip draws a long list compact.
+  const size: PromptCardSize = host === null ? tileSizeFor(total) : 'normal'
+  const body = (
     <ChoiceAnchorContext value={root}>
       {filtering ? (
         <CardSearchField
@@ -150,27 +160,35 @@ export function CardChoices({
         aria-label={label}
         data-slot="card-choices"
         data-size={size}
+        data-overlay={host !== null || undefined}
         onFocus={onFocus}
         onBlur={onBlur}
         // A pointer that leaves a card for the gap or the edge gives the preview back to the chosen card.
         onPointerOut={restore}
         onKeyDown={onKeyDown}
         style={
-          {
-            '--choice-room': `max(6rem, calc(var(--sheet-max, 20rem) - ${rest ?? (filtering ? 14.5 : 10.5)}rem))`,
-          } as CSSProperties
+          host === null
+            ? ({
+                '--choice-room': `max(6rem, calc(var(--sheet-max, 20rem) - ${rest ?? (filtering ? 14.5 : 10.5)}rem))`,
+              } as CSSProperties)
+            : ({ '--choice-room': OVERLAY_ROOM } as CSSProperties)
         }
         className="flex max-w-full min-w-0 basis-full flex-col gap-2"
       >
         {lead}
         {/*
-          The sheet the prompt sits in is at most `--sheet-max` high: what the stack, the sentence, the buttons and the
-          clock leave is the row's (`--choice-room`). Its cards stand whole in one row as high as that room; more cards
-          than the width holds scroll sideways over a thin bar, never a row cut in half.
+          In the sheet, which is at most `--sheet-max` high, what the stack, the sentence, the buttons and the clock
+          leave is the row's (`--choice-room`): its cards stand whole in one row as high as that room, and more cards
+          than the width holds scroll sideways over a thin bar, never a row cut in half. In the overlay they wrap.
         */}
         <div
           data-slot="card-row"
-          className="flex max-w-full items-start justify-center-safe gap-2 overflow-x-auto overflow-y-hidden p-1.5 [scrollbar-width:thin]"
+          className={cn(
+            'flex max-w-full items-start justify-center-safe gap-2 p-1.5',
+            host === null
+              ? 'overflow-x-auto overflow-y-hidden [scrollbar-width:thin]'
+              : 'flex-wrap content-start',
+          )}
         >
           {visible.map((id, place) => {
             const key = keys ? numberKey(place) : undefined
@@ -197,5 +215,17 @@ export function CardChoices({
         </div>
       </div>
     </ChoiceAnchorContext>
+  )
+  if (host === null) return body
+  // The overlay is the prompt's too: it carries the decision, so what finds a prompt's cards finds them here.
+  return createPortal(
+    <div
+      data-slot="choice-overlay"
+      data-decision={name}
+      className="plaque fade-scroll flex h-full flex-col items-center justify-center-safe gap-2 overflow-y-auto rounded-xl border-2 border-brass p-3 shadow-e3"
+    >
+      {body}
+    </div>,
+    host,
   )
 }

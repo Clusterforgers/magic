@@ -99,6 +99,7 @@ export const DEV_BOSS_CONTENT: DelveContent = {
         ['queen_wakes', 33],
       ],
       life: [26, 30],
+      art: { card: 'Ashcoat of the Shadow Swarm', oracle_id: '9cc69ea5-42a2-4306-ac6d-cff5adb20bcb' },
     },
   ],
   events: [],

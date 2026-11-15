@@ -76,14 +76,14 @@ The table is a `100dvh` grid that never scrolls the page. The opponent is on top
 | controls dock | the server's passing line, the stops (one row with a Mine or Theirs switch and Full Control from 1600 px, else a Stops popover), pass buttons; the primary button is bottom right, 44 px or more |
 | side | Commands, Log, Chat, Stack tabs with unread counts. L, XL a 272 to 304 px column that the viewer folds to the 44 px rail from its edge and opens again from the rail (kept per browser); M a 44 px rail opening a panel over the table; S, XS a sheet from the top bar |
 
-- Lands of a grid: every board's lands, yours too, fold into a lands chip of its pod (count, how many tapped, the names on hover); a press lays them out on the board until pressed again, and a prompt beyond priority that marks a land lays them out while it waits (priority's mana marks do not). The boards' room goes to creatures and other permanents, and a grid's cards are 0.85 of yours (`GRID_THEIR_SCALE`).
+- Lands of a grid and of a phone: every board's lands, yours too, fold into a lands chip of its pod (count, how many tapped, the names on hover); a press lays them out on the board until pressed again, and a prompt beyond priority that marks a land lays them out while it waits (priority's mana marks do not). The boards' room goes to creatures and other permanents, and a grid's cards are 0.85 of yours (`GRID_THEIR_SCALE`).
 - Lanes: a board draws its permanents in three lanes: lands, creatures (any creature) and other permanents. Creatures face the middle of the table, lands sit left and other permanents right, an opponent's board mirrored top to bottom. Lanes never overlap, an empty lane takes no room, and each lane has a faint ground (`--lane`). The command zone, graveyard and exile are the pod's corner.
 - Fit: `fitLanes` (pure) takes the largest card width at which some shape of bands fits every lane (one band, creatures over lands and others, or a band each; ties go to fewer bands). Cards shrink as counts grow, and at the 44 px floor the zone scrolls inside, creatures first, with an edge fade and a "+N" count. Creatures are the largest cards on a board.
 - Stacks: permanents equal in everything a card shows merge into one stack with a ×N badge. Lands and tokens group at once, other cards when a zone would fall under 64 px. A stack opens in place on click or Enter, and stays open while a prompt needs each member.
 - Teams: a pod and a tile carry the seat's team as a chip ("Team 1") in the team's colour (`team-1` to `team-4`, then repeating; the label always tells them apart). In Two-Headed Giant the shared life total is large on the team's first seat; the teammate's pod shows it small and muted with "shared", and both name it "Team life, shared with Ann".
 - Boss mode (a co-op fight against a boss): the boss's side on top, its abilities as a row of chips, the party's band of boards over yours at the bottom; on a phone tiles for both sides. Implementation in [web.md](web.md), Delves.
-- Seats: 2 draws one wide opponent board beside a 168 px pod column; 3 and 4 draw two or three columns of one-line pods; 5 or more, or any column under 280 px, draws a tile strip and one focused board that follows the active seat (Focus mode); the menu overrides the mode. Opponent boards shrink before yours.
-- S (tablet): the same grid, a side sheet, 44 px targets. XS (phone, portrait): top bar, a pod strip (active first), the focused opponent board, your board, the shared line, the hand dock; a tap on a pod focuses it.
+- Seats: 2 draws one wide opponent board beside a 168 px pod column; 3 and 4 draw two or three columns of one-line pods; 5 or more, or any column under 280 px, draws a tile strip and one focused board that follows the active seat (Focus mode); the menu overrides the mode. Opponent boards shrink before yours; at a grid your row keeps your creatures at 60 px first, since you play from your board and each opponent's enlarges from its pod.
+- S (tablet): the same grid, a side sheet, 44 px targets. XS (phone, portrait): top bar, a pod strip (active first), the focused opponent board, your board, the shared line, the hand dock; a tap on a pod focuses it. A phone folds every board's lands into a chip (the focused opponent's at its board's top), draws no card under 64 px (`PHONE_FLOOR_PX`, the board scrolls past it), keeps the strip to two lines (the stack, then the waiting line beside the note) and lays a card prompt's cards out in the choice overlay.
 
 ## Turn and focus
 
@@ -222,13 +222,14 @@ The seat does by hand what the engine does not run from one persistent panel at 
 | Group | Commands, in order |
 |---|---|
 | To do by hand | read-only: the seat's by-hand lines that came due (`ByHandDue`), each as its card and its quoted words, and Done; only while one is due |
-| You | the Life counter and "More life options"; Poison; Other counters |
+| You | the Life counter and "More life options"; Poison; Other counters; for the seat picked above (itself or any other seat in the game) |
 | Library | Draw; Look at the top (scry, surveil, reorder); Search for a card; Mill; Exile from the top; Put on the bottom; Shuffle; Reveal the top card |
 | Make | Tokens (the common list, a custom token); Mana; Roll a die / Flip a coin |
-| Card | the picked card's commands, as its card menu lists them: Move to, Counters, Tap, Attach, Deal damage, Pump, Reveal, Note; then Remove summoning sickness, Sacrifice and Give control |
+| Card | the picked card's commands, as its card menu lists them, for any seat's card in sight: Move to, Counters, Tap, Attach, Deal damage, Pump, Transform, Give or take control; then Reveal, Note, Remove summoning sickness and Sacrifice for the seat's own; a card in another seat's hand or face down out of sight offers only a note why |
 
 - A group is a heading and its rows; a row is a button with icon, name, one line of what it does and a chevron. A press opens the row in place (one at a time): an amount with presets, a preview line in the seat's words ("Draw 2: library 52 → 50, hand 4 → 6") and one Apply button that names the change. Nothing is sent before Apply. Commands that lose the library's order say "This cannot be undone: the library's order is lost." above Apply.
 - After Apply the row says "Sending: Lose 5 life…" until the server answers, then "Done: Lose 5 life." or "Refused: <the engine's reason>." in the row's own feedback (`role="status"`, red on a refusal), and keeps its choices on a refusal; the table notice is not used. A second Apply waits for the answer. The log says the action as for the card menu.
+- A seat picker ("Life, counters, Mill and Exile from the top change") sits above the groups while another seat is in the game: it lists the seat itself first ("You (Ana)") and the others. The You group, its Life counter (keyed by the seat, so taps still pending go to the seat they were made for), Mill and Exile from the top then act on the picked seat, name it in their rows, previews and buttons ("Bo loses 3 life", "Mill 2 cards from Bo") and send its seat in `Life`, `PlayerCounters` and `MoveTop {library}`; the other library commands stay the seat's own. The log says "Ana makes Bo lose 3 life (by hand)".
 - Life is an open counter at the top of You: name and total in large figures over -5, -1, +1 and +5. Presses add to a pending change shown as a running total ("Not sent yet: -5 (40 → 35 life)") and are sent as one `Life` action after 600 ms of quiet, so a run is one log line; one change is in flight at a time and a pending change is sent, not lost, when the tab changes. Undo drops a pending change; a taken change can be undone for 8 s while life is where it left it, as one opposite action.
 - Look at the top: Apply sends `LookTop`; while the last look is open the row lists the cards (`PlayerView.known_top`) in three lists (top, bottom, graveyard) and Apply sends one `ArrangeTop`. The seat's own log names the cards; other seats read only counts.
 - Search for a card: Apply sends `Search`, which shows the seat its whole library as a grid sorted by name, so its order is not on show. A press chooses a card, Apply sends `Tutor` and the library is shuffled; "Shuffle without a card" ends the search.
@@ -243,13 +244,17 @@ The seat does by hand what the engine does not run from one persistent panel at 
 
 `/` is Play: open games, Create game and Join with a code. Create is `/new`, an invite opens `/join/$code`, My games stays; a signed-in user also gets "Continue" for a running game. Visibility follows Steamworks and Unity lobbies: private lobbies are hidden from queries and joined by code.
 
-| Column | Content |
+Each open game is a card, one column on a phone and up to four on a wide window:
+
+| Part | Content |
 |---|---|
-| Host | account or guest name |
+| Art | each seat's commanders as art crops edged in the seat colour; without commanders the felt with the format's mark and a band of seat colours |
+| Host | account or guest name, in the display face |
+| Commanders | each seat's commanders by its seat dot |
 | Format | Normal or Commander |
-| Seats | "2 of 4" with dots; a full row dims and says "Full" |
+| Seats | "2 of 4" with dots; a full game dims and says "Full" |
 | Age | "3 min ago" in a `<time>`, refreshed every 30 s |
-| Action | Join, the one primary button per row |
+| Action | Join, the one primary button per card |
 
 - States: skeleton rows only after 300 ms; empty ("No open games. Create one, or join with a code.") with both actions; error alert with Retry, stale rows kept and dimmed.
 - Updates: poll `GET /api/lobbies` every 5 s while the tab is visible, with `ETag`, and a Refresh button. A row that fills before the click says "Someone took that seat" and the list reloads.
@@ -258,7 +263,7 @@ The seat does by hand what the engine does not run from one persistent panel at 
 - Lobby teams: the mode follows the format line ("Commander game · 4 seats · Two-Headed Giant"); each seat row has a left edge in its team's colour and the team label, a select "Team of Ann" for the host. A change shows at once, takes every Ready back and is said in a polite line; teams the server would refuse are not sent, and a refusal puts the old teams back with the reason.
 - Game over for teams: "Team 1 wins — Ann & Bo"; every seat of the winning team gets the burst and "Your team won", the others the banner naming the team and its players; each seat row carries its team chip.
 - Privacy ([server.md](server.md)): an invite game is never listed; an unknown id, an invite game without its code and a wrong code give one 404; the list never carries a token or code.
-- Accessibility: a real `<table>` with a caption from M up, stacked rows below; the button name is "Join Bo's game, 2 of 4 seats"; a polite "3 open games" line; polling never moves focus; a removed focused row sends it to the next Join.
+- Accessibility: a list named "Open games, newest first" of articles named by their host; the art is decoration, its commanders written beside the seat dots; the button name is "Join Bo's game, 2 of 4 seats"; a polite "3 open games" line; polling never moves focus; a removed focused row sends it to the next Join.
 
 ## Priority, stops and information leaks
 

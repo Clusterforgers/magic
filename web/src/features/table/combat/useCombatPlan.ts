@@ -1,10 +1,11 @@
-import { useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import type { CombatView, ObjectId } from '@/protocol/generated'
 import { useBlockPreview } from './forecast'
 import { usePendingCombat } from './pending'
 import type { PendingCombat } from './pending'
+import { ATTACK_BADGES_BY_DEFAULT, TableOptionsContext } from '../tableOptions'
 import { planLines } from './plan'
 import type { LineSpec } from './plan'
 
@@ -40,9 +41,10 @@ export function useCombatPlan(): readonly LineSpec[] {
   const cards = useMemo(() => cardsInPlay(combat, pending), [combat, pending])
   const controllers = usePlay(useShallow((state) => cards.map((id) => state.objectsById[id]?.controller)))
   const viewer = usePlay((state) => (state.view?.spectator === true ? null : state.seat))
+  const seatBadges = useContext(TableOptionsContext).attackBadges ?? ATTACK_BADGES_BY_DEFAULT
   return useMemo(() => {
     const controllerOf = (id: ObjectId) => controllers[cards.indexOf(id)]
-    const lines = planLines({ combat, forecast, pending, controllerOf, viewer })
+    const lines = planLines({ combat, forecast, pending, controllerOf, viewer, seatBadges })
     return lines.length === 0 ? NO_LINES : lines
-  }, [combat, forecast, pending, cards, controllers, viewer])
+  }, [combat, forecast, pending, cards, controllers, viewer, seatBadges])
 }

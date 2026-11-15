@@ -1,7 +1,7 @@
 //! Goal: Delves work end to end on Postgres: a player creates a run and hosts its lobby, a friend joins by its code,
 //! the host adds a bot ally and chooses its deck while each player chooses their own, only the host starts, and the
 //! start leads the party to the first boss, whose fight is a game made at once, and made again at no cost when an admin
-//! ends it unplayed; the content the web draws lists the bosses and custom cards; a party of four meets the boss with a
+//! ends it unplayed; the content the web draws lists the bosses with their art cards and the custom cards; a party of four meets the boss with a
 //! minion seat; strangers and unknown runs are refused.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -268,6 +268,21 @@ async fn the_content_lists_the_bosses_and_custom_cards(pool: PgPool) {
     assert_eq!(content.status, 200);
     let content = content.json();
     assert_eq!(content["bosses"].as_array().unwrap().len(), 4);
+    let theme = &mtg_campaign::content().unwrap().themes[0];
+    for (wire, boss) in content["bosses"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .zip(&theme.bosses)
+    {
+        assert_eq!(wire["art"]["card"], boss.art.card.as_str(), "{}", boss.id);
+        assert_eq!(
+            wire["art"]["oracle_id"],
+            boss.art.oracle_id.as_str(),
+            "{}",
+            boss.id
+        );
+    }
     let cards = content["cards"].as_array().unwrap();
     assert!(cards.iter().any(|c| c["kind"] == "Haunt"));
     assert!(cards.iter().any(|c| c["role"] == "Risky"));

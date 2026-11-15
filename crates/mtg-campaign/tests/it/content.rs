@@ -1,5 +1,5 @@
 //! Goal: the shipped content holds together: every boss deck card and reward card is a real card the engine verifies, every boss deck has 40 cards, every custom card keeps all its abilities as an emblem, every content id a boss
-//! names exists, relics carry a role, the scheme deck holds schemes and every boss has two minions to field.
+//! names exists, relics carry a role, the scheme deck holds schemes and every boss has two minions to field and is pictured by its own real card.
 use mtg_campaign::{CardKind, content};
 use mtg_cards::support::Support;
 use mtg_testkit::corpus;
@@ -123,4 +123,29 @@ fn every_custom_card_keeps_all_its_abilities_as_an_emblem() {
         }
     }
     assert!(content.haunt().is_some());
+}
+
+#[test]
+fn every_boss_is_pictured_by_a_real_card_whose_oracle_id_matches_its_name() {
+    let content = content().unwrap();
+    let cards: Vec<serde_json::Value> =
+        serde_json::from_str(&corpus::scryfall_array().unwrap()).unwrap();
+    let mut seen = std::collections::BTreeSet::new();
+    for boss in content.themes.iter().flat_map(|theme| &theme.bosses) {
+        let card = cards
+            .iter()
+            .find(|card| card["name"] == boss.art.card.as_str())
+            .unwrap_or_else(|| panic!("{}: no card {}", boss.id, boss.art.card));
+        assert_eq!(
+            card["oracle_id"],
+            boss.art.oracle_id.as_str(),
+            "{}",
+            boss.id
+        );
+        assert!(
+            seen.insert(&boss.art.oracle_id),
+            "{} shares its art",
+            boss.id
+        );
+    }
 }

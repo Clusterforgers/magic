@@ -1,4 +1,4 @@
-// Goal: the Play page lists the open games as a table of host, format, seats, decks, age and a Join named after the game, counts them in a polite status, dims and explains a full game, waits 300 ms before it draws a skeleton, shows an empty list with both ways forward, keeps the old rows dimmed beside an error with Retry, filters a long list, and offers a join code field that checks the code before it asks anybody. A running game is offered to watch.
+// Goal: the Play page lists the open games as cards with the host, format, seats, decks, age and a Join named after the game, counts them in a polite status, dims and explains a full game, waits 300 ms before it draws a skeleton, shows an empty list with both ways forward, keeps the old rows dimmed beside an error with Retry, filters a long list, and offers a join code field that checks the code before it asks anybody. A running game is offered to watch.
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
@@ -21,32 +21,25 @@ async function open(lobbies: FakeLobbies) {
   return { ...view, user: user() }
 }
 
-const table = () => screen.getByRole('table', { name: 'Open games, newest first' })
-const rowOf = (host: string) => within(table()).getByRole('row', { name: new RegExp(`^${host}\\b`) })
+const table = () => screen.getByRole('list', { name: 'Open games, newest first' })
+const rowOf = (host: string) => within(table()).getByRole('article', { name: host })
 
 describe('the open games', () => {
-  it('is a table with a column for each fact and a row for each game, newest first', async () => {
+  it('is a card for each game, newest first, named by its host and holding every fact', async () => {
     const lobbies = fakeLobbies([
       lobbyRow({ game: 'a', host: 'Bo', filled: 2, total: 4, age_secs: 180 }),
       lobbyRow({ game: 'b', host: 'Cy', filled: 1, total: 2, age_secs: 45 }),
     ])
     await open(lobbies)
-    expect(
-      within(table())
-        .getAllByRole('columnheader')
-        .map((cell) => cell.textContent),
-    ).toEqual(['Host', 'Format', 'Seats', 'Decks', 'Age', 'Action'])
+    const cards = within(table()).getAllByRole('article')
+    expect(cards.map((card) => card.getAttribute('aria-labelledby'))).toEqual(['host-a', 'host-b'])
     const bo = within(rowOf('Bo'))
-    expect(bo.getByRole('rowheader')).toHaveTextContent('Bo')
-    expect(bo.getAllByRole('cell').map((cell) => cell.textContent)).toEqual([
-      'Normal',
-      '2 of 4',
-      'Your own deck',
-      '3 min ago',
-      'Join',
-    ])
+    expect(bo.getByRole('heading', { level: 3 })).toHaveTextContent('Bo')
+    expect(rowOf('Bo')).toHaveTextContent('Normal · Your own deck · 3 min ago')
+    expect(rowOf('Bo')).toHaveTextContent('2 of 4')
+    expect(bo.getByRole('button', { name: "Join Bo's game, 2 of 4 seats" })).toBeEnabled()
     expect(within(rowOf('Cy')).getByText('just now')).toBeInTheDocument()
-    expect(within(table()).getAllByRole('row').slice(1)).toHaveLength(2)
+    expect(within(table()).getAllByRole('listitem')).toHaveLength(2)
   })
 
   it('offers to watch a running game instead of joining it, saying it runs', async () => {
@@ -109,8 +102,8 @@ describe('the open games', () => {
     const { user } = await open(lobbies)
     const row = within(rowOf('Bo'))
     expect(row.getByText('Full')).toBeInTheDocument()
-    expect(row.getByRole('rowheader')).toHaveClass('text-muted-foreground')
-    expect(within(rowOf('Cy')).getByRole('rowheader')).not.toHaveClass('text-muted-foreground')
+    expect(row.getByRole('heading', { level: 3 })).toHaveClass('text-muted-foreground')
+    expect(within(rowOf('Cy')).getByRole('heading', { level: 3 })).not.toHaveClass('text-muted-foreground')
     const button = row.getByRole('button', { name: "Join Bo's game, 4 of 4 seats" })
     expect(button).toHaveAttribute('aria-disabled', 'true')
     expect(button).toHaveAccessibleDescription('Full')
@@ -241,7 +234,7 @@ describe('an error', () => {
     const { user } = await open(lobbies)
     const region = screen.getByRole('region', { name: 'Open games' })
     expect(region).not.toHaveAttribute('data-stale')
-    expect(within(table()).getByRole('rowheader')).not.toHaveClass('text-muted-foreground')
+    expect(within(table()).getByRole('heading', { level: 3 })).not.toHaveClass('text-muted-foreground')
     lobbies.fail(new LobbyError('network', 0, 'down'))
     await settle(5_000)
     const alert = screen.getByRole('alert')
@@ -250,7 +243,7 @@ describe('an error', () => {
     expect(alert).toHaveTextContent('The games below may be out of date.')
     expect(within(table()).getByText('Bo')).toBeInTheDocument()
     expect(region).toHaveAttribute('data-stale')
-    expect(within(table()).getByRole('rowheader')).toHaveClass('text-muted-foreground')
+    expect(within(table()).getByRole('heading', { level: 3 })).toHaveClass('text-muted-foreground')
     expect(screen.getByText('1 open game')).toBeInTheDocument()
     lobbies.heal()
     await user.click(within(alert).getByRole('button', { name: 'Retry' }))
@@ -300,7 +293,7 @@ describe('filters', () => {
   const group = () => screen.queryByRole('group', { name: 'Filter the open games' })
   const hosts = () =>
     within(table())
-      .getAllByRole('rowheader')
+      .getAllByRole('heading', { level: 3 })
       .map((cell) => cell.textContent)
 
   it('are not offered for 8 rows or fewer, and are for 9', async () => {

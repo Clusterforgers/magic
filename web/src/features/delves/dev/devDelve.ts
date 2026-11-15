@@ -68,6 +68,7 @@ export const DEV_CONTENT: DelveContent = {
       card: null,
       phases: [],
       life: [32, 36],
+      art: { card: 'Gisa, the Hellraiser', oracle_id: '696363c9-e8a7-4c65-b65c-4a94891ec43d' },
     },
     {
       id: 'grimgut',
@@ -77,6 +78,7 @@ export const DEV_CONTENT: DelveContent = {
       card: 'grim',
       phases: [['nest', 50]],
       life: [36, 40],
+      art: { card: 'Krenko, Tin Street Kingpin', oracle_id: 'e8065e1d-e937-4b56-8011-78f0d07328a0' },
     },
   ],
 }

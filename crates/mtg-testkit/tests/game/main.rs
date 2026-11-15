@@ -65,6 +65,7 @@ mod manual_control;
 mod manual_faces;
 mod manual_grant;
 mod manual_library;
+mod manual_others;
 mod manual_roll;
 mod manual_show;
 mod manual_stale;

@@ -20,8 +20,8 @@ use mtg_engine::state::GameResult;
 use mtg_import::resolve::Lookup;
 use mtg_protocol::SeatDeck;
 use mtg_protocol::rest::{
-    CreateDelve, CustomCardView, DelveAction, DelveBossView, DelveContent, DelveDeckProblem,
-    DelveEventView, DelveFightView, DelveList, DelveSummary, DelveView,
+    BossArtView, CreateDelve, CustomCardView, DelveAction, DelveBossView, DelveContent,
+    DelveDeckProblem, DelveEventView, DelveFightView, DelveList, DelveSummary, DelveView,
 };
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -592,6 +592,10 @@ pub(crate) async fn content_of() -> Result<Json<DelveContent>, ApiError> {
                 card: boss.rules.first().cloned(),
                 phases: boss.phases.clone(),
                 life: (boss.life, boss.life_per_hero),
+                art: BossArtView {
+                    card: boss.art.card.clone(),
+                    oracle_id: boss.art.oracle_id.clone(),
+                },
             })
             .collect(),
         events: theme

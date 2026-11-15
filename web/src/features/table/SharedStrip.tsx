@@ -20,9 +20,15 @@ import { useSheetOverhang } from './useSheetOverhang'
 import { useStable } from './useStable'
 
 /** The note that this seat has nothing to do or that a play was taken back; drawn only while it says something. */
-function NothingToDoNote() {
+function NothingToDoNote({ prompt }: { prompt: boolean }) {
   return (
-    <div className="hidden min-w-0 shrink-[2] has-data-[slot=nothing-to-do]:block has-data-[slot=rewound]:block [&_[data-slot=nothing-to-do-region]]:basis-auto [&_p]:max-w-full [&_p]:truncate">
+    <div
+      className={cn(
+        'hidden min-w-0 shrink-[2] has-data-[slot=nothing-to-do]:block has-data-[slot=rewound]:block [&_[data-slot=nothing-to-do-region]]:basis-auto [&_p]:max-w-full [&_p]:truncate',
+        // On a phone without a prompt it shares the second line with the waiting line.
+        !prompt && 'max-sm:grow max-sm:basis-0',
+      )}
+    >
       <NothingToDoBanner />
     </div>
   )
@@ -102,7 +108,7 @@ export function SharedStrip({
               mine || stage === 'Mulligan' ? 'flex-wrap' : 'flex-wrap sm:flex-nowrap',
             )}
           >
-            <div className="flex min-w-0 shrink-[4] items-center overflow-hidden sm:has-data-[slot=stack-chips]:min-w-56">
+            <div className="flex min-w-0 shrink-[4] items-center overflow-hidden max-sm:has-data-[slot=stack-chips]:basis-full sm:has-data-[slot=stack-chips]:min-w-56">
               <StackChips />
             </div>
             {/* Room for the prompt beside the chips (it takes what they leave, down to 20 rem), so the two share a line. */}
@@ -110,8 +116,8 @@ export function SharedStrip({
               className={cn(
                 mine
                   ? // A prompt that lays out cards takes a line of its own under the stack, the whole width of the sheet.
-                    'min-w-0 flex-1 basis-80 has-[[data-slot=card-choices]]:basis-full has-[[data-slot=opening-hand]]:basis-full'
-                  : 'flex max-w-full shrink-0 items-center [&_p]:max-w-full [&_p]:truncate',
+                    'min-w-0 flex-1 basis-80 has-[[data-slot=card-choices]]:basis-full has-[[data-slot=opening-hand]]:basis-full has-[[data-slot=mode-choice]]:basis-full'
+                  : 'flex max-w-full shrink-0 items-center max-sm:min-w-0 max-sm:shrink max-sm:grow max-sm:basis-0 [&_p]:max-w-full [&_p]:truncate',
               )}
             >
               {mine ? (
@@ -137,7 +143,7 @@ export function SharedStrip({
                 </p>
               )}
             </div>
-            <NothingToDoNote />
+            <NothingToDoNote prompt={mine} />
             <OpeningStatus />
             {/*
               Who has priority over the key to the combat lines, two short lines at the end of the row: together they take

@@ -566,8 +566,10 @@ impl<S: EventStore> GameActor<S> {
     fn status(&mut self) -> GameStatus {
         let connected = self.seats.connected();
         let manual_play = self.manual_play();
+        let commanders = self.listed_commanders();
         match &self.phase {
             Phase::Lobby { ready, names } => GameStatus {
+                commanders,
                 manual_play,
                 started: false,
                 events: 0,
@@ -589,6 +591,7 @@ impl<S: EventStore> GameActor<S> {
                     .collect(),
             },
             Phase::Running(running) => GameStatus {
+                commanders,
                 manual_play,
                 started: true,
                 events: count(running.engine.events().len()),

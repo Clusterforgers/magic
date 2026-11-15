@@ -39,7 +39,7 @@ async function open(
   await renderInRouter(
     store === null ? page : <AuthContext.Provider value={store}>{page}</AuthContext.Provider>,
   )
-  await screen.findByRole('table')
+  await screen.findByRole('list', { name: 'Open games, newest first' })
   return { lobbies, user: userEvent.setup() }
 }
 

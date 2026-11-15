@@ -58,7 +58,7 @@ describe('the clicks of an attack', () => {
       'Confirm attack',
       'No attack',
     ])
-    expect(screen.queryByRole('combobox')).toBeNull()
+    expect(screen.queryByRole('combobox', { name: 'Attack at' })).toBeNull()
     expect(t.container.querySelector('[data-defender]')).toBeNull()
   })
 

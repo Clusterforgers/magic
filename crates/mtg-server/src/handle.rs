@@ -70,6 +70,8 @@ pub struct GameStatus {
     pub connected: Vec<PlayerId>,
     /// Seats that pressed Ready and did not take it back, in seat order; every seat once the game runs.
     pub ready: Vec<PlayerId>,
+    /// The commanders the seats lead, in seat order (`GameActor::listed_commanders`).
+    pub commanders: Vec<mtg_protocol::rest::LobbyCommander>,
     /// Seats nobody holds (open for a join to claim, or given back), in seat order; none once the
     /// game runs.
     pub open: Vec<PlayerId>,

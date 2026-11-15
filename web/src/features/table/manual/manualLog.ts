@@ -1,6 +1,6 @@
 /** The log lines of manual actions: the sentence of an action and the events of its change that the sentence already tells. */
 import type { LogEntry } from '@/play/store'
-import type { Event, EventView, ManualAction, ObjectId, Zone } from '@/protocol/generated'
+import type { Event, EventView, ManualAction, ObjectId, PlayerId, Zone } from '@/protocol/generated'
 import { describeHiddenManual, describeHiddenTutor, describeManual, joinWords, quoted } from '../eventText'
 import type { EventNames } from '../eventText'
 
@@ -119,6 +119,8 @@ export interface ManualRun {
   rolled?: number
   /** The names `LogEntry.names` kept for the action and the events its sentence tells again. */
   names?: Record<ObjectId, string>
+  /** The owners `LogEntry.owners` kept for the action, for a card that no longer exists. */
+  owners?: Record<ObjectId, PlayerId>
 }
 
 /** For the event at `at`, the run of a manual action; null when it is not one. */
@@ -132,12 +134,14 @@ export function manualRun(log: readonly LogEntry[], at: number): ManualRun | nul
     const shown = shownIn(log, at, consumed)
     const rolled = rolledIn(log, at, consumed)
     const kept = Object.assign({}, ...log.slice(at, at + 1 + consumed).map((each) => each.names))
+    const owners = entry.owners
     return {
       consumed,
       from: leftFrom(log, at, consumed),
       ...(shown === undefined ? {} : { shown }),
       ...(rolled === undefined ? {} : { rolled }),
       ...(Object.keys(kept).length === 0 ? {} : { names: kept }),
+      ...(owners === undefined ? {} : { owners }),
     }
   }
   // A move the viewer cannot name is told by its hidden twin, whose change is the hidden `ZoneChanged` after it.
@@ -157,13 +161,21 @@ export function manualRun(log: readonly LogEntry[], at: number): ManualRun | nul
   return null
 }
 
-/** `names` with the card names a log entry remembered (`LogEntry.names`) read first. */
+/**
+ * `names` with the card names a log entry remembered (`LogEntry.names`) read first and the owners it remembered
+ * (`LogEntry.owners`) read when the view no longer holds the card.
+ */
 export function remember(
   names: EventNames,
   remembered: Readonly<Record<ObjectId, string>> | undefined,
+  owners?: Readonly<Record<ObjectId, PlayerId>>,
 ): EventNames {
-  if (remembered === undefined) return names
-  return { ...names, card: (id) => remembered[id] ?? names.card(id) }
+  if (remembered === undefined && owners === undefined) return names
+  return {
+    ...names,
+    card: (id) => remembered?.[id] ?? names.card(id),
+    owner: (id) => names.owner?.(id) ?? owners?.[id],
+  }
 }
 
 /** The card an event puts in front of the table, and whether it is cast and still to resolve; null for any other event. */
