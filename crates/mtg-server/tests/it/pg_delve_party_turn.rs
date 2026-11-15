@@ -1,5 +1,5 @@
 //! Goal: a Delves fight the server makes for a party of four (a human host and three bot heroes) plays shared team
-//! turns: the party's turn, then the boss's side's, then the party's again, and every hero, the bots
+//! turns: the two sides take turns, each led by its first seat (the boss, not a minion), and every hero, the bots
 //! included, holds priority in the party's main phase.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -9,8 +9,8 @@ use crate::common::{self, Client};
 use crate::{net, pg_commander};
 
 use mtg_core::ids::PlayerId;
-use mtg_engine::turn::Step;
 use mtg_engine::Event;
+use mtg_engine::turn::Step;
 use mtg_protocol::events::EventView;
 use mtg_protocol::{ClientMessage, ServerMessage};
 use net::{Browser, PASSWORD, Reply, TestServer, register, request};
@@ -51,12 +51,24 @@ async fn a_party_of_four_shares_its_turn_against_the_boss(pool: PgPool) {
     .json();
     let id = created["id"].as_str().unwrap().to_owned();
     for _ in 0..3 {
-        let bot = act(&server, &id, &host, json!({"kind": "add_bot", "level": "Normal"})).await;
+        let bot = act(
+            &server,
+            &id,
+            &host,
+            json!({"kind": "add_bot", "level": "Normal"}),
+        )
+        .await;
         assert_eq!(bot.status, 200, "{}", bot.text());
     }
     for hero in 0..4 {
         let deck = pg_commander::on(pg_commander::BEAST);
-        let chosen = act(&server, &id, &host, json!({"kind": "choose_deck", "hero": hero, "deck": deck})).await;
+        let chosen = act(
+            &server,
+            &id,
+            &host,
+            json!({"kind": "choose_deck", "hero": hero, "deck": deck}),
+        )
+        .await;
         assert_eq!(chosen.status, 200, "{}", chosen.text());
     }
     let start = act(&server, &id, &host, json!({"kind": "start"})).await;
@@ -89,7 +101,8 @@ async fn a_party_of_four_shares_its_turn_against_the_boss(pool: PgPool) {
                                 step = *began;
                             }
                             EventView::Public(Event::PriorityPassed { player })
-                                if step == Step::Main1 && turns.len() == 1 =>
+                                if step == Step::Main1
+                                    && turns.last() == Some(&PlayerId::from_index(0)) =>
                             {
                                 holders.insert(player.index());
                             }
@@ -100,7 +113,13 @@ async fn a_party_of_four_shares_its_turn_against_the_boss(pool: PgPool) {
                 ServerMessage::Decision { id, decision, .. } => {
                     let answer = common::passive(&decision);
                     client
-                        .say(&handle, ClientMessage::Answer { decision: id, answer })
+                        .say(
+                            &handle,
+                            ClientMessage::Answer {
+                                decision: id,
+                                answer,
+                            },
+                        )
                         .await;
                 }
                 ServerMessage::GameOver { .. } => return,
@@ -111,8 +130,20 @@ async fn a_party_of_four_shares_its_turn_against_the_boss(pool: PgPool) {
     .await;
     assert!(played.is_ok(), "the fight stalled after turns {turns:?}");
     let hero = PlayerId::from_index(0);
-    assert_eq!(turns, [hero, boss, hero, boss], "the party's turn, then the boss's side's");
+    let (first, second) = if turns.first() == Some(&boss) {
+        (boss, hero)
+    } else {
+        (hero, boss)
+    };
+    assert_eq!(
+        turns,
+        [first, second, first, second],
+        "the sides take turns, each led by its first seat"
+    );
     for seat in 0..4 {
-        assert!(holders.contains(&seat), "hero {seat} held priority in the party's first main phase: {holders:?}");
+        assert!(
+            holders.contains(&seat),
+            "hero {seat} held priority in the party's main phase: {holders:?}"
+        );
     }
 }

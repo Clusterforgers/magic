@@ -20,7 +20,9 @@ impl GameState {
             .players
             .iter()
             .map(crate::player::Player::id)
-            .filter(|seat| *seat == player || (self.shares_turns() && self.are_teammates(*seat, player)))
+            .filter(|seat| {
+                *seat == player || (self.shares_turns() && self.are_teammates(*seat, player))
+            })
             .collect();
         for seat in sharers {
             let turns = self.rmt8_turns.entry(seat).or_insert(0);

@@ -43,7 +43,8 @@ fn table(mode: TeamMode, seats: usize) -> (Scenario, Teams) {
 
 /// Whether it is `seat`'s turn while `active` is the active player under `teams`.
 fn turn_of(teams: &Teams, seat: usize, active: usize) -> bool {
-    seat == active || (teams.shares_turns() && teams.team_of(pid(seat)) == teams.team_of(pid(active)))
+    seat == active
+        || (teams.shares_turns() && teams.team_of(pid(seat)) == teams.team_of(pid(active)))
 }
 
 /// What a turn showed: the priority holders of its precombat main phase in order, with whether each could play a land

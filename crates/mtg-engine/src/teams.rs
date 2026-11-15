@@ -2,7 +2,7 @@
 //! table's teams.
 
 use mtg_core::ids::PlayerId;
-use mtg_core::teams::Teams;
+use mtg_core::teams::{TeamMode, Teams};
 
 use crate::state::GameState;
 
@@ -80,7 +80,21 @@ impl GameState {
                 next = self.next_alive_after(next)?;
             }
         }
-        Some(next)
+        Some(self.turn_lead(next))
+    }
+
+    /// The seat that takes a turn of `player`'s team: under shared team turns its first living seat, so the boss and
+    /// not a minion is the active player of its side's turn; `player` in any other game.
+    pub fn turn_lead(&self, player: PlayerId) -> PlayerId {
+        if self
+            .teams()
+            .is_none_or(|teams| teams.mode != TeamMode::SharedTurns)
+        {
+            return player;
+        }
+        self.alive_players()
+            .find(|seat| self.are_teammates(*seat, player))
+            .unwrap_or(player)
     }
 
     /// The teammates of `player` who share their life total (Two-Headed Giant, CR 810.9), `player` excluded.

@@ -76,7 +76,8 @@ impl Ledger {
     /// Whether a turn of `active` is a turn of `player`: their own, or in Two-Headed Giant their team's.
     fn is_turn_of(&self, active: PlayerId, player: PlayerId) -> bool {
         active == player
-            || (self.teams.shares_turns() && self.teams.team_of(active) == self.teams.team_of(player))
+            || (self.teams.shares_turns()
+                && self.teams.team_of(active) == self.teams.team_of(player))
     }
 
     /// Folds `batch` into `view` and checks what the view says against the turns the batch's events tell. A permanent

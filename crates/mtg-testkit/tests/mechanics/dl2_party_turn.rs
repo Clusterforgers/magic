@@ -1,4 +1,4 @@
-//! Goal: under shared team turns (CR 805) a party of one to six heroes takes one turn against a boss and its minion, who take theirs: the turn order goes from side to side, every hero untaps, draws, may play a land and cast a sorcery and receives priority in turn order, the creatures of every hero attack in one combat while a creature that came under a hero's control stays sick until the party's next turn, each hero keeps their own life total, and a Spirit keeps sharing the party's turns.
+//! Goal: under shared team turns (CR 805) a party of one to six heroes takes one turn against a boss and its minion, who take theirs: the turn order goes from side to side, every hero untaps, draws, may play a land and cast a sorcery and receives priority in turn order, the creatures of every hero attack in one combat while a creature that came under a hero's control stays sick until the party's next turn, each hero keeps their own life total, and a Spirit keeps sharing the party's turns; a side's turn is led by its first seat, the boss and not its minion.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -9,12 +9,12 @@ use common::pid;
 use mtg_core::house::HouseRules;
 use mtg_core::teams::{TeamMode, Teams};
 use mtg_engine::Event;
-use mtg_engine::combat::AttackTarget;
-use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::PresetPermanent;
 use mtg_engine::characteristics::controller_of;
-use mtg_engine::w6b_emblems::emblem_definition;
+use mtg_engine::combat::AttackTarget;
+use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::turn::Step;
+use mtg_engine::w6b_emblems::emblem_definition;
 use mtg_testkit::cards::{forest, free_creature, swamp};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
@@ -147,7 +147,11 @@ fn the_party_shares_one_turn_against_the_boss(#[case] heroes: usize) -> Result<(
     let party: BTreeSet<usize> = (0..heroes).collect();
     let boss_side = BTreeSet::from([boss, minion]);
     for (number, turn) in &seen {
-        let ours = if turn.active == boss { &boss_side } else { &party };
+        let ours = if turn.active == boss {
+            &boss_side
+        } else {
+            &party
+        };
         let round: Vec<usize> = (0..seats).map(|n| (turn.active + n) % seats).collect();
         let holders: Vec<usize> = turn.main.iter().map(|(seat, _, _)| *seat).collect();
         assert_eq!(holders, round, "turn {number}: priority order");
@@ -162,13 +166,24 @@ fn the_party_shares_one_turn_against_the_boss(#[case] heroes: usize) -> Result<(
             ours.clone()
         };
         assert_eq!(&turn.drew, &drew, "turn {number}: who draws");
-        assert_eq!(&turn.attackers, ours, "turn {number}: whose creatures attack");
-        let foes = if turn.active == boss { &party } else { &boss_side };
+        assert_eq!(
+            &turn.attackers, ours,
+            "turn {number}: whose creatures attack"
+        );
+        let foes = if turn.active == boss {
+            &party
+        } else {
+            &boss_side
+        };
         assert_eq!(&turn.attackable, foes, "turn {number}: attackable");
     }
     // The Bears that attacked on turn 1 untapped for turn 3, and the Pups were sick until the party's next turn.
     assert_eq!(seen[&1].offered, heroes, "turn 1: the Bears");
-    assert_eq!(seen[&3].offered, 2 * heroes, "turn 3: the Bears and the Pups");
+    assert_eq!(
+        seen[&3].offered,
+        2 * heroes,
+        "turn 3: the Bears and the Pups"
+    );
 
     // Each hero keeps their own life: the boss side's attacks spread over the heroes it chose, and the party's hit
     // the boss and its minion.
@@ -182,7 +197,11 @@ fn the_party_shares_one_turn_against_the_boss(#[case] heroes: usize) -> Result<(
         .map(|seat| BOSS_LIFE - state.player(pid(*seat)).unwrap().life())
         .sum();
     let party_power = i32::try_from(heroes).unwrap();
-    assert_eq!(dealt, 2 * party_power + 3 * party_power, "Bears twice, Pups once");
+    assert_eq!(
+        dealt,
+        2 * party_power + 3 * party_power,
+        "Bears twice, Pups once"
+    );
     Ok(())
 }
 
@@ -205,12 +224,36 @@ fn a_spirit_keeps_sharing_the_partys_turns(#[case] heroes: usize) -> Result<(), 
         let holds = turn.main.iter().any(|(seat, _, _)| *seat == spirit);
         assert!(holds, "turn {number}: the Spirit gets priority");
         if turn.active == 0 {
-            assert!(turn.drew.contains(&spirit), "turn {number}: the Spirit draws");
+            assert!(
+                turn.drew.contains(&spirit),
+                "turn {number}: the Spirit draws"
+            );
             // Its cards left the game, so no creature of its attacks.
             assert!(!turn.attackers.contains(&spirit), "turn {number}");
         } else {
-            assert!(!turn.attackable.contains(&spirit), "turn {number}: out of reach");
+            assert!(
+                !turn.attackable.contains(&spirit),
+                "turn {number}: out of reach"
+            );
         }
     }
+    Ok(())
+}
+
+#[rstest]
+#[case::a_later_hero(3, 0)]
+#[case::the_first_hero(0, 0)]
+#[case::the_minion(5, 4)]
+#[case::the_boss(4, 4)]
+fn a_sides_turn_is_led_by_its_first_seat(
+    #[case] seat: usize,
+    #[case] lead: usize,
+) -> Result<(), ScriptError> {
+    let driver = Driver::from_scenario(party(4))?;
+    let state = driver.state();
+    assert_eq!(state.turn_lead(pid(seat)), pid(lead));
+    // A side's turn passes to the other side's first seat: the boss, never its minion, or the first hero.
+    let next = if lead == 0 { 4 } else { 0 };
+    assert_eq!(state.next_turn_seat(pid(seat)), Some(pid(next)));
     Ok(())
 }
