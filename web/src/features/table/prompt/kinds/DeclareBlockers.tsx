@@ -285,12 +285,10 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
   usePrimaryKey({ space: () => undefined, enter: confirm }, ready)
 
   const [firstShort] = short
-  // A rule may have this player choose how another player's creatures block (CR 509.1a).
-  const chosenFor = options.r6400_for
-  const lead =
-    chosenFor === undefined || chosenFor === null
-      ? ''
-      : `You choose how ${seatName(chosenFor)}'s creatures block. `
+  // A rule may have this player choose how another player's creatures block (CR 509.1a): the creatures offered are theirs.
+  const firstBlocker = legal.find((object) => !own.includes(object))
+  const chosenFor = firstBlocker === undefined ? undefined : byId.get(firstBlocker)?.controller
+  const lead = chosenFor === undefined ? '' : `You choose how ${seatName(chosenFor)}'s creatures block. `
   const text =
     lead +
     (legal.length === 0

@@ -621,8 +621,8 @@ impl Engine {
                 self.pending = Some(Pending::new(player, What::Attack(attackers, extras)));
                 Ok(())
             }
-            Outcome::BeginBlock(blocks, payer) => {
-                self.pending = Some(Pending::new(payer, What::Block(blocks)));
+            Outcome::BeginBlock(blocks, declaring) => {
+                self.pending = Some(Pending::new(declaring, What::Block(blocks)));
                 Ok(())
             }
             Outcome::BeginActivation(ability) => {

@@ -348,7 +348,7 @@ fn a_card_the_engine_does_not_run_shows_its_clauses_to_every_seat_that_sees_the_
 #[rstest]
 #[case(2, 41)]
 #[case(3, 42)]
-#[case(4, 43)]
+#[case(4, 45)]
 fn no_hidden_object_reaches_any_viewer_in_games_with_manual_actions(
     #[case] players: usize,
     #[case] seed: u64,

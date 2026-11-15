@@ -76,16 +76,13 @@ fn r6400_one_player_casts_every_ballot(
     while driver.decision()?.player != pid(0) {
         driver.pass()?;
     }
-    let chooser = match rule_for {
-        Some(seat) => {
-            driver.add_rule(Rule::R6400ChoosesVotes(pid(seat)), Duration::UntilEndOfTurn)?;
-            seat
-        }
-        None => {
-            driver.cast("Illusion of Choice")?;
-            resolve(&mut driver, vote, &mut Vec::new())?;
-            0
-        }
+    let chooser = if let Some(seat) = rule_for {
+        driver.add_rule(Rule::R6400ChoosesVotes(pid(seat)), Duration::UntilEndOfTurn)?;
+        seat
+    } else {
+        driver.cast("Illusion of Choice")?;
+        resolve(&mut driver, vote, &mut Vec::new())?;
+        0
     };
     let hand = driver.state().zone(Zone::Hand(pid(0))).len();
     let start = driver.state().player(pid(0)).unwrap().life();

@@ -196,7 +196,11 @@ fn tapped(driver: &Driver, name: &str) -> bool {
         .iter()
         .filter_map(|id| state.object(*id))
         .find(|object| object.card().name == name)
-        .and_then(|object| object.permanent().map(|perm| perm.tapped()))
+        .and_then(|object| {
+            object
+                .permanent()
+                .map(mtg_engine::object::PermanentState::tapped)
+        })
         .unwrap_or(false)
 }
 

@@ -23,7 +23,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .live_objects(what)?
         .into_iter()
         .filter(|object| object.zone() == Zone::Battlefield)
-        .map(|object| object.id())
+        .map(crate::object::GameObject::id)
         .collect();
     let selections: Vec<Selection> = blockers
         .iter()

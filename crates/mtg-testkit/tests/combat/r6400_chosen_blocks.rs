@@ -5,6 +5,7 @@
 //! a declaration the restrictions forbid is refused, and the log replays.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use mtg_engine::characteristics::controller_of;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::effects::Duration;
 use mtg_engine::rules::Rule;
@@ -29,8 +30,15 @@ fn creatures(names: &[&str]) -> Vec<PresetPermanent> {
 fn to_blocks(driver: &mut Driver) -> Result<(usize, Option<usize>), ScriptError> {
     for _ in 0..40 {
         if let DecisionKind::DeclareBlockers(options) = &driver.decision()?.kind {
-            let whose = options.r6400_for.map(|player| player.index());
-            return Ok((driver.decision()?.player.index(), whose));
+            // Whose creatures the declaration offers, when they are not the deciding player's.
+            let asked = driver.decision()?.player;
+            let whose = options
+                .blockers
+                .first()
+                .and_then(|option| controller_of(driver.state(), option.object))
+                .filter(|owner| *owner != asked)
+                .map(mtg_core::ids::PlayerId::index);
+            return Ok((asked.index(), whose));
         }
         driver.answer_passively()?;
     }

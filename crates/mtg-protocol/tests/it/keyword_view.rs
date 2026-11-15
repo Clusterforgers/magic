@@ -118,7 +118,6 @@ fn the_options_of_blocks_and_damage_keep_their_json_until_they_carry_something_n
             must_be_blocked_by: None,
             cant_alone: Vec::new(),
             joins: Vec::new(),
-            r6400_for: None,
             min_blockers: Vec::new(),
             max_blockers: Vec::new(),
             required: Vec::new()
@@ -134,7 +133,6 @@ fn the_options_of_blocks_and_damage_keep_their_json_until_they_carry_something_n
             must_be_blocked_by: None,
             cant_alone: Vec::new(),
             joins: Vec::new(),
-            r6400_for: None,
             min_blockers: vec![(b, 2)],
             max_blockers: Vec::new(),
             required: Vec::new()

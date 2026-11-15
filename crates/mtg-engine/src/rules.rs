@@ -2044,7 +2044,6 @@ pub(crate) fn repeated(cost: &ManaCost, times: usize) -> ManaCost {
 #[allow(clippy::too_many_lines)] // one arm for every rule
 pub(crate) fn names_nothing(rule: &Rule) -> bool {
     match rule {
-        Rule::R6400ChoosesVotes(_) => false,
         Rule::AttackTax(tax) => {
             tax.players.is_empty()
                 || (tax.mana.symbols().is_empty() && tax.life == 0 && tax.costs.is_empty())
@@ -2138,7 +2137,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::DamageAsWither
         | Rule::ManaBurn
         | Rule::RevealFirstDraw { .. }
-        | Rule::UntapRemovesCounters(_) => false,
+        | Rule::UntapRemovesCounters(_)
+        | Rule::R6400ChoosesVotes(_) => false,
         Rule::Planar => true,
         Rule::AttackOnlyNearest(left) => left.is_none(),
         Rule::PreventDamage(shield) => {

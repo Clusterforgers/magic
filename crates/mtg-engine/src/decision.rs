@@ -681,11 +681,6 @@ pub struct BlockOptions {
         ts(as = "Option<Vec<crate::r286_joins::JoinRule>>", optional)
     )]
     pub joins: Vec<crate::r286_joins::JoinRule>,
-    /// The player whose creatures block, when a rule has the player deciding choose for them (CR 509.1a: "you choose
-    /// which creatures block this combat and how those creatures block"). Left out while players declare their own.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    #[cfg_attr(feature = "ts", ts(optional))]
-    pub r6400_for: Option<PlayerId>,
 }
 
 impl BlockOptions {
@@ -1021,7 +1016,6 @@ mod tests {
             min_blockers: menace.iter().map(|(a, n)| (id(*a), *n)).collect(),
             max_blockers: Vec::new(),
             required: required.iter().map(|object| id(*object)).collect(),
-            r6400_for: None,
         }
     }
 

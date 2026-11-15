@@ -195,7 +195,7 @@ pub(crate) fn handle(
         ) => w11a_declare(state, player, options, answer),
         (DecisionKind::DeclareBlockers(options), Answer::DeclareBlockers(blocks)) => {
             check_blockers(options, &blocks)?;
-            crate::block_tax::declare(state, options.r6400_for.unwrap_or(player), blocks)
+            crate::block_tax::declare(state, crate::steps::r6400_declaring(state, player), blocks)
         }
         (DecisionKind::AssignDamage(options), Answer::AssignDamage(assignment)) => {
             Ok(assignment_answer(options, assignment)?)

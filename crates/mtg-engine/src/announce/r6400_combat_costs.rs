@@ -56,11 +56,11 @@ fn with_count(item: &CostItem, change: impl Fn(i32) -> i32) -> CostItem {
 
 /// The fixed count of an item that takes permanents, with the item at a count of one; `None` for any other item.
 fn unit(item: &CostItem) -> Option<(CostItem, i32)> {
-    let count = match item {
-        CostItem::Sacrifice { count, .. }
-        | CostItem::ReturnToHand { count, .. }
-        | CostItem::TapPermanents { count, .. } => count,
-        _ => return None,
+    let (CostItem::Sacrifice { count, .. }
+    | CostItem::ReturnToHand { count, .. }
+    | CostItem::TapPermanents { count, .. }) = item
+    else {
+        return None;
     };
     let Amount::Fixed(n) = count else { return None };
     Some((with_count(item, |_| 1), *n))

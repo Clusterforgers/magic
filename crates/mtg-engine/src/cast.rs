@@ -581,6 +581,22 @@ fn r282_suspended(state: &GameState, card: ObjectId, choices: &Choices) -> Optio
     suspend::events(state, card, x)
 }
 
+/// The events of a declaration of attackers or blockers once it is paid for, with the permanents picked for its costs.
+fn declared(
+    state: &GameState,
+    player: PlayerId,
+    what: &What,
+    choices: &Choices,
+) -> Option<Vec<Event>> {
+    match what {
+        What::Attack(attackers, extras) => {
+            crate::attack_tax::made(state, player, attackers, extras, choices)
+        }
+        What::Block(blocks) => crate::block_tax::made(state, player, blocks, choices),
+        _ => None,
+    }
+}
+
 /// The events that say what a payment is for, which come between the life paid and the mana: the cast of the spell,
 /// the activation of the ability, or the answer "paid" to the effect that asked.
 fn announcement(
@@ -675,16 +691,10 @@ fn announcement(
             choice: Choice::YesNo(true),
         }]),
         Some(Pending {
-            what: What::Attack(attackers, extras),
+            what: what @ (What::Attack(..) | What::Block(_)),
             choices,
             ..
-        }) => crate::attack_tax::made(state, player, attackers, extras, choices)
-            .ok_or_else(unexpected),
-        Some(Pending {
-            what: What::Block(blocks),
-            choices,
-            ..
-        }) => crate::block_tax::made(state, player, blocks, choices).ok_or_else(unexpected),
+        }) => declared(state, player, what, choices).ok_or_else(unexpected),
         Some(Pending {
             what: What::Trigger(_),
             ..
