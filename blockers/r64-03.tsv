@@ -1,5 +1,5 @@
 Volatile Stormdrake	Keyword::HexproofFrom over abilities: a Pred for "activated or triggered ability" sources in targeting legality (CR 702.11d), plus CR 701.12 exchange of control with an opponent's creature target	energy payment equal to mana value as an "unless" step
-Firebender Ascension	Keyword::Firebending(n) on tokens: an attack trigger adding {R} that lasts until end of combat (CR 702.?; firebend action), and Trigger "whenever you firebend"	quest counters on a "Whenever you firebend" trigger
+Firebender Ascension	Keyword::Firebending(n) on tokens: an attack trigger adding {R} that lasts until end of combat (the firebend keyword action), and Trigger "whenever you firebend"	quest counters on a "Whenever you firebend" trigger
 The Chain Veil	loyalty activation counts: a continuous grant of N extra loyalty activations per planeswalker this turn (CR 606.3 exception), tracked per permanent per turn	—
 Biomancer's Familiar	adapt replacement: a one-shot "next time target creature adapts this turn, it adapts as though it had no +1/+1 counters" modifier read by Effect::Adapt (CR 701.46a)	—
 Jeweled Amulet	remembered mana type: Remember the mana type spent on an activation cost on the source, and AddMana of the remembered type (CR 106.1)	—
