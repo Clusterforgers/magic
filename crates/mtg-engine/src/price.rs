@@ -44,8 +44,8 @@ pub(crate) struct Price {
     pub(crate) x_color: Option<Color>,
     /// How much of the mana is a waterbend cost: artifacts and creatures tapped may pay for it, each {1} (Avatar).
     pub(crate) waterbend: u32,
-    /// The mana of an `{X}` is a waterbend cost too ("Waterbend {X}").
-    pub(crate) waterbend_x: bool,
+    /// How many `{X}` are waterbend costs ("Waterbend {X}").
+    pub(crate) waterbend_x: u32,
     /// The other parts, in the order the cost prints them: life, counters removed, the objects the player picks.
     pub(crate) parts: Vec<Part>,
     /// The parts are paid for a spell being cast: the card itself is never picked for them.
@@ -166,7 +166,7 @@ pub(crate) fn settled(cost: &Cost, state: &GameState, player: PlayerId, source: 
 impl Price {
     /// Whether artifacts and creatures may tap to pay part of the mana: a waterbend part is in the cost.
     pub(crate) fn has_waterbend(&self) -> bool {
-        self.waterbend > 0 || self.waterbend_x
+        self.waterbend > 0 || self.waterbend_x > 0
     }
 
     /// The price of a cost paid in the middle of a resolution, or the name of the first part the engine does not pay:
@@ -222,7 +222,7 @@ impl Price {
         let mut mana = false;
         let mut x = 0u32;
         let mut waterbend = 0u32;
-        let mut waterbend_x = false;
+        let mut waterbend_x = 0u32;
         let mut parts = Vec::new();
         let mut x_color = None;
         let mut changes = Vec::new();
@@ -253,7 +253,7 @@ impl Price {
                 CostItem::Waterbend(Amount::X) => {
                     mana = true;
                     x = x.saturating_add(1);
-                    waterbend_x = true;
+                    waterbend_x = waterbend_x.saturating_add(1);
                 }
                 CostItem::Waterbend(Amount::Fixed(number)) => {
                     let number = u32::try_from(*number).unwrap_or(0);
@@ -583,7 +583,7 @@ mod tests {
                 x: 0,
                 x_color: None,
                 waterbend: 0,
-                waterbend_x: false,
+                waterbend_x: 0,
                 parts: Vec::new(),
                 casting: false,
                 pays: crate::r4707_pay_costs::PaysFor::Cost,
