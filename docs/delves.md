@@ -97,7 +97,7 @@ One table (`scale.rs`) sets the boss for the party's size, so every size meets t
 
 - The run page reads as a descent: a header with the party's life, hearts, Heat and seed; the ladder as a path from the first boss to the final one, every room cleared, current, next or locked; votes show who chose which camp.
 - Each camp is a scene of its own (loot, shop, campfire, event); a risky relic is always marked Dangerous. Implementation in [web.md](web.md), Delves.
-- A fight opens with the boss intro (the run view's `fight`: the plan's boss, life, custom cards, phase thresholds and minions), in place of the game's lobby: the boss's abilities in full, the party's decks and carried life, and Ready to fight; the host also has Retreat, confirmed first. When the game ends the table returns straight to the run, which greets the loot or the lost heart.
+- A fight opens with the boss intro (the run view's `fight`: the plan's boss, life, custom cards, phase thresholds and minions), in place of the game's lobby: the boss's abilities in full, the party's decks and carried life, and Ready to fight; the host also has Retreat, confirmed first. When the game ends the final table stays under the fight's result (`FightEnd`: won or lost, each seat's end, the log's last turns) until the player presses "Continue to the run", or after a 60 s countdown that "Stay" stops; the run then greets the loot or the lost heart.
 - At the table the boss's side sits on top and the party together at the bottom (boss mode); the boss's abilities, phases to come, scheme and Omen are a row of chips with their rules. Their words come from the content records the engine plays, matched to the emblems in the boss's command zone and its `BossView`.
 
 ## Content
