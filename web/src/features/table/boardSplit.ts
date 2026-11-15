@@ -51,9 +51,11 @@ export function boardCounts(state: PlayState, seats: SeatPlan, grouped = true): 
 
 /**
  * Whether the boards of a plan have their lands folded into their pods' lands chips (`LandFoldContext`): every board
- * of a grid of opponents, yours too, where the table folds lands. The boards then hold no lands lane.
+ * of a grid of opponents and every board of a phone, yours too, where the table folds lands. The boards then hold no
+ * lands lane.
  */
-export const foldsLands = (seats: SeatPlan, fold: boolean): boolean => fold && seats.shape === 'columns'
+export const foldsLands = (seats: SeatPlan, fold: boolean, phone = false): boolean =>
+  fold && (seats.shape === 'columns' || (phone && seats.shape !== 'boss'))
 
 /** The most of a prompt sheet's overhang the split keeps free above the strip: two lines of a prompt. */
 export const SHEET_RESERVE_MAX_PX = 64

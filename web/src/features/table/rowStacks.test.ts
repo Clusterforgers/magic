@@ -8,6 +8,7 @@ import { card, forest } from '@/test-utils/cards'
 import type { RowKind } from './cardModel'
 import { fixtureState } from './dev/devGame'
 import { buildFixture } from './dev/fixture'
+import { PHONE_FLOOR_PX } from './boardFloor'
 import { fitLanes, LANE_LIMITS as FIT_LIMITS } from './laneFit'
 import type { FitBox } from './fit'
 import { GROUP_OTHERS_BELOW } from './group'
@@ -360,5 +361,31 @@ describe('a lane whose last permanent died', () => {
   it('counts a ghost only where the lane has no permanent left', () => {
     const rows = layoutSeat(input).rows
     expect(laneCounts(rows, { lands: 3, creatures: 2 })).toMatchObject({ lands: 1, creatures: 2 })
+  })
+})
+
+describe('a raised floor (a phone)', () => {
+  const phone = { width: 340, height: 200 }
+  const input = { stacks: battlefieldStacks(duel, 0), facing: NEAR, opened: NOTHING, marked: NOTHING }
+
+  it.each([
+    [phone, PHONE_FLOOR_PX],
+    [{ width: 300, height: 90 }, PHONE_FLOOR_PX],
+    [{ width: 300, height: 90 }, 80],
+  ])('never draws a card under it in %o at %i px, and scrolls instead', (box, least) => {
+    const fit = must(layoutSeat({ ...input, box, least }).fit)
+    expect(fit.cardWidth).toBeGreaterThanOrEqual(least)
+    expect(fit.scrolls).toBe(true)
+    expect(fit.hidden).toBeGreaterThan(0)
+  })
+
+  it('merges identical cards when the zone scrolls at it, so fewer boxes scroll', () => {
+    expect(layoutSeat({ ...input, box: phone, least: PHONE_FLOOR_PX }).merged).toBe(true)
+  })
+
+  it('leaves a board that fits above it as it was', () => {
+    expect(layoutSeat({ ...input, box: BIG, least: PHONE_FLOOR_PX })).toEqual(
+      layoutSeat({ ...input, box: BIG }),
+    )
   })
 })

@@ -17,7 +17,7 @@ Impact: how much a problem costs a player in a 4-player Commander game at 1400 �
 | 3 | The hand is still small | hand dock | The hand lies in an arc and rises on hover, but its cards stay about 90 px wide at 1400 × 900; a full-size hover is the preview beside it. |
 | 4 | Combat lines cross the table | combat overlay | Attacks between two other seats draw faint and the lines stay under a card prompt; a line still runs from its board to its defender's pod across the row. |
 | 5 | Choices share the strip | prompts | Card prompts take the strip's width and grow over the opponents' boards with 7 rem cards; a long list still scrolls inside the sheet, and modes have no pictures. |
-| 6 | The phone table is tight | table at 390 | The controls fit (the auto-skip switch without its label), the pod drops the untapped sources and the hand dock is 104 to 140 px; boards still draw about 30 px cards and a card prompt scrolls inside its sheet. |
+| 6 | The phone table is tight | table at 390 | Boards fold their lands and draw 64 px cards that scroll, a card prompt lays its cards in the overlay; your pod still takes four lines over your board. |
 | 7 | The turn is said in two places | top bar | The badge says whose turn and the step, the ladder names the phase; below 1024 px the badge names it instead. |
 | 8 | The table is quiet between moments | table | The table plays its casts, attacks, blocks, damage, draws and shuffles and taps turn in 150 ms; there is no your-turn moment beyond the banner and no stack resolution beat. |
 
@@ -80,7 +80,6 @@ Effects and sounds decorate the batch that arrived, as the table effects do toda
 
 Each item is one commit with before and after shots at 1400 × 900, 1280 × 720 and 390 × 900 of the screens it touches, and its tests.
 
-- Phone boards: opponents' and your permanents read at 390 (about 30 px now), a card prompt without an inner scroll.
 - Own board in crowds: your creatures past 55 px at a grid table with 40 permanents a seat (an enlarge of your board, or a taller own row).
 - Commander art on open games: a commanders field on the lobby list (server), then each open game as a card with its commanders' art.
 - Boss art: a picture for each boss of the Delves content, shown on the descent and the fight panel in place of the crown.

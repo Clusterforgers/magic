@@ -17,7 +17,7 @@ export type PromptCardSize = 'normal' | 'compact'
  */
 export const PROMPT_CARD_BOX: Record<PromptCardSize, string> = {
   normal:
-    '[--card-h:calc(var(--card-w)*7/5)] [--card-w:max(3rem,min(7rem,11dvh,calc((var(--choice-room,20rem)_-_2rem)*5/7)))]',
+    '[--card-h:calc(var(--card-w)*7/5)] [--card-w:max(3rem,min(7rem,11dvh,calc((var(--choice-room,20rem)_-_2rem)*5/7)))] max-sm:[--card-w:4.75rem]',
   compact:
     '[--card-h:calc(var(--card-w)*7/5)] [--card-w:max(3rem,min(3.75rem,calc((var(--choice-room,20rem)_-_2rem)*5/7)))]',
 }
