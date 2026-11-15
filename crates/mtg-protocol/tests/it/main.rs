@@ -74,6 +74,7 @@ mod mutate_view;
 mod ninjutsu_hidden;
 mod noncreature_sickness;
 mod paid_cost_hidden;
+mod party_attack_view;
 mod phasing_view;
 mod player_aura_view;
 mod player_counter_kinds;

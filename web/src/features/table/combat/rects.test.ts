@@ -1,4 +1,4 @@
-// Goal: anchors are found in the page by the data attributes cards and seats carry (a card by its face, a seat by its panel, else its tile, a card that is not drawn by its controller's, a stack item by its chip or the chip that holds it), measured relative to the overlay, hidden ones skipped; lines get a curve only when both ends are on screen with room between them and identical drawings are made once; the attacks of a seat that attacks with a crowd fold by target into counted bundles from the box around them; and the scheduler runs its work once per frame however often it is asked.
+// Goal: anchors are found in the page by the data attributes cards and seats carry (a card by its face, a seat by its panel, else its tile, a card that is not drawn by its controller's, a seat's tile scrolled out of its strip by the strip's edge, a stack item by its chip or the chip that holds it), measured relative to the overlay, hidden ones skipped; lines get a curve only when both ends are on screen with room between them and identical drawings are made once; the attacks of a seat that attacks with a crowd fold by target into counted bundles from the box around them; and the scheduler runs its work once per frame however often it is asked.
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { must } from '@/test-utils/batches'
 import { fakeFrames } from '@/test-utils/frames'
@@ -176,6 +176,24 @@ describe('domRects', () => {
       width: 44,
       height: 62,
     })
+  })
+
+  it("reaches a seat's tile that is scrolled out of its strip at the edge of the strip it went out by", () => {
+    const { table, origin } = page()
+    const strip = child(table, 'div', {}, { x: 0, y: 60, width: 390, height: 70 })
+    strip.style.overflowX = 'auto'
+    child(strip, 'button', { 'data-tile-seat': '3' }, { x: 520, y: 60, width: 150, height: 70 })
+    const found = domRects.measure([{ kind: 'seat', seat: 3 }], origin)
+    // Past the right edge of the strip: a small box inside it, at the right end, level with the tile.
+    expect(found.get('seat:3')).toEqual({ x: 274, y: 37, width: 16, height: 16 })
+  })
+
+  it('has no edge for a tile that no strip clips or that a squeezed strip leaves no room', () => {
+    const { table, origin } = page()
+    const strip = child(table, 'div', {}, { x: 0, y: 60, width: 390, height: 4 })
+    strip.style.overflowX = 'auto'
+    child(strip, 'button', { 'data-tile-seat': '3' }, { x: 520, y: 60, width: 150, height: 70 })
+    expect(domRects.measure([{ kind: 'seat', seat: 3 }], origin).has('seat:3')).toBe(false)
   })
 
   it('leaves a card alone where no ancestor clips', () => {
