@@ -43,6 +43,8 @@ export const nameOf = (seat: PlayerId): string => NAMES[seat] ?? `Seat ${seat}`
 /** Where a turn stands. */
 export interface TurnAt {
   number: number
+  /** The round; the table keeps its own while a test leaves it out. */
+  round?: number
   active: PlayerId
   step: Step
 }

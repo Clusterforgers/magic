@@ -1,4 +1,4 @@
-// Goal: the turn banner shows "Your turn" or "Bo's turn" with the turn number only for a batch that changes the turn or the active seat, fades in for 250 ms, is held for 600 and fades out for 150 (a fade only, held 1.5 s, under reduced motion), is announced through a polite live region, never takes the place of an answer, and is not drawn at all where the table draws no timed cues.
+// Goal: the turn banner shows "Your turn" or "Bo's turn" with the round only for a batch that changes the turn or the active seat, fades in for 250 ms, is held for 600 and fades out for 150 (a fade only, held 1.5 s, under reduced motion), is announced through a polite live region, never takes the place of an answer, and is not drawn at all where the table draws no timed cues.
 import { fireEvent } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cueDom, renderCueTable, useCueClock } from '@/test-utils/cueTable'
@@ -33,19 +33,29 @@ describe('what makes the banner show', () => {
     expect(banner()).toHaveAttribute('aria-hidden', 'true')
   })
 
-  it("says Bo's turn and its number when the turn passes to another seat", () => {
+  it("says Bo's turn and the round when the turn passes to another seat", () => {
     const table = renderCueTable()
-    table.deliver(passTurn(6, 0), { number: 6, active: 0, step: 'Main1' })
-    table.deliver(passTurn(7, 1), { number: 7, active: 1, step: 'Main1' })
-    expect(cueDom()).toMatchObject({ phase: 'in', banner: "Bo's turn" + 'Turn 7' })
+    table.deliver(passTurn(6, 0), { number: 6, round: 3, active: 0, step: 'Main1' })
+    table.deliver(passTurn(7, 1), { number: 7, round: 4, active: 1, step: 'Main1' })
+    expect(cueDom()).toMatchObject({ phase: 'in', banner: "Bo's turn" + 'Round 4' })
     expect(banner()).toHaveClass('bg-turn-them', 'text-on-turn-them')
     expect(banner()).not.toHaveAttribute('data-your-turn')
   })
 
+  it('counts rounds, not turns: the next seat of the same round says the same round', () => {
+    const table = renderCueTable()
+    table.deliver(passTurn(6, 0), { number: 6, round: 3, active: 0, step: 'Main1' })
+    table.deliver(passTurn(7, 1), { number: 7, round: 3, active: 1, step: 'Main1' })
+    expect(cueDom()).toMatchObject({ banner: "Bo's turn" + 'Round 3' })
+    table.deliver(passTurn(8, 0), { number: 8, round: 4, active: 0, step: 'Main1' })
+    expect(cueDom()).toMatchObject({ banner: 'Your turn' + 'Round 4' })
+    expect(cueDom().announcement).toContain('Your turn, round 4, turn 8')
+  })
+
   it('says Your turn in the colour of your own turn', () => {
     const table = renderCueTable()
-    table.deliver(passTurn(6, 0), { number: 6, active: 0, step: 'Main1' })
-    expect(cueDom()).toMatchObject({ phase: 'in', banner: 'Your turn' + 'Turn 6' })
+    table.deliver(passTurn(6, 0), { number: 6, round: 3, active: 0, step: 'Main1' })
+    expect(cueDom()).toMatchObject({ phase: 'in', banner: 'Your turn' + 'Round 3' })
     expect(banner()).toHaveClass('bg-turn-you', 'text-on-turn-you')
     expect(banner()).toHaveAttribute('data-your-turn', 'true')
   })
@@ -55,7 +65,7 @@ describe('what makes the banner show', () => {
     table.deliver([pass(1), grant(0)], { active: 1, step: 'Main2' })
     expect(cueDom().phase).toBe('idle')
     table.deliver([pass(1)], { active: 0 })
-    expect(cueDom()).toMatchObject({ phase: 'in', banner: 'Your turn' + 'Turn 5' })
+    expect(cueDom()).toMatchObject({ phase: 'in', banner: 'Your turn' + 'Round 3' })
   })
 
   it('stays away for a snapshot, which moves the turn without a batch', () => {
@@ -82,7 +92,7 @@ describe('its timing', () => {
     // On its own, so that no other part of the table's timers count.
     const table = renderCueTable({}, { ui: <TurnBanner /> })
     const idle = vi.getTimerCount()
-    table.deliver(passTurn(6, 0), { number: 6, active: 0, step: 'Main1' })
+    table.deliver(passTurn(6, 0), { number: 6, round: 3, active: 0, step: 'Main1' })
     expect(cueDom().phase).toBe('in')
     table.advance(BANNER_TIMES.inMs - 1)
     expect(cueDom().phase).toBe('in')
@@ -103,18 +113,18 @@ describe('its timing', () => {
 
   it('starts again from the fade in when another turn begins while it shows', () => {
     const table = renderCueTable()
-    table.deliver(passTurn(6, 0), { number: 6, active: 0, step: 'Main1' })
+    table.deliver(passTurn(6, 0), { number: 6, round: 3, active: 0, step: 'Main1' })
     table.advance(BANNER_TIMES.inMs + 100)
     expect(cueDom().phase).toBe('hold')
-    table.deliver(passTurn(7, 1), { number: 7, active: 1, step: 'Main1' })
-    expect(cueDom()).toMatchObject({ phase: 'in', banner: "Bo's turn" + 'Turn 7' })
+    table.deliver(passTurn(7, 1), { number: 7, round: 4, active: 1, step: 'Main1' })
+    expect(cueDom()).toMatchObject({ phase: 'in', banner: "Bo's turn" + 'Round 4' })
     table.advance(BANNER_TIMES.inMs)
     expect(cueDom().phase).toBe('hold')
   })
 
   it('stretches with the dev slow-down', () => {
     const table = renderCueTable({ effectsSlow: 4 })
-    table.deliver(passTurn(6, 0), { number: 6, active: 0, step: 'Main1' })
+    table.deliver(passTurn(6, 0), { number: 6, round: 3, active: 0, step: 'Main1' })
     table.advance(BANNER_TIMES.inMs * 4 - 1)
     expect(cueDom().phase).toBe('in')
     table.advance(1)
@@ -124,7 +134,7 @@ describe('its timing', () => {
   it('only fades, and is held for 1.5 s, under reduced motion', () => {
     reduceMotion()
     const table = renderCueTable()
-    table.deliver(passTurn(6, 0), { number: 6, active: 0, step: 'Main1' })
+    table.deliver(passTurn(6, 0), { number: 6, round: 3, active: 0, step: 'Main1' })
     table.advance(BANNER_TIMES_REDUCED.inMs)
     expect(cueDom().phase).toBe('hold')
     table.advance(BANNER_TIMES_REDUCED.holdMs - 1)
@@ -140,18 +150,18 @@ describe('its timing', () => {
 describe('what it does for a reader and for an answer', () => {
   it('is announced by a polite live region, with the steps skipped, and the band itself is not read', () => {
     const table = renderCueTable()
-    table.deliver(passTurn(6, 0), { number: 6, active: 0, step: 'Main1' })
+    table.deliver(passTurn(6, 0), { number: 6, round: 3, active: 0, step: 'Main1' })
     const region = document.querySelector('[data-slot="turn-announcement"]')
     expect(region).toHaveAttribute('aria-live', 'polite')
     expect(region).toHaveAttribute('aria-atomic', 'true')
-    expect(region).toHaveTextContent('Your turn, turn 6. Skipped End step, Upkeep, Draw')
+    expect(region).toHaveTextContent('Your turn, round 3, turn 6. Skipped End step, Upkeep, Draw')
     expect(banner()).toHaveAttribute('aria-hidden', 'true')
   })
 
   it('leaves the pass button answering while it shows, and its answer unchanged', () => {
     const answer = vi.fn(() => true)
     const table = renderCueTable({}, { session: { answer } })
-    table.deliver(passTurn(6, 0), { number: 6, active: 0, step: 'Main1' })
+    table.deliver(passTurn(6, 0), { number: 6, round: 3, active: 0, step: 'Main1' })
     expect(cueDom().phase).toBe('in')
     const primary = document.querySelector<HTMLElement>('[data-slot="primary-action"]')
     expect(primary).not.toBeNull()

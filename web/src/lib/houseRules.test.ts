@@ -28,6 +28,8 @@ describe('reading field text', () => {
     ['take-backs turned off', { take_backs: 'off' }, 'commander', { take_backs: false }],
     ['take-backs left on, which is not sent', { take_backs: '' }, 'normal', {}],
     ['take-backs on, which is not sent either', { take_backs: 'on' }, 'normal', {}],
+    ['the blocker timer turned on', { blocker_timer: 'on' }, 'commander', { blocker_timer: true }],
+    ['the blocker timer left alone, which is off and not sent', { blocker_timer: '' }, 'normal', {}],
     [
       'deck rules gather in one object',
       { 'deck.singleton': 'off', 'deck.max_copies': '3', 'deck.deck_size': '60' },
@@ -55,6 +57,7 @@ describe('reading field text', () => {
     ['an unknown style', 'mulligan_style', 'paris-ish', 'normal'],
     ['a switch worded freely', 'mana_burn', 'yes', 'normal'],
     ['take-backs worded freely', 'take_backs', 'no', 'normal'],
+    ['the blocker timer worded freely', 'blocker_timer', 'yes', 'normal'],
     ['a tax of 11', 'commander_tax', '11', 'commander'],
   ]
   it.each(refused)('names the field of %s', (_name, id, text, format) => {
@@ -101,6 +104,8 @@ describe('naming the rules that differ', () => {
     ['a switch turned on', { open_hands: true }, 'normal', ['Open hands']],
     ['take-backs off', { take_backs: false }, 'commander', ['No take-backs']],
     ['take-backs on, as every game has them', { take_backs: true }, 'normal', []],
+    ['the blocker timer on', { blocker_timer: true }, 'normal', ['Blocker timer']],
+    ['the blocker timer off, as every game has it', { blocker_timer: false }, 'normal', []],
     ['a Vancouver mulligan', { mulligan_style: 'vancouver' }, 'commander', ['Vancouver mulligan']],
     ['the London mulligan', { mulligan_style: 'london' }, 'commander', []],
     [

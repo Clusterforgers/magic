@@ -48,14 +48,16 @@ fn instant_table() -> GameSetup {
         .unwrap()
 }
 
-/// Seat 0 is about to attack with a creature that seat 1 can block.
-fn combat_table() -> GameSetup {
-    Scenario::new(2)
+/// Seat 0 is about to attack with a creature that seat 1 can block; `timer` is the table's blocker timer house rule.
+fn combat_table(timer: bool) -> GameSetup {
+    let mut setup = Scenario::new(2)
         .at(2, 0, Step::DeclareAttackers)
         .battlefield(0, [ready(free_creature("Raider", 2, 2))])
         .battlefield(1, [ready(free_creature("Guard", 1, 3))])
         .setup()
-        .unwrap()
+        .unwrap();
+    setup.house_rules.blocker_timer = timer.then_some(true);
+    setup
 }
 
 fn spawn(setup: GameSetup, pace: Pace) -> (GameHandle, FlakyStore) {
@@ -341,7 +343,7 @@ async fn until_blockers(handle: &GameHandle, clients: &mut [Client]) -> Clocked 
 #[case::without_it(Pace { auto_pass: false, ..DEFAULT })]
 #[tokio::test(start_paused = true)]
 async fn a_defender_has_forty_five_seconds_and_the_expiry_declares_no_blocks(#[case] pace: Pace) {
-    let (handle, store) = spawn(combat_table(), pace);
+    let (handle, store) = spawn(combat_table(true), pace);
     let mut clients = join_and_ready(&handle).await;
 
     // The attacker is the active player: no clock for its declaration.
@@ -389,6 +391,58 @@ async fn a_defender_has_forty_five_seconds_and_the_expiry_declares_no_blocks(#[c
         .await;
     handle.status().await.unwrap();
     assert!(is_stale(&clients[1].drain()));
+}
+
+#[rstest]
+#[case::with_auto_pass(DEFAULT)]
+#[case::without_it(Pace { auto_pass: false, ..DEFAULT })]
+#[tokio::test(start_paused = true)]
+async fn a_defender_has_no_deadline_to_block_unless_the_table_turns_the_blocker_timer_on(
+    #[case] pace: Pace,
+) {
+    // The house rule left out is the default; it may also be set to false.
+    for rule in [None, Some(false)] {
+        let mut setup = combat_table(false);
+        setup.house_rules.blocker_timer = rule;
+        let (handle, _) = spawn(setup, pace);
+        let mut clients = join_and_ready(&handle).await;
+        let (attack_id, decision, _) = clocked(&mut clients[0]).await;
+        let DecisionKind::DeclareAttackers(options) = &decision.kind else {
+            panic!("expected the attack, got {decision:?}");
+        };
+        let raider = options.attackers[0].object;
+        let attack = Answer::DeclareAttackers(vec![(raider, AttackTarget::Player(PlayerId(1)))]);
+        clients[0]
+            .say(
+                &handle,
+                ClientMessage::Answer {
+                    decision: attack_id,
+                    answer: attack,
+                },
+            )
+            .await;
+
+        let (blockers_id, decision, left) = until_blockers(&handle, &mut clients).await;
+        assert!(matches!(decision.kind, DecisionKind::DeclareBlockers(_)));
+        assert_eq!(left, None, "no deadline with the rule {rule:?}");
+        let events = handle.status().await.unwrap().events;
+
+        // Nothing answers for the defender, however long it takes.
+        tokio::time::advance(Duration::from_hours(2)).await;
+        assert_eq!(quiet(&handle).await.events, events, "the table waits");
+        clients[1].drain();
+        clients[1]
+            .say(
+                &handle,
+                ClientMessage::Answer {
+                    decision: blockers_id,
+                    answer: Answer::DeclareBlockers(Vec::new()),
+                },
+            )
+            .await;
+        handle.status().await.unwrap();
+        assert!(!is_stale(&clients[1].drain()), "the answer is still taken");
+    }
 }
 
 #[tokio::test(start_paused = true)]

@@ -1,16 +1,6 @@
-// Goal: the driver's own helpers read a prompt as the pages draw it: which cards of a hand are for casting and which for an ability alone, how a click on a card with an ability is answered in the chooser, the turn of a banner, the cards a Priority window marks legal in the hand, the command zone and the battlefield and the zones that hold one, which windows count as idle (a land with an ability to activate and a legal card in the graveyard or exile are plays), which defender an attack aims at, and that a play which comes back to its window unanswered is tried twice there.
+// Goal: the driver's own helpers read a prompt as the pages draw it: which cards of a hand are for casting and which for an ability alone, how a click on a card with an ability is answered in the chooser, the turn number of the banner, the cards a Priority window marks legal in the hand, the command zone and the battlefield and the zones that hold one, which windows count as idle (a land with an ability to activate and a legal card in the graveyard or exile are plays), which defender an attack aims at, and that a play which comes back to its window unanswered is tried twice there.
 import { expect, test } from '@playwright/test'
-import {
-  aimAt,
-  attackersOffered,
-  hasAbility,
-  isIdle,
-  isPlayable,
-  look,
-  pickPlay,
-  Run,
-  turnOf,
-} from './driver'
+import { aimAt, attackersOffered, hasAbility, isIdle, isPlayable, look, pickPlay, Run } from './driver'
 import type { Card, Seen } from './driver'
 
 const card = (id: string): Card => ({ id, label: `Card ${id}`, land: false })
@@ -20,7 +10,8 @@ const priority = (legal: Partial<Pick<Seen, 'hand' | 'command' | 'board' | 'zone
   over: false,
   kind: 'Priority',
   id: '1',
-  banner: "Ada's turn · 3 · End step",
+  banner: "Ada's turn · Round 2 · End step",
+  turn: 3,
   text: 'You have priority',
   buttons: [],
   hand: [],
@@ -31,12 +22,6 @@ const priority = (legal: Partial<Pick<Seen, 'hand' | 'command' | 'board' | 'zone
 })
 
 test.describe('driver helpers', () => {
-  test('the turn is the number between the dots of the banner', () => {
-    expect(turnOf("Ada's turn · 5 · End step")).toBe(5)
-    expect(turnOf('Your turn · 12 · Precombat main')).toBe(12)
-    expect(turnOf('Opening hands')).toBe(0)
-  })
-
   const windows: { name: string; seen: Seen; idle: boolean }[] = [
     { name: 'nothing is legal', seen: priority({}), idle: true },
     { name: 'a hand card is legal', seen: priority({ hand: [card('1')] }), idle: false },
@@ -92,7 +77,7 @@ test.describe('driver helpers', () => {
     page,
   }) => {
     await page.setContent(`
-      <h2 data-slot="banner">Your turn · 5 · Precombat main</h2>
+      <h2 data-slot="banner" data-turn="5" data-round="3">Your turn · Round 3 · Precombat main</h2>
       <div data-decision="Priority" data-decision-id="7">
         <p data-slot="prompt-text">You have priority</p><button>Next: Combat</button><button aria-label="Attack with all" disabled><span>All</span></button>
       </div>
@@ -111,6 +96,9 @@ test.describe('driver helpers', () => {
       </section>`)
     const seen = (await page.evaluate(look, { me: 'Ada', answered: null })) as Seen
     expect(seen.kind).toBe('Priority')
+    // The badge words the round; the turn number is read from its data.
+    expect(seen.banner).toBe('Your turn · Round 3 · Precombat main')
+    expect(seen.turn).toBe(5)
     // A button is named as the page names it: the combat bar's "All" is "Attack with all".
     expect(seen.buttons).toEqual([
       { label: 'Next: Combat', disabled: false },
@@ -216,7 +204,7 @@ test.describe('driver helpers', () => {
 })
 
 test.describe('a play that comes back to its window unanswered', () => {
-  const window = "Cy's turn · 19 · Precombat main"
+  const window = "Cy's turn · Round 10 · Precombat main"
   const spell: Card = { id: '7', label: 'Spectral Steel, Enchantment, Aura', land: false }
 
   test('is tried twice there, then left alone and reported once', () => {

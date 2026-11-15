@@ -18,7 +18,13 @@ import type { EventView, Stage } from '@/protocol/generated'
 import { deriveFeed, OWN_REASON, skipNote } from './feed'
 import type { Feed, TickerKind } from './feed'
 
-const at = (number: number, active: number, step: TurnAt['step']): TurnAt => ({ number, active, step })
+// A table of two seats: the round is every second turn.
+const at = (number: number, active: number, step: TurnAt['step']): TurnAt => ({
+  number,
+  round: Math.ceil(number / 2),
+  active,
+  step,
+})
 
 /** Everything that happens between the end of one turn and the first window of the next, with nobody asked. */
 const passTurn = (next: number, active: number): EventView[] => [
@@ -61,13 +67,13 @@ const cases: Case[] = [
       grant(1),
     ],
     expected: {
-      banner: { yours: false, who: "Bo's turn", turn: 6 },
+      banner: { yours: false, who: "Bo's turn", turn: 6, round: 3 },
       skipped: ['Upkeep', 'Draw'],
       lines: [
         { kind: 'skipped', text: 'Skipped Upkeep, Draw' },
         { kind: 'event', text: 'Bo draws a card' },
       ],
-      announcement: "Bo's turn, turn 6. Skipped Upkeep, Draw",
+      announcement: "Bo's turn, round 3, turn 6. Skipped Upkeep, Draw",
     },
   },
   {
@@ -76,9 +82,9 @@ const cases: Case[] = [
     after: at(7, 0, 'Main1'),
     events: passTurn(7, 0),
     expected: {
-      banner: { yours: true, who: 'Your turn', turn: 7 },
+      banner: { yours: true, who: 'Your turn', turn: 7, round: 4 },
       skipped: ['Upkeep', 'Draw'],
-      announcement: 'Your turn, turn 7. Skipped End step, Upkeep, Draw',
+      announcement: 'Your turn, round 4, turn 7. Skipped End step, Upkeep, Draw',
     },
   },
   {
@@ -107,7 +113,7 @@ const cases: Case[] = [
     before: at(5, 1, 'Main2'),
     after: at(5, 0, 'Main2'),
     events: [pass(1)],
-    expected: { banner: { yours: true, who: 'Your turn', turn: 5 } },
+    expected: { banner: { yours: true, who: 'Your turn', turn: 5, round: 3 } },
   },
   {
     name: 'the first turn of the game',
@@ -115,7 +121,7 @@ const cases: Case[] = [
     after: at(1, 0, 'Upkeep'),
     stage: 'Turns',
     events: [begin('Untap'), turnBegan(1, 0), begin('Upkeep'), grant(0)],
-    expected: { banner: { yours: true, who: 'Your turn', turn: 1 }, skipped: [] },
+    expected: { banner: { yours: true, who: 'Your turn', turn: 1, round: 1 }, skipped: [] },
   },
   {
     name: 'the end of the game',

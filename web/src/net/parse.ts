@@ -347,6 +347,7 @@ function isTableView(value: unknown): value is TableView {
     isCount(value.first_player) &&
     isRecord(value.turn) &&
     isCount(value.turn.number) &&
+    isCount(value.turn.round) &&
     isCount(value.turn.active) &&
     (value.turn.active_left === undefined || isFlag(value.turn.active_left)) &&
     isText(value.turn.step) &&

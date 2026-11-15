@@ -1,7 +1,7 @@
 // Goal: four accounts play a four-seat Commander game with real decks (precons, or with E2E_DECK=owner the owner's imported list) in the real client against a real server, from the create form and the lobby through mulligans, casts from the command zone with their tax and commander damage to a winner, with every seat seeing the same game, no notice, no page scrolling and no console error.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
-import { playToTheEnd, Run, turnOf } from './driver'
+import { playToTheEnd, Run } from './driver'
 import type { Hooks, Seen, Style } from './driver'
 import { measure, settle, TABLE_EXEMPT, TEXT_FLOOR } from './layoutAudit'
 import type { Look } from './layoutAudit'
@@ -34,7 +34,7 @@ const RECALLING = OWNER_DECK ? [0, 1, 2, 3] : [2, 3]
 
 /** What the table shows of the game, normalised so that every seat's page reads the same: the turn and each life. */
 interface Table {
-  /** "Bo's turn · 5 · End step", with "Your turn" written out as the viewer's name. */
+  /** "Bo's turn · Round 3 · End step", with "Your turn" written out as the viewer's name. */
   turn: string
   /** Each pod's seat and life. */
   lives: string[]
@@ -252,7 +252,7 @@ test.describe('four-seat Commander', () => {
       }))
       const hooks: Hooks = {
         async before(player: Player, now: Seen, current: Run) {
-          const turn = turnOf(now.banner)
+          const turn = now.turn
           seen.highestTurn = Math.max(seen.highestTurn, turn)
           if (turn >= TURN_CAP) {
             current.done = true

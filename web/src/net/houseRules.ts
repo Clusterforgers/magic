@@ -21,6 +21,7 @@ const COUNTS = [
 const FLAGS = [
   'mana_burn',
   'take_backs',
+  'blocker_timer',
   'open_hands',
   'revealed_library_top',
   'opening_hand_smoothing',

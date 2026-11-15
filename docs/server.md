@@ -348,7 +348,7 @@ A question with one legal answer whose options every seat sees (`mtg_engine::cho
 ### Response clocks
 
 - A decision gets its clock when issued (`Running::settle`, `Pace::clock_for`) from its kind and seat alone, never the options, hand, mode or stops, so a `Priority` decision is clocked whether the seat can act or not. The match names every kind, so a new kind must choose its clock and answer.
-- Four lengths, `0` for none: response (`MTG_RESPONSE_SECS`), blocks (`MTG_BLOCK_SECS`), think (`MTG_THINK_SECS`) for what takes thought, active (`MTG_ACTIVE_SECS`) for every decision of the active player's turn; a non-active seat is clocked by class (`Class::of`). The opening (mulligans, bottoming, its scry) has no clock (`Pace::OPENING_CLOCK`) and waits for each seat until it answers or concedes.
+- Four lengths, `0` for none: response (`MTG_RESPONSE_SECS`), blocks (`MTG_BLOCK_SECS`, only at a table whose `blocker_timer` house rule is on; otherwise declaring blockers has no clock and no `deadline_ms`), think (`MTG_THINK_SECS`) for what takes thought, active (`MTG_ACTIVE_SECS`) for every decision of the active player's turn; a non-active seat is clocked by class (`Class::of`). The opening (mulligans, bottoming, its scry) has no clock (`Pace::OPENING_CLOCK`) and waits for each seat until it answers or concedes.
 - The countdown shows after `MTG_CLOCK_GRACE_SECS`; the clock runs from issue and `Decision.show_after_ms` ([protocol.md](protocol.md), Decisions) is absent when the countdown shows at once, also for a clock no longer than the grace. A reconnect is told what is left of the delay.
 - **Timer bank** (`bank.rs`): three own turns in a row without a reached deadline earn an extension, at most three (`BANK_TURNS`, `BANK_MAX`); a reached deadline restarts the count. At a sent clock's deadline the seat spends one (`Running::extend`): the deadline moves by `MTG_EXTENSION_SECS` (`0` disables the bank), the decision is resent with its id and the new `deadline_ms`, and every seat gets `Bank`; only an empty bank lets `fall_back` answer. In memory; public in `PlayerView.bank`.
 - **Turn time** (`turn_time.rs`): each seat's wall time on its own turns, chess-clock style; a turn ends at the next turn, the game's end or its player leaving, the opening is no turn and time with nobody connected does not count. The actor stamps `PlayerView.turn_time_ms` and `turn_time_running` at send time ([protocol.md](protocol.md), Decisions). In memory; a resume starts from zero.
@@ -381,7 +381,7 @@ Blank values count as unset; any other malformed value refuses to start (`Config
 | `MTG_IDLE_CLOSE_SECS` | 3600 | Seconds a started game may have no person at a seat and no answer before the janitor closes it as `expired`; 60 to 604 800. |
 | `MTG_AUTO_PASS` | on | `1`, `on`, `true` or `0`, `off`, `false`. Off starts every seat in `Held`. |
 | `MTG_RESPONSE_SECS` | 10 | Response clock; `0` for none, at most 86 400. |
-| `MTG_BLOCK_SECS` | 45 | Clock for declaring blockers; same range. |
+| `MTG_BLOCK_SECS` | 45 | Clock for declaring blockers at a table that turns the `blocker_timer` house rule on (off by default); same range. |
 | `MTG_THINK_SECS` | 60 | Clock for a seat that is not the active player when paying, dividing combat damage, declaring attackers and discarding; same range. |
 | `MTG_ACTIVE_SECS` | 0 | Clock on every decision of the active player's turn after the opening; `0` for none; same range. |
 | `MTG_EXTENSION_SECS` | 20 | Seconds an extension of the timer bank adds; `0` turns the bank off; same range. |

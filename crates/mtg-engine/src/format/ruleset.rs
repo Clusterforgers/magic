@@ -213,6 +213,11 @@ impl<'a> RuleSet<'a> {
         self.house.take_backs.unwrap_or(true)
     }
 
+    /// Whether declaring blockers runs on a clock (the server's block clock).
+    pub fn blocker_timer(&self) -> bool {
+        self.house.blocker_timer.unwrap_or(false)
+    }
+
     /// What a draw from an empty library does.
     pub fn empty_library(&self) -> EmptyLibrary {
         self.house.empty_library.unwrap_or(EmptyLibrary::Lose)
@@ -467,6 +472,7 @@ mod tests {
         assert_eq!(rules.land_plays_per_turn(), 1);
         assert!(!rules.mana_burn());
         assert!(rules.take_backs());
+        assert!(!rules.blocker_timer());
         assert_eq!(rules.empty_library(), EmptyLibrary::Lose);
         assert_eq!((rules.turn_limit(), rules.winning_life()), (None, None));
         assert_eq!(rules.poison_threshold(), 10);
@@ -499,6 +505,7 @@ mod tests {
         let house = HouseRules {
             mana_burn: Some(true),
             take_backs: Some(false),
+            blocker_timer: Some(true),
             empty_library: Some(EmptyLibrary::ReshuffleGraveyard),
             turn_limit: Some(8),
             winning_life: Some(40),
@@ -507,6 +514,7 @@ mod tests {
         let rules = normal(&house);
         assert!(rules.mana_burn());
         assert!(!rules.take_backs());
+        assert!(rules.blocker_timer());
         assert_eq!(rules.empty_library(), EmptyLibrary::ReshuffleGraveyard);
         assert_eq!(
             (rules.turn_limit(), rules.winning_life()),

@@ -114,7 +114,7 @@ describe('the badge', () => {
     renderTable({ seats: 2 })
     expect(tag()).toHaveAttribute('aria-hidden', 'true')
     expect(document.querySelector('[data-slot="banner"]')).toHaveTextContent(
-      "Bo's turn · 5 · Declare blockers",
+      "Bo's turn · Round 3 · Declare blockers",
     )
     expect(tag()?.closest('[aria-live]')).toBeNull()
   })

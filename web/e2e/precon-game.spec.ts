@@ -1,7 +1,7 @@
 // Goal: accounts play real precon decks from a Postgres database through the real UI, from the lobby into the first turns (mulligans, lands, spells with their targets and payments, attacks, every step), and the run records what stops a first real game.
 import { expect, test } from '@playwright/test'
 import type { PreconListItem } from '../src/protocol/generated'
-import { playToTheEnd, Run, turnOf } from './driver'
+import { playToTheEnd, Run } from './driver'
 import type { Hooks, Seen, Style } from './driver'
 import { everyoneReady } from './lobby'
 import type { Player } from './lobby'
@@ -44,7 +44,7 @@ async function playTurns(
   const steps = new Set<string>()
   const hooks: Hooks = {
     async before(player: Player, seen: Seen, current: Run) {
-      const turn = turnOf(seen.banner)
+      const turn = seen.turn
       turns.set(player.name, (turns.get(player.name) ?? new Set()).add(turn))
       steps.add(seen.banner.split(' · ').at(-1) ?? '')
       if (turn >= untilTurn) {

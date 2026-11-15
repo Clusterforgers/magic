@@ -10,6 +10,7 @@ describe('reading house rules', () => {
     ['counts', { starting_life: 30, mulligan_cap: 0 }, { starting_life: 30, mulligan_cap: 0 }],
     ['switches', { mana_burn: true, open_hands: false }, { mana_burn: true, open_hands: false }],
     ['take-backs off', { take_backs: false }, { take_backs: false }],
+    ['the blocker timer on', { blocker_timer: true }, { blocker_timer: true }],
     [
       'words',
       { mulligan_style: 'paris', attack_range: 'left' },
@@ -50,6 +51,7 @@ describe('reading house rules', () => {
     ['a negative count', { starting_life: -1 }],
     ['a number for a switch', { mana_burn: 1 }],
     ['words for take-backs', { take_backs: 'off' }],
+    ['words for the blocker timer', { blocker_timer: 'on' }],
     ['a style nobody knows', { mulligan_style: 'seattle' }],
     ['a hand limit of the wrong shape', { max_hand_size: { cards: 'nine' } }],
     ['commander damage of the wrong word', { commander_damage: 'none' }],
