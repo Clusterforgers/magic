@@ -13,8 +13,39 @@ import type {
   PlayerView,
 } from '@/protocol/generated'
 
-/** What an ability is to the fight: always on, the phase in force, a phase to come, the scheme now or next. */
-export type BossAbilityKind = 'passive' | 'phase' | 'next-phase' | 'scheme' | 'omen'
+/**
+ * What an ability is to the fight: always on, its Enrage, this fight's modifier, the boss's relic, the phase in force,
+ * a phase to come, the scheme now or next.
+ */
+export type BossAbilityKind =
+  | 'passive'
+  | 'enrage'
+  | 'modifier'
+  | 'relic'
+  | 'phase'
+  | 'next-phase'
+  | 'scheme'
+  | 'omen'
+
+/** The kind of an always-on custom card by its content kind, and when an Enrage begins. */
+export function standingKind(card: CustomCardView | undefined): { kind: BossAbilityKind; when?: string } {
+  switch (card?.kind) {
+    case 'Enrage':
+      return { kind: 'enrage', when: `From the heroes' turn ${card.turn}` }
+    case 'Modifier':
+      return { kind: 'modifier' }
+    case 'BossRelic':
+      return { kind: 'relic' }
+    default:
+      return { kind: 'passive' }
+  }
+}
+
+/** When the Omen comes, from the boss turns still to begin before it. */
+export function omenWhen(omenIn: number | undefined): string {
+  if (omenIn === undefined || omenIn <= 1) return 'As its next turn begins'
+  return `In ${omenIn} of its turns`
+}
 
 /** One boss ability: its name, its whole rules text and a one-line summary. */
 export interface BossAbility {
@@ -90,8 +121,12 @@ export function bossAbilities(
     const count = (seen.get(object.name) ?? 0) + 1
     seen.set(object.name, count)
     if (count > 1) continue
-    const kind = phaseNames.has(object.name) || card?.kind === 'Phase' ? 'phase' : 'passive'
-    out.push(ability(`rule-${object.name}`, kind, object.name, content))
+    if (phaseNames.has(object.name) || card?.kind === 'Phase') {
+      out.push(ability(`rule-${object.name}`, 'phase', object.name, content))
+      continue
+    }
+    const { kind, when } = standingKind(card)
+    out.push(ability(`rule-${object.name}`, kind, object.name, content, when))
   }
   for (const entry of out) {
     const count = seen.get(entry.name) ?? 1
@@ -108,7 +143,7 @@ export function bossAbilities(
   })
   if (view.scheme !== undefined) out.push(ability(`scheme-${view.scheme}`, 'scheme', view.scheme, content))
   if (view.omen !== undefined)
-    out.push(ability(`omen-${view.omen}`, 'omen', view.omen, content, 'As its next turn begins'))
+    out.push(ability(`omen-${view.omen}`, 'omen', view.omen, content, omenWhen(view.omen_in)))
   return out
 }
 
@@ -118,7 +153,10 @@ const BAR_RANK: Record<BossAbilityKind, number> = {
   scheme: 1,
   omen: 2,
   'next-phase': 3,
-  passive: 4,
+  enrage: 4,
+  modifier: 5,
+  relic: 6,
+  passive: 7,
 }
 
 /** `abilities` in the order of the table's row (`BAR_RANK`), each kind keeping its own order. */

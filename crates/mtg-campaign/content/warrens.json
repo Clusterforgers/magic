@@ -540,6 +540,8 @@
    "rules": [
     "skrix"
    ],
+   "enrage": "swarm_unending",
+   "relic": "rat_kings_crown",
    "phases": [
     [
      "nest_stirs",
@@ -619,6 +621,8 @@
    "rules": [
     "mossjaw"
    ],
+   "enrage": "overgrowth",
+   "relic": "heartwood_bark",
    "phases": [
     [
      "regrowth",
@@ -642,6 +646,8 @@
    "rules": [
     "vex"
    ],
+   "enrage": "deaths_toll",
+   "relic": "bone_reliquary",
    "line": "Rise, all of you. Rise and feast.",
    "art": { "card": "Gisa, the Hellraiser", "oracle_id": "696363c9-e8a7-4c65-b65c-4a94891ec43d" },
    "deck": [
@@ -729,6 +735,8 @@
    "rules": [
     "grimgut"
    ],
+   "enrage": "kings_fury",
+   "relic": "crown_of_cinders",
    "line": "Kneel, or be eaten. Or both!",
    "art": { "card": "Krenko, Tin Street Kingpin", "oracle_id": "e8065e1d-e937-4b56-8011-78f0d07328a0" },
    "phases": [
@@ -823,7 +831,21 @@
   "hunting_party",
   "dark_tithe",
   "plunder",
-  "marked_prey"
+  "marked_prey",
+  "grave_robbers",
+  "war_drums",
+  "second_wind",
+  "gravecall",
+  "toll_of_shadows"
+ ],
+ "scheme_every": 2,
+ "modifiers": [
+  "bloodthirst",
+  "ironhide",
+  "quickened",
+  "watchful",
+  "hoarder",
+  "far_sight"
  ],
  "minions": [
   {

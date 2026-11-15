@@ -1,7 +1,13 @@
 /** The campaign content the dev table's boss fight reads its rules from, worded as the shipped content is. */
 import type { CustomCardView, DelveContent } from '@/protocol/generated'
 
-const card = (id: string, name: string, kind: CustomCardView['kind'], text: string): CustomCardView => ({
+const card = (
+  id: string,
+  name: string,
+  kind: CustomCardView['kind'],
+  text: string,
+  turn = 0,
+): CustomCardView => ({
   id,
   name,
   kind,
@@ -10,15 +16,19 @@ const card = (id: string, name: string, kind: CustomCardView['kind'], text: stri
   art: '',
   role: '',
   price: 0,
+  turn,
 })
 
-/** The boss's emblems in its command zone at the dev table: its card, the rules every boss has and its phase now. */
+/** The boss's emblems in its command zone at the dev table: its card and Enrage, the rules every boss has, this fight's
+ * modifier, its relic and its phase now. */
 export const DEV_BOSS_EMBLEMS = [
   'Skrix, the Rat Queen',
+  'Enrage — The Swarm Unending',
   'Escalation',
-  'Enrage',
   'Reinforcements',
   'Warpath',
+  'Bloodthirst',
+  "Rat King's Crown",
   'The Nest Stirs',
 ] as const
 
@@ -45,11 +55,14 @@ export const DEV_BOSS_CONTENT: DelveContent = {
       'At the beginning of your end step, each opponent loses 1 life for every four turns you have taken.',
     ),
     card(
-      'enrage',
+      'swarm_unending',
+      'Enrage — The Swarm Unending',
       'Enrage',
-      'Boss',
-      'At the beginning of your upkeep, if you have taken ten or more turns, each opponent loses life equal to the number of turns you have taken minus nine.',
+      'Once the heroes have had seven turns, at the beginning of your upkeep, create a 1/1 black Rat creature token for each turn they have had beyond six.',
+      7,
     ),
+    card('bloodthirst', 'Bloodthirst', 'Modifier', 'Creatures you control get +1/+0.'),
+    card('rat_kings_crown', "Rat King's Crown", 'BossRelic', 'Rat creatures get +1/+1.'),
     card(
       'reinforcements',
       'Reinforcements',

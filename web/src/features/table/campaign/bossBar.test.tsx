@@ -95,6 +95,18 @@ describe('the abilities bar at the table', () => {
     ).toBeInTheDocument()
   })
 
+  it.each([
+    ['Enrage — The Swarm Unending', 'enrage'],
+    ['Bloodthirst', 'modifier'],
+    ["Rat King's Crown", 'relic'],
+  ])('lists %s as its %s, in the content words', async (name, kind) => {
+    const { user } = fight()
+    await user.click(screen.getByRole('button', { name: /^All \d+ abilities of / }))
+    const text = DEV_BOSS_CONTENT.cards.find((one) => one.name === name)?.text ?? '-'
+    expect(await screen.findByText(text)).toBeInTheDocument()
+    if (kind === 'enrage') expect(screen.getByText(/From the heroes' turn 7/)).toBeInTheDocument()
+  })
+
   it('carries the phase track, and the boss pod leaves out what the bar shows', () => {
     const { container } = fight()
     expect(container.querySelector('[data-slot="boss-abilities"] [data-slot="boss-track"]')).not.toBeNull()
