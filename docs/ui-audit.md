@@ -1,6 +1,6 @@
 # UI audit and the look
 
-The state of the web client's look and feel, the problems ranked by their cost to play, the chosen look, the game-feel plan and the items left open. Rules stay in [ui-design.md](ui-design.md); implementation in [web.md](web.md).
+The state of the web client's look and feel, the problems ranked by their cost to play, the chosen look and the game-feel plan. Rules stay in [ui-design.md](ui-design.md); implementation in [web.md](web.md).
 
 ## Method
 
