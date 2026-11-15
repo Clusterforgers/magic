@@ -104,9 +104,16 @@ fn the_boss_scales_with_the_party_and_the_heat(
     assert_eq!(copies(rules, "reserves"), reserves);
     assert_eq!(copies(rules, "warpath"), warpaths);
     assert_eq!(
-        (copies(rules, "escalation"), copies(rules, "enrage")),
+        (copies(rules, "escalation"), copies(rules, &boss.enrage)),
         (1, 1)
     );
+    // One modifier of the pool; the first boss brings no relic.
+    let modifiers = rules
+        .iter()
+        .filter(|id| theme.modifiers.contains(id))
+        .count();
+    assert_eq!(modifiers, 1);
+    assert_eq!(copies(rules, &boss.relic), 0);
     // The boss's own phases at their share of its life, the Last Bulwark with the last of them.
     for ((_, at), (_, percent)) in plan.boss.phases.iter().zip(&boss.phases) {
         assert_eq!(*at, plan.boss.life * i32::try_from(*percent).unwrap() / 100);
@@ -208,5 +215,43 @@ fn a_planned_fight_starts_as_a_game_with_its_emblems() {
         assert_eq!(seat.leader(), Some(boss));
         assert_eq!(seat.life(), minion.life);
         assert_eq!(seat.schemes(), None);
+    }
+}
+
+#[rstest]
+#[case::seed_21(21)]
+#[case::seed_5(5)]
+#[case::seed_77(77)]
+fn each_boss_from_the_second_brings_its_relic_and_every_fight_draws_a_modifier(#[case] seed: u64) {
+    let content = content().unwrap();
+    let theme = &content.themes[0];
+    let mut run = run_at_first_boss(2, 0);
+    run.seed = seed;
+    run.map = mtg_campaign::map::generate(theme, seed);
+    let bosses: Vec<(u8, String)> = run
+        .map
+        .nodes
+        .iter()
+        .filter_map(|n| n.boss.clone().map(|b| (n.id, b)))
+        .collect();
+    assert_eq!(bosses.len(), theme.bosses.len());
+    for (rank, (node, id)) in bosses.iter().enumerate() {
+        run.at = Some(*node);
+        assert_eq!(run.boss_rank(*node), rank);
+        let plan = run.fight_plan(content).unwrap().unwrap();
+        let boss = theme.boss(id).unwrap();
+        assert_eq!(
+            copies(&plan.boss.rules, &boss.relic),
+            usize::from(rank >= 1),
+            "{id}"
+        );
+        let drawn = plan
+            .boss
+            .rules
+            .iter()
+            .filter(|id| theme.modifiers.contains(id))
+            .count();
+        assert_eq!(drawn, 1, "{id}");
+        assert_eq!(plan.boss.scheme_every, theme.scheme_every);
     }
 }

@@ -1,9 +1,10 @@
-// Goal: the run page marks each room of the ladder cleared, current, next or locked through every stage of a run, names who voted for which camp, gives a boss its life for the party and Heat, tones life bars, words the stage, knows a hero ready once they bring a deck and reads how the last fight was lost.
+// Goal: the run page marks each room of the ladder cleared, current, next or locked through every stage of a run, names who voted for which camp, gives a boss its life for the party and Heat, tones life bars, words the stage, knows a hero ready once they bring a deck, reads how the last fight was lost and lists a boss's Enrage, modifier and relic in the intro by their content kinds.
 import { describe, expect, it } from 'vitest'
 import type { Run } from '@/protocol/generated'
 import { hero, run } from './fakeDelves'
 import {
   bossLife,
+  introAbilities,
   isReady,
   lastFight,
   lifeShare,
@@ -14,6 +15,7 @@ import {
   votersOf,
 } from './model'
 import { delveView } from './fakeDelves'
+import { DEV_BOSS_CONTENT } from '@/features/table/dev/bossContent'
 
 // The test ladder: boss 0, then the shop 1 or the event 2, then boss 3.
 const states = (over: Partial<Run>) => {
@@ -128,4 +130,27 @@ it.each([
 
 it('reads a boss that fell as the last fight won', () => {
   expect(lastFight(run({ status: 'Room', at: 0, cleared: [0] }))).toBe('won')
+})
+
+describe('introAbilities', () => {
+  it('names each standing card by its content kind and an Enrage by the turn it begins', () => {
+    const fight = {
+      boss: 'Skrix, the Rat Queen',
+      life: 60,
+      rules: ['skrix', 'swarm_unending', 'escalation', 'ironhide', 'rat_kings_crown'],
+      phases: [['nest_stirs', 40] as [string, number]],
+      minions: [],
+    }
+    const abilities = introAbilities(DEV_BOSS_CONTENT, fight)
+    expect(abilities.map((one) => one.kind)).toEqual([
+      'passive',
+      'enrage',
+      'passive',
+      'modifier',
+      'relic',
+      'next-phase',
+    ])
+    expect(abilities[1]?.when).toBe("From the heroes' turn 7")
+    expect(abilities[3]?.text).toBe('Creatures you control get +0/+2.')
+  })
 })

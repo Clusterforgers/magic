@@ -36,6 +36,7 @@ export const DEV_CONTENT: DelveContent = {
       art: 'mend',
       role: 'Healer',
       price: 60,
+      turn: 0,
     },
     {
       id: 'tithe',
@@ -46,6 +47,7 @@ export const DEV_CONTENT: DelveContent = {
       art: 'tithe',
       role: 'Risky',
       price: 0,
+      turn: 0,
     },
     {
       id: 'grim',
@@ -56,6 +58,7 @@ export const DEV_CONTENT: DelveContent = {
       art: 'grim',
       role: '',
       price: 0,
+      turn: 0,
     },
   ],
   bosses: [

@@ -98,6 +98,7 @@ const relicCard = (content: DelveContent, id: string): CustomCardView =>
     art: '',
     role: '',
     price: 0,
+    turn: 0,
   }
 
 /** One hero of the header: name, gold, life bar, colors and relics. */

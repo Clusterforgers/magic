@@ -44,6 +44,9 @@ export const KIND_WORDS: Record<BossAbilityKind, string> = {
   'next-phase': 'Next phase',
   scheme: 'Scheme now',
   omen: 'Omen',
+  enrage: 'Enrage',
+  modifier: 'This fight',
+  relic: 'Boss relic',
 }
 
 /** The abilities of the boss at `seat`, read from the table and the content. */

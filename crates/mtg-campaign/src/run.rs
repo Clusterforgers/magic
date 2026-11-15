@@ -879,6 +879,16 @@ impl Run {
         Ok(())
     }
 
+    /// The place of the boss room `node` on the ladder: 0 for the first boss.
+    pub fn boss_rank(&self, node: u8) -> usize {
+        let row = self.map.node(node).map_or(0, |n| n.row);
+        self.map
+            .nodes
+            .iter()
+            .filter(|n| n.boss.is_some() && n.row < row)
+            .count()
+    }
+
     /// The plan of the fight the party is in, if it is in one.
     pub fn fight_plan(&self, content: &Content) -> Result<Option<FightPlan>, CampaignError> {
         if !matches!(self.status, Status::Fight { .. }) {
@@ -912,6 +922,13 @@ impl Run {
         let life = scale.life(boss);
         let schemes = Stream::new(self.seed, "schemes", u64::from(node), 0)
             .pick(&theme.schemes, theme.schemes.len());
+        let mut rules = scale.rules(boss);
+        rules.extend(
+            Stream::new(self.seed, "modifier", u64::from(node), 0).pick(&theme.modifiers, 1),
+        );
+        if self.boss_rank(node) >= 1 && !boss.relic.is_empty() {
+            rules.push(boss.relic.clone());
+        }
         let minions = scale
             .minions(theme, boss)
             .into_iter()
@@ -940,9 +957,10 @@ impl Run {
                 hand: scale.hand(boss),
                 brain: scale.brain(boss.brain),
                 deck: boss.deck.clone(),
-                rules: scale.rules(boss),
+                rules,
                 phases: scale.phases(boss, life),
                 schemes,
+                scheme_every: theme.scheme_every,
             },
             minions,
             run: None,

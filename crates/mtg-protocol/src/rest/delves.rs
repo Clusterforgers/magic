@@ -154,6 +154,8 @@ pub struct CustomCardView {
     pub role: String,
     /// A relic's shop price.
     pub price: u32,
+    /// The heroes' turn from which an Enrage applies; 0 for other cards.
+    pub turn: u32,
 }
 
 /// A boss as the web shows it.

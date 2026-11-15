@@ -1,6 +1,6 @@
 /** The Delves run page's pure rules of display: room states and votes, boss life, life bars, stages and ready heroes. */
 import type { DeckEntry } from '@/features/game/deckEntries'
-import { summaryOf } from '@/features/table/campaign/bossAbilities'
+import { standingKind, summaryOf } from '@/features/table/campaign/bossAbilities'
 import type { BossAbility } from '@/features/table/campaign/bossAbilities'
 import type {
   Brain,
@@ -134,7 +134,15 @@ export function introAbilities(content: DelveContent, fight: DelveFightView): Bo
     const card = content.cards.find((entry) => entry.id === id)
     if (card === undefined) continue
     const name = count > 1 ? `${card.name} ×${count}` : card.name
-    out.push({ key: `rule-${id}`, kind: 'passive', name, text: card.text, summary: summaryOf(card.text) })
+    const { kind, when } = standingKind(card)
+    out.push({
+      key: `rule-${id}`,
+      kind,
+      name,
+      text: card.text,
+      summary: summaryOf(card.text),
+      ...(when === undefined ? {} : { when }),
+    })
   }
   for (const [id, life] of fight.phases) {
     const card = content.cards.find((entry) => entry.id === id)

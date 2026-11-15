@@ -41,6 +41,7 @@ function card(content: DelveContent, id: string): CustomCardView {
       art: '',
       role: '',
       price: 0,
+      turn: 0,
     }
   )
 }
