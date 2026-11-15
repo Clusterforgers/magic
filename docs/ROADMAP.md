@@ -52,6 +52,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Delves fairness: the spotlight spreads the boss's side's attacks, removal and spotlight schemes over the heroes with a cap on any one hero's share, the grace and the lull open each fight, a boss takes commander damage but never loses to 21, and the table shows whom each boss-side seat eyes (`docs/delves.md`).
 - Delves difficulty: one scaling table by party size and Heat (life, hand, Reserves, Reinforcements, Warpath, minion seats that fall with the boss, the Last Bulwark), Escalation and Enrage, the scheme deck with its Omen, measured per party size (`docs/delves.md`).
 - Delves shared turns: the party and the boss's side each take one team turn (CR 805) with life totals per hero, each hero chooses their own creatures' attacks for one shared declaration, and the table names the party's turn (`docs/delves.md`).
+- Fights and the table: a fight that ends without a result counts as lost and the host can retreat, Spirits are asked only where their haunts matter, the rules lexicon covers every engine term, decks sit in several groups, token planeswalkers show loyalty, the round counter, the blocker timer and grid lands as choices, and the card preview stays clear of the prompt (`docs/delves.md`, `docs/web.md`)
 
 ## Live game
 
@@ -60,6 +61,12 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
 - [ ] (pl2m) `join.spec.ts` "a guest follows an invite link" times out on the Join button only in a full run: the trace a failed run keeps (`web/test-results`) names the cause, and the fix makes the spec pass in full runs
+- [ ] (pf9a) A GUI sweep of every screen in every game mode and layout at the owners' window sizes, its findings fixed
+- [ ] (pf9b) The prompt band at 1400 px on grid tables keeps a card prompt's answers on one row, shows a stack of three chips whole and wraps more than eight target cards instead of scrolling them sideways
+- [ ] (pf9c) Phone tables: the boss-mode opening hand clear of the boss pod, and attack arrows to a seat scrolled out of the strip
+- [ ] (pf9d) Crowded tables: three heroes at ten permanents each keep cards above 75 px at 1400 × 900, a six-seat grid shows the opponents' lands whole, and the card preview finds room in windows near 1024 px
+- [ ] (pf9e) The live report "only the host's creature attacks" in a party turn reproduced from its stored game and fixed
+- [ ] (pf9f) Stable tests under load: the 40-tap budget in `perf.test.tsx`, `tm38_team_turns` giant_four and the `check_sched` lock-wait case
 
 ## M5 Table and prompts
 
@@ -119,6 +126,8 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 - [ ] (dl3c) Delves balance at three to six heroes: measure them on seeds 1 to 8 (a fight takes 30 to 90 minutes of machine time or more) and lift any size that wins below 50 %
 - [ ] (dl3a) Boss personalities: each boss weighs threats its own way (the healer, the biggest board, the combo) within the spotlight's cap
+- [ ] (dl2c) Each hero pays the attack costs of their own creatures in the party's combined attack
+- [ ] (dl8c) The boss side's targeted spells say in the log why they leave the eyed hero, as its attacks do
 - [ ] (dl4) A won card names the card it replaces (a basic land today), chosen from the hero's deck list on the loot screen
 - [ ] (dl5) Campfire upgrades put a sticker on a card of the hero's deck for the rest of the run
 - [ ] (dl6) Risky relics are party decisions: the party votes to take one, and events can be party votes with a shared outcome
