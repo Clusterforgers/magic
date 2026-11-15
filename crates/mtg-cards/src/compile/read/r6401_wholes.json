@@ -112,5 +112,43 @@
    }
   },
   "Visit — Choose an opponent. They choose a creature they control, then you choose a creature you control. You may exile the chosen creatures. If you do, return them to the battlefield under their owners' control at the beginning of the next end step. Otherwise, the chosen creatures fight each other."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Visit": {}
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        {
+         "AddKeyword": "Flying"
+        }
+       ],
+       "duration": {
+        "UntilEndOfTurnOrRolled": 1
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Visit — Target creature gains flying until end of turn, or until any player rolls a 1, whichever comes first."
  ]
 ]

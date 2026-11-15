@@ -464,6 +464,7 @@ const RUNS: &[&str] = &[
     "Duration.UntilPaid",
     "Duration.UntilCastFromExile",
     "Duration.UntilCreatureSpellCast",
+    "Duration.UntilEndOfTurnOrRolled",
     "Effect.Rule",
     "Effect.Regenerate",
     "Effect.RemoveFromCombat",

@@ -10,6 +10,7 @@ use crate::common;
 
 #[rstest]
 #[case::tunnel_of_love("Tunnel of Love")]
+#[case::drop_tower("Drop Tower")]
 fn r6401_the_card_compiles_into_its_file(#[case] name: &str) {
     let printed = common::printed()
         .into_iter()
@@ -28,11 +29,17 @@ fn r6401_the_card_compiles_into_its_file(#[case] name: &str) {
     }
     assert_eq!(by_hand.impl_status, ImplStatus::Full, "{name}");
     for (face, written) in by_hand.faces.iter().enumerate() {
-        for ability in written.abilities.iter().filter(|a| !matches!(a, Ability::Keyword(_))) {
+        for ability in written
+            .abilities
+            .iter()
+            .filter(|a| !matches!(a, Ability::Keyword(_)))
+        {
             let texts = written_variants(ability);
             assert!(
                 compiled.clauses.iter().any(|clause| clause.face == face
-                    && texts.iter().any(|text| same_written_text(text, &clause.text))),
+                    && texts
+                        .iter()
+                        .any(|text| same_written_text(text, &clause.text))),
                 "{name}: none of {texts:?} is a clause of {clauses:?}"
             );
         }

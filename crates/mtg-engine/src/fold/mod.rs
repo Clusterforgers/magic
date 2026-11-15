@@ -553,7 +553,8 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             state.tally(*player, Tally::Cycled);
             crate::r5522_history::r5522_note_cycled(state, *player, *object);
         }
-        Event::DieRolled { player, .. } => {
+        Event::DieRolled { player, result, .. } => {
+            crate::r6401_history::r6401_note_roll(state, *result);
             c11e_draw_random(state, event);
             state.tally(*player, Tally::R5508DiceRolled);
         }

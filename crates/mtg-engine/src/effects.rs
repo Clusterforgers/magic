@@ -488,7 +488,9 @@ pub(crate) fn lasts(
         // An effect or rule that follows its objects' tapped state reads its own record (`r5509_stays_tapped`).
         | Duration::WhileTapped
         // `UntilCreatureSpellCast` reads the effect's own timestamp (`lasts_by`).
-        | Duration::UntilCreatureSpellCast => true,
+        | Duration::UntilCreatureSpellCast
+        // `UntilEndOfTurnOrRolled` ends with the cleanup step or a roll after its own timestamp (`lasts_by`).
+        | Duration::UntilEndOfTurnOrRolled(_) => true,
         // `DuringItsControllersNextTurn` is begun for the player whose turn it waits for (`continuous.rs`).
         Duration::UntilEndOfYourNextTurn | Duration::DuringItsControllersNextTurn => {
             state.is_alive(controller)
@@ -609,7 +611,9 @@ pub(crate) fn ends_with_turn(
 ) -> bool {
     let turn = state.turn();
     match duration {
-        Duration::UntilEndOfTurn | Duration::UntilSkippedThisTurn => true,
+        Duration::UntilEndOfTurn
+        | Duration::UntilSkippedThisTurn
+        | Duration::UntilEndOfTurnOrRolled(_) => true,
         Duration::UntilEndOfYourNextTurn | Duration::DuringItsControllersNextTurn => {
             turn.number() > began && state.is_active(controller)
         }
@@ -745,6 +749,9 @@ impl ContinuousEffect {
             Duration::WhileMonarch(_) => self.anchor.is_some() && state.monarch == self.anchor,
             Duration::UntilCreatureSpellCast => {
                 !crate::r5512_until_cast::r5512_creature_cast_since(state, self.timestamp)
+            }
+            Duration::UntilEndOfTurnOrRolled(number) => {
+                !crate::r6401_history::r6401_rolled_since(state, *number, self.timestamp)
             }
             other => lasts(state, other, self.turn, self.controller, self.source),
         }

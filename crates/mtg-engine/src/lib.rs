@@ -78,6 +78,7 @@ mod r5512_until_cast;
 mod r5523_sentinels;
 mod r6013_winds;
 mod r6104_activation_facts;
+mod r6401_history;
 mod replace_dry;
 mod rmt3_skips;
 mod saga;

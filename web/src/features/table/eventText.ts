@@ -275,6 +275,8 @@ function durationWords(
   if (typeof duration === 'object') {
     if ('UntilPaid' in duration) return ` until its controller pays ${duration.UntilPaid} to end it`
     if ('WhileMonarch' in duration) return ' while that player is the monarch'
+    if ('UntilEndOfTurnOrRolled' in duration)
+      return ` until end of turn, or until any player rolls a ${duration.UntilEndOfTurnOrRolled}`
     const counter = `${counterName(duration.WhileHasCounter)} counter`
     return several ? ` while each has a ${counter}` : ` while it has a ${counter}`
   }

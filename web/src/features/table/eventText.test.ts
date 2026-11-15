@@ -1131,6 +1131,10 @@ describe('events with more than one shape', () => {
       "Grizzly Bears and Hill Giant can't attack Ana while each has a charge counter",
     ],
     [
+      effect(objects(2), { AddKeyword: 'Flying' }, { UntilEndOfTurnOrRolled: 1 }),
+      'Hill Giant gains flying until end of turn, or until any player rolls a 1',
+    ],
+    [
       effect(objects(2), { AddSubtype: 'Aura' }, { UntilPaid: '{W}' }),
       'Hill Giant becomes Aura too until its controller pays {W} to end it',
     ],
