@@ -1,4 +1,3 @@
-import { Navigate } from '@tanstack/react-router'
 import { useEffect, useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
 import { useStore } from 'zustand'
@@ -19,6 +18,7 @@ import type { Session, SessionDeps } from '@/play/session'
 import type { PlayState } from '@/play/store'
 import { TutorialCoach } from '@/features/learn/LessonCoach'
 import { tutorialOf } from '@/features/learn/tutorials'
+import { FightEnd } from '@/features/delves/FightEnd'
 import { FightLobby } from '@/features/delves/FightLobby'
 import { GameTable } from '@/features/table/GameTable'
 import { delvesApi as sharedDelves } from '@/net/delves'
@@ -201,10 +201,11 @@ function SeatedGame({
   // or the seat was lost), the connection notice is the whole page.
   let screen: ReactElement | null = null
   let title = connection.kind === 'closed' ? 'Game closed' : ended ? 'Disconnected' : 'Connecting'
-  // A Delves boss fight has its own waiting room, and its end goes straight back to the run for the loot.
+  // A Delves boss fight has its own waiting room, and its end stays on the final table under its result until the
+  // player goes on to the run (`FightEnd`).
   const delve = lookup.game?.delve ?? null
   if (over && delve !== null && !watch) {
-    screen = <Navigate to="/delves/$delveId" params={{ delveId: delve }} />
+    screen = <FightEnd delve={delve} />
     title = 'Game over'
   } else if (over) {
     // The result closes for a look at the final table and its log, and comes back from the strip above them.

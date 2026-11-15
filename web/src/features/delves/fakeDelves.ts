@@ -113,6 +113,7 @@ export function run(over: Partial<Run> = {}): Run {
     hearts: 3,
     status: 'Lobby',
     log: ['Ana joined the party.'],
+    fights: [],
     ...over,
   }
 }
