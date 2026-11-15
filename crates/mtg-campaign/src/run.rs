@@ -4,6 +4,7 @@
 
 use std::collections::BTreeMap;
 
+use mtg_core::house::Timers;
 use serde::{Deserialize, Serialize};
 
 use crate::CampaignError;
@@ -208,6 +209,11 @@ pub enum RunEvent {
         /// The deck.
         deck: HeroDeck,
     },
+    /// The host chose how long the party may take in a fight's game, in the lobby.
+    Timers {
+        /// The setting.
+        timers: Timers,
+    },
     /// The party left the lobby.
     Started,
     /// A hero voted for the next room.
@@ -258,6 +264,9 @@ pub struct Run {
     pub seed: u64,
     /// The difficulty level.
     pub heat: u8,
+    /// How long the party may take in each fight's game: relaxed unless the host chose otherwise.
+    #[serde(default)]
+    pub timers: Timers,
     /// The theme's id.
     pub theme: String,
     /// The ladder.
@@ -290,6 +299,7 @@ impl Run {
             seed,
             heat,
             theme: theme.to_owned(),
+            timers: Timers::default(),
             map,
             heroes: Vec::new(),
             at: None,
@@ -389,6 +399,10 @@ impl Run {
                 }
                 let h = self.hero_mut(*hero)?;
                 h.deck = Some(deck.clone());
+            }
+            RunEvent::Timers { timers } => {
+                self.lobby()?;
+                self.timers = *timers;
             }
             RunEvent::Started => {
                 self.lobby()?;

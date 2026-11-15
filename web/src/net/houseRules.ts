@@ -32,6 +32,7 @@ const WORDS: Record<string, readonly string[]> = {
   empty_library: ['lose', 'reshuffle_graveyard'],
   attack_range: ['any', 'neighbours', 'left'],
   mulligan_style: ['london', 'paris', 'vancouver'],
+  timers: ['relaxed', 'quick', 'off'],
 }
 
 const isHandLimit = (value: unknown): boolean =>

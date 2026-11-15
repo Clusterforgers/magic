@@ -32,6 +32,7 @@ const CLOCKS: Pace = Pace {
     think: Some(Duration::from_mins(1)),
     active: Some(Duration::from_secs(30)),
     extension: None,
+    relaxed: None,
     grace: Duration::ZERO,
     dwell: Dwell::OFF,
 };

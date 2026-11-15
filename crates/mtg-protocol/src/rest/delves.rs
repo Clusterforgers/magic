@@ -2,6 +2,7 @@
 //! the run as the party sees it and the campaign content the web draws (custom cards, bosses, events).
 
 use mtg_campaign::{Brain, CardKind, Pick, Run};
+use mtg_core::house::Timers;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
@@ -14,6 +15,10 @@ pub struct CreateDelve {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub seed: Option<String>,
+    /// How long the party may take in each fight's game; relaxed when absent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub timers: Option<Timers>,
 }
 
 /// What a member of the party does.

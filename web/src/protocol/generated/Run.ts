@@ -2,6 +2,7 @@
 import type { FloorMap } from "./FloorMap";
 import type { Hero } from "./Hero";
 import type { Status } from "./Status";
+import type { Timers } from "./Timers";
 
 /**
  * A run: its seed and theme, the ladder, the party and where they are.
@@ -11,6 +12,10 @@ export type Run = {
  * The difficulty level.
  */
 heat: number, 
+/**
+ * How long the party may take in each fight's game: relaxed unless the host chose otherwise.
+ */
+timers: Timers, 
 /**
  * The theme's id.
  */

@@ -1,14 +1,23 @@
 /**
- * The head of a run page: the theme, where the run is, Heat, the party's hearts, the seed code to copy, and each hero
+ * The head of a run page: the theme, where the run is, Heat, the timers, the party's hearts, the seed code to copy, and each hero
  * with a life bar, gold and a row of relics whose rules show on hover or focus.
  */
-import { CoinsIcon, FlameIcon, GemIcon, GhostIcon, HeartIcon, TriangleAlertIcon } from 'lucide-react'
+import {
+  ClockIcon,
+  CoinsIcon,
+  FlameIcon,
+  GemIcon,
+  GhostIcon,
+  HeartIcon,
+  TriangleAlertIcon,
+} from 'lucide-react'
 import { CopyButton } from '@/components/CopyButton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import type { CustomCardView, DelveContent, DelveView, Hero } from '@/protocol/generated'
 import { ColourPips } from './CommanderArt'
 import { HEARTS, lifeShare, lifeTone, runStage } from './model'
+import { timersText } from './words'
 
 const BAR = { low: 'bg-destructive', hurt: 'bg-warning', fine: 'bg-success' } as const
 
@@ -150,6 +159,13 @@ export function RunHeader({ view, content }: { view: DelveView; content: DelveCo
               className={cn('size-5', run.heat > 0 ? 'text-delve' : 'text-muted-foreground')}
             />
             <span aria-hidden="true">Heat {run.heat}</span>
+          </span>
+          <span
+            className="inline-flex items-center gap-1 font-medium"
+            title="How long a player may take in each fight before the table answers for them"
+          >
+            <ClockIcon aria-hidden="true" className="size-5 text-muted-foreground" />
+            <span>Timers: {timersText(run.timers)}</span>
           </span>
           <Hearts left={run.hearts} />
           <span className="inline-flex items-center gap-1">

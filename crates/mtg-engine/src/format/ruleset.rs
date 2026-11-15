@@ -2,7 +2,7 @@
 
 use mtg_core::house::{
     AttackRange, CommanderDamageLimit, EmptyLibrary, HandLimit, HouseRules, MulliganStyle,
-    SkipFirstDraw,
+    SkipFirstDraw, Timers,
 };
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::teams::Teams;
@@ -218,6 +218,11 @@ impl<'a> RuleSet<'a> {
         self.house.blocker_timer.unwrap_or(false)
     }
 
+    /// How long the server lets a seat take (the server's clocks read it alone).
+    pub fn timers(&self) -> Timers {
+        self.house.timers.unwrap_or_default()
+    }
+
     /// What a draw from an empty library does.
     pub fn empty_library(&self) -> EmptyLibrary {
         self.house.empty_library.unwrap_or(EmptyLibrary::Lose)
@@ -316,7 +321,7 @@ impl<'a> RuleSet<'a> {
 #[cfg(test)]
 mod tests {
     //! Goal: every rule the house can set wins over the format's value, an unset rule keeps it, and the mulligan options follow the resolved rule, bottom counts and the limit on mulligans included.
-    use mtg_core::house::{EmptyLibrary, HandLimit, Handicap, HouseRules, SkipFirstDraw};
+    use mtg_core::house::{EmptyLibrary, HandLimit, Handicap, HouseRules, SkipFirstDraw, Timers};
     use rstest::rstest;
 
     use super::*;
@@ -473,6 +478,7 @@ mod tests {
         assert!(!rules.mana_burn());
         assert!(rules.take_backs());
         assert!(!rules.blocker_timer());
+        assert_eq!(rules.timers(), Timers::Relaxed);
         assert_eq!(rules.empty_library(), EmptyLibrary::Lose);
         assert_eq!((rules.turn_limit(), rules.winning_life()), (None, None));
         assert_eq!(rules.poison_threshold(), 10);
@@ -506,6 +512,7 @@ mod tests {
             mana_burn: Some(true),
             take_backs: Some(false),
             blocker_timer: Some(true),
+            timers: Some(Timers::Off),
             empty_library: Some(EmptyLibrary::ReshuffleGraveyard),
             turn_limit: Some(8),
             winning_life: Some(40),
@@ -515,6 +522,7 @@ mod tests {
         assert!(rules.mana_burn());
         assert!(!rules.take_backs());
         assert!(rules.blocker_timer());
+        assert_eq!(rules.timers(), Timers::Off);
         assert_eq!(rules.empty_library(), EmptyLibrary::ReshuffleGraveyard);
         assert_eq!(
             (rules.turn_limit(), rules.winning_life()),

@@ -11,6 +11,7 @@ import type {
   HouseRules,
   MulliganStyle,
   SkipFirstDraw,
+  Timers,
 } from '@/protocol/generated'
 
 /** The formats a game is made in. */
@@ -22,7 +23,12 @@ export type RuleGroup = 'Life and cards' | 'Mulligans' | 'Turns and winning' | '
 /** The control a rule is edited with. */
 export type RuleInput =
   | { kind: 'number'; min: number; max: number; word?: string }
-  | { kind: 'choice'; options: readonly { value: string; label: string }[] }
+  | {
+      kind: 'choice'
+      options: readonly { value: string; label: string }[]
+      /** The words for the empty choice, in place of "Format’s rule"; for a rule that is no format's own. */
+      blank?: string
+    }
   /** On unless its text is "off"; only off is sent. */
   | { kind: 'switch' }
 
@@ -475,6 +481,28 @@ export const RULES: readonly RuleSpec[] = [
     'Blocker timer',
     'No blocker timer',
   ),
+  rule<Timers>({
+    id: 'timers',
+    label: 'Timers',
+    help: 'The time limit of each decision: Relaxed gives 30 seconds to respond and 3 minutes to think, Quick 10 seconds and 1 minute, Off none.',
+    group: 'Table',
+    input: {
+      kind: 'choice',
+      blank: 'Relaxed (default)',
+      options: [
+        { value: 'quick', label: 'Quick (10 seconds to respond)' },
+        { value: 'off', label: 'Off (no time limit)' },
+      ],
+    },
+    get: (rules) => rules.timers,
+    put: (rules, value) => {
+      rules.timers = value
+    },
+    from: (text) => (text === 'relaxed' || text === 'quick' || text === 'off' ? text : null),
+    text: (value) => value,
+    show: (value) => (value === 'off' ? 'No timers' : `${value === 'quick' ? 'Quick' : 'Relaxed'} timers`),
+    own: { normal: 'relaxed', commander: 'relaxed' },
+  }),
   flag('open_hands', 'Open hands', 'Every player sees every hand.', 'Table', 'Open hands', 'Hands hidden'),
   flag(
     'revealed_library_top',

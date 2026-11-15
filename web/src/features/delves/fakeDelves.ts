@@ -97,6 +97,7 @@ export function hero(over: Partial<Hero> = {}): Hero {
 export function run(over: Partial<Run> = {}): Run {
   return {
     heat: 0,
+    timers: 'relaxed',
     theme: 'warrens',
     map: {
       nodes: [

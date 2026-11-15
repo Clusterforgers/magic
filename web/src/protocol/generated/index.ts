@@ -365,6 +365,7 @@ export type { TeamMode } from "./TeamMode";
 export type { Teams } from "./Teams";
 export type { TeamsBody } from "./TeamsBody";
 export type { TextWord } from "./TextWord";
+export type { Timers } from "./Timers";
 export type { Together } from "./Together";
 export type { TokenCreated } from "./TokenCreated";
 export type { TokenOfferView } from "./TokenOfferView";

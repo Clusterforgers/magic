@@ -12,7 +12,7 @@ use mtg_testkit::cards::instant;
 use net::{Frame, TestServer, WsClient, bot_config, connect, create_game, two_seats};
 use serde_json::Value;
 
-/// Bot-sized queues and rate limits with the default pace: auto-pass on, clocks running and no dwell, so a pass never waits.
+/// Bot-sized queues and rate limits with the default pace: auto-pass on, relaxed clocks running and no dwell, so a pass never waits.
 fn paced() -> ServerConfig {
     paced_with(Pace::default())
 }
@@ -121,6 +121,7 @@ async fn a_decision_without_a_clock_leaves_the_field_out() {
         think: None,
         active: None,
         extension: None,
+        relaxed: None,
         grace: std::time::Duration::ZERO,
         ..Pace::default()
     };
@@ -182,12 +183,15 @@ async fn a_decision_on_a_clock_states_the_milliseconds_it_has() {
     }
 
     let json = next_decision(&mut second).await;
-    assert_eq!(json["deadline_ms"], 10_000, "{json}");
+    assert_eq!(
+        json["deadline_ms"], 30_000,
+        "the default timers are relaxed: {json}"
+    );
     // The same decision after a reconnect carries what is left of it.
     let (mut again, _, _) = welcomed(&server, &game, &tokens[1]).await;
     let json = next_decision(&mut again).await;
     let left = json["deadline_ms"].as_u64().unwrap();
-    assert!((1..=10_000).contains(&left), "{json}");
+    assert!((1..=30_000).contains(&left), "{json}");
     // Seat 0 had nothing to do and was passed for, so it was never asked anything.
     let mut asked = false;
     while let Frame::Message(message) = first.next().await {

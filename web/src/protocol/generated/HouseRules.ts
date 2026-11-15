@@ -8,6 +8,7 @@ import type { Handicap } from "./Handicap";
 import type { MulliganStyle } from "./MulliganStyle";
 import type { SkipFirstDraw } from "./SkipFirstDraw";
 import type { Teams } from "./Teams";
+import type { Timers } from "./Timers";
 
 /**
  * What a game's creator sets in place of the format's values. A rule that is left out keeps the
@@ -58,6 +59,10 @@ take_backs?: boolean,
  * Whether declaring blockers runs on the server's block clock; off when left out.
  */
 blocker_timer?: boolean, 
+/**
+ * How long a seat may take to answer before the server answers for it; relaxed when left out.
+ */
+timers?: Timers, 
 /**
  * What drawing from an empty library does.
  */

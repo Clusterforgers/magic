@@ -197,7 +197,8 @@ impl Running {
     /// Wraps `engine`; call [`settle`](Running::settle) to issue the first decision id.
     pub(crate) fn new(mut engine: Engine, pace: Pace) -> Running {
         engine.set_rewind_on_cancel(true);
-        let mut banks = Banks::new(engine.state().players().len(), pace.extension.is_some());
+        let clocks = pace.clocks(engine.state().ruleset().timers());
+        let mut banks = Banks::new(engine.state().players().len(), clocks.extension.is_some());
         banks.watch(engine.state());
         let mut times = TurnTimes::new(engine.state().players().len());
         times.watch(engine.state(), Instant::now());
@@ -261,7 +262,10 @@ impl Running {
     /// moves by the extension's length and the countdown shows at once. `None` when there is nothing to extend, so the
     /// table answers for the seat.
     pub(crate) fn extend(&mut self) -> Option<Extended> {
-        let length = self.pace.extension?;
+        let length = self
+            .pace
+            .clocks(self.engine.state().ruleset().timers())
+            .extension?;
         let (seat, due, hidden) = self
             .expiring()
             .map(|p| (p.decision.player, p.due, p.hidden))?;
@@ -437,8 +441,9 @@ impl Running {
             } else {
                 state.turn().active()
             };
+            let rules = state.ruleset();
             self.pace
-                .clock_for(&decision, active, state.ruleset().blocker_timer())
+                .clock_for(&decision, active, rules.blocker_timer(), rules.timers())
         };
         let now = Instant::now();
         let due = clock.and_then(|span| now.checked_add(span));

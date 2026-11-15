@@ -483,7 +483,11 @@ async fn make_fight(
         visibility: Visibility::Invite,
         accounts,
         bots,
-        house_rules: plan.house_rules(&mtg_core::house::HouseRules::default()),
+        // The run's timers apply to every fight's game.
+        house_rules: plan.house_rules(&mtg_core::house::HouseRules {
+            timers: Some(loaded.run.timers),
+            ..mtg_core::house::HouseRules::default()
+        }),
         campaign: Some(plan),
         ..GameOptions::default()
     };
@@ -739,6 +743,9 @@ pub(crate) async fn create(
             bot: None,
         },
     )?;
+    if let Some(timers) = body.timers {
+        push(&mut loaded, RunEvent::Timers { timers })?;
+    }
     save(delves, &loaded, 0).await?;
     Ok((
         StatusCode::CREATED,
