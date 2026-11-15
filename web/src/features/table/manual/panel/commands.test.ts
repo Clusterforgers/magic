@@ -181,3 +181,85 @@ describe('pressPreset and startDraft', () => {
     expect(startDraft(command('shuffle')).amount).toBe(0)
   })
 })
+
+describe('the seat picked for life, counters, Mill and Exile from the top', () => {
+  const BO = { seat: 1, name: 'Bo', life: 12, library: 30, counters: [['poison', 3]] as const }
+  const PICKED: PanelInput = {
+    ...INPUT,
+    seats: [{ seat: 0, name: 'Ana', life: 40, library: 52, counters: INPUT.counters }, BO],
+    subject: BO,
+  }
+
+  it('names the seat in the You group and in the rows that change its numbers', () => {
+    expect(panelGroups(PICKED)[0]?.label).toBe('Bo')
+    expect(command('poison', PICKED).effect).toBe('Poison counters on Bo; ten of them and Bo loses.')
+    expect(command('mill', PICKED).effect).toBe('Put the top cards of Bo’s library into Bo’s graveyard.')
+    expect(command('exileTop', PICKED).effect).toBe('Exile the top cards of Bo’s library face up.')
+    expect(command('draw', PICKED).effect).toBe('Put the top cards of your library into your hand.')
+  })
+
+  it.each<[string, CommandId, number, string, string, ManualAction]>([
+    ['loses life', 'life', -3, 'Bo: 12 → 9 life', 'Bo loses 3 life', { Life: { player: 1, delta: -3 } }],
+    ['gains life', 'life', 5, 'Bo: 12 → 17 life', 'Bo gains 5 life', { Life: { player: 1, delta: 5 } }],
+    [
+      'gets poison counters',
+      'poison',
+      2,
+      'Bo: 3 → 5 poison',
+      'Add 2 poison counters to Bo',
+      { PlayerCounters: { player: 1, counter: 'poison', delta: 2 } },
+    ],
+    [
+      'loses a counter',
+      'poison',
+      -1,
+      'Bo: 3 → 2 poison',
+      'Remove 1 poison counter from Bo',
+      { PlayerCounters: { player: 1, counter: 'poison', delta: -1 } },
+    ],
+    [
+      'is milled',
+      'mill',
+      2,
+      'Bo: the top 2 cards go to Bo’s graveyard (library 30 → 28)',
+      'Mill 2 cards from Bo',
+      { MoveTop: { count: 2, to: 'Graveyard', library: 1 } },
+    ],
+    [
+      'has its top card exiled',
+      'exileTop',
+      1,
+      'Bo: the top card goes to exile (library 30 → 29)',
+      'Exile 1 card from Bo',
+      { MoveTop: { count: 1, to: 'Exile', library: 1 } },
+    ],
+  ])(
+    '%s: previews "%s" and sends the action for the picked seat',
+    (_what, id, amount, preview, apply, action) => {
+      expect(previewOf(command(id, PICKED), draft(amount), PICKED)).toEqual({ preview, apply, action })
+    },
+  )
+
+  it('keeps drawing and putting cards on the bottom to the seat itself', () => {
+    expect(previewOf(command('draw', PICKED), draft(2), PICKED)).toMatchObject({
+      action: { Draw: { count: 2 } },
+    })
+    expect(previewOf(command('bottomTop', PICKED), draft(2), PICKED)).toMatchObject({
+      action: { MoveTop: { count: 2, to: 'LibraryBottom' } },
+    })
+  })
+
+  it.each<[CommandId, number, string]>([
+    ['poison', -4, 'Bo has 3 poison counters.'],
+    ['mill', 6, 'Bo’s library has 5 cards.'],
+  ])('refuses %s %i in plain words naming the seat', (id, amount, problem) => {
+    const short = { ...PICKED, subject: { ...BO, library: 5 } }
+    expect(previewOf(command(id, short), draft(amount), short)).toEqual({ problem })
+  })
+
+  it('makes Mill inert on the empty library of the picked seat, not on the seat’s own', () => {
+    const empty = { ...PICKED, subject: { ...BO, library: 0 } }
+    expect(command('mill', empty).unavailable).toBe('Bo’s library is empty.')
+    expect(command('draw', empty).unavailable).toBeUndefined()
+  })
+})

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
-import type { CounterKind, ManaType, ObjectId, TokenOfferView } from '@/protocol/generated'
+import type { CounterKind, ManaType, ObjectId, PlayerId, TokenOfferView } from '@/protocol/generated'
 import { useSeatNamer } from '../../names'
 import { identityOf } from '../../commander'
 import { playerOf } from '../../selectors'
@@ -19,7 +19,7 @@ import { CardGroup } from './CardGroup'
 import { DueGroup } from './DueGroup'
 import { FeedbackLine } from './FeedbackLine'
 import { useManualSender } from './feedback'
-import { panelGroups, previewOf, startDraft } from './commands'
+import { panelGroups, previewOf, startDraft, subjectOf } from './commands'
 import { COMMAND_ICONS } from './icons'
 import { LifeCounter } from './LifeCounter'
 import { LookTopBody } from './LookTopBody'
@@ -28,7 +28,7 @@ import { RowButton } from './RowButton'
 import { TutorBody } from './TutorBody'
 import { TokenChoice } from './TokenChoice'
 import { useRevealOnOpen } from './reveal'
-import type { Command, CommandId, PanelDraft, PanelGroup, PanelInput } from './commands'
+import type { Command, CommandId, PanelDraft, PanelGroup, PanelInput, PanelSeat } from './commands'
 
 const NO_COUNTERS: readonly (readonly [CounterKind, number])[] = []
 const NO_CARDS: readonly ObjectId[] = []
@@ -52,9 +52,13 @@ function lookedOf(
   return pendingLook(log, seat) === kind ? known : NO_CARDS
 }
 
-/** What the seat's commands are made from, or null for a viewer that is no seat of the game. */
-function usePanelInput(): PanelInput | null {
+/**
+ * What the seat's commands are made from, or null for a viewer that is no seat of the game. `pick` is the other seat
+ * whose life, counters and library top the commands change; a seat that left the game is not picked.
+ */
+function usePanelInput(pick: PlayerId | null): PanelInput | null {
   const nameOf = useSeatNamer()
+  const players = usePlay((state) => state.view?.players)
   const mine = usePlay(
     useShallow((state) => {
       const player = state.seat === null ? undefined : playerOf(state, state.seat)
@@ -80,7 +84,53 @@ function usePanelInput(): PanelInput | null {
   )
   const tokens = usePlay((state) => state.view?.tokens ?? NO_TOKENS)
   if (mine === null) return null
-  return { ...mine, name: nameOf(mine.seat), tokens, ...(identity === null ? {} : { identity }) }
+  const seats = (players ?? [])
+    .filter((player) => player.lost === null)
+    .map((player): PanelSeat => ({
+      seat: player.seat,
+      name: nameOf(player.seat),
+      life: player.life,
+      library: player.library.count,
+      counters: player.counters ?? NO_COUNTERS,
+    }))
+    .sort((a, b) => Number(b.seat === mine.seat) - Number(a.seat === mine.seat) || a.seat - b.seat)
+  const subject = pick === null || pick === mine.seat ? undefined : seats.find((each) => each.seat === pick)
+  return {
+    ...mine,
+    name: nameOf(mine.seat),
+    tokens,
+    seats,
+    ...(subject === undefined ? {} : { subject }),
+    ...(identity === null ? {} : { identity }),
+  }
+}
+
+/** Who the commands that change a seat's numbers (life, counters, Mill, Exile from the top) act on. */
+function SubjectPicker({ input, onPick }: { input: PanelInput; onPick: (seat: PlayerId | null) => void }) {
+  const id = useId()
+  const seats = input.seats ?? []
+  if (seats.length < 2) return null
+  return (
+    <div data-slot="commands-subject" className="grid gap-1 px-2 pt-1">
+      <label htmlFor={id} className="text-xs font-medium text-muted-foreground">
+        Life, counters, Mill and Exile from the top change
+      </label>
+      <NativeSelect
+        id={id}
+        value={String(input.subject?.seat ?? input.seat)}
+        onChange={(event) => {
+          const picked = Number(event.currentTarget.value)
+          onPick(picked === input.seat ? null : picked)
+        }}
+      >
+        {seats.map((each) => (
+          <NativeSelectOption key={each.seat} value={String(each.seat)}>
+            {each.seat === input.seat ? `You (${each.name})` : each.name}
+          </NativeSelectOption>
+        ))}
+      </NativeSelect>
+    </div>
+  )
 }
 
 /**
@@ -108,7 +158,8 @@ function PanelClock() {
  * no seat of the game has no panel.
  */
 export function CommandsPanel({ initialOpen = null }: { initialOpen?: CommandId | null }) {
-  const input = usePanelInput()
+  const [pick, setPick] = useState<PlayerId | null>(null)
+  const input = usePanelInput(pick)
   // One row is open at a time, whichever group it is in; a command of the picked card is `card:` and its id.
   const [open, setOpen] = useState<string | null>(initialOpen)
   if (input === null) return null
@@ -126,6 +177,7 @@ export function CommandsPanel({ initialOpen = null }: { initialOpen?: CommandId 
           {input.off}
         </p>
       )}
+      <SubjectPicker input={input} onPick={setPick} />
       {groups.map((group) => (
         <Group key={group.id} group={group} input={input} open={open} setOpen={setOpen} />
       ))}
@@ -148,7 +200,8 @@ function Group({ group, input, open, setOpen }: GroupProps) {
       <h3 id={heading} className="px-2 pt-1 text-xs font-medium text-muted-foreground">
         {group.label}
       </h3>
-      {group.id === 'you' ? <LifeCounter input={input} /> : null}
+      {/* Keyed by the seat so a run of taps still pending is sent to the seat it was made for. */}
+      {group.id === 'you' ? <LifeCounter key={subjectOf(input).seat} input={input} /> : null}
       {group.commands.map((command) => (
         <Row
           key={command.id}

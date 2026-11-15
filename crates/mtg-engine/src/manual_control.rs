@@ -10,7 +10,7 @@ use crate::effects::{ContinuousEffect, Duration, Modification, Selector};
 use crate::events::{Event, ZoneCause};
 use crate::keywords::summoning_sick;
 use crate::loyalty;
-use crate::manual::{ManualAction, ManualRefusal, ManualZone};
+use crate::manual::{ManualAction, ManualRefusal, ManualZone, named, seat_in_game};
 use crate::object::{GameObject, ObjectKind};
 use crate::saga;
 use crate::state::GameState;
@@ -86,26 +86,24 @@ fn sacrifice(
     }])
 }
 
-/// Seat `to` gains control of a permanent the seat controls, by an effect without end in the control layer, or a card
-/// the seat owns in its graveyard or in exile enters the battlefield under the control of `to`.
+/// Seat `to`, the acting seat or another, gains control of a permanent of any seat, by an effect without end in the
+/// control layer, or a card in a graveyard or in exile that the seat may look at enters the battlefield under the control
+/// of `to`.
 fn give_control(
     state: &GameState,
     player: PlayerId,
     id: ObjectId,
     to: PlayerId,
 ) -> Result<Vec<Event>, ManualRefusal> {
-    if to == player || !state.is_alive(to) {
-        return Err(ManualRefusal::NotAnotherSeat);
-    }
-    let object = state
-        .object(id)
-        .filter(|object| object.kind() != ObjectKind::Ability)
-        .ok_or(ManualRefusal::Unknown(id))?;
+    seat_in_game(state, to)?;
+    let object = named(state, player, id)?;
     if object.zone() == Zone::Battlefield {
-        let permanent = controlled(state, player, id)?;
+        if controller_of_object(state, object) == to {
+            return Err(ManualRefusal::NoChange);
+        }
         let effect = ContinuousEffect::new(
             EffectId(state.next_effect),
-            Selector::Objects(vec![permanent.reference()]),
+            Selector::Objects(vec![object.reference()]),
             Modification::SetController(to),
             Duration::Forever,
             state.next_timestamp,
@@ -120,9 +118,6 @@ fn give_control(
             object: id,
             zone: object.zone(),
         });
-    }
-    if object.owner() != player {
-        return Err(ManualRefusal::NotYours);
     }
     let types = object.base_types();
     if types.contains(CardType::Instant) || types.contains(CardType::Sorcery) {

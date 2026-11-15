@@ -71,6 +71,7 @@ export function LogPanel() {
         {
           seat,
           card: (id) => objects[id]?.name || logNames[id] || 'a card',
+          owner: (id) => objects[id]?.owner,
           ability: (id) => objects[id]?.source,
           permanent: (id) => objects[id]?.types.some((type) => PERMANENT_TYPES.includes(type)) ?? false,
           door: (id, at) => {

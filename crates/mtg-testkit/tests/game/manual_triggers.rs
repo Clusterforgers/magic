@@ -133,7 +133,7 @@ fn nothing_watched() -> Arc<CardDefinition> {
     |_: &Ids| ManualAction::CreateToken { token: ManualToken::Common(CommonToken::Treasure), count: 1 }, 20)]
 #[case::a_draw_is_watched(draws_for_one, |_: &Ids| ManualAction::Draw { count: 2 }, 22)]
 #[case::a_card_moved_to_the_hand_is_no_draw(draws_for_one,
-    |_: &Ids| ManualAction::MoveTop { count: 2, to: ManualZone::Hand }, 20)]
+    |_: &Ids| ManualAction::MoveTop { count: 2, to: ManualZone::Hand, library: None }, 20)]
 #[case::a_discard_is_watched(discards_for_two,
     |i: &Ids| ManualAction::Discard { object: i.spare }, 22)]
 #[case::a_card_moved_to_the_graveyard_is_no_discard(discards_for_two,

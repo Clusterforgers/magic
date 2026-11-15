@@ -383,27 +383,31 @@ pub enum ManualToken {
     },
 }
 
-/// What a seat does by hand. Zone moves, discards, attachments and damage sources are what the seat owns or controls;
-/// counters, tapping, untapping and pumps work on any permanent, damage on any player or permanent that takes it; life,
-/// a player's counters and mana on the seat's own.
+/// What a seat does by hand, as at a real table: any seat carries out the effect of a card on any seat's cards and on any
+/// seat in the game. A card in another seat's hand or in a library is never named, and discards, reveals, notes,
+/// sacrifices, library looks, draws, tokens and mana are the acting seat's own.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum ManualAction {
-    /// Move a card or token of the seat from the battlefield, its hand, graveyard, exile or command zone to a zone of its
-    /// owner. A token that leaves the battlefield ceases to exist.
+    /// Move any seat's card or token from the battlefield, a graveyard, exile, the command zone or the acting seat's hand
+    /// to a zone of its owner. A token that leaves the battlefield ceases to exist.
     Move {
         /// The object.
         object: ObjectId,
         /// Where it goes.
         to: ManualZone,
     },
-    /// Move the top cards of the seat's library, the top card first, to its hand, graveyard, exile or the bottom of the
+    /// Move the top cards of a library, the top card first, to its owner's hand, graveyard, exile or the bottom of the
     /// library.
     MoveTop {
         /// How many cards, 1 to 10.
         count: u32,
         /// Where they go.
         to: ManualZone,
+        /// Whose library; the acting seat's when left out.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        library: Option<PlayerId>,
     },
     /// Put counters on a permanent (a positive `delta`) or take them off (a negative one).
     Counters {
@@ -414,18 +418,18 @@ pub enum ManualAction {
         /// How many, from -99 to 99 and not 0.
         delta: i32,
     },
-    /// Put counters on the seat (poison, energy, experience) or take them off.
+    /// Put counters on a seat in the game (poison, energy, experience) or take them off.
     PlayerCounters {
-        /// The seat itself.
+        /// The seat.
         player: PlayerId,
         /// The kind of counter.
         counter: CounterKind,
         /// How many, from -99 to 99 and not 0.
         delta: i32,
     },
-    /// The seat gains (a positive `delta`) or loses life.
+    /// A seat in the game gains (a positive `delta`) or loses life.
     Life {
-        /// The seat itself.
+        /// The seat.
         player: PlayerId,
         /// How much, from -1000 to 1000 and not 0.
         delta: i32,
@@ -464,19 +468,19 @@ pub enum ManualAction {
         /// The card.
         object: ObjectId,
     },
-    /// Attach an Aura, Equipment or Fortification of the seat to a permanent.
+    /// Attach an Aura, Equipment or Fortification on the battlefield to a permanent.
     Attach {
         /// The attachment.
         object: ObjectId,
         /// The permanent it is attached to.
         to: ObjectId,
     },
-    /// Take an Aura, Equipment or Fortification of the seat off what it is attached to.
+    /// Take an Aura, Equipment or Fortification on the battlefield off what it is attached to.
     Unattach {
         /// The attachment.
         object: ObjectId,
     },
-    /// A card of the seat deals damage to a player or to a creature, planeswalker or battle, as its ability would.
+    /// A card deals damage to a player or to a creature, planeswalker or battle, as its ability would.
     Damage {
         /// The card that deals it, in a zone every seat sees.
         source: ObjectId,
@@ -501,12 +505,12 @@ pub enum ManualAction {
         /// Toughness change, from -99 to 99.
         toughness: i32,
     },
-    /// A transforming double-faced permanent of the seat is turned over to its other face.
+    /// A transforming double-faced permanent on the battlefield is turned over to its other face.
     Transform {
         /// The permanent.
         object: ObjectId,
     },
-    /// A double-faced card of the seat, not on the battlefield, is put onto it with its back face up.
+    /// A double-faced card in a zone the seat sees into, not on the battlefield, is put onto it with its back face up.
     MoveBack {
         /// The card.
         object: ObjectId,
@@ -585,12 +589,12 @@ pub enum ManualAction {
         /// Whether it ends with the turn; otherwise it lasts as long as the permanent stays.
         until_end_of_turn: bool,
     },
-    /// Another seat gains control of a permanent the seat controls, or a card the seat owns in its graveyard or in
+    /// A seat gains control of a permanent on the battlefield that another seat controls, or a card in a graveyard or in
     /// exile is put onto the battlefield under that seat's control.
     GiveControl {
         /// The permanent or card.
         object: ObjectId,
-        /// The seat that gains control.
+        /// The seat that gains control, the acting seat or another.
         to: PlayerId,
     },
 }
@@ -601,9 +605,12 @@ pub enum ManualRefusal {
     /// The object is not in the game, or is an ability.
     #[error("{0:?} is not a card or permanent in the game")]
     Unknown(ObjectId),
-    /// The seat neither owns nor controls the object, or names another seat's life or counters.
-    #[error("a seat changes only what it owns or controls and its own life and counters")]
+    /// The action works only on what the seat owns or controls: a discard, a reveal, a note, a sacrifice.
+    #[error("a seat does this only to what it owns or controls")]
     NotYours,
+    /// The object is in another seat's hand, in a library or face down where the seat may not look.
+    #[error("{0:?} is in a place the seat cannot look into")]
+    Hidden(ObjectId),
     /// The object is in a zone this action does not work on.
     #[error("{object:?} is in {zone:?}, where this action does not apply")]
     WrongZone {
@@ -657,9 +664,9 @@ pub enum ManualRefusal {
     /// The card is not in the seat's library, or the seat has not looked at it.
     #[error("only a card of the library the seat looked through is put into its hand")]
     NotFound,
-    /// The seat named to gain control is the acting seat or not in the game.
-    #[error("control goes to another seat in the game")]
-    NotAnotherSeat,
+    /// The seat named is not in the game.
+    #[error("that seat is not in the game")]
+    NoSuchSeat,
 }
 
 /// Whether `player` may take `action` in `state`, or why not; the check `PriorityAction::Manual` answers to.
@@ -680,7 +687,9 @@ pub(crate) fn events(
 ) -> Result<Vec<Event>, ManualRefusal> {
     let changes = match action {
         ManualAction::Move { object, to } => moves(state, player, *object, *to)?,
-        ManualAction::MoveTop { count, to } => move_top(state, player, *count, *to)?,
+        ManualAction::MoveTop { count, to, library } => {
+            move_top(state, library.unwrap_or(player), *count, *to)?
+        }
         ManualAction::Counters {
             object,
             counter,
@@ -696,16 +705,11 @@ pub(crate) fn events(
             counter,
             delta,
         } => {
-            let own = own_seat(state, player, *who)?;
-            counters(
-                Target::Player(*who),
-                counter,
-                *delta,
-                own.counters_of(counter),
-            )?
+            let now = seat_in_game(state, *who)?.counters_of(counter);
+            counters(Target::Player(*who), counter, *delta, now)?
         }
         ManualAction::Life { player: who, delta } => {
-            own_seat(state, player, *who)?;
+            seat_in_game(state, *who)?;
             life(state, *who, *delta)?
         }
         ManualAction::CreateToken { token, count } => create_tokens(state, player, token, *count)?,
@@ -714,9 +718,9 @@ pub(crate) fn events(
         ManualAction::Untap { object } => tap(state, *object, false)?,
         ManualAction::Draw { count } => draws(state, player, *count)?,
         ManualAction::Discard { object } => discard(state, player, *object)?,
-        ManualAction::Attach { object, to } => attach(state, player, *object, *to)?,
+        ManualAction::Attach { object, to } => attach(state, *object, *to)?,
         ManualAction::Unattach { object } => {
-            let attachment = attachment(state, player, *object)?;
+            let attachment = attachment(state, *object)?;
             if state.host_of(attachment.id()).is_none() {
                 return Err(ManualRefusal::NoChange);
             }
@@ -848,19 +852,40 @@ pub(crate) fn permanent(state: &GameState, id: ObjectId) -> Result<&GameObject, 
     }
 }
 
-/// The seat `who` when it is the acting seat and still in the game.
-fn own_seat(
+/// The object `id`, a card, token or permanent of any seat, when it lies where the seat may name it: not in another
+/// seat's hand (unless shown to all), not in a library of another seat and not face down in a zone where the seat may
+/// not look at it. A face-down permanent on the battlefield is named; what it is stays hidden until it turns up.
+pub(crate) fn named(
     state: &GameState,
     player: PlayerId,
+    id: ObjectId,
+) -> Result<&GameObject, ManualRefusal> {
+    let object = state
+        .object(id)
+        .filter(|object| object.kind() != ObjectKind::Ability)
+        .ok_or(ManualRefusal::Unknown(id))?;
+    let hidden = match object.zone() {
+        Zone::Hand(owner) => owner != player && !state.is_shown_to(player, id),
+        Zone::Library(owner) => owner != player,
+        Zone::Battlefield | Zone::Stack => false,
+        _ => !state.may_look_at(player, id),
+    };
+    if hidden {
+        Err(ManualRefusal::Hidden(id))
+    } else {
+        Ok(object)
+    }
+}
+
+/// The seat `who` when it is still in the game.
+pub(crate) fn seat_in_game(
+    state: &GameState,
     who: PlayerId,
 ) -> Result<&crate::player::Player, ManualRefusal> {
-    if who != player {
-        return Err(ManualRefusal::NotYours);
-    }
     state
         .player(who)
         .filter(|seat| seat.is_in_game())
-        .ok_or(ManualRefusal::NotYours)
+        .ok_or(ManualRefusal::NoSuchSeat)
 }
 
 pub(crate) fn moves(
@@ -869,7 +894,7 @@ pub(crate) fn moves(
     id: ObjectId,
     to: ManualZone,
 ) -> Result<Vec<Event>, ManualRefusal> {
-    let object = own(state, player, id)?;
+    let object = named(state, player, id)?;
     let from = object.zone();
     // A library card is not one the seat can name, and the stack holds spells that resolve or are countered.
     if matches!(from, Zone::Stack | Zone::Library(_)) {
@@ -913,12 +938,14 @@ pub(crate) fn moves(
     Ok(events)
 }
 
+/// The top `count` cards of the library of `player`, any seat in the game, move to `to`.
 fn move_top(
     state: &GameState,
     player: PlayerId,
     count: u32,
     to: ManualZone,
 ) -> Result<Vec<Event>, ManualRefusal> {
+    seat_in_game(state, player)?;
     if !(1..=MAX_CARDS).contains(&count) {
         return Err(ManualRefusal::OutOfRange("the number of cards"));
     }
@@ -1079,32 +1106,18 @@ fn copy_tokens(
         .collect())
 }
 
-/// The attachment `id` when the seat controls it on the battlefield.
-fn attachment(
-    state: &GameState,
-    player: PlayerId,
-    id: ObjectId,
-) -> Result<&GameObject, ManualRefusal> {
-    let object = own(state, player, id)?;
-    if object.zone() != Zone::Battlefield {
-        return Err(ManualRefusal::WrongZone {
-            object: id,
-            zone: object.zone(),
-        });
-    }
+/// The attachment `id` on the battlefield, whoever controls it.
+fn attachment(state: &GameState, id: ObjectId) -> Result<&GameObject, ManualRefusal> {
+    let object = permanent(state, id)?;
     if attach::kind_of(state, id).is_none() {
         return Err(ManualRefusal::NotAttachable(id));
     }
     Ok(object)
 }
 
-fn attach(
-    state: &GameState,
-    player: PlayerId,
-    id: ObjectId,
-    to: ObjectId,
-) -> Result<Vec<Event>, ManualRefusal> {
-    attachment(state, player, id)?;
+/// Attaches `id` to `to`, any two permanents of the battlefield.
+fn attach(state: &GameState, id: ObjectId, to: ObjectId) -> Result<Vec<Event>, ManualRefusal> {
+    attachment(state, id)?;
     permanent(state, to)?;
     if id == to {
         return Err(ManualRefusal::NotAttachable(id));
@@ -1241,6 +1254,8 @@ mod tests {
     #[rstest]
     #[case(ManualAction::Move { object: ObjectId(3), to: ManualZone::LibraryTop }, r#"{"Move":{"object":3,"to":"LibraryTop"}}"#)]
     #[case(ManualAction::Life { player: PlayerId(1), delta: -2 }, r#"{"Life":{"player":1,"delta":-2}}"#)]
+    #[case(ManualAction::MoveTop { count: 2, to: ManualZone::Graveyard, library: None }, r#"{"MoveTop":{"count":2,"to":"Graveyard"}}"#)]
+    #[case(ManualAction::MoveTop { count: 2, to: ManualZone::Graveyard, library: Some(PlayerId(3)) }, r#"{"MoveTop":{"count":2,"to":"Graveyard","library":3}}"#)]
     #[case(ManualAction::CreateToken { token: ManualToken::Common(CommonToken::Treasure), count: 2 }, r#"{"CreateToken":{"token":{"Common":"Treasure"},"count":2}}"#)]
     #[case(ManualAction::Counters { object: ObjectId(4), counter: CounterKind::PlusOnePlusOne, delta: 1 }, r#"{"Counters":{"object":4,"counter":"+1/+1","delta":1}}"#)]
     fn an_action_has_the_wire_form_clients_send(#[case] action: ManualAction, #[case] json: &str) {

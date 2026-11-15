@@ -1,10 +1,12 @@
-// Goal: the names of objects that left the view are kept for the log lines that tell of them: a snapshot's name table and the batches that take objects from the view add them, the newest objects stay when there are too many, and a page without any keeps the one object it holds.
+// Goal: the names of objects that left the view are kept for the log lines that tell of them: a snapshot's name table and the batches that take objects from the view add them, the newest objects stay when there are too many, a page without any keeps the one object it holds, and a manual move keeps the owner of the card it names for a token that is gone.
 import { describe, expect, it } from 'vitest'
-import type { LogName, ObjectView } from '@/protocol/generated'
+import type { EventView, LogName, ManualAction, ObjectView } from '@/protocol/generated'
 import { batchOf, must } from '@/test-utils/batches'
 import { startSession } from '@/test-utils/harness'
 import { lateJoin } from '@/test-utils/transcripts'
-import { LOG_NAMES_LIMIT, mergeLogNames, rememberDeparted } from './rememberNames'
+import { pub } from '@/test-utils/turnEvents'
+import { LOG_NAMES_LIMIT, mergeLogNames, ownersToRemember, rememberDeparted } from './rememberNames'
+import { appendLog } from './store'
 
 const snapshot = must(
   lateJoin.messages.find((message) => message.type === 'Snapshot'),
@@ -64,6 +66,29 @@ describe('the names a batch takes from the view', () => {
   it('leaves out an object the page saw with no name (face down)', () => {
     const before = { 5: { ...must(base.objects[0], 'an object'), id: 5, name: '' } }
     expect(rememberDeparted({}, before, [5])).toEqual({})
+  })
+})
+
+describe('the owner a manual move names', () => {
+  const action = (what: ManualAction): EventView => pub({ ManualAction: { player: 0, action: what } })
+  const before = { 5: { ...held(5)[5], owner: 1 } } as Record<number, ObjectView>
+
+  it('is read from the objects before the batch, for a token that is gone afterwards', () => {
+    expect(ownersToRemember(action({ Move: { object: 5, to: 'Graveyard' } }), before)).toEqual({ 5: 1 })
+  })
+
+  it('is kept in the log entry of the move', () => {
+    const log = appendLog([], 0, [action({ Move: { object: 5, to: 'Graveyard' } })], before, {})
+    expect(log[0]?.owners).toEqual({ 5: 1 })
+  })
+
+  it.each<[string, EventView, Record<number, ObjectView> | undefined]>([
+    ['an object the page never held', action({ Move: { object: 9, to: 'Graveyard' } }), before],
+    ['no objects before', action({ Move: { object: 5, to: 'Graveyard' } }), undefined],
+    ['an action that is no move', action({ Tap: { object: 5 } }), before],
+    ['an event that is no action', pub({ LifeGained: { player: 0, amount: 1 } }), before],
+  ])('remembers nothing for %s', (_what, event, objects) => {
+    expect(ownersToRemember(event, objects)).toBeUndefined()
   })
 })
 

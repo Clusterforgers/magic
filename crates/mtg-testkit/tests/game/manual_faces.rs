@@ -1,4 +1,4 @@
-//! Goal: the manual actions that turn a double-faced permanent over, put a double-faced card onto the battlefield back face up, and give a creature a combat permission until end of turn each do what the card text says through the layers, refuse what is not theirs, and replay from the log.
+//! Goal: the manual actions that turn a double-faced permanent over, put a double-faced card onto the battlefield back face up, and give a creature a combat permission until end of turn each do what the card text says through the layers, refuse what does not apply, and replay from the log.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_cards::keyword::Keyword;
@@ -80,7 +80,7 @@ fn transform_turns_the_permanent_over(#[case] times: usize, #[case] want: (&str,
 }
 
 #[test]
-fn transform_refuses_what_is_not_a_transforming_permanent_of_the_seat() {
+fn transform_refuses_what_is_not_a_transforming_permanent() {
     let mut driver = table();
     let delver = driver.id_of("Delver of Secrets").unwrap();
     let plain = driver.id_of("Plain").unwrap();
@@ -88,7 +88,7 @@ fn transform_refuses_what_is_not_a_transforming_permanent_of_the_seat() {
     let hand = in_hand(&driver);
     for (object, refusal) in [
         (plain, ManualRefusal::NotTransformable(plain)),
-        (theirs, ManualRefusal::NotYours),
+        (theirs, ManualRefusal::NotTransformable(theirs)),
         (hand, ManualRefusal::NotTransformable(hand)),
     ] {
         let got = refused(driver.manual(ManualAction::Transform { object }));

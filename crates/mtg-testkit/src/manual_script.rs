@@ -109,6 +109,15 @@ impl ManualScript {
         }
     }
 
+    /// Whose library a move of the top cards names: left out, the acting seat's by name, or any seat's.
+    fn library_of(&mut self, state: &GameState, player: PlayerId) -> Option<PlayerId> {
+        match self.rng.below(3) {
+            0 => None,
+            1 => Some(player),
+            _ => self.seat(state),
+        }
+    }
+
     fn delta(&mut self) -> i32 {
         let size = i32::try_from(self.rng.below(3)).unwrap_or(0) + 1;
         if self.rng.below(2) == 0 { size } else { -size }
@@ -143,10 +152,12 @@ impl ManualScript {
                 self.pick(&mine)
                     .map_or(nothing, |object| ManualAction::Move { object, to })
             }
-            3 => ManualAction::MoveTop {
-                count: u32::try_from(self.rng.below(3)).unwrap_or(0) + 1,
-                to: self.zone(),
-            },
+            3 => {
+                let count = u32::try_from(self.rng.below(3)).unwrap_or(0) + 1;
+                let to = self.zone();
+                let library = self.library_of(state, player);
+                ManualAction::MoveTop { count, to, library }
+            }
             4 | 5 => {
                 let table = Self::objects(state, player, Scope::Battlefield);
                 let (counter, delta) = (self.counter(), self.delta());
@@ -158,7 +169,7 @@ impl ManualScript {
                     })
             }
             6 => ManualAction::PlayerCounters {
-                player,
+                player: self.seat(state).unwrap_or(player),
                 counter: if self.rng.below(2) == 0 {
                     CounterKind::Poison
                 } else {
@@ -167,7 +178,7 @@ impl ManualScript {
                 delta: self.delta(),
             },
             7 | 8 => ManualAction::Life {
-                player,
+                player: self.seat(state).unwrap_or(player),
                 delta: self.delta() * 2,
             },
             9 => ManualAction::CreateToken {

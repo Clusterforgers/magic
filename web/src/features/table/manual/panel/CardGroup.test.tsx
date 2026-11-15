@@ -266,9 +266,13 @@ describe('the commands of the card picked', () => {
     )
   })
 
-  it("explains an opponent's card: the move row is inert with the reason", async () => {
-    await pick(THEIRS)
-    expect(commandRow(/^Move to/)).toHaveTextContent(/Only .* who owns or controls it/)
+  it("moves an opponent's card by hand: the move row is usable and sends the move", async () => {
+    const { user, manual } = await pick(THEIRS)
+    expect(commandRow(/^Move to/)).not.toHaveAttribute('aria-disabled', 'true')
+    await user.click(commandRow(/^Move to/))
+    await user.selectOptions(within(group()).getByLabelText('Move to'), 'Exile')
+    await user.click(within(group()).getByRole('button', { name: 'Move to exile' }))
+    expect(manual).toHaveBeenCalledWith({ Move: { object: THEIRS, to: 'Exile' } })
   })
 
   it('previews a tap, sends nothing before Apply, then sends it and says it was done', async () => {

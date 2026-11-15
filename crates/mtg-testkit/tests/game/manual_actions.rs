@@ -1,4 +1,4 @@
-//! Goal: the seat that has priority applies every kind of manual action to what it owns or controls, to any permanent for counters, tapping and untapping, and to its own life and counters, each one logged first by an event that names the seat and the action and followed by the events of the change; an action that is not allowed (an opponent's card or life, a card in a library or on the stack, a zone the game lacks, a number out of range, counters that are not there) is refused by name and leaves the log, the state and the question as they were; the seat keeps priority, the round starts again, and a rebuilt engine reaches the same state.
+//! Goal: the seat that has priority applies every kind of manual action, to the cards it owns or controls and to its own hand, to any permanent for counters, tapping and untapping, and to any seat for life and counters, each one logged first by an event that names the seat and the action and followed by the events of the change; an action that is not allowed (a card in another seat's hand or in a library, a card on the stack, a seat that is not in the game, a zone the game lacks, a number out of range, counters that are not there) is refused by name and leaves the log, the state and the question as they were; the seat keeps priority, the round starts again, and a rebuilt engine reaches the same state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -196,19 +196,19 @@ fn take(driver: &mut Driver, action: ManualAction) {
 #[case::the_graveyard_to_the_hand(|i: &Ids| mv(i.ghoul, ManualZone::Hand),
     |d: &Driver, i: &Ids| assert_eq!(zone(d, i.ghoul), Zone::Hand(pid(0))))]
 #[case::the_top_two_cards_to_the_graveyard(
-    |_: &Ids| ManualAction::MoveTop { count: 2, to: ManualZone::Graveyard },
+    |_: &Ids| ManualAction::MoveTop { count: 2, to: ManualZone::Graveyard, library: None },
     |d: &Driver, i: &Ids| {
         assert_eq!(zone(d, i.top), Zone::Graveyard(pid(0)));
         assert_eq!(d.state().zone(Zone::Library(pid(0))).len(), 3);
     })]
 #[case::the_top_card_to_exile(
-    |_: &Ids| ManualAction::MoveTop { count: 1, to: ManualZone::Exile },
+    |_: &Ids| ManualAction::MoveTop { count: 1, to: ManualZone::Exile, library: None },
     |d: &Driver, i: &Ids| assert_eq!(zone(d, i.top), Zone::Exile))]
 #[case::the_top_card_to_the_hand(
-    |_: &Ids| ManualAction::MoveTop { count: 1, to: ManualZone::Hand },
+    |_: &Ids| ManualAction::MoveTop { count: 1, to: ManualZone::Hand, library: None },
     |d: &Driver, i: &Ids| assert_eq!(zone(d, i.top), Zone::Hand(pid(0))))]
 #[case::the_top_two_cards_to_the_bottom_in_order(
-    |_: &Ids| ManualAction::MoveTop { count: 2, to: ManualZone::LibraryBottom },
+    |_: &Ids| ManualAction::MoveTop { count: 2, to: ManualZone::LibraryBottom, library: None },
     |d: &Driver, i: &Ids| {
         let library = d.state().zone(Zone::Library(pid(0)));
         assert_eq!(library.len(), 5);
@@ -402,12 +402,11 @@ fn custom(name: &str, types: Vec<CardType>, stats: Option<(i32, i32)>) -> Manual
 }
 
 #[rstest]
-#[case::an_opponents_permanent(|i: &Ids| mv(i.theirs, ManualZone::Graveyard), |_: &Ids| ManualRefusal::NotYours)]
-#[case::an_opponents_card_in_hand(|i: &Ids| mv(i.foe_card, ManualZone::Graveyard), |_: &Ids| ManualRefusal::NotYours)]
-#[case::an_opponents_life(|_: &Ids| ManualAction::Life { player: pid(1), delta: -3 }, |_: &Ids| ManualRefusal::NotYours)]
-#[case::an_opponents_counters(
-    |_: &Ids| ManualAction::PlayerCounters { player: pid(1), counter: CounterKind::Poison, delta: 1 },
-    |_: &Ids| ManualRefusal::NotYours)]
+#[case::an_opponents_card_in_hand(|i: &Ids| mv(i.foe_card, ManualZone::Graveyard), |i: &Ids| ManualRefusal::Hidden(i.foe_card))]
+#[case::life_of_a_seat_not_in_the_game(|_: &Ids| ManualAction::Life { player: pid(7), delta: -3 }, |_: &Ids| ManualRefusal::NoSuchSeat)]
+#[case::counters_of_a_seat_not_in_the_game(
+    |_: &Ids| ManualAction::PlayerCounters { player: pid(7), counter: CounterKind::Poison, delta: 1 },
+    |_: &Ids| ManualRefusal::NoSuchSeat)]
 #[case::an_opponents_hand_discarded(|i: &Ids| ManualAction::Discard { object: i.foe_card }, |_: &Ids| ManualRefusal::NotYours)]
 #[case::a_card_in_a_library(|i: &Ids| mv(i.top, ManualZone::Hand),
     |i: &Ids| ManualRefusal::WrongZone { object: i.top, zone: Zone::Library(pid(0)) })]
@@ -418,13 +417,13 @@ fn custom(name: &str, types: Vec<CardType>, stats: Option<(i32, i32)>) -> Manual
     |_: &Ids| ManualRefusal::NoDestination(ManualZone::Battlefield))]
 #[case::a_card_to_the_zone_it_is_in(|i: &Ids| mv(i.ghoul, ManualZone::Graveyard), |_: &Ids| ManualRefusal::NoChange)]
 #[case::the_top_of_the_library_to_the_battlefield(
-    |_: &Ids| ManualAction::MoveTop { count: 1, to: ManualZone::Battlefield },
+    |_: &Ids| ManualAction::MoveTop { count: 1, to: ManualZone::Battlefield, library: None },
     |_: &Ids| ManualRefusal::NoDestination(ManualZone::Battlefield))]
 #[case::more_cards_than_the_library_holds(
-    |_: &Ids| ManualAction::MoveTop { count: 10, to: ManualZone::Graveyard },
+    |_: &Ids| ManualAction::MoveTop { count: 10, to: ManualZone::Graveyard, library: None },
     |_: &Ids| ManualRefusal::NotEnough("cards in the library"))]
 #[case::no_cards(
-    |_: &Ids| ManualAction::MoveTop { count: 0, to: ManualZone::Graveyard },
+    |_: &Ids| ManualAction::MoveTop { count: 0, to: ManualZone::Graveyard, library: None },
     |_: &Ids| ManualRefusal::OutOfRange("the number of cards"))]
 #[case::looking_at_no_cards(|_: &Ids| ManualAction::LookTop { count: 0 },
     |_: &Ids| ManualRefusal::OutOfRange("the number of cards"))]

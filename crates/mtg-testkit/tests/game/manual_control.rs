@@ -1,4 +1,4 @@
-//! Goal: a seat searches its library and puts a card it looked through into its hand, the library shuffled after; ends the summoning sickness of a permanent it controls; sacrifices a permanent it controls so what watches dying and sacrifices triggers; and gives another seat control of a permanent it controls, or puts a card it owns from its graveyard or exile onto the battlefield under that seat's control, through the control layer; each is refused for what the seat may not do, and a rebuilt engine reaches the same state.
+//! Goal: a seat searches its library and puts a card it looked through into its hand, the library shuffled after; ends the summoning sickness of a permanent it controls; sacrifices a permanent it controls so what watches dying and sacrifices triggers; and gives a seat control of a permanent of any seat, or puts a card from a graveyard or exile onto the battlefield under that seat's control, through the control layer; each is refused for what the seat may not do, and a rebuilt engine reaches the same state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_cards::refs::{Ref, Selector};
@@ -121,9 +121,8 @@ fn hand(driver: &Driver) -> Vec<String> {
 #[case::a_sacrifice_from_the_graveyard(|d: &Driver| ManualAction::Sacrifice { object: id(d, "Dead") },
     |d: &Driver| ManualRefusal::WrongZone { object: id(d, "Dead"), zone: Zone::Graveyard(pid(0)) })]
 #[case::a_sacrifice_of_no_object(|_: &Driver| ManualAction::Sacrifice { object: ObjectId(9999) }, |_: &Driver| ManualRefusal::Unknown(ObjectId(9999)))]
-#[case::control_to_the_seat_itself(|d: &Driver| ManualAction::GiveControl { object: id(d, "Dier"), to: pid(0) }, |_: &Driver| ManualRefusal::NotAnotherSeat)]
-#[case::control_to_no_seat(|d: &Driver| ManualAction::GiveControl { object: id(d, "Dier"), to: PlayerId(7) }, |_: &Driver| ManualRefusal::NotAnotherSeat)]
-#[case::control_of_another_seats_creature(|d: &Driver| ManualAction::GiveControl { object: id(d, "Theirs"), to: pid(1) }, |_: &Driver| ManualRefusal::NotYours)]
+#[case::control_to_the_seat_that_has_it(|d: &Driver| ManualAction::GiveControl { object: id(d, "Dier"), to: pid(0) }, |_: &Driver| ManualRefusal::NoChange)]
+#[case::control_to_no_seat(|d: &Driver| ManualAction::GiveControl { object: id(d, "Dier"), to: PlayerId(7) }, |_: &Driver| ManualRefusal::NoSuchSeat)]
 #[case::an_instant_onto_the_battlefield(|d: &Driver| ManualAction::GiveControl { object: id(d, "Bolt"), to: pid(1) },
     |_: &Driver| ManualRefusal::NoDestination(ManualZone::Battlefield))]
 #[case::control_of_a_card_in_hand(|d: &Driver| ManualAction::GiveControl { object: id(d, "Held"), to: pid(1) },
@@ -183,6 +182,7 @@ fn an_empty_library_is_not_searched() {
         ManualAction::MoveTop {
             count: 1,
             to: ManualZone::Hand,
+            library: None,
         },
     );
     assert_eq!(

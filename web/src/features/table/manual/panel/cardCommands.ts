@@ -15,6 +15,8 @@ import {
   targetKey,
   zoneKind,
 } from '../offers'
+import { hiddenCard } from '../hidden'
+import { seatsExcept } from '../control'
 import type { Draft, ManualGroup, ManualItem, ManualMenu, MenuInput } from '../offers'
 import type { Preview } from './commands'
 
@@ -212,17 +214,17 @@ export function commandsFor(input: MenuInput): CardCommand[] {
 }
 
 /**
- * The control commands of a card: ending a creature's summoning sickness, a sacrifice and giving control of a
- * permanent the seat controls, and putting a card it owns from its graveyard or exile onto the battlefield under
- * another seat's control.
+ * The control commands of a card: ending a creature's summoning sickness, combat permissions and a sacrifice of a
+ * permanent the seat controls, turning over and giving control of any permanent, and putting a card of any seat from
+ * its graveyard or exile onto the battlefield under another seat's control (a card face down out of sight is not named).
  */
 export function controlCommands(input: MenuInput): CardCommand[] {
   const { object, seat, off } = input
-  const others = input.players.filter((player) => player !== seat)
-  const noOne = others.length === 0 ? 'No other seat is in the game.' : undefined
   const kind = zoneKind(object.zone)
+  const unseen = hiddenCard(input)
   const out: CardCommand[] = []
-  if (kind === 'battlefield' && object.controller === seat) {
+  const mine = kind === 'battlefield' && object.controller === seat
+  if (mine) {
     if (object.permanent?.summoning_sick === true) {
       out.push({
         id: 'unsick',
@@ -249,7 +251,10 @@ export function controlCommands(input: MenuInput): CardCommand[] {
         unavailable: off,
       })
     }
-    if (object.kind !== 'Token') {
+  }
+  if (kind === 'battlefield') {
+    const takers = seatsExcept(input, object.controller)
+    if (object.kind !== 'Token' && object.face_down !== true) {
       out.push({
         id: 'transform',
         label: 'Transform',
@@ -258,22 +263,22 @@ export function controlCommands(input: MenuInput): CardCommand[] {
         unavailable: off,
       })
     }
-    out.push({
-      id: 'sacrifice',
-      label: 'Sacrifice',
-      effect: 'Put it into its owner’s graveyard as a sacrifice.',
-      action: { Sacrifice: { object: object.id } },
-      unavailable: off,
-    })
+    if (mine) {
+      out.push({
+        id: 'sacrifice',
+        label: 'Sacrifice',
+        effect: 'Put it into its owner’s graveyard as a sacrifice.',
+        action: { Sacrifice: { object: object.id } },
+        unavailable: off,
+      })
+    }
     out.push({
       id: 'give',
-      label: 'Give control…',
-      effect: 'Another seat gains control of it.',
-      seats: others,
-      unavailable: off ?? noOne,
+      label: mine ? 'Give control…' : 'Take or give control…',
+      effect: mine ? 'Another seat gains control of it.' : 'A seat gains control of it.',
+      seats: takers,
+      unavailable: off ?? (takers.length === 0 ? 'No other seat is in the game.' : undefined),
     })
-  }
-  if (kind === 'battlefield') {
     out.push({
       id: 'copy',
       label: 'Create a token copy',
@@ -283,16 +288,17 @@ export function controlCommands(input: MenuInput): CardCommand[] {
     })
   }
   const spell = object.types.includes('Instant') || object.types.includes('Sorcery')
-  if ((kind === 'graveyard' || kind === 'exile') && object.owner === seat && !spell) {
+  if ((kind === 'graveyard' || kind === 'exile') && !spell && !unseen) {
+    const takers = seatsExcept(input, object.owner)
     out.push({
       id: 'give',
       label: 'Onto the battlefield for…',
-      effect: 'Put it onto the battlefield under another seat’s control.',
-      seats: others,
-      unavailable: off ?? noOne,
+      effect: 'Put it onto the battlefield under a seat’s control.',
+      seats: takers,
+      unavailable: off ?? (takers.length === 0 ? 'No other seat is in the game.' : undefined),
     })
   }
-  if ((kind === 'hand' || kind === 'graveyard' || kind === 'exile') && object.owner === seat && !spell) {
+  if ((kind === 'hand' || kind === 'graveyard' || kind === 'exile') && !spell && !unseen) {
     out.push({
       id: 'back',
       label: 'Onto the battlefield back face up',

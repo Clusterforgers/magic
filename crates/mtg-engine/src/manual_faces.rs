@@ -9,23 +9,24 @@ use crate::characteristics::characteristics;
 use crate::day_night::turned_over;
 use crate::effects::{ContinuousEffect, Duration, Modification, Selector};
 use crate::events::Event;
-use crate::manual::{MAX_STAT, ManualRefusal, ManualZone, moves, own};
+use crate::manual::{MAX_STAT, ManualRefusal, ManualZone, moves, named, own};
 use crate::object::GameObject;
 use crate::rules::{Rule, RuleEffect};
 use crate::state::GameState;
 use crate::zones::Zone;
 
-/// The events that turn the transforming double-faced permanent `id`, which the seat controls, to its other face.
+/// The events that turn the transforming double-faced permanent `id` of any seat to its other face. A face-down permanent
+/// does not transform, and saying that of one would tell what its card is.
 pub(crate) fn transform(
     state: &GameState,
     player: PlayerId,
     id: ObjectId,
 ) -> Result<Vec<Event>, ManualRefusal> {
-    let object = own(state, player, id)?;
-    if object.controller() != player {
-        return Err(ManualRefusal::NotYours);
-    }
-    if object.zone() != Zone::Battlefield || object.whole_card().layout != Layout::Transform {
+    let object = named(state, player, id)?;
+    if object.zone() != Zone::Battlefield
+        || object.face_down().is_some()
+        || object.whole_card().layout != Layout::Transform
+    {
         return Err(ManualRefusal::NotTransformable(id));
     }
     Ok(vec![Event::Transformed {
@@ -34,13 +35,14 @@ pub(crate) fn transform(
     }])
 }
 
-/// The events that put the double-faced card `id`, which is not on the battlefield, onto it with its back face up.
+/// The events that put the double-faced card `id` of any seat, which is not on the battlefield and lies where the seat
+/// may look at it, onto it with its back face up.
 pub(crate) fn move_back(
     state: &GameState,
     player: PlayerId,
     id: ObjectId,
 ) -> Result<Vec<Event>, ManualRefusal> {
-    let object = own(state, player, id)?;
+    let object = named(state, player, id)?;
     if !matches!(
         object.whole_card().layout,
         Layout::Transform | Layout::ModalDfc

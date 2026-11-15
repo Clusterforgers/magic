@@ -11,9 +11,9 @@ import type { ObjectId } from "./ObjectId";
 import type { PlayerId } from "./PlayerId";
 
 /**
- * What a seat does by hand. Zone moves, discards, attachments and damage sources are what the seat owns or controls;
- * counters, tapping, untapping and pumps work on any permanent, damage on any player or permanent that takes it; life,
- * a player's counters and mana on the seat's own.
+ * What a seat does by hand, as at a real table: any seat carries out the effect of a card on any seat's cards and on any
+ * seat in the game. A card in another seat's hand or in a library is never named, and discards, reveals, notes,
+ * sacrifices, library looks, draws, tokens and mana are the acting seat's own.
  */
 export type ManualAction = { "Move": { 
 /**
@@ -31,7 +31,11 @@ count: number,
 /**
  * Where they go.
  */
-to: ManualZone, } } | { "Counters": { 
+to: ManualZone, 
+/**
+ * Whose library; the acting seat's when left out.
+ */
+library?: PlayerId, } } | { "Counters": { 
 /**
  * The permanent.
  */
@@ -45,7 +49,7 @@ counter: CounterKind,
  */
 delta: number, } } | { "PlayerCounters": { 
 /**
- * The seat itself.
+ * The seat.
  */
 player: PlayerId, 
 /**
@@ -57,7 +61,7 @@ counter: CounterKind,
  */
 delta: number, } } | { "Life": { 
 /**
- * The seat itself.
+ * The seat.
  */
 player: PlayerId, 
 /**
@@ -221,6 +225,6 @@ until_end_of_turn: boolean, } } | { "GiveControl": {
  */
 object: ObjectId, 
 /**
- * The seat that gains control.
+ * The seat that gains control, the acting seat or another.
  */
 to: PlayerId, } };
