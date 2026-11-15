@@ -968,7 +968,19 @@ echo: boolean,
 /**
  * It was paid.
  */
-paid: boolean, } } | { "GiftGiven": { 
+paid: boolean, } } | { "R6401Mentored": { 
+/**
+ * The controller of the mentor ability.
+ */
+player: PlayerId, 
+/**
+ * The creature that mentored.
+ */
+mentor: ObjectId, 
+/**
+ * The creature it mentored.
+ */
+mentored: ObjectId, } } | { "GiftGiven": { 
 /**
  * Who gave it.
  */

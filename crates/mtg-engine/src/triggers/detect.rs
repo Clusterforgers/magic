@@ -258,6 +258,11 @@ enum Happened {
     RolledToVisit { player: PlayerId, result: u32 },
     /// A player opened an Attraction.
     OpenedAttraction { player: PlayerId },
+    /// A creature mentored a creature (`Event::R6401Mentored`).
+    R6401Mentored {
+        mentor: ObjectId,
+        mentored: ObjectId,
+    },
     /// A player visited an Attraction, once for each visited.
     VisitedAttraction { player: PlayerId },
     /// A player claimed the prize of an Attraction.
@@ -1359,6 +1364,12 @@ fn about_players_and_permanents(
         } if look.pre.in_attraction_deck(*object) => {
             found.push(Happened::OpenedAttraction { player: *player });
         }
+        Event::R6401Mentored {
+            mentor, mentored, ..
+        } => found.push(Happened::R6401Mentored {
+            mentor: *mentor,
+            mentored: *mentored,
+        }),
         Event::DieRolled {
             player,
             sides,
@@ -1849,6 +1860,14 @@ fn matching_player_action(
         | (TriggerPattern::VisitedAttraction { who }, Happened::VisitedAttraction { player })
         | (TriggerPattern::ClaimedPrize { who }, Happened::PrizeClaimed { player, .. }) => {
             by(who, player).then(|| counted(state, vec![Target::Player(*player)], 0))
+        }
+        (TriggerPattern::R6401Mentors { what }, Happened::R6401Mentored { mentor, mentored }) => {
+            let mentored = state.object(*mentored).map(GameObject::reference)?;
+            let mentor = state.object(*mentor).map(GameObject::reference)?;
+            scope
+                .selects(what, mentor)
+                .ok()?
+                .then(|| counted(state, vec![Target::Object(mentored)], 1))
         }
         (TriggerPattern::W11cCrime { who }, Happened::W11cCrime { player }) => {
             by(who, player).then(|| counted(state, vec![Target::Player(*player)], 0))

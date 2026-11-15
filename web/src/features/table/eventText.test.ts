@@ -129,6 +129,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Discovered: [{ Discovered: { player: 1, value: 3, card: 3 } }, 'Bo discovers 3, finding Forest'],
   DreadManifested: [{ DreadManifested: { player: 0, card: null } }, 'Ana manifests dread'],
   GiftGiven: [{ GiftGiven: { player: 0, to: 1 } }, 'Ana gives Bo a gift'],
+  R6401Mentored: [{ R6401Mentored: { player: 0, mentor: 5, mentored: 3 } }, 'Serra Angel mentors Forest'],
   UpkeepSettled: [
     { UpkeepSettled: { player: 1, object: 3, echo: false, paid: false } },
     "Bo doesn't pay the cumulative upkeep of Forest",

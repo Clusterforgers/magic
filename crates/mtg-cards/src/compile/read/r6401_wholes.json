@@ -235,5 +235,69 @@
    }
   },
   "At the beginning of each player's upkeep, that player gains control of this enchantment."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "R6401Mentors": {
+      "what": [
+       {
+        "Is": "Attached"
+       }
+      ]
+     }
+    },
+    "effects": [
+     {
+      "PutCounters": {
+       "on": "Triggering",
+       "counter": {
+        "Other": "shield"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Whenever equipped creature mentors a creature, put a shield counter on that creature."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "Attached",
+    "mods": [
+     {
+      "ModifyPT": {
+       "power": 1,
+       "toughness": 1
+      }
+     },
+     {
+      "AddKeyword": "Mentor"
+     }
+    ]
+   }
+  },
+  "Equipped creature gets +1/+1 and has mentor."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "Attached",
+    "mods": [
+     {
+      "ModifyPT": {
+       "power": 1,
+       "toughness": 1
+      }
+     },
+     {
+      "AddKeyword": "Mentor"
+     }
+    ]
+   }
+  },
+  "Equipped creature gets +1/+1 and has mentor. (Whenever it attacks, put a +1/+1 counter on target attacking creature with lesser power.)"
  ]
 ]

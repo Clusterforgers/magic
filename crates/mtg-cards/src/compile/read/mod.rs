@@ -594,6 +594,11 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
         .then_some(found)
 }
 
+/// A wording of the r64-01 table, read whole whatever its kind and reminder text.
+pub fn r6401_whole(text: &str) -> Option<Ability> {
+    r6401_wholes::r6401_whole_read(text)
+}
+
 /// Reads a whole ability of the r47-05 table of wordings one card prints (a keyword line among them).
 pub fn r4705_whole(text: &str) -> Option<Ability> {
     r4705_reads::r4705_read(text)

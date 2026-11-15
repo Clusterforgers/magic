@@ -3016,7 +3016,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::ResolvedToGraveyard { what }
             | TriggerPattern::FirstDrawRevealed { what }
             | TriggerPattern::Attacks { what }
-            | TriggerPattern::AttacksAlone { what } => {
+            | TriggerPattern::AttacksAlone { what }
+            | TriggerPattern::R6401Mentors { what } => {
                 self.at("what", |w| w.selector(what));
             }
             TriggerPattern::AttacksPlayer { what, at }

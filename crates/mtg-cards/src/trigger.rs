@@ -529,6 +529,12 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// A creature the selector picks mentors a creature (CR 702.134a: its mentor ability resolves and puts a +1/+1 counter
+    /// on its target): "whenever equipped creature mentors a creature"; `Triggering` is the creature mentored.
+    R6401Mentors {
+        /// The creatures that mentor, as they are when the mentor ability resolves.
+        what: Selector,
+    },
     /// A player opens an Attraction ("whenever you open an Attraction", CR 701.51c); `Triggering` is that player.
     OpenedAttraction {
         /// Who opens it.

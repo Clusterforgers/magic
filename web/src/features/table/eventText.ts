@@ -1074,6 +1074,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const buried = card === null ? '' : ` and puts ${n.card(card)} into their graveyard`
     return line(`${n.seat(player)} manifests dread${buried}`)
   }
+  if ('R6401Mentored' in event) {
+    const { mentor, mentored } = event.R6401Mentored
+    return line(`${n.card(mentor)} mentors ${n.card(mentored)}`)
+  }
   if ('GiftGiven' in event) {
     return line(`${n.seat(event.GiftGiven.player)} gives ${n.seat(event.GiftGiven.to)} a gift`)
   }
