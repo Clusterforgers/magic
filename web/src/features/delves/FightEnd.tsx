@@ -108,7 +108,7 @@ function FightResult(props: {
         aria-labelledby="fight-over-title"
         data-slot="fight-result"
         data-won={won}
-        className="flex max-h-full w-full max-w-xl flex-col gap-4 rounded-xl border bg-popover p-5 text-popover-foreground shadow-e3"
+        className="flex max-h-full w-full max-w-xl flex-col gap-4 rounded-xl border bg-popover p-4 text-popover-foreground shadow-e3"
       >
         <header className="flex shrink-0 items-start gap-3">
           <span
