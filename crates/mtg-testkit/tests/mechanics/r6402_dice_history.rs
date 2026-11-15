@@ -76,7 +76,7 @@ fn total_life(driver: &Driver) -> i32 {
         .state()
         .players()
         .iter()
-        .map(|player| player.life())
+        .map(mtg_engine::player::Player::life)
         .sum()
 }
 

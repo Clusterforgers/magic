@@ -288,6 +288,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 #[cfg(test)]
 mod tests {
     //! Goal: a roll is a number from 1 to the sides from the game's random stream (the same seed gives the same number and the seeds give every face), logged for the player who rolled, and the step enters the first row of the table that holds the number plus the amount added, none when no row does; two dice with a choice ask between the different numbers and log the chosen one last; a player who has left the game rolls nothing; one die for each of an amount keeps only the highest (none for 0); and another effect is refused by name.
+    use crate::events::Event;
     use mtg_core::ids::PlayerId;
     use rstest::rstest;
 
