@@ -299,14 +299,8 @@
    "Triggered": {
     "when": {
      "DiceRolled": {
-      "who": "You"
-     }
-    },
-    "if": {
-     "Compare": {
-      "left": "Triggering",
-      "op": "Ge",
-      "right": 4
+      "who": "You",
+      "at_least": 4
      }
     },
     "effects": [
