@@ -81,7 +81,8 @@ fn watch(driver: &mut Driver, turns: u32) -> Result<BTreeMap<u32, TurnSeen>, Scr
                     .push((seat, !options.playable_lands.is_empty(), castable));
             }
             DecisionKind::DeclareAttackers(options) => {
-                entry.attackers = options.attackers.len();
+                // Under shared team turns each player of the team is asked for their own creatures.
+                entry.attackers += options.attackers.len();
                 for option in &options.attackers {
                     for target in &option.defenders {
                         if let AttackTarget::Player(player) = target {
