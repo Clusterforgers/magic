@@ -220,15 +220,17 @@ fn a_two_headed_giant_team_attacks_together_and_either_defender_blocks() -> Resu
             .at(1, 0, Step::Main1),
     )?;
     driver.pass_until(Step::DeclareAttackers)?;
-    let DecisionKind::DeclareAttackers(options) = &driver.decision()?.kind else {
-        panic!("no attack");
-    };
-    assert_eq!(
-        options.attackers.len(),
-        2,
-        "the team's creatures attack together"
-    );
-    driver.attack(&[("Grizzly Bears", 2), ("Llanowar Elf", 2)])?;
+    // Each head chooses the attacks of their own creatures; the team declares them together.
+    for (seat, creature) in [(0, "Grizzly Bears"), (1, "Llanowar Elf")] {
+        let decision = driver.decision()?;
+        assert_eq!(decision.player, pid(seat));
+        let DecisionKind::DeclareAttackers(options) = &decision.kind else {
+            panic!("no attack");
+        };
+        assert_eq!(options.attackers.len(), 1, "seat {seat} chooses their own");
+        driver.attack(&[(creature, 2)])?;
+    }
+    assert_eq!(driver.state().combat().attackers().len(), 2);
     while !matches!(driver.decision()?.kind, DecisionKind::DeclareBlockers(_)) {
         driver.pass()?;
     }

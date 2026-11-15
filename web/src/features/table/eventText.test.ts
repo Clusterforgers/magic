@@ -284,7 +284,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ],
   AttackChoicesRefused: [
     { AttackChoicesRefused: { reason: 'a creature can’t attack alone' } },
-    "The party's attack is refused (a creature can’t attack alone); each hero chooses again",
+    "The team's attack is refused (a creature can’t attack alone); each player chooses again",
   ],
   BandFormed: [
     { BandFormed: { player: 1, attackers: [1, 2] } },

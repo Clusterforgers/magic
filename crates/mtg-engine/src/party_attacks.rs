@@ -1,9 +1,9 @@
-//! A party's shared combat (CR 805, CR 508.1): under shared team turns each player of the active team chooses the
-//! attacks of their own creatures in turn order, and the team makes one declaration of every choice, checked as a
-//! whole: its limits, requirements, costs and "attacks alone" read the combined set.
+//! A team's shared combat (CR 805.10, CR 810.7, CR 508.1): where teams share their turns (Two-Headed Giant, shared team
+//! turns) each player of the active team chooses the attacks of their own creatures in turn order, and the team makes
+//! one combined declaration of every choice, checked as a whole: its limits, requirements, costs and "attacks alone"
+//! read the combined set (CR 805.10b).
 
 use mtg_core::ids::{ObjectId, PlayerId};
-use mtg_core::teams::TeamMode;
 
 use crate::answers::Outcome;
 use crate::characteristics::controller_of;
@@ -29,14 +29,10 @@ pub(crate) struct AttackPick {
     pub(crate) bands: Vec<Vec<ObjectId>>,
 }
 
-/// Whether the players of the active team each choose their own attacks: shared team turns with more than one of them
-/// still in the game.
+/// Whether the players of the active team each choose their own attacks: teams that share their turns, with more than
+/// one of the team still in the game. Where every player takes their own turn the active player declares alone.
 pub(crate) fn splits(state: &GameState) -> bool {
-    state
-        .teams()
-        .is_some_and(|teams| teams.mode == TeamMode::SharedTurns)
-        && state.active_player().is_some()
-        && state.active_players().len() > 1
+    state.shares_turns() && state.active_player().is_some() && state.active_players().len() > 1
 }
 
 /// The player of the active team who chooses next, in turn order; `None` once all have chosen.

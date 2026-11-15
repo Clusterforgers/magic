@@ -212,6 +212,7 @@ mod tap_effects;
 mod tc34_cleave;
 mod tc34_opposition_agent;
 mod tc34_restart;
+mod team_attacks;
 mod together_batch;
 mod typecycling;
 mod unplayable;
