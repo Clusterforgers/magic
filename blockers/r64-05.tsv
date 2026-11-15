@@ -1,0 +1,129 @@
+Not Dead After All	Wicked Role token attached on resolution of a granted dies trigger (Role creation with attach, CR 303.7)	Duration-limited granted triggered ability on a target creature
+Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel	Per-turn resolution count of this ability ("if this is the fourth time this ability has resolved this turn") and CreateEmblem as it transforms (CR 702.145 transform trigger)	Sacrifice any number then draw that many on the back face
+Ulamog, the Defiler	Enters-with-counters amount from the greatest mana value among cards in exile (Amount::Greatest over exile) and a static keyword value (annihilator X) counted from +1/+1 counters	Top half of library exile with a cast trigger
+Kozilek, the Great Distortion	Activation cost "Discard a card with mana value X" where X is the mana value of the discarded card and also the target spell's mana value (a cost that fixes X from the paid card)	Cast trigger draws the difference to seven
+Hellkite Courser	Put a commander from the command zone onto the battlefield with a haste rider and return it to the command zone at the next end step (CR 903.9 owner may return)	Delayed return to command zone
+Witness Protection	Layer-3 name setting by a static ability (Modification::SetName only exists for copy exceptions) with SetCreatureTypes and colors	Aura loses all abilities and base 1/1
+Druid of Purification	Each player in turn order from you may choose a permanent controlled by someone else (Effect::EachPlayerChooses over a selector from You's viewpoint) then destroy all chosen	Choices by other players
+Zack Fair	Move counters of the sacrificed source onto a target (counters as last known information) and move an Equipment that was attached to it (LKI attachments)	Granted indestructible until end of turn
+Yenna, Redtooth Regent	Token copy of a chosen enchantment with exception "it isn't legendary", a condition on its name against other permanents, and "if the token is an Aura" untap and scry	Activate only as a sorcery
+Selective Obliteration	Each player chooses a color during resolution, then exile each permanent not colorless and not only that color (per-controller choice stored by player)	none
+Bumi, Unleashed	Additional combat phase after this phase with an attack restriction for that phase only (land creatures only; CR 500.8)	Untap all lands
+The Masamune	Replacement of trigger count for triggers caused by a creature dying (Panharmonicon-like keyed to dies events, including emblems)	Equipped creature first strike must be blocked if able while attacking
+The Master, Multiplied	Rule that triggered abilities you control can't cause you to sacrifice or exile creature tokens you control (resolver filter by ability kind in sacrifice and exile moves)	Myriad
+Jegantha, the Wellspring	Mana restriction that bars spending on the generic part of a cost (negative spend filter in the payment solver, mana.rs can_afford)	none
+Nils, Discipline Enforcer	End-step trigger with one up-to-one target per player (target spec per player) and an attack tax counted from the counters on each attacker	none
+Aboleth Spawn	Trigger on a creature entering under an opponent's control whose own triggered ability triggered, with a copy of that ability (CR 603.2c, 707.10)	New targets for the copy
+Illusionist's Gambit	Cast only during declare blockers on an opponent's turn, remove all attackers from combat and untap them, additional combat where they must attack and can't attack you	Additional combat phase with riders
+Cosmic Intervention	Replacement of this-turn deaths of your permanents by exile and return to the battlefield at the next end step (CR 614 with a delayed return of each exiled object)	Auras return unattached choice
+Alms Collector	Draw replacement on a batch of two or more cards that becomes one draw for each of two players (batched Draw event with count condition)	none
+Khârn the Betrayer	Damage replacement that prevents the damage and gives control to an opponent of your choice (control change inside a replacement)	Attacks or blocks each combat; draw two when you lose control
+Displaced Dinosaurs	As-enters replacement that makes the entering historic permanent a 7/7 Dinosaur creature in addition to its other types (enters-as-copy-like type and P/T set at entry)	none
+Dream Devourer	Static grant of foretell to cards in hand with a derived foretell cost (mana cost reduced by {2}) and a foretell trigger	none
+Goldberry, River-Daughter	Move counters of every kind not on this permanent from another permanent (per-kind move) and a variable move count with "if you do" draw	none
+Esper Origins // Summon: Esper Maduin	Cast-from-graveyard condition then exile and return transformed with a finality counter (CR 702.146 style), chapter I reveal top card	Saga face with transform
+Terra, Magical Adept // Esper Terra	Token copy of a nonlegendary enchantment with haste, extra lore counters if it is a Saga and delayed sacrifice at your next end step	Mill five then hand pick; chapter IV adds mana and blinks itself
+Minthara, Merciless Soul	Ward whose cost is X counted from experience counters (Keyword::Ward with Amount) and an end-step intervening-if on a permanent leaving this turn	none
+Brigid, Clachan's Heart // Brigid, Doun's Mind	Trigger on entering or transforming into a face and a mana ability adding X of one color chosen from two where X is a count	Transform trigger pattern
+Chef's Kiss	Gain control of a spell that targets only one permanent or player, copy it and reselect both targets at random excluding you and your permanents (CR 114.6, 707.10)	Spell-control effect
+Soul Immolation	Additional cost blight X with X capped by the greatest toughness among your creatures (XAtMost over Amount with Blight X in a spell additional cost)	Damage to each opponent and their creatures
+Feather, the Redeemed	Cast trigger that sets the spell's resolution destination to exile instead of the graveyard with a delayed return to hand (spell fate flag on the stack object read at resolution, CR 608.2n)	Shared with Lilah and Soulfire Grand Master
+Waterbender's Restoration	X target creatures chosen as X is announced (Bounds from X) and exile them with a return at the beginning of the next end step	Waterbend {X} additional cost now exists
+Firkraag, Cunning Instigator	Batched attack trigger for N or more creatures of a type attacking one opponent and a trigger conditioned on a creature that had to attack	none
+Comet, Stellar Pup	Planeswalker die-roll table with loyalty cost words in brackets and repeat loyalty activations this turn (sectioned rows with loyalty changes)	none
+Gift of Doom	As-turned-face-up replacement that may attach this Aura to a creature (CR 702.37 with attach)	Morph Aura
+Deathmist Raptor	Trigger on turning a permanent face up with a return from the graveyard face up or face down (face choice on a battlefield entry)	Megamorph
+Illithid Harvester // Plant Tadpoles	Ceremorphosis: turn any number of target tapped nontoken creatures face down as 2/2 Horror creatures (face-down with a given type and P/T)	Plant Tadpoles spell side already reads
+Nuka-Nuke Launcher	Until end of defending player's next turn that player gets rad counters whenever they cast a spell (a duration-bound delayed trigger on another player)	none
+Desertion	Replacement of a countered spell's destination: artifact or creature spell goes onto the battlefield under your control (countered-this-way destination for a spell on the stack)	none
+Eventide's Shadow	Remove any number of counters from among all permanents with the total bound to later draws and life loss	none
+Secret of Bloodbending	Control another player during their next combat phase or turn (CR 722, player-control effect)	Waterbend {X} additional cost now exists
+Incinerator of the Guilty	Collect evidence X with X chosen during resolution (CostItem::CollectEvidence takes a fixed number) then reflexive damage of X	Reflexive trigger
+Brass Infiniscope	Delayed trigger "when you next cast a spell with {X} in its mana cost this turn" that gains half X rounded down	Mana ability that adds {C}{C}
+Quicksilver Elemental	Gain all activated abilities of a target creature until end of turn (Modification::GainActivated from a target)	Spend blue mana as though any color for this object's abilities (SpendManaAs over This abilities limited to one color)
+Ratchet, Field Medic // Ratchet, Rescue Racer	Convert (CR 701.53) as a keyword action in effects and triggers; More Than Meets the Eye cast cost	Living metal; amount of life gained this turn
+March of Reckless Joy	Additional cost to exile any number of red cards from hand that reduces the cost by two each, exile top X and play up to two of them until your next turn ends	none
+Chance for Glory	Extra turn after this one with a lose-the-game rider at the end step of that turn (delayed trigger bound to the extra turn)	Creatures you control gain indestructible
+Frodo, Sauron's Bane	If-conditioned becomes: Halfling Scout with base 2/3 and lifelink, then Halfling Rogue with a granted trigger (Ring tempts, lose the game on four tempts)	Permanent duration becomes
+Captain America, First Avenger	Sectioned text (Throw and Catch halves of a split ability line) and divided damage equal to the unattached Equipment's mana value	Equip attach at beginning of combat
+God-Eternal Kefnet	Reveal the first card drawn each turn as it is drawn, copy it and cast the copy for {2} less when it is an instant or sorcery	Dies or exile trigger puts it third from the top
+Quantum Riddler	Draw replacement for a batch of one or more cards with a hand-size condition (draws that many plus one)	Warp {1}{U} alternative cost
+Celestial Reunion	Additional cost choosing a creature type and beholding two creatures of it, used later to decide the destination of the searched card (stored choice read on resolution)	Search with mana value X or less
+Taii Wakeen, Perfect Shot	Noncombat damage replacement this turn adding X from the activation, and a damage trigger keyed to noncombat damage equal to toughness	none
+Yidris, Maelstrom Wielder	Grant cascade to spells cast from hand this turn as they are cast (cast-time keyword grant, CR 702.85)	Commander cast triggers
+Optimus Prime, Hero // Optimus Prime, Autobot Leader	Convert as an effect inside triggers and a dies-return converted, bolster with chosen creature reference and a delayed combat damage trigger	Living metal
+Baba Lysaga, Night Witch	Sacrifice up to three permanents as a cost and count the distinct card types among the sacrificed (cost-bound set read in the effect)	none
+Garth One-Eye	Choose a name not chosen from a fixed list and create a copy of the card with that name outside the game then cast it (a card created from a named list)	Names remembered per activation
+Night Soil	Cost "Exile two creature cards from a single graveyard" (ExileFromGraveyard with any_player and single-graveyard grouping)	none
+Argentum Masticore	Sacrifice unless discard with a reflexive trigger reading the discarded card's mana value (Bound card from an unless-pay discard)	Protection from multicolored; first strike
+Yavimaya Bloomsage // Channel	Until end of turn any-time-you-could-activate-a-mana-ability life payment that adds {C} (mana ability with a life cost granted as a rule)	Prepared state and a prepare spell face
+Lilah, Undefeated Slickshot	Spell fate (exile instead of graveyard as it resolves then it becomes plotted) with the compiler emitting invalid rules for the multicolored-from-hand condition	Shared with Feather
+Accursed Witch // Infectious Curse	Return transformed under your control attached to a target opponent (an Aura-face entering attached to a player) and cost reduction for spells that target a player	Enchanted-player triggers
+Alrund, God of the Cosmos // Hakka, Whispering Raven	Count of cards in hand and foretold cards you own in exile and a choose-a-card-type reveal-top-two with the revealed cards split by type	Foretold count amount
+Archnemesis	Aura trigger that moves itself to a player who attacks you (attach to a player on trigger) and a trigger when you attack the enchanted player	Aura enchant player
+Volcanic Offering	Targets chosen by an opponent (target of an opponent's choice, CR 115.7 variant)	Seven damage with two different targets
+Prowl, Stoic Strategist // Prowl, Pursuit Vehicle	Convert as an effect and a trigger on a player playing a card exiled with this (exiled-with link plus play event)	More Than Meets the Eye
+Foggy Swamp Visions	Token copies of X exiled creature cards with sacrifice of those tokens at your next end step	X targets chosen as X is announced
+Manascape Refractor	Has all activated abilities of all lands on the battlefield (a static ability grant from other objects' abilities)	Spend any color for this object's abilities
+Invasion of Alara // Awaken the Maelstrom	Siege exile-until two nonland cards with mana value four or less, cast one free and put one into hand then the rest on the bottom	Back face is all colors and a long spell
+Bohn, Beguiling Balladeer	Grant foretell to cards in hand with derived foretell cost	Foretell trigger
+Guile	Replacement of a countering effect: exile that spell and allow playing it free (counter replacement keyed to your spells and abilities)	Protection and cannot be countered
+Vault 11: Voter's Dilemma	Secret votes for up to one creature with destroy of each tied for most votes and draw if none	Saga chapter II and III shared text
+Soulfire Grand Master	Spell fate: the next instant or sorcery cast from hand this turn goes to hand instead of the graveyard as it resolves (shared spell fate piece)	none
+Reed Richards, Smartest Man	Draw replacement for the first time each turn you would draw with the draw-step exception (Draw replacement once each turn)	none
+Clay Golem	Cost "Roll a dN" with Monstrosity X where X is the roll result (a die roll inside an activation cost bound as X)	none
+Martyrdom	Granted ability with a restriction that only you may activate it and a damage redirect shield to this creature (Activators on a granted ability)	Next 1 damage prevention shield
+Eye of Ojer Taq // Apex Observatory	Craft with two cards that share a card type and a chosen shared type used by the back face	Next spell of the chosen type is free once this turn
+Dynaheir, Invoker Adept	Delayed trigger "when you next activate an ability that isn't a mana ability by spending four or more mana" with an ability copy and new targets	Abilities of other creatures as though they had haste
+Whims of the Fates	Each player separates permanents into three piles then a random pile is sacrificed (piles, random choice, CR 700.3)	none
+Parallel Thoughts	Search seven cards into a face-down exiled pile and a draw replacement taking the top card of that pile	none
+Portal Manipulator	Redirect attacking creatures to another player after attackers are declared (CR 506.4 attack reassignment)	Enters during declare attackers
+Ashiok, Wicked Manipulator	Pay-life replacement that exiles from the top of the library instead and tokens with a granted triggered ability	Total mana value of exiled cards you own
+Soundwave, Sonic Spy // Soundwave, Superior Captain	Convert as an effect and a batched trigger for N or more creature tokens dealing combat damage with exile of a card with mana value equal to the damage	More Than Meets the Eye
+Vazi, Keen Negotiator	Trigger when an opponent's spell or ability was paid with mana from a Treasure and a Treasure-created-this-turn count	Opponent creates X Treasures
+Face Yourself	Token copies of each creature a player controls with haste and a granted end-step trigger with a planeswalker condition	none
+Abuelo's Awakening	Return to the battlefield with X additional counters and it becomes a 1/1 Spirit with flying in addition to its other types (permanent becomes on a returned card)	none
+Eriette, the Beguiler	Gain control for as long as an Aura stays attached (duration tied to an attachment) triggered by an Aura becoming attached with a mana value comparison	Enchant player ability
+Psychic Battle	Trigger on a player choosing one or more targets, a reveal by every player and a change of target by the highest mana value (CR 115.7)	none
+Stolen Uniform	Gain control of an Equipment until end of turn then attach it, and a trigger on losing control of that Equipment	none
+Magnigoth Treefolk	Landwalk of each basic land type among lands you control (a variable landwalk grant per domain type)	none
+Storyweave	A modal charm whose third mode is a this-turn next-time enters replacement for enchantment creatures	Lore counters on a Saga
+Bell Borca, Spectral Sergeant	Note the mana value of each card put into exile and a power equal to the greatest number noted this turn	none
+Sanar, Innovative First-Year	Reveal until X nonland cards with X from the colors among permanents then a per-color exile choice and cast	Vivid
+Power Pack	Exile a random card from the graveyard and cast it free at your next upkeep with exile instead of graveyard	none
+Voracious Dragon	Count of devoured permanents that are Goblins (Event::Devoured and Amount::Devoured keep only a total, not the sacrificed objects' types)	none
+Tazri, Stalwart Survivor	Granted mana ability limited by color of the creature and "Activate only if this creature has another activated ability" and spend limits to creature abilities	Mill five and take creature cards with activated abilities
+The Curse of Fenric	Becomes a 6/6 legendary Horror named Fenric and loses all abilities (permanent chapter effect with a name) and a fight against a creature named Fenric	Destroy up to one per player with replacement tokens
+Urgent Necropsy	Additional cost collect evidence X with X the total mana value of the targets (X derived from the chosen targets)	Four up-to-one targets
+Spellweaver Volute	Copy the enchanted instant card in a graveyard, cast the copy free and move this Aura to another instant card (Aura attached to a card in a graveyard)	none
+Tenth District Hero	Becomes with a name, legendary and a granted static, conditioned on it being a Detective (conditional permanent becomes)	Collect evidence cost
+Close Encounter	Additional cost choosing a creature you control or a warped card in exile, then damage equal to the chosen object's power	none
+Sharkey, Tyrant of the Shire	Has all activated abilities of lands your opponents control except mana abilities and a prohibition on those lands' non-mana abilities	Mana of any type for its abilities
+Bullseye, Death Dealer	Cost.OneOf in an activation cost (Cost.OneOf.Elsewhere is not supported: sacrifice an artifact or discard a nonland card chosen at announcement)	none
+Ludevic, Necrogenius // Olag, Ludevic's Hubris	Back face becomes a copy of a creature card exiled with it with exceptions and counters equal to its power; cost X creature cards exiled from the graveyard with a linked exile	X can't be 0
+Primitive Justice	Additional cost paid any number of times in two kinds, each adding another target (variable target count from payments)	Gain 1 life per green payment
+Caller of the Hunt	Additional cost choose a creature type and a power equal to the number of creatures of that type (stored choice read in a defining power)	none
+Rasputin Dreamweaver	Counter cap on a permanent (a rule that it can't have more than seven dream counters)	Started the turn untapped condition and damage prevention
+Casey & Raph, Hotheads	Choose one or both with each mode targeting a different player (mode targets must differ)	none
+Chorus of the Conclave	Additional cost to pay any amount of mana for each creature spell and counters equal to that amount (a variable additional cost with a count of mana paid)	none
+Catch // Release	Each player sacrifices one permanent of each of five types of their choice (Sacrifice with distinct type slots) and a gain-control spell side	none
+Guardian Beast	Conditional static preventing enchanting, indestructible and control changes for noncreature artifacts (three rule changes under one condition) without removing Auras	none
+Sunglasses of Urza	Spend white mana as though it were red (SpendAs only has AnyColor, AnyType and Normal; a one color to another color permission)	none
+Old Man of the Sea	Gain control for as long as this stays tapped and the target's power stays at most this creature's power (duration with a continuing condition) and may choose not to untap	none
+Snowfall	Triggered extra mana with a restriction to cumulative upkeep costs and an Island-is-snow branch	Replace with an extra snow amount
+Emblazoned Golem	Spend only colored mana on X with at most one mana of each color, and enters with X counters if kicked	none
+Power Leak	Enchanted player's upkeep pays any amount of mana prevent that much damage (a variable payment reducing damage)	none
+Frankenstein's Monster	As it enters exile X creature cards from your graveyard (X chosen) else go to the graveyard, and counters of three kinds by each exiled card's own choice	none
+Merseine	A net counter that stops untapping while present and a cost of the enchanted creature's mana cost payable only by its controller (an activator who is not the Aura's controller)	Cost equal to another object's mana cost
+Voodoo Doll	Activation cost {X}{X} where X is the number of pin counters on this artifact (X fixed by a count) and a damage count read on resolution	End-step destroy with damage
+Cyclopean Tomb	Land type granted for as long as a counter remains and an upkeep delayed trigger for the rest of the game that removes the counters on the lands marked by this artifact (linked objects across zones)	none
+Phyrexian Grimoire	An opponent chooses one of the top two cards of your graveyard, exile it and put the other into your hand	none
+Reflecting Mirror	Change the target of a spell with a single target when that target is you to a player with X twice the spell's mana value (CR 115.7a)	none
+Minamo's Meddling	Reveal the controller's hand and discard each card with the same name as a card spliced onto that spell (splice tracking)	none
+Nameless Race	Pay any amount of life as it enters with the amount capped by a count and power and toughness equal to the life paid (stored payment read in a defining power)	none
+North Star	One-spell-this-turn permission to spend mana as though of any type (a counted next-spell rule with SpendAs::AnyType over one cast)	none
+Dralnu's Pet	If kicked enters with flying and X counters where X is the discarded card's mana value (kicker discard cost with bound card)	none
+Caller of the Untamed	Reveal a card from your deck before the game and exile a creature you drafted; no draft happens so it is inert; a token copy of a card exiled with cards named this	Token copy tied to an exiled card with a mana value X cost
+Liquid Fire	Additional cost choose a number between 0 and 5 stored and used as X in two damage amounts (stored choice during casting)	none
+Balduvian Fallen	Trigger when cumulative upkeep is paid with a count of {B} or {R} mana spent this way	none
+Swinging Ship	Visit: an additional combat phase after the first combat phase this turn with an untap at its beginning of creatures that attacked (Attraction visit and phase insertion)	none
