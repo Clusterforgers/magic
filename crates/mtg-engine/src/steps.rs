@@ -288,6 +288,25 @@ fn declare_attackers(state: &GameState) -> Progress {
                 attackers: Vec::new(),
             }]);
         };
+        if crate::party_attacks::splits(state) {
+            if let Some(question) = crate::party_attacks::next_question(state) {
+                // A player with no creature to attack with chooses nothing without being asked.
+                if let DecisionKind::DeclareAttackers(options) = &question.kind
+                    && options.attackers.is_empty()
+                    && let Ok(crate::answers::Outcome::Events(events)) =
+                        crate::party_attacks::answer(
+                            state,
+                            question.player,
+                            options,
+                            Vec::new(),
+                            crate::combat::AttackExtras::default(),
+                        )
+                {
+                    return Progress::Events(events);
+                }
+                return Progress::Decide(question);
+            }
+        }
         let options = attack_options(state, active);
         if options.attackers.is_empty() {
             return Progress::Events(vec![

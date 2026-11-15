@@ -21,8 +21,8 @@ use mtg_engine::combat::{AttackTarget, DamageTarget};
 use mtg_engine::counters::CountersChanged;
 use mtg_engine::decision::{
     AttackOptions, AttackerOption, BlockOptions, BlockerOption, BottomOptions, DamageOptions,
-    DecisionKind, DiscardOptions, MulliganChoice, MulliganOptions, PayChoice, PayOptions,
-    PriorityAction, PriorityOptions,
+    DecisionKind, DiscardOptions, MulliganChoice, MulliganOptions, PartyAttack, PayChoice,
+    PayOptions, PriorityAction, PriorityOptions,
 };
 use mtg_engine::events::{ResolutionOutcome, ZoneCause};
 use mtg_engine::forecast::{
@@ -305,6 +305,10 @@ fn decision_kinds() -> Vec<DecisionKind> {
             cant_alone: Vec::new(),
             joins: Vec::new(),
             at_least_one: None,
+            party: Some(Box::new(PartyAttack {
+                declared: vec![(PlayerId(2), a, AttackTarget::Player(PlayerId(1)))],
+                refused: Some("a creature must attack".to_owned()),
+            })),
             attackers: vec![AttackerOption::free(
                 a,
                 vec![AttackTarget::Player(PlayerId(1))],

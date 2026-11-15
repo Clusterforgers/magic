@@ -161,6 +161,10 @@ pub struct CombatState {
     pub(crate) bands: Vec<Vec<ObjectId>>,
     /// How the blockers that block several attackers divided their combat damage, each (blocker, damage per attacker).
     pub(crate) blocker_assignments: Vec<(ObjectId, Vec<(ObjectId, u32)>)>,
+    /// The attacks each player of a team sharing its turn chose so far, in the order they chose.
+    pub(crate) attack_picks: Vec<crate::party_attacks::AttackPick>,
+    /// Why the team's chosen attacks were refused, each time they were this combat.
+    pub(crate) attack_refusals: Vec<String>,
 }
 
 impl CombatState {
@@ -497,6 +501,7 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
         cant_alone: Vec::new(),
         joins: Vec::new(),
         at_least_one: None,
+        party: None,
     };
     attack_tax::describe(state, player, &mut options);
     options.cant_alone = options

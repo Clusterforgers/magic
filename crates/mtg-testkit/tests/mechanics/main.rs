@@ -48,6 +48,7 @@ mod dk27_bid_life;
 mod dk27_counted_less;
 mod dk27_secret_numbers;
 mod dl2_party_turn;
+mod dl2b_party_attacks;
 mod e10a_earlier_targets;
 mod e10b_sealed;
 mod e14d_mechanics;

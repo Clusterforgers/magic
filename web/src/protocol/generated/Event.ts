@@ -405,7 +405,27 @@ player: PlayerId,
 /**
  * Each attacker and its target.
  */
-attackers: Array<[ObjectId, AttackTarget]>, } } | { "BandFormed": { 
+attackers: Array<[ObjectId, AttackTarget]>, } } | { "AttackersChosen": { 
+/**
+ * The player who chose.
+ */
+player: PlayerId, 
+/**
+ * Each of their attackers and its target.
+ */
+attackers: Array<[ObjectId, AttackTarget]>, 
+/**
+ * The attackers they exert.
+ */
+exert?: Array<ObjectId>, 
+/**
+ * The bands they form.
+ */
+bands?: Array<Array<ObjectId>>, } } | { "AttackChoicesRefused": { 
+/**
+ * Why the team's declaration is illegal.
+ */
+reason: string, } } | { "BandFormed": { 
 /**
  * The attacking player.
  */

@@ -1335,6 +1335,16 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     if (attackers.length === 0) return quiet(`${n.seat(player)} declares no attackers`)
     return line(`${n.seat(player)} attacks ${attackClauses(attackers, n)}`)
   }
+  if ('AttackersChosen' in event) {
+    const { player, attackers } = event.AttackersChosen
+    if (attackers.length === 0) return quiet(`${n.seat(player)} chooses no attackers`)
+    return quiet(`${n.seat(player)} chooses to attack ${attackClauses(attackers, n)}`)
+  }
+  if ('AttackChoicesRefused' in event) {
+    return line(
+      `The party's attack is refused (${event.AttackChoicesRefused.reason}); each hero chooses again`,
+    )
+  }
   if ('BandFormed' in event) {
     const { player, attackers } = event.BandFormed
     return line(`${n.seat(player)} bands ${joinWords(attackers.map((id) => n.card(id)))} together`)

@@ -99,10 +99,15 @@ fn watch(driver: &mut Driver, turns: u32) -> Result<BTreeMap<u32, TurnSeen>, Scr
                 ));
             }
             DecisionKind::DeclareAttackers(options) => {
-                entry.offered = options.attackers.len();
+                entry.offered += options.attackers.len();
                 let mut chosen = Vec::new();
                 for option in &options.attackers {
                     let controller = controller_of(state, option.object).unwrap();
+                    // Each player chooses the attacks of their own creatures only.
+                    assert_eq!(
+                        controller, decision.player,
+                        "{seat} is offered another's creature"
+                    );
                     entry.attackers.insert(controller.index());
                     for target in &option.defenders {
                         if let AttackTarget::Player(player) = target {

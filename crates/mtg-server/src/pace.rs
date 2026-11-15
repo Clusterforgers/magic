@@ -682,6 +682,7 @@ mod tests {
             cant_alone: Vec::new(),
             joins: Vec::new(),
             at_least_one: None,
+            party: None,
             attackers: (10..13)
                 .map(|n| AttackerOption::free(ObjectId(n), vec![AttackTarget::Player(PlayerId(0))]))
                 .collect(),

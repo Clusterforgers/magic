@@ -51,7 +51,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Delves at the table and between fights: boss mode (the boss's side on top with its abilities in plain words from the content the engine plays, the party together at the bottom), the boss intro in place of the game's lobby, decks fixed for the run with a lost deck held on the run page, the return to the run after a fight, the runs list without abandoned runs and with past runs folded (`docs/delves.md`).
 - Delves fairness: the spotlight spreads the boss's side's attacks, removal and spotlight schemes over the heroes with a cap on any one hero's share, the grace and the lull open each fight, a boss takes commander damage but never loses to 21, and the table shows whom each boss-side seat eyes (`docs/delves.md`).
 - Delves difficulty: one scaling table by party size and Heat (life, hand, Reserves, Reinforcements, Warpath, minion seats that fall with the boss, the Last Bulwark), Escalation and Enrage, the scheme deck with its Omen, measured per party size (`docs/delves.md`).
-- Delves shared turns: the party and the boss's side each take one team turn (CR 805) with life totals per hero, and the table names the party's turn (`docs/delves.md`).
+- Delves shared turns: the party and the boss's side each take one team turn (CR 805) with life totals per hero, each hero chooses their own creatures' attacks for one shared declaration, and the table names the party's turn (`docs/delves.md`).
 
 ## Live game
 
@@ -117,7 +117,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 ## Delves
 
-- [ ] (dl2b) Each hero declares the attacks of their own creatures in the party's shared combat, so the hero at seat 0 does not decide for the party
 - [ ] (dl3b) Delves balance at every size: measure four to six heroes with the spotlight and ramp-up, and lift two heroes' fight win rate to 50 %
 - [ ] (dl3a) Boss personalities: each boss weighs threats its own way (the healer, the biggest board, the combo) within the spotlight's cap
 - [ ] (dl4) A won card names the card it replaces (a basic land today), chosen from the hero's deck list on the loot screen

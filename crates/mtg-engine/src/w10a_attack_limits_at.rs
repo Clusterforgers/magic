@@ -151,6 +151,7 @@ mod tests {
             cant_alone: Vec::new(),
             joins: Vec::new(),
             at_least_one: None,
+            party: None,
         }
     }
 

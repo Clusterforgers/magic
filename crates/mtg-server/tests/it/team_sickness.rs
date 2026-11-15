@@ -233,6 +233,10 @@ async fn a_humans_view_holds_a_permanent_back_until_its_controllers_turn_begins(
                                     teams.team_of(object.controller),
                                     teams.team_of(decision.player)
                                 );
+                                // Under shared team turns each player chooses for their own creatures alone.
+                                if mode == TeamMode::SharedTurns {
+                                    assert_eq!(object.controller, decision.player);
+                                }
                                 assert!(
                                     object.permanent.as_ref().is_some_and(|p| !p.summoning_sick),
                                     "seat {:?} may attack with {}, which its view shows summoning sick",
@@ -270,8 +274,10 @@ async fn a_humans_view_holds_a_permanent_back_until_its_controllers_turn_begins(
             "too few permanents were checked: {:?}",
             ledger.checked
         );
-        // In Two-Headed Giant only the team's first seat declares attackers.
-        let declares = teams.members(teams.team_of(client.seat)).next() == Some(client.seat);
+        // In Two-Headed Giant only the team's first seat declares attackers; under shared team turns every player
+        // chooses their own, a human after a bot too.
+        let declares = mode == TeamMode::SharedTurns
+            || teams.members(teams.team_of(client.seat)).next() == Some(client.seat);
         assert!(
             ledger.attackers > 0 || (teams.shares_turns() && !declares),
             "seat {:?} was never offered an attacker",
