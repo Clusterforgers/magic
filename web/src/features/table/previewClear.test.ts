@@ -1,9 +1,9 @@
-// Goal: the card preview keeps clear of the open prompt's strip and the docks: at the windows of the table it docks beside the strip or above it, a phone's takes the free stretch above the strip, and where nothing is clear it stands where `previewFit` puts it.
+// Goal: the card preview keeps clear of the open prompt's strip and the docks: at the windows of the table it docks beside the strip or above it at a readable size (covering the strip's sentence before it narrows, never its buttons), a phone's takes the free stretch above the strip, and where nothing is clear it stands where `previewFit` puts it.
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
 import type { Anchor, Viewport } from './preview'
-import { fitClear, panelBox, SQUEEZED_HEIGHT_PX } from './previewClear'
-import type { Box } from './previewClear'
+import { fitClear, panelBox, READABLE_PICTURE, SQUEEZED_HEIGHT_PX } from './previewClear'
+import type { Box, ClearBox } from './previewClear'
 import { PICTURE_FLOOR, previewFit } from './previewFit'
 
 const rect = (left: number, top: number, right: number, bottom: number): Anchor => ({
@@ -158,5 +158,63 @@ describe('fitClear on a short narrow window', () => {
     const fit = fitClear(grid, view, clear)
     expect(touches(fit, view, clear)).toBe(false)
     expect(fit).toMatchObject({ picture: PICTURE_FLOOR.narrow, beside: true })
+  })
+})
+
+describe('fitClear keeps a desktop preview readable', () => {
+  /** The strip of a table soft, with its buttons at its right end firm, and the docks. */
+  const softTable = (clear: Anchor[]): ClearBox[] => {
+    const [strip, ...docks] = clear
+    const s = must(strip)
+    const actions = rect(
+      s.left + s.width - 200,
+      s.top + s.height - 44,
+      s.left + s.width - 12,
+      s.top + s.height - 8,
+    )
+    return [{ ...s, soft: true }, actions, ...docks]
+  }
+  const firmOf = (clear: ClearBox[]): Anchor[] => clear.filter((box) => box.soft !== true)
+
+  it.each(TABLES.slice(0, 2))(
+    'on %s keeps a picture of at least 260 px (or its whole natural size) off the buttons and the docks rather than narrowing beside the strip',
+    (_, view, grid, clear) => {
+      const kept = softTable(clear)
+      const fit = fitClear(grid, view, kept)
+      expect(fitClear(grid, view, clear).picture).toBeLessThan(READABLE_PICTURE)
+      expect(fit.picture).toBeGreaterThanOrEqual(Math.min(READABLE_PICTURE, previewFit(grid, view).picture))
+      expect(touches(fit, view, firmOf(kept))).toBe(false)
+    },
+  )
+
+  it('docks beside the strip at a readable size where the room is there, covering none of it', () => {
+    const view = { width: 1920, height: 900 }
+    const grid = rect(210, 344, 1400, 488)
+    const clear = softTable([rect(184, 208, 1500, 550), rect(0, 760, 1500, 900)])
+    const fit = fitClear(grid, view, clear)
+    expect(touches(fit, view, clear)).toBe(false)
+    expect(fit.picture).toBeGreaterThanOrEqual(READABLE_PICTURE)
+  })
+
+  it('narrows only where nothing readable fits, and then still keeps off the buttons', () => {
+    const [, view, grid, clear] = must(TABLES[2])
+    const kept = softTable(clear)
+    const fit = fitClear(grid, view, kept)
+    expect(touches(fit, view, firmOf(kept))).toBe(false)
+    expect(fit.picture).toBeGreaterThanOrEqual(fitClear(grid, view, clear).picture)
+  })
+
+  it('keeps off every firm box over a sweep of windows, readable from 840 px high', () => {
+    for (let width = 1024; width <= 2300; width += 128) {
+      for (let height = 720; height <= 1080; height += 60) {
+        const strip = rect(184, height * 0.3, width - 300, height * 0.6)
+        const grid = rect(210, height * 0.4, width - 330, height * 0.55)
+        const kept = softTable([strip, rect(0, height - 137, width - 300, height)])
+        const view = { width, height }
+        const fit = fitClear(grid, view, kept)
+        expect(touches(fit, view, firmOf(kept))).toBe(false)
+        if (height >= 840) expect(fit.picture).toBeGreaterThanOrEqual(READABLE_PICTURE)
+      }
+    }
   })
 })

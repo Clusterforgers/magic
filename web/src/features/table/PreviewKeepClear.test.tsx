@@ -63,6 +63,18 @@ describe('the strip mark', () => {
     expect(sheet()).toHaveAttribute('data-keep-clear')
   })
 
+  it.each(['priority', 'attack', 'mulligan'])(
+    'marks the strip soft and the buttons of a %s prompt firm, so a readable preview may cover only the sentence',
+    (prompt) => {
+      const fixture = buildFixture({ seats: 2 })
+      const pending = must(DEV_PROMPTS[prompt])(fixture)
+      renderTable({ fixture, state: (state) => ({ ...state, pending }) })
+      expect(sheet()).toHaveAttribute('data-keep-clear', 'soft')
+      for (const actions of sheet().querySelectorAll('[data-slot="prompt-actions"]'))
+        expect(actions).toHaveAttribute('data-keep-clear', '')
+    },
+  )
+
   it('is not on the strip while nothing is owed', () => {
     renderTable({ seats: 2, state: (state) => ({ ...state, pending: null }) })
     expect(sheet()).not.toHaveAttribute('data-keep-clear')
