@@ -238,14 +238,14 @@ async fn a_deck_sits_in_several_groups_and_leaves_one_at_a_time(pool: PgPool) {
     both.sort();
     let held = shelf(&server, &ann).await;
     assert_eq!(decks_of(&held, 0), both);
-    assert_eq!(decks_of(&held, 1), [one.clone()]);
+    assert_eq!(decks_of(&held, 1), std::slice::from_ref(&one));
 
     // Leaving one group leaves the other, and leaving twice is fine.
     assert_eq!(take_out(&server, &ann, &one, &fun).await.status, 204);
     assert_eq!(take_out(&server, &ann, &one, &fun).await.status, 204);
     let held = shelf(&server, &ann).await;
-    assert_eq!(decks_of(&held, 0), [two.clone()]);
-    assert_eq!(decks_of(&held, 1), [one.clone()]);
+    assert_eq!(decks_of(&held, 0), std::slice::from_ref(&two));
+    assert_eq!(decks_of(&held, 1), std::slice::from_ref(&one));
     assert_eq!(take_out(&server, &ann, &one, &hard).await.status, 204);
     assert_eq!(shelf(&server, &ann).await[1].2.len(), 0);
 
