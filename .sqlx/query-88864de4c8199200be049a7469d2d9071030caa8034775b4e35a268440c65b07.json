@@ -1,0 +1,32 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT EXISTS (SELECT 1 FROM decks WHERE owner = $1 AND id = $2) AS \"deck!\",\n                  EXISTS (SELECT 1 FROM deck_groups WHERE owner = $1 AND id = $3) AS \"group!\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "deck!",
+        "type_info": "Bool",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "group!",
+        "type_info": "Bool",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      null,
+      null
+    ]
+  },
+  "hash": "88864de4c8199200be049a7469d2d9071030caa8034775b4e35a268440c65b07"
+}

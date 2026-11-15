@@ -1,7 +1,8 @@
 //! The deck-group endpoints: a signed-in account lists, creates, renames, collapses, reorders and deletes
-//! the groups it sorts its decks into, and files a deck in one group or none. Deleting a group leaves its
-//! decks ungrouped. Every route needs an account: 503 `decks_unavailable` on a server without a database,
-//! then 401 `unauthenticated`; a group or deck of another account is a plain 404.
+//! the groups it sorts its decks into, and adds a deck to a group or takes it out again; a deck sits in any
+//! number of groups. Deleting a group leaves its decks in their other groups. Every route needs an
+//! account: 503 `decks_unavailable` on a server without a database, then 401 `unauthenticated`; a group or
+//! deck of another account is a plain 404.
 
 use axum::Json;
 use axum::extract::rejection::PathRejection;
@@ -9,7 +10,7 @@ use axum::extract::{Path, Request, State};
 use axum::http::{HeaderMap, StatusCode};
 use mtg_db::{CreateGroupError, DeckGroupRepo, DeckId, Filing, GroupChange, StoredGroup};
 use mtg_protocol::rest::{
-    DeckErrorCode, DeckGroupChange, DeckGroupChoice, DeckGroupOrder, DeckGroupView, DeckGroups,
+    DeckErrorCode, DeckGroupChange, DeckGroupOrder, DeckGroupView, DeckGroups,
     MAX_DECK_GROUP_NAME_CHARS, MAX_DECK_GROUPS_PER_USER, NewDeckGroup,
 };
 use sqlx::types::uuid::Uuid;
@@ -195,32 +196,57 @@ pub(crate) async fn reorder(
     }
 }
 
-/// `PUT /api/decks/{id}/group`: files the deck in the group, or in none for `null`; 204.
-pub(crate) async fn file(
-    State(app): State<AppState>,
-    path: Result<Path<String>, PathRejection>,
-    request: Request,
-) -> Result<StatusCode, ApiError> {
-    writable(&app)?;
-    let headers = request.headers().clone();
-    let s = session(&app, &headers).await?;
-    let deck = DeckId(id_of(path)?);
-    let body: DeckGroupChoice = read_json_limited(request, BODY_LIMIT).await?;
-    let group = body
-        .group
-        .as_deref()
-        .map(Uuid::parse_str)
-        .transpose()
-        .map_err(|_| ApiError::not_found())?;
-    match s
-        .repo
-        .file(s.owner, deck, group)
-        .await
-        .map_err(|error| failed(&error))?
-    {
+/// The deck and group ids of a `/api/decks/{id}/groups/{group}` path; one that is no id looks like one of
+/// another account.
+fn deck_and_group(
+    path: Result<Path<(String, String)>, PathRejection>,
+) -> Result<(DeckId, Uuid), ApiError> {
+    let Path((deck, group)) = path.map_err(|_| ApiError::not_found())?;
+    let parse = |id: String| Uuid::parse_str(&id).map_err(|_| ApiError::not_found());
+    Ok((DeckId(parse(deck)?), parse(group)?))
+}
+
+fn done(filing: Filing) -> Result<StatusCode, ApiError> {
+    match filing {
         Filing::Done => Ok(StatusCode::NO_CONTENT),
         Filing::NoDeck | Filing::NoGroup => Err(ApiError::not_found()),
     }
+}
+
+/// `PUT /api/decks/{id}/groups/{group}`: adds the deck to the group, beside its other groups; 204, also when
+/// it is in the group already.
+pub(crate) async fn add_deck(
+    State(app): State<AppState>,
+    path: Result<Path<(String, String)>, PathRejection>,
+    headers: HeaderMap,
+) -> Result<StatusCode, ApiError> {
+    writable(&app)?;
+    let s = session(&app, &headers).await?;
+    let (deck, group) = deck_and_group(path)?;
+    done(
+        s.repo
+            .add_deck(s.owner, deck, group)
+            .await
+            .map_err(|error| failed(&error))?,
+    )
+}
+
+/// `DELETE /api/decks/{id}/groups/{group}`: takes the deck out of that group only; 204, also when it was not
+/// in it.
+pub(crate) async fn remove_deck(
+    State(app): State<AppState>,
+    path: Result<Path<(String, String)>, PathRejection>,
+    headers: HeaderMap,
+) -> Result<StatusCode, ApiError> {
+    writable(&app)?;
+    let s = session(&app, &headers).await?;
+    let (deck, group) = deck_and_group(path)?;
+    done(
+        s.repo
+            .remove_deck(s.owner, deck, group)
+            .await
+            .map_err(|error| failed(&error))?,
+    )
 }
 
 #[cfg(test)]

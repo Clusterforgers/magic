@@ -2,7 +2,7 @@
 import type { DeckGroupView } from "./DeckGroupView";
 
 /**
- * The answer of `GET /api/deck-groups`: the account's groups in its order; a deck in none is ungrouped.
+ * The answer of `GET /api/deck-groups`: the account's groups in its order; a deck may be in several, one in none is ungrouped.
  */
 export type DeckGroups = { 
 /**

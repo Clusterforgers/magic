@@ -114,7 +114,6 @@ export type { DeckBody } from "./DeckBody";
 export type { DeckChoiceErrorCode } from "./DeckChoiceErrorCode";
 export type { DeckErrorCode } from "./DeckErrorCode";
 export type { DeckGroupChange } from "./DeckGroupChange";
-export type { DeckGroupChoice } from "./DeckGroupChoice";
 export type { DeckGroupOrder } from "./DeckGroupOrder";
 export type { DeckGroupView } from "./DeckGroupView";
 export type { DeckGroups } from "./DeckGroups";

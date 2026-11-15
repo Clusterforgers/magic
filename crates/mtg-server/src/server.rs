@@ -446,7 +446,10 @@ pub(crate) fn router(state: AppState) -> Router {
         )
         .route("/api/decks/{id}/export", get(decks::export))
         .route("/api/decks/{id}/printing", put(printings::set_line))
-        .route("/api/decks/{id}/group", put(deck_groups::file))
+        .route(
+            "/api/decks/{id}/groups/{group}",
+            put(deck_groups::add_deck).delete(deck_groups::remove_deck),
+        )
         .route(
             "/api/deck-groups",
             get(deck_groups::list).post(deck_groups::create),

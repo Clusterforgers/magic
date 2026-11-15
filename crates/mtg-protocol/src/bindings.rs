@@ -14,12 +14,12 @@ use crate::rest::{
     AccountDeletion, AccountList, AccountOptions, AccountRow, AuthErrorCode, BulkApprovalBody,
     BulkApprovalResult, BulkReads, CardDetail, CardSearchPage, CheckRequest, ChooseDeck,
     CreatedAccount, Credentials, DeckBlockedBody, DeckBody, DeckChoiceErrorCode, DeckErrorCode,
-    DeckGroupChange, DeckGroupChoice, DeckGroupOrder, DeckGroups, DeckList, DeckView,
-    FavouritePrecons, FixMarkBody, FixMarkList, GameInfo, ImportRequest, ImportResult,
-    JoinCodeRequest, JoinRequest, Joined, LinePrintingBody, LobbyErrorCode, LobbyList, MyGames,
-    NewDeckGroup, PasswordChange, PasswordReset, PreconErrorCode, PreconList, PreconView,
-    PreferredPrintingBody, PreferredPrintings, PrintingList, ReadBody, ReadCard, ReadQueue, Replay,
-    SeatTeamBody, TeamsBody, UserPrefs, UserView, VisibilityBody,
+    DeckGroupChange, DeckGroupOrder, DeckGroups, DeckList, DeckView, FavouritePrecons, FixMarkBody,
+    FixMarkList, GameInfo, ImportRequest, ImportResult, JoinCodeRequest, JoinRequest, Joined,
+    LinePrintingBody, LobbyErrorCode, LobbyList, MyGames, NewDeckGroup, PasswordChange,
+    PasswordReset, PreconErrorCode, PreconList, PreconView, PreferredPrintingBody,
+    PreferredPrintings, PrintingList, ReadBody, ReadCard, ReadQueue, Replay, SeatTeamBody,
+    TeamsBody, UserPrefs, UserView, VisibilityBody,
 };
 use crate::rest::{AdminGame, AdminGameList, AdminGameSeat, EndGameBody};
 use crate::rest::{CreateDelve, DelveAction, DelveContent, DelveList, DelveView};
@@ -99,7 +99,6 @@ pub fn export_to(dir: &Path) -> Result<(), BindingsError> {
     NewDeckGroup::export_all(&config)?;
     DeckGroupChange::export_all(&config)?;
     DeckGroupOrder::export_all(&config)?;
-    DeckGroupChoice::export_all(&config)?;
     UserPrefs::export_all(&config)?;
     FixMarkBody::export_all(&config)?;
     FixMarkList::export_all(&config)?;
