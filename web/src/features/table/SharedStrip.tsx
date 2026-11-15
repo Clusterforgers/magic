@@ -116,7 +116,7 @@ export function SharedStrip({
               className={cn(
                 mine
                   ? // A prompt that lays out cards takes a line of its own under the stack, the whole width of the sheet.
-                    'min-w-0 flex-1 basis-80 has-[[data-slot=card-choices]]:basis-full has-[[data-slot=opening-hand]]:basis-full'
+                    'min-w-0 flex-1 basis-80 has-[[data-slot=card-choices]]:basis-full has-[[data-slot=opening-hand]]:basis-full has-[[data-slot=mode-choice]]:basis-full'
                   : 'flex max-w-full shrink-0 items-center max-sm:min-w-0 max-sm:shrink max-sm:grow max-sm:basis-0 [&_p]:max-w-full [&_p]:truncate',
               )}
             >
