@@ -252,6 +252,10 @@ export interface FixtureGameOptions extends FixtureOptions {
   rules?: true
   /** A fight against a boss: the last seats are the boss and this many minions, a team against the others. */
   boss?: number
+  /** The viewer is a fallen hero's Spirit with no permanents, hand or commander (`withSpirit`), in a boss fight. */
+  spirit?: true
+  /** No seat has a permanent (`withBareBoards`): the start of a fight. */
+  bare?: true
   /** A permanent for every state a card shows joins the table (`dev/states.ts`), on a table with fewer permanents. */
   states?: true
   /** The attachments scene joins the table (`dev/equip.ts`). */
@@ -334,6 +338,56 @@ export function withBoss(moment: Fixture, minions: number): Fixture {
   const house_rules = { ...moment.view.house_rules, teams: { mode: 'teams' as const, seats } }
   const objects = [...moment.view.objects, ...emblems]
   return { ...moment, view: { ...moment.view, players, objects, house_rules } }
+}
+
+/** A table at the start of a fight: no seat has a permanent and nothing is attacking. */
+export function withBareBoards(moment: Fixture): Fixture {
+  const gone = new Set(
+    moment.view.objects.filter((object) => object.zone === 'Battlefield').map((object) => object.id),
+  )
+  return {
+    ...moment,
+    view: {
+      ...moment.view,
+      objects: moment.view.objects.filter((object) => !gone.has(object.id)),
+      battlefield: { count: 0, cards: [] },
+      combat: { attackers: [], attackers_declared: false, blockers_declared: [] },
+    },
+  }
+}
+
+/**
+ * The viewer as a fallen hero's Spirit: 0 life, no permanents, no hand and no commander, so the table has nothing of
+ * the viewer's to draw but its pod.
+ */
+export function withSpirit(moment: Fixture): Fixture {
+  const viewer = moment.view.viewer
+  const mine = (object: ObjectView): boolean =>
+    object.owner === viewer &&
+    (object.zone === 'Battlefield' || (typeof object.zone === 'object' && 'Hand' in object.zone))
+  const gone = new Set(moment.view.objects.filter(mine).map((object) => object.id))
+  const players = moment.view.players.map((player) =>
+    player.seat === viewer
+      ? {
+          ...player,
+          life: 0,
+          spirit: true,
+          hand: { count: 0, cards: [] },
+          command: { count: 0, cards: [] },
+          commanders: [],
+        }
+      : player,
+  )
+  const left = (moment.view.battlefield.cards ?? []).filter((id) => !gone.has(id))
+  return {
+    ...moment,
+    view: {
+      ...moment.view,
+      players,
+      objects: moment.view.objects.filter((object) => !gone.has(object.id)),
+      battlefield: { count: left.length, cards: left },
+    },
+  }
 }
 
 /**
@@ -421,7 +475,9 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
       : prompt === undefined && table === undefined
         ? withBossAttack(withBoss(teamed, options.boss))
         : withBoss(teamed, options.boss)
-  const fixture = options.turn === 'left' ? withActiveLeft(bossed) : bossed
+  const spirited = options.spirit === true && options.boss !== undefined ? withSpirit(bossed) : bossed
+  const bared = options.bare === true ? withBareBoards(spirited) : spirited
+  const fixture = options.turn === 'left' ? withActiveLeft(bared) : bared
   const shown = prompt !== undefined ? prompt(fixture) : options.holding === true ? undefined : null
   store.setState(fixtureState(fixture, shown))
   if (options.result !== undefined) {

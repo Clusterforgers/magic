@@ -45,6 +45,7 @@ import { StopControlsProvider } from './stops/stopControls'
 import { SidePanelMount, SideSheet, SideTabs } from './SideTabs'
 import { TableGrid } from './TableGrid'
 import { useBoardSplit } from './useBoardSplit'
+import { handIdle } from './handIdle'
 import { useTheirHead } from './useTheirHead'
 import { foldsLands, sheetReserve } from './boardSplit'
 import { AttackLinesContext, FOLD_LANDS_BY_DEFAULT, TableOptionsContext } from './tableOptions'
@@ -91,6 +92,8 @@ const Table = memo(function Table() {
   const lowered = usePlay(promptInStrip)
   // The hand of the player the viewer controls this turn, else the viewer's own (CR 722).
   const handFrom = usePlay((state) => handSeat(state, viewer))
+  // A hand dock with nothing in it is a slim bar in boss mode (`HAND_SLIM_PX`).
+  const handEmpty = usePlay((state) => handIdle(state, handFrom))
   const [mode, setMode] = useState<TableMode | undefined>(options.mode)
   const sideFolded = useSideFolded()
   const [chosen, setChosen] = useState<PlayerId | null>(options.focus ?? null)
@@ -101,8 +104,18 @@ const Table = memo(function Table() {
   const sides = useMemo(() => parseBossSides(sidesKey), [sidesKey])
   const table = useMemo(
     () =>
-      planTable({ viewport, seatCount, viewer, mode, focus: chosen ?? followed, active, sides, sideFolded }),
-    [viewport, seatCount, viewer, mode, chosen, followed, active, sides, sideFolded],
+      planTable({
+        viewport,
+        seatCount,
+        viewer,
+        mode,
+        focus: chosen ?? followed,
+        active,
+        sides,
+        sideFolded,
+        handSlim: handEmpty,
+      }),
+    [viewport, seatCount, viewer, mode, chosen, followed, active, sides, sideFolded, handEmpty],
   )
   const { seats: plan } = table
   // In boss mode the boss's side is above and the party below, so attacks at players are lines too, strong for the party.
@@ -123,7 +136,8 @@ const Table = memo(function Table() {
   const folding = options.foldLands ?? FOLD_LANDS_BY_DEFAULT
   const fx = useTableFx(options.effects ?? EFFECTS_BY_DEFAULT, options.effectsSlow)
   const moments = useTableMoments(options.effects ?? EFFECTS_BY_DEFAULT)
-  const choice = useChoiceOverlayHost(regions.phone, viewport)
+  // In boss mode the opening-hand decision floats in the overlay, so the dock keeps its size then.
+  const choice = useChoiceOverlayHost(regions.phone, viewport, plan.shape === 'boss')
 
   return (
     <AttackLinesContext value={party}>
@@ -168,6 +182,7 @@ const Table = memo(function Table() {
                                       plan={plan}
                                       size={size}
                                       pod={table.opponentPod}
+                                      card={regions.party?.bossCard}
                                       onFocusSeat={setChosen}
                                     />
                                   ) : (
@@ -194,7 +209,8 @@ const Table = memo(function Table() {
                                       plan={plan}
                                       size={size}
                                       pod={table.pod}
-                                      band={alliesBandPx(regions, plan.allies.length)}
+                                      band={regions.party?.band ?? alliesBandPx(regions, plan.allies.length)}
+                                      shares={regions.party?.shares}
                                       phone={regions.phone}
                                     />
                                   ) : (
@@ -211,7 +227,7 @@ const Table = memo(function Table() {
                                   <HandDock
                                     seat={handFrom}
                                     growMost={handGrowMost(regions)}
-                                    openingMost={openingGrowMost(regions)}
+                                    openingMost={plan.shape === 'boss' ? 0 : openingGrowMost(regions)}
                                   />
                                 }
                                 controls={

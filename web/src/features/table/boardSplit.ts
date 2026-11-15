@@ -14,6 +14,9 @@ import {
 import type { Regions, SeatPlan } from './layout'
 import type { PlayState } from '@/play/store'
 import type { PlayerId } from '@/protocol/generated'
+import { bossSplitOf } from './bossRows'
+import { handIdle } from './handIdle'
+import { handSeat } from './selectors'
 import { battlefieldStacks } from './rowStacks'
 import type { StackIds } from './rowStacks'
 
@@ -21,6 +24,10 @@ import type { StackIds } from './rowStacks'
 export interface BoardCounts {
   own: LaneCounts
   theirs: readonly LaneCounts[]
+  /** Boss mode: the other heroes' boards, in the party's order; the boards of the boss's side are `theirs`. */
+  allies?: readonly LaneCounts[]
+  /** Boss mode: your hand has a card to play, so an empty board of yours keeps room (`handIdle`). */
+  ownReady?: boolean
 }
 
 /** The closed stacks of a seat's lanes, one box each, as the board draws them before any stack opens. */
@@ -43,9 +50,15 @@ export function seatCounts(state: PlayState, seat: PlayerId, grouped = true): La
 
 /** The counts of the viewer's board and of every opponent's board of a plan. */
 export function boardCounts(state: PlayState, seats: SeatPlan, grouped = true): BoardCounts {
-  return {
+  const counts: BoardCounts = {
     own: seatCounts(state, seats.viewer, grouped),
     theirs: seats.boards.map((seat) => seatCounts(state, seat, grouped)),
+  }
+  if (seats.shape !== 'boss') return counts
+  return {
+    ...counts,
+    allies: seats.allies.map((seat) => seatCounts(state, seat, grouped)),
+    ownReady: !handIdle(state, handSeat(state, seats.viewer)),
   }
 }
 
@@ -102,6 +115,24 @@ export function splitRegions(
   head = 0,
   overhang = reserve,
 ): Regions {
+  // Boss mode splits three rows by what each shows (`splitBoss`); a phone's tiles and a board-less call use the two rows.
+  if (seats.shape === 'boss' && !regions.phone && seats.tiles.length === 0 && counts.allies !== undefined) {
+    const { split, shares, chrome } = bossSplitOf(
+      regions,
+      seats,
+      { own: counts.own, theirs: counts.theirs, allies: counts.allies, ownReady: counts.ownReady ?? true },
+      finite(reserve),
+      finite(overhang),
+    )
+    const party = { band: split.band, bossCard: split.bossCard, heroCard: split.heroCard, shares }
+    const rows = {
+      opponents: split.opponents,
+      own: split.own,
+      ownCard: split.heroCard,
+      theirCard: split.bossCard,
+    }
+    return { ...withSplit(regions, rows, chrome + BOARD_KEEP_PX), party }
+  }
   const frames = boardFrames(regions, seats)
   const theirChrome = theirChromeOf(frames.theirs.chrome, head)
   const split = splitBoards({

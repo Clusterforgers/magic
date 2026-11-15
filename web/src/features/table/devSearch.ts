@@ -77,6 +77,10 @@ export interface DevSearch {
   rules?: true
   /** A fight against a boss: the last seats are the boss and this many minions (0 to 2), a team against the rest. */
   boss?: number
+  /** `1` with `boss` makes the viewer a fallen hero's Spirit with no permanents, no hand and no commander (`withSpirit`). */
+  spirit?: true
+  /** `1` leaves every battlefield empty (`withBareBoards`), as at the start of a fight, for the opening hands. */
+  bare?: true
   /** `1` gives the viewer and the rivals a permanent for every state a card shows (`dev/states.ts`), to look at them all at once. */
   states?: true
   /** `1` adds the attachments scene (`dev/equip.ts`): five attachments on one creature, an opponent's Aura on yours, yours on theirs, a Curse and an unattached Equipment. */
@@ -136,7 +140,7 @@ const whole = (value: unknown): number | undefined =>
 
 const isDevFx = (value: unknown): value is DevFx => DEV_FX.some((name) => name === value)
 
-/** Reads `?seats=&boss=&board=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&newturn=&bar=&slow=&preview=&stops=&fc=&rules=&states=&cards=&menu=&teams=&result=&permanents=`, ignoring whatever does not make sense. The router has already parsed numbers. */
+/** Reads `?seats=&boss=&board=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&newturn=&bar=&slow=&preview=&stops=&fc=&rules=&spirit=&bare=&states=&cards=&menu=&teams=&result=&permanents=`, ignoring whatever does not make sense. The router has already parsed numbers. */
 export function parseDevSearch(search: Record<string, unknown>): DevSearch {
   const seats = whole(search.seats)
   const focus = whole(search.focus)
@@ -189,6 +193,8 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     result: DEV_RESULTS.find((result) => result === search.result),
     boss: boss === undefined || boss > 2 ? undefined : boss,
     rules: search.rules === true || search.rules === 1 || search.rules === '1' ? true : undefined,
+    spirit: search.spirit === true || search.spirit === 1 || search.spirit === '1' ? true : undefined,
+    bare: search.bare === true || search.bare === 1 || search.bare === '1' ? true : undefined,
     states: search.states === true || search.states === 1 || search.states === '1' ? true : undefined,
     moments: search.moments === true || search.moments === 1 || search.moments === '1' ? true : undefined,
     reveal: search.reveal === true || search.reveal === 1 || search.reveal === '1' ? true : undefined,
