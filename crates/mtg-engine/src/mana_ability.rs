@@ -764,6 +764,8 @@ mod combos;
 #[cfg(test)]
 mod counted;
 #[cfg(test)]
+mod life_price;
+#[cfg(test)]
 mod r6e;
 #[cfg(test)]
 mod replaced;
