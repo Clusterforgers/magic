@@ -205,3 +205,43 @@ describe('an attachment in the log', () => {
     expect(lines([onPlayer, away])).toEqual(['Card 7 moves from Card 1 to Bo', 'Card 7 becomes unattached'])
   })
 })
+
+describe('the damage triggers of a creature and its token copies', () => {
+  const ref = (id: number) => ({ id, counter: 0 })
+  const made = (object: number): EventView =>
+    pub({ TokenCreated: { object, controller: 0, name: 'Card 90', tapped: true, copy_of: ref(90) } })
+  const triggered = (source: number, hurt: PlayerId): EventView =>
+    pub({
+      AbilityTriggered: {
+        source: ref(source),
+        ability: 2,
+        controller: 0,
+        cause: {
+          subjects: [{ Player: hurt }],
+          snapshots: [],
+          amount: 4,
+          source: ref(source),
+        },
+        snapshot: {
+          id: source,
+          counter: 0,
+          controller: 0,
+          owner: 0,
+          zone: 'Battlefield',
+          characteristics: { types: 4, colors: 0, power: 4, toughness: 4, abilities: [] },
+          counters: [],
+          attachments: [],
+        },
+      },
+    })
+
+  it('names which one triggered, the copies as copies, and whom its damage hurt', () => {
+    const log = logOf([made(410), made(411), triggered(90, 1), triggered(410, 2), triggered(411, 2)])
+    const lines = foldLog(log, names, { seats: seatsOf(4) }).map((line) => line.text)
+    expect(lines.slice(2)).toEqual([
+      'An ability of Card 90 triggers on 4 damage to Bo',
+      'An ability of Card 410 (token copy) triggers on 4 damage to Cy',
+      'An ability of Card 411 (token copy) triggers on 4 damage to Cy',
+    ])
+  })
+})
