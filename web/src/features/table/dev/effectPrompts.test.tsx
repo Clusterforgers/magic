@@ -1,4 +1,4 @@
-/** Goal: `?prompt=targets|targets-two|targets-trigger|order|yesno|option|option-players|mode|mode-two|mode-trigger` and those on a clock hand the viewer, at every seat count, a decision the wire parser accepts and whose players and cards are on the table, a spell that can be taken back and a triggered ability that cannot, and each can be drawn and answered on the dev table, which clears it. */
+/** Goal: `?prompt=targets|targets-two|targets-trigger|targets-many|order|yesno|option|option-players|mode|mode-two|mode-trigger` and those on a clock hand the viewer, at every seat count, a decision the wire parser accepts and whose players and cards are on the table, a spell that can be taken back and a triggered ability that cannot, and each can be drawn and answered on the dev table, which clears it. */
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
@@ -9,7 +9,14 @@ import { parseMessage } from '@/net/parse'
 import { must } from '@/test-utils/batches'
 import { fixtureGame } from './devGame'
 
-const TARGETS = ['targets', 'targets-two', 'targets-trigger', 'targets-clock'] as const
+const TARGETS = [
+  'targets',
+  'targets-two',
+  'targets-trigger',
+  'targets-clock',
+  'targets-many',
+  'targets-many-clock',
+] as const
 const ORDERS = ['order', 'order-clock'] as const
 
 describe.each(TARGETS)('?prompt=%s', (prompt) => {
@@ -135,6 +142,16 @@ describe('the target decisions', () => {
         : undefined
     expect(options(spell?.decision.kind)?.can_cancel).toBe(true)
     expect(options(trigger?.decision.kind)).toMatchObject({ can_cancel: false, triggered: true })
+  })
+
+  it('offer an "any target" list of more than twelve creatures and every player at four seats', () => {
+    const { pending } = fixtureGame({ seats: 4, prompt: 'targets-many' }).session.store.getState()
+    const kind = must(pending).decision.kind
+    if (!('ChooseTargets' in kind)) throw new Error('not a target decision')
+    const objects = kind.ChooseTargets.legal.filter((target) => 'Object' in target)
+    const players = kind.ChooseTargets.legal.filter((target) => 'Player' in target)
+    expect(objects.length).toBeGreaterThan(12)
+    expect(players).toHaveLength(4)
   })
 
   it('run on a response clock when asked to', () => {

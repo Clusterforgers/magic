@@ -123,7 +123,7 @@ const Table = memo(function Table() {
   const folding = options.foldLands ?? FOLD_LANDS_BY_DEFAULT
   const fx = useTableFx(options.effects ?? EFFECTS_BY_DEFAULT, options.effectsSlow)
   const moments = useTableMoments(options.effects ?? EFFECTS_BY_DEFAULT)
-  const choice = useChoiceOverlayHost(regions.phone)
+  const choice = useChoiceOverlayHost(regions.phone, viewport)
 
   return (
     <AttackLinesContext value={party}>

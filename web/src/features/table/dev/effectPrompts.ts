@@ -1,4 +1,4 @@
-/** The decisions of spells and abilities the dev table can show: `?prompt=targets`, `targets-two`, `targets-trigger`, `order`, `yesno`, `option`, `option-players`, `mode`, `mode-two`, `mode-trigger`, `cards`, `cards-graveyard`, `cards-exile`, `targets-zones`, `cards-battlefield`, `cards-many`, `order-cards` and their clocks. */
+/** The decisions of spells and abilities the dev table can show: `?prompt=targets`, `targets-two`, `targets-trigger`, `order`, `yesno`, `option`, `option-players`, `mode`, `mode-two`, `mode-trigger`, `cards`, `cards-graveyard`, `cards-exile`, `targets-zones`, `targets-many`, `cards-battlefield`, `cards-many`, `order-cards` and their clocks. */
 import type { PendingDecision } from '@/play/store'
 import type {
   ChoiceOption,
@@ -53,6 +53,33 @@ const targets: DevPrompt = ({ view }) => {
           max: 1,
           can_cancel: true,
           wording: 'target creature or player an opponent controls',
+        },
+      },
+    },
+  }
+}
+
+/** An "any target" trigger among up to sixteen creatures of every seat and every player: a long list of targets. */
+const targetsMany: DevPrompt = ({ view }) => {
+  const creatures = view.players.flatMap((player) => creaturesOf(view, player.seat).slice(0, 4)).slice(0, 16)
+  const [source] = creaturesOf(view, view.viewer)
+  return {
+    id: 1,
+    decision: {
+      player: view.viewer,
+      kind: {
+        ChooseTargets: {
+          source: source?.id ?? 0,
+          spec: 0,
+          legal: [
+            ...view.players.map((player): Target => ({ Player: player.seat })),
+            ...creatures.map((o) => object(o.id)),
+          ],
+          min: 1,
+          max: 1,
+          can_cancel: false,
+          wording: 'any target',
+          triggered: true,
         },
       },
     },
@@ -422,6 +449,8 @@ export const EFFECT_PROMPTS: Record<string, DevPrompt> = {
   'cards-graveyard': cardsGraveyard,
   'cards-exile': cardsExile,
   'targets-zones': targetsZones,
+  'targets-many': targetsMany,
+  'targets-many-clock': (fixture) => ({ ...targetsMany(fixture), deadlineMs: 10_000 }),
   'cards-battlefield': cardsBattlefield,
   'cards-battlefield-clock': (fixture) => ({ ...cardsBattlefield(fixture), deadlineMs: 10_000 }),
   'cards-many': cardsMany,

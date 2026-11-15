@@ -1,13 +1,19 @@
 import { useContext, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { CSSProperties, FocusEvent, KeyboardEvent, ReactNode, Ref } from 'react'
-import type { ObjectId, ObjectView } from '@/protocol/generated'
+import type { ObjectId, ObjectView, PlayerId } from '@/protocol/generated'
+import { useSeatNamer } from '../names'
+import { SEAT_LIFE, SeatDot, seatHueStyle } from '../PodParts'
+import { useEdgeFade } from '../useEdgeFade'
 import { rovingTarget } from '../useRoving'
 import { CardSearchField } from './CardSearchField'
 import { FILTER_FROM, matchesFilter } from './cardsText'
 import { ChoiceAnchorContext } from './choiceAnchor'
-import { useChoiceOverlay } from './choiceOverlay'
+import { useChoiceOverlay, useOverlayRoom } from './choiceOverlay'
+import { groupByController, overlayLayout, SCROLLBAR_PX } from './overlayLayout'
+import type { CardGroup } from './overlayLayout'
 import { PromptContext } from './PromptContext'
 import { numberKey } from './choiceText'
 import { useOracleTexts } from './oracleWords'
@@ -17,8 +23,32 @@ import type { PromptCardSize } from './PromptCard'
 import { useRestingPreview } from './restingPreview'
 import { usePromptKeys } from './usePromptKeys'
 
-/** The room a card of the overlay is sized by (`PROMPT_CARD_BOX`): whole cards about 88 px wide, lower on a low window. */
-const OVERLAY_ROOM = '9.75rem'
+/** What the search box and the players' row take of the panel, in px, for the layout to leave room for. */
+const SEARCH_PX = 44
+const LEAD_PX = 52
+
+/** How many of the whole list's cards `seat` controls; null where the list is not grouped. */
+function wholeSize(whole: readonly CardGroup[], seat: PlayerId | null): number | undefined {
+  return whole.find((group) => group.seat === seat)?.cards.length
+}
+
+/** A seat's name in its colour over the run of cards it controls. Decoration: each card's label names its controller. */
+function GroupLabel({ seat }: { seat: PlayerId }) {
+  const seatName = useSeatNamer()
+  const me = usePlay((state) => state.seat)
+  return (
+    <div
+      aria-hidden="true"
+      data-slot="card-group-label"
+      data-seat={seat}
+      style={seatHueStyle(seat)}
+      className={cn('mb-2 flex items-center gap-1.5 text-xs font-medium', SEAT_LIFE)}
+    >
+      <SeatDot seat={seat} />
+      <span className="truncate">{seat === me ? `${seatName(seat)} (you)` : seatName(seat)}</span>
+    </div>
+  )
+}
 
 /** Props of `CardChoices`. */
 export interface CardChoicesProps {
@@ -105,11 +135,37 @@ export function CardChoices({
         : cards,
     [filtering, cards, objects, filter, rules],
   )
+  // In the overlay the cards stand in runs by the seat that controls them, so that order is the one keys and Tab follow.
+  const room = useOverlayRoom()
+  const groups = useMemo(
+    () =>
+      host === null ? [{ seat: null, cards: [...visible] }] : groupByController(visible, cards, objects),
+    [host, visible, cards, objects],
+  )
+  const shown = useMemo(() => groups.flatMap((group) => group.cards), [groups])
+  // The panel is laid out for the whole list, so it keeps its size while a search narrows the cards in it.
+  const whole = useMemo(
+    () => (host === null ? [] : groupByController(cards, cards, objects)),
+    [host, cards, objects],
+  )
+  const layout = useMemo(
+    () =>
+      host === null
+        ? null
+        : overlayLayout(
+            room,
+            whole.map((group) => group.cards.length),
+            (filtering ? SEARCH_PX : 0) + (lead === undefined || lead === null ? 0 : LEAD_PX),
+          ),
+    [host, room, whole, filtering, lead],
+  )
   const hiddenChosen = chosen.filter((id) => !visible.includes(id)).length
   // Tab reaches one card of the list (the last one focused, else the first); the arrow keys move along it.
   const [last, setLast] = useState<ObjectId | null>(null)
-  const current = last !== null && visible.includes(last) ? last : (visible[0] ?? null)
+  const current = last !== null && shown.includes(last) ? last : (shown[0] ?? null)
   const root = useRef<HTMLDivElement>(null)
+  const row = useRef<HTMLDivElement>(null)
+  useEdgeFade(row)
   const { restore } = useRestingPreview(chosen, root)
 
   const onFocus = (event: FocusEvent<HTMLElement>): void => {
@@ -131,15 +187,32 @@ export function CardChoices({
   }
   usePromptKeys(
     keys
-      ? Object.fromEntries(
-          visible.slice(0, 10).map((id, place) => [numberKey(place) ?? '', () => onPress(id)]),
-        )
+      ? Object.fromEntries(shown.slice(0, 10).map((id, place) => [numberKey(place) ?? '', () => onPress(id)]))
       : {},
     keys,
   )
 
-  // The overlay has the room for whole cards, about 88 px wide (`OVERLAY_ROOM`); the strip draws a long list compact.
+  // The strip draws a long list compact; the overlay draws whole cards at the width its layout picked.
   const size: PromptCardSize = host === null ? tileSizeFor(total) : 'normal'
+  const card = (id: ObjectId, place: number) => {
+    const key = keys ? numberKey(place) : undefined
+    return (
+      <PromptCard
+        key={id}
+        ref={place === 0 ? focusFirst : undefined}
+        id={id}
+        label={labels.get(id) ?? 'A card'}
+        size={size}
+        overlay={host !== null}
+        chosen={chosen.includes(id)}
+        closed={(closed || shut?.has(id) === true) && !chosen.includes(id)}
+        tabbable={id === current}
+        hotkey={key}
+        onPress={onPress}
+      />
+    )
+  }
+  let place = 0
   const body = (
     <ChoiceAnchorContext value={root}>
       {filtering ? (
@@ -151,7 +224,7 @@ export function CardChoices({
           hiddenChosen={hiddenChosen}
           onLeave={() => root.current?.querySelector<HTMLElement>('button[data-candidate]')?.focus()}
           focusOnOpen={search}
-          className="min-w-48 flex-1 basis-48"
+          className={host === null ? 'min-w-48 flex-1 basis-48' : 'shrink-0'}
         />
       ) : null}
       <div
@@ -171,40 +244,58 @@ export function CardChoices({
             ? ({
                 '--choice-room': `max(6rem, calc(var(--sheet-max, 20rem) - ${rest ?? (filtering ? 14.5 : 10.5)}rem))`,
               } as CSSProperties)
-            : ({ '--choice-room': OVERLAY_ROOM } as CSSProperties)
+            : undefined
         }
-        className="flex max-w-full min-w-0 basis-full flex-col gap-2"
+        className={
+          host === null
+            ? 'flex max-w-full min-w-0 basis-full flex-col gap-2'
+            : 'flex max-h-full min-h-0 min-w-0 flex-col gap-2'
+        }
       >
         {lead}
         {/*
           In the sheet, which is at most `--sheet-max` high, what the stack, the sentence, the buttons and the clock
           leave is the row's (`--choice-room`): its cards stand whole in one row as high as that room, and more cards
-          than the width holds scroll sideways over a thin bar, never a row cut in half. In the overlay they wrap.
+          than the width holds scroll sideways over a thin bar, never a row cut in half. In the overlay the cards stand
+          in a grid of the columns and width the layout picked, a run per seat where several control cards, and the
+          grid alone scrolls when it must, under the search box and the players.
         */}
         <div
+          ref={row}
           data-slot="card-row"
+          data-columns={layout?.columns}
+          data-card-width={layout?.card}
+          data-scrolls={layout?.scrolls || undefined}
+          style={
+            layout === null
+              ? undefined
+              : ({
+                  '--overlay-card-w': `${layout.card}px`,
+                  width: layout.width + 12 + SCROLLBAR_PX,
+                } as CSSProperties)
+          }
           className={cn(
-            'flex max-w-full items-start justify-center-safe gap-2 p-1.5',
-            host === null
-              ? 'overflow-x-auto overflow-y-hidden [scrollbar-width:thin]'
-              : 'flex-wrap content-start',
+            'gap-2 p-1.5',
+            layout === null
+              ? 'flex max-w-full items-start justify-center-safe overflow-x-auto overflow-y-hidden [scrollbar-width:thin]'
+              : 'fade-scroll flex min-h-0 max-w-full flex-wrap content-start justify-center gap-x-4 gap-y-4',
           )}
         >
-          {visible.map((id, place) => {
-            const key = keys ? numberKey(place) : undefined
+          {groups.map((group) => {
+            const cards = group.cards.map((id) => card(id, place++))
+            if (layout === null) return cards
+            // A block keeps the columns the whole list gave it, so a search that thins it does not move the rest.
+            const columns = Math.min(layout.columns, wholeSize(whole, group.seat) ?? group.cards.length)
             return (
-              <PromptCard
-                key={id}
-                ref={place === 0 ? focusFirst : undefined}
-                id={id}
-                label={labels.get(id) ?? 'A card'}
-                size={size}
-                chosen={chosen.includes(id)}
-                closed={(closed || shut?.has(id) === true) && !chosen.includes(id)}
-                tabbable={id === current}
-                hotkey={key}
-                onPress={onPress}
-              />
+              <div key={group.seat ?? 'all'} data-slot="card-group" data-seat={group.seat ?? undefined}>
+                {group.seat === null ? null : <GroupLabel seat={group.seat} />}
+                <div
+                  className="grid gap-2"
+                  style={{ gridTemplateColumns: `repeat(${columns}, ${layout.card}px)` }}
+                >
+                  {cards}
+                </div>
+              </div>
             )
           })}
           {visible.length === 0 && total > 0 ? (
@@ -222,7 +313,10 @@ export function CardChoices({
     <div
       data-slot="choice-overlay"
       data-decision={name}
-      className="plaque fade-scroll flex h-full flex-col items-center justify-center-safe gap-2 overflow-y-auto rounded-xl border-2 border-brass p-3 shadow-e3"
+      className={cn(
+        'plaque flex min-h-0 w-fit min-w-[min(100%,22rem)] flex-col gap-2 rounded-xl border-2 border-brass p-3 shadow-e3',
+        room.phone ? 'max-h-full max-w-full' : 'max-h-[80%] max-w-[80%]',
+      )}
     >
       {body}
     </div>,
