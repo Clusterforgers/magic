@@ -42,6 +42,7 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Condition> {
         .or_else(|| r.attempt(super::w21a_atoms::w21a_condition))
         .or_else(|| r.attempt(super::c4_hands::read))
         .or_else(|| r.attempt(super::r5522_facts::r5522_read))
+        .or_else(|| r.attempt(super::r6402_dice_facts::r6402_read))
 }
 
 /// What `died_under_you` reads, written back.

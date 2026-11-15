@@ -1007,9 +1007,29 @@ player: PlayerId,
  */
 sides: number, 
 /**
- * The number rolled, from 1 to `sides`.
+ * The result: the number rolled, from 1 to `sides`, or that number changed (CR 706.2).
  */
-result: number, } } | { "AttractionDeckShuffled": { 
+result: number, 
+/**
+ * The natural result, the number the die showed, when an effect changed it into `result` (CR 706.2).
+ */
+natural?: number, } } | { "R6402DieChanged": { 
+/**
+ * Who rolled.
+ */
+player: PlayerId, 
+/**
+ * The permanent whose rule changed the result.
+ */
+source: ObjectRef, 
+/**
+ * The result before the change.
+ */
+from: number, 
+/**
+ * The result after it.
+ */
+to: number, } } | { "AttractionDeckShuffled": { 
 /**
  * Whose deck.
  */

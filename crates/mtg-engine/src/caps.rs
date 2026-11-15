@@ -522,6 +522,7 @@ const RUNS: &[&str] = &[
     "Rule.PowerUpAgain",
     "Limit.PowerUp",
     "Rule.FlipTwoCoins",
+    "Rule.R6402ChangeRoll",
     "Rule.ExtraDie",
     "Rule.ExtraPlanarDie",
     "Rule.PlaneswalkLookTwo",

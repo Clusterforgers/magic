@@ -62,6 +62,7 @@ mod tests {
             player: PlayerId(seat),
             sides,
             result,
+            natural: None,
         };
         apply_event(game, &event).unwrap();
     }

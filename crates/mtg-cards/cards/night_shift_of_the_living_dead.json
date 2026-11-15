@@ -1,16 +1,17 @@
 {
   "oracle_id": "d758fd82-7ccb-441d-a948-0abaf0311892",
   "name": "Night Shift of the Living Dead",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Night Shift of the Living Dead",
       "oracle_fingerprint": "666e3cc19ef5231118ca8aee8be82500",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 119 }
+          "Rule": {
+            "rule": {
+              "R6402ChangeRoll": { "who": "You", "pay": { "Life": 1 }, "by": 1, "once": true }
+            }
           }
         },
         {

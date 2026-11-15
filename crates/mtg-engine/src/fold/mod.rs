@@ -560,10 +560,14 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             source,
             tapped: true,
         } => crate::r6401_history::r6401_note_tapped_for_mana(state, *player, source.id),
+        Event::R6402DieChanged { source, .. } => {
+            state.tally_object(*source, None, Tally::R6402Changed);
+        }
         Event::DieRolled { player, result, .. } => {
             crate::r6401_history::r6401_note_roll(state, *result);
             c11e_draw_random(state, event);
             state.tally(*player, Tally::R5508DiceRolled);
+            state.tally(*player, Tally::R6402Rolled(*result));
         }
         Event::PriorityGranted { player } => {
             state.priority = Some(PriorityState {

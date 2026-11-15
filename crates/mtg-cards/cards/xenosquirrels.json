@@ -1,7 +1,7 @@
 {
   "oracle_id": "d5c54df9-437e-46e1-94cf-91d9f1d343b6",
   "name": "Xenosquirrels",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Xenosquirrels",
@@ -14,9 +14,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 52, "end": 173 }
+          "Rule": {
+            "rule": {
+              "R6402ChangeRoll": { "who": "You", "pay": { "RemoveCounter": "+1/+1" }, "by": 1 }
+            }
           }
         }
       ]

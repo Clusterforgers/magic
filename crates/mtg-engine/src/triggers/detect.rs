@@ -276,12 +276,14 @@ enum Happened {
     CoinFlipWon { player: PlayerId },
     /// A player won a clash.
     W15cClashWon { player: PlayerId },
-    /// A player rolled a die: `first` for the first die of a roll, `highest` when it rolled its number of faces, and the result.
+    /// A player rolled a die: `first` for the first die of a roll, `highest` when its natural result is its number of
+    /// faces (CR 706.2), the result and the natural result.
     DiceRolled {
         player: PlayerId,
         first: bool,
         highest: bool,
         result: u32,
+        natural: u32,
         nth: u32,
     },
     /// A creature explored.
@@ -1374,11 +1376,13 @@ fn about_players_and_permanents(
             player,
             sides,
             result,
+            natural,
         } => found.push(Happened::DiceRolled {
             player: *player,
             first: c11e_first_die(look.earlier, *player),
-            highest: result == sides,
+            highest: natural.unwrap_or(*result) == *sides,
             result: *result,
+            natural: natural.unwrap_or(*result),
             nth: ordinal(look.post, look.later, *player, Tally::R5508DiceRolled),
         }),
         Event::Clashed {
@@ -1817,10 +1821,24 @@ fn matching_player_action(
             && (!*fully || *last))
             .then(|| counted(state, vec![Target::Player(*player)], 0)),
         (
-            TriggerPattern::DiceRolled { who, results, .. },
-            Happened::DiceRolled { player, result, .. },
-        ) if !results.is_empty() => (by(who, player) && results.contains(result))
-            .then(|| counted(state, vec![Target::Player(*player)], *result)),
+            TriggerPattern::DiceRolled {
+                who,
+                results,
+                natural: natural_only,
+                ..
+            },
+            Happened::DiceRolled {
+                player,
+                result,
+                natural,
+                ..
+            },
+        ) if !results.is_empty() => {
+            // "a natural 20" reads the number the die showed, any other result the changed one (CR 706.2).
+            let read = if *natural_only { natural } else { result };
+            (by(who, player) && results.contains(read))
+                .then(|| counted(state, vec![Target::Player(*player)], *read))
+        }
         (
             TriggerPattern::DiceRolled {
                 who, highest, each, ..

@@ -92,6 +92,7 @@ Seat rules for Delves fights (`docs/delves.md`), each set up in `PlayerSetup`:
 
 ## Determinism and recovery
 
+- A die's result is the number it showed, changed by any `Rule::R6402ChangeRoll` the roller uses as `Effect::RollDice` resolves (CR 706.2): each such rule asks in timestamp order, its cost and `R6402DieChanged` are logged, and `DieRolled` carries the result with the `natural` number beside it; triggers read the result, "natural" and "highest natural" read the natural number, and `TurnTally::R6402Rolled` counts the results of the turn. The turn-based roll to visit Attractions offers no change.
 - Random choices use a ChaCha8 substream keyed by (seed, counter in state). Events carry the results (a shuffle logs its whole order, a roll its result), so replay needs no RNG. A fold that draws a substream moves the counter on.
 - A coin flip (CR 705) asks the flipper to call (`ChooseOption` of `ChoiceOption::Side`, heads first, which the clock answers); `CoinFlipped` logs the call, the side and `won`.
 - A half-finished cast lives outside the state; a rebuilt engine asks for priority again. Backing out (`Answer::Undo` or a kind's `Cancel`, wherever `can_cancel`) drops it with no event: the card never left its zone and no source was tapped. With `Answer::Undo`, mana abilities the caster activated at priority just before beginning it are undone too ([Take-backs](#take-backs)).

@@ -278,7 +278,7 @@ fn moved(from: Zone) -> Event {
 #[case::a_card_out_of_another_hand(moved(Zone::Hand(OTHER)), Some(TakeBackRefusal::CardRevealed))]
 #[case::a_card_out_of_the_own_hand(moved(Zone::Hand(SEAT)), None)]
 #[case::a_shuffle(Event::LibraryShuffled { player: SEAT, order: Vec::new() }, Some(TakeBackRefusal::LibraryShuffled))]
-#[case::a_die(Event::DieRolled { player: SEAT, sides: 6, result: 3 }, Some(TakeBackRefusal::Random))]
+#[case::a_die(Event::DieRolled { player: SEAT, sides: 6, result: 3, natural: None }, Some(TakeBackRefusal::Random))]
 #[case::a_random_pick(Event::ChosenAtRandom { cards: Vec::new() }, Some(TakeBackRefusal::Random))]
 #[case::a_new_step(Event::StepBegan { step: Step::End }, Some(TakeBackRefusal::MovedOn))]
 #[case::a_pass(Event::PriorityPassed { player: OTHER }, None)]

@@ -628,6 +628,7 @@ Echoes of the Kin Tree
 Edgar, Master Machinist
 Edge Rover
 Eel Umbra
+Eelectrocute
 Eiganjo Dynastorian // Replenish
 Eiganjo Free-Riders
 Eivor, Battle-Ready
@@ -1421,6 +1422,7 @@ Nicanzil, Current Conductor
 Nick Valentine, Private Eye
 Night Clubber
 Night Market Guard
+Night Shift of the Living Dead
 Nighthawk Scavenger
 Nightmare
 Nightscape Familiar
@@ -2424,6 +2426,7 @@ Writ of Return
 Wurmwall Sweeper
 Wyll, Blade of Frontiers
 Wyrm's Crossing Patrol
+Xenosquirrels
 Yasharn, Implacable Earth
 Yidaro, Wandering Monster
 Yisan, the Wanderer Bard

@@ -470,6 +470,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::UpkeepSettled { .. }
         | Event::Foraged { .. }
         | Event::DieRolled { .. }
+        | Event::R6402DieChanged { .. }
         | Event::RolledToVisit { .. }
         | Event::PrizeClaimed { .. }
         | Event::StickerSheetsChosen { .. }
@@ -1437,6 +1438,7 @@ mod tests {
                 player: OWNER,
                 sides: 20,
                 result: 7,
+                natural: Some(6),
             },
             Event::Clashed {
                 player: OWNER,
