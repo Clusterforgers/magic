@@ -39,6 +39,8 @@ mod r370_balance;
 mod r370_bound;
 mod r5521_reduce_speed;
 mod r6401_pass_control;
+mod r6403_aura_swap;
+mod r6403_meld;
 mod retarget;
 mod ring_tempts;
 mod rmt2_shares;
@@ -309,6 +311,8 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::ChooseWithin { .. } => r5508_choose_within::run(cx, effect),
         Effect::Incubate { .. } => w7c_incubate::run(cx, effect),
         Effect::Conjure { .. } => conjure::run(cx, effect),
+        Effect::Meld { .. } => r6403_meld::run(cx, effect),
+        Effect::AuraSwap => r6403_aura_swap::run(cx, effect),
         Effect::Seek { .. } => seek::run(cx, effect),
         Effect::Venture { .. } => w11d_venture::run(cx, effect),
         Effect::OpenAttraction { .. } | Effect::RollToVisit { .. } => {
@@ -422,7 +426,7 @@ mod tests {
         {"TurnFaceDown":{"what":"This"}}, {"Harness":{"what":"This"}}, {"Plot":{"what":"This"}},
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"ControlPlayer":{"who":"Opponents"}}, {"RestartGame":{"keep":[]}},
-        {"BecomeMonarch":{}}, {"ReduceSpeed":{"who":"You"}}, {"RingTempts":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Empower":{"count":1}}, {"ChooseWithin":{"from":"This","within":{"TotalPowerAtMost":1},"as":"kept"}}, {"Incubate":{"count":1}}, {"Conjure":{"name":"Island","zone":"Hand"}}, {"Seek":{"filter":[]}}, {"Venture":{}}, {"OpenAttraction":{}}, {"RollToVisit":{}}, {"PutSticker":{"on":[]}}, {"Parade":{"what":[]}}, {"ClaimPrize":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"Enlist":{"what":"This"}}, {"BecomeLevel":{"level":2}},
+        {"BecomeMonarch":{}}, {"ReduceSpeed":{"who":"You"}}, {"RingTempts":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Empower":{"count":1}}, {"ChooseWithin":{"from":"This","within":{"TotalPowerAtMost":1},"as":"kept"}}, {"Incubate":{"count":1}}, {"Conjure":{"name":"Island","zone":"Hand"}}, {"Meld":{"with":[{"Named":"Bruna"}],"into":"Brisela"}}, "AuraSwap", {"Seek":{"filter":[]}}, {"Venture":{}}, {"OpenAttraction":{}}, {"RollToVisit":{}}, {"PutSticker":{"on":[]}}, {"Parade":{"what":[]}}, {"ClaimPrize":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"Enlist":{"what":"This"}}, {"BecomeLevel":{"level":2}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Crewed":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
         {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Remember":{"what":"This","slot":"s"}}, {"Forget":{"slot":"s"}}, {"Manifest":{}}, {"Cloak":{}}, {"FaceDownPile":{"what":"This","then":"Manifest"}}, {"BecomeForetold":{"what":"This"}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"GainSuspend":{"what":"This"}}, {"ExtraTurn":{}}, "EndTurn",
         {"ChangeTargets":{"what":"This","to":"Another"}},
@@ -466,7 +470,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 146, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 148, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -574,6 +578,8 @@ mod tests {
         "Effect.ChooseWithin",
         "Effect.Incubate",
         "Effect.Conjure",
+        "Effect.Meld",
+        "Effect.AuraSwap",
         "Effect.Seek",
         "Effect.Venture",
         "Effect.OpenAttraction",

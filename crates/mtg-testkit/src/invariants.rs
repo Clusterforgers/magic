@@ -1059,7 +1059,7 @@ impl InvariantChecker {
         }
         self.w15a_initiative_count(event);
         // The spell's card is part of the permanent, no object of its own.
-        if matches!(event, Event::Mutated { .. }) {
+        if matches!(event, Event::Mutated { .. } | Event::Melded(_)) {
             self.expected_objects -= 1;
         }
         self.expected_objects += restored;

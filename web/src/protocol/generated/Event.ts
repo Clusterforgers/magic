@@ -33,6 +33,7 @@ import type { ManaLasts } from "./ManaLasts";
 import type { ManaType } from "./ManaType";
 import type { ManualAction } from "./ManualAction";
 import type { ManualRoll } from "./ManualRoll";
+import type { Melded } from "./Melded";
 import type { NothingToDo } from "./NothingToDo";
 import type { ObjectId } from "./ObjectId";
 import type { ObjectRef } from "./ObjectRef";
@@ -1285,7 +1286,7 @@ over: boolean,
 /**
  * The controller of the spell.
  */
-player: PlayerId, } } | { "CardParted": { 
+player: PlayerId, } } | { "Melded": Melded } | { "CardParted": { 
 /**
  * The merged permanent.
  */

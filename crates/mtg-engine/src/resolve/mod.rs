@@ -484,8 +484,11 @@ fn run_step(
     run: impl Fn(&Cx<'_>, &Effect) -> Result<Run, ResolveError>,
 ) -> Result<Progress, ResolveError> {
     let scope = scope_of(state, object, resolving, rules);
-    // CR 603.4: a triggered ability whose "if" is no longer true as it resolves does nothing.
+    // CR 603.4: a triggered ability whose "if" is no longer true as it resolves does nothing. It is checked as the
+    // resolution begins: a first step that runs again once its events are folded (`Next::Again`) has bound its names
+    // and is not checked again.
     if resolving.position == START
+        && resolving.bindings.is_empty()
         && let Ability::Triggered {
             intervening_if: Some(condition),
             ..

@@ -225,6 +225,7 @@ export type { ManualToken } from "./ManualToken";
 export type { ManualZone } from "./ManualZone";
 export type { MatchOutcome } from "./MatchOutcome";
 export type { MatchView } from "./MatchView";
+export type { Melded } from "./Melded";
 export type { MergedCardView } from "./MergedCardView";
 export type { ModeChoice } from "./ModeChoice";
 export type { ModeOption } from "./ModeOption";

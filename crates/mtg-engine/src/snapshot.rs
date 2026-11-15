@@ -178,7 +178,7 @@ pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
 fn copiable(object: &crate::object::GameObject) -> Option<Arc<CardDefinition>> {
     match (object.copy_effect(), object.merged()) {
         (Some(copy), _) => Some(copy.shared()),
-        (None, Some(cards)) => Some(Arc::new(cards.top().card().copiable())),
+        (None, Some(cards)) => Some(Arc::new(cards.copiable_card().copiable())),
         (None, None) => None,
     }
 }

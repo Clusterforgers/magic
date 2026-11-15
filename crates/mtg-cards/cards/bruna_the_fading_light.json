@@ -1,0 +1,40 @@
+{
+  "oracle_id": "bce7e45d-b2c5-43aa-91a6-3a3c24f30850",
+  "name": "Bruna, the Fading Light",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bruna, the Fading Light",
+      "oracle_fingerprint": "79b0880c36bcc7a1c791ef2d73cc3427",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Subtype": "Angel" }, { "Subtype": "Human" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" }
+      ]
+    }
+  ]
+}

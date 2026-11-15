@@ -503,6 +503,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::DoorUnlocked { .. }
         | Event::DoorLocked { .. }
         | Event::Mutated { .. }
+        // The melded card and both of its cards are public on the battlefield.
+        | Event::Melded(_)
         // The cards of a merged permanent are public on the battlefield, and so is where one goes.
         | Event::CardParted { .. }
         | Event::Adapted { .. }

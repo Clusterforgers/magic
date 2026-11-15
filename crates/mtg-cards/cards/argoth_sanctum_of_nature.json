@@ -1,0 +1,64 @@
+{
+  "oracle_id": "62648946-1708-48f4-ba40-c057563ab11b",
+  "name": "Argoth, Sanctum of Nature",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Argoth, Sanctum of Nature",
+      "oracle_fingerprint": "fa048b656adcdd04f344dd08453ae1ef",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Supertype": "Legendary" },
+                      { "Color": "Green" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{G}{G}" }, "Tap"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bear",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bear"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              },
+              { "Mill": { "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

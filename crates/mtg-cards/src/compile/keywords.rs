@@ -184,6 +184,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("sunburst", Params::None),
     ("eternalize", Params::Cost),
     ("outlast", Params::Cost),
+    ("aura swap", Params::Cost),
     ("cleave", Params::Cost),
     ("encore", Params::Cost),
     ("fortify", Params::Cost),
@@ -503,6 +504,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "fabricate" => positive(rest).map(Keyword::Fabricate),
         "level up" => cost(rest).map(Keyword::LevelUp),
         "outlast" => cost(rest).map(Keyword::Outlast),
+        "aura swap" => cost(rest).map(Keyword::AuraSwap),
         "suspend" => suspend(rest),
         "enchant" => super::read::enchant_filter(rest).map(Keyword::Enchant),
         "enchant player" => Some(Keyword::EnchantPlayer { opponent: false }),
@@ -1779,6 +1781,7 @@ mod tests {
     #[case::level_up("Level up {1}{U}", Keyword::LevelUp(mana("{1}{U}")))]
     #[case::level_up_for_one("level up {1}", Keyword::LevelUp(mana("{1}")))]
     #[case::outlast("Outlast {W}", Keyword::Outlast(mana("{W}")))]
+    #[case::aura_swap("Aura swap {2}{U}", Keyword::AuraSwap(mana("{2}{U}")))]
     #[case::outlast_two_symbols("Outlast {1}{W}", Keyword::Outlast(mana("{1}{W}")))]
     #[case::changeling("Changeling", Keyword::Changeling)]
     #[case::devoid("Devoid", Keyword::Devoid)]

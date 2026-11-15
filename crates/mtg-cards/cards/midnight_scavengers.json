@@ -1,0 +1,33 @@
+{
+  "oracle_id": "1c29ae09-cc93-4a2a-b432-3c78ae01c1ed",
+  "name": "Midnight Scavengers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Midnight Scavengers",
+      "oracle_fingerprint": "e1627cc4e03dda9409c4950101c73ab5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

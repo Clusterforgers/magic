@@ -625,6 +625,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             over,
             ..
         } => crate::merged::fold(state, *object, *spell, *over)?,
+        Event::Melded(melded) => crate::merged::meld(state, melded)?,
         Event::ZoneChanged {
             object,
             from,

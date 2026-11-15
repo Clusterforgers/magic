@@ -92,6 +92,8 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Empower { .. }
         | Effect::Incubate { .. }
         | Effect::Conjure { .. }
+        | Effect::Meld { .. }
+        | Effect::AuraSwap
         | Effect::Seek { .. }
         | Effect::Venture { .. }
         | Effect::OpenAttraction { .. }

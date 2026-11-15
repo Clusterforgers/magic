@@ -1200,6 +1200,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { permanent, card, to } = event.CardParted
     return line(`${n.card(card)} goes to ${zoneWord(to, n)} apart from ${n.card(permanent)}`)
   }
+  if ('Melded' in event) {
+    const { object, with: partner, name } = event.Melded
+    return line(`${n.card(object)} and ${n.card(partner)} meld into ${name}`)
+  }
   if ('Mutated' in event)
     return line(
       `${n.seat(event.Mutated.player)} mutates a creature ${event.Mutated.over ? 'over' : 'under'} ${n.card(event.Mutated.object)}`,

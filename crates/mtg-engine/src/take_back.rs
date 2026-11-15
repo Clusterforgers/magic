@@ -394,6 +394,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::DoorUnlocked { .. }
         | Event::DoorLocked { .. }
         | Event::Mutated { .. }
+        | Event::Melded(_)
         | Event::CardParted { .. }
         | Event::Adapted { .. }
         | Event::Bolstered { .. }

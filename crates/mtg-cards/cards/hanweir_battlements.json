@@ -1,7 +1,7 @@
 {
   "oracle_id": "0e735ba6-7fd1-4d12-b20c-21525dc1e2b5",
   "name": "Hanweir Battlements",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Hanweir Battlements",
@@ -29,9 +29,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 71, "end": 227 }
+          "Activated": {
+            "cost": [{ "Mana": "{3}{R}{R}" }, "Tap"],
+            "effects": [
+              {
+                "Meld": {
+                  "with": [{ "Type": "Creature" }, { "Named": "Hanweir Garrison" }],
+                  "into": "Hanweir, the Writhing Township"
+                }
+              }
+            ]
           }
         }
       ]
