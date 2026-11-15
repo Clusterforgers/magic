@@ -1298,6 +1298,7 @@ fn printed_side(face: &PrintedFace) -> CardDefinition {
         identity: None,
         pairing: Vec::new(),
         activated: false,
+        meld_identity: crate::definition::MeldIdentity::default(),
     }
 }
 

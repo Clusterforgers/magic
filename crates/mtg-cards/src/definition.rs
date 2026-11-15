@@ -230,6 +230,10 @@ pub struct CardDefinition {
     /// rules do not see it.
     #[serde(skip)]
     pub identity: Option<CardIdentity>,
+    /// The color identity of the cards a meld result melds from, which its own identity takes in (CR 903.4); set by whoever
+    /// holds the whole meld group ([`CardDefinition::with_meld_identity`]), never serialized.
+    #[serde(skip)]
+    pub meld_identity: MeldIdentity,
 }
 
 /// A flag the table shows that is no part of what a card is: equal to any other and hashed as nothing, and left out of
@@ -246,6 +250,23 @@ impl PartialEq for Shown {
 impl Eq for Shown {}
 
 impl std::hash::Hash for Shown {
+    fn hash<H: std::hash::Hasher>(&self, _: &mut H) {}
+}
+
+/// The colors of the cards a meld result melds from: equal to any other and hashed as nothing, since only a deck check
+/// reads it, so it changes no state hash.
+#[derive(Debug, Clone, Copy, Default)]
+pub struct MeldIdentity(pub ColorSet);
+
+impl PartialEq for MeldIdentity {
+    fn eq(&self, _: &Self) -> bool {
+        true
+    }
+}
+
+impl Eq for MeldIdentity {}
+
+impl std::hash::Hash for MeldIdentity {
     fn hash<H: std::hash::Hasher>(&self, _: &mut H) {}
 }
 
@@ -275,6 +296,7 @@ impl CardDefinition {
             identity: None,
             pairing: Vec::new(),
             activated: false,
+            meld_identity: MeldIdentity::default(),
         }
     }
 
@@ -335,6 +357,14 @@ impl CardDefinition {
     #[must_use]
     pub fn with_defense(mut self, defense: u32) -> Self {
         self.defense = Some(defense);
+        self
+    }
+
+    /// Adds the color identity of the cards this meld result melds from to its own (CR 903.4: a meld result is in the
+    /// identity of the group it comes from, as Scryfall gives it).
+    #[must_use]
+    pub fn with_meld_identity(mut self, pieces: ColorSet) -> Self {
+        self.meld_identity = MeldIdentity(pieces.iter().fold(self.meld_identity.0, ColorSet::with));
         self
     }
 

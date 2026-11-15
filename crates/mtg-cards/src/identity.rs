@@ -35,9 +35,9 @@ const BASIC_TYPES: [(&str, Color); 5] = [
 
 impl CardDefinition {
     /// The card's color identity (CR 903.4): its colors, the colors of every mana symbol in its cost and rules
-    /// text, and those of its basic land types, over all its faces.
+    /// text, and those of its basic land types, over all its faces, and for a meld result those of the cards it melds from.
     pub fn color_identity(&self) -> ColorSet {
-        self.each_face().fold(ColorSet::EMPTY, |all, face| {
+        self.each_face().fold(self.meld_identity.0, |all, face| {
             face.face_identity().iter().fold(all, ColorSet::with)
         })
     }
