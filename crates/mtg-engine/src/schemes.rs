@@ -31,7 +31,7 @@ fn first_scheme_turn(state: &GameState, player: PlayerId) -> u32 {
 fn is_scheme_turn(state: &GameState, player: PlayerId, turn: u32) -> bool {
     let first = first_scheme_turn(state, player);
     let every = state.player(player).map_or(1, |p| p.scheme_every.max(1));
-    turn >= first && (turn - first) % every == 0
+    turn >= first && (turn - first).is_multiple_of(every)
 }
 
 /// How many of `player`'s turns are still to begin when its Omen is set in motion (1: as its next turn begins);
