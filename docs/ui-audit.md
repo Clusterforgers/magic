@@ -12,7 +12,7 @@ Impact: how much a problem costs a player in a 4-player Commander game at 1400 �
 
 | # | Problem | Where | What a player meets |
 |---|---|---|---|
-| 1 | Crowded boards draw small cards | table, every board | Opponents' lands fold into their pods' chips and a grid's cards weigh as yours: with 20 permanents a seat and the side panel folded, an opponent's creatures draw about 66 px wide at 1400 × 900; with 40 a seat (14 creatures each) about 48 px, which no layout of three boards side by side lifts much further. Each opponent's board enlarges over the row from its pod (about 95 px cards in the crowd fixture). |
+| 1 | Crowded boards draw small cards | table, every board | Opponents' lands fold into their pods' chips and a grid's cards weigh as yours: with 20 permanents a seat and the side panel folded, an opponent's creatures draw about 66 px wide at 1400 × 900; with 40 a seat (14 creatures each) about 48 px, which no layout of three boards side by side lifts much further. Each opponent's board enlarges over the row from its pod (about 95 px cards in the crowd fixture); your row holds your creatures at 60 px first (about 62 px at 1400 × 900, 50 at 1280 × 720 where the pods take the rest). |
 | 2 | Chrome still takes room | table | The side column takes 272 px until folded to its rail; an opponent's pod head is two to three lines; a long prompt grows the strip to 140 px. |
 | 3 | The hand is still small | hand dock | The hand lies in an arc and rises on hover, but its cards stay about 90 px wide at 1400 × 900; a full-size hover is the preview beside it. |
 | 4 | Combat lines cross the table | combat overlay | Attacks between two other seats draw faint and the lines stay under a card prompt; a line still runs from its board to its defender's pod across the row. |
@@ -80,7 +80,6 @@ Effects and sounds decorate the batch that arrived, as the table effects do toda
 
 Each item is one commit with before and after shots at 1400 × 900, 1280 × 720 and 390 × 900 of the screens it touches, and its tests.
 
-- Own board in crowds: your creatures past 55 px at a grid table with 40 permanents a seat (an enlarge of your board, or a taller own row).
 - Commander art on open games: a commanders field on the lobby list (server), then each open game as a card with its commanders' art.
 - Boss art: a picture for each boss of the Delves content, shown on the descent and the fight panel in place of the crown.
 - Long-list overlay: a choice of many cards as a centre overlay of its own, the strip keeping the sentence and the buttons.
