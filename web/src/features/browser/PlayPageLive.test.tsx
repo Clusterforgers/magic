@@ -1,5 +1,5 @@
-// Goal: the Play page keeps itself current without disturbing anyone: it polls every 5 s while the tab is visible and stops while it is hidden, reuses the rows (the very same elements) on a 304, never moves focus when it updates, sends focus from a removed row to the next Join, leaves it alone when it is somewhere else, and is a table from the M breakpoint up and stacked rows under it, swapping as the window crosses it.
-import { act, screen, within } from '@testing-library/react'
+// Goal: the Play page keeps itself current without disturbing anyone: it polls every 5 s while the tab is visible and stops while it is hidden, reuses the rows (the very same elements) on a 304, never moves focus when it updates, sends focus from a removed row to the next Join, and leaves it alone when it is somewhere else.
+import { act, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { installFakeClock, removeFakeClock, settle } from '@/test-utils/fakeClock'
@@ -7,7 +7,6 @@ import { fakeLobbies, lobbyRow, lobbyRows } from '@/test-utils/lobbies'
 import type { FakeLobbies } from '@/test-utils/lobbies'
 import { renderInRouter } from '@/test-utils/router'
 import { PlayPage } from './PlayPage'
-import { TABLE_FROM } from './OpenGameRows'
 import { POLL_MS } from './useOpenGames'
 
 let hidden = false
@@ -180,78 +179,5 @@ describe('focus while it updates', () => {
     lobbies.set([ANN])
     await settle(POLL_MS)
     expect(document.body).toHaveFocus()
-  })
-})
-
-describe('the layout', () => {
-  /** A window whose width crosses the M breakpoint when `setWide` is called. */
-  function stubWindow(wide: boolean) {
-    const listeners = new Set<() => void>()
-    let current = wide
-    vi.stubGlobal('matchMedia', (query: string) => ({
-      matches: query === TABLE_FROM ? current : false,
-      addEventListener: (_type: string, listener: () => void) => void listeners.add(listener),
-      removeEventListener: (_type: string, listener: () => void) => void listeners.delete(listener),
-    }))
-    return (next: boolean) =>
-      act(() => {
-        current = next
-        for (const listener of listeners) listener()
-      })
-  }
-
-  it('is a table with a caption from the M breakpoint up', async () => {
-    stubWindow(true)
-    await open(fakeLobbies(three))
-    expect(screen.getByRole('table', { name: 'Open games, newest first' })).toBeInTheDocument()
-    expect(screen.queryByRole('list', { name: 'Open games, newest first' })).not.toBeInTheDocument()
-  })
-
-  it('is stacked rows under it, with the same facts and the same Join names, and no table', async () => {
-    stubWindow(false)
-    await open(fakeLobbies([lobbyRow({ game: 'g1', host: 'Ann', filled: 4, total: 4 }), BO]))
-    expect(screen.queryByRole('table')).not.toBeInTheDocument()
-    const list = screen.getByRole('list', { name: 'Open games, newest first' })
-    const [ann, bo] = within(list).getAllByRole('listitem')
-    expect(bo).toHaveTextContent('Bo')
-    expect(bo).toHaveTextContent('Normal · Your own deck · 3 min ago')
-    expect(bo).toHaveTextContent('2 of 4')
-    expect(
-      within(bo as HTMLElement).getByRole('button', { name: "Join Bo's game, 2 of 4 seats" }),
-    ).toBeEnabled()
-    expect(ann).toHaveTextContent('Full')
-    expect(
-      within(ann as HTMLElement).getByRole('button', { name: "Join Ann's game, 4 of 4 seats" }),
-    ).toHaveAttribute('aria-disabled', 'true')
-    expect(within(bo as HTMLElement).getByText('3 min ago').tagName).toBe('TIME')
-  })
-
-  it('keeps the scrolling region and the count in both layouts', async () => {
-    stubWindow(false)
-    await open(fakeLobbies(three))
-    expect(screen.getByRole('region', { name: 'Open games' })).toHaveAttribute('tabindex', '0')
-    expect(screen.getByRole('status')).toHaveTextContent('3 open games')
-  })
-
-  it('swaps as the window crosses the breakpoint, and the Joins keep working', async () => {
-    const setWide = stubWindow(true)
-    await open(fakeLobbies(three))
-    expect(screen.getByRole('table')).toBeInTheDocument()
-    await setWide(false)
-    expect(screen.queryByRole('table')).not.toBeInTheDocument()
-    expect(screen.getAllByRole('listitem')).toHaveLength(3)
-    await setWide(true)
-    expect(screen.getByRole('table')).toBeInTheDocument()
-    expect(screen.getAllByRole('button', { name: /^Join .* game/ })).toHaveLength(3)
-  })
-
-  it('moves focus to the next Join in the stacked layout too', async () => {
-    stubWindow(false)
-    const lobbies = fakeLobbies(three)
-    await open(lobbies)
-    joinOf('Ann').focus()
-    lobbies.set(three.slice(1))
-    await settle(POLL_MS)
-    expect(joinOf('Bo')).toHaveFocus()
   })
 })

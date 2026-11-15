@@ -3,10 +3,14 @@
 //! Every connected seat is kept told who is at the table ([`ServerMessage::Lobby`]); readiness lives
 //! here only and is never stored, so a lobby resumed after a restart starts with nobody ready.
 
+use std::sync::Arc;
+
+use mtg_cards::CardDefinition;
 use mtg_core::house::HouseRules;
 use mtg_core::ids::PlayerId;
 use mtg_core::teams::Teams;
 use mtg_engine::{Engine, GameState};
+use mtg_protocol::rest::LobbyCommander;
 use mtg_protocol::{ErrorCode, LobbySeat, SeatDeck, ServerMessage};
 
 use crate::actor::{Fatal, GameActor, Phase};
@@ -293,6 +297,38 @@ impl<S: EventStore> GameActor<S> {
                 .lobby_seats(&[])
                 .is_some_and(|seats| mtg_protocol::manual_play(&seats)),
             Phase::Running(running) => running.manual_play(),
+        }
+    }
+
+    /// The commanders the seats lead, in seat order: the chosen decks' while the game is in its lobby (an open seat
+    /// leads none), the ones the game began with once it runs.
+    pub(crate) fn listed_commanders(&self) -> Vec<LobbyCommander> {
+        let entry = |seat: usize, card: &Arc<CardDefinition>| LobbyCommander {
+            seat: PlayerId::from_index(seat),
+            name: card.name.clone(),
+            identity: card.identity.clone(),
+        };
+        match &self.phase {
+            Phase::Lobby { names, .. } => {
+                let Some(decks) = &self.decks else {
+                    return Vec::new();
+                };
+                names
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, name)| !name.is_empty())
+                    .flat_map(|(seat, _)| decks.commanders(seat).iter().map(move |c| (seat, c)))
+                    .map(|(seat, card)| entry(seat, card))
+                    .collect()
+            }
+            Phase::Running(_) => self
+                .setup
+                .players
+                .iter()
+                .enumerate()
+                .flat_map(|(seat, player)| player.commanders.iter().map(move |c| (seat, c)))
+                .map(|(seat, card)| entry(seat, card))
+                .collect(),
         }
     }
 

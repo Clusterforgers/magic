@@ -33,6 +33,40 @@ describe('readLobbyGame', () => {
     expect(readLobbyGame({ ...row, running: 'yes' })).toBeNull()
   })
 
+  it.each<[string, unknown, unknown]>([
+    ['left out', undefined, undefined],
+    ['empty', [], undefined],
+    [
+      'one with its printing',
+      [{ seat: 0, name: 'Atraxa', identity: { oracle_id: 'o-1', printing_id: 'p-1' } }],
+      [{ seat: 0, name: 'Atraxa', identity: { oracle_id: 'o-1', printing_id: 'p-1' } }],
+    ],
+    [
+      'partners, one unknown, extras dropped',
+      [
+        { seat: 1, name: 'Tymna', identity: { oracle_id: 'o-2', art: 'x' } },
+        { seat: 1, name: 'Thrasios', later: 1 },
+      ],
+      [
+        { seat: 1, name: 'Tymna', identity: { oracle_id: 'o-2' } },
+        { seat: 1, name: 'Thrasios' },
+      ],
+    ],
+  ])('reads the commanders when %s', (_, commanders, expected) => {
+    const read = readLobbyGame({ ...row, commanders })
+    expect(read).toEqual(expected === undefined ? row : { ...row, commanders: expected })
+  })
+
+  it.each<[string, unknown]>([
+    ['not a list', { seat: 0 }],
+    ['a seat that is no count', [{ seat: -1, name: 'A' }]],
+    ['no name', [{ seat: 0 }]],
+    ['an identity without an oracle id', [{ seat: 0, name: 'A', identity: { printing_id: 'p' } }]],
+    ['a printing that is no text', [{ seat: 0, name: 'A', identity: { oracle_id: 'o', printing_id: 3 } }]],
+  ])('is null for commanders with %s', (_, commanders) => {
+    expect(readLobbyGame({ ...row, commanders })).toBeNull()
+  })
+
   it.each([true, false])('reads the flag of a table that plays by hand: %s', (manual_play) => {
     expect(readLobbyGame({ ...row, manual_play })).toEqual({ ...row, manual_play })
   })

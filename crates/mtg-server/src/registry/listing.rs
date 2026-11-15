@@ -39,6 +39,8 @@ pub struct ListedGame {
     pub created_at: String,
     /// Time since the game was created.
     pub age: Duration,
+    /// The commanders the seats lead, in seat order; none outside Commander.
+    pub commanders: Vec<mtg_protocol::rest::LobbyCommander>,
     /// Whether the game runs, so it can be watched and not joined.
     pub running: bool,
 }
@@ -108,6 +110,7 @@ impl Registry {
                     created_at: utc_stamp(wall.checked_sub(age).unwrap_or(UNIX_EPOCH)),
                     age,
                     running: false,
+                    commanders: Vec::new(),
                 };
                 (
                     entry.created,
@@ -131,6 +134,9 @@ impl Registry {
             if let Some(running) = pick(visibility, &status) {
                 game.manual_play = status.manual_play;
                 game.running = running;
+                if game.format == FormatKind::Commander {
+                    game.commanders = status.commanders;
+                }
                 listed.push(game);
             }
         }

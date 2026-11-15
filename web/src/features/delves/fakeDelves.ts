@@ -56,8 +56,18 @@ export const CONTENT: DelveContent = {
       card: 'skrix',
       phases: [['nest', 66]],
       life: [30, 35],
+      art: { card: 'Ashcoat of the Shadow Swarm', oracle_id: '9cc69ea5-42a2-4306-ac6d-cff5adb20bcb' },
     },
-    { id: 'grimgut', name: 'Grimgut', colors: 'BR', line: 'Kneel.', card: null, phases: [], life: [36, 40] },
+    {
+      id: 'grimgut',
+      name: 'Grimgut',
+      colors: 'BR',
+      line: 'Kneel.',
+      card: null,
+      phases: [],
+      life: [36, 40],
+      art: { card: 'Krenko, Tin Street Kingpin', oracle_id: 'e8065e1d-e937-4b56-8011-78f0d07328a0' },
+    },
   ],
   events: [
     {

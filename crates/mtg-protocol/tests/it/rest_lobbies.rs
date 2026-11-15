@@ -8,8 +8,8 @@ use crate::common::generated;
 use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
 use mtg_protocol::rest::{
-    GameInfo, GameSeat, JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode, LobbyGame, LobbyList,
-    Visibility, VisibilityBody,
+    GameInfo, GameSeat, JoinCodeRequest, JoinRequest, Joined, LobbyCommander, LobbyErrorCode,
+    LobbyGame, LobbyList, Visibility, VisibilityBody,
 };
 use rstest::rstest;
 use serde_json::{Value, json};
@@ -49,6 +49,7 @@ fn game(host: &str, filled: u32) -> LobbyGame {
         created_at: "2026-10-19T12:30:00Z".into(),
         age_secs: 125,
         running: false,
+        commanders: Vec::new(),
     }
 }
 
@@ -527,4 +528,43 @@ fn a_running_row_says_so_and_a_lobby_row_leaves_it_out() {
     let older: LobbyGame = serde_json::from_value(lobby).unwrap();
     assert!(!older.running, "a row without the flag is a lobby");
     assert!(generated()["LobbyGame.ts"].contains("running?: boolean"));
+}
+
+fn commander(seat: u64, name: &str, oracle: Option<&str>) -> LobbyCommander {
+    LobbyCommander {
+        seat: PlayerId(seat),
+        name: name.into(),
+        identity: oracle.map(|oracle_id| mtg_cards::CardIdentity {
+            oracle_id: oracle_id.into(),
+            printing_id: None,
+        }),
+    }
+}
+
+#[rstest]
+#[case::none(Vec::new())]
+#[case::one_with_art(vec![commander(0, "Atraxa, Praetors' Voice", Some("o-atraxa"))])]
+#[case::partners_and_one_unknown(vec![
+    commander(1, "Tymna the Weaver", Some("o-tymna")),
+    commander(1, "Thrasios, Triton Hero", None),
+])]
+fn a_row_names_its_commanders_only_when_it_has_some(#[case] commanders: Vec<LobbyCommander>) {
+    let row = LobbyGame {
+        format: "commander".into(),
+        commanders: commanders.clone(),
+        ..game("Ann", 2)
+    };
+    let value = serde_json::to_value(&row).unwrap();
+    assert_eq!(value.get("commanders").is_some(), !commanders.is_empty());
+    for (wire, commander) in value["commanders"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .zip(&commanders)
+    {
+        assert_eq!(wire.get("identity").is_none(), commander.identity.is_none());
+        assert_eq!(wire["seat"], json!(commander.seat.0));
+    }
+    assert_eq!(serde_json::from_value::<LobbyGame>(value).unwrap(), row);
+    assert!(generated()["LobbyGame.ts"].contains("commanders?: Array<LobbyCommander>"));
 }

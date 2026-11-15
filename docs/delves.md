@@ -32,7 +32,7 @@ A fallen hero keeps playing: it haunts the fight with small, clear choices and c
 
 ## Bosses
 
-- A boss (`content/<theme>.json`) has a 40-card deck of verified real cards, a brain (Hard by default), a base life and life per hero, an opening hand, a boss card and two phases.
+- A boss (`content/<theme>.json`) has a 40-card deck of verified real cards, a brain (Hard by default), a base life and life per hero, an opening hand, a boss card, two phases and an art card: a real card (`art.card`, `art.oracle_id`) whose art crop pictures it on the descent and the fight panel.
 - Its advantages are open: its boss cards are emblems in its command zone from the start; each phase is an emblem that arrives when its life falls to a share of its starting life (66 % and 33 %). The table shows the boss's phase and the next one on the seat's chips.
 - Every boss has Escalation (each of its end steps, every hero loses 1 life for every four turns it has taken) and Enrage (from its tenth turn, every hero loses its turns minus nine each upkeep), so a stalled fight ends.
 - Schemes: the theme's scheme deck, shuffled from the seed for each fight, sets one scheme in motion as each boss turn begins from its third (CR 314 in the manner of Archenemy); the next one is public as the Omen. Their effects count the heroes (a Rat per hero, a sacrifice and a discard from each hero, a drain of each hero) or name the hero in the spotlight.

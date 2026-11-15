@@ -595,6 +595,14 @@ impl SeatDecks {
         self.current.get(seat)?.as_ref().map(ChosenDeck::note)
     }
 
+    /// The commanders `seat`'s deck leads; none while it has no deck.
+    pub(crate) fn commanders(&self, seat: usize) -> &[Arc<CardDefinition>] {
+        self.current
+            .get(seat)
+            .and_then(Option::as_ref)
+            .map_or(&[], ChosenDeck::commanders)
+    }
+
     /// Whether `seat` has a deck.
     pub(crate) fn has(&self, seat: usize) -> bool {
         self.current.get(seat).is_some_and(Option::is_some)

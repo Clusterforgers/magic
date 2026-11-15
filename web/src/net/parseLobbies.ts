@@ -3,7 +3,16 @@
  * `null` for a body that does not have the documented shape, so a caller never holds a half-typed value; unknown extra
  * fields are dropped.
  */
-import type { GameInfo, GameSeat, Joined, LobbyGame, TeamsBody, Visibility } from '@/protocol/generated'
+import type {
+  CardIdentity,
+  GameInfo,
+  GameSeat,
+  Joined,
+  LobbyCommander,
+  LobbyGame,
+  TeamsBody,
+  Visibility,
+} from '@/protocol/generated'
 import { isCount, isFlag, isListOf, isRecord, isText } from './check'
 import { isTeams, readHouseRules } from './houseRules'
 import { isGameResult, readSeatDeck } from './parse'
@@ -16,6 +25,31 @@ export const isVisibility = (value: unknown): value is Visibility =>
 
 // `YYYY-MM-DDTHH:MM:SSZ`, the layout the server writes; the page puts it in a `datetime` attribute.
 const STAMP = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/
+
+/** A card's identity, `undefined` when left out, or `null` when it is not one. */
+function readIdentity(value: unknown): CardIdentity | undefined | null {
+  if (value === undefined) return undefined
+  if (!isRecord(value) || !isText(value.oracle_id)) return null
+  const printing = value.printing_id
+  if (printing === undefined) return { oracle_id: value.oracle_id }
+  return isText(printing) ? { oracle_id: value.oracle_id, printing_id: printing } : null
+}
+
+/** One commander of a row, or `null` when it is unreadable. */
+function readLobbyCommander(item: unknown): LobbyCommander | null {
+  if (!isRecord(item) || !isCount(item.seat) || !isText(item.name)) return null
+  const identity = readIdentity(item.identity)
+  if (identity === null) return null
+  return { seat: item.seat, name: item.name, ...(identity === undefined ? {} : { identity }) }
+}
+
+/** A row's commanders: an empty list when left out, `null` when any is unreadable. */
+function readLobbyCommanders(value: unknown): LobbyCommander[] | null {
+  if (value === undefined) return []
+  if (!Array.isArray(value)) return null
+  const commanders = value.map(readLobbyCommander)
+  return commanders.every((commander) => commander !== null) ? commanders : null
+}
 
 /** One row of the listing, or `null` when a field is missing, mistyped or impossible (more seats filled than exist). */
 export function readLobbyGame(item: unknown): LobbyGame | null {
@@ -37,6 +71,8 @@ export function readLobbyGame(item: unknown): LobbyGame | null {
   if (rules === null) return null
   const running = item.running === undefined ? false : item.running
   if (!isFlag(running)) return null
+  const commanders = readLobbyCommanders(item.commanders)
+  if (commanders === null) return null
   return {
     game,
     host,
@@ -48,6 +84,7 @@ export function readLobbyGame(item: unknown): LobbyGame | null {
     created_at: createdAt,
     age_secs: age,
     ...(running ? { running } : {}),
+    ...(commanders.length > 0 ? { commanders } : {}),
   }
 }
 

@@ -171,6 +171,17 @@ pub struct DelveBossView {
     pub phases: Vec<(String, u32)>,
     /// Its life with one hero and for each hero more.
     pub life: (i32, i32),
+    /// The real card whose art crop pictures it.
+    pub art: BossArtView,
+}
+
+/// The real card whose art pictures a boss.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct BossArtView {
+    /// The card's name.
+    pub card: String,
+    /// The card's Scryfall oracle id, which its picture goes by.
+    pub oracle_id: String,
 }
 
 /// An event as the web shows it.
