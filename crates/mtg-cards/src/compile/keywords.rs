@@ -2228,6 +2228,7 @@ mod tests {
             "Freerunning {B}",
             "Demonstrate",
             "Bargain",
+            "Aura swap {2}{U}",
             "Conspire",
             "Hideaway 4",
             "Gift a card",
