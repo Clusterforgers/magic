@@ -134,7 +134,14 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     "Bo doesn't pay the cumulative upkeep of Forest",
   ],
   Foraged: [{ Foraged: { player: 1 } }, 'Bo forages'],
-  DieRolled: [{ DieRolled: { player: 1, sides: 20, result: 14 } }, 'Bo rolls a d20: 14'],
+  DieRolled: [
+    { DieRolled: { player: 1, sides: 20, result: 14, natural: 13 } },
+    'Bo rolls a d20: 14 (rolled 13)',
+  ],
+  R6402DieChanged: [
+    { R6402DieChanged: { player: 1, source: { id: 5, counter: 0 }, from: 4, to: 5 } },
+    'Bo changes a die result from 4 to 5 with Serra Angel',
+  ],
   CoinFlipped: [
     { CoinFlipped: { player: 1, won: true, call: 'Tails', side: 'Tails' } },
     'Bo calls tails, the coin comes up tails: Bo wins the flip',

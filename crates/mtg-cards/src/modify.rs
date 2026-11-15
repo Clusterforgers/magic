@@ -991,6 +991,21 @@ pub enum GameRule {
     /// A player in the group who would roll one or more dice rolls that many plus one instead and ignores the lowest roll
     /// (Wyll, Blade of Frontiers); each such rule adds one more die and one more ignored roll.
     ExtraDie(Ref),
+    /// After a player in the group rolls one or more dice, they may pay `pay` to increase or decrease one result of that
+    /// roll by `by` (CR 706.2: the modified number is the result; it may leave the die's range, the ruling of
+    /// Xenosquirrels): "After you roll a die, you may pay 1 life. If you do, increase or decrease the result by 1."
+    /// They see every die of the roll first and choose which to change (the ruling of Night Shift of the Living Dead).
+    R6402ChangeRoll {
+        /// Whose rolls.
+        who: Ref,
+        /// What changing a result costs.
+        pay: R6402RollPay,
+        /// How much the result goes up or down.
+        by: u32,
+        /// Only once each turn for the permanent ("Do this only once each turn").
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        once: bool,
+    },
     /// A player in the group who would roll one or more planar dice rolls that many plus one instead and ignores one
     /// (CR 901.9): "If you would roll one or more planar dice, instead roll that many planar dice plus one and ignore
     /// one." No game the engine plays has a planar deck, so it never applies (the rulings of Fractured Powerstone).
@@ -1718,4 +1733,14 @@ mod tests {
             r#"{"ModifyPT":{"power":3,"toughness":3}}"#
         );
     }
+}
+
+/// What changing a die's result costs (`GameRule::R6402ChangeRoll`).
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub enum R6402RollPay {
+    /// This much life (CR 119.4: only a player with that much life may pay it).
+    Life(u32),
+    /// One counter of this kind removed from the permanent with the rule.
+    RemoveCounter(CounterKind),
 }

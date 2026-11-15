@@ -107,6 +107,10 @@ pub(crate) enum Tally {
     L31aInvestigated,
     /// A die rolled (CR 706).
     R5508DiceRolled,
+    /// A die rolled with this result (CR 706.2), counted for the player who rolled it.
+    R6402Rolled(u32),
+    /// A die's result changed through a permanent's rule (counted for the permanent: "Do this only once each turn").
+    R6402Changed,
     /// A card drawn.
     Drawn,
     /// A venture into the dungeon (counted for the player).

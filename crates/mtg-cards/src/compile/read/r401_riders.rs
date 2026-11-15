@@ -176,6 +176,10 @@ fn rider_sentence(r: &mut Reader<'_>, permission: &CastPermission) -> Option<Vec
     if exiled.is_some() {
         return Some(vec![CastRider::ExiledInstead]);
     }
+    // The card's own permission: "If you cast it this way and it would be put into your graveyard, exile it instead".
+    if permission.what.0 == [Pred::This] && r.attempt(r6402_itself_exiled).is_some() {
+        return Some(vec![CastRider::ExiledInstead]);
+    }
     r.need("if you cast")?;
     (r.word("a") || r.word("an")).then_some(())?;
     let kind = noun(permission);
@@ -288,6 +292,17 @@ pub fn r401_rider_texts(
     )
 }
 
+/// "If you cast it this way and it would be put into your graveyard, exile it instead" (and "this card").
+fn r6402_itself_exiled(r: &mut Reader<'_>) -> Option<()> {
+    r.need("if you cast")?;
+    if !r.word("it") {
+        r.need("this card")?;
+    }
+    r.need("this way and it would be put into your graveyard")?;
+    r.punct(',').then_some(())?;
+    r.need("exile it instead")
+}
+
 /// The text with its first letter in lower case.
 fn lowered(text: &str) -> String {
     let mut chars = text.chars();
@@ -307,6 +322,10 @@ fn rider_texts(permission: &CastPermission) -> Vec<String> {
         if permission.what.0 == [crate::refs::Pred::This] {
             texts.push(
                 "If you cast this card this way and it would be put into your graveyard, exile it instead"
+                    .to_owned(),
+            );
+            texts.push(
+                "If you cast it this way and it would be put into your graveyard, exile it instead"
                     .to_owned(),
             );
         }

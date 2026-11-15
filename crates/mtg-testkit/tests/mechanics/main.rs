@@ -184,6 +184,8 @@ mod r6104_zygon;
 mod r6105_library_of_leng;
 mod r6105_sarcophagus;
 mod r6105_support;
+mod r6402_change_roll;
+mod r6402_dice_history;
 mod r6f;
 mod repeat_each;
 mod rmt0_chroma;

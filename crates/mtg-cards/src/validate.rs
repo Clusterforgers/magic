@@ -6221,6 +6221,15 @@ impl Walker<'_> {
                 self.at(tag, |w| w.reference(who, Kind::Player));
             }
             GameRule::EchoRather(cost) => self.at(tag, |w| w.cost(cost)),
+            GameRule::R6402ChangeRoll { who, pay, by, .. } => self.at(tag, |w| {
+                w.reference(who, Kind::Player);
+                if *by == 0 {
+                    w.problem("a change of a die's result changes it by at least 1");
+                }
+                if matches!(pay, crate::modify::R6402RollPay::Life(0)) {
+                    w.problem("a change of a die's result paid with life pays at least 1");
+                }
+            }),
             GameRule::UntapRemovesCounters(_) => self.at(tag, |_| {}),
             GameRule::MayCast(permission) => self.at(tag, |w| w.cast_permission(permission)),
             GameRule::LookAtExiled { who, what, only } => self.at(tag, |w| {

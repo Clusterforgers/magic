@@ -1082,8 +1082,13 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('Foraged' in event) return line(`${n.seat(event.Foraged.player)} forages`)
   if ('DieRolled' in event) {
-    const { player, sides, result } = event.DieRolled
-    return line(`${n.seat(player)} rolls a d${sides}: ${result}`)
+    const { player, sides, result, natural } = event.DieRolled
+    const shown = natural === undefined ? '' : ` (rolled ${natural})`
+    return line(`${n.seat(player)} rolls a d${sides}: ${result}${shown}`)
+  }
+  if ('R6402DieChanged' in event) {
+    const { player, source, from, to } = event.R6402DieChanged
+    return line(`${n.seat(player)} changes a die result from ${from} to ${to} with ${n.card(source.id)}`)
   }
   if ('RolledToVisit' in event) {
     const { player, result, visited } = event.RolledToVisit

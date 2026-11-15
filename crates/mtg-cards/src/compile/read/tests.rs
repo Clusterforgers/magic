@@ -1268,6 +1268,8 @@ mod r376_secret;
 mod r5508_readers;
 mod r5519_oddities;
 mod r5520_foretold_named;
+mod r6402_change_roll;
+mod r6402_dice_facts;
 mod tc34_control;
 mod w20_attached;
 mod w22_moves;

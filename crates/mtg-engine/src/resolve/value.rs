@@ -569,6 +569,7 @@ impl<'a> Scope<'a> {
             | TurnTally::CreaturesLeftUnder
             | TurnTally::SpellsWarped
             | TurnTally::DiceRolled
+            | TurnTally::R6402Rolled(_)
             | TurnTally::CardsExiled
             | TurnTally::PermanentsToHand
             | TurnTally::CardsGravedNotFromBattlefield
@@ -599,6 +600,7 @@ impl<'a> Scope<'a> {
                     TurnTally::CreaturesLeftUnder => Tally::CreaturesLeftUnder,
                     TurnTally::SpellsWarped => Tally::Warped,
                     TurnTally::DiceRolled => Tally::R5508DiceRolled,
+                    TurnTally::R6402Rolled(result) => Tally::R6402Rolled(result),
                     TurnTally::PermanentsLeftUnder => Tally::PermanentsLeftUnder,
                     TurnTally::CardsLeftGraveyard => Tally::W21aLeftGraveyard,
                     TurnTally::R6100CreatureCardsLeftGraveyard => {
@@ -4063,6 +4065,7 @@ mod tests {
                 player: PlayerId(0),
                 sides: 6,
                 result: *result,
+                natural: None,
             };
             apply_event(&mut game, &rolled).unwrap();
         }
@@ -4074,6 +4077,37 @@ mod tests {
             [read("Only"), read("Chosen"), read("Other")],
             expected.map(Ok)
         );
+    }
+
+    #[rstest]
+    #[case::nothing_rolled(&[], &[(6, 0), (1, 0)])]
+    #[case::one_six(&[(0, 6)], &[(6, 1), (5, 0)])]
+    #[case::a_six_by_another_player(&[(1, 6)], &[(6, 0)])]
+    #[case::two_sixes_and_a_twenty(&[(0, 6), (0, 20), (0, 6)], &[(6, 2), (20, 1), (2, 0)])]
+    fn r6402_the_dice_a_player_rolled_this_turn_are_kept_by_result(
+        #[case] rolls: &[(u64, u32)],
+        #[case] expected: &[(u32, i64)],
+    ) {
+        let mut game = game();
+        for (seat, result) in rolls {
+            apply_event(
+                &mut game,
+                &Event::DieRolled {
+                    player: PlayerId(*seat),
+                    sides: 20,
+                    result: *result,
+                    natural: None,
+                },
+            )
+            .unwrap();
+        }
+        for (result, count) in expected {
+            let amount: Amount = serde_json::from_str(&format!(
+                r#"{{"Tallied":{{"who":"You","what":{{"R6402Rolled":{result}}}}}}}"#
+            ))
+            .unwrap();
+            assert_eq!(scope(&game).amount(&amount), Ok(*count), "a {result}");
+        }
     }
 
     #[test]

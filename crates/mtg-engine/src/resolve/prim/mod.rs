@@ -138,6 +138,7 @@ mod r5501_echo_rather;
 mod r5509_face_down_pile;
 mod r5509_foretold;
 mod r6102_random_counter;
+pub(crate) mod r6402_change_roll;
 mod regenerate;
 mod remove_counters;
 mod remove_from_combat;

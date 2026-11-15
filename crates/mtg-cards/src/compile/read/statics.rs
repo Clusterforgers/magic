@@ -738,6 +738,9 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     if let Some(rule) = r.attempt(super::c4_rules::read) {
         return Some(rule);
     }
+    if let Some(rule) = r.attempt(super::r6402_change_roll::r6402_read) {
+        return Some(rule);
+    }
     if let Some(rule) = r.attempt(super::r4707_costs::read) {
         return Some(rule);
     }
@@ -2047,6 +2050,9 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::PlaneswalkLookTwo(_),
             ZoneKind::Battlefield,
         ) => super::c4_rules::texts(rule),
+        (GameRule::R6402ChangeRoll { .. }, ZoneKind::Battlefield) => {
+            super::r6402_change_roll::r6402_texts(rule)
+        }
         (
             GameRule::KeepUnspentMana { .. }
             | GameRule::UnspentManaBecomes { .. }

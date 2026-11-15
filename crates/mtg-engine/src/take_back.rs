@@ -251,6 +251,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::LibraryRefilled { .. }
         | Event::AttractionDeckShuffled { .. } => Some(R::LibraryShuffled),
         Event::DieRolled { .. }
+        | Event::R6402DieChanged { .. }
         | Event::CoinFlipped { .. }
         | Event::ChosenAtRandom { .. }
         | Event::PlayersChosenAtRandom { .. }

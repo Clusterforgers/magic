@@ -6,7 +6,6 @@ use mtg_core::ids::PlayerId;
 
 use super::wrong_effect;
 use crate::choose::{ChoiceOption, OptionChooser, Optioned, pick_options};
-use crate::events::Event;
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::rng::GameRng;
 
@@ -69,17 +68,23 @@ fn ep29_with_extra(state: &crate::state::GameState, sides: u32, dice: u32, extra
         .collect()
 }
 
-/// "Ignore all but the highest roll": the highest number rolled (the earliest of equal ones) moves last, where the total
-/// is read.
-fn r5518_highest_last(rolled: &mut Vec<u32>) {
-    let at = rolled
+/// "Ignore all but the highest roll": where the highest number rolled is (the earliest of equal ones), which moves last,
+/// where the total is read.
+fn r5518_highest_at(rolled: &[u32]) -> Option<usize> {
+    rolled
         .iter()
         .enumerate()
         .max_by_key(|(at, result)| (**result, std::cmp::Reverse(*at)))
-        .map(|(at, _)| at);
-    if let Some(at) = at {
+        .map(|(at, _)| at)
+}
+
+/// Moves the die at `at` last, its result and its natural result together.
+fn r6402_move_last(rolled: &mut Vec<u32>, natural: &mut Vec<u32>, at: usize) {
+    if at < rolled.len() && at < natural.len() {
         let kept = rolled.remove(at);
         rolled.push(kept);
+        let shown = natural.remove(at);
+        natural.push(shown);
     }
 }
 
@@ -136,7 +141,21 @@ fn r5507_roll_many(
         .into_iter()
         .find(|player| state.is_alive(*player));
     let dice = u32::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(0);
-    let rolled = player.map_or_else(Vec::new, |player| rolls(state, player, sides, dice));
+    // The roll is logged as the results stand once the player has changed them (`r6402_change_roll`).
+    let (rolled, events) = match player {
+        Some(player) => {
+            let natural = rolls(state, player, sides, dice);
+            match super::r6402_change_roll::r6402_change(cx, player, &natural)? {
+                Ok(changed) => {
+                    let mut events = changed.events.clone();
+                    events.extend(changed.rolled(player, sides, &natural));
+                    (changed.results, events)
+                }
+                Err(ask) => return Ok(ask),
+            }
+        }
+        None => (Vec::new(), Vec::new()),
+    };
     let odd = rolled.iter().filter(|result| *result % 2 == 1).count();
     let total: u64 = rolled.iter().map(|result| u64::from(*result)).sum();
     let mut kept = vec![
@@ -161,16 +180,7 @@ fn r5507_roll_many(
         })
         .collect();
     Ok(Run::Done {
-        events: player.map_or_else(Vec::new, |player| {
-            rolled
-                .iter()
-                .map(|result| Event::DieRolled {
-                    player,
-                    sides,
-                    result: *result,
-                })
-                .collect()
-        }),
+        events,
         bound,
         snapshots: Vec::new(),
         next: Next::Sibling,
@@ -210,15 +220,35 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Some(count) => u32::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(0),
         None => *dice,
     };
-    let mut rolled = rolls(state, player, *sides, dice);
+    let mut natural = rolls(state, player, *sides, dice);
+    // The player may change results first (`r6402_change_roll`); a choice of one result is asked after.
+    let changed = match super::r6402_change_roll::r6402_change(cx, player, &natural)? {
+        Ok(changed) => changed,
+        Err(ask) => return Ok(ask),
+    };
+    let mut rolled = changed.results.clone();
     if highest.is_some() {
         if rolled.is_empty() {
             return Ok(Run::events(Vec::new()));
         }
-        r5518_highest_last(&mut rolled);
+        if let Some(at) = r5518_highest_at(&rolled) {
+            r6402_move_last(&mut rolled, &mut natural, at);
+        }
     }
     if *choose {
-        match c11e_chosen_last(cx, player, &rolled)? {
+        let rest = crate::resolve::Resolving {
+            journal: cx
+                .journal()
+                .get(changed.asked..)
+                .unwrap_or_default()
+                .to_vec(),
+            ..cx.resolving.clone()
+        };
+        let after = Cx {
+            scope: cx.scope.clone(),
+            resolving: &rest,
+        };
+        match c11e_chosen_last(&after, player, &rolled)? {
             Optioned::Done(taken) => {
                 let distinct = c11e_distinct(&rolled);
                 let chosen = taken
@@ -227,8 +257,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     .copied()
                     .unwrap_or(0);
                 if let Some(at) = rolled.iter().position(|result| *result == chosen) {
-                    let kept = rolled.remove(at);
-                    rolled.push(kept);
+                    r6402_move_last(&mut rolled, &mut natural, at);
                 }
             }
             Optioned::Ask(decision) => return Ok(Run::Ask(decision)),
@@ -236,15 +265,17 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     }
     let result = rolled.last().copied().unwrap_or(0);
     let total = i64::from(result) + cx.scope.amount(plus)?;
+    let mut events = changed.events.clone();
+    events.extend(
+        super::r6402_change_roll::R6402Changed {
+            results: rolled,
+            events: Vec::new(),
+            asked: changed.asked,
+        }
+        .rolled(player, *sides, &natural),
+    );
     Ok(Run::Done {
-        events: rolled
-            .iter()
-            .map(|result| Event::DieRolled {
-                player,
-                sides: *sides,
-                result: *result,
-            })
-            .collect(),
+        events,
         bound: Vec::new(),
         snapshots: Vec::new(),
         next: results
@@ -304,6 +335,7 @@ mod tests {
                 player,
                 sides,
                 result,
+                natural: None,
             },
         ] = events.as_slice()
         else {
@@ -486,6 +518,7 @@ mod tests {
                     result,
                     sides: 6,
                     player: ME,
+                    natural: None,
                 } => *result,
                 other => panic!("{other:?}"),
             })

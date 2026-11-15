@@ -1015,8 +1015,24 @@ pub enum Event {
         player: PlayerId,
         /// How many faces the die has.
         sides: u32,
-        /// The number rolled, from 1 to `sides`.
+        /// The result: the number rolled, from 1 to `sides`, or that number changed (CR 706.2).
         result: u32,
+        /// The natural result, the number the die showed, when an effect changed it into `result` (CR 706.2).
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        natural: Option<u32>,
+    },
+    /// A player changed the result of a die they rolled through a permanent's rule (`Rule::R6402ChangeRoll`): it paid the
+    /// cost and counts as used this turn. The roll is logged after it with the changed result.
+    R6402DieChanged {
+        /// Who rolled.
+        player: PlayerId,
+        /// The permanent whose rule changed the result.
+        source: ObjectRef,
+        /// The result before the change.
+        from: u32,
+        /// The result after it.
+        to: u32,
     },
     /// A player's Attraction deck was shuffled (CR 103.3a): its cards in the new order, top card last.
     AttractionDeckShuffled {
@@ -1546,6 +1562,7 @@ impl Event {
             | Event::UpkeepSettled { .. }
             | Event::Foraged { .. }
             | Event::DieRolled { .. }
+            | Event::R6402DieChanged { .. }
             | Event::CoinFlipped { .. }
             | Event::Clashed { .. }
             | Event::VotesFinished { .. }

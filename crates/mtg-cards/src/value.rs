@@ -451,6 +451,9 @@ pub enum TurnTally {
     /// The creatures put into exile from the battlefield while the players read controlled them, tokens included ("the
     /// number of creatures that were exiled under your opponents' control this turn"). Added up over the players.
     R6100CreaturesExiledUnder,
+    /// The dice the players rolled this turn whose result was this number, each die once (CR 706.2: the result after
+    /// any modification): "as long as you've rolled a 6 this turn". Added up over the players.
+    R6402Rolled(u32),
 }
 
 /// A kind of event the game logs for the turn with the object it was about, which `Amount::Tally` filters and counts.
