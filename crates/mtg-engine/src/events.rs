@@ -586,6 +586,10 @@ pub enum Event {
         player: PlayerId,
         /// The object it comes from.
         source: ObjectRef,
+        /// The source was tapped to pay its cost ("tapped a land for mana").
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(optional, as = "Option<bool>"))]
+        tapped: bool,
     },
     /// A triggered ability triggered and waits to be put on the stack.
     AbilityTriggered(Box<Triggered>),

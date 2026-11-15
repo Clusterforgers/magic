@@ -168,6 +168,9 @@ pub(crate) enum Tally {
     R6100CreatureCardLeftGraveyard,
     /// A creature put into exile from the battlefield (counted for the player who controlled it as it left).
     R6100CreatureExiledUnder,
+    /// A land its controller tapped for mana: a mana ability of the land with the tap in its cost (counted for the player
+    /// who activated it).
+    R6401LandTappedForMana,
     /// A permanent that left the battlefield for any zone (counted for the player who controlled it as it left).
     PermanentsLeftUnder,
     /// A nonland permanent that left the battlefield for any zone (counted for the player who controlled it as it left).

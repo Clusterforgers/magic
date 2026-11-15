@@ -16,6 +16,7 @@ use crate::common;
 #[case::aminatou("Aminatou, the Fateshifter")]
 #[case::inniaz("Inniaz, the Gale Force")]
 #[case::order_of_succession("Order of Succession")]
+#[case::desolation("Desolation")]
 fn r6401_the_card_compiles_into_its_file(#[case] name: &str) {
     let printed = common::printed()
         .into_iter()

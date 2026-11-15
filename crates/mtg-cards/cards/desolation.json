@@ -1,0 +1,56 @@
+{
+  "oracle_id": "a80c3af8-470e-4e95-9579-cfdf18fbdbfa",
+  "name": "Desolation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desolation",
+      "oracle_fingerprint": "1412628bd45ff4317d42def06216a5e7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "R6401LandsTappedForMana" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  },
+                  "filter": [{ "Type": "Land" }],
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "CountOf": {
+                          "subject": { "Bound": "sacrificed" },
+                          "selector": [{ "Subtype": "Plains" }, { "ControlledBy": "You" }],
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  },
+                  "amount": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -618,7 +618,14 @@ pub(crate) fn logged_activation(
         .ok_or_else(|| EngineError::InvalidEvent("a mana ability of nothing".into()))?
         .reference();
     let mut events = activation(state, player, option, taken)?;
-    events.push(Event::ManaAbilityActivated { player, source });
+    let tapped = events
+        .iter()
+        .any(|event| matches!(event, Event::PermanentTapped { object } if *object == source.id));
+    events.push(Event::ManaAbilityActivated {
+        player,
+        source,
+        tapped,
+    });
     Ok(events)
 }
 
@@ -901,7 +908,7 @@ mod tests {
         let (first, rest) = events.split_last().unwrap();
         let used = source.object;
         assert!(
-            matches!(first, Event::ManaAbilityActivated { player, source } if *player == ME && source.id == used),
+            matches!(first, Event::ManaAbilityActivated { player, source, .. } if *player == ME && source.id == used),
             "{first:?}"
         );
         rest.to_vec()

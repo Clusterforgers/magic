@@ -443,5 +443,73 @@
    }
   },
   "−1: Exile another target permanent you own, then return it to the battlefield under your control."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "End"
+     }
+    },
+    "effects": [
+     {
+      "Sacrifice": {
+       "who": {
+        "PlayersWhere": {
+         "who": "EachPlayer",
+         "test": {
+          "Compare": {
+           "left": {
+            "Tallied": {
+             "who": "You",
+             "what": "R6401LandsTappedForMana"
+            }
+           },
+           "op": "Ge",
+           "right": 1
+          }
+         }
+        }
+       },
+       "filter": [
+        {
+         "Type": "Land"
+        }
+       ],
+       "as": "sacrificed"
+      }
+     },
+     {
+      "DealDamage": {
+       "to": {
+        "PlayersWhere": {
+         "who": "EachPlayer",
+         "test": {
+          "CountOf": {
+           "subject": {
+            "Bound": "sacrificed"
+           },
+           "selector": [
+            {
+             "Subtype": "Plains"
+            },
+            {
+             "ControlledBy": "You"
+            }
+           ],
+           "op": "Ge",
+           "right": 1
+          }
+         }
+        }
+       },
+       "amount": 2
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of each end step, each player who tapped a land for mana this turn sacrifices a land of their choice. This enchantment deals 2 damage to each player who sacrificed a Plains this way."
  ]
 ]

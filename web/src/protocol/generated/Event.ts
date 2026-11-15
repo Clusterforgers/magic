@@ -591,7 +591,11 @@ player: PlayerId,
 /**
  * The object it comes from.
  */
-source: ObjectRef, } } | { "AbilityTriggered": Triggered } | { "TriggersOrdered": { 
+source: ObjectRef, 
+/**
+ * The source was tapped to pay its cost ("tapped a land for mana").
+ */
+tapped?: boolean, } } | { "AbilityTriggered": Triggered } | { "TriggersOrdered": { 
 /**
  * Who ordered them.
  */

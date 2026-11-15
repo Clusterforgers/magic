@@ -581,6 +581,7 @@ impl<'a> Scope<'a> {
             | TurnTally::CardsLeftGraveyard
             | TurnTally::R6100CreatureCardsLeftGraveyard
             | TurnTally::R6100CreaturesExiledUnder
+            | TurnTally::R6401LandsTappedForMana
             | TurnTally::CardsDrawnTotal
             | TurnTally::NoncombatDamageTakenTotal => {
                 let kind = match what {
@@ -605,6 +606,7 @@ impl<'a> Scope<'a> {
                         Tally::R6100CreatureCardLeftGraveyard
                     }
                     TurnTally::R6100CreaturesExiledUnder => Tally::R6100CreatureExiledUnder,
+                    TurnTally::R6401LandsTappedForMana => Tally::R6401LandTappedForMana,
                     TurnTally::LifeGainedTotal => Tally::GainedTotal,
                     TurnTally::CreaturesAttacked => Tally::Attackers,
                     TurnTally::CreaturesDied => Tally::Died,

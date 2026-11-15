@@ -1,11 +1,28 @@
 //! Facts of the game for pack r64-01, folded from events: the timestamp clock as each number was last rolled on a die,
-//! which "until any player rolls a 1" reads (Drop Tower).
+//! which "until any player rolls a 1" reads (Drop Tower), and the lands each player tapped for mana this turn
+//! (Desolation).
 
-use crate::state::GameState;
+use mtg_core::card::CardType;
+use mtg_core::ids::{ObjectId, PlayerId};
+
+use crate::state::{GameState, Tally};
 
 /// Notes a die roll of `result` at the clock of the next timestamp, so every effect created before it sees it.
 pub(crate) fn r6401_note_roll(state: &mut GameState, result: u32) {
     state.r6401_rolled_at.insert(result, state.next_timestamp);
+}
+
+/// Counts a land tapped for mana by `player` (`Tally::R6401LandTappedForMana`); another permanent counts for nothing.
+pub(crate) fn r6401_note_tapped_for_mana(
+    state: &mut GameState,
+    player: PlayerId,
+    source: ObjectId,
+) {
+    let land = crate::characteristics::characteristics(state, source)
+        .is_some_and(|chars| chars.types.contains(CardType::Land));
+    if land {
+        state.tally(player, Tally::R6401LandTappedForMana);
+    }
 }
 
 /// Whether `number` was rolled on a die after the effect with this timestamp began.

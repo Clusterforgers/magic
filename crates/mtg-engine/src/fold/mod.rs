@@ -172,7 +172,6 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         // A note for the table: the game state does not change.
         // A prevention changes nothing of its own; triggers read it.
         Event::AbilityLeftToTable(_)
-        | Event::ManaAbilityActivated { .. }
         | Event::ByHandDue(_)
         | Event::DamagePrevented { .. }
         // The `Revealed` before it showed the card; triggers read it from the log.
@@ -554,6 +553,12 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             state.tally(*player, Tally::Cycled);
             crate::r5522_history::r5522_note_cycled(state, *player, *object);
         }
+        Event::ManaAbilityActivated {
+            player,
+            source,
+            tapped: true,
+        } => crate::r6401_history::r6401_note_tapped_for_mana(state, *player, source.id),
+        Event::ManaAbilityActivated { .. } => {}
         Event::DieRolled { player, result, .. } => {
             crate::r6401_history::r6401_note_roll(state, *result);
             c11e_draw_random(state, event);
