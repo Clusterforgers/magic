@@ -13,6 +13,9 @@ use crate::common;
 #[case::drop_tower("Drop Tower")]
 #[case::risky_move("Risky Move")]
 #[case::aegis_of_the_legion("Aegis of the Legion")]
+#[case::aminatou("Aminatou, the Fateshifter")]
+#[case::inniaz("Inniaz, the Gale Force")]
+#[case::order_of_succession("Order of Succession")]
 fn r6401_the_card_compiles_into_its_file(#[case] name: &str) {
     let printed = common::printed()
         .into_iter()

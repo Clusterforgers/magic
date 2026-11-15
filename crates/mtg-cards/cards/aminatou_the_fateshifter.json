@@ -1,7 +1,7 @@
 {
   "oracle_id": "3a30089d-cd2d-49be-9b06-7a2454117692",
   "name": "Aminatou, the Fateshifter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Aminatou, the Fateshifter",
@@ -38,9 +38,17 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 170, "end": 322 }
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "effects": [
+              { "ChooseWords": { "who": "You", "words": ["left", "right"] } },
+              {
+                "R6401PassControl": {
+                  "what": [{ "Not": { "Type": "Land" } }, "Other"],
+                  "pick": "All"
+                }
+              }
+            ]
           }
         },
         { "Rule": { "rule": "CanBeCommander" } }

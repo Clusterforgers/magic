@@ -5128,6 +5128,9 @@ impl Walker<'_> {
                     w.problem(R5502_COMBAT_ONLY);
                 }
             }
+            Effect::R6401PassControl { what, .. } => {
+                w.at("what", |w| w.selector(what));
+            }
             Effect::ExchangeControl { what, duration } => {
                 if matches!(
                     duration,

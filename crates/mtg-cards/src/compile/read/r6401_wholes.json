@@ -299,5 +299,149 @@
    }
   },
   "Equipped creature gets +1/+1 and has mentor. (Whenever it attacks, put a +1/+1 counter on target attacking creature with lesser power.)"
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 6
+    },
+    "effects": [
+     {
+      "ChooseWords": {
+       "who": "You",
+       "words": [
+        "left",
+        "right"
+       ]
+      }
+     },
+     {
+      "R6401PassControl": {
+       "what": [
+        {
+         "Not": {
+          "Type": "Land"
+         }
+        },
+        "Other"
+       ],
+       "pick": "All"
+      }
+     }
+    ]
+   }
+  },
+  "−6: Choose left or right. Each player gains control of all nonland permanents other than ~ controlled by the next player in the chosen direction."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "GroupAttacks": {
+      "what": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       },
+       {
+        "HasKeyword": "Flying"
+       }
+      ],
+      "at_least": 3
+     }
+    },
+    "effects": [
+     {
+      "R6401PassControl": {
+       "side": "Right",
+       "what": [
+        {
+         "Not": {
+          "Type": "Land"
+         }
+        }
+       ],
+       "pick": "ByYou"
+      }
+     }
+    ]
+   }
+  },
+  "Whenever three or more creatures you control with flying attack, each player gains control of a nonland permanent of your choice controlled by the player to their right."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "ChooseWords": {
+       "who": "You",
+       "words": [
+        "left",
+        "right"
+       ]
+      }
+     },
+     {
+      "R6401PassControl": {
+       "what": [
+        {
+         "Type": "Creature"
+        }
+       ],
+       "pick": "ByEach"
+      }
+     }
+    ]
+   }
+  },
+  "Choose left or right. Starting with you and proceeding in the chosen direction, each player chooses a creature controlled by the next player in that direction. Each player gains control of the creature they chose."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 1
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Other",
+        {
+         "OwnedBy": "You"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Exile": {
+       "what": {
+        "Target": 0
+       },
+       "as": "exiled"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "exiled"
+       },
+       "to": {
+        "Battlefield": {
+         "under": "You"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "−1: Exile another target permanent you own, then return it to the battlefield under your control."
  ]
 ]

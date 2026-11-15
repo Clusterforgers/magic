@@ -449,6 +449,7 @@ const RUNS: &[&str] = &[
     "Copy.ExceptIf",
     "Effect.Continuous",
     "Effect.ExchangeControl",
+    "Effect.R6401PassControl",
     "Duration.WhileYouControlSource",
     "Rule.Duration.WhileYouControlSource",
     "Rule.Duration.UntilTheirNextTurn",

@@ -38,6 +38,7 @@ mod r306_add_step;
 mod r370_balance;
 mod r370_bound;
 mod r5521_reduce_speed;
+mod r6401_pass_control;
 mod retarget;
 mod ring_tempts;
 mod rmt2_shares;
@@ -346,6 +347,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::CreateToken { .. } => create_token::run(cx, effect),
         Effect::Continuous { .. } => continuous::run(cx, effect),
         Effect::ExchangeControl { .. } => w6e_exchange::run(cx, effect),
+        Effect::R6401PassControl { .. } => r6401_pass_control::run(cx, effect),
         Effect::Rule { .. } => rule::run(cx, effect),
         Effect::Regenerate { .. } => regenerate::run(cx, effect),
         Effect::RemoveFromCombat { .. } => remove_from_combat::run(cx, effect),
@@ -429,6 +431,7 @@ mod tests {
         {"CreateToken":{"token":{"Named":"treasure"}}},
         {"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}},
         {"ExchangeControl":{"what":["This"],"duration":"Forever"}},
+        {"R6401PassControl":{"side":"Left","what":[],"pick":"All"}},
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
         {"Regenerate":{"what":"This"}}, {"RemoveFromCombat":{"what":"This"}},
         {"BecomeBlocked":{"what":"This"}},
@@ -615,6 +618,7 @@ mod tests {
         "Effect.CreateToken",
         "Effect.Continuous",
         "Effect.ExchangeControl",
+        "Effect.R6401PassControl",
         "Effect.Rule",
         "Effect.Regenerate",
         "Effect.RemoveFromCombat",
