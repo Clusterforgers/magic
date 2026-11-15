@@ -421,7 +421,7 @@ fn a_minion_eyes_the_next_hero_so_the_side_splits() -> Result<(), ScriptError> {
     assert_ne!(Some(eyed), spotlight::focus(driver.state(), pid(boss)));
     let seen = Seen::new(driver.state(), pid(minion));
     let attack = combat::quick_attack(&seen, &options);
-    assert!(!attack.is_empty());
+    assert_ne!(attack.len(), 0);
     let aim = spotlight_aim::attack_aim(driver.state(), pid(minion), &options).unwrap();
     assert_eq!(aimed_at(&attack), vec![aim.hero]);
     assert_eq!(
@@ -437,10 +437,10 @@ fn zap_table(heroes: usize, hexproof_eyed: bool) -> Scenario {
         .map(|seat| {
             if seat == 0 {
                 let mut eyed = hero(30).cards(7).rocks(2);
-                if !hexproof_eyed {
-                    eyed = eyed.with(&[("Pest", 1, 1)]);
-                } else {
+                if hexproof_eyed {
                     eyed.keywords = vec![Keyword::Hexproof];
+                } else {
+                    eyed = eyed.with(&[("Pest", 1, 1)]);
                 }
                 eyed
             } else {
@@ -486,7 +486,7 @@ fn removal_goes_at_the_eyed_hero_not_the_best_target(#[case] heroes: usize) {
     let (driver, ranked) = ranked_targets(zap_table(heroes, false), heroes, heroes + 1);
     let eyed = spotlight::focus(driver.state(), pid(heroes)).unwrap();
     assert_eq!(eyed, pid(0));
-    assert!(!ranked.is_empty());
+    assert_ne!(ranked.len(), 0);
     for target in &ranked {
         let holder = holder(&driver, *target);
         assert!(
@@ -507,7 +507,7 @@ fn removal_leaves_a_hero_that_cannot_be_targeted_with_that_reason(#[case] heroes
     let offered: Vec<PlayerId> = (1..heroes).map(pid).collect();
     let aim = spotlight_aim::target_aim(driver.state(), pid(heroes), &offered).unwrap();
     assert_eq!(aim.why, Some(AimWhy::Unreachable));
-    assert!(!ranked.is_empty());
+    assert_ne!(ranked.len(), 0);
     assert!(
         ranked.iter().all(|target| holder(&driver, *target) != eyed),
         "the hexproof hero is not offered"

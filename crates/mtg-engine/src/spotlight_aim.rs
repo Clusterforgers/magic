@@ -60,7 +60,7 @@ pub fn deadly(state: &GameState, hero: PlayerId) -> Option<PlayerId> {
         .iter()
         .filter(|id| controller_of(state, **id) == Some(hero))
         .filter_map(|id| characteristics(state, *id))
-        .filter(|chars| chars.is_creature())
+        .filter(crate::characteristics::Characteristics::is_creature)
         .map(|chars| chars.power.unwrap_or(0).max(0))
         .sum();
     (power >= life).then_some(boss)
@@ -130,7 +130,8 @@ fn pick(
     keep
 }
 
-/// A creature as combat reads it.
+/// A creature as combat reads it: independent facts read off its characteristics and keywords.
+#[allow(clippy::struct_excessive_bools)]
 struct Fighter {
     id: ObjectId,
     power: i32,
@@ -146,7 +147,8 @@ struct Fighter {
 
 impl Fighter {
     fn of(state: &GameState, id: ObjectId) -> Option<Fighter> {
-        let chars = characteristics(state, id).filter(|c| c.is_creature())?;
+        let chars = characteristics(state, id)
+            .filter(crate::characteristics::Characteristics::is_creature)?;
         let mut fighter = Fighter {
             id,
             power: chars.power.unwrap_or(0).max(0),
@@ -287,7 +289,9 @@ pub fn attack_aim(state: &GameState, seat: PlayerId, options: &AttackOptions) ->
         seat,
         &reach,
         |hero| {
-            let life = state.player(hero).map_or(i32::MAX, |p| p.life());
+            let life = state
+                .player(hero)
+                .map_or(i32::MAX, crate::player::Player::life);
             !spotlight::in_grace(state) && found(hero).is_some_and(|c| c.through >= life)
         },
         |hero| found(hero).is_some_and(|c| c.futile),
