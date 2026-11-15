@@ -3,7 +3,7 @@ import { Pill } from '@/components/Pill'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import { useSeatNamer } from './names'
-import { isYourTurn, turnLeft, turnTeammate } from './selectors'
+import { isYourTurn, turnLeft, turnParty, turnTeammate } from './selectors'
 import { PhaseTag } from './turn/PhaseTag'
 import { usePhase } from './turn/usePhase'
 import { badgeText, badgeTitle } from './turnText'
@@ -14,6 +14,9 @@ const ON_PHASE = {
   you: 'block w-auto rounded-l-none border-2 border-phase border-l-on-phase/30 bg-phase leading-6 text-on-phase',
   them: 'block w-auto rounded-l-none border-2 border-phase border-l-phase/40 bg-phase-soft leading-6 text-foreground',
 }
+
+/** The party's seats from their joined form, which a shallow selector compares as one string. */
+const partySeats = (joined: string): number[] => (joined === '' ? [] : joined.split(',').map(Number))
 
 /**
  * Whose turn it is and in which step, always in the top bar: "Your turn · Round 3 · Precombat main", "Bo's turn · Round 3 ·
@@ -33,6 +36,7 @@ export function TurnBadge() {
       left: turnLeft(state),
       controlledBy: state.view?.turn.controlled_by,
       teammate: turnTeammate(state),
+      party: turnParty(state).join(','),
     })),
   )
   const seat = usePlay((state) => state.seat)
@@ -57,7 +61,7 @@ export function TurnBadge() {
             phase !== null && ON_PHASE[yours ? 'you' : 'them'],
           )}
         >
-          {badgeText(input, seat, name)}
+          {badgeText({ ...input, party: partySeats(input.party) }, seat, name)}
         </Pill>
       </h2>
     </div>

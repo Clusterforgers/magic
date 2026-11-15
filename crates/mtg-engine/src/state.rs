@@ -908,7 +908,7 @@ impl GameState {
     pub(crate) fn opens_round(&self, previous: PlayerId, next: PlayerId) -> bool {
         let (seats, first) = (self.players.len().max(1), self.first_player.index());
         let reversed = crate::rules::r376_turn_order_reversed(self);
-        let shared = self.teams().filter(|teams| teams.shared());
+        let shared = self.teams().filter(|teams| teams.shares_turns());
         let place = |seat: PlayerId| {
             if let Some(teams) = shared {
                 let count = usize::try_from(teams.count().max(1)).unwrap_or(1);

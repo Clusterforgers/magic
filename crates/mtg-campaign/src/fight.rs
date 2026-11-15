@@ -141,7 +141,7 @@ impl FightPlan {
         }
         HouseRules {
             teams: Some(Teams {
-                mode: TeamMode::Teams,
+                mode: TeamMode::SharedTurns,
                 seats,
             }),
             handicaps,

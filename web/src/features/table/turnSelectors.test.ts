@@ -1,11 +1,11 @@
-// Goal: the turn selectors read the stage, the result, the active seat and the priority holder alone: turns run at the stage Turns while the game has no result, a seat is the active one only then and only if the view names it, the viewer's turn is that for the viewer's own seat, and priority is whoever the view names, so every seat that looks draws the same marks; in Two-Headed Giant the active player's teammate has the turn too.
+// Goal: the turn selectors read the stage, the result, the active seat and the priority holder alone: turns run at the stage Turns while the game has no result, a seat is the active one only then and only if the view names it, the viewer's turn is that for the viewer's own seat, and priority is whoever the view names, so every seat that looks draws the same marks; in Two-Headed Giant the active player's teammate has the turn too, and under shared team turns a party without a boss is named as one.
 import { describe, expect, it } from 'vitest'
 import type { PlayState } from '@/play/store'
 import type { GameResult, Stage, TeamMode } from '@/protocol/generated'
 import { clone, must } from '@/test-utils/batches'
 import { fixtureState } from './dev/devGame'
 import { buildFixture } from './dev/fixture'
-import { holdsPriority, isActiveSeat, isYourTurn, turnsRunning, turnTeammate } from './selectors'
+import { holdsPriority, isActiveSeat, isYourTurn, turnParty, turnsRunning, turnTeammate } from './selectors'
 
 /** A four-seat game as seat 0 sees it: Bo (seat 1) has the turn and Alice, the viewer, holds priority. */
 function state(edit: (state: PlayState) => void = () => undefined): PlayState {
@@ -119,5 +119,33 @@ describe('holdsPriority', () => {
     })
     expect([0, 1, 2, 3].some((seat) => holdsPriority(none, seat))).toBe(false)
     expect(holdsPriority({ ...state(), view: null }, 0)).toBe(false)
+  })
+})
+
+describe('turnParty', () => {
+  const shared = (active: number, boss: number | null) =>
+    state((draft) => {
+      const view = must(draft.view)
+      view.house_rules = { teams: { mode: 'shared_turns', seats: [0, 0, 0, 1] } }
+      view.turn.active = active
+      if (boss !== null) must(view.players[boss]).boss = { phases: [], begun: 0 }
+    })
+
+  it.each<[string, number, number | null, number[]]>([
+    ['the heroes on their turn', 0, 3, [0, 1, 2]],
+    ['the heroes on a later seat of theirs', 1, 3, [0, 1, 2]],
+    ["nobody on the boss's turn", 3, 3, []],
+    ['the team without a boss at the table', 0, null, [0, 1, 2]],
+  ])('names %s', (_, active, boss, party) => {
+    const game = shared(active, boss)
+    expect(turnParty(game)).toEqual(party)
+    expect([0, 1, 2, 3].filter((seat) => isActiveSeat(game, seat))).toEqual(active === 3 ? [3] : [0, 1, 2])
+  })
+
+  it.each<TeamMode>(['two_headed_giant', 'teams'])('names nobody in %s', (mode) => {
+    const game = state((draft) => {
+      must(draft.view).house_rules = { teams: { mode, seats: [0, 0, 1, 1] } }
+    })
+    expect(turnParty(game)).toEqual([])
   })
 })

@@ -39,6 +39,11 @@ describe('reading house rules', () => {
       { teams: { mode: 'teams', seats: [0, 1, 0, 1] } },
       { teams: { mode: 'teams', seats: [0, 1, 0, 1] } },
     ],
+    [
+      'a party sharing its turns',
+      { teams: { mode: 'shared_turns', seats: [0, 0, 0, 1] } },
+      { teams: { mode: 'shared_turns', seats: [0, 0, 0, 1] } },
+    ],
     ['an unknown rule, dropped', { starting_life: 30, future_rule: 1 }, { starting_life: 30 }],
   ]
   it.each(good)('reads %s', (_name, body, rules) => {

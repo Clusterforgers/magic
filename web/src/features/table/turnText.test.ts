@@ -138,6 +138,15 @@ describe('badgeText', () => {
     expect(badgeText({ ...turn(0, 'Main1'), teammate: 1 }, viewer, name)).toBe(text)
   })
 
+  it.each<[number | null, string]>([
+    [0, "Your party's turn · Round 3 · Precombat main"],
+    [2, "Your party's turn · Round 3 · Precombat main"],
+    [3, "The party's turn · Round 3 · Precombat main"],
+    [null, "The party's turn · Round 3 · Precombat main"],
+  ])('names the party sharing its turn, seen from seat %s', (viewer, text) => {
+    expect(badgeText({ ...turn(0, 'Main1'), party: [0, 1, 2] }, viewer, name)).toBe(text)
+  })
+
   it.each<[number, number, string]>([
     [0, 1, "Bo's turn · you control them · Round 3 · Precombat main"],
     [1, 1, 'Your turn · Alice controls you · Round 3 · Precombat main'],

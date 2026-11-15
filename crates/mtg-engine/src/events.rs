@@ -402,6 +402,25 @@ pub enum Event {
         /// Each attacker and its target.
         attackers: Vec<(ObjectId, AttackTarget)>,
     },
+    /// A player of a team that shares its turn chose the attacks of their own creatures; the team declares every
+    /// player's choice together once the last has chosen (CR 805, CR 508.1).
+    AttackersChosen {
+        /// The player who chose.
+        player: PlayerId,
+        /// Each of their attackers and its target.
+        attackers: Vec<(ObjectId, AttackTarget)>,
+        /// The attackers they exert.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        exert: Vec<ObjectId>,
+        /// The bands they form.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        bands: Vec<Vec<ObjectId>>,
+    },
+    /// The attacks a team chose break a rule together, so each of its players chooses again.
+    AttackChoicesRefused {
+        /// Why the team's declaration is illegal.
+        reason: String,
+    },
     /// Attackers declared together form a band (CR 702.22c).
     BandFormed {
         /// The attacking player.
@@ -1499,6 +1518,8 @@ impl Event {
     pub fn touched_objects(&self) -> Vec<ObjectId> {
         match self {
             Event::LibraryShuffled { .. }
+            | Event::AttackersChosen { .. }
+            | Event::AttackChoicesRefused { .. }
             | Event::SpiritRevived { .. }
             | Event::AttractionDeckShuffled { .. }
             | Event::RolledToVisit { .. }

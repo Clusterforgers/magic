@@ -55,7 +55,7 @@ const isHandicap = (value: unknown): boolean =>
   optional(value.starting_life, isCount) &&
   optional(value.opening_hand_size, isCount)
 
-const TEAM_MODES: readonly string[] = ['two_headed_giant', 'teams']
+const TEAM_MODES: readonly string[] = ['two_headed_giant', 'teams', 'shared_turns']
 
 /** True for the teams of a table: a known mode and a team number for every seat. */
 export const isTeams = (value: unknown): value is Teams =>

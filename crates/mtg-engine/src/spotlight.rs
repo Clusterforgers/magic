@@ -256,7 +256,7 @@ pub fn in_grace(state: &GameState) -> bool {
     active(state)
         && standing(state).into_iter().any(|hero| {
             let begun = state.rmt8_turns_taken(hero);
-            let finished = if state.turn.active == hero {
+            let finished = if state.is_active(hero) {
                 begun.saturating_sub(1)
             } else {
                 begun

@@ -61,6 +61,7 @@ mod pg_delve_fights;
 mod pg_delve_forfeit;
 mod pg_delve_hooks;
 mod pg_delve_list;
+mod pg_delve_party_turn;
 mod pg_delve_votes;
 mod pg_delves;
 mod pg_failed_games;

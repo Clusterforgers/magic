@@ -2377,7 +2377,7 @@ impl GameState {
     /// The sources whose rules reveal the first card `player` draws this turn, each with whether its reveal is optional,
     /// in the order the rules were gathered.
     pub(crate) fn r4708_first_draw_reveals(&self, player: PlayerId) -> Vec<(ObjectId, bool)> {
-        let active = self.active_player() == Some(player);
+        let active = self.active_player().is_some() && self.is_active(player);
         self.rules()
             .reveal_first_draw
             .iter()
@@ -2724,7 +2724,8 @@ pub(crate) fn draws_from_bottom(state: &GameState, player: PlayerId) -> bool {
 /// their turn and they haven't activated an exhaust ability this turn (Elvish Refueler).
 pub(crate) fn r6007_exhaust_again(state: &GameState, player: PlayerId) -> bool {
     state.rules().exhaust_again.contains(&player)
-        && state.active_player() == Some(player)
+        && state.active_player().is_some()
+        && state.is_active(player)
         && !state.tallies.records.iter().any(|record| {
             record.player == Some(player)
                 && record.event

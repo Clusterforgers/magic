@@ -174,6 +174,21 @@ export function turnTeammate(state: PlayState): PlayerId | undefined {
 }
 
 /**
+ * Under shared team turns, the seats of a party whose turn it is, the active player first: a team of more than one
+ * player without a boss (the boss's side goes by the boss's name). Empty in any other game or turn.
+ */
+export function turnParty(state: PlayState): PlayerId[] {
+  const view = state.view
+  const teams = view?.house_rules?.teams
+  if (view === null || teams?.mode !== 'shared_turns') return []
+  const party = view.players
+    .map((player) => player.seat)
+    .filter((seat) => sharesTurn(teams, seat, view.turn.active))
+  const boss = view.players.some((player) => party.includes(player.seat) && player.boss != null)
+  return party.length > 1 && !boss ? party : []
+}
+
+/**
  * The sides of a fight against a boss: the seat with a boss view and every seat of its team (its minions), the boss
  * first; null at a table without a boss.
  */
