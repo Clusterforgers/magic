@@ -265,6 +265,9 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
     const { from, to } = modification.ChangeText
     return `${group ? 'have' : 'has'} "${word(from)}" changed to "${word(to)}" in ${group ? 'their' : 'its'} text`
   }
+  if ('SetName' in modification) {
+    return `${group ? 'are' : 'is'} named ${modification.SetName}`
+  }
   const { power, toughness } = modification.ModifyPowerToughness
   return `${group ? 'get' : 'gets'} ${power >= 0 ? '+' : ''}${power}/${toughness >= 0 ? '+' : ''}${toughness}`
 }

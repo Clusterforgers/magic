@@ -1108,6 +1108,10 @@ describe('events with more than one shape', () => {
       "Hill Giant can't attack its owner or planeswalkers its owner controls until end of turn",
     ],
     [
+      effect(objects(2), { SetName: 'Hollow One' }, 'UntilEndOfTurn'),
+      'Hill Giant is named Hollow One until end of turn',
+    ],
+    [
       effect(objects(2), 'CantBeBlockedUnlessAttackingOwner', 'UntilEndOfTurn'),
       "Hill Giant can't be blocked unless it's attacking its owner or a permanent its owner controls until end of turn",
     ],
