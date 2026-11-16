@@ -1,4 +1,4 @@
-// Goal: the travel of a batch plays its moves in order, staggered and capped, hides what the viewer may not identify behind a card back, chains the legs of one card, skips a move whose place is not on screen, takes each picture's size from the card it starts or ends on, runs a straight path that ends on the destination's centre and fades there, measures a source when the batch arrives (before the table redraws) and a destination on the next frame, flies nothing under reduced motion or off, and gives way to a newer batch.
+// Goal: the travel of a batch plays its moves in order, staggered and capped, hides what the viewer may not identify behind a card back, chains the legs of one card, skips a move whose place is not on screen, takes each picture's size from the card it starts or ends on, runs an arc with a wind-up and a settle, pose to pose with slow in and out, that ends on the destination's centre and fades there, measures a source when the batch arrives (before the table redraws) and a destination on the next frame, flies nothing under reduced motion or off, and gives way to a newer batch.
 import { beforeEach, describe, expect, it } from 'vitest'
 import { card } from '@/test-utils/cards'
 import { place, travelFrames } from '@/test-utils/fxDom'
@@ -7,7 +7,18 @@ import { MAX_MOVES, MOVE_MS } from './moves'
 import type { FxPlace, Move } from './moves'
 import type { Spot } from './places'
 import type { FxMode } from './store'
-import { createTravel, keyframesOf, MIN_SCALE, planFlights, REFERENCE_CARD } from './travel'
+import {
+  ARC_MAX_PX,
+  ARC_MIN_PX,
+  arcBow,
+  createTravel,
+  keyframesOf,
+  LAND_OVERSHOOT,
+  MIN_SCALE,
+  planFlights,
+  REFERENCE_CARD,
+  WINDUP_SCALE,
+} from './travel'
 import type { Flight } from './travel'
 
 const ME = 0
@@ -174,25 +185,37 @@ describe('the path of a leg', () => {
     return keyframesOf(flight, flight.size ?? SIZE)
   }
 
-  it('runs from the middle of the source to the middle of the destination, in a straight line', () => {
+  it('runs from the middle of the source to the middle of the destination in an arc that bows up', () => {
     const steps = frames(HAND, STACK).map((frame) => pose(frame, SIZE))
     expect(steps[0]).toMatchObject({ x: 150, y: 770 })
-    expect(steps.at(-1)).toMatchObject({ x: 460, y: 316 })
-    expect(steps[1]).toMatchObject({ x: 305, y: 543 })
-    // Every step lies on the line from the first to the last.
-    for (const step of steps)
-      expect((step.x - 150) / (460 - 150)).toBeCloseTo((step.y - 770) / (316 - 770), 6)
+    expect(steps[1]?.x).toBeCloseTo(150, 6)
+    expect(steps[1]?.y).toBeCloseTo(770, 6)
+    expect(steps.at(-1)?.x).toBeCloseTo(460, 6)
+    expect(steps.at(-1)?.y).toBeCloseTo(316, 6)
+    // The top of the arc is off the straight line by its bow, square to the way and upward.
+    const top = steps[2]
+    const bow = Math.hypot((top?.x ?? 0) - 305, (top?.y ?? 0) - 543)
+    expect(bow).toBeCloseTo(Math.hypot(310, 454) * 0.12, 3)
+    expect(top?.y).toBeLessThan(543)
+    expect(((top?.x ?? 0) - 305) * 310 + ((top?.y ?? 0) - 543) * -454).toBeCloseTo(0, 3)
   })
 
-  it('leaves at the offsets of its steps, whole until it lands and gone when it has', () => {
+  it('goes pose to pose: wind-up, the top of the arc, the landing, the settle and the fade, each easing into the next', () => {
     const steps = frames(HAND, STACK)
-    expect(steps.map((frame) => frame.offset)).toEqual([0, 0.5, 0.85, 1])
-    expect(steps.map((frame) => frame.opacity)).toEqual([1, 1, 1, 0])
+    expect(steps.map((frame) => frame.offset)).toEqual([0, 0.15, 0.5, 0.8, 0.9, 1])
+    expect(steps.map((frame) => frame.opacity)).toEqual([1, 1, 1, 1, 1, 0])
+    // Slow in to the top of the arc and slow out to the landing.
+    expect(steps[1]?.easing).toBe('cubic-bezier(0.4, 0, 1, 1)')
+    expect(steps[2]?.easing).toBe('cubic-bezier(0, 0, 0.2, 1)')
+    for (const frame of steps) expect(frame.easing).toBeDefined()
   })
 
-  it('takes the size of the card it starts on and the size that fits the chip it lands on', () => {
+  it('takes the size of the card it starts on, dips as it winds up, overshoots the chip it lands on and settles to it', () => {
     const steps = frames(HAND, STACK).map((frame) => pose(frame, SIZE))
     expect(steps[0]?.scale).toBe(1)
+    expect(steps[1]?.scale).toBeCloseTo(WINDUP_SCALE, 6)
+    expect(steps[3]?.scale).toBeCloseTo((32 / 140) * LAND_OVERSHOOT, 6)
+    expect(steps[4]?.scale).toBeCloseTo(32 / 140, 6)
     expect(steps.at(-1)?.scale).toBeCloseTo(32 / 140, 6)
   })
 
@@ -205,7 +228,7 @@ describe('the path of a leg', () => {
 
   it('is whole halfway, even from and to a chip, so it can be read', () => {
     const steps = frames(spot(10, 10, 24, 16), STACK).map((frame) => pose(frame, REFERENCE_CARD))
-    expect(steps[1]?.scale).toBe(1)
+    expect(steps[2]?.scale).toBe(1)
     expect(steps[0]?.scale).toBeGreaterThanOrEqual(MIN_SCALE)
     expect(steps[0]?.scale).toBeLessThan(0.5)
   })
@@ -225,13 +248,39 @@ describe('the path of a leg', () => {
     }
   })
 
-  it('keeps an ability chip at its own size all the way', () => {
+  it('keeps an ability chip at its own size but for the wind-up and the landing', () => {
     const chip = { width: 144, height: 32 }
     const [flight] = plan({ moves: [move({ kind: 'activated' })], starts: [HAND], ends: [STACK] })
     if (flight === undefined) throw new Error('no flight')
     const steps = keyframesOf(flight, chip).map((frame) => pose(frame, chip))
-    expect(steps.map((step) => step.scale)).toEqual([1, 1, 1, 1])
+    expect(steps.map((step) => step.scale)).toEqual([1, WINDUP_SCALE, 1, LAND_OVERSHOOT, 1, 1])
     expect(steps[0]).toMatchObject({ x: 150, y: 770 })
+  })
+})
+
+describe('the bow of the arc', () => {
+  it.each([
+    ['a short way', { x: 0, y: 0 }, { x: 100, y: 0 }, ARC_MIN_PX],
+    ['a middling way', { x: 0, y: 0 }, { x: 0, y: 500 }, 60],
+    ['a long way', { x: 0, y: 0 }, { x: 2000, y: 100 }, ARC_MAX_PX],
+  ])('bows %s by a share of it, between its least and greatest bow', (_name, a, b, length) => {
+    const bow = arcBow(a, b)
+    expect(Math.hypot(bow.x, bow.y)).toBeCloseTo(length, 6)
+    expect(bow.x * (b.x - a.x) + bow.y * (b.y - a.y)).toBeCloseTo(0, 6)
+  })
+
+  it.each([
+    ['upward on a level way', { x: 0, y: 0 }, { x: 300, y: 0 }],
+    ['upward on a way back', { x: 300, y: 0 }, { x: 0, y: 0 }],
+    ['upward on a slanted way down', { x: 0, y: 0 }, { x: 300, y: 300 }],
+  ])('bows %s', (_name, a, b) => {
+    expect(arcBow(a, b).y).toBeLessThan(0)
+  })
+
+  it('bows rightward on an upright way, and not at all where the ends meet', () => {
+    expect(arcBow({ x: 0, y: 500 }, { x: 0, y: 0 }).x).toBeGreaterThan(0)
+    expect(arcBow({ x: 0, y: 0 }, { x: 0, y: 500 }).x).toBeGreaterThan(0)
+    expect(arcBow({ x: 5, y: 5 }, { x: 5, y: 5 })).toEqual({ x: 0, y: 0 })
   })
 })
 

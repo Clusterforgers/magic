@@ -29,7 +29,7 @@ export interface StrikePlan {
 }
 
 /** How long a strike takes there and back, in ms (times the slow-down). */
-export const STRIKE_MS = 1500
+export const STRIKE_MS = 1100
 
 /** The share of a strike at which it lands on its target. */
 export const STRIKE_HIT = 0.5

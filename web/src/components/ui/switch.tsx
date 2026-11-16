@@ -6,8 +6,8 @@ function Switch({ className, ...props }: SwitchPrimitive.Root.Props) {
     <SwitchPrimitive.Root
       data-slot="switch"
       className={cn(
-        // The ::after widens the press target past the 20 px track.
-        'peer relative inline-flex h-5 w-9 shrink-0 items-center rounded-full border border-transparent transition-colors duration-fast ease-out after:absolute after:-inset-x-2 after:-inset-y-2 data-checked:bg-primary data-unchecked:bg-input data-disabled:cursor-not-allowed data-disabled:opacity-50',
+        // The ::after widens the press target past the 20 px track, to 44 px high under a coarse pointer.
+        'peer relative inline-flex h-5 w-9 shrink-0 items-center rounded-full border border-transparent press after:absolute after:-inset-x-2 after:-inset-y-2 pointer-coarse:after:-inset-y-3 data-checked:bg-primary data-unchecked:bg-input data-disabled:cursor-not-allowed data-disabled:opacity-50',
         className,
       )}
       {...props}
