@@ -17,6 +17,12 @@ export const NOTE_TEXT: Record<NothingToDo, string> = {
   Block: 'You have no creatures that can block',
 }
 
+/** Each kind in a few words, for the band's status beside a prompt. */
+export const NOTE_SHORT: Record<NothingToDo, string> = {
+  Attack: 'No creature can attack',
+  Block: 'No creature can block',
+}
+
 /** The steps a note speaks for: attacks are declared and blocks follow; outside them the note is stale. */
 const NOTE_STEPS: Record<NothingToDo, readonly Step[]> = {
   Attack: ['DeclareAttackers', 'DeclareBlockers'],
