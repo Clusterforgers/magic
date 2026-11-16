@@ -601,7 +601,14 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::PermanentPhasedOut { .. } => crate::phasing::w11b_fold_out_event(state, event)?,
         Event::PermanentPhasedIn { object } => crate::phasing::fold_in(state, *object)?,
         Event::Monstrous { object, .. } => set_monstrous(state, *object)?,
-        Event::Devoured { object, count } => w7e_set_devoured(state, *object, *count)?,
+        Event::Devoured {
+            object,
+            count,
+            devoured,
+        } => {
+            w7e_set_devoured(state, *object, *count)?;
+            crate::r6500_devoured::r6500_keep_devoured(state, *object, devoured);
+        }
         Event::ClassLevelGained { object, level, .. } => set_level(state, *object, *level)?,
         Event::TurnedFaceUp { object, player, .. } => {
             turn_face_up(state, *object)?;

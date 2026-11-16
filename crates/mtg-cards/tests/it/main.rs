@@ -126,6 +126,7 @@ mod r6104_cards;
 mod r6401_cards;
 mod r6403_cards;
 mod r6404_cards;
+mod r6500_cards;
 mod r6e;
 mod read_sheet;
 mod read_tier;

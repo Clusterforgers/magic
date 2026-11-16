@@ -478,10 +478,11 @@ fn check_counters_settled(state: &GameState) -> Result<(), Violation> {
                 "{id:?} holds +1/+1 and -1/-1 counters at a decision point"
             )));
         }
-        // A planeswalker with no loyalty went to its owner's graveyard (CR 704.5i).
+        // A planeswalker with no loyalty went to its owner's graveyard (CR 704.5i), unless a rule keeps its controller's.
         let walker = state.object(id).filter(|object| {
             object.base_types().contains(CardType::Planeswalker)
                 && state.is_alive(object.controller())
+                && !mtg_engine::rules::r6500_zero_loyalty_stays(state, object.controller())
         });
         if walker.is_some() && held(&CounterKind::Loyalty) == 0 {
             return Err(Violation::Counters(format!(

@@ -96,6 +96,7 @@ mod r6101_stickers;
 mod r6401_attractions;
 mod r6403_aura_swap;
 mod r6403_meld;
+mod r6500_pieces;
 mod random_pick;
 mod reconfigure;
 mod recursion;

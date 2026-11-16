@@ -49,6 +49,7 @@ All That Glitters
 All of History, All at Once
 Alpha Deathclaw
 Alphinaud Leveilleur
+Alrund, God of the Cosmos // Hakka, Whispering Raven
 Altar's Reap
 Alter Reality
 Amass the Components
@@ -1662,6 +1663,7 @@ Ramses Overdark
 Rancor
 Ransom Note
 Raphael, Tag Team Tough
+Rasputin Dreamweaver
 Ratadrabik of Urborg
 Ravenous Leucrocota
 Ravenous Slime
@@ -1775,6 +1777,7 @@ Saiba Cryptomancer
 Saltcrusted Steppe
 Sami's Curiosity
 Samurai's Katana
+Sanctum Lurker
 Sanctum Weaver
 Sandcrafter Mage
 Sandsteppe Mastodon
@@ -2086,6 +2089,7 @@ Tandem Lookout
 Tangle Tumbler
 Tangleweave Armor
 Tanuki Transplanter
+Tapestry Warden
 Tariff
 Tato Farmer
 Taurean Mauler
@@ -2351,6 +2355,7 @@ Voidmage Husher
 Volshe Tideturner
 Volunteer Reserves
 Vona, Butcher of Magan
+Voracious Dragon
 Vorel of the Hull Clade
 Vorrac Battlehorns
 Vow of Duty

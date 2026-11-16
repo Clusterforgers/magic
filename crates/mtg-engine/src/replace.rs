@@ -82,7 +82,8 @@ pub fn process(
 ) -> Result<Processed, EngineError> {
     let proposed = crate::prohibit::filter(state, proposed);
     if !(state.possible.replacements || state.possible.protection) || proposed.is_empty() {
-        return r4708_reveal::r4708_reveals(state, proposed.clone(), proposed, journal);
+        let events = crate::r6500_caps::r6500_capped(state, proposed.clone());
+        return r4708_reveal::r4708_reveals(state, proposed, events, journal);
     }
     // A card that enters as one of its faces (a land played as one, a card put onto the battlefield transformed)
     // enters as that face, so the effects that apply to its entering are the face's (CR 614.12, 712.14a): the
@@ -108,7 +109,8 @@ pub fn process(
                 || r401_riders::r401_exiled_instead(state, event)
         })
     {
-        return r4708_reveal::r4708_reveals(state, proposed.clone(), proposed, journal);
+        let events = crate::r6500_caps::r6500_capped(state, proposed.clone());
+        return r4708_reveal::r4708_reveals(state, proposed, events, journal);
     }
     let original = proposed.clone();
     let left = shields
@@ -161,6 +163,7 @@ pub fn process(
             let left: Vec<(PlayerId, Choice)> = step.answers.clone().cloned().collect();
             let mut events = step.finish();
             cost_counters::resettle(&original, &mut events);
+            let events = crate::r6500_caps::r6500_capped(state, events);
             r4708_reveal::r4708_reveals(state, original, events, &left)
         }
     }
@@ -3416,7 +3419,7 @@ impl Pass<'_> {
             .and_then(|made| made.checked_mul(each))
             .and_then(|total| i32::try_from(total).ok())
             .filter(|total| *total > 0);
-        if let Some(slot) = w7e_devoured_slot(object, made) {
+        if let Some(slot) = w7e_devoured_slot(object, &chosen) {
             self.slots.insert(entering + 1, slot);
         }
         if let (Some(card), Some(delta)) = (self.state.object(object), gained) {
@@ -4137,10 +4140,16 @@ mod r401_riders;
 
 /// The event that keeps how many permanents `object` devoured as it entered, which its abilities read once it is on
 /// the battlefield; none when it devoured nothing.
-fn w7e_devoured_slot(object: ObjectId, made: usize) -> Option<Slot> {
-    let count = u32::try_from(made).ok().filter(|count| *count > 0)?;
+fn w7e_devoured_slot(object: ObjectId, chosen: &[ObjectId]) -> Option<Slot> {
+    let count = u32::try_from(chosen.len())
+        .ok()
+        .filter(|count| *count > 0)?;
     Some(Slot {
-        item: Item::One(Event::Devoured { object, count }),
+        item: Item::One(Event::Devoured {
+            object,
+            count,
+            devoured: chosen.to_vec(),
+        }),
         applied: Vec::new(),
         frozen: true,
     })

@@ -360,6 +360,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::SpentFrom { .. }
         | Pred::GravedThisTurn
         | Pred::GravedThisCombat
+        | Pred::R6500StartedTurnUntapped
         | Pred::SharesColorWithLastCast
         | Pred::CouldAttackThisTurn
         | Pred::ArrivedThisTurn
@@ -458,6 +459,7 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         StatKind::Colors | StatKind::R374ColorSet | StatKind::R4700ChosenColors => Traits::COLORS,
         StatKind::BasicLandTypes | StatKind::CreatureType | StatKind::Subtypes => Traits::SUBTYPES,
         StatKind::R6018PermanentTypes => Traits::TYPES,
+        StatKind::R6500StationValue => Traits::POWER.or(Traits::TOUGHNESS),
         StatKind::R374Types => Traits::TYPES.or(Traits::SUBTYPES).or(Traits::SUPERTYPES),
         StatKind::R374CreatureTypes => Traits::TYPES.or(Traits::SUBTYPES),
         StatKind::R374Bushido | StatKind::R374Toxic => Traits::KEYWORDS,
@@ -489,6 +491,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Promised
         | Amount::ResolvedThisTurn
         | Amount::Devoured
+        | Amount::R6500DevouredMatching(_)
         | Amount::RemovedThisWay(_)
         | Amount::Bound(_)
         | Amount::CastWith(_)
