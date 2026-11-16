@@ -650,6 +650,7 @@ impl GameState {
             delayed: Vec::new(),
             next_delayed: 0,
             r6703_ignored: Vec::new(),
+            r6703_countered_in: None,
             limits_spent: BTreeSet::new(),
             game_limits_spent: BTreeSet::new(),
             r5515_power_ups: BTreeMap::new(),

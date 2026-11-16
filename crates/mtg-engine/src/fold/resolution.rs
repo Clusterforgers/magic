@@ -345,7 +345,11 @@ fn end(state: &mut GameState, id: ObjectId, outcome: ResolutionOutcome) -> Resul
     // A spell that a replacement effect sent elsewhere (exile instead of the graveyard, or the battlefield of the player
     // who countered it: Desertion) is off the stack already.
     let on_stack = state.zones.get(Zone::Stack).contains(&id);
-    let elsewhere_ok = zone != Zone::Battlefield || outcome == ResolutionOutcome::Countered;
+    let elsewhere_ok = zone != Zone::Battlefield
+        || (outcome == ResolutionOutcome::Countered && state.r6703_countered_in == Some(id));
+    if state.r6703_countered_in == Some(id) {
+        state.r6703_countered_in = None;
+    }
     if !on_stack && (kind == ObjectKind::Ability || !elsewhere_ok) {
         return Err(invalid(format!("{id:?} is not on the stack")));
     }

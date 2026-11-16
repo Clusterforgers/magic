@@ -137,6 +137,16 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::CardParted { .. }
         | Event::CommanderStayed { .. }
         | Event::ObjectLeftGame { .. } => {
+            // A countered spell a replacement puts onto the battlefield (Desertion) ends its resolution next.
+            if let Event::ZoneChanged {
+                object,
+                from: Zone::Stack,
+                to: Zone::Battlefield,
+                cause: crate::events::ZoneCause::Countered,
+            } = event
+            {
+                state.r6703_countered_in = Some(*object);
+            }
             zones::apply(state, event)?;
             opening::dk26_exiled(state, event)
         }
