@@ -28,7 +28,7 @@ import { mergeLogNames, rememberDeparted } from './rememberNames'
 import { dueLinesAfter, owesByHand } from './byHand'
 import { appendChat, appendLog, createPlayStore, mergeHistory } from './store'
 import type { PlayState, PlayStore } from './store'
-import { applyBatch, fromFirstBatch, fromSnapshot, indexById, withBank, withPresence } from './view'
+import { applyBatch, batchEnd, fromFirstBatch, fromSnapshot, indexById, withBank, withPresence } from './view'
 import { createAwayClocks } from './awayClocks'
 import { refusalNotice } from '@/features/table/whyWords'
 
@@ -455,7 +455,7 @@ export function createSession(deps: SessionDeps): Session {
       view,
       viewAt: Date.now(),
       objectsById,
-      seq: batch.from_seq + batch.events.length,
+      seq: batchEnd(batch),
       byHand: owesByHand(state.byHand, batch.events, state.seat, state.objectsById, objectsById),
       dueLines: dueLinesAfter(state.dueLines, batch.events, state.seat, state.objectsById, objectsById),
       log: appendLog(state.log, batch.from_seq, batch.events, state.objectsById, objectsById, batch.shown),

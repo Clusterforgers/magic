@@ -794,6 +794,7 @@ impl TableView {
             },
             combat_forecast: pending_combat_forecast(state),
             result: state.result(),
+            loop_draw: state.loop_draw().map(<[String]>::to_vec),
             tokens: token_offers(state, viewer),
         }
     }

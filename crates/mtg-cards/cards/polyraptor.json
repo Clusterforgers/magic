@@ -1,0 +1,19 @@
+{
+  "oracle_id": "e47e3a40-f51f-41ed-8e7c-06200a2abc22",
+  "name": "Polyraptor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Polyraptor",
+      "oracle_fingerprint": "26bec7f91ed6727a633f345a46bee412",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": "This" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

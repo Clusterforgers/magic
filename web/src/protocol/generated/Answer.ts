@@ -3,6 +3,7 @@ import type { AttackTarget } from "./AttackTarget";
 import type { CardsChoice } from "./CardsChoice";
 import type { CostsChoice } from "./CostsChoice";
 import type { DivideChoice } from "./DivideChoice";
+import type { LoopAnswer } from "./LoopAnswer";
 import type { ModeChoice } from "./ModeChoice";
 import type { MulliganChoice } from "./MulliganChoice";
 import type { NameChoice } from "./NameChoice";
@@ -34,4 +35,4 @@ exert?: Array<ObjectId>,
  * The bands, each of at least two attackers that attack the same player, planeswalker or battle; one with banding
  * or "bands with other" is offered with `AttackerOption::banding`.
  */
-bands?: Array<Array<ObjectId>>, } } | { "DeclareBlockers": Array<[ObjectId, ObjectId]> } | { "AssignDamage": Array<[ObjectId, number]> } | { "Discard": Array<ObjectId> } | { "ChooseTargets": TargetChoice } | { "ChooseMode": ModeChoice } | { "ChooseNumber": NumberChoice } | { "ChooseName": NameChoice } | { "DivideAmount": DivideChoice } | { "ChooseCards": CardsChoice } | { "OrderCards": OrderChoice } | { "Scry": ScryChoice } | { "YesNo": YesNoChoice } | { "ChooseOption": OptionChoice } | { "ChooseCosts": CostsChoice } | { "OrderTriggers": TriggersChoice } | { "ChooseReplacement": ReplacementChoice } | "Undo";
+bands?: Array<Array<ObjectId>>, } } | { "DeclareBlockers": Array<[ObjectId, ObjectId]> } | { "AssignDamage": Array<[ObjectId, number]> } | { "Discard": Array<ObjectId> } | { "ChooseTargets": TargetChoice } | { "ChooseMode": ModeChoice } | { "ChooseNumber": NumberChoice } | { "ChooseName": NameChoice } | { "DivideAmount": DivideChoice } | { "ChooseCards": CardsChoice } | { "OrderCards": OrderChoice } | { "Scry": ScryChoice } | { "YesNo": YesNoChoice } | { "ChooseOption": OptionChoice } | { "ChooseCosts": CostsChoice } | { "OrderTriggers": TriggersChoice } | { "ChooseReplacement": ReplacementChoice } | { "Loop": LoopAnswer } | "Undo";

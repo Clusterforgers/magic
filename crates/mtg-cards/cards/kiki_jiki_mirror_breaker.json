@@ -1,0 +1,46 @@
+{
+  "oracle_id": "a34b7416-cfe3-4a1e-a8c1-a3056b747519",
+  "name": "Kiki-Jiki, Mirror Breaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kiki-Jiki, Mirror Breaker",
+      "oracle_fingerprint": "4971bfa73d13fd289d8c3f4ef2bfe0eb",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Supertype": "Legendary" } },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": { "of": { "Target": 0 }, "except": [{ "AddKeyword": "Haste" }] }
+                  },
+                  "as": "copy"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Sacrifice": { "filter": [{ "Is": { "Bound": "copy" } }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

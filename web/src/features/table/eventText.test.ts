@@ -258,6 +258,22 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   PriorityPassed: [{ PriorityPassed: { player: 1 } }, 'Bo passes priority'],
   LandPlayed: [{ LandPlayed: { player: 0, object: 3 } }, 'Ana plays Forest'],
   TookBack: [{ TookBack: { player: 0, kind: 'Cast', name: 'Shock' } }, 'Ana took back casting Shock'],
+  LoopRepeated: [
+    {
+      LoopRepeated: {
+        player: 0,
+        cards: ['Kiki-Jiki, Mirror Breaker', 'Pestermite'],
+        iterations: 50,
+        total: { tokens: [{ controller: 0, name: 'Pestermite', count: 50 }] },
+        events: 1200,
+      },
+    },
+    'Kiki-Jiki, Mirror Breaker and Pestermite loop repeated 50 times by Ana: +50 Pestermite tokens for Ana',
+  ],
+  LoopDrawn: [
+    { LoopDrawn: { cards: ['Polyraptor', 'Aether Flash'] } },
+    'Polyraptor and Aether Flash would loop forever with no one able to stop it: the game is a draw',
+  ],
   SpellCast: [{ SpellCast: { player: 1, object: 4 } }, 'Bo casts Lightning Bolt'],
   SpellResolved: [{ SpellResolved: { object: 4 } }, 'Lightning Bolt resolves'],
   PermanentTapped: [{ PermanentTapped: { object: 3 } }, 'Forest becomes tapped'],

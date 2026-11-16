@@ -770,6 +770,11 @@ impl Driver {
                 Answer::OrderTriggers(TriggersChoice((0..o.triggers.len()).collect()))
             }
             DecisionKind::ChooseReplacement(_) => Answer::ChooseReplacement(ReplacementChoice(0)),
+            // Passive: no shortcut, except a draw for a loop no one has to act in.
+            DecisionKind::Loop(options) if options.can_draw => {
+                Answer::Loop(mtg_engine::loops::LoopAnswer::Draw)
+            }
+            DecisionKind::Loop(_) => Answer::Loop(mtg_engine::loops::LoopAnswer::Stop),
         }
     }
 

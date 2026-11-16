@@ -85,6 +85,10 @@ combat_forecast: CombatForecast | null,
  */
 result: GameResult | null, 
 /**
+ * The cards of the loop of mandatory actions that drew the game (CR 104.4b); left out otherwise.
+ */
+loop_draw?: Array<string>, 
+/**
  * The tokens the viewer's own cards make, in any zone, by card name: the manual panel offers them. Left out for a
  * spectator and while there are none.
  */

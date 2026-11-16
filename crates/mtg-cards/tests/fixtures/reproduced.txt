@@ -719,6 +719,7 @@ Exotic Orchard
 Exploding Barrel
 Exploration
 Explore
+Exquisite Blood
 Exquisite Huntmaster
 Exterminate!
 Eye of Nidhogg
@@ -1161,6 +1162,7 @@ Kentaro, the Smiling Cat
 Keranos, God of Storms
 Kess, Dissident Mage
 Kessig Wolf Run
+Kiki-Jiki, Mirror Breaker
 Kill! Maim! Burn!
 Kimoyo Beads
 Kindred Boon
@@ -1565,6 +1567,7 @@ Pentad Prism
 Perch Protection
 Persist
 Personal Sanctuary
+Pestermite
 Pestilent Syphoner
 Peter Parker's Camera
 Petrified Wood-Kin
@@ -1600,6 +1603,7 @@ Poet's Quill
 Poison the Waters
 Pollen Lullaby
 Polymorphist's Jest
+Polyraptor
 Pompous Gadabout
 Pongify
 Pontiff of Blight

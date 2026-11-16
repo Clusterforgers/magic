@@ -51,6 +51,7 @@ export const DECISION_LABEL: Record<DecisionName, string> = {
   ChooseCosts: 'Choose costs',
   OrderTriggers: 'Order triggers',
   ChooseReplacement: 'Choose which effect applies first',
+  Loop: 'Repeat a loop',
 }
 
 /** The name of a decision kind; a new kind stops compiling here until it is named. A kind a newer server sends is `Unknown`. */
@@ -75,6 +76,7 @@ export function decisionName(kind: DecisionKind): DecisionName | 'Unknown' {
   if ('ChooseCosts' in kind) return 'ChooseCosts'
   if ('OrderTriggers' in kind) return 'OrderTriggers'
   if ('ChooseReplacement' in kind) return 'ChooseReplacement'
+  if ('Loop' in kind) return 'Loop'
   if ('Discard' in kind) return 'Discard'
   void (kind satisfies never)
   return 'Unknown'
@@ -243,6 +245,7 @@ export const WAIT_PHRASE: Record<DecisionName, string> = {
   ChooseCosts: 'to choose costs',
   OrderTriggers: 'to order triggers',
   ChooseReplacement: 'to choose which effect applies first',
+  Loop: 'to choose how many times a loop repeats',
 }
 
 /** Whether `name` is a decision this page knows (a newer server may name one it does not). */

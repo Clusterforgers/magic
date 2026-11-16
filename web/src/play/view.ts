@@ -124,6 +124,11 @@ function rebuild(previous: StateView, table: TableView, objects: ObjectView[]): 
   return shallowSame(previous, next) ? previous : next
 }
 
+/** The log position after `batch`: its events, and the loop iterations it folds without listing them. */
+export function batchEnd(batch: EventBatch): number {
+  return batch.from_seq + batch.events.length + (batch.folded ?? 0)
+}
+
 /** Advances `view` by one batch: replaces the table, upserts `objects`, drops `gone`, keeps objects in id order. */
 export function applyBatch(view: StateView, batch: EventBatch): StateView {
   return rebuild(view, batch.table, mergeObjects(view.objects, batch.objects, batch.gone))

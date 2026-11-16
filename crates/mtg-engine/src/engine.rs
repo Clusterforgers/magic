@@ -1,5 +1,7 @@
 //! The public driver: advance until a player must decide, then validate and apply answers.
 
+mod loop_run;
+
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
 use crate::announce::{Answered, Next, Pending, Special, What, announce};
@@ -40,6 +42,7 @@ pub struct Checkpoint {
     last: Option<LastAction>,
     mana_run: Option<ManaRun>,
     rewinds: usize,
+    offer: Option<crate::loops::Offer>,
 }
 
 /// A batch of events the replacement step has questions about: the batch waits, and the answers so far are kept, until
@@ -89,6 +92,12 @@ pub struct Engine {
     dropped: Vec<(usize, Vec<Event>)>,
     /// Whether backing out of a cast also undoes the mana tapped for it, cutting the log ([`Engine::set_rewind_on_cancel`]).
     rewind_on_cancel: bool,
+    /// The priority points of the step, watched for loops (`loops`).
+    watch: crate::loops::Watch,
+    /// The loop offer the engine waits on, in place of the priority decision under it.
+    offer: Option<crate::loops::Offer>,
+    /// A shortcut is running its iterations: answers are not watched.
+    looping: bool,
 }
 
 impl Engine {
@@ -113,6 +122,9 @@ impl Engine {
             mana_run: None,
             dropped: Vec::new(),
             rewind_on_cancel: false,
+            watch: crate::loops::Watch::default(),
+            offer: None,
+            looping: false,
         };
         engine.advance()?;
         Ok(engine)
@@ -223,7 +235,13 @@ impl Engine {
     /// Illegal answers return an error and leave the engine untouched. On success returns every
     /// event produced, including the automatic steps that followed the answer.
     pub fn apply(&mut self, answer: Answer) -> Result<Vec<Event>, EngineError> {
+        if self.offer.is_some() {
+            return self.answer_loop(answer);
+        }
         let decision = self.decision.as_ref().ok_or(EngineError::NoDecision)?;
+        let watched = self
+            .loop_how(decision, &answer)
+            .map(|how| (how, decision.kind.name(), answer.clone()));
         let given = answer.clone();
         let outcome = handle(
             &self.state,
@@ -252,7 +270,7 @@ impl Engine {
             }
             self.advance()
         });
-        let events = self.finish(checkpoint, result)?;
+        let mut events = self.finish(checkpoint, result)?;
         let step = StepFacts {
             player,
             priority,
@@ -263,6 +281,15 @@ impl Engine {
         };
         self.last = take_back::next_last(self.last.take(), &self.state, self.mana_run, &step);
         self.mana_run = take_back::next_run(self.mana_run, &step);
+        if let Some((how, kind, answer)) = watched {
+            let taken = crate::loops::Taken {
+                player,
+                kind,
+                answer,
+                how,
+            };
+            self.watch_loops(taken, &mut events)?;
+        }
         Ok(events)
     }
 
@@ -390,6 +417,7 @@ impl Engine {
 
     /// Notes that `player` did something outside the take-back records: a later take-back cannot undo it.
     fn acted_aside(&mut self, player: PlayerId) {
+        self.watch.clear();
         self.last = take_back::acted_aside(self.last.take(), player);
         self.mana_run = None;
     }
@@ -444,6 +472,7 @@ impl Engine {
             last: self.last.clone(),
             mana_run: self.mana_run,
             rewinds: self.dropped.len(),
+            offer: self.offer.clone(),
         }
     }
 
@@ -474,6 +503,8 @@ impl Engine {
         self.last = checkpoint.last;
         self.mana_run = checkpoint.mana_run;
         self.batch = None;
+        self.offer = checkpoint.offer;
+        self.watch.clear();
         Ok(())
     }
 
@@ -856,6 +887,7 @@ impl Engine {
 
     /// Runs the game until a decision is needed or the game ends.
     fn advance(&mut self) -> Result<(), EngineError> {
+        self.offer = None;
         for _ in 0..MAX_INTERNAL_STEPS {
             // A batch waits for the answer to a question of the replacement step: that question is the decision.
             if self.held.is_some() {

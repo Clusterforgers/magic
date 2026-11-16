@@ -1,7 +1,7 @@
 /** A replay as plain data: the view and log at any step, folded from the steps with checkpoints, and the perspective. */
 import { appendLog } from '@/play/store'
 import type { LogEntry } from '@/play/store'
-import { applyBatch, fromFirstBatch, indexById } from '@/play/view'
+import { applyBatch, batchEnd, fromFirstBatch, indexById } from '@/play/view'
 import type { EventBatch, PlayerId, Replay, StateView } from '@/protocol/generated'
 
 /** The table at one step: the view and the log up to it. */
@@ -26,7 +26,7 @@ function next(previous: Frame, step: EventBatch): Frame {
     indexById(view.objects),
     step.shown,
   )
-  return { view, log, seq: step.from_seq + step.events.length }
+  return { view, log, seq: batchEnd(step) }
 }
 
 /**
@@ -39,7 +39,7 @@ export function createCursor(steps: readonly EventBatch[]): ((index: number) => 
   const start = first === undefined ? null : fromFirstBatch(first)
   if (first === undefined || start === null) return null
   const kept = new Map<number, Frame>([
-    [0, { view: start, log: appendLog([], 0, first.events), seq: first.events.length }],
+    [0, { view: start, log: appendLog([], 0, first.events), seq: batchEnd(first) }],
   ])
   let last: [number, Frame] = [0, kept.get(0) as Frame]
   return (wanted: number): Frame => {
