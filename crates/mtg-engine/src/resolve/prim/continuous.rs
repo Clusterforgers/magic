@@ -491,6 +491,15 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::SetColors(colors) => Modification::SetColors(colors.iter().copied().collect()),
         Wanted::AddColors(colors) => Modification::AddColors(colors.iter().copied().collect()),
         Wanted::AddKeyword(keyword) => Modification::AddKeyword(chosen_in(scope, keyword)),
+        Wanted::R6601KeywordX { keyword, count } => {
+            let number = u32::try_from(scope.amount(count)?.max(0)).unwrap_or(u32::MAX);
+            let numbered = keyword
+                .r6601_numbered(number)
+                .ok_or(ResolveError::Unsupported(
+                    "Mod.R6601KeywordX of a keyword without a number",
+                ))?;
+            Modification::AddKeyword(numbered)
+        }
         Wanted::LockKeyword(keyword) => Modification::LockKeyword(keyword.clone()),
         Wanted::RemoveKeyword(keyword) => Modification::RemoveKeyword(keyword.clone()),
         Wanted::RemoveKeywordKind(kind) => Modification::RemoveKeywordKind(*kind),
@@ -527,6 +536,9 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::CantAttackYou(attacked) => Modification::CantAttackYou {
             you: scope.controller,
             attacked: *attacked,
+        },
+        Wanted::R6601CantAttackPlayers(who) => Modification::R6601CantAttackPlayers {
+            players: scope.players(who)?,
         },
         Wanted::CantAttackOwner(attacked) => Modification::CantAttackOwner {
             attacked: *attacked,

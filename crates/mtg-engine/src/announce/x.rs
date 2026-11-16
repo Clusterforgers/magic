@@ -439,7 +439,11 @@ fn largest(ctx: &Ctx<'_>, choices: &Choices) -> Option<u32> {
                 super::r5523_x_cap::r6503_fixed_x(ctx).map_or(payable, |fixed| fixed.min(payable));
             Some(parts::most(ctx, choices).map_or(payable, |most| most.min(payable)))
         }
-        XCost::Parts => parts::most(ctx, choices),
+        // "Blight X. X can't be greater than ...": the cap holds for an X that only parts of the cost count.
+        XCost::Parts => {
+            let most = parts::most(ctx, choices)?;
+            Some(super::r5523_x_cap::r5523_spell_cap(ctx).map_or(most, |cap| cap.min(most)))
+        }
     }
 }
 

@@ -167,6 +167,22 @@ impl Scope<'_> {
         let Some(card) = seen.card.filter(|_| seen.zone == Zone::Battlefield) else {
             return Ok(false);
         };
+        let named = self.objects(host)?;
+        // A host that has left the battlefield is judged as it last existed (CR 608.2h): "an Equipment that was attached
+        // to ~" after ~ was sacrificed, though the Equipment has since become unattached (CR 704.5n).
+        let held_as_it_left = named.iter().any(|named| {
+            self.state.object(named.id).is_none_or(|live| {
+                live.counter() != named.counter || live.zone() != Zone::Battlefield
+            }) && self.snapshots.iter().any(|shot| {
+                shot.id == named.id
+                    && shot.counter == named.counter
+                    && shot.zone == Zone::Battlefield
+                    && shot.attachments.contains(&card.id())
+            })
+        });
+        if held_as_it_left {
+            return Ok(true);
+        }
         let Some(attached_to) = self.state.host_of(card.id()) else {
             // An Aura that enchants a player is attached to that player.
             return Ok(match self.state.player_host_of(card.id()) {
@@ -174,10 +190,7 @@ impl Scope<'_> {
                 None => false,
             });
         };
-        Ok(self
-            .objects(host)?
-            .into_iter()
-            .any(|named| named.id == attached_to))
+        Ok(named.into_iter().any(|named| named.id == attached_to))
     }
 
     /// Whether a permanent that matches the selector is attached to the object, which is still on the battlefield.

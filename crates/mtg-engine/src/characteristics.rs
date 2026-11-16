@@ -234,6 +234,7 @@ pub(crate) fn cant_attack_defender(
         Modification::CantAttackOwner { attacked } => {
             owner == Some(defender) && protects(*attacked, walker)
         }
+        Modification::R6601CantAttackPlayers { players } => players.contains(&defender),
         _ => false,
     })
 }

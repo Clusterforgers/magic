@@ -82,6 +82,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::GainAbilities(_)
         | Modification::CantAttack
         | Modification::CantAttackYou { .. }
+        | Modification::R6601CantAttackPlayers { .. }
         | Modification::CantAttackOwner { .. }
         | Modification::CantBeBlockedUnlessAttackingOwner
         | Modification::CantBlock
@@ -126,6 +127,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::AddChosenColor
         | Wanted::SetCommanderColor => Traits::COLORS,
         Wanted::AddKeyword(_)
+        | Wanted::R6601KeywordX { .. }
         | Wanted::R6001AddChosenAbilities
         | Wanted::KeywordsOf { .. }
         | Wanted::AddProtectionFromChosenColor
@@ -150,6 +152,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::SetLoyalty(_)
         | Wanted::CantAttack
         | Wanted::CantAttackYou(_)
+        | Wanted::R6601CantAttackPlayers(_)
         | Wanted::CantAttackOwner(_)
         | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
@@ -176,7 +179,8 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         }
         Wanted::SetPower(value)
         | Wanted::SetToughness(value)
-        | Wanted::BlocksAdditionalPer(value) => reads_of_amount(value),
+        | Wanted::BlocksAdditionalPer(value)
+        | Wanted::R6601KeywordX { count: value, .. } => reads_of_amount(value),
         Wanted::SetController(who) | Wanted::GainAbilitiesOf(who) => reads_of_ref(who),
         // The keywords of the other objects are read.
         Wanted::KeywordsOf { from, .. } => Traits::KEYWORDS.or(reads_of_ref(from)),
@@ -226,6 +230,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::LoseAbilitiesExceptMana
         | Wanted::CantAttack
         | Wanted::CantAttackYou(_)
+        | Wanted::R6601CantAttackPlayers(_)
         | Wanted::CantAttackOwner(_)
         | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
@@ -263,6 +268,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Defending
         | Ref::Attacked
         | Ref::AttackedThisTurn
+        | Ref::R6601HighestRollers
         | Ref::MostLife
         | Ref::Teammates
         | Ref::R6501PlayersFromYou

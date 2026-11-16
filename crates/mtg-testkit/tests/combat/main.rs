@@ -87,6 +87,8 @@ mod r6400_reblocks;
 mod r6501_mirror_match;
 mod r6503_counted_annihilator;
 mod r6503_counted_ward;
+mod r6601_chaos;
+mod r6601_nils;
 mod riot;
 mod rmt1_become_blocked;
 mod rmt7_blocks_per;

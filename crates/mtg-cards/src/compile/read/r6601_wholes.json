@@ -1,0 +1,567 @@
+[
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Search": {
+       "filter": [
+        {
+         "Type": "Land"
+        }
+       ],
+       "as": "land"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "land"
+       },
+       "to": {
+        "Battlefield": {}
+       }
+      }
+     },
+     {
+      "RepeatEach": {
+       "over": "Opponents",
+       "as": "p",
+       "effects": [
+        {
+         "May": {
+          "who": {
+           "Bound": "p"
+          },
+          "effects": [
+           {
+            "Bind": {
+             "what": {
+              "Bound": "p"
+             },
+             "as": "accepted",
+             "adds": true
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     },
+     {
+      "RepeatEach": {
+       "over": {
+        "Bound": "accepted"
+       },
+       "as": "q",
+       "effects": [
+        {
+         "Search": {
+          "who": {
+           "Bound": "q"
+          },
+          "filter": [
+           {
+            "Type": "Land"
+           }
+          ],
+          "as": "theirs"
+         }
+        },
+        {
+         "Move": {
+          "what": {
+           "Bound": "theirs"
+          },
+          "to": {
+           "Battlefield": {}
+          }
+         }
+        }
+       ]
+      }
+     },
+     {
+      "RepeatEach": {
+       "over": {
+        "Bound": "accepted"
+       },
+       "as": "r",
+       "effects": [
+        {
+         "Search": {
+          "filter": [
+           {
+            "Type": "Land"
+           }
+          ],
+          "as": "more"
+         }
+        },
+        {
+         "Move": {
+          "what": {
+           "Bound": "more"
+          },
+          "to": {
+           "Battlefield": {}
+          }
+         }
+        }
+       ]
+      }
+     },
+     {
+      "Shuffle": {}
+     },
+     {
+      "RepeatEach": {
+       "over": {
+        "Bound": "accepted"
+       },
+       "as": "s",
+       "effects": [
+        {
+         "Shuffle": {
+          "who": {
+           "Bound": "s"
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Tempting offer — Search your library for a land card and put it onto the battlefield. Each opponent may search their library for a land card and put it onto the battlefield. For each opponent who searches a library this way, search your library for a land card and put it onto the battlefield. Then each player who searched a library this way shuffles."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "SpellCast": {
+      "what": [
+       "This"
+      ],
+      "by": "You"
+     }
+    },
+    "from": "Stack",
+    "targets": [
+     {
+      "what": "Opponent"
+     }
+    ],
+    "effects": [
+     {
+      "ExileTop": {
+       "who": {
+        "Target": 0
+       },
+       "count": {
+        "Half": {
+         "of": {
+          "Count": [
+           {
+            "In": "Library"
+           },
+           {
+            "OwnedBy": {
+             "Target": 0
+            }
+           }
+          ]
+         },
+         "up": true
+        }
+       },
+       "as": "exiled"
+      }
+     }
+    ]
+   }
+  },
+  "When you cast this spell, target opponent exiles the top half of their library, rounded up."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "Enters": {
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "by": {
+     "WithCounters": {
+      "counter": "+1/+1",
+      "count": {
+       "Greatest": {
+        "of": [
+         {
+          "In": "Exile"
+         }
+        ],
+        "stat": "ManaValue"
+       }
+      }
+     }
+    }
+   }
+  },
+  "~ enters with a number of +1/+1 counters on it equal to the greatest mana value among cards in exile."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{1}"
+     },
+     "SacrificeSelf"
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        {
+         "AddKeyword": "Indestructible"
+        }
+       ],
+       "duration": "UntilEndOfTurn"
+      }
+     },
+     {
+      "PutCountersOf": {
+       "on": {
+        "Target": 0
+       },
+       "of": "This"
+      }
+     },
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "Subtype": "Equipment"
+         },
+         {
+          "AttachedTo": "This"
+         }
+        ]
+       },
+       "as": "equipment"
+      }
+     },
+     {
+      "Attach": {
+       "what": {
+        "Bound": "equipment"
+       },
+       "to": {
+        "Target": 0
+       }
+      }
+     }
+    ]
+   }
+  },
+  "{1}, Sacrifice ~: Target creature you control gains indestructible until end of turn. Put ~'s counters on that creature and attach an Equipment that was attached to ~ to that creature."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{2}"
+     },
+     "Tap"
+    ],
+    "timing": "Sorcery",
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Enchantment"
+        },
+        {
+         "ControlledBy": "You"
+        },
+        {
+         "Not": {
+          "SharesName": {
+           "Each": [
+            {
+             "ControlledBy": "You"
+            },
+            {
+             "Not": {
+              "Is": "Candidate"
+             }
+            }
+           ]
+          }
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "CreateToken": {
+       "token": {
+        "CopyOf": {
+         "of": {
+          "Target": 0
+         },
+         "except": [
+          {
+           "RemoveSupertype": "Legendary"
+          }
+         ]
+        }
+       },
+       "as": "token"
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Matches": {
+         "subject": {
+          "Bound": "token"
+         },
+         "selector": [
+          {
+           "Subtype": "Aura"
+          }
+         ]
+        }
+       },
+       "then": [
+        {
+         "Untap": {
+          "what": "This"
+         }
+        },
+        {
+         "Scry": {
+          "count": 2
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "{2}, {T}: Choose target enchantment you control that doesn't have the same name as another permanent you control. Create a token that's a copy of it, except it isn't legendary. If the token is an Aura, untap ~, then scry 2. Activate only as a sorcery."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "End",
+      "whose": "You"
+     }
+    },
+    "targets": [
+     {
+      "what": {
+       "PerPlayer": {
+        "players": "EachPlayer",
+        "what": [
+         {
+          "Type": "Creature"
+         }
+        ]
+       }
+      },
+      "bounds": {
+       "min": 0,
+       "max": 1
+      }
+     }
+    ],
+    "effects": [
+     {
+      "PutCounters": {
+       "on": {
+        "Target": 0
+       },
+       "counter": "+1/+1"
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your end step, for each player, put a +1/+1 counter on up to one target creature that player controls."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "R6601AttackTaxPerCounter": {
+      "attacked": "Both",
+      "attackers": [
+       {
+        "Type": "Creature"
+       },
+       "HasAnyCounter"
+      ],
+      "mana": "{1}"
+     }
+    }
+   }
+  },
+  "Each creature with one or more counters on it can't attack you or planeswalkers you control unless its controller pays {X}, where X is the number of counters on that creature."
+ ],
+ [
+  {
+   "AdditionalCost": {
+    "cost": [
+     {
+      "Blight": "X"
+     },
+     {
+      "XAtMost": {
+       "Greatest": {
+        "of": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ],
+        "stat": "Toughness"
+       }
+      }
+     }
+    ],
+    "required": true
+   }
+  },
+  "As an additional cost to cast this spell, blight X. X can't be greater than the greatest toughness among creatures you control."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "DealDamage": {
+       "to": {
+        "Union": [
+         "Opponents",
+         {
+          "Each": [
+           {
+            "Type": "Creature"
+           },
+           {
+            "ControlledBy": "Opponents"
+           }
+          ]
+         }
+        ]
+       },
+       "amount": "X"
+      }
+     }
+    ]
+   }
+  },
+  "~ deals X damage to each opponent and each creature they control."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "BeginCombat",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "RepeatEach": {
+       "over": "EachPlayer",
+       "as": "roller",
+       "effects": [
+        {
+         "RollDice": {
+          "who": {
+           "Bound": "roller"
+          },
+          "sides": 20,
+          "count": 1,
+          "results": []
+         }
+        }
+       ]
+      }
+     },
+     {
+      "Continuous": {
+       "affected": "This",
+       "mods": [
+        {
+         "R6601CantAttackPlayers": "R6601HighestRollers"
+        }
+       ],
+       "duration": "UntilEndOfCombat"
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of combat on your turn, each player rolls a d20. If one or more opponents had the highest result, this creature can't attack those players or planeswalkers they control this combat."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "This",
+    "mods": [
+     {
+      "R6601KeywordX": {
+       "keyword": {
+        "Annihilator": 0
+       },
+       "count": {
+        "Counters": {
+         "on": "This",
+         "counter": "+1/+1"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "~ has annihilator X, where X is the number of +1/+1 counters on it."
+ ]
+]
