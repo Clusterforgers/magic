@@ -62,6 +62,7 @@ Anafenza, Kin-Tree Spirit
 Ancestral Vision
 Ancient Amphitheater
 Ancient Hydra
+Ancient Lumberknot
 Ancient Stone Idol
 Ancient Ziggurat
 Angel of Finality
@@ -176,6 +177,7 @@ Bear Umbra
 Beast Walkers
 Beast Within
 Beastmaster Ascension
+Bedrock Tortoise
 Befriending the Moths // Imperial Moth
 Behemoth of Vault 0
 Behold the Multiverse
@@ -836,6 +838,7 @@ Genesis Wave
 Germination Practicum
 Gerrard's Wisdom
 Getaway Car
+Ghalta the Immovable
 Ghalta, Primal Hunger
 Ghave, Guru of Spores
 Ghired, Conclave Exile
@@ -1002,6 +1005,7 @@ Hidden Dragonslayer
 Hidden Hideout
 Hideous Laughter
 Hierophant Bio-Titan
+High Alert
 High Ground
 Highspire Artisan
 History of Benalia

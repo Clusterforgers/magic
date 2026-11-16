@@ -68,6 +68,28 @@
  ],
  [
   {
+   "Rule": {
+    "rule": {
+     "Combat": {
+      "who": {
+       "Each": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      },
+      "quirk": "AttackDespiteDefender"
+     }
+    }
+   }
+  },
+  "Creatures you control can attack as though they didn't have defender."
+ ],
+ [
+  {
    "Triggered": {
     "when": {
      "StepBegins": {

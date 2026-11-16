@@ -13,6 +13,10 @@ use crate::common;
 #[case::rasputin_dreamweaver("Rasputin Dreamweaver")]
 #[case::voracious_dragon("Voracious Dragon")]
 #[case::sanctum_lurker("Sanctum Lurker")]
+#[case::ancient_lumberknot("Ancient Lumberknot")]
+#[case::bedrock_tortoise("Bedrock Tortoise")]
+#[case::ghalta("Ghalta the Immovable")]
+#[case::high_alert("High Alert")]
 #[case::alrund("Alrund, God of the Cosmos // Hakka, Whispering Raven")]
 fn r6500_the_card_compiles_into_its_file(#[case] name: &str) {
     let printed = common::printed()
