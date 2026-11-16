@@ -11,6 +11,7 @@
 @import './features/table/turn/phase.css';
 @import './features/table/focusBoard.css';
 @import './features/table/campaign/campaign.css';
+@import './feel.css';
 
 @custom-variant dark (&:is(.dark *));
 

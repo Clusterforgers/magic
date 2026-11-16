@@ -20,6 +20,8 @@
   --fx-stagger-ms: 120ms;
   --fx-arrow-ms: 250ms;
   --fx-mark-ms: 600ms;
+  /* The newest stack item or a drawn card rising into place once the card flying to it has landed. */
+  --fx-arrive-ms: 300ms;
   /* The chip an ability flies as. */
   --fx-chip-w: 9rem;
   --fx-chip-h: 2rem;
@@ -191,6 +193,11 @@
   font-size: 1.1rem;
 }
 
+/* Staging: the newest stack item stands raised over the ones under it. */
+.fx-stage-top {
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--foreground) 22%, transparent);
+}
+
 /* The crack across a dying card. */
 .fx-crack path {
   fill: none;
@@ -211,13 +218,29 @@
     --fx-dir: 1;
   }
 
+  /*
+   * Pose to pose: it draws back and squashes (the wind-up), lunges stretched toward the other side, recoils a little
+   * past its place (the follow-through) and settles.
+   */
   @keyframes fx-lunge {
     0%,
     100% {
       translate: 0 0;
+      scale: 1;
     }
-    30% {
-      translate: 0 calc(var(--fx-dir, 1) * 0.9rem);
+    18% {
+      translate: 0 calc(var(--fx-dir, 1) * -0.3rem);
+      scale: 1.03 0.96;
+      animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+    }
+    42% {
+      translate: 0 calc(var(--fx-dir, 1) * 1.1rem);
+      scale: 0.97 1.04;
+      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+    70% {
+      translate: 0 calc(var(--fx-dir, 1) * -0.15rem);
+      scale: 1;
     }
   }
 
@@ -245,32 +268,49 @@
     }
   }
 
+  /* The hit: squashed and lit white on impact, then a 5 px shake that dies away. */
   @keyframes fx-shake {
     0%,
     100% {
       translate: 0 0;
+      scale: 1;
+      filter: none;
     }
-    15% {
+    10% {
+      translate: -5px 0;
+      scale: 0.94;
+      filter: brightness(1.9);
+    }
+    25% {
+      translate: 5px 0;
+      scale: 1.03;
+      filter: brightness(1.3);
+    }
+    40% {
       translate: -3px 0;
+      scale: 1;
+      filter: none;
     }
-    30% {
+    55% {
       translate: 3px 0;
     }
-    45% {
-      translate: -2px 0;
-    }
-    60% {
-      translate: 2px 0;
-    }
-    75% {
+    70% {
       translate: -1px 0;
     }
   }
 
+  /* It pops in a little past its size and settles. */
   @keyframes fx-enter {
     0% {
       scale: 0.7;
       filter: brightness(1.8);
+    }
+    60% {
+      scale: 1.05;
+      filter: none;
+    }
+    82% {
+      scale: 0.98;
     }
     100% {
       scale: 1;
@@ -301,13 +341,20 @@
     }
   }
 
+  /* A life total jumps, dips past its size and settles. */
   @keyframes fx-pop {
     0%,
     100% {
       scale: 1;
     }
     20% {
-      scale: 1.18;
+      scale: 1.25;
+    }
+    45% {
+      scale: 0.96;
+    }
+    70% {
+      scale: 1.02;
     }
   }
 
@@ -332,12 +379,16 @@
       filter: grayscale(1) saturate(1) brightness(0.85);
       width: var(--ghost-w);
       margin-inline-end: 0;
+      scale: 0.94;
+      rotate: -3deg;
     }
     100% {
       opacity: 0;
       filter: grayscale(1) saturate(1) brightness(0.7);
       width: 0;
       margin-inline-end: calc(-1 * var(--fx-row-gap));
+      scale: 0.85;
+      rotate: -6deg;
     }
   }
 
@@ -366,6 +417,49 @@
 
   .fx-mark {
     animation: fx-mark calc(var(--fx-mark-ms) * var(--fx-slow, 1)) ease-out both;
+  }
+
+  /* It rises a little past its size and settles, after the leg that brings its card has landed (0.8 of it). */
+  @keyframes fx-arrive {
+    0%,
+    100% {
+      translate: 0 0;
+      scale: 1;
+    }
+    35% {
+      translate: 0 -2px;
+      scale: 1.08;
+    }
+    70% {
+      scale: 0.98;
+    }
+  }
+
+  .fx-stage-top {
+    animation: fx-arrive calc(var(--fx-arrive-ms) * var(--fx-slow, 1)) var(--ease-out)
+      calc(var(--fx-travel-ms) * 0.8) both;
+  }
+
+  /* A drawn card in the viewer's hand rises 8 px and settles as the card back flying to it lands. */
+  @keyframes fx-drawn {
+    0%,
+    100% {
+      translate: 0 0;
+      scale: 1;
+    }
+    40% {
+      translate: 0 -8px;
+      scale: 1.04;
+    }
+    75% {
+      translate: 0 1px;
+      scale: 0.99;
+    }
+  }
+
+  button[data-object-id][data-fx~='drawn'] {
+    animation: fx-drawn calc(var(--fx-arrive-ms) * var(--fx-slow, 1)) var(--ease-out)
+      calc(var(--fx-travel-ms) * 0.8) both;
   }
 
   /* On a flying card the flight sets the time, not the mount. */

@@ -189,6 +189,11 @@ describe('impacts', () => {
     plan(MY_BEAR, [{ target: { player: FOE }, amount: 1 }], 1),
   ]
 
+  it('is snappy: a strike lands within 600 ms and is back home within 1.1 s', () => {
+    expect(impactDelay(0)).toBeLessThanOrEqual(600)
+    expect(STRIKE_MS).toBeLessThanOrEqual(1100)
+  })
+
   it('lands each wave a strike later, at the hit', () => {
     expect(impactDelay(0)).toBe(STRIKE_HIT * STRIKE_MS)
     expect(impactDelay(1, 2)).toBe((1 + STRIKE_HIT) * STRIKE_MS * 2)

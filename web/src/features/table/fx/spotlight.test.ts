@@ -11,6 +11,7 @@ import {
   SPOTLIGHT_FLOOR_PX,
   SPOTLIGHT_GAP_PX,
   SPOTLIGHT_MIN_PX,
+  SPOTLIGHT_OVERSHOOT,
   spotlightBoxes,
   spotlightMs,
   spotlightKeyframes,
@@ -139,8 +140,8 @@ describe('when it stands', () => {
     const frames = spotlightKeyframes({ still: false, own: true })
     const duration = spotlightMs(true)
     expect((frames[1]?.offset ?? 0) * duration).toBeCloseTo(150)
-    expect((1 - (frames[2]?.offset ?? 0)) * duration).toBeCloseTo(150)
-    const held = ((frames[2]?.offset ?? 0) - (frames[1]?.offset ?? 0)) * duration
+    expect((1 - (frames.at(-2)?.offset ?? 0)) * duration).toBeCloseTo(150)
+    const held = ((frames.at(-2)?.offset ?? 0) - (frames[1]?.offset ?? 0)) * duration
     expect(held).toBeCloseTo(240)
     const still = spotlightKeyframes({ still: true, own: true })
     expect(still.map((frame) => frame.opacity)).toEqual([0, 1, 1, 0])
@@ -201,10 +202,14 @@ describe('what it shows', () => {
     expect(still.every((frame) => frame.transform === undefined)).toBe(true)
     expect(still.map((frame) => frame.opacity)).toEqual([0, 1, 1, 0])
     const moving = spotlightKeyframes({ still: false })
-    expect(moving.map((frame) => frame.opacity)).toEqual([0, 1, 1, 0])
+    expect(moving.map((frame) => frame.opacity)).toEqual([0, 1, 1, 1, 0])
     expect(moving[0]?.transform).toMatch(/scale/)
     expect(moving[1]?.offset).toBeCloseTo(150 / MOVE_MS.spotlight)
-    expect(moving[2]?.offset).toBeCloseTo(1 - 150 / MOVE_MS.spotlight)
+    expect(moving.at(-2)?.offset).toBeCloseTo(1 - 150 / MOVE_MS.spotlight)
+    // It overshoots as it comes in and settles 90 ms later: the follow-through.
+    expect(moving[1]?.transform).toBe(`scale(${SPOTLIGHT_OVERSHOOT})`)
+    expect(moving[2]?.transform).toBe('scale(1)')
+    expect(((moving[2]?.offset ?? 0) - (moving[1]?.offset ?? 0)) * MOVE_MS.spotlight).toBeCloseTo(90)
   })
 })
 

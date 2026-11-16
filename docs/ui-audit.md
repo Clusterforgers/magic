@@ -83,6 +83,35 @@ Every screen and table mode shot at 1873 × 1047, 1530 × 898, 1400 × 900, 1024
 | 24 | Low | Hero names and figures of the run summary wrap on separate lines | Delves victory, phone | dl-victory-390 | fixed: one row, the relic names under it |
 | 25 | Low | The deck list and groups, the replay and the open games list have no dev fixture, so they cannot be shot without a server | decks, replay, play | - | pf10m |
 
+## Feel audit
+
+The table (normal, grid, Teams, Two-Headed Giant, the Delves boss table, the phone), the lobby, the deck pages and Delves held to the twenty rules of [ui-design.md](ui-design.md) (Feel): shot at 1873 × 1047, 1400 × 900 and 390 × 844 and read in the motion code (`fx.css`, `travel.ts`, `strikes.ts`, `spotlight.ts`, `HandFan.tsx`, `button.tsx`). Ranked by what a player feels every turn.
+
+| # | Sev | Finding | Where | Rule | State |
+|---|---|---|---|---|---|
+| 1 | High | A card in flight runs a straight line at one ease, with no wind-up and no landing | every draw, cast, resolve and death | arcs, anticipation, follow through, slow in and out | fixed: pose to pose on an arc |
+| 2 | High | A press gives no squash: a button moves 1 px, a card nothing | every page | squash, Doherty | fixed: 0.97 and a spring back |
+| 3 | High | Zone chips (32 px), the lands chip, "+N more" (32 px) and the switch (36 px) are under 44 px on a phone | phone table, every switch | Fitts, hit areas | fixed: a 44 px hit area |
+| 4 | High | An attacker's lunge is one push; a hit is a 3 px shake that reads as a twitch | combat | anticipation, stretch, exaggeration | fixed: wind-up, stretched lunge, recoil; a squashed, lit, 5 px hit |
+| 5 | Med | Strikes take 1.5 s there and back | combat damage | timing | fixed: 1.1 s |
+| 6 | Med | Every stack chip weighs the same but for its border, and the newest does not arrive | shared strip | staging | fixed: raised top chip that rises in, the rest at 0.8 |
+| 7 | Med | An attacked seat changes its ring only | pods and tiles, every layout | staging | fixed: a flinch and a light |
+| 8 | Med | The primary pass button looks the same when priority comes back | controls dock | frequency, staging | fixed: one swell |
+| 9 | Med | A drawn card stands in the hand without a beat | hand dock | follow through | fixed: an 8 px rise and settle |
+| 10 | Med | Entering permanents and life totals stop dead at their peak; a dying card only greys | table | follow through | fixed: overshoot and settle; a dying card shrinks and tips |
+| 11 | Med | No mark says the server has not answered 400 ms after an answer | table | Doherty | roadmap pf11a |
+| 12 | Med | The side column opens on Commands, a long list, during play, where the Log or Stack is what a player reads | table at 1400 and wider | frequency, Hick | roadmap pf11b |
+| 13 | Low | A lifted hand card rises in 100 ms without a deeper shadow | hand dock | solid drawing | fixed: a spring and a deeper shadow |
+| 14 | Low | The spotlight comes in and stops | casts | follow through | fixed: overshoot, settled in 90 ms |
+| 15 | Low | The builder's played-by-hand rows are 24 px on a phone | builder | Fitts | fixed: 44 px |
+| 16 | Low | A cast card stays in the hand until the server's batch | table | Doherty | roadmap pf11c |
+| 17 | Low | A tap turns the face as the attack lunge starts, so the two poses blur | combat | pose to pose | roadmap pf11d |
+| 18 | Low | The step ladder's stop marks are 28 px wide under a coarse pointer | phone and tablet top bar | Fitts | roadmap pf11e |
+| 19 | Low | A card added in the builder does not travel into the deck list | builder | secondary action | roadmap pf11f |
+| 20 | Low | Delves vote and shop choices answer a press by colour alone, and the vote count does not move | Delves | exaggerated feedback | roadmap pf11g |
+
+- Kept as they are: Jakob (Arena's dock, labels and Space), Postel (deck import formats, accent-free search), Miller (folded stack and lands, grouped deck lists) and Hick (one primary per prompt, the choice overlay past six) hold on every screen.
+
 ## The look
 
 Spellforge, a dark fantasy table, with each seat in its own colour: a lit green felt with a dark rim under the boards, warm plaques with a soft shadow for pods, tiles and the centre strip, a brass hairline on seat frames and docks, cards that cast a shadow on the felt, ivory text, Cinzel for life, seat names and page titles, and a gold main action with a glow. Each seat's pod and tile carry a 2 px top edge in the seat's hue and its life figure in that hue, so four players tell apart at a glance. Tokens and rules are in [ui-design.md](ui-design.md) (Design system).

@@ -49,7 +49,7 @@ export function LandSummary({
       }}
       className={cn(
         DENSITY[density].chip,
-        'cursor-pointer text-muted-foreground outline-offset-2 outline-primary hover:text-foreground focus-visible:outline-2',
+        'relative hit-area cursor-pointer text-muted-foreground outline-offset-2 outline-primary hover:text-foreground focus-visible:outline-2',
         fold.open && 'ring-1 ring-brass',
       )}
     >
