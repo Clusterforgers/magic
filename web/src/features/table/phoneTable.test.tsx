@@ -1,4 +1,4 @@
-// Goal: a phone held upright keeps its table to the essentials: the controls dock shows the auto-skip switch without its label (the switch keeps its name), the pod drops the untapped sources the lands already show, the hand dock is 104 to 140 px, the boards fold their lands into chips and draw no card under the phone floor, the strip keeps to two lines, and a row of choice cards never widens the sheet past the screen.
+// Goal: a phone held upright keeps its table to the essentials: the combat answers keep their words, the controls dock shows the auto-skip switch without its label (the switch keeps its name), the pod drops the untapped sources the lands already show, the hand dock is 104 to 140 px, the boards fold their lands into chips and draw no card under the phone floor, the strip keeps to two lines, and a row of choice cards never widens the sheet past the screen.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -9,6 +9,19 @@ import { must } from '@/test-utils/batches'
 const read = (path: string): string => readFileSync(join(import.meta.dirname, path), 'utf8')
 
 describe('the phone table', () => {
+  it('keeps the word of every combat answer on a phone: Attack and No attack, Block and No blocks', () => {
+    for (const [file, labels] of [
+      ['prompt/kinds/DeclareAttackers.tsx', ['Confirm attack', 'No attack']],
+      ['prompt/kinds/DeclareBlockers.tsx', ['Confirm blocks', 'No blocks']],
+    ] as const) {
+      const source = read(file)
+      for (const label of labels) {
+        const tag = must(source.split('<BarButton').find((part) => part.includes(`label="${label}"`)))
+        expect(tag.slice(0, tag.indexOf('/>'))).toMatch(/\bkeepWord\b/)
+      }
+    }
+  })
+
   it('names the auto-skip switch for a screen reader and hides its label on a phone', () => {
     const toggle = read('stops/AutoSkipToggle.tsx')
     expect(toggle).toContain("cn('max-sm:sr-only'")

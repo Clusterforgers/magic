@@ -7,6 +7,7 @@ import {
   BOSS_SPAN,
   OWN_SHARE,
   POD_COLUMN_PX,
+  SHEET_KEEP_PX,
   ZONE_GAP_PX,
   alliesBandPx,
   sheetMost,
@@ -150,7 +151,19 @@ export function splitRegions(
     own: counts.own,
     theirs: counts.theirs,
   })
-  return withSplit(regions, split, theirChrome + BOARD_KEEP_PX)
+  if (!regions.phone) return withSplit(regions, split, theirChrome + BOARD_KEEP_PX)
+  // A phone's sheet may lie over the opponents' cards, never over their pods, tiles or the boss's abilities; a head
+  // taller than the sheet's usual keep (a boss's bar and pod) takes the excess from your row while a sheet stands up.
+  return withSplit(regions, phoneHeadKept(split, theirChrome, overhang), theirChrome)
+}
+
+/** `split` with the opponents' row grown by what a phone's head over `SHEET_KEEP_PX` needs under a sheet standing `overhang` px up; your row keeps `MIN_ROW_SHARE`. */
+export function phoneHeadKept(split: BoardSplit, theirChrome: number, overhang: number): BoardSplit {
+  const excess = finite(theirChrome) - SHEET_KEEP_PX
+  if (!(excess > 0) || !(finite(overhang) > 0)) return split
+  const room = split.opponents + split.own
+  const opponents = Math.max(split.opponents, Math.min(room * (1 - MIN_ROW_SHARE), split.opponents + excess))
+  return { ...split, opponents, own: room - opponents }
 }
 
 /** The least width in px of your creatures for which the split gives an opponent's pod column its floor. */
@@ -340,7 +353,7 @@ function bossFrames(
 
 /**
  * `regions` with the rows of a split, and the sheet's most kept inside the opponents' row and the strip, leaving `keep`
- * px of that row off a phone (`sheetMost`).
+ * px of that row (on a phone at least `SHEET_KEEP_PX`, and for a sheet of cards too; `sheetMost`).
  */
 export function withSplit(regions: Regions, split: BoardSplit, keep = 0): Regions {
   return {
@@ -348,6 +361,13 @@ export function withSplit(regions: Regions, split: BoardSplit, keep = 0): Region
     opponents: split.opponents,
     own: split.own,
     sheet: sheetMost(regions.main.height, regions.shared, split.opponents, regions.phone, keep),
-    sheetWide: sheetMost(regions.main.height, regions.shared, split.opponents, regions.phone),
+    // A sheet of cards may cover the opponents' boards, but on a phone not the pods and tiles over them.
+    sheetWide: sheetMost(
+      regions.main.height,
+      regions.shared,
+      split.opponents,
+      regions.phone,
+      regions.phone ? keep : 0,
+    ),
   }
 }

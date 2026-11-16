@@ -307,7 +307,7 @@ const clampTo = (value: number, min: number, max: number): number => Math.min(ma
 
 /**
  * The most a prompt sheet grows to in a window of this height, over a strip and an opponents' area of these heights:
- * it leaves `SHEET_KEEP_PX` of the area on a phone and `keep` px elsewhere, and is never under `BAND_MIN_PX`
+ * it leaves `keep` px of the area, on a phone at least `SHEET_KEEP_PX`, and is never under `BAND_MIN_PX`
  * (`BAND_MIN_PHONE_PX` on a phone) below 40 % of the height and the top bar.
  */
 export function sheetMost(
@@ -317,7 +317,7 @@ export function sheetMost(
   phone: boolean,
   keep = 0,
 ): number {
-  const room = Math.max(0, opponents - (phone ? SHEET_KEEP_PX : keep))
+  const room = Math.max(0, opponents - (phone ? Math.max(SHEET_KEEP_PX, keep) : keep))
   const floor = phone ? BAND_MIN_PHONE_PX : BAND_MIN_PX
   // The floor still ends at the top bar.
   return Math.min(

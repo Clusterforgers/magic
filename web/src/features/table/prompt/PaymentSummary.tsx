@@ -33,8 +33,8 @@ export function Row({
         data-line={line ? 'true' : undefined}
         className={
           line
-            ? // `flex-1` and the contained width keep the line beside its label at the width the sheet has; it scrolls.
-              'flex min-w-0 flex-1 flex-nowrap items-center gap-1.5 overflow-x-auto p-0.5 [contain:inline-size] [scrollbar-width:thin]'
+            ? // `flex-1` and the contained width keep the line beside its label at the width the sheet has; it wraps.
+              'flex min-w-0 flex-1 flex-wrap items-center gap-1.5 p-0.5 [contain:inline-size]'
             : 'flex min-w-0 flex-wrap items-center gap-1.5'
         }
       >

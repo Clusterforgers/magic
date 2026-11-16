@@ -1,5 +1,6 @@
-// Goal: the run header shows the stage, Heat, the hearts left, the seed code to copy and each hero's life bar, gold and relics, a risky relic marked as such.
+// Goal: the run header shows the stage, Heat, the hearts left, the seed code to copy and each hero's life bar, gold and relics, a risky relic marked as such; a phone folds it to the theme and the hearts until opened.
 import { screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { expect, it } from 'vitest'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { renderInRouter } from '@/test-utils/router'
@@ -50,6 +51,29 @@ it.each([
     </TooltipProvider>,
   )
   expect(screen.getByText(words)).toBeInTheDocument()
+})
+
+it('folds to one line on a phone, the theme and the hearts, and opens the rest from its button', async () => {
+  const view = delveView({}, { status: 'Map', heroes: [hero({ name: 'Ana' }), hero({ name: 'Bo' })] })
+  await renderInRouter(
+    <TooltipProvider>
+      <RunHeader view={view} content={CONTENT} />
+    </TooltipProvider>,
+  )
+  const party = screen.getByRole('list', { name: 'Party' })
+  const toggle = screen.getByRole('button', { name: 'Show the run and the party' })
+  expect(toggle).toHaveClass('sm:hidden')
+  expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  for (const folded of [party, screen.getByLabelText(/^Heat/), screen.getByText('Choosing a path')]) {
+    expect(folded).toHaveClass('max-sm:hidden')
+  }
+  expect(screen.getByRole('img', { name: /hearts left/ }).closest('.max-sm\\:hidden')).toBeNull()
+  await userEvent.setup().click(toggle)
+  expect(screen.getByRole('button', { name: 'Hide the run and the party' })).toHaveAttribute(
+    'aria-expanded',
+    'true',
+  )
+  expect(party).not.toHaveClass('max-sm:hidden')
 })
 
 it('leaves the party out of the lobby, where the hero cards show it', async () => {
