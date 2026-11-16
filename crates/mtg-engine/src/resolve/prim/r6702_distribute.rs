@@ -16,6 +16,7 @@ use crate::zones::Zone;
 /// The controller chooses between one and as many permanents as there are counters among those the reference names on
 /// the battlefield, then how many each of them but the last gets (at least one each, leaving at least one for each
 /// after it); the last takes the rest. Every permanent gets its share at once. No counter, or no permanent, is no event.
+#[allow(clippy::too_many_lines)] // the choice of permanents, then one share after another
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::R6702Distribute {
         among,
@@ -31,7 +32,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .live_objects(among)?
         .into_iter()
         .filter(|object| object.zone() == Zone::Battlefield)
-        .map(|object| object.id())
+        .map(crate::object::GameObject::id)
         .collect();
     let total = u32::try_from(total).unwrap_or(0);
     if total == 0 || from.is_empty() {

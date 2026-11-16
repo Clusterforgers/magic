@@ -30,6 +30,7 @@ use crate::wording;
 /// A step with k questions runs k + 1 times. The journal holds the yes or no to the first question and, after a yes, the
 /// answer the announcement logs along with the events of the cast: a yes when the spell was cast and a no when it could not
 /// be. Nothing else is logged for the announcement, so a game rebuilt from its log in the middle of one asks it again.
+#[allow(clippy::too_many_lines)] // the question, the cast "if able" with none, and the answers of the announcement
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::CastFromZone {
         who,

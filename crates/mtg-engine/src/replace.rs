@@ -793,10 +793,12 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         ),
         // Only a shield counts its amount, and it begins as `PreventUpTo`; one with effects names the damage left to it.
         // More cards to surveil are offered by the surveil itself (`r4708_actions`).
+        // An Aura attached as it turns face up is asked by the turn-up itself (`announce::turn_up`).
         ReplaceBy::PreventCounted(_)
         | ReplaceBy::PreventNextAnd(_)
         | ReplaceBy::MayAddAmount(_)
-        | ReplaceBy::MayInstead(_) => false,
+        | ReplaceBy::MayInstead(_)
+        | ReplaceBy::R6702MayAttach(_) => false,
         ReplaceBy::PreventCountedAnd { most, .. } => {
             matches!(most, Amount::Fixed(_)) && matches!(unit, Unit::Damage { .. })
         }
@@ -859,8 +861,6 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::AsEntersWith { .. }
         | ReplaceBy::ChooseAfter { .. }
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
-        // Asked by the special action or effect that turns the Aura face up (`announce::turn_up`).
-        ReplaceBy::R6702MayAttach(_) => false,
         ReplaceBy::AsEnters(_) => matches!(unit, Unit::Enter { .. } | Unit::Transform { .. }),
         ReplaceBy::Choose(_) => matches!(unit, Unit::Enter { .. } | Unit::Attach { .. }),
         ReplaceBy::Instead(_) => !matches!(
