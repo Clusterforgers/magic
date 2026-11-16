@@ -79,8 +79,13 @@ describe('what an answer is called', () => {
     [{ SecretPlayer: 0 }, 0, 'Ana (you)'],
     [{ Color: 'Red' }, 0, 'Red'],
     [{ Label: 'Goblin' }, 0, 'Goblin'],
+    [{ SecretObject: 7 }, 0, 'Grizzly Bears'],
   ] as const)('%j seen from seat %s is "%s"', (option, viewer, label) => {
-    expect(optionLabel(option, seat, viewer)).toBe(label)
+    expect(optionLabel(option, seat, viewer, (id) => (id === 7 ? 'Grizzly Bears' : '?'))).toBe(label)
+  })
+
+  it('calls a permanent voted for "a permanent" when its name is not known', () => {
+    expect(optionLabel({ SecretObject: 9 }, seat, 0)).toBe('a permanent')
   })
 
   it.each([

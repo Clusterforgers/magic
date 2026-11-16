@@ -57,6 +57,7 @@ impl Policy<'_> {
                         }
                         ChoiceOption::Player(_)
                         | ChoiceOption::SecretPlayer(_)
+                        | ChoiceOption::SecretObject(_)
                         | ChoiceOption::Secret(_)
                         | ChoiceOption::Side(_) => false,
                     })

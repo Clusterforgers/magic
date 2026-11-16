@@ -139,6 +139,8 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Continuous { .. }
         | Effect::ExchangeControl { .. }
         | Effect::R6401PassControl { .. }
+        | Effect::R6702Distribute { .. }
+        | Effect::R6702CountersPerVote { .. }
         | Effect::Rule { .. }
         | Effect::Regenerate { .. }
         | Effect::RemoveFromCombat { .. }

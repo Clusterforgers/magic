@@ -1336,7 +1336,7 @@ pub(crate) fn announceable_in(
     if let Some(rules) = crate::keywords::cleave::cleaved(state, id, way) {
         return announceable(state, player, id, &rules) && attach::announceable(state, player, id);
     }
-    way == Some(CastWay::Overload)
+    matches!(way, Some(CastWay::Overload | CastWay::FaceDown))
         || (spell_ability(state, id)
             .is_none_or(|(_, rules)| announceable(state, player, id, &rules))
             && attach::announceable(state, player, id))

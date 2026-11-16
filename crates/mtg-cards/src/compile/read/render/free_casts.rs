@@ -39,6 +39,7 @@ pub(super) fn text(effects: &[Effect]) -> Option<(String, usize)> {
             transformed: false,
             bind: None,
             otherwise,
+            must: false,
         },
         ..,
     ] = effects

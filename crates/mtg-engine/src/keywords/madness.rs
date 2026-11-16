@@ -59,6 +59,7 @@ impl KeywordRules for Madness {
                         to: Destination::Graveyard,
                         bind: None,
                     }],
+                    must: false,
                 }],
             },
         ]

@@ -1,5 +1,5 @@
 /** The questions of effects in plain words: who asks, what is asked, which keys answer, and what each answer is called. */
-import type { ChoiceOption, ModeOption, PlayerId } from '@/protocol/generated'
+import type { ChoiceOption, ModeOption, ObjectId, PlayerId } from '@/protocol/generated'
 import { countOf } from './combatText'
 
 /** The keys that choose the first ten entries of a list, in order: 1 to 9, then 0. */
@@ -47,12 +47,14 @@ export function modeKeysWords(count: number, single: boolean): string {
   return `Press ${range} to choose a mode or take it back.`
 }
 
-/** One option as its button names it; the viewer's own seat says so. */
+/** One option as its button names it; the viewer's own seat says so, and a permanent voted for is called by its name. */
 export function optionLabel(
   option: ChoiceOption,
   seatName: (seat: PlayerId) => string,
   viewer: PlayerId | null,
+  objectName: (id: ObjectId) => string = () => 'a permanent',
 ): string {
+  if ('SecretObject' in option) return objectName(option.SecretObject)
   if ('Player' in option || 'SecretPlayer' in option) {
     const seat = 'Player' in option ? option.Player : option.SecretPlayer
     const name = seatName(seat)

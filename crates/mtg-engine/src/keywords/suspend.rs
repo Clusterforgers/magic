@@ -81,6 +81,7 @@ impl KeywordRules for Suspend {
                     transformed: false,
                     bind: None,
                     otherwise: Vec::new(),
+                    must: false,
                 }],
             },
             Ability::Static {

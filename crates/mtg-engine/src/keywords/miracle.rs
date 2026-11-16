@@ -47,6 +47,7 @@ impl KeywordRules for Miracle {
                 transformed: false,
                 bind: None,
                 otherwise: Vec::new(),
+                must: false,
             }],
         }]
     }

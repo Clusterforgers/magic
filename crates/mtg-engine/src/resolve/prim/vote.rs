@@ -238,6 +238,44 @@ fn r376_player_votes(
     })
 }
 
+/// The ballots of a secret vote on objects ("Each player secretly votes for a creature you don't control"): each voter
+/// chooses one of the objects face down, an additional ballot may be left blank; the votes are shown together once every
+/// ballot is cast.
+fn r6702_secret_object_votes(
+    cx: &Cx<'_>,
+    objects: &[ObjectId],
+    candidates: &[Target],
+) -> Result<Result<Vec<(PlayerId, Target)>, Run>, ResolveError> {
+    let mut choosers: Vec<OptionChooser> = Vec::new();
+    for (voter, again) in voters(cx) {
+        let mut options: Vec<ChoiceOption> = objects
+            .iter()
+            .map(|id| ChoiceOption::SecretObject(*id))
+            .collect();
+        if again {
+            options.push(ChoiceOption::Secret(W17C_NO_VOTE.to_owned()));
+        }
+        choosers.push(OptionChooser {
+            player: voter,
+            options,
+            text: "Vote for a permanent.".to_owned(),
+        });
+    }
+    Ok(match r6400_pick(cx, choosers)? {
+        Optioned::Ask(decision) => Err(Run::Ask(decision)),
+        Optioned::Done(taken) => Ok(taken
+            .into_iter()
+            .filter_map(|(voter, index)| {
+                let id = objects.get(index)?;
+                candidates
+                    .iter()
+                    .find(|t| t.object().is_some_and(|o| o.id == *id))
+                    .map(|target| (voter, *target))
+            })
+            .collect()),
+    })
+}
+
 /// The names a vote on players or objects binds: the leaders under `bind`, every vote under `tally`.
 fn r376_bound(
     votes: &[Target],
@@ -271,14 +309,14 @@ fn of(
             "a vote is on players or on objects, not both".into(),
         ));
     }
-    if secret && !objects.is_empty() {
-        return Err(ResolveError::Invalid(
-            "a vote on objects is never secret".into(),
-        ));
-    }
     let seats = voters(cx);
     let votes: Vec<(PlayerId, Target)> = if candidates.is_empty() {
         Vec::new()
+    } else if secret && !objects.is_empty() {
+        match r6702_secret_object_votes(cx, &objects, &candidates)? {
+            Ok(votes) => votes,
+            Err(ask) => return Ok(ask),
+        }
     } else if objects.is_empty() {
         match r376_player_votes(cx, &players, false, secret)? {
             Ok(votes) => votes,
@@ -358,7 +396,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a vote asks the controller first and then the others in turn order whoever is the active player, offers the named choices (face down for a secret vote), offers players face down for a secret vote on them and every other player for a vote for another player at two to four seats, keeps every tied leader and nothing else, binds every vote to the tally, and refuses a secret vote on objects, a vote on players or objects that names no winner nor tally and another effect, by name.
+    //! Goal: a vote asks the controller first and then the others in turn order whoever is the active player, offers the named choices (face down for a secret vote), offers players and objects face down for a secret vote on them and every other player for a vote for another player at two to four seats, keeps every tied leader and nothing else, binds every vote to the tally, and refuses a vote on players or objects that names no winner nor tally and another effect, by name.
     use rstest::rstest;
 
     use super::*;
@@ -447,9 +485,33 @@ mod tests {
     }
 
     #[rstest]
-    #[case::secret_on_objects(
-        r#"{"Vote":{"options":{"Of":{"Each":[{"Type":"Creature"}]}},"secret":true,"as":"won"}}"#
-    )]
+    #[case::two_seats(2)]
+    #[case::three_seats(3)]
+    #[case::four_seats(4)]
+    fn a_secret_vote_on_objects_offers_them_face_down(#[case] seats: usize) {
+        let json = r#"{"Vote":{"options":{"Of":{"Each":[{"Type":"Creature"}]}},"secret":true,"tally":"votes"}}"#;
+        let game = state(
+            vec![vec![]; seats],
+            std::iter::once(vec![creature("Source", 1, 1), creature("Bear", 2, 2)])
+                .chain(std::iter::repeat_n(vec![], seats - 1))
+                .collect(),
+        );
+        let Run::Ask(decision) = play(&game, 0, json).unwrap() else {
+            panic!("a vote asks the first voter");
+        };
+        let DecisionKind::ChooseOption(options) = decision.kind else {
+            panic!("a secret vote on objects offers options");
+        };
+        let both: Vec<ChoiceOption> = game
+            .zone(crate::zones::Zone::Battlefield)
+            .iter()
+            .map(|id| ChoiceOption::SecretObject(*id))
+            .collect();
+        assert_eq!(options.options, both);
+        assert_eq!(decision.player, PlayerId(0));
+    }
+
+    #[rstest]
     #[case::no_name_for_the_winners(r#"{"Vote":{"options":{"Of":"EachPlayer"}}}"#)]
     #[case::no_name_for_another_player(r#"{"Vote":{"options":"AnotherPlayer","secret":true}}"#)]
     fn a_vote_on_players_that_cannot_be_played_is_refused(#[case] json: &str) {

@@ -100,6 +100,8 @@ mod r6403_meld;
 mod r6500_pieces;
 mod r6502_enters_as;
 mod r6502_names;
+mod r6702_craft;
+mod r6702_turn_up;
 mod random_pick;
 mod reconfigure;
 mod recursion;

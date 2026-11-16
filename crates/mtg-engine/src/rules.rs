@@ -1793,6 +1793,15 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             combat: *combat,
         },
         GameRule::MustAttack(who) => Rule::MustAttack(objects(who, Zone::Battlefield)?),
+        GameRule::R6702MustAttackOneOf { who, players } => {
+            let players = scope.players(players)?;
+            Rule::MustAttackPlayers(
+                objects(who, Zone::Battlefield)?
+                    .into_iter()
+                    .flat_map(|creature| players.iter().map(move |player| (creature, *player)))
+                    .collect(),
+            )
+        }
         GameRule::R6600AdaptsFresh(who) => Rule::R6600AdaptsFresh(objects(who, Zone::Battlefield)?),
         GameRule::MustAttackPlayers { who, players } => Rule::MustAttackPlayers(
             objects(who, Zone::Battlefield)?

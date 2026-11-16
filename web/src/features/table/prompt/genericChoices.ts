@@ -230,7 +230,7 @@ export function genericChoices(kind: DecisionKind, words: GenericWords): Generic
   }
   if ('ChooseOption' in kind) {
     const offer = each(kind.ChooseOption.options, (option, at) =>
-      pick(`option-${at}`, optionLabel(option, words.seat, words.viewer), { ChooseOption: at }),
+      pick(`option-${at}`, optionLabel(option, words.seat, words.viewer, words.object), { ChooseOption: at }),
     )
     if (kind.ChooseOption.can_cancel !== true) return offer
     return { ...offer, choices: [...offer.choices, back(words, 'Undo')] }

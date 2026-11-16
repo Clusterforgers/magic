@@ -152,6 +152,7 @@ mod r6603_loyalty_again;
 mod r6603_spared_tokens;
 mod r6603_support;
 mod r6603_transforms;
+mod r6702_cards;
 mod r8p2_enters;
 mod reflexive;
 mod replacement;

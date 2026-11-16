@@ -1,7 +1,7 @@
 {
   "oracle_id": "2bbb33e3-7d03-457c-92bb-b0c943615fa1",
   "name": "Koh, the Face Stealer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Koh, the Face Stealer",
@@ -44,15 +44,45 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 115, "end": 166 }
+          "Activated": {
+            "cost": [{ "PayLife": 1 }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "In": "Exile" }, { "ExiledWith": "This" }]
+                  },
+                  "as": "card"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "CountOf": { "of": { "Bound": "card" }, "filter": [] } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Forget": { "slot": "chosen" } },
+                    { "Remember": { "what": { "Bound": "card" }, "slot": "chosen" } }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 167, "end": 237 }
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "R6702GainActivatedAndTriggeredOf": {
+                  "Remembered": { "on": "This", "slot": "chosen" }
+                }
+              }
+            ]
           }
         }
       ]

@@ -444,6 +444,7 @@ fn preset_state(
         spent_from: Vec::new(),
         convoked: Vec::new(),
         delved: Vec::new(),
+        r6702_crafted: Vec::new(),
         copy: None,
         merged: None,
         phased: crate::object::PhasedState::default(),

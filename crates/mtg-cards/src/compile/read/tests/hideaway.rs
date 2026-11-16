@@ -24,6 +24,7 @@ fn cast(play: bool) -> Effect {
         transformed: false,
         bind: None,
         otherwise: Vec::new(),
+        must: false,
     }
 }
 

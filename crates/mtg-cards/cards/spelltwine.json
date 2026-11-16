@@ -1,0 +1,53 @@
+{
+  "oracle_id": "307e68e0-5095-474c-af02-bfcb2e463763",
+  "name": "Spelltwine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spelltwine",
+      "oracle_fingerprint": "69f745430dd47a817cc1f10436fbebdd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              },
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "mine" } },
+              { "Exile": { "what": { "Target": 1 }, "as": "theirs" } },
+              { "CopyCard": { "what": { "Bound": "mine" }, "as": "copy1" } },
+              { "CopyCard": { "what": { "Bound": "theirs" }, "as": "copy2" } },
+              {
+                "Choose": {
+                  "from": { "Union": [{ "Bound": "copy1" }, { "Bound": "copy2" }] },
+                  "as": "first",
+                  "rest_as": "second"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "first" }, "free": true, "must": true } },
+              { "CastFromZone": { "what": { "Bound": "second" }, "free": true, "must": true } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

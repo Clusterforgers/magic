@@ -1231,6 +1231,7 @@ fn effect() -> impl Strategy<Value = Effect> {
                         transformed: free && play,
                         bind: None,
                         otherwise,
+                        must: false,
                     }
                 }),
             (reference(), cost(), amount(), list(), list()).prop_map(
@@ -1330,7 +1331,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                 cost,
                 condition: None,
                 targets,
-                effects
+                effects,
             }),
         (trigger_pattern(), tail(), limit(), targets(), effects()).prop_map(
             |(when, (intervening_if, from), limit, targets, effects)| Ability::Triggered {

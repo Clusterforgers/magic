@@ -407,15 +407,16 @@ pub(crate) fn defenders_for(state: &GameState, player: PlayerId) -> Vec<AttackTa
     targets
 }
 
-/// The player a rule pairs the creature `object` with (Encore, CR 702.141) when that player is among the `defenders`: the
-/// creature attacks that player if able, so it may attack no one else. A rule that pairs it with a player who cannot be
-/// attacked asks nothing of it.
-fn paired_defender(
+/// The players and planeswalkers rules pair the creature `object` with (Encore, CR 702.141; "attacks an opponent with the
+/// most life", any one of several) that are among the `defenders`: the creature attacks one of them if able, so it may
+/// attack no one else. A rule that pairs it with a player who cannot be attacked asks nothing of it.
+fn paired_defenders(
     state: &GameState,
     object: ObjectId,
     defenders: &[AttackTarget],
-) -> Option<AttackTarget> {
-    must_attack_players(state, object)
+) -> Vec<AttackTarget> {
+    let mut paired: Vec<AttackTarget> = Vec::new();
+    for target in must_attack_players(state, object)
         .into_iter()
         .map(AttackTarget::Player)
         .chain(
@@ -423,7 +424,12 @@ fn paired_defender(
                 .into_iter()
                 .map(AttackTarget::Planeswalker),
         )
-        .find(|target| defenders.contains(target))
+    {
+        if defenders.contains(&target) && !paired.contains(&target) {
+            paired.push(target);
+        }
+    }
+    paired
 }
 
 /// What a goaded creature may attack (CR 701.15): a player other than its goaders when it can attack one, else any of the
@@ -490,8 +496,9 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
             if allowed.is_empty() && !defenders.is_empty() {
                 return None;
             }
-            let defenders = paired_defender(state, object, &allowed)
-                .map(|only| vec![only])
+            let paired = paired_defenders(state, object, &allowed);
+            let defenders = (!paired.is_empty())
+                .then_some(paired)
                 .or_else(|| goaded_defenders(state, object, &allowed))
                 .unwrap_or(allowed);
             Some(AttackerOption {
@@ -545,7 +552,7 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
                 && !crate::r286_joins::r286_bound(&options.joins, option.object)
                 && (must_attack(state, option.object)
                     || !goaded_by(state, option.object).is_empty()
-                    || paired_defender(state, option.object, &defenders).is_some())
+                    || !paired_defenders(state, option.object, &defenders).is_empty())
         })
         .map(|option| option.object)
         .collect();

@@ -64,6 +64,25 @@ pub(crate) fn lendable(card: &CardDefinition) -> Vec<(usize, Arc<Ability>)> {
     rules.chain(mana).collect()
 }
 
+/// The triggered abilities printed on a card, each with its index among its rules, which a permanent that gains the
+/// activated and triggered abilities of the card has after the activated ones (`Modification::R6702GainActivatedAndTriggeredOf`).
+pub(crate) fn r6702_lendable_triggers(card: &CardDefinition) -> Vec<(usize, Arc<Ability>)> {
+    card.rules
+        .iter()
+        .enumerate()
+        .filter(|(_, rules)| matches!(***rules, Ability::Triggered { .. }))
+        .map(|(index, rules)| (index, Arc::clone(rules)))
+        .collect()
+}
+
+/// Whether the ability on the stack is a craft ability of the object `source` (an activated ability whose cost exiles
+/// craft materials, CR 702.167a).
+pub(crate) fn r6702_crafts(ability: &crate::abilities::AbilityObject, source: ObjectId) -> bool {
+    ability.source.id == source
+        && matches!(&*ability.rules, Ability::Activated { cost, .. }
+            if cost.0.iter().any(|item| matches!(item, CostItem::Craft { .. })))
+}
+
 /// "{T}: Add {X}" as a rules ability.
 fn tap_for_mana(produces: ManaType) -> Arc<Ability> {
     Arc::new(Ability::Activated {

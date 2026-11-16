@@ -421,6 +421,7 @@ fn paradigm_effects() -> Vec<mtg_cards::effect::Effect> {
             transformed: false,
             bind: None,
             otherwise: Vec::new(),
+            must: false,
         },
     ]
 }
@@ -792,10 +793,12 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         ),
         // Only a shield counts its amount, and it begins as `PreventUpTo`; one with effects names the damage left to it.
         // More cards to surveil are offered by the surveil itself (`r4708_actions`).
+        // An Aura attached as it turns face up is asked by the turn-up itself (`announce::turn_up`).
         ReplaceBy::PreventCounted(_)
         | ReplaceBy::PreventNextAnd(_)
         | ReplaceBy::MayAddAmount(_)
-        | ReplaceBy::MayInstead(_) => false,
+        | ReplaceBy::MayInstead(_)
+        | ReplaceBy::R6702MayAttach(_) => false,
         ReplaceBy::PreventCountedAnd { most, .. } => {
             matches!(most, Amount::Fixed(_)) && matches!(unit, Unit::Damage { .. })
         }
@@ -3014,6 +3017,7 @@ impl Pass<'_> {
                     transformed: false,
                     bind: None,
                     otherwise: Vec::new(),
+                    must: false,
                 }],
                 targets: Vec::new(),
                 bindings: Vec::new(),
@@ -3992,7 +3996,9 @@ impl Pass<'_> {
                 ChoiceOption::Player(player) | ChoiceOption::SecretPlayer(player) => {
                     Some(Chosen::Player(player))
                 }
-                ChoiceOption::Secret(_) | ChoiceOption::Side(_) => None,
+                ChoiceOption::Secret(_) | ChoiceOption::SecretObject(_) | ChoiceOption::Side(_) => {
+                    None
+                }
             }
         })))
     }

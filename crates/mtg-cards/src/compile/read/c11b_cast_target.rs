@@ -49,6 +49,7 @@ fn c11b_cast(what: Ref, free: bool, bind: Option<String>) -> Effect {
         transformed: false,
         bind,
         otherwise: Vec::new(),
+        must: false,
     }
 }
 

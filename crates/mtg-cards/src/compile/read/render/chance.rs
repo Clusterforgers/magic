@@ -155,6 +155,19 @@ impl Writer<'_> {
                 highest: Some(highest),
                 count: None,
                 ..
+            } if plus.is_zero() && **highest == Amount::Fixed(2) => Some((
+                vec![format!("roll two d{sides} and ignore the lower roll")],
+                1,
+            )),
+            Effect::RollDice {
+                who: Ref::You,
+                sides,
+                dice: 1,
+                choose: false,
+                plus,
+                highest: Some(highest),
+                count: None,
+                ..
             } if plus.is_zero() && **highest == Amount::Players(Ref::Attacked) => Some((
                 vec![format!(
                     "roll a d{sides} for each player being attacked and ignore all but the highest roll"

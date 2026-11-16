@@ -99,6 +99,31 @@ pub(super) fn next(
     if !payable(state, player, card, &up) {
         return Next::Drop;
     }
+    // "As this Aura is turned face up, you may attach it to a creature" (CR 708.8): asked once the parts are picked,
+    // among the permanents it could enchant face up with those parts paid.
+    if settled == choices.cost_picks().len()
+        && let Some(hosts) = r6702_hosts(state, player, card, choices)
+    {
+        if hosts.is_empty() {
+            choices.pick_for_cost(Vec::new());
+            return next(state, player, card, choices, done);
+        }
+        done.asked = Some(Phase::Parts);
+        return Next::Ask(Decision {
+            player,
+            kind: DecisionKind::ChooseCards(CardsOptions {
+                one_per_name: false,
+                source: card,
+                from: hosts,
+                min: 0,
+                max: 1,
+                text: "You may choose a permanent to attach it to.".to_owned(),
+                can_cancel: false,
+                total: None,
+                groups: Vec::new(),
+            }),
+        });
+    }
     let paid = choices.clone();
     let spend = crate::spend::Spend::special(mtg_cards::spend::SpecialAction::TurnFaceUp);
     let mana = up.mana.with(ManaSymbol::Generic(
@@ -159,7 +184,79 @@ pub(crate) fn events(
         }));
     }
     events.extend(turned_up_counters(state, card));
+    if let Some(&host) = picks.next().and_then(|picked| picked.first()) {
+        events.push(Event::Attached {
+            object: card,
+            to: host,
+        });
+    }
     Some(events)
+}
+
+/// The "you may attach it to" selector of the face-up card (`ReplaceBy::R6702MayAttach`), if it has one.
+pub(crate) fn r6702_may_attach(state: &GameState, card: ObjectId) -> Option<Selector> {
+    let object = state.object(card)?;
+    crate::ability_reader::printed_rules(&object.def).find_map(|rules| match &**rules {
+        Ability::Replacement {
+            when: ReplaceWhen::TurnedFaceUp { what },
+            by: ReplaceBy::R6702MayAttach(to),
+            ..
+        } if *what == Selector::this() => Some(to.clone()),
+        _ => None,
+    })
+}
+
+/// The permanents `card` may be attached to as it is turned face up: those its selector names that it could enchant
+/// once it is face up and the parts of its cost picked in `choices` are paid (CR 303.4, 708.8). `None` when the card
+/// has no such ability; the parts are judged in a copy of the state, so the sacrificed creature is never offered.
+pub(crate) fn r6702_hosts(
+    state: &GameState,
+    player: PlayerId,
+    card: ObjectId,
+    choices: &Choices,
+) -> Option<Vec<ObjectId>> {
+    let to = r6702_may_attach(state, card)?;
+    let mut after = state.clone();
+    let up = turn_up(state, card)?;
+    let mut picks = choices.cost_picks().iter();
+    let mut events = Vec::new();
+    for part in &up.parts {
+        let picked = if matches!(part, Part::Pick(_)) {
+            picks.next().map_or(&[][..], Vec::as_slice)
+        } else {
+            &[]
+        };
+        events.extend(part.events(state, player, card, picked));
+    }
+    events.push(Event::TurnedFaceUp {
+        object: card,
+        player,
+        x: 0,
+    });
+    for event in &events {
+        crate::fold::apply_event(&mut after, event).ok()?;
+    }
+    Some(r6702_hosts_in(&after, player, card, &to))
+}
+
+/// The permanents of `to` that the face-up Aura `card` could enchant in `state`.
+pub(crate) fn r6702_hosts_in(
+    state: &GameState,
+    player: PlayerId,
+    card: ObjectId,
+    to: &Selector,
+) -> Vec<ObjectId> {
+    let Some(object) = state.object(card) else {
+        return Vec::new();
+    };
+    let scope = crate::resolve::Scope::announcing(state, player, object.reference());
+    scope
+        .matching(to)
+        .unwrap_or_default()
+        .into_iter()
+        .map(|host| host.id)
+        .filter(|&host| crate::attach::legal_host(state, card, host))
+        .collect()
 }
 
 /// The counters `card` gets as it is turned face up, from the "As ~ is turned face up, put N counters on it" abilities

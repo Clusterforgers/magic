@@ -1367,6 +1367,9 @@ pub enum ReplaceBy {
         /// How many.
         count: u32,
     },
+    /// As the Aura is turned face up, its controller may attach it to a permanent the selector names that it could
+    /// enchant (CR 708.8, 303.4): "As this Aura is turned face up, you may attach it to a creature." Only `TurnedFaceUp`.
+    R6702MayAttach(Selector),
     /// As the permanent enters, its controller may behold what the selector names: choose such a permanent they control
     /// or reveal such a card from their hand; if they don't (or can't) it enters tapped ("you may behold a Jace").
     BeholdOrTapped(Selector),

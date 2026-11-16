@@ -20,8 +20,11 @@ use crate::rng::GameRng;
 /// The target specifications announced, in the order they are asked: an Aura spell's one, from its enchant ability
 /// (CR 303.4a), otherwise those of the rules or, for a modal ability, of the modes chosen.
 pub(super) fn specs(ctx: &Ctx<'_>, choices: &Choices) -> Vec<TargetSpec> {
-    // An overloaded spell has no targets: each object that could be one is affected (CR 702.96).
-    if choices.way == Some(CastWay::Overload) {
+    // An overloaded spell has no targets: each object that could be one is affected (CR 702.96). A spell cast face down
+    // is a 2/2 creature spell with no abilities and no subtypes, an Aura's enchant included (CR 708.2a, 702.37c).
+    if choices.way == Some(CastWay::Overload)
+        || (choices.way == Some(CastWay::FaceDown) && matches!(ctx.what, What::Spell(_)))
+    {
         return Vec::new();
     }
     // A creature card cast for its bestow cost is an Aura spell with enchant creature (CR 702.103b).

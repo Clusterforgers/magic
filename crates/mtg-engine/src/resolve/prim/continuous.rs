@@ -344,6 +344,28 @@ fn borrowed(scope: &Scope<'_>, from: &mtg_cards::refs::Ref) -> Result<Vec<Borrow
     Ok(found)
 }
 
+/// The activated abilities the cards `from` names lend (`borrowed`), and after them their printed triggered abilities,
+/// each with its index among the rules of its card.
+fn r6702_borrowed_with_triggers(
+    scope: &Scope<'_>,
+    from: &mtg_cards::refs::Ref,
+) -> Result<Vec<Borrowed>, ResolveError> {
+    let mut found = borrowed(scope, from)?;
+    for donor in scope.objects(from)? {
+        let Some(object) = scope.state.object(donor.id) else {
+            continue;
+        };
+        for (index, body) in crate::ability_reader::r6702_lendable_triggers(object.card()) {
+            found.push(Borrowed {
+                donor: donor.id,
+                index,
+                body,
+            });
+        }
+    }
+    Ok(found)
+}
+
 /// The land or creature type a permanent becomes, as chosen under the name `wanted` gives.
 fn chosen_types(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, ResolveError> {
     match wanted {
@@ -508,6 +530,9 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::LoseAbilitiesExceptMana => Modification::LoseAbilitiesExceptMana,
         Wanted::LoseThisAbility | Wanted::LosePrinted(_) => return Err(not_resolving()),
         Wanted::GainAbilitiesOf(from) => Modification::GainAbilities(borrowed(scope, from)?),
+        Wanted::R6702GainActivatedAndTriggeredOf(from) => {
+            Modification::GainAbilities(r6702_borrowed_with_triggers(scope, from)?)
+        }
         // Each listed keyword one of the objects has, with its variant ("hexproof from white" for hexproof).
         Wanted::KeywordsOf { from, keywords } => {
             let mut given: Vec<Keyword> = Vec::new();

@@ -85,6 +85,22 @@ pub fn roll(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         .parse::<u32>()
         .ok()
         .filter(|sides| (2..=MOST_SIDES).contains(sides))?;
+    // "Roll two d20 and ignore the lower roll.": both dice are rolled and only the higher counts.
+    if dice == 2
+        && r.attempt(|r| r.words("and ignore the lower roll").then_some(()))
+            .is_some()
+    {
+        return Some(vec![Effect::RollDice {
+            who: Ref::You,
+            sides,
+            dice: 1,
+            choose: false,
+            plus: Amount::zero(),
+            highest: Some(Box::new(Amount::Fixed(2))),
+            results: Vec::new(),
+            count: None,
+        }]);
+    }
     let choose = dice > 1;
     if choose {
         r.need("and choose one result")?;

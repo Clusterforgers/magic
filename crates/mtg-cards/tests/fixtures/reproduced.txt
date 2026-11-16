@@ -143,6 +143,7 @@ Azorius Signet
 Azure Fleet Admiral
 Azusa, Lost but Seeking
 Baaallerina
+Baba Lysaga, Night Witch
 Back in Town
 Baird, Steward of Argive
 Balduvian Conjurer
@@ -503,6 +504,7 @@ Death Ward
 Death-Greeter's Champion
 Deathcap Cultivator
 Deathleaper, Terror Weapon
+Deathmist Raptor
 Debris Field Crusher
 Debtors' Transport
 Deceit
@@ -728,6 +730,7 @@ Eye of Nidhogg
 Eyeblight Massacre
 Eyetwitch
 Ezzaroot Channeler
+Fabrication Foundry
 Faceless One
 Fain, the Broker
 Faith Unbroken
@@ -830,6 +833,7 @@ Galea, Kindler of Hope
 Gallifrey Falls // No More
 Galvanic Iteration
 Galvanizing Sawship
+Game of Chaos
 Game-Trail Changeling
 Garruk Wildspeaker
 Garruk, Primal Hunter
@@ -865,6 +869,7 @@ Ghoulcaller Gisa
 Giant Beaver
 Giant Cindermaw
 Giant Growth
+Gift of Doom
 Gift of Paradise
 Gilded Drake
 Gilded Goose
@@ -1072,6 +1077,7 @@ Impulsive Pilferer
 Impulsivity
 In Oketra's Name
 In the Trenches
+Incinerator of the Guilty
 Indulging Patrician
 Infectious Inquiry
 Inferno Project
@@ -1186,6 +1192,7 @@ Kodama of the East Tree
 Kodama of the West Tree
 Kodama's Might
 Kodama's Reach
+Koh, the Face Stealer
 Kolaghan Skirmisher
 Kolaghan's Command
 Kolvori, God of Kinship // The Ringhart Crest
@@ -1982,6 +1989,7 @@ Spectral Shift
 Spectral Steel
 Speedway Fanatic
 Spellbreaker Behemoth
+Spelltwine
 Sphere of Safety
 Sphinx of Jwar Isle
 Sphinx of Magosi

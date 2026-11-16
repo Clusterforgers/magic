@@ -147,6 +147,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::SwitchPT => Traits::POWER.or(Traits::TOUGHNESS),
         Wanted::GrantAbility(_)
         | Wanted::GainAbilitiesOf(_)
+        | Wanted::R6702GainActivatedAndTriggeredOf(_)
         | Wanted::SetName(_)
         | Wanted::ThisAbility
         | Wanted::SetLoyalty(_)
@@ -181,7 +182,9 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::SetToughness(value)
         | Wanted::BlocksAdditionalPer(value)
         | Wanted::R6601KeywordX { count: value, .. } => reads_of_amount(value),
-        Wanted::SetController(who) | Wanted::GainAbilitiesOf(who) => reads_of_ref(who),
+        Wanted::SetController(who)
+        | Wanted::GainAbilitiesOf(who)
+        | Wanted::R6702GainActivatedAndTriggeredOf(who) => reads_of_ref(who),
         // The keywords of the other objects are read.
         Wanted::KeywordsOf { from, .. } => Traits::KEYWORDS.or(reads_of_ref(from)),
         // The creature types of the other object are read.
@@ -282,6 +285,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Paid
         | Ref::Convoked
         | Ref::Delved
+        | Ref::R6702CraftedWith
         | Ref::R6602FromYou => Traits::NONE,
         Ref::Remembered { on, .. } => reads_of_ref(on),
         Ref::LastExiledWith { on, filter } => reads_of_ref(on).or(reads_of_selector(filter)),
@@ -508,6 +512,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::ColorsSpent
         | Amount::PermanentsGraved
         | Amount::LifeLostThisWay
+        | Amount::R6702FlipStakes
         | Amount::DamageDealtThisWay
         | Amount::Destroyed(_)
         | Amount::Exiled(_)
@@ -595,6 +600,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::Tally { who, filter, .. } => reads_of_ref(who).or(reads_of_selector(filter)),
         Amount::Remembered { on, .. } => reads_of_ref(on),
         Amount::CardTypes(of) => reads_of_selector(of).or(Traits::TYPES),
+        Amount::R6702CardTypesOf(of) => reads_of_ref(of).or(Traits::TYPES),
         Amount::Largest { who, of } | Amount::Smallest { who, of } => {
             reads_of_ref(who).or(reads_of_selector(of))
         }

@@ -63,6 +63,7 @@ impl KeywordRules for Cipher {
                     transformed: false,
                     bind: None,
                     otherwise: Vec::new(),
+                    must: false,
                 },
             ],
         }]

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ef72af33-37fc-48ed-90d8-547c90e1609d",
+  "name": "Trap the Trespassers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trap the Trespassers",
+      "oracle_fingerprint": "0e841999a8c513ba1a9804e869b1826e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Vote": {
+                  "options": {
+                    "Of": { "Each": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+                  },
+                  "secret": true,
+                  "tally": "votes"
+                }
+              },
+              { "R6702CountersPerVote": { "tally": "votes", "counter": { "Other": "stun" } } },
+              { "Tap": { "what": { "Bound": "votes" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
