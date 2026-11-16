@@ -719,6 +719,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::Surveils { .. }
         | ReplaceWhen::CopiesSpell { .. }
         | ReplaceWhen::Learns { .. }
+        | ReplaceWhen::R6603DrawsSeveral { .. }
         | ReplaceWhen::Draw { .. } => false,
     }
 }
@@ -1324,6 +1325,10 @@ impl Pass<'_> {
             | (ReplaceWhen::LoseGame { who }, Unit::Loss { player })
             | (ReplaceWhen::Draw { who, .. }, Unit::Draw { player }) => {
                 scope.players(who)?.contains(player)
+            }
+            (ReplaceWhen::R6603DrawsSeveral { who, at_least }, Unit::Draw { player }) => {
+                self.r6603_draws_of(*player).len() >= *at_least as usize
+                    && scope.players(who)?.contains(player)
             }
             (
                 ReplaceWhen::Discarded { what, by, effect },
@@ -2422,6 +2427,13 @@ impl Pass<'_> {
                 Unit::Damage { .. },
             ) => {
                 self.w9c_prevent_all_but(at, candidate, *kept, applied);
+            }
+            (ReplaceBy::Instead(effects), Unit::Draw { player })
+                if self.r6603_several(candidate) =>
+            {
+                let at = self.r6603_one_draw(at, *player);
+                let asked = self.w5d_instead(at, candidate, by, effects, &unit, applied);
+                return Ok(asked.map_or(Applied::Done, Applied::Ask));
             }
             (ReplaceBy::Instead(effects) | ReplaceBy::Plus(effects), _)
             | (ReplaceBy::PreventAnd(effects), Unit::Damage { .. })
@@ -4192,6 +4204,7 @@ mod r304c_amounts;
 mod r4703_loss;
 mod r5501_attached;
 mod r6008_library;
+mod r6603_draws;
 mod r6603_transforms;
 mod w9c_prevent;
 

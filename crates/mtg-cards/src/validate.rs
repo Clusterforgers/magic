@@ -6673,7 +6673,8 @@ impl Walker<'_> {
             | ReplaceWhen::Surveils { who }
             | ReplaceWhen::CopiesSpell { who }
             | ReplaceWhen::Learns { who }
-            | ReplaceWhen::Draw { who, .. } => {
+            | ReplaceWhen::Draw { who, .. }
+            | ReplaceWhen::R6603DrawsSeveral { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
         }
@@ -6980,6 +6981,11 @@ impl Walker<'_> {
                 || !matches!(by, ReplaceBy::WithCounters { tapped: false, .. }))
         {
             self.problem("turning face up only puts counters on the permanent itself");
+        }
+        if matches!(when, ReplaceWhen::R6603DrawsSeveral { at_least, .. } if *at_least < 2)
+            || matches!((when, by), (ReplaceWhen::R6603DrawsSeveral { .. }, by) if !matches!(by, ReplaceBy::Instead(_)))
+        {
+            self.problem("a draw of several cards is replaced only by steps instead, and only from two cards on");
         }
         if matches!(when, ReplaceWhen::R6603Transforms { .. })
             && !matches!(by, ReplaceBy::AsEnters(_))

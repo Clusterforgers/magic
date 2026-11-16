@@ -7,78 +7,33 @@
       "name": "Hellkite Courser",
       "oracle_fingerprint": "80c247df467968dc80993d4f6813c067",
       "abilities": [
-        {
-          "Keyword": "Flying"
-        },
+        { "Keyword": "Flying" },
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "effects": [
               {
                 "May": {
                   "effects": [
                     {
                       "Choose": {
-                        "from": {
-                          "Each": [
-                            "Commander",
-                            {
-                              "In": "Command"
-                            },
-                            {
-                              "OwnedBy": "You"
-                            }
-                          ]
-                        },
+                        "from": { "Each": ["Commander", { "In": "Command" }, { "OwnedBy": "You" }] },
                         "as": "commander"
                       }
                     },
-                    {
-                      "Move": {
-                        "what": {
-                          "Bound": "commander"
-                        },
-                        "to": {
-                          "Battlefield": {}
-                        }
-                      }
-                    },
+                    { "Move": { "what": { "Bound": "commander" }, "to": { "Battlefield": {} } } },
                     {
                       "Continuous": {
-                        "affected": {
-                          "Bound": "commander"
-                        },
-                        "mods": [
-                          {
-                            "AddKeyword": "Haste"
-                          }
-                        ],
+                        "affected": { "Bound": "commander" },
+                        "mods": [{ "AddKeyword": "Haste" }],
                         "duration": "Forever"
                       }
                     },
                     {
                       "DelayedTrigger": {
-                        "when": {
-                          "StepBegins": {
-                            "step": "End"
-                          }
-                        },
+                        "when": { "StepBegins": { "step": "End" } },
                         "effects": [
-                          {
-                            "Move": {
-                              "what": {
-                                "Bound": "commander"
-                              },
-                              "to": "Command"
-                            }
-                          }
+                          { "Move": { "what": { "Bound": "commander" }, "to": "Command" } }
                         ]
                       }
                     }

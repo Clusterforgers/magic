@@ -11,6 +11,9 @@ use crate::common;
 #[rstest]
 #[case::sephiroth("Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel")]
 #[case::hellkite_courser("Hellkite Courser")]
+#[case::doubling_cube("Doubling Cube")]
+#[case::the_master_multiplied("The Master, Multiplied")]
+#[case::alms_collector("Alms Collector")]
 fn r6603_the_card_compiles_into_its_file(#[case] name: &str) {
     let printed = common::printed()
         .into_iter()

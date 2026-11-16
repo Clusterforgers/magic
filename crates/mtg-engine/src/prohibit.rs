@@ -160,6 +160,22 @@ fn counters_on(who: &[Target], on: Target) -> bool {
     }
 }
 
+/// Whether the spell or ability resolving is a triggered ability controlled by the controller of `object`.
+fn r6603_own_trigger_resolving(state: &GameState, object: ObjectId) -> bool {
+    let Some(running) = state.resolving() else {
+        return false;
+    };
+    let Some(ability) = state.object(running.object).and_then(GameObject::ability) else {
+        return false;
+    };
+    let triggered = ability.delayed.is_some()
+        || matches!(
+            &*ability.rules,
+            mtg_cards::ability::Ability::Triggered { .. }
+        );
+    triggered && state.resolving_controller() == holder(state, object)
+}
+
 /// Whether one prohibition forbids the action: the one check of each entry of `Prohibited`.
 #[allow(clippy::too_many_lines)]
 fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
@@ -241,6 +257,10 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
                     .object(object)
                     .is_some_and(|o| picks(state, ban, by, o.reference()))
         }
+        (
+            Prohibited::R6603ByOwnTriggers,
+            Doing::Sacrifice { object, .. } | Doing::Exile { object },
+        ) => covers(who, None, Some(object)) && r6603_own_trigger_resolving(state, object),
         (Prohibited::Exile, Doing::Exile { object }) => covers(
             who,
             state.object(object).map(GameObject::owner),

@@ -138,5 +138,158 @@
    }
   },
   "When this creature enters, you may put a commander you own from the command zone onto the battlefield. It gains haste. Return it to the command zone at the beginning of the next end step."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{3}"
+     },
+     "Tap"
+    ],
+    "effects": [
+     {
+      "AddMana": {
+       "mana": {
+        "Fixed": [
+         "White"
+        ]
+       },
+       "times": {
+        "ManaInPoolOf": {
+         "who": "You",
+         "mana": "White"
+        }
+       }
+      }
+     },
+     {
+      "AddMana": {
+       "mana": {
+        "Fixed": [
+         "Blue"
+        ]
+       },
+       "times": {
+        "ManaInPoolOf": {
+         "who": "You",
+         "mana": "Blue"
+        }
+       }
+      }
+     },
+     {
+      "AddMana": {
+       "mana": {
+        "Fixed": [
+         "Black"
+        ]
+       },
+       "times": {
+        "ManaInPoolOf": {
+         "who": "You",
+         "mana": "Black"
+        }
+       }
+      }
+     },
+     {
+      "AddMana": {
+       "mana": {
+        "Fixed": [
+         "Red"
+        ]
+       },
+       "times": {
+        "ManaInPoolOf": {
+         "who": "You",
+         "mana": "Red"
+        }
+       }
+      }
+     },
+     {
+      "AddMana": {
+       "mana": {
+        "Fixed": [
+         "Green"
+        ]
+       },
+       "times": {
+        "ManaInPoolOf": {
+         "who": "You",
+         "mana": "Green"
+        }
+       }
+      }
+     },
+     {
+      "AddMana": {
+       "mana": {
+        "Fixed": [
+         "Colorless"
+        ]
+       },
+       "times": {
+        "ManaInPoolOf": {
+         "who": "You",
+         "mana": "Colorless"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "{3}, {T}: Double the amount of each type of unspent mana you have."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "Cant": {
+      "who": {
+       "Each": [
+        {
+         "Type": "Creature"
+        },
+        "Token",
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      },
+      "action": "R6603ByOwnTriggers"
+     }
+    }
+   }
+  },
+  "Triggered abilities you control can't cause you to sacrifice or exile creature tokens you control."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "R6603DrawsSeveral": {
+      "who": "Opponents",
+      "at_least": 2
+     }
+    },
+    "by": {
+     "Instead": [
+      {
+       "Draw": {}
+      },
+      {
+       "Draw": {
+        "who": "Triggering"
+       }
+      }
+     ]
+    }
+   }
+  },
+  "If an opponent would draw two or more cards, instead you and that player each draw a card."
  ]
 ]

@@ -688,6 +688,10 @@ pub enum Prohibited {
     Discard,
     /// Be exiled (CR 406).
     Exile,
+    /// Be sacrificed or exiled by a triggered ability their controller controls while it resolves: "Triggered abilities you
+    /// control can't cause you to sacrifice or exile creature tokens you control." A cost the player pays to resolve the
+    /// ability (a "you may sacrifice") is caused by it too.
+    R6603ByOwnTriggers,
     /// Transform (CR 701.28).
     Transform,
     /// Phase out (CR 702.26).

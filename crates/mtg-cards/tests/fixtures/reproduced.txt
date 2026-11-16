@@ -975,6 +975,7 @@ Heidar, Rimewind Master
 Heliod, God of the Sun
 Heliod, Sun-Crowned
 Hellish Rebuke
+Hellkite Courser
 Hellkite Igniter
 Hellkite Overlord
 Hellkite Tyrant
