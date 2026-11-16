@@ -262,7 +262,7 @@ function RoomPanel({
           className="flex items-center gap-2 rounded-xl border-2 border-relic bg-delve-stone p-3 text-sm font-medium"
         >
           <TrophyIcon aria-hidden="true" className="size-5 text-relic" />
-          {boss ? `${boss.name} falls!` : 'The boss falls!'} Each hero heals 10, takes 50 gold and picks loot.
+          {boss ? `${boss.name} falls!` : 'The boss falls!'} Each hero heals 15, takes 50 gold and picks loot.
         </p>
       ) : null}
       {offer && me ? (

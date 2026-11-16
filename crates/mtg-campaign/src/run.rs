@@ -21,7 +21,7 @@ pub const LIFE: i32 = 40;
 /// The fights the party may lose and retry.
 pub const HEARTS: u8 = 3;
 /// Life each hero gets back after a boss falls.
-pub const HEAL_AFTER_BOSS: i32 = 10;
+pub const HEAL_AFTER_BOSS: i32 = 15;
 /// Life a Campfire rest gives.
 pub const REST: i32 = 20;
 /// Life a hero who ended a won fight as a Spirit comes back with.

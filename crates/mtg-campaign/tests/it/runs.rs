@@ -5,7 +5,7 @@
 //! entered with no vote and stored votes for that boss still replay; bots answer every offer; the host chooses the timers in the lobby, every fight's game keeps them and a stored run without them is relaxed; each fight whose game
 //! ended or lost its table is kept with its game for the fight log; and replaying the
 //! events gives the same run.
-use mtg_campaign::run::{HEAL_AFTER_BOSS, HEARTS, LIFE, SPIRIT_RETURN};
+use mtg_campaign::run::{HEARTS, LIFE, SPIRIT_RETURN};
 use mtg_campaign::{
     Brain, Content, Forfeit, HeroDeck, Offer, Pick, Run, RunEvent, Status, content,
 };
@@ -225,10 +225,7 @@ fn a_won_fight_carries_life_brings_spirits_back_and_offers_loot() {
     apply(&mut run, &mut events, won);
     assert_eq!(run.status, Status::Room);
     let lives: Vec<i32> = run.heroes.iter().map(|h| h.life).collect();
-    assert_eq!(
-        lives,
-        vec![17 + HEAL_AFTER_BOSS, SPIRIT_RETURN + HEAL_AFTER_BOSS, LIFE]
-    );
+    assert_eq!(lives, vec![17 + 15, SPIRIT_RETURN + 15, LIFE]);
     for hero in &run.heroes {
         assert_eq!(hero.gold, 50);
         assert!(
