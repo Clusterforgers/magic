@@ -17,6 +17,33 @@ The rules the web client is built to: principles, design system, a fit-to-viewpo
 | Contrast and focus | 4.5:1 text, 3:1 edges and rings, focus never covered, colour never alone |
 | Motion and timing | 100 to 300 ms, ease-out in; nothing delays an answer; a working state past 1 s |
 
+### Feel
+
+The twenty rules of motion and interaction the table, lobby, deck pages and Delves are held to; the findings against them are ranked in [ui-audit.md](ui-audit.md) (Feel audit). Motion is CSS transforms, opacity and filters on keyframes, or the Web Animations API, never a re-render per frame; nothing waits for it, input stays live and `prefers-reduced-motion: reduce` turns it into still marks.
+
+| Rule | Here |
+|---|---|
+| Squash and stretch | A press squashes a control or card to 0.97; an attacker stretches 4 % along its lunge; a hit card squashes to 0.94 on impact |
+| Anticipation | An attacker draws back before it lunges, a strike before it lands, a flying card dips to 0.94 as it leaves |
+| Staging | What just happened is the focus: the newest stack chip is raised and ringed, older chips sit at 0.8; the attacked seat rings; the prompt band glows; nothing else dims below 0.8 |
+| Pose to pose | Every move is three to five keyframes (leave, peak, land, settle) in `fx.css` or `travel.ts`, tweened by the browser |
+| Follow through | A landing card and an entering permanent overshoot about 4 % and settle; a released press springs back past 1 |
+| Slow in, slow out | Card legs ease in and out (`EASE_IN_OUT`), entrances ease out, exits ease in; linear only for clocks |
+| Arcs | A card in flight bows off the straight line by 12 % of the way (24 to 96 px), up and away from the table's centre |
+| Secondary action | The hit flashes and its number floats; an attacker's edge glows; a resolved spell's mark rides on it |
+| Timing | Presses 100 ms, card legs 380 ms, attacks 450 ms, hits 450 ms; a batch's whole sequence under 1.7 s |
+| Exaggeration | A hit flashes bright then red and shakes 5 px; a life total pops to 1.25 with a coloured flash |
+| Solid drawing | Cards cast a shadow on the felt, a lifted hand card a deeper one; a tap turns the face about its centre; the coin turns in 3D |
+| Appeal | One look (Spellforge), one set of motion tokens, the same moves in every layout |
+| Fitts and hit areas | Pass, Next, Resolve and Attack are the largest buttons, bottom right; under a coarse pointer every control and chip has a 44 px hit area (`hit-area`), grown with a pseudo-element, never the layout |
+| Hick | A prompt shows one primary answer and at most about six choices at once; more go to the choice overlay with a search |
+| Miller | Groups of at most about seven: stack chips fold into "×N" and "+N more", lands fold into counts, a deck list groups by type |
+| Doherty | A press shows its pressed state in the same frame; an answer sent closes its prompt at once; a working state shows past 400 ms |
+| Postel | Deck import takes Arena, MTGO, Moxfield and plain lists; search ignores case and accents; a number field takes typing and steppers |
+| Jakob | Arena's layout and words: hand at the bottom in an arc, opponents across, the pass button bottom right with Arena's labels, Space to pass |
+| Frequency | Pass, Next, Resolve and Attack are gold and largest; stops one press away; manual commands in the side panel; rare actions in menus |
+| Reduced motion | Under `reduce` nothing travels, scales or shakes: marks and outlines stand for the effect's time |
+
 ## Design system
 
 Tokens are CSS variables in `index.css`, mapped by `@theme inline`; shadcn's names stay. `tokens.test.ts` computes the contrast of every text, edge and ring pair in both themes and holds the scales below; `tokenUse.test.ts` keeps hard-coded colours, sizes and off-scale text out of `components/` and the pages beside the table. A state tint (`bg-success/12`) sits on the page, panels and menus, not on the table.

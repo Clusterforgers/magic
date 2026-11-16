@@ -1,0 +1,65 @@
+/*
+ * Press and hit areas (docs/ui-design.md, Feel). A press squashes a control or card to 0.97 in the frame it is pressed
+ * and springs it back past 1 when let go; the `press` utility does the same and carries the colour transitions too, so
+ * it replaces `transition-colors`. `hit-area` grows what a finger can hit to 44 px under a coarse pointer with a pseudo-element, so
+ * the layout never moves; the element must be positioned (`relative`).
+ */
+:root {
+  --press-scale: 0.97;
+  --press-in-ms: 60ms;
+  --press-out-ms: 220ms;
+  /* A spring that passes 1 a little before it settles: the follow-through of a release. */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --hit-min: 44px;
+}
+
+/*
+ * Every button and card is pressed the same way, also those drawn without `Button`. In the base layer, so a button's own
+ * transition or scale utilities win; the press still shows in the frame it happens.
+ */
+@layer base {
+  @media (prefers-reduced-motion: no-preference) {
+    :where(button, a[data-slot='button']) {
+      transition: scale var(--press-out-ms) var(--ease-spring);
+    }
+
+    :where(button, a[data-slot='button']):active:not([aria-haspopup], :disabled, [aria-disabled='true']) {
+      scale: var(--press-scale);
+      transition-duration: var(--press-in-ms);
+      transition-timing-function: var(--ease-out);
+    }
+  }
+}
+
+@utility press {
+  transition-property: color, background-color, border-color, outline-color, box-shadow, opacity;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-out);
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition-property: color, background-color, border-color, outline-color, box-shadow, opacity, scale;
+    transition-duration:
+      var(--duration-fast), var(--duration-fast), var(--duration-fast), var(--duration-fast),
+      var(--duration-fast), var(--duration-fast), var(--press-out-ms);
+    transition-timing-function:
+      var(--ease-out), var(--ease-out), var(--ease-out), var(--ease-out), var(--ease-out), var(--ease-out),
+      var(--ease-spring);
+
+    &:active:not([aria-haspopup], :disabled, [aria-disabled='true']) {
+      scale: var(--press-scale);
+      transition-duration: var(--press-in-ms);
+      transition-timing-function: var(--ease-out);
+    }
+  }
+}
+
+@utility hit-area {
+  @media (pointer: coarse) {
+    &::after {
+      content: '';
+      position: absolute;
+      inset-block: min(0px, calc((100% - var(--hit-min)) / 2));
+      inset-inline: min(0px, calc((100% - var(--hit-min)) / 2));
+    }
+  }
+}
