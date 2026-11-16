@@ -504,6 +504,7 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
           icon={X}
           label="No attack"
           word="No attack"
+          keepWord
           onClick={() => answer({ DeclareAttackers: [] })}
         />
       )}

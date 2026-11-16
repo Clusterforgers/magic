@@ -345,6 +345,7 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
         icon={Shield}
         label="No blocks"
         word="No blocks"
+        keepWord
         disabled={required.length > 0 || unserved.length > 0}
         onClick={() => answer({ DeclareBlockers: [] })}
       />

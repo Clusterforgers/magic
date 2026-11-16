@@ -78,7 +78,7 @@ Every screen and table mode shot at 1873 × 1047, 1530 × 898, 1400 × 900, 1024
 | 19 | Low | Key hints (Esc, Space) are drawn on touch screens | phone prompts | p-x-390 | fixed: left out under a coarse pointer |
 | 20 | Low | The deck detail is a tall empty panel while the seats run below the fold | lobby, 1400 | pg-lobby-2hg-1400 | pf10h |
 | 21 | Low | End the run is plain text under the chronicle, unlike every other action | Delves, every state | dl-map-1400 | pf10i |
-| 22 | Low | "No attack" is an icon-only button beside a labelled Attack | phone, attack | teams22-attack-390 | pf10j |
+| 22 | Low | "No attack" is an icon-only button beside a labelled Attack | phone, attack | teams22-attack-390 | fixed: No attack and No blocks keep their words |
 | 23 | Low | The commander tax badge lies over the commander's type line in the hand dock | every table | duel-pri-1400 | fixed: the pill in the middle of the art |
 | 24 | Low | Hero names and figures of the run summary wrap on separate lines | Delves victory, phone | dl-victory-390 | pf10l |
 | 25 | Low | The deck list and groups, the replay and the open games list have no dev fixture, so they cannot be shot without a server | decks, replay, play | - | pf10m |
