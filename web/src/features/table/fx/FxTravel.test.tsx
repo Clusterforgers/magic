@@ -9,7 +9,7 @@ import { MOVE_MS } from './moves'
 import type { Move } from './moves'
 import { createFx } from './store'
 import type { FxMode } from './store'
-import { EASE_OUT, keyframesOf } from './travel'
+import { keyframesOf, LEG_EASING } from './travel'
 
 const ME = 0
 const FOE = 1
@@ -81,7 +81,7 @@ describe('a card that flies', () => {
     expect(started?.timing).toEqual({
       duration: MOVE_MS.travel,
       delay: 0,
-      easing: EASE_OUT,
+      easing: LEG_EASING,
       fill: 'forwards',
     })
     expect(started?.element).toBe(fliers()[0])

@@ -62,9 +62,14 @@ export interface Spotlight {
 /** The time a spotlight takes to come in, and to go out, in ms: the same for every spotlight. */
 const FADE_MS = 150
 
+/** The share past its size the spotlight grows to as it comes in, and the time it takes to settle back, in ms. */
+export const SPOTLIGHT_OVERSHOOT = 1.04
+const SETTLE_MS = 90
+
 /**
- * The keyframes of the spotlight over its whole time: in with a little growth (`ease-out`), whole, then out (`ease-in`),
- * each fade `FADE_MS` long. A still one is on at once and off at once, as a card standing for the same time.
+ * The keyframes of the spotlight over its whole time: in with a little growth (`ease-out`) that overshoots by
+ * `SPOTLIGHT_OVERSHOOT` and settles in `SETTLE_MS`, whole, then out (`ease-in`), each fade `FADE_MS` long. A still one
+ * is on at once and off at once, as a card standing for the same time.
  */
 export function spotlightKeyframes({ still, own = false }: { still: boolean; own?: boolean }): Keyframe[] {
   if (still) {
@@ -78,7 +83,8 @@ export function spotlightKeyframes({ still, own = false }: { still: boolean; own
   const fade = FADE_MS / spotlightMs(own)
   return [
     { offset: 0, opacity: 0, transform: 'scale(0.92)', easing: 'ease-out' },
-    { offset: fade, opacity: 1, transform: 'scale(1)' },
+    { offset: fade, opacity: 1, transform: `scale(${SPOTLIGHT_OVERSHOOT})`, easing: 'ease-in-out' },
+    { offset: fade + SETTLE_MS / spotlightMs(own), opacity: 1, transform: 'scale(1)' },
     { offset: 1 - fade, opacity: 1, transform: 'scale(1)', easing: 'ease-in' },
     { offset: 1, opacity: 0, transform: 'scale(0.96)' },
   ]
