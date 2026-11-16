@@ -11,6 +11,7 @@ import { DelveContentContext } from '../campaign/useBossAbilities'
 import { DEV_BOSS_CONTENT } from './bossContent'
 import { DevFxControls } from './DevFxControls'
 import { DevMoments } from './DevMoments'
+import { DevScript } from './DevScript'
 import { DevTurnChange } from './DevTurnChange'
 import { fixtureGame } from './devGame'
 import { FIXTURE_MARKER, buildFixture } from './fixture'
@@ -114,6 +115,7 @@ export function DevTableRoute() {
     teams,
     result,
     permanents,
+    script,
   } = useSearch({
     from: '/dev/table',
   })
@@ -226,6 +228,7 @@ export function DevTableRoute() {
             <DevFxControls initial={fx} open={bar} />
             <DevTurnChange on={newturn === true} />
             <DevMoments on={moments === true} count={shown} />
+            <DevScript on={script === 'layout'} />
           </DelveContentContext>
         </CardsApiContext>
       </TableOptionsContext>

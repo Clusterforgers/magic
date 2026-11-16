@@ -56,6 +56,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Fights and the table: a fight that ends without a result counts as lost and the host can retreat, Spirits are asked only where their haunts matter, the rules lexicon covers every engine term, decks sit in several groups, token planeswalkers show loyalty, the round counter, the blocker timer and grid lands as choices, and the card preview stays clear of the prompt (`docs/delves.md`, `docs/web.md`)
 - GUI sweep: every screen, table mode and prompt kind shot at the owners' sizes, the findings ranked in `docs/ui-audit.md`.
 - Feel: the twenty rules of motion and interaction, press squash and 44 px hit areas, card travel on an arc with a wind-up and a settle, attacks, hits, entries and deaths pose to pose, the staged stack and attacked seat, the swelling pass button and snappier strikes (`docs/ui-design.md`, `docs/ui-audit.md`).
+- Holding still: card sizes and the board split hold until a board no longer fits or clearly has room, the prompt sheet overlays the boards, moved cards slide, and `scripts/layout-jumps.mjs` counts the jumps of a scripted stretch of play (`docs/web.md`, Holding still).
 
 ## Live game
 
@@ -75,6 +76,9 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf11d) An attacker taps first and lunges after, so the tap and the lunge read as two poses
 - [ ] (pf11e) The step ladder's stop marks hit at 44 px under a coarse pointer without widening the top bar
 - [ ] (pf11f) A card added in the builder travels into its group of the deck list, and a removed one leaves it
+- [ ] (pf12a) An opponent's board drawn from the middle of the table holds its bands' height until the next size step, so a line that empties or a land pile that shortens does not shift the lanes above it
+- [ ] (pf12b) The lane of other permanents, set at the right, grows leftward from its own right edge, so a new artifact leaves the cards already there in place
+- [ ] (pf12c) The hand dock grows or gives back its second row only at a settle point (end of a step), not on every draw
 - [ ] (pf11g) Delves votes and shop buys answer a press with a beat on the chosen card and a moving vote count
 - [ ] (pf10m) Dev fixtures for the deck list and groups, the replay and the open games list, so a sweep shoots them without a server
 - [ ] (pf9e) The live report "only the host's creature attacks" in a party turn reproduced from its stored game and fixed

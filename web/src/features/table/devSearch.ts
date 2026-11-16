@@ -116,6 +116,8 @@ export interface DevSearch {
   permanents?: number
   /** Seats in two teams, even against odd seats: `2v2` (`teams`) or `2hg` (Two-Headed Giant, shared life). */
   teams?: DevTeams
+  /** `layout` exposes the layout script (`dev/layoutScript.ts`) as `window.__tableScript` to step through its states. */
+  script?: 'layout'
   /** Ends the game and shows the result page: the viewer `won`, `lost`, a `draw`, or the viewer's team won (`team`, with `teams`). */
   result?: DevResult
 }
@@ -149,7 +151,7 @@ const whole = (value: unknown): number | undefined =>
 
 const isDevFx = (value: unknown): value is DevFx => DEV_FX.some((name) => name === value)
 
-/** Reads `?seats=&boss=&board=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&newturn=&bar=&slow=&preview=&stops=&fc=&rules=&spirit=&bare=&alone=&states=&cards=&menu=&teams=&result=&permanents=`, ignoring whatever does not make sense. The router has already parsed numbers. */
+/** Reads `?seats=&boss=&board=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&newturn=&bar=&slow=&preview=&stops=&fc=&rules=&spirit=&bare=&alone=&states=&cards=&menu=&teams=&result=&permanents=&script=`, ignoring whatever does not make sense. The router has already parsed numbers. */
 export function parseDevSearch(search: Record<string, unknown>): DevSearch {
   const seats = whole(search.seats)
   const focus = whole(search.focus)
@@ -192,6 +194,7 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     tour: search.tour === 1 ? '1' : typeof search.tour === 'string' ? search.tour : undefined,
     lexicon: search.lexicon === 1 ? '1' : typeof search.lexicon === 'string' ? search.lexicon : undefined,
     teams: teamsOf(search.teams),
+    script: search.script === 'layout' ? 'layout' : undefined,
     permanents:
       typeof search.permanents === 'number' &&
       Number.isInteger(search.permanents) &&

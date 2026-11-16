@@ -39,7 +39,7 @@ import { TableGrid } from './TableGrid'
 import { useBoardSplit } from './useBoardSplit'
 import { handIdle } from './handIdle'
 import { useTheirHead } from './useTheirHead'
-import { foldsLands, sheetReserve } from './boardSplit'
+import { foldsLands } from './boardSplit'
 import { AttackLinesContext, FOLD_LANDS_BY_DEFAULT, TableOptionsContext } from './tableOptions'
 import { TopBar } from './TopBar'
 import { TableTour } from './tour/TableTour'
@@ -115,15 +115,12 @@ const Table = memo(function Table() {
     () => (plan.mode === 'boss' ? [plan.viewer, ...plan.allies] : null),
     [plan.mode, plan.viewer, plan.allies],
   )
-  // The overhang the sheet wants in steps of 8 px: the split reserves part of it, and a pod column keeps all of it free.
-  const [overhang, setOverhang] = useState(0)
-  const onOverhang = useCallback((px: number) => setOverhang(Math.ceil(Math.max(0, px) / 8) * 8), [])
   const [head, setHead] = useState(0)
   // Steps of 8 px, so a pod that grows by a pixel does not move the boards.
   const onHead = useCallback((px: number) => setHead(Math.ceil(px / 8) * 8), [])
   const section = useRef<HTMLElement>(null)
   useTheirHead(section, onHead, `${ready}|${plan.shape}|${plan.boards.join(',')}`)
-  const regions = useBoardSplit(table.regions, plan, sheetReserve(overhang), head, overhang)
+  const regions = useBoardSplit(table.regions, plan, 0, head, 0)
   const size: CardSize = plan.compact ? 'compact' : 'normal'
   const folding = options.foldLands ?? FOLD_LANDS_BY_DEFAULT
   const fx = useTableFx(options.effects ?? EFFECTS_BY_DEFAULT, options.effectsSlow)
@@ -191,7 +188,6 @@ const Table = memo(function Table() {
                                   <SharedStrip
                                     sheetMax={regions.sheet}
                                     sheetWide={regions.sheetWide}
-                                    onOverhang={onOverhang}
                                     inset={table.pod === 'aside' ? POD_COLUMN_PX + ZONE_GAP_PX : 0}
                                   />
                                 }

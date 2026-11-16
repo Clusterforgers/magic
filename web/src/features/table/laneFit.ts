@@ -286,6 +286,31 @@ export function highestRung(rungs: number, fits: (rung: number) => boolean): num
 }
 
 /**
+ * The fit of every lane inside the box at exactly `cardWidth`, in the shape `prefer` where it fits, else the first of
+ * the preference order that does; null when the width is off the limits or no shape fits.
+ */
+export function fitAt(
+  box: FitBox,
+  counts: LaneCounts,
+  facing: 'near' | 'far',
+  limits: LaneLimits,
+  cardWidth: number,
+  prefer?: BoardShape,
+): LaneFit | null {
+  if (cardWidth < limits.minWidth || cardWidth > limits.maxWidth) return null
+  const boxHeight = whole(box.height)
+  const order =
+    prefer === undefined ? PREFERENCE : [prefer, ...PREFERENCE.filter((shape) => shape !== prefer)]
+  for (const shape of order) {
+    const bands = placeShape(shape, counts, cardWidth, box.width, limits, facing)
+    if (bands === null) continue
+    const height = heightOf(bands, limits.bandGap)
+    if (height <= boxHeight) return { shape, cardWidth, bands, height, scrolls: false, hidden: 0 }
+  }
+  return null
+}
+
+/**
  * The largest rung of the ladder at which some shape fits every lane inside the box, searched by halving: a shape
  * that fits at a width fits at every smaller one. Ties go to two bands, then one. At the floor without a fit the shape
  * that needs the least height wins and the zone scrolls.
