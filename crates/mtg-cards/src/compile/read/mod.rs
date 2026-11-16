@@ -606,6 +606,11 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
         .then_some(found)
 }
 
+/// A wording of the r67-01 table, read whole whatever its kind and reminder text.
+pub fn r6701_whole(text: &str) -> Option<Ability> {
+    r6701_wholes::r6701_whole_read(text)
+}
+
 /// A wording of the r66-00 table, read whole whatever its kind and reminder text.
 pub fn r6600_whole(text: &str) -> Option<Ability> {
     r6600_wholes::r6600_whole_read(text)
