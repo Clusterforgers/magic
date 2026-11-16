@@ -13,7 +13,7 @@ import {
   splitBoss,
 } from './bossSplit'
 import type { BossBoard, BossSplitInput } from './bossSplit'
-import { laneHeight } from './laneFit'
+import { LANE_LIMITS, ladderOf, laneHeight } from './laneFit'
 import type { LaneCounts } from './laneFit'
 import { ALLY_STRIP_PX, HAND_SLIM_PX, gridRows, planTable, regionSizes } from './layout'
 import type { BossSides } from './layout'
@@ -142,6 +142,18 @@ describe('splitBoss', () => {
       expect(split.opponents).toBeLessThanOrEqual(room * BOSS_SIDE_MOST + 1e-6)
       expect(split.band === ALLY_STRIP_PX || split.band >= ALLY_ROW_MIN_PX).toBe(true)
       expect(split.heroCard).toBe(0)
+    },
+  )
+
+  it.each([2, 5])(
+    'squeezed with %i crowded allies, your board keeps what it needs at the floor before the allies grow',
+    (count) => {
+      for (const room of [480, 600, 700]) {
+        const split = splitBoss(input({ room, boss: 40, allies: Array.from({ length: count }, () => 40), own: 40 }))
+        const yours = split.own - split.band - 8
+        const need = 24 + laneHeight(930, permanents(40), ladderOf(LANE_LIMITS).at(0))
+        expect(yours).toBeGreaterThanOrEqual(Math.min(need, split.own - 8 - ALLY_ROW_MIN_PX) - 1e-6)
+      }
     },
   )
 

@@ -88,8 +88,8 @@ export function allyShares(allies: readonly LaneCounts[]): number[] {
  * at `BOSS_CARD_FLOOR_PX` cards; the boss then takes what is left, up to `BOSS_SCALE` of the heroes' card and
  * `BOSS_SIDE_MOST` of the room. A board without permanents takes one
  * line (`BOSS_LINE_PX`, `ALLY_LINE_PX`, `OWN_LINE_PX`); a hand that will fill an empty board keeps your row. What is
- * left goes to the allies' row and yours in proportion to what they need. Without a fit at the floor the room splits
- * by what each row needs there, the boss's capped, and the allies are a strip of tiles where their row would be low.
+ * left goes to the allies' row and yours in proportion to what they need. Without a fit at the floor the boss takes
+ * what it needs there up to its cap, your row what it needs there, and the allies the rest: a strip of tiles where low.
  */
 export function splitBoss(input: BossSplitInput, limits: LaneLimits = LANE_LIMITS): BossSplit {
   const room = finite(input.room)
@@ -170,9 +170,10 @@ function squeezed(
   const opponents = Math.min(cap, boss)
   const party = Math.max(0, room - opponents)
   const rest = Math.max(0, party - gap)
-  const sum = allies + own
-  const scaled = sum === 0 ? 0 : (rest * allies) / sum
-  const low = scaled < (allyShows ? ALLY_ROW_MIN_PX : ALLY_LINE_PX)
+  // Your board is where you play: it keeps what it needs at the floor first, and the allies' row takes the rest.
+  const least = allyShows ? ALLY_ROW_MIN_PX : ALLY_LINE_PX
+  const scaled = allies === 0 ? 0 : rest - Math.min(own, Math.max(0, rest - least))
+  const low = scaled < least
   const band = input.allies.length === 0 ? 0 : low ? Math.min(ALLY_STRIP_PX, rest) : scaled
   return { opponents, own: party, band, bossCard: 0, heroCard: 0 }
 }
