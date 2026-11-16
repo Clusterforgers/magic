@@ -72,7 +72,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf10h) The lobby's deck detail panel takes the height of its content, and the seats list stays in view beside it
 - [ ] (pf10i) Delves "End the run" is an outline button with the other run actions, not plain text under the chronicle
 - [ ] (pf10j) "No attack" on a phone's attack bar carries its label, as Attack does
-- [ ] (pf10k) The commander tax badge in the hand dock lies clear of the commander card's type line
 - [ ] (pf10l) The Delves run summary keeps each hero's name and figures on one aligned row on a phone
 - [ ] (pf10m) Dev fixtures for the deck list and groups, the replay and the open games list, so a sweep shoots them without a server
 - [ ] (pf9e) The live report "only the host's creature attacks" in a party turn reproduced from its stored game and fixed
