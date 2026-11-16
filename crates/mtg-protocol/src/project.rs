@@ -479,9 +479,12 @@ impl ObjectView {
         // An ability on the stack is named after its source and has nothing else of the source's printed side.
         let printed = object.kind() != ObjectKind::Ability;
         let is_token = object.kind() == ObjectKind::Token && !behind;
-        // A name sticker adds its words to the name the table reads (layer 3).
-        let words: &[String] = if behind { &[] } else { &chars.name_words };
-        let stickered = mtg_engine::un34_stickers::name_with(words, &card.name);
+        // A name sticker adds its words to the name the table reads, and an effect may set it (layer 3).
+        let stickered = if behind {
+            card.name.clone()
+        } else {
+            chars.name_for(&card.name)
+        };
         // The Ring's ability on the stack is the Ring's, named so whoever its Ring-bearer is and whether or not the viewer
         // may look at it: the Ring and its bearer are public.
         let granter = granter_of(object);

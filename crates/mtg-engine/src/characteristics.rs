@@ -58,9 +58,22 @@ pub struct Characteristics {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<String>>", optional))]
     pub name_words: Vec<String>,
+    /// The name an effect gave it in place of its printed one ("named Legitimate Businessperson", layer 3).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub name_set: Option<String>,
 }
 
 impl Characteristics {
+    /// The name the game reads, given the printed one: the name an effect set or the printed one, after the words of
+    /// its name stickers.
+    pub fn name_for(&self, printed: &str) -> String {
+        crate::un34_stickers::name_with(
+            &self.name_words,
+            self.name_set.as_deref().unwrap_or(printed),
+        )
+    }
+
     /// Whether the object is currently a creature.
     pub fn is_creature(&self) -> bool {
         self.types.contains(CardType::Creature)
@@ -94,6 +107,7 @@ impl Characteristics {
             toughness: None,
             abilities: Vec::new(),
             name_words: Vec::new(),
+            name_set: None,
         }
     }
 }
@@ -483,6 +497,7 @@ pub(crate) fn base(object: &GameObject) -> Characteristics {
         toughness: prototype.map_or(card.toughness, |(_, _, toughness)| Some(toughness)),
         abilities: card.abilities.clone(),
         name_words: Vec::new(),
+        name_set: None,
     }
 }
 

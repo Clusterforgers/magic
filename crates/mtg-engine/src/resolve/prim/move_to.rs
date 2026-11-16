@@ -177,6 +177,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 attached_to: None,
                 only: None,
                 face_down: false,
+                becomes: &[],
             };
             return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
         }
@@ -211,6 +212,15 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 attached_to: Some(NamedHost { host }),
                 only: None,
                 face_down: false,
+                becomes: &[],
+            };
+            return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
+        }
+        Destination::R6502BattlefieldAs { becomes } => {
+            let becomes = super::r6502_enters_as::lowered(cx, becomes)?;
+            let entry = Entry {
+                becomes: &becomes,
+                ..Entry::plain()
             };
             return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
         }
@@ -246,6 +256,8 @@ struct Entry<'a> {
     only: Option<&'a Selector>,
     /// Face down (CR 708.3): a 2/2 creature with nothing else that enters with nothing its card would bring.
     face_down: bool,
+    /// What it is from the moment it enters (`Destination::R6502BattlefieldAs`).
+    becomes: &'a [crate::effects::Modification],
 }
 
 impl Entry<'_> {
@@ -259,6 +271,7 @@ impl Entry<'_> {
             attached_to: None,
             only: None,
             face_down: false,
+            becomes: &[],
         }
     }
 
@@ -349,7 +362,9 @@ fn onto_battlefield(
         attached_to,
         only,
         face_down,
+        becomes,
     } = *entry;
+    let mut made = 0u64;
     let mut questions = Questions::new(cx);
     let mut events = Vec::new();
     let mut snapshots = Vec::new();
@@ -358,7 +373,8 @@ fn onto_battlefield(
         if transformed && object.whole_card().layout != Layout::Transform {
             continue;
         }
-        let state = &*as_entering(cx.state(), object.id(), transformed);
+        let faced = as_entering(cx.state(), object.id(), transformed);
+        let state = &*super::r6502_enters_as::as_it_enters(&faced, object, becomes);
         let Some(object) = state.object(object.id()) else {
             continue;
         };
@@ -418,6 +434,9 @@ fn onto_battlefield(
             *cause = ZoneCause::PutFaceDown { by: controller };
         }
         events.push(event);
+        events.extend(super::r6502_enters_as::arriving(
+            cx, object, becomes, &mut made,
+        ));
         snapshots.extend(shot);
         entered.push(object.id());
         if transformed {

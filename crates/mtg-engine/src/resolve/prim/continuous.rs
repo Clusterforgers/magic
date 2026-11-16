@@ -407,9 +407,10 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::SetTypes(types) => Modification::SetTypes(types.iter().copied().collect()),
         Wanted::AddSupertype(supertype) => Modification::AddSupertype(*supertype),
         Wanted::RemoveSupertype(supertype) => Modification::RemoveSupertype(*supertype),
-        Wanted::SetName(_) | Wanted::ThisAbility | Wanted::SetLoyalty(_) => {
+        Wanted::SetName(name) => Modification::SetName(name.clone()),
+        Wanted::ThisAbility | Wanted::SetLoyalty(_) => {
             return Err(ResolveError::Unsupported(
-                "Mod.RemoveSupertype outside the exceptions of a copy",
+                "Mod.ThisAbility outside the exceptions of a copy",
             ));
         }
         Wanted::AddSubtype(subtype) => Modification::AddSubtype(subtype.clone()),

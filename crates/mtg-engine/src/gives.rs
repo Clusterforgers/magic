@@ -117,6 +117,7 @@ impl Gives {
             Modification::SetPower(_)
             | Modification::SetToughness(_)
             | Modification::AddNameWords(_)
+            | Modification::SetName(_)
             | Modification::LoseAbility(_) => {
                 return;
             }

@@ -258,6 +258,7 @@ const RUNS: &[&str] = &[
     "Effect.Move.Attached",
     "Effect.Move.FaceDown",
     "Effect.Move.Enchanting",
+    "Effect.Move.R6502As",
     "Effect.Move.Command",
     "Effect.Move.Random.Top",
     "Effect.ExileUntil",

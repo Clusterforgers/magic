@@ -2220,16 +2220,13 @@ impl<'a> Scope<'a> {
                 op.holds(i64::from(seen.counters.of(kind)), i64::from(*to))
             }
             Pred::Named(name) => {
-                seen.card.is_some_and(|c| {
-                    crate::un34_stickers::name_with(&seen.chars.name_words, &c.card().name) == *name
-                }) || self.r4703_counts_as_named(name, seen)
+                seen.card
+                    .is_some_and(|c| seen.chars.name_for(&c.card().name) == *name)
+                    || self.r4703_counts_as_named(name, seen)
             }
-            Pred::OriginallyPrintedIn(set) => seen.card.is_some_and(|c| {
-                set.has(&crate::un34_stickers::name_with(
-                    &seen.chars.name_words,
-                    &c.card().name,
-                ))
-            }),
+            Pred::OriginallyPrintedIn(set) => seen
+                .card
+                .is_some_and(|c| set.has(&seen.chars.name_for(&c.card().name))),
             Pred::ChosenColor
             | Pred::ChosenSubtype
             | Pred::NthChosenLandType(_)
@@ -2326,7 +2323,7 @@ impl<'a> Scope<'a> {
     pub(super) fn card_name(seen: &Seen<'_>) -> Option<String> {
         seen.card
             .filter(|card| card.face_down().is_none())
-            .map(|card| card.card().name.clone())
+            .map(|card| seen.chars.name_for(&card.card().name))
     }
 
     pub(super) fn stat(seen: &Seen<'_>, stat: StatKind) -> Option<i64> {
@@ -2888,9 +2885,9 @@ impl<'a> Scope<'a> {
             Chosen::CreatureType(subtype) | Chosen::LandType(subtype) => has_subtype(subtype),
             Chosen::LandTypes(types) => types.iter().any(has_subtype),
             Chosen::CardType(kind) => seen.chars.types.contains(*kind),
-            Chosen::Name(name) => seen.card.is_some_and(|c| {
-                crate::un34_stickers::name_with(&seen.chars.name_words, &c.card().name) == *name
-            }),
+            Chosen::Name(name) => seen
+                .card
+                .is_some_and(|c| seen.chars.name_for(&c.card().name) == *name),
             Chosen::Player(_)
             | Chosen::Players(_)
             | Chosen::Chapter(_)
@@ -3196,12 +3193,8 @@ impl<'a> Scope<'a> {
             let mut names = BTreeSet::new();
             for object in self.matching(of)? {
                 // A face-down card has no name.
-                let found = self
-                    .seen(object)
-                    .and_then(|seen| seen.card)
-                    .filter(|card| card.face_down().is_none());
-                if let Some(card) = found {
-                    names.insert(card.card().name.clone());
+                if let Some(name) = self.seen(object).as_ref().and_then(Self::card_name) {
+                    names.insert(name);
                 }
             }
             return Ok(i64::try_from(names.len()).unwrap_or(i64::MAX));
