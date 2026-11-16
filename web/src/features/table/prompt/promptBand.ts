@@ -8,8 +8,21 @@ export const BAND_PHONE_REM = 40
 /** From this band width (in rem) choices of any size stand beside the sentence. */
 export const BAND_WIDE_REM = 100
 
+/** Below this band width (in rem) the answers leave out their key hints and the rest of "Cancel the spell". */
+export const BAND_NARROW_REM = 64
+
+/** What else shapes the band: a `status` beside the prompt (a note, the combat key), a prompt that lays out `cards`. */
+export interface BandParts {
+  status?: boolean
+  cards?: boolean
+}
+
 /** The rows of the band's grid areas for a band `rem` wide holding `choices`; each row lists its cells left to right. */
-export function bandAreas(rem: number, choices: BandChoices): string[][] {
+export function bandAreas(
+  rem: number,
+  choices: BandChoices,
+  { status = false, cards = false }: BandParts = {},
+): string[][] {
   if (rem < BAND_PHONE_REM) {
     return [
       ['stack', 'stack'],
@@ -24,7 +37,10 @@ export function bandAreas(rem: number, choices: BandChoices): string[][] {
   if (choices === 'none') return [head]
   if (choices === 'inline' || rem >= BAND_WIDE_REM)
     return [['stack', 'status', 'text', 'choices', 'clock', 'actions']]
-  return [head, head.map(() => 'choices')]
+  if (cards) return [head, head.map(() => 'choices')]
+  // The answers keep the first line to themselves and the sentence; a status starts the choices' line.
+  const first = ['stack', 'text', 'clock', 'actions']
+  return [first, [status ? 'status' : 'choices', 'choices', 'choices', 'choices']]
 }
 
 /** How many lines the sentence keeps before its ellipsis: one, or three beside choices of any size in a wide band. */

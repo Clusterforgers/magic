@@ -26,6 +26,29 @@
       'choices choices choices choices choices';
   }
 
+  /*
+   * From 1024 px a prompt of choices other than cards gives its first line to the sentence and the answers, which keep
+   * one row; a status (a note, the combat key) starts the choices' line instead. Cards keep the whole line.
+   */
+  @container band (40rem <= width < 100rem) {
+    &:not([data-cards]):has([data-slot='prompt-choices']:not([data-inline]):not(:empty)) {
+      grid-template-columns: fit-content(20%) minmax(8rem, 1fr) auto auto;
+      grid-template-areas:
+        'stack text clock actions'
+        'choices choices choices choices';
+    }
+    &:not([data-cards]):has([data-slot='prompt-choices']:not([data-inline]):not(:empty)):has(
+        [data-slot='strip-status']:not(:empty)
+      ) {
+      grid-template-areas:
+        'stack text clock actions'
+        'status choices choices choices';
+      & > [data-slot='strip-status'] {
+        align-self: start;
+      }
+    }
+  }
+
   /* A wide strip keeps them beside the sentence, which then wraps in a column of at most 22 rem. */
   @container band (width >= 100rem) {
     &:has([data-slot='prompt-choices']:not(:empty)) {
@@ -91,6 +114,11 @@
       white-space: nowrap;
     }
     & [data-slot='stack-more-word'] {
+      display: none;
+    }
+    /* The answers' key hints give their room to the answers' one row; the keys still work and each button names its key. */
+    & [data-slot='prompt-actions'] [data-slot='key-hint'],
+    & [data-slot='prompt-actions'] [data-slot='undo-rest'] {
       display: none;
     }
   }

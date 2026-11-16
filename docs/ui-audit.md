@@ -58,7 +58,7 @@ Every screen and table mode shot at 1873 × 1047, 1530 × 898, 1400 × 900, 1024
 | # | Sev | Finding | Where | Shot | State |
 |---|---|---|---|---|---|
 | 1 | High | Five or more heroes crush your board to one cut line under the party's row | boss table, 6 heroes, every size | boss6-1400 | fixed: your board's floor comes before the allies' row |
-| 2 | High | A card prompt's answers wrap into three rows in a strip-high sheet and the primary is cut | 4 seats, pay, 1024 | p-pay-1024 | primary kept on the first line; one row is pf10a |
+| 2 | High | A card prompt's answers wrap into three rows in a strip-high sheet and the primary is cut | 4 seats, pay, 1024 | p-pay-1024 | fixed: the answers keep the first line in one row |
 | 3 | High | Sticky answers on a phone are transparent: choices scroll behind Keep, Confirm order, Confirm payment | phone, mulligan, order, pay | p-order-390, p-pay-390 | fixed: an opaque answers row |
 | 4 | Med | The opening hand's seventh card wraps under Keep and Mulligan | phone, mulligan | p-mull-390 | fixed: one scrolling row |
 | 5 | Med | The band's top stack chip collapses to a dot at 1024 and drops its name at 1400 | every table with a prompt | ffa4-pri-1024 | fixed: label to a reader and "+N" under 64 rem |
@@ -69,7 +69,7 @@ Every screen and table mode shot at 1873 × 1047, 1530 × 898, 1400 × 900, 1024
 | 10 | Med | The choice overlay leaves the hand dock an empty band under the strip | 5 seats, targets-many, 1400 and 1873 | grid5-targets-1873 | pf10d |
 | 11 | Med | The stack's target arrows run across the prompt sentence | phone, any prompt with a stack | p-x-390 | pf10e |
 | 12 | Med | The boss-mode opening hand covers the boss's pod | phone, boss, mulligan | p-mull-boss-390 | fixed: a phone sheet keeps the head clear |
-| 13 | Med | Pay at 1400: answers on two rows and the mana sources scroll sideways | 4 seats, pay | p-pay-1400 | pf10a |
+| 13 | Med | Pay at 1400: answers on two rows and the mana sources scroll sideways | 4 seats, pay | p-pay-1400 | fixed: one row, the sources wrap |
 | 14 | Low | The run header fills the first phone screen before the room's choice | Delves map, camps, phone | dl-map-390, dl-campfire-390 | pf10f |
 | 15 | Low | Shop offers of different heights put their Buy buttons on different lines | Delves shop, 1400 | dl-shop-1400 | pf10g |
 | 16 | Low | Enter the fight and Retreat stand on two rows | Delves boss intro | dl-fight-1400 | fixed |

@@ -65,7 +65,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf9b) The prompt band at 1400 px on grid tables keeps a card prompt's answers on one row, shows a stack of three chips whole and wraps more than eight target cards instead of scrolling them sideways
 - [ ] (pf10n) Phone tables: attack arrows to a seat scrolled out of the tile strip point at the strip's edge
 - [ ] (pf9d) Crowded tables: three heroes at ten permanents each keep cards above 75 px at 1400 × 900, a six-seat grid shows the opponents' lands whole, and the card preview finds room in windows near 1024 px
-- [ ] (pf10a) A card prompt's answers stay on one row at 1024 to 1400 px on 4-seat tables (pay: Confirm, Pay automatically, Cancel), and the mana sources wrap instead of scrolling sideways
 - [ ] (pf10d) The choice overlay keeps the hand dock drawn, or gives its room to the overlay, instead of leaving an empty band under the strip
 - [ ] (pf10e) The stack's target arrows on a phone run under the prompt sentence, as the combat lines do
 - [ ] (pf10f) Delves pages on a phone fold the run header (party life and relics) to one line, so the room's choice is on the first screen

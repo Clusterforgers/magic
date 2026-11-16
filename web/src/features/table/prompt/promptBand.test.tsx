@@ -9,7 +9,14 @@ import { must } from '@/test-utils/batches'
 import { blockAfter } from '@/test-utils/cssBlocks'
 import { renderTable } from '@/test-utils/tableHarness'
 import { BAND_MIN_PHONE_PX, BAND_MIN_PX, SHEET_MAX_VH, sheetMost } from '../layout'
-import { BAND_PHONE_REM, BAND_WIDE_REM, bandAreas, isClamped, sentenceLines } from './promptBand'
+import {
+  BAND_NARROW_REM,
+  BAND_PHONE_REM,
+  BAND_WIDE_REM,
+  bandAreas,
+  isClamped,
+  sentenceLines,
+} from './promptBand'
 import type { BandChoices } from './promptBand'
 
 // Read as text rather than imported, which would hand back what Tailwind builds from it.
@@ -86,7 +93,9 @@ describe('the band rules', () => {
 describe('the stylesheet', () => {
   it('draws the areas the rules name', () => {
     expect(areasIn(band)).toEqual(bandAreas(64, 'none'))
-    expect(areasIn(band, "&:has([data-slot='prompt-choices']:not(:empty))")).toEqual(bandAreas(64, 'wide'))
+    expect(areasIn(band, "&:has([data-slot='prompt-choices']:not(:empty))")).toEqual(
+      bandAreas(64, 'wide', { cards: true }),
+    )
     expect(areasIn(band, `@container band (width >= ${BAND_WIDE_REM}rem)`)).toEqual(
       bandAreas(BAND_WIDE_REM, 'wide'),
     )
@@ -94,6 +103,26 @@ describe('the stylesheet', () => {
       bandAreas(64, 'inline'),
     )
     expect(areasIn(band, `@container band (width < ${BAND_PHONE_REM}rem)`)).toEqual(bandAreas(24, 'wide'))
+    const mid = blockAfter(band, `@container band (${BAND_PHONE_REM}rem <= width < ${BAND_WIDE_REM}rem)`)
+    expect(areasIn(mid, '&:not([data-cards])')).toEqual(bandAreas(64, 'wide'))
+    expect(areasIn(mid, "[data-slot='strip-status']:not(:empty)")).toEqual(
+      bandAreas(64, 'wide', { status: true }),
+    )
+  })
+
+  it('gives the answers of a prompt with choices the first line from 1024 to 1600 px: the status starts the choices line', () => {
+    for (const status of [false, true]) {
+      const [first, second] = bandAreas(64, 'wide', { status })
+      expect(first).toEqual(['stack', 'text', 'clock', 'actions'])
+      expect(second?.[0]).toBe(status ? 'status' : 'choices')
+    }
+    // Cards keep the whole line under the head row.
+    expect(bandAreas(64, 'wide', { status: true, cards: true })[1]).toEqual(Array(5).fill('choices'))
+    const narrow = blockAfter(band, `@container band (width < ${BAND_NARROW_REM}rem)`)
+    expect(blockAfter(narrow, "[data-slot='prompt-actions'] [data-slot='undo-rest']")).toMatch(
+      /display:\s*none/,
+    )
+    expect(narrow).toMatch(/\[data-slot='prompt-actions'\] \[data-slot='key-hint'\],/)
   })
 
   it('clamps the sentence to one line, and to three only in a wide band beside choices that are not short', () => {

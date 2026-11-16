@@ -36,6 +36,11 @@ describe('Cancel in the prompts of an announcement', () => {
     expect(screen.getAllByRole('button', { name: words })).toHaveLength(1)
     expect(cancel).toHaveAttribute('aria-keyshortcuts', 'Escape')
     expect(cancel).toHaveTextContent(/Esc$/)
+    // A narrow band keeps "Cancel" alone (`promptBand.css`); the name stays whole.
+    expect(cancel.firstChild?.textContent).toBe('Cancel')
+    expect(cancel.querySelector('[data-slot="undo-rest"]')?.textContent?.trim()).toBe(
+      words.replace(/^Cancel /, ''),
+    )
     await userEvent.setup().click(screen.getByRole('button', { name: words }))
     expect(answer.mock.calls).toEqual([[sent]])
   })

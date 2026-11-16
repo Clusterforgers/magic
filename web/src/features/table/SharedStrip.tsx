@@ -137,6 +137,7 @@ export function SharedStrip({
           <div
             data-slot="strip-row"
             data-band={mine || undefined}
+            data-cards={(mine && cards) || undefined}
             className={cn(
               'min-h-0 flex-1',
               mine
