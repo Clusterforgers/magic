@@ -1,4 +1,4 @@
-// Goal: the run page shows each state of a run and sends the matching action: the lobby's hero cards with their Ready state, the deck picker, bot ally and start (only for the host, once every hero is ready), the ladder's votes with who voted for what, the boss fight's link and phases, how a lost fight cost a heart, the host's retreat (confirmed first, never for a guest), every kind of offer, and the end.
+// Goal: the run page shows each state of a run and sends the matching action: the lobby's hero cards with their Ready state, the deck picker, bot ally and start (only for the host, once every hero is ready), the ladder's votes with who voted for what, the boss fight's link and phases, how a lost fight cost a heart and at what life the heroes regroup (full at the first boss, half later), the host's retreat (confirmed first, never for a guest), every kind of offer, and the end.
 import { fireEvent, screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
@@ -143,6 +143,31 @@ describe('the ladder and the fight', () => {
     )
     expect(await screen.findByText(note)).toBeInTheDocument()
   })
+
+  it.each([
+    ['the first boss', 0, 'full'],
+    ['a later boss', 3, 'half'],
+  ])(
+    'says the heroes regroup at %s: %s life, in the loss note and the retreat dialog',
+    async (_boss, at, life) => {
+      await show(
+        delveView(
+          { boss: 'skrix_nest', fight },
+          {
+            status: { Fight: { game: 'g47' } },
+            at,
+            hearts: 2,
+            log: ['The party was beaten back and regroups (2 hearts left).'],
+          },
+        ),
+      )
+      const note = await screen.findByText(/beaten back and lost a heart/)
+      expect(note).toHaveTextContent(`Every hero regroups at ${life} life for another try.`)
+      fireEvent.click(screen.getByRole('button', { name: 'Retreat' }))
+      const dialog = await screen.findByRole('alertdialog', { name: 'Retreat from the fight?' })
+      expect(dialog).toHaveTextContent(`every hero regroups at ${life} life and the boss`)
+    },
+  )
 
   it('leaves the loss note out while the last line of the chronicle is something else', async () => {
     await show(

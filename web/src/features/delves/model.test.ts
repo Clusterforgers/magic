@@ -1,8 +1,9 @@
-// Goal: the run page marks each room of the ladder cleared, current, next or locked through every stage of a run, names who voted for which camp, gives a boss its life for the party and Heat, tones life bars, words the stage, knows a hero ready once they bring a deck, reads how the last fight was lost and lists a boss's Enrage, modifier and relic in the intro by their content kinds.
+// Goal: the run page marks each room of the ladder cleared, current, next or locked through every stage of a run, names who voted for which camp, gives a boss its life for the party and Heat, tones life bars, words the stage, knows a hero ready once they bring a deck, reads how the last fight was lost, tells the first boss from a later one for the life the party regroups at, and lists a boss's Enrage, modifier and relic in the intro by their content kinds.
 import { describe, expect, it } from 'vitest'
 import type { Run } from '@/protocol/generated'
 import { hero, run } from './fakeDelves'
 import {
+  atFirstBoss,
   bossLife,
   introAbilities,
   isReady,
@@ -11,6 +12,7 @@ import {
   lifeTone,
   nodeState,
   openChoices,
+  regroupLife,
   runStage,
   votersOf,
 } from './model'
@@ -126,6 +128,31 @@ it.each([
   expect(lastFight(run({ status: { Fight: { game: null } }, at: 0, log: ['Ana joined', line] }))).toBe(how)
   // The same line at a camp is no longer news.
   expect(lastFight(run({ status: 'Map', at: 0, log: [line] }))).toBeNull()
+})
+
+it.each([
+  ['nowhere yet', null, true, 'full'],
+  ['at the first boss', 0, true, 'full'],
+  ['at the shop between the bosses', 1, false, 'half'],
+  ['at the event between the bosses', 2, false, 'half'],
+  ['at the later boss', 3, false, 'half'],
+  ['at a room the map lacks', 9, true, 'full'],
+] as const)('tells the first boss from a later one, %s', (_where, at, first, life) => {
+  const r = run({ at })
+  expect(atFirstBoss(r)).toBe(first)
+  expect(regroupLife(r)).toBe(life)
+})
+
+it('reads the first boss by the rows of the map, not by the order of its nodes', () => {
+  const nodes = run().map.nodes
+  const reversed = run({ at: 3, map: { nodes: [...nodes].reverse() } })
+  expect(atFirstBoss(reversed)).toBe(false)
+  // A ladder whose first boss room lies in row 1 has its camp in row 0: that boss is the first.
+  const camp = { id: 0, row: 0, lane: 0, kind: 'shop' as const, next: [1] }
+  const boss = { id: 1, row: 1, lane: 0, kind: 'boss' as const, boss: 'skrix_nest', next: [2] }
+  const last = { id: 2, row: 2, lane: 0, kind: 'boss' as const, boss: 'grimgut', next: [] }
+  expect(regroupLife(run({ at: 1, map: { nodes: [camp, boss, last] } }))).toBe('full')
+  expect(regroupLife(run({ at: 2, map: { nodes: [camp, boss, last] } }))).toBe('half')
 })
 
 it('reads a boss that fell as the last fight won', () => {
