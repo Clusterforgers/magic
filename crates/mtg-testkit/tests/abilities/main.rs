@@ -137,6 +137,7 @@ mod r6105_braids;
 mod r6105_kodama;
 mod r6401_mentor;
 mod r6404_cards;
+mod r6501_doubled_mana;
 mod r6501_text_shaman;
 mod r8p2_enters;
 mod reflexive;

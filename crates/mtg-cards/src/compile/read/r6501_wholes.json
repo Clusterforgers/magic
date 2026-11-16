@@ -123,5 +123,25 @@
    }
   },
   "For each creature attacking you or a planeswalker you control, create a token that's a copy of that creature and that's blocking that creature. Exile those tokens at end of combat."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{3}"
+     },
+     "Tap"
+    ],
+    "effects": [
+     {
+      "AddMana": {
+       "mana": "R6501UnspentDoubled"
+      }
+     }
+    ]
+   }
+  },
+  "{3}, {T}: Double the amount of each type of unspent mana you have."
  ]
 ]

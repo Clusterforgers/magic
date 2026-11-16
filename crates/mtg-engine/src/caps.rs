@@ -297,6 +297,7 @@ const RUNS: &[&str] = &[
     "Effect.AddMana.WhenSpent",
     "Effect.AddMana.CommanderIdentity",
     "Effect.AddMana.CostOf",
+    "Effect.AddMana.R6501UnspentDoubled",
     "Effect.AddMana.ProducedBy",
     "Effect.AddMana.EachColorAmong",
     "Effect.AddMana.AnyColorAmong",

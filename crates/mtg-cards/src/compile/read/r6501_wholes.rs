@@ -67,6 +67,10 @@ mod tests {
             ("at end of combat", "at end of turn"),
             ("Exile those tokens", "Sacrifice those tokens"),
             ("For each creature", "For each artifact"),
+            ("Double the amount", "Triple the amount"),
+            ("each type of", "one type of"),
+            ("mana you have", "mana an opponent has"),
+            ("{3}, {T}", "{2}, {T}"),
         ];
         for (_, text) in R6501_SHAPES.iter() {
             for (from, to) in swaps {

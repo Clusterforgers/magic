@@ -235,6 +235,10 @@ pub enum Produce {
     /// One mana of any color chosen as the controller drafted cards named like the source ("Add one mana of any color
     /// chosen as you drafted cards named ~"); none in a game without a draft, where no color was chosen (Paliano ruling).
     DraftedColors,
+    /// One more mana of each type for each unspent mana of that type in the player's pool, restricted mana counted too;
+    /// the mana added has no restriction ("Double the amount of each type of unspent mana you have", Doubling Cube
+    /// rulings; the type of mana is its color or colorless).
+    R6501UnspentDoubled,
     /// Mana of one color chosen when added, as many as the controller's devotion to that color (CR 700.5): "Choose a
     /// color. Add an amount of mana of that color equal to your devotion to that color."
     Devotion,

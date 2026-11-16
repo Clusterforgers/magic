@@ -11,6 +11,7 @@ use crate::common;
 #[rstest]
 #[case::balduvian_shaman("Balduvian Shaman")]
 #[case::mirror_match("Mirror Match")]
+#[case::doubling_cube("Doubling Cube")]
 fn r6501_the_card_compiles_into_its_file(#[case] name: &str) {
     let printed = common::printed()
         .into_iter()
