@@ -20,9 +20,6 @@ export const HAND_MAX_ROWS = 3
  */
 export const HAND_HEAD_PX = 54
 
-/** The widest card of an opening hand in px: the table has nothing else to read while the hand is judged. */
-export const OPENING_CARD_MAX_PX = 136
-
 /** The widest card the hand dock of this height (px) holds in one line: its height over the card's shape, between the fit limits and `cap`. */
 export function handCardWidth(height: number, cap: number = FIT_LIMITS.maxWidth): number {
   const fits = Number.isFinite(height) ? Math.floor(height / CARD_ASPECT) : FIT_LIMITS.minWidth
@@ -62,26 +59,6 @@ export function handDockNeed({ width, count, commanders, most }: DockNeedInput):
     return need <= most ? need : 0
   }
   return 0
-}
-
-/**
- * How tall the hand dock must be (px, with its chrome) to draw an opening hand in one row of the widest cards the line
- * holds, up to `OPENING_CARD_MAX_PX`, so the hand is read while it is judged; 0 when one row of cards over
- * `HAND_FLOOR_PX` does not hold it or `most` (the tallest the dock may grow) leaves no more than the usual size. Like
- * `handDockNeed` it reads the width only.
- */
-export function openingDockNeed({ width, count, commanders, most }: DockNeedInput): number {
-  if (most <= 0) return 0
-  const head = commanders > 0 ? COMMAND_GAP_PX : 0
-  const all = handLayout({
-    width: Math.max(0, width - head),
-    height: most - HAND_DOCK_CHROME_PX,
-    count: Math.max(1, count) + commanders,
-    cap: OPENING_CARD_MAX_PX,
-  })
-  if (all.rows > 1 || all.scrolls) return 0
-  // Rounded up, so the dock's own height holds the same card width again.
-  return Math.ceil(all.box.width * CARD_ASPECT) + HAND_DOCK_CHROME_PX
 }
 
 /**

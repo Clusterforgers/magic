@@ -110,6 +110,7 @@ export const DivideAmountPrompt: PromptComponent<'DivideAmount'> = ({ options })
   const seatName = useSeatNamer()
   const me = usePlay((state) => state.seat)
   const statusId = useId()
+  const formId = useId()
   const inputs = useRef(new Map<ObjectId, HTMLInputElement>())
   const first = useRef<HTMLInputElement | null>(null)
   useDefaultFocus(first)
@@ -163,52 +164,64 @@ export const DivideAmountPrompt: PromptComponent<'DivideAmount'> = ({ options })
   }
 
   return (
-    <PromptLayout text={divideSentence(askerWords(source?.name), text, total)}>
-      <form data-slot="divide-split" className="grid w-full gap-2" onSubmit={confirm}>
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-          <Button type="submit" className="h-10 px-4" disabled={!verdict.legal} aria-describedby={statusId}>
-            Confirm
-          </Button>
-          {options.can_cancel === true ? (
-            <UndoButton zone={source?.zone} onUndo={() => void answer('Undo')} />
-          ) : null}
-          <p
-            id={statusId}
-            role="status"
-            data-slot="divide-status"
-            data-legal={verdict.legal}
-            data-left={verdict.left}
-            className="min-w-0 text-sm"
+    <PromptLayout
+      text={divideSentence(askerWords(source?.name), text, total)}
+      choices={
+        <form id={formId} data-slot="divide-split" className="w-full" onSubmit={confirm}>
+          <button type="submit" hidden tabIndex={-1} />
+          <ul
+            aria-label="Amount for each target"
+            className="grid max-h-64 grid-cols-[repeat(auto-fill,minmax(min(100%,22rem),1fr))] gap-x-4 gap-y-1.5 overflow-y-auto"
           >
-            {verdict.status}
-          </p>
-        </div>
-        <ul aria-label="Amount for each target" className="grid max-h-64 gap-1.5 overflow-y-auto">
-          {among.map((target, index) => {
-            const share = shares[index] ?? 1
-            const objectId = 'Object' in target ? target.Object.id : undefined
-            return (
-              <Row
-                key={targetKey(target)}
-                target={target}
-                label={labels[index] ?? 'a target'}
-                share={share}
-                max={mostFor(shares, index, total)}
-                active={objectId !== undefined && selection.has(objectId)}
-                inputRef={(element) => {
-                  if (index === 0) first.current = element
-                  if (objectId === undefined) return
-                  if (element === null) inputs.current.delete(objectId)
-                  else inputs.current.set(objectId, element)
-                }}
-                onEnter={() => (objectId === undefined ? selection.clear() : selection.set([objectId]))}
-                onLeave={() => selection.clear()}
-                onChange={(wanted) => setEdited(setShare(shares, index, wanted, total))}
-              />
-            )
-          })}
-        </ul>
-      </form>
+            {among.map((target, index) => {
+              const share = shares[index] ?? 1
+              const objectId = 'Object' in target ? target.Object.id : undefined
+              return (
+                <Row
+                  key={targetKey(target)}
+                  target={target}
+                  label={labels[index] ?? 'a target'}
+                  share={share}
+                  max={mostFor(shares, index, total)}
+                  active={objectId !== undefined && selection.has(objectId)}
+                  inputRef={(element) => {
+                    if (index === 0) first.current = element
+                    if (objectId === undefined) return
+                    if (element === null) inputs.current.delete(objectId)
+                    else inputs.current.set(objectId, element)
+                  }}
+                  onEnter={() => (objectId === undefined ? selection.clear() : selection.set([objectId]))}
+                  onLeave={() => selection.clear()}
+                  onChange={(wanted) => setEdited(setShare(shares, index, wanted, total))}
+                />
+              )
+            })}
+          </ul>
+        </form>
+      }
+    >
+      <Button
+        type="submit"
+        form={formId}
+        className="h-10 px-4"
+        disabled={!verdict.legal}
+        aria-describedby={statusId}
+      >
+        Confirm
+      </Button>
+      {options.can_cancel === true ? (
+        <UndoButton zone={source?.zone} onUndo={() => void answer('Undo')} />
+      ) : null}
+      <p
+        id={statusId}
+        role="status"
+        data-slot="divide-status"
+        data-legal={verdict.legal}
+        data-left={verdict.left}
+        className="min-w-0 text-sm"
+      >
+        {verdict.status}
+      </p>
     </PromptLayout>
   )
 }

@@ -597,6 +597,7 @@ pub(crate) async fn content_of() -> Result<Json<DelveContent>, ApiError> {
                 art: card.art.clone(),
                 role: card.role.clone(),
                 price: card.price,
+                turn: card.turn,
             })
             .collect(),
         bosses: theme

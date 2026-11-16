@@ -47,6 +47,7 @@ pub(crate) fn setup(
             spirit: None,
             phases: Vec::new(),
             schemes: Vec::new(),
+            scheme_every: 1,
             leader: None,
         })
         .collect();

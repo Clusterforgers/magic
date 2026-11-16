@@ -20,6 +20,8 @@ export interface UndoButtonProps {
  */
 export function UndoButton({ zone, onUndo, ref, className = 'h-10 px-4' }: UndoButtonProps) {
   useUndoKey(onUndo)
+  const words = undoWords(zone)
+  const [verb = words, ...rest] = words.split(' ')
   return (
     <Button
       ref={ref}
@@ -27,10 +29,13 @@ export function UndoButton({ zone, onUndo, ref, className = 'h-10 px-4' }: UndoB
       variant="outline"
       className={className}
       data-slot="undo"
+      aria-label={words}
       aria-keyshortcuts="Escape"
       onClick={onUndo}
     >
-      {undoWords(zone)}
+      {/* A narrow band keeps the verb alone (`promptBand.css`), so the answers stay on one row. */}
+      {verb}
+      <span data-slot="undo-rest">&nbsp;{rest.join(' ')}</span>
       <KeyHint>Esc</KeyHint>
     </Button>
   )

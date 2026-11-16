@@ -47,10 +47,10 @@ describe('the strip and its sheet', () => {
 })
 
 describe('what it says', () => {
-  it('holds the prompt this seat must answer, and who has priority', () => {
+  it('holds the prompt this seat must answer, and leaves out "You have priority", which the prompt says', () => {
     renderTable({ seats: 4 })
     expect(within(strip()).getByText(/^Your decision: Priority/)).toBeInTheDocument()
-    expect(strip()).toHaveTextContent('Alice has priority · 1 passed')
+    expect(strip()).not.toHaveTextContent('has priority')
     expect(strip().querySelector('[data-decision="Priority"]')).not.toBeNull()
   })
 

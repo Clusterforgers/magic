@@ -140,6 +140,7 @@ export const AssignDamagePrompt: PromptComponent<'AssignDamage'> = ({ options })
   const { attacker, power, blockers, excess, lethal, unblocked } = options
   const { answer, selection } = usePrompt()
   const statusId = useId()
+  const formId = useId()
   const inputs = useRef(new Map<ObjectId, HTMLInputElement>())
   const seatName = useSeatNamer()
   const attackerName = usePlay((state) => state.objectsById[attacker]?.name ?? 'the attacker')
@@ -232,56 +233,68 @@ export const AssignDamagePrompt: PromptComponent<'AssignDamage'> = ({ options })
   )
 
   return (
-    <PromptLayout text={text}>
-      <form data-slot="damage-split" className="grid w-full gap-2" onSubmit={confirm}>
-        <ul aria-label="Damage for each blocker" className="grid gap-1.5">
-          {recipients.map((recipient, index) => {
-            const amount = amounts[index] ?? 0
-            return (
-              <Row
-                key={recipient.id}
-                recipient={recipient}
-                label={labels[index] ?? recipient.name}
-                deathtouch={deathtouch}
-                amount={amount}
-                max={clampedAmount(amounts, index, power, power)}
-                active={selection.has(recipient.id)}
-                inputRef={(element) => {
-                  if (element === null) inputs.current.delete(recipient.id)
-                  else inputs.current.set(recipient.id, element)
-                }}
-                onEnter={() => selection.set([recipient.id])}
-                onLeave={() => selection.clear()}
-                onChange={change(index)}
-              />
-            )
-          })}
-        </ul>
-        {defender === undefined ? null : (
-          <p data-slot="damage-excess" className="text-sm">
-            {defender} takes the rest: {restOf(power, amounts)}.
-          </p>
-        )}
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-          <Button type="submit" className="h-10 px-4" disabled={!verdict.legal} aria-describedby={statusId}>
-            Confirm
-          </Button>
-          <p
-            id={statusId}
-            role="status"
-            data-slot="damage-status"
-            data-legal={verdict.legal}
-            className="min-w-0 text-sm"
+    <PromptLayout
+      text={text}
+      choices={
+        <form id={formId} data-slot="damage-split" className="grid w-full gap-2" onSubmit={confirm}>
+          <button type="submit" hidden tabIndex={-1} />
+          <ul
+            aria-label="Damage for each blocker"
+            className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,22rem),1fr))] gap-x-4 gap-y-1.5"
           >
-            {verdict.status}
-          </p>
-          {unblocked === true ? (
-            <Button type="button" variant="outline" className="h-10 px-4" onClick={asUnblocked}>
-              Assign as though unblocked
-            </Button>
-          ) : null}
-        </div>
-      </form>
+            {recipients.map((recipient, index) => {
+              const amount = amounts[index] ?? 0
+              return (
+                <Row
+                  key={recipient.id}
+                  recipient={recipient}
+                  label={labels[index] ?? recipient.name}
+                  deathtouch={deathtouch}
+                  amount={amount}
+                  max={clampedAmount(amounts, index, power, power)}
+                  active={selection.has(recipient.id)}
+                  inputRef={(element) => {
+                    if (element === null) inputs.current.delete(recipient.id)
+                    else inputs.current.set(recipient.id, element)
+                  }}
+                  onEnter={() => selection.set([recipient.id])}
+                  onLeave={() => selection.clear()}
+                  onChange={change(index)}
+                />
+              )
+            })}
+          </ul>
+          {defender === undefined ? null : (
+            <p data-slot="damage-excess" className="text-sm">
+              {defender} takes the rest: {restOf(power, amounts)}.
+            </p>
+          )}
+        </form>
+      }
+    >
+      <Button
+        type="submit"
+        form={formId}
+        className="h-10 px-4"
+        disabled={!verdict.legal}
+        aria-describedby={statusId}
+      >
+        Confirm
+      </Button>
+      {unblocked === true ? (
+        <Button type="button" variant="outline" className="h-10 px-4" onClick={asUnblocked}>
+          Assign as though unblocked
+        </Button>
+      ) : null}
+      <p
+        id={statusId}
+        role="status"
+        data-slot="damage-status"
+        data-legal={verdict.legal}
+        className="min-w-0 text-sm"
+      >
+        {verdict.status}
+      </p>
     </PromptLayout>
   )
 }

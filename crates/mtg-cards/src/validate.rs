@@ -3356,6 +3356,7 @@ impl Walker<'_> {
             TriggerPattern::DiceRolled {
                 highest: false,
                 results,
+                at_least: 0,
                 each: true,
                 ..
             } => results.is_empty(),

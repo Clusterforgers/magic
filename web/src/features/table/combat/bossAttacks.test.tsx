@@ -1,4 +1,4 @@
-// Goal: whoever an attack is aimed at can see it in every layout: in boss mode (boss's side above, party below, tiles on a phone) the boss's attack at each hero, the viewer included, is a line to that hero's pod or tile as well as a badge, strong because it concerns the party; outside boss mode (a grid, or the boss table with its layout changed) an attack at a player is a badge alone; and in each the attacked seat, the viewer's own pod too, wears the attacked mark and its badge says "you".
+// Goal: whoever an attack is aimed at can see it in every layout: in boss mode (boss's side above, party below, tiles on a phone) the boss's attack at each hero, the viewer included, is a line to that hero's pod or tile as well as a badge, strong because it concerns the party; outside boss mode (a grid, or the boss table with its layout changed) it is an arrow and a badge as well; and in each the attacked seat, the viewer's own pod too, wears the attacked mark and its badge says "you".
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
 import { renderForecastTable } from '@/test-utils/forecastTable'
@@ -84,10 +84,10 @@ describe('an attack at the party in boss mode', () => {
     expect(other.getAttribute('aria-label')).toMatch(/ attacks with \d+ creatures?: /)
   })
 
-  it('leaves the badges alone when the layout is changed to a grid or focus, whose boards a line would cross', () => {
+  it('keeps the arrows and the badges when the layout is changed to a grid or focus', () => {
     for (const mode of ['grid', 'focus'] as const) {
       const table = bossTable(3, 0, { mode })
-      expect(attackLines(table.container), mode).toHaveLength(0)
+      expect(attackLines(table.container).length, mode).toBeGreaterThan(0)
       for (let seat = 0; seat < 3; seat += 1) {
         const place = placeOf(table.container, seat)
         expect(place, `${mode} mark on seat ${seat}`).toHaveAttribute('data-attacked')
@@ -105,13 +105,13 @@ describe('an attack at the viewer on a table without a boss', () => {
   it.each([
     ['a grid', { attackBadges: true }],
     ['a phone', { attackBadges: true, viewport: PHONE }],
-  ])("%s: the badge on the viewer's own pod, its mark and no line", (_, layout) => {
+  ])("%s: the arrows, the badge on the viewer's own pod and its mark", (_, layout) => {
     const table = renderForecastTable({ seats: 4, scene: (fixture) => fixture, layout })
     const own = placeOf(table.container, 0)
     expect(own).toHaveAttribute('data-attacked')
     const badge = must(own.querySelector('[data-slot="attack-badge"]'), 'the viewer badge')
     expect(badge.getAttribute('aria-label')).toMatch(/ attacks you with 3 creatures: /)
-    expect(attackLines(table.container)).toHaveLength(0)
+    expect(attackLines(table.container).length).toBeGreaterThan(0)
     // The attacker is not under attack.
     expect(placeOf(table.container, 1)).not.toHaveAttribute('data-attacked')
   })

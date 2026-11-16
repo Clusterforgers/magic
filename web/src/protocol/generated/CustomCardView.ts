@@ -36,4 +36,8 @@ role: string,
 /**
  * A relic's shop price.
  */
-price: number, };
+price: number, 
+/**
+ * The heroes' turn from which an Enrage applies; 0 for other cards.
+ */
+turn: number, };

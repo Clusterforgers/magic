@@ -5,6 +5,7 @@
 import type { AttackTarget, CombatForecast, CombatView, ObjectId, PlayerId } from '@/protocol/generated'
 import { blockOutcome } from './outcome'
 import type { Outcome } from './outcome'
+import { chosenAttacks } from './pending'
 import type { PendingCombat } from './pending'
 
 /** A place a line starts or ends: a card, or a seat's panel. */
@@ -56,11 +57,6 @@ export interface PlanInput {
   viewer?: PlayerId | null
   /** The viewer's party, whose attacks and the attacks at them are drawn strong as the viewer's own are. */
   party?: readonly PlayerId[] | null
-  /**
-   * Leave out the attacks at a player, which the defender's pod shows as a badge per attacking seat (`attackGroups`):
-   * the lines that remain join two boards (a block, an attack at a planeswalker or battle) and never cross to a pod.
-   */
-  seatBadges?: boolean
 }
 
 /** The creatures one seat attacks one player with, declared or still being chosen. */
@@ -94,7 +90,7 @@ export function attackGroups(
   if (combat?.attackers_declared === true) {
     for (const attacker of combat.attackers) add(attacker.object, attacker.target, false)
   }
-  for (const [attacker, to] of pending.attacks) add(attacker, to, true)
+  for (const [attacker, to] of chosenAttacks(pending)) add(attacker, to, true)
   return groups
 }
 
@@ -110,9 +106,7 @@ export function planLines({
   controllerOf,
   viewer = null,
   party = null,
-  seatBadges = false,
 }: PlanInput): LineSpec[] {
-  const drawn = (to: AttackTarget): boolean => !(seatBadges && 'Player' in to)
   const card = (id: ObjectId): Anchor => {
     const seat = controllerOf(id)
     return seat === undefined ? { kind: 'card', id } : { kind: 'card', id, seat }
@@ -130,15 +124,14 @@ export function planLines({
   const blocks: LineSpec[] = []
   if (combat?.attackers_declared === true) {
     for (const attacker of combat.attackers) {
-      if (drawn(attacker.target))
-        attacks.push({
-          key: `attack:${attacker.object}`,
-          kind: 'attack',
-          pending: false,
-          from: card(attacker.object),
-          to: target(attacker.target),
-          ...(concerns(attacker.object, attacker.target) ? { mine: true } : {}),
-        })
+      attacks.push({
+        key: `attack:${attacker.object}`,
+        kind: 'attack',
+        pending: false,
+        from: card(attacker.object),
+        to: target(attacker.target),
+        ...(concerns(attacker.object, attacker.target) ? { mine: true } : {}),
+      })
       for (const blocker of attacker.blockers) {
         blocks.push({
           key: `block:${blocker}`,
@@ -152,15 +145,13 @@ export function planLines({
     }
   }
   const chosen: LineSpec[] = [
-    ...[...pending.attacks]
-      .filter(([, to]) => drawn(to))
-      .map(([attacker, to]): LineSpec => ({
-        key: `pending-attack:${attacker}`,
-        kind: 'attack',
-        pending: true,
-        from: card(attacker),
-        to: target(to),
-      })),
+    ...chosenAttacks(pending).map(([attacker, to]): LineSpec => ({
+      key: `pending-attack:${attacker}`,
+      kind: 'attack',
+      pending: true,
+      from: card(attacker),
+      to: target(to),
+    })),
     ...[...pending.blocks].map(([blocker, attacker]): LineSpec => ({
       key: `pending-block:${blocker}`,
       kind: 'block',

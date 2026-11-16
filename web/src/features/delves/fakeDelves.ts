@@ -15,6 +15,7 @@ export const CONTENT: DelveContent = {
       art: 'skrix',
       role: '',
       price: 0,
+      turn: 0,
     },
     {
       id: 'nest',
@@ -25,6 +26,7 @@ export const CONTENT: DelveContent = {
       art: 'nest',
       role: '',
       price: 0,
+      turn: 0,
     },
     {
       id: 'idol',
@@ -35,6 +37,7 @@ export const CONTENT: DelveContent = {
       art: 'idol',
       role: 'Damage',
       price: 70,
+      turn: 0,
     },
     {
       id: 'pact',
@@ -45,6 +48,7 @@ export const CONTENT: DelveContent = {
       art: 'pact',
       role: 'Risky',
       price: 0,
+      turn: 0,
     },
   ],
   bosses: [
@@ -134,6 +138,7 @@ export function run(over: Partial<Run> = {}): Run {
     hearts: 3,
     status: 'Lobby',
     log: ['Ana joined the party.'],
+    fights: [],
     results: [],
     ...over,
   }

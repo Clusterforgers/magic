@@ -83,7 +83,8 @@ describe('the strip mark', () => {
       const pending = must(DEV_PROMPTS[prompt])(fixture)
       renderTable({ fixture, state: (state) => ({ ...state, pending }) })
       expect(sheet()).toHaveAttribute('data-keep-clear', 'soft')
-      const firm = [...sheet().querySelectorAll('[data-slot="prompt-text"], [data-slot="prompt-actions"]')]
+      // A floating mulligan holds its sentence and buttons in the overlay over the table, not in the strip.
+      const firm = [...document.querySelectorAll('[data-slot="prompt-text"], [data-slot="prompt-actions"]')]
       expect(firm.length).toBeGreaterThan(0)
       for (const element of firm) expect(element).toHaveAttribute('data-keep-clear', '')
     },

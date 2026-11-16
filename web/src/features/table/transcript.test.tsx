@@ -96,10 +96,11 @@ function expectScreenToMatch(container: HTMLElement, state: PlayState, step: str
     const folded = foldLog(state.log, { seat: String, card: String }, { seats })
     expect(log.querySelectorAll('li'), `${step}: log`).toHaveLength(folded.length)
   }
-  const decision = container.querySelector('[data-slot="decision-line"]')?.textContent ?? ''
-  expect(decision.startsWith('Your decision: '), `${step}: decision "${decision}"`).toBe(
-    state.pending !== null,
-  )
+  // The opening-hand decision floats in the centre overlay, out of the strip's decision line.
+  const decision = [...container.querySelectorAll('[data-slot="decision-line"], [data-opening]')]
+    .map((element) => element.textContent ?? '')
+    .join('')
+  expect(decision.includes('Your decision: '), `${step}: decision "${decision}"`).toBe(state.pending !== null)
 }
 
 interface Replay {

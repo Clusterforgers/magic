@@ -52,14 +52,16 @@ export const TEXT_BESIDE_PX = 240
 /** The least picture of a low panel in a free stretch above or below the strip, in px: it never lies over the strip. */
 export const BAND_PICTURE = 96
 
-const boxOf = (anchor: Anchor): Box => ({
+/** The edges of `anchor`. */
+export const boxOf = (anchor: Anchor): Box => ({
   left: anchor.left,
   top: anchor.top,
   right: anchor.left + anchor.width,
   bottom: anchor.top + anchor.height,
 })
 
-const meets = (a: Box, b: Box): boolean =>
+/** Whether two boxes overlap. */
+export const meets = (a: Box, b: Box): boolean =>
   a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top
 
 /** The rectangle the panel of `fit` can take in the window, at its tallest. */
@@ -290,13 +292,24 @@ function shortAround(
  * that spans the table, with its text beside the picture (`sideBand`). Only where none of that is clear does it cover
  * the rest of the strip (a `soft` box), never its sentence or buttons. A top or bottom panel (a phone's) takes the free
  * stretch of the window between them. A box without size is ignored; where nothing is clear the panel stands where
- * `previewFit` puts it.
+ * `previewFit` puts it. A side panel first looks for a place at a readable picture clear of the board's `cards` too,
+ * over empty room; where there is none it may cover them (a pinned preview then narrows the boards, `previewReserve.ts`).
  */
-export function fitClear(anchor: Anchor, viewport: Viewport, clear: readonly ClearBox[]): PreviewFit {
+export function fitClear(
+  anchor: Anchor,
+  viewport: Viewport,
+  clear: readonly ClearBox[],
+  cards: readonly Anchor[] = [],
+): PreviewFit {
   const base = previewFit(anchor, viewport)
   const drawn = clear.filter((box) => box.width > 0 && box.height > 0)
   const blockers = drawn.map(boxOf)
   const panel = panelBox(base, viewport)
+  const board = cards.filter((card) => card.width > 0 && card.height > 0).map(boxOf)
+  if (viewport.width >= SIDE_DOCK_FROM && board.some((box) => meets(panel, box))) {
+    const empty = sideAround(anchor, viewport, base, [...blockers, ...board], READABLE_PICTURE)
+    if (empty !== null) return empty
+  }
   if (!blockers.some((box) => meets(panel, box))) return base
   if (viewport.width >= SIDE_DOCK_FROM) {
     const firm = drawn.filter((box) => box.soft !== true).map(boxOf)

@@ -5,7 +5,7 @@
  * every few seconds, which also reads a finished fight back.
  */
 import { Link } from '@tanstack/react-router'
-import { CircleAlertIcon, ShieldIcon, TrophyIcon } from 'lucide-react'
+import { CircleAlertIcon, DoorOpenIcon, ShieldIcon, TrophyIcon } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { CopyButton } from '@/components/CopyButton'
 import { Loading } from '@/components/Loading'
@@ -32,6 +32,7 @@ import { loadPickerDecks, notePlayed, readPlayed } from './deckPicker'
 import type { LastPlayed, PickerDecks } from './deckPicker'
 import { BossIntro } from './BossIntro'
 import { DeckPicker } from './DeckPicker'
+import { FightLog } from './FightLog'
 import { lastFight, listOf, nextStep } from './model'
 import type { FindCard } from './findCard'
 import { PartyLobby } from './PartyLobby'
@@ -119,6 +120,9 @@ function FightPanel({
   const waiting = view.deck_problems
     .filter((problem) => problem.hero !== view.me)
     .map((problem) => view.run.heroes[problem.hero]?.name ?? `Hero ${problem.hero + 1}`)
+  const retreat = view.host ? (
+    <RetreatButton hearts={view.run.hearts} busy={busy} onRetreat={onRetreat} />
+  ) : null
   return (
     <BossIntro view={view} content={content}>
       <div className="grid gap-2">
@@ -128,13 +132,17 @@ function FightPanel({
           </p>
         ) : null}
         {game !== null ? (
-          <Link
-            to="/game/$gameId"
-            params={{ gameId: game }}
-            className={cn(buttonVariants({ size: 'lg' }), 'w-full sm:w-auto sm:justify-self-start')}
-          >
-            Enter the fight
-          </Link>
+          // The way in and the way out share one row, the way in first.
+          <div data-slot="fight-actions" className="flex flex-wrap items-center gap-2">
+            <Link
+              to="/game/$gameId"
+              params={{ gameId: game }}
+              className={cn(buttonVariants({ size: 'lg' }), 'w-full sm:w-auto')}
+            >
+              Enter the fight
+            </Link>
+            {retreat}
+          </div>
         ) : mine !== undefined ? (
           <div className="grid gap-2 rounded-lg border border-destructive/50 bg-surface p-3 text-sm">
             <p>Your deck can no longer be played ({mine.reason}). Choose another to fight this boss.</p>
@@ -151,7 +159,7 @@ function FightPanel({
             The fight is being prepared…
           </p>
         )}
-        {view.host ? <RetreatButton hearts={view.run.hearts} busy={busy} onRetreat={onRetreat} /> : null}
+        {game !== null ? null : retreat}
       </div>
       <RevivalNote />
     </BossIntro>
@@ -190,14 +198,25 @@ function EndPanel({ view, content }: { view: DelveView; content: DelveContent })
       </dl>
       <ul aria-label="Heroes" className="grid w-full max-w-prose gap-1 text-left text-sm">
         {view.run.heroes.map((hero, at) => (
-          <li key={`${at}-${hero.name}`} className="flex flex-wrap justify-between gap-2 border-b py-1">
-            <span className="font-medium">{hero.name}</span>
-            <span className="text-muted-foreground">
-              {hero.life} life · {hero.gold} gold · {hero.relics.length} relics
-              {hero.relics.length > 0
-                ? ` (${hero.relics.map((id) => content.cards.find((c) => c.id === id)?.name ?? id).join(', ')})`
-                : ''}
+          // The name and the figures share one row at every width; the relics' names follow on a line of their own.
+          <li
+            key={`${at}-${hero.name}`}
+            data-slot="summary-hero"
+            className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-2 border-b py-1"
+          >
+            <span className="truncate font-medium">{hero.name}</span>
+            <span
+              data-slot="summary-figures"
+              className="whitespace-nowrap text-muted-foreground tabular-nums"
+            >
+              {hero.life} life · {hero.gold} gold · {hero.relics.length}{' '}
+              {hero.relics.length === 1 ? 'relic' : 'relics'}
             </span>
+            {hero.relics.length > 0 ? (
+              <span data-slot="summary-relics" className="col-span-full text-xs text-muted-foreground">
+                {` (${hero.relics.map((id) => content.cards.find((c) => c.id === id)?.name ?? id).join(', ')})`}
+              </span>
+            ) : null}
           </li>
         ))}
       </ul>
@@ -454,9 +473,18 @@ export function DelvePage({
               ))}
             </ol>
           </section>
+          <FightLog run={view.run} content={content} />
           {view.host && !over && status !== 'Lobby' ? (
             <>
-              <Button variant="ghost" disabled={busy} onClick={() => setEnding(true)}>
+              {/* A run action like Retreat: an outline button at the start of the column, not a line of text. */}
+              <Button
+                variant="outline"
+                data-slot="end-run"
+                className="justify-self-start"
+                disabled={busy}
+                onClick={() => setEnding(true)}
+              >
+                <DoorOpenIcon aria-hidden="true" />
                 End the run
               </Button>
               <AlertDialog open={ending} onOpenChange={setEnding}>

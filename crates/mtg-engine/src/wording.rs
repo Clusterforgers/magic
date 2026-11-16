@@ -793,6 +793,8 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             who: by,
             highest,
             results,
+            at_least,
+            on_a_die,
             natural,
             each,
         } => {
@@ -801,6 +803,9 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 let numbers: Vec<String> = results.iter().map(u32::to_string).collect();
                 let natural = if *natural { "natural " } else { "" };
                 format!("a {natural}{}", numbers.join(" or "))
+            } else if *at_least > 0 {
+                let on = if *on_a_die { " on a die" } else { "" };
+                format!("a {at_least} or higher{on}")
             } else if *highest {
                 "a die's highest natural result".to_owned()
             } else if *each {

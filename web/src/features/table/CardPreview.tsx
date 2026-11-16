@@ -30,7 +30,7 @@ import { useSeatNamer } from './names'
 import { usePreviewStore, usePreviewTarget } from './preview'
 import { usePreviewDismiss } from './usePreviewDismiss'
 import type { Dock, PreviewTarget } from './preview'
-import { fitClear } from './previewClear'
+import { usePreviewFit } from './previewReserve'
 import { useKeepClear } from './keepClear'
 import {
   activatedLines,
@@ -131,6 +131,7 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
   const gone = held === undefined
   const signedIn = useAuth((state) => state.status === 'signed-in')
   const clear = useKeepClear()
+  const fit = usePreviewFit(target, clear)
 
   const { pinned } = target
   const panel = useRef<HTMLDivElement>(null)
@@ -150,7 +151,6 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
 
   if (object === undefined || held === undefined) return null
   const summary = isStacked(held) ? stackSummary(held, sourceObject, entry, name, targetNames) : null
-  const fit = fitClear(target.anchor, { width: window.innerWidth, height: window.innerHeight }, clear)
   const { dock, beside } = fit
   const pt = powerToughness(object)
   const keywords = keywordLine(object)
@@ -181,13 +181,18 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
         maxHeight: fit.maxHeight,
       }}
       className={cn(
-        'fixed z-[60] overflow-y-auto rounded-xl bg-popover p-3 text-popover-foreground shadow-lg ring-1 ring-foreground/15',
+        'fixed z-[60] overflow-x-hidden overflow-y-auto rounded-xl bg-popover p-3 text-popover-foreground shadow-lg ring-1 ring-foreground/15',
         DOCK[dock],
         beside ? 'flex gap-3' : null,
         target.pinned ? null : 'pointer-events-none',
       )}
     >
-      <div className={cn('shrink-0', beside ? null : 'mx-auto w-fit')}>
+      {/* Beside the text this column is exactly the picture wide, so the oracle text under it wraps there and never widens it. */}
+      <div
+        data-slot="preview-picture"
+        className={beside ? 'shrink-0' : 'mx-auto w-fit max-w-full'}
+        style={beside ? { width: fit.picture } : undefined}
+      >
         <PreviewCard
           key={id}
           object={object}
@@ -198,7 +203,14 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
           usable={note?.usable}
         />
       </div>
-      <div className={cn('grid content-start gap-1 text-sm', beside ? 'min-w-0 flex-1' : 'mt-3')}>
+      {/* One column that may shrink to nothing and words that break anywhere: no line widens the panel. */}
+      <div
+        data-slot="preview-details"
+        className={cn(
+          'grid grid-cols-[minmax(0,1fr)] content-start gap-1 text-sm [overflow-wrap:anywhere]',
+          beside ? 'min-w-0 flex-1' : 'mt-3',
+        )}
+      >
         <p className="font-semibold">{roomTitle(object.name, links.doors)}</p>
         {summary === null ? null : (
           <div data-slot="preview-stack" className="grid gap-0.5 rounded-md bg-muted px-2 py-1">

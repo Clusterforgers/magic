@@ -256,6 +256,8 @@ export interface FixtureGameOptions extends FixtureOptions {
   spirit?: true
   /** No seat has a permanent (`withBareBoards`): the start of a fight. */
   bare?: true
+  /** Every opponent but the last out of the game, the last with an empty board. */
+  alone?: true
   /** A permanent for every state a card shows joins the table (`dev/states.ts`), on a table with fewer permanents. */
   states?: true
   /** The attachments scene joins the table (`dev/equip.ts`). */
@@ -435,6 +437,41 @@ export function withBossAttack(moment: Fixture): Fixture {
   }
 }
 
+/**
+ * Every opponent but the last out of the game, by turns conceded and out of life, their permanents gone with them, and
+ * the last opponent with no permanents: the end of a free-for-all, where one empty board faces the viewer's.
+ */
+export function withLastStanding(moment: Fixture): Fixture {
+  const viewer = moment.view.viewer
+  const rivals = moment.view.players.filter((player) => player.seat !== viewer).map((player) => player.seat)
+  const out = new Set(rivals.slice(0, -1))
+  const emptied = new Set(rivals)
+  const gone = new Set(
+    moment.view.objects
+      .filter((object) => object.zone === 'Battlefield' && emptied.has(object.controller))
+      .map((object) => object.id),
+  )
+  let lost = 0
+  const players = moment.view.players.map((player) => {
+    if (!out.has(player.seat)) return player
+    lost += 1
+    return lost % 2 === 1
+      ? { ...player, lost: 'Conceded' as const }
+      : { ...player, life: 0, lost: 'ZeroLife' as const }
+  })
+  const left = (moment.view.battlefield.cards ?? []).filter((id) => !gone.has(id))
+  return {
+    ...moment,
+    view: {
+      ...moment.view,
+      players,
+      objects: moment.view.objects.filter((object) => !gone.has(object.id)),
+      battlefield: { count: left.length, cards: left },
+      combat: { attackers: [], attackers_declared: false, blockers_declared: [] },
+    },
+  }
+}
+
 /** The table with its active player gone (CR 800.4): the seat is out of the game and the turn goes on without it. */
 function withActiveLeft(moment: Fixture): Fixture {
   const gone = moment.view.turn.active
@@ -477,7 +514,8 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
         : withBoss(teamed, options.boss)
   const spirited = options.spirit === true && options.boss !== undefined ? withSpirit(bossed) : bossed
   const bared = options.bare === true ? withBareBoards(spirited) : spirited
-  const fixture = options.turn === 'left' ? withActiveLeft(bared) : bared
+  const lone = options.alone === true ? withLastStanding(bared) : bared
+  const fixture = options.turn === 'left' ? withActiveLeft(lone) : lone
   const shown = prompt !== undefined ? prompt(fixture) : options.holding === true ? undefined : null
   store.setState(fixtureState(fixture, shown))
   if (options.result !== undefined) {

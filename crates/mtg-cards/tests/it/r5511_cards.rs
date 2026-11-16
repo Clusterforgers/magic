@@ -154,7 +154,17 @@ fn r5511_reads_back_whole(#[case] name: &str) {
     r#"{ "Supertype": "Snow" }"#,
     r#"{ "Supertype": "Basic" }"#
 )]
-#[case::house_five_or_higher("Mr. House, President and CEO", r#""right": 4"#, r#""right": 5"#)]
+#[case::house_five_or_higher(
+    "Mr. House, President and CEO",
+    r#""at_least": 4"#,
+    r#""at_least": 5"#
+)]
+#[case::house_seven_or_higher("Mr. House, President and CEO", r#""right": 6"#, r#""right": 7"#)]
+#[case::house_each_roll(
+    "Mr. House, President and CEO",
+    r#""at_least": 4"#,
+    r#""highest": true"#
+)]
 #[case::house_artifacts("Mr. House, President and CEO", r#""Treasure""#, r#""Clue""#)]
 #[case::hellion_opponents_life(
     "Volcano Hellion",
