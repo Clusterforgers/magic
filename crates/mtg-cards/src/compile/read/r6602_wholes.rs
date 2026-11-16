@@ -63,6 +63,13 @@ mod tests {
             ("its owner's control", "your control"),
             ("Until end of turn, target", "Target"),
             ("dies", "attacks"),
+            ("starting with you, ", ""),
+            ("you don't control", "you control"),
+            ("may choose an artifact", "may choose a creature"),
+            ("Each opponent may copy", "Each player may copy"),
+            ("plus an additional time", "plus two additional times"),
+            ("Discard a card with mana value X", "Discard a card"),
+            ("Counter target spell", "Counter target creature spell"),
         ];
         for (_, text) in R6602_SHAPES.iter() {
             for (from, to) in swaps {

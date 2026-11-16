@@ -7390,7 +7390,20 @@ fn announces_x(cost: &Cost) -> bool {
                 item,
                 CostItem::PayEnergy(Amount::X) | CostItem::PayLife(Amount::X)
             ) || r4710_among_x(item)
+                || r6602_discard_by_x(item)
         })
+}
+
+/// Whether the part discards a card whose filter reads X ("Discard a card with mana value X"): the X is announced with
+/// the activation and the discarded card must match it (CR 107.3, 601.2b).
+fn r6602_discard_by_x(item: &CostItem) -> bool {
+    matches!(
+        item,
+        CostItem::Discard {
+            count: Amount::Fixed(1),
+            filter: Some(filter),
+        } if filter.r301_reads_x()
+    )
 }
 
 /// Whether the part removes X counters from among permanents.
