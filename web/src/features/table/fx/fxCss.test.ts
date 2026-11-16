@@ -1,4 +1,4 @@
-// Goal: the table-feedback stylesheet starts motion only where motion is welcome (every animation sits in the no-preference block, which holds all the keyframes, while reduced motion gets still outlines), applies only to elements that carry an effect attribute, takes every duration from the variables that mirror FX_MS and stretches it by the dev slow-down, repeats the move times of `MOVE_MS`, lays the layer of flying cards outside the layout without a pointer, and is part of the app's stylesheet.
+// Goal: the table-feedback stylesheet starts motion only where motion is welcome (every animation sits in the no-preference block, which holds all the keyframes, while reduced motion gets still outlines), applies only to elements that carry an effect attribute, takes every duration from the variables that mirror FX_MS and stretches it by the dev slow-down, repeats the move times of `MOVE_MS`, lays the layer of flying cards outside the layout without a pointer, moves pose to pose (an attacker winds up, lunges stretched and recoils, a hit squashes, lights and shakes, an entering card and a life total overshoot and settle, a dying card shrinks and tips over), and is part of the app’s stylesheet.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -46,6 +46,48 @@ describe('motion', () => {
     expect(rules.length).toBeGreaterThan(5)
     for (const rule of rules) expect(rule.selector, rule.selector).toMatch(/data-fx|data-ghost|\.fx-/)
     for (const rule of rulesIn(reduced)) expect(rule.selector, rule.selector).toMatch(/data-fx/)
+  })
+})
+
+describe('feel (docs/ui-design.md, Feel)', () => {
+  /** The declarations of one keyframe step of a named animation, such as `42%`. */
+  const step = (name: string, at: string): string => {
+    const frames = blockAfter(motion, `@keyframes ${name}`)
+    const start = frames.search(new RegExp(`(^|\\s|,)${at}\\s*\\{`))
+    if (start < 0) throw new Error(`${name} has no ${at}`)
+    return blockAfter(frames.slice(start), at)
+  }
+
+  it('winds an attacker up away from its target, lunges it stretched and lets it recoil past its place', () => {
+    expect(step('fx-lunge', '18%')).toMatch(/translate: 0 calc\(var\(--fx-dir, 1\) \* -0\.3rem\)/)
+    expect(step('fx-lunge', '18%')).toMatch(/scale: 1\.03 0\.96/)
+    expect(step('fx-lunge', '42%')).toMatch(/translate: 0 calc\(var\(--fx-dir, 1\) \* 1\.1rem\)/)
+    expect(step('fx-lunge', '42%')).toMatch(/scale: 0\.97 1\.04/)
+    expect(step('fx-lunge', '70%')).toMatch(/-0\.15rem/)
+  })
+
+  it('eases into the lunge and out of it', () => {
+    expect(step('fx-lunge', '18%')).toMatch(/animation-timing-function: cubic-bezier\(0\.4, 0, 1, 1\)/)
+    expect(step('fx-lunge', '42%')).toMatch(/animation-timing-function: cubic-bezier\(0, 0, 0\.2, 1\)/)
+  })
+
+  it('squashes and lights a hit card on impact, then shakes it 5 px', () => {
+    const impact = step('fx-shake', '10%')
+    expect(impact).toMatch(/scale: 0\.94/)
+    expect(impact).toMatch(/translate: -5px 0/)
+    expect(impact).toMatch(/filter: brightness\(1\.9\)/)
+  })
+
+  it('lets an entering permanent and a life total overshoot and settle', () => {
+    expect(step('fx-enter', '60%')).toMatch(/scale: 1\.05/)
+    expect(step('fx-enter', '82%')).toMatch(/scale: 0\.98/)
+    expect(step('fx-pop', '20%')).toMatch(/scale: 1\.25/)
+    expect(step('fx-pop', '45%')).toMatch(/scale: 0\.96/)
+  })
+
+  it('lets a dying card shrink and tip over as it greys', () => {
+    expect(step('fx-ghost', '100%')).toMatch(/scale: 0\.85/)
+    expect(step('fx-ghost', '100%')).toMatch(/rotate: -6deg/)
   })
 })
 
