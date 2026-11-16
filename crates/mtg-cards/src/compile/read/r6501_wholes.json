@@ -143,5 +143,15 @@
    }
   },
   "{3}, {T}: Double the amount of each type of unspent mana you have."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     "R6501RedistributeLife"
+    ]
+   }
+  },
+  "Redistribute any number of players' life totals."
  ]
 ]

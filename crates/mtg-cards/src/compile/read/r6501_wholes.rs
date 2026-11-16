@@ -71,6 +71,8 @@ mod tests {
             ("each type of", "one type of"),
             ("mana you have", "mana an opponent has"),
             ("{3}, {T}", "{2}, {T}"),
+            ("any number of players'", "two players'"),
+            ("life totals", "hands"),
         ];
         for (_, text) in R6501_SHAPES.iter() {
             for (from, to) in swaps {

@@ -371,6 +371,7 @@ const RUNS: &[&str] = &[
     "Effect.Conjure",
     "Effect.Meld",
     "Effect.AuraSwap",
+    "Effect.R6501RedistributeLife",
     "Effect.Seek",
     "Effect.Monstrosity",
     "Effect.Renown",

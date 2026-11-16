@@ -2056,6 +2056,10 @@ pub enum Effect {
     /// an Aura card in their hand that could enchant what the source is attached to; the source goes to its owner's hand
     /// and the card enters attached to that object or player. When either can't move, neither does (CR 701.12a).
     AuraSwap,
+    /// "Redistribute any number of players' life totals": the controller gives each player one of the life totals the
+    /// players have as it begins, each total once and never split; each player gains or loses the difference (CR
+    /// 119.5), and a player given their own total is one left out.
+    R6501RedistributeLife,
     /// "If you both own and control ~ and a creature named N, exile them, then meld them into M" (CR 701.42): when the
     /// controller owns and controls the source and a permanent `with` names, both are exiled, and if both are then cards
     /// of a meld pair in exile they return as one melded permanent with the characteristics of the card `into`.

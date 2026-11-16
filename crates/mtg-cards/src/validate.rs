@@ -5310,6 +5310,7 @@ impl Walker<'_> {
             }),
             Effect::EndTurn
             | Effect::AuraSwap
+            | Effect::R6501RedistributeLife
             | Effect::StillResolves
             | Effect::Rephase
             | Effect::AddStep { .. }

@@ -148,6 +148,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::DrawGame {}
         | Effect::SetLife { .. }
         | Effect::ExchangeLife { .. }
+        | Effect::R6501RedistributeLife
         | Effect::ExchangeLifeWithToughness { .. }
         | Effect::RemoveDamage { .. }
         | Effect::Balance { .. }
