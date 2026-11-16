@@ -112,9 +112,7 @@ pub(crate) fn r6701_alt_casts_given(
     mods_naming_spell(state, caster, spell)
         .into_iter()
         .filter_map(|modification| match modification {
-            Modification::GrantAbility(granted)
-                if matches!(&*granted, Ability::AltCast { .. }) =>
-            {
+            Modification::GrantAbility(granted) if matches!(&*granted, Ability::AltCast { .. }) => {
                 Some(granted)
             }
             _ => None,

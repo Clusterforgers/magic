@@ -287,7 +287,10 @@ pub(super) fn trigger(ctx: &Ctx, when: &TriggerPattern) -> String {
         }
         TriggerPattern::Caused { inner, by, source } => caused(ctx, inner, by.as_ref(), source),
         TriggerPattern::R6701WhileActivating { inner, kind } => {
-            format!("{} while you're activating a {kind:?} ability", trigger(ctx, inner))
+            format!(
+                "{} while you're activating a {kind:?} ability",
+                trigger(ctx, inner)
+            )
         }
         other => generic::node(ctx, other),
     }

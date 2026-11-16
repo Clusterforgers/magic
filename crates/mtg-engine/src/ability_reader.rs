@@ -756,7 +756,11 @@ fn granted_keyword(
 }
 
 /// The modification `index` of the static ability the continuous effect `effect` grants.
-fn r6701_nested_mod(state: &GameState, effect: EffectId, index: usize) -> Option<WantedModification> {
+fn r6701_nested_mod(
+    state: &GameState,
+    effect: EffectId,
+    index: usize,
+) -> Option<WantedModification> {
     let found = state.effects().iter().find(|found| found.id == effect)?;
     let Modification::GrantAbility(granted) = &found.modification else {
         return None;

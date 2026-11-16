@@ -7686,13 +7686,11 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
         |(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true, .. } if cost.has_x()),
     );
     // An optional cost names what it took once paid ("If you revealed a Dragon card or chose a Dragon ...").
-    walker.pays_objects = card
-        .abilities()
-        .any(|(_, a)| {
-            matches!(a, Ability::AdditionalCost { cost, .. } if picks(cost))
+    walker.pays_objects = card.abilities().any(|(_, a)| {
+        matches!(a, Ability::AdditionalCost { cost, .. } if picks(cost))
                 // A way to cast the card for a cost that takes objects ("the returned creature").
                 || matches!(a, Ability::AltCast { cost: Some(cost), .. } if picks(cost))
-        });
+    });
     if !is_uuid(&card.oracle_id) {
         walker.at("oracle_id", |w| w.problem("not a lowercase UUID"));
     }
@@ -7915,6 +7913,8 @@ fn lists(k: &Keyword, keyword: &str) -> bool {
             && Keyword::Partner.name().eq_ignore_ascii_case(keyword))
         // Scryfall lists `Enchant` for an Aura that enchants a player as it does for any other.
         || (matches!(k, Keyword::EnchantPlayer { .. }) && "Enchant".eq_ignore_ascii_case(keyword))
+        // Scryfall lists `Emerge` for emerge from artifact.
+        || (matches!(k, Keyword::R6701EmergeFromArtifact(_)) && "Emerge".eq_ignore_ascii_case(keyword))
         // Scryfall lists `Crew` for a crew that may be activated only once each turn.
         || (matches!(k, Keyword::CrewOnce(_)) && "Crew".eq_ignore_ascii_case(keyword))
         // Scryfall lists `Equip` for an Equipment that equips only some creatures as for any other.

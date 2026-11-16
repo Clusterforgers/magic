@@ -1145,7 +1145,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             false,
         ),
         TriggerPattern::R6701WhileActivating { inner, kind } => (
-            format!("{} while you're activating a {kind:?} ability", clause(inner).0),
+            format!(
+                "{} while you're activating a {kind:?} ability",
+                clause(inner).0
+            ),
             false,
         ),
         TriggerPattern::AnyOf(patterns) => {

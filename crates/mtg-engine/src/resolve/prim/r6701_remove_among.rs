@@ -101,7 +101,9 @@ fn r6701_question(cx: &Cx<'_>, held: &[Held], offered: &[usize]) -> Decision {
                 Target::Object(object) => cx
                     .state()
                     .object(object.id)
-                    .map_or_else(String::new, |object| format!(" from {}", object.card().name)),
+                    .map_or_else(String::new, |object| {
+                        format!(" from {}", object.card().name)
+                    }),
                 Target::Player(player) => format!(" from player {}", player.0 + 1),
             };
             ChoiceOption::Label(format!("{} counter{whose}", kind.name()))

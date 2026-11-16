@@ -51,7 +51,9 @@ static MORPH: LazyLock<CardDefinition> = LazyLock::new(|| creature(false));
 static DISGUISE: LazyLock<CardDefinition> = LazyLock::new(|| creature(true));
 static R6701_HORROR: LazyLock<CardDefinition> = LazyLock::new(|| {
     let mut shown = creature(false);
-    shown.subtypes.push(mtg_core::card::Subtype("Horror".into()));
+    shown
+        .subtypes
+        .push(mtg_core::card::Subtype("Horror".into()));
     shown
 });
 

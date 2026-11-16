@@ -48,7 +48,7 @@ pub(crate) fn cause_of(pre: &GameState, events: &[Event], post: &GameState) -> O
                 return Some(CausedBy {
                     player: put.controller,
                     object: Some(put.source),
-                    activating: r6701_kind_activated(pre, put),
+                    activating: r6701_kind_activated(post, put),
                 });
             }
             Event::SpellCast { player, object, .. } => {
@@ -96,8 +96,8 @@ pub(crate) fn cause_of(pre: &GameState, events: &[Event], post: &GameState) -> O
     })
 }
 
-/// The specific kind of the ability `put` puts on the stack, read in `state` from before its costs were paid (a craft
-/// ability's source is exiled as it is paid).
+/// The specific kind of the ability `put` puts on the stack, read as its source was when the ability was put on the stack
+/// (a craft ability's source is exiled as it is paid).
 fn r6701_kind_activated(
     state: &GameState,
     put: &crate::abilities::PutOnStack,
@@ -107,6 +107,6 @@ fn r6701_kind_activated(
         ability: put.ability,
         source: put.origin,
     };
-    let rules = crate::ability_reader::ability(state, address)?;
-    crate::activation_kind::specific(state, address, &rules)
+    let rules = crate::ability_reader::ability_as_it_was(state, address, &put.snapshot)?;
+    crate::activation_kind::specific_as_it_was(state, address, &rules, &put.snapshot)
 }

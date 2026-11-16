@@ -253,7 +253,13 @@ mod tests {
         assert_eq!(object.card().name, "");
         assert_eq!(object.card().power, Some(2));
         assert_eq!(object.card().toughness, Some(2));
-        assert!(object.card().subtypes.iter().any(|subtype| subtype.0 == "Horror"));
+        assert!(
+            object
+                .card()
+                .subtypes
+                .iter()
+                .any(|subtype| subtype.0 == "Horror")
+        );
         // Its morph cost still turns it face up.
         let (mana, _) = crate::face_down::turn_up_cost(&game, shifter).unwrap();
         assert_eq!(mana.to_string(), "{1}{U}");

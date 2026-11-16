@@ -1,7 +1,7 @@
 {
   "oracle_id": "12fa17b2-158e-4d53-897f-81111f912b00",
   "name": "Market Gnome",
-  "impl_status": "Full",
+  "impl_status": "Partial",
   "faces": [
     {
       "name": "Market Gnome",
@@ -14,16 +14,9 @@
           }
         },
         {
-          "Triggered": {
-            "when": {
-              "R6701WhileActivating": {
-                "inner": {
-                  "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Exile" }
-                },
-                "kind": "R6701Craft"
-              }
-            },
-            "effects": [{ "GainLife": { "amount": 1 } }, { "Draw": {} }]
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 58, "end": 181 }
           }
         }
       ]

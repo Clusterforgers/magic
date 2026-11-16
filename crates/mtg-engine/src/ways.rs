@@ -268,7 +268,12 @@ fn r5510_given_emerge(
     let own_keywords: Vec<Keyword> = keywords_of(state, id).into_iter().cloned().collect();
     crate::spell_keywords::given_to_spell(state, player, id)
         .into_iter()
-        .filter(|keyword| matches!(keyword, Keyword::Emerge(_) | Keyword::R6701EmergeFromArtifact(_)) && !own_keywords.contains(keyword))
+        .filter(|keyword| {
+            matches!(
+                keyword,
+                Keyword::Emerge(_) | Keyword::R6701EmergeFromArtifact(_)
+            ) && !own_keywords.contains(keyword)
+        })
         .flat_map(|keyword| crate::c9_emerge_ways::c9_emerge_ways(state, id, &keyword, instant))
         .collect()
 }

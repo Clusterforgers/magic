@@ -146,9 +146,9 @@ mod r6102_random_counter;
 mod r6400_block;
 pub(crate) mod r6402_change_roll;
 pub(crate) mod r6502_enters_as;
+mod r6701_remove_among;
 mod regenerate;
 mod remove_counters;
-mod r6701_remove_among;
 mod remove_from_combat;
 mod repeat_each;
 mod rephase;
@@ -293,7 +293,9 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Transform { .. } => transform::run(cx, effect),
         Effect::Flip { .. } => flip::run(cx, effect),
         Effect::TurnFaceUp { .. } => turn_up::run(cx, effect),
-        Effect::TurnFaceDown { .. } | Effect::R6701TurnFaceDownHorror { .. } => rmt8_turn_down::run(cx, effect),
+        Effect::TurnFaceDown { .. } | Effect::R6701TurnFaceDownHorror { .. } => {
+            rmt8_turn_down::run(cx, effect)
+        }
         Effect::Harness { .. } => rmt8_turn_down::harness(cx, effect),
         Effect::Plot { .. } => r282_plot::run(cx, effect),
         Effect::Prepare { .. } => prepare::run(cx, effect),
