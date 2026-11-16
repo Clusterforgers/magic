@@ -5,7 +5,7 @@ import { CardPicture } from './CardPicture'
 import { FxMark } from './FxMark'
 import { useFx } from './hooks'
 import { Spotlight } from './Spotlight'
-import { EASE_OUT, keyframesOf, REVEAL_KEYFRAMES } from './travel'
+import { keyframesOf, LEG_EASING, REVEAL_KEYFRAMES } from './travel'
 import type { Flight, Size, Travel } from './travel'
 import { useFlights, useSpotlight } from './useFlights'
 
@@ -44,7 +44,7 @@ function Flier({ flight, travel }: { flight: Flight; travel: Travel }) {
     const timing = {
       duration: flight.duration,
       delay: flight.delay,
-      easing: EASE_OUT,
+      easing: LEG_EASING,
       fill: 'forwards',
     } as const
     const bounds = { width: window.innerWidth, height: window.innerHeight }
