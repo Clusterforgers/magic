@@ -472,6 +472,16 @@ fn counters(ctx: &Ctx, effect: &Effect) -> Option<String> {
                 &format!("{}: {}{how}", tokens(ctx, count), token_text(ctx, token)),
             )
         }
+        Effect::R6602CreateAttached { who, token, to } => act(
+            ctx,
+            who,
+            "create",
+            &format!(
+                "{} attached to {}",
+                token_text(ctx, token),
+                phrase::who(ctx, to)
+            ),
+        ),
         _ => return None,
     })
 }

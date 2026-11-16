@@ -1965,6 +1965,18 @@ pub enum Effect {
         /// What happens.
         act: PlanarAct,
     },
+    /// Creates an Aura token attached to a permanent ("create a Wicked Role token attached to it", CR 303.7, 111.1): the
+    /// token enters attached to the first permanent `to` names on the battlefield; when there is none, or the token
+    /// could not enchant it, the token is not created (CR 303.4i).
+    R6602CreateAttached {
+        /// Who controls the token.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// What the token is.
+        token: TokenRef,
+        /// The permanent it enters attached to.
+        to: Ref,
+    },
     /// Creates tokens.
     CreateToken {
         /// Who controls them.

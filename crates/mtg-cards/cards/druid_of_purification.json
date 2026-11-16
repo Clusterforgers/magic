@@ -1,0 +1,62 @@
+{
+  "oracle_id": "5bb32efd-9e58-4021-bbda-4ffccfa1d601",
+  "name": "Druid of Purification",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Druid of Purification",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Enters": {
+                "what": [
+                  "This"
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "R6602FromYou",
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Type": "Artifact"
+                          },
+                          {
+                            "Type": "Enchantment"
+                          }
+                        ]
+                      },
+                      {
+                        "Not": {
+                          "ControlledBy": "You"
+                        }
+                      }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": 1
+                  },
+                  "as": "chosen"
+                }
+              },
+              {
+                "Destroy": {
+                  "what": {
+                    "Bound": "chosen"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

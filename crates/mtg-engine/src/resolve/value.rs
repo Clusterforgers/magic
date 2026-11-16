@@ -1425,6 +1425,12 @@ impl<'a> Scope<'a> {
             Ref::SourceOf(of) => self.r302b_sources(of)?,
             Ref::PlayersWhere { who, test } => self.players_where(who, test)?,
             Ref::Seated { of, side, opponent } => self.r376_seated(of, *side, *opponent)?,
+            Ref::R6602FromYou => self
+                .state
+                .turn_order_from(self.controller)
+                .into_iter()
+                .map(Target::Player)
+                .collect(),
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
             Ref::OpponentsOf(inner) => self.r5523_opponents_of(inner)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,

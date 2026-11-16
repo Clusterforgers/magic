@@ -292,6 +292,7 @@ mod r6102_wholes;
 mod r6103_wholes;
 mod r6400_wholes;
 mod r6401_wholes;
+mod r6602_wholes;
 mod r6402_change_roll;
 mod r6402_dice_facts;
 mod r6a_effects;
@@ -602,6 +603,11 @@ pub fn r6401_whole(text: &str) -> Option<Ability> {
     r6401_wholes::r6401_whole_read(text)
 }
 
+/// A wording of the r66-02 table, read whole whatever its kind and reminder text.
+pub fn r6602_whole(text: &str) -> Option<Ability> {
+    r6602_wholes::r6602_whole_read(text)
+}
+
 /// Reads a whole ability of the r47-05 table of wordings one card prints (a keyword line among them).
 pub fn r4705_whole(text: &str) -> Option<Ability> {
     r4705_reads::r4705_read(text)
@@ -669,6 +675,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r6401_wholes::r6401_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r6602_wholes::r6602_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r6103_wholes::r6103_whole_read(text) {

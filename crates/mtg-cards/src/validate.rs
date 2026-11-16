@@ -688,6 +688,7 @@ impl<'a> Walker<'a> {
                 self.reference(of, Kind::Player);
                 self.expect(Kind::Player, want);
             }
+            Ref::R6602FromYou => self.expect(Kind::Player, want),
             Ref::Remembered { on, .. } => {
                 self.reference(on, Kind::Object);
                 self.expect(Kind::Either, want);
@@ -3721,7 +3722,8 @@ impl Walker<'_> {
             | Ref::OrController(_)
             | Ref::OwnerOf(_)
             | Ref::PlayersWhere { .. }
-            | Ref::Seated { .. } => Kind::Player,
+            | Ref::Seated { .. }
+            | Ref::R6602FromYou => Kind::Player,
             Ref::Affected
             | Ref::LastExiledWith { .. }
             | Ref::Delved
@@ -4997,6 +4999,11 @@ impl Walker<'_> {
                 w.at("from", |w| w.reference(from, Kind::Object));
                 w.at("to", |w| w.reference(to, Kind::Object));
                 w.at("count", |w| w.amount(count));
+            }
+            Effect::R6602CreateAttached { who, token, to } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("token", |w| w.token(token));
+                w.at("to", |w| w.reference(to, Kind::Object));
             }
             Effect::CreateToken {
                 who,

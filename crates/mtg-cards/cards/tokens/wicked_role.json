@@ -1,0 +1,18 @@
+{
+  "id": "wicked_role",
+  "token": {
+    "name": "Wicked Role",
+    "types": ["Enchantment"],
+    "subtypes": ["Aura", "Role"],
+    "abilities": [
+      { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+      { "Static": { "affected": "Attached", "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }] } },
+      {
+        "Triggered": {
+          "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+          "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+        }
+      }
+    ]
+  }
+}

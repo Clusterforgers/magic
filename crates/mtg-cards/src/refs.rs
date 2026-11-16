@@ -192,6 +192,9 @@ pub enum Ref {
     /// Every player and object any of these references names, as one recipient ("you and/or permanents you control"): a
     /// damage shield used up by what it covers shares what it has left among them.
     Union(Vec<Ref>),
+    /// Each player still in the game in turn order starting with the controller ("starting with you, each player", CR
+    /// 101.4): the order in which they act.
+    R6602FromYou,
     /// The next player still in the game seated on `side` of each player `of` names (CR 101.4: turns pass to the left):
     /// "the player to your right"; with `opponent`, the nearest opponent of that player on that side ("the opponent to
     /// your left"). Nobody when no other player is left.
