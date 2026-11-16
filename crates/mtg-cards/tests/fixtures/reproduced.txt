@@ -141,6 +141,7 @@ Baaallerina
 Back in Town
 Baird, Steward of Argive
 Balduvian Conjurer
+Balduvian Shaman
 Balduvian Warlord
 Bandit's Haul
 Bane of Progress
@@ -563,6 +564,7 @@ Doom Whisperer
 Door of Destinies
 Dormant Gomazoa
 Doublecast
+Doubling Cube
 Down, Down to Goblin-town
 Dowsing Dagger // Lost Vale
 Draconic Lore
@@ -599,6 +601,7 @@ Drownyard Temple
 Drudge Beetle
 Drudge Sentinel
 Drudge Skeletons
+Druid of Purification
 Dryad of the Ilysian Grove
 Dual Casting
 Dual Strike
@@ -1356,6 +1359,7 @@ Mirelurk Queen
 Mirran Bardiche
 Mirri, Weatherlight Duelist
 Mirror Image
+Mirror Match
 Mirror Sheen
 Mirrormind Crown
 Mirrorweave
@@ -1711,6 +1715,7 @@ Revenge of Ravens
 Reverberate
 Reverence
 Reverse Engineer
+Reverse the Sands
 Rhet-Tomb Mystic
 Rhox Charger
 Rhox Faithmender

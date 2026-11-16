@@ -32,7 +32,11 @@ fn r6501_thing(name: &str, kind: CardType) -> Arc<CardDefinition> {
 /// Druid of Purification with flash, so it can enter on another player's turn.
 fn r6501_flash_druid() -> Arc<CardDefinition> {
     let flash: Ability = serde_json::from_str(r#"{"Keyword":"Flash"}"#).unwrap();
-    Arc::new((*card("Druid of Purification").unwrap()).clone().with_rules(flash))
+    Arc::new(
+        (*card("Druid of Purification").unwrap())
+            .clone()
+            .with_rules(flash),
+    )
 }
 
 /// Seat 0 holds the Druid, four Forests and its own Relic 0; every other seat `s` controls Relic s and Charm s; seat
@@ -79,7 +83,10 @@ fn r6501_enter(
                 let chosen: Vec<ObjectId> = pick(driver, decision.player).into_iter().collect();
                 driver.answer(Answer::ChooseCards(CardsChoice(chosen)))?;
             }
-            _ if cast && driver.state().stack().is_empty() && driver.state().resolving().is_none() => {
+            _ if cast
+                && driver.state().stack().is_empty()
+                && driver.state().resolving().is_none() =>
+            {
                 return Ok(asked);
             }
             _ => {
@@ -114,10 +121,16 @@ fn r6501_each_player_from_the_controller_may_choose_one_to_destroy(
     })?;
     let order: Vec<PlayerId> = asked.iter().map(|(player, _)| *player).collect();
     let expected: Vec<PlayerId> = (0..seats).map(pid).collect();
-    assert_eq!(order, expected, "turn order starting with the Druid's controller");
+    assert_eq!(
+        order, expected,
+        "turn order starting with the Druid's controller"
+    );
     let own = driver.id_of("Relic 0")?;
     for (_, offered) in &asked {
-        assert!(!offered.contains(&own), "the controller's own artifact is never offered");
+        assert!(
+            !offered.contains(&own),
+            "the controller's own artifact is never offered"
+        );
         assert_eq!(offered.len(), 2 * (seats - 1));
     }
     assert!(!r6501_on_battlefield(&driver, &format!("Relic {last}")));

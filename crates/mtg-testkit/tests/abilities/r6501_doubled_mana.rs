@@ -33,7 +33,11 @@ fn r6501_creature_isle() -> Arc<CardDefinition> {
 /// The free mana of `kind` and the restricted mana in the seat's pool.
 fn r6501_pool(driver: &Driver, seat: usize, kind: ManaType) -> (u32, usize) {
     let pool = driver.state().player(pid(seat)).unwrap().mana();
-    let restricted = pool.restricted().iter().filter(|unit| unit.mana == kind).count();
+    let restricted = pool
+        .restricted()
+        .iter()
+        .filter(|unit| unit.mana == kind)
+        .count();
     (pool.get(kind), restricted)
 }
 

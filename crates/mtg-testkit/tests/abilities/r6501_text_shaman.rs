@@ -123,8 +123,8 @@ fn r6501_balduvian_shaman_changes_a_color_word_and_grants_cumulative_upkeep(
     assert_eq!(r6501_size(&driver, "Brute"), (3, 3));
     assert_eq!(r6501_size(&driver, "Hothead"), (2, 2));
     let anthem = driver.id_of("Anthem")?;
-    let keywords = serde_json::to_string(&mtg_engine::keywords::keywords_of(driver.state(), anthem))
-        .unwrap();
+    let keywords =
+        serde_json::to_string(&mtg_engine::keywords::keywords_of(driver.state(), anthem)).unwrap();
     assert_eq!(keywords, r#"[{"CumulativeUpkeep":"{1}"}]"#);
     let state = replay(driver.engine().setup(), driver.engine().events()).unwrap();
     assert_eq!(state.state_hash(), driver.state().state_hash());

@@ -80,10 +80,7 @@ fn question(cx: &Cx<'_>, player: PlayerId, offered: &[i64]) -> Decision {
                 .iter()
                 .map(|life| ChoiceOption::Label(format!("{life} life")))
                 .collect(),
-            text: format!(
-                "Choose the life total player {} gets.",
-                player.index() + 1
-            ),
+            text: format!("Choose the life total player {} gets.", player.index() + 1),
         }),
     }
 }

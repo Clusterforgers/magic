@@ -66,7 +66,11 @@ fn r6501_mirror_match_blocks_each_attacker_of_its_caster_with_its_copy(
     driver.pass_until(Step::DeclareAttackers)?;
     // With a third seat, the Roamer attacks seat 1 and gets no copy.
     let other = if seats > 2 { 1 } else { defender };
-    driver.attack(&[("Raider", defender), ("Pouncer", defender), ("Roamer", other)])?;
+    driver.attack(&[
+        ("Raider", defender),
+        ("Pouncer", defender),
+        ("Roamer", other),
+    ])?;
     let mut cast = false;
     let mut seen_blocks = false;
     for _ in 0..120 {
@@ -111,9 +115,15 @@ fn r6501_mirror_match_blocks_each_attacker_of_its_caster_with_its_copy(
         }
     }
     assert!(seen_blocks, "the game did not reach combat damage");
-    assert!(r6501_tokens(&driver, defender).is_empty(), "the tokens are exiled at end of combat");
+    assert!(
+        r6501_tokens(&driver, defender).is_empty(),
+        "the tokens are exiled at end of combat"
+    );
     let hit = if seats > 2 { 2 } else { 0 };
-    assert_eq!(driver.state().player(pid(defender)).unwrap().life(), life[defender]);
+    assert_eq!(
+        driver.state().player(pid(defender)).unwrap().life(),
+        life[defender]
+    );
     if seats > 2 {
         assert_eq!(driver.state().player(pid(1)).unwrap().life(), life[1] - hit);
     }

@@ -210,8 +210,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 };
                 for kind in ManaType::ALL {
                     let held = pool.get(kind).saturating_add(
-                        u32::try_from(pool.restricted().iter().filter(|unit| unit.mana == kind).count())
-                            .unwrap_or(u32::MAX),
+                        u32::try_from(
+                            pool.restricted()
+                                .iter()
+                                .filter(|unit| unit.mana == kind)
+                                .count(),
+                        )
+                        .unwrap_or(u32::MAX),
                     );
                     let added = usize::try_from(held).unwrap_or(0).saturating_mul(times);
                     events.extend(std::iter::repeat_n(
