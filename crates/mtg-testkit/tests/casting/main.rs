@@ -125,6 +125,7 @@ mod mana_rider;
 mod mana_spent;
 mod mana_takes;
 mod mana_uncounterable;
+mod mana_with_a_roll;
 mod mana_wordings;
 mod miracle;
 mod miracle_spells;

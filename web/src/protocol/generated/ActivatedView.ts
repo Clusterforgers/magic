@@ -33,6 +33,11 @@ loyalty?: LoyaltyCost,
  */
 mana?: boolean, 
 /**
+ * Whether it is a mana ability activated at priority like any other ability (one that also rolls a die, discards or
+ * untaps): `PriorityOptions.abilities` offers it, and no payment taps it.
+ */
+announced?: boolean, 
+/**
  * The keyword line that adds it (`Cycling {2}`, `Equip {1}`), when a keyword does.
  */
 keyword?: string, 

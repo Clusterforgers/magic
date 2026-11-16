@@ -169,6 +169,11 @@ pub struct ActivatedView {
     #[serde(default, skip_serializing_if = "is_false")]
     #[ts(as = "Option<bool>", optional)]
     pub mana: bool,
+    /// Whether it is a mana ability activated at priority like any other ability (one that also rolls a die, discards or
+    /// untaps): `PriorityOptions.abilities` offers it, and no payment taps it.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[ts(as = "Option<bool>", optional)]
+    pub announced: bool,
     /// The keyword line that adds it (`Cycling {2}`, `Equip {1}`), when a keyword does.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
