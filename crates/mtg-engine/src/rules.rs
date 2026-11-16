@@ -1438,7 +1438,6 @@ impl RulesInForce {
                 .extend(players.iter().map(|player| (*player, controller))),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
             Rule::LoyaltyTwice(players) => self.loyalty_twice.extend(players),
-            Rule::R6600AdaptsFresh(_) => {}
             Rule::R6600LoyaltyOnceMore(players) => {
                 for player in players {
                     let more = self.loyalty_once_more.entry(*player).or_default();
@@ -1601,7 +1600,9 @@ impl RulesInForce {
             )),
             // Shields are read by the replacement step, spell costs by the cost step and the bonuses of a spell's mana
             // where it resolves (`spend_rider::entering`), from the rule changes themselves.
+            // The adapt reads its rule from the rule changes themselves.
             Rule::EntersWith { .. }
+            | Rule::R6600AdaptsFresh(_)
             | Rule::Planar
             | Rule::SpellCost { .. }
             | Rule::PreventDamage(_)

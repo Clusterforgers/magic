@@ -603,9 +603,23 @@ mod tests {
     }
 
     #[test]
-    fn several_choosers_are_refused_and_nobody_chooses_nothing() {
+    fn several_choosers_each_choose_in_turn_order_and_nobody_chooses_nothing() {
         let each = r#"{"ChooseValue":{"who":"EachPlayer","kind":"Color","as":"hue"}}"#;
-        assert!(run_with(vec![], each).is_err());
+        let Run::Ask(first) = run_with(vec![], each).unwrap() else {
+            panic!("the active player is asked first");
+        };
+        assert_eq!(first.player, ME);
+        let Run::Ask(second) = run_with(vec![(ME, Choice::Option(0))], each).unwrap() else {
+            panic!("the next player is asked");
+        };
+        assert_eq!(second.player, PlayerId(1));
+        let both = vec![(ME, Choice::Option(0)), (PlayerId(1), Choice::Option(1))];
+        let Run::Done { bound, .. } = run_with(both, each).unwrap() else {
+            panic!("both chose");
+        };
+        assert_eq!(bound.len(), 2, "one value for each player");
+        let numbers = r#"{"ChooseValue":{"who":"EachPlayer","kind":{"Number":[1,3]},"as":"n"}}"#;
+        assert!(run_with(vec![], numbers).is_err(), "a number is chosen by one player");
         let nobody = r#"{"ChooseValue":{"who":{"Target":0},"kind":"Color","as":"hue"}}"#;
         assert_eq!(remembered(run_with(vec![], nobody).unwrap()), None);
     }
