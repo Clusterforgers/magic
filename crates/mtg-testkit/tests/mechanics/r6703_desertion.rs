@@ -7,6 +7,7 @@ use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
 use mtg_core::card::CardType;
+use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_testkit::cards::{forest, free_creature, island};
@@ -66,7 +67,11 @@ fn desertion_steals_artifact_and_creature_spells_only(
         .find(|object| object.card().name == "Prize")
         .map(|object| mtg_engine::choose::Target::Object(object.reference()))
         .expect("the Prize is on the stack");
-    driver.cast_at("Desertion", &[prize])?;
+    driver.begin_cast("Desertion")?;
+    if matches!(driver.decision()?.kind, DecisionKind::ChooseTargets(_)) {
+        driver.choose_targets(&[prize])?;
+    }
+    driver.answer(Answer::PayMana(PayChoice::Auto))?;
     for _ in 0..50 {
         if driver.state().stack().is_empty() && driver.state().resolving().is_none() {
             break;

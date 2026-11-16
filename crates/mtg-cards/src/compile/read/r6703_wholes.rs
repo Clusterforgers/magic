@@ -42,9 +42,13 @@ pub(super) fn r6703_pair_texts(first: &Ability, second: &Ability) -> Vec<String>
 
 /// The two abilities of the pair whose wording is the whole of the rest of the sentence.
 pub(super) fn r6703_pair_read(r: &mut super::tokens::Reader<'_>) -> Option<Vec<Ability>> {
-    R6703_PAIR_SHAPES.iter().find_map(|([first, second], text)| {
-        r.attempt(|r| (r.r376_text(text) && r.end()).then(|| vec![first.clone(), second.clone()]))
-    })
+    R6703_PAIR_SHAPES
+        .iter()
+        .find_map(|([first, second], text)| {
+            r.attempt(|r| {
+                (r.r376_text(text) && r.end()).then(|| vec![first.clone(), second.clone()])
+            })
+        })
 }
 
 /// The entries parsed once.
@@ -78,8 +82,8 @@ mod tests {
     //! Goal: every entry of the table parses, reads back from its own words and writes them back, and a near miss of its
     //! words (a number, a player or a duration changed) reads as nothing.
     use super::{
-        R6703_PAIR_SHAPES, R6703_PAIRS, R6703_SHAPES, R6703_WHOLES, r6703_add_wholes, r6703_pair_texts,
-        r6703_whole_read,
+        R6703_PAIR_SHAPES, R6703_PAIRS, R6703_SHAPES, R6703_WHOLES, r6703_add_wholes,
+        r6703_pair_texts, r6703_whole_read,
     };
 
     #[test]
@@ -88,7 +92,10 @@ mod tests {
         assert_eq!(R6703_PAIR_SHAPES.len(), entries.len());
         for ([first, second], text) in R6703_PAIR_SHAPES.iter() {
             assert_eq!(r6703_pair_texts(first, second), std::slice::from_ref(text));
-            assert!(r6703_pair_texts(second, first).is_empty(), "the order matters");
+            assert!(
+                r6703_pair_texts(second, first).is_empty(),
+                "the order matters"
+            );
         }
     }
 
@@ -126,8 +133,14 @@ mod tests {
             ("rounded down", "rounded up"),
             ("Add {C}{C}", "Add {C}"),
             ("with {X} in its mana cost", "with {X}"),
-            ("noncombat damage to a creature", "combat damage to a creature"),
-            ("equal to that creature's toughness", "equal to that creature's power"),
+            (
+                "noncombat damage to a creature",
+                "combat damage to a creature",
+            ),
+            (
+                "equal to that creature's toughness",
+                "equal to that creature's power",
+            ),
             ("plus X instead", "plus 1 instead"),
             ("a source you control would", "a source would"),
         ];

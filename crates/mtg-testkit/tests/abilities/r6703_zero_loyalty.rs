@@ -61,7 +61,11 @@ fn loyalty(driver: &Driver, name: &str) -> Option<u32> {
     let id = driver.id_of(name).ok()?;
     let object = driver.state().object(id)?;
     (object.zone() == Zone::Battlefield)
-        .then(|| object.permanent().map(|p| p.counters_of(&CounterKind::Loyalty)))
+        .then(|| {
+            object
+                .permanent()
+                .map(|p| p.counters_of(&CounterKind::Loyalty))
+        })
         .flatten()
 }
 
@@ -74,7 +78,9 @@ fn a_walker_of_the_lurkers_controller_stays_with_zero_loyalty(
     if lurker {
         mine.push(ready(card("Sanctum Lurker").unwrap()));
     }
-    let mut scenario = Scenario::new(seats).battlefield(0, mine).hand(0, [murder()]);
+    let mut scenario = Scenario::new(seats)
+        .battlefield(0, mine)
+        .hand(0, [murder()]);
     for seat in 1..seats {
         scenario = scenario.battlefield(seat, [ready(walker(&format!("Theirs {seat}")))]);
     }

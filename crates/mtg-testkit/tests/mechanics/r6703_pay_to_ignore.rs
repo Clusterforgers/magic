@@ -63,7 +63,10 @@ fn table(seats: usize, owner: usize, active: usize) -> Result<Driver, ScriptErro
         scenario = scenario
             .battlefield(seat, board)
             .hand(seat, [tutor(&format!("Tutor {seat}"))])
-            .library(seat, [free_creature(&format!("Bear {seat}"), 2, 2), forest()]);
+            .library(
+                seat,
+                [free_creature(&format!("Bear {seat}"), 2, 2), forest()],
+            );
     }
     Driver::from_scenario(scenario)
 }
@@ -85,20 +88,33 @@ fn only_the_payer_searches_this_turn(
 ) -> Result<(), ScriptError> {
     let mut driver = table(seats, owner, 1)?;
     let arbiter = driver.id_of("Leonin Arbiter")?;
-    assert_eq!(ignorable(&driver), [arbiter], "any player may pay, the controller or not");
+    assert_eq!(
+        ignorable(&driver),
+        [arbiter],
+        "any player may pay, the controller or not"
+    );
     if pays {
         let stack_before = driver.state().stack().len();
         driver.answer(Answer::Priority(PriorityAction::IgnoreEffect(arbiter)))?;
         driver.answer(Answer::PayMana(PayChoice::Auto))?;
-        assert_eq!(driver.state().stack().len(), stack_before, "a special action uses no stack");
-        assert!(ignorable(&driver).is_empty(), "paid once is enough this turn");
+        assert_eq!(
+            driver.state().stack().len(),
+            stack_before,
+            "a special action uses no stack"
+        );
+        assert!(
+            ignorable(&driver).is_empty(),
+            "paid once is enough this turn"
+        );
     }
     assert_eq!(searches(&mut driver, 1)?, pays);
     Ok(())
 }
 
 #[rstest]
-fn another_players_payment_frees_only_them(#[values(2, 4)] seats: usize) -> Result<(), ScriptError> {
+fn another_players_payment_frees_only_them(
+    #[values(2, 4)] seats: usize,
+) -> Result<(), ScriptError> {
     let mut driver = table(seats, 0, 1)?;
     let arbiter = driver.id_of("Leonin Arbiter")?;
     // Seat 1 is active: seat 0 pays while it holds priority in seat 1's turn, then seat 1 tries to search.
@@ -114,7 +130,11 @@ fn another_players_payment_frees_only_them(#[values(2, 4)] seats: usize) -> Resu
     driver.answer(Answer::PayMana(PayChoice::Auto))?;
     let before = names(driver.state(), Zone::Hand(pid(1))).len();
     settle(&mut driver)?;
-    assert_eq!(names(driver.state(), Zone::Hand(pid(1))).len(), before, "seat 1 found nothing");
+    assert_eq!(
+        names(driver.state(), Zone::Hand(pid(1))).len(),
+        before,
+        "seat 1 found nothing"
+    );
     Ok(())
 }
 

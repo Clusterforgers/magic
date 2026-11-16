@@ -39,7 +39,11 @@ fn the_chosen_creature_alone_gets_trample_and_the_delayed_trigger(
 ) -> Result<(), ScriptError> {
     let mut scenario = Scenario::new(seats).battlefield(
         0,
-        [ready(leader()), ready(free_creature("Runt", 1, 1)), ready(free_creature("Ox", 3, 3))],
+        [
+            ready(leader()),
+            ready(free_creature("Runt", 1, 1)),
+            ready(free_creature("Ox", 3, 3)),
+        ],
     );
     for seat in 1..seats {
         scenario = scenario.battlefield(seat, [ready(free_creature("Bystander", 0, 1))]);
@@ -54,15 +58,23 @@ fn the_chosen_creature_alone_gets_trample_and_the_delayed_trigger(
         driver.answer_passively()?;
     }
     let runt = driver.id_of("Runt")?;
-    let counters = driver
-        .state()
-        .object(runt)
-        .and_then(|o| o.permanent().map(|p| p.counters_of(&CounterKind::PlusOnePlusOne)));
+    let counters = driver.state().object(runt).and_then(|o| {
+        o.permanent()
+            .map(|p| p.counters_of(&CounterKind::PlusOnePlusOne))
+    });
     assert_eq!(counters, Some(2), "the Runt has the least toughness");
     if driver.state().turn().step() == Step::EndCombat {
-        assert!(mtg_engine::keywords::has_keyword(driver.state(), runt, &Keyword::Trample));
+        assert!(mtg_engine::keywords::has_keyword(
+            driver.state(),
+            runt,
+            &Keyword::Trample
+        ));
         let ox = driver.id_of("Ox")?;
-        assert!(!mtg_engine::keywords::has_keyword(driver.state(), ox, &Keyword::Trample));
+        assert!(!mtg_engine::keywords::has_keyword(
+            driver.state(),
+            ox,
+            &Keyword::Trample
+        ));
     }
     // Unblocked, the attacker deals combat damage to seat 1; only the Runt's damage gains the life.
     let life = driver.state().player(pid(0)).unwrap().life();

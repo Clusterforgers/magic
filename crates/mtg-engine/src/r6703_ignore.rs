@@ -18,9 +18,7 @@ use crate::state::GameState;
 pub(crate) fn offer(state: &GameState, player: PlayerId, source: ObjectId) -> Option<ManaCost> {
     crate::rules::pay_to_ignore(state)
         .iter()
-        .find(|(found, _)| {
-            found.id == source && !state.r6703_ignored.contains(&(player, *found))
-        })
+        .find(|(found, _)| found.id == source && !state.r6703_ignored.contains(&(player, *found)))
         .map(|(_, cost)| cost.clone())
 }
 

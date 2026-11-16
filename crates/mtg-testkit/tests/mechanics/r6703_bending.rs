@@ -191,7 +191,10 @@ fn each_bending_is_logged_once_and_triggers_its_watchers(
 
 /// Seat 0 controls Avatar Aang and the bending sources, and bends the elements in order; Aang attacks for its own
 /// firebending when `Fire` is among them.
-fn aang_after(elements: &[Bending], seats: usize) -> Result<(Driver, Vec<Event>), ScriptError> {
+fn aang_after(
+    elements: &[Bending],
+    seats: usize,
+) -> Result<(Driver, Vec<Event>, mtg_core::ids::ObjectId), ScriptError> {
     let aang = card("Avatar Aang // Aang, Master of Elements").unwrap();
     let mut board = board();
     board.push(ready(aang));
@@ -203,11 +206,12 @@ fn aang_after(elements: &[Bending], seats: usize) -> Result<(Driver, Vec<Event>)
         scenario = scenario.battlefield(seat, [ready(free_creature("Bystander", 1, 1))]);
     }
     let mut driver = Driver::from_scenario(scenario)?;
+    let aang = driver.id_of("Avatar Aang")?;
     let mut log = Vec::new();
     for element in elements {
         log.extend(bend(&mut driver, *element, "Avatar Aang")?);
     }
-    Ok((driver, log))
+    Ok((driver, log, aang))
 }
 
 #[rstest]
@@ -219,10 +223,9 @@ fn avatar_aang_draws_for_each_bending_and_transforms_after_all_four(
     #[case] transforms: bool,
     #[values(2, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let (driver, log) = aang_after(elements, seats)?;
+    let (driver, log, aang) = aang_after(elements, seats)?;
     let hand = driver.state().zone(Zone::Hand(pid(0))).len();
     assert_eq!(hand, elements.len(), "one card for each bending");
-    let aang = driver.id_of("Avatar Aang")?;
     let transformed = log
         .iter()
         .any(|event| matches!(event, Event::Transformed { object, .. } if *object == aang));

@@ -120,7 +120,11 @@ fn e15g_special_answer(
             Ok(Outcome::BeginEndEffect(offered.object, effect))
         }
         PriorityAction::IgnoreEffect(object) => {
-            if !options.ignorable.iter().any(|option| option.object == object) {
+            if !options
+                .ignorable
+                .iter()
+                .any(|option| option.object == object)
+            {
                 return Err(IllegalAnswer::NotOffered("ignore effect").into());
             }
             Ok(Outcome::BeginIgnore(object))
@@ -901,9 +905,7 @@ pub(crate) fn answer(
         }
         special @ (PriorityAction::UnlockDoor(..)
         | PriorityAction::EndEffect(_)
-        | PriorityAction::IgnoreEffect(_)) => {
-            e15g_special_answer(options, &special)
-        }
+        | PriorityAction::IgnoreEffect(_)) => e15g_special_answer(options, &special),
         PriorityAction::CastPrepared(object) => {
             let offered = options.faces.iter().any(|option| {
                 option.card == object && option.face == prepared::SPELL_FACE && !option.land

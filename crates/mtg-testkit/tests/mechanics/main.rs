@@ -196,6 +196,7 @@ mod r6703_bending;
 mod r6703_desertion;
 mod r6703_noncombat_shots;
 mod r6703_pay_to_ignore;
+mod r6703_support;
 mod r6f;
 mod repeat_each;
 mod rmt0_chroma;

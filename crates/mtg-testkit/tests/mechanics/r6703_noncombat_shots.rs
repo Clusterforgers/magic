@@ -42,7 +42,13 @@ fn table(seats: usize) -> Result<Driver, ScriptError> {
             .chain(lands),
         )
         .library(0, library)
-        .battlefield(1, [ready(free_creature("Mouse", 1, 1)), ready(free_creature("Bear", 3, 3))]);
+        .battlefield(
+            1,
+            [
+                ready(free_creature("Mouse", 1, 1)),
+                ready(free_creature("Bear", 3, 3)),
+            ],
+        );
     for seat in 2..seats {
         scenario = scenario.battlefield(seat, [ready(free_creature("Bystander", 1, 1))]);
     }
