@@ -91,6 +91,7 @@ function chosenWords(chosen: Chosen, n: EventNames): string {
     return `, choosing ${color.toLowerCase()} and ${type}`
   }
   if ('Players' in chosen) return `, choosing ${joinWords(chosen.Players.map((seat) => n.seat(seat)))}`
+  if ('R6700PlaneswalkerType' in chosen) return `, choosing ${chosen.R6700PlaneswalkerType}`
   return `, choosing ${chosen.CreatureType}`
 }
 
@@ -298,6 +299,7 @@ function durationWords(
     if ('WhileMonarch' in duration) return ' while that player is the monarch'
     if ('UntilEndOfTurnOrRolled' in duration)
       return ` until end of turn, or until any player rolls a ${duration.UntilEndOfTurnOrRolled}`
+    if ('R6700UntilEndOfTheirNextTurn' in duration) return " until the end of that player's next turn"
     const counter = `${counterName(duration.WhileHasCounter)} counter`
     return several ? ` while each has a ${counter}` : ` while it has a ${counter}`
   }
