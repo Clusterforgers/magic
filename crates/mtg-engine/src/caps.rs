@@ -460,6 +460,7 @@ const RUNS: &[&str] = &[
     "Effect.Continuous",
     "Effect.ExchangeControl",
     "Effect.R6401PassControl",
+    "Effect.R6602CreateAttached",
     "Duration.WhileYouControlSource",
     "Rule.Duration.WhileYouControlSource",
     "Rule.Duration.UntilTheirNextTurn",

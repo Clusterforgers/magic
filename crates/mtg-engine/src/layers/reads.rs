@@ -281,7 +281,8 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Candidate
         | Ref::Paid
         | Ref::Convoked
-        | Ref::Delved => Traits::NONE,
+        | Ref::Delved
+        | Ref::R6602FromYou => Traits::NONE,
         Ref::Remembered { on, .. } => reads_of_ref(on),
         Ref::LastExiledWith { on, filter } => reads_of_ref(on).or(reads_of_selector(filter)),
         Ref::ControllerOf(inner) | Ref::OrController(inner) => {

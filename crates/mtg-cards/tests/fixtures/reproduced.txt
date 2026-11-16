@@ -1191,6 +1191,7 @@ Korozda Monitor
 Korvold, Gleeful Glutton
 Koth, Fire of Resistance
 Kozilek's Translator
+Kozilek, the Great Distortion
 Krark's Thumb
 Kraum, Violent Cacophony
 Krav, the Unredeemed
@@ -1468,6 +1469,7 @@ Norn's Annex
 Norn's Choirmaster
 Norwood Riders
 Nostalgic Dreams
+Not Dead After All
 Notion Rain
 Nourishing Shoal
 Novijen, Heart of Progress
@@ -2136,6 +2138,7 @@ Tempestra, Dame of Games
 Temple Altisaur
 Temporal Manipulation
 Tempt with Discovery
+Tempt with Mayhem
 Temur Devotee
 Tender Wildguide
 Tendershoot Dryad

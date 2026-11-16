@@ -86,6 +86,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
             condition(ctx, test)
         ),
         Ref::OrController(inner) => format!("{} or its controller", who(ctx, inner)),
+        Ref::R6602FromYou => "each player in turn order, starting with you".to_owned(),
         Ref::Seated { of, side, opponent } => format!(
             "the {} to the {} of {}",
             if *opponent { "opponent" } else { "player" },

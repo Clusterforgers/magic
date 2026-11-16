@@ -42,6 +42,7 @@ mod r6401_pass_control;
 mod r6403_aura_swap;
 mod r6403_meld;
 mod r6501_redistribute;
+mod r6602_create_attached;
 mod retarget;
 mod ring_tempts;
 mod rmt2_shares;
@@ -354,6 +355,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::AddStep { .. } => r306_add_step::run(cx, effect),
         Effect::WinGame { .. } => win_game::run(cx, effect),
         Effect::CreateToken { .. } => create_token::run(cx, effect),
+        Effect::R6602CreateAttached { .. } => r6602_create_attached::run(cx, effect),
         Effect::Continuous { .. } => continuous::run(cx, effect),
         Effect::ExchangeControl { .. } => w6e_exchange::run(cx, effect),
         Effect::R6401PassControl { .. } => r6401_pass_control::run(cx, effect),
@@ -439,6 +441,7 @@ mod tests {
         {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}}, {"CopyCard":{"what":"This","as":"copy"}},
         {"BecomeCopy":{"what":"This","of":"This","duration":"UntilEndOfTurn"}},
         {"CreateToken":{"token":{"Named":"treasure"}}},
+        {"R6602CreateAttached":{"token":{"Named":"wicked_role"},"to":"This"}},
         {"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}},
         {"ExchangeControl":{"what":["This"],"duration":"Forever"}},
         {"R6401PassControl":{"side":"Left","what":[],"pick":"All"}},
@@ -629,6 +632,7 @@ mod tests {
         "Effect.CopyCard",
         "Effect.BecomeCopy",
         "Effect.CreateToken",
+        "Effect.R6602CreateAttached",
         "Effect.Continuous",
         "Effect.ExchangeControl",
         "Effect.R6401PassControl",

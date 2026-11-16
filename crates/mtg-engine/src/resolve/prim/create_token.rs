@@ -259,7 +259,7 @@ fn chosen_defenders(
 /// What each token the effect makes is made from: a predefined or described token, a token sized by an amount counted
 /// now (never below zero), the card of a name the game can conjure (none when it cannot), or the copies of the objects a
 /// reference names.
-fn made_from(cx: &Cx<'_>, token: &TokenRef) -> Result<Vec<MadeFrom>, ResolveError> {
+pub(super) fn made_from(cx: &Cx<'_>, token: &TokenRef) -> Result<Vec<MadeFrom>, ResolveError> {
     Ok(match token {
         TokenRef::Named(id) => vec![(Arc::new(w7c_predefined_definition(id)?), None)],
         TokenRef::Card(name) => cx

@@ -690,6 +690,7 @@ impl<'a> Walker<'a> {
                 self.reference(of, Kind::Player);
                 self.expect(Kind::Player, want);
             }
+            Ref::R6602FromYou => self.expect(Kind::Player, want),
             Ref::Remembered { on, .. } => {
                 self.reference(on, Kind::Object);
                 self.expect(Kind::Either, want);
@@ -3765,7 +3766,8 @@ impl Walker<'_> {
             | Ref::OrController(_)
             | Ref::OwnerOf(_)
             | Ref::PlayersWhere { .. }
-            | Ref::Seated { .. } => Kind::Player,
+            | Ref::Seated { .. }
+            | Ref::R6602FromYou => Kind::Player,
             Ref::Affected
             | Ref::LastExiledWith { .. }
             | Ref::Delved
@@ -5050,6 +5052,11 @@ impl Walker<'_> {
                 w.at("to", |w| w.reference(to, Kind::Object));
                 w.at("count", |w| w.amount(count));
             }
+            Effect::R6602CreateAttached { who, token, to } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("token", |w| w.token(token));
+                w.at("to", |w| w.reference(to, Kind::Object));
+            }
             Effect::CreateToken {
                 who,
                 token,
@@ -5872,7 +5879,7 @@ impl Walker<'_> {
             .collect();
         let outer = std::mem::replace(&mut self.ep29_removes, removes);
         // The X a part of the cost counts is the one the ability announces.
-        self.x_free = cost.has_x();
+        self.x_free = cost.has_x() || cost.0.iter().any(r6602_discard_by_x);
         self.x_now = self.x_free;
         self.activated_cost = true;
         self.at("cost", |w| w.cost(cost));
@@ -5883,12 +5890,12 @@ impl Walker<'_> {
             self.scope = Scope::new(&[], false);
             self.at("condition", |w| w.condition(condition));
         }
-        self.x_free = cost.has_x();
+        self.x_free = cost.has_x() || cost.0.iter().any(r6602_discard_by_x);
         // An `{X}` of the mana and a part that counts X are asked as the ability is announced.
         if has_x_mana(cost) {
             self.uses("Cost", "Mana.X");
         }
-        self.x_now = cost.has_x();
+        self.x_now = self.x_free;
         self.body(targets, effects, false);
         self.pays_objects = paid;
         self.ep29_removes = outer;
@@ -7466,7 +7473,20 @@ fn announces_x(cost: &Cost) -> bool {
                 item,
                 CostItem::PayEnergy(Amount::X) | CostItem::PayLife(Amount::X)
             ) || r4710_among_x(item)
+                || r6602_discard_by_x(item)
         })
+}
+
+/// Whether the part discards a card whose filter reads X ("Discard a card with mana value X"): the X is announced with
+/// the activation and the discarded card must match it (CR 107.3, 601.2b).
+fn r6602_discard_by_x(item: &CostItem) -> bool {
+    matches!(
+        item,
+        CostItem::Discard {
+            count: Amount::Fixed(1),
+            filter: Some(filter),
+        } if filter.r301_reads_x()
+    )
 }
 
 /// Whether the part removes X counters from among permanents.
