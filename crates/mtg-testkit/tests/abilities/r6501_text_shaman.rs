@@ -129,7 +129,7 @@ fn r6501_balduvian_shaman_changes_a_color_word_and_grants_cumulative_upkeep(
     let state = replay(driver.engine().setup(), driver.engine().events()).unwrap();
     assert_eq!(state.state_hash(), driver.state().state_hash());
     // At seat 0's next upkeep it gets an age counter and, with no mana to pay, is sacrificed; the change stays gone.
-    driver.idle_until(seats as u32 + 1, Step::Draw)?;
+    driver.idle_until(u32::try_from(seats).unwrap() + 1, Step::Draw)?;
     assert!(!driver.state().zone(Zone::Battlefield).contains(&anthem));
     assert_eq!(r6501_size(&driver, "Hothead"), (1, 1));
     Ok(())
