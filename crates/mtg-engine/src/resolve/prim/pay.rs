@@ -405,13 +405,15 @@ pub(super) fn price_of(cost: &Cost) -> Result<Price, ResolveError> {
         Leaves::Discarded => return Err(ResolveError::Unsupported("Effect.Pay.DiscardSelf")),
         Leaves::Sacrificed | Leaves::Exiled | Leaves::Stays => {}
     }
-    // Energy, life and counters from among permanents are the parts whose X is announced with a payment an effect asks
-    // for ("pay any amount of life", "remove any number of +1/+1 counters from among creatures you control").
+    // Energy, life, counters from among permanents and evidence are the parts whose X is announced with a payment an
+    // effect asks for ("pay any amount of life", "remove any number of +1/+1 counters from among creatures you control",
+    // "you may collect evidence X").
     if price.parts.iter().any(|part| {
         part.is_counted()
             && !part.is_counted_energy()
             && !part.is_counted_life()
             && !part.r4710_is_counted_among()
+            && !part.r6702_is_counted_evidence()
     }) {
         return Err(ResolveError::Unsupported("Effect.Pay.X.Parts"));
     }

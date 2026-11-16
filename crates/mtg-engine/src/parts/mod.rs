@@ -655,6 +655,11 @@ impl Part {
         matches!(self, Part::X(inner) if matches!(&**inner, Part::Pick(pick) if pick.reads_x))
     }
 
+    /// Whether the part collects evidence X, the X announced with the payment (CR 701.59a).
+    pub(crate) fn r6702_is_counted_evidence(&self) -> bool {
+        matches!(self, Part::X(inner) if matches!(&**inner, Part::Pick(pick) if pick.kind == Kind::Evidence))
+    }
+
     /// Whether the part picks objects whose mana values add up to the X announced exactly.
     pub(crate) fn r6702_totals_x(&self) -> bool {
         matches!(self, Part::X(inner) if matches!(&**inner, Part::Pick(pick) if pick.r6702_total))

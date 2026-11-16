@@ -165,14 +165,14 @@ fn r6702_galactus_attacks_an_opponent_with_the_most_life(
     Ok(())
 }
 
-/// Seat 0's Koh exiled the Elves; seat 0 pays 1 life to choose `chosen`: seat 0's life and the mana abilities of Koh.
+/// Seat 0's Koh exiled the Pinger; seat 0 pays 1 life to choose `chosen`: seat 0's life and the abilities Koh has.
 fn r6702_koh(seats: usize, chosen: Option<&str>) -> Result<(i32, usize), ScriptError> {
     let scenario = (0..seats).fold(
         Scenario::new(seats)
             .hand(0, [card("Koh, the Face Stealer").unwrap()])
             .battlefield(
                 0,
-                std::iter::once(ready(card("Llanowar Elves").unwrap()))
+                std::iter::once(ready(mtg_testkit::cards::pinger("Pinger", 1)))
                     .chain((0..6).map(|_| ready(mtg_testkit::cards::swamp())))
                     .collect::<Vec<_>>(),
             )
@@ -185,7 +185,7 @@ fn r6702_koh(seats: usize, chosen: Option<&str>) -> Result<(i32, usize), ScriptE
     for _ in 0..40 {
         match &driver.decision()?.kind {
             DecisionKind::ChooseTargets(_) => {
-                let elves = driver.id_of("Llanowar Elves")?;
+                let elves = driver.id_of("Pinger")?;
                 let target = mtg_engine::choose::Target::Object(
                     driver.state().object(elves).unwrap().reference(),
                 );
@@ -206,12 +206,18 @@ fn r6702_koh(seats: usize, chosen: Option<&str>) -> Result<(i32, usize), ScriptE
     let DecisionKind::Priority(options) = &driver.decision()?.kind else {
         panic!("priority after the choice");
     };
-    let mana = options
-        .mana_abilities
+    // Koh is summoning sick: the Pinger's {T} ability is held back, but Koh has it.
+    let held = options
+        .abilities
         .iter()
-        .filter(|option| option.source.object == koh)
-        .count();
-    Ok((driver.state().player(pid(0)).unwrap().life(), mana))
+        .filter(|ability| ability.object == koh)
+        .count()
+        + options
+            .inactive
+            .iter()
+            .filter(|inactive| inactive.ability.object == koh)
+            .count();
+    Ok((driver.state().player(pid(0)).unwrap().life(), held))
 }
 
 /// Settles the stack, choosing the named card when a card choice is asked.
@@ -236,10 +242,10 @@ fn r6702_koh_gains_the_abilities_of_the_chosen_card(
     #[case] seats: usize,
 ) -> Result<(), ScriptError> {
     let (_, without) = r6702_koh(seats, None)?;
-    let (life, with) = r6702_koh(seats, Some("Llanowar Elves"))?;
+    let (life, with) = r6702_koh(seats, Some("Pinger"))?;
     assert_eq!(life, 19);
-    // Koh has no mana ability of its own, and the Elves' once the Elves are chosen.
-    assert_eq!((without, with), (0, 1));
+    // Koh's own "Pay 1 life" ability, and the Pinger's once the Pinger is chosen.
+    assert_eq!((without, with), (1, 2));
     Ok(())
 }
 
@@ -309,7 +315,7 @@ fn r6702_incinerator(seats: usize, x: u32) -> Result<(Vec<String>, usize), Scrip
 
 #[rstest]
 #[case::three_kills_the_small_and_the_walker(2, 3, &["Big"], 3)]
-#[case::five_four_seats(4, 5, &["Big"], 3)]
+#[case::five_kills_every_one_four_seats(4, 5, &[], 3)]
 #[case::nothing_collected(3, 0, &["Big", "Small", "Walker"], 0)]
 fn r6702_incinerator_deals_the_evidence_collected(
     #[case] seats: usize,
@@ -396,6 +402,13 @@ fn r6702_foundry(seats: usize, x: u32, exiled: &[&str]) -> Result<(bool, usize),
         match &decision.kind {
             DecisionKind::ChooseNumber(_) => {
                 driver.answer(Answer::ChooseNumber(NumberChoice::Number(x)))?;
+            }
+            DecisionKind::ChooseTargets(options) => {
+                let first = options.legal[0];
+                driver.choose_targets(&[first])?;
+            }
+            DecisionKind::PayMana(_) => {
+                driver.answer(Answer::PayMana(mtg_engine::decision::PayChoice::Auto))?;
             }
             DecisionKind::ChooseCards(_) => r6702_take(&mut driver, exiled)?,
             DecisionKind::Priority(_) if driver.state().stack().is_empty() => break,
