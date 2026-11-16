@@ -399,7 +399,15 @@ cast?: boolean,
 /**
  * It covers any move from the battlefield ("if it would leave the battlefield"), not only one to a graveyard.
  */
-leaves?: boolean, } } | { "Replaces": { 
+leaves?: boolean, } } | { "R6503ResolvesInstead": { 
+/**
+ * The spells it covers.
+ */
+objects: Array<ObjectRef>, 
+/**
+ * What happens instead: a move to another zone, or other steps.
+ */
+by: unknown, } } | { "Replaces": { 
 /**
  * The event it replaces.
  */
