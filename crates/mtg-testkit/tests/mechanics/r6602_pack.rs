@@ -93,7 +93,7 @@ fn r6602_not_dead_after_all_returns_the_creature_with_a_wicked_role(
     assert_eq!(back.len(), 1, "the Ogre returned");
     let state = driver.state();
     let object = state.object(back[0]).unwrap();
-    assert!(object.permanent().unwrap().tapped, "it returns tapped");
+    assert!(object.permanent().unwrap().tapped(), "it returns tapped");
     let roles = on_battlefield(&driver, "Wicked Role");
     assert_eq!(roles.len(), 1, "one Wicked Role");
     assert_eq!(state.host_of(roles[0]), Some(back[0]));
@@ -129,9 +129,9 @@ fn r6602_the_wicked_role_drains_each_opponent_when_it_dies(
     assert!(on_battlefield(&driver, "Ogre").is_empty(), "the second death keeps it");
     assert!(on_battlefield(&driver, "Wicked Role").is_empty());
     let state = driver.state();
-    let start = state.player(pid(0)).life;
+    let start = state.player(pid(0)).unwrap().life();
     for seat in 1..seats {
-        assert_eq!(state.player(pid(seat)).life, start - 1, "seat {seat} lost 1 life");
+        assert_eq!(state.player(pid(seat)).unwrap().life(), start - 1, "seat {seat} lost 1 life");
     }
     Ok(())
 }
@@ -220,7 +220,7 @@ fn r6602_kozilek_discards_a_card_of_the_value_x_to_counter_a_spell_of_that_value
         }
     }
     // The only spell and the only card in hand both have mana value 0: X can be nothing else.
-    assert!(numbers.iter().all(|range| *range == (0, 0)), "{numbers:?}");
+    assert!(numbers.iter().all(|range| *range == (0, Some(0))), "{numbers:?}");
     settle(&mut driver, &[])?;
     assert_eq!(on_battlefield(&driver, "Ogre").len(), 1, "Doom Blade was countered");
     let state = driver.state();
