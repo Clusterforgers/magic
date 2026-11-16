@@ -57,10 +57,11 @@ pub(crate) fn kind_of(state: &GameState, id: ObjectId) -> Option<Kind> {
     if object.bestowed() {
         return Some(Kind::Aura);
     }
-    // The subtypes effects gave a permanent are held by the layers, which a pass over the battlefield reads in place.
-    let given = (object.zone() == Zone::Battlefield)
-        .then(|| state.layers().get(id))
-        .flatten()
+    // The subtypes effects gave a permanent are held by the layers, which a pass over the battlefield reads in place; a
+    // card an effect names elsewhere is held there too (a card about to enter as an Aura, `r6502_enters_as`).
+    let given = state
+        .layers()
+        .get(id)
         .map(|held| held.chars.subtypes.as_slice());
     let has = |subtypes: &[Subtype], name: &str| subtypes.iter().any(|s| s.0 == name);
     KINDS
@@ -268,7 +269,7 @@ fn may_enchant(state: &GameState, aura: &GameObject, host: &GameObject) -> bool 
 pub(crate) fn spell_target(state: &GameState, id: ObjectId) -> Option<TargetSpec> {
     let object = state.object(id)?;
     if object.kind() == ObjectKind::Ability
-        || !(object.bestowed() || object.card().subtypes.iter().any(|s| s.0 == "Aura"))
+        || kind_of(state, id) != Some(Kind::Aura)
         || object.base_types().contains(CardType::Instant)
         || object.base_types().contains(CardType::Sorcery)
     {

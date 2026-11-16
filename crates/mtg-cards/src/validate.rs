@@ -675,8 +675,10 @@ impl<'a> Walker<'a> {
             | Ref::Promised
             | Ref::Attacked
             | Ref::AttackedThisTurn
+            | Ref::R6601HighestRollers
             | Ref::MostLife
             | Ref::Teammates
+            | Ref::R6501PlayersFromYou
             | Ref::ActivePlayer
             | Ref::Chooser
             | Ref::Asker
@@ -696,6 +698,7 @@ impl<'a> Walker<'a> {
                 self.reference(of, Kind::Player);
                 self.expect(Kind::Player, want);
             }
+            Ref::R6602FromYou => self.expect(Kind::Player, want),
             Ref::Remembered { on, .. } => {
                 self.reference(on, Kind::Object);
                 self.expect(Kind::Either, want);
@@ -910,6 +913,7 @@ impl<'a> Walker<'a> {
             }
             Pred::ArrivedFrom(_) => self.uses("Pred", "ArrivedFrom"),
             Pred::GravedThisCombat => self.uses("Pred", "GravedThisCombat"),
+            Pred::R6500StartedTurnUntapped => self.uses("Pred", "R6500StartedTurnUntapped"),
             Pred::SharesColorWithLastCast => self.uses("Pred", "SharesColorWithLastCast"),
             Pred::CouldAttackThisTurn => self.uses("Pred", "CouldAttackThisTurn"),
             Pred::ArrivedThisTurn => self.uses("Pred", "ArrivedThisTurn"),
@@ -968,7 +972,7 @@ impl<'a> Walker<'a> {
             // An Aura is attached to a permanent, or to a player it enchants ("Curses attached to you").
             Pred::AttachedTo(r) => self.reference(r, Kind::Either),
             Pred::EnchantableBy(r) => self.reference(r, Kind::Object),
-            Pred::ChosenAs(name) => self.chosen_as(name),
+            Pred::ChosenAs(name) | Pred::R6600OnlyControllersColor(name) => self.chosen_as(name),
             Pred::Named(name) => self
                 .names
                 .push((self.face, self.current_path(), name.clone())),
@@ -1038,6 +1042,7 @@ impl<'a> Walker<'a> {
             | Pred::ManaFrom(_)
             | Pred::GravedThisTurn
             | Pred::GravedThisCombat
+            | Pred::R6500StartedTurnUntapped
             | Pred::SharesColorWithLastCast
             | Pred::CouldAttackThisTurn
             | Pred::ArrivedThisTurn
@@ -1361,6 +1366,13 @@ impl<'a> Walker<'a> {
                 self.hand_or_life_lost(amount);
             }
             Amount::Kicks | Amount::Promised | Amount::Devoured => self.paid_amount(amount),
+            Amount::R6500DevouredMatching(filter) => {
+                self.uses("Amount", "R6500DevouredMatching");
+                if !self.w7e_has_devour {
+                    self.problem("`R6500DevouredMatching` needs a Devour keyword on the card");
+                }
+                self.at("R6500DevouredMatching", |w| w.selector(filter));
+            }
             Amount::RemovedThisWay(counter) => self.ep29_removed(counter),
             Amount::Bound(name) => {
                 if !self.scope.numbers.contains(name) {
@@ -1408,6 +1420,7 @@ impl<'a> Walker<'a> {
             StatKind::R4700ChosenColors => "R4700ChosenColors",
             StatKind::R6018PermanentTypes => "R6018PermanentTypes",
             StatKind::R6104LifePaid => "R6104LifePaid",
+            StatKind::R6500StationValue => "R6500StationValue",
             _ => return,
         };
         self.uses("Stat", name);
@@ -1619,6 +1632,7 @@ impl<'a> Walker<'a> {
             | Amount::Promised
             | Amount::ResolvedThisTurn
             | Amount::Devoured
+            | Amount::R6500DevouredMatching(_)
             | Amount::RemovedThisWay(_)
             | Amount::Bound(_)
             | Amount::PermanentsGraved
@@ -2023,6 +2037,10 @@ impl<'a> Walker<'a> {
                             w.uses("Cost", "XAtMost.Elsewhere");
                         }
                         w.at("XAtMost", |w| w.amount(most));
+                    }
+                    CostItem::XIs(amount) => {
+                        w.uses("Cost", "XIs");
+                        w.at("XIs", |w| w.amount(amount));
                     }
                     CostItem::XAtLeast(least) => {
                         if *least == 0 {
@@ -2607,8 +2625,12 @@ impl<'a> Walker<'a> {
         match keyword {
             // Ward is an `Effect::Pay` of the player who targets: life counted as it resolves ("pay life equal to its
             // power") is paid as any counted life in an effect.
+            // The cost is paid as the ward trigger resolves (CR 702.21a), so "{X}, where X is ..." is counted then.
             Keyword::Ward(cost) => {
+                // A generic amount counted as the ward trigger resolves ("ward {X}, where X is ...") is paid then.
+                let held = std::mem::replace(&mut self.r5511_resolving_cost, true);
                 self.at("cost", |w| w.c6_eg_paid_cost(cost, &Ref::Triggering));
+                self.r5511_resolving_cost = held;
                 self.payment_of_the_source(cost);
             }
             Keyword::CumulativeUpkeepActs { acts, payable } => {
@@ -2756,7 +2778,15 @@ impl<'a> Walker<'a> {
                 }
                 self.at("of", |w| w.selector(of));
             }
-            Keyword::Annihilator(0) => self.problem("annihilator needs a number of at least 1"),
+            Keyword::Annihilator(count) => {
+                if count.fixed() == Some(0) || matches!(count, Amount::Fixed(n) if *n < 0) {
+                    self.problem("annihilator needs a number of at least 1");
+                }
+                if count.fixed().is_none() {
+                    self.uses("Keyword", "Annihilator.Counted");
+                    self.at("count", |w| w.amount(count));
+                }
+            }
             Keyword::Dredge(0) => self.problem("dredge needs a number of at least 1"),
             Keyword::Fabricate(0) => self.problem("fabricate needs a number of at least 1"),
             Keyword::Afterlife(0) => self.problem("afterlife needs a number of at least 1"),
@@ -2804,7 +2834,9 @@ impl<'a> Walker<'a> {
                 }
                 self.keyword(keyword);
             }
-            Modification::SetController(who) => self.reference(who, Kind::Player),
+            Modification::SetController(who) | Modification::R6601CantAttackPlayers(who) => {
+                self.reference(who, Kind::Player);
+            }
             Modification::GainAbilitiesOf(from) | Modification::SetCreatureTypesOf(from) => {
                 self.reference(from, Kind::Object);
             }
@@ -2823,6 +2855,14 @@ impl<'a> Walker<'a> {
                 self.selector(selector);
             }
             Modification::BlocksAdditionalPer(per) => self.at("per", |w| w.amount(per)),
+            Modification::R6601KeywordX { keyword, count } => {
+                // The keyword's own number is a placeholder: it is judged as the smallest number it takes.
+                match keyword.r6601_numbered(1) {
+                    Some(numbered) => self.keyword(&numbered),
+                    None => self.problem("only a keyword with a number takes a counted number"),
+                }
+                self.at("count", |w| w.amount(count));
+            }
             Modification::MinBlockers(count)
             | Modification::MaxBlockers(count)
             | Modification::BlocksAdditional(count) => {
@@ -3002,9 +3042,9 @@ impl<'a> Walker<'a> {
                 w.modification(modification);
                 if matches!(
                     modification,
-                    Modification::SetName(_) | Modification::ThisAbility | Modification::SetLoyalty(_)
+                    Modification::ThisAbility | Modification::SetLoyalty(_)
                 ) {
-                    w.problem("a name, a loyalty or this ability changes only the copiable values of a copy (`except`)");
+                    w.problem("a loyalty or this ability changes only the copiable values of a copy (`except`)");
                 }
             });
         }
@@ -3516,6 +3556,9 @@ impl Walker<'_> {
             Destination::BattlefieldEnchanting { only } => {
                 self.at("only", |w| w.selector(only));
             }
+            Destination::R6502BattlefieldAs { becomes } => {
+                self.at("becomes", |w| w.mods(becomes));
+            }
             _ => {}
         }
     }
@@ -3728,8 +3771,10 @@ impl Walker<'_> {
             | Ref::Promised
             | Ref::Attacked
             | Ref::AttackedThisTurn
+            | Ref::R6601HighestRollers
             | Ref::MostLife
             | Ref::Teammates
+            | Ref::R6501PlayersFromYou
             | Ref::ActivePlayer
             | Ref::Chooser
             | Ref::Asker
@@ -3741,7 +3786,8 @@ impl Walker<'_> {
             | Ref::OrController(_)
             | Ref::OwnerOf(_)
             | Ref::PlayersWhere { .. }
-            | Ref::Seated { .. } => Kind::Player,
+            | Ref::Seated { .. }
+            | Ref::R6602FromYou => Kind::Player,
             Ref::Affected
             | Ref::LastExiledWith { .. }
             | Ref::Delved
@@ -4053,6 +4099,7 @@ impl Walker<'_> {
             | Produce::CommanderIdentity(_)
             | Produce::Devotion
             | Produce::DraftedColors
+            | Produce::R6501UnspentDoubled
             | Produce::OfTapped => {}
         }
         // Mana the engine adds without a choice is a primitive of its own; a choice of mana is not.
@@ -4155,6 +4202,13 @@ impl Walker<'_> {
             } => {
                 self.uses("Effect", "Move.Battlefield");
                 self.uses("Effect", "Move.Enchanting");
+            }
+            Effect::Move {
+                to: Destination::R6502BattlefieldAs { .. },
+                ..
+            } => {
+                self.uses("Effect", "Move.Battlefield");
+                self.uses("Effect", "Move.R6502As");
             }
             Effect::Move {
                 to: Destination::BattlefieldFaceDown { .. },
@@ -5025,6 +5079,11 @@ impl Walker<'_> {
                 w.at("to", |w| w.reference(to, Kind::Object));
                 w.at("count", |w| w.amount(count));
             }
+            Effect::R6602CreateAttached { who, token, to } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("token", |w| w.token(token));
+                w.at("to", |w| w.reference(to, Kind::Object));
+            }
             Effect::CreateToken {
                 who,
                 token,
@@ -5339,6 +5398,7 @@ impl Walker<'_> {
             }),
             Effect::EndTurn
             | Effect::AuraSwap
+            | Effect::R6501RedistributeLife
             | Effect::StillResolves
             | Effect::Rephase
             | Effect::AddStep { .. }
@@ -5850,7 +5910,7 @@ impl Walker<'_> {
             .collect();
         let outer = std::mem::replace(&mut self.ep29_removes, removes);
         // The X a part of the cost counts is the one the ability announces.
-        self.x_free = cost.has_x();
+        self.x_free = cost.has_x() || cost.0.iter().any(r6602_discard_by_x);
         self.x_now = self.x_free;
         self.activated_cost = true;
         self.at("cost", |w| w.cost(cost));
@@ -5861,12 +5921,12 @@ impl Walker<'_> {
             self.scope = Scope::new(&[], false);
             self.at("condition", |w| w.condition(condition));
         }
-        self.x_free = cost.has_x();
+        self.x_free = cost.has_x() || cost.0.iter().any(r6602_discard_by_x);
         // An `{X}` of the mana and a part that counts X are asked as the ability is announced.
         if has_x_mana(cost) {
             self.uses("Cost", "Mana.X");
         }
-        self.x_now = cost.has_x();
+        self.x_now = self.x_free;
         self.body(targets, effects, false);
         self.pays_objects = paid;
         self.ep29_removes = outer;
@@ -5967,9 +6027,16 @@ impl Walker<'_> {
             }
             Ability::Loyalty {
                 cost,
+                condition,
                 targets,
                 effects,
-            } => w.loyalty_ability(*cost, targets, effects),
+            } => {
+                if let Some(condition) = condition {
+                    w.uses("Ability", "Loyalty.Condition");
+                    w.at("condition", |w| w.condition(condition));
+                }
+                w.loyalty_ability(*cost, targets, effects);
+            }
             Ability::Activated {
                 cost,
                 targets,
@@ -6122,7 +6189,11 @@ impl Walker<'_> {
             GameRule::R6400ChoosesVotes { chooser } => self.at(tag, |w| {
                 w.at("chooser", |w| w.reference(chooser, Kind::Player));
             }),
+            GameRule::R6500CounterCap { what, .. } => self.at(tag, |w| {
+                w.at("what", |w| w.reference(what, Kind::Object));
+            }),
             GameRule::MustAttack(who)
+            | GameRule::R6600AdaptsFresh(who)
             | GameRule::MustBlock(who)
             | GameRule::CantBeCountered(who)
             | GameRule::CantBeRegenerated(who)
@@ -6217,6 +6288,20 @@ impl Walker<'_> {
                     });
                 }
             }),
+            GameRule::R6601AttackTaxPerCounter {
+                who,
+                attackers,
+                mana,
+                ..
+            } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("attackers", |w| w.selector(attackers));
+                if mana.rest().symbols().is_empty() || mana.has_x() {
+                    w.at("mana", |w| {
+                        w.problem("a tax per counter is fixed mana, paid once for each counter");
+                    });
+                }
+            }),
             GameRule::BlockTax {
                 blockers,
                 attackers,
@@ -6299,8 +6384,10 @@ impl Walker<'_> {
             | GameRule::LookAtTopAnyTime(who)
             | GameRule::SkipDrawStep(who)
             | GameRule::R6007ExhaustAgain(who)
+            | GameRule::R6500ZeroLoyaltyStays(who)
             | GameRule::NoMaxHandSize(who)
             | GameRule::LoyaltyTwice(who)
+            | GameRule::R6600LoyaltyOnceMore(who)
             | GameRule::BoastTwice(who)
             | GameRule::LoyaltyAnyTime(who)
             | GameRule::LoyaltyCostsMore { who, .. } => {
@@ -6337,6 +6424,11 @@ impl Walker<'_> {
                 }
             }),
             GameRule::PlayersHave { who, .. } => self.at(tag, |w| w.reference(who, Kind::Player)),
+            GameRule::R6603LoyaltyAgain(times) => {
+                if *times == 0 {
+                    self.at(tag, |w| w.problem("more activations are at least one"));
+                }
+            }
             GameRule::CanBeCommander
             | GameRule::AnyNumberInDeck
             | GameRule::Draft(_)
@@ -6667,11 +6759,13 @@ impl Walker<'_> {
             ReplaceWhen::ZoneChange { what, .. }
             | ReplaceWhen::Destroyed { what }
             | ReplaceWhen::Countered { what }
+            | ReplaceWhen::R6503Resolves { what }
             | ReplaceWhen::TurnedFaceUp { what }
             | ReplaceWhen::Explores { what }
             | ReplaceWhen::Connives { what }
             | ReplaceWhen::Enters { what }
             | ReplaceWhen::R6105Uncycled { what }
+            | ReplaceWhen::R6603Transforms { what }
             | ReplaceWhen::BecomesAttached { what } => {
                 self.at("what", |w| w.selector(what));
             }
@@ -6703,7 +6797,8 @@ impl Walker<'_> {
             | ReplaceWhen::Surveils { who }
             | ReplaceWhen::CopiesSpell { who }
             | ReplaceWhen::Learns { who }
-            | ReplaceWhen::Draw { who, .. } => {
+            | ReplaceWhen::Draw { who, .. }
+            | ReplaceWhen::R6603DrawsSeveral { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
         }
@@ -6912,6 +7007,7 @@ impl Walker<'_> {
                         | ReplaceWhen::Discarded { .. }
                         | ReplaceWhen::R6105Uncycled { .. }
                         | ReplaceWhen::Countered { .. }
+                        | ReplaceWhen::R6503Resolves { .. }
                 ) =>
             {
                 self.problem("`MoveTo` replaces a `ZoneChange` or a `Discarded`");
@@ -7011,15 +7107,28 @@ impl Walker<'_> {
         {
             self.problem("turning face up only puts counters on the permanent itself");
         }
+        if matches!(when, ReplaceWhen::R6603DrawsSeveral { at_least, .. } if *at_least < 2)
+            || matches!((when, by), (ReplaceWhen::R6603DrawsSeveral { .. }, by) if !matches!(by, ReplaceBy::Instead(_)))
+        {
+            self.problem("a draw of several cards is replaced only by steps instead, and only from two cards on");
+        }
+        if matches!(when, ReplaceWhen::R6603Transforms { .. })
+            && !matches!(by, ReplaceBy::AsEnters(_))
+        {
+            self.problem("a permanent that transforms has only effects as it turns over");
+        }
         let enters = matches!(
             when,
-            ReplaceWhen::Enters { .. } | ReplaceWhen::BecomesAttached { .. }
+            ReplaceWhen::Enters { .. }
+                | ReplaceWhen::BecomesAttached { .. }
+                | ReplaceWhen::R6603Transforms { .. }
         );
         let zone_move = matches!(
             when,
             ReplaceWhen::ZoneChange { .. }
                 | ReplaceWhen::Destroyed { .. }
                 | ReplaceWhen::Countered { .. }
+                | ReplaceWhen::R6503Resolves { .. }
                 | ReplaceWhen::Discarded { .. }
                 | ReplaceWhen::R6105Uncycled { .. }
                 | ReplaceWhen::Enters { .. }
@@ -7415,7 +7524,20 @@ fn announces_x(cost: &Cost) -> bool {
                 item,
                 CostItem::PayEnergy(Amount::X) | CostItem::PayLife(Amount::X)
             ) || r4710_among_x(item)
+                || r6602_discard_by_x(item)
         })
+}
+
+/// Whether the part discards a card whose filter reads X ("Discard a card with mana value X"): the X is announced with
+/// the activation and the discarded card must match it (CR 107.3, 601.2b).
+fn r6602_discard_by_x(item: &CostItem) -> bool {
+    matches!(
+        item,
+        CostItem::Discard {
+            count: Amount::Fixed(1),
+            filter: Some(filter),
+        } if filter.r301_reads_x()
+    )
 }
 
 /// Whether the part removes X counters from among permanents.
@@ -8402,7 +8524,7 @@ mod tests {
     )]
     #[case::this_ability_goes_with_a_copy_only(
         r#"{"Static":{"affected":"This","mods":["ThisAbility"]}}"#,
-        "a name, a loyalty or this ability changes only the copiable values of a copy (`except`)"
+        "a loyalty or this ability changes only the copiable values of a copy (`except`)"
     )]
     #[case::a_player_takes_only_the_keywords_players_have(
         r#"{"Static":{"affected":"You","mods":[{"AddKeyword":"Flying"}]}}"#,

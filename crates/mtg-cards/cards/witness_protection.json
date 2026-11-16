@@ -1,7 +1,7 @@
 {
   "oracle_id": "a5f5e71e-83a7-468d-829a-6392b764c76e",
   "name": "Witness Protection",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Witness Protection",
@@ -9,9 +9,16 @@
       "abilities": [
         { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 17, "end": 232 }
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetName": "Legitimate Businessperson" },
+              { "SetColors": ["Green", "White"] },
+              { "SetTypes": ["Creature"] },
+              { "SetCreatureTypes": ["Citizen"] },
+              { "SetPT": { "power": 1, "toughness": 1 } },
+              "LoseAbilities"
+            ]
           }
         }
       ]

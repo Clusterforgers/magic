@@ -1,7 +1,7 @@
 {
   "oracle_id": "4c1c1537-e519-4e2f-9bc2-d34b289d4487",
   "name": "Kozilek, the Great Distortion",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kozilek, the Great Distortion",
@@ -39,9 +39,22 @@
         },
         { "Keyword": "Menace" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 113, "end": 186 }
+          "Activated": {
+            "cost": [
+              {
+                "Discard": {
+                  "filter": [{ "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }]
+                }
+              }
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
           }
         }
       ]

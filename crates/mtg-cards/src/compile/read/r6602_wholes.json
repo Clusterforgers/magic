@@ -1,0 +1,314 @@
+[
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        {
+         "GrantAbility": {
+          "Triggered": {
+           "when": {
+            "ZoneChange": {
+             "what": [
+              "This"
+             ],
+             "from": "Battlefield",
+             "to": "Graveyard"
+            }
+           },
+           "effects": [
+            {
+             "Move": {
+              "what": "This",
+              "to": {
+               "Battlefield": {
+                "tapped": true
+               }
+              },
+              "as": "returned"
+             }
+            },
+            {
+             "R6602CreateAttached": {
+              "token": {
+               "Named": "wicked_role"
+              },
+              "to": {
+               "Bound": "returned"
+              }
+             }
+            }
+           ]
+          }
+         }
+        }
+       ],
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "Until end of turn, target creature you control gains \"When this creature dies, return it to the battlefield tapped under its owner's control, then create a Wicked Role token attached to it.\""
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "Choose": {
+       "who": "R6602FromYou",
+       "from": {
+        "Each": [
+         {
+          "AnyOf": [
+           {
+            "Type": "Artifact"
+           },
+           {
+            "Type": "Enchantment"
+           }
+          ]
+         },
+         {
+          "Not": {
+           "ControlledBy": "You"
+          }
+         }
+        ]
+       },
+       "count": {
+        "min": 0,
+        "max": 1
+       },
+       "as": "chosen"
+      }
+     },
+     {
+      "Destroy": {
+       "what": {
+        "Bound": "chosen"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "When this creature enters, starting with you, each player may choose an artifact or enchantment you don't control. Destroy each permanent chosen this way."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell",
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "RepeatEach": {
+       "over": "Opponents",
+       "as": "opponent",
+       "effects": [
+        {
+         "May": {
+          "who": {
+           "Bound": "opponent"
+          },
+          "effects": [
+           {
+            "CopySpell": {
+             "what": {
+              "Target": 0
+             },
+             "who": {
+              "Bound": "opponent"
+             },
+             "new_targets": true
+            }
+           },
+           {
+            "Bind": {
+             "what": {
+              "Bound": "opponent"
+             },
+             "as": "copied",
+             "adds": true
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     },
+     {
+      "CopySpell": {
+       "what": {
+        "Target": 0
+       },
+       "count": {
+        "Sum": [
+         1,
+         {
+          "Players": {
+           "Bound": "copied"
+          }
+         }
+        ]
+       },
+       "new_targets": true
+      }
+     }
+    ]
+   }
+  },
+  "Choose target instant or sorcery spell. Each opponent may copy that spell and may choose new targets for the copy they control. You copy that spell once plus an additional time for each opponent who copied the spell this way. You may choose new targets for the copies you control."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Discard": {
+       "filter": [
+        {
+         "Compare": {
+          "stat": "ManaValue",
+          "op": "Eq",
+          "to": "X"
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell",
+        {
+         "Compare": {
+          "stat": "ManaValue",
+          "op": "Eq",
+          "to": "X"
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Counter": {
+       "what": {
+        "Target": 0
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Discard a card with mana value X: Counter target spell with mana value X."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "SpellCast": {
+      "what": [
+       "This"
+      ],
+      "by": "You"
+     }
+    },
+    "if": {
+     "Compare": {
+      "left": {
+       "Count": [
+        {
+         "In": "Hand"
+        },
+        {
+         "OwnedBy": "You"
+        }
+       ]
+      },
+      "op": "Lt",
+      "right": 7
+     }
+    },
+    "from": "Stack",
+    "effects": [
+     {
+      "Draw": {
+       "count": {
+        "Sum": [
+         7,
+         {
+          "Times": {
+           "by": -1,
+           "of": {
+            "Count": [
+             {
+              "In": "Hand"
+             },
+             {
+              "OwnedBy": "You"
+             }
+            ]
+           }
+          }
+         }
+        ]
+       }
+      }
+     }
+    ]
+   }
+  },
+  "When you cast this spell, if you have fewer than seven cards in hand, draw cards equal to the difference."
+ ]
+]

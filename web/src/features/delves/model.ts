@@ -77,10 +77,36 @@ export function listOf(names: readonly string[]): string {
   return `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`
 }
 
-/** A boss's life for this party and Heat (`docs/delves.md`, Bosses): a fifth more from Heat 1. */
-export function bossLife(life: readonly [number, number], heroes: number, heat: number): number {
-  const base = life[0] + life[1] * Math.max(0, heroes - 1)
-  return heat >= 1 ? Math.round(base * 1.2) : base
+/** A Heat's difficulty tier (`docs/delves.md`, Difficulty): its name and what it asks of the party. */
+export interface HeatTier {
+  heat: number
+  name: string
+  text: string
+}
+
+const CASUAL: HeatTier = { heat: 0, name: 'Casual', text: 'any deck can win with some luck' }
+
+/** The three Heats, from the gentlest. */
+export const HEAT_TIERS: readonly HeatTier[] = [
+  CASUAL,
+  { heat: 1, name: 'Seasoned', text: 'needs a deck that suits the format' },
+  { heat: 2, name: 'Heroic', text: 'needs a team of decks that work together and suit the format' },
+]
+
+/** The tier of `heat`; a Heat above the table reads as the highest. */
+export function heatTier(heat: number): HeatTier {
+  return HEAT_TIERS[Math.min(Math.max(0, heat), HEAT_TIERS.length - 1)] ?? CASUAL
+}
+
+/** `heat` in words: "Heat 0 — Casual: any deck can win with some luck". */
+export function heatWords(heat: number): string {
+  const tier = heatTier(heat)
+  return `Heat ${heat} — ${tier.name}: ${tier.text}`
+}
+
+/** A boss's starting life against this party at its place on the ladder and the run's Heat, if the view lists it. */
+export function bossLife(view: Pick<DelveView, 'boss_lives'>, boss: string): number | undefined {
+  return view.boss_lives.find(([id]) => id === boss)?.[1]
 }
 
 /** The most life a hero carries without relic bonuses (`docs/delves.md`, Shape). */
@@ -175,6 +201,15 @@ export function lastFight(run: Run): 'won' | 'lost' | 'retreated' | 'closed' | n
   if (line.startsWith('The party lost its table')) return 'closed'
   return null
 }
+
+/** Whether the party's room is the first boss of the ladder: no boss room lies in an earlier row, as `Run::boss_rank` is 0. */
+export function atFirstBoss(run: Run): boolean {
+  const row = run.map.nodes.find((node) => node.id === run.at)?.row ?? 0
+  return !run.map.nodes.some((node) => node.boss != null && node.row < row)
+}
+
+/** How much of their life every hero regroups with after a lost fight: all of it before the first boss, half later. */
+export const regroupLife = (run: Run): 'full' | 'half' => (atFirstBoss(run) ? 'full' : 'half')
 
 /** What the party does next, in one line of help for the stage the run is in. */
 export function nextStep(view: DelveView): string {

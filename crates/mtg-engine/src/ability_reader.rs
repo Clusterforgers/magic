@@ -640,7 +640,7 @@ fn keyword_added(
                 _ => None,
             }
         }
-        AbilitySource::GrantedKeyword(grant) => granted_keyword(state, grant),
+        AbilitySource::GrantedKeyword(grant) => granted_keyword(state, grant, address.object, shot),
         AbilitySource::Printed | AbilitySource::Granted(_) => None,
     }
 }
@@ -704,7 +704,12 @@ fn granted_ability(state: &GameState, grant: Grant) -> Option<Arc<Ability>> {
 }
 
 /// The keyword `grant` gives, if it gives one.
-fn granted_keyword(state: &GameState, grant: Grant) -> Option<Keyword> {
+fn granted_keyword(
+    state: &GameState,
+    grant: Grant,
+    holder_id: ObjectId,
+    shot: Option<&Snapshot>,
+) -> Option<Keyword> {
     match grant {
         Grant::Effect(id) => state
             .effects()
@@ -720,6 +725,26 @@ fn granted_keyword(state: &GameState, grant: Grant) -> Option<Keyword> {
             index,
         } => match static_mod(state, source, rule, index)? {
             WantedModification::AddKeyword(keyword) => Some(keyword),
+            // A counted keyword is the one the holder has with its number worked out, or had as it left.
+            WantedModification::R6601KeywordX { keyword, .. } => {
+                let kind = std::mem::discriminant(&keyword);
+                let left = shot.filter(|shot| {
+                    shot.id == holder_id
+                        && holder(state, holder_id)
+                            .is_none_or(|object| object.counter() != shot.counter)
+                });
+                match left {
+                    Some(shot) => shot
+                        .keywords
+                        .iter()
+                        .find(|held| std::mem::discriminant(*held) == kind)
+                        .cloned(),
+                    None => keywords::keywords_of(state, holder_id)
+                        .into_iter()
+                        .find(|held| std::mem::discriminant(*held) == kind)
+                        .cloned(),
+                }
+            }
             _ => None,
         },
         Grant::R6701Nested { effect, index } => match r6701_nested_mod(state, effect, index)? {

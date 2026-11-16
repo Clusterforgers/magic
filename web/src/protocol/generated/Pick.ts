@@ -3,4 +3,4 @@
 /**
  * A hero's answer to their first offer.
  */
-export type Pick = { "Take": number } | "Skip" | "Rest" | "Reforge";
+export type Pick = { "Take": number } | "Skip" | "Rest" | "Reforge" | { "Duplicate": string };

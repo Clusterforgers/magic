@@ -72,6 +72,7 @@ function BossStop({
   content: DelveContent
 }) {
   const boss = content.bosses.find((b) => b.id === node.boss)
+  const life = node.boss ? bossLife(view, node.boss) : undefined
   const name = boss?.name ?? 'A boss'
   const fighting = state === 'current' && typeof view.run.status === 'object'
   const last = node.next.length === 0
@@ -113,7 +114,7 @@ function BossStop({
           </span>
           <span className="truncate font-semibold">{name}</span>
           <span className="flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
-            {boss ? <span>{bossLife(boss.life, view.run.heroes.length, view.run.heat)} life</span> : null}
+            {life === undefined ? null : <span>{life} life</span>}
             {boss && boss.phases.length > 0 ? <span>{boss.phases.length + 1} phases</span> : null}
           </span>
         </span>

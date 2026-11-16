@@ -1,0 +1,46 @@
+{
+  "oracle_id": "338747e8-bed8-4e60-8b19-5c2b80799477",
+  "name": "Soul Immolation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Immolation",
+      "oracle_fingerprint": "151730fb834a396d1575a41fd795c045",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              { "Blight": "X" },
+              {
+                "XAtMost": {
+                  "Greatest": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "Toughness"
+                  }
+                }
+              }
+            ],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Union": [
+                      "Opponents",
+                      { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                    ]
+                  },
+                  "amount": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

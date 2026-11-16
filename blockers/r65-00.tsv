@@ -1,0 +1,100 @@
+Alchemist's Gambit	Duration scoped to an extra turn: 'during that turn, damage can't be prevented' and a delayed trigger 'at the beginning of that turn's end step' for the extra turn	Keyword::Cleave with the bracketed lose-the-game clause removed; exile this spell
+Aragorn, Company Leader	Triggering counter kinds ('one of each of those kinds of counters') for 'whenever you put one or more counters on ~' and a Condition on the Ring-bearer chosen as another creature	choice of a counter among first strike, vigilance, deathtouch and lifelink
+Avatar Aang // Aang, Master of Elements	bending actions (airbend, earthbend, firebend, waterbend) as events, a "whenever you bend" trigger and a per-turn record of which bends were done	—
+Backdraft	History of damage dealt by each sorcery spell this turn per caster (TallyEvent::Damaged keyed by spell source with the amount), and a choice of one of those spells, halved rounded down	none
+Chance for Glory	Extra turn after this one with a lose-the-game rider at the end step of that turn (delayed trigger bound to the extra turn)	Creatures you control gain indestructible
+Cyclopean Tomb	Land type granted for as long as a counter remains and an upkeep delayed trigger for the rest of the game that removes the counters on the lands marked by this artifact (linked objects across zones)	none
+Deathmist Raptor	Trigger on turning a permanent face up with a return from the graveyard face up or face down (face choice on a battlefield entry)	Megamorph
+Ertai's Meddling	exile a spell from the stack with delay counters and recast it when the last is removed (CR 702 delay)	—
+Feather, the Redeemed	Cast trigger that sets the spell's resolution destination to exile instead of the graveyard with a delayed return to hand (spell fate flag on the stack object read at resolution, CR 608.2n)	Shared with Lilah and Soulfire Grand Master
+Ferris Wheel	Phase out "until you roll a 3 or less while rolling to visit your Attractions" (a PhaseOut with a phase-in condition on RolledToVisit, CR 702.26) and the history "hasn't been phased out with this Attraction"	none
+Firebender Ascension	Keyword::Firebending(n) on tokens: an attack trigger adding {R} that lasts until end of combat (the firebend keyword action), and Trigger "whenever you firebend"	quest counters on a "Whenever you firebend" trigger
+Firkraag, Cunning Instigator	Batched attack trigger for N or more creatures of a type attacking one opponent and a trigger conditioned on a creature that had to attack	none
+Frodo, Sauron's Bane	If-conditioned becomes: Halfling Scout with base 2/3 and lifelink, then Halfling Rogue with a granted trigger (Ring tempts, lose the game on four tempts)	Permanent duration becomes
+General Jarkeld	Effect "exchange the blockers of two blocked attackers" (each creature blocking exactly one of them stops blocking it and blocks the other, without triggering "blocks", after the could-be-blocked-by-all check)	none
+Khârn the Betrayer	Damage replacement that prevents the damage and gives control to an opponent of your choice (control change inside a replacement)	Attacks or blocks each combat; draw two when you lose control
+Magma Pummeler	prevention that removes counters (CR 615.1: "prevent that damage and remove that many +1/+1 counters", amount prevented = counters removed) with a linked reflexive trigger "when one or more counters are removed this way, it deals that much damage to any target"	none
+Medomai's Prophecy	Chapter II ChooseValue CardName remembered on the Saga and chapter III 'when you cast a spell with the chosen name for the first time this turn' as a trigger the Saga holds after that chapter	none
+Optimus Prime, Hero // Optimus Prime, Autobot Leader	Convert as an effect inside triggers and a dies-return converted, bolster with chosen creature reference and a delayed combat damage trigger	Living metal
+Riku of Many Paths	Amount of the number of modes chosen for the cast modal spell and a triggered modal choice 'choose up to X' of three modes	trigger: whenever you cast a modal spell
+Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel	Replacement 'as this creature transforms into <face>' that runs effects (CreateEmblem) as part of the transform event (ReplaceWhen for Transform plus a ReplaceBy that adds effects to the event)	none
+Shambling Swarm	Same delayed removal at the beginning of the next end step with the -1/-1 counters of the division per target	dies trigger with divided counters among up to three targets (exists)
+Sorrow's Path	Effect "swap the blocks of two blocking creatures" (each blocks all creatures the other was blocking, after a check that each could block all the other's attackers, CR 509.1h); R6400Block blocks one chosen attacker only	its tap trigger (2 damage to you and each creature you control) needs only a reader
+Steamflogger Boss	ReplaceWhen for assembling a Contraption by a Rigger you control with a count	none
+Stolen Uniform	Gain control of an Equipment until end of turn then attach it, and a trigger on losing control of that Equipment	none
+Strict Proctor	TriggerPattern on a triggered ability triggering whose trigger event is a permanent entering (CR 603.6a), with Ref to that ability on the stack for Counter unless pays {2}	none
+Suffocation	History "the last red instant or sorcery spell that dealt damage to you this turn" with its controller (damage log by spell source color and type as it was), CastOnly over it	"draw a card at the beginning of the next turn's upkeep" delayed trigger (exists)
+The Masamune	Replacement of trigger count for triggers caused by a creature dying (Panharmonicon-like keyed to dies events, including emblems)	Equipped creature first strike must be blocked if able while attacking
+The Master, Multiplied	Rule that triggered abilities you control can't cause you to sacrifice or exile creature tokens you control (resolver filter by ability kind in sacrifice and exile moves)	Myriad
+The Valeyard	Effect::VillainousChoice repeated an additional time for a player a rule names (the resolve tree enters one branch per choice; the expansion to two choices must happen in w2d_villainous::run)	none
+Trap the Trespassers	secret vote on objects (Vote.secret with VoteFor::Of objects: a secret Selection decision projected hidden until all ballots are cast)	RepeatEach over the distinct objects of a tally with Amount "votes it received" (count of the object in a bound list)
+Uvilda, Dean of Perfection // Nassari, Dean of Expression	exile a card from hand with refine counters and granted triggers on the exiled card (abilities granted to a card in exile)	—
+Zabaz, the Glimmerwasp	ReplaceWhen::CountersPut filtered by the cause: a modular triggered ability (source ability kind) on a creature you control	none
+Aetherplasm	put a creature card onto the battlefield blocking a creature (CR 509.1h)	—
+Aradesh, the Founder	Keyword::Enlist fact "it enlisted a creature this combat" as a condition	—
+Atraxa, Grand Unifier	Choose with a per-card-type partition: a set of cards admitting a distinct card type for each (bipartite matching in the ChooseCards check and the web prompt; groups cannot express a multi-type card)	none
+Berserker's Frenzy	Effect "choose any number of creatures" (untargeted Choose of 0..N objects by the caster, bound) feeding Rule MustBlock(Bound) UntilEndOfTurn	CastOnly condition "before combat or during combat before blockers are declared" (Main1/BeginCombat/DeclareAttackers of a turn whose first combat has not passed declare blockers); the 15—20 branch is built (R6400ChoosesBlocks UntilEndOfTurn) and the d20 table exists
+Bewitching Leechcraft	ReplaceWhen::Untaps (the untap step untap of a permanent) with ReplaceBy 'remove a +1/+1 counter instead; if you do, untap it'	granting that replacement to the enchanted creature (GrantAbility Replacement)
+Biomancer's Familiar	adapt replacement: a one-shot "next time target creature adapts this turn, it adapts as though it had no +1/+1 counters" modifier read by Effect::Adapt (CR 701.46a)	—
+Bumi, Unleashed	Additional combat phase after this phase with an attack restriction for that phase only (land creatures only; CR 500.8)	Untap all lands
+Centaur of Attention	stored die results on a permanent (Effect::RollDice storing results on the object, Amount "greatest number of stored results of the same value") and rerolling chosen stored results	none
+Circling Vultures	special action: discard this card any time you could cast an instant (CR 116.2 without the stack)	—
+Clandestine Chameleon	Modification granting all abilities of ability stickers on other permanents you own and on cards in your graveyard (ability-sticker abilities read from objects in a graveyard)	none
+Cryptic Spires	deck-construction choice: circled colors chosen before the game (CR 100.4-style pregame choice)	—
+Deification	damage-to-planeswalker replacement keeping one loyalty counter (CR 614.1a) for planeswalkers of a chosen type	choose a planeswalker type as it enters
+Desertion	Replacement of a countered spell's destination: artifact or creature spell goes onto the battlefield under your control (countered-this-way destination for a spell on the stack)	none
+Edgar, King of Figaro	GameRule "the first time you flip one or more coins each turn, those coins come up heads and you win": a per-turn first coin-flip set (all flips of one instruction, e.g. Ral Zarek's five, count as one set per its ruling) tracked in state	reader for the ability-word line "Two-Headed Coin — ..."
+Enduring Angel // Angelic Enforcer	ReplaceWhen::LifeLoss covering damage: 'if your life total would be reduced to 0 or less, instead transform this creature and your life total becomes 3. Then if it didn't transform this way, you lose the game'	SetLife and a conditional LoseGame inside Instead
+Equinox	Condition on a spell: 'if it would destroy a land you control' (Condition reading the effects of the target spell) for a granted activated counter	granted activated ability to the enchanted land
+Esper Origins // Summon: Esper Maduin	Cast-from-graveyard condition then exile and return transformed with a finality counter (CR 702.146 style), chapter I reveal top card	Saga face with transform
+Eventide's Shadow	Remove any number of counters from among all permanents with the total bound to later draws and life loss	none
+Expert-Level Safe	simultaneous secret choice of 1, 2 or 3 by you and a target opponent (ChooseWords secret with who = You and Target) with a comparison "if they match"	"cards exiled with it" put into owners' hands (linked exile set of Remember)
+Eye of Ojer Taq // Apex Observatory	Craft with two cards that share a card type and a chosen shared type used by the back face	Next spell of the chosen type is free once this turn
+Fasting	CR 614.10 optional skip: a decision between leaving the upkeep and beginning the draw step (steps::leave_step returns events only; no Progress::Decide outside the untap step)	GainLife tied to the skip ('If you do')
+Game of Chaos	A coin-flip loop whose continue decision passes to the loser of the last flip and whose stakes double each flip (RepeatWhile.ask is one fixed Ref and the stakes need a Let that changes per pass)	none
+Ghostly Flame	color of damage sources: black and red permanents and spells are colorless sources (CR 609.7 hook)	—
+Goldberry, River-Daughter	Move counters of every kind not on this permanent from another permanent (per-kind move) and a variable move count with "if you do" draw	none
+Grifter's Blade	ReplaceBy for an Equipment entering attached to a creature its controller chooses among creatures it could be attached to (an as-enters attach choice)	none
+Grime Gorger	Choose with a per-card-type partition (same piece as Atraxa: one card per card type, a multi-type card filling any one of its types)	none
+Grimoire Thief	cards exiled face down with the source turned face up, and countering spells with the same names (linked exile, CR 607)	—
+Guardian Angel	repeatable "pay {1} any time you could cast an instant" special action with prevention shields (CR 116)	—
+Guile	Replacement of a countering effect: exile that spell and allow playing it free (counter replacement keyed to your spells and abilities)	Protection and cannot be countered
+Hellkite Courser	Put a commander from the command zone onto the battlefield with a haste rider and return it to the command zone at the next end step (CR 903.9 owner may return)	Delayed return to command zone
+Huatli, Poet of Unity // Roar of the Fifth People	Nested grants: `Grant` has no address for an ability granted by a granted static ('a static ability that is granted cannot grant abilities in turn', validate.rs), needed by chapter II 'This Saga gains "Creatures you control have '{T}: Add {R}, {G}, or {W}.'"'	none: the writer already words the nested ability and the rest of the card reads
+Illithid Harvester // Plant Tadpoles	Ceremorphosis: turn any number of target tapped nontoken creatures face down as 2/2 Horror creatures (face-down with a given type and P/T)	Plant Tadpoles spell side already reads
+Illusionist's Gambit	Cast only during declare blockers on an opponent's turn, remove all attackers from combat and untap them, additional combat where they must attack and can't attack you	Additional combat phase with riders
+Koh, the Face Stealer	choose a creature card exiled with the source and gain its abilities (linked exile, CR 607.2)	—
+Long List of the Ents	noted creature types on a Saga and a delayed "next creature spell of that type enters with a counter"	—
+Lost in Thought	special action: exile three cards from your graveyard to ignore a static effect until end of turn (CR 116)	—
+Magnigoth Treefolk	Landwalk of each basic land type among lands you control (a variable landwalk grant per domain type)	none
+Martyrdom	Granted ability with a restriction that only you may activate it and a damage redirect shield to this creature (Activators on a granted ability)	Next 1 damage prevention shield
+Nameless Race	Pay any amount of life as it enters with the amount capped by a count and power and toughness equal to the life paid (stored payment read in a defining power)	none
+Nicol Bolas, Dragon-God	Each opponent exiles a card from their hand or a permanent they control: a Choose by each opponent from a union of their hand and their permanents (Choose.who with per-chooser `from`)	static: has all loyalty abilities of all other planeswalkers on the battlefield; -8 'each opponent who doesn't control a legendary creature or planeswalker loses the game' reader
+Night Shift of the Living Dead (partial gap)	the turn-based roll to visit Attractions (un33_attractions::roll_events, CR 701.52a) cannot ask the R6402ChangeRoll question: a decision during a turn-based action	none
+Ogre Enforcer	lethal damage per single source (track marked damage by source, CR 704.5g exception)	—
+Old Man of the Sea	Gain control for as long as this stays tapped and the target's power stays at most this creature's power (duration with a continuing condition) and may choose not to untap	none
+Panglacial Wurm	A cast action offered during a library search effect (a Priority-free cast decision in the middle of Effect::Search resolution) from the library	none
+Parallel Thoughts	Search seven cards into a face-down exiled pile and a draw replacement taking the top card of that pile	none
+Phyrexian Grimoire	An opponent chooses one of the top two cards of your graveyard, exile it and put the other into your hand	none
+Power Pack	Exile a random card from the graveyard and cast it free at your next upkeep with exile instead of graveyard	none
+Pyramids	Shield over the next destruction of one fixed object with Instead effects (ShieldShape for ReplaceWhen::Destroyed + InsteadNext; shield.rs fixes only zone-change objects as Rule::DiesInstead)	none
+Reed Richards, Smartest Man	Per-turn record of 'would draw' events per player (replaced draws included) so ReplaceWhen::Draw can match only the first one each turn outside the draw step's first card	none
+Research // Development	'Unless any opponent has you draw a card' where every opponent may choose in turn (OneOf asks only the first opponent) repeated with RepeatWhile	Research: shuffle up to four cards from outside the game into the library does nothing in Commander (Outside search)
+Serum Powder	mulligan-time special action: exile the hand and draw that many (CR 103.5 hook)	—
+Silhouette	prevention filter "damage a source would deal because of a spell or ability that targets that creature" (shield reading whether the resolving spell or ability that causes the damage targets the protected creature)	none
+Space Beleren	Keyword "sculptor" (planeswalker-type keyword of the set) not in the engine	—
+Spy Kit	characteristic: the equipped creature has all names of nonlegendary creature cards (CR 201.2 name set)	—
+Storyweave	A modal charm whose third mode is a this-turn next-time enters replacement for enchantment creatures	Lore counters on a Saga
+Swinging Ship	Visit: an additional combat phase after the first combat phase this turn with an untap at its beginning of creatures that attacked (Attraction visit and phase insertion)	none
+The Chain Veil	loyalty activation counts: a continuous grant of N extra loyalty activations per planeswalker this turn (CR 606.3 exception), tracked per permanent per turn	—
+The Pandorica	phase out with "can't phase in for as long as the source remains tapped" and phasing in on untap/leave (CR 702.26)	—
+Thrasta, Tempest's Roar	CR 702.19c trample over planeswalkers: DamageOptions needs a second excess recipient (the attacked planeswalker's controller after its loyalty) in damage::division, assignment_answer and the web damage-assignment prompt	CastOnly-free cost reduction per other spell cast this turn reader
+Torrent of Lava	abilities granted to creatures while a spell is on the stack, preventing damage from that spell	—
+Unpredictable Cyclone	ReplaceWhen::Draw whose cause is a cycling ability of another nonland card (the card cycled is read), instead exile until a card sharing a type, cast it free, rest on the bottom randomly	none
+Vault 11: Voter's Dilemma	Secret votes for up to one creature with destroy of each tied for most votes and draw if none	Saga chapter II and III shared text
+Vedalken Squirrel-Whacker	ReplaceBy as-enters roll of two dice setting base power and base toughness from the first and second results (CR 613.4b base P/T from a stored result)	replacement "if you would roll one or more six-sided dice, instead roll them and you may exchange one result with this creature's base power or base toughness"
+Volcanic Offering	Targets chosen by an opponent (target of an opponent's choice, CR 115.7 variant)	Seven damage with two different targets
+Volo, Itinerant Scholar	noted creature types on a permanent (a Journal token) and an Amount counting them	—
+Volrath's Curse	special action: sacrifice a permanent to ignore a static effect until end of turn (CR 116)	—
+Well-Laid Plans	static prevention filter on source and recipient together: damage from a creature to another creature that shares a color with it (DamageShield predicate relating source and target)	none
+Zack Fair	Move counters of the sacrificed source onto a target (counters as last known information) and move an Equipment that was attached to it (LKI attachments)	Granted indestructible until end of turn

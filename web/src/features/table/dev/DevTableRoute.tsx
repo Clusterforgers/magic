@@ -18,6 +18,7 @@ import { FRONT_OF, SHOWCASE_NAMES, fetchRealIds } from './realCards'
 import type { RealIds } from './realCards'
 import { printedDetail, STATES_BASE_PERMANENTS, withStates } from './states'
 import { roomDetail, roomsApi } from './roomsScene'
+import { revealApi } from './momentScene'
 import { parseStopSpec } from './stopSpec'
 import { menuCandidates, useOpenDevMenu } from '../manual/devMenu'
 import { useOpenDevPanel } from '../manual/panel/devPanel'
@@ -105,6 +106,7 @@ export function DevTableRoute() {
     counters,
     crowd,
     moments,
+    shown,
     menu,
     panel,
     tour,
@@ -212,7 +214,9 @@ export function DevTableRoute() {
   return (
     <GameContext value={game}>
       <TableOptionsContext value={options}>
-        <CardsApiContext value={prompt === 'priority-rooms' ? roomsApi : cardsApi}>
+        <CardsApiContext
+          value={prompt === 'priority-rooms' ? roomsApi : moments === true ? revealApi : cardsApi}
+        >
           {/* A boss fight reads its rules from the dev content, not a server. */}
           <DelveContentContext value={boss === undefined ? undefined : DEV_BOSS_CONTENT}>
             <p className="sr-only" data-fixture={FIXTURE_MARKER}>
@@ -221,7 +225,7 @@ export function DevTableRoute() {
             {result === undefined || review ? <GameTable /> : <GameOver onReview={() => setReview(true)} />}
             <DevFxControls initial={fx} open={bar} />
             <DevTurnChange on={newturn === true} />
-            <DevMoments on={moments === true} />
+            <DevMoments on={moments === true} count={shown} />
           </DelveContentContext>
         </CardsApiContext>
       </TableOptionsContext>

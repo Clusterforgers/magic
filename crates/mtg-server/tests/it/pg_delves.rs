@@ -186,6 +186,7 @@ async fn a_party_gathers_and_the_start_makes_the_first_boss_fight(pool: PgPool) 
     assert_eq!(missing.status, 404);
 }
 
+/// At Heat 2 the first boss fields the party-size table's minion; below it, one fewer (`docs/delves.md`, Difficulty).
 #[sqlx::test(migrations = false)]
 async fn a_party_of_four_meets_the_boss_and_a_minion(pool: PgPool) {
     let server = pg_commander::start(&pool).await;
@@ -195,7 +196,7 @@ async fn a_party_of_four_meets_the_boss_and_a_minion(pool: PgPool) {
         "POST",
         "/api/delves",
         Some(&host),
-        Some(json!({"heat": 0, "seed": "HORDE"})),
+        Some(json!({"heat": 2, "seed": "HORDE"})),
     )
     .await
     .json();

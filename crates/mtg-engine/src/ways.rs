@@ -307,8 +307,10 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
         return Vec::new();
     }
     let in_hand = matches!(zone, Zone::Hand(_));
-    // A commander is cast from its owner's command zone for its mana cost and the tax (CR 903.8).
-    let from_command = matches!(zone, Zone::Command(_)) && state.is_commander(id);
+    // A commander is cast from its owner's command zone for its mana cost and the tax (CR 903.8), a Satchel card for its
+    // mana cost like a card in hand.
+    let from_command =
+        matches!(zone, Zone::Command(_)) && (state.is_commander(id) || state.in_satchel(id));
     // The creature card of an Adventure that was exiled on an adventure (CR 715.4).
     let on_adventure =
         zone == Zone::Exile && card.on_adventure() == Some(player) && card.face().is_none();
@@ -685,7 +687,9 @@ fn keyword_way(
             CastWay::Mutate,
             "Mutate",
             cost,
-            (in_hand || (matches!(zone, Zone::Command(_)) && state.is_commander(id)))
+            (in_hand
+                || (matches!(zone, Zone::Command(_))
+                    && (state.is_commander(id) || state.in_satchel(id))))
                 && is_creature(state, id)
                 && merged::announceable(state, player, id),
         ),

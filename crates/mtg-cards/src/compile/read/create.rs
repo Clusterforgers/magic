@@ -426,7 +426,7 @@ fn token_name(r: &mut Reader<'_>) -> Option<String> {
 }
 
 /// A proper name: capitalized words, with "of" and "the" between them.
-fn proper_name(r: &mut Reader<'_>) -> Option<String> {
+pub(super) fn proper_name(r: &mut Reader<'_>) -> Option<String> {
     let mut words = vec![r.name()?.to_owned()];
     while let Some(word) = r.attempt(|r| {
         let joined = r.take_word().filter(|word| matches!(*word, "of" | "the"));

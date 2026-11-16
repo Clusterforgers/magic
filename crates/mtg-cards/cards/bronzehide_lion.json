@@ -1,7 +1,7 @@
 {
   "oracle_id": "0db3b29e-e21c-4240-8e5e-959ba6bcf706",
   "name": "Bronzehide Lion",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Bronzehide Lion",
@@ -22,9 +22,45 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 62, "end": 282 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": {
+                    "R6502BattlefieldAs": {
+                      "becomes": [
+                        { "SetTypes": ["Enchantment"] },
+                        { "AddSubtype": "Aura" },
+                        "LoseAbilities",
+                        {
+                          "AddKeyword": {
+                            "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                          }
+                        },
+                        {
+                          "GrantAbility": {
+                            "Activated": {
+                              "cost": "{W}{G}",
+                              "effects": [
+                                {
+                                  "Continuous": {
+                                    "affected": "Attached",
+                                    "mods": [{ "AddKeyword": "Indestructible" }],
+                                    "duration": "UntilEndOfTurn"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

@@ -521,7 +521,9 @@ pub fn read(item: &str) -> Option<Keyword> {
         },
         "companion" => companion(rest),
         "toxic" => positive(rest).map(Keyword::Toxic),
-        "annihilator" => positive(rest).map(Keyword::Annihilator),
+        "annihilator" => positive(rest)
+            .and_then(|number| i32::try_from(number).ok())
+            .map(|number| Keyword::Annihilator(Amount::Fixed(number))),
         "landwalk" => landwalk(item),
         "offering" => Some(Keyword::Offering(r301_offering_quality(rest))),
         // "Affinity for snow lands": the snow supertype before the land type.
@@ -1675,8 +1677,8 @@ mod tests {
     #[case::soulbond("Soulbond", Keyword::Soulbond)]
     #[case::extort("Extort", Keyword::Extort)]
     #[case::evolve("Evolve", Keyword::Evolve)]
-    #[case::annihilator("Annihilator 2", Keyword::Annihilator(2))]
-    #[case::annihilator_six("Annihilator 6", Keyword::Annihilator(6))]
+    #[case::annihilator("Annihilator 2", Keyword::Annihilator(Amount::Fixed(2)))]
+    #[case::annihilator_six("Annihilator 6", Keyword::Annihilator(Amount::Fixed(6)))]
     #[case::ravenous("Ravenous", Keyword::Ravenous)]
     #[case::riot("Riot", Keyword::Riot)]
     #[case::decayed("Decayed", Keyword::Decayed)]

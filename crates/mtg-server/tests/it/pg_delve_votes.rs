@@ -46,11 +46,12 @@ async fn read(server: &TestServer, id: &str, who: &Browser) -> Value {
     reply.json()
 }
 
-/// The answer a player gives their first offer: a rest at a campfire, leaving a shop, else the first choice.
+/// The answer a player gives their first offer: a rest at a campfire, leaving a shop or the Mirror Pool, else the first
+/// choice.
 fn answer(offer: &Value) -> Value {
-    if offer == "Campfire" {
+    if offer.get("Campfire").is_some() {
         json!("Rest")
-    } else if offer.get("Shop").is_some() {
+    } else if offer.get("Shop").is_some() || offer == "Duplicate" {
         json!("Skip")
     } else {
         json!({"Take": 0})

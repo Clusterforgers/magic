@@ -5,7 +5,6 @@ use mtg_cards::effect::Effect;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::TriggerPattern;
-use mtg_cards::value::Amount;
 
 use super::KeywordRules;
 
@@ -29,7 +28,7 @@ impl KeywordRules for Annihilator {
             effects: vec![Effect::Sacrifice {
                 who: Ref::Defending,
                 filter: Selector::default(),
-                count: Amount::Fixed(i32::try_from(*count).unwrap_or(i32::MAX)),
+                count: count.clone(),
                 bind: None,
             }],
         }]

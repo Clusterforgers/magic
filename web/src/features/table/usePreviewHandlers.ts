@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import type { FocusEvent, MouseEvent, PointerEvent } from 'react'
-import type { ObjectId } from '@/protocol/generated'
+import type { ObjectId, ObjectView } from '@/protocol/generated'
 import { anchorOf, usePreviewStore } from './preview'
 
 /** The events that drive the preview of one card; spread them on its element. */
@@ -17,12 +17,13 @@ export interface PreviewHandlers {
  * handles (`onClick`: the card plays, taps or is chosen) pins nothing: it is an act and not a request to look, and a
  * pinned preview covers a part of the table (the prompt among it) until it is closed. `dockFrom` names the element
  * the preview docks away from when it is not the card itself (the grid a prompt's cards sit in, so the panel keeps its
- * side as the pointer crosses the cards).
+ * side as the pointer crosses the cards). `shown` is a card the view may not hold (a revealed one): the preview draws it.
  */
 export function usePreviewHandlers(
   id: ObjectId,
   onClick?: (card: HTMLElement) => void,
   dockFrom?: (card: HTMLElement) => Element,
+  shown?: ObjectView,
 ): PreviewHandlers {
   const preview = usePreviewStore()
   // An element that leaves the screen while hovered gets no pointer-leave.
@@ -34,10 +35,10 @@ export function usePreviewHandlers(
         onClick(event.currentTarget)
         return
       }
-      preview.pin(id, anchor(event.currentTarget))
+      preview.pin(id, anchor(event.currentTarget), shown)
     },
     onPointerEnter(event) {
-      if (event.pointerType === 'mouse') preview.show(id, anchor(event.currentTarget))
+      if (event.pointerType === 'mouse') preview.show(id, anchor(event.currentTarget), shown)
     },
     onPointerLeave: () => preview.hide(id),
     onFocus: (event) => preview.show(id, anchor(event.currentTarget)),

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "3354c3d3-5713-4139-beb2-4fa17f6b47d9",
+  "name": "Balduvian Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balduvian Shaman",
+      "oracle_fingerprint": "3fdd60692941ceeb6d358ad96ac64e67",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Enchantment" },
+                    { "Color": "White" },
+                    { "ControlledBy": "You" },
+                    { "Not": { "HasKeywordNamed": "Cumulative upkeep" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "from" } },
+              { "ChooseValue": { "kind": { "LikeChosen": "from" }, "as": "to" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ChangeTextChosen": { "from": "from", "to": "to" } },
+                    { "AddKeyword": { "CumulativeUpkeep": "{1}" } }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

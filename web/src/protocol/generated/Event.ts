@@ -1183,7 +1183,11 @@ object: ObjectId,
 /**
  * How many permanents it devoured.
  */
-count: number, } } | { "Monstrous": { 
+count: number, 
+/**
+ * The permanents it devoured, by the ids they had on the battlefield; their sacrifices log them as they were.
+ */
+devoured?: Array<ObjectId>, } } | { "Monstrous": { 
 /**
  * The creature that became monstrous.
  */

@@ -169,6 +169,11 @@ pub struct ActivatedView {
     #[serde(default, skip_serializing_if = "is_false")]
     #[ts(as = "Option<bool>", optional)]
     pub mana: bool,
+    /// Whether it is a mana ability activated at priority like any other ability (one that also rolls a die, discards or
+    /// untaps): `PriorityOptions.abilities` offers it, and no payment taps it.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[ts(as = "Option<bool>", optional)]
+    pub announced: bool,
     /// The keyword line that adds it (`Cycling {2}`, `Equip {1}`), when a keyword does.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
@@ -619,8 +624,13 @@ pub struct PlayerView {
     /// Graveyard (public).
     pub graveyard: ZoneView,
     /// Command zone (public): the commanders, the junkyard (the Attractions put there, CR 717.6a) and the rest; the
-    /// face-down cards of the Attraction deck are not in it.
+    /// face-down cards of the Attraction deck and the Satchel are not in it.
     pub command: ZoneView,
+    /// The cards of a Delves hero's Satchel (public), in the order they were set up: earned cards its owner may cast like
+    /// cards in hand; left out while it is empty.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<ObjectId>>", optional)]
+    pub satchel: Vec<ObjectId>,
     /// The cards left in the seat's Attraction deck (CR 717.2), face down in its command zone; left out while there are
     /// none.
     #[serde(default, skip_serializing_if = "is_no_card")]

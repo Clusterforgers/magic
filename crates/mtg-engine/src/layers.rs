@@ -470,6 +470,7 @@ impl Held {
             | Modification::SetCreatureTypes(_)
             | Modification::GrantText(_)
             | Modification::AddNameWords(_)
+            | Modification::SetName(_)
             | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
             | Modification::AddColors(_)
@@ -480,6 +481,7 @@ impl Held {
             | Modification::SwitchPowerToughness
             | Modification::CantAttack
             | Modification::CantAttackYou { .. }
+            | Modification::R6601CantAttackPlayers { .. }
             | Modification::CantAttackOwner { .. }
             | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
@@ -782,13 +784,14 @@ fn is_player_ref(affected: &Ref) -> bool {
 fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
     Some(match wanted {
         Wanted::SetController(_) => Layer::Control,
-        Wanted::ChangeTextChosen { .. } | Wanted::ChangeTextChosenTo { .. } => Layer::Text,
+        Wanted::ChangeTextChosen { .. }
+        | Wanted::ChangeTextChosenTo { .. }
+        | Wanted::SetName(_) => Layer::Text,
         Wanted::AddType(_)
         | Wanted::RemoveType(_)
         | Wanted::SetTypes(_)
         | Wanted::RemoveSupertype(_)
         | Wanted::AddSupertype(_)
-        | Wanted::SetName(_)
         | Wanted::ThisAbility
         | Wanted::SetLoyalty(_)
         | Wanted::AddSubtype(_)
@@ -809,6 +812,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::AddChosenColor
         | Wanted::SetCommanderColor => Layer::Color,
         Wanted::AddKeyword(_)
+        | Wanted::R6601KeywordX { .. }
         | Wanted::R6001AddChosenAbilities
         | Wanted::KeywordsOf { .. }
         | Wanted::AddProtectionFromChosenColor
@@ -830,6 +834,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         Wanted::SwitchPT => Layer::PtSwitch,
         Wanted::CantAttack
         | Wanted::CantAttackYou(_)
+        | Wanted::R6601CantAttackPlayers(_)
         | Wanted::CantAttackOwner(_)
         | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
@@ -981,7 +986,7 @@ fn hold_named(
     registered: &[&ContinuousEffect],
     held: &mut BTreeMap<ObjectId, Held>,
 ) {
-    for effect in registered {
+    for effect in registered.iter().filter(|effect| !effect.entering) {
         if let Selector::Objects(named) = &effect.selector {
             for reference in named {
                 if let Some(object) = state.object(reference.id).filter(|object| {

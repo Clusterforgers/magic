@@ -11,6 +11,8 @@ const ENTRIES: readonly { title: string; lines: readonly string[] }[] = [
     lines: [
       'Your party fights a ladder of bosses; between two bosses you vote for a camp: Treasure, Shop, Event or Campfire.',
       'Life carries over between fights. A lost fight costs one of the party’s 3 hearts and is retried.',
+      'Cards you earn go to your Satchel, beside your command zone: in every fight you may cast them like cards in hand. Your deck stays as you chose it.',
+      'A Campfire or the Shop may upgrade your commander for the run: a lower cost, a keyword, more power or loyalty.',
     ],
   },
   { title: 'How Spirits work', lines: SPIRIT_RULES },

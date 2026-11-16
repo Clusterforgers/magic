@@ -46,9 +46,12 @@ Alchemist's Retrieval
 Alhammarret's Archive
 Alisaie Leveilleur
 All That Glitters
+All Will Be One
 All of History, All at Once
+Alms Collector
 Alpha Deathclaw
 Alphinaud Leveilleur
+Alrund, God of the Cosmos // Hakka, Whispering Raven
 Altar's Reap
 Alter Reality
 Amass the Components
@@ -61,6 +64,7 @@ Anafenza, Kin-Tree Spirit
 Ancestral Vision
 Ancient Amphitheater
 Ancient Hydra
+Ancient Lumberknot
 Ancient Stone Idol
 Ancient Ziggurat
 Angel of Finality
@@ -109,6 +113,7 @@ Assassin's Trophy
 Assemble the Entmoot
 Atlantean Skirmisher
 Atmospheric Greenhouse
+Atraxa, Grand Unifier
 Atreus, Impulsive Son
 Atzocan Seer
 Augury Raven
@@ -141,6 +146,7 @@ Baaallerina
 Back in Town
 Baird, Steward of Argive
 Balduvian Conjurer
+Balduvian Shaman
 Balduvian Warlord
 Bandit's Haul
 Bane of Progress
@@ -175,6 +181,7 @@ Bear Umbra
 Beast Walkers
 Beast Within
 Beastmaster Ascension
+Bedrock Tortoise
 Befriending the Moths // Imperial Moth
 Behemoth of Vault 0
 Behold the Multiverse
@@ -187,6 +194,7 @@ Bighorner Rancher
 Bilious Skulldweller
 Bill Potts
 Binding the Old Gods
+Biomancer's Familiar
 Biomass Mutation
 Biomechan Engineer
 Biotech Specialist
@@ -272,6 +280,7 @@ Brinelin, the Moon Kraken
 Brion Stoutarm
 Brisela, Voice of Nightmares
 Brokers Hideout
+Bronzehide Lion
 Bronzeplate Boar
 Broodbirth Viper
 Broodcaller Scourge
@@ -331,6 +340,7 @@ Champion's Helm
 Chandra, Awakened Inferno
 Changeling Outcast
 Changing Loyalty
+Chaos Dragon
 Charmbreaker Devils
 Charred Graverobber
 Chartooth Cougar
@@ -392,6 +402,7 @@ Complaints Clerk
 Composer of Spring
 Conclave Sledge-Captain
 Conclave Tribunal
+Conduit of Worlds
 Conifer Wurm
 Consider
 Consign // Oblivion
@@ -564,6 +575,7 @@ Doom Whisperer
 Door of Destinies
 Dormant Gomazoa
 Doublecast
+Doubling Cube
 Down, Down to Goblin-town
 Dowsing Dagger // Lost Vale
 Draconic Lore
@@ -600,6 +612,7 @@ Drownyard Temple
 Drudge Beetle
 Drudge Sentinel
 Drudge Skeletons
+Druid of Purification
 Dryad of the Ilysian Grove
 Dual Casting
 Dual Strike
@@ -740,6 +753,7 @@ Fearless Skald
 Fearsome Goblin Pair
 Feaster of Fools
 Feasting Hobbit
+Feather, the Redeemed
 Felidar Sovereign
 Fellwar Stone
 Ferocity of the Wilds
@@ -837,6 +851,7 @@ Genesis Wave
 Germination Practicum
 Gerrard's Wisdom
 Getaway Car
+Ghalta the Immovable
 Ghalta, Primal Hunger
 Ghave, Guru of Spores
 Ghired, Conclave Exile
@@ -895,6 +910,7 @@ Golden Ratio
 Golden-Scale Aeronaut
 Goldlust Triad
 Goldwarden's Helm
+Goliath Daydreamer
 Goliath Truck
 Gollum, Obsessed Stalker
 Gonti's Machinations
@@ -977,6 +993,7 @@ Heidar, Rimewind Master
 Heliod, God of the Sun
 Heliod, Sun-Crowned
 Hellish Rebuke
+Hellkite Courser
 Hellkite Igniter
 Hellkite Overlord
 Hellkite Tyrant
@@ -1003,6 +1020,7 @@ Hidden Dragonslayer
 Hidden Hideout
 Hideous Laughter
 Hierophant Bio-Titan
+High Alert
 High Ground
 Highspire Artisan
 History of Benalia
@@ -1177,6 +1195,7 @@ Korozda Monitor
 Korvold, Gleeful Glutton
 Koth, Fire of Resistance
 Kozilek's Translator
+Kozilek, the Great Distortion
 Krark's Thumb
 Kraum, Violent Cacophony
 Krav, the Unredeemed
@@ -1227,6 +1246,7 @@ Lightform
 Lightning Bolt
 Lightning, Security Sergeant
 Lignify
+Lilah, Undefeated Slickshot
 Liliana's Standard Bearer
 Lion Sash
 Liquimetal Torque
@@ -1352,6 +1372,7 @@ Mindlock Orb
 Mindslaver
 Ministrant of Obligation
 Minotaur de Force
+Minthara, Merciless Soul
 Mirari
 Mirari's Wake
 Mire's Malice
@@ -1359,6 +1380,7 @@ Mirelurk Queen
 Mirran Bardiche
 Mirri, Weatherlight Duelist
 Mirror Image
+Mirror Match
 Mirror Sheen
 Mirrormind Crown
 Mirrorweave
@@ -1442,6 +1464,7 @@ Nightscape Familiar
 Nightveil Sprite
 Nihil Spellbomb
 Niko Defies Destiny
+Nils, Discipline Enforcer
 Ninja Pizza
 Ninja of the Deep Hours
 Ninja of the New Moon
@@ -1451,6 +1474,7 @@ Norn's Annex
 Norn's Choirmaster
 Norwood Riders
 Nostalgic Dreams
+Not Dead After All
 Notion Rain
 Nourishing Shoal
 Novijen, Heart of Progress
@@ -1666,6 +1690,7 @@ Ramses Overdark
 Rancor
 Ransom Note
 Raphael, Tag Team Tough
+Rasputin Dreamweaver
 Ratadrabik of Urborg
 Ravenous Leucrocota
 Ravenous Slime
@@ -1715,6 +1740,7 @@ Revenge of Ravens
 Reverberate
 Reverence
 Reverse Engineer
+Reverse the Sands
 Rhet-Tomb Mystic
 Rhox Charger
 Rhox Faithmender
@@ -1740,6 +1766,7 @@ Rising Miasma
 Risky Move
 Rite of Replication
 Rith, Liberated Primeval
+River Song's Diary
 River of Tears
 Riveteers Overlook
 Riveteers Requisitioner
@@ -1779,6 +1806,7 @@ Saiba Cryptomancer
 Saltcrusted Steppe
 Sami's Curiosity
 Samurai's Katana
+Sanctum Lurker
 Sanctum Weaver
 Sandcrafter Mage
 Sandsteppe Mastodon
@@ -1831,6 +1859,7 @@ Seedship Agrarian
 Seeker of Slaanesh
 Seekers' Squire
 Seize the Day
+Selective Obliteration
 Seraph of the Sword
 Sergeant John Benton
 Serpent of the Pass
@@ -1930,6 +1959,7 @@ Solstice Zealot
 Soltari Foot Soldier
 Songs of the Damned
 Soraya the Falconer
+Soul Immolation
 Soul Manipulation
 Soul Shepherd
 Soul of New Phyrexia
@@ -2090,6 +2120,7 @@ Tandem Lookout
 Tangle Tumbler
 Tangleweave Armor
 Tanuki Transplanter
+Tapestry Warden
 Tariff
 Tato Farmer
 Taurean Mauler
@@ -2112,6 +2143,8 @@ Telepathy
 Tempestra, Dame of Games
 Temple Altisaur
 Temporal Manipulation
+Tempt with Discovery
+Tempt with Mayhem
 Temur Devotee
 Tender Wildguide
 Tendershoot Dryad
@@ -2131,6 +2164,7 @@ Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Birth of Meletis
 The Celestus
+The Chain Veil
 The Cruelty of Gix
 The Dalek Emperor
 The Elder Dragon War
@@ -2235,6 +2269,7 @@ Toxic Deluge
 Trace of Abundance
 Trade Caravan
 Trailtracker Scout
+Training Grounds
 Trait Doctoring
 Trapped in the Tower
 Trash for Treasure
@@ -2271,6 +2306,7 @@ Ukkima, Stalking Shadow
 Uktabi Efreet
 Ulamog's Crusher
 Ulamog's Dreadsire
+Ulamog, the Defiler
 Ultimecia, Temporal Threat
 Ultramarines Honour Guard
 Ultron, Unlimited
@@ -2355,6 +2391,8 @@ Voidmage Husher
 Volshe Tideturner
 Volunteer Reserves
 Vona, Butcher of Magan
+Voodoo Doll
+Voracious Dragon
 Vorel of the Hull Clade
 Vorrac Battlehorns
 Vow of Duty
@@ -2424,6 +2462,7 @@ Wipe Away
 Wirewood Channeler
 Withering Boon
 Withering Curse
+Witness Protection
 Wizard Class
 Wizard's Rockets
 Wolf of Devil's Breach
@@ -2445,11 +2484,13 @@ Wyrm's Crossing Patrol
 Xenosquirrels
 Yasharn, Implacable Earth
 Ydwen Efreet
+Yenna, Redtooth Regent
 Yidaro, Wandering Monster
 Yisan, the Wanderer Bard
 You Cannot Pass!
 Young Wolf
 Yurlok of Scorch Thrash
+Zack Fair
 Zanikev Locust
 Zealous Conscripts
 Zellix, Sanity Flayer

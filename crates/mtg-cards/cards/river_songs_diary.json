@@ -1,0 +1,55 @@
+{
+  "oracle_id": "60a63eb4-b0f7-4930-9bf6-afd42261d4d0",
+  "name": "River Song's Diary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "River Song's Diary",
+      "oracle_fingerprint": "827818a1dc582d46a453197381756ffd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "CastFrom": "Hand" }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "R6503Resolves": { "what": [{ "Is": "Triggering" }] } },
+                  "by": { "Instead": [{ "Exile": { "what": "Triggering" } }] },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                  "as": "diary"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "diary" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

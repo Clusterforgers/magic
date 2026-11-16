@@ -1,7 +1,7 @@
 {
   "oracle_id": "bf0e9e00-fba5-448a-9052-ae730aea4bf8",
   "name": "Jace, Reality Sculptor",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Jace, Reality Sculptor",
@@ -45,9 +45,44 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 188, "end": 337 }
+          "Loyalty": {
+            "cost": "Zero",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Total": {
+                    "of": [{ "Subtype": "Jace" }, { "ControlledBy": "You" }],
+                    "stat": "Loyalty"
+                  }
+                },
+                "op": "Ge",
+                "right": 25
+              }
+            },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "ExileTop": {
+                        "who": { "Bound": "opponent" },
+                        "count": {
+                          "Difference": [
+                            {
+                              "Count": [{ "In": "Library" }, { "OwnedBy": { "Bound": "opponent" } }]
+                            },
+                            1
+                          ]
+                        },
+                        "as": "exiled"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -185,14 +185,16 @@ fn sticker_sheets(state: &GameState, seat: PlayerId) -> Vec<StickerSheetView> {
         .collect()
 }
 
-/// The command zone of `seat` without the face-down cards of its Attraction deck, which `attraction_deck` counts.
+/// The command zone of `seat` without the face-down cards of its Attraction deck, which `attraction_deck` counts, and
+/// without its Satchel, which `satchel` lists.
 fn command_view(state: &GameState, viewer: PlayerId, seat: PlayerId) -> ZoneView {
     let mut view = zone_view(state, viewer, Zone::Command(seat));
-    let deck = state.attraction_deck(seat);
-    if !deck.is_empty() {
-        view.count = view.count.saturating_sub(count(deck.len()));
+    let mut apart = state.attraction_deck(seat).to_vec();
+    apart.extend(state.satchel(seat));
+    if !apart.is_empty() {
+        view.count = view.count.saturating_sub(count(apart.len()));
         if let Some(cards) = view.cards.as_mut() {
-            cards.retain(|id| !deck.contains(id));
+            cards.retain(|id| !apart.contains(id));
         }
     }
     view
@@ -479,9 +481,12 @@ impl ObjectView {
         // An ability on the stack is named after its source and has nothing else of the source's printed side.
         let printed = object.kind() != ObjectKind::Ability;
         let is_token = object.kind() == ObjectKind::Token && !behind;
-        // A name sticker adds its words to the name the table reads (layer 3).
-        let words: &[String] = if behind { &[] } else { &chars.name_words };
-        let stickered = mtg_engine::un34_stickers::name_with(words, &card.name);
+        // A name sticker adds its words to the name the table reads, and an effect may set it (layer 3).
+        let stickered = if behind {
+            card.name.clone()
+        } else {
+            chars.name_for(&card.name)
+        };
         // The Ring's ability on the stack is the Ring's, named so whoever its Ring-bearer is and whether or not the viewer
         // may look at it: the Ring and its bearer are public.
         let granter = granter_of(object);
@@ -682,6 +687,7 @@ impl PlayerView {
             },
             graveyard: zone_view(state, viewer, Zone::Graveyard(seat)),
             command: command_view(state, viewer, seat),
+            satchel: state.satchel(seat),
             attraction_deck: count(state.attraction_deck(seat).len()),
             sticker_sheets: sticker_sheets(state, seat),
             commanders: state

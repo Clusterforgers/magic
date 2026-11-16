@@ -977,7 +977,7 @@ mod tests {
             Keyword::Melee,
             Keyword::Mentor,
             Keyword::Dethrone,
-            Keyword::Annihilator(2),
+            Keyword::Annihilator(mtg_cards::value::Amount::Fixed(2)),
             Keyword::Extort,
             Keyword::Evolve,
             Keyword::LevelUp(cost()),
@@ -1438,7 +1438,7 @@ mod tests {
     #[case::r301_offering(Keyword::Offering(Selector::default()), Hooks::none())]
     #[case::harmonize(Keyword::Harmonize(Cost::mana("{4}{R}".parse().unwrap())), Hooks::none())]
     #[case::read_ahead(Keyword::ReadAhead, Hooks { abilities: 1, ..Hooks::none() })]
-    #[case::annihilator(Keyword::Annihilator(2), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::annihilator(Keyword::Annihilator(mtg_cards::value::Amount::Fixed(2)), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::macro_keyword(Keyword::Macro { name: "bushido".to_owned(), amount: 2 }, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::extort(Keyword::Extort, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::evolve(Keyword::Evolve, Hooks { abilities: 1, ..Hooks::none() })]

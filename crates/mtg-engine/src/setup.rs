@@ -101,6 +101,9 @@ pub struct PlayerSetup {
     /// Emblems the seat starts with in its command zone (CR 114), each made with
     /// [`emblem_definition`](crate::w6b_emblems::emblem_definition).
     pub emblems: Vec<Arc<CardDefinition>>,
+    /// The cards of the seat's Satchel (a Delves hero's earned cards), in its command zone from the start and castable
+    /// from there like cards in hand ([`crate::satchel`]).
+    pub satchel: Vec<Arc<CardDefinition>>,
     /// The emblem the seat gets when it becomes a Spirit; with one, the seat at 0 life stays in the game as a Spirit
     /// while a teammate lives ([`crate::spirits`]).
     pub spirit: Option<Arc<CardDefinition>>,
@@ -218,6 +221,15 @@ impl GameSetup {
     pub fn with_emblems(mut self, emblems: Vec<Vec<Arc<CardDefinition>>>) -> Self {
         for (player, cards) in self.players.iter_mut().zip(emblems) {
             player.emblems = cards;
+        }
+        self
+    }
+
+    /// The setup with these Satchels, one list for each seat in table order.
+    #[must_use]
+    pub fn with_satchels(mut self, satchels: Vec<Vec<Arc<CardDefinition>>>) -> Self {
+        for (player, cards) in self.players.iter_mut().zip(satchels) {
+            player.satchel = cards;
         }
         self
     }
@@ -491,6 +503,7 @@ impl GameState {
         let mut un34 = crate::un34_stickers::Stickers::default();
         let mut placed: BTreeMap<(usize, usize), ObjectId> = BTreeMap::new();
         let mut emblems = Vec::new();
+        let mut satchel_ids = Vec::new();
         for (seat, setup_player) in setup.players.iter().enumerate() {
             let owner = PlayerId::from_index(seat);
             for card in setup_player.library.iter().rev() {
@@ -517,6 +530,9 @@ impl GameState {
             }
             for card in &setup_player.emblems {
                 emblems.push(create(owner, card, Zone::Command(owner)));
+            }
+            for card in &setup_player.satchel {
+                satchel_ids.push(create(owner, card, Zone::Command(owner)));
             }
             un34.bring(owner, setup_player.stickers.clone());
             let status = match setup.start {
@@ -672,6 +688,7 @@ impl GameState {
             un34,
             w15a_initiative: None,
             commanders: Commanders::of(commander_ids),
+            satchels: crate::satchel::Satchels::of(satchel_ids),
             companions,
             looked_by_hand: Vec::new(),
             looked_face_down: Vec::new(),
