@@ -1,6 +1,6 @@
 //! Goal: the table holds still through a typical stretch of play: the board split and every board's card size change only when a board no longer fits or clearly has room for a larger card, never back and forth on one permanent, so the layout script stays under its budget of jumps.
 import { describe, expect, it } from 'vitest'
-import { boardCounts, boardFrames, splitRegions } from './boardSplit'
+import { boardCounts, boardFrames, holdSplit, splitBoards, splitRegions } from './boardSplit'
 import type { HeldRows } from './boardSplit'
 import { fixtureState } from './dev/devGame'
 import { buildFixture } from './dev/fixture'
@@ -125,5 +125,41 @@ describe('fitHeld', () => {
     const nearly = fitHeld(box, lanes(23), 'near', LANE_LIMITS, hold)
     if (fresh.cardWidth < crowded.cardWidth * (1 + GROW_SHARE))
       expect(nearly.cardWidth).toBe(crowded.cardWidth)
+  })
+})
+
+describe('holdSplit', () => {
+  const base = { room: 700, ownChrome: 24, theirChrome: 24, ownWidth: 1100, theirWidth: 1100 }
+  const counts = (lands: number, creatures: number, other: number): LaneCounts => ({
+    lands,
+    creatures,
+    other,
+  })
+
+  it.each([
+    [counts(6, 4, 2), counts(6, 4, 2)],
+    [counts(8, 9, 3), counts(7, 7, 4)],
+    [counts(10, 14, 5), counts(9, 12, 6)],
+  ])('keeps its rows when %o gains a creature and loses it again', (own, theirs) => {
+    const start = splitBoards({ ...base, own, theirs: [theirs] })
+    const more = holdSplit(
+      { ...base, own: { ...own, creatures: own.creatures + 1 }, theirs: [theirs] },
+      start,
+    )
+    const back = holdSplit({ ...base, own, theirs: [theirs] }, more)
+    expect(back.opponents).toBe(more.opponents)
+    expect(more.opponents).toBe(start.opponents)
+  })
+
+  it('gives way to the fresh split when the held rows no longer fit', () => {
+    const start = splitBoards({ ...base, own: counts(2, 1, 0), theirs: [counts(20, 20, 10)] })
+    const crowded = { ...base, own: counts(20, 30, 10), theirs: [counts(20, 20, 10)] }
+    expect(holdSplit(crowded, start)).toEqual(splitBoards(crowded))
+  })
+
+  it('gives way to a clearly larger card that one permanent more would keep', () => {
+    const start = splitBoards({ ...base, own: counts(20, 30, 10), theirs: [counts(2, 2, 1)] })
+    const emptied = { ...base, own: counts(2, 2, 1), theirs: [counts(2, 2, 1)] }
+    expect(holdSplit(emptied, start)).toEqual(splitBoards(emptied))
   })
 })
