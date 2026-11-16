@@ -66,7 +66,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf10n) Phone tables: attack arrows to a seat scrolled out of the tile strip point at the strip's edge
 - [ ] (pf9d) Crowded tables: three heroes at ten permanents each keep cards above 75 px at 1400 × 900, a six-seat grid shows the opponents' lands whole, and the card preview finds room in windows near 1024 px
 - [ ] (pf10d) The choice overlay keeps the hand dock drawn, or gives its room to the overlay, instead of leaving an empty band under the strip
-- [ ] (pf10e) The stack's target arrows on a phone run under the prompt sentence, as the combat lines do
 - [ ] (pf10f) Delves pages on a phone fold the run header (party life and relics) to one line, so the room's choice is on the first screen
 - [ ] (pf10g) Delves shop offers share one height, so every Buy button stands on one line
 - [ ] (pf10h) The lobby's deck detail panel takes the height of its content, and the seats list stays in view beside it

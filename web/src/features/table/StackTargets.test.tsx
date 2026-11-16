@@ -151,6 +151,14 @@ describe('the arrows', () => {
     )
   })
 
+  it('runs above the strip from 640 px and under it on a phone, with a faint copy above as the combat lines have', () => {
+    table([[on(1)]])
+    expect(must(document.querySelector('[data-layer="stack"]'))).toHaveClass('z-[25]', 'max-sm:z-10')
+    const ghost = must(document.querySelector('[data-layer="stack-ghost"]'))
+    expect(ghost).toHaveClass('z-30', 'opacity-30', 'sm:hidden')
+    expect(ghost.querySelectorAll('[data-line]')).toHaveLength(1)
+  })
+
   it('stops at 6 arrows however many targets there are', () => {
     table([Array.from({ length: 9 }, (_, index) => on(index + 1))])
     expect(arrows()).toHaveLength(6)
