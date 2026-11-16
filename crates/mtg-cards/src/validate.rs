@@ -1984,7 +1984,7 @@ impl<'a> Walker<'a> {
                     }
                     CostItem::ExileSpell { filter } => w.at("filter", |w| w.selector(filter)),
                     CostItem::ExileTotalValue { filter, .. } => {
-                        w.at("filter", |w| w.selector(filter))
+                        w.at("filter", |w| w.selector(filter));
                     }
                     CostItem::OneOf(costs) => w.alternatives(costs),
                     CostItem::Discard { count, filter } => {
