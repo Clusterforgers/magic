@@ -197,7 +197,7 @@ impl Delayed {
                         self.bindings.get(name).and_then(|bound| {
                             bound.iter().find_map(|target| match target {
                                 crate::choose::Target::Player(player) => Some(*player),
-                                _ => None,
+                                crate::choose::Target::Object(_) => None,
                             })
                         })
                     }
