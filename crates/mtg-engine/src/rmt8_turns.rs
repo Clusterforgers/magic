@@ -89,6 +89,7 @@ mod tests;
 pub(crate) fn turn_face_down(
     state: &mut GameState,
     id: mtg_core::ids::ObjectId,
+    horror: bool,
 ) -> Result<(), crate::error::EngineError> {
     let object = state
         .objects
@@ -98,7 +99,11 @@ pub(crate) fn turn_face_down(
     if object.face_down.is_some() {
         return Err(crate::fold::invalid(format!("{id:?} is face down already")));
     }
-    object.face_down = Some(crate::object::FaceDown::Morph);
+    object.face_down = Some(if horror {
+        crate::object::FaceDown::R6701Horror
+    } else {
+        crate::object::FaceDown::Morph
+    });
     Ok(())
 }
 

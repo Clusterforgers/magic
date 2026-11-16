@@ -1,7 +1,7 @@
 {
   "oracle_id": "c551f007-9740-4a2a-8ef5-7be1a7afe14b",
   "name": "Altar of the Wretched // Wretched Bonemass",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Altar of the Wretched",
@@ -75,15 +75,44 @@
       "oracle_fingerprint": "0d26da14e5e5f6594e4f85f676da5622",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 111 }
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Stat": { "of": "R6702CraftedWith", "stat": "Power" } },
+                  "toughness": { "Stat": { "of": "R6702CraftedWith", "stat": "Power" } }
+                }
+              }
+            ],
+            "defining": true
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 112, "end": 347 }
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "KeywordsOf": {
+                  "from": "R6702CraftedWith",
+                  "keywords": [
+                    "Flying",
+                    "FirstStrike",
+                    "DoubleStrike",
+                    "Deathtouch",
+                    "Haste",
+                    "Hexproof",
+                    "Indestructible",
+                    "Lifelink",
+                    "Menace",
+                    { "Protection": [] },
+                    "Reach",
+                    "Trample",
+                    "Vigilance"
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

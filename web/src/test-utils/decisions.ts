@@ -47,6 +47,17 @@ export const KINDS: Record<DecisionName, DecisionKind> = {
   ChooseCosts: { ChooseCosts: { source: 1, optional: [] } },
   OrderTriggers: { OrderTriggers: { triggers: [] } },
   ChooseReplacement: { ChooseReplacement: { candidates: [] } },
+  Loop: {
+    Loop: {
+      cards: ['Polyraptor'],
+      per_iteration: {},
+      mandatory: false,
+      bounded: false,
+      max: 10000,
+      asked: 0,
+      can_draw: false,
+    },
+  },
 }
 
 /** A decision of the named kind for `player`. */

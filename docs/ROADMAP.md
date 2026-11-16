@@ -57,6 +57,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - GUI sweep: every screen, table mode and prompt kind shot at the owners' sizes, the findings ranked in `docs/ui-audit.md`.
 - Feel: the twenty rules of motion and interaction, press squash and 44 px hit areas, card travel on an arc with a wind-up and a settle, attacks, hits, entries and deaths pose to pose, the staged stack and attacked seat, the swelling pass button and snappier strikes (`docs/ui-design.md`, `docs/ui-audit.md`).
 - Holding still: card sizes and the board split hold until a board no longer fits or clearly has room, the prompt sheet overlays the boards, moved cards slide, and `scripts/layout-jumps.mjs` counts the jumps of a scripted stretch of play (`docs/web.md`, Holding still).
+- Loops (CR 104.4b, 732): a loop found at priority points, a draw for a mandatory loop that never ends, a shortcut of N iterations its driver chooses, run as one batch with a summary line, bot answers, and the prompt in every layout (`docs/engine.md`, Loops).
 
 ## Live game
 
@@ -86,6 +87,8 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf9g) Copies of one trigger are told apart on the stack, and a trigger whose conditions all fail says why in the log
 - [ ] (pf9h) An ability that rolls several dice makes one roll of them (Mr. House), so "one or more dice" triggers fire once
 - [ ] (pf9i) An announced mana ability (a die roll or discard besides the mana: Vexing Puzzlebox) can be chosen in the PayMana prompt while paying, not only at priority before the cast; automatic payment still leaves it out
+- [ ] (lp1) A pending loop offer survives a rebuild of the engine from the log (a server restart asks priority again and finds the loop three cycles later)
+- [ ] (lp2) A loop that makes a permanent each cycle runs past the shortcut's work cap (about 350 iterations of Kiki-Jiki with Pestermite): each engine step reads every permanent
 
 ## M5 Table and prompts
 

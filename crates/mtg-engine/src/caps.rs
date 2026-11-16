@@ -124,6 +124,8 @@ const RUNS: &[&str] = &[
     "Amount.HighestLife",
     "Amount.LowestHand",
     "Amount.LifeLostThisWay",
+    "Amount.R6702CardTypesOf",
+    "Amount.R6702FlipStakes",
     "Amount.DamageDealtThisWay",
     "Amount.Destroyed",
     "Amount.Exiled",
@@ -201,6 +203,9 @@ const RUNS: &[&str] = &[
     "Cost.Draw",
     "Cost.DiscardRandom",
     "Cost.CollectEvidence",
+    "Cost.R6702CollectEvidenceX",
+    "Cost.R6702SacrificeUpTo",
+    "Cost.R6702ExileTotalX",
     "Cost.ExileCardTypes",
     "Cost.GenericOf",
     "Cost.Blight",
@@ -321,6 +326,7 @@ const RUNS: &[&str] = &[
     "Effect.PutCounters",
     "Effect.RemoveCounters",
     "Effect.RemoveAllCounters",
+    "Effect.R6701RemoveAmong",
     "Effect.MoveCounters",
     "Effect.SpellEntersWith",
     "Effect.MultiplyCounters",
@@ -341,6 +347,7 @@ const RUNS: &[&str] = &[
     "Effect.Flip",
     "Effect.TurnFaceUp",
     "Effect.TurnFaceDown",
+    "Effect.R6701TurnFaceDownHorror",
     "Effect.Prepare",
     "Effect.Unprepare",
     "Effect.Suspect",
@@ -394,6 +401,7 @@ const RUNS: &[&str] = &[
     "Effect.Revive",
     "Effect.ReduceSpeed",
     "Effect.ControlPlayer",
+    "Effect.R6701ControlCombat",
     "Effect.ControlPlayer.By",
     "Effect.RestartGame",
     "Effect.RingTempts",
@@ -461,6 +469,8 @@ const RUNS: &[&str] = &[
     "Effect.ExchangeControl",
     "Effect.R6401PassControl",
     "Effect.R6602CreateAttached",
+    "Effect.R6702Distribute",
+    "Effect.R6702CountersPerVote",
     "Duration.WhileYouControlSource",
     "Rule.Duration.WhileYouControlSource",
     "Rule.Duration.UntilTheirNextTurn",
@@ -492,6 +502,7 @@ const RUNS: &[&str] = &[
     "Ability.Rule",
     "Rule.MustAttack",
     "Rule.MustAttackPlayers",
+    "Rule.R6702MustAttackOneOf",
     "Rule.MustAttackAt",
     "Rule.MustAttackWithOne",
     "Rule.AttackTax",
@@ -668,6 +679,7 @@ const RUNS: &[&str] = &[
     "Mod.LockKeyword",
     "Mod.GrantAbility",
     "Mod.GainAbilitiesOf",
+    "Mod.R6702GainActivatedAndTriggeredOf",
     "Mod.LoseAbilities",
     "Mod.LoseAbilitiesExceptMana",
     "Mod.LoseThisAbility",
@@ -995,6 +1007,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.TappedForCounters",
     "ReplaceBy.RevealOrTapped",
     "ReplaceBy.R6007RevealOrControl",
+    "ReplaceBy.R6702MayAttach",
     "ReplaceBy.Instead.PaysLife",
     "ReplaceBy.BeholdOrTapped",
     "ReplaceBy.PayOrGraveyard",
@@ -1117,6 +1130,7 @@ const RUNS: &[&str] = &[
     "Keyword.Exploit",
     "Keyword.Soulbond",
     "Keyword.Emerge",
+    "Keyword.R6701EmergeFromArtifact",
     "Keyword.Offering",
     "Keyword.Harmonize",
     "Keyword.ReadAhead",
@@ -1524,6 +1538,7 @@ mod tests {
     #[case::putting_counters("Effect.PutCounters", true)]
     #[case::removing_counters("Effect.RemoveCounters", true)]
     #[case::removing_all_counters("Effect.RemoveAllCounters", true)]
+    #[case::r6701_removing_counters_from_among("Effect.R6701RemoveAmong", true)]
     #[case::moving_counters("Effect.MoveCounters", true)]
     #[case::multiplying_counters("Effect.MultiplyCounters", true)]
     #[case::divided_amounts_read_outside_damage_and_counters("Amount.Divided.Elsewhere", false)]
@@ -1949,6 +1964,7 @@ mod tests {
     #[case::soulbond("Keyword.Soulbond", true)]
     #[case::pairing("Effect.Pair", true)]
     #[case::emerge("Keyword.Emerge", true)]
+    #[case::r6701_emerge_from_artifact("Keyword.R6701EmergeFromArtifact", true)]
     #[case::harmonize("Keyword.Harmonize", true)]
     #[case::read_ahead("Keyword.ReadAhead", true)]
     #[case::recover("Keyword.Recover", true)]

@@ -114,6 +114,11 @@ pub(crate) struct Pick {
     pub(crate) reads_x: bool,
     /// What the picked cards have in common as a set ("with the same name", "that share a color").
     pub(crate) alike: Option<Alike>,
+    /// Any number up to `count` is picked, none included ("Sacrifice up to three permanents").
+    pub(crate) up_to: bool,
+    /// One or more are picked whose mana values add up to exactly `count` ("Exile one or more other artifacts you
+    /// control with total mana value X").
+    pub(crate) r6702_total: bool,
 }
 
 /// One part of a cost the engine pays besides `{T}`, mana and the loss of the source.
@@ -256,6 +261,8 @@ fn pick(
             count,
             reads_x,
             alike: None,
+            up_to: false,
+            r6702_total: false,
         }),
         x || reads_x,
     ))
@@ -325,10 +332,48 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     count,
                     reads_x: false,
                     alike: None,
+                    up_to: false,
+                    r6702_total: false,
                 }),
                 false,
             )
         }
+        CostItem::R6702ExileTotalX { filter } => (
+            Part::Pick(Pick {
+                kind: Kind::ExilePermanent,
+                filter: filter.clone(),
+                count: 0,
+                reads_x: false,
+                alike: None,
+                up_to: false,
+                r6702_total: true,
+            }),
+            true,
+        ),
+        CostItem::R6702SacrificeUpTo { filter, most } => (
+            Part::Pick(Pick {
+                kind: Kind::Sacrifice,
+                filter: filter.clone(),
+                count: usize::try_from(*most).unwrap_or(usize::MAX),
+                reads_x: false,
+                alike: None,
+                up_to: true,
+                r6702_total: false,
+            }),
+            false,
+        ),
+        CostItem::R6702CollectEvidenceX => (
+            Part::Pick(Pick {
+                kind: Kind::Evidence,
+                filter: Selector::default(),
+                count: 0,
+                reads_x: false,
+                alike: None,
+                up_to: false,
+                r6702_total: false,
+            }),
+            true,
+        ),
         CostItem::CollectEvidence(value) => {
             let count = usize::try_from(*value).unwrap_or(usize::MAX);
             let filter = Selector::default();
@@ -340,6 +385,8 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     count,
                     reads_x: false,
                     alike: None,
+                    up_to: false,
+                    r6702_total: false,
                 }),
                 false,
             )
@@ -351,6 +398,8 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                 count: usize::try_from(*types).unwrap_or(usize::MAX),
                 reads_x: false,
                 alike: None,
+                up_to: false,
+                r6702_total: false,
             }),
             false,
         ),
@@ -366,6 +415,8 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     count: 1,
                     reads_x: false,
                     alike: None,
+                    up_to: false,
+                    r6702_total: false,
                 }),
                 x,
             )
@@ -408,6 +459,8 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     count: 1,
                     reads_x: false,
                     alike: None,
+                    up_to: false,
+                    r6702_total: false,
                 }),
                 false,
             )
@@ -599,9 +652,19 @@ impl Part {
         matches!(self, Part::X(inner) if matches!(**inner, Part::Life(_)))
     }
 
-    /// Whether the part picks by the X announced ("a red card with mana value X").
+    /// Whether the part picks by the X announced ("a red card with mana value X", "with total mana value X").
     pub(crate) fn r301_picks_by_x(&self) -> bool {
         matches!(self, Part::X(inner) if matches!(&**inner, Part::Pick(pick) if pick.reads_x))
+    }
+
+    /// Whether the part collects evidence X, the X announced with the payment (CR 701.59a).
+    pub(crate) fn r6702_is_counted_evidence(&self) -> bool {
+        matches!(self, Part::X(inner) if matches!(&**inner, Part::Pick(pick) if pick.kind == Kind::Evidence))
+    }
+
+    /// Whether the part picks objects whose mana values add up to the X announced exactly.
+    pub(crate) fn r6702_totals_x(&self) -> bool {
+        matches!(self, Part::X(inner) if matches!(&**inner, Part::Pick(pick) if pick.r6702_total))
     }
 
     /// Whether the part is counters removed from among permanents, as many as the X announced ("remove any number of
@@ -632,6 +695,10 @@ impl Part {
                 counter, filter, ..
             } => among::most(payer, filter, counter.as_ref()),
             Part::Pick(pick) if pick.reads_x => pick.r301_most(payer),
+            // "With total mana value X": X reaches the mana value of every candidate together.
+            Part::Pick(pick) if pick.r6702_total => {
+                evidence::total_value(payer.state, &pick.candidates(payer))
+            }
             // Any number of counters goes on one creature, which needn't survive them (the blight rulings).
             Part::Pick(pick) if matches!(pick.kind, Kind::Blight(_)) => {
                 if pick.candidates(payer).is_empty() {
@@ -1076,6 +1143,12 @@ impl Pick {
 
     /// Whether `candidates` cannot pay the part: too few of them, or too little power among them.
     pub(crate) fn short(&self, state: &GameState, candidates: &[ObjectId]) -> bool {
+        if self.up_to {
+            return false;
+        }
+        if self.r6702_total {
+            return !r6702_sums_to(state, candidates, self.count);
+        }
         if let Some(alike) = self.alike {
             return !r5518_alike::r5518_has_set(state, candidates, self.count, alike);
         }
@@ -1105,6 +1178,16 @@ impl Pick {
         state: &GameState,
         candidates: &[ObjectId],
     ) -> Option<Vec<ObjectId>> {
+        // "Up to three": none is a pick too, so only an empty list goes unasked.
+        if self.up_to {
+            return candidates.is_empty().then(Vec::new);
+        }
+        if self.r6702_total {
+            let alone = candidates.len() == 1
+                && usize::try_from(evidence::total_value(state, candidates)).ok()
+                    == Some(self.count);
+            return alone.then(|| candidates.to_vec());
+        }
         let alone = match self.kind {
             Kind::TapPower | Kind::R5511CardTypes => candidates.len() == 1,
             Kind::Evidence => {
@@ -1178,7 +1261,13 @@ impl Pick {
             let most = u32::try_from(forage::CARDS.min(offered)).unwrap_or(u32::MAX);
             return (1, most);
         }
+        if self.r6702_total {
+            return (1, u32::try_from(offered).unwrap_or(u32::MAX));
+        }
         let count = u32::try_from(self.count).unwrap_or(u32::MAX);
+        if self.up_to {
+            return (0, count.min(u32::try_from(offered).unwrap_or(u32::MAX)));
+        }
         (count, count)
     }
 
@@ -1203,6 +1292,11 @@ impl Pick {
             }
         }
         let needed = u32::try_from(self.count).unwrap_or(u32::MAX);
+        if self.r6702_total && evidence::total_value(state, picked) != needed {
+            return Some(IllegalAnswer::WrongPick(
+                "permanents with exactly that total mana value",
+            ));
+        }
         match self.kind {
             Kind::TapPower => {
                 let got = tap::total_power(state, picked);
@@ -1374,4 +1468,26 @@ fn r286_others_gain(state: &GameState, payer: PlayerId, amount: u32) -> Vec<Even
         .filter(|player| !crate::rules::cant_gain_life(state, *player))
         .map(|player| Event::LifeGained { player, amount })
         .collect()
+}
+
+/// Whether some of `candidates`, at least one, have mana values that add up to exactly `total` (a subset sum).
+fn r6702_sums_to(state: &GameState, candidates: &[ObjectId], total: usize) -> bool {
+    let mut reachable = vec![false; total + 1];
+    let mut any = false;
+    for value in candidates.iter().map(|id| evidence::value_of(state, *id)) {
+        let Ok(value) = usize::try_from(value) else {
+            continue;
+        };
+        if value > total {
+            continue;
+        }
+        for at in (value..=total).rev() {
+            if reachable[at - value] {
+                reachable[at] = true;
+            }
+        }
+        reachable[value] = true;
+        any |= value == total;
+    }
+    any || reachable[total]
 }

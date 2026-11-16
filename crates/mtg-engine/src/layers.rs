@@ -824,6 +824,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::LoseThisAbility
         | Wanted::LosePrinted(_)
         | Wanted::GainAbilitiesOf(_)
+        | Wanted::R6702GainActivatedAndTriggeredOf(_)
         | Wanted::LoseAbilities
         | Wanted::LoseAbilitiesExceptMana => Layer::Ability,
         Wanted::SetPT { .. } | Wanted::SetPower(_) | Wanted::SetToughness(_) if defining => {
@@ -1107,8 +1108,10 @@ impl<'a> Pass<'a> {
         }
         let mut waiting = self.candidates(layer);
         Self::order(&mut waiting);
+        // A set where no effect reads what any writes stays so as effects leave it: the first goes next each time.
+        let mut free = Self::independent(&waiting);
         while !waiting.is_empty() {
-            let at = self.next(&waiting);
+            let at = if free { 0 } else { self.next(&waiting) };
             let chosen = waiting.remove(at);
             if self.apply(&chosen) {
                 // It gave a static ability, whose modifications of this layer join the others.
@@ -1118,6 +1121,7 @@ impl<'a> Pass<'a> {
                     }
                 }
                 Self::order(&mut waiting);
+                free = Self::independent(&waiting);
             }
         }
         if layer == Some(Layer::Type) {
@@ -1315,6 +1319,10 @@ impl<'a> Pass<'a> {
                     rule: ability.address.ability,
                     index,
                 },
+                // A static ability an effect gave grants by the effect and the modification's index.
+                AbilitySource::Granted(Grant::Effect(effect)) => {
+                    Grant::R6701Nested { effect, index }
+                }
                 AbilitySource::Granted(grant) | AbilitySource::GrantedKeyword(grant) => grant,
                 // A static ability a keyword adds (reconfigure) is named by the rule of the keyword on the card.
                 AbilitySource::PrintedKeyword(rule) => Grant::Static {
@@ -1594,6 +1602,14 @@ impl<'a> Pass<'a> {
     /// Which of the waiting effects applies next: the first, by timestamp, that depends on no other effect that does
     /// not depend on it in turn. The characteristic-defining abilities go before the others, and neither kind
     /// depends on the other (CR 613.3, 613.8a). `waiting` is in the order of `order`.
+    /// Whether no effect of `waiting` reads anything one of them writes, so none can depend on another.
+    fn independent(waiting: &[Cand<'_>]) -> bool {
+        let writes = waiting
+            .iter()
+            .fold(Traits::NONE, |all, cand| all.or(cand.writes));
+        !waiting.iter().any(|cand| cand.reads.meets(writes))
+    }
+
     fn next(&self, waiting: &[Cand<'_>]) -> usize {
         let n = waiting
             .iter()
@@ -1605,7 +1621,8 @@ impl<'a> Pass<'a> {
                 && waiting[a].reads.meets(waiting[b].writes)
                 && (waiting[a].ability.is_none() || waiting[a].ability != waiting[b].ability)
         };
-        if n == 1 || !(0..n).any(|a| (0..n).any(|b| may(a, b))) {
+        if n == 1 || Self::independent(&waiting[..n]) || !(0..n).any(|a| (0..n).any(|b| may(a, b)))
+        {
             return 0;
         }
         let mut depends = vec![vec![false; n]; n];

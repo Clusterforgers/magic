@@ -29,6 +29,7 @@ import type { GameResult } from "./GameResult";
 import type { HandLooked } from "./HandLooked";
 import type { LeftToTable } from "./LeftToTable";
 import type { LibraryLooked } from "./LibraryLooked";
+import type { LoopSummary } from "./LoopSummary";
 import type { LossReason } from "./LossReason";
 import type { ManaLasts } from "./ManaLasts";
 import type { ManaType } from "./ManaType";
@@ -166,7 +167,11 @@ by: PlayerId,
 /**
  * Whether the controlled player takes an extra turn after that turn.
  */
-extra_turn?: boolean, } } | { "GameRestarted": { 
+extra_turn?: boolean, 
+/**
+ * The control lasts the player's next combat phase rather than their next turn.
+ */
+combat?: boolean, } } | { "GameRestarted": { 
 /**
  * The player whose effect restarted the game.
  */
@@ -616,7 +621,11 @@ object: ObjectId, } } | { "GameEnded": {
 /**
  * The result.
  */
-result: GameResult, } } | { "AbilityPutOnStack": PutOnStack } | { "AbilityActivated": { 
+result: GameResult, } } | { "LoopDrawn": { 
+/**
+ * The names of the objects whose abilities make up the loop.
+ */
+cards: Array<string>, } } | { "LoopRepeated": LoopSummary } | { "AbilityPutOnStack": PutOnStack } | { "AbilityActivated": { 
 /**
  * Who activated it.
  */
@@ -1287,7 +1296,11 @@ object: ObjectId,
 /**
  * Its controller, who turned it.
  */
-player: PlayerId, } } | { "CommanderColorChosen": { 
+player: PlayerId, 
+/**
+ * It is a 2/2 Horror creature (`FaceDown::R6701Horror`) rather than a plain 2/2 creature.
+ */
+horror?: boolean, } } | { "CommanderColorChosen": { 
 /**
  * Who chose.
  */

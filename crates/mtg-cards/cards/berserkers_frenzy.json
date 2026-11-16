@@ -1,0 +1,63 @@
+{
+  "oracle_id": "5cd51d39-aebc-4367-9157-da70b8d9b1a3",
+  "name": "Berserker's Frenzy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Berserker's Frenzy",
+      "oracle_fingerprint": "24134b691ac6d5413cf5431a6e4f8d5a",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": { "All": [{ "Not": "AfterBlockers" }, { "Not": "AfterCombat" }] }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "highest": 2,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 14,
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": { "Each": [{ "Type": "Creature" }] },
+                            "count": { "min": 0, "max": null },
+                            "as": "chosen"
+                          }
+                        },
+                        {
+                          "Rule": {
+                            "rule": { "MustBlock": { "Bound": "chosen" } },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 15,
+                      "to": 20,
+                      "effects": [
+                        {
+                          "Rule": {
+                            "rule": { "R6400ChoosesBlocks": { "chooser": "You" } },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

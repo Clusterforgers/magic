@@ -295,6 +295,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::LockKeyword(_)
             | mtg_cards::modify::Modification::GrantAbility(_)
             | mtg_cards::modify::Modification::GainAbilitiesOf(_)
+            | mtg_cards::modify::Modification::R6702GainActivatedAndTriggeredOf(_)
             // It counts its number for each object as layer 6 applies (`r6601_ulamog` tests it).
             | mtg_cards::modify::Modification::R6601KeywordX { .. }
             // These read other objects (the last creature card exiled, the keywords of linked cards), which the table's

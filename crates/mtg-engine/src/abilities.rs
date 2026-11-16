@@ -41,6 +41,14 @@ pub enum Grant {
         /// The modification's index among the static's modifications.
         index: usize,
     },
+    /// The modification `index` of the static ability that the continuous effect `effect` gave an object ("This Saga gains
+    /// 'Creatures you control have \"{T}: Add {R}, {G}, or {W}.\"'"): an ability a granted static ability grants in turn.
+    R6701Nested {
+        /// The effect that gave the static ability.
+        effect: EffectId,
+        /// The modification's index among the static's modifications.
+        index: usize,
+    },
     /// The Ring of `player` (CR 701.54), which is no object: its level `level` (1 gives evasion, 2 to 4 each a triggered
     /// ability) gives the Ring-bearer what the level says, whatever the Ring-bearer is called.
     Ring {

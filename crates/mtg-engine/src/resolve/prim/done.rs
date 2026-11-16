@@ -51,6 +51,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::PutCounters { .. }
         | Effect::RemoveCounters { .. }
         | Effect::RemoveAllCounters { .. }
+        | Effect::R6701RemoveAmong { .. }
         | Effect::MoveCounters { .. }
         | Effect::SpellEntersWith { .. }
         | Effect::MultiplyCounters { .. }
@@ -69,6 +70,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Flip { .. }
         | Effect::TurnFaceUp { .. }
         | Effect::TurnFaceDown { .. }
+        | Effect::R6701TurnFaceDownHorror { .. }
         | Effect::Harness { .. }
         | Effect::Plot { .. }
         | Effect::Prepare { .. }
@@ -83,6 +85,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::BecomeMonarch { .. }
         | Effect::ReduceSpeed { .. }
         | Effect::ControlPlayer { .. }
+        | Effect::R6701ControlCombat { .. }
         | Effect::RestartGame { .. }
         | Effect::RingTempts { .. }
         | Effect::CreateEmblem { .. }
@@ -136,6 +139,8 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Continuous { .. }
         | Effect::ExchangeControl { .. }
         | Effect::R6401PassControl { .. }
+        | Effect::R6702Distribute { .. }
+        | Effect::R6702CountersPerVote { .. }
         | Effect::Rule { .. }
         | Effect::Regenerate { .. }
         | Effect::RemoveFromCombat { .. }

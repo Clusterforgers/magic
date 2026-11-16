@@ -75,6 +75,8 @@ pub enum DecisionKind {
     OrderTriggers(TriggersOptions),
     /// Choose which replacement effect applies first.
     ChooseReplacement(ReplacementOptions),
+    /// Repeat a loop a number of times or stop it (CR 732): asked of the player whose choice drives it.
+    Loop(crate::loops::LoopOptions),
 }
 
 impl DecisionKind {
@@ -117,6 +119,7 @@ impl DecisionKind {
             DecisionKind::ChooseCosts(_) => "choose-costs",
             DecisionKind::OrderTriggers(_) => "order-triggers",
             DecisionKind::ChooseReplacement(_) => "choose-replacement",
+            DecisionKind::Loop(_) => "loop",
         }
     }
 }
@@ -962,6 +965,8 @@ pub enum Answer {
     OrderTriggers(TriggersChoice),
     /// The replacement effect applied first.
     ChooseReplacement(ReplacementChoice),
+    /// The answer to a loop offer.
+    Loop(crate::loops::LoopAnswer),
     /// Back out of the spell or ability being announced at a step that allows it (`DecisionKind::can_undo`): nothing
     /// is paid or moved until the payment, so the card stays where it was and no mana is spent (CR 601.2, 727.1).
     Undo,
@@ -992,6 +997,7 @@ impl Answer {
             Answer::ChooseCosts(_) => "choose-costs",
             Answer::OrderTriggers(_) => "order-triggers",
             Answer::ChooseReplacement(_) => "choose-replacement",
+            Answer::Loop(_) => "loop",
             Answer::Undo => "undo",
         }
     }

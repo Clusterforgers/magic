@@ -9,6 +9,7 @@ import { askerWords, numberKey, numberKeysWords, optionLabel, optionSentence } f
 import { KeyHint } from '../KeyHint'
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
+import type { ObjectId } from '@/protocol/generated'
 import type { PromptComponent } from '../types'
 import { UndoButton } from '../UndoButton'
 import { useObjects } from '../useCombatNames'
@@ -31,6 +32,13 @@ export const ChooseOptionPrompt: PromptComponent<'ChooseOption'> = ({ options })
   const seatName = useSeatNamer()
   const me = usePlay((state) => state.seat)
   const [source] = useObjects(useMemo(() => [options.source], [options.source]))
+  const votedIds = useMemo(
+    () => options.options.flatMap((option) => ('SecretObject' in option ? [option.SecretObject] : [])),
+    [options.options],
+  )
+  const voted = useObjects(votedIds)
+  const objectName = (id: ObjectId): string =>
+    voted.find((object) => object?.id === id)?.name ?? 'a permanent'
   const first = useRef<HTMLButtonElement>(null)
   useDefaultFocus(first)
 
@@ -39,7 +47,7 @@ export const ChooseOptionPrompt: PromptComponent<'ChooseOption'> = ({ options })
   const needle = filter.trim().toLowerCase()
   // An option keeps its index in the whole list, so the answer is the same whatever the filter hides.
   const choices = options.options
-    .map((option, index) => ({ option, index, label: optionLabel(option, seatName, me) }))
+    .map((option, index) => ({ option, index, label: optionLabel(option, seatName, me, objectName) }))
     .filter((choice) => !filtering || choice.label.toLowerCase().includes(needle))
   const choose = (index: number) => () => void answer({ ChooseOption: index })
   usePromptKeys(

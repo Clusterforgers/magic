@@ -321,6 +321,9 @@ fn read_clause(
     if let Some(found) = read::r6401_whole(text) {
         return (Some(found), Vec::new());
     }
+    if let Some(found) = read::r6701_whole(text) {
+        return (Some(found), Vec::new());
+    }
     if let Some(found) = read::r6501_whole(text) {
         return (Some(found), Vec::new());
     }

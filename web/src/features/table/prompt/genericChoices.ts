@@ -230,7 +230,7 @@ export function genericChoices(kind: DecisionKind, words: GenericWords): Generic
   }
   if ('ChooseOption' in kind) {
     const offer = each(kind.ChooseOption.options, (option, at) =>
-      pick(`option-${at}`, optionLabel(option, words.seat, words.viewer), { ChooseOption: at }),
+      pick(`option-${at}`, optionLabel(option, words.seat, words.viewer, words.object), { ChooseOption: at }),
     )
     if (kind.ChooseOption.can_cancel !== true) return offer
     return { ...offer, choices: [...offer.choices, back(words, 'Undo')] }
@@ -256,6 +256,16 @@ export function genericChoices(kind: DecisionKind, words: GenericWords): Generic
   if ('ChooseReplacement' in kind) {
     return each(kind.ChooseReplacement.candidates, (candidate, at) =>
       pick(`effect-${at}`, `${words.object(candidate.source)} first`, { ChooseReplacement: at }),
+    )
+  }
+  if ('Loop' in kind) {
+    const { max, can_draw } = kind.Loop
+    return some(
+      pick('loop-stop', 'Stop the loop', { Loop: 'Stop' }),
+      ...[10, 100]
+        .filter((times) => times <= max)
+        .map((times) => pick(`loop-${times}`, `Repeat ${times} times`, { Loop: { Repeat: times } })),
+      ...(can_draw ? [pick('loop-draw', 'Let it loop: a draw', { Loop: 'Draw' })] : []),
     )
   }
   return none()

@@ -51,6 +51,7 @@ const FACE_DOWN: Record<FaceDownKind, string> = {
   Disguise: 'Disguise',
   Manifest: 'Manifest',
   Cloak: 'Cloak',
+  R6701Horror: 'Face down',
   Hideaway: 'Hideaway',
   Held: 'Face down',
   Sealed: 'Face down',

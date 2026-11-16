@@ -212,6 +212,23 @@ pub enum CostItem {
     ExileTop(Amount),
     /// Collect evidence (CR 701.59): exile cards from the payer's graveyard with total mana value at least that much.
     CollectEvidence(u32),
+    /// Collect evidence X (CR 701.59a): the payer announces X as the cost is paid during a resolution, then exiles cards
+    /// from their graveyard with total mana value X or greater; the steps after the payment read that X.
+    R6702CollectEvidenceX,
+    /// Exile one or more permanents the payer controls that the selector names, with total mana value exactly the X
+    /// announced (CR 601.2b): "Exile one or more other artifacts you control with total mana value X".
+    R6702ExileTotalX {
+        /// Which permanents the payer controls may be exiled.
+        filter: Selector,
+    },
+    /// Sacrifice up to this many permanents the selector names, none included ("Sacrifice up to three permanents");
+    /// `Ref::Paid` names them.
+    R6702SacrificeUpTo {
+        /// Which permanents may be chosen.
+        filter: Selector,
+        /// The most.
+        most: u32,
+    },
     /// Generic mana equal to the amount, counted as the cost is paid during a resolution ("echo {X}, where X is your life
     /// total").
     GenericOf(Amount),
@@ -389,6 +406,7 @@ impl Cost {
             | CostItem::ExiledToGraveyard { count, .. }
             | CostItem::ToLibrary { count, .. } => *count == Amount::X,
             CostItem::OneOf(costs) => costs.iter().any(Cost::has_x),
+            CostItem::R6702CollectEvidenceX | CostItem::R6702ExileTotalX { .. } => true,
             _ => false,
         })
     }
@@ -472,6 +490,15 @@ mod tests {
     #[case::forage(Cost(vec![CostItem::Forage]), r#"["Forage"]"#)]
     #[case::waterbend(Cost(vec![CostItem::Waterbend(Amount::Fixed(3))]), r#"[{"Waterbend":3}]"#)]
     #[case::waterbend_x(Cost(vec![CostItem::Waterbend(Amount::X)]), r#"[{"Waterbend":"X"}]"#)]
+    #[case::evidence_x(Cost(vec![CostItem::R6702CollectEvidenceX]), r#"["R6702CollectEvidenceX"]"#)]
+    #[case::sacrifice_up_to(
+        Cost(vec![CostItem::R6702SacrificeUpTo { filter: Selector::default(), most: 3 }]),
+        r#"[{"R6702SacrificeUpTo":{"filter":[],"most":3}}]"#
+    )]
+    #[case::exile_total_x(
+        Cost(vec![CostItem::R6702ExileTotalX { filter: Selector(vec![Pred::Other]) }]),
+        r#"[{"R6702ExileTotalX":{"filter":["Other"]}}]"#
+    )]
     #[case::exiled_to_graveyard(
         Cost(vec![CostItem::ExiledToGraveyard { filter: Selector(vec![Pred::OwnedBy(Ref::Opponents)]), count: Amount::Fixed(2) }]),
         r#"[{"ExiledToGraveyard":{"filter":[{"OwnedBy":"Opponents"}],"count":2}}]"#
@@ -510,6 +537,20 @@ mod tests {
     fn x_is_found_in_mana_and_life_parts() {
         assert!(Cost(vec![mana("{X}{R}")]).has_x());
         assert!(Cost(vec![CostItem::PayLife(Amount::X)]).has_x());
+        assert!(Cost(vec![CostItem::R6702CollectEvidenceX]).has_x());
+        assert!(
+            Cost(vec![CostItem::R6702ExileTotalX {
+                filter: Selector::default()
+            }])
+            .has_x()
+        );
+        assert!(
+            !Cost(vec![CostItem::R6702SacrificeUpTo {
+                filter: Selector::default(),
+                most: 3
+            }])
+            .has_x()
+        );
         assert!(!Cost(vec![mana("{2}"), CostItem::Tap]).has_x());
     }
 }

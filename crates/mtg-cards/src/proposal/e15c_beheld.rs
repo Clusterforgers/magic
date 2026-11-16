@@ -17,7 +17,9 @@ pub(super) fn paid_words(abilities: &[Ability]) -> Option<String> {
         return None;
     }
     match cost.0.as_slice() {
-        [CostItem::CollectEvidence(_)] => Some("evidence was collected".to_owned()),
+        [CostItem::CollectEvidence(_) | CostItem::R6702CollectEvidenceX] => {
+            Some("evidence was collected".to_owned())
+        }
         [
             CostItem::Behold {
                 filter,

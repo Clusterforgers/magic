@@ -1,4 +1,4 @@
-//! Goal: the smoke gate passes Verified corpus cards that the games use, counts how each kind of card is used, and names the failure of a rules file whose effect errors, a card that loops, a card that can never be cast and a card the games never meet.
+//! Goal: the smoke gate passes Verified corpus cards that the games use, counts how each kind of card is used, and names the failure of a rules file whose effect errors, a card that loops with a growing stack, a card that can never be cast, a card the games never meet, and passes a card whose mandatory loop repeats one state, which draws the game.
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -44,10 +44,28 @@ fn erroring_spell() -> Arc<CardDefinition> {
     with_rules(&instant("Erroring Spell", 0, &[Color::Green]), vec![spell])
 }
 
-/// A free creature that gains its controller life as it enters and whenever anyone gains life: a loop with no end.
+/// A free creature that gains its controller life as it enters and twice whenever anyone gains life: a loop with no
+/// end whose stack grows, so it never repeats a state and only the watchdog stops it.
 fn looping_creature() -> Arc<CardDefinition> {
     creature_with(
         "Looping Creature",
+        vec![
+            trigger(when::this_enters(), vec![gain_life(1)]),
+            trigger(
+                TriggerPattern::LifeGained {
+                    who: Ref::each_player(),
+                },
+                vec![gain_life(1), gain_life(1)],
+            ),
+        ],
+    )
+}
+
+/// A free creature that gains its controller life as it enters and whenever anyone gains life: a loop of mandatory
+/// actions that repeats the same state.
+fn drawing_creature() -> Arc<CardDefinition> {
+    creature_with(
+        "Drawing Creature",
         vec![
             trigger(when::this_enters(), vec![gain_life(1)]),
             trigger(
@@ -58,6 +76,12 @@ fn looping_creature() -> Arc<CardDefinition> {
             ),
         ],
     )
+}
+
+#[test]
+fn a_card_whose_loop_repeats_the_same_state_draws_the_game() {
+    let report = smoke(&drawing_creature());
+    assert!(report.passed(), "{:?}", report.failure);
 }
 
 #[rstest]

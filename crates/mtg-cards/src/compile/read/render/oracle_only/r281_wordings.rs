@@ -112,6 +112,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
 fn cost_words(item: &CostItem) -> Option<String> {
     match item {
         CostItem::CollectEvidence(total) => Some(format!("Collect evidence {total}")),
+        CostItem::R6702CollectEvidenceX => Some("Collect evidence X".to_owned()),
         CostItem::ReturnToHand {
             filter,
             count: crate::value::Amount::Fixed(3),

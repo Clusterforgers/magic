@@ -488,6 +488,12 @@ struct Walker<'a> {
     amounting: Amounting,
     /// How many abilities deep the walk stands inside abilities that other abilities grant or tokens carry.
     nested: u32,
+    /// The walk stands in the changes of a resolved effect (`Effect::Continuous`), whose granted static ability may grant
+    /// abilities in turn (`Grant::R6701Nested` in the engine).
+    r6701_effect_grant: bool,
+    /// The walk stands in the changes of a static ability that names spells, which may give a way to cast them
+    /// (`Ability::AltCast`).
+    r6701_spell_grant: bool,
     /// The values chosen before an emblem is made, which its abilities may read: the engine writes them in as the
     /// emblem is made.
     r4702_emblem_values: BTreeSet<String>,
@@ -537,6 +543,8 @@ impl<'a> Walker<'a> {
             r5523_spell_cap: false,
             amounting: Amounting::Other,
             nested: 0,
+            r6701_effect_grant: false,
+            r6701_spell_grant: false,
             r4702_emblem_values: BTreeSet::new(),
             after: After::Nothing,
             after_may: false,
@@ -695,7 +703,7 @@ impl<'a> Walker<'a> {
                 self.reference(on, Kind::Object);
                 self.expect(Kind::Either, want);
             }
-            Ref::Delved => self.expect(Kind::Object, want),
+            Ref::Delved | Ref::R6702CraftedWith => self.expect(Kind::Object, want),
             Ref::LastExiledWith { on, filter } => {
                 self.reference(on, Kind::Object);
                 self.at("filter", |w| w.selector(filter));
@@ -1224,6 +1232,7 @@ impl<'a> Walker<'a> {
                 }
             }
             Amount::DamageDealtThisWay => self.uses("Amount", "DamageDealtThisWay"),
+            Amount::R6702FlipStakes => self.uses("Amount", "R6702FlipStakes"),
             _ => self.uses("Amount", "LifeLostThisWay"),
         }
     }
@@ -1345,6 +1354,10 @@ impl<'a> Walker<'a> {
             }
             Amount::Distinct { of, stat } => self.r374_distinct_of(of, *stat),
             Amount::CardTypes(of) => self.w2c_selector_amount("CardTypes", of),
+            Amount::R6702CardTypesOf(of) => {
+                self.uses("Amount", "R6702CardTypesOf");
+                self.at("of", |w| w.reference(of, Kind::Object));
+            }
             Amount::Destroyed(of) => self.w2c_selector_amount("Destroyed", of),
             Amount::Exiled(of) => self.w2c_selector_amount("Exiled", of),
             Amount::PhasedOut(of) => self.w2c_selector_amount("PhasedOut", of),
@@ -1353,6 +1366,7 @@ impl<'a> Walker<'a> {
             Amount::LowestLife(who) => self.player_amount("LowestLife", who),
             Amount::LowestHand(_)
             | Amount::LifeLostThisWay
+            | Amount::R6702FlipStakes
             | Amount::DamageDealtThisWay
             | Amount::DieResult(_) => {
                 self.hand_or_life_lost(amount);
@@ -1611,11 +1625,13 @@ impl<'a> Walker<'a> {
             | Amount::Total { .. }
             | Amount::Distinct { .. }
             | Amount::CardTypes(_)
+            | Amount::R6702CardTypesOf(_)
             | Amount::Players(_)
             | Amount::LowestLife(_)
             | Amount::HighestLife(_)
             | Amount::LowestHand(_)
             | Amount::LifeLostThisWay
+            | Amount::R6702FlipStakes
             | Amount::DamageDealtThisWay
             | Amount::Destroyed(_)
             | Amount::Exiled(_)
@@ -1990,7 +2006,9 @@ impl<'a> Walker<'a> {
                             w.at("filter", |w| w.selector(filter));
                         }
                     }
-                    CostItem::TapPower { filter, .. } => {
+                    CostItem::TapPower { filter, .. }
+                    | CostItem::R6702SacrificeUpTo { filter, .. }
+                    | CostItem::R6702ExileTotalX { filter } => {
                         w.at("filter", |w| w.selector(filter));
                     }
                     CostItem::ManaCostOf(of) => {
@@ -2014,6 +2032,7 @@ impl<'a> Walker<'a> {
                     | CostItem::DiscardSelf
                     | CostItem::Unattach
                     | CostItem::CollectEvidence(_)
+                    | CostItem::R6702CollectEvidenceX
                     | CostItem::ExileCardTypes(_)
                     | CostItem::Waterbend(_)
                     | CostItem::OthersGainLife(_)
@@ -2691,6 +2710,7 @@ impl<'a> Walker<'a> {
             | Keyword::Disturb(cost)
             | Keyword::MoreThanMeetsTheEye(cost)
             | Keyword::Emerge(cost)
+            | Keyword::R6701EmergeFromArtifact(cost)
             | Keyword::Harmonize(cost)
             | Keyword::Freerunning(cost)
             | Keyword::Spectacle(cost)
@@ -2828,7 +2848,9 @@ impl<'a> Walker<'a> {
             Modification::SetController(who) | Modification::R6601CantAttackPlayers(who) => {
                 self.reference(who, Kind::Player);
             }
-            Modification::GainAbilitiesOf(from) | Modification::SetCreatureTypesOf(from) => {
+            Modification::GainAbilitiesOf(from)
+            | Modification::R6702GainActivatedAndTriggeredOf(from)
+            | Modification::SetCreatureTypesOf(from) => {
                 self.reference(from, Kind::Object);
             }
             Modification::KeywordsOf { from, keywords } => {
@@ -2933,6 +2955,7 @@ impl<'a> Walker<'a> {
             | Ability::Triggered { .. }
             | Ability::Static { .. }
             | Ability::CostModifier { .. } => {}
+            Ability::AltCast { .. } if self.r6701_spell_grant => {}
             Ability::Rule { from, .. } | Ability::Replacement { from, .. } => {
                 if !from.is_battlefield() {
                     self.problem("a granted rule or replacement works from the battlefield");
@@ -2949,17 +2972,20 @@ impl<'a> Walker<'a> {
             if *defining {
                 self.problem("a static ability that is granted cannot be characteristic-defining");
             }
-            if mods
-                .iter()
-                .any(|modification| matches!(modification, Modification::GrantAbility(_)))
+            if !self.r6701_effect_grant
+                && mods
+                    .iter()
+                    .any(|modification| matches!(modification, Modification::GrantAbility(_)))
             {
                 self.problem("a static ability that is granted cannot grant abilities in turn");
             }
         }
         let scope = std::mem::take(&mut self.scope);
+        let effect_grant = std::mem::replace(&mut self.r6701_effect_grant, false);
         self.nested += 1;
         self.at("GrantAbility", |w| w.ability(granted));
         self.nested -= 1;
+        self.r6701_effect_grant = effect_grant;
         self.scope = scope;
     }
 
@@ -3197,6 +3223,12 @@ impl<'a> Walker<'a> {
             TriggerPattern::AnyOf(patterns) => self.any_of(patterns),
             TriggerPattern::Batch(inner) => self.batch(inner),
             TriggerPattern::Nth { event, nth } => self.nth(event, *nth),
+            TriggerPattern::R6701WhileActivating { inner, .. } => {
+                if !matches!(**inner, TriggerPattern::ZoneChange { .. }) {
+                    self.problem("an activation wraps one zone change");
+                }
+                self.at("inner", |w| w.trigger_pattern(inner));
+            }
             TriggerPattern::Caused { inner, by, source } => {
                 self.at("source", |w| w.selector(source));
                 if let Some(by) = by {
@@ -3276,6 +3308,7 @@ impl<'a> Walker<'a> {
             inner,
             TriggerPattern::Batch(_)
                 | TriggerPattern::Caused { .. }
+                | TriggerPattern::R6701WhileActivating { .. }
                 | TriggerPattern::Nth { .. }
                 | TriggerPattern::AnyOf(_)
                 | TriggerPattern::State { .. }
@@ -3771,6 +3804,7 @@ impl Walker<'_> {
             Ref::Affected
             | Ref::LastExiledWith { .. }
             | Ref::Delved
+            | Ref::R6702CraftedWith
             | Ref::Candidate
             | Ref::This
             | Ref::Dealer
@@ -3882,7 +3916,7 @@ impl Walker<'_> {
     }
 
     /// `Vote`: at least two named choices that are names of their own, or the players or objects to vote for with the
-    /// name of the winners or of every vote; only a vote on named choices or on players is secret.
+    /// name of the winners or of every vote; a secret vote is on named choices, on players or on objects, never on both.
     fn vote(&mut self, options: &VoteFor, secret: bool, bind: Option<&str>, tally: Option<&str>) {
         let kind = match options {
             VoteFor::Named(names) => {
@@ -3903,8 +3937,8 @@ impl Walker<'_> {
             }
             VoteFor::AnotherPlayer => Kind::Player,
         };
-        if secret && kind != Kind::Player {
-            self.problem("only a vote on named choices or on players is secret");
+        if secret && kind == Kind::Either {
+            self.problem("a secret vote is on players or on objects, not both");
         }
         if bind.is_none() && tally.is_none() {
             self.problem("a vote on players or objects names its winners");
@@ -4415,6 +4449,7 @@ impl Walker<'_> {
             | Effect::Flip { what }
             | Effect::TurnFaceUp { what }
             | Effect::TurnFaceDown { what }
+            | Effect::R6701TurnFaceDownHorror { what }
             | Effect::LockOrUnlockDoor { what }
             | Effect::Prepare { what }
             | Effect::Unprepare { what }
@@ -4710,6 +4745,7 @@ impl Walker<'_> {
             | Effect::Exploit { who } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
             }
+            Effect::R6701ControlCombat { who } => w.at("who", |w| w.reference(who, Kind::Player)),
             Effect::ControlPlayer { who, by, .. } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("by", |w| w.reference(by, Kind::Player));
@@ -4832,6 +4868,11 @@ impl Walker<'_> {
                 w.at("count", |w| w.amount(count));
             }
             Effect::RemoveAllCounters { from, .. } => w.at("from", |w| w.reference(from, Kind::Either)),
+            Effect::R6701RemoveAmong { from, bind } => {
+                w.at("from", |w| w.reference(from, Kind::Either));
+                w.at("as", |w| w.bind(bind, Kind::Either));
+                w.scope.numbers.insert(bind.clone());
+            }
             Effect::RepeatEach {
                 over,
                 bind,
@@ -5161,7 +5202,9 @@ impl Walker<'_> {
                 duration,
             } => {
                 w.at("affected", |w| w.reference(affected, Kind::Object));
+                let effect_grant = std::mem::replace(&mut w.r6701_effect_grant, true);
                 w.at("mods", |w| w.mods(mods));
+                w.r6701_effect_grant = effect_grant;
                 if *duration == Duration::WhileYouControlSource {
                     w.uses("Duration", "WhileYouControlSource");
                 }
@@ -5211,6 +5254,13 @@ impl Walker<'_> {
             }
             Effect::R6401PassControl { what, .. } => {
                 w.at("what", |w| w.selector(what));
+            }
+            Effect::R6702CountersPerVote { tally, .. } => {
+                w.at("tally", |w| w.reference(&Ref::Bound(tally.clone()), Kind::Either));
+            }
+            Effect::R6702Distribute { among, count, .. } => {
+                w.at("among", |w| w.reference(among, Kind::Object));
+                w.at("count", |w| w.amount(count));
             }
             Effect::ExchangeControl { what, duration } => {
                 if matches!(
@@ -5796,7 +5846,9 @@ impl Walker<'_> {
             });
         }
         self.scope.in_static = true;
+        self.r6701_spell_grant = names_spells(affected);
         self.at("mods", |w| w.mods(mods));
+        self.r6701_spell_grant = false;
         if names_spells(affected) {
             self.spell_keywords(mods);
         }
@@ -5844,7 +5896,7 @@ impl Walker<'_> {
                 Modification::AddKeyword(
                     Keyword::Convoke | Keyword::Improvise | Keyword::Delve | Keyword::Affinity(_)
                 )
-            )
+            ) || matches!(m, Modification::GrantAbility(granted) if matches!(**granted, Ability::AltCast { .. }))
         };
         if !mods.iter().all(helps) {
             self.at("mods", |w| {
@@ -6212,7 +6264,8 @@ impl Walker<'_> {
                 }
                 w.at("at", |w| w.reference(at, Kind::Object));
             }),
-            GameRule::MustAttackPlayers { who, players } => self.at(tag, |w| {
+            GameRule::MustAttackPlayers { who, players }
+            | GameRule::R6702MustAttackOneOf { who, players } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Object));
                 w.at("players", |w| w.reference(players, Kind::Player));
             }),
@@ -7072,9 +7125,14 @@ impl Walker<'_> {
         self.e19_mill(when, by);
         if let ReplaceWhen::TurnedFaceUp { what } = when
             && (*what != Selector::this()
-                || !matches!(by, ReplaceBy::WithCounters { tapped: false, .. }))
+                || !matches!(
+                    by,
+                    ReplaceBy::WithCounters { tapped: false, .. } | ReplaceBy::R6702MayAttach(_)
+                ))
         {
-            self.problem("turning face up only puts counters on the permanent itself");
+            self.problem(
+                "turning face up only puts counters on the permanent itself or attaches it",
+            );
         }
         if matches!(when, ReplaceWhen::R6603DrawsSeveral { at_least, .. } if *at_least < 2)
             || matches!((when, by), (ReplaceWhen::R6603DrawsSeveral { .. }, by) if !matches!(by, ReplaceBy::Instead(_)))
@@ -7229,6 +7287,12 @@ impl Walker<'_> {
                     self.uses("Keyword", "Devour.X");
                 }
                 self.at("of", |w| w.selector(of));
+            }
+            ReplaceBy::R6702MayAttach(to) => {
+                if !matches!(when, ReplaceWhen::TurnedFaceUp { .. }) {
+                    self.problem("only an Aura turned face up is attached as it turns");
+                }
+                self.at("to", |w| w.selector(to));
             }
             ReplaceBy::PayLifeOrTapped(0) => self.problem("paying no life is entering untapped"),
             ReplaceBy::TappedForCounters { count: 0, .. } => {
@@ -7450,6 +7514,9 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::TapPermanents { .. }
                 | CostItem::TapPower { .. }
                 | CostItem::CollectEvidence(_)
+                | CostItem::R6702CollectEvidenceX
+                | CostItem::R6702SacrificeUpTo { .. }
+                | CostItem::R6702ExileTotalX { .. }
                 | CostItem::ExileCardTypes(_)
                 | CostItem::Blight(_)
                 | CostItem::Behold { .. }
@@ -7478,6 +7545,7 @@ const fn r379_replaces_cost(keyword: &Keyword) -> bool {
             | Keyword::Disturb(_)
             | Keyword::Mayhem(_)
             | Keyword::Emerge(_)
+            | Keyword::R6701EmergeFromArtifact(_)
             | Keyword::Harmonize(_)
             | Keyword::Freerunning(_)
             | Keyword::Bestow(_)
@@ -7490,7 +7558,9 @@ fn announces_x(cost: &Cost) -> bool {
         || cost.0.iter().any(|item| {
             matches!(
                 item,
-                CostItem::PayEnergy(Amount::X) | CostItem::PayLife(Amount::X)
+                CostItem::PayEnergy(Amount::X)
+                    | CostItem::PayLife(Amount::X)
+                    | CostItem::R6702CollectEvidenceX
             ) || r4710_among_x(item)
                 || r6602_discard_by_x(item)
         })
@@ -7654,9 +7724,11 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
         |(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true, .. } if cost.has_x()),
     );
     // An optional cost names what it took once paid ("If you revealed a Dragon card or chose a Dragon ...").
-    walker.pays_objects = card
-        .abilities()
-        .any(|(_, a)| matches!(a, Ability::AdditionalCost { cost, .. } if picks(cost)));
+    walker.pays_objects = card.abilities().any(|(_, a)| {
+        matches!(a, Ability::AdditionalCost { cost, .. } if picks(cost))
+                // A way to cast the card for a cost that takes objects ("the returned creature").
+                || matches!(a, Ability::AltCast { cost: Some(cost), .. } if picks(cost))
+    });
     if !is_uuid(&card.oracle_id) {
         walker.at("oracle_id", |w| w.problem("not a lowercase UUID"));
     }
@@ -7879,6 +7951,8 @@ fn lists(k: &Keyword, keyword: &str) -> bool {
             && Keyword::Partner.name().eq_ignore_ascii_case(keyword))
         // Scryfall lists `Enchant` for an Aura that enchants a player as it does for any other.
         || (matches!(k, Keyword::EnchantPlayer { .. }) && "Enchant".eq_ignore_ascii_case(keyword))
+        // Scryfall lists `Emerge` for emerge from artifact.
+        || (matches!(k, Keyword::R6701EmergeFromArtifact(_)) && "Emerge".eq_ignore_ascii_case(keyword))
         // Scryfall lists `Crew` for a crew that may be activated only once each turn.
         || (matches!(k, Keyword::CrewOnce(_)) && "Crew".eq_ignore_ascii_case(keyword))
         // Scryfall lists `Equip` for an Equipment that equips only some creatures as for any other.
@@ -9114,9 +9188,9 @@ mod tests {
         r#"{"Spell":{"effects":[{"Vote":{"options":{"Of":{"Each":[]}}}}]}}"#,
         "faces[0].abilities[0].Spell.effects[0].Vote: a vote on players or objects names its winners"
     )]
-    #[case::a_secret_vote_on_objects(
-        r#"{"Spell":{"effects":[{"Vote":{"options":{"Of":{"Each":[]}},"secret":true,"as":"won"}}]}}"#,
-        "faces[0].abilities[0].Spell.effects[0].Vote: only a vote on named choices or on players is secret"
+    #[case::a_secret_vote_on_players_and_objects(
+        r#"{"Spell":{"effects":[{"Vote":{"options":{"Of":{"Union":["EachPlayer",{"Each":[]}]}},"secret":true,"as":"won"}}]}}"#,
+        "faces[0].abilities[0].Spell.effects[0].Vote: a secret vote is on players or on objects, not both"
     )]
     #[case::a_vote_name_bound_twice(
         r#"{"Spell":{"effects":[{"Vote":{"options":{"Named":["a","b"]}}},{"Vote":{"options":{"Named":["b","c"]}}}]}}"#,

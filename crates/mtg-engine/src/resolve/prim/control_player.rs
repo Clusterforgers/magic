@@ -1,4 +1,5 @@
-//! `Effect::ControlPlayer`: the controller of the effect controls a player during that player's next turn (CR 722).
+//! `Effect::ControlPlayer`: the controller of the effect controls a player during that player's next turn (CR 722);
+//! `Effect::R6701ControlCombat`: during that player's next combat phase.
 
 use mtg_cards::effect::Effect;
 use mtg_cards::refs::Ref;
@@ -11,13 +12,14 @@ use crate::resolve::{Cx, ResolveError, Run};
 /// the effect or by the player `by` names; `player_control` starts it with that player's next turn. Nothing happens
 /// when `by` names no player still in the game.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::ControlPlayer {
-        who,
-        by,
-        extra_turn,
-    } = effect
-    else {
-        return Err(wrong_effect("ControlPlayer"));
+    let (who, by, extra_turn, combat) = match effect {
+        Effect::ControlPlayer {
+            who,
+            by,
+            extra_turn,
+        } => (who, by, extra_turn, false),
+        Effect::R6701ControlCombat { who } => (who, &Ref::You, &false, true),
+        _ => return Err(wrong_effect("ControlPlayer")),
     };
     let state = cx.state();
     let by = if *by == Ref::You {
@@ -42,6 +44,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 player,
                 by,
                 extra_turn: *extra_turn,
+                combat,
             })
             .collect(),
     ))
@@ -92,6 +95,7 @@ mod tests {
                     player,
                     by,
                     extra_turn,
+                    combat: false,
                 } => {
                     assert_eq!(*by, ME);
                     (player.0, *extra_turn)

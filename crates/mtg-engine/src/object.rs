@@ -109,6 +109,9 @@ pub enum FaceDown {
     Morph,
     /// A spell or permanent cast face down for its disguise (CR 702.168): as a morph, with ward {2}.
     Disguise,
+    /// A permanent an effect turned face down as a 2/2 Horror creature ("They're 2/2 Horror creatures"): as a morph, with
+    /// the creature type Horror (CR 708.2a); turned face up only for a morph or disguise cost of its own.
+    R6701Horror,
     /// A card put onto the battlefield face down by manifest (CR 701.40a): as a morph, a 2/2 creature that only its controller
     /// may look at; it can be turned face up for its mana cost when it is a creature card.
     Manifest,
@@ -148,9 +151,11 @@ impl FaceDown {
             FaceDown::Foretold { .. } | FaceDown::Hideaway { .. } => owner == viewer,
             FaceDown::Held { looker, .. } => looker == viewer,
             FaceDown::Sealed { .. } | FaceDown::Attraction => false,
-            FaceDown::Morph | FaceDown::Disguise | FaceDown::Manifest | FaceDown::Cloak => {
-                controller == viewer
-            }
+            FaceDown::Morph
+            | FaceDown::Disguise
+            | FaceDown::Manifest
+            | FaceDown::Cloak
+            | FaceDown::R6701Horror => controller == viewer,
         }
     }
 }
@@ -247,6 +252,8 @@ pub struct PermanentState {
     pub(crate) convoked: Vec<ObjectRef>,
     /// The cards exiled with the delve of its spell, as they are in exile (CR 702.66).
     pub(crate) delved: Vec<ObjectRef>,
+    /// The cards exiled to pay the craft cost of the ability that returned it, as they are in exile (CR 702.167c).
+    pub(crate) r6702_crafted: Vec<ObjectRef>,
     /// The copy effect that makes the permanent a copy of another object (CR 707): its copiable values replace the card's.
     pub(crate) copy: Option<CopyEffect>,
     /// The cards the permanent is made of once a mutating creature spell has merged with it (CR 729).
@@ -294,6 +301,7 @@ impl PermanentState {
             spent_from,
             convoked: Vec::new(),
             delved: Vec::new(),
+            r6702_crafted: Vec::new(),
             copy: None,
             merged: None,
             phased: PhasedState::default(),

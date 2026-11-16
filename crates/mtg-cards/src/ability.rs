@@ -156,6 +156,8 @@ pub enum ActivationKind {
     /// The buyback cost of a spell (CR 702.27): an additional cost, not an ability, whose mana only a modifier of this
     /// kind changes ("Buyback costs cost {2} less").
     Buyback,
+    /// A craft ability (CR 702.167): "while you're activating a craft ability".
+    R6701Craft,
 }
 
 /// Whether a count is zero, so serialization can leave it out.

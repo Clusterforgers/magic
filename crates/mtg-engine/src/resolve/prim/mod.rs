@@ -43,6 +43,8 @@ mod r6403_aura_swap;
 mod r6403_meld;
 mod r6501_redistribute;
 mod r6602_create_attached;
+mod r6702_distribute;
+mod r6702_per_vote;
 mod retarget;
 mod ring_tempts;
 mod rmt2_shares;
@@ -146,6 +148,7 @@ mod r6102_random_counter;
 mod r6400_block;
 pub(crate) mod r6402_change_roll;
 pub(crate) mod r6502_enters_as;
+mod r6701_remove_among;
 mod regenerate;
 mod remove_counters;
 mod remove_from_combat;
@@ -275,6 +278,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::PutCounters { .. } => put_counters::run(cx, effect),
         Effect::RemoveCounters { .. } => remove_counters::run(cx, effect),
         Effect::RemoveAllCounters { .. } => remove_counters::run_all(cx, effect),
+        Effect::R6701RemoveAmong { .. } => r6701_remove_among::run(cx, effect),
         Effect::MoveCounters { .. } => move_counters::run(cx, effect),
         Effect::SpellEntersWith { .. } => spell_enters_with::run(cx, effect),
         Effect::MultiplyCounters { .. } => multiply_counters::run(cx, effect),
@@ -291,7 +295,9 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Transform { .. } => transform::run(cx, effect),
         Effect::Flip { .. } => flip::run(cx, effect),
         Effect::TurnFaceUp { .. } => turn_up::run(cx, effect),
-        Effect::TurnFaceDown { .. } => rmt8_turn_down::run(cx, effect),
+        Effect::TurnFaceDown { .. } | Effect::R6701TurnFaceDownHorror { .. } => {
+            rmt8_turn_down::run(cx, effect)
+        }
         Effect::Harness { .. } => rmt8_turn_down::harness(cx, effect),
         Effect::Plot { .. } => r282_plot::run(cx, effect),
         Effect::Prepare { .. } => prepare::run(cx, effect),
@@ -305,7 +311,9 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Fight { .. } => fight::run(cx, effect),
         Effect::BecomeMonarch { .. } => become_monarch::run(cx, effect),
         Effect::ReduceSpeed { .. } => r5521_reduce_speed::run(cx, effect),
-        Effect::ControlPlayer { .. } => control_player::run(cx, effect),
+        Effect::ControlPlayer { .. } | Effect::R6701ControlCombat { .. } => {
+            control_player::run(cx, effect)
+        }
         Effect::RestartGame { .. } => restart_game::run(cx, effect),
         Effect::RingTempts { .. } => ring_tempts::run(cx, effect),
         Effect::CreateEmblem { .. } => w6b_create_emblem::run(cx, effect),
@@ -359,6 +367,8 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Continuous { .. } => continuous::run(cx, effect),
         Effect::ExchangeControl { .. } => w6e_exchange::run(cx, effect),
         Effect::R6401PassControl { .. } => r6401_pass_control::run(cx, effect),
+        Effect::R6702Distribute { .. } => r6702_distribute::run(cx, effect),
+        Effect::R6702CountersPerVote { .. } => r6702_per_vote::run(cx, effect),
         Effect::Rule { .. } => rule::run(cx, effect),
         Effect::Regenerate { .. } => regenerate::run(cx, effect),
         Effect::RemoveFromCombat { .. } => remove_from_combat::run(cx, effect),
@@ -445,6 +455,8 @@ mod tests {
         {"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}},
         {"ExchangeControl":{"what":["This"],"duration":"Forever"}},
         {"R6401PassControl":{"side":"Left","what":[],"pick":"All"}},
+        {"R6702Distribute":{"among":"This","counter":{"Other":"stun"},"count":3}},
+        {"R6702CountersPerVote":{"tally":"votes","counter":{"Other":"stun"}}},
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
         {"Regenerate":{"what":"This"}}, {"RemoveFromCombat":{"what":"This"}}, {"R6400Block":{"what":"This"}},
         {"BecomeBlocked":{"what":"This"}},
@@ -479,7 +491,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 151, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 153, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -636,6 +648,8 @@ mod tests {
         "Effect.Continuous",
         "Effect.ExchangeControl",
         "Effect.R6401PassControl",
+        "Effect.R6702Distribute",
+        "Effect.R6702CountersPerVote",
         "Effect.Rule",
         "Effect.Regenerate",
         "Effect.RemoveFromCombat",

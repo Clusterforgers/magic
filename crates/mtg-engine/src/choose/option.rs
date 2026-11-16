@@ -28,6 +28,8 @@ pub enum ChoiceOption {
     Secret(String),
     /// A player voted for face down: the answer is not shown to the other seats until the vote is done.
     SecretPlayer(PlayerId),
+    /// A permanent or card voted for face down: the answer is not shown to the other seats until the vote is done.
+    SecretObject(ObjectId),
     /// A side of a coin, called before the flip (CR 705.1).
     Side(CoinSide),
 }
@@ -89,7 +91,9 @@ pub(crate) fn answer(
     }
     let secret = matches!(
         options.options.get(choice.0),
-        Some(ChoiceOption::Secret(_) | ChoiceOption::SecretPlayer(_))
+        Some(
+            ChoiceOption::Secret(_) | ChoiceOption::SecretPlayer(_) | ChoiceOption::SecretObject(_)
+        )
     );
     Ok(Outcome::Events(vec![Event::ChoiceMade {
         player,

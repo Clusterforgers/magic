@@ -2,8 +2,11 @@
 
 use mtg_cards::effect::Effect;
 
+use mtg_core::ids::{ObjectId, PlayerId};
+
 use super::wrong_effect;
 use crate::characteristics::controller_of_object;
+use crate::choose::{Picked, Selection, pick_selections};
 use crate::events::Event;
 use crate::object::FaceDown;
 use crate::resolve::{Cx, ResolveError, Run};
@@ -17,7 +20,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Err(wrong_effect("TurnFaceUp"));
     };
     let state = cx.state();
-    let events = cx
+    let events: Vec<Event> = cx
         .scope
         .live_objects(what)?
         .into_iter()
@@ -40,6 +43,56 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             events
         })
         .collect();
+    r6702_attach(cx, events)
+}
+
+/// "As this Aura is turned face up, you may attach it to a creature" (`ReplaceBy::R6702MayAttach`, CR 708.8): each
+/// controller of such an Aura the effect turns up chooses at most one permanent it could enchant face up, judged with
+/// every permanent of the effect turned up, and the Aura is attached as it turns.
+fn r6702_attach(cx: &Cx<'_>, mut events: Vec<Event>) -> Result<Run, ResolveError> {
+    let state = cx.state();
+    let auras: Vec<(ObjectId, PlayerId, mtg_cards::refs::Selector)> = events
+        .iter()
+        .filter_map(|event| match event {
+            Event::TurnedFaceUp { object, player, .. } => {
+                crate::announce::turn_up::r6702_may_attach(state, *object)
+                    .map(|to| (*object, *player, to))
+            }
+            _ => None,
+        })
+        .collect();
+    if auras.is_empty() {
+        return Ok(Run::events(events));
+    }
+    let mut after = state.clone();
+    for event in &events {
+        crate::fold::apply_event(&mut after, event)
+            .map_err(|error| ResolveError::Invalid(error.to_string()))?;
+    }
+    let selections: Vec<Selection> = auras
+        .iter()
+        .map(|(aura, player, to)| Selection {
+            one_per_name: false,
+            groups: Vec::new(),
+            player: *player,
+            from: crate::announce::turn_up::r6702_hosts_in(&after, *player, *aura, to),
+            min: 0,
+            max: 1,
+            text: "You may choose a permanent to attach it to.".to_owned(),
+        })
+        .collect();
+    let taken = match pick_selections(cx, &selections)? {
+        Picked::Ask(decision) => return Ok(Run::Ask(decision)),
+        Picked::Done(taken) => taken,
+    };
+    for ((aura, _, _), (_, hosts)) in auras.iter().zip(taken) {
+        if let Some(&host) = hosts.first() {
+            events.push(Event::Attached {
+                object: *aura,
+                to: host,
+            });
+        }
+    }
     Ok(Run::events(events))
 }
 

@@ -86,6 +86,16 @@ describe('describeResult', () => {
   it.each(cases)('%s', (_what, result, me, lost, headline, detail) => {
     expect(describeResult(result, me, name, players(...lost))).toEqual({ headline, detail })
   })
+
+  it('names the loop of a draw by a loop that would never end', () => {
+    expect(
+      describeResult('Draw', 0, name, players(null, null), null, ['Polyraptor', 'Aether Flash']),
+    ).toEqual({
+      headline: 'The game is a draw',
+      detail:
+        'Polyraptor and Aether Flash would loop forever with no one able to stop it: the game is a draw.',
+    })
+  })
 })
 
 describe('describeResult for teams', () => {

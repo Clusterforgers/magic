@@ -55,7 +55,7 @@ export function GameOver({ onReview }: { onReview?: () => void }) {
   const name = (who: number): string => seatName(lookup, who)
   const players = view?.players ?? []
   const teams = view?.house_rules?.teams ?? lookup.game?.house_rules?.teams ?? null
-  const { headline, detail } = describeResult(result, seat, name, players, teams)
+  const { headline, detail } = describeResult(result, seat, name, players, teams, view?.loop_draw)
   const seats = seatOutcomes(result, seat, name, players, teams)
   const kind = endKind(result, seat, players, teams)
   const Icon = ICON[kind]

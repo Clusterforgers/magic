@@ -160,7 +160,8 @@ impl Class {
             DecisionKind::PayMana(_)
             | DecisionKind::AssignDamage(_)
             | DecisionKind::DeclareAttackers(_)
-            | DecisionKind::Discard(_) => Class::Think,
+            | DecisionKind::Discard(_)
+            | DecisionKind::Loop(_) => Class::Think,
         }
     }
 }
@@ -312,6 +313,12 @@ pub(crate) fn is_priority(decision: &Decision) -> bool {
 pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
     match &decision.kind {
         DecisionKind::Priority(_) => Some(pass()),
+        // A loop that never ends by itself is a draw once the clock runs out (CR 104.4b); any other is played on by hand.
+        DecisionKind::Loop(options) => Some(Answer::Loop(if options.can_draw {
+            mtg_engine::loops::LoopAnswer::Draw
+        } else {
+            mtg_engine::loops::LoopAnswer::Stop
+        })),
         DecisionKind::DeclareBlockers(options) => {
             Some(Answer::DeclareBlockers(options.legal_blocks()))
         }

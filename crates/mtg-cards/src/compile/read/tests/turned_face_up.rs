@@ -38,7 +38,7 @@ fn being_turned_face_up_reads_and_writes_back(#[case] text: &str, #[case] json: 
     "Whenever another permanent you control is turned face up, if it's a creature, put two +1/+1 counters on it."
 )]
 #[case::the_face_it_returns_in(
-    "Whenever a permanent you control is turned face up, you may return this card from your graveyard to the battlefield face up or face down."
+    "Whenever a permanent you control is turned face up, you may return this card from your graveyard to the battlefield face down."
 )]
 fn a_wording_the_template_does_not_model_is_left_to_the_table(#[case] text: &str) {
     assert!(

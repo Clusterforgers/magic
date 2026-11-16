@@ -658,6 +658,9 @@ pub enum Amount {
     },
     /// How many card types there are among the objects that match the selector.
     CardTypes(Selector),
+    /// How many card types there are among the objects the reference names, each one that left judged as it last was:
+    /// "three or more card types among the sacrificed permanents".
+    R6702CardTypesOf(Ref),
     /// How many players the reference names: `Players(Opponents)` is the number of opponents.
     Players(Ref),
     /// The lowest life total among the players the reference names (a player "has 13 or less life": `EachPlayer`; "an
@@ -673,6 +676,9 @@ pub enum Amount {
     /// The life the players lost to the effects of the spell or ability that is resolving ("you gain life equal to the
     /// life lost this way"): the amounts of its `LifeLost` events so far.
     LifeLostThisWay,
+    /// The life stakes of a flip that doubles with each flip ("Double the life stakes with each flip"): 1, doubled for
+    /// each coin flip the resolving spell or ability made before its latest one.
+    R6702FlipStakes,
     /// The damage the resolving spell or ability has dealt so far, after prevention, to every player and object together
     /// ("you gain life equal to the damage dealt this way"); zero outside a resolution.
     DamageDealtThisWay,
@@ -1087,11 +1093,13 @@ enum Tagged {
         stat: StatKind,
     },
     CardTypes(Selector),
+    R6702CardTypesOf(Ref),
     Players(Ref),
     LowestLife(Ref),
     HighestLife(Ref),
     LowestHand(Ref),
     LifeLostThisWay,
+    R6702FlipStakes,
     DamageDealtThisWay,
     Destroyed(Selector),
     Exiled(Selector),
@@ -1304,11 +1312,13 @@ enum TaggedRef<'a> {
         stat: StatKind,
     },
     CardTypes(&'a Selector),
+    R6702CardTypesOf(&'a Ref),
     Players(&'a Ref),
     LowestLife(&'a Ref),
     HighestLife(&'a Ref),
     LowestHand(&'a Ref),
     LifeLostThisWay,
+    R6702FlipStakes,
     DamageDealtThisWay,
     Destroyed(&'a Selector),
     Exiled(&'a Selector),
@@ -1490,11 +1500,13 @@ impl From<Tagged> for Amount {
             Tagged::GreatestCast { who, of, stat } => Amount::GreatestCast { who, of, stat },
             Tagged::Total { of, stat } => Amount::Total { of, stat },
             Tagged::CardTypes(of) => Amount::CardTypes(of),
+            Tagged::R6702CardTypesOf(of) => Amount::R6702CardTypesOf(of),
             Tagged::Players(who) => Amount::Players(who),
             Tagged::LowestLife(who) => Amount::LowestLife(who),
             Tagged::HighestLife(who) => Amount::HighestLife(who),
             Tagged::LowestHand(who) => Amount::LowestHand(who),
             Tagged::LifeLostThisWay => Amount::LifeLostThisWay,
+            Tagged::R6702FlipStakes => Amount::R6702FlipStakes,
             Tagged::DamageDealtThisWay => Amount::DamageDealtThisWay,
             Tagged::Distinct { of, stat } => Amount::Distinct { of, stat },
             Tagged::Destroyed(of) => Amount::Destroyed(of),
@@ -1636,11 +1648,13 @@ impl Serialize for Amount {
                 TaggedRef::Total { of, stat: *stat }.serialize(serializer)
             }
             Amount::CardTypes(of) => TaggedRef::CardTypes(of).serialize(serializer),
+            Amount::R6702CardTypesOf(of) => TaggedRef::R6702CardTypesOf(of).serialize(serializer),
             Amount::Players(who) => TaggedRef::Players(who).serialize(serializer),
             Amount::LowestLife(who) => TaggedRef::LowestLife(who).serialize(serializer),
             Amount::HighestLife(who) => TaggedRef::HighestLife(who).serialize(serializer),
             Amount::LowestHand(who) => TaggedRef::LowestHand(who).serialize(serializer),
             Amount::LifeLostThisWay => TaggedRef::LifeLostThisWay.serialize(serializer),
+            Amount::R6702FlipStakes => TaggedRef::R6702FlipStakes.serialize(serializer),
             Amount::DamageDealtThisWay => TaggedRef::DamageDealtThisWay.serialize(serializer),
             Amount::Distinct { of, stat } => {
                 TaggedRef::Distinct { of, stat: *stat }.serialize(serializer)

@@ -7,6 +7,7 @@ import type { CostsOptions } from "./CostsOptions";
 import type { DamageOptions } from "./DamageOptions";
 import type { DiscardOptions } from "./DiscardOptions";
 import type { DivideOptions } from "./DivideOptions";
+import type { LoopOptions } from "./LoopOptions";
 import type { ModeOptions } from "./ModeOptions";
 import type { MulliganOptions } from "./MulliganOptions";
 import type { NameOptions } from "./NameOptions";
@@ -24,4 +25,4 @@ import type { YesNoOptions } from "./YesNoOptions";
 /**
  * The kind of decision, each variant carrying its exhaustive options.
  */
-export type DecisionKind = { "Mulligan": MulliganOptions } | { "BottomCards": BottomOptions } | { "Priority": PriorityOptions } | { "PayMana": PayOptions } | { "DeclareAttackers": AttackOptions } | { "DeclareBlockers": BlockOptions } | { "AssignDamage": DamageOptions } | { "Discard": DiscardOptions } | { "ChooseTargets": TargetOptions } | { "ChooseMode": ModeOptions } | { "ChooseNumber": NumberOptions } | { "ChooseName": NameOptions } | { "DivideAmount": DivideOptions } | { "ChooseCards": CardsOptions } | { "OrderCards": OrderOptions } | { "Scry": ScryOptions } | { "YesNo": YesNoOptions } | { "ChooseOption": OptionOptions } | { "ChooseCosts": CostsOptions } | { "OrderTriggers": TriggersOptions } | { "ChooseReplacement": ReplacementOptions };
+export type DecisionKind = { "Mulligan": MulliganOptions } | { "BottomCards": BottomOptions } | { "Priority": PriorityOptions } | { "PayMana": PayOptions } | { "DeclareAttackers": AttackOptions } | { "DeclareBlockers": BlockOptions } | { "AssignDamage": DamageOptions } | { "Discard": DiscardOptions } | { "ChooseTargets": TargetOptions } | { "ChooseMode": ModeOptions } | { "ChooseNumber": NumberOptions } | { "ChooseName": NameOptions } | { "DivideAmount": DivideOptions } | { "ChooseCards": CardsOptions } | { "OrderCards": OrderOptions } | { "Scry": ScryOptions } | { "YesNo": YesNoOptions } | { "ChooseOption": OptionOptions } | { "ChooseCosts": CostsOptions } | { "OrderTriggers": TriggersOptions } | { "ChooseReplacement": ReplacementOptions } | { "Loop": LoopOptions };

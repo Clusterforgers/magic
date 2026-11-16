@@ -1,7 +1,7 @@
 {
   "oracle_id": "4232995b-68c0-4514-8cde-bc62b9d1cbaa",
   "name": "Galactus, Devourer of Worlds",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Galactus, Devourer of Worlds",
@@ -18,9 +18,39 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 78, "end": 256 }
+          "Rule": {
+            "rule": {
+              "R6702MustAttackOneOf": {
+                "who": "This",
+                "players": {
+                  "PlayersWhere": {
+                    "who": "Opponents",
+                    "test": {
+                      "Compare": {
+                        "left": { "Life": "You" },
+                        "op": "Eq",
+                        "right": { "HighestLife": { "OpponentsOf": { "ControllerOf": "This" } } }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Named": "Silver Surfer, Galactus's Herald" }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
           }
         }
       ]

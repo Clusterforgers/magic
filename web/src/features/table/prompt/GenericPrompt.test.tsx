@@ -227,6 +227,23 @@ const ROWS: Row[] = [
     1,
     { ChooseReplacement: 1 },
   ],
+  [
+    'Loop',
+    {
+      Loop: {
+        cards: ['Polyraptor', 'Aether Flash'],
+        per_iteration: {},
+        mandatory: true,
+        bounded: false,
+        max: 50,
+        asked: 0,
+        can_draw: true,
+      },
+    },
+    ['Stop the loop', 'Repeat 10 times', 'Let it loop: a draw'],
+    1,
+    { Loop: { Repeat: 10 } },
+  ],
 ]
 
 const buttons = (): string[] =>

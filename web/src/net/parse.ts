@@ -645,6 +645,7 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       if (!isTableView(v.table)) return '"table" is not a table view'
       if (!isListOf(v.objects, isObjectView)) return '"objects" must be a list of objects with ids'
       if (!isIdList(v.gone)) return '"gone" must be a list of ids'
+      if (v.folded !== undefined && !isCount(v.folded)) return '"folded" must be a whole number'
       return {
         type,
         from_seq: v.from_seq,
@@ -652,6 +653,7 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
         table: v.table,
         objects: v.objects,
         gone: v.gone,
+        ...(v.folded === undefined ? {} : { folded: v.folded }),
       }
     case 'Snapshot':
       if (!isCount(v.seq)) return '"seq" must be a whole number'

@@ -232,6 +232,8 @@ mod r6105_tariff;
 mod r6503_fixed_x;
 mod r6503_loyalty_only_if;
 mod r6601_soul_immolation;
+mod r6701_cards;
+mod r6702_spells;
 mod r6q1_face_down_cost;
 mod r7p3_next_spell;
 mod rebound;

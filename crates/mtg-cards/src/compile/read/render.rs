@@ -684,6 +684,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r6018_wholes::r6018_add_wholes(ability, &mut texts);
     super::r6100_wholes::r6100_add_wholes(ability, &mut texts);
     super::r6401_wholes::r6401_add_wholes(ability, &mut texts);
+    super::r6701_wholes::r6701_add_wholes(ability, &mut texts);
     super::r6500_wholes::r6500_add_wholes(ability, &mut texts);
     super::r6501_wholes::r6501_add_wholes(ability, &mut texts);
     super::r6503_wholes::r6503_add_wholes(ability, &mut texts);
@@ -691,6 +692,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r6601_wholes::r6601_add_wholes(ability, &mut texts);
     super::r6602_wholes::r6602_add_wholes(ability, &mut texts);
     super::r6603_wholes::r6603_add_wholes(ability, &mut texts);
+    super::r6702_wholes::r6702_add_wholes(ability, &mut texts);
     super::r6103_wholes::r6103_add_wholes(ability, &mut texts);
     super::r6400_wholes::r6400_add_wholes(ability, &mut texts);
     super::r5510_fortified::r5510_wordings(&mut texts);
@@ -3872,6 +3874,7 @@ impl Writer<'_> {
             .or_else(|| self.r301_cant_phase_out(effect))
             .or_else(|| self.r5502_attacks_next_combat(effect))
             .or_else(|| super::r6400_wholes::r6400_effect_text(effect))
+            .or_else(|| super::r6702_wholes::r6702_effect_text(effect))
             .or_else(|| self.rmt2_reverberation(effect))
             .or_else(|| self.rmt2_target_spell_uncounterable(effect))
         {

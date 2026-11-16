@@ -1,7 +1,7 @@
 {
   "oracle_id": "13ab2f3f-f65e-42b5-b743-39b30a4c4751",
   "name": "Scarlet Spider, Ben Reilly",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Scarlet Spider, Ben Reilly",
@@ -22,9 +22,15 @@
         },
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 135, "end": 292 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "CountedAsCast": { "Stat": { "of": "Paid", "stat": "ManaValue" } } }
+              }
+            },
+            "condition": { "CastWith": "WebSlinging" }
           }
         }
       ]

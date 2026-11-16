@@ -17,6 +17,33 @@ use crate::object::{FaceDown, GameObject, ObjectKind, ObjectRef, PermanentState}
 use crate::state::{GameState, Tally};
 use crate::zones::{Placement, Zone};
 
+/// The cards exiled to pay the craft cost of the resolving ability when that ability returns its own exiled source to
+/// the battlefield (CR 702.167c), as they are in exile; nothing for any other move.
+fn r6702_craft_materials(state: &GameState, id: ObjectId) -> Vec<ObjectRef> {
+    let Some(resolving) = state.resolving.as_ref() else {
+        return Vec::new();
+    };
+    let Some(ability) = state.object(resolving.object) else {
+        return Vec::new();
+    };
+    let crafts = ability
+        .ability
+        .as_ref()
+        .is_some_and(|held| crate::ability_reader::r6702_crafts(held, id));
+    if !crafts || state.object(id).map(GameObject::zone) != Some(Zone::Exile) {
+        return Vec::new();
+    }
+    ability
+        .choices
+        .cost_picks()
+        .iter()
+        .flatten()
+        .filter_map(|picked| state.object(*picked))
+        .filter(|card| card.zone() == Zone::Exile)
+        .map(GameObject::reference)
+        .collect()
+}
+
 /// Moves `id` to `to`, creating or dropping permanent state and leaving combat as needed.
 #[allow(clippy::too_many_lines)]
 pub(super) fn move_object(
@@ -39,6 +66,11 @@ pub(super) fn move_object(
             crate::un34_stickers::fold_left(state, id);
         }
     }
+    let r6702_crafted = if to == Zone::Battlefield {
+        r6702_craft_materials(state, id)
+    } else {
+        Vec::new()
+    };
     // A permanent that enters takes the next timestamp, which its static abilities carry (CR 613.7).
     let timestamp = state.next_timestamp;
     if to == Zone::Battlefield {
@@ -136,6 +168,7 @@ pub(super) fn move_object(
             PermanentState::entering(timestamp, paid, way, x, face, spent, spent_from);
         permanent.convoked = convoked;
         permanent.delved = delved;
+        permanent.r6702_crafted = r6702_crafted;
         permanent.doors = crate::dk1c5_rooms::Doors::entering(&object.def, face);
         object.permanent = Some(permanent);
     } else if to != Zone::Stack {
@@ -418,7 +451,11 @@ fn held_as_cast(state: &GameState, player: PlayerId, spell: ObjectId) -> AsCast 
     if asked.is_empty() && counted.is_empty() {
         return (asked, Vec::new());
     }
-    let scope = crate::resolve::Scope::announcing(state, player, object.reference());
+    // The objects the cost took are the spell's own ("the mana value of the returned creature").
+    let scope = crate::resolve::Scope {
+        choices: &object.choices,
+        ..crate::resolve::Scope::announcing(state, player, object.reference())
+    };
     let held = asked
         .into_iter()
         .filter(|condition| scope.holds(condition).unwrap_or(false))

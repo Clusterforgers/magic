@@ -833,6 +833,14 @@ pub enum TriggerPattern {
         /// Which time in the turn it must be, from one.
         nth: u32,
     },
+    /// The event, while the trigger's controller is activating an ability of the kind, its costs paid in the same batch
+    /// ("When this creature is exiled from the battlefield while you're activating a craft ability", CR 602.2).
+    R6701WhileActivating {
+        /// The event.
+        inner: Box<TriggerPattern>,
+        /// The kind of the ability being activated.
+        kind: crate::ability::ActivationKind,
+    },
     /// The event, when a spell or ability caused it ("whenever you put a -1/-1 counter on a creature", "when a spell or
     /// ability an opponent controls causes you to discard this"): the controller of the spell or ability that is
     /// resolving, being cast or activated when the event happens, or the controller of the source of the damage. Turn
@@ -1359,6 +1367,9 @@ pub enum ReplaceBy {
         /// How many.
         count: u32,
     },
+    /// As the Aura is turned face up, its controller may attach it to a permanent the selector names that it could
+    /// enchant (CR 708.8, 303.4): "As this Aura is turned face up, you may attach it to a creature." Only `TurnedFaceUp`.
+    R6702MayAttach(Selector),
     /// As the permanent enters, its controller may behold what the selector names: choose such a permanent they control
     /// or reveal such a card from their hand; if they don't (or can't) it enters tapped ("you may behold a Jace").
     BeholdOrTapped(Selector),

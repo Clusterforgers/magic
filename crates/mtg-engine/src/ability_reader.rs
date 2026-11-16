@@ -16,7 +16,7 @@ use mtg_cards::refs::{Ref, ZoneKind};
 use mtg_cards::spend::ManaLasts;
 use mtg_cards::value::Amount;
 use mtg_cards::{AbilityDef, CardDefinition};
-use mtg_core::ids::ObjectId;
+use mtg_core::ids::{EffectId, ObjectId};
 use mtg_core::mana::ManaType;
 
 use crate::abilities::{AbilityRef, AbilitySource, Grant};
@@ -62,6 +62,25 @@ pub(crate) fn lendable(card: &CardDefinition) -> Vec<(usize, Arc<Ability>)> {
         (card.rules.len() + at, tap_for_mana(mana.produces))
     });
     rules.chain(mana).collect()
+}
+
+/// The triggered abilities printed on a card, each with its index among its rules, which a permanent that gains the
+/// activated and triggered abilities of the card has after the activated ones (`Modification::R6702GainActivatedAndTriggeredOf`).
+pub(crate) fn r6702_lendable_triggers(card: &CardDefinition) -> Vec<(usize, Arc<Ability>)> {
+    card.rules
+        .iter()
+        .enumerate()
+        .filter(|(_, rules)| matches!(***rules, Ability::Triggered { .. }))
+        .map(|(index, rules)| (index, Arc::clone(rules)))
+        .collect()
+}
+
+/// Whether the ability on the stack is a craft ability of the object `source` (an activated ability whose cost exiles
+/// craft materials, CR 702.167a).
+pub(crate) fn r6702_crafts(ability: &crate::abilities::AbilityObject, source: ObjectId) -> bool {
+    ability.source.id == source
+        && matches!(&*ability.rules, Ability::Activated { cost, .. }
+            if cost.0.iter().any(|item| matches!(item, CostItem::Craft { .. })))
 }
 
 /// "{T}: Add {X}" as a rules ability.
@@ -691,6 +710,10 @@ fn granted_ability(state: &GameState, grant: Grant) -> Option<Arc<Ability>> {
             WantedModification::GrantAbility(granted) => Some(granted),
             _ => None,
         },
+        Grant::R6701Nested { effect, index } => match r6701_nested_mod(state, effect, index)? {
+            WantedModification::GrantAbility(granted) => Some(granted),
+            _ => None,
+        },
         // The ability is printed on the donor, and it is only an ability of the object while the donor is the same object.
         Grant::Borrowed { donor, ability } => lendable(card_of(state, donor, None)?)
             .into_iter()
@@ -743,7 +766,27 @@ fn granted_keyword(
             }
             _ => None,
         },
+        Grant::R6701Nested { effect, index } => match r6701_nested_mod(state, effect, index)? {
+            WantedModification::AddKeyword(keyword) => Some(keyword),
+            _ => None,
+        },
         Grant::Borrowed { .. } | Grant::Ring { .. } => None,
+    }
+}
+
+/// The modification `index` of the static ability the continuous effect `effect` grants.
+fn r6701_nested_mod(
+    state: &GameState,
+    effect: EffectId,
+    index: usize,
+) -> Option<WantedModification> {
+    let found = state.effects().iter().find(|found| found.id == effect)?;
+    let Modification::GrantAbility(granted) = &found.modification else {
+        return None;
+    };
+    match &**granted {
+        Ability::Static { mods, .. } => mods.get(index).cloned(),
+        _ => None,
     }
 }
 

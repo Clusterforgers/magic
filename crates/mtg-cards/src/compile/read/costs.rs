@@ -698,6 +698,7 @@ fn item_text(item: &CostItem) -> Option<String> {
         CostItem::Exert => "Exert ~".to_owned(),
         CostItem::Forage => "Forage".to_owned(),
         CostItem::CollectEvidence(total) => format!("Collect evidence {total}"),
+        CostItem::R6702CollectEvidenceX => "Collect evidence X".to_owned(),
         CostItem::ExileCardTypes(types) => format!(
             "Exile any number of other cards from your graveyard with {} or more card types among them",
             count_word(*types)?

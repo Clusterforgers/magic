@@ -799,6 +799,10 @@ pub struct TableView {
     pub combat_forecast: Option<CombatForecast>,
     /// The result once the game is over.
     pub result: Option<GameResult>,
+    /// The cards of the loop of mandatory actions that drew the game (CR 104.4b); left out otherwise.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub loop_draw: Option<Vec<String>>,
     /// The tokens the viewer's own cards make, in any zone, by card name: the manual panel offers them. Left out for a
     /// spectator and while there are none.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]

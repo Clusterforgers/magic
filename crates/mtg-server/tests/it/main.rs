@@ -28,6 +28,7 @@ mod lobby;
 mod lobby_http;
 mod lobby_listing;
 mod lobby_roster;
+mod loops;
 mod manual_message;
 mod manual_play;
 mod many_seat_pace;

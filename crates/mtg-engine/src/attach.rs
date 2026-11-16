@@ -208,7 +208,7 @@ fn spares(state: &GameState, keyword: &Keyword, attachment: ObjectId, host: Obje
                 })
                 .filter_map(|applied| match applied.origin {
                     Grant::Static { source, .. } => Some(source),
-                    Grant::Effect(id) => state
+                    Grant::Effect(id) | Grant::R6701Nested { effect: id, .. } => state
                         .effects()
                         .iter()
                         .find(|effect| effect.id == id)
@@ -268,7 +268,9 @@ fn may_enchant(state: &GameState, aura: &GameObject, host: &GameObject) -> bool 
 /// anything but an Aura card.
 pub(crate) fn spell_target(state: &GameState, id: ObjectId) -> Option<TargetSpec> {
     let object = state.object(id)?;
+    // A face-down spell is a 2/2 creature spell with no subtypes (CR 708.2a): an Aura cast face down targets nothing.
     if object.kind() == ObjectKind::Ability
+        || object.face_down().is_some()
         || kind_of(state, id) != Some(Kind::Aura)
         || object.base_types().contains(CardType::Instant)
         || object.base_types().contains(CardType::Sorcery)

@@ -999,6 +999,16 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         counter: Option<CounterKind>,
     },
+    /// The controller removes any number of counters from among the permanents and players `from` names, one at a time
+    /// and of any kinds, and the number removed is kept under the name (`Amount::Bound`): "Remove any number of counters
+    /// from among permanents on the battlefield."
+    R6701RemoveAmong {
+        /// Where they may come from.
+        from: Ref,
+        /// The name the number removed is kept under.
+        #[serde(rename = "as")]
+        bind: String,
+    },
     /// The permanent spells `spell` names enter the battlefield with `count` additional +1/+1 counters on them as they
     /// resolve (CR 614.1c): "that creature enters with an additional +1/+1 counter on it" after a creature spell is cast.
     SpellEntersWith {
@@ -1161,6 +1171,12 @@ pub enum Effect {
         /// What is turned.
         what: Ref,
     },
+    /// Turns face-up permanents face down as 2/2 Horror creatures (CR 708.2a): "turn ... face down. They're 2/2 Horror
+    /// creatures."
+    R6701TurnFaceDownHorror {
+        /// What is turned.
+        what: Ref,
+    },
     /// Makes prepare cards on the battlefield prepared: while one is, its controller may cast a copy of its spell face and doing so unprepares it. A permanent that is prepared already, is no prepare card or is not on the battlefield is passed over.
     Prepare {
         /// What becomes prepared.
@@ -1318,6 +1334,12 @@ pub enum Effect {
         /// Whether that player takes an extra turn after that turn (Emrakul, the Promised End).
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         extra_turn: bool,
+    },
+    /// The controller of the effect controls the players during each one's next combat phase (CR 722, 506.1): "You
+    /// control target opponent during their next combat phase."
+    R6701ControlCombat {
+        /// The players controlled.
+        who: Ref,
     },
     /// The game restarts (CR 727); `keep` stays exiled, then enters under your control.
     RestartGame {
@@ -1593,6 +1615,10 @@ pub enum Effect {
         /// Done when the card is not cast: the player declines, or nothing lets it be cast.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         otherwise: Vec<Effect>,
+        /// The card is cast if able, with no question ("Cast the copies if able"): only a card that can't be cast is
+        /// left (CR 608.2g).
+        #[serde(default, skip_serializing_if = "is_false")]
+        must: bool,
     },
     /// The player copies a card in exile (CR 707.12) and binds the copy: a token card in exile that its owner may cast
     /// (`CastFromZone`) and that ceases to exist as soon as it is anywhere but on the stack (CR 704.5e).
@@ -2135,6 +2161,25 @@ pub enum Effect {
         /// Which of them pass.
         pick: R6401Pick,
     },
+    /// The controller distributes counters among any number of the permanents the reference names as the effect resolves,
+    /// at least one on each chosen ("distribute three stun counters among any number of tapped creatures your opponents
+    /// control"); none when it names none.
+    R6702Distribute {
+        /// The permanents the counters may go on.
+        among: crate::refs::Ref,
+        /// The kind of counter.
+        counter: CounterKind,
+        /// How many.
+        count: Amount,
+    },
+    /// Each object a vote's tally names gets one counter of the kind for each vote it received, all at once ("For each
+    /// creature with one or more votes, put that many stun counters on it").
+    R6702CountersPerVote {
+        /// The name the vote bound every vote to (`Vote.tally`).
+        tally: String,
+        /// The kind of counter.
+        counter: CounterKind,
+    },
     /// Changes a rule of the game for a while.
     Rule {
         /// The rule.
@@ -2431,6 +2476,7 @@ fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
             transformed: false,
             bind: None,
             otherwise,
+            must: false,
         },
         Effect::Move {
             what: Ref::Bound(EXILED.to_owned()),

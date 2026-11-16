@@ -438,7 +438,10 @@ fn result_explained(state: &GameState, result: GameResult) -> bool {
         (GameResult::Winner(winner), _) => {
             limited && matches!(leaders.as_slice(), [only] if only.id() == winner)
         }
-        (GameResult::Draw, _) => (limited && leaders.len() > 1) || everyone_wins,
+        // A loop of mandatory actions that would never end draws the game for everyone still in it (CR 104.4b).
+        (GameResult::Draw, _) => {
+            (limited && leaders.len() > 1) || everyone_wins || state.loop_draw().is_some()
+        }
         // A team wins once its players are the only ones left, or alone at the highest life at the turn limit.
         (GameResult::Team(team), _) => {
             (!survivors.is_empty() && survivors.iter().all(|p| state.team_of(p.id()) == team))

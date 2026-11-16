@@ -164,6 +164,9 @@ pub enum Event {
         /// Whether the controlled player takes an extra turn after that turn.
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         extra_turn: bool,
+        /// The control lasts the player's next combat phase rather than their next turn.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        combat: bool,
     },
     /// The game restarted (CR 727): every card goes back to its owner's library (a commander to the command zone), tokens
     /// and other objects cease to exist, the players start over and the opening runs again with `by` as the starting
@@ -607,6 +610,13 @@ pub enum Event {
         /// The result.
         result: GameResult,
     },
+    /// A loop of mandatory actions would go on forever (CR 104.4b, 732.4): the game is a draw, and `GameEnded` follows.
+    LoopDrawn {
+        /// The names of the objects whose abilities make up the loop.
+        cards: Vec<String>,
+    },
+    /// A loop ran as a shortcut (CR 732): the summary of the events right before it.
+    LoopRepeated(Box<crate::loops::LoopSummary>),
     /// An ability was put on the stack, activated by its controller or triggered.
     AbilityPutOnStack(Box<PutOnStack>),
     /// A player activated an ability; its costs are paid and the ability goes on the stack next.
@@ -1273,6 +1283,9 @@ pub enum Event {
         object: ObjectId,
         /// Its controller, who turned it.
         player: PlayerId,
+        /// It is a 2/2 Horror creature (`FaceDown::R6701Horror`) rather than a plain 2/2 creature.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        horror: bool,
     },
     /// A commander's owner chose its color before the game began ("If ~ is your commander, choose a color before the game
     /// begins."): the card is that color in every zone.
@@ -1648,6 +1661,8 @@ impl Event {
             | Event::CombatEnded
             | Event::PlayerLost { .. }
             | Event::GameEnded { .. }
+            | Event::LoopDrawn { .. }
+            | Event::LoopRepeated(_)
             | Event::AbilityActivated { .. }
             | Event::ManaAbilityActivated { .. }
             | Event::AbilityTriggered(_)
