@@ -1,6 +1,7 @@
 // Goal: the run page shows each state of a run and sends the matching action: the lobby's hero cards with their Ready state, the deck picker, bot ally and start (only for the host, once every hero is ready), the ladder's votes with who voted for what, the boss fight's link and phases, how a lost fight cost a heart, the host's retreat (confirmed first, never for a guest), every kind of offer, and the end.
 import { fireEvent, screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import { must } from '@/test-utils/batches'
 import { renderInRouter } from '@/test-utils/router'
 import { DelvePage } from './DelvePage'
 import { delveView, fakeDelves, hero } from './fakeDelves'
@@ -237,6 +238,40 @@ describe('offers', () => {
     expect(await screen.findByRole('button', { name: 'Buy (70 gold)' })).toBeDisabled()
     expect(screen.getByRole('button', { name: /Healing draught/ })).toBeDisabled()
     expect(screen.getByText('Needs 70 gold')).toBeInTheDocument()
+  })
+
+  it('stands every Buy button of the shop at the foot of its offer, so a row of offers buys on one line', async () => {
+    await show(
+      room(
+        {
+          Shop: {
+            items: [
+              { Card: { name: 'Cultivate', sold: false } },
+              { Relic: { id: 'idol', price: 40, sold: false } },
+              'Draught',
+            ],
+          },
+        },
+        100,
+      ),
+    )
+    await screen.findByRole('button', { name: 'Buy (40 gold)' })
+    const offers = [...document.querySelectorAll<HTMLElement>('[data-slot="shop-offer"]')]
+    expect(offers).toHaveLength(3)
+    for (const offer of offers) {
+      expect(offer).toHaveClass('flex', 'flex-col')
+      // The offer's last element is its button, outside any frame, with the rest stretched or pushed above it.
+      const button = must(offer.querySelector('button:last-of-type'))
+      expect(offer.lastElementChild === button || offer.lastElementChild?.lastElementChild === button).toBe(
+        true,
+      )
+    }
+    expect(screen.getByRole('figure', { name: 'Ember Idol' }).querySelector('button')).toBeNull()
+    expect(screen.getByRole('figure', { name: 'Ember Idol' })).toHaveClass('flex-1')
+    expect(screen.getByRole('figure', { name: 'Cultivate' })).toHaveClass(
+      'flex-1',
+      'grid-rows-[auto_auto_1fr]',
+    )
   })
 
   it('says what a campfire rest heals', async () => {
