@@ -35,6 +35,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         (
             ShieldShape::Countered,
             ReplaceWhen::Countered { what },
+            ReplaceBy::BattlefieldUnderYours,
+        ) => Some((what, ZoneKind::Battlefield, None, true, false)),
+        (
+            ShieldShape::Countered,
+            ReplaceWhen::Countered { what },
             ReplaceBy::IntoLibrary { place, .. },
         ) => Some((what, ZoneKind::Library, Some(*place), true, false)),
         _ => None,
@@ -96,6 +101,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         | ReplaceBy::PreventAnd(_)
         | ReplaceBy::Multiply(_)
         | ReplaceBy::Add(_)
+        | ReplaceBy::AddAmount(_)
         | ReplaceBy::Instead(_)
         | ReplaceBy::InsteadNext(_)
         | ReplaceBy::RedirectUpTo { .. }
@@ -145,6 +151,10 @@ pub(super) fn damage_shield(
         | ReplaceBy::RedirectUpTo { .. }
         | ReplaceBy::Redirect { .. } => Some(by.clone()),
         ReplaceBy::InsteadNext(effects) => Some(ReplaceBy::Instead(effects.clone())),
+        // "Plus X" of a shield is fixed as it begins, X of the activation that made it (CR 611.2c).
+        ReplaceBy::AddAmount(amount) => Some(ReplaceBy::Add(
+            u32::try_from(cx.scope.amount(amount)?.max(0)).unwrap_or(u32::MAX),
+        )),
         ReplaceBy::RedirectCounted { most, to } => Some(ReplaceBy::RedirectUpTo {
             most: u32::try_from(cx.scope.amount(most)?.max(0)).unwrap_or(u32::MAX),
             to: to.clone(),

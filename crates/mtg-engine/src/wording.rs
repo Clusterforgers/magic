@@ -658,6 +658,20 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             };
             (format!("{recipient} is dealt damage"), *hit == Ref::This)
         }
+        TriggerPattern::DealsToughnessDamage { source, combat } => {
+            let kind = match combat {
+                Some(true) => "combat damage",
+                Some(false) => "noncombat damage",
+                None => "damage",
+            };
+            (
+                format!(
+                    "{} deals {kind} to a creature equal to its toughness",
+                    subject(source)
+                ),
+                false,
+            )
+        }
         TriggerPattern::DealtExcess { what, combat } => {
             let kind = match combat {
                 Some(true) => "excess combat damage",

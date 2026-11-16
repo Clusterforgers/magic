@@ -683,6 +683,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r6018_wholes::r6018_add_wholes(ability, &mut texts);
     super::r6100_wholes::r6100_add_wholes(ability, &mut texts);
     super::r6401_wholes::r6401_add_wholes(ability, &mut texts);
+    super::r6703_wholes::r6703_add_wholes(ability, &mut texts);
     super::r6103_wholes::r6103_add_wholes(ability, &mut texts);
     super::r6400_wholes::r6400_add_wholes(ability, &mut texts);
     super::r5510_fortified::r5510_wordings(&mut texts);
@@ -3503,7 +3504,7 @@ impl Writer<'_> {
             Effect::Learn { who: Ref::You } => "learn".to_owned(),
             Effect::Monstrosity { count } => format!("monstrosity {}", points_text(count)?),
             Effect::Adapt { count } => format!("adapt {}", points_text(count)?),
-            Effect::Bolster { count } => format!("bolster {}", points_text(count)?),
+            Effect::Bolster { count, bind: None } => format!("bolster {}", points_text(count)?),
             Effect::Empower { count } => format!("empower Jace {}", points_text(count)?),
             Effect::Amass {
                 subtype,

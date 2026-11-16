@@ -50,6 +50,7 @@
                   ]
                 }
               },
+              { "Performed": { "action": "Earthbent" } },
               {
                 "Reflexive": {
                   "targets": [

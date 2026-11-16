@@ -103,6 +103,7 @@ mod r5515_auras;
 mod r6008_delver;
 mod r6105_dont_blink;
 mod r6400_chosen_votes;
+mod r6703_doomed_turn;
 mod ring;
 mod rmt7_lose_printed;
 mod rmt7_turn_rules;

@@ -20,11 +20,11 @@ use crate::resolve::{Cx, ResolveError, Run};
 /// proposed `CountersChanged` that a replacement effect sees, and one `Bolstered` follows them, also when there are
 /// none. A player who controls no creature bolsters nothing.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Bolster { count } = effect else {
+    let Effect::Bolster { count, bind } = effect else {
         return Err(wrong_effect("Bolster"));
     };
     let delta = whole(cx.scope.amount(count)?);
-    Stop::settle(bolster(cx, delta))
+    Stop::settle(bolster(cx, delta, bind.as_deref()))
 }
 
 /// The creatures the player controls that tie for the least toughness.
@@ -45,7 +45,7 @@ fn weakest(cx: &Cx<'_>) -> Result<Vec<ObjectRef>, ResolveError> {
         .collect())
 }
 
-fn bolster(cx: &Cx<'_>, delta: i32) -> Result<Run, Stop> {
+fn bolster(cx: &Cx<'_>, delta: i32, bind: Option<&str>) -> Result<Run, Stop> {
     let player = cx.controller();
     let tied = weakest(cx)?;
     let mut questions = Questions::new(cx);
@@ -76,5 +76,14 @@ fn bolster(cx: &Cx<'_>, delta: i32) -> Result<Run, Stop> {
         object: chosen.id,
         player,
     });
-    Ok(Run::events(events))
+    // "The chosen creature": the creature bolstered, for the steps after it.
+    Ok(match bind {
+        Some(name) => Run::Done {
+            events,
+            bound: vec![(name.to_owned(), vec![Target::Object(chosen)])],
+            snapshots: Vec::new(),
+            next: crate::resolve::Next::Sibling,
+        },
+        None => Run::events(events),
+    })
 }

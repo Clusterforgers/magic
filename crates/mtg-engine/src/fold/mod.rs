@@ -268,6 +268,20 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             Ok(())
         }
         Event::Surveilled(surveilled) => zones::surveil(state, surveilled),
+        Event::Bent { player, element } => {
+            let kind = match element {
+                crate::events::Bending::Water => crate::state::Tally::Waterbent,
+                crate::events::Bending::Earth => crate::state::Tally::Earthbent,
+                crate::events::Bending::Fire => crate::state::Tally::Firebent,
+                crate::events::Bending::Air => crate::state::Tally::Airbent,
+            };
+            state.tally(*player, kind);
+            Ok(())
+        }
+        Event::IgnoredEffect { player, source } => {
+            state.r6703_ignored.push((*player, *source));
+            Ok(())
+        }
         Event::Investigated { player } => {
             state.tally(*player, crate::state::Tally::L31aInvestigated);
             Ok(())
@@ -390,11 +404,14 @@ fn begin_turn(
         state.r379_turn_ended(ending, before);
     }
     state.turn.no_power_up = false;
+    state.r6703_ignored.clear();
+    let mut at_end = None;
     if extra {
         let Some(taken) = state.extra_turns.pop().filter(|turn| turn.player == active) else {
             return Err(invalid(format!("{active:?} has no extra turn to take")));
         };
         state.turn.no_power_up = taken.no_power_up;
+        at_end = taken.r6703_end;
     } else {
         state.turn.regular = active;
     }
@@ -421,6 +438,11 @@ fn begin_turn(
     state.priority = None;
     state.combat = crate::combat::CombatState::default();
     settle_permanents(state);
+    // The extra turn's own delayed trigger is set up as it begins, so it waits for this turn's end step alone.
+    if let Some(mut end) = at_end {
+        end.id = crate::triggers::DelayedId(state.next_delayed);
+        crate::triggers::fold_created(state, &end)?;
+    }
     Ok(())
 }
 
@@ -453,10 +475,12 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             player,
             skip_untap,
             no_power_up,
+            r6703_end,
         } => state.extra_turns.push(ExtraTurn {
             player: *player,
             skip_untap: *skip_untap,
             no_power_up: *no_power_up,
+            r6703_end: r6703_end.clone(),
         }),
         Event::PlayerControlGained {
             player,

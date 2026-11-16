@@ -325,6 +325,9 @@ fn exile(r: &mut Reader<'_>) -> Option<CostItem> {
     if let Some(types) = r.attempt(r5511_card_types) {
         return Some(CostItem::ExileCardTypes(types));
     }
+    if let Some(item) = r.attempt(r6703_total_value) {
+        return Some(item);
+    }
     let (form, count) = how_many(r)?;
     let mut filter = phrase(r, form)?;
     // "Exile a creature you control": a permanent of the battlefield.
@@ -348,6 +351,21 @@ fn exile(r: &mut Reader<'_>) -> Option<CostItem> {
             any_player: false,
             count,
         }
+    })
+}
+
+/// "any number of historic cards from your graveyard with total mana value 30 or greater" (The Capitoline Triad).
+fn r6703_total_value(r: &mut Reader<'_>) -> Option<CostItem> {
+    r.words("any number of").then_some(())?;
+    let mut filter = phrase(r, Form::Targets)?;
+    without(&mut filter, &Pred::In(ZoneKind::Graveyard))?;
+    without(&mut filter, &Pred::OwnedBy(Ref::You))?;
+    r.words("with total mana value").then_some(())?;
+    let total = r.take_word()?.parse::<u32>().ok()?;
+    r.words("or greater").then_some(())?;
+    Some(CostItem::ExileTotalValue {
+        filter: kinds_only(filter)?,
+        total,
     })
 }
 
@@ -770,6 +788,15 @@ fn item_text(item: &CostItem) -> Option<String> {
             said.0
                 .extend([Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)]);
             format!("Exile {}", taken_text(&said, count)?)
+        }
+        CostItem::ExileTotalValue { filter, total } => {
+            let mut said = filter.clone();
+            said.0
+                .extend([Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)]);
+            format!(
+                "Exile any number of {} with total mana value {total} or greater",
+                phrase_text(&said, Form::Targets)?
+            )
         }
         CostItem::ExileFromHand { filter, count } => {
             let mut said = filter.clone();

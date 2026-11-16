@@ -176,6 +176,7 @@ pub(crate) fn check(state: &GameState) -> Vec<Event> {
             && object
                 .permanent()
                 .is_some_and(|permanent| permanent.counters_of(&CounterKind::Loyalty) == 0)
+            && !crate::rules::zero_loyalty_stays(state, id)
         {
             events.push(Event::ZoneChanged {
                 object: id,

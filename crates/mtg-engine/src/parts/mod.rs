@@ -87,6 +87,8 @@ pub(crate) enum Kind {
     Evidence,
     /// Cards in the payer's graveyard are exiled, with at least `Pick.count` card types among them.
     R5511CardTypes,
+    /// Cards of the filter in the payer's graveyard are exiled, with total mana value at least `Pick.count`.
+    R6703TotalValue,
     /// A creature the payer controls gets that many -1/-1 counters.
     Blight(u32),
     /// A permanent the payer controls is chosen, or a card in their hand is revealed; then exiled when the flag is set.
@@ -344,6 +346,16 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                 false,
             )
         }
+        CostItem::ExileTotalValue { filter, total } => (
+            Part::Pick(Pick {
+                kind: Kind::R6703TotalValue,
+                filter: filter.clone(),
+                count: usize::try_from(*total).unwrap_or(usize::MAX),
+                reads_x: false,
+                alike: None,
+            }),
+            false,
+        ),
         CostItem::ExileCardTypes(types) => (
             Part::Pick(Pick {
                 kind: Kind::R5511CardTypes,
@@ -672,6 +684,7 @@ impl Part {
                 Kind::Exile | Kind::ExileAny => "Cost.ExileFromGraveyard",
                 Kind::Evidence => "Cost.CollectEvidence",
                 Kind::R5511CardTypes => "Cost.ExileCardTypes",
+                Kind::R6703TotalValue => "Cost.ExileTotalValue",
                 Kind::Blight(_) => "Cost.Blight",
                 Kind::Behold(_) => "Cost.Behold",
                 Kind::ToLibrary(..) => "Cost.ToLibrary",
@@ -768,7 +781,12 @@ impl Part {
             }
             Part::SacrificeAll(filter) => r303c_sacrifice_all::r303c_all(payer, filter),
             Part::ExileTop(amount) => exile_top::payable(payer, *amount).then(Vec::new),
-            Part::Pick(pick) if matches!(pick.kind, Kind::Evidence | Kind::R5511CardTypes) => {
+            Part::Pick(pick)
+                if matches!(
+                    pick.kind,
+                    Kind::Evidence | Kind::R5511CardTypes | Kind::R6703TotalValue
+                ) =>
+            {
                 let found = pick.candidates(payer);
                 (!pick.short(payer.state, &found)).then_some(found)
             }
@@ -901,6 +919,7 @@ pub(crate) fn photographed(
                 | Kind::Exile
                 | Kind::ExileAny
                 | Kind::Evidence
+                | Kind::R6703TotalValue
                 | Kind::R5511CardTypes
                 | Kind::Forage
                 | Kind::Craft
@@ -1018,7 +1037,7 @@ impl Pick {
         let mut found = match self.kind {
             Kind::Sacrifice => sacrifice::candidates(payer, &self.filter),
             Kind::Discard => discard::candidates(payer, &self.filter),
-            Kind::Exile | Kind::Evidence | Kind::R5511CardTypes => {
+            Kind::Exile | Kind::Evidence | Kind::R5511CardTypes | Kind::R6703TotalValue => {
                 exile::candidates(payer, &self.filter)
             }
             Kind::ExileHand => exile_hand::candidates(payer, &self.filter),
@@ -1052,6 +1071,7 @@ impl Pick {
             Kind::Discard => crate::prohibit::may_discard(payer.state, payer.player, *id),
             Kind::Exile
             | Kind::R5511CardTypes
+            | Kind::R6703TotalValue
             | Kind::ExileHand
             | Kind::ExileAny
             | Kind::ExilePermanent
@@ -1077,8 +1097,10 @@ impl Pick {
         match self.kind {
             Kind::TapPower => usize::try_from(tap::total_power(state, candidates))
                 .is_ok_and(|total| total < self.count),
-            Kind::Evidence => usize::try_from(evidence::total_value(state, candidates))
-                .is_ok_and(|total| total < self.count),
+            Kind::Evidence | Kind::R6703TotalValue => {
+                usize::try_from(evidence::total_value(state, candidates))
+                    .is_ok_and(|total| total < self.count)
+            }
             Kind::R5511CardTypes => {
                 usize::try_from(r5511_card_types::r5511_types_among(state, candidates))
                     .is_ok_and(|among| among < self.count)
@@ -1096,7 +1118,7 @@ impl Pick {
     ) -> Option<Vec<ObjectId>> {
         let alone = match self.kind {
             Kind::TapPower | Kind::R5511CardTypes => candidates.len() == 1,
-            Kind::Evidence => {
+            Kind::Evidence | Kind::R6703TotalValue => {
                 candidates.len() == 1
                     || usize::try_from(evidence::total_value(state, candidates))
                         .is_ok_and(|total| total == self.count)
@@ -1159,7 +1181,7 @@ impl Pick {
     pub(crate) fn bounds(&self, offered: usize) -> (u32, u32) {
         if matches!(
             self.kind,
-            Kind::TapPower | Kind::Evidence | Kind::R5511CardTypes
+            Kind::TapPower | Kind::Evidence | Kind::R5511CardTypes | Kind::R6703TotalValue
         ) {
             return (1, u32::try_from(offered).unwrap_or(u32::MAX));
         }
@@ -1197,7 +1219,7 @@ impl Pick {
                 let got = tap::total_power(state, picked);
                 (got < needed).then_some(IllegalAnswer::TooLittlePower { needed, got })
             }
-            Kind::Evidence => {
+            Kind::Evidence | Kind::R6703TotalValue => {
                 let got = evidence::total_value(state, picked);
                 (got < needed).then_some(IllegalAnswer::TooLittleValue { needed, got })
             }
@@ -1242,6 +1264,7 @@ impl Pick {
             Kind::Counter => c11c_counter_picks::c11c_text(&self.filter, self.count),
             Kind::ExileAny => exile::text_any(&self.filter, self.count),
             Kind::Evidence => evidence::text(self.count),
+            Kind::R6703TotalValue => evidence::r6703_text(&self.filter, self.count),
             Kind::R5511CardTypes => r5511_card_types::r5511_text(self.count),
             Kind::Blight(count) => blight::text(count),
             Kind::Behold(exile) => behold::text(&self.filter, self.count, exile),
@@ -1294,7 +1317,9 @@ impl Pick {
             Kind::Return => bounce::event(state, object),
             Kind::Untap => Some(untap::event(object)),
             Kind::Counter => c11c_counter_picks::c11c_event(state, &self.filter, object, kinds),
-            Kind::ExileAny | Kind::Evidence | Kind::R5511CardTypes => exile::event(state, object),
+            Kind::ExileAny | Kind::Evidence | Kind::R5511CardTypes | Kind::R6703TotalValue => {
+                exile::event(state, object)
+            }
             Kind::Behold(_) => behold::event(state, player, object),
             Kind::Forage => forage::event(state, object),
             Kind::ExiledToGraveyard => exiled::event(state, object),

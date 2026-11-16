@@ -467,7 +467,15 @@ fn allowed_defenders(
                     object,
                     defender,
                     matches!(target, AttackTarget::Planeswalker(_)),
-                ) && !crate::prohibit::attack_forbidden(state, object, defender)
+                ) && !crate::prohibit::attack_forbidden(
+                    state,
+                    object,
+                    defender,
+                    match target {
+                        AttackTarget::Planeswalker(walker) => Some(*walker),
+                        _ => None,
+                    },
+                )
             })
         })
         .collect()

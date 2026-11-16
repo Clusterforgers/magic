@@ -219,6 +219,16 @@ pub enum TriggerPattern {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         combat: Option<bool>,
     },
+    /// A source the selector picks deals damage to a creature equal to that creature's toughness as the damage is dealt
+    /// ("whenever a source you control deals noncombat damage to a creature equal to that creature's toughness");
+    /// `Amount::Triggering` is the damage and the creature is the one triggering.
+    DealsToughnessDamage {
+        /// The source of the damage.
+        source: Selector,
+        /// Only combat damage (`true`) or only other damage (`false`); both when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        combat: Option<bool>,
+    },
     /// A permanent the selector picks is dealt excess damage (CR 120.10): more damage at once than is lethal to it, its
     /// toughness less the damage marked for a creature, its loyalty for a planeswalker; `Amount::Triggering` is the
     /// excess, and the permanent is the one triggering.
@@ -1246,6 +1256,9 @@ pub enum ReplaceBy {
     /// The object goes to this zone instead ("exile it instead"); a card in a graveyard, a hand, the stack or exile
     /// goes to its owner's zone.
     MoveTo(ZoneKind),
+    /// The card of a countered spell is put onto the battlefield under the replacement's controller instead of into its
+    /// owner's graveyard (Desertion); only a shield over `Countered` uses it.
+    BattlefieldUnderYours,
     /// The object is put into its owner's library instead, at this place ("reveal it and shuffle it into its owner's library
     /// instead", "put it on top of its owner's library instead"); a reveal shows it to every player first.
     IntoLibrary {
@@ -1522,7 +1535,10 @@ impl ShieldShape {
                     _ => None,
                 }
             }
-            (ReplaceWhen::Countered { .. }, ReplaceBy::MoveTo(_))
+            (
+                ReplaceWhen::Countered { .. },
+                ReplaceBy::MoveTo(_) | ReplaceBy::BattlefieldUnderYours,
+            )
             | (
                 ReplaceWhen::Countered { .. },
                 ReplaceBy::IntoLibrary {
@@ -1567,6 +1583,7 @@ impl ShieldShape {
                 | ReplaceBy::PreventAnd(_)
                 | ReplaceBy::Multiply(_)
                 | ReplaceBy::Add(_)
+                | ReplaceBy::AddAmount(_)
                 | ReplaceBy::Instead(_)
                 | ReplaceBy::InsteadNext(_)
                 | ReplaceBy::RedirectUpTo { .. }

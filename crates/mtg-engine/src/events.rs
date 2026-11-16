@@ -50,6 +50,21 @@ pub enum NothingToDo {
     Block,
 }
 
+/// The element a player bent (Avatar): the keyword actions "whenever you waterbend, earthbend, firebend, or airbend"
+/// waits for.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum Bending {
+    /// A waterbend cost was paid.
+    Water,
+    /// An earthbend was done.
+    Earth,
+    /// A firebending ability resolved.
+    Fire,
+    /// An airbend was done.
+    Air,
+}
+
 /// Why a creature was put into its owner's graveyard by state-based actions.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -141,6 +156,10 @@ pub enum Event {
         /// Whether power-up abilities can't be activated during it.
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         no_power_up: bool,
+        /// The delayed trigger set up as it begins, for its end step; its id is given then.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        r6703_end: Option<Box<DelayedCreated>>,
     },
     /// The latest extra turn added is not taken, because its player has left the game or a rule skips it.
     ExtraTurnSkipped {
@@ -1012,6 +1031,20 @@ pub enum Event {
         /// Who collected it.
         player: PlayerId,
     },
+    /// A player bent an element (Avatar): paid a waterbend cost, or an earthbend, firebending ability or airbend was done.
+    Bent {
+        /// Who bent it.
+        player: PlayerId,
+        /// The element.
+        element: Bending,
+    },
+    /// A player paid to ignore the effects of a source until end of turn (`GameRule::PayToIgnore`, a special action).
+    IgnoredEffect {
+        /// Who paid.
+        player: PlayerId,
+        /// The source whose effects they ignore.
+        source: ObjectRef,
+    },
     /// A player investigated (CR 701.16a): the Clue token is the creation before it.
     Investigated {
         /// Who investigated.
@@ -1620,6 +1653,8 @@ impl Event {
             | Event::Learned { .. }
             | Event::EvidenceCollected { .. }
             | Event::Investigated { .. }
+            | Event::Bent { .. }
+            | Event::IgnoredEffect { .. }
             | Event::Discovered { .. }
             | Event::DreadManifested { .. }
             | Event::GiftGiven { .. }

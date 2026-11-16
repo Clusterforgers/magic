@@ -32,9 +32,15 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     } else {
         (duration, cx.controller())
     };
+    // An airbend ends with the rule that lets the owners cast what it exiled; the player airbent even when it exiled
+    // nothing (Avatar Aang ruling).
+    let airbent = matches!(rule, GameRule::MayCastRather { .. }).then(|| Event::Bent {
+        player: cx.controller(),
+        element: crate::events::Bending::Air,
+    });
     let rule = lower_rule(&cx.scope, &fixed_choices(&cx.scope, rule))?;
     if names_nothing(&rule) {
-        return Ok(Run::events(Vec::new()));
+        return Ok(Run::events(airbent.into_iter().collect()));
     }
     let controller = r5502_held_by(cx, &rule, duration, controller);
     // "During its controller's next turn" of a requirement to attack is the next turn of the players it waits for.
@@ -44,7 +50,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         (_, other) => other.clone(),
     };
-    Ok(Run::events(vec![Event::RuleCreated {
+    let created = Event::RuleCreated {
         effect: Box::new(RuleEffect {
             id: EffectId(state.next_effect),
             rule,
@@ -53,7 +59,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             source: Some(cx.scope.source),
             controller,
         }),
-    }]))
+    };
+    Ok(Run::events(
+        std::iter::once(created).chain(airbent).collect(),
+    ))
 }
 
 /// The player the rule is begun for: `begun_for` (the resolving controller, or the player of `UntilTheirNextTurn`), or for

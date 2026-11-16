@@ -23,6 +23,7 @@ pub(super) fn extra_turns(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
         count: Amount::Fixed(i32::try_from(count).ok()?),
         skip_untap: false,
         no_power_up: false,
+        at_end: Vec::new(),
     })
 }
 
@@ -48,6 +49,15 @@ pub fn extra_turn(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         && let Effect::ExtraTurn { no_power_up, .. } = &mut effect
     {
         *no_power_up = true;
+    }
+    let loses = r.attempt(|r| {
+        r.punct('.').then_some(())?;
+        r.need("at the beginning of that turn's end step, you lose the game")
+    });
+    if loses.is_some()
+        && let Effect::ExtraTurn { at_end, .. } = &mut effect
+    {
+        *at_end = vec![Effect::LoseGame { who: Ref::You }];
     }
     Some(vec![effect])
 }
@@ -130,6 +140,7 @@ pub fn effect_text(effect: &Effect, subject: Option<&str>) -> Option<String> {
             count: Amount::Fixed(count),
             skip_untap,
             no_power_up,
+            at_end,
         } => {
             let turns = turns_text(*count)?;
             let mut skip = String::new();
@@ -139,6 +150,13 @@ pub fn effect_text(effect: &Effect, subject: Option<&str>) -> Option<String> {
             if *no_power_up {
                 skip += (*who == Ref::You && *count == 1)
                     .then_some(". During that turn, power-up abilities can't be activated")?;
+            }
+            if !at_end.is_empty() {
+                (*who == Ref::You
+                    && *count == 1
+                    && *at_end == [Effect::LoseGame { who: Ref::You }])
+                .then_some(())?;
+                skip += ". At the beginning of that turn's end step, you lose the game";
             }
             match subject {
                 Some("you") | None if *who == Ref::You => {

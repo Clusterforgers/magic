@@ -1750,7 +1750,7 @@ impl<'a> Walker<'a> {
             Condition::AsCast(inner) => self.as_cast(inner),
             Condition::R401OnCast(_) | Condition::R401Targets(_) => self.r401_on_cast(condition),
             Condition::ManaSpent(_) => self.uses("Condition", "ManaSpent"),
-            Condition::YourTurn => {}
+            Condition::YourTurn | Condition::PaidToIgnore => {}
             Condition::ExtraTurn => self.uses("Condition", "ExtraTurn"),
             Condition::StartingPlayer(who) => {
                 self.uses("Condition", "StartingPlayer");
@@ -1969,6 +1969,9 @@ impl<'a> Walker<'a> {
                         w.at("count", |w| w.amount(count));
                     }
                     CostItem::ExileSpell { filter } => w.at("filter", |w| w.selector(filter)),
+                    CostItem::ExileTotalValue { filter, .. } => {
+                        w.at("filter", |w| w.selector(filter))
+                    }
                     CostItem::OneOf(costs) => w.alternatives(costs),
                     CostItem::Discard { count, filter } => {
                         w.at("count", |w| w.amount(count));
@@ -2401,6 +2404,7 @@ impl<'a> Walker<'a> {
                     | CostItem::ExileTop(_)
                     | CostItem::CollectEvidence(_)
                     | CostItem::ExileCardTypes(_)
+                    | CostItem::ExileTotalValue { .. }
                     | CostItem::Blight(_)
                     | CostItem::Behold { .. }
                     | CostItem::ExiledToGraveyard { .. }
@@ -3065,6 +3069,9 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Visit {}
             | TriggerPattern::Prize {} => {}
             TriggerPattern::DealtExcess { what, .. } => self.at("what", |w| w.selector(what)),
+            TriggerPattern::DealsToughnessDamage { source, .. } => {
+                self.at("source", |w| w.selector(source));
+            }
             TriggerPattern::DealsDamage { source, to, .. } => {
                 self.at("source", |w| w.selector(source));
                 if let Some(to) = to {
@@ -4426,8 +4433,13 @@ impl Walker<'_> {
             | Effect::Renown { count }
             | Effect::Adapt { count }
             | Effect::Fabricate { count }
-            | Effect::Empower { count }
-            | Effect::Bolster { count } => w.at("count", |w| w.amount(count)),
+            | Effect::Empower { count } => w.at("count", |w| w.amount(count)),
+            Effect::Bolster { count, bind } => {
+                w.at("count", |w| w.amount(count));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
+            }
             Effect::Search {
                 who,
                 of,
@@ -4675,9 +4687,12 @@ impl Walker<'_> {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("with", |w| w.reference(with, Kind::Object));
             }
-            Effect::ExtraTurn { who, count, .. } => {
+            Effect::ExtraTurn {
+                who, count, at_end, ..
+            } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
+                w.effect_list("at_end", at_end, false);
             }
             Effect::CreateEmblem { who, abilities } => w.w6b_emblem(who, abilities),
             Effect::AddPhase { phases } => {
@@ -6081,6 +6096,11 @@ impl Walker<'_> {
             GameRule::DamageCantBePrevented { source, .. } => {
                 self.at(tag, |w| w.at("source", |w| w.selector(source)));
             }
+            GameRule::PayToIgnore(cost) => {
+                if cost.has_x() {
+                    self.problem("`PayToIgnore` costs no {X}");
+                }
+            }
             GameRule::PowerUpAgain(which) => {
                 self.at(tag, |w| w.selector(which));
             }
@@ -6364,6 +6384,7 @@ impl Walker<'_> {
             | GameRule::ExileFound(_)
             | GameRule::NoLegendRule(_)
             | GameRule::NoLegendRuleFor(_)
+            | GameRule::ZeroLoyaltyStays(_)
             | GameRule::AbilitiesAsThoughHaste(_)
             | GameRule::MaxHandSize { .. }
             | GameRule::HandSizeChange { .. }
@@ -6401,7 +6422,9 @@ impl Walker<'_> {
             GameRule::NoLegendRule(who)
             | GameRule::ControlSearches(who)
             | GameRule::ExileFound(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
-            GameRule::NoLegendRuleFor(what) | GameRule::AbilitiesAsThoughHaste(what) => {
+            GameRule::NoLegendRuleFor(what)
+            | GameRule::ZeroLoyaltyStays(what)
+            | GameRule::AbilitiesAsThoughHaste(what) => {
                 self.at(tag, |w| w.selector(what));
             }
             GameRule::NextSpell { what, .. } => {
@@ -6501,6 +6524,9 @@ impl Walker<'_> {
             }
             Prohibited::Attack { unless } => {
                 self.at("unless", |w| w.condition(unless));
+            }
+            Prohibited::AttackPlaneswalkers(walkers) => {
+                self.at("AttackPlaneswalkers", |w| w.selector(walkers));
             }
             Prohibited::PayCosts {
                 life, sacrifice, ..
@@ -6884,6 +6910,9 @@ impl Walker<'_> {
                 ) =>
             {
                 self.problem("`MoveTo` replaces a `ZoneChange` or a `Discarded`");
+            }
+            ReplaceBy::BattlefieldUnderYours if !matches!(when, ReplaceWhen::Countered { .. }) => {
+                self.problem("`BattlefieldUnderYours` replaces a `Countered`");
             }
             _ => {}
         }
@@ -7342,6 +7371,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::TapPower { .. }
                 | CostItem::CollectEvidence(_)
                 | CostItem::ExileCardTypes(_)
+                | CostItem::ExileTotalValue { .. }
                 | CostItem::Blight(_)
                 | CostItem::Behold { .. }
                 | CostItem::ExiledToGraveyard { .. }
@@ -9781,7 +9811,11 @@ impl Walker<'_> {
             self.at("to", |w| w.reference(to, Kind::Player));
         }
         let fits = match action {
-            Action::Investigated => card.is_none() && value.is_none() && to.is_none(),
+            Action::Investigated
+            | Action::Waterbent
+            | Action::Earthbent
+            | Action::Firebent
+            | Action::Airbent => card.is_none() && value.is_none() && to.is_none(),
             Action::Discovered => value.is_some() && to.is_none(),
             Action::ManifestedDread => value.is_none() && to.is_none(),
             Action::GaveGift => card.is_none() && value.is_none() && to.is_some(),

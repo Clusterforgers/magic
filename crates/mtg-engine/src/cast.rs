@@ -163,6 +163,18 @@ pub(crate) fn activation_events(
         cause: None,
         delayed: None,
     })));
+    // Paying a waterbend cost is waterbending, however it was paid (Avatar Aang ruling).
+    if let Ability::Activated { cost, .. } = &*rules
+        && cost
+            .0
+            .iter()
+            .any(|item| matches!(item, CostItem::Waterbend(_)))
+    {
+        events.push(Event::Bent {
+            player,
+            element: crate::events::Bending::Water,
+        });
+    }
     Some(events)
 }
 
@@ -635,6 +647,11 @@ fn announcement(
             special: Some(Special::EndEffect(effect)),
             ..
         }) => crate::e15g_paid::events(state, player, *effect).ok_or_else(unexpected),
+        Some(Pending {
+            what: What::Spell(source),
+            special: Some(Special::IgnoreEffect),
+            ..
+        }) => crate::r6703_ignore::events(state, player, *source).ok_or_else(unexpected),
         Some(Pending {
             what: What::Spell(card),
             special: Some(Special::TurnFaceUp),

@@ -1,0 +1,462 @@
+[
+ [
+  {
+   "Triggered": {
+    "when": {
+     "AnyOf": [
+      {
+       "Did": {
+        "action": "Waterbent",
+        "who": "You"
+       }
+      },
+      {
+       "Did": {
+        "action": "Earthbent",
+        "who": "You"
+       }
+      },
+      {
+       "Did": {
+        "action": "Firebent",
+        "who": "You"
+       }
+      },
+      {
+       "Did": {
+        "action": "Airbent",
+        "who": "You"
+       }
+      }
+     ]
+    },
+    "effects": [
+     {
+      "Draw": {
+       "count": 1
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "All": [
+         {
+          "Compare": {
+           "left": {
+            "Tallied": {
+             "who": "You",
+             "what": "Waterbent"
+            }
+           },
+           "op": "Ge",
+           "right": 1
+          }
+         },
+         {
+          "Compare": {
+           "left": {
+            "Tallied": {
+             "who": "You",
+             "what": "Earthbent"
+            }
+           },
+           "op": "Ge",
+           "right": 1
+          }
+         },
+         {
+          "Compare": {
+           "left": {
+            "Tallied": {
+             "who": "You",
+             "what": "Firebent"
+            }
+           },
+           "op": "Ge",
+           "right": 1
+          }
+         },
+         {
+          "Compare": {
+           "left": {
+            "Tallied": {
+             "who": "You",
+             "what": "Airbent"
+            }
+           },
+           "op": "Ge",
+           "right": 1
+          }
+         }
+        ]
+       },
+       "then": [
+        {
+         "Transform": {
+          "what": "This"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever you waterbend, earthbend, firebend, or airbend, draw a card. Then if you've done all four this turn, transform ~."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "BeginCombat",
+      "whose": "Opponents"
+     }
+    },
+    "effects": [
+     {
+      "Pay": {
+       "who": "ActivePlayer",
+       "cost": "{2}",
+       "unpaid": [
+        {
+         "Rule": {
+          "rule": {
+           "Cant": {
+            "who": "ActivePlayer",
+            "action": {
+             "AttackPlaneswalkers": [
+              {
+               "Subtype": "Jace"
+              },
+              {
+               "ControlledBy": "You"
+              }
+             ]
+            }
+           }
+          },
+          "duration": "UntilEndOfTurn"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of combat on each opponent's turn, they may pay {2}. If they don't, creatures they control can't attack Jaces you control this turn."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell"
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Shield": {
+       "when": {
+        "Countered": {
+         "what": [
+          {
+           "Is": {
+            "Target": 0
+           }
+          },
+          "Spell",
+          {
+           "AnyOf": [
+            {
+             "Type": "Artifact"
+            },
+            {
+             "Type": "Creature"
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "by": "BattlefieldUnderYours",
+       "duration": "UntilEndOfTurn"
+      }
+     },
+     {
+      "Counter": {
+       "what": {
+        "Target": 0
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Counter target spell. If an artifact or creature spell is countered this way, put that card onto the battlefield under your control instead of into its owner's graveyard."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "ZeroLoyaltyStays": [
+      {
+       "Type": "Planeswalker"
+      },
+      {
+       "ControlledBy": "You"
+      }
+     ]
+    }
+   }
+  },
+  "Planeswalkers you control aren't put into their owners' graveyards for having 0 loyalty."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     "Tap"
+    ],
+    "effects": [
+     {
+      "AddMana": {
+       "mana": {
+        "Fixed": [
+         "Colorless",
+         "Colorless"
+        ]
+       }
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "when": {
+        "SpellCast": {
+         "what": [
+          "XInCost"
+         ],
+         "by": "You"
+        }
+       },
+       "this_turn": true,
+       "effects": [
+        {
+         "Draw": {}
+        },
+        {
+         "GainLife": {
+          "amount": {
+           "Half": {
+            "of": "X",
+            "up": false
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "{T}: Add {C}{C}. When you next cast a spell with {X} in its mana cost this turn, you draw a card and gain half X life, rounded down."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "DealsToughnessDamage": {
+      "source": [
+       {
+        "ControlledBy": "You"
+       }
+      ],
+      "combat": false
+     }
+    },
+    "effects": [
+     {
+      "Draw": {}
+     }
+    ]
+   }
+  },
+  "Whenever a source you control deals noncombat damage to a creature equal to that creature's toughness, draw a card."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{X}"
+     },
+     "Tap"
+    ],
+    "effects": [
+     {
+      "Shield": {
+       "when": {
+        "Damage": {
+         "source": [
+          {
+           "ControlledBy": "You"
+          }
+         ],
+         "combat": false
+        }
+       },
+       "by": {
+        "AddAmount": "X"
+       },
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "{X}, {T}: If a source you control would deal noncombat damage to a permanent or player this turn, it deals that much damage plus X instead."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "LifeGained": {
+      "who": "You"
+     }
+    },
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "Transform": {
+          "what": "This"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "Reflexive": {
+       "targets": [
+        {
+         "what": {
+          "Object": [
+           {
+            "Type": "Artifact"
+           },
+           {
+            "In": "Graveyard"
+           },
+           {
+            "OwnedBy": "You"
+           },
+           {
+            "Compare": {
+             "stat": "ManaValue",
+             "op": "Le",
+             "to": {
+              "Tallied": {
+               "who": "You",
+               "what": "LifeGainedTotal"
+              }
+             }
+            }
+           }
+          ]
+         }
+        }
+       ],
+       "effects": [
+        {
+         "Move": {
+          "what": {
+           "Target": 0
+          },
+          "to": {
+           "Battlefield": {
+            "tapped": true
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever you gain life, you may convert ~. When you do, return target artifact card with mana value less than or equal to the amount of life you gained this turn from your graveyard to the battlefield tapped."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "GroupAttacks": {
+      "what": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     }
+    },
+    "effects": [
+     {
+      "Bolster": {
+       "count": 2,
+       "as": "chosen"
+      }
+     },
+     {
+      "Continuous": {
+       "affected": {
+        "Bound": "chosen"
+       },
+       "mods": [
+        {
+         "AddKeyword": "Trample"
+        }
+       ],
+       "duration": "UntilEndOfTurn"
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "when": {
+        "DealsDamage": {
+         "source": [
+          {
+           "Is": {
+            "Bound": "chosen"
+           }
+          }
+         ],
+         "to": "EachPlayer",
+         "combat": true
+        }
+       },
+       "this_turn": true,
+       "effects": [
+        {
+         "Transform": {
+          "what": "This"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever you attack, bolster 2. The chosen creature gains trample until end of turn. When that creature deals combat damage to a player this turn, convert ~."
+ ]
+]

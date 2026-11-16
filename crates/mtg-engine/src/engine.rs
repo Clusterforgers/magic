@@ -657,6 +657,10 @@ impl Engine {
                 self.pending = Some(Pending::special(player, object, Special::EndEffect(effect)));
                 Ok(())
             }
+            Outcome::BeginIgnore(object) => {
+                self.pending = Some(Pending::special(player, object, Special::IgnoreEffect));
+                Ok(())
+            }
             Outcome::BeginPrepared(permanent) => {
                 let (event, copy) = prepared::copy_of(&self.state, player, permanent)
                     .ok_or_else(|| EngineError::InvalidEvent("no prepared spell to cast".into()))?;

@@ -405,6 +405,10 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
             "the legend rule does not apply to {}",
             phrase::selector(ctx, what)
         ),
+        GameRule::ZeroLoyaltyStays(what) => format!(
+            "{} stay on the battlefield with 0 loyalty",
+            phrase::selector(ctx, what)
+        ),
         GameRule::UntapDuring { what, whose } => format!(
             "untap {} during the untap step of {}",
             phrase::selectors(ctx, what),
@@ -703,6 +707,10 @@ pub(super) fn replace_by(ctx: &Ctx, by: &ReplaceBy, depth: u8, out: &mut Vec<Ste
             format!("it goes to {} instead", phrase::zone_text(*zone)),
         )),
         ReplaceBy::IntoLibrary { .. } => out.push(Step::new(depth, r6008_into_library(by))),
+        ReplaceBy::BattlefieldUnderYours => out.push(Step::new(
+            depth,
+            "its card goes onto the battlefield under your control instead",
+        )),
         ReplaceBy::Instead(list) => {
             out.push(Step::new(depth, "instead:"));
             effects::list(ctx, list, depth + 1, out);

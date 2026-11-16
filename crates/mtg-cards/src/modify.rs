@@ -730,6 +730,9 @@ pub enum Prohibited {
         /// The attack is open while this holds for the defending player.
         unless: Condition,
     },
+    /// Attack the planeswalkers the selector picks, judged as the rule's controller and source see them as the attack is
+    /// declared (CR 508.1b): "creatures they control can't attack Jaces you control this turn". The players stay open.
+    AttackPlaneswalkers(Selector),
     /// Activate abilities of one kind of the sources the selector picks (every source when empty): the kind is a loyalty
     /// ability, the equip ability or the cycling ability, or any activated ability but a mana ability.
     ActivateKind {
@@ -1134,6 +1137,14 @@ pub enum GameRule {
     /// The legend rule (CR 704.5j) does not apply to the permanents the selector picks, judged for the rule's controller:
     /// "the legend rule doesn't apply to tokens you control".
     NoLegendRuleFor(Selector),
+    /// The planeswalkers the selector picks, judged for the rule's controller, aren't put into their owners' graveyards
+    /// for having 0 loyalty (CR 704.5i): "Planeswalkers you control aren't put into their owners' graveyards for having
+    /// 0 loyalty."
+    ZeroLoyaltyStays(Selector),
+    /// Any player may pay the mana, a special action any time they have priority (CR 116.2), for that player to ignore
+    /// the other effects of the rule's source until end of turn; those effects leave such a player out with
+    /// `Condition::PaidToIgnore` ("Any player may pay {2} for that player to ignore this effect until end of turn.").
+    PayToIgnore(ManaCostX),
     /// The permanents the selector picks that the rule's controller controls untap during the untap step of each of the
     /// players (CR 502.3): "untap all creatures you control during each other player's untap step".
     UntapDuring {

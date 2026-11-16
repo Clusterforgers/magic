@@ -1,7 +1,7 @@
 {
   "oracle_id": "e0321049-a3ed-4378-b607-7fb190b6f0fd",
   "name": "The Capitoline Triad",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Capitoline Triad",
@@ -28,9 +28,37 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 150, "end": 323 }
+          "Activated": {
+            "cost": [
+              {
+                "ExileTotalValue": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Supertype": "Legendary" },
+                        { "Subtype": "Saga" }
+                      ]
+                    }
+                  ],
+                  "total": 30
+                }
+              }
+            ],
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Static": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "SetPT": { "power": 9, "toughness": 9 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

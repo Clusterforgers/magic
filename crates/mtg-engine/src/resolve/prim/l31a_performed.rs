@@ -5,7 +5,7 @@ use mtg_cards::did::Action;
 use mtg_cards::effect::Effect;
 
 use super::wrong_effect;
-use crate::events::Event;
+use crate::events::{Bending, Event};
 use crate::resolve::{Cx, ResolveError, Run};
 
 /// One event for each player the effect names who is still in the game: `Investigated` once for each time,
@@ -76,6 +76,15 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 mentor: cx.scope.source.id,
                 mentored,
             })),
+            Action::Earthbent | Action::Firebent | Action::Airbent | Action::Waterbent => {
+                let element = match action {
+                    Action::Earthbent => Bending::Earth,
+                    Action::Firebent => Bending::Fire,
+                    Action::Airbent => Bending::Air,
+                    _ => Bending::Water,
+                };
+                events.extend((0..times).map(|_| Event::Bent { player, element }));
+            }
             _ => return Err(ResolveError::Unsupported("Effect.Performed")),
         }
     }

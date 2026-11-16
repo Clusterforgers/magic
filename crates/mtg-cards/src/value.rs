@@ -457,6 +457,14 @@ pub enum TurnTally {
     /// The dice the players rolled this turn whose result was this number, each die once (CR 706.2: the result after
     /// any modification): "as long as you've rolled a 6 this turn". Added up over the players.
     R6402Rolled(u32),
+    /// The times the players waterbent this turn (`Action::Waterbent`). Added up over the players.
+    Waterbent,
+    /// The times the players earthbent this turn (`Action::Earthbent`). Added up over the players.
+    Earthbent,
+    /// The times the players firebent this turn (`Action::Firebent`). Added up over the players.
+    Firebent,
+    /// The times the players airbent this turn (`Action::Airbent`). Added up over the players.
+    Airbent,
 }
 
 /// A kind of event the game logs for the turn with the object it was about, which `Amount::Tally` filters and counts.
@@ -1943,6 +1951,9 @@ pub enum Condition {
     /// The effect just before this one in its list was carried out in full ("if you do"): a "may" that was
     /// accepted, a cost that was paid, cards that were moved.
     Performed,
+    /// "You" paid this turn to ignore the effects of the source (`GameRule::PayToIgnore`); inside a `PlayersWhere`, the
+    /// player tested did.
+    PaidToIgnore,
     /// A player the reference names is the monarch (CR 724): any of them when it names several, so `EachPlayer` is "there is a
     /// monarch" and its `Not` "there is no monarch".
     Monarch(Ref),

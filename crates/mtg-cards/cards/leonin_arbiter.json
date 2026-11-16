@@ -1,0 +1,23 @@
+{
+  "oracle_id": "a33f6070-590c-4be8-9180-b1ac2608cbc4",
+  "name": "Leonin Arbiter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leonin Arbiter",
+      "oracle_fingerprint": "879fe63dffa1529366e8f08b372ef6d6",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "CantSearch": {
+                "PlayersWhere": { "who": "EachPlayer", "test": { "Not": "PaidToIgnore" } }
+              }
+            }
+          }
+        },
+        { "Rule": { "rule": { "PayToIgnore": "{2}" } } }
+      ]
+    }
+  ]
+}

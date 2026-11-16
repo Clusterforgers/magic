@@ -375,6 +375,24 @@ describe('special actions are offered as plays', () => {
   })
 })
 
+describe('a source whose effect the viewer may pay to ignore is a play on it, whoever controls it', () => {
+  const ignoring: Partial<PriorityOptions> = { ignorable: [{ object: 10, cost: [{ Generic: 2 }] }] }
+
+  it.each([
+    ['their own', ME],
+    ['an opponent', THEM],
+  ])('is worded with its price on a permanent of %s', (_name, controller) => {
+    const found = abilityPlays(options([], ignoring), table(placed(10, 'Battlefield', controller)), ME)
+    expect(found.get(10)?.map((play) => [play.label, play.action])).toEqual([
+      ['Pay {2}: ignore its effect this turn', { IgnoreEffect: 10 }],
+    ])
+  })
+
+  it('is not offered to a spectator seat', () => {
+    expect(abilityPlays(options([], ignoring), table(placed(10, 'Battlefield', ME)), null).size).toBe(0)
+  })
+})
+
 describe('an effect the viewer may end by paying is a play on the permanent it changes', () => {
   const ending: Partial<PriorityOptions> = {
     endable: [{ effect: 7, object: 10, cost: [{ Colored: 'White' }] }],

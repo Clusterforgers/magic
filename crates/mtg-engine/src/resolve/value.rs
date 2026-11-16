@@ -574,6 +574,10 @@ impl<'a> Scope<'a> {
             | TurnTally::SpellsWarped
             | TurnTally::DiceRolled
             | TurnTally::R6402Rolled(_)
+            | TurnTally::Waterbent
+            | TurnTally::Earthbent
+            | TurnTally::Firebent
+            | TurnTally::Airbent
             | TurnTally::CardsExiled
             | TurnTally::PermanentsToHand
             | TurnTally::CardsGravedNotFromBattlefield
@@ -606,6 +610,10 @@ impl<'a> Scope<'a> {
                     TurnTally::SpellsWarped => Tally::Warped,
                     TurnTally::DiceRolled => Tally::R5508DiceRolled,
                     TurnTally::R6402Rolled(result) => Tally::R6402Rolled(result),
+                    TurnTally::Waterbent => Tally::Waterbent,
+                    TurnTally::Earthbent => Tally::Earthbent,
+                    TurnTally::Firebent => Tally::Firebent,
+                    TurnTally::Airbent => Tally::Airbent,
                     TurnTally::PermanentsLeftUnder => Tally::PermanentsLeftUnder,
                     TurnTally::CardsLeftGraveyard => Tally::W21aLeftGraveyard,
                     TurnTally::R6100CreatureCardsLeftGraveyard => {
@@ -3702,6 +3710,11 @@ impl<'a> Scope<'a> {
             Condition::IsNight => self.state.day_night() == Some(DayNight::Night),
             Condition::NeitherDayNorNight => self.state.day_night().is_none(),
             Condition::YourTurn | Condition::ExtraTurn => self.turn_fact(condition),
+            Condition::PaidToIgnore => self
+                .state
+                .r6703_ignored
+                .iter()
+                .any(|(player, source)| *player == self.controller && *source == self.source),
             Condition::Among(who) => self.among(who)?,
             Condition::StartingPlayer(who) => self.started(who)?,
             Condition::Step(named) => {
