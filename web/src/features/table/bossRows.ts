@@ -1,5 +1,5 @@
 /** The boards of boss mode as `splitBoss` reads them: their widths in the table's frames and what each row spends besides lanes. */
-import { allyShares, POD_MIN_PX, splitBoss } from './bossSplit'
+import { allyShares, holdBoss, POD_MIN_PX } from './bossSplit'
 import type { BossBoard, BossSplit } from './bossSplit'
 import type { LaneCounts } from './laneFit'
 import { BOSS_ABILITIES_PX, BOSS_SPAN, POD_COLUMN_PX, ZONE_GAP_PX } from './layout'
@@ -32,6 +32,7 @@ export function bossSplitOf(
   counts: BossCounts,
   reserve: number,
   overhang: number,
+  held: BossSplit | null = null,
 ): { split: BossSplit; shares: number[]; chrome: number } {
   const main = regions.main.width
   const inner = main - 2 * ZONE_GAP_PX
@@ -58,18 +59,21 @@ export function bossSplitOf(
     width: main - 2 * ZONE_GAP_PX - POD_COLUMN_PX - ZONE_GAP_PX - 2 * ZONE_PAD_PX,
     counts: counts.own,
   }
-  const split = splitBoss({
-    room: regions.opponents + regions.own,
-    boss,
-    bossChrome,
-    bossFloor: bossChrome - 2 * ZONE_PAD_PX + POD_MIN_PX + sheet - reserve,
-    allies,
-    allyChrome: 2 * FRAME_PX + ALLY_TILE_PX + 2 * ZONE_PAD_PX,
-    own,
-    ownChrome: 2 * ZONE_GAP_PX + 2 * ZONE_PAD_PX,
-    ownReady: counts.ownReady,
-    ownFloor: 2 * ZONE_GAP_PX + POD_MIN_PX,
-    gap: ZONE_GAP_PX,
-  })
+  const split = holdBoss(
+    {
+      room: regions.opponents + regions.own,
+      boss,
+      bossChrome,
+      bossFloor: bossChrome - 2 * ZONE_PAD_PX + POD_MIN_PX + sheet - reserve,
+      allies,
+      allyChrome: 2 * FRAME_PX + ALLY_TILE_PX + 2 * ZONE_PAD_PX,
+      own,
+      ownChrome: 2 * ZONE_GAP_PX + 2 * ZONE_PAD_PX,
+      ownReady: counts.ownReady,
+      ownFloor: 2 * ZONE_GAP_PX + POD_MIN_PX,
+      gap: ZONE_GAP_PX,
+    },
+    held,
+  )
   return { split, shares, chrome: bossChrome }
 }

@@ -338,7 +338,8 @@ function HandSlot({
             : ({ '--fan-turn': `${fan.turn}deg`, '--fan-drop': `${fan.drop}px` } as CSSProperties)
         }
         className={cn(
-          'relative rounded-md bg-table motion-safe:transition-transform motion-safe:duration-fast motion-safe:ease-out',
+          // A lifted card rises with a little spring and casts a deeper shadow on the felt (docs/ui-design.md, Feel).
+          'relative rounded-md bg-table group-hover/slot:shadow-lg group-has-focus-visible/slot:shadow-lg motion-safe:transition-[translate,rotate,box-shadow] motion-safe:duration-base motion-safe:ease-(--ease-spring)',
           // The arc of the hand; a card that rises stands straight.
           fan !== undefined &&
             'translate-y-(--fan-drop) rotate-(--fan-turn) group-hover/slot:rotate-0 group-has-focus-visible/slot:rotate-0',

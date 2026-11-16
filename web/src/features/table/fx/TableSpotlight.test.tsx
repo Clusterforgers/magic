@@ -141,7 +141,7 @@ describe('the spotlight of a cast', () => {
       delay: MOVE_MS.travel,
       fill: 'both',
     })
-    expect(started?.keyframes.map((frame) => frame.opacity)).toEqual([0, 1, 1, 0])
+    expect(started?.keyframes.map((frame) => frame.opacity)).toEqual([0, 1, 1, 1, 0])
     act(() => started?.finish())
     expect(spotlight(container)).toBeNull()
   })

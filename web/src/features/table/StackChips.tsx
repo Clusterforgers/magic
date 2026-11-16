@@ -85,8 +85,11 @@ const Chip = memo(function Chip({ group, top, tabbable, hidden, aims, aria, empt
         tabIndex={tabbable && !hidden ? 0 : -1}
         {...(hidden ? {} : handlers)}
         className={cn(
-          'relative flex h-10 items-center gap-1.5 rounded-lg border bg-background pr-2 pl-1 text-sm font-medium outline-offset-2 outline-primary focus-visible:outline-2',
-          top ? 'max-w-[min(18rem,100%)] border-primary' : 'max-w-[min(12rem,100%)]',
+          'relative hit-area flex h-10 items-center gap-1.5 rounded-lg border bg-background pr-2 pl-1 text-sm font-medium outline-offset-2 outline-primary focus-visible:outline-2',
+          // Staging: the newest item is the focus, raised and ringed; the ones under it step back a little.
+          top
+            ? 'fx-stage-top max-w-[min(18rem,100%)] border-primary'
+            : 'max-w-[min(12rem,100%)] opacity-80 hover:opacity-100 focus-visible:opacity-100',
           empty && 'border-dashed',
         )}
       >
@@ -235,7 +238,7 @@ export function StackChips() {
           onClick={() => {
             if (side !== null && !(side.open && side.tab === 'stack')) side.activate('stack')
           }}
-          className="h-8 shrink-0 rounded-lg border border-dashed px-2 text-sm font-medium text-muted-foreground outline-offset-2 outline-primary hover:text-foreground focus-visible:outline-2"
+          className="relative hit-area h-8 shrink-0 rounded-lg border border-dashed px-2 text-sm font-medium text-muted-foreground outline-offset-2 outline-primary hover:text-foreground focus-visible:outline-2"
         >
           +{folded.length}
           <span data-slot="stack-more-word"> more</span>
