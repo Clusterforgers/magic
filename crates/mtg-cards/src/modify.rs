@@ -140,6 +140,14 @@ pub enum Modification {
     SetCommanderColor,
     /// Adds a keyword ability (layer 6).
     AddKeyword(Keyword),
+    /// Adds a numbered keyword whose number is counted for each object as the layer applies (layer 6): "~ has annihilator
+    /// X, where X is the number of +1/+1 counters on it". The keyword's own number is a placeholder.
+    R6601KeywordX {
+        /// The keyword, its number replaced by the count.
+        keyword: Keyword,
+        /// The number, read with the object as `Affected`.
+        count: Amount,
+    },
     /// Adds protection from a colour the controller chooses as the effect begins (layer 6): "protection from the
     /// color of your choice". Only an effect of a spell or ability has it, never a static ability.
     AddProtectionFromChosenColor,
@@ -257,6 +265,7 @@ impl Modification {
             | Modification::AddChosenColor
             | Modification::SetCommanderColor => Some("5"),
             Modification::AddKeyword(_)
+            | Modification::R6601KeywordX { .. }
             | Modification::KeywordsOf { .. }
             | Modification::R6001AddChosenAbilities
             | Modification::AddProtectionFromChosenColor
@@ -884,6 +893,21 @@ pub enum GameRule {
         /// Shroud is ignored too.
         #[serde(default, skip_serializing_if = "crate::effect::is_false")]
         shroud: bool,
+    },
+    /// "Each creature with one or more counters on it can't attack you or planeswalkers you control unless its controller
+    /// pays {X}, where X is the number of counters on that creature" (CR 508.1h): each taxed creature costs the mana once
+    /// for each counter on it as the attack is declared.
+    R6601AttackTaxPerCounter {
+        /// The players it protects.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// Whether it protects the players, the planeswalkers they control or both.
+        attacked: Attacked,
+        /// The attacking creatures it taxes, judged when the attack is declared; every creature when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        attackers: Selector,
+        /// The mana each counter on a taxed creature costs; no `{X}`.
+        mana: ManaCostX,
     },
     /// Creatures can't attack the players (or their planeswalkers) unless their controller pays the mana for each of them
     /// as the attack is declared (CR 508.1h): the declaration is made only with the payment.

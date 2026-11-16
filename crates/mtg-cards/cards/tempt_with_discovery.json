@@ -1,0 +1,71 @@
+{
+  "oracle_id": "4baa6145-216e-476b-b178-aaaa1e633701",
+  "name": "Tempt with Discovery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tempt with Discovery",
+      "oracle_fingerprint": "d270ecb1100e4396f832f2c1634dd972",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [{ "Type": "Land" }], "as": "land" } },
+              { "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": {} } } },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "p",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "p" },
+                        "effects": [
+                          { "Bind": { "what": { "Bound": "p" }, "as": "accepted", "adds": true } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "accepted" },
+                  "as": "q",
+                  "effects": [
+                    {
+                      "Search": {
+                        "who": { "Bound": "q" },
+                        "filter": [{ "Type": "Land" }],
+                        "as": "theirs"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "theirs" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "accepted" },
+                  "as": "r",
+                  "effects": [
+                    { "Search": { "filter": [{ "Type": "Land" }], "as": "more" } },
+                    { "Move": { "what": { "Bound": "more" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              },
+              { "Shuffle": {} },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "accepted" },
+                  "as": "s",
+                  "effects": [{ "Shuffle": { "who": { "Bound": "s" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

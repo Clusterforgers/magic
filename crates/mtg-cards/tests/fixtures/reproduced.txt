@@ -1439,6 +1439,7 @@ Nightscape Familiar
 Nightveil Sprite
 Nihil Spellbomb
 Niko Defies Destiny
+Nils, Discipline Enforcer
 Ninja Pizza
 Ninja of the Deep Hours
 Ninja of the New Moon
@@ -1926,6 +1927,7 @@ Solstice Zealot
 Soltari Foot Soldier
 Songs of the Damned
 Soraya the Falconer
+Soul Immolation
 Soul Manipulation
 Soul Shepherd
 Soul of New Phyrexia
@@ -2108,6 +2110,7 @@ Telepathy
 Tempestra, Dame of Games
 Temple Altisaur
 Temporal Manipulation
+Tempt with Discovery
 Temur Devotee
 Tender Wildguide
 Tendershoot Dryad
@@ -2267,6 +2270,7 @@ Ukkima, Stalking Shadow
 Uktabi Efreet
 Ulamog's Crusher
 Ulamog's Dreadsire
+Ulamog, the Defiler
 Ultimecia, Temporal Threat
 Ultramarines Honour Guard
 Ultron, Unlimited
@@ -2446,6 +2450,7 @@ Yisan, the Wanderer Bard
 You Cannot Pass!
 Young Wolf
 Yurlok of Scorch Thrash
+Zack Fair
 Zanikev Locust
 Zealous Conscripts
 Zellix, Sanity Flayer

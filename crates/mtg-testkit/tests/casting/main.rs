@@ -228,6 +228,7 @@ mod r6105_arachne;
 mod r6105_mind_bomb;
 mod r6105_primeval_spawn;
 mod r6105_tariff;
+mod r6601_soul_immolation;
 mod r6q1_face_down_cost;
 mod r7p3_next_spell;
 mod rebound;

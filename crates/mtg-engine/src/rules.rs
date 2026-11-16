@@ -609,6 +609,10 @@ pub struct AttackTax {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(type = "unknown"))]
     pub costs: Vec<mtg_cards::cost::CostItem>,
+    /// The mana is paid once for each counter on the taxed creature as the attack is declared.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(optional, as = "Option<bool>"))]
+    pub per_counter: bool,
 }
 
 /// What a prevention shield protects and how much it prevents.
@@ -1786,8 +1790,23 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 mana: repeated(mana.rest(), times),
                 life: life.saturating_mul(u32::try_from(times).unwrap_or(u32::MAX)),
                 costs: crate::announce::r6400_combat_costs::r6400_repeated(cost, times),
+                per_counter: false,
             })
         }
+        GameRule::R6601AttackTaxPerCounter {
+            who,
+            attacked,
+            attackers,
+            mana,
+        } => Rule::AttackTax(AttackTax {
+            players: scope.players(who)?,
+            attacked: *attacked,
+            creatures: attackers.clone(),
+            mana: mana.rest().clone(),
+            life: 0,
+            costs: Vec::new(),
+            per_counter: true,
+        }),
         GameRule::BlockTax { .. } => crate::block_tax::lower(scope, wanted)?,
         GameRule::AttackLimit(most) => Rule::AttackLimit(*most),
         GameRule::AttackLimitAt { most, at } => attack_limit_at(scope, *most, at)?,

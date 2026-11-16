@@ -2814,6 +2814,14 @@ impl<'a> Walker<'a> {
                 self.selector(selector);
             }
             Modification::BlocksAdditionalPer(per) => self.at("per", |w| w.amount(per)),
+            Modification::R6601KeywordX { keyword, count } => {
+                // The keyword's own number is a placeholder: it is judged as the smallest number it takes.
+                match keyword.r6601_numbered(1) {
+                    Some(numbered) => self.keyword(&numbered),
+                    None => self.problem("only a keyword with a number takes a counted number"),
+                }
+                self.at("count", |w| w.amount(count));
+            }
             Modification::MinBlockers(count)
             | Modification::MaxBlockers(count)
             | Modification::BlocksAdditional(count) => {
@@ -6183,6 +6191,20 @@ impl Walker<'_> {
                 if mana.has_x() {
                     w.at("mana", |w| {
                         w.problem("an attack tax is fixed mana, repeated by `per`, not an {X}");
+                    });
+                }
+            }),
+            GameRule::R6601AttackTaxPerCounter {
+                who,
+                attackers,
+                mana,
+                ..
+            } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("attackers", |w| w.selector(attackers));
+                if mana.rest().symbols().is_empty() || mana.has_x() {
+                    w.at("mana", |w| {
+                        w.problem("a tax per counter is fixed mana, paid once for each counter");
                     });
                 }
             }),

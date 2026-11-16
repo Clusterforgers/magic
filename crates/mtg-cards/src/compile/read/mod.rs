@@ -294,6 +294,7 @@ mod r6400_wholes;
 mod r6401_wholes;
 mod r6402_change_roll;
 mod r6402_dice_facts;
+mod r6601_wholes;
 mod r6a_effects;
 mod r6a_more;
 mod r6a_wordings;
@@ -597,9 +598,9 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
         .then_some(found)
 }
 
-/// A wording of the r64-01 table, read whole whatever its kind and reminder text.
+/// A wording of the r64-01 or r66-01 table, read whole whatever its kind and reminder text.
 pub fn r6401_whole(text: &str) -> Option<Ability> {
-    r6401_wholes::r6401_whole_read(text)
+    r6401_wholes::r6401_whole_read(text).or_else(|| r6601_wholes::r6601_whole_read(text))
 }
 
 /// Reads a whole ability of the r47-05 table of wordings one card prints (a keyword line among them).
@@ -669,6 +670,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r6401_wholes::r6401_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r6601_wholes::r6601_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r6103_wholes::r6103_whole_read(text) {

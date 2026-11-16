@@ -488,6 +488,29 @@ pub enum GiftKind {
 }
 
 impl Keyword {
+    /// The keyword with its number set ("annihilator X" once X is counted); none for a keyword without a number.
+    pub fn r6601_numbered(&self, number: u32) -> Option<Keyword> {
+        Some(match self {
+            Keyword::Dredge(_) => Keyword::Dredge(number),
+            Keyword::Crew(_) => Keyword::Crew(number),
+            Keyword::CrewOnce(_) => Keyword::CrewOnce(number),
+            Keyword::Toxic(_) => Keyword::Toxic(number),
+            Keyword::Annihilator(_) => Keyword::Annihilator(number),
+            Keyword::Saddle(_) => Keyword::Saddle(number),
+            Keyword::Fabricate(_) => Keyword::Fabricate(number),
+            Keyword::Vanishing(_) => Keyword::Vanishing(number),
+            Keyword::Fading(_) => Keyword::Fading(number),
+            Keyword::Casualty(_) => Keyword::Casualty(number),
+            Keyword::Hideaway(_) => Keyword::Hideaway(number),
+            Keyword::Afterlife(_) => Keyword::Afterlife(number),
+            Keyword::Graft(_) => Keyword::Graft(number),
+            Keyword::Afflict(_) => Keyword::Afflict(number),
+            Keyword::Renown(_) => Keyword::Renown(number),
+            Keyword::Ripple(_) => Keyword::Ripple(number),
+            _ => return None,
+        })
+    }
+
     /// Companion with this condition; the condition is boxed so a keyword, and every event that holds one, stays small.
     pub fn companion(condition: DeckCondition) -> Keyword {
         Keyword::Companion(Box::new(condition))
