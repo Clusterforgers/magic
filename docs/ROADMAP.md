@@ -66,6 +66,7 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf10n) Phone tables: attack arrows to a seat scrolled out of the tile strip point at the strip's edge
 - [ ] (pf9d) Crowded tables: three heroes at ten permanents each keep cards above 75 px at 1400 × 900, a six-seat grid shows the opponents' lands whole, and the card preview finds room in windows near 1024 px
 - [ ] (pf10o) The lobby's seats list stands on the first screen at 1400 × 900 beside the deck chooser instead of under the invite panel
+- [ ] (pf10p) On a phone the top bar's Effects button no longer overlaps the element behind it
 - [ ] (pf10m) Dev fixtures for the deck list and groups, the replay and the open games list, so a sweep shoots them without a server
 - [ ] (pf9e) The live report "only the host's creature attacks" in a party turn reproduced from its stored game and fixed
 - [ ] (pf9f) Stable tests under load: the 40-tap budget in `perf.test.tsx`, `tm38_team_turns` giant_four and the `check_sched` lock-wait case
