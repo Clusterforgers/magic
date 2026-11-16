@@ -19,7 +19,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { cn } from '@/lib/utils'
 import type { CustomCardView, DelveContent, DelveView, Hero } from '@/protocol/generated'
 import { ColourPips } from './CommanderArt'
-import { HEARTS, lifeShare, lifeTone, runStage } from './model'
+import { HEARTS, heatTier, heatWords, lifeShare, lifeTone, runStage } from './model'
 import { timersText } from './words'
 
 const BAR = { low: 'bg-destructive', hurt: 'bg-warning', fine: 'bg-success' } as const
@@ -167,14 +167,16 @@ export function RunHeader({ view, content }: { view: DelveView; content: DelveCo
         <div className="ml-auto flex flex-wrap items-center gap-x-4 gap-y-2 text-sm max-sm:shrink-0">
           <span
             className={cn('inline-flex items-center gap-1 font-medium', folds)}
-            aria-label={`Heat ${run.heat}`}
-            title="Heat raises the bosses' life and wits"
+            aria-label={heatWords(run.heat)}
+            title={`${heatWords(run.heat)}. Each later boss is harder than the one before.`}
           >
             <FlameIcon
               aria-hidden="true"
               className={cn('size-5', run.heat > 0 ? 'text-delve' : 'text-muted-foreground')}
             />
-            <span aria-hidden="true">Heat {run.heat}</span>
+            <span aria-hidden="true">
+              Heat {run.heat} · {heatTier(run.heat).name}
+            </span>
           </span>
           <span
             className={cn('inline-flex items-center gap-1 font-medium', folds)}

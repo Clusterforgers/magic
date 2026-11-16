@@ -1010,6 +1010,24 @@ impl Run {
             .count()
     }
 
+    /// Each boss of the ladder by id with the life it starts its fight with against this party, at its rank and the
+    /// run's Heat.
+    pub fn boss_lives(&self, content: &Content) -> Vec<(String, i32)> {
+        let Ok(theme) = self.theme(content) else {
+            return Vec::new();
+        };
+        let heroes = self.heroes.len();
+        self.map
+            .nodes
+            .iter()
+            .filter_map(|n| {
+                let boss = theme.boss(n.boss.as_deref()?)?;
+                let scale = Scale::new(heroes, self.heat, self.boss_rank(n.id));
+                Some((boss.id.clone(), scale.life(boss)))
+            })
+            .collect()
+    }
+
     /// The plan of the fight the party is in, if it is in one.
     pub fn fight_plan(&self, content: &Content) -> Result<Option<FightPlan>, CampaignError> {
         let rank = self.at.map_or(0, |node| self.boss_rank(node));

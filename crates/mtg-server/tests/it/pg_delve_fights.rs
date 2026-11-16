@@ -114,6 +114,13 @@ async fn the_fight_plays_the_decks_the_party_chose_and_waits_for_a_lost_one(pool
     let view = start.json();
     assert_eq!(view["deck_problems"], json!([]));
     let game = game_of(&view).expect("the first fight is made at the start");
+    // The ladder lists every boss's life for the party; the current one's is the fight's.
+    let lives = view["boss_lives"].as_array().unwrap();
+    assert_eq!(lives.len(), 4, "{lives:?}");
+    assert!(
+        lives.contains(&json!([view["boss"], view["fight"]["life"]])),
+        "{lives:?}"
+    );
 
     // The recipe plays each hero's own deck and names the run.
     let recipe = recipe_of(&pool, &game).await;

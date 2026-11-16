@@ -573,6 +573,9 @@ fn view(loaded: &Loaded, user: UserId, deck_problems: Vec<DelveDeckProblem>) -> 
         me,
         run: loaded.run.clone(),
         boss,
+        boss_lives: campaign()
+            .map(|content| loaded.run.boss_lives(content))
+            .unwrap_or_default(),
         deck_problems,
         fight: fight_view(&loaded.run),
     }

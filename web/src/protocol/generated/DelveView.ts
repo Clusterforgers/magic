@@ -36,6 +36,10 @@ run: Run,
  */
 boss?: string, 
 /**
+ * Each boss of the ladder by id with the life it starts its fight with against this party, at its rank and Heat.
+ */
+boss_lives: Array<[string, number]>, 
+/**
  * The heroes whose decks the waiting fight cannot be made with; empty when nothing stops it.
  */
 deck_problems: Array<DelveDeckProblem>, 

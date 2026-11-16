@@ -1,11 +1,35 @@
 //! Goal: the rank × Heat table never makes a boss easier: at every party size a later boss on the ladder and a higher
 //! Heat give it at least as much life, hand, brain and minions, its relic and modifier no later and its Enrage no
 //! later; the first boss at Heat 0 is gentler than the boss as written and the final boss at Heat 1 is not; each
-//! Enrage has a variant for each Heat's turn.
+//! Enrage has a variant for each Heat's turn; the run lists each boss of its ladder with the life of its rank.
 use mtg_campaign::content::{Boss, CardKind};
 use mtg_campaign::scale::{ENRAGE_TURN, ENRAGE_WRITTEN, MAX_HEAT, RANKS, enrage_id};
-use mtg_campaign::{Scale, content};
+use mtg_campaign::{Run, RunEvent, Scale, content};
 use rstest::rstest;
+
+#[rstest]
+fn the_ladder_lists_each_boss_with_the_life_of_its_rank(
+    #[values(1, 3, 6)] heroes: usize,
+    #[values(0, 2)] heat: u8,
+) {
+    let content = content().unwrap();
+    let theme = &content.themes[0];
+    let events: Vec<RunEvent> = (0..heroes)
+        .map(|at| RunEvent::Joined {
+            name: format!("H{at}"),
+            user: Some(format!("u{at}")),
+            bot: None,
+        })
+        .collect();
+    let run = Run::replay(content, "warrens", 9, heat, &events).unwrap();
+    let lives = run.boss_lives(content);
+    assert_eq!(lives.len(), theme.bosses.len());
+    for node in run.map.nodes.iter().filter(|n| n.boss.is_some()) {
+        let boss = theme.boss(node.boss.as_deref().unwrap()).unwrap();
+        let life = Scale::new(heroes, heat, run.boss_rank(node.id)).life(boss);
+        assert!(lives.contains(&(boss.id.clone(), life)), "{}", boss.id);
+    }
+}
 
 /// Everything that makes the boss harder, in an order where more is harder (the Enrage turn negated).
 fn strength(scale: Scale, boss: &Boss) -> [i64; 7] {
