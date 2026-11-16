@@ -152,7 +152,10 @@
   @container band (width < 40rem) {
     & [data-slot='decision-line'] > [data-slot='prompt-actions'] {
       background: var(--surface);
-      box-shadow: 0 -0.5rem 0.5rem -0.25rem var(--surface);
+      /* Upward a soft edge; downward a solid one over the sheet's padding, so no choice shows under the answers. */
+      box-shadow:
+        0 -0.5rem 0.5rem -0.25rem var(--surface),
+        0 0.5rem 0 0 var(--surface);
       padding-block: 0.25rem;
     }
     /* Smaller answers keep to one row, so the fixed band leaves the sentence and the choices in view above them. */

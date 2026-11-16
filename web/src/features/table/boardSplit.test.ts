@@ -7,7 +7,6 @@ import {
   boardFrames,
   MIN_ROW_SHARE,
   FLOOR_OWN_CARD_PX,
-  phoneHeadKept,
   podColumnFloor,
   shareSplit,
   splitBoards,
@@ -244,12 +243,11 @@ describe("a phone's sheet and the boss's head", () => {
     expect(withSheet.sheetWide).toBe(without.sheetWide)
   })
 
-  it('grows the opponents only by the head over the keep, never past the least of your row', () => {
-    const split = { opponents: 300, own: 300, ownCard: 60, theirCard: 48 }
-    expect(phoneHeadKept(split, SHEET_KEEP_PX, 200)).toBe(split)
-    expect(phoneHeadKept(split, SHEET_KEEP_PX + 40, 0)).toBe(split)
-    expect(phoneHeadKept(split, SHEET_KEEP_PX + 40, 200).opponents).toBe(340)
-    expect(phoneHeadKept(split, SHEET_KEEP_PX + 400, 200)).toMatchObject({ opponents: 450, own: 150 })
+  it("moves no row of the boss's phone table for a sheet: the band's room is kept with or without one", () => {
+    const without = splitRegions(table.regions, table.seats, counts, 0, 190, 0)
+    const withSheet = splitRegions(table.regions, table.seats, counts, 0, 190, 224)
+    expect(withSheet.opponents).toBe(without.opponents)
+    expect(without.sheet - without.shared).toBeLessThanOrEqual(without.sheetRoom + 1e-9)
   })
 })
 

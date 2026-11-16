@@ -7,7 +7,6 @@ import {
   BOSS_SPAN,
   OWN_SHARE,
   POD_COLUMN_PX,
-  SHEET_KEEP_PX,
   ZONE_GAP_PX,
   alliesBandPx,
   sheetMost,
@@ -170,18 +169,9 @@ export function splitRegions(
     held,
   )
   if (!regions.phone) return withSplit(regions, split, theirChrome + BOARD_KEEP_PX)
-  // A phone's sheet may lie over the opponents' cards, never over their pods, tiles or the boss's abilities; a head
-  // taller than the sheet's usual keep (a boss's bar and pod) takes the excess from your row while a sheet stands up.
-  return withSplit(regions, phoneHeadKept(split, theirChrome, overhang), theirChrome)
-}
-
-/** `split` with the opponents' row grown by what a phone's head over `SHEET_KEEP_PX` needs under a sheet standing `overhang` px up; your row keeps `MIN_ROW_SHARE`. */
-export function phoneHeadKept(split: BoardSplit, theirChrome: number, overhang: number): BoardSplit {
-  const excess = finite(theirChrome) - SHEET_KEEP_PX
-  if (!(excess > 0) || !(finite(overhang) > 0)) return split
-  const room = split.opponents + split.own
-  const opponents = Math.max(split.opponents, Math.min(room * (1 - MIN_ROW_SHARE), split.opponents + excess))
-  return { ...split, opponents, own: room - opponents }
+  // A phone's sheet lies in the band's room, which the split counts in the opponents' chrome; a sheet of cards leaves
+  // their pods, tiles and a boss's bar and pod (`theirChrome`) clear.
+  return withSplit(regions, split, theirChrome)
 }
 
 /** The least width in px of your creatures for which the split gives an opponent's pod column its floor. */
