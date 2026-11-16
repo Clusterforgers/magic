@@ -110,6 +110,7 @@ Assassin's Trophy
 Assemble the Entmoot
 Atlantean Skirmisher
 Atmospheric Greenhouse
+Atraxa, Grand Unifier
 Atreus, Impulsive Son
 Atzocan Seer
 Augury Raven
@@ -1352,6 +1353,7 @@ Mindlock Orb
 Mindslaver
 Ministrant of Obligation
 Minotaur de Force
+Minthara, Merciless Soul
 Mirari
 Mirari's Wake
 Mire's Malice
@@ -1830,6 +1832,7 @@ Seedship Agrarian
 Seeker of Slaanesh
 Seekers' Squire
 Seize the Day
+Selective Obliteration
 Seraph of the Sword
 Sergeant John Benton
 Serpent of the Pass
