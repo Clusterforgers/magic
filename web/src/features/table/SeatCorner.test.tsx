@@ -424,4 +424,9 @@ describe('a pod taller than its column', () => {
     expect(scroller.contains(zones)).toBe(false)
     expect(zones.parentElement).toBe(bo)
   })
+
+  it('leaves a cramped pod uncapped, so its name row and life stay over the corner and the column scrolls', () => {
+    show({ room: { height: POD_CRAMPED_PX - 1, card: 120 } })
+    expect(pod('Bo')).not.toHaveClass('max-h-full')
+  })
 })

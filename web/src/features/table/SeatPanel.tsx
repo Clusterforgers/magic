@@ -384,10 +384,10 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
       data-tight={tight || undefined}
       style={seatHueStyle(seat)}
       className={cn(
-        // One track that may shrink (`minmax(0, 1fr)`): a chip that is longer than the pod is cut inside it instead of
-        // widening the pod and pushing the life figure out of the column.
+        '@container relative flex min-w-0 flex-col gap-2 plaque rounded-xl p-2 text-card-foreground',
         // The column's height caps the pod: the blocks above the corner give way and scroll, so the zones stay in view.
-        '@container relative flex max-h-full min-w-0 flex-col gap-2 plaque rounded-xl p-2 text-card-foreground',
+        // A cramped pod keeps its name row and life over the corner, and the column scrolls to the chips under it.
+        !cramped && 'max-h-full',
         ring,
         eliminated && 'border-l-4 border-destructive',
         player.boss ? 'border-2 border-boss' : SEAT_EDGE,
@@ -424,7 +424,9 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
                 seat={seat}
                 life={player.life}
                 as="p"
-                className={cramped ? 'text-3xl font-semibold tabular-nums' : 'text-life'}
+                // The display face's figures reach 2 px under a `leading-none` line: the padding keeps them inside the
+                // blocks' scroller, which would otherwise scroll and fade for them.
+                className={cn('pb-0.5', cramped ? 'text-3xl font-semibold tabular-nums' : 'text-life')}
                 team={team}
                 spirit={player.spirit === true}
               />
