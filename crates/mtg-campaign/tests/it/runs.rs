@@ -201,10 +201,43 @@ fn each_lost_fight_costs_a_heart_until_defeat(#[case] losses: u8) {
             "the fight is retried"
         );
         assert!(
-            run.heroes.iter().all(|h| h.life == LIFE / 2),
-            "heroes regroup at half life"
+            run.heroes.iter().all(|h| h.life == LIFE),
+            "heroes beaten by the first boss regroup at full life"
         );
     }
+}
+
+#[rstest]
+#[case(1)]
+#[case(2)]
+fn a_fight_lost_to_a_later_boss_regroups_at_half_life(#[case] bots: usize) {
+    let content = content().unwrap();
+    let (mut run, mut events) = lobby(content, 5, bots);
+    apply(&mut run, &mut events, RunEvent::Started);
+    let later = run
+        .map
+        .nodes
+        .iter()
+        .map(|n| n.id)
+        .find(|&id| run.map.node(id).is_some_and(|n| n.boss.is_some()) && run.boss_rank(id) >= 1)
+        .expect("the ladder has a second boss");
+    run.at = Some(later);
+    apply(
+        &mut run,
+        &mut events,
+        RunEvent::FightCreated { game: "g".into() },
+    );
+    let lost = RunEvent::FightEnded {
+        won: false,
+        lives: vec![0; bots + 1],
+        spirits: vec![0; bots + 1],
+    };
+    apply(&mut run, &mut events, lost);
+    assert_eq!(run.hearts, HEARTS - 1);
+    assert!(
+        run.heroes.iter().all(|h| h.life == LIFE / 2),
+        "heroes regroup at half life"
+    );
 }
 
 #[test]
@@ -423,7 +456,10 @@ fn a_forfeited_fight_costs_a_heart_like_a_lost_one_and_is_made_again(
     apply(&mut run, &mut events, RunEvent::FightForfeited { cause });
     assert_eq!(run.hearts, HEARTS - 1);
     assert_eq!(run.status, Status::Fight { game: None });
-    assert!(run.heroes.iter().all(|h| h.life == LIFE / 2));
+    assert!(
+        run.heroes.iter().all(|h| h.life == LIFE),
+        "the first boss: back at full life"
+    );
     let line = run.log.last().unwrap();
     assert!(
         line.starts_with("The party") && line.contains(words),

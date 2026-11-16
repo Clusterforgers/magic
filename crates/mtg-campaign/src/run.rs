@@ -754,8 +754,9 @@ impl Run {
         }
     }
 
-    /// A lost fight costs a heart: with none left the run is lost, else every hero regroups at half life and the
-    /// fight is made again. `how` is the party's part of the chronicle line.
+    /// A lost fight costs a heart: with none left the run is lost, else every hero regroups and the fight is made
+    /// again, at full life against the first boss and at half life against a later one. `how` is the party's part
+    /// of the chronicle line.
     fn fight_lost(&mut self, content: &Content, how: &str) {
         self.hearts = self.hearts.saturating_sub(1);
         if self.hearts == 0 {
@@ -764,9 +765,11 @@ impl Run {
                 .push("The party fell. The Warrens keep their dead.".to_owned());
             return;
         }
-        // The party lost only once every hero fell: all regroup at half their life.
+        // The party lost only once every hero fell: all regroup, whole before the first boss and at half life later.
+        let first = self.at.is_none_or(|node| self.boss_rank(node) == 0);
         for h in &mut self.heroes {
-            h.life = h.max_life(content) / 2;
+            let max = h.max_life(content);
+            h.life = if first { max } else { max / 2 };
         }
         self.log.push(format!(
             "The party {how} and regroups ({} hearts left).",
