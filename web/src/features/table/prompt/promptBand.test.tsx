@@ -117,6 +117,12 @@ describe('the stylesheet', () => {
     expect(answers).not.toMatch(/wrap-reverse/)
   })
 
+  it('keeps a narrow band\'s stack room for the top chip: the label to a reader and "+2 more" as "+2"', () => {
+    const narrow = blockAfter(band, '@container band (width < 64rem)')
+    expect(blockAfter(narrow, "[data-slot='stack-label']")).toMatch(/clip-path:\s*inset\(50%\)/)
+    expect(blockAfter(narrow, "[data-slot='stack-more-word']")).toMatch(/display:\s*none/)
+  })
+
   it('gives a phone answers a row of their own across the band, opaque over the choices that scroll under them', () => {
     const phone = bandAreas(BAND_PHONE_REM - 1, 'wide')
     expect(phone.at(-1)).toEqual(['actions', 'actions'])
