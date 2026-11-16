@@ -50,10 +50,12 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Delves: the co-op boss rush with own Commander decks for 1 to 6 heroes, the Warrens ladder of four bosses with phases, relics, loot, shop, campfire and events, Spirits at 0 life, runs stored as event logs with fights as recorded games, the web pages and the bot simulator (`docs/delves.md`).
 - Delves at the table and between fights: boss mode (the boss's side on top with its abilities in plain words from the content the engine plays, the party together at the bottom), the boss intro in place of the game's lobby, decks fixed for the run with a lost deck held on the run page, the return to the run after a fight, the runs list without abandoned runs and with past runs folded (`docs/delves.md`).
 - Delves fairness: the spotlight spreads the boss's side's attacks, removal and spotlight schemes over the heroes with a cap on any one hero's share, the grace and the lull open each fight, a boss takes commander damage but never loses to 21, and the table shows whom each boss-side seat eyes (`docs/delves.md`).
-- Delves difficulty: one scaling table by party size and Heat (life, hand, Reserves, Reinforcements, Warpath, minion seats that fall with the boss, the Last Bulwark), Escalation and Enrage, the scheme deck with its Omen, measured per party size (`docs/delves.md`).
+- Delves difficulty: one scaling table by party size (life, hand, Reserves, Reinforcements, Warpath, minion seats that fall with the boss, the Last Bulwark), Escalation and Enrage, the scheme deck with its Omen, measured per party size; the bosses ramp by ladder rank and the three Heats (Casual, Seasoned, Heroic) by one rank × Heat table with the Enrage turn by Heat, worded on the new-run form and the run header (`docs/delves.md`).
 - Delves shared turns: the party and the boss's side each take one team turn (CR 805) with life totals per hero, each hero chooses their own creatures' attacks for one shared declaration, and the table names the party's turn (`docs/delves.md`).
+- Delves rewards: the Satchel of earned cards cast from beside the command zone at every fight with the deck kept whole, the Mirror Pool's copy, and commander upgrades fitted to each commander as emblems (`docs/delves.md`).
 - Fights and the table: a fight that ends without a result counts as lost and the host can retreat, Spirits are asked only where their haunts matter, the rules lexicon covers every engine term, decks sit in several groups, token planeswalkers show loyalty, the round counter, the blocker timer and grid lands as choices, and the card preview stays clear of the prompt (`docs/delves.md`, `docs/web.md`)
 - GUI sweep: every screen, table mode and prompt kind shot at the owners' sizes, the findings ranked in `docs/ui-audit.md`.
+- Feel: the twenty rules of motion and interaction, press squash and 44 px hit areas, card travel on an arc with a wind-up and a settle, attacks, hits, entries and deaths pose to pose, the staged stack and attacked seat, the swelling pass button and snappier strikes (`docs/ui-design.md`, `docs/ui-audit.md`).
 
 ## Live game
 
@@ -67,11 +69,19 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf9d) Crowded tables: three heroes at ten permanents each keep cards above 75 px at 1400 × 900, a six-seat grid shows the opponents' lands whole, and the card preview finds room in windows near 1024 px
 - [ ] (pf10o) The lobby's seats list stands on the first screen at 1400 × 900 beside the deck chooser instead of under the invite panel
 - [ ] (pf10p) On a phone the top bar's Effects button no longer overlaps the element behind it
+- [ ] (pf11a) A sent answer the server has not followed within 400 ms shows a quiet working mark in the strip, gone with the next batch (`docs/ui-design.md`, Feel)
+- [ ] (pf11b) During play the side column opens on the Log or the Stack, the tab a player reads, with Commands one press away
+- [ ] (pf11c) A cast or a land played leaves the hand at once on the press, before the server's batch, and comes back if the server refuses it
+- [ ] (pf11d) An attacker taps first and lunges after, so the tap and the lunge read as two poses
+- [ ] (pf11e) The step ladder's stop marks hit at 44 px under a coarse pointer without widening the top bar
+- [ ] (pf11f) A card added in the builder travels into its group of the deck list, and a removed one leaves it
+- [ ] (pf11g) Delves votes and shop buys answer a press with a beat on the chosen card and a moving vote count
 - [ ] (pf10m) Dev fixtures for the deck list and groups, the replay and the open games list, so a sweep shoots them without a server
 - [ ] (pf9e) The live report "only the host's creature attacks" in a party turn reproduced from its stored game and fixed
-- [ ] (pf9f) Stable tests under load: the 40-tap budget in `perf.test.tsx`, `tm38_team_turns` giant_four and the `check_sched` lock-wait case
+- [ ] (pf9f) Stable tests under load: the 40-tap budget in `perf.test.tsx` and the `check_sched` lock-wait case
 - [ ] (pf9g) Copies of one trigger are told apart on the stack, and a trigger whose conditions all fail says why in the log
 - [ ] (pf9h) An ability that rolls several dice makes one roll of them (Mr. House), so "one or more dice" triggers fire once
+- [ ] (pf9i) An announced mana ability (a die roll or discard besides the mana: Vexing Puzzlebox) can be chosen in the PayMana prompt while paying, not only at priority before the cast; automatic payment still leaves it out
 
 ## M5 Table and prompts
 
@@ -134,7 +144,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl2c) Each hero pays the attack costs of their own creatures in the party's combined attack
 - [ ] (dl8c) The boss side's targeted spells say in the log why they leave the eyed hero, as its attacks do
 - [ ] (dl8d) The glossary explains each boss's Enrage by its own rules, not as the Magic keyword
-- [ ] (dl4) A won card names the card it replaces (a basic land today), chosen from the hero's deck list on the loot screen
+- [ ] (dl4a) Bot allies temper and buy commander upgrades, and the simulator's heroes bring their commander facts
 - [ ] (dl5) Campfire upgrades put a sticker on a card of the hero's deck for the rest of the run
 - [ ] (dl6) Risky relics are party decisions: the party votes to take one, and events can be party votes with a shared outcome
 - [ ] (dl7) The scouts' forecast: background bot fights measure each boss of a new ladder and the ladder shows the measured win rate
@@ -144,6 +154,8 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl10) The run page follows the run over a socket instead of reading it every 4 s
 - [ ] (dl11) Custom cards open in the card inspector at the table with their frame and text, and the boss's phases sit in the top bar
 - [ ] (dl13) A second theme with its bosses, events and reward pool; Heat 3 and above
+- [ ] (dl14a) Measure the Hard-boss rows of the Difficulty table (Heat 0 ranks 2 and 3, Heat 1 ranks 1 to 3, Heat 2) and parties of three or more against the tier targets, and tune the Normal-brain rows, which win 92 to 98 % against two Normal heroes
+- [ ] (dl14b) Softer boss passives at Heat 0 and harsher ones at Heat 2, a variant of each passive by Heat as the Enrage has
 
 ## M8 Polish and deploy
 

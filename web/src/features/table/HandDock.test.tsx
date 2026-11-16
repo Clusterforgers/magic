@@ -176,7 +176,13 @@ describe('the fan for 1 to 20 cards', () => {
       expect(lifter.className).toContain('group-hover/slot:-translate-y-(--hand-lift)')
       expect(lifter.className).toContain('group-has-focus-visible/slot:-translate-y-(--hand-lift)')
       expect(lifter.className).toContain('pointer-coarse:group-focus-within/slot:-translate-y-(--hand-lift)')
-      expect(lifter.className).toContain('motion-safe:transition-transform')
+      // It rises with a spring and casts a deeper shadow, only where motion is welcome.
+      expect(lifter).toHaveClass(
+        'motion-safe:transition-[translate,rotate,box-shadow]',
+        'motion-safe:ease-(--ease-spring)',
+        'group-hover/slot:shadow-lg',
+      )
+      expect(lifter.className).not.toMatch(/(^| )transition/)
       // An opaque backing, so the face of an overlapped neighbour does not show through a tinted one.
       expect(lifter).toHaveClass('rounded-md', 'bg-table')
     }

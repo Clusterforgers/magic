@@ -23,7 +23,9 @@ it('shows the run and the party at a glance', async () => {
     </TooltipProvider>,
   )
   expect(screen.getByText('Choosing a path')).toBeInTheDocument()
-  expect(screen.getByLabelText('Heat 2')).toBeInTheDocument()
+  expect(
+    screen.getByLabelText('Heat 2 — Heroic: needs a team of decks that work together and suit the format'),
+  ).toHaveTextContent('Heat 2 · Heroic')
   expect(screen.getByRole('img', { name: '1 of 3 hearts left' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /Copy seed code/ })).toBeInTheDocument()
   const ana = screen.getByRole('img', { name: 'Ana: 8 life' })

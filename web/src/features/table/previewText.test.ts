@@ -136,6 +136,13 @@ describe('activatedLines', () => {
   const tap: ActivatedView = { cost: '{T}', effect: 'Add {G}.', mana: true }
   const loyalty: ActivatedView = { ability: at(3), cost: '+1', effect: 'Scry 2.', loyalty: { Plus: 1 } }
   const bare: ActivatedView = { ability: at(4), cost: '', effect: 'Draw a card.' }
+  const roll: ActivatedView = {
+    ability: at(6),
+    cost: '{T}',
+    effect: 'Add one mana of any color. Roll a d20.',
+    mana: true,
+    announced: true,
+  }
   const blind: ActivatedView = { ability: at(5), cost: '{1}', effect: 'Activated ability 6', unworded: true }
 
   it.each<[string, ActivatedView[], string[]]>([
@@ -150,6 +157,11 @@ describe('activatedLines', () => {
     ['an effect with no cost', [bare], ['Draw a card.']],
     ['an ability named only by its place', [blind], ['Activated ability 6']],
     ['a mana ability, which the mana line tells', [tap], []],
+    [
+      'a mana ability activated like any ability (a d20 roll)',
+      [tap, roll],
+      ['{T}: Add one mana of any color. Roll a d20.'],
+    ],
     [
       'mana abilities among others, left out in the order of the card',
       [tap, draw, tap, equip],

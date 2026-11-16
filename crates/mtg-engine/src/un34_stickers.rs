@@ -222,14 +222,20 @@ impl GameState {
     /// (`Characteristics::name_words`, layer 3).
     pub fn name_of(&self, id: ObjectId) -> Option<String> {
         let object = self.object(id)?;
-        let printed = object.card().name.clone();
-        if self.un34.on.is_empty() {
-            return Some(printed);
+        let printed = &object.card().name;
+        // A permanent's name stickers and set name are in its layers; a card elsewhere has none unless stickered.
+        if object.zone() == crate::zones::Zone::Battlefield
+            && let Some(held) = self.layers().get(id)
+        {
+            return Some(held.chars.name_for(printed));
         }
-        let words = crate::characteristics::seen_as(self, id)
-            .map(|(chars, _)| chars.name_words)
-            .unwrap_or_default();
-        Some(name_with(&words, &printed))
+        if self.un34.on.is_empty() {
+            return Some(printed.clone());
+        }
+        Some(
+            crate::characteristics::seen_as(self, id)
+                .map_or_else(|| printed.clone(), |(chars, _)| chars.name_for(printed)),
+        )
     }
 }
 

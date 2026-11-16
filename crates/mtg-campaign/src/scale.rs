@@ -1,6 +1,7 @@
-//! How a boss scales with the party and the Heat: its life, opening hand, brain and boss cards, extra combats, its
-//! phases with the Last Bulwark for a big party, and the minions it fields. One table, so every party size from one to
-//! six heroes meets the same challenge.
+//! How a boss scales with the party, its place on the ladder and the Heat: its life, opening hand, brain and boss
+//! cards, extra combats, its phases with the Last Bulwark for a big party, and the minions it fields. One table by
+//! party size, so every size from one to six heroes meets the same challenge, and one by ladder rank and Heat, so the
+//! first boss is the gentlest, each later one harder and each Heat a clear step up.
 
 use crate::content::{Boss, Brain, Minion, Theme};
 
@@ -16,6 +17,14 @@ pub const ESCALATION: &str = "escalation";
 pub const BULWARK: &str = "bulwark";
 /// The most heroes a table is scaled for.
 pub const MOST: usize = 6;
+/// The highest Heat.
+pub const MAX_HEAT: u8 = 2;
+/// The ladder ranks the tier table has rows for; a later boss plays the last row.
+pub const RANKS: usize = 4;
+/// The heroes' turn each boss's Enrage card is written for (Heat 1).
+pub const ENRAGE_WRITTEN: u32 = 7;
+/// The heroes' turn the Enrage begins on, by Heat.
+pub const ENRAGE_TURN: [u32; MAX_HEAT as usize + 1] = [9, ENRAGE_WRITTEN, 6];
 
 /// The boss's life by party size, in percent of its base and the life it gets for each hero after the first.
 const LIFE: [i32; MOST + 1] = [100, 100, 100, 100, 85, 100, 90];
@@ -32,57 +41,125 @@ const BULWARK_FROM: usize = 3;
 /// Cards a boss's opening hand has fewer than its base against a single hero; it gets one more for each hero after the
 /// first.
 const SOLO_HAND: u32 = 5;
-/// Life each Heat adds, in percent.
-const HEAT_LIFE: i32 = 20;
 
-/// The scaling for a party of `heroes` at `heat`.
+/// How hard a boss plays at one ladder rank and Heat, on top of the party-size table.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Tier {
+    /// Its life and its minions', in percent of the party-size table's.
+    pub life: i32,
+    /// Cards its opening hand has more (or fewer) than the party-size table's.
+    pub hand: i32,
+    /// Brain levels above (or below) its own, for it and its minions.
+    pub brain: i8,
+    /// Minions it fields more (or fewer) than the party-size table's.
+    pub minions: i8,
+    /// Whether it brings its own relic.
+    pub relic: bool,
+    /// Whether it draws a modifier from the theme's pool.
+    pub modifier: bool,
+}
+
+const fn tier(life: i32, hand: i32, brain: i8, minions: i8, relic: bool, modifier: bool) -> Tier {
+    Tier {
+        life,
+        hand,
+        brain,
+        minions,
+        relic,
+        modifier,
+    }
+}
+
+/// The tier table, by Heat and then ladder rank: life %, hand, brain, minions, relic, modifier (`docs/delves.md`,
+/// Difficulty). No row is easier than the one before it or the one at the Heat below.
+pub const TIERS: [[Tier; RANKS]; MAX_HEAT as usize + 1] = [
+    [
+        tier(60, -2, -1, -1, false, false),
+        tier(70, -2, -1, -1, false, true),
+        tier(80, -1, 0, 0, true, true),
+        tier(90, 0, 0, 0, true, true),
+    ],
+    [
+        tier(75, -1, -1, -1, false, true),
+        tier(90, 0, 0, 0, true, true),
+        tier(100, 0, 0, 0, true, true),
+        tier(110, 1, 0, 0, true, true),
+    ],
+    [
+        tier(100, 0, 0, 0, false, true),
+        tier(115, 1, 1, 0, true, true),
+        tier(125, 1, 1, 0, true, true),
+        tier(140, 2, 1, 0, true, true),
+    ],
+];
+
+/// The id of the Enrage card `id` made to begin on the heroes' turn `turn`: `id` itself on the turn it is written for.
+pub fn enrage_id(id: &str, turn: u32) -> String {
+    if turn == ENRAGE_WRITTEN {
+        id.to_owned()
+    } else {
+        format!("{id}_at_{turn}")
+    }
+}
+
+/// The scaling for a party of `heroes` at `heat` against the boss at `rank` on the ladder.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Scale {
     /// The heroes in the fight, 1 to [`MOST`].
     pub heroes: usize,
-    /// The run's Heat.
+    /// The run's Heat, 0 to [`MAX_HEAT`].
     pub heat: u8,
+    /// The boss's place on the ladder: 0 for the first.
+    pub rank: usize,
 }
 
 impl Scale {
-    /// The scaling for `heroes` (clamped to 1..=[`MOST`]) at `heat`.
-    pub fn new(heroes: usize, heat: u8) -> Scale {
+    /// The scaling for `heroes` (clamped to 1..=[`MOST`]) at `heat` (at most [`MAX_HEAT`]) against the boss at `rank`.
+    pub fn new(heroes: usize, heat: u8, rank: usize) -> Scale {
         Scale {
             heroes: heroes.clamp(1, MOST),
-            heat,
+            heat: heat.min(MAX_HEAT),
+            rank,
         }
+    }
+
+    /// The tier of this rank and Heat.
+    pub fn tier(self) -> Tier {
+        TIERS[usize::from(self.heat)][self.rank.min(RANKS - 1)]
     }
 
     fn extra_heroes(self) -> i32 {
         i32::try_from(self.heroes - 1).unwrap_or(0)
     }
 
-    /// `life` raised by the Heat.
-    fn heated(self, life: i32) -> i32 {
-        life + life * HEAT_LIFE * i32::from(self.heat) / 100
+    /// `life` at the tier's share, at least 1.
+    fn tiered(self, life: i32) -> i32 {
+        (life * self.tier().life / 100).max(1)
     }
 
-    /// The boss's starting life: its base and more for each hero after the first, scaled by party size and raised by
-    /// the Heat.
+    /// The boss's starting life: its base and more for each hero after the first, scaled by party size and the tier.
     pub fn life(self, boss: &Boss) -> i32 {
         let base = boss.life + boss.life_per_hero * self.extra_heroes();
-        self.heated(base * LIFE[self.heroes] / 100)
+        self.tiered(base * LIFE[self.heroes] / 100)
     }
 
-    /// The boss's opening hand: its base less [`SOLO_HAND`], one card for each hero after the first and one for each
-    /// Heat.
+    /// The boss's opening hand: its base less [`SOLO_HAND`], one card for each hero after the first and the tier's; at
+    /// least one card.
     pub fn hand(self, boss: &Boss) -> u32 {
-        let extra = u32::try_from(self.heroes - 1).unwrap_or(0) + u32::from(self.heat);
-        boss.hand.saturating_sub(SOLO_HAND).max(1) + extra
+        let base = i64::from(boss.hand.saturating_sub(SOLO_HAND).max(1));
+        let hand = base + i64::from(self.extra_heroes()) + i64::from(self.tier().hand);
+        u32::try_from(hand.max(1)).unwrap_or(1)
     }
 
-    /// The brain of a boss or minion: one level stronger from Heat 2.
+    /// The brain of a boss or minion, moved by the tier's levels.
     pub fn brain(self, brain: Brain) -> Brain {
-        if self.heat >= 2 {
-            brain.stronger()
+        let shift = self.tier().brain;
+        let step = if shift < 0 {
+            Brain::weaker
         } else {
-            brain
-        }
+            Brain::stronger
+        };
+        (0..shift.unsigned_abs()).fold(brain, |b, _| step(b))
     }
 
     /// The extra combats the boss gets each turn.
@@ -90,12 +167,17 @@ impl Scale {
         COMBATS[self.heroes]
     }
 
-    /// The custom cards in the boss's command zone from the start: its passive, its Enrage, Escalation, and by party
-    /// size Reinforcements, Reserves and Warpath for each extra combat.
+    /// The heroes' turn the Enrage begins on at this Heat.
+    pub fn enrage_turn(self) -> u32 {
+        ENRAGE_TURN[usize::from(self.heat)]
+    }
+
+    /// The custom cards in the boss's command zone from the start: its passive, its Enrage for the Heat, Escalation,
+    /// by party size Reinforcements, Reserves and Warpath for each extra combat, and its relic when the tier brings it.
     pub fn rules(self, boss: &Boss) -> Vec<String> {
         let mut rules = boss.rules.clone();
         if !boss.enrage.is_empty() {
-            rules.push(boss.enrage.clone());
+            rules.push(enrage_id(&boss.enrage, self.enrage_turn()));
         }
         rules.push(ESCALATION.to_owned());
         rules.extend(std::iter::repeat_n(
@@ -110,6 +192,9 @@ impl Scale {
             WARPATH.to_owned(),
             self.extra_combats(),
         ));
+        if self.tier().relic && !boss.relic.is_empty() {
+            rules.push(boss.relic.clone());
+        }
         rules
     }
 
@@ -130,18 +215,25 @@ impl Scale {
         phases
     }
 
+    /// How many minions the boss fields: the party-size table's, moved by the tier.
+    pub fn minion_count(self) -> usize {
+        let count =
+            i64::try_from(MINIONS[self.heroes]).unwrap_or(0) + i64::from(self.tier().minions);
+        usize::try_from(count.max(0)).unwrap_or(0)
+    }
+
     /// The minions the boss fields: the theme's first ones that do not play the boss's own deck.
     pub fn minions<'a>(self, theme: &'a Theme, boss: &Boss) -> Vec<&'a Minion> {
         theme
             .minions
             .iter()
             .filter(|m| m.deck_of != boss.id)
-            .take(MINIONS[self.heroes])
+            .take(self.minion_count())
             .collect()
     }
 
-    /// A minion's starting life, raised by the Heat.
+    /// A minion's starting life at the tier's share.
     pub fn minion_life(self, minion: &Minion) -> i32 {
-        self.heated(minion.life)
+        self.tiered(minion.life)
     }
 }

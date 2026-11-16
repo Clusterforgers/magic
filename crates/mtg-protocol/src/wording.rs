@@ -93,12 +93,14 @@ pub fn activated_views(
             targets: Vec::new(),
             loyalty,
             mana: false,
+            announced: false,
             keyword: None,
             unworded: true,
             ways: Vec::new(),
         });
         view.ability = Some(address);
         view.mana = rules.is_mana_ability();
+        view.announced = mtg_engine::r281_at_priority(&rules);
         view.keyword = keyword;
         if view.mana {
             let made = made.get_or_insert_with(|| mana_ways(state, id));
@@ -156,6 +158,7 @@ fn plain_mana(produces: ManaType) -> ActivatedView {
         targets: Vec::new(),
         loyalty: None,
         mana: true,
+        announced: false,
         keyword: None,
         unworded: false,
         ways: vec![ManaWayView {
@@ -178,6 +181,7 @@ fn worded(rules: &Ability, name: &str, loyalty: Option<LoyaltyCost>) -> Option<A
         targets: target_phrases(effect, rules.targets().len()),
         loyalty,
         mana: false,
+        announced: false,
         keyword: None,
         unworded: false,
         ways: Vec::new(),

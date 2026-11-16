@@ -61,8 +61,10 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::Defending => "the defending player".to_owned(),
         Ref::Attacked => "the attacked player".to_owned(),
         Ref::AttackedThisTurn => "each opponent you attacked this turn".to_owned(),
+        Ref::R6601HighestRollers => "each player who had the highest result".to_owned(),
         Ref::MostLife => "the player with the most life".to_owned(),
         Ref::Teammates => "your teammates".to_owned(),
+        Ref::R6501PlayersFromYou => "each player, starting with you".to_owned(),
         Ref::ActivePlayer => "the active player".to_owned(),
         Ref::Chooser => "the player choosing".to_owned(),
         Ref::Asker => "the player asking".to_owned(),
@@ -85,6 +87,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
             condition(ctx, test)
         ),
         Ref::OrController(inner) => format!("{} or its controller", who(ctx, inner)),
+        Ref::R6602FromYou => "each player in turn order, starting with you".to_owned(),
         Ref::Seated { of, side, opponent } => format!(
             "the {} to the {} of {}",
             if *opponent { "opponent" } else { "player" },
@@ -485,6 +488,7 @@ fn stat_text(stat: StatKind) -> &'static str {
         StatKind::Subtypes => "subtypes",
         StatKind::R6018PermanentTypes => "permanent types",
         StatKind::R6104LifePaid => "life paid to activate it",
+        StatKind::R6500StationValue => "power it stations with",
     }
 }
 

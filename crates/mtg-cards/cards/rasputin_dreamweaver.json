@@ -1,7 +1,7 @@
 {
   "oracle_id": "fef452ee-9018-4175-bb79-476544e48433",
   "name": "Rasputin Dreamweaver",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rasputin Dreamweaver",
@@ -34,15 +34,17 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 203, "end": 301 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": { "Matches": { "subject": "This", "selector": ["R6500StartedTurnUntapped"] } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "dream" } } }]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 302, "end": 359 }
+          "Rule": {
+            "rule": {
+              "R6500CounterCap": { "what": "This", "counter": { "Other": "dream" }, "most": 7 }
+            }
           }
         }
       ]

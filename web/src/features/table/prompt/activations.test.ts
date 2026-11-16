@@ -1,4 +1,4 @@
-// Goal: which cards the Priority offer lets the viewer activate an ability of, and how each play is worded: only the viewer's own permanents and cards of its own hand, graveyard, exile and command zone, never an opponent's card or a mana ability, none for a spectator, and the plays of a card in the order land or spell, ability, mana; and the notes that carry the abilities to the card's name and preview, laid over the hand's reasons; an effect its controller may end by paying is a play on the permanent it changes.
+// Goal: which cards the Priority offer lets the viewer activate an ability of, and how each play is worded: only the viewer's own permanents and cards of its own hand, graveyard, exile and command zone, never an opponent's card or a mana ability the payment taps (an announced one is a play), none for a spectator, and the plays of a card in the order land or spell, ability, mana; and the notes that carry the abilities to the card's name and preview, laid over the hand's reasons; an effect its controller may end by paying is a play on the permanent it changes.
 import { describe, expect, it } from 'vitest'
 import type {
   AbilityRef,
@@ -107,6 +107,22 @@ describe('which cards are offered an ability', () => {
     const found = abilityPlays(options([mana, draw]), objects, ME)
     expect(found.get(10)?.map((play) => play.action)).toEqual([{ Activate: draw }])
     expect(abilityPlays(options([mana]), objects, ME).size).toBe(0)
+  })
+
+  it('keeps an announced mana ability (Vexing Puzzlebox: add one mana, roll a d20) as a play of its own', () => {
+    const [roll, search] = [ref(10, 1), ref(10, 2)]
+    const words = 'Add one mana of any color. Roll a d20.'
+    const objects = table(
+      placed(10, 'Battlefield', ME, [
+        worded(roll, { cost: '{T}', effect: words, mana: true, announced: true }),
+        worded(search, { cost: '{T}, Remove 100 charge counters from Vexing Puzzlebox' }),
+      ]),
+    )
+    const found = abilityPlays(options([roll]), objects, ME)
+    const plays = playsOf(10, 'Vexing Puzzlebox', options([roll]), found, [])
+    expect(plays.map((play) => play.action)).toEqual([{ Activate: roll }])
+    expect(plays[0]?.label).toBe(`{T}: ${words}`)
+    expect(activationNotes(found).get(10)?.usable).toEqual([abilityKey(roll)])
   })
 
   it('collects the abilities of one card in the order the offer lists them, and of several cards apart', () => {

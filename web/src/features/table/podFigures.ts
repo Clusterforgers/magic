@@ -2,7 +2,7 @@
 import type { PlayerId, PlayerView } from '@/protocol/generated'
 
 /** The zones a pod counts. */
-export type ZoneKey = 'hand' | 'library' | 'graveyard' | 'exile' | 'command' | 'attractions'
+export type ZoneKey = 'hand' | 'library' | 'graveyard' | 'exile' | 'command' | 'satchel' | 'attractions'
 
 /** A zone as the chips and dialogs name it. */
 export const ZONE_NAME: Record<ZoneKey, string> = {
@@ -11,6 +11,7 @@ export const ZONE_NAME: Record<ZoneKey, string> = {
   graveyard: 'Graveyard',
   exile: 'Exile',
   command: 'Command zone',
+  satchel: 'Satchel',
   attractions: 'Attraction deck',
 }
 
@@ -21,6 +22,7 @@ export const ZONE_SHORT: Record<ZoneKey, string> = {
   graveyard: 'Grave',
   exile: 'Exile',
   command: 'Cmd',
+  satchel: 'Sat',
   attractions: 'Attr',
 }
 
@@ -71,14 +73,16 @@ export function podCounts(player: PlayerView, exile: number): PodCounts {
     graveyard: player.graveyard.count,
     exile,
     command: player.command.count,
+    satchel: player.satchel?.length ?? 0,
     attractions: player.attraction_deck ?? 0,
   }
 }
 
-/** The zones a pod draws as chips: the four that always count, then the command zone and the Attraction deck once they hold a card. */
+/** The zones a pod draws as chips: the four that always count, then the command zone, the Satchel and the Attraction deck once they hold a card. */
 export function chipZones(counts: PodCounts): ZoneKey[] {
   const zones: ZoneKey[] = ['hand', 'library', 'graveyard', 'exile']
   if (counts.command > 0) zones.push('command')
+  if (counts.satchel > 0) zones.push('satchel')
   if (counts.attractions > 0) zones.push('attractions')
   return zones
 }
@@ -153,6 +157,7 @@ export function tileName(facts: TileFacts): string {
     `${counts.graveyard} in graveyard`,
     `${counts.exile} in exile`,
     counts.command > 0 ? `${counts.command} in the command zone` : null,
+    counts.satchel > 0 ? `${counts.satchel} in the Satchel` : null,
     facts.revealed ?? null,
     ...(facts.commander ?? []),
     ...(facts.enchanted ?? []),

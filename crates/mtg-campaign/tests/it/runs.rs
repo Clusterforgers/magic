@@ -5,7 +5,7 @@
 //! entered with no vote and stored votes for that boss still replay; bots answer every offer; the host chooses the timers in the lobby, every fight's game keeps them and a stored run without them is relaxed; each fight whose game
 //! ended or lost its table is kept with its game for the fight log; and replaying the
 //! events gives the same run.
-use mtg_campaign::run::{HEAL_AFTER_BOSS, HEARTS, LIFE, SPIRIT_RETURN};
+use mtg_campaign::run::{HEARTS, LIFE, SPIRIT_RETURN};
 use mtg_campaign::{
     Brain, Content, Forfeit, HeroDeck, Offer, Pick, Run, RunEvent, Status, content,
 };
@@ -18,6 +18,7 @@ fn deck(colors: &str) -> HeroDeck {
         id: format!("precon:{colors}"),
         name: format!("Deck {colors}"),
         colors: colors.to_owned(),
+        commanders: Vec::new(),
     }
 }
 
@@ -201,10 +202,43 @@ fn each_lost_fight_costs_a_heart_until_defeat(#[case] losses: u8) {
             "the fight is retried"
         );
         assert!(
-            run.heroes.iter().all(|h| h.life == LIFE / 2),
-            "heroes regroup at half life"
+            run.heroes.iter().all(|h| h.life == LIFE),
+            "heroes beaten by the first boss regroup at full life"
         );
     }
+}
+
+#[rstest]
+#[case(1)]
+#[case(2)]
+fn a_fight_lost_to_a_later_boss_regroups_at_half_life(#[case] bots: usize) {
+    let content = content().unwrap();
+    let (mut run, mut events) = lobby(content, 5, bots);
+    apply(&mut run, &mut events, RunEvent::Started);
+    let later = run
+        .map
+        .nodes
+        .iter()
+        .map(|n| n.id)
+        .find(|&id| run.map.node(id).is_some_and(|n| n.boss.is_some()) && run.boss_rank(id) >= 1)
+        .expect("the ladder has a second boss");
+    run.at = Some(later);
+    apply(
+        &mut run,
+        &mut events,
+        RunEvent::FightCreated { game: "g".into() },
+    );
+    let lost = RunEvent::FightEnded {
+        won: false,
+        lives: vec![0; bots + 1],
+        spirits: vec![0; bots + 1],
+    };
+    apply(&mut run, &mut events, lost);
+    assert_eq!(run.hearts, HEARTS - 1);
+    assert!(
+        run.heroes.iter().all(|h| h.life == LIFE / 2),
+        "heroes regroup at half life"
+    );
 }
 
 #[test]
@@ -225,10 +259,7 @@ fn a_won_fight_carries_life_brings_spirits_back_and_offers_loot() {
     apply(&mut run, &mut events, won);
     assert_eq!(run.status, Status::Room);
     let lives: Vec<i32> = run.heroes.iter().map(|h| h.life).collect();
-    assert_eq!(
-        lives,
-        vec![17 + HEAL_AFTER_BOSS, SPIRIT_RETURN + HEAL_AFTER_BOSS, LIFE]
-    );
+    assert_eq!(lives, vec![17 + 15, SPIRIT_RETURN + 15, LIFE]);
     for hero in &run.heroes {
         assert_eq!(hero.gold, 50);
         assert!(
@@ -347,7 +378,7 @@ fn play(seed: u64, bots: usize) -> (Run, Vec<RunEvent>) {
             }
             Status::Room if !run.heroes[0].offers.is_empty() => {
                 let pick = match &run.heroes[0].offers[0] {
-                    Offer::Campfire => Pick::Rest,
+                    Offer::Campfire { .. } => Pick::Rest,
                     Offer::Shop { .. } => Pick::Skip,
                     Offer::Cards { cards } if cards.is_empty() => Pick::Skip,
                     Offer::Relics { relics } if relics.is_empty() => Pick::Skip,
@@ -426,7 +457,10 @@ fn a_forfeited_fight_costs_a_heart_like_a_lost_one_and_is_made_again(
     apply(&mut run, &mut events, RunEvent::FightForfeited { cause });
     assert_eq!(run.hearts, HEARTS - 1);
     assert_eq!(run.status, Status::Fight { game: None });
-    assert!(run.heroes.iter().all(|h| h.life == LIFE / 2));
+    assert!(
+        run.heroes.iter().all(|h| h.life == LIFE),
+        "the first boss: back at full life"
+    );
     let line = run.log.last().unwrap();
     assert!(
         line.starts_with("The party") && line.contains(words),

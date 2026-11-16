@@ -76,11 +76,13 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         // An ability that is given adds effects (the pass finds them as they come) and changes none that exist.
         // A name read by no other effect of the engine's: words added to it change nothing another effect reads.
         Modification::AddNameWords(_)
+        | Modification::SetName(_)
         | Modification::GrantAbility(_)
         | Modification::GrantText(_)
         | Modification::GainAbilities(_)
         | Modification::CantAttack
         | Modification::CantAttackYou { .. }
+        | Modification::R6601CantAttackPlayers { .. }
         | Modification::CantAttackOwner { .. }
         | Modification::CantBeBlockedUnlessAttackingOwner
         | Modification::CantBlock
@@ -125,6 +127,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::AddChosenColor
         | Wanted::SetCommanderColor => Traits::COLORS,
         Wanted::AddKeyword(_)
+        | Wanted::R6601KeywordX { .. }
         | Wanted::R6001AddChosenAbilities
         | Wanted::KeywordsOf { .. }
         | Wanted::AddProtectionFromChosenColor
@@ -150,6 +153,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::SetLoyalty(_)
         | Wanted::CantAttack
         | Wanted::CantAttackYou(_)
+        | Wanted::R6601CantAttackPlayers(_)
         | Wanted::CantAttackOwner(_)
         | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
@@ -176,7 +180,8 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         }
         Wanted::SetPower(value)
         | Wanted::SetToughness(value)
-        | Wanted::BlocksAdditionalPer(value) => reads_of_amount(value),
+        | Wanted::BlocksAdditionalPer(value)
+        | Wanted::R6601KeywordX { count: value, .. } => reads_of_amount(value),
         Wanted::SetController(who)
         | Wanted::GainAbilitiesOf(who)
         | Wanted::R6702GainActivatedAndTriggeredOf(who) => reads_of_ref(who),
@@ -228,6 +233,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::LoseAbilitiesExceptMana
         | Wanted::CantAttack
         | Wanted::CantAttackYou(_)
+        | Wanted::R6601CantAttackPlayers(_)
         | Wanted::CantAttackOwner(_)
         | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
@@ -265,8 +271,10 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Defending
         | Ref::Attacked
         | Ref::AttackedThisTurn
+        | Ref::R6601HighestRollers
         | Ref::MostLife
         | Ref::Teammates
+        | Ref::R6501PlayersFromYou
         | Ref::ActivePlayer
         | Ref::Chooser
         | Ref::Asker
@@ -278,6 +286,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Convoked
         | Ref::Delved
         | Ref::R6702CraftedWith => Traits::NONE,
+        Ref::R6602FromYou => Traits::NONE,
         Ref::Remembered { on, .. } => reads_of_ref(on),
         Ref::LastExiledWith { on, filter } => reads_of_ref(on).or(reads_of_selector(filter)),
         Ref::ControllerOf(inner) | Ref::OrController(inner) => {
@@ -364,6 +373,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::SpentFrom { .. }
         | Pred::GravedThisTurn
         | Pred::GravedThisCombat
+        | Pred::R6500StartedTurnUntapped
         | Pred::SharesColorWithLastCast
         | Pred::CouldAttackThisTurn
         | Pred::ArrivedThisTurn
@@ -429,6 +439,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::Subtype(_) => Traits::SUBTYPES,
         Pred::ChosenSubtype | Pred::NthChosenLandType(_) => Traits::SUBTYPES.or(Traits::TYPES),
         Pred::ChosenAs(_) => Traits::COLORS.or(Traits::TYPES).or(Traits::SUBTYPES),
+        Pred::R6600OnlyControllersColor(_) => Traits::COLORS.or(Traits::CONTROL),
         Pred::SharesSubtype(who) | Pred::SharesCreatureTypeWithEach(who) => {
             Traits::SUBTYPES.or(reads_of_ref(who))
         }
@@ -462,6 +473,7 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         StatKind::Colors | StatKind::R374ColorSet | StatKind::R4700ChosenColors => Traits::COLORS,
         StatKind::BasicLandTypes | StatKind::CreatureType | StatKind::Subtypes => Traits::SUBTYPES,
         StatKind::R6018PermanentTypes => Traits::TYPES,
+        StatKind::R6500StationValue => Traits::POWER.or(Traits::TOUGHNESS),
         StatKind::R374Types => Traits::TYPES.or(Traits::SUBTYPES).or(Traits::SUPERTYPES),
         StatKind::R374CreatureTypes => Traits::TYPES.or(Traits::SUBTYPES),
         StatKind::R374Bushido | StatKind::R374Toxic => Traits::KEYWORDS,
@@ -493,6 +505,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Promised
         | Amount::ResolvedThisTurn
         | Amount::Devoured
+        | Amount::R6500DevouredMatching(_)
         | Amount::RemovedThisWay(_)
         | Amount::Bound(_)
         | Amount::CastWith(_)

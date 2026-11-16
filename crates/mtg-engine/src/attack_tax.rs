@@ -29,6 +29,7 @@ use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::fold::apply_event;
 use crate::help::Offered;
+use crate::object::GameObject;
 use crate::parts::Part;
 use crate::priority::mana_options;
 use crate::resolve::Scope;
@@ -40,7 +41,20 @@ use crate::zones::Zone;
 /// What `object` costs to attack `target`: the mana of every tax in force that protects the player attacked, or the
 /// player who controls the planeswalker attacked, and taxes the creature.
 pub(crate) fn cost_of(state: &GameState, object: ObjectId, target: AttackTarget) -> ManaCost {
-    in_force(state, object, target).fold(ManaCost::ZERO, |sum, taxing| plus(&sum, &taxing.tax.mana))
+    in_force(state, object, target).fold(ManaCost::ZERO, |sum, taxing| {
+        if taxing.tax.per_counter {
+            let counters = state
+                .object(object)
+                .and_then(GameObject::permanent)
+                .map_or(0, |held| {
+                    held.counters().map(|(_, count)| count).sum::<u32>()
+                });
+            let times = usize::try_from(counters).unwrap_or(usize::MAX);
+            plus(&sum, &crate::rules::repeated(&taxing.tax.mana, times))
+        } else {
+            plus(&sum, &taxing.tax.mana)
+        }
+    })
 }
 
 /// What `object` costs to attack `target` in life: the life of the same taxes as `cost_of`.

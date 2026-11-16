@@ -144,19 +144,13 @@ fn setup_of(plan: &FightPlan, cards: &[Vec<String>], seed: u64) -> GameSetup {
     let content = content().unwrap();
     let mut decks: Vec<Vec<Arc<CardDefinition>>> = Vec::new();
     let mut commanders = Vec::new();
+    let mut satchels = Vec::new();
     for (at, added) in plan.heroes.iter().map(|h| usize::from(h.hero)).zip(cards) {
         let (deck, _) = hero_deck(at);
-        let mut library = deck.cards.clone();
-        for name in added {
-            let basic = library.iter().position(|c| {
-                ["Plains", "Island", "Swamp", "Mountain", "Forest"].contains(&c.name.as_str())
-            });
-            if let Some(basic) = basic {
-                library[basic] = card(name);
-            }
-        }
-        decks.push(library);
+        decks.push(deck.cards.clone());
         commanders.push(deck.commanders.clone());
+        // The earned cards wait in the Satchel; the deck stays as it is.
+        satchels.push(added.iter().map(|name| card(name)).collect());
     }
     for deck in plan.boss_decks() {
         decks.push(
@@ -166,7 +160,9 @@ fn setup_of(plan: &FightPlan, cards: &[Vec<String>], seed: u64) -> GameSetup {
         );
         commanders.push(Vec::new());
     }
-    let setup = GameSetup::new(Arc::new(Commander), seed, decks).with_commanders(commanders);
+    let setup = GameSetup::new(Arc::new(Commander), seed, decks)
+        .with_commanders(commanders)
+        .with_satchels(satchels);
     plan.apply(content, setup).unwrap()
 }
 
@@ -467,6 +463,7 @@ fn lobby(seed: u64, heroes: usize, heat: u8) -> (Run, Vec<RunEvent>) {
                 id: deck.name.clone(),
                 name: deck.name,
                 colors: colors.into(),
+                commanders: Vec::new(),
             },
         });
     }
@@ -516,7 +513,10 @@ fn main() {
                             .unwrap()
                             .id;
                         run.at = Some(node);
-                        let plan = run.fight_plan(content).unwrap().unwrap();
+                        // `DELVE_SIM_RANK` scales the boss as the one at that place on the ladder.
+                        let rank = std::env::var("DELVE_SIM_RANK")
+                            .map_or(run.boss_rank(node), |r| r.parse().unwrap());
+                        let plan = run.fight_plan_at(content, rank).unwrap().unwrap();
                         let t = Instant::now();
                         let fought = fight(&plan, &vec![Vec::new(); heroes], seed, hero_level);
                         println!(
@@ -551,7 +551,7 @@ fn main() {
                                 Status::Fight { game: Some(_) } => {
                                     let plan = run.fight_plan(content).unwrap().unwrap();
                                     let cards: Vec<Vec<String>> =
-                                        run.heroes.iter().map(|h| h.cards.clone()).collect();
+                                        run.heroes.iter().map(|h| h.satchel.clone()).collect();
                                     fights_played += 1;
                                     let fought = fight(
                                         &plan,

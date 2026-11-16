@@ -47,18 +47,32 @@
         {
           "Loyalty": {
             "cost": "Zero",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Total": {
+                    "of": [{ "Subtype": "Jace" }, { "ControlledBy": "You" }],
+                    "stat": "Loyalty"
+                  }
+                },
+                "op": "Ge",
+                "right": 25
+              }
+            },
             "effects": [
               {
                 "RepeatEach": {
                   "over": "Opponents",
-                  "as": "player",
+                  "as": "opponent",
                   "effects": [
                     {
                       "ExileTop": {
-                        "who": { "Bound": "player" },
+                        "who": { "Bound": "opponent" },
                         "count": {
                           "Difference": [
-                            { "Count": [{ "In": "Library" }, { "OwnedBy": { "Bound": "player" } }] },
+                            {
+                              "Count": [{ "In": "Library" }, { "OwnedBy": { "Bound": "opponent" } }]
+                            },
                             1
                           ]
                         },
@@ -68,19 +82,7 @@
                   ]
                 }
               }
-            ],
-            "condition": {
-              "Compare": {
-                "left": {
-                  "Counters": {
-                    "on": { "Each": [{ "Subtype": "Jace" }, { "ControlledBy": "You" }] },
-                    "counter": "loyalty"
-                  }
-                },
-                "op": "Ge",
-                "right": 25
-              }
-            }
+            ]
           }
         }
       ]

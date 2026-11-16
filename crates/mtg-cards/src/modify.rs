@@ -53,8 +53,8 @@ pub enum Modification {
     /// Adds a supertype to the copiable values of a copy: "except it is legendary in addition to its other types". Only the
     /// exceptions of a copy have it.
     AddSupertype(Supertype),
-    /// Names the copiable values of a copy: "except its name is Lazav, Dimir Mastermind". Only the exceptions of a copy
-    /// have it.
+    /// Names the copiable values of a copy: "except its name is Lazav, Dimir Mastermind" (layer 1); as the change of a
+    /// static ability or an effect it replaces the name (layer 3): "named Legitimate Businessperson".
     SetName(String),
     /// Gives the copiable values of a copy the ability that is resolving: "except it has this ability". Only the
     /// exceptions of a `BecomeCopy` have it.
@@ -140,6 +140,14 @@ pub enum Modification {
     SetCommanderColor,
     /// Adds a keyword ability (layer 6).
     AddKeyword(Keyword),
+    /// Adds a numbered keyword whose number is counted for each object as the layer applies (layer 6): "~ has annihilator
+    /// X, where X is the number of +1/+1 counters on it". The keyword's own number is a placeholder.
+    R6601KeywordX {
+        /// The keyword, its number replaced by the count.
+        keyword: Keyword,
+        /// The number, read with the object as `Affected`.
+        count: Amount,
+    },
     /// Adds protection from a colour the controller chooses as the effect begins (layer 6): "protection from the
     /// color of your choice". Only an effect of a spell or ability has it, never a static ability.
     AddProtectionFromChosenColor,
@@ -181,6 +189,9 @@ pub enum Modification {
     CantAttackYou(Attacked),
     /// The object can't attack its owner, the planeswalkers its owner controls or both (a restriction, no layer).
     CantAttackOwner(Attacked),
+    /// The object can't attack the players the reference names as the effect begins or the planeswalkers they control
+    /// (a restriction, no layer): "can't attack those players or planeswalkers they control this combat".
+    R6601CantAttackPlayers(Ref),
     /// The object can't be blocked unless it is attacking its owner or a permanent its owner controls (a restriction, no
     /// layer).
     CantBeBlockedUnlessAttackingOwner,
@@ -260,6 +271,7 @@ impl Modification {
             | Modification::AddChosenColor
             | Modification::SetCommanderColor => Some("5"),
             Modification::AddKeyword(_)
+            | Modification::R6601KeywordX { .. }
             | Modification::KeywordsOf { .. }
             | Modification::R6001AddChosenAbilities
             | Modification::AddProtectionFromChosenColor
@@ -282,6 +294,7 @@ impl Modification {
             Modification::CantAttack
             | Modification::CantAttackYou(_)
             | Modification::CantAttackOwner(_)
+            | Modification::R6601CantAttackPlayers(_)
             | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
             | Modification::DoesntUntap
@@ -618,6 +631,9 @@ pub enum CombatQuirk {
     AssignsByToughness,
     /// While their power is negative, they assign combat damage as though it were positive (its absolute value).
     AssignsAsThoughPositive,
+    /// They station permanents using their toughness rather than their power (CR 702.184a): the station ability they pay
+    /// for puts charge counters equal to their toughness.
+    R6500StationsByToughness,
     /// They must be blocked if able: a requirement on the block declaration (CR 509.1c).
     MustBeBlocked(Blocking),
     /// Every creature the selector picks that is able to block them does so (CR 509.1c), judged for their controller:
@@ -692,6 +708,10 @@ pub enum Prohibited {
     Discard,
     /// Be exiled (CR 406).
     Exile,
+    /// Be sacrificed or exiled by a triggered ability their controller controls while it resolves: "Triggered abilities you
+    /// control can't cause you to sacrifice or exile creature tokens you control." A cost the player pays to resolve the
+    /// ability (a "you may sacrifice") is caused by it too.
+    R6603ByOwnTriggers,
     /// Transform (CR 701.28).
     Transform,
     /// Phase out (CR 702.26).
@@ -898,6 +918,21 @@ pub enum GameRule {
         #[serde(default, skip_serializing_if = "crate::effect::is_false")]
         shroud: bool,
     },
+    /// "Each creature with one or more counters on it can't attack you or planeswalkers you control unless its controller
+    /// pays {X}, where X is the number of counters on that creature" (CR 508.1h): each taxed creature costs the mana once
+    /// for each counter on it as the attack is declared.
+    R6601AttackTaxPerCounter {
+        /// The players it protects.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// Whether it protects the players, the planeswalkers they control or both.
+        attacked: Attacked,
+        /// The attacking creatures it taxes, judged when the attack is declared; every creature when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        attackers: Selector,
+        /// The mana each counter on a taxed creature costs; no `{X}`.
+        mana: ManaCostX,
+    },
     /// Creatures can't attack the players (or their planeswalkers) unless their controller pays the mana for each of them
     /// as the attack is declared (CR 508.1h): the declaration is made only with the payment.
     AttackTax {
@@ -1094,6 +1129,17 @@ pub enum GameRule {
     /// The players may activate the loyalty abilities of planeswalkers they control twice each turn rather than only
     /// once (CR 606.3).
     LoyaltyTwice(Ref),
+    /// For each planeswalker the players control, they may activate one of its loyalty abilities once more this turn
+    /// as though none had been activated (CR 606.3): each such rule raises the allowance by one (The Chain Veil).
+    R6600LoyaltyOnceMore(Ref),
+    /// The next time the creatures adapt this turn, each adapts as though it had no +1/+1 counters on it (CR 701.46a):
+    /// the rule is used up by that adapt.
+    R6600AdaptsFresh(Ref),
+    /// The loyalty ability that makes this rule may be activated this many more times this turn than the planeswalker's
+    /// loyalty abilities otherwise may ("you may activate ~'s loyalty ability two more times this turn"); only that
+    /// ability of that permanent, so a loyalty ability it gains is not covered (Comet, Stellar Pup rulings). A rule
+    /// only a resolving loyalty ability makes.
+    R6603LoyaltyAgain(u32),
     /// The controller may pay this cost rather than the echo cost of each permanent they control (CR 702.30, CR 118.9):
     /// "You may pay {0} rather than pay the echo cost for permanents you control." Paying it counts as paying echo.
     EchoRather(Cost),
@@ -1171,6 +1217,19 @@ pub enum GameRule {
     /// exhaust abilities as though they haven't been activated ("During your turn, as long as you haven't activated an
     /// exhaust ability this turn, you may activate exhaust abilities as though they haven't been activated.").
     R6007ExhaustAgain(Ref),
+    /// The permanents can't have more than `most` counters of the kind on them ("~ can't have more than seven dream
+    /// counters on it."): a put that would pass the cap puts only enough to reach it, and none once it is reached.
+    R6500CounterCap {
+        /// The permanents capped.
+        what: Ref,
+        /// The kind of counter.
+        counter: crate::value::CounterKind,
+        /// The most they may have.
+        most: u32,
+    },
+    /// Planeswalkers the players control aren't put into their owners' graveyards for having 0 loyalty: the state-based
+    /// action of CR 704.5i passes them over.
+    R6500ZeroLoyaltyStays(Ref),
     /// The players may play additional lands each of their turns (CR 305.2).
     AdditionalLandPlays {
         /// Who may play them.

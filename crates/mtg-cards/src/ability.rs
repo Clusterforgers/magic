@@ -353,15 +353,14 @@ pub enum Ability {
     Loyalty {
         /// The change in loyalty.
         cost: LoyaltyCost,
+        /// "Activate only if ..." (CR 602.5b): what must hold as it is activated.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        condition: Option<Condition>,
         /// The targets.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         targets: Vec<TargetSpec>,
         /// What it does.
         effects: Vec<Effect>,
-        /// It may be activated only while this holds ("Activate only if there are twenty-five or more loyalty counters
-        /// among Jaces you control.").
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        condition: Option<Condition>,
     },
     /// "When / whenever / at ..." (CR 603).
     Triggered {

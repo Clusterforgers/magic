@@ -132,6 +132,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::CopyCard { .. }
         | Effect::BecomeCopy { .. }
         | Effect::CreateToken { .. }
+        | Effect::R6602CreateAttached { .. }
         | Effect::Continuous { .. }
         | Effect::ExchangeControl { .. }
         | Effect::R6401PassControl { .. }
@@ -150,6 +151,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::DrawGame {}
         | Effect::SetLife { .. }
         | Effect::ExchangeLife { .. }
+        | Effect::R6501RedistributeLife
         | Effect::ExchangeLifeWithToughness { .. }
         | Effect::RemoveDamage { .. }
         | Effect::Balance { .. }

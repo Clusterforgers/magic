@@ -606,7 +606,14 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::PermanentPhasedOut { .. } => crate::phasing::w11b_fold_out_event(state, event)?,
         Event::PermanentPhasedIn { object } => crate::phasing::fold_in(state, *object)?,
         Event::Monstrous { object, .. } => set_monstrous(state, *object)?,
-        Event::Devoured { object, count } => w7e_set_devoured(state, *object, *count)?,
+        Event::Devoured {
+            object,
+            count,
+            devoured,
+        } => {
+            w7e_set_devoured(state, *object, *count)?;
+            crate::r6500_devoured::r6500_keep_devoured(state, *object, devoured);
+        }
         Event::ClassLevelGained { object, level, .. } => set_level(state, *object, *level)?,
         Event::TurnedFaceUp { object, player, .. } => {
             turn_face_up(state, *object)?;
@@ -845,8 +852,11 @@ fn change_life(
 /// ability resolves is kept for "the result".
 fn c11e_draw_random(state: &mut GameState, event: &Event) {
     state.rng_index += 1;
-    if let (Event::DieRolled { result, .. }, Some(resolving)) = (event, state.resolving.as_mut()) {
+    if let (Event::DieRolled { result, player, .. }, Some(resolving)) =
+        (event, state.resolving.as_mut())
+    {
         resolving.rolled.push(*result);
+        resolving.r6601_rollers.push((*player, *result));
     }
 }
 

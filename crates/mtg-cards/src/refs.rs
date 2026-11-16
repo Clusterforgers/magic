@@ -71,6 +71,8 @@ pub enum Ref {
     Opponents,
     /// Every player.
     EachPlayer,
+    /// Every player in turn order starting with the controller ("starting with you, each player").
+    R6501PlayersFromYou,
     /// The source object of the ability (the spell itself for a spell).
     This,
     /// The targets chosen for the target specification with this index.
@@ -118,6 +120,9 @@ pub enum Ref {
     /// The opponents of the controller that their creatures attacked this turn, directly or through a planeswalker
     /// ("each opponent you attacked this turn"); an attack of an earlier combat of the turn still counts.
     AttackedThisTurn,
+    /// The players whose latest die roll of the resolution is the highest any player rolled in it ("each player rolls a
+    /// d20. ... the highest result"); none before a roll.
+    R6601HighestRollers,
     /// The player with the most life, or each of the players tied for it.
     MostLife,
     /// The controller's teammates still in the game, in turn order (CR 810.2): nobody at a table without teams.
@@ -195,6 +200,9 @@ pub enum Ref {
     /// Every player and object any of these references names, as one recipient ("you and/or permanents you control"): a
     /// damage shield used up by what it covers shares what it has left among them.
     Union(Vec<Ref>),
+    /// Each player still in the game in turn order starting with the controller ("starting with you, each player", CR
+    /// 101.4): the order in which they act.
+    R6602FromYou,
     /// The next player still in the game seated on `side` of each player `of` names (CR 101.4: turns pass to the left):
     /// "the player to your right"; with `opponent`, the nearest opponent of that player on that side ("the opponent to
     /// your left"). Nobody when no other player is left.
@@ -493,6 +501,9 @@ pub enum Pred {
     /// Matches the value the resolution remembered under the name (`Effect::ChooseValue`): has the colour, the creature,
     /// land or card type or the card name; a number or a word matches nothing.
     ChosenAs(String),
+    /// Is exactly the one colour its controller chose under the name, when each player chose one (`ChooseValue` by
+    /// several players): "it's only the color its controller chose".
+    R6600OnlyControllersColor(String),
     /// Its power, toughness, mana value or loyalty compares to the amount.
     Compare {
         /// The characteristic.
@@ -599,6 +610,9 @@ pub enum Pred {
     /// Is a card in a graveyard that was put there, from anywhere, during the combat phase now going on or the latest one
     /// this turn ("that wasn't put there this combat" is its negation).
     GravedThisCombat,
+    /// Is a permanent that was untapped on the battlefield as the turn began, before its untap step, and has stayed on
+    /// the battlefield since ("if ~ started the turn untapped").
+    R6500StartedTurnUntapped,
     /// Shares a color with the spell most recently cast this turn, by any player, as it was cast ("spells that share a
     /// color with the spell most recently cast this turn"); nothing does before a spell is cast this turn.
     SharesColorWithLastCast,

@@ -39,6 +39,9 @@ export const MAX_DEV_SLOW = 20
 /** The longest wait `?preview=` accepts, in milliseconds. */
 export const MAX_DEV_PREVIEW_MS = 10_000
 
+/** The most cards `shown` makes the dev reveal show. */
+export const MAX_DEV_SHOWN = 12
+
 /** The address parameters of `/dev/table`. */
 export interface DevSearch {
   /** How many seats the fixture table has, 2 or more; 4 when missing or wrong. */
@@ -97,6 +100,8 @@ export interface DevSearch {
   counters?: true
   /** `1` plays a reveal of three cards and a d20 roll once the table has loaded (`dev/momentScene.ts`), to look at the moments. */
   moments?: true
+  /** With `moments`: how many cards the reveal shows (1 to 12), each with rules text as long as a real card's, to look at a reveal of many. */
+  shown?: number
   /** `real` identifies the cards by the card search of a running server, so the table draws real pictures. */
   cards?: 'real'
   /** Opens the manual menu of a card once the table has loaded: `1` a permanent of the viewer, `hand` a card in the viewer's hand, `opp` a permanent of an opponent. */
@@ -203,6 +208,13 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     takeback: search.takeback === true || search.takeback === 1 || search.takeback === '1' ? true : undefined,
     states: search.states === true || search.states === 1 || search.states === '1' ? true : undefined,
     moments: search.moments === true || search.moments === 1 || search.moments === '1' ? true : undefined,
+    shown:
+      typeof search.shown === 'number' &&
+      Number.isInteger(search.shown) &&
+      search.shown >= 1 &&
+      search.shown <= MAX_DEV_SHOWN
+        ? search.shown
+        : undefined,
     reveal: search.reveal === true || search.reveal === 1 || search.reveal === '1' ? true : undefined,
     counters: search.counters === true || search.counters === 1 || search.counters === '1' ? true : undefined,
     crowd: search.crowd === true || search.crowd === 1 || search.crowd === '1' ? true : undefined,

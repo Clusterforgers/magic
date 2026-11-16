@@ -252,6 +252,10 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
     }[attacked]
     return `can't attack ${whom}`
   }
+  if ('R6601CantAttackPlayers' in modification) {
+    const seats = joinWords(modification.R6601CantAttackPlayers.players.map((seat) => n.seat(seat)))
+    return `can't attack ${seats} or planeswalkers they control`
+  }
   if ('CantAttackOwner' in modification) {
     const whom = {
       Player: 'its owner',
@@ -264,6 +268,9 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
     const word = (text: TextWord) => ('Color' in text ? text.Color.toLowerCase() : text.Subtype)
     const { from, to } = modification.ChangeText
     return `${group ? 'have' : 'has'} "${word(from)}" changed to "${word(to)}" in ${group ? 'their' : 'its'} text`
+  }
+  if ('SetName' in modification) {
+    return `${group ? 'are' : 'is'} named ${modification.SetName}`
   }
   const { power, toughness } = modification.ModifyPowerToughness
   return `${group ? 'get' : 'gets'} ${power >= 0 ? '+' : ''}${power}/${toughness >= 0 ? '+' : ''}${toughness}`

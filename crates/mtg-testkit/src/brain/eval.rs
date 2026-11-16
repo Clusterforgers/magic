@@ -495,6 +495,7 @@ mod tests {
             toughness: Some(toughness),
             abilities: Vec::new(),
             name_words: Vec::new(),
+            name_set: None,
         };
         chars.power = Some(power);
         Body {

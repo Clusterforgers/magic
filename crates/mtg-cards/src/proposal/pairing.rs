@@ -922,7 +922,8 @@ impl<'a> Pairer<'a> {
     }
 
     /// The abilities a renderer writes as a clause, in the clauses of their kind. A line of Saga chapters is read by
-    /// each of its chapters.
+    /// each of its chapters. A keyword a whole-wording table reads from a static sentence ("~ has ward {X}, where X is the
+    /// number of experience counters you have.") stands for that sentence too.
     fn exact(&mut self) {
         let abilities = self.abilities;
         for (at, ability) in abilities.iter().enumerate() {
@@ -946,7 +947,11 @@ impl<'a> Pairer<'a> {
                     ..
                 }
             );
-            if let Some(slot) = self.find_text(kinds_of(ability), &written, chapter) {
+            let mut kinds = kinds_of(ability).to_vec();
+            if matches!(ability, Ability::Keyword(_)) && !kinds.contains(&ClauseKind::Static) {
+                kinds.push(ClauseKind::Static);
+            }
+            if let Some(slot) = self.find_text(&kinds, &written, chapter) {
                 self.settle(at, slot, ClauseState::Reads { ability: at });
             }
         }
@@ -1233,7 +1238,7 @@ pub(crate) fn haunt_pair_texts(enters: &Ability, haunted: &Ability) -> Vec<Strin
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a row of the table of a die roll is told from other clauses by its range of totals and its bar, whatever the range looks like, and only an ability that rolls a die owns the rows after its clause; a spell ability reads a line the compiler takes for a static only when its wording names every line; what a source is attached to is named by the face (equipped for an Equipment, enchanted for an Aura), and the other word reads as another rule.
+    //! Goal: a row of the table of a die roll is told from other clauses by its range of totals and its bar, whatever the range looks like, and only an ability that rolls a die owns the rows after its clause; a keyword whose whole wording is a static sentence stands for that sentence; a spell ability reads a line the compiler takes for a static only when its wording names every line; what a source is attached to is named by the face (equipped for an Equipment, enchanted for an Aura), and the other word reads as another rule.
     use rstest::rstest;
 
     use super::*;
@@ -1280,6 +1285,40 @@ mod tests {
             .iter()
             .all(|state| matches!(state, ClauseState::Reads { ability: 0 }));
         assert_eq!(all_read, reads, "{states:?}");
+    }
+
+    const WARD_BY_COUNTERS: &str = r#"{"faces":[{"abilities":[{"Keyword":{"Ward":[{"GenericOf":{"Counters":{"on":"You","counter":{"Other":"experience"}}}}]}}]}]}"#;
+    const ANNIHILATOR_BY_COUNTERS: &str = r#"{"faces":[{"abilities":[{"Keyword":{"Annihilator":{"Counters":{"on":"This","counter":"+1/+1"}}}}]}]}"#;
+
+    #[rstest]
+    #[case::ward(
+        "Test Spell has ward {X}, where X is the number of experience counters you have.",
+        WARD_BY_COUNTERS,
+        true
+    )]
+    #[case::ward_of_another_counter(
+        "Test Spell has ward {X}, where X is the number of energy counters you have.",
+        WARD_BY_COUNTERS,
+        false
+    )]
+    #[case::annihilator(
+        "Test Spell has annihilator X, where X is the number of +1/+1 counters on it.",
+        ANNIHILATOR_BY_COUNTERS,
+        true
+    )]
+    #[case::annihilator_of_another_counter(
+        "Test Spell has annihilator X, where X is the number of -1/-1 counters on it.",
+        ANNIHILATOR_BY_COUNTERS,
+        false
+    )]
+    fn a_keyword_stands_for_the_static_sentence_its_wording_is(
+        #[case] text: &str,
+        #[case] proposal: &str,
+        #[case] reads: bool,
+    ) {
+        let states = c11f_states("Legendary Creature \u{2014} Elf", text, proposal);
+        let read = matches!(states.as_slice(), [ClauseState::Reads { ability: 0 }]);
+        assert_eq!(read, reads, "{states:?}");
     }
 
     /// An activated ability that pumps what the source is attached to (Demonspine Whip).

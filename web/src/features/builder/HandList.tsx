@@ -60,7 +60,7 @@ function Entry({
               title={card.name}
               data-slot="card-name"
               onClick={(event) => onPreview(card, event.currentTarget)}
-              className="min-h-6 max-w-full min-w-0 truncate rounded-sm text-left text-sm font-medium underline-offset-4 hover:underline"
+              className="min-h-6 max-w-full min-w-0 truncate rounded-sm text-left text-sm font-medium underline-offset-4 hover:underline pointer-coarse:min-h-11"
             >
               {card.name}
               {count > 1 ? <span className="font-normal text-muted-foreground"> ×{count}</span> : null}

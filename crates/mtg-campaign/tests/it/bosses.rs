@@ -4,7 +4,7 @@
 use std::collections::BTreeSet;
 
 use mtg_campaign::content::Theme;
-use mtg_campaign::scale::MOST;
+use mtg_campaign::scale::{MAX_HEAT, MOST};
 use mtg_campaign::{Boss, CardKind, Scale, content};
 use rstest::rstest;
 use serde_json::{Value, json};
@@ -68,13 +68,15 @@ fn drains_of(id: &str) -> Vec<Drain> {
     out
 }
 
-/// Every boss-side card a fight against `boss` can bring: its rules at every party size, its relic and phases, the
+/// Every boss-side card a fight against `boss` can bring: its rules at every party size and Heat, its relic and phases, the
 /// theme's schemes and modifiers and the minions' rules.
 fn boss_side_cards(theme: &Theme, boss: &Boss) -> BTreeSet<String> {
     (1..=MOST)
-        .flat_map(|heroes| Scale::new(heroes, 0).rules(boss))
+        .flat_map(|heroes| {
+            (0..=MAX_HEAT).flat_map(move |heat| Scale::new(heroes, heat, 0).rules(boss))
+        })
         .chain(
-            Scale::new(MOST, 0)
+            Scale::new(MOST, 0, 0)
                 .phases(boss, 100)
                 .into_iter()
                 .map(|(id, _)| id),

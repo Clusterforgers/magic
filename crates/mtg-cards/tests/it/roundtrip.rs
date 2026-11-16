@@ -269,7 +269,7 @@ fn keyword() -> impl Strategy<Value = Keyword> {
             Keyword::Evolve,
         ]),
         (1u32..10).prop_map(Keyword::Crew),
-        (1u32..10).prop_map(Keyword::Annihilator),
+        (1i32..10).prop_map(|n| Keyword::Annihilator(Amount::Fixed(n))),
         cost().prop_map(Keyword::Mutate),
         cost().prop_map(Keyword::Encore),
         cost().prop_map(Keyword::Squad),
@@ -1329,6 +1329,7 @@ fn ability() -> impl Strategy<Value = Ability> {
         )
             .prop_map(|(cost, targets, effects)| Ability::Loyalty {
                 cost,
+                condition: None,
                 targets,
                 effects,
                 condition: None,

@@ -148,7 +148,7 @@ const ORDINARY_EFFECTS =
   Move LoseUnspentMana PutBeneathTop BecomeBlocked FaceDownPile ExileHidden Remember Forget RememberValue Balance AddMana
   SpellEntersWith JoinAttack Revive Parade ExileUntil RevealUntil ExileTop Performed EndTurn AddStep RepeatWhile
   SeparatePiles RepeatEach ChooseWords ChooseNumbers BidLife Either OneOf ChangeTargets Rule Reattack If Together May Pay
-  R6400Block AuraSwap Meld R6401PassControl
+  R6400Block AuraSwap Meld R6401PassControl R6501RedistributeLife R6602CreateAttached
   PayAnyTimes StillResolves Bind Let`)
 
 /** The `CostItem` variants that are keyword actions or the words of one, by lexicon term. */
@@ -190,7 +190,7 @@ const COSTS: Record<string, string> = {
 
 const ORDINARY_COSTS =
   names(`Mana PayLife Draw ManaCostOf OwnManaCost OwnManaValue OwnManaCostLess ReturnToHand AlikeFromHand
-  DamageToYou OthersGainLife GenericOf ExiledToGraveyard ToLibrary XAtLeast XColor ChosenColorOnly XAtMost OneOf Changed`)
+  DamageToYou OthersGainLife GenericOf ExiledToGraveyard ToLibrary XAtLeast XColor ChosenColorOnly XAtMost XIs OneOf Changed`)
 
 /** The `TriggerPattern` variants that name a keyword action, designation or rules term, by lexicon term. */
 const TRIGGERS: Record<string, string> = {
@@ -291,7 +291,7 @@ const PLAYER_FIELDS: Record<string, string> = {
 }
 
 const PLAIN_PLAYER_FIELDS = names(
-  'seat effects spirit eyes boss bank turn_time_ms turn_time_running connected',
+  'seat effects spirit eyes boss satchel bank turn_time_ms turn_time_running connected',
 )
 
 /** The fields of the turn view that are a designation or a rules term, by lexicon term. */

@@ -246,8 +246,9 @@ pub enum Keyword {
     Mentor,
     /// Dethrone (CR 702.105): whenever it attacks the player with the most life or tied for most life, it gets a +1/+1 counter.
     Dethrone,
-    /// Annihilator N (CR 702.86): whenever it attacks, the defending player sacrifices N permanents.
-    Annihilator(u32),
+    /// Annihilator N (CR 702.86): whenever it attacks, the defending player sacrifices N permanents; N may be counted as
+    /// the trigger resolves ("annihilator X, where X is the number of +1/+1 counters on it").
+    Annihilator(Amount),
     /// Extort (CR 702.101): whenever you cast a spell, you may pay {W/B}; each opponent then loses 1 life and you gain that much.
     Extort,
     /// Evolve (CR 702.100): whenever a creature enters under your control with greater power or toughness, it gets a +1/+1 counter.
@@ -488,6 +489,31 @@ pub enum GiftKind {
 }
 
 impl Keyword {
+    /// The keyword with its number set ("annihilator X" once X is counted); none for a keyword without a number.
+    pub fn r6601_numbered(&self, number: u32) -> Option<Keyword> {
+        Some(match self {
+            Keyword::Dredge(_) => Keyword::Dredge(number),
+            Keyword::Crew(_) => Keyword::Crew(number),
+            Keyword::CrewOnce(_) => Keyword::CrewOnce(number),
+            Keyword::Toxic(_) => Keyword::Toxic(number),
+            Keyword::Annihilator(_) => {
+                Keyword::Annihilator(Amount::Fixed(i32::try_from(number).unwrap_or(i32::MAX)))
+            }
+            Keyword::Saddle(_) => Keyword::Saddle(number),
+            Keyword::Fabricate(_) => Keyword::Fabricate(number),
+            Keyword::Vanishing(_) => Keyword::Vanishing(number),
+            Keyword::Fading(_) => Keyword::Fading(number),
+            Keyword::Casualty(_) => Keyword::Casualty(number),
+            Keyword::Hideaway(_) => Keyword::Hideaway(number),
+            Keyword::Afterlife(_) => Keyword::Afterlife(number),
+            Keyword::Graft(_) => Keyword::Graft(number),
+            Keyword::Afflict(_) => Keyword::Afflict(number),
+            Keyword::Renown(_) => Keyword::Renown(number),
+            Keyword::Ripple(_) => Keyword::Ripple(number),
+            _ => return None,
+        })
+    }
+
     /// Companion with this condition; the condition is boxed so a keyword, and every event that holds one, stays small.
     pub fn companion(condition: DeckCondition) -> Keyword {
         Keyword::Companion(Box::new(condition))
@@ -1100,7 +1126,7 @@ mod tests {
             Keyword::Melee,
             Keyword::Mentor,
             Keyword::Dethrone,
-            Keyword::Annihilator(2),
+            Keyword::Annihilator(Amount::Fixed(2)),
             Keyword::Extort,
             Keyword::Evolve,
             Keyword::LevelUp(Cost::default()),

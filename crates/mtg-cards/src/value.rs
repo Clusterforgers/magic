@@ -75,6 +75,9 @@ pub enum StatKind {
     /// The life paid to activate it, for an activated ability on the stack: its cost's life and the life paid for its
     /// Phyrexian mana symbols ("that much life").
     R6104LifePaid,
+    /// The number it stations permanents with (CR 702.184a): its power, or its toughness while a rule says it stations
+    /// using its toughness (`CombatQuirk::R6500StationsByToughness`).
+    R6500StationValue,
 }
 
 /// A comparison between two numbers.
@@ -706,6 +709,9 @@ pub enum Amount {
     ResolvedThisTurn,
     /// How many permanents this permanent devoured as it entered (CR 702.82); zero once it has left the battlefield.
     Devoured,
+    /// How many of the permanents this permanent devoured as it entered the selector matches, each as it last existed
+    /// on the battlefield ("the number of Goblins it devoured"); zero once it has left the battlefield.
+    R6500DevouredMatching(Selector),
     /// How many counters of the kind the cost of the resolving ability removed from its source ("for each charge counter removed this
     /// way" after "Remove all charge counters from ~"); zero outside such an ability.
     RemovedThisWay(CounterKind),
@@ -1103,6 +1109,7 @@ enum Tagged {
     Mutations(Ref),
     Promised,
     ResolvedThisTurn,
+    R6500DevouredMatching(Selector),
     Devoured,
     RemovedThisWay(CounterKind),
     Bound(String),
@@ -1321,6 +1328,7 @@ enum TaggedRef<'a> {
     Mutations(&'a Ref),
     Promised,
     ResolvedThisTurn,
+    R6500DevouredMatching(&'a Selector),
     Devoured,
     RemovedThisWay(&'a CounterKind),
     Bound(&'a str),
@@ -1509,6 +1517,7 @@ impl From<Tagged> for Amount {
             Tagged::Mutations(of) => Amount::Mutations(of),
             Tagged::Promised => Amount::Promised,
             Tagged::ResolvedThisTurn => Amount::ResolvedThisTurn,
+            Tagged::R6500DevouredMatching(filter) => Amount::R6500DevouredMatching(filter),
             Tagged::Devoured => Amount::Devoured,
             Tagged::RemovedThisWay(counter) => Amount::RemovedThisWay(counter),
             Tagged::Bound(name) => Amount::Bound(name),
@@ -1658,6 +1667,9 @@ impl Serialize for Amount {
             Amount::Mutations(of) => TaggedRef::Mutations(of).serialize(serializer),
             Amount::Promised => TaggedRef::Promised.serialize(serializer),
             Amount::ResolvedThisTurn => TaggedRef::ResolvedThisTurn.serialize(serializer),
+            Amount::R6500DevouredMatching(filter) => {
+                TaggedRef::R6500DevouredMatching(filter).serialize(serializer)
+            }
             Amount::Devoured => TaggedRef::Devoured.serialize(serializer),
             Amount::RemovedThisWay(counter) => {
                 TaggedRef::RemovedThisWay(counter).serialize(serializer)

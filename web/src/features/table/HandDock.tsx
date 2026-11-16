@@ -53,15 +53,34 @@ export function commandersInHand(
  * The cards at the head of the dock: the commanders waiting in the command zone, then the top card of your library while
  * you may see it (Sigarda, Future Sight, Courser of Kruphix), so it is cast or played from here like a card of the hand.
  */
-function headOfHand(
+export function headOfHand(
   player: PlayerView | undefined,
   objects: Readonly<Record<ObjectId, ObjectView>>,
 ): ReadonlyMap<ObjectId, HandCommander> {
   const commanders = commandersInHand(player, objects)
+  const satchel = satchelInHand(player, objects)
   const top = player === undefined ? undefined : seenTop(player)
-  if (top === undefined || objects[top] === undefined) return commanders
-  return new Map([...commanders, [top, { tax: 0, words: TOP_WORDS, top: true }]])
+  const head = satchel.length === 0 ? commanders : new Map([...commanders, ...satchel])
+  if (top === undefined || objects[top] === undefined) return head
+  return new Map([...head, [top, { tax: 0, words: TOP_WORDS, top: true }]])
 }
+
+/** The cards of your Satchel, each with the words of where it is and what it costs ("in your Satchel, costs {1}{G}"). */
+function satchelInHand(
+  player: PlayerView | undefined,
+  objects: Readonly<Record<ObjectId, ObjectView>>,
+): [ObjectId, HandCommander][] {
+  return (player?.satchel ?? [])
+    .filter((id) => objects[id] !== undefined)
+    .map((id) => {
+      const cost = castCostLine(objects[id]?.mana_cost ?? null, 0)
+      const words = cost === '' ? SATCHEL_WORDS : `${SATCHEL_WORDS}, costs ${cost}`
+      return [id, { tax: 0, words, satchel: true }]
+    })
+}
+
+/** Where a Satchel card at the head of the dock is, in the words of its spoken name. */
+const SATCHEL_WORDS = 'in your Satchel'
 
 /**
  * The hand dock, the bottom edge of the table: the viewer's cards as a fan as tall as the dock allows, side by side

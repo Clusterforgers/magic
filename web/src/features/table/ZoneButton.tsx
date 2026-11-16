@@ -13,7 +13,7 @@ import { useLegalCount } from './prompt/marks'
 import { TopFace } from './TopFace'
 
 /** The zones whose cards a pod lists in a dialog. */
-export type ListedZone = Extract<ZoneKey, 'graveyard' | 'exile' | 'command'>
+export type ListedZone = Extract<ZoneKey, 'graveyard' | 'exile' | 'command' | 'satchel'>
 
 interface ZoneDialogProps {
   zone: ListedZone
@@ -108,7 +108,7 @@ function Thumbs({ zone, ids }: { zone: ListedZone; ids: readonly ObjectId[] }) {
 /**
  * A chip with the zone's icon and count that opens the list of every card in it, most recent first. A graveyard or
  * exile with a card the viewer can play or use now (flashback, an ability) wears the ring of a legal card and a play
- * mark, and says how many in its name; the command zone does not, its commanders are cast from the hand dock.
+ * mark, and says how many in its name, and so does a Satchel; the command zone does not, its commanders are cast from the hand dock.
  */
 export function ZoneButton({
   zone,

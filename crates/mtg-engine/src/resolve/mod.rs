@@ -70,6 +70,11 @@ pub(crate) const LET: &str = "~let:";
 /// a tab) instead: what `Effect::ChooseValue` remembers for the rest of the resolution.
 pub(crate) const CHOSEN_VALUE: &str = "~value:";
 
+/// The name a value one of several choosers chose is remembered under: the value of `name` for `player`.
+pub(crate) fn r6600_player_value(name: &str, player: PlayerId) -> String {
+    format!("{name}@{}", player.0)
+}
+
 /// The prefix of the bound name (`~legal:<index>`) under which the first step records the targets of a specification
 /// that are legal as the resolution begins: the later steps act on them even after an earlier step made them illegal
 /// (CR 608.2b).
@@ -104,6 +109,8 @@ pub struct Resolving {
     pub(crate) g10c_dealt: u32,
     /// The dice rolled so far in the resolution, in the order logged, which "the result" reads.
     pub(crate) rolled: Vec<u32>,
+    /// Who rolled each die of `rolled`, with its result, which "the highest result" among players reads.
+    pub(crate) r6601_rollers: Vec<(PlayerId, u32)>,
     /// The permanents the resolution has destroyed so far, as the objects they were, which "destroyed this way" reads.
     pub(crate) destroyed: Vec<ObjectRef>,
     /// The permanents the resolution has exiled so far, as the objects they were, which "exiled this way" reads.
@@ -133,6 +140,7 @@ impl Resolving {
             r6702_flips: 0,
             g10c_dealt: 0,
             rolled: Vec::new(),
+            r6601_rollers: Vec::new(),
             destroyed: Vec::new(),
             w14b_exiled: Vec::new(),
             w11b_phased: Vec::new(),

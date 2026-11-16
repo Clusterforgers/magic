@@ -234,6 +234,14 @@ pub(crate) fn assigns_by_toughness(state: &GameState, id: ObjectId) -> bool {
         .has(id, |q| matches!(q, CombatQuirk::AssignsByToughness))
 }
 
+/// Whether a rule makes the creature station permanents using its toughness rather than its power (CR 702.184a).
+pub(crate) fn r6500_stations_by_toughness(state: &GameState, id: ObjectId) -> bool {
+    state
+        .rules()
+        .quirks
+        .has(id, |q| matches!(q, CombatQuirk::R6500StationsByToughness))
+}
+
 /// Whether the creature assigns combat damage as though its negative power were positive.
 pub(crate) fn r377_assigns_as_positive(state: &GameState, id: ObjectId) -> bool {
     state

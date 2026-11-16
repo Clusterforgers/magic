@@ -394,8 +394,8 @@ pub fn loyalty(r: &mut Reader<'_>) -> Option<Ability> {
     let targets = std::mem::take(&mut r.targets);
     Some(Ability::Loyalty {
         cost,
+        condition: None,
         targets,
         effects,
-        condition: None,
     })
 }

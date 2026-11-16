@@ -1,4 +1,4 @@
-//! Goal: a mana ability that costs mana (filter lands, Signets, a Coffers) is offered at priority exactly when its cost can be paid from floating mana or the other sources, activating it pays that cost and adds its mana, it pays a spell from the mana of the same payment, and without other mana it is neither offered nor accepted.
+//! Goal: a mana ability that costs mana (filter lands, Signets, a Coffers) is offered at priority exactly when its cost can be paid from floating mana or the other sources, activating it pays that cost and adds its mana, it pays a spell from the mana of the same payment, and without other mana (a mana ability activated only as an instant is none) it is neither offered nor accepted.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 use std::sync::Arc;
 
@@ -246,5 +246,51 @@ fn darkwater_catacombs_pays_a_spell_inside_the_payment(
     })))?;
     assert_eq!(driver.state().stack().len(), 1, "the bear is cast");
     assert_eq!(floating(&driver), 0);
+    Ok(())
+}
+
+#[rstest]
+#[case::darkwater_catacombs("Darkwater Catacombs")]
+#[case::coffers("Coffers")]
+#[case::pyramid_of_the_pantheon("Pyramid of the Pantheon")]
+fn a_mana_ability_activated_only_as_an_instant_never_pays_a_costly_one(
+    #[case] name: &str,
+    #[values(2, 3, 4)] players: usize,
+) -> Result<(), ScriptError> {
+    let mut scenario = Scenario::new(players).at(1, 0, Step::Main1).battlefield(
+        0,
+        vec![
+            ready(source(name)),
+            ready(card("Lion's Eye Diamond").unwrap()),
+        ],
+    );
+    for seat in 0..players {
+        scenario = scenario.library(seat, (0..5).map(|_| island()));
+    }
+    let mut driver = Driver::from_scenario(scenario)?;
+    let DecisionKind::Priority(options) = &driver.decision().unwrap().kind else {
+        panic!("priority expected");
+    };
+    let diamond = driver.id_of("Lion's Eye Diamond")?;
+    assert!(
+        options
+            .mana_abilities
+            .iter()
+            .any(|o| o.source.object == diamond),
+        "the diamond itself is offered at priority"
+    );
+    assert_eq!(offered(&driver, name), Vec::new());
+    let id = driver.id_of(name)?;
+    for ability in 0..5 {
+        let source = mtg_engine::mana::ManaSource {
+            object: id,
+            ability,
+        };
+        assert!(
+            driver
+                .answer(Answer::Priority(PriorityAction::ActivateMana(source)))
+                .is_err()
+        );
+    }
     Ok(())
 }

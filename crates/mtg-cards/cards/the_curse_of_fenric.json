@@ -1,7 +1,7 @@
 {
   "oracle_id": "ef7fce1b-0d95-4f92-a8ad-09d9756fa0e4",
   "name": "The Curse of Fenric",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Curse of Fenric",
@@ -54,15 +54,43 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 278, "end": 385 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [{ "what": { "Object": [{ "Not": "Token" }, { "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetName": "Fenric" },
+                    { "SetTypes": ["Creature"] },
+                    { "AddSupertype": "Legendary" },
+                    { "SetCreatureTypes": ["Horror"] },
+                    { "SetPT": { "power": 6, "toughness": 6 } },
+                    "LoseAbilities"
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 386, "end": 450 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Mutant" }] } },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Named": "Fenric" },
+                    { "Not": { "Is": { "Target": 0 } } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }]
           }
         }
       ]

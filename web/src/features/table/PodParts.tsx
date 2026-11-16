@@ -1,4 +1,4 @@
-import { Ban, Crown, FerrisWheel, Hand, Library, Play, Skull } from 'lucide-react'
+import { Backpack, Ban, Crown, FerrisWheel, Hand, Library, Play, Skull } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { CSSProperties } from 'react'
 import { cn } from '@/lib/utils'
@@ -14,6 +14,7 @@ export const ZONE_ICON: Record<ZoneKey, LucideIcon> = {
   graveyard: Skull,
   exile: Ban,
   command: Crown,
+  satchel: Backpack,
   attractions: FerrisWheel,
 }
 

@@ -1,0 +1,257 @@
+[
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Not": "Token"
+        },
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        {
+         "SetName": "Fenric"
+        },
+        {
+         "SetTypes": [
+          "Creature"
+         ]
+        },
+        {
+         "AddSupertype": "Legendary"
+        },
+        {
+         "SetCreatureTypes": [
+          "Horror"
+         ]
+        },
+        {
+         "SetPT": {
+          "power": 6,
+          "toughness": 6
+         }
+        },
+        "LoseAbilities"
+       ],
+       "duration": "Forever"
+      }
+     }
+    ]
+   }
+  },
+  "Target nontoken creature becomes a 6/6 legendary Horror creature named Fenric and loses all abilities."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Subtype": "Mutant"
+        }
+       ]
+      }
+     },
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "Named": "Fenric"
+        },
+        {
+         "Not": {
+          "Is": {
+           "Target": 0
+          }
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Fight": {
+       "what": {
+        "Target": 0
+       },
+       "with": {
+        "Target": 1
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Target Mutant fights another target creature named Fenric."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{2}{W}"
+     },
+     {
+      "CollectEvidence": 4
+     }
+    ],
+    "effects": [
+     {
+      "If": {
+       "condition": {
+        "Matches": {
+         "subject": "This",
+         "selector": [
+          {
+           "Subtype": "Detective"
+          }
+         ]
+        }
+       },
+       "then": [
+        {
+         "Continuous": {
+          "affected": "This",
+          "mods": [
+           {
+            "SetName": "Mileva, the Stalwart"
+           },
+           {
+            "SetTypes": [
+             "Creature"
+            ]
+           },
+           {
+            "AddSupertype": "Legendary"
+           },
+           {
+            "SetPT": {
+             "power": 5,
+             "toughness": 5
+            }
+           },
+           {
+            "GrantAbility": {
+             "Static": {
+              "affected": {
+               "Each": [
+                {
+                 "Type": "Creature"
+                },
+                "Other",
+                {
+                 "ControlledBy": "You"
+                }
+               ]
+              },
+              "mods": [
+               {
+                "AddKeyword": "Indestructible"
+               }
+              ]
+             }
+            }
+           }
+          ],
+          "duration": "Forever"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "{2}{W}, Collect evidence 4: If this creature is a Detective, it becomes a legendary creature named Mileva, the Stalwart, it has base power and toughness 5/5, and it gains \"Other creatures you control have indestructible.\""
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "from": "Battlefield",
+      "to": "Graveyard"
+     }
+    },
+    "effects": [
+     {
+      "Move": {
+       "what": "This",
+       "to": {
+        "R6502BattlefieldAs": {
+         "becomes": [
+          {
+           "SetTypes": [
+            "Enchantment"
+           ]
+          },
+          {
+           "AddSubtype": "Aura"
+          },
+          "LoseAbilities",
+          {
+           "AddKeyword": {
+            "Enchant": [
+             {
+              "Type": "Creature"
+             },
+             {
+              "ControlledBy": "You"
+             }
+            ]
+           }
+          },
+          {
+           "GrantAbility": {
+            "Activated": {
+             "cost": "{W}{G}",
+             "effects": [
+              {
+               "Continuous": {
+                "affected": "Attached",
+                "mods": [
+                 {
+                  "AddKeyword": "Indestructible"
+                 }
+                ],
+                "duration": "UntilEndOfTurn"
+               }
+              }
+             ]
+            }
+           }
+          }
+         ]
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "When this creature dies, return it to the battlefield. It's an Aura enchantment with enchant creature you control and \"{G}{W}: Enchanted creature gains indestructible until end of turn,\" and it loses all other abilities."
+ ]
+]

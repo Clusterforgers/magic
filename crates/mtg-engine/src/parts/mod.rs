@@ -404,10 +404,8 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
             false,
         ),
         CostItem::Blight(count) => {
+            // "Blight X" waits for the X announced (CR 601.2b); the counters still go on one creature.
             let (number, x) = amount(count, item)?;
-            if x {
-                return Err(counted(item));
-            }
             let filter = Selector(vec![Pred::Type(CardType::Creature)]);
             let kind = Kind::Blight(number);
             (
@@ -420,7 +418,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     up_to: false,
                     r6702_total: false,
                 }),
-                false,
+                x,
             )
         }
         CostItem::Behold { .. } => behold_pick(item)?,
@@ -630,6 +628,10 @@ impl Part {
                 },
                 Part::Exert => Part::Exert,
                 Part::Pick(pick) if pick.reads_x => Part::Pick(pick.r301_at(x)),
+                Part::Pick(pick) if matches!(pick.kind, Kind::Blight(_)) => Part::Pick(Pick {
+                    kind: Kind::Blight(x),
+                    ..pick.clone()
+                }),
                 Part::Pick(pick) => Part::Pick(Pick {
                     count: usize::try_from(x).unwrap_or(usize::MAX),
                     ..pick.clone()
@@ -696,6 +698,14 @@ impl Part {
             // "With total mana value X": X reaches the mana value of every candidate together.
             Part::Pick(pick) if pick.r6702_total => {
                 evidence::total_value(payer.state, &pick.candidates(payer))
+            }
+            // Any number of counters goes on one creature, which needn't survive them (the blight rulings).
+            Part::Pick(pick) if matches!(pick.kind, Kind::Blight(_)) => {
+                if pick.candidates(payer).is_empty() {
+                    0
+                } else {
+                    u32::MAX
+                }
             }
             Part::Pick(pick) => u32::try_from(pick.candidates(payer).len()).unwrap_or(u32::MAX),
             Part::ExileTop(_) => exile_top::most(payer),
@@ -803,6 +813,7 @@ impl Part {
             Part::X(inner) => match &**inner {
                 Part::Life(_) => "Pay X life".to_owned(),
                 Part::Energy(_) => "Pay X {E}".to_owned(),
+                Part::Pick(pick) if matches!(pick.kind, Kind::Blight(_)) => "Blight X".to_owned(),
                 other => other.text(),
             },
         }
