@@ -1317,7 +1317,6 @@ Mardu Shadowspear
 Mardu Strike Leader
 Mariposa Military Base
 Marit Lage's Slumber
-Market Gnome
 Maro
 Marrow Chomper
 Marvo, Deep Operative
@@ -1569,7 +1568,6 @@ Perch Protection
 Persist
 Personal Sanctuary
 Pestilent Syphoner
-Peter Parker // Amazing Spider-Man
 Peter Parker's Camera
 Petrified Wood-Kin
 Petrify

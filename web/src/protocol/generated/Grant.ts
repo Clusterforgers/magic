@@ -29,6 +29,14 @@ rule: number,
 /**
  * The modification's index among the static's modifications.
  */
+index: number, } } | { "R6701Nested": { 
+/**
+ * The effect that gave the static ability.
+ */
+effect: EffectId, 
+/**
+ * The modification's index among the static's modifications.
+ */
 index: number, } } | { "Ring": { 
 /**
  * Whose Ring it is.

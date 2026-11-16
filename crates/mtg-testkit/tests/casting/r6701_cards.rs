@@ -226,7 +226,10 @@ fn r6701_spider_man(seats: usize, hand: Vec<Arc<CardDefinition>>) -> Result<Driv
     r6701_play(&mut driver, "", &[])?;
     let parker = driver.id_of("Peter Parker")?;
     assert!(
-        driver.state().object(parker).is_some_and(|object| object.face() == Some(1)),
+        driver
+            .state()
+            .object(parker)
+            .is_some_and(|object| object.face() == Some(1)),
         "Peter Parker transformed"
     );
     Ok(driver)

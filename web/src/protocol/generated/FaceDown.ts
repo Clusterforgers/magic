@@ -10,7 +10,7 @@ export type FaceDown = { "Foretold": {
 /**
  * The number of the turn it was foretold in.
  */
-turn: number, } } | "Morph" | "Disguise" | "Manifest" | "Cloak" | { "Hideaway": { 
+turn: number, } } | "Morph" | "Disguise" | "R6701Horror" | "Manifest" | "Cloak" | { "Hideaway": { 
 /**
  * The permanent that hid it.
  */
