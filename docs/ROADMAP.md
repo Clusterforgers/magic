@@ -70,7 +70,7 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf10p) On a phone the top bar's Effects button no longer overlaps the element behind it
 - [ ] (pf10m) Dev fixtures for the deck list and groups, the replay and the open games list, so a sweep shoots them without a server
 - [ ] (pf9e) The live report "only the host's creature attacks" in a party turn reproduced from its stored game and fixed
-- [ ] (pf9f) Stable tests under load: the 40-tap budget in `perf.test.tsx`, `tm38_team_turns` giant_four and the `check_sched` lock-wait case
+- [ ] (pf9f) Stable tests under load: the 40-tap budget in `perf.test.tsx` and the `check_sched` lock-wait case
 - [ ] (pf9g) Copies of one trigger are told apart on the stack, and a trigger whose conditions all fail says why in the log
 - [ ] (pf9h) An ability that rolls several dice makes one roll of them (Mr. House), so "one or more dice" triggers fire once
 - [ ] (pf9i) An announced mana ability (a die roll or discard besides the mana: Vexing Puzzlebox) can be chosen in the PayMana prompt while paying, not only at priority before the cast; automatic payment still leaves it out

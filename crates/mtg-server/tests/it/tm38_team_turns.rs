@@ -5,8 +5,9 @@ use std::collections::BTreeSet;
 use std::time::Duration;
 
 use crate::common::{self, Client, windowed};
+use mtg_core::card::CardType;
 use mtg_core::house::HouseRules;
-use mtg_core::ids::PlayerId;
+use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::teams::{TeamMode, Teams};
 use mtg_engine::turn::Step;
 use mtg_engine::{DecisionKind, Event, GameResult};
@@ -59,12 +60,13 @@ fn options(teams: Teams, bots: &[usize]) -> GameOptions {
     }
 }
 
-/// What the human seats saw: the priority windows each was asked at (turn, active seat, step) and every draw of a
-/// turn's draw step (turn, active seat, drawing seat).
+/// What the human seats saw: the priority windows each was asked at (turn, active seat, step), every draw of a
+/// turn's draw step (turn, active seat, drawing seat), and the turns a seat held a land in a main phase (turn, seat).
 #[derive(Default)]
 struct Seen {
     asked: Vec<(u32, usize, usize, Step)>,
     draws: BTreeSet<(u32, usize, usize)>,
+    held_land: BTreeSet<(u32, usize)>,
     result: Option<GameResult>,
 }
 
@@ -81,6 +83,7 @@ async fn play(registry: &Registry, created: GameId, humans: &[usize], turns: u32
     }
     let mut seen = Seen::default();
     let mut place: Vec<(u32, usize, Step)> = vec![(0, 0, Step::Untap); clients.len()];
+    let mut lands: BTreeSet<ObjectId> = BTreeSet::new();
     let mut draw_turn: Option<(u32, usize, bool)> = None;
     let outcome = tokio::time::timeout(Duration::from_secs(6 * 60 * 60), async {
         loop {
@@ -94,6 +97,21 @@ async fn play(registry: &Registry, created: GameId, humans: &[usize], turns: u32
                     ServerMessage::Events(batch) => {
                         let turn = &batch.table.turn;
                         place[index] = (turn.number, turn.active.index(), turn.step);
+                        lands.extend(
+                            batch
+                                .objects
+                                .iter()
+                                .filter(|object| object.types.contains(&CardType::Land))
+                                .map(|object| object.id),
+                        );
+                        // A seat with no land in hand and no mana cannot act, and the table passes for it unasked.
+                        let hand = batch.table.players.iter().find(|p| p.seat == client.seat);
+                        let holds_land = hand
+                            .and_then(|player| player.hand.cards.as_ref())
+                            .is_some_and(|cards| cards.iter().any(|card| lands.contains(card)));
+                        if turn.step.is_main() && holds_land {
+                            seen.held_land.insert((turn.number, client.seat.index()));
+                        }
                         if index != 0 {
                             continue;
                         }
@@ -172,7 +190,8 @@ async fn the_seats_of_the_active_team_are_asked_and_draw_as_the_mode_says(
     let turn_of = |seat: usize, active: usize| {
         seat == active || (mode == TeamMode::TwoHeadedGiant && team(seat) == team(active))
     };
-    // Every seat holds lands it never plays, so it can act in each main phase of its turns, and only there.
+    // A seat that holds a land never plays it, so it can act in each main phase of its turns, and only there; the deal
+    // is random, so a seat without a land in hand is passed for unasked.
     let main_asks: BTreeSet<(u32, usize)> = seen
         .asked
         .iter()
@@ -189,7 +208,9 @@ async fn the_seats_of_the_active_team_are_asked_and_draw_as_the_mode_says(
     }
     let turns: BTreeSet<(u32, usize)> = seen.asked.iter().map(|(n, a, _, _)| (*n, *a)).collect();
     for (number, active) in &turns {
-        for seat in (0..seats).filter(|seat| turn_of(*seat, *active)) {
+        let holders = (0..seats)
+            .filter(|seat| turn_of(*seat, *active) && seen.held_land.contains(&(*number, *seat)));
+        for seat in holders {
             assert!(
                 main_asks.contains(&(*number, seat)),
                 "seat {seat} not asked on turn {number}"
@@ -212,6 +233,10 @@ async fn the_seats_of_the_active_team_are_asked_and_draw_as_the_mode_says(
         }
     }
     assert!(turns.len() >= 4, "the game ran too few turns: {turns:?}");
+    assert!(
+        !seen.held_land.is_empty(),
+        "no seat was seen holding a land"
+    );
 }
 
 #[rstest]
