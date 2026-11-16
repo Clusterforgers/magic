@@ -8,6 +8,7 @@ mod store;
 
 pub(crate) use hooks::boss_concedes;
 
+use std::collections::BTreeSet;
 use std::sync::Arc;
 
 use axum::Json;
@@ -173,6 +174,47 @@ fn letters(colors: impl Iterator<Item = Color>) -> String {
     out.sort_by_key(|c| "WUBRG".find(*c));
     out.dedup();
     out.into_iter().collect()
+}
+
+/// The deck `id` as a hero brings it: its name, its commanders' colour identity and their facts.
+fn hero_deck(id: String, chosen: &ChosenDeck) -> HeroDeck {
+    let commanders = chosen.commanders();
+    HeroDeck {
+        id,
+        name: chosen.note().name.clone(),
+        colors: letters(
+            commanders
+                .iter()
+                .flat_map(|card| card.color_identity().iter()),
+        ),
+        commanders: commanders
+            .iter()
+            .map(|card| commander_facts(card))
+            .collect(),
+    }
+}
+
+/// What a commander card is, as far as its run upgrades go.
+fn commander_facts(card: &CardDefinition) -> mtg_campaign::CommanderFacts {
+    use mtg_core::card::CardType;
+    mtg_campaign::CommanderFacts {
+        name: card.name.clone(),
+        creature: card.types.contains(&CardType::Creature),
+        planeswalker: card.types.contains(&CardType::Planeswalker),
+        power: card.power,
+        generic: card
+            .mana_cost
+            .as_ref()
+            .map_or(0, mtg_core::mana::ManaCost::generic),
+        keywords: card
+            .rules
+            .iter()
+            .filter_map(|rule| match rule.as_ref() {
+                mtg_cards::ability::Ability::Keyword(keyword) => Some(keyword.shown_name()),
+                _ => None,
+            })
+            .collect(),
+    }
 }
 
 /// A loaded run: its header, its log and the run they fold to.
@@ -407,8 +449,8 @@ async fn hero_decks(
         };
         match resolve_as(app, deck_owner(loaded, at), &deck.id).await {
             Ok(chosen) => {
-                let added = cards_named(app, &hero.cards).await?;
-                decks.push(chosen.with_run_cards(&added).map_err(|error| {
+                let added = cards_named(app, &hero.satchel).await?;
+                decks.push(chosen.with_satchel(&added).map_err(|error| {
                     tracing::error!(%error, "a hero's deck could not be fingerprinted");
                     ApiError::internal()
                 })?);
@@ -575,7 +617,52 @@ fn view(loaded: &Loaded, user: UserId, deck_problems: Vec<DelveDeckProblem>) -> 
         boss,
         deck_problems,
         fight: fight_view(&loaded.run),
+        mirror: Vec::new(),
     }
+}
+
+/// The cards `hero` may copy at the Mirror Pool while that is their first offer: their deck's nonland cards and their
+/// Satchel, each name once, in name order; empty otherwise, and the Satchel alone when the deck no longer plays.
+async fn mirror_cards(
+    app: &AppState,
+    loaded: &Loaded,
+    hero: usize,
+) -> Result<Vec<String>, ApiError> {
+    let Some(h) = loaded.run.heroes.get(hero) else {
+        return Ok(Vec::new());
+    };
+    if h.offers.first() != Some(&mtg_campaign::Offer::Duplicate) {
+        return Ok(Vec::new());
+    }
+    let mut names: BTreeSet<String> = h.satchel.iter().cloned().collect();
+    if let Some(deck) = h.deck.as_ref() {
+        match resolve_as(app, deck_owner(loaded, hero), &deck.id).await {
+            Ok(chosen) => names.extend(
+                chosen
+                    .cards()
+                    .iter()
+                    .filter(|card| !card.types.contains(&mtg_core::card::CardType::Land))
+                    .map(|card| card.name.clone()),
+            ),
+            Err(Refused::Failed(error)) => return Err(error),
+            Err(_) => {}
+        }
+    }
+    Ok(names.into_iter().collect())
+}
+
+/// The view for `user`, with the cards they may copy at the Mirror Pool.
+async fn view_for(
+    app: &AppState,
+    loaded: &Loaded,
+    user: UserId,
+    deck_problems: Vec<DelveDeckProblem>,
+) -> Result<DelveView, ApiError> {
+    let mut shown = view(loaded, user, deck_problems);
+    if let Some(me) = shown.me {
+        shown.mirror = mirror_cards(app, loaded, usize::from(me)).await?;
+    }
+    Ok(shown)
 }
 
 /// `GET /api/delves/content`: the custom cards, bosses and events the web draws.
@@ -756,6 +843,12 @@ pub(crate) async fn create(
             bot: None,
         },
     )?;
+    push(
+        &mut loaded,
+        RunEvent::Content {
+            version: mtg_campaign::run::CONTENT,
+        },
+    )?;
     if let Some(timers) = body.timers {
         push(&mut loaded, RunEvent::Timers { timers })?;
     }
@@ -818,7 +911,24 @@ pub(crate) async fn get_one(
     let from = loaded.events.len();
     let problems = advance(&app, &mut loaded).await?;
     save(delves, &loaded, from).await?;
-    Ok(Json(view(&loaded, user.id, problems)))
+    Ok(Json(view_for(&app, &loaded, user.id, problems).await?))
+}
+
+/// A member's answer to their first offer; a card to copy at the Mirror Pool must be one of their deck or Satchel.
+async fn pick_event(
+    app: &AppState,
+    loaded: &Loaded,
+    member: u8,
+    pick: mtg_campaign::Pick,
+) -> Result<RunEvent, ApiError> {
+    if let mtg_campaign::Pick::Duplicate(card) = &pick
+        && !mirror_cards(app, loaded, usize::from(member))
+            .await?
+            .contains(card)
+    {
+        return Err(refused("that card is not in your deck or Satchel"));
+    }
+    Ok(RunEvent::Picked { hero: member, pick })
 }
 
 /// The event a member's action makes, checked against who they are.
@@ -903,24 +1013,14 @@ async fn event_of(
                 }
             }
             let chosen = resolve(app, headers, &deck).await.map_err(deck_refused)?;
-            let colors = letters(
-                chosen
-                    .commanders()
-                    .iter()
-                    .flat_map(|card| card.color_identity().iter()),
-            );
             Ok(RunEvent::DeckChosen {
                 hero,
-                deck: HeroDeck {
-                    id: deck,
-                    name: chosen.note().name.clone(),
-                    colors,
-                },
+                deck: hero_deck(deck, &chosen),
             })
         }
         DelveAction::Start => host_only(RunEvent::Started),
         DelveAction::Vote { node } => Ok(RunEvent::Voted { hero: member, node }),
-        DelveAction::Pick { pick } => Ok(RunEvent::Picked { hero: member, pick }),
+        DelveAction::Pick { pick } => pick_event(app, loaded, member, pick).await,
         DelveAction::Abandon => host_only(RunEvent::Abandoned),
         DelveAction::Retreat => host_only(RunEvent::FightForfeited {
             cause: Forfeit::Retreat,
@@ -968,7 +1068,7 @@ pub(crate) async fn act(
     push(&mut loaded, event)?;
     let problems = advance(&app, &mut loaded).await?;
     save(delves, &loaded, from).await?;
-    Ok(Json(view(&loaded, user.id, problems)))
+    Ok(Json(view_for(&app, &loaded, user.id, problems).await?))
 }
 
 #[cfg(test)]

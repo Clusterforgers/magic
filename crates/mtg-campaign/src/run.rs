@@ -13,6 +13,7 @@ use crate::fight::{BossSeat, FightPlan, HAND, HeroSeat, MinionSeat};
 use crate::map::{FloorMap, RoomKind, generate};
 use crate::rng::Stream;
 use crate::scale::Scale;
+use crate::upgrade::{CommanderFacts, Upgrade, fitting};
 
 /// The most heroes a party has.
 pub const PARTY: usize = crate::scale::MOST;
@@ -34,6 +35,10 @@ pub const CARD_PRICE: u32 = 35;
 pub const DRAUGHT_PRICE: u32 = 30;
 /// Life the draught gives.
 pub const DRAUGHT: i32 = 15;
+/// The price of a commander upgrade at the shop.
+pub const UPGRADE_PRICE: u32 = 50;
+/// The content generation a new run is made with (`RunEvent::Content`); a run stored without one is generation 0.
+pub const CONTENT: u32 = 1;
 
 /// The deck a hero brings.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -45,13 +50,16 @@ pub struct HeroDeck {
     pub name: String,
     /// Its colour identity as WUBRG letters, which card rewards follow.
     pub colors: String,
+    /// Its commanders as their upgrades see them; none for a deck chosen before upgrades, which then gets none.
+    #[serde(default)]
+    pub commanders: Vec<CommanderFacts>,
 }
 
 /// A choice waiting for one hero.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Offer {
-    /// Take one card into the deck (it replaces a basic land) or skip for gold.
+    /// Take one card into the Satchel or skip for gold.
     Cards {
         /// The cards offered.
         cards: Vec<String>,
@@ -66,8 +74,13 @@ pub enum Offer {
         /// The wares.
         items: Vec<ShopItem>,
     },
-    /// Rest or reforge.
-    Campfire,
+    /// Rest, reforge, or temper: take one of these commander upgrades (none when nothing fits the commanders).
+    Campfire {
+        /// The upgrades offered.
+        upgrades: Vec<Upgrade>,
+    },
+    /// At the Mirror Pool: copy a nonland card of the deck or Satchel into the Satchel, or skip.
+    Duplicate,
     /// One option of an event.
     Event {
         /// The event's id.
@@ -97,13 +110,20 @@ pub enum ShopItem {
     },
     /// A healing draught.
     Draught,
+    /// A commander upgrade.
+    Upgrade {
+        /// The upgrade.
+        upgrade: Upgrade,
+        /// Whether it was bought.
+        sold: bool,
+    },
 }
 
 /// A hero's answer to their first offer.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Pick {
-    /// The item, relic, card or option with this index.
+    /// The item, relic, card, upgrade or option with this index.
     Take(u8),
     /// Nothing (gold for a card pick); leaves a shop.
     Skip,
@@ -111,6 +131,8 @@ pub enum Pick {
     Rest,
     /// At a campfire: a card pick.
     Reforge,
+    /// At the Mirror Pool: the card to copy, by name, from the deck or Satchel.
+    Duplicate(String),
 }
 
 /// One roll of a gamble an answer ran into.
@@ -155,8 +177,10 @@ pub struct Hero {
     pub gold: u32,
     /// Their relics, in the order they got them.
     pub relics: Vec<String>,
-    /// The cards that joined their deck, each replacing a basic land.
-    pub cards: Vec<String>,
+    /// Their Satchel: every card they earned in the run, in the order they got it, castable from it in each fight.
+    pub satchel: Vec<String>,
+    /// Their commander upgrades, in the order they got them.
+    pub upgrades: Vec<Upgrade>,
     /// The choices waiting for them, first one first.
     pub offers: Vec<Offer>,
 }
@@ -245,6 +269,11 @@ pub enum RunEvent {
         /// The deck.
         deck: HeroDeck,
     },
+    /// The content generation the run is made with, stored as it is created.
+    Content {
+        /// The generation (`CONTENT`).
+        version: u32,
+    },
     /// The host chose how long the party may take in a fight's game, in the lobby.
     Timers {
         /// The setting.
@@ -300,6 +329,9 @@ pub struct Run {
     pub seed: u64,
     /// The difficulty level.
     pub heat: u8,
+    /// The content generation it was made with: events of a later one stay out of it, so a stored run replays alike.
+    #[serde(default)]
+    pub content: u32,
     /// How long the party may take in each fight's game: relaxed unless the host chose otherwise.
     #[serde(default)]
     pub timers: Timers,
@@ -339,6 +371,7 @@ impl Run {
         Ok(Run {
             seed,
             heat,
+            content: 0,
             theme: theme.to_owned(),
             timers: Timers::default(),
             map,
@@ -441,7 +474,8 @@ impl Run {
                     life: LIFE,
                     gold: 0,
                     relics: Vec::new(),
-                    cards: Vec::new(),
+                    satchel: Vec::new(),
+                    upgrades: Vec::new(),
                     offers: Vec::new(),
                 });
                 self.log.push(format!("{name} joined the party."));
@@ -471,6 +505,10 @@ impl Run {
             RunEvent::Timers { timers } => {
                 self.lobby()?;
                 self.timers = *timers;
+            }
+            RunEvent::Content { version } => {
+                self.lobby()?;
+                self.content = *version;
             }
             RunEvent::Started => {
                 self.lobby()?;
@@ -557,7 +595,7 @@ impl Run {
                 if self.status != Status::Room {
                     return Err(refused("nothing to pick now"));
                 }
-                self.pick(content, *hero, *pick)?;
+                self.pick(content, *hero, pick.clone())?;
                 if self.heroes.iter().all(|h| h.offers.is_empty()) {
                     // A single way on (a camp's next boss) needs no vote: the party walks into it.
                     match self.map.choices(self.at).as_slice() {
@@ -659,14 +697,26 @@ impl Run {
                         });
                     }
                     items.push(ShopItem::Draught);
+                    // After the draught, so the wares of a stored run keep their places.
+                    if let Some(upgrade) = self.upgrade_offer(node, hero, "shop", 1).pop() {
+                        items.push(ShopItem::Upgrade {
+                            upgrade,
+                            sold: false,
+                        });
+                    }
                     self.push_offer(hero, Offer::Shop { items });
                 }
             }
             RoomKind::Event => {
                 let mut rng = Stream::new(self.seed, "event", u64::from(node), 0);
-                let event = theme
+                // Only the events of the run's content generation, so a stored run draws as it did.
+                let pool: Vec<&crate::content::EventSpec> = theme
                     .events
-                    .get(rng.below(theme.events.len()))
+                    .iter()
+                    .filter(|e| e.since <= self.content)
+                    .collect();
+                let event = pool
+                    .get(rng.below(pool.len()))
                     .map(|e| e.id.clone())
                     .ok_or_else(|| refused("the theme has no events"))?;
                 if let Some(spec) = theme.event(&event) {
@@ -684,7 +734,8 @@ impl Run {
             RoomKind::Campfire => {
                 self.log.push("A campfire burns low.".to_owned());
                 for hero in 0..self.heroes.len() {
-                    self.push_offer(hero, Offer::Campfire);
+                    let upgrades = self.upgrade_offer(node, hero, "temper", 3);
+                    self.push_offer(hero, Offer::Campfire { upgrades });
                 }
             }
         }
@@ -715,12 +766,30 @@ impl Run {
             .pool
             .iter()
             .filter(|(name, cols)| {
-                cols.chars().all(|c| colors.contains(c)) && !h.cards.contains(name)
+                cols.chars().all(|c| colors.contains(c)) && !h.satchel.contains(name)
             })
             .map(|(name, _)| name.clone())
             .collect();
-        let salt = u64::try_from(h.offers.len() + h.cards.len()).unwrap_or(0);
+        let salt = u64::try_from(h.offers.len() + h.satchel.len()).unwrap_or(0);
         let mut rng = Stream::new(self.seed, label, u64::from(node) * 16 + salt, hero as u64);
+        rng.pick(&fits, count)
+    }
+
+    /// Upgrades that fit the hero's commanders, drawn for one room and purpose.
+    fn upgrade_offer(&self, node: u8, hero: usize, label: &str, count: usize) -> Vec<Upgrade> {
+        let Some(h) = self.heroes.get(hero) else {
+            return Vec::new();
+        };
+        let commanders: &[CommanderFacts] =
+            h.deck.as_ref().map_or(&[], |d| d.commanders.as_slice());
+        let fits = fitting(commanders, &h.upgrades);
+        let salt = u64::try_from(h.upgrades.len()).unwrap_or(0);
+        let mut rng = Stream::new(
+            self.seed,
+            &format!("upgrade-{label}"),
+            u64::from(node) * 16 + salt,
+            hero as u64,
+        );
         rng.pick(&fits, count)
     }
 
@@ -854,7 +923,7 @@ impl Run {
                     .cloned()
                     .unwrap_or_default();
                 said = format!("took the card {card}");
-                h.cards.push(card);
+                h.satchel.push(card);
             }
             (Offer::Cards { .. }, Pick::Skip) => {
                 h.gold += SKIP_GOLD;
@@ -885,6 +954,7 @@ impl Run {
                         price, sold: false, ..
                     }) => *price,
                     Some(ShopItem::Draught) => DRAUGHT_PRICE,
+                    Some(ShopItem::Upgrade { sold: false, .. }) => UPGRADE_PRICE,
                     _ => return Err(refused("sold out")),
                 };
                 if h.gold < price {
@@ -896,7 +966,7 @@ impl Run {
                     Some(ShopItem::Card { name, sold }) => {
                         *sold = true;
                         said = format!("bought the card {name}");
-                        h.cards.push(name.clone());
+                        h.satchel.push(name.clone());
                     }
                     Some(ShopItem::Relic { id, sold, .. }) => {
                         *sold = true;
@@ -909,6 +979,11 @@ impl Run {
                         h.heal(content, DRAUGHT);
                         outcomes.push(Outcome::Life(h.life - before));
                     }
+                    Some(ShopItem::Upgrade { upgrade, sold }) => {
+                        *sold = true;
+                        said = format!("bought the upgrade: {}", upgrade.words());
+                        h.upgrades.push(upgrade.clone());
+                    }
                     None => {}
                 }
                 if let Some(first) = h.offers.first_mut() {
@@ -916,19 +991,35 @@ impl Run {
                 }
                 done = false;
             }
-            (Offer::Campfire, Pick::Rest) => {
+            (Offer::Campfire { .. }, Pick::Rest) => {
                 let before = h.life;
                 h.heal(content, REST);
                 said.push_str("rested at the fire");
                 outcomes.push(Outcome::Life(h.life - before));
             }
-            (Offer::Campfire, Pick::Reforge) => {
+            (Offer::Campfire { .. }, Pick::Reforge) => {
                 // The card pick follows at once.
                 done = true;
                 said.push_str("reforged at the fire");
                 outcomes.push(Outcome::CardPick);
                 follow.push(Offer::Cards { cards: Vec::new() });
             }
+            (Offer::Campfire { upgrades }, Pick::Take(i)) => {
+                let upgrade = upgrades
+                    .get(index(i, upgrades.len())?)
+                    .cloned()
+                    .ok_or_else(|| refused("no such choice"))?;
+                said = format!("tempered at the fire: {}", upgrade.words());
+                h.upgrades.push(upgrade);
+            }
+            (Offer::Duplicate, Pick::Duplicate(card)) => {
+                if card.trim().is_empty() {
+                    return Err(refused("name the card to copy"));
+                }
+                said = format!("copied {card} into the Satchel");
+                h.satchel.push(card);
+            }
+            (Offer::Duplicate, Pick::Skip) => said.push_str("left the pool"),
             (Offer::Event { event }, Pick::Take(i)) => {
                 let spec = theme
                     .event(&event)
@@ -963,6 +1054,10 @@ impl Run {
                         Outcome::CardPick => {
                             follow.push(Offer::Cards { cards: Vec::new() });
                             outcomes.push(Outcome::CardPick);
+                        }
+                        Outcome::Duplicate => {
+                            follow.push(Offer::Duplicate);
+                            outcomes.push(Outcome::Duplicate);
                         }
                         Outcome::Gamble { .. } => {}
                     }
@@ -1037,6 +1132,7 @@ impl Run {
                         .map(|c| c.hand)
                         .sum::<u32>(),
                 relics: h.relics.clone(),
+                upgrades: h.upgrades.clone(),
             })
             .collect();
         let scale = Scale::new(heroes.len(), self.heat);
@@ -1089,7 +1185,7 @@ impl Run {
     }
 
     /// The events bot allies send now: a vote once every player voted (with the most votes, the torch's on a tie),
-    /// and an answer to each offer (the first relic and card, a rest when hurt, the first event option).
+    /// and an answer to each offer (the first relic and card, a rest when hurt, the first event option, the newest Satchel card at the Mirror Pool).
     pub fn bot_moves(&self, content: &Content) -> Vec<RunEvent> {
         let mut out = Vec::new();
         let bots = self
@@ -1127,7 +1223,11 @@ impl Run {
                     let pick = match h.offers.first() {
                         Some(Offer::Cards { cards }) if !cards.is_empty() => Pick::Take(0),
                         Some(Offer::Relics { relics }) if !relics.is_empty() => Pick::Take(0),
-                        Some(Offer::Campfire) => {
+                        Some(Offer::Duplicate) => h
+                            .satchel
+                            .last()
+                            .map_or(Pick::Skip, |card| Pick::Duplicate(card.clone())),
+                        Some(Offer::Campfire { .. }) => {
                             if h.life < h.max_life(content) - 10 {
                                 Pick::Rest
                             } else {

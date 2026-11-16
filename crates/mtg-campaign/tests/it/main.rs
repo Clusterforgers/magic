@@ -7,4 +7,5 @@ mod content;
 mod events;
 mod fights;
 mod runs;
+mod satchel;
 mod spirits;

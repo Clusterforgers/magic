@@ -88,6 +88,11 @@ pub struct DelveView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub fight: Option<DelveFightView>,
+    /// The cards the caller may copy at the Mirror Pool while that is their first offer: the nonland cards of their deck
+    /// and their Satchel, each name once, in name order; left out otherwise.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<String>>", optional)]
+    pub mirror: Vec<String>,
 }
 
 /// The boss's side of a fight as the engine gets it: what the intro screen lists.

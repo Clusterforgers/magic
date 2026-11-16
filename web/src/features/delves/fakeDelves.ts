@@ -83,7 +83,7 @@ export const CONTENT: DelveContent = {
           label: 'Pay the toll',
           outcomes: [{ Gold: -25 }, 'CardPick'],
           needs: { gold: 25, life: 0 },
-          summary: '−25 gold, a card for your deck',
+          summary: '−25 gold, a card for your Satchel',
         },
         {
           label: 'Push past',

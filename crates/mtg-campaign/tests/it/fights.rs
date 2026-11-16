@@ -50,6 +50,7 @@ fn run_at_first_boss(heroes: usize, heat: u8) -> Run {
                 id: "x".into(),
                 name: "x".into(),
                 colors: "G".into(),
+                commanders: Vec::new(),
             },
         });
     }
