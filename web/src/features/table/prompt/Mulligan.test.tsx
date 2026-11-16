@@ -360,5 +360,8 @@ describe('the opening hand drawn large', () => {
     // The answers are sticky in the sheet, so a sheet that scrolls keeps Keep and Mulligan in view.
     expect(row.closest('[data-slot="prompt-choices"]')).not.toBeNull()
     expect(mulligan().closest('[data-slot="prompt-actions"]')).toHaveClass('sticky')
+    // One row that scrolls when the band is narrower than seven cards, never a second row under the answers.
+    expect(row).toHaveClass('overflow-x-auto', 'justify-center-safe')
+    expect(row).not.toHaveClass('flex-wrap')
   })
 })
