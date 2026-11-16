@@ -61,7 +61,7 @@ export function fitHeld(
 }
 
 /** `counts` with one box more in every lane that has one. */
-function padded(counts: LaneCounts): LaneCounts {
+export function padded(counts: LaneCounts): LaneCounts {
   const more = (count: number): number => (count > 0 ? count + 1 : 0)
   return {
     ...counts,

@@ -97,7 +97,7 @@ describe('the room kept for the prompt sheet', () => {
       ['priority', 88],
     ] as const) {
       heights.sheet = sheet
-      table.update({ pending: must(DEV_PROMPTS[prompt])(table.fixture) })
+      table.update(() => ({ pending: must(DEV_PROMPTS[prompt])(table.fixture) }))
       resized()
       expect(main().style.gridTemplateRows).toBe(rows)
     }

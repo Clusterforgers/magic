@@ -1,5 +1,6 @@
 /** Pure split of the table's height in boss mode: the boss's side, the other heroes' row and your board, each by what it draws. */
 import { ALLY_STRIP_PX } from './layout'
+import { GROW_SHARE, padded } from './holdFit'
 import { LANE_LIMITS, highestRung, ladderOf, laneHeight } from './laneFit'
 import type { LaneCounts, LaneLimits } from './laneFit'
 
@@ -176,4 +177,54 @@ function squeezed(
   const low = scaled < least
   const band = input.allies.length === 0 ? 0 : low ? Math.min(ALLY_STRIP_PX, rest) : scaled
   return { opponents, own: party, band, bossCard: 0, heroCard: 0 }
+}
+
+/**
+ * `splitBoss`, holding the rows of `held` while the room is the same, every board still fits its row at the held
+ * cards, and no fresh split gives the heroes or the boss a card `GROW_SHARE` larger even with one permanent more in
+ * every lane: one permanent more or less then moves no row. A split without cards (empty boards, nothing fits) is
+ * never held.
+ */
+export function holdBoss(
+  input: BossSplitInput,
+  held: BossSplit | null,
+  limits: LaneLimits = LANE_LIMITS,
+): BossSplit {
+  const fresh = splitBoss(input, limits)
+  const room = finite(input.room)
+  const cardless = (split: BossSplit): boolean => split.heroCard === 0 || split.bossCard === 0
+  if (held === null || cardless(held) || cardless(fresh)) return fresh
+  if (Math.abs(held.opponents + held.own - room) > 0.5) return fresh
+  const need = (board: BossBoard, card: number): number =>
+    finite(board.head ?? 0) + laneHeight(board.width, board.counts, card, limits)
+  const most = (boards: readonly BossBoard[], card: number): number =>
+    Math.max(0, ...boards.map((board) => need(board, card)))
+  const gap = input.allies.length === 0 ? 0 : finite(input.gap)
+  // What each row lacks for its boards at a card; the boss's row may be capped and a row squeezed, so a held row serves
+  // at a card while it lacks no more there than the fresh split's row does at the fresh card.
+  const bossShort = (split: BossSplit, card: number): number =>
+    finite(input.bossChrome) + most(input.boss, card) - split.opponents
+  const heroShort = (split: BossSplit, card: number): number =>
+    Math.max(
+      input.allies.length === 0 ? 0 : finite(input.allyChrome) + most(input.allies, card) - split.band,
+      finite(input.ownChrome) + need(input.own, card) - (split.own - split.band - gap),
+    )
+  const bossSlack = Math.max(0, bossShort(fresh, fresh.bossCard)) + 1
+  const heroSlack = Math.max(0, heroShort(fresh, fresh.heroCard)) + 1
+  const { at, rungs } = ladderOf(limits)
+  const bossFits = (rung: number): boolean => bossShort(held, at(rung)) <= bossSlack
+  const heroFits = (rung: number): boolean => heroShort(held, at(rung)) <= heroSlack
+  if (!bossFits(0) || !heroFits(0)) return fresh
+  const heroCard = at(highestRung(rungs, heroFits))
+  const bossCard = Math.min(at(highestRung(rungs, bossFits)), Math.floor(heroCard * BOSS_SCALE))
+  const more = (board: BossBoard): BossBoard => ({ ...board, counts: padded(board.counts) })
+  const roomy = splitBoss(
+    { ...input, boss: input.boss.map(more), allies: input.allies.map(more), own: more(input.own) },
+    limits,
+  )
+  const better = (card: number, now: number, wider: number): boolean =>
+    card * (1 + GROW_SHARE) < now && card * (1 + GROW_SHARE) < wider
+  const grows =
+    better(heroCard, fresh.heroCard, roomy.heroCard) || better(bossCard, fresh.bossCard, roomy.bossCard)
+  return grows ? fresh : { ...held, heroCard, bossCard }
 }

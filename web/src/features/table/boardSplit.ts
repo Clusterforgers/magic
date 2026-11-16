@@ -16,7 +16,8 @@ import type { Regions, SeatPlan } from './layout'
 import type { PlayState } from '@/play/store'
 import type { PlayerId } from '@/protocol/generated'
 import { bossSplitOf } from './bossRows'
-import { GROW_SHARE } from './holdFit'
+import type { BossSplit } from './bossSplit'
+import { GROW_SHARE, padded } from './holdFit'
 import { handIdle } from './handIdle'
 import { handSeat } from './selectors'
 import { battlefieldStacks } from './rowStacks'
@@ -126,6 +127,15 @@ export function splitRegions(
       { own: counts.own, theirs: counts.theirs, allies: counts.allies, ownReady: counts.ownReady ?? true },
       finite(reserve),
       finite(overhang),
+      held?.band === undefined || held.bossCard === undefined || held.heroCard === undefined
+        ? null
+        : {
+            opponents: held.opponents,
+            own: held.own,
+            band: held.band,
+            bossCard: held.bossCard,
+            heroCard: held.heroCard,
+          },
     )
     const party = { band: split.band, bossCard: split.bossCard, heroCard: split.heroCard, shares }
     const rows = {
@@ -377,13 +387,19 @@ export function withSplit(regions: Regions, split: BoardSplit, keep = 0): Region
   }
 }
 
+/** Without a fit a held split keeps its rows while the fresh one lies within this share of the room of them. */
+export const SPLIT_DRIFT_SHARE = 0.08
+
 /** The rows a split drew last, which the next split holds where they still serve (`holdSplit`). */
-export type HeldRows = Pick<BoardSplit, 'opponents' | 'own'>
+export type HeldRows = Pick<BoardSplit, 'opponents' | 'own'> &
+  Partial<Pick<BossSplit, 'band' | 'bossCard' | 'heroCard'>>
 
 /**
- * `splitBoards`, holding the rows of `held` while the room is the same, both rows still fit their boards at the floor,
- * and neither board's card in them is more than `GROW_SHARE` under the one a fresh split gives: one permanent more or
- * less then moves no row. Without a fit at the floor or with no permanent anywhere the fresh split stands.
+ * `splitBoards`, holding the rows of `held` while the room is the same and both rows still fit their boards at the
+ * floor, unless a fresh split gives a board a card `GROW_SHARE` larger even with one permanent more in every lane
+ * (clear room, so the next permanent does not split back): one permanent more or less then moves no row. Rows that no
+ * longer fit give way to the fresh split, or, where that has no fit either, are held while it lies within
+ * `SPLIT_DRIFT_SHARE` of the room of them.
  */
 export function holdSplit(
   input: SplitInput,
@@ -392,8 +408,9 @@ export function holdSplit(
 ): BoardSplit {
   const fresh = splitBoards(input, limits)
   const room = finite(input.room)
-  if (held === null || fresh.ownCard === 0 || Math.abs(held.opponents + held.own - room) > 0.5) return fresh
-  if (held.opponents < Math.min(fresh.opponents, finite(input.theirFloor ?? 0))) return fresh
+  if (held === null || Math.abs(held.opponents + held.own - room) > 0.5) return fresh
+  const least = room * MIN_ROW_SHARE
+  const kept = { ...fresh, opponents: held.opponents, own: held.own }
   const { at, rungs } = ladderOf(limits)
   const rows = Math.max(1, Math.floor(finite(input.theirRows ?? 1)))
   const ownFits = (rung: number): boolean =>
@@ -403,10 +420,17 @@ export function holdSplit(
   const theirFits = (rung: number): boolean =>
     rows * theirNeed(rung) + finite(input.theirChrome) + (rows - 1) * finite(input.theirRowChrome ?? 0) <=
     held.opponents
-  if (!ownFits(0) || !theirFits(0)) return fresh
+  const floored = held.opponents >= Math.min(fresh.opponents, finite(input.theirFloor ?? 0))
+  if (!ownFits(0) || !theirFits(0) || !floored || held.own < least || held.opponents < least) {
+    const near = Math.abs(fresh.opponents - held.opponents) <= room * SPLIT_DRIFT_SHARE
+    return fresh.ownCard === 0 && near && held.own >= least && held.opponents >= least ? kept : fresh
+  }
   const ownCard = at(highestRung(rungs, ownFits))
   const theirCard = at(highestRung(rungs, theirFits))
-  if (ownCard * (1 + GROW_SHARE) < fresh.ownCard || theirCard * (1 + GROW_SHARE) < fresh.theirCard)
+  const roomy = splitBoards({ ...input, own: padded(input.own), theirs: input.theirs.map(padded) }, limits)
+  const better = (card: number, now: number, more: number): boolean =>
+    card * (1 + GROW_SHARE) < now && card * (1 + GROW_SHARE) < more
+  if (better(ownCard, fresh.ownCard, roomy.ownCard) || better(theirCard, fresh.theirCard, roomy.theirCard))
     return fresh
-  return { opponents: held.opponents, own: held.own, ownCard, theirCard }
+  return { ...kept, ownCard, theirCard }
 }

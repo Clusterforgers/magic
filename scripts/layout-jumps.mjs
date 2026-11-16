@@ -2,7 +2,7 @@
 // Counts layout jumps of the table: steps a running dev server's /dev/table?script=layout through its states
 // (web/src/features/table/dev/layoutScript.ts) in Chromium and, after each state settles, compares the boxes of the
 // hand dock, the prompt band, the board rows, each board and the first card of each lane with the state before. A
-// box that moves or resizes by more than 4 px is a jump.
+// box that moves or resizes by more than 4 px is a jump; the prompt sheet, an overlay, is counted apart.
 // Usage: node scripts/layout-jumps.mjs [--base http://127.0.0.1:5173] [--tables duel,four,...] [--sizes 1873x1047,...]
 //          [--json out.json] [--shots <dir>] [--detail]
 // CHROMIUM_PATH picks the browser (on NixOS: CHROMIUM_PATH=$(ls -d /nix/store/*-chromium-[0-9]*/bin/chromium | head -n 1)).
@@ -74,7 +74,7 @@ function look() {
   };
   put("hand", "dock", document.querySelector('[data-region="hand"]'));
   put("band", "strip", document.querySelector('[data-region="shared"]'));
-  put("band", "sheet", document.querySelector('[data-slot="shared-sheet"]'));
+  put("sheet", "overlay", document.querySelector('[data-slot="shared-sheet"]'));
   for (const area of ["opponents", "own"])
     put("row", area, document.querySelector(`[data-area="${area}"]`));
   for (const board of document.querySelectorAll("[data-battlefield-seat]")) {
@@ -119,7 +119,15 @@ async function settle() {
       changes += 1;
       last = now;
     }
-    if (still >= 6) break;
+    // Slides and other finite animations end before the boxes count as still.
+    const moving = document
+      .getAnimations()
+      .some(
+        (each) =>
+          each.playState === "running" &&
+          each.effect?.getTiming().iterations !== Infinity,
+      );
+    if (still >= 6 && !moving) break;
   }
   return changes;
 }
@@ -153,7 +161,7 @@ try {
       await page.evaluate(() => window.__tableScript.go(0));
       await page.evaluate(settle);
       let before = await page.evaluate(look);
-      const groups = { band: 0, hand: 0, row: 0, board: 0, card: 0 };
+      const groups = { sheet: 0, band: 0, hand: 0, row: 0, board: 0, card: 0 };
       let passes = 0;
       const detail = [];
       for (let index = 1; index < count; index += 1) {
@@ -180,10 +188,14 @@ try {
         }
         before = after;
       }
-      const total = Object.values(groups).reduce((a, b) => a + b, 0);
+      // The sheet lies over the boards: its own changes move nothing else and are counted apart.
+      const total = Object.entries(groups).reduce(
+        (sum, [group, count]) => (group === "sheet" ? sum : sum + count),
+        0,
+      );
       results.push({ table, size, total, passes, ...groups });
       console.log(
-        `${table.padEnd(6)} ${size.padEnd(10)} jumps ${String(total).padStart(4)}  band ${groups.band} hand ${groups.hand} rows ${groups.row} boards ${groups.board} cards ${groups.card}  extra passes ${passes}`,
+        `${table.padEnd(6)} ${size.padEnd(10)} jumps ${String(total).padStart(4)}  band ${groups.band} hand ${groups.hand} rows ${groups.row} boards ${groups.board} cards ${groups.card}  sheet ${groups.sheet}  extra passes ${passes}`,
       );
       if (config.detail) for (const line of detail) console.log(`    ${line}`);
       await page.close();

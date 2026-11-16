@@ -71,7 +71,17 @@ export function useBoardSplit(
     )
   }, [key, regions, plan, reserve, head, overhang, boss])
   useLayoutEffect(() => {
-    held.current = { opponents: split.opponents, own: split.own }
+    const party = split.party
+    held.current =
+      party === undefined
+        ? { opponents: split.opponents, own: split.own }
+        : {
+            opponents: split.opponents,
+            own: split.own,
+            band: party.band,
+            bossCard: party.bossCard,
+            heroCard: party.heroCard,
+          }
   }, [split])
   return split
 }
