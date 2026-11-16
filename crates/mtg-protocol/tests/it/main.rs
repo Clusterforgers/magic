@@ -106,6 +106,7 @@ mod ring_view;
 mod room_view;
 mod round_view;
 mod saga_transform_view;
+mod satchel_view;
 mod seat_deck;
 mod shown_view;
 mod snapshot_log;

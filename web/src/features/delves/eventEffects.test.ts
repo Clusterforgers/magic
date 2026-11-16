@@ -20,7 +20,7 @@ describe('chips', () => {
     [{ Life: 8 }, 'life', 'gain', '+8 life'],
     [{ Life: 0 }, 'life', 'flat', 'no life change'],
     ['Relic', 'relic', 'gain', 'a relic'],
-    ['CardPick', 'card', 'gain', 'a card for your deck'],
+    ['CardPick', 'card', 'gain', 'a card for your Satchel'],
   ])('draws %j as a %s chip, a %s: %s', (outcome, kind, tone, text) => {
     expect(chipOf(outcome)).toEqual({ kind, tone, text })
   })

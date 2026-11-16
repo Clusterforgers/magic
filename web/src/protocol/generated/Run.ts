@@ -15,6 +15,10 @@ export type Run = {
  */
 heat: number, 
 /**
+ * The content generation it was made with: events of a later one stay out of it, so a stored run replays alike.
+ */
+content: number, 
+/**
  * How long the party may take in each fight's game: relaxed unless the host chose otherwise.
  */
 timers: Timers, 

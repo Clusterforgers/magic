@@ -416,6 +416,8 @@ pub struct GameState {
     pub(crate) w15a_initiative: Option<crate::w15a_initiative::W15aHeld>,
     /// The commanders of the game and what is counted for them (CR 903); empty outside Commander.
     pub(crate) commanders: crate::commanders::Commanders,
+    /// The cards set up in each Delves hero's Satchel (`satchel`).
+    pub(crate) satchels: crate::satchel::Satchels,
     /// The companions the seats named, outside the game until their owners bring them in (CR 702.139).
     pub(crate) companions: crate::companions::Companions,
     /// The cards of a library its owner looked at by hand (`ManualAction::LookTop`), known to that seat while each is
@@ -1193,6 +1195,8 @@ impl Hash for GameState {
         }
         // Likewise a game without commanders.
         self.commanders.hash(state);
+        // Likewise a game without Satchels.
+        self.satchels.hash(state);
         // Likewise a game without companions.
         self.companions.hash(state);
     }

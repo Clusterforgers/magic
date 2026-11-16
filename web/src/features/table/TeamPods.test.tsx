@@ -83,7 +83,7 @@ describe('the words of a seat with a team', () => {
   })
 
   it("names the team and the shared life in a tile's accessible name", () => {
-    const counts = { hand: 1, library: 2, graveyard: 0, exile: 0, command: 0, attractions: 0 }
+    const counts = { hand: 1, library: 2, graveyard: 0, exile: 0, command: 0, satchel: 0, attractions: 0 }
     const facts = {
       name: 'Bo',
       life: 30,

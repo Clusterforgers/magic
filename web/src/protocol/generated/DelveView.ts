@@ -46,4 +46,9 @@ deck_problems: Array<DelveDeckProblem>,
 /**
  * The boss fight as its game is made, while the party is in one.
  */
-fight?: DelveFightView, };
+fight?: DelveFightView, 
+/**
+ * The cards the caller may copy at the Mirror Pool while that is their first offer: the nonland cards of their deck
+ * and their Satchel, each name once, in name order; left out otherwise.
+ */
+mirror?: Array<string>, };

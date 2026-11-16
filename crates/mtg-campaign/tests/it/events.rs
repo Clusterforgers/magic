@@ -8,7 +8,7 @@ use mtg_campaign::{
 };
 use rstest::rstest;
 
-use Outcome::{CardPick, Gamble, Gold, Life, Relic};
+use Outcome::{CardPick, Duplicate, Gamble, Gold, Life, Relic};
 
 fn option(outcomes: Vec<Outcome>) -> EventOption {
     EventOption {
@@ -57,7 +57,8 @@ fn every_event_option_of_the_content_has_a_summary_and_every_event_an_option_any
 #[case::life_cost(Life(-8), "−8 life")]
 #[case::life_gain(Life(8), "+8 life")]
 #[case::relic(Relic, "a relic")]
-#[case::card(CardPick, "a card for your deck")]
+#[case::card(CardPick, "a card for your Satchel")]
+#[case::duplicate(Duplicate, "a copy of a card from your deck or Satchel")]
 #[case::chance(
     Gamble { odds: 50, win: vec![Relic], lose: vec![Life(-8)] },
     "50%: a relic · 50%: −8 life"
@@ -72,7 +73,7 @@ fn an_outcome_reads_in_plain_words(#[case] outcome: Outcome, #[case] words: &str
 
 #[rstest]
 #[case::nothing(vec![], "nothing", Needs::default())]
-#[case::a_payment(vec![Gold(-25), CardPick], "−25 gold, a card for your deck", Needs { gold: 25, life: 0 })]
+#[case::a_payment(vec![Gold(-25), CardPick], "−25 gold, a card for your Satchel", Needs { gold: 25, life: 0 })]
 #[case::a_sure_life_cost(vec![Life(-8), Gold(40)], "−8 life, +40 gold", Needs { gold: 0, life: 8 })]
 #[case::a_gain(vec![Gold(30)], "+30 gold", Needs::default())]
 #[case::a_gamble_is_a_risk_not_a_cost(
@@ -128,6 +129,7 @@ fn at_event(content: &Content, event: &str, gold: u32, life: i32, bots: usize) -
                 id: "precon:RG".into(),
                 name: "Deck".into(),
                 colors: "RG".into(),
+                commanders: Vec::new(),
             },
         });
     }

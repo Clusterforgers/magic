@@ -18,6 +18,7 @@ fn deck(colors: &str) -> HeroDeck {
         id: format!("precon:{colors}"),
         name: format!("Deck {colors}"),
         colors: colors.to_owned(),
+        commanders: Vec::new(),
     }
 }
 
@@ -377,7 +378,7 @@ fn play(seed: u64, bots: usize) -> (Run, Vec<RunEvent>) {
             }
             Status::Room if !run.heroes[0].offers.is_empty() => {
                 let pick = match &run.heroes[0].offers[0] {
-                    Offer::Campfire => Pick::Rest,
+                    Offer::Campfire { .. } => Pick::Rest,
                     Offer::Shop { .. } => Pick::Skip,
                     Offer::Cards { cards } if cards.is_empty() => Pick::Skip,
                     Offer::Relics { relics } if relics.is_empty() => Pick::Skip,

@@ -133,7 +133,7 @@ it.each([
 
 it('knows a hero ready once they bring a deck', () => {
   expect(isReady(hero())).toBe(false)
-  expect(isReady(hero({ deck: { id: 'd', name: 'D', colors: 'G' } }))).toBe(true)
+  expect(isReady(hero({ deck: { id: 'd', name: 'D', colors: 'G', commanders: [] } }))).toBe(true)
 })
 
 it.each([

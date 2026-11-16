@@ -284,6 +284,7 @@ function RoomPanel({
           content={content}
           busy={busy}
           find={find}
+          mirror={view.mirror ?? []}
           onPick={(pick) => act({ kind: 'pick', pick })}
         />
       ) : null}

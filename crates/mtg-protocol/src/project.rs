@@ -185,14 +185,16 @@ fn sticker_sheets(state: &GameState, seat: PlayerId) -> Vec<StickerSheetView> {
         .collect()
 }
 
-/// The command zone of `seat` without the face-down cards of its Attraction deck, which `attraction_deck` counts.
+/// The command zone of `seat` without the face-down cards of its Attraction deck, which `attraction_deck` counts, and
+/// without its Satchel, which `satchel` lists.
 fn command_view(state: &GameState, viewer: PlayerId, seat: PlayerId) -> ZoneView {
     let mut view = zone_view(state, viewer, Zone::Command(seat));
-    let deck = state.attraction_deck(seat);
-    if !deck.is_empty() {
-        view.count = view.count.saturating_sub(count(deck.len()));
+    let mut apart = state.attraction_deck(seat).to_vec();
+    apart.extend(state.satchel(seat));
+    if !apart.is_empty() {
+        view.count = view.count.saturating_sub(count(apart.len()));
         if let Some(cards) = view.cards.as_mut() {
-            cards.retain(|id| !deck.contains(id));
+            cards.retain(|id| !apart.contains(id));
         }
     }
     view
@@ -685,6 +687,7 @@ impl PlayerView {
             },
             graveyard: zone_view(state, viewer, Zone::Graveyard(seat)),
             command: command_view(state, viewer, seat),
+            satchel: state.satchel(seat),
             attraction_deck: count(state.attraction_deck(seat).len()),
             sticker_sheets: sticker_sheets(state, seat),
             commanders: state

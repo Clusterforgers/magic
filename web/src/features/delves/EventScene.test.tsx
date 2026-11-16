@@ -26,7 +26,7 @@ describe('an event before the choice', () => {
   it('shows a payment and its reward as a cost and a gain', () => {
     scene(100)
     const chips = [...choice('Pay the toll').querySelectorAll('[data-chip]')]
-    expect(chips.map((c) => c.textContent)).toEqual(['−25 gold', 'a card for your deck'])
+    expect(chips.map((c) => c.textContent)).toEqual(['−25 gold', 'a card for your Satchel'])
     expect(chips.map((c) => c.getAttribute('data-tone'))).toEqual(['cost', 'gain'])
   })
 
@@ -51,7 +51,7 @@ describe('an event before the choice', () => {
 
   it('describes each choice to a screen reader with the server’s words', () => {
     scene(100)
-    expect(choice('Pay the toll')).toHaveAccessibleDescription('−25 gold, a card for your deck')
+    expect(choice('Pay the toll')).toHaveAccessibleDescription('−25 gold, a card for your Satchel')
     expect(choice('Reach into the sack')).toHaveAccessibleDescription('50%: a relic · 50%: −10 life')
     expect(choice('Turn back')).toHaveAccessibleDescription('Nothing happens')
   })

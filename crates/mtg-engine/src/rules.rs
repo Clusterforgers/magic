@@ -3346,7 +3346,9 @@ pub(crate) fn grants_look(state: &GameState, viewer: PlayerId, card: &GameObject
 fn r305c_cast_anyway(state: &GameState, player: PlayerId, card: &GameObject) -> bool {
     match card.zone() {
         Zone::Hand(owner) => owner == player,
-        Zone::Command(owner) => owner == player && state.is_commander(card.id()),
+        Zone::Command(owner) => {
+            owner == player && (state.is_commander(card.id()) || state.in_satchel(card.id()))
+        }
         zone => cast_permissions(state).iter().any(|other| {
             !other.opens_no_zone
                 && other.adds_to_printed(crate::resolve::zone_kind(zone))

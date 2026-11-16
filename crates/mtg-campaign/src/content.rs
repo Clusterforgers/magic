@@ -195,8 +195,10 @@ pub enum Outcome {
     Life(i32),
     /// A relic drawn from those the hero lacks.
     Relic,
-    /// A card pick in the hero's colours.
+    /// A card pick in the hero's colours, for their Satchel.
     CardPick,
+    /// A copy of a nonland card from the hero's deck or Satchel, of their choice, for their Satchel.
+    Duplicate,
     /// A chance: `win` with `odds` percent, `lose` otherwise.
     Gamble {
         /// The chance to win, in percent.
@@ -245,13 +247,14 @@ impl Needs {
 }
 
 impl Outcome {
-    /// The outcome in plain words: "+40 gold", "−8 life", "a relic", "a card for your deck", or a chance with its odds.
+    /// The outcome in plain words: "+40 gold", "−8 life", "a relic", "a card for your Satchel", or a chance with its odds.
     pub fn words(&self) -> String {
         match self {
             Outcome::Gold(n) => format!("{} gold", signed(*n)),
             Outcome::Life(n) => format!("{} life", signed(*n)),
             Outcome::Relic => "a relic".to_owned(),
-            Outcome::CardPick => "a card for your deck".to_owned(),
+            Outcome::CardPick => "a card for your Satchel".to_owned(),
+            Outcome::Duplicate => "a copy of a card from your deck or Satchel".to_owned(),
             Outcome::Gamble { odds, win, lose } => format!(
                 "{odds}%: {} · {}%: {}",
                 list_words(win),
@@ -332,6 +335,9 @@ pub struct EventSpec {
     pub text: String,
     /// Its choices.
     pub options: Vec<EventOption>,
+    /// The content generation it joined the theme in: a run made before it never meets it (`Run.content`).
+    #[serde(default)]
+    pub since: u32,
 }
 
 /// A dungeon theme: its bosses, events and the cards its rewards offer.
