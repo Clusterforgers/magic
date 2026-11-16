@@ -268,6 +268,10 @@ pub struct EventBatch {
     pub folded: u64,
 }
 
+#[allow(
+    clippy::trivially_copy_pass_by_ref,
+    reason = "serde passes the field by reference"
+)]
 const fn is_zero(value: &u64) -> bool {
     *value == 0
 }
@@ -826,7 +830,8 @@ pub fn project_events(
     let mut sightings: Vec<Vec<ObjectView>> = viewers.iter().map(|_| Vec::new()).collect();
     let mut known = shown_now(before);
     let folded = folded_by_loops(events);
-    let skipped = u64::try_from(folded.iter().filter(|folded| **folded).count()).unwrap_or(u64::MAX);
+    let skipped =
+        u64::try_from(folded.iter().filter(|folded| **folded).count()).unwrap_or(u64::MAX);
     for (event, folded) in events.iter().zip(&folded) {
         // A loop's iterations reach the client as its summary alone: the table and object diff carry their result.
         if *folded {

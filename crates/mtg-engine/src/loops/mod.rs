@@ -13,6 +13,11 @@ pub(crate) use watch::{Found, How, Taken, Watch, absolute};
 /// The most iterations one shortcut runs, and the most a turn runs in all.
 pub const LOOP_CAP: u32 = 10_000;
 
+/// The work one shortcut may do: the permanents on the battlefield summed over its iterations. Every step of the engine
+/// reads every permanent, so a loop that makes a permanent each time costs the square of its iterations; the shortcut
+/// stops once it has done this much (a few hundred iterations of a growing loop, thousands of one that stays small).
+pub const LOOP_WORK: usize = 60_000;
+
 /// A loop offered to the player whose choice drives it: repeat it a number of times, or stop (CR 732.2a, 732.6).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]

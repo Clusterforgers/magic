@@ -8,8 +8,8 @@ use crate::decision::{Answer, Decision, DecisionKind};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::loops::{
-    Found, How, LOOP_CAP, LoopAnswer, LoopLife, LoopOptions, LoopStep, LoopSummary, LoopTokens,
-    Offer, Taken,
+    Found, How, LOOP_CAP, LOOP_WORK, LoopAnswer, LoopLife, LoopOptions, LoopStep, LoopSummary,
+    LoopTokens, Offer, Taken,
 };
 use crate::state::{GameResult, Stage};
 
@@ -167,6 +167,7 @@ impl Engine {
         let lives: Vec<(PlayerId, i64)> = self.lives();
         self.looping = true;
         let mut done = 0;
+        let mut work = 0usize;
         'run: while done < times && self.state.result().is_none() {
             let starts = self.decision.as_ref().is_some_and(|decision| {
                 matches!(decision.kind, DecisionKind::Priority(_))
@@ -174,6 +175,14 @@ impl Engine {
                     && crate::loops::shape_at(&self.state, decision.player) == found.start
             });
             if !starts {
+                break;
+            }
+            work += self
+                .state
+                .zone(crate::zones::Zone::Battlefield)
+                .len()
+                .max(1);
+            if work > LOOP_WORK && done > 0 {
                 break;
             }
             let base = self.state.next_object;

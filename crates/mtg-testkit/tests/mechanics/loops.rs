@@ -6,10 +6,10 @@ use crate::common;
 use common::{name_of, pid};
 use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_engine::choose::Target;
 use mtg_engine::choose::{OptionChoice, TargetChoice, YesNoChoice};
 use mtg_engine::decision::{Answer, Decision, DecisionKind, PayChoice, PriorityAction};
 use mtg_engine::loops::{LoopAnswer, LoopOptions, LoopSummary};
-use mtg_engine::choose::Target;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Event, GameResult, replay};
 use mtg_testkit::cards::land;
@@ -33,7 +33,6 @@ fn play(
             return Ok(Some((decision.player, options.clone())));
         }
         let answer = policy(driver, &decision).unwrap_or_else(|| Driver::passive_answer(&decision));
-        if std::env::var("LOOPDBG").is_ok() { eprintln!("{} {:?} stack={} {:?}", decision.kind.name(), decision.player, driver.state().stack().len(), answer); }
         driver.answer(answer)?;
     }
     Ok(None)
@@ -88,11 +87,23 @@ fn a_mandatory_loop_that_never_ends_is_a_draw_for_everyone_still_in_the_game(
     let offer = play(&mut driver, 400, |_, _| None)?;
     assert_eq!(offer, None, "no one has a choice, so no one is asked");
     assert_eq!(driver.state().result(), Some(GameResult::Draw));
-    assert!(driver.state().loop_draw().is_some_and(|cards| cards.iter().any(|c| c == "Polyraptor")));
+    assert!(
+        driver
+            .state()
+            .loop_draw()
+            .is_some_and(|cards| cards.iter().any(|c| c == "Polyraptor"))
+    );
     assert!((0..seats).all(|seat| driver.state().is_alive(pid(seat))));
-    assert!(tokens_named(&driver, "Polyraptor") < 8, "found within a few cycles");
+    assert!(
+        tokens_named(&driver, "Polyraptor") < 8,
+        "found within a few cycles"
+    );
     let events = driver.engine().events();
-    assert!(events.iter().any(|event| matches!(event, Event::LoopDrawn { .. })));
+    assert!(
+        events
+            .iter()
+            .any(|event| matches!(event, Event::LoopDrawn { .. }))
+    );
     let replayed = replay(driver.engine().setup(), events).unwrap();
     assert_eq!(replayed.state_hash(), driver.state().state_hash());
     Ok(())
@@ -125,14 +136,16 @@ fn tread(driver: &Driver, decision: &Decision, yes: bool) -> Option<Answer> {
                 .legal
                 .iter()
                 .filter_map(|target| match target {
-                    Target::Object(object) if name_of(driver.state(), object.id) == "Polyraptor" => {
+                    Target::Object(object)
+                        if name_of(driver.state(), object.id) == "Polyraptor" =>
+                    {
                         Some(*target)
                     }
                     _ => None,
                 })
                 .max_by_key(|target| match target {
                     Target::Object(object) => object.id,
-                    _ => ObjectId(0),
+                    Target::Player(_) => ObjectId(0),
                 })?;
             Some(Answer::ChooseTargets(TargetChoice::Targets(vec![newest])))
         }
@@ -146,8 +159,8 @@ fn a_may_loop_is_offered_to_its_driver_and_runs_the_number_chosen_in_one_batch(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
     let mut driver = polyraptor_table(seats, "Where Ancients Tread", None);
-    let (asked, options) =
-        play(&mut driver, 400, |d, decision| tread(d, decision, true))?.expect("the driver is asked");
+    let (asked, options) = play(&mut driver, 400, |d, decision| tread(d, decision, true))?
+        .expect("the driver is asked");
     assert_eq!(asked, pid(0));
     assert!(!options.mandatory && !options.can_draw && !options.bounded);
     for name in ["Polyraptor", "Where Ancients Tread"] {
@@ -155,20 +168,29 @@ fn a_may_loop_is_offered_to_its_driver_and_runs_the_number_chosen_in_one_batch(
     }
     assert!(options.max >= 1000);
     let before = driver.engine().events().len();
-    let n: u32 = std::env::var("LOOPN").ok().and_then(|v| v.parse().ok()).unwrap_or(100);
-    let t = std::time::Instant::now();
-    let events = driver.answer(Answer::Loop(LoopAnswer::Repeat(n)))?;
-    eprintln!("{n} iterations: {:?}, {} events", t.elapsed(), events.len());
+    let events = driver.answer(Answer::Loop(LoopAnswer::Repeat(1000)))?;
     let summary = summaries(&events).pop().expect("one summary");
     assert_eq!(summary.player, Some(pid(0)));
-    assert_eq!(summary.iterations, 100);
-    let made: u32 = summary.total.tokens.iter().filter(|t| t.name == "Polyraptor").map(|t| t.count).sum();
-    assert_eq!(made, 100);
-    assert_eq!(summary.events as usize, driver.engine().events().len() - before - 1);
+    assert_eq!(
+        summary.iterations, 1000,
+        "a loop that stays small runs the thousand"
+    );
+    let made: u32 = summary
+        .total
+        .tokens
+        .iter()
+        .filter(|t| t.name == "Polyraptor")
+        .map(|t| t.count)
+        .sum();
+    assert_eq!(made, 1000);
+    assert_eq!(
+        summary.events as usize,
+        driver.engine().events().len() - before - 1
+    );
     // Normal play resumes at the loop's start; the driver says no and the loop ends.
     let offer = play(&mut driver, 40, |d, decision| tread(d, decision, false))?;
     assert_eq!(offer, None);
-    assert!(driver.state().stack().is_empty());
+    assert_eq!(driver.state().stack(), &[] as &[ObjectId]);
     assert_eq!(tokens_named(&driver, "Polyraptor"), 1);
     let replayed = replay(driver.engine().setup(), driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.state().state_hash());
@@ -207,7 +229,10 @@ fn a_life_drain_loop_is_no_draw_and_ends_with_the_game(
     let ran = summaries(driver.engine().events());
     assert!(!ran.is_empty(), "the loop runs as a shortcut");
     if seats == 2 {
-        assert_eq!(offers, 0, "one opponent: every target is forced, so the loop runs by itself");
+        assert_eq!(
+            offers, 0,
+            "one opponent: every target is forced, so the loop runs by itself"
+        );
         assert_eq!(ran[0].player, None);
     } else {
         assert!(offers >= 1);
@@ -228,7 +253,11 @@ fn kiki(kiki: ObjectId, creature: ObjectId) -> impl FnMut(&Driver, &Decision) ->
                 .map(|ability| Answer::Priority(PriorityAction::Activate(*ability)))
         }
         DecisionKind::ChooseTargets(options) => {
-            let wanted = if options.source == kiki { creature } else { kiki };
+            let wanted = if options.source == kiki {
+                creature
+            } else {
+                kiki
+            };
             options
                 .legal
                 .iter()
@@ -274,22 +303,28 @@ fn the_controller_of_kiki_jiki_chooses_how_many_copies(
     let made: u32 = options.per_iteration.tokens.iter().map(|t| t.count).sum();
     assert_eq!(made, 1, "one copy an iteration");
     let before = tokens_named(&driver, creature);
-    let n: u32 = std::env::var("LOOPN").ok().and_then(|v| v.parse().ok()).unwrap_or(50);
-    let t = std::time::Instant::now();
-    let events = driver.answer(Answer::Loop(LoopAnswer::Repeat(n)))?;
-    eprintln!("{n} kiki iterations: {:?}, {} events", t.elapsed(), events.len());
+    let events = driver.answer(Answer::Loop(LoopAnswer::Repeat(50)))?;
     assert_eq!(summaries(&events).pop().map(|s| s.iterations), Some(50));
     assert_eq!(tokens_named(&driver, creature), before + 50);
     // The batch ends at the start of the loop with priority, where the controller stops.
     assert!(matches!(driver.decision()?.kind, DecisionKind::Priority(_)));
     assert_eq!(driver.decision()?.player, pid(0));
     // Out of range: no iterations, more than the cap.
-    let options = play(&mut driver, 400, kiki(kiki_id, copied))?.expect("offered again").1;
+    let options = play(&mut driver, 400, kiki(kiki_id, copied))?
+        .expect("offered again")
+        .1;
     assert_eq!(options.asked, 1);
     for wrong in [0, options.max + 1] {
-        assert!(driver.answer(Answer::Loop(LoopAnswer::Repeat(wrong))).is_err());
+        assert!(
+            driver
+                .answer(Answer::Loop(LoopAnswer::Repeat(wrong)))
+                .is_err()
+        );
     }
-    assert!(driver.answer(Answer::Loop(LoopAnswer::Draw)).is_err(), "a loop with a driver is no draw");
+    assert!(
+        driver.answer(Answer::Loop(LoopAnswer::Draw)).is_err(),
+        "a loop with a driver is no draw"
+    );
     driver.answer(Answer::Loop(LoopAnswer::Stop))?;
     assert!(matches!(driver.decision()?.kind, DecisionKind::Priority(_)));
     let replayed = replay(driver.engine().setup(), driver.engine().events()).unwrap();
@@ -304,7 +339,11 @@ fn a_third_player_responds_after_the_batch_and_breaks_the_loop(
     let (mut driver, kiki_id, pestermite) = kiki_table(seats, "Pestermite", Some(2));
     let (asked, _) =
         play(&mut driver, 400, kiki(kiki_id, pestermite))?.expect("the controller is asked");
-    assert_eq!(asked, pid(0), "the driver is asked, not the player who could respond");
+    assert_eq!(
+        asked,
+        pid(0),
+        "the driver is asked, not the player who could respond"
+    );
     driver.answer(Answer::Loop(LoopAnswer::Repeat(10)))?;
     let mut policy = kiki(kiki_id, pestermite);
     let mut bolted = false;
@@ -314,29 +353,52 @@ fn a_third_player_responds_after_the_batch_and_breaks_the_loop(
         {
             return Some(Answer::PayMana(PayChoice::Auto));
         }
-        if decision.player == pid(2) && !d.state().stack().is_empty() && !bolted {
-            if let DecisionKind::Priority(options) = &decision.kind {
-                bolted = true;
-                return options
-                    .castable
-                    .first()
-                    .map(|spell| Answer::Priority(PriorityAction::CastSpell(*spell)));
-            }
+        if decision.player == pid(2)
+            && !d.state().stack().is_empty()
+            && !bolted
+            && let DecisionKind::Priority(options) = &decision.kind
+        {
+            bolted = true;
+            return options
+                .castable
+                .first()
+                .map(|spell| Answer::Priority(PriorityAction::CastSpell(*spell)));
         }
         if let DecisionKind::ChooseTargets(_) = &decision.kind
             && decision.player == pid(2)
         {
-            return Some(Answer::ChooseTargets(TargetChoice::Targets(vec![Target::Object(
-                d.state().object(kiki_id).unwrap().reference(),
-            )])));
+            return Some(Answer::ChooseTargets(TargetChoice::Targets(vec![
+                Target::Object(d.state().object(kiki_id).unwrap().reference()),
+            ])));
         }
         if d.state().turn().number() > 1 {
             return None;
         }
         policy(d, decision)
     })?;
-    assert!(offer.is_none(), "the loop is broken, so it is not offered again");
+    assert!(
+        offer.is_none(),
+        "the loop is broken, so it is not offered again"
+    );
     assert!(bolted);
-    assert!(driver.state().object(kiki_id).is_none_or(|kiki| kiki.zone() != Zone::Battlefield));
+    assert!(
+        driver
+            .state()
+            .object(kiki_id)
+            .is_none_or(|kiki| kiki.zone() != Zone::Battlefield)
+    );
+    Ok(())
+}
+
+#[test]
+fn a_growing_loop_stops_at_the_work_a_shortcut_may_do() -> Result<(), ScriptError> {
+    let (mut driver, kiki_id, pestermite) = kiki_table(2, "Pestermite", None);
+    play(&mut driver, 400, kiki(kiki_id, pestermite))?.expect("the controller is asked");
+    let before = tokens_named(&driver, "Pestermite");
+    let events = driver.answer(Answer::Loop(LoopAnswer::Repeat(1000)))?;
+    let ran = summaries(&events).pop().expect("one summary").iterations;
+    assert!((200..1000).contains(&ran), "{ran} iterations");
+    assert_eq!(tokens_named(&driver, "Pestermite"), before + ran as usize);
+    assert!(matches!(driver.decision()?.kind, DecisionKind::Priority(_)));
     Ok(())
 }

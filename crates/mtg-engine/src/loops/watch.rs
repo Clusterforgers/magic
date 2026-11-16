@@ -152,7 +152,12 @@ impl Watch {
     }
 
     /// Notes the priority point `state` stands at, `holder` holding priority, and returns the loop it closes, if any.
-    pub(crate) fn mark(&mut self, state: &GameState, holder: PlayerId, log: usize) -> Option<Found> {
+    pub(crate) fn mark(
+        &mut self,
+        state: &GameState,
+        holder: PlayerId,
+        log: usize,
+    ) -> Option<Found> {
         let turn = state.turn();
         let scope = (turn.number(), turn.step());
         if self.turn != scope.0 {
@@ -169,7 +174,11 @@ impl Watch {
             counts: shape::counts(state),
             taken: self.dropped + self.taken.len(),
             next_object: state.next_object,
-            lives: state.players().iter().map(|player| (player.id, i64::from(player.life))).collect(),
+            lives: state
+                .players()
+                .iter()
+                .map(|player| (player.id, i64::from(player.life)))
+                .collect(),
             log,
             stack: shape::stack_names(state),
         });
@@ -230,7 +239,10 @@ impl Watch {
             }
         }
         let cards = cards_of(state, &marks[last - period + 1..=last], taken);
-        let mut shapes: Vec<u64> = marks[last - period + 1..=last].iter().map(|mark| mark.shape).collect();
+        let mut shapes: Vec<u64> = marks[last - period + 1..=last]
+            .iter()
+            .map(|mark| mark.shape)
+            .collect();
         shapes.sort_unstable();
         let key = shape::loop_key(&shapes);
         Some(Found {
@@ -264,7 +276,10 @@ impl Watch {
 
 /// The names of the objects on the stack at the cycle's points and of the sources of the abilities activated in it.
 fn cards_of(state: &GameState, marks: &[Mark], taken: &[Taken]) -> Vec<String> {
-    let mut names: Vec<String> = marks.iter().flat_map(|mark| mark.stack.iter().cloned()).collect();
+    let mut names: Vec<String> = marks
+        .iter()
+        .flat_map(|mark| mark.stack.iter().cloned())
+        .collect();
     for answer in taken {
         if let Answer::Priority(PriorityAction::Activate(ability)) = &answer.answer
             && let Some(object) = state.object(ability.object)

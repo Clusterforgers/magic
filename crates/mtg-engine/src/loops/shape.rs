@@ -66,7 +66,11 @@ pub(crate) fn counts(state: &GameState) -> Counts {
             i64::from(player.mana.total()),
         );
         for (kind, count) in &player.counters {
-            add(Measure::Other, hash_of(("counter", id, kind)), i64::from(*count));
+            add(
+                Measure::Other,
+                hash_of(("counter", id, kind)),
+                i64::from(*count),
+            );
         }
         for (name, zone) in [
             ("hand", Zone::Hand(id)),
@@ -119,14 +123,18 @@ pub(crate) fn counts(state: &GameState) -> Counts {
 
 /// The change from `before` to `after`, the keys whose value moved, sorted.
 pub(crate) fn delta(before: &Counts, after: &Counts) -> Counts {
-    let mut change: std::collections::BTreeMap<(Measure, u64), i64> = std::collections::BTreeMap::new();
+    let mut change: std::collections::BTreeMap<(Measure, u64), i64> =
+        std::collections::BTreeMap::new();
     for (key, value) in before {
         *change.entry(*key).or_default() -= value;
     }
     for (key, value) in after {
         *change.entry(*key).or_default() += value;
     }
-    change.into_iter().filter(|(_, value)| *value != 0).collect()
+    change
+        .into_iter()
+        .filter(|(_, value)| *value != 0)
+        .collect()
 }
 
 /// The key a loop is known by in its turn: the shapes of its points, sorted, so it is the same wherever it is found.
