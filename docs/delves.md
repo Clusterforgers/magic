@@ -36,10 +36,22 @@ A fallen hero keeps playing: it haunts the fight with small, clear choices and c
 
 ## Bosses
 
-- A boss (`content/<theme>.json`) has a 40-card deck of verified real cards, a brain (Hard by default), a base life and life per hero, an opening hand, a boss card, two phases and an art card: a real card (`art.card`, `art.oracle_id`) whose art crop pictures it on the descent and the fight panel.
-- Its advantages are open: its boss cards are emblems in its command zone from the start; each phase is an emblem that arrives when its life falls to a share of its starting life (66 % and 33 %). The table shows the boss's phase and the next one on the seat's chips.
-- Every boss has Escalation (each of its end steps, every hero loses 1 life for every four turns it has taken) and Enrage (from its tenth turn, every hero loses its turns minus nine each upkeep), so a stalled fight ends.
-- Schemes: the theme's scheme deck, shuffled from the seed for each fight, sets one scheme in motion as each boss turn begins from its third (CR 314 in the manner of Archenemy); the next one is public as the Omen. Their effects count the heroes (a Rat per hero, a sacrifice and a discard from each hero, a drain of each hero) or name the hero in the spotlight.
+- A boss (`content/<theme>.json`) has a 40-card deck of verified real cards, a brain (Hard by default), a base life and life per hero, an opening hand, one passive (`rules`), an Enrage (`enrage`), two phases, a relic of its own (`relic`) and an art card: a real card (`art.card`, `art.oracle_id`) whose art crop pictures it on the descent and the fight panel.
+- Its advantages are open: its passive, Enrage, modifier and relic are emblems in its command zone from the start; each phase is an emblem that arrives when its life falls to a share of its starting life (66 % and 33 %). The table shows the boss's phase and the next one on the seat's chips.
+- Enrage: each boss's own, from the heroes' seventh turn (`turn` on the card, read by the boss bar and the intro). It ends a stalled fight in the boss's manner: a growing swarm, growing counters, a growing toll or a growing attack.
+- Modifier: one buff drawn from the theme's pool (`modifiers`) for each fight, from the seed and the room, so a retried fight keeps it.
+- Relic: from the second boss of the ladder on (`Run::boss_rank`), the boss brings its own risky relic, which helps the boss and may help the heroes too.
+- Every boss has Escalation (each of its end steps, every hero loses 1 life for every four turns it has taken).
+- Drain rule: a boss has at most one life loss with no way out, Escalation. Every other life loss of a boss card, phase, scheme, modifier or relic happens only unless the hero pays (mana or a discard), and its text says so; a content test reads each card's abilities and enforces it.
+
+| Boss | Passive | Enrage (from the heroes' turn 7) | Relic (from the second boss) |
+|---|---|---|---|
+| Skrix | a Rat each upkeep | Rats each upkeep: the heroes' turns beyond six | Rat King's Crown: Rats get +1/+1 |
+| Mossjaw | its creatures +1/+1 and trample | a +1/+1 counter on each of its creatures each upkeep | Heartwood Bark: all creatures +0/+2 |
+| Vex | a Zombie when a hero's nontoken creature dies | each hero loses 3 unless they pay {2}, each upkeep | Bone Reliquary: creature spells cost {1} less |
+| Grimgut | a hasty Goblin each upkeep | its creatures +1/+0 each combat per heroes' turn beyond six | Crown of Cinders: all creatures have haste |
+
+- Schemes: the theme's scheme deck of 14, shuffled from the seed for each fight, sets one scheme in motion every other boss turn from its third (`scheme_every`, CR 314 in the manner of Archenemy); a scheme stays in motion until the boss's next turn begins, so the turns between have none. The next one is public as the Omen with the boss turns until it comes. At that cadence a fight of 30 boss turns meets each scheme at most once. Their effects count the heroes (a Rat per hero, a sacrifice and a discard from each hero, a toll on each hero) or name the hero in the spotlight; Hunting Party spares commanders.
 - Minions: a lieutenant seat on the boss's side with another boss's deck, its own life and bot brain, sharing the boss's turn; it falls with the boss (`LossReason::LeaderFell`), so the party wins when the boss falls.
 
 ## Spotlight
@@ -59,7 +71,7 @@ The boss's side spreads its pressure over the party (`mtg-engine`, `spotlight.rs
 
 - Lull: the boss's side's creatures can't attack and its schemes wait until the boss's third turn, so the heroes have three turns before the first attack. The Omen shows the first scheme from the start.
 - The boss bots hold back sweepers (wipes, and damage or sacrifice to each player or creature without a target) through the boss's first three turns.
-- Reserves and Reinforcements begin on the boss's second turn and Warpath on its fourth; Escalation grows by 1 every four boss turns and Enrage begins on the tenth.
+- Reserves and Reinforcements begin on the boss's second turn and Warpath on its fourth; Escalation grows by 1 every four boss turns and Enrage begins after the heroes' seventh turn.
 
 ## Commander rules in a fight
 
@@ -85,7 +97,7 @@ One table (`scale.rs`) sets the boss for the party's size, so every size meets t
 ## Loot
 
 - After each lieutenant every hero gets 50 gold, a pick of one of three relics and a pick of one of three cards in their colours (skipping a card gives 10 gold). A new card replaces a basic land of the deck.
-- Relics (`content/cards.json`) are emblems the hero keeps for the run, each with a role that shapes the party: Healer, Removal, Damage, Support, and Risky relics whose effect is symmetrical and helps the boss too (all red spells cost {2} less, every player draws an extra card, all creatures get +2/+0). Risky relics come only from loot and treasure, never the shop.
+- Relics (`content/cards.json`) are emblems the hero keeps for the run, each with a role that shapes the party: Healer, Removal, Damage, Support, and Risky relics whose effect is symmetrical and helps the boss too (all red spells cost {2} less, every player draws an extra card, all creatures get +2/+0). Risky relics come only from loot and treasure, never the shop. A boss's own relic (Bosses) is risky in the same way and stays with the boss.
 - Camps: Treasure offers a relic pick; the Shop sells three cards (35 gold), two relics and a draught; an Event offers each hero a choice with gold, life, relic or card outcomes and seeded gambles; a Campfire offers rest or a card pick.
 
 ## Events
@@ -107,8 +119,9 @@ One table (`scale.rs`) sets the boss for the party's size, so every size meets t
 
 - The run page reads as a descent: a header with the party's life, hearts, Heat and seed; the ladder as a path from the first boss to the final one, every room cleared, current, next or locked; votes show who chose which camp.
 - Each camp is a scene of its own (loot, shop, campfire, event); a risky relic is always marked Dangerous. An event shows each option's effects before the choice (gains and costs, odds, why an option is shut) and a "What happened" panel with the chronicle after it (Events). Implementation in [web.md](web.md), Delves.
-- A fight opens with the boss intro (the run view's `fight`: the plan's boss, life, custom cards, phase thresholds and minions), in place of the game's lobby: the boss's abilities in full, the party's decks and carried life, and Ready to fight; the host also has Retreat, confirmed first. When the game ends the table returns straight to the run, which greets the loot or the lost heart.
-- At the table the boss's side sits on top and the party together at the bottom (boss mode); the boss's abilities, phases to come, scheme and Omen are a row of chips with their rules. Their words come from the content records the engine plays, matched to the emblems in the boss's command zone and its `BossView`.
+- A fight opens with the boss intro (the run view's `fight`: the plan's boss, life, custom cards, phase thresholds and minions), in place of the game's lobby: the boss's abilities in full, the party's decks and carried life, and Ready to fight; the host also has Retreat, confirmed first. When the game ends the final table stays under the fight's result (`FightEnd`: won or lost, each seat's end, the log's last turns) until the player presses "Continue to the run", or after a 60 s countdown that "Stay" stops; the run then greets the loot or the lost heart.
+- The run keeps each fight whose game ended or lost its table (`Run.fights`: the game, the room, won or lost; a voided game and a retreat before a game leave none). The run page lists them newest first as the Fight log, each linking to its recorded game (`/replay/$gameId`), where the whole log of the fight reads back.
+- At the table the boss's side sits on top and the party together at the bottom (boss mode); the boss's passive, Enrage (with the heroes' turn it begins on), modifier, relic, phases to come, scheme and Omen are a row of chips with their rules, and the intro lists the same. Their words come from the content records the engine plays, matched to the emblems in the boss's command zone and its `BossView`.
 
 ## Content
 

@@ -41,6 +41,7 @@ mod counted_mana;
 mod counter_actions;
 mod counter_mana;
 mod counting_costs;
+mod dice_results;
 mod discard_casts;
 mod dk1d_disturb;
 mod dk1d_permit_costs;

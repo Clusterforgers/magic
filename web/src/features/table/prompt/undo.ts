@@ -12,7 +12,10 @@ export function undoWords(zone: Zone | undefined): string {
 export function escapeTaken(target: EventTarget | null): boolean {
   return (
     isTyping(target) &&
-    !(target instanceof Element && target.closest('[data-slot="prompt-actions"]') !== null)
+    !(
+      target instanceof Element &&
+      target.closest('[data-slot="prompt-actions"], [data-slot="prompt-choices"]') !== null
+    )
   )
 }
 

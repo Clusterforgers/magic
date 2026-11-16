@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { DeckInfo } from '@/net/api'
 import { AuthContext } from '@/features/auth/context'
 import { createAuthStore, offlineAccounts } from '@/features/auth/store'
+import { must } from '@/test-utils/batches'
 import { renderInRouter } from '@/test-utils/router'
 import { deckFacts, lobbyDecks, lobbyPrecons } from './dev/deckApis'
 import type { DevDeckSwitches } from './dev/deckApis'
@@ -412,6 +413,14 @@ describe('one column and two', () => {
     await screen.findByRole('option', { name: /Atraxa Superfriends/ })
     expect(document.querySelector('[data-slot="deck-pane"]')).not.toBeNull()
     expect(screen.queryByRole('dialog')).toBeNull()
+  })
+
+  it('keeps the preview beside the list as high as what it shows, not stretched to the list', async () => {
+    width(true)
+    await open()
+    await screen.findByRole('option', { name: /Atraxa Superfriends/ })
+    const pane = must(document.querySelector('[data-slot="deck-pane"]'))
+    expect(pane).toHaveClass('self-start', 'max-h-[70dvh]', 'overflow-y-auto')
   })
 
   it('opens the preview as a dialog from a row on a narrow page, and takes the deck from it', async () => {

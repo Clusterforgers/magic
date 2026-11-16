@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { CombatView } from '@/protocol/generated'
+import { NO_PENDING } from './pending'
 import { planLines } from './plan'
 
 // Cards 10 to 19 belong to seat 1, 20 to 29 to seat 2, 30 to 39 to the viewer (seat 0).
@@ -15,7 +16,7 @@ const combat = (attackers: CombatView['attackers']): CombatView =>
 const attack = (object: number, target: CombatView['attackers'][number]['target']) =>
   ({ object, target, blockers: [] }) as unknown as CombatView['attackers'][number]
 
-const NONE = { attacks: new Map(), blocks: new Map() } as never
+const NONE = NO_PENDING
 
 describe('attack lines', () => {
   it.each([

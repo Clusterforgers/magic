@@ -48,6 +48,7 @@ import {
 } from './selectors'
 import { describeMulligan } from './turnText'
 import { useBoxHeight } from './useBoxHeight'
+import { useEdgeFade } from './useEdgeFade'
 import { SeatCorner } from './SeatCorner'
 import { LibraryTopChip } from './LibraryTopChip'
 import { RevealedChip } from './RevealedChip'
@@ -170,6 +171,8 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
   // The blocks above the corner: its room is the column less these (the column is measured by `PodColumn`).
   const above = useRef<HTMLDivElement>(null)
   const aboveHeight = useBoxHeight(above)
+  const topScroll = useRef<HTMLDivElement>(null)
+  useEdgeFade(topScroll)
   // The chips a cramped column lays under the corner, which the corner leaves room for, so the column never scrolls.
   const below = useRef<HTMLDivElement>(null)
   const belowHeight = useBoxHeight(below)
@@ -381,71 +384,77 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
       data-tight={tight || undefined}
       style={seatHueStyle(seat)}
       className={cn(
-        // One track that may shrink (`minmax(0, 1fr)`): a chip that is longer than the pod is cut inside it instead of
-        // widening the pod and pushing the life figure out of the column.
-        '@container relative grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-2 plaque rounded-xl p-2 text-card-foreground',
+        '@container relative flex min-w-0 flex-col gap-2 plaque rounded-xl p-2 text-card-foreground',
+        // The column's height caps the pod: the blocks above the corner give way and scroll, so the zones stay in view.
+        // A cramped pod keeps its name row and life over the corner, and the column scrolls to the chips under it.
+        !cramped && 'max-h-full',
         ring,
         eliminated && 'border-l-4 border-destructive',
         player.boss ? 'border-2 border-boss' : SEAT_EDGE,
         defenderClass(defender.state),
       )}
     >
-      {/* Everything above the corner: its height does not depend on how the corner is drawn, so the corner can be sized by it. */}
-      <div ref={above} data-slot="pod-top" className="grid grid-cols-[minmax(0,1fr)] content-start gap-2">
-        {/* The name has the whole width; under it the clocks and the hand and library stand beside the life figure,
+      {/* Everything above the corner: its height does not depend on how the corner is drawn, so the corner can be sized by it.
+          It is measured inside its scroller, at its whole height, however much of it the column shows. */}
+      <div ref={topScroll} data-slot="pod-top-scroll" className="fade-scroll min-h-0 shrink">
+        <div ref={above} data-slot="pod-top" className="grid grid-cols-[minmax(0,1fr)] content-start gap-2">
+          {/* The name has the whole width; under it the clocks and the hand and library stand beside the life figure,
             at its right, so the largest figure never shares a row with words that could run into it. */}
-        <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1">
-          <div
-            data-slot="pod-name-row"
-            className="col-span-full flex min-w-0 items-center justify-between gap-2"
-          >
-            {name}
-            {/* The attacks at the seat stand at the end of its name row, clear of the figures beside the life. */}
-            <span className="flex shrink-0 items-center gap-1 empty:hidden">
-              <AttackBadges seat={seat} />
-            </span>
-          </div>
-          <div
-            data-slot="pod-meta"
-            className="flex min-w-0 flex-wrap content-center items-center gap-x-2 gap-y-0.5 self-stretch"
-          >
-            {handChips}
-            {timers}
-          </div>
-          <div className="flex items-center gap-1.5 justify-self-end">
-            <LifeForecast seat={seat} />
-            <Life
-              seat={seat}
-              life={player.life}
-              as="p"
-              className={cramped ? 'text-3xl font-semibold tabular-nums' : 'text-life'}
-              team={team}
-              spirit={player.spirit === true}
-            />
-          </div>
-          {cramped ? null : (
-            <div className="col-span-full grid grid-cols-[minmax(0,1fr)] gap-0.5">
-              {/* Room for the pool is kept under the name, so nothing moves when mana floats. */}
-              <div
-                data-slot="mana-slot"
-                className={cn('min-h-5', tight && 'flex flex-wrap items-center gap-1')}
-              >
-                {mana}
-                {tight ? extraChips : null}
+          <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1">
+            <div
+              data-slot="pod-name-row"
+              className="col-span-full flex min-w-0 items-center justify-between gap-2"
+            >
+              {name}
+              {/* The attacks at the seat stand at the end of its name row, clear of the figures beside the life. */}
+              <span className="flex shrink-0 items-center gap-1 empty:hidden">
+                <AttackBadges seat={seat} />
+              </span>
+            </div>
+            <div
+              data-slot="pod-meta"
+              className="flex min-w-0 flex-wrap content-center items-center gap-x-2 gap-y-0.5 self-stretch"
+            >
+              {handChips}
+              {timers}
+            </div>
+            <div className="flex items-center gap-1.5 justify-self-end">
+              <LifeForecast seat={seat} />
+              <Life
+                seat={seat}
+                life={player.life}
+                as="p"
+                // The display face's figures reach 2 px under a `leading-none` line: the padding keeps them inside the
+                // blocks' scroller, which would otherwise scroll and fade for them.
+                className={cn('pb-0.5', cramped ? 'text-3xl font-semibold tabular-nums' : 'text-life')}
+                team={team}
+                spirit={player.spirit === true}
+              />
+            </div>
+            {cramped ? null : (
+              <div className="col-span-full grid grid-cols-[minmax(0,1fr)] gap-0.5">
+                {/* Room for the pool is kept under the name, so nothing moves when mana floats. */}
+                <div
+                  data-slot="mana-slot"
+                  className={cn('min-h-5', tight && 'flex flex-wrap items-center gap-1')}
+                >
+                  {mana}
+                  {tight ? extraChips : null}
+                </div>
+                <UntappedSources seat={seat} />
               </div>
-              <UntappedSources seat={seat} />
+            )}
+          </header>
+          {words === '' ? null : <p className="sr-only">{words}</p>}
+          <div data-slot="pod-status" className="grid content-start gap-1 empty:hidden">
+            {notes}
+          </div>
+          {tight ? null : (
+            <div data-slot="pod-counts" className="flex flex-wrap gap-1 empty:hidden">
+              {extraChips}
             </div>
           )}
-        </header>
-        {words === '' ? null : <p className="sr-only">{words}</p>}
-        <div data-slot="pod-status" className="grid content-start gap-1 empty:hidden">
-          {notes}
         </div>
-        {tight ? null : (
-          <div data-slot="pod-counts" className="flex flex-wrap gap-1 empty:hidden">
-            {extraChips}
-          </div>
-        )}
       </div>
       <SeatCorner
         owner={owner}

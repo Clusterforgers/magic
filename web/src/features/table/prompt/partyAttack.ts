@@ -1,5 +1,12 @@
 /** The words of a team's shared combat in a player's attack prompt: what the teammates chose and why a choice was refused. */
-import type { PartyAttack, PlayerId } from '@/protocol/generated'
+import type { AttackTarget, ObjectId, PartyAttack, PlayerId } from '@/protocol/generated'
+
+/** What the teammates before the chooser chose, creature to what it attacks: drawn as chosen while the player chooses. */
+export function teamAttacks(party: PartyAttack | undefined): ReadonlyMap<ObjectId, AttackTarget> {
+  return new Map(
+    (party?.declared ?? []).map(([, object, target]): [ObjectId, AttackTarget] => [object, target]),
+  )
+}
 
 /**
  * "The team's attack was refused: …. Ann attacks with 2 creatures, Bo with 1." or "No teammate attacks yet.", ending

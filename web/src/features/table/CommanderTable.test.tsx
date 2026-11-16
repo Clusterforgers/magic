@@ -120,6 +120,15 @@ describe('your commanders in the hand dock', () => {
     expect(list.querySelectorAll('[data-slot="hand-commander-tax"]')).toHaveLength(2)
   })
 
+  it('draw the tax in the middle of the art, clear of the type line at the card foot', () => {
+    show()
+    const list = screen.getByRole('list', { name: "Alice's commanders in the command zone" })
+    for (const pill of list.querySelectorAll('[data-slot="hand-commander-tax"]')) {
+      expect(pill).toHaveClass('top-1/2', '-translate-1/2')
+      expect(pill.className).not.toMatch(/\bbottom-/)
+    }
+  })
+
   it('stand in a box as high as the dock, so the divider after them never rises over the battlefield', () => {
     show()
     const box = must(document.querySelector('[data-slot="hand-command"]'))

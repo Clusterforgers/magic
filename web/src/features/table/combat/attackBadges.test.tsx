@@ -1,9 +1,9 @@
-// Goal: an attack at a player is drawn as a badge on the defender's pod per attacking seat (declared and still being chosen apart, the count of creatures, their names for a screen reader) instead of a line from a board to a pod, while the lines that join two boards (a block, an attack at a planeswalker) stay.
+// Goal: an attack at a player is told by a badge on the defender's pod per attacking seat (declared and still being chosen apart, the count of creatures, their names for a screen reader) beside the line from each attacker, in every layout; the attacks at a party's seats draw strong, as the viewer's own.
 import { describe, expect, it } from 'vitest'
 import type { AttackTarget, CombatView, ObjectId, PlayerId } from '@/protocol/generated'
 import { NO_PENDING } from './pending'
 import type { PendingCombat } from './pending'
-import { attackGroups, planLines } from './plan'
+import { anchorKey, attackGroups, planLines } from './plan'
 import { attackWords } from './AttackBadges'
 import { renderTable } from '@/test-utils/tableHarness'
 import { must } from '@/test-utils/batches'
@@ -76,24 +76,22 @@ describe('attackGroups', () => {
   })
 })
 
-describe('planLines with seat badges', () => {
+describe('planLines for attacks at a player', () => {
   const view = combat([
     [10, player(0), [20]],
     [11, { Planeswalker: 30 }, []],
   ])
 
-  it('leaves out the attacks at a player and keeps the block and the attack at a planeswalker', () => {
-    const lines = planLines({
-      combat: view,
-      forecast: null,
-      pending: NO_PENDING,
-      controllerOf,
-      seatBadges: true,
-    })
-    expect(lines.map((line) => line.key)).toEqual(['attack:11', 'block:20'])
+  it('draws the attack at a player and at a planeswalker and the block, as lines beside the badges', () => {
+    const lines = planLines({ combat: view, forecast: null, pending: NO_PENDING, controllerOf })
+    expect(lines.map((line) => [line.key, anchorKey(line.to)])).toEqual([
+      ['attack:10', 'seat:0'],
+      ['attack:11', 'card:30'],
+      ['block:20', 'card:10'],
+    ])
   })
 
-  it('leaves out a pending attack at a player too', () => {
+  it('draws a pending attack at a player too, dashed', () => {
     const lines = planLines({
       combat: null,
       forecast: null,
@@ -102,9 +100,11 @@ describe('planLines with seat badges', () => {
         [10, { Planeswalker: 30 }],
       ]),
       controllerOf,
-      seatBadges: true,
     })
-    expect(lines.map((line) => line.key)).toEqual(['pending-attack:10'])
+    expect(lines.map((line) => [line.key, line.pending])).toEqual([
+      ['pending-attack:20', true],
+      ['pending-attack:10', true],
+    ])
   })
 
   it("draws the attacks at a party's seats strong, as the viewer's own, only for a viewer with a party", () => {
@@ -121,11 +121,6 @@ describe('planLines with seat badges', () => {
     expect(mine([0, 3], 0)).toEqual([true, true])
     expect(mine([0, 1], 0)).toEqual([true, true])
     expect(mine([0, 3], null)).toEqual([false, false])
-  })
-
-  it('draws every attack without them', () => {
-    const lines = planLines({ combat: view, forecast: null, pending: NO_PENDING, controllerOf })
-    expect(lines.map((line) => line.key)).toEqual(['attack:10', 'attack:11', 'block:20'])
   })
 })
 

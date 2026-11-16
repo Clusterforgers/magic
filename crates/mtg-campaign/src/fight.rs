@@ -51,6 +51,13 @@ pub struct BossSeat {
     /// Its scheme deck, in the order its schemes are set in motion.
     #[serde(default)]
     pub schemes: Vec<String>,
+    /// Every how many of its turns a scheme is set in motion, from its third.
+    #[serde(default = "every_turn")]
+    pub scheme_every: u32,
+}
+
+fn every_turn() -> u32 {
+    1
 }
 
 /// A minion's seat in a fight: a lieutenant on the boss's side that falls with the boss.
@@ -210,6 +217,7 @@ impl FightPlan {
             .with_spirits(spirits)
             .with_phases(phase_lists)
             .with_schemes(schemes)
+            .with_scheme_every(self.boss.scheme_every)
             .with_leaders(leaders);
         setup.validate_decks = false;
         Ok(setup)

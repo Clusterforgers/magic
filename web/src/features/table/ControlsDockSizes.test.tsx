@@ -227,6 +227,9 @@ describe('the pass button', () => {
     // The keys are still told: by a tooltip and to a screen reader, whatever the window.
     expect(primaryButton()).toHaveAttribute('aria-keyshortcuts', 'Space')
     expect(primaryButton()).toHaveAttribute('title', 'Space')
+    // A touch screen has no keys: the caps it would draw are left out there.
+    for (const cap of dock().querySelectorAll('[data-slot="key-cap"]'))
+      expect(cap).toHaveClass('pointer-coarse:hidden')
   })
 
   it('leaves the spell’s name to the stack strip in a dock without hints, and says it to a screen reader', () => {

@@ -92,6 +92,46 @@ export const ChooseCostsPrompt: PromptComponent<'ChooseCosts'> = ({ options }) =
           <span className="sr-only"> {costKeysWords(optional.length)}</span>
         </>
       }
+      choices={
+        <>
+          <div
+            role="group"
+            aria-label="Optional costs"
+            data-slot="cost-list"
+            className="grid max-h-56 basis-full grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] content-start gap-1 overflow-y-auto p-0.5"
+          >
+            {optional.map((cost, place) => {
+              const key = numberKey(place)
+              const picked = chosen.includes(cost.index)
+              const refused = refusal(cost, chosen, optional) !== undefined
+              return (
+                <Button
+                  key={cost.index}
+                  variant={picked ? 'default' : 'outline'}
+                  className="h-auto min-h-9 justify-start whitespace-normal px-3 py-0.5 text-left text-sm leading-snug aria-disabled:opacity-50"
+                  aria-label={cost.label}
+                  aria-keyshortcuts={key}
+                  aria-pressed={picked}
+                  aria-disabled={refused || undefined}
+                  data-cost={cost.index}
+                  onClick={() => press(cost)}
+                >
+                  {key === undefined ? null : <KeyHint>{key}</KeyHint>}
+                  <span className="ml-2 min-w-0">
+                    <CostLabel label={cost.label} />
+                  </span>
+                  {picked ? <Check aria-hidden="true" className="ml-auto size-4 shrink-0" /> : null}
+                </Button>
+              )
+            })}
+          </div>
+          {problem === undefined ? null : (
+            <p role="status" data-slot="costs-problem" className="basis-full text-sm text-muted-foreground">
+              {problem}
+            </p>
+          )}
+        </>
+      }
     >
       <Button
         ref={confirm}
@@ -118,42 +158,6 @@ export const ChooseCostsPrompt: PromptComponent<'ChooseCosts'> = ({ options }) =
           </>
         )}
       </p>
-      <div
-        role="group"
-        aria-label="Optional costs"
-        data-slot="cost-list"
-        className="flex max-h-56 basis-full flex-col gap-1 overflow-y-auto p-0.5"
-      >
-        {optional.map((cost, place) => {
-          const key = numberKey(place)
-          const picked = chosen.includes(cost.index)
-          const refused = refusal(cost, chosen, optional) !== undefined
-          return (
-            <Button
-              key={cost.index}
-              variant={picked ? 'default' : 'outline'}
-              className="h-auto min-h-9 justify-start whitespace-normal px-3 py-0.5 text-left text-sm leading-snug aria-disabled:opacity-50"
-              aria-label={cost.label}
-              aria-keyshortcuts={key}
-              aria-pressed={picked}
-              aria-disabled={refused || undefined}
-              data-cost={cost.index}
-              onClick={() => press(cost)}
-            >
-              {key === undefined ? null : <KeyHint>{key}</KeyHint>}
-              <span className="ml-2 min-w-0">
-                <CostLabel label={cost.label} />
-              </span>
-              {picked ? <Check aria-hidden="true" className="ml-auto size-4 shrink-0" /> : null}
-            </Button>
-          )
-        })}
-      </div>
-      {problem === undefined ? null : (
-        <p role="status" data-slot="costs-problem" className="basis-full text-sm text-muted-foreground">
-          {problem}
-        </p>
-      )}
     </PromptLayout>
   )
 }

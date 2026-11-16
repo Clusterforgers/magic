@@ -9,8 +9,7 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "DiceRolled": { "who": "You" } },
-            "if": { "Compare": { "left": "Triggering", "op": "Ge", "right": 3 } },
+            "when": { "DiceRolled": { "who": "You", "at_least": 3 } },
             "effects": [
               {
                 "Continuous": {

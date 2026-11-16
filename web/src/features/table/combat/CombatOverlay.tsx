@@ -18,7 +18,7 @@ import './attach.css'
 
 interface LayerProps {
   drawn: readonly DrawnLine[]
-  layer: 'lines' | 'ghost' | 'stack'
+  layer: 'lines' | 'ghost' | 'stack' | 'stack-ghost'
   className: string
 }
 
@@ -158,8 +158,13 @@ function Lines({ lines }: { lines: readonly LineSpec[] }) {
       {cards ? null : <Layer drawn={combat} layer="ghost" className="combat-ghost z-30 opacity-30" />}
       <BundleLabels drawn={combat} />
       {/* The arrows of the stack start at a chip in the strip, so they run above it (and under the hand and the controls). */}
+      {/* On a phone the sheet holds the sentence over most of the table: the arrows dive under it as the combat lines
+          do, and a faint copy above shows where they run. */}
       {targets.length === 0 || cards ? null : (
-        <Layer drawn={targets} layer="stack" className="combat-stack z-[25]" />
+        <>
+          <Layer drawn={targets} layer="stack" className="combat-stack z-[25] max-sm:z-10" />
+          <Layer drawn={targets} layer="stack-ghost" className="combat-stack z-30 opacity-30 sm:hidden" />
+        </>
       )}
     </div>
   )

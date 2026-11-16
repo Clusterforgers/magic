@@ -21,15 +21,7 @@ import { TableMoments } from './moment/TableMoments'
 import { useTableMoments } from './moment/useTableMoments'
 import { LexiconDialog } from './lexicon/LexiconDialog'
 import { ManualMenuProvider } from './manual/ManualMenu'
-import {
-  alliesBandPx,
-  handGrowMost,
-  openingGrowMost,
-  planTable,
-  POD_COLUMN_PX,
-  sidePanelRows,
-  ZONE_GAP_PX,
-} from './layout'
+import { alliesBandPx, handGrowMost, planTable, POD_COLUMN_PX, sidePanelRows, ZONE_GAP_PX } from './layout'
 import type { TableMode } from './layout'
 import { ChoiceOverlayContext, useChoiceOverlayHost } from './prompt/choiceOverlay'
 import { createMarksStore, MarksContext } from './prompt/marks'
@@ -136,8 +128,8 @@ const Table = memo(function Table() {
   const folding = options.foldLands ?? FOLD_LANDS_BY_DEFAULT
   const fx = useTableFx(options.effects ?? EFFECTS_BY_DEFAULT, options.effectsSlow)
   const moments = useTableMoments(options.effects ?? EFFECTS_BY_DEFAULT)
-  // In boss mode the opening-hand decision floats in the overlay, so the dock keeps its size then.
-  const choice = useChoiceOverlayHost(regions.phone, viewport, plan.shape === 'boss')
+  // The opening-hand decision floats in the overlay at every table but a phone's, so the dock keeps its size then.
+  const choice = useChoiceOverlayHost(regions.phone, viewport, true)
 
   return (
     <AttackLinesContext value={party}>
@@ -223,13 +215,7 @@ const Table = memo(function Table() {
                                     />
                                   )
                                 }
-                                hand={
-                                  <HandDock
-                                    seat={handFrom}
-                                    growMost={handGrowMost(regions)}
-                                    openingMost={plan.shape === 'boss' ? 0 : openingGrowMost(regions)}
-                                  />
-                                }
+                                hand={<HandDock seat={handFrom} growMost={handGrowMost(regions)} />}
                                 controls={
                                   spectator ? <Watching /> : <ControlsDock stopsRow={table.stopsRow} />
                                 }

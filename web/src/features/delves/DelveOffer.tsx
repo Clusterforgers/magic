@@ -42,6 +42,7 @@ function card(content: DelveContent, id: string): CustomCardView {
       art: '',
       role: '',
       price: 0,
+      turn: 0,
     }
   )
 }
@@ -249,7 +250,7 @@ export function DelveOffer({
             if (item === 'Draught') {
               const short = gold < DRAUGHT_PRICE
               return (
-                <li key="draught" className="grid w-full content-start gap-2 sm:w-44">
+                <li key="draught" data-slot="shop-offer" className="flex w-full flex-col gap-2 sm:w-44">
                   <div className="grid aspect-[5/7] place-items-center rounded-xl border-2 border-success bg-surface shadow-e1">
                     <FlaskConicalIcon aria-hidden="true" className="size-12 text-success" />
                   </div>
@@ -258,6 +259,7 @@ export function DelveOffer({
                   <Button
                     size="sm"
                     variant="outline"
+                    className="mt-auto"
                     disabled={busy || short}
                     onClick={() => take(i)}
                     aria-label={`Healing draught: ${DRAUGHT_HEAL} life (${DRAUGHT_PRICE} gold)`}
@@ -270,8 +272,13 @@ export function DelveOffer({
             if ('Card' in item) {
               const short = gold < CARD_PRICE
               return (
-                <li key={item.Card.name}>
-                  <NamedCard name={item.Card.name} sold={item.Card.sold} find={find}>
+                <li key={item.Card.name} data-slot="shop-offer" className="flex flex-col">
+                  <NamedCard
+                    name={item.Card.name}
+                    sold={item.Card.sold}
+                    find={find}
+                    className="flex-1 grid-rows-[auto_auto_1fr] [&>button]:self-end"
+                  >
                     <Button
                       size="sm"
                       variant="outline"
@@ -294,22 +301,21 @@ export function DelveOffer({
             const relic = card(content, item.Relic.id)
             const short = gold < item.Relic.price
             return (
-              <li key={item.Relic.id}>
-                <CustomCardFrame card={relic} className={cn(item.Relic.sold && 'opacity-60')}>
-                  <Button
-                    size="sm"
-                    className="flex-1"
-                    disabled={busy || item.Relic.sold || short}
-                    onClick={() => take(i)}
-                    aria-label={item.Relic.sold ? 'Sold' : `Buy (${item.Relic.price} gold)`}
-                  >
-                    {item.Relic.sold
-                      ? 'Sold'
-                      : short
-                        ? `Needs ${item.Relic.price} gold`
-                        : `Buy · ${item.Relic.price} gold`}
-                  </Button>
-                </CustomCardFrame>
+              <li key={item.Relic.id} data-slot="shop-offer" className="flex flex-col gap-2">
+                <CustomCardFrame card={relic} className={cn('flex-1', item.Relic.sold && 'opacity-60')} />
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={busy || item.Relic.sold || short}
+                  onClick={() => take(i)}
+                  aria-label={item.Relic.sold ? 'Sold' : `Buy (${item.Relic.price} gold)`}
+                >
+                  {item.Relic.sold
+                    ? 'Sold'
+                    : short
+                      ? `Needs ${item.Relic.price} gold`
+                      : `Buy · ${item.Relic.price} gold`}
+                </Button>
               </li>
             )
           })}

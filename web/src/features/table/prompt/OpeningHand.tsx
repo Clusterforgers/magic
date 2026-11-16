@@ -32,7 +32,7 @@ function OpeningCard({ id }: { id: ObjectId }) {
 
 /**
  * The cards of the hand being judged, whole and side by side up to 7 rem wide, so the keep is decided on the
- * cards, not on their names in the dock: seven fill the row, never below 3 rem, wrapping only then. Decoration for the eye: the hand dock holds the same cards for a screen
+ * cards, not on their names in the dock: seven fill the row, never below 3 rem, and a row wider than the band scrolls (a phone) rather than wrap under the answers. Decoration for the eye: the hand dock holds the same cards for a screen
  * reader and the keyboard, so the row is `aria-hidden` apart from its preview on hover.
  */
 export function OpeningHand({ card }: { card?: number } = {}) {
@@ -58,7 +58,7 @@ export function OpeningHand({ card }: { card?: number } = {}) {
     <ul
       aria-hidden="true"
       data-slot="opening-hand"
-      className="flex basis-full flex-wrap justify-center gap-2 [container-type:inline-size] [--card-h:calc(var(--card-w)*7/5)] [--card-w:max(3rem,min(7rem,11dvh,calc((100cqw_-_3rem)/7)))]"
+      className="flex basis-full justify-center-safe gap-2 overflow-x-auto [container-type:inline-size] [--card-h:calc(var(--card-w)*7/5)] [--card-w:max(3rem,min(7rem,11dvh,calc((100cqw_-_3rem)/7)))]"
     >
       {ids.map((id) => (
         <OpeningCard key={id} id={id} />

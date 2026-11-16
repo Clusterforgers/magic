@@ -3,7 +3,7 @@ import type { LogEntry } from '@/play/store'
 import type { Event, PlayerId, PlayerView } from '@/protocol/generated'
 import { commanderDamageLine } from './commander'
 import { commanderHits } from './commanderLog'
-import { abilityGranters, abilitySources, eventContexts } from './eventContext'
+import { abilityGranters, abilitySources, eventContexts, tokenCopies } from './eventContext'
 import { describeEvent, joinWords } from './eventText'
 import type { EventNames } from './eventText'
 import { byHandLine, manualRun, manualText, remember } from './manual/manualLog'
@@ -50,10 +50,12 @@ export interface FoldOptions {
  */
 export function foldLog(log: readonly LogEntry[], given: EventNames, options: FoldOptions): FoldedLine[] {
   const sources = abilitySources(log.map((entry) => entry.event))
+  const copies = tokenCopies(log.map((entry) => entry.event))
   const granters = abilityGranters(log.map((entry) => entry.event))
   const names: EventNames = {
     ...given,
     ability: (id) => given.ability?.(id) ?? sources.get(id),
+    copy: (id) => given.copy?.(id) ?? copies.has(id),
     granter: (id) => given.granter?.(id) ?? granters.get(id),
   }
   const lines: FoldedLine[] = []

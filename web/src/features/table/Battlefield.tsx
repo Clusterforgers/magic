@@ -27,6 +27,8 @@ import {
 import type { RowEntry } from './rowStacks'
 import { STACKS_BY_DEFAULT, TableOptionsContext } from './tableOptions'
 import { useEdgeFade } from './useEdgeFade'
+import { ZONE_PAD_PX } from './boardSplit'
+import { usePreviewInset } from './previewReserve'
 import { useMarkedIds } from './useMarkedIds'
 import { useStable } from './useStable'
 import { useContentBox } from './useZoneFit'
@@ -166,6 +168,7 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
   const stacks = usePlay(useStable((state) => battlefieldStacks(state, seat, grouped)))
   const zone = useRef<HTMLDivElement>(null)
   useEdgeFade(zone)
+  const inset = usePreviewInset(zone)
   const box = useContentBox(zone)
   const permanents = useMemo(() => idsOfRows(stacks.plain), [stacks])
   const marked = useMarkedIds(permanents)
@@ -272,6 +275,13 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
       <div
         ref={zone}
         data-slot="battlefield-zone"
+        data-preview-inset={inset.left + inset.right > 0 ? inset.left + inset.right : undefined}
+        // A pinned preview over the board narrows it, so the lanes refit beside the panel and no card lies under it.
+        style={
+          inset.left + inset.right > 0
+            ? { paddingLeft: ZONE_PAD_PX + inset.left, paddingRight: ZONE_PAD_PX + inset.right }
+            : undefined
+        }
         className={cn(
           'fade-scroll flex min-h-0 flex-1 flex-col gap-3 p-1',
           // An opponent's lanes end at the middle of the table, as yours start there.
@@ -287,10 +297,9 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
             <div
               key={lanes.map((lane) => lane.lane).join('-')}
               data-slot="board-band"
-              className={cn(
-                'flex shrink-0 items-start gap-3',
-                lanes.length === 1 && lanes[0]?.lane === 'creatures' ? 'justify-center' : 'justify-between',
-              )}
+              // Lanes start at the board's left edge, so the room a short row leaves stays at the right, where a
+              // side preview stands.
+              className="flex shrink-0 items-start justify-start gap-3"
             >
               {lanes.map((place) => (
                 <Lane

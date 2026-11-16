@@ -5,6 +5,7 @@
  * a thin row. The panel is sized to its cards (`overlayLayout.ts`) from the room the table measures here.
  */
 import { createContext, useCallback, useContext, useLayoutEffect, useMemo, useState } from 'react'
+import { usePlay } from '@/features/game/gameContext'
 import type { Viewport } from '../layout'
 import { FILTER_FROM } from './cardsText'
 import type { OverlayRoom } from './overlayLayout'
@@ -21,7 +22,7 @@ export interface ChoiceOverlay {
   claim: () => () => void
   /** The overlay is open. */
   open: boolean
-  /** The opening-hand decision floats in the overlay (boss mode off a phone), with the seats' keep status in it. */
+  /** The opening-hand decision floats in the overlay (every table off a phone), with the seats' keep status in it. */
   opening: boolean
 }
 
@@ -70,10 +71,17 @@ export function useOpeningOverlay(): HTMLElement | null {
   return host
 }
 
-/** Whether the opening-hand decision is open in the overlay, so the strip leaves out what the overlay carries. */
+/**
+ * Whether the opening-hand decision is open in the overlay, so the strip and the hand dock leave out what the overlay
+ * carries. Another choice in the overlay (a long list of targets) leaves the hand drawn.
+ */
 export function useOpeningInOverlay(): boolean {
   const overlay = useContext(ChoiceOverlayContext)
-  return overlay !== null && overlay.opening && overlay.open
+  const mulligan = usePlay((state) => {
+    const kind = state.pending?.decision.kind
+    return typeof kind === 'object' && kind !== null && 'Mulligan' in kind
+  })
+  return overlay !== null && overlay.opening && overlay.open && mulligan
 }
 
 /** The room the open overlay has; a table's guess outside one. */

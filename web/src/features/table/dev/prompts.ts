@@ -17,7 +17,7 @@ import type {
   Step,
   YieldUntil,
 } from '@/protocol/generated'
-import { forecastChoiceScene, forecastScene, withBlockForecast } from './combatScene'
+import { forecastChoiceScene, forecastScene, sidesAttackScene, withBlockForecast } from './combatScene'
 import { abilitiesTable, withAbilities } from './abilityScene'
 import { assignBandedDamage, assignDamage } from './damagePrompt'
 import { ANNOUNCE_PROMPTS } from './announcePrompts'
@@ -560,6 +560,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'attack-banding': attackTable(false),
   'block-clock': blockTable,
   forecast: forecastScene,
+  'attack-sides': sidesAttackScene,
   'forecast-choice': forecastChoiceScene,
   'pay-hybrid': hybridTable,
   'pay-low-life': hybridTable,

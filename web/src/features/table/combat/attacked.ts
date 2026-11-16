@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import type { ObjectId, PlayerId } from '@/protocol/generated'
-import { usePendingCombat } from './pending'
+import { chosenAttacks, usePendingCombat } from './pending'
 import { attackGroups } from './plan'
 import type { AttackGroup } from './plan'
 
@@ -22,7 +22,7 @@ export function useSeatAttacks(seat: PlayerId): SeatAttacks {
   const attackers = useMemo(() => {
     const ids: ObjectId[] = []
     for (const attacker of combat?.attackers ?? []) ids.push(attacker.object)
-    for (const [attacker] of pending.attacks) ids.push(attacker)
+    for (const [attacker] of chosenAttacks(pending)) ids.push(attacker)
     return ids
   }, [combat, pending])
   const facts = usePlay(

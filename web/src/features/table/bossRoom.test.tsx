@@ -1,4 +1,4 @@
-// Goal: in boss mode a board without permanents is one line (a Spirit's own row, an ally's tile, the boss's pods) and a hand dock with nothing to play is a slim bar, while a board that has permanents keeps its zone; the opening-hand decision floats in the middle of the table over the dimmed boards with the seats' keep status in it, and normal tables keep their strip, their dock and their rows.
+// Goal: in boss mode a board without permanents is one line (a Spirit's own row, an ally's tile, the boss's pods) and a hand dock with nothing to play is a slim bar, while a board that has permanents keeps its zone; the opening-hand decision floats in the middle of the table over the dimmed boards with the seats' keep status in it; every table off a phone floats the opening-hand decision the same way, the dock keeping its place but not a second copy of the hand, and a phone keeps it in the strip.
 import { screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { Answer } from '@/protocol/generated'
@@ -7,6 +7,7 @@ import { renderTable } from '@/test-utils/tableHarness'
 import { withBareBoards, withBoss, withSpirit } from './dev/devGame'
 import { buildFixture } from './dev/fixture'
 import { HAND_SLIM_PX } from './layout'
+import type { Viewport } from './layout'
 
 const SLIM = new RegExp(` ${HAND_SLIM_PX}px`)
 
@@ -75,13 +76,14 @@ describe('boss mode with boards that draw nothing', () => {
 
 describe('the opening hands in boss mode', () => {
   /** The table of seat 0 at its Mulligan decision, over a boss fight or a plain table of three. */
-  function mulligan(boss: boolean) {
+  function mulligan(boss: boolean, viewport?: Viewport) {
     const answer = vi.fn((_answer: Answer) => true)
     const base = buildFixture({ seats: 3 })
     const fixture = boss ? withBareBoards(withBoss(base, 0)) : base
     const hand = must(fixture.view.players[0]?.hand.cards)
     const table = renderTable({
       fixture,
+      ...(viewport === undefined ? {} : { options: { viewport } }),
       session: { answer },
       state: (state) => {
         const view = clone(must(state.view))
@@ -103,37 +105,52 @@ describe('the opening hands in boss mode', () => {
     return { ...table, answer, hand }
   }
 
-  it('floats in the overlay: the hand in one row of large cards, the buttons and every seat under it', () => {
-    const { container, hand } = mulligan(true)
-    const panel = container.querySelector(
-      '[data-slot="choice-host"] [data-slot="choice-overlay"][data-opening]',
-    )
-    expect(panel).not.toBeNull()
-    const cards = panel?.querySelectorAll('[data-slot="opening-hand"] [data-slot="opening-card"]')
-    expect(cards).toHaveLength(hand.length)
-    const row = panel?.querySelector<HTMLElement>('[data-slot="opening-hand"]')
-    const width = Number.parseInt(row?.style.getPropertyValue('--card-w') ?? '0', 10)
-    expect(width).toBeGreaterThanOrEqual(140)
-    expect(width).toBeLessThanOrEqual(180)
-    expect(panel?.querySelector('[data-slot="prompt-text"]')?.textContent).toContain('Keep this hand')
-    expect(panel?.querySelectorAll('[data-slot="opening-status"] [data-seat-status]')).toHaveLength(3)
-    expect(container.querySelector('[data-slot="choice-host"]')?.hasAttribute('hidden')).toBe(false)
-    // The strip carries neither the hand nor the status twice.
-    expect(container.querySelectorAll('[data-slot="opening-hand"]')).toHaveLength(1)
-    expect(container.querySelectorAll('[data-slot="opening-status"]')).toHaveLength(1)
+  it.each([
+    ['a boss fight', true],
+    ['a plain table of three', false],
+  ])(
+    'floats in the overlay at %s: the hand in one row of large cards, the buttons and every seat under it',
+    (_name, boss) => {
+      const { container, hand } = mulligan(boss)
+      const panel = container.querySelector(
+        '[data-slot="choice-host"] [data-slot="choice-overlay"][data-opening]',
+      )
+      expect(panel).not.toBeNull()
+      const cards = panel?.querySelectorAll('[data-slot="opening-hand"] [data-slot="opening-card"]')
+      expect(cards).toHaveLength(hand.length)
+      const row = panel?.querySelector<HTMLElement>('[data-slot="opening-hand"]')
+      const width = Number.parseInt(row?.style.getPropertyValue('--card-w') ?? '0', 10)
+      expect(width).toBeGreaterThanOrEqual(140)
+      expect(width).toBeLessThanOrEqual(180)
+      expect(panel?.querySelector('[data-slot="prompt-text"]')?.textContent).toContain('Keep this hand')
+      expect(panel?.querySelectorAll('[data-slot="opening-status"] [data-seat-status]')).toHaveLength(3)
+      expect(container.querySelector('[data-slot="choice-host"]')?.hasAttribute('hidden')).toBe(false)
+      // The strip carries neither the hand nor the status twice.
+      expect(container.querySelectorAll('[data-slot="opening-hand"]')).toHaveLength(1)
+      expect(container.querySelectorAll('[data-slot="opening-status"]')).toHaveLength(1)
+    },
+  )
+
+  it.each([true, false])('keeps the dock in place without a second copy of the hand (boss %s)', (boss) => {
+    const { container } = mulligan(boss)
+    const dock = must(container.querySelector('[data-region="hand"] [data-floating]'))
+    expect(dock).toHaveClass('invisible')
+    expect(dock).toHaveAttribute('aria-hidden', 'true')
   })
 
   it('answers Keep from the overlay', async () => {
-    const { answer, user } = mulligan(true)
+    const { answer, user } = mulligan(false)
     await user.click(screen.getByRole('button', { name: 'Keep' }))
     expect(answer).toHaveBeenCalledWith({ Mulligan: 'Keep' })
   })
 
-  it('leaves the other tables as they were: the hand and the status in the strip', () => {
-    const { container } = mulligan(false)
-    expect(container.querySelector('[data-opening]')).toBeNull()
-    expect(container.querySelector('[data-slot="shared-sheet"] [data-slot="opening-hand"]')).not.toBeNull()
-    expect(container.querySelector('[data-slot="shared-sheet"] [data-slot="opening-status"]')).not.toBeNull()
-    expect(container.querySelector('[data-slot="opening-hand"][data-large]')).toBeNull()
-  })
+  it.each([true, false])(
+    'keeps it in the strip on a phone, the hand in one row, the dock as it is (boss %s)',
+    (boss) => {
+      const { container } = mulligan(boss, { width: 390, height: 844 })
+      expect(container.querySelector('[data-opening]')).toBeNull()
+      expect(container.querySelector('[data-slot="shared-sheet"] [data-slot="opening-hand"]')).not.toBeNull()
+      expect(container.querySelector('[data-region="hand"] [data-floating]')).toBeNull()
+    },
+  )
 })

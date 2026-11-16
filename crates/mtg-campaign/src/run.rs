@@ -177,6 +177,18 @@ impl Hero {
     }
 }
 
+/// A fight whose game ended, for its log: the recorded game, the room and whether the party won.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct FoughtFight {
+    /// The game's id, whose replay holds the fight's log.
+    pub game: String,
+    /// The boss's room.
+    pub room: u8,
+    /// Whether the party won.
+    pub won: bool,
+}
+
 /// Where the run is.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -309,6 +321,9 @@ pub struct Run {
     pub status: Status,
     /// What happened, in words, newest last.
     pub log: Vec<String>,
+    /// The fights whose game ended with a result or lost its table, oldest first.
+    #[serde(default)]
+    pub fights: Vec<FoughtFight>,
     /// What the heroes' answers in the camp last visited did, in order; cleared when the next camp opens or a fight is won.
     pub results: Vec<Resolved>,
 }
@@ -334,6 +349,7 @@ impl Run {
             hearts: HEARTS,
             status: Status::Lobby,
             log: Vec::new(),
+            fights: Vec::new(),
             results: Vec::new(),
         })
     }
@@ -506,9 +522,10 @@ impl Run {
                 lives,
                 spirits,
             } => {
-                if !matches!(self.status, Status::Fight { game: Some(_) }) {
+                let Status::Fight { game: Some(game) } = &self.status else {
                     return Err(refused("no fight is running"));
-                }
+                };
+                self.record_fight(game.clone(), *won);
                 self.fight_ended(content, *won, lives, spirits)?;
             }
             RunEvent::FightVoided => {
@@ -526,6 +543,9 @@ impl Run {
                 );
                 if !live {
                     return Err(refused("there is no fight to leave"));
+                }
+                if let Status::Fight { game: Some(game) } = &self.status {
+                    self.record_fight(game.clone(), false);
                 }
                 let how = match cause {
                     Forfeit::Closed => "lost its table",
@@ -725,6 +745,13 @@ impl Run {
         let salt = u64::try_from(h.offers.len() + h.relics.len()).unwrap_or(0);
         let mut rng = Stream::new(self.seed, label, u64::from(node) * 16 + salt, hero as u64);
         rng.pick(&fits, count)
+    }
+
+    /// Keeps the fight of `game` in the room the party is in for the run's fight log.
+    fn record_fight(&mut self, game: String, won: bool) {
+        if let Some(room) = self.at {
+            self.fights.push(FoughtFight { game, room, won });
+        }
     }
 
     /// A lost fight costs a heart: with none left the run is lost, else every hero regroups at half life and the
@@ -970,6 +997,16 @@ impl Run {
         Ok(())
     }
 
+    /// The place of the boss room `node` on the ladder: 0 for the first boss.
+    pub fn boss_rank(&self, node: u8) -> usize {
+        let row = self.map.node(node).map_or(0, |n| n.row);
+        self.map
+            .nodes
+            .iter()
+            .filter(|n| n.boss.is_some() && n.row < row)
+            .count()
+    }
+
     /// The plan of the fight the party is in, if it is in one.
     pub fn fight_plan(&self, content: &Content) -> Result<Option<FightPlan>, CampaignError> {
         if !matches!(self.status, Status::Fight { .. }) {
@@ -1003,6 +1040,13 @@ impl Run {
         let life = scale.life(boss);
         let schemes = Stream::new(self.seed, "schemes", u64::from(node), 0)
             .pick(&theme.schemes, theme.schemes.len());
+        let mut rules = scale.rules(boss);
+        rules.extend(
+            Stream::new(self.seed, "modifier", u64::from(node), 0).pick(&theme.modifiers, 1),
+        );
+        if self.boss_rank(node) >= 1 && !boss.relic.is_empty() {
+            rules.push(boss.relic.clone());
+        }
         let minions = scale
             .minions(theme, boss)
             .into_iter()
@@ -1031,9 +1075,10 @@ impl Run {
                 hand: scale.hand(boss),
                 brain: scale.brain(boss.brain),
                 deck: boss.deck.clone(),
-                rules: scale.rules(boss),
+                rules,
                 phases: scale.phases(boss, life),
                 schemes,
+                scheme_every: theme.scheme_every,
             },
             minions,
             run: None,

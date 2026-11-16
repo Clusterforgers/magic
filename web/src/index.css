@@ -6,6 +6,7 @@
 @import './features/table/fx/fx.css';
 @import './features/table/moment/moment.css';
 @import './features/table/prompt/responseClock.css';
+@import './features/table/prompt/promptBand.css';
 @import './features/table/turn/turn.css';
 @import './features/table/turn/phase.css';
 @import './features/table/focusBoard.css';
