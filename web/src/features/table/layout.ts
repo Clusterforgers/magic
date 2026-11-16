@@ -243,6 +243,12 @@ export const SHEET_KEEP_PX = 120
  */
 export const BAND_MIN_PX = 96
 export const BAND_MIN_PHONE_PX = 136
+/**
+ * The prompt band's height, the strip with the room kept above it (`Regions.sheetRoom`): fixed per window whatever the
+ * prompt, so no board moves for a prompt and the sheet lies over no card. A phone's is taller, its cells a line each.
+ */
+export const BAND_CLAMP: HeightClamp = { min: 128, vh: 19, max: 200 }
+export const BAND_PHONE_CLAMP: HeightClamp = { min: BAND_MIN_PHONE_PX, vh: 20, max: 200 }
 /** The side column takes this share of the window width between its bounds; M gets a rail of `RAIL_PX`. */
 export const SIDE_SHARE = 0.18
 export const SIDE_MIN_PX = 272
@@ -279,15 +285,22 @@ export interface Regions {
   opponents: number
   own: number
   /**
-   * The most a prompt sheet grows to: 40 % of the height, up over the opponents' board (on a phone leaving
-   * `SHEET_KEEP_PX` of it, elsewhere their pods and `BOARD_KEEP_PX` of their boards once split) and no further than the top bar. Never down over your board (the cards a prompt asks you to click are yours), the hand dock or the controls.
+   * The most a prompt sheet grows to: the band (`BAND_CLAMP`), into the room the opponents' area keeps free above the
+   * strip (`sheetRoom`), so it covers no card; less where the split leaves the opponents too little. Never down over
+   * your board (the cards a prompt asks you to click are yours), the hand dock or the controls.
    */
   sheet: number
   /**
-   * The most a sheet that lays out cards grows to (`CARD_PROMPTS`): as `sheet`, but over the opponents' boards too,
-   * whose cards it does not ask for or draws again itself; never over your board, the hand dock or the controls.
+   * The most a sheet that lays out cards grows to (`CARD_PROMPTS`): up to 40 % of the height over the opponents'
+   * boards, whose cards it draws again itself, leaving their pods and `BOARD_KEEP_PX` of their boards once split (on a
+   * phone `SHEET_KEEP_PX`); at least `sheet`. An overlay: no board moves for it.
    */
   sheetWide: number
+  /**
+   * The room the opponents' area keeps free above the strip for the prompt sheet, in px: the band (`BAND_CLAMP`) less
+   * the strip, for every prompt kind and between prompts alike; 0 for a spectator (`withoutBand`).
+   */
+  sheetRoom: number
   /** In boss mode, how the party's room is split (`splitBoss`); left out elsewhere. */
   party?: PartyRows
   /** The hand dock is the slim bar (`HAND_SLIM_PX`): the seat has nothing to play from it. */
@@ -327,6 +340,11 @@ export function sheetMost(
   )
 }
 
+/** `regions` without the band's room: a spectator answers no prompt, so the boards keep that room. */
+export function withoutBand(regions: Regions): Regions {
+  return { ...regions, sheetRoom: 0 }
+}
+
 /** The px a `HeightClamp` gives in a window of this height. */
 export function clampedHeight(range: HeightClamp, height: number): number {
   return clampTo((height * range.vh) / 100, range.min, range.max)
@@ -350,6 +368,8 @@ export function regionSizes(viewport: Viewport, folded = false, handSlim = false
   const rest = Math.max(0, height - topBar - shared - hand)
   const opponents = rest / (1 + OWN_SHARE)
   const own = rest - opponents
+  const band = clampedHeight(phone ? BAND_PHONE_CLAMP : BAND_CLAMP, height)
+  const sheet = Math.min(band, sheetMost(height, shared, opponents, phone))
   return {
     breakpoint,
     phone,
@@ -363,8 +383,9 @@ export function regionSizes(viewport: Viewport, folded = false, handSlim = false
     hand,
     opponents,
     own,
-    sheet: sheetMost(height, shared, opponents, phone),
-    sheetWide: sheetMost(height, shared, opponents, phone),
+    sheet,
+    sheetWide: Math.max(sheet, sheetMost(height, shared, opponents, phone)),
+    sheetRoom: Math.max(0, band - shared),
     ...(slim ? { handSlim: true } : {}),
   }
 }

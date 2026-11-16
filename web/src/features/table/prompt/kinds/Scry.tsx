@@ -91,7 +91,12 @@ function PileCard({
         <PromptPicture
           object={object}
           size={size}
-          className={size === 'compact' ? '[--card-w:4.5rem] [--card-h:6.25rem]' : undefined}
+          // A compact card is as high as the sheet leaves its pile (`scry-piles`), so a pile's row stands whole.
+          className={
+            size === 'compact'
+              ? '[--card-h:clamp(3.5rem,calc(var(--sheet-max,20rem)_-_11rem),6.25rem)] [--card-w:calc(var(--card-h)*0.72)]'
+              : undefined
+          }
         />
       </span>
       <span className="flex shrink-0 gap-1">
@@ -278,7 +283,8 @@ export const ScryPrompt: PromptComponent<'Scry'> = ({ options }) => {
             ref={root}
             data-slot="scry-piles"
             onKeyDown={onKeyDown}
-            className="flex basis-full flex-wrap gap-2 overflow-y-auto max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_12rem))]"
+            // Its cards stand whole under their number, over their buttons and below the pile's heading in the piles' height.
+            className="flex basis-full flex-wrap gap-2 overflow-y-auto max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_6.5rem))] [--choice-room:max(6rem,calc(var(--sheet-max,20rem)_-_10.5rem))]"
           >
             {pile('top')}
             {pile('bottom')}

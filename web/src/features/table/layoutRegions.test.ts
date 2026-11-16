@@ -25,6 +25,7 @@ import {
   regionSizes,
   SHARED_CLAMP,
   STOPS_ROW_MIN_WIDTH_PX,
+  withoutBand,
 } from './layout'
 import type { Breakpoint, TableMode, Viewport } from './layout'
 
@@ -126,15 +127,26 @@ describe('regionSizes', () => {
   })
 
   it.each([
-    ['1920x1080', 432],
-    ['1280x720', 288],
-    // A phone's sheet leaves the tile strip and a row of the opponents' board (`SHEET_KEEP_PX`).
-    ['390x844', 59.08 + (844 - 44 - 59.08 - 135.04) / 2.15 - 120],
-    // A window so low that the strip and the opponents are less than 40 %: the sheet takes them and no more.
-    ['844x390', 56 + (390 - 32 - 56 - 104) / 2.15],
-  ])('lets the sheet of a %s window grow %f px up over the opponents', (name, most) => {
-    const viewport = must(SIZES.find(([label]) => label === name)?.[1])
-    expect(regionSizes(viewport).sheet).toBeCloseTo(most, 6)
+    // The band: 19 % of the height between 128 and 200 px; a phone's 20 % from 136.
+    ['1920x1080', 200],
+    ['1280x720', 136.8],
+    ['390x844', 168.8],
+    ['844x390', 128],
+  ])(
+    'holds the sheet of a %s window to the band of %f px, whose room above the strip the boards keep free',
+    (name, band) => {
+      const viewport = must(SIZES.find(([label]) => label === name)?.[1])
+      const regions = regionSizes(viewport)
+      expect(regions.sheet).toBeCloseTo(band, 6)
+      expect(regions.sheetWide).toBeGreaterThanOrEqual(regions.sheet)
+      expect(regions.sheetRoom).toBeCloseTo(band - regions.shared, 6)
+    },
+  )
+
+  it('keeps one band per window: a spectator, who answers no prompt, keeps none', () => {
+    const regions = regionSizes({ width: 1881, height: 1047 })
+    expect(withoutBand(regions).sheetRoom).toBe(0)
+    expect(regions.sheetRoom).toBeGreaterThan(0)
   })
 
   it('draws a column of 272 to 304 px from L, a rail of 44 px at M and a sheet below', () => {

@@ -110,13 +110,13 @@ describe('splitBoards', () => {
   })
 })
 
+// The band's room above the strip is kept in every case (`Regions.sheetRoom`); a smaller reserve changes nothing.
 const VIEWPORTS = [
-  [1920, 1080, 185, 155, 0],
-  [1920, 1080, 185, 155, 40],
-  [1440, 900, 145, 115, 0],
-  // The two lines of the priority prompt at 1440 stand 50 px above the strip.
-  [1440, 900, 145, 115, 56],
-  [1366, 768, 110, 88, 0],
+  [1920, 1080, 160, 130, 0],
+  [1920, 1080, 160, 130, 40],
+  [1440, 900, 120, 110, 0],
+  [1440, 900, 120, 110, 56],
+  [1366, 768, 100, 88, 0],
   [1280, 720, 100, 80, 0],
   [1024, 768, 96, 76, 0],
 ] as const
@@ -128,7 +128,9 @@ function cardsAt(width: number, height: number, seats: number, board: 'duel' | '
   const frames = boardFrames(table.regions, table.seats)
   const stacksOf = (seat: number) => battlefieldStacks(state, seat)
   const regions = splitRegions(table.regions, table.seats, boardCounts(state, table.seats), reserve)
-  const theirFrame = { ...frames.theirs, chrome: frames.theirs.chrome + reserve }
+  // The band's room is kept above the strip whatever the prompt (`Regions.sheetRoom`).
+  const kept = Math.max(reserve, table.regions.sheetRoom)
+  const theirFrame = { ...frames.theirs, chrome: frames.theirs.chrome + kept }
   const fit = (
     seat: number,
     row: number,
@@ -173,7 +175,9 @@ describe('the prompt sheet of a split table', () => {
       })
       expect(regions.phone).toBe(phone)
       const room = phone ? 250 - SHEET_KEEP_PX : 250
-      expect(regions.sheet).toBeCloseTo(Math.min(height * 0.4, regions.shared + room), 6)
+      // No higher than the band, whose room the split keeps free of cards.
+      const band = regions.shared + regions.sheetRoom
+      expect(regions.sheet).toBeCloseTo(Math.min(band, height * 0.4, regions.shared + room), 6)
     },
   )
 
@@ -190,7 +194,11 @@ describe('the prompt sheet of a split table', () => {
         chrome + BOARD_KEEP_PX,
       )
       expect(regions.sheet).toBeCloseTo(
-        Math.min(height * 0.4, regions.shared + 320 - chrome - BOARD_KEEP_PX),
+        Math.min(
+          regions.shared + regions.sheetRoom,
+          height * 0.4,
+          regions.shared + 320 - chrome - BOARD_KEEP_PX,
+        ),
         6,
       )
     },

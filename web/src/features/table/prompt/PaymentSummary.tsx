@@ -26,7 +26,7 @@ export function Row({
 }) {
   return (
     <div role="group" aria-label={label} className="flex flex-wrap items-center gap-x-3 gap-y-1">
-      <span aria-hidden="true" className="w-24 shrink-0 text-xs text-muted-foreground">
+      <span aria-hidden="true" className="shrink-0 text-xs text-muted-foreground">
         {label}
       </span>
       <div
@@ -214,11 +214,32 @@ export function PaymentSummary({
     <div
       ref={root}
       data-slot="payment"
-      // The rows stand side by side where the band is wide enough, so a payment stays a line or two high.
-      className="grid w-full grid-cols-[repeat(auto-fit,minmax(min(100%,26rem),1fr))] gap-x-6 gap-y-1.5 text-sm"
+      // The rows flow side by side at their own widths, so a payment keeps to the band's few lines; the sources, the
+      // longest, take a line of their own and wrap in it.
+      className="flex w-full flex-wrap items-center gap-x-6 gap-y-1.5 text-sm [&>*]:max-w-full [&>:has(>[data-line])]:basis-full"
     >
       <Row label="Cost">
         <ManaPips pips={costPips(cost)} sizeClass={PIP_SIZE} label="Mana cost" />
+        {/* What is made and owed stand on the cost's line, so a payment keeps to the band's height. */}
+        <div data-slot="pay-made-owed" className="ms-3 flex flex-wrap items-center gap-x-4 gap-y-1">
+          {/* Before anything is chosen what is owed is the cost: "Made so far" waits for a first source. */}
+          {empty ? null : (
+            <Half label="Made so far">
+              <ManaPips
+                pips={costPips([...madeCost(spends.flatMap(madeOf)), ...genericMade(spends)])}
+                sizeClass={PIP_SIZE}
+                label="Mana made"
+              />
+            </Half>
+          )}
+          <Half label="Still owed">
+            {covered ? (
+              <Quiet>nothing, covered</Quiet>
+            ) : (
+              <ManaPips pips={costPips(owed)} sizeClass={PIP_SIZE} label="Mana still owed" />
+            )}
+          </Half>
+        </div>
       </Row>
       <Row label="Floating mana">
         {held.length === 0 ? (
@@ -315,85 +336,67 @@ export function PaymentSummary({
       ))}
       {life === undefined ? null : <LifeRow life={life} cost={cost} />}
       {sources}
-      <Row label="Paying with">
-        {empty ? <Quiet>nothing yet</Quiet> : null}
-        {spends.map((spend, index) => {
-          const base = chipKey(spend)
-          const nth = seen.get(base) ?? 0
-          seen.set(base, nth + 1)
-          return (
-            <Button
-              key={`${base}-${nth}`}
-              type="button"
-              variant="outline"
-              size="sm"
-              data-slot="pay-chip"
-              aria-label={`Remove ${spendWords(spend, nameOf)}`}
-              className="h-9 gap-1.5 px-2"
-              onClick={() => take(index)}
-            >
-              <span aria-hidden="true" className="text-muted-foreground tabular-nums">
-                {index + 1}.
-              </span>
-              {madeOf(spend).map((mana, at) => (
-                <ManaDot key={`${mana}-${at}`} type={mana} />
-              ))}
-              {genericOf(spend) > 0 ? <span aria-hidden="true">{genericOf(spend)}</span> : null}
-              <span aria-hidden="true">{chipName(spend, nameOf)}</span>
-              <span aria-hidden="true" className="text-muted-foreground">
-                ×
-              </span>
-            </Button>
-          )
-        })}
-        {empty ? null : (
-          <>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="h-9 px-2"
-              aria-label="Undo the last choice"
-              onClick={() => take(spends.length - 1)}
-            >
-              Undo
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="h-9 px-2"
-              aria-label="Clear the payment"
-              onClick={() => {
-                refocus.current = 0
-                onClear()
-              }}
-            >
-              Clear
-            </Button>
-          </>
-        )}
-      </Row>
-      <div data-slot="pay-made-owed" className="flex flex-wrap items-center gap-x-4 gap-y-1">
-        <Half label="Made so far">
-          {empty ? (
-            <Quiet>nothing yet</Quiet>
-          ) : (
-            <ManaPips
-              pips={costPips([...madeCost(spends.flatMap(madeOf)), ...genericMade(spends)])}
-              sizeClass={PIP_SIZE}
-              label="Mana made"
-            />
+      {/* Shown once something is chosen: before that "Made so far" says there is nothing yet, a line less in the band. */}
+      {empty ? null : (
+        <Row label="Paying with">
+          {spends.map((spend, index) => {
+            const base = chipKey(spend)
+            const nth = seen.get(base) ?? 0
+            seen.set(base, nth + 1)
+            return (
+              <Button
+                key={`${base}-${nth}`}
+                type="button"
+                variant="outline"
+                size="sm"
+                data-slot="pay-chip"
+                aria-label={`Remove ${spendWords(spend, nameOf)}`}
+                className="h-9 gap-1.5 px-2"
+                onClick={() => take(index)}
+              >
+                <span aria-hidden="true" className="text-muted-foreground tabular-nums">
+                  {index + 1}.
+                </span>
+                {madeOf(spend).map((mana, at) => (
+                  <ManaDot key={`${mana}-${at}`} type={mana} />
+                ))}
+                {genericOf(spend) > 0 ? <span aria-hidden="true">{genericOf(spend)}</span> : null}
+                <span aria-hidden="true">{chipName(spend, nameOf)}</span>
+                <span aria-hidden="true" className="text-muted-foreground">
+                  ×
+                </span>
+              </Button>
+            )
+          })}
+          {empty ? null : (
+            <>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-9 px-2"
+                aria-label="Undo the last choice"
+                onClick={() => take(spends.length - 1)}
+              >
+                Undo
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-9 px-2"
+                aria-label="Clear the payment"
+                onClick={() => {
+                  refocus.current = 0
+                  onClear()
+                }}
+              >
+                Clear
+              </Button>
+            </>
           )}
-        </Half>
-        <Half label="Still owed">
-          {covered ? (
-            <Quiet>nothing, covered</Quiet>
-          ) : (
-            <ManaPips pips={costPips(owed)} sizeClass={PIP_SIZE} label="Mana still owed" />
-          )}
-        </Half>
-      </div>
+        </Row>
+      )}
     </div>
   )
 }

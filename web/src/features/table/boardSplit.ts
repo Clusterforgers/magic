@@ -119,6 +119,9 @@ export function splitRegions(
   overhang = reserve,
   held: HeldRows | null = null,
 ): Regions {
+  // The band's room above the strip is kept in every split, prompt or none, so no prompt moves a board.
+  reserve = Math.max(finite(reserve), finite(regions.sheetRoom))
+  overhang = Math.max(finite(overhang), finite(regions.sheetRoom))
   // Boss mode splits three rows by what each shows (`splitBoss`); a phone's tiles and a board-less call use the two rows.
   if (seats.shape === 'boss' && !regions.phone && seats.tiles.length === 0 && counts.allies !== undefined) {
     const { split, shares, chrome } = bossSplitOf(
@@ -144,7 +147,7 @@ export function splitRegions(
       ownCard: split.heroCard,
       theirCard: split.bossCard,
     }
-    return { ...withSplit(regions, rows, chrome + BOARD_KEEP_PX), party }
+    return { ...withSplit(regions, rows, chrome - reserve + BOARD_KEEP_PX), party }
   }
   const frames = boardFrames(regions, seats)
   const theirChrome = theirChromeOf(frames.theirs.chrome, head)
@@ -367,24 +370,15 @@ function bossFrames(
 }
 
 /**
- * `regions` with the rows of a split, and the sheet's most kept inside the opponents' row and the strip, leaving `keep`
- * px of that row (on a phone at least `SHEET_KEEP_PX`, and for a sheet of cards too; `sheetMost`).
+ * `regions` with the rows of a split and the sheet's most: the band, whose room the split keeps free of cards, and for a
+ * prompt that lays out cards up over the opponents' boards to leave `keep` px of their row (their pods and a row of
+ * cards; on a phone at least `SHEET_KEEP_PX`; `sheetMost`).
  */
 export function withSplit(regions: Regions, split: BoardSplit, keep = 0): Regions {
-  return {
-    ...regions,
-    opponents: split.opponents,
-    own: split.own,
-    sheet: sheetMost(regions.main.height, regions.shared, split.opponents, regions.phone, keep),
-    // A sheet of cards may cover the opponents' boards, but on a phone not the pods and tiles over them.
-    sheetWide: sheetMost(
-      regions.main.height,
-      regions.shared,
-      split.opponents,
-      regions.phone,
-      regions.phone ? keep : 0,
-    ),
-  }
+  const most = sheetMost(regions.main.height, regions.shared, split.opponents, regions.phone, keep)
+  const band = finite(regions.sheetRoom) > 0 ? regions.shared + regions.sheetRoom : Number.POSITIVE_INFINITY
+  const sheet = Math.min(band, most)
+  return { ...regions, opponents: split.opponents, own: split.own, sheet, sheetWide: Math.max(sheet, most) }
 }
 
 /** Without a fit a held split keeps its rows while the fresh one lies within this share of the room of them. */

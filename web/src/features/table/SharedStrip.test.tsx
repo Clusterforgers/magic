@@ -32,9 +32,11 @@ describe('the strip and its sheet', () => {
     expect(most).toBeLessThanOrEqual(Math.floor(viewport.height * 0.4))
   })
 
-  it('scrolls inside itself, with the edge fade, when the prompt is taller than the sheet may be', () => {
+  it('scrolls inside itself, opaque to its edge, when the prompt is taller than the sheet may be', () => {
     renderTable({ seats: 2 })
-    expect(sheet()).toHaveClass('fade-scroll')
+    expect(sheet()).toHaveClass('overflow-y-auto', 'plaque')
+    // An edge fade would let the board's art show through the prompt's last line.
+    expect(sheet()).not.toHaveClass('fade-scroll')
   })
 
   it('is stacked above the lines of combat and below the hand dock and the controls', () => {
