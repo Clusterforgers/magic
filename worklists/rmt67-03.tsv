@@ -1,0 +1,16 @@
+Avatar Aang // Aang, Master of Elements	bending actions (airbend, earthbend, firebend, waterbend) as events, a "whenever you bend" trigger and a per-turn record of which bends were done	—
+Jace, Multiverse Architect	Modification::CantAttack restricted to planeswalkers with a subtype controlled by a player (Attacked has no subtype filter: 'creatures can't attack Jaces you control')	beginning-of-combat trigger on each opponent's turn with that opponent paying {2} (Pay with who = active player)
+Leonin Arbiter	"any player may pay {2} to ignore this effect until end of turn": a special action (CR 116) per player that suspends a static rule for that player this turn	none
+Desertion	Replacement of a countered spell's destination: artifact or creature spell goes onto the battlefield under your control (countered-this-way destination for a spell on the stack)	none
+The Capitoline Triad	CostItem::ExileFromGraveyard any number with Pred::TotalAtLeast (total mana value 30 or greater)	none
+Brass Infiniscope	Delayed trigger 'when you next cast a spell with {X} in its mana cost this turn' reading half of that spell's X rounded down	none
+Ratchet, Field Medic // Ratchet, Rescue Racer	Convert (CR 701.53) as an effect inside a reflexive trigger	Living metal; life gained this turn amount
+Chance for Glory	Extra turn after this one with a lose-the-game rider at the end step of that turn (delayed trigger bound to the extra turn)	Creatures you control gain indestructible
+Sanctum Lurker	static that exempts planeswalkers from CR 704.5i (0 loyalty state-based action)	station already exists
+God-Eternal Kefnet	Reveal the first card drawn each turn as it is drawn, copy it and cast the copy for {2} less when it is an instant or sorcery	Dies or exile trigger puts it third from the top
+Taii Wakeen, Perfect Shot	Noncombat damage replacement this turn adding X from the activation, and a damage trigger keyed to noncombat damage equal to toughness	none
+Niko, Light of Hope	Duration "until the next end step" (any player's) for Effect::BecomeCopy: a C10XpCopyEnds variant ended as the next end step begins, carried by BecameCopy/CopyEnded	Shard token as a TokenSpec with "{2}, Sacrifice this token: Scry 1, then draw a card."; BecomeCopy of an exiled card (copiable_values reads it already)
+Optimus Prime, Hero // Optimus Prime, Autobot Leader	Convert as an effect inside triggers and a dies-return converted, bolster with chosen creature reference and a delayed combat damage trigger	Living metal
+Thrasta, Tempest's Roar	CR 702.19c trample over planeswalkers: DamageOptions needs a second excess recipient (the attacked planeswalker's controller after its loyalty) in damage::division, assignment_answer and the web damage-assignment prompt	CastOnly-free cost reduction per other spell cast this turn reader
+Garth One-Eye	Choose a name not chosen from a fixed list and create a copy of the card with that name outside the game then cast it (a card created from a named list)	Names remembered per activation
+Volo, Itinerant Scholar	noted creature types on a permanent (a Journal token) and an Amount counting them	—

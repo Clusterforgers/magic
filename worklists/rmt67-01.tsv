@@ -1,0 +1,16 @@
+Crabomination	Keyword::Emerge variant sacrificing an artifact ('emerge from artifact', CR 702.119 with an artifact filter)	Cast a spell from among cards exiled this way
+Peter Parker // Amazing Spider-Man	Keyword::WebSlinging (CR 702.188) granted to legendary multicolored spells	none
+Illithid Harvester // Plant Tadpoles	Ceremorphosis: turn any number of target tapped nontoken creatures face down as 2/2 Horror creatures (face-down with a given type and P/T)	Plant Tadpoles spell side already reads
+Henzie "Toolbox" Torre	CostModifier over ActivationKind::Blitz and a cast-time grant of Keyword::Blitz with cost = mana cost to creature spells of mana value 4+	none
+Eventide's Shadow	Remove any number of counters from among all permanents with the total bound to later draws and life loss	none
+Secret of Bloodbending	Control another player during their next combat phase or turn (CR 722, player-control effect)	Waterbend {X} additional cost now exists
+Blaster Hulk	CostModifier.per Amount::Tally(EnergyPaidOrLost) on the spell itself while it is cast (the cost step reading a turn tally for its own spell)	none
+Scarlet Spider, Ben Reilly	Keyword::WebSlinging and a 'cast using web-slinging' fact with the returned creature's mana value	none
+Captain America, First Avenger	Sectioned ability words (Throw / Catch) and Amount mana value of an unattached Equipment chosen as cost for divided damage	Equip attach at beginning of combat
+Ob Nixilis, the Adversary	Keyword::Casualty X with copy exceptions: not legendary and starting loyalty X (CR 702.153, 707.9b)	none
+Unstable Glyphbridge // Sandswirl Wanderglyph	Condition per player "attacked you or a planeswalker you control this turn" read in a static Cant Cast over PlayersWhere (Ref::AttackedThisTurn inverted: the attackers of the source's controller)	"for each player, choose a creature with power 2 or less that player controls, then destroy all except those" (Choose per player bound together); "whenever an opponent casts a spell during their turn, they can't attack you" (Rule with TheirNextTurn bounded to this turn)
+Market Gnome	TriggerPattern 'exiled from the battlefield while you're activating a craft ability' (ZoneChange caused by a craft cost, CR 702.167)	none
+Yidris, Maelstrom Wielder	Cast-time grant of Keyword::Cascade to spells cast from hand this turn (CR 702.85)	Commander cast triggers
+Huatli, Poet of Unity // Roar of the Fifth People	Nested grants: `Grant` has no address for an ability granted by a granted static ('a static ability that is granted cannot grant abilities in turn', validate.rs), needed by chapter II 'This Saga gains "Creatures you control have '{T}: Add {R}, {G}, or {W}.'"'	none: the writer already words the nested ability and the rest of the card reads
+Stalking Leonin	EntersChoice/Effect "secretly choose an opponent" remembered by the permanent from a triggered ability (Chosen::SecretPlayer hidden in Event::Entered projection)	Cost::RevealChosenPlayer ("Reveal the player you chose:") with Event revealing the choice; condition "if it's controlled by the chosen player" on a target attacking you
+Bronzehide Lion	return-as-Aura: Destination::Battlefield with entering modifications (Aura with enchant creature you control and a granted ability, losing others) and the attach choice as it enters (CR 303.4f)	—
