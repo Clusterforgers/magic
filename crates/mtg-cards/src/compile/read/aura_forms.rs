@@ -3,7 +3,8 @@
 //! "... is an Insect artifact creature with base power and toughness 0/1 and has indestructible, and it loses all other
 //! abilities, card types, and creature types.", "... is a black Dragon with base power and toughness 4/2, has flying and
 //! deathtouch, and is goaded." One list of changes in the order the layers need them: colors, card types, creature
-//! types, size, the loss of abilities, then the keywords it has, then "is goaded".
+//! types, size, the loss of abilities, then the keywords it has, then "is goaded". A name after the size ("... 1/1 named
+//! Legitimate Businessperson") comes first: it is set in layer 3.
 
 use mtg_core::card::{CardType, Subtype};
 use mtg_core::color::Color;
@@ -38,7 +39,13 @@ pub(super) fn form(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
     let power = i32::try_from(r.number()?).ok()?;
     r.punct('/').then_some(())?;
     let toughness = i32::try_from(r.number()?).ok()?;
-    if r.words(aura_additive::IN_ADDITION) {
+    // "named Legitimate Businessperson": the name replaces every other name (layer 3).
+    let named = if r.word("named") {
+        Some(super::create::proper_name(r)?)
+    } else {
+        None
+    };
+    if named.is_none() && r.words(aura_additive::IN_ADDITION) {
         paint.is_none().then_some(())?;
         let form = aura_additive::Form {
             lose: lose_first,
@@ -51,6 +58,7 @@ pub(super) fn form(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
     }
     (!kinds.is_empty()).then_some(())?;
     let mut mods = Vec::new();
+    mods.extend(named.map(Modification::SetName));
     mods.extend(paint.map(Modification::SetColors));
     if creature {
         let mut types = Vec::new();
@@ -127,6 +135,11 @@ pub(super) fn texts(mods: &[Modification]) -> Vec<String> {
         return additive;
     }
     let mut rest = mods;
+    let mut named = String::new();
+    if let Some((Modification::SetName(name), after)) = rest.split_first() {
+        named = format!(" named {name}");
+        rest = after;
+    }
     let mut paint: Option<&[Color]> = None;
     if let Some((Modification::SetColors(colors), after)) = rest.split_first() {
         paint = Some(colors);
@@ -174,7 +187,7 @@ pub(super) fn texts(mods: &[Modification]) -> Vec<String> {
         }
     };
     let head = format!(
-        "is {} {noun} with base power and toughness {power}/{toughness}",
+        "is {} {noun} with base power and toughness {power}/{toughness}{named}",
         article(&noun)
     );
     let tail = match (lose, given, goaded) {

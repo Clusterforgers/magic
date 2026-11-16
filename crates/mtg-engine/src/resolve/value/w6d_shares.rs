@@ -26,10 +26,10 @@ const W6D_TYPES: [CardType; 9] = [
 ];
 
 /// The name of the object as it was seen: none while it lies face down (CR 708.2a).
-fn w6d_name<'s>(seen: &Seen<'s>) -> Option<&'s str> {
+fn w6d_name(seen: &Seen<'_>) -> Option<String> {
     seen.card
         .filter(|card| card.face_down().is_none())
-        .map(|card| card.card().name.as_str())
+        .map(|card| seen.chars.name_for(&card.card().name))
 }
 
 impl Scope<'_> {

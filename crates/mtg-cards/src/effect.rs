@@ -184,6 +184,14 @@ pub enum Destination {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         under: Option<Ref>,
     },
+    /// The battlefield under its owner's control as an object with these changes from the moment it enters, for as long
+    /// as it stays ("return it to the battlefield. It's an Aura enchantment with enchant creature you control and ...,
+    /// and it loses all other abilities"): an Aura enchants a permanent its controller chooses among those it may
+    /// enchant as it is, and stays where it was when there is none (CR 303.4g, 400.7).
+    R6502BattlefieldAs {
+        /// What it is as it enters.
+        becomes: Vec<Modification>,
+    },
     /// The battlefield under its owner's control, where an Aura enters attached only to a permanent the selector matches
     /// among those it may enchant, chosen by its controller, and stays where it was when there is none ("Only creatures
     /// can be enchanted this way."); any other card enters as usual.

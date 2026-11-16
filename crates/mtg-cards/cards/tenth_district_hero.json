@@ -1,7 +1,7 @@
 {
   "oracle_id": "0953772c-9374-4616-9c04-5838aaf626c9",
   "name": "Tenth District Hero",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tenth District Hero",
@@ -26,9 +26,45 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 123, "end": 344 }
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}" }, { "CollectEvidence": 4 }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "This", "selector": [{ "Subtype": "Detective" }] }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetName": "Mileva, the Stalwart" },
+                          { "SetTypes": ["Creature"] },
+                          { "AddSupertype": "Legendary" },
+                          { "SetPT": { "power": 5, "toughness": 5 } },
+                          {
+                            "GrantAbility": {
+                              "Static": {
+                                "affected": {
+                                  "Each": [
+                                    { "Type": "Creature" },
+                                    "Other",
+                                    { "ControlledBy": "You" }
+                                  ]
+                                },
+                                "mods": [{ "AddKeyword": "Indestructible" }]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

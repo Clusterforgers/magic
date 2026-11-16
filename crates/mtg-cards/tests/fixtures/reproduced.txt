@@ -276,6 +276,7 @@ Brinelin, the Moon Kraken
 Brion Stoutarm
 Brisela, Voice of Nightmares
 Brokers Hideout
+Bronzehide Lion
 Bronzeplate Boar
 Broodbirth Viper
 Broodcaller Scourge
@@ -2434,6 +2435,7 @@ Wipe Away
 Wirewood Channeler
 Withering Boon
 Withering Curse
+Witness Protection
 Wizard Class
 Wizard's Rockets
 Wolf of Devil's Breach

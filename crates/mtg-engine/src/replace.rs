@@ -88,7 +88,9 @@ pub fn process(
     // A card that enters as one of its faces (a land played as one, a card put onto the battlefield transformed)
     // enters as that face, so the effects that apply to its entering are the face's (CR 614.12, 712.14a): the
     // replacement step reads the card as it will be, not as it lies in the hand.
-    let view = crate::faces::entering_as(state, &proposed);
+    let faces = crate::faces::entering_as(state, &proposed);
+    // A card put onto the battlefield as something else ("It's an Aura enchantment ...") is read as it will be too.
+    let view = crate::resolve::prim::r6502_enters_as::entering_view(&faces, &proposed);
     let state = &*view;
     let sources = gather(state);
     let shields = shields_of(state);

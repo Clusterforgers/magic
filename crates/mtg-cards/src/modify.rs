@@ -53,8 +53,8 @@ pub enum Modification {
     /// Adds a supertype to the copiable values of a copy: "except it is legendary in addition to its other types". Only the
     /// exceptions of a copy have it.
     AddSupertype(Supertype),
-    /// Names the copiable values of a copy: "except its name is Lazav, Dimir Mastermind". Only the exceptions of a copy
-    /// have it.
+    /// Names the copiable values of a copy: "except its name is Lazav, Dimir Mastermind" (layer 1); as the change of a
+    /// static ability or an effect it replaces the name (layer 3): "named Legitimate Businessperson".
     SetName(String),
     /// Gives the copiable values of a copy the ability that is resolving: "except it has this ability". Only the
     /// exceptions of a `BecomeCopy` have it.

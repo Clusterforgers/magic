@@ -3001,9 +3001,9 @@ impl<'a> Walker<'a> {
                 w.modification(modification);
                 if matches!(
                     modification,
-                    Modification::SetName(_) | Modification::ThisAbility | Modification::SetLoyalty(_)
+                    Modification::ThisAbility | Modification::SetLoyalty(_)
                 ) {
-                    w.problem("a name, a loyalty or this ability changes only the copiable values of a copy (`except`)");
+                    w.problem("a loyalty or this ability changes only the copiable values of a copy (`except`)");
                 }
             });
         }
@@ -3507,6 +3507,9 @@ impl Walker<'_> {
             }
             Destination::BattlefieldEnchanting { only } => {
                 self.at("only", |w| w.selector(only));
+            }
+            Destination::R6502BattlefieldAs { becomes } => {
+                self.at("becomes", |w| w.mods(becomes));
             }
             _ => {}
         }
@@ -4149,6 +4152,13 @@ impl Walker<'_> {
             } => {
                 self.uses("Effect", "Move.Battlefield");
                 self.uses("Effect", "Move.Enchanting");
+            }
+            Effect::Move {
+                to: Destination::R6502BattlefieldAs { .. },
+                ..
+            } => {
+                self.uses("Effect", "Move.Battlefield");
+                self.uses("Effect", "Move.R6502As");
             }
             Effect::Move {
                 to: Destination::BattlefieldFaceDown { .. },
@@ -8385,7 +8395,7 @@ mod tests {
     )]
     #[case::this_ability_goes_with_a_copy_only(
         r#"{"Static":{"affected":"This","mods":["ThisAbility"]}}"#,
-        "a name, a loyalty or this ability changes only the copiable values of a copy (`except`)"
+        "a loyalty or this ability changes only the copiable values of a copy (`except`)"
     )]
     #[case::a_player_takes_only_the_keywords_players_have(
         r#"{"Static":{"affected":"You","mods":[{"AddKeyword":"Flying"}]}}"#,

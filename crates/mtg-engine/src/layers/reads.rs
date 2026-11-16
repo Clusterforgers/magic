@@ -76,6 +76,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         // An ability that is given adds effects (the pass finds them as they come) and changes none that exist.
         // A name read by no other effect of the engine's: words added to it change nothing another effect reads.
         Modification::AddNameWords(_)
+        | Modification::SetName(_)
         | Modification::GrantAbility(_)
         | Modification::GrantText(_)
         | Modification::GainAbilities(_)

@@ -50,9 +50,7 @@ impl Scope<'_> {
             Pred::HasName => {
                 face_down.is_none()
                     && seen.card.is_some_and(|card| {
-                        !crate::un34_stickers::name_with(&seen.chars.name_words, &card.card().name)
-                            .trim()
-                            .is_empty()
+                        !seen.chars.name_for(&card.card().name).trim().is_empty()
                     })
             }
             _ => false,
