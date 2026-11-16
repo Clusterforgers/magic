@@ -106,8 +106,10 @@ impl Pass<'_> {
             &mut || answers.next().cloned(),
         ) {
             Ok(Inline::Events(mut events)) => {
-                // A permanent remembers what its replacement exiled, as any effect of it (CR 607.2a).
-                if let Some(remembered) = crate::memory::exiled_by(candidate.object, &events, state)
+                // A permanent remembers what the shield its ability made exiled, as any effect of it (CR 607.2a).
+                if matches!(candidate.origin, Origin::Shield(_))
+                    && let Some(remembered) =
+                        crate::memory::exiled_by(candidate.object, &events, state)
                 {
                     events.push(remembered);
                 }
