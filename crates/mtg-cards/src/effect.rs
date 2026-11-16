@@ -636,7 +636,9 @@ pub enum Effect {
         rest_as: Option<String>,
     },
     /// A player chooses a value that is not an object or a player and the resolution remembers it under the name:
-    /// `Pred::ChosenAs` and `Amount::ChosenAs` read it. A player with one option (or none) is not asked.
+    /// `Pred::ChosenAs` and `Amount::ChosenAs` read it. A player with one option (or none) is not asked. Several players
+    /// each choose one of the options, in turn order from the active player (CR 101.4), and each choice is remembered
+    /// for its player (`Pred::R6600OnlyControllersColor`).
     ChooseValue {
         /// Who chooses; exactly one player.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]

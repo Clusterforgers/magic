@@ -428,6 +428,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::Subtype(_) => Traits::SUBTYPES,
         Pred::ChosenSubtype | Pred::NthChosenLandType(_) => Traits::SUBTYPES.or(Traits::TYPES),
         Pred::ChosenAs(_) => Traits::COLORS.or(Traits::TYPES).or(Traits::SUBTYPES),
+        Pred::R6600OnlyControllersColor(_) => Traits::COLORS.or(Traits::CONTROL),
         Pred::SharesSubtype(who) | Pred::SharesCreatureTypeWithEach(who) => {
             Traits::SUBTYPES.or(reads_of_ref(who))
         }

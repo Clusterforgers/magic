@@ -46,6 +46,7 @@ Alchemist's Retrieval
 Alhammarret's Archive
 Alisaie Leveilleur
 All That Glitters
+All Will Be One
 All of History, All at Once
 Alpha Deathclaw
 Alphinaud Leveilleur
@@ -111,6 +112,7 @@ Assassin's Trophy
 Assemble the Entmoot
 Atlantean Skirmisher
 Atmospheric Greenhouse
+Atraxa, Grand Unifier
 Atreus, Impulsive Son
 Atzocan Seer
 Augury Raven
@@ -191,6 +193,7 @@ Bighorner Rancher
 Bilious Skulldweller
 Bill Potts
 Binding the Old Gods
+Biomancer's Familiar
 Biomass Mutation
 Biomechan Engineer
 Biotech Specialist
@@ -397,6 +400,7 @@ Complaints Clerk
 Composer of Spring
 Conclave Sledge-Captain
 Conclave Tribunal
+Conduit of Worlds
 Conifer Wurm
 Consider
 Consign // Oblivion
@@ -1361,6 +1365,7 @@ Mindlock Orb
 Mindslaver
 Ministrant of Obligation
 Minotaur de Force
+Minthara, Merciless Soul
 Mirari
 Mirari's Wake
 Mire's Malice
@@ -1844,6 +1849,7 @@ Seedship Agrarian
 Seeker of Slaanesh
 Seekers' Squire
 Seize the Day
+Selective Obliteration
 Seraph of the Sword
 Sergeant John Benton
 Serpent of the Pass
@@ -2145,6 +2151,7 @@ Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Birth of Meletis
 The Celestus
+The Chain Veil
 The Cruelty of Gix
 The Dalek Emperor
 The Elder Dragon War
@@ -2249,6 +2256,7 @@ Toxic Deluge
 Trace of Abundance
 Trade Caravan
 Trailtracker Scout
+Training Grounds
 Trait Doctoring
 Trapped in the Tower
 Trash for Treasure

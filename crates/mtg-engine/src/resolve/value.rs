@@ -2289,6 +2289,10 @@ impl<'a> Scope<'a> {
             | Pred::NthChosenLandType(_)
             | Pred::ChosenName
             | Pred::ChosenAs(_) => self.chosen_pred(pred, seen),
+            Pred::R6600OnlyControllersColor(name) => {
+                matches!(self.chosen_value(&crate::resolve::r6600_player_value(name, seen.controller)), Some(Chosen::Color(color))
+                    if seen.chars.colors == mtg_core::color::ColorSet::default().with(*color))
+            }
             // Alone it holds when the object fits in the total; the choice keeps the sum (`r6003_total`).
             Pred::TotalAtMost { stat, most } => {
                 Self::stat(seen, *stat).unwrap_or(0) <= self.amount(most)?
