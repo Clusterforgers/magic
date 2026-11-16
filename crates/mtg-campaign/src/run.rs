@@ -8,9 +8,10 @@ use mtg_core::house::Timers;
 use serde::{Deserialize, Serialize};
 
 use crate::CampaignError;
-use crate::content::{Brain, Content, Outcome, Theme};
+use crate::content::{Brain, Content, CustomCard, Outcome, Theme};
 use crate::fight::{BossSeat, FightPlan, HAND, HeroSeat, MinionSeat};
 use crate::map::{FloorMap, RoomKind, generate};
+use crate::relics::{DeckMakeup, FILTER_FROM, offerable};
 use crate::rng::Stream;
 use crate::scale::Scale;
 use crate::upgrade::{CommanderFacts, Upgrade, fitting};
@@ -37,8 +38,9 @@ pub const DRAUGHT_PRICE: u32 = 30;
 pub const DRAUGHT: i32 = 15;
 /// The price of a commander upgrade at the shop.
 pub const UPGRADE_PRICE: u32 = 50;
-/// The content generation a new run is made with (`RunEvent::Content`); a run stored without one is generation 0.
-pub const CONTENT: u32 = 1;
+/// The content generation a new run is made with (`RunEvent::Content`); a run stored without one is generation 0. From 2
+/// relic offers follow the deck and the relics of the larger pool are offered.
+pub const CONTENT: u32 = 2;
 
 /// The deck a hero brings.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -53,6 +55,11 @@ pub struct HeroDeck {
     /// Its commanders as their upgrades see them; none for a deck chosen before upgrades, which then gets none.
     #[serde(default)]
     pub commanders: Vec<CommanderFacts>,
+    /// What it is made of, for the relic offers; none for a deck chosen before offers followed the deck, which then
+    /// gets them unfiltered.
+    #[serde(default)]
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub makeup: Option<DeckMakeup>,
 }
 
 /// A choice waiting for one hero.
@@ -793,7 +800,8 @@ impl Run {
         rng.pick(&fits, count)
     }
 
-    /// Relics the hero lacks, drawn for one room and purpose; the risky ones only where `label` allows them.
+    /// Relics the hero lacks, drawn for one room and purpose; the risky ones only where `label` allows them, and from
+    /// the filter's generation on only those the hero's deck can use.
     fn relic_offer(
         &self,
         content: &Content,
@@ -805,12 +813,20 @@ impl Run {
         let Some(h) = self.heroes.get(hero) else {
             return Vec::new();
         };
-        let fits: Vec<String> = content
+        let mut fits: Vec<&CustomCard> = content
             .relics()
             .into_iter()
+            .filter(|c| c.since <= self.content)
             .filter(|c| !h.relics.contains(&c.id) && (label != "shop" || c.price > 0))
-            .map(|c| c.id.clone())
             .collect();
+        // From the filter's generation on, only relics the deck (and its Satchel) can use.
+        if self.content >= FILTER_FROM
+            && let Some(makeup) = h.deck.as_ref().and_then(|d| d.makeup.as_ref())
+            && let Ok(theme) = self.theme(content)
+        {
+            fits = offerable(fits, &makeup.with_satchel(&h.satchel, theme));
+        }
+        let fits: Vec<String> = fits.into_iter().map(|c| c.id.clone()).collect();
         let salt = u64::try_from(h.offers.len() + h.relics.len()).unwrap_or(0);
         let mut rng = Stream::new(self.seed, label, u64::from(node) * 16 + salt, hero as u64);
         rng.pick(&fits, count)

@@ -130,6 +130,7 @@ fn at_event(content: &Content, event: &str, gold: u32, life: i32, bots: usize) -
                 name: "Deck".into(),
                 colors: "RG".into(),
                 commanders: Vec::new(),
+                makeup: None,
             },
         });
     }

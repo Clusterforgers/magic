@@ -40,6 +40,7 @@ fn deck(commanders: Vec<CommanderFacts>) -> HeroDeck {
         name: "Deck".into(),
         colors: "RG".into(),
         commanders,
+        makeup: None,
     }
 }
 

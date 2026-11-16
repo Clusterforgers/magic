@@ -6,6 +6,8 @@ mod bosses;
 mod content;
 mod events;
 mod fights;
+mod relic_cards;
+mod relics;
 mod runs;
 mod satchel;
 mod spirits;

@@ -15,7 +15,9 @@ use axum::Json;
 use axum::extract::rejection::PathRejection;
 use axum::extract::{Path, Request, State};
 use axum::http::{HeaderMap, StatusCode};
-use mtg_campaign::{Brain, Content, FightPlan, Forfeit, HeroDeck, Run, RunEvent, Status, content};
+use mtg_campaign::{
+    Brain, Content, DeckMakeup, FightPlan, Forfeit, HeroDeck, Run, RunEvent, Status, content,
+};
 use mtg_cards::CardDefinition;
 use mtg_core::color::Color;
 use mtg_core::ids::PlayerId;
@@ -191,7 +193,20 @@ fn hero_deck(id: String, chosen: &ChosenDeck) -> HeroDeck {
             .iter()
             .map(|card| commander_facts(card))
             .collect(),
+        makeup: Some(deck_makeup(chosen)),
     }
+}
+
+/// What the deck is made of, its commanders and library counted card by card, for the relic offers.
+fn deck_makeup(chosen: &ChosenDeck) -> DeckMakeup {
+    let mut makeup = DeckMakeup::default();
+    for card in chosen.commanders() {
+        makeup.add_card(card, true);
+    }
+    for card in chosen.cards() {
+        makeup.add_card(card, false);
+    }
+    makeup
 }
 
 /// What a commander card is, as far as its run upgrades go.

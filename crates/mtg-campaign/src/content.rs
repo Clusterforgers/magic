@@ -9,6 +9,7 @@ use mtg_cards::ability::Ability;
 use serde::{Deserialize, Serialize};
 
 use crate::CampaignError;
+use crate::relics::Want;
 
 /// What a custom card is for.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -64,6 +65,13 @@ pub struct CustomCard {
     /// The heroes' turn from which an Enrage applies; 0 for other cards.
     #[serde(default)]
     pub turn: u32,
+    /// What a relic's rules care about in a deck, so offers skip it for a deck with too few such cards; none for a relic
+    /// of use to any deck.
+    #[serde(default)]
+    pub wants: Vec<Want>,
+    /// The content generation from which a relic is offered (`RunEvent::Content`); a run of an earlier one never meets it.
+    #[serde(default)]
+    pub since: u32,
     /// Its abilities, in the card DSL.
     pub abilities: Vec<Ability>,
 }
@@ -356,6 +364,9 @@ pub struct Theme {
     pub events: Vec<EventSpec>,
     /// The cards rewards offer: a name and its colours as WUBRG letters (empty for colourless).
     pub pool: Vec<(String, String)>,
+    /// The type line of each pool card ("Creature — Angel"), which counts the Satchel's cards for the relic filter.
+    #[serde(default)]
+    pub pool_types: BTreeMap<String, String>,
     /// The bosses' scheme deck, shuffled for each fight.
     #[serde(default)]
     pub schemes: Vec<String>,

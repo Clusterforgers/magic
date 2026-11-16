@@ -4,6 +4,7 @@
 pub mod content;
 pub mod fight;
 pub mod map;
+pub mod relics;
 pub mod rng;
 pub mod run;
 pub mod scale;
@@ -15,6 +16,7 @@ pub use content::{
 };
 pub use fight::{BossSeat, FightPlan, HeroSeat, MinionSeat};
 pub use map::{FloorMap, Node, RoomKind};
+pub use relics::{DeckMakeup, Want};
 pub use run::{
     Forfeit, GambleRoll, Hero, HeroDeck, Offer, Pick, Resolved, Run, RunEvent, ShopItem, Status,
 };
