@@ -190,7 +190,7 @@ const COSTS: Record<string, string> = {
 
 const ORDINARY_COSTS =
   names(`Mana PayLife Draw ManaCostOf OwnManaCost OwnManaValue OwnManaCostLess ReturnToHand AlikeFromHand
-  DamageToYou OthersGainLife GenericOf ExiledToGraveyard ToLibrary XAtLeast XColor ChosenColorOnly XAtMost OneOf Changed`)
+  DamageToYou OthersGainLife GenericOf ExiledToGraveyard ToLibrary XAtLeast XColor ChosenColorOnly XAtMost XIs OneOf Changed`)
 
 /** The `TriggerPattern` variants that name a keyword action, designation or rules term, by lexicon term. */
 const TRIGGERS: Record<string, string> = {
