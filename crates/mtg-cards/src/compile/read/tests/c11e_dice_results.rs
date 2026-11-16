@@ -68,7 +68,7 @@ fn c11e_a_near_miss_stays_unread(#[case] text: &str) {
 }
 
 #[rstest]
-#[case::a_die_lower_than("Whenever you roll a 4 or higher, draw a card.")]
+#[case::a_die_lower_than("Whenever you roll a 4 or lower, draw a card.")]
 #[case::a_coin_and_a_die("Whenever you roll a die or flip a coin, draw a card.")]
 #[case::lowest("Whenever you roll a die's lowest natural result, draw a card.")]
 fn c11e_another_roll_event_stays_unread(#[case] text: &str) {

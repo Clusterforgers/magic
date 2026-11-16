@@ -4,7 +4,7 @@ import { isStateView, parseMessage } from '@/net/parse'
 import { applyBatch } from '@/play/view'
 import type { ObjectView, StateView } from '@/protocol/generated'
 import { batchOf, must, tableOf } from '@/test-utils/batches'
-import { fixtureGame, fixtureLookup, fixtureSession, fixtureState } from './dev/devGame'
+import { fixtureGame, fixtureLookup, fixtureSession, fixtureState, withLastStanding } from './dev/devGame'
 import { buildFixture, FIXTURE_MARKER, NAMES } from './dev/fixture'
 
 const COUNTS = Array.from({ length: 11 }, (_, index) => index + 2)
@@ -260,4 +260,21 @@ describe('the fixture game with a prompt', () => {
     expect(session.store.getState().pending).toBeNull()
     expect(session.answer({ Priority: 'Pass' })).toBe(false)
   })
+})
+
+describe('the last opponent standing (alone=1)', () => {
+  it.each([3, 4, 6])(
+    'leaves %i seats with every opponent but the last out and the last one with an empty board',
+    (seats) => {
+      const view = withLastStanding(buildFixture({ seats })).view
+      const rivals = view.players.filter((player) => player.seat !== view.viewer)
+      const last = must(rivals.at(-1))
+      expect(rivals.slice(0, -1).every((player) => player.lost !== null)).toBe(true)
+      expect(rivals.slice(0, -1).map((player) => player.lost)).toContain('Conceded')
+      expect(last.lost).toBeNull()
+      for (const rival of rivals) expect(byController(view, rival.seat)).toHaveLength(0)
+      expect(byController(view, view.viewer).length).toBeGreaterThan(0)
+      expect(view.battlefield.cards ?? []).toHaveLength(view.battlefield.count)
+    },
+  )
 })

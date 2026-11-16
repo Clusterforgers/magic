@@ -40,7 +40,7 @@ describe('the picture width', () => {
 
 describe('the room under the blocks of the pod', () => {
   it.each<[string, number | null, number | null, number | null]>([
-    ['a column of 183 px with 74 px above', 183, 74, 85],
+    ['a column of 183 px with 74 px above (and the 2 px seat edge)', 183, 74, 83],
     ['a column not measured', null, 74, null],
     ['blocks not measured', 183, null, null],
     ['a column shorter than its blocks', 60, 74, 0],
@@ -49,9 +49,9 @@ describe('the room under the blocks of the pod', () => {
   })
 
   it.each<[string, number | null, number]>([
-    ['52 px of chips under the corner, and their gap', 52, 25],
-    ['no chips under it (hidden, 0 px)', 0, 85],
-    ['chips not measured', null, 85],
+    ['52 px of chips under the corner, and their gap', 52, 23],
+    ['no chips under it (hidden, 0 px)', 0, 83],
+    ['chips not measured', null, 83],
   ])('leaves room for %s', (_name, below, room) => {
     expect(cornerHeight(183, 74, below)).toBe(room)
   })

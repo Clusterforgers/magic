@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 import type { AttackTarget, ObjectId } from '@/protocol/generated'
 import {
   NO_PENDING,
+  chosenAttacks,
   PendingCombatContext,
   createPendingCombatStore,
   usePendingCombat,
@@ -32,6 +33,20 @@ describe('the pending store', () => {
     store.set({ attacks: aimed })
     expect(store.get().blocks.size).toBe(0)
     expect(store.get().attacks).toBe(aimed)
+  })
+
+  it("holds the attacks of teammates apart from the prompt's own, the teammates' first among all that are chosen", () => {
+    const store = createPendingCombatStore()
+    const team = attacks([4, { Player: 2 }])
+    const own = attacks([5, { Player: 2 }])
+    store.set({ team })
+    expect(store.get().team).toBe(team)
+    expect(store.get().attacks.size).toBe(0)
+    expect(store.get()).not.toBe(NO_PENDING)
+    store.set({ team, attacks: own })
+    expect(chosenAttacks(store.get()).map(([attacker]) => attacker)).toEqual([4, 5])
+    store.set({ team: attacks(), attacks: attacks() })
+    expect(store.get()).toBe(NO_PENDING)
   })
 
   it('tells its listeners once per change', () => {

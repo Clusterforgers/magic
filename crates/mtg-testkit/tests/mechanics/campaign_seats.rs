@@ -1,8 +1,9 @@
 //! Goal: the campaign's seat rules work in real games: a seat with a Spirit emblem at 0 life becomes a Spirit while a
 //! teammate lives (its cards outside the library leave, its emblem arrives) and its team loses once nobody on it lives;
 //! boss phases begin one by one at their life thresholds; a scheme deck sets one scheme in motion as each of its
-//! seat's turns begins, the last one leaving and the next shown as the Omen; a minion loses with its leader; emblems
-//! placed at setup work from the start, cost modifiers on emblems included; such games replay from their logs; and a
+//! seat's turns begins (or every other one, each scheme then in motion for one turn), the last one leaving and the next
+//! shown as the Omen with the turns until it comes; a minion loses with its leader; emblems placed at setup work from the
+//! start, cost modifiers on emblems included; such games replay from their logs; and a
 //! Spirit is out of its opponents' reach: no attack option and no target of theirs names it, while its team still can.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -261,6 +262,43 @@ fn a_scheme_deck_sets_one_scheme_in_motion_each_turn_of_its_seat(
         emblem_names(&driver, 0).is_empty(),
         "the other seat sets none"
     );
+    let replayed = replay(&setup, driver.engine().events()).unwrap();
+    assert_eq!(replayed.state_hash(), driver.engine().state_hash());
+    Ok(())
+}
+
+#[rstest]
+#[case::a_scheme_turn_sets_the_first(2, "Feast", 2, 3, 20)]
+#[case::the_turn_between_has_none(4, "Feast", 1, 2, 20)]
+#[case::the_next_scheme_turn_sets_the_next(6, "Ambush", 2, 2, 23)]
+#[case::the_turn_after_it_has_none_again(8, "Ambush", 1, 2, 23)]
+fn a_scheme_deck_every_other_turn_sets_a_scheme_for_one_turn_and_names_when_the_omen_comes(
+    #[case] turn: u32,
+    #[case] omen: &str,
+    #[case] omen_in: u32,
+    #[case] power: i32,
+    #[case] life: i32,
+) -> Result<(), ScriptError> {
+    let deck = [emblem("Ambush", &[ANTHEM]), emblem("Feast", &[UPKEEP_GAIN])];
+    let scenario = table(&[20, 20], None).schemes(1, deck).scheme_every(1, 2);
+    let setup = scenario.clone().setup().unwrap();
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.idle_until(turn, Step::Main1)?;
+    let in_motion = match turn {
+        2 => vec!["Ambush"],
+        6 => vec!["Feast"],
+        _ => Vec::new(),
+    };
+    assert_eq!(emblem_names(&driver, 1), in_motion);
+    let state = driver.state();
+    assert_eq!(
+        state.player(pid(1)).unwrap().schemes(),
+        Some((in_motion.first().copied(), omen))
+    );
+    assert_eq!(mtg_engine::schemes::omen_in(state, pid(1)), Some(omen_in));
+    let bear = driver.id_of("Bear 1")?;
+    assert_eq!(characteristics(state, bear).unwrap().power, Some(power));
+    assert_eq!(state.player(pid(1)).unwrap().life(), life);
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.engine().state_hash());
     Ok(())

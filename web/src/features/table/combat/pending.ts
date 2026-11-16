@@ -12,13 +12,18 @@ export interface PendingCombat {
   blocks: ReadonlyMap<ObjectId, ObjectId>
   /** Attacks being chosen, attacker to what it attacks. */
   attacks: ReadonlyMap<ObjectId, AttackTarget>
+  /**
+   * Attacks the teammates of a party's shared declaration chose already: drawn as chosen like `attacks`, but no part of
+   * the answer, since the party declares them with the last hero's own.
+   */
+  team: ReadonlyMap<ObjectId, AttackTarget>
 }
 
 const NO_BLOCKS: ReadonlyMap<ObjectId, ObjectId> = new Map()
 const NO_ATTACKS: ReadonlyMap<ObjectId, AttackTarget> = new Map()
 
 /** Nothing chosen. */
-export const NO_PENDING: PendingCombat = { blocks: NO_BLOCKS, attacks: NO_ATTACKS }
+export const NO_PENDING: PendingCombat = { blocks: NO_BLOCKS, attacks: NO_ATTACKS, team: NO_ATTACKS }
 
 /** Where prompts leave their unsent choices. */
 export interface PendingCombatStore {
@@ -40,8 +45,12 @@ export function createPendingCombatStore(): PendingCombatStore {
     // An empty map is always the shared one, so "still nothing" is not a change.
     const blocks = next.blocks === undefined || next.blocks.size === 0 ? NO_BLOCKS : next.blocks
     const attacks = next.attacks === undefined || next.attacks.size === 0 ? NO_ATTACKS : next.attacks
-    if (blocks === current.blocks && attacks === current.attacks) return
-    current = blocks === NO_BLOCKS && attacks === NO_ATTACKS ? NO_PENDING : { blocks, attacks }
+    const team = next.team === undefined || next.team.size === 0 ? NO_ATTACKS : next.team
+    if (blocks === current.blocks && attacks === current.attacks && team === current.team) return
+    current =
+      blocks === NO_BLOCKS && attacks === NO_ATTACKS && team === NO_ATTACKS
+        ? NO_PENDING
+        : { blocks, attacks, team }
     for (const listener of [...listeners]) listener()
   }
   return {
@@ -55,6 +64,11 @@ export function createPendingCombatStore(): PendingCombatStore {
       }
     },
   }
+}
+
+/** Every attack chosen and not declared yet, the teammates' first and the prompt's own after them. */
+export function chosenAttacks(pending: PendingCombat): [ObjectId, AttackTarget][] {
+  return [...pending.team, ...pending.attacks]
 }
 
 /** The pending store of the table around the caller; a table-less caller shares one that nothing publishes to. */
@@ -77,10 +91,10 @@ export function usePendingCombat(): PendingCombat {
  */
 export function usePublishPending(next: Partial<PendingCombat>): void {
   const store = usePendingStore()
-  const { blocks, attacks } = next
+  const { blocks, attacks, team } = next
   // Layout effects, so the lines are never drawn once without the choice that was just made.
   useLayoutEffect(() => {
-    store.set({ blocks, attacks })
-  }, [store, blocks, attacks])
+    store.set({ blocks, attacks, team })
+  }, [store, blocks, attacks, team])
   useLayoutEffect(() => () => store.clear(), [store])
 }

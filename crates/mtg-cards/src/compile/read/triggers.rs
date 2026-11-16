@@ -776,6 +776,8 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
             who: by,
             highest,
             results: Vec::new(),
+            at_least: 0,
+            on_a_die: false,
             natural: false,
             each,
         })
@@ -1794,6 +1796,8 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             who,
             highest: false,
             results,
+            at_least: 0,
+            on_a_die: false,
             natural,
             each: false,
         } if !results.is_empty() => Some(format!(
@@ -1803,8 +1807,23 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         )),
         TriggerPattern::DiceRolled {
             who,
+            highest: false,
+            results,
+            at_least,
+            on_a_die,
+            natural: false,
+            each: false,
+        } if results.is_empty() && *at_least > 0 => Some(format!(
+            "Whenever {} a {at_least} or higher{}",
+            player_verb(who, "roll")?,
+            if *on_a_die { " on a die" } else { "" }
+        )),
+        TriggerPattern::DiceRolled {
+            who,
             highest,
             results,
+            at_least: 0,
+            on_a_die: false,
             natural: false,
             each,
         } if results.is_empty() && !(*highest && *each) => c11e_rolled_text(who, *highest, *each),

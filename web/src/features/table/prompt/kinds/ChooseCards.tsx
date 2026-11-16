@@ -127,7 +127,24 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
     (total > 0 && hi > 0 ? ` · ${chosen.length} chosen` : '') + (totalWords === '' ? '' : ` · ${totalWords}`)
 
   return (
-    <PromptLayout text={text}>
+    <PromptLayout
+      text={text}
+      choices={
+        <CardChoices
+          cards={from}
+          chosen={chosen}
+          closed={closed}
+          shut={sameName}
+          labels={labels}
+          objects={byId}
+          onPress={press}
+          label="Cards to choose from"
+          keys
+          focusFirst={first}
+          search={searching}
+        />
+      }
+    >
       <Button
         className="h-9 px-4"
         disabled={!legal}
@@ -148,19 +165,6 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
         {cardsRule(bounds, total)}
         {progress}
       </p>
-      <CardChoices
-        cards={from}
-        chosen={chosen}
-        closed={closed}
-        shut={sameName}
-        labels={labels}
-        objects={byId}
-        onPress={press}
-        label="Cards to choose from"
-        keys
-        focusFirst={first}
-        search={searching}
-      />
     </PromptLayout>
   )
 }

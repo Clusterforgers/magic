@@ -248,8 +248,9 @@ export function CardChoices({
         }
         className={
           host === null
-            ? 'flex max-w-full min-w-0 basis-full flex-col gap-2'
-            : 'flex max-h-full min-h-0 min-w-0 flex-col gap-2'
+            ? // In the strip the players stand in a column before the cards, so the choice stays one card high.
+              'flex max-w-full min-w-0 basis-full items-center gap-3 [&>[data-slot=player-targets]]:max-w-56 [&>[data-slot=player-targets]]:shrink-0 [&>[data-slot=player-targets]]:flex-col [&>[data-slot=player-targets]]:items-stretch [&>[data-slot=player-targets]]:border-e [&>[data-slot=player-targets]]:pe-3'
+            : 'flex max-h-full min-h-0 min-w-0 flex-col gap-2 [&>[data-slot=player-targets]]:border-b [&>[data-slot=player-targets]]:pb-2'
         }
       >
         {lead}

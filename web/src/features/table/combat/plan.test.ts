@@ -224,6 +224,11 @@ describe('planLines for choices not sent yet', () => {
       attacks([5, P2], [6, { Planeswalker: 9 }]),
       ['pending-attack:5 card:5>seat:2 pending', 'pending-attack:6 card:6>card:9 pending'],
     ],
+    [
+      "the attacks of a teammate before the prompt's own",
+      { ...NO_PENDING, team: new Map([[4, P2]]), attacks: new Map([[5, P2]]) },
+      ['pending-attack:4 card:4>seat:2 pending', 'pending-attack:5 card:5>seat:2 pending'],
+    ],
   ])('draws %s as dashed lines, with no outcome', (_name, pending, expected) => {
     const lines = plan(null, null, pending)
     expect(lines.map(show)).toEqual(expected)

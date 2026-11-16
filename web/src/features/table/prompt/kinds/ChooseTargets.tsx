@@ -138,7 +138,77 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
   const text = totalText === '' ? sentence : `${sentence} ${totalText}`
 
   return (
-    <PromptLayout text={text}>
+    <PromptLayout
+      text={text}
+      choices={
+        <>
+          <CardChoices
+            cards={objectIds}
+            chosen={chosenIds}
+            closed={closed}
+            labels={cardLabels}
+            objects={byId}
+            onPress={onCard}
+            label="Legal targets"
+            rest={players.length === 0 ? 11 : 13.5}
+            lead={
+              players.length === 0 ? undefined : (
+                // The players stand on a line of their own over the cards, so a player never reads as a card.
+                <div
+                  role="group"
+                  aria-label="Players"
+                  data-slot="player-targets"
+                  className="flex flex-wrap items-center gap-2"
+                >
+                  <span aria-hidden="true" className="text-xs text-muted-foreground">
+                    Players
+                  </span>
+                  {players.map((target) => {
+                    const picked = has(target)
+                    return (
+                      <Button
+                        key={targetKey(target)}
+                        size="sm"
+                        variant="outline"
+                        aria-pressed={picked}
+                        disabled={(closed || !fits(target, chosen)) && !picked}
+                        onClick={() => pick(target)}
+                        className={picked ? CHOSEN_BUTTON : undefined}
+                      >
+                        {picked ? <Check aria-hidden="true" strokeWidth={3} /> : null}
+                        {'Player' in target ? <PlayerFace seat={target.Player} /> : null}
+                        {labelOf(target)}
+                      </Button>
+                    )
+                  })}
+                </div>
+              )
+            }
+          />
+          {chosen.length === 0 ? null : (
+            <ul
+              aria-label="Your targets"
+              data-slot="chosen-targets"
+              className="grid max-h-44 basis-full gap-1 overflow-y-auto"
+            >
+              {chosen.map((target) => (
+                <li key={targetKey(target)} className="flex items-center justify-between gap-2 text-sm">
+                  <span className="min-w-0">{labelOf(target)}</span>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    aria-label={`Remove ${labelOf(target)}`}
+                    onClick={() => pick(target)}
+                  >
+                    Remove
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </>
+      }
+    >
       <Button
         className="h-10 px-4"
         disabled={chosen.length < min}
@@ -155,70 +225,6 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
         Undo
       </Button>
       {options.can_cancel ? <UndoButton zone={source?.zone} onUndo={() => void answer('Undo')} /> : null}
-      <CardChoices
-        cards={objectIds}
-        chosen={chosenIds}
-        closed={closed}
-        labels={cardLabels}
-        objects={byId}
-        onPress={onCard}
-        label="Legal targets"
-        rest={players.length === 0 ? 11 : 13.5}
-        lead={
-          players.length === 0 ? undefined : (
-            // The players stand on a line of their own over the cards, so a player never reads as a card.
-            <div
-              role="group"
-              aria-label="Players"
-              data-slot="player-targets"
-              className="flex basis-full flex-wrap items-center gap-2 border-b pb-2"
-            >
-              <span aria-hidden="true" className="text-xs text-muted-foreground">
-                Players
-              </span>
-              {players.map((target) => {
-                const picked = has(target)
-                return (
-                  <Button
-                    key={targetKey(target)}
-                    size="sm"
-                    variant="outline"
-                    aria-pressed={picked}
-                    disabled={(closed || !fits(target, chosen)) && !picked}
-                    onClick={() => pick(target)}
-                    className={picked ? CHOSEN_BUTTON : undefined}
-                  >
-                    {picked ? <Check aria-hidden="true" strokeWidth={3} /> : null}
-                    {'Player' in target ? <PlayerFace seat={target.Player} /> : null}
-                    {labelOf(target)}
-                  </Button>
-                )
-              })}
-            </div>
-          )
-        }
-      />
-      {chosen.length === 0 ? null : (
-        <ul
-          aria-label="Your targets"
-          data-slot="chosen-targets"
-          className="grid max-h-44 basis-full gap-1 overflow-y-auto"
-        >
-          {chosen.map((target) => (
-            <li key={targetKey(target)} className="flex items-center justify-between gap-2 text-sm">
-              <span className="min-w-0">{labelOf(target)}</span>
-              <Button
-                size="sm"
-                variant="ghost"
-                aria-label={`Remove ${labelOf(target)}`}
-                onClick={() => pick(target)}
-              >
-                Remove
-              </Button>
-            </li>
-          ))}
-        </ul>
-      )}
     </PromptLayout>
   )
 }

@@ -22,8 +22,14 @@ pub enum CardKind {
     Phase,
     /// The emblem a hero gets on becoming a Spirit.
     Haunt,
-    /// A scheme of a boss's scheme deck, set in motion as one of its turns begins.
+    /// A scheme of a boss's scheme deck, set in motion as one of its scheme turns begins.
     Scheme,
+    /// A boss's Enrage, which begins once the heroes have had its `turn` turns.
+    Enrage,
+    /// A boss buff drawn for each fight from the theme's pool.
+    Modifier,
+    /// A boss's own risky relic, which it brings from the second boss of the ladder on.
+    BossRelic,
 }
 
 /// A card that is not on Scryfall: its printed side and the abilities it has as an emblem.
@@ -55,6 +61,9 @@ pub struct CustomCard {
     /// Cards its holder's opening hand has in addition.
     #[serde(default)]
     pub hand: u32,
+    /// The heroes' turn from which an Enrage applies; 0 for other cards.
+    #[serde(default)]
+    pub turn: u32,
     /// Its abilities, in the card DSL.
     pub abilities: Vec<Ability>,
 }
@@ -119,9 +128,15 @@ pub struct Boss {
     pub hand: u32,
     /// Its deck: card names and copies.
     pub deck: Vec<(String, u32)>,
-    /// Custom cards it starts with in its command zone.
+    /// Custom cards it starts with in its command zone: its passive.
     #[serde(default)]
     pub rules: Vec<String>,
+    /// Its Enrage card.
+    #[serde(default)]
+    pub enrage: String,
+    /// Its own risky relic, which it brings from the second boss of the ladder on.
+    #[serde(default)]
+    pub relic: String,
     /// Its phases: a phase card and the share of its starting life, in percent, at or below which it begins.
     #[serde(default)]
     pub phases: Vec<(String, u32)>,
@@ -328,6 +343,12 @@ pub struct Theme {
     /// The bosses' scheme deck, shuffled for each fight.
     #[serde(default)]
     pub schemes: Vec<String>,
+    /// Every how many boss turns a scheme is set in motion, from the boss's third.
+    #[serde(default = "every_turn")]
+    pub scheme_every: u32,
+    /// The buff modifiers one of which each fight draws for the boss.
+    #[serde(default)]
+    pub modifiers: Vec<String>,
     /// The minions a boss fields for a big party, in the order they join.
     #[serde(default)]
     pub minions: Vec<Minion>,
@@ -396,6 +417,10 @@ impl Content {
     pub fn haunt(&self) -> Option<&CustomCard> {
         self.cards.values().find(|c| c.kind == CardKind::Haunt)
     }
+}
+
+fn every_turn() -> u32 {
+    1
 }
 
 /// The content shipped with the crate, read once.

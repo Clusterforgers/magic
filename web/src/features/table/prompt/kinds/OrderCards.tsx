@@ -167,6 +167,50 @@ export const OrderCardsPrompt: PromptComponent<'OrderCards'> = ({ options }) => 
           <span className="sr-only"> {ORDER_KEYS}</span>
         </>
       }
+      choices={
+        <>
+          <p
+            data-slot="order-pile"
+            className="min-w-0 basis-full truncate text-xs font-medium text-muted-foreground"
+          >
+            {pileHeading(pile)}: first on the left
+          </p>
+          <ol
+            ref={list}
+            aria-label="Your cards in order, the first on top"
+            data-slot="card-order"
+            data-pile={pile}
+            onKeyDown={onKeyDown}
+            // What the stack, the sentence, the buttons and the clock leave of the sheet (`--sheet-max`) is the strip's.
+            className="flex max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_13rem))] basis-full flex-wrap content-start gap-2 overflow-y-auto p-0.5"
+          >
+            {shown.map((id, place) => (
+              <OrderRow
+                key={id}
+                id={id}
+                object={objects.get(id)}
+                label={labels.get(id) ?? 'A card'}
+                place={place}
+                count={count}
+                size={size}
+                onMove={move}
+              />
+            ))}
+          </ol>
+          {count === 0 ? null : (
+            <p
+              data-slot="order-preview"
+              aria-hidden="true"
+              className="basis-full text-xs text-muted-foreground"
+            >
+              {orderPreview(
+                shown.map((id) => labels.get(id) ?? 'A card'),
+                pile,
+              )}
+            </p>
+          )}
+        </>
+      }
     >
       <Button className="h-9 px-4" onClick={() => answer({ OrderCards: [...shown] })}>
         Confirm order
@@ -182,39 +226,6 @@ export const OrderCardsPrompt: PromptComponent<'OrderCards'> = ({ options }) => 
       >
         Original order
       </Button>
-      <p data-slot="order-pile" className="min-w-0 flex-1 truncate text-xs font-medium text-muted-foreground">
-        {pileHeading(pile)}: first on the left
-      </p>
-      <ol
-        ref={list}
-        aria-label="Your cards in order, the first on top"
-        data-slot="card-order"
-        data-pile={pile}
-        onKeyDown={onKeyDown}
-        // What the stack, the sentence, the buttons and the clock leave of the sheet (`--sheet-max`) is the strip's.
-        className="flex max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_13rem))] basis-full flex-wrap content-start gap-2 overflow-y-auto p-0.5"
-      >
-        {shown.map((id, place) => (
-          <OrderRow
-            key={id}
-            id={id}
-            object={objects.get(id)}
-            label={labels.get(id) ?? 'A card'}
-            place={place}
-            count={count}
-            size={size}
-            onMove={move}
-          />
-        ))}
-      </ol>
-      {count === 0 ? null : (
-        <p data-slot="order-preview" aria-hidden="true" className="basis-full text-xs text-muted-foreground">
-          {orderPreview(
-            shown.map((id) => labels.get(id) ?? 'A card'),
-            pile,
-          )}
-        </p>
-      )}
     </PromptLayout>
   )
 }

@@ -65,6 +65,46 @@ function isDrawn(element: Element, box: DOMRect, scope: ParentNode): boolean {
   return true
 }
 
+/** The size of the mark at the edge of a strip that stands in for a tile scrolled out of it. */
+const EDGE_PX = 16
+
+/**
+ * Where a seat's panel or tile that a clipping ancestor cuts off entirely is reached: a small box inside the room the
+ * clipping ancestors leave, at the point nearest to `box`, so that an arrow aimed at a tile scrolled out of a strip
+ * ends at the strip's edge. Null where nothing clips or the ancestors leave no room.
+ */
+function edgeOf(
+  element: Element,
+  box: DOMRect,
+  scope: ParentNode,
+): Pick<DOMRect, 'left' | 'top' | 'width' | 'height'> | null {
+  let room: { left: number; top: number; right: number; bottom: number } | null = null
+  for (
+    let parent = element.parentElement;
+    parent !== null && parent !== scope;
+    parent = parent.parentElement
+  ) {
+    const { overflowX, overflowY } = getComputedStyle(parent)
+    if (!clips(overflowX) && !clips(overflowY)) continue
+    const clip = parent.getBoundingClientRect()
+    room =
+      room === null
+        ? { left: clip.left, top: clip.top, right: clip.right, bottom: clip.bottom }
+        : {
+            left: Math.max(room.left, clip.left),
+            top: Math.max(room.top, clip.top),
+            right: Math.min(room.right, clip.right),
+            bottom: Math.min(room.bottom, clip.bottom),
+          }
+  }
+  if (room === null || room.right - room.left < EDGE_PX || room.bottom - room.top < EDGE_PX) return null
+  const place = (centre: number, low: number, high: number): number =>
+    Math.min(Math.max(centre - EDGE_PX / 2, low), high - EDGE_PX)
+  const left = place(box.left + box.width / 2, room.left, room.right)
+  const top = place(box.top + box.height / 2, room.top, room.bottom)
+  return { left, top, width: EDGE_PX, height: EDGE_PX }
+}
+
 /** The provider that reads the page. */
 export const domRects: RectProvider = {
   measure(anchors, origin) {
@@ -81,12 +121,19 @@ export const domRects: RectProvider = {
         const element = scope.querySelector(selector)
         if (element === null) continue
         const box = faceOf(element).getBoundingClientRect()
-        if (box.width <= 0 || box.height <= 0 || !isDrawn(element, box, scope)) continue
+        if (box.width <= 0 || box.height <= 0) continue
+        // A seat's tile scrolled out of its strip is reached at the edge of the strip it went out by.
+        const shown = isDrawn(element, box, scope)
+          ? box
+          : selector.startsWith('[data-')
+            ? edgeOf(element, box, scope)
+            : null
+        if (shown === null) continue
         found.set(anchorKey(anchor), {
-          x: box.left - base.left,
-          y: box.top - base.top,
-          width: box.width,
-          height: box.height,
+          x: shown.left - base.left,
+          y: shown.top - base.top,
+          width: shown.width,
+          height: shown.height,
         })
         break
       }

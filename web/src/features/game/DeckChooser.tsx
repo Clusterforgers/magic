@@ -275,7 +275,8 @@ export function DeckChooser({
           {wide ? (
             <div
               data-slot="deck-pane"
-              className="surface min-h-72 min-w-0 overflow-y-auto overscroll-contain p-4"
+              // As high as what it shows (at least 18 rem, at most most of the window), not stretched to the list beside it.
+              className="surface min-h-72 max-h-[70dvh] min-w-0 self-start overflow-y-auto overscroll-contain p-4"
             >
               {pane(false)}
             </div>

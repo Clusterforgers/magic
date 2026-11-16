@@ -25,6 +25,9 @@ const ART: Record<CardKind, { icon: LucideIcon; tint: string; edge: string }> = 
   Phase: { icon: FlameIcon, tint: 'from-destructive/20 to-delve/60', edge: 'border-delve' },
   Haunt: { icon: GhostIcon, tint: 'from-turn-them/20 to-turn-them/60', edge: 'border-turn-them' },
   Scheme: { icon: EyeIcon, tint: 'from-primary/20 to-primary/60', edge: 'border-primary' },
+  Enrage: { icon: FlameIcon, tint: 'from-destructive/25 to-delve/70', edge: 'border-delve' },
+  Modifier: { icon: CrownIcon, tint: 'from-delve/20 to-delve/50', edge: 'border-delve' },
+  BossRelic: { icon: GemIcon, tint: 'from-relic/25 to-delve/60', edge: 'border-delve' },
 }
 
 /** The badge of a risky relic: a warning icon and "Dangerous", with what makes it so for a screen reader. */

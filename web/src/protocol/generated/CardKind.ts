@@ -3,4 +3,4 @@
 /**
  * What a custom card is for.
  */
-export type CardKind = "Relic" | "Boss" | "Phase" | "Haunt" | "Scheme";
+export type CardKind = "Relic" | "Boss" | "Phase" | "Haunt" | "Scheme" | "Enrage" | "Modifier" | "BossRelic";

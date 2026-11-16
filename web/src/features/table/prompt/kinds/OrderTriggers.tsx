@@ -69,7 +69,72 @@ export const OrderTriggersPrompt: PromptComponent<'OrderTriggers'> = ({ options 
   }, [shown])
 
   return (
-    <PromptLayout text={orderSentence(count, note)}>
+    <PromptLayout
+      text={orderSentence(count, note)}
+      choices={
+        <>
+          {/* The triggers fill the band's width in numbered columns of at least 20 rem, read left to right. */}
+          <ol
+            aria-label="Your triggers, the one that resolves first on top"
+            data-slot="trigger-order"
+            className="grid max-h-60 basis-full grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-x-4 gap-y-1 overflow-y-auto"
+          >
+            {shown.map((entry, place) => {
+              const label = labels[entry] ?? 'A trigger'
+              return (
+                <li key={entry} className="flex items-center justify-between gap-2 text-sm">
+                  <span className="min-w-0">
+                    <span className="text-muted-foreground">{place + 1}.</span> {label}
+                    {place === 0 ? <span className="text-muted-foreground"> (resolves first)</span> : null}
+                    {place === count - 1 && count > 1 ? (
+                      <span className="text-muted-foreground"> (resolves last)</span>
+                    ) : null}
+                  </span>
+                  <span className="flex shrink-0 gap-1">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      data-entry={entry}
+                      data-move="up"
+                      aria-label={`Move ${label} up`}
+                      disabled={place === 0}
+                      focusableWhenDisabled
+                      onClick={() => move(place, -1)}
+                    >
+                      Up
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      data-entry={entry}
+                      data-move="down"
+                      aria-label={`Move ${label} down`}
+                      disabled={place === count - 1}
+                      focusableWhenDisabled
+                      onClick={() => move(place, 1)}
+                    >
+                      Down
+                    </Button>
+                  </span>
+                </li>
+              )
+            })}
+          </ol>
+          {keyed ? (
+            <label className="flex h-8 items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                data-slot="always-order"
+                className="size-4 accent-primary"
+                checked={always}
+                onChange={(event) => setAlways(event.target.checked)}
+              />
+              Always use this order
+            </label>
+          ) : null}
+        </>
+      }
+    >
       <Button
         className="h-10 px-4"
         onClick={() => {
@@ -92,64 +157,6 @@ export const OrderTriggersPrompt: PromptComponent<'OrderTriggers'> = ({ options 
       >
         Default order
       </Button>
-      {keyed ? (
-        <label className="flex h-10 items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            data-slot="always-order"
-            className="size-4 accent-primary"
-            checked={always}
-            onChange={(event) => setAlways(event.target.checked)}
-          />
-          Always use this order
-        </label>
-      ) : null}
-      <ol
-        aria-label="Your triggers, the one that resolves first on top"
-        data-slot="trigger-order"
-        className="grid max-h-60 basis-full gap-1 overflow-y-auto"
-      >
-        {shown.map((entry, place) => {
-          const label = labels[entry] ?? 'A trigger'
-          return (
-            <li key={entry} className="flex items-center justify-between gap-2 text-sm">
-              <span className="min-w-0">
-                <span className="text-muted-foreground">{place + 1}.</span> {label}
-                {place === 0 ? <span className="text-muted-foreground"> (resolves first)</span> : null}
-                {place === count - 1 && count > 1 ? (
-                  <span className="text-muted-foreground"> (resolves last)</span>
-                ) : null}
-              </span>
-              <span className="flex shrink-0 gap-1">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  data-entry={entry}
-                  data-move="up"
-                  aria-label={`Move ${label} up`}
-                  disabled={place === 0}
-                  focusableWhenDisabled
-                  onClick={() => move(place, -1)}
-                >
-                  Up
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  data-entry={entry}
-                  data-move="down"
-                  aria-label={`Move ${label} down`}
-                  disabled={place === count - 1}
-                  focusableWhenDisabled
-                  onClick={() => move(place, 1)}
-                >
-                  Down
-                </Button>
-              </span>
-            </li>
-          )
-        })}
-      </ol>
     </PromptLayout>
   )
 }

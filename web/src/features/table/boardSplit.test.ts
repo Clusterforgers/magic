@@ -7,6 +7,7 @@ import {
   boardFrames,
   MIN_ROW_SHARE,
   FLOOR_OWN_CARD_PX,
+  phoneHeadKept,
   podColumnFloor,
   shareSplit,
   splitBoards,
@@ -81,6 +82,31 @@ describe('splitBoards', () => {
     const crowdedOwn = splitBoards({ ...base, own: counts(8, 12, 6), theirs: [counts(3, 1, 0)] })
     const crowdedTheirs = splitBoards({ ...base, own: counts(3, 1, 0), theirs: [counts(8, 12, 6)] })
     expect(crowdedOwn.own).toBeGreaterThan(crowdedTheirs.own)
+  })
+
+  it('keeps an empty board its least share below the strips of seats that left', () => {
+    const own = counts(10, 14, 8)
+    const plain = splitBoards({ ...base, room: 700, own, theirs: [NONE] })
+    const led = splitBoards({ ...base, room: 700, theirChrome: 24 + 64, theirLead: 64, own, theirs: [NONE] })
+    expect(plain.opponents).toBeLessThan(700 * MIN_ROW_SHARE + 8)
+    expect(led.opponents).toBeGreaterThanOrEqual(700 * MIN_ROW_SHARE + 64)
+  })
+
+  it.each([
+    ['an empty opponent', counts(3, 4, 2), [NONE], 900],
+    ['two sparse opponents', counts(2, 2, 1), [counts(1, 1, 0), NONE], 1000],
+    ['an empty board facing an empty board of yours but lands', counts(5, 0, 0), [NONE], 800],
+  ])('shares the room neither board can use evenly: %s', (_, own, theirs, room) => {
+    const split = splitBoards({ ...base, room, own, theirs })
+    expect(split.ownCard).toBeGreaterThan(0)
+    const ownSpare =
+      split.own -
+      Math.max(room * MIN_ROW_SHARE, base.ownChrome + laneHeight(base.ownWidth, own, split.ownCard))
+    const theirNeed = Math.max(...theirs.map((each) => laneHeight(base.theirWidth, each, split.theirCard)))
+    const theirSpare = split.opponents - Math.max(room * MIN_ROW_SHARE, base.theirChrome + theirNeed)
+    expect(ownSpare).toBeGreaterThan(8)
+    expect(ownSpare).toBeCloseTo(theirSpare, 6)
+    expect(split.opponents).toBeGreaterThan(room * MIN_ROW_SHARE)
   })
 })
 
@@ -169,6 +195,54 @@ describe('the prompt sheet of a split table', () => {
       )
     },
   )
+})
+
+describe("a phone's sheet and the boss's head", () => {
+  // The boss fight on a phone (`/dev/table?seats=4&boss=0&bare=1&prompt=mulligan`): the abilities bar and the boss's
+  // pod reach 190 px down the opponents' area, and the opening hand's sheet wants 224 px over the strip.
+  const viewport = { width: 390, height: 844 }
+  const table = planTable({
+    viewport,
+    seatCount: 4,
+    viewer: 0,
+    sides: { boss: 3, enemies: [3] },
+  })
+  const state = fixtureState(buildFixture({ seats: 4 }))
+  const counts = { ...boardCounts(state, table.seats), allies: [] as LaneCounts[] }
+
+  it.each([
+    ['a sheet of answers', 'sheet'],
+    ['a sheet of cards', 'sheetWide'],
+  ] as const)("leaves the boss's bar and pod clear of %s, with the sheet's room kept", (_name, key) => {
+    const head = 190
+    const overhang = 224
+    const regions = splitRegions(table.regions, table.seats, counts, 64, head, overhang)
+    const kept = theirChromeOf(boardFrames(table.regions, table.seats).theirs.chrome, head)
+    expect(kept).toBeGreaterThan(SHEET_KEEP_PX)
+    const over = regions[key] - regions.shared
+    expect(regions.opponents - over).toBeGreaterThanOrEqual(kept - 1e-9)
+    // The sheet keeps the room it had where the head was no taller than the usual keep.
+    const low = splitRegions(table.regions, table.seats, counts, 64, 0, overhang)
+    expect(over).toBeGreaterThanOrEqual(low[key] - low.shared - 1e-9)
+    expect(regions.own).toBeGreaterThanOrEqual((regions.opponents + regions.own) * MIN_ROW_SHARE - 1e-9)
+  })
+
+  it('leaves a phone of tiles as it was: its head is under the usual keep', () => {
+    const plain = planTable({ viewport, seatCount: 4, viewer: 0 })
+    const flat = boardCounts(state, plain.seats)
+    const without = splitRegions(plain.regions, plain.seats, flat, 64, 0, 0)
+    const withSheet = splitRegions(plain.regions, plain.seats, flat, 64, 0, 224)
+    expect(withSheet.opponents).toBe(without.opponents)
+    expect(withSheet.sheetWide).toBe(without.sheetWide)
+  })
+
+  it('grows the opponents only by the head over the keep, never past the least of your row', () => {
+    const split = { opponents: 300, own: 300, ownCard: 60, theirCard: 48 }
+    expect(phoneHeadKept(split, SHEET_KEEP_PX, 200)).toBe(split)
+    expect(phoneHeadKept(split, SHEET_KEEP_PX + 40, 0)).toBe(split)
+    expect(phoneHeadKept(split, SHEET_KEEP_PX + 40, 200).opponents).toBe(340)
+    expect(phoneHeadKept(split, SHEET_KEEP_PX + 400, 200)).toMatchObject({ opponents: 450, own: 150 })
+  })
 })
 
 describe('the chrome of the opponents row', () => {

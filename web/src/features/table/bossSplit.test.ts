@@ -13,9 +13,23 @@ import {
   splitBoss,
 } from './bossSplit'
 import type { BossBoard, BossSplitInput } from './bossSplit'
-import { laneHeight } from './laneFit'
+import { LANE_LIMITS, ladderOf, laneHeight } from './laneFit'
 import type { LaneCounts } from './laneFit'
-import { ALLY_STRIP_PX, HAND_SLIM_PX, gridRows, planTable, regionSizes } from './layout'
+import { must } from '@/test-utils/batches'
+import { bossSplitOf } from './bossRows'
+import { fixtureState, withBoss } from './dev/devGame'
+import { buildFixture } from './dev/fixture'
+import { seatCounts } from './boardSplit'
+import { bossSidesOf } from './selectors'
+import {
+  ALLY_STRIP_PX,
+  HAND_SLIM_PX,
+  POD_COLUMN_PX,
+  ZONE_GAP_PX,
+  gridRows,
+  planTable,
+  regionSizes,
+} from './layout'
 import type { BossSides } from './layout'
 
 const board = (width: number, counts: LaneCounts, head?: number): BossBoard =>
@@ -142,6 +156,56 @@ describe('splitBoss', () => {
       expect(split.opponents).toBeLessThanOrEqual(room * BOSS_SIDE_MOST + 1e-6)
       expect(split.band === ALLY_STRIP_PX || split.band >= ALLY_ROW_MIN_PX).toBe(true)
       expect(split.heroCard).toBe(0)
+    },
+  )
+
+  it.each([2, 5])(
+    'squeezed with %i crowded allies, your board keeps what it needs at the floor before the allies grow',
+    (count) => {
+      for (const room of [480, 600, 700]) {
+        const split = splitBoss(
+          input({ room, boss: 40, allies: Array.from({ length: count }, () => 40), own: 40 }),
+        )
+        const yours = split.own - split.band - 8
+        const need = 24 + laneHeight(930, permanents(40), ladderOf(LANE_LIMITS).at(0))
+        expect(yours).toBeGreaterThanOrEqual(Math.min(need, split.own - 8 - ALLY_ROW_MIN_PX) - 1e-6)
+      }
+    },
+  )
+
+  // The dev route's fight (`/dev/table?seats=4&boss=0`): three heroes of 40 permanents, squeezed or not.
+  it.each([
+    [2, 1024, 768],
+    [3, 1024, 768],
+    [3, 1280, 720],
+    [3, 1400, 900],
+    [3, 1530, 898],
+    [3, 1873, 1047],
+    [4, 1400, 900],
+  ])(
+    '%i heroes at 40 permanents at %i x %i: your lanes get the height they need',
+    (heroes, width, height) => {
+      const state = fixtureState(withBoss(buildFixture({ seats: heroes + 1 }), 0))
+      const plan = planTable({
+        viewport: { width, height },
+        seatCount: heroes + 1,
+        viewer: 0,
+        sides: must(bossSidesOf(must(state.view))),
+      })
+      const regions = plan.regions
+      const counts = {
+        own: seatCounts(state, 0),
+        theirs: plan.seats.boards.map((seat) => seatCounts(state, seat)),
+        allies: plan.seats.allies.map((seat) => seatCounts(state, seat)),
+        ownReady: true,
+      }
+      const { split } = bossSplitOf(regions, plan.seats, counts, 0, 0)
+      const gap = counts.allies.length === 0 ? 0 : ZONE_GAP_PX
+      // Your row less the allies' row, its gap, the row's padding and the board's.
+      const lanes = split.own - split.band - gap - 2 * ZONE_GAP_PX - 2 * 4
+      const ownWidth = regions.main.width - 2 * ZONE_GAP_PX - POD_COLUMN_PX - ZONE_GAP_PX - 2 * 4
+      const card = split.heroCard > 0 ? split.heroCard : ladderOf(LANE_LIMITS).at(0)
+      expect(lanes).toBeGreaterThanOrEqual(laneHeight(ownWidth, counts.own, card) - 1e-6)
     },
   )
 

@@ -144,6 +144,25 @@ describe('the note in the centre strip', () => {
     expect(note()).toBeNull()
   })
 
+  it.each([
+    ['Attack', 'No creature can attack'],
+    ['Block', 'No creature can block'],
+  ] as const)(
+    'beside a prompt says "%s" as one short status line, the whole sentence in its tooltip and for a reader',
+    (kind, short) => {
+      const { add, note, update } = renderQuiet()
+      add(nothing(0, kind))
+      update(() => ({ pending: priority(1) }))
+      const shown = must(note())
+      expect(shown).toHaveAttribute('title', NOTE_TEXT[kind])
+      expect(shown).toHaveTextContent(short)
+      expect(shown).toHaveTextContent(NOTE_TEXT[kind])
+      expect(must(shown.querySelector('[aria-hidden="true"]'))).toHaveTextContent(short)
+      expect(shown).toHaveClass('text-xs', 'leading-4')
+      expect(shown).not.toHaveClass('py-1')
+    },
+  )
+
   it('stays through a decision that is replaced by the next, and clears when the last is answered', () => {
     const { add, note, update } = renderQuiet()
     add(nothing(0, 'Block'))

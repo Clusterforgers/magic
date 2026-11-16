@@ -81,7 +81,7 @@ export function PreviewCard({
       ? undefined
       : ({ '--card-w': `${width}px`, '--card-h': `${(width * 7) / 5}px` } as CSSProperties)
   return (
-    <div className="grid gap-2" style={box}>
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-2" style={box}>
       <CardWidthContext.Provider value={width ?? null}>
         {flips && shown !== own ? (
           <CardImage
@@ -134,7 +134,10 @@ export function PreviewCard({
                 </p>
               ) : null}
               {(faces[at]?.oracle_text ?? '') === '' ? null : (
-                <p data-slot="preview-oracle" className="whitespace-pre-line select-text">
+                <p
+                  data-slot="preview-oracle"
+                  className="whitespace-pre-line select-text [overflow-wrap:anywhere]"
+                >
                   {faces[at]?.oracle_text}
                 </p>
               )}
@@ -142,7 +145,10 @@ export function PreviewCard({
           ))}
         </ul>
       ) : face === undefined || face.oracle_text === '' ? null : (
-        <p data-slot="preview-oracle" className="text-sm whitespace-pre-line select-text">
+        <p
+          data-slot="preview-oracle"
+          className="text-sm whitespace-pre-line select-text [overflow-wrap:anywhere]"
+        >
           {face.oracle_text}
         </p>
       )}

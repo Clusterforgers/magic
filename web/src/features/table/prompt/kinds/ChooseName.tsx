@@ -88,65 +88,72 @@ export const ChooseNamePrompt: PromptComponent<'ChooseName'> = ({ options }) => 
   }
 
   return (
-    <PromptLayout text={optionSentence(askerWords(source?.name), options.text ?? 'Name a card.')}>
-      <form className="flex basis-full flex-wrap items-center gap-2" data-slot="name-form" onSubmit={submit}>
-        <label htmlFor={fieldId} className="sr-only">
-          Card name
-        </label>
-        <Input
-          ref={field}
-          id={fieldId}
-          type="search"
-          autoComplete="off"
-          placeholder="Search for a card"
-          className="h-10 min-w-48 flex-1"
-          value={typed}
-          onChange={(event) => setTyped(event.target.value)}
-        />
-        <Button type="button" variant="outline" className="h-10 px-4" onClick={() => name('')}>
-          Name no card
-        </Button>
-        {failed ? <span role="alert">The card search is not available.</span> : null}
-        {looked.length > 0 ? (
+    <PromptLayout
+      text={optionSentence(askerWords(source?.name), options.text ?? 'Name a card.')}
+      choices={
+        <form
+          className="flex basis-full flex-wrap items-center gap-2"
+          data-slot="name-form"
+          onSubmit={submit}
+        >
+          <label htmlFor={fieldId} className="sr-only">
+            Card name
+          </label>
+          <Input
+            ref={field}
+            id={fieldId}
+            type="search"
+            autoComplete="off"
+            placeholder="Search for a card"
+            className="h-10 min-w-48 flex-1"
+            value={typed}
+            onChange={(event) => setTyped(event.target.value)}
+          />
+          <Button type="button" variant="outline" className="h-10 px-4" onClick={() => name('')}>
+            Name no card
+          </Button>
+          {failed ? <span role="alert">The card search is not available.</span> : null}
+          {looked.length > 0 ? (
+            <div
+              role="group"
+              aria-label="Cards you looked at"
+              data-slot="name-looked"
+              className="flex basis-full flex-wrap items-center gap-2"
+            >
+              <span className="text-xs text-muted-foreground">You looked at:</span>
+              {looked.map((seen) => (
+                <Button
+                  key={seen}
+                  type="button"
+                  variant="secondary"
+                  className="h-10 px-4"
+                  onClick={() => name(seen)}
+                >
+                  {seen}
+                </Button>
+              ))}
+            </div>
+          ) : null}
           <div
             role="group"
-            aria-label="Cards you looked at"
-            data-slot="name-looked"
-            className="flex basis-full flex-wrap items-center gap-2"
+            aria-label="Cards"
+            data-slot="name-hits"
+            className="flex basis-full flex-wrap gap-2"
           >
-            <span className="text-xs text-muted-foreground">You looked at:</span>
-            {looked.map((seen) => (
+            {hits.map((hit) => (
               <Button
-                key={seen}
+                key={hit.oracle_id}
                 type="button"
-                variant="secondary"
+                variant="outline"
                 className="h-10 px-4"
-                onClick={() => name(seen)}
+                onClick={() => name(hit.name)}
               >
-                {seen}
+                {hit.name}
               </Button>
             ))}
           </div>
-        ) : null}
-        <div
-          role="group"
-          aria-label="Cards"
-          data-slot="name-hits"
-          className="flex basis-full flex-wrap gap-2"
-        >
-          {hits.map((hit) => (
-            <Button
-              key={hit.oracle_id}
-              type="button"
-              variant="outline"
-              className="h-10 px-4"
-              onClick={() => name(hit.name)}
-            >
-              {hit.name}
-            </Button>
-          ))}
-        </div>
-      </form>
-    </PromptLayout>
+        </form>
+      }
+    />
   )
 }

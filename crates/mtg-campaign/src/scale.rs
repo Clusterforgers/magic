@@ -10,10 +10,8 @@ pub const REINFORCEMENTS: &str = "reinforcements";
 pub const RESERVES: &str = "reserves";
 /// The boss card that gives a boss an extra combat each turn.
 pub const WARPATH: &str = "warpath";
-/// The boss card whose anthem grows with the boss's turns.
+/// The boss card whose end-step drain grows with the boss's turns: every boss's one life loss with no way out.
 pub const ESCALATION: &str = "escalation";
-/// The boss card that drains the party more each turn from the boss's tenth on.
-pub const ENRAGE: &str = "enrage";
 /// The phase that caps the attackers at the boss in its last phase.
 pub const BULWARK: &str = "bulwark";
 /// The most heroes a table is scaled for.
@@ -92,12 +90,14 @@ impl Scale {
         COMBATS[self.heroes]
     }
 
-    /// The custom cards in the boss's command zone from the start: its own, Escalation and Enrage, and by party size
-    /// Reinforcements, Reserves and Warpath for each extra combat.
+    /// The custom cards in the boss's command zone from the start: its passive, its Enrage, Escalation, and by party
+    /// size Reinforcements, Reserves and Warpath for each extra combat.
     pub fn rules(self, boss: &Boss) -> Vec<String> {
         let mut rules = boss.rules.clone();
+        if !boss.enrage.is_empty() {
+            rules.push(boss.enrage.clone());
+        }
         rules.push(ESCALATION.to_owned());
-        rules.push(ENRAGE.to_owned());
         rules.extend(std::iter::repeat_n(
             REINFORCEMENTS.to_owned(),
             REINFORCED[self.heroes],
