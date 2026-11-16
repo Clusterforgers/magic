@@ -1,0 +1,44 @@
+{
+  "oracle_id": "9f95027a-5f04-48b4-99a0-8913be3a520a",
+  "name": "Selective Obliteration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Selective Obliteration",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "ChooseValue": {
+                  "who": "EachPlayer",
+                  "kind": "Color",
+                  "as": "color"
+                }
+              },
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            "Colorless",
+                            {
+                              "R6600OnlyControllersColor": "color"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

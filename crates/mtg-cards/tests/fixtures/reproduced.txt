@@ -46,6 +46,7 @@ Alchemist's Retrieval
 Alhammarret's Archive
 Alisaie Leveilleur
 All That Glitters
+All Will Be One
 All of History, All at Once
 Alpha Deathclaw
 Alphinaud Leveilleur
@@ -187,6 +188,7 @@ Bighorner Rancher
 Bilious Skulldweller
 Bill Potts
 Binding the Old Gods
+Biomancer's Familiar
 Biomass Mutation
 Biomechan Engineer
 Biotech Specialist
@@ -392,6 +394,7 @@ Complaints Clerk
 Composer of Spring
 Conclave Sledge-Captain
 Conclave Tribunal
+Conduit of Worlds
 Conifer Wurm
 Consider
 Consign // Oblivion
@@ -2127,6 +2130,7 @@ Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Birth of Meletis
 The Celestus
+The Chain Veil
 The Cruelty of Gix
 The Dalek Emperor
 The Elder Dragon War

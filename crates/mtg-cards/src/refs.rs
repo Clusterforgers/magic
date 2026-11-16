@@ -490,6 +490,9 @@ pub enum Pred {
     /// Matches the value the resolution remembered under the name (`Effect::ChooseValue`): has the colour, the creature,
     /// land or card type or the card name; a number or a word matches nothing.
     ChosenAs(String),
+    /// Is exactly the one colour its controller chose under the name, when each player chose one (`ChooseValue` by
+    /// several players): "it's only the color its controller chose".
+    R6600OnlyControllersColor(String),
     /// Its power, toughness, mana value or loyalty compares to the amount.
     Compare {
         /// The characteristic.

@@ -1,7 +1,7 @@
 {
   "oracle_id": "923d44a9-774d-459c-9cec-1d5b081b51f0",
   "name": "Biomancer's Familiar",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Biomancer's Familiar",
@@ -12,14 +12,22 @@
             "applies_to": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
             "change": "Reduce",
             "mana": "{2}",
-            "activating": "Any",
+            "activating": "Every",
             "least": 1
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 142, "end": 246 }
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "R6600AdaptsFresh": { "Target": 0 } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

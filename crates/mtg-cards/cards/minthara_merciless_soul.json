@@ -1,35 +1,83 @@
 {
   "oracle_id": "fad0c174-4c4a-4662-bd1f-224886e826e1",
   "name": "Minthara, Merciless Soul",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Minthara, Merciless Soul",
       "oracle_fingerprint": "2ffb4bbbd99730c8c5ff19d7518f5da8",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 77 } }
+          "Keyword": {
+            "Ward": [
+              {
+                "GenericOf": {
+                  "Counters": {
+                    "on": "You",
+                    "counter": {
+                      "Other": "experience"
+                    }
+                  }
+                }
+              }
+            ]
+          }
         },
         {
           "Triggered": {
-            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "when": {
+              "StepBegins": {
+                "step": "End",
+                "whose": "You"
+              }
+            },
             "if": {
               "Compare": {
-                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "left": {
+                  "Tallied": {
+                    "who": "You",
+                    "what": "PermanentsLeftUnder"
+                  }
+                },
                 "op": "Ge",
                 "right": 1
               }
             },
-            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "experience" } } }]
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "You",
+                  "counter": {
+                    "Other": "experience"
+                  }
+                }
+              }
+            ]
           }
         },
         {
           "Static": {
-            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "affected": {
+              "Each": [
+                {
+                  "Type": "Creature"
+                },
+                {
+                  "ControlledBy": "You"
+                }
+              ]
+            },
             "mods": [
               {
                 "ModifyPT": {
-                  "power": { "Counters": { "on": "You", "counter": { "Other": "experience" } } },
+                  "power": {
+                    "Counters": {
+                      "on": "You",
+                      "counter": {
+                        "Other": "experience"
+                      }
+                    }
+                  },
                   "toughness": 0
                 }
               }

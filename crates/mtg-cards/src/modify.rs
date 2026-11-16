@@ -1081,6 +1081,12 @@ pub enum GameRule {
     /// The players may activate the loyalty abilities of planeswalkers they control twice each turn rather than only
     /// once (CR 606.3).
     LoyaltyTwice(Ref),
+    /// For each planeswalker the players control, they may activate one of its loyalty abilities once more this turn
+    /// as though none had been activated (CR 606.3): each such rule raises the allowance by one (The Chain Veil).
+    R6600LoyaltyOnceMore(Ref),
+    /// The next time the creatures adapt this turn, each adapts as though it had no +1/+1 counters on it (CR 701.46a):
+    /// the rule is used up by that adapt.
+    R6600AdaptsFresh(Ref),
     /// The controller may pay this cost rather than the echo cost of each permanent they control (CR 702.30, CR 118.9):
     /// "You may pay {0} rather than pay the echo cost for permanents you control." Paying it counts as paying echo.
     EchoRather(Cost),

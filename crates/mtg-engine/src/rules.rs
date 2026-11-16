@@ -297,6 +297,10 @@ pub enum Rule {
     NoMaxHandSize(Vec<PlayerId>),
     /// The players may activate each of their planeswalkers' loyalty abilities twice each turn (CR 606.3).
     LoyaltyTwice(Vec<PlayerId>),
+    /// The players may activate one loyalty ability of each of their planeswalkers once more this turn (CR 606.3).
+    R6600LoyaltyOnceMore(Vec<PlayerId>),
+    /// The next time each creature adapts, it adapts as though it had no +1/+1 counters (CR 701.46a); read by the adapt.
+    R6600AdaptsFresh(Vec<ObjectRef>),
     /// The players may pay the cost rather than the echo cost of each permanent they control (CR 702.30).
     EchoRather {
         /// The players it covers.
@@ -740,6 +744,7 @@ impl RuleEffect {
         let gone = |r: &ObjectRef| state.object(r.id).is_none_or(|o| o.counter() != r.counter);
         match &self.rule {
             Rule::MustAttack(named)
+            | Rule::R6600AdaptsFresh(named)
             | Rule::MustBlock(named)
             | Rule::CantBeCountered(named)
             | Rule::CantBeRegenerated(named)
@@ -890,6 +895,8 @@ pub(crate) struct RulesInForce {
     no_hand_limit: BTreeSet<PlayerId>,
     /// The players who may activate each planeswalker's loyalty abilities twice each turn.
     loyalty_twice: BTreeSet<PlayerId>,
+    /// For each player, how many more loyalty activations of each of their planeswalkers the rules in force allow.
+    loyalty_once_more: BTreeMap<PlayerId, u32>,
     /// The costs each player may pay rather than the echo cost of a permanent they control, in the order the rules began.
     echo_rather: Vec<(PlayerId, mtg_cards::cost::Cost)>,
     /// The reveals of first draws in force: the controller, the source, whether optional, whether on their turns only.
@@ -1431,6 +1438,13 @@ impl RulesInForce {
                 .extend(players.iter().map(|player| (*player, controller))),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
             Rule::LoyaltyTwice(players) => self.loyalty_twice.extend(players),
+            Rule::R6600AdaptsFresh(_) => {}
+            Rule::R6600LoyaltyOnceMore(players) => {
+                for player in players {
+                    let more = self.loyalty_once_more.entry(*player).or_default();
+                    *more = more.saturating_add(1);
+                }
+            }
             Rule::EchoRather { players, cost } => self
                 .echo_rather
                 .extend(players.iter().map(|player| (*player, cost.clone()))),
@@ -1718,6 +1732,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             combat: *combat,
         },
         GameRule::MustAttack(who) => Rule::MustAttack(objects(who, Zone::Battlefield)?),
+        GameRule::R6600AdaptsFresh(who) => Rule::R6600AdaptsFresh(objects(who, Zone::Battlefield)?),
         GameRule::MustAttackPlayers { who, players } => Rule::MustAttackPlayers(
             objects(who, Zone::Battlefield)?
                 .into_iter()
@@ -1960,6 +1975,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::NoMaxHandSize(who) => Rule::NoMaxHandSize(scope.players(who)?),
         GameRule::LoyaltyTwice(who) => Rule::LoyaltyTwice(scope.players(who)?),
+        GameRule::R6600LoyaltyOnceMore(who) => Rule::R6600LoyaltyOnceMore(scope.players(who)?),
         GameRule::EchoRather(cost) => Rule::EchoRather {
             players: scope.players(&Ref::You)?,
             cost: cost.clone(),
@@ -2090,6 +2106,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
             tax.mana.symbols().is_empty() && tax.life == 0 && tax.costs.is_empty()
         }
         Rule::MustAttack(named)
+        | Rule::R6600AdaptsFresh(named)
         | Rule::MustBlock(named)
         | Rule::CantBeCountered(named)
         | Rule::CantBeRegenerated(named)
@@ -2142,6 +2159,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::NoLegendRule(players)
         | Rule::NoMaxHandSize(players)
         | Rule::LoyaltyTwice(players)
+        | Rule::R6600LoyaltyOnceMore(players)
         | Rule::EchoRather { players, .. }
         | Rule::BoastTwice(players)
         | Rule::LoyaltyAnyTime(players)
@@ -2341,6 +2359,7 @@ static NONE: RulesInForce = RulesInForce {
     exile_found: Vec::new(),
     no_hand_limit: BTreeSet::new(),
     loyalty_twice: BTreeSet::new(),
+    loyalty_once_more: BTreeMap::new(),
     echo_rather: Vec::new(),
     reveal_first_draw: Vec::new(),
     boast_twice: BTreeSet::new(),
@@ -2756,13 +2775,21 @@ pub fn skips_extra_turns(state: &GameState, player: PlayerId) -> bool {
 }
 
 /// How many times each turn `player` may activate the loyalty abilities of one planeswalker they control: twice under a
-/// rule that allows it (Oath of Teferi), else once (CR 606.3).
+/// rule that allows it (Oath of Teferi), else once (CR 606.3), and once more for each rule that grants one more
+/// activation this turn (The Chain Veil).
 pub fn loyalty_activations(state: &GameState, player: PlayerId) -> u32 {
-    if state.rules().loyalty_twice.contains(&player) {
+    let base: u32 = if state.rules().loyalty_twice.contains(&player) {
         2
     } else {
         1
-    }
+    };
+    let more = state
+        .rules()
+        .loyalty_once_more
+        .get(&player)
+        .copied()
+        .unwrap_or(0);
+    base.saturating_add(more)
 }
 
 /// The costs `player` may pay rather than the echo cost of a permanent they control (Thick-Skinned Goblin), in the

@@ -960,7 +960,7 @@ impl<'a> Walker<'a> {
             // An Aura is attached to a permanent, or to a player it enchants ("Curses attached to you").
             Pred::AttachedTo(r) => self.reference(r, Kind::Either),
             Pred::EnchantableBy(r) => self.reference(r, Kind::Object),
-            Pred::ChosenAs(name) => self.chosen_as(name),
+            Pred::ChosenAs(name) | Pred::R6600OnlyControllersColor(name) => self.chosen_as(name),
             Pred::Named(name) => self
                 .names
                 .push((self.face, self.current_path(), name.clone())),
@@ -6092,6 +6092,7 @@ impl Walker<'_> {
                 w.at("chooser", |w| w.reference(chooser, Kind::Player));
             }),
             GameRule::MustAttack(who)
+            | GameRule::R6600AdaptsFresh(who)
             | GameRule::MustBlock(who)
             | GameRule::CantBeCountered(who)
             | GameRule::CantBeRegenerated(who)
@@ -6270,6 +6271,7 @@ impl Walker<'_> {
             | GameRule::R6007ExhaustAgain(who)
             | GameRule::NoMaxHandSize(who)
             | GameRule::LoyaltyTwice(who)
+            | GameRule::R6600LoyaltyOnceMore(who)
             | GameRule::BoastTwice(who)
             | GameRule::LoyaltyAnyTime(who)
             | GameRule::LoyaltyCostsMore { who, .. } => {

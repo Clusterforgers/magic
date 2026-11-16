@@ -70,6 +70,11 @@ pub(crate) const LET: &str = "~let:";
 /// a tab) instead: what `Effect::ChooseValue` remembers for the rest of the resolution.
 pub(crate) const CHOSEN_VALUE: &str = "~value:";
 
+/// The name a value one of several choosers chose is remembered under: the value of `name` for `player`.
+pub(crate) fn r6600_player_value(name: &str, player: PlayerId) -> String {
+    format!("{name}@{}", player.0)
+}
+
 /// The prefix of the bound name (`~legal:<index>`) under which the first step records the targets of a specification
 /// that are legal as the resolution begins: the later steps act on them even after an earlier step made them illegal
 /// (CR 608.2b).
