@@ -252,6 +252,10 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
     }[attacked]
     return `can't attack ${whom}`
   }
+  if ('R6601CantAttackPlayers' in modification) {
+    const seats = joinWords(modification.R6601CantAttackPlayers.players.map((seat) => n.seat(seat)))
+    return `can't attack ${seats} or planeswalkers they control`
+  }
   if ('CantAttackOwner' in modification) {
     const whom = {
       Player: 'its owner',

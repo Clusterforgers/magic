@@ -1104,6 +1104,10 @@ describe('events with more than one shape', () => {
       "Hill Giant can't attack Ana until end of turn",
     ],
     [
+      effect(objects(2), { R6601CantAttackPlayers: { players: [0, 1] } }, 'UntilEndOfTurn'),
+      "Hill Giant can't attack Ana and Bo or planeswalkers they control until end of turn",
+    ],
+    [
       effect(objects(2), { CantAttackOwner: { attacked: 'Both' } }, 'UntilEndOfTurn'),
       "Hill Giant can't attack its owner or planeswalkers its owner controls until end of turn",
     ],
