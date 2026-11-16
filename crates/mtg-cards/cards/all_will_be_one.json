@@ -1,0 +1,40 @@
+{
+  "oracle_id": "477374dc-042c-48f7-9ebe-99c15d8ae04f",
+  "name": "All Will Be One",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "All Will Be One",
+      "oracle_fingerprint": "8142ec52a48eccf584981719956b8192",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": {
+                  "AnyOf": [
+                    { "Batch": { "CountersPut": { "each": true } } },
+                    { "Batch": { "PlayerCountersPut": { "who": "EachPlayer" } } }
+                  ]
+                },
+                "by": "You"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    "Opponent",
+                    { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                    { "Object": [{ "Type": "Planeswalker" }, { "ControlledBy": "Opponents" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

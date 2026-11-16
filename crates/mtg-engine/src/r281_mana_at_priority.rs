@@ -13,7 +13,7 @@ use crate::state::GameState;
 
 /// Whether `rules` is a mana ability that the planner never activates, so it is activated at priority and resolves
 /// at once.
-pub(crate) fn r281_at_priority(rules: &Ability) -> bool {
+pub fn r281_at_priority(rules: &Ability) -> bool {
     rules.is_mana_ability() && plain_mana_ability(rules).is_none() && mana_shape(rules).is_none()
 }
 

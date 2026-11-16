@@ -1,7 +1,7 @@
 {
   "oracle_id": "0757c5a7-e51b-4c39-bb4d-b32657c10cb4",
   "name": "Lilah, Undefeated Slickshot",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Lilah, Undefeated Slickshot",
@@ -9,9 +9,26 @@
       "abilities": [
         { "Keyword": "Prowess" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 93, "end": 349 }
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } },
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "CastFrom": "Hand" }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "R6503Resolves": { "what": [{ "Is": "Triggering" }] } },
+                  "by": { "Instead": [{ "Plot": { "what": "Triggering" } }] },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

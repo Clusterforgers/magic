@@ -1,6 +1,6 @@
 //! Goal: a Delves fight whose game ends without a result is settled by the run and never hangs it: a fight lobby that
 //! expires, a started game the janitor closes (a bot ally is no person) and a lobby the host closes each count as a
-//! lost fight (a heart, every hero at half life, a new game; defeat with no hearts left); the host's Retreat ends the
+//! lost fight (a heart, every hero at full life before the first boss, a new game; defeat with no hearts left); the host's Retreat ends the
 //! table and counts the same way, for the host alone and only in a fight.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -115,13 +115,16 @@ async fn status_of(pool: &PgPool, game: &str) -> RecordStatus {
         .status
 }
 
-/// What a fight lost without a result leaves: one heart gone, every hero at half life, a new game waiting, and the
+/// What a fight lost without a result leaves: one heart gone, every hero at full life (the first boss), a new game waiting, and the
 /// chronicle saying how.
 fn assert_lost(view: &Value, old: &str, how: &str) {
     assert_eq!(view["run"]["hearts"], 2, "{}", view["run"]["log"]);
     assert_ne!(game_of(view), old, "the fight is made again");
     for hero in view["run"]["heroes"].as_array().unwrap() {
-        assert_eq!(hero["life"], 20, "every hero regroups at half life");
+        assert_eq!(
+            hero["life"], 40,
+            "every hero regroups at full life after the first boss"
+        );
     }
     assert!(last_line(view).starts_with(how), "{}", last_line(view));
 }

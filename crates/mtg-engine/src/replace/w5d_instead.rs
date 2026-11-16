@@ -47,7 +47,8 @@ impl Pass<'_> {
             | Unit::LifeLoss { player } => (Some(Target::Player(*player)), None),
             Unit::Move { object: id, .. }
             | Unit::Enter { object: id, .. }
-            | Unit::Attach { object: id } => (object(*id), None),
+            | Unit::Attach { object: id }
+            | Unit::Transform { object: id, .. } => (object(*id), None),
             Unit::Other => (None, None),
         };
         let amount = match &self.slots[at].item {
@@ -106,6 +107,13 @@ impl Pass<'_> {
             &mut || answers.next().cloned(),
         ) {
             Ok(Inline::Events(mut events)) => {
+                // A permanent remembers what the shield its ability made exiled, as any effect of it (CR 607.2a).
+                if matches!(candidate.origin, Origin::Shield(_))
+                    && let Some(remembered) =
+                        crate::memory::exiled_by(candidate.object, &events, state)
+                {
+                    events.push(remembered);
+                }
                 // A shuffle is drawn once the batch is known (`g12a_order_shuffles`): two effects of one batch that
                 // each shuffle a card into the same library shuffle both cards.
                 for event in &mut events {
@@ -120,9 +128,10 @@ impl Pass<'_> {
         }
     }
 
-    /// The state with the cards the batch's other events take from a library or a graveyard already gone, when there are
-    /// such cards: effects run in place of two events of one batch (two combat damage events that each become "exile that
-    /// many cards from the top of their library" or "exile that many cards from your graveyard") take different cards.
+    /// The state with the cards the batch's other events take from a library or a graveyard already gone, and the counters
+    /// they remove already off, when there are such: effects run in place of two events of one batch (two combat damage
+    /// events that each become "exile that many cards from the top of their library" or "remove that many +1/+1 counters
+    /// from it") take different cards and remove no more counters than there are (CR 122.8, 609.3).
     fn taken_by_the_batch(&self, at: usize) -> Option<GameState> {
         let taken: Vec<&Event> = self
             .slots
@@ -136,6 +145,9 @@ impl Pass<'_> {
                         ..
                     },
                 ) => Some(event),
+                Item::One(event @ Event::CountersChanged(CountersChanged { delta: ..0, .. })) => {
+                    Some(event)
+                }
                 _ => None,
             })
             .collect();

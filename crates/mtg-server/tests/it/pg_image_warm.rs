@@ -179,6 +179,7 @@ async fn table_with(pool: &PgPool, behavior: Behavior, lines: Lines) -> Table {
             by_hand: Vec::new(),
             attractions: Vec::new(),
             stickers: Vec::new(),
+            satchel: Vec::new(),
         }
     });
     let recipe = GameRecipe::normal(5, decks);

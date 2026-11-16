@@ -83,7 +83,7 @@ export const CONTENT: DelveContent = {
           label: 'Pay the toll',
           outcomes: [{ Gold: -25 }, 'CardPick'],
           needs: { gold: 25, life: 0 },
-          summary: '−25 gold, a card for your deck',
+          summary: '−25 gold, a card for your Satchel',
         },
         {
           label: 'Push past',
@@ -112,7 +112,8 @@ export function hero(over: Partial<Hero> = {}): Hero {
     life: 40,
     gold: 0,
     relics: [],
-    cards: [],
+    satchel: [],
+    upgrades: [],
     offers: [],
     ...over,
   }
@@ -121,6 +122,7 @@ export function hero(over: Partial<Hero> = {}): Hero {
 export function run(over: Partial<Run> = {}): Run {
   return {
     heat: 0,
+    content: 1,
     timers: 'relaxed',
     theme: 'warrens',
     map: {
@@ -152,6 +154,10 @@ export function delveView(over: Partial<DelveView> = {}, runOver: Partial<Run> =
     host: true,
     me: 0,
     run: run(runOver),
+    boss_lives: [
+      ['skrix_nest', 18],
+      ['grimgut', 33],
+    ],
     deck_problems: [],
     ...over,
   }

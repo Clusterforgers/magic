@@ -1,5 +1,6 @@
 //! Station (CR 702.184): "Tap another untapped creature you control: Put charge counters equal to its power on this
-//! permanent. Activate only as a sorcery." The creature is a cost, so one with summoning sickness may pay it (CR 302.6).
+//! permanent. Activate only as a sorcery." A creature a rule says stations using its toughness puts that many instead
+//! (CR 702.184a, `StatKind::R6500StationValue`). The creature is a cost, so one with summoning sickness may pay it (CR 302.6).
 //! The STATION brackets of the card are static and activated abilities conditioned on the charge counters
 //! (`docs/cards-dsl.md`).
 
@@ -38,7 +39,7 @@ impl KeywordRules for Station {
                 counter: CounterKind::Charge,
                 count: Amount::Stat {
                     of: Ref::Paid,
-                    stat: StatKind::Power,
+                    stat: StatKind::R6500StationValue,
                 },
             }],
         }]
@@ -56,7 +57,7 @@ mod tests {
 
     fn written() -> Ability {
         serde_json::from_str(
-            r#"{"Activated":{"cost":[{"TapPermanents":{"filter":[{"Type":"Creature"},"Other"]}}],"timing":"Sorcery","effects":[{"PutCounters":{"on":"This","counter":"charge","count":{"Stat":{"of":"Paid","stat":"Power"}}}}]}}"#,
+            r#"{"Activated":{"cost":[{"TapPermanents":{"filter":[{"Type":"Creature"},"Other"]}}],"timing":"Sorcery","effects":[{"PutCounters":{"on":"This","counter":"charge","count":{"Stat":{"of":"Paid","stat":"R6500StationValue"}}}}]}}"#,
         )
         .unwrap()
     }

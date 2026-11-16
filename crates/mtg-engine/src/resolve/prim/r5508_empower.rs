@@ -96,6 +96,7 @@ fn r5508_empower(cx: &Cx<'_>, count: &Amount) -> Result<Run, Stop> {
 pub(crate) fn r5508_jace_token() -> TokenSpec {
     let loyalty = |minus: u32, json: &str| Ability::Loyalty {
         cost: LoyaltyCost::Minus(minus),
+        condition: None,
         targets: Vec::new(),
         effects: serde_json::from_str(json).unwrap_or_default(),
     };

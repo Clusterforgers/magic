@@ -54,4 +54,9 @@ turn: number,
 /**
  * The player a `WhileMonarch` effect follows, fixed as it began; none for any other duration.
  */
-anchor?: PlayerId, };
+anchor?: PlayerId, 
+/**
+ * Made with the move that put the object onto the battlefield (`Destination::R6502BattlefieldAs`): it changes the
+ * object on the battlefield only, so a card the move sent elsewhere instead stays as its card prints.
+ */
+entering?: boolean, };

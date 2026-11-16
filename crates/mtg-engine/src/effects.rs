@@ -135,6 +135,9 @@ pub enum Modification {
     SetColors(ColorSet),
     /// Adds words to the name, as a name sticker does (layer 3, a text change of the name).
     AddNameWords(String),
+    /// Replaces the name (layer 3): "named Legitimate Businessperson". Name stickers put on before it are gone with the
+    /// old name.
+    SetName(String),
     /// A line of text the table follows by hand (layer 6): it changes nothing the engine runs and `granted_text` lists it.
     GrantText(String),
     /// Adds colours to the ones it has (layer 5).
@@ -256,6 +259,12 @@ pub enum Modification {
         #[cfg_attr(feature = "ts", ts(type = "\"Player\" | \"Planeswalkers\" | \"Both\""))]
         attacked: mtg_cards::modify::Attacked,
     },
+    /// The object can't attack these players or the planeswalkers they control: a restriction with no layer that the
+    /// attack declaration reads.
+    R6601CantAttackPlayers {
+        /// The players it can't attack.
+        players: Vec<PlayerId>,
+    },
     /// The object can't attack its owner, the planeswalkers its owner controls or both: a restriction with no layer that
     /// the attack declaration reads.
     CantAttackOwner {
@@ -294,7 +303,9 @@ impl Modification {
     pub const fn layer(&self) -> Option<Layer> {
         Some(match self {
             Modification::SetController(_) => Layer::Control,
-            Modification::ChangeText { .. } | Modification::AddNameWords(_) => Layer::Text,
+            Modification::ChangeText { .. }
+            | Modification::AddNameWords(_)
+            | Modification::SetName(_) => Layer::Text,
             Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
@@ -323,6 +334,7 @@ impl Modification {
             Modification::SwitchPowerToughness => Layer::PtSwitch,
             Modification::CantAttack
             | Modification::CantAttackYou { .. }
+            | Modification::R6601CantAttackPlayers { .. }
             | Modification::CantAttackOwner { .. }
             | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
@@ -343,6 +355,7 @@ impl Modification {
     pub(crate) fn apply(&self, chars: &mut Characteristics) {
         match self {
             Modification::AddNameWords(words) => chars.name_words.push(words.clone()),
+            Modification::SetName(name) => chars.set_name(name),
             Modification::AddType(ty) => chars.types = chars.types.with(*ty),
             Modification::RemoveType(ty) => chars.types = without(chars.types, *ty),
             Modification::SetTypes(types) => {
@@ -412,9 +425,7 @@ impl Modification {
                 chars.power = chars.power.map(|p| p.saturating_add(*power));
                 chars.toughness = chars.toughness.map(|t| t.saturating_add(*toughness));
             }
-            Modification::SwitchPowerToughness => {
-                std::mem::swap(&mut chars.power, &mut chars.toughness);
-            }
+            Modification::SwitchPowerToughness => std::mem::swap(&mut chars.power, &mut chars.toughness),
             // Abilities are not part of `Characteristics` but for the plain mana abilities: `keywords_of` and
             // `ability_reader` read them off the order the effects applied in. The attack and block rules read the
             // restrictions the same way.
@@ -431,6 +442,7 @@ impl Modification {
             | Modification::GainAbilities(_)
             | Modification::CantAttack
             | Modification::CantAttackYou { .. }
+            | Modification::R6601CantAttackPlayers { .. }
             | Modification::CantAttackOwner { .. }
             | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
@@ -686,6 +698,11 @@ pub struct ContinuousEffect {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub anchor: Option<PlayerId>,
+    /// Made with the move that put the object onto the battlefield (`Destination::R6502BattlefieldAs`): it changes the
+    /// object on the battlefield only, so a card the move sent elsewhere instead stays as its card prints.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub entering: bool,
 }
 
 /// The effects that `made` overwrites wholly, which can go as it begins (CR 613.7: of two effects that set the same
@@ -740,6 +757,7 @@ impl ContinuousEffect {
             controller: PlayerId(0),
             turn: 0,
             anchor: None,
+            entering: false,
         }
     }
 

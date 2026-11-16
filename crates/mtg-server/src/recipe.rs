@@ -114,6 +114,10 @@ pub enum DeckRef {
         /// which is also how a recipe stored before stickers reads.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         stickers: Vec<String>,
+        /// The oracle ids of a Delves hero's Satchel cards, castable from the command zone; left out of the stored form
+        /// while empty, which is also how a recipe stored before the Satchel reads.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        satchel: Vec<String>,
     },
 }
 
@@ -137,6 +141,7 @@ impl DeckRef {
             by_hand: Vec::new(),
             attractions: Vec::new(),
             stickers: Vec::new(),
+            satchel: Vec::new(),
         }
     }
 
@@ -293,6 +298,7 @@ struct SeatCards {
     companion: Option<Arc<CardDefinition>>,
     attractions: Vec<AttractionCard>,
     stickers: Vec<Arc<CardDefinition>>,
+    satchel: Vec<Arc<CardDefinition>>,
 }
 
 impl SeatCards {
@@ -304,6 +310,7 @@ impl SeatCards {
             self.companion.as_ref(),
             &self.attractions,
             &self.stickers,
+            &self.satchel,
         )
     }
 }
@@ -531,6 +538,7 @@ impl GameRecipe {
                     companion,
                     attractions,
                     stickers,
+                    satchel,
                     ..
                 } => Some(
                     cards
@@ -538,7 +546,8 @@ impl GameRecipe {
                         .chain(commanders)
                         .chain(companion)
                         .chain(attractions.iter().map(|card| &card.oracle_id))
-                        .chain(stickers),
+                        .chain(stickers)
+                        .chain(satchel),
                 ),
                 DeckRef::Demo { .. } => None,
             })
@@ -613,18 +622,21 @@ impl GameRecipe {
         let mut companions = Vec::with_capacity(seats.len());
         let mut attractions = Vec::with_capacity(seats.len());
         let mut stickers = Vec::with_capacity(seats.len());
+        let mut satchels = Vec::with_capacity(seats.len());
         for seat in seats {
             libraries.push(seat.library);
             commanders.push(seat.commanders);
             companions.push(seat.companion);
             attractions.push(seat.attractions);
             stickers.push(seat.stickers);
+            satchels.push(seat.satchel);
         }
         let mut setup = GameSetup::new(self.format.rules(), self.seed, libraries)
             .with_commanders(commanders)
             .with_companions(companions)
             .with_attractions(attractions)
             .with_stickers(stickers)
+            .with_satchels(satchels)
             .with_house_rules(self.house_rules.clone())
             .with_conjurable(conjured);
         // Legality only warns (`docs/deck-check.md`), so the engine does not judge the decks.
@@ -684,6 +696,7 @@ impl GameRecipe {
                         companion: None,
                         attractions: Vec::new(),
                         stickers: Vec::new(),
+                        satchel: Vec::new(),
                     }
                 }
                 DeckRef::Demo { id } => SeatCards {
@@ -697,6 +710,7 @@ impl GameRecipe {
                     companion: None,
                     attractions: Vec::new(),
                     stickers: Vec::new(),
+                    satchel: Vec::new(),
                 },
                 DeckRef::Oracle {
                     cards,
@@ -706,6 +720,7 @@ impl GameRecipe {
                     by_hand,
                     attractions,
                     stickers,
+                    satchel,
                 } => {
                     let ids: Vec<String> = cards
                         .iter()
@@ -730,6 +745,9 @@ impl GameRecipe {
                         attractions: attraction_cards(catalog, seat, attractions, by_hand)?,
                         stickers: catalog
                             .deck_by_hand(stickers, by_hand)
+                            .map_err(|ids| RecipeError::UnknownCards { seat, ids })?,
+                        satchel: catalog
+                            .deck_by_hand(satchel, by_hand)
                             .map_err(|ids| RecipeError::UnknownCards { seat, ids })?,
                     }
                 }
@@ -1152,6 +1170,7 @@ mod tests {
             by_hand: by_hand.iter().map(|id| (*id).to_owned()).collect(),
             attractions: Vec::new(),
             stickers: Vec::new(),
+            satchel: Vec::new(),
         }
     }
 
@@ -1447,6 +1466,7 @@ mod tests {
             by_hand: Vec::new(),
             attractions: Vec::new(),
             stickers: Vec::new(),
+            satchel: Vec::new(),
         }
     }
 
@@ -1573,6 +1593,7 @@ mod tests {
             by_hand: Vec::new(),
             attractions: Vec::new(),
             stickers: Vec::new(),
+            satchel: Vec::new(),
         };
         let recipe = GameRecipe::normal(1, [deck.clone(), deck]);
         assert_eq!(recipe.card_art(), art(expected));
@@ -1588,6 +1609,7 @@ mod tests {
             by_hand: Vec::new(),
             attractions: Vec::new(),
             stickers: Vec::new(),
+            satchel: Vec::new(),
         };
         let recipe = GameRecipe::normal(
             1,

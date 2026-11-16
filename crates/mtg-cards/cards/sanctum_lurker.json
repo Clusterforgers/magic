@@ -1,0 +1,38 @@
+{
+  "oracle_id": "3ebd64d2-c178-45a2-a51f-9869754baa0f",
+  "name": "Sanctum Lurker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sanctum Lurker",
+      "oracle_fingerprint": "e1bb98146a7a5292ce9161c8094330f7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Empower": { "count": 1 } }]
+          }
+        },
+        { "Rule": { "rule": { "R6500ZeroLoyaltyStays": "You" } } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Loyalty": {
+                    "cost": { "Plus": 2 },
+                    "effects": [
+                      { "DealDamage": { "to": "Opponents", "amount": 1 } },
+                      { "GainLife": { "amount": 1 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

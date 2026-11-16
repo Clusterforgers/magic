@@ -179,7 +179,9 @@ pub(super) fn c11e_result_text(which: DieResult) -> String {
 /// A row of the table of a die roll: the totals it holds and the text after the bar. "1—9 | S" (or "1-9 | S"), "20 | S"
 /// (that total only), "15+ | S" (that total and more) and "9 or less | S" (from 1 to that total).
 pub fn die_row(text: &str) -> Option<(u32, Option<u32>, &str)> {
-    let (range, body) = text.split_once(" | ")?;
+    let Some((range, body)) = text.split_once(" | ") else {
+        return r6603_dash_row(text);
+    };
     let (from, to) = if let Some(from) = range.strip_suffix('+') {
         (from.parse().ok()?, None)
     } else if let Some(to) = range.strip_suffix(" or less") {
@@ -191,6 +193,23 @@ pub fn die_row(text: &str) -> Option<(u32, Option<u32>, &str)> {
         (only, Some(only))
     };
     (from >= 1 && to.is_none_or(|to| to >= from)).then_some((from, to, body))
+}
+
+/// A row printed "3 \u{2014} S" or "1 or 2 \u{2014} S" (Comet, Stellar Pup): one total, or two totals in a row; any
+/// other words before the dash are an ability word, not a row.
+fn r6603_dash_row(text: &str) -> Option<(u32, Option<u32>, &str)> {
+    let (range, body) = text.split_once(" \u{2014} ")?;
+    let number = |word: &str| -> Option<u32> {
+        word.bytes()
+            .all(|b| b.is_ascii_digit())
+            .then(|| word.parse().ok())
+            .flatten()
+    };
+    let (from, to) = match range.split_once(" or ") {
+        Some((from, to)) => (number(from)?, number(to)?),
+        None => (number(range)?, number(range)?),
+    };
+    (from >= 1 && (to == from || to == from + 1)).then_some((from, Some(to), body))
 }
 
 /// The totals of a row as the card prints them.
@@ -222,6 +241,15 @@ fn r5518_with_subject(text: String) -> Vec<String> {
         .filter(|(verb, _)| VERBS.contains(verb))
         .map(|(verb, rest)| format!("You {} {rest}", verb.to_lowercase()));
     std::iter::once(text).chain(subject).collect()
+}
+
+/// The totals of a row as a card that prints its rows with a dash words them: "3", "1 or 2".
+fn r6603_dash_range(from: u32, to: Option<u32>) -> Option<String> {
+    match to {
+        Some(to) if to == from => Some(from.to_string()),
+        Some(to) if to == from + 1 => Some(format!("{from} or {to}")),
+        _ => None,
+    }
 }
 
 /// Every way a card prints the totals of a row: the dash may be a hyphen, and a range from 1 may read "N or less".
@@ -298,9 +326,12 @@ pub fn row_texts(ability: &Ability) -> Vec<Vec<String>> {
                 .into_iter()
                 .flat_map(r5518_with_subject)
                 .flat_map(|text| {
+                    let dashed = r6603_dash_range(row.from, row.to)
+                        .map(|range| format!("{range} \u{2014} {text}"));
                     ranges
                         .iter()
-                        .map(move |range| format!("{range} | {text}"))
+                        .map(|range| format!("{range} | {text}"))
+                        .chain(dashed)
                         .collect::<Vec<_>>()
                 })
                 .collect()

@@ -172,20 +172,27 @@ pub(crate) fn hidden_across(
         .collect()
 }
 
-/// The objects hidden from `viewer` across a batch of `events`, less the cards a reveal of the batch showed every seat:
-/// a card revealed and then put into a hand in the same answer is known to the table (`docs/protocol.md`, Visibility).
+/// The objects hidden from `viewer` across a batch of `events`, less the cards the batch showed them: a reveal shows every
+/// seat, and a look or a search shows the seat that looked. The engine keeps such a card shown only until the resolution
+/// ends, so one that ends in the same answer leaves no mark on `after` (`docs/protocol.md`, Visibility).
 pub(crate) fn hidden_across_events(
     before: &GameState,
     after: &GameState,
     events: &[mtg_engine::Event],
     viewer: PlayerId,
 ) -> BTreeMap<ObjectId, String> {
+    use mtg_engine::Event;
     let mut hidden = hidden_across(before, after, viewer);
     for event in events {
-        if let mtg_engine::Event::Revealed(revealed) = event {
-            for card in &revealed.cards {
-                hidden.remove(card);
-            }
+        let shown = match event {
+            Event::Revealed(revealed) => &revealed.cards,
+            Event::LibraryLooked(looked) if looked.player == viewer => &looked.cards,
+            Event::HandLooked(looked) if looked.player == viewer => &looked.cards,
+            Event::CardsFound(found) if found.player == viewer => &found.cards,
+            _ => continue,
+        };
+        for card in shown {
+            hidden.remove(card);
         }
     }
     hidden
@@ -1674,6 +1681,46 @@ fn a_reveal_shows_the_cards_to_every_seat(#[values(2, 3, 4)] seats: usize) {
         .expect("the top card was looked at");
     let hidden = BTreeMap::from([(top, after.object(top).unwrap().card().name.clone())]);
     for batch in &batches[1..] {
+        assert_clean(batch, &hidden);
+    }
+}
+
+/// A look at the top of each library that ends in the same answer: the looker was told the cards in that batch, so they
+/// count as known to it, while every other seat (the owners too) learns only how many.
+#[rstest]
+fn cards_looked_at_in_a_resolution_that_ends_in_the_batch_are_known_to_the_looker_alone(
+    #[values(2, 3, 4)] seats: usize,
+) {
+    let spell = mtg_cards::CardDefinition::new("Glance")
+        .with_type(mtg_core::card::CardType::Sorcery)
+        .with_mana_cost(mtg_testkit::cards::cost(0, &[mtg_core::color::Color::Blue]))
+        .with_rules(mtg_cards::ability::Ability::Spell {
+            targets: Vec::new(),
+            effects: vec![mtg_cards::effect::Effect::LookAtTop {
+                who: mtg_cards::refs::Ref::EachPlayer,
+                count: mtg_cards::value::Amount::Fixed(1),
+                bind: "top".into(),
+            }],
+        });
+    let scenario = library_table(seats, std::sync::Arc::new(spell), &[]);
+    let before = GameState::from_setup(&scenario.clone().setup().unwrap()).unwrap();
+    let (after, events, batches) = play_spell(scenario, seats, "Glance", |decision| {
+        panic!("a look asks nothing, not {}", decision.kind.name())
+    });
+    let looked: Vec<ObjectId> = events
+        .iter()
+        .filter_map(|event| match event {
+            mtg_engine::Event::LibraryLooked(looked) => Some(looked.cards.clone()),
+            _ => None,
+        })
+        .flatten()
+        .collect();
+    assert_eq!(looked.len(), seats, "the top card of each library");
+    for (seat, batch) in batches.iter().enumerate() {
+        let viewer = PlayerId::from_index(seat);
+        let hidden = hidden_across_events(&before, &after, &events, viewer);
+        let known = looked.iter().filter(|id| !hidden.contains_key(id)).count();
+        assert_eq!(known, if seat == 0 { seats } else { 0 }, "seat {seat}");
         assert_clean(batch, &hidden);
     }
 }

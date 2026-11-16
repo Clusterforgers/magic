@@ -74,6 +74,10 @@ export const ACTIONS: readonly Entry[] = [
     'Role token',
     'A Role is an Aura token attached to a creature that gives it an ability. A permanent can have only one Role of each controller.',
   ],
+  [
+    'Wicked Role',
+    'A Wicked Role token is an Aura enchantment with enchant creature: the enchanted creature gets +1/+1, and when the Aura is put into a graveyard from the battlefield, each opponent loses 1 life.',
+  ],
   ['Populate', 'Create a token that is a copy of a creature token you control.'],
   [
     'Proliferate',

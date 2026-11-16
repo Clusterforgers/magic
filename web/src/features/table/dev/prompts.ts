@@ -127,8 +127,12 @@ const priority: DevPrompt = ({ view }) => {
   })
   const options: PriorityOptions = {
     playable_lands: hand.filter(isLand).map((object) => object.id),
-    // The commanders in the command zone are cast like the hand's spells.
-    castable: [...waitingCommanders(view), ...spells.slice(0, -1).map((object) => object.id)],
+    // The commanders in the command zone and the Satchel's cards are cast like the hand's spells.
+    castable: [
+      ...waitingCommanders(view),
+      ...(view.players[viewer]?.satchel ?? []),
+      ...spells.slice(0, -1).map((object) => object.id),
+    ],
     mana_abilities,
     can_act: true,
     can_pass: true,

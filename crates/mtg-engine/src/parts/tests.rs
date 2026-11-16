@@ -475,7 +475,6 @@ fn the_new_parts_are_read_and_named(#[case] json: &str, #[case] name: &str) {
 #[case::draw(r#"{"Draw":{"Life":"You"}}"#, "Cost.Draw.Counted")]
 #[case::discard_random(r#"{"DiscardRandom":{"Life":"You"}}"#, "Cost.DiscardRandom.Counted")]
 #[case::blight(r#"{"Blight":{"Life":"You"}}"#, "Cost.Blight.Counted")]
-#[case::blight_x(r#"{"Blight":"X"}"#, "Cost.Blight.Counted")]
 #[case::library_zone(r#"{"ToLibrary":{"from":"Exile","filter":[]}}"#, "Cost.ToLibrary.Zone")]
 fn the_new_parts_name_what_they_cannot_count(#[case] json: &str, #[case] name: &str) {
     assert_eq!(Part::read(&item(json)), Err(name));
@@ -601,4 +600,14 @@ fn spending_a_counted_amount_of_counters_is_named_and_x_takes_what_is_held() {
             count: 2
         }
     );
+}
+
+#[rstest]
+fn r6601_blight_x_puts_the_x_announced_on_one_creature(#[values(0, 1, 4)] x: u32) {
+    let read = part(r#"{"Blight":"X"}"#);
+    assert!(read.is_counted());
+    assert!(matches!(
+        read.at(x),
+        Part::Pick(Pick { kind: Kind::Blight(n), count: 1, .. }) if n == x
+    ));
 }

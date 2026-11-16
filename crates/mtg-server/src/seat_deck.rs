@@ -34,6 +34,7 @@ pub struct ChosenDeck {
     companion: Option<Arc<CardDefinition>>,
     attractions: Arc<[AttractionCard]>,
     stickers: Arc<[Arc<CardDefinition>]>,
+    satchel: Arc<[Arc<CardDefinition>]>,
     deck: DeckRef,
     fingerprint: DeckFingerprint,
     note: SeatDeck,
@@ -53,6 +54,7 @@ impl ChosenDeck {
             companion: None,
             attractions: Arc::from([]),
             stickers: Arc::from([]),
+            satchel: Arc::from([]),
             deck: DeckRef::Demo {
                 id: deck.id.to_owned(),
             },
@@ -84,6 +86,7 @@ impl ChosenDeck {
             companion: None,
             attractions: Arc::from([]),
             stickers: Arc::from([]),
+            satchel: Arc::from([]),
             deck: DeckRef::Demo {
                 id: demo::commander_stand_in_id(size),
             },
@@ -126,6 +129,7 @@ impl ChosenDeck {
             companion: None,
             attractions: Arc::from([]),
             stickers: Arc::from([]),
+            satchel: Arc::from([]),
             deck: DeckRef::Oracle {
                 cards: oracle_ids,
                 commanders: commander_ids,
@@ -134,6 +138,7 @@ impl ChosenDeck {
                 by_hand: Vec::new(),
                 attractions: Vec::new(),
                 stickers: Vec::new(),
+                satchel: Vec::new(),
             },
             note,
             own_issues: Arc::from([]),
@@ -142,39 +147,37 @@ impl ChosenDeck {
         })
     }
 
-    /// The deck with each of `added` (an oracle id and its card) in place of a basic land of its library, the last
-    /// ones first, for the cards a Delves hero won; a built-in deck, or one out of basic lands, stays as it is.
-    pub fn with_run_cards(
+    /// The deck with `cards` (each an oracle id and its card) as its Delves Satchel: the cards a hero earned in the run,
+    /// castable from the command zone while the library stays as it is. They are part of the deck's fingerprint and the
+    /// recipe keeps them; a built-in deck has no oracle ids to name them by and stays as it is.
+    pub fn with_satchel(
         mut self,
-        added: &[(String, Arc<CardDefinition>)],
+        cards: &[(String, Arc<CardDefinition>)],
     ) -> Result<ChosenDeck, FingerprintError> {
-        let DeckRef::Oracle {
-            cards: ids,
-            printings,
-            ..
-        } = &mut self.deck
-        else {
+        if cards.is_empty() {
             return Ok(self);
-        };
-        let mut cards: Vec<Arc<CardDefinition>> = self.cards.to_vec();
-        for (id, card) in added {
-            let Some(at) = cards.iter().rposition(|c| {
-                c.types.contains(&mtg_core::card::CardType::Land)
-                    && c.supertypes.contains(&mtg_core::card::Supertype::Basic)
-            }) else {
-                break;
-            };
-            cards[at] = Arc::clone(card);
-            if let Some(slot) = ids.get_mut(at) {
-                slot.clone_from(id);
-            }
-            if let Some(printing) = printings.get_mut(at) {
-                *printing = None;
-            }
         }
-        self.fingerprint = DeckFingerprint::of_seat(&cards, &self.commanders)?;
-        self.cards = cards.into();
+        if let DeckRef::Oracle { satchel, .. } = &mut self.deck {
+            *satchel = cards
+                .iter()
+                .map(|(oracle_id, _)| oracle_id.clone())
+                .collect();
+            self.satchel = cards.iter().map(|(_, card)| Arc::clone(card)).collect();
+            self.fingerprint = DeckFingerprint::of_seat_all(
+                &self.cards,
+                &self.commanders,
+                self.companion.as_ref(),
+                &self.attractions,
+                &self.stickers,
+                &self.satchel,
+            )?;
+        }
         Ok(self)
+    }
+
+    /// The cards of the deck's Delves Satchel; empty outside a Delves fight.
+    pub fn satchel(&self) -> &[Arc<CardDefinition>] {
+        &self.satchel
     }
 
     /// The deck with the printing each deck line chose: one entry for every card of the library, then of the
@@ -294,6 +297,7 @@ impl ChosenDeck {
                 self.companion.as_ref(),
                 &self.attractions,
                 &self.stickers,
+                &self.satchel,
             )?;
         }
         Ok(self)
@@ -325,6 +329,7 @@ impl ChosenDeck {
                 self.companion.as_ref(),
                 &self.attractions,
                 &self.stickers,
+                &self.satchel,
             )?;
         }
         Ok(self)

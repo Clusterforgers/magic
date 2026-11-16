@@ -2,6 +2,7 @@
 import type { Brain } from "./Brain";
 import type { HeroDeck } from "./HeroDeck";
 import type { Offer } from "./Offer";
+import type { Upgrade } from "./Upgrade";
 
 /**
  * A member of the party.
@@ -36,9 +37,13 @@ gold: number,
  */
 relics: Array<string>, 
 /**
- * The cards that joined their deck, each replacing a basic land.
+ * Their Satchel: every card they earned in the run, in the order they got it, castable from it in each fight.
  */
-cards: Array<string>, 
+satchel: Array<string>, 
+/**
+ * Their commander upgrades, in the order they got them.
+ */
+upgrades: Array<Upgrade>, 
 /**
  * The choices waiting for them, first one first.
  */

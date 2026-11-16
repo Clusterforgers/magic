@@ -1,0 +1,361 @@
+[
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "End",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "ChooseValue": {
+       "kind": "CardType",
+       "as": "type"
+      }
+     },
+     {
+      "LookAtTop": {
+       "count": 2,
+       "as": "top"
+      }
+     },
+     {
+      "Reveal": {
+       "what": {
+        "Bound": "top"
+       }
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Each": [
+         {
+          "In": "Library"
+         },
+         {
+          "Is": {
+           "Bound": "top"
+          }
+         },
+         {
+          "ChosenAs": "type"
+         }
+        ]
+       },
+       "to": "Hand"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "top"
+       },
+       "to": {
+        "Library": {
+         "place": "Bottom",
+         "order": "Chosen"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your end step, choose a card type, then reveal the top two cards of your library. Put all cards of the chosen type revealed this way into your hand and the rest on the bottom of your library in any order."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "Combat": {
+      "who": {
+       "Each": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      },
+      "quirk": "AttackDespiteDefender"
+     }
+    }
+   }
+  },
+  "Creatures you control can attack as though they didn't have defender."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "Upkeep",
+      "whose": "You"
+     }
+    },
+    "if": {
+     "Matches": {
+      "subject": "This",
+      "selector": [
+       "R6500StartedTurnUntapped"
+      ]
+     }
+    },
+    "effects": [
+     {
+      "PutCounters": {
+       "on": "This",
+       "counter": {
+        "Other": "dream"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your upkeep, if ~ started the turn untapped, put a dream counter on it."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "R6500CounterCap": {
+      "what": "This",
+      "counter": {
+       "Other": "dream"
+      },
+      "most": 7
+     }
+    }
+   }
+  },
+  "~ can't have more than seven dream counters on it."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "RemoveCounters": {
+       "counter": {
+        "Other": "dream"
+       }
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Shield": {
+       "when": {
+        "Damage": {
+         "to": "This"
+        }
+       },
+       "by": {
+        "PreventUpTo": 1
+       },
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "Remove a dream counter from ~: Prevent the next 1 damage that would be dealt to ~ this turn."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "Empower": {
+       "count": 1
+      }
+     }
+    ]
+   }
+  },
+  "When this creature enters, empower Jace 1."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "R6500ZeroLoyaltyStays": "You"
+    }
+   }
+  },
+  "Planeswalkers you control aren't put into their owners' graveyards for having 0 loyalty."
+ ],
+ [
+  {
+   "Static": {
+    "affected": {
+     "Each": [
+      {
+       "Type": "Planeswalker"
+      },
+      {
+       "ControlledBy": "You"
+      }
+     ]
+    },
+    "mods": [
+     {
+      "GrantAbility": {
+       "Loyalty": {
+        "cost": {
+         "Plus": 2
+        },
+        "effects": [
+         {
+          "DealDamage": {
+           "to": "Opponents",
+           "amount": 1
+          }
+         },
+         {
+          "GainLife": {
+           "amount": 1
+          }
+         }
+        ]
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Planeswalkers you control have \"[+2]: This planeswalker deals 1 damage to each opponent and you gain 1 life.\""
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "Combat": {
+      "who": {
+       "Each": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        },
+        {
+         "Test": {
+          "left": {
+           "Stat": {
+            "of": "Candidate",
+            "stat": "Toughness"
+           }
+          },
+          "op": "Gt",
+          "right": {
+           "Stat": {
+            "of": "Candidate",
+            "stat": "Power"
+           }
+          }
+         }
+        }
+       ]
+      },
+      "quirk": "R6500StationsByToughness"
+     }
+    }
+   }
+  },
+  "Each creature you control with toughness greater than its power stations permanents using its toughness rather than its power."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "Combat": {
+      "who": {
+       "Each": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        },
+        {
+         "Test": {
+          "left": {
+           "Stat": {
+            "of": "Candidate",
+            "stat": "Toughness"
+           }
+          },
+          "op": "Gt",
+          "right": {
+           "Stat": {
+            "of": "Candidate",
+            "stat": "Power"
+           }
+          }
+         }
+        }
+       ]
+      },
+      "quirk": "AssignsByToughness"
+     }
+    }
+   }
+  },
+  "Each creature you control with toughness greater than its power assigns combat damage equal to its toughness rather than its power."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "targets": [
+     {
+      "what": "AnyTarget"
+     }
+    ],
+    "effects": [
+     {
+      "DealDamage": {
+       "to": {
+        "Target": 0
+       },
+       "amount": {
+        "Times": {
+         "by": 2,
+         "of": {
+          "R6500DevouredMatching": [
+           {
+            "Subtype": "Goblin"
+           }
+          ]
+         }
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "When this creature enters, it deals damage to any target equal to twice the number of Goblins it devoured."
+ ]
+]

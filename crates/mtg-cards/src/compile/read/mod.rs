@@ -294,6 +294,14 @@ mod r6400_wholes;
 mod r6401_wholes;
 mod r6402_change_roll;
 mod r6402_dice_facts;
+mod r6500_wholes;
+mod r6501_wholes;
+mod r6502_wholes;
+mod r6503_wholes;
+mod r6600_wholes;
+mod r6601_wholes;
+mod r6602_wholes;
+mod r6603_wholes;
 mod r6700_wholes;
 mod r6a_effects;
 mod r6a_more;
@@ -598,14 +606,39 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
         .then_some(found)
 }
 
+/// A wording of the r66-00 table, read whole whatever its kind and reminder text.
+pub fn r6600_whole(text: &str) -> Option<Ability> {
+    r6600_wholes::r6600_whole_read(text)
+}
+
+/// A wording of the r66-03 table, read whole whatever its kind and reminder text.
+pub fn r6603_whole(text: &str) -> Option<Ability> {
+    r6603_wholes::r6603_whole_read(text)
+}
+
 /// A wording of the r67-00 table, read whole whatever its kind and reminder text.
 pub fn r6700_whole(text: &str) -> Option<Ability> {
     r6700_wholes::r6700_whole_read(text)
 }
 
-/// A wording of the r64-01 table, read whole whatever its kind and reminder text.
+/// A wording of the r64-01 or r66-01 table, read whole whatever its kind and reminder text.
 pub fn r6401_whole(text: &str) -> Option<Ability> {
-    r6401_wholes::r6401_whole_read(text)
+    r6401_wholes::r6401_whole_read(text).or_else(|| r6601_wholes::r6601_whole_read(text))
+}
+
+/// A wording of the r65-01 table, read whole whatever its kind and reminder text.
+pub fn r6501_whole(text: &str) -> Option<Ability> {
+    r6501_wholes::r6501_whole_read(text)
+}
+
+/// A wording of the r65-03 table, read whole whatever its kind and reminder text.
+pub fn r6503_whole(text: &str) -> Option<Ability> {
+    r6503_wholes::r6503_whole_read(text)
+}
+
+/// A wording of the r66-02 table, read whole whatever its kind and reminder text.
+pub fn r6602_whole(text: &str) -> Option<Ability> {
+    r6602_wholes::r6602_whole_read(text)
 }
 
 /// Reads a whole ability of the r47-05 table of wordings one card prints (a keyword line among them).
@@ -668,6 +701,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     if let Some(found) = r6102_wholes::r6102_read(text) {
         return Some(found);
     }
+    if let Some(found) = r6502_wholes::r6502_read(text) {
+        return Some(found);
+    }
     if let Some(found) = r6018_wholes::r6018_whole_read(text) {
         return Some(found);
     }
@@ -675,6 +711,24 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r6401_wholes::r6401_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r6500_wholes::r6500_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r6503_wholes::r6503_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r6600_wholes::r6600_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r6601_wholes::r6601_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r6602_wholes::r6602_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r6603_wholes::r6603_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r6700_wholes::r6700_whole_read(text) {

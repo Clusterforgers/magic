@@ -1,0 +1,567 @@
+[
+ [
+  {
+   "Keyword": {
+    "Ward": [
+     {
+      "GenericOf": {
+       "Counters": {
+        "on": "You",
+        "counter": {
+         "Other": "experience"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "~ has ward {X}, where X is the number of experience counters you have."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": "Zero",
+    "condition": {
+     "Compare": {
+      "left": {
+       "Total": {
+        "of": [
+         {
+          "Subtype": "Jace"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ],
+        "stat": "Loyalty"
+       }
+      },
+      "op": "Ge",
+      "right": 25
+     }
+    },
+    "effects": [
+     {
+      "RepeatEach": {
+       "over": "Opponents",
+       "as": "opponent",
+       "effects": [
+        {
+         "ExileTop": {
+          "who": {
+           "Bound": "opponent"
+          },
+          "count": {
+           "Difference": [
+            {
+             "Count": [
+              {
+               "In": "Library"
+              },
+              {
+               "OwnedBy": {
+                "Bound": "opponent"
+               }
+              }
+             ]
+            },
+            1
+           ]
+          },
+          "as": "exiled"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "0: Exile all but the bottom card of each opponent's library. Activate only if there are twenty-five or more loyalty counters among Jaces you control."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "SpellCast": {
+      "what": [
+       {
+        "AnyOf": [
+         {
+          "Type": "Instant"
+         },
+         {
+          "Type": "Sorcery"
+         }
+        ]
+       },
+       {
+        "CastFrom": "Hand"
+       }
+      ],
+      "by": "You"
+     }
+    },
+    "effects": [
+     {
+      "Shield": {
+       "when": {
+        "R6503Resolves": {
+         "what": [
+          {
+           "Is": "Triggering"
+          }
+         ]
+        }
+       },
+       "by": {
+        "Instead": [
+         {
+          "Exile": {
+           "what": "Triggering",
+           "as": "dreamed"
+          }
+         },
+         {
+          "PutCounters": {
+           "on": {
+            "Bound": "dreamed"
+           },
+           "counter": {
+            "Other": "dream"
+           }
+          }
+         }
+        ]
+       },
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "Whenever you cast an instant or sorcery spell from your hand, exile that card with a dream counter on it instead of putting it into your graveyard as it resolves."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Attacks": {
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "effects": [
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "In": "Exile"
+         },
+         {
+          "OwnedBy": "You"
+         },
+         {
+          "HasCounter": {
+           "Other": "dream"
+          }
+         },
+         {
+          "Not": {
+           "Type": "Land"
+          }
+         }
+        ]
+       },
+       "as": "dream"
+      }
+     },
+     {
+      "CastFromZone": {
+       "what": {
+        "Bound": "dream"
+       },
+       "free": true
+      }
+     }
+    ]
+   }
+  },
+  "Whenever this creature attacks, you may cast a spell from among cards you own in exile with dream counters on them without paying its mana cost."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "SpellCast": {
+      "what": [
+       {
+        "AnyOf": [
+         {
+          "Type": "Instant"
+         },
+         {
+          "Type": "Sorcery"
+         }
+        ]
+       },
+       {
+        "CastFrom": "Hand"
+       }
+      ],
+      "by": "EachPlayer"
+     }
+    },
+    "effects": [
+     {
+      "Shield": {
+       "when": {
+        "R6503Resolves": {
+         "what": [
+          {
+           "Is": "Triggering"
+          }
+         ]
+        }
+       },
+       "by": {
+        "Instead": [
+         {
+          "Exile": {
+           "what": "Triggering"
+          }
+         }
+        ]
+       },
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "Imprint \u2014 Whenever a player casts an instant or sorcery spell from their hand, exile it instead of putting it into a graveyard as it resolves."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "Upkeep",
+      "whose": "You"
+     }
+    },
+    "if": {
+     "Compare": {
+      "left": {
+       "Count": [
+        {
+         "In": "Exile"
+        },
+        {
+         "ExiledWith": "This"
+        }
+       ]
+      },
+      "op": "Ge",
+      "right": 4
+     }
+    },
+    "effects": [
+     {
+      "ChooseAtRandom": {
+       "from": {
+        "Each": [
+         {
+          "In": "Exile"
+         },
+         {
+          "ExiledWith": "This"
+         }
+        ]
+       },
+       "as": "diary"
+      }
+     },
+     {
+      "CastFromZone": {
+       "what": {
+        "Bound": "diary"
+       },
+       "free": true
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your upkeep, if there are four or more cards exiled with this artifact, choose one of them at random. You may cast it without paying its mana cost."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "SpellCast": {
+      "what": [
+       {
+        "Compare": {
+         "stat": "Colors",
+         "op": "Ge",
+         "to": 2
+        }
+       },
+       {
+        "AnyOf": [
+         {
+          "Type": "Instant"
+         },
+         {
+          "Type": "Sorcery"
+         }
+        ]
+       },
+       {
+        "CastFrom": "Hand"
+       }
+      ],
+      "by": "You"
+     }
+    },
+    "effects": [
+     {
+      "Shield": {
+       "when": {
+        "R6503Resolves": {
+         "what": [
+          {
+           "Is": "Triggering"
+          }
+         ]
+        }
+       },
+       "by": {
+        "Instead": [
+         {
+          "Plot": {
+           "what": "Triggering"
+          }
+         }
+        ]
+       },
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "Whenever you cast a multicolored instant or sorcery spell from your hand, exile that spell instead of putting it into your graveyard as it resolves. If you do, it becomes plotted."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "SpellCast": {
+      "what": [
+       {
+        "AnyOf": [
+         {
+          "Type": "Instant"
+         },
+         {
+          "Type": "Sorcery"
+         }
+        ]
+       },
+       {
+        "Targeting": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       }
+      ],
+      "by": "You"
+     }
+    },
+    "effects": [
+     {
+      "Shield": {
+       "when": {
+        "R6503Resolves": {
+         "what": [
+          {
+           "Is": "Triggering"
+          }
+         ]
+        }
+       },
+       "by": {
+        "Instead": [
+         {
+          "Exile": {
+           "what": "Triggering",
+           "as": "feathered"
+          }
+         },
+         {
+          "DelayedTrigger": {
+           "when": {
+            "StepBegins": {
+             "step": "End"
+            }
+           },
+           "effects": [
+            {
+             "Move": {
+              "what": {
+               "Bound": "feathered"
+              },
+              "to": "Hand"
+             }
+            }
+           ]
+          }
+         }
+        ]
+       },
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "Whenever you cast an instant or sorcery spell that targets a creature you control, exile that card instead of putting it into your graveyard as it resolves. If you do, return it to your hand at the beginning of the next end step."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "Enters": {
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "by": {
+     "WithCounters": {
+      "counter": "+1/+1",
+      "count": {
+       "Greatest": {
+        "of": [
+         {
+          "In": "Exile"
+         }
+        ],
+        "stat": "ManaValue"
+       }
+      }
+     }
+    }
+   }
+  },
+  "~ enters with a number of +1/+1 counters on it equal to the greatest mana value among cards in exile."
+ ],
+ [
+  {
+   "Keyword": {
+    "Annihilator": {
+     "Counters": {
+      "on": "This",
+      "counter": "+1/+1"
+     }
+    }
+   }
+  },
+  "~ has annihilator X, where X is the number of +1/+1 counters on it."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "End",
+      "whose": "You"
+     }
+    },
+    "if": {
+     "Matches": {
+      "subject": "This",
+      "selector": [
+       "Untapped"
+      ]
+     }
+    },
+    "effects": [
+     {
+      "Destroy": {
+       "what": "This"
+      }
+     },
+     {
+      "DealDamage": {
+       "to": "You",
+       "amount": {
+        "Counters": {
+         "on": "This",
+         "counter": {
+          "Other": "pin"
+         }
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your end step, if this artifact is untapped, destroy this artifact and it deals damage to you equal to the number of pin counters on it."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{X}{X}"
+     },
+     "Tap",
+     {
+      "XIs": {
+       "Counters": {
+        "on": "This",
+        "counter": {
+         "Other": "pin"
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": "AnyTarget"
+     }
+    ],
+    "effects": [
+     {
+      "DealDamage": {
+       "to": {
+        "Target": 0
+       },
+       "amount": {
+        "Counters": {
+         "on": "This",
+         "counter": {
+          "Other": "pin"
+         }
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "{X}{X}, {T}: This artifact deals damage equal to the number of pin counters on it to any target. X is the number of pin counters on this artifact."
+ ]
+]

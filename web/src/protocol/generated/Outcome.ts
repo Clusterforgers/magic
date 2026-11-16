@@ -3,7 +3,7 @@
 /**
  * What an event option does to the hero who takes it.
  */
-export type Outcome = { "Gold": number } | { "Life": number } | "Relic" | "CardPick" | { "Gamble": { 
+export type Outcome = { "Gold": number } | { "Life": number } | "Relic" | "CardPick" | "Duplicate" | { "Gamble": { 
 /**
  * The chance to win, in percent.
  */

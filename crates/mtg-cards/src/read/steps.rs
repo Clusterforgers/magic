@@ -125,11 +125,13 @@ pub(super) fn ability_into(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
         }
         Ability::Loyalty {
             cost,
+            condition,
             targets: specs,
             effects: list,
         } => {
             let ctx = Ctx::new(specs);
             out.push(Step::new(depth, format!("loyalty: {}", loyalty(*cost))));
+            gate(&ctx, "only if", condition.as_ref(), depth, out);
             targets(&ctx, depth, out);
             effects::list(&ctx, list, depth, out);
         }

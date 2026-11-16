@@ -186,6 +186,11 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
   const taxOnCards = chips.tax.filter((chip) => drawn.includes(chip.key))
   const taxLoose = chips.tax.filter((chip) => !drawn.includes(chip.key))
   const counts = podCounts(player, exile.length)
+  // A Delves hero's earned cards: public, listed by a chip beside the command zone; yours are cast from the hand dock too.
+  const satchel =
+    (player.satchel?.length ?? 0) > 0 ? (
+      <ZoneButton zone="satchel" owner={owner} ids={player.satchel ?? NO_IDS} density="line" thumbs />
+    ) : null
   const eliminated = player.lost !== null
   // A seat whose client is gone; one that left the game for good is eliminated instead.
   const away = !eliminated && !player.connected
@@ -323,6 +328,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
             {commanders.length > 0 ? (
               <ZoneButton zone="command" owner={owner} ids={commanders} density="line" thumbs />
             ) : null}
+            {satchel}
           </div>
           {/* The status flows on after the zones in the same lines, so a pod head takes as few lines as its width allows. */}
           <div data-slot="pod-status" className="contents empty:hidden">
@@ -356,6 +362,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
   const extraChips = (
     <>
       {flags.you ? <LibraryTopChip player={player} /> : null}
+      {satchel}
       <RevealedChip owner={owner} player={player} density="line" />
       <RingChip owner={owner} player={player} density="line" />
       <SpeedChip owner={owner} player={player} density="line" />

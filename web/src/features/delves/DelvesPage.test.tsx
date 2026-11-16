@@ -1,4 +1,4 @@
-// Goal: a run in the list shows its party and how far down the ladder it got, one skull per boss with the beaten ones marked; runs under way lead the list, finished runs (victory, defeat) sit in a collapsed "Past runs" section, abandoned runs are not shown, and the new-run form offers the timers with Relaxed as its default and sends the one that is chosen.
+// Goal: a run in the list shows its party and how far down the ladder it got, one skull per boss with the beaten ones marked; runs under way lead the list, finished runs (victory, defeat) sit in a collapsed "Past runs" section, abandoned runs are not shown, and the new-run form offers the three Heats as worded tiers and the timers with Relaxed as its default and sends the ones that are chosen.
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
@@ -90,6 +90,24 @@ describe('the new run form', () => {
       ['quick', 'Quick: 10 seconds to respond, 1 minute to think'],
       ['off', 'Off: no time limit in any fight'],
     ])
+  })
+
+  it('offers the three Heats as tiers, Casual chosen, with what the chosen one asks in plain words', async () => {
+    const { bodies, user } = await open()
+    const heat = screen.getByLabelText('Heat')
+    expect(heat).toHaveValue('0')
+    expect(
+      within(heat)
+        .getAllByRole('option')
+        .map((option) => option.textContent),
+    ).toEqual(['Heat 0 — Casual', 'Heat 1 — Seasoned', 'Heat 2 — Heroic'])
+    expect(heat).toHaveAccessibleDescription(/^Heat 0 — Casual: any deck can win with some luck\./)
+    await user.selectOptions(heat, '2')
+    expect(heat).toHaveAccessibleDescription(
+      /^Heat 2 — Heroic: needs a team of decks that work together and suit the format\./,
+    )
+    await user.click(screen.getByRole('button', { name: 'Create delve' }))
+    expect(bodies).toEqual([{ heat: 2, timers: 'relaxed' }])
   })
 
   it.each([

@@ -82,17 +82,18 @@ impl DeckFingerprint {
         commanders: &[Arc<CardDefinition>],
         companion: Option<&Arc<CardDefinition>>,
     ) -> Result<DeckFingerprint, FingerprintError> {
-        DeckFingerprint::of_seat_all(cards, commanders, companion, &[], &[])
+        DeckFingerprint::of_seat_all(cards, commanders, companion, &[], &[], &[])
     }
 
-    /// Like [`DeckFingerprint::of_seat_with`], with the seat's Attraction deck and sticker sheets. Without them it
-    /// equals [`DeckFingerprint::of_seat_with`].
+    /// Like [`DeckFingerprint::of_seat_with`], with the seat's Attraction deck, sticker sheets and Delves Satchel.
+    /// Without them it equals [`DeckFingerprint::of_seat_with`].
     pub fn of_seat_all(
         cards: &[Arc<CardDefinition>],
         commanders: &[Arc<CardDefinition>],
         companion: Option<&Arc<CardDefinition>>,
         attractions: &[AttractionCard],
         stickers: &[Arc<CardDefinition>],
+        satchel: &[Arc<CardDefinition>],
     ) -> Result<DeckFingerprint, FingerprintError> {
         let mut text = encode(cards, commanders, companion)?;
         if !attractions.is_empty() {
@@ -109,6 +110,12 @@ impl DeckFingerprint {
             text.push_str(&stickers.len().to_string());
             text.push('\n');
             write_cards(stickers, &mut text)?;
+        }
+        if !satchel.is_empty() {
+            text.push_str("satchel\n");
+            text.push_str(&satchel.len().to_string());
+            text.push('\n');
+            write_cards(satchel, &mut text)?;
         }
         Ok(DeckFingerprint(Sha256::digest(text.as_bytes()).into()))
     }

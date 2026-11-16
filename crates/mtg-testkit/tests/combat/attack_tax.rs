@@ -467,6 +467,7 @@ fn a_rule_made_by_an_effect_taxes_until_it_ends(
         mana: mtg_core::mana::ManaCost::parse("{2}").unwrap(),
         life: 0,
         costs: Vec::new(),
+        per_counter: false,
     };
     driver.add_rule(Rule::AttackTax(tax), Duration::UntilEndOfTurn)?;
     declare(&mut driver, &["A"], 1)?;

@@ -214,7 +214,7 @@ export function PartyLobby({
         <DialogContent className="max-w-6xl p-4 sm:p-6">
           <DialogTitle>Choose a deck for {pickingHero?.name}</DialogTitle>
           <DialogDescription>
-            A Commander deck for the whole run; won cards replace its basic lands.
+            A Commander deck for the whole run, kept as it is; won cards wait in your Satchel.
           </DialogDescription>
           {pickingHero !== undefined && picking !== null ? (
             <DeckPicker

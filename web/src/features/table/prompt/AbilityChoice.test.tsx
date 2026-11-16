@@ -1,4 +1,4 @@
-// Goal: a permanent or a card of the viewer's hand, graveyard or command zone with an activatable ability is marked legal like a hand card and named "Activate <ability>", a click activates it or, when the card has several plays, opens a chooser at the card that picks one by mouse or keyboard and closes on Escape, Tab, a press outside or a second click on the card; a mana ability is no play, an opponent's card is never marked.
+// Goal: a permanent or a card of the viewer's hand, graveyard or command zone with an activatable ability is marked legal like a hand card and named "Activate <ability>", a click activates it or, when the card has several plays, opens a chooser at the card that picks one by mouse or keyboard and closes on Escape, Tab, a press outside or a second click on the card; a mana ability the payment taps is no play while an announced one (a d20 roll) is, an opponent's card is never marked.
 import { act, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { indexById } from '@/play/view'
@@ -124,6 +124,42 @@ describe('a permanent with one ability', () => {
   it('does nothing on a click on a card the offer leaves out', async () => {
     const { card, answer, user } = renderAbilities(given, words)
     await user.click(card(other.id))
+    expect(answer).not.toHaveBeenCalled()
+  })
+})
+
+describe('a permanent whose mana ability is activated like any ability (Vexing Puzzlebox)', () => {
+  const roll = ref(rock.id, 1)
+  const words: [ObjectView, ...ActivatedView[]][] = [
+    [
+      rock,
+      {
+        ability: roll,
+        cost: '{T}',
+        effect: 'Add one mana of any color. Roll a d20.',
+        mana: true,
+        announced: true,
+      },
+    ],
+  ]
+
+  it('is marked legal and activates on a click', async () => {
+    const { card, highlight, answer, user } = renderAbilities(options([roll]), words)
+    expect(highlight(rock.id)).toBe('legal')
+    await user.click(card(rock.id))
+    expect(answer.mock.calls).toEqual([[{ Priority: { Activate: roll } }]])
+  })
+
+  it('is one line of the chooser beside the mana the payment taps', async () => {
+    const given = options([roll], {
+      mana_abilities: [{ source: { object: rock.id, ability: 0 }, produces: 'Colorless' }],
+    })
+    const { card, answer, items, user } = renderAbilities(given, words)
+    await user.click(card(rock.id))
+    expect(items(rock.name)).toEqual([
+      'Activate tap: Add one mana of any color. Roll a d20.',
+      'Add colorless mana',
+    ])
     expect(answer).not.toHaveBeenCalled()
   })
 })

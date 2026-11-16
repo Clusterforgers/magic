@@ -119,6 +119,7 @@ impl Gives {
             Modification::SetPower(_)
             | Modification::SetToughness(_)
             | Modification::AddNameWords(_)
+            | Modification::SetName(_)
             | Modification::LoseAbility(_) => {
                 return;
             }
@@ -137,9 +138,9 @@ impl Gives {
                 return;
             }
             Modification::CantAttack => GivenRule::CantAttack,
-            Modification::CantAttackYou { .. } | Modification::CantAttackOwner { .. } => {
-                GivenRule::CantAttackYou
-            }
+            Modification::CantAttackYou { .. }
+            | Modification::CantAttackOwner { .. }
+            | Modification::R6601CantAttackPlayers { .. } => GivenRule::CantAttackYou,
             Modification::CantBlock => GivenRule::CantBlock,
             Modification::CanBlockOnly { .. } => GivenRule::CanBlockOnly,
             Modification::CantBeBlocked => GivenRule::CantBeBlocked,
