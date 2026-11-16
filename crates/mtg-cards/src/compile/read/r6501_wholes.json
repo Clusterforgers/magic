@@ -1,0 +1,127 @@
+[
+ [
+  {
+   "Activated": {
+    "cost": [
+     "Tap"
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Enchantment"
+        },
+        {
+         "Color": "White"
+        },
+        {
+         "ControlledBy": "You"
+        },
+        {
+         "Not": {
+          "HasKeywordNamed": "Cumulative upkeep"
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "ChooseValue": {
+       "kind": "Color",
+       "as": "from"
+      }
+     },
+     {
+      "ChooseValue": {
+       "kind": {
+        "LikeChosen": "from"
+       },
+       "as": "to"
+      }
+     },
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        {
+         "ChangeTextChosen": {
+          "from": "from",
+          "to": "to"
+         }
+        },
+        {
+         "AddKeyword": {
+          "CumulativeUpkeep": "{1}"
+         }
+        }
+       ],
+       "duration": "Forever"
+      }
+     }
+    ]
+   }
+  },
+  "{T}: Change the text of target white enchantment you control that doesn't have cumulative upkeep by replacing all instances of one color word with another. That enchantment gains \"Cumulative upkeep {1}.\""
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "CreateToken": {
+       "token": {
+        "CopyOf": {
+         "of": {
+          "Each": [
+           {
+            "Type": "Creature"
+           },
+           {
+            "AttackingPlayerOrPlaneswalker": "You"
+           }
+          ]
+         }
+        }
+       },
+       "blocking": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "AttackingPlayerOrPlaneswalker": "You"
+         }
+        ]
+       },
+       "as": "tokens"
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "when": {
+        "StepBegins": {
+         "step": "EndCombat"
+        }
+       },
+       "effects": [
+        {
+         "Exile": {
+          "what": {
+           "Bound": "tokens"
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "For each creature attacking you or a planeswalker you control, create a token that's a copy of that creature and that's blocking that creature. Exile those tokens at end of combat."
+ ]
+]
