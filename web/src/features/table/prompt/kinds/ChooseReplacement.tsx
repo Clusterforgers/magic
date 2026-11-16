@@ -105,24 +105,25 @@ export const ChooseReplacementPrompt: PromptComponent<'ChooseReplacement'> = ({ 
           <span className="sr-only"> {replacementKeys(candidates.length)}</span>
         </>
       }
-    >
-      <ol
-        aria-label="Replacement effects"
-        data-slot="replacement-list"
-        className="grid max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_7rem))] basis-full grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] gap-2 overflow-y-auto p-0.5"
-      >
-        {candidates.map((candidate, index) => (
-          <ReplacementRow
-            key={index}
-            index={index}
-            candidate={candidate}
-            object={objects[index]}
-            label={labels[index] ?? 'A card'}
-            onChoose={choose}
-            buttonRef={index === 0 ? first : undefined}
-          />
-        ))}
-      </ol>
-    </PromptLayout>
+      choices={
+        <ol
+          aria-label="Replacement effects"
+          data-slot="replacement-list"
+          className="grid max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_7rem))] basis-full grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] gap-2 overflow-y-auto p-0.5"
+        >
+          {candidates.map((candidate, index) => (
+            <ReplacementRow
+              key={index}
+              index={index}
+              candidate={candidate}
+              object={objects[index]}
+              label={labels[index] ?? 'A card'}
+              onChoose={choose}
+              buttonRef={index === 0 ? first : undefined}
+            />
+          ))}
+        </ol>
+      }
+    />
   )
 }

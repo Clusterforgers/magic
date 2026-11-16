@@ -108,6 +108,8 @@ pub struct PlayerSetup {
     pub phases: Vec<crate::phases::BossPhase>,
     /// A boss seat's scheme deck, in the order its schemes are set in motion ([`crate::schemes`]).
     pub schemes: Vec<Arc<CardDefinition>>,
+    /// Every how many of the seat's turns a scheme is set in motion, from its first scheme turn; 0 and 1 mean each turn.
+    pub scheme_every: u32,
     /// The seat whose loss makes this one lose too ([`crate::schemes::leaders_fall`]).
     pub leader: Option<PlayerId>,
 }
@@ -243,6 +245,15 @@ impl GameSetup {
     pub fn with_schemes(mut self, schemes: Vec<Vec<Arc<CardDefinition>>>) -> Self {
         for (player, deck) in self.players.iter_mut().zip(schemes) {
             player.schemes = deck;
+        }
+        self
+    }
+
+    /// The setup with every seat's schemes set in motion every `every` of its turns.
+    #[must_use]
+    pub fn with_scheme_every(mut self, every: u32) -> Self {
+        for player in &mut self.players {
+            player.scheme_every = every;
         }
         self
     }
@@ -446,6 +457,7 @@ fn starting_player(
     player.spirit_form.clone_from(&setup.spirit);
     player.phases.clone_from(&setup.phases);
     player.schemes.clone_from(&setup.schemes);
+    player.scheme_every = setup.scheme_every.max(1);
     player.leader = setup.leader;
     for (kind, count) in &setup.counters {
         if *count > 0 {

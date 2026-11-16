@@ -42,10 +42,9 @@ describe('the wide sheet', () => {
     expect(SHEET_KEEP_PX).toBeGreaterThan(0)
   })
 
-  it("gives a row of cards or the opening hand the strip's whole width", () => {
-    const strip = readFileSync(join(import.meta.dirname, '../SharedStrip.tsx'), 'utf8')
-    expect(strip).toContain('has-[[data-slot=card-choices]]:basis-full')
-    expect(strip).toContain('has-[[data-slot=opening-hand]]:basis-full')
+  it("gives a row of cards or the opening hand the strip's whole width below a wide band", () => {
+    const band = readFileSync(join(import.meta.dirname, 'promptBand.css'), 'utf8')
+    expect(band).toContain("'choices choices choices choices choices'")
   })
 
   it('draws a whole card up to 7 rem wide, following the window height', () => {

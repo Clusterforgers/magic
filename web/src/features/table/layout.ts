@@ -229,11 +229,6 @@ export const HAND_SLIM_PX = 104
  * window height (`HAND_GROW_VAR`, `handDockNeed`); the boards give up that room.
  */
 export const HAND_GROW_VH = 23
-/**
- * While an opening hand waits for its keep or mulligan the dock may take this percent of the window height to draw the
- * hand large (`openingDockNeed`): the boards are empty then.
- */
-export const OPENING_GROW_VH = 32
 /** The custom property of the table's main area that holds the height the hand dock needs for its rows, in px. */
 export const HAND_GROW_VAR = '--hand-grow'
 /** The own board is this many times as tall as the opponents' area (`minmax(0, 1.15fr)` against `minmax(0, 1fr)`). */
@@ -242,6 +237,12 @@ export const OWN_SHARE = 1.15
 export const SHEET_MAX_VH = 40
 /** What a phone's prompt sheet leaves of the opponents' area: the tile strip and a row of their board, in px. */
 export const SHEET_KEEP_PX = 120
+/**
+ * The least a prompt sheet may grow to, whatever the boards leave: a sentence line and a row of 40 px answers (on a
+ * phone also the stack chips' line), so an empty board above never squeezes the prompt.
+ */
+export const BAND_MIN_PX = 96
+export const BAND_MIN_PHONE_PX = 136
 /** The side column takes this share of the window width between its bounds; M gets a rail of `RAIL_PX`. */
 export const SIDE_SHARE = 0.18
 export const SIDE_MIN_PX = 272
@@ -306,7 +307,8 @@ const clampTo = (value: number, min: number, max: number): number => Math.min(ma
 
 /**
  * The most a prompt sheet grows to in a window of this height, over a strip and an opponents' area of these heights:
- * it leaves `SHEET_KEEP_PX` of the area on a phone and `keep` px elsewhere.
+ * it leaves `SHEET_KEEP_PX` of the area on a phone and `keep` px elsewhere, and is never under `BAND_MIN_PX`
+ * (`BAND_MIN_PHONE_PX` on a phone) below 40 % of the height and the top bar.
  */
 export function sheetMost(
   height: number,
@@ -316,7 +318,13 @@ export function sheetMost(
   keep = 0,
 ): number {
   const room = Math.max(0, opponents - (phone ? SHEET_KEEP_PX : keep))
-  return Math.min((height * SHEET_MAX_VH) / 100, shared + room)
+  const floor = phone ? BAND_MIN_PHONE_PX : BAND_MIN_PX
+  // The floor still ends at the top bar.
+  return Math.min(
+    (height * SHEET_MAX_VH) / 100,
+    shared + Math.max(0, opponents),
+    Math.max(floor, shared + room),
+  )
 }
 
 /** The px a `HeightClamp` gives in a window of this height. */
@@ -395,11 +403,6 @@ export const CHOICE_AREAS = '"bar bar" "opponents opponents" "own own" "shared s
 /** The tallest the hand dock grows for its rows in a window of these regions, in px; 0 on a phone, whose dock keeps its size. */
 export function handGrowMost(regions: Pick<Regions, 'phone' | 'main'>): number {
   return regions.phone ? 0 : (regions.main.height * HAND_GROW_VH) / 100
-}
-
-/** The tallest the hand dock grows for an opening hand in a window of these regions, in px; 0 on a phone, whose dock keeps its size. */
-export function openingGrowMost(regions: Pick<Regions, 'phone' | 'main'>): number {
-  return regions.phone ? 0 : (regions.main.height * OPENING_GROW_VH) / 100
 }
 
 const weight = (px: number | undefined): number => Math.round((px ?? 0) * 100) / 100

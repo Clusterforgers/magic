@@ -1,7 +1,7 @@
 {
   "oracle_id": "6cde5aa5-729f-40d3-a4c7-3516f9dbf7f5",
   "name": "Ground Pounder",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ground Pounder",
@@ -41,9 +41,17 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 97, "end": 185 }
+          "Triggered": {
+            "when": { "DiceRolled": { "who": "You", "at_least": 5, "on_a_die": true } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

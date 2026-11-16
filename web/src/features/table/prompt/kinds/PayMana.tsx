@@ -308,51 +308,55 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   const nothingChosen = spends.length === 0 && life.length === 0
   const restCanBePaid = completable(cost, pool, spends, life, reach)
   return (
-    <PromptLayout text={text}>
-      <PaymentSummary
-        cost={cost}
-        owed={owedNow}
-        covered={covered}
-        pool={pool}
-        spends={spends}
-        nameOf={nameOf}
-        canSpend={canSpend}
-        onSpendPool={(mana) => add({ kind: 'pool', mana })}
-        restricted={heldRestricted}
-        offerRows={offerRows}
-        onOffer={add}
-        onSpendRestricted={(index) => {
-          const spend = inPool.find((one) => one.kind === 'restricted' && one.index === index)
-          if (spend !== undefined) add(spend)
-        }}
-        onRemove={removeAt}
-        onClear={clear}
-        sources={
-          <ManaSources
-            sources={byPermanent}
-            nameOf={nameOf}
-            legal={legal}
-            taken={taken}
-            onAct={act}
-            open={openSwitch}
-            onPick={openSwitch?.swap === true ? swap : pick}
-            onClose={openSwitch?.swap === true ? closeSwitch : closeChooser}
-            swappable={[...swaps.keys()]}
-            onSwitch={openSwitchOn}
-          />
-        }
-        life={
-          hasLife
-            ? {
-                total: options.life,
-                paid: paidLife,
-                choices: lifeSwitches,
-                words: wordsOf,
-                onToggle: toggleLife,
-              }
-            : undefined
-        }
-      />
+    <PromptLayout
+      text={text}
+      choices={
+        <PaymentSummary
+          cost={cost}
+          owed={owedNow}
+          covered={covered}
+          pool={pool}
+          spends={spends}
+          nameOf={nameOf}
+          canSpend={canSpend}
+          onSpendPool={(mana) => add({ kind: 'pool', mana })}
+          restricted={heldRestricted}
+          offerRows={offerRows}
+          onOffer={add}
+          onSpendRestricted={(index) => {
+            const spend = inPool.find((one) => one.kind === 'restricted' && one.index === index)
+            if (spend !== undefined) add(spend)
+          }}
+          onRemove={removeAt}
+          onClear={clear}
+          sources={
+            <ManaSources
+              sources={byPermanent}
+              nameOf={nameOf}
+              legal={legal}
+              taken={taken}
+              onAct={act}
+              open={openSwitch}
+              onPick={openSwitch?.swap === true ? swap : pick}
+              onClose={openSwitch?.swap === true ? closeSwitch : closeChooser}
+              swappable={[...swaps.keys()]}
+              onSwitch={openSwitchOn}
+            />
+          }
+          life={
+            hasLife
+              ? {
+                  total: options.life,
+                  paid: paidLife,
+                  choices: lifeSwitches,
+                  words: wordsOf,
+                  onToggle: toggleLife,
+                }
+              : undefined
+          }
+        />
+      }
+    >
       <Button
         className="h-10 px-4"
         data-slot="pay-confirm"

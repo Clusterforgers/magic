@@ -32,6 +32,7 @@ import { loadPickerDecks, notePlayed, readPlayed } from './deckPicker'
 import type { LastPlayed, PickerDecks } from './deckPicker'
 import { BossIntro } from './BossIntro'
 import { DeckPicker } from './DeckPicker'
+import { FightLog } from './FightLog'
 import { lastFight, listOf, nextStep } from './model'
 import type { FindCard } from './findCard'
 import { PartyLobby } from './PartyLobby'
@@ -454,6 +455,7 @@ export function DelvePage({
               ))}
             </ol>
           </section>
+          <FightLog run={view.run} content={content} />
           {view.host && !over && status !== 'Lobby' ? (
             <>
               <Button variant="ghost" disabled={busy} onClick={() => setEnding(true)}>

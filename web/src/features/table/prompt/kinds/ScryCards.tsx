@@ -135,32 +135,38 @@ export function ScryCards({ options, kind }: { options: CardsOptions; kind: Away
     )
   }
   return (
-    <PromptLayout text={text}>
+    <PromptLayout
+      text={text}
+      choices={
+        <>
+          <p
+            data-slot="look-preview"
+            aria-hidden="true"
+            className="line-clamp-2 min-w-0 basis-full text-xs text-muted-foreground"
+          >
+            {lookPreview(split.top.map(nameOf), split.away.map(nameOf), kind)}
+          </p>
+          <ChoiceAnchorContext value={piles}>
+            <div
+              ref={piles}
+              data-slot="look-piles"
+              onPointerOut={restore}
+              className="flex basis-full flex-wrap gap-2 overflow-y-auto max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_10.5rem))]"
+            >
+              <Pile title={TOP_PILE} ids={split.top} slot="top">
+                {split.top.map(card)}
+              </Pile>
+              <Pile title={awayPile(kind)} ids={split.away} slot="away">
+                {split.away.map(card)}
+              </Pile>
+            </div>
+          </ChoiceAnchorContext>
+        </>
+      }
+    >
       <Button className="h-9 px-4" onClick={() => answer({ ChooseCards: split.away })}>
         Confirm
       </Button>
-      <p
-        data-slot="look-preview"
-        aria-hidden="true"
-        className="line-clamp-2 min-w-0 basis-full text-xs text-muted-foreground"
-      >
-        {lookPreview(split.top.map(nameOf), split.away.map(nameOf), kind)}
-      </p>
-      <ChoiceAnchorContext value={piles}>
-        <div
-          ref={piles}
-          data-slot="look-piles"
-          onPointerOut={restore}
-          className="flex basis-full flex-wrap gap-2 overflow-y-auto max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_10.5rem))]"
-        >
-          <Pile title={TOP_PILE} ids={split.top} slot="top">
-            {split.top.map(card)}
-          </Pile>
-          <Pile title={awayPile(kind)} ids={split.away} slot="away">
-            {split.away.map(card)}
-          </Pile>
-        </div>
-      </ChoiceAnchorContext>
     </PromptLayout>
   )
 }

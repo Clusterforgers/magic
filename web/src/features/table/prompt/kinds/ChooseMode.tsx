@@ -80,6 +80,48 @@ export const ChooseModePrompt: PromptComponent<'ChooseMode'> = ({ options }) => 
           <span className="sr-only"> {modeKeysWords(modes.length, single)}</span>
         </>
       }
+      choices={
+        // The modes stand beside the card's picture, so each reads against the card it is a mode of; they fill the
+        // band's width in columns of at least 16 rem.
+        <div
+          data-slot="mode-choice"
+          style={{ '--choice-room': MODE_PICTURE_ROOM } as CSSProperties}
+          className="flex basis-full items-start gap-3"
+        >
+          <PromptPicture object={source} size="normal" />
+          <div
+            role="group"
+            aria-label="Modes"
+            data-slot="mode-list"
+            className="grid max-h-56 min-w-0 flex-1 grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] content-start gap-1 overflow-y-auto p-0.5"
+          >
+            {modes.map((mode, place) => {
+              const key = numberKey(place)
+              const label = modeLabel(mode)
+              const count = times(mode.index)
+              const picked = count > 0
+              return (
+                <Button
+                  key={mode.index}
+                  ref={place === 0 ? first : undefined}
+                  variant={picked ? 'default' : 'outline'}
+                  className="h-auto min-h-9 justify-start whitespace-normal px-3 py-0.5 text-left text-sm leading-snug"
+                  aria-label={label}
+                  aria-keyshortcuts={key}
+                  aria-pressed={single ? undefined : picked}
+                  disabled={!single && spent + weight(mode.index) > max && (repeat || !picked)}
+                  focusableWhenDisabled
+                  onClick={() => press(mode.index)}
+                >
+                  {key === undefined ? null : <KeyHint>{key}</KeyHint>}
+                  <span className="ml-2 min-w-0">{label}</span>
+                  {count > 1 ? <span className="ml-2 text-xs">x{count}</span> : null}
+                </Button>
+              )
+            })}
+          </div>
+        </div>
+      }
     >
       {single ? null : (
         <Button
@@ -108,45 +150,6 @@ export const ChooseModePrompt: PromptComponent<'ChooseMode'> = ({ options }) => 
           onUndo={() => void answer('Undo')}
         />
       ) : null}
-      {/* The modes stand beside the card's picture, so each reads against the card it is a mode of. */}
-      <div
-        data-slot="mode-choice"
-        style={{ '--choice-room': MODE_PICTURE_ROOM } as CSSProperties}
-        className="flex basis-full items-start gap-3"
-      >
-        <PromptPicture object={source} size="normal" />
-        <div
-          role="group"
-          aria-label="Modes"
-          data-slot="mode-list"
-          className="flex max-h-56 min-w-0 flex-1 flex-col gap-1 overflow-y-auto p-0.5"
-        >
-          {modes.map((mode, place) => {
-            const key = numberKey(place)
-            const label = modeLabel(mode)
-            const count = times(mode.index)
-            const picked = count > 0
-            return (
-              <Button
-                key={mode.index}
-                ref={place === 0 ? first : undefined}
-                variant={picked ? 'default' : 'outline'}
-                className="h-auto min-h-9 justify-start whitespace-normal px-3 py-0.5 text-left text-sm leading-snug"
-                aria-label={label}
-                aria-keyshortcuts={key}
-                aria-pressed={single ? undefined : picked}
-                disabled={!single && spent + weight(mode.index) > max && (repeat || !picked)}
-                focusableWhenDisabled
-                onClick={() => press(mode.index)}
-              >
-                {key === undefined ? null : <KeyHint>{key}</KeyHint>}
-                <span className="ml-2 min-w-0">{label}</span>
-                {count > 1 ? <span className="ml-2 text-xs">x{count}</span> : null}
-              </Button>
-            )
-          })}
-        </div>
-      </div>
     </PromptLayout>
   )
 }

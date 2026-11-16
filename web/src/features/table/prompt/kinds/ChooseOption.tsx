@@ -16,6 +16,8 @@ import { useDefaultFocus, usePromptKeys } from '../usePromptKeys'
 
 /** More options than this get a filter field: a card name is chosen among all the cards of the game. */
 const FILTER_FROM = 12
+/** Up to this many options stand beside the sentence in the band (`PromptLayout` `inline`). */
+const INLINE_OPTIONS = 4
 
 /**
  * ChooseOption: one of a short list (a color, a player, a name). Each option is a big button that answers at once,
@@ -55,44 +57,49 @@ export const ChooseOptionPrompt: PromptComponent<'ChooseOption'> = ({ options })
           <span className="sr-only"> {numberKeysWords(choices.length)}</span>
         </>
       }
+      inline={!filtering && choices.length <= INLINE_OPTIONS}
+      choices={
+        <>
+          {filtering ? (
+            <Input
+              type="search"
+              aria-label="Filter options"
+              placeholder="Filter by name"
+              autoComplete="off"
+              value={filter}
+              className="h-9 min-w-40 flex-1 basis-40"
+              onChange={(event) => setFilter(event.target.value)}
+            />
+          ) : null}
+          <div
+            role="group"
+            aria-label="Options"
+            data-slot="option-list"
+            className="flex max-h-44 basis-full flex-wrap items-center gap-2 overflow-y-auto p-0.5"
+          >
+            {choices.map(({ option, index, label }, place) => {
+              const key = numberKey(place)
+              return (
+                <Button
+                  key={index}
+                  ref={place === 0 ? first : undefined}
+                  variant="outline"
+                  className="h-10 px-4"
+                  aria-label={label}
+                  aria-keyshortcuts={key}
+                  onClick={choose(index)}
+                >
+                  {'Color' in option ? <ManaDot type={option.Color} /> : null}
+                  {'Side' in option ? <Coins aria-hidden="true" /> : null}
+                  {label}
+                  {key === undefined ? null : <KeyHint>{key}</KeyHint>}
+                </Button>
+              )
+            })}
+          </div>
+        </>
+      }
     >
-      {filtering ? (
-        <Input
-          type="search"
-          aria-label="Filter options"
-          placeholder="Filter by name"
-          autoComplete="off"
-          value={filter}
-          className="h-9 min-w-40 flex-1 basis-40"
-          onChange={(event) => setFilter(event.target.value)}
-        />
-      ) : null}
-      <div
-        role="group"
-        aria-label="Options"
-        data-slot="option-list"
-        className="flex max-h-44 basis-full flex-wrap items-center gap-2 overflow-y-auto p-0.5"
-      >
-        {choices.map(({ option, index, label }, place) => {
-          const key = numberKey(place)
-          return (
-            <Button
-              key={index}
-              ref={place === 0 ? first : undefined}
-              variant="outline"
-              className="h-10 px-4"
-              aria-label={label}
-              aria-keyshortcuts={key}
-              onClick={choose(index)}
-            >
-              {'Color' in option ? <ManaDot type={option.Color} /> : null}
-              {'Side' in option ? <Coins aria-hidden="true" /> : null}
-              {label}
-              {key === undefined ? null : <KeyHint>{key}</KeyHint>}
-            </Button>
-          )
-        })}
-      </div>
       {options.can_cancel === true ? (
         <UndoButton zone={source?.zone} onUndo={() => void answer('Undo')} />
       ) : null}

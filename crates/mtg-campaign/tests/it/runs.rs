@@ -2,7 +2,8 @@
 //! and every deck chosen; the first boss needs no vote; a lost fight costs a heart and is retried until the hearts
 //! run out; a fight whose game ended unplayed waits for a new game at no cost; a fight whose table closed or that the host retreated from counts as lost; a won fight carries each hero's life, brings Spirits back and offers loot; votes go to the most votes or
 //! the torch bearer; bots vote only after every player; a vote is always between two camps, a camp's next boss is
-//! entered with no vote and stored votes for that boss still replay; bots answer every offer; the host chooses the timers in the lobby, every fight's game keeps them and a stored run without them is relaxed; and replaying the
+//! entered with no vote and stored votes for that boss still replay; bots answer every offer; the host chooses the timers in the lobby, every fight's game keeps them and a stored run without them is relaxed; each fight whose game
+//! ended or lost its table is kept with its game for the fight log; and replaying the
 //! events gives the same run.
 use mtg_campaign::run::{HEAL_AFTER_BOSS, HEARTS, LIFE, SPIRIT_RETURN};
 use mtg_campaign::{
@@ -431,6 +432,43 @@ fn a_forfeited_fight_costs_a_heart_like_a_lost_one_and_is_made_again(
         line.starts_with("The party") && line.contains(words),
         "{line}"
     );
+    let replayed = Run::replay(content, "warrens", 5, 0, &events).unwrap();
+    assert_eq!(replayed, run);
+}
+
+#[test]
+fn each_finished_fight_is_kept_with_its_game_room_and_result() {
+    let content = content().unwrap();
+    let (mut run, mut events) = lobby(content, 5, 1);
+    apply(&mut run, &mut events, RunEvent::Started);
+    let room = run.at.unwrap();
+    // A game that ended unplayed and a retreat before any game leave no fight to look back on.
+    let created = |game: &str| RunEvent::FightCreated { game: game.into() };
+    apply(&mut run, &mut events, created("void"));
+    apply(&mut run, &mut events, RunEvent::FightVoided);
+    let retreat = RunEvent::FightForfeited {
+        cause: Forfeit::Retreat,
+    };
+    apply(&mut run, &mut events, retreat);
+    assert_eq!(run.fights, Vec::new());
+    apply(&mut run, &mut events, created("closed"));
+    let closed = RunEvent::FightForfeited {
+        cause: Forfeit::Closed,
+    };
+    apply(&mut run, &mut events, closed);
+    apply(&mut run, &mut events, created("won"));
+    let won = RunEvent::FightEnded {
+        won: true,
+        lives: vec![30; run.heroes.len()],
+        spirits: Vec::new(),
+    };
+    apply(&mut run, &mut events, won);
+    let kept: Vec<(&str, u8, bool)> = run
+        .fights
+        .iter()
+        .map(|fight| (fight.game.as_str(), fight.room, fight.won))
+        .collect();
+    assert_eq!(kept, vec![("closed", room, false), ("won", room, true)]);
     let replayed = Run::replay(content, "warrens", 5, 0, &events).unwrap();
     assert_eq!(replayed, run);
 }

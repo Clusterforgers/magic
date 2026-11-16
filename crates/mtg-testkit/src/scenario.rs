@@ -404,6 +404,15 @@ impl Scenario {
         self
     }
 
+    /// Sets a player's schemes in motion every `every` of its turns.
+    #[must_use]
+    pub fn scheme_every(mut self, player: usize, every: u32) -> Self {
+        if let Some(seat) = self.seat(player) {
+            seat.scheme_every = every;
+        }
+        self
+    }
+
     /// Makes a player the minion of `leader`: it loses when the leader does (`mtg_engine::schemes`).
     #[must_use]
     pub fn leader(mut self, player: usize, leader: usize) -> Self {

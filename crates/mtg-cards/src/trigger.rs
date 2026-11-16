@@ -608,8 +608,10 @@ pub enum TriggerPattern {
     },
     /// A player rolls one or more dice ("whenever you roll one or more dice"), once for each roll; with `highest`, once
     /// for each die that rolls its highest natural result ("whenever you roll a die's highest natural result", CR 706.2);
-    /// with `results`, once for each die whose result is one of them ("whenever you roll a 1 or 2"), and `Amount::Triggering`
-    /// is that result. `Triggering` is that player.
+    /// with `results`, once for each die whose result is one of them ("whenever you roll a 1 or 2"), and with `at_least`,
+    /// once for each die whose result is at least that ("whenever you roll a 4 or higher", CR 706.2). `Amount::Triggering`
+    /// is the result of that die (of the roll's first die for a trigger of each roll), so "if you rolled a 6 or higher" is
+    /// `Compare { Triggering, Ge, 6 }`. `Triggering` is that player.
     DiceRolled {
         /// Who rolls.
         #[serde(
@@ -623,6 +625,12 @@ pub enum TriggerPattern {
         /// Only a die whose result is one of these.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         results: Vec<u32>,
+        /// Only a die whose result is this or more; none (0) for any result.
+        #[serde(default, skip_serializing_if = "crate::effect::is_zero_u32")]
+        at_least: u32,
+        /// The `at_least` is worded "a 5 or higher on a die" rather than "a 5 or higher"; it only words it.
+        #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+        on_a_die: bool,
         /// The results are worded as natural results ("a natural 20"); no effect modifies a roll, so it only words them.
         #[serde(default, skip_serializing_if = "crate::effect::is_false")]
         natural: bool,

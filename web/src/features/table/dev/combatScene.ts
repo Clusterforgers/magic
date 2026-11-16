@@ -1,6 +1,6 @@
 /**
  * Combat scenes for the dev table that carry a forecast: `forecastScene` (`?prompt=forecast`) shows every outcome the
- * forecast can have at once, and `withBlockForecast` gives the declare-blockers fixture (`?prompt=block`) the
+ * forecast can have at once, `withBlockForecast` gives the declare-blockers fixture (`?prompt=block`) the
  * forecast the engine would send before the viewer has blocked.
  */
 import type { AttackerView, ObjectId, ObjectView, PlayerId, StateView } from '@/protocol/generated'
@@ -134,6 +134,46 @@ export function withBlockForecast(fixture: Fixture): Fixture {
   const damage = devForecast(staged).players.find((player) => player.player === view.viewer)?.damage ?? 0
   const lethal = withLife(staged, view.viewer, Math.max(1, damage - 1))
   return { ...fixture, view: { ...lethal, combat_forecast: devForecast(lethal) } }
+}
+
+/** How many creatures each seat of the attacking side sends in `sidesAttackScene`. */
+export const SIDES_ATTACKERS = 2
+
+/**
+ * Two sides at war (`?prompt=attack-sides&teams=2v2`, `?seats=3` and up without teams): the viewer's side, the seats of
+ * their own parity as `withTeams` seats a team together, has declared an attack on its turn, each seat with
+ * `SIDES_ATTACKERS` ready creatures at one opponent, the seats of the other side in turn so that every opponent is
+ * attacked. Nobody has blocked.
+ */
+export function sidesAttackScene(fixture: Fixture): Fixture {
+  const { view } = fixture
+  const side = view.viewer % 2
+  const mine = view.players.filter((player) => player.seat % 2 === side).map((player) => player.seat)
+  const theirs = view.players.filter((player) => player.seat % 2 !== side).map((player) => player.seat)
+  const attackers: AttackerView[] = mine.flatMap((seat, at) => {
+    const defender = theirs[at % Math.max(1, theirs.length)]
+    return defender === undefined
+      ? []
+      : fighters(view, seat)
+          .filter((object) => object.permanent?.tapped === false)
+          .slice(0, SIDES_ATTACKERS)
+          .map((object): AttackerView => ({
+            object: object.id,
+            target: { Player: defender },
+            blocked: false,
+            blockers: [],
+          }))
+  })
+  const attacking = new Set(attackers.map((attacker) => attacker.object))
+  const was = new Set(view.combat.attackers.map((attacker) => attacker.object))
+  const objects = view.objects.map((object) =>
+    object.permanent !== null && (attacking.has(object.id) || was.has(object.id))
+      ? { ...object, permanent: { ...object.permanent, tapped: attacking.has(object.id) } }
+      : object,
+  )
+  const combat = { attackers, attackers_declared: true, blockers_declared: [] }
+  const turn = { ...view.turn, active: view.viewer, step: 'DeclareBlockers' as const }
+  return { ...fixture, view: { ...view, objects, combat, turn, combat_forecast: null } }
 }
 
 /** The forecast scene with numbers that depend on a choice of effects (`?prompt=forecast-choice`). */

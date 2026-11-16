@@ -96,6 +96,8 @@ export function DevTableRoute() {
     boss,
     spirit,
     bare,
+    alone,
+    takeback,
     cards,
     states,
     equip,
@@ -136,6 +138,7 @@ export function DevTableRoute() {
       boss,
       spirit,
       bare,
+      alone,
       previewMs: preview,
       stops: stops === undefined ? undefined : parseStopSpec(stops),
       fullControl: fc === 'next' ? 'NextWindow' : fc === 'held' ? 'Held' : undefined,
@@ -158,6 +161,7 @@ export function DevTableRoute() {
     boss,
     spirit,
     bare,
+    alone,
     states,
     equip,
     reveal,
@@ -197,6 +201,12 @@ export function DevTableRoute() {
     [mode, focus, fx, newturn, moments, slow],
   )
   useDevHelp(tour, lexicon)
+  useEffect(() => {
+    if (takeback !== true || view === null) return
+    game.session.store.setState({
+      takeBackOffer: { player: view.viewer, kind: 'Cast', name: 'Lightning Bolt', at: 0 },
+    })
+  }, [takeback, game, view])
   // The result closes for a look at the final table, as on the game page.
   const [review, setReview] = useState(false)
   return (

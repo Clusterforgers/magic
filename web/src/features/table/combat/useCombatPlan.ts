@@ -1,11 +1,12 @@
 import { useContext, useMemo } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
+import { teammates } from '@/lib/teams'
 import type { CombatView, ObjectId } from '@/protocol/generated'
 import { useBlockPreview } from './forecast'
-import { usePendingCombat } from './pending'
+import { chosenAttacks, usePendingCombat } from './pending'
 import type { PendingCombat } from './pending'
-import { ATTACK_BADGES_BY_DEFAULT, AttackLinesContext, TableOptionsContext } from '../tableOptions'
+import { AttackLinesContext } from '../tableOptions'
 import { planLines } from './plan'
 import type { LineSpec } from './plan'
 
@@ -19,7 +20,7 @@ export function cardsInPlay(combat: CombatView | null, pending: PendingCombat): 
     for (const blocker of attacker.blockers) ids.add(blocker)
     if ('Planeswalker' in attacker.target) ids.add(attacker.target.Planeswalker)
   }
-  for (const [attacker, target] of pending.attacks) {
+  for (const [attacker, target] of chosenAttacks(pending)) {
     ids.add(attacker)
     if ('Planeswalker' in target) ids.add(target.Planeswalker)
   }
@@ -41,13 +42,17 @@ export function useCombatPlan(): readonly LineSpec[] {
   const cards = useMemo(() => cardsInPlay(combat, pending), [combat, pending])
   const controllers = usePlay(useShallow((state) => cards.map((id) => state.objectsById[id]?.controller)))
   const viewer = usePlay((state) => (state.view?.spectator === true ? null : state.seat))
-  // A layout that keeps the lines off the other boards (boss mode) draws the attacks at players as lines too.
-  const party = useContext(AttackLinesContext)
-  const badgesOn = useContext(TableOptionsContext).attackBadges ?? ATTACK_BADGES_BY_DEFAULT
-  const seatBadges = badgesOn && party === null
+  // The viewer's teammates (the other heroes of a fight against a boss too) count as the viewer: an attack by or at
+  // them draws strong, in every layout.
+  const teams = usePlay((state) => state.view?.house_rules?.teams)
+  const seated = useContext(AttackLinesContext)
+  const party = useMemo(
+    () => (viewer === null ? null : [...new Set([...teammates(teams, viewer), ...(seated ?? [])])]),
+    [teams, viewer, seated],
+  )
   return useMemo(() => {
     const controllerOf = (id: ObjectId) => controllers[cards.indexOf(id)]
-    const lines = planLines({ combat, forecast, pending, controllerOf, viewer, party, seatBadges })
+    const lines = planLines({ combat, forecast, pending, controllerOf, viewer, party })
     return lines.length === 0 ? NO_LINES : lines
-  }, [combat, forecast, pending, cards, controllers, viewer, party, seatBadges])
+  }, [combat, forecast, pending, cards, controllers, viewer, party])
 }

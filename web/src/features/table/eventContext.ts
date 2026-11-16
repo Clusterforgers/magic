@@ -121,6 +121,17 @@ export function abilitySources(events: readonly EventView[]): ReadonlyMap<Object
   return sources
 }
 
+/** The tokens of `events` made as a copy of another object, which the log names apart from the card they copy. */
+export function tokenCopies(events: readonly EventView[]): ReadonlySet<ObjectId> {
+  const copies = new Set<ObjectId>()
+  for (const view of events) {
+    const event = publicEvent(view)
+    if (event === null || typeof event === 'string' || !('TokenCreated' in event)) continue
+    if (event.TokenCreated.copy_of !== undefined) copies.add(event.TokenCreated.object)
+  }
+  return copies
+}
+
 /**
  * What each ability object of `events` belongs to when no object gives its source the ability (the Ring's levels), so a
  * line about the ability resolving names the Ring even after the object left the view.

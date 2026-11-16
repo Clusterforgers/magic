@@ -67,6 +67,8 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf9d) Crowded tables: three heroes at ten permanents each keep cards above 75 px at 1400 × 900, a six-seat grid shows the opponents' lands whole, and the card preview finds room in windows near 1024 px
 - [ ] (pf9e) The live report "only the host's creature attacks" in a party turn reproduced from its stored game and fixed
 - [ ] (pf9f) Stable tests under load: the 40-tap budget in `perf.test.tsx`, `tm38_team_turns` giant_four and the `check_sched` lock-wait case
+- [ ] (pf9g) Copies of one trigger are told apart on the stack, and a trigger whose conditions all fail says why in the log
+- [ ] (pf9h) An ability that rolls several dice makes one roll of them (Mr. House), so "one or more dice" triggers fire once
 
 ## M5 Table and prompts
 
@@ -128,6 +130,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl3a) Boss personalities: each boss weighs threats its own way (the healer, the biggest board, the combo) within the spotlight's cap
 - [ ] (dl2c) Each hero pays the attack costs of their own creatures in the party's combined attack
 - [ ] (dl8c) The boss side's targeted spells say in the log why they leave the eyed hero, as its attacks do
+- [ ] (dl8d) The glossary explains each boss's Enrage by its own rules, not as the Magic keyword
 - [ ] (dl4) A won card names the card it replaces (a basic land today), chosen from the hero's deck list on the loot screen
 - [ ] (dl5) Campfire upgrades put a sticker on a card of the hero's deck for the rest of the run
 - [ ] (dl6) Risky relics are party decisions: the party votes to take one, and events can be party votes with a shared outcome

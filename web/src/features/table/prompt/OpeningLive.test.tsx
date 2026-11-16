@@ -69,17 +69,19 @@ describe('Mulligan', () => {
     expect(text()).toContain('puts 2 cards on the bottom')
   })
 
-  it('names the seat still deciding and stops when a new snapshot says it kept', () => {
+  it('shows the seat still deciding in the floating status and follows a new snapshot that says it kept', () => {
     const { h, send, container } = mount()
     const view = clone(fixture.view)
     view.stage = 'Mulligan'
     must(view.players[1]).mulligan = 'Deciding'
     act(() => h.deliver({ type: 'Snapshot', seq: 2, state: view }))
     send(decision(24, mulligan()))
-    expect(container.querySelector('[data-slot="mulligan-waiting"]')).toHaveTextContent('Still deciding: Bo.')
+    const bo = (): Element | null => container.querySelector('[data-opening] [data-seat-status="1"]')
+    expect(bo()).toHaveAttribute('data-status', 'choosing')
     must(view.players[1]).mulligan = 'Kept'
     act(() => h.deliver({ type: 'Snapshot', seq: 3, state: view }))
-    expect(container.querySelector('[data-slot="mulligan-waiting"]')).toBeNull()
+    // The snapshot ends the wait on Bo: the status says it kept, or the snapshot took the decision down with it.
+    expect(bo()?.getAttribute('data-status') ?? 'done').toBe('done')
   })
 })
 

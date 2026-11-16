@@ -20,7 +20,7 @@ import {
 } from '../combatText'
 import { useSeatNamer } from '../../names'
 import { BarButton } from '../CombatBar'
-import { partyWords } from '../partyAttack'
+import { partyWords, teamAttacks } from '../partyAttack'
 import { markCards, useCardMarks, useCardNotes } from '../marks'
 import type { CardMarks, CardNote, CardNotes } from '../marks'
 import { useOwnCardIds } from '../ownCards'
@@ -134,7 +134,8 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
   const declaredIds = useMemo(() => declared.map((entry) => entry.object), [declared])
   // The attack as chosen so far is drawn as lines from each attacker to what it attacks, before anything is sent.
   const drawn = useMemo(() => new Map(declared.map(({ object, target }) => [object, target])), [declared])
-  usePublishPending({ attacks: drawn })
+  const team = useMemo(() => teamAttacks(options.party), [options.party])
+  usePublishPending({ attacks: drawn, team })
   // The engine is asked what the attack would do each time it changes (nobody is blocking yet); its forecast comes
   // back through the seam and is drawn on the seats it would hit.
   const attackMade = useMemo(() => attacksAnswer(drawn), [drawn])

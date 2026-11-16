@@ -469,6 +469,10 @@ pub struct BossView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub omen: Option<String>,
+    /// How many of the boss's turns are still to begin when the Omen is set in motion: 1 as its next turn begins.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub omen_in: Option<u32>,
 }
 
 /// A sticker sheet a seat plays with (public).

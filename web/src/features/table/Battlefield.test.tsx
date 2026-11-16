@@ -225,3 +225,18 @@ describe('a tapped card', () => {
     expect(upright.querySelector('[data-slot="card-face"]')).not.toHaveAttribute('data-turned')
   })
 })
+
+describe('the lanes of a board', () => {
+  it.each([2, 4])(
+    'start at the left edge of every band at %i seats, so a short row leaves its room at the right',
+    (seats) => {
+      renderTable({ seats })
+      const bands = [...document.querySelectorAll<HTMLElement>('[data-slot="board-band"]')]
+      expect(bands.length).toBeGreaterThan(0)
+      for (const band of bands) {
+        expect(band.className).toContain('justify-start')
+        expect(band.className).not.toMatch(/justify-(center|between|end)/)
+      }
+    },
+  )
+})

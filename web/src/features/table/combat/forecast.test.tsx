@@ -17,7 +17,7 @@ import {
   previewFor,
   useBlockPreview,
 } from './forecast'
-import { usePendingStore } from './pending'
+import { NO_PENDING, usePendingStore } from './pending'
 import type { PendingCombatStore } from './pending'
 
 const FORECAST: CombatForecast = {
@@ -102,9 +102,9 @@ describe('the answer a prompt would send for the choices it has made', () => {
         ],
       },
     ],
-    ['nothing pending', pendingAnswer({ blocks: new Map(), attacks: new Map() }), null],
-    ['pending blocks', pendingAnswer({ blocks, attacks: new Map() }), blocksAnswer(blocks)],
-    ['pending attacks', pendingAnswer({ blocks: new Map(), attacks }), attacksAnswer(attacks)],
+    ['nothing pending', pendingAnswer({ ...NO_PENDING }), null],
+    ['pending blocks', pendingAnswer({ ...NO_PENDING, blocks }), blocksAnswer(blocks)],
+    ['pending attacks', pendingAnswer({ ...NO_PENDING, attacks }), attacksAnswer(attacks)],
   ])('is %s', (_name, answer, expected) => {
     expect(answer).toEqual(expected)
   })
