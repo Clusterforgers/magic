@@ -599,6 +599,7 @@ Drownyard Temple
 Drudge Beetle
 Drudge Sentinel
 Drudge Skeletons
+Druid of Purification
 Dryad of the Ilysian Grove
 Dual Casting
 Dual Strike
@@ -1448,6 +1449,7 @@ Norn's Annex
 Norn's Choirmaster
 Norwood Riders
 Nostalgic Dreams
+Not Dead After All
 Notion Rain
 Nourishing Shoal
 Novijen, Heart of Progress
@@ -2108,6 +2110,7 @@ Telepathy
 Tempestra, Dame of Games
 Temple Altisaur
 Temporal Manipulation
+Tempt with Mayhem
 Temur Devotee
 Tender Wildguide
 Tendershoot Dryad

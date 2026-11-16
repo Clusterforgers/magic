@@ -5,39 +5,24 @@
   "faces": [
     {
       "name": "Not Dead After All",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "73c521ae8ea029ecabfddcca1aca5cf4",
       "abilities": [
         {
           "Spell": {
             "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    },
-                    {
-                      "ControlledBy": "You"
-                    }
-                  ]
-                }
-              }
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
             ],
             "effects": [
               {
                 "Continuous": {
-                  "affected": {
-                    "Target": 0
-                  },
+                  "affected": { "Target": 0 },
                   "mods": [
                     {
                       "GrantAbility": {
                         "Triggered": {
                           "when": {
                             "ZoneChange": {
-                              "what": [
-                                "This"
-                              ],
+                              "what": ["This"],
                               "from": "Battlefield",
                               "to": "Graveyard"
                             }
@@ -46,22 +31,14 @@
                             {
                               "Move": {
                                 "what": "This",
-                                "to": {
-                                  "Battlefield": {
-                                    "tapped": true
-                                  }
-                                },
+                                "to": { "Battlefield": { "tapped": true } },
                                 "as": "returned"
                               }
                             },
                             {
                               "R6602CreateAttached": {
-                                "token": {
-                                  "Named": "wicked_role"
-                                },
-                                "to": {
-                                  "Bound": "returned"
-                                }
+                                "token": { "Named": "wicked_role" },
+                                "to": { "Bound": "returned" }
                               }
                             }
                           ]

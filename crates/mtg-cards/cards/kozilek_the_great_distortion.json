@@ -9,26 +9,10 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "SpellCast": {
-                "what": [
-                  "This"
-                ],
-                "by": "You"
-              }
-            },
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
             "if": {
               "Compare": {
-                "left": {
-                  "Count": [
-                    {
-                      "In": "Hand"
-                    },
-                    {
-                      "OwnedBy": "You"
-                    }
-                  ]
-                },
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
                 "op": "Lt",
                 "right": 7
               }
@@ -43,16 +27,7 @@
                       {
                         "Times": {
                           "by": -1,
-                          "of": {
-                            "Count": [
-                              {
-                                "In": "Hand"
-                              },
-                              {
-                                "OwnedBy": "You"
-                              }
-                            ]
-                          }
+                          "of": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
                         }
                       }
                     ]
@@ -62,51 +37,24 @@
             ]
           }
         },
-        {
-          "Keyword": "Menace"
-        },
+        { "Keyword": "Menace" },
         {
           "Activated": {
             "cost": [
               {
                 "Discard": {
-                  "filter": [
-                    {
-                      "Compare": {
-                        "stat": "ManaValue",
-                        "op": "Eq",
-                        "to": "X"
-                      }
-                    }
-                  ]
+                  "filter": [{ "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }]
                 }
               }
             ],
             "targets": [
               {
                 "what": {
-                  "Object": [
-                    "Spell",
-                    {
-                      "Compare": {
-                        "stat": "ManaValue",
-                        "op": "Eq",
-                        "to": "X"
-                      }
-                    }
-                  ]
+                  "Object": ["Spell", { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }]
                 }
               }
             ],
-            "effects": [
-              {
-                "Counter": {
-                  "what": {
-                    "Target": 0
-                  }
-                }
-              }
-            ]
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
           }
         }
       ]
