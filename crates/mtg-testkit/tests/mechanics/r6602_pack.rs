@@ -126,12 +126,19 @@ fn r6602_the_wicked_role_drains_each_opponent_when_it_dies(
         driver.cast_at("Doom Blade", &[ogre])?;
         settle(&mut driver, &[])?;
     }
-    assert!(on_battlefield(&driver, "Ogre").is_empty(), "the second death keeps it");
+    assert!(
+        on_battlefield(&driver, "Ogre").is_empty(),
+        "the second death keeps it"
+    );
     assert!(on_battlefield(&driver, "Wicked Role").is_empty());
     let state = driver.state();
     let start = state.player(pid(0)).unwrap().life();
     for seat in 1..seats {
-        assert_eq!(state.player(pid(seat)).unwrap().life(), start - 1, "seat {seat} lost 1 life");
+        assert_eq!(
+            state.player(pid(seat)).unwrap().life(),
+            start - 1,
+            "seat {seat} lost 1 life"
+        );
     }
     Ok(())
 }
@@ -157,8 +164,15 @@ fn r6602_druid_destroys_what_each_player_chose(
     // The n-th player asked takes the n-th relic of the list when it is there.
     let asked = settle(&mut driver, picks)?;
     let expected: Vec<usize> = (0..seats).collect();
-    assert_eq!(asked, expected, "every player is asked, starting with the controller");
-    assert_eq!(on_battlefield(&driver, "Mine").len(), 1, "never its controller's own");
+    assert_eq!(
+        asked, expected,
+        "every player is asked, starting with the controller"
+    );
+    assert_eq!(
+        on_battlefield(&driver, "Mine").len(),
+        1,
+        "never its controller's own"
+    );
     let left = (1..seats)
         .filter(|seat| on_battlefield(&driver, &format!("Relic{seat}")).is_empty())
         .count();
@@ -220,10 +234,20 @@ fn r6602_kozilek_discards_a_card_of_the_value_x_to_counter_a_spell_of_that_value
         }
     }
     // The only spell and the only card in hand both have mana value 0: X can be nothing else.
-    assert!(numbers.iter().all(|range| *range == (0, Some(0))), "{numbers:?}");
+    assert!(
+        numbers.iter().all(|range| *range == (0, Some(0))),
+        "{numbers:?}"
+    );
     settle(&mut driver, &[])?;
-    assert_eq!(on_battlefield(&driver, "Ogre").len(), 1, "Doom Blade was countered");
+    assert_eq!(
+        on_battlefield(&driver, "Ogre").len(),
+        1,
+        "Doom Blade was countered"
+    );
     let state = driver.state();
-    assert!(state.zone(Zone::Hand(pid(0))).is_empty(), "the Trinket was discarded");
+    assert!(
+        state.zone(Zone::Hand(pid(0))).is_empty(),
+        "the Trinket was discarded"
+    );
     Ok(())
 }

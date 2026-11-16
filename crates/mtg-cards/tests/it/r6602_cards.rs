@@ -41,9 +41,14 @@ fn r6602_the_card_compiles_into_its_file(#[case] name: &str) {
                 compiled.clauses.iter().any(|clause| clause.face == face
                     && texts
                         .iter()
-                        .any(|text| same_written_text(text, &clause.text))),
+                        .any(|text| same_written_text(text, without_ability_word(&clause.text)))),
                 "{name}: none of {texts:?} is a clause of {clauses:?}"
             );
         }
     }
+}
+
+/// A clause without the ability word that opens it ("Tempting offer — "), which no rule reads (CR 207.2c).
+fn without_ability_word(text: &str) -> &str {
+    text.split_once(" \u{2014} ").map_or(text, |(_, rest)| rest)
 }

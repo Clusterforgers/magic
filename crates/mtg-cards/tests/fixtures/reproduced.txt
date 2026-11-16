@@ -1176,6 +1176,7 @@ Korozda Monitor
 Korvold, Gleeful Glutton
 Koth, Fire of Resistance
 Kozilek's Translator
+Kozilek, the Great Distortion
 Krark's Thumb
 Kraum, Violent Cacophony
 Krav, the Unredeemed
