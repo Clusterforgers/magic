@@ -1,10 +1,12 @@
-// Goal: while the Mulligan prompt waits off a phone the opening hand floats in the centre overlay, and the hand dock keeps its size and place without drawing the hand a second time; on a phone the dock draws the hand as at any other decision, in a row that scrolls.
+// Goal: while the Mulligan prompt waits off a phone the opening hand floats in the centre overlay, and the hand dock keeps its size and place without drawing the hand a second time, while another choice in the overlay leaves the hand drawn; on a phone the dock draws the hand as at any other decision, in a row that scrolls.
 import { screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { PlayState } from '@/play/store'
 import { must } from '@/test-utils/batches'
 import { KINDS } from '@/test-utils/decisions'
 import { renderTable } from '@/test-utils/tableHarness'
+import { buildFixture } from './dev/fixture'
+import { DEV_PROMPTS } from './dev/prompts'
 import { clampedHeight, HAND_GROW_VAR, HAND_PHONE_CLAMP } from './layout'
 import { HAND_DOCK_SIDES_PX, HAND_FLOOR_PX, handCardWidth } from './handFit'
 
@@ -58,6 +60,18 @@ describe('the hand dock at the opening hand', () => {
       expect(other.hidden).toBe(false)
     },
   )
+
+  it('draws its cards under another choice in the overlay, a long list of targets', () => {
+    room.width = 1100
+    room.height = 220
+    const fixture = buildFixture({ seats: 5 })
+    const pending = must(DEV_PROMPTS['targets-many'])(fixture)
+    renderTable({ fixture, state: (state) => ({ ...state, pending }) })
+    const host = must(document.querySelector<HTMLElement>('[data-slot="choice-host"]'))
+    expect(host.hidden).toBe(false)
+    expect(host.querySelector('button[data-candidate]')).not.toBeNull()
+    expect(hand().closest('[data-floating]')).toBeNull()
+  })
 
   it('draws its cards again once the keep or mulligan is answered', () => {
     room.width = 1100
