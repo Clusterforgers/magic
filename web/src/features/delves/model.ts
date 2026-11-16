@@ -176,6 +176,15 @@ export function lastFight(run: Run): 'won' | 'lost' | 'retreated' | 'closed' | n
   return null
 }
 
+/** Whether the party's room is the first boss of the ladder: no boss room lies in an earlier row, as `Run::boss_rank` is 0. */
+export function atFirstBoss(run: Run): boolean {
+  const row = run.map.nodes.find((node) => node.id === run.at)?.row ?? 0
+  return !run.map.nodes.some((node) => node.boss != null && node.row < row)
+}
+
+/** How much of their life every hero regroups with after a lost fight: all of it before the first boss, half later. */
+export const regroupLife = (run: Run): 'full' | 'half' => (atFirstBoss(run) ? 'full' : 'half')
+
 /** What the party does next, in one line of help for the stage the run is in. */
 export function nextStep(view: DelveView): string {
   const status = view.run.status
