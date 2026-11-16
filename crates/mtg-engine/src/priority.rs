@@ -314,12 +314,13 @@ pub(crate) fn activation(
         let counters = object
             .permanent()
             .map_or(0, |permanent| permanent.counters_of(&CounterKind::Loyalty));
-        if !loyalty::can_activate(state, player, object, *cost) {
+        let printed = address.source.is_printed().then_some(address.ability);
+        if !loyalty::r6603_can_activate(state, player, object, *cost, printed) {
             return if object.zone() != Zone::Battlefield {
                 Never
             } else if !sorcery_timing(state, player) {
                 Hindered(Unplayable::Timing, Some(Why::SorcerySpeed))
-            } else if state.loyalty_spent(object.reference()) {
+            } else if state.r6603_loyalty_spent_by(object.reference(), printed) {
                 Hindered(Unplayable::Restricted, Some(Why::LimitSpent))
             } else {
                 Hindered(Unplayable::Cost, Some(Why::OtherCost))

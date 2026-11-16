@@ -6393,6 +6393,11 @@ impl Walker<'_> {
                 }
             }),
             GameRule::PlayersHave { who, .. } => self.at(tag, |w| w.reference(who, Kind::Player)),
+            GameRule::R6603LoyaltyAgain(times) => {
+                if *times == 0 {
+                    self.at(tag, |w| w.problem("more activations are at least one"));
+                }
+            }
             GameRule::CanBeCommander
             | GameRule::AnyNumberInDeck
             | GameRule::Draft(_)
@@ -6729,6 +6734,7 @@ impl Walker<'_> {
             | ReplaceWhen::Connives { what }
             | ReplaceWhen::Enters { what }
             | ReplaceWhen::R6105Uncycled { what }
+            | ReplaceWhen::R6603Transforms { what }
             | ReplaceWhen::BecomesAttached { what } => {
                 self.at("what", |w| w.selector(what));
             }
@@ -6760,7 +6766,8 @@ impl Walker<'_> {
             | ReplaceWhen::Surveils { who }
             | ReplaceWhen::CopiesSpell { who }
             | ReplaceWhen::Learns { who }
-            | ReplaceWhen::Draw { who, .. } => {
+            | ReplaceWhen::Draw { who, .. }
+            | ReplaceWhen::R6603DrawsSeveral { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
         }
@@ -7069,9 +7076,21 @@ impl Walker<'_> {
         {
             self.problem("turning face up only puts counters on the permanent itself");
         }
+        if matches!(when, ReplaceWhen::R6603DrawsSeveral { at_least, .. } if *at_least < 2)
+            || matches!((when, by), (ReplaceWhen::R6603DrawsSeveral { .. }, by) if !matches!(by, ReplaceBy::Instead(_)))
+        {
+            self.problem("a draw of several cards is replaced only by steps instead, and only from two cards on");
+        }
+        if matches!(when, ReplaceWhen::R6603Transforms { .. })
+            && !matches!(by, ReplaceBy::AsEnters(_))
+        {
+            self.problem("a permanent that transforms has only effects as it turns over");
+        }
         let enters = matches!(
             when,
-            ReplaceWhen::Enters { .. } | ReplaceWhen::BecomesAttached { .. }
+            ReplaceWhen::Enters { .. }
+                | ReplaceWhen::BecomesAttached { .. }
+                | ReplaceWhen::R6603Transforms { .. }
         );
         let zone_move = matches!(
             when,

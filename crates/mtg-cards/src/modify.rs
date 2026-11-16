@@ -704,6 +704,10 @@ pub enum Prohibited {
     Discard,
     /// Be exiled (CR 406).
     Exile,
+    /// Be sacrificed or exiled by a triggered ability their controller controls while it resolves: "Triggered abilities you
+    /// control can't cause you to sacrifice or exile creature tokens you control." A cost the player pays to resolve the
+    /// ability (a "you may sacrifice") is caused by it too.
+    R6603ByOwnTriggers,
     /// Transform (CR 701.28).
     Transform,
     /// Phase out (CR 702.26).
@@ -1118,6 +1122,11 @@ pub enum GameRule {
     /// The next time the creatures adapt this turn, each adapts as though it had no +1/+1 counters on it (CR 701.46a):
     /// the rule is used up by that adapt.
     R6600AdaptsFresh(Ref),
+    /// The loyalty ability that makes this rule may be activated this many more times this turn than the planeswalker's
+    /// loyalty abilities otherwise may ("you may activate ~'s loyalty ability two more times this turn"); only that
+    /// ability of that permanent, so a loyalty ability it gains is not covered (Comet, Stellar Pup rulings). A rule
+    /// only a resolving loyalty ability makes.
+    R6603LoyaltyAgain(u32),
     /// The controller may pay this cost rather than the echo cost of each permanent they control (CR 702.30, CR 118.9):
     /// "You may pay {0} rather than pay the echo cost for permanents you control." Paying it counts as paying echo.
     EchoRather(Cost),

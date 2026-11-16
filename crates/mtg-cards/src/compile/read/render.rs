@@ -690,6 +690,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r6600_wholes::r6600_add_wholes(ability, &mut texts);
     super::r6601_wholes::r6601_add_wholes(ability, &mut texts);
     super::r6602_wholes::r6602_add_wholes(ability, &mut texts);
+    super::r6603_wholes::r6603_add_wholes(ability, &mut texts);
     super::r6103_wholes::r6103_add_wholes(ability, &mut texts);
     super::r6400_wholes::r6400_add_wholes(ability, &mut texts);
     super::r5510_fortified::r5510_wordings(&mut texts);

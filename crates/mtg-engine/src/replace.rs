@@ -109,6 +109,7 @@ pub fn process(
                 || exiles_by_paradigm(state, &item)
                 || moves_by_a_rule(state, event)
                 || r401_riders::r401_exiled_instead(state, event)
+                || r6603_transforms::r6603_turns_up_replacement(state, event)
         })
     {
         let events = crate::r6500_caps::r6500_capped(state, proposed.clone());
@@ -605,6 +606,8 @@ enum Unit {
     },
     /// An attachment would become attached to a permanent.
     Attach { object: ObjectId },
+    /// A permanent would transform, turning `face` up (`r6603_transforms`).
+    Transform { object: ObjectId, face: Option<u8> },
     /// A card would enter the battlefield.
     Enter {
         object: ObjectId,
@@ -707,6 +710,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::TurnedFaceUp { what }
         | ReplaceWhen::Discarded { what, .. }
         | ReplaceWhen::R6105Uncycled { what }
+        | ReplaceWhen::R6603Transforms { what }
         | ReplaceWhen::BecomesAttached { what } => only_this(what),
         ReplaceWhen::Damage { to, .. } | ReplaceWhen::CountersPut { on: to, .. } => {
             matches!(to, Some(Ref::This))
@@ -724,6 +728,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::Surveils { .. }
         | ReplaceWhen::CopiesSpell { .. }
         | ReplaceWhen::Learns { .. }
+        | ReplaceWhen::R6603DrawsSeveral { .. }
         | ReplaceWhen::Draw { .. } => false,
     }
 }
@@ -850,12 +855,15 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::WithKindsOn(_)
         | ReplaceBy::BecomesChoice(_)
         | ReplaceBy::Mill(_)
-        | ReplaceBy::AsEnters(_)
         | ReplaceBy::AsEntersWith { .. }
         | ReplaceBy::ChooseAfter { .. }
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
+        ReplaceBy::AsEnters(_) => matches!(unit, Unit::Enter { .. } | Unit::Transform { .. }),
         ReplaceBy::Choose(_) => matches!(unit, Unit::Enter { .. } | Unit::Attach { .. }),
-        ReplaceBy::Instead(_) => !matches!(unit, Unit::Other | Unit::Attach { .. }),
+        ReplaceBy::Instead(_) => !matches!(
+            unit,
+            Unit::Other | Unit::Attach { .. } | Unit::Transform { .. }
+        ),
         ReplaceBy::Plus(_) => matches!(unit, Unit::Tokens { .. }),
         ReplaceBy::UnderYourControl => matches!(unit, Unit::Tokens { .. } | Unit::Enter { .. }),
         ReplaceBy::InsteadNext(_) => {
@@ -1049,6 +1057,10 @@ impl Pass<'_> {
             }
             Event::LifeGained { player, .. } => Unit::Life { player: *player },
             Event::Attached { object, .. } => Unit::Attach { object: *object },
+            Event::Transformed { object, face } => Unit::Transform {
+                object: *object,
+                face: *face,
+            },
             Event::PlayerLost { player, .. } => Unit::Loss { player: *player },
             Event::CardDrawn { player, .. } | Event::DrewFromEmptyLibrary { player } => {
                 Unit::Draw { player: *player }
@@ -1324,6 +1336,10 @@ impl Pass<'_> {
             | (ReplaceWhen::Draw { who, .. }, Unit::Draw { player }) => {
                 scope.players(who)?.contains(player)
             }
+            (ReplaceWhen::R6603DrawsSeveral { who, at_least }, Unit::Draw { player }) => {
+                self.r6603_draws_of(*player).len() >= *at_least as usize
+                    && scope.players(who)?.contains(player)
+            }
             (
                 ReplaceWhen::Discarded { what, by, effect },
                 Unit::Move {
@@ -1372,6 +1388,7 @@ impl Pass<'_> {
                 },
             )
             | (ReplaceWhen::BecomesAttached { what }, Unit::Attach { object })
+            | (ReplaceWhen::R6603Transforms { what }, Unit::Transform { object, .. })
             | (ReplaceWhen::Enters { what }, Unit::Enter { object, .. }) => {
                 let Some(reference) = self.reference(*object) else {
                     return Ok(false);
@@ -1415,7 +1432,10 @@ impl Pass<'_> {
             return Ok(vec![protection]);
         }
         let mut found: Vec<Candidate> = Vec::new();
-        let mut consider = |step: &Pass<'_>, source: &Source| -> Result<(), EngineError> {
+        let mut consider = |step: &Pass<'_>,
+                            source: &Source,
+                            into: bool|
+         -> Result<(), EngineError> {
             let Ability::Replacement {
                 when,
                 by,
@@ -1432,7 +1452,8 @@ impl Pass<'_> {
             } else {
                 Origin::Ability(source.address)
             };
-            if slot.applied.contains(&origin)
+            if matches!(when, ReplaceWhen::R6603Transforms { .. }) != into
+                || slot.applied.contains(&origin)
                 || found.iter().any(|c| c.origin == origin)
                 || !applies_to(by, &unit)
                 || (regeneration.is_some()
@@ -1470,7 +1491,10 @@ impl Pass<'_> {
             Ok(())
         };
         for source in &self.sources {
-            consider(self, source)?;
+            consider(self, source, false)?;
+        }
+        for own in self.r6603_turned_up(&unit) {
+            consider(self, &own, true)?;
         }
         // The card that enters is not in play yet: the effects it prints about its own entering work from wherever it is.
         // A card put onto the battlefield face down has no abilities as it enters (CR 708.2), so what it prints about its
@@ -1496,7 +1520,7 @@ impl Pass<'_> {
                         ..
                     }
                 ) {
-                    consider(self, &own)?;
+                    consider(self, &own, false)?;
                 }
             }
         }
@@ -2043,7 +2067,9 @@ impl Pass<'_> {
                 Target::Player(player) => *player,
                 Target::Object(object) => controller_of(object.id),
             },
-            Unit::Move { object, .. } | Unit::Attach { object } => controller_of(*object),
+            Unit::Move { object, .. }
+            | Unit::Attach { object }
+            | Unit::Transform { object, .. } => controller_of(*object),
             Unit::Other => self.state.active_or_next(),
         }
     }
@@ -2423,6 +2449,13 @@ impl Pass<'_> {
             ) => {
                 self.w9c_prevent_all_but(at, candidate, *kept, applied);
             }
+            (ReplaceBy::Instead(effects), Unit::Draw { player })
+                if self.r6603_several(candidate) =>
+            {
+                let at = self.r6603_one_draw(at, *player);
+                let asked = self.w5d_instead(at, candidate, by, effects, &unit, applied);
+                return Ok(asked.map_or(Applied::Done, Applied::Ask));
+            }
             (ReplaceBy::Instead(effects) | ReplaceBy::Plus(effects), _)
             | (ReplaceBy::PreventAnd(effects), Unit::Damage { .. })
             | (ReplaceBy::PreventCountedAnd { effects, .. }, Unit::Damage { .. }) => {
@@ -2501,6 +2534,9 @@ impl Pass<'_> {
             }
             (ReplaceBy::Choose(kind), Unit::Attach { object }) => {
                 return self.r5501_choose_as_attached(at, candidate, *kind, *object, applied);
+            }
+            (ReplaceBy::AsEnters(effects), Unit::Transform { .. }) => {
+                return Ok(self.r304_as_enters(at, candidate, effects, &unit, applied));
             }
             (_, Unit::Enter { object, controller }) => {
                 let entering = (*object, *controller);
@@ -4196,6 +4232,8 @@ mod r304c_amounts;
 mod r4703_loss;
 mod r5501_attached;
 mod r6008_library;
+mod r6603_draws;
+mod r6603_transforms;
 mod w9c_prevent;
 
 /// The counters for each permanent devoured: "Devour X, where X is the number of creatures devoured this way" is

@@ -301,6 +301,15 @@ pub enum Rule {
     R6600LoyaltyOnceMore(Vec<PlayerId>),
     /// The next time each creature adapts, it adapts as though it had no +1/+1 counters (CR 701.46a); read by the adapt.
     R6600AdaptsFresh(Vec<ObjectRef>),
+    /// The loyalty ability `ability` printed on the permanent may be activated `times` more times this turn.
+    R6603LoyaltyAgain {
+        /// The planeswalker.
+        permanent: ObjectRef,
+        /// The index of the ability among the rules of its card.
+        ability: usize,
+        /// How many more activations.
+        times: u32,
+    },
     /// The players may pay the cost rather than the echo cost of each permanent they control (CR 702.30).
     EchoRather {
         /// The players it covers.
@@ -924,6 +933,8 @@ pub(crate) struct RulesInForce {
     loyalty_twice: BTreeSet<PlayerId>,
     /// For each player, how many more loyalty activations of each of their planeswalkers the rules in force allow.
     loyalty_once_more: BTreeMap<PlayerId, u32>,
+    /// The loyalty abilities that may be activated more times this turn, with how many more each rule allows.
+    r6603_loyalty_again: Vec<(ObjectRef, usize, u32)>,
     /// The costs each player may pay rather than the echo cost of a permanent they control, in the order the rules began.
     echo_rather: Vec<(PlayerId, mtg_cards::cost::Cost)>,
     /// The reveals of first draws in force: the controller, the source, whether optional, whether on their turns only.
@@ -1475,6 +1486,13 @@ impl RulesInForce {
                     *more = more.saturating_add(1);
                 }
             }
+            Rule::R6603LoyaltyAgain {
+                permanent,
+                ability,
+                times,
+            } => self
+                .r6603_loyalty_again
+                .push((*permanent, *ability, *times)),
             Rule::EchoRather { players, cost } => self
                 .echo_rather
                 .extend(players.iter().map(|player| (*player, cost.clone()))),
@@ -2034,6 +2052,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::NoMaxHandSize(who) => Rule::NoMaxHandSize(scope.players(who)?),
         GameRule::LoyaltyTwice(who) => Rule::LoyaltyTwice(scope.players(who)?),
         GameRule::R6600LoyaltyOnceMore(who) => Rule::R6600LoyaltyOnceMore(scope.players(who)?),
+        GameRule::R6603LoyaltyAgain(times) => r6603_lower_loyalty_again(scope, *times)?,
         GameRule::EchoRather(cost) => Rule::EchoRather {
             players: scope.players(&Ref::You)?,
             cost: cost.clone(),
@@ -2236,6 +2255,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::AttackAsThoughHasteAt(players) => players.is_empty(),
         Rule::MayCastRather { casts, .. } => casts.is_empty(),
         Rule::MaxHandSize(sizes) => sizes.is_empty(),
+        Rule::R6603LoyaltyAgain { times, .. } => *times == 0,
         Rule::LoyaltyCostsMore(more) => more.iter().all(|(_, plus)| *plus == 0),
         Rule::HandSizeChange(changes) => changes.is_empty(),
         Rule::UntapDuring { whose, .. } => whose.is_empty(),
@@ -2432,6 +2452,7 @@ static NONE: RulesInForce = RulesInForce {
     no_hand_limit: BTreeSet::new(),
     loyalty_twice: BTreeSet::new(),
     loyalty_once_more: BTreeMap::new(),
+    r6603_loyalty_again: Vec::new(),
     echo_rather: Vec::new(),
     reveal_first_draw: Vec::new(),
     boast_twice: BTreeSet::new(),
@@ -2847,6 +2868,40 @@ pub(crate) fn power_up_allowance(state: &GameState, source: ObjectRef) -> u32 {
 /// Whether `player` skips each extra turn they would begin: the one place the turn order reads this rule.
 pub fn skips_extra_turns(state: &GameState, player: PlayerId) -> bool {
     state.rules().skip_extra_turns.contains(&player)
+}
+
+/// The rule "you may activate ~'s loyalty ability N more times this turn" as the loyalty ability that resolves makes it:
+/// about that ability of its source; refused by name when no loyalty ability of a permanent is resolving.
+fn r6603_lower_loyalty_again(scope: &Scope<'_>, times: u32) -> Result<Rule, ResolveError> {
+    let unsupported = || ResolveError::Unsupported("Rule.R6603LoyaltyAgain");
+    let state = scope.state;
+    let ability = state
+        .resolving()
+        .and_then(|running| state.object(running.object))
+        .and_then(GameObject::ability)
+        .filter(|ability| {
+            ability.source() == scope.source
+                && ability.origin().is_printed()
+                && matches!(ability.rules(), mtg_cards::ability::Ability::Loyalty { .. })
+        })
+        .ok_or_else(unsupported)?;
+    Ok(Rule::R6603LoyaltyAgain {
+        permanent: scope.source,
+        ability: ability.index(),
+        times,
+    })
+}
+
+/// How many more times this turn the loyalty ability `ability` of `permanent` may be activated than its planeswalker's
+/// loyalty abilities otherwise may.
+pub fn r6603_loyalty_again(state: &GameState, permanent: ObjectRef, ability: usize) -> u32 {
+    state
+        .rules()
+        .r6603_loyalty_again
+        .iter()
+        .filter(|(on, index, _)| *on == permanent && *index == ability)
+        .map(|(_, _, times)| *times)
+        .sum()
 }
 
 /// How many times each turn `player` may activate the loyalty abilities of one planeswalker they control: twice under a
