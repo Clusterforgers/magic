@@ -8375,7 +8375,7 @@ mod tests {
     )]
     #[case::this_ability_goes_with_a_copy_only(
         r#"{"Static":{"affected":"This","mods":["ThisAbility"]}}"#,
-        "a name, a loyalty or this ability changes only the copiable values of a copy (`except`)"
+        "a loyalty or this ability changes only the copiable values of a copy (`except`)"
     )]
     #[case::a_player_takes_only_the_keywords_players_have(
         r#"{"Static":{"affected":"You","mods":[{"AddKeyword":"Flying"}]}}"#,
