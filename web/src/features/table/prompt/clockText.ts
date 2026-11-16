@@ -5,8 +5,8 @@ import type { DecisionName } from '../turnText'
 
 /** What a clock counts down for: a decision kind, or a kind whose answer at zero depends on its options. */
 export type ClockKind =
-    | 'LoopDraw'
-| DecisionName
+  | 'LoopDraw'
+  | DecisionName
   | 'Unknown'
   | 'ChooseModeCancel'
   | 'ChooseCardsNone'

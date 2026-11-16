@@ -1535,7 +1535,7 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { player, kind, name } = event.TookBack
     return line(`${n.seat(player)} took back ${takeBackAction(kind, name)}`)
   }
-  if ("LoopRepeated" in event) return line(loopSummaryLine(event.LoopRepeated, (seat) => n.seat(seat)))
+  if ('LoopRepeated' in event) return line(loopSummaryLine(event.LoopRepeated, (seat) => n.seat(seat)))
   if ('LoopDrawn' in event) return line(loopDrawLine(event.LoopDrawn.cards))
   const unhandled: never = event
   return line(String(unhandled))

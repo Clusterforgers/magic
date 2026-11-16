@@ -48,7 +48,15 @@ export const KINDS: Record<DecisionName, DecisionKind> = {
   OrderTriggers: { OrderTriggers: { triggers: [] } },
   ChooseReplacement: { ChooseReplacement: { candidates: [] } },
   Loop: {
-    Loop: { cards: ['Polyraptor'], per_iteration: {}, mandatory: false, bounded: false, max: 10000, asked: 0, can_draw: false },
+    Loop: {
+      cards: ['Polyraptor'],
+      per_iteration: {},
+      mandatory: false,
+      bounded: false,
+      max: 10000,
+      asked: 0,
+      can_draw: false,
+    },
   },
 }
 

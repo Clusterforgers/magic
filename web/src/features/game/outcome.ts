@@ -80,7 +80,8 @@ export function describeResult(
     player.lost === null ? [] : [`${subject(player.seat, me, name)} ${describeLoss(player.lost)}`],
   )
   const how = sentence(losses)
-  if (result === 'Draw' && loopDraw != null) return { headline: 'The game is a draw', detail: `${loopDrawText(loopDraw)}.` }
+  if (result === 'Draw' && loopDraw != null)
+    return { headline: 'The game is a draw', detail: `${loopDrawText(loopDraw)}.` }
   if (result === 'Draw') return { headline: 'The game is a draw', detail: how ?? 'Nobody won.' }
   if ('Team' in result) {
     const won = `${teamWinText(result.Team, teams, name)}.`

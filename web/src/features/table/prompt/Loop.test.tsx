@@ -7,7 +7,10 @@ import { renderDecision } from '@/test-utils/combatTable'
 
 const polyraptor: LoopOptions = {
   cards: ['Polyraptor', 'Where Ancients Tread'],
-  per_iteration: { tokens: [{ controller: 0, name: 'Polyraptor', count: 1 }], life: [{ player: 1, change: -5 }] },
+  per_iteration: {
+    tokens: [{ controller: 0, name: 'Polyraptor', count: 1 }],
+    life: [{ player: 1, change: -5 }],
+  },
   mandatory: false,
   bounded: false,
   max: 10_000,
@@ -16,7 +19,10 @@ const polyraptor: LoopOptions = {
 }
 
 function mount(given: Partial<LoopOptions> = {}, seats = 2, mode?: TableMode) {
-  return renderDecision({ Loop: { ...polyraptor, ...given } }, { seats, options: mode === undefined ? {} : { mode } })
+  return renderDecision(
+    { Loop: { ...polyraptor, ...given } },
+    { seats, options: mode === undefined ? {} : { mode } },
+  )
 }
 
 describe.each<[number, TableMode | undefined]>([
@@ -79,7 +85,11 @@ describe('stopping and the draw', () => {
   })
 
   it('offers the draw, focused, for a loop that runs by itself forever', async () => {
-    const { answer, text, user } = mount({ mandatory: true, can_draw: true, cards: ['Polyraptor', 'Aether Flash'] })
+    const { answer, text, user } = mount({
+      mandatory: true,
+      can_draw: true,
+      cards: ['Polyraptor', 'Aether Flash'],
+    })
     expect(text()).toContain('Polyraptor and Aether Flash repeat by themselves.')
     const draw = screen.getByRole('button', { name: 'Let it loop: the game is a draw' })
     expect(draw).toHaveFocus()
