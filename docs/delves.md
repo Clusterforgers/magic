@@ -32,7 +32,7 @@ A fallen hero keeps playing: it haunts the fight with small, clear choices and c
 - Ways back: Rise Again; the Phoenix Feather relic (pay 6 life once each fight: every fallen teammate returns with 8 life and four cards); a won fight brings every Spirit back at 10.
 - A Spirit is asked at priority only where its haunts matter (`docs/server.md`, Windows): the party's upkeep and main phases with an empty stack (Rise Again, spending ectoplasm), the boss side's beginning of combat (Hinder, Howl) and its declare attackers step when it attacks the party (Ward), and whenever an object of the boss side is on the stack. Spells and abilities of its teammates never ask it and every other step is passed for; a stop of its own asks anywhere, and Full Control asks at every window. The Spirit panel says so.
 - Bot Spirits (`brain/haunt.rs`) rise as soon as they can, Ward when 4 or more power attacks the party, and before an opponent's combat Hinder its biggest creature (power 4 or more, 2 ectoplasm held) or Howl (4 held). A bot holding the Phoenix Feather uses it while it has 14 life or more.
-- Measured with two Hard heroes at Heat 0 (`fights`): the fallen hero spends its Spirit turns on 3 haunt actions a fight and never reaches Rise Again, so haunting helps at the margin and does not decide a fight.
+- Measured with two Hard heroes against the boss at Heat 1, rank 2 (`fights`): the fallen hero spends its Spirit turns on 3 haunt actions a fight and never reaches Rise Again, so haunting helps at the margin and does not decide a fight.
 
 ## Bosses
 
@@ -163,12 +163,12 @@ Within a run the bosses ramp with the party's relics, loot and upgrades: the fir
 
 ## Tuning
 
-- `cargo run --release -p mtg-campaign --example delve_sim -- fights <games> <heroes> <level> [first seed] [threads] [heat]` plays each boss in turn against a fresh party of bot heroes on the four fixture Commander decks; `runs` plays whole runs with life carried and loot taken. Games are untimed and seeded, so each result replays. `DELVE_SIM_DROP` (boss cards, phases or schemes by id), `DELVE_SIM_LIFE` (percent), `DELVE_SIM_HAND` and `DELVE_SIM_MINIONS` change the plan to measure what each part is worth; `DELVE_SIM_IDLE_SPIRITS` makes every Spirit pass, to measure what haunt actions are worth. Each line also counts falls, rises and haunt actions.
+- `cargo run --release -p mtg-campaign --example delve_sim -- fights <games> <heroes> <level> [first seed] [threads] [heat]` plays each boss in turn against a fresh party of bot heroes on the four fixture Commander decks; `runs` plays whole runs with life carried and loot taken. Games are untimed and seeded, so each result replays. `DELVE_SIM_RANK` scales each boss as the one at that rank of the ladder; `DELVE_SIM_DROP` (boss cards, phases or schemes by id), `DELVE_SIM_LIFE` (percent), `DELVE_SIM_HAND` and `DELVE_SIM_MINIONS` change the plan to measure what each part is worth; `DELVE_SIM_IDLE_SPIRITS` makes every Spirit pass, to measure what haunt actions are worth. Each line also counts falls, rises and haunt actions.
 - Minutes are estimated at 0.6 per hero turn and 0.5 per turn of the boss's side.
 - Each fight prints the pressure each hero took, the round a hero first fell to half life and the round a hero first fell.
-- The target at Heat 0 for a party of Hard bots, at every size: each fight won in 50 to 60 % of fights, a whole run in 20 to 35 %, a fight in 25 to 60 minutes for four heroes; no hero takes more than 40 % of the boss's pressure with three or more heroes (60 % with two).
+- The Heat 1 target for a party of Hard bots, at every size: each fight from the second boss won in 50 to 60 % of fights, a whole run in 20 to 35 %, a fight in 25 to 60 minutes for four heroes; no hero takes more than 40 % of the boss's pressure with three or more heroes (60 % with two).
 
-Measured with Hard heroes at Heat 0 on the four fixture Commander decks (three precons and a tuned player deck), `fights 1 <heroes> hard <seed>`, one boss per seed (seeds 1 to 4 meet Skrix, Mossjaw, Vex and Grimgut, seeds 5 to 8 again), with the spotlight and the ramp-up:
+Measured with Hard heroes against the boss at Heat 1, rank 2 strength (life 100 %, its own brain and hand), on the four fixture Commander decks (three precons and a tuned player deck), `fights 1 <heroes> hard <seed>`, one boss per seed (seeds 1 to 4 meet Skrix, Mossjaw, Vex and Grimgut, seeds 5 to 8 again), with the spotlight and the ramp-up:
 
 | Heroes | Seeds | Fights won | Turns (boss side) | Minutes | Largest hero share (worst) | First at half life | First fall |
 |---|---|---|---|---|---|---|---|
@@ -180,3 +180,25 @@ Measured with Hard heroes at Heat 0 on the four fixture Commander decks (three p
 - The grace keeps every hero above 0 life through their first three turns.
 - Solo seed 5 (Skrix) is not counted: the boss bot repeats one paid ability until the runaway watchdog stops the game in turn 13.
 - Three heroes on seeds 2 and 3 and four heroes on seeds 1 to 4 had not ended after 110 minutes of machine time per fight; five and six heroes are slower still and are not in this table.
+
+### Tier targets and measures
+
+Targets by Heat and rank, for a party of Normal bots (a deck of any kind played plainly) and of Hard bots (a deck played well); one fight at a time, each a fresh party at full life:
+
+| Heat | First boss (rank 0) | Middle bosses (ranks 1, 2) | Final boss (rank 3) |
+|---|---|---|---|
+| 0 Casual | Normal bots win about 80 % | Normal bots win 60 to 70 % | Normal bots win about 50 % |
+| 1 Seasoned | Normal bots win about 70 % | Hard bots win 50 to 60 % | Hard bots win about 45 % |
+| 2 Heroic | Hard bots win about 50 % | Hard bots win 35 to 45 % | Hard bots win about 30 % |
+
+Measured with two Normal heroes, `DELVE_SIM_RANK=<rank> fights <games> 2 normal 1 6 <heat>` (seeds from 1, the boss following the seed):
+
+| Heat | Rank | Fights won | Skrix, Mossjaw, Vex, Grimgut | Turns (boss side) | Machine time a fight |
+|---|---|---|---|---|---|
+| 0 | 0 | 38/40 (95 %) | 10/10, 10/10, 10/10, 8/10 | 12.2 (5.8) | about 1 s |
+| 0 | 1 | 39/40 (98 %) | 10/10, 10/10, 10/10, 9/10 | 12.7 (6.0) | about 1 s |
+| 1 | 0 | 37/40 (92 %) | 10/10, 10/10, 10/10, 7/10 | 13.4 (6.5) | about 1 s |
+| 1 | 2 | 1/3 | Skrix 0/1, Vex 1/1, Grimgut 0/1 | 15.0 (7.7) | 7 to 9 min |
+
+- The brain is the largest step: a boss one level below Hard (Normal) loses to two Normal heroes in more than 90 % of fights, so the first boss at Heat 1 and the first two at Heat 0 sit above their targets; Grimgut, the final boss of the theme, is the hardest of the four at every rank.
+- The Heat 1 rank 2 sample is three fights (a Hard boss takes 7 to 9 minutes of machine time a fight with six threads) and only shows that the Hard boss beats two Normal heroes more often than not; the Hard-boss rows (Heat 0 ranks 2 and 3, Heat 1 ranks 1 to 3, all of Heat 2) and parties of three or more are not yet measured against their targets.
