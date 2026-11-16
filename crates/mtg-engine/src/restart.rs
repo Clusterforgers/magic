@@ -48,7 +48,7 @@ pub(crate) fn fold(state: &mut GameState, by: PlayerId, kept: &[ObjectId]) {
             continue;
         }
         let owner = object.owner;
-        let zone = if state.commanders.contains(id) {
+        let zone = if state.commanders.contains(id) || state.satchels.contains(id) {
             Zone::Command(owner)
         } else {
             Zone::Library(owner)
