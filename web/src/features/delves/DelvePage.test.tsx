@@ -305,6 +305,17 @@ it.each([
   expect(heroes).toHaveTextContent(`40 life · 0 gold · ${words}`)
 })
 
+it('keeps each hero of the run summary on one row of name and figures, the relic names under them', async () => {
+  await show(
+    delveView({}, { status: 'Victory', at: 3, cleared: [0, 1, 3], heroes: [hero({ relics: ['idol'] })] }),
+  )
+  const row = must((await screen.findByRole('list', { name: 'Heroes' })).querySelector('li'))
+  expect(row).toHaveClass('grid', 'grid-cols-[minmax(0,1fr)_auto]')
+  expect(must(row.querySelector('[data-slot="summary-figures"]'))).toHaveClass('whitespace-nowrap')
+  expect(row.querySelector('[data-slot="summary-figures"]')).not.toHaveTextContent('Ember Idol')
+  expect(must(row.querySelector('[data-slot="summary-relics"]'))).toHaveClass('col-span-full')
+})
+
 describe('ending the run', () => {
   it('asks before the host ends it, and only then sends it', async () => {
     const client = await show(delveView({}, { status: 'Map', at: 0, cleared: [0] }))

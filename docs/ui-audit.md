@@ -80,7 +80,7 @@ Every screen and table mode shot at 1873 × 1047, 1530 × 898, 1400 × 900, 1024
 | 21 | Low | End the run is plain text under the chronicle, unlike every other action | Delves, every state | dl-map-1400 | fixed: an outline button |
 | 22 | Low | "No attack" is an icon-only button beside a labelled Attack | phone, attack | teams22-attack-390 | fixed: No attack and No blocks keep their words |
 | 23 | Low | The commander tax badge lies over the commander's type line in the hand dock | every table | duel-pri-1400 | fixed: the pill in the middle of the art |
-| 24 | Low | Hero names and figures of the run summary wrap on separate lines | Delves victory, phone | dl-victory-390 | pf10l |
+| 24 | Low | Hero names and figures of the run summary wrap on separate lines | Delves victory, phone | dl-victory-390 | fixed: one row, the relic names under it |
 | 25 | Low | The deck list and groups, the replay and the open games list have no dev fixture, so they cannot be shot without a server | decks, replay, play | - | pf10m |
 
 ## The look

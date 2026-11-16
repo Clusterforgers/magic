@@ -198,15 +198,25 @@ function EndPanel({ view, content }: { view: DelveView; content: DelveContent })
       </dl>
       <ul aria-label="Heroes" className="grid w-full max-w-prose gap-1 text-left text-sm">
         {view.run.heroes.map((hero, at) => (
-          <li key={`${at}-${hero.name}`} className="flex flex-wrap justify-between gap-2 border-b py-1">
-            <span className="font-medium">{hero.name}</span>
-            <span className="text-muted-foreground">
+          // The name and the figures share one row at every width; the relics' names follow on a line of their own.
+          <li
+            key={`${at}-${hero.name}`}
+            data-slot="summary-hero"
+            className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-2 border-b py-1"
+          >
+            <span className="truncate font-medium">{hero.name}</span>
+            <span
+              data-slot="summary-figures"
+              className="whitespace-nowrap text-muted-foreground tabular-nums"
+            >
               {hero.life} life · {hero.gold} gold · {hero.relics.length}{' '}
               {hero.relics.length === 1 ? 'relic' : 'relics'}
-              {hero.relics.length > 0
-                ? ` (${hero.relics.map((id) => content.cards.find((c) => c.id === id)?.name ?? id).join(', ')})`
-                : ''}
             </span>
+            {hero.relics.length > 0 ? (
+              <span data-slot="summary-relics" className="col-span-full text-xs text-muted-foreground">
+                {` (${hero.relics.map((id) => content.cards.find((c) => c.id === id)?.name ?? id).join(', ')})`}
+              </span>
+            ) : null}
           </li>
         ))}
       </ul>
