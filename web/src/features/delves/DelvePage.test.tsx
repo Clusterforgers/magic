@@ -244,6 +244,16 @@ it('names the end of a won run and its seed code', async () => {
   expect(screen.getAllByRole('button', { name: /Copy seed code/ }).length).toBeGreaterThan(0)
 })
 
+it.each([
+  [['idol'], '1 relic (Ember Idol)'],
+  [['idol', 'mend'], '2 relics (Ember Idol, mend)'],
+  [[], '0 relics'],
+])('counts a hero holding %j in the run summary as "%s"', async (relics, words) => {
+  await show(delveView({}, { status: 'Victory', at: 3, cleared: [0, 1, 3], heroes: [hero({ relics })] }))
+  const heroes = await screen.findByRole('list', { name: 'Heroes' })
+  expect(heroes).toHaveTextContent(`40 life · 0 gold · ${words}`)
+})
+
 describe('ending the run', () => {
   it('asks before the host ends it, and only then sends it', async () => {
     const client = await show(delveView({}, { status: 'Map', at: 0, cleared: [0] }))

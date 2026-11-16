@@ -149,7 +149,9 @@ describe('splitBoss', () => {
     'squeezed with %i crowded allies, your board keeps what it needs at the floor before the allies grow',
     (count) => {
       for (const room of [480, 600, 700]) {
-        const split = splitBoss(input({ room, boss: 40, allies: Array.from({ length: count }, () => 40), own: 40 }))
+        const split = splitBoss(
+          input({ room, boss: 40, allies: Array.from({ length: count }, () => 40), own: 40 }),
+        )
         const yours = split.own - split.band - 8
         const need = 24 + laneHeight(930, permanents(40), ladderOf(LANE_LIMITS).at(0))
         expect(yours).toBeGreaterThanOrEqual(Math.min(need, split.own - 8 - ALLY_ROW_MIN_PX) - 1e-6)

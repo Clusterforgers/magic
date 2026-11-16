@@ -194,7 +194,8 @@ function EndPanel({ view, content }: { view: DelveView; content: DelveContent })
           <li key={`${at}-${hero.name}`} className="flex flex-wrap justify-between gap-2 border-b py-1">
             <span className="font-medium">{hero.name}</span>
             <span className="text-muted-foreground">
-              {hero.life} life · {hero.gold} gold · {hero.relics.length} relics
+              {hero.life} life · {hero.gold} gold · {hero.relics.length}{' '}
+              {hero.relics.length === 1 ? 'relic' : 'relics'}
               {hero.relics.length > 0
                 ? ` (${hero.relics.map((id) => content.cards.find((c) => c.id === id)?.name ?? id).join(', ')})`
                 : ''}
