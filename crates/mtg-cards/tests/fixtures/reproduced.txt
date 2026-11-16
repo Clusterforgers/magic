@@ -719,6 +719,7 @@ Exotic Orchard
 Exploding Barrel
 Exploration
 Explore
+Exquisite Blood
 Exquisite Huntmaster
 Exterminate!
 Eye of Nidhogg
@@ -1565,6 +1566,7 @@ Pentad Prism
 Perch Protection
 Persist
 Personal Sanctuary
+Pestermite
 Pestilent Syphoner
 Peter Parker's Camera
 Petrified Wood-Kin

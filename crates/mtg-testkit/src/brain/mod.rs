@@ -251,6 +251,7 @@ impl HeuristicBot {
             engine
         };
         match &decision.kind {
+            DecisionKind::Loop(options) => crate::loop_answer::loop_answer(self.seat, options),
             DecisionKind::Priority(options) if pending => {
                 if self.played.len() >= TURN_PLAYS {
                     return Answer::Priority(PriorityAction::Pass);

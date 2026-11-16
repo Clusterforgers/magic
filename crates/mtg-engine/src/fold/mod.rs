@@ -532,6 +532,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::ManaAbilityActivated { tapped: false, .. }
         | Event::AnnouncementRewound { .. }
         | Event::TookBack { .. }
+        | Event::LoopRepeated(_)
         | Event::ManaBurned { .. }
         | Event::Explored { .. }
         | Event::Connived { .. }
@@ -700,6 +701,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             crate::schemes::fold(state, *player, *emblem)?;
         }
         Event::GameEnded { result } => end_game(state, *result),
+        Event::LoopDrawn { cards } => state.loop_draw = Some(cards.clone()),
         other => return c6_kw_fold_rest(state, other),
     }
     Ok(())

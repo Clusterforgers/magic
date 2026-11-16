@@ -14,6 +14,7 @@ pub mod blitz_cards;
 pub mod block_limit_cards;
 pub mod block_restriction_cards;
 pub mod bot;
+pub mod loop_answer;
 pub mod brain;
 pub mod brain_decks;
 pub mod c4_cards;

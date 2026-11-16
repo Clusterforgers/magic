@@ -380,6 +380,8 @@ pub struct GameState {
     /// What the cards of the game can do that the engine looks for only when they can.
     pub(crate) possible: Possible,
     pub(crate) result: Option<GameResult>,
+    /// The cards of the loop of mandatory actions that drew the game (`Event::LoopDrawn`).
+    pub(crate) loop_draw: Option<Vec<String>>,
     /// Day or night (CR 726); neither until a permanent with daybound or nightbound appears.
     pub(crate) day_night: Option<crate::day_night::DayNight>,
     /// Each seat's latest finished turn, kept as it ends.
@@ -885,6 +887,11 @@ impl GameState {
     /// The result once the game is over.
     pub const fn result(&self) -> Option<GameResult> {
         self.result
+    }
+
+    /// The cards of the loop of mandatory actions that drew the game, if one did (CR 104.4b).
+    pub fn loop_draw(&self) -> Option<&[String]> {
+        self.loop_draw.as_deref()
     }
 
     /// Whether `id` is a seat still in the game.

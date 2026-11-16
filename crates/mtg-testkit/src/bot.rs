@@ -731,6 +731,7 @@ impl RandomBot {
                 Answer::OrderTriggers(TriggersChoice((0..options.triggers.len()).collect()))
             }
             DecisionKind::ChooseReplacement(_) => Answer::ChooseReplacement(ReplacementChoice(0)),
+            DecisionKind::Loop(options) => crate::loop_answer::loop_answer(decision.player, options),
         }
     }
 

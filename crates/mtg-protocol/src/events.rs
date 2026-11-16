@@ -261,6 +261,28 @@ pub struct EventBatch {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<ObjectView>>", optional)]
     pub shown: Vec<ObjectView>,
+    /// Log events the batch covers without listing them: the iterations of a loop shortcut, which its `LoopRepeated`
+    /// event sums up. The next batch starts at `from_seq` plus `events` plus this. Left out while zero.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    #[ts(as = "Option<u64>", optional)]
+    pub folded: u64,
+}
+
+const fn is_zero(value: &u64) -> bool {
+    *value == 0
+}
+
+/// Which of `events` a loop shortcut's summary later in the slice covers: the `events` events right before each
+/// `LoopRepeated`.
+fn folded_by_loops(events: &[Event]) -> Vec<bool> {
+    let mut folded = vec![false; events.len()];
+    for (at, event) in events.iter().enumerate() {
+        if let Event::LoopRepeated(summary) = event {
+            let span = usize::try_from(summary.events).unwrap_or(usize::MAX);
+            folded[at.saturating_sub(span)..at].fill(true);
+        }
+    }
+    folded
 }
 
 fn count(len: usize) -> u32 {
@@ -368,6 +390,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::NothingToDo { .. }
         | Event::AnnouncementRewound { .. }
         | Event::TookBack { .. }
+        | Event::LoopDrawn { .. }
+        | Event::LoopRepeated(_)
         | Event::PriorityGranted { .. }
         | Event::PriorityPassed { .. }
         | Event::LandPlayed { .. }
@@ -801,7 +825,14 @@ pub fn project_events(
     let mut views: Vec<Vec<EventView>> = viewers.iter().map(|_| Vec::new()).collect();
     let mut sightings: Vec<Vec<ObjectView>> = viewers.iter().map(|_| Vec::new()).collect();
     let mut known = shown_now(before);
-    for event in events {
+    let folded = folded_by_loops(events);
+    let skipped = u64::try_from(folded.iter().filter(|folded| **folded).count()).unwrap_or(u64::MAX);
+    for (event, folded) in events.iter().zip(&folded) {
+        // A loop's iterations reach the client as its summary alone: the table and object diff carry their result.
+        if *folded {
+            apply_event(&mut state, event)?;
+            continue;
+        }
         for (list, viewer) in views.iter_mut().zip(viewers) {
             list.push(match redact(&state, event, *viewer) {
                 Some(hidden) => EventView::Hidden(hidden),
@@ -831,6 +862,7 @@ pub fn project_events(
                 objects,
                 gone,
                 shown,
+                folded: skipped,
             }
         })
         .collect())

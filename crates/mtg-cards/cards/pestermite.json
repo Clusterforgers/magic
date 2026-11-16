@@ -1,0 +1,22 @@
+{
+  "oracle_id": "83cf4235-eb4e-4c55-839a-f2740d41ed5e",
+  "name": "Pestermite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pestermite",
+      "oracle_fingerprint": "d48bf463bf1098277d016cabc8abeec9",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "May": { "effects": [{ "TapOrUntap": { "what": { "Target": 0 } } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -725,6 +725,8 @@ pub enum DecisionName {
     OrderTriggers,
     /// Choose which replacement effect applies first.
     ChooseReplacement,
+    /// Repeat a loop a number of times or stop it.
+    Loop,
 }
 
 impl DecisionName {
@@ -753,6 +755,7 @@ impl DecisionName {
             DecisionKind::ChooseCosts(_) => DecisionName::ChooseCosts,
             DecisionKind::OrderTriggers(_) => DecisionName::OrderTriggers,
             DecisionKind::ChooseReplacement(_) => DecisionName::ChooseReplacement,
+            DecisionKind::Loop(_) => DecisionName::Loop,
         }
     }
 }

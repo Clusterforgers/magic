@@ -667,6 +667,7 @@ impl GameState {
             rules_cache: RulesCache::default(),
             possible: Possible::default(),
             result: None,
+            loop_draw: None,
             day_night: None,
             seat_turns: std::collections::BTreeMap::new(),
             cast_names: std::collections::BTreeMap::new(),

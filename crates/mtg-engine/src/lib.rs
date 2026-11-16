@@ -137,6 +137,7 @@ pub mod help;
 pub mod keywords;
 mod l294_damage;
 pub mod library;
+pub mod loops;
 pub mod loyalty;
 pub mod mana;
 pub mod manual;

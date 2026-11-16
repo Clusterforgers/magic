@@ -94,6 +94,7 @@ mod l31a_keyword_actions;
 mod l31b_any_amount;
 mod l31d_any_number;
 mod lifted_gates;
+mod loops;
 mod macro_combat;
 mod macro_keywords;
 mod macro_keywords_other;

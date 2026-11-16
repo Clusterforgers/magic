@@ -607,6 +607,13 @@ pub enum Event {
         /// The result.
         result: GameResult,
     },
+    /// A loop of mandatory actions would go on forever (CR 104.4b, 732.4): the game is a draw, and `GameEnded` follows.
+    LoopDrawn {
+        /// The names of the objects whose abilities make up the loop.
+        cards: Vec<String>,
+    },
+    /// A loop ran as a shortcut (CR 732): the summary of the events right before it.
+    LoopRepeated(Box<crate::loops::LoopSummary>),
     /// An ability was put on the stack, activated by its controller or triggered.
     AbilityPutOnStack(Box<PutOnStack>),
     /// A player activated an ability; its costs are paid and the ability goes on the stack next.
@@ -1648,6 +1655,8 @@ impl Event {
             | Event::CombatEnded
             | Event::PlayerLost { .. }
             | Event::GameEnded { .. }
+            | Event::LoopDrawn { .. }
+            | Event::LoopRepeated(_)
             | Event::AbilityActivated { .. }
             | Event::ManaAbilityActivated { .. }
             | Event::AbilityTriggered(_)
