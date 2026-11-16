@@ -455,6 +455,8 @@ struct Walker<'a> {
     pays_objects: bool,
     /// The cost under the walk is that of an activated ability, whose counted amounts the engine counts as it is announced.
     activated_cost: bool,
+    /// The cost under the walk is a flashback cost whose parts count the X the cast announces, and its least X with it.
+    r6503_flashback_x: bool,
     /// The ability under the walk is an activated one whose cost removes counters from its source: the kinds `RemovedThisWay` reads.
     ep29_removes: Vec<crate::value::CounterKind>,
     /// The cost under the walk is paid rather than a mana cost, whose counted amounts the engine counts for the card cast.
@@ -521,6 +523,7 @@ impl<'a> Walker<'a> {
             has_additional_cost: false,
             pays_objects: false,
             activated_cost: false,
+            r6503_flashback_x: false,
             ep29_removes: Vec::new(),
             rather_cost: false,
             counts_x: false,
@@ -2016,13 +2019,19 @@ impl<'a> Walker<'a> {
                         }
                         w.at("XAtMost", |w| w.amount(most));
                     }
+                    CostItem::XIs(amount) => {
+                        w.uses("Cost", "XIs");
+                        w.at("XIs", |w| w.amount(amount));
+                    }
                     CostItem::XAtLeast(least) => {
                         if *least == 0 {
                             w.problem("an X of at least 0 is any X");
                         }
                         // The least X is announced for an activated ability, and where an effect asks the payment and
                         // announces its X ("you may pay one or more {E}").
-                        if !w.activated_cost && (!w.r306_paying || !w.x_free) {
+                        if w.r6503_flashback_x {
+                            w.uses("Cost", "XAtLeast.Flashback");
+                        } else if !w.activated_cost && (!w.r306_paying || !w.x_free) {
                             w.uses("Cost", "XAtLeast.Elsewhere");
                         }
                     }
@@ -2600,7 +2609,10 @@ impl<'a> Walker<'a> {
             // Ward is an `Effect::Pay` of the player who targets: life counted as it resolves ("pay life equal to its
             // power") is paid as any counted life in an effect.
             Keyword::Ward(cost) => {
+                // A generic amount counted as the ward trigger resolves ("ward {X}, where X is ...") is paid then.
+                let held = std::mem::replace(&mut self.r5511_resolving_cost, true);
                 self.at("cost", |w| w.c6_eg_paid_cost(cost, &Ref::Triggering));
+                self.r5511_resolving_cost = held;
                 self.payment_of_the_source(cost);
             }
             Keyword::CumulativeUpkeepActs { acts, payable } => {
@@ -2684,10 +2696,12 @@ impl<'a> Walker<'a> {
             // A part of a flashback cost that counts X takes the X the spell announces ("Flashback—{R}{R}, Discard X
             // cards."), which the cast for that cost asks.
             Keyword::Flashback(cost) => {
-                let held = self.x_now;
+                let held = (self.x_now, self.r6503_flashback_x);
                 self.x_now |= cost.0.iter().any(amount_is_x) && !has_x_mana(cost);
+                // "If you cast this spell this way, X can't be 0": the cast for the flashback cost announces its X.
+                self.r6503_flashback_x = self.x_now;
                 self.at("cost", |w| w.cost(cost));
-                self.x_now = held;
+                (self.x_now, self.r6503_flashback_x) = held;
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Flashback.Cost", cost, false);
             }
             Keyword::Morph(cost) | Keyword::Megamorph(cost) | Keyword::Disguise(cost) => {
@@ -2747,7 +2761,15 @@ impl<'a> Walker<'a> {
                 }
                 self.at("of", |w| w.selector(of));
             }
-            Keyword::Annihilator(0) => self.problem("annihilator needs a number of at least 1"),
+            Keyword::Annihilator(count) => {
+                if count.fixed() == Some(0) || matches!(count, Amount::Fixed(n) if *n < 0) {
+                    self.problem("annihilator needs a number of at least 1");
+                }
+                if count.fixed().is_none() {
+                    self.uses("Keyword", "Annihilator.Counted");
+                    self.at("count", |w| w.amount(count));
+                }
+            }
             Keyword::Dredge(0) => self.problem("dredge needs a number of at least 1"),
             Keyword::Fabricate(0) => self.problem("fabricate needs a number of at least 1"),
             Keyword::Afterlife(0) => self.problem("afterlife needs a number of at least 1"),
@@ -5935,9 +5957,16 @@ impl Walker<'_> {
             }
             Ability::Loyalty {
                 cost,
+                condition,
                 targets,
                 effects,
-            } => w.loyalty_ability(*cost, targets, effects),
+            } => {
+                if let Some(condition) = condition {
+                    w.uses("Ability", "Loyalty.Condition");
+                    w.at("condition", |w| w.condition(condition));
+                }
+                w.loyalty_ability(*cost, targets, effects);
+            }
             Ability::Activated {
                 cost,
                 targets,
@@ -6635,6 +6664,7 @@ impl Walker<'_> {
             ReplaceWhen::ZoneChange { what, .. }
             | ReplaceWhen::Destroyed { what }
             | ReplaceWhen::Countered { what }
+            | ReplaceWhen::R6503Resolves { what }
             | ReplaceWhen::TurnedFaceUp { what }
             | ReplaceWhen::Explores { what }
             | ReplaceWhen::Connives { what }
@@ -6880,6 +6910,7 @@ impl Walker<'_> {
                         | ReplaceWhen::Discarded { .. }
                         | ReplaceWhen::R6105Uncycled { .. }
                         | ReplaceWhen::Countered { .. }
+                        | ReplaceWhen::R6503Resolves { .. }
                 ) =>
             {
                 self.problem("`MoveTo` replaces a `ZoneChange` or a `Discarded`");
@@ -6988,6 +7019,7 @@ impl Walker<'_> {
             ReplaceWhen::ZoneChange { .. }
                 | ReplaceWhen::Destroyed { .. }
                 | ReplaceWhen::Countered { .. }
+                | ReplaceWhen::R6503Resolves { .. }
                 | ReplaceWhen::Discarded { .. }
                 | ReplaceWhen::R6105Uncycled { .. }
                 | ReplaceWhen::Enters { .. }

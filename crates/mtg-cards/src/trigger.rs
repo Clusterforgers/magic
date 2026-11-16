@@ -916,6 +916,13 @@ pub enum ReplaceWhen {
         /// The spell that would be countered.
         what: Selector,
     },
+    /// A spell matching the selector would be put into a graveyard as it resolves (CR 608.2n): the move of a resolved
+    /// instant or sorcery, not of one that is countered or fizzles ("instead of putting it into your graveyard as it
+    /// resolves").
+    R6503Resolves {
+        /// The resolving spell.
+        what: Selector,
+    },
     /// A face-down permanent matching the selector is turned face up ("As ~ is turned face up, put five +1/+1 counters
     /// on it", CR 708.8): the counters are put on it as it turns, before any player can respond. Only `WithCounters`
     /// on the permanent itself.
@@ -1472,6 +1479,9 @@ pub enum ShieldShape {
     },
     /// A spell named now that would be countered goes elsewhere.
     Countered,
+    /// A spell named now that would be put into a graveyard as it resolves goes elsewhere, or other steps happen instead
+    /// (CR 608.2n).
+    R6503Resolving,
     /// A class of moves or entries, judged as each happens.
     Class,
     /// Damage prevented, changed or redirected.
@@ -1513,6 +1523,11 @@ impl ShieldShape {
                     (Some(ZoneKind::Battlefield), None) => Some(Self::Named { leaves: true }),
                     _ => None,
                 }
+            }
+            (ReplaceWhen::R6503Resolves { what }, ReplaceBy::MoveTo(_) | ReplaceBy::Instead(_))
+                if names_objects(what) =>
+            {
+                Some(Self::R6503Resolving)
             }
             (ReplaceWhen::Countered { .. }, ReplaceBy::MoveTo(_))
             | (

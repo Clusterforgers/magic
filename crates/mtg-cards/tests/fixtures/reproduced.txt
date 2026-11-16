@@ -738,6 +738,7 @@ Fearless Skald
 Fearsome Goblin Pair
 Feaster of Fools
 Feasting Hobbit
+Feather, the Redeemed
 Felidar Sovereign
 Fellwar Stone
 Ferocity of the Wilds
@@ -893,6 +894,7 @@ Golden Ratio
 Golden-Scale Aeronaut
 Goldlust Triad
 Goldwarden's Helm
+Goliath Daydreamer
 Goliath Truck
 Gollum, Obsessed Stalker
 Gonti's Machinations
@@ -1225,6 +1227,7 @@ Lightform
 Lightning Bolt
 Lightning, Security Sergeant
 Lignify
+Lilah, Undefeated Slickshot
 Liliana's Standard Bearer
 Lion Sash
 Liquimetal Torque
@@ -1736,6 +1739,7 @@ Rising Miasma
 Risky Move
 Rite of Replication
 Rith, Liberated Primeval
+River Song's Diary
 River of Tears
 Riveteers Overlook
 Riveteers Requisitioner
@@ -2267,6 +2271,7 @@ Ukkima, Stalking Shadow
 Uktabi Efreet
 Ulamog's Crusher
 Ulamog's Dreadsire
+Ulamog, the Defiler
 Ultimecia, Temporal Threat
 Ultramarines Honour Guard
 Ultron, Unlimited
@@ -2351,6 +2356,7 @@ Voidmage Husher
 Volshe Tideturner
 Volunteer Reserves
 Vona, Butcher of Magan
+Voodoo Doll
 Vorel of the Hull Clade
 Vorrac Battlehorns
 Vow of Duty

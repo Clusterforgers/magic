@@ -1,0 +1,66 @@
+{
+  "oracle_id": "9207facd-fbf9-4faa-ac44-6c0bcac81551",
+  "name": "Goliath Daydreamer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goliath Daydreamer",
+      "oracle_fingerprint": "a9a5e484f4a249aa14e470ae4f939529",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "CastFrom": "Hand" }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "R6503Resolves": { "what": [{ "Is": "Triggering" }] } },
+                  "by": {
+                    "Instead": [
+                      { "Exile": { "what": "Triggering", "as": "dreamed" } },
+                      {
+                        "PutCounters": {
+                          "on": { "Bound": "dreamed" },
+                          "counter": { "Other": "dream" }
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Exile" },
+                      { "OwnedBy": "You" },
+                      { "HasCounter": { "Other": "dream" } },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  },
+                  "as": "dream"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "dream" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

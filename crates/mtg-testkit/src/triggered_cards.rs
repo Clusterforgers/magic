@@ -49,7 +49,7 @@ pub fn devourer() -> Arc<CardDefinition> {
         &[Color::Red],
         2,
         2,
-        &[Keyword::Annihilator(1)],
+        &[Keyword::Annihilator(mtg_cards::value::Amount::Fixed(1))],
     )
 }
 

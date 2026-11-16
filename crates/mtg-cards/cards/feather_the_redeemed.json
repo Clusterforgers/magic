@@ -1,7 +1,7 @@
 {
   "oracle_id": "aa219936-661b-4ccb-8741-78b70cff2b1a",
   "name": "Feather, the Redeemed",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Feather, the Redeemed",
@@ -9,9 +9,37 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 7, "end": 236 }
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "Targeting": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "R6503Resolves": { "what": [{ "Is": "Triggering" }] } },
+                  "by": {
+                    "Instead": [
+                      { "Exile": { "what": "Triggering", "as": "feathered" } },
+                      {
+                        "DelayedTrigger": {
+                          "when": { "StepBegins": { "step": "End" } },
+                          "effects": [
+                            { "Move": { "what": { "Bound": "feathered" }, "to": "Hand" } }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

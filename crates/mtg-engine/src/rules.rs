@@ -517,6 +517,16 @@ pub enum Rule {
         #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
         leaves: bool,
     },
+    /// A shield over the resolution of spells (CR 608.2n): each of the spells, fixed when it was made, that would be put
+    /// into a graveyard as it resolves is replaced by `by` instead ("exile that card with a dream counter on it instead
+    /// of putting it into your graveyard as it resolves").
+    R6503ResolvesInstead {
+        /// The spells it covers.
+        objects: Vec<ObjectRef>,
+        /// What happens instead: a move to another zone, or other steps.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        by: mtg_cards::trigger::ReplaceBy,
+    },
     /// A shield over any event of a kind, judged when the event would happen: "if a creature would die this turn, exile it
     /// instead", "permanents enter tapped this turn". The controller and source of the effect that made it read its references.
     Replaces {
@@ -747,6 +757,7 @@ impl RuleEffect {
                 only: Some(named), ..
             } => named.iter().all(gone),
             Rule::EntersWith { spell, .. } => gone(spell),
+            Rule::R6503ResolvesInstead { objects, .. } => objects.iter().all(gone),
             Rule::DiesInstead { objects, cast, .. } => objects.iter().all(|named| {
                 // A card named in another zone is the spell on the stack one zone change on (CR 400.7).
                 let cast_now = *cast
@@ -1593,6 +1604,7 @@ impl RulesInForce {
             | Rule::PreventDamage(_)
             | Rule::Regenerate(_)
             | Rule::DiesInstead { .. }
+            | Rule::R6503ResolvesInstead { .. }
             | Rule::Replaces { .. } => {}
             Rule::DamageAsWither => self.damage_as_wither = true,
             Rule::ManaBurn => self.mana_burn = true,
@@ -2184,7 +2196,9 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
             shield.to.as_ref().is_some_and(Vec::is_empty)
                 || shield.from.as_ref().is_some_and(Vec::is_empty)
         }
-        Rule::DiesInstead { objects, .. } => objects.is_empty(),
+        Rule::DiesInstead { objects, .. } | Rule::R6503ResolvesInstead { objects, .. } => {
+            objects.is_empty()
+        }
         Rule::GraveyardCardsUntargetable
         | Rule::CantLoseGame { .. }
         | Rule::CantCastSpells { .. }
@@ -2491,6 +2505,7 @@ pub(crate) fn fold_created(state: &mut GameState, effect: &RuleEffect) -> Result
         Rule::PreventDamage(_)
             | Rule::Regenerate(_)
             | Rule::DiesInstead { .. }
+            | Rule::R6503ResolvesInstead { .. }
             | Rule::Replaces { .. }
     ) {
         state.possible.replacements = true;

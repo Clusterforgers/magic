@@ -246,8 +246,9 @@ pub enum Keyword {
     Mentor,
     /// Dethrone (CR 702.105): whenever it attacks the player with the most life or tied for most life, it gets a +1/+1 counter.
     Dethrone,
-    /// Annihilator N (CR 702.86): whenever it attacks, the defending player sacrifices N permanents.
-    Annihilator(u32),
+    /// Annihilator N (CR 702.86): whenever it attacks, the defending player sacrifices N permanents; N may be counted as
+    /// the trigger resolves ("annihilator X, where X is the number of +1/+1 counters on it").
+    Annihilator(Amount),
     /// Extort (CR 702.101): whenever you cast a spell, you may pay {W/B}; each opponent then loses 1 life and you gain that much.
     Extort,
     /// Evolve (CR 702.100): whenever a creature enters under your control with greater power or toughness, it gets a +1/+1 counter.
@@ -1100,7 +1101,7 @@ mod tests {
             Keyword::Melee,
             Keyword::Mentor,
             Keyword::Dethrone,
-            Keyword::Annihilator(2),
+            Keyword::Annihilator(Amount::Fixed(2)),
             Keyword::Extort,
             Keyword::Evolve,
             Keyword::LevelUp(Cost::default()),

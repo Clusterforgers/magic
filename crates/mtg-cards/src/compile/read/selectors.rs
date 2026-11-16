@@ -428,10 +428,8 @@ fn numbered_keyword(r: &mut Reader<'_>) -> Option<Keyword> {
 /// The words of a keyword with a number, as `numbered_keyword` reads them.
 fn numbered_keyword_text(keyword: &Keyword) -> Option<String> {
     let number = match keyword {
-        Keyword::Fabricate(number)
-        | Keyword::Annihilator(number)
-        | Keyword::Toxic(number)
-        | Keyword::Afterlife(number) => *number,
+        Keyword::Fabricate(number) | Keyword::Toxic(number) | Keyword::Afterlife(number) => *number,
+        Keyword::Annihilator(count) => count.fixed()?,
         _ => return None,
     };
     Some(format!("{} {number}", keyword.name().to_lowercase()))

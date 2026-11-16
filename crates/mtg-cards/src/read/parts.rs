@@ -636,6 +636,10 @@ pub(super) fn replace_when(ctx: &Ctx, when: &ReplaceWhen) -> String {
         ReplaceWhen::Countered { what } => {
             format!("{} would be countered", phrase::selector(ctx, what))
         }
+        ReplaceWhen::R6503Resolves { what } => format!(
+            "{} would be put into a graveyard as it resolves",
+            phrase::selector(ctx, what)
+        ),
         ReplaceWhen::LifeGain {
             who,
             caused_own: false,

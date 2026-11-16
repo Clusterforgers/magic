@@ -295,7 +295,11 @@ fn w20c_flayer_sets_a_base_size_under_the_aura_and_annihilates_for_its_new_contr
         (Some(12), Some(12)),
         "7b then the Aura in 7c"
     );
-    for keyword in [Keyword::Trample, Keyword::Annihilator(2), Keyword::Haste] {
+    for keyword in [
+        Keyword::Trample,
+        Keyword::Annihilator(mtg_cards::value::Amount::Fixed(2)),
+        Keyword::Haste,
+    ] {
         assert!(w20c_has(&driver, "Ogre", &keyword), "{keyword:?}");
     }
     let before = w20c_count(&driver, 1);
@@ -318,7 +322,11 @@ fn w20c_flayer_sets_a_base_size_under_the_aura_and_annihilates_for_its_new_contr
         home.power.unwrap_or_default() <= 5,
         "the base size ends with the turn"
     );
-    assert!(!w20c_has(&driver, "Ogre", &Keyword::Annihilator(2)));
+    assert!(!w20c_has(
+        &driver,
+        "Ogre",
+        &Keyword::Annihilator(mtg_cards::value::Amount::Fixed(2))
+    ));
     replays(&driver, &setup);
     Ok(())
 }
