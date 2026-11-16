@@ -3,9 +3,10 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "cn"
 
 // A status message: the icon, when there is one, and the title say what kind it is, so the colour of the edge
-// only adds to it.
+// only adds to it. Beside an icon every other part stands in the second column, so a button under the words never widens
+// the icon's column.
 const alertVariants = cva(
-  "group/alert relative grid w-full gap-1 rounded-xl border bg-surface px-4 py-3 text-left text-sm text-foreground has-data-[slot=alert-action]:relative has-data-[slot=alert-action]:pr-20 has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-3 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg:not([class*='size-'])]:size-4",
+  "group/alert relative grid w-full gap-1 rounded-xl border bg-surface px-4 py-3 text-left text-sm text-foreground has-data-[slot=alert-action]:relative has-data-[slot=alert-action]:pr-20 has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-3 has-[>svg]:[&>:not(svg)]:col-start-2 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
