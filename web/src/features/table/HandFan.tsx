@@ -375,14 +375,14 @@ function DragFace({
 
 /**
  * The mark on a commander at the head of the hand: a crown, and the tax its cast costs more ("+{2}") while there is one.
- * It sits above the card's foot, clear of the power and toughness box.
+ * It sits in the middle of the art, clear of the name, cost, type line and power and toughness box.
  */
 function TaxPill({ tax }: { tax: number }) {
   return (
     <span
       aria-hidden="true"
       data-slot="hand-commander-tax"
-      className="pointer-events-none absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-0.5 rounded-full bg-background/90 px-1 py-px text-xs leading-4 font-semibold whitespace-nowrap text-foreground shadow-sm ring-1 ring-foreground/20"
+      className="pointer-events-none absolute top-1/2 left-1/2 flex -translate-1/2 items-center gap-0.5 rounded-full bg-background/90 px-1 py-px text-xs leading-4 font-semibold whitespace-nowrap text-foreground shadow-sm ring-1 ring-foreground/20"
     >
       <Crown className="size-3 shrink-0 text-primary" />
       {tax === 0 ? null : (
@@ -407,7 +407,7 @@ function TopPill() {
     <span
       aria-hidden="true"
       data-slot="hand-library-top"
-      className="pointer-events-none absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-0.5 rounded-full bg-background/90 px-1 py-px text-xs leading-4 font-semibold whitespace-nowrap text-foreground shadow-sm ring-1 ring-foreground/20"
+      className="pointer-events-none absolute top-1/2 left-1/2 flex -translate-1/2 items-center gap-0.5 rounded-full bg-background/90 px-1 py-px text-xs leading-4 font-semibold whitespace-nowrap text-foreground shadow-sm ring-1 ring-foreground/20"
     >
       <Library className="size-3 shrink-0 text-primary" />
       Top

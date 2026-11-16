@@ -3113,6 +3113,11 @@ impl<'a> Scope<'a> {
             distinct.dedup();
             return i64::try_from(distinct.len()).unwrap_or(0);
         }
+        // "Whenever you roll a die, ... equal to the result": the trigger rolls nothing itself, so the result is the amount
+        // of the roll that triggered it.
+        if which == DieResult::Only && rolled.is_empty() {
+            return self.cause.map_or(0, |cause| i64::from(cause.amount));
+        }
         let back = usize::from(which == DieResult::Other);
         rolled
             .len()

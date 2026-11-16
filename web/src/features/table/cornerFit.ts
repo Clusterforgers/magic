@@ -10,6 +10,8 @@ export const CORNER_SHARE = 0.6
 /** The padding of a pod panel (`p-2`) and the gap between its blocks (`gap-2`) in px. */
 export const POD_PAD_PX = 8
 export const POD_GAP_PX = 8
+/** The seat's coloured top edge of a pod panel (`SEAT_EDGE`, `border-t-2`) in px. */
+export const POD_EDGE_PX = 2
 /** The width inside a pod panel in px: the pictures of a corner lie in it. */
 export const CORNER_ROOM_PX = POD_COLUMN_PX - 2 * POD_PAD_PX
 /** The px a second partner adds to its slot: its head shows above the one over it. */
@@ -90,7 +92,7 @@ export function cornerHeight(
 ): number | null {
   if (column === null || above === null) return null
   const under = below === null || below <= 0 ? 0 : below + POD_GAP_PX
-  return Math.max(0, column - 2 * POD_PAD_PX - above - POD_GAP_PX - under)
+  return Math.max(0, column - POD_EDGE_PX - 2 * POD_PAD_PX - above - POD_GAP_PX - under)
 }
 
 /** A pod column shorter than this (px) cannot hold the pod's full blocks and the least picture: the pod folds its chips into the name and pool rows. */

@@ -143,10 +143,11 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
       )}
     >
       <span className="flex h-6 items-center justify-between gap-2">
-        <span className="flex min-w-0 items-center gap-1.5">
+        {/* What does not fit is cut inside the name's side, never drawn under the life figures beside it. */}
+        <span data-slot="tile-name-row" className="flex min-w-0 items-center gap-1.5 overflow-hidden">
           <SeatDot seat={seat} />
           <span className="min-w-10 truncate text-sm font-semibold">{name}</span>
-          {team === null || !team.badge ? null : <TeamBadge team={team.team} size="chip" />}
+          {team === null || !team.badge ? null : <TeamBadge team={team.team} size="mini" />}
           {player.boss ? <BossChip compact /> : null}
           {player.spirit ? <SpiritMark compact /> : null}
           {showsPriorityDot(flags.active, flags.priority) ? (

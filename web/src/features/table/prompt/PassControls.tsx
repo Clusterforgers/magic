@@ -39,7 +39,8 @@ export function topYieldable(state: PlayState): ObjectView | undefined {
 }
 
 /** A key as a small cap on a button, drawn where the dock has the room (`full`) and always hidden from a screen reader. */
-const KEY_CAP = 'ml-1 inline-block rounded border px-1 text-xs leading-4 font-normal'
+// A touch screen has no keys to press, so the caps give their room to the label there.
+const KEY_CAP = 'ml-1 inline-block rounded border px-1 text-xs leading-4 font-normal pointer-coarse:hidden'
 
 /**
  * The ways to pass priority, for a Priority prompt: a primary button that passes once and says what that does now

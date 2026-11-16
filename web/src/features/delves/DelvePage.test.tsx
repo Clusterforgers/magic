@@ -1,6 +1,7 @@
 // Goal: the run page shows each state of a run and sends the matching action: the lobby's hero cards with their Ready state, the deck picker, bot ally and start (only for the host, once every hero is ready), the ladder's votes with who voted for what, the boss fight's link and phases, how a lost fight cost a heart, the host's retreat (confirmed first, never for a guest), every kind of offer, and the end.
 import { fireEvent, screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import { must } from '@/test-utils/batches'
 import { renderInRouter } from '@/test-utils/router'
 import { DelvePage } from './DelvePage'
 import { delveView, fakeDelves, hero } from './fakeDelves'
@@ -154,6 +155,14 @@ describe('the ladder and the fight', () => {
     expect(screen.queryByText(/lost a heart/)).toBeNull()
   })
 
+  it("puts the way in and the host's Retreat on one row, the way in first", async () => {
+    await show(delveView({ boss: 'skrix_nest', fight }, { status: { Fight: { game: 'g45' } }, at: 0 }))
+    const link = await screen.findByRole('link', { name: 'Enter the fight' })
+    const row = link.parentElement
+    expect(row).toHaveAttribute('data-slot', 'fight-actions')
+    expect(row?.children[1]).toBe(screen.getByRole('button', { name: 'Retreat' }))
+  })
+
   it('lets the host retreat from the fight after a confirmation, and only then sends it', async () => {
     const client = await show(
       delveView({ boss: 'skrix_nest', fight }, { status: { Fight: { game: 'g44' } }, at: 0, hearts: 3 }),
@@ -194,6 +203,14 @@ describe('the ladder and the fight', () => {
     expect(screen.queryByRole('button', { name: 'Retreat' })).toBeNull()
   })
 
+  it('draws End the run as an outline button, as Retreat is, not as plain text', async () => {
+    await show(delveView({ boss: 'skrix_nest' }, { status: 'Map', at: 0, cleared: [0] }))
+    const end = await screen.findByRole('button', { name: 'End the run' })
+    expect(end).toHaveAttribute('data-slot', 'end-run')
+    expect(end).toHaveClass('border-border-strong', 'justify-self-start')
+    expect(end.querySelector('svg')).not.toBeNull()
+  })
+
   it('greets the camp after a boss with its fall', async () => {
     await show(delveView({ boss: 'skrix_nest' }, { status: 'Room', at: 0, cleared: [0] }))
     expect(await screen.findByText(/Skrix, the Rat Queen falls!/)).toBeInTheDocument()
@@ -231,6 +248,40 @@ describe('offers', () => {
     expect(screen.getByText('Needs 70 gold')).toBeInTheDocument()
   })
 
+  it('stands every Buy button of the shop at the foot of its offer, so a row of offers buys on one line', async () => {
+    await show(
+      room(
+        {
+          Shop: {
+            items: [
+              { Card: { name: 'Cultivate', sold: false } },
+              { Relic: { id: 'idol', price: 40, sold: false } },
+              'Draught',
+            ],
+          },
+        },
+        100,
+      ),
+    )
+    await screen.findByRole('button', { name: 'Buy (40 gold)' })
+    const offers = [...document.querySelectorAll<HTMLElement>('[data-slot="shop-offer"]')]
+    expect(offers).toHaveLength(3)
+    for (const offer of offers) {
+      expect(offer).toHaveClass('flex', 'flex-col')
+      // The offer's last element is its button, outside any frame, with the rest stretched or pushed above it.
+      const button = must(offer.querySelector('button:last-of-type'))
+      expect(offer.lastElementChild === button || offer.lastElementChild?.lastElementChild === button).toBe(
+        true,
+      )
+    }
+    expect(screen.getByRole('figure', { name: 'Ember Idol' }).querySelector('button')).toBeNull()
+    expect(screen.getByRole('figure', { name: 'Ember Idol' })).toHaveClass('flex-1')
+    expect(screen.getByRole('figure', { name: 'Cultivate' })).toHaveClass(
+      'flex-1',
+      'grid-rows-[auto_auto_1fr]',
+    )
+  })
+
   it('says what a campfire rest heals', async () => {
     await show(delveView({}, { status: 'Room', at: 0, heroes: [hero({ offers: ['Campfire'], life: 12 })] }))
     expect(await screen.findByText('Heal 20 life: 12 → 32.')).toBeInTheDocument()
@@ -242,6 +293,27 @@ it('names the end of a won run and its seed code', async () => {
   expect(await screen.findByRole('heading', { name: 'Victory!' })).toBeInTheDocument()
   expect(screen.getByText('SEED', { selector: 'strong' })).toBeInTheDocument()
   expect(screen.getAllByRole('button', { name: /Copy seed code/ }).length).toBeGreaterThan(0)
+})
+
+it.each([
+  [['idol'], '1 relic (Ember Idol)'],
+  [['idol', 'mend'], '2 relics (Ember Idol, mend)'],
+  [[], '0 relics'],
+])('counts a hero holding %j in the run summary as "%s"', async (relics, words) => {
+  await show(delveView({}, { status: 'Victory', at: 3, cleared: [0, 1, 3], heroes: [hero({ relics })] }))
+  const heroes = await screen.findByRole('list', { name: 'Heroes' })
+  expect(heroes).toHaveTextContent(`40 life · 0 gold · ${words}`)
+})
+
+it('keeps each hero of the run summary on one row of name and figures, the relic names under them', async () => {
+  await show(
+    delveView({}, { status: 'Victory', at: 3, cleared: [0, 1, 3], heroes: [hero({ relics: ['idol'] })] }),
+  )
+  const row = must((await screen.findByRole('list', { name: 'Heroes' })).querySelector('li'))
+  expect(row).toHaveClass('grid', 'grid-cols-[minmax(0,1fr)_auto]')
+  expect(must(row.querySelector('[data-slot="summary-figures"]'))).toHaveClass('whitespace-nowrap')
+  expect(row.querySelector('[data-slot="summary-figures"]')).not.toHaveTextContent('Ember Idol')
+  expect(must(row.querySelector('[data-slot="summary-relics"]'))).toHaveClass('col-span-full')
 })
 
 describe('ending the run', () => {

@@ -4,7 +4,17 @@
  * counted on the "All" button at its end, which lists every ability in full. The intro screen of a Delves fight lists
  * the same abilities (`BossAbilityList`).
  */
-import { CrownIcon, EyeIcon, FlameIcon, HourglassIcon, ListIcon, ScrollTextIcon } from 'lucide-react'
+import {
+  CrownIcon,
+  EyeIcon,
+  FlameIcon,
+  GemIcon,
+  HourglassIcon,
+  ListIcon,
+  ScrollTextIcon,
+  SkullIcon,
+  SparklesIcon,
+} from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useLayoutEffect, useRef, useState } from 'react'
 import type { RefObject } from 'react'
@@ -26,6 +36,9 @@ const ICONS: Record<BossAbilityKind, LucideIcon> = {
   'next-phase': HourglassIcon,
   scheme: ScrollTextIcon,
   omen: EyeIcon,
+  enrage: SkullIcon,
+  modifier: SparklesIcon,
+  relic: GemIcon,
 }
 
 /** Each kind's chip: the phase in force filled, the scheme tinted, what is always on plain, what is to come dashed. */
@@ -35,6 +48,9 @@ const CHIP: Record<BossAbilityKind, { chip: string; icon: string }> = {
   passive: { chip: 'border-boss/45 bg-card', icon: 'text-boss' },
   'next-phase': { chip: 'border-dashed border-boss/60 bg-card text-muted-foreground', icon: 'text-boss' },
   omen: { chip: 'border-dashed border-boss/60 bg-card text-muted-foreground', icon: 'text-boss' },
+  enrage: { chip: 'border-boss/45 bg-card', icon: 'text-boss' },
+  modifier: { chip: 'border-boss/45 bg-card', icon: 'text-boss' },
+  relic: { chip: 'border-boss/45 bg-card', icon: 'text-boss' },
 }
 
 /** One ability's kind, when it comes, name and whole text: the body of its popover and a row of the full list. */

@@ -9,7 +9,7 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "DiceRolled": { "who": "You", "highest": true } },
+            "when": { "DiceRolled": { "who": "You" } },
             "effects": [
               {
                 "Continuous": {

@@ -1,4 +1,4 @@
-/** Goal: the payment prompt lists each mana source on one scrolling line with the symbols of what a tap gives (Sol Ring two colourless, a Signet with its cost, a Treasure and a Command Tower of any colour, a bounce land both mana) and its marks (restricted mana, life, energy, another permanent), equal sources share a chip with a count, a click adds or takes back like the card does, the colour of a source of several is picked in a switch beside its chip and a chosen one's colour changes there without taking it back, and the running total of what the payment has made sits on one line with what is still owed. */
+/** Goal: the payment prompt lists the mana sources in lines that wrap with the symbols of what a tap gives (Sol Ring two colourless, a Signet with its cost, a Treasure and a Command Tower of any colour, a bounce land both mana) and its marks (restricted mana, life, energy, another permanent), equal sources share a chip with a count, a click adds or takes back like the card does, the colour of a source of several is picked in a switch beside its chip and a chosen one's colour changes there without taking it back, and the running total of what the payment has made sits on one line with what is still owed. */
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
@@ -103,11 +103,11 @@ describe('the sources of ?prompt=pay-sources', () => {
 })
 
 describe('the compact payment sheet', () => {
-  it('draws the sources on one scrolling line and what is made beside what is owed', () => {
+  it('wraps the sources instead of scrolling them sideways and draws what is made beside what is owed', () => {
     open()
     const line = must(row('Mana sources').querySelector<HTMLElement>('[data-line="true"]'))
-    expect(line.className).toContain('flex-nowrap')
-    expect(line.className).toContain('overflow-x-auto')
+    expect(line.className).toContain('flex-wrap')
+    expect(line.className).not.toContain('overflow-x-auto')
     expect(line.querySelectorAll('[data-slot="pay-source"]')).toHaveLength(chips().length)
     const shared = must(prompt().querySelector<HTMLElement>('[data-slot="pay-made-owed"]'))
     expect(within(shared).getByRole('group', { name: 'Made so far' })).toBeInTheDocument()

@@ -7,6 +7,7 @@ import {
   BOSS_SPAN,
   OWN_SHARE,
   POD_COLUMN_PX,
+  SHEET_KEEP_PX,
   ZONE_GAP_PX,
   alliesBandPx,
   sheetMost,
@@ -142,6 +143,7 @@ export function splitRegions(
     theirFloor: podColumnFloor(regions, seats, overhang),
     theirRows: frames.theirs.rows,
     theirRowChrome: theirChrome,
+    theirLead: theirChrome - frames.theirs.chrome,
     theirScale: seats.shape === 'columns' ? GRID_THEIR_SCALE : THEIR_SCALE,
     ownCrowd: seats.shape === 'columns' && !regions.phone ? OWN_CROWD_PX : 0,
     ownWidth: frames.own.width,
@@ -149,7 +151,19 @@ export function splitRegions(
     own: counts.own,
     theirs: counts.theirs,
   })
-  return withSplit(regions, split, theirChrome + BOARD_KEEP_PX)
+  if (!regions.phone) return withSplit(regions, split, theirChrome + BOARD_KEEP_PX)
+  // A phone's sheet may lie over the opponents' cards, never over their pods, tiles or the boss's abilities; a head
+  // taller than the sheet's usual keep (a boss's bar and pod) takes the excess from your row while a sheet stands up.
+  return withSplit(regions, phoneHeadKept(split, theirChrome, overhang), theirChrome)
+}
+
+/** `split` with the opponents' row grown by what a phone's head over `SHEET_KEEP_PX` needs under a sheet standing `overhang` px up; your row keeps `MIN_ROW_SHARE`. */
+export function phoneHeadKept(split: BoardSplit, theirChrome: number, overhang: number): BoardSplit {
+  const excess = finite(theirChrome) - SHEET_KEEP_PX
+  if (!(excess > 0) || !(finite(overhang) > 0)) return split
+  const room = split.opponents + split.own
+  const opponents = Math.max(split.opponents, Math.min(room * (1 - MIN_ROW_SHARE), split.opponents + excess))
+  return { ...split, opponents, own: room - opponents }
 }
 
 /** The least width in px of your creatures for which the split gives an opponent's pod column its floor. */
@@ -168,7 +182,7 @@ export const GRID_THEIR_SCALE = 0.85
 /** Neither row gets less than this share of the room both share, so an empty board keeps a place for a prompt sheet. */
 export const MIN_ROW_SHARE = 0.25
 /** The padding of a battlefield's zone around its lanes (`p-1`). */
-const ZONE_PAD_PX = 4
+export const ZONE_PAD_PX = 4
 /** The one-line pod over a board of the columns shape, and the tile strip of focus mode (`h-14`). */
 const LINE_POD_PX = 40
 const TILE_STRIP_PX = 56
@@ -188,6 +202,8 @@ export interface SplitInput {
   theirScale?: number
   /** What each row of opponents' boards after the first spends besides its lanes (its pod line and frame). */
   theirRowChrome?: number
+  /** What the opponents' row spends above their boards beyond `theirChrome`'s estimate (seats that left, a wrapped pod line), which its least share does not count; 0 when left out. */
+  theirLead?: number
   /** Your creatures' least width in px before the opponents' boards grow past their floor (`OWN_CROWD_PX`); 0 when left out. */
   ownCrowd?: number
   /** The width of the lanes of your board and of each opponent's board in px. */
@@ -218,7 +234,8 @@ export function shareSplit(room: number): BoardSplit {
 /**
  * The largest card `w` of the ladder at which your lanes at `w` and every opponent's at `THEIR_SCALE` of it fit the
  * room together; the opponents' row gets what its lanes need and your row the rest, each at least `MIN_ROW_SHARE` of
- * the room. What is left lifts the opponents' cards further, up to `w`. Without a fit at the floor, or with no
+ * the room. What is left lifts the opponents' cards further, up to `w`, and what even that leaves is shared evenly
+ * by both rows. Without a fit at the floor, or with no
  * permanent anywhere, the room splits by `OWN_SHARE`, the opponents' row keeping its chrome and `BOARD_KEEP_PX`, and
  * as much of what their lanes need at the floor as your row leaves above its own floor (at least `MIN_ROW_SHARE`). The opponents' row is at least `theirFloor` where your creatures keep
  * `FLOOR_OWN_CARD_PX`; elsewhere only room your lanes leave lifts it towards that.
@@ -234,7 +251,7 @@ export function splitBoards(input: SplitInput, limits: LaneLimits = LANE_LIMITS)
   const rows = Math.max(1, Math.floor(finite(input.theirRows ?? 1)))
   const theirRow = (card: number): number =>
     Math.max(
-      least,
+      least + finite(input.theirLead ?? 0),
       rows * theirNeed(card) + finite(input.theirChrome) + (rows - 1) * finite(input.theirRowChrome ?? 0),
     )
   const theirCard = (card: number): number => Math.floor(card * finite(input.theirScale ?? THEIR_SCALE))
@@ -267,7 +284,11 @@ export function splitBoards(input: SplitInput, limits: LaneLimits = LANE_LIMITS)
   const spare = room - ownRow(card)
   let theirs = theirCard(card)
   while (theirs + limits.step <= card && theirRow(theirs + limits.step) <= spare) theirs += limits.step
-  const opponents = Math.max(theirRow(theirs), Math.min(floor, spare))
+  const held = Math.max(theirRow(theirs), Math.min(floor, spare))
+  // Room your cards cannot use even all of it (the next card is too wide for a band more, or the largest) is shared
+  // evenly, so a nearly empty board keeps its place and the strip stays between the boards instead of riding up.
+  const grows = card + limits.step <= limits.maxWidth && ownRow(card + limits.step) <= room - held
+  const opponents = grows ? held : held + Math.max(0, spare - held) / 2
   return { opponents, own: room - opponents, ownCard: card, theirCard: theirs }
 }
 
@@ -332,7 +353,7 @@ function bossFrames(
 
 /**
  * `regions` with the rows of a split, and the sheet's most kept inside the opponents' row and the strip, leaving `keep`
- * px of that row off a phone (`sheetMost`).
+ * px of that row (on a phone at least `SHEET_KEEP_PX`, and for a sheet of cards too; `sheetMost`).
  */
 export function withSplit(regions: Regions, split: BoardSplit, keep = 0): Regions {
   return {
@@ -340,6 +361,13 @@ export function withSplit(regions: Regions, split: BoardSplit, keep = 0): Region
     opponents: split.opponents,
     own: split.own,
     sheet: sheetMost(regions.main.height, regions.shared, split.opponents, regions.phone, keep),
-    sheetWide: sheetMost(regions.main.height, regions.shared, split.opponents, regions.phone),
+    // A sheet of cards may cover the opponents' boards, but on a phone not the pods and tiles over them.
+    sheetWide: sheetMost(
+      regions.main.height,
+      regions.shared,
+      split.opponents,
+      regions.phone,
+      regions.phone ? keep : 0,
+    ),
   }
 }

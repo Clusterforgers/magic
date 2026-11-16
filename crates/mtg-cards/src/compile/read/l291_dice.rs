@@ -11,6 +11,20 @@ pub(super) fn results(r: &mut Reader<'_>, who: Ref) -> Option<TriggerPattern> {
     r.word("a").then_some(())?;
     let natural = r.word("natural");
     let mut results = vec![r.number().filter(|n| *n > 0)?];
+    // "a 4 or higher", "a 5 or higher on a die": every die at that number or more.
+    if !natural
+        && let Some(on_a_die) = r.attempt(|r| r.words("or higher").then(|| r.words("on a die")))
+    {
+        return Some(TriggerPattern::DiceRolled {
+            who,
+            highest: false,
+            results: Vec::new(),
+            at_least: results[0],
+            on_a_die,
+            natural: false,
+            each: false,
+        });
+    }
     // "a 1 or 2", "a 2, 4, or 6": a list of more than two has commas, and its last number follows "or".
     let mut last = false;
     while let Some((or, n)) = r.attempt(|r| {
@@ -42,6 +56,8 @@ pub(super) fn results(r: &mut Reader<'_>, who: Ref) -> Option<TriggerPattern> {
         who,
         highest: false,
         results,
+        at_least: 0,
+        on_a_die: false,
         natural,
         each: false,
     })

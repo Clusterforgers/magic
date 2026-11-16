@@ -88,6 +88,8 @@ pub struct Player {
     pub(crate) schemes_set: u32,
     /// The emblem of the scheme in motion.
     pub(crate) scheme: Option<mtg_core::ids::ObjectId>,
+    /// Every how many of its turns a scheme is set in motion; 0 and 1 both mean each turn.
+    pub(crate) scheme_every: u32,
     /// The seat whose loss makes this one lose too: a boss's minion ([`crate::schemes::leaders_fall`]).
     pub(crate) leader: Option<PlayerId>,
 }
@@ -117,6 +119,7 @@ impl Player {
             schemes: Vec::new(),
             schemes_set: 0,
             scheme: None,
+            scheme_every: 1,
             leader: None,
         }
     }
@@ -155,7 +158,10 @@ impl Player {
             deck.get(usize::try_from(n % len).unwrap_or(0))
                 .map(|c| c.name.as_str())
         };
-        let current = self.schemes_set.checked_sub(1).and_then(at);
+        let current = self
+            .scheme
+            .and_then(|_| self.schemes_set.checked_sub(1))
+            .and_then(at);
         Some((current, at(self.schemes_set)?))
     }
 

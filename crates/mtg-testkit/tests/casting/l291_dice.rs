@@ -30,7 +30,10 @@ fn l291_roller() -> Arc<CardDefinition> {
 }
 
 /// Answers passively until the stack and the waiting triggers are empty; the dice rolled meanwhile, by seat.
-fn l291_settle(driver: &mut Driver, rolled: &mut Vec<(usize, u32)>) -> Result<(), ScriptError> {
+pub(crate) fn l291_settle(
+    driver: &mut Driver,
+    rolled: &mut Vec<(usize, u32)>,
+) -> Result<(), ScriptError> {
     for _ in 0..200 {
         let state = driver.state();
         if state.stack().is_empty()
@@ -63,7 +66,10 @@ fn l291_table(seats: usize, seed: u64, roller: usize, watcher: &str) -> Scenario
 }
 
 /// Activates the Die Roller of the active seat `times` times; the dice rolled, by seat.
-fn l291_roll(driver: &mut Driver, times: usize) -> Result<Vec<(usize, u32)>, ScriptError> {
+pub(crate) fn l291_roll(
+    driver: &mut Driver,
+    times: usize,
+) -> Result<Vec<(usize, u32)>, ScriptError> {
     let mut rolled = Vec::new();
     for _ in 0..times {
         let events = driver.begin_activation("Die Roller")?;
@@ -77,7 +83,7 @@ fn l291_roll(driver: &mut Driver, times: usize) -> Result<Vec<(usize, u32)>, Scr
     Ok(rolled)
 }
 
-fn l291_replays(driver: &Driver, scenario: Scenario) {
+pub(crate) fn l291_replays(driver: &Driver, scenario: Scenario) {
     let setup = scenario.setup().unwrap();
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.engine().state_hash());

@@ -1,8 +1,9 @@
 /**
  * The head of a run page: the theme, where the run is, Heat, the timers, the party's hearts, the seed code to copy, and each hero
- * with a life bar, gold and a row of relics whose rules show on hover or focus.
+ * with a life bar, gold and a row of relics whose rules show on hover or focus; a phone folds it to one line.
  */
 import {
+  ChevronDownIcon,
   ClockIcon,
   CoinsIcon,
   FlameIcon,
@@ -11,7 +12,9 @@ import {
   HeartIcon,
   TriangleAlertIcon,
 } from 'lucide-react'
+import { useState } from 'react'
 import { CopyButton } from '@/components/CopyButton'
+import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import type { CustomCardView, DelveContent, DelveView, Hero } from '@/protocol/generated'
@@ -107,6 +110,7 @@ const relicCard = (content: DelveContent, id: string): CustomCardView =>
     art: '',
     role: '',
     price: 0,
+    turn: 0,
   }
 
 /** One hero of the header: name, gold, life bar, colors and relics. */
@@ -138,19 +142,31 @@ function HeroLine({ hero, you, content }: { hero: Hero; you: boolean; content: D
   )
 }
 
-/** The run's header. */
+/**
+ * The run's header. On a phone it folds to one line, the theme and the hearts, with a button that opens the rest (Heat,
+ * the timers, the seed and the party), so the room's choice is on the first screen.
+ */
 export function RunHeader({ view, content }: { view: DelveView; content: DelveContent }) {
   const run = view.run
+  const [open, setOpen] = useState(false)
+  // Folded on a phone: left out under `sm` until opened.
+  const folds = open ? undefined : 'max-sm:hidden'
   return (
-    <header data-slot="run-header" className="grid gap-3 rounded-xl border bg-delve-stone p-4 shadow-e1">
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <div className="grid min-w-0 gap-1">
-          <p className="text-xs font-semibold tracking-wide text-delve uppercase">{runStage(view)}</p>
-          <h1 className="text-2xl font-semibold tracking-tight">{content.theme}</h1>
+    <header
+      data-slot="run-header"
+      data-open={open || undefined}
+      className="grid gap-3 rounded-xl border bg-delve-stone p-4 shadow-e1 max-sm:gap-2 max-sm:px-3 max-sm:py-2"
+    >
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 max-sm:flex-nowrap max-sm:gap-x-2">
+        <div className="grid min-w-0 gap-1 max-sm:flex-1">
+          <p className={cn('text-xs font-semibold tracking-wide text-delve uppercase', folds)}>
+            {runStage(view)}
+          </p>
+          <h1 className="truncate text-2xl font-semibold tracking-tight max-sm:text-lg">{content.theme}</h1>
         </div>
-        <div className="ml-auto flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+        <div className="ml-auto flex flex-wrap items-center gap-x-4 gap-y-2 text-sm max-sm:shrink-0">
           <span
-            className="inline-flex items-center gap-1 font-medium"
+            className={cn('inline-flex items-center gap-1 font-medium', folds)}
             aria-label={`Heat ${run.heat}`}
             title="Heat raises the bosses' life and wits"
           >
@@ -161,22 +177,37 @@ export function RunHeader({ view, content }: { view: DelveView; content: DelveCo
             <span aria-hidden="true">Heat {run.heat}</span>
           </span>
           <span
-            className="inline-flex items-center gap-1 font-medium"
+            className={cn('inline-flex items-center gap-1 font-medium', folds)}
             title="How long a player may take in each fight before the table answers for them"
           >
             <ClockIcon aria-hidden="true" className="size-5 text-muted-foreground" />
             <span>Timers: {timersText(run.timers)}</span>
           </span>
           <Hearts left={run.hearts} />
-          <span className="inline-flex items-center gap-1">
+          <span className={cn('inline-flex items-center gap-1', folds)}>
             <span className="text-muted-foreground">Seed</span>
             <span className="font-mono font-medium">{view.seed}</span>
             <CopyButton text={view.seed} label="Copy seed code" />
           </span>
         </div>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          data-slot="run-header-toggle"
+          aria-expanded={open}
+          aria-label={open ? 'Hide the run and the party' : 'Show the run and the party'}
+          className="shrink-0 sm:hidden"
+          onClick={() => setOpen((was) => !was)}
+        >
+          <ChevronDownIcon
+            aria-hidden="true"
+            className={cn('size-5 transition-transform', open && 'rotate-180')}
+          />
+        </Button>
       </div>
       {run.status === 'Lobby' ? null : (
-        <ul aria-label="Party" className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+        <ul aria-label="Party" className={cn('grid grid-cols-2 gap-2 lg:grid-cols-4', folds)}>
           {run.heroes.map((hero, i) => (
             <HeroLine key={`${hero.name}-${i}`} hero={hero} you={i === view.me} content={content} />
           ))}

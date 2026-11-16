@@ -64,7 +64,6 @@ fn schemes_minions_and_scaling_cards_exist() {
         mtg_campaign::scale::RESERVES,
         mtg_campaign::scale::WARPATH,
         mtg_campaign::scale::ESCALATION,
-        mtg_campaign::scale::ENRAGE,
     ] {
         assert_eq!(content.card(id).unwrap().kind, CardKind::Boss, "{id}");
     }

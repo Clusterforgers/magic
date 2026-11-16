@@ -19,4 +19,8 @@ scheme?: string,
 /**
  * The name of the Omen: the scheme set in motion next.
  */
-omen?: string, };
+omen?: string, 
+/**
+ * How many of the boss's turns are still to begin when the Omen is set in motion: 1 as its next turn begins.
+ */
+omen_in?: number, };

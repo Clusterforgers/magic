@@ -1,4 +1,4 @@
-// Goal: every boss of the shipped roster shows each of its abilities in plain words from the content the engine plays (its boss card, Escalation, Enrage, its phases to come with the share of life at which each begins, the scheme in motion and the Omen), as a one-line summary on the table's bar and in full on the intro list; an emblem given twice is listed once with its count; a boss's own triggers are named "Boss: ability" in the log.
+// Goal: every boss of the shipped roster shows each of its abilities in plain words from the content the engine plays (its passive, its own Enrage with the heroes' turn it begins on, Escalation, this fight's modifier, its relic, its phases to come with the share of life at which each begins, the scheme in motion and the Omen with when it comes), as a one-line summary on the table's bar and in full on the intro list; an emblem given twice is listed once with its count; a boss's own triggers are named "Boss: ability" in the log.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { render, screen, within } from '@testing-library/react'
@@ -24,6 +24,7 @@ interface RawCard {
   art: string
   role?: string
   price?: number
+  turn?: number
 }
 
 interface RawBoss {
@@ -34,6 +35,8 @@ interface RawBoss {
   life: number
   life_per_hero: number
   rules: string[]
+  enrage: string
+  relic: string
   phases: Array<[string, number]>
   art: { card: string; oracle_id: string }
 }
@@ -43,6 +46,7 @@ interface RawTheme {
   text: string
   bosses: RawBoss[]
   schemes: string[]
+  modifiers: string[]
 }
 
 const cards = JSON.parse(readFileSync(join(CONTENT_DIR, 'cards.json'), 'utf8')) as RawCard[]
@@ -61,6 +65,7 @@ const CONTENT: DelveContent = {
     art: card.art,
     role: card.role ?? '',
     price: card.price ?? 0,
+    turn: card.turn ?? 0,
   })),
   bosses: theme.bosses.map((boss) => ({
     id: boss.id,
@@ -81,12 +86,17 @@ const card = (id: string): RawCard => {
   return found
 }
 
+/** The always-on cards of a fight against `boss`: its passive, its Enrage, Escalation, a modifier and its relic. */
+function standing(boss: RawBoss): string[] {
+  return [...boss.rules, boss.enrage, 'escalation', theme.modifiers[0] ?? '', boss.relic]
+}
+
 /** A boss seat as the engine shows it: its emblems in the command zone, phases by name, a scheme and the Omen. */
 function bossSeat(
   boss: RawBoss,
   extra: string[] = [],
 ): { player: PlayerView; objects: Record<number, ObjectView> } {
-  const ruleIds = [...boss.rules, 'escalation', 'enrage', ...extra]
+  const ruleIds = [...standing(boss), ...extra]
   const objects: Record<number, ObjectView> = {}
   ruleIds.forEach((id, at) => {
     objects[900 + at] = { id: 900 + at, name: card(id).name, zone: { Command: 3 } } as ObjectView
@@ -100,6 +110,7 @@ function bossSeat(
       begun: 0,
       scheme: card(scheme).name,
       omen: card(omen).name,
+      omen_in: 2,
     },
   } as unknown as PlayerView
   return { player, objects }
@@ -109,7 +120,7 @@ describe('bossAbilities over the shipped roster', () => {
   it.each(theme.bosses.map((boss) => [boss.name, boss] as const))('%s', (_, boss) => {
     const { player, objects } = bossSeat(boss)
     const abilities = bossAbilities(player, boss.name, objects, CONTENT)
-    const expected = [...boss.rules, 'escalation', 'enrage', ...boss.phases.map(([id]) => id)]
+    const expected = [...standing(boss), ...boss.phases.map(([id]) => id)]
     for (const id of expected) {
       const entry = abilities.find((one) => one.name === card(id).name)
       expect(entry, id).toBeDefined()
@@ -119,10 +130,14 @@ describe('bossAbilities over the shipped roster', () => {
     boss.phases.forEach(([id, percent]) => {
       expect(abilities.find((one) => one.name === card(id).name)?.when).toBe(`At ${percent}% of its life`)
     })
+    expect(abilities.find((one) => one.kind === 'enrage')?.when).toBe("From the heroes' turn 7")
+    expect(abilities.find((one) => one.kind === 'omen')?.when).toBe('In 2 of its turns')
     expect(abilities.map((one) => one.kind)).toEqual([
       ...boss.rules.map(() => 'passive'),
+      'enrage',
       'passive',
-      'passive',
+      'modifier',
+      'relic',
       ...boss.phases.map(() => 'next-phase'),
       'scheme',
       'omen',

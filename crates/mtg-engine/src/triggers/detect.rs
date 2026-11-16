@@ -277,13 +277,15 @@ enum Happened {
     /// A player won a clash.
     W15cClashWon { player: PlayerId },
     /// A player rolled a die: `first` for the first die of a roll, `highest` when its natural result is its number of
-    /// faces (CR 706.2), the result and the natural result.
+    /// faces (CR 706.2), the result, the natural result, and the best result among the dice of its roll that this die
+    /// and the ones after it in the batch show.
     DiceRolled {
         player: PlayerId,
         first: bool,
         highest: bool,
         result: u32,
         natural: u32,
+        best: u32,
         nth: u32,
     },
     /// A creature explored.
@@ -881,6 +883,22 @@ fn loss_ordinal(look: Look<'_>, player: PlayerId, amount: u32) -> u32 {
     ordinal(look.post, look.later, player, Tally::Losses)
 }
 
+/// The best result among the die just rolled (`result`) and the dice the player rolls after it in the batch: what "if any of those
+/// results was 10 or higher" reads for a roll of several dice (CR 706.2).
+fn c11e_best_die(later: &[Event], player: PlayerId, result: u32) -> u32 {
+    later
+        .iter()
+        .filter_map(|event| match event {
+            Event::DieRolled {
+                player: rolled,
+                result,
+                ..
+            } if *rolled == player => Some(*result),
+            _ => None,
+        })
+        .fold(result, u32::max)
+}
+
 /// Whether a die the player rolled is the first of its roll: no die of theirs since the step before it ended.
 fn c11e_first_die(earlier: &[Event], player: PlayerId) -> bool {
     !earlier
@@ -1407,6 +1425,7 @@ fn about_players_and_permanents(
             highest: natural.unwrap_or(*result) == *sides,
             result: *result,
             natural: natural.unwrap_or(*result),
+            best: c11e_best_die(look.later, *player, *result),
             nth: ordinal(look.post, look.later, *player, Tally::R5508DiceRolled),
         }),
         Event::Clashed {
@@ -1844,42 +1863,44 @@ fn matching_player_action(
             && door.is_none_or(|door| door == *unlocked && scope.source.id == *object)
             && (!*fully || *last))
             .then(|| counted(state, vec![Target::Player(*player)], 0)),
+        // A pattern of results, a threshold or a highest result judges each die (CR 706.2), and so does "a die"; "one or
+        // more dice" triggers once for each roll. The amount is the die's result, or for a roll the best of its dice.
         (
             TriggerPattern::DiceRolled {
                 who,
+                highest,
                 results,
+                at_least,
                 natural: natural_only,
+                each,
                 ..
-            },
-            Happened::DiceRolled {
-                player,
-                result,
-                natural,
-                ..
-            },
-        ) if !results.is_empty() => {
-            // "a natural 20" reads the number the die showed, any other result the changed one (CR 706.2).
-            let read = if *natural_only { natural } else { result };
-            (by(who, player) && results.contains(read))
-                .then(|| counted(state, vec![Target::Player(*player)], *read))
-        }
-        (
-            TriggerPattern::DiceRolled {
-                who, highest, each, ..
             },
             Happened::DiceRolled {
                 player,
                 first,
                 highest: rolled_highest,
+                result,
+                natural,
+                best,
                 ..
             },
-        ) => (by(who, player)
-            && if *highest {
-                *rolled_highest
-            } else {
-                *first || *each
-            })
-        .then(|| counted(state, vec![Target::Player(*player)], 0)),
+        ) => {
+            // "a natural 20" reads the number the die showed, any other result the changed one (CR 706.2).
+            let read = if *natural_only { natural } else { result };
+            let each_die = *each || *highest || *at_least > 0 || !results.is_empty();
+            (by(who, player)
+                && (*first || each_die)
+                && (!*highest || *rolled_highest)
+                && (results.is_empty() || results.contains(read))
+                && read >= at_least)
+                .then(|| {
+                    counted(
+                        state,
+                        vec![Target::Player(*player)],
+                        if each_die { *read } else { *best },
+                    )
+                })
+        }
         // A visit ability triggers for the Attraction its controller's roll lit up (CR 702.159a).
         (TriggerPattern::Visit {}, Happened::RolledToVisit { player, result }) => {
             (crate::characteristics::controller_of(state, scope.source.id) == Some(*player)

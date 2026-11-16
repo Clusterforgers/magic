@@ -33,6 +33,8 @@ function renderMulligan(given: MulliganOptions, { status = [], lost = [], own = 
   const table = renderTable({
     seats: Math.max(2, status.length + 1),
     session: { answer },
+    // A phone keeps the decision in the strip with its waiting line; elsewhere it floats (`bossRoom.test.tsx`).
+    options: { viewport: { width: 390, height: 844 } },
     state: (state) => {
       const view = clone(must(state.view))
       view.stage = 'Mulligan'
@@ -349,13 +351,17 @@ describe('a new decision', () => {
 })
 
 describe('the opening hand drawn large', () => {
-  it('shows every card of the hand in order under the buttons, in the strip, hidden from a screen reader', () => {
+  it('shows every card of the hand in order among the choices of the strip, the buttons among its answers, hidden from a screen reader', () => {
     const { container, mulligan } = renderMulligan(options())
     const row = must(container.querySelector('[data-slot="opening-hand"]'))
     expect(row).toHaveAttribute('aria-hidden', 'true')
     expect(row.querySelectorAll('[data-slot="opening-card"]')).toHaveLength(hand.length)
     expect(row.closest('[data-region="shared"]')).not.toBeNull()
-    // The buttons come first, so a sheet that scrolls shows them before the cards.
-    expect(mulligan().compareDocumentPosition(row) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    // The answers are sticky in the sheet, so a sheet that scrolls keeps Keep and Mulligan in view.
+    expect(row.closest('[data-slot="prompt-choices"]')).not.toBeNull()
+    expect(mulligan().closest('[data-slot="prompt-actions"]')).toHaveClass('sticky')
+    // One row that scrolls when the band is narrower than seven cards, never a second row under the answers.
+    expect(row).toHaveClass('overflow-x-auto', 'justify-center-safe')
+    expect(row).not.toHaveClass('flex-wrap')
   })
 })
