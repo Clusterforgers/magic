@@ -86,7 +86,10 @@ const Chip = memo(function Chip({ group, top, tabbable, hidden, aims, aria, empt
         {...(hidden ? {} : handlers)}
         className={cn(
           'relative hit-area flex h-10 items-center gap-1.5 rounded-lg border bg-background pr-2 pl-1 text-sm font-medium outline-offset-2 outline-primary focus-visible:outline-2',
-          top ? 'max-w-[min(18rem,100%)] border-primary' : 'max-w-[min(12rem,100%)]',
+          // Staging: the newest item is the focus, raised and ringed; the ones under it step back a little.
+          top
+            ? 'fx-stage-top max-w-[min(18rem,100%)] border-primary'
+            : 'max-w-[min(12rem,100%)] opacity-80 hover:opacity-100 focus-visible:opacity-100',
           empty && 'border-dashed',
         )}
       >

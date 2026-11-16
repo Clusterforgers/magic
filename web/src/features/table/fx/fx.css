@@ -20,6 +20,8 @@
   --fx-stagger-ms: 120ms;
   --fx-arrow-ms: 250ms;
   --fx-mark-ms: 600ms;
+  /* The newest stack item rising into focus once the card flying to it has landed. */
+  --fx-arrive-ms: 300ms;
   /* The chip an ability flies as. */
   --fx-chip-w: 9rem;
   --fx-chip-h: 2rem;
@@ -189,6 +191,11 @@
   bottom: auto;
   left: 0;
   font-size: 1.1rem;
+}
+
+/* Staging: the newest stack item stands raised over the ones under it. */
+.fx-stage-top {
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--foreground) 22%, transparent);
 }
 
 /* The crack across a dying card. */
@@ -410,6 +417,27 @@
 
   .fx-mark {
     animation: fx-mark calc(var(--fx-mark-ms) * var(--fx-slow, 1)) ease-out both;
+  }
+
+  /* It rises a little past its size and settles, after the leg that brings its card has landed (0.8 of it). */
+  @keyframes fx-arrive {
+    0%,
+    100% {
+      translate: 0 0;
+      scale: 1;
+    }
+    35% {
+      translate: 0 -2px;
+      scale: 1.08;
+    }
+    70% {
+      scale: 0.98;
+    }
+  }
+
+  .fx-stage-top {
+    animation: fx-arrive calc(var(--fx-arrive-ms) * var(--fx-slow, 1)) var(--ease-out)
+      calc(var(--fx-travel-ms) * 0.8) both;
   }
 
   /* On a flying card the flight sets the time, not the mount. */
