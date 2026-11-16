@@ -4,6 +4,7 @@ mod ability_view;
 mod activated_view;
 mod active_left_fuzz;
 mod active_left_view;
+mod announced_mana_view;
 mod attachment_view;
 mod auto_yield_key;
 mod batch_diff;

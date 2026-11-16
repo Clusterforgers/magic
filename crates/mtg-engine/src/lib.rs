@@ -235,6 +235,7 @@ pub use error::{EngineError, PreviewError};
 pub use events::Event;
 pub use fold::apply_event;
 pub use mana_ability::mana_ways;
+pub use r281_mana_at_priority::r281_at_priority;
 pub use setup::{GameSetup, PlayerSetup, PresetPermanent, Start};
 pub use snapshot::{Snapshot, snapshot};
 pub use state::{GameResult, GameState};
