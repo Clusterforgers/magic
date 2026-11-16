@@ -51,8 +51,12 @@ fn the_ping_costs_twice_the_pins_and_asks_no_x(
 ) -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(table(seats, pins, mana, false))?;
     let abilities = driver.offered_abilities("Voodoo Doll")?;
-    assert_eq!(abilities.contains(&PING), offered, "{abilities:?}");
+    assert!(abilities.contains(&PING), "{abilities:?}");
     if !offered {
+        // Twice the pins can't be paid: the announcement backs out and nothing is paid (CR 601.2h, 602.2).
+        let _ = driver.begin_ability("Voodoo Doll", PING);
+        assert!(driver.state().stack().is_empty());
+        assert!(matches!(driver.decision()?.kind, DecisionKind::Priority(_)));
         return Ok(());
     }
     let before = driver.state().player(pid(seats - 1)).unwrap().life();

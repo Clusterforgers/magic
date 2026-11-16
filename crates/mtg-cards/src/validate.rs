@@ -455,8 +455,6 @@ struct Walker<'a> {
     pays_objects: bool,
     /// The cost under the walk is that of an activated ability, whose counted amounts the engine counts as it is announced.
     activated_cost: bool,
-    /// The cost under the walk is a flashback cost whose parts count the X the cast announces, and its least X with it.
-    r6503_flashback_x: bool,
     /// The ability under the walk is an activated one whose cost removes counters from its source: the kinds `RemovedThisWay` reads.
     ep29_removes: Vec<crate::value::CounterKind>,
     /// The cost under the walk is paid rather than a mana cost, whose counted amounts the engine counts for the card cast.
@@ -523,7 +521,6 @@ impl<'a> Walker<'a> {
             has_additional_cost: false,
             pays_objects: false,
             activated_cost: false,
-            r6503_flashback_x: false,
             ep29_removes: Vec::new(),
             rather_cost: false,
             counts_x: false,
@@ -2029,9 +2026,7 @@ impl<'a> Walker<'a> {
                         }
                         // The least X is announced for an activated ability, and where an effect asks the payment and
                         // announces its X ("you may pay one or more {E}").
-                        if w.r6503_flashback_x {
-                            w.uses("Cost", "XAtLeast.Flashback");
-                        } else if !w.activated_cost && (!w.r306_paying || !w.x_free) {
+                        if !w.activated_cost && (!w.r306_paying || !w.x_free) {
                             w.uses("Cost", "XAtLeast.Elsewhere");
                         }
                     }
@@ -2696,12 +2691,10 @@ impl<'a> Walker<'a> {
             // A part of a flashback cost that counts X takes the X the spell announces ("Flashback—{R}{R}, Discard X
             // cards."), which the cast for that cost asks.
             Keyword::Flashback(cost) => {
-                let held = (self.x_now, self.r6503_flashback_x);
+                let held = self.x_now;
                 self.x_now |= cost.0.iter().any(amount_is_x) && !has_x_mana(cost);
-                // "If you cast this spell this way, X can't be 0": the cast for the flashback cost announces its X.
-                self.r6503_flashback_x = self.x_now;
                 self.at("cost", |w| w.cost(cost));
-                (self.x_now, self.r6503_flashback_x) = held;
+                self.x_now = held;
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Flashback.Cost", cost, false);
             }
             Keyword::Morph(cost) | Keyword::Megamorph(cost) | Keyword::Disguise(cost) => {

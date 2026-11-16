@@ -1014,24 +1014,6 @@ pub(crate) fn suspend_of(state: &GameState, id: ObjectId) -> Option<(u32, ManaCo
         })
 }
 
-/// The least X the keyword cost of the way `way` of the card `id` allows ("Flashback—{3}{R}, Remove X loyalty counters
-/// from among planeswalkers you control. If you cast this spell this way, X can't be 0.", CR 601.2b): 0 for another way.
-pub(crate) fn r6503_way_least_x(state: &GameState, id: ObjectId, way: CastWay) -> u32 {
-    keywords_of(state, id)
-        .into_iter()
-        .filter_map(|keyword| match (way, keyword) {
-            (CastWay::Flashback, Keyword::Flashback(cost)) => {
-                cost.0.iter().find_map(|item| match item {
-                    CostItem::XAtLeast(least) => Some(*least),
-                    _ => None,
-                })
-            }
-            _ => None,
-        })
-        .max()
-        .unwrap_or(0)
-}
-
 /// Suspend X (CR 702.62a, "Suspend X—{X}{3}{U}. X can't be 0."): a suspend keyword with no fixed number of time counters
 /// and an `{X}` in its cost. The mana without the X, how many `{X}` it holds and the least X; `None` for another suspend.
 pub(crate) fn suspend_x_of(state: &GameState, id: ObjectId) -> Option<(ManaCost, u32, u32)> {

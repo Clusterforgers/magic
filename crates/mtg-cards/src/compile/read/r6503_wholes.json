@@ -438,54 +438,6 @@
  ],
  [
   {
-   "Triggered": {
-    "when": {
-     "SpellCast": {
-      "what": [
-       "This"
-      ],
-      "by": "You"
-     }
-    },
-    "from": "Stack",
-    "targets": [
-     {
-      "what": "Opponent"
-     }
-    ],
-    "effects": [
-     {
-      "ExileTop": {
-       "who": {
-        "Target": 0
-       },
-       "count": {
-        "Half": {
-         "of": {
-          "Count": [
-           {
-            "In": "Library"
-           },
-           {
-            "OwnedBy": {
-             "Target": 0
-            }
-           }
-          ]
-         },
-         "up": true
-        }
-       },
-       "as": "exiled"
-      }
-     }
-    ]
-   }
-  },
-  "When you cast this spell, target opponent exiles the top half of their library, rounded up."
- ],
- [
-  {
    "Replacement": {
     "when": {
      "Enters": {

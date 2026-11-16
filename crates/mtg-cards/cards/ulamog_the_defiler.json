@@ -1,31 +1,16 @@
 {
   "oracle_id": "97836c48-8777-4b4e-98fb-e99204f38bdd",
   "name": "Ulamog, the Defiler",
-  "impl_status": "Full",
+  "impl_status": "Partial",
   "faces": [
     {
       "name": "Ulamog, the Defiler",
       "oracle_fingerprint": "84b312f147af2a964cb71a670e511cd2",
       "abilities": [
         {
-          "Triggered": {
-            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
-            "from": "Stack",
-            "targets": [{ "what": "Opponent" }],
-            "effects": [
-              {
-                "ExileTop": {
-                  "who": { "Target": 0 },
-                  "count": {
-                    "Half": {
-                      "of": { "Count": [{ "In": "Library" }, { "OwnedBy": { "Target": 0 } }] },
-                      "up": true
-                    }
-                  },
-                  "as": "exiled"
-                }
-              }
-            ]
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 91 }
           }
         },
         { "Keyword": { "Ward": [{ "Sacrifice": { "filter": [], "count": 2 } }] } },

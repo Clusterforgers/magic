@@ -15,7 +15,7 @@ use mtg_engine::choose::Target;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_testkit::cards::{burn, cost, damage, island, mountain, one_target, plains};
+use mtg_testkit::cards::{burn, cost, damage, forest, island, mountain, one_target, plains};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
@@ -45,6 +45,7 @@ fn table(seats: usize, permanent: &str, hand: Vec<Arc<CardDefinition>>) -> Scena
                 lands(3, mountain),
                 lands(2, island),
                 lands(2, plains),
+                lands(1, forest),
             ]
             .concat(),
         )
@@ -120,7 +121,11 @@ fn a_countered_spell_still_goes_to_the_graveyard(
         }
         driver.answer_passively()?;
     }
-    let bolt = driver.state().stack()[0];
+    let bolt = driver
+        .state()
+        .object(driver.state().stack()[0])
+        .unwrap()
+        .reference();
     driver.cast_at("Counterspell", &[Target::Object(bolt)])?;
     settle(&mut driver)?;
     let graveyard = names(driver.state(), Zone::Graveyard(pid(0)));
@@ -258,7 +263,7 @@ fn feather_returns_the_spell_at_the_next_end_step(
     driver.cast_at("Giant Growth", &[feather])?;
     settle(&mut driver)?;
     assert_eq!(names(driver.state(), Zone::Exile), ["Giant Growth"]);
-    driver.pass_until(Step::End)?;
+    driver.idle_until(1, Step::End)?;
     settle(&mut driver)?;
     assert!(names(driver.state(), Zone::Hand(pid(0))).contains(&"Giant Growth".to_owned()));
     assert!(names(driver.state(), Zone::Exile).is_empty());

@@ -209,7 +209,6 @@ const RUNS: &[&str] = &[
     "Cost.Forage",
     "Cost.Waterbend",
     "Cost.XAtLeast",
-    "Cost.XAtLeast.Flashback",
     "Ability.Loyalty.Condition",
     "ReplaceWhen.R6503Resolves",
     "Keyword.Annihilator.Counted",
@@ -1958,7 +1957,6 @@ mod tests {
     #[case::x_costs(X_COST, true)]
     #[case::x_read_after_resolving("Amount.X.Elsewhere", false)]
     #[case::r379_x_of_an_alternative_cost("Cost.Alternative.X", true)]
-    #[case::r6503_least_x_of_a_flashback_cost("Cost.XAtLeast.Flashback", true)]
     #[case::r6503_a_loyalty_ability_activated_only_if("Ability.Loyalty.Condition", true)]
     #[case::r6503_a_spell_put_elsewhere_as_it_resolves("ReplaceWhen.R6503Resolves", true)]
     #[case::r6503_a_counted_annihilator("Keyword.Annihilator.Counted", true)]

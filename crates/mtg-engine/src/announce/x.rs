@@ -313,11 +313,7 @@ fn least_x(ctx: &Ctx<'_>, choices: &Choices) -> u32 {
 /// The least X the cost lets the player choose.
 fn least_x_chosen(ctx: &Ctx<'_>, choices: &Choices) -> u32 {
     let Some(Ability::Activated { cost, .. }) = ctx.ability else {
-        let way = match (ctx.what, choices.way) {
-            (What::Spell(spell), Some(way)) => ways::r6503_way_least_x(ctx.state, *spell, way),
-            _ => 0,
-        };
-        return super::optional::chosen_least_x(ctx, choices).max(way);
+        return super::optional::chosen_least_x(ctx, choices);
     };
     least_of(cost)
 }

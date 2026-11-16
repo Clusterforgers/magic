@@ -228,7 +228,6 @@ mod r6105_mind_bomb;
 mod r6105_primeval_spawn;
 mod r6105_tariff;
 mod r6503_fixed_x;
-mod r6503_flashback_least_x;
 mod r6503_loyalty_only_if;
 mod r6q1_face_down_cost;
 mod r7p3_next_spell;
