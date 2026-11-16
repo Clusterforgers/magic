@@ -45,6 +45,10 @@ export const CASTING: readonly Entry[] = [
     "You may cast this spell by sacrificing a creature and paying the emerge cost reduced by that creature's mana value.",
   ],
   [
+    'Emerge from artifact',
+    "You may cast this spell by sacrificing an artifact and paying the emerge cost reduced by that artifact's mana value.",
+  ],
+  [
     'Spectacle',
     'You may cast this spell for its spectacle cost rather than its mana cost if an opponent lost life this turn.',
   ],

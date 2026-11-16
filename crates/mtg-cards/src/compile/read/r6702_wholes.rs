@@ -100,7 +100,7 @@ mod tests {
         let swaps = [
             ("a creature", "an artifact"),
             ("may attach", "attach"),
-            ("this Aura", "this creature"),
+            ("this Aura", "target Aura"),
             ("face up or face down", "face up"),
             ("1 life", "2 life"),
             ("Double", "Triple"),
