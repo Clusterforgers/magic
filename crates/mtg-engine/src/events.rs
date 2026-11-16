@@ -1185,6 +1185,9 @@ pub enum Event {
         object: ObjectId,
         /// How many permanents it devoured.
         count: u32,
+        /// The permanents it devoured, by the ids they had on the battlefield; their sacrifices log them as they were.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        devoured: Vec<ObjectId>,
     },
     /// A creature became monstrous (CR 701.37): the permanent keeps the designation while it stays on the battlefield;
     /// the counters are the event before it.

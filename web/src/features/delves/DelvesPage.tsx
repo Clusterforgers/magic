@@ -20,6 +20,7 @@ import type { DelvesApi } from '@/net/delves'
 import type { DelveSummary, Timers } from '@/protocol/generated'
 import { cn } from '@/lib/utils'
 import { DelvesRules } from './DelvesRules'
+import { HEAT_TIERS, heatWords } from './model'
 import { errorText, statusText } from './words'
 
 export function NewDelveForm({ client }: { client: DelvesApi }) {
@@ -60,11 +61,21 @@ export function NewDelveForm({ client }: { client: DelvesApi }) {
         <h2 className="text-lg font-semibold">New delve</h2>
         <div className="grid gap-1">
           <Label htmlFor="delve-heat">Heat</Label>
-          <NativeSelect id="delve-heat" value={heat} onChange={(e) => setHeat(e.target.value)}>
-            <NativeSelectOption value="0">Heat 0: the bosses as written</NativeSelectOption>
-            <NativeSelectOption value="1">Heat 1: bosses have a fifth more life</NativeSelectOption>
-            <NativeSelectOption value="2">Heat 2: and play one level smarter</NativeSelectOption>
+          <NativeSelect
+            id="delve-heat"
+            aria-describedby="delve-heat-text"
+            value={heat}
+            onChange={(e) => setHeat(e.target.value)}
+          >
+            {HEAT_TIERS.map((tier) => (
+              <NativeSelectOption key={tier.heat} value={String(tier.heat)}>
+                Heat {tier.heat} — {tier.name}
+              </NativeSelectOption>
+            ))}
           </NativeSelect>
+          <p id="delve-heat-text" className="text-xs text-muted-foreground">
+            {heatWords(Number(heat))}. Each later boss is harder than the one before.
+          </p>
         </div>
         <div className="grid gap-1">
           <Label htmlFor="delve-timers">Timers</Label>

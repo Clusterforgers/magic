@@ -1,0 +1,210 @@
+[
+ [
+  {
+   "Activated": {
+    "cost": [
+     "Tap"
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Enchantment"
+        },
+        {
+         "Color": "White"
+        },
+        {
+         "ControlledBy": "You"
+        },
+        {
+         "Not": {
+          "HasKeywordNamed": "Cumulative upkeep"
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "ChooseValue": {
+       "kind": "Color",
+       "as": "from"
+      }
+     },
+     {
+      "ChooseValue": {
+       "kind": {
+        "LikeChosen": "from"
+       },
+       "as": "to"
+      }
+     },
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        {
+         "ChangeTextChosen": {
+          "from": "from",
+          "to": "to"
+         }
+        },
+        {
+         "AddKeyword": {
+          "CumulativeUpkeep": "{1}"
+         }
+        }
+       ],
+       "duration": "Forever"
+      }
+     }
+    ]
+   }
+  },
+  "{T}: Change the text of target white enchantment you control that doesn't have cumulative upkeep by replacing all instances of one color word with another. That enchantment gains \"Cumulative upkeep {1}.\""
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "CreateToken": {
+       "token": {
+        "CopyOf": {
+         "of": {
+          "Each": [
+           {
+            "Type": "Creature"
+           },
+           {
+            "AttackingPlayerOrPlaneswalker": "You"
+           }
+          ]
+         }
+        }
+       },
+       "blocking": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "AttackingPlayerOrPlaneswalker": "You"
+         }
+        ]
+       },
+       "as": "tokens"
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "when": {
+        "StepBegins": {
+         "step": "EndCombat"
+        }
+       },
+       "effects": [
+        {
+         "Exile": {
+          "what": {
+           "Bound": "tokens"
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "For each creature attacking you or a planeswalker you control, create a token that's a copy of that creature and that's blocking that creature. Exile those tokens at end of combat."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{3}"
+     },
+     "Tap"
+    ],
+    "effects": [
+     {
+      "AddMana": {
+       "mana": "R6501UnspentDoubled"
+      }
+     }
+    ]
+   }
+  },
+  "{3}, {T}: Double the amount of each type of unspent mana you have."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     "R6501RedistributeLife"
+    ]
+   }
+  },
+  "Redistribute any number of players' life totals."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "Choose": {
+       "who": "R6501PlayersFromYou",
+       "from": {
+        "Each": [
+         {
+          "AnyOf": [
+           {
+            "Type": "Artifact"
+           },
+           {
+            "Type": "Enchantment"
+           }
+          ]
+         },
+         {
+          "Not": {
+           "ControlledBy": "You"
+          }
+         }
+        ]
+       },
+       "count": {
+        "min": 0,
+        "max": 1
+       },
+       "as": "chosen"
+      }
+     },
+     {
+      "Destroy": {
+       "what": {
+        "Bound": "chosen"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "When this creature enters, starting with you, each player may choose an artifact or enchantment you don't control. Destroy each permanent chosen this way."
+ ]
+]

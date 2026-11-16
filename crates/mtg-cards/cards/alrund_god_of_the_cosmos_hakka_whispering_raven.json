@@ -1,7 +1,7 @@
 {
   "oracle_id": "0a69c3dd-52a3-4ef6-b53f-b0780e0dc5f8",
   "name": "Alrund, God of the Cosmos // Hakka, Whispering Raven",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Alrund, God of the Cosmos",
@@ -31,9 +31,31 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 86, "end": 310 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "ChooseValue": { "kind": "CardType", "as": "type" } },
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "ChosenAs": "type" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
           }
         }
       ]

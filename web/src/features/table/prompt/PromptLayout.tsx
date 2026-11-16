@@ -28,8 +28,8 @@ function LiveText({
       ref={textRef}
       id={id}
       data-slot="prompt-text"
-      // The preview never covers the sentence, as it never covers the buttons.
-      data-keep-clear=""
+      // The preview covers the sentence only where no place at full size leaves it clear (`fitClear`).
+      data-keep-clear="text"
       aria-live="polite"
       aria-atomic="true"
       className={cn('text-sm font-medium', className)}
@@ -138,7 +138,7 @@ export function PromptLayout({
           {children === undefined ? null : (
             <div
               data-slot="prompt-actions"
-              data-keep-clear=""
+              data-keep-clear="answers"
               className="flex flex-wrap items-center gap-1.5 empty:hidden"
             >
               {children}
@@ -164,7 +164,7 @@ export function PromptLayout({
       {children === undefined ? null : (
         <div
           data-slot="prompt-actions"
-          data-keep-clear=""
+          data-keep-clear="answers"
           // Sticky to the sheet's edges: the answers stay in view while a tall band scrolls inside the sheet.
           className="prompt-answers sticky top-0 bottom-0 z-10 empty:hidden"
         >

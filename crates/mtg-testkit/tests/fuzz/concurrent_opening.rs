@@ -282,19 +282,29 @@ fn answer_of(script: &Script, decision: &Decision) -> Answer {
     }
 }
 
-/// Seed 363 deals a commander that chooses its color before the hands; the opening still ends the same in any order.
+/// A seed that deals a commander choosing its color before the hands; the opening still ends the same in any order.
+/// The seed is searched, not fixed, so new cards in the corpus cannot move the case away.
 #[rstest]
 fn a_color_chosen_before_the_hands_keeps_any_order_the_same(
     #[values(3, 4, 6)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let setup = setup(Table::Commander, seats, 363)?;
-    assert!(matches!(
-        Engine::new(setup.clone())?
-            .decisions()
-            .first()
-            .map(|d| &d.kind),
-        Some(DecisionKind::ChooseOption(_))
-    ));
+    let mut found = None;
+    for seed in (363..).take(3000) {
+        let setup = setup(Table::Commander, seats, seed)?;
+        if matches!(
+            Engine::new(setup.clone())?
+                .decisions()
+                .first()
+                .map(|d| &d.kind),
+            Some(DecisionKind::ChooseOption(_))
+        ) {
+            found = Some(setup);
+            break;
+        }
+    }
+    let Some(setup) = found else {
+        panic!("no seed in 3000 deals a commander that chooses its color before the hands");
+    };
     let scripts: Vec<Script> = (0..seats)
         .map(|seat| Script {
             mulligans: vec![seat % 2 == 0],

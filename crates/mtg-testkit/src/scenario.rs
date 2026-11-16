@@ -369,6 +369,20 @@ impl Scenario {
         self
     }
 
+    /// Gives a player Satchel cards in their command zone from the start, castable like cards in hand
+    /// (`mtg_engine::satchel`).
+    #[must_use]
+    pub fn satchel(
+        mut self,
+        player: usize,
+        cards: impl IntoIterator<Item = Arc<CardDefinition>>,
+    ) -> Self {
+        if let Some(seat) = self.seat(player) {
+            seat.satchel.extend(cards);
+        }
+        self
+    }
+
     /// Gives a player the Spirit emblem they get on becoming a Spirit (`mtg_engine::spirits`).
     #[must_use]
     pub fn spirit(mut self, player: usize, card: Arc<CardDefinition>) -> Self {

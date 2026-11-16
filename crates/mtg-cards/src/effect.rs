@@ -184,6 +184,14 @@ pub enum Destination {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         under: Option<Ref>,
     },
+    /// The battlefield under its owner's control as an object with these changes from the moment it enters, for as long
+    /// as it stays ("return it to the battlefield. It's an Aura enchantment with enchant creature you control and ...,
+    /// and it loses all other abilities"): an Aura enchants a permanent its controller chooses among those it may
+    /// enchant as it is, and stays where it was when there is none (CR 303.4g, 400.7).
+    R6502BattlefieldAs {
+        /// What it is as it enters.
+        becomes: Vec<Modification>,
+    },
     /// The battlefield under its owner's control, where an Aura enters attached only to a permanent the selector matches
     /// among those it may enchant, chosen by its controller, and stays where it was when there is none ("Only creatures
     /// can be enchanted this way."); any other card enters as usual.
@@ -235,6 +243,10 @@ pub enum Produce {
     /// One mana of any color chosen as the controller drafted cards named like the source ("Add one mana of any color
     /// chosen as you drafted cards named ~"); none in a game without a draft, where no color was chosen (Paliano ruling).
     DraftedColors,
+    /// One more mana of each type for each unspent mana of that type in the player's pool, restricted mana counted too;
+    /// the mana added has no restriction ("Double the amount of each type of unspent mana you have", Doubling Cube
+    /// rulings; the type of mana is its color or colorless).
+    R6501UnspentDoubled,
     /// Mana of one color chosen when added, as many as the controller's devotion to that color (CR 700.5): "Choose a
     /// color. Add an amount of mana of that color equal to your devotion to that color."
     Devotion,
@@ -624,7 +636,9 @@ pub enum Effect {
         rest_as: Option<String>,
     },
     /// A player chooses a value that is not an object or a player and the resolution remembers it under the name:
-    /// `Pred::ChosenAs` and `Amount::ChosenAs` read it. A player with one option (or none) is not asked.
+    /// `Pred::ChosenAs` and `Amount::ChosenAs` read it. A player with one option (or none) is not asked. Several players
+    /// each choose one of the options, in turn order from the active player (CR 101.4), and each choice is remembered
+    /// for its player (`Pred::R6600OnlyControllersColor`).
     ChooseValue {
         /// Who chooses; exactly one player.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
@@ -1965,6 +1979,18 @@ pub enum Effect {
         /// What happens.
         act: PlanarAct,
     },
+    /// Creates an Aura token attached to a permanent ("create a Wicked Role token attached to it", CR 303.7, 111.1): the
+    /// token enters attached to the first permanent `to` names on the battlefield; when there is none, or the token
+    /// could not enchant it, the token is not created (CR 303.4i).
+    R6602CreateAttached {
+        /// Who controls the token.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// What the token is.
+        token: TokenRef,
+        /// The permanent it enters attached to.
+        to: Ref,
+    },
     /// Creates tokens.
     CreateToken {
         /// Who controls them.
@@ -2052,6 +2078,10 @@ pub enum Effect {
     /// an Aura card in their hand that could enchant what the source is attached to; the source goes to its owner's hand
     /// and the card enters attached to that object or player. When either can't move, neither does (CR 701.12a).
     AuraSwap,
+    /// "Redistribute any number of players' life totals": the controller gives each player one of the life totals the
+    /// players have as it begins, each total once and never split; each player gains or loses the difference (CR
+    /// 119.5), and a player given their own total is one left out.
+    R6501RedistributeLife,
     /// "If you both own and control ~ and a creature named N, exile them, then meld them into M" (CR 701.42): when the
     /// controller owns and controls the source and a permanent `with` names, both are exiled, and if both are then cards
     /// of a meld pair in exile they return as one melded permanent with the characteristics of the card `into`.

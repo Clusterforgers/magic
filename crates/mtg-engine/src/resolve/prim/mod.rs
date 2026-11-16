@@ -41,6 +41,8 @@ mod r5521_reduce_speed;
 mod r6401_pass_control;
 mod r6403_aura_swap;
 mod r6403_meld;
+mod r6501_redistribute;
+mod r6602_create_attached;
 mod retarget;
 mod ring_tempts;
 mod rmt2_shares;
@@ -143,6 +145,7 @@ mod r5509_foretold;
 mod r6102_random_counter;
 mod r6400_block;
 pub(crate) mod r6402_change_roll;
+pub(crate) mod r6502_enters_as;
 mod regenerate;
 mod remove_counters;
 mod remove_from_combat;
@@ -315,6 +318,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Conjure { .. } => conjure::run(cx, effect),
         Effect::Meld { .. } => r6403_meld::run(cx, effect),
         Effect::AuraSwap => r6403_aura_swap::run(cx, effect),
+        Effect::R6501RedistributeLife => r6501_redistribute::run(cx, effect),
         Effect::Seek { .. } => seek::run(cx, effect),
         Effect::Venture { .. } => w11d_venture::run(cx, effect),
         Effect::OpenAttraction { .. } | Effect::RollToVisit { .. } => {
@@ -351,6 +355,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::AddStep { .. } => r306_add_step::run(cx, effect),
         Effect::WinGame { .. } => win_game::run(cx, effect),
         Effect::CreateToken { .. } => create_token::run(cx, effect),
+        Effect::R6602CreateAttached { .. } => r6602_create_attached::run(cx, effect),
         Effect::Continuous { .. } => continuous::run(cx, effect),
         Effect::ExchangeControl { .. } => w6e_exchange::run(cx, effect),
         Effect::R6401PassControl { .. } => r6401_pass_control::run(cx, effect),
@@ -429,13 +434,14 @@ mod tests {
         {"TurnFaceDown":{"what":"This"}}, {"Harness":{"what":"This"}}, {"Plot":{"what":"This"}},
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"ControlPlayer":{"who":"Opponents"}}, {"RestartGame":{"keep":[]}},
-        {"BecomeMonarch":{}}, {"ReduceSpeed":{"who":"You"}}, {"RingTempts":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Empower":{"count":1}}, {"ChooseWithin":{"from":"This","within":{"TotalPowerAtMost":1},"as":"kept"}}, {"Incubate":{"count":1}}, {"Conjure":{"name":"Island","zone":"Hand"}}, {"Meld":{"with":[{"Named":"Bruna"}],"into":"Brisela"}}, "AuraSwap", {"Seek":{"filter":[]}}, {"Venture":{}}, {"OpenAttraction":{}}, {"RollToVisit":{}}, {"PutSticker":{"on":[]}}, {"Parade":{"what":[]}}, {"ClaimPrize":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"Enlist":{"what":"This"}}, {"BecomeLevel":{"level":2}},
+        {"BecomeMonarch":{}}, {"ReduceSpeed":{"who":"You"}}, {"RingTempts":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Empower":{"count":1}}, {"ChooseWithin":{"from":"This","within":{"TotalPowerAtMost":1},"as":"kept"}}, {"Incubate":{"count":1}}, {"Conjure":{"name":"Island","zone":"Hand"}}, {"Meld":{"with":[{"Named":"Bruna"}],"into":"Brisela"}}, "AuraSwap", "R6501RedistributeLife", {"Seek":{"filter":[]}}, {"Venture":{}}, {"OpenAttraction":{}}, {"RollToVisit":{}}, {"PutSticker":{"on":[]}}, {"Parade":{"what":[]}}, {"ClaimPrize":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"Enlist":{"what":"This"}}, {"BecomeLevel":{"level":2}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Crewed":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
         {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Remember":{"what":"This","slot":"s"}}, {"Forget":{"slot":"s"}}, {"Manifest":{}}, {"Cloak":{}}, {"FaceDownPile":{"what":"This","then":"Manifest"}}, {"BecomeForetold":{"what":"This"}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"GainSuspend":{"what":"This"}}, {"ExtraTurn":{}}, "EndTurn",
         {"ChangeTargets":{"what":"This","to":"Another"}},
         {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}}, {"CopyCard":{"what":"This","as":"copy"}},
         {"BecomeCopy":{"what":"This","of":"This","duration":"UntilEndOfTurn"}},
         {"CreateToken":{"token":{"Named":"treasure"}}},
+        {"R6602CreateAttached":{"token":{"Named":"wicked_role"},"to":"This"}},
         {"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}},
         {"ExchangeControl":{"what":["This"],"duration":"Forever"}},
         {"R6401PassControl":{"side":"Left","what":[],"pick":"All"}},
@@ -473,7 +479,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 149, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 151, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -583,6 +589,7 @@ mod tests {
         "Effect.Conjure",
         "Effect.Meld",
         "Effect.AuraSwap",
+        "Effect.R6501RedistributeLife",
         "Effect.Seek",
         "Effect.Venture",
         "Effect.OpenAttraction",
@@ -625,6 +632,7 @@ mod tests {
         "Effect.CopyCard",
         "Effect.BecomeCopy",
         "Effect.CreateToken",
+        "Effect.R6602CreateAttached",
         "Effect.Continuous",
         "Effect.ExchangeControl",
         "Effect.R6401PassControl",

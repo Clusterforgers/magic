@@ -110,7 +110,9 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
   const store = usePreviewStore()
   const name = useSeatNamer()
   const { id } = target
-  const held = usePlay((state) => state.objectsById[id])
+  const live = usePlay((state) => state.objectsById[id])
+  // A card shown at a reveal is drawn as it was shown, which the view may hold no longer.
+  const held = target.shown ?? live
   const sourceObject = usePlay((state) =>
     held?.source === undefined ? undefined : state.objectsById[held.source],
   )
@@ -199,7 +201,7 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
           role={role}
           size={beside ? 'medium' : 'large'}
           width={fit.picture}
-          revealed={place !== undefined}
+          revealed={place !== undefined || target.shown !== undefined}
           usable={note?.usable}
         />
       </div>

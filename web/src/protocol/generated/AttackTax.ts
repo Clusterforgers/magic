@@ -30,4 +30,8 @@ life: number,
  * The permanents each taxed creature costs besides, sacrificed, returned or tapped (CR 508.1g), each a fixed
  * number counted the same way.
  */
-costs?: unknown, };
+costs?: unknown, 
+/**
+ * The mana is paid once for each counter on the taxed creature as the attack is declared.
+ */
+per_counter?: boolean, };

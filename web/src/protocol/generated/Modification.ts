@@ -13,7 +13,7 @@ import type { TextWord } from "./TextWord";
 /**
  * What an effect changes.
  */
-export type Modification = { "AddType": CardType } | { "RemoveType": CardType } | { "SetTypes": CardTypes } | { "AddSupertype": Supertype } | { "RemoveSupertype": Supertype } | { "AddSubtype": Subtype } | { "SetCreatureTypes": Array<Subtype> } | { "SetLandTypes": Array<Subtype> } | "AddAllCreatureTypes" | { "SetColors": ColorSet } | { "AddNameWords": string } | { "GrantText": string } | { "AddColors": ColorSet } | { "AddKeyword": unknown } | { "AddKeywords": unknown } | { "RemoveKeyword": unknown } | { "RemoveKeywordKind": "Landwalk" | "Protection" | "Ward" | "BandsWithOther" } | { "LockKeyword": unknown } | { "GrantAbility": unknown } | { "GainAbilities": Array<Borrowed> } | "LoseAbilities" | "LoseAbilitiesExceptMana" | { "LoseAbility": AbilityRef } | { "SetController": PlayerId } | { "ChangeText": { 
+export type Modification = { "AddType": CardType } | { "RemoveType": CardType } | { "SetTypes": CardTypes } | { "AddSupertype": Supertype } | { "RemoveSupertype": Supertype } | { "AddSubtype": Subtype } | { "SetCreatureTypes": Array<Subtype> } | { "SetLandTypes": Array<Subtype> } | "AddAllCreatureTypes" | { "SetColors": ColorSet } | { "AddNameWords": string } | { "SetName": string } | { "GrantText": string } | { "AddColors": ColorSet } | { "AddKeyword": unknown } | { "AddKeywords": unknown } | { "RemoveKeyword": unknown } | { "RemoveKeywordKind": "Landwalk" | "Protection" | "Ward" | "BandsWithOther" } | { "LockKeyword": unknown } | { "GrantAbility": unknown } | { "GainAbilities": Array<Borrowed> } | "LoseAbilities" | "LoseAbilitiesExceptMana" | { "LoseAbility": AbilityRef } | { "SetController": PlayerId } | { "ChangeText": { 
 /**
  * The word replaced.
  */
@@ -69,7 +69,11 @@ you: PlayerId,
 /**
  * Whether it protects the player, their planeswalkers or both.
  */
-attacked: "Player" | "Planeswalkers" | "Both", } } | { "CantAttackOwner": { 
+attacked: "Player" | "Planeswalkers" | "Both", } } | { "R6601CantAttackPlayers": { 
+/**
+ * The players it can't attack.
+ */
+players: Array<PlayerId>, } } | { "CantAttackOwner": { 
 /**
  * Whether it protects the owner, their planeswalkers or both.
  */

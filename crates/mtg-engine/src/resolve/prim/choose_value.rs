@@ -32,6 +32,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let player = match choosers.as_slice() {
         [] => return Ok(done(None, bind)),
         [player] => *player,
+        several if r6600_by_options(kind) => return r6600_each_chooses(cx, several, kind, bind),
         _ => {
             return Err(ResolveError::Invalid(
                 "a value is chosen by one player".into(),
@@ -85,6 +86,58 @@ fn choice(
                     }),
                 )
             })),
+    })
+}
+
+/// Whether a value of this kind is one pick among fixed options, which several players can each make in one step.
+fn r6600_by_options(kind: &ValueKind) -> bool {
+    !matches!(
+        kind,
+        ValueKind::Number(..)
+            | ValueKind::CardName(_)
+            | ValueKind::Colors
+            | ValueKind::LikeChosen(_)
+    )
+}
+
+/// Each of several players chooses one of the options, in turn order from the active player (CR 101.4); each value is
+/// remembered for its player (`r6600_player_value`).
+fn r6600_each_chooses(
+    cx: &Cx<'_>,
+    players: &[PlayerId],
+    kind: &ValueKind,
+    bind: &str,
+) -> Result<Run, ResolveError> {
+    let state = cx.state();
+    let options = options(kind);
+    let choosers: Vec<OptionChooser> = state
+        .turn_order_from(state.turn().active())
+        .into_iter()
+        .filter(|player| players.contains(player))
+        .map(|player| OptionChooser {
+            player,
+            text: question(kind),
+            options: options.clone(),
+        })
+        .collect();
+    let taken = match pick_options(cx, &choosers)? {
+        Optioned::Ask(decision) => return Ok(Run::Ask(decision)),
+        Optioned::Done(taken) => taken,
+    };
+    let bound = taken
+        .into_iter()
+        .filter_map(|(player, index)| {
+            let chosen = value(kind, options.get(index)?, None)?;
+            let json = serde_json::to_string(&chosen).ok()?;
+            let name = crate::resolve::r6600_player_value(bind, player);
+            Some((format!("{CHOSEN_VALUE}{name}\t{json}"), Vec::new()))
+        })
+        .collect();
+    Ok(Run::Done {
+        events: Vec::new(),
+        bound,
+        snapshots: Vec::new(),
+        next: Next::Sibling,
     })
 }
 
@@ -550,9 +603,26 @@ mod tests {
     }
 
     #[test]
-    fn several_choosers_are_refused_and_nobody_chooses_nothing() {
+    fn several_choosers_each_choose_in_turn_order_and_nobody_chooses_nothing() {
         let each = r#"{"ChooseValue":{"who":"EachPlayer","kind":"Color","as":"hue"}}"#;
-        assert!(run_with(vec![], each).is_err());
+        let Run::Ask(first) = run_with(vec![], each).unwrap() else {
+            panic!("the active player is asked first");
+        };
+        assert_eq!(first.player, ME);
+        let Run::Ask(second) = run_with(vec![(ME, Choice::Option(0))], each).unwrap() else {
+            panic!("the next player is asked");
+        };
+        assert_eq!(second.player, PlayerId(1));
+        let both = vec![(ME, Choice::Option(0)), (PlayerId(1), Choice::Option(1))];
+        let Run::Done { bound, .. } = run_with(both, each).unwrap() else {
+            panic!("both chose");
+        };
+        assert_eq!(bound.len(), 2, "one value for each player");
+        let numbers = r#"{"ChooseValue":{"who":"EachPlayer","kind":{"Number":[1,3]},"as":"n"}}"#;
+        assert!(
+            run_with(vec![], numbers).is_err(),
+            "a number is chosen by one player"
+        );
         let nobody = r#"{"ChooseValue":{"who":{"Target":0},"kind":"Color","as":"hue"}}"#;
         assert_eq!(remembered(run_with(vec![], nobody).unwrap()), None);
     }

@@ -1,7 +1,7 @@
 {
   "oracle_id": "a04f46b4-b0b0-4aef-907f-1df1a2e261de",
   "name": "Chaos Dragon",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Chaos Dragon",
@@ -11,9 +11,33 @@
         { "Keyword": "Haste" },
         { "Rule": { "rule": { "MustAttack": "This" } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 57, "end": 255 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "roller",
+                  "effects": [
+                    {
+                      "RollDice": {
+                        "who": { "Bound": "roller" },
+                        "sides": 20,
+                        "results": [],
+                        "count": 1
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "R6601CantAttackPlayers": "R6601HighestRollers" }],
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
           }
         }
       ]

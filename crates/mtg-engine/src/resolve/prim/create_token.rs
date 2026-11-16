@@ -13,8 +13,9 @@ use mtg_cards::value::Amount;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::wrong_effect;
+use crate::attach::{self, Host};
 use crate::caps::caps;
-use crate::choose::{ChoiceOption, OptionChooser, Optioned, Target, pick_options};
+use crate::choose::{ChoiceOption, OptionChooser, Optioned, Questions, Stop, Target, pick_options};
 use crate::combat::{AttackTarget, defenders_for};
 use crate::copies::copiable_values;
 use crate::events::Event;
@@ -22,6 +23,7 @@ use crate::object::{GameObject, ObjectRef};
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::state::GameState;
 use crate::tokens::TokenCreated;
+use crate::wording;
 
 /// What a predefined token is: the description in its file (`cards/tokens/<id>.json`).
 fn predefined(id: &str) -> Result<&'static TokenFile, ResolveError> {
@@ -170,15 +172,30 @@ fn named_defender(
         .then_some(aim))
 }
 
-/// The attacking creature `player`'s tokens enter blocking: the one `blocking` names while it still attacks `player`
-/// or a planeswalker of theirs, after blockers are declared; none otherwise, and the tokens just enter.
+/// The attacking creature `player`'s token enters blocking: the one `blocking` names while it still attacks `player`
+/// or a planeswalker of theirs, after blockers are declared; none otherwise, and the token just enters. When `blocking`
+/// names several creatures, a token that is a copy of one of them blocks that one ("for each creature attacking you,
+/// create a token that's a copy of that creature and that's blocking that creature"), and any other the first.
 fn ep23_blocked(
     cx: &Cx<'_>,
     blocking: &Ref,
     player: PlayerId,
+    copy_of: Option<ObjectRef>,
 ) -> Result<Option<ObjectId>, ResolveError> {
     let state = cx.state();
-    let Some(Target::Object(named)) = cx.scope.refs(blocking)?.first().copied() else {
+    let named: Vec<ObjectRef> = cx
+        .scope
+        .refs(blocking)?
+        .into_iter()
+        .filter_map(|target| match target {
+            Target::Object(object) => Some(object),
+            Target::Player(_) => None,
+        })
+        .collect();
+    let Some(named) = copy_of
+        .filter(|copied| named.contains(copied))
+        .or_else(|| named.first().copied())
+    else {
         return Ok(None);
     };
     if state.object(named.id).map(GameObject::reference) != Some(named)
@@ -242,7 +259,7 @@ fn chosen_defenders(
 /// What each token the effect makes is made from: a predefined or described token, a token sized by an amount counted
 /// now (never below zero), the card of a name the game can conjure (none when it cannot), or the copies of the objects a
 /// reference names.
-fn made_from(cx: &Cx<'_>, token: &TokenRef) -> Result<Vec<MadeFrom>, ResolveError> {
+pub(super) fn made_from(cx: &Cx<'_>, token: &TokenRef) -> Result<Vec<MadeFrom>, ResolveError> {
     Ok(match token {
         TokenRef::Named(id) => vec![(Arc::new(w7c_predefined_definition(id)?), None)],
         TokenRef::Card(name) => cx
@@ -366,14 +383,17 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let first = state.next_object().get();
     let mut made = 0;
     let mut events = Vec::with_capacity(players.len() * number * made_from.len());
+    let mut hosts = R6601Hosts::new(cx);
     for (controller, aim) in aims {
-        let blocked = match blocking {
-            Some(blocking) if aim.is_none() => ep23_blocked(cx, blocking, controller)?,
-            _ => None,
-        };
         for (definition, copy_of) in &made_from {
+            let blocked = match blocking {
+                Some(blocking) if aim.is_none() => {
+                    ep23_blocked(cx, blocking, controller, *copy_of)?
+                }
+                _ => None,
+            };
             for _ in 0..number {
-                events.push(Event::TokenCreated(TokenCreated {
+                let created = Event::TokenCreated(TokenCreated {
                     object: ObjectId(first + made),
                     copy_of: *copy_of,
                     controller,
@@ -382,7 +402,16 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     attacking: aim,
                     blocking: blocked,
                     definition: Arc::clone(definition),
-                }));
+                });
+                // An Aura token enters attached to what its controller chooses, and one with nothing to enchant is
+                // not created (CR 303.4f).
+                let attached = match hosts.r6601_host(&created, controller) {
+                    Ok(Some(attached)) => attached,
+                    Ok(None) => continue,
+                    Err(stop) => return Stop::settle(Err(stop)),
+                };
+                events.push(created);
+                events.extend(attached);
                 events.extend(crate::r371_token_loyalty::entering(
                     ObjectId(first + made),
                     definition,
@@ -391,9 +420,19 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             }
         }
     }
-    // A token is a new object: its zone-change counter starts at 0.
-    let bound = bind
-        .iter()
+    let bound = bound_tokens(bind.as_ref(), first, made);
+    Ok(Run::Done {
+        events,
+        bound,
+        snapshots: Vec::new(),
+        next: Next::Sibling,
+    })
+}
+
+/// The name bound to the `made` tokens that took the object numbers from `first` on: a token is a new object, so its
+/// zone-change counter starts at 0.
+fn bound_tokens(bind: Option<&String>, first: u64, made: u64) -> Vec<(String, Vec<Target>)> {
+    bind.into_iter()
         .map(|name| {
             let named = (0..made).map(|n| {
                 Target::Object(ObjectRef {
@@ -403,13 +442,105 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             });
             (name.clone(), named.collect())
         })
-        .collect();
-    Ok(Run::Done {
-        events,
-        bound,
-        snapshots: Vec::new(),
-        next: Next::Sibling,
-    })
+        .collect()
+}
+
+/// The hosts of the Aura tokens a step creates: each is asked with the tokens before it already made, in a scratch copy
+/// of the state.
+struct R6601Hosts<'a> {
+    questions: Questions<'a>,
+    state: &'a GameState,
+    /// The state with the tokens made so far, once an Aura token is made.
+    scratch: Option<GameState>,
+    /// The tokens made before the first Aura token, folded into the scratch state when it is made.
+    before: Vec<Event>,
+}
+
+impl<'a> R6601Hosts<'a> {
+    fn new(cx: &'a Cx<'_>) -> Self {
+        R6601Hosts {
+            questions: Questions::new(cx),
+            state: cx.state(),
+            scratch: None,
+            before: Vec::new(),
+        }
+    }
+
+    /// The attachment a created token enters with: none for a token that is no Aura, the event attaching an Aura to
+    /// the permanent or player its controller chooses among those it may enchant (CR 303.4f), and `None` for an Aura
+    /// with nothing to enchant, which is not created.
+    fn r6601_host(
+        &mut self,
+        created: &Event,
+        controller: PlayerId,
+    ) -> Result<Option<Vec<Event>>, Stop> {
+        let Event::TokenCreated(token) = created else {
+            return Ok(Some(Vec::new()));
+        };
+        let is_aura = token
+            .definition
+            .types
+            .contains(&mtg_core::card::CardType::Enchantment)
+            && token
+                .definition
+                .subtypes
+                .iter()
+                .any(|subtype| subtype.0 == "Aura");
+        if !is_aura && self.scratch.is_none() {
+            self.before.push(created.clone());
+            return Ok(Some(Vec::new()));
+        }
+        let fold = |scratch: &mut GameState, event: &Event| {
+            crate::fold::apply_event(scratch, event).map_err(|error| {
+                Stop::Fail(ResolveError::Invalid(format!(
+                    "a token can't be made: {error:?}"
+                )))
+            })
+        };
+        if self.scratch.is_none() {
+            let mut scratch = self.state.clone();
+            for event in &self.before {
+                fold(&mut scratch, event)?;
+            }
+            self.scratch = Some(scratch);
+        }
+        let Some(scratch) = self.scratch.as_mut() else {
+            return Ok(None);
+        };
+        fold(scratch, created)?;
+        if !is_aura {
+            return Ok(Some(Vec::new()));
+        }
+        let Some(object) = scratch.object(token.object) else {
+            return Ok(None);
+        };
+        let objects = attach::hosts_when_entering(scratch, object, controller).unwrap_or_default();
+        let players = attach::player_hosts_when_entering(scratch, object, controller);
+        let host = match (objects.as_slice(), players.as_slice()) {
+            ([], []) => None,
+            ([one], _) => Some(Host::Object(*one)),
+            ([], [one]) => Some(Host::Player(*one)),
+            ([], _) => {
+                let options = players.iter().copied().map(ChoiceOption::Player).collect();
+                let at = self
+                    .questions
+                    .w9b_option(controller, options, wording::ENCHANT.into())?;
+                players.get(at).copied().map(Host::Player)
+            }
+            _ => self
+                .questions
+                .cards(controller, objects, (1, 1), wording::ENCHANT.into())?
+                .first()
+                .copied()
+                .map(Host::Object),
+        };
+        let Some(host) = host else {
+            return Ok(None);
+        };
+        let attach = host.attach(token.object);
+        fold(scratch, &attach)?;
+        Ok(Some(vec![attach]))
+    }
 }
 
 #[cfg(test)]

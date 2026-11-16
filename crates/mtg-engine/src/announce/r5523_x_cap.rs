@@ -26,9 +26,37 @@ pub(super) fn r5523_spell_cap(ctx: &Ctx<'_>) -> Option<u32> {
         })
         .flat_map(|cost| cost.0.iter())
         .filter_map(|item| match item {
-            CostItem::XAtMost(most) => scope.amount(most).ok(),
+            CostItem::XAtMost(most) | CostItem::XIs(most) => scope.amount(most).ok(),
             _ => None,
         })
         .map(|most| u32::try_from(most.max(0)).unwrap_or(u32::MAX))
         .min()
+}
+
+/// The X the text of the spell or of the activated ability defines (`CostItem::XIs`, CR 107.3c), counted as it is
+/// announced; `None` when no player-free X is named.
+pub(super) fn r6503_fixed_x(ctx: &Ctx<'_>) -> Option<u32> {
+    let object = ctx.state.object(ctx.source)?;
+    let scope = Scope::announcing(ctx.state, ctx.player, object.reference());
+    let fixed = |cost: &mtg_cards::cost::Cost| {
+        cost.0.iter().find_map(|item| match item {
+            CostItem::XIs(amount) => scope.amount(amount).ok(),
+            _ => None,
+        })
+    };
+    let value = match (ctx.what, ctx.ability) {
+        (What::Spell(_), _) => {
+            crate::ability_reader::printed_rules(object.card()).find_map(|rule| match &**rule {
+                Ability::AdditionalCost {
+                    cost,
+                    required: true,
+                    ..
+                } => fixed(cost),
+                _ => None,
+            })
+        }
+        (What::Ability(_), Some(Ability::Activated { cost, .. })) => fixed(cost),
+        _ => None,
+    }?;
+    Some(u32::try_from(value.max(0)).unwrap_or(u32::MAX))
 }

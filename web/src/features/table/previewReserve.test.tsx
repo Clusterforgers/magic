@@ -1,9 +1,9 @@
-//! Goal: a pinned card preview never lies over a board's cards: a board it overlaps narrows on that side to keep its cards beside the panel (down to a least width), a board it misses keeps its width, and a hovered preview finds empty room beside the cards where there is some.
+//! Goal: a pinned card preview never lies over a board's cards: a board it overlaps narrows on that side to keep its cards beside the panel (down to a least width), a board it misses keeps its width, and a hovered preview finds empty room beside the cards at its full size where there is some.
 import { act, render, screen } from '@testing-library/react'
 import { useRef } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { Anchor, Viewport } from './preview'
-import { boxOf, fitClear, meets, panelBox, READABLE_PICTURE } from './previewClear'
+import { boxOf, fitClear, meets, panelBox } from './previewClear'
 import type { Box } from './previewClear'
 import { GAP_PX, previewFit } from './previewFit'
 import { boardInset, NO_INSET, reservePreview, usePreviewInset, ZONE_KEEP_PX } from './previewReserve'
@@ -70,17 +70,20 @@ describe('fitClear beside the board cards', () => {
   const card = rect(380, 470, 600, 780)
   const clear = [rect(0, 880, 1050, 1047), rect(1050, 880, 1560, 1047)]
 
-  it('stands over empty room where the natural panel would cover cards', () => {
-    const cards = [card, rect(610, 470, 830, 780), rect(840, 470, 1060, 780), rect(1190, 470, 1400, 690)]
-    const base = previewFit(card, view)
+  it('stands over empty room at full size where the natural panel would cover cards', () => {
+    // The card shown in a row in the middle: the natural right panel lies over the last card, the left one is empty.
+    const shown = rect(600, 470, 820, 780)
+    const cards = [shown, rect(830, 470, 1050, 780), rect(1400, 470, 1600, 690)]
+    const base = previewFit(shown, view)
     expect(cards.some((each) => meets(panelBox(base, view), boxOf(each)))).toBe(true)
-    const fit = fitClear(card, view, clear, cards)
+    const fit = fitClear(shown, view, clear, cards)
     expect(cards.some((each) => meets(panelBox(fit, view), boxOf(each)))).toBe(false)
     expect(clear.some((each) => meets(panelBox(fit, view), boxOf(each)))).toBe(false)
-    expect(fit.picture).toBeGreaterThanOrEqual(Math.min(READABLE_PICTURE, base.picture))
+    expect(fit.picture).toBe(base.picture)
+    expect(fit.width).toBe(base.width)
   })
 
-  it('stands as it would without cards where no empty room holds a readable picture', () => {
+  it('stands as it would without cards where no empty room holds the full size', () => {
     const wall = Array.from({ length: 8 }, (_, at) => rect(184 + at * 210, 64, 384 + at * 210, 870))
     expect(fitClear(card, view, clear, wall)).toEqual(fitClear(card, view, clear))
   })
