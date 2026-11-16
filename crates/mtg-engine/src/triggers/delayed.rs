@@ -190,6 +190,27 @@ impl Delayed {
                     && state.is_active(self.controller)
                     && turn.step() > Step::Upkeep
             }
+            // Ends once the player the name was bound to has finished a turn after the one it was set up in.
+            Duration::R6700UntilEndOfTheirNextTurn(who) => {
+                let player = match who {
+                    mtg_cards::refs::Ref::Bound(name) => {
+                        self.bindings.get(name).and_then(|bound| {
+                            bound.iter().find_map(|target| match target {
+                                crate::choose::Target::Player(player) => Some(*player),
+                                _ => None,
+                            })
+                        })
+                    }
+                    _ => None,
+                };
+                player.is_none_or(|player| {
+                    !state.is_alive(player)
+                        || state
+                            .r379_since
+                            .ended_turn(player)
+                            .is_some_and(|ended| ended > self.turn)
+                })
+            }
             Duration::WhileSourceOnBattlefield => !state.object(self.source.id).is_some_and(|o| {
                 o.counter() == self.source.counter && o.zone().is_permanent_zone()
             }),
@@ -367,6 +388,37 @@ mod tests {
         set_up(&mut state, source, duration);
         assert!(!state.delayed()[0].lapsed(&state), "not at once");
         next_turn(&mut state, FOE);
+        assert_eq!(state.delayed()[0].lapsed(&state), lapsed);
+    }
+
+    /// A delayed trigger "until the end of defending player's next turn" set up in `ME`'s turn, the name bound to `FOE`.
+    fn r6700_set_up_for_foe(state: &mut GameState, source: ObjectId) {
+        let mut event = created(
+            state,
+            source,
+            vec![("defender".to_owned(), vec![Target::Player(FOE)])],
+        );
+        event.until = Some(Duration::R6700UntilEndOfTheirNextTurn(Ref::Bound(
+            "defender".to_owned(),
+        )));
+        apply_event(state, &Event::DelayedTriggerCreated(Box::new(event))).unwrap();
+    }
+
+    #[rstest]
+    #[case::through_the_turn_it_began_in(&[], false)]
+    #[case::through_that_players_next_turn(&[FOE], false)]
+    #[case::not_past_that_players_next_turn(&[FOE, ME], true)]
+    #[case::not_a_turn_of_another_player(&[ME], false)]
+    fn r6700_it_waits_until_the_end_of_that_players_next_turn(
+        #[case] turns: &[PlayerId],
+        #[case] lapsed: bool,
+    ) {
+        let (mut state, source) = table();
+        next_turn(&mut state, ME);
+        r6700_set_up_for_foe(&mut state, source);
+        for active in turns {
+            next_turn(&mut state, *active);
+        }
         assert_eq!(state.delayed()[0].lapsed(&state), lapsed);
     }
 

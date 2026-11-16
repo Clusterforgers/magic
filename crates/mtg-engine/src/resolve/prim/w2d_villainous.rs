@@ -6,8 +6,11 @@ use mtg_cards::compile::render_ability;
 use mtg_cards::effect::Effect;
 use mtg_core::ids::PlayerId;
 
+use super::repeat_each::{clear_pass, repeat_at};
 use super::wrong_effect;
+use crate::choose::Target;
 use crate::choose::{ChoiceOption, OptionChooser, Optioned, pick_options};
+use crate::resolve::tree::is_next_pass;
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::wording;
 
@@ -40,8 +43,17 @@ pub(super) fn w2d_label(effects: &[Effect], fallback: &str) -> ChoiceOption {
     })
 }
 
+/// The name under which the times the player still faces the choice after this one are counted, one name for each
+/// choice; no card can write it, since a name has no `~`.
+fn faces_name(cx: &Cx<'_>) -> String {
+    let at: Vec<String> = repeat_at(cx).iter().map(ToString::to_string).collect();
+    format!("~faces:{}", at.join("."))
+}
+
 /// The first player the effect names who is still in the game chooses one of the two options, a public choice, and the
-/// step goes into it; nobody in the game to choose is no choice.
+/// step goes into it; nobody in the game to choose is no choice. A player a rule makes face the choice additional times
+/// (`Rule::R6700VillainousAgain`) faces it again after each option done (the tree comes back to the choice), the names
+/// the option bound freed, until they faced it that many more times.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::VillainousChoice {
         who, first, second, ..
@@ -58,7 +70,50 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     else {
         return Ok(Run::events(Vec::new()));
     };
-    choose_between(cx, player, first, second, "Face a villainous choice.")
+    let name = faces_name(cx);
+    let again = is_next_pass(cx.resolving.position());
+    let left = if again {
+        cx.resolving.bindings().get(&name).map_or(0, Vec::len)
+    } else {
+        crate::rules::r6700_villainous_extra(state, player)
+    };
+    let mut bound: Vec<(String, Vec<Target>)> = Vec::new();
+    if again {
+        // The last time faced is done: what its option bound stays for the effects after the choice.
+        if left == 0 {
+            return Ok(Run::Done {
+                events: Vec::new(),
+                bound,
+                snapshots: Vec::new(),
+                next: Next::Sibling,
+            });
+        }
+        let options: Vec<Effect> = first.iter().chain(second.iter()).cloned().collect();
+        bound.extend(clear_pass(cx, &options, std::slice::from_ref(&name)));
+    }
+    let run = choose_between(cx, player, first, second, "Face a villainous choice.")?;
+    Ok(match run {
+        Run::Done {
+            events,
+            bound: chosen,
+            snapshots,
+            next,
+        } => {
+            // Only the length counts: one stand-in entry for each time the player faces the choice after this one.
+            let remaining = if again { left - 1 } else { left };
+            if remaining > 0 {
+                bound.push((name, vec![Target::Player(player); remaining]));
+            }
+            bound.extend(chosen);
+            Run::Done {
+                events,
+                bound,
+                snapshots,
+                next,
+            }
+        }
+        other => other,
+    })
 }
 
 /// `player` chooses one of the two lists, a public choice, and the step goes into it.

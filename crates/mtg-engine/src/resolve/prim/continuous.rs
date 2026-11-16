@@ -297,9 +297,12 @@ fn chosen_in(scope: &Scope<'_>, keyword: &Keyword) -> Keyword {
     };
     let fixed = |pred: &Pred| match (pred, chosen) {
         (Pred::ChosenColor, Chosen::Color(color)) => Pred::Color(*color),
-        (Pred::ChosenSubtype, Chosen::CreatureType(subtype) | Chosen::LandType(subtype)) => {
-            Pred::Subtype(subtype.clone())
-        }
+        (
+            Pred::ChosenSubtype,
+            Chosen::CreatureType(subtype)
+            | Chosen::LandType(subtype)
+            | Chosen::R6700PlaneswalkerType(subtype),
+        ) => Pred::Subtype(subtype.clone()),
         (Pred::ChosenSubtype, Chosen::CardType(kind)) => Pred::Type(*kind),
         _ => pred.clone(),
     };
@@ -535,6 +538,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         }
         Wanted::CantBlock => Modification::CantBlock,
         Wanted::DoesntUntap => Modification::DoesntUntap,
+        Wanted::R6700KeepsLastLoyalty => Modification::R6700KeepsLastLoyalty,
         Wanted::CantBeTurnedFaceUp => Modification::CantBeTurnedFaceUp,
         Wanted::CantBeBlocked => Modification::CantBeBlocked,
         Wanted::Goaded => Modification::Goaded {

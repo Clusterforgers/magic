@@ -85,6 +85,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::CantBeBlockedUnlessAttackingOwner
         | Modification::CantBlock
         | Modification::DoesntUntap
+        | Modification::R6700KeepsLastLoyalty
         | Modification::CantBeTurnedFaceUp
         | Modification::CantBeBlocked
         | Modification::CantBeBlockedBy { .. }
@@ -153,6 +154,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
         | Wanted::DoesntUntap
+        | Wanted::R6700KeepsLastLoyalty
         | Wanted::CantBeTurnedFaceUp
         | Wanted::CantBeBlocked
         | Wanted::CantBeBlockedBy(_)
@@ -229,6 +231,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
         | Wanted::DoesntUntap
+        | Wanted::R6700KeepsLastLoyalty
         | Wanted::CantBeTurnedFaceUp
         | Wanted::CantBeBlocked
         | Wanted::MinBlockers(_)

@@ -978,6 +978,14 @@ pub enum ReplaceWhen {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// A player would draw one or more cards by one instruction (an effect's draw, the draw step's): the replacement
+    /// applies to the whole instruction before any applies to a card drawn (the ruling of Quantum Riddler), so only
+    /// `Add` ("you draw that many cards plus one instead").
+    R6700Draws {
+        /// Who would draw.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
     /// A player would draw a card.
     Draw {
         /// Who would draw.
@@ -1062,6 +1070,8 @@ pub enum EntersChoice {
     CreatureType,
     /// A land type (CR 205.3i).
     LandType,
+    /// A planeswalker type (CR 205.3j).
+    R6700PlaneswalkerType,
     /// A player.
     Player,
     /// An opponent of the permanent's controller.

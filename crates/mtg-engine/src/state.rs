@@ -364,6 +364,9 @@ pub struct GameState {
     pub(crate) r5512_creature_cast_at: Option<u64>,
     /// The timestamp clock as each number was last rolled on a die this game (`r6401_history.rs`).
     pub(crate) r6401_rolled_at: BTreeMap<u32, u64>,
+    /// Each player's first set of coin flips of a turn: the turn's number and the spell or ability it was flipped for
+    /// (`r6700_flips.rs`).
+    pub(crate) r6700_flip_sets: BTreeMap<PlayerId, (u32, Option<ObjectId>)>,
     /// The "since your last turn" history (`r379_since.rs`); derived from the turn events and left out of the hash, so a
     /// game hashes as it did before it was kept.
     pub(crate) r379_since: crate::r379_since::Since,
@@ -1051,6 +1054,10 @@ impl Hash for GameState {
         // Likewise until a die is rolled.
         if !self.r6401_rolled_at.is_empty() {
             self.r6401_rolled_at.hash(state);
+        }
+        // Likewise until a coin is flipped.
+        if !self.r6700_flip_sets.is_empty() {
+            self.r6700_flip_sets.hash(state);
         }
         // Likewise a game in which no seat looked at its library by hand.
         if !self.looked_by_hand.is_empty() {

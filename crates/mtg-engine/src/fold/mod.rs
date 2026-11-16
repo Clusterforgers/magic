@@ -552,8 +552,11 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::ChosenAtRandom { .. }
         | Event::PlayersChosenAtRandom { .. }
         | Event::KindChosenAtRandom { .. }
-        | Event::Sought { .. }
-        | Event::CoinFlipped { .. } => {
+        | Event::Sought { .. } => {
+            c11e_draw_random(state, event);
+        }
+        Event::CoinFlipped { player, .. } => {
+            crate::r6700_flips::r6700_note_flip(state, *player);
             c11e_draw_random(state, event);
         }
         Event::Cycled { player, object, .. } => {

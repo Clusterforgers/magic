@@ -2832,7 +2832,12 @@ impl<'a> Scope<'a> {
             Pred::ChosenSubtype => {
                 matches!(
                     self.entered_choice(),
-                    Some(Chosen::CreatureType(_) | Chosen::LandType(_) | Chosen::CardType(_))
+                    Some(
+                        Chosen::CreatureType(_)
+                            | Chosen::LandType(_)
+                            | Chosen::CardType(_)
+                            | Chosen::R6700PlaneswalkerType(_)
+                    )
                 ) && self
                     .entered_choice()
                     .is_some_and(|chosen| Self::is_chosen(seen, chosen))
@@ -2885,7 +2890,9 @@ impl<'a> Scope<'a> {
             Chosen::Colors(colors) => colors
                 .iter()
                 .any(|color| seen.chars.colors.contains(*color)),
-            Chosen::CreatureType(subtype) | Chosen::LandType(subtype) => has_subtype(subtype),
+            Chosen::CreatureType(subtype)
+            | Chosen::LandType(subtype)
+            | Chosen::R6700PlaneswalkerType(subtype) => has_subtype(subtype),
             Chosen::LandTypes(types) => types.iter().any(has_subtype),
             Chosen::CardType(kind) => seen.chars.types.contains(*kind),
             Chosen::Name(name) => seen.card.is_some_and(|c| {

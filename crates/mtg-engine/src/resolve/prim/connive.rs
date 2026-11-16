@@ -12,7 +12,7 @@ use crate::counters::CountersChanged;
 use crate::events::Event;
 use crate::replace::{Processed, process};
 use crate::resolve::{Cx, ResolveError, Run};
-use crate::steps::draw;
+use crate::steps::draw_exact;
 use crate::wording;
 use crate::zones::Zone;
 
@@ -57,11 +57,12 @@ pub(super) fn connivances(
             player,
         });
         // Past an empty library one more draw is all that matters (CR 704.5b).
-        let times = count.min(state.zone(Zone::Library(player)).len() + 1);
+        let times = crate::replace::r6700_draws::r6700_draw_count(state, player, count)
+            .min(state.zone(Zone::Library(player)).len() + 1);
         for _ in 0..times {
             let nth = attempts.iter().filter(|who| **who == player).count() + 1;
             attempts.push(player);
-            if let Some(event) = draw(state, player, nth).into_iter().nth(nth - 1) {
+            if let Some(event) = draw_exact(state, player, nth).into_iter().nth(nth - 1) {
                 let unchanged = matches!(
                     process(state, vec![event.clone()], &[]),
                     Ok(Processed::Events(found)) if found == [event.clone()]

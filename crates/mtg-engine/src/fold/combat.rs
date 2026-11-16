@@ -63,6 +63,7 @@ fn damage_object(
     // Any damage from a source with deathtouch marks a creature for destruction (CR 704.5h).
     let deathtouched =
         amount > 0 && deathtouch && characteristics(state, id).is_some_and(|c| c.is_creature());
+    let keeps_last = walker && crate::r6700_flips::r6700_keeps_last_loyalty(state, id);
     let perm = state
         .objects
         .get_mut(&id)
@@ -82,11 +83,12 @@ fn damage_object(
         (walker, CounterKind::Loyalty),
         (battle, CounterKind::defense()),
     ] {
-        let removed = if is {
-            amount.min(perm.counters_of(&kind))
-        } else {
-            0
-        };
+        let held = perm.counters_of(&kind);
+        let mut removed = if is { amount.min(held) } else { 0 };
+        // "Instead all but one of those counters are removed" (Deification): only the result of the damage changes.
+        if keeps_last && kind == CounterKind::Loyalty && removed > 0 && removed == held {
+            removed -= 1;
+        }
         if removed > 0 {
             let delta =
                 -i32::try_from(removed).map_err(|_| invalid("too many counters removed"))?;

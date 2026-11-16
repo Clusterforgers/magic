@@ -2874,6 +2874,7 @@ impl<'a> Walker<'a> {
             | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
             | Modification::DoesntUntap
+            | Modification::R6700KeepsLastLoyalty
             | Modification::CantBeTurnedFaceUp
             | Modification::CantBeBlocked
             | Modification::BlockedByAll
@@ -6248,6 +6249,8 @@ impl Walker<'_> {
             | GameRule::ExtraVote(who)
             | GameRule::SkipExtraTurns(who)
             | GameRule::FlipTwoCoins(who)
+            | GameRule::R6700FirstFlipsHeads(who)
+            | GameRule::R6700VillainousAgain(who)
             | GameRule::ExtraDie(who)
             | GameRule::ExtraPlanarDie(who)
             | GameRule::PlaneswalkLookTwo(who)
@@ -6672,6 +6675,7 @@ impl Walker<'_> {
             | ReplaceWhen::Surveils { who }
             | ReplaceWhen::CopiesSpell { who }
             | ReplaceWhen::Learns { who }
+            | ReplaceWhen::R6700Draws { who }
             | ReplaceWhen::Draw { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
@@ -6691,6 +6695,11 @@ impl Walker<'_> {
         crate::r406_actions::r406_check(when, by, |problem| self.problem(problem));
         crate::r4708_actions::r4708_check(when, by, |problem| self.problem(problem));
         crate::r5516_learn::r5516_check(when, by, |problem| self.problem(problem));
+        if matches!(when, ReplaceWhen::R6700Draws { .. }) != matches!(by, ReplaceBy::Add(_))
+            && matches!(when, ReplaceWhen::R6700Draws { .. })
+        {
+            self.problem("a draw instruction is replaced only by drawing that many plus some more");
+        }
         if matches!(when, ReplaceWhen::CopiesSpell { .. })
             && !matches!(by, ReplaceBy::AddAmount(Amount::Fixed(n)) if *n > 0)
         {

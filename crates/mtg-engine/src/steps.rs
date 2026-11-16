@@ -257,6 +257,17 @@ pub(crate) fn draw(state: &GameState, player: PlayerId, count: usize) -> Vec<Eve
     if cant_draw(state, player) {
         return Vec::new();
     }
+    // "Draw that many plus one instead" replaces the instruction before the draws (Quantum Riddler).
+    let count = crate::replace::r6700_draws::r6700_draw_count(state, player, count);
+    draw_exact(state, player, count)
+}
+
+/// The draws of exactly `count` cards by `player`, after any replacement of the whole instruction: the cards from the
+/// top (or the bottom, by a rule) of the library, a draw from an empty library logged as such.
+pub(crate) fn draw_exact(state: &GameState, player: PlayerId, count: usize) -> Vec<Event> {
+    if cant_draw(state, player) {
+        return Vec::new();
+    }
     // "Can't draw more than one card each turn": the draws past the limit don't happen.
     let count = crate::rules::ep24_draws_left(state, player).map_or(count, |left| count.min(left));
     let library = state.zone(Zone::Library(player));

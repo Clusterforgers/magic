@@ -1,7 +1,7 @@
 {
   "oracle_id": "7fb88a5d-9b72-4da9-ade4-d09cadd7e1cb",
   "name": "Nuka-Nuke Launcher",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Nuka-Nuke Launcher",
@@ -10,16 +10,75 @@
         {
           "Static": {
             "affected": "Attached",
-            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }, { "AddKeyword": "Intimidate" }]
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": 3,
+                  "toughness": 0
+                }
+              },
+              {
+                "AddKeyword": "Intimidate"
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 145, "end": 289 }
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  {
+                    "Is": "Attached"
+                  }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "from": "Defending",
+                  "as": "defender"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "by": {
+                        "Bound": "defender"
+                      }
+                    }
+                  },
+                  "once": false,
+                  "until": {
+                    "R6700UntilEndOfTheirNextTurn": {
+                      "Bound": "defender"
+                    }
+                  },
+                  "effects": [
+                    {
+                      "PutCounters": {
+                        "on": {
+                          "Bound": "defender"
+                        },
+                        "counter": {
+                          "Other": "rad"
+                        },
+                        "count": 2
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
-        { "Keyword": { "Equip": "{3}" } }
+        {
+          "Keyword": {
+            "Equip": "{3}"
+          }
+        }
       ]
     }
   ]

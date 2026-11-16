@@ -172,6 +172,7 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
       CantAttack: "can't attack",
       CantBlock: "can't block",
       DoesntUntap: `${group ? "don't" : "doesn't"} untap during their controller's untap step`,
+      R6700KeepsLastLoyalty: `${group ? 'keep' : 'keeps'} one loyalty counter when damage would remove all of them`,
       CantBeBlocked: "can't be blocked",
       CantBeBlockedUnlessAttackingOwner:
         "can't be blocked unless it's attacking its owner or a permanent its owner controls",

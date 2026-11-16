@@ -45,8 +45,18 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     else {
         return Ok(Run::events(Vec::new()));
     };
+    let edgar = crate::r6700_flips::r6700_heads_won(state, player, cx.resolving.object, *until);
     // Krark's Thumb: two coins or more for one flip, one kept (`ep22_two_coins`).
-    let (call, side, coins) = if crate::rules::ep22_coins_per_flip(state, player) > 1 {
+    let (call, side, coins) = if edgar {
+        // Every coin comes up heads and the flip is won, whatever was called (Edgar, King of Figaro).
+        let thumbs = crate::rules::ep22_coins_per_flip(state, player);
+        let coins = if thumbs > 1 {
+            vec![CoinSide::Heads; usize::try_from(thumbs).unwrap_or(1)]
+        } else {
+            Vec::new()
+        };
+        (CoinSide::Heads, CoinSide::Heads, coins)
+    } else if crate::rules::ep22_coins_per_flip(state, player) > 1 {
         match super::ep22_two_coins::ep22_flip(cx, player)? {
             Ok(found) => (found.call, found.kept, found.coins),
             Err(asked) => return Ok(asked),

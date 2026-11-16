@@ -192,6 +192,7 @@ mod r6401_history;
 mod r6402_change_roll;
 mod r6402_dice_history;
 mod r6405_waterbend_x;
+mod r6700_pack;
 mod r6f;
 mod repeat_each;
 mod rmt0_chroma;

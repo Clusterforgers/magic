@@ -41,6 +41,7 @@ const RULES: Record<GivenRule, RuleWords> = {
   BlockerLimit: give('Block limit', 'Blockers', 'needs or allows only some blockers', 'plain'),
   BlocksAdditional: give('Extra blocks', 'More blocks', 'can block additional creatures', 'raise'),
   DoesntUntap: give("Doesn't untap", 'No untap', "doesn't untap", 'restrict'),
+  R6700KeepsLastLoyalty: give('Keeps loyalty', 'Last loyalty', 'damage leaves it one loyalty counter', 'raise'),
   CantBeTurnedFaceUp: give('Stays face down', 'Face down', "can't be turned face up", 'restrict'),
   LoseAbilities: give('Loses abilities', 'Blanked', 'loses all abilities', 'restrict'),
   LoseKeyword: give('Loses a keyword', 'No keyword', 'loses a keyword', 'restrict'),

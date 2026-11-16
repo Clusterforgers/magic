@@ -42,6 +42,8 @@ pub enum GivenRule {
     BlocksAdditional,
     /// The host doesn't untap in its controller's untap step.
     DoesntUntap,
+    /// Damage to the host leaves it at least one loyalty counter.
+    R6700KeepsLastLoyalty,
     /// The host can't be turned face up.
     CantBeTurnedFaceUp,
     /// The host loses all abilities.
@@ -148,6 +150,7 @@ impl Gives {
             | Modification::BlockedByAll => GivenRule::BlockerLimit,
             Modification::BlocksAdditional(_) => GivenRule::BlocksAdditional,
             Modification::DoesntUntap => GivenRule::DoesntUntap,
+            Modification::R6700KeepsLastLoyalty => GivenRule::R6700KeepsLastLoyalty,
             Modification::CantBeTurnedFaceUp => GivenRule::CantBeTurnedFaceUp,
             Modification::LoseAbilities | Modification::LoseAbilitiesExceptMana => {
                 GivenRule::LoseAbilities
