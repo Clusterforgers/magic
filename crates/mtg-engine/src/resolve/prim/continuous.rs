@@ -355,14 +355,12 @@ fn r6702_borrowed_with_triggers(
         let Some(object) = scope.state.object(donor.id) else {
             continue;
         };
-        for (index, body) in object.card().rules.iter().enumerate() {
-            if matches!(&**body, mtg_cards::ability::Ability::Triggered { .. }) {
-                found.push(Borrowed {
-                    donor: donor.id,
-                    index,
-                    body: Arc::clone(body),
-                });
-            }
+        for (index, body) in crate::ability_reader::r6702_lendable_triggers(object.card()) {
+            found.push(Borrowed {
+                donor: donor.id,
+                index,
+                body,
+            });
         }
     }
     Ok(found)

@@ -7424,7 +7424,9 @@ fn announces_x(cost: &Cost) -> bool {
         || cost.0.iter().any(|item| {
             matches!(
                 item,
-                CostItem::PayEnergy(Amount::X) | CostItem::PayLife(Amount::X)
+                CostItem::PayEnergy(Amount::X)
+                    | CostItem::PayLife(Amount::X)
+                    | CostItem::R6702CollectEvidenceX
             ) || r4710_among_x(item)
         })
 }

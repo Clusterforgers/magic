@@ -402,6 +402,7 @@ impl Cost {
             | CostItem::ExiledToGraveyard { count, .. }
             | CostItem::ToLibrary { count, .. } => *count == Amount::X,
             CostItem::OneOf(costs) => costs.iter().any(Cost::has_x),
+            CostItem::R6702CollectEvidenceX | CostItem::R6702ExileTotalX { .. } => true,
             _ => false,
         })
     }
@@ -485,6 +486,15 @@ mod tests {
     #[case::forage(Cost(vec![CostItem::Forage]), r#"["Forage"]"#)]
     #[case::waterbend(Cost(vec![CostItem::Waterbend(Amount::Fixed(3))]), r#"[{"Waterbend":3}]"#)]
     #[case::waterbend_x(Cost(vec![CostItem::Waterbend(Amount::X)]), r#"[{"Waterbend":"X"}]"#)]
+    #[case::evidence_x(Cost(vec![CostItem::R6702CollectEvidenceX]), r#"["R6702CollectEvidenceX"]"#)]
+    #[case::sacrifice_up_to(
+        Cost(vec![CostItem::R6702SacrificeUpTo { filter: Selector::default(), most: 3 }]),
+        r#"[{"R6702SacrificeUpTo":{"filter":[],"most":3}}]"#
+    )]
+    #[case::exile_total_x(
+        Cost(vec![CostItem::R6702ExileTotalX { filter: Selector(vec![Pred::Other]) }]),
+        r#"[{"R6702ExileTotalX":{"filter":["Other"]}}]"#
+    )]
     #[case::exiled_to_graveyard(
         Cost(vec![CostItem::ExiledToGraveyard { filter: Selector(vec![Pred::OwnedBy(Ref::Opponents)]), count: Amount::Fixed(2) }]),
         r#"[{"ExiledToGraveyard":{"filter":[{"OwnedBy":"Opponents"}],"count":2}}]"#
@@ -523,6 +533,20 @@ mod tests {
     fn x_is_found_in_mana_and_life_parts() {
         assert!(Cost(vec![mana("{X}{R}")]).has_x());
         assert!(Cost(vec![CostItem::PayLife(Amount::X)]).has_x());
+        assert!(Cost(vec![CostItem::R6702CollectEvidenceX]).has_x());
+        assert!(
+            Cost(vec![CostItem::R6702ExileTotalX {
+                filter: Selector::default()
+            }])
+            .has_x()
+        );
+        assert!(
+            !Cost(vec![CostItem::R6702SacrificeUpTo {
+                filter: Selector::default(),
+                most: 3
+            }])
+            .has_x()
+        );
         assert!(!Cost(vec![mana("{2}"), CostItem::Tap]).has_x());
     }
 }

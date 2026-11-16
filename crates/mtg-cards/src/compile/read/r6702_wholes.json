@@ -655,56 +655,6 @@
  ],
  [
   {
-   "Spell": {
-    "targets": [
-     {
-      "what": {
-       "Object": [
-        {
-         "Type": "Creature"
-        }
-       ]
-      },
-      "bounds": {
-       "min": 0,
-       "max": "X"
-      }
-     }
-    ],
-    "effects": [
-     {
-      "Tap": {
-       "what": {
-        "Target": 0
-       }
-      }
-     },
-     {
-      "R6702Distribute": {
-       "among": {
-        "Each": [
-         {
-          "Type": "Creature"
-         },
-         "Tapped",
-         {
-          "ControlledBy": "Opponents"
-         }
-        ]
-       },
-       "counter": {
-        "Other": "stun"
-       },
-       "count": 3
-      }
-     }
-    ]
-   }
-  },
-  "Tap up to X target creatures, then distribute three stun counters among any number of tapped creatures your opponents control."
- ],
- [
-  {
    "Loyalty": {
     "cost": "Zero",
     "effects": [

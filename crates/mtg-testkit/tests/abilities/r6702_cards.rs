@@ -100,9 +100,9 @@ fn r6702_baba_lysaga_counts_the_card_types_sacrificed(
 ) -> Result<(), ScriptError> {
     let (mine, theirs, drawn) = r6702_baba(seats, sacrificed)?;
     if rewarded {
-        assert_eq!((mine, theirs, drawn), (43, 37, 3));
+        assert_eq!((mine, theirs, drawn), (23, 17, 3));
     } else {
-        assert_eq!((mine, theirs, drawn), (40, 40, 0));
+        assert_eq!((mine, theirs, drawn), (20, 20, 0));
     }
     Ok(())
 }
@@ -165,16 +165,15 @@ fn r6702_galactus_attacks_an_opponent_with_the_most_life(
     Ok(())
 }
 
-/// Seat 0's Koh exiled the cards named; seat 0 pays 1 life to choose `chosen`: the abilities seat 0 may activate on Koh.
+/// Seat 0's Koh exiled the Elves; seat 0 pays 1 life to choose `chosen`: seat 0's life and the mana abilities of Koh.
 fn r6702_koh(seats: usize, chosen: Option<&str>) -> Result<(i32, usize), ScriptError> {
     let scenario = (0..seats).fold(
         Scenario::new(seats)
-            .battlefield(0, [ready(card("Llanowar Elves").unwrap())])
             .hand(0, [card("Koh, the Face Stealer").unwrap()])
             .battlefield(
                 0,
-                (0..6)
-                    .map(|_| ready(mtg_testkit::cards::swamp()))
+                std::iter::once(ready(card("Llanowar Elves").unwrap()))
+                    .chain((0..6).map(|_| ready(mtg_testkit::cards::swamp())))
                     .collect::<Vec<_>>(),
             )
             .at(1, 0, Step::Main1),
@@ -199,14 +198,20 @@ fn r6702_koh(seats: usize, chosen: Option<&str>) -> Result<(i32, usize), ScriptE
             }
         }
     }
-    let before = driver.offered_abilities("Koh, the Face Stealer")?.len();
     if let Some(chosen) = chosen {
         driver.begin_activation("Koh, the Face Stealer")?;
         r6702_settle_choosing(&mut driver, chosen)?;
     }
-    let after = driver.offered_abilities("Koh, the Face Stealer")?.len();
-    let _ = before;
-    Ok((driver.state().player(pid(0)).unwrap().life(), after))
+    let koh = driver.id_of("Koh, the Face Stealer")?;
+    let DecisionKind::Priority(options) = &driver.decision()?.kind else {
+        panic!("priority after the choice");
+    };
+    let mana = options
+        .mana_abilities
+        .iter()
+        .filter(|option| option.source.object == koh)
+        .count();
+    Ok((driver.state().player(pid(0)).unwrap().life(), mana))
 }
 
 /// Settles the stack, choosing the named card when a card choice is asked.
@@ -232,9 +237,9 @@ fn r6702_koh_gains_the_abilities_of_the_chosen_card(
 ) -> Result<(), ScriptError> {
     let (_, without) = r6702_koh(seats, None)?;
     let (life, with) = r6702_koh(seats, Some("Llanowar Elves"))?;
-    assert_eq!(life, 39);
-    // Koh's own "Pay 1 life" ability, then the Elves' mana ability as well.
-    assert_eq!(with, without + 1);
+    assert_eq!(life, 19);
+    // Koh has no mana ability of its own, and the Elves' once the Elves are chosen.
+    assert_eq!((without, with), (0, 1));
     Ok(())
 }
 
@@ -269,7 +274,7 @@ fn r6702_incinerator(seats: usize, x: u32) -> Result<(Vec<String>, usize), Scrip
     for _ in 0..80 {
         match &driver.decision()?.kind {
             DecisionKind::YesNo(_) => {
-                driver.answer(Answer::YesNo(x > 0))?;
+                driver.answer(Answer::YesNo(mtg_engine::choose::YesNoChoice(x > 0)))?;
             }
             DecisionKind::ChooseNumber(_) => {
                 driver.answer(Answer::ChooseNumber(NumberChoice::Number(x)))?;

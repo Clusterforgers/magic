@@ -148,7 +148,7 @@ pub(super) fn r301_x_without_picks(
     let reading: Vec<&Part> = price
         .parts
         .iter()
-        .filter(|part| part.r301_picks_by_x())
+        .filter(|part| part.r301_picks_by_x() || part.r6702_totals_x())
         .collect();
     if reading.is_empty() {
         return Vec::new();

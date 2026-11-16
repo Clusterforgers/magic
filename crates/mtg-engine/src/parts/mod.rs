@@ -650,9 +650,14 @@ impl Part {
         matches!(self, Part::X(inner) if matches!(**inner, Part::Life(_)))
     }
 
-    /// Whether the part picks by the X announced ("a red card with mana value X").
+    /// Whether the part picks by the X announced ("a red card with mana value X", "with total mana value X").
     pub(crate) fn r301_picks_by_x(&self) -> bool {
         matches!(self, Part::X(inner) if matches!(&**inner, Part::Pick(pick) if pick.reads_x))
+    }
+
+    /// Whether the part picks objects whose mana values add up to the X announced exactly.
+    pub(crate) fn r6702_totals_x(&self) -> bool {
+        matches!(self, Part::X(inner) if matches!(&**inner, Part::Pick(pick) if pick.r6702_total))
     }
 
     /// Whether the part is counters removed from among permanents, as many as the X announced ("remove any number of
@@ -683,6 +688,10 @@ impl Part {
                 counter, filter, ..
             } => among::most(payer, filter, counter.as_ref()),
             Part::Pick(pick) if pick.reads_x => pick.r301_most(payer),
+            // "With total mana value X": X reaches the mana value of every candidate together.
+            Part::Pick(pick) if pick.r6702_total => {
+                evidence::total_value(payer.state, &pick.candidates(payer))
+            }
             Part::Pick(pick) => u32::try_from(pick.candidates(payer).len()).unwrap_or(u32::MAX),
             Part::ExileTop(_) => exile_top::most(payer),
             Part::Exert

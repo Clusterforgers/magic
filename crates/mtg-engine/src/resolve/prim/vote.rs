@@ -490,15 +490,24 @@ mod tests {
     #[case::four_seats(4)]
     fn a_secret_vote_on_objects_offers_them_face_down(#[case] seats: usize) {
         let json = r#"{"Vote":{"options":{"Of":{"Each":[{"Type":"Creature"}]}},"secret":true,"tally":"votes"}}"#;
-        let game = game(seats);
+        let game = state(
+            vec![vec![]; seats],
+            std::iter::once(vec![creature("Source", 1, 1), creature("Bear", 2, 2)])
+                .chain(std::iter::repeat_n(vec![], seats - 1))
+                .collect(),
+        );
         let Run::Ask(decision) = play(&game, 0, json).unwrap() else {
             panic!("a vote asks the first voter");
         };
         let DecisionKind::ChooseOption(options) = decision.kind else {
             panic!("a secret vote on objects offers options");
         };
-        let source = game.zone(crate::zones::Zone::Battlefield)[0];
-        assert_eq!(options.options, [ChoiceOption::SecretObject(source)]);
+        let both: Vec<ChoiceOption> = game
+            .zone(crate::zones::Zone::Battlefield)
+            .iter()
+            .map(|id| ChoiceOption::SecretObject(*id))
+            .collect();
+        assert_eq!(options.options, both);
         assert_eq!(decision.player, PlayerId(0));
     }
 

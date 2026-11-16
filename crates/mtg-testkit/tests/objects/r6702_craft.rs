@@ -20,11 +20,12 @@ fn r6702_crafted(seats: usize, materials: &[&str]) -> Result<(Driver, ObjectId),
         Scenario::new(seats)
             .battlefield(
                 0,
-                [ready(
+                std::iter::once(ready(
                     card("Altar of the Wretched // Wretched Bonemass").unwrap(),
-                )],
+                ))
+                .chain((0..4).map(|_| ready(swamp())))
+                .collect::<Vec<_>>(),
             )
-            .battlefield(0, (0..4).map(|_| ready(swamp())).collect::<Vec<_>>())
             .graveyard(
                 0,
                 [
@@ -37,12 +38,23 @@ fn r6702_crafted(seats: usize, materials: &[&str]) -> Result<(Driver, ObjectId),
         |scenario, seat| scenario.library(seat, vec![mountain(); 8]),
     );
     let mut driver = Driver::from_scenario(scenario)?;
-    let abilities = driver.offered_abilities("Altar of the Wretched")?;
+    let altar = "Altar of the Wretched";
+    let abilities = driver.offered_abilities(altar)?;
     assert!(!abilities.is_empty(), "the craft ability is offered");
-    driver.begin_activation("Altar of the Wretched")?;
+    driver.begin_activation(altar)?;
     for _ in 0..60 {
         let decision = driver.decision()?.clone();
         match &decision.kind {
+            // Craft with one or more creatures: X is the number of materials.
+            DecisionKind::ChooseNumber(_) => {
+                let x = u32::try_from(materials.len()).unwrap();
+                driver.answer(Answer::ChooseNumber(
+                    mtg_engine::choose::NumberChoice::Number(x),
+                ))?;
+            }
+            DecisionKind::PayMana(_) => {
+                driver.answer(Answer::PayMana(mtg_engine::decision::PayChoice::Auto))?;
+            }
             DecisionKind::ChooseCards(options) => {
                 let taken: Vec<ObjectId> = options
                     .from
@@ -67,8 +79,9 @@ fn r6702_crafted(seats: usize, materials: &[&str]) -> Result<(Driver, ObjectId),
         .iter()
         .copied()
         .find(|id| {
-            mtg_engine::characteristics(driver.state(), *id)
-                .is_some_and(|chars| chars.name == "Wretched Bonemass")
+            let object = driver.state().object(*id).unwrap();
+            object.card().name.contains("Bonemass")
+                || object.whole_card().name.contains("Altar of the Wretched")
         })
         .expect("the Bonemass is on the battlefield");
     Ok((driver, bonemass))
@@ -86,17 +99,15 @@ fn r6702_bonemass_is_the_total_of_its_materials(
     let (driver, bonemass) = r6702_crafted(seats, materials)?;
     let chars = mtg_engine::characteristics(driver.state(), bonemass).unwrap();
     assert_eq!(chars.power.zip(chars.toughness), Some(size));
-    let has = |wanted: &Keyword| chars.keywords.contains(wanted);
+    let held = mtg_engine::keywords::keywords_of(driver.state(), bonemass);
+    let has = |wanted: &Keyword| held.contains(&wanted);
     let angel = materials.contains(&"Serra Angel");
     let knight = materials.contains(&"Black Knight");
     assert_eq!(has(&Keyword::Flying), angel);
     assert_eq!(has(&Keyword::Vigilance), angel);
     assert_eq!(has(&Keyword::FirstStrike), knight);
     assert_eq!(
-        chars
-            .keywords
-            .iter()
-            .any(|k| matches!(k, Keyword::Protection(_))),
+        held.iter().any(|k| matches!(k, Keyword::Protection(_))),
         knight
     );
     assert!(!has(&Keyword::Trample));

@@ -116,3 +116,102 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .collect();
     Ok(Run::events(events))
 }
+
+#[cfg(test)]
+mod tests {
+    //! Goal: counters are distributed as the effect resolves: the controller picks the permanents (none asked for a lone
+    //! one), then the share of each but the last, at least one each; the last takes the rest, and nothing is put when
+    //! nothing can hold them.
+    use mtg_core::ids::PlayerId;
+    use rstest::rstest;
+
+    use super::*;
+    use crate::fixtures::{creature, state};
+    use crate::resolve::{Resolving, Scope};
+    use crate::state::GameState;
+
+    const DISTRIBUTE: &str = r#"{"R6702Distribute":{"among":{"Each":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]},"counter":{"Other":"stun"},"count":3}}"#;
+
+    fn game(theirs: usize) -> GameState {
+        state(
+            vec![vec![], vec![]],
+            vec![
+                vec![creature("Source", 1, 1)],
+                (0..theirs)
+                    .map(|at| creature(&format!("Foe {at}"), 2, 2))
+                    .collect(),
+            ],
+        )
+    }
+
+    fn play(game: &GameState, journal: Vec<(PlayerId, Choice)>) -> Result<Run, ResolveError> {
+        let source = game.object(game.zone(Zone::Battlefield)[0]).unwrap();
+        let resolving = Resolving {
+            journal,
+            ..Resolving::begin(source.id())
+        };
+        let cx = Cx {
+            scope: Scope::announcing(game, PlayerId(0), source.reference()),
+            resolving: &resolving,
+        };
+        run(&cx, &serde_json::from_str(DISTRIBUTE).unwrap())
+    }
+
+    fn shares(run: Run) -> Vec<i32> {
+        let Run::Done { events, .. } = run else {
+            panic!("the distribution is done");
+        };
+        events
+            .into_iter()
+            .map(|event| match event {
+                Event::CountersChanged(changed) => changed.delta,
+                other => panic!("unexpected {other:?}"),
+            })
+            .collect()
+    }
+
+    #[test]
+    fn a_lone_permanent_takes_every_counter_unasked() {
+        assert_eq!(shares(play(&game(1), Vec::new()).unwrap()), [3]);
+    }
+
+    #[test]
+    fn nothing_to_hold_them_is_no_event() {
+        assert!(shares(play(&game(0), Vec::new()).unwrap()).is_empty());
+    }
+
+    #[rstest]
+    #[case::two_then_one(2, Some(2), &[2, 1])]
+    #[case::one_then_two(2, Some(1), &[1, 2])]
+    #[case::one_each_unasked(3, None, &[1, 1, 1])]
+    fn the_shares_are_asked_for_all_but_the_last(
+        #[case] chosen: usize,
+        #[case] first: Option<u32>,
+        #[case] want: &[i32],
+    ) {
+        let game = game(3);
+        let foes: Vec<ObjectId> = game.zone(Zone::Battlefield)[1..=chosen].to_vec();
+        let mut journal = vec![(PlayerId(0), Choice::Cards(foes))];
+        let asked = play(&game, journal.clone()).unwrap();
+        match first {
+            Some(share) => {
+                assert!(matches!(asked, Run::Ask(_)), "the first share is asked");
+                journal.push((PlayerId(0), Choice::Number(share)));
+                assert_eq!(shares(play(&game, journal).unwrap()), want);
+            }
+            None => assert_eq!(shares(asked), want),
+        }
+    }
+
+    #[test]
+    fn another_effect_is_refused_by_name() {
+        let game = game(1);
+        let source = game.object(game.zone(Zone::Battlefield)[0]).unwrap();
+        let resolving = Resolving::begin(source.id());
+        let cx = Cx {
+            scope: Scope::announcing(&game, PlayerId(0), source.reference()),
+            resolving: &resolving,
+        };
+        assert!(run(&cx, &serde_json::from_str(r#"{"Draw":{}}"#).unwrap()).is_err());
+    }
+}

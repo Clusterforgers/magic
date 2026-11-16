@@ -26,11 +26,10 @@ fn r6702_craft_materials(state: &GameState, id: ObjectId) -> Vec<ObjectRef> {
     let Some(ability) = state.object(resolving.object) else {
         return Vec::new();
     };
-    let crafts = ability.ability.as_ref().is_some_and(|held| {
-        held.source.id == id
-            && matches!(&*held.rules, mtg_cards::ability::Ability::Activated { cost, .. }
-                if cost.0.iter().any(|item| matches!(item, mtg_cards::cost::CostItem::Craft { .. })))
-    });
+    let crafts = ability
+        .ability
+        .as_ref()
+        .is_some_and(|held| crate::ability_reader::r6702_crafts(held, id));
     if !crafts || state.object(id).map(GameObject::zone) != Some(Zone::Exile) {
         return Vec::new();
     }

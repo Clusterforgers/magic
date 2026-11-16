@@ -11,7 +11,7 @@ use mtg_engine::choose::CardsChoice;
 use mtg_engine::decision::{Answer, DecisionKind, PriorityAction};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_testkit::cards::{free_creature, mountain};
+use mtg_testkit::cards::{free_creature, mountain, swamp};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
@@ -65,7 +65,7 @@ fn r6702_take(driver: &mut Driver, names: &[&str]) -> Result<(), ScriptError> {
     Ok(())
 }
 
-/// Seat 0 casts the named card face down with three Mountains, beside a Wolf, a Bear and a Gargoyle of
+/// Seat 0 casts the named card face down (with lands enough to cast it face up too), beside a Wolf, a Bear and a Gargoyle of
 /// protection from black, and gets priority back with the stack empty.
 fn r6702_face_down(seats: usize, name: &str, graveyard: &[&str]) -> Result<Driver, ScriptError> {
     let mut gargoyle = (*free_creature("Gargoyle", 2, 2)).clone();
@@ -86,6 +86,9 @@ fn r6702_face_down(seats: usize, name: &str, graveyard: &[&str]) -> Result<Drive
                     ready(mountain()),
                     ready(mountain()),
                     ready(mountain()),
+                    ready(swamp()),
+                    ready(swamp()),
+                    ready(swamp()),
                     ready(free_creature("Wolf", 2, 2)),
                     ready(free_creature("Bear", 2, 2)),
                     ready(std::sync::Arc::new(gargoyle)),
@@ -140,9 +143,16 @@ fn r6702_gift_of_doom_is_attached_as_it_turns_face_up(
     );
     if let Some(host) = host {
         let bear = driver.id_of(host)?;
-        let chars = mtg_engine::characteristics(state, bear).unwrap();
-        assert!(chars.keywords.contains(&Keyword::Deathtouch));
-        assert!(chars.keywords.contains(&Keyword::Indestructible));
+        assert!(mtg_engine::keywords::has_keyword(
+            state,
+            bear,
+            &Keyword::Deathtouch
+        ));
+        assert!(mtg_engine::keywords::has_keyword(
+            state,
+            bear,
+            &Keyword::Indestructible
+        ));
         assert!(state.zone(Zone::Battlefield).contains(&gift));
     } else {
         assert!(
@@ -172,7 +182,7 @@ fn r6702_deathmist_raptor_returns_when_a_permanent_turns_face_up(
     for _ in 0..20 {
         match &driver.decision()?.kind {
             DecisionKind::YesNo(_) => {
-                driver.answer(Answer::YesNo(true))?;
+                driver.answer(Answer::YesNo(mtg_engine::choose::YesNoChoice(true)))?;
             }
             // The first option returns it face up, the second face down.
             DecisionKind::ChooseOption(options) => {
@@ -187,8 +197,11 @@ fn r6702_deathmist_raptor_returns_when_a_permanent_turns_face_up(
             }
         }
     }
-    let raptor = driver.id_of("Deathmist Raptor")?;
-    let object = driver.state().object(raptor).unwrap();
+    let object = driver
+        .state()
+        .objects()
+        .find(|object| object.whole_card().name == "Deathmist Raptor")
+        .unwrap();
     assert_eq!(object.zone(), Zone::Battlefield);
     assert_eq!(object.face_down().is_none(), face_up);
     Ok(())
