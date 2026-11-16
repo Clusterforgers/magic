@@ -16,6 +16,8 @@ import type { Regions, SeatPlan } from './layout'
 import type { PlayState } from '@/play/store'
 import type { PlayerId } from '@/protocol/generated'
 import { bossSplitOf } from './bossRows'
+import type { BossSplit } from './bossSplit'
+import { GROW_SHARE, padded } from './holdFit'
 import { handIdle } from './handIdle'
 import { handSeat } from './selectors'
 import { battlefieldStacks } from './rowStacks'
@@ -115,6 +117,7 @@ export function splitRegions(
   reserve = 0,
   head = 0,
   overhang = reserve,
+  held: HeldRows | null = null,
 ): Regions {
   // Boss mode splits three rows by what each shows (`splitBoss`); a phone's tiles and a board-less call use the two rows.
   if (seats.shape === 'boss' && !regions.phone && seats.tiles.length === 0 && counts.allies !== undefined) {
@@ -124,6 +127,15 @@ export function splitRegions(
       { own: counts.own, theirs: counts.theirs, allies: counts.allies, ownReady: counts.ownReady ?? true },
       finite(reserve),
       finite(overhang),
+      held?.band === undefined || held.bossCard === undefined || held.heroCard === undefined
+        ? null
+        : {
+            opponents: held.opponents,
+            own: held.own,
+            band: held.band,
+            bossCard: held.bossCard,
+            heroCard: held.heroCard,
+          },
     )
     const party = { band: split.band, bossCard: split.bossCard, heroCard: split.heroCard, shares }
     const rows = {
@@ -136,21 +148,24 @@ export function splitRegions(
   }
   const frames = boardFrames(regions, seats)
   const theirChrome = theirChromeOf(frames.theirs.chrome, head)
-  const split = splitBoards({
-    room: regions.opponents + regions.own,
-    ownChrome: frames.own.chrome,
-    theirChrome: theirChrome + finite(reserve),
-    theirFloor: podColumnFloor(regions, seats, overhang),
-    theirRows: frames.theirs.rows,
-    theirRowChrome: theirChrome,
-    theirLead: theirChrome - frames.theirs.chrome,
-    theirScale: seats.shape === 'columns' ? GRID_THEIR_SCALE : THEIR_SCALE,
-    ownCrowd: seats.shape === 'columns' && !regions.phone ? OWN_CROWD_PX : 0,
-    ownWidth: frames.own.width,
-    theirWidth: frames.theirs.width,
-    own: counts.own,
-    theirs: counts.theirs,
-  })
+  const split = holdSplit(
+    {
+      room: regions.opponents + regions.own,
+      ownChrome: frames.own.chrome,
+      theirChrome: theirChrome + finite(reserve),
+      theirFloor: podColumnFloor(regions, seats, overhang),
+      theirRows: frames.theirs.rows,
+      theirRowChrome: theirChrome,
+      theirLead: theirChrome - frames.theirs.chrome,
+      theirScale: seats.shape === 'columns' ? GRID_THEIR_SCALE : THEIR_SCALE,
+      ownCrowd: seats.shape === 'columns' && !regions.phone ? OWN_CROWD_PX : 0,
+      ownWidth: frames.own.width,
+      theirWidth: frames.theirs.width,
+      own: counts.own,
+      theirs: counts.theirs,
+    },
+    held,
+  )
   if (!regions.phone) return withSplit(regions, split, theirChrome + BOARD_KEEP_PX)
   // A phone's sheet may lie over the opponents' cards, never over their pods, tiles or the boss's abilities; a head
   // taller than the sheet's usual keep (a boss's bar and pod) takes the excess from your row while a sheet stands up.
@@ -370,4 +385,52 @@ export function withSplit(regions: Regions, split: BoardSplit, keep = 0): Region
       regions.phone ? keep : 0,
     ),
   }
+}
+
+/** Without a fit a held split keeps its rows while the fresh one lies within this share of the room of them. */
+export const SPLIT_DRIFT_SHARE = 0.08
+
+/** The rows a split drew last, which the next split holds where they still serve (`holdSplit`). */
+export type HeldRows = Pick<BoardSplit, 'opponents' | 'own'> &
+  Partial<Pick<BossSplit, 'band' | 'bossCard' | 'heroCard'>>
+
+/**
+ * `splitBoards`, holding the rows of `held` while the room is the same and both rows still fit their boards at the
+ * floor, unless a fresh split gives a board a card `GROW_SHARE` larger even with one permanent more in every lane
+ * (clear room, so the next permanent does not split back): one permanent more or less then moves no row. Rows that no
+ * longer fit give way to the fresh split, or, where that has no fit either, are held while it lies within
+ * `SPLIT_DRIFT_SHARE` of the room of them.
+ */
+export function holdSplit(
+  input: SplitInput,
+  held: HeldRows | null,
+  limits: LaneLimits = LANE_LIMITS,
+): BoardSplit {
+  const fresh = splitBoards(input, limits)
+  const room = finite(input.room)
+  if (held === null || Math.abs(held.opponents + held.own - room) > 0.5) return fresh
+  const least = room * MIN_ROW_SHARE
+  const kept = { ...fresh, opponents: held.opponents, own: held.own }
+  const { at, rungs } = ladderOf(limits)
+  const rows = Math.max(1, Math.floor(finite(input.theirRows ?? 1)))
+  const ownFits = (rung: number): boolean =>
+    laneHeight(input.ownWidth, input.own, at(rung), limits) + finite(input.ownChrome) <= held.own
+  const theirNeed = (rung: number): number =>
+    Math.max(0, ...input.theirs.map((counts) => laneHeight(input.theirWidth, counts, at(rung), limits)))
+  const theirFits = (rung: number): boolean =>
+    rows * theirNeed(rung) + finite(input.theirChrome) + (rows - 1) * finite(input.theirRowChrome ?? 0) <=
+    held.opponents
+  const floored = held.opponents >= Math.min(fresh.opponents, finite(input.theirFloor ?? 0))
+  if (!ownFits(0) || !theirFits(0) || !floored || held.own < least || held.opponents < least) {
+    const near = Math.abs(fresh.opponents - held.opponents) <= room * SPLIT_DRIFT_SHARE
+    return fresh.ownCard === 0 && near && held.own >= least && held.opponents >= least ? kept : fresh
+  }
+  const ownCard = at(highestRung(rungs, ownFits))
+  const theirCard = at(highestRung(rungs, theirFits))
+  const roomy = splitBoards({ ...input, own: padded(input.own), theirs: input.theirs.map(padded) }, limits)
+  const better = (card: number, now: number, more: number): boolean =>
+    card * (1 + GROW_SHARE) < now && card * (1 + GROW_SHARE) < more
+  if (better(ownCard, fresh.ownCard, roomy.ownCard) || better(theirCard, fresh.theirCard, roomy.theirCard))
+    return fresh
+  return { ...kept, ownCard, theirCard }
 }

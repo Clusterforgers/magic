@@ -88,8 +88,8 @@ export function TableGrid({
         className="felt grid min-h-0 min-w-0"
       >
         <Area area="bar">{bar}</Area>
-        {/* The prompt sheet of the shared strip grows up into this area; its room is kept free (`useSheetOverhang`). */}
-        <Area area="opponents" className="px-2 pt-2 pb-[calc(0.5rem+var(--sheet-overhang,0px))]">
+        {/* The prompt sheet of the shared strip grows up over this area as an overlay: the boards under it never move. */}
+        <Area area="opponents" className="px-2 pt-2 pb-2">
           {opponents}
         </Area>
         <Area area="shared" className="px-2">

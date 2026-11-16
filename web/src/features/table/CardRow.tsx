@@ -12,6 +12,7 @@ import { NO_GHOSTS } from './fx/model'
 import type { Ghost } from './fx/model'
 import type { RowEntry } from './rowStacks'
 import { TuckedCard } from './TuckedCard'
+import { useFlip } from './useFlip'
 import { objectIdOf, useRoving } from './useRoving'
 
 interface CardRowProps {
@@ -128,6 +129,8 @@ export function CardRow({
 }: CardRowProps) {
   const roving = useRoving(ids)
   const list = useRef<HTMLUListElement>(null)
+  // A card a redraw puts elsewhere (a neighbour left, the lane wrapped) slides there instead of jumping.
+  useFlip(list)
   const focusAfter = useRef<ObjectId | null>(null)
   const entryOf = useMemo(() => entriesById(stacks), [stacks])
   const tuckedOf = useMemo(() => tuckedById(stacks), [stacks])
@@ -221,6 +224,7 @@ export function CardRow({
             return (
               <li
                 key={item}
+                data-flip={item}
                 className={itemClass}
                 style={lifted === undefined ? undefined : { paddingTop: lifted.lift }}
               >
@@ -240,6 +244,7 @@ export function CardRow({
           return (
             <li
               key={item}
+              data-flip={item}
               data-stack-open={entry !== undefined && entry.ids[0] === item ? entry.ids.length : undefined}
               className={cn(itemClass, closes && 'relative')}
               style={lifted === undefined ? undefined : { paddingTop: lifted.lift }}
