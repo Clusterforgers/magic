@@ -516,7 +516,10 @@ fn main() {
                             .unwrap()
                             .id;
                         run.at = Some(node);
-                        let plan = run.fight_plan(content).unwrap().unwrap();
+                        // `DELVE_SIM_RANK` scales the boss as the one at that place on the ladder.
+                        let rank = std::env::var("DELVE_SIM_RANK")
+                            .map_or(run.boss_rank(node), |r| r.parse().unwrap());
+                        let plan = run.fight_plan_at(content, rank).unwrap().unwrap();
                         let t = Instant::now();
                         let fought = fight(&plan, &vec![Vec::new(); heroes], seed, hero_level);
                         println!(

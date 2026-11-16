@@ -152,6 +152,10 @@ export function delveView(over: Partial<DelveView> = {}, runOver: Partial<Run> =
     host: true,
     me: 0,
     run: run(runOver),
+    boss_lives: [
+      ['skrix_nest', 18],
+      ['grimgut', 33],
+    ],
     deck_problems: [],
     ...over,
   }

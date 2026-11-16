@@ -195,7 +195,16 @@ export function devView(state: DevState): DelveView {
         }
       : undefined
   return delveView(
-    { seed: 'EMBER-7Q2K', boss: 'hollow', ...(fight === undefined ? {} : { fight }) },
+    {
+      seed: 'EMBER-7Q2K',
+      boss: 'hollow',
+      boss_lives: [
+        ['skrix_nest', 40],
+        ['hollow', 140],
+        ['grimgut', 170],
+      ],
+      ...(fight === undefined ? {} : { fight }),
+    },
     {
       map,
       heat: 1,

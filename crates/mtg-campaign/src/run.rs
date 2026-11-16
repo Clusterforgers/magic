@@ -1010,8 +1010,37 @@ impl Run {
             .count()
     }
 
+    /// Each boss of the ladder by id with the life it starts its fight with against this party, at its rank and the
+    /// run's Heat.
+    pub fn boss_lives(&self, content: &Content) -> Vec<(String, i32)> {
+        let Ok(theme) = self.theme(content) else {
+            return Vec::new();
+        };
+        let heroes = self.heroes.len();
+        self.map
+            .nodes
+            .iter()
+            .filter_map(|n| {
+                let boss = theme.boss(n.boss.as_deref()?)?;
+                let scale = Scale::new(heroes, self.heat, self.boss_rank(n.id));
+                Some((boss.id.clone(), scale.life(boss)))
+            })
+            .collect()
+    }
+
     /// The plan of the fight the party is in, if it is in one.
     pub fn fight_plan(&self, content: &Content) -> Result<Option<FightPlan>, CampaignError> {
+        let rank = self.at.map_or(0, |node| self.boss_rank(node));
+        self.fight_plan_at(content, rank)
+    }
+
+    /// The plan of the fight the party is in, if it is in one, with its boss scaled as the boss at `rank` on the
+    /// ladder (the simulator measures each boss at each rank).
+    pub fn fight_plan_at(
+        &self,
+        content: &Content,
+        rank: usize,
+    ) -> Result<Option<FightPlan>, CampaignError> {
         if !matches!(self.status, Status::Fight { .. }) {
             return Ok(None);
         }
@@ -1039,16 +1068,15 @@ impl Run {
                 relics: h.relics.clone(),
             })
             .collect();
-        let scale = Scale::new(heroes.len(), self.heat);
+        let scale = Scale::new(heroes.len(), self.heat, rank);
         let life = scale.life(boss);
         let schemes = Stream::new(self.seed, "schemes", u64::from(node), 0)
             .pick(&theme.schemes, theme.schemes.len());
         let mut rules = scale.rules(boss);
-        rules.extend(
-            Stream::new(self.seed, "modifier", u64::from(node), 0).pick(&theme.modifiers, 1),
-        );
-        if self.boss_rank(node) >= 1 && !boss.relic.is_empty() {
-            rules.push(boss.relic.clone());
+        if scale.tier().modifier {
+            rules.extend(
+                Stream::new(self.seed, "modifier", u64::from(node), 0).pick(&theme.modifiers, 1),
+            );
         }
         let minions = scale
             .minions(theme, boss)

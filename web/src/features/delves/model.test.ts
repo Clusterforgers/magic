@@ -1,10 +1,12 @@
-// Goal: the run page marks each room of the ladder cleared, current, next or locked through every stage of a run, names who voted for which camp, gives a boss its life for the party and Heat, tones life bars, words the stage, knows a hero ready once they bring a deck, reads how the last fight was lost, tells the first boss from a later one for the life the party regroups at, and lists a boss's Enrage, modifier and relic in the intro by their content kinds.
+// Goal: the run page marks each room of the ladder cleared, current, next or locked through every stage of a run, names who voted for which camp, gives a boss its life for the party from the ladder the run lists, words each Heat as its tier, tones life bars, words the stage, knows a hero ready once they bring a deck, reads how the last fight was lost, tells the first boss from a later one for the life the party regroups at, and lists a boss's Enrage, modifier and relic in the intro by their content kinds.
 import { describe, expect, it } from 'vitest'
 import type { Run } from '@/protocol/generated'
 import { hero, run } from './fakeDelves'
 import {
   atFirstBoss,
   bossLife,
+  heatTier,
+  heatWords,
   introAbilities,
   isReady,
   lastFight,
@@ -81,13 +83,28 @@ it('names the voters of each room', () => {
   expect(votersOf(r, 3)).toEqual([])
 })
 
+it('reads a boss life for the party from the ladder the run lists', () => {
+  const view = {
+    boss_lives: [
+      ['skrix', 18],
+      ['grimgut', 33],
+    ] as [string, number][],
+  }
+  expect(bossLife(view, 'grimgut')).toBe(33)
+  expect(bossLife(view, 'vex')).toBeUndefined()
+})
+
 it.each([
-  [[30, 8], 1, 0, 30],
-  [[30, 8], 4, 0, 54],
-  [[30, 8], 1, 1, 36],
-  [[30, 8], 2, 2, 46],
-] as const)('a boss of life %j with %i heroes at Heat %i has %i life', (life, heroes, heat, expected) => {
-  expect(bossLife(life, heroes, heat)).toBe(expected)
+  [0, 'Heat 0 — Casual: any deck can win with some luck'],
+  [1, 'Heat 1 — Seasoned: needs a deck that suits the format'],
+  [2, 'Heat 2 — Heroic: needs a team of decks that work together and suit the format'],
+] as const)('words Heat %i as its tier', (heat, words) => {
+  expect(heatWords(heat)).toBe(words)
+  expect(heatTier(heat).heat).toBe(heat)
+})
+
+it('reads a Heat beyond the table as the highest tier', () => {
+  expect(heatTier(5).name).toBe('Heroic')
 })
 
 it.each([

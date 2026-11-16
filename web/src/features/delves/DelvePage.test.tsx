@@ -87,6 +87,9 @@ describe('the ladder and the fight', () => {
     expect(within(shop).getByText('Your vote')).toBeInTheDocument()
     expect(screen.getByRole('listitem', { name: /^Boss: Skrix, the Rat Queen, Cleared/ })).toBeInTheDocument()
     expect(screen.getByRole('listitem', { name: /^Final boss: Grimgut, Locked/ })).toBeInTheDocument()
+    // Each boss shows the life it starts with against this party at its place on the ladder.
+    const final = screen.getByRole('listitem', { name: /^Final boss: Grimgut/ })
+    expect(within(final).getByText('33 life')).toBeInTheDocument()
   })
 
   const fight = {

@@ -32,19 +32,19 @@ A fallen hero keeps playing: it haunts the fight with small, clear choices and c
 - Ways back: Rise Again; the Phoenix Feather relic (pay 6 life once each fight: every fallen teammate returns with 8 life and four cards); a won fight brings every Spirit back at 10.
 - A Spirit is asked at priority only where its haunts matter (`docs/server.md`, Windows): the party's upkeep and main phases with an empty stack (Rise Again, spending ectoplasm), the boss side's beginning of combat (Hinder, Howl) and its declare attackers step when it attacks the party (Ward), and whenever an object of the boss side is on the stack. Spells and abilities of its teammates never ask it and every other step is passed for; a stop of its own asks anywhere, and Full Control asks at every window. The Spirit panel says so.
 - Bot Spirits (`brain/haunt.rs`) rise as soon as they can, Ward when 4 or more power attacks the party, and before an opponent's combat Hinder its biggest creature (power 4 or more, 2 ectoplasm held) or Howl (4 held). A bot holding the Phoenix Feather uses it while it has 14 life or more.
-- Measured with two Hard heroes at Heat 0 (`fights`): the fallen hero spends its Spirit turns on 3 haunt actions a fight and never reaches Rise Again, so haunting helps at the margin and does not decide a fight.
+- Measured with two Hard heroes against the boss at Heat 1, rank 2 (`fights`): the fallen hero spends its Spirit turns on 3 haunt actions a fight and never reaches Rise Again, so haunting helps at the margin and does not decide a fight.
 
 ## Bosses
 
 - A boss (`content/<theme>.json`) has a 40-card deck of verified real cards, a brain (Hard by default), a base life and life per hero, an opening hand, one passive (`rules`), an Enrage (`enrage`), two phases, a relic of its own (`relic`) and an art card: a real card (`art.card`, `art.oracle_id`) whose art crop pictures it on the descent and the fight panel.
 - Its advantages are open: its passive, Enrage, modifier and relic are emblems in its command zone from the start; each phase is an emblem that arrives when its life falls to a share of its starting life (66 % and 33 %). The table shows the boss's phase and the next one on the seat's chips.
-- Enrage: each boss's own, from the heroes' seventh turn (`turn` on the card, read by the boss bar and the intro). It ends a stalled fight in the boss's manner: a growing swarm, growing counters, a growing toll or a growing attack.
-- Modifier: one buff drawn from the theme's pool (`modifiers`) for each fight, from the seed and the room, so a retried fight keeps it.
-- Relic: from the second boss of the ladder on (`Run::boss_rank`), the boss brings its own risky relic, which helps the boss and may help the heroes too.
+- Enrage: each boss's own, from the heroes' seventh turn at Heat 1 (ninth at Heat 0, sixth at Heat 2; `turn` on the card, read by the boss bar and the intro). It ends a stalled fight in the boss's manner: a growing swarm, growing counters, a growing toll or a growing attack.
+- Modifier: one buff drawn from the theme's pool (`modifiers`) for each fight, from the seed and the room, so a retried fight keeps it; the first boss at Heat 0 draws none.
+- Relic: as the Difficulty table says (from the second boss at Heat 1 and 2, the third at Heat 0), the boss brings its own risky relic, which helps the boss and may help the heroes too.
 - Every boss has Escalation (each of its end steps, every hero loses 1 life for every four turns it has taken).
 - Drain rule: a boss has at most one life loss with no way out, Escalation. Every other life loss of a boss card, phase, scheme, modifier or relic happens only unless the hero pays (mana or a discard), and its text says so; a content test reads each card's abilities and enforces it.
 
-| Boss | Passive | Enrage (from the heroes' turn 7) | Relic (from the second boss) |
+| Boss | Passive | Enrage (from the heroes' turn 7 at Heat 1) | Relic (Difficulty) |
 |---|---|---|---|
 | Skrix | a Rat each upkeep | Rats each upkeep: the heroes' turns beyond six | Rat King's Crown: Rats get +1/+1 |
 | Mossjaw | its creatures +1/+1 and trample | a +1/+1 counter on each of its creatures each upkeep | Heartwood Bark: all creatures +0/+2 |
@@ -71,7 +71,7 @@ The boss's side spreads its pressure over the party (`mtg-engine`, `spotlight.rs
 
 - Lull: the boss's side's creatures can't attack and its schemes wait until the boss's third turn, so the heroes have three turns before the first attack. The Omen shows the first scheme from the start.
 - The boss bots hold back sweepers (wipes, and damage or sacrifice to each player or creature without a target) through the boss's first three turns.
-- Reserves and Reinforcements begin on the boss's second turn and Warpath on its fourth; Escalation grows by 1 every four boss turns and Enrage begins after the heroes' seventh turn.
+- Reserves and Reinforcements begin on the boss's second turn and Warpath on its fourth; Escalation grows by 1 every four boss turns and Enrage begins after the heroes' seventh turn at Heat 1 (Difficulty).
 
 ## Commander rules in a fight
 
@@ -92,7 +92,40 @@ One table (`scale.rs`) sets the boss for the party's size, so every size meets t
 | 6 | 90 % | base | | 2 | 1 | 2 | yes |
 
 - Life is a share of `life + life_per_hero × (heroes − 1)`. Reserves is a 2/2 Zombie each upkeep from the boss's second turn; Reinforcements a card and a 2/2 Zombie from its second; Warpath, from its fourth turn, untaps the boss's creatures after its first combat and adds a combat and a main phase; the Last Bulwark begins with the last phase: no more than three creatures can attack the boss each combat.
-- Heat raises the difficulty: each Heat gives the boss a card more in its opening hand and the boss and its minions a fifth more life; Heat 2 gives them a stronger brain.
+- The party-size table is the base; the boss's place on the ladder and the Heat move it (Difficulty).
+
+## Difficulty
+
+The host picks the Heat when creating a run; the creation form and the run header word it as a tier:
+
+| Heat | Tier | In plain words |
+|---|---|---|
+| 0 | Casual | any deck can win with some luck |
+| 1 | Seasoned | needs a deck that suits the format |
+| 2 | Heroic | needs a team of decks that work together and suit the format |
+
+Within a run the bosses ramp with the party's relics, loot and upgrades: the first boss (`Run::boss_rank` 0) is the gentlest and each later one harder. One table (`scale.rs`, `TIERS`) by Heat and rank moves the party-size table, so every party size meets the same ramp; a ladder longer than four bosses plays the last row for the rest. Life is a share of the party-size life (the minions' life too), hand and minions are added to the party-size numbers, brain moves the boss's and its minions' bot level (Hard by default), relic brings the boss's own relic, modifier draws one from the theme's pool:
+
+| Heat | Rank | Life | Hand | Brain | Minions | Relic | Modifier |
+|---|---|---|---|---|---|---|---|
+| 0 | 0 | 60 % | −2 | −1 | −1 | | |
+| 0 | 1 | 70 % | −2 | −1 | −1 | | yes |
+| 0 | 2 | 80 % | −1 | | | yes | yes |
+| 0 | 3+ | 90 % | | | | yes | yes |
+| 1 | 0 | 75 % | −1 | −1 | −1 | | yes |
+| 1 | 1 | 90 % | | | | yes | yes |
+| 1 | 2 | 100 % | | | | yes | yes |
+| 1 | 3+ | 110 % | +1 | | | yes | yes |
+| 2 | 0 | 100 % | | | | | yes |
+| 2 | 1 | 115 % | +1 | +1 | | yes | yes |
+| 2 | 2 | 125 % | +1 | +1 | | yes | yes |
+| 2 | 3+ | 140 % | +2 | +1 | | yes | yes |
+
+- Enrage begins after the heroes' ninth turn at Heat 0, their seventh at Heat 1 (as each Enrage card is written) and their sixth at Heat 2 (`ENRAGE_TURN`). The content makes each Enrage card's variant for the other turns on loading (`<id>_at_<turn>`: its turn, its rules text and the turn counts its abilities read), so the boss bar and the intro read the turn the fight plays.
+- Heat 1 at rank 2 is the boss as it was balanced before the tiers (Measured); Heat 0 sits below it at every rank and Heat 2 above.
+- The drain rule holds at every Heat: no tier adds a life loss, so Escalation stays each boss's one drain with no way out.
+- A content test holds the table monotonic: at every party size a later rank or a higher Heat never gives a boss less life, hand, brain or minions, never takes away its relic or modifier and never delays its Enrage.
+- The run view lists each boss of the ladder with the life it starts with against the party at its rank (`DelveView.boss_lives`), which the ladder and the intro show.
 
 ## Loot
 
@@ -130,12 +163,12 @@ One table (`scale.rs`) sets the boss for the party's size, so every size meets t
 
 ## Tuning
 
-- `cargo run --release -p mtg-campaign --example delve_sim -- fights <games> <heroes> <level> [first seed] [threads] [heat]` plays each boss in turn against a fresh party of bot heroes on the four fixture Commander decks; `runs` plays whole runs with life carried and loot taken. Games are untimed and seeded, so each result replays. `DELVE_SIM_DROP` (boss cards, phases or schemes by id), `DELVE_SIM_LIFE` (percent), `DELVE_SIM_HAND` and `DELVE_SIM_MINIONS` change the plan to measure what each part is worth; `DELVE_SIM_IDLE_SPIRITS` makes every Spirit pass, to measure what haunt actions are worth. Each line also counts falls, rises and haunt actions.
+- `cargo run --release -p mtg-campaign --example delve_sim -- fights <games> <heroes> <level> [first seed] [threads] [heat]` plays each boss in turn against a fresh party of bot heroes on the four fixture Commander decks; `runs` plays whole runs with life carried and loot taken. Games are untimed and seeded, so each result replays. `DELVE_SIM_RANK` scales each boss as the one at that rank of the ladder; `DELVE_SIM_DROP` (boss cards, phases or schemes by id), `DELVE_SIM_LIFE` (percent), `DELVE_SIM_HAND` and `DELVE_SIM_MINIONS` change the plan to measure what each part is worth; `DELVE_SIM_IDLE_SPIRITS` makes every Spirit pass, to measure what haunt actions are worth. Each line also counts falls, rises and haunt actions.
 - Minutes are estimated at 0.6 per hero turn and 0.5 per turn of the boss's side.
 - Each fight prints the pressure each hero took, the round a hero first fell to half life and the round a hero first fell.
-- The target at Heat 0 for a party of Hard bots, at every size: each fight won in 50 to 60 % of fights, a whole run in 20 to 35 %, a fight in 25 to 60 minutes for four heroes; no hero takes more than 40 % of the boss's pressure with three or more heroes (60 % with two).
+- The Heat 1 target for a party of Hard bots, at every size: each fight from the second boss won in 50 to 60 % of fights, a whole run in 20 to 35 %, a fight in 25 to 60 minutes for four heroes; no hero takes more than 40 % of the boss's pressure with three or more heroes (60 % with two).
 
-Measured with Hard heroes at Heat 0 on the four fixture Commander decks (three precons and a tuned player deck), `fights 1 <heroes> hard <seed>`, one boss per seed (seeds 1 to 4 meet Skrix, Mossjaw, Vex and Grimgut, seeds 5 to 8 again), with the spotlight and the ramp-up:
+Measured with Hard heroes against the boss at Heat 1, rank 2 strength (life 100 %, its own brain and hand), on the four fixture Commander decks (three precons and a tuned player deck), `fights 1 <heroes> hard <seed>`, one boss per seed (seeds 1 to 4 meet Skrix, Mossjaw, Vex and Grimgut, seeds 5 to 8 again), with the spotlight and the ramp-up:
 
 | Heroes | Seeds | Fights won | Turns (boss side) | Minutes | Largest hero share (worst) | First at half life | First fall |
 |---|---|---|---|---|---|---|---|
@@ -147,3 +180,25 @@ Measured with Hard heroes at Heat 0 on the four fixture Commander decks (three p
 - The grace keeps every hero above 0 life through their first three turns.
 - Solo seed 5 (Skrix) is not counted: the boss bot repeats one paid ability until the runaway watchdog stops the game in turn 13.
 - Three heroes on seeds 2 and 3 and four heroes on seeds 1 to 4 had not ended after 110 minutes of machine time per fight; five and six heroes are slower still and are not in this table.
+
+### Tier targets and measures
+
+Targets by Heat and rank, for a party of Normal bots (a deck of any kind played plainly) and of Hard bots (a deck played well); one fight at a time, each a fresh party at full life:
+
+| Heat | First boss (rank 0) | Middle bosses (ranks 1, 2) | Final boss (rank 3) |
+|---|---|---|---|
+| 0 Casual | Normal bots win about 80 % | Normal bots win 60 to 70 % | Normal bots win about 50 % |
+| 1 Seasoned | Normal bots win about 70 % | Hard bots win 50 to 60 % | Hard bots win about 45 % |
+| 2 Heroic | Hard bots win about 50 % | Hard bots win 35 to 45 % | Hard bots win about 30 % |
+
+Measured with two Normal heroes, `DELVE_SIM_RANK=<rank> fights <games> 2 normal 1 6 <heat>` (seeds from 1, the boss following the seed):
+
+| Heat | Rank | Fights won | Skrix, Mossjaw, Vex, Grimgut | Turns (boss side) | Machine time a fight |
+|---|---|---|---|---|---|
+| 0 | 0 | 38/40 (95 %) | 10/10, 10/10, 10/10, 8/10 | 12.2 (5.8) | about 1 s |
+| 0 | 1 | 39/40 (98 %) | 10/10, 10/10, 10/10, 9/10 | 12.7 (6.0) | about 1 s |
+| 1 | 0 | 37/40 (92 %) | 10/10, 10/10, 10/10, 7/10 | 13.4 (6.5) | about 1 s |
+| 1 | 2 | 1/3 | Skrix 0/1, Vex 1/1, Grimgut 0/1 | 15.0 (7.7) | 7 to 9 min |
+
+- The brain is the largest step: a boss one level below Hard (Normal) loses to two Normal heroes in more than 90 % of fights, so the first boss at Heat 1 and the first two at Heat 0 sit above their targets; Grimgut, the final boss of the theme, is the hardest of the four at every rank.
+- The Heat 1 rank 2 sample is three fights (a Hard boss takes 7 to 9 minutes of machine time a fight with six threads) and only shows that the Hard boss beats two Normal heroes more often than not; the Hard-boss rows (Heat 0 ranks 2 and 3, Heat 1 ranks 1 to 3, all of Heat 2) and parties of three or more are not yet measured against their targets.

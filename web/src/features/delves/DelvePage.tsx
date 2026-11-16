@@ -33,7 +33,7 @@ import type { LastPlayed, PickerDecks } from './deckPicker'
 import { BossIntro } from './BossIntro'
 import { DeckPicker } from './DeckPicker'
 import { FightLog } from './FightLog'
-import { lastFight, listOf, nextStep, regroupLife } from './model'
+import { heatTier, lastFight, listOf, nextStep, regroupLife } from './model'
 import type { FindCard } from './findCard'
 import { PartyLobby } from './PartyLobby'
 import { ResultPanel } from './ResultPanel'
@@ -201,7 +201,9 @@ function EndPanel({ view, content }: { view: DelveView; content: DelveContent })
         <dt className="text-muted-foreground">Hearts left</dt>
         <dd className="font-semibold">{view.run.hearts}</dd>
         <dt className="text-muted-foreground">Heat</dt>
-        <dd className="font-semibold">{view.run.heat}</dd>
+        <dd className="font-semibold">
+          {view.run.heat} · {heatTier(view.run.heat).name}
+        </dd>
         <dt className="text-muted-foreground">Rooms</dt>
         <dd className="font-semibold">{view.run.cleared.length}</dd>
       </dl>
