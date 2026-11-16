@@ -1,8 +1,9 @@
-// Goal: the prompt sheet lies over no card of the opponents' boards: the table's main area carries how far the sheet stands above the shared strip (0 for a sheet no taller than the strip), it follows the sheet as a prompt grows or shrinks it, it goes with the strip, and the opponents' area keeps that much room free below its boards on top of its own padding. A sheet held at its most asks the split for the room its content wants and scrolls the answers into view.
+// Goal: the prompt sheet is an overlay that moves no board: the table's main area carries how far the sheet stands above the shared strip (0 for a sheet no taller than the strip) for the overlays that stop above it, it follows the sheet as a prompt grows or shrinks it and goes with the strip, while the opponents' area keeps its own padding and the board rows keep their heights across every prompt kind. A sheet held at its most asks the split for the room its content wants and scrolls the answers into view.
 import { act } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
+import { DEV_PROMPTS } from './dev/prompts'
 import { revealBy, SHEET_OVERHANG_VAR, wantedOverhang } from './useSheetOverhang'
 
 /** A `ResizeObserver` the test fires by hand, since jsdom has no layout. */
@@ -74,15 +75,32 @@ describe('the room kept for the prompt sheet', () => {
     expect(overhang()).toBe('0px')
   })
 
-  it('is left on the main area for the opponents to keep free, below their boards and above the shared strip', () => {
+  it("moves no board: the opponents' area keeps its own padding and the sheet lies over it", () => {
     renderTable({ seats: 4 })
     const opponents = must(document.querySelector('[data-area="opponents"]'))
     expect(main()).toContainElement(opponents as HTMLElement)
-    expect(opponents).toHaveClass('pb-[calc(0.5rem+var(--sheet-overhang,0px))]', 'pt-2', 'px-2')
+    expect(opponents).toHaveClass('pb-2', 'pt-2', 'px-2')
     // The sheet is not in this area, so it can never be drawn over its cards.
     expect(opponents).not.toContainElement(
       document.querySelector('[data-slot="shared-sheet"]') as HTMLElement,
     )
+  })
+
+  it('keeps the rows of the table at one height across prompt kinds of every sheet height', () => {
+    const table = renderTable({ seats: 4 })
+    const rows = main().style.gridTemplateRows
+    expect(rows).not.toBe('')
+    for (const [prompt, sheet] of [
+      ['targets', 260],
+      ['pay', 190],
+      ['scry', 320],
+      ['priority', 88],
+    ] as const) {
+      heights.sheet = sheet
+      table.update({ pending: must(DEV_PROMPTS[prompt])(table.fixture) })
+      resized()
+      expect(main().style.gridTemplateRows).toBe(rows)
+    }
   })
 
   it('is clipped by each battlefield, so a board squeezed to no room shows no sliver of a card', () => {

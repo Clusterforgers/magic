@@ -1,7 +1,8 @@
 /** The table's regions with the board rows split by what each must hold (`boardSplit.ts`). */
-import { useContext, useMemo } from 'react'
+import { useContext, useLayoutEffect, useMemo, useRef } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import { foldsLands, seatCounts, splitRegions } from './boardSplit'
+import type { HeldRows } from './boardSplit'
 import { handIdle } from './handIdle'
 import type { LaneCounts } from './laneFit'
 import { useLandsShown } from './landPrefs'
@@ -48,7 +49,9 @@ export function useBoardSplit(
       .join('|')
     return `${boss && !handIdle(state, handSeat(state, plan.viewer)) ? 1 : 0}#${counts}`
   })
-  return useMemo(() => {
+  // The rows drawn last: the next split keeps them while they serve (`holdSplit`).
+  const held = useRef<HeldRows | null>(null)
+  const split = useMemo(() => {
     const [ready = '', rest = ''] = key.split('#')
     const [own = '0,0,0', ...others] = rest.split('|')
     const theirs = others.slice(0, plan.boards.length).map(parse)
@@ -64,6 +67,11 @@ export function useBoardSplit(
       reserve,
       head,
       overhang,
+      held.current,
     )
   }, [key, regions, plan, reserve, head, overhang, boss])
+  useLayoutEffect(() => {
+    held.current = { opponents: split.opponents, own: split.own }
+  }, [split])
+  return split
 }

@@ -16,6 +16,7 @@ import type { Regions, SeatPlan } from './layout'
 import type { PlayState } from '@/play/store'
 import type { PlayerId } from '@/protocol/generated'
 import { bossSplitOf } from './bossRows'
+import { GROW_SHARE } from './holdFit'
 import { handIdle } from './handIdle'
 import { handSeat } from './selectors'
 import { battlefieldStacks } from './rowStacks'
@@ -115,6 +116,7 @@ export function splitRegions(
   reserve = 0,
   head = 0,
   overhang = reserve,
+  held: HeldRows | null = null,
 ): Regions {
   // Boss mode splits three rows by what each shows (`splitBoss`); a phone's tiles and a board-less call use the two rows.
   if (seats.shape === 'boss' && !regions.phone && seats.tiles.length === 0 && counts.allies !== undefined) {
@@ -136,21 +138,24 @@ export function splitRegions(
   }
   const frames = boardFrames(regions, seats)
   const theirChrome = theirChromeOf(frames.theirs.chrome, head)
-  const split = splitBoards({
-    room: regions.opponents + regions.own,
-    ownChrome: frames.own.chrome,
-    theirChrome: theirChrome + finite(reserve),
-    theirFloor: podColumnFloor(regions, seats, overhang),
-    theirRows: frames.theirs.rows,
-    theirRowChrome: theirChrome,
-    theirLead: theirChrome - frames.theirs.chrome,
-    theirScale: seats.shape === 'columns' ? GRID_THEIR_SCALE : THEIR_SCALE,
-    ownCrowd: seats.shape === 'columns' && !regions.phone ? OWN_CROWD_PX : 0,
-    ownWidth: frames.own.width,
-    theirWidth: frames.theirs.width,
-    own: counts.own,
-    theirs: counts.theirs,
-  })
+  const split = holdSplit(
+    {
+      room: regions.opponents + regions.own,
+      ownChrome: frames.own.chrome,
+      theirChrome: theirChrome + finite(reserve),
+      theirFloor: podColumnFloor(regions, seats, overhang),
+      theirRows: frames.theirs.rows,
+      theirRowChrome: theirChrome,
+      theirLead: theirChrome - frames.theirs.chrome,
+      theirScale: seats.shape === 'columns' ? GRID_THEIR_SCALE : THEIR_SCALE,
+      ownCrowd: seats.shape === 'columns' && !regions.phone ? OWN_CROWD_PX : 0,
+      ownWidth: frames.own.width,
+      theirWidth: frames.theirs.width,
+      own: counts.own,
+      theirs: counts.theirs,
+    },
+    held,
+  )
   if (!regions.phone) return withSplit(regions, split, theirChrome + BOARD_KEEP_PX)
   // A phone's sheet may lie over the opponents' cards, never over their pods, tiles or the boss's abilities; a head
   // taller than the sheet's usual keep (a boss's bar and pod) takes the excess from your row while a sheet stands up.
@@ -370,4 +375,38 @@ export function withSplit(regions: Regions, split: BoardSplit, keep = 0): Region
       regions.phone ? keep : 0,
     ),
   }
+}
+
+/** The rows a split drew last, which the next split holds where they still serve (`holdSplit`). */
+export type HeldRows = Pick<BoardSplit, 'opponents' | 'own'>
+
+/**
+ * `splitBoards`, holding the rows of `held` while the room is the same, both rows still fit their boards at the floor,
+ * and neither board's card in them is more than `GROW_SHARE` under the one a fresh split gives: one permanent more or
+ * less then moves no row. Without a fit at the floor or with no permanent anywhere the fresh split stands.
+ */
+export function holdSplit(
+  input: SplitInput,
+  held: HeldRows | null,
+  limits: LaneLimits = LANE_LIMITS,
+): BoardSplit {
+  const fresh = splitBoards(input, limits)
+  const room = finite(input.room)
+  if (held === null || fresh.ownCard === 0 || Math.abs(held.opponents + held.own - room) > 0.5) return fresh
+  if (held.opponents < Math.min(fresh.opponents, finite(input.theirFloor ?? 0))) return fresh
+  const { at, rungs } = ladderOf(limits)
+  const rows = Math.max(1, Math.floor(finite(input.theirRows ?? 1)))
+  const ownFits = (rung: number): boolean =>
+    laneHeight(input.ownWidth, input.own, at(rung), limits) + finite(input.ownChrome) <= held.own
+  const theirNeed = (rung: number): number =>
+    Math.max(0, ...input.theirs.map((counts) => laneHeight(input.theirWidth, counts, at(rung), limits)))
+  const theirFits = (rung: number): boolean =>
+    rows * theirNeed(rung) + finite(input.theirChrome) + (rows - 1) * finite(input.theirRowChrome ?? 0) <=
+    held.opponents
+  if (!ownFits(0) || !theirFits(0)) return fresh
+  const ownCard = at(highestRung(rungs, ownFits))
+  const theirCard = at(highestRung(rungs, theirFits))
+  if (ownCard * (1 + GROW_SHARE) < fresh.ownCard || theirCard * (1 + GROW_SHARE) < fresh.theirCard)
+    return fresh
+  return { opponents: held.opponents, own: held.own, ownCard, theirCard }
 }
