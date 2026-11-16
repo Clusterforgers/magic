@@ -71,6 +71,8 @@ pub enum Ref {
     Opponents,
     /// Every player.
     EachPlayer,
+    /// Every player in turn order starting with the controller ("starting with you, each player").
+    R6501PlayersFromYou,
     /// The source object of the ability (the spell itself for a spell).
     This,
     /// The targets chosen for the target specification with this index.

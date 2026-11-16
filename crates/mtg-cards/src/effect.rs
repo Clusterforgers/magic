@@ -235,6 +235,10 @@ pub enum Produce {
     /// One mana of any color chosen as the controller drafted cards named like the source ("Add one mana of any color
     /// chosen as you drafted cards named ~"); none in a game without a draft, where no color was chosen (Paliano ruling).
     DraftedColors,
+    /// One more mana of each type for each unspent mana of that type in the player's pool, restricted mana counted too;
+    /// the mana added has no restriction ("Double the amount of each type of unspent mana you have", Doubling Cube
+    /// rulings; the type of mana is its color or colorless).
+    R6501UnspentDoubled,
     /// Mana of one color chosen when added, as many as the controller's devotion to that color (CR 700.5): "Choose a
     /// color. Add an amount of mana of that color equal to your devotion to that color."
     Devotion,
@@ -2052,6 +2056,10 @@ pub enum Effect {
     /// an Aura card in their hand that could enchant what the source is attached to; the source goes to its owner's hand
     /// and the card enters attached to that object or player. When either can't move, neither does (CR 701.12a).
     AuraSwap,
+    /// "Redistribute any number of players' life totals": the controller gives each player one of the life totals the
+    /// players have as it begins, each total once and never split; each player gains or loses the difference (CR
+    /// 119.5), and a player given their own total is one left out.
+    R6501RedistributeLife,
     /// "If you both own and control ~ and a creature named N, exile them, then meld them into M" (CR 701.42): when the
     /// controller owns and controls the source and a permanent `with` names, both are exiled, and if both are then cards
     /// of a meld pair in exile they return as one melded permanent with the characteristics of the card `into`.

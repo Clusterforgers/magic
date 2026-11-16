@@ -295,6 +295,7 @@ mod r6401_wholes;
 mod r6402_change_roll;
 mod r6402_dice_facts;
 mod r6500_wholes;
+mod r6501_wholes;
 mod r6a_effects;
 mod r6a_more;
 mod r6a_wordings;
@@ -601,6 +602,11 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
 /// A wording of the r64-01 table, read whole whatever its kind and reminder text.
 pub fn r6401_whole(text: &str) -> Option<Ability> {
     r6401_wholes::r6401_whole_read(text)
+}
+
+/// A wording of the r65-01 table, read whole whatever its kind and reminder text.
+pub fn r6501_whole(text: &str) -> Option<Ability> {
+    r6501_wholes::r6501_whole_read(text)
 }
 
 /// Reads a whole ability of the r47-05 table of wordings one card prints (a keyword line among them).

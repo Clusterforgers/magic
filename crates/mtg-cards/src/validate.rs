@@ -669,6 +669,7 @@ impl<'a> Walker<'a> {
             | Ref::AttackedThisTurn
             | Ref::MostLife
             | Ref::Teammates
+            | Ref::R6501PlayersFromYou
             | Ref::ActivePlayer
             | Ref::Chooser
             | Ref::Asker
@@ -3721,6 +3722,7 @@ impl Walker<'_> {
             | Ref::AttackedThisTurn
             | Ref::MostLife
             | Ref::Teammates
+            | Ref::R6501PlayersFromYou
             | Ref::ActivePlayer
             | Ref::Chooser
             | Ref::Asker
@@ -4044,6 +4046,7 @@ impl Walker<'_> {
             | Produce::CommanderIdentity(_)
             | Produce::Devotion
             | Produce::DraftedColors
+            | Produce::R6501UnspentDoubled
             | Produce::OfTapped => {}
         }
         // Mana the engine adds without a choice is a primitive of its own; a choice of mana is not.
@@ -5321,6 +5324,7 @@ impl Walker<'_> {
             }),
             Effect::EndTurn
             | Effect::AuraSwap
+            | Effect::R6501RedistributeLife
             | Effect::StillResolves
             | Effect::Rephase
             | Effect::AddStep { .. }

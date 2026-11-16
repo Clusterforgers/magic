@@ -1,0 +1,41 @@
+{
+  "oracle_id": "1f0883f8-89c9-4620-9837-72a2909e0599",
+  "name": "Mirror Match",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirror Match",
+      "oracle_fingerprint": "980e523b976f075f023074592e70b03c",
+      "abilities": [
+        { "CastOnly": { "condition": { "Step": "DeclareBlockers" } } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": {
+                        "Each": [{ "Type": "Creature" }, { "AttackingPlayerOrPlaneswalker": "You" }]
+                      }
+                    }
+                  },
+                  "blocking": {
+                    "Each": [{ "Type": "Creature" }, { "AttackingPlayerOrPlaneswalker": "You" }]
+                  },
+                  "as": "tokens"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "tokens" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

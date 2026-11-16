@@ -63,6 +63,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::AttackedThisTurn => "each opponent you attacked this turn".to_owned(),
         Ref::MostLife => "the player with the most life".to_owned(),
         Ref::Teammates => "your teammates".to_owned(),
+        Ref::R6501PlayersFromYou => "each player, starting with you".to_owned(),
         Ref::ActivePlayer => "the active player".to_owned(),
         Ref::Chooser => "the player choosing".to_owned(),
         Ref::Asker => "the player asking".to_owned(),

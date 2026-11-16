@@ -684,6 +684,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r6100_wholes::r6100_add_wholes(ability, &mut texts);
     super::r6401_wholes::r6401_add_wholes(ability, &mut texts);
     super::r6500_wholes::r6500_add_wholes(ability, &mut texts);
+    super::r6501_wholes::r6501_add_wholes(ability, &mut texts);
     super::r6103_wholes::r6103_add_wholes(ability, &mut texts);
     super::r6400_wholes::r6400_add_wholes(ability, &mut texts);
     super::r5510_fortified::r5510_wordings(&mut texts);
@@ -3900,6 +3901,7 @@ impl Writer<'_> {
             Ref::Opponents => "each opponent".to_owned(),
             Ref::EachPlayer => "each player".to_owned(),
             Ref::Teammates => "each of your teammates".to_owned(),
+            Ref::R6501PlayersFromYou => "each player, starting with you".to_owned(),
             Ref::Target(0)
                 if self.target_is(|what| {
                     matches!(what, Targetable::Player | Targetable::Opponent)

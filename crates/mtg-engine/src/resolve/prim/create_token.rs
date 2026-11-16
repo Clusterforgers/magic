@@ -170,15 +170,30 @@ fn named_defender(
         .then_some(aim))
 }
 
-/// The attacking creature `player`'s tokens enter blocking: the one `blocking` names while it still attacks `player`
-/// or a planeswalker of theirs, after blockers are declared; none otherwise, and the tokens just enter.
+/// The attacking creature `player`'s token enters blocking: the one `blocking` names while it still attacks `player`
+/// or a planeswalker of theirs, after blockers are declared; none otherwise, and the token just enters. When `blocking`
+/// names several creatures, a token that is a copy of one of them blocks that one ("for each creature attacking you,
+/// create a token that's a copy of that creature and that's blocking that creature"), and any other the first.
 fn ep23_blocked(
     cx: &Cx<'_>,
     blocking: &Ref,
     player: PlayerId,
+    copy_of: Option<ObjectRef>,
 ) -> Result<Option<ObjectId>, ResolveError> {
     let state = cx.state();
-    let Some(Target::Object(named)) = cx.scope.refs(blocking)?.first().copied() else {
+    let named: Vec<ObjectRef> = cx
+        .scope
+        .refs(blocking)?
+        .into_iter()
+        .filter_map(|target| match target {
+            Target::Object(object) => Some(object),
+            Target::Player(_) => None,
+        })
+        .collect();
+    let Some(named) = copy_of
+        .filter(|copied| named.contains(copied))
+        .or_else(|| named.first().copied())
+    else {
         return Ok(None);
     };
     if state.object(named.id).map(GameObject::reference) != Some(named)
@@ -367,11 +382,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let mut made = 0;
     let mut events = Vec::with_capacity(players.len() * number * made_from.len());
     for (controller, aim) in aims {
-        let blocked = match blocking {
-            Some(blocking) if aim.is_none() => ep23_blocked(cx, blocking, controller)?,
-            _ => None,
-        };
         for (definition, copy_of) in &made_from {
+            let blocked = match blocking {
+                Some(blocking) if aim.is_none() => {
+                    ep23_blocked(cx, blocking, controller, *copy_of)?
+                }
+                _ => None,
+            };
             for _ in 0..number {
                 events.push(Event::TokenCreated(TokenCreated {
                     object: ObjectId(first + made),

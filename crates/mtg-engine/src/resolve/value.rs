@@ -1387,11 +1387,7 @@ impl<'a> Scope<'a> {
         Ok(match reference {
             Ref::You => vec![Target::Player(self.controller)],
             Ref::Opponents | Ref::Teammates => self.r4710_side(reference),
-            Ref::EachPlayer => state
-                .turn_order_from(state.turn().active())
-                .into_iter()
-                .map(Target::Player)
-                .collect(),
+            Ref::EachPlayer | Ref::R6501PlayersFromYou => self.r6501_turn_order(reference),
             Ref::This => vec![Target::Object(self.source)],
             Ref::Affected => {
                 let (object, read) = self.affected.ok_or_else(|| {
@@ -1541,6 +1537,20 @@ impl<'a> Scope<'a> {
     }
 
     /// The controller's opponents, or their teammates, still in the game in turn order.
+    /// Every player in turn order: from the active player, or from the controller for "starting with you".
+    fn r6501_turn_order(&self, reference: &Ref) -> Vec<Target> {
+        let start = if *reference == Ref::R6501PlayersFromYou {
+            self.controller
+        } else {
+            self.state.turn().active()
+        };
+        self.state
+            .turn_order_from(start)
+            .into_iter()
+            .map(Target::Player)
+            .collect()
+    }
+
     fn r4710_side(&self, reference: &Ref) -> Vec<Target> {
         let players = if *reference == Ref::Teammates {
             self.state.r4710_teammates_of(self.controller)
