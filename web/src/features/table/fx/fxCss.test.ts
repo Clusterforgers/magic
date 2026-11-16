@@ -85,6 +85,17 @@ describe('feel (docs/ui-design.md, Feel)', () => {
     expect(step('fx-pop', '45%')).toMatch(/scale: 0\.96/)
   })
 
+  it('lifts a drawn card 8 px as the card flying to it lands, and lets it settle', () => {
+    const rule = rulesIn(motion).find(
+      (entry) => entry.selector === "button[data-object-id][data-fx~='drawn']",
+    )
+    expect(rule?.body).toMatch(/animation: fx-drawn calc\(var\(--fx-arrive-ms\) \* var\(--fx-slow, 1\)\)/)
+    expect(rule?.body).toMatch(/calc\(var\(--fx-travel-ms\) \* 0\.8\) both/)
+    expect(step('fx-drawn', '40%')).toMatch(/translate: 0 -8px/)
+    expect(step('fx-drawn', '75%')).toMatch(/translate: 0 1px/)
+    expect(reduced).not.toMatch(/drawn/)
+  })
+
   it('lets a dying card shrink and tip over as it greys', () => {
     expect(step('fx-ghost', '100%')).toMatch(/scale: 0\.85/)
     expect(step('fx-ghost', '100%')).toMatch(/rotate: -6deg/)

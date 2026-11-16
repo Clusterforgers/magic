@@ -20,7 +20,7 @@
   --fx-stagger-ms: 120ms;
   --fx-arrow-ms: 250ms;
   --fx-mark-ms: 600ms;
-  /* The newest stack item rising into focus once the card flying to it has landed. */
+  /* The newest stack item or a drawn card rising into place once the card flying to it has landed. */
   --fx-arrive-ms: 300ms;
   /* The chip an ability flies as. */
   --fx-chip-w: 9rem;
@@ -437,6 +437,28 @@
 
   .fx-stage-top {
     animation: fx-arrive calc(var(--fx-arrive-ms) * var(--fx-slow, 1)) var(--ease-out)
+      calc(var(--fx-travel-ms) * 0.8) both;
+  }
+
+  /* A drawn card in the viewer's hand rises 8 px and settles as the card back flying to it lands. */
+  @keyframes fx-drawn {
+    0%,
+    100% {
+      translate: 0 0;
+      scale: 1;
+    }
+    40% {
+      translate: 0 -8px;
+      scale: 1.04;
+    }
+    75% {
+      translate: 0 1px;
+      scale: 0.99;
+    }
+  }
+
+  button[data-object-id][data-fx~='drawn'] {
+    animation: fx-drawn calc(var(--fx-arrive-ms) * var(--fx-slow, 1)) var(--ease-out)
       calc(var(--fx-travel-ms) * 0.8) both;
   }
 
