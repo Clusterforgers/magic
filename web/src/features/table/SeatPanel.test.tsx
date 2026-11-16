@@ -398,7 +398,8 @@ describe('the panel', () => {
   it('is one column that may shrink, so a long commander chip is cut inside the pod and life stays in its column', () => {
     show(0)
     const pod = panel('Alice (you)')
-    expect(pod).toHaveClass('grid-cols-[minmax(0,1fr)]', 'min-w-0')
+    expect(pod).toHaveClass('flex-col', 'min-w-0')
+    expect(pod.querySelector('[data-slot="pod-top"]')).toHaveClass('grid-cols-[minmax(0,1fr)]')
     const chips = must(pod.querySelector<HTMLElement>('[data-slot="pod-counts"]'))
     const texts = [...chips.querySelectorAll<HTMLElement>('[data-slot^="commander-"] > .truncate')]
     expect(texts.length).toBeGreaterThan(1)

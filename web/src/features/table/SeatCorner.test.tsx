@@ -362,8 +362,8 @@ describe('the size of the pictures', () => {
   })
 
   it.each<[string, number, 'picture' | 'chips']>([
-    ['a column of 160 px (a room of 62 px under the blocks)', 160, 'picture'],
-    ['a column of 159 px (a room of 61 px under the blocks)', 159, 'chips'],
+    ['a column of 162 px (a room of 62 px under the blocks and the seat edge)', 162, 'picture'],
+    ['a column of 161 px (a room of 61 px under the blocks and the seat edge)', 161, 'chips'],
   ])('is a picture or chips whole, never a cut card: %s', (_name, height, form) => {
     above(74)
     show({ room: { height, card: 120 } })
@@ -382,7 +382,7 @@ describe('a cramped column', () => {
     vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(height)
 
   it('keeps the name row and life over the corner and lays the pool, sources and other chips under it', () => {
-    // 20 px above and 20 under the corner leave a column of 150 px a room of 78 px: a picture.
+    // 20 px above and 20 under the corner leave a column of 150 px a room of 76 px: a picture.
     above(20)
     show({ room: { height: 150, card: 120 } })
     const bo = pod('Bo')
@@ -395,7 +395,7 @@ describe('a cramped column', () => {
   })
 
   it('draws chips where the chips under the corner leave less than the least picture, so the column does not scroll', () => {
-    // 20 px above and 60 under: a column of 150 px leaves the corner 38 px.
+    // 20 px above and 60 under: a column of 150 px leaves the corner 36 px.
     vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockImplementation(function (this: HTMLElement) {
       return this.dataset['slot'] === 'pod-more' ? 60 : 20
     })
@@ -409,5 +409,19 @@ describe('a cramped column', () => {
     show({ room: { height: POD_CRAMPED_PX, card: 120 } })
     expect(pod('Bo').querySelector('[data-slot="mana-slot"]')).not.toBeNull()
     expect(pod('Bo').querySelector('[data-slot="pod-more"]')).toBeEmptyDOMElement()
+  })
+})
+
+describe('a pod taller than its column', () => {
+  it('keeps the zones in view: the blocks above the corner shrink and scroll, the corner does not', () => {
+    show({ room: { height: 240, card: 120 } })
+    const bo = pod('Bo')
+    expect(bo).toHaveClass('flex', 'flex-col', 'max-h-full')
+    const scroller = must(bo.querySelector('[data-slot="pod-top-scroll"]'))
+    expect(scroller).toHaveClass('fade-scroll', 'min-h-0')
+    expect(scroller.querySelector('[data-slot="pod-top"]')).not.toBeNull()
+    const zones = must(bo.querySelector('[data-slot="seat-corner"], [data-slot="corner-chips"]'))
+    expect(scroller.contains(zones)).toBe(false)
+    expect(zones.parentElement).toBe(bo)
   })
 })
