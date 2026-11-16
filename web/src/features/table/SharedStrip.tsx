@@ -111,8 +111,8 @@ export function SharedStrip({
         ref={sheet}
         data-slot="shared-sheet"
         data-fx-anchor="stack"
-        // The card preview keeps off the strip while it holds a decision; it may cover its spare room to stay readable, never
-        // the sentence or the buttons (marked firm in `PromptLayout`).
+        // The card preview keeps off the strip while it holds a decision where it can; the strip ranks below the sentence and
+        // the buttons (`PromptLayout`), which it covers last.
         data-keep-clear={mine ? 'soft' : undefined}
         data-your-turn={yourTurn || undefined}
         // The sheet starts beside the pod column, which keeps the life of the seat above it in view.

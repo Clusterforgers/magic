@@ -103,6 +103,16 @@ impl Brain {
             Brain::Hard | Brain::VeryHard => Brain::VeryHard,
         }
     }
+
+    /// One level weaker, Easy staying itself.
+    #[must_use]
+    pub fn weaker(self) -> Brain {
+        match self {
+            Brain::Easy | Brain::Normal => Brain::Easy,
+            Brain::Hard => Brain::Normal,
+            Brain::VeryHard => Brain::Hard,
+        }
+    }
 }
 
 /// A boss seat: a themed deck of real cards, a brain, life that grows with the party, its boss card and phases.
@@ -185,8 +195,10 @@ pub enum Outcome {
     Life(i32),
     /// A relic drawn from those the hero lacks.
     Relic,
-    /// A card pick in the hero's colours.
+    /// A card pick in the hero's colours, for their Satchel.
     CardPick,
+    /// A copy of a nonland card from the hero's deck or Satchel, of their choice, for their Satchel.
+    Duplicate,
     /// A chance: `win` with `odds` percent, `lose` otherwise.
     Gamble {
         /// The chance to win, in percent.
@@ -235,13 +247,14 @@ impl Needs {
 }
 
 impl Outcome {
-    /// The outcome in plain words: "+40 gold", "−8 life", "a relic", "a card for your deck", or a chance with its odds.
+    /// The outcome in plain words: "+40 gold", "−8 life", "a relic", "a card for your Satchel", or a chance with its odds.
     pub fn words(&self) -> String {
         match self {
             Outcome::Gold(n) => format!("{} gold", signed(*n)),
             Outcome::Life(n) => format!("{} life", signed(*n)),
             Outcome::Relic => "a relic".to_owned(),
-            Outcome::CardPick => "a card for your deck".to_owned(),
+            Outcome::CardPick => "a card for your Satchel".to_owned(),
+            Outcome::Duplicate => "a copy of a card from your deck or Satchel".to_owned(),
             Outcome::Gamble { odds, win, lose } => format!(
                 "{odds}%: {} · {}%: {}",
                 list_words(win),
@@ -322,6 +335,9 @@ pub struct EventSpec {
     pub text: String,
     /// Its choices.
     pub options: Vec<EventOption>,
+    /// The content generation it joined the theme in: a run made before it never meets it (`Run.content`).
+    #[serde(default)]
+    pub since: u32,
 }
 
 /// A dungeon theme: its bosses, events and the cards its rewards offer.
@@ -380,7 +396,19 @@ impl Content {
     pub fn parse(cards: &str, themes: &[&str]) -> Result<Content, CampaignError> {
         let list: Vec<CustomCard> =
             serde_json::from_str(cards).map_err(|e| CampaignError::Content(e.to_string()))?;
-        let cards = list.into_iter().map(|c| (c.id.clone(), c)).collect();
+        let mut cards: BTreeMap<String, CustomCard> =
+            list.into_iter().map(|c| (c.id.clone(), c)).collect();
+        let variants = cards
+            .values()
+            .filter(|c| c.kind == CardKind::Enrage)
+            .flat_map(|c| {
+                crate::scale::ENRAGE_TURN
+                    .iter()
+                    .filter(move |turn| **turn != c.turn)
+                    .map(move |turn| enrage_at(c, *turn))
+            })
+            .collect::<Result<Vec<_>, _>>()?;
+        cards.extend(variants.into_iter().map(|c| (c.id.clone(), c)));
         let themes = themes
             .iter()
             .map(|text| {
@@ -421,6 +449,68 @@ impl Content {
 
 fn every_turn() -> u32 {
     1
+}
+
+/// The Enrage `card` made to begin on the heroes' turn `turn` (`scale::ENRAGE_TURN`): its id, `turn`, rules text and
+/// the turn counts its abilities compare with and count beyond.
+fn enrage_at(card: &CustomCard, turn: u32) -> Result<CustomCard, CampaignError> {
+    const WORDS: [&str; 13] = [
+        "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+        "eleven", "twelve",
+    ];
+    let word = |n: u32| {
+        WORDS
+            .get(usize::try_from(n).unwrap_or(usize::MAX))
+            .copied()
+            .unwrap_or("many")
+    };
+    let fail = |e: serde_json::Error| CampaignError::Content(e.to_string());
+    let mut abilities = serde_json::to_value(&card.abilities).map_err(fail)?;
+    retime(&mut abilities, card.turn, turn);
+    let text = card
+        .text
+        .replace(
+            &format!("have had {} turns", word(card.turn)),
+            &format!("have had {} turns", word(turn)),
+        )
+        .replace(
+            &format!("beyond {}", word(card.turn.saturating_sub(1))),
+            &format!("beyond {}", word(turn.saturating_sub(1))),
+        );
+    Ok(CustomCard {
+        id: crate::scale::enrage_id(&card.id, turn),
+        text,
+        turn,
+        abilities: serde_json::from_value(abilities).map_err(fail)?,
+        ..card.clone()
+    })
+}
+
+/// Moves the heroes' turn counts in `value` from an Enrage written for turn `from` to one beginning on `to`: a
+/// comparison of the opponents' turns with `from` and a count of their turns beyond `from − 1`.
+fn retime(value: &mut serde_json::Value, from: u32, to: u32) {
+    use serde_json::{Value, json};
+    let theirs = json!({ "TurnsTaken": "Opponents" });
+    match value {
+        Value::Object(map) => {
+            if let Some(Value::Object(compare)) = map.get_mut("Compare")
+                && compare.get("left") == Some(&theirs)
+                && compare.get("right") == Some(&json!(from))
+            {
+                compare.insert("right".into(), json!(to));
+            }
+            if let Some(Value::Array(pair)) = map.get_mut("Difference")
+                && pair.first() == Some(&theirs)
+                && pair.get(1) == Some(&json!(from.saturating_sub(1)))
+                && let Some(count) = pair.get_mut(1)
+            {
+                *count = json!(to.saturating_sub(1));
+            }
+            map.values_mut().for_each(|v| retime(v, from, to));
+        }
+        Value::Array(items) => items.iter_mut().for_each(|v| retime(v, from, to)),
+        _ => {}
+    }
 }
 
 /// The content shipped with the crate, read once.

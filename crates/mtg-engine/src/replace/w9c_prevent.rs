@@ -176,6 +176,7 @@ mod tests {
 
     use mtg_cards::CardDefinition;
     use mtg_cards::ability::Ability;
+    use mtg_cards::value::CounterKind;
     use mtg_core::card::CardType;
     use mtg_core::ids::{ObjectId, PlayerId};
     use rstest::rstest;
@@ -195,6 +196,7 @@ mod tests {
     const HALF: &str = r#"{"Replacement":{"when":{"Damage":{"to":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}}},"by":"PreventHalf"}}"#;
     const ANGELS: &str = r#"{"Replacement":{"when":{"TokenCreation":{"what":[{"Type":"Creature"}]}},"by":{"Instead":[{"CreateToken":{"token":{"Custom":{"name":"Angel","colors":["White"],"types":["Creature"],"subtypes":["Angel"],"power":4,"toughness":4}},"count":"Triggering"}}]}}}"#;
     const UNPREVENTABLE: &str = r#"{"Rule":{"rule":{"DamageCantBePrevented":{}}}}"#;
+    const SHEDS: &str = r#"{"Replacement":{"when":{"Damage":{"to":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}}},"by":{"PreventAnd":[{"RemoveCounters":{"from":"Triggering","counter":"+1/+1","count":"Triggering"}}]}}}"#;
 
     fn ability(json: &str) -> Ability {
         serde_json::from_str(json).unwrap()
@@ -261,6 +263,39 @@ mod tests {
         // Damage to a creature of another player is dealt.
         let other = hit(wall, bear, amount);
         assert_eq!(events(&game, vec![other.clone()]), [other]);
+    }
+
+    /// Damage from several sources at once, each prevented to remove that many counters (Protean Hydra blocked by three
+    /// creatures), removes no more counters than the creature has, and the batch folds (CR 122.8, 609.3).
+    #[rstest]
+    fn simultaneous_preventions_remove_no_more_counters_than_there_are(
+        #[values(2, 4)] seats: usize,
+        #[values(2, 3, 4)] hits: u32,
+    ) {
+        let mut game = game(seats, &[SHEDS]);
+        let (wall, bear) = (at(&game, 1), at(&game, 2));
+        let on = Target::Object(game.object(wall).unwrap().reference());
+        crate::fold::apply_event(
+            &mut game,
+            &Event::CountersChanged(CountersChanged {
+                on,
+                counter: CounterKind::PlusOnePlusOne,
+                delta: 4,
+            }),
+        )
+        .unwrap();
+        let out = events(&game, (0..hits).map(|_| hit(bear, wall, 2)).collect());
+        let removed: i32 = out
+            .iter()
+            .map(|event| match event {
+                Event::CountersChanged(CountersChanged { delta, .. }) => -delta,
+                _ => 0,
+            })
+            .sum();
+        assert_eq!(removed, 4.min(2 * i32::try_from(hits).unwrap()), "{out:?}");
+        for event in &out {
+            crate::fold::apply_event(&mut game, event).unwrap();
+        }
     }
 
     #[rstest]

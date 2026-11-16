@@ -297,6 +297,19 @@ pub enum Rule {
     NoMaxHandSize(Vec<PlayerId>),
     /// The players may activate each of their planeswalkers' loyalty abilities twice each turn (CR 606.3).
     LoyaltyTwice(Vec<PlayerId>),
+    /// The players may activate one loyalty ability of each of their planeswalkers once more this turn (CR 606.3).
+    R6600LoyaltyOnceMore(Vec<PlayerId>),
+    /// The next time each creature adapts, it adapts as though it had no +1/+1 counters (CR 701.46a); read by the adapt.
+    R6600AdaptsFresh(Vec<ObjectRef>),
+    /// The loyalty ability `ability` printed on the permanent may be activated `times` more times this turn.
+    R6603LoyaltyAgain {
+        /// The planeswalker.
+        permanent: ObjectRef,
+        /// The index of the ability among the rules of its card.
+        ability: usize,
+        /// How many more activations.
+        times: u32,
+    },
     /// The players may pay the cost rather than the echo cost of each permanent they control (CR 702.30).
     EchoRather {
         /// The players it covers.
@@ -328,9 +341,6 @@ pub enum Rule {
     /// The legend rule does not apply to the permanents the selector picks, judged for the rule's controller (CR
     /// 704.5j).
     NoLegendRuleFor(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Selector),
-    /// The planeswalkers the selector picks, judged for the rule's controller, aren't put into their owners' graveyards
-    /// for having 0 loyalty (CR 704.5i).
-    ZeroLoyaltyStays(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Selector),
     /// Any player may pay the mana to ignore the other effects of the rule's source until end of turn (CR 116.2).
     PayToIgnore(ManaCost),
     /// The controller may activate abilities of the creatures the selector picks as though they had haste (CR 302.6).
@@ -359,6 +369,17 @@ pub enum Rule {
     SkipDrawStep(Vec<PlayerId>),
     /// The players may activate exhaust abilities again during their turns until they activate one.
     R6007ExhaustAgain(Vec<PlayerId>),
+    /// The permanents can't have more than `most` counters of the kind (`GameRule::R6500CounterCap`).
+    R6500CounterCap {
+        /// The permanents capped.
+        named: Vec<ObjectRef>,
+        /// The kind of counter.
+        counter: CounterKind,
+        /// The most they may have.
+        most: u32,
+    },
+    /// The players' planeswalkers stay on the battlefield with 0 loyalty (`GameRule::R6500ZeroLoyaltyStays`).
+    R6500ZeroLoyaltyStays(Vec<PlayerId>),
     /// The players may look at the top card of their library any time.
     LookAtTop(Vec<PlayerId>),
     /// The players may look at the face-down cards in exile the selector picks (CR 406.3).
@@ -522,6 +543,16 @@ pub enum Rule {
         #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
         leaves: bool,
     },
+    /// A shield over the resolution of spells (CR 608.2n): each of the spells, fixed when it was made, that would be put
+    /// into a graveyard as it resolves is replaced by `by` instead ("exile that card with a dream counter on it instead
+    /// of putting it into your graveyard as it resolves").
+    R6503ResolvesInstead {
+        /// The spells it covers.
+        objects: Vec<ObjectRef>,
+        /// What happens instead: a move to another zone, or other steps.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        by: mtg_cards::trigger::ReplaceBy,
+    },
     /// A shield over any event of a kind, judged when the event would happen: "if a creature would die this turn, exile it
     /// instead", "permanents enter tapped this turn". The controller and source of the effect that made it read its references.
     Replaces {
@@ -614,6 +645,10 @@ pub struct AttackTax {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(type = "unknown"))]
     pub costs: Vec<mtg_cards::cost::CostItem>,
+    /// The mana is paid once for each counter on the taxed creature as the attack is declared.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(optional, as = "Option<bool>"))]
+    pub per_counter: bool,
 }
 
 /// What a prevention shield protects and how much it prevents.
@@ -745,13 +780,16 @@ impl RuleEffect {
         let gone = |r: &ObjectRef| state.object(r.id).is_none_or(|o| o.counter() != r.counter);
         match &self.rule {
             Rule::MustAttack(named)
+            | Rule::R6600AdaptsFresh(named)
             | Rule::MustBlock(named)
             | Rule::CantBeCountered(named)
             | Rule::CantBeRegenerated(named)
+            | Rule::R6500CounterCap { named, .. }
             | Rule::MayCast {
                 only: Some(named), ..
             } => named.iter().all(gone),
             Rule::EntersWith { spell, .. } => gone(spell),
+            Rule::R6503ResolvesInstead { objects, .. } => objects.iter().all(gone),
             Rule::DiesInstead { objects, cast, .. } => objects.iter().all(|named| {
                 // A card named in another zone is the spell on the stack one zone change on (CR 400.7).
                 let cast_now = *cast
@@ -895,6 +933,10 @@ pub(crate) struct RulesInForce {
     no_hand_limit: BTreeSet<PlayerId>,
     /// The players who may activate each planeswalker's loyalty abilities twice each turn.
     loyalty_twice: BTreeSet<PlayerId>,
+    /// For each player, how many more loyalty activations of each of their planeswalkers the rules in force allow.
+    loyalty_once_more: BTreeMap<PlayerId, u32>,
+    /// The loyalty abilities that may be activated more times this turn, with how many more each rule allows.
+    r6603_loyalty_again: Vec<(ObjectRef, usize, u32)>,
     /// The costs each player may pay rather than the echo cost of a permanent they control, in the order the rules began.
     echo_rather: Vec<(PlayerId, mtg_cards::cost::Cost)>,
     /// The reveals of first draws in force: the controller, the source, whether optional, whether on their turns only.
@@ -908,6 +950,10 @@ pub(crate) struct RulesInForce {
     skip_draw: BTreeSet<PlayerId>,
     /// The players who may activate exhaust abilities again (`R6007ExhaustAgain`).
     exhaust_again: BTreeSet<PlayerId>,
+    /// The counter caps on permanents: the permanent, the kind and the most it may have (`R6500CounterCap`).
+    r6500_caps: Vec<(ObjectId, CounterKind, u32)>,
+    /// The players whose planeswalkers stay with 0 loyalty (`R6500ZeroLoyaltyStays`).
+    r6500_zero_loyalty: BTreeSet<PlayerId>,
     look_top: BTreeSet<PlayerId>,
     extra_lands: BTreeMap<PlayerId, u32>,
     again: Vec<Again>,
@@ -915,8 +961,6 @@ pub(crate) struct RulesInForce {
     hand_change: BTreeMap<PlayerId, i64>,
     no_legend: BTreeSet<PlayerId>,
     no_legend_for: Vec<NoLegendFor>,
-    /// The planeswalkers that stay with 0 loyalty, by rule (CR 704.5i).
-    zero_loyalty_stays: Vec<NoLegendFor>,
     /// The sources whose effects a player may pay to ignore, with the price (`Rule::PayToIgnore`).
     pay_to_ignore: Vec<(ObjectRef, ManaCost)>,
     /// The creatures whose abilities may be activated as though they had haste, by rule.
@@ -1195,15 +1239,6 @@ impl RulesInForce {
                     self.pay_to_ignore.push((source, cost.clone()));
                 }
             }
-            Rule::ZeroLoyaltyStays(what) => {
-                if let Some(source) = source {
-                    self.zero_loyalty_stays.push(NoLegendFor {
-                        controller,
-                        source,
-                        what: what.clone(),
-                    });
-                }
-            }
             Rule::UntapDuring { what, whose } => {
                 if let Some(source) = source {
                     self.untap_during.push(UntapDuring {
@@ -1454,6 +1489,19 @@ impl RulesInForce {
                 .extend(players.iter().map(|player| (*player, controller))),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
             Rule::LoyaltyTwice(players) => self.loyalty_twice.extend(players),
+            Rule::R6600LoyaltyOnceMore(players) => {
+                for player in players {
+                    let more = self.loyalty_once_more.entry(*player).or_default();
+                    *more = more.saturating_add(1);
+                }
+            }
+            Rule::R6603LoyaltyAgain {
+                permanent,
+                ability,
+                times,
+            } => self
+                .r6603_loyalty_again
+                .push((*permanent, *ability, *times)),
             Rule::EchoRather { players, cost } => self
                 .echo_rather
                 .extend(players.iter().map(|player| (*player, cost.clone()))),
@@ -1473,7 +1521,6 @@ impl RulesInForce {
             | Rule::HandSizeChange(_)
             | Rule::NoLegendRule(_)
             | Rule::NoLegendRuleFor(_)
-            | Rule::ZeroLoyaltyStays(_)
             | Rule::PayToIgnore(_)
             | Rule::AbilitiesAsThoughHaste(_)
             | Rule::UntapDuring { .. } => {
@@ -1481,6 +1528,16 @@ impl RulesInForce {
             }
             Rule::SkipDrawStep(players) => self.skip_draw.extend(players),
             Rule::R6007ExhaustAgain(players) => self.exhaust_again.extend(players),
+            Rule::R6500CounterCap {
+                named,
+                counter,
+                most,
+            } => self.r6500_caps.extend(
+                ids(named)
+                    .into_iter()
+                    .map(|id| (id, counter.clone(), *most)),
+            ),
+            Rule::R6500ZeroLoyaltyStays(players) => self.r6500_zero_loyalty.extend(players),
             Rule::UntapLimit { who, what, count } => {
                 if let Some(source) = source {
                     self.untap_limits.push(crate::rmt4_untap_limit::UntapLimit {
@@ -1612,12 +1669,15 @@ impl RulesInForce {
             )),
             // Shields are read by the replacement step, spell costs by the cost step and the bonuses of a spell's mana
             // where it resolves (`spend_rider::entering`), from the rule changes themselves.
+            // The adapt reads its rule from the rule changes themselves.
             Rule::EntersWith { .. }
+            | Rule::R6600AdaptsFresh(_)
             | Rule::Planar
             | Rule::SpellCost { .. }
             | Rule::PreventDamage(_)
             | Rule::Regenerate(_)
             | Rule::DiesInstead { .. }
+            | Rule::R6503ResolvesInstead { .. }
             | Rule::Replaces { .. } => {}
             Rule::DamageAsWither => self.damage_as_wither = true,
             Rule::ManaBurn => self.mana_burn = true,
@@ -1743,6 +1803,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             combat: *combat,
         },
         GameRule::MustAttack(who) => Rule::MustAttack(objects(who, Zone::Battlefield)?),
+        GameRule::R6600AdaptsFresh(who) => Rule::R6600AdaptsFresh(objects(who, Zone::Battlefield)?),
         GameRule::MustAttackPlayers { who, players } => Rule::MustAttackPlayers(
             objects(who, Zone::Battlefield)?
                 .into_iter()
@@ -1811,8 +1872,23 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 mana: repeated(mana.rest(), times),
                 life: life.saturating_mul(u32::try_from(times).unwrap_or(u32::MAX)),
                 costs: crate::announce::r6400_combat_costs::r6400_repeated(cost, times),
+                per_counter: false,
             })
         }
+        GameRule::R6601AttackTaxPerCounter {
+            who,
+            attacked,
+            attackers,
+            mana,
+        } => Rule::AttackTax(AttackTax {
+            players: scope.players(who)?,
+            attacked: *attacked,
+            creatures: attackers.clone(),
+            mana: mana.rest().clone(),
+            life: 0,
+            costs: Vec::new(),
+            per_counter: true,
+        }),
         GameRule::BlockTax { .. } => crate::block_tax::lower(scope, wanted)?,
         GameRule::AttackLimit(most) => Rule::AttackLimit(*most),
         GameRule::AttackLimitAt { most, at } => attack_limit_at(scope, *most, at)?,
@@ -1963,7 +2039,6 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         | GameRule::HandSizeChange { .. }
         | GameRule::NoLegendRule(_)
         | GameRule::NoLegendRuleFor(_)
-        | GameRule::ZeroLoyaltyStays(_)
         | GameRule::PayToIgnore(_)
         | GameRule::AbilitiesAsThoughHaste(_)
         | GameRule::UntapDuring { .. } => lower_option(scope, wanted)?,
@@ -1987,6 +2062,8 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::NoMaxHandSize(who) => Rule::NoMaxHandSize(scope.players(who)?),
         GameRule::LoyaltyTwice(who) => Rule::LoyaltyTwice(scope.players(who)?),
+        GameRule::R6600LoyaltyOnceMore(who) => Rule::R6600LoyaltyOnceMore(scope.players(who)?),
+        GameRule::R6603LoyaltyAgain(times) => r6603_lower_loyalty_again(scope, *times)?,
         GameRule::EchoRather(cost) => Rule::EchoRather {
             players: scope.players(&Ref::You)?,
             cost: cost.clone(),
@@ -2006,6 +2083,16 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         ),
         GameRule::SkipDrawStep(who) => Rule::SkipDrawStep(scope.players(who)?),
         GameRule::R6007ExhaustAgain(who) => Rule::R6007ExhaustAgain(scope.players(who)?),
+        GameRule::R6500CounterCap {
+            what,
+            counter,
+            most,
+        } => Rule::R6500CounterCap {
+            named: objects(what, Zone::Battlefield)?,
+            counter: counter.clone(),
+            most: *most,
+        },
+        GameRule::R6500ZeroLoyaltyStays(who) => Rule::R6500ZeroLoyaltyStays(scope.players(who)?),
         GameRule::AdditionalLandPlays { who, count } => {
             let count = u32::try_from(scope.amount(count)?.max(0)).unwrap_or(u32::MAX);
             Rule::AdditionalLandPlays(
@@ -2085,7 +2172,6 @@ fn lower_option(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveErr
         }
         GameRule::NoLegendRule(who) => Rule::NoLegendRule(scope.players(who)?),
         GameRule::NoLegendRuleFor(what) => Rule::NoLegendRuleFor(what.clone()),
-        GameRule::ZeroLoyaltyStays(what) => Rule::ZeroLoyaltyStays(what.clone()),
         GameRule::PayToIgnore(cost) => Rule::PayToIgnore(cost.rest().clone()),
         GameRule::AbilitiesAsThoughHaste(what) => Rule::AbilitiesAsThoughHaste(what.clone()),
         GameRule::UntapDuring { what, whose } => Rule::UntapDuring {
@@ -2119,9 +2205,11 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
             tax.mana.symbols().is_empty() && tax.life == 0 && tax.costs.is_empty()
         }
         Rule::MustAttack(named)
+        | Rule::R6600AdaptsFresh(named)
         | Rule::MustBlock(named)
         | Rule::CantBeCountered(named)
         | Rule::CantBeRegenerated(named)
+        | Rule::R6500CounterCap { named, .. }
         | Rule::PowerUpAgain(named) => named.is_empty(),
         Rule::EntersWith {
             counters, keyword, ..
@@ -2168,15 +2256,18 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
         | Rule::R6007ExhaustAgain(players)
+        | Rule::R6500ZeroLoyaltyStays(players)
         | Rule::NoLegendRule(players)
         | Rule::NoMaxHandSize(players)
         | Rule::LoyaltyTwice(players)
+        | Rule::R6600LoyaltyOnceMore(players)
         | Rule::EchoRather { players, .. }
         | Rule::BoastTwice(players)
         | Rule::LoyaltyAnyTime(players)
         | Rule::AttackAsThoughHasteAt(players) => players.is_empty(),
         Rule::MayCastRather { casts, .. } => casts.is_empty(),
         Rule::MaxHandSize(sizes) => sizes.is_empty(),
+        Rule::R6603LoyaltyAgain { times, .. } => *times == 0,
         Rule::LoyaltyCostsMore(more) => more.iter().all(|(_, plus)| *plus == 0),
         Rule::HandSizeChange(changes) => changes.is_empty(),
         Rule::UntapDuring { whose, .. } => whose.is_empty(),
@@ -2200,7 +2291,6 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::AttackLimit(_)
         | Rule::BlockLimit(_)
         | Rule::NoLegendRuleFor(_)
-        | Rule::ZeroLoyaltyStays(_)
         | Rule::PayToIgnore(_)
         | Rule::AbilitiesAsThoughHaste(_)
         | Rule::ReverseTurnOrder
@@ -2215,7 +2305,9 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
             shield.to.as_ref().is_some_and(Vec::is_empty)
                 || shield.from.as_ref().is_some_and(Vec::is_empty)
         }
-        Rule::DiesInstead { objects, .. } => objects.is_empty(),
+        Rule::DiesInstead { objects, .. } | Rule::R6503ResolvesInstead { objects, .. } => {
+            objects.is_empty()
+        }
         Rule::GraveyardCardsUntargetable
         | Rule::CantLoseGame { .. }
         | Rule::CantCastSpells { .. }
@@ -2372,6 +2464,8 @@ static NONE: RulesInForce = RulesInForce {
     exile_found: Vec::new(),
     no_hand_limit: BTreeSet::new(),
     loyalty_twice: BTreeSet::new(),
+    loyalty_once_more: BTreeMap::new(),
+    r6603_loyalty_again: Vec::new(),
     echo_rather: Vec::new(),
     reveal_first_draw: Vec::new(),
     boast_twice: BTreeSet::new(),
@@ -2379,6 +2473,8 @@ static NONE: RulesInForce = RulesInForce {
     loyalty_more: BTreeMap::new(),
     skip_draw: BTreeSet::new(),
     exhaust_again: BTreeSet::new(),
+    r6500_caps: Vec::new(),
+    r6500_zero_loyalty: BTreeSet::new(),
     look_top: BTreeSet::new(),
     extra_lands: BTreeMap::new(),
     again: Vec::new(),
@@ -2386,7 +2482,6 @@ static NONE: RulesInForce = RulesInForce {
     hand_change: BTreeMap::new(),
     no_legend: BTreeSet::new(),
     no_legend_for: Vec::new(),
-    zero_loyalty_stays: Vec::new(),
     pay_to_ignore: Vec::new(),
     haste_for_abilities: Vec::new(),
     untap_during: Vec::new(),
@@ -2524,6 +2619,7 @@ pub(crate) fn fold_created(state: &mut GameState, effect: &RuleEffect) -> Result
         Rule::PreventDamage(_)
             | Rule::Regenerate(_)
             | Rule::DiesInstead { .. }
+            | Rule::R6503ResolvesInstead { .. }
             | Rule::Replaces { .. }
     ) {
         state.possible.replacements = true;
@@ -2788,14 +2884,56 @@ pub fn skips_extra_turns(state: &GameState, player: PlayerId) -> bool {
     state.rules().skip_extra_turns.contains(&player)
 }
 
+/// The rule "you may activate ~'s loyalty ability N more times this turn" as the loyalty ability that resolves makes it:
+/// about that ability of its source; refused by name when no loyalty ability of a permanent is resolving.
+fn r6603_lower_loyalty_again(scope: &Scope<'_>, times: u32) -> Result<Rule, ResolveError> {
+    let unsupported = || ResolveError::Unsupported("Rule.R6603LoyaltyAgain");
+    let state = scope.state;
+    let ability = state
+        .resolving()
+        .and_then(|running| state.object(running.object))
+        .and_then(GameObject::ability)
+        .filter(|ability| {
+            ability.source() == scope.source
+                && ability.origin().is_printed()
+                && matches!(ability.rules(), mtg_cards::ability::Ability::Loyalty { .. })
+        })
+        .ok_or_else(unsupported)?;
+    Ok(Rule::R6603LoyaltyAgain {
+        permanent: scope.source,
+        ability: ability.index(),
+        times,
+    })
+}
+
+/// How many more times this turn the loyalty ability `ability` of `permanent` may be activated than its planeswalker's
+/// loyalty abilities otherwise may.
+pub fn r6603_loyalty_again(state: &GameState, permanent: ObjectRef, ability: usize) -> u32 {
+    state
+        .rules()
+        .r6603_loyalty_again
+        .iter()
+        .filter(|(on, index, _)| *on == permanent && *index == ability)
+        .map(|(_, _, times)| *times)
+        .sum()
+}
+
 /// How many times each turn `player` may activate the loyalty abilities of one planeswalker they control: twice under a
-/// rule that allows it (Oath of Teferi), else once (CR 606.3).
+/// rule that allows it (Oath of Teferi), else once (CR 606.3), and once more for each rule that grants one more
+/// activation this turn (The Chain Veil).
 pub fn loyalty_activations(state: &GameState, player: PlayerId) -> u32 {
-    if state.rules().loyalty_twice.contains(&player) {
+    let base: u32 = if state.rules().loyalty_twice.contains(&player) {
         2
     } else {
         1
-    }
+    };
+    let more = state
+        .rules()
+        .loyalty_once_more
+        .get(&player)
+        .copied()
+        .unwrap_or(0);
+    base.saturating_add(more)
 }
 
 /// The costs `player` may pay rather than the echo cost of a permanent they control (Thick-Skinned Goblin), in the
@@ -2837,6 +2975,31 @@ pub(crate) fn draws_from_bottom(state: &GameState, player: PlayerId) -> bool {
 
 /// Whether `player` may activate an exhaust ability of theirs that was activated before: a rule in force says so, it is
 /// their turn and they haven't activated an exhaust ability this turn (Elvish Refueler).
+/// Whether any counter cap is in force.
+pub(crate) fn r6500_any_counter_caps(state: &GameState) -> bool {
+    !state.rules().r6500_caps.is_empty()
+}
+
+/// The most counters of the kind the permanent `id` may have, the lowest of the caps in force; none without one.
+pub(crate) fn r6500_counter_cap(
+    state: &GameState,
+    id: ObjectId,
+    kind: &CounterKind,
+) -> Option<u32> {
+    state
+        .rules()
+        .r6500_caps
+        .iter()
+        .filter(|(capped, counter, _)| *capped == id && counter == kind)
+        .map(|(_, _, most)| *most)
+        .min()
+}
+
+/// Whether the planeswalkers `player` controls stay on the battlefield with 0 loyalty (CR 704.5i).
+pub fn r6500_zero_loyalty_stays(state: &GameState, player: PlayerId) -> bool {
+    state.rules().r6500_zero_loyalty.contains(&player)
+}
+
 pub(crate) fn r6007_exhaust_again(state: &GameState, player: PlayerId) -> bool {
     state.rules().exhaust_again.contains(&player)
         && state.active_player().is_some()
@@ -3197,7 +3360,9 @@ pub(crate) fn grants_look(state: &GameState, viewer: PlayerId, card: &GameObject
 fn r305c_cast_anyway(state: &GameState, player: PlayerId, card: &GameObject) -> bool {
     match card.zone() {
         Zone::Hand(owner) => owner == player,
-        Zone::Command(owner) => owner == player && state.is_commander(card.id()),
+        Zone::Command(owner) => {
+            owner == player && (state.is_commander(card.id()) || state.in_satchel(card.id()))
+        }
         zone => cast_permissions(state).iter().any(|other| {
             !other.opens_no_zone
                 && other.adds_to_printed(crate::resolve::zone_kind(zone))
@@ -3384,19 +3549,6 @@ pub fn no_legend_rule_for(state: &GameState, id: ObjectId) -> bool {
         return false;
     };
     state.rules().no_legend_for.iter().any(|rule| {
-        Scope::announcing(state, rule.controller, rule.source)
-            .selects(&rule.what, object.reference())
-            .unwrap_or(false)
-    })
-}
-
-/// Whether a rule says the planeswalker `id` isn't put into its owner's graveyard for having 0 loyalty, judged for the
-/// rule's controller: the one place the state-based actions read these rules (CR 704.5i).
-pub fn zero_loyalty_stays(state: &GameState, id: ObjectId) -> bool {
-    let Some(object) = state.object(id) else {
-        return false;
-    };
-    state.rules().zero_loyalty_stays.iter().any(|rule| {
         Scope::announcing(state, rule.controller, rule.source)
             .selects(&rule.what, object.reference())
             .unwrap_or(false)

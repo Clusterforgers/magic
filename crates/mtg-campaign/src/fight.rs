@@ -27,6 +27,9 @@ pub struct HeroSeat {
     pub hand: u32,
     /// The relics in its command zone.
     pub relics: Vec<String>,
+    /// Its commander upgrades, each an emblem in its command zone beside the relics.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub upgrades: Vec<crate::upgrade::Upgrade>,
 }
 
 /// The boss's seat in a fight.
@@ -157,7 +160,7 @@ impl FightPlan {
     }
 
     /// `setup` (one deck for each seat: the heroes', the boss's, then the minions') made into this fight: its house
-    /// rules, the relics and boss cards in the command zones, the heroes' Spirit emblem, the boss's phases and scheme
+    /// rules, the relics, commander upgrades and boss cards in the command zones, the heroes' Spirit emblem, the boss's phases and scheme
     /// deck, and the minions bound to the boss. The boss's deck is no Commander deck, so the decks are not checked
     /// against the format.
     pub fn apply(&self, content: &Content, setup: GameSetup) -> Result<GameSetup, CampaignError> {
@@ -176,12 +179,15 @@ impl FightPlan {
         };
         let mut emblems = Vec::new();
         for hero in &self.heroes {
-            emblems.push(
-                hero.relics
-                    .iter()
-                    .map(|id| content.card(id).map(crate::content::CustomCard::definition))
-                    .collect::<Result<Vec<_>, _>>()?,
-            );
+            let mut own = hero
+                .relics
+                .iter()
+                .map(|id| content.card(id).map(crate::content::CustomCard::definition))
+                .collect::<Result<Vec<_>, _>>()?;
+            for upgrade in &hero.upgrades {
+                own.push(upgrade.definition()?);
+            }
+            emblems.push(own);
         }
         emblems.push(cards(&self.boss.rules)?);
         for minion in &self.minions {

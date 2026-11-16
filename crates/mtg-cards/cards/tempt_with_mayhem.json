@@ -1,0 +1,62 @@
+{
+  "oracle_id": "cbf64c58-664f-431f-987e-08ae70d23f2b",
+  "name": "Tempt with Mayhem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tempt with Mayhem",
+      "oracle_fingerprint": "6b7dc719a492e5b13f0f9fd9bc84147a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "opponent" },
+                        "effects": [
+                          {
+                            "CopySpell": {
+                              "what": { "Target": 0 },
+                              "who": { "Bound": "opponent" },
+                              "new_targets": true
+                            }
+                          },
+                          {
+                            "Bind": {
+                              "what": { "Bound": "opponent" },
+                              "as": "copied",
+                              "adds": true
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "CopySpell": {
+                  "what": { "Target": 0 },
+                  "count": { "Sum": [1, { "Players": { "Bound": "copied" } }] },
+                  "new_targets": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

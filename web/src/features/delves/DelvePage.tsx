@@ -33,7 +33,7 @@ import type { LastPlayed, PickerDecks } from './deckPicker'
 import { BossIntro } from './BossIntro'
 import { DeckPicker } from './DeckPicker'
 import { FightLog } from './FightLog'
-import { lastFight, listOf, nextStep } from './model'
+import { heatTier, lastFight, listOf, nextStep, regroupLife } from './model'
 import type { FindCard } from './findCard'
 import { PartyLobby } from './PartyLobby'
 import { ResultPanel } from './ResultPanel'
@@ -49,13 +49,16 @@ const LOSS_NOTE = {
   closed: 'The fight’s table closed without a result, which counts as a lost fight: the party lost a heart',
 } as const
 
-/** The host's way out of a fight: it counts as lost, with the heart and the half life that costs. */
+/** The host's way out of a fight: it counts as lost, with the heart it costs and the life the heroes regroup at. */
 function RetreatButton({
   hearts,
+  regroup,
   busy,
   onRetreat,
 }: {
   hearts: number
+  /** The life every hero regroups at: full before the first boss, half later. */
+  regroup: 'full' | 'half'
   busy: boolean
   onRetreat: () => void
 }) {
@@ -75,7 +78,7 @@ function RetreatButton({
           <AlertDialogTitle>Retreat from the fight?</AlertDialogTitle>
           <AlertDialogDescription>
             {hearts > 1
-              ? `The fight counts as lost: the party loses a heart (${hearts - 1} left), every hero regroups at half life and the boss is faced again from the start.`
+              ? `The fight counts as lost: the party loses a heart (${hearts - 1} left), every hero regroups at ${regroup} life and the boss is faced again from the start.`
               : 'This is the last heart: retreating ends the run in defeat.'}
           </AlertDialogDescription>
           <AlertDialogFooter>
@@ -121,14 +124,20 @@ function FightPanel({
     .filter((problem) => problem.hero !== view.me)
     .map((problem) => view.run.heroes[problem.hero]?.name ?? `Hero ${problem.hero + 1}`)
   const retreat = view.host ? (
-    <RetreatButton hearts={view.run.hearts} busy={busy} onRetreat={onRetreat} />
+    <RetreatButton
+      hearts={view.run.hearts}
+      regroup={regroupLife(view.run)}
+      busy={busy}
+      onRetreat={onRetreat}
+    />
   ) : null
   return (
     <BossIntro view={view} content={content}>
       <div className="grid gap-2">
         {lost === 'lost' || lost === 'retreated' || lost === 'closed' ? (
           <p role="status" className="rounded-lg border border-destructive/50 bg-surface p-3 text-sm">
-            {LOSS_NOTE[lost]} ({view.run.hearts} left). Every hero regroups at half life for another try.
+            {LOSS_NOTE[lost]} ({view.run.hearts} left). Every hero regroups at {regroupLife(view.run)} life
+            for another try.
           </p>
         ) : null}
         {game !== null ? (
@@ -192,7 +201,9 @@ function EndPanel({ view, content }: { view: DelveView; content: DelveContent })
         <dt className="text-muted-foreground">Hearts left</dt>
         <dd className="font-semibold">{view.run.hearts}</dd>
         <dt className="text-muted-foreground">Heat</dt>
-        <dd className="font-semibold">{view.run.heat}</dd>
+        <dd className="font-semibold">
+          {view.run.heat} · {heatTier(view.run.heat).name}
+        </dd>
         <dt className="text-muted-foreground">Rooms</dt>
         <dd className="font-semibold">{view.run.cleared.length}</dd>
       </dl>
@@ -262,7 +273,7 @@ function RoomPanel({
           className="flex items-center gap-2 rounded-xl border-2 border-relic bg-delve-stone p-3 text-sm font-medium"
         >
           <TrophyIcon aria-hidden="true" className="size-5 text-relic" />
-          {boss ? `${boss.name} falls!` : 'The boss falls!'} Each hero heals 10, takes 50 gold and picks loot.
+          {boss ? `${boss.name} falls!` : 'The boss falls!'} Each hero heals 15, takes 50 gold and picks loot.
         </p>
       ) : null}
       {offer && me ? (
@@ -273,6 +284,7 @@ function RoomPanel({
           content={content}
           busy={busy}
           find={find}
+          mirror={view.mirror ?? []}
           onPick={(pick) => act({ kind: 'pick', pick })}
         />
       ) : null}

@@ -276,6 +276,10 @@ pub enum CostItem {
     /// amount of life you gained this turn"); pays nothing itself. A payment an effect asks for (`Effect::Pay`) reads it,
     /// and so does the announcement of a spell that holds it as a required `AdditionalCost` (Open the Way).
     XAtMost(crate::value::Amount),
+    /// The X of the cost is this amount, defined by the text and counted as the spell is cast or the ability activated
+    /// (CR 107.3c, 601.2b): no player chooses it ("X is the number of pin counters on this artifact"); pays nothing
+    /// itself. A spell holds it as a required `AdditionalCost`.
+    XIs(crate::value::Amount),
     /// Forage (Bloomburrow): exile three cards from the payer's graveyard or sacrifice a Food they control.
     Forage,
     /// Craft materials (CR 702.167): exile permanents the payer controls and/or cards in their graveyard that match, other than the source.

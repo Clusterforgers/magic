@@ -44,6 +44,7 @@ pub(crate) fn setup(
             attractions: Vec::new(),
             stickers: Vec::new(),
             emblems: Vec::new(),
+            satchel: Vec::new(),
             spirit: None,
             phases: Vec::new(),
             schemes: Vec::new(),

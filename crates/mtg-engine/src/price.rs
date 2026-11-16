@@ -115,6 +115,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::XColor(_) => "Cost.XColor",
         CostItem::ChosenColorOnly => "Cost.ChosenColorOnly",
         CostItem::XAtMost(_) => "Cost.XAtMost",
+        CostItem::XIs(_) => "Cost.XIs",
     }
 }
 
@@ -248,7 +249,10 @@ impl Price {
                 // The least X is read where X is announced (`announce/x.rs`), the most where an effect asks the payment
                 // (`resolve/prim/w6c_pay_x.rs`); "spend only mana of the chosen color" where the total of an activation
                 // is worked out (`chosen_color_only`).
-                CostItem::XAtLeast(_) | CostItem::XAtMost(_) | CostItem::ChosenColorOnly => {}
+                CostItem::XAtLeast(_)
+                | CostItem::XAtMost(_)
+                | CostItem::XIs(_)
+                | CostItem::ChosenColorOnly => {}
                 CostItem::XColor(color) => x_color = Some(*color),
                 CostItem::Waterbend(_) if !waterbend_ok => return Err(unpaid(item)),
                 CostItem::Waterbend(Amount::X) => {

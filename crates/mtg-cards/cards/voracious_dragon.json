@@ -1,7 +1,7 @@
 {
   "oracle_id": "7f39bbae-6c84-4cb3-9a58-d746a723ad35",
   "name": "Voracious Dragon",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Voracious Dragon",
@@ -10,9 +10,22 @@
         { "Keyword": "Flying" },
         { "Keyword": { "Devour": { "counters": 1, "of": [{ "Type": "Creature" }] } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 133, "end": 239 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "R6500DevouredMatching": [{ "Subtype": "Goblin" }] }
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

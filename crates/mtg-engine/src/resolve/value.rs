@@ -958,6 +958,53 @@ impl<'a> Scope<'a> {
             .map_or(0, |permanent| i64::from(permanent.devoured()))
     }
 
+    /// The number the objects `of` names station with (CR 702.184a): each one's power, or its toughness while a rule says
+    /// it stations using its toughness, as it is or as it last was.
+    fn r6500_station_value(&self, of: &Ref) -> Result<i64, ResolveError> {
+        Ok(self
+            .objects(of)?
+            .iter()
+            .filter_map(|object| {
+                let seen = self.seen(self.as_it_left(*object))?;
+                let by_toughness =
+                    crate::combat_quirks::r6500_stations_by_toughness(self.state, object.id);
+                let stat = if by_toughness {
+                    StatKind::Toughness
+                } else {
+                    StatKind::Power
+                };
+                Self::stat(&seen, stat)
+            })
+            .sum())
+    }
+
+    /// How many of the permanents the source devoured as it entered the filter matches, each as it last existed on the
+    /// battlefield; zero once the source has left the battlefield.
+    fn r6500_devoured_matching(&self, filter: &Selector) -> Result<i64, ResolveError> {
+        let Some((_, shots)) = self
+            .state
+            .r5522
+            .r6500_devoured
+            .iter()
+            .find(|(held, _)| *held == self.source)
+        else {
+            return Ok(0);
+        };
+        let mut scope = self.clone();
+        scope.snapshots.extend(shots.iter());
+        let mut count = 0i64;
+        for shot in shots {
+            let reference = ObjectRef {
+                id: shot.id,
+                counter: shot.counter,
+            };
+            if scope.selects(filter, reference)? {
+                count += 1;
+            }
+        }
+        Ok(count)
+    }
+
     /// How many times the permanents `of` names have mutated (CR 702.140): as they are, or as they were when they left.
     fn mutations(&self, of: &Ref) -> Result<i64, ResolveError> {
         let mut total = 0i64;
@@ -1348,11 +1395,7 @@ impl<'a> Scope<'a> {
         Ok(match reference {
             Ref::You => vec![Target::Player(self.controller)],
             Ref::Opponents | Ref::Teammates => self.r4710_side(reference),
-            Ref::EachPlayer => state
-                .turn_order_from(state.turn().active())
-                .into_iter()
-                .map(Target::Player)
-                .collect(),
+            Ref::EachPlayer | Ref::R6501PlayersFromYou => self.r6501_turn_order(reference),
             Ref::This => vec![Target::Object(self.source)],
             Ref::Affected => {
                 let (object, read) = self.affected.ok_or_else(|| {
@@ -1410,6 +1453,7 @@ impl<'a> Scope<'a> {
                 .into_iter()
                 .map(Target::Player)
                 .collect(),
+            Ref::R6601HighestRollers => self.r6601_highest_rollers(),
             Ref::AttackedThisTurn => self
                 .r5523_attacked_this_turn()
                 .into_iter()
@@ -1433,6 +1477,7 @@ impl<'a> Scope<'a> {
             Ref::SourceOf(of) => self.r302b_sources(of)?,
             Ref::PlayersWhere { who, test } => self.players_where(who, test)?,
             Ref::Seated { of, side, opponent } => self.r376_seated(of, *side, *opponent)?,
+            Ref::R6602FromYou => self.r6602_from_you(),
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
             Ref::OpponentsOf(inner) => self.r5523_opponents_of(inner)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,
@@ -1501,7 +1546,30 @@ impl<'a> Scope<'a> {
             .collect()
     }
 
+    /// Every player still in the game in turn order starting with the controller (`Ref::R6602FromYou`).
+    fn r6602_from_you(&self) -> Vec<Target> {
+        self.state
+            .turn_order_from(self.controller)
+            .into_iter()
+            .map(Target::Player)
+            .collect()
+    }
+
     /// The controller's opponents, or their teammates, still in the game in turn order.
+    /// Every player in turn order: from the active player, or from the controller for "starting with you".
+    fn r6501_turn_order(&self, reference: &Ref) -> Vec<Target> {
+        let start = if *reference == Ref::R6501PlayersFromYou {
+            self.controller
+        } else {
+            self.state.turn().active()
+        };
+        self.state
+            .turn_order_from(start)
+            .into_iter()
+            .map(Target::Player)
+            .collect()
+    }
+
     fn r4710_side(&self, reference: &Ref) -> Vec<Target> {
         let players = if *reference == Ref::Teammates {
             self.state.r4710_teammates_of(self.controller)
@@ -2228,21 +2296,22 @@ impl<'a> Scope<'a> {
                 op.holds(i64::from(seen.counters.of(kind)), i64::from(*to))
             }
             Pred::Named(name) => {
-                seen.card.is_some_and(|c| {
-                    crate::un34_stickers::name_with(&seen.chars.name_words, &c.card().name) == *name
-                }) || self.r4703_counts_as_named(name, seen)
+                seen.card
+                    .is_some_and(|c| seen.chars.name_for(&c.card().name) == *name)
+                    || self.r4703_counts_as_named(name, seen)
             }
-            Pred::OriginallyPrintedIn(set) => seen.card.is_some_and(|c| {
-                set.has(&crate::un34_stickers::name_with(
-                    &seen.chars.name_words,
-                    &c.card().name,
-                ))
-            }),
+            Pred::OriginallyPrintedIn(set) => seen
+                .card
+                .is_some_and(|c| set.has(&seen.chars.name_for(&c.card().name))),
             Pred::ChosenColor
             | Pred::ChosenSubtype
             | Pred::NthChosenLandType(_)
             | Pred::ChosenName
             | Pred::ChosenAs(_) => self.chosen_pred(pred, seen),
+            Pred::R6600OnlyControllersColor(name) => {
+                matches!(self.chosen_value(&crate::resolve::r6600_player_value(name, seen.controller)), Some(Chosen::Color(color))
+                    if seen.chars.colors == mtg_core::color::ColorSet::default().with(*color))
+            }
             // Alone it holds when the object fits in the total; the choice keeps the sum (`r6003_total`).
             Pred::TotalAtMost { stat, most } => {
                 Self::stat(seen, *stat).unwrap_or(0) <= self.amount(most)?
@@ -2258,6 +2327,10 @@ impl<'a> Scope<'a> {
                 self.candidate.set(before);
                 let (left, right) = amounts?;
                 op.holds(left, right)
+            }
+            Pred::R6500StartedTurnUntapped => {
+                seen.zone == Zone::Battlefield
+                    && self.state.r5522.r6500_untapped.contains(&reference)
             }
             Pred::Modified
             | Pred::RingBearer
@@ -2334,12 +2407,13 @@ impl<'a> Scope<'a> {
     pub(super) fn card_name(seen: &Seen<'_>) -> Option<String> {
         seen.card
             .filter(|card| card.face_down().is_none())
-            .map(|card| card.card().name.clone())
+            .map(|card| seen.chars.name_for(&card.card().name))
     }
 
     pub(super) fn stat(seen: &Seen<'_>, stat: StatKind) -> Option<i64> {
         match stat {
-            StatKind::Power => seen.chars.power.map(i64::from),
+            // Without the state, the number it stations with is its power; `r6500_station_value` reads the rule.
+            StatKind::Power | StatKind::R6500StationValue => seen.chars.power.map(i64::from),
             StatKind::Toughness => seen.chars.toughness.map(i64::from),
             StatKind::Colors => i64::try_from(seen.chars.colors.iter().count()).ok(),
             // The base after the effects that set it (CR 613.4b): a printed 1/1 that an effect made 3/3 reads 3.
@@ -2463,6 +2537,10 @@ impl<'a> Scope<'a> {
                 }
                 total
             }
+            Amount::Stat {
+                of,
+                stat: StatKind::R6500StationValue,
+            } => self.r6500_station_value(of)?,
             Amount::R374AtMost(inner, most) => self.r374_at_most(inner, *most)?,
             Amount::Stat { of, stat } => self
                 .objects(of)?
@@ -2568,6 +2646,7 @@ impl<'a> Scope<'a> {
             Amount::Promised => i64::from(self.payments(OptionalKind::Gift) > 0),
             Amount::ResolvedThisTurn => self.resolved_this_turn(),
             Amount::Devoured => self.w7e_devoured(),
+            Amount::R6500DevouredMatching(filter) => self.r6500_devoured_matching(filter)?,
             Amount::RemovedThisWay(_) => i64::from(self.choices.cost_counters_removed()),
             Amount::Bound(name) => self.kept_number(name),
             Amount::CastWith(way) => i64::from(self.cast_way() == Some(*way)),
@@ -2896,9 +2975,9 @@ impl<'a> Scope<'a> {
             Chosen::CreatureType(subtype) | Chosen::LandType(subtype) => has_subtype(subtype),
             Chosen::LandTypes(types) => types.iter().any(has_subtype),
             Chosen::CardType(kind) => seen.chars.types.contains(*kind),
-            Chosen::Name(name) => seen.card.is_some_and(|c| {
-                crate::un34_stickers::name_with(&seen.chars.name_words, &c.card().name) == *name
-            }),
+            Chosen::Name(name) => seen
+                .card
+                .is_some_and(|c| seen.chars.name_for(&c.card().name) == *name),
             Chosen::Player(_)
             | Chosen::Players(_)
             | Chosen::Chapter(_)
@@ -3090,6 +3169,26 @@ impl<'a> Scope<'a> {
             .unwrap_or(i64::from(i32::MAX)))
     }
 
+    /// The players whose latest die of the resolution is the highest die any player rolled in it.
+    fn r6601_highest_rollers(&self) -> Vec<Target> {
+        let rollers = self
+            .state
+            .resolving
+            .as_ref()
+            .map_or(&[][..], |resolving| &resolving.r6601_rollers[..]);
+        let mut latest: Vec<(PlayerId, u32)> = Vec::new();
+        for (player, result) in rollers {
+            latest.retain(|(held, _)| held != player);
+            latest.push((*player, *result));
+        }
+        let highest = latest.iter().map(|(_, result)| *result).max();
+        latest
+            .into_iter()
+            .filter(|(_, result)| Some(*result) == highest)
+            .map(|(player, _)| Target::Player(player))
+            .collect()
+    }
+
     /// A result of the latest roll of the resolution: the last die logged (a single die, or the one chosen, which a choice
     /// logs last) or the one before it (the other result), or the total (that of a roll of several dice, else every die of the resolution added up); zero
     /// outside a resolution or before a roll.
@@ -3209,12 +3308,8 @@ impl<'a> Scope<'a> {
             let mut names = BTreeSet::new();
             for object in self.matching(of)? {
                 // A face-down card has no name.
-                let found = self
-                    .seen(object)
-                    .and_then(|seen| seen.card)
-                    .filter(|card| card.face_down().is_none());
-                if let Some(card) = found {
-                    names.insert(card.card().name.clone());
+                if let Some(name) = self.seen(object).as_ref().and_then(Self::card_name) {
+                    names.insert(name);
                 }
             }
             return Ok(i64::try_from(names.len()).unwrap_or(i64::MAX));

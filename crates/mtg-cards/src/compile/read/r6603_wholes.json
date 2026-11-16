@@ -1,0 +1,482 @@
+[
+ [
+  {
+   "Replacement": {
+    "when": {
+     "R6603Transforms": {
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "by": {
+     "AsEnters": [
+      {
+       "CreateEmblem": {
+        "abilities": [
+         {
+          "Triggered": {
+           "when": {
+            "ZoneChange": {
+             "what": [
+              {
+               "Type": "Creature"
+              }
+             ],
+             "from": "Battlefield",
+             "to": "Graveyard"
+            }
+           },
+           "targets": [
+            {
+             "what": "Opponent"
+            }
+           ],
+           "effects": [
+            {
+             "LoseLife": {
+              "who": {
+               "Target": 0
+              },
+              "amount": 1
+             }
+            },
+            {
+             "GainLife": {
+              "amount": 1
+             }
+            }
+           ]
+          }
+         }
+        ]
+       }
+      }
+     ]
+    }
+   }
+  },
+  "As this creature transforms into ~, you get an emblem with \"Whenever a creature dies, target opponent loses 1 life and you gain 1 life.\""
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "Choose": {
+          "from": {
+           "Each": [
+            "Commander",
+            {
+             "In": "Command"
+            },
+            {
+             "OwnedBy": "You"
+            }
+           ]
+          },
+          "as": "commander"
+         }
+        },
+        {
+         "Move": {
+          "what": {
+           "Bound": "commander"
+          },
+          "to": {
+           "Battlefield": {}
+          }
+         }
+        },
+        {
+         "Continuous": {
+          "affected": {
+           "Bound": "commander"
+          },
+          "mods": [
+           {
+            "AddKeyword": "Haste"
+           }
+          ],
+          "duration": "Forever"
+         }
+        },
+        {
+         "DelayedTrigger": {
+          "when": {
+           "StepBegins": {
+            "step": "End"
+           }
+          },
+          "effects": [
+           {
+            "Move": {
+             "what": {
+              "Bound": "commander"
+             },
+             "to": "Command"
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "When this creature enters, you may put a commander you own from the command zone onto the battlefield. It gains haste. Return it to the command zone at the beginning of the next end step."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{3}"
+     },
+     "Tap"
+    ],
+    "effects": [
+     {
+      "AddMana": {
+       "mana": {
+        "Fixed": [
+         "White"
+        ]
+       },
+       "times": {
+        "ManaInPoolOf": {
+         "who": "You",
+         "mana": "White"
+        }
+       }
+      }
+     },
+     {
+      "AddMana": {
+       "mana": {
+        "Fixed": [
+         "Blue"
+        ]
+       },
+       "times": {
+        "ManaInPoolOf": {
+         "who": "You",
+         "mana": "Blue"
+        }
+       }
+      }
+     },
+     {
+      "AddMana": {
+       "mana": {
+        "Fixed": [
+         "Black"
+        ]
+       },
+       "times": {
+        "ManaInPoolOf": {
+         "who": "You",
+         "mana": "Black"
+        }
+       }
+      }
+     },
+     {
+      "AddMana": {
+       "mana": {
+        "Fixed": [
+         "Red"
+        ]
+       },
+       "times": {
+        "ManaInPoolOf": {
+         "who": "You",
+         "mana": "Red"
+        }
+       }
+      }
+     },
+     {
+      "AddMana": {
+       "mana": {
+        "Fixed": [
+         "Green"
+        ]
+       },
+       "times": {
+        "ManaInPoolOf": {
+         "who": "You",
+         "mana": "Green"
+        }
+       }
+      }
+     },
+     {
+      "AddMana": {
+       "mana": {
+        "Fixed": [
+         "Colorless"
+        ]
+       },
+       "times": {
+        "ManaInPoolOf": {
+         "who": "You",
+         "mana": "Colorless"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "{3}, {T}: Double the amount of each type of unspent mana you have."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "Cant": {
+      "who": {
+       "Each": [
+        {
+         "Type": "Creature"
+        },
+        "Token",
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      },
+      "action": "R6603ByOwnTriggers"
+     }
+    }
+   }
+  },
+  "Triggered abilities you control can't cause you to sacrifice or exile creature tokens you control."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "R6603DrawsSeveral": {
+      "who": "Opponents",
+      "at_least": 2
+     }
+    },
+    "by": {
+     "Instead": [
+      {
+       "Draw": {}
+      },
+      {
+       "Draw": {
+        "who": "Triggering"
+       }
+      }
+     ]
+    }
+   }
+  },
+  "If an opponent would draw two or more cards, instead you and that player each draw a card."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "PutCounters": {
+       "on": "This",
+       "counter": "loyalty",
+       "count": 2
+      }
+     },
+     {
+      "CreateToken": {
+       "token": {
+        "Custom": {
+         "name": "Squirrel",
+         "colors": [
+          "Green"
+         ],
+         "types": [
+          "Creature"
+         ],
+         "subtypes": [
+          "Squirrel"
+         ],
+         "power": 1,
+         "toughness": 1
+        }
+       },
+       "count": 2,
+       "as": "squirrels"
+      }
+     },
+     {
+      "Continuous": {
+       "affected": {
+        "Bound": "squirrels"
+       },
+       "mods": [
+        {
+         "AddKeyword": "Haste"
+        }
+       ],
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "[+2], then create two 1/1 green Squirrel creature tokens. They gain haste until end of turn."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "RemoveCounters": {
+       "from": "This",
+       "counter": "loyalty"
+      }
+     },
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "OwnedBy": "You"
+         },
+         {
+          "In": "Graveyard"
+         },
+         {
+          "Compare": {
+           "stat": "ManaValue",
+           "op": "Le",
+           "to": 2
+          }
+         }
+        ]
+       },
+       "as": "card"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "card"
+       },
+       "to": "Hand"
+      }
+     }
+    ]
+   }
+  },
+  "[−1], then return a card with mana value 2 or less from your graveyard to your hand."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Either": {
+       "first": [
+        {
+         "Choose": {
+          "from": {
+           "Each": [
+            {
+             "Type": "Creature"
+            }
+           ]
+          },
+          "as": "victim"
+         }
+        },
+        {
+         "DealDamage": {
+          "to": {
+           "Bound": "victim"
+          },
+          "amount": {
+           "Counters": {
+            "on": "This",
+            "counter": "loyalty"
+           }
+          }
+         }
+        }
+       ],
+       "second": [
+        {
+         "Choose": {
+          "from": "EachPlayer",
+          "as": "victim"
+         }
+        },
+        {
+         "DealDamage": {
+          "to": {
+           "Bound": "victim"
+          },
+          "amount": {
+           "Counters": {
+            "on": "This",
+            "counter": "loyalty"
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     {
+      "RemoveCounters": {
+       "from": "This",
+       "counter": "loyalty",
+       "count": 2
+      }
+     }
+    ]
+   }
+  },
+  "~ deals damage equal to the number of loyalty counters on him to a creature or player, then [−2]."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "PutCounters": {
+       "on": "This",
+       "counter": "loyalty"
+      }
+     },
+     {
+      "Rule": {
+       "rule": {
+        "R6603LoyaltyAgain": 2
+       },
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "[+1], and you may activate ~'s loyalty ability two more times this turn."
+ ]
+]

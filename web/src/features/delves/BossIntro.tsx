@@ -25,7 +25,7 @@ export function BossIntro({
   const boss = content.bosses.find((entry) => entry.id === view.boss)
   const fight = view.fight
   const name = fight?.boss ?? boss?.name ?? 'A boss'
-  const life = fight?.life ?? (boss ? bossLife(boss.life, view.run.heroes.length, view.run.heat) : null)
+  const life = fight?.life ?? (view.boss === undefined ? undefined : bossLife(view, view.boss)) ?? null
   const abilities = fight === undefined ? [] : introAbilities(content, fight)
   const problems = new Map(view.deck_problems.map((problem) => [problem.hero, problem.reason]))
   return (

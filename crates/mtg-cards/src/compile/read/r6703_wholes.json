@@ -202,23 +202,6 @@
  ],
  [
   {
-   "Rule": {
-    "rule": {
-     "ZeroLoyaltyStays": [
-      {
-       "Type": "Planeswalker"
-      },
-      {
-       "ControlledBy": "You"
-      }
-     ]
-    }
-   }
-  },
-  "Planeswalkers you control aren't put into their owners' graveyards for having 0 loyalty."
- ],
- [
-  {
    "Activated": {
     "cost": [
      "Tap"

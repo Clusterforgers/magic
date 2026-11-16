@@ -1,0 +1,12 @@
+{
+  "oracle_id": "b353f0ab-266c-4448-b93b-fafb68b03765",
+  "name": "Reverse the Sands",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reverse the Sands",
+      "oracle_fingerprint": "875b1f230bdcc24f92354ff1b878fa5b",
+      "abilities": [{ "Spell": { "effects": ["R6501RedistributeLife"] } }]
+    }
+  ]
+}

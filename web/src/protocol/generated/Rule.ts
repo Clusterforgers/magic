@@ -195,7 +195,19 @@ spells: unknown,
 /**
  * With `spells`, the permanents whose abilities it is also for.
  */
-abilities: unknown, } } | { "RevealTop": Array<PlayerId> } | { "RevealHand": Array<PlayerId> } | { "ControlSearches": Array<PlayerId> } | { "ExileFound": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "LoyaltyTwice": Array<PlayerId> } | { "EchoRather": { 
+abilities: unknown, } } | { "RevealTop": Array<PlayerId> } | { "RevealHand": Array<PlayerId> } | { "ControlSearches": Array<PlayerId> } | { "ExileFound": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "LoyaltyTwice": Array<PlayerId> } | { "R6600LoyaltyOnceMore": Array<PlayerId> } | { "R6600AdaptsFresh": Array<ObjectRef> } | { "R6603LoyaltyAgain": { 
+/**
+ * The planeswalker.
+ */
+permanent: ObjectRef, 
+/**
+ * The index of the ability among the rules of its card.
+ */
+ability: number, 
+/**
+ * How many more activations.
+ */
+times: number, } } | { "EchoRather": { 
 /**
  * The players it covers.
  */
@@ -231,7 +243,19 @@ what: unknown,
 /**
  * The most of them that untap.
  */
-count: number, } } | { "SkipDrawStep": Array<PlayerId> } | { "R6007ExhaustAgain": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "LookAtExiled": { 
+count: number, } } | { "SkipDrawStep": Array<PlayerId> } | { "R6007ExhaustAgain": Array<PlayerId> } | { "R6500CounterCap": { 
+/**
+ * The permanents capped.
+ */
+named: Array<ObjectRef>, 
+/**
+ * The kind of counter.
+ */
+counter: CounterKind, 
+/**
+ * The most they may have.
+ */
+most: number, } } | { "R6500ZeroLoyaltyStays": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "LookAtExiled": { 
 /**
  * The players who may look.
  */
@@ -387,7 +411,15 @@ cast?: boolean,
 /**
  * It covers any move from the battlefield ("if it would leave the battlefield"), not only one to a graveyard.
  */
-leaves?: boolean, } } | { "Replaces": { 
+leaves?: boolean, } } | { "R6503ResolvesInstead": { 
+/**
+ * The spells it covers.
+ */
+objects: Array<ObjectRef>, 
+/**
+ * What happens instead: a move to another zone, or other steps.
+ */
+by: unknown, } } | { "Replaces": { 
 /**
  * The event it replaces.
  */

@@ -17,7 +17,7 @@ import type {
   DragOverEvent,
   DragStartEvent,
 } from '@dnd-kit/core'
-import { Crown, Library } from 'lucide-react'
+import { Backpack, Crown, Library } from 'lucide-react'
 import { useLayoutEffect, useRef, useState } from 'react'
 import type { CSSProperties, KeyboardEvent, ReactNode } from 'react'
 import { createPortal } from 'react-dom'
@@ -58,6 +58,8 @@ export interface HandCommander {
   words: string
   /** The top card of your library (Sigarda, Future Sight), not a commander. */
   top?: boolean
+  /** A card of your Satchel (Delves), not a commander. */
+  satchel?: boolean
 }
 
 /** How far a mouse moves with the button down before a drag starts; a click moves less. */
@@ -177,8 +179,9 @@ export function HandFan({ ids, label, size, cost = false, layout, commanders, on
             back={rows > 1 && Math.floor(index / perRow) < rows - 1}
             lifts={rows === 1 || Math.floor(index / perRow) < rows - 1}
             fan={rows === 1 ? fanOf(index, ids.length) : undefined}
-            commander={commander !== undefined && commander.top !== true}
+            commander={commander !== undefined && commander.top !== true && commander.satchel !== true}
             top={commander?.top === true}
+            satchel={commander?.satchel === true}
             drop={
               over === id && from >= 0 && from !== index ? (from < index ? 'after' : 'before') : undefined
             }
@@ -193,6 +196,8 @@ export function HandFan({ ids, label, size, cost = false, layout, commanders, on
             />
             {commander === undefined ? null : commander.top === true ? (
               <TopPill />
+            ) : commander.satchel === true ? (
+              <SatchelPill />
             ) : (
               <TaxPill tax={commander.tax} />
             )}
@@ -273,6 +278,7 @@ function HandSlot({
   lifts,
   commander,
   top,
+  satchel,
   drop,
   fan,
   children,
@@ -285,6 +291,7 @@ function HandSlot({
   fan?: Fan | undefined
   commander: boolean
   top: boolean
+  satchel: boolean
   drop: 'before' | 'after' | undefined
   children: ReactNode
 }) {
@@ -300,6 +307,7 @@ function HandSlot({
       data-back={back || undefined}
       data-commander={commander || undefined}
       data-library-top={top || undefined}
+      data-satchel={satchel || undefined}
       data-drag={drag.isDragging || undefined}
       data-drop={drop}
       style={back ? { height: HAND_HEAD_PX } : undefined}
@@ -402,6 +410,20 @@ function TaxPill({ tax }: { tax: number }) {
 }
 
 /** The mark on the top card of your library at the head of the hand: the library's icon and "Top". */
+/** The mark on a card of your Satchel at the head of the hand: a backpack and the word. */
+function SatchelPill() {
+  return (
+    <span
+      aria-hidden="true"
+      data-slot="hand-satchel"
+      className="pointer-events-none absolute top-1/2 left-1/2 flex -translate-1/2 items-center gap-0.5 rounded-full bg-background/90 px-1 py-px text-xs leading-4 font-semibold whitespace-nowrap text-foreground shadow-sm ring-1 ring-foreground/20"
+    >
+      <Backpack className="size-3 shrink-0 text-primary" />
+      Satchel
+    </span>
+  )
+}
+
 function TopPill() {
   return (
     <span

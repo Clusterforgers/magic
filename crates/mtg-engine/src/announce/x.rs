@@ -305,6 +305,13 @@ struct Offer {
 /// The least X the cost allows: craft takes at least as many materials as it names (CR 702.167a), and a cost may say
 /// "X can't be 0", and so may a kicker with `{X}` the spell is kicked for.
 fn least_x(ctx: &Ctx<'_>, choices: &Choices) -> u32 {
+    // An X the text defines is its own floor and cap (`largest`): no player chooses it (CR 107.3c).
+    let fixed = super::r5523_x_cap::r6503_fixed_x(ctx).unwrap_or(0);
+    fixed.max(least_x_chosen(ctx, choices))
+}
+
+/// The least X the cost lets the player choose.
+fn least_x_chosen(ctx: &Ctx<'_>, choices: &Choices) -> u32 {
     let Some(Ability::Activated { cost, .. }) = ctx.ability else {
         return super::optional::chosen_least_x(ctx, choices);
     };
@@ -428,9 +435,15 @@ fn largest(ctx: &Ctx<'_>, choices: &Choices) -> Option<u32> {
             let payable = largest_payable(ctx, choices)?;
             let payable =
                 super::r5523_x_cap::r5523_spell_cap(ctx).map_or(payable, |cap| cap.min(payable));
+            let payable =
+                super::r5523_x_cap::r6503_fixed_x(ctx).map_or(payable, |fixed| fixed.min(payable));
             Some(parts::most(ctx, choices).map_or(payable, |most| most.min(payable)))
         }
-        XCost::Parts => parts::most(ctx, choices),
+        // "Blight X. X can't be greater than ...": the cap holds for an X that only parts of the cost count.
+        XCost::Parts => {
+            let most = parts::most(ctx, choices)?;
+            Some(super::r5523_x_cap::r5523_spell_cap(ctx).map_or(most, |cap| cap.min(most)))
+        }
     }
 }
 

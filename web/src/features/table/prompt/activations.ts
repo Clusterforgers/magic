@@ -1,8 +1,8 @@
 /**
  * The abilities a Priority prompt lets the viewer activate from the table: which permanents and cards of the hand, the
  * graveyard, the exile and the command zone carry one, what each is called, and the plays a card with several offers in a chooser.
- * Mana abilities are never listed here: they stay the business of `PriorityOptions.mana_abilities` and are no play
- * (docs/ui-design.md).
+ * Mana abilities the payment taps are never listed here: they stay the business of `PriorityOptions.mana_abilities` and are no play
+ * (docs/ui-design.md); an announced one (a mana ability that also rolls a die or discards) is activated like any ability.
  */
 import type {
   AbilityRef,
@@ -138,8 +138,8 @@ function ignorePlay(option: PaidIgnore): Play {
 
 /**
  * The cards of `seat` with something to do besides casting or playing them: each ability in `options.abilities` whose
- * card the seat may use it from, and each locked door of a Room of the seat that it may unlock now. An ability the
- * card's words mark as a mana ability is left out, and a spectator (no seat) has none.
+ * card the seat may use it from, and each locked door of a Room of the seat that it may unlock now. A mana ability the
+ * payment taps is left out (an announced one stays), and a spectator (no seat) has none.
  */
 export function abilityPlays(
   options: PriorityOptions,
@@ -165,7 +165,7 @@ export function abilityPlays(
     const worded = object.activated?.find(
       (entry) => entry.ability !== undefined && sameAbility(entry.ability, ref),
     )
-    if (worded?.mana === true) continue
+    if (worded?.mana === true && worded.announced !== true) continue
     const { label, detail } = wording(ref, worded)
     add(ref.object, {
       key: abilityKey(ref),

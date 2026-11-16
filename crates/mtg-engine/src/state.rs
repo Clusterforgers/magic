@@ -426,6 +426,8 @@ pub struct GameState {
     pub(crate) w15a_initiative: Option<crate::w15a_initiative::W15aHeld>,
     /// The commanders of the game and what is counted for them (CR 903); empty outside Commander.
     pub(crate) commanders: crate::commanders::Commanders,
+    /// The cards set up in each Delves hero's Satchel (`satchel`).
+    pub(crate) satchels: crate::satchel::Satchels,
     /// The companions the seats named, outside the game until their owners bring them in (CR 702.139).
     pub(crate) companions: crate::companions::Companions,
     /// The cards of a library its owner looked at by hand (`ManualAction::LookTop`), known to that seat while each is
@@ -864,11 +866,25 @@ impl GameState {
     }
 
     /// Whether a loyalty ability of the planeswalker `permanent` has been activated this turn (CR 606.3).
+    #[cfg(test)]
     pub(crate) fn loyalty_spent(&self, permanent: ObjectRef) -> bool {
+        self.r6603_loyalty_spent_by(permanent, None)
+    }
+
+    /// [`Self::loyalty_spent`] for the printed loyalty ability at `ability` of the planeswalker, which a rule may let be
+    /// activated more times this turn ("you may activate ~'s loyalty ability two more times this turn").
+    pub(crate) fn r6603_loyalty_spent_by(
+        &self,
+        permanent: ObjectRef,
+        ability: Option<usize>,
+    ) -> bool {
         let used = self.loyalty_used.get(&permanent).copied().unwrap_or(0);
         let limit = crate::characteristics::controller_of(self, permanent.id)
             .map_or(1, |player| crate::rules::loyalty_activations(self, player));
-        used >= limit
+        let more = ability.map_or(0, |ability| {
+            crate::rules::r6603_loyalty_again(self, permanent, ability)
+        });
+        used >= limit.saturating_add(more)
     }
 
     /// The id the next object created during the game gets (abilities on the stack, and tokens later).
@@ -1193,6 +1209,8 @@ impl Hash for GameState {
         }
         // Likewise a game without commanders.
         self.commanders.hash(state);
+        // Likewise a game without Satchels.
+        self.satchels.hash(state);
         // Likewise a game without companions.
         self.companions.hash(state);
     }

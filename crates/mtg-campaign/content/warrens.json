@@ -296,6 +296,28 @@
      ]
     }
    ]
+  },
+  {
+   "id": "mirror_pool",
+   "title": "The Mirror Pool",
+   "text": "Still water in a cave of glass. Whatever is held over it rises from it a second time.",
+   "since": 1,
+   "options": [
+    {
+     "label": "Hold a card over the water",
+     "outcomes": [
+      "Duplicate"
+     ]
+    },
+    {
+     "label": "Fish out the coins",
+     "outcomes": [
+      {
+       "Gold": 20
+      }
+     ]
+    }
+   ]
   }
  ],
  "pool": [

@@ -20,11 +20,22 @@ export function topDialogLine(legal: boolean): string {
 /** The words of the top card of your library at the head of the hand dock. */
 export const TOP_WORDS = 'on top of your library'
 
-/** The spoken name of the head of the hand dock: the commanders, the top card of the library, or both. */
+/**
+ * The spoken name of the head of the hand dock: what it holds of the commanders, the Satchel and the top card of the
+ * library ("Ann's commanders in the command zone and the Satchel").
+ */
 export function headLabel(owner: string, head: ReadonlyMap<ObjectId, HandCommander>): string {
-  const top = [...head.values()].some((entry) => entry.top === true)
-  if (!top) return `${owner}'s commanders in the command zone`
-  return head.size > 1
-    ? `${owner}'s commanders in the command zone and the top card of the library`
-    : `${owner}'s top card of the library`
+  const entries = [...head.values()]
+  const parts = [
+    entries.some((entry) => entry.top !== true && entry.satchel !== true)
+      ? 'commanders in the command zone'
+      : null,
+    entries.some((entry) => entry.satchel === true) ? 'Satchel' : null,
+    entries.some((entry) => entry.top === true) ? 'top card of the library' : null,
+  ].filter((part): part is string => part !== null)
+  const [first = 'commanders in the command zone', ...rest] = parts
+  const more = rest.map((part) => `the ${part}`)
+  const last = more.pop()
+  const head0 = [first, ...more].join(', ')
+  return `${owner}'s ${last === undefined ? head0 : `${head0} and ${last}`}`
 }

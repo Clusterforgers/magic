@@ -82,13 +82,13 @@ export interface ActivatedLine {
 }
 
 /**
- * The activated abilities of `object` in its card's words, in the order of the card: every one that is not a mana ability
+ * The activated abilities of `object` in its card's words, in the order of the card: every one but a mana ability the payment taps
  * (the preview's mana line tells those), with the ones named by `usable` (`abilityKey`) marked as available now. Empty
  * while the server sent no words, which it does for a card the viewer may not read.
  */
 export function activatedLines(object: ObjectView, usable: readonly string[] = []): ActivatedLine[] {
   return (object.activated ?? []).flatMap((entry, index) => {
-    if (entry.mana === true) return []
+    if (entry.mana === true && entry.announced !== true) return []
     const full = entry.cost === '' ? entry.effect : `${entry.cost}: ${entry.effect}`
     const text =
       entry.unworded === true

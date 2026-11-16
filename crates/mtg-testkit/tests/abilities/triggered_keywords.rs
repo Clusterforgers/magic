@@ -386,7 +386,14 @@ fn dethrone_does_not_trigger_for_a_creature_that_attacks_another_player(
 }
 
 fn annihilator(name: &str, count: u32) -> Arc<CardDefinition> {
-    keyworded(name, 1, 1, &[Keyword::Annihilator(count)])
+    keyworded(
+        name,
+        1,
+        1,
+        &[Keyword::Annihilator(mtg_cards::value::Amount::Fixed(
+            i32::try_from(count).unwrap(),
+        ))],
+    )
 }
 
 /// Seat 0 attacks with `attackers`, each aimed at the seat `aimed` names; `held` permanents belong to the defending seats.
@@ -463,7 +470,10 @@ fn two_instances_on_one_creature_sacrifice_both_numbers(
                 "Twice",
                 1,
                 1,
-                &[Keyword::Annihilator(1), Keyword::Annihilator(2)],
+                &[
+                    Keyword::Annihilator(mtg_cards::value::Amount::Fixed(1)),
+                    Keyword::Annihilator(mtg_cards::value::Amount::Fixed(2)),
+                ],
             )],
             |_| 5,
         )

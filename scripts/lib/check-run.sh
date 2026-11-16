@@ -58,10 +58,16 @@ pg_pick_mode() {
 pg_start() {
   local id addr limit i
   limit=$(awk -v m="$test_timeout" 'BEGIN { printf "%d", m * 60 + 600 }')
-  id=$(docker run -d --rm --label "$pg_label" --tmpfs /var/lib/postgresql/data -p 127.0.0.1::5432 \
-    -e POSTGRES_USER=magic -e POSTGRES_PASSWORD=magic -e POSTGRES_DB=magic \
-    --entrypoint timeout "$pg_image" "$limit" docker-entrypoint.sh postgres \
-    -c fsync=off -c synchronous_commit=off -c full_page_writes=off) || return 1
+  # Docker can lose a race for the host port under load ("failed to set up container networking"); try again.
+  for ((i = 0; i < 3; i++)); do
+    id=$(docker run -d --rm --label "$pg_label" --tmpfs /var/lib/postgresql/data -p 127.0.0.1::5432 \
+      -e POSTGRES_USER=magic -e POSTGRES_PASSWORD=magic -e POSTGRES_DB=magic \
+      --entrypoint timeout "$pg_image" "$limit" docker-entrypoint.sh postgres \
+      -c fsync=off -c synchronous_commit=off -c full_page_writes=off) && break
+    id=""
+    sleep 1
+  done
+  [ -n "$id" ] || return 1
   addr=$(docker port "$id" 5432/tcp | first 1)
   for ((i = 0; i < 300; i++)); do
     if docker exec "$id" pg_isready -q -h 127.0.0.1 -U magic 2>/dev/null; then

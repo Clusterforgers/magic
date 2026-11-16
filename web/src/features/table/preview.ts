@@ -1,6 +1,6 @@
 /** The big card preview: which card is shown, where it docks, and the store the cards talk to. */
 import { createContext, useContext, useSyncExternalStore } from 'react'
-import type { ObjectId } from '@/protocol/generated'
+import type { ObjectId, ObjectView } from '@/protocol/generated'
 
 /** The box of the card that asked for a preview, in viewport pixels. */
 export interface Anchor {
@@ -15,6 +15,8 @@ export interface PreviewTarget {
   id: ObjectId
   anchor: Anchor
   pinned: boolean
+  /** The card as every seat was shown it, for one the view may hold no longer (a revealed card that moved on); drawn instead of the view's. */
+  shown?: ObjectView
 }
 
 /** The edge of the screen the preview sits at, always on the side away from its card. */
@@ -42,11 +44,11 @@ export interface PreviewStore {
   get(): PreviewTarget | null
   subscribe(listener: () => void): () => void
   /** Hover or keyboard focus on a card; ignored while a card is pinned, so a pin stays until it is closed. */
-  show(id: ObjectId, anchor: Anchor): void
+  show(id: ObjectId, anchor: Anchor, shown?: ObjectView): void
   /** The pointer left or focus moved off a card; a pinned preview stays. */
   hide(id: ObjectId): void
   /** A click or tap: pins the card, or unpins it when it is the pinned one already. */
-  pin(id: ObjectId, anchor: Anchor): void
+  pin(id: ObjectId, anchor: Anchor, shown?: ObjectView): void
   /** Closes whatever is shown. */
   dismiss(): void
 }
@@ -68,15 +70,19 @@ export function createPreviewStore(): PreviewStore {
         listeners.delete(listener)
       }
     },
-    show(id, anchor) {
+    show(id, anchor, shown) {
       if (target?.pinned === true) return
-      set({ id, anchor, pinned: false })
+      set({ id, anchor, pinned: false, ...(shown === undefined ? {} : { shown }) })
     },
     hide(id) {
       if (target !== null && !target.pinned && target.id === id) set(null)
     },
-    pin(id, anchor) {
-      set(target?.pinned === true && target.id === id ? null : { id, anchor, pinned: true })
+    pin(id, anchor, shown) {
+      set(
+        target?.pinned === true && target.id === id
+          ? null
+          : { id, anchor, pinned: true, ...(shown === undefined ? {} : { shown }) },
+      )
     },
     dismiss: () => set(null),
   }

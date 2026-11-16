@@ -202,6 +202,37 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         Produce::OneOf(types) => (types.clone(), 1),
         Produce::AnyColorAmong(among) => (colors_among(&cx.scope, among), 1),
+        // Each type counts the restricted mana of that type too; what is added may be spent on anything.
+        Produce::R6501UnspentDoubled => {
+            for player in &players {
+                let Some(pool) = state.player(*player).map(crate::player::Player::mana) else {
+                    continue;
+                };
+                for kind in ManaType::ALL {
+                    let held = pool.get(kind).saturating_add(
+                        u32::try_from(
+                            pool.restricted()
+                                .iter()
+                                .filter(|unit| unit.mana == kind)
+                                .count(),
+                        )
+                        .unwrap_or(u32::MAX),
+                    );
+                    let added = usize::try_from(held).unwrap_or(0).saturating_mul(times);
+                    events.extend(std::iter::repeat_n(
+                        Event::ManaAdded {
+                            player: *player,
+                            mana: kind,
+                            source,
+                            only: only.clone(),
+                            lasts: *lasts,
+                        },
+                        added,
+                    ));
+                }
+            }
+            return Ok(Run::events(events));
+        }
         // A game has no draft, so no color was chosen and no mana is added (Paliano, the High City ruling).
         Produce::DraftedColors => (Vec::new(), 1),
         Produce::OneOfLists(lists) => {

@@ -44,6 +44,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         ) => Some((what, ZoneKind::Library, Some(*place), true, false)),
         _ => None,
     };
+    // The spells named now that would be put into a graveyard as they resolve (CR 608.2n).
+    if let (ShieldShape::R6503Resolving, ReplaceWhen::R6503Resolves { what }) = (shape, when) {
+        return r6503_resolving(cx, what, by, duration);
+    }
     // A class of events (every creature that dies this turn, every card put into a graveyard) is judged as each happens.
     if matches!(shape, ShieldShape::Class | ShieldShape::Next) {
         let Some(players) = r374_fixed_players(cx, when)? else {
@@ -353,4 +357,32 @@ fn g11b_chosen_fixed(cx: &Cx<'_>, pred: &Pred) -> Pred {
         ),
         _ => pred.clone(),
     }
+}
+
+/// The shield over the spells `what` names now, each replaced by `by` as it would be put into a graveyard as it resolves
+/// (CR 608.2n).
+fn r6503_resolving(
+    cx: &Cx<'_>,
+    what: &mtg_cards::refs::Selector,
+    by: &ReplaceBy,
+    duration: &Duration,
+) -> Result<Run, ResolveError> {
+    let named = match what.0.as_slice() {
+        [Pred::Is(named)] => named.clone(),
+        _ => Ref::Each(what.clone()),
+    };
+    let objects = cx
+        .scope
+        .live_objects(&named)?
+        .into_iter()
+        .map(GameObject::reference)
+        .collect();
+    Ok(begin(
+        cx,
+        Rule::R6503ResolvesInstead {
+            objects,
+            by: by.clone(),
+        },
+        duration.clone(),
+    ))
 }

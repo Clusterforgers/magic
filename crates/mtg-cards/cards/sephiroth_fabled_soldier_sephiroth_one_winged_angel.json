@@ -1,7 +1,7 @@
 {
   "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
   "name": "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sephiroth, Fabled SOLDIER",
@@ -55,9 +55,34 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 7, "end": 182 }
+          "Replacement": {
+            "when": { "R6603Transforms": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                {
+                  "CreateEmblem": {
+                    "abilities": [
+                      {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": [{ "Type": "Creature" }],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "targets": [{ "what": "Opponent" }],
+                          "effects": [
+                            { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } },
+                            { "GainLife": { "amount": 1 } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
           }
         },
         {

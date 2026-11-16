@@ -14,7 +14,6 @@ use rstest::rstest;
 #[case("Brass Infiniscope")]
 #[case("Ratchet, Field Medic // Ratchet, Rescue Racer")]
 #[case("Chance for Glory")]
-#[case("Sanctum Lurker")]
 #[case("Taii Wakeen, Perfect Shot")]
 #[case("Optimus Prime, Hero // Optimus Prime, Autobot Leader")]
 fn the_card_plays_whole(#[case] name: &str) {

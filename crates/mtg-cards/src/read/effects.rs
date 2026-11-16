@@ -326,6 +326,9 @@ fn moved(ctx: &Ctx, what: &Ref, to: &Destination) -> String {
             "put {what} onto the battlefield; an Aura may enchant only {} this way",
             phrase::selectors(ctx, only)
         ),
+        Destination::R6502BattlefieldAs { .. } => {
+            format!("put {what} onto the battlefield, as it enters and while it stays:")
+        }
     }
 }
 
@@ -472,6 +475,16 @@ fn counters(ctx: &Ctx, effect: &Effect) -> Option<String> {
                 &format!("{}: {}{how}", tokens(ctx, count), token_text(ctx, token)),
             )
         }
+        Effect::R6602CreateAttached { who, token, to } => act(
+            ctx,
+            who,
+            "create",
+            &format!(
+                "{} attached to {}",
+                token_text(ctx, token),
+                phrase::who(ctx, to)
+            ),
+        ),
         _ => return None,
     })
 }
@@ -622,6 +635,14 @@ fn mode(number: usize, mode: &Mode, depth: u8, out: &mut Vec<Step>) {
 /// The effects that hold other effects: a block of steps under a line that says when or for whom they run.
 fn block(ctx: &Ctx, effect: &Effect, depth: u8, out: &mut Vec<Step>) -> bool {
     match effect {
+        Effect::Move {
+            what,
+            to: to @ Destination::R6502BattlefieldAs { becomes },
+            ..
+        } => {
+            out.push(Step::new(depth, moved(ctx, what, to)));
+            parts::modifications(ctx, becomes, depth + 1, out);
+        }
         Effect::If {
             condition,
             then,

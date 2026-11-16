@@ -652,6 +652,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r5517_wholes::r5517_wordings(ability, &mut texts);
     super::r6008_wholes::r6008_wordings(ability, &mut texts);
     super::r6102_wholes::r6102_wordings(ability, &mut texts);
+    super::r6502_wholes::r6502_wordings(ability, &mut texts);
     super::r5519_wholes::r5519_whole_texts(ability, &mut texts);
     super::r6003_wholes::r6003_whole_texts(ability, &mut texts);
     super::r5516_actions::r5516_wordings(ability, &mut texts);
@@ -683,6 +684,13 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r6018_wholes::r6018_add_wholes(ability, &mut texts);
     super::r6100_wholes::r6100_add_wholes(ability, &mut texts);
     super::r6401_wholes::r6401_add_wholes(ability, &mut texts);
+    super::r6500_wholes::r6500_add_wholes(ability, &mut texts);
+    super::r6501_wholes::r6501_add_wholes(ability, &mut texts);
+    super::r6503_wholes::r6503_add_wholes(ability, &mut texts);
+    super::r6600_wholes::r6600_add_wholes(ability, &mut texts);
+    super::r6601_wholes::r6601_add_wholes(ability, &mut texts);
+    super::r6602_wholes::r6602_add_wholes(ability, &mut texts);
+    super::r6603_wholes::r6603_add_wholes(ability, &mut texts);
     super::r6703_wholes::r6703_add_wholes(ability, &mut texts);
     super::r6103_wholes::r6103_add_wholes(ability, &mut texts);
     super::r6400_wholes::r6400_add_wholes(ability, &mut texts);
@@ -1269,9 +1277,12 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
         }
         Ability::Loyalty {
             cost,
+            condition: None,
             targets,
             effects,
         } => loyalty::texts(*cost, targets, effects),
+        // "Activate only if ..." on a loyalty ability is worded by the wholes that hold it.
+        Ability::Loyalty { .. } => Vec::new(),
         Ability::AdditionalCost {
             cost,
             required,
@@ -3900,6 +3911,7 @@ impl Writer<'_> {
             Ref::Opponents => "each opponent".to_owned(),
             Ref::EachPlayer => "each player".to_owned(),
             Ref::Teammates => "each of your teammates".to_owned(),
+            Ref::R6501PlayersFromYou => "each player, starting with you".to_owned(),
             Ref::Target(0)
                 if self.target_is(|what| {
                     matches!(what, Targetable::Player | Targetable::Opponent)

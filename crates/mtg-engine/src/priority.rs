@@ -307,17 +307,30 @@ pub(crate) fn activation(
         )
     };
     // A loyalty ability costs counters, not a cost the price below knows (CR 606).
-    if let Ability::Loyalty { cost, .. } = rules {
+    if let Ability::Loyalty {
+        cost, condition, ..
+    } = rules
+    {
+        // "Activate only if ..." is judged as the loyalty ability is activated (CR 602.5b, 606.3).
+        if let Some(condition) = condition
+            && object.zone() == Zone::Battlefield
+            && !Scope::announcing(state, player, object.reference())
+                .holds(condition)
+                .unwrap_or(false)
+        {
+            return Hindered(Unplayable::Restricted, Some(Why::OwnCondition));
+        }
         // A `-X` removes X counters, at most those the planeswalker holds (CR 606.6).
         let counters = object
             .permanent()
             .map_or(0, |permanent| permanent.counters_of(&CounterKind::Loyalty));
-        if !loyalty::can_activate(state, player, object, *cost) {
+        let printed = address.source.is_printed().then_some(address.ability);
+        if !loyalty::r6603_can_activate(state, player, object, *cost, printed) {
             return if object.zone() != Zone::Battlefield {
                 Never
             } else if !sorcery_timing(state, player) {
                 Hindered(Unplayable::Timing, Some(Why::SorcerySpeed))
-            } else if state.loyalty_spent(object.reference()) {
+            } else if state.r6603_loyalty_spent_by(object.reference(), printed) {
                 Hindered(Unplayable::Restricted, Some(Why::LimitSpent))
             } else {
                 Hindered(Unplayable::Cost, Some(Why::OtherCost))

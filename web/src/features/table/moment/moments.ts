@@ -130,24 +130,27 @@ export function withMoments(current: readonly Moment[], more: readonly Moment[])
   return [...current, ...more].slice(-MOST_MOMENTS)
 }
 
-/** The least and the most a revealed card's picture is wide, in px. */
-export const REVEAL_MIN_PX = 96
-export const REVEAL_MAX_PX = 300
+/** The least and the most a revealed card's picture is wide, in px: as compact as the cards of the table. */
+export const REVEAL_MIN_PX = 72
+export const REVEAL_MAX_PX = 150
 
 /** A card's height over its width. */
 const ASPECT = 7 / 5
 
 /** The share of the window's height a card may take, the gap between cards, and the room the panel and the page's margin keep at the sides, in px. */
-const HEIGHT_SHARE = 0.5
-/** The share when another moment (a die) stands under the cards, so both fit above the hand. */
-const CROWDED_HEIGHT_SHARE = 0.4
-const CARD_GAP_PX = 12
+const HEIGHT_SHARE = 0.27
+/** The share when another moment (a die) stands beside the cards, so both fit above the hand. */
+const CROWDED_HEIGHT_SHARE = 0.22
+/** The line of name under a picture and the gap above it, in px. */
+const CAPTION_PX = 20
+const CARD_GAP_PX = 8
 const SIDE_ROOM_PX = 56
 
 /**
- * How wide the picture of each of `count` revealed cards is: as large as the window allows (at most half its height and
- * all the width the cards share), never over `REVEAL_MAX_PX` and never under `REVEAL_MIN_PX`, below which the row scrolls.
- * With `crowded` (another moment stands with the cards) they may take less of the height.
+ * How wide the picture of each of `count` revealed cards is: as large as the window allows (a card and its name line at
+ * most `HEIGHT_SHARE` of its height, and all the width the cards share), never over `REVEAL_MAX_PX` and never under
+ * `REVEAL_MIN_PX`, below which the tiles wrap and the list scrolls. With `crowded` (another moment stands with the
+ * cards) they may take less of the height.
  */
 export function revealWidth(
   count: number,
@@ -156,7 +159,7 @@ export function revealWidth(
 ): number {
   const n = Math.max(1, count)
   const byRow = (window.width - SIDE_ROOM_PX - CARD_GAP_PX * (n - 1)) / n
-  const byHeight = (window.height * (crowded ? CROWDED_HEIGHT_SHARE : HEIGHT_SHARE)) / ASPECT
+  const byHeight = (window.height * (crowded ? CROWDED_HEIGHT_SHARE : HEIGHT_SHARE) - CAPTION_PX) / ASPECT
   return Math.floor(Math.max(REVEAL_MIN_PX, Math.min(REVEAL_MAX_PX, byRow, byHeight)))
 }
 

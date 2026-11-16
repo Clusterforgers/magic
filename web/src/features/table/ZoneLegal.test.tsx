@@ -18,7 +18,7 @@ const exile = fixture.view.objects
   .filter((object) => object.zone === 'Exile' && object.owner === 0)
   .map((object) => object.id)
 
-const IDS: Record<ListedZone, readonly ObjectId[]> = { graveyard, exile, command: commanders }
+const IDS: Record<ListedZone, readonly ObjectId[]> = { graveyard, exile, command: commanders, satchel: [] }
 
 type Flavour = 'chip' | 'picture'
 

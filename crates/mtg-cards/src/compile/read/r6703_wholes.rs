@@ -128,8 +128,6 @@ mod tests {
             ("artifact or creature spell", "creature spell"),
             ("under your control", "under its owner's control"),
             ("Counter target spell", "Counter target creature spell"),
-            ("Planeswalkers you control", "Planeswalkers"),
-            ("0 loyalty", "1 loyalty"),
             ("rounded down", "rounded up"),
             ("Add {C}{C}", "Add {C}"),
             ("with {X} in its mana cost", "with {X}"),

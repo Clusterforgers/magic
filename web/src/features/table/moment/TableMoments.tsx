@@ -4,12 +4,12 @@ import { useStore } from 'zustand'
 import { Button } from '@/components/ui/button'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useSeatNamer } from '../names'
-import { PreviewCard } from '../PreviewCard'
 import { useViewport } from '../useViewport'
 import { CoinFace } from './CoinFace'
 import { DieFace } from './DieFace'
 import { revealWidth } from './moments'
 import type { CoinMoment, RevealMoment, RollMoment } from './moments'
+import { RevealTile } from './RevealTile'
 import { useMoments } from './store'
 import { useCoinLanded } from './useCoinLanded'
 
@@ -35,7 +35,11 @@ function Heading({ words, why, onDismiss }: { words: string; why: string | null;
   )
 }
 
-/** Cards a player revealed, large, with their pictures, who revealed them and why. */
+/**
+ * Cards a player revealed, as compact tiles with their pictures and one-line names, who revealed them and why. The tiles
+ * wrap and scroll inside a bounded height, so a reveal of many cards never grows past a part of the window; the rules
+ * text is in the card's preview, which a hover, focus or click on a tile shows.
+ */
 function Reveal({
   moment,
   crowded,
@@ -57,11 +61,13 @@ function Reveal({
       className="pointer-events-auto max-h-[calc(100dvh-5rem)] max-w-full overflow-y-auto rounded-xl bg-popover p-3 text-popover-foreground shadow-lg ring-1 ring-foreground/15"
     >
       <Heading words={`${who} reveals`} why={moment.why} onDismiss={onDismiss} />
-      <ul aria-label="Revealed cards" className="mt-2 flex max-w-full items-start gap-3 overflow-x-auto pb-1">
+      <ul
+        aria-label="Revealed cards"
+        data-slot="moment-cards"
+        className="mt-2 flex max-h-[34dvh] max-w-full flex-wrap items-start justify-center gap-2 overflow-x-hidden overflow-y-auto p-1"
+      >
         {moment.cards.map((card) => (
-          <li key={card.id} data-slot="moment-card" className="shrink-0">
-            <PreviewCard object={card} role={null} size="large" width={width} revealed />
-          </li>
+          <RevealTile key={card.id} card={card} width={width} />
         ))}
       </ul>
     </section>

@@ -21,6 +21,10 @@ pub(crate) struct R5522Game {
     pub(crate) untapped_lands: BTreeMap<PlayerId, u32>,
     /// Every damage dealt to a permanent this game: the permanent, and the source as it was (`r6100_history`).
     pub(crate) r6100_struck: Vec<(ObjectRef, Snapshot)>,
+    /// The permanents that were untapped as the current turn began, before its untap step.
+    pub(crate) r6500_untapped: BTreeSet<ObjectRef>,
+    /// The permanents each permanent devoured as it entered, as they last existed on the battlefield (`r6500_devoured`).
+    pub(crate) r6500_devoured: Vec<(ObjectRef, Vec<Snapshot>)>,
 }
 
 impl R5522Game {
@@ -30,6 +34,8 @@ impl R5522Game {
             && self.hits.is_empty()
             && self.untapped_lands.is_empty()
             && self.r6100_struck.is_empty()
+            && self.r6500_untapped.is_empty()
+            && self.r6500_devoured.is_empty()
     }
 }
 
@@ -50,9 +56,11 @@ impl R5522Turn {
 }
 use crate::state::GameState;
 
-/// Keeps how many untapped lands each player controls as a turn begins, before its untap step.
+/// Keeps how many untapped lands each player controls as a turn begins, before its untap step, and which permanents are
+/// untapped then.
 pub(crate) fn r5522_note_turn_began(state: &mut GameState) {
     let mut counts: BTreeMap<PlayerId, u32> = BTreeMap::new();
+    let mut untapped_now = BTreeSet::new();
     for id in state.zone(crate::zones::Zone::Battlefield) {
         let Some(chars) = crate::characteristics::characteristics(state, *id) else {
             continue;
@@ -61,6 +69,9 @@ pub(crate) fn r5522_note_turn_began(state: &mut GameState) {
             .object(*id)
             .and_then(crate::object::GameObject::permanent)
             .is_some_and(|permanent| !permanent.tapped());
+        if untapped && let Some(object) = state.object(*id) {
+            untapped_now.insert(object.reference());
+        }
         if untapped
             && chars.types.contains(mtg_core::card::CardType::Land)
             && let Some(controller) = crate::characteristics::controller_of(state, *id)
@@ -69,6 +80,7 @@ pub(crate) fn r5522_note_turn_began(state: &mut GameState) {
         }
     }
     state.r5522.untapped_lands = counts;
+    state.r5522.r6500_untapped = untapped_now;
 }
 
 /// Keeps the creatures the active player could declare as attackers now, as attackers are declared.

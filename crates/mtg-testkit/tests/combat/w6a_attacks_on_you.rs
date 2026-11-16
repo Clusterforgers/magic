@@ -192,6 +192,7 @@ fn life_tax(life: u32, mana: &str) -> Rule {
         mana: mtg_core::mana::ManaCost::parse(mana).unwrap(),
         life,
         costs: Vec::new(),
+        per_counter: false,
     })
 }
 

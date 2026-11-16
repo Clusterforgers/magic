@@ -81,6 +81,9 @@ pub struct DelveView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub boss: Option<String>,
+    /// Each boss of the ladder by id with the life it starts its fight with against this party, at its rank and Heat.
+    #[serde(default)]
+    pub boss_lives: Vec<(String, i32)>,
     /// The heroes whose decks the waiting fight cannot be made with; empty when nothing stops it.
     #[serde(default)]
     pub deck_problems: Vec<DelveDeckProblem>,
@@ -88,6 +91,11 @@ pub struct DelveView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub fight: Option<DelveFightView>,
+    /// The cards the caller may copy at the Mirror Pool while that is their first offer: the nonland cards of their deck
+    /// and their Satchel, each name once, in name order; left out otherwise.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<String>>", optional)]
+    pub mirror: Vec<String>,
 }
 
 /// The boss's side of a fight as the engine gets it: what the intro screen lists.

@@ -1,7 +1,7 @@
 {
   "oracle_id": "4d330c40-3d72-4528-a254-d036683958d3",
   "name": "Voodoo Doll",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Voodoo Doll",
@@ -14,15 +14,36 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 69, "end": 225 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": { "Matches": { "subject": "This", "selector": ["Untapped"] } },
+            "effects": [
+              { "Destroy": { "what": "This" } },
+              {
+                "DealDamage": {
+                  "to": "You",
+                  "amount": { "Counters": { "on": "This", "counter": { "Other": "pin" } } }
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 226, "end": 372 }
+          "Activated": {
+            "cost": [
+              { "Mana": "{X}{X}" },
+              "Tap",
+              { "XIs": { "Counters": { "on": "This", "counter": { "Other": "pin" } } } }
+            ],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Counters": { "on": "This", "counter": { "Other": "pin" } } }
+                }
+              }
+            ]
           }
         }
       ]
