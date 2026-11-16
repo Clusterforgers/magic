@@ -1345,6 +1345,11 @@ impl<'a> Scope<'a> {
                 .into_iter()
                 .map(Target::Player)
                 .collect(),
+            Ref::R6501PlayersFromYou => state
+                .turn_order_from(self.controller)
+                .into_iter()
+                .map(Target::Player)
+                .collect(),
             Ref::This => vec![Target::Object(self.source)],
             Ref::Affected => {
                 let (object, read) = self.affected.ok_or_else(|| {

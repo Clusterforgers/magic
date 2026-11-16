@@ -73,6 +73,10 @@ mod tests {
             ("{3}, {T}", "{2}, {T}"),
             ("any number of players'", "two players'"),
             ("life totals", "hands"),
+            ("starting with you", "starting with the active player"),
+            ("may choose", "chooses"),
+            ("you don't control", "you control"),
+            ("an artifact or enchantment", "a creature"),
         ];
         for (_, text) in R6501_SHAPES.iter() {
             for (from, to) in swaps {

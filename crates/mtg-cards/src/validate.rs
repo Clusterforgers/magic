@@ -669,6 +669,7 @@ impl<'a> Walker<'a> {
             | Ref::AttackedThisTurn
             | Ref::MostLife
             | Ref::Teammates
+            | Ref::R6501PlayersFromYou
             | Ref::ActivePlayer
             | Ref::Chooser
             | Ref::Asker
@@ -3709,6 +3710,7 @@ impl Walker<'_> {
             | Ref::AttackedThisTurn
             | Ref::MostLife
             | Ref::Teammates
+            | Ref::R6501PlayersFromYou
             | Ref::ActivePlayer
             | Ref::Chooser
             | Ref::Asker

@@ -3900,6 +3900,7 @@ impl Writer<'_> {
             Ref::Opponents => "each opponent".to_owned(),
             Ref::EachPlayer => "each player".to_owned(),
             Ref::Teammates => "each of your teammates".to_owned(),
+            Ref::R6501PlayersFromYou => "each player, starting with you".to_owned(),
             Ref::Target(0)
                 if self.target_is(|what| {
                     matches!(what, Targetable::Player | Targetable::Opponent)

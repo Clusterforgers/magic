@@ -264,6 +264,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::AttackedThisTurn
         | Ref::MostLife
         | Ref::Teammates
+        | Ref::R6501PlayersFromYou
         | Ref::ActivePlayer
         | Ref::Chooser
         | Ref::Asker
