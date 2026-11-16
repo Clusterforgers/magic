@@ -37,6 +37,7 @@ fn murder() -> Arc<CardDefinition> {
     Arc::new(
         CardDefinition::new("Murder")
             .with_type(CardType::Instant)
+            .with_mana_cost(mtg_testkit::cards::cost(0, &[]))
             .with_rules(
                 serde_json::from_str::<Ability>(
                     r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}"#,
