@@ -1162,6 +1162,7 @@ Kentaro, the Smiling Cat
 Keranos, God of Storms
 Kess, Dissident Mage
 Kessig Wolf Run
+Kiki-Jiki, Mirror Breaker
 Kill! Maim! Burn!
 Kimoyo Beads
 Kindred Boon
@@ -1602,6 +1603,7 @@ Poet's Quill
 Poison the Waters
 Pollen Lullaby
 Polymorphist's Jest
+Polyraptor
 Pompous Gadabout
 Pongify
 Pontiff of Blight

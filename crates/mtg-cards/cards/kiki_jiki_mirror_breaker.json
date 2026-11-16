@@ -23,12 +23,12 @@
               }
             ],
             "effects": [
-              { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } }, "as": "copy" } },
               {
-                "Continuous": {
-                  "affected": { "Bound": "copy" },
-                  "mods": [{ "AddKeyword": "Haste" }],
-                  "duration": "Forever"
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": { "of": { "Target": 0 }, "except": [{ "AddKeyword": "Haste" }] }
+                  },
+                  "as": "copy"
                 }
               },
               {
