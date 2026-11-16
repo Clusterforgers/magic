@@ -291,7 +291,7 @@ const PLAYER_FIELDS: Record<string, string> = {
 }
 
 const PLAIN_PLAYER_FIELDS = names(
-  'seat effects spirit eyes boss bank turn_time_ms turn_time_running connected',
+  'seat effects spirit eyes boss satchel bank turn_time_ms turn_time_running connected',
 )
 
 /** The fields of the turn view that are a designation or a rules term, by lexicon term. */

@@ -120,7 +120,7 @@ const relicCard = (content: DelveContent, id: string): CustomCardView =>
 function HeroGear({ hero }: { hero: Hero }) {
   if (hero.satchel.length === 0 && hero.upgrades.length === 0) return null
   return (
-    <ul data-slot="hero-gear" className="grid gap-0.5 text-xs text-muted-foreground">
+    <ul data-slot="hero-gear" className="grid gap-1 text-xs text-muted-foreground">
       {hero.satchel.length > 0 ? (
         <li data-slot="hero-satchel" className="flex items-start gap-1">
           <BackpackIcon aria-hidden="true" className="mt-px size-3.5 shrink-0 text-delve" />
