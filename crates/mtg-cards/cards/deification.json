@@ -9,66 +9,27 @@
       "abilities": [
         {
           "Replacement": {
-            "when": {
-              "Enters": {
-                "what": [
-                  "This"
-                ]
-              }
-            },
-            "by": {
-              "Choose": "R6700PlaneswalkerType"
-            }
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "R6700PlaneswalkerType" }
           }
         },
         {
           "Static": {
             "affected": {
-              "Each": [
-                {
-                  "Type": "Planeswalker"
-                },
-                {
-                  "ControlledBy": "You"
-                },
-                "ChosenSubtype"
-              ]
+              "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }, "ChosenSubtype"]
             },
-            "mods": [
-              {
-                "AddKeyword": "Hexproof"
-              }
-            ]
+            "mods": [{ "AddKeyword": "Hexproof" }]
           }
         },
         {
           "Static": {
             "affected": {
-              "Each": [
-                {
-                  "Type": "Planeswalker"
-                },
-                {
-                  "ControlledBy": "You"
-                },
-                "ChosenSubtype"
-              ]
+              "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }, "ChosenSubtype"]
             },
-            "mods": [
-              "R6700KeepsLastLoyalty"
-            ],
+            "mods": ["R6700KeepsLastLoyalty"],
             "condition": {
               "Compare": {
-                "left": {
-                  "Count": [
-                    {
-                      "Type": "Creature"
-                    },
-                    {
-                      "ControlledBy": "You"
-                    }
-                  ]
-                },
+                "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
                 "op": "Ge",
                 "right": 1
               }

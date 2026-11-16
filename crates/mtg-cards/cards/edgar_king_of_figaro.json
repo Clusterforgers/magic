@@ -9,39 +9,17 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "effects": [
               {
                 "Draw": {
-                  "count": {
-                    "Count": [
-                      {
-                        "Type": "Artifact"
-                      },
-                      {
-                        "ControlledBy": "You"
-                      }
-                    ]
-                  }
+                  "count": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
                 }
               }
             ]
           }
         },
-        {
-          "Rule": {
-            "rule": {
-              "R6700FirstFlipsHeads": "You"
-            }
-          }
-        }
+        { "Rule": { "rule": { "R6700FirstFlipsHeads": "You" } } }
       ]
     }
   ]

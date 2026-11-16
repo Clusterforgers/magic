@@ -505,6 +505,7 @@ Deepfathom Skulker
 Deeproot Waters
 Defacing Duskmage // Vandal's Edit
 Defile
+Deification
 Deluxe Dragster
 Delver of Secrets // Insectile Aberration
 Demolition Field
@@ -626,6 +627,7 @@ Echo Inspector
 Echo Mage
 Echo Storm
 Echoes of the Kin Tree
+Edgar, King of Figaro
 Edgar, Master Machinist
 Edge Rover
 Eel Umbra
@@ -1451,6 +1453,7 @@ Nostalgic Dreams
 Notion Rain
 Nourishing Shoal
 Novijen, Heart of Progress
+Nuka-Nuke Launcher
 Nykthos Paragon
 Nylea's Colossus
 Nylea's Huntmaster
@@ -2151,6 +2154,7 @@ The Squadron Sinister
 The Thing, Ben Grimm
 The Torment of Gollum
 The Underworld Cookbook
+The Valeyard
 The War Doctor
 The Warring Triad
 The Wise Mothman

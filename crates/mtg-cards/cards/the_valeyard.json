@@ -7,20 +7,8 @@
       "name": "The Valeyard",
       "oracle_fingerprint": "16b9d30b328dd7ef0eecb9fd3c4b53bd",
       "abilities": [
-        {
-          "Rule": {
-            "rule": {
-              "R6700VillainousAgain": "Opponents"
-            }
-          }
-        },
-        {
-          "Rule": {
-            "rule": {
-              "VoteAgain": "You"
-            }
-          }
-        }
+        { "Rule": { "rule": { "R6700VillainousAgain": "Opponents" } } },
+        { "Rule": { "rule": { "VoteAgain": "You" } } }
       ]
     }
   ]

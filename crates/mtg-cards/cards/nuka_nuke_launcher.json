@@ -10,61 +10,24 @@
         {
           "Static": {
             "affected": "Attached",
-            "mods": [
-              {
-                "ModifyPT": {
-                  "power": 3,
-                  "toughness": 0
-                }
-              },
-              {
-                "AddKeyword": "Intimidate"
-              }
-            ]
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }, { "AddKeyword": "Intimidate" }]
           }
         },
         {
           "Triggered": {
-            "when": {
-              "Attacks": {
-                "what": [
-                  {
-                    "Is": "Attached"
-                  }
-                ]
-              }
-            },
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
             "effects": [
-              {
-                "Choose": {
-                  "from": "Defending",
-                  "as": "defender"
-                }
-              },
+              { "Choose": { "from": "Defending", "as": "defender" } },
               {
                 "DelayedTrigger": {
-                  "when": {
-                    "SpellCast": {
-                      "by": {
-                        "Bound": "defender"
-                      }
-                    }
-                  },
+                  "when": { "SpellCast": { "by": { "Bound": "defender" } } },
                   "once": false,
-                  "until": {
-                    "R6700UntilEndOfTheirNextTurn": {
-                      "Bound": "defender"
-                    }
-                  },
+                  "until": { "R6700UntilEndOfTheirNextTurn": { "Bound": "defender" } },
                   "effects": [
                     {
                       "PutCounters": {
-                        "on": {
-                          "Bound": "defender"
-                        },
-                        "counter": {
-                          "Other": "rad"
-                        },
+                        "on": { "Bound": "defender" },
+                        "counter": { "Other": "rad" },
                         "count": 2
                       }
                     }
@@ -74,11 +37,7 @@
             ]
           }
         },
-        {
-          "Keyword": {
-            "Equip": "{3}"
-          }
-        }
+        { "Keyword": { "Equip": "{3}" } }
       ]
     }
   ]

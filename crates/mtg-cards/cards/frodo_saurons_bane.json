@@ -14,35 +14,16 @@
               {
                 "If": {
                   "condition": {
-                    "Matches": {
-                      "subject": "This",
-                      "selector": [
-                        {
-                          "Subtype": "Citizen"
-                        }
-                      ]
-                    }
+                    "Matches": { "subject": "This", "selector": [{ "Subtype": "Citizen" }] }
                   },
                   "then": [
                     {
                       "Continuous": {
                         "affected": "This",
                         "mods": [
-                          {
-                            "SetCreatureTypes": [
-                              "Halfling",
-                              "Scout"
-                            ]
-                          },
-                          {
-                            "SetPT": {
-                              "power": 2,
-                              "toughness": 3
-                            }
-                          },
-                          {
-                            "AddKeyword": "Lifelink"
-                          }
+                          { "SetCreatureTypes": ["Halfling", "Scout"] },
+                          { "SetPT": { "power": 2, "toughness": 3 } },
+                          { "AddKeyword": "Lifelink" }
                         ],
                         "duration": "Forever"
                       }
@@ -60,34 +41,20 @@
               {
                 "If": {
                   "condition": {
-                    "Matches": {
-                      "subject": "This",
-                      "selector": [
-                        {
-                          "Subtype": "Scout"
-                        }
-                      ]
-                    }
+                    "Matches": { "subject": "This", "selector": [{ "Subtype": "Scout" }] }
                   },
                   "then": [
                     {
                       "Continuous": {
                         "affected": "This",
                         "mods": [
-                          {
-                            "SetCreatureTypes": [
-                              "Halfling",
-                              "Rogue"
-                            ]
-                          },
+                          { "SetCreatureTypes": ["Halfling", "Rogue"] },
                           {
                             "GrantAbility": {
                               "Triggered": {
                                 "when": {
                                   "DealsDamage": {
-                                    "source": [
-                                      "This"
-                                    ],
+                                    "source": ["This"],
                                     "to": "EachPlayer",
                                     "combat": true
                                   }
@@ -95,24 +62,9 @@
                                 "effects": [
                                   {
                                     "If": {
-                                      "condition": {
-                                        "RingTempted": {
-                                          "who": "You",
-                                          "times": 4
-                                        }
-                                      },
-                                      "then": [
-                                        {
-                                          "LoseGame": {
-                                            "who": "Triggering"
-                                          }
-                                        }
-                                      ],
-                                      "otherwise": [
-                                        {
-                                          "RingTempts": {}
-                                        }
-                                      ]
+                                      "condition": { "RingTempted": { "who": "You", "times": 4 } },
+                                      "then": [{ "LoseGame": { "who": "Triggering" } }],
+                                      "otherwise": [{ "RingTempts": {} }]
                                     }
                                   }
                                 ]

@@ -7,103 +7,42 @@
       "name": "Quantum Riddler",
       "oracle_fingerprint": "77bf6b353f596b0f4754a10741b54860",
       "abilities": [
-        {
-          "Keyword": "Flying"
-        },
+        { "Keyword": "Flying" },
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
-            "effects": [
-              {
-                "Draw": {}
-              }
-            ]
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
           }
         },
         {
           "Replacement": {
-            "when": {
-              "R6700Draws": {}
-            },
-            "by": {
-              "Add": 1
-            },
+            "when": { "R6700Draws": {} },
+            "by": { "Add": 1 },
             "condition": {
               "Compare": {
-                "left": {
-                  "Count": [
-                    {
-                      "In": "Hand"
-                    },
-                    {
-                      "OwnedBy": "You"
-                    }
-                  ]
-                },
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
                 "op": "Le",
                 "right": 1
               }
             }
           }
         },
-        {
-          "AltCast": {
-            "way": "Warp",
-            "cost": "{1}{U}"
-          }
-        },
+        { "AltCast": { "way": "Warp", "cost": "{1}{U}" } },
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
-            "if": {
-              "CastWith": "Warp"
-            },
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
             "effects": [
-              {
-                "Choose": {
-                  "from": "This",
-                  "as": "warped"
-                }
-              },
+              { "Choose": { "from": "This", "as": "warped" } },
               {
                 "DelayedTrigger": {
-                  "when": {
-                    "StepBegins": {
-                      "step": "End"
-                    }
-                  },
+                  "when": { "StepBegins": { "step": "End" } },
                   "effects": [
-                    {
-                      "Exile": {
-                        "what": {
-                          "Bound": "warped"
-                        },
-                        "as": "warped_card"
-                      }
-                    },
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
                     {
                       "Rule": {
                         "rule": {
-                          "MayCast": {
-                            "from": "Exile",
-                            "only": {
-                              "Bound": "warped_card"
-                            }
-                          }
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
                         },
                         "duration": "Forever"
                       }
