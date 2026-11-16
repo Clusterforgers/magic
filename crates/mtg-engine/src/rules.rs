@@ -2788,7 +2788,7 @@ fn r6603_lower_loyalty_again(scope: &Scope<'_>, times: u32) -> Result<Rule, Reso
         .filter(|ability| {
             ability.source() == scope.source
                 && ability.origin().is_printed()
-                && matches!(&*ability.rules, mtg_cards::ability::Ability::Loyalty { .. })
+                && matches!(ability.rules(), mtg_cards::ability::Ability::Loyalty { .. })
         })
         .ok_or_else(unsupported)?;
     Ok(Rule::R6603LoyaltyAgain {

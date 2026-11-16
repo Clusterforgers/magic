@@ -170,7 +170,7 @@ fn r6603_own_trigger_resolving(state: &GameState, object: ObjectId) -> bool {
     };
     let triggered = ability.delayed.is_some()
         || matches!(
-            &*ability.rules,
+            ability.rules(),
             mtg_cards::ability::Ability::Triggered { .. }
         );
     triggered && state.resolving_controller() == holder(state, object)

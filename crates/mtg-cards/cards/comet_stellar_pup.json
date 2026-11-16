@@ -19,27 +19,15 @@
                       "from": 1,
                       "to": 2,
                       "effects": [
-                        {
-                          "PutCounters": {
-                            "on": "This",
-                            "counter": "loyalty",
-                            "count": 2
-                          }
-                        },
+                        { "PutCounters": { "on": "This", "counter": "loyalty", "count": 2 } },
                         {
                           "CreateToken": {
                             "token": {
                               "Custom": {
                                 "name": "Squirrel",
-                                "colors": [
-                                  "Green"
-                                ],
-                                "types": [
-                                  "Creature"
-                                ],
-                                "subtypes": [
-                                  "Squirrel"
-                                ],
+                                "colors": ["Green"],
+                                "types": ["Creature"],
+                                "subtypes": ["Squirrel"],
                                 "power": 1,
                                 "toughness": 1
                               }
@@ -50,14 +38,8 @@
                         },
                         {
                           "Continuous": {
-                            "affected": {
-                              "Bound": "squirrels"
-                            },
-                            "mods": [
-                              {
-                                "AddKeyword": "Haste"
-                              }
-                            ],
+                            "affected": { "Bound": "squirrels" },
+                            "mods": [{ "AddKeyword": "Haste" }],
                             "duration": "UntilEndOfTurn"
                           }
                         }
@@ -67,42 +49,20 @@
                       "from": 3,
                       "to": 3,
                       "effects": [
-                        {
-                          "RemoveCounters": {
-                            "from": "This",
-                            "counter": "loyalty"
-                          }
-                        },
+                        { "RemoveCounters": { "from": "This", "counter": "loyalty" } },
                         {
                           "Choose": {
                             "from": {
                               "Each": [
-                                {
-                                  "OwnedBy": "You"
-                                },
-                                {
-                                  "In": "Graveyard"
-                                },
-                                {
-                                  "Compare": {
-                                    "stat": "ManaValue",
-                                    "op": "Le",
-                                    "to": 2
-                                  }
-                                }
+                                { "OwnedBy": "You" },
+                                { "In": "Graveyard" },
+                                { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }
                               ]
                             },
                             "as": "card"
                           }
                         },
-                        {
-                          "Move": {
-                            "what": {
-                              "Bound": "card"
-                            },
-                            "to": "Hand"
-                          }
-                        }
+                        { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
                       ]
                     },
                     {
@@ -114,77 +74,39 @@
                             "first": [
                               {
                                 "Choose": {
-                                  "from": {
-                                    "Each": [
-                                      {
-                                        "Type": "Creature"
-                                      }
-                                    ]
-                                  },
+                                  "from": { "Each": [{ "Type": "Creature" }] },
                                   "as": "victim"
                                 }
                               },
                               {
                                 "DealDamage": {
-                                  "to": {
-                                    "Bound": "victim"
-                                  },
-                                  "amount": {
-                                    "Counters": {
-                                      "on": "This",
-                                      "counter": "loyalty"
-                                    }
-                                  }
+                                  "to": { "Bound": "victim" },
+                                  "amount": { "Counters": { "on": "This", "counter": "loyalty" } }
                                 }
                               }
                             ],
                             "second": [
-                              {
-                                "Choose": {
-                                  "from": "EachPlayer",
-                                  "as": "victim"
-                                }
-                              },
+                              { "Choose": { "from": "EachPlayer", "as": "victim" } },
                               {
                                 "DealDamage": {
-                                  "to": {
-                                    "Bound": "victim"
-                                  },
-                                  "amount": {
-                                    "Counters": {
-                                      "on": "This",
-                                      "counter": "loyalty"
-                                    }
-                                  }
+                                  "to": { "Bound": "victim" },
+                                  "amount": { "Counters": { "on": "This", "counter": "loyalty" } }
                                 }
                               }
                             ]
                           }
                         },
-                        {
-                          "RemoveCounters": {
-                            "from": "This",
-                            "counter": "loyalty",
-                            "count": 2
-                          }
-                        }
+                        { "RemoveCounters": { "from": "This", "counter": "loyalty", "count": 2 } }
                       ]
                     },
                     {
                       "from": 6,
                       "to": 6,
                       "effects": [
-                        {
-                          "PutCounters": {
-                            "on": "This",
-                            "counter": "loyalty"
-                          }
-                        },
+                        { "PutCounters": { "on": "This", "counter": "loyalty" } },
                         {
                           "Rule": {
-                            "rule": {
-                              "R6603LoyaltyAgain": 2
-                            },
+                            "rule": { "R6603LoyaltyAgain": 2 },
                             "duration": "UntilEndOfTurn"
                           }
                         }
