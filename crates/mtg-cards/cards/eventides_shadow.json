@@ -1,0 +1,22 @@
+{
+  "oracle_id": "92ac8aa4-e23c-4ed9-8317-c249a17ce3d2",
+  "name": "Eventide's Shadow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eventide's Shadow",
+      "oracle_fingerprint": "91455cf7441d01f322c15f50a651756c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "R6701RemoveAmong": { "from": { "Each": [] }, "as": "removed" } },
+              { "Draw": { "count": { "Bound": "removed" } } },
+              { "LoseLife": { "amount": { "Bound": "removed" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

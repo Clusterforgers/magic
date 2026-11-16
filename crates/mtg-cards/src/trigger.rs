@@ -833,6 +833,14 @@ pub enum TriggerPattern {
         /// Which time in the turn it must be, from one.
         nth: u32,
     },
+    /// The event, while the trigger's controller is activating an ability of the kind, its costs paid in the same batch
+    /// ("When this creature is exiled from the battlefield while you're activating a craft ability", CR 602.2).
+    R6701WhileActivating {
+        /// The event.
+        inner: Box<TriggerPattern>,
+        /// The kind of the ability being activated.
+        kind: crate::ability::ActivationKind,
+    },
     /// The event, when a spell or ability caused it ("whenever you put a -1/-1 counter on a creature", "when a spell or
     /// ability an opponent controls causes you to discard this"): the controller of the spell or ability that is
     /// resolving, being cast or activated when the event happens, or the controller of the source of the damage. Turn

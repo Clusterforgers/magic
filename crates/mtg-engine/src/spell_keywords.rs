@@ -29,6 +29,43 @@ pub(crate) fn given_to_spell(state: &GameState, caster: PlayerId, spell: ObjectI
     let Some(target) = state.object(spell).map(GameObject::reference) else {
         return given;
     };
+    for modification in mods_naming_spell(state, caster, spell) {
+        if let Modification::AddKeyword(keyword) = modification {
+            let keyword = r5510_read_own_cost(state, spell, &keyword);
+            if !given.contains(&keyword) {
+                given.push(keyword);
+            }
+        }
+    }
+    for effect in &state.rule_effects {
+        let Rule::NextSpell {
+            what,
+            benefit: SpellBenefit::Keyword(keyword),
+        } = &effect.rule
+        else {
+            continue;
+        };
+        let scope = Scope {
+            casting: Some((spell, caster)),
+            ..Scope::announcing(state, effect.controller, effect.source.unwrap_or(target))
+        };
+        if effect.controller == caster
+            && (what.is_empty() || scope.selects(what, target).unwrap_or(false))
+            && !given.contains(keyword)
+        {
+            given.push(keyword.clone());
+        }
+    }
+    given
+}
+
+/// The changes the static abilities of the permanents in play make to `spell`, which `caster` casts, in the order they
+/// were found: each static ability that names spells, whose selector and condition take the spell.
+fn mods_naming_spell(state: &GameState, caster: PlayerId, spell: ObjectId) -> Vec<Modification> {
+    let mut found: Vec<Modification> = Vec::new();
+    let Some(target) = state.object(spell).map(GameObject::reference) else {
+        return found;
+    };
     for &id in state.zone(Zone::Battlefield) {
         let Some(object) = state
             .object(id)
@@ -59,36 +96,30 @@ pub(crate) fn given_to_spell(state: &GameState, caster: PlayerId, spell: ObjectI
             if !applies {
                 continue;
             }
-            for modification in mods {
-                if let Modification::AddKeyword(keyword) = modification {
-                    let keyword = r5510_read_own_cost(state, spell, keyword);
-                    if !given.contains(&keyword) {
-                        given.push(keyword);
-                    }
-                }
+            found.extend(mods.iter().cloned());
+        }
+    }
+    found
+}
+
+/// The `AltCast` abilities static abilities give `spell` as `caster` casts it ("Each legendary spell you cast that's one
+/// or more colors has web-slinging {G}{W}{U}"): ways to cast it the card does not print (CR 118.9).
+pub(crate) fn r6701_alt_casts_given(
+    state: &GameState,
+    caster: PlayerId,
+    spell: ObjectId,
+) -> Vec<Arc<Ability>> {
+    mods_naming_spell(state, caster, spell)
+        .into_iter()
+        .filter_map(|modification| match modification {
+            Modification::GrantAbility(granted)
+                if matches!(&*granted, Ability::AltCast { .. }) =>
+            {
+                Some(granted)
             }
-        }
-    }
-    for effect in &state.rule_effects {
-        let Rule::NextSpell {
-            what,
-            benefit: SpellBenefit::Keyword(keyword),
-        } = &effect.rule
-        else {
-            continue;
-        };
-        let scope = Scope {
-            casting: Some((spell, caster)),
-            ..Scope::announcing(state, effect.controller, effect.source.unwrap_or(target))
-        };
-        if effect.controller == caster
-            && (what.is_empty() || scope.selects(what, target).unwrap_or(false))
-            && !given.contains(keyword)
-        {
-            given.push(keyword.clone());
-        }
-    }
-    given
+            _ => None,
+        })
+        .collect()
 }
 
 /// The selector and changes of a static ability of the battlefield that names spells.

@@ -16,7 +16,7 @@ use mtg_cards::refs::{Ref, ZoneKind};
 use mtg_cards::spend::ManaLasts;
 use mtg_cards::value::Amount;
 use mtg_cards::{AbilityDef, CardDefinition};
-use mtg_core::ids::ObjectId;
+use mtg_core::ids::{EffectId, ObjectId};
 use mtg_core::mana::ManaType;
 
 use crate::abilities::{AbilityRef, AbilitySource, Grant};
@@ -691,6 +691,10 @@ fn granted_ability(state: &GameState, grant: Grant) -> Option<Arc<Ability>> {
             WantedModification::GrantAbility(granted) => Some(granted),
             _ => None,
         },
+        Grant::R6701Nested { effect, index } => match r6701_nested_mod(state, effect, index)? {
+            WantedModification::GrantAbility(granted) => Some(granted),
+            _ => None,
+        },
         // The ability is printed on the donor, and it is only an ability of the object while the donor is the same object.
         Grant::Borrowed { donor, ability } => lendable(card_of(state, donor, None)?)
             .into_iter()
@@ -718,7 +722,23 @@ fn granted_keyword(state: &GameState, grant: Grant) -> Option<Keyword> {
             WantedModification::AddKeyword(keyword) => Some(keyword),
             _ => None,
         },
+        Grant::R6701Nested { effect, index } => match r6701_nested_mod(state, effect, index)? {
+            WantedModification::AddKeyword(keyword) => Some(keyword),
+            _ => None,
+        },
         Grant::Borrowed { .. } | Grant::Ring { .. } => None,
+    }
+}
+
+/// The modification `index` of the static ability the continuous effect `effect` grants.
+fn r6701_nested_mod(state: &GameState, effect: EffectId, index: usize) -> Option<WantedModification> {
+    let found = state.effects().iter().find(|found| found.id == effect)?;
+    let Modification::GrantAbility(granted) = &found.modification else {
+        return None;
+    };
+    match &**granted {
+        Ability::Static { mods, .. } => mods.get(index).cloned(),
+        _ => None,
     }
 }
 

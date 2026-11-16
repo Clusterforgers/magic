@@ -16,6 +16,8 @@ pub(crate) struct CausedBy {
     pub(crate) player: PlayerId,
     /// The spell, or the object an ability comes from, or the source of the damage.
     pub(crate) object: Option<ObjectRef>,
+    /// The specific kind of the ability being activated, when the batch pays the costs of an activation.
+    pub(crate) activating: Option<mtg_cards::ability::ActivationKind>,
 }
 
 /// The cause of the events: the spell or ability that is resolving; else the spell being cast or the ability being
@@ -37,6 +39,7 @@ pub(crate) fn cause_of(pre: &GameState, events: &[Event], post: &GameState) -> O
         return Some(CausedBy {
             player: object.controller(),
             object: Some(origin),
+            activating: None,
         });
     }
     for event in events {
@@ -45,6 +48,7 @@ pub(crate) fn cause_of(pre: &GameState, events: &[Event], post: &GameState) -> O
                 return Some(CausedBy {
                     player: put.controller,
                     object: Some(put.source),
+                    activating: r6701_kind_activated(pre, put),
                 });
             }
             Event::SpellCast { player, object, .. } => {
@@ -54,6 +58,7 @@ pub(crate) fn cause_of(pre: &GameState, events: &[Event], post: &GameState) -> O
                 return Some(CausedBy {
                     player: *player,
                     object: spell,
+                    activating: None,
                 });
             }
             _ => {}
@@ -69,6 +74,7 @@ pub(crate) fn cause_of(pre: &GameState, events: &[Event], post: &GameState) -> O
             Some(CausedBy {
                 player,
                 object: Some(object),
+                activating: None,
             })
         }
         // CR 714.3b: the turn-based lore counter of a Saga is put by the Saga's controller.
@@ -83,8 +89,24 @@ pub(crate) fn cause_of(pre: &GameState, events: &[Event], post: &GameState) -> O
             Some(CausedBy {
                 player,
                 object: Some(saga),
+                activating: None,
             })
         }
         _ => None,
     })
+}
+
+/// The specific kind of the ability `put` puts on the stack, read in `state` from before its costs were paid (a craft
+/// ability's source is exiled as it is paid).
+fn r6701_kind_activated(
+    state: &GameState,
+    put: &crate::abilities::PutOnStack,
+) -> Option<mtg_cards::ability::ActivationKind> {
+    let address = crate::abilities::AbilityRef {
+        object: put.source.id,
+        ability: put.ability,
+        source: put.origin,
+    };
+    let rules = crate::ability_reader::ability(state, address)?;
+    crate::activation_kind::specific(state, address, &rules)
 }

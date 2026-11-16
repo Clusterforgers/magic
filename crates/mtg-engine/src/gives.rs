@@ -267,7 +267,7 @@ fn from(state: &GameState, applied: &Applied, id: ObjectId) -> bool {
     match applied.origin {
         Grant::Static { source, .. } => source == id,
         Grant::Borrowed { .. } | Grant::Ring { .. } => false,
-        Grant::Effect(effect) => state
+        Grant::Effect(effect) | Grant::R6701Nested { effect, .. } => state
             .effects()
             .iter()
             .any(|e| e.id == effect && e.source.as_ref().is_some_and(|source| source.id == id)),

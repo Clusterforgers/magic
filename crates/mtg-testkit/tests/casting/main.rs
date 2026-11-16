@@ -4,6 +4,7 @@ mod activation_costs;
 mod affinity;
 mod aftermath;
 mod alt_cast;
+mod r6701_cards;
 mod alternative_costs;
 mod announce_again;
 mod announce_division;

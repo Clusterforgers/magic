@@ -145,6 +145,7 @@ mod r6400_block;
 pub(crate) mod r6402_change_roll;
 mod regenerate;
 mod remove_counters;
+mod r6701_remove_among;
 mod remove_from_combat;
 mod repeat_each;
 mod rephase;
@@ -272,6 +273,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::PutCounters { .. } => put_counters::run(cx, effect),
         Effect::RemoveCounters { .. } => remove_counters::run(cx, effect),
         Effect::RemoveAllCounters { .. } => remove_counters::run_all(cx, effect),
+        Effect::R6701RemoveAmong { .. } => r6701_remove_among::run(cx, effect),
         Effect::MoveCounters { .. } => move_counters::run(cx, effect),
         Effect::SpellEntersWith { .. } => spell_enters_with::run(cx, effect),
         Effect::MultiplyCounters { .. } => multiply_counters::run(cx, effect),
@@ -288,7 +290,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Transform { .. } => transform::run(cx, effect),
         Effect::Flip { .. } => flip::run(cx, effect),
         Effect::TurnFaceUp { .. } => turn_up::run(cx, effect),
-        Effect::TurnFaceDown { .. } => rmt8_turn_down::run(cx, effect),
+        Effect::TurnFaceDown { .. } | Effect::R6701TurnFaceDownHorror { .. } => rmt8_turn_down::run(cx, effect),
         Effect::Harness { .. } => rmt8_turn_down::harness(cx, effect),
         Effect::Plot { .. } => r282_plot::run(cx, effect),
         Effect::Prepare { .. } => prepare::run(cx, effect),
@@ -302,7 +304,9 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Fight { .. } => fight::run(cx, effect),
         Effect::BecomeMonarch { .. } => become_monarch::run(cx, effect),
         Effect::ReduceSpeed { .. } => r5521_reduce_speed::run(cx, effect),
-        Effect::ControlPlayer { .. } => control_player::run(cx, effect),
+        Effect::ControlPlayer { .. } | Effect::R6701ControlCombat { .. } => {
+            control_player::run(cx, effect)
+        }
         Effect::RestartGame { .. } => restart_game::run(cx, effect),
         Effect::RingTempts { .. } => ring_tempts::run(cx, effect),
         Effect::CreateEmblem { .. } => w6b_create_emblem::run(cx, effect),

@@ -49,6 +49,11 @@ fn creature(ward_wanted: bool) -> CardDefinition {
 
 static MORPH: LazyLock<CardDefinition> = LazyLock::new(|| creature(false));
 static DISGUISE: LazyLock<CardDefinition> = LazyLock::new(|| creature(true));
+static R6701_HORROR: LazyLock<CardDefinition> = LazyLock::new(|| {
+    let mut shown = creature(false);
+    shown.subtypes.push(mtg_core::card::Subtype("Horror".into()));
+    shown
+});
 
 impl FaceDown {
     /// The characteristics a spell or permanent that lies face down this way has (CR 708.2a), or `None` for a card that
@@ -62,6 +67,7 @@ impl FaceDown {
             | FaceDown::Attraction => None,
             FaceDown::Morph | FaceDown::Manifest => Some(&MORPH),
             FaceDown::Disguise | FaceDown::Cloak => Some(&DISGUISE),
+            FaceDown::R6701Horror => Some(&R6701_HORROR),
         }
     }
 

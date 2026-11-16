@@ -1310,6 +1310,8 @@ impl<'a> Pass<'a> {
                     rule: ability.address.ability,
                     index,
                 },
+                // A static ability an effect gave grants by the effect and the modification's index.
+                AbilitySource::Granted(Grant::Effect(effect)) => Grant::R6701Nested { effect, index },
                 AbilitySource::Granted(grant) | AbilitySource::GrantedKeyword(grant) => grant,
                 // A static ability a keyword adds (reconfigure) is named by the rule of the keyword on the card.
                 AbilitySource::PrintedKeyword(rule) => Grant::Static {

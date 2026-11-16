@@ -985,6 +985,16 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         counter: Option<CounterKind>,
     },
+    /// The controller removes any number of counters from among the permanents and players `from` names, one at a time
+    /// and of any kinds, and the number removed is kept under the name (`Amount::Bound`): "Remove any number of counters
+    /// from among permanents on the battlefield."
+    R6701RemoveAmong {
+        /// Where they may come from.
+        from: Ref,
+        /// The name the number removed is kept under.
+        #[serde(rename = "as")]
+        bind: String,
+    },
     /// The permanent spells `spell` names enter the battlefield with `count` additional +1/+1 counters on them as they
     /// resolve (CR 614.1c): "that creature enters with an additional +1/+1 counter on it" after a creature spell is cast.
     SpellEntersWith {
@@ -1147,6 +1157,12 @@ pub enum Effect {
         /// What is turned.
         what: Ref,
     },
+    /// Turns face-up permanents face down as 2/2 Horror creatures (CR 708.2a): "turn ... face down. They're 2/2 Horror
+    /// creatures."
+    R6701TurnFaceDownHorror {
+        /// What is turned.
+        what: Ref,
+    },
     /// Makes prepare cards on the battlefield prepared: while one is, its controller may cast a copy of its spell face and doing so unprepares it. A permanent that is prepared already, is no prepare card or is not on the battlefield is passed over.
     Prepare {
         /// What becomes prepared.
@@ -1304,6 +1320,12 @@ pub enum Effect {
         /// Whether that player takes an extra turn after that turn (Emrakul, the Promised End).
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         extra_turn: bool,
+    },
+    /// The controller of the effect controls the players during each one's next combat phase (CR 722, 506.1): "You
+    /// control target opponent during their next combat phase."
+    R6701ControlCombat {
+        /// The players controlled.
+        who: Ref,
     },
     /// The game restarts (CR 727); `keep` stays exiled, then enters under your control.
     RestartGame {

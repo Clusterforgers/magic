@@ -314,6 +314,7 @@ const RUNS: &[&str] = &[
     "Effect.PutCounters",
     "Effect.RemoveCounters",
     "Effect.RemoveAllCounters",
+    "Effect.R6701RemoveAmong",
     "Effect.MoveCounters",
     "Effect.SpellEntersWith",
     "Effect.MultiplyCounters",
@@ -334,6 +335,7 @@ const RUNS: &[&str] = &[
     "Effect.Flip",
     "Effect.TurnFaceUp",
     "Effect.TurnFaceDown",
+    "Effect.R6701TurnFaceDownHorror",
     "Effect.Prepare",
     "Effect.Unprepare",
     "Effect.Suspect",
@@ -386,6 +388,7 @@ const RUNS: &[&str] = &[
     "Effect.Revive",
     "Effect.ReduceSpeed",
     "Effect.ControlPlayer",
+    "Effect.R6701ControlCombat",
     "Effect.ControlPlayer.By",
     "Effect.RestartGame",
     "Effect.RingTempts",
@@ -1096,6 +1099,7 @@ const RUNS: &[&str] = &[
     "Keyword.Exploit",
     "Keyword.Soulbond",
     "Keyword.Emerge",
+    "Keyword.R6701EmergeFromArtifact",
     "Keyword.Offering",
     "Keyword.Harmonize",
     "Keyword.ReadAhead",
@@ -1501,6 +1505,7 @@ mod tests {
     #[case::putting_counters("Effect.PutCounters", true)]
     #[case::removing_counters("Effect.RemoveCounters", true)]
     #[case::removing_all_counters("Effect.RemoveAllCounters", true)]
+    #[case::r6701_removing_counters_from_among("Effect.R6701RemoveAmong", true)]
     #[case::moving_counters("Effect.MoveCounters", true)]
     #[case::multiplying_counters("Effect.MultiplyCounters", true)]
     #[case::divided_amounts_read_outside_damage_and_counters("Amount.Divided.Elsewhere", false)]
@@ -1926,6 +1931,7 @@ mod tests {
     #[case::soulbond("Keyword.Soulbond", true)]
     #[case::pairing("Effect.Pair", true)]
     #[case::emerge("Keyword.Emerge", true)]
+    #[case::r6701_emerge_from_artifact("Keyword.R6701EmergeFromArtifact", true)]
     #[case::harmonize("Keyword.Harmonize", true)]
     #[case::read_ahead("Keyword.ReadAhead", true)]
     #[case::recover("Keyword.Recover", true)]

@@ -207,7 +207,7 @@ fn spares(state: &GameState, keyword: &Keyword, attachment: ObjectId, host: Obje
                 })
                 .filter_map(|applied| match applied.origin {
                     Grant::Static { source, .. } => Some(source),
-                    Grant::Effect(id) => state
+                    Grant::Effect(id) | Grant::R6701Nested { effect: id, .. } => state
                         .effects()
                         .iter()
                         .find(|effect| effect.id == id)

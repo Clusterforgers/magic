@@ -403,6 +403,8 @@ pub enum Keyword {
     Offering(Selector),
     /// Emerge with its cost (CR 702.119): an alternative cost to cast the card from a hand by sacrificing a creature and paying the emerge cost reduced by that creature's mana value.
     Emerge(Cost),
+    /// Emerge from artifact with its cost (CR 702.119): emerge whose sacrificed permanent is an artifact, the cost reduced by that artifact's mana value.
+    R6701EmergeFromArtifact(Cost),
     /// Harmonize with its cost (CR 702.180): an alternative cost to cast the card from its owner's graveyard, reduced by the power of a creature its caster may tap; the spell is exiled when it leaves the stack.
     Harmonize(Cost),
     /// Read ahead (CR 702.155): as the Saga enters, its controller chooses a chapter number and it enters with that many lore counters; chapter abilities with a lower number don't trigger.
@@ -654,6 +656,7 @@ impl Keyword {
         "Exploit",
         "Soulbond",
         "Emerge",
+        "Emerge from artifact",
         "Offering",
         "Harmonize",
         "Read ahead",
@@ -864,6 +867,7 @@ impl Keyword {
             Keyword::Exploit => "Exploit",
             Keyword::Soulbond => "Soulbond",
             Keyword::Emerge(_) => "Emerge",
+            Keyword::R6701EmergeFromArtifact(_) => "Emerge from artifact",
             Keyword::Offering(_) => "Offering",
             Keyword::Harmonize(_) => "Harmonize",
             Keyword::ReadAhead => "Read ahead",
@@ -1180,6 +1184,7 @@ mod tests {
             Keyword::Exploit,
             Keyword::Soulbond,
             Keyword::Emerge(Cost::default()),
+            Keyword::R6701EmergeFromArtifact(Cost::default()),
             Keyword::Offering(Selector::default()),
             Keyword::Harmonize(Cost::default()),
             Keyword::ReadAhead,

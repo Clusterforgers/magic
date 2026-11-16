@@ -1,0 +1,55 @@
+{
+  "oracle_id": "5c26c30b-bc4a-4d20-8406-ef9022256e0d",
+  "name": "Crabomination",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crabomination",
+      "oracle_fingerprint": "1e7efd8d9c40a683f0cd38a7013ba560",
+      "abilities": [
+        { "Keyword": { "R6701EmergeFromArtifact": "{5}{B}{B}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ExileTop": { "who": { "Target": 0 }, "as": "top" } },
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Graveyard" }] },
+                  "as": "buried"
+                }
+              },
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] },
+                  "as": "held"
+                }
+              },
+              {
+                "Exile": {
+                  "what": { "Union": [{ "Bound": "buried" }, { "Bound": "held" }] },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Union": [{ "Bound": "top" }, { "Bound": "exiled" }] } },
+                      { "In": "Exile" },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "card" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

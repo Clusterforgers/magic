@@ -164,6 +164,9 @@ pub enum Event {
         /// Whether the controlled player takes an extra turn after that turn.
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         extra_turn: bool,
+        /// The control lasts the player's next combat phase rather than their next turn.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        combat: bool,
     },
     /// The game restarted (CR 727): every card goes back to its owner's library (a commander to the command zone), tokens
     /// and other objects cease to exist, the players start over and the opening runs again with `by` as the starting
@@ -1270,6 +1273,9 @@ pub enum Event {
         object: ObjectId,
         /// Its controller, who turned it.
         player: PlayerId,
+        /// It is a 2/2 Horror creature (`FaceDown::R6701Horror`) rather than a plain 2/2 creature.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        horror: bool,
     },
     /// A commander's owner chose its color before the game began ("If ~ is your commander, choose a color before the game
     /// begins."): the card is that color in every zone.
