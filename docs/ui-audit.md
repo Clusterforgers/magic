@@ -70,7 +70,7 @@ Every screen and table mode shot at 1873 × 1047, 1530 × 898, 1400 × 900, 1024
 | 11 | Med | The stack's target arrows run across the prompt sentence | phone, any prompt with a stack | p-x-390 | fixed: under the sheet with a faint copy above |
 | 12 | Med | The boss-mode opening hand covers the boss's pod | phone, boss, mulligan | p-mull-boss-390 | fixed: a phone sheet keeps the head clear |
 | 13 | Med | Pay at 1400: answers on two rows and the mana sources scroll sideways | 4 seats, pay | p-pay-1400 | fixed: one row, the sources wrap |
-| 14 | Low | The run header fills the first phone screen before the room's choice | Delves map, camps, phone | dl-map-390, dl-campfire-390 | pf10f |
+| 14 | Low | The run header fills the first phone screen before the room's choice | Delves map, camps, phone | dl-map-390, dl-campfire-390 | fixed: folded to the theme and hearts |
 | 15 | Low | Shop offers of different heights put their Buy buttons on different lines | Delves shop, 1400 | dl-shop-1400 | pf10g |
 | 16 | Low | Enter the fight and Retreat stand on two rows | Delves boss intro | dl-fight-1400 | fixed |
 | 17 | Low | "1 relics" in the run summary | Delves victory | dl-victory-390 | fixed |
