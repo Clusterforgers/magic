@@ -686,6 +686,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r6401_wholes::r6401_add_wholes(ability, &mut texts);
     super::r6500_wholes::r6500_add_wholes(ability, &mut texts);
     super::r6501_wholes::r6501_add_wholes(ability, &mut texts);
+    super::r6503_wholes::r6503_add_wholes(ability, &mut texts);
     super::r6103_wholes::r6103_add_wholes(ability, &mut texts);
     super::r6400_wholes::r6400_add_wholes(ability, &mut texts);
     super::r5510_fortified::r5510_wordings(&mut texts);
@@ -1271,9 +1272,12 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
         }
         Ability::Loyalty {
             cost,
+            condition: None,
             targets,
             effects,
         } => loyalty::texts(*cost, targets, effects),
+        // "Activate only if ..." on a loyalty ability is worded by the wholes that hold it.
+        Ability::Loyalty { .. } => Vec::new(),
         Ability::AdditionalCost {
             cost,
             required,

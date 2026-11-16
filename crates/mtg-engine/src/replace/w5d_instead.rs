@@ -106,6 +106,13 @@ impl Pass<'_> {
             &mut || answers.next().cloned(),
         ) {
             Ok(Inline::Events(mut events)) => {
+                // A permanent remembers what the shield its ability made exiled, as any effect of it (CR 607.2a).
+                if matches!(candidate.origin, Origin::Shield(_))
+                    && let Some(remembered) =
+                        crate::memory::exiled_by(candidate.object, &events, state)
+                {
+                    events.push(remembered);
+                }
                 // A shuffle is drawn once the batch is known (`g12a_order_shuffles`): two effects of one batch that
                 // each shuffle a card into the same library shuffle both cards.
                 for event in &mut events {

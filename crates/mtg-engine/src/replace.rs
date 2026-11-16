@@ -457,6 +457,7 @@ fn shields_of(state: &GameState) -> Vec<RuleEffect> {
                 Rule::PreventDamage(_)
                     | Rule::Regenerate(_)
                     | Rule::DiesInstead { .. }
+                    | Rule::R6503ResolvesInstead { .. }
                     | Rule::Replaces { .. }
             ) && effect.source.is_some()
                 && effect.is_active(state)
@@ -599,6 +600,8 @@ enum Unit {
         destroyed: bool,
         /// The move is the end of a countered spell (CR 701.6).
         countered: bool,
+        /// The move puts a resolved spell into a graveyard as it resolves (CR 608.2n).
+        resolved: bool,
     },
     /// An attachment would become attached to a permanent.
     Attach { object: ObjectId },
@@ -700,6 +703,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::ZoneChange { what, .. }
         | ReplaceWhen::Destroyed { what }
         | ReplaceWhen::Countered { what }
+        | ReplaceWhen::R6503Resolves { what }
         | ReplaceWhen::TurnedFaceUp { what }
         | ReplaceWhen::Discarded { what, .. }
         | ReplaceWhen::R6105Uncycled { what }
@@ -1020,6 +1024,7 @@ impl Pass<'_> {
                         ..
                     }
                 ),
+                resolved: matches!(event, Event::SpellResolved { .. }),
             };
         }
         match event {
@@ -1356,6 +1361,16 @@ impl Pass<'_> {
                     ..
                 },
             )
+            | (
+                ReplaceWhen::R6503Resolves { what },
+                Unit::Move {
+                    object,
+                    from: Zone::Stack,
+                    to: Zone::Graveyard(_),
+                    resolved: true,
+                    ..
+                },
+            )
             | (ReplaceWhen::BecomesAttached { what }, Unit::Attach { object })
             | (ReplaceWhen::Enters { what }, Unit::Enter { object, .. }) => {
                 let Some(reference) = self.reference(*object) else {
@@ -1517,6 +1532,7 @@ impl Pass<'_> {
         .into_iter()
         .flatten()
         .chain(self.c7_untap_dies(slot))
+        .chain(self.r6503_resolves_instead(slot))
         .collect()
     }
 
@@ -4136,6 +4152,7 @@ mod c6_blk_draw_step;
 mod c7_untap_dies;
 #[cfg(test)]
 mod r3d_replaces;
+mod r6503_resolves;
 
 mod finality;
 mod r401_riders;

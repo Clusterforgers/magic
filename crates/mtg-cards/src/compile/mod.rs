@@ -324,6 +324,9 @@ fn read_clause(
     if let Some(found) = read::r6501_whole(text) {
         return (Some(found), Vec::new());
     }
+    if let Some(found) = read::r6503_whole(text) {
+        return (Some(found), Vec::new());
+    }
     match kind {
         ClauseKind::Keyword => {
             // `check_printed` accepts Enchant on an Aura only.

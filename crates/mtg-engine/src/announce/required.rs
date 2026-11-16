@@ -68,11 +68,12 @@ fn variants_at(
         };
         // "Spend only black mana on X" pays nothing: it colors the mana of the X (`price::spell_x_color`); "X can't be
         // greater than ..." pays nothing either: it caps the X announced (`announce::r5523_x_cap`).
-        if cost
-            .0
-            .iter()
-            .all(|item| matches!(item, CostItem::XColor(_) | CostItem::XAtMost(_)))
-        {
+        if cost.0.iter().all(|item| {
+            matches!(
+                item,
+                CostItem::XColor(_) | CostItem::XAtMost(_) | CostItem::XIs(_)
+            )
+        }) {
             continue;
         }
         let settled = at.map(|(state, player, id)| crate::price::settled(cost, state, player, id));

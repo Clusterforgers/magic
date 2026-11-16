@@ -209,6 +209,10 @@ const RUNS: &[&str] = &[
     "Cost.Forage",
     "Cost.Waterbend",
     "Cost.XAtLeast",
+    "Ability.Loyalty.Condition",
+    "ReplaceWhen.R6503Resolves",
+    "Keyword.Annihilator.Counted",
+    "Cost.XIs",
     "Cost.XColor",
     "Cost.ChosenColorOnly",
     "Stat.R374Types",
@@ -1961,6 +1965,10 @@ mod tests {
     #[case::x_costs(X_COST, true)]
     #[case::x_read_after_resolving("Amount.X.Elsewhere", false)]
     #[case::r379_x_of_an_alternative_cost("Cost.Alternative.X", true)]
+    #[case::r6503_a_loyalty_ability_activated_only_if("Ability.Loyalty.Condition", true)]
+    #[case::r6503_a_spell_put_elsewhere_as_it_resolves("ReplaceWhen.R6503Resolves", true)]
+    #[case::r6503_a_counted_annihilator("Keyword.Annihilator.Counted", true)]
+    #[case::r6503_an_x_the_text_defines("Cost.XIs", true)]
     #[case::paying_x_in_an_effect("Effect.Pay.X", true)]
     #[case::paying_energy_of_a_chosen_amount_in_an_effect("Effect.Pay.X.Energy", true)]
     #[case::paying_a_part_that_counts_x_in_an_effect("Effect.Pay.X.Parts", false)]

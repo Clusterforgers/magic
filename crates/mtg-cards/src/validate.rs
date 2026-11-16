@@ -2028,6 +2028,10 @@ impl<'a> Walker<'a> {
                         }
                         w.at("XAtMost", |w| w.amount(most));
                     }
+                    CostItem::XIs(amount) => {
+                        w.uses("Cost", "XIs");
+                        w.at("XIs", |w| w.amount(amount));
+                    }
                     CostItem::XAtLeast(least) => {
                         if *least == 0 {
                             w.problem("an X of at least 0 is any X");
@@ -2612,7 +2616,10 @@ impl<'a> Walker<'a> {
             // Ward is an `Effect::Pay` of the player who targets: life counted as it resolves ("pay life equal to its
             // power") is paid as any counted life in an effect.
             Keyword::Ward(cost) => {
+                // A generic amount counted as the ward trigger resolves ("ward {X}, where X is ...") is paid then.
+                let held = std::mem::replace(&mut self.r5511_resolving_cost, true);
                 self.at("cost", |w| w.c6_eg_paid_cost(cost, &Ref::Triggering));
+                self.r5511_resolving_cost = held;
                 self.payment_of_the_source(cost);
             }
             Keyword::CumulativeUpkeepActs { acts, payable } => {
@@ -2759,7 +2766,15 @@ impl<'a> Walker<'a> {
                 }
                 self.at("of", |w| w.selector(of));
             }
-            Keyword::Annihilator(0) => self.problem("annihilator needs a number of at least 1"),
+            Keyword::Annihilator(count) => {
+                if count.fixed() == Some(0) || matches!(count, Amount::Fixed(n) if *n < 0) {
+                    self.problem("annihilator needs a number of at least 1");
+                }
+                if count.fixed().is_none() {
+                    self.uses("Keyword", "Annihilator.Counted");
+                    self.at("count", |w| w.amount(count));
+                }
+            }
             Keyword::Dredge(0) => self.problem("dredge needs a number of at least 1"),
             Keyword::Fabricate(0) => self.problem("fabricate needs a number of at least 1"),
             Keyword::Afterlife(0) => self.problem("afterlife needs a number of at least 1"),
@@ -5961,9 +5976,16 @@ impl Walker<'_> {
             }
             Ability::Loyalty {
                 cost,
+                condition,
                 targets,
                 effects,
-            } => w.loyalty_ability(*cost, targets, effects),
+            } => {
+                if let Some(condition) = condition {
+                    w.uses("Ability", "Loyalty.Condition");
+                    w.at("condition", |w| w.condition(condition));
+                }
+                w.loyalty_ability(*cost, targets, effects);
+            }
             Ability::Activated {
                 cost,
                 targets,
@@ -6665,6 +6687,7 @@ impl Walker<'_> {
             ReplaceWhen::ZoneChange { what, .. }
             | ReplaceWhen::Destroyed { what }
             | ReplaceWhen::Countered { what }
+            | ReplaceWhen::R6503Resolves { what }
             | ReplaceWhen::TurnedFaceUp { what }
             | ReplaceWhen::Explores { what }
             | ReplaceWhen::Connives { what }
@@ -6910,6 +6933,7 @@ impl Walker<'_> {
                         | ReplaceWhen::Discarded { .. }
                         | ReplaceWhen::R6105Uncycled { .. }
                         | ReplaceWhen::Countered { .. }
+                        | ReplaceWhen::R6503Resolves { .. }
                 ) =>
             {
                 self.problem("`MoveTo` replaces a `ZoneChange` or a `Discarded`");
@@ -7018,6 +7042,7 @@ impl Walker<'_> {
             ReplaceWhen::ZoneChange { .. }
                 | ReplaceWhen::Destroyed { .. }
                 | ReplaceWhen::Countered { .. }
+                | ReplaceWhen::R6503Resolves { .. }
                 | ReplaceWhen::Discarded { .. }
                 | ReplaceWhen::R6105Uncycled { .. }
                 | ReplaceWhen::Enters { .. }

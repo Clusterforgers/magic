@@ -15,17 +15,17 @@
         },
         { "Keyword": { "Ward": [{ "Sacrifice": { "filter": [], "count": 2 } }] } },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 123, "end": 229 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Greatest": { "of": [{ "In": "Exile" }], "stat": "ManaValue" } }
+              }
+            }
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 230, "end": 302 }
-          }
-        }
+        { "Keyword": { "Annihilator": { "Counters": { "on": "This", "counter": "+1/+1" } } } }
       ]
     }
   ]
