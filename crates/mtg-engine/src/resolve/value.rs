@@ -1315,6 +1315,25 @@ impl<'a> Scope<'a> {
             .collect()
     }
 
+    /// The cards exiled to pay the craft cost that put the source onto the battlefield, while they are still in exile
+    /// (CR 702.167c).
+    fn r6702_crafted_with(&self) -> Vec<Target> {
+        self.state
+            .object(self.source.id)
+            .filter(|object| object.counter() == self.source.counter)
+            .and_then(|object| object.permanent.as_ref())
+            .map(|permanent| permanent.r6702_crafted.clone())
+            .unwrap_or_default()
+            .into_iter()
+            .filter(|card| {
+                self.state.object(card.id).is_some_and(|object| {
+                    object.counter() == card.counter && object.zone() == crate::zones::Zone::Exile
+                })
+            })
+            .map(Target::Object)
+            .collect()
+    }
+
     /// The card each object `on` names exiled last among those `filter` selects, while it is still in exile.
     fn r5511_last_exiled(&self, on: &Ref, filter: &Selector) -> Result<Vec<Target>, ResolveError> {
         let mut found = Vec::new();
@@ -1418,6 +1437,7 @@ impl<'a> Scope<'a> {
             Ref::Paid => self.paid(),
             Ref::Convoked => self.convoked(),
             Ref::Delved => self.r5511_delved(),
+            Ref::R6702CraftedWith => self.r6702_crafted_with(),
             Ref::Remembered { on, slot } => self.remembered(on, slot)?,
             Ref::LastExiledWith { on, filter } => self.r5511_last_exiled(on, filter)?,
             Ref::Arrived { of, zone } => self.arrived(of, *zone)?,
@@ -2542,6 +2562,7 @@ impl<'a> Scope<'a> {
                 None => self.w2c_distinct(of, *stat)?,
             },
             Amount::CardTypes(of) => self.card_types_among(of)?,
+            Amount::R6702CardTypesOf(of) => self.r6702_card_types_of(of)?,
             Amount::TallyTypes { event, who, filter } => {
                 self.r4703_logged_types(*event, &self.players(who)?, filter)?
             }
@@ -2551,6 +2572,7 @@ impl<'a> Scope<'a> {
             Amount::HighestLife(who) => self.lives(who)?.max().unwrap_or(i64::from(i32::MIN)),
             Amount::LowestHand(who) => self.lowest_hand(who)?,
             Amount::LifeLostThisWay => self.life_lost_this_way(),
+            Amount::R6702FlipStakes => self.r6702_flip_stakes(),
             Amount::DamageDealtThisWay => self.g10c_dealt_this_way(),
             Amount::Destroyed(of) => self.w2c_destroyed(of)?,
             Amount::Exiled(of) => self.w14b_exiled(of)?,
@@ -2988,6 +3010,27 @@ impl<'a> Scope<'a> {
     }
 
     /// How many of the card types there are among the objects the selector matches, each counted once.
+    /// How many card types the objects the reference names have, each that is gone judged as it left (`count_of`).
+    fn r6702_card_types_of(&self, of: &Ref) -> Result<i64, ResolveError> {
+        if let Ref::Bound(name) = of
+            && !self.bindings.contains_key(name)
+        {
+            return Ok(0);
+        }
+        let mut seen = Vec::new();
+        for object in self.objects(of)? {
+            let judged = if self.seen(object).is_some() {
+                object
+            } else {
+                self.as_it_left(object)
+            };
+            if let Some(found) = self.seen(judged) {
+                seen.push(found);
+            }
+        }
+        Self::types_among(&seen)
+    }
+
     fn card_types_among(&self, of: &Selector) -> Result<i64, ResolveError> {
         let seen: Vec<Seen<'a>> = self
             .matching(of)?
@@ -3292,6 +3335,16 @@ impl<'a> Scope<'a> {
                 .as_ref()
                 .map_or(0, |resolving| resolving.g10c_dealt),
         )
+    }
+
+    /// The stakes of the latest flip of the resolution: 1, doubled for each flip before it.
+    fn r6702_flip_stakes(&self) -> i64 {
+        let flips = self
+            .state
+            .resolving
+            .as_ref()
+            .map_or(0, |resolving| resolving.r6702_flips);
+        1_i64 << flips.saturating_sub(1).min(62)
     }
 
     fn life_lost_this_way(&self) -> i64 {

@@ -820,6 +820,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::LoseThisAbility
         | Wanted::LosePrinted(_)
         | Wanted::GainAbilitiesOf(_)
+        | Wanted::R6702GainActivatedAndTriggeredOf(_)
         | Wanted::LoseAbilities
         | Wanted::LoseAbilitiesExceptMana => Layer::Ability,
         Wanted::SetPT { .. } | Wanted::SetPower(_) | Wanted::SetToughness(_) if defining => {

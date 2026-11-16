@@ -212,6 +212,23 @@ pub enum CostItem {
     ExileTop(Amount),
     /// Collect evidence (CR 701.59): exile cards from the payer's graveyard with total mana value at least that much.
     CollectEvidence(u32),
+    /// Collect evidence X (CR 701.59a): the payer announces X as the cost is paid during a resolution, then exiles cards
+    /// from their graveyard with total mana value X or greater; the steps after the payment read that X.
+    R6702CollectEvidenceX,
+    /// Exile one or more permanents the payer controls that the selector names, with total mana value exactly the X
+    /// announced (CR 601.2b): "Exile one or more other artifacts you control with total mana value X".
+    R6702ExileTotalX {
+        /// Which permanents the payer controls may be exiled.
+        filter: Selector,
+    },
+    /// Sacrifice up to this many permanents the selector names, none included ("Sacrifice up to three permanents");
+    /// `Ref::Paid` names them.
+    R6702SacrificeUpTo {
+        /// Which permanents may be chosen.
+        filter: Selector,
+        /// The most.
+        most: u32,
+    },
     /// Generic mana equal to the amount, counted as the cost is paid during a resolution ("echo {X}, where X is your life
     /// total").
     GenericOf(Amount),

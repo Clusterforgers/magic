@@ -692,7 +692,7 @@ impl<'a> Walker<'a> {
                 self.reference(on, Kind::Object);
                 self.expect(Kind::Either, want);
             }
-            Ref::Delved => self.expect(Kind::Object, want),
+            Ref::Delved | Ref::R6702CraftedWith => self.expect(Kind::Object, want),
             Ref::LastExiledWith { on, filter } => {
                 self.reference(on, Kind::Object);
                 self.at("filter", |w| w.selector(filter));
@@ -1219,6 +1219,7 @@ impl<'a> Walker<'a> {
                 }
             }
             Amount::DamageDealtThisWay => self.uses("Amount", "DamageDealtThisWay"),
+            Amount::R6702FlipStakes => self.uses("Amount", "R6702FlipStakes"),
             _ => self.uses("Amount", "LifeLostThisWay"),
         }
     }
@@ -1340,6 +1341,10 @@ impl<'a> Walker<'a> {
             }
             Amount::Distinct { of, stat } => self.r374_distinct_of(of, *stat),
             Amount::CardTypes(of) => self.w2c_selector_amount("CardTypes", of),
+            Amount::R6702CardTypesOf(of) => {
+                self.uses("Amount", "R6702CardTypesOf");
+                self.at("of", |w| w.reference(of, Kind::Object));
+            }
             Amount::Destroyed(of) => self.w2c_selector_amount("Destroyed", of),
             Amount::Exiled(of) => self.w2c_selector_amount("Exiled", of),
             Amount::PhasedOut(of) => self.w2c_selector_amount("PhasedOut", of),
@@ -1348,6 +1353,7 @@ impl<'a> Walker<'a> {
             Amount::LowestLife(who) => self.player_amount("LowestLife", who),
             Amount::LowestHand(_)
             | Amount::LifeLostThisWay
+            | Amount::R6702FlipStakes
             | Amount::DamageDealtThisWay
             | Amount::DieResult(_) => {
                 self.hand_or_life_lost(amount);
@@ -1598,11 +1604,13 @@ impl<'a> Walker<'a> {
             | Amount::Total { .. }
             | Amount::Distinct { .. }
             | Amount::CardTypes(_)
+            | Amount::R6702CardTypesOf(_)
             | Amount::Players(_)
             | Amount::LowestLife(_)
             | Amount::HighestLife(_)
             | Amount::LowestHand(_)
             | Amount::LifeLostThisWay
+            | Amount::R6702FlipStakes
             | Amount::DamageDealtThisWay
             | Amount::Destroyed(_)
             | Amount::Exiled(_)
@@ -1976,7 +1984,9 @@ impl<'a> Walker<'a> {
                             w.at("filter", |w| w.selector(filter));
                         }
                     }
-                    CostItem::TapPower { filter, .. } => {
+                    CostItem::TapPower { filter, .. }
+                    | CostItem::R6702SacrificeUpTo { filter, .. }
+                    | CostItem::R6702ExileTotalX { filter } => {
                         w.at("filter", |w| w.selector(filter));
                     }
                     CostItem::ManaCostOf(of) => {
@@ -2000,6 +2010,7 @@ impl<'a> Walker<'a> {
                     | CostItem::DiscardSelf
                     | CostItem::Unattach
                     | CostItem::CollectEvidence(_)
+                    | CostItem::R6702CollectEvidenceX
                     | CostItem::ExileCardTypes(_)
                     | CostItem::Waterbend(_)
                     | CostItem::OthersGainLife(_)
@@ -2796,7 +2807,9 @@ impl<'a> Walker<'a> {
                 self.keyword(keyword);
             }
             Modification::SetController(who) => self.reference(who, Kind::Player),
-            Modification::GainAbilitiesOf(from) | Modification::SetCreatureTypesOf(from) => {
+            Modification::GainAbilitiesOf(from)
+            | Modification::R6702GainActivatedAndTriggeredOf(from)
+            | Modification::SetCreatureTypesOf(from) => {
                 self.reference(from, Kind::Object);
             }
             Modification::KeywordsOf { from, keywords } => {
@@ -3725,6 +3738,7 @@ impl Walker<'_> {
             Ref::Affected
             | Ref::LastExiledWith { .. }
             | Ref::Delved
+            | Ref::R6702CraftedWith
             | Ref::Candidate
             | Ref::This
             | Ref::Dealer
@@ -3836,7 +3850,7 @@ impl Walker<'_> {
     }
 
     /// `Vote`: at least two named choices that are names of their own, or the players or objects to vote for with the
-    /// name of the winners or of every vote; only a vote on named choices or on players is secret.
+    /// name of the winners or of every vote; a secret vote is on named choices, on players or on objects, never on both.
     fn vote(&mut self, options: &VoteFor, secret: bool, bind: Option<&str>, tally: Option<&str>) {
         let kind = match options {
             VoteFor::Named(names) => {
@@ -3857,8 +3871,8 @@ impl Walker<'_> {
             }
             VoteFor::AnotherPlayer => Kind::Player,
         };
-        if secret && kind != Kind::Player {
-            self.problem("only a vote on named choices or on players is secret");
+        if secret && kind == Kind::Either {
+            self.problem("a secret vote is on players or on objects, not both");
         }
         if bind.is_none() && tally.is_none() {
             self.problem("a vote on players or objects names its winners");
@@ -5153,6 +5167,13 @@ impl Walker<'_> {
             Effect::R6401PassControl { what, .. } => {
                 w.at("what", |w| w.selector(what));
             }
+            Effect::R6702CountersPerVote { tally, .. } => {
+                w.at("tally", |w| w.reference(&Ref::Bound(tally.clone()), Kind::Either));
+            }
+            Effect::R6702Distribute { among, count, .. } => {
+                w.at("among", |w| w.reference(among, Kind::Object));
+                w.at("count", |w| w.amount(count));
+            }
             Effect::ExchangeControl { what, duration } => {
                 if matches!(
                     duration,
@@ -5938,7 +5959,14 @@ impl Walker<'_> {
                 cost,
                 targets,
                 effects,
-            } => w.loyalty_ability(*cost, targets, effects),
+                condition,
+            } => {
+                if let Some(condition) = condition {
+                    w.uses("Ability", "Loyalty.Condition");
+                    w.at("condition", |w| w.condition(condition));
+                }
+                w.loyalty_ability(*cost, targets, effects);
+            }
             Ability::Activated {
                 cost,
                 targets,
@@ -6141,7 +6169,8 @@ impl Walker<'_> {
                 }
                 w.at("at", |w| w.reference(at, Kind::Object));
             }),
-            GameRule::MustAttackPlayers { who, players } => self.at(tag, |w| {
+            GameRule::MustAttackPlayers { who, players }
+            | GameRule::R6702MustAttackOneOf { who, players } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Object));
                 w.at("players", |w| w.reference(players, Kind::Player));
             }),
@@ -6976,9 +7005,14 @@ impl Walker<'_> {
         self.e19_mill(when, by);
         if let ReplaceWhen::TurnedFaceUp { what } = when
             && (*what != Selector::this()
-                || !matches!(by, ReplaceBy::WithCounters { tapped: false, .. }))
+                || !matches!(
+                    by,
+                    ReplaceBy::WithCounters { tapped: false, .. } | ReplaceBy::R6702MayAttach(_)
+                ))
         {
-            self.problem("turning face up only puts counters on the permanent itself");
+            self.problem(
+                "turning face up only puts counters on the permanent itself or attaches it",
+            );
         }
         let enters = matches!(
             when,
@@ -7120,6 +7154,12 @@ impl Walker<'_> {
                     self.uses("Keyword", "Devour.X");
                 }
                 self.at("of", |w| w.selector(of));
+            }
+            ReplaceBy::R6702MayAttach(to) => {
+                if !matches!(when, ReplaceWhen::TurnedFaceUp { .. }) {
+                    self.problem("only an Aura turned face up is attached as it turns");
+                }
+                self.at("to", |w| w.selector(to));
             }
             ReplaceBy::PayLifeOrTapped(0) => self.problem("paying no life is entering untapped"),
             ReplaceBy::TappedForCounters { count: 0, .. } => {
@@ -7341,6 +7381,9 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::TapPermanents { .. }
                 | CostItem::TapPower { .. }
                 | CostItem::CollectEvidence(_)
+                | CostItem::R6702CollectEvidenceX
+                | CostItem::R6702SacrificeUpTo { .. }
+                | CostItem::R6702ExileTotalX { .. }
                 | CostItem::ExileCardTypes(_)
                 | CostItem::Blight(_)
                 | CostItem::Behold { .. }
@@ -8992,9 +9035,9 @@ mod tests {
         r#"{"Spell":{"effects":[{"Vote":{"options":{"Of":{"Each":[]}}}}]}}"#,
         "faces[0].abilities[0].Spell.effects[0].Vote: a vote on players or objects names its winners"
     )]
-    #[case::a_secret_vote_on_objects(
-        r#"{"Spell":{"effects":[{"Vote":{"options":{"Of":{"Each":[]}},"secret":true,"as":"won"}}]}}"#,
-        "faces[0].abilities[0].Spell.effects[0].Vote: only a vote on named choices or on players is secret"
+    #[case::a_secret_vote_on_players_and_objects(
+        r#"{"Spell":{"effects":[{"Vote":{"options":{"Of":{"Union":["EachPlayer",{"Each":[]}]}},"secret":true,"as":"won"}}]}}"#,
+        "faces[0].abilities[0].Spell.effects[0].Vote: a secret vote is on players or on objects, not both"
     )]
     #[case::a_vote_name_bound_twice(
         r#"{"Spell":{"effects":[{"Vote":{"options":{"Named":["a","b"]}}},{"Vote":{"options":{"Named":["b","c"]}}}]}}"#,

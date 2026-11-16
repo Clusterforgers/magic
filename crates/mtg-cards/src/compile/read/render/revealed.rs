@@ -61,6 +61,7 @@ fn steps(effects: &[Effect], held: &Ref) -> Option<String> {
                 transformed: false,
                 bind: None,
                 otherwise,
+                must: false,
             },
         ] if what == held => {
             let [Effect::Move { what, to, .. }] = otherwise.as_slice() else {

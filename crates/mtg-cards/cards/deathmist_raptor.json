@@ -1,7 +1,7 @@
 {
   "oracle_id": "a7d4f5aa-26d4-4363-aa5a-a26d6f791b82",
   "name": "Deathmist Raptor",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Deathmist Raptor",
@@ -9,9 +9,25 @@
       "abilities": [
         { "Keyword": "Deathtouch" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 11, "end": 148 }
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": [{ "ControlledBy": "You" }] } },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Either": {
+                        "first": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }],
+                        "second": [
+                          { "Move": { "what": "This", "to": { "BattlefieldFaceDown": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         { "Keyword": { "Megamorph": "{4}{G}" } }

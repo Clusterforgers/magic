@@ -36,6 +36,7 @@ impl Writer<'_> {
             transformed: false,
             bind: None,
             otherwise: Vec::new(),
+            must: false,
         };
         let to_the_bottom = Effect::Move {
             what: Ref::Bound(EXILED.to_owned()),

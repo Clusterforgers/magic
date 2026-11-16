@@ -247,6 +247,8 @@ pub struct PermanentState {
     pub(crate) convoked: Vec<ObjectRef>,
     /// The cards exiled with the delve of its spell, as they are in exile (CR 702.66).
     pub(crate) delved: Vec<ObjectRef>,
+    /// The cards exiled to pay the craft cost of the ability that returned it, as they are in exile (CR 702.167c).
+    pub(crate) r6702_crafted: Vec<ObjectRef>,
     /// The copy effect that makes the permanent a copy of another object (CR 707): its copiable values replace the card's.
     pub(crate) copy: Option<CopyEffect>,
     /// The cards the permanent is made of once a mutating creature spell has merged with it (CR 729).
@@ -294,6 +296,7 @@ impl PermanentState {
             spent_from,
             convoked: Vec::new(),
             delved: Vec::new(),
+            r6702_crafted: Vec::new(),
             copy: None,
             merged: None,
             phased: PhasedState::default(),

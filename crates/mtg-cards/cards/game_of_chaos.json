@@ -1,0 +1,44 @@
+{
+  "oracle_id": "b6756608-a618-4e26-a090-ea8fc992def1",
+  "name": "Game of Chaos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Game of Chaos",
+      "oracle_fingerprint": "f99fe7a0cc70ef2bf9a392850b013709",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": { "Compare": { "left": 1, "op": "Ge", "right": 1 } },
+                  "effects": [
+                    {
+                      "FlipCoin": {
+                        "win": [
+                          { "GainLife": { "amount": "R6702FlipStakes" } },
+                          { "LoseLife": { "who": { "Target": 0 }, "amount": "R6702FlipStakes" } },
+                          { "Choose": { "from": "You", "as": "decider" } }
+                        ],
+                        "lose": [
+                          { "LoseLife": { "amount": "R6702FlipStakes" } },
+                          { "GainLife": { "who": { "Target": 0 }, "amount": "R6702FlipStakes" } },
+                          { "Choose": { "from": { "Target": 0 }, "as": "decider" } }
+                        ]
+                      }
+                    }
+                  ],
+                  "most": 1000,
+                  "at_least_once": true,
+                  "ask": { "Bound": "decider" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

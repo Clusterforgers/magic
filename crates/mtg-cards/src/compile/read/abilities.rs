@@ -396,5 +396,6 @@ pub fn loyalty(r: &mut Reader<'_>) -> Option<Ability> {
         cost,
         targets,
         effects,
+        condition: None,
     })
 }

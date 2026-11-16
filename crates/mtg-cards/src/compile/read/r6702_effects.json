@@ -1,0 +1,15 @@
+[
+ [
+  {
+   "Rule": {
+    "rule": {
+     "MustBlock": {
+      "Bound": "chosen"
+     }
+    },
+    "duration": "UntilEndOfTurn"
+   }
+  },
+  "they block this turn if able"
+ ]
+]

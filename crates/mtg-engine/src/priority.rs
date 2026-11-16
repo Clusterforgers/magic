@@ -297,7 +297,18 @@ pub(crate) fn activation(
         )
     };
     // A loyalty ability costs counters, not a cost the price below knows (CR 606).
-    if let Ability::Loyalty { cost, .. } = rules {
+    if let Ability::Loyalty {
+        cost, condition, ..
+    } = rules
+    {
+        // "Activate only if ..." (CR 602.5b by way of 606.3).
+        if let Some(condition) = condition
+            && !crate::resolve::Scope::announcing(state, player, object.reference())
+                .holds(condition)
+                .unwrap_or(false)
+        {
+            return Hindered(Unplayable::Restricted, None);
+        }
         // A `-X` removes X counters, at most those the planeswalker holds (CR 606.6).
         let counters = object
             .permanent()

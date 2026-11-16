@@ -48,6 +48,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             transformed: false,
             bind: None,
             otherwise,
+            must: false,
         },
     ] = casts.as_slice()
     else {

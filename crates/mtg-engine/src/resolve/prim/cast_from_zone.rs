@@ -40,6 +40,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         transformed,
         rather,
         spend_as,
+        must,
         ..
     } = effect
     else {
@@ -62,7 +63,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Ok(c11b_cast_done(cx, effect, false));
     };
     let mut answers = cx.journal().iter();
-    let next = answers.next();
+    // A cast "if able" is asked no yes: it stands as said.
+    let said = (player, Choice::YesNo(true));
+    let next = if *must { Some(&said) } else { answers.next() };
     let after = answers.next();
     if answers.next().is_some() {
         return Err(unexpected("a third answer"));
@@ -100,12 +103,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             Ok(c11b_cast_done(cx, effect, false))
         }
         (Some((who, Choice::YesNo(true))), None) if *who == player => {
-            let card = cx
-                .scope
-                .live_objects(what)?
-                .into_iter()
-                .find(offered)
-                .ok_or_else(|| unexpected("a cast of a card that is gone"))?;
+            let found = cx.scope.live_objects(what)?.into_iter().find(offered);
+            let Some(card) = found else {
+                if *must {
+                    return Ok(c11b_cast_done(cx, effect, false));
+                }
+                return Err(unexpected("a cast of a card that is gone"));
+            };
             if *play && is_land(card) {
                 return Ok(Run::Done {
                     events: crate::stack::land_played(cx.state(), player, card.id(), None),

@@ -415,6 +415,7 @@ fn paradigm_effects() -> Vec<mtg_cards::effect::Effect> {
             transformed: false,
             bind: None,
             otherwise: Vec::new(),
+            must: false,
         },
     ]
 }
@@ -845,6 +846,8 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::AsEntersWith { .. }
         | ReplaceBy::ChooseAfter { .. }
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
+        // Asked by the special action or effect that turns the Aura face up (`announce::turn_up`).
+        ReplaceBy::R6702MayAttach(_) => false,
         ReplaceBy::Choose(_) => matches!(unit, Unit::Enter { .. } | Unit::Attach { .. }),
         ReplaceBy::Instead(_) => !matches!(unit, Unit::Other | Unit::Attach { .. }),
         ReplaceBy::Plus(_) => matches!(unit, Unit::Tokens { .. }),
@@ -2957,6 +2960,7 @@ impl Pass<'_> {
                     transformed: false,
                     bind: None,
                     otherwise: Vec::new(),
+                    must: false,
                 }],
                 targets: Vec::new(),
                 bindings: Vec::new(),
@@ -3935,7 +3939,9 @@ impl Pass<'_> {
                 ChoiceOption::Player(player) | ChoiceOption::SecretPlayer(player) => {
                     Some(Chosen::Player(player))
                 }
-                ChoiceOption::Secret(_) | ChoiceOption::Side(_) => None,
+                ChoiceOption::Secret(_) | ChoiceOption::SecretObject(_) | ChoiceOption::Side(_) => {
+                    None
+                }
             }
         })))
     }

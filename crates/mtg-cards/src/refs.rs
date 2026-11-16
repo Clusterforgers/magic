@@ -163,6 +163,9 @@ pub enum Ref {
     },
     /// The cards exiled with the delve of the spell the source is or came from (CR 702.66), while they are still in exile.
     Delved,
+    /// The cards exiled to pay the craft cost of the ability that put the source onto the battlefield (CR 702.167c), while
+    /// they are still in exile: "the exiled cards used to craft it".
+    R6702CraftedWith,
     /// The controller of the referenced object.
     ControllerOf(Box<Ref>),
     /// The opponents of the players the inner reference names ("each of that player's opponents"), in turn order.

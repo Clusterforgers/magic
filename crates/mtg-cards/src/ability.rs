@@ -358,6 +358,10 @@ pub enum Ability {
         targets: Vec<TargetSpec>,
         /// What it does.
         effects: Vec<Effect>,
+        /// It may be activated only while this holds ("Activate only if there are twenty-five or more loyalty counters
+        /// among Jaces you control.").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        condition: Option<Condition>,
     },
     /// "When / whenever / at ..." (CR 603).
     Triggered {

@@ -64,6 +64,7 @@ fn ripple(count: u32) -> Vec<Effect> {
                     transformed: false,
                     bind: None,
                     otherwise: Vec::new(),
+                    must: false,
                 }],
             },
             Effect::Move {

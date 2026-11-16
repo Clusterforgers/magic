@@ -1,0 +1,918 @@
+[
+ [
+  {
+   "CastOnly": {
+    "condition": {
+     "All": [
+      {
+       "Not": "AfterBlockers"
+      },
+      {
+       "Not": "AfterCombat"
+      }
+     ]
+    }
+   }
+  },
+  "Cast this spell only before combat or during combat before blockers are declared."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "TurnedFaceUp": {
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "by": {
+     "R6702MayAttach": [
+      {
+       "Type": "Creature"
+      }
+     ]
+    }
+   }
+  },
+  "As this Aura is turned face up, you may attach it to a creature."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "TurnedFaceUp": {
+      "what": [
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     }
+    },
+    "from": "Graveyard",
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "Either": {
+          "first": [
+           {
+            "Move": {
+             "what": "This",
+             "to": {
+              "Battlefield": {}
+             }
+            }
+           }
+          ],
+          "second": [
+           {
+            "Move": {
+             "what": "This",
+             "to": {
+              "BattlefieldFaceDown": {}
+             }
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever a permanent you control is turned face up, you may return this card from your graveyard to the battlefield face up or face down."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": "Opponent"
+     }
+    ],
+    "effects": [
+     {
+      "RepeatWhile": {
+       "condition": {
+        "Compare": {
+         "left": 1,
+         "op": "Ge",
+         "right": 1
+        }
+       },
+       "effects": [
+        {
+         "FlipCoin": {
+          "win": [
+           {
+            "GainLife": {
+             "amount": "R6702FlipStakes"
+            }
+           },
+           {
+            "LoseLife": {
+             "who": {
+              "Target": 0
+             },
+             "amount": "R6702FlipStakes"
+            }
+           },
+           {
+            "Choose": {
+             "from": "You",
+             "as": "decider"
+            }
+           }
+          ],
+          "lose": [
+           {
+            "LoseLife": {
+             "who": "You",
+             "amount": "R6702FlipStakes"
+            }
+           },
+           {
+            "GainLife": {
+             "who": {
+              "Target": 0
+             },
+             "amount": "R6702FlipStakes"
+            }
+           },
+           {
+            "Choose": {
+             "from": {
+              "Target": 0
+             },
+             "as": "decider"
+            }
+           }
+          ]
+         }
+        }
+       ],
+       "most": 1000,
+       "at_least_once": true,
+       "ask": {
+        "Bound": "decider"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Flip a coin. If you win the flip, you gain 1 life and target opponent loses 1 life, and you decide whether to flip again. If you lose the flip, you lose 1 life and that opponent gains 1 life, and that player decides whether to flip again. Double the life stakes with each flip."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "This",
+    "mods": [
+     {
+      "SetPT": {
+       "power": {
+        "Stat": {
+         "of": "R6702CraftedWith",
+         "stat": "Power"
+        }
+       },
+       "toughness": {
+        "Stat": {
+         "of": "R6702CraftedWith",
+         "stat": "Power"
+        }
+       }
+      }
+     }
+    ],
+    "defining": true
+   }
+  },
+  "~'s power and toughness are each equal to the total power of the exiled cards used to craft it."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "This",
+    "mods": [
+     {
+      "KeywordsOf": {
+       "from": "R6702CraftedWith",
+       "keywords": [
+        "Flying",
+        "FirstStrike",
+        "DoubleStrike",
+        "Deathtouch",
+        "Haste",
+        "Hexproof",
+        "Indestructible",
+        "Lifelink",
+        "Menace",
+        {
+         "Protection": []
+        },
+        "Reach",
+        "Trample",
+        "Vigilance"
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "This creature has flying as long as an exiled card used to craft it has flying. The same is true for first strike, double strike, deathtouch, haste, hexproof, indestructible, lifelink, menace, protection, reach, trample, and vigilance."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "DealsDamage": {
+      "source": [
+       "This"
+      ],
+      "to": "EachPlayer",
+      "combat": true
+     }
+    },
+    "effects": [
+     {
+      "Choose": {
+       "from": "TriggeringPlayer",
+       "as": "damaged"
+      }
+     },
+     {
+      "Pay": {
+       "cost": [
+        "R6702CollectEvidenceX"
+       ],
+       "paid": [
+        {
+         "Reflexive": {
+          "effects": [
+           {
+            "DealDamage": {
+             "to": {
+              "Each": [
+               {
+                "AnyOf": [
+                 {
+                  "Type": "Creature"
+                 },
+                 {
+                  "Type": "Planeswalker"
+                 }
+                ]
+               },
+               {
+                "ControlledBy": {
+                 "Bound": "damaged"
+                }
+               }
+              ]
+             },
+             "amount": "X"
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever this creature deals combat damage to a player, you may collect evidence X. When you do, this creature deals X damage to each creature and planeswalker that player controls."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        },
+        {
+         "In": "Graveyard"
+        },
+        {
+         "OwnedBy": "You"
+        }
+       ]
+      }
+     },
+     {
+      "what": {
+       "Object": [
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        },
+        {
+         "In": "Graveyard"
+        },
+        {
+         "OwnedBy": "Opponents"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Exile": {
+       "what": {
+        "Target": 0
+       },
+       "as": "mine"
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Target": 1
+       },
+       "as": "theirs"
+      }
+     },
+     {
+      "CopyCard": {
+       "what": {
+        "Bound": "mine"
+       },
+       "as": "copy1"
+      }
+     },
+     {
+      "CopyCard": {
+       "what": {
+        "Bound": "theirs"
+       },
+       "as": "copy2"
+      }
+     },
+     {
+      "Choose": {
+       "from": {
+        "Union": [
+         {
+          "Bound": "copy1"
+         },
+         {
+          "Bound": "copy2"
+         }
+        ]
+       },
+       "as": "first",
+       "rest_as": "second"
+      }
+     },
+     {
+      "CastFromZone": {
+       "what": {
+        "Bound": "first"
+       },
+       "free": true,
+       "must": true
+      }
+     },
+     {
+      "CastFromZone": {
+       "what": {
+        "Bound": "second"
+       },
+       "free": true,
+       "must": true
+      }
+     },
+     {
+      "Exile": {
+       "what": "This"
+      }
+     }
+    ]
+   }
+  },
+  "Exile target instant or sorcery card from your graveyard and target instant or sorcery card from an opponent's graveyard. Copy those cards. Cast the copies if able without paying their mana costs. Exile ~."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "R6702MustAttackOneOf": {
+      "who": "This",
+      "players": {
+       "PlayersWhere": {
+        "who": "Opponents",
+        "test": {
+         "Compare": {
+          "left": {
+           "Life": "You"
+          },
+          "op": "Eq",
+          "right": {
+           "HighestLife": {
+            "OpponentsOf": {
+             "ControllerOf": "This"
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    "condition": {
+     "Not": {
+      "Compare": {
+       "left": {
+        "Count": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         },
+         {
+          "Named": "Silver Surfer, Galactus's Herald"
+         }
+        ]
+       },
+       "op": "Ge",
+       "right": 1
+      }
+     }
+    }
+   }
+  },
+  "~ attacks an opponent with the most life among your opponents each combat if able unless you control a creature named Silver Surfer, Galactus's Herald."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "R6702MustAttackOneOf": {
+      "who": "This",
+      "players": {
+       "PlayersWhere": {
+        "who": "Opponents",
+        "test": {
+         "Compare": {
+          "left": {
+           "Life": "You"
+          },
+          "op": "Eq",
+          "right": {
+           "HighestLife": {
+            "OpponentsOf": {
+             "ControllerOf": "This"
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    "condition": {
+     "Not": {
+      "Compare": {
+       "left": {
+        "Count": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         },
+         {
+          "Named": "Silver Surfer, Galactus's Herald"
+         }
+        ]
+       },
+       "op": "Ge",
+       "right": 1
+      }
+     }
+    }
+   }
+  },
+  "Insatiable Hunger — ~ attacks an opponent with the most life among your opponents each combat if able unless you control a creature named Silver Surfer, Galactus's Herald."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "PayLife": 1
+     }
+    ],
+    "effects": [
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "In": "Exile"
+         },
+         {
+          "ExiledWith": "This"
+         }
+        ]
+       },
+       "as": "card"
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "CountOf": {
+           "of": {
+            "Bound": "card"
+           },
+           "filter": []
+          }
+         },
+         "op": "Ge",
+         "right": 1
+        }
+       },
+       "then": [
+        {
+         "Forget": {
+          "slot": "chosen"
+         }
+        },
+        {
+         "Remember": {
+          "what": {
+           "Bound": "card"
+          },
+          "slot": "chosen"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Pay 1 life: Choose a creature card exiled with ~."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "This",
+    "mods": [
+     {
+      "R6702GainActivatedAndTriggeredOf": {
+       "Remembered": {
+        "on": "This",
+        "slot": "chosen"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "~ has all activated and triggered abilities of the last chosen card."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     "Tap",
+     {
+      "R6702SacrificeUpTo": {
+       "filter": [],
+       "most": 3
+      }
+     }
+    ],
+    "effects": [
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "R6702CardTypesOf": "Paid"
+         },
+         "op": "Ge",
+         "right": 3
+        }
+       },
+       "then": [
+        {
+         "LoseLife": {
+          "who": "Opponents",
+          "amount": 3
+         }
+        },
+        {
+         "GainLife": {
+          "amount": 3
+         }
+        },
+        {
+         "Draw": {
+          "count": 3
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "{T}, Sacrifice up to three permanents: If there were three or more card types among the sacrificed permanents, each opponent loses 3 life, you gain 3 life, and you draw three cards."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      },
+      "bounds": {
+       "min": 0,
+       "max": "X"
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Tap": {
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "R6702Distribute": {
+       "among": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         "Tapped",
+         {
+          "ControlledBy": "Opponents"
+         }
+        ]
+       },
+       "counter": {
+        "Other": "stun"
+       },
+       "count": 3
+      }
+     }
+    ]
+   }
+  },
+  "Tap up to X target creatures, then distribute three stun counters among any number of tapped creatures your opponents control."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": "Zero",
+    "effects": [
+     {
+      "RepeatEach": {
+       "over": "Opponents",
+       "as": "player",
+       "effects": [
+        {
+         "ExileTop": {
+          "who": {
+           "Bound": "player"
+          },
+          "count": {
+           "Difference": [
+            {
+             "Count": [
+              {
+               "In": "Library"
+              },
+              {
+               "OwnedBy": {
+                "Bound": "player"
+               }
+              }
+             ]
+            },
+            1
+           ]
+          },
+          "as": "exiled"
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "condition": {
+     "Compare": {
+      "left": {
+       "Counters": {
+        "on": {
+         "Each": [
+          {
+           "Subtype": "Jace"
+          },
+          {
+           "ControlledBy": "You"
+          }
+         ]
+        },
+        "counter": "loyalty"
+       }
+      },
+      "op": "Ge",
+      "right": 25
+     }
+    }
+   }
+  },
+  "0: Exile all but the bottom card of each opponent's library. Activate only if there are twenty-five or more loyalty counters among Jaces you control."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{2}{W}"
+     },
+     "Tap",
+     {
+      "R6702ExileTotalX": {
+       "filter": [
+        {
+         "Type": "Artifact"
+        },
+        "Other"
+       ]
+      }
+     }
+    ],
+    "timing": "Sorcery",
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Artifact"
+        },
+        {
+         "Compare": {
+          "stat": "ManaValue",
+          "op": "Le",
+          "to": "X"
+         }
+        },
+        {
+         "In": "Graveyard"
+        },
+        {
+         "OwnedBy": "You"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Move": {
+       "what": {
+        "Target": 0
+       },
+       "to": {
+        "Battlefield": {}
+       }
+      }
+     }
+    ]
+   }
+  },
+  "{2}{W}, {T}, Exile one or more other artifacts you control with total mana value X: Return target artifact card with mana value X or less from your graveyard to the battlefield. Activate only as a sorcery."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Vote": {
+       "options": {
+        "Of": {
+         "Each": [
+          {
+           "Type": "Creature"
+          },
+          {
+           "Not": {
+            "ControlledBy": "You"
+           }
+          }
+         ]
+        }
+       },
+       "secret": true,
+       "tally": "votes"
+      }
+     },
+     {
+      "R6702CountersPerVote": {
+       "tally": "votes",
+       "counter": {
+        "Other": "stun"
+       }
+      }
+     },
+     {
+      "Tap": {
+       "what": {
+        "Bound": "votes"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Secret council — Each player secretly votes for a creature you don't control, then those votes are revealed. For each creature with one or more votes, put that many stun counters on it, then tap it."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Vote": {
+       "options": {
+        "Of": {
+         "Each": [
+          {
+           "Type": "Creature"
+          },
+          {
+           "Not": {
+            "ControlledBy": "You"
+           }
+          }
+         ]
+        }
+       },
+       "secret": true,
+       "tally": "votes"
+      }
+     },
+     {
+      "R6702CountersPerVote": {
+       "tally": "votes",
+       "counter": {
+        "Other": "stun"
+       }
+      }
+     },
+     {
+      "Tap": {
+       "what": {
+        "Bound": "votes"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Each player secretly votes for a creature you don't control, then those votes are revealed. For each creature with one or more votes, put that many stun counters on it, then tap it."
+ ]
+]

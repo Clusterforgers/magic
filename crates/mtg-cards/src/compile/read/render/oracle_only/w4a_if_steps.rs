@@ -64,6 +64,7 @@ pub(super) fn w4a_step_texts(before: &[Effect], steps: &[Effect]) -> Vec<String>
                 transformed: false,
                 bind: None,
                 otherwise,
+                must: false,
             },
         ] if otherwise.is_empty() => w4a_free_from_hand(group).into_iter().collect(),
         [

@@ -99,6 +99,7 @@ pub fn after_exiling(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> Option<()
                 transformed: false,
                 bind: None,
                 otherwise: Vec::new(),
+                must: false,
             }
         }
         Effect::ExileTop { count, bind, .. } if bind == IMPULSE => {
@@ -288,6 +289,7 @@ fn free_cast(what: Ref, play: bool) -> Effect {
         transformed: false,
         bind: None,
         otherwise: Vec::new(),
+        must: false,
     }
 }
 
@@ -436,8 +438,7 @@ pub fn text(effect: &Effect) -> Option<String> {
             way: None,
             transformed: false,
             bind: None,
-            otherwise,
-        } if name == FOUND && otherwise.is_empty() => {
+            otherwise, must: false, } if name == FOUND && otherwise.is_empty() => {
             "you may cast it without paying its mana cost".to_owned()
         }
         moved if *moved == bottom_in_a_random_order() => {
@@ -498,6 +499,7 @@ pub fn free_cast_from_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             transformed: false,
             bind: None,
             otherwise: Vec::new(),
+            must: false,
         },
     ])
 }

@@ -1579,6 +1579,10 @@ pub enum Effect {
         /// Done when the card is not cast: the player declines, or nothing lets it be cast.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         otherwise: Vec<Effect>,
+        /// The card is cast if able, with no question ("Cast the copies if able"): only a card that can't be cast is
+        /// left (CR 608.2g).
+        #[serde(default, skip_serializing_if = "is_false")]
+        must: bool,
     },
     /// The player copies a card in exile (CR 707.12) and binds the copy: a token card in exile that its owner may cast
     /// (`CastFromZone`) and that ceases to exist as soon as it is anywhere but on the stack (CR 704.5e).
@@ -2105,6 +2109,25 @@ pub enum Effect {
         /// Which of them pass.
         pick: R6401Pick,
     },
+    /// The controller distributes counters among any number of the permanents the reference names as the effect resolves,
+    /// at least one on each chosen ("distribute three stun counters among any number of tapped creatures your opponents
+    /// control"); none when it names none.
+    R6702Distribute {
+        /// The permanents the counters may go on.
+        among: crate::refs::Ref,
+        /// The kind of counter.
+        counter: CounterKind,
+        /// How many.
+        count: Amount,
+    },
+    /// Each object a vote's tally names gets one counter of the kind for each vote it received, all at once ("For each
+    /// creature with one or more votes, put that many stun counters on it").
+    R6702CountersPerVote {
+        /// The name the vote bound every vote to (`Vote.tally`).
+        tally: String,
+        /// The kind of counter.
+        counter: CounterKind,
+    },
     /// Changes a rule of the game for a while.
     Rule {
         /// The rule.
@@ -2401,6 +2424,7 @@ fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
             transformed: false,
             bind: None,
             otherwise,
+            must: false,
         },
         Effect::Move {
             what: Ref::Bound(EXILED.to_owned()),

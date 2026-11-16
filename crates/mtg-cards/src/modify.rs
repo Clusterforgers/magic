@@ -158,6 +158,9 @@ pub enum Modification {
     /// The object has the activated abilities printed on the cards the reference names, wherever they are (layer 6): "has all
     /// activated abilities of all creature cards in graveyards". A card that leaves its zone is a new object and gives none.
     GainAbilitiesOf(Ref),
+    /// The object has the activated and triggered abilities printed on the cards the reference names, wherever they are
+    /// (layer 6): "~ has all activated and triggered abilities of the last chosen card".
+    R6702GainActivatedAndTriggeredOf(Ref),
     /// The object loses all its abilities (layer 6); abilities granted after it still count.
     LoseAbilities,
     /// The object loses all its abilities except mana abilities (layer 6, CR 605): "lose all abilities except mana
@@ -266,6 +269,7 @@ impl Modification {
             | Modification::RemoveKeywordKind(_)
             | Modification::GrantAbility(_)
             | Modification::GainAbilitiesOf(_)
+            | Modification::R6702GainActivatedAndTriggeredOf(_)
             | Modification::LoseThisAbility
             | Modification::LosePrinted(_)
             | Modification::LoseAbilities
@@ -809,6 +813,15 @@ pub enum GameRule {
         /// The creatures, in the order they are paired.
         who: Ref,
         /// The players, in the order they are paired.
+        players: Ref,
+    },
+    /// Each creature `who` names attacks one of the players `players` names each combat if able (CR 508.1d), the set read
+    /// again as each declaration is made: "~ attacks an opponent with the most life among your opponents each combat if
+    /// able". A creature that can't attack any of them may attack as it could otherwise.
+    R6702MustAttackOneOf {
+        /// The creatures.
+        who: Ref,
+        /// The players, any one of whom meets the requirement.
         players: Ref,
     },
     /// Creatures attack the planeswalker `at` names each combat if able (CR 508.1d): the creatures `who` names, and

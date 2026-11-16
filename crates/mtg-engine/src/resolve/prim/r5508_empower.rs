@@ -98,6 +98,7 @@ pub(crate) fn r5508_jace_token() -> TokenSpec {
         cost: LoyaltyCost::Minus(minus),
         targets: Vec::new(),
         effects: serde_json::from_str(json).unwrap_or_default(),
+        condition: None,
     };
     TokenSpec {
         name: "Jace".to_owned(),

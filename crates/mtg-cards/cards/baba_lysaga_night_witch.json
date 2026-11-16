@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d6cd4aa1-ff3a-4453-8735-e5ace5cbe386",
+  "name": "Baba Lysaga, Night Witch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baba Lysaga, Night Witch",
+      "oracle_fingerprint": "5bcbb3588c71b01d09e28a4604c3f944",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "R6702SacrificeUpTo": { "filter": [], "most": 3 } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "R6702CardTypesOf": "Paid" }, "op": "Ge", "right": 3 }
+                  },
+                  "then": [
+                    { "LoseLife": { "who": "Opponents", "amount": 3 } },
+                    { "GainLife": { "amount": 3 } },
+                    { "Draw": { "count": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
