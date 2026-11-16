@@ -12,6 +12,7 @@ use rstest::rstest;
 #[case::doubling_cube("Doubling Cube")]
 #[case::the_master_multiplied("The Master, Multiplied")]
 #[case::alms_collector("Alms Collector")]
+#[case::comet_stellar_pup("Comet, Stellar Pup")]
 fn r6603_the_card_is_verified(#[case] name: &str) {
     let support = corpus().unwrap().support(name).unwrap();
     assert_eq!(support.support, Support::Verified, "{name}: {support:?}");

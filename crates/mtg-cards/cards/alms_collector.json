@@ -7,29 +7,11 @@
       "name": "Alms Collector",
       "oracle_fingerprint": "d66955046914bd50813a5f1e9c529107",
       "abilities": [
-        {
-          "Keyword": "Flash"
-        },
+        { "Keyword": "Flash" },
         {
           "Replacement": {
-            "when": {
-              "R6603DrawsSeveral": {
-                "who": "Opponents",
-                "at_least": 2
-              }
-            },
-            "by": {
-              "Instead": [
-                {
-                  "Draw": {}
-                },
-                {
-                  "Draw": {
-                    "who": "Triggering"
-                  }
-                }
-              ]
-            }
+            "when": { "R6603DrawsSeveral": { "who": "Opponents", "at_least": 2 } },
+            "by": { "Instead": [{ "Draw": {} }, { "Draw": { "who": "Triggering" } }] }
           }
         }
       ]

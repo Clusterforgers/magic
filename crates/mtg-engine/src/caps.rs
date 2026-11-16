@@ -545,6 +545,7 @@ const RUNS: &[&str] = &[
     "Rule.ExileFound",
     "Rule.NoMaxHandSize",
     "Rule.LoyaltyTwice",
+    "Rule.R6603LoyaltyAgain",
     "Rule.EchoRather",
     "Rule.RevealFirstDraw",
     "Rule.BoastTwice",

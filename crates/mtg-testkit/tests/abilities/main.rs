@@ -140,6 +140,7 @@ mod r6404_cards;
 mod r6603_commander_visit;
 mod r6603_doubling_cube;
 mod r6603_draws_several;
+mod r6603_loyalty_again;
 mod r6603_spared_tokens;
 mod r6603_support;
 mod r6603_transforms;

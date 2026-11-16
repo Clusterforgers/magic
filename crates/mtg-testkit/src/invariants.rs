@@ -1441,7 +1441,13 @@ impl InvariantChecker {
         }
         let number = turn.number();
         // Once a turn, or twice under a rule that allows it (Oath of Teferi, CR 606.3).
-        let limit = mtg_engine::rules::loyalty_activations(&self.shadow, player);
+        // A printed loyalty ability may go more times under a rule it made (Comet, Stellar Pup).
+        let more = if address.source.is_printed() {
+            mtg_engine::rules::r6603_loyalty_again(&self.shadow, source, address.ability)
+        } else {
+            0
+        };
+        let limit = mtg_engine::rules::loyalty_activations(&self.shadow, player) + more;
         let entry = self.loyalty_turns.entry(source).or_insert((number, 0));
         if entry.0 != number {
             *entry = (number, 0);

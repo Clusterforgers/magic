@@ -14,6 +14,7 @@ use crate::common;
 #[case::doubling_cube("Doubling Cube")]
 #[case::the_master_multiplied("The Master, Multiplied")]
 #[case::alms_collector("Alms Collector")]
+#[case::comet_stellar_pup("Comet, Stellar Pup")]
 fn r6603_the_card_compiles_into_its_file(#[case] name: &str) {
     let printed = common::printed()
         .into_iter()

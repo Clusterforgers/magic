@@ -47,6 +47,7 @@ Alhammarret's Archive
 Alisaie Leveilleur
 All That Glitters
 All of History, All at Once
+Alms Collector
 Alpha Deathclaw
 Alphinaud Leveilleur
 Altar's Reap
@@ -563,6 +564,7 @@ Doom Whisperer
 Door of Destinies
 Dormant Gomazoa
 Doublecast
+Doubling Cube
 Down, Down to Goblin-town
 Dowsing Dagger // Lost Vale
 Draconic Lore

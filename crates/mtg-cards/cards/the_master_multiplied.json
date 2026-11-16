@@ -7,21 +7,11 @@
       "name": "The Master, Multiplied",
       "oracle_fingerprint": "b758da243611bebb5111c6638853844f",
       "abilities": [
-        {
-          "Keyword": "Myriad"
-        },
+        { "Keyword": "Myriad" },
         {
           "Rule": {
             "rule": {
-              "NoLegendRuleFor": [
-                {
-                  "Type": "Creature"
-                },
-                "Token",
-                {
-                  "ControlledBy": "You"
-                }
-              ]
+              "NoLegendRuleFor": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }]
             }
           }
         },
@@ -29,17 +19,7 @@
           "Rule": {
             "rule": {
               "Cant": {
-                "who": {
-                  "Each": [
-                    {
-                      "Type": "Creature"
-                    },
-                    "Token",
-                    {
-                      "ControlledBy": "You"
-                    }
-                  ]
-                },
+                "who": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
                 "action": "R6603ByOwnTriggers"
               }
             }

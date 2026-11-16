@@ -47,15 +47,28 @@ pub(crate) fn entering(state: &GameState, id: ObjectId) -> Option<Event> {
 /// (CR 606.3), when no loyalty ability of it has been activated this turn, and, for a cost that removes counters, when
 /// it holds that many (CR 606.6). A `-X` cost is asked for X as the ability is announced, so it is always allowed here:
 /// X is at most the counters the planeswalker holds, and 0 is a number.
+#[cfg(test)]
 pub(crate) fn can_activate(
     state: &GameState,
     player: PlayerId,
     object: &GameObject,
     cost: LoyaltyCost,
 ) -> bool {
+    r6603_can_activate(state, player, object, cost, None)
+}
+
+/// [`can_activate`] for the printed loyalty ability at `ability` (none for another), which a rule may let be activated
+/// more times this turn.
+pub(crate) fn r6603_can_activate(
+    state: &GameState,
+    player: PlayerId,
+    object: &GameObject,
+    cost: LoyaltyCost,
+    ability: Option<usize>,
+) -> bool {
     if object.zone() != Zone::Battlefield
         || !(sorcery_timing(state, player) || crate::rules::loyalty_any_time(state, player))
-        || state.loyalty_spent(object.reference())
+        || state.r6603_loyalty_spent_by(object.reference(), ability)
     {
         return false;
     }

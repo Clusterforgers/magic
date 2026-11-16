@@ -9,101 +9,42 @@
       "abilities": [
         {
           "Activated": {
-            "cost": [
-              {
-                "Mana": "{3}"
-              },
-              "Tap"
-            ],
+            "cost": [{ "Mana": "{3}" }, "Tap"],
             "effects": [
               {
                 "AddMana": {
-                  "mana": {
-                    "Fixed": [
-                      "White"
-                    ]
-                  },
-                  "times": {
-                    "ManaInPoolOf": {
-                      "who": "You",
-                      "mana": "White"
-                    }
-                  }
+                  "mana": { "Fixed": ["White"] },
+                  "times": { "ManaInPoolOf": { "who": "You", "mana": "White" } }
                 }
               },
               {
                 "AddMana": {
-                  "mana": {
-                    "Fixed": [
-                      "Blue"
-                    ]
-                  },
-                  "times": {
-                    "ManaInPoolOf": {
-                      "who": "You",
-                      "mana": "Blue"
-                    }
-                  }
+                  "mana": { "Fixed": ["Blue"] },
+                  "times": { "ManaInPoolOf": { "who": "You", "mana": "Blue" } }
                 }
               },
               {
                 "AddMana": {
-                  "mana": {
-                    "Fixed": [
-                      "Black"
-                    ]
-                  },
-                  "times": {
-                    "ManaInPoolOf": {
-                      "who": "You",
-                      "mana": "Black"
-                    }
-                  }
+                  "mana": { "Fixed": ["Black"] },
+                  "times": { "ManaInPoolOf": { "who": "You", "mana": "Black" } }
                 }
               },
               {
                 "AddMana": {
-                  "mana": {
-                    "Fixed": [
-                      "Red"
-                    ]
-                  },
-                  "times": {
-                    "ManaInPoolOf": {
-                      "who": "You",
-                      "mana": "Red"
-                    }
-                  }
+                  "mana": { "Fixed": ["Red"] },
+                  "times": { "ManaInPoolOf": { "who": "You", "mana": "Red" } }
                 }
               },
               {
                 "AddMana": {
-                  "mana": {
-                    "Fixed": [
-                      "Green"
-                    ]
-                  },
-                  "times": {
-                    "ManaInPoolOf": {
-                      "who": "You",
-                      "mana": "Green"
-                    }
-                  }
+                  "mana": { "Fixed": ["Green"] },
+                  "times": { "ManaInPoolOf": { "who": "You", "mana": "Green" } }
                 }
               },
               {
                 "AddMana": {
-                  "mana": {
-                    "Fixed": [
-                      "Colorless"
-                    ]
-                  },
-                  "times": {
-                    "ManaInPoolOf": {
-                      "who": "You",
-                      "mana": "Colorless"
-                    }
-                  }
+                  "mana": { "Fixed": ["Colorless"] },
+                  "times": { "ManaInPoolOf": { "who": "You", "mana": "Colorless" } }
                 }
               }
             ]

@@ -6306,6 +6306,11 @@ impl Walker<'_> {
                 }
             }),
             GameRule::PlayersHave { who, .. } => self.at(tag, |w| w.reference(who, Kind::Player)),
+            GameRule::R6603LoyaltyAgain(times) => {
+                if *times == 0 {
+                    self.at(tag, |w| w.problem("more activations are at least one"));
+                }
+            }
             GameRule::CanBeCommander
             | GameRule::AnyNumberInDeck
             | GameRule::Draft(_)

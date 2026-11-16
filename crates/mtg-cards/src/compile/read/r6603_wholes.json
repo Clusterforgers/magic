@@ -291,5 +291,192 @@
    }
   },
   "If an opponent would draw two or more cards, instead you and that player each draw a card."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "PutCounters": {
+       "on": "This",
+       "counter": "loyalty",
+       "count": 2
+      }
+     },
+     {
+      "CreateToken": {
+       "token": {
+        "Custom": {
+         "name": "Squirrel",
+         "colors": [
+          "Green"
+         ],
+         "types": [
+          "Creature"
+         ],
+         "subtypes": [
+          "Squirrel"
+         ],
+         "power": 1,
+         "toughness": 1
+        }
+       },
+       "count": 2,
+       "as": "squirrels"
+      }
+     },
+     {
+      "Continuous": {
+       "affected": {
+        "Bound": "squirrels"
+       },
+       "mods": [
+        {
+         "AddKeyword": "Haste"
+        }
+       ],
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "[+2], then create two 1/1 green Squirrel creature tokens. They gain haste until end of turn."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "RemoveCounters": {
+       "from": "This",
+       "counter": "loyalty"
+      }
+     },
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "OwnedBy": "You"
+         },
+         {
+          "In": "Graveyard"
+         },
+         {
+          "Compare": {
+           "stat": "ManaValue",
+           "op": "Le",
+           "to": 2
+          }
+         }
+        ]
+       },
+       "as": "card"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "card"
+       },
+       "to": "Hand"
+      }
+     }
+    ]
+   }
+  },
+  "[−1], then return a card with mana value 2 or less from your graveyard to your hand."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Either": {
+       "first": [
+        {
+         "Choose": {
+          "from": {
+           "Each": [
+            {
+             "Type": "Creature"
+            }
+           ]
+          },
+          "as": "victim"
+         }
+        },
+        {
+         "DealDamage": {
+          "to": {
+           "Bound": "victim"
+          },
+          "amount": {
+           "Counters": {
+            "on": "This",
+            "counter": "loyalty"
+           }
+          }
+         }
+        }
+       ],
+       "second": [
+        {
+         "Choose": {
+          "from": "EachPlayer",
+          "as": "victim"
+         }
+        },
+        {
+         "DealDamage": {
+          "to": {
+           "Bound": "victim"
+          },
+          "amount": {
+           "Counters": {
+            "on": "This",
+            "counter": "loyalty"
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     {
+      "RemoveCounters": {
+       "from": "This",
+       "counter": "loyalty",
+       "count": 2
+      }
+     }
+    ]
+   }
+  },
+  "~ deals damage equal to the number of loyalty counters on him to a creature or player, then [−2]."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "PutCounters": {
+       "on": "This",
+       "counter": "loyalty"
+      }
+     },
+     {
+      "Rule": {
+       "rule": {
+        "R6603LoyaltyAgain": 2
+       },
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "[+1], and you may activate ~'s loyalty ability two more times this turn."
  ]
 ]

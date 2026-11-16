@@ -1085,6 +1085,11 @@ pub enum GameRule {
     /// The players may activate the loyalty abilities of planeswalkers they control twice each turn rather than only
     /// once (CR 606.3).
     LoyaltyTwice(Ref),
+    /// The loyalty ability that makes this rule may be activated this many more times this turn than the planeswalker's
+    /// loyalty abilities otherwise may ("you may activate ~'s loyalty ability two more times this turn"); only that
+    /// ability of that permanent, so a loyalty ability it gains is not covered (Comet, Stellar Pup rulings). A rule
+    /// only a resolving loyalty ability makes.
+    R6603LoyaltyAgain(u32),
     /// The controller may pay this cost rather than the echo cost of each permanent they control (CR 702.30, CR 118.9):
     /// "You may pay {0} rather than pay the echo cost for permanents you control." Paying it counts as paying echo.
     EchoRather(Cost),

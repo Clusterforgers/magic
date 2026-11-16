@@ -1,7 +1,7 @@
 {
   "oracle_id": "e7c67480-1816-4071-9eab-a1d1b535a344",
   "name": "Comet, Stellar Pup",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Comet, Stellar Pup",
@@ -19,15 +19,27 @@
                       "from": 1,
                       "to": 2,
                       "effects": [
-                        { "PutCounters": { "on": "This", "counter": "loyalty", "count": 2 } },
+                        {
+                          "PutCounters": {
+                            "on": "This",
+                            "counter": "loyalty",
+                            "count": 2
+                          }
+                        },
                         {
                           "CreateToken": {
                             "token": {
                               "Custom": {
                                 "name": "Squirrel",
-                                "colors": ["Green"],
-                                "types": ["Creature"],
-                                "subtypes": ["Squirrel"],
+                                "colors": [
+                                  "Green"
+                                ],
+                                "types": [
+                                  "Creature"
+                                ],
+                                "subtypes": [
+                                  "Squirrel"
+                                ],
                                 "power": 1,
                                 "toughness": 1
                               }
@@ -38,8 +50,14 @@
                         },
                         {
                           "Continuous": {
-                            "affected": { "Bound": "squirrels" },
-                            "mods": [{ "AddKeyword": "Haste" }],
+                            "affected": {
+                              "Bound": "squirrels"
+                            },
+                            "mods": [
+                              {
+                                "AddKeyword": "Haste"
+                              }
+                            ],
                             "duration": "UntilEndOfTurn"
                           }
                         }
@@ -49,20 +67,42 @@
                       "from": 3,
                       "to": 3,
                       "effects": [
-                        { "RemoveCounters": { "from": "This", "counter": "loyalty" } },
+                        {
+                          "RemoveCounters": {
+                            "from": "This",
+                            "counter": "loyalty"
+                          }
+                        },
                         {
                           "Choose": {
                             "from": {
                               "Each": [
-                                { "OwnedBy": "You" },
-                                { "In": "Graveyard" },
-                                { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }
+                                {
+                                  "OwnedBy": "You"
+                                },
+                                {
+                                  "In": "Graveyard"
+                                },
+                                {
+                                  "Compare": {
+                                    "stat": "ManaValue",
+                                    "op": "Le",
+                                    "to": 2
+                                  }
+                                }
                               ]
                             },
                             "as": "card"
                           }
                         },
-                        { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
+                        {
+                          "Move": {
+                            "what": {
+                              "Bound": "card"
+                            },
+                            "to": "Hand"
+                          }
+                        }
                       ]
                     },
                     {
@@ -74,64 +114,86 @@
                             "first": [
                               {
                                 "Choose": {
-                                  "from": { "Each": [{ "Type": "Creature" }] },
+                                  "from": {
+                                    "Each": [
+                                      {
+                                        "Type": "Creature"
+                                      }
+                                    ]
+                                  },
                                   "as": "victim"
                                 }
                               },
                               {
                                 "DealDamage": {
-                                  "to": { "Bound": "victim" },
-                                  "amount": { "Counters": { "on": "This", "counter": "loyalty" } }
+                                  "to": {
+                                    "Bound": "victim"
+                                  },
+                                  "amount": {
+                                    "Counters": {
+                                      "on": "This",
+                                      "counter": "loyalty"
+                                    }
+                                  }
                                 }
                               }
                             ],
                             "second": [
-                              { "Choose": { "from": "EachPlayer", "as": "victim" } },
+                              {
+                                "Choose": {
+                                  "from": "EachPlayer",
+                                  "as": "victim"
+                                }
+                              },
                               {
                                 "DealDamage": {
-                                  "to": { "Bound": "victim" },
-                                  "amount": { "Counters": { "on": "This", "counter": "loyalty" } }
+                                  "to": {
+                                    "Bound": "victim"
+                                  },
+                                  "amount": {
+                                    "Counters": {
+                                      "on": "This",
+                                      "counter": "loyalty"
+                                    }
+                                  }
                                 }
                               }
                             ]
                           }
                         },
-                        { "RemoveCounters": { "from": "This", "counter": "loyalty", "count": 2 } }
+                        {
+                          "RemoveCounters": {
+                            "from": "This",
+                            "counter": "loyalty",
+                            "count": 2
+                          }
+                        }
                       ]
                     },
                     {
                       "from": 6,
                       "to": 6,
-                      "effects": [{ "PutCounters": { "on": "This", "counter": "loyalty" } }]
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": "This",
+                            "counter": "loyalty"
+                          }
+                        },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "R6603LoyaltyAgain": 2
+                            },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
                     }
                   ]
                 }
               }
             ]
-          }
-        },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 25, "end": 126 }
-          }
-        },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 127, "end": 215 }
-          }
-        },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 216, "end": 326 }
-          }
-        },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 327, "end": 407 }
           }
         }
       ]

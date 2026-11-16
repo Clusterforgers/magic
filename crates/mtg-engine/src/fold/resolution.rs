@@ -58,7 +58,8 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             // A planeswalker has one loyalty ability activated each turn, whichever it is, or two under a rule that
             // allows it (CR 606.3).
             if matches!(&*rules, Ability::Loyalty { .. }) {
-                if state.loyalty_spent(*source) {
+                let printed = origin.is_printed().then_some(*ability);
+                if state.r6603_loyalty_spent_by(*source, printed) {
                     return Err(invalid(format!(
                         "a loyalty ability of {source:?} was already activated this turn"
                     )));
