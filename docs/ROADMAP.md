@@ -66,7 +66,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf10n) Phone tables: attack arrows to a seat scrolled out of the tile strip point at the strip's edge
 - [ ] (pf9d) Crowded tables: three heroes at ten permanents each keep cards above 75 px at 1400 × 900, a six-seat grid shows the opponents' lands whole, and the card preview finds room in windows near 1024 px
 - [ ] (pf10h) The lobby's deck detail panel takes the height of its content, and the seats list stays in view beside it
-- [ ] (pf10i) Delves "End the run" is an outline button with the other run actions, not plain text under the chronicle
 - [ ] (pf10l) The Delves run summary keeps each hero's name and figures on one aligned row on a phone
 - [ ] (pf10m) Dev fixtures for the deck list and groups, the replay and the open games list, so a sweep shoots them without a server
 - [ ] (pf9e) The live report "only the host's creature attacks" in a party turn reproduced from its stored game and fixed

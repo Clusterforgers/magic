@@ -5,7 +5,7 @@
  * every few seconds, which also reads a finished fight back.
  */
 import { Link } from '@tanstack/react-router'
-import { CircleAlertIcon, ShieldIcon, TrophyIcon } from 'lucide-react'
+import { CircleAlertIcon, DoorOpenIcon, ShieldIcon, TrophyIcon } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { CopyButton } from '@/components/CopyButton'
 import { Loading } from '@/components/Loading'
@@ -466,7 +466,15 @@ export function DelvePage({
           <FightLog run={view.run} content={content} />
           {view.host && !over && status !== 'Lobby' ? (
             <>
-              <Button variant="ghost" disabled={busy} onClick={() => setEnding(true)}>
+              {/* A run action like Retreat: an outline button at the start of the column, not a line of text. */}
+              <Button
+                variant="outline"
+                data-slot="end-run"
+                className="justify-self-start"
+                disabled={busy}
+                onClick={() => setEnding(true)}
+              >
+                <DoorOpenIcon aria-hidden="true" />
                 End the run
               </Button>
               <AlertDialog open={ending} onOpenChange={setEnding}>

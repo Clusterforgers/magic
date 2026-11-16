@@ -203,6 +203,14 @@ describe('the ladder and the fight', () => {
     expect(screen.queryByRole('button', { name: 'Retreat' })).toBeNull()
   })
 
+  it('draws End the run as an outline button, as Retreat is, not as plain text', async () => {
+    await show(delveView({ boss: 'skrix_nest' }, { status: 'Map', at: 0, cleared: [0] }))
+    const end = await screen.findByRole('button', { name: 'End the run' })
+    expect(end).toHaveAttribute('data-slot', 'end-run')
+    expect(end).toHaveClass('border-border-strong', 'justify-self-start')
+    expect(end.querySelector('svg')).not.toBeNull()
+  })
+
   it('greets the camp after a boss with its fall', async () => {
     await show(delveView({ boss: 'skrix_nest' }, { status: 'Room', at: 0, cleared: [0] }))
     expect(await screen.findByText(/Skrix, the Rat Queen falls!/)).toBeInTheDocument()
