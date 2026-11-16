@@ -331,6 +331,7 @@ Champion's Helm
 Chandra, Awakened Inferno
 Changeling Outcast
 Changing Loyalty
+Chaos Dragon
 Charmbreaker Devils
 Charred Graverobber
 Chartooth Cougar
@@ -2445,6 +2446,7 @@ Wyrm's Crossing Patrol
 Xenosquirrels
 Yasharn, Implacable Earth
 Ydwen Efreet
+Yenna, Redtooth Regent
 Yidaro, Wandering Monster
 Yisan, the Wanderer Bard
 You Cannot Pass!

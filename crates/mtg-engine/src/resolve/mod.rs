@@ -102,6 +102,8 @@ pub struct Resolving {
     pub(crate) g10c_dealt: u32,
     /// The dice rolled so far in the resolution, in the order logged, which "the result" reads.
     pub(crate) rolled: Vec<u32>,
+    /// Who rolled each die of `rolled`, with its result, which "the highest result" among players reads.
+    pub(crate) r6601_rollers: Vec<(PlayerId, u32)>,
     /// The permanents the resolution has destroyed so far, as the objects they were, which "destroyed this way" reads.
     pub(crate) destroyed: Vec<ObjectRef>,
     /// The permanents the resolution has exiled so far, as the objects they were, which "exiled this way" reads.
@@ -130,6 +132,7 @@ impl Resolving {
             lost: 0,
             g10c_dealt: 0,
             rolled: Vec::new(),
+            r6601_rollers: Vec::new(),
             destroyed: Vec::new(),
             w14b_exiled: Vec::new(),
             w11b_phased: Vec::new(),

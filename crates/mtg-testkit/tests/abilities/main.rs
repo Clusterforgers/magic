@@ -139,6 +139,7 @@ mod r6401_mentor;
 mod r6404_cards;
 mod r6601_tempt;
 mod r6601_ulamog;
+mod r6601_yenna;
 mod r6601_zack;
 mod r8p2_enters;
 mod reflexive;

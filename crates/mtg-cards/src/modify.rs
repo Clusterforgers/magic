@@ -186,6 +186,9 @@ pub enum Modification {
     CantAttackYou(Attacked),
     /// The object can't attack its owner, the planeswalkers its owner controls or both (a restriction, no layer).
     CantAttackOwner(Attacked),
+    /// The object can't attack the players the reference names as the effect begins or the planeswalkers they control
+    /// (a restriction, no layer): "can't attack those players or planeswalkers they control this combat".
+    R6601CantAttackPlayers(Ref),
     /// The object can't be blocked unless it is attacking its owner or a permanent its owner controls (a restriction, no
     /// layer).
     CantBeBlockedUnlessAttackingOwner,
@@ -287,6 +290,7 @@ impl Modification {
             Modification::CantAttack
             | Modification::CantAttackYou(_)
             | Modification::CantAttackOwner(_)
+            | Modification::R6601CantAttackPlayers(_)
             | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
             | Modification::DoesntUntap

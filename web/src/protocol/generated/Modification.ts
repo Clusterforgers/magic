@@ -69,7 +69,11 @@ you: PlayerId,
 /**
  * Whether it protects the player, their planeswalkers or both.
  */
-attacked: "Player" | "Planeswalkers" | "Both", } } | { "CantAttackOwner": { 
+attacked: "Player" | "Planeswalkers" | "Both", } } | { "R6601CantAttackPlayers": { 
+/**
+ * The players it can't attack.
+ */
+players: Array<PlayerId>, } } | { "CantAttackOwner": { 
 /**
  * Whether it protects the owner, their planeswalkers or both.
  */

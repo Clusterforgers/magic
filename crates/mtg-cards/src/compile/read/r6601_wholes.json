@@ -291,6 +291,97 @@
  ],
  [
   {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{2}"
+     },
+     "Tap"
+    ],
+    "timing": "Sorcery",
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Enchantment"
+        },
+        {
+         "ControlledBy": "You"
+        },
+        {
+         "Not": {
+          "SharesName": {
+           "Each": [
+            {
+             "ControlledBy": "You"
+            },
+            {
+             "Not": {
+              "Is": "Candidate"
+             }
+            }
+           ]
+          }
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "CreateToken": {
+       "token": {
+        "CopyOf": {
+         "of": {
+          "Target": 0
+         },
+         "except": [
+          {
+           "RemoveSupertype": "Legendary"
+          }
+         ]
+        }
+       },
+       "as": "token"
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Matches": {
+         "subject": {
+          "Bound": "token"
+         },
+         "selector": [
+          {
+           "Subtype": "Aura"
+          }
+         ]
+        }
+       },
+       "then": [
+        {
+         "Untap": {
+          "what": "This"
+         }
+        },
+        {
+         "Scry": {
+          "count": 2
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "{2}, {T}: Choose target enchantment you control that doesn't have the same name as another permanent you control. Create a token that's a copy of it, except it isn't legendary. If the token is an Aura, untap ~, then scry 2. Activate only as a sorcery."
+ ],
+ [
+  {
    "Triggered": {
     "when": {
      "StepBegins": {
@@ -405,6 +496,50 @@
    }
   },
   "~ deals X damage to each opponent and each creature they control."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "BeginCombat",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "RepeatEach": {
+       "over": "EachPlayer",
+       "as": "roller",
+       "effects": [
+        {
+         "RollDice": {
+          "who": {
+           "Bound": "roller"
+          },
+          "sides": 20,
+          "count": 1,
+          "results": []
+         }
+        }
+       ]
+      }
+     },
+     {
+      "Continuous": {
+       "affected": "This",
+       "mods": [
+        {
+         "R6601CantAttackPlayers": "R6601HighestRollers"
+        }
+       ],
+       "duration": "UntilEndOfCombat"
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of combat on your turn, each player rolls a d20. If one or more opponents had the highest result, this creature can't attack those players or planeswalkers they control this combat."
  ],
  [
   {

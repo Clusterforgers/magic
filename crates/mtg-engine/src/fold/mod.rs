@@ -840,8 +840,11 @@ fn change_life(
 /// ability resolves is kept for "the result".
 fn c11e_draw_random(state: &mut GameState, event: &Event) {
     state.rng_index += 1;
-    if let (Event::DieRolled { result, .. }, Some(resolving)) = (event, state.resolving.as_mut()) {
+    if let (Event::DieRolled { result, player, .. }, Some(resolving)) =
+        (event, state.resolving.as_mut())
+    {
         resolving.rolled.push(*result);
+        resolving.r6601_rollers.push((*player, *result));
     }
 }
 

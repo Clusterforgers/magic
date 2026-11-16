@@ -1402,6 +1402,7 @@ impl<'a> Scope<'a> {
                 .into_iter()
                 .map(Target::Player)
                 .collect(),
+            Ref::R6601HighestRollers => self.r6601_highest_rollers(),
             Ref::AttackedThisTurn => self
                 .r5523_attacked_this_turn()
                 .into_iter()
@@ -3080,6 +3081,26 @@ impl<'a> Scope<'a> {
             .map(|player| i64::try_from(self.state.zone(Zone::Hand(player)).len()).unwrap_or(0))
             .min()
             .unwrap_or(i64::from(i32::MAX)))
+    }
+
+    /// The players whose latest die of the resolution is the highest die any player rolled in it.
+    fn r6601_highest_rollers(&self) -> Vec<Target> {
+        let rollers = self
+            .state
+            .resolving
+            .as_ref()
+            .map_or(&[][..], |resolving| &resolving.r6601_rollers[..]);
+        let mut latest: Vec<(PlayerId, u32)> = Vec::new();
+        for (player, result) in rollers {
+            latest.retain(|(held, _)| held != player);
+            latest.push((*player, *result));
+        }
+        let highest = latest.iter().map(|(_, result)| *result).max();
+        latest
+            .into_iter()
+            .filter(|(_, result)| Some(*result) == highest)
+            .map(|(player, _)| Target::Player(player))
+            .collect()
     }
 
     /// A result of the latest roll of the resolution: the last die logged (a single die, or the one chosen, which a choice

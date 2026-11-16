@@ -480,6 +480,7 @@ impl Held {
             | Modification::SwitchPowerToughness
             | Modification::CantAttack
             | Modification::CantAttackYou { .. }
+            | Modification::R6601CantAttackPlayers { .. }
             | Modification::CantAttackOwner { .. }
             | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
@@ -831,6 +832,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         Wanted::SwitchPT => Layer::PtSwitch,
         Wanted::CantAttack
         | Wanted::CantAttackYou(_)
+        | Wanted::R6601CantAttackPlayers(_)
         | Wanted::CantAttackOwner(_)
         | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock

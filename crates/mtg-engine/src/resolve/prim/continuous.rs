@@ -536,6 +536,9 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             you: scope.controller,
             attacked: *attacked,
         },
+        Wanted::R6601CantAttackPlayers(who) => Modification::R6601CantAttackPlayers {
+            players: scope.players(who)?,
+        },
         Wanted::CantAttackOwner(attacked) => Modification::CantAttackOwner {
             attacked: *attacked,
         },

@@ -667,6 +667,7 @@ impl<'a> Walker<'a> {
             | Ref::Promised
             | Ref::Attacked
             | Ref::AttackedThisTurn
+            | Ref::R6601HighestRollers
             | Ref::MostLife
             | Ref::Teammates
             | Ref::ActivePlayer
@@ -2795,7 +2796,9 @@ impl<'a> Walker<'a> {
                 }
                 self.keyword(keyword);
             }
-            Modification::SetController(who) => self.reference(who, Kind::Player),
+            Modification::SetController(who) | Modification::R6601CantAttackPlayers(who) => {
+                self.reference(who, Kind::Player);
+            }
             Modification::GainAbilitiesOf(from) | Modification::SetCreatureTypesOf(from) => {
                 self.reference(from, Kind::Object);
             }
@@ -3716,6 +3719,7 @@ impl Walker<'_> {
             | Ref::Promised
             | Ref::Attacked
             | Ref::AttackedThisTurn
+            | Ref::R6601HighestRollers
             | Ref::MostLife
             | Ref::Teammates
             | Ref::ActivePlayer

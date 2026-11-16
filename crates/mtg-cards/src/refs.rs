@@ -118,6 +118,9 @@ pub enum Ref {
     /// The opponents of the controller that their creatures attacked this turn, directly or through a planeswalker
     /// ("each opponent you attacked this turn"); an attack of an earlier combat of the turn still counts.
     AttackedThisTurn,
+    /// The players whose latest die roll of the resolution is the highest any player rolled in it ("each player rolls a
+    /// d20. ... the highest result"); none before a roll.
+    R6601HighestRollers,
     /// The player with the most life, or each of the players tied for it.
     MostLife,
     /// The controller's teammates still in the game, in turn order (CR 810.2): nobody at a table without teams.

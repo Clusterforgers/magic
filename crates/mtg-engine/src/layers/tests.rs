@@ -310,6 +310,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::SetController(_)
             | mtg_cards::modify::Modification::CantAttack
             | mtg_cards::modify::Modification::CantAttackYou(_)
+            | mtg_cards::modify::Modification::R6601CantAttackPlayers(_)
             | mtg_cards::modify::Modification::CantAttackOwner(_)
             | mtg_cards::modify::Modification::CantBeBlockedUnlessAttackingOwner
             | mtg_cards::modify::Modification::CantBlock

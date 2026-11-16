@@ -81,6 +81,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::GainAbilities(_)
         | Modification::CantAttack
         | Modification::CantAttackYou { .. }
+        | Modification::R6601CantAttackPlayers { .. }
         | Modification::CantAttackOwner { .. }
         | Modification::CantBeBlockedUnlessAttackingOwner
         | Modification::CantBlock
@@ -150,6 +151,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::SetLoyalty(_)
         | Wanted::CantAttack
         | Wanted::CantAttackYou(_)
+        | Wanted::R6601CantAttackPlayers(_)
         | Wanted::CantAttackOwner(_)
         | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
@@ -227,6 +229,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::LoseAbilitiesExceptMana
         | Wanted::CantAttack
         | Wanted::CantAttackYou(_)
+        | Wanted::R6601CantAttackPlayers(_)
         | Wanted::CantAttackOwner(_)
         | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
@@ -264,6 +267,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Defending
         | Ref::Attacked
         | Ref::AttackedThisTurn
+        | Ref::R6601HighestRollers
         | Ref::MostLife
         | Ref::Teammates
         | Ref::ActivePlayer

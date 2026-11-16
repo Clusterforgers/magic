@@ -13,6 +13,8 @@ use crate::common;
 #[case::ulamog("Ulamog, the Defiler")]
 #[case::zack_fair("Zack Fair")]
 #[case::nils("Nils, Discipline Enforcer")]
+#[case::yenna("Yenna, Redtooth Regent")]
+#[case::chaos_dragon("Chaos Dragon")]
 #[case::soul_immolation("Soul Immolation")]
 fn r6601_the_card_compiles_into_its_file(#[case] name: &str) {
     let printed = common::printed()

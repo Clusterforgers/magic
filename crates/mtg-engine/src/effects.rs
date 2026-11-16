@@ -253,6 +253,12 @@ pub enum Modification {
         #[cfg_attr(feature = "ts", ts(type = "\"Player\" | \"Planeswalkers\" | \"Both\""))]
         attacked: mtg_cards::modify::Attacked,
     },
+    /// The object can't attack these players or the planeswalkers they control: a restriction with no layer that the
+    /// attack declaration reads.
+    R6601CantAttackPlayers {
+        /// The players it can't attack.
+        players: Vec<PlayerId>,
+    },
     /// The object can't attack its owner, the planeswalkers its owner controls or both: a restriction with no layer that
     /// the attack declaration reads.
     CantAttackOwner {
@@ -320,6 +326,7 @@ impl Modification {
             Modification::SwitchPowerToughness => Layer::PtSwitch,
             Modification::CantAttack
             | Modification::CantAttackYou { .. }
+            | Modification::R6601CantAttackPlayers { .. }
             | Modification::CantAttackOwner { .. }
             | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
@@ -427,6 +434,7 @@ impl Modification {
             | Modification::GainAbilities(_)
             | Modification::CantAttack
             | Modification::CantAttackYou { .. }
+            | Modification::R6601CantAttackPlayers { .. }
             | Modification::CantAttackOwner { .. }
             | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock

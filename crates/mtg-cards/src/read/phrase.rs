@@ -61,6 +61,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::Defending => "the defending player".to_owned(),
         Ref::Attacked => "the attacked player".to_owned(),
         Ref::AttackedThisTurn => "each opponent you attacked this turn".to_owned(),
+        Ref::R6601HighestRollers => "each player who had the highest result".to_owned(),
         Ref::MostLife => "the player with the most life".to_owned(),
         Ref::Teammates => "your teammates".to_owned(),
         Ref::ActivePlayer => "the active player".to_owned(),

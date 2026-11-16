@@ -84,6 +84,7 @@ mod r6001_kytheon;
 mod r6400_attack_costs;
 mod r6400_chosen_blocks;
 mod r6400_reblocks;
+mod r6601_chaos;
 mod r6601_nils;
 mod riot;
 mod rmt1_become_blocked;

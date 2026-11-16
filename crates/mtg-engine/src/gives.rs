@@ -135,9 +135,9 @@ impl Gives {
                 return;
             }
             Modification::CantAttack => GivenRule::CantAttack,
-            Modification::CantAttackYou { .. } | Modification::CantAttackOwner { .. } => {
-                GivenRule::CantAttackYou
-            }
+            Modification::CantAttackYou { .. }
+            | Modification::CantAttackOwner { .. }
+            | Modification::R6601CantAttackPlayers { .. } => GivenRule::CantAttackYou,
             Modification::CantBlock => GivenRule::CantBlock,
             Modification::CanBlockOnly { .. } => GivenRule::CanBlockOnly,
             Modification::CantBeBlocked => GivenRule::CantBeBlocked,

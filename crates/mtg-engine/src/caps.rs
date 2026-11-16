@@ -660,6 +660,7 @@ const RUNS: &[&str] = &[
     "Mod.SetController",
     "Mod.CantAttack",
     "Mod.CantAttackYou",
+    "Mod.R6601CantAttackPlayers",
     "Mod.CantAttackOwner",
     "Mod.CantBeBlockedUnlessAttackingOwner",
     "Mod.CantBlock",
