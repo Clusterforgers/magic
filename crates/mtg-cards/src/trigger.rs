@@ -1001,6 +1001,13 @@ pub enum ReplaceWhen {
         /// The attachment.
         what: Selector,
     },
+    /// A permanent matching the selector transforms into the face that has this ability (CR 701.28, 614.1c): "As this
+    /// creature transforms into ~, you get an emblem with ...". Only `AsEnters`, whose effects happen as it turns over;
+    /// it applies from the face turned up, and never to a permanent that enters transformed (CR 712.14a).
+    R6603Transforms {
+        /// The permanent that transforms.
+        what: Selector,
+    },
     /// A creature matching the selector would explore (CR 701.44); only `Instead`, whose `Explore` of `Triggering` is
     /// the replaced exploration ("instead it explores, then it explores again").
     Explores {

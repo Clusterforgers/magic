@@ -47,7 +47,8 @@ impl Pass<'_> {
             | Unit::LifeLoss { player } => (Some(Target::Player(*player)), None),
             Unit::Move { object: id, .. }
             | Unit::Enter { object: id, .. }
-            | Unit::Attach { object: id } => (object(*id), None),
+            | Unit::Attach { object: id }
+            | Unit::Transform { object: id, .. } => (object(*id), None),
             Unit::Other => (None, None),
         };
         let amount = match &self.slots[at].item {

@@ -6641,6 +6641,7 @@ impl Walker<'_> {
             | ReplaceWhen::Connives { what }
             | ReplaceWhen::Enters { what }
             | ReplaceWhen::R6105Uncycled { what }
+            | ReplaceWhen::R6603Transforms { what }
             | ReplaceWhen::BecomesAttached { what } => {
                 self.at("what", |w| w.selector(what));
             }
@@ -6980,9 +6981,16 @@ impl Walker<'_> {
         {
             self.problem("turning face up only puts counters on the permanent itself");
         }
+        if matches!(when, ReplaceWhen::R6603Transforms { .. })
+            && !matches!(by, ReplaceBy::AsEnters(_))
+        {
+            self.problem("a permanent that transforms has only effects as it turns over");
+        }
         let enters = matches!(
             when,
-            ReplaceWhen::Enters { .. } | ReplaceWhen::BecomesAttached { .. }
+            ReplaceWhen::Enters { .. }
+                | ReplaceWhen::BecomesAttached { .. }
+                | ReplaceWhen::R6603Transforms { .. }
         );
         let zone_move = matches!(
             when,

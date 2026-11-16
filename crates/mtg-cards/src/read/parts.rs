@@ -633,6 +633,9 @@ pub(super) fn replace_when(ctx: &Ctx, when: &ReplaceWhen) -> String {
         ReplaceWhen::BecomesAttached { what } => {
             format!("{} would become attached", phrase::selector(ctx, what))
         }
+        ReplaceWhen::R6603Transforms { what } => {
+            format!("{} transforms into this face", phrase::selector(ctx, what))
+        }
         ReplaceWhen::Countered { what } => {
             format!("{} would be countered", phrase::selector(ctx, what))
         }

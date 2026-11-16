@@ -424,6 +424,8 @@ A copy effect gives an object the copiable values of another (`CreateToken` with
 | An opponent's choice as it enters | `ReplaceBy::OpponentChooses(kind)` ("As this creature enters, an opponent chooses a creature type."): the controller names the opponent when there are several, and that opponent's choice is the permanent's. |
 | Through the next upkeep | `Duration::UntilEndOfYourNextUpkeep` lasts through the controller's next upkeep of a later turn and ends as its draw step begins (Halfdane). |
 | Chosen as it becomes attached | `ReplaceWhen::BecomesAttached` with `ReplaceBy::Choose` ("As this Equipment becomes attached to a creature, choose a color."): the controller of the attachment chooses as the `Attached` event is replaced, and `Event::ChosenAsAttached` puts the choice on it in place of the earlier one, so its static abilities read "the last chosen color"; an equip to the creature it is on attaches nothing and asks nothing. |
+| As it transforms | `ReplaceWhen::R6603Transforms` with `AsEnters` ("As this creature transforms into ~, you get an emblem with ...", CR 701.28, 614.1c): the replacement is read from the face the permanent turns up, its effects come in front of the `Transformed` event, and a permanent put onto the battlefield transformed does not transform (`replace/r6603_transforms.rs`). |
+| Commanders from the command zone | "Put a commander you own from the command zone onto the battlefield ... Return it to the command zone at the beginning of the next end step" is a `Choose` of `Commander` `In(Command)` then `Move` to the battlefield and a delayed `Move` to `Destination::Command`, which finds no commander that left the battlefield meanwhile (CR 400.7). |
 
 ## Validation
 

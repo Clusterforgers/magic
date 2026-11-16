@@ -1,0 +1,142 @@
+[
+ [
+  {
+   "Replacement": {
+    "when": {
+     "R6603Transforms": {
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "by": {
+     "AsEnters": [
+      {
+       "CreateEmblem": {
+        "abilities": [
+         {
+          "Triggered": {
+           "when": {
+            "ZoneChange": {
+             "what": [
+              {
+               "Type": "Creature"
+              }
+             ],
+             "from": "Battlefield",
+             "to": "Graveyard"
+            }
+           },
+           "targets": [
+            {
+             "what": "Opponent"
+            }
+           ],
+           "effects": [
+            {
+             "LoseLife": {
+              "who": {
+               "Target": 0
+              },
+              "amount": 1
+             }
+            },
+            {
+             "GainLife": {
+              "amount": 1
+             }
+            }
+           ]
+          }
+         }
+        ]
+       }
+      }
+     ]
+    }
+   }
+  },
+  "As this creature transforms into ~, you get an emblem with \"Whenever a creature dies, target opponent loses 1 life and you gain 1 life.\""
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "Choose": {
+          "from": {
+           "Each": [
+            "Commander",
+            {
+             "In": "Command"
+            },
+            {
+             "OwnedBy": "You"
+            }
+           ]
+          },
+          "as": "commander"
+         }
+        },
+        {
+         "Move": {
+          "what": {
+           "Bound": "commander"
+          },
+          "to": {
+           "Battlefield": {}
+          }
+         }
+        },
+        {
+         "Continuous": {
+          "affected": {
+           "Bound": "commander"
+          },
+          "mods": [
+           {
+            "AddKeyword": "Haste"
+           }
+          ],
+          "duration": "Forever"
+         }
+        },
+        {
+         "DelayedTrigger": {
+          "when": {
+           "StepBegins": {
+            "step": "End"
+           }
+          },
+          "effects": [
+           {
+            "Move": {
+             "what": {
+              "Bound": "commander"
+             },
+             "to": "Command"
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "When this creature enters, you may put a commander you own from the command zone onto the battlefield. It gains haste. Return it to the command zone at the beginning of the next end step."
+ ]
+]
