@@ -148,7 +148,7 @@ const ORDINARY_EFFECTS =
   Move LoseUnspentMana PutBeneathTop BecomeBlocked FaceDownPile ExileHidden Remember Forget RememberValue Balance AddMana
   SpellEntersWith JoinAttack Revive Parade ExileUntil RevealUntil ExileTop Performed EndTurn AddStep RepeatWhile
   SeparatePiles RepeatEach ChooseWords ChooseNumbers BidLife Either OneOf ChangeTargets Rule Reattack If Together May Pay
-  R6400Block AuraSwap Meld R6401PassControl
+  R6400Block AuraSwap Meld R6401PassControl R6501RedistributeLife
   PayAnyTimes StillResolves Bind Let`)
 
 /** The `CostItem` variants that are keyword actions or the words of one, by lexicon term. */
