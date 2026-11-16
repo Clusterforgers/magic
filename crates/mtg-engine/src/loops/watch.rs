@@ -70,6 +70,7 @@ struct Mark {
     lives: Vec<(PlayerId, i64)>,
     log: usize,
     stack: Vec<String>,
+    rng: u64,
 }
 
 /// A loop found: one cycle's answers, ready to be repeated.
@@ -181,6 +182,7 @@ impl Watch {
                 .collect(),
             log,
             stack: shape::stack_names(state),
+            rng: state.rng_index(),
         });
         if self.marks.len() > KEPT {
             self.marks.remove(0);
@@ -202,10 +204,12 @@ impl Watch {
             return None;
         }
         // A loop goes through the stack and logs something each cycle: a cast begun and backed out of again and again
-        // changes nothing and is no loop.
+        // changes nothing and is no loop. Nor is a cycle that draws a random number: its results are not predictable
+        // (CR 732.2a).
         let cycle = &marks[last - period + 1..=last];
         if cycle.iter().all(|mark| mark.stack.is_empty())
             || marks[last].log == marks[last - period].log
+            || marks[last].rng != marks[first].rng
         {
             return None;
         }
