@@ -9,11 +9,7 @@ export function ownCardIds(state: PlayState): ObjectId[] {
   const { seat, view } = state
   if (seat === null || view === null) return []
   const player = playerOf(state, seat)
-  const hand = [
-    ...(player?.command.cards ?? []),
-    ...(player?.satchel ?? []),
-    ...(player?.hand.cards ?? []),
-  ]
+  const hand = [...(player?.command.cards ?? []), ...(player?.satchel ?? []), ...(player?.hand.cards ?? [])]
   const rows = splitBattlefield(view, state.objectsById).get(seat)
   return rows === undefined ? hand : [...hand, ...rows.creatures, ...rows.other, ...rows.lands]
 }

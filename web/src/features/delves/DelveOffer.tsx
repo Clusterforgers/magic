@@ -198,7 +198,10 @@ function MirrorPool({
         onChange={(event) => setFilter(event.target.value)}
         className="max-w-xs"
       />
-      <ul aria-label="Cards to copy" className="grid max-h-80 gap-1 overflow-y-auto sm:grid-cols-2 lg:grid-cols-3">
+      <ul
+        aria-label="Cards to copy"
+        className="grid max-h-80 gap-1 overflow-y-auto sm:grid-cols-2 lg:grid-cols-3"
+      >
         {shown.map((name) => (
           <li key={name}>
             <Button

@@ -315,7 +315,12 @@ describe('offers', () => {
   })
 
   it('says what a campfire rest heals', async () => {
-    await show(delveView({}, { status: 'Room', at: 0, heroes: [hero({ offers: [{ Campfire: { upgrades: [] } }], life: 12 })] }))
+    await show(
+      delveView(
+        {},
+        { status: 'Room', at: 0, heroes: [hero({ offers: [{ Campfire: { upgrades: [] } }], life: 12 })] },
+      ),
+    )
     expect(await screen.findByText('Heal 20 life: 12 → 32.')).toBeInTheDocument()
   })
 })

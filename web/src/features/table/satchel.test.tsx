@@ -68,7 +68,11 @@ describe('the figures', () => {
   })
 
   it.each<[string, { top?: boolean; satchel?: boolean }[], string]>([
-    ['commanders and the Satchel', [{}, { satchel: true }], "Alice's commanders in the command zone and the Satchel"],
+    [
+      'commanders and the Satchel',
+      [{}, { satchel: true }],
+      "Alice's commanders in the command zone and the Satchel",
+    ],
     ['the Satchel', [{ satchel: true }], "Alice's Satchel"],
     [
       'all three',

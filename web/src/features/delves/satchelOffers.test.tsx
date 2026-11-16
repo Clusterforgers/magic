@@ -114,10 +114,7 @@ it('lists each hero’s Satchel and upgrades in the run header', async () => {
     {},
     {
       status: 'Map',
-      heroes: [
-        hero({ satchel: ['Opt', 'Sol Ring'], upgrades: [UPGRADES[0]!] }),
-        hero({ name: 'Bo' }),
-      ],
+      heroes: [hero({ satchel: ['Opt', 'Sol Ring'], upgrades: [UPGRADES[0]!] }), hero({ name: 'Bo' })],
     },
   )
   await renderInRouter(

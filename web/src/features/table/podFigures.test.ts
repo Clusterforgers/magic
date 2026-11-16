@@ -20,7 +20,15 @@ import {
 } from './podFigures'
 import type { PodCounts, ZoneKey } from './podFigures'
 
-const COUNTS: PodCounts = { hand: 7, library: 46, graveyard: 5, exile: 1, command: 1, satchel: 0, attractions: 0 }
+const COUNTS: PodCounts = {
+  hand: 7,
+  library: 46,
+  graveyard: 5,
+  exile: 1,
+  command: 1,
+  satchel: 0,
+  attractions: 0,
+}
 
 const zones = (counts: Partial<Record<ZoneKey, number>>): PlayerView =>
   ({
