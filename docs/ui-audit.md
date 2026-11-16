@@ -64,7 +64,7 @@ Every screen and table mode shot at 1873 × 1047, 1530 × 898, 1400 × 900, 1024
 | 5 | Med | The band's top stack chip collapses to a dot at 1024 and drops its name at 1400 | every table with a prompt | ffa4-pri-1024 | fixed: label to a reader and "+N" under 64 rem |
 | 6 | Med | "You have no creatures that can block" beside a prompt is a cut pill over the combat key at every width | every table in combat | duel-pri-1873, p-mode-1024 | fixed: a short status line |
 | 7 | Med | Your pod's graveyard, exile and commander line scroll out of the pod column | 4 seats, teams, 2HG, 1024 to 1530 | ffa4-pri-1024, thg-attack-1530 | fixed: the blocks above the corner scroll |
-| 8 | Med | Three heroes at 40 permanents: your lands lane is cut at the bottom | boss table, 3 heroes, 1400 | p-block-party-1400 | pf10c |
+| 8 | Med | Three heroes at 40 permanents: your lands lane is cut at the bottom | boss table, 3 heroes, 1400 | p-block-party-1400 | fixed: your board keeps its need at the floor first |
 | 9 | Med | An attack badge on a tile lies over the seat's team chip | teams 3v3, 1400 | teams33-block-1400 | fixed: dot and number in tiles |
 | 10 | Med | The choice overlay leaves the hand dock an empty band under the strip | 5 seats, targets-many, 1400 and 1873 | grid5-targets-1873 | pf10d |
 | 11 | Med | The stack's target arrows run across the prompt sentence | phone, any prompt with a stack | p-x-390 | pf10e |

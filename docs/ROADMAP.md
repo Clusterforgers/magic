@@ -66,7 +66,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf9c) Phone tables: the boss-mode opening hand clear of the boss pod, and attack arrows to a seat scrolled out of the strip
 - [ ] (pf9d) Crowded tables: three heroes at ten permanents each keep cards above 75 px at 1400 × 900, a six-seat grid shows the opponents' lands whole, and the card preview finds room in windows near 1024 px
 - [ ] (pf10a) A card prompt's answers stay on one row at 1024 to 1400 px on 4-seat tables (pay: Confirm, Pay automatically, Cancel), and the mana sources wrap instead of scrolling sideways
-- [ ] (pf10c) A boss table of three heroes at 40 permanents each draws your lands lane whole at 1400 × 900 (the unsqueezed split under-counts your board)
 - [ ] (pf10d) The choice overlay keeps the hand dock drawn, or gives its room to the overlay, instead of leaving an empty band under the strip
 - [ ] (pf10e) The stack's target arrows on a phone run under the prompt sentence, as the combat lines do
 - [ ] (pf10f) Delves pages on a phone fold the run header (party life and relics) to one line, so the room's choice is on the first screen
