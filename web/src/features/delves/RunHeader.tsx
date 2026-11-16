@@ -3,7 +3,9 @@
  * with a life bar, gold and a row of relics whose rules show on hover or focus; a phone folds it to one line.
  */
 import {
+  BackpackIcon,
   ChevronDownIcon,
+  CrownIcon,
   ClockIcon,
   CoinsIcon,
   FlameIcon,
@@ -21,6 +23,7 @@ import type { CustomCardView, DelveContent, DelveView, Hero } from '@/protocol/g
 import { ColourPips } from './CommanderArt'
 import { HEARTS, lifeShare, lifeTone, runStage } from './model'
 import { timersText } from './words'
+import { satchelWords, upgradeWords } from './upgrades'
 
 const BAR = { low: 'bg-destructive', hurt: 'bg-warning', fine: 'bg-success' } as const
 
@@ -113,7 +116,28 @@ const relicCard = (content: DelveContent, id: string): CustomCardView =>
     turn: 0,
   }
 
-/** One hero of the header: name, gold, life bar, colors and relics. */
+/** A hero's Satchel (the cards they earned, cast from it in every fight) and commander upgrades, in words. */
+function HeroGear({ hero }: { hero: Hero }) {
+  if (hero.satchel.length === 0 && hero.upgrades.length === 0) return null
+  return (
+    <ul data-slot="hero-gear" className="grid gap-0.5 text-xs text-muted-foreground">
+      {hero.satchel.length > 0 ? (
+        <li data-slot="hero-satchel" className="flex items-start gap-1">
+          <BackpackIcon aria-hidden="true" className="mt-px size-3.5 shrink-0 text-delve" />
+          <span>{satchelWords(hero.satchel)}</span>
+        </li>
+      ) : null}
+      {hero.upgrades.map((upgrade, i) => (
+        <li key={`${i}-${upgradeWords(upgrade)}`} data-slot="hero-upgrade" className="flex items-start gap-1">
+          <CrownIcon aria-hidden="true" className="mt-px size-3.5 shrink-0 text-delve" />
+          <span>{upgradeWords(upgrade)}</span>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+/** One hero of the header: name, gold, life bar, colors, relics, the Satchel and the commander upgrades. */
 function HeroLine({ hero, you, content }: { hero: Hero; you: boolean; content: DelveContent }) {
   return (
     <li data-hero={hero.name} className="grid min-w-0 content-start gap-2 rounded-lg border bg-surface p-2">
@@ -138,6 +162,7 @@ function HeroLine({ hero, you, content }: { hero: Hero; you: boolean; content: D
           </span>
         ) : null}
       </span>
+      <HeroGear hero={hero} />
     </li>
   )
 }

@@ -1,4 +1,4 @@
-// Goal: the run page shows each state of a run and sends the matching action: the lobby's hero cards with their Ready state, the deck picker, bot ally and start (only for the host, once every hero is ready), the ladder's votes with who voted for what, the boss fight's link and phases, how a lost fight cost a heart and at what life the heroes regroup (full at the first boss, half later), the host's retreat (confirmed first, never for a guest), every kind of offer, and the end.
+// Goal: the run page shows each state of a run and sends the matching action: the lobby's hero cards with their Ready state, the deck picker, bot ally and start (only for the host, once every hero is ready), the ladder's votes with who voted for what, the boss fight's link and phases, how a lost fight cost a heart and at what life the heroes regroup (full at the first boss, half later), the host's retreat (confirmed first, never for a guest), every kind of offer (the Mirror Pool from the view's list), and the end.
 import { fireEvent, screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
@@ -17,7 +17,7 @@ async function show(view: DelveView) {
 }
 
 const bo = hero({ name: 'Bot', user: null, bot: 'Normal' })
-const ready = { deck: { id: 'precon:x', name: 'Elven Council', colors: 'G' } }
+const ready = { deck: { id: 'precon:x', name: 'Elven Council', colors: 'G', commanders: [] } }
 
 describe('the lobby', () => {
   it('shows each hero ready or choosing and lets the host descend only when all are ready', async () => {
@@ -249,14 +249,21 @@ describe('offers', () => {
   it.each([
     [{ Relics: { relics: ['idol', 'pact'] } } as Offer, 'Take Ember Idol', { Take: 0 }],
     [{ Cards: { cards: ['Lightning Bolt'] } } as Offer, 'Take Lightning Bolt', { Take: 0 }],
-    ['Campfire' as Offer, 'Rest', 'Rest'],
-    ['Campfire' as Offer, 'Reforge', 'Reforge'],
+    [{ Campfire: { upgrades: [] } } as Offer, 'Rest', 'Rest'],
+    [{ Campfire: { upgrades: [] } } as Offer, 'Reforge', 'Reforge'],
     [{ Event: { event: 'toll' } } as Offer, 'Turn back', { Take: 3 }],
     [{ Shop: { items: ['Draught'] } } as Offer, 'Leave the shop', 'Skip'],
   ])('answers %j with %s', async (offer, button, pick) => {
     const client = await show(room(offer, 100))
     fireEvent.click(await screen.findByRole('button', { name: button }))
     expect(client.actions).toEqual([{ kind: 'pick', pick }])
+  })
+
+  it('answers the Mirror Pool with a card of the view’s list', async () => {
+    const view = { ...room('Duplicate'), mirror: ['Cultivate', 'Sol Ring'] }
+    const client = await show(view)
+    fireEvent.click(await screen.findByRole('button', { name: 'Copy Sol Ring' }))
+    expect(client.actions).toEqual([{ kind: 'pick', pick: { Duplicate: 'Sol Ring' } }])
   })
 
   it('marks a risky relic as dangerous and keeps an unaffordable ware out of reach', async () => {
@@ -308,7 +315,7 @@ describe('offers', () => {
   })
 
   it('says what a campfire rest heals', async () => {
-    await show(delveView({}, { status: 'Room', at: 0, heroes: [hero({ offers: ['Campfire'], life: 12 })] }))
+    await show(delveView({}, { status: 'Room', at: 0, heroes: [hero({ offers: [{ Campfire: { upgrades: [] } }], life: 12 })] }))
     expect(await screen.findByText('Heal 20 life: 12 → 32.')).toBeInTheDocument()
   })
 })

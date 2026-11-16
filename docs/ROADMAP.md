@@ -52,6 +52,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Delves fairness: the spotlight spreads the boss's side's attacks, removal and spotlight schemes over the heroes with a cap on any one hero's share, the grace and the lull open each fight, a boss takes commander damage but never loses to 21, and the table shows whom each boss-side seat eyes (`docs/delves.md`).
 - Delves difficulty: one scaling table by party size and Heat (life, hand, Reserves, Reinforcements, Warpath, minion seats that fall with the boss, the Last Bulwark), Escalation and Enrage, the scheme deck with its Omen, measured per party size (`docs/delves.md`).
 - Delves shared turns: the party and the boss's side each take one team turn (CR 805) with life totals per hero, each hero chooses their own creatures' attacks for one shared declaration, and the table names the party's turn (`docs/delves.md`).
+- Delves rewards: the Satchel of earned cards cast from beside the command zone at every fight with the deck kept whole, the Mirror Pool's copy, and commander upgrades fitted to each commander as emblems (`docs/delves.md`).
 - Fights and the table: a fight that ends without a result counts as lost and the host can retreat, Spirits are asked only where their haunts matter, the rules lexicon covers every engine term, decks sit in several groups, token planeswalkers show loyalty, the round counter, the blocker timer and grid lands as choices, and the card preview stays clear of the prompt (`docs/delves.md`, `docs/web.md`)
 - GUI sweep: every screen, table mode and prompt kind shot at the owners' sizes, the findings ranked in `docs/ui-audit.md`.
 
@@ -134,7 +135,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl2c) Each hero pays the attack costs of their own creatures in the party's combined attack
 - [ ] (dl8c) The boss side's targeted spells say in the log why they leave the eyed hero, as its attacks do
 - [ ] (dl8d) The glossary explains each boss's Enrage by its own rules, not as the Magic keyword
-- [ ] (dl4) A won card names the card it replaces (a basic land today), chosen from the hero's deck list on the loot screen
+- [ ] (dl4a) Bot allies temper and buy commander upgrades, and the simulator's heroes bring their commander facts
 - [ ] (dl5) Campfire upgrades put a sticker on a card of the hero's deck for the rest of the run
 - [ ] (dl6) Risky relics are party decisions: the party votes to take one, and events can be party votes with a shared outcome
 - [ ] (dl7) The scouts' forecast: background bot fights measure each boss of a new ladder and the ladder shows the measured win rate

@@ -112,7 +112,8 @@ export function hero(over: Partial<Hero> = {}): Hero {
     life: 40,
     gold: 0,
     relics: [],
-    cards: [],
+    satchel: [],
+    upgrades: [],
     offers: [],
     ...over,
   }
@@ -121,6 +122,7 @@ export function hero(over: Partial<Hero> = {}): Hero {
 export function run(over: Partial<Run> = {}): Run {
   return {
     heat: 0,
+    content: 1,
     timers: 'relaxed',
     theme: 'warrens',
     map: {

@@ -37,6 +37,8 @@ export function signed(n: number): string {
 export function chipOf(outcome: Outcome): Chip | null {
   if (outcome === 'Relic') return { kind: 'relic', tone: 'gain', text: 'a relic' }
   if (outcome === 'CardPick') return { kind: 'card', tone: 'gain', text: 'a card for your Satchel' }
+  if (outcome === 'Duplicate')
+    return { kind: 'card', tone: 'gain', text: 'a copy of a card from your deck or Satchel' }
   if ('Gold' in outcome) return amount('gold', outcome.Gold)
   if ('Life' in outcome) return amount('life', outcome.Life)
   return null

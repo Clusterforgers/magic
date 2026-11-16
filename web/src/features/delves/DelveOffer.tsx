@@ -1,10 +1,13 @@
 /**
  * The first choice waiting for the player, each as a scene of its own: the loot's card and relic picks as cards, the
- * goblin trader's wares, the campfire's two paths and an event as a story card with its choices.
+ * goblin trader's wares, the campfire's paths (rest, reforge, temper a commander), the Mirror Pool's copy and an event
+ * as a story card with its choices.
  */
 import {
   CoinsIcon,
   FlameIcon,
+  CopyIcon,
+  CrownIcon,
   FlaskConicalIcon,
   GemIcon,
   HammerIcon,
@@ -14,15 +17,18 @@ import {
   StoreIcon,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { useState } from 'react'
 import type { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
-import type { CustomCardView, DelveContent, Offer, Pick } from '@/protocol/generated'
+import type { CustomCardView, DelveContent, Offer, Pick, Upgrade } from '@/protocol/generated'
 import { CustomCardFrame } from './CustomCardFrame'
 import { isRisky, MAX_LIFE } from './model'
 import { EventScene } from './EventScene'
 import { NamedCard } from './NamedCard'
 import type { FindCard } from './findCard'
+import { UPGRADE_PRICE, upgradeWords } from './upgrades'
 
 /** Prices the server charges (`mtg-campaign`, run.rs). */
 export const CARD_PRICE = 35
@@ -123,6 +129,101 @@ function Path({
   )
 }
 
+const NO_CARDS: readonly string[] = []
+
+/** The campfire's third path: one of the commander upgrades drawn for the hero, each with its words. */
+function Temper({
+  upgrades,
+  busy,
+  onTake,
+}: {
+  upgrades: readonly Upgrade[]
+  busy: boolean
+  onTake: (i: number) => void
+}) {
+  return (
+    <div data-slot="temper" className="grid content-start gap-3 rounded-xl border bg-surface p-4 shadow-e1">
+      <div className="flex items-start gap-3">
+        <CrownIcon aria-hidden="true" className="size-8 shrink-0 text-delve" />
+        <div className="grid gap-1">
+          <h3 className="font-semibold">Temper</h3>
+          <p className="text-sm text-muted-foreground">Upgrade your commander for the rest of the run.</p>
+        </div>
+      </div>
+      <ul className="grid gap-2">
+        {upgrades.map((upgrade, i) => {
+          const words = upgradeWords(upgrade)
+          return (
+            <li key={words}>
+              <Button
+                variant="outline"
+                className="h-auto w-full justify-start py-2 text-left whitespace-normal"
+                disabled={busy}
+                onClick={() => onTake(i)}
+              >
+                {words}
+              </Button>
+            </li>
+          )
+        })}
+      </ul>
+    </div>
+  )
+}
+
+/** The Mirror Pool's choice: a card of the deck or Satchel to copy into the Satchel, found by name, or none. */
+function MirrorPool({
+  cards,
+  busy,
+  onPick,
+}: {
+  cards: readonly string[]
+  busy: boolean
+  onPick: (pick: Pick) => void
+}) {
+  const [filter, setFilter] = useState('')
+  const shown = cards.filter((name) => name.toLowerCase().includes(filter.trim().toLowerCase()))
+  return (
+    <Scene
+      label="Mirror Pool"
+      icon={CopyIcon}
+      title="The Mirror Pool"
+      blurb="Choose a card of your deck or Satchel: a copy joins your Satchel for the rest of the run."
+    >
+      <Input
+        type="search"
+        aria-label="Find a card"
+        placeholder="Find a card"
+        value={filter}
+        onChange={(event) => setFilter(event.target.value)}
+        className="max-w-xs"
+      />
+      <ul aria-label="Cards to copy" className="grid max-h-80 gap-1 overflow-y-auto sm:grid-cols-2 lg:grid-cols-3">
+        {shown.map((name) => (
+          <li key={name}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full justify-start"
+              disabled={busy}
+              onClick={() => onPick({ Duplicate: name })}
+              aria-label={`Copy ${name}`}
+            >
+              {name}
+            </Button>
+          </li>
+        ))}
+      </ul>
+      {cards.length === 0 ? (
+        <p className="text-sm text-muted-foreground">The water shows nothing to copy.</p>
+      ) : null}
+      <Button variant="ghost" className="justify-self-start" disabled={busy} onClick={() => onPick('Skip')}>
+        Leave the pool
+      </Button>
+    </Scene>
+  )
+}
+
 export function DelveOffer({
   offer,
   gold,
@@ -130,6 +231,7 @@ export function DelveOffer({
   content,
   busy,
   find,
+  mirror = NO_CARDS,
   onPick,
 }: {
   offer: Offer
@@ -140,10 +242,16 @@ export function DelveOffer({
   busy: boolean
   /** Finds offered cards' pictures; the card search by default. */
   find?: FindCard
+  /** The cards the Mirror Pool may copy: the deck's nonland cards and the Satchel (`DelveView.mirror`). */
+  mirror?: readonly string[]
   onPick: (pick: Pick) => void
 }) {
   const take = (i: number) => onPick({ Take: i })
-  if (offer === 'Campfire') {
+  if (offer === 'Duplicate') {
+    return <MirrorPool cards={mirror} busy={busy} onPick={onPick} />
+  }
+  if ('Campfire' in offer) {
+    const { upgrades } = offer.Campfire
     const healed = life === undefined ? null : Math.min(MAX_LIFE, life + REST_HEAL)
     return (
       <Scene
@@ -152,7 +260,7 @@ export function DelveOffer({
         title="Campfire"
         blurb="The party catches its breath. Choose one."
       >
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className={cn('grid gap-3 sm:grid-cols-2', upgrades.length > 0 && 'lg:grid-cols-3')}>
           <Path
             icon={HeartPulseIcon}
             title="Rest"
@@ -169,11 +277,12 @@ export function DelveOffer({
           <Path
             icon={HammerIcon}
             title="Reforge"
-            text="Pick a new card for your deck; it replaces a basic land."
+            text="Pick a new card for your Satchel."
             action="Reforge"
             busy={busy}
             onPick={() => onPick('Reforge')}
           />
+          {upgrades.length > 0 ? <Temper upgrades={upgrades} busy={busy} onTake={take} /> : null}
         </div>
       </Scene>
     )
@@ -184,7 +293,7 @@ export function DelveOffer({
         label="Card pick"
         icon={SparklesIcon}
         title="Pick a card"
-        blurb="It replaces a basic land of your deck for the rest of the run."
+        blurb="It joins your Satchel: in every fight you may cast it like a card in hand."
       >
         <ul className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:gap-4">
           {offer.Cards.cards.map((name, i) => (
@@ -265,6 +374,35 @@ export function DelveOffer({
                     aria-label={`Healing draught: ${DRAUGHT_HEAL} life (${DRAUGHT_PRICE} gold)`}
                   >
                     {short ? `Needs ${DRAUGHT_PRICE} gold` : `Buy · ${DRAUGHT_PRICE} gold`}
+                  </Button>
+                </li>
+              )
+            }
+            if ('Upgrade' in item) {
+              const { upgrade, sold } = item.Upgrade
+              const words = upgradeWords(upgrade)
+              const short = gold < UPGRADE_PRICE
+              return (
+                <li key={words} data-slot="shop-offer" className="flex w-full flex-col gap-2 sm:w-44">
+                  <div
+                    className={cn(
+                      'grid aspect-[5/7] place-items-center rounded-xl border-2 border-delve bg-surface shadow-e1',
+                      sold && 'opacity-60',
+                    )}
+                  >
+                    <CrownIcon aria-hidden="true" className="size-12 text-delve" />
+                  </div>
+                  <p className="text-sm font-medium leading-tight">Commander upgrade</p>
+                  <p className="text-xs text-muted-foreground">{words}.</p>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="mt-auto"
+                    disabled={busy || sold || short}
+                    onClick={() => take(i)}
+                    aria-label={sold ? `${words} (sold)` : `${words} (${UPGRADE_PRICE} gold)`}
+                  >
+                    {sold ? 'Sold' : short ? `Needs ${UPGRADE_PRICE} gold` : `Buy · ${UPGRADE_PRICE} gold`}
                   </Button>
                 </li>
               )

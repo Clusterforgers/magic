@@ -90,15 +90,17 @@ export const DEV_CONTENT: DelveContent = {
 const party = [
   hero({
     name: 'Ana',
-    deck: { id: 'd-atraxa', name: 'Atraxa Counters', colors: 'WUBG' },
+    deck: { id: 'd-atraxa', name: 'Atraxa Counters', colors: 'WUBG', commanders: [] },
     life: 31,
     gold: 60,
     relics: ['idol', 'mend'],
+    satchel: ['Lightning Bolt', 'Cultivate'],
+    upgrades: [{ commander: 'Atraxa', boon: 'Counter' }],
   }),
   hero({
     name: 'Bo',
     user: 'u1',
-    deck: { id: 'precon:cmm', name: 'Draconic Dissent', colors: 'UBR' },
+    deck: { id: 'precon:cmm', name: 'Draconic Dissent', colors: 'UBR', commanders: [] },
     life: 18,
     gold: 25,
     relics: ['pact'],
@@ -107,7 +109,7 @@ const party = [
     name: 'Cyra',
     user: null,
     bot: 'Normal',
-    deck: { id: 'precon:x', name: 'Elven Council', colors: 'G' },
+    deck: { id: 'precon:x', name: 'Elven Council', colors: 'G', commanders: [] },
     life: 40,
     gold: 50,
   }),
@@ -148,10 +150,19 @@ const OFFERS: Partial<Record<DevState, Offer>> = {
         { Relic: { id: 'mend', price: 60, sold: false } },
         { Relic: { id: 'idol', price: 70, sold: false } },
         'Draught',
+        { Upgrade: { upgrade: { commander: 'Atraxa', boon: { Keyword: 'Flying' } }, sold: false } },
       ],
     },
   },
-  campfire: 'Campfire',
+  campfire: {
+    Campfire: {
+      upgrades: [
+        { commander: 'Atraxa', boon: { Cheaper: 1 } },
+        { commander: 'Atraxa', boon: { Pump: 2 } },
+        { commander: 'Atraxa', boon: { Keyword: 'Trample' } },
+      ],
+    },
+  },
   event: { Event: { event: 'toll' } },
   result: { Relics: { relics: ['idol'] } },
 }
