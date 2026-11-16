@@ -154,6 +154,14 @@ describe('the ladder and the fight', () => {
     expect(screen.queryByText(/lost a heart/)).toBeNull()
   })
 
+  it("puts the way in and the host's Retreat on one row, the way in first", async () => {
+    await show(delveView({ boss: 'skrix_nest', fight }, { status: { Fight: { game: 'g45' } }, at: 0 }))
+    const link = await screen.findByRole('link', { name: 'Enter the fight' })
+    const row = link.parentElement
+    expect(row).toHaveAttribute('data-slot', 'fight-actions')
+    expect(row?.children[1]).toBe(screen.getByRole('button', { name: 'Retreat' }))
+  })
+
   it('lets the host retreat from the fight after a confirmation, and only then sends it', async () => {
     const client = await show(
       delveView({ boss: 'skrix_nest', fight }, { status: { Fight: { game: 'g44' } }, at: 0, hearts: 3 }),
@@ -242,6 +250,16 @@ it('names the end of a won run and its seed code', async () => {
   expect(await screen.findByRole('heading', { name: 'Victory!' })).toBeInTheDocument()
   expect(screen.getByText('SEED', { selector: 'strong' })).toBeInTheDocument()
   expect(screen.getAllByRole('button', { name: /Copy seed code/ }).length).toBeGreaterThan(0)
+})
+
+it.each([
+  [['idol'], '1 relic (Ember Idol)'],
+  [['idol', 'mend'], '2 relics (Ember Idol, mend)'],
+  [[], '0 relics'],
+])('counts a hero holding %j in the run summary as "%s"', async (relics, words) => {
+  await show(delveView({}, { status: 'Victory', at: 3, cleared: [0, 1, 3], heroes: [hero({ relics })] }))
+  const heroes = await screen.findByRole('list', { name: 'Heroes' })
+  expect(heroes).toHaveTextContent(`40 life · 0 gold · ${words}`)
 })
 
 describe('ending the run', () => {

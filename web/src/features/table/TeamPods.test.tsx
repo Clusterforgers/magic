@@ -54,6 +54,19 @@ describe('pods at a table with teams', () => {
     expect([0, 1, 2, 3, 4, 5].map(badge)).toEqual(badges)
     expect([0, 1, 2, 3, 4, 5].map(shared)).toEqual([null, null, null, null, null, null])
   })
+
+  it("draws a tile's team as its dot and number, the word kept for a reader, and cuts its name side instead of the life", () => {
+    renderTable({
+      fixture: buildFixture({ seats: 6, permanents: 2 }),
+      options: { viewport: { width: 1920, height: 1080 } },
+      state: withTeams(ALTERNATE),
+    })
+    const tile = must(document.querySelector<HTMLElement>('[data-tile-seat="1"]'))
+    const team = must(tile.querySelector<HTMLElement>('[data-slot="team-badge"]'))
+    expect(team).toHaveAttribute('title', 'Team 2')
+    expect(must(team.querySelector('.sr-only'))).toHaveTextContent('Team')
+    expect(must(tile.querySelector('[data-slot="tile-name-row"]'))).toHaveClass('min-w-0', 'overflow-hidden')
+  })
 })
 
 describe('the words of a seat with a team', () => {

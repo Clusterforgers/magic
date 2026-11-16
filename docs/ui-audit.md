@@ -51,6 +51,38 @@ Every prompt kind is shot on `/dev/table?prompt=…` at 2550 × 1380, 2300 × 84
 - Empty boards: the sheet keeps at least a sentence line and a row of answers (`BAND_MIN_PX`), so a seat with nothing on the field above never shrinks the prompt to a scrolling sliver.
 - What remains: a stack of three chips folds to one chip and "+2 more" beside a prompt below 1600 px; a mode choice stands as high as its card picture.
 
+## Sweep at the owners' sizes
+
+Every screen and table mode shot at 1873 × 1047, 1530 × 898, 1400 × 900, 1024 × 768 and 390 × 844 on the dev routes (`/dev/table` with `seats`, `teams`, `boss`, `permanents`, `crowd`, `alone`, `bare` and each prompt kind; `/dev/lobby`, `/dev/builder`, `/dev/delve?state=…`, `/new`, `/`). Screenshots are named `<case>-<width>`; ranked by cost to play, high first.
+
+| # | Sev | Finding | Where | Shot | State |
+|---|---|---|---|---|---|
+| 1 | High | Five or more heroes crush your board to one cut line under the party's row | boss table, 6 heroes, every size | boss6-1400 | fixed: your board's floor comes before the allies' row |
+| 2 | High | A card prompt's answers wrap into three rows in a strip-high sheet and the primary is cut | 4 seats, pay, 1024 | p-pay-1024 | primary kept on the first line; one row is pf10a |
+| 3 | High | Sticky answers on a phone are transparent: choices scroll behind Keep, Confirm order, Confirm payment | phone, mulligan, order, pay | p-order-390, p-pay-390 | fixed: an opaque answers row |
+| 4 | Med | The opening hand's seventh card wraps under Keep and Mulligan | phone, mulligan | p-mull-390 | fixed: one scrolling row |
+| 5 | Med | The band's top stack chip collapses to a dot at 1024 and drops its name at 1400 | every table with a prompt | ffa4-pri-1024 | fixed: label to a reader and "+N" under 64 rem |
+| 6 | Med | "You have no creatures that can block" beside a prompt is a cut pill over the combat key at every width | every table in combat | duel-pri-1873, p-mode-1024 | fixed: a short status line |
+| 7 | Med | Your pod's graveyard, exile and commander line scroll out of the pod column | 4 seats, teams, 2HG, 1024 to 1530 | ffa4-pri-1024, thg-attack-1530 | pf10b |
+| 8 | Med | Three heroes at 40 permanents: your lands lane is cut at the bottom | boss table, 3 heroes, 1400 | p-block-party-1400 | pf10c |
+| 9 | Med | An attack badge on a tile lies over the seat's team chip | teams 3v3, 1400 | teams33-block-1400 | fixed: dot and number in tiles |
+| 10 | Med | The choice overlay leaves the hand dock an empty band under the strip | 5 seats, targets-many, 1400 and 1873 | grid5-targets-1873 | pf10d |
+| 11 | Med | The stack's target arrows run across the prompt sentence | phone, any prompt with a stack | p-x-390 | pf10e |
+| 12 | Med | The boss-mode opening hand covers the boss's pod | phone, boss, mulligan | p-mull-boss-390 | pf9c |
+| 13 | Med | Pay at 1400: answers on two rows and the mana sources scroll sideways | 4 seats, pay | p-pay-1400 | pf10a |
+| 14 | Low | The run header fills the first phone screen before the room's choice | Delves map, camps, phone | dl-map-390, dl-campfire-390 | pf10f |
+| 15 | Low | Shop offers of different heights put their Buy buttons on different lines | Delves shop, 1400 | dl-shop-1400 | pf10g |
+| 16 | Low | Enter the fight and Retreat stand on two rows | Delves boss intro | dl-fight-1400 | fixed |
+| 17 | Low | "1 relics" in the run summary | Delves victory | dl-victory-390 | fixed |
+| 18 | Low | An alert's Retry row widens the icon column and indents the words 80 px | create page error, every alert with an action | pg-new-1400 | fixed |
+| 19 | Low | Key hints (Esc, Space) are drawn on touch screens | phone prompts | p-x-390 | fixed: left out under a coarse pointer |
+| 20 | Low | The deck detail is a tall empty panel while the seats run below the fold | lobby, 1400 | pg-lobby-2hg-1400 | pf10h |
+| 21 | Low | End the run is plain text under the chronicle, unlike every other action | Delves, every state | dl-map-1400 | pf10i |
+| 22 | Low | "No attack" is an icon-only button beside a labelled Attack | phone, attack | teams22-attack-390 | pf10j |
+| 23 | Low | The commander tax badge lies over the commander's type line in the hand dock | every table | duel-pri-1400 | pf10k |
+| 24 | Low | Hero names and figures of the run summary wrap on separate lines | Delves victory, phone | dl-victory-390 | pf10l |
+| 25 | Low | The deck list and groups, the replay and the open games list have no dev fixture, so they cannot be shot without a server | decks, replay, play | - | pf10m |
+
 ## The look
 
 Spellforge, a dark fantasy table, with each seat in its own colour: a lit green felt with a dark rim under the boards, warm plaques with a soft shadow for pods, tiles and the centre strip, a brass hairline on seat frames and docks, cards that cast a shadow on the felt, ivory text, Cinzel for life, seat names and page titles, and a gold main action with a glow. Each seat's pod and tile carry a 2 px top edge in the seat's hue and its life figure in that hue, so four players tell apart at a glance. Tokens and rules are in [ui-design.md](ui-design.md) (Design system).

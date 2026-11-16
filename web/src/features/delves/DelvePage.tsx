@@ -120,6 +120,9 @@ function FightPanel({
   const waiting = view.deck_problems
     .filter((problem) => problem.hero !== view.me)
     .map((problem) => view.run.heroes[problem.hero]?.name ?? `Hero ${problem.hero + 1}`)
+  const retreat = view.host ? (
+    <RetreatButton hearts={view.run.hearts} busy={busy} onRetreat={onRetreat} />
+  ) : null
   return (
     <BossIntro view={view} content={content}>
       <div className="grid gap-2">
@@ -129,13 +132,17 @@ function FightPanel({
           </p>
         ) : null}
         {game !== null ? (
-          <Link
-            to="/game/$gameId"
-            params={{ gameId: game }}
-            className={cn(buttonVariants({ size: 'lg' }), 'w-full sm:w-auto sm:justify-self-start')}
-          >
-            Enter the fight
-          </Link>
+          // The way in and the way out share one row, the way in first.
+          <div data-slot="fight-actions" className="flex flex-wrap items-center gap-2">
+            <Link
+              to="/game/$gameId"
+              params={{ gameId: game }}
+              className={cn(buttonVariants({ size: 'lg' }), 'w-full sm:w-auto')}
+            >
+              Enter the fight
+            </Link>
+            {retreat}
+          </div>
         ) : mine !== undefined ? (
           <div className="grid gap-2 rounded-lg border border-destructive/50 bg-surface p-3 text-sm">
             <p>Your deck can no longer be played ({mine.reason}). Choose another to fight this boss.</p>
@@ -152,7 +159,7 @@ function FightPanel({
             The fight is being prepared…
           </p>
         )}
-        {view.host ? <RetreatButton hearts={view.run.hearts} busy={busy} onRetreat={onRetreat} /> : null}
+        {game !== null ? null : retreat}
       </div>
       <RevivalNote />
     </BossIntro>
@@ -194,7 +201,8 @@ function EndPanel({ view, content }: { view: DelveView; content: DelveContent })
           <li key={`${at}-${hero.name}`} className="flex flex-wrap justify-between gap-2 border-b py-1">
             <span className="font-medium">{hero.name}</span>
             <span className="text-muted-foreground">
-              {hero.life} life · {hero.gold} gold · {hero.relics.length} relics
+              {hero.life} life · {hero.gold} gold · {hero.relics.length}{' '}
+              {hero.relics.length === 1 ? 'relic' : 'relics'}
               {hero.relics.length > 0
                 ? ` (${hero.relics.map((id) => content.cards.find((c) => c.id === id)?.name ?? id).join(', ')})`
                 : ''}

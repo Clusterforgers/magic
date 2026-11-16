@@ -31,7 +31,7 @@ function NothingToDoNote({ prompt }: { prompt: boolean }) {
         prompt && 'sm:max-w-48',
       )}
     >
-      <NothingToDoBanner />
+      <NothingToDoBanner beside={prompt} />
     </div>
   )
 }

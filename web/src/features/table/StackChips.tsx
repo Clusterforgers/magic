@@ -194,14 +194,17 @@ export function StackChips() {
   const folded = groups.filter((group) => !shown.has(group.ids[0] ?? 0)).flatMap((group) => group.ids)
   return (
     <div data-slot="stack-chips" className="flex min-w-0 shrink items-center gap-2">
-      <span className="text-xs font-medium text-muted-foreground max-sm:sr-only">Stack</span>
+      <span data-slot="stack-label" className="text-xs font-medium text-muted-foreground max-sm:sr-only">
+        Stack
+      </span>
       <ol
         ref={list}
         role="list"
         aria-label="Spells on the stack, top first"
         onFocus={roving.onFocus}
         onKeyDown={roving.onKeyDown}
-        className="flex min-w-0 items-center gap-1.5 overflow-hidden p-1"
+        // The top chip keeps its dot and picture whole however narrow the strip; its name is what gives way.
+        className="flex min-w-16 items-center gap-1.5 overflow-hidden p-1"
       >
         {items.map((item, index) => {
           if (typeof item !== 'number') return <StackGhostChip key={`ghost:${item.token}`} ghost={item} />
@@ -234,7 +237,8 @@ export function StackChips() {
           }}
           className="h-8 shrink-0 rounded-lg border border-dashed px-2 text-sm font-medium text-muted-foreground outline-offset-2 outline-primary hover:text-foreground focus-visible:outline-2"
         >
-          +{folded.length} more
+          +{folded.length}
+          <span data-slot="stack-more-word"> more</span>
         </button>
       )}
     </div>
