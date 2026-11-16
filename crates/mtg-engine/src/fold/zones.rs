@@ -418,7 +418,11 @@ fn held_as_cast(state: &GameState, player: PlayerId, spell: ObjectId) -> AsCast 
     if asked.is_empty() && counted.is_empty() {
         return (asked, Vec::new());
     }
-    let scope = crate::resolve::Scope::announcing(state, player, object.reference());
+    // The objects the cost took are the spell's own ("the mana value of the returned creature").
+    let scope = crate::resolve::Scope {
+        choices: &object.choices,
+        ..crate::resolve::Scope::announcing(state, player, object.reference())
+    };
     let held = asked
         .into_iter()
         .filter(|condition| scope.holds(condition).unwrap_or(false))

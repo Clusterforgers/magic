@@ -424,6 +424,7 @@ Counterspell
 Courser of Kruphix
 Court of Bounty
 Court of Grace
+Crabomination
 Crack in Time
 Crafty Cutpurse
 Cram Session
@@ -702,6 +703,7 @@ Ethereal Usher
 Ethersworn Sphinx
 Eureka Moment
 Evangel of Heliod
+Eventide's Shadow
 Evercoat Ursine
 Everdream
 Evermind

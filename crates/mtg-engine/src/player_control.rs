@@ -25,6 +25,9 @@ pub struct PlayerControl {
     pub extra_turn: bool,
     /// The number of the turn it applies in, once that turn has begun.
     pub turn: Option<u32>,
+    /// It lasts the player's next combat phase only: it begins with that phase and ends as it ends.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub combat: bool,
 }
 
 impl GameState {
@@ -93,13 +96,51 @@ fn searching_own_library(state: &GameState, decision: &Decision) -> bool {
 }
 
 /// Schedules the control (`PlayerControlGained`).
-pub(crate) fn gain(state: &mut GameState, player: PlayerId, by: PlayerId, extra_turn: bool) {
+pub(crate) fn gain(
+    state: &mut GameState,
+    player: PlayerId,
+    by: PlayerId,
+    extra_turn: bool,
+    combat: bool,
+) {
     state.player_controls.push(PlayerControl {
         player,
         by,
         extra_turn,
         turn: None,
+        combat,
     });
+}
+
+/// A step begins: a control of the next combat phase of the active player begins with their beginning of combat step,
+/// and one under way ends with the first step after the combat phase (CR 506.1, 722.2).
+pub(crate) fn r6701_step_began(state: &mut GameState, step: crate::turn::Step) {
+    use crate::turn::Step;
+    if !state.player_controls.iter().any(|control| control.combat) {
+        return;
+    }
+    let number = state.turn.number;
+    let in_combat = matches!(
+        step,
+        Step::BeginCombat
+            | Step::DeclareAttackers
+            | Step::DeclareBlockers
+            | Step::FirstStrikeDamage
+            | Step::CombatDamage
+            | Step::EndCombat
+    );
+    if step == Step::BeginCombat {
+        let active = state.turn.active();
+        for control in &mut state.player_controls {
+            if control.combat && control.player == active && control.turn.is_none() {
+                control.turn = Some(number);
+            }
+        }
+    } else if !in_combat {
+        state
+            .player_controls
+            .retain(|control| !(control.combat && control.turn.is_some()));
+    }
 }
 
 /// A turn of `active` numbered `number` begins: the controls of earlier turns end and those waiting for this player's
@@ -113,7 +154,7 @@ pub(crate) fn turn_began(state: &mut GameState, number: u32, active: PlayerId) {
         .retain(|control| control.turn.is_none_or(|turn| turn == number));
     let mut extra = 0;
     for control in &mut state.player_controls {
-        if control.player == active && control.turn.is_none() {
+        if control.player == active && control.turn.is_none() && !control.combat {
             control.turn = Some(number);
             extra += usize::from(control.extra_turn);
         }
@@ -132,6 +173,7 @@ mod tests {
     //! Goal: a control begins with the controlled player's next turn and not before, ends when the turn after begins, the latest control of a player wins, a controller who left controls nobody, and an extra turn asked for follows the controlled turn.
     use super::*;
     use crate::fixtures::state;
+    use crate::turn::Step;
 
     const A: PlayerId = PlayerId(0);
     const B: PlayerId = PlayerId(1);
@@ -145,7 +187,7 @@ mod tests {
     fn a_control_waits_for_the_players_next_turn_and_ends_after_it() {
         let mut game = game();
         game.turn.number = 4;
-        gain(&mut game, B, A, false);
+        gain(&mut game, B, A, false, false);
         assert_eq!(game.player_controller(B), B);
         turn_began(&mut game, 5, C);
         assert_eq!(game.player_controller(B), B);
@@ -163,12 +205,48 @@ mod tests {
     #[test]
     fn the_latest_control_wins_and_an_extra_turn_follows() {
         let mut game = game();
-        gain(&mut game, B, A, false);
-        gain(&mut game, B, C, true);
+        gain(&mut game, B, A, false, false);
+        gain(&mut game, B, C, true, false);
         game.turn.number = 2;
         turn_began(&mut game, 2, B);
         assert_eq!(game.player_controller(B), C);
         assert_eq!(game.extra_turns.len(), 1);
         assert_eq!(game.extra_turns[0].player, B);
+    }
+
+    #[rstest::rstest]
+    #[case::begins_with_their_combat(&[Step::Main1], B, false)]
+    #[case::holds_through_their_combat(&[Step::BeginCombat, Step::DeclareAttackers], B, true)]
+    #[case::ends_after_their_combat(&[Step::BeginCombat, Step::EndCombat, Step::Main2], B, false)]
+    #[case::not_on_another_players_combat(&[Step::BeginCombat], C, false)]
+    fn r6701_a_combat_control_lasts_their_next_combat_phase(
+        #[case] steps: &[Step],
+        #[case] active: PlayerId,
+        #[case] controlled: bool,
+    ) {
+        let mut game = game();
+        gain(&mut game, B, A, false, true);
+        game.turn.number = 3;
+        game.turn.active = active;
+        turn_began(&mut game, 3, active);
+        for step in steps {
+            r6701_step_began(&mut game, *step);
+        }
+        let expected = if controlled { A } else { B };
+        assert_eq!(game.player_controller(B), expected);
+    }
+
+    #[test]
+    fn r6701_a_combat_control_waits_past_a_turn_without_combat() {
+        let mut game = game();
+        gain(&mut game, B, A, false, true);
+        game.turn.number = 3;
+        game.turn.active = B;
+        turn_began(&mut game, 3, B);
+        r6701_step_began(&mut game, Step::End);
+        game.turn.number = 5;
+        turn_began(&mut game, 5, B);
+        r6701_step_began(&mut game, Step::BeginCombat);
+        assert_eq!(game.player_controller(B), A);
     }
 }

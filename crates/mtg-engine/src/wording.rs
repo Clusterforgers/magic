@@ -1144,6 +1144,13 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             format!("{}, caused by a spell or ability", clause(inner).0),
             false,
         ),
+        TriggerPattern::R6701WhileActivating { inner, kind } => (
+            format!(
+                "{} while you're activating a {kind:?} ability",
+                clause(inner).0
+            ),
+            false,
+        ),
         TriggerPattern::AnyOf(patterns) => {
             let clauses: Vec<(String, bool)> = patterns.iter().map(clause).collect();
             (

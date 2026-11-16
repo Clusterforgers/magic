@@ -302,6 +302,7 @@ mod r6600_wholes;
 mod r6601_wholes;
 mod r6602_wholes;
 mod r6603_wholes;
+mod r6701_wholes;
 mod r6a_effects;
 mod r6a_more;
 mod r6a_wordings;
@@ -605,6 +606,11 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
         .then_some(found)
 }
 
+/// A wording of the r67-01 table, read whole whatever its kind and reminder text.
+pub fn r6701_whole(text: &str) -> Option<Ability> {
+    r6701_wholes::r6701_whole_read(text)
+}
+
 /// A wording of the r66-00 table, read whole whatever its kind and reminder text.
 pub fn r6600_whole(text: &str) -> Option<Ability> {
     r6600_wholes::r6600_whole_read(text)
@@ -705,6 +711,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r6401_wholes::r6401_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r6701_wholes::r6701_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r6500_wholes::r6500_whole_read(text) {

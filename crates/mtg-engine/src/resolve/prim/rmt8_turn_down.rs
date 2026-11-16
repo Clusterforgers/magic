@@ -13,8 +13,10 @@ use crate::zones::Zone;
 /// together and in the order the reference lists them. Anything else is passed over: a permanent that is face down
 /// already, a card in another zone, an object that changed zones since it was named and a player.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::TurnFaceDown { what } = effect else {
-        return Err(wrong_effect("TurnFaceDown"));
+    let (what, horror) = match effect {
+        Effect::TurnFaceDown { what } => (what, false),
+        Effect::R6701TurnFaceDownHorror { what } => (what, true),
+        _ => return Err(wrong_effect("TurnFaceDown")),
     };
     let state = cx.state();
     let events = cx
@@ -25,6 +27,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .map(|object| Event::TurnedFaceDown {
             object: object.id(),
             player: controller_of_object(state, object),
+            horror,
         })
         .collect();
     Ok(Run::events(events))
@@ -148,7 +151,7 @@ mod tests {
         let named: Vec<&str> = events
             .iter()
             .map(|event| match event {
-                Event::TurnedFaceDown { object, player } => {
+                Event::TurnedFaceDown { object, player, .. } => {
                     let name = game.object(*object).unwrap().whole_card().name.as_str();
                     let owner = if name == "Siege" { FOE } else { ME };
                     assert_eq!(*player, owner, "its controller turns it");
@@ -191,7 +194,8 @@ mod tests {
                 &mut game,
                 &Event::TurnedFaceDown {
                     object: shifter,
-                    player: ME
+                    player: ME,
+                    horror: false,
                 }
             )
             .is_err()
@@ -230,5 +234,34 @@ mod tests {
         };
         assert!(events.is_empty(), "a harnessed permanent is passed over");
         assert!(apply_event(&mut game, &Event::Harnessed { object: bear }).is_err());
+    }
+
+    #[rstest]
+    fn r6701_a_permanent_turned_face_down_as_a_horror_is_a_2_2_horror(
+        #[values(2, 3, 4)] seats: usize,
+    ) {
+        let mut game = table(seats);
+        let shifter = id(&game, "Shifter");
+        for event in turned_down(
+            &game,
+            r#"{"R6701TurnFaceDownHorror":{"what":{"Each":[{"Named":"Shifter"}]}}}"#,
+        ) {
+            apply_event(&mut game, &event).unwrap();
+        }
+        let object = game.object(shifter).unwrap();
+        assert_eq!(object.face_down(), Some(FaceDown::R6701Horror));
+        assert_eq!(object.card().name, "");
+        assert_eq!(object.card().power, Some(2));
+        assert_eq!(object.card().toughness, Some(2));
+        assert!(
+            object
+                .card()
+                .subtypes
+                .iter()
+                .any(|subtype| subtype.0 == "Horror")
+        );
+        // Its morph cost still turns it face up.
+        let (mana, _) = crate::face_down::turn_up_cost(&game, shifter).unwrap();
+        assert_eq!(mana.to_string(), "{1}{U}");
     }
 }

@@ -23,6 +23,11 @@ fn c9_emerge_creature() -> Selector {
     Selector(vec![Pred::Type(CardType::Creature)])
 }
 
+/// "an artifact": the permanent emerge from artifact sacrifices.
+fn r6701_emerge_artifact() -> Selector {
+    Selector(vec![Pred::Type(CardType::Artifact)])
+}
+
 /// `cost` with `first` before its other items.
 fn c9_emerge_with(first: CostItem, cost: &Cost) -> Cost {
     Cost(
@@ -44,9 +49,16 @@ pub(crate) fn c9_emerge_ways(
         return Vec::new();
     };
     match keyword {
-        Keyword::Emerge(cost) if matches!(zone, Zone::Hand(_)) => {
+        Keyword::Emerge(cost) | Keyword::R6701EmergeFromArtifact(cost)
+            if matches!(zone, Zone::Hand(_)) =>
+        {
+            let filter = if matches!(keyword, Keyword::Emerge(_)) {
+                c9_emerge_creature()
+            } else {
+                r6701_emerge_artifact()
+            };
             let sacrifice = CostItem::Sacrifice {
-                filter: c9_emerge_creature(),
+                filter,
                 count: Amount::Fixed(1),
             };
             let cost = c9_emerge_with(sacrifice, cost);

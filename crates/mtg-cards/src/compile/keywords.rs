@@ -479,7 +479,10 @@ pub fn read(item: &str) -> Option<Keyword> {
         "prowl" => spell_cost(rest).map(Keyword::Prowl),
         "mayhem" => spell_cost(rest).map(Keyword::Mayhem),
         "disturb" => spell_cost(rest).map(Keyword::Disturb),
-        "emerge" => spell_cost(rest).map(Keyword::Emerge),
+        "emerge" => match rest.strip_prefix("from artifact ") {
+            Some(cost) => spell_cost(cost).map(Keyword::R6701EmergeFromArtifact),
+            None => spell_cost(rest).map(Keyword::Emerge),
+        },
         "harmonize" => spell_cost(rest).map(Keyword::Harmonize),
         "spectacle" => spell_cost(rest).map(Keyword::Spectacle),
         "freerunning" => spell_cost(rest).map(Keyword::Freerunning),
@@ -1722,6 +1725,10 @@ mod tests {
     #[case::mayhem_hybrid("Mayhem {B/R}", Keyword::Mayhem(mana("{B/R}")))]
     #[case::disturb("Disturb {2}{W}", Keyword::Disturb(mana("{2}{W}")))]
     #[case::emerge("Emerge {5}{U}{U}", Keyword::Emerge(mana("{5}{U}{U}")))]
+    #[case::r6701_emerge_from_artifact(
+        "Emerge from artifact {5}{B}{B}",
+        Keyword::R6701EmergeFromArtifact(mana("{5}{B}{B}"))
+    )]
     #[case::r301_affinity_for_snow_lands(
         "Affinity for snow lands",
         Keyword::Affinity(Selector(vec![Pred::Supertype(Supertype::Snow), Pred::Type(CardType::Land)]))
@@ -2222,6 +2229,7 @@ mod tests {
             "Mayhem {1}",
             "Disturb {1}",
             "Emerge {1}",
+            "Emerge from artifact {5}{B}{B}",
             "Harmonize {1}",
             "Afterlife 2",
             "Horsemanship",

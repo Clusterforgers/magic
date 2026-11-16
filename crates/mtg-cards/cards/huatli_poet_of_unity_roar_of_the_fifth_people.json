@@ -1,7 +1,7 @@
 {
   "oracle_id": "2e6ed3e6-d2b8-4b75-b7e1-0773da4987a1",
   "name": "Huatli, Poet of Unity // Roar of the Fifth People",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Huatli, Poet of Unity",
@@ -67,9 +67,41 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 139, "end": 217 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Static": {
+                          "affected": {
+                            "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                          },
+                          "mods": [
+                            {
+                              "GrantAbility": {
+                                "Activated": {
+                                  "cost": ["Tap"],
+                                  "effects": [
+                                    {
+                                      "AddMana": { "mana": { "OneOf": ["Red", "Green", "White"] } }
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         },
         {

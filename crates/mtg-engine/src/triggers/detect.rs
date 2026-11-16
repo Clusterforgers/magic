@@ -1970,6 +1970,11 @@ fn matching_event(
                 .then(|| matching(inner, happened, scope))
                 .flatten()
         }
+        (TriggerPattern::R6701WhileActivating { inner, kind }, happened) => {
+            r6701_activating(scope, *kind)
+                .then(|| matching(inner, happened, scope))
+                .flatten()
+        }
         (
             TriggerPattern::DealsDamage { source, to, combat },
             Happened::Damaged {
@@ -2560,6 +2565,13 @@ pub(crate) fn step_matches(named: mtg_cards::trigger::Step, began: Step) -> bool
             | (Named::End, Step::End)
             | (Named::Cleanup, Step::Cleanup)
     )
+}
+
+/// Whether the events were caused by the trigger's controller activating an ability of the kind `kind`.
+fn r6701_activating(scope: &Scope<'_>, kind: mtg_cards::ability::ActivationKind) -> bool {
+    scope
+        .caused
+        .is_some_and(|caused| caused.player == scope.controller && caused.activating == Some(kind))
 }
 
 /// Whether the spell or ability that caused the events is controlled by one of the players `by` names and is one of the

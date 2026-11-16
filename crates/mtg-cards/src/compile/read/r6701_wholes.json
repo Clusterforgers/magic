@@ -1,0 +1,286 @@
+[
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "targets": [
+     {
+      "what": "Opponent"
+     }
+    ],
+    "effects": [
+     {
+      "ExileTop": {
+       "who": {
+        "Target": 0
+       },
+       "as": "top"
+      }
+     },
+     {
+      "ChooseAtRandom": {
+       "from": {
+        "Each": [
+         {
+          "OwnedBy": {
+           "Target": 0
+          }
+         },
+         {
+          "In": "Graveyard"
+         }
+        ]
+       },
+       "as": "buried"
+      }
+     },
+     {
+      "ChooseAtRandom": {
+       "from": {
+        "Each": [
+         {
+          "OwnedBy": {
+           "Target": 0
+          }
+         },
+         {
+          "In": "Hand"
+         }
+        ]
+       },
+       "as": "held"
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Union": [
+         {
+          "Bound": "buried"
+         },
+         {
+          "Bound": "held"
+         }
+        ]
+       },
+       "as": "exiled"
+      }
+     },
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "Is": {
+           "Union": [
+            {
+             "Bound": "top"
+            },
+            {
+             "Bound": "exiled"
+            }
+           ]
+          }
+         },
+         {
+          "In": "Exile"
+         },
+         {
+          "Not": {
+           "Type": "Land"
+          }
+         }
+        ]
+       },
+       "count": {
+        "min": 0,
+        "max": 1
+       },
+       "as": "card"
+      }
+     },
+     {
+      "CastFromZone": {
+       "what": {
+        "Bound": "card"
+       },
+       "free": true
+      }
+     }
+    ]
+   }
+  },
+  "When this creature enters, target opponent exiles the top card of their library, a card at random from their graveyard, and a card at random from their hand. You may cast a spell from among cards exiled this way without paying its mana cost."
+ ],
+ [
+  {
+   "CostModifier": {
+    "applies_to": [
+     "This"
+    ],
+    "change": "Reduce",
+    "mana": "{1}",
+    "per": {
+     "Tallied": {
+      "who": "You",
+      "what": "EnergyPaidOrLost"
+     }
+    }
+   }
+  },
+  "This spell costs {1} less to cast for each {E} you've paid or lost this turn."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "R6701RemoveAmong": {
+       "from": {
+        "Each": []
+       },
+       "as": "removed"
+      }
+     },
+     {
+      "Draw": {
+       "count": {
+        "Bound": "removed"
+       }
+      }
+     },
+     {
+      "LoseLife": {
+       "amount": {
+        "Bound": "removed"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Remove any number of counters from among permanents on the battlefield. You draw cards and lose life equal to the number of counters removed this way."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "Enters": {
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "by": {
+     "WithCounters": {
+      "counter": "+1/+1",
+      "count": {
+       "CountedAsCast": {
+        "Stat": {
+         "of": "Paid",
+         "stat": "ManaValue"
+        }
+       }
+      }
+     }
+    },
+    "condition": {
+     "CastWith": "WebSlinging"
+    }
+   }
+  },
+  "If Scarlet Spider was cast using web-slinging, he enters with X +1/+1 counters on him, where X is the mana value of the returned creature."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        "Tapped",
+        {
+         "Not": "Token"
+        }
+       ]
+      },
+      "bounds": {
+       "min": 0,
+       "max": null
+      }
+     }
+    ],
+    "effects": [
+     {
+      "R6701TurnFaceDownHorror": {
+       "what": {
+        "Target": 0
+       }
+      }
+     }
+    ]
+   }
+  },
+  "When this creature enters, turn any number of target tapped nontoken creatures face down. They're 2/2 Horror creatures."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": "Opponent"
+     }
+    ],
+    "effects": [
+     {
+      "If": {
+       "condition": "AdditionalCostPaid",
+       "then": [
+        {
+         "ControlPlayer": {
+          "who": {
+           "Target": 0
+          }
+         }
+        }
+       ],
+       "otherwise": [
+        {
+         "R6701ControlCombat": {
+          "who": {
+           "Target": 0
+          }
+         }
+        }
+       ]
+      }
+     },
+     {
+      "Exile": {
+       "what": "This"
+      }
+     }
+    ]
+   }
+  },
+  "You control target opponent during their next combat phase. If this spell's additional cost was paid, you control that player during their next turn instead.\nExile ~."
+ ]
+]

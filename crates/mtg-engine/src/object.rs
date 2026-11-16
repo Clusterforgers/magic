@@ -109,6 +109,9 @@ pub enum FaceDown {
     Morph,
     /// A spell or permanent cast face down for its disguise (CR 702.168): as a morph, with ward {2}.
     Disguise,
+    /// A permanent an effect turned face down as a 2/2 Horror creature ("They're 2/2 Horror creatures"): as a morph, with
+    /// the creature type Horror (CR 708.2a); turned face up only for a morph or disguise cost of its own.
+    R6701Horror,
     /// A card put onto the battlefield face down by manifest (CR 701.40a): as a morph, a 2/2 creature that only its controller
     /// may look at; it can be turned face up for its mana cost when it is a creature card.
     Manifest,
@@ -148,9 +151,11 @@ impl FaceDown {
             FaceDown::Foretold { .. } | FaceDown::Hideaway { .. } => owner == viewer,
             FaceDown::Held { looker, .. } => looker == viewer,
             FaceDown::Sealed { .. } | FaceDown::Attraction => false,
-            FaceDown::Morph | FaceDown::Disguise | FaceDown::Manifest | FaceDown::Cloak => {
-                controller == viewer
-            }
+            FaceDown::Morph
+            | FaceDown::Disguise
+            | FaceDown::Manifest
+            | FaceDown::Cloak
+            | FaceDown::R6701Horror => controller == viewer,
         }
     }
 }
