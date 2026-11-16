@@ -127,9 +127,10 @@ impl Pass<'_> {
         }
     }
 
-    /// The state with the cards the batch's other events take from a library or a graveyard already gone, when there are
-    /// such cards: effects run in place of two events of one batch (two combat damage events that each become "exile that
-    /// many cards from the top of their library" or "exile that many cards from your graveyard") take different cards.
+    /// The state with the cards the batch's other events take from a library or a graveyard already gone, and the counters
+    /// they remove already off, when there are such: effects run in place of two events of one batch (two combat damage
+    /// events that each become "exile that many cards from the top of their library" or "remove that many +1/+1 counters
+    /// from it") take different cards and remove no more counters than there are (CR 122.8, 609.3).
     fn taken_by_the_batch(&self, at: usize) -> Option<GameState> {
         let taken: Vec<&Event> = self
             .slots
@@ -143,6 +144,9 @@ impl Pass<'_> {
                         ..
                     },
                 ) => Some(event),
+                Item::One(event @ Event::CountersChanged(CountersChanged { delta: ..0, .. })) => {
+                    Some(event)
+                }
                 _ => None,
             })
             .collect();
