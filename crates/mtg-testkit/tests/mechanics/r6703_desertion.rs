@@ -20,7 +20,11 @@ use crate::common::{names, pid};
 fn spell(name: &str, ty: CardType) -> Arc<CardDefinition> {
     match ty {
         CardType::Creature => free_creature(name, 2, 2),
-        other => Arc::new(CardDefinition::new(name).with_type(other)),
+        other => Arc::new(
+            CardDefinition::new(name)
+                .with_type(other)
+                .with_mana_cost(mtg_testkit::cards::cost(0, &[])),
+        ),
     }
 }
 
@@ -54,7 +58,14 @@ fn desertion_steals_artifact_and_creature_spells_only(
         }
         driver.pass()?;
     }
-    let prize = driver.target_named("Prize")?;
+    let prize = driver
+        .state()
+        .stack()
+        .iter()
+        .filter_map(|id| driver.state().object(*id))
+        .find(|object| object.card().name == "Prize")
+        .map(|object| mtg_engine::choose::Target::Object(object.reference()))
+        .expect("the Prize is on the stack");
     driver.cast_at("Desertion", &[prize])?;
     for _ in 0..50 {
         if driver.state().stack().is_empty() && driver.state().resolving().is_none() {

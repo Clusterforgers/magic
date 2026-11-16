@@ -24,6 +24,7 @@ fn tutor(name: &str) -> Arc<CardDefinition> {
     Arc::new(
         CardDefinition::new(name)
             .with_type(CardType::Sorcery)
+            .with_mana_cost(mtg_testkit::cards::cost(0, &[]))
             .with_rules(
                 serde_json::from_str::<Ability>(
                     r#"{"Spell":{"effects":[{"Search":{"filter":[],"as":"found"}},{"Move":{"what":{"Bound":"found"},"to":"Hand"}},{"Shuffle":{}}]}}"#,

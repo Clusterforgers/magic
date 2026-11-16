@@ -74,6 +74,9 @@ fn defenders(
                     .unwrap_or_default();
                 return Ok((driver, found));
             }
+            DecisionKind::PayMana(_) => {
+                driver.answer(Answer::PayMana(mtg_engine::decision::PayChoice::Auto))?;
+            }
             _ => {
                 driver.answer_passively()?;
             }

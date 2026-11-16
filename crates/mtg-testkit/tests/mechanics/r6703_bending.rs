@@ -10,6 +10,7 @@ use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::refs::Ref;
 use mtg_core::card::CardType;
+use mtg_engine::decision::{Answer, PayChoice};
 use mtg_engine::events::{Bending, Event};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
@@ -94,7 +95,7 @@ fn bend(driver: &mut Driver, element: Bending, attacker: &str) -> Result<Vec<Eve
     match element {
         Bending::Water => {
             log.extend(driver.begin_activation("Water Stone")?);
-            log.extend(driver.answer_passively()?);
+            log.extend(driver.answer(Answer::PayMana(PayChoice::Auto))?);
         }
         Bending::Earth => {
             log.extend(driver.begin_activation("Earth Stone")?);
