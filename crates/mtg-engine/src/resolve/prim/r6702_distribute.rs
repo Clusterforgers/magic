@@ -6,7 +6,7 @@ use mtg_core::ids::ObjectId;
 
 use super::put_counters::whole;
 use super::wrong_effect;
-use crate::choose::{Choice, NumberOptions, Picked, Selection, Target, pick_selections};
+use crate::choose::{CardsOptions, Choice, NumberOptions, Target};
 use crate::counters::CountersChanged;
 use crate::decision::{Decision, DecisionKind};
 use crate::events::Event;
@@ -38,26 +38,50 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Ok(Run::events(Vec::new()));
     }
     let player = cx.controller();
-    let most = usize::try_from(total).unwrap_or(usize::MAX);
-    let selection = Selection {
-        one_per_name: false,
-        groups: Vec::new(),
-        player,
-        min: 1,
-        max: most,
-        text: format!("Choose the permanents to distribute {total} counters among."),
-        from: from.clone(),
+    let most = usize::try_from(total).unwrap_or(usize::MAX).min(from.len());
+    let mut answers = cx.journal().iter();
+    // A lone permanent takes every counter unasked.
+    let chosen: Vec<ObjectId> = if from.len() == 1 {
+        from.clone()
+    } else {
+        match answers.next() {
+            Some((who, Choice::Cards(cards)))
+                if *who == player
+                    && (1..=most).contains(&cards.len())
+                    && cards.iter().all(|card| from.contains(card))
+                    && cards
+                        .iter()
+                        .enumerate()
+                        .all(|(at, card)| !cards[..at].contains(card)) =>
+            {
+                cards.clone()
+            }
+            Some(_) => {
+                return Err(ResolveError::Invalid(
+                    "not a choice of permanents to distribute among".into(),
+                ));
+            }
+            None => {
+                return Ok(Run::Ask(Decision {
+                    player,
+                    kind: DecisionKind::ChooseCards(CardsOptions {
+                        one_per_name: false,
+                        source: cx.scope.source.id,
+                        from,
+                        min: 1,
+                        max: u32::try_from(most).unwrap_or(u32::MAX),
+                        text: format!(
+                            "Choose the permanents to distribute {total} counters among."
+                        ),
+                        can_cancel: false,
+                        total: None,
+                        groups: Vec::new(),
+                    }),
+                }));
+            }
+        }
     };
-    // The choice is asked unless the list holds no more than the fewest to take.
-    let asked = from.len() > 1;
-    let chosen = match pick_selections(cx, std::slice::from_ref(&selection))? {
-        Picked::Ask(decision) => return Ok(Run::Ask(decision)),
-        Picked::Done(taken) => taken
-            .into_iter()
-            .flat_map(|(_, cards)| cards)
-            .collect::<Vec<_>>(),
-    };
-    let mut numbers = cx.journal().iter().skip(usize::from(asked));
+    let mut numbers = answers;
     let mut shares: Vec<u32> = Vec::with_capacity(chosen.len());
     let mut left = total;
     for (at, object) in chosen.iter().enumerate() {

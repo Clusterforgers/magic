@@ -22,7 +22,9 @@ use crate::rng::GameRng;
 pub(super) fn specs(ctx: &Ctx<'_>, choices: &Choices) -> Vec<TargetSpec> {
     // An overloaded spell has no targets: each object that could be one is affected (CR 702.96). A spell cast face down
     // is a 2/2 creature spell with no abilities and no subtypes, an Aura's enchant included (CR 708.2a, 702.37c).
-    if matches!(choices.way, Some(CastWay::Overload | CastWay::FaceDown)) {
+    if choices.way == Some(CastWay::Overload)
+        || (choices.way == Some(CastWay::FaceDown) && matches!(ctx.what, What::Spell(_)))
+    {
         return Vec::new();
     }
     // A creature card cast for its bestow cost is an Aura spell with enchant creature (CR 702.103b).

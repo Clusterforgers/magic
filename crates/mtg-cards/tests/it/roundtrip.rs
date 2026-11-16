@@ -1332,7 +1332,6 @@ fn ability() -> impl Strategy<Value = Ability> {
                 condition: None,
                 targets,
                 effects,
-                condition: None,
             }),
         (trigger_pattern(), tail(), limit(), targets(), effects()).prop_map(
             |(when, (intervening_if, from), limit, targets, effects)| Ability::Triggered {
