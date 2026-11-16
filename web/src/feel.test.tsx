@@ -75,6 +75,26 @@ describe('the primary pass button', () => {
   })
 })
 
+describe('the attacked seat', () => {
+  const motion = blockAfter(css.slice(css.lastIndexOf(NO_PREFERENCE)), NO_PREFERENCE)
+
+  it('flinches and lights once as attackers are aimed at its pod or tile, only where motion is welcome', () => {
+    expect(motion).toMatch(
+      /:is\(\[data-seat\], \[data-tile-seat\]\)\[data-attacked\]\s*\{\s*animation: feel-attacked var\(--ready-ms\) var\(--ease-out\);/,
+    )
+    const frames = blockAfter(motion, '@keyframes feel-attacked')
+    expect(frames).toMatch(/scale: 1\.015/)
+    expect(frames).toMatch(/brightness\(1\.25\)/)
+  })
+
+  it.each(['features/table/SeatPanel.tsx', 'features/table/SeatTile.tsx'])(
+    'is marked on the seat of %s, the pods and tiles of every layout',
+    (path) => {
+      expect(readFileSync(join(import.meta.dirname, path), 'utf8')).toMatch(/'?data-attacked'?[=:]/)
+    },
+  )
+})
+
 describe('the hit area', () => {
   it('is 44 px under a coarse pointer, as a pseudo-element centred on the control', () => {
     expect(variable('--hit-min')).toBe('44px')

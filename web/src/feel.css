@@ -88,4 +88,24 @@
   [data-slot='primary-action']:not(:disabled) {
     animation: feel-ready var(--ready-ms) var(--ease-out);
   }
+
+  /* Staging: a seat's pod or tile flinches and lights once as attackers are aimed at it, in every layout. */
+  @keyframes feel-attacked {
+    0%,
+    100% {
+      scale: 1;
+      filter: none;
+    }
+    25% {
+      scale: 1.015;
+      filter: brightness(1.25);
+    }
+    60% {
+      scale: 0.995;
+    }
+  }
+
+  :is([data-seat], [data-tile-seat])[data-attacked] {
+    animation: feel-attacked var(--ready-ms) var(--ease-out);
+  }
 }
