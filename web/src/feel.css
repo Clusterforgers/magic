@@ -11,6 +11,7 @@
   /* A spring that passes 1 a little before it settles: the follow-through of a release. */
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --hit-min: 44px;
+  --ready-ms: 420ms;
 }
 
 /*
@@ -61,5 +62,30 @@
       inset-block: min(0px, calc((100% - var(--hit-min)) / 2));
       inset-inline: min(0px, calc((100% - var(--hit-min)) / 2));
     }
+  }
+}
+
+/*
+ * Frequency and staging: the primary pass button (Pass, Next, Resolve, Attack) swells once when it comes to the viewer,
+ * so the answer the viewer gives most is where the eye lands. No fill, so a press squashes it again at once.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes feel-ready {
+    0%,
+    100% {
+      scale: 1;
+      filter: none;
+    }
+    35% {
+      scale: 1.06;
+      filter: brightness(1.15);
+    }
+    70% {
+      scale: 0.98;
+    }
+  }
+
+  [data-slot='primary-action']:not(:disabled) {
+    animation: feel-ready var(--ready-ms) var(--ease-out);
   }
 }

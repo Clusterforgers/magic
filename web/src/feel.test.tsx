@@ -1,4 +1,4 @@
-// Goal: every button and card squashes to 0.97 in the frame it is pressed and springs back only where motion is welcome, a menu trigger or a disabled control never squashes, and under a coarse pointer every button, the switch, the stack chips and the lands chip hit at 44 px through a pseudo-element that never moves the layout.
+// Goal: every button and card squashes to 0.97 in the frame it is pressed and springs back only where motion is welcome, a menu trigger or a disabled control never squashes, the primary pass button swells once when it comes to the viewer, and under a coarse pointer every button, the switch, the stack chips and the lands chip hit at 44 px through a pseudo-element that never moves the layout.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { render, screen } from '@testing-library/react'
@@ -54,6 +54,24 @@ describe('the press', () => {
     expect(classes).toContain('press')
     expect(classes).not.toContain('transition-colors')
     expect(press).toMatch(/background-color/)
+  })
+})
+
+describe('the primary pass button', () => {
+  const ready = css.slice(css.lastIndexOf(NO_PREFERENCE))
+  const motion = blockAfter(ready, NO_PREFERENCE)
+
+  it('swells once when it comes to the viewer, only where motion is welcome', () => {
+    expect(motion).toMatch(
+      /\[data-slot='primary-action'\]:not\(:disabled\)\s*\{\s*animation: feel-ready var\(--ready-ms\) var\(--ease-out\);/,
+    )
+    expect(blockAfter(motion, '@keyframes feel-ready')).toMatch(/scale: 1\.06/)
+    expect(Number.parseFloat(variable('--ready-ms'))).toBeLessThanOrEqual(450)
+    expect(css.replace(motion, '')).not.toMatch(/feel-ready \w/)
+  })
+
+  it('keeps no fill, so a press squashes it at once afterwards', () => {
+    expect(motion).not.toMatch(/forwards|both/)
   })
 })
 
