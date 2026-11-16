@@ -8,3 +8,4 @@ mod events;
 mod fights;
 mod runs;
 mod spirits;
+mod tiers;

@@ -49,7 +49,7 @@ const THEME: &str = "warrens";
 /// The most runs a list shows.
 const LIST_LIMIT: i64 = 50;
 /// The highest Heat.
-const MAX_HEAT: u8 = 2;
+const MAX_HEAT: u8 = mtg_campaign::scale::MAX_HEAT;
 
 /// The runs of a server with a database.
 #[derive(Debug)]
