@@ -11,10 +11,11 @@ use crate::mana::{ManaOption, ManaPool, can_afford};
 use crate::spend::Spend;
 use crate::state::GameState;
 
-/// The sources that may pay `option`'s cost: every other permanent's mana abilities.
+/// The sources that may pay `option`'s cost: every other permanent's mana abilities but those activated only as an
+/// instant, which are never a source of a payment (Lion's Eye Diamond), so the offer and the payment agree.
 fn payers(all: &[ManaOption], option: &ManaOption) -> Vec<ManaOption> {
     all.iter()
-        .filter(|other| other.source.object != option.source.object)
+        .filter(|other| other.source.object != option.source.object && !other.priority_only)
         .cloned()
         .collect()
 }

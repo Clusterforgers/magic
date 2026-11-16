@@ -17,6 +17,33 @@ The rules the web client is built to: principles, design system, a fit-to-viewpo
 | Contrast and focus | 4.5:1 text, 3:1 edges and rings, focus never covered, colour never alone |
 | Motion and timing | 100 to 300 ms, ease-out in; nothing delays an answer; a working state past 1 s |
 
+### Feel
+
+The twenty rules of motion and interaction the table, lobby, deck pages and Delves are held to; the findings against them are ranked in [ui-audit.md](ui-audit.md) (Feel audit). Motion is CSS transforms, opacity and filters on keyframes, or the Web Animations API, never a re-render per frame; nothing waits for it, input stays live and `prefers-reduced-motion: reduce` turns it into still marks.
+
+| Rule | Here |
+|---|---|
+| Squash and stretch | A press squashes a control or card to 0.97; an attacker stretches 4 % along its lunge; a hit card squashes to 0.94 on impact |
+| Anticipation | An attacker draws back before it lunges, a strike before it lands, a flying card dips to 0.94 as it leaves |
+| Staging | What just happened is the focus: the newest stack chip is raised and rises in, older chips sit at 0.8; an attacked seat flinches and lights; the prompt band glows; nothing else dims below 0.8 |
+| Pose to pose | Every move is three to six keyframes (leave, peak, land, settle) in `fx.css` or `travel.ts`, tweened by the browser |
+| Follow through | A landing card and an entering permanent overshoot about 4 % and settle; a released press springs back past 1 |
+| Slow in, slow out | A card leg eases into the top of its arc and out of it to land (a curve per keyframe in `travel.ts`), entrances ease out, exits ease in; linear only for clocks |
+| Arcs | A card in flight bows off the straight line by 12 % of the way (24 to 96 px), upward, or rightward on an upright way (`arcBow`) |
+| Secondary action | The hit flashes and its number floats; an attacker's edge glows; a resolved spell's mark rides on it |
+| Timing | Presses 60 ms in and 220 ms back, card legs 380 ms, attacks 500 ms, hits 550 ms, strikes 1.1 s there and back; a batch's whole sequence under 1.7 s |
+| Exaggeration | A hit flashes white-hot (brightness 1.9) and shakes 5 px; a life total pops to 1.25 with a coloured flash |
+| Solid drawing | Cards cast a shadow on the felt, a lifted hand card a deeper one; a tap turns the face about its centre; the coin turns in 3D |
+| Appeal | One look (Spellforge), one set of motion tokens, the same moves in every layout |
+| Fitts and hit areas | Pass, Next, Resolve and Attack are the largest buttons, bottom right; under a coarse pointer every button and table chip has a 44 px hit area (`hit-area`), grown with a pseudo-element, never the layout |
+| Hick | A prompt shows one primary answer and at most about six choices at once; more go to the choice overlay with a search |
+| Miller | Groups of at most about seven: stack chips fold into "×N" and "+N more", lands fold into counts, a deck list groups by type |
+| Doherty | A press shows its pressed state in the same frame; an answer sent closes its prompt at once, before the server's batch (`answerPending`) |
+| Postel | Deck import takes Arena, MTGO, Moxfield and plain lists; search ignores case and accents; a number field takes typing and steppers |
+| Jakob | Arena's layout and words: hand at the bottom in an arc, opponents across, the pass button bottom right with Arena's labels, Space to pass |
+| Frequency | Pass, Next, Resolve and Attack are gold and largest, and swell once when they come to the viewer; stops one press away; manual commands in the side panel; rare actions in menus |
+| Reduced motion | Under `reduce` nothing travels, scales or shakes: marks and outlines stand for the effect's time |
+
 ## Design system
 
 Tokens are CSS variables in `index.css`, mapped by `@theme inline`; shadcn's names stay. `tokens.test.ts` computes the contrast of every text, edge and ring pair in both themes and holds the scales below; `tokenUse.test.ts` keeps hard-coded colours, sizes and off-scale text out of `components/` and the pages beside the table. A state tint (`bg-success/12`) sits on the page, panels and menus, not on the table.
@@ -71,14 +98,14 @@ The table is a `100dvh` grid that never scrolls the page. The opponent is on top
 |---|---|
 | top bar | home, turn badge, step ladder (from 1024 px), menu (layout, theme, card images, hand order, Concede); 44 px |
 | opponents, own | a pod and board per seat; the rows share the room by what their boards hold, not by a fixed ratio |
-| shared | stack chips, ticker, prompt line. A prompt is one band across the whole width, as in Arena: stack chips, status, the sentence on one line, the choices, the primary answer at the right end; choices that do not fit beside the sentence take a line of their own. A band that needs more grows up into a sheet of at most 40 dvh into room the opponents' area keeps free, never under a sentence and a row of answers however empty the boards, so it covers no card of a battlefield and never your board (its cards are what a prompt asks you to click), the hand or the controls |
+| shared | stack chips, ticker, prompt line. A prompt is one band across the whole width, as in Arena: stack chips, status, the sentence on one line, the choices, the primary answer at the right end; choices that do not fit beside the sentence take a line of their own. A band that needs more grows up into a sheet of at most 40 dvh that lies over the opponents' area, so no board moves for a prompt; it is never under a sentence and a row of answers however empty the boards, and never over your board (its cards are what a prompt asks you to click), the hand or the controls |
 | hand dock | whole cards in one row lying in a gentle arc (`fanOf`: the ends turned up to 6° and 8 px lower), overlapping in rows only when they do not fit; hover or focus lifts a card upright and opens the preview |
 | controls dock | the server's passing line, the stops (one row with a Mine or Theirs switch and Full Control from 1600 px, else a Stops popover), pass buttons; the primary button is bottom right, 44 px or more |
 | side | Commands, Log, Chat, Stack tabs with unread counts. L, XL a 272 to 304 px column that the viewer folds to the 44 px rail from its edge and opens again from the rail (kept per browser); M a 44 px rail opening a panel over the table; S, XS a sheet from the top bar |
 
 - Lands of a grid and of a phone: every board, yours too, carries a lands chip on its pod ("Lands 7", "Hide lands" while laid out; a desktop grid shows lands by default, a phone folds them). The table menu's "Show lands" switch turns every board and is kept in the browser; a chip turns its own board, and a prompt beyond priority that marks a land lays folded lands out while it waits (priority's mana marks do not). Folded lands give their room to creatures and other permanents; a grid's cards are 0.85 of yours (`GRID_THEIR_SCALE`).
 - Lanes: a board draws its permanents in three lanes: lands, creatures (any creature) and other permanents. Creatures face the middle of the table, lands sit left and other permanents right, an opponent's board mirrored top to bottom. Lanes never overlap, an empty lane takes no room, and each lane has a faint ground (`--lane`). The command zone, graveyard and exile are the pod's corner.
-- Fit: `fitLanes` (pure) takes the largest card width at which some shape of bands fits every lane (one band, creatures over lands and others, or a band each; ties go to fewer bands). Cards shrink as counts grow, and at the 44 px floor the zone scrolls inside, creatures first, with an edge fade and a "+N" count. Creatures are the largest cards on a board.
+- Fit: `fitLanes` (pure) takes the largest card width at which some shape of bands fits every lane (one band, creatures over lands and others, or a band each; ties go to fewer bands). Cards shrink as counts grow, in steps of about 8 %; a board holds its size and the board split its rows until the cards no longer fit or clearly have room for a larger size, so one permanent never moves the table, and a card that does move slides there; and at the 44 px floor the zone scrolls inside, creatures first, with an edge fade and a "+N" count. Creatures are the largest cards on a board.
 - Stacks: permanents equal in everything a card shows merge into one stack with a ×N badge. Lands and tokens group at once, other cards when a zone would fall under 64 px. A stack opens in place on click or Enter, and stays open while a prompt needs each member.
 - Teams: a pod and a tile carry the seat's team as a chip ("Team 1") in the team's colour (`team-1` to `team-4`, then repeating; the label always tells them apart). In Two-Headed Giant the shared life total is large on the team's first seat; the teammate's pod shows it small and muted with "shared", and both name it "Team life, shared with Ann".
 - Boss mode (a co-op fight against a boss): the boss's side on top, its abilities as a row of chips, the party's band of boards over yours at the bottom; on a phone tiles for both sides. Implementation in [web.md](web.md), Delves.
@@ -155,6 +182,7 @@ A move is a picture of the card (a card back for a card the viewer may not ident
 | `--fx-stagger-ms` | 120 | between the moves of one batch |
 | `--fx-arrow-ms` | 250 | an arrow draws in |
 | `--fx-mark-ms` | 600 | `activated`, `triggered`, `resolved`, `countered`, `fizzled`, `exiled`, `bounced`, `drawn` |
+| `--fx-arrive-ms` | 300 | the newest stack chip and a drawn card rise and settle, starting as the leg to them lands (0.8 of `--fx-travel-ms`) |
 
 A whole sequence stays under 1,700 ms. `--fx-slow` stretches all of them. Under `prefers-reduced-motion: reduce` nothing travels or scales: source and destination take their marks as still outlines at once, the spotlight appears and goes without motion, marks appear and go as badges, arrows appear without drawing in.
 

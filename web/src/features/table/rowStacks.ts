@@ -9,6 +9,8 @@ import type { RowKind } from './cardModel'
 import type { FitBox } from './fit'
 import { GROUP_OTHERS_BELOW, groupPermanents } from './group'
 import type { Groupable, Stack } from './group'
+import { fitHeld } from './holdFit'
+import type { FitHold } from './holdFit'
 import { LANE_LIMITS, fitLanes } from './laneFit'
 import type { LaneCounts, LaneFit } from './laneFit'
 import { splitBattlefield } from './selectors'
@@ -252,6 +254,11 @@ export interface SeatLayoutInput {
   most?: number | null
   /** The narrowest card before the zone scrolls, in px (`PHONE_FLOOR_PX` on a phone); the ladder's floor when left out. */
   least?: number | null
+  /** The card width and shape the board drew last, which the fit holds while they fit (`fitHeld`); left out, every fit starts afresh. */
+  hold?: FitHold | null
+}
+
+/** The rows of a seat to draw| null
 }
 
 /** The rows of a seat to draw and the fit of its zone. */
@@ -306,6 +313,7 @@ export function layoutSeat({
   held,
   most,
   least,
+  hold,
 }: SeatLayoutInput): SeatLayout {
   const plain = entriesOfRows(stacks.plain, opened, marked)
   if (box === null) return { rows: plain, stacks: stacks.plain, merged: false, fit: null }
@@ -319,7 +327,9 @@ export function layoutSeat({
         ? LANE_LIMITS.maxWidth
         : Math.max(floor, Math.min(LANE_LIMITS.maxWidth, most)),
   }
-  const plainFit = fitLanes(box, laneCounts(plain, held), facing, limits)
+  const fit = (counts: LaneCounts): LaneFit =>
+    hold === undefined ? fitLanes(box, counts, facing, limits) : fitHeld(box, counts, facing, limits, hold)
+  const plainFit = fit(laneCounts(plain, held))
   // A zone that scrolls at a raised floor merges identical cards too: fewer boxes to scroll past.
   if (plainFit.cardWidth >= GROUP_OTHERS_BELOW && !plainFit.scrolls) {
     return { rows: plain, stacks: stacks.plain, merged: false, fit: plainFit }
@@ -329,6 +339,6 @@ export function layoutSeat({
     rows: merged,
     stacks: stacks.merged,
     merged: true,
-    fit: fitLanes(box, laneCounts(merged, held), facing, limits),
+    fit: fit(laneCounts(merged, held)),
   }
 }

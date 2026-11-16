@@ -56,7 +56,7 @@ const resized = (): void => {
 /** What the layout says for a seat's battlefield in a box, rows in the order the zone draws them. */
 function expected(table: TableHarness, seat: number, facing: 'near' | 'far', box: FitBox, grouped = false) {
   const stacks = battlefieldStacks(table.store.getState(), seat, grouped)
-  const fit = layoutSeat({ box, stacks, facing, opened: new Set(), marked: new Set() }).fit
+  const fit = layoutSeat({ box, stacks, facing, opened: new Set(), marked: new Set(), hold: null }).fit
   if (fit === null) throw new Error('a box was given, so the layout fits')
   const lanes = fit.bands.flatMap((band) => band.lanes)
   const place = (row: RowKind) => must(lanes.find((lane) => lane.lane === row))

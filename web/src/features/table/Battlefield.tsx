@@ -14,6 +14,7 @@ import { LandFoldContext } from './landFold'
 import { promptKey } from './boardZoom'
 import { SHAPES } from './laneFit'
 import type { LanePlace } from './laneFit'
+import type { FitHold } from './holdFit'
 import { useSeatNamer } from './names'
 import {
   battlefieldStacks,
@@ -189,6 +190,9 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
   const grid = useContext(GridCardContext)
   const most = grid?.most ?? null
   const least = useContext(BoardFloorContext)
+  // The card width and shape drawn last: the next fit keeps them while they fit (`fitHeld`), so one permanent more or
+  // less does not resize the board. Read when the inputs change, written once the fit is drawn.
+  const hold = useRef<FitHold | null>(null)
   // The fit of the box alone, which a grid of boards shares out as one size; it never depends on that size.
   const alone = useMemo(
     () =>
@@ -200,6 +204,7 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
         marked,
         held: { creatures: creatureGhosts, other: otherGhosts, lands: landGhosts },
         least,
+        hold: hold.current,
       }),
     [box, shown, facing, opened, marked, creatureGhosts, otherGhosts, landGhosts, least],
   )
@@ -217,6 +222,7 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
             held: { creatures: creatureGhosts, other: otherGhosts, lands: landGhosts },
             most,
             least,
+            hold: hold.current,
           }),
     [
       alone,
@@ -254,6 +260,9 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
   }, [])
   const { fit } = layout
   const cardWidth = fit?.cardWidth ?? null
+  useLayoutEffect(() => {
+    hold.current = fit === null || fit.scrolls ? null : { width: fit.cardWidth, shape: fit.shape }
+  }, [fit])
   useLayoutEffect(() => {
     onCardWidth?.(cardWidth)
   }, [onCardWidth, cardWidth])

@@ -4,9 +4,10 @@ import { LoaderCircleIcon } from 'lucide-react'
 import { cn } from 'cn'
 
 // Heights are the target sizes of the design system: 32, 36 and 44 px, and 24 px for dense rows. Under a coarse
-// pointer every control that people press often grows to 44 px.
+// pointer every control that people press often grows to 44 px and every button hits at 44 px (`hit-area`); `press`
+// squashes it in the frame it is pressed and springs it back (docs/ui-design.md, Feel).
 const buttonStyles = cva(
-  "group/button inline-flex shrink-0 items-center justify-center gap-2 rounded-lg border border-transparent text-sm font-medium whitespace-nowrap transition-colors duration-fast ease-out select-none motion-safe:active:not-aria-[haspopup]:translate-y-px aria-disabled:cursor-not-allowed aria-disabled:opacity-50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button press hit-area relative inline-flex shrink-0 items-center justify-center gap-2 rounded-lg border border-transparent text-sm font-medium whitespace-nowrap select-none aria-disabled:cursor-not-allowed aria-disabled:opacity-50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {

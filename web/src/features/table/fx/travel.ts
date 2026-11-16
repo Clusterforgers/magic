@@ -135,11 +135,6 @@ interface Pose {
 }
 
 const lerp = (a: number, b: number, t: number): number => a + (b - a) * t
-const mix = (a: Pose, b: Pose, t: number): Pose => ({
-  x: lerp(a.x, b.x, t),
-  y: lerp(a.y, b.y, t),
-  scale: lerp(a.scale, b.scale, t),
-})
 
 /** The share of its size a picture takes at a place: exactly the card's, else what fits the chip it lands on. */
 function scaleAt(spot: Spot, size: Size): number {
@@ -148,50 +143,104 @@ function scaleAt(spot: Spot, size: Size): number {
   return Math.min(1, Math.max(MIN_SCALE, fit))
 }
 
-/** The point of the way after which the picture fades out. */
-const FADE_AT = 0.85
+/** The point of the way after which the picture fades out, settled on what the table already shows. */
+const FADE_AT = 0.9
 
 /** `at` kept inside 0 to `limit` for a length of `length`, as far as the length fits. */
 const within = (at: number, length: number, limit: number | undefined): number =>
   limit === undefined ? at : Math.max(0, Math.min(at, limit - length))
 
-/** The steps of a leg, which the easing runs over: it leaves, is at its fullest halfway and fades as it lands. */
-const STEPS = [0, 0.5, FADE_AT, 1] as const
+/** The share of its size a picture dips to as it leaves: the wind-up before the flight. */
+export const WINDUP_SCALE = 0.94
+
+/** The share past its landing size a picture overshoots before it settles: the follow-through. */
+export const LAND_OVERSHOOT = 1.04
+
+/** How far the arc bows off the straight line, as a share of the way, and its least and greatest bow in px. */
+export const ARC_SHARE = 0.12
+export const ARC_MIN_PX = 24
+export const ARC_MAX_PX = 96
+
+/** Slow in and slow out: the leg eases out of its wind-up, speeds up to the top of the arc and slows to land. */
+const EASE_IN = 'cubic-bezier(0.4, 0, 1, 1)'
+const EASE_LAND = 'cubic-bezier(0, 0, 0.2, 1)'
+const EASE_SETTLE = 'cubic-bezier(0.45, 0, 0.55, 1)'
 
 /**
- * The keyframes of a leg for a picture of `size` (an ability's chip is measured by the caller): a straight path from
- * the middle of the source to the middle of the destination, the picture taking the size of each end and whole halfway,
- * where it can be read. It fades in the last part, once it has landed on what the table already shows. The picture
- * stays inside `bounds` (the window) when they are given, so a source at the edge of the screen does not draw it half off.
+ * The poses of a leg, pose to pose: it dips as it winds up, is whole at the top of its arc, lands a little large and
+ * settles to the size of where it lands, then fades. Each pose eases into the next by its own curve, so the leg's
+ * timing is linear.
+ */
+const POSES = [
+  { offset: 0, easing: EASE_SETTLE },
+  { offset: 0.15, easing: EASE_IN },
+  { offset: 0.5, easing: EASE_LAND },
+  { offset: 0.8, easing: EASE_SETTLE },
+  { offset: FADE_AT, easing: 'linear' },
+  { offset: 1, easing: 'linear' },
+] as const
+
+/** The easing of a whole leg: linear, as the poses carry their own. */
+export const LEG_EASING = 'linear'
+
+/** The bow of the arc between two points: square to the way, upward (or rightward on a level way), 0 when they meet. */
+export function arcBow(a: { x: number; y: number }, b: { x: number; y: number }): { x: number; y: number } {
+  const dx = b.x - a.x
+  const dy = b.y - a.y
+  const distance = Math.hypot(dx, dy)
+  if (distance < 1) return { x: 0, y: 0 }
+  const bow = Math.min(ARC_MAX_PX, Math.max(ARC_MIN_PX, distance * ARC_SHARE))
+  let nx = -dy / distance
+  let ny = dx / distance
+  if (ny > 0 || (ny === 0 && nx < 0)) {
+    nx = -nx
+    ny = -ny
+  }
+  return { x: nx * bow, y: ny * bow }
+}
+
+/**
+ * The keyframes of a leg for a picture of `size` (an ability's chip is measured by the caller): an arc from the middle
+ * of the source to the middle of the destination, the picture taking the size of each end and whole at the top of the
+ * arc, where it can be read. It winds up, lands with a small overshoot, settles and fades on what the table already
+ * shows. The picture stays inside `bounds` (the window) when they are given, so a source at the edge of the screen does
+ * not draw it half off.
  */
 export function keyframesOf(flight: Flight, size: Size, bounds?: Size): Keyframe[] {
   const { from, to } = flight
   const chip = flight.size === null
   const a = center(from)
   const b = center(to)
-  const start: Pose = { ...a, scale: chip ? 1 : scaleAt(from, size) }
-  const end: Pose = { ...b, scale: chip ? 1 : scaleAt(to, size) }
-  const middle: Pose = { x: lerp(a.x, b.x, 0.5), y: lerp(a.y, b.y, 0.5), scale: 1 }
-  const pose = (t: number): Pose =>
-    t <= 0.5 ? mix(start, middle, t / 0.5) : mix(middle, end, (t - 0.5) / 0.5)
-  return STEPS.map((offset) => {
-    const { x, y, scale } = pose(offset)
+  const bow = arcBow(a, b)
+  const startScale = chip ? 1 : scaleAt(from, size)
+  const endScale = chip ? 1 : scaleAt(to, size)
+  const poses: Pose[] = [
+    { ...a, scale: startScale },
+    { ...a, scale: startScale * WINDUP_SCALE },
+    { x: lerp(a.x, b.x, 0.5) + bow.x, y: lerp(a.y, b.y, 0.5) + bow.y, scale: 1 },
+    { ...b, scale: endScale * LAND_OVERSHOOT },
+    { ...b, scale: endScale },
+    { ...b, scale: endScale },
+  ]
+  return POSES.map(({ offset, easing }, at) => {
+    const { x, y, scale } = poses[at] ?? { ...b, scale: endScale }
     // The origin is the top left corner, so the corner goes where the scaled picture's centre minus half of it is.
     const left = within(x - (size.width * scale) / 2, size.width * scale, bounds?.width)
     const top = within(y - (size.height * scale) / 2, size.height * scale, bounds?.height)
     return {
       offset,
+      easing,
       transform: `translate(${left}px, ${top}px) scale(${scale})`,
       opacity: offset === 1 ? 0 : 1,
     }
   })
 }
 
-/** The keyframes of the face turning up over the back: hidden until the leg is nearly through. */
+/** The keyframes of the face turning up over the back: hidden past the top of the arc and up by the landing. */
 export const REVEAL_KEYFRAMES: Keyframe[] = [
   { offset: 0, opacity: 0 },
-  { offset: 0.7, opacity: 0 },
-  { offset: FADE_AT, opacity: 1 },
+  { offset: 0.6, opacity: 0 },
+  { offset: 0.8, opacity: 1 },
   { offset: 1, opacity: 1 },
 ]
 
