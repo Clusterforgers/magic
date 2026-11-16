@@ -172,3 +172,58 @@ fn r6602_druid_destroys_what_each_player_chose(
     assert!(left <= destroyed);
     Ok(())
 }
+
+#[rstest]
+fn r6602_kozilek_discards_a_card_of_the_value_x_to_counter_a_spell_of_that_value(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    use mtg_engine::choose::{NumberChoice, Target, TargetChoice};
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .battlefield(
+                0,
+                [
+                    ready(card("Kozilek, the Great Distortion").unwrap()),
+                    ready(free_creature("Ogre", 3, 3)),
+                ],
+            )
+            .hand(0, [free("Doom Blade"), relic("Trinket")]),
+    )?;
+    let ogre = driver.target_named("Ogre")?;
+    driver.cast_at("Doom Blade", &[ogre])?;
+    let blade = driver
+        .state()
+        .stack()
+        .iter()
+        .copied()
+        .find(|id| name_of(driver.state(), *id) == "Doom Blade")
+        .unwrap();
+    driver.begin_activation("Kozilek, the Great Distortion")?;
+    let mut numbers = Vec::new();
+    for _ in 0..20 {
+        let decision = driver.decision()?.clone();
+        match decision.kind {
+            DecisionKind::ChooseNumber(options) => {
+                numbers.push((options.min, options.max));
+                driver.answer(Answer::ChooseNumber(NumberChoice::Number(0)))?;
+            }
+            DecisionKind::ChooseTargets(_) => {
+                let reference = driver.state().object(blade).unwrap().reference();
+                driver.answer(Answer::ChooseTargets(TargetChoice::Targets(vec![
+                    Target::Object(reference),
+                ])))?;
+            }
+            DecisionKind::Priority(_) => break,
+            _ => {
+                driver.answer_passively()?;
+            }
+        }
+    }
+    // The only spell and the only card in hand both have mana value 0: X can be nothing else.
+    assert!(numbers.iter().all(|range| *range == (0, 0)), "{numbers:?}");
+    settle(&mut driver, &[])?;
+    assert_eq!(on_battlefield(&driver, "Ogre").len(), 1, "Doom Blade was countered");
+    let state = driver.state();
+    assert!(state.zone(Zone::Hand(pid(0))).is_empty(), "the Trinket was discarded");
+    Ok(())
+}

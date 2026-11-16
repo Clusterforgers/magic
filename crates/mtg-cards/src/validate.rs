@@ -5826,7 +5826,7 @@ impl Walker<'_> {
             .collect();
         let outer = std::mem::replace(&mut self.ep29_removes, removes);
         // The X a part of the cost counts is the one the ability announces.
-        self.x_free = cost.has_x();
+        self.x_free = cost.has_x() || cost.0.iter().any(r6602_discard_by_x);
         self.x_now = self.x_free;
         self.activated_cost = true;
         self.at("cost", |w| w.cost(cost));
@@ -5837,12 +5837,12 @@ impl Walker<'_> {
             self.scope = Scope::new(&[], false);
             self.at("condition", |w| w.condition(condition));
         }
-        self.x_free = cost.has_x();
+        self.x_free = cost.has_x() || cost.0.iter().any(r6602_discard_by_x);
         // An `{X}` of the mana and a part that counts X are asked as the ability is announced.
         if has_x_mana(cost) {
             self.uses("Cost", "Mana.X");
         }
-        self.x_now = cost.has_x();
+        self.x_now = self.x_free;
         self.body(targets, effects, false);
         self.pays_objects = paid;
         self.ep29_removes = outer;

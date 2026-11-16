@@ -70,6 +70,7 @@ mod tests {
             ("plus an additional time", "plus two additional times"),
             ("Discard a card with mana value X", "Discard a card"),
             ("Counter target spell", "Counter target creature spell"),
+            ("fewer than seven", "fewer than six"),
         ];
         for (_, text) in R6602_SHAPES.iter() {
             for (from, to) in swaps {
