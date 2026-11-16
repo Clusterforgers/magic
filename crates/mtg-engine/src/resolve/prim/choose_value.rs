@@ -619,7 +619,10 @@ mod tests {
         };
         assert_eq!(bound.len(), 2, "one value for each player");
         let numbers = r#"{"ChooseValue":{"who":"EachPlayer","kind":{"Number":[1,3]},"as":"n"}}"#;
-        assert!(run_with(vec![], numbers).is_err(), "a number is chosen by one player");
+        assert!(
+            run_with(vec![], numbers).is_err(),
+            "a number is chosen by one player"
+        );
         let nobody = r#"{"ChooseValue":{"who":{"Target":0},"kind":"Color","as":"hue"}}"#;
         assert_eq!(remembered(run_with(vec![], nobody).unwrap()), None);
     }
