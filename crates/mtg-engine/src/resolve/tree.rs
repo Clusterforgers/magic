@@ -20,7 +20,8 @@ pub(crate) const fn is_next_pass(position: &[usize]) -> bool {
     position.len().is_multiple_of(2)
 }
 
-/// Whether the effect runs again after its body: a `RepeatEach`, or a `FlipCoin` until a loss after its `win` list.
+/// Whether the effect runs again after its body: a `RepeatEach`, a `FlipCoin` until a loss after its `win` list, or a
+/// villainous choice after either option (faced again or done, `w2d_villainous`).
 const fn loops(effect: &Effect) -> bool {
     matches!(
         effect,
@@ -28,6 +29,7 @@ const fn loops(effect: &Effect) -> bool {
             | Effect::RepeatWhile { .. }
             | Effect::FlipCoin { until: true, .. }
             | Effect::Clash { until: true, .. }
+            | Effect::VillainousChoice { .. }
     )
 }
 

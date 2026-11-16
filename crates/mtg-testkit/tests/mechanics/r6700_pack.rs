@@ -4,6 +4,7 @@
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_engine::Event;
+use mtg_engine::decision::{Answer, PayChoice};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_testkit::cards::{bear, free_creature, island};
@@ -57,6 +58,7 @@ fn r6700_two_hives(seats: usize, seed: u64, edgar: bool) -> Result<Vec<bool>, Sc
     let mut driver = Driver::from_scenario(scenario)?;
     for _ in 0..2 {
         driver.begin_activation("Wirefly Hive")?;
+        driver.answer(Answer::PayMana(PayChoice::Auto))?;
         r6700_settle(&mut driver)?;
     }
     Ok(r6700_flips(&driver))
