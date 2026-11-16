@@ -154,6 +154,14 @@ describe('the ladder and the fight', () => {
     expect(screen.queryByText(/lost a heart/)).toBeNull()
   })
 
+  it("puts the way in and the host's Retreat on one row, the way in first", async () => {
+    await show(delveView({ boss: 'skrix_nest', fight }, { status: { Fight: { game: 'g45' } }, at: 0 }))
+    const link = await screen.findByRole('link', { name: 'Enter the fight' })
+    const row = link.parentElement
+    expect(row).toHaveAttribute('data-slot', 'fight-actions')
+    expect(row?.children[1]).toBe(screen.getByRole('button', { name: 'Retreat' }))
+  })
+
   it('lets the host retreat from the fight after a confirmation, and only then sends it', async () => {
     const client = await show(
       delveView({ boss: 'skrix_nest', fight }, { status: { Fight: { game: 'g44' } }, at: 0, hearts: 3 }),
