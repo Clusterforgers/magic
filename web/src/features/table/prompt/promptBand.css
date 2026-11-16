@@ -51,7 +51,8 @@
         'text text'
         'choices choices'
         'status status'
-        'clock actions';
+        'clock clock'
+        'actions actions';
     }
   }
 
@@ -78,6 +79,15 @@
     grid-column: text-start / clock-start;
     grid-row: text-start / text-end;
   }
+
+  /* On a phone the sticky answers are an opaque row across the band, so the choices scrolling under them never show through. */
+  @container band (width < 40rem) {
+    & [data-slot='decision-line'] > [data-slot='prompt-actions'] {
+      background: var(--surface);
+      box-shadow: 0 -0.5rem 0.5rem -0.25rem var(--surface);
+      padding-block: 0.25rem;
+    }
+  }
 }
 
 /*
@@ -102,12 +112,13 @@
 
 /*
  * The answers stand right to left from the primary one, which kinds put first: it sits at the band's right end in
- * every prompt and is the first a Tab reaches.
+ * every prompt and is the first a Tab reaches. Answers that wrap do so downward, so the primary keeps the first line,
+ * which a short sheet shows before it cuts the rest.
  */
 @utility prompt-answers {
   display: flex;
   flex-direction: row-reverse;
-  flex-wrap: wrap-reverse;
+  flex-wrap: wrap;
   justify-content: flex-start;
   align-items: center;
   gap: 0.375rem;

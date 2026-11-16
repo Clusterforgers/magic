@@ -16,7 +16,8 @@ export function bandAreas(rem: number, choices: BandChoices): string[][] {
       ['text', 'text'],
       ['choices', 'choices'],
       ['status', 'status'],
-      ['clock', 'actions'],
+      ['clock', 'clock'],
+      ['actions', 'actions'],
     ]
   }
   const head = ['stack', 'status', 'text', 'clock', 'actions']

@@ -110,6 +110,23 @@ describe('the stylesheet', () => {
     expect(answers).toMatch(/flex-direction:\s*row-reverse/)
     expect(answers).toMatch(/justify-content:\s*flex-start/)
   })
+
+  it('wraps the answers downward, so a short sheet that cuts them keeps the primary on the first line', () => {
+    const answers = blockAfter(css, '@utility prompt-answers')
+    expect(answers).toMatch(/flex-wrap:\s*wrap;/)
+    expect(answers).not.toMatch(/wrap-reverse/)
+  })
+
+  it('gives a phone answers a row of their own across the band, opaque over the choices that scroll under them', () => {
+    const phone = bandAreas(BAND_PHONE_REM - 1, 'wide')
+    expect(phone.at(-1)).toEqual(['actions', 'actions'])
+    expect(phone.flat().filter((cell) => cell === 'actions')).toHaveLength(2)
+    const rule = blockAfter(
+      band.slice(band.lastIndexOf(`@container band (width < ${BAND_PHONE_REM}rem)`)),
+      "[data-slot='prompt-actions']",
+    )
+    expect(rule).toMatch(/background:\s*var\(--surface\)/)
+  })
 })
 
 describe('the band in the strip', () => {
