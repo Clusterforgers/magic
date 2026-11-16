@@ -5,31 +5,18 @@
   "faces": [
     {
       "name": "Selective Obliteration",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "86fb2a54a723eb01b8fa96ae6fb250e4",
       "abilities": [
         {
           "Spell": {
             "effects": [
-              {
-                "ChooseValue": {
-                  "who": "EachPlayer",
-                  "kind": "Color",
-                  "as": "color"
-                }
-              },
+              { "ChooseValue": { "who": "EachPlayer", "kind": "Color", "as": "color" } },
               {
                 "Exile": {
                   "what": {
                     "Each": [
                       {
-                        "Not": {
-                          "AnyOf": [
-                            "Colorless",
-                            {
-                              "R6600OnlyControllersColor": "color"
-                            }
-                          ]
-                        }
+                        "Not": { "AnyOf": ["Colorless", { "R6600OnlyControllersColor": "color" }] }
                       }
                     ]
                   }

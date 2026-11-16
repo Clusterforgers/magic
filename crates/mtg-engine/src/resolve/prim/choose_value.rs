@@ -93,7 +93,10 @@ fn choice(
 fn r6600_by_options(kind: &ValueKind) -> bool {
     !matches!(
         kind,
-        ValueKind::Number(..) | ValueKind::CardName(_) | ValueKind::Colors | ValueKind::LikeChosen(_)
+        ValueKind::Number(..)
+            | ValueKind::CardName(_)
+            | ValueKind::Colors
+            | ValueKind::LikeChosen(_)
     )
 }
 

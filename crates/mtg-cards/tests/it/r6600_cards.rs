@@ -13,6 +13,9 @@ use crate::common;
 #[case::all_will_be_one("All Will Be One")]
 #[case::the_chain_veil("The Chain Veil")]
 #[case::biomancers_familiar("Biomancer's Familiar")]
+#[case::selective_obliteration("Selective Obliteration")]
+#[case::atraxa("Atraxa, Grand Unifier")]
+#[case::minthara("Minthara, Merciless Soul")]
 fn r6600_the_card_compiles_into_its_file(#[case] name: &str) {
     let printed = common::printed()
         .into_iter()

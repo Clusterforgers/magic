@@ -19,7 +19,9 @@ use mtg_engine::choose::{CardsChoice, ChoiceOption, OptionChoice, Target, YesNoC
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_testkit::cards::{creature, forest, free_creature, island, mountain, plains, swamp, wastes};
+use mtg_testkit::cards::{
+    creature, forest, free_creature, island, mountain, plains, swamp, wastes,
+};
 use mtg_testkit::corpus::card;
 use mtg_testkit::scenario::with_counters;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
@@ -116,7 +118,13 @@ fn r6600_conduit_casts_a_permanent_card_then_forbids_spells(
                 ready(mountain()),
             ],
         )
-        .hand(0, [card("Lightning Bolt").unwrap(), card("Lightning Bolt").unwrap()])
+        .hand(
+            0,
+            [
+                card("Lightning Bolt").unwrap(),
+                card("Lightning Bolt").unwrap(),
+            ],
+        )
         .graveyard(0, [card("Grizzly Bears").unwrap()]);
     let mut driver = Driver::from_scenario(scenario)?;
     let foe = driver.target_player(1);
@@ -363,7 +371,13 @@ fn r6600_biomancers_familiar_leaves_one_mana(
 fn r6600_trio(seat: usize) -> Vec<mtg_engine::PresetPermanent> {
     vec![
         ready(creature(&format!("White {seat}"), 0, &[Color::White], 1, 1)),
-        ready(creature(&format!("Azorius {seat}"), 0, &[Color::White, Color::Blue], 1, 1)),
+        ready(creature(
+            &format!("Azorius {seat}"),
+            0,
+            &[Color::White, Color::Blue],
+            1,
+            1,
+        )),
         ready(free_creature(&format!("Gray {seat}"), 1, 1)),
     ]
 }
@@ -390,7 +404,11 @@ fn r6600_selective_obliteration_keeps_colorless_and_the_controllers_color(
             DecisionKind::ChooseOption(options) => {
                 askers.push(decision.player.index());
                 // Seat 0 keeps white, the others choose blue.
-                let color = if decision.player == pid(0) { Color::White } else { Color::Blue };
+                let color = if decision.player == pid(0) {
+                    Color::White
+                } else {
+                    Color::Blue
+                };
                 let at = options
                     .options
                     .iter()
@@ -408,10 +426,21 @@ fn r6600_selective_obliteration_keeps_colorless_and_the_controllers_color(
             }
         }
     }
-    assert_eq!(askers, (0..seats).collect::<Vec<_>>(), "each player in turn order");
+    assert_eq!(
+        askers,
+        (0..seats).collect::<Vec<_>>(),
+        "each player in turn order"
+    );
     for seat in 0..seats {
-        assert_eq!(driver.id_of(&format!("White {seat}")).is_ok(), seat == 0, "White {seat}");
-        assert!(driver.id_of(&format!("Azorius {seat}")).is_err(), "Azorius {seat}");
+        assert_eq!(
+            driver.id_of(&format!("White {seat}")).is_ok(),
+            seat == 0,
+            "White {seat}"
+        );
+        assert!(
+            driver.id_of(&format!("Azorius {seat}")).is_err(),
+            "Azorius {seat}"
+        );
         assert!(driver.id_of(&format!("Gray {seat}")).is_ok(), "Gray {seat}");
     }
     assert!(driver.id_of("Wastes").is_ok());
@@ -420,7 +449,9 @@ fn r6600_selective_obliteration_keeps_colorless_and_the_controllers_color(
 
 /// A card of these types, named `name`.
 fn r6600_typed(name: &str, types: &[CardType]) -> Arc<CardDefinition> {
-    let card = types.iter().fold(CardDefinition::new(name), |card, ty| card.with_type(*ty));
+    let card = types
+        .iter()
+        .fold(CardDefinition::new(name), |card, ty| card.with_type(*ty));
     Arc::new(if types.contains(&CardType::Creature) {
         card.with_power_toughness(1, 1)
     } else {
@@ -458,7 +489,12 @@ fn r6600_atraxa_takes_one_card_for_each_card_type(
     ];
     library.extend((0..6).map(|n| r6600_typed(&format!("Filler {n}"), &[])));
     library.extend((0..2).map(|n| r6600_typed(&format!("Deep Bear {n}"), &[CardType::Creature])));
-    let mut board = vec![ready(forest()), ready(plains()), ready(island()), ready(swamp())];
+    let mut board = vec![
+        ready(forest()),
+        ready(plains()),
+        ready(island()),
+        ready(swamp()),
+    ];
     board.extend((0..3).map(|_| ready(wastes())));
     let scenario = Scenario::new(seats)
         .at(1, 0, Step::Main1)
@@ -475,7 +511,10 @@ fn r6600_atraxa_takes_one_card_for_each_card_type(
             DecisionKind::ChooseCards(options) => {
                 let state = driver.state();
                 assert!(
-                    options.from.iter().all(|id| !name_of(state, *id).starts_with("Deep")),
+                    options
+                        .from
+                        .iter()
+                        .all(|id| !name_of(state, *id).starts_with("Deep")),
                     "only the top ten are revealed"
                 );
                 let pick = picks.get(asked).copied().unwrap_or("");
@@ -498,14 +537,17 @@ fn r6600_atraxa_takes_one_card_for_each_card_type(
             }
         }
     }
-    assert_eq!(asked, 3, "artifact, creature and land are asked; the other types have no card");
+    assert_eq!(
+        asked, 3,
+        "artifact, creature and land are asked; the other types have no card"
+    );
     assert_eq!(r6600_hand(&driver), hand);
     let library = driver.state().zone(Zone::Library(pid(0))).len();
     assert_eq!(library, 12 - hand.len());
     Ok(())
 }
 
-/// A sorcery that deals 1 damage to target creature.
+/// A sorcery costing {1} that deals 1 damage to target creature.
 fn r6600_ping() -> Arc<CardDefinition> {
     let rule: Ability = serde_json::from_str(
         r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":1}}]}}"#,
@@ -514,6 +556,7 @@ fn r6600_ping() -> Arc<CardDefinition> {
     Arc::new(
         CardDefinition::new("Ping")
             .with_type(CardType::Sorcery)
+            .with_mana_cost(mtg_testkit::cards::cost(1, &[]))
             .with_rules(rule),
     )
 }
@@ -531,19 +574,25 @@ fn r6600_minthara_ward_counts_experience(
     let mut scenario = Scenario::new(seats)
         .at(1, 1, Step::Main1)
         .battlefield(0, [ready(card("Minthara, Merciless Soul").unwrap())])
-        .battlefield(1, (0..lands).map(|_| ready(wastes())).collect::<Vec<_>>())
+        .battlefield(1, (0..=lands).map(|_| ready(wastes())).collect::<Vec<_>>())
         .hand(1, [r6600_ping()]);
     if experience > 0 {
         scenario = scenario.counters(0, CounterKind::Other("experience".into()), experience);
     }
     let mut driver = Driver::from_scenario(scenario)?;
+    let had = driver
+        .state()
+        .player(pid(0))
+        .unwrap()
+        .counters_of(&CounterKind::Other("experience".into()));
+    assert_eq!(had, experience);
     let minthara = driver.target_named("Minthara, Merciless Soul")?;
     driver.cast_at("Ping", &[minthara])?;
     for _ in 0..200 {
         let decision = driver.decision()?.clone();
         match &decision.kind {
             DecisionKind::YesNo(_) => {
-                driver.answer(Answer::YesNo(YesNoChoice(true)))?;
+                driver.answer(Answer::YesNo(YesNoChoice(hit)))?;
             }
             DecisionKind::PayMana(_) => {
                 driver.answer(Answer::PayMana(PayChoice::Auto))?;
@@ -559,7 +608,13 @@ fn r6600_minthara_ward_counts_experience(
         }
     }
     let id = driver.id_of("Minthara, Merciless Soul").unwrap();
-    let damage = driver.state().object(id).unwrap().permanent().unwrap().damage();
+    let damage = driver
+        .state()
+        .object(id)
+        .unwrap()
+        .permanent()
+        .unwrap()
+        .damage();
     assert_eq!(damage, u32::from(hit));
     Ok(())
 }

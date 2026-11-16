@@ -881,5 +881,40 @@
    }
   },
   "~ has ward {X}, where X is the number of experience counters you have."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "End",
+      "whose": "You"
+     }
+    },
+    "if": {
+     "Compare": {
+      "left": {
+       "Tallied": {
+        "who": "You",
+        "what": "PermanentsLeftUnder"
+       }
+      },
+      "op": "Ge",
+      "right": 1
+     }
+    },
+    "effects": [
+     {
+      "PutCounters": {
+       "on": "You",
+       "counter": {
+        "Other": "experience"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your end step, if a permanent you controlled left the battlefield this turn, you get an experience counter."
  ]
 ]

@@ -10,74 +10,30 @@
         {
           "Keyword": {
             "Ward": [
-              {
-                "GenericOf": {
-                  "Counters": {
-                    "on": "You",
-                    "counter": {
-                      "Other": "experience"
-                    }
-                  }
-                }
-              }
+              { "GenericOf": { "Counters": { "on": "You", "counter": { "Other": "experience" } } } }
             ]
           }
         },
         {
           "Triggered": {
-            "when": {
-              "StepBegins": {
-                "step": "End",
-                "whose": "You"
-              }
-            },
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
             "if": {
               "Compare": {
-                "left": {
-                  "Tallied": {
-                    "who": "You",
-                    "what": "PermanentsLeftUnder"
-                  }
-                },
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
                 "op": "Ge",
                 "right": 1
               }
             },
-            "effects": [
-              {
-                "PutCounters": {
-                  "on": "You",
-                  "counter": {
-                    "Other": "experience"
-                  }
-                }
-              }
-            ]
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "experience" } } }]
           }
         },
         {
           "Static": {
-            "affected": {
-              "Each": [
-                {
-                  "Type": "Creature"
-                },
-                {
-                  "ControlledBy": "You"
-                }
-              ]
-            },
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
             "mods": [
               {
                 "ModifyPT": {
-                  "power": {
-                    "Counters": {
-                      "on": "You",
-                      "counter": {
-                        "Other": "experience"
-                      }
-                    }
-                  },
+                  "power": { "Counters": { "on": "You", "counter": { "Other": "experience" } } },
                   "toughness": 0
                 }
               }

@@ -2599,8 +2599,11 @@ impl<'a> Walker<'a> {
         match keyword {
             // Ward is an `Effect::Pay` of the player who targets: life counted as it resolves ("pay life equal to its
             // power") is paid as any counted life in an effect.
+            // The cost is paid as the ward trigger resolves (CR 702.21a), so "{X}, where X is ..." is counted then.
             Keyword::Ward(cost) => {
+                self.r5511_resolving_cost = true;
                 self.at("cost", |w| w.c6_eg_paid_cost(cost, &Ref::Triggering));
+                self.r5511_resolving_cost = false;
                 self.payment_of_the_source(cost);
             }
             Keyword::CumulativeUpkeepActs { acts, payable } => {

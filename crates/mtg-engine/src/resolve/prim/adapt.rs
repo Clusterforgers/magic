@@ -11,10 +11,10 @@ use crate::choose::Target;
 use crate::counters::CountersChanged;
 use crate::events::Event;
 use crate::object::GameObject;
+use crate::object::ObjectRef;
 use crate::resolve::{Cx, ResolveError, Run};
 use crate::rules::Rule;
 use mtg_core::ids::EffectId;
-use crate::object::ObjectRef;
 
 /// A source on the battlefield that holds no +1/+1 counter gets the counters, as a proposed `CountersChanged` that a
 /// replacement effect sees, and adapts: one `Adapted` follows the counters, also when there are none. A source that
@@ -34,10 +34,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         events.extend(fresh.iter().map(|id| Event::RuleExpired { id: *id }));
         let holds = fresh.is_empty()
             && cx
-            .state()
-            .object(holder.id)
-            .and_then(GameObject::permanent)
-            .is_none_or(|held| held.counters_of(&CounterKind::PlusOnePlusOne) > 0);
+                .state()
+                .object(holder.id)
+                .and_then(GameObject::permanent)
+                .is_none_or(|held| held.counters_of(&CounterKind::PlusOnePlusOne) > 0);
         if holds {
             continue;
         }
@@ -64,4 +64,3 @@ fn r6600_fresh_rules(cx: &Cx<'_>, holder: ObjectRef) -> Vec<EffectId> {
         .map(|effect| effect.id)
         .collect()
 }
-

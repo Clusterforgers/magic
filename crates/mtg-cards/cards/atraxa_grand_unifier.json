@@ -7,63 +7,26 @@
       "name": "Atraxa, Grand Unifier",
       "oracle_fingerprint": "e1ed307f139b7a02de51f62653f8d03a",
       "abilities": [
-        {
-          "Keyword": "Flying"
-        },
-        {
-          "Keyword": "Vigilance"
-        },
-        {
-          "Keyword": "Deathtouch"
-        },
-        {
-          "Keyword": "Lifelink"
-        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Lifelink" },
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "effects": [
-              {
-                "LookAtTop": {
-                  "count": 10,
-                  "as": "top"
-                }
-              },
-              {
-                "Reveal": {
-                  "what": {
-                    "Bound": "top"
-                  }
-                }
-              },
+              { "LookAtTop": { "count": 10, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
               {
                 "Choose": {
                   "from": {
                     "Each": [
-                      {
-                        "In": "Library"
-                      },
-                      {
-                        "Is": {
-                          "Bound": "top"
-                        }
-                      },
-                      {
-                        "Type": "Artifact"
-                      }
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Artifact" }
                     ]
                   },
-                  "count": {
-                    "min": 0,
-                    "max": 1
-                  },
+                  "count": { "min": 0, "max": 1 },
                   "as": "type_artifact"
                 }
               },
@@ -71,30 +34,13 @@
                 "Choose": {
                   "from": {
                     "Each": [
-                      {
-                        "In": "Library"
-                      },
-                      {
-                        "Is": {
-                          "Bound": "top"
-                        }
-                      },
-                      {
-                        "Type": "Battle"
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_artifact"
-                          }
-                        }
-                      }
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Battle" },
+                      { "Not": { "Is": { "Bound": "type_artifact" } } }
                     ]
                   },
-                  "count": {
-                    "min": 0,
-                    "max": 1
-                  },
+                  "count": { "min": 0, "max": 1 },
                   "as": "type_battle"
                 }
               },
@@ -102,37 +48,14 @@
                 "Choose": {
                   "from": {
                     "Each": [
-                      {
-                        "In": "Library"
-                      },
-                      {
-                        "Is": {
-                          "Bound": "top"
-                        }
-                      },
-                      {
-                        "Type": "Creature"
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_artifact"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_battle"
-                          }
-                        }
-                      }
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" },
+                      { "Not": { "Is": { "Bound": "type_artifact" } } },
+                      { "Not": { "Is": { "Bound": "type_battle" } } }
                     ]
                   },
-                  "count": {
-                    "min": 0,
-                    "max": 1
-                  },
+                  "count": { "min": 0, "max": 1 },
                   "as": "type_creature"
                 }
               },
@@ -140,44 +63,15 @@
                 "Choose": {
                   "from": {
                     "Each": [
-                      {
-                        "In": "Library"
-                      },
-                      {
-                        "Is": {
-                          "Bound": "top"
-                        }
-                      },
-                      {
-                        "Type": "Enchantment"
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_artifact"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_battle"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_creature"
-                          }
-                        }
-                      }
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Enchantment" },
+                      { "Not": { "Is": { "Bound": "type_artifact" } } },
+                      { "Not": { "Is": { "Bound": "type_battle" } } },
+                      { "Not": { "Is": { "Bound": "type_creature" } } }
                     ]
                   },
-                  "count": {
-                    "min": 0,
-                    "max": 1
-                  },
+                  "count": { "min": 0, "max": 1 },
                   "as": "type_enchantment"
                 }
               },
@@ -185,51 +79,16 @@
                 "Choose": {
                   "from": {
                     "Each": [
-                      {
-                        "In": "Library"
-                      },
-                      {
-                        "Is": {
-                          "Bound": "top"
-                        }
-                      },
-                      {
-                        "Type": "Instant"
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_artifact"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_battle"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_creature"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_enchantment"
-                          }
-                        }
-                      }
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Instant" },
+                      { "Not": { "Is": { "Bound": "type_artifact" } } },
+                      { "Not": { "Is": { "Bound": "type_battle" } } },
+                      { "Not": { "Is": { "Bound": "type_creature" } } },
+                      { "Not": { "Is": { "Bound": "type_enchantment" } } }
                     ]
                   },
-                  "count": {
-                    "min": 0,
-                    "max": 1
-                  },
+                  "count": { "min": 0, "max": 1 },
                   "as": "type_instant"
                 }
               },
@@ -237,58 +96,17 @@
                 "Choose": {
                   "from": {
                     "Each": [
-                      {
-                        "In": "Library"
-                      },
-                      {
-                        "Is": {
-                          "Bound": "top"
-                        }
-                      },
-                      {
-                        "Type": "Kindred"
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_artifact"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_battle"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_creature"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_enchantment"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_instant"
-                          }
-                        }
-                      }
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Kindred" },
+                      { "Not": { "Is": { "Bound": "type_artifact" } } },
+                      { "Not": { "Is": { "Bound": "type_battle" } } },
+                      { "Not": { "Is": { "Bound": "type_creature" } } },
+                      { "Not": { "Is": { "Bound": "type_enchantment" } } },
+                      { "Not": { "Is": { "Bound": "type_instant" } } }
                     ]
                   },
-                  "count": {
-                    "min": 0,
-                    "max": 1
-                  },
+                  "count": { "min": 0, "max": 1 },
                   "as": "type_kindred"
                 }
               },
@@ -296,65 +114,18 @@
                 "Choose": {
                   "from": {
                     "Each": [
-                      {
-                        "In": "Library"
-                      },
-                      {
-                        "Is": {
-                          "Bound": "top"
-                        }
-                      },
-                      {
-                        "Type": "Land"
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_artifact"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_battle"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_creature"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_enchantment"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_instant"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_kindred"
-                          }
-                        }
-                      }
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Land" },
+                      { "Not": { "Is": { "Bound": "type_artifact" } } },
+                      { "Not": { "Is": { "Bound": "type_battle" } } },
+                      { "Not": { "Is": { "Bound": "type_creature" } } },
+                      { "Not": { "Is": { "Bound": "type_enchantment" } } },
+                      { "Not": { "Is": { "Bound": "type_instant" } } },
+                      { "Not": { "Is": { "Bound": "type_kindred" } } }
                     ]
                   },
-                  "count": {
-                    "min": 0,
-                    "max": 1
-                  },
+                  "count": { "min": 0, "max": 1 },
                   "as": "type_land"
                 }
               },
@@ -362,72 +133,19 @@
                 "Choose": {
                   "from": {
                     "Each": [
-                      {
-                        "In": "Library"
-                      },
-                      {
-                        "Is": {
-                          "Bound": "top"
-                        }
-                      },
-                      {
-                        "Type": "Planeswalker"
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_artifact"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_battle"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_creature"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_enchantment"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_instant"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_kindred"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_land"
-                          }
-                        }
-                      }
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Planeswalker" },
+                      { "Not": { "Is": { "Bound": "type_artifact" } } },
+                      { "Not": { "Is": { "Bound": "type_battle" } } },
+                      { "Not": { "Is": { "Bound": "type_creature" } } },
+                      { "Not": { "Is": { "Bound": "type_enchantment" } } },
+                      { "Not": { "Is": { "Bound": "type_instant" } } },
+                      { "Not": { "Is": { "Bound": "type_kindred" } } },
+                      { "Not": { "Is": { "Bound": "type_land" } } }
                     ]
                   },
-                  "count": {
-                    "min": 0,
-                    "max": 1
-                  },
+                  "count": { "min": 0, "max": 1 },
                   "as": "type_planeswalker"
                 }
               },
@@ -435,79 +153,20 @@
                 "Choose": {
                   "from": {
                     "Each": [
-                      {
-                        "In": "Library"
-                      },
-                      {
-                        "Is": {
-                          "Bound": "top"
-                        }
-                      },
-                      {
-                        "Type": "Sorcery"
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_artifact"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_battle"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_creature"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_enchantment"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_instant"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_kindred"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_land"
-                          }
-                        }
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Bound": "type_planeswalker"
-                          }
-                        }
-                      }
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Sorcery" },
+                      { "Not": { "Is": { "Bound": "type_artifact" } } },
+                      { "Not": { "Is": { "Bound": "type_battle" } } },
+                      { "Not": { "Is": { "Bound": "type_creature" } } },
+                      { "Not": { "Is": { "Bound": "type_enchantment" } } },
+                      { "Not": { "Is": { "Bound": "type_instant" } } },
+                      { "Not": { "Is": { "Bound": "type_kindred" } } },
+                      { "Not": { "Is": { "Bound": "type_land" } } },
+                      { "Not": { "Is": { "Bound": "type_planeswalker" } } }
                     ]
                   },
-                  "count": {
-                    "min": 0,
-                    "max": 1
-                  },
+                  "count": { "min": 0, "max": 1 },
                   "as": "type_sorcery"
                 }
               },
@@ -515,33 +174,15 @@
                 "Move": {
                   "what": {
                     "Union": [
-                      {
-                        "Bound": "type_artifact"
-                      },
-                      {
-                        "Bound": "type_battle"
-                      },
-                      {
-                        "Bound": "type_creature"
-                      },
-                      {
-                        "Bound": "type_enchantment"
-                      },
-                      {
-                        "Bound": "type_instant"
-                      },
-                      {
-                        "Bound": "type_kindred"
-                      },
-                      {
-                        "Bound": "type_land"
-                      },
-                      {
-                        "Bound": "type_planeswalker"
-                      },
-                      {
-                        "Bound": "type_sorcery"
-                      }
+                      { "Bound": "type_artifact" },
+                      { "Bound": "type_battle" },
+                      { "Bound": "type_creature" },
+                      { "Bound": "type_enchantment" },
+                      { "Bound": "type_instant" },
+                      { "Bound": "type_kindred" },
+                      { "Bound": "type_land" },
+                      { "Bound": "type_planeswalker" },
+                      { "Bound": "type_sorcery" }
                     ]
                   },
                   "to": "Hand"
@@ -549,15 +190,8 @@
               },
               {
                 "Move": {
-                  "what": {
-                    "Bound": "top"
-                  },
-                  "to": {
-                    "Library": {
-                      "place": "Bottom",
-                      "order": "Random"
-                    }
-                  }
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
                 }
               }
             ]
