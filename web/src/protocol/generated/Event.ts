@@ -4,6 +4,7 @@ import type { AbilitySource } from "./AbilitySource";
 import type { AimWhy } from "./AimWhy";
 import type { AttackTarget } from "./AttackTarget";
 import type { BecameCopy } from "./BecameCopy";
+import type { Bending } from "./Bending";
 import type { ByHandDue } from "./ByHandDue";
 import type { CardConjured } from "./CardConjured";
 import type { CardCopy } from "./CardCopy";
@@ -142,7 +143,11 @@ skip_untap?: boolean,
 /**
  * Whether power-up abilities can't be activated during it.
  */
-no_power_up?: boolean, } } | { "ExtraTurnSkipped": { 
+no_power_up?: boolean, 
+/**
+ * The delayed trigger set up as it begins, for its end step; its id is given then.
+ */
+r6703_end?: DelayedCreated, } } | { "ExtraTurnSkipped": { 
 /**
  * Whose turn.
  */
@@ -982,7 +987,23 @@ player: PlayerId, } } | { "EvidenceCollected": {
 /**
  * Who collected it.
  */
-player: PlayerId, } } | { "Investigated": { 
+player: PlayerId, } } | { "Bent": { 
+/**
+ * Who bent it.
+ */
+player: PlayerId, 
+/**
+ * The element.
+ */
+element: Bending, } } | { "IgnoredEffect": { 
+/**
+ * Who paid.
+ */
+player: PlayerId, 
+/**
+ * The source whose effects they ignore.
+ */
+source: ObjectRef, } } | { "Investigated": { 
 /**
  * Who investigated.
  */

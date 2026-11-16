@@ -5411,8 +5411,16 @@ impl Walker<'_> {
                 let saved = std::mem::replace(&mut w.scope.in_trigger, true);
                 // A delayed trigger on a block or on damage names the one who did it, as any triggered ability does.
                 let dealer = std::mem::replace(&mut w.scope.dealer, true);
-                // The trigger it leaves behind remembers the X of the spell or ability that sets it up.
+                // The trigger it leaves behind remembers the X of the spell or ability that sets it up; one on another
+                // spell being cast reads the X that spell was cast with instead ("when you next cast a spell with {X}").
+                let reads_cast = casts_another_spell(when);
+                let saved_x = (w.x_now, w.x_free);
+                if reads_cast {
+                    w.x_now = true;
+                    w.x_free = true;
+                }
                 w.effect_list("effects", effects, false);
+                (w.x_now, w.x_free) = saved_x;
                 w.scope.dealer = dealer;
                 w.scope.in_trigger = saved;
             }
