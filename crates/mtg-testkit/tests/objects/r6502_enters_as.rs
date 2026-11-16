@@ -20,9 +20,8 @@ use crate::common::{names, on_battlefield, pid};
 /// Seat 0 controls `dying`, a Mountain and, when `host` names one, that permanent; seat 1 controls a creature.
 fn table(seats: usize, dying: &str, host: Option<&str>) -> Scenario {
     let mut mine = vec![ready(card(dying).unwrap()), ready(mountain())];
-    match host {
-        Some(name) => mine.push(ready(free_creature(name, 2, 2))),
-        None => {}
+    if let Some(name) = host {
+        mine.push(ready(free_creature(name, 2, 2)));
     }
     Scenario::new(seats)
         .at(1, 0, Step::Main1)

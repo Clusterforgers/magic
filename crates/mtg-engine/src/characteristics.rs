@@ -65,6 +65,12 @@ pub struct Characteristics {
 }
 
 impl Characteristics {
+    /// Gives it this name in place of every other (layer 3): the words of earlier name stickers go with the old name.
+    pub(crate) fn set_name(&mut self, name: &str) {
+        self.name_words.clear();
+        self.name_set = Some(name.to_owned());
+    }
+
     /// The name the game reads, given the printed one: the name an effect set or the printed one, after the words of
     /// its name stickers.
     pub fn name_for(&self, printed: &str) -> String {

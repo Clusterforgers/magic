@@ -344,10 +344,7 @@ impl Modification {
     pub(crate) fn apply(&self, chars: &mut Characteristics) {
         match self {
             Modification::AddNameWords(words) => chars.name_words.push(words.clone()),
-            Modification::SetName(name) => {
-                chars.name_words.clear();
-                chars.name_set = Some(name.clone());
-            }
+            Modification::SetName(name) => chars.set_name(name),
             Modification::AddType(ty) => chars.types = chars.types.with(*ty),
             Modification::RemoveType(ty) => chars.types = without(chars.types, *ty),
             Modification::SetTypes(types) => {
