@@ -84,7 +84,12 @@ it('names the voters of each room', () => {
 })
 
 it('reads a boss life for the party from the ladder the run lists', () => {
-  const view = { boss_lives: [['skrix', 18], ['grimgut', 33]] as [string, number][] }
+  const view = {
+    boss_lives: [
+      ['skrix', 18],
+      ['grimgut', 33],
+    ] as [string, number][],
+  }
   expect(bossLife(view, 'grimgut')).toBe(33)
   expect(bossLife(view, 'vex')).toBeUndefined()
 })

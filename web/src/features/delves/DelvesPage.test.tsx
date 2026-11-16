@@ -96,11 +96,11 @@ describe('the new run form', () => {
     const { bodies, user } = await open()
     const heat = screen.getByLabelText('Heat')
     expect(heat).toHaveValue('0')
-    expect(within(heat).getAllByRole('option').map((option) => option.textContent)).toEqual([
-      'Heat 0 — Casual',
-      'Heat 1 — Seasoned',
-      'Heat 2 — Heroic',
-    ])
+    expect(
+      within(heat)
+        .getAllByRole('option')
+        .map((option) => option.textContent),
+    ).toEqual(['Heat 0 — Casual', 'Heat 1 — Seasoned', 'Heat 2 — Heroic'])
     expect(heat).toHaveAccessibleDescription(/^Heat 0 — Casual: any deck can win with some luck\./)
     await user.selectOptions(heat, '2')
     expect(heat).toHaveAccessibleDescription(

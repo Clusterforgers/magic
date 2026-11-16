@@ -61,7 +61,12 @@ export function NewDelveForm({ client }: { client: DelvesApi }) {
         <h2 className="text-lg font-semibold">New delve</h2>
         <div className="grid gap-1">
           <Label htmlFor="delve-heat">Heat</Label>
-          <NativeSelect id="delve-heat" aria-describedby="delve-heat-text" value={heat} onChange={(e) => setHeat(e.target.value)}>
+          <NativeSelect
+            id="delve-heat"
+            aria-describedby="delve-heat-text"
+            value={heat}
+            onChange={(e) => setHeat(e.target.value)}
+          >
             {HEAT_TIERS.map((tier) => (
               <NativeSelectOption key={tier.heat} value={String(tier.heat)}>
                 Heat {tier.heat} — {tier.name}
