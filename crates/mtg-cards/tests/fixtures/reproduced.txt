@@ -49,6 +49,7 @@ All That Glitters
 All of History, All at Once
 Alpha Deathclaw
 Alphinaud Leveilleur
+Alrund, God of the Cosmos // Hakka, Whispering Raven
 Altar's Reap
 Alter Reality
 Amass the Components
@@ -61,6 +62,7 @@ Anafenza, Kin-Tree Spirit
 Ancestral Vision
 Ancient Amphitheater
 Ancient Hydra
+Ancient Lumberknot
 Ancient Stone Idol
 Ancient Ziggurat
 Angel of Finality
@@ -175,6 +177,7 @@ Bear Umbra
 Beast Walkers
 Beast Within
 Beastmaster Ascension
+Bedrock Tortoise
 Befriending the Moths // Imperial Moth
 Behemoth of Vault 0
 Behold the Multiverse
@@ -835,6 +838,7 @@ Genesis Wave
 Germination Practicum
 Gerrard's Wisdom
 Getaway Car
+Ghalta the Immovable
 Ghalta, Primal Hunger
 Ghave, Guru of Spores
 Ghired, Conclave Exile
@@ -1001,6 +1005,7 @@ Hidden Dragonslayer
 Hidden Hideout
 Hideous Laughter
 Hierophant Bio-Titan
+High Alert
 High Ground
 Highspire Artisan
 History of Benalia
@@ -1662,6 +1667,7 @@ Ramses Overdark
 Rancor
 Ransom Note
 Raphael, Tag Team Tough
+Rasputin Dreamweaver
 Ratadrabik of Urborg
 Ravenous Leucrocota
 Ravenous Slime
@@ -1775,6 +1781,7 @@ Saiba Cryptomancer
 Saltcrusted Steppe
 Sami's Curiosity
 Samurai's Katana
+Sanctum Lurker
 Sanctum Weaver
 Sandcrafter Mage
 Sandsteppe Mastodon
@@ -2086,6 +2093,7 @@ Tandem Lookout
 Tangle Tumbler
 Tangleweave Armor
 Tanuki Transplanter
+Tapestry Warden
 Tariff
 Tato Farmer
 Taurean Mauler
@@ -2351,6 +2359,7 @@ Voidmage Husher
 Volshe Tideturner
 Volunteer Reserves
 Vona, Butcher of Magan
+Voracious Dragon
 Vorel of the Hull Clade
 Vorrac Battlehorns
 Vow of Duty

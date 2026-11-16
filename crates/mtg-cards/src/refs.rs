@@ -596,6 +596,9 @@ pub enum Pred {
     /// Is a card in a graveyard that was put there, from anywhere, during the combat phase now going on or the latest one
     /// this turn ("that wasn't put there this combat" is its negation).
     GravedThisCombat,
+    /// Is a permanent that was untapped on the battlefield as the turn began, before its untap step, and has stayed on
+    /// the battlefield since ("if ~ started the turn untapped").
+    R6500StartedTurnUntapped,
     /// Shares a color with the spell most recently cast this turn, by any player, as it was cast ("spells that share a
     /// color with the spell most recently cast this turn"); nothing does before a spell is cast this turn.
     SharesColorWithLastCast,

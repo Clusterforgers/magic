@@ -484,6 +484,7 @@ fn stat_text(stat: StatKind) -> &'static str {
         StatKind::Subtypes => "subtypes",
         StatKind::R6018PermanentTypes => "permanent types",
         StatKind::R6104LifePaid => "life paid to activate it",
+        StatKind::R6500StationValue => "power it stations with",
     }
 }
 

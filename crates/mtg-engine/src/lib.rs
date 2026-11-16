@@ -81,6 +81,8 @@ mod r5523_sentinels;
 mod r6013_winds;
 mod r6104_activation_facts;
 mod r6401_history;
+mod r6500_caps;
+mod r6500_devoured;
 mod replace_dry;
 mod rmt3_skips;
 mod saga;

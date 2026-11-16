@@ -902,6 +902,7 @@ impl<'a> Walker<'a> {
             }
             Pred::ArrivedFrom(_) => self.uses("Pred", "ArrivedFrom"),
             Pred::GravedThisCombat => self.uses("Pred", "GravedThisCombat"),
+            Pred::R6500StartedTurnUntapped => self.uses("Pred", "R6500StartedTurnUntapped"),
             Pred::SharesColorWithLastCast => self.uses("Pred", "SharesColorWithLastCast"),
             Pred::CouldAttackThisTurn => self.uses("Pred", "CouldAttackThisTurn"),
             Pred::ArrivedThisTurn => self.uses("Pred", "ArrivedThisTurn"),
@@ -1030,6 +1031,7 @@ impl<'a> Walker<'a> {
             | Pred::ManaFrom(_)
             | Pred::GravedThisTurn
             | Pred::GravedThisCombat
+            | Pred::R6500StartedTurnUntapped
             | Pred::SharesColorWithLastCast
             | Pred::CouldAttackThisTurn
             | Pred::ArrivedThisTurn
@@ -1353,6 +1355,13 @@ impl<'a> Walker<'a> {
                 self.hand_or_life_lost(amount);
             }
             Amount::Kicks | Amount::Promised | Amount::Devoured => self.paid_amount(amount),
+            Amount::R6500DevouredMatching(filter) => {
+                self.uses("Amount", "R6500DevouredMatching");
+                if !self.w7e_has_devour {
+                    self.problem("`R6500DevouredMatching` needs a Devour keyword on the card");
+                }
+                self.at("R6500DevouredMatching", |w| w.selector(filter));
+            }
             Amount::RemovedThisWay(counter) => self.ep29_removed(counter),
             Amount::Bound(name) => {
                 if !self.scope.numbers.contains(name) {
@@ -1400,6 +1409,7 @@ impl<'a> Walker<'a> {
             StatKind::R4700ChosenColors => "R4700ChosenColors",
             StatKind::R6018PermanentTypes => "R6018PermanentTypes",
             StatKind::R6104LifePaid => "R6104LifePaid",
+            StatKind::R6500StationValue => "R6500StationValue",
             _ => return,
         };
         self.uses("Stat", name);
@@ -1611,6 +1621,7 @@ impl<'a> Walker<'a> {
             | Amount::Promised
             | Amount::ResolvedThisTurn
             | Amount::Devoured
+            | Amount::R6500DevouredMatching(_)
             | Amount::RemovedThisWay(_)
             | Amount::Bound(_)
             | Amount::PermanentsGraved
@@ -6091,6 +6102,9 @@ impl Walker<'_> {
             GameRule::R6400ChoosesVotes { chooser } => self.at(tag, |w| {
                 w.at("chooser", |w| w.reference(chooser, Kind::Player));
             }),
+            GameRule::R6500CounterCap { what, .. } => self.at(tag, |w| {
+                w.at("what", |w| w.reference(what, Kind::Object));
+            }),
             GameRule::MustAttack(who)
             | GameRule::MustBlock(who)
             | GameRule::CantBeCountered(who)
@@ -6268,6 +6282,7 @@ impl Walker<'_> {
             | GameRule::LookAtTopAnyTime(who)
             | GameRule::SkipDrawStep(who)
             | GameRule::R6007ExhaustAgain(who)
+            | GameRule::R6500ZeroLoyaltyStays(who)
             | GameRule::NoMaxHandSize(who)
             | GameRule::LoyaltyTwice(who)
             | GameRule::BoastTwice(who)

@@ -383,6 +383,19 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
             format!("{} has no maximum hand size", phrase::who(ctx, who))
         }
         GameRule::SkipDrawStep(who) => format!("{} skips the draw step", phrase::who(ctx, who)),
+        GameRule::R6500CounterCap {
+            what,
+            counter,
+            most,
+        } => format!(
+            "{} can't have more than {most} {} counters on it",
+            phrase::who(ctx, what),
+            counter.name()
+        ),
+        GameRule::R6500ZeroLoyaltyStays(who) => format!(
+            "planeswalkers {} controls aren't put into their owners' graveyards for having 0 loyalty",
+            phrase::who(ctx, who)
+        ),
         GameRule::R6007ExhaustAgain(who) => format!(
             "during their turn, as long as {} hasn't activated an exhaust ability this turn, they may activate exhaust abilities as though they haven't been activated",
             phrase::who(ctx, who)
@@ -812,6 +825,9 @@ fn combat_quirk(who: &str, quirk: &CombatQuirk) -> String {
         }
         CombatQuirk::AssignsAsThoughPositive => {
             format!("{who} assign combat damage as though their power were positive")
+        }
+        CombatQuirk::R6500StationsByToughness => {
+            format!("{who} station permanents using their toughness rather than their power")
         }
         CombatQuirk::AssignsByToughness => {
             format!("{who} assign combat damage equal to their toughness rather than their power")

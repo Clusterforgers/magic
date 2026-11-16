@@ -171,8 +171,10 @@ pub(crate) fn check(state: &GameState) -> Vec<Event> {
             continue;
         };
         // A planeswalker with no loyalty is put into its owner's graveyard (CR 704.5i); one that is a creature too
-        // goes once, whatever else would happen to it.
+        // goes once, whatever else would happen to it. A rule may keep its controller's planeswalkers there.
         if chars.types.contains(CardType::Planeswalker)
+            && !crate::characteristics::controller_of(state, id)
+                .is_some_and(|controller| crate::rules::r6500_zero_loyalty_stays(state, controller))
             && object
                 .permanent()
                 .is_some_and(|permanent| permanent.counters_of(&CounterKind::Loyalty) == 0)

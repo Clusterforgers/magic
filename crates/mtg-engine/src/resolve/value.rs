@@ -950,6 +950,53 @@ impl<'a> Scope<'a> {
             .map_or(0, |permanent| i64::from(permanent.devoured()))
     }
 
+    /// The number the objects `of` names station with (CR 702.184a): each one's power, or its toughness while a rule says
+    /// it stations using its toughness, as it is or as it last was.
+    fn r6500_station_value(&self, of: &Ref) -> Result<i64, ResolveError> {
+        Ok(self
+            .objects(of)?
+            .iter()
+            .filter_map(|object| {
+                let seen = self.seen(self.as_it_left(*object))?;
+                let by_toughness =
+                    crate::combat_quirks::r6500_stations_by_toughness(self.state, object.id);
+                let stat = if by_toughness {
+                    StatKind::Toughness
+                } else {
+                    StatKind::Power
+                };
+                Self::stat(&seen, stat)
+            })
+            .sum())
+    }
+
+    /// How many of the permanents the source devoured as it entered the filter matches, each as it last existed on the
+    /// battlefield; zero once the source has left the battlefield.
+    fn r6500_devoured_matching(&self, filter: &Selector) -> Result<i64, ResolveError> {
+        let Some((_, shots)) = self
+            .state
+            .r5522
+            .r6500_devoured
+            .iter()
+            .find(|(held, _)| *held == self.source)
+        else {
+            return Ok(0);
+        };
+        let mut scope = self.clone();
+        scope.snapshots.extend(shots.iter());
+        let mut count = 0i64;
+        for shot in shots {
+            let reference = ObjectRef {
+                id: shot.id,
+                counter: shot.counter,
+            };
+            if scope.selects(filter, reference)? {
+                count += 1;
+            }
+        }
+        Ok(count)
+    }
+
     /// How many times the permanents `of` names have mutated (CR 702.140): as they are, or as they were when they left.
     fn mutations(&self, of: &Ref) -> Result<i64, ResolveError> {
         let mut total = 0i64;
@@ -2251,6 +2298,10 @@ impl<'a> Scope<'a> {
                 let (left, right) = amounts?;
                 op.holds(left, right)
             }
+            Pred::R6500StartedTurnUntapped => {
+                seen.zone == Zone::Battlefield
+                    && self.state.r5522.r6500_untapped.contains(&reference)
+            }
             Pred::Modified
             | Pred::RingBearer
             | Pred::FaceDown
@@ -2331,7 +2382,8 @@ impl<'a> Scope<'a> {
 
     pub(super) fn stat(seen: &Seen<'_>, stat: StatKind) -> Option<i64> {
         match stat {
-            StatKind::Power => seen.chars.power.map(i64::from),
+            // Without the state, the number it stations with is its power; `r6500_station_value` reads the rule.
+            StatKind::Power | StatKind::R6500StationValue => seen.chars.power.map(i64::from),
             StatKind::Toughness => seen.chars.toughness.map(i64::from),
             StatKind::Colors => i64::try_from(seen.chars.colors.iter().count()).ok(),
             // The base after the effects that set it (CR 613.4b): a printed 1/1 that an effect made 3/3 reads 3.
@@ -2455,6 +2507,10 @@ impl<'a> Scope<'a> {
                 }
                 total
             }
+            Amount::Stat {
+                of,
+                stat: StatKind::R6500StationValue,
+            } => self.r6500_station_value(of)?,
             Amount::R374AtMost(inner, most) => self.r374_at_most(inner, *most)?,
             Amount::Stat { of, stat } => self
                 .objects(of)?
@@ -2560,6 +2616,7 @@ impl<'a> Scope<'a> {
             Amount::Promised => i64::from(self.payments(OptionalKind::Gift) > 0),
             Amount::ResolvedThisTurn => self.resolved_this_turn(),
             Amount::Devoured => self.w7e_devoured(),
+            Amount::R6500DevouredMatching(filter) => self.r6500_devoured_matching(filter)?,
             Amount::RemovedThisWay(_) => i64::from(self.choices.cost_counters_removed()),
             Amount::Bound(name) => self.kept_number(name),
             Amount::CastWith(way) => i64::from(self.cast_way() == Some(*way)),

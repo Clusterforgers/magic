@@ -354,6 +354,17 @@ pub enum Rule {
     SkipDrawStep(Vec<PlayerId>),
     /// The players may activate exhaust abilities again during their turns until they activate one.
     R6007ExhaustAgain(Vec<PlayerId>),
+    /// The permanents can't have more than `most` counters of the kind (`GameRule::R6500CounterCap`).
+    R6500CounterCap {
+        /// The permanents capped.
+        named: Vec<ObjectRef>,
+        /// The kind of counter.
+        counter: CounterKind,
+        /// The most they may have.
+        most: u32,
+    },
+    /// The players' planeswalkers stay on the battlefield with 0 loyalty (`GameRule::R6500ZeroLoyaltyStays`).
+    R6500ZeroLoyaltyStays(Vec<PlayerId>),
     /// The players may look at the top card of their library any time.
     LookAtTop(Vec<PlayerId>),
     /// The players may look at the face-down cards in exile the selector picks (CR 406.3).
@@ -743,6 +754,7 @@ impl RuleEffect {
             | Rule::MustBlock(named)
             | Rule::CantBeCountered(named)
             | Rule::CantBeRegenerated(named)
+            | Rule::R6500CounterCap { named, .. }
             | Rule::MayCast {
                 only: Some(named), ..
             } => named.iter().all(gone),
@@ -903,6 +915,10 @@ pub(crate) struct RulesInForce {
     skip_draw: BTreeSet<PlayerId>,
     /// The players who may activate exhaust abilities again (`R6007ExhaustAgain`).
     exhaust_again: BTreeSet<PlayerId>,
+    /// The counter caps on permanents: the permanent, the kind and the most it may have (`R6500CounterCap`).
+    r6500_caps: Vec<(ObjectId, CounterKind, u32)>,
+    /// The players whose planeswalkers stay with 0 loyalty (`R6500ZeroLoyaltyStays`).
+    r6500_zero_loyalty: BTreeSet<PlayerId>,
     look_top: BTreeSet<PlayerId>,
     extra_lands: BTreeMap<PlayerId, u32>,
     again: Vec<Again>,
@@ -1456,6 +1472,16 @@ impl RulesInForce {
             }
             Rule::SkipDrawStep(players) => self.skip_draw.extend(players),
             Rule::R6007ExhaustAgain(players) => self.exhaust_again.extend(players),
+            Rule::R6500CounterCap {
+                named,
+                counter,
+                most,
+            } => self.r6500_caps.extend(
+                ids(named)
+                    .into_iter()
+                    .map(|id| (id, counter.clone(), *most)),
+            ),
+            Rule::R6500ZeroLoyaltyStays(players) => self.r6500_zero_loyalty.extend(players),
             Rule::UntapLimit { who, what, count } => {
                 if let Some(source) = source {
                     self.untap_limits.push(crate::rmt4_untap_limit::UntapLimit {
@@ -1979,6 +2005,16 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         ),
         GameRule::SkipDrawStep(who) => Rule::SkipDrawStep(scope.players(who)?),
         GameRule::R6007ExhaustAgain(who) => Rule::R6007ExhaustAgain(scope.players(who)?),
+        GameRule::R6500CounterCap {
+            what,
+            counter,
+            most,
+        } => Rule::R6500CounterCap {
+            named: objects(what, Zone::Battlefield)?,
+            counter: counter.clone(),
+            most: *most,
+        },
+        GameRule::R6500ZeroLoyaltyStays(who) => Rule::R6500ZeroLoyaltyStays(scope.players(who)?),
         GameRule::AdditionalLandPlays { who, count } => {
             let count = u32::try_from(scope.amount(count)?.max(0)).unwrap_or(u32::MAX);
             Rule::AdditionalLandPlays(
@@ -2093,6 +2129,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::MustBlock(named)
         | Rule::CantBeCountered(named)
         | Rule::CantBeRegenerated(named)
+        | Rule::R6500CounterCap { named, .. }
         | Rule::PowerUpAgain(named) => named.is_empty(),
         Rule::EntersWith {
             counters, keyword, ..
@@ -2139,6 +2176,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
         | Rule::R6007ExhaustAgain(players)
+        | Rule::R6500ZeroLoyaltyStays(players)
         | Rule::NoLegendRule(players)
         | Rule::NoMaxHandSize(players)
         | Rule::LoyaltyTwice(players)
@@ -2348,6 +2386,8 @@ static NONE: RulesInForce = RulesInForce {
     loyalty_more: BTreeMap::new(),
     skip_draw: BTreeSet::new(),
     exhaust_again: BTreeSet::new(),
+    r6500_caps: Vec::new(),
+    r6500_zero_loyalty: BTreeSet::new(),
     look_top: BTreeSet::new(),
     extra_lands: BTreeMap::new(),
     again: Vec::new(),
@@ -2804,6 +2844,31 @@ pub(crate) fn draws_from_bottom(state: &GameState, player: PlayerId) -> bool {
 
 /// Whether `player` may activate an exhaust ability of theirs that was activated before: a rule in force says so, it is
 /// their turn and they haven't activated an exhaust ability this turn (Elvish Refueler).
+/// Whether any counter cap is in force.
+pub(crate) fn r6500_any_counter_caps(state: &GameState) -> bool {
+    !state.rules().r6500_caps.is_empty()
+}
+
+/// The most counters of the kind the permanent `id` may have, the lowest of the caps in force; none without one.
+pub(crate) fn r6500_counter_cap(
+    state: &GameState,
+    id: ObjectId,
+    kind: &CounterKind,
+) -> Option<u32> {
+    state
+        .rules()
+        .r6500_caps
+        .iter()
+        .filter(|(capped, counter, _)| *capped == id && counter == kind)
+        .map(|(_, _, most)| *most)
+        .min()
+}
+
+/// Whether the planeswalkers `player` controls stay on the battlefield with 0 loyalty (CR 704.5i).
+pub fn r6500_zero_loyalty_stays(state: &GameState, player: PlayerId) -> bool {
+    state.rules().r6500_zero_loyalty.contains(&player)
+}
+
 pub(crate) fn r6007_exhaust_again(state: &GameState, player: PlayerId) -> bool {
     state.rules().exhaust_again.contains(&player)
         && state.active_player().is_some()

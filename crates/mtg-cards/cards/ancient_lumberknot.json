@@ -14,14 +14,14 @@
                 "who": {
                   "Each": [
                     { "Type": "Creature" },
+                    { "ControlledBy": "You" },
                     {
                       "Test": {
-                        "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
-                        "op": "Lt",
-                        "right": { "Stat": { "of": "Candidate", "stat": "Toughness" } }
+                        "left": { "Stat": { "of": "Candidate", "stat": "Toughness" } },
+                        "op": "Gt",
+                        "right": { "Stat": { "of": "Candidate", "stat": "Power" } }
                       }
-                    },
-                    { "ControlledBy": "You" }
+                    }
                   ]
                 },
                 "quirk": "AssignsByToughness"
