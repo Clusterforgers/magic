@@ -195,7 +195,19 @@ spells: unknown,
 /**
  * With `spells`, the permanents whose abilities it is also for.
  */
-abilities: unknown, } } | { "RevealTop": Array<PlayerId> } | { "RevealHand": Array<PlayerId> } | { "ControlSearches": Array<PlayerId> } | { "ExileFound": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "LoyaltyTwice": Array<PlayerId> } | { "EchoRather": { 
+abilities: unknown, } } | { "RevealTop": Array<PlayerId> } | { "RevealHand": Array<PlayerId> } | { "ControlSearches": Array<PlayerId> } | { "ExileFound": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "LoyaltyTwice": Array<PlayerId> } | { "R6600LoyaltyOnceMore": Array<PlayerId> } | { "R6600AdaptsFresh": Array<ObjectRef> } | { "R6603LoyaltyAgain": { 
+/**
+ * The planeswalker.
+ */
+permanent: ObjectRef, 
+/**
+ * The index of the ability among the rules of its card.
+ */
+ability: number, 
+/**
+ * How many more activations.
+ */
+times: number, } } | { "EchoRather": { 
 /**
  * The players it covers.
  */
