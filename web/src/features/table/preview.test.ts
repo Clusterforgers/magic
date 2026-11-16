@@ -1,5 +1,6 @@
 // Goal: the card preview docks away from the card it shows, hover and focus come and go while a click pins, and the keyboard helpers move along a row from the right place; the dev route reads its address defensively.
 import { describe, expect, it, vi } from 'vitest'
+import type { ObjectView } from '@/protocol/generated'
 import { parseDevSearch } from './devSearch'
 import { createPreviewStore, dockOf, SIDE_DOCK_FROM } from './preview'
 import type { Anchor } from './preview'
@@ -108,6 +109,19 @@ describe('the preview store', () => {
     expect(store.get()).toEqual({ id: 1, anchor: a, pinned: true })
   })
 
+  it('keeps the card as it was shown, for a card the view may hold no longer, from a hover and from a pin', () => {
+    const store = createPreviewStore()
+    const shown = { id: 7, name: 'Island' } as ObjectView
+    store.show(7, a, shown)
+    expect(store.get()).toEqual({ id: 7, anchor: a, pinned: false, shown })
+    store.pin(7, a, shown)
+    expect(store.get()?.shown).toBe(shown)
+    store.show(8, a)
+    expect(store.get()?.shown).toBe(shown)
+    store.pin(8, a)
+    expect(store.get()).toEqual({ id: 8, anchor: a, pinned: true })
+  })
+
   it('pins a different card without unpinning it first', () => {
     const store = createPreviewStore()
     store.pin(1, a)
@@ -189,6 +203,18 @@ describe('parseDevSearch', () => {
 
   it.each([undefined, 'them', 'YOU', 1, true])('leaves out the turn %j, which is not "you"', (turn) => {
     expect(parseDevSearch({ seats: 2, turn }).turn).toBeUndefined()
+  })
+
+  it.each([
+    [1, 1],
+    [8, 8],
+    [12, 12],
+    [0, undefined],
+    [13, undefined],
+    [2.5, undefined],
+    ['8', undefined],
+  ])('reads the number of revealed cards %j as %j', (shown, expected) => {
+    expect(parseDevSearch({ shown }).shown).toBe(expected)
   })
 
   it('leaves out a prompt that is not a word', () => {
