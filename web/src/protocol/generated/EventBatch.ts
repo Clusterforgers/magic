@@ -37,4 +37,9 @@ gone: Array<ObjectId>,
  * The cards the batch showed the viewer (a reveal, a look) that are hidden from them after it, as they saw them
  * when shown, so the log can name them; left out while there are none. The client keeps them out of its view.
  */
-shown?: Array<ObjectView>, };
+shown?: Array<ObjectView>, 
+/**
+ * Log events the batch covers without listing them: the iterations of a loop shortcut, which its `LoopRepeated`
+ * event sums up. The next batch starts at `from_seq` plus `events` plus this. Left out while zero.
+ */
+folded?: number, };

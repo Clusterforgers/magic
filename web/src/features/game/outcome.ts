@@ -1,6 +1,7 @@
 /** Words for how a game ended: the headline for this seat, and what happened to each player. */
 import { memberNames, teamLabel, teamMembers, teamOf, winningSeats } from '@/lib/teams'
 import type { GameResult, LossReason, PlayerId, PlayerView, Teams } from '@/protocol/generated'
+import { loopDrawLine as loopDrawText } from '@/features/table/loopText'
 
 /** How a player lost, as a phrase that follows their name ("Bo conceded"). */
 export function describeLoss(reason: LossReason): string {
@@ -64,7 +65,8 @@ export function teamWinText(team: number, teams: Teams | null | undefined, name:
 
 /**
  * Headline and detail of a finished game for the seat `me`; `players` may be empty when no view ever arrived. A team's
- * win names the team and its players, and is "Your team won" for each of them.
+ * win names the team and its players, and is "Your team won" for each of them. A draw by a loop that would never end
+ * (`loopDraw`, the loop's cards) says so.
  */
 export function describeResult(
   result: GameResult,
@@ -72,11 +74,13 @@ export function describeResult(
   name: Names,
   players: readonly PlayerView[],
   teams?: Teams | null,
+  loopDraw?: readonly string[] | null,
 ): Outcome {
   const losses = players.flatMap((player) =>
     player.lost === null ? [] : [`${subject(player.seat, me, name)} ${describeLoss(player.lost)}`],
   )
   const how = sentence(losses)
+  if (result === 'Draw' && loopDraw != null) return { headline: 'The game is a draw', detail: `${loopDrawText(loopDraw)}.` }
   if (result === 'Draw') return { headline: 'The game is a draw', detail: how ?? 'Nobody won.' }
   if ('Team' in result) {
     const won = `${teamWinText(result.Team, teams, name)}.`

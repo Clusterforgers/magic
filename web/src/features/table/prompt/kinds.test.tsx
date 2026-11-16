@@ -35,7 +35,7 @@ const BUILT: DecisionName[] = [
 describe('the registry', () => {
   it('has a prompt for each decision kind and for nothing else', () => {
     expect(Object.keys(PROMPTS).toSorted()).toEqual([...NAMES].toSorted())
-    expect(NAMES).toHaveLength(21)
+    expect(NAMES).toHaveLength(22)
   })
 
   it.each(BUILT)('has a built prompt for %s, not the stand-in', (name) => {

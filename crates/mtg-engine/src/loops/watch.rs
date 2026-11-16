@@ -201,6 +201,14 @@ impl Watch {
         if !(first..=last - period).all(|i| marks[i].shape == marks[i + period].shape) {
             return None;
         }
+        // A loop goes through the stack and logs something each cycle: a cast begun and backed out of again and again
+        // changes nothing and is no loop.
+        let cycle = &marks[last - period + 1..=last];
+        if cycle.iter().all(|mark| mark.stack.is_empty())
+            || marks[last].log == marks[last - period].log
+        {
+            return None;
+        }
         let delta = shape::delta(&marks[last - period].counts, &marks[last].counts);
         let ids = marks[last].next_object - marks[last - period].next_object;
         let window = marks[first].next_object;

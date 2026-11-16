@@ -55,6 +55,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Delves rewards: the Satchel of earned cards cast from beside the command zone at every fight with the deck kept whole, the Mirror Pool's copy, and commander upgrades fitted to each commander as emblems (`docs/delves.md`).
 - Fights and the table: a fight that ends without a result counts as lost and the host can retreat, Spirits are asked only where their haunts matter, the rules lexicon covers every engine term, decks sit in several groups, token planeswalkers show loyalty, the round counter, the blocker timer and grid lands as choices, and the card preview stays clear of the prompt (`docs/delves.md`, `docs/web.md`)
 - GUI sweep: every screen, table mode and prompt kind shot at the owners' sizes, the findings ranked in `docs/ui-audit.md`.
+- Loops (CR 104.4b, 732): a loop found at priority points, a draw for a mandatory loop that never ends, a shortcut of N iterations its driver chooses, run as one batch with a summary line, bot answers, and the prompt in every layout (`docs/engine.md`, Loops).
 
 ## Live game
 
@@ -74,6 +75,8 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf9g) Copies of one trigger are told apart on the stack, and a trigger whose conditions all fail says why in the log
 - [ ] (pf9h) An ability that rolls several dice makes one roll of them (Mr. House), so "one or more dice" triggers fire once
 - [ ] (pf9i) An announced mana ability (a die roll or discard besides the mana: Vexing Puzzlebox) can be chosen in the PayMana prompt while paying, not only at priority before the cast; automatic payment still leaves it out
+- [ ] (lp1) A pending loop offer survives a rebuild of the engine from the log (a server restart asks priority again and finds the loop three cycles later)
+- [ ] (lp2) A loop that makes a permanent each cycle runs past the shortcut's work cap (about 350 iterations of Kiki-Jiki with Pestermite): each engine step reads every permanent
 
 ## M5 Table and prompts
 

@@ -97,7 +97,7 @@ function FightResult(props: {
   // The party is team 0 of a fight (docs/delves.md), so its win reads before the table's teams are known.
   const partyWon = result !== 'Draw' && 'Team' in result && result.Team === 0
   const won = partyWon || (seat !== null && winningSeats(result, teams).includes(seat))
-  const { detail } = describeResult(result, seat, name, players, teams)
+  const { detail } = describeResult(result, seat, name, players, teams, view?.loop_draw)
   const seats = seatOutcomes(result, seat, name, players, teams)
   const Icon = won ? TrophyIcon : SkullIcon
   return (

@@ -5,7 +5,8 @@ import type { DecisionName } from '../turnText'
 
 /** What a clock counts down for: a decision kind, or a kind whose answer at zero depends on its options. */
 export type ClockKind =
-  | DecisionName
+    | 'LoopDraw'
+| DecisionName
   | 'Unknown'
   | 'ChooseModeCancel'
   | 'ChooseCardsNone'
@@ -24,6 +25,7 @@ export function clockKind(kind: DecisionKind): ClockKind {
   if ('ChooseNumber' in kind && kind.ChooseNumber.can_cancel === true) return 'ChooseNumberCancel'
   if ('PayMana' in kind && kind.PayMana.can_cancel === true) return 'PayManaCancel'
   if ('ChooseCosts' in kind && kind.ChooseCosts.can_cancel) return 'ChooseCostsCancel'
+  if ('Loop' in kind && kind.Loop.can_draw) return 'LoopDraw'
   return decisionName(kind)
 }
 
@@ -45,6 +47,8 @@ const AT_ZERO: Partial<Record<ClockKind, { countdown: string; announced: string 
   },
   DivideAmount: { countdown: 'Dividing it evenly for you', announced: 'divides it evenly for you' },
   Priority: { countdown: 'Passing for you', announced: 'passes for you' },
+  Loop: { countdown: 'Stopping the loop for you', announced: 'stops the loop for you' },
+  LoopDraw: { countdown: 'Letting the loop run: a draw', announced: 'lets the loop run for you: a draw' },
   DeclareBlockers: { countdown: 'Declaring no blocks', announced: 'declares no blocks for you' },
   ChooseTargets: { countdown: 'Choosing no targets', announced: 'chooses no targets for you' },
   OrderTriggers: { countdown: 'Ordering the triggers for you', announced: 'orders the triggers for you' },

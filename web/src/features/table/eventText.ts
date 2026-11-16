@@ -39,6 +39,7 @@ import { rollSentence } from './manual/panel/roll'
 import { teamLabel } from '@/lib/teams'
 import { keywordWords as grantKeywordWords } from './manual/offers'
 import { takeBackAction } from './takeBackText'
+import { loopDrawLine, loopSummaryLine } from './loopText'
 import { hauntWords } from './campaign/haunt'
 import { granterAbility, granterClause, granterHolder, granterName, granterOfOrigin } from './granter'
 
@@ -1534,6 +1535,8 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { player, kind, name } = event.TookBack
     return line(`${n.seat(player)} took back ${takeBackAction(kind, name)}`)
   }
+  if ("LoopRepeated" in event) return line(loopSummaryLine(event.LoopRepeated, (seat) => n.seat(seat)))
+  if ('LoopDrawn' in event) return line(loopDrawLine(event.LoopDrawn.cards))
   const unhandled: never = event
   return line(String(unhandled))
 }

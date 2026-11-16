@@ -29,6 +29,7 @@ import type { GameResult } from "./GameResult";
 import type { HandLooked } from "./HandLooked";
 import type { LeftToTable } from "./LeftToTable";
 import type { LibraryLooked } from "./LibraryLooked";
+import type { LoopSummary } from "./LoopSummary";
 import type { LossReason } from "./LossReason";
 import type { ManaLasts } from "./ManaLasts";
 import type { ManaType } from "./ManaType";
@@ -616,7 +617,11 @@ object: ObjectId, } } | { "GameEnded": {
 /**
  * The result.
  */
-result: GameResult, } } | { "AbilityPutOnStack": PutOnStack } | { "AbilityActivated": { 
+result: GameResult, } } | { "LoopDrawn": { 
+/**
+ * The names of the objects whose abilities make up the loop.
+ */
+cards: Array<string>, } } | { "LoopRepeated": LoopSummary } | { "AbilityPutOnStack": PutOnStack } | { "AbilityActivated": { 
 /**
  * Who activated it.
  */

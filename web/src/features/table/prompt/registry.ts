@@ -13,6 +13,7 @@ import { DeclareAttackersPrompt } from './kinds/DeclareAttackers'
 import { DeclareBlockersPrompt } from './kinds/DeclareBlockers'
 import { DiscardPrompt } from './kinds/Discard'
 import { DivideAmountPrompt } from './kinds/DivideAmount'
+import { LoopPrompt } from './kinds/Loop'
 import { MulliganPrompt } from './kinds/Mulligan'
 import { OrderCardsPrompt } from './kinds/OrderCards'
 import { ScryPrompt } from './kinds/Scry'
@@ -48,4 +49,5 @@ export const PROMPTS: { [K in DecisionName]: PromptComponent<K> } = {
   ChooseCosts: ChooseCostsPrompt,
   OrderTriggers: OrderTriggersPrompt,
   ChooseReplacement: ChooseReplacementPrompt,
+  Loop: LoopPrompt,
 }
