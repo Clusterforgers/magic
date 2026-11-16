@@ -18,6 +18,7 @@ use crate::rules::{DamageShield, Rule, RuleEffect};
 /// none protected: nothing begins), and lasts for its duration. It prevents all the damage or, as `PreventUpTo`, that
 /// much in all; `PreventCounted` counts that much as it begins. A shield over deaths, or over leaving the battlefield,
 /// covers the permanents its selector names now; a shield over the next draw or loss of the game is judged at that event. Any other shield refuses by the name of its effect (`ShieldShape`).
+#[allow(clippy::too_many_lines)] // one arm for each shape of shield
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Shield { when, by, duration } = effect else {
         return Err(wrong_effect("Shield"));

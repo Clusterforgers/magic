@@ -473,7 +473,7 @@ fn allowed_defenders(
                     defender,
                     match target {
                         AttackTarget::Planeswalker(walker) => Some(*walker),
-                        _ => None,
+                        AttackTarget::Player(_) => None,
                     },
                 )
             })
