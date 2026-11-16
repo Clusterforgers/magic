@@ -138,4 +138,12 @@ describe('the hit area', () => {
     const source = readFileSync(join(import.meta.dirname, path), 'utf8')
     expect(source.match(/relative hit-area/g)?.length).toBe(count)
   })
+
+  it.each([
+    'features/builder/HandList.tsx',
+    'features/table/manual/panel/RowButton.tsx',
+    'features/decks/groups/GroupFolds.tsx',
+  ])('grows the rows of %s to 44 px under a coarse pointer', (path) => {
+    expect(readFileSync(join(import.meta.dirname, path), 'utf8')).toMatch(/pointer-coarse:min-h-11/)
+  })
 })
