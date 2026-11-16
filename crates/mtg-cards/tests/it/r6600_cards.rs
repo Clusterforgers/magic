@@ -16,6 +16,7 @@ use crate::common;
 #[case::selective_obliteration("Selective Obliteration")]
 #[case::atraxa("Atraxa, Grand Unifier")]
 #[case::minthara("Minthara, Merciless Soul")]
+#[case::training_grounds("Training Grounds")]
 fn r6600_the_card_compiles_into_its_file(#[case] name: &str) {
     let printed = common::printed()
         .into_iter()
