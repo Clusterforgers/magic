@@ -249,4 +249,4 @@ Smoke of the new bosses at the bracket generation, two Normal heroes against the
 | Seraphine | 2/4 | 22.8 (11.5) | 13 s to 12 min |
 | Ysolde | 6/6 | 16.0 (7.7) | 1 s to 16 min |
 
-- Both decks play their fights to the end with no loop and no failure; Seraphine holds near the Heat 1 first-boss target, Ysolde sits below it (dl15l).
+- Both decks play their fights to the end with no loop and no failure; against the Heat 1 first-boss target (Normal heroes win about 70 %) Seraphine is harder and Ysolde easier (dl15l).
