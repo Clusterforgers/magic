@@ -6,6 +6,7 @@ mod auto_skips;
 mod auto_yields;
 mod bot_fallbacks;
 mod bot_seats;
+mod busy_tables;
 mod by_hand_window;
 mod clocked_manual;
 mod combat_flips;

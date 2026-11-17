@@ -7,6 +7,7 @@ use std::time::Instant;
 use mtg_core::ids::PlayerId;
 use mtg_engine::{Decision, Engine};
 
+use super::clock;
 use super::deep::{candidates, rollout_settings};
 use super::eval::Weights;
 use super::seen::Seen;
@@ -59,12 +60,18 @@ pub fn forced_win(
     if decision.player != seat || !seen.is_active(seat) || !in_reach(&seen) {
         return None;
     }
-    let tries = candidates(engine, seat, decision, held, 30, 4);
-    tries
-        .into_iter()
-        .take(TRIED)
-        .take_while(|_| until.is_none_or(|until| Instant::now() < until))
-        .find(|answer| (0..WORLDS).all(|world| wins(engine, seat, answer, key ^ (world + 1))))
+    let probe = || {
+        let tries = candidates(engine, seat, decision, held, 30, 4);
+        tries
+            .into_iter()
+            .take(TRIED)
+            .take_while(|_| !clock::stopped())
+            .find(|answer| (0..WORLDS).all(|world| wins(engine, seat, answer, key ^ (world + 1))))
+    };
+    match until {
+        Some(until) => clock::stopping(clock::Stop::at(until), probe),
+        None => probe(),
+    }
 }
 
 /// Whether giving `answer` in a world redealt with `key` and playing on with the quick policies wins the game for the
@@ -89,6 +96,10 @@ fn wins(engine: &Engine, seat: PlayerId, answer: &Answer, key: u64) -> bool {
         };
         if world.result().is_some() || reached(&world, &decision, start, Horizon::EndOfTurn, step) {
             break;
+        }
+        // A world cut by the stop proves no win.
+        if clock::stopped() {
+            return false;
         }
         let quick = rollout.quick(&world, &decision);
         if apply_answer(&mut world, &decision, quick).is_err() {

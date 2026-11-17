@@ -34,6 +34,9 @@ pub enum ConfigError {
     /// `MTG_IDLE_CLOSE_SECS` is not a whole number of seconds from 60 to 604800.
     #[error("MTG_IDLE_CLOSE_SECS must be a whole number of seconds from 60 to 604800, got {0:?}")]
     BadIdleCloseSecs(String),
+    /// `MTG_BOTS_ALONE_SECS` is not a whole number of seconds from 60 to 604800.
+    #[error("MTG_BOTS_ALONE_SECS must be a whole number of seconds from 60 to 604800, got {0:?}")]
+    BadBotsAloneSecs(String),
     /// An `MTG_ALLOWED_ORIGINS` entry is not `http(s)://host[:port]`.
     #[error("MTG_ALLOWED_ORIGINS entry {0:?} is not an origin such as https://host[:port]")]
     BadOrigin(String),
@@ -256,19 +259,27 @@ pub struct Retention {
     pub lobby_after: Duration,
     /// A started game is closed after this long with no person at a seat and no answer taken (`MTG_IDLE_CLOSE_SECS`).
     pub abandoned_after: Duration,
+    /// A started game with bot seats is closed after this long with no person connected, however the bots play on
+    /// (`MTG_BOTS_ALONE_SECS`).
+    pub bots_alone_after: Duration,
 }
 
 impl Retention {
-    /// Reads `MTG_IDLE_CLOSE_SECS` through `get`; a blank or missing value leaves the default.
+    /// Reads `MTG_IDLE_CLOSE_SECS` and `MTG_BOTS_ALONE_SECS` through `get`; a blank or missing value leaves the
+    /// default.
     fn apply_env(&mut self, get: &impl Fn(&str) -> Option<String>) -> Result<(), ConfigError> {
-        if let Some(text) = get("MTG_IDLE_CLOSE_SECS") {
-            let seconds = text
-                .trim()
+        let seconds = |text: &str| {
+            text.trim()
                 .parse::<u64>()
                 .ok()
                 .filter(|s| IDLE_CLOSE_SECS.contains(s))
-                .ok_or(ConfigError::BadIdleCloseSecs(text))?;
-            self.abandoned_after = Duration::from_secs(seconds);
+                .map(Duration::from_secs)
+        };
+        if let Some(text) = get("MTG_IDLE_CLOSE_SECS") {
+            self.abandoned_after = seconds(&text).ok_or(ConfigError::BadIdleCloseSecs(text))?;
+        }
+        if let Some(text) = get("MTG_BOTS_ALONE_SECS") {
+            self.bots_alone_after = seconds(&text).ok_or(ConfigError::BadBotsAloneSecs(text))?;
         }
         Ok(())
     }
@@ -281,6 +292,7 @@ impl Default for Retention {
             finished_after: Duration::from_mins(10),
             lobby_after: Duration::from_hours(1),
             abandoned_after: Duration::from_hours(1),
+            bots_alone_after: Duration::from_mins(15),
         }
     }
 }
@@ -650,6 +662,24 @@ mod tests {
             load(&[("MTG_IDLE_CLOSE_SECS", text)]),
             Err(ConfigError::BadIdleCloseSecs(text.to_owned()))
         );
+    }
+
+    #[rstest]
+    #[case("", Some(900))]
+    #[case("60", Some(60))]
+    #[case(" 1800 ", Some(1_800))]
+    #[case("59", None)]
+    #[case("604801", None)]
+    #[case("15m", None)]
+    fn bots_alone_times(#[case] text: &str, #[case] seconds: Option<u64>) {
+        let loaded = load(&[("MTG_BOTS_ALONE_SECS", text)]);
+        match seconds {
+            Some(seconds) => assert_eq!(
+                loaded.map(|c| c.retention.bots_alone_after),
+                Ok(Duration::from_secs(seconds))
+            ),
+            None => assert_eq!(loaded, Err(ConfigError::BadBotsAloneSecs(text.to_owned()))),
+        }
     }
 
     #[rstest]

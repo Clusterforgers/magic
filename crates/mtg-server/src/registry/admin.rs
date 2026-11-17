@@ -64,7 +64,7 @@ impl Registry {
         candidates.sort_by_key(|candidate| std::cmp::Reverse(candidate.0));
         let mut rows = Vec::with_capacity(candidates.len());
         for (_, handle, bots, mut row) in candidates {
-            let Ok(status) = handle.status().await else {
+            let Ok(status) = handle.status_within(super::listing::STATUS_WAIT).await else {
                 continue;
             };
             if status.result.is_some() {

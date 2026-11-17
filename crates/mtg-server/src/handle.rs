@@ -1,5 +1,7 @@
 //! The cheap-clone front door to a running game actor.
 
+use std::time::Duration;
+
 use mtg_core::house::HouseRuleError;
 use mtg_core::ids::PlayerId;
 use mtg_core::teams::Teams;
@@ -7,7 +9,7 @@ use mtg_engine::Engine;
 use mtg_engine::state::GameResult;
 use mtg_protocol::{ClientMessage, SeatDeck, ServerMessage};
 use thiserror::Error;
-use tokio::sync::{mpsc, oneshot};
+use tokio::sync::{mpsc, oneshot, watch};
 
 use crate::game_id::GameId;
 use crate::seat_deck::ChosenDeck;
@@ -146,11 +148,21 @@ pub(crate) enum Command {
 pub struct GameHandle {
     id: GameId,
     commands: mpsc::Sender<Command>,
+    /// The status the actor published last, between two of its commands.
+    glance: watch::Receiver<Option<GameStatus>>,
 }
 
 impl GameHandle {
-    pub(crate) fn new(id: GameId, commands: mpsc::Sender<Command>) -> GameHandle {
-        GameHandle { id, commands }
+    pub(crate) fn new(
+        id: GameId,
+        commands: mpsc::Sender<Command>,
+        glance: watch::Receiver<Option<GameStatus>>,
+    ) -> GameHandle {
+        GameHandle {
+            id,
+            commands,
+            glance,
+        }
     }
 
     /// The game this handle talks to.
@@ -321,5 +333,27 @@ impl GameHandle {
             .await
             .map_err(|_| GameClosed)?;
         answer.await.map_err(|_| GameClosed)
+    }
+
+    /// The status the actor published after its last command (without `state_hash`), not waiting for it; `None` once
+    /// the actor is gone or before it published one.
+    pub fn glance(&self) -> Option<GameStatus> {
+        if self.commands.is_closed() {
+            return None;
+        }
+        self.glance.borrow().clone()
+    }
+
+    /// [`GameHandle::status`] when the actor answers within `wait`, else its last published status
+    /// ([`GameHandle::glance`]), so a list of games never waits on a busy table.
+    pub async fn status_within(&self, wait: Duration) -> Result<GameStatus, GameClosed> {
+        match tokio::time::timeout(wait, self.status()).await {
+            Ok(status) => status,
+            Err(_) => match self.glance() {
+                Some(status) => Ok(status),
+                None if self.commands.is_closed() => Err(GameClosed),
+                None => self.status().await,
+            },
+        }
     }
 }

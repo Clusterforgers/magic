@@ -426,7 +426,7 @@ pub fn greedy_blocks(
         .map(|body| (body.id, creature_value(body)))
         .collect();
     let mut score = |blocks: &Blocks| -> Option<f64> {
-        if *budget == 0 || !options.accepts(blocks) {
+        if *budget == 0 || super::clock::stopped() || !options.accepts(blocks) {
             return None;
         }
         *budget -= 1;
