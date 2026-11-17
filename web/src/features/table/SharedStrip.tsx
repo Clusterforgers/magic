@@ -15,7 +15,6 @@ import { isYourTurn } from './selectors'
 import { StackChips } from './StackChips'
 import { TurnTicker } from './turn/TurnTicker'
 import { priorityText, waitingOn, waitingText } from './turnText'
-import { useEdgeFade } from './useEdgeFade'
 import { useSheetOverhang } from './useSheetOverhang'
 import { useStable } from './useStable'
 
@@ -47,7 +46,7 @@ function StripMeta({ holder, className }: { holder: string; className?: string }
       )}
     >
       {holder === '' ? null : (
-        <p data-slot="priority" className="text-muted-foreground max-sm:sr-only">
+        <p data-slot="priority" title={holder} className="text-muted-foreground max-sm:sr-only">
           {holder}
         </p>
       )}
@@ -92,7 +91,6 @@ export function SharedStrip({
   const cards = usePlay(laysOutCards)
   const strip = useRef<HTMLElement>(null)
   const sheet = useRef<HTMLDivElement>(null)
-  useEdgeFade(sheet)
   useSheetOverhang(strip, sheet, onOverhang)
   return (
     <section
@@ -101,7 +99,12 @@ export function SharedStrip({
       data-region="shared"
       data-your-turn={yourTurn || undefined}
       style={
-        { '--sheet-max': `${Math.floor(cards ? (sheetWide ?? sheetMax) : sheetMax)}px` } as CSSProperties
+        {
+          '--sheet-max': `${Math.floor(cards ? (sheetWide ?? sheetMax) : sheetMax)}px`,
+          // A prompt's cards are as high as the sheet leaves below its sentence, headings and padding, so a row of them
+          // stands whole in the sheet; a prompt that knows its own rows sets its own (`CardChoices`).
+          '--choice-room': 'max(6rem, calc(var(--sheet-max) - 10.5rem))',
+        } as CSSProperties
       }
       // The prompt's title ("Your decision: ...") is for a screen reader; its sentence says the same to the eye in a
       // line less. On a phone the key to the combat lines goes too.
@@ -120,7 +123,7 @@ export function SharedStrip({
         // The edge takes the colour of the phase; on your turn the gold glow of `your-turn-cue` lies outside it.
         data-themed=""
         className={cn(
-          'band-room fade-scroll absolute inset-x-0 bottom-0 max-h-(--sheet-max) min-h-full plaque rounded-xl border-2 border-phase px-3 py-1',
+          'band-room absolute inset-x-0 overflow-x-hidden overflow-y-auto overscroll-contain [scrollbar-width:thin] bottom-0 max-h-(--sheet-max) min-h-full plaque rounded-xl border-2 border-phase px-3 py-1',
           yourTurn && 'your-turn-cue',
         )}
       >
@@ -193,7 +196,8 @@ export function SharedStrip({
               data-slot="strip-status"
               className={
                 mine
-                  ? 'flex min-w-0 flex-col justify-center gap-0.5 text-xs leading-4 empty:hidden'
+                  ? // Its lines never run into the sentence beside: each is cut with an ellipsis, whole in its tooltip.
+                    'flex min-w-0 flex-col justify-center gap-0.5 overflow-hidden text-xs leading-4 empty:hidden [&_[data-slot=strip-meta]]:min-w-0 [&_[data-slot=strip-meta]]:shrink [&_[data-slot=priority]]:truncate'
                   : 'contents'
               }
             >

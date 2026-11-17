@@ -67,20 +67,23 @@ describe('the band rules', () => {
     },
   )
 
-  it('puts choices of any size on a line of their own below 100 rem and beside the sentence from it; short ones always beside', () => {
+  it('puts choices of any size on a line of their own, cards beside the sentence from 100 rem; short ones always beside', () => {
     expect(bandAreas(BAND_WIDE_REM - 1, 'wide')).toHaveLength(2)
-    expect(bandAreas(BAND_WIDE_REM, 'wide')).toHaveLength(1)
+    expect(bandAreas(BAND_WIDE_REM, 'wide')).toHaveLength(2)
+    expect(bandAreas(BAND_WIDE_REM - 1, 'wide', { cards: true })).toHaveLength(2)
+    expect(bandAreas(BAND_WIDE_REM, 'wide', { cards: true })).toHaveLength(1)
     expect(bandAreas(BAND_PHONE_REM, 'inline')).toEqual([
       ['stack', 'status', 'text', 'choices', 'clock', 'actions'],
     ])
     expect(bandAreas(BAND_WIDE_REM, 'none')).toEqual([['stack', 'status', 'text', 'clock', 'actions']])
   })
 
-  it('keeps the sentence to one line, three only beside choices of any size in a wide band', () => {
+  it('keeps the sentence to one line, three only beside cards in a wide band', () => {
     expect(sentenceLines(150, 'none')).toBe(1)
     expect(sentenceLines(150, 'inline')).toBe(1)
-    expect(sentenceLines(90, 'wide')).toBe(1)
-    expect(sentenceLines(150, 'wide')).toBe(3)
+    expect(sentenceLines(90, 'wide', true)).toBe(1)
+    expect(sentenceLines(150, 'wide')).toBe(1)
+    expect(sentenceLines(150, 'wide', true)).toBe(3)
   })
 
   it('tells a cut sentence from one that fits', () => {
@@ -97,27 +100,40 @@ describe('the stylesheet', () => {
       bandAreas(64, 'wide', { cards: true }),
     )
     expect(areasIn(band, `@container band (width >= ${BAND_WIDE_REM}rem)`)).toEqual(
-      bandAreas(BAND_WIDE_REM, 'wide'),
+      bandAreas(BAND_WIDE_REM, 'wide', { cards: true }),
     )
     expect(areasIn(band, "&:has([data-slot='prompt-choices'][data-inline]:not(:empty))")).toEqual(
       bandAreas(64, 'inline'),
     )
     expect(areasIn(band, `@container band (width < ${BAND_PHONE_REM}rem)`)).toEqual(bandAreas(24, 'wide'))
-    const mid = blockAfter(band, `@container band (${BAND_PHONE_REM}rem <= width < ${BAND_WIDE_REM}rem)`)
+    const mid = blockAfter(band, `@container band (width >= ${BAND_PHONE_REM}rem)`)
     expect(areasIn(mid, '&:not([data-cards])')).toEqual(bandAreas(64, 'wide'))
     expect(areasIn(mid, "[data-slot='strip-status']:not(:empty)")).toEqual(
       bandAreas(64, 'wide', { status: true }),
     )
   })
 
-  it('gives the answers of a prompt with choices the first line from 1024 to 1600 px: the status starts the choices line', () => {
+  it('gives the answers of a prompt with choices the first line from 1024 px: the status starts the choices line', () => {
     for (const status of [false, true]) {
       const [first, second] = bandAreas(64, 'wide', { status })
       expect(first).toEqual(['stack', 'text', 'clock', 'actions'])
       expect(second?.[0]).toBe(status ? 'status' : 'choices')
     }
-    // Cards keep the whole line under the head row.
+    // Cards keep the whole line under the head row from 64 rem; under it they give the first line to the answers too.
     expect(bandAreas(64, 'wide', { status: true, cards: true })[1]).toEqual(Array(5).fill('choices'))
+    for (const status of [false, true]) {
+      expect(bandAreas(50, 'wide', { status, cards: true })).toEqual(bandAreas(50, 'wide', { status }))
+    }
+    const cardsNarrow = blockAfter(
+      band,
+      `@container band (${BAND_PHONE_REM}rem <= width < ${BAND_NARROW_REM}rem)`,
+    )
+    expect(areasIn(cardsNarrow, "&[data-cards]:has([data-slot='prompt-choices']")).toEqual(
+      bandAreas(50, 'wide', { cards: true }),
+    )
+    expect(areasIn(cardsNarrow, "[data-slot='strip-status']:not(:empty)")).toEqual(
+      bandAreas(50, 'wide', { status: true, cards: true }),
+    )
     const narrow = blockAfter(band, `@container band (width < ${BAND_NARROW_REM}rem)`)
     expect(blockAfter(narrow, "[data-slot='prompt-actions'] [data-slot='undo-rest']")).toMatch(
       /display:\s*none/,
@@ -125,11 +141,14 @@ describe('the stylesheet', () => {
     expect(narrow).toMatch(/\[data-slot='prompt-actions'\] \[data-slot='key-hint'\],/)
   })
 
-  it('clamps the sentence to one line, and to three only in a wide band beside choices that are not short', () => {
+  it('clamps the sentence to one line, and to three only in a wide band beside cards', () => {
     expect(blockAfter(css, ".strip-band [data-slot='prompt-sentence'] .prompt-sentence-clamp")).toMatch(
       /line-clamp:\s*1;/,
     )
-    const wide = blockAfter(css, `@container band (width >= ${BAND_WIDE_REM}rem) {\n  .strip-band`)
+    const wide = blockAfter(
+      css,
+      `@container band (width >= ${BAND_WIDE_REM}rem) {\n  .strip-band[data-cards]`,
+    )
     expect(wide).toMatch(/:not\(\[data-inline\]\)/)
     expect(wide).toMatch(/line-clamp:\s*3;/)
   })
@@ -229,5 +248,31 @@ describe('the sheet floor', () => {
   it('still grows to its room where the boards leave it, and never past 40 % of the window', () => {
     expect(sheetMost(900, 63, 400, false, 120)).toBe(343)
     expect(sheetMost(900, 63, 900, false)).toBe(360)
+  })
+})
+
+describe("a payment's band", () => {
+  it('cuts a status line that does not fit, whole in its tooltip, so it never runs into the sentence beside it', () => {
+    const fixture = buildFixture({ seats: 2 })
+    const pending = must(DEV_PROMPTS['pay'])(fixture)
+    const { container } = renderTable({
+      fixture,
+      state: (state) => ({
+        ...state,
+        pending,
+        view:
+          state.view === null || state.view.priority === null
+            ? state.view
+            : { ...state.view, priority: { ...state.view.priority, holder: 1 } },
+      }),
+    })
+    const status = must(container.querySelector<HTMLElement>('[data-slot="strip-status"]'))
+    expect(status).toHaveClass('min-w-0', 'overflow-hidden')
+    const line = must(status.querySelector<HTMLElement>('[data-slot="priority"]'))
+    expect(line.textContent).not.toBe('')
+    expect(line.title).toBe(line.textContent)
+    expect(status.className).toContain('[&_[data-slot=priority]]:truncate')
+    // The payment's choices take a line of their own at every width from a tablet up, never a column beside the sentence.
+    for (const rem of [50, 90, 120, 160]) expect(bandAreas(rem, 'wide', { status: true })).toHaveLength(2)
   })
 })

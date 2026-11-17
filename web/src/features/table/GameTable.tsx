@@ -21,7 +21,15 @@ import { TableMoments } from './moment/TableMoments'
 import { useTableMoments } from './moment/useTableMoments'
 import { LexiconDialog } from './lexicon/LexiconDialog'
 import { ManualMenuProvider } from './manual/ManualMenu'
-import { alliesBandPx, handGrowMost, planTable, POD_COLUMN_PX, sidePanelRows, ZONE_GAP_PX } from './layout'
+import {
+  alliesBandPx,
+  handGrowMost,
+  planTable,
+  POD_COLUMN_PX,
+  sidePanelRows,
+  withoutBand,
+  ZONE_GAP_PX,
+} from './layout'
 import type { TableMode } from './layout'
 import { ChoiceOverlayContext, useChoiceOverlayHost } from './prompt/choiceOverlay'
 import { createMarksStore, MarksContext } from './prompt/marks'
@@ -120,7 +128,12 @@ const Table = memo(function Table() {
   const onHead = useCallback((px: number) => setHead(Math.ceil(px / 8) * 8), [])
   const section = useRef<HTMLElement>(null)
   useTheirHead(section, onHead, `${ready}|${plan.shape}|${plan.boards.join(',')}`)
-  const regions = useBoardSplit(table.regions, plan, 0, head, 0)
+  // A spectator answers no prompt, so its boards keep the band's room.
+  const base = useMemo(
+    () => (spectator ? withoutBand(table.regions) : table.regions),
+    [spectator, table.regions],
+  )
+  const regions = useBoardSplit(base, plan, 0, head, 0)
   const size: CardSize = plan.compact ? 'compact' : 'normal'
   const folding = options.foldLands ?? FOLD_LANDS_BY_DEFAULT
   const fx = useTableFx(options.effects ?? EFFECTS_BY_DEFAULT, options.effectsSlow)

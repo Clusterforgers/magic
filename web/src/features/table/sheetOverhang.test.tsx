@@ -1,8 +1,8 @@
-// Goal: the prompt sheet is an overlay that moves no board: the table's main area carries how far the sheet stands above the shared strip (0 for a sheet no taller than the strip) for the overlays that stop above it, it follows the sheet as a prompt grows or shrinks it and goes with the strip, while the opponents' area keeps its own padding and the board rows keep their heights across every prompt kind. A sheet held at its most asks the split for the room its content wants and scrolls the answers into view.
+// Goal: the prompt sheet moves no board and covers no card: the opponents' area keeps the band's room free below its boards (one height per window, for every prompt kind and between prompts), the sheet grows up into it, and the table's main area carries how far the sheet stands above the shared strip for the overlays that stop above it; the board rows keep their heights across every prompt kind, and a sheet held at its most scrolls the answers into view.
 import { act } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { must } from '@/test-utils/batches'
-import { renderTable } from '@/test-utils/tableHarness'
+import { renderTable, tablePlanOf, TEST_VIEWPORT } from '@/test-utils/tableHarness'
 import { DEV_PROMPTS } from './dev/prompts'
 import { revealBy, SHEET_OVERHANG_VAR, wantedOverhang } from './useSheetOverhang'
 
@@ -75,11 +75,14 @@ describe('the room kept for the prompt sheet', () => {
     expect(overhang()).toBe('0px')
   })
 
-  it("moves no board: the opponents' area keeps its own padding and the sheet lies over it", () => {
+  it("moves no board: the opponents' area keeps the band's room free below its boards and the sheet grows into it", () => {
     renderTable({ seats: 4 })
-    const opponents = must(document.querySelector('[data-area="opponents"]'))
-    expect(main()).toContainElement(opponents as HTMLElement)
-    expect(opponents).toHaveClass('pb-2', 'pt-2', 'px-2')
+    const opponents = must(document.querySelector<HTMLElement>('[data-area="opponents"]'))
+    expect(main()).toContainElement(opponents)
+    expect(opponents).toHaveClass('pt-2', 'px-2')
+    const room = Math.floor(tablePlanOf(TEST_VIEWPORT, 4).regions.sheetRoom)
+    expect(room).toBeGreaterThan(40)
+    expect(opponents.style.paddingBottom).toBe(`calc(${room}px + 0.5rem)`)
     // The sheet is not in this area, so it can never be drawn over its cards.
     expect(opponents).not.toContainElement(
       document.querySelector('[data-slot="shared-sheet"]') as HTMLElement,

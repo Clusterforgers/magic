@@ -32,11 +32,21 @@ interface TableGridProps {
 
 // A one-cell grid whose track may shrink below its content (`minmax(0, 1fr)`), so the region's content is cut or scrolls
 // inside the region instead of pushing the row open.
-function Area({ area, className, children }: { area: string; className?: string; children: ReactNode }) {
+function Area({
+  area,
+  className,
+  style,
+  children,
+}: {
+  area: string
+  className?: string
+  style?: CSSProperties
+  children: ReactNode
+}) {
   return (
     <div
       data-area={area}
-      style={{ gridArea: area }}
+      style={{ gridArea: area, ...style }}
       className={cn('grid min-h-0 min-w-0 grid-cols-[minmax(0,1fr)] grid-rows-[minmax(0,1fr)]', className)}
     >
       {children}
@@ -88,8 +98,12 @@ export function TableGrid({
         className="felt grid min-h-0 min-w-0"
       >
         <Area area="bar">{bar}</Area>
-        {/* The prompt sheet of the shared strip grows up over this area as an overlay: the boards under it never move. */}
-        <Area area="opponents" className="px-2 pt-2 pb-2">
+        {/* The prompt sheet grows up into the band's room this area keeps free below its boards for every prompt and between them, so it covers no card and moves no board. */}
+        <Area
+          area="opponents"
+          className="px-2 pt-2"
+          style={{ paddingBottom: `calc(0.5rem + ${Math.floor(regions.sheetRoom)}px)` }}
+        >
           {opponents}
         </Area>
         <Area area="shared" className="px-2">
