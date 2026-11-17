@@ -352,7 +352,7 @@ The dock's form (`dockForm(regions)` in `layout.ts`) sets how much the words say
 - `prompt/ResponseClock` shows "Passing for you in 7 s" (`clockText.ts` words what the server answers for every kind) as a `role="timer"` that does not announce each second; the last three seconds are urgent (`data-urgent`). Its bar is `response-clock-bar` (`prompt/responseClock.css`).
 - Away seats: `Presence` sets `PlayerView.connected` and its `deadline_ms` starts that seat's clock (`play/awayClocks.ts`). A seat still in with no client wears `AwayMark`, and the waiting line adds "Bo is away: the game acts for them in 12 s" (`presenceText.ts`), the seconds hidden from the live region. An eliminated seat never reads as away.
 - Timer bank: every pod draws the public `PlayerView.bank` beside the name (`BankMark`, `bankText.ts`): an hourglass and the count, nothing at 0. When it drops the mark reads "N used" with a warning edge for five seconds (`data-spent`).
-- Turn time (`TurnTimeMark`, `lib/turnTime.ts`): every pod draws a seat's time on its own turns as m:ss (h:mm:ss from an hour), nothing before its first turn. The running seat's figure ticks from `PlayState.viewAt` on one shared second interval (`useSecondTick`). The game-over list gives each seat's total.
+- Turn time (`TurnTimeMark`, `lib/turnTime.ts`): every pod draws a seat's time on its own turns as m:ss (h:mm:ss from an hour), nothing before its first turn. Every seat the table marks running ticks from `PlayState.viewAt` on one shared second interval (`useSecondTick`); under shared team turns that is the teammate whose decision it is, not the first seat of the team. The game-over list gives each seat's total.
 
 ### Keys
 

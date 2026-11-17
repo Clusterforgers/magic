@@ -190,6 +190,15 @@ fn millis(span: Duration) -> u64 {
     u64::try_from(span.as_millis()).unwrap_or(u64::MAX)
 }
 
+/// The seats the engine waits on now: the player of its pending decision.
+fn asked(engine: &Engine) -> Vec<PlayerId> {
+    engine
+        .decision()
+        .map(|decision| decision.player)
+        .into_iter()
+        .collect()
+}
+
 mod manual;
 mod opening;
 
@@ -201,7 +210,7 @@ impl Running {
         let mut banks = Banks::new(engine.state().players().len(), clocks.extension.is_some());
         banks.watch(engine.state());
         let mut times = TurnTimes::new(engine.state().players().len());
-        times.watch(engine.state(), Instant::now());
+        times.watch(engine.state(), &asked(&engine), Instant::now());
         Running {
             engine,
             pending: None,
@@ -242,6 +251,22 @@ impl Running {
         self.times = times;
     }
 
+    /// The seat whose turn `seat` plays on: itself on its own turn or its team's shared turn (CR 805.3), else the
+    /// active player; `None` once the active player has left.
+    fn turn_of(&self, seat: PlayerId) -> Option<PlayerId> {
+        let state = self.engine.state();
+        state
+            .active_player()
+            .map(|active| if state.is_active(seat) { seat } else { active })
+    }
+
+    /// Charges the turn time to the seats the engine waits on now.
+    fn watch_times(&mut self) {
+        let waiting = asked(&self.engine);
+        self.times
+            .watch(self.engine.state(), &waiting, Instant::now());
+    }
+
     /// Stops the turn count while no seat is connected (`paused`) and restarts it when one is.
     pub(crate) fn pause_turn_time(&mut self, paused: bool) {
         self.times.pause(paused, Instant::now());
@@ -251,8 +276,7 @@ impl Running {
     pub(crate) fn clock_ran_out(&mut self) {
         let seat = self.expiring().map(|p| p.decision.player);
         if let Some(seat) = seat {
-            self.banks
-                .ran_out(seat, self.engine.state().active_player());
+            self.banks.ran_out(seat, self.turn_of(seat));
         }
     }
 
@@ -273,8 +297,7 @@ impl Running {
         if hidden || !self.banks.spend(seat) {
             return None;
         }
-        self.banks
-            .ran_out(seat, self.engine.state().active_player());
+        self.banks.ran_out(seat, self.turn_of(seat));
         let now = Instant::now();
         let from = due.max(now);
         let new_due = from.checked_add(length).unwrap_or(from);
@@ -690,7 +713,7 @@ impl Running {
             let on_stack = stops::by_hand_on_stack(self.engine.state());
             let passed = self.engine.apply(answer)?;
             self.banks.watch(self.engine.state());
-            self.times.watch(self.engine.state(), Instant::now());
+            self.watch_times();
             stops.left(at, &passed);
             stops.resolved(&on_stack, &passed);
             events.extend(passed);
@@ -748,7 +771,7 @@ impl Running {
         let times = self.times.clone();
         let events = run(&mut self.engine)?;
         self.banks.watch(self.engine.state());
-        self.times.watch(self.engine.state(), Instant::now());
+        self.watch_times();
         let cut = self.engine.cut_since(&checkpoint);
         let from_seq = count(cut.unwrap_or(self.engine.events().len() - events.len()));
         Ok(Step {

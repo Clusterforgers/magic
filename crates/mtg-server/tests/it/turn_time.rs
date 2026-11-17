@@ -1,4 +1,4 @@
-//! Goal: through the actor, on tokio's paused time, each seat's turn time is the wall time of its own turns from start to the next turn's start, adds up across turns and seats, is public, ticks for the running seat only, is told to a seat that comes back, and stands still while no seat is connected.
+//! Goal: through the actor, on tokio's paused time, each seat's turn time is the wall time of its own turns from start to the next turn's start, adds up across turns and seats, is public, ticks for the running seat only, is told to a seat that comes back, and stands still while no seat is connected; under shared team turns (Two-Headed Giant, shared turns, a Delves party) a decision of a teammate runs only that teammate's clock, an opponent's decision runs nobody's, and the round counter counts one turn of each team.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -6,8 +6,10 @@ use crate::common;
 use std::time::Duration;
 
 use common::{Client, game_id, passive, roomy};
-use mtg_engine::Decision;
+use mtg_core::house::HouseRules;
+use mtg_core::teams::{TeamMode, Teams};
 use mtg_engine::state::Stage;
+use mtg_engine::{Decision, GameSetup};
 use mtg_protocol::{ClientMessage, DecisionId, ServerMessage, TableView};
 use mtg_server::{GameConfig, GameHandle, Pace, spawn_game_with};
 use mtg_testkit::Scenario;
@@ -24,7 +26,10 @@ struct Table {
 
 impl Table {
     async fn start(seats: usize) -> Table {
-        let setup = Scenario::new(seats).setup().unwrap();
+        Table::start_with(Scenario::new(seats).setup().unwrap(), seats).await
+    }
+
+    async fn start_with(setup: GameSetup, seats: usize) -> Table {
         let config = GameConfig {
             pace: Pace::MANUAL,
             ..roomy()
@@ -140,6 +145,37 @@ impl Table {
         self.clients[seat] = Some(Client::join(&self.handle, seat).await);
         self.settle().await;
     }
+
+    /// The seat the game waits on.
+    async fn waiting(&self) -> usize {
+        let status = self.handle.status().await.unwrap();
+        status.waiting_on.expect("a seat to wait for").index()
+    }
+
+    /// Gives every seat a fresh snapshot, as a reconnect does, so each holds the figures of this instant.
+    async fn refresh(&mut self) {
+        for seat in 0..self.clients.len() {
+            self.leave(seat).await;
+            self.come_back(seat).await;
+        }
+    }
+
+    /// Answers passively until the game waits on `seat` and holds its decision.
+    async fn until_waiting_on(&mut self, seat: usize) {
+        for _ in 0..200 {
+            if self.waiting().await == seat && self.asked[seat].is_some() {
+                return;
+            }
+            self.answer().await;
+        }
+        panic!("the game never waited for seat {seat}");
+    }
+
+    /// Turn number and round of the latest table seat 0 holds.
+    fn round(&self) -> (u32, u32) {
+        let turn = &self.tables[0].as_ref().unwrap().turn;
+        (turn.number, turn.round)
+    }
 }
 
 /// Seconds spent in turn `turn`, different for every turn.
@@ -204,4 +240,95 @@ async fn time_with_nobody_connected_does_not_count() {
         want,
         "the minute nobody was here is not counted"
     );
+}
+
+/// A table of `seats.len()` seats in teams (the team of each seat as given) that play `mode`.
+fn teams_setup(mode: TeamMode, seats: &[u32]) -> GameSetup {
+    Scenario::new(seats.len())
+        .house_rules(HouseRules {
+            teams: Some(Teams {
+                mode,
+                seats: seats.to_vec(),
+            }),
+            ..HouseRules::default()
+        })
+        .setup()
+        .unwrap()
+}
+
+const GIANT: (TeamMode, &[u32]) = (TeamMode::TwoHeadedGiant, &[0, 0, 1, 1]);
+const SHARED: (TeamMode, &[u32]) = (TeamMode::SharedTurns, &[0, 0, 1, 1]);
+const PARTY: (TeamMode, &[u32]) = (TeamMode::SharedTurns, &[0, 0, 0, 1, 1]);
+
+/// Whom the priority of the first main phase reaches in turn, and whose clock that decision runs: a seat of the active
+/// team its own, an opponent nobody's.
+const GIANT_PRIORITY: &[(usize, Option<usize>)] =
+    &[(0, Some(0)), (1, Some(1)), (2, None), (3, None)];
+const PARTY_PRIORITY: &[(usize, Option<usize>)] = &[
+    (0, Some(0)),
+    (1, Some(1)),
+    (2, Some(2)),
+    (3, None),
+    (4, None),
+];
+
+#[rstest]
+#[case::two_headed_giant(GIANT, GIANT_PRIORITY)]
+#[case::teams_with_shared_turns(SHARED, GIANT_PRIORITY)]
+#[case::a_party_of_three(PARTY, PARTY_PRIORITY)]
+#[tokio::test(start_paused = true)]
+async fn a_decision_of_a_teammate_runs_only_that_teammates_clock(
+    #[case] (mode, seats): (TeamMode, &[u32]),
+    #[case] priority: &[(usize, Option<usize>)],
+) {
+    let mut table = Table::start_with(teams_setup(mode, seats), seats.len()).await;
+    let mut used = vec![0; seats.len()];
+    for (step, &(seat, charged)) in priority.iter().enumerate() {
+        table.until_waiting_on(seat).await;
+        let running: Vec<bool> = (0..seats.len()).map(|n| charged == Some(n)).collect();
+        // The first table is the opening's, which carries no turn time; every later one is the batch of an answer.
+        for viewer in (0..seats.len()).filter(|_| step > 0) {
+            let now: Vec<(u64, bool)> = table.figures(viewer);
+            assert_eq!(
+                now.iter().map(|figure| figure.1).collect::<Vec<_>>(),
+                running,
+                "the batch that asked seat {seat} says who ticks, to seat {viewer}"
+            );
+        }
+        let spent = 2_000 * (step as u64 + 1);
+        table.wait(spent).await;
+        table.refresh().await;
+        if let Some(charged) = charged {
+            used[charged] += spent;
+        }
+        let want: Vec<(u64, bool)> = used.iter().copied().zip(running).collect();
+        for viewer in 0..seats.len() {
+            assert_eq!(
+                table.figures(viewer),
+                want,
+                "while the game waited on seat {seat}, as seat {viewer} hears it"
+            );
+        }
+    }
+}
+
+#[rstest]
+#[case::two_headed_giant(GIANT)]
+#[case::teams_with_shared_turns(SHARED)]
+#[case::a_party_of_three(PARTY)]
+#[tokio::test(start_paused = true)]
+async fn the_round_counts_one_turn_of_each_team(#[case] (mode, seats): (TeamMode, &[u32])) {
+    let mut table = Table::start_with(teams_setup(mode, seats), seats.len()).await;
+    let mut rounds = std::collections::BTreeMap::new();
+    for _ in 0..4000 {
+        let (turn, round) = table.round();
+        rounds.insert(turn, round);
+        if turn >= 6 {
+            break;
+        }
+        table.answer().await;
+    }
+    let want: std::collections::BTreeMap<u32, u32> =
+        (1..=6).map(|turn: u32| (turn, turn.div_ceil(2))).collect();
+    assert_eq!(rounds, want);
 }
