@@ -268,9 +268,11 @@ fn may_enchant(state: &GameState, aura: &GameObject, host: &GameObject) -> bool 
 /// anything but an Aura card.
 pub(crate) fn spell_target(state: &GameState, id: ObjectId) -> Option<TargetSpec> {
     let object = state.object(id)?;
-    // A face-down spell is a 2/2 creature spell with no subtypes (CR 708.2a): an Aura cast face down targets nothing.
+    // A face-down spell is a 2/2 creature spell with no subtypes (CR 708.2a): an Aura cast face down targets nothing. A
+    // card cast from face down in exile (Gonti) turns face up as it is cast (CR 601.2a) and announces its target.
     if object.kind() == ObjectKind::Ability
-        || object.face_down().is_some()
+        || (object.face_down().is_some()
+            && matches!(object.zone(), Zone::Stack | Zone::Battlefield))
         || kind_of(state, id) != Some(Kind::Aura)
         || object.base_types().contains(CardType::Instant)
         || object.base_types().contains(CardType::Sorcery)

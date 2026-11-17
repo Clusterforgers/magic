@@ -119,7 +119,36 @@ pub fn check_state(state: &GameState) -> Result<(), Violation> {
     check_zone_index(state)?;
     check_merged(state)?;
     check_companions(state)?;
+    check_aura_spells(state)?;
     check_bookkeeping(state)
+}
+
+/// An Aura spell on the stack announced what it will enchant as it was cast (CR 303.4a, 601.2c): a face-up spell with an
+/// enchant ability, or a bestowed one, carries a target.
+fn check_aura_spells(state: &GameState) -> Result<(), Violation> {
+    for &id in state.zone(Zone::Stack) {
+        let Some(spell) = state.object(id) else {
+            continue;
+        };
+        if spell.kind() == ObjectKind::Ability
+            || spell.face_down().is_some()
+            || spell.card().is_type(CardType::Instant)
+            || spell.card().is_type(CardType::Sorcery)
+        {
+            continue;
+        }
+        let enchants = spell.bestowed()
+            || keywords_of(state, id)
+                .iter()
+                .any(|k| matches!(k, Keyword::Enchant(_) | Keyword::EnchantPlayer { .. }));
+        if enchants && spell.choices().targets.first().is_none_or(Vec::is_empty) {
+            return Err(Violation::Bookkeeping(format!(
+                "the Aura spell {id:?} ({}) is on the stack without the target it enchants",
+                spell.card().name
+            )));
+        }
+    }
+    Ok(())
 }
 
 /// A companion (CR 702.139) is no object while it lies outside the game and is revealed once the opening is over; once

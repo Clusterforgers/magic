@@ -61,6 +61,7 @@ mod graveyard_fuzz;
 mod group_statics_fuzz;
 mod harness_selfcheck;
 mod help_fuzz;
+mod hidden_aura_fuzz;
 mod hideaway_fuzz;
 mod illegal_answers;
 mod improvise_fuzz;
