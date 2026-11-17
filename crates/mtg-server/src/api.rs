@@ -468,7 +468,7 @@ fn is_json(headers: &HeaderMap) -> bool {
 
 /// The deck seat `index` of a new game starts with. Only the creator's seat may name a stored deck,
 /// and only the creator's own; every other seat starts with a built-in deck, a precon (public
-/// data, so any seat may take one) or none.
+/// data, so any seat may take one, a bot's too, also drawn at random) or none.
 async fn starting_deck(
     app: &AppState,
     headers: &HeaderMap,
@@ -476,8 +476,11 @@ async fn starting_deck(
     id: &str,
     options: &GameOptions,
 ) -> Result<ChosenDeck, ApiError> {
-    let found = if index == 0 || deck_choice::precon_code(id).is_some() {
-        deck_choice::resolve(app, headers, id).await
+    let public = deck_choice::precon_code(id).is_some()
+        || crate::random_deck::Pool::of(id) == Some(crate::random_deck::Pool::Precons);
+    let found = if index == 0 || public {
+        let seed = crate::random_deck::fresh_seed(index);
+        deck_choice::resolve_for(app, headers, id, options.format, seed).await
     } else {
         deck_choice::built_in(id)
     };

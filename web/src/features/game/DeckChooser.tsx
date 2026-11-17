@@ -21,6 +21,8 @@ import type { DeckEntry } from './deckEntries'
 import { deckFormat, deckWords, issueWords, NO_ISSUES } from './deckWords'
 import { DeckPane } from './DeckPane'
 import { usePreconChoices } from './usePreconChoices'
+import { isRandomId } from './randomDeck'
+import { RandomDeckChoice } from './RandomDeckChoice'
 import { useDeckSort } from './deckSort'
 import { BuiltInSource, OwnSource, PreconSource } from './DeckSources'
 import type { DeckChoice } from './useDeckChoice'
@@ -118,7 +120,9 @@ export function DeckChooser({
   const rested = watching && selected !== null && selected.id === restedId ? selected : null
   const details = useDeckDetails(decks, precons, rested)
   // The seat's own deck is checked too when it breaks the table's rules, so the warning under it can list why.
-  const warnedId = current != null && current.warnings > 0 ? choice.chosenId : null
+  // A drawn deck is hidden until the start, so the server has no check of it to show.
+  const warnedId =
+    current != null && current.warnings > 0 && !isRandomId(choice.chosenId) ? choice.chosenId : null
   const verdicts = useVerdicts(decks, game, [
     ...(rested === null || rested.kind === 'builtin' ? [] : [rested.id]),
     ...(warnedId === null ? [] : [warnedId]),
@@ -224,74 +228,83 @@ export function DeckChooser({
           ) : null}
         </>
       ) : (
-        <div className="grid min-h-0 flex-1 gap-4 min-[1000px]:grid-cols-[minmax(14rem,18rem)_minmax(0,1fr)] min-[1280px]:grid-cols-[minmax(16rem,20rem)_minmax(0,1fr)]">
-          <Tabs
-            value={shown}
-            onValueChange={(value) => {
-              const next = kinds.find((entry) => entry.kind === value)
-              if (next === undefined) return
-              setTab(next.kind)
-              setSelected(null)
-              setOpened((before) => new Set(before).add(next.kind))
-            }}
-            className="flex min-h-0 flex-col gap-3"
-          >
-            <TabsList aria-label="Kinds of deck" className="max-w-full">
-              {kinds.map((entry) => (
-                <TabsTrigger key={entry.kind} value={entry.kind}>
-                  {entry.label}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-            {kinds.map((entry) => (
-              <TabsContent
-                key={entry.kind}
-                value={entry.kind}
-                keepMounted
-                className="flex min-h-0 flex-1 flex-col outline-none"
-              >
-                {!opened.has(entry.kind) ? null : entry.kind === 'builtin' ? (
-                  <BuiltInSource api={api} active={shown === entry.kind} {...source} />
-                ) : entry.kind === 'own' ? (
-                  <OwnSource
-                    decks={decks}
-                    precons={preconState}
-                    favourites={favourites.codes}
-                    groups={deckGroups.groups}
-                    active={shown === entry.kind}
-                    {...source}
-                  />
-                ) : (
-                  <PreconSource
-                    precons={preconState}
-                    favourites={favourites.codes}
-                    active={shown === entry.kind}
-                    {...source}
-                  />
-                )}
-              </TabsContent>
-            ))}
-          </Tabs>
-          {wide ? (
-            <div
-              data-slot="deck-pane"
-              // As high as what it shows (at least 18 rem, at most most of the window), not stretched to the list beside it.
-              className="surface min-h-72 max-h-[70dvh] min-w-0 self-start overflow-y-auto overscroll-contain p-4"
+        <>
+          <RandomDeckChoice
+            signedIn={signedIn}
+            groups={deckGroups.groups}
+            current={choice.pending?.id ?? choice.chosenId}
+            disabled={busy}
+            onChoose={(pick) => choice.choose(pick)}
+          />
+          <div className="grid min-h-0 flex-1 gap-4 min-[1000px]:grid-cols-[minmax(14rem,18rem)_minmax(0,1fr)] min-[1280px]:grid-cols-[minmax(16rem,20rem)_minmax(0,1fr)]">
+            <Tabs
+              value={shown}
+              onValueChange={(value) => {
+                const next = kinds.find((entry) => entry.kind === value)
+                if (next === undefined) return
+                setTab(next.kind)
+                setSelected(null)
+                setOpened((before) => new Set(before).add(next.kind))
+              }}
+              className="flex min-h-0 flex-col gap-3"
             >
-              {pane(false)}
-            </div>
-          ) : (
-            <Dialog open={sheet} onOpenChange={setSheet}>
-              <DialogContent data-slot="deck-sheet" className="max-w-xl p-4 sm:p-6">
-                <DialogTitle className="sr-only">Deck preview</DialogTitle>
-                <DialogDescription className="sr-only">
-                  The deck's cards, how far the game plays them and whether this table takes it.
-                </DialogDescription>
+              <TabsList aria-label="Kinds of deck" className="max-w-full">
+                {kinds.map((entry) => (
+                  <TabsTrigger key={entry.kind} value={entry.kind}>
+                    {entry.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              {kinds.map((entry) => (
+                <TabsContent
+                  key={entry.kind}
+                  value={entry.kind}
+                  keepMounted
+                  className="flex min-h-0 flex-1 flex-col outline-none"
+                >
+                  {!opened.has(entry.kind) ? null : entry.kind === 'builtin' ? (
+                    <BuiltInSource api={api} active={shown === entry.kind} {...source} />
+                  ) : entry.kind === 'own' ? (
+                    <OwnSource
+                      decks={decks}
+                      precons={preconState}
+                      favourites={favourites.codes}
+                      groups={deckGroups.groups}
+                      active={shown === entry.kind}
+                      {...source}
+                    />
+                  ) : (
+                    <PreconSource
+                      precons={preconState}
+                      favourites={favourites.codes}
+                      active={shown === entry.kind}
+                      {...source}
+                    />
+                  )}
+                </TabsContent>
+              ))}
+            </Tabs>
+            {wide ? (
+              <div
+                data-slot="deck-pane"
+                // As high as what it shows (at least 18 rem, at most most of the window), not stretched to the list beside it.
+                className="surface min-h-72 max-h-[70dvh] min-w-0 self-start overflow-y-auto overscroll-contain p-4"
+              >
                 {pane(false)}
-              </DialogContent>
-            </Dialog>
-          )}
-        </div>
+              </div>
+            ) : (
+              <Dialog open={sheet} onOpenChange={setSheet}>
+                <DialogContent data-slot="deck-sheet" className="max-w-xl p-4 sm:p-6">
+                  <DialogTitle className="sr-only">Deck preview</DialogTitle>
+                  <DialogDescription className="sr-only">
+                    The deck's cards, how far the game plays them and whether this table takes it.
+                  </DialogDescription>
+                  {pane(false)}
+                </DialogContent>
+              </Dialog>
+            )}
+          </div>
+        </>
       )}
       <p
         data-slot="deck-note"

@@ -205,6 +205,7 @@ fn shape(message: &ServerMessage) -> String {
         ServerMessage::Presence { .. } => "presence".into(),
         ServerMessage::Deciding { .. } => "deciding".into(),
         ServerMessage::Spectators { .. } => "spectators".into(),
+        ServerMessage::DecksRevealed { .. } => "decks revealed".into(),
         ServerMessage::TakeBackOffer { .. }
         | ServerMessage::TakeBackAsked { .. }
         | ServerMessage::TakeBackEnded { .. }

@@ -66,7 +66,7 @@ pub use lobbies::{
 };
 pub use precons::{
     PRECON_DECK_PREFIX, PreconBoard, PreconCardView, PreconErrorCode, PreconList, PreconListItem,
-    PreconView,
+    PreconView, RANDOM_OWN_DECK, RANDOM_PRECON_DECK,
 };
 pub use prefs::{
     HAND_GROUPS, HandGroup, HandSort, HandSortBy, MAX_AUTO_YIELDS, MAX_DEFAULT_STOPS, UserPrefs,

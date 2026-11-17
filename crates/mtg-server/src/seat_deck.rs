@@ -41,6 +41,8 @@ pub struct ChosenDeck {
     own_issues: Arc<[Issue]>,
     reads: BTreeMap<String, String>,
     conjured: BTreeMap<String, Arc<CardDefinition>>,
+    /// The real name of a deck drawn at random, which the table hears only at the start; `None` for a deck chosen by name.
+    hidden: Option<String>,
 }
 
 impl ChosenDeck {
@@ -67,6 +69,7 @@ impl ChosenDeck {
             own_issues: Arc::from([]),
             reads: BTreeMap::new(),
             conjured: BTreeMap::new(),
+            hidden: None,
         })
     }
 
@@ -99,6 +102,7 @@ impl ChosenDeck {
             own_issues: Arc::from([]),
             reads: BTreeMap::new(),
             conjured: BTreeMap::new(),
+            hidden: None,
         })
     }
 
@@ -144,6 +148,7 @@ impl ChosenDeck {
             own_issues: Arc::from([]),
             reads: BTreeMap::new(),
             conjured: BTreeMap::new(),
+            hidden: None,
         })
     }
 
@@ -241,6 +246,20 @@ impl ChosenDeck {
     /// What the table is told of the deck.
     pub fn note(&self) -> &SeatDeck {
         &self.note
+    }
+
+    /// The deck under `label` until the start, for a deck drawn at random: the table, its holder included, sees the
+    /// label in the lobby and the real name when the game starts ([`ChosenDeck::revealed`]).
+    #[must_use]
+    pub fn hidden_as(mut self, label: &str) -> ChosenDeck {
+        let name = std::mem::replace(&mut self.note.name, label.to_owned());
+        self.hidden = Some(name);
+        self
+    }
+
+    /// The real name of a deck drawn at random, told at the start; `None` for a deck chosen by name.
+    pub fn revealed(&self) -> Option<&str> {
+        self.hidden.as_deref()
     }
 
     /// How the recipe names the deck.
@@ -598,6 +617,15 @@ impl SeatDecks {
     /// What the table is told of `seat`'s deck.
     pub(crate) fn note(&self, seat: usize) -> Option<&SeatDeck> {
         self.current.get(seat)?.as_ref().map(ChosenDeck::note)
+    }
+
+    /// The seats whose deck was drawn at random, with its real name, in seat order: what the start tells the table.
+    pub(crate) fn revealed(&self) -> Vec<(usize, String)> {
+        self.current
+            .iter()
+            .enumerate()
+            .filter_map(|(seat, deck)| Some((seat, deck.as_ref()?.revealed()?.to_owned())))
+            .collect()
     }
 
     /// The commanders `seat`'s deck leads; none while it has no deck.

@@ -58,7 +58,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Feel: the twenty rules of motion and interaction, press squash and 44 px hit areas, card travel on an arc with a wind-up and a settle, attacks, hits, entries and deaths pose to pose, the staged stack and attacked seat, the swelling pass button and snappier strikes (`docs/ui-design.md`, `docs/ui-audit.md`).
 - Holding still: card sizes and the board split hold until a board no longer fits or clearly has room, the prompt sheet lies in a band of one height per window kept free above the strip so it covers no card, the boss keeps a fair share of the heroes' card size, moved cards slide, and `scripts/layout-jumps.mjs` counts the jumps of a scripted stretch of play (`docs/web.md`, Holding still).
 - Loops (CR 104.4b, 732): a loop found at priority points, a draw for a mandatory loop that never ends, a shortcut of N iterations its driver chooses, run as one batch with a summary line, bot answers, and the prompt in every layout (`docs/engine.md`, Loops).
-- Choosing faster: quick selection buttons (all, owned, allied in team modes, none) in prompts that pick several objects (`docs/web.md`).
+- Choosing faster: quick selection buttons (all, owned, allied in team modes, none) in prompts that pick several objects, a random precon or own deck in every mode, hidden until the start (`docs/web.md`, `docs/server.md`).
 
 ## Live game
 
