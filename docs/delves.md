@@ -241,3 +241,12 @@ Measured with two Normal heroes, `DELVE_SIM_RANK=<rank> fights <games> 2 normal 
 
 - The brain is the largest step: a boss one level below Hard (Normal) loses to two Normal heroes in more than 90 % of fights, so the first boss at Heat 1 and the first two at Heat 0 sit above their targets; Grimgut, the final boss of the theme, is the hardest of the four at every rank.
 - The Heat 1 rank 2 sample is three fights (a Hard boss takes 7 to 9 minutes of machine time a fight with six threads) and only shows that the Hard boss beats two Normal heroes more often than not; the Hard-boss rows (Heat 0 ranks 2 and 3, Heat 1 ranks 1 to 3, all of Heat 2) and parties of three or more are not yet measured against their targets.
+
+Smoke of the new bosses at the bracket generation, two Normal heroes against the first boss at Heat 1 (bracket 2, a Normal brain), `DELVE_SIM_BOSSES=seraphine_spire,ysolde_reef fights 12 2 normal 1 6 1` stopped after 20 minutes with 10 fights ended:
+
+| Boss | Fights won by the heroes | Turns (boss side) | Machine time a fight |
+|---|---|---|---|
+| Seraphine | 2/4 | 22.8 (11.5) | 13 s to 12 min |
+| Ysolde | 6/6 | 16.0 (7.7) | 1 s to 16 min |
+
+- Both decks play their fights to the end with no loop and no failure; Seraphine holds near the Heat 1 first-boss target, Ysolde sits below it (dl15l).
