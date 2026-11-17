@@ -16,14 +16,20 @@ const GIFT_WORDS: Record<Gift, string> = {
   Hexproof: 'hexproof',
 }
 
-/** An upgrade in words, as the server says it: "Atraxa costs {1} less to cast", "Atraxa has flying". */
+/** An upgrade in words, as the server says it: "Atraxa costs {1} less to cast", "Atraxa has flying", "Ruric gets −1/−1". */
 export function upgradeWords({ commander, boon }: Upgrade): string {
   if (boon === 'Counter') return `${commander} enters with an additional +1/+1 counter`
   if (boon === 'Loyalty') return `${commander} enters with an additional loyalty counter`
   if ('Cheaper' in boon) return `${commander} costs {${boon.Cheaper}} less to cast`
   if ('Pump' in boon) return `${commander} gets +${boon.Pump}/+${boon.Pump}`
+  if ('Tax' in boon) return `${commander} costs {${boon.Tax}} more to cast`
+  if ('Shrink' in boon) return `${commander} gets −${boon.Shrink}/−${boon.Shrink}`
   return `${commander} has ${GIFT_WORDS[boon.Keyword]}`
 }
+
+/** Whether an upgrade is a bane an event cost: a tax or a shrink. */
+export const isBane = ({ boon }: Upgrade): boolean =>
+  typeof boon === 'object' && ('Tax' in boon || 'Shrink' in boon)
 
 /** What a Satchel holds in words: "Satchel: Sol Ring, Opt", or "Satchel empty". */
 export function satchelWords(cards: readonly string[]): string {

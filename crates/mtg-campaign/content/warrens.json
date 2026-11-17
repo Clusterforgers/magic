@@ -32,7 +32,8 @@
      "label": "Turn back",
      "outcomes": []
     }
-   ]
+   ],
+   "until": 2
   },
   {
    "id": "glittering_pool",
@@ -63,7 +64,8 @@
      "label": "Leave it",
      "outcomes": []
     }
-   ]
+   ],
+   "until": 2
   },
   {
    "id": "trapped_miner",
@@ -87,7 +89,8 @@
       }
      ]
     }
-   ]
+   ],
+   "until": 2
   },
   {
    "id": "old_shrine",
@@ -121,7 +124,8 @@
       }
      ]
     }
-   ]
+   ],
+   "until": 2
   },
   {
    "id": "rat_kings_hoard",
@@ -150,7 +154,8 @@
      "label": "Walk around",
      "outcomes": []
     }
-   ]
+   ],
+   "until": 2
   },
   {
    "id": "wandering_merchant",
@@ -170,7 +175,8 @@
      "label": "Decline",
      "outcomes": []
     }
-   ]
+   ],
+   "until": 2
   },
   {
    "id": "mushroom_grove",
@@ -205,7 +211,8 @@
       }
      ]
     }
-   ]
+   ],
+   "until": 2
   },
   {
    "id": "collapsed_tunnel",
@@ -238,7 +245,8 @@
       }
      ]
     }
-   ]
+   ],
+   "until": 2
   },
   {
    "id": "duelling_statue",
@@ -274,7 +282,8 @@
       }
      ]
     }
-   ]
+   ],
+   "until": 2
   },
   {
    "id": "campfire_tales",
@@ -295,7 +304,8 @@
       }
      ]
     }
-   ]
+   ],
+   "until": 2
   },
   {
    "id": "mirror_pool",
@@ -317,7 +327,450 @@
       }
      ]
     }
-   ]
+   ],
+   "until": 2
+  },
+  {
+   "id": "goblin_toll_trade",
+   "title": "The Goblin Toll",
+   "text": "A goblin with a crooked crown blocks a bridge and demands payment.",
+   "options": [
+    {
+     "label": "Pay the toll",
+     "outcomes": [
+      {
+       "Gold": -25
+      },
+      "CardPick"
+     ]
+    },
+    {
+     "label": "Push past",
+     "outcomes": [
+      {
+       "Life": -8
+      },
+      {
+       "Gold": 40
+      }
+     ]
+    },
+    {
+     "label": "Turn back",
+     "outcomes": [
+      {
+       "Gold": 10
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "glittering_pool_trade",
+   "title": "Glittering Pool",
+   "text": "Coins shine at the bottom of a cold, still pool.",
+   "options": [
+    {
+     "label": "Dive for the coins",
+     "outcomes": [
+      {
+       "Life": -6
+      },
+      {
+       "Gold": 60
+      }
+     ]
+    },
+    {
+     "label": "Skim the shallows",
+     "outcomes": [
+      {
+       "Gold": 15
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "trapped_miner_trade",
+   "title": "The Trapped Miner",
+   "text": "A miner is pinned under fallen timber, begging for help.",
+   "options": [
+    {
+     "label": "Free him",
+     "outcomes": [
+      {
+       "Life": -5
+      },
+      {
+       "RelicOf": "Common"
+      }
+     ]
+    },
+    {
+     "label": "Take his pack and go",
+     "outcomes": [
+      {
+       "Gold": 30
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "old_shrine_trade",
+   "title": "An Old Shrine",
+   "text": "A forgotten shrine hums with warm light.",
+   "options": [
+    {
+     "label": "Pray",
+     "outcomes": [
+      {
+       "Life": 8
+      }
+     ]
+    },
+    {
+     "label": "Offer your strength",
+     "outcomes": [
+      {
+       "MaxLife": -5
+      },
+      {
+       "RelicOf": "Rare"
+      }
+     ]
+    },
+    {
+     "label": "Pry out the gems",
+     "outcomes": [
+      {
+       "Life": -8
+      },
+      {
+       "Gold": 60
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "rat_kings_hoard_trade",
+   "title": "The Rat King's Hoard",
+   "text": "A tangle of rats guards a pile of trinkets.",
+   "options": [
+    {
+     "label": "Swap a trinket",
+     "outcomes": [
+      "LoseRelic",
+      {
+       "RelicOf": "Rare"
+      }
+     ]
+    },
+    {
+     "label": "Reach into the nest",
+     "outcomes": [
+      {
+       "MaxLife": -10
+      },
+      {
+       "RelicOf": "Mythic"
+      }
+     ]
+    },
+    {
+     "label": "Walk around",
+     "outcomes": [
+      {
+       "Gold": 10
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "wandering_merchant_trade",
+   "title": "Wandering Merchant",
+   "text": "A hooded figure offers a single wrapped card.",
+   "options": [
+    {
+     "label": "Buy it",
+     "outcomes": [
+      {
+       "Gold": -30
+      },
+      "CardPick"
+     ]
+    },
+    {
+     "label": "Trade a card for a trinket",
+     "outcomes": [
+      "LoseCard",
+      {
+       "RelicOf": "Common"
+      }
+     ]
+    },
+    {
+     "label": "Share a drink",
+     "outcomes": [
+      {
+       "Life": 4
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "mushroom_grove_trade",
+   "title": "Mushroom Grove",
+   "text": "Pale mushrooms glow in a damp cave. Some look edible.",
+   "options": [
+    {
+     "label": "Eat a pale one",
+     "outcomes": [
+      {
+       "Life": 8
+      }
+     ]
+    },
+    {
+     "label": "Gather them to sell",
+     "outcomes": [
+      {
+       "Gold": 25
+      }
+     ]
+    },
+    {
+     "label": "Eat the black cap",
+     "outcomes": [
+      {
+       "MaxLife": -5
+      },
+      {
+       "RelicOf": "Rare"
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "collapsed_tunnel_trade",
+   "title": "Collapsed Tunnel",
+   "text": "The way ahead is half buried. Digging through will take effort.",
+   "options": [
+    {
+     "label": "Dig through",
+     "outcomes": [
+      {
+       "Gold": 30
+      }
+     ]
+    },
+    {
+     "label": "Squeeze through the gap",
+     "outcomes": [
+      {
+       "Life": -6
+      },
+      "CardPick"
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "duelling_statue_trade",
+   "title": "The Duelling Statue",
+   "text": "A stone warrior offers a challenge: strike true and claim its prize.",
+   "options": [
+    {
+     "label": "Accept the challenge",
+     "outcomes": [
+      {
+       "Life": -12
+      },
+      {
+       "RelicOf": "Rare"
+      },
+      {
+       "Gold": 20
+      }
+     ]
+    },
+    {
+     "label": "Swear the statue an oath",
+     "outcomes": [
+      {
+       "Bane": {
+        "Tax": 1
+       }
+      },
+      {
+       "MaxLife": -5
+      },
+      {
+       "RelicOf": "Mythic"
+      }
+     ]
+    },
+    {
+     "label": "Bow and leave",
+     "outcomes": [
+      {
+       "Gold": 10
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "campfire_tales_trade",
+   "title": "Campfire Tales",
+   "text": "Another band of adventurers shares their fire and their stories.",
+   "options": [
+    {
+     "label": "Trade stories",
+     "outcomes": [
+      "CardPick"
+     ]
+    },
+    {
+     "label": "Trade supplies",
+     "outcomes": [
+      {
+       "Gold": 30
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "mirror_pool_trade",
+   "title": "The Mirror Pool",
+   "text": "Still water in a cave of glass. Whatever is held over it rises from it a second time.",
+   "options": [
+    {
+     "label": "Hold a card over the water",
+     "outcomes": [
+      "Duplicate"
+     ]
+    },
+    {
+     "label": "Step into the reflection",
+     "outcomes": [
+      {
+       "Bane": {
+        "Shrink": 1
+       }
+      },
+      {
+       "MaxLife": -5
+      },
+      {
+       "RelicOf": "Mythic"
+      }
+     ]
+    },
+    {
+     "label": "Fish out the coins",
+     "outcomes": [
+      {
+       "Gold": 20
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "bleeding_altar",
+   "title": "The Bleeding Altar",
+   "text": "A black stone altar drinks whatever is spilled on it, and gives back in kind.",
+   "options": [
+    {
+     "label": "Bleed on the altar",
+     "outcomes": [
+      {
+       "Life": -15
+      },
+      {
+       "RelicOf": "Rare"
+      }
+     ]
+    },
+    {
+     "label": "Bind your blood to it",
+     "outcomes": [
+      {
+       "MaxLife": -10
+      },
+      {
+       "RelicOf": "Mythic"
+      }
+     ]
+    },
+    {
+     "label": "Pray beside it",
+     "outcomes": [
+      {
+       "Life": 6
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "kings_forge",
+   "title": "The Forge of Kings",
+   "text": "An old dwarven forge still burns. It remakes what is fed to it into something greater.",
+   "options": [
+    {
+     "label": "Melt down a relic",
+     "outcomes": [
+      "LoseRelic",
+      {
+       "MaxLife": -5
+      },
+      {
+       "RelicOf": "Mythic"
+      }
+     ]
+    },
+    {
+     "label": "Feed it a card",
+     "outcomes": [
+      "LoseCard",
+      {
+       "Life": -5
+      },
+      {
+       "RelicOf": "Rare"
+      }
+     ]
+    },
+    {
+     "label": "Warm your hands",
+     "outcomes": [
+      {
+       "Life": 5
+      }
+     ]
+    }
+   ],
+   "since": 3
   }
  ],
  "pool": [
@@ -494,6 +947,51 @@
    ""
   ]
  ],
+ "pool_types": {
+  "Swords to Plowshares": "Instant",
+  "Serra Angel": "Creature — Angel",
+  "Pacifism": "Enchantment — Aura",
+  "Path to Exile": "Instant",
+  "Ajani's Pridemate": "Creature — Cat Soldier",
+  "Glorious Anthem": "Enchantment",
+  "Banishing Light": "Enchantment",
+  "Wrath of God": "Sorcery",
+  "Counterspell": "Instant",
+  "Brainstorm": "Instant",
+  "Mulldrifter": "Creature — Elemental",
+  "Mana Drain": "Instant",
+  "Ponder": "Sorcery",
+  "Opt": "Instant",
+  "Fact or Fiction": "Instant",
+  "Doom Blade": "Instant",
+  "Duress": "Sorcery",
+  "Pestilence": "Enchantment",
+  "Feed the Swarm": "Sorcery",
+  "Lightning Bolt": "Instant",
+  "Fireball": "Sorcery",
+  "Fiery Temper": "Instant",
+  "Blasphemous Act": "Sorcery",
+  "Chaos Warp": "Instant",
+  "Dragon Tempest": "Enchantment",
+  "Llanowar Elves": "Creature — Elf Druid",
+  "Giant Growth": "Instant",
+  "Rancor": "Enchantment — Aura",
+  "Kodama's Reach": "Sorcery — Arcane",
+  "Beast Within": "Instant",
+  "Cultivate": "Sorcery",
+  "Rampant Growth": "Sorcery",
+  "Prey Upon": "Sorcery",
+  "Lignify": "Enchantment Kindred — Treefolk Aura",
+  "Eternal Witness": "Creature — Human Shaman",
+  "Exploration": "Enchantment",
+  "Kolaghan's Command": "Instant",
+  "Sol Ring": "Artifact",
+  "Arcane Signet": "Artifact",
+  "Swiftfoot Boots": "Artifact — Equipment",
+  "Fellwar Stone": "Artifact",
+  "Skullclamp": "Artifact — Equipment",
+  "Howling Mine": "Artifact"
+ },
  "bosses": [
   {
    "id": "skrix_nest",
@@ -504,7 +1002,10 @@
    "life_per_hero": 30,
    "hand": 9,
    "line": "My children are hungry.",
-   "art": { "card": "Ashcoat of the Shadow Swarm", "oracle_id": "9cc69ea5-42a2-4306-ac6d-cff5adb20bcb" },
+   "art": {
+    "card": "Ashcoat of the Shadow Swarm",
+    "oracle_id": "9cc69ea5-42a2-4306-ac6d-cff5adb20bcb"
+   },
    "deck": [
     [
      "Swamp",
@@ -585,7 +1086,10 @@
    "life_per_hero": 30,
    "hand": 10,
    "line": "Moss grows on the bones of the bold.",
-   "art": { "card": "Thrun, Breaker of Silence", "oracle_id": "789b7af5-ac15-40b6-b5b7-f3fcdcfb52e1" },
+   "art": {
+    "card": "Thrun, Breaker of Silence",
+    "oracle_id": "789b7af5-ac15-40b6-b5b7-f3fcdcfb52e1"
+   },
    "deck": [
     [
      "Forest",
@@ -671,7 +1175,10 @@
    "enrage": "deaths_toll",
    "relic": "bone_reliquary",
    "line": "Rise, all of you. Rise and feast.",
-   "art": { "card": "Gisa, the Hellraiser", "oracle_id": "696363c9-e8a7-4c65-b65c-4a94891ec43d" },
+   "art": {
+    "card": "Gisa, the Hellraiser",
+    "oracle_id": "696363c9-e8a7-4c65-b65c-4a94891ec43d"
+   },
    "deck": [
     [
      "Swamp",
@@ -760,7 +1267,10 @@
    "enrage": "kings_fury",
    "relic": "crown_of_cinders",
    "line": "Kneel, or be eaten. Or both!",
-   "art": { "card": "Krenko, Tin Street Kingpin", "oracle_id": "e8065e1d-e937-4b56-8011-78f0d07328a0" },
+   "art": {
+    "card": "Krenko, Tin Street Kingpin",
+    "oracle_id": "e8065e1d-e937-4b56-8011-78f0d07328a0"
+   },
    "phases": [
     [
      "warren_wakes",

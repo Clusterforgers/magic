@@ -15,7 +15,9 @@ use axum::Json;
 use axum::extract::rejection::PathRejection;
 use axum::extract::{Path, Request, State};
 use axum::http::{HeaderMap, StatusCode};
-use mtg_campaign::{Brain, Content, FightPlan, Forfeit, HeroDeck, Run, RunEvent, Status, content};
+use mtg_campaign::{
+    Brain, Content, DeckMakeup, FightPlan, Forfeit, HeroDeck, Run, RunEvent, Status, content,
+};
 use mtg_cards::CardDefinition;
 use mtg_core::color::Color;
 use mtg_core::ids::PlayerId;
@@ -191,7 +193,20 @@ fn hero_deck(id: String, chosen: &ChosenDeck) -> HeroDeck {
             .iter()
             .map(|card| commander_facts(card))
             .collect(),
+        makeup: Some(deck_makeup(chosen)),
     }
+}
+
+/// What the deck is made of, its commanders and library counted card by card, for the relic offers.
+fn deck_makeup(chosen: &ChosenDeck) -> DeckMakeup {
+    let mut makeup = DeckMakeup::default();
+    for card in chosen.commanders() {
+        makeup.add_card(card, true);
+    }
+    for card in chosen.cards() {
+        makeup.add_card(card, false);
+    }
+    makeup
 }
 
 /// What a commander card is, as far as its run upgrades go.
@@ -450,7 +465,10 @@ async fn hero_decks(
         match resolve_as(app, deck_owner(loaded, at), &deck.id).await {
             Ok(chosen) => {
                 let added = cards_named(app, &hero.satchel).await?;
-                decks.push(chosen.with_satchel(&added).map_err(|error| {
+                let played = chosen
+                    .without(&hero.lost)
+                    .and_then(|deck| deck.with_satchel(&added));
+                decks.push(played.map_err(|error| {
                     tracing::error!(%error, "a hero's deck could not be fingerprinted");
                     ApiError::internal()
                 })?);
@@ -622,8 +640,9 @@ fn view(loaded: &Loaded, user: UserId, deck_problems: Vec<DelveDeckProblem>) -> 
     }
 }
 
-/// The cards `hero` may copy at the Mirror Pool while that is their first offer: their deck's nonland cards and their
-/// Satchel, each name once, in name order; empty otherwise, and the Satchel alone when the deck no longer plays.
+/// The cards `hero` may copy at the Mirror Pool or give up for an event's cost while that is their first offer: their
+/// deck's nonland cards (less the copies given up) and their Satchel, each name once, in name order; empty otherwise, and
+/// the Satchel alone when the deck no longer plays.
 async fn mirror_cards(
     app: &AppState,
     loaded: &Loaded,
@@ -632,19 +651,28 @@ async fn mirror_cards(
     let Some(h) = loaded.run.heroes.get(hero) else {
         return Ok(Vec::new());
     };
-    if h.offers.first() != Some(&mtg_campaign::Offer::Duplicate) {
+    if !matches!(
+        h.offers.first(),
+        Some(mtg_campaign::Offer::Duplicate | mtg_campaign::Offer::Discard)
+    ) {
         return Ok(Vec::new());
     }
     let mut names: BTreeSet<String> = h.satchel.iter().cloned().collect();
     if let Some(deck) = h.deck.as_ref() {
         match resolve_as(app, deck_owner(loaded, hero), &deck.id).await {
-            Ok(chosen) => names.extend(
-                chosen
-                    .cards()
-                    .iter()
-                    .filter(|card| !card.types.contains(&mtg_core::card::CardType::Land))
-                    .map(|card| card.name.clone()),
-            ),
+            Ok(chosen) => {
+                let played = chosen.without(&h.lost).map_err(|error| {
+                    tracing::error!(%error, "a hero's deck could not be fingerprinted");
+                    ApiError::internal()
+                })?;
+                names.extend(
+                    played
+                        .cards()
+                        .iter()
+                        .filter(|card| !card.types.contains(&mtg_core::card::CardType::Land))
+                        .map(|card| card.name.clone()),
+                );
+            }
             Err(Refused::Failed(error)) => return Err(error),
             Err(_) => {}
         }
@@ -685,6 +713,7 @@ pub(crate) async fn content_of() -> Result<Json<DelveContent>, ApiError> {
                 art: card.art.clone(),
                 role: card.role.clone(),
                 price: card.price,
+                rarity: card.rarity,
                 turn: card.turn,
             })
             .collect(),
@@ -720,6 +749,8 @@ pub(crate) async fn content_of() -> Result<Json<DelveContent>, ApiError> {
                         outcomes: o.outcomes.clone(),
                         needs: o.needs(),
                         summary: o.summary(),
+                        cost: o.cost(),
+                        reward: o.reward(),
                     })
                     .collect(),
             })
@@ -922,7 +953,7 @@ async fn pick_event(
     member: u8,
     pick: mtg_campaign::Pick,
 ) -> Result<RunEvent, ApiError> {
-    if let mtg_campaign::Pick::Duplicate(card) = &pick
+    if let mtg_campaign::Pick::Duplicate(card) | mtg_campaign::Pick::Discard(card) = &pick
         && !mirror_cards(app, loaded, usize::from(member))
             .await?
             .contains(card)

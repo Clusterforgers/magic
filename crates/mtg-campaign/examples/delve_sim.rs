@@ -464,6 +464,7 @@ fn lobby(seed: u64, heroes: usize, heat: u8) -> (Run, Vec<RunEvent>) {
                 name: deck.name,
                 colors: colors.into(),
                 commanders: Vec::new(),
+                makeup: None,
             },
         });
     }

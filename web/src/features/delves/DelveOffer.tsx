@@ -1,7 +1,7 @@
 /**
  * The first choice waiting for the player, each as a scene of its own: the loot's card and relic picks as cards, the
- * goblin trader's wares, the campfire's paths (rest, reforge, temper a commander), the Mirror Pool's copy and an event
- * as a story card with its choices.
+ * goblin trader's wares, the campfire's paths (rest, reforge, temper a commander), the Mirror Pool's copy, an event
+ * as a story card with its choices, and the card or relic an event's bargain takes.
  */
 import {
   CoinsIcon,
@@ -15,6 +15,7 @@ import {
   ScrollTextIcon,
   SparklesIcon,
   StoreIcon,
+  Trash2Icon,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useState } from 'react'
@@ -22,10 +23,11 @@ import type { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
-import type { CustomCardView, DelveContent, Offer, Pick, Upgrade } from '@/protocol/generated'
+import type { CustomCardView, DelveContent, Hero, Offer, Pick, Upgrade } from '@/protocol/generated'
 import { CustomCardFrame } from './CustomCardFrame'
-import { isRisky, MAX_LIFE } from './model'
+import { customCard, isRisky, MAX_LIFE, maxLifeOf } from './model'
 import { EventScene } from './EventScene'
+import { heroFacts } from './eventEffects'
 import { NamedCard } from './NamedCard'
 import type { FindCard } from './findCard'
 import { UPGRADE_PRICE, upgradeWords } from './upgrades'
@@ -36,22 +38,6 @@ export const DRAUGHT_PRICE = 30
 /** Life a campfire rest and a draught heal (`docs/delves.md`, Shape). */
 export const REST_HEAL = 20
 export const DRAUGHT_HEAL = 15
-
-function card(content: DelveContent, id: string): CustomCardView {
-  return (
-    content.cards.find((c) => c.id === id) ?? {
-      id,
-      name: id,
-      kind: 'Relic',
-      type_line: 'Relic',
-      text: '',
-      art: '',
-      role: '',
-      price: 0,
-      turn: 0,
-    }
-  )
-}
 
 /** A scene of the run: an emblem, a title, a line of what it is and the player's gold, over the dungeon's stone. */
 function Scene({
@@ -181,8 +167,6 @@ function MirrorPool({
   busy: boolean
   onPick: (pick: Pick) => void
 }) {
-  const [filter, setFilter] = useState('')
-  const shown = cards.filter((name) => name.toLowerCase().includes(filter.trim().toLowerCase()))
   return (
     <Scene
       label="Mirror Pool"
@@ -190,6 +174,45 @@ function MirrorPool({
       title="The Mirror Pool"
       blurb="Choose a card of your deck or Satchel: a copy joins your Satchel for the rest of the run."
     >
+      <CardFinder
+        cards={cards}
+        list="Cards to copy"
+        verb="Copy"
+        busy={busy}
+        onChoose={(name) => onPick({ Duplicate: name })}
+      />
+      {cards.length === 0 ? (
+        <p className="text-sm text-muted-foreground">The water shows nothing to copy.</p>
+      ) : null}
+      <Button variant="ghost" className="justify-self-start" disabled={busy} onClick={() => onPick('Skip')}>
+        Leave the pool
+      </Button>
+    </Scene>
+  )
+}
+
+/** A name filter over a list of card names, each a button; with `chosen` (empty for none yet) each is a toggle. */
+function CardFinder({
+  cards,
+  list,
+  verb,
+  chosen,
+  busy,
+  onChoose,
+}: {
+  cards: readonly string[]
+  /** The list's accessible name. */
+  list: string
+  /** What a press does to the card, for its accessible name: "Copy". */
+  verb: string
+  chosen?: string
+  busy: boolean
+  onChoose: (name: string) => void
+}) {
+  const [filter, setFilter] = useState('')
+  const shown = cards.filter((name) => name.toLowerCase().includes(filter.trim().toLowerCase()))
+  return (
+    <>
       <Input
         type="search"
         aria-label="Find a card"
@@ -198,31 +221,108 @@ function MirrorPool({
         onChange={(event) => setFilter(event.target.value)}
         className="max-w-xs"
       />
-      <ul
-        aria-label="Cards to copy"
-        className="grid max-h-80 gap-1 overflow-y-auto sm:grid-cols-2 lg:grid-cols-3"
-      >
+      <ul aria-label={list} className="grid max-h-80 gap-1 overflow-y-auto sm:grid-cols-2 lg:grid-cols-3">
         {shown.map((name) => (
           <li key={name}>
             <Button
-              variant="outline"
+              variant={chosen === name ? 'destructive' : 'outline'}
               size="sm"
               className="w-full justify-start"
               disabled={busy}
-              onClick={() => onPick({ Duplicate: name })}
-              aria-label={`Copy ${name}`}
+              aria-pressed={chosen === undefined ? undefined : chosen === name}
+              onClick={() => onChoose(name)}
+              aria-label={`${verb} ${name}`}
             >
               {name}
             </Button>
           </li>
         ))}
       </ul>
+    </>
+  )
+}
+
+/** An event's price of a card: one of the deck or Satchel to give up for the rest of the run, chosen, then confirmed. */
+function DiscardScene({
+  cards,
+  busy,
+  onPick,
+}: {
+  cards: readonly string[]
+  busy: boolean
+  onPick: (pick: Pick) => void
+}) {
+  const [chosen, setChosen] = useState<string>()
+  return (
+    <Scene
+      label="Give up a card"
+      icon={Trash2Icon}
+      title="Give up a card"
+      blurb="The bargain is struck. Choose a card of your deck or Satchel: it is gone for the rest of the run."
+    >
+      <CardFinder
+        cards={cards}
+        list="Cards to give up"
+        verb="Choose"
+        chosen={chosen ?? ''}
+        busy={busy}
+        onChoose={setChosen}
+      />
       {cards.length === 0 ? (
-        <p className="text-sm text-muted-foreground">The water shows nothing to copy.</p>
+        <p className="text-sm text-muted-foreground">You hold no card to give up.</p>
       ) : null}
-      <Button variant="ghost" className="justify-self-start" disabled={busy} onClick={() => onPick('Skip')}>
-        Leave the pool
+      <Button
+        variant="destructive"
+        className="justify-self-start"
+        disabled={busy || chosen === undefined}
+        onClick={() => {
+          if (chosen === undefined) return
+          // A second Discard offer may follow: it starts with no card chosen.
+          setChosen(undefined)
+          onPick({ Discard: chosen })
+        }}
+      >
+        {chosen === undefined ? 'Choose a card to give up' : `Give up ${chosen}`}
       </Button>
+    </Scene>
+  )
+}
+
+/** An event's price of a relic: one of the hero's relics to give up, as cards with their rarity. */
+function SurrenderScene({
+  relics,
+  busy,
+  onTake,
+}: {
+  relics: readonly CustomCardView[]
+  busy: boolean
+  onTake: (i: number) => void
+}) {
+  return (
+    <Scene
+      label="Give up a relic"
+      icon={GemIcon}
+      title="Give up a relic"
+      blurb="The bargain is struck. Choose one of your relics: it is gone for the rest of the run."
+    >
+      <ul className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:gap-4">
+        {relics.map((relic, i) => (
+          <li key={`${relic.id}-${i}`}>
+            <CustomCardFrame card={relic}>
+              <Button
+                size="sm"
+                className="flex-1"
+                variant="destructive"
+                disabled={busy}
+                onClick={() => onTake(i)}
+                aria-label={`Give up ${relic.name}`}
+              >
+                Give up
+              </Button>
+            </CustomCardFrame>
+          </li>
+        ))}
+      </ul>
     </Scene>
   )
 }
@@ -235,6 +335,7 @@ export function DelveOffer({
   busy,
   find,
   mirror = NO_CARDS,
+  hero,
   onPick,
 }: {
   offer: Offer
@@ -245,17 +346,29 @@ export function DelveOffer({
   busy: boolean
   /** Finds offered cards' pictures; the card search by default. */
   find?: FindCard
-  /** The cards the Mirror Pool may copy: the deck's nonland cards and the Satchel (`DelveView.mirror`). */
+  /**
+   * The cards the Mirror Pool may copy and a Discard may give up: the deck's nonland cards and the Satchel
+   * (`DelveView.mirror`).
+   */
   mirror?: readonly string[]
+  /** The hero the offer is for, whose life cap, relics and commander gate an event's choices. */
+  hero?: Hero
   onPick: (pick: Pick) => void
 }) {
   const take = (i: number) => onPick({ Take: i })
   if (offer === 'Duplicate') {
     return <MirrorPool cards={mirror} busy={busy} onPick={onPick} />
   }
+  if (offer === 'Discard') {
+    return <DiscardScene cards={mirror} busy={busy} onPick={onPick} />
+  }
+  if ('Surrender' in offer) {
+    const relics = offer.Surrender.relics.map((id) => customCard(content, id))
+    return <SurrenderScene relics={relics} busy={busy} onTake={take} />
+  }
   if ('Campfire' in offer) {
     const { upgrades } = offer.Campfire
-    const healed = life === undefined ? null : Math.min(MAX_LIFE, life + REST_HEAL)
+    const healed = life === undefined ? null : Math.min(hero ? maxLifeOf(hero) : MAX_LIFE, life + REST_HEAL)
     return (
       <Scene
         label="Campfire"
@@ -316,7 +429,7 @@ export function DelveOffer({
     )
   }
   if ('Relics' in offer) {
-    const relics = offer.Relics.relics.map((id) => card(content, id))
+    const relics = offer.Relics.relics.map((id) => customCard(content, id))
     return (
       <Scene
         label="Relic pick"
@@ -439,7 +552,7 @@ export function DelveOffer({
                 </li>
               )
             }
-            const relic = card(content, item.Relic.id)
+            const relic = customCard(content, item.Relic.id)
             const short = gold < item.Relic.price
             return (
               <li key={item.Relic.id} data-slot="shop-offer" className="flex flex-col gap-2">
@@ -475,7 +588,12 @@ export function DelveOffer({
   const event = content.events.find((e) => e.id === offer.Event.event)
   return (
     <Scene label="Event" icon={ScrollTextIcon} title={event?.title ?? 'An event'} gold={gold}>
-      <EventScene event={event} gold={gold} life={life} busy={busy} onPick={take} />
+      <EventScene
+        event={event}
+        hero={hero ? heroFacts(hero) : { gold, life: life ?? Number.MAX_SAFE_INTEGER }}
+        busy={busy}
+        onPick={take}
+      />
     </Scene>
   )
 }

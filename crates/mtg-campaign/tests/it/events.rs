@@ -73,8 +73,8 @@ fn an_outcome_reads_in_plain_words(#[case] outcome: Outcome, #[case] words: &str
 
 #[rstest]
 #[case::nothing(vec![], "nothing", Needs::default())]
-#[case::a_payment(vec![Gold(-25), CardPick], "−25 gold, a card for your Satchel", Needs { gold: 25, life: 0 })]
-#[case::a_sure_life_cost(vec![Life(-8), Gold(40)], "−8 life, +40 gold", Needs { gold: 0, life: 8 })]
+#[case::a_payment(vec![Gold(-25), CardPick], "−25 gold, a card for your Satchel", Needs { gold: 25, life: 0, ..Needs::default() })]
+#[case::a_sure_life_cost(vec![Life(-8), Gold(40)], "−8 life, +40 gold", Needs { gold: 0, life: 8, ..Needs::default() })]
 #[case::a_gain(vec![Gold(30)], "+30 gold", Needs::default())]
 #[case::a_gamble_is_a_risk_not_a_cost(
     vec![Gamble { odds: 50, win: vec![Relic], lose: vec![Life(-8), Gold(-9)] }],
@@ -95,7 +95,11 @@ fn an_option_summarises_its_outcomes_and_needs_its_sure_costs(
 #[case::enough_gold(25, 40, None)]
 #[case::short_of_gold(24, 40, Some("needs 25 gold, you have 24"))]
 fn a_gold_cost_needs_the_gold(#[case] gold: u32, #[case] life: i32, #[case] unmet: Option<&str>) {
-    let needs = Needs { gold: 25, life: 0 };
+    let needs = Needs {
+        gold: 25,
+        life: 0,
+        ..Needs::default()
+    };
     assert_eq!(needs.unmet(gold, life).as_deref(), unmet);
 }
 
@@ -104,7 +108,11 @@ fn a_gold_cost_needs_the_gold(#[case] gold: u32, #[case] life: i32, #[case] unme
 #[case::exactly_the_cost(8, Some("needs more than 8 life, you have 8"))]
 #[case::less(3, Some("needs more than 8 life, you have 3"))]
 fn a_life_cost_leaves_the_hero_standing(#[case] life: i32, #[case] unmet: Option<&str>) {
-    let needs = Needs { gold: 0, life: 8 };
+    let needs = Needs {
+        gold: 0,
+        life: 8,
+        ..Needs::default()
+    };
     assert_eq!(needs.unmet(500, life).as_deref(), unmet);
 }
 
@@ -130,6 +138,7 @@ fn at_event(content: &Content, event: &str, gold: u32, life: i32, bots: usize) -
                 name: "Deck".into(),
                 colors: "RG".into(),
                 commanders: Vec::new(),
+                makeup: None,
             },
         });
     }

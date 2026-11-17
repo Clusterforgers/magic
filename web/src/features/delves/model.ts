@@ -114,6 +114,9 @@ export const MAX_LIFE = 40
 /** The hearts a party starts with. */
 export const HEARTS = 3
 
+/** A hero's life cap: the base moved by the events that cut or raised it. */
+export const maxLifeOf = (hero: Pick<Hero, 'life_cap'>): number => MAX_LIFE + hero.life_cap
+
 /** The share of a life bar a life fills, 0 to 1. */
 export const lifeShare = (life: number, max = MAX_LIFE): number => Math.max(0, Math.min(1, life / max))
 
@@ -146,6 +149,24 @@ export const lettersOf = (entry: DeckEntry): string => (entry.identity ?? []).jo
 
 /** Whether a card is a risky relic: its effect is symmetrical and helps the boss too. */
 export const isRisky = (card: Pick<CustomCardView, 'role'>): boolean => card.role === 'Risky'
+
+/** A card of the content by id; a plain common relic of that name when the content lacks it. */
+export function customCard(content: Pick<DelveContent, 'cards'>, id: string): CustomCardView {
+  return (
+    content.cards.find((c) => c.id === id) ?? {
+      id,
+      name: id,
+      kind: 'Relic',
+      type_line: 'Relic',
+      text: '',
+      art: '',
+      role: '',
+      price: 0,
+      rarity: 'Common',
+      turn: 0,
+    }
+  )
+}
 
 /**
  * The boss's abilities for the intro of a fight, from the plan its game is made with: each custom card in its command

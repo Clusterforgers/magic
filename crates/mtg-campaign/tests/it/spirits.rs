@@ -505,3 +505,60 @@ fn the_boss_bot_attacks_only_the_living() -> Result<(), ScriptError> {
     }
     Ok(())
 }
+
+/// Passes priority until the stack is empty.
+fn settle(driver: &mut Driver) -> Result<(), ScriptError> {
+    for _ in 0..40 {
+        if driver.state().stack().is_empty() && driver.state().resolving().is_none() {
+            return Ok(());
+        }
+        driver.pass()?;
+    }
+    Err(ScriptError::Stuck("the stack".into()))
+}
+
+#[rstest]
+fn a_revived_spirit_loses_life_from_the_life_it_returned_with(
+    #[values(2, 3)] heroes: usize,
+) -> Result<(), ScriptError> {
+    // Seat 0 is a Spirit at -5; seat 1 holds the Phoenix Feather, a Mountain and a Bolt; the boss sits last.
+    let boss = heroes;
+    let mut seats = vec![0; heroes];
+    seats.push(1);
+    let house = HouseRules {
+        teams: Some(Teams {
+            mode: TeamMode::Teams,
+            seats,
+        }),
+        ..HouseRules::default()
+    };
+    let mut scenario = Scenario::new(heroes + 1)
+        .house_rules(house)
+        .life(0, -5)
+        .life(boss, 40)
+        .emblems(1, [custom("phoenix_feather")])
+        .battlefield(1, [ready(free_creature("Squire", 2, 2)), ready(mountain())])
+        .hand(1, [burn("Bolt", 3)])
+        .battlefield(boss, [ready(free_creature("Brute", 3, 3))]);
+    for seat in 0..heroes {
+        scenario = scenario.spirit(seat, custom("restless_spirit"));
+        if seat > 0 {
+            scenario = scenario.life(seat, 20);
+        }
+    }
+    for seat in 0..=heroes {
+        scenario = scenario.library(seat, (0..20).map(|_| mountain()));
+    }
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.idle_until(2, Step::Main1)?;
+    assert!(driver.state().player(pid(0)).unwrap().is_spirit());
+    driver.begin_ability("Phoenix Feather", 0)?;
+    settle(&mut driver)?;
+    assert_eq!(driver.state().player(pid(0)).unwrap().life(), 8);
+    // The Driver checks the life history after every answer: the Bolt takes 3 from the 8 the Spirit returned with.
+    let target = driver.target_player(0);
+    driver.cast_at("Bolt", &[target])?;
+    settle(&mut driver)?;
+    assert_eq!(driver.state().player(pid(0)).unwrap().life(), 5);
+    Ok(())
+}

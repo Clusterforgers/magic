@@ -25,4 +25,8 @@ upgrades: Array<Upgrade>, } } | "Duplicate" | { "Event": {
 /**
  * The event's id.
  */
-event: string, } };
+event: string, } } | "Discard" | { "Surrender": { 
+/**
+ * The relics the hero holds.
+ */
+relics: Array<string>, } };

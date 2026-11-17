@@ -1,6 +1,6 @@
 /** Runs and content for the Delves tests: a run in any state and a client that answers from memory. */
 import type { DelvesApi } from '@/net/delves'
-import type { DelveAction, DelveContent, DelveView, Hero, Run } from '@/protocol/generated'
+import type { DelveAction, DelveContent, DelveView, Hero, Needs, Run } from '@/protocol/generated'
 
 export const CONTENT: DelveContent = {
   theme: 'The Warrens',
@@ -15,6 +15,7 @@ export const CONTENT: DelveContent = {
       art: 'skrix',
       role: '',
       price: 0,
+      rarity: 'Common',
       turn: 0,
     },
     {
@@ -26,6 +27,7 @@ export const CONTENT: DelveContent = {
       art: 'nest',
       role: '',
       price: 0,
+      rarity: 'Common',
       turn: 0,
     },
     {
@@ -37,6 +39,7 @@ export const CONTENT: DelveContent = {
       art: 'idol',
       role: 'Damage',
       price: 70,
+      rarity: 'Rare',
       turn: 0,
     },
     {
@@ -48,6 +51,7 @@ export const CONTENT: DelveContent = {
       art: 'pact',
       role: 'Risky',
       price: 0,
+      rarity: 'Mythic',
       turn: 0,
     },
   ],
@@ -82,25 +86,98 @@ export const CONTENT: DelveContent = {
         {
           label: 'Pay the toll',
           outcomes: [{ Gold: -25 }, 'CardPick'],
-          needs: { gold: 25, life: 0 },
+          needs: needs({ gold: 25 }),
           summary: '−25 gold, a card for your Satchel',
+          cost: '25 gold',
+          reward: 'a card for your Satchel',
         },
         {
           label: 'Push past',
           outcomes: [{ Life: -8 }, { Gold: 40 }],
-          needs: { gold: 0, life: 8 },
+          needs: needs({ life: 8 }),
           summary: '−8 life, +40 gold',
+          cost: '8 life',
+          reward: '40 gold',
         },
         {
           label: 'Reach into the sack',
           outcomes: [{ Gamble: { odds: 50, win: ['Relic'], lose: [{ Life: -10 }] } }],
-          needs: { gold: 0, life: 0 },
+          needs: needs(),
           summary: '50%: a relic · 50%: −10 life',
+          cost: 'nothing',
+          reward: '50%: a relic · 50%: −10 life',
         },
-        { label: 'Turn back', outcomes: [], needs: { gold: 0, life: 0 }, summary: 'nothing' },
+        {
+          label: 'Turn back',
+          outcomes: [],
+          needs: needs(),
+          summary: 'nothing',
+          cost: 'nothing',
+          reward: 'nothing',
+        },
+      ],
+    },
+    {
+      id: 'bargain',
+      title: 'The Hollow Bargain',
+      text: 'A voice offers power for a price.',
+      options: [
+        {
+          label: 'Bleed for it',
+          outcomes: [{ MaxLife: -5 }, { RelicOf: 'Mythic' }],
+          needs: needs({ max_life: 5 }),
+          summary: '−5 max life, a Mythic relic',
+          cost: '5 max life for the run',
+          reward: 'a Mythic relic',
+        },
+        {
+          label: 'Burn a card',
+          outcomes: ['LoseCard', { RelicOf: 'Rare' }],
+          needs: needs(),
+          summary: 'give up a card, a Rare relic',
+          cost: 'a card of your deck or Satchel',
+          reward: 'a Rare relic',
+        },
+        {
+          label: 'Trade a relic',
+          outcomes: ['LoseRelic', { Gold: 80 }],
+          needs: needs({ relic: true }),
+          summary: 'give up a relic, +80 gold',
+          cost: 'a relic',
+          reward: '80 gold',
+        },
+        {
+          label: 'Weaken your champion',
+          outcomes: [{ Bane: { Shrink: 1 } }, { RelicOf: 'Common' }],
+          needs: needs({ commander: true, creature_commander: true }),
+          summary: 'your commander gets −1/−1, a Common relic',
+          cost: 'your commander gets −1/−1',
+          reward: 'a Common relic',
+        },
+        {
+          label: 'Tax your champion',
+          outcomes: [{ Bane: { Tax: 1 } }, { Gold: 30 }],
+          needs: needs({ commander: true }),
+          summary: 'your commander costs {1} more, +30 gold',
+          cost: 'your commander costs {1} more to cast',
+          reward: '30 gold',
+        },
       ],
     },
   ],
+}
+
+/** What an option asks of a hero: nothing but what `over` names. */
+export function needs(over: Partial<Needs> = {}): Needs {
+  return {
+    gold: 0,
+    life: 0,
+    max_life: 0,
+    relic: false,
+    commander: false,
+    creature_commander: false,
+    ...over,
+  }
 }
 
 export function hero(over: Partial<Hero> = {}): Hero {
@@ -115,6 +192,8 @@ export function hero(over: Partial<Hero> = {}): Hero {
     satchel: [],
     upgrades: [],
     offers: [],
+    life_cap: 0,
+    lost: [],
     ...over,
   }
 }

@@ -1,27 +1,43 @@
-/** An event: its story, then each choice as a card that says plainly what it gives, costs or risks, and why it is shut. */
+/** An event: its story, then each choice as a card that says plainly what it costs and what it gives or risks, and why it is shut. */
 import { ScrollTextIcon } from 'lucide-react'
+import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
-import type { DelveEventView } from '@/protocol/generated'
-import { Effects } from './EffectChips'
+import type { DelveEventView, DelveOptionView } from '@/protocol/generated'
+import { EffectChip, Effects } from './EffectChips'
 import { isEmpty, optionViews } from './eventEffects'
-import type { OptionView } from './eventEffects'
+import type { HeroFacts, OptionView } from './eventEffects'
+
+/** One side of a choice: its heading over its chips. */
+function Side({ side, children }: { side: 'cost' | 'reward'; children: ReactNode }) {
+  return (
+    <span data-side={side} className="grid content-start gap-1">
+      <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+        {side === 'cost' ? 'Cost' : 'Reward'}
+      </span>
+      {children}
+    </span>
+  )
+}
 
 function Choice({
   index,
   option,
-  summary,
+  words,
   busy,
   onPick,
 }: {
   index: number
   option: OptionView
-  /** The server's words for what the option does, read out with it. */
-  summary: string
+  /** The server's words for what the option costs and gives, read out with it. */
+  words: Pick<DelveOptionView, 'cost' | 'reward'> | undefined
   busy: boolean
   onPick: () => void
 }) {
   const id = `event-option-${index}`
   const shut = option.blocked !== null
+  const nothing = isEmpty(option.part)
+  const said =
+    nothing || words === undefined ? 'Nothing happens' : `Cost: ${words.cost}. Reward: ${words.reward}`
   return (
     <li>
       <button
@@ -47,16 +63,37 @@ function Choice({
           </span>
           <span className="font-semibold">{option.label}</span>
         </span>
-        <span aria-hidden="true" className="grid gap-1">
-          {isEmpty(option.part) ? (
+        <span aria-hidden="true" className="grid gap-2">
+          {nothing ? (
             <span className="text-sm text-muted-foreground">Nothing happens.</span>
           ) : (
-            <Effects part={option.part} />
+            <span className="grid gap-x-4 gap-y-2 sm:grid-cols-2">
+              <Side side="cost">
+                {option.cost.length === 0 ? (
+                  <span data-free="" className="text-sm font-semibold text-success">
+                    Free
+                  </span>
+                ) : (
+                  <span className="flex flex-wrap items-center gap-2">
+                    {option.cost.map((chip, i) => (
+                      <EffectChip key={`${chip.kind}-${i}`} chip={chip} />
+                    ))}
+                  </span>
+                )}
+              </Side>
+              <Side side="reward">
+                {isEmpty(option.reward) ? (
+                  <span className="text-sm text-muted-foreground">Nothing</span>
+                ) : (
+                  <Effects part={option.reward} />
+                )}
+              </Side>
+            </span>
           )}
           {shut ? <span className="text-sm font-medium text-destructive">{option.blocked}</span> : null}
         </span>
         <span id={`${id}-says`} className="sr-only">
-          {isEmpty(option.part) ? 'Nothing happens' : summary}
+          {said}
           {shut ? `. ${option.blocked}` : ''}
         </span>
       </button>
@@ -64,22 +101,20 @@ function Choice({
   )
 }
 
-/** The event card of the run page: the story in a quote, then the choices with their effects. */
+/** The event card of the run page: the story in a quote, then the choices with their costs and rewards. */
 export function EventScene({
   event,
-  gold,
-  life,
+  hero,
   busy,
   onPick,
 }: {
   event: DelveEventView | undefined
-  gold: number
-  /** The hero's life; the gold alone gates an option when it is unknown. */
-  life: number | undefined
+  /** What gates the hero's choices; a fact left out never shuts one. */
+  hero: HeroFacts
   busy: boolean
   onPick: (option: number) => void
 }) {
-  const options = optionViews(event?.options ?? [], gold, life ?? Number.MAX_SAFE_INTEGER)
+  const options = optionViews(event?.options ?? [], hero)
   return (
     <article className="mx-auto grid w-full max-w-prose gap-4 rounded-xl border-2 border-relic bg-surface p-4 shadow-e2 sm:p-6">
       <p className="flex gap-2 text-sm italic leading-relaxed text-muted-foreground">
@@ -99,7 +134,7 @@ export function EventScene({
               key={option.label}
               index={i}
               option={option}
-              summary={event?.options[i]?.summary ?? ''}
+              words={event?.options[i]}
               busy={busy}
               onPick={() => onPick(i)}
             />
