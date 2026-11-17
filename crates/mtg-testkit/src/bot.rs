@@ -614,6 +614,9 @@ impl RandomBot {
             DecisionKind::ChooseCards(options) if options.text.starts_with("Forage:") => {
                 self.r5515_forage(options, state)
             }
+            DecisionKind::Loop(options) => {
+                crate::loop_answer::loop_answer_in(state, decision.player, options)
+            }
             _ => self.choose(decision),
         }
     }

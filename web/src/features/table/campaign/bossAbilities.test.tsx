@@ -1,4 +1,4 @@
-// Goal: every boss of the shipped roster shows each of its abilities in plain words from the content the engine plays (its passive, its own Enrage with the heroes' turn it begins on, Escalation, this fight's modifier, its relic, its phases to come with the share of life at which each begins, the scheme in motion and the Omen with when it comes), as a one-line summary on the table's bar and in full on the intro list; an emblem given twice is listed once with its count; a boss's own triggers are named "Boss: ability" in the log.
+// Goal: every boss of the shipped roster shows each of its abilities in plain words from the content the engine plays (its passive, its own Enrage with the heroes' turn it begins on, Escalation, this fight's modifier, its relic, its phases to come with the share of life at which each begins, the scheme in motion and the Omen with when it comes), as a one-line summary on the table's bar and in full on the intro list; an emblem given twice is listed once with its count; a boss's own triggers are named "Boss: ability" in the log; its commander card is listed as "Phase III: card" until its last phase begins.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { render, screen, within } from '@testing-library/react'
@@ -11,6 +11,7 @@ import { withBoss } from '../dev/devGame'
 import { describeEvent } from '../eventText'
 import { bossAbilities, bossOwner, summaryOf } from './bossAbilities'
 import { BossAbilityList } from './BossAbilities'
+import { commanderLabel } from './bossPhase'
 import { DelveContentContext } from './useBossAbilities'
 
 const CONTENT_DIR = join(import.meta.dirname, '../../../../../crates/mtg-campaign/content')
@@ -50,7 +51,9 @@ interface RawTheme {
   modifiers: string[]
 }
 
-const cards = JSON.parse(readFileSync(join(CONTENT_DIR, 'cards.json'), 'utf8')) as RawCard[]
+const cards = ['cards.json', 'boss_cards.json'].flatMap(
+  (file) => JSON.parse(readFileSync(join(CONTENT_DIR, file), 'utf8')) as RawCard[],
+)
 const theme = JSON.parse(readFileSync(join(CONTENT_DIR, 'warrens.json'), 'utf8')) as RawTheme
 
 /** The content as `GET /api/delves/content` serves it, built from the same files. */
@@ -147,6 +150,29 @@ describe('bossAbilities over the shipped roster', () => {
     render(<BossAbilityList abilities={abilities} />)
     const list = within(screen.getByRole('list', { name: 'Boss abilities' }))
     for (const id of expected) expect(list.getByText(card(id).name)).toBeInTheDocument()
+  })
+
+  it.each([
+    ['before its phases', 0, true],
+    ['in its second phase', 1, true],
+    ['once its last phase began', 2, false],
+  ])('names its commander card with the phase it comes in %s', (_, begun, listed) => {
+    const [boss] = theme.bosses
+    if (boss === undefined) throw new Error('no boss')
+    const { player, objects } = bossSeat(boss)
+    const view = { ...player.boss, begun, commander: 'Ashcoat of the Shadow Swarm' }
+    const seat = { ...player, boss: view } as PlayerView
+    const entry = bossAbilities(seat, boss.name, objects, CONTENT).find((one) =>
+      one.key.startsWith('commander-'),
+    )
+    expect(entry?.name).toBe(listed ? 'Phase III: Ashcoat of the Shadow Swarm' : undefined)
+    if (listed) expect(entry?.when).toBe('With its last phase')
+  })
+
+  it('numbers the commander card by the boss’s own phases, the Last Bulwark aside', () => {
+    expect(commanderLabel(['Phase II — A', 'Phase III — B', 'Last Bulwark'], 'Akroma, Angel of Wrath')).toBe(
+      'Phase III: Akroma, Angel of Wrath',
+    )
   })
 
   it('lists an emblem given twice once, with its count', () => {

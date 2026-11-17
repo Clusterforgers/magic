@@ -3,6 +3,7 @@
 //! fresh party) or `runs` (whole runs, life carried and loot taken), a level `easy`, `normal`, `hard` or `veryhard`.
 //! The heroes play the four fixture Commander decks in turn; every game is untimed, so a result replays with its seed.
 //! Each fight reports its turns, the boss side's share of them and an estimate of its minutes at a human pace.
+//! A run plays the newest content generation (`DELVE_SIM_CONTENT` sets another); `DELVE_SIM_BOSSES` picks the bosses.
 #![allow(
     clippy::unwrap_used,
     clippy::expect_used,
@@ -449,7 +450,10 @@ impl Tally {
 /// A run in its lobby with `heroes` bot heroes on the precons; the first hero counts as the player.
 fn lobby(seed: u64, heroes: usize, heat: u8) -> (Run, Vec<RunEvent>) {
     let content = content().unwrap();
-    let mut events = Vec::new();
+    // `DELVE_SIM_CONTENT` plays a run of that content generation; a new run's by default.
+    let version = std::env::var("DELVE_SIM_CONTENT")
+        .map_or(mtg_campaign::run::CONTENT, |v| v.parse().unwrap());
+    let mut events = vec![RunEvent::Content { version }];
     for at in 0..heroes {
         events.push(RunEvent::Joined {
             name: format!("Hero {at}"),
@@ -486,7 +490,20 @@ fn main() {
     let heat: u8 = args.get(6).map_or(0, |a| a.parse().unwrap());
     let content = content().unwrap();
     let theme = &content.themes[0];
-    let bosses: Vec<String> = theme.bosses.iter().map(|b| b.id.clone()).collect();
+    // `DELVE_SIM_BOSSES` (comma-separated ids) plays only those bosses.
+    let only = std::env::var("DELVE_SIM_BOSSES").ok();
+    let bosses: Vec<String> = theme
+        .bosses
+        .iter()
+        .chain(&theme.upgraded)
+        .map(|b| b.id.clone())
+        .filter(|id| {
+            only.as_deref()
+                .map_or(!id.ends_with(mtg_campaign::content::UPGRADED), |only| {
+                    only.split(',').any(|o| o == id)
+                })
+        })
+        .collect();
     // (boss, won, turns) per fight, and per run the cleared bosses.
     let fights: Mutex<BTreeMap<String, Tally>> = Mutex::new(BTreeMap::new());
     let runs: Mutex<Vec<(usize, bool)>> = Mutex::new(Vec::new());
@@ -506,13 +523,23 @@ fn main() {
                         // The boss follows the seed, so one game from any seed meets the same boss as in a longer series.
                         let boss = &bosses[usize::try_from(seed - 1).unwrap() % bosses.len()];
                         let (mut run, _) = lobby(seed, heroes, heat);
-                        let node = run
-                            .map
-                            .nodes
-                            .iter()
-                            .find(|n| n.boss.as_deref() == Some(boss))
-                            .unwrap()
-                            .id;
+                        // A boss off this seed's ladder takes the place of the boss of its rank (the final one for a
+                        // final boss, else the first).
+                        let node = match run.map.nodes.iter().find(|n| n.boss.as_deref() == Some(boss)) {
+                            Some(node) => node.id,
+                            None => {
+                                let last = theme.boss(boss).unwrap().final_boss;
+                                let node = run
+                                    .map
+                                    .nodes
+                                    .iter_mut()
+                                    .filter(|n| n.boss.is_some())
+                                    .reduce(|first, n| if last { n } else { first })
+                                    .unwrap();
+                                node.boss = Some(boss.clone());
+                                node.id
+                            }
+                        };
                         run.at = Some(node);
                         // `DELVE_SIM_RANK` scales the boss as the one at that place on the ladder.
                         let rank = std::env::var("DELVE_SIM_RANK")

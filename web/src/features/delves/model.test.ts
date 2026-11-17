@@ -197,4 +197,18 @@ describe('introAbilities', () => {
     expect(abilities[1]?.when).toBe("From the heroes' turn 7")
     expect(abilities[3]?.text).toBe('Creatures you control get +0/+2.')
   })
+
+  it('names the commander card with the last phase and the life it comes at', () => {
+    const fight = {
+      boss: 'Skrix, the Rat Queen',
+      life: 60,
+      rules: ['skrix'],
+      phases: [['nest_stirs', 40] as [string, number], ['plague_tide', 20] as [string, number]],
+      commander: 'Ashcoat of the Shadow Swarm',
+      minions: [],
+    }
+    const last = introAbilities(DEV_BOSS_CONTENT, fight).at(-1)
+    expect(last?.name).toBe('Phase III: Ashcoat of the Shadow Swarm')
+    expect(last?.when).toBe('At 20 life')
+  })
 })

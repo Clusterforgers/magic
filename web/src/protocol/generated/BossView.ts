@@ -13,6 +13,10 @@ phases: Array<string>,
  */
 begun: number, 
 /**
+ * The name of the boss's commander card, which it casts as its last phase begins.
+ */
+commander?: string, 
+/**
  * The name of the scheme in motion.
  */
 scheme?: string, 

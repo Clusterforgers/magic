@@ -533,7 +533,7 @@ async fn make_fight(
     let side = std::iter::once((plan.boss.name.as_str(), plan.boss.brain))
         .chain(plan.minions.iter().map(|m| (m.name.as_str(), m.brain)));
     for (at, ((name, brain), deck)) in side.zip(plan.boss_decks()).enumerate() {
-        decks.push(Some(boss_side_deck(app, name, deck).await?));
+        decks.push(Some(boss_side_deck(app, name, &deck).await?));
         names.push(name.to_owned());
         accounts.push(None);
         bots.push(BotSeat {
@@ -596,6 +596,7 @@ fn fight_view(run: &Run) -> Option<DelveFightView> {
         life: plan.boss.life,
         rules: plan.boss.rules.clone(),
         phases: plan.boss.phases.clone(),
+        commander: plan.boss.commander.clone(),
         minions: plan
             .minions
             .iter()
@@ -720,6 +721,7 @@ pub(crate) async fn content_of() -> Result<Json<DelveContent>, ApiError> {
         bosses: theme
             .bosses
             .iter()
+            .chain(&theme.upgraded)
             .map(|boss| DelveBossView {
                 id: boss.id.clone(),
                 name: boss.name.clone(),

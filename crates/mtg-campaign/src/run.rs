@@ -12,7 +12,7 @@ use crate::content::{
     Brain, Content, CustomCard, EventOption, MIN_LIFE_CAP, Needs, Outcome, Rarity, Theme,
 };
 use crate::fight::{BossSeat, FightPlan, HAND, HeroSeat, MinionSeat};
-use crate::map::{FloorMap, RoomKind, generate};
+use crate::map::{FloorMap, RoomKind, generate, generate_for};
 use crate::relics::{
     DeckMakeup, FILTER_FROM, RARE_ODDS, RARITY_FROM, TREASURE_RARE_BONUS, offerable,
 };
@@ -44,8 +44,8 @@ pub const DRAUGHT: i32 = 15;
 pub const UPGRADE_PRICE: u32 = 50;
 /// The content generation a new run is made with (`RunEvent::Content`); a run stored without one is generation 0. From 2
 /// relic offers follow the deck and the relics of the larger pool are offered; from 3 relics have rarities and events are
-/// known trade-offs.
-pub const CONTENT: u32 = 3;
+/// known trade-offs; from 4 bosses play bracket decks with their commander card.
+pub const CONTENT: u32 = crate::scale::BRACKETS_FROM;
 
 /// The deck a hero brings.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -569,6 +569,8 @@ impl Run {
             RunEvent::Content { version } => {
                 self.lobby()?;
                 self.content = *version;
+                // The ladder is drawn from the bosses of the run's generation.
+                self.map = generate_for(self.theme(content)?, self.seed, *version);
             }
             RunEvent::Started => {
                 self.lobby()?;
@@ -1320,7 +1322,8 @@ impl Run {
             .iter()
             .filter_map(|n| {
                 let boss = theme.boss(n.boss.as_deref()?)?;
-                let scale = Scale::new(heroes, self.heat, self.boss_rank(n.id));
+                let scale =
+                    Scale::of_content(heroes, self.heat, self.boss_rank(n.id), self.content);
                 Some((boss.id.clone(), scale.life(boss)))
             })
             .collect()
@@ -1367,7 +1370,7 @@ impl Run {
                 upgrades: h.upgrades.clone(),
             })
             .collect();
-        let scale = Scale::new(heroes.len(), self.heat, rank);
+        let scale = Scale::of_content(heroes.len(), self.heat, rank, self.content);
         let life = scale.life(boss);
         let schemes = Stream::new(self.seed, "schemes", u64::from(node), 0)
             .pick(&theme.schemes, theme.schemes.len());
@@ -1390,7 +1393,7 @@ impl Run {
                     life: scale.minion_life(minion),
                     hand: HAND,
                     brain: scale.brain(lieutenant.brain),
-                    deck: lieutenant.deck.clone(),
+                    deck: scale.deck(lieutenant),
                     rules: minion.rules.clone(),
                 })
             })
@@ -1404,7 +1407,9 @@ impl Run {
                 life,
                 hand: scale.hand(boss),
                 brain: scale.brain(boss.brain),
-                deck: boss.deck.clone(),
+                deck: scale.deck(boss),
+                commander: (scale.bracketed && !boss.commander.is_empty())
+                    .then(|| boss.commander.clone()),
                 rules,
                 phases: scale.phases(boss, life),
                 schemes,

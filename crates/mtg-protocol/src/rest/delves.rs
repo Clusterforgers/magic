@@ -110,6 +110,10 @@ pub struct DelveFightView {
     pub rules: Vec<String>,
     /// Its phases by card id, each with the life at or below which it begins.
     pub phases: Vec<(String, i32)>,
+    /// Its commander card's name: a real card it casts free as its last phase begins.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub commander: Option<String>,
     /// Its minions: name and starting life.
     pub minions: Vec<(String, i32)>,
 }

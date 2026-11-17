@@ -4,7 +4,7 @@ Design of Delves, the co-op campaign: a party of 1 to 6 heroes fights a ladder o
 
 ## Shape
 
-- A run is a boss rush. Its ladder (`mtg-campaign`, `map.rs`) holds the theme's lieutenants in an order drawn from the seed, then the final boss; between two bosses the party votes for one of two camps: Treasure, Shop, Event or Campfire.
+- A run is a boss rush. Its ladder (`mtg-campaign`, `map.rs`) holds three of the theme's lieutenants drawn from the seed, then a final boss drawn from the theme's final bosses and the upgraded forms of the lieutenants left off the ladder (a run of a content generation before 4 meets every lieutenant of its generation, then the theme's final boss); between two bosses the party votes for one of two camps: Treasure, Shop, Event or Campfire.
 - Every boss fight is a fresh, normally recorded Commander game: board, hand and library reset. The party is one team of seats from seat 0, the boss one seat after them and its minions after it (`FightPlan`).
 - Each side takes one shared team turn (`TeamMode::SharedTurns`, CR 805): every hero untaps, draws, plays a land and casts sorceries in the party's turn, a side's turn is led by its first seat (`turn_lead`: the first living hero, the boss) and priority goes round the table from it. In the declare-attackers step each player of the side chooses the attacks of their own creatures in turn order, seeing what the teammates before chose; the side declares every choice at once, so limits, requirements, costs and "attacks alone" read the whole declaration (`party_attacks`). A choice illegal only together is refused with its reason and chosen again; after two refusals the engine declares the plain legal attack. Life totals stay per hero. The table names the party's turn ("Your party's turn").
 - Life carries over between fights. After a won fight each hero keeps their end life and heals 15; a hero who ended it as a Spirit comes back at 10 first. A Campfire rest heals 20, the shop's draught 15; nothing heals above 40 plus relic bonuses.
@@ -36,7 +36,11 @@ A fallen hero keeps playing: it haunts the fight with small, clear choices and c
 
 ## Bosses
 
-- A boss (`content/<theme>.json`) has a 40-card deck of verified real cards, a brain (Hard by default), a base life and life per hero, an opening hand, one passive (`rules`), an Enrage (`enrage`), two phases, a relic of its own (`relic`) and an art card: a real card (`art.card`, `art.oracle_id`) whose art crop pictures it on the descent and the fight panel.
+- A boss (`content/<theme>.json`, its custom cards in `content/boss_cards.json` or `cards.json`) has its colours, a thematic deck written in brackets (`brackets`, Difficulty), a commander card, a brain (Hard by default), a base life and life per hero, an opening hand, one passive (`rules`), an Enrage (`enrage`), two phases, a relic of its own (`relic`) and an art card: a real card (`art.card`, `art.oracle_id`) whose art crop pictures it on the descent and the fight panel. `since` is the content generation it joined in; `deck` is the 40-card deck runs of a generation before 4 play.
+- Bracket decks: Standard-style decks of real cards that play automatically (Verified or Read), in the boss's colours, at most four copies of a card, 40 to 45 % basic lands. `base` is the bracket 1 deck of 40 cards; each of `steps` makes the next bracket from the one below by the cards it adds and cuts: 50 cards at bracket 2, 60 from bracket 3, swaps for brackets 4 and 5. Bracket 1 plays cards of mana value 5 or less, bracket 2 of 6 or less, bracket 3 of 7 or less. Theme comes before strength: each deck plays the boss's creature type and supports its passive.
+- Commander card: a real card of any type (`commander`) that waits in the boss's command zone, where nothing casts it (`PlayerSetup::held`). The boss's last own phase carries a state trigger: while the card is there, the boss casts it without paying its mana cost; a card that can't be cast then goes to the graveyard. The intro and the boss bar list it as "Phase III: <card>" until then, and the cast is logged as any spell. The plan names it (`BossSeat.commander`), the deck list sent for the boss's seat ends with it and `FightPlan::apply` moves it from the library to the command zone.
+- Upgraded boss: a boss with an `upgrade` also stands as a final boss under a new name with one extra boss card (`<id>_ascendant`, `Boss::upgraded`): the same deck, commander, phases, Enrage and relic, at the final boss's bracket. It is drawn only for a ladder its own lieutenant form is not on, and it never fields its own minion.
+- No loops: no boss deck holds a known infinite combo (a content test vets card pairs and plays every deck at every bracket under the loop detector). The bots of the boss's side answer any loop offer with at most 5 iterations or Stop and never a draw (`loop_answer_in`, `BOSS_LOOP_CAP`).
 - Its advantages are open: its passive, Enrage, modifier and relic are emblems in its command zone from the start; each phase is an emblem that arrives when its life falls to a share of its starting life (66 % and 33 %). The table shows the boss's phase and the next one on the seat's chips.
 - Enrage: each boss's own, from the heroes' seventh turn at Heat 1 (ninth at Heat 0, sixth at Heat 2; `turn` on the card, read by the boss bar and the intro). It ends a stalled fight in the boss's manner: a growing swarm, growing counters, a growing toll or a growing attack.
 - Modifier: one buff drawn from the theme's pool (`modifiers`) for each fight, from the seed and the room, so a retried fight keeps it; the first boss at Heat 0 draws none.
@@ -44,12 +48,18 @@ A fallen hero keeps playing: it haunts the fight with small, clear choices and c
 - Every boss has Escalation (each of its end steps, every hero loses 1 life for every four turns it has taken).
 - Drain rule: a boss has at most one life loss with no way out, Escalation. Every other life loss of a boss card, phase, scheme, modifier or relic happens only unless the hero pays (mana or a discard), and its text says so; a content test reads each card's abilities and enforces it.
 
-| Boss | Passive | Enrage (from the heroes' turn 7 at Heat 1) | Relic (Difficulty) |
-|---|---|---|---|
-| Skrix | a Rat each upkeep | Rats each upkeep: the heroes' turns beyond six | Rat King's Crown: Rats get +1/+1 |
-| Mossjaw | its creatures +1/+1 and trample | a +1/+1 counter on each of its creatures each upkeep | Heartwood Bark: all creatures +0/+2 |
-| Vex | a Zombie when a hero's nontoken creature dies | each hero loses 3 unless they pay {2}, each upkeep | Bone Reliquary: creature spells cost {1} less |
-| Grimgut | a hasty Goblin each upkeep | its creatures +1/+0 each combat per heroes' turn beyond six | Crown of Cinders: all creatures have haste |
+| Boss | Colours, deck | Commander card | Passive | Enrage (from the heroes' turn 7 at Heat 1) | Relic (Difficulty) |
+|---|---|---|---|---|---|
+| Skrix | B, Rats | Ashcoat of the Shadow Swarm | a Rat each upkeep | Rats each upkeep: the heroes' turns beyond six | Rat King's Crown: Rats get +1/+1 |
+| Mossjaw | G, Trolls and beasts | Thrun, Breaker of Silence | its creatures +1/+1 and trample | a +1/+1 counter on each of its creatures each upkeep | Heartwood Bark: all creatures +0/+2 |
+| Vex | BR, Zombies | Gisa, the Hellraiser | a Zombie when a hero's nontoken creature dies | each hero loses 3 unless they pay {2}, each upkeep | Bone Reliquary: creature spells cost {1} less |
+| Grimgut (final) | R, Goblins | Krenko, Tin Street Kingpin | a hasty Goblin each upkeep | its creatures +1/+0 each combat per heroes' turn beyond six | Crown of Cinders: all creatures have haste |
+| Seraphine | W, Angels and lifegain | Akroma, Angel of Wrath | its creatures have lifelink | a creature card at random from its graveyard to the battlefield each upkeep per heroes' turn beyond six | Halo of Wings: creatures with flying get +1/+1 |
+| Ysolde | U, Merfolk and krakens | Lorthos, the Tidemaker | taps a hero's creature each upkeep | each hero mills two per heroes' turn beyond six, each upkeep | Tidal Codex: instants and sorceries cost {1} less |
+
+- Phases of the new bosses: Seraphine's creatures get +1/+1 and vigilance, then a 4/4 flying Angel each upkeep; Ysolde's foes' creatures get −1/−0, then her creatures have hexproof and she draws at each end step.
+- Upgraded forms: Skrix, Empress of the Undercity (a menace Rat at each end step) and Mossjaw the Undying (a 3/3 Troll at each end step).
+- Roster: the target is the five mono-colour bosses (complete: W Seraphine, U Ysolde, B Skrix, R Grimgut, G Mossjaw) and ten two-colour bosses, one per colour pair (BR Vex so far); the open slots are roadmap items.
 
 - Schemes: the theme's scheme deck of 14, shuffled from the seed for each fight, sets one scheme in motion every other boss turn from its third (`scheme_every`, CR 314 in the manner of Archenemy); a scheme stays in motion until the boss's next turn begins, so the turns between have none. The next one is public as the Omen with the boss turns until it comes. At that cadence a fight of 30 boss turns meets each scheme at most once. Their effects count the heroes (a Rat per hero, a sacrifice and a discard from each hero, a toll on each hero) or name the hero in the spotlight; Hunting Party spares commanders.
 - Minions: a lieutenant seat on the boss's side with another boss's deck, its own life and bot brain, sharing the boss's turn; it falls with the boss (`LossReason::LeaderFell`), so the party wins when the boss falls.
@@ -104,7 +114,32 @@ The host picks the Heat when creating a run; the creation form and the run heade
 | 1 | Seasoned | needs a deck that suits the format |
 | 2 | Heroic | needs a team of decks that work together and suit the format |
 
-Within a run the bosses ramp with the party's relics, loot and upgrades: the first boss (`Run::boss_rank` 0) is the gentlest and each later one harder. One table (`scale.rs`, `TIERS`) by Heat and rank moves the party-size table, so every party size meets the same ramp; a ladder longer than four bosses plays the last row for the rest. Life is a share of the party-size life (the minions' life too), hand and minions are added to the party-size numbers, brain moves the boss's and its minions' bot level (Hard by default), relic brings the boss's own relic, modifier draws one from the theme's pool:
+Within a run the bosses ramp with the party's relics, loot and upgrades: the first boss (`Run::boss_rank` 0) is the gentlest and each later one harder. The deck's bracket carries most of the step (`scale.rs`, `BRACKETS`): a bracket is abstract deck power, and a lower bracket also plays a smaller deck (40 cards at bracket 1, 50 at bracket 2, 60 from bracket 3):
+
+| Heat | Fight 1 | Fights 2 and 3 | Fight 4 |
+|---|---|---|---|
+| 0 Casual | 1 | 2 | 3 |
+| 1 Seasoned | 2 | 3 | 4 |
+| 2 Heroic | 3 | 4 | 5 |
+
+Runs of content generation 4 and later (`BRACKETS_FROM`, `Scale::of_content`) play the bracket decks and the commander card under the bracket tier table (`BRACKET_TIERS`), whose life, hand and brain move less than before:
+
+| Heat | Rank | Bracket | Life | Hand | Brain | Minions | Relic | Modifier |
+|---|---|---|---|---|---|---|---|---|
+| 0 | 0 | 1 | 75 % | −1 | −1 | −1 | | |
+| 0 | 1 | 2 | 80 % | −1 | −1 | −1 | | yes |
+| 0 | 2 | 2 | 85 % | | | | yes | yes |
+| 0 | 3+ | 3 | 90 % | | | | yes | yes |
+| 1 | 0 | 2 | 85 % | −1 | −1 | −1 | | yes |
+| 1 | 1 | 3 | 90 % | | | | yes | yes |
+| 1 | 2 | 3 | 95 % | | | | yes | yes |
+| 1 | 3+ | 4 | 100 % | | | | yes | yes |
+| 2 | 0 | 3 | 95 % | | | | | yes |
+| 2 | 1 | 4 | 105 % | | | | yes | yes |
+| 2 | 2 | 4 | 110 % | | | | yes | yes |
+| 2 | 3+ | 5 | 120 % | +1 | +1 | | yes | yes |
+
+A run of an earlier generation keeps the decks as written and the rank × Heat table below (`TIERS`). That table by Heat and rank moves the party-size table, so every party size meets the same ramp; a ladder longer than four bosses plays the last row for the rest. Life is a share of the party-size life (the minions' life too), hand and minions are added to the party-size numbers, brain moves the boss's and its minions' bot level (Hard by default), relic brings the boss's own relic, modifier draws one from the theme's pool:
 
 | Heat | Rank | Life | Hand | Brain | Minions | Relic | Modifier |
 |---|---|---|---|---|---|---|---|
@@ -124,7 +159,7 @@ Within a run the bosses ramp with the party's relics, loot and upgrades: the fir
 - Enrage begins after the heroes' ninth turn at Heat 0, their seventh at Heat 1 (as each Enrage card is written) and their sixth at Heat 2 (`ENRAGE_TURN`). The content makes each Enrage card's variant for the other turns on loading (`<id>_at_<turn>`: its turn, its rules text and the turn counts its abilities read), so the boss bar and the intro read the turn the fight plays.
 - Heat 1 at rank 2 is the boss as it was balanced before the tiers (Measured); Heat 0 sits below it at every rank and Heat 2 above.
 - The drain rule holds at every Heat: no tier adds a life loss, so Escalation stays each boss's one drain with no way out.
-- A content test holds the table monotonic: at every party size a later rank or a higher Heat never gives a boss less life, hand, brain or minions, never takes away its relic or modifier and never delays its Enrage.
+- A content test holds both tables monotonic: at every party size a later rank or a higher Heat never gives a boss a lower bracket, less life, hand, brain or minions, never takes away its relic or modifier and never delays its Enrage.
 - The run view lists each boss of the ladder with the life it starts with against the party at its rank (`DelveView.boss_lives`), which the ladder and the intro show.
 
 ## Loot
@@ -179,11 +214,12 @@ Within a run the bosses ramp with the party's relics, loot and upgrades: the fir
 ## Content
 
 - Custom cards are not on Scryfall: id, name, type line, rules text, art placeholder key, role and price, and their abilities in the card DSL. The engine plays each as an emblem; the web draws them from the content endpoint.
-- A content test checks that every boss and reward card is Verified in the corpus, every boss deck has 40 cards and every custom card keeps all its abilities.
+- A content test checks that every boss, commander and reward card plays automatically (Verified or Read) in the corpus, every deck as written has 40 cards, every bracket deck keeps the rules of Bosses at every bracket and every custom card keeps all its abilities.
+- Content generations of bosses: 4 brings the bracket decks, the commander cards, Seraphine, Ysolde and the upgraded forms (`RunEvent::Content`; the map is drawn again for the generation the run stores).
 
 ## Tuning
 
-- `cargo run --release -p mtg-campaign --example delve_sim -- fights <games> <heroes> <level> [first seed] [threads] [heat]` plays each boss in turn against a fresh party of bot heroes on the four fixture Commander decks; `runs` plays whole runs with life carried and loot taken. Games are untimed and seeded, so each result replays. `DELVE_SIM_RANK` scales each boss as the one at that rank of the ladder; `DELVE_SIM_DROP` (boss cards, phases or schemes by id), `DELVE_SIM_LIFE` (percent), `DELVE_SIM_HAND` and `DELVE_SIM_MINIONS` change the plan to measure what each part is worth; `DELVE_SIM_IDLE_SPIRITS` makes every Spirit pass, to measure what haunt actions are worth. Each line also counts falls, rises and haunt actions.
+- `cargo run --release -p mtg-campaign --example delve_sim -- fights <games> <heroes> <level> [first seed] [threads] [heat]` plays each boss in turn against a fresh party of bot heroes on the four fixture Commander decks; `runs` plays whole runs with life carried and loot taken. Games are untimed and seeded, so each result replays. `DELVE_SIM_RANK` scales each boss as the one at that rank of the ladder; `DELVE_SIM_DROP` (boss cards, phases or schemes by id), `DELVE_SIM_LIFE` (percent), `DELVE_SIM_HAND` and `DELVE_SIM_MINIONS` change the plan to measure what each part is worth; `DELVE_SIM_IDLE_SPIRITS` makes every Spirit pass, to measure what haunt actions are worth. Each line also counts falls, rises and haunt actions. A run plays the newest content generation (`DELVE_SIM_CONTENT` sets another); `DELVE_SIM_BOSSES` (ids, an upgraded form included) plays only those bosses, a boss off the seed's ladder taking the place of the boss of its rank.
 - Minutes are estimated at 0.6 per hero turn and 0.5 per turn of the boss's side.
 - Each fight prints the pressure each hero took, the round a hero first fell to half life and the round a hero first fell.
 - The Heat 1 target for a party of Hard bots, at every size: each fight from the second boss won in 50 to 60 % of fights, a whole run in 20 to 35 %, a fight in 25 to 60 minutes for four heroes; no hero takes more than 40 % of the boss's pressure with three or more heroes (60 % with two).
@@ -222,3 +258,12 @@ Measured with two Normal heroes, `DELVE_SIM_RANK=<rank> fights <games> 2 normal 
 
 - The brain is the largest step: a boss one level below Hard (Normal) loses to two Normal heroes in more than 90 % of fights, so the first boss at Heat 1 and the first two at Heat 0 sit above their targets; Grimgut, the final boss of the theme, is the hardest of the four at every rank.
 - The Heat 1 rank 2 sample is three fights (a Hard boss takes 7 to 9 minutes of machine time a fight with six threads) and only shows that the Hard boss beats two Normal heroes more often than not; the Hard-boss rows (Heat 0 ranks 2 and 3, Heat 1 ranks 1 to 3, all of Heat 2) and parties of three or more are not yet measured against their targets.
+
+Smoke of the new bosses at the bracket generation, two Normal heroes against the first boss at Heat 1 (bracket 2, a Normal brain), `DELVE_SIM_BOSSES=seraphine_spire,ysolde_reef fights 12 2 normal 1 6 1` stopped after 20 minutes with 10 fights ended:
+
+| Boss | Fights won by the heroes | Turns (boss side) | Machine time a fight |
+|---|---|---|---|
+| Seraphine | 2/4 | 22.8 (11.5) | 13 s to 12 min |
+| Ysolde | 6/6 | 16.0 (7.7) | 1 s to 16 min |
+
+- Both decks play their fights to the end with no loop and no failure; against the Heat 1 first-boss target (Normal heroes win about 70 %) Seraphine is harder and Ysolde easier (dl15l).

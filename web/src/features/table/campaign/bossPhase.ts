@@ -75,3 +75,19 @@ export function phaseCueBetween(
   }
   return cue
 }
+
+/** The name of the phase card that caps attackers for a big party; it begins with the boss's last phase. */
+export const BULWARK_NAME = 'Last Bulwark'
+
+/** What the boss's commander card says in a list of its abilities. */
+export const COMMANDER_TEXT =
+  'As its last phase begins, the boss casts this card from its command zone without paying its mana cost.'
+
+/**
+ * The label of the boss's commander card, "Phase III: Akroma, Angel of Wrath": the phase it comes with is the boss's
+ * last own phase (the Last Bulwark beside it does not count), numbered after the opening phase.
+ */
+export function commanderLabel(phases: readonly string[], commander: string): string {
+  const own = phases.filter((name) => name !== BULWARK_NAME).length
+  return `Phase ${roman(own + 1)}: ${commander}`
+}

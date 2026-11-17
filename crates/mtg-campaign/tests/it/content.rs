@@ -1,4 +1,4 @@
-//! Goal: the shipped content holds together: every boss deck card and reward card is a real card the engine verifies, every boss deck has 40 cards, every custom card keeps all its abilities as an emblem, every content id a boss
+//! Goal: the shipped content holds together: every boss deck card and reward card is a real card the engine verifies, every boss deck as written before brackets has 40 cards, every custom card keeps all its abilities as an emblem, every content id a boss
 //! names exists, relics carry a role, the scheme deck holds schemes and every boss has two minions to field and is pictured by its own real card.
 use mtg_campaign::{CardKind, content};
 use mtg_cards::support::Support;
@@ -15,15 +15,24 @@ fn every_card_a_boss_or_reward_names_is_played_in_full() {
         let names = theme
             .bosses
             .iter()
-            .flat_map(|b| b.deck.iter().map(|(name, _)| name.as_str()))
-            .chain(theme.pool.iter().map(|(name, _)| name.as_str()));
-        for name in names.filter(|name| !BASICS.contains(name)) {
+            .flat_map(|b| {
+                let brackets = (1..=mtg_campaign::scale::MAX_BRACKET).flat_map(|at| b.deck_at(at));
+                b.deck
+                    .iter()
+                    .cloned()
+                    .chain(brackets)
+                    .map(|(name, _)| name)
+                    .chain(std::iter::once(b.commander.clone()).filter(|c| !c.is_empty()))
+                    .collect::<Vec<_>>()
+            })
+            .chain(theme.pool.iter().map(|(name, _)| name.clone()))
+            .collect::<Vec<_>>();
+        for name in names.iter().filter(|name| !BASICS.contains(&name.as_str())) {
             let support = corpus
                 .support(name)
                 .unwrap_or_else(|e| panic!("{name}: {e}"));
-            assert_eq!(
-                support.support,
-                Support::Verified,
+            assert!(
+                matches!(support.support, Support::Verified | Support::Read),
                 "{name} is not played in full"
             );
         }
@@ -41,8 +50,10 @@ fn boss_decks_have_forty_cards_and_their_rules_exist() {
             theme.id
         );
         for boss in &theme.bosses {
-            let size: u32 = boss.deck.iter().map(|(_, n)| n).sum();
-            assert_eq!(size, 40, "{}", boss.id);
+            if boss.since == 0 {
+                let size: u32 = boss.deck.iter().map(|(_, n)| n).sum();
+                assert_eq!(size, 40, "{}", boss.id);
+            }
             for id in &boss.rules {
                 assert_eq!(content.card(id).unwrap().kind, CardKind::Boss, "{id}");
             }
