@@ -151,6 +151,12 @@ pub struct AutoChoices {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[ts(as = "Option<bool>", optional)]
     pub skip_triggers: bool,
+    /// "Always pay automatically": a mana payment the automatic payment makes with no real choice (no hybrid or
+    /// Phyrexian symbol, no creature or card to help pay, no mana ability that does more than add mana) is paid at
+    /// once, out of Full Control; left out (false) when off.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub auto_pay: bool,
 }
 
 /// A triggered or activated ability a seat lets resolve unasked for the rest of the game (see

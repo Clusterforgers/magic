@@ -509,7 +509,8 @@ function isAutoChoices(value: unknown): value is SentAutoChoices {
     isFlag(value.order_triggers) &&
     isFlag(value.assign_damage) &&
     (value.smart_stops === undefined || isFlag(value.smart_stops)) &&
-    (value.skip_triggers === undefined || isFlag(value.skip_triggers))
+    (value.skip_triggers === undefined || isFlag(value.skip_triggers)) &&
+    (value.auto_pay === undefined || isFlag(value.auto_pay))
   )
 }
 

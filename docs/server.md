@@ -319,6 +319,8 @@ A Spirit (a fallen hero of Delves, [delves.md](delves.md)) has default windows o
 
 A question with one legal answer whose options every seat sees (`mtg_engine::choose::sole_answer`) is answered for an `Off` seat in the same run of passes, and a payment the seat cannot make (`YesNoOptions::only_no`) is declined; Full Control asks both. A question whose one answer could come from a hidden zone (`YesNoOptions::unseen`: a discard, search, reveal or exile from hand) is always asked.
 
+With "Always pay automatically" (`AutoChoices.auto_pay`, `pace::auto_paid`) a seat out of Full Control is answered `Auto` for a `PayMana` with no real choice in it: an automatic payment exists, the cost has only plain symbols (no hybrid, Phyrexian or snow symbol; X is announced before), nothing is offered to help pay (convoke, improvise, delve) and the automatic payment (lands before artifacts) takes no life and uses no mana ability that does more than add mana (a painland, a Treasure, a filter). The answer is a step in the run that cast the spell, so no payment prompt is left for a take-back to race; a take-back after it undoes the cast and the payment together.
+
 ### Stops, Full Control and yields
 
 - Stops and modes live in the actor per seat (`Stops`), never stored: they survive reconnects, and a resumed game starts every seat in the default mode without stops. Setting one takes no engine step, so the pending decision keeps its id.

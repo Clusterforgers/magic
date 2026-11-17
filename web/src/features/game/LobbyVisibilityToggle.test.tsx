@@ -43,7 +43,16 @@ describe('what the host sees', () => {
     await openLobby()
     expect(
       screen.getAllByRole('button').map((button) => button.getAttribute('aria-label') ?? button.textContent),
-    ).toEqual([LISTED, INVITE, 'Remove Bo from the game', 'Change', 'Random precon', 'Use this deck', 'Ready', 'Close game'])
+    ).toEqual([
+      LISTED,
+      INVITE,
+      'Remove Bo from the game',
+      'Change',
+      'Random precon',
+      'Use this deck',
+      'Ready',
+      'Close game',
+    ])
   })
 })
 
