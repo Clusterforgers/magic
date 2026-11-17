@@ -1,8 +1,13 @@
 //! Time management for one decision, as chess engines budget a move: the decision's importance scales the search
 //! (combat when lethal is in reach, a big opposing spell on the stack and the seat's big plays get most; a pass with
 //! nothing to do gets none), a soft limit ends the search once its favourite is stable, and a hard limit ends it
-//! whatever the state, always within [`DECISION_CAP`] of the decision's start.
+//! whatever the state, always within [`DECISION_CAP`] of the decision's start. A [`Stop`] set around a decision
+//! ([`stopping`]) is the hard stop every loop of the search checks ([`stopped`]): its time, or its flag raised by the
+//! caller that gave up waiting.
 
+use std::cell::RefCell;
+use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::{Duration, Instant};
 
 use mtg_engine::Decision;
@@ -16,8 +21,98 @@ use super::threat;
 /// The longest one decision may take, all searches included: under the server's 5 s think deadline.
 pub const DECISION_CAP: Duration = Duration::from_millis(4_500);
 
+/// When the decisions answered inside [`stopping`] stop searching: at a time, or once a flag is raised.
+#[derive(Debug, Clone, Default)]
+pub struct Stop {
+    at: Option<Instant>,
+    cancel: Option<Arc<AtomicBool>>,
+}
+
+impl Stop {
+    /// A stop at `at`.
+    pub fn at(at: Instant) -> Stop {
+        Stop {
+            at: Some(at),
+            cancel: None,
+        }
+    }
+
+    /// This stop that also comes once `cancel` is raised.
+    #[must_use]
+    pub fn or_cancel(mut self, cancel: Arc<AtomicBool>) -> Stop {
+        self.cancel = Some(cancel);
+        self
+    }
+
+    /// Whether the stop has come.
+    pub fn reached(&self) -> bool {
+        self.cancel
+            .as_ref()
+            .is_some_and(|cancel| cancel.load(Ordering::Relaxed))
+            || self.at.is_some_and(|at| Instant::now() >= at)
+    }
+
+    /// The earlier of this stop and `outer`, either's flag stopping it.
+    fn within(self, outer: Option<&Stop>) -> Stop {
+        let Some(outer) = outer else {
+            return self;
+        };
+        Stop {
+            at: match (self.at, outer.at) {
+                (Some(a), Some(b)) => Some(a.min(b)),
+                (a, b) => a.or(b),
+            },
+            cancel: self.cancel.or_else(|| outer.cancel.clone()),
+        }
+    }
+}
+
+thread_local! {
+    static STOP: RefCell<Option<Stop>> = const { RefCell::new(None) };
+}
+
+/// Runs `work` with `stop` as the hard stop of every search on this thread (the earlier of it and one already set).
+pub fn stopping<T>(stop: Stop, work: impl FnOnce() -> T) -> T {
+    /// Puts the stop that was set before back, also when `work` panics.
+    struct Restore(Option<Stop>);
+    impl Drop for Restore {
+        fn drop(&mut self) {
+            let before = self.0.take();
+            STOP.with(|slot| *slot.borrow_mut() = before);
+        }
+    }
+    let before = STOP.with(|slot| slot.borrow().clone());
+    let inner = stop.within(before.as_ref());
+    STOP.with(|slot| *slot.borrow_mut() = Some(inner));
+    let _restore = Restore(before);
+    work()
+}
+
+/// Whether the hard stop of the decision being answered on this thread has come; never without a [`stopping`] around.
+pub fn stopped() -> bool {
+    STOP.with(|slot| slot.borrow().as_ref().is_some_and(Stop::reached))
+}
+
 /// The most an important decision multiplies its level's budget by.
 pub const MOST: f64 = 3.0;
+
+/// Permanents on the battlefield up to which a search gets its whole budget.
+const FULL_BOARD: usize = 30;
+
+/// The least share of its budget a search on a crowded board gets.
+const LEAST_BOARD_SHARE: f64 = 0.35;
+
+/// The share of its budget a search gets on a battlefield of `permanents`: all of it up to [`FULL_BOARD`], less in
+/// proportion beyond, never under [`LEAST_BOARD_SHARE`]. Every simulated step costs more on a crowded board, so the
+/// search ends sooner and each loop's last step overshoots its stop less.
+pub fn board_share(permanents: usize) -> f64 {
+    if permanents <= FULL_BOARD {
+        return 1.0;
+    }
+    let ratio = f64::from(u32::try_from(FULL_BOARD).unwrap_or(u32::MAX))
+        / f64::from(u32::try_from(permanents).unwrap_or(u32::MAX));
+    ratio.max(LEAST_BOARD_SHARE)
+}
 
 /// The time a search leaves before the cap for the answer to come back (a rollout step finishing, the reply).
 const SLACK: Duration = Duration::from_millis(300);
@@ -133,7 +228,7 @@ impl Budget {
 
     /// Whether the hard limit has passed.
     pub fn out(&self) -> bool {
-        self.hard.is_some_and(|hard| Instant::now() >= hard)
+        self.hard.is_some_and(|hard| Instant::now() >= hard) || stopped()
     }
 
     /// Whether the soft limit has passed.
@@ -144,7 +239,8 @@ impl Budget {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a decision's budget scales with its importance and never reaches past the decision cap.
+    //! Goal: a decision's budget scales with its importance and the board's size and never reaches past the decision cap,
+    //! and a stop ends it at its time or its flag, the earlier of nested stops holding.
     use rstest::rstest;
 
     use super::*;
@@ -158,6 +254,67 @@ mod tests {
         let budget = Budget::new(Instant::now(), 600, None, importance, 1.0);
         assert_eq!(budget.iterations, expected);
         assert!(budget.soft.is_none() && budget.hard.is_none() && !budget.out());
+    }
+
+    #[rstest]
+    #[case::none_set(None, false, false)]
+    #[case::still_ahead(Some(60_000), false, false)]
+    #[case::passed(Some(0), false, true)]
+    #[case::cancelled(Some(60_000), true, true)]
+    #[case::cancelled_without_a_time(None, true, true)]
+    fn a_stop_comes_at_its_time_or_its_flag(
+        #[case] in_ms: Option<u64>,
+        #[case] raised: bool,
+        #[case] expected: bool,
+    ) {
+        let cancel = Arc::new(AtomicBool::new(raised));
+        let stop = match in_ms {
+            Some(ms) => Stop::at(Instant::now() + Duration::from_millis(ms)),
+            None => Stop::default(),
+        }
+        .or_cancel(cancel);
+        assert!(!stopped(), "no stop outside");
+        assert_eq!(stopping(stop, stopped), expected);
+        assert!(!stopped(), "the stop ends with its work");
+    }
+
+    #[rstest]
+    fn the_earlier_of_two_nested_stops_holds_and_the_outer_one_returns(
+        #[values(true, false)] inner_first: bool,
+    ) {
+        let now = Instant::now();
+        let (soon, late) = (now, now + Duration::from_secs(60));
+        let (outer, inner) = if inner_first {
+            (late, soon)
+        } else {
+            (soon, late)
+        };
+        let (inside, after) = stopping(Stop::at(outer), || {
+            (stopping(Stop::at(inner), stopped), stopped())
+        });
+        assert!(inside, "the earlier stop has come inside");
+        assert_eq!(
+            after, !inner_first,
+            "the outer stop alone holds after the inner one"
+        );
+    }
+
+    #[test]
+    fn the_hard_limit_ends_at_a_stop() {
+        let budget = Budget::new(Instant::now(), 600, Some(Duration::from_secs(4)), 1.0, 1.0);
+        assert!(!budget.out());
+        let cancel = Arc::new(AtomicBool::new(true));
+        assert!(stopping(Stop::default().or_cancel(cancel), || budget.out()));
+    }
+
+    #[rstest]
+    fn a_crowded_board_gets_a_smaller_share(
+        #[values(0, 10, 30, 31, 45, 60, 90, 200, 10_000)] permanents: usize,
+    ) {
+        let share = board_share(permanents);
+        assert!((LEAST_BOARD_SHARE..=1.0).contains(&share));
+        assert!(board_share(permanents + 1) <= share);
+        assert_eq!(share >= 1.0, permanents <= FULL_BOARD);
     }
 
     #[rstest]

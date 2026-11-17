@@ -532,7 +532,7 @@ pub fn ismcts(
             {
                 break;
             }
-            if step % 16 == 15 && budget.out() {
+            if step > 0 && budget.out() {
                 cut = true;
                 break;
             }

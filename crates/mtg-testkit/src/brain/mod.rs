@@ -402,7 +402,12 @@ impl HeuristicBot {
             deep.iterations,
             deep.time,
             clock::importance(&seen, decision),
-            self.budget,
+            // An untimed search keeps its whole count, so its answers replay as before.
+            if deep.time.is_some() {
+                self.budget * clock::board_share(seen.battlefield().len())
+            } else {
+                self.budget
+            },
         );
         if budget.iterations == 0 {
             return self.settled(before, prior);
@@ -504,6 +509,12 @@ impl SeatBrain for HeuristicBot {
     fn choose(&mut self, decision: &Decision, table: Option<&Engine>) -> Answer {
         self.started = self.next_asked.take().unwrap_or_else(Instant::now);
         match table {
+            // A timed brain stops every loop of its search at the decision cap.
+            Some(engine) if self.settings.time.is_some() => {
+                clock::stopping(clock::Stop::at(clock::cap(self.started)), || {
+                    self.answer(decision, engine)
+                })
+            }
             Some(engine) => self.answer(decision, engine),
             None => self.random.choose(decision),
         }
