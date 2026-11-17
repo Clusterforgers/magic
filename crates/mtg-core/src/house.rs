@@ -1026,6 +1026,8 @@ mod tests {
                 open_hands: open,
                 revealed_library_top: top,
                 opening_hand_smoothing: smoothing,
+                // Set whenever open hands is, so the rule meets every value without one more strategy.
+                team_hands: open.map(|open| !open),
                 mulligan_style: style,
                 handicaps,
                 teams,
