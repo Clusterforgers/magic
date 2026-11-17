@@ -21,4 +21,12 @@ needs: Needs,
 /**
  * What it does in plain words, for a screen reader.
  */
-summary: string, };
+summary: string, 
+/**
+ * What it takes from the hero in plain words, "nothing" for a free option.
+ */
+cost: string, 
+/**
+ * What it gives the hero in plain words.
+ */
+reward: string, };

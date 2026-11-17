@@ -104,6 +104,43 @@ pub enum Boon {
     Counter,
     /// It enters with an additional loyalty counter.
     Loyalty,
+    /// A bane: its cost has this much more generic mana.
+    Tax(u32),
+    /// A bane: it gets −N/−N.
+    Shrink(i32),
+}
+
+/// A commander bane an event's option costs: the inverse of an upgrade, kept for the rest of the run.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum Bane {
+    /// The commander costs this much more generic mana.
+    Tax(u32),
+    /// The commander gets −N/−N.
+    Shrink(i32),
+}
+
+impl Bane {
+    /// The upgrade's boon that carries it.
+    pub fn boon(self) -> Boon {
+        match self {
+            Bane::Tax(n) => Boon::Tax(n),
+            Bane::Shrink(n) => Boon::Shrink(n),
+        }
+    }
+
+    /// Whether only a creature commander can carry it.
+    pub fn for_creature(self) -> bool {
+        matches!(self, Bane::Shrink(_))
+    }
+
+    /// The bane in words about `name`: "your commander costs {1} more to cast", "Atraxa gets −1/−1".
+    pub fn words(self, name: &str) -> String {
+        match self {
+            Bane::Tax(n) => format!("{name} costs {{{n}}} more to cast"),
+            Bane::Shrink(n) => format!("{name} gets −{n}/−{n}"),
+        }
+    }
 }
 
 /// One upgrade of one commander.
@@ -128,7 +165,14 @@ impl Upgrade {
             Boon::Pump(n) => format!("{name} gets +{n}/+{n}"),
             Boon::Counter => format!("{name} enters with an additional +1/+1 counter"),
             Boon::Loyalty => format!("{name} enters with an additional loyalty counter"),
+            Boon::Tax(n) => Bane::Tax(*n).words(name),
+            Boon::Shrink(n) => Bane::Shrink(*n).words(name),
         }
+    }
+
+    /// Whether it is a bane an event cost rather than a boon.
+    pub fn is_bane(&self) -> bool {
+        matches!(self.boon, Boon::Tax(_) | Boon::Shrink(_))
     }
 
     /// The emblem that carries it in the hero's command zone.
@@ -153,6 +197,20 @@ impl Upgrade {
                 "change": "Reduce",
                 "mana": format!("{{{n}}}")
             }}),
+            Boon::Tax(n) => json!({ "CostModifier": {
+                "applies_to": [
+                    "Spell",
+                    "Commander",
+                    { "Named": self.commander },
+                    { "ControlledBy": "You" }
+                ],
+                "change": "Increase",
+                "mana": format!("{{{n}}}")
+            }}),
+            Boon::Shrink(n) => json!({ "Static": {
+                "affected": { "Each": creature },
+                "mods": [{ "ModifyPT": { "power": -n, "toughness": -n } }]
+            }}),
             Boon::Keyword(gift) => json!({ "Static": {
                 "affected": { "Each": creature },
                 "mods": [{ "AddKeyword": gift.keyword() }]
@@ -172,7 +230,11 @@ impl Upgrade {
         let ability: Ability = serde_json::from_value(ability)
             .map_err(|e| CampaignError::Content(format!("upgrade {}: {e}", self.words())))?;
         Ok(Arc::new(mtg_engine::w6b_emblems::emblem_definition(
-            &format!("Upgrade: {}", self.words()),
+            &format!(
+                "{}: {}",
+                if self.is_bane() { "Bane" } else { "Upgrade" },
+                self.words()
+            ),
             &[ability],
         )))
     }

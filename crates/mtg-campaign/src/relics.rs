@@ -10,7 +10,8 @@ use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use serde::{Deserialize, Serialize};
 
-use crate::content::{CustomCard, Theme};
+use crate::content::{CustomCard, Rarity, Theme};
+use crate::rng::Stream;
 
 /// The content generation from which relic offers follow the deck and the larger relic pool is offered
 /// (`RunEvent::Content`); older runs draw from the first twenty relics and every deck alike.
@@ -18,6 +19,48 @@ pub const FILTER_FROM: u32 = 2;
 /// The cards of what a relic wants a deck holds at least for the relic to be of use, the commanders and the Satchel
 /// included; a creature commander is wanted once.
 pub const MIN_CARDS: u32 = 8;
+/// The content generation from which relics have rarities that decide their offers and prices, and events are known
+/// trade-offs with no gambles.
+pub const RARITY_FROM: u32 = 3;
+/// The chance in percent that a loot slot offers a Rare relic, by the beaten boss's rank (the last for later ones);
+/// the other slots offer Common ones.
+pub const RARE_ODDS: [u32; 4] = [15, 25, 35, 45];
+/// What a Treasure camp adds to the loot's Rare chance.
+pub const TREASURE_RARE_BONUS: u32 = 20;
+
+/// A relic's shop price from the rarity generation on.
+pub fn price(rarity: Rarity) -> u32 {
+    match rarity {
+        Rarity::Common => 55,
+        Rarity::Rare => 90,
+        Rarity::Mythic => 150,
+    }
+}
+
+/// One relic of `fits` for each rarity of `slots`, none twice, drawn by `rng`: a slot with no relic of its rarity left
+/// takes one of the tier below, and below Common any relic left.
+pub fn draw(fits: &[&CustomCard], slots: &[Rarity], rng: &mut Stream) -> Vec<String> {
+    let mut out: Vec<String> = Vec::new();
+    for slot in slots {
+        let mut tier = Some(*slot);
+        loop {
+            let pool: Vec<&CustomCard> = fits
+                .iter()
+                .copied()
+                .filter(|c| tier.is_none_or(|t| c.rarity == t) && !out.contains(&c.id))
+                .collect();
+            if let Some(relic) = pool.get(rng.below(pool.len())) {
+                out.push(relic.id.clone());
+                break;
+            }
+            match tier {
+                Some(t) => tier = t.lower(),
+                None => break,
+            }
+        }
+    }
+    out
+}
 
 /// What a relic's rules care about in a deck; a relic with none is of use to any deck.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

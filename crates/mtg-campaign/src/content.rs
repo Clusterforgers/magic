@@ -33,6 +33,42 @@ pub enum CardKind {
     BossRelic,
 }
 
+/// How rare a relic is: stronger effects sit in rarer tiers, and the tier decides where the relic comes from
+/// (`docs/delves.md`, Relics).
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, Serialize, Deserialize,
+)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum Rarity {
+    /// Loot, treasure and the shop offer it most.
+    #[default]
+    Common,
+    /// Loot and treasure offer it now and then, more on later floors; the shop sells it dear.
+    Rare,
+    /// Run-defining: only events and the loot before the final boss offer it.
+    Mythic,
+}
+
+impl Rarity {
+    /// The tier below, `None` below Common.
+    pub fn lower(self) -> Option<Rarity> {
+        match self {
+            Rarity::Mythic => Some(Rarity::Rare),
+            Rarity::Rare => Some(Rarity::Common),
+            Rarity::Common => None,
+        }
+    }
+
+    /// Its word: "Common", "Rare", "Mythic".
+    pub fn word(self) -> &'static str {
+        match self {
+            Rarity::Common => "Common",
+            Rarity::Rare => "Rare",
+            Rarity::Mythic => "Mythic",
+        }
+    }
+}
+
 /// A card that is not on Scryfall: its printed side and the abilities it has as an emblem.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -72,6 +108,9 @@ pub struct CustomCard {
     /// The content generation from which a relic is offered (`RunEvent::Content`); a run of an earlier one never meets it.
     #[serde(default)]
     pub since: u32,
+    /// A relic's rarity, which from the rarity generation on decides where it is offered and its shop price.
+    #[serde(default)]
+    pub rarity: Rarity,
     /// Its abilities, in the card DSL.
     pub abilities: Vec<Ability>,
 }
@@ -207,7 +246,17 @@ pub enum Outcome {
     CardPick,
     /// A copy of a nonland card from the hero's deck or Satchel, of their choice, for their Satchel.
     Duplicate,
-    /// A chance: `win` with `odds` percent, `lose` otherwise.
+    /// A pick of relics of this rarity the hero lacks (of a lower one when the deck can use none of it).
+    RelicOf(Rarity),
+    /// The hero's life cap moves by this much for the rest of the run; a cut also lowers their life to the new cap.
+    MaxLife(i32),
+    /// The hero gives up a card of their choice from their deck or Satchel for the rest of the run.
+    LoseCard,
+    /// The hero gives up a relic of their choice.
+    LoseRelic,
+    /// The hero's first commander is weakened for the rest of the run, as an emblem like an upgrade.
+    Bane(crate::upgrade::Bane),
+    /// A chance: `win` with `odds` percent, `lose` otherwise. Only events before the trade generation have one.
     Gamble {
         /// The chance to win, in percent.
         odds: u32,
@@ -236,7 +285,22 @@ pub struct Needs {
     pub gold: u32,
     /// The life a sure cost takes; the hero must keep more than 0 of it.
     pub life: u32,
+    /// The life cap a cut takes; the hero must keep at least `MIN_LIFE_CAP` of it.
+    #[serde(default)]
+    pub max_life: u32,
+    /// Whether the hero must hold a relic to give up.
+    #[serde(default)]
+    pub relic: bool,
+    /// Whether the hero's deck must have a commander to weaken.
+    #[serde(default)]
+    pub commander: bool,
+    /// Whether that commander must be a creature.
+    #[serde(default)]
+    pub creature_commander: bool,
 }
+
+/// The least life cap a cut may leave a hero, so an event never leaves them unable to go on.
+pub const MIN_LIFE_CAP: i32 = 20;
 
 impl Needs {
     /// Why a hero with this gold and life cannot take the option, if they cannot.
@@ -263,12 +327,30 @@ impl Outcome {
             Outcome::Relic => "a relic".to_owned(),
             Outcome::CardPick => "a card for your Satchel".to_owned(),
             Outcome::Duplicate => "a copy of a card from your deck or Satchel".to_owned(),
+            Outcome::RelicOf(rarity) => format!("a {} relic", rarity.word()),
+            Outcome::MaxLife(n) => format!("{} max life", signed(*n)),
+            Outcome::LoseCard => "lose a card of your deck or Satchel".to_owned(),
+            Outcome::LoseRelic => "give up a relic".to_owned(),
+            Outcome::Bane(bane) => bane.words("your commander"),
             Outcome::Gamble { odds, win, lose } => format!(
                 "{odds}%: {} · {}%: {}",
                 list_words(win),
                 100u32.saturating_sub(*odds),
                 list_words(lose)
             ),
+        }
+    }
+
+    /// Whether it takes something from the hero: gold, life or life cap lost, a card, a relic, a commander bane.
+    pub fn is_cost(&self) -> bool {
+        match self {
+            Outcome::Gold(n) | Outcome::Life(n) | Outcome::MaxLife(n) => *n < 0,
+            Outcome::LoseCard | Outcome::LoseRelic | Outcome::Bane(_) => true,
+            Outcome::Relic
+            | Outcome::CardPick
+            | Outcome::Duplicate
+            | Outcome::RelicOf(_)
+            | Outcome::Gamble { .. } => false,
         }
     }
 }
@@ -300,7 +382,30 @@ impl EventOption {
         list_words(&self.outcomes)
     }
 
-    /// What a hero must have to take it: gold and life for its sure costs.
+    /// What it takes from the hero, in plain words ("−8 life, give up a relic"), "nothing" for a free option.
+    pub fn cost(&self) -> String {
+        let costs: Vec<Outcome> = self
+            .outcomes
+            .iter()
+            .filter(|o| o.is_cost())
+            .cloned()
+            .collect();
+        list_words(&costs)
+    }
+
+    /// What it gives the hero, in plain words ("a Mythic relic"), "nothing" for an option that only costs.
+    pub fn reward(&self) -> String {
+        let gains: Vec<Outcome> = self
+            .outcomes
+            .iter()
+            .filter(|o| !o.is_cost())
+            .cloned()
+            .collect();
+        list_words(&gains)
+    }
+
+    /// What a hero must have to take it: gold, life and life cap for its sure costs, a relic to give up, a commander to
+    /// weaken.
     pub fn needs(&self) -> Needs {
         let cost = |pick: fn(&Outcome) -> Option<i32>| {
             let sum: i64 = self
@@ -327,6 +432,19 @@ impl EventOption {
                     None
                 }
             }),
+            max_life: cost(|o| {
+                if let Outcome::MaxLife(n) = o {
+                    Some(*n)
+                } else {
+                    None
+                }
+            }),
+            relic: self.outcomes.contains(&Outcome::LoseRelic),
+            commander: self.outcomes.iter().any(|o| matches!(o, Outcome::Bane(_))),
+            creature_commander: self
+                .outcomes
+                .iter()
+                .any(|o| matches!(o, Outcome::Bane(bane) if bane.for_creature())),
         }
     }
 }
@@ -346,6 +464,16 @@ pub struct EventSpec {
     /// The content generation it joined the theme in: a run made before it never meets it (`Run.content`).
     #[serde(default)]
     pub since: u32,
+    /// The last content generation that meets it; a later run meets the trade version that replaced it instead.
+    #[serde(default)]
+    pub until: Option<u32>,
+}
+
+impl EventSpec {
+    /// Whether a run of content generation `version` may meet it.
+    pub fn in_generation(&self, version: u32) -> bool {
+        self.since <= version && self.until.is_none_or(|last| version <= last)
+    }
 }
 
 /// A dungeon theme: its bosses, events and the cards its rewards offer.

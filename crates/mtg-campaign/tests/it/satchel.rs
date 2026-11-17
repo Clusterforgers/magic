@@ -239,7 +239,7 @@ fn affordable(run: &Run, event: &str) -> Pick {
         .unwrap()
         .options
         .iter()
-        .position(|o| o.needs().unmet(h.gold, h.life).is_none())
+        .position(|o| h.lacks(content, &o.needs()).is_none())
         .unwrap();
     Pick::Take(u8::try_from(at).unwrap())
 }
@@ -270,13 +270,16 @@ fn events_met(seed: u64, version: u32) -> Vec<String> {
                 }
                 let pick = match offer {
                     Offer::Duplicate => Pick::Duplicate("Sol Ring".into()),
+                    Offer::Discard => Pick::Discard("Sol Ring".into()),
                     Offer::Campfire { upgrades } if !upgrades.is_empty() => Pick::Take(0),
                     Offer::Campfire { .. } => Pick::Rest,
                     Offer::Shop { .. } => Pick::Skip,
                     Offer::Cards { cards } if cards.is_empty() => Pick::Skip,
                     Offer::Relics { relics } if relics.is_empty() => Pick::Skip,
                     Offer::Event { event } => affordable(&run, &event),
-                    Offer::Cards { .. } | Offer::Relics { .. } => Pick::Take(0),
+                    Offer::Cards { .. } | Offer::Relics { .. } | Offer::Surrender { .. } => {
+                        Pick::Take(0)
+                    }
                 };
                 RunEvent::Picked { hero: 0, pick }
             }
@@ -302,7 +305,7 @@ fn only_a_run_of_the_mirror_pools_generation_meets_it() {
         );
         newer += events_met(seed, CONTENT)
             .iter()
-            .filter(|e| *e == "mirror_pool")
+            .filter(|e| e.starts_with("mirror_pool"))
             .count();
     }
     assert!(newer > 0, "a new run meets the Mirror Pool");
@@ -507,10 +510,13 @@ fn a_camp_offers_only_upgrades_that_fit_and_a_deck_without_facts_gets_none() {
                                 Pick::Skip
                             }
                             Offer::Duplicate => Pick::Skip,
+                            Offer::Discard => Pick::Discard("Sol Ring".into()),
                             Offer::Cards { cards } if cards.is_empty() => Pick::Skip,
                             Offer::Relics { relics } if relics.is_empty() => Pick::Skip,
                             Offer::Event { event } => affordable(&run, event),
-                            Offer::Cards { .. } | Offer::Relics { .. } => Pick::Take(0),
+                            Offer::Cards { .. }
+                            | Offer::Relics { .. }
+                            | Offer::Surrender { .. } => Pick::Take(0),
                         };
                         RunEvent::Picked { hero: 0, pick }
                     }

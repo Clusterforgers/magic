@@ -277,7 +277,14 @@ fn a_deck_chosen_before_the_filter_is_offered_every_relic_of_the_pool() {
     let none: BTreeSet<String> = (0..400)
         .flat_map(|seed| loot(seed, CONTENT, hero_deck(None), &[], &[]))
         .collect();
-    assert_eq!(none.len(), relic_ids().len(), "{none:?}");
+    // Every relic but the Mythic ones, which loot offers only after the last lieutenant.
+    let content = content().unwrap();
+    let pool = content
+        .relics()
+        .iter()
+        .filter(|c| c.rarity != mtg_campaign::Rarity::Mythic)
+        .count();
+    assert_eq!(none.len(), pool, "{none:?}");
 }
 
 #[test]

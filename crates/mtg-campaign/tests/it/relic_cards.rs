@@ -7,7 +7,7 @@
 use std::collections::BTreeMap;
 use std::sync::Arc;
 
-use mtg_campaign::relics::{FILTER_FROM, Want};
+use mtg_campaign::relics::{FILTER_FROM, RARITY_FROM, Want};
 use mtg_campaign::run::CONTENT;
 use mtg_campaign::{CardKind, FightPlan, HeroDeck, Run, RunEvent, content};
 use mtg_cards::CardDefinition;
@@ -58,7 +58,7 @@ fn each_relic_wants_what_its_rules_name() {
                 Want::Color(color) => format!("\"Color\":\"{}\"", color_name(*color)),
                 Want::Type(card_type) => format!("\"Type\":\"{card_type:?}\""),
                 Want::Subtype(subtype) => format!("\"Subtype\":\"{subtype}\""),
-                Want::Tokens => "\"Token\"".to_owned(),
+                Want::Tokens => "\"Token".to_owned(),
                 Want::Counters => "\"+1/+1\"".to_owned(),
                 Want::Graveyard => "\"Graveyard\"".to_owned(),
                 Want::CreatureCommander => "\"Commander\"".to_owned(),
@@ -173,7 +173,11 @@ fn the_larger_pool_belongs_to_the_filters_generation() {
     for relic in content.relics() {
         assert!(relic.since <= CONTENT, "{}", relic.id);
         if relic.since > 0 {
-            assert_eq!(relic.since, FILTER_FROM, "{}", relic.id);
+            assert!(
+                [FILTER_FROM, RARITY_FROM].contains(&relic.since),
+                "{}",
+                relic.id
+            );
         }
     }
     for card in content.cards.values() {
