@@ -324,6 +324,7 @@ export type { ResolutionOutcome } from "./ResolutionOutcome";
 export type { Resolved } from "./Resolved";
 export type { Restricted } from "./Restricted";
 export type { Revealed } from "./Revealed";
+export type { RevealedDeck } from "./RevealedDeck";
 export type { RoomKind } from "./RoomKind";
 export type { RoundView } from "./RoundView";
 export type { RowState } from "./RowState";

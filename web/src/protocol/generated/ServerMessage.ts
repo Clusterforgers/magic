@@ -16,6 +16,7 @@ import type { LogHost } from "./LogHost";
 import type { LogName } from "./LogName";
 import type { PlayerId } from "./PlayerId";
 import type { Refusal } from "./Refusal";
+import type { RevealedDeck } from "./RevealedDeck";
 import type { StateView } from "./StateView";
 import type { Stop } from "./Stop";
 import type { TakeBackOffer } from "./TakeBackOffer";
@@ -261,4 +262,8 @@ seats: Array<DecidingView>, } | { "type": "Spectators",
 /**
  * The spectators connected now.
  */
-count: number, };
+count: number, } | { "type": "DecksRevealed", 
+/**
+ * Each seat that drew its deck, in seat order.
+ */
+decks: Array<RevealedDeck>, };

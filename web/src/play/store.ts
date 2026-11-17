@@ -92,6 +92,8 @@ export interface LogEntry {
 export interface ChatLine {
   from: PlayerId
   text: string
+  /** A line the table says about the seat (a deck drawn at random), not one the seat typed. */
+  table?: true
 }
 
 /** Everything a game screen reads. Treat it as immutable: the session replaces what changes and nothing else. */

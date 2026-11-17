@@ -615,9 +615,7 @@ fn view(loaded: &Loaded, user: UserId, deck_problems: Vec<DelveDeckProblem>) -> 
         me,
         run: loaded.run.clone(),
         boss,
-        boss_lives: campaign()
-            .map(|content| loaded.run.boss_lives(content))
-            .unwrap_or_default(),
+        boss_lives: campaign().map_or_default(|content| loaded.run.boss_lives(content)),
         deck_problems,
         fight: fight_view(&loaded.run),
         mirror: Vec::new(),
@@ -999,11 +997,7 @@ async fn event_of(
                 ));
             }
             if loaded.run.status != Status::Lobby {
-                let current = target
-                    .deck
-                    .as_ref()
-                    .map(|d| d.id.clone())
-                    .unwrap_or_default();
+                let current = target.deck.as_ref().map_or_default(|d| d.id.clone());
                 let plays = resolve_as(app, deck_owner(loaded, usize::from(hero)), &current).await;
                 match plays {
                     Ok(_) => {
@@ -1015,6 +1009,20 @@ async fn event_of(
                     Err(_) => {}
                 }
             }
+            // A random deck is drawn now and stored by its own id, so every fight of the run plays it.
+            let deck = match crate::random_deck::Pool::of(&deck) {
+                Some(pool) => {
+                    let owner = app.auth().session_user(headers).await?.map(|u| u.id.uuid());
+                    let seed = crate::random_deck::seed_for(
+                        &loaded.run.seed.to_string(),
+                        usize::from(hero),
+                    );
+                    crate::random_deck::drawn_id(app, owner, pool, FormatKind::Commander, seed)
+                        .await
+                        .map_err(deck_refused)?
+                }
+                None => deck,
+            };
             let chosen = resolve(app, headers, &deck).await.map_err(deck_refused)?;
             Ok(RunEvent::DeckChosen {
                 hero,

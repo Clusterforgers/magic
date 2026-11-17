@@ -13,6 +13,12 @@ use super::decks::DeckPicture;
 /// seat, a join or the creation of a game.
 pub const PRECON_DECK_PREFIX: &str = "precon:";
 
+/// The deck id of a precon drawn at random from those that suit the table, wherever a seat names a deck.
+pub const RANDOM_PRECON_DECK: &str = "random:precon";
+
+/// The deck id of one of the caller's stored decks drawn at random; followed by `:<group id>`, one of that group's.
+pub const RANDOM_OWN_DECK: &str = "random:mine";
+
 /// A precon in the list of `GET /api/precons`, with its deck check.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct PreconListItem {

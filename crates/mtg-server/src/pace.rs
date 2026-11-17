@@ -487,8 +487,9 @@ fn first_modes(options: &ModeOptions) -> Option<ModeChoice> {
     Some(ModeChoice::Modes(chosen))
 }
 
-/// The plain answer to `decision` when `choices` let the server give it: triggers in the order they triggered and
-/// combat damage lethal in order. Both read only what every player sees, so answering at once shows nothing hidden.
+/// The plain answer to `decision` when `choices` let the server give it: triggers in the order they triggered, combat
+/// damage lethal in order and a payment the automatic payment makes with no real choice ([`auto_paid`]). The first
+/// two read only what every player sees, so answering at once shows nothing hidden; a payment is the seat's own cast.
 pub(crate) fn chosen_answer(decision: &Decision, choices: AutoChoices) -> Option<Answer> {
     match &decision.kind {
         DecisionKind::OrderTriggers(options) if choices.order_triggers => {
@@ -497,8 +498,42 @@ pub(crate) fn chosen_answer(decision: &Decision, choices: AutoChoices) -> Option
         DecisionKind::AssignDamage(options) if choices.assign_damage => {
             damage_in_order(options).map(Answer::AssignDamage)
         }
+        DecisionKind::PayMana(options) if choices.auto_pay => auto_paid(options),
         _ => None,
     }
+}
+
+/// `Auto` for a payment with no real choice in it: a cost of plain symbols only (no hybrid, Phyrexian or snow symbol
+/// to pick for), nothing offered to help pay (convoke, improvise, delve), and an automatic payment (lands before
+/// artifacts, `auto_payment_with`) that takes no life and uses only mana abilities that add mana and do nothing else.
+/// Anything else is asked as usual.
+pub(crate) fn auto_paid(options: &PayOptions) -> Option<Answer> {
+    if !options.auto_available || !options.cost.is_plain() || !options.help.is_empty() {
+        return None;
+    }
+    let payment = mtg_engine::mana::auto_payment_with(
+        &options.cost,
+        &options.pool,
+        &options.sources,
+        options.help(),
+        options.life,
+        &options.spend,
+    )?;
+    let only_mana = |source: &mtg_engine::mana::ManaSource| {
+        options
+            .sources
+            .iter()
+            .filter(|option| option.source == *source)
+            .all(|option| {
+                !(option.extra || option.sacrifice || option.exile)
+                    && option.life == 0
+                    && option.energy == 0
+                    && option.cost.symbols().is_empty()
+                    && option.takes.is_empty()
+            })
+    };
+    (payment.life == 0 && payment.taps.iter().all(only_mana))
+        .then_some(Answer::PayMana(PayChoice::Auto))
 }
 
 /// Whether `answer` takes a triggered ability off the stack without a target. Only the clock gives it ([`fallback`]):
@@ -1607,6 +1642,7 @@ mod tests {
             assign_damage,
             smart_stops: false,
             skip_triggers: false,
+            auto_pay: false,
         }
     }
 
@@ -1624,6 +1660,105 @@ mod tests {
         #[case] expected: Option<Answer>,
     ) {
         assert_eq!(chosen_answer(&decision(OTHER, kind), choices), expected);
+    }
+
+    /// What a mana source of a payment does besides adding mana.
+    #[derive(Debug, Clone, Copy)]
+    enum Source {
+        Plain,
+        Painland,
+        Treasure,
+        Filter,
+    }
+
+    /// A payment of `cost` from a Forest (object 30) and a source (object 31) of the kind `second` that adds red, with
+    /// `delve` a card to exile when set.
+    fn paid_with(cost: &str, second: Source, delve: bool) -> DecisionKind {
+        use mtg_engine::mana::{ManaOption, ManaSource};
+        let option = |object: u64, produces| {
+            ManaOption::new(
+                ManaSource {
+                    object: ObjectId(object),
+                    ability: 0,
+                },
+                produces,
+            )
+        };
+        let mut red = option(31, mtg_core::mana::ManaType::Red);
+        match second {
+            Source::Plain => {}
+            Source::Painland => red.extra = true,
+            Source::Treasure => red.sacrifice = true,
+            Source::Filter => red.cost = mtg_core::mana::ManaCost::parse("{1}").unwrap(),
+        }
+        let cost = mtg_core::mana::ManaCost::parse(cost).unwrap();
+        let sources = vec![option(30, mtg_core::mana::ManaType::Green), red];
+        let mut help = mtg_engine::help::Offered::default();
+        if delve {
+            help.delve = vec![ObjectId(50)];
+        }
+        DecisionKind::PayMana(PayOptions {
+            spend: Box::new(Spend::other()),
+            spell: ObjectId(1),
+            auto_available: mtg_engine::mana::auto_payment_with(
+                &cost,
+                &ManaPool::default(),
+                &sources,
+                help.help(),
+                20,
+                &Spend::other(),
+            )
+            .is_some(),
+            max_life: max_life_payment_of(&cost),
+            cost,
+            pool: ManaPool::default(),
+            sources,
+            can_cancel: true,
+            attack: false,
+            block: false,
+            life: 20,
+            help: Box::new(help),
+        })
+    }
+
+    /// The most life a cost may take: 2 for each Phyrexian symbol.
+    fn max_life_payment_of(cost: &mtg_core::mana::ManaCost) -> u32 {
+        let phyrexian = cost
+            .symbols()
+            .iter()
+            .filter(|symbol| symbol.can_pay_life())
+            .count();
+        u32::try_from(phyrexian * 2).unwrap()
+    }
+
+    /// The settings with only "Always pay automatically" as given.
+    fn paying(on: bool) -> AutoChoices {
+        AutoChoices {
+            auto_pay: on,
+            ..AutoChoices::default()
+        }
+    }
+
+    #[rstest]
+    #[case::one_land(paid_with("{G}", Source::Plain, false), true, true)]
+    #[case::both_lands(paid_with("{1}{G}", Source::Plain, false), true, true)]
+    #[case::off_asks(paid_with("{G}", Source::Plain, false), false, false)]
+    #[case::hybrid_asks(paid_with("{R/G}", Source::Plain, false), true, false)]
+    #[case::phyrexian_asks(paid_with("{G/P}", Source::Plain, false), true, false)]
+    #[case::generic_from_either_land(paid_with("{1}", Source::Plain, false), true, true)]
+    #[case::help_offered_asks(paid_with("{1}", Source::Plain, true), true, false)]
+    #[case::a_painland_asks(paid_with("{R}", Source::Painland, false), true, false)]
+    #[case::a_treasure_asks(paid_with("{R}", Source::Treasure, false), true, false)]
+    #[case::a_filter_asks(paid_with("{R}", Source::Filter, false), true, false)]
+    #[case::an_unused_painland_does_not_ask(paid_with("{G}", Source::Painland, false), true, true)]
+    #[case::unaffordable_asks(paid_with("{3}", Source::Plain, false), true, false)]
+    fn always_pay_automatically_pays_only_a_payment_without_a_choice(
+        #[case] kind: DecisionKind,
+        #[case] on: bool,
+        #[case] paid: bool,
+    ) {
+        let expected = paid.then_some(Answer::PayMana(PayChoice::Auto));
+        assert_eq!(chosen_answer(&decision(OTHER, kind), paying(on)), expected);
     }
 
     #[test]

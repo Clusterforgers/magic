@@ -27,6 +27,7 @@ use crate::api::{ApiError, MAX_NAME_CHARS, is_unsafe_in_names, read_json};
 use crate::auth::client_address;
 use crate::deck_choice::{self, Refused};
 use crate::game_id::GameId;
+use crate::recipe::FormatKind;
 use crate::registry::{
     ChosenDeck, ClaimError, Entrance, HOST, ListedGame, SeatClaim, Seated, TableError,
 };
@@ -499,7 +500,13 @@ pub(crate) async fn choose_deck(
     }
     // Only the holder gets this far, so the answer to a deck that is not theirs tells nothing to a
     // stranger.
-    let deck = deck_choice::resolve(&app, &headers, &body.deck)
+    let format = app
+        .registry()
+        .describe(game)
+        .await
+        .map_or(FormatKind::Normal, |found| found.format);
+    let seed = crate::random_deck::seed_for(&game.to_string(), seat.index());
+    let deck = deck_choice::resolve_for(&app, &headers, &body.deck, format, seed)
         .await
         .map_err(Refused::into_error)?;
     let note = app.registry().choose_deck(game, seat, by, deck).await?;

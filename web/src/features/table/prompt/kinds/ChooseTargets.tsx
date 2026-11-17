@@ -24,6 +24,9 @@ import {
 import type { PromptComponent } from '../types'
 import { UndoButton } from '../UndoButton'
 import { PlayerFace } from '../PlayerFace'
+import { QuickSelect } from '../QuickSelect'
+import { useAllies } from '../useAllies'
+import { quickButtons } from '../quickSelect'
 import { useObjects } from '../useCombatNames'
 
 /**
@@ -33,7 +36,8 @@ import { useObjects } from '../useCombatNames'
  * draws no card to press. The chosen targets are listed with a button each to
  * take them back, Undo takes back the last one, and Confirm sends them once there are enough. A spell or an ability
  * can be backed out of with its Undo button or Escape, since nothing is paid yet; a triggered ability cannot, so it has
- * none and waits for a target. With a most for the total mana value the sentence tells the total so far, and a
+ * none and waits for a target. With room for several the quick selection buttons (`QuickSelect`) add every legal
+ * target, the viewer's own or their teammates', or take all back. With a most for the total mana value the sentence tells the total so far, and a
  * target that would go over it is neither marked nor taken.
  */
 export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options }) => {
@@ -135,6 +139,25 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
     chosen: chosen.length,
   })
   const totalText = totalWords(options.legal, total, chosen)
+  const allies = useAllies()
+  const quick = quickButtons<Target>({
+    legal: offered,
+    chosen,
+    max,
+    same: sameTarget,
+    seatOf: (target) =>
+      'Player' in target ? target.Player : (byId.get(target.Object.id)?.controller ?? null),
+    me,
+    allies,
+    breaks: (next) => {
+      let current = chosen
+      for (const target of next.slice(chosen.length)) {
+        if (!fits(target, current)) return 'Together they pass the most total mana value'
+        current = [...current, target]
+      }
+      return undefined
+    },
+  })
   const text = totalText === '' ? sentence : `${sentence} ${totalText}`
 
   return (
@@ -142,6 +165,7 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
       text={text}
       choices={
         <>
+          <QuickSelect buttons={quick} onSet={setChosen} />
           <CardChoices
             cards={objectIds}
             chosen={chosenIds}

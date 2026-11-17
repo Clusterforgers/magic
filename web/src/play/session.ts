@@ -384,6 +384,15 @@ export function createSession(deps: SessionDeps): Session {
       case 'Spectators':
         setState({ spectators: message.count })
         return
+      case 'DecksRevealed':
+        // The table's own lines in the chat: who drew which deck, told once as the game starts.
+        setState((state) => ({
+          chat: message.decks.reduce(
+            (chat, deck) => appendChat(chat, { from: deck.seat, text: `drew ${deck.name}`, table: true }),
+            state.chat,
+          ),
+        }))
+        return
       default: {
         // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.
         const unhandled: never = message

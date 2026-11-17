@@ -23,4 +23,10 @@ smart_stops: boolean,
  * Every triggered ability on top of the stack, any seat's, is passed for at once at the seat's priority, out of
  * Full Control; left out (false) when off.
  */
-skip_triggers?: boolean, };
+skip_triggers?: boolean, 
+/**
+ * "Always pay automatically": a mana payment the automatic payment makes with no real choice (no hybrid or
+ * Phyrexian symbol, no creature or card to help pay, no mana ability that does more than add mana) is paid at
+ * once, out of Full Control; left out (false) when off.
+ */
+auto_pay?: boolean, };

@@ -11,7 +11,7 @@ use mtg_core::ids::PlayerId;
 use mtg_core::teams::Teams;
 use mtg_engine::{Engine, GameState};
 use mtg_protocol::rest::LobbyCommander;
-use mtg_protocol::{ErrorCode, LobbySeat, SeatDeck, ServerMessage};
+use mtg_protocol::{ErrorCode, LobbySeat, RevealedDeck, SeatDeck, ServerMessage};
 
 use crate::actor::{Fatal, GameActor, Phase};
 use crate::handle::{DeckRefusal, TeamsRefusal};
@@ -417,6 +417,24 @@ impl<S: EventStore> GameActor<S> {
         recorder.warm_images(chosen);
     }
 
+    /// Tells every client the real names of the decks drawn at random, before the opening batch; nothing when none was.
+    fn reveal_decks(&mut self) {
+        let decks: Vec<RevealedDeck> = self
+            .decks
+            .as_ref()
+            .map_or_default(SeatDecks::revealed)
+            .into_iter()
+            .map(|(seat, name)| RevealedDeck {
+                seat: PlayerId::from_index(seat),
+                name,
+            })
+            .collect();
+        if !decks.is_empty() {
+            self.seats
+                .broadcast(&ServerMessage::DecksRevealed { decks });
+        }
+    }
+
     /// Creates the engine, persists its opening events and shows them from seq 0 like any other batch.
     ///
     /// If anything fails the lobby stays as it was, so a repeated `Ready` retries.
@@ -468,6 +486,7 @@ impl<S: EventStore> GameActor<S> {
                     recorder.started().await;
                 }
                 self.warm_images();
+                self.reveal_decks();
                 self.announce(batches, Vec::new(), if idle { Vec::new() } else { first });
                 if idle {
                     return self.start_up().await;

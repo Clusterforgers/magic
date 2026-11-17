@@ -32,6 +32,7 @@ use crate::decks::lines_of;
 use crate::demo;
 use crate::precon_api::judged_precon;
 use crate::printings::{preferred_of, with_preferred};
+use crate::random_deck;
 use crate::recipe::FormatKind;
 use crate::seat_deck::ChosenDeck;
 use crate::server::AppState;
@@ -119,6 +120,20 @@ pub(crate) async fn resolve(
         });
     }
     stored(app, headers, id).await
+}
+
+/// [`resolve`] for a seat at a table of `format`: a random deck id ([`random_deck::Pool`]) draws with `seed`.
+pub(crate) async fn resolve_for(
+    app: &AppState,
+    headers: &HeaderMap,
+    id: &str,
+    format: FormatKind,
+    seed: u64,
+) -> Result<ChosenDeck, Refused> {
+    match random_deck::Pool::of(id) {
+        Some(pool) => random_deck::resolve(app, headers, pool, format, seed).await,
+        None => resolve(app, headers, id).await,
+    }
 }
 
 /// A built-in deck by its id; a stored deck's id is [`Refused::Unknown`] here. For the seats of a
