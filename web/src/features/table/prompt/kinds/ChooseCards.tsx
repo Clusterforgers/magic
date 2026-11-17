@@ -25,6 +25,10 @@ import { PromptLayout } from '../PromptLayout'
 import type { PromptComponent } from '../types'
 import { UndoButton } from '../UndoButton'
 import { useObjects } from '../useCombatNames'
+import { QuickSelect } from '../QuickSelect'
+import { useAllies } from '../useAllies'
+import { quickButtons } from '../quickSelect'
+import { usePlay } from '@/features/game/gameContext'
 import { useDefaultFocus } from '../usePromptKeys'
 import { ScryCards } from './ScryCards'
 
@@ -38,7 +42,8 @@ const NONE: readonly ObjectId[] = []
  * legal. A long list and a search of a library get a search box. The choice goes in the order it was made. The
  * server's answer at the deadline is the first `min` cards of the list, so focus starts on the first card, or on the
  * search box of a search of a library. Cards picked for the cost of a spell or ability being announced can be backed
- * out of with Undo or Escape, which pays nothing.
+ * out of with Undo or Escape, which pays nothing. With room for several the quick selection buttons (`QuickSelect`) add
+ * every card, the viewer's own or their teammates', or take all back.
  */
 const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
   const { answer, selection } = usePrompt()
@@ -96,6 +101,36 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
     selection.set(next)
   }
 
+  // A whole quick choice keeps to the total, and to one card per name or group.
+  const fitsQuick = (next: readonly ObjectId[]): boolean => {
+    if (!fitsCardsTotal(from, cardsTotal, next)) return false
+    const groups = options.groups ?? []
+    const keyOf = (id: ObjectId): string | number | undefined =>
+      groups.length > 0
+        ? groups[from.indexOf(id)]
+        : options.one_per_name === true
+          ? byId.get(id)?.name
+          : undefined
+    const keys = next.map(keyOf).filter((key) => key !== undefined)
+    return new Set(keys).size === keys.length
+  }
+  const me = usePlay((state) => state.seat)
+  const allies = useAllies()
+  const quick = quickButtons<ObjectId>({
+    legal: from,
+    chosen,
+    max: hi,
+    same: (a, b) => a === b,
+    seatOf: (id) => byId.get(id)?.controller ?? null,
+    me,
+    allies,
+    breaks: (next) => (fitsQuick(next) ? undefined : 'Together they break the rule of this choice'),
+  })
+  const setQuick = (next: readonly ObjectId[]): void => {
+    latest.current = next
+    selection.set(next)
+  }
+
   const closed = hi > 1 && chosen.length >= hi
   const open = useMemo(
     () => (hi === 0 || closed ? NONE : from.filter((id) => !sameName.has(id))),
@@ -130,19 +165,22 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
     <PromptLayout
       text={text}
       choices={
-        <CardChoices
-          cards={from}
-          chosen={chosen}
-          closed={closed}
-          shut={sameName}
-          labels={labels}
-          objects={byId}
-          onPress={press}
-          label="Cards to choose from"
-          keys
-          focusFirst={first}
-          search={searching}
-        />
+        <>
+          <QuickSelect buttons={quick} onSet={setQuick} />
+          <CardChoices
+            cards={from}
+            chosen={chosen}
+            closed={closed}
+            shut={sameName}
+            labels={labels}
+            objects={byId}
+            onPress={press}
+            label="Cards to choose from"
+            keys
+            focusFirst={first}
+            search={searching}
+          />
+        </>
       }
     >
       <Button
