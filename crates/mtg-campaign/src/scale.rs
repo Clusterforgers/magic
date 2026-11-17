@@ -1,7 +1,8 @@
 //! How a boss scales with the party, its place on the ladder and the Heat: its life, opening hand, brain and boss
 //! cards, extra combats, its phases with the Last Bulwark for a big party, and the minions it fields. One table by
 //! party size, so every size from one to six heroes meets the same challenge, and one by ladder rank and Heat, so the
-//! first boss is the gentlest, each later one harder and each Heat a clear step up.
+//! first boss is the gentlest, each later one harder and each Heat a clear step up; from content generation 4 that
+//! table also picks the bracket of the boss's deck, which carries most of the step.
 
 use crate::content::{Boss, Brain, Minion, Theme};
 
@@ -45,6 +46,8 @@ const SOLO_HAND: u32 = 5;
 /// How hard a boss plays at one ladder rank and Heat, on top of the party-size table.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Tier {
+    /// The bracket of its deck ([`BRACKETS`]); 0 for the deck as written before brackets.
+    pub bracket: u8,
     /// Its life and its minions', in percent of the party-size table's.
     pub life: i32,
     /// Cards its opening hand has more (or fewer) than the party-size table's.
@@ -60,7 +63,20 @@ pub struct Tier {
 }
 
 const fn tier(life: i32, hand: i32, brain: i8, minions: i8, relic: bool, modifier: bool) -> Tier {
+    bracketed(0, life, hand, brain, minions, relic, modifier)
+}
+
+const fn bracketed(
+    bracket: u8,
+    life: i32,
+    hand: i32,
+    brain: i8,
+    minions: i8,
+    relic: bool,
+    modifier: bool,
+) -> Tier {
     Tier {
+        bracket,
         life,
         hand,
         brain,
@@ -93,6 +109,43 @@ pub const TIERS: [[Tier; RANKS]; MAX_HEAT as usize + 1] = [
     ],
 ];
 
+/// The content generation from which bosses play bracket decks ([`BRACKET_TIERS`]) with their commander card; a run of
+/// an earlier one plays [`TIERS`] and the decks as written.
+pub const BRACKETS_FROM: u32 = 4;
+/// The highest bracket.
+pub const MAX_BRACKET: u8 = 5;
+/// A boss deck's size by bracket, from bracket 1.
+pub const DECK_SIZE: [u32; MAX_BRACKET as usize] = [40, 50, 60, 60, 60];
+
+/// The bracket table, by Heat and then ladder rank (`docs/delves.md`, Difficulty): the first boss, the middle two, the
+/// final boss.
+pub const BRACKETS: [[u8; RANKS]; MAX_HEAT as usize + 1] =
+    [[1, 2, 2, 3], [2, 3, 3, 4], [3, 4, 4, 5]];
+
+/// The tier table of the bracket generation, by Heat and then ladder rank: bracket, life %, hand, brain, minions, relic,
+/// modifier. The bracket carries most of the step; life, hand and brain move less than in [`TIERS`]. No row is easier
+/// than the one before it or the one at the Heat below.
+pub const BRACKET_TIERS: [[Tier; RANKS]; MAX_HEAT as usize + 1] = [
+    [
+        bracketed(BRACKETS[0][0], 75, -1, -1, -1, false, false),
+        bracketed(BRACKETS[0][1], 80, -1, -1, -1, false, true),
+        bracketed(BRACKETS[0][2], 85, 0, 0, 0, true, true),
+        bracketed(BRACKETS[0][3], 90, 0, 0, 0, true, true),
+    ],
+    [
+        bracketed(BRACKETS[1][0], 85, -1, -1, -1, false, true),
+        bracketed(BRACKETS[1][1], 90, 0, 0, 0, true, true),
+        bracketed(BRACKETS[1][2], 95, 0, 0, 0, true, true),
+        bracketed(BRACKETS[1][3], 100, 0, 0, 0, true, true),
+    ],
+    [
+        bracketed(BRACKETS[2][0], 95, 0, 0, 0, false, true),
+        bracketed(BRACKETS[2][1], 105, 0, 0, 0, true, true),
+        bracketed(BRACKETS[2][2], 110, 0, 0, 0, true, true),
+        bracketed(BRACKETS[2][3], 120, 1, 1, 0, true, true),
+    ],
+];
+
 /// The id of the Enrage card `id` made to begin on the heroes' turn `turn`: `id` itself on the turn it is written for.
 pub fn enrage_id(id: &str, turn: u32) -> String {
     if turn == ENRAGE_WRITTEN {
@@ -111,21 +164,48 @@ pub struct Scale {
     pub heat: u8,
     /// The boss's place on the ladder: 0 for the first.
     pub rank: usize,
+    /// Whether the run plays the bracket generation ([`BRACKET_TIERS`]).
+    pub bracketed: bool,
 }
 
 impl Scale {
-    /// The scaling for `heroes` (clamped to 1..=[`MOST`]) at `heat` (at most [`MAX_HEAT`]) against the boss at `rank`.
+    /// The scaling for `heroes` (clamped to 1..=[`MOST`]) at `heat` (at most [`MAX_HEAT`]) against the boss at `rank`,
+    /// before brackets ([`TIERS`]).
     pub fn new(heroes: usize, heat: u8, rank: usize) -> Scale {
         Scale {
             heroes: heroes.clamp(1, MOST),
             heat: heat.min(MAX_HEAT),
             rank,
+            bracketed: false,
+        }
+    }
+
+    /// [`Scale::new`] for a run of content generation `content`: bracketed from [`BRACKETS_FROM`].
+    pub fn of_content(heroes: usize, heat: u8, rank: usize, content: u32) -> Scale {
+        Scale {
+            bracketed: content >= BRACKETS_FROM,
+            ..Scale::new(heroes, heat, rank)
         }
     }
 
     /// The tier of this rank and Heat.
     pub fn tier(self) -> Tier {
-        TIERS[usize::from(self.heat)][self.rank.min(RANKS - 1)]
+        let table = if self.bracketed {
+            &BRACKET_TIERS
+        } else {
+            &TIERS
+        };
+        table[usize::from(self.heat)][self.rank.min(RANKS - 1)]
+    }
+
+    /// The bracket of the boss's deck: 0 for the deck as written before brackets.
+    pub fn bracket(self) -> u8 {
+        self.tier().bracket
+    }
+
+    /// The boss's deck at this scale.
+    pub fn deck(self, boss: &Boss) -> Vec<(String, u32)> {
+        boss.deck_at(self.bracket())
     }
 
     fn extra_heroes(self) -> i32 {
@@ -227,7 +307,7 @@ impl Scale {
         theme
             .minions
             .iter()
-            .filter(|m| m.deck_of != boss.id)
+            .filter(|m| m.deck_of != boss.identity())
             .take(self.minion_count())
             .collect()
     }

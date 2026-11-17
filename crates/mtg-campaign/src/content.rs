@@ -136,8 +136,24 @@ pub struct Boss {
     pub life_per_hero: i32,
     /// Its opening hand size.
     pub hand: u32,
-    /// Its deck: card names and copies.
+    /// Its deck as written before brackets, for runs of an earlier content generation: card names and copies.
+    #[serde(default)]
     pub deck: Vec<(String, u32)>,
+    /// Its deck by bracket (`scale::BRACKETS`), for runs from `scale::BRACKETS_FROM`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub brackets: Option<BracketDeck>,
+    /// Its commander card: a real card it casts free from its command zone as its last phase begins.
+    #[serde(default)]
+    pub commander: String,
+    /// The content generation it joined the theme in: a run made before it never meets it.
+    #[serde(default)]
+    pub since: u32,
+    /// Its upgraded form, which may stand as the final boss of a ladder it is not on.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub upgrade: Option<BossUpgrade>,
+    /// The boss an upgraded form is made from; none for a boss as written.
+    #[serde(skip)]
+    pub upgrade_of: Option<String>,
     /// Custom cards it starts with in its command zone: its passive.
     #[serde(default)]
     pub rules: Vec<String>,
@@ -165,6 +181,105 @@ pub struct BossArt {
     pub card: String,
     /// The card's Scryfall oracle id.
     pub oracle_id: String,
+}
+
+/// A boss's deck by bracket: the deck of bracket 1 and, for each bracket above it, the cards that bracket adds and
+/// cuts.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct BracketDeck {
+    /// The bracket 1 deck: card names and copies.
+    pub base: Vec<(String, u32)>,
+    /// Brackets 2 and up, in order: each changes the bracket below it.
+    pub steps: Vec<DeckStep>,
+}
+
+/// How one bracket's deck differs from the bracket below it.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct DeckStep {
+    /// Cards added: names and copies.
+    #[serde(default)]
+    pub add: Vec<(String, u32)>,
+    /// Cards taken out: names and copies.
+    #[serde(default)]
+    pub cut: Vec<(String, u32)>,
+}
+
+impl BracketDeck {
+    /// The deck at `bracket` (from 1; past the last step the last deck): card names and copies, in the order they were
+    /// first named.
+    pub fn at(&self, bracket: u8) -> Vec<(String, u32)> {
+        let mut deck = self.base.clone();
+        for step in self
+            .steps
+            .iter()
+            .take(usize::from(bracket.saturating_sub(1)))
+        {
+            for (name, n) in &step.cut {
+                if let Some(entry) = deck.iter_mut().find(|(have, _)| have == name) {
+                    entry.1 = entry.1.saturating_sub(*n);
+                }
+            }
+            for (name, n) in &step.add {
+                match deck.iter_mut().find(|(have, _)| have == name) {
+                    Some(entry) => entry.1 += n,
+                    None => deck.push((name.clone(), *n)),
+                }
+            }
+            deck.retain(|(_, n)| *n > 0);
+        }
+        deck
+    }
+}
+
+/// A boss's upgraded form: the same identity with a new name and an extra effect, fought as a final boss.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct BossUpgrade {
+    /// The upgraded form's name.
+    pub name: String,
+    /// The boss cards it has in addition to the boss's passive.
+    pub rules: Vec<String>,
+    /// What it says as the fight begins.
+    #[serde(default)]
+    pub line: String,
+}
+
+/// The id suffix of a boss's upgraded form.
+pub const UPGRADED: &str = "_ascendant";
+
+impl Boss {
+    /// The boss whose deck, minions and identity this one shares: the boss it is upgraded from, or itself.
+    pub fn identity(&self) -> &str {
+        self.upgrade_of.as_deref().unwrap_or(&self.id)
+    }
+
+    /// Its deck at `bracket`; the deck as written for bracket 0 or a boss with no bracket decks.
+    pub fn deck_at(&self, bracket: u8) -> Vec<(String, u32)> {
+        match &self.brackets {
+            Some(decks) if bracket > 0 => decks.at(bracket),
+            _ => self.deck.clone(),
+        }
+    }
+
+    /// Its upgraded form as a final boss, if it has one: its own rules and the upgrade's, from the bracket generation.
+    pub fn upgraded(&self) -> Option<Boss> {
+        let upgrade = self.upgrade.as_ref()?;
+        let mut rules = self.rules.clone();
+        rules.extend(upgrade.rules.iter().cloned());
+        Some(Boss {
+            id: format!("{}{UPGRADED}", self.id),
+            name: upgrade.name.clone(),
+            final_boss: true,
+            rules,
+            line: upgrade.line.clone(),
+            since: self.since.max(crate::scale::BRACKETS_FROM),
+            upgrade: None,
+            upgrade_of: Some(self.id.clone()),
+            ..self.clone()
+        })
+    }
 }
 
 /// A boss's minion: a lieutenant seat on the boss's side for a big party, with another boss's deck; it falls with the
@@ -368,12 +483,18 @@ pub struct Theme {
     /// The minions a boss fields for a big party, in the order they join.
     #[serde(default)]
     pub minions: Vec<Minion>,
+    /// The upgraded forms of its bosses, made as the content is read (`Boss::upgraded`).
+    #[serde(skip)]
+    pub upgraded: Vec<Boss>,
 }
 
 impl Theme {
-    /// The boss with this id.
+    /// The boss with this id, an upgraded form included.
     pub fn boss(&self, id: &str) -> Option<&Boss> {
-        self.bosses.iter().find(|m| m.id == id)
+        self.bosses
+            .iter()
+            .chain(&self.upgraded)
+            .find(|m| m.id == id)
     }
 
     /// The event with this id.
@@ -392,10 +513,14 @@ pub struct Content {
 }
 
 impl Content {
-    /// Reads the content from its JSON texts.
-    pub fn parse(cards: &str, themes: &[&str]) -> Result<Content, CampaignError> {
-        let list: Vec<CustomCard> =
-            serde_json::from_str(cards).map_err(|e| CampaignError::Content(e.to_string()))?;
+    /// Reads the content from its JSON texts: the custom card files and the themes.
+    pub fn parse(card_files: &[&str], themes: &[&str]) -> Result<Content, CampaignError> {
+        let mut list: Vec<CustomCard> = Vec::new();
+        for text in card_files {
+            let more: Vec<CustomCard> =
+                serde_json::from_str(text).map_err(|e| CampaignError::Content(e.to_string()))?;
+            list.extend(more);
+        }
         let mut cards: BTreeMap<String, CustomCard> =
             list.into_iter().map(|c| (c.id.clone(), c)).collect();
         let variants = cards
@@ -409,12 +534,15 @@ impl Content {
             })
             .collect::<Result<Vec<_>, _>>()?;
         cards.extend(variants.into_iter().map(|c| (c.id.clone(), c)));
-        let themes = themes
+        let mut themes = themes
             .iter()
             .map(|text| {
                 serde_json::from_str(text).map_err(|e| CampaignError::Content(e.to_string()))
             })
             .collect::<Result<Vec<Theme>, _>>()?;
+        for theme in &mut themes {
+            theme.upgraded = theme.bosses.iter().filter_map(Boss::upgraded).collect();
+        }
         Ok(Content { cards, themes })
     }
 
@@ -519,7 +647,10 @@ pub fn content() -> Result<&'static Content, CampaignError> {
     CONTENT
         .get_or_init(|| {
             Content::parse(
-                include_str!("../content/cards.json"),
+                &[
+                    include_str!("../content/cards.json"),
+                    include_str!("../content/boss_cards.json"),
+                ],
                 &[include_str!("../content/warrens.json")],
             )
         })

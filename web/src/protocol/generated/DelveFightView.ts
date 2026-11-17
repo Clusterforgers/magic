@@ -21,6 +21,10 @@ rules: Array<string>,
  */
 phases: Array<[string, number]>, 
 /**
+ * Its commander card's name: a real card it casts free as its last phase begins.
+ */
+commander?: string, 
+/**
  * Its minions: name and starting life.
  */
 minions: Array<[string, number]>, };

@@ -3,6 +3,7 @@
 
 mod boss_cards;
 mod bosses;
+mod brackets;
 mod content;
 mod events;
 mod fights;

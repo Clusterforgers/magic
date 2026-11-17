@@ -1,6 +1,7 @@
 /** The Delves run page's pure rules of display: room states and votes, boss life, life bars, stages and ready heroes. */
 import type { DeckEntry } from '@/features/game/deckEntries'
 import { standingKind, summaryOf } from '@/features/table/campaign/bossAbilities'
+import { COMMANDER_TEXT, commanderLabel } from '@/features/table/campaign/bossPhase'
 import type { BossAbility } from '@/features/table/campaign/bossAbilities'
 import type {
   Brain,
@@ -181,6 +182,19 @@ export function introAbilities(content: DelveContent, fight: DelveFightView): Bo
       text: card.text,
       summary: summaryOf(card.text),
       when: life >= fight.life ? 'From the start' : `At ${life} life (${share}%)`,
+    })
+  }
+  if (fight.commander !== undefined) {
+    const names = fight.phases.map(([id]) => content.cards.find((entry) => entry.id === id)?.name ?? id)
+    const own = fight.phases.filter(([id]) => id !== 'bulwark')
+    const at = own.at(-1)?.[1]
+    out.push({
+      key: `commander-${fight.commander}`,
+      kind: 'next-phase',
+      name: commanderLabel(names, fight.commander),
+      text: COMMANDER_TEXT,
+      summary: summaryOf(COMMANDER_TEXT),
+      ...(at === undefined ? {} : { when: `At ${at} life` }),
     })
   }
   return out

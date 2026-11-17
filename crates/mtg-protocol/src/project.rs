@@ -667,6 +667,7 @@ impl PlayerView {
                 ((_, begun), schemes) => Some(crate::view::BossView {
                     phases: player.phase_names().map(str::to_owned).collect(),
                     begun: u32::try_from(begun).unwrap_or(u32::MAX),
+                    commander: player.held().next().map(str::to_owned),
                     scheme: schemes.and_then(|(now, _)| now).map(str::to_owned),
                     omen: schemes.map(|(_, omen)| omen.to_owned()),
                     omen_in: mtg_engine::schemes::omen_in(state, seat),

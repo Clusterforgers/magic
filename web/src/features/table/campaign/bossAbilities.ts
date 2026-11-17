@@ -12,6 +12,7 @@ import type {
   PlayerId,
   PlayerView,
 } from '@/protocol/generated'
+import { BULWARK_NAME, COMMANDER_TEXT, commanderLabel } from './bossPhase'
 
 /**
  * What an ability is to the fight: always on, its Enrage, this fight's modifier, the boss's relic, the phase in force,
@@ -134,6 +135,18 @@ export function bossAbilities(
       share !== undefined ? `At ${share}% of its life` : at === last ? 'With its last phase' : undefined
     out.push(ability(`phase-${name}`, 'next-phase', name, content, when))
   })
+  const own = view.phases.filter((name) => name !== BULWARK_NAME).length
+  if (view.commander !== undefined && view.begun < own) {
+    const name = commanderLabel(view.phases, view.commander)
+    out.push({
+      key: `commander-${view.commander}`,
+      kind: 'next-phase',
+      name,
+      text: COMMANDER_TEXT,
+      summary: summaryOf(COMMANDER_TEXT),
+      when: 'With its last phase',
+    })
+  }
   if (view.scheme !== undefined) out.push(ability(`scheme-${view.scheme}`, 'scheme', view.scheme, content))
   if (view.omen !== undefined)
     out.push(ability(`omen-${view.omen}`, 'omen', view.omen, content, omenWhen(view.omen_in)))

@@ -1,4 +1,4 @@
-//! Goal: every boss of the content has its parts (one passive, an Enrage after the heroes' seventh turn, two phases, a
+//! Goal: every boss of the content (an upgraded form too, for the drain rule) has its parts (one passive, an Enrage after the heroes' seventh turn, two phases, a
 //! relic of its own, a modifier pool to draw from), at most one life drain with no way out and the words for the way out
 //! of every other, a Hunting Party that spares commanders, and a scheme deck long enough for a fight at its cadence.
 use std::collections::BTreeSet;
@@ -92,7 +92,7 @@ fn boss_side_cards(theme: &Theme, boss: &Boss) -> BTreeSet<String> {
 fn a_boss_has_at_most_one_life_drain_with_no_way_out_and_words_the_way_out_of_the_others() {
     let content = content().unwrap();
     for theme in &content.themes {
-        for boss in &theme.bosses {
+        for boss in theme.bosses.iter().chain(&theme.upgraded) {
             let mut unavoidable = Vec::new();
             for id in boss_side_cards(theme, boss) {
                 let found = drains_of(&id);

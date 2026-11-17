@@ -23,7 +23,10 @@ fn the_ladder_lists_each_boss_with_the_life_of_its_rank(
         .collect();
     let run = Run::replay(content, "warrens", 9, heat, &events).unwrap();
     let lives = run.boss_lives(content);
-    assert_eq!(lives.len(), theme.bosses.len());
+    assert_eq!(
+        lives.len(),
+        theme.bosses.iter().filter(|b| b.since == 0).count()
+    );
     for node in run.map.nodes.iter().filter(|n| n.boss.is_some()) {
         let boss = theme.boss(node.boss.as_deref().unwrap()).unwrap();
         let life = Scale::new(heroes, heat, run.boss_rank(node.id)).life(boss);

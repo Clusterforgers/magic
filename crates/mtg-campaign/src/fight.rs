@@ -1,7 +1,7 @@
 //! A boss fight as a plan: the heroes' seats (carried life, relics as emblems, the Spirit rule) against the boss seat
-//! (scaled life, extra cards, its boss cards, phases and scheme deck) and the boss's minions, seated after it, who fall
-//! with it. The plan lays itself over a normal game setup, whose decks the caller resolves (the server from its card
-//! database, the simulator from the corpus).
+//! (scaled life, extra cards, its boss cards, phases, scheme deck and commander card) and the boss's minions, seated
+//! after it, who fall with it. The plan lays itself over a normal game setup, whose decks the caller resolves (the
+//! server from its card database, the simulator from the corpus).
 
 use mtg_core::house::{Handicap, HouseRules};
 use mtg_core::ids::PlayerId;
@@ -47,6 +47,9 @@ pub struct BossSeat {
     pub brain: Brain,
     /// Its deck: card names and copies.
     pub deck: Vec<(String, u32)>,
+    /// Its commander card: a real card that waits in its command zone and is cast free as its last phase begins.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub commander: Option<String>,
     /// The custom cards in its command zone from the start.
     pub rules: Vec<String>,
     /// Its phases: the phase card and the life at or below which it begins.
@@ -115,10 +118,13 @@ impl FightPlan {
         PlayerId::from_index(self.heroes.len() + 1 + at)
     }
 
-    /// The decks of the boss's side in seat order: the boss's, then each minion's.
-    pub fn boss_decks(&self) -> Vec<&[(String, u32)]> {
-        std::iter::once(self.boss.deck.as_slice())
-            .chain(self.minions.iter().map(|m| m.deck.as_slice()))
+    /// The decks of the boss's side in seat order: the boss's with its commander card last, then each minion's. The
+    /// caller resolves them; [`FightPlan::apply`] takes the commander card out of the boss's library again.
+    pub fn boss_decks(&self) -> Vec<Vec<(String, u32)>> {
+        let mut boss = self.boss.deck.clone();
+        boss.extend(self.boss.commander.iter().map(|name| (name.clone(), 1)));
+        std::iter::once(boss)
+            .chain(self.minions.iter().map(|m| m.deck.clone()))
             .collect()
     }
 
@@ -193,17 +199,33 @@ impl FightPlan {
         for minion in &self.minions {
             emblems.push(cards(&minion.rules)?);
         }
+        // The commander card waits in the command zone; the boss's last own phase casts it.
+        let last_own = self
+            .boss
+            .phases
+            .iter()
+            .rposition(|(id, _)| id != crate::scale::BULWARK);
         let phases = self
             .boss
             .phases
             .iter()
-            .map(|(id, at_life)| {
-                content.card(id).map(|card| BossPhase {
+            .enumerate()
+            .map(|(at, (id, at_life))| {
+                let card = content.card(id)?;
+                let emblem = match &self.boss.commander {
+                    Some(name) if Some(at) == last_own => {
+                        let mut card = card.clone();
+                        card.abilities.push(cast_commander(name)?);
+                        card.definition()
+                    }
+                    _ => card.definition(),
+                };
+                Ok(BossPhase {
                     at_life: *at_life,
-                    emblem: card.definition(),
+                    emblem,
                 })
             })
-            .collect::<Result<Vec<_>, _>>()?;
+            .collect::<Result<Vec<_>, CampaignError>>()?;
         let boss_side = 1 + self.minions.len();
         let mut spirits = vec![haunt; self.heroes.len()];
         spirits.extend(std::iter::repeat_n(None, boss_side));
@@ -225,7 +247,41 @@ impl FightPlan {
             .with_schemes(schemes)
             .with_scheme_every(self.boss.scheme_every)
             .with_leaders(leaders);
+        if let Some(name) = &self.boss.commander {
+            let boss = setup
+                .players
+                .get_mut(self.heroes.len())
+                .ok_or_else(|| CampaignError::Refused("no boss seat".into()))?;
+            let at = boss
+                .library
+                .iter()
+                .rposition(|card| card.name == *name)
+                .ok_or_else(|| CampaignError::Refused(format!("the boss deck lacks {name}")))?;
+            let card = boss.library.remove(at);
+            boss.held.push(card);
+        }
         setup.validate_decks = false;
         Ok(setup)
     }
+}
+
+/// The ability the boss's last phase gets for its commander card `name`: while the card waits in the boss's command
+/// zone, the boss casts it without paying its mana cost; a card that can't be cast then goes to its graveyard.
+fn cast_commander(name: &str) -> Result<mtg_cards::ability::Ability, CampaignError> {
+    let card = serde_json::json!({ "Each": [{ "In": "Command" }, { "Named": name }, { "OwnedBy": "You" }] });
+    let ability = serde_json::json!({ "Triggered": {
+        "when": { "State": { "condition": { "Compare": {
+            "left": { "Count": card["Each"] }, "op": "Gt", "right": 0
+        } } } },
+        "effects": [
+            { "Bind": { "what": card, "as": "commander" } },
+            { "CastFromZone": {
+                "what": { "Bound": "commander" },
+                "free": true,
+                "must": true,
+                "otherwise": [{ "Move": { "what": { "Bound": "commander" }, "to": "Graveyard" } }]
+            } }
+        ]
+    } });
+    serde_json::from_value(ability).map_err(|e| CampaignError::Content(e.to_string()))
 }
