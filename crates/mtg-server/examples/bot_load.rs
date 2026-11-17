@@ -1,5 +1,5 @@
 //! Load test: games of one passive person and three Very Hard bots play while a client asks the HTTP API, and the
-//! request latencies are printed (`docs/performance.md`, Bot load).
+//! request latencies are printed: the game browser's list, a static list and one game's page (`docs/performance.md`, Bot load).
 //!
 //! `cargo run --release -p mtg-server --example bot_load` with `GAMES` (default 3), `SECS` (default 60) and
 //! `WORKERS` (runtime worker threads, default 4, as a small server has).
@@ -105,15 +105,19 @@ async fn run() {
     }
 
     let mut lobbies = Vec::new();
-    let mut options = Vec::new();
+    let mut decks_times = Vec::new();
+    let mut game_times = Vec::new();
+    let game_path = format!("/api/games/{}", handles[0].id());
     let end = Instant::now() + Duration::from_secs(secs);
     while Instant::now() < end {
         lobbies.push(timed_get(addr, "/api/lobbies").await);
-        options.push(timed_get(addr, "/api/auth/options").await);
+        decks_times.push(timed_get(addr, "/api/demo-decks").await);
+        game_times.push(timed_get(addr, &game_path).await);
         tokio::time::sleep(Duration::from_millis(100)).await;
     }
     report("GET /api/lobbies", &mut lobbies);
-    report("GET /api/auth/options", &mut options);
+    report("GET /api/demo-decks", &mut decks_times);
+    report("GET /api/games/{id}", &mut game_times);
     let mut events = 0;
     for handle in &handles {
         events += handle.status().await.map_or(0, |status| status.events);
@@ -151,7 +155,7 @@ async fn timed_get(addr: SocketAddr, path: &str) -> Duration {
     stream.write_all(request.as_bytes()).await.unwrap();
     let mut reply = Vec::new();
     stream.read_to_end(&mut reply).await.unwrap();
-    assert!(reply.starts_with(b"HTTP/1.1 200"), "{path} failed");
+    assert!(reply.starts_with(b"HTTP/1.1 "), "{path} gave no answer");
     started.elapsed()
 }
 
