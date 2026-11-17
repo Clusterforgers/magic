@@ -9,7 +9,7 @@ use crate::common;
 
 use std::collections::{BTreeMap, BTreeSet};
 
-use common::{Step, is_hidden, revealed_tops, run_game, unique_setup, with_unique_names};
+use common::{Step, is_hidden_in, revealed_tops, run_game, unique_setup, with_unique_names};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::choose::Choice;
 use mtg_engine::object::GameObject;
@@ -129,6 +129,8 @@ const SCALAR_KEYS: &[&str] = &[
     "who",
     // A target slot of a rule (`ObjectRef::Target`), as a public token definition names it.
     "Target",
+    // The team of each seat (`Teams::seats` in the table's house rules).
+    "seats",
 ];
 
 /// How often (in answers) a full snapshot is checked; events are checked after every answer.
@@ -143,7 +145,7 @@ pub(crate) fn hidden_in(state: &GameState, viewer: PlayerId) -> BTreeMap<ObjectI
     let tops: Vec<ObjectId> = revealed_tops(state).into_values().collect();
     state
         .objects()
-        .filter(|o| is_hidden(o.zone(), viewer) && !tops.contains(&o.id()))
+        .filter(|o| is_hidden_in(state, o.zone(), viewer) && !tops.contains(&o.id()))
         .filter(|o| !state.is_shown_to(viewer, o.id()))
         .filter(|o| !state.is_commander(o.id()))
         .map(|o| (o.id(), o.card().name.clone()))
@@ -165,7 +167,7 @@ pub(crate) fn hidden_across(
         .filter(|(id, _)| {
             after
                 .object(*id)
-                .is_none_or(|o| is_hidden(o.zone(), viewer) && !tops.contains(id))
+                .is_none_or(|o| is_hidden_in(after, o.zone(), viewer) && !tops.contains(id))
                 && !after.is_shown_to(viewer, *id)
                 && !offered.contains(id)
         })
@@ -309,6 +311,85 @@ fn no_hidden_object_reaches_any_viewer(#[case] players: usize, #[case] seed: u64
     });
     assert!(engine.result().is_some(), "game should finish");
     assert!(checked > 500 && snapshots > 5, "test must not be vacuous");
+}
+
+/// At a table with teams (2v2, Two-Headed Giant, a Delves party of three against one) a seat sees its teammates' hands
+/// while team hands are on, and nothing else hidden reaches any viewer: no opponent's hand, no library, and nothing of a
+/// hand for a spectator. With team hands off a teammate's hand is as hidden as an opponent's.
+#[rstest]
+#[case::two_v_two(mtg_core::teams::TeamMode::Teams, vec![0, 1, 0, 1], 81)]
+#[case::two_headed_giant(mtg_core::teams::TeamMode::TwoHeadedGiant, vec![0, 0, 1, 1], 82)]
+#[case::delves_party(mtg_core::teams::TeamMode::SharedTurns, vec![0, 0, 0, 1], 83)]
+fn a_teammates_hand_reaches_its_team_alone(
+    #[case] mode: mtg_core::teams::TeamMode,
+    #[case] seats: Vec<u32>,
+    #[case] seed: u64,
+    #[values(None, Some(false))] team_hands: Option<bool>,
+) {
+    let players = seats.len();
+    let mut setup = unique_setup(players, seed);
+    setup.house_rules.teams = Some(mtg_core::teams::Teams {
+        mode,
+        seats: seats.clone(),
+    });
+    setup.house_rules.team_hands = team_hands;
+    // Every seat and a spectator, which is the first id past the last seat.
+    let viewers: Vec<PlayerId> = (0..=players).map(PlayerId::from_index).collect();
+    let (mut checked, mut snapshots, mut mates_seen) = (0usize, 0usize, 0usize);
+    run_game(setup, seed, |step: &Step| {
+        let batches = project_events(step.before, step.events, &viewers, step.from_seq).unwrap();
+        for (viewer, batch) in viewers.iter().zip(&batches) {
+            let hidden = hidden_across(step.before, step.after, *viewer);
+            checked += hidden.len();
+            for (part, value) in batch_parts(batch) {
+                let found = leaks(&value, &hidden);
+                assert!(
+                    found.is_empty(),
+                    "{mode:?} answer {} viewer {viewer:?}: batch {part} leaks {found:?}",
+                    step.answers
+                );
+            }
+        }
+        if step.answers.is_multiple_of(SNAPSHOT_EVERY) {
+            snapshots += 1;
+            for viewer in &viewers {
+                let view = StateView::for_player(step.after, *viewer);
+                let found = leaks(
+                    &serde_json::to_value(&view).unwrap(),
+                    &hidden_in(step.after, *viewer),
+                );
+                assert!(
+                    found.is_empty(),
+                    "{mode:?} answer {} viewer {viewer:?}: snapshot leaks {found:?}",
+                    step.answers
+                );
+                for player in &view.table.players {
+                    let mate = player.seat != *viewer
+                        && viewer.index() < players
+                        && seats[player.seat.index()] == seats[viewer.index()];
+                    if mate && team_hands.is_none() {
+                        assert_eq!(
+                            player.hand.cards.as_ref().map(Vec::len),
+                            Some(player.hand.count as usize)
+                        );
+                        mates_seen += player.hand.count as usize;
+                    } else if player.seat != *viewer {
+                        assert_eq!(
+                            player.hand.cards, None,
+                            "{viewer:?} sees the hand of {:?}",
+                            player.seat
+                        );
+                    }
+                }
+            }
+        }
+    });
+    assert!(checked > 200 && snapshots > 3, "test must not be vacuous");
+    assert_eq!(
+        mates_seen > 0,
+        team_hands.is_none(),
+        "teammates' hands are listed only with team hands on"
+    );
 }
 
 /// Spells with targets and abilities on the stack name only things every seat may see: the cast of a spell, the
@@ -764,7 +845,7 @@ fn a_card_discarded_or_exiled_to_pay_a_cost_reaches_every_seat_and_no_hidden_obj
                 if step
                     .after
                     .object(*object)
-                    .is_some_and(|o| !is_hidden(o.zone(), *viewer))
+                    .is_some_and(|o| !is_hidden_in(step.after, o.zone(), *viewer))
                 {
                     assert!(
                         view.objects.iter().any(|o| o.id == *object),
@@ -895,7 +976,7 @@ fn a_revealed_library_top_reaches_every_viewer_and_nothing_below_it_does(
                     let view = StateView::for_player(step.after, *viewer);
                     let seen = view.objects.iter().any(|o| o.id == *top);
                     let still_visible =
-                        !is_hidden(step.after.object(*top).unwrap().zone(), *viewer);
+                        !is_hidden_in(step.after, step.after.object(*top).unwrap().zone(), *viewer);
                     assert_eq!(seen, still_visible, "seed {seed} answer {}", step.answers);
                 }
             }
@@ -994,7 +1075,7 @@ fn snapshots_show_exactly_what_the_viewer_may_know(#[case] players: usize, #[cas
             let expected: BTreeSet<ObjectId> = step
                 .after
                 .objects()
-                .filter(|o| !is_hidden(o.zone(), *viewer))
+                .filter(|o| !is_hidden_in(step.after, o.zone(), *viewer))
                 .map(GameObject::id)
                 .collect();
             assert_eq!(

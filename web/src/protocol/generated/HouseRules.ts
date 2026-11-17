@@ -92,6 +92,10 @@ open_hands?: boolean,
  */
 revealed_library_top?: boolean, 
 /**
+ * Whether teammates see each other's hands; on at a table with teams when left out.
+ */
+team_hands?: boolean, 
+/**
  * Whether each opening hand is the better of two draws by its share of lands.
  */
 opening_hand_smoothing?: boolean, 

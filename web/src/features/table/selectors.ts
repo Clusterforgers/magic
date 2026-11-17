@@ -86,6 +86,14 @@ export function exileOf(state: PlayState, seat: PlayerId): ObjectId[] {
 }
 
 /**
+ * Another seat's hand as the view lists it to the viewer (a teammate's, or any under open hands); `null` for the viewer's
+ * own hand, which the hand dock draws, and for a hand that is a count only.
+ */
+export function shownHandOf(player: PlayerView, you: boolean): readonly ObjectId[] | null {
+  return you ? null : (player.hand.cards ?? null)
+}
+
+/**
  * The cards of the seat's command zone without its emblems, which the pod shows as effect chips; wrap in
  * `useShallow`.
  */

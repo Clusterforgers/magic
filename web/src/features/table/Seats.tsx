@@ -6,6 +6,7 @@ import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
 import { Battlefield } from './Battlefield'
+import { BoardZones } from './BoardZones'
 import { useDefenderClick } from './combat/defender'
 import { LandFoldContext } from './landFold'
 import { LandsShownContext } from './landPrefs'
@@ -106,8 +107,13 @@ export const SeatArea = memo(function SeatArea({
         )}
       >
         {pod === 'none' ? (
-          // The tile above the board has the figures; the lands chip is a line of its own at the board's top.
-          <div data-slot="board-lands" className="flex shrink-0 justify-end px-1 empty:hidden">
+          // The tile above the board has the figures; the zones and the lands chip are a line of their own at the board's top,
+          // drawn over a board too tall for its frame, which overflows upward from its near edge.
+          <div
+            data-slot="board-lands"
+            className="relative z-10 flex shrink-0 items-center justify-end gap-1 px-1 empty:hidden"
+          >
+            <BoardZones seat={seat} owner={owner} />
             <LandSummary seat={seat} owner={owner} density="tile" />
           </div>
         ) : null}
