@@ -132,6 +132,11 @@ impl<'a> RuleSet<'a> {
         self.house.open_hands.unwrap_or(false)
     }
 
+    /// Whether teammates see each other's hands: on at a table with teams unless the house rules turn it off.
+    pub fn team_hands(&self) -> bool {
+        self.house.teams.is_some() && self.house.team_hands.unwrap_or(true)
+    }
+
     /// Whether every seat sees the top card of every library.
     pub fn revealed_library_top(&self) -> bool {
         self.house.revealed_library_top.unwrap_or(false)
@@ -640,8 +645,30 @@ mod table_tests {
         let rules = RuleSet::new(&Normal, &house);
         assert_eq!(rules.attack_range(), AttackRange::Any);
         assert!(!rules.open_hands() && !rules.revealed_library_top());
+        assert!(!rules.team_hands(), "no teams, no team hands");
         assert!(!rules.opening_hand_smoothing());
         assert_eq!(rules.mulligan_style(), MulliganStyle::London);
+    }
+
+    #[rstest]
+    fn teammates_see_each_others_hands_unless_the_table_turns_it_off(
+        #[values(
+            mtg_core::teams::TeamMode::TwoHeadedGiant,
+            mtg_core::teams::TeamMode::Teams,
+            mtg_core::teams::TeamMode::SharedTurns
+        )]
+        mode: mtg_core::teams::TeamMode,
+        #[values(None, Some(true), Some(false))] set: Option<bool>,
+    ) {
+        let house = HouseRules {
+            teams: Some(Teams::even(mode, 2, 2)),
+            team_hands: set,
+            ..HouseRules::default()
+        };
+        assert_eq!(
+            RuleSet::new(&Normal, &house).team_hands(),
+            set != Some(false)
+        );
     }
 
     #[rstest]

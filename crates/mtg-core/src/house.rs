@@ -253,6 +253,10 @@ pub struct HouseRules {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub revealed_library_top: Option<bool>,
+    /// Whether teammates see each other's hands; on at a table with teams when left out.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub team_hands: Option<bool>,
     /// Whether each opening hand is the better of two draws by its share of lands.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
@@ -624,6 +628,7 @@ mod tests {
     #[case::open_on("open_hands", json!(true))]
     #[case::open_off("open_hands", json!(false))]
     #[case::top_on("revealed_library_top", json!(true))]
+    #[case::team_hands_off("team_hands", json!(false))]
     #[case::smoothing_on("opening_hand_smoothing", json!(true))]
     #[case::london("mulligan_style", json!("london"))]
     #[case::paris("mulligan_style", json!("paris"))]
@@ -648,6 +653,7 @@ mod tests {
     #[case::style_case("mulligan_style", json!("London"))]
     #[case::open_text("open_hands", json!("yes"))]
     #[case::top_number("revealed_library_top", json!(1))]
+    #[case::team_hands_text("team_hands", json!("on"))]
     #[case::smoothing_text("opening_hand_smoothing", json!("on"))]
     #[case::timers_word("timers", json!("fast"))]
     #[case::timers_case("timers", json!("Quick"))]
@@ -1020,6 +1026,8 @@ mod tests {
                 open_hands: open,
                 revealed_library_top: top,
                 opening_hand_smoothing: smoothing,
+                // Set whenever open hands is, so the rule meets every value without one more strategy.
+                team_hands: open.map(|open| !open),
                 mulligan_style: style,
                 handicaps,
                 teams,

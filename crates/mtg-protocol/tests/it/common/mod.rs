@@ -23,6 +23,20 @@ pub fn is_hidden(zone: Zone, viewer: PlayerId) -> bool {
     }
 }
 
+/// [`is_hidden`] at the table of `state`: a hand is also known to the seats of its owner's team while the table leaves
+/// team hands on (on with teams unless `team_hands` is false). A spectator is on no team.
+pub fn is_hidden_in(state: &GameState, zone: Zone, viewer: PlayerId) -> bool {
+    let house = state.house_rules();
+    let teammate = |owner: PlayerId| {
+        house.team_hands != Some(false)
+            && house.teams.as_ref().is_some_and(|teams| {
+                teams.seats.get(viewer.index()).is_some()
+                    && teams.seats.get(viewer.index()) == teams.seats.get(owner.index())
+            })
+    };
+    is_hidden(zone, viewer) && !matches!(zone, Zone::Hand(owner) if teammate(owner))
+}
+
 /// The top card of each library whose owner controls a permanent that prints "play with the top card of your library
 /// revealed": every seat knows these cards. Stated here from the printed rules alone, as a second opinion on
 /// `GameState::revealed_top`.
@@ -63,7 +77,7 @@ pub fn revealed_tops(state: &GameState) -> BTreeMap<PlayerId, ObjectId> {
 pub fn visible_ids(state: &GameState, viewer: PlayerId) -> BTreeSet<ObjectId> {
     state
         .objects()
-        .filter(|o| !is_hidden(o.zone(), viewer))
+        .filter(|o| !is_hidden_in(state, o.zone(), viewer))
         .map(mtg_engine::object::GameObject::id)
         .collect()
 }

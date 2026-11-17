@@ -45,6 +45,7 @@ import {
   isYourTurn,
   NO_IDS,
   playerOf,
+  shownHandOf,
 } from './selectors'
 import { describeMulligan } from './turnText'
 import { useBoxHeight } from './useBoxHeight'
@@ -186,6 +187,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
   const taxOnCards = chips.tax.filter((chip) => drawn.includes(chip.key))
   const taxLoose = chips.tax.filter((chip) => !drawn.includes(chip.key))
   const counts = podCounts(player, exile.length)
+  const theirHand = shownHandOf(player, flags.you)
   // A Delves hero's earned cards: public, listed by a chip beside the command zone; yours are cast from the hand dock too.
   const satchel =
     (player.satchel?.length ?? 0) > 0 ? (
@@ -309,7 +311,11 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
             className="flex max-w-full min-w-0 flex-wrap items-center gap-1"
           >
             {timers}
-            <CountChip zone="hand" count={counts.hand} density="line" />
+            {theirHand === null ? (
+              <CountChip zone="hand" count={counts.hand} density="line" />
+            ) : (
+              <ZoneButton zone="hand" owner={owner} ids={theirHand} density="line" />
+            )}
             <CountChip zone="library" count={counts.library} density="line" />
             {flags.you ? <LibraryTopChip player={player} /> : null}
             <RevealedChip owner={owner} player={player} density="line" />
@@ -354,7 +360,11 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
   // Beside the life the hand and library are quiet figures without a chip's background.
   const handChips = (
     <>
-      <CountChip zone="hand" count={counts.hand} density="tile" />
+      {theirHand === null ? (
+        <CountChip zone="hand" count={counts.hand} density="tile" />
+      ) : (
+        <ZoneButton zone="hand" owner={owner} ids={theirHand} density="line" />
+      )}
       <CountChip zone="library" count={counts.library} density="tile" />
       <LandSummary seat={seat} owner={owner} density="tile" />
     </>

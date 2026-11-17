@@ -57,6 +57,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - GUI sweep: every screen, table mode and prompt kind shot at the owners' sizes, the findings ranked in `docs/ui-audit.md`.
 - Feel: the twenty rules of motion and interaction, press squash and 44 px hit areas, card travel on an arc with a wind-up and a settle, attacks, hits, entries and deaths pose to pose, the staged stack and attacked seat, the swelling pass button and snappier strikes (`docs/ui-design.md`, `docs/ui-audit.md`).
 - Holding still: card sizes and the board split hold until a board no longer fits or clearly has room, the prompt sheet lies in a band of one height per window kept free above the strip so it covers no card, the boss keeps a fair share of the heroes' card size, moved cards slide, and `scripts/layout-jumps.mjs` counts the jumps of a scripted stretch of play (`docs/web.md`, Holding still).
+- Team sight: a teammate's zones open from every layout and teammates see each other's hands (`team_hands`, on at every team table), never an opponent or a spectator.
 - Loops (CR 104.4b, 732): a loop found at priority points, a draw for a mandatory loop that never ends, a shortcut of N iterations its driver chooses, run as one batch with a summary line, bot answers, and the prompt in every layout (`docs/engine.md`, Loops).
 
 ## Live game
@@ -136,7 +137,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 ## M7 Product
 
-- [ ] (tm1a) Team life and choices of Two-Headed Giant beyond the shared total: an effect that sets each player's life (CR 810.9e), the team mulligan, teammates who see each other's hands and priority by team
+- [ ] (tm1a) Team life and choices of Two-Headed Giant beyond the shared total: an effect that sets each player's life (CR 810.9e), the team mulligan and priority by team
 - [ ] (tm1b) Teams the host sets in the lobby are stored when set, so a restart before the start keeps them, and My games carries each seat's team so a team win counts for its members
 - [ ] (tm2b) A tournament match game offers its seat-0 player no host controls (visibility, Close game, Remove), so no player can strand a match; the organiser's correction stays the way to settle one (`docs/server.md`, Tournaments)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
