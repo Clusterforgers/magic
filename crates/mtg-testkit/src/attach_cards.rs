@@ -1,6 +1,7 @@
 //! Auras, Equipment and legendary permanents (CR 303.4, 301.5, 704.5j, 704.5m to 704.5p), and the decks and games built from
 //! them: the corpus Auras, Equipment and legends, synthetic Auras for creatures, lands and opponents' creatures, synthetic
-//! Equipment, a spell that returns an Aura, and the removal that takes their hosts away.
+//! Equipment, a spell that returns an Aura, the removal that takes their hosts away, and a Gonti-like thief that casts
+//! Auras from face-down exile.
 
 use std::sync::Arc;
 
@@ -186,6 +187,65 @@ pub fn legendary_relic() -> Arc<CardDefinition> {
             .with_supertype(Supertype::Legendary)
             .with_mana_cost(cost(2, &[])),
     )
+}
+
+/// A `{1}{B}` 2/2 Rogue of this name with the trigger of Gonti, Canny Acquisitor: whenever creatures its controller
+/// controls deal combat damage to a player, that player's top card is exiled face down, seen by its controller alone, who
+/// may play it for as long as it stays exiled and spend mana as though it were mana of any type.
+pub fn canny_thief(name: &str) -> Result<Arc<CardDefinition>, CorpusError> {
+    let trigger = r#"{"Triggered":{"when":{"Batch":{"DealsDamage":{"source":[{"Type":"Creature"},{"ControlledBy":"You"}],"to":"EachPlayer","combat":true}}},"effects":[{"LookAtTop":{"who":"Triggering","as":"top"}},{"ExileHidden":{"what":{"Bound":"top"},"held":true,"as":"held"}},{"Rule":{"rule":{"MayCast":{"from":"Exile","only":{"Bound":"held"},"play":true,"spend_as":"AnyType"}},"duration":"Forever"}}]}}"#;
+    Ok(Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Creature)
+            .with_subtype("Rogue")
+            .with_mana_cost(cost(1, &[Color::Black]))
+            .with_power_toughness(2, 2)
+            .with_rules(rules(trigger)?),
+    ))
+}
+
+/// The corpus Auras of the hidden Aura deck: one for an opponent's creature, one for any creature, one for the caster's
+/// creature, one for a creature card in a graveyard and one for a player.
+pub const HIDDEN_AURA_CARDS: &[&str] = &[
+    "Control Magic",
+    "Pacifism",
+    "Rancor",
+    "Animate Dead",
+    "Curse of Chaos",
+];
+
+/// A legal Normal deck of the hidden Aura cards, Canny Thieves that exile the opponents' top cards face down for their
+/// controller to cast, Grizzly Bears and lands of five colours.
+pub fn hidden_aura_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
+    let colors = [
+        Color::Blue,
+        Color::Red,
+        Color::White,
+        Color::Green,
+        Color::Black,
+    ];
+    let mut deck: Vec<Arc<CardDefinition>> = (0..24).map(|i| land(colors[i % 5])).collect();
+    for name in HIDDEN_AURA_CARDS {
+        deck.extend(std::iter::repeat_n(corpus::card(name)?, 4));
+    }
+    for name in ["Canny Thief", "Quiet Thief", "Sly Thief"] {
+        deck.extend(std::iter::repeat_n(canny_thief(name)?, 4));
+    }
+    deck.extend(std::iter::repeat_n(bear(), 4));
+    rng.shuffle(&mut deck);
+    Ok(deck)
+}
+
+/// A normal game of `players` seats whose decks are [`hidden_aura_deck`]s, fully determined by `seed`.
+pub fn hidden_aura_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusError> {
+    let mut decks = Vec::with_capacity(players);
+    for seat in 0u64..players as u64 {
+        decks.push(hidden_aura_deck(&mut GameRng::substream(
+            seed,
+            19_500 + seat,
+        ))?);
+    }
+    Ok(GameSetup::new(Arc::new(Normal), seed, decks))
 }
 
 /// The corpus Auras, Equipment and legends the deck holds.

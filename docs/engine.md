@@ -266,6 +266,7 @@ The rules of the data are in [cards-dsl.md](cards-dsl.md) (Triggers, replacement
 - Opening hand (CR 103.6): the question lists `Ability::OpeningHand` (onto the battlefield) and `Ability::OpeningReveal` (revealed, each setting up a one-time delayed trigger). `Ability::OpeningHandWith` (Gemstone Caverns) is offered only to a non-starting player when it says so, begins with its counter and leaves the seat in `Opening` with `Player::opening_exile` cards owed until a second question exiles them.
 - An attachment that becomes unattached (unattached, moved or leaving) triggers `TriggerPattern::Unattached`, with the permanent it left as the triggering object, judged before the batch.
 - An Aura whose enchant restriction names a graveyard (`Enchant [Creature, In Graveyard]`, Animate Dead) targets a card there and resolves attached to it (`fold_attached`, `host_of` and `legal_host` accept that host for such an Aura only). On the battlefield the rest of its restriction applies; its own trigger returns the card (`Ref::Attached`) and attaches it, and a move to another creature is not refused.
+- An Aura spell announces the one target it enchants (`attach::cast_target`, CR 303.4a), wherever it is cast from: a card cast from face down in exile (Gonti) turns face up as it is cast and targets like any other; only an Aura cast face down targets nothing (CR 708.2a). An Aura with nothing to target is not castable.
 
 ## Combat and keywords
 

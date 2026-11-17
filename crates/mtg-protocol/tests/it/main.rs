@@ -6,6 +6,7 @@ mod active_left_fuzz;
 mod active_left_view;
 mod announced_mana_view;
 mod attachment_view;
+mod aura_target_wire;
 mod auto_yield_key;
 mod batch_diff;
 mod batch_size;
