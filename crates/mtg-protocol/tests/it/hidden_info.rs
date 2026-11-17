@@ -129,7 +129,8 @@ const SCALAR_KEYS: &[&str] = &[
     "who",
     // A target slot of a rule (`ObjectRef::Target`), as a public token definition names it.
     "Target",
-    // The team of each seat (`Teams::seats` in the table's house rules).
+    // A team number: the team of each seat (`Teams::seats`) and the team that won (`GameResult::Team`).
+    "Team",
     "seats",
 ];
 
