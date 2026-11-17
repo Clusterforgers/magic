@@ -82,7 +82,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf12c) The hand dock grows or gives back its second row only at a settle point (end of a step), not on every draw
 - [ ] (pf11g) Delves votes and shop buys answer a press with a beat on the chosen card and a moving vote count
 - [ ] (pf10m) Dev fixtures for the deck list and groups, the replay and the open games list, so a sweep shoots them without a server
-- [ ] (pf9e) The live report "only the host's creature attacks" in a party turn reproduced from its stored game and fixed
 - [ ] (pf9f) Stable tests under load: the 40-tap budget in `perf.test.tsx` and the `check_sched` lock-wait case
 - [ ] (pf9j) The view tests' seat loops iterate instead of indexing, and the `needless_range_loop` and `map_unwrap_or` allowances Rust 1.100 needed are dropped
 - [ ] (pf9g) Copies of one trigger are told apart on the stack, and a trigger whose conditions all fail says why in the log

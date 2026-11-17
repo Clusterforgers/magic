@@ -95,6 +95,7 @@ mod rmt7_blocks_per;
 mod soulbond;
 mod spectacle;
 mod t20a_tribute;
+mod team_damage;
 mod undaunted;
 mod vehicle_shapes;
 mod vehicles;
