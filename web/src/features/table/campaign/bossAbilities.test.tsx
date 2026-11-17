@@ -25,6 +25,7 @@ interface RawCard {
   role?: string
   price?: number
   turn?: number
+  rarity?: DelveContent['cards'][number]['rarity']
 }
 
 interface RawBoss {
@@ -66,6 +67,7 @@ const CONTENT: DelveContent = {
     role: card.role ?? '',
     price: card.price ?? 0,
     turn: card.turn ?? 0,
+    rarity: card.rarity ?? 'Common',
   })),
   bosses: theme.bosses.map((boss) => ({
     id: boss.id,

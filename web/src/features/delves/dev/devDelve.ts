@@ -12,6 +12,9 @@ export const DEV_STATES = [
   'shop',
   'campfire',
   'event',
+  'bargain',
+  'discard',
+  'surrender',
   'result',
   'victory',
   'defeat',
@@ -37,6 +40,7 @@ export const DEV_CONTENT: DelveContent = {
       art: 'mend',
       role: 'Healer',
       price: 60,
+      rarity: 'Common',
       turn: 0,
     },
     {
@@ -48,6 +52,7 @@ export const DEV_CONTENT: DelveContent = {
       art: 'tithe',
       role: 'Risky',
       price: 0,
+      rarity: 'Mythic',
       turn: 0,
     },
     {
@@ -59,6 +64,7 @@ export const DEV_CONTENT: DelveContent = {
       art: 'grim',
       role: '',
       price: 0,
+      rarity: 'Common',
       turn: 0,
     },
   ],
@@ -87,15 +93,29 @@ export const DEV_CONTENT: DelveContent = {
   ],
 }
 
+const ATRAXA = {
+  name: 'Atraxa',
+  creature: true,
+  planeswalker: false,
+  power: 4,
+  generic: 3,
+  keywords: ['Flying', 'Vigilance', 'Deathtouch', 'Lifelink'],
+}
+
 const party = [
   hero({
     name: 'Ana',
-    deck: { id: 'd-atraxa', name: 'Atraxa Counters', colors: 'WUBG', commanders: [] },
+    deck: { id: 'd-atraxa', name: 'Atraxa Counters', colors: 'WUBG', commanders: [ATRAXA] },
     life: 31,
     gold: 60,
     relics: ['idol', 'mend'],
     satchel: ['Lightning Bolt', 'Cultivate'],
-    upgrades: [{ commander: 'Atraxa', boon: 'Counter' }],
+    upgrades: [
+      { commander: 'Atraxa', boon: 'Counter' },
+      { commander: 'Atraxa', boon: { Tax: 1 } },
+    ],
+    life_cap: -5,
+    lost: ['Opt'],
   }),
   hero({
     name: 'Bo',
@@ -164,6 +184,9 @@ const OFFERS: Partial<Record<DevState, Offer>> = {
     },
   },
   event: { Event: { event: 'toll' } },
+  bargain: { Event: { event: 'bargain' } },
+  discard: 'Discard',
+  surrender: { Surrender: { relics: ['idol', 'mend'] } },
   result: { Relics: { relics: ['idol'] } },
 }
 
@@ -209,6 +232,7 @@ export function devView(state: DevState): DelveView {
     {
       seed: 'EMBER-7Q2K',
       boss: 'hollow',
+      mirror: ['Lightning Bolt', 'Cultivate', 'Sol Ring', 'Swords to Plowshares', 'Beast Within'],
       boss_lives: [
         ['skrix_nest', 40],
         ['hollow', 140],

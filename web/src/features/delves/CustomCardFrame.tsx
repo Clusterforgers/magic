@@ -1,6 +1,6 @@
 /**
  * A card that is not on Scryfall (a relic, a boss card, a boss phase, a scheme, the Spirit's haunt), drawn as a framed card:
- * name, an art panel tinted by what the card is for, the type line, the rules text and a relic's role. A risky relic,
+ * name, an art panel tinted by what the card is for, the type line, the rules text and a relic's role and rarity. A risky relic,
  * whose effect helps the boss too, wears a hazard edge and a "Dangerous" badge.
  */
 import {
@@ -17,6 +17,8 @@ import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import type { CardKind, CustomCardView } from '@/protocol/generated'
 import { isRisky } from './model'
+import { RARITY_TONE } from './rarity'
+import { RarityTag } from './RarityTag'
 import { roleLabel } from './words'
 
 const ART: Record<CardKind, { icon: LucideIcon; tint: string; edge: string }> = {
@@ -60,20 +62,28 @@ export function CustomCardFrame({
   const art = ART[card.kind]
   const Icon = art?.icon ?? SwordsIcon
   const risky = isRisky(card)
+  // Only a hero's relic has a rarity worth showing; a boss's relic is part of the boss.
+  const rarity = card.kind === 'Relic' ? card.rarity : undefined
   return (
     <figure
       data-slot="custom-card"
       data-kind={card.kind}
       data-risky={risky || undefined}
+      data-rarity={rarity}
       aria-label={card.name}
       className={cn(
         'flex w-full flex-col sm:w-56 overflow-hidden rounded-xl border-2 bg-card shadow-e1',
-        risky ? 'border-destructive' : (art?.edge ?? 'border-border-strong'),
+        risky
+          ? 'border-destructive'
+          : rarity
+            ? RARITY_TONE[rarity].border
+            : (art?.edge ?? 'border-border-strong'),
         className,
       )}
     >
-      <figcaption className="flex items-center justify-between gap-2 border-b px-3 py-1 text-sm font-semibold leading-tight">
-        <span className="min-w-0">{card.name}</span>
+      <figcaption className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 border-b px-3 py-1 text-sm font-semibold leading-tight">
+        <span className="break-words">{card.name}</span>
+        {rarity ? <RarityTag rarity={rarity} /> : null}
       </figcaption>
       <div
         role="img"

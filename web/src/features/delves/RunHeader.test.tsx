@@ -36,8 +36,8 @@ it('shows the run and the party at a glance', async () => {
   )
   const relics = within(screen.getByRole('group', { name: 'Relics of Ana' })).getAllByRole('button')
   expect(relics.map((b) => b.getAttribute('aria-label'))).toEqual([
-    'Ember Idol, relic of Ana: Creatures you control get +1/+0.',
-    'Wildfire Pact, risky, relic of Ana: All red spells cost {2} less.',
+    'Ember Idol, Rare, relic of Ana: Creatures you control get +1/+0.',
+    'Wildfire Pact, Mythic, risky, relic of Ana: All red spells cost {2} less.',
   ])
   expect(relics[1]).toHaveAttribute('data-risky', 'true')
 })
