@@ -14,6 +14,8 @@
 @utility strip-band {
   display: grid;
   align-items: center;
+  /* One line stays in the strip's middle; lines past the band's height start at its top and scroll, never cut above. */
+  align-content: safe center;
   column-gap: 0.75rem;
   row-gap: 0.25rem;
   grid-template-columns: fit-content(20%) fit-content(14rem) minmax(12rem, 1fr) auto auto;
@@ -30,7 +32,7 @@
    * From 1024 px a prompt of choices other than cards gives its first line to the sentence and the answers, which keep
    * one row; a status (a note, the combat key) starts the choices' line instead. Cards keep the whole line.
    */
-  @container band (40rem <= width < 100rem) {
+  @container band (width >= 40rem) {
     &:not([data-cards]):has([data-slot='prompt-choices']:not([data-inline]):not(:empty)) {
       grid-template-columns: fit-content(20%) minmax(8rem, 1fr) auto auto;
       grid-template-areas:
@@ -49,9 +51,32 @@
     }
   }
 
-  /* A wide strip keeps them beside the sentence, which then wraps in a column of at most 22 rem. */
+  /* Under 64 rem a prompt's cards do the same, so their answers keep one row beside the sentence. */
+  @container band (40rem <= width < 64rem) {
+    &[data-cards]:has([data-slot='prompt-choices']:not([data-inline]):not(:empty)) {
+      grid-template-columns: fit-content(20%) minmax(8rem, 1fr) auto auto;
+      grid-template-areas:
+        'stack text clock actions'
+        'choices choices choices choices';
+    }
+    &[data-cards]:has([data-slot='prompt-choices']:not([data-inline]):not(:empty)):has(
+        [data-slot='strip-status']:not(:empty)
+      ) {
+      grid-template-areas:
+        'stack text clock actions'
+        'status choices choices choices';
+      & > [data-slot='strip-status'] {
+        align-self: start;
+      }
+    }
+  }
+
+  /*
+   * A wide strip keeps a prompt's cards beside the sentence, which then wraps in a column of at most 22 rem; other
+   * choices keep their line across the band, which a column beside the sentence would stack past the band's height.
+   */
   @container band (width >= 100rem) {
-    &:has([data-slot='prompt-choices']:not(:empty)) {
+    &[data-cards]:has([data-slot='prompt-choices']:not(:empty)) {
       grid-template-columns: fit-content(18%) fit-content(12rem) minmax(10rem, 22rem) minmax(0, 1fr) auto auto;
       grid-template-areas: 'stack status text choices clock actions';
     }
@@ -127,8 +152,19 @@
   @container band (width < 40rem) {
     & [data-slot='decision-line'] > [data-slot='prompt-actions'] {
       background: var(--surface);
-      box-shadow: 0 -0.5rem 0.5rem -0.25rem var(--surface);
+      /* Upward a soft edge; downward a solid one over the sheet's padding, so no choice shows under the answers. */
+      box-shadow:
+        0 -0.5rem 0.5rem -0.25rem var(--surface),
+        0 0.5rem 0 0 var(--surface);
       padding-block: 0.25rem;
+    }
+    /* Smaller answers keep to one row, so the fixed band leaves the sentence and the choices in view above them. */
+    & [data-slot='decision-line'] > [data-slot='prompt-actions'] {
+      gap: 0.25rem;
+    }
+    & [data-slot='decision-line'] > [data-slot='prompt-actions'] button {
+      height: 2.25rem;
+      padding-inline: 0.5rem;
     }
   }
 }
@@ -145,7 +181,7 @@
   overflow: hidden;
 }
 @container band (width >= 100rem) {
-  .strip-band:has([data-slot='prompt-choices']:not([data-inline]):not(:empty))
+  .strip-band[data-cards]:has([data-slot='prompt-choices']:not([data-inline]):not(:empty))
     [data-slot='prompt-sentence']
     .prompt-sentence-clamp {
     -webkit-line-clamp: 3;

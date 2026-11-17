@@ -56,7 +56,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Fights and the table: a fight that ends without a result counts as lost and the host can retreat, Spirits are asked only where their haunts matter, the rules lexicon covers every engine term, decks sit in several groups, token planeswalkers show loyalty, the round counter, the blocker timer and grid lands as choices, and the card preview stays clear of the prompt (`docs/delves.md`, `docs/web.md`)
 - GUI sweep: every screen, table mode and prompt kind shot at the owners' sizes, the findings ranked in `docs/ui-audit.md`.
 - Feel: the twenty rules of motion and interaction, press squash and 44 px hit areas, card travel on an arc with a wind-up and a settle, attacks, hits, entries and deaths pose to pose, the staged stack and attacked seat, the swelling pass button and snappier strikes (`docs/ui-design.md`, `docs/ui-audit.md`).
-- Holding still: card sizes and the board split hold until a board no longer fits or clearly has room, the prompt sheet overlays the boards, moved cards slide, and `scripts/layout-jumps.mjs` counts the jumps of a scripted stretch of play (`docs/web.md`, Holding still).
+- Holding still: card sizes and the board split hold until a board no longer fits or clearly has room, the prompt sheet lies in a band of one height per window kept free above the strip so it covers no card, the boss keeps a fair share of the heroes' card size, moved cards slide, and `scripts/layout-jumps.mjs` counts the jumps of a scripted stretch of play (`docs/web.md`, Holding still).
 - Loops (CR 104.4b, 732): a loop found at priority points, a draw for a mandatory loop that never ends, a shortcut of N iterations its driver chooses, run as one batch with a summary line, bot answers, and the prompt in every layout (`docs/engine.md`, Loops).
 
 ## Live game
@@ -84,6 +84,7 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf10m) Dev fixtures for the deck list and groups, the replay and the open games list, so a sweep shoots them without a server
 - [ ] (pf9e) The live report "only the host's creature attacks" in a party turn reproduced from its stored game and fixed
 - [ ] (pf9f) Stable tests under load: the 40-tap budget in `perf.test.tsx` and the `check_sched` lock-wait case
+- [ ] (pf9j) The view tests' seat loops iterate instead of indexing, and the `needless_range_loop` and `map_unwrap_or` allowances Rust 1.100 needed are dropped
 - [ ] (pf9g) Copies of one trigger are told apart on the stack, and a trigger whose conditions all fail says why in the log
 - [ ] (pf9h) An ability that rolls several dice makes one roll of them (Mr. House), so "one or more dice" triggers fire once
 - [ ] (pf9i) An announced mana ability (a die roll or discard besides the mana: Vexing Puzzlebox) can be chosen in the PayMana prompt while paying, not only at priority before the cast; automatic payment still leaves it out

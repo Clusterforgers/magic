@@ -118,7 +118,7 @@ fn r6007_reads_back_whole(#[case] name: &str) {
 
 /// Cards that stay `Partial` read back clause by clause but for their `Manual` clauses.
 #[rstest]
-#[case("Illithid Harvester // Plant Tadpoles", 1)]
+#[case("Illithid Harvester // Plant Tadpoles", 0)]
 fn r6007_reads_back_but_the_manual_clauses(#[case] name: &str, #[case] manual: usize) {
     let report = r6007_report(name, &r6007_file(name));
     let left = report

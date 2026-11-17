@@ -7,7 +7,6 @@ import {
   BOSS_SPAN,
   OWN_SHARE,
   POD_COLUMN_PX,
-  SHEET_KEEP_PX,
   ZONE_GAP_PX,
   alliesBandPx,
   sheetMost,
@@ -119,6 +118,9 @@ export function splitRegions(
   overhang = reserve,
   held: HeldRows | null = null,
 ): Regions {
+  // The band's room above the strip is kept in every split, prompt or none, so no prompt moves a board.
+  reserve = Math.max(finite(reserve), finite(regions.sheetRoom))
+  overhang = Math.max(finite(overhang), finite(regions.sheetRoom))
   // Boss mode splits three rows by what each shows (`splitBoss`); a phone's tiles and a board-less call use the two rows.
   if (seats.shape === 'boss' && !regions.phone && seats.tiles.length === 0 && counts.allies !== undefined) {
     const { split, shares, chrome } = bossSplitOf(
@@ -144,7 +146,7 @@ export function splitRegions(
       ownCard: split.heroCard,
       theirCard: split.bossCard,
     }
-    return { ...withSplit(regions, rows, chrome + BOARD_KEEP_PX), party }
+    return { ...withSplit(regions, rows, chrome - reserve + BOARD_KEEP_PX), party }
   }
   const frames = boardFrames(regions, seats)
   const theirChrome = theirChromeOf(frames.theirs.chrome, head)
@@ -167,18 +169,9 @@ export function splitRegions(
     held,
   )
   if (!regions.phone) return withSplit(regions, split, theirChrome + BOARD_KEEP_PX)
-  // A phone's sheet may lie over the opponents' cards, never over their pods, tiles or the boss's abilities; a head
-  // taller than the sheet's usual keep (a boss's bar and pod) takes the excess from your row while a sheet stands up.
-  return withSplit(regions, phoneHeadKept(split, theirChrome, overhang), theirChrome)
-}
-
-/** `split` with the opponents' row grown by what a phone's head over `SHEET_KEEP_PX` needs under a sheet standing `overhang` px up; your row keeps `MIN_ROW_SHARE`. */
-export function phoneHeadKept(split: BoardSplit, theirChrome: number, overhang: number): BoardSplit {
-  const excess = finite(theirChrome) - SHEET_KEEP_PX
-  if (!(excess > 0) || !(finite(overhang) > 0)) return split
-  const room = split.opponents + split.own
-  const opponents = Math.max(split.opponents, Math.min(room * (1 - MIN_ROW_SHARE), split.opponents + excess))
-  return { ...split, opponents, own: room - opponents }
+  // A phone's sheet lies in the band's room, which the split counts in the opponents' chrome; a sheet of cards leaves
+  // their pods, tiles and a boss's bar and pod (`theirChrome`) clear.
+  return withSplit(regions, split, theirChrome)
 }
 
 /** The least width in px of your creatures for which the split gives an opponent's pod column its floor. */
@@ -367,24 +360,15 @@ function bossFrames(
 }
 
 /**
- * `regions` with the rows of a split, and the sheet's most kept inside the opponents' row and the strip, leaving `keep`
- * px of that row (on a phone at least `SHEET_KEEP_PX`, and for a sheet of cards too; `sheetMost`).
+ * `regions` with the rows of a split and the sheet's most: the band, whose room the split keeps free of cards, and for a
+ * prompt that lays out cards up over the opponents' boards to leave `keep` px of their row (their pods and a row of
+ * cards; on a phone at least `SHEET_KEEP_PX`; `sheetMost`).
  */
 export function withSplit(regions: Regions, split: BoardSplit, keep = 0): Regions {
-  return {
-    ...regions,
-    opponents: split.opponents,
-    own: split.own,
-    sheet: sheetMost(regions.main.height, regions.shared, split.opponents, regions.phone, keep),
-    // A sheet of cards may cover the opponents' boards, but on a phone not the pods and tiles over them.
-    sheetWide: sheetMost(
-      regions.main.height,
-      regions.shared,
-      split.opponents,
-      regions.phone,
-      regions.phone ? keep : 0,
-    ),
-  }
+  const most = sheetMost(regions.main.height, regions.shared, split.opponents, regions.phone, keep)
+  const band = finite(regions.sheetRoom) > 0 ? regions.shared + regions.sheetRoom : Number.POSITIVE_INFINITY
+  const sheet = Math.min(band, most)
+  return { ...regions, opponents: split.opponents, own: split.own, sheet, sheetWide: Math.max(sheet, most) }
 }
 
 /** Without a fit a held split keeps its rows while the fresh one lies within this share of the room of them. */

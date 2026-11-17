@@ -51,7 +51,7 @@ describe('the sources of ?prompt=pay-sources', () => {
 
   it('adds a source with a click, shows the total made against what is still owed, and takes it back', async () => {
     const { user } = open()
-    expect(within(row('Made so far')).getByText('nothing yet')).toBeInTheDocument()
+    expect(within(prompt()).queryByRole('group', { name: 'Made so far' })).toBeNull()
     await user.click(chip('Tap Sol Ring for'))
     expect(chip('Tap Sol Ring for')).toHaveAttribute('aria-pressed', 'true')
     expect(within(row('Made so far')).getByRole('img')).toHaveAccessibleName(
@@ -60,7 +60,7 @@ describe('the sources of ?prompt=pay-sources', () => {
     expect(within(row('Still owed')).getByRole('img')).toHaveAccessibleName('Mana still owed: white, green')
     await user.click(chip('Tap Sol Ring for'))
     expect(chip('Tap Sol Ring for')).toHaveAttribute('aria-pressed', 'false')
-    expect(within(row('Made so far')).getByText('nothing yet')).toBeInTheDocument()
+    expect(within(prompt()).queryByRole('group', { name: 'Made so far' })).toBeNull()
   })
 
   it('picks the colour of a source of any colour in the switch and shows what it will give', async () => {
@@ -103,15 +103,20 @@ describe('the sources of ?prompt=pay-sources', () => {
 })
 
 describe('the compact payment sheet', () => {
-  it('wraps the sources instead of scrolling them sideways and draws what is made beside what is owed', () => {
-    open()
+  it('wraps the sources instead of scrolling them sideways and draws what is made and owed on the line of the cost', async () => {
+    const { user } = open()
     const line = must(row('Mana sources').querySelector<HTMLElement>('[data-line="true"]'))
     expect(line.className).toContain('flex-wrap')
     expect(line.className).not.toContain('overflow-x-auto')
     expect(line.querySelectorAll('[data-slot="pay-source"]')).toHaveLength(chips().length)
-    const shared = must(prompt().querySelector<HTMLElement>('[data-slot="pay-made-owed"]'))
+    // Nothing chosen: no "Paying with" line, and what is owed stands beside the cost.
+    expect(within(prompt()).queryByRole('group', { name: 'Paying with' })).toBeNull()
+    expect(within(row('Cost')).getByRole('group', { name: 'Still owed' })).toBeInTheDocument()
+    await user.click(chip('Tap Sol Ring for'))
+    const shared = must(row('Cost').querySelector<HTMLElement>('[data-slot="pay-made-owed"]'))
     expect(within(shared).getByRole('group', { name: 'Made so far' })).toBeInTheDocument()
     expect(within(shared).getByRole('group', { name: 'Still owed' })).toBeInTheDocument()
+    expect(row('Paying with')).toBeInTheDocument()
   })
 })
 

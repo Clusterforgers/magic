@@ -16,6 +16,8 @@ The rules the web client is built to: principles, design system, a fit-to-viewpo
 | Fitts's law | Pass is the largest target, bottom right; frequent controls 32 px or more, 44 on touch |
 | Contrast and focus | 4.5:1 text, 3:1 edges and rings, focus never covered, colour never alone |
 | Motion and timing | 100 to 300 ms, ease-out in; nothing delays an answer; a working state past 1 s |
+| Nothing hidden, nothing jumps | A prompt covers no opponent's or boss's card and moves no board: it lies in a band of fixed height kept free above the strip; text in it never overlaps (a line too long is cut with its whole text in a tooltip) and no board art shows through it |
+| Fair share | Every board stays readable: the boss's cards are at least about 60 % of the heroes' where its board is like theirs |
 
 ### Feel
 
@@ -98,7 +100,7 @@ The table is a `100dvh` grid that never scrolls the page. The opponent is on top
 |---|---|
 | top bar | home, turn badge, step ladder (from 1024 px), menu (layout, theme, card images, hand order, Concede); 44 px |
 | opponents, own | a pod and board per seat; the rows share the room by what their boards hold, not by a fixed ratio |
-| shared | stack chips, ticker, prompt line. A prompt is one band across the whole width, as in Arena: stack chips, status, the sentence on one line, the choices, the primary answer at the right end; choices that do not fit beside the sentence take a line of their own. A band that needs more grows up into a sheet of at most 40 dvh that lies over the opponents' area, so no board moves for a prompt; it is never under a sentence and a row of answers however empty the boards, and never over your board (its cards are what a prompt asks you to click), the hand or the controls |
+| shared | stack chips, ticker, prompt line. A prompt is one band across the whole width, as in Arena: stack chips, status, the sentence on one line, the choices, the primary answer at the right end; choices that do not fit beside the sentence take a line of their own. A band that needs more grows up into a sheet within a band of one height per window (19 dvh, 128 to 200 px; on a phone 20 dvh from 136), whose room the opponents' area keeps free above the strip for every prompt and between prompts: no board moves for a prompt and the sheet covers no card. What the band does not hold scrolls inside it, opaque to its edge, the answers in view. A prompt that lays out cards may grow further over the opponents' boards, always leaving their pods and a row of their cards. Never over your board (its cards are what a prompt asks you to click), the hand or the controls |
 | hand dock | whole cards in one row lying in a gentle arc (`fanOf`: the ends turned up to 6° and 8 px lower), overlapping in rows only when they do not fit; hover or focus lifts a card upright and opens the preview |
 | controls dock | the server's passing line, the stops (one row with a Mine or Theirs switch and Full Control from 1600 px, else a Stops popover), pass buttons; the primary button is bottom right, 44 px or more |
 | side | Commands, Log, Chat, Stack tabs with unread counts. L, XL a 272 to 304 px column that the viewer folds to the 44 px rail from its edge and opens again from the rail (kept per browser); M a 44 px rail opening a panel over the table; S, XS a sheet from the top bar |

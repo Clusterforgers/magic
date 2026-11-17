@@ -4,11 +4,13 @@ import {
   ALLY_LINE_PX,
   ALLY_MIN_SHARE,
   ALLY_ROW_MIN_PX,
+  BOSS_FAIR_SHARE,
   BOSS_LINE_PX,
   BOSS_SCALE,
   BOSS_SIDE_MOST,
   OWN_LINE_PX,
   allyShares,
+  holdBoss,
   permanentsIn,
   splitBoss,
 } from './bossSplit'
@@ -215,6 +217,31 @@ describe('splitBoss', () => {
       expect(Number.isFinite(split.opponents)).toBe(true)
       expect(Number.isFinite(split.own)).toBe(true)
     }
+  })
+})
+
+describe("the boss's fair share", () => {
+  it.each([560, 650, 800, 1100, 1500])(
+    'keeps the boss at 60 percent of the heroes or more in a room of %i px where its board is like theirs',
+    (room) => {
+      for (const allies of [[], [15], [15, 15], [15, 15, 15]]) {
+        const split = splitBoss(input({ room, boss: 15, allies, own: 15 }))
+        if (split.heroCard === 0) continue
+        expect(split.bossCard).toBeGreaterThanOrEqual(split.heroCard * BOSS_FAIR_SHARE * 0.9)
+        expect(split.bossCard).toBeGreaterThanOrEqual(split.heroCard * 0.6)
+      }
+    },
+  )
+
+  it('gives way from held rows that left the boss under its share', () => {
+    const shape = input({ room: 800, boss: 15, allies: [15], own: 15 })
+    const fresh = splitBoss(shape)
+    // A split drawn with the heroes' cards large and the boss's at the floor.
+    const unfair = { ...fresh, bossCard: 44, heroCard: fresh.heroCard }
+    const held = holdBoss(shape, unfair)
+    expect(held.bossCard).toBeGreaterThanOrEqual(held.heroCard * 0.6)
+    // A fair split held stays as it is.
+    expect(holdBoss(shape, fresh)).toEqual(fresh)
   })
 })
 

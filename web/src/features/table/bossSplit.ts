@@ -12,6 +12,11 @@ export const BOSS_SCALE = 0.85
 export const ALLY_MIN_SHARE = 4
 /** The boss's cards are held at this width in px, at the least, while the heroes' cards grow. */
 export const BOSS_CARD_FLOOR_PX = 60
+/**
+ * The boss's cards are held at this share of the heroes' at the least while the heroes' grow (up to `BOSS_SCALE` and
+ * `BOSS_SIDE_MOST`), so the boss's board stays readable beside theirs; a step of the card ladder under it leaves 0.6.
+ */
+export const BOSS_FAIR_SHARE = 0.66
 /** The party's row of boards is shown from this height in px; under it the heroes are a strip of tiles. */
 export const ALLY_ROW_MIN_PX = 120
 
@@ -123,9 +128,10 @@ export function splitBoss(input: BossSplitInput, limits: LaneLimits = LANE_LIMIT
       ? Math.max(finite(input.ownFloor), finite(input.ownChrome) + need([ownBoard], card))
       : OWN_LINE_PX
   const heroes = (rung: number): number => allyRow(at(rung)) + gap + ownRow(at(rung))
-  // The heroes grow first; the boss's row is held at the least that draws `BOSS_CARD_FLOOR_PX` cards meanwhile.
-  const total = (rung: number): number =>
-    bossRow(Math.min(bossCard(at(rung)), BOSS_CARD_FLOOR_PX)) + heroes(rung)
+  // The heroes grow first; the boss's row is held meanwhile at the least that draws its fair share of their card.
+  const bossLeast = (card: number): number =>
+    Math.min(bossCard(card), Math.max(BOSS_CARD_FLOOR_PX, Math.floor(card * BOSS_FAIR_SHARE)))
+  const total = (rung: number): number => bossRow(bossLeast(at(rung))) + heroes(rung)
   const floor = at(0)
   // Nothing fits at the floor: each row takes its share of what it needs there.
   if (!(total(0) <= room)) {
@@ -224,7 +230,11 @@ export function holdBoss(
   )
   const better = (card: number, now: number, wider: number): boolean =>
     card * (1 + GROW_SHARE) < now && card * (1 + GROW_SHARE) < wider
+  // A held boss under its fair share of the heroes' card gives way to a fresh split that draws it larger.
+  const unfair = bossCard < heroCard * BOSS_FAIR_SHARE * (1 - GROW_SHARE / 2) && fresh.bossCard > bossCard
   const grows =
-    better(heroCard, fresh.heroCard, roomy.heroCard) || better(bossCard, fresh.bossCard, roomy.bossCard)
+    unfair ||
+    better(heroCard, fresh.heroCard, roomy.heroCard) ||
+    better(bossCard, fresh.bossCard, roomy.bossCard)
   return grows ? fresh : { ...held, heroCard, bossCard }
 }
