@@ -361,6 +361,14 @@ impl Entry {
         if self.person_at(&status.connected) {
             self.last_connected = now;
         }
+        // Bots answer on their own, so their moves never count as a person using the table: a game with bot and person
+        // seats ends once no person has been connected for a while.
+        if !self.bots.is_empty()
+            && self.bots.len() < self.seats.len()
+            && age(self.last_connected) >= rules.bots_alone_after
+        {
+            return false;
+        }
         if self
             .events_seen
             .replace(status.events)
@@ -1081,7 +1089,7 @@ impl Registry {
                 entry.delve.clone(),
             )
         };
-        let status = handle.status().await.ok()?;
+        let status = handle.status_within(listing::STATUS_WAIT).await.ok()?;
         Some(PublicGame {
             format,
             visibility,
@@ -1105,7 +1113,7 @@ impl Registry {
             .collect();
         let mut statuses = Vec::with_capacity(handles.len());
         for (id, handle) in handles {
-            statuses.push((id, handle.status().await.ok()));
+            statuses.push((id, handle.status_within(listing::STATUS_WAIT).await.ok()));
         }
         let mut due = Vec::new();
         {
@@ -1156,7 +1164,7 @@ impl Registry {
     ) -> Option<Option<GameResult>> {
         let running = |s: &GameStatus| s.started && s.result.is_none();
         let status = match (status.as_ref().is_some_and(running), self.handle(id)) {
-            (true, Some(handle)) => handle.status().await.ok(),
+            (true, Some(handle)) => handle.status_within(listing::STATUS_WAIT).await.ok(),
             _ => status,
         };
         let mut games = self.games();
@@ -1169,7 +1177,7 @@ impl Registry {
         }
         games.remove(&id);
         if status.as_ref().is_some_and(running) {
-            tracing::info!(game = %id, "closed an abandoned game: nobody at a seat and no answer taken");
+            tracing::info!(game = %id, "closed an abandoned game: no person at a seat for too long");
         }
         Some(status.and_then(|s| s.result))
     }

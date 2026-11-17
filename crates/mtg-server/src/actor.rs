@@ -10,7 +10,7 @@ use mtg_engine::error::SetupError;
 use mtg_engine::{Engine, EngineError, GameSetup};
 use mtg_protocol::{ClientMessage, ErrorCode, PROTOCOL_VERSION, ServerMessage, Stop};
 use thiserror::Error;
-use tokio::sync::{mpsc, oneshot};
+use tokio::sync::{mpsc, oneshot, watch};
 
 use crate::game_id::GameId;
 use crate::handle::{Command, GameHandle, GameStatus, JoinError};
@@ -202,7 +202,8 @@ fn launch<S: EventStore>(
     decks: Option<SeatDecks>,
 ) -> GameHandle {
     let (commands, inbox) = mpsc::channel(config.command_queue.max(1));
-    let actor = GameActor {
+    let (glance, glanced) = watch::channel(None);
+    let mut actor = GameActor {
         id,
         store,
         seats: Seats::new(setup.players.len(), config.seat_queue),
@@ -218,9 +219,11 @@ fn launch<S: EventStore>(
         recorder,
         decks,
         take_backs: crate::take_backs::TakeBacks::default(),
+        glance,
     };
+    actor.publish_glance();
     tokio::spawn(actor.run(inbox));
-    GameHandle::new(id, commands)
+    GameHandle::new(id, commands, glanced)
 }
 
 /// Where the game is in its life.
@@ -265,6 +268,9 @@ pub(crate) struct GameActor<S> {
     pub(crate) presence: Presence,
     /// The open take-back request and what each seat may take back.
     pub(crate) take_backs: crate::take_backs::TakeBacks,
+    /// Where the status is published between commands, for lists that must not wait on the actor
+    /// ([`GameHandle::glance`]).
+    pub(crate) glance: watch::Sender<Option<GameStatus>>,
 }
 
 impl<S: EventStore> GameActor<S> {
@@ -275,6 +281,7 @@ impl<S: EventStore> GameActor<S> {
         }
         loop {
             self.pause_turn_time();
+            self.publish_glance();
             let command = match self.due() {
                 None => tokio::select! {
                     biased;
@@ -353,7 +360,7 @@ impl<S: EventStore> GameActor<S> {
             }
             Command::Status { reply } => {
                 // A caller that stopped waiting needs no answer.
-                let _ = reply.send(self.status());
+                let _ = reply.send(self.status(true));
             }
             Command::Table { reply } => {
                 let table = match &self.phase {
@@ -471,6 +478,19 @@ impl<S: EventStore> GameActor<S> {
         }
     }
 
+    /// Publishes the status, without its state hash, for [`GameHandle::glance`]; readers wake only when it changed.
+    fn publish_glance(&mut self) {
+        let status = self.status(false);
+        self.glance.send_if_modified(|held| {
+            if held.as_ref() == Some(&status) {
+                false
+            } else {
+                *held = Some(status);
+                true
+            }
+        });
+    }
+
     /// Queues a snapshot, the seat's pending decision and the result for a game that is running.
     fn sync(&mut self, seat: PlayerId) {
         if let Phase::Running(running) = &self.phase {
@@ -563,7 +583,8 @@ impl<S: EventStore> GameActor<S> {
         self.seats.send(seat, rejection.into_message());
     }
 
-    fn status(&mut self) -> GameStatus {
+    /// The actor's bookkeeping; the state hash only when `hashed`, since it hashes the whole state.
+    fn status(&mut self, hashed: bool) -> GameStatus {
         let connected = self.seats.connected();
         let manual_play = self.manual_play();
         let commanders = self.listed_commanders();
@@ -595,7 +616,7 @@ impl<S: EventStore> GameActor<S> {
                 manual_play,
                 started: true,
                 events: count(running.engine.events().len()),
-                state_hash: Some(running.engine.state_hash()),
+                state_hash: hashed.then(|| running.engine.state_hash()),
                 waiting_on: running.waiting_on(),
                 result: running.engine.result(),
                 connected,
