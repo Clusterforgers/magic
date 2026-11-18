@@ -104,6 +104,7 @@ fn lookup(started: bool, result: Option<GameResult>, visibility: Visibility) -> 
         manual_play: false,
         house_rules: None,
         delve: None,
+        tournament_match: false,
     }
 }
 
@@ -512,6 +513,26 @@ fn the_game_lookup_names_its_delve_only_for_a_boss_fight() {
     let value = serde_json::to_value(&fight).unwrap();
     assert_eq!(value["delve"], json!("run-1"));
     assert_eq!(serde_json::from_value::<GameInfo>(value).unwrap(), fight);
+}
+
+#[test]
+fn the_game_lookup_marks_only_a_tournament_match() {
+    let plain = lookup(false, None, Visibility::Invite);
+    let value = serde_json::to_value(&plain).unwrap();
+    assert!(value.get("tournament_match").is_none());
+    assert!(
+        !serde_json::from_value::<GameInfo>(value)
+            .unwrap()
+            .tournament_match
+    );
+    let matched = GameInfo {
+        tournament_match: true,
+        ..plain
+    };
+    let value = serde_json::to_value(&matched).unwrap();
+    assert_eq!(value["tournament_match"], json!(true));
+    assert_eq!(serde_json::from_value::<GameInfo>(value).unwrap(), matched);
+    assert!(generated()["GameInfo.ts"].contains("tournament_match?: boolean"));
 }
 
 #[test]

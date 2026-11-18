@@ -3,6 +3,7 @@
 use std::collections::HashMap;
 
 use mtg_core::ids::PlayerId;
+use mtg_core::teams::Teams;
 use mtg_engine::state::GameResult;
 use uuid::Uuid;
 
@@ -54,6 +55,8 @@ pub struct UserGame {
     pub reason: Option<String>,
     /// Every seat of the game in seat order, the user's own included.
     pub seats: Vec<UserGameSeat>,
+    /// The teams of the table from its recipe; none where every player plays for themself.
+    pub teams: Option<Teams>,
 }
 
 impl GameRecords {
@@ -134,6 +137,7 @@ impl GameRecords {
         let limit = i64::try_from(limit).unwrap_or(i64::MAX);
         let games = sqlx::query!(
             r#"SELECT g.id, s.seat, g.status, g.result, g.failure_reason,
+                      g.recipe -> 'house_rules' -> 'teams' AS teams,
                       to_char(g.created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"')
                           AS "created_at!"
                FROM seats s JOIN games g ON g.id = s.game_id
@@ -186,6 +190,8 @@ impl GameRecords {
                     result: game.result.and_then(|v| serde_json::from_value(v).ok()),
                     reason: game.failure_reason,
                     seats: seats.remove(&game.id).unwrap_or_default(),
+                    // Teams this server cannot read only matter for display.
+                    teams: game.teams.and_then(|v| serde_json::from_value(v).ok()),
                 })
             })
             .collect()

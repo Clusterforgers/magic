@@ -64,6 +64,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Team sight: a teammate's zones open from every layout and teammates see each other's hands (`team_hands`, on at every team table), never an opponent or a spectator.
 - Loops (CR 104.4b, 732): a loop found at priority points, a draw for a mandatory loop that never ends, a shortcut of N iterations its driver chooses, run as one batch with a summary line, bot answers, and the prompt in every layout (`docs/engine.md`, Loops).
 - Choosing faster: quick selection buttons (all, owned, allied in team modes, none) in prompts that pick several objects, a random precon or own deck in every mode, hidden until the start, and "Always pay automatically" for payments without a real choice (`docs/web.md`, `docs/server.md`).
+- Team tables: a tournament match has no player host, so its seat 0 gets only what every player gets in the lobby (`tournament_match`); at a table of three or more the pods of the seats the game waits on carry a "waiting for" mark in every layout; teams set in the lobby are stored at once and survive a restart, and My games carries each seat's team so a team's win counts for its members; an effect that sets each player's life sets a shared total once.
 
 ## Live game
 
@@ -129,14 +130,11 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 ## M7 Product
 
-- [ ] (tm1a) Team life and choices of Two-Headed Giant beyond the shared total: an effect that sets each player's life (CR 810.9e), the team mulligan and priority by team
-- [ ] (tm1b) Teams the host sets in the lobby are stored when set, so a restart before the start keeps them, and My games carries each seat's team so a team win counts for its members
-- [ ] (tm2b) A tournament match game offers its seat-0 player no host controls (visibility, Close game, Remove), so no player can strand a match; the organiser's correction stays the way to settle one (`docs/server.md`, Tournaments)
+- [ ] (tm1c) Two-Headed Giant choices by team: the team mulligan, priority by team, and the team choosing which player an effect that sets each player's life affects (now its first player named; CR 810)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
 - [ ] (ai36a) Hard beats Normal by 70% or more in 1v1 and Very Hard beats Hard by 65% or more; Normal with Hard's former searches beats main's Normal 59.6% but aims Pacifism at a teammate in Two-Headed Giant (target ranking of auras), so it waits for that fix (`crates/mtg-testkit/src/brain`, `examples/bot_tournament.rs`)
 - [ ] (ai54a) Very Hard beats main's Very Hard by 62% or more and Hard main's Hard by 58% in 4-player pods and Commander pods with SPRT significance (Hard 1v1 59.1%, accepted; Very Hard 1v1 49.6% over 121 games, Hard pods 56.1% over 82), so Very Hard's guarded margin and its importance budget want their own tuning; Texel weights fitted on self-play (held-out loss 0.229 to 0.188) wait for a match test, and a pod Commander game of seed 51405 loops a choose-option question at turn 44 (`crates/mtg-testkit/src/brain`, `examples/bot_tournament.rs`)
-- [ ] (v1h) A "waiting on <player>" mark on the pods of a table of three or more, beside the strip's line, so a spectator and a player see at a glance whom the game waits for
 
 ## Delves
 

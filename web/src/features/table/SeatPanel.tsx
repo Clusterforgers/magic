@@ -66,6 +66,7 @@ import { memberNames } from '@/lib/teams'
 import { useSeatTeam } from './teamLife'
 import type { SeatTeam } from './teamLife'
 import { BossChip, BossTrack, SpiritMark } from './campaign/CampaignMarks'
+import { WaitingMark } from './WaitingMark'
 
 interface SeatPanelProps {
   seat: PlayerId
@@ -276,6 +277,7 @@ export const SeatPanel = memo(function SeatPanel({
         <PriorityDot label={priorityName(owner, flags.you)} />
       ) : null}
       {away ? <AwayMark /> : null}
+      <WaitingMark seat={seat} />
       {line ? <ZoomButton seat={seat} owner={owner} /> : null}
     </div>
   )

@@ -43,7 +43,15 @@ pub(super) fn set(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     };
     let target = cx.scope.amount(amount)?;
     let mut events = Vec::new();
+    let mut set: Vec<PlayerId> = Vec::new();
     for player in cx.scope.players(who)? {
+        // A shared total is set once: of a team the effect names whole, only its first player named is affected
+        // (CR 810.9e), so the team ends on the number instead of losing the difference twice.
+        let sharers = cx.state().life_sharers(player);
+        if set.iter().any(|done| sharers.contains(done)) {
+            continue;
+        }
+        set.push(player);
         if let Some(life) = life_of(cx, player) {
             events.extend(move_to(cx, player, life, target));
         }

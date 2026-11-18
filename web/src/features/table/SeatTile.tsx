@@ -41,6 +41,8 @@ import { memberNames, teamLabel } from '@/lib/teams'
 import { useSeatTeam } from './teamLife'
 import { BossChip, SpiritMark } from './campaign/CampaignMarks'
 import { GhostIcon } from 'lucide-react'
+import { WaitingMark } from './WaitingMark'
+import { waitingMarkText } from './waitingMarkText'
 
 interface SeatTileProps {
   seat: PlayerId
@@ -77,6 +79,8 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
   const effects = usePlay(
     useStable((state) => (player === undefined ? [] : seatEffects(player, state.objectsById, name, namer))),
   )
+  // The tile is one button, so its name carries the mark's words too.
+  const waiting = usePlay((state) => waitingMarkText(state, seat, namer))
   if (player === undefined) return null
   const eliminated = player.lost !== null
   const away = !eliminated && !player.connected
@@ -124,7 +128,8 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
           ? ', your attackers go here'
           : defender.state === 'candidate'
             ? ', may be attacked'
-            : '')
+            : '') +
+        (waiting === null ? '' : `, w${waiting.slice(1)}`)
       }
       data-defender={defender.state}
       data-attacked={attacked || undefined}
@@ -155,6 +160,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
             <PriorityDot label={priorityName(name, false)} />
           ) : null}
           {away ? <AwayMark /> : null}
+          <WaitingMark seat={seat} />
         </span>
         <span className="flex shrink-0 items-center gap-1">
           <AttackBadges seat={seat} />

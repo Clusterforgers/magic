@@ -73,7 +73,9 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
   const [refused, setRefused] = useState(false)
   const [previewing, setPreviewing] = useState<ReadyFacts['previewing']>(null)
   const open = status === 'open'
-  const host = seat === HOST_SEAT
+  // A tournament match has no player host: its organiser runs it, and seat 0 is a player like the others.
+  const hosted = lookup.game?.tournament_match !== true
+  const host = hosted && seat === HOST_SEAT
   const known = lookup.game?.visibility
   const tableFormat = lookup.game?.format ?? 'normal'
   const tableRules = lookup.game?.house_rules
@@ -127,7 +129,7 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
       <LobbySeatRow
         key={row.seat}
         row={row}
-        host={row.seat === HOST_SEAT}
+        host={hosted && row.seat === HOST_SEAT}
         account={accounts.bySeat.get(row.seat) ?? null}
         team={
           team === null || shownTeams === null

@@ -628,6 +628,9 @@ async fn a_match_game_has_no_player_host_and_one_dropped_without_a_result_is_mad
         }
     }
     assert!(server.registry.handle(game.parse().unwrap()).is_some());
+    // The lookup says so, so the lobby offers seat 0 no host controls.
+    let info = call(&server, "GET", &format!("/api/games/{game}"), None, None).await;
+    assert_eq!(info.json()["tournament_match"], true, "{}", info.text());
 
     // The lobby is dropped without a result (closed): the next read of the tournament makes a new game.
     server
