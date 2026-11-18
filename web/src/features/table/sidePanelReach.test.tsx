@@ -14,8 +14,9 @@ const SIZES: ReadonlyArray<[string, Viewport, string]> = [
   ['1100x800 rail', { width: 1100, height: 800 }, '2 / 5'],
   ['768x1024 tablet sheet', { width: 768, height: 1024 }, '2 / 4'],
   ['640x768 sheet', { width: 640, height: 768 }, '2 / 4'],
-  ['640x700 short sheet', { width: 640, height: 700 }, '2 / 5'],
+  ['640x700 short sheet', { width: 640, height: 700 }, '2 / 4'],
   ['390x844 phone sheet', { width: 390, height: 844 }, '2 / 4'],
+  ['360x740 small phone sheet', { width: 360, height: 740 }, '2 / 4'],
   ['390x640 short phone sheet', { width: 390, height: 640 }, '2 / 5'],
   ['844x390 phone on its side', { width: 844, height: 390 }, '2 / 5'],
 ]
