@@ -1,4 +1,4 @@
-// Goal: the run page marks each room of the ladder cleared, current, next or locked through every stage of a run, names who voted for which camp, gives a boss its life for the party from the ladder the run lists, words each Heat as its tier, tones life bars, words the stage, knows a hero ready once they bring a deck, reads how the last fight was lost, tells the first boss from a later one for the life the party regroups at, and lists a boss's Enrage, modifier and relic in the intro by their content kinds.
+// Goal: the run page marks each room of the ladder cleared, current, next or locked through every stage of a run, names who voted for which camp, gives a boss its life for the party from the ladder the run lists, words each Heat as its tier, tones life bars, words the stage, knows a hero ready once they bring a deck, reads how the last fight was lost, words the loot before a descent apart from a camp, tells the first boss from a later one for the life the party regroups at, and lists a boss's Enrage, modifier and relic in the intro by their content kinds.
 import { describe, expect, it } from 'vitest'
 import type { Run } from '@/protocol/generated'
 import { hero, run } from './fakeDelves'
@@ -12,6 +12,7 @@ import {
   lastFight,
   lifeShare,
   lifeTone,
+  nextStep,
   nodeState,
   openChoices,
   regroupLife,
@@ -174,6 +175,16 @@ it('reads the first boss by the rows of the map, not by the order of its nodes',
 
 it('reads a boss that fell as the last fight won', () => {
   expect(lastFight(run({ status: 'Room', at: 0, cleared: [0] }))).toBe('won')
+})
+
+it.each([
+  [false, 'At camp', 'after a boss it votes for a camp'],
+  [true, 'Loot before the descent', 'descends to the next floor'],
+])('words the loot of a descent apart from a camp (descending %s)', (descending, stage, step) => {
+  const view = delveView({}, { status: 'Room', at: 3, cleared: [0, 3], floors_cleared: 1, descending })
+  expect(runStage(view)).toBe(stage)
+  expect(nextStep(view)).toContain(step)
+  expect(lastFight(view.run)).toBe('won')
 })
 
 describe('introAbilities', () => {

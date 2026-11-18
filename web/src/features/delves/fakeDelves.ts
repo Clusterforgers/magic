@@ -215,6 +215,7 @@ export function run(over: Partial<Run> = {}): Run {
     floor: 1,
     floors_cleared: 0,
     floor_votes: {},
+    descending: false,
     heroes: [hero()],
     at: null,
     cleared: [],

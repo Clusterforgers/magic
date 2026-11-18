@@ -140,7 +140,7 @@ export function runStage(view: DelveView): string {
   const status = view.run.status
   if (status === 'Lobby') return 'Gathering the party'
   if (status === 'Map') return 'Choosing a path'
-  if (status === 'Room') return 'At camp'
+  if (status === 'Room') return view.run.descending ? 'Loot before the descent' : 'At camp'
   if (status === 'FloorCleared') return `Floor ${view.run.floor} cleared`
   if (status === 'Victory') return 'Victory'
   if (status === 'Defeat') return 'Defeated'
@@ -262,6 +262,8 @@ export function nextStep(view: DelveView): string {
     return 'Each hero chooses a Commander deck once, for the whole run; rewards later swap cards into it. The host descends when everyone is ready.'
   if (status === 'Map')
     return 'The boss is behind you. Choose the camp the party rests at before the next boss.'
+  if (status === 'Room' && view.run.descending)
+    return "Take the final boss's loot below. When every hero has answered, the party descends to the next floor."
   if (status === 'Room')
     return 'Take your pick below. When every hero has answered, the party moves on: after a boss it votes for a camp, after a camp it faces the next boss.'
   if (status === 'FloorCleared')

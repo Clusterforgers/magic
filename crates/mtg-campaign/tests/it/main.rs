@@ -5,6 +5,7 @@ mod boss_cards;
 mod bosses;
 mod brackets;
 mod content;
+mod descent_loot;
 mod endless;
 mod events;
 mod fights;
