@@ -1,8 +1,8 @@
 //! Goal: Delves work end to end on Postgres: a player creates a run and hosts its lobby, a friend joins by its code,
 //! the host adds a bot ally and chooses its deck while each player chooses their own, only the host starts, and the
 //! start leads the party to the first boss, whose fight is a game made at once, and made again at no cost when an admin
-//! ends it unplayed; the content the web draws lists the bosses with their art cards, the events with each option's effects, needs and summary, and the custom cards; a party of four meets the boss with a
-//! minion seat; strangers and unknown runs are refused.
+//! ends it unplayed; the content the web draws lists the bosses with their art cards, the events with each option's effects, needs and summary, and the custom cards; a party of four meets the boss
+//! alone; strangers and unknown runs are refused.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::{net, pg_commander};
@@ -193,9 +193,9 @@ async fn a_party_gathers_and_the_start_makes_the_first_boss_fight(pool: PgPool) 
     assert_eq!(missing.status, 404);
 }
 
-/// At Heat 2 the first boss fields the party-size table's minion; below it, one fewer (`docs/delves.md`, Difficulty).
+/// A party of four meets the boss alone, the run page naming its theme and story (`docs/delves.md`, Bosses).
 #[sqlx::test(migrations = false)]
-async fn a_party_of_four_meets_the_boss_and_a_minion(pool: PgPool) {
+async fn a_party_of_four_meets_the_boss(pool: PgPool) {
     let server = pg_commander::start(&pool).await;
     let host = register(server.addr, "hostess", PASSWORD).await;
     let created = call(
@@ -257,8 +257,8 @@ async fn a_party_of_four_meets_the_boss_and_a_minion(pool: PgPool) {
         .collect();
     assert_eq!(names.len(), 5, "four heroes and the boss: {names:?}");
     let content = mtg_campaign::content().unwrap();
-    let theme = &content.themes[0];
-    assert!(theme.bosses.iter().any(|b| b.name == names[4]), "{names:?}");
+    let bosses = content.themes.iter().flat_map(|t| &t.bosses);
+    assert!(bosses.clone().any(|b| b.name == names[4]), "{names:?}");
 }
 
 #[sqlx::test(migrations = false)]
