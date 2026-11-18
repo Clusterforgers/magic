@@ -6232,6 +6232,10 @@ impl Walker<'_> {
             GameRule::PowerUpAgain(which) => {
                 self.at(tag, |w| w.selector(which));
             }
+            GameRule::FlipOrStayTapped { who, what } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.selector(what));
+            }),
             GameRule::R6400ChoosesBlocks { chooser, whose } => self.at(tag, |w| {
                 w.at("chooser", |w| w.reference(chooser, Kind::Player));
                 w.at("whose", |w| w.reference(whose, Kind::Player));
@@ -6416,6 +6420,9 @@ impl Walker<'_> {
             | GameRule::ExtraVote(who)
             | GameRule::SkipExtraTurns(who)
             | GameRule::FlipTwoCoins(who)
+            | GameRule::FlipOrExiled(who)
+            | GameRule::FlipOrNoLifeGain(who)
+            | GameRule::SameNameLimit { who, .. }
             | GameRule::R6700FirstFlipsHeads(who)
             | GameRule::R6700VillainousAgain(who)
             | GameRule::ExtraDie(who)

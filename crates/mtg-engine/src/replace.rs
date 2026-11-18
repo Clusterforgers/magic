@@ -81,7 +81,11 @@ pub fn process(
     journal: &[(PlayerId, Choice)],
 ) -> Result<Processed, EngineError> {
     let proposed = crate::prohibit::filter(state, proposed);
-    if !(state.possible.replacements || state.possible.protection) || proposed.is_empty() {
+    if !(state.possible.replacements
+        || state.possible.protection
+        || crate::rule_flips::r_moves_possible(state))
+        || proposed.is_empty()
+    {
         let events = crate::r6500_caps::r6500_capped(state, proposed.clone());
         return r4708_reveal::r4708_reveals(state, proposed, events, journal);
     }
@@ -277,6 +281,13 @@ enum Origin {
     /// An Attraction card that would be put into a hand, a library or a graveyard, which its owner puts into the command
     /// zone instead (CR 717.6): the junkyard.
     Junkyard(ObjectId),
+    /// A reusable Satchel card that would leave the stack or the battlefield, which returns to its owner's Satchel instead
+    /// (`satchel.rs`).
+    Satchel(ObjectId),
+    /// A card or token that would be put into a graveyard while its owner flips for it (No Rest, `rule_flips.rs`).
+    FlipExiled(ObjectId),
+    /// Life a player would gain while they flip for it (No Mercy, `rule_flips.rs`).
+    FlipNoGain(PlayerId),
     /// A permanent with a finality counter that would be put into a graveyard from the battlefield, which is exiled instead
     /// (CR 122.1g).
     Finality,
@@ -334,13 +345,19 @@ fn returns_by_buyback(state: &GameState, item: &Item) -> bool {
         })
 }
 
-/// Whether a rule that is no ability sends the object of the event elsewhere: a commander to its command zone or a permanent
-/// with a finality counter to exile.
+/// Whether a rule that is no ability sends the object of the event elsewhere: a commander to its command zone, a permanent
+/// with a finality counter to exile, a reusable Satchel card back, or a flip of No Rest or No Mercy.
 fn moves_by_a_rule(state: &GameState, event: &Event) -> bool {
     commander_leaves(state, event)
         || exiles_by_finality(state, event)
-        || moving(state, event).is_some_and(|(object, _, to)| {
+        || matches!(event, Event::LifeGained { player, .. } if crate::rules::flips_or_no_life_gain(state, *player).is_some())
+        || moving(state, event).is_some_and(|(object, from, to)| {
             crate::un33_attractions::junkyard(state, object, to).is_some()
+                || crate::satchel::returns_to(state, object, from, to).is_some()
+                || (matches!(to, Zone::Graveyard(_))
+                    && state.object(object).is_some_and(|card| {
+                        crate::rules::flips_or_exiled(state, card.owner()).is_some()
+                    }))
         })
 }
 
@@ -1548,6 +1565,8 @@ impl Pass<'_> {
         }
         found.extend(self.commander_candidates(at, &unit));
         found.extend(self.junkyard_candidate(&unit));
+        found.extend(self.satchel_candidate(&unit));
+        found.extend(self.rule_flip_candidate(at, &unit));
         found.extend(self.r401_rider_candidates(slot, &unit));
         found.sort_by_key(|candidate| candidate.origin);
         Ok(found)
@@ -1729,6 +1748,102 @@ impl Pass<'_> {
             // The rule is no effect of the card, so it is ordered with the others (CR 616.1).
             is_self: false,
         })
+    }
+
+    /// The Satchel in place of any zone but the battlefield for a reusable Satchel card that leaves the stack or the
+    /// battlefield (`satchel.rs`).
+    fn satchel_candidate(&self, unit: &Unit) -> Option<Candidate> {
+        let Unit::Move {
+            object, from, to, ..
+        } = unit
+        else {
+            return None;
+        };
+        crate::satchel::returns_to(self.state, *object, *from, *to)?;
+        let moving = self.state.object(*object)?;
+        Some(Candidate {
+            origin: Origin::Satchel(*object),
+            object: moving.reference(),
+            controller: moving.owner(),
+            action: Action::Replace(ReplaceBy::MoveTo(ZoneKind::Command)),
+            // The rule is no effect of the card, so it is ordered with the others (CR 616.1).
+            is_self: false,
+        })
+    }
+
+    /// The flip of No Rest for a card or token on its way to a graveyard, or of No Mercy for life a player would gain
+    /// (`rule_flips.rs`): exiled, or no life gained, when the flip is lost.
+    fn rule_flip_candidate(&self, at: usize, unit: &Unit) -> Option<Candidate> {
+        let (origin, controller, source, action) = match unit {
+            Unit::Move {
+                object,
+                to: Zone::Graveyard(_),
+                ..
+            } => {
+                let owner = self.state.object(*object)?.owner();
+                let source = crate::rules::flips_or_exiled(self.state, owner)?;
+                let exile = ReplaceBy::MoveTo(ZoneKind::Exile);
+                (Origin::FlipExiled(*object), owner, source, exile)
+            }
+            Unit::Life { player } => {
+                let source = crate::rules::flips_or_no_life_gain(self.state, *player)?;
+                (
+                    Origin::FlipNoGain(*player),
+                    *player,
+                    source,
+                    ReplaceBy::Prevent,
+                )
+            }
+            _ => return None,
+        };
+        // One flip for each event: a won flip leaves it as it is.
+        if self.slots[at].applied.contains(&origin) {
+            return None;
+        }
+        Some(Candidate {
+            origin,
+            object: source,
+            controller,
+            action: Action::Replace(action),
+            // The rule is no effect of the card, so it is ordered with the others (CR 616.1).
+            is_self: false,
+        })
+    }
+
+    /// For the flip of a rule (`rule_flip_candidate`): logs the flip before the slot at `at` and gives the slot the
+    /// replacement goes on with, or `None` after a won flip, which leaves the event as it is. Any other replacement
+    /// goes on with `at`.
+    fn rule_flip(&mut self, at: usize, candidate: &Candidate) -> Option<usize> {
+        if !matches!(
+            candidate.origin,
+            Origin::FlipExiled(_) | Origin::FlipNoGain(_)
+        ) {
+            return Some(at);
+        }
+        let earlier = self.slots[..at]
+            .iter()
+            .filter(|slot| matches!(slot.item, Item::One(Event::CoinFlipped { .. })))
+            .count();
+        let flip = crate::rule_flips::flip(
+            self.state,
+            candidate.controller,
+            u64::try_from(earlier).unwrap_or(u64::MAX),
+        );
+        let lost = crate::rule_flips::lost(&flip);
+        self.slots.insert(
+            at,
+            Slot {
+                item: Item::One(flip),
+                applied: Vec::new(),
+                frozen: true,
+            },
+        );
+        let at = at + 1;
+        if lost {
+            return Some(at);
+        }
+        self.slots[at].applied.push(candidate.origin);
+        None
     }
 
     /// The zone a card of the merged permanent `permanent` was set to go to in this batch, in place of the permanent's.
@@ -2156,6 +2271,15 @@ impl Pass<'_> {
             Origin::Junkyard(_) => {
                 "If ~ would be put into a hand, library or graveyard, its owner puts it into their junkyard instead."
             }
+            Origin::FlipExiled(_) => {
+                "If ~ would be put into a graveyard, its owner flips a coin. If they lose the flip, exile it instead."
+            }
+            Origin::FlipNoGain(_) => {
+                "If a player would gain life, they flip a coin. If they lose the flip, they gain no life."
+            }
+            Origin::Satchel(_) => {
+                "If ~ would leave the stack or the battlefield, it returns to its owner's Satchel instead."
+            }
         };
         self.named(fixed, candidate.object.id)
     }
@@ -2407,6 +2531,9 @@ impl Pass<'_> {
     /// Applies one effect to the item at `at`.
     #[allow(clippy::too_many_lines)]
     fn apply(&mut self, at: usize, candidate: &Candidate) -> Result<Applied, EngineError> {
+        let Some(at) = self.rule_flip(at, candidate) else {
+            return Ok(Applied::Done);
+        };
         let mut applied = self.slots[at].applied.clone();
         applied.push(candidate.origin);
         let unit = self.unit(&self.slots[at].item);

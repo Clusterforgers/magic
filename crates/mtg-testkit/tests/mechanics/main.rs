@@ -26,6 +26,7 @@ mod connive;
 mod countdown_keywords;
 mod counted_amounts;
 mod decayed;
+mod delves_modifiers;
 mod demonstrate;
 mod detain_play;
 mod divided_resolution;

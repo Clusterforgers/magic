@@ -158,6 +158,9 @@ pub(crate) fn untap_events(state: &GameState, kept: &[ObjectId]) -> (Vec<Event>,
         .flat_map(|player| crate::phasing::in_events(state, *player))
         .collect();
     events.splice(0..0, leaving);
+    // Stone Sleep flips first; a lost flip holds the player's big creatures down.
+    let (flips, asleep) = crate::rule_flips::stone_sleep(state, &actives);
+    events.splice(0..0, flips);
     let coming: Vec<_> = events
         .iter()
         .filter_map(|event| match event {
@@ -176,6 +179,7 @@ pub(crate) fn untap_events(state: &GameState, kept: &[ObjectId]) -> (Vec<Event>,
         .filter(|id| {
             active.is_some()
                 && !going.contains(*id)
+                && !asleep.contains(*id)
                 && (controller_of(state, **id).is_some_and(|c| actives.contains(&c))
                     || during.contains(*id))
                 && !crate::characteristics::doesnt_untap(state, **id)
