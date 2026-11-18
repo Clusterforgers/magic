@@ -129,6 +129,11 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Learned: [{ Learned: { player: 1 } }, 'Bo learns'],
   EvidenceCollected: [{ EvidenceCollected: { player: 1 } }, 'Bo collects evidence'],
   Investigated: [{ Investigated: { player: 1 } }, 'Bo investigates'],
+  Bent: [{ Bent: { player: 1, element: 'Earth' } }, 'Bo earthbends'],
+  IgnoredEffect: [
+    { IgnoredEffect: { player: 1, source: { id: 3, counter: 0 } } },
+    'Bo pays to ignore the effect of Forest this turn',
+  ],
   Discovered: [{ Discovered: { player: 1, value: 3, card: 3 } }, 'Bo discovers 3, finding Forest'],
   DreadManifested: [{ DreadManifested: { player: 0, card: null } }, 'Ana manifests dread'],
   GiftGiven: [{ GiftGiven: { player: 0, to: 1 } }, 'Ana gives Bo a gift'],

@@ -58,6 +58,7 @@
                   ]
                 }
               },
+              { "Performed": { "action": "Earthbent" } },
               { "Untap": { "what": { "Target": 0 } } }
             ]
           }

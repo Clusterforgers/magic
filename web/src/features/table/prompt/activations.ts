@@ -12,6 +12,7 @@ import type {
   ObjectId,
   ObjectView,
   PaidEnd,
+  PaidIgnore,
   PlayerId,
   PriorityAction,
   PriorityOptions,
@@ -99,6 +100,14 @@ function wording(ref: AbilityRef, worded: ActivatedView | undefined): Pick<Play,
   return { label: full }
 }
 
+/** The line of the ability `ref` of `object` in the card's words: "{T}: Add one mana of any color. Roll a d20." */
+export function abilityLine(ref: AbilityRef, object: ObjectView | undefined): string {
+  const worded = object?.activated?.find(
+    (entry) => entry.ability !== undefined && sameAbility(entry.ability, ref),
+  )
+  return wording(ref, worded).label
+}
+
 /** Tells the unlocking of a door of a Room apart from its other plays. */
 export const unlockKey = (option: FaceOption): string => `unlock-${option.card}-${option.face}`
 
@@ -124,6 +133,17 @@ function endPlay(option: PaidEnd): Play {
   }
 }
 
+/** The line of a source whose effects the holder may ignore until end of turn by paying (a special action): "Any player may pay {2} for that player to ignore this effect until end of turn." */
+function ignorePlay(option: PaidIgnore): Play {
+  const cost = costText(option.cost)
+  return {
+    key: `ignore-${option.object}`,
+    label: `Pay ${cost}: ignore its effect this turn`,
+    words: `Pay ${cost} to ignore the effect of this card until end of turn`,
+    action: { IgnoreEffect: option.object },
+  }
+}
+
 /**
  * The cards of `seat` with something to do besides casting or playing them: each ability in `options.abilities` whose
  * card the seat may use it from, and each locked door of a Room of the seat that it may unlock now. A mana ability the
@@ -137,8 +157,10 @@ export function abilityPlays(
   const abilities = options.abilities ?? []
   const doors = options.unlockable ?? []
   const ends = options.endable ?? []
+  const ignores = options.ignorable ?? []
   const special = specialActions(options)
-  if (seat === null || abilities.length + doors.length + ends.length + special.length === 0) return NONE
+  if (seat === null || abilities.length + doors.length + ends.length + ignores.length + special.length === 0)
+    return NONE
   const found = new Map<ObjectId, Play[]>()
   const add = (id: ObjectId, play: Play): void => {
     const list = found.get(id)
@@ -170,6 +192,10 @@ export function abilityPlays(
   for (const option of ends) {
     const object = objectsById[option.object]
     if (object !== undefined && object.zone === 'Battlefield') add(option.object, endPlay(option))
+  }
+  for (const option of ignores) {
+    const object = objectsById[option.object]
+    if (object !== undefined && object.zone === 'Battlefield') add(option.object, ignorePlay(option))
   }
   for (const [id, verb, action] of special) {
     const object = objectsById[id]

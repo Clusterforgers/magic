@@ -2,8 +2,9 @@
  * Pure hysteresis of a board's card size: a fit holds its card width and shape while they still fit, steps down only
  * when they no longer do and up only when clearly more room is there, so one permanent more or less moves nothing.
  */
-import { fitAt, fitLanes } from './laneFit'
-import type { BoardShape, LaneCounts, LaneFit, LaneLimits } from './laneFit'
+import type { RowKind } from './cardModel'
+import { fitAt, fitLanes, SHAPES } from './laneFit'
+import type { BandPlace, BoardShape, LaneCounts, LaneFit, LaneLimits, LanePlace } from './laneFit'
 import type { FitBox } from './fit'
 
 /** The card width and shape a board drew last, which its next fit holds where it can. */
@@ -69,4 +70,71 @@ export function padded(counts: LaneCounts): LaneCounts {
     creatures: more(counts.creatures),
     other: more(counts.other),
   }
+}
+
+/** The heights a board's bands keep while its card width and shape hold: by band (`bandKey`), in px. */
+export interface BandHold {
+  width: number
+  shape: BoardShape
+  heights: Readonly<Record<string, number>>
+}
+
+/** The key of a band: its lanes, in order, joined by `-`. */
+export const bandKey = (lanes: readonly RowKind[]): string => lanes.join('-')
+
+/** The key of the band of `shape` that a placed band belongs to, whichever of its lanes are empty. */
+function keyIn(shape: BoardShape, band: BandPlace): string {
+  const lane = band.lanes[0]?.lane
+  return bandKey(SHAPES[shape].find((lanes) => lane !== undefined && lanes.includes(lane)) ?? [])
+}
+
+/**
+ * The heights the bands of `fit` draw at: each at least the height it was drawn at since the last size step, so a line
+ * that empties or a pile that shortens moves no lane beyond it, and a band that emptied keeps its room. A new card
+ * width or shape, a scrolling fit or held heights that no longer fit `boxHeight` start afresh from the fit.
+ */
+export function holdBands(
+  hold: BandHold | null,
+  fit: LaneFit | null,
+  boxHeight: number,
+  bandGap: number,
+): BandHold | null {
+  if (fit === null || fit.scrolls) return null
+  const fresh: Record<string, number> = {}
+  for (const band of fit.bands) fresh[keyIn(fit.shape, band)] = band.height
+  const start: BandHold = { width: fit.cardWidth, shape: fit.shape, heights: fresh }
+  if (hold === null || hold.width !== fit.cardWidth || hold.shape !== fit.shape) return start
+  const heights: Record<string, number> = { ...hold.heights }
+  for (const [key, height] of Object.entries(fresh)) heights[key] = Math.max(heights[key] ?? 0, height)
+  const values = Object.values(heights)
+  const total = values.reduce((sum, height) => sum + height, 0) + bandGap * Math.max(0, values.length - 1)
+  return total <= boxHeight ? { ...start, heights } : start
+}
+
+/** A band as drawn: its key, its lanes (none for a band held empty) and the height it keeps in px. */
+export interface HeldBand {
+  key: string
+  lanes: readonly LanePlace[]
+  height: number
+}
+
+/**
+ * The bands to draw from the top of the zone down: the fit's bands, and an empty band in its shape's place for each
+ * band held that the fit no longer has, each at the height `hold` keeps.
+ */
+export function heldBands(fit: LaneFit, hold: BandHold | null, facing: 'near' | 'far'): readonly HeldBand[] {
+  const drawn = fit.bands.map((band) => ({ key: keyIn(fit.shape, band), band }))
+  if (hold === null) return drawn.map(({ key, band }) => ({ key, lanes: band.lanes, height: band.height }))
+  const placed = new Map(drawn.map(({ key, band }) => [key, band]))
+  const outwards = SHAPES[fit.shape].map(bandKey)
+  const keys = outwards.filter((key) => placed.has(key) || (hold.heights[key] ?? 0) > 0)
+  // The fit's own order says which way its bands run (a scrolling opponent's board leads with its creatures).
+  const first = outwards.find((key) => placed.has(key))
+  const inwards = drawn.length > 1 ? drawn[0]?.key !== first : facing === 'far'
+  const ordered = inwards ? [...keys].reverse() : keys
+  return ordered.map((key) => {
+    const band = placed.get(key)
+    const height = Math.max(band?.height ?? 0, hold.heights[key] ?? 0)
+    return { key, lanes: band?.lanes ?? [], height }
+  })
 }

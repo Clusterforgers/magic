@@ -231,6 +231,7 @@ export function createSession(deps: SessionDeps): Session {
       attempt: event.attempt,
       notice: event.reason ?? (event.status === 'connecting' ? null : state.notice),
       pending: live ? state.pending : null,
+      answered: live ? state.answered : null,
       // Only a live connection hears of the lobby; once it is gone the roster is no longer the server's latest word.
       lobby: live ? state.lobby : null,
       preview: live ? state.preview : null,
@@ -330,6 +331,7 @@ export function createSession(deps: SessionDeps): Session {
           result: message.result,
           phase: 'over',
           pending: null,
+          answered: null,
           deciding: [],
           preview: null,
           yielding: null,
@@ -427,6 +429,7 @@ export function createSession(deps: SessionDeps): Session {
         ),
         seq: message.seq,
         pending: null, // the server sends the current decision right after the snapshot
+        answered: null,
         preview: null,
         log: mergeHistory(state.log, message.seq, message.log, message.hosts, message.rewound === true),
         logNames: mergeLogNames(state.logNames, message.names),
@@ -471,6 +474,7 @@ export function createSession(deps: SessionDeps): Session {
       logNames: rememberDeparted(state.logNames, state.objectsById, batch.gone),
       phase: state.result === null ? 'playing' : 'over',
       lobby: null,
+      answered: null,
       ...(passed ? { pending: null, preview: null } : {}),
     })
   }
@@ -486,6 +490,7 @@ export function createSession(deps: SessionDeps): Session {
         ...(message.deadline_ms === undefined ? {} : { deadlineMs: message.deadline_ms }),
         ...(message.show_after_ms === undefined ? {} : { showAfterMs: message.show_after_ms }),
       },
+      answered: null,
       preview: null,
     })
     const card = getState().castWhenAsked
@@ -502,7 +507,7 @@ export function createSession(deps: SessionDeps): Session {
     lastAnswered = pending.id
     sentCount += 1
     answeredAt = sentCount
-    setState({ pending: null, preview: null })
+    setState({ pending: null, answered: answer, preview: null })
     return true
   }
 
@@ -529,6 +534,8 @@ export function createSession(deps: SessionDeps): Session {
   }
 
   function onError(message: Of<'Error'>): void {
+    // A refusal is the server's word on the answer in flight too: a card it refused goes back to the hand.
+    if (getState().answered !== null) setState({ answered: null })
     switch (message.code) {
       case 'StaleDecision':
         setState({ notice: NOTICES.stale })

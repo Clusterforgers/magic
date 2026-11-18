@@ -1,7 +1,7 @@
 {
   "oracle_id": "4f95664f-6113-41e6-a99e-12bfc9d1710a",
   "name": "Ratchet, Field Medic // Ratchet, Rescue Racer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ratchet, Field Medic",
@@ -10,9 +10,41 @@
         { "Keyword": { "MoreThanMeetsTheEye": "{1}{W}" } },
         { "Keyword": "Lifelink" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 87, "end": 301 }
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [
+              { "May": { "effects": [{ "Transform": { "what": "This" } }] } },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": {
+                        "Object": [
+                          { "Type": "Artifact" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" },
+                          {
+                            "Compare": {
+                              "stat": "ManaValue",
+                              "op": "Le",
+                              "to": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -61,6 +61,36 @@ export function handDockNeed({ width, count, commanders, most }: DockNeedInput):
   return 0
 }
 
+/** The dock height a hand dock grew to and when: the settle point it was taken at and the room it was taken for. */
+export interface SettledNeed {
+  need: number
+  /** The settle point: a step of a turn (`settleKey`). */
+  at: string
+  /** The dock's line width and its most, in px: a new window size settles at once. */
+  width: number
+  most: number
+}
+
+/** The settle point of a view: the turn and its step, so the dock changes its rows once a step, not on every draw. */
+export const settleKey = (turn: number, step: string): string => `${turn}:${step}`
+
+/**
+ * The height the hand dock draws at: `need` taken at the first draw, at a new settle point (a new step) or a new room
+ * (a window resized), and otherwise the height taken last, so a draw or a play within a step neither grows the dock
+ * by a row nor gives one back; the hand fits the dock it has meanwhile (smaller cards, or one row that scrolls).
+ */
+export function settleNeed(
+  held: SettledNeed | null,
+  need: number,
+  at: string,
+  width: number,
+  most: number,
+): SettledNeed {
+  const fresh = { need, at, width, most }
+  if (held === null || held.at !== at || held.width !== width || held.most !== most) return fresh
+  return held
+}
+
 /**
  * The room the commanders' box takes besides its cards and one gap, in px: the padding of its line and of the hand's,
  * its divider line and the dock's own gap. Counted as the DOM draws it, so a full row never runs past the dock.

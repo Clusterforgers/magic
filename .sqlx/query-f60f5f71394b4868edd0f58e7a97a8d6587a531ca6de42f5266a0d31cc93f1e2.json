@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE games SET recipe = CASE\n                 WHEN $2::jsonb IS NULL THEN recipe #- '{house_rules,teams}'\n                 ELSE jsonb_set(recipe, '{house_rules}',\n                     COALESCE(recipe -> 'house_rules', '{}'::jsonb) || jsonb_build_object('teams', $2::jsonb))\n               END\n             WHERE id = $1 AND status = 'lobby'",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Jsonb"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "f60f5f71394b4868edd0f58e7a97a8d6587a531ca6de42f5266a0d31cc93f1e2"
+}

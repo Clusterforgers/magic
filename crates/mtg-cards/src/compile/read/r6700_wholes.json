@@ -1,0 +1,238 @@
+[
+ [
+  {
+   "Rule": {
+    "rule": {
+     "R6700FirstFlipsHeads": "You"
+    }
+   }
+  },
+  "Two-Headed Coin — The first time you flip one or more coins each turn, those coins come up heads and you win those flips."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "R6700VillainousAgain": "Opponents"
+    }
+   }
+  },
+  "If an opponent would face a villainous choice, they face that choice an additional time."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "R6700Draws": {}
+    },
+    "by": {
+     "Add": 1
+    },
+    "condition": {
+     "Compare": {
+      "left": {
+       "Count": [
+        {
+         "In": "Hand"
+        },
+        {
+         "OwnedBy": "You"
+        }
+       ]
+      },
+      "op": "Le",
+      "right": 1
+     }
+    }
+   }
+  },
+  "As long as you have one or fewer cards in hand, if you would draw one or more cards, you draw that many cards plus one instead."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": "{B}{B}{B}",
+    "effects": [
+     {
+      "If": {
+       "condition": {
+        "Matches": {
+         "subject": "This",
+         "selector": [
+          {
+           "Subtype": "Scout"
+          }
+         ]
+        }
+       },
+       "then": [
+        {
+         "Continuous": {
+          "affected": "This",
+          "mods": [
+           {
+            "SetCreatureTypes": [
+             "Halfling",
+             "Rogue"
+            ]
+           },
+           {
+            "GrantAbility": {
+             "Triggered": {
+              "when": {
+               "DealsDamage": {
+                "source": [
+                 "This"
+                ],
+                "to": "EachPlayer",
+                "combat": true
+               }
+              },
+              "effects": [
+               {
+                "If": {
+                 "condition": {
+                  "RingTempted": {
+                   "who": "You",
+                   "times": 4
+                  }
+                 },
+                 "then": [
+                  {
+                   "LoseGame": {
+                    "who": "Triggering"
+                   }
+                  }
+                 ],
+                 "otherwise": [
+                  {
+                   "RingTempts": {}
+                  }
+                 ]
+                }
+               }
+              ]
+             }
+            }
+           }
+          ],
+          "duration": "Forever"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "{B}{B}{B}: If ~ is a Scout, it becomes a Halfling Rogue with \"Whenever this creature deals combat damage to a player, that player loses the game if the Ring has tempted you four or more times this game. Otherwise, the Ring tempts you.\""
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Attacks": {
+      "what": [
+       {
+        "Is": "Attached"
+       }
+      ]
+     }
+    },
+    "effects": [
+     {
+      "Choose": {
+       "from": "Defending",
+       "as": "defender"
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "when": {
+        "SpellCast": {
+         "by": {
+          "Bound": "defender"
+         }
+        }
+       },
+       "once": false,
+       "until": {
+        "R6700UntilEndOfTheirNextTurn": {
+         "Bound": "defender"
+        }
+       },
+       "effects": [
+        {
+         "PutCounters": {
+          "on": {
+           "Bound": "defender"
+          },
+          "counter": {
+           "Other": "rad"
+          },
+          "count": 2
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever equipped creature attacks, until the end of defending player's next turn, that player gets two rad counters whenever they cast a spell."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "Enters": {
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "by": {
+     "Choose": "R6700PlaneswalkerType"
+    }
+   }
+  },
+  "As this enchantment enters, choose a planeswalker type."
+ ],
+ [
+  {
+   "Static": {
+    "affected": {
+     "Each": [
+      {
+       "Type": "Planeswalker"
+      },
+      {
+       "ControlledBy": "You"
+      },
+      "ChosenSubtype"
+     ]
+    },
+    "mods": [
+     "R6700KeepsLastLoyalty"
+    ],
+    "condition": {
+     "Compare": {
+      "left": {
+       "Count": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      },
+      "op": "Ge",
+      "right": 1
+     }
+    }
+   }
+  },
+  "As long as you control a creature, if damage dealt to a planeswalker you control of the chosen type would result in all loyalty counters on it being removed, instead all but one of those counters are removed."
+ ]
+]

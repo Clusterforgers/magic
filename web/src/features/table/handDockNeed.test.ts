@@ -1,4 +1,4 @@
-// Goal: the hand dock grows only for a hand that one row of the narrowest card does not hold, to the height of the two or three rows that do (never past its most), and at that height the hand's layout holds every card without scrolling, commanders at its head included, and the width one row needs (`handRowPx`, which sizes the controls dock) is exactly the least at which the dock does not grow.
+// Goal: the hand dock grows only for a hand that one row of the narrowest card does not hold, to the height of the two or three rows that do (never past its most), and at that height the hand's layout holds every card without scrolling, commanders at its head included, and the width one row needs (`handRowPx`, which sizes the controls dock) is exactly the least at which the dock does not grow. Within a step the dock keeps the rows it settled on, taking or giving back a row only at the next step or a new window size.
 import { describe, expect, it } from 'vitest'
 import {
   COMMAND_GAP_PX,
@@ -9,7 +9,10 @@ import {
   handDockNeed,
   handLayout,
   handRowPx,
+  settleKey,
+  settleNeed,
 } from './handFit'
+import type { SettledNeed } from './handFit'
 
 const TWO_ROWS = 95 + 54 + HAND_DOCK_CHROME_PX
 const THREE_ROWS = 95 + 2 * 54 + HAND_DOCK_CHROME_PX
@@ -80,5 +83,78 @@ describe('handRowPx', () => {
     const inner = handRowPx(count, commanders) - HAND_DOCK_SIDES_PX
     expect(handDockNeed({ width: inner, count, commanders, most: 1000 })).toBe(0)
     expect(handDockNeed({ width: inner - 1, count, commanders, most: 1000 })).toBeGreaterThan(0)
+  })
+})
+
+describe('settleNeed', () => {
+  /** Plays a stretch of draws and plays at a 601 px line, at most 230 px: [step, cards] per state; answers the heights. */
+  const play = (states: readonly (readonly [string, number])[], width = 601, most = 230): number[] => {
+    let held: SettledNeed | null = null
+    return states.map(([step, count]) => {
+      held = settleNeed(held, handDockNeed({ width, count, commanders: 2, most }), step, width, most)
+      return held.need
+    })
+  }
+
+  it.each([
+    [
+      'draws within a step',
+      [
+        ['1:Draw', 5],
+        ['1:Draw', 6],
+        ['1:Draw', 8],
+      ],
+      [0, 0, 0],
+    ],
+    [
+      'plays within a step',
+      [
+        ['1:Main1', 9],
+        ['1:Main1', 6],
+        ['1:Main1', 5],
+      ],
+      [TWO_ROWS, TWO_ROWS, TWO_ROWS],
+    ],
+    [
+      'a row taken at the next step',
+      [
+        ['1:Draw', 5],
+        ['1:Draw', 9],
+        ['1:Main1', 9],
+      ],
+      [0, 0, TWO_ROWS],
+    ],
+    [
+      'a row given back at the next step',
+      [
+        ['1:Main1', 9],
+        ['1:Main1', 5],
+        ['1:Combat', 5],
+      ],
+      [TWO_ROWS, TWO_ROWS, 0],
+    ],
+    [
+      'a third row at the next step',
+      [
+        ['1:Main1', 9],
+        ['1:Main1', 14],
+        ['2:Draw', 14],
+      ],
+      [TWO_ROWS, TWO_ROWS, THREE_ROWS],
+    ],
+  ] as const)('%s', (_what, states, heights) => {
+    expect(play(states)).toEqual(heights)
+  })
+
+  it('settles at once on a new room', () => {
+    const held = settleNeed(null, 0, '1:Draw', 921, 248)
+    expect(settleNeed(held, TWO_ROWS, '1:Draw', 601, 248).need).toBe(TWO_ROWS)
+    expect(settleNeed(held, TWO_ROWS, '1:Draw', 921, 230).need).toBe(TWO_ROWS)
+    expect(settleNeed(held, TWO_ROWS, '1:Draw', 921, 248).need).toBe(0)
+  })
+
+  it('names a settle point by the turn and its step', () => {
+    expect(settleKey(3, 'Draw')).not.toBe(settleKey(4, 'Draw'))
+    expect(settleKey(3, 'Draw')).not.toBe(settleKey(3, 'Upkeep'))
   })
 })

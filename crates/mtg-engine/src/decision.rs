@@ -204,6 +204,11 @@ pub struct PriorityOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<PaidEnd>>", optional))]
     pub endable: Vec<PaidEnd>,
+    /// The sources whose effects the holder can ignore until end of turn by paying (a special action that does not use
+    /// the stack): "Any player may pay {2} for that player to ignore this effect until end of turn."
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<PaidIgnore>>", optional))]
+    pub ignorable: Vec<PaidIgnore>,
     /// Whether the holder can put their companion into their hand now: a special action (CR 702.139) for {3} at sorcery
     /// timing, once a game.
     #[serde(default, skip_serializing_if = "is_false")]
@@ -386,6 +391,16 @@ pub struct PaidEnd {
     pub cost: ManaCost,
 }
 
+/// A source whose effects a player may ignore until end of turn by paying (`GameRule::PayToIgnore`, CR 116.2).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct PaidIgnore {
+    /// The source.
+    pub object: ObjectId,
+    /// What ignoring it costs.
+    pub cost: ManaCost,
+}
+
 /// A face of a card with several faces that a player can cast or play now.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -418,6 +433,12 @@ pub struct PayOptions {
     pub pool: ManaPool,
     /// Mana abilities that may be tapped.
     pub sources: Vec<ManaOption>,
+    /// The payer's mana abilities that do more than add mana (a roll, a discard, CR 605.3a): an `Activate` answer activates
+    /// one at once and the payment is asked again with its mana; never part of an automatic payment, and left out while
+    /// there are none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<AbilityRef>>", optional))]
+    pub announced: Vec<AbilityRef>,
     /// The creatures that may be tapped (`convoke`) and the graveyard cards that may be exiled (`delve`) to pay part of the cost; boxed to keep a decision small, and flat on the wire.
     #[serde(flatten)]
     #[cfg_attr(feature = "ts", ts(flatten))]
@@ -885,6 +906,9 @@ pub enum PriorityAction {
     UnlockDoor(ObjectId, u8),
     /// End this effect (CR 116.2c, a special action): pay what it names (it must be offered in `PriorityOptions.endable`).
     EndEffect(EffectId),
+    /// Ignore the effects of this source until end of turn (a special action): pay what it names (it must be offered in
+    /// `PriorityOptions.ignorable`).
+    IgnoreEffect(ObjectId),
     /// Do something by hand for a card the engine does not run: a zone move, counters, life, a token and the like. Legal at
     /// any priority, checked against the state (`manual.rs`).
     Manual(ManualAction),
@@ -902,6 +926,8 @@ pub enum PayChoice {
     Complete(Payment),
     /// Abandon the cast (when `can_cancel`): the spell stays where it was, nothing is logged.
     Cancel,
+    /// Activate this mana ability of `PayOptions.announced` now (CR 601.2g); the payment is asked again once it resolved.
+    Activate(AbilityRef),
 }
 
 /// A player's answer to the pending decision.

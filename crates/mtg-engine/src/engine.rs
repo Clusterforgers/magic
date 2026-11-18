@@ -38,6 +38,7 @@ pub struct Checkpoint {
     mark: usize,
     decision: Option<Decision>,
     pending: Option<Pending>,
+    paused: Option<Box<Pending>>,
     held: Option<Held>,
     last: Option<LastAction>,
     mana_run: Option<ManaRun>,
@@ -81,6 +82,8 @@ pub struct Engine {
     /// (`player_control::answerer`).
     shown: Option<Decision>,
     pending: Option<Pending>,
+    /// The payment set aside while a mana ability activated during it resolves (`PayChoice::Activate`).
+    paused: Option<Box<Pending>>,
     held: Option<Held>,
     /// The open `Together` batch: where its events begin in the log and the state before them.
     batch: Option<(usize, GameState)>,
@@ -116,6 +119,7 @@ impl Engine {
             decision: None,
             shown: None,
             pending: None,
+            paused: None,
             held: None,
             batch: None,
             last: None,
@@ -468,6 +472,7 @@ impl Engine {
             mark: self.events.len(),
             decision: self.decision.clone(),
             pending: self.pending.clone(),
+            paused: self.paused.clone(),
             held: self.held.clone(),
             last: self.last.clone(),
             mana_run: self.mana_run,
@@ -499,6 +504,7 @@ impl Engine {
         self.state = state;
         self.set_decision(checkpoint.decision);
         self.pending = checkpoint.pending;
+        self.paused = checkpoint.paused;
         self.held = checkpoint.held;
         self.last = checkpoint.last;
         self.mana_run = checkpoint.mana_run;
@@ -648,8 +654,8 @@ impl Engine {
                 self.pending = Some(Pending::new(player, What::Spell(spell)));
                 Ok(())
             }
-            Outcome::BeginAttack(attackers, extras) => {
-                self.pending = Some(Pending::new(player, What::Attack(attackers, extras)));
+            Outcome::BeginAttack(declaring, attackers, extras) => {
+                self.pending = Some(Pending::new(declaring, What::Attack(attackers, extras)));
                 Ok(())
             }
             Outcome::BeginBlock(blocks, declaring) => {
@@ -688,6 +694,10 @@ impl Engine {
                 self.pending = Some(Pending::special(player, object, Special::EndEffect(effect)));
                 Ok(())
             }
+            Outcome::BeginIgnore(object) => {
+                self.pending = Some(Pending::special(player, object, Special::IgnoreEffect));
+                Ok(())
+            }
             Outcome::BeginPrepared(permanent) => {
                 let (event, copy) = prepared::copy_of(&self.state, player, permanent)
                     .ok_or_else(|| EngineError::InvalidEvent("no prepared spell to cast".into()))?;
@@ -704,6 +714,11 @@ impl Engine {
             Outcome::Cards(cards) => self.announced(Answered::Cards(cards)),
             Outcome::Division(shares) => self.announced(Answered::Division(shares)),
             Outcome::Assisted(events) => self.announced(Answered::Assisted(events)),
+            Outcome::PauseFor(ability) => {
+                self.paused = self.pending.take().map(Box::new);
+                self.pending = Some(Pending::new(player, What::Ability(ability)));
+                Ok(())
+            }
             Outcome::CancelCast => {
                 self.pending = None;
                 Ok(())
@@ -911,6 +926,13 @@ impl Engine {
                     }
                     Next::Drop => self.drop_pending()?,
                 }
+                continue;
+            }
+            // The mana ability activated during a payment has resolved: the payment is asked again (CR 601.2g).
+            if self.state.resolving().is_none()
+                && let Some(paused) = self.paused.take()
+            {
+                self.pending = Some(*paused);
                 continue;
             }
             match next(&self.state) {

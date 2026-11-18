@@ -4,7 +4,8 @@ import { useGame, usePlay } from '@/features/game/gameContext'
 import type { ObjectId, ObjectView, PlayerId, PlayerView } from '@/protocol/generated'
 import { castCostLine } from './commander'
 import { HandBacks } from './Hand'
-import { dockLayouts, handDockNeed } from './handFit'
+import { dockLayouts, handDockNeed, settleKey, settleNeed } from './handFit'
+import type { SettledNeed } from './handFit'
 import { HAND_GROW_VAR } from './layout'
 import { headLabel, seenTop, TOP_WORDS } from './libraryTop'
 import { HandFan } from './HandFan'
@@ -132,10 +133,22 @@ export const HandDock = memo(function HandDock({
     return dockLayouts({ width, height, count: cards.length, commanders: waiting.size, coarse })
   }, [room, cards, waiting, coarse])
   const lineWidth = room === null ? 0 : room.width - 2 * PAD_PX
-  const need =
+  const fresh =
     room === null || cards === null || coarse || growMost <= 0
       ? 0
       : handDockNeed({ width: lineWidth, count: cards.length, commanders: waiting.size, most: growMost })
+  // The dock takes or gives back a row at a settle point (a new step), never on each draw within one.
+  const step = usePlay((state) => settleKey(state.view?.turn.number ?? 0, state.view?.turn.step ?? ''))
+  const known = room !== null && cards !== null
+  const settled = useRef<SettledNeed | null>(null)
+  const kept = useMemo(
+    () => (known ? settleNeed(settled.current, fresh, step, lineWidth, growMost) : null),
+    [known, fresh, step, lineWidth, growMost],
+  )
+  useLayoutEffect(() => {
+    settled.current = kept
+  }, [kept])
+  const need = kept?.need ?? 0
   useLayoutEffect(() => {
     const main = zone.current?.closest<HTMLElement>('[data-slot="table-main"]')
     if (main == null || need <= 0) return undefined

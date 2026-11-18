@@ -116,6 +116,35 @@ fn within_budget(picks: &[Pick<'_>], mana: u32) -> (Attack, bool) {
     (attack, taxed)
 }
 
+/// `attack` cut back to the mana its player surely has (`AttackOptions::mana`, CR 508.1h): its taxed creatures that are
+/// not required are dropped last to first until the tax fits ([`within_budget`]), and a declaration the rules no longer
+/// accept becomes the plain legal attack. A declaration that costs nothing is kept as it is.
+pub fn affordable_attack(options: &AttackOptions, attack: &[(ObjectId, AttackTarget)]) -> Attack {
+    if options.cost_of(attack).symbols().is_empty() {
+        return attack.to_vec();
+    }
+    let picks: Vec<Pick<'_>> = attack
+        .iter()
+        .map(|(object, target)| Pick {
+            object: *object,
+            target: *target,
+            tax: options
+                .attackers
+                .iter()
+                .find(|option| option.object == *object)
+                .and_then(|option| option.tax.iter().find(|(taxed, _)| taxed == target))
+                .map(|(_, cost)| cost),
+            required: options.required.contains(object),
+        })
+        .collect();
+    let (kept, _) = within_budget(&picks, options.mana);
+    if options.accepts(&kept) {
+        kept
+    } else {
+        options.legal_attack()
+    }
+}
+
 /// `blocks` without every block of its last creature that is not required to block, cut back to a declaration the
 /// rules accept (an attacker left with too few blockers loses them, else what the rules require). `None` once the
 /// declaration is what the rules require, which costs nothing (a requirement never makes a player pay, CR 509.1d).

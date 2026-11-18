@@ -110,6 +110,14 @@ export function bossLife(view: Pick<DelveView, 'boss_lives'>, boss: string): num
   return view.boss_lives.find(([id]) => id === boss)?.[1]
 }
 
+/** "Upgraded form of Skrix, the Rat Queen" for a final boss's upgraded form; null for a boss of its own. */
+export function upgradedFrom(content: Pick<DelveContent, 'bosses'>, boss: string | undefined): string | null {
+  const from = content.bosses.find((entry) => entry.id === boss)?.upgrade_of
+  if (from === undefined) return null
+  const name = content.bosses.find((entry) => entry.id === from)?.name
+  return name === undefined ? null : `Upgraded form of ${name}`
+}
+
 /** The most life a hero carries without relic bonuses (`docs/delves.md`, Shape). */
 export const MAX_LIFE = 40
 /** The hearts a party starts with. */

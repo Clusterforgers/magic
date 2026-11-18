@@ -92,6 +92,7 @@ function chosenWords(chosen: Chosen, n: EventNames): string {
     return `, choosing ${color.toLowerCase()} and ${type}`
   }
   if ('Players' in chosen) return `, choosing ${joinWords(chosen.Players.map((seat) => n.seat(seat)))}`
+  if ('R6700PlaneswalkerType' in chosen) return `, choosing ${chosen.R6700PlaneswalkerType}`
   return `, choosing ${chosen.CreatureType}`
 }
 
@@ -173,6 +174,7 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
       CantAttack: "can't attack",
       CantBlock: "can't block",
       DoesntUntap: `${group ? "don't" : "doesn't"} untap during their controller's untap step`,
+      R6700KeepsLastLoyalty: `${group ? 'keep' : 'keeps'} one loyalty counter when damage would remove all of them`,
       CantBeBlocked: "can't be blocked",
       CantBeBlockedUnlessAttackingOwner:
         "can't be blocked unless it's attacking its owner or a permanent its owner controls",
@@ -305,6 +307,7 @@ function durationWords(
     if ('WhileMonarch' in duration) return ' while that player is the monarch'
     if ('UntilEndOfTurnOrRolled' in duration)
       return ` until end of turn, or until any player rolls a ${duration.UntilEndOfTurnOrRolled}`
+    if ('R6700UntilEndOfTheirNextTurn' in duration) return " until the end of that player's next turn"
     const counter = `${counterName(duration.WhileHasCounter)} counter`
     return several ? ` while each has a ${counter}` : ` while it has a ${counter}`
   }
@@ -1149,6 +1152,16 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('Learned' in event) return line(`${n.seat(event.Learned.player)} learns`)
   if ('EvidenceCollected' in event) return line(`${n.seat(event.EvidenceCollected.player)} collects evidence`)
   if ('Investigated' in event) return line(`${n.seat(event.Investigated.player)} investigates`)
+  if ('IgnoredEffect' in event) {
+    const { player, source } = event.IgnoredEffect
+    return line(`${n.seat(player)} pays to ignore the effect of ${n.card(source.id)} this turn`)
+  }
+  if ('Bent' in event) {
+    const verb = { Water: 'waterbends', Earth: 'earthbends', Fire: 'firebends', Air: 'airbends' }[
+      event.Bent.element
+    ]
+    return line(`${n.seat(event.Bent.player)} ${verb}`)
+  }
   if ('Discovered' in event) {
     const { player, value, card } = event.Discovered
     const found = card === null ? '' : `, finding ${n.card(card)}`

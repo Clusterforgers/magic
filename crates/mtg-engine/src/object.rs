@@ -71,6 +71,8 @@ pub enum Chosen {
     CreatureType(mtg_core::card::Subtype),
     /// A colour and a creature type chosen together ("choose a color and a creature type").
     ColorAndType(mtg_core::color::Color, mtg_core::card::Subtype),
+    /// A planeswalker type (CR 205.3j).
+    R6700PlaneswalkerType(mtg_core::card::Subtype),
     /// A land type, which a landwalk the source grants names (CR 702.14).
     LandType(mtg_core::card::Subtype),
     /// Several land types, in the order they were chosen ("the first chosen type").

@@ -40,4 +40,8 @@ result: GameResult | null,
 /**
  * Why a failed game could not be restored, in words for a player; null for every other status.
  */
-reason: string | null, };
+reason: string | null, 
+/**
+ * The user's own seat's team, counted from 0, so a team's win counts for its members; left out without teams.
+ */
+team?: number, };

@@ -498,6 +498,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Learned { .. }
         | Event::EvidenceCollected { .. }
         | Event::Investigated { .. }
+        | Event::Bent { .. }
+        | Event::IgnoredEffect { .. }
         | Event::Discovered { .. }
         | Event::DreadManifested { .. }
         | Event::GiftGiven { .. }

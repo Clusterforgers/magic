@@ -1,4 +1,4 @@
-//! Goal: a mana ability that does more than add mana and asks for what the payment cannot run (Vexing Puzzlebox's "{T}: Add one mana of any color. Roll a d20.") is offered at priority, resolves at once with its mana and its roll, its "whenever you roll" trigger goes on the stack afterwards and puts that many charge counters on it, and its floating mana pays a later cast; the payment never counts or taps it on its own (docs/engine.md), at two to four seats.
+//! Goal: a mana ability that does more than add mana and asks for what the payment cannot run (Vexing Puzzlebox's "{T}: Add one mana of any color. Roll a d20.") is offered at priority, resolves at once with its mana and its roll, its "whenever you roll" trigger goes on the stack afterwards and puts that many charge counters on it, and its floating mana pays a later cast; the payment never counts or taps it on its own; while paying for a spell it is offered too, resolves at once and the payment is asked again with its mana, its trigger waiting until the cast is done, and automatic payment never activates it (docs/engine.md), at two to four seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_cards::value::CounterKind;
@@ -142,5 +142,111 @@ fn puzzlebox_mana_tapped_at_priority_pays_a_cast(#[case] seats: usize) -> Result
         0,
         "the floating mana paid"
     );
+    Ok(())
+}
+
+fn tapped(driver: &Driver, id: ObjectId) -> bool {
+    driver
+        .state()
+        .object(id)
+        .and_then(|object| object.permanent())
+        .is_some_and(mtg_engine::object::PermanentState::tapped)
+}
+
+/// The active seat holds Grizzly Bears with the Puzzlebox and two Forests, and begins to cast it.
+fn paying(seats: usize) -> Result<(Driver, PlayerId), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .hand_named(0, ["Grizzly Bears"])
+            .battlefield_named(0, ["Vexing Puzzlebox", "Forest", "Forest"]),
+    )?;
+    driver.begin_cast("Grizzly Bears")?;
+    Ok((driver, PlayerId(0)))
+}
+
+/// Answers the questions of the activation passively (the colour) until the payment is asked again.
+fn back_to_payment(driver: &mut Driver) -> Result<Vec<Event>, ScriptError> {
+    let mut log = Vec::new();
+    while !matches!(driver.decision()?.kind, DecisionKind::PayMana(_)) {
+        let answer = Driver::passive_answer(driver.decision()?);
+        log.extend(driver.answer(answer)?);
+    }
+    Ok(log)
+}
+
+#[rstest]
+#[case::two_seats(2)]
+#[case::three_seats(3)]
+#[case::four_seats(4)]
+fn puzzlebox_is_activated_from_the_payment_and_the_payment_is_asked_again(
+    #[case] seats: usize,
+) -> Result<(), ScriptError> {
+    let (mut driver, me) = paying(seats)?;
+    let puzzlebox = driver.id_of("Vexing Puzzlebox")?;
+    let offered = driver.pay_options()?.announced.clone();
+    assert_eq!(offered.len(), 1, "the mana ability is offered while paying");
+    let ability = offered[0];
+    assert_eq!(ability.object, puzzlebox);
+    let mut log = driver.answer(Answer::PayMana(PayChoice::Activate(ability)))?;
+    log.extend(back_to_payment(&mut driver)?);
+    assert!(rolled(&log, me).is_some(), "a d20 is rolled: {log:?}");
+    assert!(tapped(&driver, puzzlebox));
+    let options = driver.pay_options()?;
+    assert_eq!(options.pool.total(), 1, "its mana floats into the payment");
+    assert!(
+        options.announced.is_empty(),
+        "a tapped Puzzlebox is offered no more"
+    );
+    assert!(
+        driver.state().stack().is_empty(),
+        "the roll's trigger waits until the cast is done"
+    );
+    assert!(
+        driver
+            .answer(Answer::PayMana(PayChoice::Activate(ability)))
+            .is_err(),
+        "an ability not offered is refused"
+    );
+    let log = driver.answer(Answer::PayMana(PayChoice::Auto))?;
+    assert!(
+        log.iter().any(|e| matches!(e, Event::SpellCast { .. })),
+        "{log:?}"
+    );
+    assert_eq!(driver.state().player(me).unwrap().mana().total(), 0);
+    assert_eq!(
+        driver.state().stack().len(),
+        2,
+        "the Bears and, above them, the roll's trigger"
+    );
+    Ok(())
+}
+
+#[rstest]
+#[case::two_seats(2)]
+#[case::four_seats(4)]
+fn automatic_payment_never_activates_it(#[case] seats: usize) -> Result<(), ScriptError> {
+    let (mut driver, _) = paying(seats)?;
+    let puzzlebox = driver.id_of("Vexing Puzzlebox")?;
+    let log = driver.answer(Answer::PayMana(PayChoice::Auto))?;
+    assert!(log.iter().any(|e| matches!(e, Event::SpellCast { .. })));
+    assert!(!tapped(&driver, puzzlebox));
+    assert!(!log.iter().any(|e| matches!(e, Event::DieRolled { .. })));
+    Ok(())
+}
+
+#[test]
+fn backing_out_after_it_leaves_its_mana_floating() -> Result<(), ScriptError> {
+    let (mut driver, me) = paying(2)?;
+    let ability = driver.pay_options()?.announced[0];
+    driver.answer(Answer::PayMana(PayChoice::Activate(ability)))?;
+    back_to_payment(&mut driver)?;
+    driver.answer(Answer::PayMana(PayChoice::Cancel))?;
+    assert_eq!(
+        driver.state().zone(Zone::Hand(me)).len(),
+        1,
+        "the Bears went back to the hand"
+    );
+    assert_eq!(driver.state().player(me).unwrap().mana().total(), 1);
+    assert!(matches!(driver.decision()?.kind, DecisionKind::Priority(_)));
     Ok(())
 }

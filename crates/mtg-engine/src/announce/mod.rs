@@ -308,10 +308,14 @@ pub(crate) struct Done {
     pub(crate) assist_pick: Option<usize>,
     /// How much generic mana the helper chose to pay.
     pub(crate) assist_amount: Option<u32>,
-    /// The events of the helper's own payment of that mana, chosen by the helper.
+    /// The events of the helper's own payment of that mana, chosen by the helper, or of the teammates' payments of a
+    /// team's attack.
     pub(crate) assist_events: Option<Vec<Event>>,
     /// The helper and the generic mana they pay, once the step has taken it off the cost.
     pub(crate) assist_paid: Option<(PlayerId, u32)>,
+    /// How many teammates of a team's combined attack paid for their own creatures, in turn order; their payments are
+    /// kept in `assist_events` (`attack_tax`).
+    pub(crate) party_paid: u8,
     /// How many target specifications have their division settled.
     pub(crate) divided: usize,
     /// The kind of counter the player picked for the next permanent of a cost that removes a counter of any kind, by
@@ -325,6 +329,13 @@ pub(crate) struct Done {
     asked: Option<Phase>,
     /// Why the announcement was taken back: the step that could not be met.
     pub(crate) rewound: Option<Unplayable>,
+}
+
+impl Done {
+    /// Marks the payment a teammate is asked for their own creatures of a team's attack as the decision it waits for.
+    pub(crate) fn asking_teammate(&mut self) {
+        self.asked = Some(Phase::Assist);
+    }
 }
 
 /// A special action that pays a cost and does not use the stack (CR 116.2): the cost is paid through the normal payment
@@ -345,6 +356,8 @@ pub(crate) enum Special {
     Unlock(u8),
     /// Ending this effect by paying its price (CR 116.2c): the card is the object it changes.
     EndEffect(mtg_core::ids::EffectId),
+    /// Paying to ignore the effects of the card until end of turn (`GameRule::PayToIgnore`).
+    IgnoreEffect,
 }
 
 /// A cast or activation that has begun and is not paid for yet.
@@ -536,6 +549,13 @@ impl Pending {
             }
             Answered::Way(pick) if wanted == Phase::Face => self.done.face_picked = Some(pick),
             Answered::Way(pick) if wanted == Phase::Assist => self.done.assist_pick = Some(pick),
+            Answered::Assisted(events) if matches!(self.what, What::Attack(..)) => {
+                self.done
+                    .assist_events
+                    .get_or_insert_with(Vec::new)
+                    .extend(events);
+                self.done.party_paid = self.done.party_paid.saturating_add(1);
+            }
             Answered::Assisted(events) => self.done.assist_events = Some(events),
             Answered::Number(amount) if wanted == Phase::Assist => {
                 self.done.assist_amount = Some(amount);
@@ -746,6 +766,14 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
             Special::Companion => companion::next(state, *player, *card),
             Special::Unlock(door) => dk1c5_unlock::next(state, *player, *card, *door),
             Special::EndEffect(effect) => e15g_paid_end::next(state, *player, *effect),
+            Special::IgnoreEffect => {
+                let Some(cost) = crate::r6703_ignore::offer(state, *player, *card) else {
+                    return Next::Drop;
+                };
+                suspend::pay(state, *player, *card, cost, || {
+                    crate::r6703_ignore::events(state, *player, *card)
+                })
+            }
         };
     }
     let what: &What = what;

@@ -709,9 +709,14 @@ async fn a_resumed_game_starts_its_dwell_afresh_and_writes_the_same_log() {
     tokio::task::yield_now().await;
 
     let resumed_at = Instant::now();
-    let handle = resume_game_with(store.clone(), game_id(1), setup, config(Dwell::fixed(600)))
-        .await
-        .unwrap();
+    let handle = Box::pin(resume_game_with(
+        store.clone(),
+        game_id(1),
+        setup,
+        config(Dwell::fixed(600)),
+    ))
+    .await
+    .unwrap();
     let mut tapes = Vec::new();
     for n in 0..2 {
         let inbox = handle.join(seat(n)).await.unwrap();

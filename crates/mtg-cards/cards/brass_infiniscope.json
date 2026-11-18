@@ -1,0 +1,31 @@
+{
+  "oracle_id": "f74d8f53-a239-4641-90f1-bf786d57e253",
+  "name": "Brass Infiniscope",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brass Infiniscope",
+      "oracle_fingerprint": "2887402ced583009ecc694b7d47eae4a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Colorless", "Colorless"] } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "SpellCast": { "what": ["XInCost"], "by": "You" } },
+                  "this_turn": true,
+                  "effects": [
+                    { "Draw": {} },
+                    { "GainLife": { "amount": { "Half": { "of": "X", "up": false } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -10,6 +10,7 @@ import { useEdgeFade } from '../useEdgeFade'
 import { rovingTarget } from '../useRoving'
 import { CardSearchField } from './CardSearchField'
 import { FILTER_FROM, matchesFilter } from './cardsText'
+import { BAND_HEAD_REM, SEARCH_ROW_REM, stripCardWidth } from './cardPrompts'
 import { ChoiceAnchorContext } from './choiceAnchor'
 import { useChoiceOverlay, useOverlayRoom } from './choiceOverlay'
 import { groupByController, overlayLayout, SCROLLBAR_PX } from './overlayLayout'
@@ -75,8 +76,8 @@ export interface CardChoicesProps {
   /** Controls drawn before the cards in the same group (a player among the targets). */
   lead?: ReactNode
   /**
-   * What the rest of the prompt takes of the sheet, in rem (the sentence, the buttons, a line of players); the grid has
-   * the remainder (`--choice-room`), and its cards are sized so a whole row fits it. 10.5 when left out, 14.5 with a search.
+   * What the prompt draws above the cards inside its choices, in rem (a row of quick buttons, `QUICK_ROW_REM`); the
+   * band's first line and a search box are counted here. The cards have what is left of the sheet (`--choice-room`).
    */
   rest?: number
   /** A search of a library: the search box shows from two cards and takes focus when the prompt appears. */
@@ -112,10 +113,11 @@ export function CardChoices({
   keys = false,
   focusFirst,
   lead,
-  rest,
+  rest = 0,
   search = false,
 }: CardChoicesProps) {
   const total = cards.length
+  const fit = useMemo(() => stripCardWidth(total), [total])
   const host = useChoiceOverlay(total)
   const name = useContext(PromptContext)?.name
   const [filter, setFilter] = useState('')
@@ -242,24 +244,24 @@ export function CardChoices({
         style={
           host === null
             ? ({
-                '--choice-room': `max(6rem, calc(var(--sheet-max, 20rem) - ${rest ?? (filtering ? 14.5 : 10.5)}rem))`,
+                '--choice-room': `max(6rem, calc(var(--sheet-max, 20rem) - ${BAND_HEAD_REM + rest + (filtering ? SEARCH_ROW_REM : 0)}rem))`,
               } as CSSProperties)
             : undefined
         }
         className={
           host === null
-            ? // In the strip the players stand in a column before the cards, so the choice stays one card high.
-              'flex max-w-full min-w-0 basis-full items-center gap-3 [&>[data-slot=player-targets]]:max-w-56 [&>[data-slot=player-targets]]:shrink-0 [&>[data-slot=player-targets]]:flex-col [&>[data-slot=player-targets]]:items-stretch [&>[data-slot=player-targets]]:border-e [&>[data-slot=player-targets]]:pe-3'
+            ? // In the strip the players stand in columns before the cards, as high as their line (`promptBand.css`).
+              'flex max-w-full min-w-0 basis-full items-center gap-3'
             : 'flex max-h-full min-h-0 min-w-0 flex-col gap-2 [&>[data-slot=player-targets]]:border-b [&>[data-slot=player-targets]]:pb-2'
         }
       >
         {lead}
         {/*
-          In the sheet, which is at most `--sheet-max` high, what the stack, the sentence, the buttons and the clock
-          leave is the row's (`--choice-room`): its cards stand whole in one row as high as that room, and more cards
-          than the width holds scroll sideways over a thin bar, never a row cut in half. In the overlay the cards stand
-          in a grid of the columns and width the layout picked, a run per seat where several control cards, and the
-          grid alone scrolls when it must, under the search box and the players.
+          In the sheet, which is at most `--sheet-max` high, what the sentence, the buttons and the clock leave is the
+          cards' (`--choice-room`): they stand whole in one row, from nine cards in two where that makes them larger,
+          as large as that room and the row's width allow (`--choice-fit`), so no card is cut or scrolled away. In the
+          overlay the cards stand in a grid of the columns and width the layout picked, a run per seat where several
+          control cards, and the grid alone scrolls when it must, under the search box and the players.
         */}
         <div
           ref={row}
@@ -269,7 +271,9 @@ export function CardChoices({
           data-scrolls={layout?.scrolls || undefined}
           style={
             layout === null
-              ? undefined
+              ? ({
+                  '--choice-fit': fit,
+                } as CSSProperties)
               : ({
                   '--overlay-card-w': `${layout.card}px`,
                   width: layout.width + 12 + SCROLLBAR_PX,
@@ -278,7 +282,7 @@ export function CardChoices({
           className={cn(
             'gap-2 p-1.5',
             layout === null
-              ? 'flex max-w-full items-start justify-center-safe overflow-x-auto overflow-y-hidden [scrollbar-width:thin]'
+              ? 'flex max-w-full min-w-0 flex-1 flex-wrap items-start justify-start overflow-x-auto overflow-y-hidden [container-type:inline-size] [scrollbar-width:thin]'
               : 'fade-scroll flex min-h-0 max-w-full flex-wrap content-start justify-center gap-x-4 gap-y-4',
           )}
         >
@@ -300,7 +304,7 @@ export function CardChoices({
             )
           })}
           {visible.length === 0 && total > 0 ? (
-            <p data-slot="no-match" className="p-2 text-sm text-muted-foreground">
+            <p data-slot="no-match" className="col-span-full p-2 text-sm text-muted-foreground">
               {`No card has “${filter.trim()}” in its name, type or text.`}
             </p>
           ) : null}

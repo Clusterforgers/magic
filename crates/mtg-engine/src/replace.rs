@@ -730,6 +730,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::CopiesSpell { .. }
         | ReplaceWhen::Learns { .. }
         | ReplaceWhen::R6603DrawsSeveral { .. }
+        | ReplaceWhen::R6700Draws { .. }
         | ReplaceWhen::Draw { .. } => false,
     }
 }
@@ -833,6 +834,13 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
             matches!(unit, Unit::Move { .. })
                 && !matches!(place, mtg_cards::effect::Place::Below(_))
         }
+        ReplaceBy::BattlefieldUnderYours => matches!(
+            unit,
+            Unit::Move {
+                countered: true,
+                ..
+            }
+        ),
         ReplaceBy::Tapped
         | ReplaceBy::Untapped
         | ReplaceBy::WithCounters { .. }
@@ -2511,6 +2519,22 @@ impl Pass<'_> {
                     self.redirect(at, *object, *from, destination, &applied);
                 }
             }
+            (
+                ReplaceBy::BattlefieldUnderYours,
+                Unit::Move {
+                    object, from, to, ..
+                },
+            ) => {
+                self.slots[at].applied.clone_from(&applied);
+                if *to != Zone::Battlefield {
+                    self.r6703_onto_battlefield(
+                        at,
+                        (*object, *from),
+                        candidate.controller,
+                        &applied,
+                    );
+                }
+            }
             (ReplaceBy::IntoLibrary { place, reveal, .. }, Unit::Move { object, from, .. }) => {
                 self.g12a_into_library(at, (*object, *from), (*place, *reveal), &applied);
             }
@@ -3960,17 +3984,15 @@ impl Pass<'_> {
             match options[index].clone() {
                 ChoiceOption::Color(color) => Some(Chosen::Color(color)),
                 ChoiceOption::Label(name) if kind == EntersChoice::TwoBasicLandTypes => {
-                    name.split_once(R5511_THEN).map(|(first, second)| {
-                        Chosen::LandTypes(vec![
-                            Subtype(first.to_owned()),
-                            Subtype(second.to_owned()),
-                        ])
-                    })
+                    two_land_types(&name)
                 }
                 ChoiceOption::Label(name)
                     if matches!(kind, EntersChoice::LandType | EntersChoice::BasicLandType) =>
                 {
                     Some(Chosen::LandType(Subtype(name)))
+                }
+                ChoiceOption::Label(name) if kind == EntersChoice::R6700PlaneswalkerType => {
+                    Some(Chosen::R6700PlaneswalkerType(Subtype(name)))
                 }
                 ChoiceOption::Label(name)
                     if matches!(kind, EntersChoice::CardType | EntersChoice::CardTypeOf(_)) =>
@@ -4028,6 +4050,7 @@ impl Pass<'_> {
                 .collect(),
             EntersChoice::CreatureType => values::creature_types(),
             EntersChoice::LandType => values::land_types(),
+            EntersChoice::R6700PlaneswalkerType => values::r6700_planeswalker_types(),
             EntersChoice::CardType => values::card_types(),
             EntersChoice::CardTypeOf(set) => values::card_types_of(set),
             EntersChoice::BasicLandType => values::basic_land_types(),
@@ -4078,6 +4101,13 @@ impl Pass<'_> {
 /// The words between the first and the second of two land types chosen in order.
 const R5511_THEN: &str = ", then ";
 
+/// The two land types of a "first, then second" label.
+fn two_land_types(label: &str) -> Option<Chosen> {
+    label.split_once(R5511_THEN).map(|(first, second)| {
+        Chosen::LandTypes(vec![Subtype(first.to_owned()), Subtype(second.to_owned())])
+    })
+}
+
 /// The question of a choice made as a permanent enters, in words.
 fn entering_question(kind: EntersChoice) -> String {
     match kind {
@@ -4090,6 +4120,7 @@ fn entering_question(kind: EntersChoice) -> String {
         }
         EntersChoice::CreatureType => "Choose a creature type.".to_owned(),
         EntersChoice::LandType => "Choose a land type.".to_owned(),
+        EntersChoice::R6700PlaneswalkerType => "Choose a planeswalker type.".to_owned(),
         EntersChoice::BasicLandType => "Choose a basic land type.".to_owned(),
         EntersChoice::TwoBasicLandTypes => {
             "Choose two basic land types: the first, then the second.".to_owned()
@@ -4162,6 +4193,7 @@ pub(crate) mod r5516_copies;
 pub(crate) mod r5516_learns;
 mod r5517_life;
 mod r5517_under;
+pub(crate) mod r6700_draws;
 mod rmt5_next;
 use rmt5_next::rmt5_next_as_instead;
 mod e19_mill;
@@ -4240,6 +4272,7 @@ mod r5501_attached;
 mod r6008_library;
 mod r6603_draws;
 mod r6603_transforms;
+mod r6703_onto_battlefield;
 mod w9c_prevent;
 
 /// The counters for each permanent devoured: "Devour X, where X is the number of creatures devoured this way" is

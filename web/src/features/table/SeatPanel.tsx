@@ -66,11 +66,14 @@ import { memberNames } from '@/lib/teams'
 import { useSeatTeam } from './teamLife'
 import type { SeatTeam } from './teamLife'
 import { BossChip, BossTrack, SpiritMark } from './campaign/CampaignMarks'
+import { WaitingMark } from './WaitingMark'
 
 interface SeatPanelProps {
   seat: PlayerId
   /** `panel` is the pod for a column 168 px wide; `line` is one row, for a column of boards or a narrow window. */
   variant?: 'panel' | 'line'
+  /** A line keeps its figures to one row under the name, scrolling sideways where they do not fit (a grid of opponents). */
+  oneRow?: boolean
 }
 
 /** How a pod reads while an attack is aimed: a seat that may be attacked has an outline, the one chosen a filled one. */
@@ -148,7 +151,11 @@ function Life({ seat, life, as, className, team, spirit = false }: LifeProps) {
  * commander beside the chips; as a `line` it keeps to one row of the essentials and wraps the chips only when the
  * row is too narrow.
  */
-export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: SeatPanelProps) {
+export const SeatPanel = memo(function SeatPanel({
+  seat,
+  variant = 'panel',
+  oneRow = false,
+}: SeatPanelProps) {
   const owner = useSeatNamer()(seat)
   const player = usePlay((state) => playerOf(state, seat))
   const exile = usePlay(useShallow((state) => exileOf(state, seat)))
@@ -205,6 +212,8 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
     'data-boss': player.boss ? true : undefined,
     'data-spirit': player.spirit ? true : undefined,
     'data-seat': seat,
+    // The card preview covers a pod only after the card it shows (`keepClear.ts`).
+    'data-keep-clear': 'pod',
     'data-you': flags.you || undefined,
     'data-active': flags.active || undefined,
     'data-your-turn': flags.cue || undefined,
@@ -268,6 +277,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
         <PriorityDot label={priorityName(owner, flags.you)} />
       ) : null}
       {away ? <AwayMark /> : null}
+      <WaitingMark seat={seat} />
       {line ? <ZoomButton seat={seat} owner={owner} /> : null}
     </div>
   )
@@ -286,10 +296,10 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
           defenderClass(defender.state),
         )}
       >
-        <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+        <div className={cn('flex min-w-0 gap-x-2 gap-y-1', oneRow ? 'flex-col' : 'flex-wrap items-center')}>
           <div className="flex min-w-24 flex-1 items-center justify-between gap-2">
             <div className="flex min-w-0 items-center gap-2">
-              <CommanderPortrait ids={commanders} className="size-8" />
+              <CommanderPortrait ids={commanders} className={oneRow ? 'size-6' : 'size-8'} />
               {name}
             </div>
             <div className="flex shrink-0 items-center gap-1.5">
@@ -305,46 +315,72 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
               />
             </div>
           </div>
+          {/* One row of figures: a crowded grid keeps every pod two lines high, so the boards under them keep their room. */}
           <div
-            role="group"
-            aria-label={`${owner}'s zones`}
-            className="flex max-w-full min-w-0 flex-wrap items-center gap-1"
+            data-slot={oneRow ? 'pod-figures' : undefined}
+            className={
+              oneRow
+                ? 'flex min-w-0 items-center gap-1 overflow-x-auto [scrollbar-width:none] [mask-image:linear-gradient(to_right,black_calc(100%-1rem),transparent)] *:shrink-0'
+                : 'contents'
+            }
           >
-            {timers}
-            {theirHand === null ? (
-              <CountChip zone="hand" count={counts.hand} density="line" />
-            ) : (
-              <ZoneButton zone="hand" owner={owner} ids={theirHand} density="line" />
-            )}
-            <CountChip zone="library" count={counts.library} density="line" />
-            {flags.you ? <LibraryTopChip player={player} /> : null}
-            <RevealedChip owner={owner} player={player} density="line" />
-            <RingChip owner={owner} player={player} density="line" />
-            <SpeedChip owner={owner} player={player} density="line" />
-            <PlayerCounterChips owner={owner} player={player} density="line" />
-            <PlayerEffectChips owner={owner} player={player} density="line" />
-            <CompanionChip owner={owner} player={player} />
-            <StickerSheetsChip player={player} />
-            {counts.attractions > 0 ? (
-              <CountChip zone="attractions" count={counts.attractions} density="line" />
+            {/* The lands lead the row: their chip and what they leave untapped stay in view however many figures follow. */}
+            {oneRow ? (
+              <>
+                <LandSummary seat={seat} owner={owner} density="line" />
+                <UntappedSources seat={seat} className="flex-nowrap" />
+              </>
             ) : null}
-            <LandSummary seat={seat} owner={owner} density="line" />
-            <ZoneButton zone="graveyard" owner={owner} ids={graveyard} density="line" thumbs />
-            <ZoneButton zone="exile" owner={owner} ids={exile} density="line" thumbs />
-            {commanders.length > 0 ? (
-              <ZoneButton zone="command" owner={owner} ids={commanders} density="line" thumbs />
-            ) : null}
-            {satchel}
-          </div>
-          {/* The status flows on after the zones in the same lines, so a pod head takes as few lines as its width allows. */}
-          <div data-slot="pod-status" className="contents empty:hidden">
-            {/* A phone keeps the pod to its figures: the lands under it show what is untapped. */}
-            <UntappedSources seat={seat} className="max-sm:hidden" />
-            {mana}
-            <TaxChips chips={chips.tax} density="line" />
-            <DamageChips chips={chips.damage} density="line" />
-            <EnchantChips chips={enchants} density="line" />
-            {notes}
+            <div
+              role="group"
+              aria-label={`${owner}'s zones`}
+              className={cn(
+                'flex max-w-full min-w-0 items-center gap-1',
+                oneRow ? 'max-w-none shrink-0' : 'flex-wrap',
+              )}
+            >
+              {timers}
+              {theirHand === null ? (
+                <CountChip zone="hand" count={counts.hand} density="line" />
+              ) : (
+                <ZoneButton zone="hand" owner={owner} ids={theirHand} density="line" />
+              )}
+              <CountChip zone="library" count={counts.library} density="line" />
+              {flags.you ? <LibraryTopChip player={player} /> : null}
+              <RevealedChip owner={owner} player={player} density="line" />
+              <RingChip owner={owner} player={player} density="line" />
+              <SpeedChip owner={owner} player={player} density="line" />
+              <PlayerCounterChips owner={owner} player={player} density="line" />
+              <PlayerEffectChips owner={owner} player={player} density="line" />
+              <CompanionChip owner={owner} player={player} />
+              <StickerSheetsChip player={player} />
+              {counts.attractions > 0 ? (
+                <CountChip zone="attractions" count={counts.attractions} density="line" />
+              ) : null}
+              {oneRow ? null : <LandSummary seat={seat} owner={owner} density="line" />}
+              <ZoneButton zone="graveyard" owner={owner} ids={graveyard} density="line" thumbs={!oneRow} />
+              <ZoneButton zone="exile" owner={owner} ids={exile} density="line" thumbs={!oneRow} />
+              {commanders.length > 0 ? (
+                <ZoneButton zone="command" owner={owner} ids={commanders} density="line" thumbs={!oneRow} />
+              ) : null}
+              {satchel}
+            </div>
+            {/* The status flows on after the zones in the same lines, so a pod head takes as few lines as its width allows. */}
+            <div
+              data-slot="pod-status"
+              className={cn(
+                'contents empty:hidden',
+                oneRow && '*:shrink-0 *:flex-nowrap *:whitespace-nowrap',
+              )}
+            >
+              {/* A phone keeps the pod to its figures: the lands under it show what is untapped. */}
+              {oneRow ? null : <UntappedSources seat={seat} className="max-sm:hidden" />}
+              {mana}
+              <TaxChips chips={chips.tax} density="line" />
+              <DamageChips chips={chips.damage} density="line" />
+              <EnchantChips chips={enchants} density="line" />
+              {notes}
+            </div>
           </div>
         </div>
         {words === '' ? null : <p className="sr-only">{words}</p>}

@@ -119,6 +119,16 @@ fn e15g_special_answer(
                 .ok_or(IllegalAnswer::NotOffered("end effect"))?;
             Ok(Outcome::BeginEndEffect(offered.object, effect))
         }
+        PriorityAction::IgnoreEffect(object) => {
+            if !options
+                .ignorable
+                .iter()
+                .any(|option| option.object == object)
+            {
+                return Err(IllegalAnswer::NotOffered("ignore effect").into());
+            }
+            Ok(Outcome::BeginIgnore(object))
+        }
         _ => Err(IllegalAnswer::NotOffered("special action").into()),
     }
 }
@@ -776,6 +786,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         .collect();
     let unlockable = crate::dk1c5_rooms::dk1c5_unlockable(state, player, &pool, &all_mana, life);
     let endable = crate::e15g_paid::endable(state, player, &pool, &all_mana, life);
+    let ignorable = crate::r6703_ignore::ignorable(state, player, &pool, &all_mana, life);
     let (abilities, inactive) = silence(state, silenced, abilities_now(state, player));
     let mut faces = face_options(
         state,
@@ -814,6 +825,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         ) || !faces.is_empty()
             || !unlockable.is_empty()
             || !endable.is_empty()
+            || !ignorable.is_empty()
             || companion,
         playable_lands,
         castable,
@@ -825,6 +837,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         turnable,
         unlockable,
         endable,
+        ignorable,
         companion,
         faces,
         unplayable,
@@ -903,9 +916,9 @@ pub(crate) fn answer(
             }
             Ok(Outcome::BeginTurnUp(object))
         }
-        special @ (PriorityAction::UnlockDoor(..) | PriorityAction::EndEffect(_)) => {
-            e15g_special_answer(options, &special)
-        }
+        special @ (PriorityAction::UnlockDoor(..)
+        | PriorityAction::EndEffect(_)
+        | PriorityAction::IgnoreEffect(_)) => e15g_special_answer(options, &special),
         PriorityAction::CastPrepared(object) => {
             let offered = options.faces.iter().any(|option| {
                 option.card == object && option.face == prepared::SPELL_FACE && !option.land

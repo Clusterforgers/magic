@@ -105,7 +105,11 @@ pub(crate) fn spawn_named<S: EventStore>(
     names: Vec<String>,
     decks: Option<SeatDecks>,
 ) -> Result<GameHandle, StartError> {
+    // The lobby's teams may be a draft (`Lobby::set_teams`), which only the start checks whole.
+    let mut setup = setup;
+    let draft = setup.house_rules.teams.take();
     setup.validate()?;
+    setup.house_rules.teams = draft;
     let seats = setup.players.len();
     let phase = Phase::Lobby {
         ready: vec![false; seats],
@@ -141,7 +145,8 @@ pub async fn resume_game_with<S: EventStore>(
     setup: GameSetup,
     config: GameConfig,
 ) -> Result<GameHandle, StartError> {
-    resume_recorded(store, id, setup, config, None).await
+    // Boxed: the rebuilt engine makes the future large (clippy::large_futures at every caller).
+    Box::pin(resume_recorded(store, id, setup, config, None)).await
 }
 
 /// Like [`resume_game_with`], writing the game's milestones to `recorder`.

@@ -37,10 +37,11 @@ export function groupStack(
 }
 
 /**
- * How many chips of a row fit: `rights` are the right edges of the chips from the row's start, in order, and `width`
- * is the row's own width. The first chip always counts, so the top of the stack is never folded away.
+ * How many chips of a list fit: `ends` are the far edges of the chips from the list's start, in order (their right
+ * edges in a row, their bottoms in a column), and `room` is the list's own width or height. The first chip always
+ * counts, so the top of the stack is never folded away.
  */
-export function chipsThatFit(rights: readonly number[], width: number): number {
-  const fit = rights.findIndex((right) => right > width + 0.5)
-  return fit === -1 ? rights.length : Math.max(1, fit)
+export function chipsThatFit(ends: readonly number[], room: number): number {
+  const fit = ends.findIndex((end) => end > room + 0.5)
+  return fit === -1 ? ends.length : Math.max(1, fit)
 }

@@ -227,6 +227,10 @@ pub enum Rule {
     PowerUpAgain(Vec<ObjectRef>),
     /// The players flip two coins for each coin they would flip and ignore one (CR 705.3).
     FlipTwoCoins(Vec<PlayerId>),
+    /// The players' first set of coin flips each turn comes up heads and is won (`GameRule::R6700FirstFlipsHeads`).
+    R6700FirstFlipsHeads(Vec<PlayerId>),
+    /// The players face each villainous choice an additional time (`GameRule::R6700VillainousAgain`).
+    R6700VillainousAgain(Vec<PlayerId>),
     /// The players roll one die more for each roll of one or more dice and ignore the lowest roll.
     ExtraDie(Vec<PlayerId>),
     /// After the players roll, they may pay to increase or decrease one result by `by` (`GameRule::R6402ChangeRoll`).
@@ -344,6 +348,8 @@ pub enum Rule {
     /// The legend rule does not apply to the permanents the selector picks, judged for the rule's controller (CR
     /// 704.5j).
     NoLegendRuleFor(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Selector),
+    /// Any player may pay the mana to ignore the other effects of the rule's source until end of turn (CR 116.2).
+    PayToIgnore(ManaCost),
     /// The controller may activate abilities of the creatures the selector picks as though they had haste (CR 302.6).
     AbilitiesAsThoughHaste(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Selector),
     /// The permanents the selector picks that the rule's controller controls untap during the untap steps of the players
@@ -908,6 +914,10 @@ pub(crate) struct RulesInForce {
     power_up_again: Vec<ObjectRef>,
     /// One entry for each rule that doubles a player's coins: a player listed twice flips four.
     flip_two: Vec<PlayerId>,
+    /// The players whose first set of coin flips each turn comes up heads.
+    r6700_first_heads: BTreeSet<PlayerId>,
+    /// One entry for each rule that makes a player face a villainous choice an additional time.
+    r6700_villainous_again: Vec<PlayerId>,
     /// One entry for each rule that adds a die to a player's rolls: a player listed twice rolls two more.
     extra_die: Vec<PlayerId>,
     /// The rules that let a player change a result after they roll, in timestamp order.
@@ -965,6 +975,8 @@ pub(crate) struct RulesInForce {
     hand_change: BTreeMap<PlayerId, i64>,
     no_legend: BTreeSet<PlayerId>,
     no_legend_for: Vec<NoLegendFor>,
+    /// The sources whose effects a player may pay to ignore, with the price (`Rule::PayToIgnore`).
+    pay_to_ignore: Vec<(ObjectRef, ManaCost)>,
     /// The creatures whose abilities may be activated as though they had haste, by rule.
     haste_for_abilities: Vec<NoLegendFor>,
     untap_during: Vec<UntapDuring>,
@@ -1236,6 +1248,11 @@ impl RulesInForce {
                     });
                 }
             }
+            Rule::PayToIgnore(cost) => {
+                if let Some(source) = source {
+                    self.pay_to_ignore.push((source, cost.clone()));
+                }
+            }
             Rule::UntapDuring { what, whose } => {
                 if let Some(source) = source {
                     self.untap_during.push(UntapDuring {
@@ -1427,6 +1444,8 @@ impl RulesInForce {
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
             Rule::PowerUpAgain(objects) => self.power_up_again.extend(objects),
             Rule::FlipTwoCoins(players) => self.flip_two.extend(players),
+            Rule::R6700FirstFlipsHeads(players) => self.r6700_first_heads.extend(players),
+            Rule::R6700VillainousAgain(players) => self.r6700_villainous_again.extend(players),
             Rule::ExtraDie(players) => self.extra_die.extend(players),
             Rule::R6402ChangeRoll {
                 players,
@@ -1524,6 +1543,7 @@ impl RulesInForce {
             | Rule::HandSizeChange(_)
             | Rule::NoLegendRule(_)
             | Rule::NoLegendRuleFor(_)
+            | Rule::PayToIgnore(_)
             | Rule::AbilitiesAsThoughHaste(_)
             | Rule::UntapDuring { .. } => {
                 self.put_option(rule, controller, source);
@@ -1963,6 +1983,8 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             Zone::Battlefield,
         )?),
         GameRule::FlipTwoCoins(who) => Rule::FlipTwoCoins(scope.players(who)?),
+        GameRule::R6700FirstFlipsHeads(who) => Rule::R6700FirstFlipsHeads(scope.players(who)?),
+        GameRule::R6700VillainousAgain(who) => Rule::R6700VillainousAgain(scope.players(who)?),
         GameRule::ExtraDie(who) => Rule::ExtraDie(scope.players(who)?),
         GameRule::R6402ChangeRoll { who, pay, by, once } => Rule::R6402ChangeRoll {
             players: scope.players(who)?,
@@ -2051,6 +2073,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         | GameRule::HandSizeChange { .. }
         | GameRule::NoLegendRule(_)
         | GameRule::NoLegendRuleFor(_)
+        | GameRule::PayToIgnore(_)
         | GameRule::AbilitiesAsThoughHaste(_)
         | GameRule::UntapDuring { .. } => lower_option(scope, wanted)?,
         GameRule::LookAtTopAnyTime(who) => Rule::LookAtTop(scope.players(who)?),
@@ -2183,6 +2206,7 @@ fn lower_option(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveErr
         }
         GameRule::NoLegendRule(who) => Rule::NoLegendRule(scope.players(who)?),
         GameRule::NoLegendRuleFor(what) => Rule::NoLegendRuleFor(what.clone()),
+        GameRule::PayToIgnore(cost) => Rule::PayToIgnore(cost.rest().clone()),
         GameRule::AbilitiesAsThoughHaste(what) => Rule::AbilitiesAsThoughHaste(what.clone()),
         GameRule::UntapDuring { what, whose } => Rule::UntapDuring {
             what: what.clone(),
@@ -2250,6 +2274,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::ExtraVote(players)
         | Rule::SkipExtraTurns(players)
         | Rule::FlipTwoCoins(players)
+        | Rule::R6700FirstFlipsHeads(players)
+        | Rule::R6700VillainousAgain(players)
         | Rule::ExtraDie(players)
         | Rule::R6402ChangeRoll { players, .. }
         | Rule::KeepUnspentMana(players, _)
@@ -2302,6 +2328,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::AttackLimit(_)
         | Rule::BlockLimit(_)
         | Rule::NoLegendRuleFor(_)
+        | Rule::PayToIgnore(_)
         | Rule::AbilitiesAsThoughHaste(_)
         | Rule::ReverseTurnOrder
         | Rule::DamageAsWither
@@ -2459,6 +2486,8 @@ static NONE: RulesInForce = RulesInForce {
     skip_extra_turns: BTreeSet::new(),
     power_up_again: Vec::new(),
     flip_two: Vec::new(),
+    r6700_first_heads: BTreeSet::new(),
+    r6700_villainous_again: Vec::new(),
     extra_die: Vec::new(),
     r6402_change_roll: Vec::new(),
     keep_mana: Vec::new(),
@@ -2493,6 +2522,7 @@ static NONE: RulesInForce = RulesInForce {
     hand_change: BTreeMap::new(),
     no_legend: BTreeSet::new(),
     no_legend_for: Vec::new(),
+    pay_to_ignore: Vec::new(),
     haste_for_abilities: Vec::new(),
     untap_during: Vec::new(),
     untap_limits: Vec::new(),
@@ -3267,6 +3297,21 @@ pub fn ep22_coins_per_flip(state: &GameState, player: PlayerId) -> u32 {
     1 << doublings
 }
 
+/// Whether a rule makes `player`'s first set of coin flips each turn come up heads and be won (Edgar, King of Figaro).
+pub(crate) fn r6700_first_heads(state: &GameState, player: PlayerId) -> bool {
+    state.rules().r6700_first_heads.contains(&player)
+}
+
+/// How many additional times `player` faces each villainous choice: one for each rule that adds one.
+pub(crate) fn r6700_villainous_extra(state: &GameState, player: PlayerId) -> usize {
+    state
+        .rules()
+        .r6700_villainous_again
+        .iter()
+        .filter(|seat| **seat == player)
+        .count()
+}
+
 /// How many additional votes `player` gets while voting (CR 701.38d): one for each rule that gives one.
 pub fn ep33_extra_votes(state: &GameState, player: PlayerId) -> usize {
     state
@@ -3577,6 +3622,11 @@ pub fn no_legend_rule_for(state: &GameState, id: ObjectId) -> bool {
             .selects(&rule.what, object.reference())
             .unwrap_or(false)
     })
+}
+
+/// The sources whose effects a player may pay to ignore until end of turn, with the price (`Rule::PayToIgnore`).
+pub(crate) fn pay_to_ignore(state: &GameState) -> &[(ObjectRef, ManaCost)] {
+    &state.rules().pay_to_ignore
 }
 
 /// The untap limits in force (CR 502.3).

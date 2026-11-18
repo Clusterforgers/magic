@@ -87,6 +87,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::CantBeBlockedUnlessAttackingOwner
         | Modification::CantBlock
         | Modification::DoesntUntap
+        | Modification::R6700KeepsLastLoyalty
         | Modification::CantBeTurnedFaceUp
         | Modification::CantBeBlocked
         | Modification::CantBeBlockedBy { .. }
@@ -158,6 +159,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
         | Wanted::DoesntUntap
+        | Wanted::R6700KeepsLastLoyalty
         | Wanted::CantBeTurnedFaceUp
         | Wanted::CantBeBlocked
         | Wanted::CantBeBlockedBy(_)
@@ -238,6 +240,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
         | Wanted::DoesntUntap
+        | Wanted::R6700KeepsLastLoyalty
         | Wanted::CantBeTurnedFaceUp
         | Wanted::CantBeBlocked
         | Wanted::MinBlockers(_)
@@ -630,7 +633,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         } => reads_of_ref(subject)
             .or(reads_of_selector(selector))
             .or(reads_of_amount(right)),
-        Condition::YourTurn => Traits::CONTROL,
+        Condition::YourTurn | Condition::PaidToIgnore => Traits::CONTROL,
         Condition::NewlyControlled(what) => reads_of_ref(what).or(Traits::CONTROL),
         Condition::AttackedThisTurnBy { player, .. } => reads_of_ref(player),
         Condition::Exploited { by, what } => reads_of_ref(by).or(reads_of_ref(what)),

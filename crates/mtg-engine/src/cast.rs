@@ -55,6 +55,7 @@ fn paid_from(part: &Part, ability: AbilityRef) -> ObjectId {
 ///
 /// The source is photographed before the costs, so the ability knows what it was (CR 113.7a); a token sacrificed
 /// for it has ceased to exist by then, and the ability still has the rules it was activated from.
+#[allow(clippy::too_many_lines)] // one arm for each kind of ability and of source-moving cost
 pub(crate) fn activation_events(
     state: &GameState,
     player: PlayerId,
@@ -163,6 +164,18 @@ pub(crate) fn activation_events(
         cause: None,
         delayed: None,
     })));
+    // Paying a waterbend cost is waterbending, however it was paid (Avatar Aang ruling).
+    if let Ability::Activated { cost, .. } = &*rules
+        && cost
+            .0
+            .iter()
+            .any(|item| matches!(item, CostItem::Waterbend(_)))
+    {
+        events.push(Event::Bent {
+            player,
+            element: crate::events::Bending::Water,
+        });
+    }
     Some(events)
 }
 
@@ -212,6 +225,7 @@ pub(crate) fn payment_decision(
         cost,
         pool,
         sources,
+        announced: Vec::new(),
     })
 }
 
@@ -435,9 +449,10 @@ pub(crate) fn pay_answer(
     choice: PayChoice,
     pending: Option<&Pending>,
 ) -> Result<Outcome, EngineError> {
-    // The helper of an assist pays its share when asked, before and apart from the caster's payment (CR 702.132a).
+    // The helper of an assist pays its share when asked, before and apart from the caster's payment (CR 702.132a); so
+    // does a teammate for their own creatures of a team's attack.
     if let Some(Pending {
-        what: What::Spell(_),
+        what: What::Spell(_) | What::Attack(..),
         player: caster,
         ..
     }) = pending
@@ -459,6 +474,13 @@ pub(crate) fn pay_answer(
             }
             other => other,
         });
+    }
+    if let PayChoice::Activate(ability) = choice {
+        return if options.announced.contains(&ability) {
+            Ok(Outcome::PauseFor(ability))
+        } else {
+            Err(IllegalAnswer::NotOffered("mana ability").into())
+        };
     }
     let announced = match choice {
         PayChoice::Cancel => Vec::new(),
@@ -581,16 +603,14 @@ fn r282_suspended(state: &GameState, card: ObjectId, choices: &Choices) -> Optio
     suspend::events(state, card, x)
 }
 
-/// The events of a declaration of attackers or blockers once it is paid for, with the permanents picked for its costs.
-fn declared(
-    state: &GameState,
-    player: PlayerId,
-    what: &What,
-    choices: &Choices,
-) -> Option<Vec<Event>> {
-    match what {
+/// The events of a declaration of attackers or blockers once it is paid for, with the permanents picked for its costs
+/// and the teammates' payments of a team's attack.
+fn declared(state: &GameState, player: PlayerId, pending: &Pending) -> Option<Vec<Event>> {
+    let choices = &pending.choices;
+    match &pending.what {
         What::Attack(attackers, extras) => {
-            crate::attack_tax::made(state, player, attackers, extras, choices)
+            let paid = pending.done.assist_events.as_deref().unwrap_or_default();
+            crate::attack_tax::made(state, player, (attackers, extras), choices, paid)
         }
         What::Block(blocks) => crate::block_tax::made(state, player, blocks, choices),
         _ => None,
@@ -599,6 +619,7 @@ fn declared(
 
 /// The events that say what a payment is for, which come between the life paid and the mana: the cast of the spell,
 /// the activation of the ability, or the answer "paid" to the effect that asked.
+#[allow(clippy::too_many_lines)] // one arm for each kind of pending announcement
 fn announcement(
     state: &GameState,
     player: PlayerId,
@@ -635,6 +656,11 @@ fn announcement(
             special: Some(Special::EndEffect(effect)),
             ..
         }) => crate::e15g_paid::events(state, player, *effect).ok_or_else(unexpected),
+        Some(Pending {
+            what: What::Spell(source),
+            special: Some(Special::IgnoreEffect),
+            ..
+        }) => crate::r6703_ignore::events(state, player, *source).ok_or_else(unexpected),
         Some(Pending {
             what: What::Spell(card),
             special: Some(Special::TurnFaceUp),
@@ -690,11 +716,12 @@ fn announcement(
             player,
             choice: Choice::YesNo(true),
         }]),
-        Some(Pending {
-            what: what @ (What::Attack(..) | What::Block(_)),
-            choices,
-            ..
-        }) => declared(state, player, what, choices).ok_or_else(unexpected),
+        Some(
+            pending @ Pending {
+                what: What::Attack(..) | What::Block(_),
+                ..
+            },
+        ) => declared(state, player, pending).ok_or_else(unexpected),
         Some(Pending {
             what: What::Trigger(_),
             ..
@@ -814,6 +841,7 @@ fn pay_with(
     let payment = match choice {
         PayChoice::Cancel if options.can_cancel => return Ok(Outcome::CancelCast),
         PayChoice::Cancel => return Err(IllegalAnswer::NotOffered("cancel").into()),
+        PayChoice::Activate(_) => return Err(IllegalAnswer::NotOffered("mana ability").into()),
         PayChoice::Manual(payment) => payment,
         PayChoice::Complete(partial) => complete_payment_with(
             &options.cost,
@@ -902,6 +930,7 @@ mod tests {
             help: Box::default(),
             spend: Box::new(Spend::other()),
             can_cancel,
+            announced: Vec::new(),
             attack: false,
             block: false,
             life,

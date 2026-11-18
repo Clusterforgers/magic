@@ -1,7 +1,7 @@
 {
   "oracle_id": "264efed9-65ab-40ad-877f-c6c25ca0281e",
   "name": "Edgar, King of Figaro",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Edgar, King of Figaro",
@@ -19,12 +19,7 @@
             ]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 62, "end": 183 }
-          }
-        }
+        { "Rule": { "rule": { "R6700FirstFlipsHeads": "You" } } }
       ]
     }
   ]

@@ -8,7 +8,9 @@ import type { LucideIcon } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
-import type { PlayerView } from '@/protocol/generated'
+import type { Color, PlayerView } from '@/protocol/generated'
+import { costPips } from './cardModel'
+import { Pip } from './ManaPips'
 import { DENSITY } from './PodParts'
 import type { ChipDensity } from './PodParts'
 import { useContext } from 'react'
@@ -38,6 +40,25 @@ const TONE: Record<EffectTone, string> = {
   neutral: 'text-muted-foreground',
 }
 
+/** Each colour of a seat's costs with the one it stands for this round, as pips: "(R)→(G)". */
+function DrawnColors({ colors }: { colors: readonly (readonly [Color, Color])[] }) {
+  const pip = (color: Color) => costPips([{ Colored: color }])[0]
+  return (
+    <span aria-hidden="true" data-slot="drawn-colors" className="flex items-center gap-1.5">
+      {colors.map(([from, to]) => {
+        const [a, b] = [pip(from), pip(to)]
+        return a === undefined || b === undefined ? null : (
+          <span key={from} className="flex items-center gap-px">
+            <Pip pip={a} sizeClass="size-4 text-xs" />
+            <span className="text-xs text-muted-foreground">→</span>
+            <Pip pip={b} sizeClass="size-4 text-xs" />
+          </span>
+        )
+      })}
+    </span>
+  )
+}
+
 function EffectChip({ effect, density }: { effect: EffectFacts; density: Exclude<ChipDensity, 'tile'> }) {
   const Icon = ICON[effect.icon]
   const chip = (
@@ -48,12 +69,16 @@ function EffectChip({ effect, density }: { effect: EffectFacts; density: Exclude
       data-slot="player-effect"
       data-effect={effect.key}
       data-tone={effect.tone}
-      className={cn(DENSITY[density].chip, 'max-w-36 text-foreground')}
+      className={cn(DENSITY[density].chip, effect.colors === undefined && 'max-w-36', 'text-foreground')}
     >
       <Icon aria-hidden="true" className={cn('shrink-0', DENSITY[density].icon, TONE[effect.tone])} />
-      <span aria-hidden="true" className="truncate">
-        {effect.label}
-      </span>
+      {effect.colors === undefined ? (
+        <span aria-hidden="true" className="truncate">
+          {effect.label}
+        </span>
+      ) : (
+        <DrawnColors colors={effect.colors} />
+      )}
     </span>
   )
   return (
@@ -88,7 +113,32 @@ export function PlayerEffectChips({
   if (density !== 'tile') {
     return effects.map((effect) => <EffectChip key={effect.key} effect={effect} density={density} />)
   }
-  // A tile is one button: the figure is no control of its own, and the tile's name says the effects.
+  // A tile is one button: the figure is no control of its own, and the tile's name says the effects. The colours a
+  // hero's costs stand for this round stay in sight as pips, since every cast hangs on them.
+  const drawn = effects.find((effect) => effect.colors !== undefined)
+  const others = effects.filter((effect) => effect !== drawn)
+  return (
+    <>
+      {drawn?.colors === undefined ? null : (
+        <span title={drawn.detail} className={DENSITY.tile.chip}>
+          <DrawnColors colors={drawn.colors} />
+        </span>
+      )}
+      {others.length === 0 ? null : <EffectCount owner={owner} effects={effects} count={others.length} />}
+    </>
+  )
+}
+
+/** A tile's figure for its effects: the count, with every effect named in the tile. */
+function EffectCount({
+  owner,
+  effects,
+  count,
+}: {
+  owner: string
+  effects: readonly EffectFacts[]
+  count: number
+}) {
   return (
     <span
       role="img"
@@ -99,7 +149,7 @@ export function PlayerEffectChips({
     >
       <Sparkles aria-hidden="true" className={cn('shrink-0', DENSITY.tile.icon)} />
       <span aria-hidden="true" className="tabular-nums">
-        {effects.length}
+        {count}
       </span>
     </span>
   )

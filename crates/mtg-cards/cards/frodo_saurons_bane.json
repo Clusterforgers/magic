@@ -1,7 +1,7 @@
 {
   "oracle_id": "8be62f5c-0ab2-4869-97a2-d8a69a3fde95",
   "name": "Frodo, Sauron's Bane",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Frodo, Sauron's Bane",
@@ -35,9 +35,50 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 111, "end": 350 }
+          "Activated": {
+            "cost": "{B}{B}{B}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "This", "selector": [{ "Subtype": "Scout" }] }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetCreatureTypes": ["Halfling", "Rogue"] },
+                          {
+                            "GrantAbility": {
+                              "Triggered": {
+                                "when": {
+                                  "DealsDamage": {
+                                    "source": ["This"],
+                                    "to": "EachPlayer",
+                                    "combat": true
+                                  }
+                                },
+                                "effects": [
+                                  {
+                                    "If": {
+                                      "condition": { "RingTempted": { "who": "You", "times": 4 } },
+                                      "then": [{ "LoseGame": { "who": "Triggering" } }],
+                                      "otherwise": [{ "RingTempts": {} }]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

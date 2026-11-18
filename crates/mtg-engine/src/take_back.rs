@@ -381,6 +381,8 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::InitiativeTaken { .. }
         | Event::EvidenceCollected { .. }
         | Event::Investigated { .. }
+        | Event::Bent { .. }
+        | Event::IgnoredEffect { .. }
         | Event::GiftGiven { .. }
         | Event::R6401Mentored { .. }
         | Event::UpkeepSettled { .. }

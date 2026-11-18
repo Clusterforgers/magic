@@ -1780,7 +1780,7 @@ impl<'a> Walker<'a> {
             Condition::AsCast(inner) => self.as_cast(inner),
             Condition::R401OnCast(_) | Condition::R401Targets(_) => self.r401_on_cast(condition),
             Condition::ManaSpent(_) => self.uses("Condition", "ManaSpent"),
-            Condition::YourTurn => {}
+            Condition::YourTurn | Condition::PaidToIgnore => {}
             Condition::ExtraTurn => self.uses("Condition", "ExtraTurn"),
             Condition::StartingPlayer(who) => {
                 self.uses("Condition", "StartingPlayer");
@@ -1999,6 +1999,9 @@ impl<'a> Walker<'a> {
                         w.at("count", |w| w.amount(count));
                     }
                     CostItem::ExileSpell { filter } => w.at("filter", |w| w.selector(filter)),
+                    CostItem::ExileTotalValue { filter, .. } => {
+                        w.at("filter", |w| w.selector(filter));
+                    }
                     CostItem::OneOf(costs) => w.alternatives(costs),
                     CostItem::Discard { count, filter } => {
                         w.at("count", |w| w.amount(count));
@@ -2438,6 +2441,7 @@ impl<'a> Walker<'a> {
                     | CostItem::ExileTop(_)
                     | CostItem::CollectEvidence(_)
                     | CostItem::ExileCardTypes(_)
+                    | CostItem::ExileTotalValue { .. }
                     | CostItem::Blight(_)
                     | CostItem::Behold { .. }
                     | CostItem::ExiledToGraveyard { .. }
@@ -2936,6 +2940,7 @@ impl<'a> Walker<'a> {
             | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
             | Modification::DoesntUntap
+            | Modification::R6700KeepsLastLoyalty
             | Modification::CantBeTurnedFaceUp
             | Modification::CantBeBlocked
             | Modification::BlockedByAll
@@ -3131,6 +3136,9 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Visit {}
             | TriggerPattern::Prize {} => {}
             TriggerPattern::DealtExcess { what, .. } => self.at("what", |w| w.selector(what)),
+            TriggerPattern::DealsToughnessDamage { source, .. } => {
+                self.at("source", |w| w.selector(source));
+            }
             TriggerPattern::DealsDamage { source, to, .. } => {
                 self.at("source", |w| w.selector(source));
                 if let Some(to) = to {
@@ -4515,8 +4523,13 @@ impl Walker<'_> {
             | Effect::Renown { count }
             | Effect::Adapt { count }
             | Effect::Fabricate { count }
-            | Effect::Empower { count }
-            | Effect::Bolster { count } => w.at("count", |w| w.amount(count)),
+            | Effect::Empower { count } => w.at("count", |w| w.amount(count)),
+            Effect::Bolster { count, bind } => {
+                w.at("count", |w| w.amount(count));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
+            }
             Effect::Search {
                 who,
                 of,
@@ -4765,9 +4778,12 @@ impl Walker<'_> {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("with", |w| w.reference(with, Kind::Object));
             }
-            Effect::ExtraTurn { who, count, .. } => {
+            Effect::ExtraTurn {
+                who, count, at_end, ..
+            } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
+                w.effect_list("at_end", at_end, false);
             }
             Effect::CreateEmblem { who, abilities } => w.w6b_emblem(who, abilities),
             Effect::AddPhase { phases } => {
@@ -5506,8 +5522,16 @@ impl Walker<'_> {
                 let saved = std::mem::replace(&mut w.scope.in_trigger, true);
                 // A delayed trigger on a block or on damage names the one who did it, as any triggered ability does.
                 let dealer = std::mem::replace(&mut w.scope.dealer, true);
-                // The trigger it leaves behind remembers the X of the spell or ability that sets it up.
+                // The trigger it leaves behind remembers the X of the spell or ability that sets it up; one on another
+                // spell being cast reads the X that spell was cast with instead ("when you next cast a spell with {X}").
+                let reads_cast = casts_another_spell(when);
+                let saved_x = (w.x_now, w.x_free);
+                if reads_cast {
+                    w.x_now = true;
+                    w.x_free = true;
+                }
                 w.effect_list("effects", effects, false);
+                (w.x_now, w.x_free) = saved_x;
                 w.scope.dealer = dealer;
                 w.scope.in_trigger = saved;
             }
@@ -6200,6 +6224,11 @@ impl Walker<'_> {
             GameRule::DamageCantBePrevented { source, .. } => {
                 self.at(tag, |w| w.at("source", |w| w.selector(source)));
             }
+            GameRule::PayToIgnore(cost) => {
+                if cost.has_x() {
+                    self.problem("`PayToIgnore` costs no {X}");
+                }
+            }
             GameRule::PowerUpAgain(which) => {
                 self.at(tag, |w| w.selector(which));
             }
@@ -6387,6 +6416,8 @@ impl Walker<'_> {
             | GameRule::ExtraVote(who)
             | GameRule::SkipExtraTurns(who)
             | GameRule::FlipTwoCoins(who)
+            | GameRule::R6700FirstFlipsHeads(who)
+            | GameRule::R6700VillainousAgain(who)
             | GameRule::ExtraDie(who)
             | GameRule::ExtraPlanarDie(who)
             | GameRule::PlaneswalkLookTwo(who)
@@ -6648,6 +6679,9 @@ impl Walker<'_> {
             Prohibited::Attack { unless } => {
                 self.at("unless", |w| w.condition(unless));
             }
+            Prohibited::AttackPlaneswalkers(walkers) => {
+                self.at("AttackPlaneswalkers", |w| w.selector(walkers));
+            }
             Prohibited::PayCosts {
                 life, sacrifice, ..
             } => {
@@ -6820,6 +6854,7 @@ impl Walker<'_> {
             | ReplaceWhen::Surveils { who }
             | ReplaceWhen::CopiesSpell { who }
             | ReplaceWhen::Learns { who }
+            | ReplaceWhen::R6700Draws { who }
             | ReplaceWhen::Draw { who, .. }
             | ReplaceWhen::R6603DrawsSeveral { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
@@ -6840,6 +6875,11 @@ impl Walker<'_> {
         crate::r406_actions::r406_check(when, by, |problem| self.problem(problem));
         crate::r4708_actions::r4708_check(when, by, |problem| self.problem(problem));
         crate::r5516_learn::r5516_check(when, by, |problem| self.problem(problem));
+        if matches!(when, ReplaceWhen::R6700Draws { .. }) != matches!(by, ReplaceBy::Add(_))
+            && matches!(when, ReplaceWhen::R6700Draws { .. })
+        {
+            self.problem("a draw instruction is replaced only by drawing that many plus some more");
+        }
         if matches!(when, ReplaceWhen::CopiesSpell { .. })
             && !matches!(by, ReplaceBy::AddAmount(Amount::Fixed(n)) if *n > 0)
         {
@@ -7034,6 +7074,9 @@ impl Walker<'_> {
                 ) =>
             {
                 self.problem("`MoveTo` replaces a `ZoneChange` or a `Discarded`");
+            }
+            ReplaceBy::BattlefieldUnderYours if !matches!(when, ReplaceWhen::Countered { .. }) => {
+                self.problem("`BattlefieldUnderYours` replaces a `Countered`");
             }
             _ => {}
         }
@@ -7519,6 +7562,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::R6702SacrificeUpTo { .. }
                 | CostItem::R6702ExileTotalX { .. }
                 | CostItem::ExileCardTypes(_)
+                | CostItem::ExileTotalValue { .. }
                 | CostItem::Blight(_)
                 | CostItem::Behold { .. }
                 | CostItem::ExiledToGraveyard { .. }
@@ -9978,7 +10022,11 @@ impl Walker<'_> {
             self.at("to", |w| w.reference(to, Kind::Player));
         }
         let fits = match action {
-            Action::Investigated => card.is_none() && value.is_none() && to.is_none(),
+            Action::Investigated
+            | Action::Waterbent
+            | Action::Earthbent
+            | Action::Firebent
+            | Action::Airbent => card.is_none() && value.is_none() && to.is_none(),
             Action::Discovered => value.is_some() && to.is_none(),
             Action::ManifestedDread => value.is_none() && to.is_none(),
             Action::GaveGift => card.is_none() && value.is_none() && to.is_some(),

@@ -1,6 +1,7 @@
 //! The effects in force on one player, as the table shows them on the player's pod: the rules that name the player
 //! and the keywords the player has. Read from the rules in force, so each holds exactly while the game applies it.
 
+use mtg_core::color::Color;
 use mtg_core::ids::PlayerId;
 use serde::{Deserialize, Serialize};
 
@@ -47,6 +48,9 @@ pub enum PlayerEffect {
     TopRevealed,
     /// The player may look at the top card of their library any time.
     LooksAtTop,
+    /// The colors in the costs of the player's spells stand for others this round (`cost_colors`): each color of their
+    /// commanders' identity with the one it stands for, in color order.
+    CostColorsDrawn(Vec<(Color, Color)>),
     /// The player has this keyword (hexproof, protection, shroud), by its shown name.
     Keyword(String),
 }
@@ -127,6 +131,9 @@ pub fn player_effects(state: &GameState, player: PlayerId) -> Vec<PlayerEffect> 
             .into_iter()
             .filter_map(|(on, effect)| on.then_some(effect)),
     );
+    if let Some(colors) = crate::cost_colors::drawn(state, player) {
+        out.push(PlayerEffect::CostColorsDrawn(colors.into_iter().collect()));
+    }
     let granted = rules
         .player_keywords
         .iter()

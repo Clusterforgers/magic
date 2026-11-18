@@ -53,6 +53,7 @@
                   ]
                 }
               },
+              { "Performed": { "action": "Earthbent" } },
               {
                 "Continuous": {
                   "affected": { "Target": 1 },
@@ -92,6 +93,7 @@
                   ]
                 }
               },
+              { "Performed": { "action": "Earthbent" } },
               { "GainLife": { "amount": 3 } }
             ]
           }

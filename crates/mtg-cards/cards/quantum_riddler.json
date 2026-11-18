@@ -1,7 +1,7 @@
 {
   "oracle_id": "58582fac-4c42-4a1c-9ab1-4a892b500da4",
   "name": "Quantum Riddler",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Quantum Riddler",
@@ -15,9 +15,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 47, "end": 174 }
+          "Replacement": {
+            "when": { "R6700Draws": {} },
+            "by": { "Add": 1 },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                "op": "Le",
+                "right": 1
+              }
+            }
           }
         },
         { "AltCast": { "way": "Warp", "cost": "{1}{U}" } },

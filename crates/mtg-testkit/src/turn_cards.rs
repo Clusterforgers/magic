@@ -75,6 +75,7 @@ pub fn time_spell(name: &str, who: Ref, count: i32, skip_untap: bool) -> Arc<Car
             count: Amount::Fixed(count),
             skip_untap,
             no_power_up: false,
+            at_end: Vec::new(),
         }],
     )
 }

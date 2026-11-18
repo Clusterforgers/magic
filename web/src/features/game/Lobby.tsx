@@ -73,7 +73,9 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
   const [refused, setRefused] = useState(false)
   const [previewing, setPreviewing] = useState<ReadyFacts['previewing']>(null)
   const open = status === 'open'
-  const host = seat === HOST_SEAT
+  // A tournament match has no player host: its organiser runs it, and seat 0 is a player like the others.
+  const hosted = lookup.game?.tournament_match !== true
+  const host = hosted && seat === HOST_SEAT
   const known = lookup.game?.visibility
   const tableFormat = lookup.game?.format ?? 'normal'
   const tableRules = lookup.game?.house_rules
@@ -127,7 +129,7 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
       <LobbySeatRow
         key={row.seat}
         row={row}
-        host={row.seat === HOST_SEAT}
+        host={hosted && row.seat === HOST_SEAT}
         account={accounts.bySeat.get(row.seat) ?? null}
         team={
           team === null || shownTeams === null
@@ -214,9 +216,6 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
             <LobbyVisibility visibility={known} />
           )}
         </div>
-
-        {/* Above the seats so the host sees the link and the code without scrolling on a laptop. */}
-        {host ? <JoinInvite game={game} /> : null}
 
         <section
           aria-labelledby="seats-title"
@@ -305,6 +304,9 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
             {announced}
           </p>
         </section>
+
+        {/* Under the seats, which stand on the first screen beside the deck chooser; the host scrolls a little for the link. */}
+        {host ? <JoinInvite game={game} /> : null}
 
         <Invites game={game} mine={seat} />
       </div>

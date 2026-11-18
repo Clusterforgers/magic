@@ -252,7 +252,20 @@ fn unpack(
     recipe: &GameRecipe,
     catalog: &Catalog,
 ) -> Result<Unpacked, Unloadable> {
-    let setup = recipe.build_with(catalog).map_err(|error| match error {
+    // A lobby's teams may be a draft that only the start checks whole, so they are built without and set back after.
+    let draft = if record.status == RecordStatus::Lobby {
+        recipe.house_rules.teams.clone()
+    } else {
+        None
+    };
+    let built = if draft.is_some() {
+        let mut whole = recipe.clone();
+        whole.house_rules.teams = None;
+        whole.build_with(catalog)
+    } else {
+        recipe.build_with(catalog)
+    };
+    let mut setup = built.map_err(|error| match error {
         // The detail leads with what happened to the game, and the log names the seat.
         RecipeError::DeckChanged { seat, .. } => Unloadable {
             detail: error.to_string(),
@@ -268,6 +281,9 @@ fn unpack(
         }
         _ => Unloadable::new(format!("the recipe does not build: {error}"), Cause::Setup),
     })?;
+    if draft.is_some() {
+        setup.house_rules.teams = draft;
+    }
     let seats = setup.players.len();
     let numbered = record
         .seats

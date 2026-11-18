@@ -164,6 +164,7 @@ pub(crate) fn turn_began(state: &mut GameState, number: u32, active: PlayerId) {
             player: active,
             skip_untap: false,
             no_power_up: false,
+            r6703_end: None,
         });
     }
 }

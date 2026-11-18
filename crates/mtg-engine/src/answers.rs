@@ -22,8 +22,13 @@ pub(crate) enum Outcome {
     Events(Vec<Event>),
     /// Start casting this spell; its announcement and payment are decided next.
     BeginCast(ObjectId),
-    /// This attack is declared once its cost is paid (CR 508.1h): the payment is decided next.
-    BeginAttack(Vec<(ObjectId, AttackTarget)>, crate::combat::AttackExtras),
+    /// This attack is declared once its cost is paid (CR 508.1h): the payment is decided next, led by the attacking
+    /// player (the active player of a team that attacks together).
+    BeginAttack(
+        mtg_core::ids::PlayerId,
+        Vec<(ObjectId, AttackTarget)>,
+        crate::combat::AttackExtras,
+    ),
     /// This block is declared once its cost is paid (CR 509.1d): the payment is decided next, by the player whose
     /// creatures block.
     BeginBlock(Vec<(ObjectId, ObjectId)>, mtg_core::ids::PlayerId),
@@ -43,6 +48,8 @@ pub(crate) enum Outcome {
     BeginUnlock(ObjectId, u8),
     /// Start ending this effect by paying for it: the payment of its price is decided next; the object is the one it changes.
     BeginEndEffect(ObjectId, mtg_core::ids::EffectId),
+    /// Start paying to ignore the effects of this source until end of turn: the payment is decided next.
+    BeginIgnore(ObjectId),
     /// Start casting a copy of the spell face of this prepared permanent: the copy is made and its announcement and payment are decided next.
     BeginPrepared(ObjectId),
     /// These are the modes, in the order they are printed, of the cast or activation in progress.
@@ -61,6 +68,9 @@ pub(crate) enum Outcome {
     Division(Vec<(Target, u32)>),
     /// These are the events of the helper's payment for the assist of the spell in progress.
     Assisted(Vec<Event>),
+    /// Set the payment in progress aside and activate this mana ability; the payment is asked again once it resolved
+    /// (CR 601.2g, 605.3a).
+    PauseFor(AbilityRef),
     /// Abandon the cast or activation in progress.
     CancelCast,
     /// Remove the triggered ability being put on the stack, whose controller chose no target (CR 603.3d).

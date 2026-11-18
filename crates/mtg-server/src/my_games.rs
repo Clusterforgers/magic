@@ -87,12 +87,19 @@ fn view(game: UserGame) -> Option<MyGame> {
             || format!("Seat {}", game.seat + 1),
             |seat| seat.name.clone(),
         );
+    let team_of = |seat: usize| {
+        game.teams
+            .as_ref()
+            .and_then(|teams| teams.seats.get(seat).copied())
+    };
+    let team = team_of(game.seat);
     let others = game
         .seats
         .into_iter()
         .filter(|seat| seat.seat != game.seat)
         .map(|seat| MyGameSeat {
             seat: PlayerId::from_index(seat.seat),
+            team: team_of(seat.seat),
             name: seat.name,
             user: seat.user,
         })
@@ -106,12 +113,14 @@ fn view(game: UserGame) -> Option<MyGame> {
         others,
         result: game.result,
         reason,
+        team,
     })
 }
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a stored game becomes the wire shape with the user's own seat split from the others in seat order, a result only where there is one, a reason only on a failed game (a plain one when none was kept), and games that were dropped are never shown.
+    //! Goal: a stored game becomes the wire shape with the user's own seat split from the others in seat order, each seat's team at a table with teams, a result only where there is one, a reason only on a failed game (a plain one when none was kept), and games that were dropped are never shown.
+    use mtg_core::teams::{TeamMode, Teams};
     use mtg_engine::state::GameResult;
     use rstest::rstest;
     use uuid::Uuid;
@@ -141,6 +150,7 @@ mod tests {
                 .then_some(GameResult::Winner(PlayerId::from_index(1))),
             reason: matches!(status, RecordStatus::Failed).then(|| STORED.to_owned()),
             seats,
+            teams: None,
         }
     }
 
@@ -241,5 +251,33 @@ mod tests {
         let listed = view(game(RecordStatus::Running, 3, vec![seat(0, "Ann", None)])).unwrap();
         assert_eq!(listed.name, "Seat 4");
         assert_eq!(listed.others.len(), 1);
+    }
+
+    #[rstest]
+    #[case::two_headed_giant(TeamMode::TwoHeadedGiant, vec![0, 0, 1, 1])]
+    #[case::alternate(TeamMode::Teams, vec![0, 1, 0, 1])]
+    fn every_seat_carries_its_team_at_a_table_with_teams(
+        #[case] mode: TeamMode,
+        #[case] teams: Vec<u32>,
+    ) {
+        let seats = vec![
+            seat(0, "Ann", None),
+            seat(1, "Bo", None),
+            seat(2, "Cy", None),
+            seat(3, "Di", None),
+        ];
+        let mut stored = game(RecordStatus::Finished, 2, seats.clone());
+        stored.teams = Some(Teams {
+            mode,
+            seats: teams.clone(),
+        });
+        let listed = view(stored).unwrap();
+        assert_eq!(listed.team, Some(teams[2]));
+        let others: Vec<_> = listed.others.iter().map(|other| other.team).collect();
+        assert_eq!(others, vec![Some(teams[0]), Some(teams[1]), Some(teams[3])]);
+        // Without teams nobody carries one.
+        let plain = view(game(RecordStatus::Finished, 2, seats)).unwrap();
+        assert_eq!(plain.team, None);
+        assert!(plain.others.iter().all(|other| other.team.is_none()));
     }
 }

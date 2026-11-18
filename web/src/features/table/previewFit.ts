@@ -11,6 +11,11 @@ export const PICTURE_CEILING = { side: 480, narrow: 320 } as const
 export const PANEL_SHARE = 0.3
 /** The panel may always take this much of a wide window, in px, so a smaller window still gets a larger picture. */
 export const PANEL_ALLOWED_MIN_PX = 384
+/**
+ * The narrowest window that grants `PANEL_ALLOWED_MIN_PX`: under it (a rail window near 1024 px) the panel keeps to
+ * `PANEL_SHARE` of the width, so it finds room beside the boards instead of covering a third of them.
+ */
+export const PANEL_ALLOWED_FROM_PX = 1280
 /** The panel's padding on both sides, in px (`p-3`). */
 export const PANEL_PADDING_PX = 24
 /** What a side panel is wider than its picture, in px: the padding and the room of a scroll bar. */
@@ -73,7 +78,10 @@ export function sideFit(
   const fits = Math.min(
     PICTURE_CEILING.side,
     pictureForHeight(maxHeight),
-    Math.max(viewport.width * PANEL_SHARE, PANEL_ALLOWED_MIN_PX) - PANEL_EXTRA_PX,
+    Math.max(
+      viewport.width * PANEL_SHARE,
+      viewport.width >= PANEL_ALLOWED_FROM_PX ? PANEL_ALLOWED_MIN_PX : 0,
+    ) - PANEL_EXTRA_PX,
     clear - PANEL_EXTRA_PX,
   )
   const picture = Math.floor(Math.max(PICTURE_FLOOR.side, fits))

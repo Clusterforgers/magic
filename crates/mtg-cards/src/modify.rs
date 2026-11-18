@@ -199,6 +199,9 @@ pub enum Modification {
     CantBlock,
     /// The object does not untap during its controller's untap step (a restriction, no layer).
     DoesntUntap,
+    /// Damage dealt to the object that would remove all the loyalty counters on it removes all but one of them instead
+    /// (a restriction, no layer; CR 120.3c): the damage is dealt in full, only its result changes (Deification).
+    R6700KeepsLastLoyalty,
     /// The object can't be turned face up (a restriction, no layer).
     CantBeTurnedFaceUp,
     /// The object can't be blocked (a restriction, no layer).
@@ -298,6 +301,7 @@ impl Modification {
             | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
             | Modification::DoesntUntap
+            | Modification::R6700KeepsLastLoyalty
             | Modification::CantBeTurnedFaceUp
             | Modification::CantBeBlocked
             | Modification::CantBeBlockedBy(_)
@@ -407,6 +411,10 @@ pub enum Duration {
     /// Until end of turn, or until any player rolls this number on a die after the effect began, whichever comes first
     /// ("until end of turn, or until any player rolls a 1, whichever comes first"). Only a continuous effect lasts this way.
     UntilEndOfTurnOrRolled(u32),
+    /// Until the end of the next turn of the player the reference names, a name the resolution bound to that player
+    /// ("until the end of defending player's next turn, that player gets two rad counters whenever they cast a spell"):
+    /// it ends with the first turn of theirs that ends after the turn it began in. Only a delayed trigger lasts this way.
+    R6700UntilEndOfTheirNextTurn(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Ref),
     /// Without end (until the object or the game is gone).
     Forever,
     /// Until the controller of the effect pays this mana as a special action, any time they have priority ("you may pay
@@ -754,6 +762,9 @@ pub enum Prohibited {
         /// The attack is open while this holds for the defending player.
         unless: Condition,
     },
+    /// Attack the planeswalkers the selector picks, judged as the rule's controller and source see them as the attack is
+    /// declared (CR 508.1b): "creatures they control can't attack Jaces you control this turn". The players stay open.
+    AttackPlaneswalkers(Selector),
     /// Activate abilities of one kind of the sources the selector picks (every source when empty): the kind is a loyalty
     /// ability, the equip ability or the cycling ability, or any activated ability but a mana ability.
     ActivateKind {
@@ -1070,6 +1081,12 @@ pub enum GameRule {
     /// A player in the group who would flip a coin flips two instead and ignores one (CR 705.3, Krark's Thumb); each such
     /// rule doubles the coins again.
     FlipTwoCoins(Ref),
+    /// The first time each turn a player in the group flips one or more coins, those coins come up heads and the player
+    /// wins those flips (Edgar, King of Figaro); every coin of one instruction is one set (the ruling of Edgar).
+    R6700FirstFlipsHeads(Ref),
+    /// A player in the group who would face a villainous choice faces it an additional time (CR 701.56): "If an
+    /// opponent would face a villainous choice, they face that choice an additional time." Each such rule adds one.
+    R6700VillainousAgain(Ref),
     /// A player in the group who would roll one or more dice rolls that many plus one instead and ignores the lowest roll
     /// (Wyll, Blade of Frontiers); each such rule adds one more die and one more ignored roll.
     ExtraDie(Ref),
@@ -1197,6 +1214,10 @@ pub enum GameRule {
     /// The legend rule (CR 704.5j) does not apply to the permanents the selector picks, judged for the rule's controller:
     /// "the legend rule doesn't apply to tokens you control".
     NoLegendRuleFor(Selector),
+    /// Any player may pay the mana, a special action any time they have priority (CR 116.2), for that player to ignore
+    /// the other effects of the rule's source until end of turn; those effects leave such a player out with
+    /// `Condition::PaidToIgnore` ("Any player may pay {2} for that player to ignore this effect until end of turn.").
+    PayToIgnore(ManaCostX),
     /// The permanents the selector picks that the rule's controller controls untap during the untap step of each of the
     /// players (CR 502.3): "untap all creatures you control during each other player's untap step".
     UntapDuring {

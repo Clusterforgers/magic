@@ -3,7 +3,7 @@
  * command zone, as a short label for the pod's chip and a sentence for its hover detail. Whether an effect helps or
  * hinders the seat is a word and an icon on the chip as well as a colour, never the colour alone.
  */
-import type { ObjectId, ObjectView, PlayerEffect, PlayerId, PlayerView } from '@/protocol/generated'
+import type { Color, ObjectId, ObjectView, PlayerEffect, PlayerId, PlayerView } from '@/protocol/generated'
 import { abilityText } from './cardModel'
 
 /** Whether an effect helps the seat, hinders it, or neither. */
@@ -23,13 +23,19 @@ export interface EffectFacts {
   /** The hover detail: what the effect does, a sentence. */
   detail: string
   tone: EffectTone
+  /** The colors of the seat's costs this round, each with the one it stands for, which the chip shows as pips. */
+  colors?: readonly (readonly [Color, Color])[]
   /** An emblem's object, which the chip can show. */
   object?: ObjectId
 }
 
 type Fixed = Exclude<
   PlayerEffect,
-  { LifeFloor: number } | { MaxHandSize: number } | { ExtraLandPlays: number } | { Keyword: string }
+  | { LifeFloor: number }
+  | { MaxHandSize: number }
+  | { ExtraLandPlays: number }
+  | { Keyword: string }
+  | { CostColorsDrawn: [Color, Color][] }
 >
 
 const FIXED: Record<Fixed, Omit<EffectFacts, 'key' | 'detail'> & { detail: (owner: string) => string }> = {
@@ -146,6 +152,7 @@ export function effectFacts(effect: PlayerEffect, owner: string): EffectFacts {
       detail: `${owner} may play ${more} additional ${more === 1 ? 'land' : 'lands'} each turn.`,
     }
   }
+  if ('CostColorsDrawn' in effect) return drawnFacts(effect.CostColorsDrawn, owner)
   const word = effect.Keyword
   return {
     key: `Keyword:${word}`,
@@ -272,4 +279,17 @@ export function withoutBossBar(effects: readonly EffectFacts[]): EffectFacts[] {
 /** The name of the chip group: "Effects on Bo: Can't lose, Hexproof". */
 export function effectsName(owner: string, effects: readonly EffectFacts[]): string {
   return `Effects on ${owner}: ${effects.map((effect) => effect.label).join(', ')}`
+}
+
+/** The colors of the seat's costs this round under the Unmaker in words ("Costs: red is green"); the chip draws pips. */
+function drawnFacts(colors: readonly (readonly [Color, Color])[], owner: string): EffectFacts {
+  const words = colors.map(([from, to]) => `${from.toLowerCase()} is ${to.toLowerCase()}`).join(', ')
+  return {
+    key: 'CostColorsDrawn',
+    icon: 'boss',
+    label: `Costs: ${words}`,
+    tone: 'hinder',
+    detail: `This round ${owner}'s costs change color: ${words}. A symbol of the first color is paid with the second.`,
+    colors,
+  }
 }

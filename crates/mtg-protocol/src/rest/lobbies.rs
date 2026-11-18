@@ -132,6 +132,10 @@ pub struct GameInfo {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub delve: Option<String>,
+    /// Whether the game is a tournament match: it has no player host, so seat 0 gets no host controls. Left out when not.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub tournament_match: bool,
 }
 
 /// The body of `POST /api/games/{id}/join`.

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "17327d50-be12-423d-9d37-d6bae519f50c",
+  "name": "Taii Wakeen, Perfect Shot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Taii Wakeen, Perfect Shot",
+      "oracle_fingerprint": "f52372b128fadc467280154bf81f6914",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsToughnessDamage": { "source": [{ "ControlledBy": "You" }], "combat": false }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap"],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "ControlledBy": "You" }], "combat": false } },
+                  "by": { "AddAmount": "X" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

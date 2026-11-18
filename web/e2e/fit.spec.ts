@@ -723,7 +723,8 @@ test.describe('the development table with 40 permanents a seat', () => {
       const sheet = page.getByRole('button', { name: /^Commands, log, chat and stack/ })
       // The development effects panel lies over the top bar's button, so the press is sent to the button itself.
       if (await sheet.isVisible()) await sheet.evaluate((button) => (button as HTMLElement).click())
-      else await page.getByRole('tab', { name: 'Commands' }).click()
+      // The side opens on the log; Commands is one press away.
+      await page.getByRole('tab', { name: 'Commands' }).click()
       await expect(page.getByRole('region', { name: 'Commands' })).toBeVisible()
       await expect(page.locator('[data-slot="side-overlay"][data-lowered]')).toBeAttached()
       // A trial click fails when another element would take the press.

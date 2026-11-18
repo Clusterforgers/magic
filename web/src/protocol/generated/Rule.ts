@@ -147,7 +147,7 @@ chooser: PlayerId,
 /**
  * Whose blocks.
  */
-whose: Array<PlayerId>, } } | { "R6400ChoosesVotes": PlayerId } | { "ExtraVote": Array<PlayerId> } | "ReverseTurnOrder" | { "AttackOnlyNearest": boolean | null } | { "SkipExtraTurns": Array<PlayerId> } | { "PowerUpAgain": Array<ObjectRef> } | { "FlipTwoCoins": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | { "R6402ChangeRoll": { 
+whose: Array<PlayerId>, } } | { "R6400ChoosesVotes": PlayerId } | { "ExtraVote": Array<PlayerId> } | "ReverseTurnOrder" | { "AttackOnlyNearest": boolean | null } | { "SkipExtraTurns": Array<PlayerId> } | { "PowerUpAgain": Array<ObjectRef> } | { "FlipTwoCoins": Array<PlayerId> } | { "R6700FirstFlipsHeads": Array<PlayerId> } | { "R6700VillainousAgain": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | { "R6402ChangeRoll": { 
 /**
  * Whose rolls.
  */
@@ -223,7 +223,7 @@ may: boolean,
 /**
  * Whether it works only on the controller's turns.
  */
-your_turns: boolean, } } | { "BoastTwice": Array<PlayerId> } | { "LoyaltyAnyTime": Array<PlayerId> } | { "LoyaltyCostsMore": Array<[PlayerId, number]> } | { "MaxHandSize": Array<[PlayerId, number]> } | { "HandSizeChange": Array<[PlayerId, number]> } | { "NoLegendRule": Array<PlayerId> } | { "NoLegendRuleFor": unknown } | { "AbilitiesAsThoughHaste": unknown } | { "UntapDuring": { 
+your_turns: boolean, } } | { "BoastTwice": Array<PlayerId> } | { "LoyaltyAnyTime": Array<PlayerId> } | { "LoyaltyCostsMore": Array<[PlayerId, number]> } | { "MaxHandSize": Array<[PlayerId, number]> } | { "HandSizeChange": Array<[PlayerId, number]> } | { "NoLegendRule": Array<PlayerId> } | { "NoLegendRuleFor": unknown } | { "PayToIgnore": ManaCost } | { "AbilitiesAsThoughHaste": unknown } | { "UntapDuring": { 
 /**
  * The permanents, judged when the step untaps.
  */

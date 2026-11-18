@@ -2,7 +2,8 @@ import { useId, useMemo, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { Button } from '@/components/ui/button'
 import { usePlay } from '@/features/game/gameContext'
-import type { ManaOption, ManaType, ObjectId } from '@/protocol/generated'
+import type { AbilityRef, ManaOption, ManaType, ObjectId } from '@/protocol/generated'
+import { abilityKey, abilityLine, spoken } from '../activations'
 import { LIFE_PER_SYMBOL, manaWords } from '../../manaSymbols'
 import { ManaSources } from '../ManaSources'
 import { markCards, useCardMarks } from '../marks'
@@ -54,11 +55,14 @@ export const AUTO_REASON = 'The game finds no way to pay this cost with what you
  * has a switch that pays 2 life for it instead of mana (within the life total and what the options allow). Confirm
  * sends the chosen payment; with nothing chosen yet "Pay automatically" lets the game choose, and after some picks
  * "Pay the rest for me" keeps them and lets the game pay what is owed; Undo or Escape (only when the options allow
- * it) gives up on the cast, and the permanents picked stay untapped since nothing is paid until Confirm.
+ * it) gives up on the cast, and the permanents picked stay untapped since nothing is paid until Confirm. A mana
+ * ability that does more than add mana (Vexing Puzzlebox's roll, `options.announced`) is a button and a legal card:
+ * it is activated at once and the payment is asked again with its mana floating.
  */
 export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   const { answer, selection } = usePrompt()
   const { spell, cost, pool } = options
+  const announced = useMemo(() => options.announced ?? [], [options.announced])
   const own = useOwnCardIds()
   const byPermanent = useMemo(() => manaByPermanent(options.sources), [options.sources])
   const inPool = useMemo<Spend[]>(
@@ -88,6 +92,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
     () => [
       spell,
       ...byPermanent.keys(),
+      ...announced.map((ref) => ref.object),
       ...pieces.flatMap((one) =>
         one.kind === 'convoke'
           ? [one.creature]
@@ -98,7 +103,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
               : [],
       ),
     ],
-    [spell, byPermanent, pieces],
+    [spell, byPermanent, pieces, announced],
   )
   const names = usePlay(useShallow((state) => named.map((id) => state.objectsById[id]?.name)))
   const nameOf = (id: ObjectId): string =>
@@ -126,9 +131,19 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
     () => spends.flatMap((spend) => (spend.kind === 'tap' ? [spend.option.source.object] : [])),
     [spends],
   )
+  // A source whose mana ability does more than add mana (a roll, a discard) is activated at once, apart from the
+  // payment, which is asked again with its mana in the pool.
+  const activatable = useMemo(
+    () => [...new Set(announced.map((ref) => ref.object))].filter((id) => !byPermanent.has(id)),
+    [announced, byPermanent],
+  )
+  const lines = usePlay(
+    useShallow((state) => announced.map((ref) => abilityLine(ref, state.objectsById[ref.object]))),
+  )
+  const activate = (ref: AbilityRef): void => void answer({ PayMana: { Activate: ref } })
   const marks = useMemo(
-    () => markCards(own, legal, chooser === undefined ? taken : [...taken, chooser]),
-    [own, legal, taken, chooser],
+    () => markCards(own, [...legal, ...activatable], chooser === undefined ? taken : [...taken, chooser]),
+    [own, legal, activatable, taken, chooser],
   )
 
   const heldRestricted: RestrictedEntry[] = (pool.restricted ?? []).map((restricted, index) => ({
@@ -215,6 +230,11 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   }
 
   const act = (id: ObjectId): void => {
+    const announcedRef = activatable.includes(id) ? announced.find((ref) => ref.object === id) : undefined
+    if (announcedRef !== undefined) {
+      activate(announcedRef)
+      return
+    }
     const chosen = spends.findIndex((spend) => spend.kind === 'tap' && spend.option.source.object === id)
     if (chosen >= 0) {
       removeAt(chosen)
@@ -392,6 +412,23 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
           Pay the rest for me
         </Button>
       ) : null}
+      {announced.map((ref, at) => {
+        const line = lines[at] ?? 'its mana ability'
+        const name = nameOf(ref.object)
+        return (
+          <Button
+            key={`${ref.object}-${abilityKey(ref)}`}
+            className="h-10 px-4"
+            variant="outline"
+            data-slot="pay-activate"
+            title={`${name}: ${line}`}
+            aria-label={`Activate ${name}: ${spoken(line)}`}
+            onClick={() => activate(ref)}
+          >
+            Activate {name}
+          </Button>
+        )
+      })}
       {options.can_cancel ? (
         options.attack === true || options.block === true ? (
           <Button

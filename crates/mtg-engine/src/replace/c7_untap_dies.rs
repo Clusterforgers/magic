@@ -1,6 +1,7 @@
 //! "If that creature would die this turn, exile it instead", "If it would leave the battlefield, exile it instead": the
 //! shields of the permanents and spells an effect named (`Rule::DiesInstead`, CR 614.1a, 611.2c).
 
+use mtg_cards::refs::ZoneKind;
 use mtg_cards::trigger::ReplaceBy;
 
 use super::{Action, Candidate, Origin, Pass, Slot, Unit};
@@ -69,13 +70,16 @@ impl Pass<'_> {
                     origin,
                     object: effect.source?,
                     controller: effect.controller,
-                    action: Action::Replace(place.map_or(ReplaceBy::MoveTo(*to), |place| {
-                        ReplaceBy::IntoLibrary {
-                            place,
+                    // A countered card bound for the battlefield goes there under the shield's controller (Desertion).
+                    action: Action::Replace(match (place, to) {
+                        (Some(place), _) => ReplaceBy::IntoLibrary {
+                            place: *place,
                             reveal: false,
                             optional: false,
-                        }
-                    })),
+                        },
+                        (None, ZoneKind::Battlefield) => ReplaceBy::BattlefieldUnderYours,
+                        (None, to) => ReplaceBy::MoveTo(*to),
+                    }),
                     is_self: false,
                 })
             })

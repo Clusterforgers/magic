@@ -636,6 +636,7 @@ pub(super) fn condition(ctx: &Ctx, cond: &Condition) -> String {
             format!("{} (checked as it triggers only)", condition(ctx, inner))
         }
         Condition::YourTurn => "it is your turn".to_owned(),
+        Condition::PaidToIgnore => "you paid to ignore this effect this turn".to_owned(),
         Condition::ExtraTurn => "it is an extra turn".to_owned(),
         Condition::Among(players) => format!("you are among {}", who(ctx, players)),
         Condition::IsDay => "it is day".to_owned(),
@@ -699,6 +700,9 @@ pub(super) fn duration(value: &Duration) -> String {
         Duration::UntilCreatureSpellCast => "until a player casts a creature spell".to_owned(),
         Duration::UntilEndOfTurnOrRolled(n) => {
             format!("until end of turn, or until any player rolls a {n}, whichever comes first")
+        }
+        Duration::R6700UntilEndOfTheirNextTurn(_) => {
+            "until the end of that player's next turn".to_owned()
         }
         Duration::WhileHasCounter(counter) => {
             format!("while it has a {} counter", counter_text(counter))

@@ -260,6 +260,15 @@ pub(super) fn did_happened(
             found.extend(action.map(|action| did(action, Some(*player), Some(*object))));
         }
         Event::Foraged { player } => found.push(did(Action::Foraged, Some(*player), None)),
+        Event::Bent { player, element } => {
+            let action = match element {
+                crate::events::Bending::Water => Action::Waterbent,
+                crate::events::Bending::Earth => Action::Earthbent,
+                crate::events::Bending::Fire => Action::Firebent,
+                crate::events::Bending::Air => Action::Airbent,
+            };
+            found.push(did(action, Some(*player), None));
+        }
         // The flipper loses a flip whose call missed (CR 705.2); a won flip is `CoinFlipWon`.
         Event::CoinFlipped {
             player, won: false, ..

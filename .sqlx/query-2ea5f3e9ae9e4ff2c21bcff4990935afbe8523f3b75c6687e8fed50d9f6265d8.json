@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT g.id, s.seat, g.status, g.result, g.failure_reason,\n                      to_char(g.created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"')\n                          AS \"created_at!\"\n               FROM seats s JOIN games g ON g.id = s.game_id\n               WHERE s.user_id = $1\n                 AND (g.status IN ('lobby', 'running', 'finished')\n                      OR (g.status = 'failed' AND NOT s.hidden))\n               ORDER BY g.created_at DESC, g.id DESC\n               LIMIT $2",
+  "query": "SELECT g.id, s.seat, g.status, g.result, g.failure_reason,\n                      g.recipe -> 'house_rules' -> 'teams' AS teams,\n                      to_char(g.created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"')\n                          AS \"created_at!\"\n               FROM seats s JOIN games g ON g.id = s.game_id\n               WHERE s.user_id = $1\n                 AND (g.status IN ('lobby', 'running', 'finished')\n                      OR (g.status = 'failed' AND NOT s.hidden))\n               ORDER BY g.created_at DESC, g.id DESC\n               LIMIT $2",
   "describe": {
     "columns": [
       {
@@ -60,6 +60,12 @@
       },
       {
         "ordinal": 5,
+        "name": "teams",
+        "type_info": "Jsonb",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 6,
         "name": "created_at!",
         "type_info": "Text",
         "origin": "Expression"
@@ -77,8 +83,9 @@
       false,
       true,
       true,
+      null,
       null
     ]
   },
-  "hash": "95344d74f78ee250de6446a5800ca6905d992d3a9b9fc60db414e400d3190a52"
+  "hash": "2ea5f3e9ae9e4ff2c21bcff4990935afbe8523f3b75c6687e8fed50d9f6265d8"
 }

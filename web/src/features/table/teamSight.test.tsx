@@ -71,7 +71,9 @@ describe("a Delves hero's zones", () => {
       await user.click(must(document.querySelector<HTMLElement>('[data-tile-seat="1"]')))
     }
     const area = must(document.querySelector<HTMLElement>('[data-seat-area="1"]'))
-    const zones = must(area.querySelector<HTMLElement>('[data-slot="board-zones"]'))
+    // A hero's frame carries the zones beside its tile; a phone's board draws them at its top.
+    const frame = area.closest<HTMLElement>('[data-slot="ally-frame"]') ?? area
+    const zones = must(frame.querySelector<HTMLElement>('[data-slot="board-zones"]'))
     const graveyard = must(zones.querySelector<HTMLElement>('button[data-zone="graveyard"]'))
     await user.click(graveyard)
     expect(within(screen.getByRole('dialog')).getByRole('heading').textContent).toMatch(/graveyard$/)

@@ -25,22 +25,22 @@ The twenty rules of motion and interaction the table, lobby, deck pages and Delv
 
 | Rule | Here |
 |---|---|
-| Squash and stretch | A press squashes a control or card to 0.97; an attacker stretches 4 % along its lunge; a hit card squashes to 0.94 on impact |
-| Anticipation | An attacker draws back before it lunges, a strike before it lands, a flying card dips to 0.94 as it leaves |
+| Squash and stretch | A press squashes a control or card to 0.97; an attacker stretches 4 % along its lunge; a hit card squashes to 0.94 on impact; a Delves vote or shop buy beats the chosen card (0.96, 1.03, settle) on the press, the vote on its way stands marked as the vote, and a vote count or the purse pops as it changes (`beat`, `TickingCount`) |
+| Anticipation | An attacker that taps lies down first and lunges after (`fx-tap-lunge`); every attacker draws back before it lunges, a strike before it lands, a flying card dips to 0.94 as it leaves |
 | Staging | What just happened is the focus: the newest stack chip is raised and rises in, older chips sit at 0.8; an attacked seat flinches and lights; the prompt band glows; nothing else dims below 0.8 |
 | Pose to pose | Every move is three to six keyframes (leave, peak, land, settle) in `fx.css` or `travel.ts`, tweened by the browser |
 | Follow through | A landing card and an entering permanent overshoot about 4 % and settle; a released press springs back past 1 |
 | Slow in, slow out | A card leg eases into the top of its arc and out of it to land (a curve per keyframe in `travel.ts`), entrances ease out, exits ease in; linear only for clocks |
-| Arcs | A card in flight bows off the straight line by 12 % of the way (24 to 96 px), upward, or rightward on an upright way (`arcBow`) |
+| Arcs | A card in flight bows off the straight line by 12 % of the way (24 to 96 px), upward, or rightward on an upright way (`arcBow`); a card added in the builder flies so from its search row into its line (to the Deck switch while the list is out of view), the line beats as it lands, and a line removed or moved away slides out as a ghost while the list closes up at once (`deckTravel`) |
 | Secondary action | The hit flashes and its number floats; an attacker's edge glows; a resolved spell's mark rides on it |
 | Timing | Presses 60 ms in and 220 ms back, card legs 380 ms, attacks 500 ms, hits 550 ms, strikes 1.1 s there and back; a batch's whole sequence under 1.7 s |
 | Exaggeration | A hit flashes white-hot (brightness 1.9) and shakes 5 px; a life total pops to 1.25 with a coloured flash |
 | Solid drawing | Cards cast a shadow on the felt, a lifted hand card a deeper one; a tap turns the face about its centre; the coin turns in 3D |
 | Appeal | One look (Spellforge), one set of motion tokens, the same moves in every layout |
-| Fitts and hit areas | Pass, Next, Resolve and Attack are the largest buttons, bottom right; under a coarse pointer every button and table chip has a 44 px hit area (`hit-area`), grown with a pseudo-element, never the layout |
+| Fitts and hit areas | Pass, Next, Resolve and Attack are the largest buttons, bottom right; under a coarse pointer every button and table chip has a 44 px hit area (`hit-area`), grown with a pseudo-element, never the layout; the top bar's step ladder is then one button that opens it below the bar with 44 px stops (`StepLadder` `zoom`) |
 | Hick | A prompt shows one primary answer and at most about six choices at once; more go to the choice overlay with a search |
 | Miller | Groups of at most about seven: stack chips fold into "×N" and "+N more", lands fold into counts, a deck list groups by type |
-| Doherty | A press shows its pressed state in the same frame; an answer sent closes its prompt at once, before the server's batch (`answerPending`) |
+| Doherty | A press shows its pressed state in the same frame; an answer sent closes its prompt at once, before the server's batch (`answerPending`); an answer the server has not followed within 400 ms shows a quiet turning ring in the strip until its next word (`answered`, `WorkingMark`); a card cast or played as a land dips and rises out of its slot on the press and stands there again if the server refuses (`handLeaving`) |
 | Postel | Deck import takes Arena, MTGO, Moxfield and plain lists; search ignores case and accents; a number field takes typing and steppers |
 | Jakob | Arena's layout and words: hand at the bottom in an arc, opponents across, the pass button bottom right with Arena's labels, Space to pass |
 | Frequency | Pass, Next, Resolve and Attack are gold and largest, and swell once when they come to the viewer; stops one press away; manual commands in the side panel; rare actions in menus |
@@ -245,7 +245,7 @@ The seat does by hand what the engine does not run from one persistent panel at 
 
 | Size | Where |
 |---|---|
-| L, XL | the first tab of the side column, "Commands", the tab on show when the table opens; the column keeps its width, so the card sizes the layout gate protects do not change |
+| L, XL | the first tab of the side column, "Commands", one press from the Log the column opens on during play; it comes forward by itself when a card is waited for or a by-hand line comes due; the column keeps its width, so the card sizes the layout gate protects do not change |
 | M | the first icon of the rail, opening a 320 px panel over the boards, from under the top bar down to the hand and controls row; the same icon closes it |
 | S, XS | the first tab of the side sheet, a non-modal sheet that hangs from the top bar (the top bar's button reads "Commands, log, chat and stack"); a press on the tab on show keeps it open, Close shuts it |
 

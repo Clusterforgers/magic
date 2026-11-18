@@ -1081,7 +1081,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         amount().prop_map(|count| Effect::Monstrosity { count }),
         (2u32..=3).prop_map(|level| Effect::BecomeLevel { level }),
         amount().prop_map(|count| Effect::Adapt { count }),
-        amount().prop_map(|count| Effect::Bolster { count }),
+        amount().prop_map(|count| Effect::Bolster { count, bind: None }),
         reference().prop_map(|what| Effect::Explore { what }),
         (reference(), simple_amount()).prop_map(|(what, count)| Effect::Connive { what, count }),
         (
@@ -1149,6 +1149,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 count,
                 skip_untap,
                 no_power_up,
+                at_end: Vec::new(),
             }
         ),
         prop::collection::vec(

@@ -595,9 +595,14 @@ async fn a_resumed_game_starts_the_clock_of_its_pending_decision_afresh() {
         auto_pass: false,
         ..DEFAULT
     };
-    let second = resume_game_with(store.clone(), game_id(1), setup, config(held))
-        .await
-        .unwrap();
+    let second = Box::pin(resume_game_with(
+        store.clone(),
+        game_id(1),
+        setup,
+        config(held),
+    ))
+    .await
+    .unwrap();
     assert_eq!(second.status().await.unwrap().events, stopped.events);
     let mut back = Client::join(&second, 1).await;
     assert!(matches!(back.next().await, ServerMessage::Welcome { .. }));

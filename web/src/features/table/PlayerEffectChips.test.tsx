@@ -60,6 +60,34 @@ describe('PlayerEffectChips', () => {
   })
 
   it.each(['panel', 'line', 'tile'] as const)(
+    "shows in the %s which colour each of the seat's costs stands for this round, as pips",
+    (place) => {
+      show(place, [
+        {
+          CostColorsDrawn: [
+            ['Red', 'Green'],
+            ['Green', 'Red'],
+          ],
+        },
+        'CantLose',
+      ])
+      const drawn = must(document.querySelector('[data-slot="drawn-colors"]'))
+      const pips = [...drawn.querySelectorAll('[data-pip]')].map((pip) => pip.getAttribute('data-pip'))
+      expect(pips).toEqual(['R', 'G', 'G', 'R'])
+      if (place === 'tile') {
+        expect(document.querySelector('[data-slot="player-effects"]')).toHaveTextContent('1')
+        expect(screen.getByRole('button', { name: /Show Bo's board/ })).toHaveAccessibleName(
+          expect.stringContaining('Costs: red is green, green is red'),
+        )
+      } else {
+        expect(
+          screen.getByRole('img', { name: /Bo's costs change color: red is green, green is red/ }),
+        ).toBeInTheDocument()
+      }
+    },
+  )
+
+  it.each(['panel', 'line', 'tile'] as const)(
     'draws nothing in the %s for a seat without effects',
     (place) => {
       show(place, [])

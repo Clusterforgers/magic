@@ -17,6 +17,7 @@ use crate::decision::DecisionKind;
 use crate::events::Event;
 use crate::help::Offered;
 use crate::mana::{ManaOption, can_afford_with};
+use crate::r281_mana_at_priority::r281_while_paying;
 use crate::spend::Spend;
 use crate::state::GameState;
 use crate::triggers::PendingTrigger;
@@ -120,7 +121,7 @@ fn pay(
         ctx.can_cancel(),
         reserved_life,
     ) {
-        Some(options)
+        Some(mut options)
             if can_afford_with(
                 &options.cost,
                 &options.pool,
@@ -130,6 +131,13 @@ fn pay(
                 &options.spend,
             ) =>
         {
+            options.announced = match (ctx.what, &ctx.granted) {
+                (What::Spell(_), None) => r281_while_paying(ctx.state, ctx.player, None),
+                (What::Ability(ability), None) => {
+                    r281_while_paying(ctx.state, ctx.player, Some(*ability))
+                }
+                _ => Vec::new(),
+            };
             ctx.ask(DecisionKind::PayMana(options))
         }
         _ => Next::Drop,

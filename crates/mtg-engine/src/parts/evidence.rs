@@ -25,3 +25,16 @@ pub(super) fn text(value: usize) -> String {
         "Collect evidence {value}: exile cards from your graveyard with total mana value {value} or more."
     )
 }
+
+/// "Exile any number of historic cards from your graveyard with total mana value 30 or more."
+pub(super) fn r6703_text(filter: &mtg_cards::refs::Selector, value: usize) -> String {
+    let (head, _) = crate::wording::phrase(filter);
+    let kind = if head == "permanent" {
+        "card".to_owned()
+    } else {
+        format!("{head} card")
+    };
+    format!(
+        "Exile any number of {kind}s from your graveyard with total mana value {value} or more."
+    )
+}

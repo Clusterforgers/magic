@@ -2,6 +2,7 @@ import { laysOutCards } from './prompt/cardPrompts'
 import { useRef } from 'react'
 import type { CSSProperties } from 'react'
 import { usePlay } from '@/features/game/gameContext'
+import { useAfterDelay } from '@/hooks/useAfterDelay'
 import { cn } from '@/lib/utils'
 import { CombatLegend } from './combat/CombatLegend'
 import { useSeatNamer } from './names'
@@ -32,6 +33,33 @@ function NothingToDoNote({ prompt }: { prompt: boolean }) {
     >
       <NothingToDoBanner beside={prompt} />
     </div>
+  )
+}
+
+/** How long a sent answer may wait for the server's next word before the strip says it is working (Doherty). */
+export const WORKING_AFTER_MS = 400
+
+/**
+ * A quiet working mark: drawn once an answer this seat sent has waited `WORKING_AFTER_MS` for the server, gone with the
+ * server's next word. A small turning ring; under reduced motion a still one.
+ */
+function WorkingMark() {
+  const waiting = usePlay((state) => state.answered !== null)
+  const shown = useAfterDelay(waiting, WORKING_AFTER_MS)
+  if (!shown) return null
+  return (
+    <span
+      data-slot="working-mark"
+      role="status"
+      title="Sent; waiting for the server"
+      className="ms-2 inline-flex size-4 shrink-0 items-center justify-center motion-safe:animate-in motion-safe:fade-in motion-safe:duration-base"
+    >
+      <span
+        aria-hidden="true"
+        className="size-3 rounded-full border-2 border-muted-foreground/40 border-t-muted-foreground motion-safe:animate-spin"
+      />
+      <span className="sr-only">Sent, waiting for the server</span>
+    </span>
   )
 }
 
@@ -191,6 +219,7 @@ export function SharedStrip({
                   )}
                 </p>
               )}
+              {mine ? null : <WorkingMark />}
             </div>
             <div
               data-slot="strip-status"

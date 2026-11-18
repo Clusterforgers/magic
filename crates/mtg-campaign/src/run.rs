@@ -45,8 +45,9 @@ pub const UPGRADE_PRICE: u32 = 50;
 /// The content generation a new run is made with (`RunEvent::Content`); a run stored without one is generation 0. From 2
 /// relic offers follow the deck and the relics of the larger pool are offered; from 3 relics have rarities and events are
 /// known trade-offs; from 4 bosses play bracket decks with their commander card; from 5 the roster grows by more
-/// two-colour bosses, upgraded forms and the uber boss, and a cleared floor may descend.
-pub const CONTENT: u32 = 5;
+/// two-colour bosses, upgraded forms and the uber boss, and a cleared floor may descend; from 6 a boss stands for every
+/// colour pair.
+pub const CONTENT: u32 = crate::scale::PAIRS_FROM;
 /// The content generation from which the party may descend to a deeper floor after a floor's final boss.
 pub const ENDLESS_FROM: u32 = 5;
 /// The hearts a descent gives back, up to [`HEARTS`].

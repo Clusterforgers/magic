@@ -1,4 +1,4 @@
-// Goal: the words of the games list are right for every age, every set of other players and every way a game can end or fail, whoever won and however many seats there were.
+// Goal: the words of the games list are right for every age, every set of other players and every way a game can end or fail, whoever won (a team's win counts for each of its members) and however many seats there were.
 import { describe, expect, it } from 'vitest'
 import { listed } from '@/test-utils/accountsServer'
 import {
@@ -76,6 +76,23 @@ describe('resultText', () => {
     ],
   ])('says who won when %s', (_what, over, words) => {
     expect(resultText(listed({ status: 'finished', others, ...over }))).toBe(words)
+  })
+
+  describe('at a table with teams', () => {
+    const teamed = [
+      { seat: 1, name: 'Player 2', user: 'bo', team: 1 },
+      { seat: 2, name: 'Cy', user: null, team: 0 },
+      { seat: 3, name: 'Di', user: null, team: 1 },
+    ]
+    it.each([
+      ['the user’s team won', 0, 0, 'Your team won'],
+      ['the user’s team won without the user', 1, 1, 'Your team won'],
+      ['the other team won', 0, 1, 'bo and Di won'],
+      ['the other team of one won', 1, 0, 'Cy won'],
+    ])('says %s', (_what, team, winner, words) => {
+      const game = listed({ status: 'finished', seat: 0, team, others: teamed, result: { Team: winner } })
+      expect(resultText(game)).toBe(words)
+    })
   })
 
   it.each(['lobby', 'running'] as const)('says nothing for a game in the %s state', (status) => {

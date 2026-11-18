@@ -36,14 +36,15 @@ export function panelOf(value: unknown): DevPanel | undefined {
   return COMMANDS.find((id) => id === value)
 }
 
-/** Opens the side area onto the panel when it is shut, from the rail's first icon or the top bar's sheet button; true once the panel is drawn. */
+/**
+ * Opens the side area onto the panel, one step per call: the side's first tab (Commands) where its tabs are drawn (the
+ * column, the rail, an open sheet), else the top bar's sheet button; true once the panel is drawn.
+ */
 export function showPanel(root: ParentNode = document): boolean {
   if (root.querySelector('[data-slot="commands-panel"]') !== null) return true
-  root
-    .querySelector<HTMLElement>(
-      'aside[data-side="rail"] [role="tab"], button[aria-label^="Commands, log, chat"]',
-    )
-    ?.click()
+  const tab = root.querySelector<HTMLElement>(':is(aside[data-side], [data-side="sheet"]) [role="tab"]')
+  if (tab !== null) tab.click()
+  else root.querySelector<HTMLElement>('button[aria-label^="Commands, log, chat"]')?.click()
   return false
 }
 

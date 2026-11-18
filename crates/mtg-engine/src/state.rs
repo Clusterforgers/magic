@@ -105,6 +105,14 @@ pub(crate) struct Possible {
 pub(crate) enum Tally {
     /// An investigation (CR 701.16a).
     L31aInvestigated,
+    /// A waterbend cost paid (Avatar).
+    Waterbent,
+    /// An earthbend done (Avatar).
+    Earthbent,
+    /// A firebending ability resolved (Avatar).
+    Firebent,
+    /// An airbend done (Avatar).
+    Airbent,
     /// A die rolled (CR 706).
     R5508DiceRolled,
     /// A die rolled with this result (CR 706.2), counted for the player who rolled it.
@@ -344,6 +352,10 @@ pub struct GameState {
     pub(crate) trigger_round: u32,
     pub(crate) delayed: Vec<Delayed>,
     pub(crate) next_delayed: u64,
+    /// The players who paid this turn to ignore the effects of a source (`GameRule::PayToIgnore`), with the source.
+    pub(crate) r6703_ignored: Vec<(PlayerId, ObjectRef)>,
+    /// The countered spell a replacement just put onto the battlefield, whose countering ends next (Desertion).
+    pub(crate) r6703_countered_in: Option<ObjectId>,
     pub(crate) limits_spent: BTreeSet<(ObjectRef, AbilitySource, usize)>,
     /// The once-each-game abilities used, as `limits_spent`; a new turn keeps them.
     pub(crate) game_limits_spent: BTreeSet<(ObjectRef, AbilitySource, usize)>,
@@ -364,6 +376,9 @@ pub struct GameState {
     pub(crate) r5512_creature_cast_at: Option<u64>,
     /// The timestamp clock as each number was last rolled on a die this game (`r6401_history.rs`).
     pub(crate) r6401_rolled_at: BTreeMap<u32, u64>,
+    /// Each player's first set of coin flips of a turn: the turn's number and the spell or ability it was flipped for
+    /// (`r6700_flips.rs`).
+    pub(crate) r6700_flip_sets: BTreeMap<PlayerId, (u32, Option<ObjectId>)>,
     /// The "since your last turn" history (`r379_since.rs`); derived from the turn events and left out of the hash, so a
     /// game hashes as it did before it was kept.
     pub(crate) r379_since: crate::r379_since::Since,
@@ -1043,6 +1058,13 @@ impl Hash for GameState {
         self.trigger_round.hash(state);
         self.delayed.hash(state);
         self.next_delayed.hash(state);
+        // A game where nobody paid to ignore an effect hashes as it did before the rule existed.
+        if !self.r6703_ignored.is_empty() {
+            self.r6703_ignored.hash(state);
+        }
+        if self.r6703_countered_in.is_some() {
+            self.r6703_countered_in.hash(state);
+        }
         self.limits_spent.hash(state);
         // A game with no once-a-game ability hashes as it did before they existed.
         if !self.game_limits_spent.is_empty() {
@@ -1074,6 +1096,10 @@ impl Hash for GameState {
         // Likewise until a die is rolled.
         if !self.r6401_rolled_at.is_empty() {
             self.r6401_rolled_at.hash(state);
+        }
+        // Likewise until a coin is flipped.
+        if !self.r6700_flip_sets.is_empty() {
+            self.r6700_flip_sets.hash(state);
         }
         // Likewise a game in which no seat looked at its library by hand.
         if !self.looked_by_hand.is_empty() {
@@ -1346,6 +1372,7 @@ mod tests {
                 player: PlayerId::from_index(0),
                 skip_untap: false,
                 no_power_up: false,
+                r6703_end: None,
             };
             apply_event(&mut game, &added).unwrap();
         }
