@@ -266,3 +266,4 @@ hidden_aura_fuzz::aura_spells_always_carry_their_target
 
 # mtg-campaign::it
 relic_cards::every_relic_plays_a_real_fight
+rework_warrens_b::a_real_fight_at_level_v_plays_on
