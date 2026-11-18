@@ -301,12 +301,6 @@ First-boss tuning of the bracket generation: two Normal heroes against each boss
 | Vorthana | 32 (36), 9 | 46/64 (72 %) | 16.5 (8.1) |
 | Sivanne | 27 (30), 10 | 47/64 (73 %) | 16.0 (7.8) |
 
-<<<<<<< HEAD
-- Before tuning the heroes won 40 of 75 fights against Seraphine at 27 life and 9 cards, 69 of 75 against Ysolde at 27 life and 9 cards, and 1 of 8 against Morwenna at 26 life with a toll of {2}.
-- The samples are small: 40 fights for Seraphine and Ysolde, 31 and 23 for Morwenna and Hollowmere, 8 for Korrath, Sahrra and Valdric, so a rate can move by 15 points or more between series. Hollowmere, Korrath and Valdric sit above the target and Morwenna below it (dl15l).
-=======
 - Before tuning the heroes won 40 of 75 fights against Seraphine at 27 life and 9 cards, 69 of 75 against Ysolde at 27 life and 9 cards, 1 of 8 against Morwenna at 26 life with a toll of {2}, 60 of 64 against Aurenne and 53 of 64 against Vorthana at 27 life and 9 cards, 35 of 64 against Vorthana at 38 life and 10 cards, and 50 of 64 against Sivanne at 27 life and 9 cards.
 - The samples are small: 64 fights for each generation-6 boss, 40 for Seraphine and Ysolde, 31 and 23 for Morwenna and Hollowmere, 8 for Korrath, Sahrra and Valdric, so a rate can move by 15 points or more between series. Hollowmere, Korrath and Valdric sit above the target and Morwenna below it (dl15l).
-- Hollowmere plays no attack tax: Windborn Muse made the party's shared attack cost more than a hero could pay and stopped the fight (`AttackUnaffordable`, dl2c). One Morwenna fight in 32 ran into the watchdog: a hero deck's Archangel of Tithes taxes the boss's attack, and the Normal boss bot declared an attack it could not pay and cancelled the payment again and again (dl15p).
->>>>>>> worktree-agent-a9ae0e2a26e78c062
 - The Unmaker as the final boss at Heat 2 (bracket 5, a Hard brain), `DELVE_SIM_RANK=3 DELVE_SIM_BOSSES=unmaker_void fights 6 2 normal 1 6 2`: no fight ended within 8 minutes of machine time, so it is not measured yet (dl15l).
