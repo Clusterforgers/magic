@@ -40,7 +40,7 @@ export function commandersInHand(
   for (const id of command) {
     const commander = commanders.find((entry) => entry.object === id)
     if (commander === undefined) continue
-    const cost = castCostLine(objects[id]?.mana_cost ?? null, commander.tax)
+    const cost = castCostLine(objects[id]?.cost_now ?? objects[id]?.mana_cost ?? null, commander.tax)
     waiting.set(id, {
       tax: commander.tax,
       words: cost === '' ? 'in the command zone' : `in the command zone, costs ${cost}`,
@@ -73,7 +73,7 @@ function satchelInHand(
   return (player?.satchel ?? [])
     .filter((id) => objects[id] !== undefined)
     .map((id) => {
-      const cost = castCostLine(objects[id]?.mana_cost ?? null, 0)
+      const cost = castCostLine(objects[id]?.cost_now ?? objects[id]?.mana_cost ?? null, 0)
       const words = cost === '' ? SATCHEL_WORDS : `${SATCHEL_WORDS}, costs ${cost}`
       return [id, { tax: 0, words, satchel: true }]
     })

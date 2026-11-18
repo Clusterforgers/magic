@@ -412,6 +412,7 @@ function isObjectView(value: unknown): value is ObjectView {
     isTag(value.zone) &&
     isText(value.name) &&
     (value.mana_cost === null || Array.isArray(value.mana_cost)) &&
+    (value.cost_now === undefined || Array.isArray(value.cost_now)) &&
     isListOf(value.supertypes, isText) &&
     isListOf(value.types, isText) &&
     isListOf(value.subtypes, isText) &&

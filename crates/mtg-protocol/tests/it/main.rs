@@ -29,6 +29,7 @@ mod commander_view;
 mod common;
 mod companion_view;
 mod copy_view;
+mod cost_now_view;
 mod counter_view;
 mod crew_hidden;
 mod dk27_secret_numbers;

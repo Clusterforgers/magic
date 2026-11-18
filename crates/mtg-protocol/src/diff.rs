@@ -57,6 +57,7 @@ mod tests {
             zone,
             name: format!("Card {id}"),
             mana_cost: None,
+            cost_now: None,
             supertypes: Vec::new(),
             types: Vec::new(),
             subtypes: Vec::new(),

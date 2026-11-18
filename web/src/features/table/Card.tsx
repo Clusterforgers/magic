@@ -8,6 +8,7 @@ import { HIGHLIGHT, PICKED, SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
 import { CardFace } from './CardFace'
 import { ChosenMark } from './ChosenMark'
+import { CostNowMark } from './CostNowMark'
 import { useCreatureOutlook } from './combat/drawn'
 import { outlookWords } from './combat/forecastText'
 import { ForecastMarks } from './combat/ForecastMarks'
@@ -167,6 +168,7 @@ export const Card = memo(function Card({
         ) : null,
       )}
       <ManaStrip id={id} />
+      {object.cost_now === undefined ? null : <CostNowMark cost={object.cost_now} />}
       {highlight === 'selected' ? <ChosenMark /> : null}
       {note?.hint === undefined ? null : (
         <span

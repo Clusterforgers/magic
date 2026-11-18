@@ -276,6 +276,11 @@ pub struct ObjectView {
     pub name: String,
     /// Printed mana cost, if it has one.
     pub mana_cost: Option<ManaCost>,
+    /// The mana cost its owner pays now where a rule draws the colors of their costs anew (`cost_colors`): for a card
+    /// off the battlefield and the stack whose cost the rule changes; left out otherwise.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub cost_now: Option<ManaCost>,
     /// Printed supertypes.
     pub supertypes: Vec<Supertype>,
     /// Current card types.
