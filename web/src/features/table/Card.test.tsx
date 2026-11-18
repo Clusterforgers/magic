@@ -49,9 +49,15 @@ describe('card face', () => {
     const drawn = card({ name: 'Hill Giant', cost_now: [{ Generic: 1 }, { Colored: 'Red' }] })
     const { container, unmount } = renderCard({ object: drawn })
     const mark = must(container.querySelector<HTMLElement>('[data-slot="cost-now"]'))
-    expect(within(mark).getByRole('img', { name: 'Costs now: 1 generic, red', hidden: true })).toBeInTheDocument()
-    expect(within(face(container)).getByRole('img', { name: 'Mana cost now: 1 generic, red' })).toBeInTheDocument()
-    expect(button()).toHaveAccessibleName(expect.stringContaining('cost 1 generic, red, printed cost 1 generic, green'))
+    expect(
+      within(mark).getByRole('img', { name: 'Costs now: 1 generic, red', hidden: true }),
+    ).toBeInTheDocument()
+    expect(
+      within(face(container)).getByRole('img', { name: 'Mana cost now: 1 generic, red' }),
+    ).toBeInTheDocument()
+    expect(button()).toHaveAccessibleName(
+      expect.stringContaining('cost 1 generic, red, printed cost 1 generic, green'),
+    )
     unmount()
     const plain = renderCard({ object: card({ name: 'Hill Giant' }) })
     expect(plain.container.querySelector('[data-slot="cost-now"]')).toBeNull()
