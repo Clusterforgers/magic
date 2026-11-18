@@ -226,3 +226,31 @@ fn a_reworked_fight_plan_holds_only_the_reworked_parts(
         1 + rework.relics.len() + usize::from(rework.innate.is_some())
     );
 }
+
+#[rstest]
+fn a_reworked_boss_seat_takes_the_opening_land_rule_and_its_emblems(#[values(1, 2)] heroes: usize) {
+    use mtg_engine::GameSetup;
+    use mtg_engine::format::Commander;
+    use mtg_engine::opening_lands::OpeningLands;
+    use std::sync::Arc;
+    let content = content().unwrap();
+    let plan = reworked_run(heroes, 2)
+        .fight_plan(content)
+        .unwrap()
+        .unwrap();
+    let land = || mtg_testkit::cards::land(mtg_core::color::Color::Green);
+    let decks = (0..=heroes)
+        .map(|_| (0..40).map(|_| land()).collect())
+        .collect();
+    let setup = plan
+        .apply(content, GameSetup::new(Arc::new(Commander), 4, decks))
+        .unwrap();
+    let boss = &setup.players[heroes];
+    assert_eq!(boss.opening_lands, Some(OpeningLands::BOSS));
+    assert!(
+        setup.players[..heroes]
+            .iter()
+            .all(|p| p.opening_lands.is_none())
+    );
+    assert_eq!(boss.emblems.len(), plan.boss.emblems().len());
+}

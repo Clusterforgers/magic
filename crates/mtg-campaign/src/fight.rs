@@ -312,6 +312,12 @@ impl FightPlan {
             let card = boss.library.remove(at);
             boss.held.push(card);
         }
+        // A reworked boss draws 7 with 2 to 4 lands and takes no mulligan.
+        if self.boss.rework.is_some()
+            && let Some(boss) = setup.players.get_mut(self.heroes.len())
+        {
+            boss.opening_lands = Some(mtg_engine::opening_lands::OpeningLands::BOSS);
+        }
         setup.validate_decks = false;
         Ok(setup)
     }
