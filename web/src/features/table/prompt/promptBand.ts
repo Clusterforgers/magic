@@ -11,17 +11,26 @@ export const BAND_WIDE_REM = 100
 /** Below this band width (in rem) the answers leave out their key hints and the rest of "Cancel the spell". */
 export const BAND_NARROW_REM = 64
 
-/** What else shapes the band: a `status` beside the prompt (a note, the combat key), a prompt that lays out `cards`. */
+/** The width of the stack's column beside a prompt's cards below `BAND_WIDE_REM`, in rem: three chips stand in it whole. */
+export const STACK_COLUMN_REM = 12
+
+/**
+ * What else shapes the band: a `status` beside the prompt (a note, the combat key), a prompt that lays out `cards`,
+ * whose pictures stand in the band's own `row` of cards (`CardChoices` in place, not in the choice overlay), spells on
+ * the `stack`.
+ */
 export interface BandParts {
   status?: boolean
   cards?: boolean
+  row?: boolean
+  stack?: boolean
 }
 
 /** The rows of the band's grid areas for a band `rem` wide holding `choices`; each row lists its cells left to right. */
 export function bandAreas(
   rem: number,
   choices: BandChoices,
-  { status = false, cards = false }: BandParts = {},
+  { status = false, cards = false, row = false, stack = false }: BandParts = {},
 ): string[][] {
   if (rem < BAND_PHONE_REM) {
     return [
@@ -37,6 +46,14 @@ export function bandAreas(
   if (choices === 'none') return [head]
   if (choices === 'inline' || (cards && rem >= BAND_WIDE_REM))
     return [['stack', 'status', 'text', 'choices', 'clock', 'actions']]
+  if (cards && row) {
+    // The status, the sentence and the answers keep the first line; the stack stands as a column at the cards' left.
+    if (!stack) return [['status', 'text', 'clock', 'actions'], Array<string>(4).fill('choices')]
+    return [
+      [status ? 'status' : 'text', 'text', 'clock', 'actions'],
+      ['stack', 'choices', 'choices', 'choices'],
+    ]
+  }
   if (cards && rem >= BAND_NARROW_REM) return [head, head.map(() => 'choices')]
   // The answers keep the first line to themselves and the sentence; a status starts the choices' line.
   const first = ['stack', 'text', 'clock', 'actions']

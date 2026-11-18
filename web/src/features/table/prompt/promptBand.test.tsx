@@ -13,6 +13,7 @@ import {
   BAND_NARROW_REM,
   BAND_PHONE_REM,
   BAND_WIDE_REM,
+  STACK_COLUMN_REM,
   bandAreas,
   isClamped,
   sentenceLines,
@@ -139,6 +140,41 @@ describe('the stylesheet', () => {
       /display:\s*none/,
     )
     expect(narrow).toMatch(/\[data-slot='prompt-actions'\] \[data-slot='key-hint'\],/)
+  })
+
+  it('gives a row of cards in the band a line under the answers, the stack a column at its left, below 100 rem', () => {
+    for (const rem of [BAND_PHONE_REM, 56, BAND_NARROW_REM, 71, BAND_WIDE_REM - 1]) {
+      for (const status of [false, true]) {
+        const [first, second] = bandAreas(rem, 'wide', { status, cards: true, row: true, stack: true })
+        // The answers keep the first line beside the sentence, one row, and the stack never squeezes them.
+        expect(first?.slice(-3)).toEqual(['text', 'clock', 'actions'])
+        expect(first).not.toContain('stack')
+        expect(second).toEqual(['stack', 'choices', 'choices', 'choices'])
+        expect(first?.[0]).toBe(status ? 'status' : 'text')
+        expect(bandAreas(rem, 'wide', { status, cards: true, row: true })[1]).toEqual(
+          Array(4).fill('choices'),
+        )
+      }
+    }
+    expect(bandAreas(BAND_WIDE_REM, 'wide', { cards: true, row: true, stack: true })).toEqual(
+      bandAreas(BAND_WIDE_REM, 'wide', { cards: true }),
+    )
+    const rows = blockAfter(band, `@container band (${BAND_PHONE_REM}rem <= width < ${BAND_WIDE_REM}rem)`)
+    const head =
+      "&[data-cards]:has([data-slot='prompt-choices']:not([data-inline]):not(:empty) [data-slot='card-row'])"
+    expect(areasIn(rows, `${head}:not(`)).toEqual(bandAreas(70, 'wide', { cards: true, row: true }))
+    expect(areasIn(rows, `${head}:has(\n        [data-slot='stack-chips']\n      ) {`)).toEqual(
+      bandAreas(70, 'wide', { cards: true, row: true, stack: true, status: true }),
+    )
+    expect(areasIn(rows, ":not(:has([data-slot='strip-status']:not(:empty)))")).toEqual(
+      bandAreas(70, 'wide', { cards: true, row: true, stack: true }),
+    )
+    // The stack's column is as wide as the rules say, and its chips stand in a column that never sets the line's height.
+    expect(rows).toContain(`grid-template-columns: ${STACK_COLUMN_REM}rem minmax(8rem, 1fr) auto auto;`)
+    expect(blockAfter(rows, "& [data-slot='stack-chips'] {")).toMatch(
+      /position:\s*absolute;[\s\S]*flex-direction:\s*column/,
+    )
+    expect(blockAfter(rows, "& [data-slot='stack-chips'] > ol {")).toMatch(/flex-direction:\s*column/)
   })
 
   it('clamps the sentence to one line, and to three only in a wide band beside cards', () => {

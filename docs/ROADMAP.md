@@ -71,7 +71,10 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
 - [ ] (pl2m) `join.spec.ts` "a guest follows an invite link" times out on the Join button only in a full run: the trace a failed run keeps (`web/test-results`) names the cause, and the fix makes the spec pass in full runs
-- [ ] (pf9b) The prompt band at 1400 px on grid tables keeps a card prompt's answers on one row, shows a stack of three chips whole and wraps more than eight target cards instead of scrolling them sideways
+- [ ] (pf9b2) Prompt cards under 76 px wide draw a compact face (name, cost, power and toughness) whole instead of cutting the full face's foot line
+- [ ] (pf9b3) At 1280 × 720 a card prompt's sheet holds its first line and one row of whole cards without scrolling, and more than eight target cards wrap at 1400 × 900
+- [ ] (pf9d2) An eight-seat grid at 1400 × 900 shows a row of each opponent's cards
+- [ ] (pf9d3) Your pod column in boss mode at 1400 × 900 shows all its chips without scrolling
 - [ ] (pf10o) The lobby's seats list stands on the first screen at 1400 × 900 beside the deck chooser instead of under the invite panel
 - [ ] (pf11a) A sent answer the server has not followed within 400 ms shows a quiet working mark in the strip, gone with the next batch (`docs/ui-design.md`, Feel)
 - [ ] (pf11b) During play the side column opens on the Log or the Stack, the tab a player reads, with Commands one press away

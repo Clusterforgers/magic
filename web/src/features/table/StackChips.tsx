@@ -142,11 +142,15 @@ const Chip = memo(function Chip({ group, top, tabbable, hidden, aims, aria, empt
   )
 })
 
-/** How many children of `element` fit its width, from their boxes on screen. */
+/** How many children of `element` fit its width, or its height where it stands as a column, from their boxes on screen. */
 function fitOf(element: HTMLElement): number {
-  const start = element.getBoundingClientRect().left
-  const rights = [...element.children].map((child) => child.getBoundingClientRect().right - start)
-  return chipsThatFit(rights, element.clientWidth)
+  const column = getComputedStyle(element).flexDirection === 'column'
+  const box = element.getBoundingClientRect()
+  const ends = [...element.children].map((child) => {
+    const own = child.getBoundingClientRect()
+    return column ? own.bottom - box.top : own.right - box.left
+  })
+  return chipsThatFit(ends, column ? element.clientHeight : element.clientWidth)
 }
 
 /**
@@ -175,7 +179,8 @@ function useFitCount(list: RefObject<HTMLOListElement | null>, items: number): n
  * The spells and abilities on the stack as chips in the shared strip, the one that resolves first leading and
  * ringed. Items next to each other that are the same ability of one source (a board of triggers) fold into one chip
  * with a count ("×6", `stackGroups.ts`). The chips that do not fit the strip give way to one "+N more" button, which
- * opens the Stack tab, so the row never scrolls or runs out of the strip. One tab stop, moved with the arrow keys;
+ * opens the Stack tab, so the row never scrolls or runs out of the strip; beside a prompt's cards the chips stand in a
+ * column at the cards' left (`promptBand.css`) and fold by its height the same way. One tab stop, moved with the arrow keys;
  * hover or focus previews the card. Nothing is drawn while the stack is empty. The top chip names what it aims at
  * ("→ Hill Giant") beside a dot in its controller's colour and is where the arrows to the targets start; a chip that
  * is hovered or focused draws its own arrows, and a folded chip those of every item in its run (`combat/stackArrows.ts`).

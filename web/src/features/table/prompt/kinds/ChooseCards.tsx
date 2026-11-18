@@ -27,6 +27,7 @@ import { UndoButton } from '../UndoButton'
 import { useObjects } from '../useCombatNames'
 import { QuickSelect } from '../QuickSelect'
 import { useAllies } from '../useAllies'
+import { QUICK_ROW_REM } from '../cardPrompts'
 import { quickButtons } from '../quickSelect'
 import { usePlay } from '@/features/game/gameContext'
 import { useDefaultFocus } from '../usePromptKeys'
@@ -179,6 +180,7 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
             keys
             focusFirst={first}
             search={searching}
+            rest={quick.length > 0 ? QUICK_ROW_REM : 0}
           />
         </>
       }
