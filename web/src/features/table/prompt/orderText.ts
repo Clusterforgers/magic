@@ -73,7 +73,18 @@ export function placeWords(place: number, count: number): string {
   return `now ${ordinal(place + 1)} of ${count}${tail}`
 }
 
-const PLACE_WORDS = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth']
+const PLACE_WORDS = [
+  'first',
+  'second',
+  'third',
+  'fourth',
+  'fifth',
+  'sixth',
+  'seventh',
+  'eighth',
+  'ninth',
+  'tenth',
+]
 
 /** A place among `count` in a word: "first", "second", "last". */
 export function whichWord(place: number, count: number): string {

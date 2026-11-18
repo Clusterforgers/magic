@@ -237,7 +237,7 @@ export const OWN_SHARE = 1.15
 export const SHEET_MAX_VH = 40
 /** What a phone's prompt sheet leaves of the opponents' area: the tile strip and a row of their board, in px. */
 export const SHEET_KEEP_PX = 120
-/** A phone's band is two lines: the asking card and the question, then the answers. */
+/** A phone's band is two lines over the ticker: the asking card and the question, then the answers. */
 export const BAND_PHONE_PX = 112
 /**
  * The least a prompt sheet that grows (a decision with no column or sheet for its choices) may grow to, whatever the
@@ -246,13 +246,17 @@ export const BAND_PHONE_PX = 112
  */
 export const BAND_MIN_PX = 96
 export const BAND_MIN_PHONE_PX = BAND_PHONE_PX
+/** The line under the band's row that says what the last batch did (`TurnTicker`), in px. */
+export const BAND_TICKER_PX = 16
 /**
- * The prompt band's height: one line, the shared strip itself, in every prompt and between prompts, so no board moves
- * for a prompt and the band lies over no card. A phone's is two lines, the strip with `Regions.sheetRoom` kept above it.
- * What a prompt chooses among is drawn in the Stack column or the decision sheet, never in the band.
+ * The prompt band's height in a window of this height: one line of 44 px controls over the ticker's line, the shared
+ * strip with `BAND_TICKER_PX` kept above it (`Regions.sheetRoom`), in every prompt and between prompts, so no board
+ * moves for a prompt and the band lies over no card. A phone's is two lines over the ticker. What a prompt chooses
+ * among is drawn in the Stack column or the decision sheet, never in the band.
  */
-export const BAND_CLAMP: HeightClamp = SHARED_CLAMP
-export const BAND_PHONE_CLAMP: HeightClamp = { min: BAND_PHONE_PX, vh: 0, max: BAND_PHONE_PX }
+export function bandHeight(height: number, phone: boolean): number {
+  return phone ? BAND_PHONE_PX : clampedHeight(SHARED_CLAMP, height) + BAND_TICKER_PX
+}
 /** The side column takes this share of the window width between its bounds; M gets a rail of `RAIL_PX`. */
 export const SIDE_SHARE = 0.18
 export const SIDE_MIN_PX = 272
@@ -289,7 +293,7 @@ export interface Regions {
   opponents: number
   own: number
   /**
-   * The most a prompt sheet grows to: the band (`BAND_CLAMP`), into the room the opponents' area keeps free above the
+   * The most a prompt sheet grows to: the band (`bandHeight`), into the room the opponents' area keeps free above the
    * strip (`sheetRoom`), so it covers no card; less where the split leaves the opponents too little. Never down over
    * your board (the cards a prompt asks you to click are yours), the hand dock or the controls.
    */
@@ -301,7 +305,7 @@ export interface Regions {
    */
   sheetWide: number
   /**
-   * The room the opponents' area keeps free above the strip for the prompt sheet, in px: the band (`BAND_CLAMP`) less
+   * The room the opponents' area keeps free above the strip for the prompt sheet, in px: the band (`bandHeight`) less
    * the strip, for every prompt kind and between prompts alike; 0 for a spectator (`withoutBand`).
    */
   sheetRoom: number
@@ -372,7 +376,9 @@ export function regionSizes(viewport: Viewport, folded = false, handSlim = false
   const rest = Math.max(0, height - topBar - shared - hand)
   const opponents = rest / (1 + OWN_SHARE)
   const own = rest - opponents
-  const band = clampedHeight(phone ? BAND_PHONE_CLAMP : BAND_CLAMP, height)
+  // The room is counted first, so it is a whole number of px whatever the strip's height.
+  const sheetRoom = phone ? Math.max(0, BAND_PHONE_PX - shared) : BAND_TICKER_PX
+  const band = shared + sheetRoom
   const sheet = Math.min(band, sheetMost(height, shared, opponents, phone))
   return {
     breakpoint,
@@ -389,7 +395,7 @@ export function regionSizes(viewport: Viewport, folded = false, handSlim = false
     own,
     sheet,
     sheetWide: Math.max(sheet, sheetMost(height, shared, opponents, phone)),
-    sheetRoom: Math.max(0, band - shared),
+    sheetRoom,
     ...(slim ? { handSlim: true } : {}),
   }
 }

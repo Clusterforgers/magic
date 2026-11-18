@@ -87,11 +87,13 @@ export function look(arg: { me: string; answered: string | null }): Observed | n
     turn: Number(document.querySelector<HTMLElement>('[data-slot="banner"]')?.dataset['turn'] ?? 0),
     text,
     // The band's answers and what the prompt draws in the Stack column or the decision sheet, which carry the kind too.
-    buttons: Array.from(document.querySelectorAll<HTMLButtonElement>('[data-decision] button')).map((button) => ({
-      // The accessible name, as `getByRole` reads it: the combat bar's buttons show "All" and are named "Attack with all".
-      label: (button.getAttribute('aria-label') ?? button.textContent ?? '').trim(),
-      disabled: button.disabled || button.getAttribute('aria-disabled') === 'true',
-    })),
+    buttons: Array.from(document.querySelectorAll<HTMLButtonElement>('[data-decision] button')).map(
+      (button) => ({
+        // The accessible name, as `getByRole` reads it: the combat bar's buttons show "All" and are named "Attack with all".
+        label: (button.getAttribute('aria-label') ?? button.textContent ?? '').trim(),
+        disabled: button.disabled || button.getAttribute('aria-disabled') === 'true',
+      }),
+    ),
     hand: legal(`ul[aria-label="${arg.me}'s hand"]`),
     command: legal(`ul[aria-label="${arg.me}'s commanders in the command zone"]`),
     board: legal(`section[aria-label="${arg.me}'s battlefield"]`),
@@ -465,8 +467,7 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
       now = await seeNow(player)
     }
     // After some picks the prompt offers to pay the rest instead of paying everything automatically.
-    const rest =
-      now !== null && enabled(now, 'Pay the rest for me') ? 'Pay the rest for me' : 'Pay for me'
+    const rest = now !== null && enabled(now, 'Pay the rest for me') ? 'Pay the rest for me' : 'Pay for me'
     if (now !== null && enabled(now, rest)) {
       return payFor(page, rest, seen.id, 'pays automatically (nothing left to tap by hand)')
     }

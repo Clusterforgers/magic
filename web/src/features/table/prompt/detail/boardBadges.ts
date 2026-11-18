@@ -71,5 +71,12 @@ export function lightHandlers(id: ObjectId | undefined): {
   if (id === undefined) return {}
   const on = (): void => lightCard(id)
   const off = (): void => lightCard(null)
-  return { onPointerEnter: on, onPointerLeave: off, onPointerDown: on, onPointerUp: off, onFocus: on, onBlur: off }
+  return {
+    onPointerEnter: on,
+    onPointerLeave: off,
+    onPointerDown: on,
+    onPointerUp: off,
+    onFocus: on,
+    onBlur: off,
+  }
 }

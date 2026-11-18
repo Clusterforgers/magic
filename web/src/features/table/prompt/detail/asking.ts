@@ -26,11 +26,7 @@ export function detailKind(name: string): boolean {
 }
 
 /** The sheet's one line: who asks, the place in a run, or the decision's name. */
-export function sheetTitle(
-  asker: (Asker & { shown: string }) | null,
-  label: string,
-  paying = false,
-): string {
+export function sheetTitle(asker: (Asker & { shown: string }) | null, label: string, paying = false): string {
   if (asker === null || asker.shown === '') return label
   if (paying) return `Pay for ${asker.shown}`
   if (asker.run !== undefined) {
@@ -117,7 +113,14 @@ export function clauseParts(
   return { before: text.slice(0, start), marked: text.slice(start, end), after: text.slice(end) }
 }
 
-const FOLLOW_UPS = ['If you do,', "If you don't,", "If you can't,", 'When you do,', 'If they do,', "If they don't,"]
+const FOLLOW_UPS = [
+  'If you do,',
+  "If you don't,",
+  "If you can't,",
+  'When you do,',
+  'If they do,',
+  "If they don't,",
+]
 
 const sentenceEnd = (text: string, from: number): number => {
   const at = text.indexOf('. ', from)
@@ -156,7 +159,9 @@ export function askKicker(asker: Asker): { lead: string; rest: string } {
     return { lead: asker.cause === undefined ? 'Your triggers' : asker.cause.name, rest: runPlace(asker.run) }
   }
   if (asker.resolving) return { lead: 'Resolving now', rest: 'asks you' }
-  return asker.stack === undefined ? { lead: 'Asks you', rest: '' } : { lead: 'Going on the stack', rest: 'asks you' }
+  return asker.stack === undefined
+    ? { lead: 'Asks you', rest: '' }
+    : { lead: 'Going on the stack', rest: 'asks you' }
 }
 
 /** What a run's row says under its name: a done one its outcome, a waiting one its effect. */

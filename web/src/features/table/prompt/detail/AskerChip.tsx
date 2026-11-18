@@ -103,7 +103,9 @@ function Chip({
       type="button"
       data-slot="prompt-asker"
       data-asker={board ?? id}
-      aria-label={words === undefined ? `${name} asks. Show the card.` : `${words}, from ${name}. Show the card.`}
+      aria-label={
+        words === undefined ? `${name} asks. Show the card.` : `${words}, from ${name}. Show the card.`
+      }
       title={name}
       className="asker-chip outline-primary focus-visible:outline-2"
       {...both}

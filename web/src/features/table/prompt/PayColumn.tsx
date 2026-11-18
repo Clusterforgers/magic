@@ -30,7 +30,8 @@ function openCaption(slot: PaySlot, nameOf: (id: ObjectId) => string): string {
 /** What stands under a filled slot: the source that paid it. */
 function paidCaption(slot: PaySlot, spends: readonly Spend[], nameOf: (id: ObjectId) => string): string {
   if (slot.fill?.life === true) return '2 life'
-  const spend = slot.fill?.spend === null || slot.fill?.spend === undefined ? undefined : spends[slot.fill.spend]
+  const spend =
+    slot.fill?.spend === null || slot.fill?.spend === undefined ? undefined : spends[slot.fill.spend]
   if (spend === undefined) return ''
   switch (spend.kind) {
     case 'pool':
@@ -50,7 +51,10 @@ function paidCaption(slot: PaySlot, spends: readonly Spend[], nameOf: (id: Objec
 /** The disc of a slot: the mana that paid it, else its symbol in a dashed ring. */
 function SlotDisc({ slot, sizeClass }: { slot: PaySlot; sizeClass: string }) {
   const [symbol] = costPips([slot.symbol])
-  const paid = slot.fill?.mana === null || slot.fill?.mana === undefined ? undefined : costPips(madeCost([slot.fill.mana]))[0]
+  const paid =
+    slot.fill?.mana === null || slot.fill?.mana === undefined
+      ? undefined
+      : costPips(madeCost([slot.fill.mana]))[0]
   if (paid !== undefined) return <Pip pip={paid} sizeClass={sizeClass} />
   if (slot.fill === null && symbol !== undefined) {
     // Owed: the symbol as the cost prints it (a hybrid split, a Phyrexian phi), pale in a dashed ring.
@@ -154,13 +158,17 @@ export function madeNames(made: readonly ManaType[]): string {
 
 /** What a group makes, in words: "white", "white or blue, you choose", "white and blue, costs 1 generic". */
 export function groupWords(gives: Gives, marks: readonly SourceMark[]): string {
-  const made = gives.any
-    ? 'one mana of any color'
-    : gives.ways.map((way) => madeNames(way.made)).join(' or ')
+  const made = gives.any ? 'one mana of any color' : gives.ways.map((way) => madeNames(way.made)).join(' or ')
   const parts = [
     `Makes ${made}`,
     ...(gives.any || gives.ways.length > 1 ? ['you choose'] : []),
-    ...(gives.cost.length > 0 ? [`costs ${costPips(gives.cost).map((pip) => pip.name).join(' and ')}`] : []),
+    ...(gives.cost.length > 0
+      ? [
+          `costs ${costPips(gives.cost)
+            .map((pip) => pip.name)
+            .join(' and ')}`,
+        ]
+      : []),
     ...(gives.sacrifice ? ['sacrifice'] : []),
     ...marks.map((mark) => mark.words),
   ]
@@ -294,7 +302,12 @@ export function PayColumn({
   return (
     <div ref={root} data-slot="pay-column" className="grid min-w-0 gap-2">
       <Kicker lead="Paying" rest={`${name} · ${paid} of ${slots.length}`} />
-      <div data-slot="pay-track" role="group" aria-label="What is owed" className="flex flex-wrap gap-x-1 gap-y-1.5">
+      <div
+        data-slot="pay-track"
+        role="group"
+        aria-label="What is owed"
+        className="flex flex-wrap gap-x-1 gap-y-1.5"
+      >
         {slots.map((slot, at) => {
           const caption = slot.fill === null ? openCaption(slot, nameOf) : paidCaption(slot, spends, nameOf)
           const index = slot.fill?.spend ?? null

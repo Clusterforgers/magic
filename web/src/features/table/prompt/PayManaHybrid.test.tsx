@@ -94,8 +94,8 @@ describe('a hybrid cost', () => {
   it('keeps a hybrid symbol hybrid in what is still owed until mana meets it', async () => {
     const { land, user, container } = renderPay(payOptions('{R/W}{R/W}', 'RWR'))
     const owed = (): (string | null)[] =>
-      [...container.querySelectorAll('[data-slot="pay-track"] [role="img"][aria-label^="Owed"]')].map((circle) =>
-        circle.getAttribute('aria-label'),
+      [...container.querySelectorAll('[data-slot="pay-track"] [role="img"][aria-label^="Owed"]')].map(
+        (circle) => circle.getAttribute('aria-label'),
       )
     expect(owed()).toEqual(['Owed: red or white mana', 'Owed: red or white mana'])
     await user.click(land(0))

@@ -135,7 +135,12 @@ function permanent(card: Card, id: ObjectId, viewer: number): ObjectView {
     zone: 'Battlefield',
     name: card.name,
     mana_cost: card.cost.length === 0 ? null : card.cost,
-    supertypes: card.legendary === true ? ['Legendary'] : card.types.includes('Land') && makes.length === 1 ? ['Basic'] : [],
+    supertypes:
+      card.legendary === true
+        ? ['Legendary']
+        : card.types.includes('Land') && makes.length === 1
+          ? ['Basic']
+          : [],
     types: card.types,
     subtypes: card.subtypes ?? [],
     colors: card.colors,
@@ -185,7 +190,9 @@ function scene(fixture: Fixture, stacked: Stacked): Scene {
     next += 1
     ids[card.name] = id
     const object = permanent(card, id, viewer)
-    return spell && card.name === 'Brago, King Eternal' ? { ...object, zone: 'Stack', permanent: null } : object
+    return spell && card.name === 'Brago, King Eternal'
+      ? { ...object, zone: 'Stack', permanent: null }
+      : object
   })
   const abilities = ('triggers' in stacked ? stacked.triggers : []).map((name): ObjectView => {
     const card = CARDS.find((one) => one.name === name)
@@ -223,7 +230,11 @@ function scene(fixture: Fixture, stacked: Stacked): Scene {
       view: {
         ...view,
         objects: [...kept, ...own, ...abilities],
-        battlefield: { ...view.battlefield, count: others.length + field.length, cards: [...others, ...field] },
+        battlefield: {
+          ...view.battlefield,
+          count: others.length + field.length,
+          cards: [...others, ...field],
+        },
         stack: { count: stack.length, cards: stack },
         turn: { ...view.turn, active: viewer, step: 'Main1' },
         combat: { attackers: [], attackers_declared: false, blockers_declared: [] },
@@ -245,10 +256,15 @@ function idsOf(fixture: Fixture): Record<string, ObjectId> {
   return ids
 }
 
-const cardOf = (name: string): Card => CARDS.find((card) => card.name === name) ?? { name, cost: [], colors: [], types: [] }
+const cardOf = (name: string): Card =>
+  CARDS.find((card) => card.name === name) ?? { name, cost: [], colors: [], types: [] }
 
 /** The question a trigger of `name` asks, with what asks it. */
-function mayOf(fixture: Fixture, name: string, run?: { index: number; order: readonly string[] }): PendingDecision {
+function mayOf(
+  fixture: Fixture,
+  name: string,
+  run?: { index: number; order: readonly string[] },
+): PendingDecision {
   const ids = idsOf(fixture)
   const card = cardOf(name)
   const text = card.rules ?? ''

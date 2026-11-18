@@ -9,7 +9,7 @@ import { ASK_PROMPTS } from '../../dev/askScene'
 import { fixtureGame } from '../../dev/devGame'
 import type { FixtureGameOptions } from '../../dev/devGame'
 import { GameTable } from '../../GameTable'
-import { BAND_PHONE_PX, regionSizes, SHARED_CLAMP, clampedHeight } from '../../layout'
+import { BAND_PHONE_PX, BAND_TICKER_PX, regionSizes, SHARED_CLAMP, clampedHeight } from '../../layout'
 import { DETAIL_HOLD_MS } from '../../sideState'
 import { TableOptionsContext } from '../../tableOptions'
 import { forgetOutcomes } from './runMemory'
@@ -87,10 +87,11 @@ describe('a "you may" in every mode and window', () => {
       expect(chip).toHaveTextContent('Mentor of the Meek')
       expect(table.one('[data-slot="prompt-text"]')).toHaveTextContent('Pay {1}?')
       const actions = table.one('[data-slot="prompt-actions"]')
-      expect(within(actions).getAllByRole('button').map((button) => button.getAttribute('aria-label'))).toEqual([
-        'No',
-        'Yes',
-      ])
+      expect(
+        within(actions)
+          .getAllByRole('button')
+          .map((button) => button.getAttribute('aria-label')),
+      ).toEqual(['No', 'Yes'])
       expect(table.one('[data-slot="strip-stack"]')).not.toBeVisible()
       expect(table.one('[data-slot="strip-status"]')).not.toBeVisible()
       expect(band.querySelector('[data-slot="prompt-choices"]')).toBeNull()
@@ -118,7 +119,8 @@ describe('the Stack column', () => {
   afterEach(() => vi.useRealTimers())
 
   const selected = (): string | null =>
-    screen.getAllByRole('tab').find((tab) => tab.getAttribute('aria-selected') === 'true')?.textContent ?? null
+    screen.getAllByRole('tab').find((tab) => tab.getAttribute('aria-selected') === 'true')?.textContent ??
+    null
 
   it('comes forward for a decision and gives the tab back after it', () => {
     const table = owe('ask-may')
@@ -145,11 +147,11 @@ describe('the Stack column', () => {
     expect(document.querySelector('[data-slot="decision-detail"]')).toBeNull()
   })
 
-  it('never changes size: the band is the strip, a phone`s two lines', () => {
+  it('never changes size: the band is the strip over the ticker`s line, a phone`s two lines', () => {
     for (const viewport of [DESKTOP, LAPTOP, RAIL]) {
       const regions = regionSizes(viewport)
-      expect(regions.sheet).toBe(clampedHeight(SHARED_CLAMP, viewport.height))
-      expect(regions.sheetRoom).toBe(0)
+      expect(regions.sheet).toBe(clampedHeight(SHARED_CLAMP, viewport.height) + BAND_TICKER_PX)
+      expect(regions.sheetRoom).toBe(BAND_TICKER_PX)
     }
     const phone = regionSizes(PHONE)
     expect(phone.sheet).toBe(BAND_PHONE_PX)
@@ -265,7 +267,9 @@ describe('paying', () => {
   it.each(WINDOWS)('draws the circles, the groups and the meter at %s', (_window, viewport) => {
     const table = owe('ask-pay', {}, viewport)
     expect(captions(table)).toEqual(['any', 'any', 'white', 'blue'])
-    expect(table.all('[data-slot="pay-group-label"]').map((label) => label.getAttribute('aria-label'))).toEqual([
+    expect(
+      table.all('[data-slot="pay-group-label"]').map((label) => label.getAttribute('aria-label')),
+    ).toEqual([
       'Makes white',
       'Makes blue',
       'Makes white or blue, you choose',
@@ -283,7 +287,10 @@ describe('paying', () => {
     const table = owe('ask-pay')
     const tap = (name: RegExp) => table.user.click(screen.getByRole('button', { name }))
     // A Signet's own cost is paid from mana made before it.
-    expect(screen.getByRole('button', { name: /^Tap Azorius Signet/ })).toHaveAttribute('aria-disabled', 'true')
+    expect(screen.getByRole('button', { name: /^Tap Azorius Signet/ })).toHaveAttribute(
+      'aria-disabled',
+      'true',
+    )
     expect(table.one('[data-slot="row-why"]')).toHaveTextContent('Tap another source for its cost first')
     await tap(/^Tap Plains for white/)
     expect(captions(table)).toEqual(['any', 'any', 'Plains', 'blue'])
@@ -324,7 +331,9 @@ describe('paying', () => {
   it('lights the row of a land of two colours pressed on the board, which its row then answers', async () => {
     const table = owe('ask-pay')
     const fountain = must(
-      table.all('button[data-object-id][data-size]').find((card) => /^Hallowed Fountain/.test(card.getAttribute('aria-label') ?? '')),
+      table
+        .all('button[data-object-id][data-size]')
+        .find((card) => /^Hallowed Fountain/.test(card.getAttribute('aria-label') ?? '')),
     )
     await table.user.click(fountain)
     expect(table.one('[data-slot="pay-source-row"][data-lit]')).toHaveTextContent('Hallowed Fountain')

@@ -25,11 +25,15 @@ function open(name = 'pay-sources') {
 }
 const column = (): HTMLElement => must(document.querySelector<HTMLElement>('[data-slot="pay-column"]'))
 const rows = (): HTMLElement[] => [...column().querySelectorAll<HTMLElement>('[data-slot="pay-source-row"]')]
-const row = (name: string): HTMLElement => must(rows().find((el) => el.textContent?.startsWith(name.slice(0, 1) + name)))
+const row = (name: string): HTMLElement =>
+  must(rows().find((el) => el.textContent?.startsWith(name.slice(0, 1) + name)))
 const labels = (): (string | null)[] =>
-  [...column().querySelectorAll('[data-slot="pay-group-label"]')].map((label) => label.getAttribute('aria-label'))
+  [...column().querySelectorAll('[data-slot="pay-group-label"]')].map((label) =>
+    label.getAttribute('aria-label'),
+  )
 const tap = (name: RegExp): HTMLElement => within(column()).getByRole('button', { name })
-const paid = (): string | null => must(document.querySelector('[data-slot="pay-meter"]')).getAttribute('aria-label')
+const paid = (): string | null =>
+  must(document.querySelector('[data-slot="pay-meter"]')).getAttribute('aria-label')
 const captions = (): string[] =>
   [...column().querySelectorAll('[data-slot="pay-caption"]')].map((caption) => caption.textContent ?? '')
 
@@ -51,9 +55,7 @@ describe('the sources of ?prompt=pay-sources', () => {
       within(row('Command Tower'))
         .getAllByRole('button')
         .map((button) => button.getAttribute('aria-label')),
-    ).toEqual(
-      ['white', 'blue', 'black', 'red', 'green'].map((colour) => `Tap Command Tower for ${colour}`),
-    )
+    ).toEqual(['white', 'blue', 'black', 'red', 'green'].map((colour) => `Tap Command Tower for ${colour}`))
   })
 
   it('adds a source with a press, counts it in the circles and takes it back with Untap', async () => {
@@ -72,10 +74,14 @@ describe('the sources of ?prompt=pay-sources', () => {
   it('takes the colour of a source of any colour from its row, and changes it there without untapping', async () => {
     const { user } = open()
     await user.click(tap(/^Tap Command Tower for blue/))
-    expect(within(column()).getByRole('button', { name: 'Remove blue from Command Tower' })).toBeInTheDocument()
+    expect(
+      within(column()).getByRole('button', { name: 'Remove blue from Command Tower' }),
+    ).toBeInTheDocument()
     expect(row('Command Tower')).toHaveTextContent('paying')
     await user.click(tap(/^Switch Command Tower to green/))
-    expect(within(column()).getByRole('button', { name: 'Remove green from Command Tower' })).toBeInTheDocument()
+    expect(
+      within(column()).getByRole('button', { name: 'Remove green from Command Tower' }),
+    ).toBeInTheDocument()
     expect(within(column()).queryByRole('button', { name: 'Remove blue from Command Tower' })).toBeNull()
     // A source of one kind has no other kind to switch to.
     await user.click(tap(/^Tap Sol Ring for/))
@@ -119,7 +125,9 @@ describe('the marks of ?prompt=pay-marks', () => {
     open('pay-marks')
     const group = must(row(name).closest('[data-slot="pay-group"]'))
     const label = must(group.querySelector('[data-slot="pay-group-label"]'))
-    expect([...label.querySelectorAll('[data-mark]')].map((el) => el.getAttribute('data-mark'))).toEqual([mark])
+    expect([...label.querySelectorAll('[data-mark]')].map((el) => el.getAttribute('data-mark'))).toEqual([
+      mark,
+    ])
     expect(label.getAttribute('aria-label')).toContain(words)
   })
 
@@ -142,7 +150,13 @@ describe('the groups', () => {
     [4, [source(4, 'W', 0), source(4, 'U', 1)]],
     [5, [{ ...source(5, 'W'), also: ['Blue'], cost: [{ Generic: 1 }] }]],
   ])
-  const names: Record<number, string> = { 1: 'Forest', 2: 'Forest', 3: 'Sol Ring', 4: 'Fountain', 5: 'Signet' }
+  const names: Record<number, string> = {
+    1: 'Forest',
+    2: 'Forest',
+    3: 'Sol Ring',
+    4: 'Fountain',
+    5: 'Signet',
+  }
   const nameOf = (id: number): string => names[id] ?? 'a permanent'
 
   it('puts equal permanents on one row and every kind of source in its own group', () => {

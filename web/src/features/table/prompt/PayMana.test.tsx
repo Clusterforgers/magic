@@ -79,7 +79,9 @@ function renderPay(given: PayOptions) {
   /** What pays, in the order chosen: the filled circles of the column, each piece once. */
   const chips = (): string[] => {
     const circles = [...table.container.querySelectorAll<HTMLElement>('button[data-slot="pay-circle"]')]
-    const pieces = new Map(circles.map((circle) => [Number(circle.dataset['spend']), circle.getAttribute('aria-label') ?? '']))
+    const pieces = new Map(
+      circles.map((circle) => [Number(circle.dataset['spend']), circle.getAttribute('aria-label') ?? '']),
+    )
     return [...pieces.entries()].sort(([a], [b]) => a - b).map(([, label]) => label)
   }
   /** One step: `3` clicks land 3, `3/U` then picks blue in the chooser, `pool:G` spends floating green. */

@@ -56,7 +56,11 @@ function PlainYesNo({
   const send = (yes: boolean): void => {
     if (run !== undefined) {
       const asked = text.replace(/\?+$/, '')
-      rememberOutcome(run.id, run.index, asked === '' ? (yes ? 'Yes' : 'No') : `${yes ? 'Yes' : 'No'} · ${asked}`)
+      rememberOutcome(
+        run.id,
+        run.index,
+        asked === '' ? (yes ? 'Yes' : 'No') : `${yes ? 'Yes' : 'No'} · ${asked}`,
+      )
     }
     answer({ YesNo: yes })
   }
@@ -83,7 +87,10 @@ function PlainYesNo({
       choices={
         ability === null ? undefined : (
           // Under the asking card, off the band: a rule for the rest of the game is no answer to press in passing.
-          <div data-slot="always-answer" className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+          <div
+            data-slot="always-answer"
+            className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground"
+          >
             <span>For the rest of the game:</span>
             <Button
               size="sm"

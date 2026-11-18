@@ -273,8 +273,8 @@ describe('the chrome of the opponents row', () => {
     expect(regions.opponents - (regions.sheetWide - regions.shared)).toBeGreaterThanOrEqual(
       192 + BOARD_KEEP_PX - 1e-9,
     )
-    // The band is the strip; a sheet that grows (a decision with no column for its choices) still has room.
-    expect(regions.sheet).toBe(regions.shared)
+    // The band is one line; a sheet that grows (a decision with no column for its choices) still has room.
+    expect(regions.sheet).toBe(regions.shared + regions.sheetRoom)
     expect(regions.sheetWide).toBeGreaterThan(regions.shared + 32)
   })
 })

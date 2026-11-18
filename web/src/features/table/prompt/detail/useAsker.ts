@@ -22,7 +22,9 @@ export function useAsker(): ShownAsker | null {
   const source = usePlay((state) =>
     asker?.source === undefined ? undefined : state.objectsById[asker.source],
   )
-  const stacked = usePlay((state) => (asker?.stack === undefined ? undefined : state.objectsById[asker.stack]))
+  const stacked = usePlay((state) =>
+    asker?.stack === undefined ? undefined : state.objectsById[asker.stack],
+  )
   return useMemo(() => {
     if (asker === null) return null
     const object = source ?? stacked

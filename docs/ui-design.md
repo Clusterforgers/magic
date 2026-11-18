@@ -204,7 +204,7 @@ A decision is answered in two places that never move: the band says what is aske
 
 | Part | What it holds |
 |---|---|
-| Band | one line, the strip's height (56 to 72 px), the same in every prompt and between prompts; two lines (112 px) on a phone. The asking card's chip (art and name; hover, focus or a press lights the card on the board and shows its preview), the question in the card's words, a short reading (a run's dots and "2 of 3", a payment's symbols), the answers at the right end |
+| Band | one line of 44 px controls over the ticker's line (72 to 88 px), the same in every prompt and between prompts; two lines (112 px) on a phone. The asking card's chip (art and name; hover, focus or a press lights the card on the board and shows its preview), the question in the card's words, a short reading (a run's dots and "2 of 3", a payment's symbols), the answers at the right end |
 | Stack column | the side column comes forward on its Stack tab when a decision arrives and gives the tab back afterwards; it never changes size |
 | Sheet | where no column is open (a phone, a rail, a folded column): the same detail in a sheet over the hand, at most 330 px, with a grab handle that folds it; folded from the start when the answer is a press on the table |
 

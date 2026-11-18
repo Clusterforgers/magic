@@ -388,7 +388,9 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
                       className="detail-row grid-cols-[minmax(0,1fr)_auto] py-1 pr-1"
                     >
                       <span className="grid min-w-0">
-                        <span className="truncate text-[0.8125rem] leading-[1.125rem] font-semibold">{name}</span>
+                        <span className="truncate text-[0.8125rem] leading-[1.125rem] font-semibold">
+                          {name}
+                        </span>
                         <span className="truncate text-xs leading-4 text-muted-foreground" title={line}>
                           {line}
                         </span>

@@ -80,7 +80,8 @@ const PROMPTS = [
 async function show(page: Page, table: string, prompt: string | null, folded = false): Promise<Shown> {
   await page.goto(`${DEV_WEB_URL}/dev/table?${table}${prompt === null ? '' : `&prompt=${prompt}`}`)
   await page.locator('[data-slot="shared-sheet"]').waitFor()
-  if (prompt !== null) await page.locator('[data-slot="prompt-text"]').first().waitFor()
+  // A payment's sentence is read aloud and not drawn.
+  if (prompt !== null) await page.locator('[data-slot="prompt-text"]').first().waitFor({ state: 'attached' })
   // The fold is remembered, so a second page of the same test opens folded already.
   const fold = page.getByRole('button', { name: 'Fold the side panel' })
   if (folded && (await fold.isVisible())) await fold.click()
@@ -105,7 +106,13 @@ async function show(page: Page, table: string, prompt: string | null, folded = f
 const same = (a: Box | null, b: Box | null): boolean =>
   a === null || b === null ? a === b : a.every((value, at) => Math.abs(value - (b[at] ?? 0)) <= 1)
 
-const TABLES = ['seats=2&board=duel', 'seats=6&mode=grid', 'seats=4&teams=2v2', 'seats=4&teams=2hg', 'seats=4&boss=1'] as const
+const TABLES = [
+  'seats=2&board=duel',
+  'seats=6&mode=grid',
+  'seats=4&teams=2v2',
+  'seats=4&teams=2hg',
+  'seats=4&boss=1',
+] as const
 
 test.describe('the prompt band and the Stack column', () => {
   // Each test opens the table once for every decision kind.
@@ -116,30 +123,45 @@ test.describe('the prompt band and the Stack column', () => {
     [1280, 720],
   ] as const) {
     for (const table of TABLES) {
-      test(`nothing moves from one decision to the next on ${table} at ${width}x${height}`, async ({ page }) => {
+      test(`nothing moves from one decision to the next on ${table} at ${width}x${height}`, async ({
+        page,
+      }) => {
         await page.setViewportSize({ width, height })
         const quiet = await show(page, table, null)
-        expect(quiet.band[3], 'one line').toBeLessThanOrEqual(72)
-        expect(quiet.band[3]).toBeGreaterThanOrEqual(56)
+        // One line of controls over the ticker's line.
+        expect(quiet.band[3], 'one line').toBeLessThanOrEqual(88)
+        expect(quiet.band[3]).toBeGreaterThanOrEqual(72)
+        expect(quiet.bandScrolls, 'the band between decisions scrolls').toBe(false)
         for (const prompt of PROMPTS.slice(1)) {
           const shown = await show(page, table, prompt)
           const label = `${table} ${prompt} ${width}x${height}`
-          expect(same(shown.band, quiet.band), `${label}: the band keeps its box, ${shown.band} against ${quiet.band}`).toBe(true)
+          expect(
+            same(shown.band, quiet.band),
+            `${label}: the band keeps its box, ${shown.band} against ${quiet.band}`,
+          ).toBe(true)
           expect(shown.bandScrolls, `${label}: the band scrolls`).toBe(false)
           expect(new Set(shown.answerTops).size, `${label}: the answers keep one row`).toBeLessThanOrEqual(1)
           expect(shown.answersOut, `${label}: answers outside the band`).toBe(0)
           for (const [name, box] of Object.entries(shown.still)) {
-            expect(same(box, quiet.still[name] ?? null), `${label}: ${name} moved, ${box} against ${quiet.still[name]}`).toBe(true)
+            expect(
+              same(box, quiet.still[name] ?? null),
+              `${label}: ${name} moved, ${box} against ${quiet.still[name]}`,
+            ).toBe(true)
           }
           expect(shown.detail, `${label}: the detail is in the column`).toBe('column')
           expect(shown.sheet).toBeNull()
-          await expect(page.getByRole('tab', { name: /^Stack/ }), label).toHaveAttribute('aria-selected', 'true')
+          await expect(page.getByRole('tab', { name: /^Stack/ }), label).toHaveAttribute(
+            'aria-selected',
+            'true',
+          )
         }
       })
     }
   }
 
-  test('shows the asking card in the band and the column, and gives the tab back after the answer', async ({ page }) => {
+  test('shows the asking card in the band and the column, and gives the tab back after the answer', async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 1400, height: 900 })
     const shown = await show(page, 'seats=2&board=duel', 'ask-may')
     expect(shown.chip).toBe(true)
@@ -161,14 +183,22 @@ test.describe('the prompt band and the Stack column', () => {
     const quiet = await show(page, 'seats=2&board=duel', null, true)
     for (const prompt of ['yesno', 'order', 'pay', 'mode-two']) {
       const shown = await show(page, 'seats=2&board=duel', prompt, true)
-      expect(same(shown.band, quiet.band), `${prompt}: the band keeps its box`).toBe(true)
-      expect(same(shown.still['own'] ?? null, quiet.still['own'] ?? null), `${prompt}: your board moved`).toBe(true)
+      expect(
+        same(shown.band, quiet.band),
+        `${prompt}: the band keeps its box, ${shown.band} against ${quiet.band}`,
+      ).toBe(true)
+      expect(
+        same(shown.still['own'] ?? null, quiet.still['own'] ?? null),
+        `${prompt}: your board moved`,
+      ).toBe(true)
       expect(shown.detail, `${prompt}: the detail is in the sheet`).toBe('sheet')
       expect(shown.sheet?.[3] ?? 0, `${prompt}: the sheet is at most 330 px`).toBeLessThanOrEqual(331)
     }
   })
 
-  test('is two lines on a phone, the detail in the sheet and a choice of cards in the overlay', async ({ page }) => {
+  test('is two lines on a phone, the detail in the sheet and a choice of cards in the overlay', async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 390, height: 844 })
     const quiet = await show(page, 'seats=2&board=duel', null)
     expect(quiet.band[3]).toBe(112)

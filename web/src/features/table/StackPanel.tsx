@@ -295,7 +295,10 @@ export function StackRest() {
 /** The items of the stack, top first; `plain` leaves out the frame, the heading and the large top item. */
 function StackList({ without, plain = false }: { without?: ReadonlySet<ObjectId>; plain?: boolean }) {
   const all = usePlay(useShallow(stackTopFirst))
-  const ids = useMemo(() => (without === undefined ? all : all.filter((id) => !without.has(id))), [all, without])
+  const ids = useMemo(
+    () => (without === undefined ? all : all.filter((id) => !without.has(id))),
+    [all, without],
+  )
   const objectsById = usePlay((state) => state.objectsById)
   const groups = useMemo(() => groupStack(ids, objectsById), [ids, objectsById])
   const [opened, setOpened] = useState<ReadonlySet<string>>(() => new Set())

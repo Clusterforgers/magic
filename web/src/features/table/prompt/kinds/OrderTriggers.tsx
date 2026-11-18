@@ -190,7 +190,9 @@ export const OrderTriggersPrompt: PromptComponent<'OrderTriggers'> = ({ options 
               data-interactive=""
               data-picked={place >= 0 || undefined}
               aria-pressed={place >= 0}
-              aria-label={place >= 0 ? `${label}, resolves ${whichWord(place, count)}. Press to take it out.` : label}
+              aria-label={
+                place >= 0 ? `${label}, resolves ${whichWord(place, count)}. Press to take it out.` : label
+              }
               className="detail-row outline-offset-2 outline-primary focus-visible:outline-2"
               onClick={() => pick(index)}
               {...lightHandlers(sources[index]?.id)}
@@ -290,7 +292,11 @@ export const OrderTriggersPrompt: PromptComponent<'OrderTriggers'> = ({ options 
         <>
           <Kicker
             lead={`Order ${count} triggers`}
-            rest={touch ? `press the one that resolves ${whichWord(Math.min(picks.length, count - 1), count)}` : 'top resolves first'}
+            rest={
+              touch
+                ? `press the one that resolves ${whichWord(Math.min(picks.length, count - 1), count)}`
+                : 'top resolves first'
+            }
           />
           {rows}
           {keyed ? (

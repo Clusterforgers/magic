@@ -62,7 +62,11 @@ export function AskMarks() {
     for (const badge of badges) add(badge)
     if (asker?.board !== undefined) add({ id: asker.board, label: 'asking', tone: 'ask' })
     if (asker?.cause !== undefined) {
-      add({ id: asker.cause.object, label: asker.cause.entered === true ? 'just entered' : 'cause', tone: 'cause' })
+      add({
+        id: asker.cause.object,
+        label: asker.cause.entered === true ? 'just entered' : 'cause',
+        tone: 'cause',
+      })
     }
     return all.map(badgeRules).join('') + (lit === null ? '' : litRules(lit))
   }, [asker, badges, lit])

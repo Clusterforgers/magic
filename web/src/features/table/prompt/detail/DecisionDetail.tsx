@@ -43,7 +43,9 @@ function MarkedRules({ text, clause }: { text: string; clause: readonly [number,
 }
 
 /** The words of the asking card: the ability's text from the server, else the card's own text with its "you may" found here. */
-function useAskedText(asker: ShownAsker): { text: string; clause: readonly [number, number] | undefined } | null {
+function useAskedText(
+  asker: ShownAsker,
+): { text: string; clause: readonly [number, number] | undefined } | null {
   const question = usePlay((state) => {
     const kind = ownDecision(state)?.decision.kind
     return kind !== undefined && 'YesNo' in kind ? (kind.YesNo.text ?? '') : null
@@ -91,7 +93,9 @@ function AskEntry({ asker, tag }: { asker: ShownAsker; tag: string }) {
         <span data-slot="ask-tag" className="detail-tag">
           {tag}
         </span>
-        <b className="text-sm leading-[1.125rem] font-semibold">{asker.shown === '' ? 'A card' : asker.shown}</b>
+        <b className="text-sm leading-[1.125rem] font-semibold">
+          {asker.shown === '' ? 'A card' : asker.shown}
+        </b>
         {words === null ? null : <MarkedRules text={words.text} clause={words.clause} />}
       </div>
     </div>

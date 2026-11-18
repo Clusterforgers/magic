@@ -33,7 +33,12 @@ export interface PaySlot {
 const ONE: ManaSymbol = { Generic: 1 }
 
 /** The slots a cost asks for: a generic part one slot a mana, every other symbol one slot. */
-function slotsOf(cost: ManaCost, prefix: string, extraOf: ObjectId | undefined, life: LifeSymbols): PaySlot[] {
+function slotsOf(
+  cost: ManaCost,
+  prefix: string,
+  extraOf: ObjectId | undefined,
+  life: LifeSymbols,
+): PaySlot[] {
   const paid = new Set(life)
   return cost.flatMap((symbol, at): PaySlot[] => {
     if (typeof symbol === 'object' && 'Generic' in symbol) {

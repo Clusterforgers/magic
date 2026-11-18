@@ -230,73 +230,73 @@ export function PaymentSummary({
       }
     >
       {aside ? null : (
-      <Row label="Cost">
-        <ManaPips pips={costPips(cost)} sizeClass={PIP_SIZE} label="Mana cost" />
-        {/* What is made and owed stand on the cost's line, so a payment keeps to the band's height. */}
-        <div data-slot="pay-made-owed" className="ms-3 flex flex-wrap items-center gap-x-4 gap-y-1">
-          {/* Before anything is chosen what is owed is the cost: "Made so far" waits for a first source. */}
-          {empty ? null : (
-            <Half label="Made so far">
-              <ManaPips
-                pips={costPips([...madeCost(spends.flatMap(madeOf)), ...genericMade(spends)])}
-                sizeClass={PIP_SIZE}
-                label="Mana made"
-              />
-            </Half>
-          )}
-          <Half label="Still owed">
-            {covered ? (
-              <Quiet>nothing, covered</Quiet>
-            ) : (
-              <ManaPips pips={costPips(owed)} sizeClass={PIP_SIZE} label="Mana still owed" />
+        <Row label="Cost">
+          <ManaPips pips={costPips(cost)} sizeClass={PIP_SIZE} label="Mana cost" />
+          {/* What is made and owed stand on the cost's line, so a payment keeps to the band's height. */}
+          <div data-slot="pay-made-owed" className="ms-3 flex flex-wrap items-center gap-x-4 gap-y-1">
+            {/* Before anything is chosen what is owed is the cost: "Made so far" waits for a first source. */}
+            {empty ? null : (
+              <Half label="Made so far">
+                <ManaPips
+                  pips={costPips([...madeCost(spends.flatMap(madeOf)), ...genericMade(spends)])}
+                  sizeClass={PIP_SIZE}
+                  label="Mana made"
+                />
+              </Half>
             )}
-          </Half>
-        </div>
-      </Row>
+            <Half label="Still owed">
+              {covered ? (
+                <Quiet>nothing, covered</Quiet>
+              ) : (
+                <ManaPips pips={costPips(owed)} sizeClass={PIP_SIZE} label="Mana still owed" />
+              )}
+            </Half>
+          </div>
+        </Row>
       )}
       {aside && held.length === 0 ? null : (
-      <Row label="Floating mana">
-        {held.length === 0 ? (
-          <Quiet>none</Quiet>
-        ) : (
-          held.map((type) => {
-            const left = poolLeft(pool, spends, type)
-            const usable = left > 0 && canSpend(type)
-            const kept = keptOf(pool, type)
-            return (
-              <Button
-                key={type}
-                type="button"
-                variant="outline"
-                size="sm"
-                data-slot="pay-pool"
-                // Not `disabled`: a button that goes dead under the keyboard would drop its focus.
-                aria-disabled={!usable}
-                aria-label={`Spend ${manaName(type)} from your pool, ${left} left${kept === null ? '' : `, ${kept.words}`}`}
-                title={kept?.words}
-                className="h-9 gap-1.5 px-2 aria-disabled:pointer-events-none aria-disabled:opacity-50"
-                onClick={() => {
-                  if (usable) onSpendPool(type)
-                }}
-              >
-                <ManaDot type={type} />
-                <span aria-hidden="true" className="tabular-nums">
-                  {left}
-                </span>
-                {kept === null ? null : (
-                  <span
-                    aria-hidden="true"
-                    data-mark="kept"
-                    className="rounded-sm bg-muted px-1 text-xs text-muted-foreground"
-                  >
-                    kept
+        <Row label="Floating mana">
+          {held.length === 0 ? (
+            <Quiet>none</Quiet>
+          ) : (
+            held.map((type) => {
+              const left = poolLeft(pool, spends, type)
+              const usable = left > 0 && canSpend(type)
+              const kept = keptOf(pool, type)
+              return (
+                <Button
+                  key={type}
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  data-slot="pay-pool"
+                  // Not `disabled`: a button that goes dead under the keyboard would drop its focus.
+                  aria-disabled={!usable}
+                  aria-label={`Spend ${manaName(type)} from your pool, ${left} left${kept === null ? '' : `, ${kept.words}`}`}
+                  title={kept?.words}
+                  className="h-9 gap-1.5 px-2 aria-disabled:pointer-events-none aria-disabled:opacity-50"
+                  onClick={() => {
+                    if (usable) onSpendPool(type)
+                  }}
+                >
+                  <ManaDot type={type} />
+                  <span aria-hidden="true" className="tabular-nums">
+                    {left}
                   </span>
-                )}
-              </Button>
-            )
-          })
-        )}
-      </Row>
+                  {kept === null ? null : (
+                    <span
+                      aria-hidden="true"
+                      data-mark="kept"
+                      className="rounded-sm bg-muted px-1 text-xs text-muted-foreground"
+                    >
+                      kept
+                    </span>
+                  )}
+                </Button>
+              )
+            })
+          )}
+        </Row>
       )}
       {restricted.length === 0 ? null : (
         <Row label="Restricted mana">

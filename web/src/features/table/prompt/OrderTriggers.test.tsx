@@ -53,7 +53,9 @@ describe('the list at first', () => {
       for (const [entry, trigger] of entries.entries()) {
         expect(rowOf(entry)).toHaveTextContent(nameOf(trigger.source.id))
         expect(rowOf(entry)).toHaveTextContent(must(trigger.when))
-        expect(within(rowOf(entry)).getByRole('button', { name: `Move ${labelOf(trigger)} up` })).toBeInTheDocument()
+        expect(
+          within(rowOf(entry)).getByRole('button', { name: `Move ${labelOf(trigger)} up` }),
+        ).toBeInTheDocument()
       }
       // Nothing on the table is clickable while the triggers are ordered.
       expect([...marks().values()]).toEqual([])
@@ -234,11 +236,15 @@ describe('the rows', () => {
       [1, 2],
       [2, 3],
     ] as const) {
-      expect(within(rowOf(entry)).getByRole('button', { name: `Move ${name}: When it dies (${n}) up` })).toBeInTheDocument()
+      expect(
+        within(rowOf(entry)).getByRole('button', { name: `Move ${name}: When it dies (${n}) up` }),
+      ).toBeInTheDocument()
     }
     await user.click(move(0, 'up'))
     expect(shown()).toEqual([2, 0, 1])
-    expect(within(rowOf(0)).getByRole('button', { name: `Move ${name}: When it dies (1) up` })).toBeInTheDocument()
+    expect(
+      within(rowOf(0)).getByRole('button', { name: `Move ${name}: When it dies (1) up` }),
+    ).toBeInTheDocument()
   })
 
   it('call a source the view does not hold "A card", and a trigger without words by its ability number', () => {

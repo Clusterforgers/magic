@@ -101,7 +101,11 @@ function Sentence({
       <LiveText
         id={id}
         textRef={words}
-        className={cn('min-w-0 flex-1', open ? null : 'prompt-sentence-clamp', capital && 'first-letter:uppercase')}
+        className={cn(
+          'min-w-0 flex-1',
+          open ? null : 'prompt-sentence-clamp',
+          capital && 'first-letter:uppercase',
+        )}
       >
         {text}
       </LiveText>
@@ -235,7 +239,11 @@ export function PromptLayout({
     <>
       {title}
       {chip ? <AskerChip /> : (lead ?? null)}
-      <Sentence text={chip ? withoutAsker(text, asker.shown) : text} quiet={quiet && side !== null} capital={chip} />
+      <Sentence
+        text={chip ? withoutAsker(text, asker.shown) : text}
+        quiet={quiet && side !== null}
+        capital={chip}
+      />
       {meter === undefined || meter === null || meter === false ? null : (
         <div data-slot="prompt-meter" className="flex items-center gap-2 empty:hidden">
           {meter}
@@ -244,7 +252,11 @@ export function PromptLayout({
       {choices === undefined || choices === null || choices === false ? null : aside ? (
         side.detail === null ? null : (
           createPortal(
-            <div data-slot="prompt-choices" data-detail="" className="grid min-w-0 content-start gap-2 empty:hidden">
+            <div
+              data-slot="prompt-choices"
+              data-detail=""
+              className="grid min-w-0 content-start gap-2 empty:hidden"
+            >
               {choices}
             </div>,
             side.detail,

@@ -127,11 +127,11 @@ describe('regionSizes', () => {
   })
 
   it.each([
-    // The band: the strip itself, 7 % of the height between 56 and 72 px; a phone's two lines.
-    ['1920x1080', 72],
-    ['1280x720', 56],
+    // The band: the strip (7 % of the height between 56 and 72 px) and the ticker's 16 px; a phone's two lines.
+    ['1920x1080', 88],
+    ['1280x720', 72],
     ['390x844', 112],
-    ['844x390', 56],
+    ['844x390', 72],
   ])(
     'holds the sheet of a %s window to the band of %f px, a phone keeping its second line free above the strip',
     (name, band) => {
@@ -143,8 +143,8 @@ describe('regionSizes', () => {
     },
   )
 
-  it('keeps one band per window: a spectator, who answers no prompt, keeps no second line on a phone', () => {
-    const regions = regionSizes({ width: 390, height: 844 })
+  it('keeps one band per window: a spectator, who answers no prompt, keeps none', () => {
+    const regions = regionSizes({ width: 1881, height: 1047 })
     expect(withoutBand(regions).sheetRoom).toBe(0)
     expect(regions.sheetRoom).toBeGreaterThan(0)
   })

@@ -53,11 +53,19 @@ describe('the slots of a payment', () => {
     [
       'floating mana and improvise',
       [{ Generic: 1 }, W],
-      [{ kind: 'improvise', artifact: 9 }, { kind: 'pool', mana: 'White' }],
+      [
+        { kind: 'improvise', artifact: 9 },
+        { kind: 'pool', mana: 'White' },
+      ],
       ['any<-0', 'White<-1'],
     ],
     ['improvise never pays a colour', [W], [{ kind: 'improvise', artifact: 9 }], ['White<-']],
-    ['a hybrid symbol takes either colour', [{ Hybrid: ['White', 'Blue'] }], [tap(1, 'Blue')], ['White/Blue<-0']],
+    [
+      'a hybrid symbol takes either colour',
+      [{ Hybrid: ['White', 'Blue'] }],
+      [tap(1, 'Blue')],
+      ['White/Blue<-0'],
+    ],
     [
       'the narrower slot is filled first',
       [{ Hybrid: ['White', 'Blue'] }, W],

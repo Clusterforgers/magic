@@ -91,7 +91,11 @@ describe('the asker', () => {
   })
 
   it('is the named object alone where the server sent none', () => {
-    expect(askerOf(pendingOf({ YesNo: { source: 12 } }))).toMatchObject({ source: 12, stack: undefined, name: '' })
+    expect(askerOf(pendingOf({ YesNo: { source: 12 } }))).toMatchObject({
+      source: 12,
+      stack: undefined,
+      name: '',
+    })
   })
 
   it('does not point at a source the server left out', () => {
@@ -113,7 +117,11 @@ describe('the asked clause', () => {
   const text = 'Whenever a creature enters, you may pay {1}. If you do, draw a card.'
 
   it.each<[string, readonly [number, number] | undefined, [string, string, string]]>([
-    ['a clause in the middle', [28, 44], ['Whenever a creature enters, ', 'you may pay {1}.', ' If you do, draw a card.']],
+    [
+      'a clause in the middle',
+      [28, 44],
+      ['Whenever a creature enters, ', 'you may pay {1}.', ' If you do, draw a card.'],
+    ],
     ['a clause to the end', [28, text.length], ['Whenever a creature enters, ', text.slice(28), '']],
     ['no clause', undefined, [text, '', '']],
     ['a clause past the text', [28, 400], [text, '', '']],
@@ -124,7 +132,12 @@ describe('the asked clause', () => {
   })
 
   it.each<[string, string, string, string | undefined]>([
-    ['the may the question names, with what depends on it', text, 'Pay {1}?', 'you may pay {1}. If you do, draw a card.'],
+    [
+      'the may the question names, with what depends on it',
+      text,
+      'Pay {1}?',
+      'you may pay {1}. If you do, draw a card.',
+    ],
     ['a plain may', 'When it enters, you may gain 1 life.', 'Gain 1 life?', 'you may gain 1 life.'],
     [
       'the second of two',
@@ -132,7 +145,12 @@ describe('the asked clause', () => {
       'Discard a card?',
       'you may discard a card. If you do, gain 2 life.',
     ],
-    ['the first may for a question in other words', 'You may scry 1. Draw a card.', 'Look?', 'You may scry 1.'],
+    [
+      'the first may for a question in other words',
+      'You may scry 1. Draw a card.',
+      'Look?',
+      'You may scry 1.',
+    ],
     ['the first may for no question', 'At your upkeep, you may scry 1.', '', 'you may scry 1.'],
     ['nothing in a text with no may and no such words', 'Each player loses 1 life.', 'Pay {2}?', undefined],
   ])('finds %s', (_what, words, question, clause) => {
@@ -148,7 +166,12 @@ describe('the words around the asker', () => {
     ['resolving', {}, 'Resolving now', 'asks you'],
     ['being cast or put on the stack', { resolving: false }, 'Going on the stack', 'asks you'],
     ['off the stack', { resolving: false, stack: undefined }, 'Asks you', ''],
-    ['one of a run with a cause', { run: RUN, cause: { object: 9, name: 'Brago' } }, 'Brago', 'trigger 2 of 4'],
+    [
+      'one of a run with a cause',
+      { run: RUN, cause: { object: 9, name: 'Brago' } },
+      'Brago',
+      'trigger 2 of 4',
+    ],
     ['one of a run without', { run: RUN }, 'Your triggers', 'trigger 2 of 4'],
   ])('%s', (_what, change, lead, rest) => {
     expect(askKicker({ ...base, cause: undefined, run: undefined, ...change })).toEqual({ lead, rest })
@@ -177,7 +200,12 @@ describe('the words around the asker', () => {
       false,
       'Brago · 2 of 4',
     ],
-    ['an asker with no name', { ...base, cause: undefined, run: undefined, shown: '' }, false, 'Order triggers'],
+    [
+      'an asker with no name',
+      { ...base, cause: undefined, run: undefined, shown: '' },
+      false,
+      'Order triggers',
+    ],
   ])('the sheet names %s', (_what, asker, paying, title) => {
     expect(sheetTitle(asker, 'Order triggers', paying)).toBe(title)
   })

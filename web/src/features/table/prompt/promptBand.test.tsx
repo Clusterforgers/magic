@@ -9,12 +9,13 @@ import { must } from '@/test-utils/batches'
 import { blockAfter } from '@/test-utils/cssBlocks'
 import { renderTable } from '@/test-utils/tableHarness'
 import {
-  BAND_CLAMP,
+  BAND_TICKER_PX,
   BAND_MIN_PHONE_PX,
   BAND_MIN_PX,
   BAND_PHONE_PX,
   SHARED_CLAMP,
   SHEET_MAX_VH,
+  bandHeight,
   clampedHeight,
   regionSizes,
   sheetMost,
@@ -102,7 +103,8 @@ describe('the band rules', () => {
 
 describe('the stylesheet', () => {
   const phone = blockAfter(band, `@container band (width < ${BAND_PHONE_REM}rem)`)
-  const fallback = "&:has([data-slot='decision-line'] > [data-slot='prompt-choices']:not([data-inline]):not(:empty))"
+  const fallback =
+    "&:has([data-slot='decision-line'] > [data-slot='prompt-choices']:not([data-inline]):not(:empty))"
   const quiet = "&:has([data-slot='prompt-sentence'][data-quiet])"
 
   it('draws the areas the rules name', () => {
@@ -154,20 +156,24 @@ describe('the stylesheet', () => {
     expect(answers).toMatch(/justify-content:\s*flex-start/)
   })
 
-  it('keeps a narrow band\'s lead for the top chip and drops the key hints only where the answers need the room', () => {
+  it("keeps a narrow band's lead for the top chip and drops the key hints only where the answers need the room", () => {
     const narrow = blockAfter(band, `@container band (width < ${BAND_NARROW_REM}rem)`)
     expect(blockAfter(narrow, "[data-slot='stack-label']")).toMatch(/clip-path:\s*inset\(50%\)/)
     expect(blockAfter(narrow, "[data-slot='stack-more-word']")).toMatch(/display:\s*none/)
     const hints = blockAfter(band, `@container band (width < ${BAND_HINTS_REM}rem)`)
     expect(hints).toMatch(/\[data-slot='prompt-actions'\] \[data-slot='key-hint'\],/)
-    expect(blockAfter(hints, "[data-slot='prompt-actions'] [data-slot='undo-rest']")).toMatch(/display:\s*none/)
+    expect(blockAfter(hints, "[data-slot='prompt-actions'] [data-slot='undo-rest']")).toMatch(
+      /display:\s*none/,
+    )
   })
 
   it('draws every list one column wide in the Stack column, three cards to a row', () => {
     const column = blockAfter(css, "\n[data-slot='decision-choices'] {")
-    expect(blockAfter(column, "& [data-slot='mode-list']")).toMatch(/grid-template-columns:\s*minmax\(0, 1fr\)/)
+    expect(blockAfter(column, "& [data-slot='mode-list']")).toMatch(
+      /grid-template-columns:\s*minmax\(0, 1fr\)/,
+    )
     expect(blockAfter(column, "& [class*='max-h-']")).toMatch(/max-height:\s*none/)
-    expect(blockAfter(column, "> [data-candidate]")).toMatch(/--card-w:\s*calc\(\(100cqi - 1rem\) \/ 3/)
+    expect(blockAfter(column, '> [data-candidate]')).toMatch(/--card-w:\s*calc\(\(100cqi - 1rem\) \/ 3/)
   })
 
   it('moves nothing under reduced motion', () => {
@@ -246,12 +252,14 @@ describe('the band`s height', () => {
     [1400, 900],
     [1280, 720],
     [1100, 800],
-  ])('is the strip itself at %ix%i: no room is kept above it and no prompt grows it', (width, height) => {
+  ])("is the strip and the ticker's line at %ix%i, whatever the prompt", (width, height) => {
     const regions = regionSizes({ width, height })
-    expect(BAND_CLAMP).toEqual(SHARED_CLAMP)
-    expect(regions.sheet).toBe(clampedHeight(SHARED_CLAMP, height))
-    expect(regions.sheet).toBe(regions.shared)
-    expect(regions.sheetRoom).toBe(0)
+    expect(regions.sheet).toBe(clampedHeight(SHARED_CLAMP, height) + BAND_TICKER_PX)
+    expect(regions.sheet).toBe(bandHeight(height, false))
+    expect(regions.sheetRoom).toBe(BAND_TICKER_PX)
+    // One row of 44 px controls, the ticker, the padding and the edge fit in it.
+    expect(regions.sheet).toBeGreaterThanOrEqual(44 + BAND_TICKER_PX + 8 + 4)
+    expect(regions.sheet).toBeLessThanOrEqual(88)
   })
 
   it.each([
@@ -271,12 +279,15 @@ describe('the sheet of a prompt with no column to draw in', () => {
     [2550, 1380],
     [1400, 900],
     [1280, 720],
-  ])('never squeezes under a sentence and a row of answers over an empty board at %ix%i', (_width, height) => {
-    // Nothing on the opponents' boards: their row is down to its pods, which a sheet may not cover.
-    const most = sheetMost(height, 56, 40, false, 120)
-    expect(most).toBeGreaterThanOrEqual(BAND_MIN_PX)
-    expect(most).toBeLessThanOrEqual((height * SHEET_MAX_VH) / 100)
-  })
+  ])(
+    'never squeezes under a sentence and a row of answers over an empty board at %ix%i',
+    (_width, height) => {
+      // Nothing on the opponents' boards: their row is down to its pods, which a sheet may not cover.
+      const most = sheetMost(height, 56, 40, false, 120)
+      expect(most).toBeGreaterThanOrEqual(BAND_MIN_PX)
+      expect(most).toBeLessThanOrEqual((height * SHEET_MAX_VH) / 100)
+    },
+  )
 
   it('keeps a phone its own floor', () => {
     expect(sheetMost(844, 56, 100, true)).toBe(BAND_MIN_PHONE_PX)

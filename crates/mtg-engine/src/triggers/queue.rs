@@ -180,24 +180,36 @@ pub fn effect_words(rules: &Ability, name: &str) -> String {
         return String::new();
     };
     let text = text.replace('~', name);
-    if !matches!(rules, Ability::Triggered { .. }) {
-        return text;
+    if matches!(rules, Ability::Triggered { .. }) {
+        without_event(&text)
+    } else {
+        text
     }
-    // The event ends at the first comma that does not continue a list ("creatures, planeswalkers, or battles").
+}
+
+/// The text of a triggered ability without the event it waits for, its first letter a capital; the whole text when no
+/// event can be told from the effect.
+fn without_event(text: &str) -> String {
+    // The event ends at the first comma that is no part of a list ("creatures, planeswalkers, or battles"): one
+    // before "or" or "and", or before an item of a word or two that such a comma follows.
+    let joins = |rest: &str| rest.starts_with("or ") || rest.starts_with("and ");
     let mut from = 0;
     let effect = loop {
         let Some(at) = text[from..].find(", ").map(|at| at + from) else {
             break None;
         };
         let rest = &text[at + 2..];
-        if rest.starts_with("or ") || rest.starts_with("and ") {
+        let item = rest.find(", ").is_some_and(|next| {
+            joins(&rest[next + 2..]) && rest[..next].split_whitespace().count() <= 2
+        });
+        if joins(rest) || item {
             from = at + 2;
             continue;
         }
         break Some(rest);
     };
     let Some(effect) = effect.filter(|effect| !effect.is_empty()) else {
-        return text;
+        return text.to_owned();
     };
     let mut effect = effect.to_owned();
     if let Some(first) = effect.get_mut(..1) {
@@ -752,5 +764,145 @@ mod tests {
             }
             other => panic!("{other:?}"),
         }
+    }
+
+    #[rstest]
+    #[case::an_entering(
+        "Whenever another creature enters, you may gain 1 life.",
+        "You may gain 1 life."
+    )]
+    #[case::a_payment(
+        "Whenever another creature you control with power 2 or less enters, you may pay {1}. If you do, draw a card.",
+        "You may pay {1}. If you do, draw a card."
+    )]
+    #[case::a_list_in_the_event(
+        "Whenever one or more creatures, planeswalkers, or battles you control are dealt damage, draw a card.",
+        "Draw a card."
+    )]
+    #[case::a_condition_after_the_event(
+        "At the beginning of your upkeep, if you control an artifact, scry 1.",
+        "If you control an artifact, scry 1."
+    )]
+    #[case::an_effect_of_two_parts(
+        "When Alpha enters, draw a card, and you gain 1 life.",
+        "Draw a card, and you gain 1 life."
+    )]
+    #[case::no_event_to_tell("Draw a card.", "Draw a card.")]
+    #[case::nothing_after_the_comma("When Alpha dies, ", "When Alpha dies, ")]
+    fn the_effect_of_a_trigger_is_its_text_after_the_event(
+        #[case] text: &str,
+        #[case] effect: &str,
+    ) {
+        assert_eq!(without_event(text), effect);
+    }
+
+    #[test]
+    fn the_words_of_a_trigger_name_its_source_and_leave_out_the_event() {
+        let words = effect_words(&watching(2), "Alpha");
+        let whole = mtg_cards::compile::render_ability(&watching(2)).unwrap();
+        assert!(!words.is_empty() && !words.starts_with("When"), "{words}");
+        assert!(
+            words.chars().next().is_some_and(char::is_uppercase),
+            "{words}"
+        );
+        assert!(
+            whole.to_lowercase().ends_with(&words.to_lowercase()),
+            "{words:?} ends {whole:?}"
+        );
+        assert!(words.len() < whole.len());
+    }
+
+    /// Puts the trigger that waits first for `player` on the stack, and gives its object.
+    fn put_next(state: &mut GameState, player: PlayerId) -> ObjectId {
+        let at = *group(state, player).first().unwrap();
+        let waiting = state.pending_triggers()[at].trigger().clone();
+        let object = state.next_object();
+        let put = crate::abilities::PutOnStack {
+            origin: waiting.origin,
+            object,
+            source: waiting.source,
+            snapshot: waiting.snapshot.clone(),
+            ability: waiting.ability,
+            controller: player,
+            choices: crate::choose::Choices::default(),
+            cause: Some(waiting.cause.clone()),
+            delayed: None,
+        };
+        apply_event(state, &Event::AbilityPutOnStack(Box::new(put))).unwrap();
+        object
+    }
+
+    #[rstest]
+    #[case::two(&[("Alpha", 0), ("Beta", 0)])]
+    #[case::three(&[("Alpha", 0), ("Alpha", 1), ("Beta", 0)])]
+    fn triggers_a_player_puts_on_the_stack_together_are_one_run_that_resolves_last_first(
+        #[case] mine: &[(&str, usize)],
+    ) {
+        let mut state = table();
+        queue(&mut state, mine);
+        queue(&mut state, &[("Gamma", 0)]);
+        let put: Vec<ObjectId> = mine.iter().map(|_| put_next(&mut state, ME)).collect();
+        let theirs = put_next(&mut state, FOE);
+        let run = state.trigger_run_of(put[0]).unwrap().clone();
+        assert_eq!(run.controller(), ME);
+        for object in &put {
+            assert_eq!(state.trigger_run_of(*object).unwrap().id(), run.id());
+        }
+        let resolving: Vec<ObjectId> = run.resolving_order().map(|member| member.object).collect();
+        let last_first: Vec<ObjectId> = put.iter().rev().copied().collect();
+        assert_eq!(resolving, last_first);
+        // Another player's triggers are a run of their own.
+        let other = state.trigger_run_of(theirs).unwrap();
+        assert_eq!(other.controller(), FOE);
+        assert_eq!(other.resolving_order().count(), 1);
+        // What triggers after a run began is no part of it.
+        queue(&mut state, &[("Beta", 0)]);
+        let late = put_next(&mut state, ME);
+        assert_ne!(state.trigger_run_of(late).unwrap().id(), run.id());
+        assert_eq!(
+            state
+                .trigger_run_of(put[0])
+                .unwrap()
+                .resolving_order()
+                .count(),
+            mine.len()
+        );
+        assert!(state.trigger_run_of(ObjectId(9_999_999)).is_none());
+    }
+
+    #[test]
+    fn a_cause_is_public_only_while_its_object_lies_face_up_on_the_battlefield_or_the_stack() {
+        let state = table();
+        let alpha = state.object(id(&state, "Alpha")).unwrap().reference();
+        let about = |subjects: Vec<crate::choose::Target>| Cause {
+            subjects,
+            ..Cause::default()
+        };
+        assert_eq!(
+            public_cause(&state, &about(vec![crate::choose::Target::Object(alpha)])),
+            Some(alpha.id)
+        );
+        // A player is no object, an object that is gone is none, and an older self of the object is not the object.
+        assert_eq!(
+            public_cause(&state, &about(vec![crate::choose::Target::Player(ME)])),
+            None
+        );
+        let gone = ObjectRef {
+            id: ObjectId(9_999_999),
+            counter: 0,
+        };
+        assert_eq!(
+            public_cause(&state, &about(vec![crate::choose::Target::Object(gone)])),
+            None
+        );
+        let older = ObjectRef {
+            id: alpha.id,
+            counter: alpha.counter + 1,
+        };
+        assert_eq!(
+            public_cause(&state, &about(vec![crate::choose::Target::Object(older)])),
+            None
+        );
+        assert_eq!(public_cause(&state, &Cause::default()), None);
     }
 }
