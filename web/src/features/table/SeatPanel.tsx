@@ -520,8 +520,13 @@ export const SeatPanel = memo(function SeatPanel({
         height={cornerHeight(room.height, aboveHeight, cramped ? belowHeight : null)}
         card={room.card}
       />
-      {/* Always in the page, so it is measured from the start; empty (and hidden) unless the column is cramped. */}
-      <div ref={below} data-slot="pod-more" className="flex flex-wrap items-center gap-1 empty:hidden">
+      {/* Always in the page, so it is measured from the start; empty (and hidden) unless the column is cramped. One row
+          that scrolls sideways, its end fading, so the cramped column keeps one line of chips under the corner. */}
+      <div
+        ref={below}
+        data-slot="pod-more"
+        className="flex shrink-0 items-center gap-1 overflow-x-auto overscroll-x-contain pe-4 whitespace-nowrap [&>*]:shrink-0 [mask-image:linear-gradient(to_right,black_calc(100%-1rem),transparent)] [scrollbar-width:none] empty:hidden"
+      >
         {cramped ? (
           <>
             {mana}
