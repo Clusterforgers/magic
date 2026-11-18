@@ -100,6 +100,7 @@ mod tests {
             paired_with: None,
             attachments: Vec::new(),
             gives: None,
+            modifiers: Vec::new(),
             manual: Vec::new(),
             manual_owed: false,
             read: false,

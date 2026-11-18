@@ -130,6 +130,11 @@ pub fn sheet(card: &Card, printed: &PrintedCard) -> ReadSheet {
     rows::build(card, printed)
 }
 
+/// How long an effect lasts, in the words of a card ("until end of turn").
+pub fn duration_wording(duration: &crate::modify::Duration) -> String {
+    phrase::duration(duration)
+}
+
 /// The words of one ability as the sheet shows them: the renderer's first, else the first wording the checker accepts.
 pub fn ability_wording(ability: &Ability) -> Option<String> {
     rows::wording(ability)

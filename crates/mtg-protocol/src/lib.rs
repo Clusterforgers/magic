@@ -9,6 +9,7 @@
 
 mod apply;
 mod diff;
+mod modifiers;
 
 pub mod bindings;
 pub mod error;
@@ -38,6 +39,7 @@ pub use rest::{
 };
 pub use view::{
     ActivatedView, AttackerView, CombatView, CommanderDamageView, CommanderView, CompanionView,
-    CopyView, GivesView, Granter, ManaWayView, MergedCardView, ObjectView, PermanentView,
-    PlayerView, PriorityView, StateView, TableView, TokenOfferView, TurnView, ZoneView,
+    CopyView, GivesView, Granter, ManaWayView, MergedCardView, ModifierView, ObjectView,
+    PermanentView, PlayerView, PriorityView, StateView, TableView, TokenOfferView, TurnView,
+    ZoneView,
 };

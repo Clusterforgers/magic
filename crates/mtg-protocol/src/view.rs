@@ -133,6 +133,27 @@ pub struct GivesView {
     pub rules: Vec<GivenRule>,
 }
 
+/// One thing that changes an object now with its source, for the preview: an effect or static ability, an attachment,
+/// an emblem, counters or a copy effect. Identical ones from sources of one name are one line with their count.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct ModifierView {
+    /// What it does in words, all sources together: "+2/+2", "+1/+1, Flying", "Can't block", "Copy of Grizzly Bears".
+    pub effect: String,
+    /// Where it comes from: a card's name, "+1/+1 counter", "The Ring", or "A face-down card" and "A hidden card" for a
+    /// source the viewer may not identify.
+    pub source: String,
+    /// The objects it comes from that the viewer sees on the table, for the client to point at; left out while none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<ObjectId>>", optional)]
+    pub sources: Vec<ObjectId>,
+    /// How many identical sources add up to it.
+    pub count: u32,
+    /// How long it lasts ("until end of turn"); left out for one that lasts as long as its source.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub duration: Option<String>,
+}
+
 /// Whether a number is 0, so serialization can leave it out (serde hands over a reference).
 #[allow(clippy::trivially_copy_pass_by_ref)]
 const fn is_zero(value: &i32) -> bool {
@@ -382,6 +403,11 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub gives: Option<GivesView>,
+    /// Everything that changes the object now, each with its source as the viewer may know it, identical ones added
+    /// together; left out while nothing does.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<ModifierView>>", optional)]
+    pub modifiers: Vec<ModifierView>,
     /// Whether the object lies face down (a foretold card in exile). The seat that may look at it sees its characteristics
     /// besides; every other seat sees an object with no name, types, colours, abilities or counters.
     #[serde(default, skip_serializing_if = "is_false")]
