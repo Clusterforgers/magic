@@ -1994,6 +1994,38 @@
    }
   },
   {
+   "id": "vorthana_hive",
+   "name": "Vorthana, Queen of the Rot Hive",
+   "since": 6,
+   "colors": "BG",
+   "brain": "Hard",
+   "life": 32,
+   "life_per_hero": 36,
+   "hand": 9,
+   "rules": ["vorthana"],
+   "enrage": "the_swarm_wakes",
+   "relic": "chitin_censer",
+   "phases": [["the_hive_stirs", 66], ["the_rot_blooms", 33]],
+   "line": "The hive remembers every one of its dead, and sends them back hungry.",
+   "commander": "Aatchik, Emerald Radian",
+   "art": {"card": "Gleancrawler", "oracle_id": "bb7389fa-ab01-4ca2-bd18-03cf5b4cedf6"},
+   "brackets": {
+    "base": [
+     ["Swamp", 9], ["Forest", 8],
+     ["Phyrexian Battleflies", 2], ["Seedship Broodtender", 2], ["Drudge Beetle", 2], ["Great Fierce Bee", 2],
+     ["Stinging Cave Crawler", 2], ["Voracious Brood", 2], ["Insectoid Exterminator", 2], ["Carrion Grub", 1],
+     ["Lord Dregg, Insect Invader", 1], ["Fumulus, the Infestation", 1], ["Heartstabber Mosquito", 2],
+     ["Decimator Beetle", 1], ["Moldgraf Millipede", 1], ["Extinguish the Light", 1], ["Heartless Act", 1]
+    ],
+    "steps": [
+     {"add": [["Swamp", 2], ["Forest", 2], ["Gleancrawler", 1], ["Zanikev Locust", 1], ["Chitin Gravestalker", 1], ["Rotfeaster Maggot", 1], ["Necrosquito", 1], ["Iridescent Hornbeetle", 1]]},
+     {"add": [["Swamp", 2], ["Forest", 2], ["Moldgraf Monstrosity", 1], ["Deadbridge Goliath", 1], ["Stinging Cave Crawler", 1], ["Swarm, Being of Bees", 1], ["Mortipede", 1], ["Necrosquito", 1]]},
+     {"cut": [["Phyrexian Battleflies", 2], ["Drudge Beetle", 1]], "add": [["Heartstabber Mosquito", 1], ["Moldgraf Monstrosity", 1], ["Gleancrawler", 1]]},
+     {"cut": [["Drudge Beetle", 1], ["Carrion Grub", 1], ["Seedship Broodtender", 1]], "add": [["Zanikev Locust", 1], ["Deadbridge Goliath", 1], ["Great Fierce Bee", 1]]}
+    ]
+   }
+  },
+  {
    "id": "unmaker_void",
    "name": "The Unmaker",
    "uber": true,

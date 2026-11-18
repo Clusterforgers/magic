@@ -55,7 +55,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Delves generation 5: five two-colour bosses (Hollowmere WU Spirits, Morwenna UB Faeries, Korrath RG Dinosaurs, Sahrra GW Cats, Valdric WB Vampires), upgraded Vex, Seraphine and Ysolde, and the Unmaker, an uber boss at Heat 2 whose engine rule draws the heroes' cost colours anew each round with the cost now on the card (`docs/delves.md`).
 - Delves shared turns: the party and the boss's side each take one team turn (CR 805) with life totals per hero, each hero chooses their own creatures' attacks for one shared declaration, and the table names the party's turn (`docs/delves.md`).
 - Delves endless: after a floor's final boss the party votes to bank the win or descend to a new ladder of bosses one bracket stronger per floor, with no early handicaps, a risky relic more and Intensify (earlier Enrage, passive once more), behind content generation 5 (`docs/delves.md`).
-- Delves generation 6: the remaining two-colour bosses (Ozrith UR Wizards, Aurenne WR Knights), with generation-5 ladders pinned (`docs/delves.md`).
+- Delves generation 6: the remaining two-colour bosses (Ozrith UR Wizards, Aurenne WR Knights, Vorthana BG Insects), with generation-5 ladders pinned (`docs/delves.md`).
 - Delves rewards: the Satchel of earned cards cast from beside the command zone at every fight with the deck kept whole, the Mirror Pool's copy, commander upgrades fitted to each commander as emblems, relic rarities (Common, Rare, run-defining Mythic) that decide loot, treasure and shop offers and prices, and events as known trade-offs of life, life cap, a card, a relic or a commander bane against rewards that grow with the cost (`docs/delves.md`).
 - Fights and the table: a fight that ends without a result counts as lost and the host can retreat, Spirits are asked only where their haunts matter, the rules lexicon covers every engine term, decks sit in several groups, token planeswalkers show loyalty, the round counter, the blocker timer and grid lands as choices, and the card preview stays clear of the prompt (`docs/delves.md`, `docs/web.md`)
 - GUI sweep: every screen, table mode and prompt kind shot at the owners' sizes, the findings ranked in `docs/ui-audit.md`.
@@ -170,7 +170,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl13) A second theme with its bosses, events and reward pool; Heat 3 and above
 - [ ] (dl14a) Measure the Hard-boss rows of the Difficulty table (Heat 0 ranks 2 and 3, Heat 1 ranks 1 to 3, Heat 2) and parties of three or more against the tier targets, and tune the Normal-brain rows, which win 92 to 98 % against two Normal heroes
 - [ ] (dl14b) Softer boss passives at Heat 0 and harsher ones at Heat 2, a variant of each passive by Heat as the Enrage has
-- [ ] (dl15h) A BG boss with its bracket deck, passive, Enrage, two phases, relic and commander card
 - [ ] (dl15i) A UG boss with its bracket deck, passive, Enrage, two phases, relic and commander card
 - [ ] (dl16a) Measure deeper Delves floors with the simulator (floors 2 and 3 at each Heat) and tune the per-floor steps against the tier targets
 - [ ] (dl15l) Measure the bracket generation against the tier targets with Hard bosses and tune each boss's brackets by its win rate

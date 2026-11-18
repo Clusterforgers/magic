@@ -1,7 +1,7 @@
 //! Goal: the passives and Enrages of the two-colour bosses of generations 5 and 6 do what their words say in real games:
 //! Hollowmere's dead return as Spirits, Korrath's creatures grow when hurt, Sahrra's pride grows when a Cat falls,
 //! Valdric's Vampires feed on the heroes' dead, Ozrith's spells call up Elementals, Aurenne's attackers strike harder,
-//! and each Enrage waits for the heroes' seventh turn and then grows.
+//! Vorthana's dead return to her hand, and each Enrage waits for the heroes' seventh turn and then grows.
 use std::sync::Arc;
 
 use mtg_campaign::content;
@@ -135,6 +135,8 @@ fn valdrics_vampires_feed_on_the_heroes_dead(
 #[case::the_feast_grows("the_crimson_feast", "Vampire", 16, 3)]
 #[case::the_charge_waits("the_last_charge", "Knight", 12, 0)]
 #[case::the_charge_grows("the_last_charge", "Knight", 16, 3)]
+#[case::the_swarm_sleeps("the_swarm_wakes", "Insect", 12, 0)]
+#[case::the_swarm_grows("the_swarm_wakes", "Insect", 16, 3)]
 #[case::no_dream_is_stolen_yet("stolen_dreams", "Fallen", 12, 0)]
 #[case::one_dream_is_stolen("stolen_dreams", "Fallen", 14, 1)]
 #[case::the_graveyard_runs_dry("stolen_dreams", "Fallen", 16, 3)]
@@ -160,6 +162,33 @@ fn aurennes_attackers_strike_harder() -> Result<(), ScriptError> {
     assert_eq!(power(&driver, "Brute"), Some(4));
     assert_eq!(power(&driver, "Fervent Cathar"), Some(2), "only attackers");
     assert_eq!(power(&driver, "Bear"), Some(2));
+    Ok(())
+}
+
+#[test]
+fn vorthanas_dead_return_to_her_hand() -> Result<(), ScriptError> {
+    let scenario = table(&["vorthana"], &[])
+        .graveyard(BOSS, [free_creature("Drone", 1, 1), mountain()])
+        .at(2, BOSS, Step::Main1);
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.idle_until(3, Step::Main1)?;
+    let state = driver.state();
+    let named = |zone: Zone, name: &str| {
+        state
+            .zone(zone)
+            .iter()
+            .filter_map(|id| state.object(*id))
+            .filter(|o| o.card().name == name)
+            .count()
+    };
+    let boss = PlayerId::from_index(BOSS);
+    assert_eq!(named(Zone::Hand(boss), "Drone"), 1);
+    assert_eq!(named(Zone::Graveyard(boss), "Drone"), 0);
+    assert_eq!(
+        named(Zone::Graveyard(boss), "Mountain"),
+        1,
+        "only creatures"
+    );
     Ok(())
 }
 
