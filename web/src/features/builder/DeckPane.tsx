@@ -6,7 +6,7 @@ import {
   PencilIcon,
   ShieldCheckIcon,
 } from 'lucide-react'
-import { useId, useMemo, useRef, useState } from 'react'
+import { useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { Ref } from 'react'
 import { Link } from '@tanstack/react-router'
 import { EmptyState } from '@/components/EmptyState'
@@ -32,6 +32,7 @@ import { handCards, handSentence, previewFromDraft } from './deckSummary'
 import { HandList } from './HandList'
 import { cardsIn, identityOf } from './identity'
 import { LegalitySection } from './LegalitySection'
+import { flyWaiting } from './deckTravel'
 import { LineRow } from './LineRow'
 import type { LineActions } from './LineRow'
 import { LookToggle } from './LookToggle'
@@ -111,6 +112,8 @@ export function DeckPane({
   className,
 }: DeckPaneProps) {
   const id = useId()
+  // A card added or moved flies into its line once this render has drawn it (`deckTravel`).
+  useLayoutEffect(() => flyWaiting(), [draft])
   const [issuesOnly, setIssuesOnly] = useState(false)
   const [sort, setSort] = useState<SortKey>('name')
   const [look, setLook] = useDeckLook()

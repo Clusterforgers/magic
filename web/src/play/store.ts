@@ -3,6 +3,7 @@ import { createStore } from 'zustand/vanilla'
 import type { StoreApi } from 'zustand/vanilla'
 import type { ConnectionStatus } from '@/net/socket'
 import type {
+  Answer,
   AutoChoices,
   AutoSkip,
   AutoYield,
@@ -116,6 +117,11 @@ export interface PlayState {
   seq: number | null
   /** The decision this seat must answer now, if any. */
   pending: PendingDecision | null
+  /**
+   * The answer this seat sent last, until the server's next word follows it (a batch, a decision, a snapshot or a
+   * refusal) or the connection goes; the strip's working mark and the hand's leaving card read it.
+   */
+  answered: Answer | null
   /** The engine's forecast for the answer this seat is choosing, as of its latest preview; gone with the decision. */
   preview: PreviewState | null
   /** The clock of `pending` while it has one, counted down from the moment the decision arrived. */
@@ -241,6 +247,7 @@ export function initialPlayState(): PlayState {
     objectsById: {},
     seq: null,
     pending: null,
+    answered: null,
     preview: null,
     clock: null,
     log: [],

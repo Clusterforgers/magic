@@ -58,7 +58,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Delves rewards: the Satchel of earned cards cast from beside the command zone at every fight with the deck kept whole, the Mirror Pool's copy, commander upgrades fitted to each commander as emblems, relic rarities (Common, Rare, run-defining Mythic) that decide loot, treasure and shop offers and prices, and events as known trade-offs of life, life cap, a card, a relic or a commander bane against rewards that grow with the cost (`docs/delves.md`).
 - Fights and the table: a fight that ends without a result counts as lost and the host can retreat, Spirits are asked only where their haunts matter, the rules lexicon covers every engine term, decks sit in several groups, token planeswalkers show loyalty, the round counter, the blocker timer and grid lands as choices, and the card preview stays clear of the prompt (`docs/delves.md`, `docs/web.md`)
 - GUI sweep: every screen, table mode and prompt kind shot at the owners' sizes, the findings ranked in `docs/ui-audit.md`.
-- Feel: the twenty rules of motion and interaction, press squash and 44 px hit areas, card travel on an arc with a wind-up and a settle, attacks, hits, entries and deaths pose to pose, the staged stack and attacked seat, the swelling pass button and snappier strikes (`docs/ui-design.md`, `docs/ui-audit.md`).
+- Feel: the twenty rules of motion and interaction, press squash and 44 px hit areas, card travel on an arc with a wind-up and a settle, attacks, hits, entries and deaths pose to pose, the staged stack and attacked seat, the swelling pass button and snappier strikes; answers felt on the press (a working mark past 400 ms, a cast leaving the hand, a tap before the lunge, 44 px stops on touch, builder cards travelling into the list, Delves votes and buys that beat) and the side column on the log (`docs/ui-design.md`, `docs/ui-audit.md`).
 - Holding still: card sizes and the board split hold until a board no longer fits or clearly has room, the prompt sheet lies in a band of one height per window kept free above the strip so it covers no card, the boss keeps a fair share of the heroes' card size, moved cards slide, and `scripts/layout-jumps.mjs` counts the jumps of a scripted stretch of play (`docs/web.md`, Holding still).
 - Team sight: a teammate's zones open from every layout and teammates see each other's hands (`team_hands`, on at every team table), never an opponent or a spectator.
 - Loops (CR 104.4b, 732): a loop found at priority points, a draw for a mandatory loop that never ends, a shortcut of N iterations its driver chooses, run as one batch with a summary line, bot answers, and the prompt in every layout (`docs/engine.md`, Loops).
@@ -75,16 +75,9 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf9d) Crowded tables: three heroes at ten permanents each keep cards above 75 px at 1400 × 900, a six-seat grid shows the opponents' lands whole, and the card preview finds room in windows near 1024 px
 - [ ] (pf10o) The lobby's seats list stands on the first screen at 1400 × 900 beside the deck chooser instead of under the invite panel
 - [ ] (pf10p) On a phone the top bar's Effects button no longer overlaps the element behind it
-- [ ] (pf11a) A sent answer the server has not followed within 400 ms shows a quiet working mark in the strip, gone with the next batch (`docs/ui-design.md`, Feel)
-- [ ] (pf11b) During play the side column opens on the Log or the Stack, the tab a player reads, with Commands one press away
-- [ ] (pf11c) A cast or a land played leaves the hand at once on the press, before the server's batch, and comes back if the server refuses it
-- [ ] (pf11d) An attacker taps first and lunges after, so the tap and the lunge read as two poses
-- [ ] (pf11e) The step ladder's stop marks hit at 44 px under a coarse pointer without widening the top bar
-- [ ] (pf11f) A card added in the builder travels into its group of the deck list, and a removed one leaves it
 - [ ] (pf12a) An opponent's board drawn from the middle of the table holds its bands' height until the next size step, so a line that empties or a land pile that shortens does not shift the lanes above it
 - [ ] (pf12b) The lane of other permanents, set at the right, grows leftward from its own right edge, so a new artifact leaves the cards already there in place
 - [ ] (pf12c) The hand dock grows or gives back its second row only at a settle point (end of a step), not on every draw
-- [ ] (pf11g) Delves votes and shop buys answer a press with a beat on the chosen card and a moving vote count
 - [ ] (pf10m) Dev fixtures for the deck list and groups, the replay and the open games list, so a sweep shoots them without a server
 - [ ] (pf9f) Stable tests under load: the 40-tap budget in `perf.test.tsx` and the `check_sched` lock-wait case
 - [ ] (pf9j) The view tests' seat loops iterate instead of indexing, and the `needless_range_loop` and `map_unwrap_or` allowances Rust 1.100 needed are dropped

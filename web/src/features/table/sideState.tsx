@@ -30,10 +30,16 @@ export function SideProvider({
   children: ReactNode
 }) {
   const { session } = useGame()
-  // Until a tab is chosen a seat shows its Commands, and a viewer that is no seat, which has none, the log.
+  // Until a tab is chosen the side shows the log, what a player reads during play; Commands is one press away, and
+  // comes forward by itself when a card is waited for or work by hand comes due.
   const [chosen, setTab] = useState<SideTab | null>(null)
-  const seated = usePlay((state) => state.seat !== null)
-  const tab: SideTab = chosen ?? (seated ? 'commands' : 'log')
+  const tab: SideTab = chosen ?? 'log'
+  const due = usePlay((state) => state.seat !== null && state.dueLines.length > 0)
+  const [wasDue, setWasDue] = useState(due)
+  if (due !== wasDue) {
+    setWasDue(due)
+    if (due) setTab('commands')
+  }
   const [panel, setPanel] = useState(false)
   const [mount, setMount] = useState<HTMLElement | null>(null)
   const [seen, setSeen] = useState<Seen>(() => {

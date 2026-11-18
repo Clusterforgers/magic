@@ -26,7 +26,7 @@ const side = () => screen.getByRole('complementary', { name: 'Commands, log, cha
 const tab = (name: string | RegExp) => screen.getByRole('tab', { name })
 
 describe('a wide window: the column', () => {
-  it('is always open, on the Commands of a seat, with Log, Chat and Stack a tab away', async () => {
+  it('is always open, on the log during play, with Commands, Chat and Stack a tab away', async () => {
     const { user } = renderTable({ seats: 4, options: { viewport: WIDE } })
     expect(side()).toHaveAttribute('data-side', 'column')
     expect(
@@ -34,6 +34,9 @@ describe('a wide window: the column', () => {
         .getAllByRole('tab')
         .map((each) => each.textContent?.replace(/\d.*$/, '').trim()),
     ).toEqual(['Commands', 'Log', 'Chat', 'Stack'])
+    expect(within(side()).getByRole('log', { name: 'Game log' })).toBeInTheDocument()
+    expect(within(side()).queryByRole('region', { name: 'Commands' })).toBeNull()
+    await user.click(tab(/^Commands/))
     expect(within(side()).getByRole('region', { name: 'Commands' })).toBeInTheDocument()
     await user.click(tab(/^Log/))
     expect(within(side()).getByRole('log', { name: 'Game log' })).toBeInTheDocument()
@@ -150,6 +153,8 @@ describe.each([
     await user.click(button())
     const sheet = screen.getByRole('dialog', { name: 'Commands, log, chat and stack' })
     expect(within(sheet).getAllByRole('tab')).toHaveLength(4)
+    expect(within(sheet).getByRole('log', { name: 'Game log' })).toBeInTheDocument()
+    await user.click(within(sheet).getByRole('tab', { name: /^Commands/ }))
     expect(within(sheet).getByRole('region', { name: 'Commands' })).toBeInTheDocument()
     await user.click(within(sheet).getByRole('tab', { name: /^Log/ }))
     expect(within(sheet).getByRole('log', { name: 'Game log' })).toBeInTheDocument()

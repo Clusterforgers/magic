@@ -1,5 +1,5 @@
 // Goal: the prompt of a decision on a clock shows the seconds left as text that counts down with the session's clock, a bar that drains over the time left (not drawn, with only the number, under a preference for less motion), says its sentence once to a screen reader, turns urgent in the last seconds and goes with the prompt at zero; a decision without a clock (the opening's keep or mulligan and bottoming among them), or another decision's clock, shows nothing; the Commands panel shows the same countdown (with no spoken start of its own) while the seat has a clock.
-import { act, within } from '@testing-library/react'
+import { act, fireEvent, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { DecisionKind, ServerMessage } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
@@ -148,9 +148,15 @@ describe('what a screen reader hears', () => {
 describe('in the Commands panel', () => {
   const inPanel = (container: HTMLElement): HTMLElement | null =>
     container.querySelector('[data-slot="commands-panel"] [data-slot="commands-clock"]')
+  // The side opens on the log; the seat working by hand is one press away from its Commands.
+  const working = () => {
+    const table = mount()
+    fireEvent.click(within(table.container).getByRole('tab', { name: /^Commands/ }))
+    return table
+  }
 
   it('shows the same countdown to a seat working there, counting down with the prompt', () => {
-    const { send, wait, words, container } = mount()
+    const { send, wait, words, container } = working()
     expect(inPanel(container)).toBeNull()
     send(decision(5, KINDS.Priority, 10_000))
     const panelWords = (): string => inPanel(container)?.querySelector('[role="timer"]')?.textContent ?? ''
@@ -165,7 +171,7 @@ describe('in the Commands panel', () => {
   })
 
   it('says nothing aloud of its own and has no controls: the prompt announces the clock', () => {
-    const { send, container } = mount()
+    const { send, container } = working()
     send(decision(5, KINDS.Priority, 10_000))
     expect(inPanel(container)?.querySelector('[role="status"]')).toBeNull()
     expect(within(must(inPanel(container))).queryAllByRole('button')).toEqual([])

@@ -12,6 +12,7 @@
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --hit-min: 44px;
   --ready-ms: 420ms;
+  --hand-leave-ms: 180ms;
 }
 
 /*
@@ -62,6 +63,40 @@
       inset-block: min(0px, calc((100% - var(--hit-min)) / 2));
       inset-inline: min(0px, calc((100% - var(--hit-min)) / 2));
     }
+  }
+}
+
+/*
+ * Doherty: a card cast or played as a land leaves the hand on the press, before the server's batch (`handLeaving`). It
+ * dips as it lets go and rises out of its slot; the slot keeps its room, so the hand closes up once, when the batch moves
+ * the card. A refusal takes the mark away and the card stands in its place again. Under reduced motion it only fades.
+ */
+[data-slot='hand-slot'][data-leaving] {
+  pointer-events: none;
+}
+
+[data-slot='hand-slot'][data-leaving] > div {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes feel-hand-leave {
+    0% {
+      transform: none;
+      opacity: 1;
+    }
+    35% {
+      transform: scale(0.94);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-24px) scale(0.94);
+      opacity: 0;
+    }
+  }
+
+  [data-slot='hand-slot'][data-leaving] > div {
+    animation: feel-hand-leave var(--hand-leave-ms) var(--ease-in) forwards;
   }
 }
 

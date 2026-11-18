@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { blockAfter, rulesIn } from '@/test-utils/cssBlocks'
+import { TAP_MOTION } from '../cardSize'
 import { FX_MS, MARK_FX } from './model'
 import type { FxKind } from './model'
 import { MOVE_MS } from './moves'
@@ -69,6 +70,19 @@ describe('feel (docs/ui-design.md, Feel)', () => {
   it('eases into the lunge and out of it', () => {
     expect(step('fx-lunge', '18%')).toMatch(/animation-timing-function: cubic-bezier\(0\.4, 0, 1, 1\)/)
     expect(step('fx-lunge', '42%')).toMatch(/animation-timing-function: cubic-bezier\(0, 0, 0\.2, 1\)/)
+  })
+
+  it('lets an attacker that taps to attack tap first and lunge after, two poses within the same attack time', () => {
+    expect(blockAfter(motion, "button[data-object-id][data-tapped][data-fx~='attacked']")).toMatch(
+      /animation: fx-tap-lunge calc\(var\(--fx-attacked-ms\)/,
+    )
+    // The tap is the face's 150 ms height change; the card holds still until it has lain down.
+    const tapMs = Number(/duration-(\d+)/.exec(TAP_MOTION)?.[1])
+    const held = Number(/(\d+)%\s*,\s*100%/.exec(blockAfter(motion, '@keyframes fx-tap-lunge'))?.[1])
+    expect(held / 100).toBeGreaterThanOrEqual(tapMs / FX_MS.attacked)
+    expect(step('fx-tap-lunge', '43%')).toMatch(/scale: 1\.03 0\.96/)
+    expect(step('fx-tap-lunge', '59%')).toMatch(/translate: 0 calc\(var\(--fx-dir, 1\) \* 1\.1rem\)/)
+    expect(step('fx-tap-lunge', '79%')).toMatch(/-0\.15rem/)
   })
 
   it('squashes and lights a hit card on impact, then shakes it 5 px', () => {
