@@ -123,6 +123,13 @@ async fn a_party_gathers_and_the_start_makes_the_first_boss_fight(pool: PgPool) 
     let start = act(&server, &id, &host, json!({"kind": "start"})).await;
     assert_eq!(start.status, 200, "{}", start.text());
     let view = start.json();
+    // The run page names the run's own theme and story.
+    let theme = mtg_campaign::content()
+        .unwrap()
+        .theme(view["run"]["theme"].as_str().unwrap())
+        .unwrap();
+    assert_eq!(view["theme"], theme.name.as_str());
+    assert_eq!(view["story"], theme.text.as_str());
     let game = view["run"]["status"]["Fight"]["game"]
         .as_str()
         .unwrap_or_default()

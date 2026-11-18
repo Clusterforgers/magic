@@ -36,7 +36,15 @@ run: Run,
  */
 boss?: string, 
 /**
- * Each boss of the ladder by id with the life it starts its fight with against this party, at its rank and Heat.
+ * The name of the run's theme.
+ */
+theme: string, 
+/**
+ * The story of the run's theme.
+ */
+story: string, 
+/**
+ * Each boss of the ladder by id with the life it starts its fight with against this party.
  */
 boss_lives: Array<[string, number]>, 
 /**

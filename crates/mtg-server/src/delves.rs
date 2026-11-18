@@ -614,6 +614,9 @@ fn fight_view(run: &Run) -> Option<DelveFightView> {
 }
 
 fn view(loaded: &Loaded, user: UserId, deck_problems: Vec<DelveDeckProblem>) -> DelveView {
+    let theme = campaign()
+        .ok()
+        .and_then(|content| content.theme(&loaded.run.theme).ok());
     let me = loaded
         .run
         .heroes
@@ -642,6 +645,8 @@ fn view(loaded: &Loaded, user: UserId, deck_problems: Vec<DelveDeckProblem>) -> 
         me,
         run: loaded.run.clone(),
         boss,
+        theme: theme.map(|t| t.name.clone()).unwrap_or_default(),
+        story: theme.map(|t| t.text.clone()).unwrap_or_default(),
         boss_lives: campaign().map_or_default(|content| loaded.run.boss_lives(content)),
         deck_problems,
         fight: fight_view(&loaded.run),

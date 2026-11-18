@@ -86,7 +86,13 @@ pub struct DelveView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub boss: Option<String>,
-    /// Each boss of the ladder by id with the life it starts its fight with against this party, at its rank and Heat.
+    /// The name of the run's theme.
+    #[serde(default)]
+    pub theme: String,
+    /// The story of the run's theme.
+    #[serde(default)]
+    pub story: String,
+    /// Each boss of the ladder by id with the life it starts its fight with against this party.
     #[serde(default)]
     pub boss_lives: Vec<(String, i32)>,
     /// The heroes whose decks the waiting fight cannot be made with; empty when nothing stops it.

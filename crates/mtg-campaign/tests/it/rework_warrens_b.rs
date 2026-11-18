@@ -45,7 +45,8 @@ fn pid(seat: usize) -> PlayerId {
 }
 
 fn boss(id: &str) -> &'static mtg_campaign::content::Boss {
-    content().unwrap().themes[0].boss(id).unwrap()
+    let mut themes = content().unwrap().themes.iter();
+    themes.find_map(|theme| theme.boss(id)).unwrap()
 }
 
 fn custom(id: &str) -> Arc<CardDefinition> {
@@ -791,7 +792,10 @@ fn a_real_fight_at_level_v_plays_on(
         "aurenne_bastion",
         "vorthana_hive",
         "sivanne_mire",
-        "unmaker_void"
+        "unmaker_void",
+        "siren_queen",
+        "drowned_archivist",
+        "leviathan"
     )]
     id: &str,
 ) {
