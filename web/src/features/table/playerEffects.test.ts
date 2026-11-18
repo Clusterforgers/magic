@@ -61,7 +61,7 @@ describe('effectFacts', () => {
     expect(effectFacts(effect, 'Bo').label).toBe(label)
   })
 
-  it('words the colours a seat\'s costs stand for this round, each once', () => {
+  it("words the colours a seat's costs stand for this round, each once", () => {
     const effect: PlayerEffect = {
       CostColorsDrawn: [
         ['White', 'Blue'],
