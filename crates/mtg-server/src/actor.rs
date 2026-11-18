@@ -105,7 +105,11 @@ pub(crate) fn spawn_named<S: EventStore>(
     names: Vec<String>,
     decks: Option<SeatDecks>,
 ) -> Result<GameHandle, StartError> {
+    // The lobby's teams may be a draft (`Lobby::set_teams`), which only the start checks whole.
+    let mut setup = setup;
+    let draft = setup.house_rules.teams.take();
     setup.validate()?;
+    setup.house_rules.teams = draft;
     let seats = setup.players.len();
     let phase = Phase::Lobby {
         ready: vec![false; seats],

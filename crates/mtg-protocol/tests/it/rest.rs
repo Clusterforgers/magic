@@ -271,15 +271,18 @@ fn listing() -> MyGames {
                         seat: PlayerId(1),
                         name: "Bo".into(),
                         user: None,
+                        team: Some(1),
                     },
                     MyGameSeat {
                         seat: PlayerId(2),
                         name: "Cy".into(),
                         user: Some("cyrus".into()),
+                        team: Some(0),
                     },
                 ],
-                result: Some(GameResult::Winner(PlayerId(2))),
+                result: Some(GameResult::Team(0)),
                 reason: None,
+                team: Some(0),
             },
             MyGame {
                 game: "5f2b9c1e-0000-4000-8000-000000000002".into(),
@@ -290,6 +293,7 @@ fn listing() -> MyGames {
                 others: Vec::new(),
                 result: None,
                 reason: None,
+                team: None,
             },
             MyGame {
                 game: "5f2b9c1e-0000-4000-8000-000000000003".into(),
@@ -303,6 +307,7 @@ fn listing() -> MyGames {
                     "The deck of Bo has changed since this game was made, so it cannot continue."
                         .into(),
                 ),
+                team: None,
             },
         ],
     }
@@ -321,11 +326,12 @@ fn the_game_list_has_the_documented_wire_shape() {
                 "status": "finished",
                 "created_at": "2026-10-18T12:00:00Z",
                 "others": [
-                    {"seat": 1, "name": "Bo", "user": null},
-                    {"seat": 2, "name": "Cy", "user": "cyrus"},
+                    {"seat": 1, "name": "Bo", "user": null, "team": 1},
+                    {"seat": 2, "name": "Cy", "user": "cyrus", "team": 0},
                 ],
-                "result": {"Winner": 2},
+                "result": {"Team": 0},
                 "reason": null,
+                "team": 0,
             },
             {
                 "game": "5f2b9c1e-0000-4000-8000-000000000002",

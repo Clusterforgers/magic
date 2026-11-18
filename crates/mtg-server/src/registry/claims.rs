@@ -399,6 +399,12 @@ impl Registry {
             Ok(Err(TeamsRefusal::Invalid(error))) => return Err(TableError::Teams(error)),
             Err(_) => return Err(TableError::NotFound),
         }
+        // The lobby already plays with them: a failed write is logged and only a restart before the start loses them.
+        if let Some(records) = &table.records
+            && let Err(error) = records.set_lobby_teams(game, teams.as_ref()).await
+        {
+            tracing::warn!(%error, %game, "could not store a lobby's teams");
+        }
         match self.games().get_mut(&game) {
             Some(entry) => entry.house_rules.teams = teams,
             None => return Err(TableError::NotFound),

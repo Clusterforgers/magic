@@ -16,4 +16,8 @@ name: string,
 /**
  * The username of the account sitting there; null for a guest seat.
  */
-user: string | null, };
+user: string | null, 
+/**
+ * The seat's team, counted from 0, at a table with teams; left out where every player plays for themself.
+ */
+team?: number, };

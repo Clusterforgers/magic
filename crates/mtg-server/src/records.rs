@@ -13,6 +13,7 @@ use std::collections::HashMap;
 use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
+use mtg_core::teams::Teams;
 use mtg_engine::state::GameResult;
 use sqlx::PgPool;
 use thiserror::Error;
@@ -430,6 +431,32 @@ impl GameRecords {
                 "the game is not in its lobby".to_owned(),
             ))
         }
+    }
+
+    /// Stores the teams the lobby set in its recipe's house rules (none takes them out), so a restart before the start
+    /// keeps them; false when the game is not in its lobby or not recorded.
+    pub(crate) async fn set_lobby_teams(
+        &self,
+        id: GameId,
+        teams: Option<&Teams>,
+    ) -> Result<bool, RecordError> {
+        let teams = teams
+            .map(serde_json::to_value)
+            .transpose()
+            .map_err(|e| RecordError::Encode(e.to_string()))?;
+        let updated = sqlx::query!(
+            r#"UPDATE games SET recipe = CASE
+                 WHEN $2::jsonb IS NULL THEN recipe #- '{house_rules,teams}'
+                 ELSE jsonb_set(recipe, '{house_rules}',
+                     COALESCE(recipe -> 'house_rules', '{}'::jsonb) || jsonb_build_object('teams', $2::jsonb))
+               END
+             WHERE id = $1 AND status = 'lobby'"#,
+            id.uuid(),
+            teams,
+        )
+        .execute(&self.pool)
+        .await?;
+        Ok(updated.rows_affected() == 1)
     }
 
     /// Notes that the lobby is over and the engine runs.

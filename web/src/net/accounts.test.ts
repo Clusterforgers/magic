@@ -173,7 +173,12 @@ describe('answers', () => {
   })
 
   it('returns a game a team won with its result', async () => {
-    const team = { ...finished, result: { Team: 1 } }
+    const team = {
+      ...finished,
+      result: { Team: 1 },
+      team: 1,
+      others: finished.others.map((seat) => ({ ...seat, team: 0 })),
+    }
     const fake = fakeFetch(() => jsonResponse(200, { games: [team] }))
     await expect(createAccountsApi({ fetch: fake.fetch }).myGames()).resolves.toEqual([team])
   })
@@ -228,6 +233,11 @@ describe('answers', () => {
     ['a game without a result field', { games: [{ ...listed(), result: undefined }] }],
     ['a game without a reason field', { games: [{ ...listed(), reason: undefined }] }],
     ['a game whose reason is a number', { games: [{ ...listed(), reason: 3 }] }],
+    ['a game whose team is text', { games: [{ ...listed(), team: 'one' }] }],
+    [
+      'a seat whose team is negative',
+      { games: [{ ...listed(), others: [{ seat: 1, name: 'Bo', user: null, team: -1 }] }] },
+    ],
   ]
 
   it.each(unreadableGames)('rejects %s as bad_response', async (_what, body) => {

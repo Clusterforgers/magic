@@ -148,7 +148,13 @@ function readRows(body: unknown): AccountRow[] | null {
 function readSeat(item: unknown): MyGameSeat | null {
   if (!isRecord(item) || !isCount(item.seat) || !isText(item.name)) return null
   if (item.user !== null && !isText(item.user)) return null
-  return { seat: item.seat, name: item.name, user: item.user }
+  if (item.team !== undefined && !isCount(item.team)) return null
+  return {
+    seat: item.seat,
+    name: item.name,
+    user: item.user,
+    ...(isCount(item.team) ? { team: item.team } : {}),
+  }
 }
 
 function readGame(item: unknown): MyGame | null {
@@ -156,6 +162,7 @@ function readGame(item: unknown): MyGame | null {
   if (!isStatus(item.status) || !isText(item.created_at) || !Array.isArray(item.others)) return null
   if (item.result !== null && !isGameResult(item.result)) return null
   if (item.reason !== null && !isText(item.reason)) return null
+  if (item.team !== undefined && !isCount(item.team)) return null
   const others: MyGameSeat[] = []
   for (const entry of item.others) {
     const seat = readSeat(entry)
@@ -171,6 +178,7 @@ function readGame(item: unknown): MyGame | null {
     others,
     result: item.result,
     reason: item.reason,
+    ...(isCount(item.team) ? { team: item.team } : {}),
   }
 }
 

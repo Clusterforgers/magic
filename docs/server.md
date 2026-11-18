@@ -59,7 +59,7 @@ Limits per socket: `Join` within 10 s of the upgrade; frames and messages of 64 
 - A recipe, seat rows or log that do not load (a replay panic included), a changed or lost deck or card and a started game with an unheld seat mark the game `failed`; only an unreachable database stops boot. A `failed` game is not retried (fix the row and set `running` by hand) or loaded, so its tokens, lookup and sockets answer 404.
 - A failure has two texts: `failure`, the operator's detail (error, seat, fingerprints), also logged; and `failure_reason`, one sentence for the players from `Cause` (`registry/cause.rs`) with no internals. My games shows "This game could not be restored, so it cannot continue." for a `failed` game without a reason.
 - A lobby returns with its visibility, join code and claims, nobody ready, and its age: past `Retention::lobby_after` (database clock) it becomes `expired`. A started game with an open seat does not load; a running one gets a fresh `abandoned_after` without a connection. `MTG_MAX_GAMES` limits creation only.
-- Lobby choices are not stored until the start: a restarted lobby reads its recipe, so a seat returns on its built-in deck, and a seat whose recipe names a stored deck has none until it chooses again.
+- Teams the lobby sets are written into the stored recipe at once (`GameRecords::set_lobby_teams`), so a restart before the start keeps them; a resumed lobby takes them back as the draft they were, checked whole only at the start. Other lobby choices are not stored until the start: a restarted lobby reads its recipe, so a seat returns on its built-in deck, and a seat whose recipe names a stored deck has none until it chooses again.
 
 ### Deck check
 
@@ -104,7 +104,7 @@ Limits per socket: `Join` within 10 s of the upgrade; frames and messages of 64 
 - `seats.user_id` is unique per game. A signed-in create binds seat 0 to the creator, and the first signed-in join through an unbound seat's link binds that seat; guests and unrecorded games bind nothing. One guarded `UPDATE` decides (`Registry::bind_seat`), so racing accounts get one winner and a bound seat never changes hands. A failed binding is logged and never stops the join.
 - Binding adds a way in and takes none away: old links keep working, and another signed-in account using a bound seat's token plays like a guest and is not bound.
 - `GET /ws/{game}` answers, after the origin check, 404 for an address that is not a game id, 503 `accounts_unavailable`, 401 `unauthenticated` (a bad cookie is cleared), then one 404 for an unknown game and for a game the user holds no seat in.
-- `GET /api/me/games` lists the user's `lobby`, `running`, `finished` and `failed` games from the database, newest first, at most 100. A failed game shows its `failure_reason` to its seat holders only; lookup, sockets and the game browser answer 404 for it.
+- `GET /api/me/games` lists the user's `lobby`, `running`, `finished` and `failed` games from the database, newest first, at most 100; at a table with teams the user's seat and every other seat carry their `team` from the recipe, so a team's win reads as won for each member ("Your team won"). A failed game shows its `failure_reason` to its seat holders only; lookup, sockets and the game browser answer 404 for it.
 - `DELETE /api/me/games/{id}` hides a failed game from the user's list (204) by marking their seat `hidden`; the record and the other players keep it, so a repaired (`running`) game shows for all. A game not listed, not failed or already removed is 404.
 
 ## Open games

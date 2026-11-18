@@ -329,6 +329,10 @@ pub struct MyGameSeat {
     pub name: String,
     /// The username of the account sitting there; null for a guest seat.
     pub user: Option<String>,
+    /// The seat's team, counted from 0, at a table with teams; left out where every player plays for themself.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub team: Option<u32>,
 }
 
 /// One game in the signed-in user's list.
@@ -351,6 +355,10 @@ pub struct MyGame {
     pub result: Option<GameResult>,
     /// Why a failed game could not be restored, in words for a player; null for every other status.
     pub reason: Option<String>,
+    /// The user's own seat's team, counted from 0, so a team's win counts for its members; left out without teams.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub team: Option<u32>,
 }
 
 /// The answer of `GET /api/me/games`: the user's games, newest first, at most 100.

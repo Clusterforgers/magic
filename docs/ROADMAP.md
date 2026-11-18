@@ -63,7 +63,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Team sight: a teammate's zones open from every layout and teammates see each other's hands (`team_hands`, on at every team table), never an opponent or a spectator.
 - Loops (CR 104.4b, 732): a loop found at priority points, a draw for a mandatory loop that never ends, a shortcut of N iterations its driver chooses, run as one batch with a summary line, bot answers, and the prompt in every layout (`docs/engine.md`, Loops).
 - Choosing faster: quick selection buttons (all, owned, allied in team modes, none) in prompts that pick several objects, a random precon or own deck in every mode, hidden until the start, and "Always pay automatically" for payments without a real choice (`docs/web.md`, `docs/server.md`).
-- Team tables: a tournament match has no player host, so its seat 0 gets only what every player gets in the lobby (`tournament_match`); at a table of three or more the pods of the seats the game waits on carry a "waiting for" mark in every layout.
+- Team tables: a tournament match has no player host, so its seat 0 gets only what every player gets in the lobby (`tournament_match`); at a table of three or more the pods of the seats the game waits on carry a "waiting for" mark in every layout; teams set in the lobby are stored at once and survive a restart, and My games carries each seat's team so a team's win counts for its members.
 
 ## Live game
 
@@ -142,7 +142,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 ## M7 Product
 
 - [ ] (tm1a) Team life and choices of Two-Headed Giant beyond the shared total: an effect that sets each player's life (CR 810.9e), the team mulligan and priority by team
-- [ ] (tm1b) Teams the host sets in the lobby are stored when set, so a restart before the start keeps them, and My games carries each seat's team so a team win counts for its members
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
 - [ ] (ai36a) Hard beats Normal by 70% or more in 1v1 and Very Hard beats Hard by 65% or more; Normal with Hard's former searches beats main's Normal 59.6% but aims Pacifism at a teammate in Two-Headed Giant (target ranking of auras), so it waits for that fix (`crates/mtg-testkit/src/brain`, `examples/bot_tournament.rs`)
