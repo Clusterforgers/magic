@@ -309,7 +309,17 @@ test.describe('the development table with 40 permanents a seat', () => {
   test('fits at every size with three targeting items on the stack at rest', async ({ page }) => {
     await page.goto(`${DEV_WEB_URL}/dev/table?board=duel&prompt=priority&turn=you`)
     await page.locator(THINGS.primary).waitFor()
-    await expect(page.locator('[data-stack-chip]')).toHaveCount(3)
+    // The band keeps the stack chips to a fifth of its width (docs/ui-design.md, The band): the chips on show and the
+    // "+N more" button count the three items.
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () =>
+            document.querySelectorAll('[data-stack-chip]').length +
+            Number(document.querySelector('[data-slot="stack-more"]')?.textContent?.match(/\d+/)?.[0] ?? 0),
+        ),
+      )
+      .toBe(3)
     await atEverySize(page, ['hand', 'life', 'primary'], onTable('three stack items'))
   })
 
@@ -453,7 +463,9 @@ test.describe('the development table with 40 permanents a seat', () => {
       const hidden = Number(seen.more?.match(/\d+/)?.[0] ?? 0)
       const folded = seen.counts.reduce((sum, count) => sum + Number(count.slice(1)) - 1, 0)
       expect(seen.shown + folded + hidden, `${label}: every item counted once`).toBe(16)
-      if (size.width >= 1366) expect(seen.counts, `${label}: the runs fold`).toEqual(['×2', '×4', '×6'])
+      // The runs fold in order from the top; the band's fifth for the chips shows the first of them at least.
+      if (size.width >= 1366) expect(seen.counts.length, `${label}: the runs fold`).toBeGreaterThan(0)
+      expect(['×2', '×4', '×6'].slice(0, seen.counts.length), `${label}: the runs fold`).toEqual(seen.counts)
       // Twelve attackers at three seats: one bundle each, its label whole, in the window and off the strip.
       expect(seen.labels.map((one) => one.text).toSorted(), `${label}: bundle labels`).toEqual([
         '4 attackers → Cy',
@@ -546,6 +558,7 @@ test.describe('the development table with 40 permanents a seat', () => {
           hints: dock?.querySelectorAll('[data-slot="key-cap"]').length ?? 0,
           primary: dock?.querySelector('[data-slot="primary-action"]')?.textContent ?? '',
           scrolls: dock === null || dock === undefined ? false : dock.scrollWidth > dock.clientWidth + 1,
+          main: document.querySelector('[data-slot="table-main"]')?.getBoundingClientRect().width ?? 0,
         }
       })
     // A spell on the stack (the longest words of the full dock) and the longest step to name in the short one.
@@ -559,8 +572,9 @@ test.describe('the development table with 40 permanents a seat', () => {
         const seen = await read()
         expect(seen.cards, `${label}: the cards of the hand and the commanders`).toBe(9)
         expect(seen.scrolls, `${label}: the dock scrolls sideways`).toBe(false)
-        // Key hints and the name of a spell only where the dock leaves the row its room (a main area of 1161 px).
-        const roomy = size.width >= 1481
+        // Key hints and the name of a spell only where the dock leaves the row its room (a main area of 1161 px, beside
+        // the side column, `DOCK_FULL_MIN_MAIN_PX`).
+        const roomy = seen.main >= 1161
         expect(seen.hints > 0, `${label}: key hints`).toBe(roomy)
         if (!roomy) expect(seen.dock, `${label}: the dock`).toBeLessThanOrEqual(300)
         if (query.startsWith('prompt=priority&') && !roomy) expect(seen.primary).toBe('Resolve')
@@ -729,7 +743,8 @@ test.describe('the development table with 40 permanents a seat', () => {
       await expect(page.locator('[data-slot="side-overlay"][data-lowered]')).toBeAttached()
       // A trial click fails when another element would take the press.
       await block.click({ trial: true })
-      const sentence = page.locator('[data-slot="decision-line"]')
+      // The band's line is `display: contents` (its parts are cells of the band's grid), so the sentence is what shows.
+      const sentence = page.locator('[data-slot="decision-line"] [data-slot="prompt-sentence"]')
       await expect(sentence).toBeVisible()
       const covered = await sentence.evaluate((line) => {
         const box = line.getBoundingClientRect()
