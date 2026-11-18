@@ -188,6 +188,27 @@ describe('domRects', () => {
     expect(found.get('seat:3')).toEqual({ x: 274, y: 37, width: 16, height: 16 })
   })
 
+  it.each([
+    // The tile's left end in the page, and whether its own box is what the line reaches.
+    [-148, false],
+    [-136, false],
+    [-130, true],
+    [-40, true],
+  ])(
+    'reaches a tile whose left end is at %i px at the edge unless more than the mark of it shows',
+    (x, own) => {
+      const { table, origin } = page()
+      const strip = child(table, 'div', {}, { x: 0, y: 60, width: 390, height: 70 })
+      strip.style.overflowX = 'auto'
+      child(strip, 'button', { 'data-tile-seat': '3' }, { x, y: 60, width: 150, height: 70 })
+      const found = domRects.measure([{ kind: 'seat', seat: 3 }], origin)
+      // A sliver of the tile is no place to point at: the mark stands at the strip's left end instead.
+      expect(found.get('seat:3')).toEqual(
+        own ? { x: x - 100, y: 10, width: 150, height: 70 } : { x: -100, y: 37, width: 16, height: 16 },
+      )
+    },
+  )
+
   it('has no edge for a tile that no strip clips or that a squeezed strip leaves no room', () => {
     const { table, origin } = page()
     const strip = child(table, 'div', {}, { x: 0, y: 60, width: 390, height: 4 })
