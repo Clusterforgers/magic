@@ -1930,6 +1930,38 @@
    }
   },
   {
+   "id": "ozrith_observatory",
+   "name": "Ozrith, Archmage of the Tempest",
+   "since": 6,
+   "colors": "UR",
+   "brain": "Hard",
+   "life": 27,
+   "life_per_hero": 30,
+   "hand": 9,
+   "rules": ["ozrith"],
+   "enrage": "the_storm_breaks",
+   "relic": "stormglass_orrery",
+   "phases": [["the_gathering_storm", 66], ["eye_of_the_storm", 33]],
+   "line": "Every spell is a spark, and I have been gathering sparks for a thousand years.",
+   "commander": "Niv-Mizzet, Parun",
+   "art": {"card": "Archmage Emeritus", "oracle_id": "8305d576-21d8-4ce7-8eda-a7cd9793aca5"},
+   "brackets": {
+    "base": [
+     ["Island", 9], ["Mountain", 8],
+     ["Soul-Scar Mage", 2], ["Heartfire Immolator", 2], ["Coruscation Mage", 2], ["Umara Mystic", 2],
+     ["Cyclops Superconductor", 2], ["Windrider Wizard", 2], ["Veyran, Voice of Duality", 1], ["Rockslide Sorcerer", 1],
+     ["Expedition Diviner", 1], ["Lightning Bolt", 2], ["Izzet Charm", 2], ["Arc Trail", 1], ["Electrolyze", 1],
+     ["Opt", 1], ["Consider", 1]
+    ],
+    "steps": [
+     {"add": [["Island", 2], ["Mountain", 2], ["Archmage Emeritus", 1], ["Gandalf, Spark Starter", 1], ["Prismari Command", 1], ["Ral's Outburst", 1], ["Fire // Ice", 1], ["Deekah, Fractal Theorist", 1]]},
+     {"add": [["Island", 2], ["Mountain", 2], ["Aven Fateshaper", 1], ["Prismari, the Inspiration", 1], ["Sower of Temptation", 1], ["Lightning Bolt", 1], ["Expressive Iteration", 1], ["Electrolyze", 1]]},
+     {"cut": [["Coruscation Mage", 2], ["Expedition Diviner", 1]], "add": [["Lightning Bolt", 1], ["Sower of Temptation", 1], ["Archmage Emeritus", 1]]},
+     {"cut": [["Consider", 1], ["Opt", 1], ["Windrider Wizard", 1]], "add": [["Gandalf the Grey", 1], ["Umara Mystic", 1], ["Izzet Charm", 1]]}
+    ]
+   }
+  },
+  {
    "id": "unmaker_void",
    "name": "The Unmaker",
    "uber": true,

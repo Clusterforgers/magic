@@ -1,6 +1,7 @@
-//! Goal: the passives and Enrages of the two-colour bosses of generation 5 do what their words say in real games:
+//! Goal: the passives and Enrages of the two-colour bosses of generations 5 and 6 do what their words say in real games:
 //! Hollowmere's dead return as Spirits, Korrath's creatures grow when hurt, Sahrra's pride grows when a Cat falls,
-//! Valdric's Vampires feed on the heroes' dead, and each Enrage waits for the heroes' seventh turn and then grows.
+//! Valdric's Vampires feed on the heroes' dead, Ozrith's spells call up Elementals, and each Enrage waits for the heroes'
+//! seventh turn and then grows.
 use std::sync::Arc;
 
 use mtg_campaign::content;
@@ -144,5 +145,34 @@ fn a_new_enrage_waits_for_the_heroes_seventh_turn_then_grows(
     let mut driver = Driver::from_scenario(table(&[id], &[]))?;
     driver.idle_until(turn, Step::Main1)?;
     assert_eq!(count(&driver, BOSS, name), expected);
+    Ok(())
+}
+
+#[test]
+fn ozriths_spells_call_up_elementals() -> Result<(), ScriptError> {
+    let driver = burn_at(&["ozrith"], &[], "Bear", 1)?;
+    assert_eq!(count(&driver, BOSS, "Elemental"), 1);
+    assert_eq!(count(&driver, HERO, "Elemental"), 0);
+    Ok(())
+}
+
+// The storm deals 1 damage at the boss's 7th upkeep (game turn 14) and 3 at its 8th (turn 16), so the Bear (2/2) falls
+// only then.
+#[rstest]
+#[case::the_storm_waits(12, 1)]
+#[case::the_storm_grazes(14, 1)]
+#[case::the_storm_grows(16, 0)]
+fn a_storm_enrage_waits_for_the_heroes_seventh_turn_then_grows(
+    #[case] turn: u32,
+    #[case] bears: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(table(&["the_storm_breaks"], &[]))?;
+    driver.idle_until(turn, Step::Main1)?;
+    assert_eq!(count(&driver, HERO, "Bear"), bears);
+    assert_eq!(
+        count(&driver, BOSS, "Brute"),
+        1,
+        "only the heroes' creatures"
+    );
     Ok(())
 }

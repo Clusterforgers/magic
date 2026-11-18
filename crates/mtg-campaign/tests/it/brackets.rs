@@ -3,7 +3,7 @@
 //! bracket table never makes a boss easier; no boss deck holds an infinite combo, and the boss's side stops any loop
 //! after five iterations; the commander card waits in the command zone and is cast as the last phase begins in real
 //! fights of two to four heroes for every boss; an upgraded boss can stand as the final boss; runs of an earlier
-//! generation keep their ladder and decks, generation 5 adds one boss per colour pair, and the uber boss stands only as
+//! generation keep their ladder and decks, generations 5 and 6 add one boss per colour pair, and the uber boss stands only as
 //! the final boss of one hot ladder in four, drawing the heroes' cost colours anew.
 use std::collections::BTreeSet;
 use std::sync::Arc;
@@ -12,7 +12,7 @@ use mtg_campaign::content::{Boss, UPGRADED};
 use mtg_campaign::map::{LIEUTENANTS, generate, generate_for};
 use mtg_campaign::run::CONTENT;
 use mtg_campaign::scale::{
-    BRACKETS, BRACKETS_FROM, DECK_SIZE, MAX_BRACKET, MAX_HEAT, RANKS, ROSTER_FROM,
+    BRACKETS, BRACKETS_FROM, DECK_SIZE, MAX_BRACKET, MAX_HEAT, PAIRS_FROM, RANKS, ROSTER_FROM,
 };
 use mtg_campaign::{FightPlan, Run, RunEvent, Scale, content};
 use mtg_cards::CardDefinition;
@@ -35,8 +35,10 @@ use rstest::rstest;
 const BASICS: [&str; 6] = ["Plains", "Island", "Swamp", "Mountain", "Forest", "Wastes"];
 /// The highest mana value a deck card may have, by bracket from 1; the commander card is apart.
 const MANA_VALUE_CAP: [u32; MAX_BRACKET as usize] = [5, 6, 7, 20, 20];
-/// Known two-card infinite combos: a boss deck never holds both cards of one.
-const COMBOS: [(&str, &str); 8] = [
+/// Known two-card infinite combos: a boss deck with its commander card never holds both cards of one.
+const COMBOS: [(&str, &str); 10] = [
+    ("Niv-Mizzet, Parun", "Niv-Mizzet, Visionary"),
+    ("Niv-Mizzet, Parun", "Curiosity"),
     ("Kiki-Jiki, Mirror Breaker", "Pestermite"),
     ("Kiki-Jiki, Mirror Breaker", "Zealous Conscripts"),
     ("Sanguine Bond", "Exquisite Blood"),
@@ -135,9 +137,10 @@ fn every_boss_deck_loads_at_every_bracket_and_keeps_its_rules() {
                     "{at}: {name} costs {value}"
                 );
             }
+            let with_commander = |name: &str| names.contains(name) || boss.commander == name;
             for (a, b) in COMBOS {
                 assert!(
-                    !(names.contains(a) && names.contains(b)),
+                    !(with_commander(a) && with_commander(b)),
                     "{at}: {a} and {b} loop"
                 );
             }
@@ -563,19 +566,61 @@ fn a_generation_four_ladder_never_changes(#[values(0, 1, 2)] heat: u8) {
     }
 }
 
-#[test]
-fn the_new_bosses_join_from_generation_five() {
+/// The ladders generation 5 drew before generation 6 joined, seeds 0 to 7, at Heat 1 and then at Heat 2.
+const GENERATION_FIVE: [[&str; 8]; 2] = [
+    [
+        "hollowmere_belfry,Event,Treasure,vex_crypt,Campfire,Treasure,mossjaw_hall,Treasure,Shop,ysolde_reef_ascendant",
+        "mossjaw_hall,Campfire,Treasure,seraphine_spire,Shop,Campfire,vex_crypt,Shop,Treasure,ysolde_reef_ascendant",
+        "skrix_nest,Campfire,Shop,vex_crypt,Campfire,Shop,morwenna_court,Treasure,Campfire,seraphine_spire_ascendant",
+        "morwenna_court,Campfire,Event,hollowmere_belfry,Event,Shop,korrath_wilds,Campfire,Event,vex_crypt_ascendant",
+        "sahrra_pride,Campfire,Event,mossjaw_hall,Event,Campfire,skrix_nest,Shop,Treasure,vex_crypt_ascendant",
+        "seraphine_spire,Shop,Event,valdric_manor,Campfire,Shop,hollowmere_belfry,Event,Campfire,ysolde_reef_ascendant",
+        "vex_crypt,Campfire,Event,seraphine_spire,Campfire,Event,ysolde_reef,Treasure,Campfire,skrix_nest_ascendant",
+        "ysolde_reef,Treasure,Shop,mossjaw_hall,Campfire,Shop,morwenna_court,Campfire,Shop,vex_crypt_ascendant",
+    ],
+    [
+        "hollowmere_belfry,Event,Treasure,vex_crypt,Campfire,Treasure,mossjaw_hall,Treasure,Shop,unmaker_void",
+        "mossjaw_hall,Campfire,Treasure,seraphine_spire,Shop,Campfire,vex_crypt,Shop,Treasure,ysolde_reef_ascendant",
+        "skrix_nest,Campfire,Shop,vex_crypt,Campfire,Shop,morwenna_court,Treasure,Campfire,seraphine_spire_ascendant",
+        "morwenna_court,Campfire,Event,hollowmere_belfry,Event,Shop,korrath_wilds,Campfire,Event,vex_crypt_ascendant",
+        "sahrra_pride,Campfire,Event,mossjaw_hall,Event,Campfire,skrix_nest,Shop,Treasure,vex_crypt_ascendant",
+        "seraphine_spire,Shop,Event,valdric_manor,Campfire,Shop,hollowmere_belfry,Event,Campfire,ysolde_reef_ascendant",
+        "vex_crypt,Campfire,Event,seraphine_spire,Campfire,Event,ysolde_reef,Treasure,Campfire,unmaker_void",
+        "ysolde_reef,Treasure,Shop,mossjaw_hall,Campfire,Shop,morwenna_court,Campfire,Shop,vex_crypt_ascendant",
+    ],
+];
+
+#[rstest]
+fn a_generation_five_ladder_never_changes(#[values(1, 2)] heat: u8) {
+    let theme = &content().unwrap().themes[0];
+    for (seed, ladder) in GENERATION_FIVE[usize::from(heat - 1)].iter().enumerate() {
+        let map = generate_for(theme, seed as u64, ROSTER_FROM, heat);
+        assert_eq!(rooms(&map), *ladder, "seed {seed}");
+    }
+    for seed in 0..300u64 {
+        let map = generate_for(theme, seed, ROSTER_FROM, heat);
+        for id in map.nodes.iter().filter_map(|n| n.boss.as_deref()) {
+            assert!(
+                theme.boss(id).unwrap().since <= ROSTER_FROM,
+                "seed {seed}: {id}"
+            );
+        }
+    }
+}
+
+#[rstest]
+fn the_new_bosses_join_from_their_generation(#[values(ROSTER_FROM, PAIRS_FROM)] generation: u32) {
     let theme = &content().unwrap().themes[0];
     let mut met = BTreeSet::new();
     for seed in 0..400u64 {
-        let map = generate_for(theme, seed, ROSTER_FROM, 1);
+        let map = generate_for(theme, seed, generation, 1);
         met.extend(map.nodes.iter().filter_map(|n| n.boss.clone()));
     }
     for boss in theme
         .bosses
         .iter()
         .chain(&theme.upgraded)
-        .filter(|b| b.since == ROSTER_FROM && !b.uber)
+        .filter(|b| b.since == generation && !b.uber)
     {
         assert!(met.contains(&boss.id), "{} is drawn", boss.id);
     }
