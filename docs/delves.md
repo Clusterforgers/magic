@@ -58,7 +58,6 @@ Runs of content generation 8 and later (`REWORK_FROM`) play the reworked boss (`
 - No loops: the bots of the boss's side answer any loop offer with at most 5 iterations or Stop and never a draw (`loop_answer_in`, `BOSS_LOOP_CAP`).
 - Drain rule: a boss's innate, modifier, phase or satchel card takes life from a hero only as damage or unless the hero pays.
 - Relics for heroes: from generation 8 a relic can drop again; owning it never lowers its chance, and copies stack.
-- Closing older runs: the rework's migration ends every open run with `Abandoned`; finished and abandoned runs stay on the leaderboard.
 
 ## Spotlight
 

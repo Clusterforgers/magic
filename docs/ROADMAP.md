@@ -167,7 +167,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (rw5) Boss view and intro on screen: innate with its level, modifier, relics, satchel and the phase countdown by round
 - [ ] (rw6) Simulator: `delve_sim` takes a depth, names a modifier and reports the round each fight ended in and the share that reached each phase
 - [ ] (rw7) Measure the reworked bosses at each Heat and depths 0, 3 and 7 with two and four Hard heroes; tune life and the level steps
-- [ ] (rw8) Remove the old boss systems (Escalation, Enrage, Intensify, schemes, Omen, minion seats, Lull, Reserves to Last Bulwark, commander card, upgraded and uber bosses, own relics, old modifiers, brackets and tiers, life phases) from campaign, protocol, server, simulator and web, and make generation 8 the newest
+- [ ] (rw8) Remove the old boss systems (Escalation, Enrage, Intensify, schemes, Omen, minion seats, Lull, Reserves to Last Bulwark, commander card, upgraded and uber bosses, own relics, old modifiers, brackets and tiers, life phases) from campaign, protocol, server, simulator and web, and make generation 8 the newest; the migration that closes open runs (and its test, in commit d973c7921) ships with it
 
 ## M8 Polish and deploy
 
