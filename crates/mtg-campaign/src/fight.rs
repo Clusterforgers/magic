@@ -60,19 +60,27 @@ pub struct BossSeat {
     /// Every how many of its turns a scheme is set in motion, from its third.
     #[serde(default = "every_turn")]
     pub scheme_every: u32,
-    /// The reworked boss's innate at its level ([`crate::innate`]), in its command zone from the start.
+    /// The reworked boss's parts ([`crate::boss_plan`]); none for a boss of an older generation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rework: Option<Box<Reworked>>,
+}
+
+/// The parts of a reworked boss's seat.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Reworked {
+    /// Its innate at its level ([`crate::innate`]), in its command zone from the start.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub innate: Option<String>,
-    /// The fight's encounter modifier ([`crate::modifiers`]), in the boss's command zone from the start.
+    /// The fight's encounter modifier ([`crate::modifiers`]), in its command zone from the start.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modifier: Option<String>,
-    /// The relics the reworked boss brings, copies included ([`crate::boss_relics`]).
+    /// The relics it brings, copies included ([`crate::boss_relics`]).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub relics: Vec<String>,
-    /// The reworked boss's phases: the phase card and the round whose last turn's end step begins it.
+    /// Its phases: the phase card and the round whose last turn's end step begins it.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub round_phases: Vec<(String, u32)>,
-    /// The reworked boss's satchel; the caller resolves the cards with [`FightPlan::boss_decks`]'s.
+    /// Its satchel, whose cards the caller resolves.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub satchel: Vec<crate::content::SatchelCard>,
 }
@@ -82,13 +90,29 @@ fn every_turn() -> u32 {
 }
 
 impl BossSeat {
+    /// A reworked boss's phases, each beginning by its round.
+    fn round_phases<'a>(
+        &'a self,
+        content: &'a Content,
+    ) -> impl Iterator<Item = Result<BossPhase, CampaignError>> + 'a {
+        let phases = self.rework.iter().flat_map(|r| r.round_phases.iter());
+        phases.map(|(id, round)| {
+            Ok(BossPhase {
+                begins: PhaseStart::AtRound(*round),
+                emblem: content.card(id)?.definition(),
+            })
+        })
+    }
+
     /// The custom cards in its command zone from the start: its rules, then a reworked boss's innate, modifier and
     /// relics (copies stack).
     pub fn emblems(&self) -> Vec<String> {
         let mut ids = self.rules.clone();
-        ids.extend(self.innate.iter().cloned());
-        ids.extend(self.modifier.iter().cloned());
-        ids.extend(self.relics.iter().cloned());
+        if let Some(rework) = &self.rework {
+            ids.extend(rework.innate.iter().cloned());
+            ids.extend(rework.modifier.iter().cloned());
+            ids.extend(rework.relics.iter().cloned());
+        }
         ids
     }
 }
@@ -252,12 +276,7 @@ impl FightPlan {
                     emblem,
                 })
             })
-            .chain(self.boss.round_phases.iter().map(|(id, round)| {
-                Ok(BossPhase {
-                    begins: PhaseStart::AtRound(*round),
-                    emblem: content.card(id)?.definition(),
-                })
-            }))
+            .chain(self.boss.round_phases(content))
             .collect::<Result<Vec<_>, CampaignError>>()?;
         let boss_side = 1 + self.minions.len();
         let mut spirits = vec![haunt; self.heroes.len()];

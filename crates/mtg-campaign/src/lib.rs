@@ -18,7 +18,7 @@ pub use content::{
     Boss, BossArt, Brain, CardKind, Content, CustomCard, EventOption, Minion, Needs, Outcome,
     Rarity, content,
 };
-pub use fight::{BossSeat, FightPlan, HeroSeat, MinionSeat};
+pub use fight::{BossSeat, FightPlan, HeroSeat, MinionSeat, Reworked};
 pub use map::{FloorMap, Node, RoomKind};
 pub use relics::{DeckMakeup, Want};
 pub use run::{

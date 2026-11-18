@@ -4,7 +4,7 @@
 
 use crate::boss_relics;
 use crate::content::{Boss, Brain, Content};
-use crate::fight::{BossSeat, HAND};
+use crate::fight::{BossSeat, HAND, Reworked};
 use crate::innate::innate_id;
 use crate::run::Run;
 use crate::scale::{PHASE_ROUNDS, REWORK_FROM, Scale};
@@ -51,16 +51,18 @@ impl Run {
             phases: Vec::new(),
             schemes: Vec::new(),
             scheme_every: 1,
-            innate: boss.innate.as_ref().map(|id| innate_id(id, level)),
-            modifier: modifier.map(|m| m.id.clone()),
-            relics,
-            round_phases: boss
-                .round_phases
-                .iter()
-                .cloned()
-                .zip(PHASE_ROUNDS)
-                .collect(),
-            satchel: boss.satchel.clone(),
+            rework: Some(Box::new(Reworked {
+                innate: boss.innate.as_ref().map(|id| innate_id(id, level)),
+                modifier: modifier.map(|m| m.id.clone()),
+                relics,
+                round_phases: boss
+                    .round_phases
+                    .iter()
+                    .cloned()
+                    .zip(PHASE_ROUNDS)
+                    .collect(),
+                satchel: boss.satchel.clone(),
+            })),
         }
     }
 }

@@ -210,18 +210,19 @@ fn a_reworked_fight_plan_holds_only_the_reworked_parts(
     let run = reworked_run(heroes, heat);
     let plan = run.fight_plan(content).unwrap().unwrap();
     let boss = &plan.boss;
+    let rework = boss.rework.as_deref().unwrap();
     assert_eq!(boss.life, Scale::boss_life(heroes));
     assert_eq!(boss.brain, Brain::Hard);
-    assert!(plan.minions.is_empty());
+    assert_eq!(plan.minions.len(), 0);
     assert!(boss.rules.is_empty() && boss.phases.is_empty() && boss.schemes.is_empty());
     assert_eq!(boss.commander, None);
-    assert!(boss.modifier.is_some());
-    assert_eq!(boss.relics.len(), boss_relics::count(0, heat));
-    let rounds: Vec<u32> = boss.round_phases.iter().map(|(_, r)| *r).collect();
+    assert!(rework.modifier.is_some());
+    assert_eq!(rework.relics.len(), boss_relics::count(0, heat));
+    let rounds: Vec<u32> = rework.round_phases.iter().map(|(_, r)| *r).collect();
     assert!(rounds.is_empty() || rounds == PHASE_ROUNDS);
     // The plan's emblems: the modifier and any relics, copies kept.
     assert_eq!(
         boss.emblems().len(),
-        1 + boss.relics.len() + usize::from(boss.innate.is_some())
+        1 + rework.relics.len() + usize::from(rework.innate.is_some())
     );
 }
