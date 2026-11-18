@@ -12,11 +12,15 @@ export interface StackGroup {
   ids: readonly ObjectId[]
 }
 
-/** What makes two items one: abilities of a source with the same text, or copies of a spell, of one controller. */
+/**
+ * What makes two items one: abilities of a source with the same text that triggered on the same things, or copies of
+ * a spell, of one controller.
+ */
 function foldKey(object: ObjectView | undefined): string | null {
   if (object === undefined) return null
   const shared = `${object.controller}|${object.name}|${object.rules_text ?? ''}`
-  if (object.kind === 'Ability') return `ability|${object.source ?? ''}|${shared}`
+  if (object.kind === 'Ability')
+    return `ability|${object.source ?? ''}|${shared}|${JSON.stringify(object.trigger ?? null)}`
   if (object.copy !== undefined) return `copy|${object.kind ?? 'Card'}|${shared}`
   return null
 }

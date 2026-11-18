@@ -164,10 +164,12 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
   return (
     <PromptLayout
       text={text}
+      // The targets are on the table or in the centre overlay: a sheet over the hand keeps out of the way.
+      folded
       choices={
         <>
-          <QuickSelect buttons={quick} onSet={setChosen} />
           <CardChoices
+            quick={<QuickSelect buttons={quick} onSet={setChosen} />}
             cards={objectIds}
             chosen={chosenIds}
             closed={closed}

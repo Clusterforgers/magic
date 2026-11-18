@@ -54,9 +54,9 @@ describe('the wide sheet', () => {
     expect(SHEET_KEEP_PX).toBeGreaterThan(0)
   })
 
-  it("gives a row of cards or the opening hand the strip's whole width below a wide band", () => {
+  it("gives the opening hand, which no column holds, the strip's whole width below the band's line", () => {
     const band = readFileSync(join(import.meta.dirname, 'promptBand.css'), 'utf8')
-    expect(band).toContain("'choices choices choices choices choices'")
+    expect(band).toContain("'choices choices choices choices choices choices choices'")
   })
 
   it('draws a whole card up to 7 rem wide, following the window height', () => {

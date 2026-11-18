@@ -90,6 +90,7 @@ mod tests {
             source: None,
             granter: None,
             rules_text: None,
+            trigger: None,
             targets: Vec::new(),
             targets_legal: Vec::new(),
             counters: Vec::new(),

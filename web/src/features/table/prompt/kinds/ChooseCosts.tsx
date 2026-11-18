@@ -98,7 +98,7 @@ export const ChooseCostsPrompt: PromptComponent<'ChooseCosts'> = ({ options }) =
             role="group"
             aria-label="Optional costs"
             data-slot="cost-list"
-            className="grid max-h-56 basis-full grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] content-start gap-1 overflow-y-auto p-0.5"
+            className="grid max-h-56 basis-full grid-cols-[repeat(auto-fill,minmax(min(100%,16rem),1fr))] content-start gap-1 overflow-y-auto p-0.5"
           >
             {optional.map((cost, place) => {
               const key = numberKey(place)

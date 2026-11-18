@@ -62,6 +62,7 @@ fn the_target_decision_of_an_aura_cast_from_hidden_exile_is_sent(
         decision: decision.clone(),
         deadline_ms: None,
         show_after_ms: None,
+        asking: None,
     })
     .unwrap();
     assert_eq!(sent["type"], "Decision");

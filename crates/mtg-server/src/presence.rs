@@ -104,6 +104,20 @@ impl<S: EventStore> GameActor<S> {
         }
     }
 
+    /// The spell or ability that asks `decision`, as its seat may see it now.
+    pub(crate) fn asking(
+        &self,
+        decision: &mtg_engine::Decision,
+    ) -> Option<Box<mtg_protocol::AskingView>> {
+        match &self.phase {
+            Phase::Running(running) => {
+                mtg_protocol::AskingView::of(running.engine.state(), decision.player, decision)
+                    .map(Box::new)
+            }
+            Phase::Lobby { .. } => None,
+        }
+    }
+
     /// Tells the other seats and the spectators the time `seat` now has, when it is away: it was issued a decision or its clock grew.
     pub(crate) fn tell_away(&mut self, seat: PlayerId, deadline_ms: Option<u64>) {
         let connected = self.seats.connected();

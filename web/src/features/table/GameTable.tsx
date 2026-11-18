@@ -38,6 +38,8 @@ import { createPreviewStore, PreviewContext } from './preview'
 import { Opponents, SeatArea } from './Seats'
 import { BossSide, PartySide } from './BossLayout'
 import { bossSidesKey, defaultFocusOf, handSeat, parseBossSides, seatCountOf, turnLeft } from './selectors'
+import { AskMarks } from './prompt/detail/AskMarks'
+import { DecisionSheet } from './prompt/detail/DecisionSheet'
 import { SharedStrip } from './SharedStrip'
 import { useSideFolded } from './sideFold'
 import { SideProvider } from './sideState'
@@ -139,7 +141,7 @@ const Table = memo(function Table() {
   const fx = useTableFx(options.effects ?? EFFECTS_BY_DEFAULT, options.effectsSlow)
   const moments = useTableMoments(options.effects ?? EFFECTS_BY_DEFAULT)
   // The opening-hand decision floats in the overlay at every table but a phone's, so the dock keeps its size then.
-  const choice = useChoiceOverlayHost(regions.phone, viewport, true)
+  const choice = useChoiceOverlayHost(regions.phone, viewport, true, regions.side !== 'column')
 
   return (
     <AttackLinesContext value={party}>
@@ -233,7 +235,13 @@ const Table = memo(function Table() {
                                   <SidePanelMount rows={sidePanelRows(regions, lowered)} lowered={lowered} />
                                 }
                                 // Inside the grid's own stacking context, so the lines run under the shared strip and above the boards.
-                                overlay={<CombatOverlay />}
+                                overlay={
+                                  <>
+                                    <CombatOverlay />
+                                    <AskMarks />
+                                  </>
+                                }
+                                sheet={spectator ? null : <DecisionSheet phone={regions.phone} />}
                                 choice={choice}
                               />
                             </ChoiceOverlayContext>

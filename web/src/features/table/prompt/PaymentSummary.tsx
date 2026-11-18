@@ -162,6 +162,11 @@ export interface PaymentSummaryProps {
   life?: LifeSummary
   /** The row of mana sources, drawn between the floating mana and the payment. */
   sources?: ReactNode
+  /**
+   * Beside the column's circles and source rows (`PayColumn`): only what they do not hold, the floating and
+   * restricted mana, convoke, improvise and delve, and the life switches, a line each.
+   */
+  aside?: boolean
 }
 
 /**
@@ -186,6 +191,7 @@ export function PaymentSummary({
   onClear,
   life,
   sources,
+  aside = false,
 }: PaymentSummaryProps) {
   const root = useRef<HTMLDivElement>(null)
   const refocus = useRef<number | null>(null)
@@ -216,73 +222,82 @@ export function PaymentSummary({
       data-slot="payment"
       // The rows flow side by side at their own widths, so a payment keeps to the band's few lines; the sources, the
       // longest, take a line of their own and wrap in it.
-      className="flex w-full flex-wrap items-center gap-x-6 gap-y-1.5 text-sm [&>*]:max-w-full [&>:has(>[data-line])]:basis-full"
+      data-aside={aside || undefined}
+      className={
+        aside
+          ? 'grid w-full gap-1.5 text-sm empty:hidden'
+          : 'flex w-full flex-wrap items-center gap-x-6 gap-y-1.5 text-sm [&>*]:max-w-full [&>:has(>[data-line])]:basis-full'
+      }
     >
-      <Row label="Cost">
-        <ManaPips pips={costPips(cost)} sizeClass={PIP_SIZE} label="Mana cost" />
-        {/* What is made and owed stand on the cost's line, so a payment keeps to the band's height. */}
-        <div data-slot="pay-made-owed" className="ms-3 flex flex-wrap items-center gap-x-4 gap-y-1">
-          {/* Before anything is chosen what is owed is the cost: "Made so far" waits for a first source. */}
-          {empty ? null : (
-            <Half label="Made so far">
-              <ManaPips
-                pips={costPips([...madeCost(spends.flatMap(madeOf)), ...genericMade(spends)])}
-                sizeClass={PIP_SIZE}
-                label="Mana made"
-              />
-            </Half>
-          )}
-          <Half label="Still owed">
-            {covered ? (
-              <Quiet>nothing, covered</Quiet>
-            ) : (
-              <ManaPips pips={costPips(owed)} sizeClass={PIP_SIZE} label="Mana still owed" />
+      {aside ? null : (
+        <Row label="Cost">
+          <ManaPips pips={costPips(cost)} sizeClass={PIP_SIZE} label="Mana cost" />
+          {/* What is made and owed stand on the cost's line, so a payment keeps to the band's height. */}
+          <div data-slot="pay-made-owed" className="ms-3 flex flex-wrap items-center gap-x-4 gap-y-1">
+            {/* Before anything is chosen what is owed is the cost: "Made so far" waits for a first source. */}
+            {empty ? null : (
+              <Half label="Made so far">
+                <ManaPips
+                  pips={costPips([...madeCost(spends.flatMap(madeOf)), ...genericMade(spends)])}
+                  sizeClass={PIP_SIZE}
+                  label="Mana made"
+                />
+              </Half>
             )}
-          </Half>
-        </div>
-      </Row>
-      <Row label="Floating mana">
-        {held.length === 0 ? (
-          <Quiet>none</Quiet>
-        ) : (
-          held.map((type) => {
-            const left = poolLeft(pool, spends, type)
-            const usable = left > 0 && canSpend(type)
-            const kept = keptOf(pool, type)
-            return (
-              <Button
-                key={type}
-                type="button"
-                variant="outline"
-                size="sm"
-                data-slot="pay-pool"
-                // Not `disabled`: a button that goes dead under the keyboard would drop its focus.
-                aria-disabled={!usable}
-                aria-label={`Spend ${manaName(type)} from your pool, ${left} left${kept === null ? '' : `, ${kept.words}`}`}
-                title={kept?.words}
-                className="h-9 gap-1.5 px-2 aria-disabled:pointer-events-none aria-disabled:opacity-50"
-                onClick={() => {
-                  if (usable) onSpendPool(type)
-                }}
-              >
-                <ManaDot type={type} />
-                <span aria-hidden="true" className="tabular-nums">
-                  {left}
-                </span>
-                {kept === null ? null : (
-                  <span
-                    aria-hidden="true"
-                    data-mark="kept"
-                    className="rounded-sm bg-muted px-1 text-xs text-muted-foreground"
-                  >
-                    kept
+            <Half label="Still owed">
+              {covered ? (
+                <Quiet>nothing, covered</Quiet>
+              ) : (
+                <ManaPips pips={costPips(owed)} sizeClass={PIP_SIZE} label="Mana still owed" />
+              )}
+            </Half>
+          </div>
+        </Row>
+      )}
+      {aside && held.length === 0 ? null : (
+        <Row label="Floating mana">
+          {held.length === 0 ? (
+            <Quiet>none</Quiet>
+          ) : (
+            held.map((type) => {
+              const left = poolLeft(pool, spends, type)
+              const usable = left > 0 && canSpend(type)
+              const kept = keptOf(pool, type)
+              return (
+                <Button
+                  key={type}
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  data-slot="pay-pool"
+                  // Not `disabled`: a button that goes dead under the keyboard would drop its focus.
+                  aria-disabled={!usable}
+                  aria-label={`Spend ${manaName(type)} from your pool, ${left} left${kept === null ? '' : `, ${kept.words}`}`}
+                  title={kept?.words}
+                  className="h-9 gap-1.5 px-2 aria-disabled:pointer-events-none aria-disabled:opacity-50"
+                  onClick={() => {
+                    if (usable) onSpendPool(type)
+                  }}
+                >
+                  <ManaDot type={type} />
+                  <span aria-hidden="true" className="tabular-nums">
+                    {left}
                   </span>
-                )}
-              </Button>
-            )
-          })
-        )}
-      </Row>
+                  {kept === null ? null : (
+                    <span
+                      aria-hidden="true"
+                      data-mark="kept"
+                      className="rounded-sm bg-muted px-1 text-xs text-muted-foreground"
+                    >
+                      kept
+                    </span>
+                  )}
+                </Button>
+              )
+            })
+          )}
+        </Row>
+      )}
       {restricted.length === 0 ? null : (
         <Row label="Restricted mana">
           {restricted.map((entry) => (
@@ -337,7 +352,7 @@ export function PaymentSummary({
       {life === undefined ? null : <LifeRow life={life} cost={cost} />}
       {sources}
       {/* Shown once something is chosen: before that "Made so far" says there is nothing yet, a line less in the band. */}
-      {empty ? null : (
+      {empty || aside ? null : (
         <Row label="Paying with">
           {spends.map((spend, index) => {
             const base = chipKey(spend)

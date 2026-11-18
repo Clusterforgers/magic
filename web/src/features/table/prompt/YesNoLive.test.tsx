@@ -65,7 +65,7 @@ describe('a yes-or-no decision from the server', () => {
   it('starts again for the next decision, with focus back on No', async () => {
     const { send, user } = mount()
     send(question(35))
-    await user.tab({ shift: true })
+    await user.tab()
     expect(screen.getByRole('button', { name: 'Yes' })).toHaveFocus()
     send(question(36, { text: 'Gain 2 life?' }))
     expect(screen.getByRole('button', { name: 'No' })).toHaveFocus()

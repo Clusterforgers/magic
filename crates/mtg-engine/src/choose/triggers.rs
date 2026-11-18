@@ -30,6 +30,16 @@ pub struct TriggerEntry {
     #[serde(default, skip_serializing_if = "AbilitySource::is_printed")]
     #[cfg_attr(feature = "ts", ts(as = "Option<AbilitySource>", optional))]
     pub origin: AbilitySource,
+    /// What it does in the words of its card, without the event it waits for: "You may gain 1 life." Empty for an
+    /// ability the card writer cannot word.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<String>", optional))]
+    pub text: String,
+    /// The object whose event triggered it (the creature that entered), while it lies face up on the battlefield or on
+    /// the stack; left out otherwise.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub cause: Option<mtg_core::ids::ObjectId>,
 }
 
 /// The triggers to order.
@@ -92,6 +102,8 @@ mod tests {
                     ability: 0,
                     when: String::new(),
                     origin: AbilitySource::default(),
+                    text: String::new(),
+                    cause: None,
                 })
                 .collect(),
         }

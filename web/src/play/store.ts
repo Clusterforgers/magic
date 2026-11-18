@@ -4,6 +4,7 @@ import type { StoreApi } from 'zustand/vanilla'
 import type { ConnectionStatus } from '@/net/socket'
 import type {
   Answer,
+  AskingView,
   AutoChoices,
   AutoSkip,
   AutoYield,
@@ -49,6 +50,8 @@ export interface PendingDecision {
   deadlineMs?: number
   /** Milliseconds after the message arrived at which the countdown shows; absent when it shows at once. */
   showAfterMs?: number
+  /** The spell or ability that asks, as the server sent it; absent for a decision none asks. */
+  asking?: AskingView
 }
 
 /**

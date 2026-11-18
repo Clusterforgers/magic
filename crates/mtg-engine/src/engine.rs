@@ -43,7 +43,6 @@ pub struct Checkpoint {
     last: Option<LastAction>,
     mana_run: Option<ManaRun>,
     rewinds: usize,
-    offer: Option<crate::loops::Offer>,
 }
 
 /// A batch of events the replacement step has questions about: the batch waits, and the answers so far are kept, until
@@ -97,8 +96,6 @@ pub struct Engine {
     rewind_on_cancel: bool,
     /// The priority points of the step, watched for loops (`loops`).
     watch: crate::loops::Watch,
-    /// The loop offer the engine waits on, in place of the priority decision under it.
-    offer: Option<crate::loops::Offer>,
     /// A shortcut is running its iterations: answers are not watched.
     looping: bool,
 }
@@ -127,10 +124,14 @@ impl Engine {
             dropped: Vec::new(),
             rewind_on_cancel: false,
             watch: crate::loops::Watch::default(),
-            offer: None,
             looping: false,
         };
         engine.advance()?;
+        // A loop offer the log ends on is asked again.
+        if let Some(offer) = engine.state.loop_offer() {
+            let decision = offer.decision();
+            engine.set_decision(Some(decision));
+        }
         Ok(engine)
     }
 
@@ -239,7 +240,7 @@ impl Engine {
     /// Illegal answers return an error and leave the engine untouched. On success returns every
     /// event produced, including the automatic steps that followed the answer.
     pub fn apply(&mut self, answer: Answer) -> Result<Vec<Event>, EngineError> {
-        if self.offer.is_some() {
+        if self.state.loop_offer().is_some() && !self.looping {
             return self.answer_loop(answer);
         }
         let decision = self.decision.as_ref().ok_or(EngineError::NoDecision)?;
@@ -477,7 +478,6 @@ impl Engine {
             last: self.last.clone(),
             mana_run: self.mana_run,
             rewinds: self.dropped.len(),
-            offer: self.offer.clone(),
         }
     }
 
@@ -509,7 +509,6 @@ impl Engine {
         self.last = checkpoint.last;
         self.mana_run = checkpoint.mana_run;
         self.batch = None;
-        self.offer = checkpoint.offer;
         self.watch.clear();
         Ok(())
     }
@@ -902,7 +901,6 @@ impl Engine {
 
     /// Runs the game until a decision is needed or the game ends.
     fn advance(&mut self) -> Result<(), EngineError> {
-        self.offer = None;
         for _ in 0..MAX_INTERNAL_STEPS {
             // A batch waits for the answer to a question of the replacement step: that question is the decision.
             if self.held.is_some() {

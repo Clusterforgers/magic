@@ -380,24 +380,10 @@
     ],
     "effects": [
      {
-      "RepeatWhile": {
-       "condition": {
-        "Compare": {
-         "left": 0,
-         "op": "Eq",
-         "right": 0
-        }
-       },
-       "effects": [
-        {
-         "RollDice": {
-          "sides": 6,
-          "results": []
-         }
-        }
-       ],
-       "most": 1000,
-       "times": {
+      "RollDice": {
+       "sides": 6,
+       "results": [],
+       "count": {
         "Sum": [
          1,
          {

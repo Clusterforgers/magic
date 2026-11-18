@@ -180,7 +180,7 @@ export function HandFan({ ids, label, size, cost = false, layout, commanders, on
             // A row another row lies over keeps only its top as its slot, so the slots of the row below start right under it.
             back={rows > 1 && Math.floor(index / perRow) < rows - 1}
             lifts={rows === 1 || Math.floor(index / perRow) < rows - 1}
-            fan={rows === 1 ? fanOf(index, ids.length) : undefined}
+            fan={rows === 1 ? fanPlace(index, ids.length, layout?.box) : undefined}
             commander={commander !== undefined && commander.top !== true && commander.satchel !== true}
             top={commander?.top === true}
             satchel={commander?.satchel === true}
@@ -270,6 +270,45 @@ export function fanOf(index: number, count: number): Fan {
   return { turn, drop: Math.round(share * share * FAN_DROP_MOST * 10) / 10 }
 }
 
+/** How far a box turned `turn` degrees about its centre reaches past its upright sides (`x`) and its top and foot (`y`), in px. */
+export function turnedReach(turn: number, box: { width: number; height: number }): { x: number; y: number } {
+  const angle = (Math.abs(turn) * Math.PI) / 180
+  const sin = Math.sin(angle)
+  const cos = Math.cos(angle)
+  return {
+    x: (box.height / 2) * sin + (box.width / 2) * cos - box.width / 2,
+    y: (box.width / 2) * sin + (box.height / 2) * cos - box.height / 2,
+  }
+}
+
+/** A slot's card in the arc: its turn in degrees and its offset across and down from the slot, in px. */
+export interface FanPlace {
+  turn: number
+  x: number
+  y: number
+}
+
+/** Rounds a distance up to the next tenth of a pixel, so a rounded place never reaches out by a sliver. */
+const ceilTenth = (px: number): number => Math.ceil(Math.round(px * 1000) / 100) / 10
+
+/**
+ * Where card `index` of `count` lies in a slot of `box`: the arc of `fanOf` raised so the lowest corner of the hand rests
+ * on the floor of the slots, and each turned card moved inwards by what its corners reach past its sides, so the arc
+ * stays inside the fan at rest (the room above the cards is the lift's). Without a box only the drop is raised.
+ */
+export function fanPlace(index: number, count: number, box?: { width: number; height: number }): FanPlace {
+  const { turn, drop } = fanOf(index, count)
+  const end = fanOf(count - 1, count)
+  const reach = box === undefined ? 0 : turnedReach(turn, box).x
+  const endReach = box === undefined ? 0 : turnedReach(end.turn, box).y
+  const rise = ceilTenth(end.drop + endReach)
+  return {
+    turn,
+    x: turn === 0 ? 0 : -Math.sign(turn) * ceilTenth(reach),
+    y: Math.round((drop - rise) * 10) / 10,
+  }
+}
+
 /**
  * One place of the hand: the card on its backing, which rises on hover and focus. A sortable slot is a drag source
  * and a drop target; while a card is dragged over it a bar marks the side the card goes to.
@@ -293,8 +332,8 @@ function HandSlot({
   lifts: boolean
   /** The card's cast or play went out and the server has not answered yet: it rises out of the hand (`handLeaving`). */
   leaving: boolean
-  /** The slot's place in the arc of a one-row hand (`fanOf`); none in a hand of several rows. */
-  fan?: Fan | undefined
+  /** The slot's place in the arc of a one-row hand (`fanPlace`); none in a hand of several rows. */
+  fan?: FanPlace | undefined
   commander: boolean
   top: boolean
   satchel: boolean
@@ -342,14 +381,18 @@ function HandSlot({
         style={
           fan === undefined
             ? undefined
-            : ({ '--fan-turn': `${fan.turn}deg`, '--fan-drop': `${fan.drop}px` } as CSSProperties)
+            : ({
+                '--fan-turn': `${fan.turn}deg`,
+                '--fan-x': `${fan.x}px`,
+                '--fan-y': `${fan.y}px`,
+              } as CSSProperties)
         }
         className={cn(
           // A lifted card rises with a little spring and casts a deeper shadow on the felt (docs/ui-design.md, Feel).
           'relative rounded-md bg-table group-hover/slot:shadow-lg group-has-focus-visible/slot:shadow-lg motion-safe:transition-[translate,rotate,box-shadow] motion-safe:duration-base motion-safe:ease-(--ease-spring)',
           // The arc of the hand; a card that rises stands straight.
           fan !== undefined &&
-            'translate-y-(--fan-drop) rotate-(--fan-turn) group-hover/slot:rotate-0 group-has-focus-visible/slot:rotate-0',
+            'translate-x-(--fan-x) translate-y-(--fan-y) rotate-(--fan-turn) group-hover/slot:rotate-0 group-has-focus-visible/slot:rotate-0',
           // The row nothing lies over is whole already; a lift there would only cover the row above.
           lifts &&
             'group-hover/slot:-translate-y-(--hand-lift) group-has-focus-visible/slot:-translate-y-(--hand-lift) pointer-coarse:group-focus-within/slot:-translate-y-(--hand-lift)',

@@ -68,7 +68,7 @@ async function cast(player: Player, name: string, target?: string): Promise<void
     await player.page.locator('[data-decision] button', { hasText: target }).click()
     await player.page.getByRole('button', { name: 'Confirm targets' }).click()
   }
-  await player.page.getByRole('button', { name: 'Pay automatically' }).click()
+  await player.page.getByRole('button', { name: 'Pay for me' }).click()
   await expect(sentence(player)).toContainText(`Responding to your ${name}`)
 }
 

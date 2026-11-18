@@ -67,6 +67,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Choosing faster: quick selection buttons (all, owned, allied in team modes, none) in prompts that pick several objects, a random precon or own deck in every mode, hidden until the start, and "Always pay automatically" for payments without a real choice (`docs/web.md`, `docs/server.md`).
 - Team tables: a tournament match has no player host, so its seat 0 gets only what every player gets in the lobby (`tournament_match`); at a table of three or more the pods of the seats the game waits on carry a "waiting for" mark in every layout; teams set in the lobby are stored at once and survive a restart, and My games carries each seat's team so a team's win counts for its members; an effect that sets each player's life sets a shared total once.
 - Card preview modifiers: under the rules text the preview lists everything that changes the card with its source and duration, identical sources added together, a line pointing at its source on the board, and no hidden source named (`docs/protocol.md`, `docs/web.md`).
+- Middle bar: a prompt band of one fixed line with the asking card's chip, and the decision's detail (the asking card with its clause, runs of triggers, ordering, paying) in the Stack column or a sheet over the hand (`docs/ui-design.md`, The band and the Stack column).
 
 ## Live game
 
@@ -82,10 +83,8 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf9f) Stable tests under load: the 40-tap budget in `perf.test.tsx` and the `check_sched` lock-wait case
 - [ ] (pf9j) The view tests' seat loops iterate instead of indexing, and the `needless_range_loop` and `map_unwrap_or` allowances Rust 1.100 needed are dropped
 - [ ] (pf9k) Priority offers a spell that only an announced mana ability (Vexing Puzzlebox) makes affordable, so it can be cast and paid from the payment prompt
-- [ ] (pf9g) Copies of one trigger are told apart on the stack, and a trigger whose conditions all fail says why in the log
-- [ ] (pf9h) An ability that rolls several dice makes one roll of them (Mr. House), so "one or more dice" triggers fire once
-- [ ] (lp1) A pending loop offer survives a rebuild of the engine from the log (a server restart asks priority again and finds the loop three cycles later)
-- [ ] (lp2) A loop that makes a permanent each cycle runs past the shortcut's work cap (about 350 iterations of Kiki-Jiki with Pestermite): each engine step reads every permanent
+- [ ] (pf9i) An announced mana ability (a die roll or discard besides the mana: Vexing Puzzlebox) can be chosen in the PayMana prompt while paying, not only at priority before the cast; automatic payment still leaves it out
+- [ ] (lp2a) A loop that makes a permanent each cycle runs thousands of iterations in one shortcut: the trigger scan, the target lists and the state-based actions of each step no longer read every permanent
 
 ## M5 Table and prompts
 
@@ -98,6 +97,16 @@ The table and its prompts are live; the items below polish them.
 - [ ] (dk1c4a) The soulbond cards the compiler still leaves out: Donna Noble (a damage trigger), Joint Assault ("if it's paired"), Doom Weaver, Imperious Mindbreaker, Breathkeeper Seraph, Mirage Phalanx (quoted grants with their own amount), Flowering Lumberknot, Tarelily, Azra Matchthrower
 - [ ] (pm1) The preview's "Modified by" also names cost changes (reductions, taxes, the Unmaker's drawn colours) by source, and a seat pod lists what changes the player by source
 - [ ] (dk1c5c) Rooms: lock a door (Marina Vendrell, Keys to the House), a token copy of a half (Blu) and the copiable door state (CR 707.2)
+- [ ] (mb1) Pay for me previews its payment: `PayOptions.auto_plan` (the `Payment` the game would make) fills the circles on hover before the press
+- [ ] (mb2) An asking source that has left its zone keeps its picture: a last-known face (`AskingView` identity) for the chip and the column's card
+- [ ] (mb3) The asked clause for every decision of a spell or ability: the spell's own text and the clause of a mode, a number, an option and a choice of cards from the engine's position in the effect, not from the words
+- [ ] (mb4) The keyboard walks from the band's answers into the Stack column and back without crossing the boards, and the phone's board split holds the layout script to six jumps again (`layoutJumps.test.ts`)
+- [ ] (ft1) The opening hands at 1920x1080 (dev table and a real game) leave the hand dock and your life uncovered by the shared sheet, or the mulligan detail moves to the Stack column where one is open
+- [ ] (ft2) With the Commands panel open the block prompt's sentence stays visible and pressable (phone, short phone, tablet, rail), and on a 360x740 phone the Commands sheet leaves your life in view
+- [ ] (ft3) The duel board at 1920x1080 keeps your creatures at 190 px under the band, the opponent's corner at 1440x900 draws pictures, and the opponent's pod column does not scroll at 1366x768
+- [ ] (ft4) The crowded scene's bundle labels stay whole and off the strip at 390x844; `fit.spec.ts`'s real game-over test reaches the end without a 30 s stall
+- [ ] (ft5) `layout.spec.ts` passes again under the band (43 of the first 99 failed)
+- [ ] (mb5) `/dev/table?cards=real` over a card fixture of its own, so the asking card's art shows without a running server
 
 - [ ] Playwright games with corpus decks that ask every decision kind
 

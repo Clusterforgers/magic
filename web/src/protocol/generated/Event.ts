@@ -30,6 +30,7 @@ import type { GameResult } from "./GameResult";
 import type { HandLooked } from "./HandLooked";
 import type { LeftToTable } from "./LeftToTable";
 import type { LibraryLooked } from "./LibraryLooked";
+import type { LoopOffer } from "./LoopOffer";
 import type { LoopSummary } from "./LoopSummary";
 import type { LossReason } from "./LossReason";
 import type { ManaLasts } from "./ManaLasts";
@@ -630,7 +631,11 @@ result: GameResult, } } | { "LoopDrawn": {
 /**
  * The names of the objects whose abilities make up the loop.
  */
-cards: Array<string>, } } | { "LoopRepeated": LoopSummary } | { "AbilityPutOnStack": PutOnStack } | { "AbilityActivated": { 
+cards: Array<string>, } } | { "LoopRepeated": LoopSummary } | { "LoopOffered": LoopOffer } | { "LoopStopped": { 
+/**
+ * Who was asked.
+ */
+player: PlayerId, } } | { "AbilityPutOnStack": PutOnStack } | { "AbilityActivated": { 
 /**
  * Who activated it.
  */
@@ -716,7 +721,15 @@ bound: Array<[string, Array<Target>]>,
 /**
  * Objects the step moved away, as they were.
  */
-snapshots: Array<Snapshot>, } } | { "ResolutionEnded": { 
+snapshots: Array<Snapshot>, } } | { "ConditionsFailed": { 
+/**
+ * The ability.
+ */
+object: ObjectId, 
+/**
+ * The conditions in the card's words, after "if"; those the writer cannot word are left out.
+ */
+conditions?: Array<string>, } } | { "ResolutionEnded": { 
 /**
  * The spell or ability.
  */

@@ -44,9 +44,10 @@ const clips = (overflow: string): boolean => overflow !== '' && overflow !== 'vi
 /**
  * Whether some of `box`, the box of an element of the table, is drawn: no ancestor below `scope` that scrolls or
  * clips (a board's zone, a section squeezed to no room) cuts all of it off. A card in such a place is in the page but
- * not on the table, so a line must not run to where it would be.
+ * not on the table, so a line must not run to where it would be. With `least`, a sliver of that many px or fewer does
+ * not count: a tile that shows two px of itself is reached at the strip's edge, like one that shows none.
  */
-function isDrawn(element: Element, box: DOMRect, scope: ParentNode): boolean {
+function isDrawn(element: Element, box: DOMRect, scope: ParentNode, least = 0): boolean {
   let { left, top, right, bottom } = box
   for (
     let parent = element.parentElement;
@@ -60,7 +61,7 @@ function isDrawn(element: Element, box: DOMRect, scope: ParentNode): boolean {
     top = Math.max(top, clip.top)
     right = Math.min(right, clip.right)
     bottom = Math.min(bottom, clip.bottom)
-    if (right <= left || bottom <= top) return false
+    if (right - left <= least || bottom - top <= least) return false
   }
   return true
 }
@@ -123,9 +124,10 @@ export const domRects: RectProvider = {
         const box = faceOf(element).getBoundingClientRect()
         if (box.width <= 0 || box.height <= 0) continue
         // A seat's tile scrolled out of its strip is reached at the edge of the strip it went out by.
-        const shown = isDrawn(element, box, scope)
+        const marked = selector.startsWith('[data-')
+        const shown = isDrawn(element, box, scope, marked ? EDGE_PX : 0)
           ? box
-          : selector.startsWith('[data-')
+          : marked
             ? edgeOf(element, box, scope)
             : null
         if (shown === null) continue

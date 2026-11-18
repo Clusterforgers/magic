@@ -264,6 +264,7 @@ mod t20c_pay_cards;
 mod tapped_for_mana;
 mod target_reductions;
 mod token_costs;
+mod trigger_conditions;
 mod unearth;
 mod w17a_cascade_spells;
 mod w19_conditional_flash;

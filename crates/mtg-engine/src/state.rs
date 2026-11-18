@@ -350,6 +350,9 @@ pub struct GameState {
     pub(crate) r288_resolved_chapter: Option<(ObjectId, ObjectRef, u32)>,
     pub(crate) pending_triggers: Vec<PendingTrigger>,
     pub(crate) trigger_round: u32,
+    /// The runs of triggered abilities on the stack (`TriggerRun`); the fold sets them again from the log, so the
+    /// fingerprint leaves them out.
+    pub(crate) trigger_runs: Vec<crate::triggers::TriggerRun>,
     pub(crate) delayed: Vec<Delayed>,
     pub(crate) next_delayed: u64,
     /// The players who paid this turn to ignore the effects of a source (`GameRule::PayToIgnore`), with the source.
@@ -397,6 +400,8 @@ pub struct GameState {
     pub(crate) result: Option<GameResult>,
     /// The cards of the loop of mandatory actions that drew the game (`Event::LoopDrawn`).
     pub(crate) loop_draw: Option<Vec<String>>,
+    /// The loop offer waiting for its answer (`Event::LoopOffered`), dropped by the next event.
+    pub(crate) loop_offer: Option<Box<crate::loops::LoopOffer>>,
     /// Day or night (CR 726); neither until a permanent with daybound or nightbound appears.
     pub(crate) day_night: Option<crate::day_night::DayNight>,
     /// Each seat's latest finished turn, kept as it ends.
@@ -632,6 +637,13 @@ impl GameState {
     /// The spell or ability that is resolving, with its journal.
     pub const fn resolving(&self) -> Option<&Resolving> {
         self.resolving.as_ref()
+    }
+
+    /// The run of triggered abilities the ability `object` went on the stack with, if it is one of a run still there.
+    pub fn trigger_run_of(&self, object: ObjectId) -> Option<&crate::triggers::TriggerRun> {
+        self.trigger_runs
+            .iter()
+            .find(|run| run.members.iter().any(|member| member.object == object))
     }
 
     /// Triggered abilities that triggered and wait to go on the stack, in the order they triggered.
@@ -907,6 +919,11 @@ impl GameState {
     /// The cards of the loop of mandatory actions that drew the game, if one did (CR 104.4b).
     pub fn loop_draw(&self) -> Option<&[String]> {
         self.loop_draw.as_deref()
+    }
+
+    /// The loop offer waiting for its answer, if one is.
+    pub fn loop_offer(&self) -> Option<&crate::loops::LoopOffer> {
+        self.loop_offer.as_deref()
     }
 
     /// Whether `id` is a seat still in the game.

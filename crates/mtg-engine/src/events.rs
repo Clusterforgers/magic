@@ -636,6 +636,14 @@ pub enum Event {
     },
     /// A loop ran as a shortcut (CR 732): the summary of the events right before it.
     LoopRepeated(Box<crate::loops::LoopSummary>),
+    /// A loop was found and its driver is asked how often to repeat it (CR 732.2a); the question waits until the next
+    /// event.
+    LoopOffered(Box<crate::loops::LoopOffer>),
+    /// The player asked about a loop plays on by hand instead (`LoopAnswer::Stop`).
+    LoopStopped {
+        /// Who was asked.
+        player: PlayerId,
+    },
     /// An ability was put on the stack, activated by its controller or triggered.
     AbilityPutOnStack(Box<PutOnStack>),
     /// A player activated an ability; its costs are paid and the ability goes on the stack next.
@@ -719,6 +727,16 @@ pub enum Event {
         bound: Vec<(String, Vec<Target>)>,
         /// Objects the step moved away, as they were.
         snapshots: Vec<Snapshot>,
+    },
+    /// A triggered ability whose effects all hang on conditions found every one of them false as it began to resolve, so
+    /// it does nothing; `ResolutionEnded` follows.
+    ConditionsFailed {
+        /// The ability.
+        object: ObjectId,
+        /// The conditions in the card's words, after "if"; those the writer cannot word are left out.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<Vec<String>>", optional))]
+        conditions: Vec<String>,
     },
     /// The resolution of a spell or ability is over.
     ResolutionEnded {
@@ -1698,6 +1716,8 @@ impl Event {
             | Event::GameEnded { .. }
             | Event::LoopDrawn { .. }
             | Event::LoopRepeated(_)
+            | Event::LoopOffered(_)
+            | Event::LoopStopped { .. }
             | Event::AbilityActivated { .. }
             | Event::ManaAbilityActivated { .. }
             | Event::AbilityTriggered(_)
@@ -1709,6 +1729,7 @@ impl Event {
             | Event::ChoiceMade { .. }
             | Event::StepDone { .. }
             | Event::ResolutionEnded { .. }
+            | Event::ConditionsFailed { .. }
             | Event::AbilityLeftToTable(_)
             | Event::ByHandDue(_)
             | Event::LifeGained { .. }

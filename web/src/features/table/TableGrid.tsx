@@ -26,6 +26,8 @@ interface TableGridProps {
   sidePanel?: ReactNode
   /** Drawn over the regions inside the grid's stacking context, such as the combat lines. */
   overlay?: ReactNode
+  /** The decision's detail as a sheet over the hand, where no column holds it (`prompt/detail/DecisionSheet`). */
+  sheet?: ReactNode
   /** The centre overlay of a card prompt (`prompt/choiceOverlay`): its element's ref and whether it is open. */
   choice?: { open: boolean; ref: Ref<HTMLDivElement> }
 }
@@ -72,6 +74,7 @@ export function TableGrid({
   side,
   sidePanel,
   overlay,
+  sheet,
   choice,
 }: TableGridProps) {
   // Read here, so a change of phase redraws the frame alone: the regions are elements made by the table and stay as they were.
@@ -128,6 +131,7 @@ export function TableGrid({
             className="relative z-15 flex min-h-0 min-w-0 items-center justify-center bg-scrim px-2 pt-2 pb-[calc(0.125rem+var(--sheet-overhang,0px))]"
           />
         )}
+        {sheet}
         {sidePanel}
       </div>
       {side}

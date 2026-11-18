@@ -10,6 +10,8 @@ export function KeywordWord({ term, children }: { term: Term; children: string }
       <PopoverTrigger
         openOnHover
         delay={250}
+        // A word in a sentence, not a native button: Base UI is told so.
+        nativeButton={false}
         render={<span role="button" tabIndex={0} data-slot="keyword-word" />}
         className="cursor-help underline decoration-dotted underline-offset-2"
       >

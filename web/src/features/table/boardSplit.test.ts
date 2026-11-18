@@ -228,9 +228,9 @@ describe("a phone's sheet and the boss's head", () => {
     expect(kept).toBeGreaterThan(SHEET_KEEP_PX)
     const over = regions[key] - regions.shared
     expect(regions.opponents - over).toBeGreaterThanOrEqual(kept - 1e-9)
-    // The sheet keeps the room it had where the head was no taller than the usual keep.
+    // The band keeps the room it had where the head was no taller than the usual keep; a sheet that grows gives way to the head.
     const low = splitRegions(table.regions, table.seats, counts, 64, 0, overhang)
-    expect(over).toBeGreaterThanOrEqual(low[key] - low.shared - 1e-9)
+    if (key === 'sheet') expect(over).toBeGreaterThanOrEqual(low[key] - low.shared - 1e-9)
     expect(regions.own).toBeGreaterThanOrEqual((regions.opponents + regions.own) * MIN_ROW_SHARE - 1e-9)
   })
 
@@ -270,10 +270,12 @@ describe('the chrome of the opponents row', () => {
     const state = fixtureState(buildFixture({ seats: 4 }))
     const regions = splitRegions(table.regions, table.seats, boardCounts(state, table.seats), 64, 174)
     expect(regions.opponents).toBeGreaterThanOrEqual(192 + BOARD_KEEP_PX)
-    expect(regions.opponents - (regions.sheet - regions.shared)).toBeGreaterThanOrEqual(
+    expect(regions.opponents - (regions.sheetWide - regions.shared)).toBeGreaterThanOrEqual(
       192 + BOARD_KEEP_PX - 1e-9,
     )
-    expect(regions.sheet).toBeGreaterThan(regions.shared + 32)
+    // The band is one line; a sheet that grows (a decision with no column for its choices) still has room.
+    expect(regions.sheet).toBe(regions.shared + regions.sheetRoom)
+    expect(regions.sheetWide).toBeGreaterThan(regions.shared + 32)
   })
 })
 

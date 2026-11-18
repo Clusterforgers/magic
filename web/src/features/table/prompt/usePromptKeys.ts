@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import type { RefObject } from 'react'
+import { SideContext } from '../sideContext'
 
 /** What takes letters and digits for itself: fields, editable text, widgets that read typing, menus and dialogs. */
 const TAKES_TEXT = [
@@ -57,8 +58,14 @@ export function usePromptKeys(keys: Readonly<Record<string, () => void>>, enable
  * not lose its cursor to a question), and without scrolling the page.
  */
 export function useDefaultFocus(target: RefObject<HTMLElement | null>): void {
+  // What a prompt chooses among is drawn in the Stack column a frame after the prompt (`PromptLayout`): a target
+  // that is not in the page yet takes the focus once the column holds it.
+  const host = useContext(SideContext)?.detail ?? null
+  const done = useRef(false)
   useEffect(() => {
+    if (done.current || target.current === null) return
+    done.current = true
     if (isTyping(document.activeElement)) return
-    target.current?.focus({ preventScroll: true })
-  }, [target])
+    target.current.focus({ preventScroll: true })
+  }, [target, host])
 }

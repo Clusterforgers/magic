@@ -28,7 +28,7 @@ function wordsOf(moment: Moment): string[] {
       return [label ?? 'End turn']
     }
     case 'PayAuto':
-      return ['Pay automatically']
+      return ['Pay for me']
     case 'Attack':
       return ['press Attack', ...moment.cards]
     case 'Block':

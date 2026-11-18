@@ -110,7 +110,7 @@ export function genericChoices(kind: DecisionKind, words: GenericWords): Generic
   if ('PayMana' in kind) {
     const { auto_available: auto, can_cancel: cancel } = kind.PayMana
     return some(
-      ...(auto ? [pick('auto', 'Pay automatically', { PayMana: 'Auto' })] : []),
+      ...(auto ? [pick('auto', 'Pay for me', { PayMana: 'Auto' })] : []),
       ...(cancel ? [back(words, { PayMana: 'Cancel' })] : []),
     )
   }

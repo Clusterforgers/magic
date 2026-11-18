@@ -1,4 +1,3 @@
-import { laysOutCards } from './prompt/cardPrompts'
 import { useRef } from 'react'
 import type { CSSProperties } from 'react'
 import { usePlay } from '@/features/game/gameContext'
@@ -9,6 +8,7 @@ import { useSeatNamer } from './names'
 import { OpeningStatus } from './OpeningStatus'
 import { AwayMark } from './PodParts'
 import { awaySeats, awayText, untimed } from './presenceText'
+import { hasDetail } from './prompt/detail/asking'
 import { NothingToDoBanner } from './prompt/NothingToDoBanner'
 import { ownDecision } from './prompt/ownDecision'
 import { PromptHost } from './prompt/PromptHost'
@@ -115,8 +115,10 @@ export function SharedStrip({
   const seat = usePlay((state) => state.seat)
   // Beside this seat's own prompt, "You have priority" says what the band already shows.
   const ownPriority = priority !== null && priority.holder === seat
-  // A prompt that lays out cards may take the opponents' boards' room too: its cards are what there is to look at.
-  const cards = usePlay(laysOutCards)
+  // A decision with detail has it in the Stack column or the decision sheet: the band is the asking card's chip, the
+  // question and the answers, and never changes height. One without (the opening hand on a phone, a fallen hero's
+  // abilities) may grow the sheet for what it lays out.
+  const detail = usePlay((state) => hasDetail(ownDecision(state)))
   const strip = useRef<HTMLElement>(null)
   const sheet = useRef<HTMLDivElement>(null)
   useSheetOverhang(strip, sheet, onOverhang)
@@ -128,7 +130,8 @@ export function SharedStrip({
       data-your-turn={yourTurn || undefined}
       style={
         {
-          '--sheet-max': `${Math.floor(cards ? (sheetWide ?? sheetMax) : sheetMax)}px`,
+          '--sheet-max': `${Math.floor(mine && !detail ? (sheetWide ?? sheetMax) : sheetMax)}px`,
+          '--band-h': `${Math.floor(sheetMax)}px`,
           // A prompt's cards are as high as the sheet leaves below its sentence, headings and padding, so a row of them
           // stands whole in the sheet; a prompt that knows its own rows sets its own (`CardChoices`).
           '--choice-room': 'max(6rem, calc(var(--sheet-max) - 10.5rem))',
@@ -151,7 +154,7 @@ export function SharedStrip({
         // The edge takes the colour of the phase; on your turn the gold glow of `your-turn-cue` lies outside it.
         data-themed=""
         className={cn(
-          'band-room absolute inset-x-0 overflow-x-hidden overflow-y-auto overscroll-contain [scrollbar-width:thin] bottom-0 max-h-(--sheet-max) min-h-full plaque rounded-xl border-2 border-phase px-3 py-1',
+          'band-room absolute inset-x-0 overflow-x-hidden overflow-y-auto overscroll-contain [scrollbar-width:thin] bottom-0 max-h-[max(100%,var(--sheet-max))] min-h-[max(100%,var(--band-h))] plaque rounded-xl border-2 border-phase px-3 py-0.5',
           yourTurn && 'your-turn-cue',
         )}
       >
@@ -168,7 +171,7 @@ export function SharedStrip({
           <div
             data-slot="strip-row"
             data-band={mine || undefined}
-            data-cards={(mine && cards) || undefined}
+            data-detail={(mine && detail) || undefined}
             className={cn(
               'min-h-0 flex-1',
               mine
@@ -181,6 +184,8 @@ export function SharedStrip({
           >
             <div
               data-slot="strip-stack"
+              // The asking card's chip leads a decision with detail; the stack is in the column beside it.
+              hidden={mine && detail}
               className={cn(
                 'flex min-w-0 items-center overflow-hidden',
                 !mine &&
@@ -223,6 +228,8 @@ export function SharedStrip({
             </div>
             <div
               data-slot="strip-status"
+              // The combat key and the notes leave the band while a card asks: its question has the line.
+              hidden={mine && detail}
               className={
                 mine
                   ? // Its lines never run into the sentence beside: each is cut with an ellipsis, whole in its tooltip.

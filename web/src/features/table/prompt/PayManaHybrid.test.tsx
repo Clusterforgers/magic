@@ -1,4 +1,4 @@
-/** Goal: for hybrid, monocolored hybrid and Phyrexian costs the PayMana prompt marks the sources that can pay, lets the player pay 2 life for each Phyrexian symbol within the life total, shows the life that leaves, keeps the sentence, Pay automatically and Pay the rest for me working, and sends the payment with its life as one answer; a plain cost shows no life at all. */
+/** Goal: for hybrid, monocolored hybrid and Phyrexian costs the PayMana prompt marks the sources that can pay, lets the player pay 2 life for each Phyrexian symbol within the life total, shows the life that leaves, keeps the sentence, Pay for me and Pay the rest for me working, and sends the payment with its life as one answer; a plain cost shows no life at all. */
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { Answer, ObjectId, PayOptions } from '@/protocol/generated'
@@ -93,20 +93,26 @@ describe('a hybrid cost', () => {
 
   it('keeps a hybrid symbol hybrid in what is still owed until mana meets it', async () => {
     const { land, user, container } = renderPay(payOptions('{R/W}{R/W}', 'RWR'))
-    const owed = (): string | null =>
-      container.querySelector('[aria-label^="Mana still owed"]')?.getAttribute('aria-label') ?? null
-    expect(owed()).toBe('Mana still owed: red or white mana, red or white mana')
+    const owed = (): (string | null)[] =>
+      [...container.querySelectorAll('[data-slot="pay-track"] [role="img"][aria-label^="Owed"]')].map(
+        (circle) => circle.getAttribute('aria-label'),
+      )
+    expect(owed()).toEqual(['Owed: red or white mana', 'Owed: red or white mana'])
     await user.click(land(0))
-    expect(owed()).toBe('Mana still owed: red or white mana')
+    expect(owed()).toEqual(['Owed: red or white mana'])
     await user.click(land(1))
-    expect(owed()).toBeNull()
+    expect(owed()).toEqual([])
   })
 
   it('draws the cost with a split symbol and names it in words', () => {
     const { container } = renderPay(payOptions('{2}{R/W}', 'RW'))
-    const cost = container.querySelector('[data-slot="payment"] [role="img"][aria-label^="Mana cost"]')
-    expect(cost).toHaveAttribute('aria-label', 'Mana cost: 2 generic, red or white mana')
-    expect(container.querySelector('[data-slot="payment"] [data-pip="R/W"]')).not.toBeNull()
+    const owed = [...container.querySelectorAll('[data-slot="pay-track"] [role="img"][aria-label^="Owed"]')]
+    expect(owed.map((circle) => circle.getAttribute('aria-label'))).toEqual([
+      'Owed: 1 generic',
+      'Owed: 1 generic',
+      'Owed: red or white mana',
+    ])
+    expect(container.querySelector('[data-slot="pay-track"] [data-pip="R/W"]')).not.toBeNull()
   })
 })
 
@@ -262,26 +268,29 @@ describe('a Phyrexian cost', () => {
 
   it('shows a Phyrexian cost with the phi mark and says it in words', () => {
     const { container } = renderPay(payOptions('{2}{W/P}{G/U/P}', 'G'))
-    const label = container
-      .querySelector('[data-slot="payment"] [role="img"][aria-label^="Mana cost"]')
-      ?.getAttribute('aria-label')
-    expect(label).toBe('Mana cost: 2 generic, white mana or 2 life, green or blue mana or 2 life')
-    expect(container.querySelector('[data-slot="payment"] [data-pip="W/P"]')?.textContent).toBe('ϕ')
-    expect(container.querySelector('[data-slot="payment"] [data-pip="G/U/P"]')?.textContent).toBe('ϕ')
+    const owed = [...container.querySelectorAll('[data-slot="pay-track"] [role="img"][aria-label^="Owed"]')]
+    expect(owed.map((circle) => circle.getAttribute('aria-label'))).toEqual([
+      'Owed: 1 generic',
+      'Owed: 1 generic',
+      'Owed: white mana or 2 life',
+      'Owed: green or blue mana or 2 life',
+    ])
+    expect(container.querySelector('[data-slot="pay-track"] [data-pip="W/P"]')?.textContent).toBe('ϕ')
+    expect(container.querySelector('[data-slot="pay-track"] [data-pip="G/U/P"]')?.textContent).toBe('ϕ')
   })
 })
 
-describe('Pay automatically and Pay the rest for me with life', () => {
-  it('Pay automatically is offered while nothing is chosen, and answers Auto', async () => {
+describe('Pay for me and Pay the rest for me with life', () => {
+  it('Pay for me is offered while nothing is chosen, and answers Auto', async () => {
     const { user, answer } = renderPay(payOptions('{1}{W/P}', 'G'))
-    await user.click(screen.getByRole('button', { name: 'Pay automatically' }))
+    await user.click(screen.getByRole('button', { name: 'Pay for me' }))
     expect(answer.mock.calls).toEqual([[{ PayMana: 'Auto' }]])
   })
 
   it('goes away once life is chosen, and Pay the rest for me keeps the life', async () => {
     const { lifeSwitches, user, answer } = renderPay(payOptions('{1}{B/P}{B/P}', 'G'))
     await user.click(must(lifeSwitches()[0]))
-    expect(screen.queryByRole('button', { name: 'Pay automatically' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Pay for me' })).toBeNull()
     await user.click(screen.getByRole('button', { name: 'Pay the rest for me' }))
     expect(answer.mock.calls).toEqual([[{ PayMana: { Complete: { pool: [], taps: [], life: 2 } } }]])
   })
@@ -294,11 +303,11 @@ describe('Pay automatically and Pay the rest for me with life', () => {
     expect(answer.mock.calls).toEqual([[{ PayMana: { Complete: { pool: [], taps: [tap(1)], life: 2 } } }]])
   })
 
-  it('offers no Pay automatically when it would take the last life, but still lets life be paid by hand', async () => {
+  it('offers no Pay for me when it would take the last life, but still lets life be paid by hand', async () => {
     const { lifeSwitches, user, answer, text } = renderPay(
       payOptions('{W/P}', '', { life: 2, auto_available: false }),
     )
-    expect(screen.getByRole('button', { name: 'Pay automatically' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Pay for me' })).toBeDisabled()
     expect(text()).toBe(
       'Pay 1 white or 2 life for Selesnya Evangel. Choose a land or other mana source to use its mana, pay 2 life for a Phyrexian symbol.',
     )
