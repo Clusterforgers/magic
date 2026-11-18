@@ -1296,6 +1296,7 @@
    "line": "Rise, all of you. Rise and feast.",
    "art": { "card": "Gisa, the Hellraiser", "oracle_id": "696363c9-e8a7-4c65-b65c-4a94891ec43d" },
    "commander": "Gisa, the Hellraiser",
+   "upgrade": {"name": "Vex, the Deathless", "rules": ["vex_deathless"], "line": "I have died eleven times. Each time I came back with more of you.", "since": 5},
    "brackets": {
     "base": [
      ["Swamp", 9],
@@ -1603,9 +1604,9 @@
    "since": 4,
    "colors": "W",
    "brain": "Hard",
-   "life": 27,
-   "life_per_hero": 30,
-   "hand": 9,
+   "life": 24,
+   "life_per_hero": 27,
+   "hand": 8,
    "rules": ["seraphine"],
    "enrage": "choir_eternal",
    "relic": "halo_of_wings",
@@ -1615,6 +1616,7 @@
    ],
    "line": "Kneel, and be forgiven. Stand, and be judged.",
    "commander": "Akroma, Angel of Wrath",
+   "upgrade": {"name": "Seraphine, Choir Eternal", "rules": ["seraphine_eternal"], "line": "The choir never ends. It only grows louder.", "since": 5},
    "art": {"card": "Bruna, the Fading Light", "oracle_id": "bce7e45d-b2c5-43aa-91a6-3a3c24f30850"},
    "brackets": {
     "base": [
@@ -1687,9 +1689,9 @@
    "since": 4,
    "colors": "U",
    "brain": "Hard",
-   "life": 27,
-   "life_per_hero": 30,
-   "hand": 9,
+   "life": 30,
+   "life_per_hero": 32,
+   "hand": 10,
    "rules": ["ysolde"],
    "enrage": "rising_tide",
    "relic": "tidal_codex",
@@ -1699,6 +1701,7 @@
    ],
    "line": "The sea keeps everything it takes. It will keep you.",
    "commander": "Lorthos, the Tidemaker",
+   "upgrade": {"name": "Ysolde, Empress of the Abyss", "rules": ["ysolde_abyssal"], "line": "Down here, the tide answers only to me.", "since": 5},
    "art": {"card": "Kiora, the Rising Tide", "oracle_id": "5d748bce-dff8-46fa-a3d1-633863b7bbff"},
    "brackets": {
     "base": [
@@ -1725,7 +1728,7 @@
        ["Coralhelm Commander", 2],
        ["Grappling Kraken", 1],
        ["Monstrosity of the Lake", 1],
-       ["Fact or Fiction", 1],
+       ["Master of the Pearl Trident", 1],
        ["Counterspell", 1]
       ]
      },
