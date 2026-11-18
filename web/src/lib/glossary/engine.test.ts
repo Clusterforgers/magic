@@ -193,7 +193,7 @@ const COSTS: Record<string, string> = {
 
 const ORDINARY_COSTS =
   names(`Mana PayLife Draw ManaCostOf OwnManaCost OwnManaValue OwnManaCostLess ReturnToHand AlikeFromHand
-  DamageToYou OthersGainLife GenericOf ExiledToGraveyard ToLibrary XAtLeast XColor ChosenColorOnly XAtMost XIs OneOf Changed R6702ExileTotalX`)
+  DamageToYou OthersGainLife GenericOf ExiledToGraveyard ToLibrary XAtLeast XColor ChosenColorOnly XAtMost XIs OneOf Changed R6702ExileTotalX ExileTotalValue`)
 
 /** The `TriggerPattern` variants that name a keyword action, designation or rules term, by lexicon term. */
 const TRIGGERS: Record<string, string> = {
@@ -262,7 +262,7 @@ const TRIGGERS: Record<string, string> = {
 const ORDINARY_TRIGGERS =
   names(`ZoneChange ZoneChangeExcept ResolvedToGraveyard Attacks AttacksAlone AttacksPlayer
   AttacksPlayerOrPlaneswalker PlayerAttacked PlayerAttacks BecomesTarget PlayerBecomesTarget PutOnStack FirstDrawRevealed
-  Drew Blocks BecomesBlocked Unblocked GroupAttacks GroupAttacksAt StepBegins State Did AnyOf Batch Nth Caused R6701WhileActivating`)
+  Drew Blocks BecomesBlocked Unblocked GroupAttacks GroupAttacksAt StepBegins State Did AnyOf Batch Nth Caused R6701WhileActivating DealsToughnessDamage`)
 
 /** The fields of the player view that are a designation, a status or a counter the rules define, by lexicon term. */
 const PLAYER_FIELDS: Record<string, string> = {
