@@ -57,6 +57,22 @@ export function BossIntro({
         </div>
       </header>
       {children}
+      {fight && fight.intensify.length > 0 ? (
+        <section
+          aria-labelledby="intensify-title"
+          data-slot="intensify"
+          className="grid gap-1 rounded-lg border border-delve/60 bg-surface p-3 text-sm"
+        >
+          <h3 id="intensify-title" className="font-semibold">
+            Floor {view.run.floor}: Intensified
+          </h3>
+          <ul className="grid list-disc gap-1 pl-4 text-muted-foreground">
+            {fight.intensify.map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
       <section aria-labelledby="party-title" className="grid gap-2">
         <h3 id="party-title" className="text-sm font-semibold">
           The party

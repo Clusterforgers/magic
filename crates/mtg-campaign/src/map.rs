@@ -96,7 +96,27 @@ pub fn generate(theme: &Theme, seed: u64) -> FloorMap {
 /// earlier. Before [`BRACKETS_FROM`] it meets every lieutenant and then the final boss; from it, [`LIEUTENANTS`] of
 /// them and then one final boss drawn from the theme's final bosses and the upgraded forms of the lieutenants left off.
 pub fn generate_for(theme: &Theme, seed: u64, content: u32) -> FloorMap {
-    let mut rng = Stream::new(seed, "map", 0, 0);
+    generate_floor(theme, seed, content, 1, &[])
+}
+
+/// The ladder of `floor` (from 1) in a run of content generation `content`: the first floor as [`generate_for`] draws
+/// it; a deeper one drawn by the seed keyed by the floor, its bosses avoiding those of `avoid` (the floor above, by
+/// identity) while enough others are left.
+pub fn generate_floor(
+    theme: &Theme,
+    seed: u64,
+    content: u32,
+    floor: u8,
+    avoid: &[&str],
+) -> FloorMap {
+    let key = u64::from(floor.saturating_sub(1));
+    let mut rng = Stream::new(seed, "map", key, 0);
+    let identity = |id: &str| {
+        theme
+            .boss(id)
+            .map_or(id.to_owned(), |b| b.identity().to_owned())
+    };
+    let avoided: Vec<String> = avoid.iter().map(|id| identity(id)).collect();
     let lieutenants: Vec<&str> = theme
         .bosses
         .iter()
@@ -110,7 +130,13 @@ pub fn generate_for(theme: &Theme, seed: u64, content: u32) -> FloorMap {
         .map(|b| b.id.as_str());
     let mut order;
     if content >= BRACKETS_FROM {
-        order = rng.pick(&lieutenants, LIEUTENANTS.min(lieutenants.len()));
+        let (new, old): (Vec<&str>, Vec<&str>) = lieutenants
+            .iter()
+            .partition(|id| !avoided.iter().any(|a| a == *id));
+        order = rng.pick(&new, LIEUTENANTS.min(new.len()));
+        if order.len() < LIEUTENANTS && !old.is_empty() {
+            order.extend(rng.pick(&old, (LIEUTENANTS - order.len()).min(old.len())));
+        }
         let upgraded = theme
             .upgraded
             .iter()
@@ -118,7 +144,19 @@ pub fn generate_for(theme: &Theme, seed: u64, content: u32) -> FloorMap {
             .filter(|b| !order.contains(&b.identity()))
             .map(|b| b.id.as_str());
         let candidates: Vec<&str> = finals.chain(upgraded).collect();
-        order.extend(rng.pick(&candidates, 1));
+        let unmet: Vec<&str> = candidates
+            .iter()
+            .copied()
+            .filter(|id| !avoided.contains(&identity(id)))
+            .collect();
+        order.extend(rng.pick(
+            if unmet.is_empty() {
+                &candidates
+            } else {
+                &unmet
+            },
+            1,
+        ));
     } else {
         order = rng.pick(&lieutenants, lieutenants.len());
         order.extend(finals);

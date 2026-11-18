@@ -25,6 +25,10 @@ phases: Array<[string, number]>,
  */
 commander?: string, 
 /**
+ * What the floor changes for it (Intensify), one line each; empty on the first floor.
+ */
+intensify: Array<string>, 
+/**
  * Its minions: name and starting life.
  */
 minions: Array<[string, number]>, };

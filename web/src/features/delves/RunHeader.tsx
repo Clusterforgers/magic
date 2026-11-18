@@ -1,5 +1,5 @@
 /**
- * The head of a run page: the theme, where the run is, Heat, the timers, the party's hearts, the seed code to copy, and each hero
+ * The head of a run page: the theme, where the run is, Heat, the floor, the timers, the party's hearts, the seed code to copy, and each hero
  * with a life bar, gold and a row of relics whose rules show on hover or focus (edged by rarity), the Satchel, upgrades and banes; a phone folds it to one line.
  */
 import {
@@ -12,6 +12,7 @@ import {
   GemIcon,
   GhostIcon,
   HeartIcon,
+  LayersIcon,
   SkullIcon,
   Trash2Icon,
   TriangleAlertIcon,
@@ -239,6 +240,14 @@ export function RunHeader({ view, content }: { view: DelveView; content: DelveCo
             <span aria-hidden="true">
               Heat {run.heat} · {heatTier(run.heat).name}
             </span>
+          </span>
+          <span
+            data-slot="floor"
+            className={cn('inline-flex items-center gap-1 font-medium', folds)}
+            title="Each floor below the first makes every boss stronger"
+          >
+            <LayersIcon aria-hidden="true" className="size-5 text-muted-foreground" />
+            <span>Floor {run.floor}</span>
           </span>
           <span
             className={cn('inline-flex items-center gap-1 font-medium', folds)}

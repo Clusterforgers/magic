@@ -98,6 +98,7 @@ describe('the ladder and the fight', () => {
     rules: ['skrix'],
     phases: [['nest', 80]] as Array<[string, number]>,
     minions: [],
+    intensify: [] as string[],
   }
 
   it('opens with the boss intro: the way in, the party with its decks and life, the abilities and phases', async () => {

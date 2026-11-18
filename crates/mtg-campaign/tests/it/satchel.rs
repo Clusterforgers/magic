@@ -263,6 +263,10 @@ fn events_met(seed: u64, version: u32) -> Vec<String> {
                 hero: 0,
                 node: run.map.choices(run.at)[0],
             },
+            Status::FloorCleared => RunEvent::FloorVoted {
+                hero: 0,
+                descend: false,
+            },
             Status::Room => {
                 let offer = run.heroes[0].offers[0].clone();
                 if let Offer::Event { event } = &offer {

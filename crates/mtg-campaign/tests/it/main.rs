@@ -5,6 +5,7 @@ mod boss_cards;
 mod bosses;
 mod brackets;
 mod content;
+mod endless;
 mod events;
 mod fights;
 mod mythic_cards;
