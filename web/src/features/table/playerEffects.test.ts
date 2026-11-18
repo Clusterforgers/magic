@@ -23,6 +23,12 @@ const EVERY: PlayerEffect[] = [
   'HandRevealed',
   'TopRevealed',
   'LooksAtTop',
+  {
+    CostColorsDrawn: [
+      ['Red', 'Green'],
+      ['Green', 'Red'],
+    ],
+  },
   { Keyword: 'Hexproof' },
 ]
 
@@ -53,6 +59,19 @@ describe('effectFacts', () => {
     ['CantLose', "Can't lose"],
   ] as const)('labels %j as %s', (effect, label) => {
     expect(effectFacts(effect, 'Bo').label).toBe(label)
+  })
+
+  it('words the colours a seat\'s costs stand for this round, each once', () => {
+    const effect: PlayerEffect = {
+      CostColorsDrawn: [
+        ['White', 'Blue'],
+        ['Blue', 'Black'],
+        ['Black', 'White'],
+      ],
+    }
+    const facts = effectFacts(effect, 'Bo')
+    expect(facts.label).toBe('Costs: white is blue, blue is black, black is white')
+    expect(facts.colors).toHaveLength(3)
   })
 })
 
