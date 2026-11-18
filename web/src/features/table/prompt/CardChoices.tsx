@@ -75,6 +75,8 @@ export interface CardChoicesProps {
   focusFirst?: Ref<HTMLButtonElement>
   /** Controls drawn before the cards in the same group (a player among the targets). */
   lead?: ReactNode
+  /** Controls drawn above the cards wherever they are drawn, the overlay included (the quick selection buttons). */
+  quick?: ReactNode
   /**
    * What the prompt draws above the cards inside its choices, in rem (a row of quick buttons, `QUICK_ROW_REM`); the
    * band's first line and a search box are counted here. The cards have what is left of the sheet (`--choice-room`).
@@ -113,6 +115,7 @@ export function CardChoices({
   keys = false,
   focusFirst,
   lead,
+  quick,
   rest = 0,
   search = false,
 }: CardChoicesProps) {
@@ -217,6 +220,7 @@ export function CardChoices({
   let place = 0
   const body = (
     <ChoiceAnchorContext value={root}>
+      {quick}
       {filtering ? (
         <CardSearchField
           value={filter}

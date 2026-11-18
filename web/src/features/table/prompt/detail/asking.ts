@@ -15,16 +15,6 @@ const NO_DETAIL: ReadonlySet<string> = new Set([
   'Discard',
 ])
 
-/** The decisions whose answer is a press on the board or in the centre overlay: a sheet over the hand starts folded. */
-const POINTS_AT_TABLE: ReadonlySet<string> = new Set([
-  'ChooseTargets',
-  'ChooseCards',
-  'Scry',
-  'OrderCards',
-  'AssignDamage',
-  'DivideAmount',
-])
-
 /** The name of a decision's kind: the key it came with. */
 export function kindKey(kind: DecisionKind): string {
   return typeof kind === 'object' && kind !== null ? (Object.keys(kind)[0] ?? '') : ''
@@ -54,11 +44,6 @@ export function hasDetail(pending: PendingDecision | null): boolean {
   return pending !== null && !NO_DETAIL.has(kindKey(pending.decision.kind))
 }
 
-/** Whether a sheet over the hand starts folded for `pending`: its answer is on the table, which the sheet would cover. */
-export function startsFolded(pending: PendingDecision | null): boolean {
-  return pending !== null && POINTS_AT_TABLE.has(kindKey(pending.decision.kind))
-}
-
 /** The object a decision names as what asks: its `source`, or the spell of a payment. */
 export function namedSource(kind: DecisionKind): ObjectId | undefined {
   const options: unknown = typeof kind === 'object' && kind !== null ? Object.values(kind)[0] : undefined
@@ -74,6 +59,8 @@ export interface Asker {
   source: ObjectId | undefined
   /** The spell or ability on the stack that asks. */
   stack: ObjectId | undefined
+  /** It is resolving now; false while it is being cast or put on the stack. */
+  resolving: boolean
   /** The source's name as the server gave it; empty when it gave none. */
   name: string
   /** The asking ability's rules text. */
@@ -99,6 +86,7 @@ export function askerOf(pending: PendingDecision | null): Asker | null {
     return {
       source: named,
       stack: undefined,
+      resolving: false,
       name: '',
       text: undefined,
       clause: undefined,
@@ -109,6 +97,7 @@ export function askerOf(pending: PendingDecision | null): Asker | null {
   return {
     source: asking.source,
     stack: asking.stack,
+    resolving: asking.resolving === true,
     name: asking.name ?? '',
     text: asking.text,
     clause: asking.clause,
@@ -166,7 +155,8 @@ export function askKicker(asker: Asker): { lead: string; rest: string } {
   if (asker.run !== undefined) {
     return { lead: asker.cause === undefined ? 'Your triggers' : asker.cause.name, rest: runPlace(asker.run) }
   }
-  return { lead: asker.stack === undefined ? 'Asks you' : 'Resolving now', rest: asker.stack === undefined ? '' : 'asks you' }
+  if (asker.resolving) return { lead: 'Resolving now', rest: 'asks you' }
+  return asker.stack === undefined ? { lead: 'Asks you', rest: '' } : { lead: 'Going on the stack', rest: 'asks you' }
 }
 
 /** What a run's row says under its name: a done one its outcome, a waiting one its effect. */

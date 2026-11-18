@@ -84,7 +84,7 @@ function AskEntry({ asker, tag }: { asker: ShownAsker; tag: string }) {
             Card
           </span>
         ) : (
-          <CardFace object={asker.object} role={null} size="normal" fit />
+          <CardFace object={asker.object} role={null} size="normal" fit upright />
         )}
       </span>
       <div className="grid min-w-0 content-start gap-1.5">

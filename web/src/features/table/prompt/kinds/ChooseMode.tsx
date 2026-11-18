@@ -93,7 +93,7 @@ export const ChooseModePrompt: PromptComponent<'ChooseMode'> = ({ options }) => 
             role="group"
             aria-label="Modes"
             data-slot="mode-list"
-            className="grid max-h-56 min-w-0 flex-1 grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] content-start gap-1 overflow-y-auto p-0.5"
+            className="grid max-h-56 min-w-0 flex-1 grid-cols-[repeat(auto-fill,minmax(min(100%,16rem),1fr))] content-start gap-1 overflow-y-auto p-0.5"
           >
             {modes.map((mode, place) => {
               const key = numberKey(place)

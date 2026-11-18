@@ -14,7 +14,7 @@ import { ManaPips } from './ManaPips'
 import { useSeatNamer } from './names'
 import { SeatDot } from './PodParts'
 import { StackYieldMenu, yieldKeyOf } from './StackYieldMenu'
-import { hasDetail, kindKey } from './prompt/detail/asking'
+import { hasDetail, kindKey, namedSource } from './prompt/detail/asking'
 import { DecisionDetail, Kicker } from './prompt/detail/DecisionDetail'
 import { ownDecision } from './prompt/ownDecision'
 import { objectWords } from './prompt/targetText'
@@ -265,12 +265,18 @@ export function StackRest() {
     return own !== null && kindKey(own.decision.kind) === 'OrderTriggers'
   })
   // The asking spell or ability and the triggers of its run are drawn above, in the decision's own list.
+  const named = usePlay((state) => {
+    const own = ownDecision(state)
+    const id = own === null ? undefined : namedSource(own.decision.kind)
+    return id !== undefined && state.objectsById[id]?.zone === 'Stack' ? id : undefined
+  })
   const shown = useMemo(() => {
     const ids = new Set<ObjectId>()
+    if (named !== undefined) ids.add(named)
     if (asking?.stack !== undefined) ids.add(asking.stack)
     for (const entry of asking?.run?.entries ?? []) if (entry.object !== undefined) ids.add(entry.object)
     return ids
-  }, [asking])
+  }, [asking, named])
   const count = usePlay((state) => (state.view?.stack.cards ?? []).filter((id) => !shown.has(id)).length)
   return (
     <div data-slot="stack-rest" className="grid gap-2">

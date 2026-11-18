@@ -248,11 +248,6 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   }
   useCardMarks(marks, act, { toggles: true })
 
-  const pick = (option: ManaOption): void => {
-    add({ kind: 'tap', option })
-    focusCard(option.source.object)
-  }
-
   const swaps = useMemo(
     () =>
       new Map(
@@ -325,7 +320,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
           taken={taken}
           asking={chooser}
           swaps={swaps}
-          onTap={pick}
+          onTap={(option) => add({ kind: 'tap', option })}
           onSwap={swap}
           onRemove={removeAt}
         >

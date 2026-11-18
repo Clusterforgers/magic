@@ -22,6 +22,10 @@ pub struct AskingView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub stack: Option<ObjectId>,
+    /// Whether that spell or ability is resolving now; false while it is being cast or put on the stack.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub resolving: bool,
     /// The card it comes from (the spell itself, the source of an ability) while the viewer sees that object; left out
     /// once the source has left its zone or is hidden.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -154,9 +158,13 @@ impl AskingView {
         };
         let object = state.object(stack)?;
         let view = ObjectView::of(state, viewer, stack)?;
+        let resolving = state
+            .resolving()
+            .is_some_and(|running| running.object() == stack);
         let Some(ability) = object.ability() else {
             return Some(AskingView {
                 stack: Some(stack),
+                resolving,
                 source: Some(stack),
                 name: view.name,
                 ..AskingView::default()
@@ -180,6 +188,7 @@ impl AskingView {
         });
         Some(AskingView {
             stack: Some(stack),
+            resolving,
             source: seen.map(|seen| seen.id),
             name: view.name,
             ability: Some(ability.index()),

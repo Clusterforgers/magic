@@ -165,6 +165,8 @@ export interface PromptLayoutProps {
   quiet?: boolean
   /** The chip at the band's left for a decision no one card asks (the triggers to order): in place of the asker's. */
   lead?: ReactNode
+  /** The answer is a press on the table or in the centre overlay: the decision sheet over the hand starts folded. */
+  folded?: boolean
   /** One row: the sentence and the controls side by side, so the sheet stays one line high (the combat prompts). */
   compact?: boolean
 }
@@ -183,11 +185,18 @@ export function PromptLayout({
   meter,
   quiet = false,
   lead,
+  folded = false,
 }: PromptLayoutProps) {
   const { name } = usePrompt()
   const side = useContext(SideContext)
   // At a table the detail of a decision is the column's or the sheet's; its element arrives a frame after the prompt.
-  const aside = side !== null && !inline && detailKind(name)
+  // Short choices stay in the band, except in a narrow window, whose band has two short lines: they go to the sheet too.
+  const short = inline && side?.kind !== 'sheet'
+  const aside = side !== null && !short && detailKind(name)
+  const hint = side?.setSheetStart
+  useLayoutEffect(() => {
+    hint?.(folded)
+  }, [hint, folded])
   const asker = useAsker()
   const chip = detailKind(name) && asker !== null && asker.shown !== ''
   const title = (
@@ -236,7 +245,7 @@ export function PromptLayout({
       ) : (
         <div
           data-slot="prompt-choices"
-          data-inline={inline || undefined}
+          data-inline={short || undefined}
           className="flex min-w-0 flex-wrap items-center gap-2 empty:hidden"
         >
           {choices}

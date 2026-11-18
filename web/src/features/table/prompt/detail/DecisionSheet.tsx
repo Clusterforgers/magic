@@ -6,7 +6,7 @@ import { useSide } from '../../sideContext'
 import { StackRest } from '../../StackPanel'
 import { ChoiceOverlayContext } from '../choiceOverlay'
 import { ownDecision } from '../ownDecision'
-import { hasDetail, kindKey, sheetTitle, startsFolded } from './asking'
+import { hasDetail, kindKey, sheetTitle } from './asking'
 import { DecisionDetail } from './DecisionDetail'
 import { useAsker } from './useAsker'
 
@@ -23,7 +23,7 @@ export function DecisionSheet({ phone }: { phone: boolean }) {
   const body = useId()
   if (side.kind === 'column' || pending === null || !hasDetail(pending)) return null
   const forced = overlay?.open === true
-  const folded = forced || (side.sheetFolded ?? startsFolded(pending))
+  const folded = forced || (side.sheetFolded ?? side.sheetStart)
   const kind = kindKey(pending.decision.kind)
   const label = Object.hasOwn(DECISION_LABEL, kind) ? DECISION_LABEL[kind as DecisionName] : kind
   return (

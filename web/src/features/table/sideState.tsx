@@ -57,6 +57,7 @@ export function SideProvider({
     const timer = setTimeout(() => setLately(false), DETAIL_HOLD_MS)
     return () => clearTimeout(timer)
   }, [asked])
+  const [sheetFolded, setSheetFolded] = useState<boolean | null>(null)
   const deciding = asked || lately
   const [wasDeciding, setWasDeciding] = useState(false)
   const [before, setBefore] = useState<SideTab | null | undefined>(undefined)
@@ -68,10 +69,12 @@ export function SideProvider({
     } else {
       if (before !== undefined && chosen === 'stack') setTab(before)
       setBefore(undefined)
+      // The next decision's sheet starts as its kind asks, whatever the viewer did with this one.
+      setSheetFolded(null)
     }
   }
   const [detail, setDetail] = useState<HTMLElement | null>(null)
-  const [sheetFolded, setSheetFolded] = useState<boolean | null>(null)
+  const [sheetStart, setSheetStart] = useState(false)
   const [panel, setPanel] = useState(false)
   const [mount, setMount] = useState<HTMLElement | null>(null)
   const [seen, setSeen] = useState<Seen>(() => {
@@ -143,8 +146,10 @@ export function SideProvider({
       setDetail,
       sheetFolded,
       setSheetFolded,
+      sheetStart,
+      setSheetStart,
     }),
-    [kind, foldable, tab, open, counts, activate, mount, detail, sheetFolded],
+    [kind, foldable, tab, open, counts, activate, mount, detail, sheetFolded, sheetStart],
   )
   return <SideContext value={value}>{children}</SideContext>
 }

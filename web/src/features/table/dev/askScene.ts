@@ -271,7 +271,7 @@ function mayOf(fixture: Fixture, name: string, run?: { index: number; order: rea
     name,
     ability: 0,
     text,
-    ...(ids[`${name} trigger`] === undefined ? {} : { stack: ids[`${name} trigger`] }),
+    ...(ids[`${name} trigger`] === undefined ? {} : { stack: ids[`${name} trigger`], resolving: true }),
     ...(ids[name] === undefined ? {} : { source: ids[name] }),
     ...(clause === undefined ? {} : { clause: [clause[0], clause[1]] }),
     ...(brago === undefined ? {} : { cause: { object: brago, name: 'Brago, King Eternal', entered: true } }),

@@ -34,6 +34,10 @@ export interface SideState {
   sheetFolded: boolean | null
   /** Folds or opens the decision sheet. */
   setSheetFolded(folded: boolean): void
+  /** Whether the pending decision's sheet starts folded: its answer is a press on the table (`PromptLayout`'s `folded`). */
+  sheetStart: boolean
+  /** Says how the pending decision's sheet starts. */
+  setSheetStart(folded: boolean): void
 }
 
 /** Provided by `SideProvider`. */

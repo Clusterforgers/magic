@@ -38,7 +38,8 @@
   /* A phone: two lines. The lead and the sentence, then the meter, short choices, the clock and the answers. */
   @container band (width < 40rem) {
     & {
-      grid-template-columns: auto minmax(0, 1fr) auto auto;
+      /* The answers have the second line's free room, so they are cut only when they are wider than the band. */
+      grid-template-columns: auto auto auto minmax(0, 1fr);
       grid-template-areas:
         'lead text text text'
         'meter choices clock actions';
@@ -57,7 +58,7 @@
     }
     /* The meter stands beside the lead, so the second line is the answers' alone. */
     &:has([data-slot='prompt-sentence'][data-quiet]) {
-      grid-template-columns: auto minmax(0, 1fr) auto auto;
+      grid-template-columns: auto auto auto minmax(0, 1fr);
       grid-template-areas:
         'lead meter meter meter'
         'choices clock actions actions';
@@ -446,5 +447,42 @@
   to {
     transform: none;
     opacity: 1;
+  }
+}
+
+/*
+ * What a prompt chooses among, drawn in the Stack column or the decision sheet: every list is one column wide and
+ * nothing is wider than its box. A prompt's cards stand three to a row, the picture a prompt draws beside its modes is
+ * left out (the asking card stands above), and a list keeps no height of its own: the column scrolls.
+ */
+[data-slot='decision-choices'] {
+  /* The heights the prompts take from the band's sheet do not bind here. */
+  --sheet-max: 100rem;
+  & [data-slot='prompt-choices'] > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+  & [data-slot='mode-choice'] {
+    display: grid;
+  }
+  & [data-slot='mode-choice'] > [data-slot='prompt-picture'] {
+    display: none;
+  }
+  & [data-slot='mode-list'] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* A list keeps no height of its own here: the column scrolls as one. */
+  & [class*='max-h-'] {
+    max-height: none;
+  }
+  & [data-slot='card-choices']:not([data-overlay]) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  & [data-slot='card-row']:not([data-columns]) {
+    overflow: visible;
+  }
+  & [data-slot='card-row']:not([data-columns]) > [data-candidate] {
+    --card-w: calc((100cqi - 1rem) / 3 - 1px) !important;
   }
 }

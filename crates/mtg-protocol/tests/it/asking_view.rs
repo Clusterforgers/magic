@@ -82,6 +82,7 @@ fn a_may_trigger_names_its_stack_object_source_clause_and_cause() {
     let asking = asking(&driver).unwrap();
     let top = *driver.state().stack().last().unwrap();
     assert_eq!(asking.stack, Some(top));
+    assert!(asking.resolving);
     assert_eq!(asking.source, Some(driver.id_of("Mentor").unwrap()));
     assert_eq!(asking.name, "Mentor");
     assert_eq!(asking.ability, Some(0));
@@ -225,6 +226,7 @@ fn a_payment_is_asked_by_the_spell_being_cast() {
     let asking = asking(&driver).unwrap();
     assert_eq!(asking.name, "Ogre");
     assert_eq!(asking.source, Some(spell));
+    assert!(!asking.resolving, "a spell being cast is not resolving");
     assert_eq!(
         (asking.ability, asking.clause, asking.run),
         (None, None, None)

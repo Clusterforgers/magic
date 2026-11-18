@@ -16,6 +16,11 @@ export interface ChoiceOverlay {
   host: HTMLElement | null
   /** The table is a phone's. */
   phone: boolean
+  /**
+   * Every choice of cards takes the overlay: a phone, and any table without a side column, whose decision sheet lies
+   * over the hand and is folded while a prompt's cards are on show.
+   */
+  every: boolean
   /** The room inside the overlay's element: measured, or worked out from the window before it has a size. */
   room: OverlayRoom
   /** Opens the overlay while the caller holds it; the function returned lets it go. */
@@ -46,15 +51,15 @@ function roomOf(box: HTMLElement): { width: number; height: number } | null {
   return { width: Math.floor(width / 8) * 8, height: Math.floor(height / 8) * 8 }
 }
 
-/** Whether a choice among `count` cards takes the overlay: every choice on a phone, a long list anywhere. */
-export function wantsOverlay(count: number, phone: boolean): boolean {
-  return phone ? count > 0 : count > FILTER_FROM
+/** Whether a choice among `count` cards takes the overlay: every choice where `every` (a phone, a table without a side column), a long list anywhere. */
+export function wantsOverlay(count: number, every: boolean): boolean {
+  return every ? count > 0 : count > FILTER_FROM
 }
 
 /** The overlay's element for a choice among `count` cards, held open while the caller is mounted; null to draw in place. */
 export function useChoiceOverlay(count: number): HTMLElement | null {
   const overlay = useContext(ChoiceOverlayContext)
-  const host = overlay !== null && wantsOverlay(count, overlay.phone) ? overlay.host : null
+  const host = overlay !== null && wantsOverlay(count, overlay.every) ? overlay.host : null
   const claim = overlay?.claim
   const used = host !== null
   useLayoutEffect(() => (used && claim !== undefined ? claim() : undefined), [used, claim])
@@ -94,6 +99,7 @@ export function useChoiceOverlayHost(
   phone: boolean,
   viewport: Viewport,
   opening = false,
+  every = phone,
 ): {
   value: ChoiceOverlay
   open: boolean
@@ -126,8 +132,8 @@ export function useChoiceOverlayHost(
     [measured, viewport, phone],
   )
   const value = useMemo(
-    () => ({ host, phone, room, claim, open, opening: opening && !phone }),
-    [host, phone, room, claim, open, opening],
+    () => ({ host, phone, every, room, claim, open, opening: opening && !phone }),
+    [host, phone, every, room, claim, open, opening],
   )
   return { value, open, ref: setHost }
 }

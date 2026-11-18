@@ -13,6 +13,10 @@ export type AskingView = {
  */
 stack?: ObjectId, 
 /**
+ * Whether that spell or ability is resolving now; false while it is being cast or put on the stack.
+ */
+resolving?: boolean, 
+/**
  * The card it comes from (the spell itself, the source of an ability) while the viewer sees that object; left out
  * once the source has left its zone or is hidden.
  */
