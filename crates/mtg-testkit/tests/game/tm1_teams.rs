@@ -1,12 +1,13 @@
-//! Goal: teams decide who is an opponent at four and six seats, a team wins once all its opponents have lost (CR 808), and Two-Headed Giant shares the turn, the life total, the poison counters and the loss of a team (CR 810), each with the turn order, the draws, the sorcery timing, the land plays and the combat of a shared turn; bot games of every mode finish under every invariant.
+//! Goal: teams decide who is an opponent at four and six seats, a team wins once all its opponents have lost (CR 808), and Two-Headed Giant shares the turn, the life total (an effect that sets each player's life sets it once), the poison counters and the loss of a team (CR 810), each with the turn order, the draws, the sorcery timing, the land plays and the combat of a shared turn; bot games of every mode finish under every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use crate::common::pid;
 use crate::common::seeds::{for_each_seed, fuzz_games};
+use crate::common::{pid, spell};
 
 use std::sync::Arc;
 
 use mtg_cards::value::CounterKind;
+use mtg_core::card::CardType;
 use mtg_core::house::HouseRules;
 use mtg_core::ids::PlayerId;
 use mtg_core::teams::{TeamMode, Teams};
@@ -16,7 +17,7 @@ use mtg_engine::player::Player;
 use mtg_engine::state::Stage;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_engine::{GameResult, GameState};
+use mtg_engine::{Event, GameResult, GameState};
 use mtg_testkit::cards::{bear, elf, forest, giant, swamp};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{
@@ -150,6 +151,45 @@ fn a_two_headed_giant_team_shares_life_poison_and_its_loss() -> Result<(), Scrip
     assert_eq!((poison(state, 2), poison(state, 3)), (9, 7));
     assert_eq!(alive(state), [0, 1]);
     assert_eq!(state.result(), Some(GameResult::Team(0)));
+    Ok(())
+}
+
+/// "Each player's life total becomes 10" sets a shared total once, through one player of each team (CR 810.9e), and
+/// each player's own total where teams keep their own.
+#[rstest]
+#[case::giant(TeamMode::TwoHeadedGiant, 30, &[0, 2])]
+#[case::teams(TeamMode::Teams, 20, &[0, 1, 2, 3])]
+fn an_effect_that_sets_each_players_life_sets_a_shared_total_once(
+    #[case] mode: TeamMode,
+    #[case] start: u32,
+    #[case] changed: &[usize],
+) -> Result<(), ScriptError> {
+    let set = spell(
+        "Reset",
+        CardType::Instant,
+        "[]",
+        r#"[{"SetLife":{"who":"EachPlayer","amount":10}}]"#,
+    );
+    let mut driver =
+        Driver::from_scenario(Scenario::new(4).hand(0, [set]).house_rules(rules(mode, 4)))?;
+    driver.cast("Reset")?;
+    while !driver.state().stack().is_empty() {
+        driver.pass()?;
+    }
+    for seat in 0..4 {
+        assert_eq!(life(driver.state(), seat), 10, "seat {seat}");
+    }
+    let lost: Vec<(usize, u32)> = driver
+        .engine()
+        .events()
+        .iter()
+        .filter_map(|event| match event {
+            Event::LifeLost { player, amount } => Some((player.index(), *amount)),
+            _ => None,
+        })
+        .collect();
+    let want: Vec<(usize, u32)> = changed.iter().map(|seat| (*seat, start - 10)).collect();
+    assert_eq!(lost, want);
     Ok(())
 }
 
