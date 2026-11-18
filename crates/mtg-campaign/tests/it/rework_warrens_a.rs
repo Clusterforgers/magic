@@ -45,8 +45,6 @@ const BOSSES: [&str; 8] = [
     "hollowmere_belfry",
     "morwenna_court",
 ];
-/// The colours of each boss's precon, as the design names them, in the order of [`BOSSES`].
-const DECK_COLORS: [&str; 8] = ["BG", "G", "B", "R", "W", "GU", "WU", "UB"];
 /// The boss's seat at the two-hero table.
 const BOSS: usize = 2;
 /// The creatures each hero starts with: name, power and toughness.
@@ -476,9 +474,9 @@ fn each_reworked_boss_loads_whole(#[values(0, 1, 2, 3, 4, 5, 6, 7)] at: usize) {
     let content = content().unwrap();
     let boss = boss(BOSSES[at]);
     let file = boss.deck_file.as_deref().unwrap();
-    // The colours the reworked boss takes from its deck; the record's `colors` follow once the bracket decks go (rw8).
+    // The boss takes its colours from its deck.
     assert_eq!(
-        sorted(DECK_COLORS[at]),
+        sorted(&boss.colors),
         sorted(&deck_colors(file)),
         "{}",
         boss.id
